@@ -4,11 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"testing"
 
 	nodeapi "berty.tech/core/api/node"
-	"berty.tech/core/api/node/graphql"
-	gqlgen "berty.tech/core/api/node/graphql/graph/generated"
 	"berty.tech/core/entity"
 	netutil "berty.tech/core/network/helper"
 	. "github.com/smartystreets/goconvey/convey"
@@ -17,13 +16,13 @@ import (
 
 func TestPagination(t *testing.T) {
 	var (
-		ctx      = context.Background()
-		alice    *Node
-		gs       *grpc.Server
-		resolver gqlgen.ResolverRoot
+		ctx    = context.Background()
+		alice  *Node
+		gs     *grpc.Server
+		client nodeapi.ServiceClient
 	)
 
-	Convey("prepare graphql service", t, func() {
+	Convey("prepare client grpc", t, func() {
 		// grpc
 		gs = grpc.NewServer()
 
@@ -48,8 +47,7 @@ func TestPagination(t *testing.T) {
 		})
 		conn, err := grpc.Dial("", dialOpts...)
 		So(err, ShouldBeNil)
-
-		resolver = graphql.New(nodeapi.NewServiceClient(conn)).Resolvers
+		client = nodeapi.NewServiceClient(conn)
 
 		go func() {
 			gs.Serve(ic.Listener())
@@ -60,150 +58,151 @@ func TestPagination(t *testing.T) {
 	})
 
 	Convey("testing pagination with 6 entries, 2 per-page (6%2=0)", t, func() {
-		p := &nodeapi.Pagination{
-			First: 2,
-		}
-		out, err := resolver.Query().ContactList(ctx, &entity.Contact{}, p.OrderBy, p.OrderDesc, &p.First, &p.After, &p.Last, &p.Before)
+		stream, err := client.ContactList(ctx, &nodeapi.ContactListInput{
+			Paginate: &nodeapi.Pagination{
+				First: 2,
+			},
+		})
 		So(err, ShouldBeNil)
-		expected := nodeapi.ContactListConnection{
-			Edges: []*nodeapi.ContactEdge{
-				{Node: &entity.Contact{ID: "abcde_0", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_0"},
-				{Node: &entity.Contact{ID: "abcde_1", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_1"},
-			},
-			PageInfo: &nodeapi.PageInfo{
-				StartCursor: "abcde_0",
-				EndCursor:   "abcde_1",
-				HasNextPage: true,
-			},
+
+		expected := []*entity.Contact{
+			&entity.Contact{ID: "abcde_0", Status: entity.Contact_IsTrustedFriend},
+			&entity.Contact{ID: "abcde_1", Status: entity.Contact_IsTrustedFriend},
+		}
+		out := []*entity.Contact{}
+		for {
+			contact, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			So(err, ShouldBeNil)
+			out = append(out, contact)
 		}
 		So(toIndentedJSON(out), ShouldEqual, toIndentedJSON(expected))
 
-		p = &nodeapi.Pagination{
-			First: 2,
-			After: "abcde_1",
-		}
-		out, err = resolver.Query().ContactList(ctx, &entity.Contact{}, p.OrderBy, p.OrderDesc, &p.First, &p.After, &p.Last, &p.Before)
+		stream, err = client.ContactList(ctx, &nodeapi.ContactListInput{
+			Paginate: &nodeapi.Pagination{
+				First: 2,
+				After: "abcde_3",
+			},
+		})
 		So(err, ShouldBeNil)
 
-		expected = nodeapi.ContactListConnection{
-			Edges: []*nodeapi.ContactEdge{
-				{Node: &entity.Contact{ID: "abcde_2", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_2"},
-				{Node: &entity.Contact{ID: "abcde_3", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_3"},
-			},
-			PageInfo: &nodeapi.PageInfo{
-				StartCursor:     "abcde_2",
-				EndCursor:       "abcde_3",
-				HasPreviousPage: true,
-				HasNextPage:     true,
-			},
+		expected = []*entity.Contact{
+			&entity.Contact{ID: "abcde_4", Status: entity.Contact_IsTrustedFriend},
+			&entity.Contact{ID: "abcde_5", Status: entity.Contact_IsTrustedFriend},
 		}
-		So(toIndentedJSON(out), ShouldEqual, toIndentedJSON(expected))
 
-		p = &nodeapi.Pagination{
-			First: 2,
-			After: "abcde_3",
-		}
-		out, err = resolver.Query().ContactList(ctx, &entity.Contact{}, p.OrderBy, p.OrderDesc, &p.First, &p.After, &p.Last, &p.Before)
-		So(err, ShouldBeNil)
-		expected = nodeapi.ContactListConnection{
-			Edges: []*nodeapi.ContactEdge{
-				{Node: &entity.Contact{ID: "abcde_4", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_4"},
-				{Node: &entity.Contact{ID: "abcde_5", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_5"},
-			},
-			PageInfo: &nodeapi.PageInfo{
-				StartCursor:     "abcde_4",
-				EndCursor:       "abcde_5",
-				HasPreviousPage: true,
-				HasNextPage:     false,
-			},
+		out = []*entity.Contact{}
+		for {
+			contact, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			So(err, ShouldBeNil)
+			out = append(out, contact)
 		}
 		So(toIndentedJSON(out), ShouldEqual, toIndentedJSON(expected))
 		//fmt.Println(toIndentedJSON(out))
 		//fmt.Println(toIndentedJSON(expected))
 	})
 	Convey("testing pagination with 6 entries, 4 per-page (6%4=2)", t, func() {
-		p := &nodeapi.Pagination{
-			First: 4,
-		}
-		out, err := resolver.Query().ContactList(ctx, &entity.Contact{}, p.OrderBy, p.OrderDesc, &p.First, &p.After, &p.Last, &p.Before)
-		So(err, ShouldBeNil)
-		expected := nodeapi.ContactListConnection{
-			Edges: []*nodeapi.ContactEdge{
-				{Node: &entity.Contact{ID: "abcde_0", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_0"},
-				{Node: &entity.Contact{ID: "abcde_1", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_1"},
-				{Node: &entity.Contact{ID: "abcde_2", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_2"},
-				{Node: &entity.Contact{ID: "abcde_3", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_3"},
-			},
-			PageInfo: &nodeapi.PageInfo{
-				StartCursor: "abcde_0",
-				EndCursor:   "abcde_3",
-				HasNextPage: true,
-			},
-		}
-		So(toIndentedJSON(out), ShouldEqual, toIndentedJSON(expected))
 
-		p = &nodeapi.Pagination{
-			First: 4,
-			After: "abcde_3",
-		}
-		out, err = resolver.Query().ContactList(ctx, &entity.Contact{}, p.OrderBy, p.OrderDesc, &p.First, &p.After, &p.Last, &p.Before)
+		stream, err := client.ContactList(ctx, &nodeapi.ContactListInput{
+			Paginate: &nodeapi.Pagination{
+				First: 4,
+			},
+		})
 		So(err, ShouldBeNil)
-		expected = nodeapi.ContactListConnection{
-			Edges: []*nodeapi.ContactEdge{
-				{Node: &entity.Contact{ID: "abcde_4", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_4"},
-				{Node: &entity.Contact{ID: "abcde_5", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_5"},
+
+		expected := []*entity.Contact{
+			&entity.Contact{ID: "abcde_0", Status: entity.Contact_IsTrustedFriend},
+			&entity.Contact{ID: "abcde_1", Status: entity.Contact_IsTrustedFriend},
+			&entity.Contact{ID: "abcde_2", Status: entity.Contact_IsTrustedFriend},
+			&entity.Contact{ID: "abcde_3", Status: entity.Contact_IsTrustedFriend},
+		}
+		out := []*entity.Contact{}
+		for {
+			contact, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			So(err, ShouldBeNil)
+			out = append(out, contact)
+		}
+
+		stream, err = client.ContactList(ctx, &nodeapi.ContactListInput{
+			Paginate: &nodeapi.Pagination{
+				First: 4,
+				After: "abcde_3",
 			},
-			PageInfo: &nodeapi.PageInfo{
-				StartCursor:     "abcde_4",
-				EndCursor:       "abcde_5",
-				HasPreviousPage: true,
-				HasNextPage:     false,
-			},
+		})
+		So(err, ShouldBeNil)
+
+		expected = []*entity.Contact{
+			&entity.Contact{ID: "abcde_4", Status: entity.Contact_IsTrustedFriend},
+			&entity.Contact{ID: "abcde_5", Status: entity.Contact_IsTrustedFriend},
+		}
+
+		out = []*entity.Contact{}
+		for {
+			contact, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			So(err, ShouldBeNil)
+			out = append(out, contact)
 		}
 		So(toIndentedJSON(out), ShouldEqual, toIndentedJSON(expected))
 	})
 	Convey("testing pagination with 6 entries, 4 per-page, reverse order (6%4=2)", t, func() {
-		p := &nodeapi.Pagination{
-			OrderDesc: true,
-			First:     4,
-			//OrderBy:   "id",
-		}
-		out, err := resolver.Query().ContactList(ctx, &entity.Contact{}, p.OrderBy, p.OrderDesc, &p.First, &p.After, &p.Last, &p.Before)
+		stream, err := client.ContactList(ctx, &nodeapi.ContactListInput{
+			Paginate: &nodeapi.Pagination{
+				First:     4,
+				OrderDesc: true,
+			},
+		})
 		So(err, ShouldBeNil)
-		expected := nodeapi.ContactListConnection{
-			Edges: []*nodeapi.ContactEdge{
-				{Node: &entity.Contact{ID: "abcde_5", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_5"},
-				{Node: &entity.Contact{ID: "abcde_4", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_4"},
-				{Node: &entity.Contact{ID: "abcde_3", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_3"},
-				{Node: &entity.Contact{ID: "abcde_2", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_2"},
-			},
-			PageInfo: &nodeapi.PageInfo{
-				StartCursor:     "abcde_5",
-				EndCursor:       "abcde_2",
-				HasPreviousPage: false,
-				HasNextPage:     true,
-			},
+
+		expected := []*entity.Contact{
+			&entity.Contact{ID: "abcde_5", Status: entity.Contact_IsTrustedFriend},
+			&entity.Contact{ID: "abcde_4", Status: entity.Contact_IsTrustedFriend},
+			&entity.Contact{ID: "abcde_3", Status: entity.Contact_IsTrustedFriend},
+			&entity.Contact{ID: "abcde_2", Status: entity.Contact_IsTrustedFriend},
+		}
+
+		out := []*entity.Contact{}
+		for {
+			contact, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			So(err, ShouldBeNil)
+			out = append(out, contact)
 		}
 		So(toIndentedJSON(out), ShouldEqual, toIndentedJSON(expected))
 
-		p = &nodeapi.Pagination{
-			OrderDesc: true,
-			First:     4,
-			After:     "abcde_2",
-		}
-		out, err = resolver.Query().ContactList(ctx, &entity.Contact{}, p.OrderBy, p.OrderDesc, &p.First, &p.After, &p.Last, &p.Before)
+		stream, err = client.ContactList(ctx, &nodeapi.ContactListInput{
+			Paginate: &nodeapi.Pagination{
+				OrderDesc: true,
+				First:     4,
+				After:     "abcde_2",
+			},
+		})
 		So(err, ShouldBeNil)
-		expected = nodeapi.ContactListConnection{
-			Edges: []*nodeapi.ContactEdge{
-				{Node: &entity.Contact{ID: "abcde_1", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_1"},
-				{Node: &entity.Contact{ID: "abcde_0", Status: entity.Contact_IsTrustedFriend}, Cursor: "abcde_0"},
-			},
-			PageInfo: &nodeapi.PageInfo{
-				StartCursor:     "abcde_1",
-				EndCursor:       "abcde_0",
-				HasPreviousPage: true,
-				HasNextPage:     false,
-			},
+
+		expected = []*entity.Contact{
+			&entity.Contact{ID: "abcde_1", Status: entity.Contact_IsTrustedFriend},
+			&entity.Contact{ID: "abcde_0", Status: entity.Contact_IsTrustedFriend},
+		}
+		out = []*entity.Contact{}
+		for {
+			contact, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			So(err, ShouldBeNil)
+			out = append(out, contact)
 		}
 		So(toIndentedJSON(out), ShouldEqual, toIndentedJSON(expected))
 	})
