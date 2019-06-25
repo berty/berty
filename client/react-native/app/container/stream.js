@@ -142,7 +142,7 @@ export class StreamPagination extends Stream {
     // if item must be at end check that it has been forced
     if (!change.force && newIndex === this.queue.length) {
       if (this.queue.length < this.paginate.first) {
-        // this.invoke()
+        this.invokeDebounce()
       }
       return
     }
@@ -226,6 +226,7 @@ export class StreamPagination extends Stream {
 
   invokeHashTable = {}
 
+  invokeDebounce = debounce(100, this.invoke)
   invoke = async () => {
     const queue = []
 

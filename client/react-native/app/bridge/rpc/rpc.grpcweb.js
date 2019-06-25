@@ -1,7 +1,15 @@
 import grpc from 'grpc-web'
 import { getServiceName } from './utils'
 import Stream from 'stream'
-export const DefautlHostname = 'http://localhost:8989'
+
+const url = new URL(window && window.location ? window.location.href : '')
+const host =
+  url.searchParams.get('daemon-host') ||
+  url.searchParams.get('host') ||
+  '127.0.0.1'
+const port =
+  url.searchParams.get('daemon-port') || url.searchParams.get('port') || '8989'
+export const DefautlHostname = `http://${host}:${port}`
 
 const { MethodInfo } = grpc.AbstractClientBase
 const lazyMethod = payload => payload

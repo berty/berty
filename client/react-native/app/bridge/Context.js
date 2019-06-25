@@ -12,6 +12,7 @@ export const withBridgeContext = Component => {
       return (
         <BridgeContext.Consumer>
           {context => {
+            console.log('new context', context)
             return <Component {...this.props} bridge={context} />
           }}
         </BridgeContext.Consumer>

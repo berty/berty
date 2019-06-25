@@ -30,7 +30,12 @@ class Auth extends PureComponent {
 
   getIp = async () => {
     if (Platform.OS === 'web' && !Platform.Desktop) {
-      return window.location.hostname || '127.0.0.1'
+      var url = new URL(window.location.href)
+      return (
+        url.searchParams.get('node-host') ||
+        url.searchParams.get('host') ||
+        '127.0.0.1'
+      )
     }
     return '127.0.0.1'
   }
@@ -109,10 +114,9 @@ class Auth extends PureComponent {
     await this.start(nickname) // @FIXME: implement this later
 
     const { grpcWebPort } = await this.getPort()
-    console.log(grpcWebPort)
     const nodeService = service.create(
       service.NodeService,
-      rpc.grpcWebWithHostname('http://localhost:' + grpcWebPort),
+      rpc.grpcWebWithHostname(`http://${await this.getIp()}:${grpcWebPort}`),
       middleware.chain(
         __DEV__ ? middleware.logger.create('NODE-SERVICE') : null // eslint-disable-line
       )

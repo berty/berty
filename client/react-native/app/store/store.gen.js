@@ -1538,6 +1538,8 @@ export class Store {
 
     this.node = {
       service:
+        this.bridge &&
+        this.bridge.node &&
         this.bridge.node.service &&
         new NodeServiceStore(this, this.bridge.node.service),
     }
