@@ -9,7 +9,6 @@ import ReactDOM from 'react-dom'
 
 import RootNavigator from '@berty/navigation'
 import AppWrapper from './integration/AppWrapper'
-console.log('test')
 
 const isIntegrationMode = process.env['ENVIRONMENT'] === 'integration_test'
 

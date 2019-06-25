@@ -31,24 +31,28 @@ import Mutex from 'await-mutex'
                     return this.store.entity.{{case 'camel' type}}.get(this.{{name}}Id)
                   {{/if}}
                 }
-                set {{name}} ({{name}}) {
+                set {{name}} (_) {
                   {{#if repeated}}
-                    {{name}}.forEach(_ => this.store.entity.{{case 'camel' type}}.set(
+                    _.forEach(_ => {
+                  {{/if}}
+                  if (this.store.entity.{{case 'camel' type}}.has(_.id)) {
+                    const entity = this.store.entity.{{case 'camel' type}}.get(_.id)
+                    Object.keys(_).forEach(k => { _[k] = entity[k] })
+                  } else {
+                    this.store.entity.{{case 'camel' type}}.set(
                       _.id,
                       new {{type}}EntityStore(this.store, _),
-                    ))
-                  {{else}}
-                    this.store.entity.{{case 'camel' type}}.set(
-                      {{name}}.id,
-                      new {{type}}EntityStore(this.store, {{name}}),
                     )
+                  }
+                  {{#if repeated}}
+                   })
                   {{/if}}
                 }
               {{else}}
                 {{#if repeated}}
-                  {{name}} = []
+                  @observable {{name}} = []
                 {{else}}
-                  {{name}} = null
+                  @observable {{name}} = null
                 {{/if}}
               {{/if}}
             {{/each}}
@@ -118,10 +122,19 @@ import Mutex from 'await-mutex'
                           default:
                           case 0:
                           case 1:
-                            this.store.entity.{{case 'camel' resolvedType.name}}.set(
-                              entity.id,
-                              new {{resolvedType.name}}EntityStore(this.store, entity),
-                            )
+                            if (this.store.entity.{{case 'camel' resolvedType.name}}.has(entity.id)) {
+                              const current = this.store.entity.{{case 'camel' resolvedType.name}}.get(entity.id)
+                              Object.keys(entity).forEach(_ => {
+                                current[_] = entity[_]
+                              })
+                              entity = current
+                            } else {
+                              entity = new {{resolvedType.name}}EntityStore(this.store, entity)
+                              this.store.entity.{{case 'camel' resolvedType.name}}.set(
+                                entity.id,
+                                entity
+                              )
+                            }
                             break
                           case 2:
                             if (this.store.entity.{{case 'camel' resolvedType.name}}.has(entity.id)) {
@@ -148,8 +161,14 @@ import Mutex from 'await-mutex'
                     this.store.entity.{{case 'camel' resolvedType.name}}.delete(output.id)
                   }
                 {{else}}
-                  output = new {{resolvedType.name}}EntityStore(this.store, output)
-                  this.store.entity.{{case 'camel' resolvedType.name}}.set(output.id, output)
+                  if (this.store.entity.{{case 'camel' resolvedType.name}}.has(output.id)) {
+                    const current = this.store.entity.{{case 'camel' resolvedType.name}}.get(output.id)
+                    Object.keys(output).forEach(_ => { current[_] = output[_] })
+                    output = current
+                  } else {
+                    output = new {{resolvedType.name}}EntityStore(this.store, output)
+                    this.store.entity.{{case 'camel' resolvedType.name}}.set(output.id, output)
+                  }
                 {{/if}}
               {{/if}}
             {{/each}}
@@ -195,7 +214,7 @@ import Mutex from 'await-mutex'
       this.entity = {
         {{#with (lookup 'berty.node.CommitLog.Entity')}}
           {{#each fields}}
-            {{case 'camel' resolvedType.name}}: observable.map({}, { deep: false }),
+            {{case 'camel' resolvedType.name}}: observable.map({}, { deep: true }),
           {{/each}}
         {{/with}}
       }

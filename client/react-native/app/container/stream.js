@@ -92,105 +92,87 @@ export class StreamPagination extends Stream {
 
   compareSup = (a, b) => (this.paginate.orderDesc ? a < b : a > b)
 
-  add = change => {
-    const { newValue } = change
+  change = change => {
+    const { newValue, oldValue, type } = change
+
+    const item = newValue || oldValue
+    const index = this.queue.findIndex(_ => _.id === item.id)
 
     // delete item from list if not equal with filter
-    if (!deepFilterEqual(this.filter, newValue)) {
-      this.delete({ ...change, oldValue: newValue })
+    if (type === 'delete' || !deepFilterEqual(this.filter, item)) {
+      if (index !== -1) {
+        this.queue.splice(index, 1)
+      }
       return
     }
 
-    // find where to put the new item
-    const cursor = this.cursorExtractor(newValue)
+    // get the item cursor
+    const cursor = this.cursorExtractor(item)
 
-    // if item exist, update it
-    const index = this.queue.findIndex(item => newValue.id === item.id)
-    if (index !== -1) {
-      // if cursor has not changed, just update item
-      if (cursor === this.cursorExtractor(this.queue[index])) {
-        this.queue.splice(index, 1, newValue)
-        return
-      } else {
-        // else, update his position
-      }
+    // if item exist and cursor has not changed, just update it
+    if (index !== -1 && cursor === this.cursorExtractor(this.queue[index])) {
+      this.queue.splice(index, 1, item)
+      return
     }
 
+    // else find new index of item
+    let newIndex = this.queue.length ? -1 : 0
     for (let topIndex in this.queue) {
       let itemTop = this.queue[topIndex]
       let infTop = this.compareInf(cursor, this.cursorExtractor(itemTop))
       if (infTop) {
-        // if item exist, update his position
-        if (index !== -1 && index >= topIndex) {
-          this.queue.splice(
-            // remove all items from top
-            topIndex,
-            // delete items from top to index (included)
-            index + 1 - topIndex,
-            // replace first by index updated
-            newValue,
-            // add the all items from top to index (not included)
-            ...this.queue.slice(topIndex, index)
-          )
-        } else {
-          this.queue.splice(topIndex, 0, newValue)
-        }
-        return
+        newIndex = topIndex
+        break
       }
       let bottomIndex = this.queue.length - topIndex - 1
       let itemBottom = this.queue[bottomIndex]
       let supBottom = this.compareSup(cursor, this.cursorExtractor(itemBottom))
       if (supBottom) {
-        // if item exist, update his position
-        if (index !== -1 && index < bottomIndex) {
-          this.queue.splice(
-            // remove all items from index
-            index,
-            // delete items from index (included) to bottom
-            bottomIndex - (index + 1),
-            // add all items from index (not included) to bottom
-            ...this.queue.slice(index + 1, bottomIndex + 1),
-            // replace last by index updated
-            newValue
-          )
-        } else {
-          if (bottomIndex + 1 < this.queue.length || change.force) {
-            this.queue.splice(bottomIndex + 1, 0, newValue)
-          }
-        }
-        return
+        newIndex = bottomIndex + 1
+        break
       }
     }
 
-    // if forced to add, push it
-    if (this.queue.length === 0 && change.force) {
-      this.queue.push(newValue)
+    // if no position has been found, quit
+    if (newIndex === -1) {
+      console.warn('no position found for item', this.queue, item)
       return
     }
 
-    if (this.queue.length < this.paginate.first) {
-      this.invoke()
+    // if item must be at end check that it has been forced
+    if (!change.force && newIndex === this.queue.length) {
+      if (this.queue.length < this.paginate.first) {
+        // this.invoke()
+      }
+      return
     }
-  }
 
-  update = change => {
-    this.add(change)
-  }
-
-  delete = change => {
-    const { oldValue } = change
-
-    const index = this.queue.findIndex(item => item.id === oldValue.id)
+    // if item is not in queue, add it
     if (index === -1) {
+      this.queue.splice(newIndex, 0, item)
       return
     }
-    this.queue.splice(index, 1)
+
+    // else update the queue
+    const min = Math.min(index, newIndex)
+    const max = Math.max(index, newIndex)
+
+    if (index === min) {
+      this.queue.slice(
+        min,
+        max - min + 1,
+        ...this.queue.slice(min + 1, max + 1),
+        item
+      )
+    } else {
+      this.queue.slice(min, max - min + 1, item, ...this.queue.slice(min, max))
+    }
   }
 
   observeMutex = new Mutex()
   observe = async change => {
     this.observeMutex.acquire().then(unlock => {
-      this[change.type](change)
+      this.change(change)
       unlock()
     })
     this.smartForceUpdate()
