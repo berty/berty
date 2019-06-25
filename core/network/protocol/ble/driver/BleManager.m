@@ -25,7 +25,9 @@ static NSString* const __nonnull PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A
 
 static NSString* const __nonnull EOD = @"EOD";
 
+// TODO: No need to check error on this?
 - (instancetype __nonnull) initScannerAndAdvertiser {
+    os_log(OS_LOG_DEFAULT, "peripheralManager: initScannerAndAdvertiser");
     self = [super init];
 
     if (self) {
@@ -53,6 +55,7 @@ static NSString* const __nonnull EOD = @"EOD";
 }
 
 - (void)initService {
+    os_log(OS_LOG_DEFAULT, "peripheralManager: initService");
     self.serviceUUID = [CBUUID UUIDWithString:SERVICE_UUID];
     self.maUUID = [CBUUID UUIDWithString:MA_UUID];
     self.peerUUID = [CBUUID UUIDWithString:PEER_ID_UUID];
@@ -332,4 +335,3 @@ static NSString* const __nonnull EOD = @"EOD";
 }
 
 @end
-

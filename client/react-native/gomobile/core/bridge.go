@@ -92,7 +92,7 @@ func NewNativeBridge(loggerNative NativeLogger) NativeBridge {
 		panic(err)
 	}
 
-	initBleFunc()
+	bindBleFunc()
 
 	iogrpc := helper.NewIOGrpc()
 

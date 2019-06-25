@@ -78,7 +78,7 @@ final class DeviceManager {
 
 
     // Libp2p bound functions
-    public static void disconnectFromDevice(String multiAddr) {
+    public static void closeConnWithDevice(String multiAddr) {
         Log.i(TAG, "disconnectFromDevice() called with MultiAddr: " + multiAddr);
 
 //        BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
@@ -91,7 +91,7 @@ final class DeviceManager {
 //        }
     }
 
-    public static boolean writeToDevice(byte[] payload, String multiAddr) {
+    public static boolean sendToDevice(String multiAddr, byte[] payload) {
         Log.i(TAG, "writeToDevice() called with payload: " + Arrays.toString(payload) + ", hashCode: " + Arrays.toString(payload).hashCode() + ", string: " + new String(payload).replaceAll("\\p{C}", "?") + ", length: " + payload.length + ", to MultiAddr: " + multiAddr);
 
         BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
@@ -114,8 +114,8 @@ final class DeviceManager {
     }
 
     // TODO: Implement canDialPeer on yamux side
-    public static boolean canDialPeer(String multiAddr) {
-        Log.i(TAG, "dialPeer() called with MultiAddr: " + multiAddr);
+    public static boolean canDialDevice(String multiAddr) {
+        Log.i(TAG, "canDialDevice() called with MultiAddr: " + multiAddr);
 
         BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
 
@@ -127,8 +127,8 @@ final class DeviceManager {
 
     }
 
-    public static boolean dialPeer(String multiAddr) {
-        Log.i(TAG, "dialPeer() called with MultiAddr: " + multiAddr);
+    public static boolean dialDevice(String multiAddr) {
+        Log.i(TAG, "dialDevice() called with MultiAddr: " + multiAddr);
 
         BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	blema "berty.tech/core/network/protocol/ble/multiaddr"
 	peer "github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
@@ -54,17 +53,6 @@ func HandlePeerFound(rID string, rAddr string) bool {
 }
 
 func addToPeerStoreAndConnect(rPID peer.ID, rMa ma.Multiaddr, rAddr string) {
-	// TODO: Is this usefull or used for debug something?
-	for _, v := range disc.transport.host.Peerstore().Peers() {
-		pi := disc.transport.host.Peerstore().PeerInfo(v)
-		for _, addr := range pi.Addrs {
-			bleAddr, err := addr.ValueForProtocol(blema.P_BLE)
-			if err == nil && bleAddr == rAddr {
-				disc.transport.host.Peerstore().ClearAddrs(v)
-			}
-		}
-	}
-
 	// Add peer to peerstore
 	disc.transport.host.Peerstore().AddAddr(rPID, rMa, pstore.TempAddrTTL)
 

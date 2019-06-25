@@ -67,7 +67,7 @@ func (c *Conn) Write(p []byte) (n int, err error) {
 	}
 
 	// Write using native driver
-	if bledrv.Write(p, rAddr) == false {
+	if bledrv.SendToDevice(rAddr, p) == false {
 		return 0, fmt.Errorf("conn write failed: native write failed")
 	}
 

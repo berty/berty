@@ -34,16 +34,9 @@ func newListener(lMa ma.Multiaddr, t *Transport) (*Listener, error) {
 		closer:          make(chan struct{}),
 	}
 
-	/* TODO: Replace this by:
 	if !bledrv.StartBleDriver(listener.Addr().String(), t.host.ID().Pretty()) {
 		return nil, errors.New("listener creation failed: can't start BLE native driver")
 	}
-	*/
-	bledrv.SetMa(listener.Addr().String())
-	bledrv.SetPeerID(t.host.ID().Pretty())
-	bledrv.InitScannerAndAdvertiser()
-	bledrv.StartScanning()
-	bledrv.StartAdvertising()
 
 	return listener, nil
 }
@@ -82,15 +75,10 @@ func (l *Listener) Close() error {
 	case <-l.closer:
 		return errors.New("listener close failed: already closed")
 	default:
-		/* TODO: Replace this by:
 		defer close(l.closer)
 		if !bledrv.StopBleDriver() {
 			return errors.New("listener close failed: can't stop BLE native driver")
 		}
-		return nil
-		*/
-		bledrv.CloseScannerAndAdvertiser()
-		close(l.closer)
 		return nil
 	}
 }

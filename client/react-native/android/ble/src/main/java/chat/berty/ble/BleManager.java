@@ -96,18 +96,6 @@ public final class BleManager {
     }
 
     // Setters
-    public static void setMultiAddr(String multiAddr) {
-        Log.i(TAG, "Own multiAddr set: " + multiAddr);
-
-        maCharacteristic.setValue(multiAddr);
-    }
-
-    public static void setPeerID(String peerID) {
-        Log.i(TAG, "Own peerID set: " + peerID);
-
-        peerIDCharacteristic.setValue(peerID);
-    }
-
     static void setAdvertisingState(boolean state) {
         Log.d(TAG, "setAdvertisingState() called with state: " + state);
 
@@ -157,15 +145,19 @@ public final class BleManager {
     // Bluetooth service related
     // TODO: Check return in libp2p
     // public static boolean initBluetoothService() {
-    public static void initBluetoothService() {
-        Log.d(TAG, "initBluetoothService() called");
+    public static boolean startBleDriver(String multiAddr, String peerID) {
+        Log.d(TAG, "startBleDriver() called");
         Activity activity = activityAndContextGetter.getCurrentActivity();
         Context context = activityAndContextGetter.getApplicationContext();
+
+        // Set MultiAddr and PeerID characteristics
+        maCharacteristic.setValue(multiAddr);
+        peerIDCharacteristic.setValue(peerID);
 
         try {
             // Turn on Bluetooth adapter
             if (!mBluetoothAdapter.isEnabled()) {
-                Log.d(TAG, "initBluetoothService() Bluetooth adapter is off: turning it on");
+                Log.d(TAG, "startBleDriver() Bluetooth adapter is off: turning it on");
 
                 Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 activity.startActivityForResult(enableBluetoothIntent, BLUETOOTH_ENABLE_REQUEST);
@@ -176,7 +168,7 @@ public final class BleManager {
 
             // Check Location permission (required by BLE)
             if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "initBluetoothService() location permission isn't granted: requesting it");
+                Log.d(TAG, "startBleDriver() location permission isn't granted: requesting it");
 
                 ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST);
                 // TODO: Check result of ACCESS_FINE_LOCATION
@@ -185,41 +177,48 @@ public final class BleManager {
 
             BluetoothManager bleManager = (BluetoothManager)context.getSystemService(BLUETOOTH_SERVICE);
             if (bleManager == null) {
-                Log.e(TAG, "initBluetoothService() failed: BLE Manager is null");
-                return;
+                Log.e(TAG, "startBleDriver() failed: BLE Manager is null");
+                return false;
             }
 
             BluetoothGattService bertyService = createService();
-            Log.d(TAG, "initBluetoothService() service created: " + bertyService);
+            Log.d(TAG, "startBleDriver() service created: " + bertyService);
 
             BluetoothGattServer gattServer = bleManager.openGattServer(context, mGattServerCallback);
             gattServer.addService(bertyService);
             mGattServerCallback.setBluetoothGattServer(gattServer);
 
             bluetoothReady = true;
-            Log.i(TAG, "initBluetoothService() succeeded");
+
+            if (startScanning() && startAdvertising()) {
+                Log.i(TAG, "startBleDriver() succeeded");
+                return true;
+            }
         } catch (Exception e) {
-            Log.e(TAG, "initBluetoothService() failed: " + e.getMessage());
+            Log.e(TAG, "startBleDriver() failed: " + e.getMessage());
         }
+
+        return false;
     }
 
     // TODO: Check return in libp2p
     // public static boolean closeBluetoothService() {
-    public static void closeBluetoothService() {
-        Log.d(TAG, "closeBluetoothService() called");
+    public static boolean stopBleDriver() {
+        Log.d(TAG, "stopBleDriver() called");
 
         if (!isBluetoothReady()) {
-            Log.w(TAG, "closeBluetoothService() canceled");
-            return;
+            Log.w(TAG, "stopBleDriver() canceled");
+            return false;
         }
 
-        if (scanning) stopScanning();
-        if (advertising) stopAdvertising();
+        if ((scanning && !stopScanning()) || (advertising && !stopAdvertising()))
+            return false;
+
         mGattServerCallback.closeGattServer();
 
         bluetoothReady = false;
 
-        return;
+        return true;
     }
 
     private static BluetoothGattService createService() {
@@ -236,40 +235,44 @@ public final class BleManager {
 
 
     // Advertise related
-    public static void startAdvertising() {
+    private static boolean startAdvertising() {
         Log.d(TAG, "startAdvertising() called");
 
         if (!isBluetoothReady()) {
             Log.w(TAG, "startAdvertising() canceled");
-            return;
+            return false;
         }
 
         AdvertiseSettings settings = Advertiser.buildAdvertiseSettings(true, AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY, AdvertiseSettings.ADVERTISE_TX_POWER_HIGH, 0);
         AdvertiseData data = Advertiser.buildAdvertiseData();
 
         mBluetoothLeAdvertiser.startAdvertising(settings, data, mAdvertisingCallback);
+
+        return true;
     }
 
-    private static void stopAdvertising() {
+    private static boolean stopAdvertising() {
         Log.d(TAG, "stopAdvertising() called");
 
         if (!isBluetoothReady() || !isAdvertising()) {
             Log.w(TAG, "stopAdvertising() canceled");
-            return;
+            return false;
         }
 
         mBluetoothLeAdvertiser.stopAdvertising(mAdvertisingCallback);
         setAdvertisingState(false);
+
+        return true;
     }
 
 
     // Scan related
-    public static void startScanning() {
+    private static boolean startScanning() {
         Log.d(TAG, "startScanning() called");
 
         if (!isBluetoothReady()) {
             Log.w(TAG, "startScanning() canceled");
-            return;
+            return false;
         }
 
         ScanSettings settings = Scanner.createScanSetting();
@@ -279,17 +282,21 @@ public final class BleManager {
         Log.d(TAG, "Scan filter: " + filter);
 
         mBluetoothLeScanner.startScan(Collections.singletonList(filter), settings, mScanCallback);
+
+        return true;
     }
 
-    private static void stopScanning() {
+    private static boolean stopScanning() {
         Log.d(TAG, "stopScanning() called");
 
         if (!isBluetoothReady() || !isScanning()) {
             Log.w(TAG, "stopScanning() canceled");
-            return;
+            return false;
         }
 
         mBluetoothLeScanner.stopScan(mScanCallback);
         setScanningState(false);
+
+        return true;
     }
 }

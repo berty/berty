@@ -2,30 +2,9 @@
 
 package driver
 
-/* TODO: Refactor this file and correponding java to have this functions only:
-GO -> NATIVE:
-StartBleDriver(localMa string, localID string) bool
-StopBleDriver() bool
+var StartBleDriver func(localMa string, localID string) bool = nil
+var StopBleDriver func() bool = nil
 
-SendToDevice(remoteMa string, payload []byte) bool
-CloseConnWithDevice(remoteMa string)
-
-
-NATIVE -> GO:
-ReceiveFromDevice(remoteMa string, payload []byte)
-ConnClosedWithDevice(remoteMa string)
-NotifyPeerFound(remoteAddr string, remoteID string)
-*/
-
-var InitScannerAndAdvertiser func() = nil
-var CloseScannerAndAdvertiser func() = nil
-
-var SetMa func(string) = nil
-var SetPeerID func(string) = nil
-
-var StartScanning func() = nil
-var StartAdvertising func() = nil
-
-var Write func(p []byte, ma string) bool = nil
-var DialPeer func(ma string) bool = nil
-var CloseConnWithDevice func(ma string) = nil
+var DialDevice func(remoteMa string) bool = nil
+var SendToDevice func(remoteMa string, payload []byte) bool = nil
+var CloseConnWithDevice func(remoteMa string) = nil

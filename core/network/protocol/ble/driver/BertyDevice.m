@@ -9,10 +9,10 @@
 
 #import "BertyDevice.h"
 #import <os/log.h>
-#import "ble.h"
+#import "BleInterface.h"
 
-extern void sendBytesToConn(char *, void *, int);
-extern void AddToPeerStoreC(char *, char *);
+extern unsigned short handlePeerFound(char *, char *);
+extern void receiveFromDevice(char *, void *, int);
 
 CBService *getService(NSArray *services, NSString *uuid) {
     CBService *result = nil;
@@ -62,7 +62,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
         };
 
         void (^writeHandler)(NSData *data) = ^(NSData *data) {
-            sendBytesToConn([self.remoteMa UTF8String], [data bytes], (int)[data length]);
+            receiveFromDevice([self.remoteMa UTF8String], [data bytes], (int)[data length]);
         };
 
         self.characteristicHandlers = @{
@@ -86,7 +86,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
     os_log(OS_LOG_DEFAULT, "handlePeerID() device %@ with current Ma %@, new Ma %@", [self.peripheral.identifier UUIDString], self.remoteMa, remoteMa);
     self.remoteMa = [NSString stringWithUTF8String:[maData bytes]];
     self.maRecv = TRUE;
-    [self checkAndAddToPeerstore];
+    [self checkAndHandleFoundPeer];
 }
 
 - (void)handlePeerID:(NSData *)peerIDData {
@@ -94,14 +94,17 @@ CBService *getService(NSArray *services, NSString *uuid) {
     os_log(OS_LOG_DEFAULT, "handlePeerID() device %@ with current peerID %@, new peerID %@", [self.peripheral.identifier UUIDString], self.remotePeerID, remotePeerID);
     self.remotePeerID = remotePeerID;
     self.peerIDRecv = TRUE;
-    [self checkAndAddToPeerstore];
+    [self checkAndHandleFoundPeer];
 }
 
-- (void)checkAndAddToPeerstore {
+- (void)checkAndHandleFoundPeer {
     if (self.maSend == TRUE && self.peerIDSend == TRUE &&
         self.maRecv == TRUE && self.peerIDRecv == TRUE) {
-        os_log(OS_LOG_DEFAULT, "checkAndAddToPeerstore() adding %@ to peerstore", [self.peripheral.identifier UUIDString]);
-        AddToPeerStoreC([self.remotePeerID UTF8String], [self.remoteMa UTF8String]);
+        os_log(OS_LOG_DEFAULT, "checkAndHandleFoundPeer() handling found peer %@", [self.peripheral.identifier UUIDString]);
+        if (!handlePeerFound([self.remotePeerID UTF8String], [self.remoteMa UTF8String])) {
+          os_log_error(OS_LOG_DEFAULT, "checkAndHandleFoundPeer() failed: golang can't handle new peer %@", [self.peripheral.identifier UUIDString]);
+          //TODO: Disconnect device
+        }
     }
 }
 
@@ -155,7 +158,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
                             os_log(OS_LOG_DEFAULT, "handshake() device %@ write peerID succeed", [device.peripheral.identifier UUIDString]);
 
                             self.peerIDSend = TRUE;
-                            [self checkAndAddToPeerstore];
+                            [self checkAndHandleFoundPeer];
                         }];
                     }];
                 }];

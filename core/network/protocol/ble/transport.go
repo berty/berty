@@ -45,7 +45,7 @@ func (t *Transport) Dial(ctx context.Context, rMa ma.Multiaddr, p peer.ID) (tpt.
 	}
 
 	// TODO: Is this pertinent? We need to think about it
-	if bledrv.DialPeer(rAddr) == false {
+	if bledrv.DialDevice(rAddr) == false {
 		return nil, errors.New("transport dialing peer failed")
 	}
 
