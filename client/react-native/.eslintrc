@@ -2,12 +2,13 @@
   "parser": "babel-eslint",
   "extends": [
     "eslint:recommended",
-    "prettier",
-    "standard",
-    "standard-react",
+    "plugin:prettier/recommended",
+    "prettier/standard",
+    "prettier/react",
     "react-app"
   ],
   "plugins": [
+    "babel",
     "jsx-a11y",
     "react",
     "promise",

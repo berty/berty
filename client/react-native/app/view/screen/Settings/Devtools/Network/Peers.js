@@ -48,8 +48,8 @@ class Peers extends Component {
     header: (
       <Header
         navigation={navigation}
-        title='Peers List'
-        titleIcon='list'
+        title="Peers List"
+        titleIcon="list"
         backBtn
       />
     ),
@@ -64,18 +64,18 @@ class Peers extends Component {
     watchdog: false,
   }
 
-  async componentWillMount () {
+  async componentWillMount() {
     this.monitorPeersStream = await this.props.context.node.service.monitorPeers(
       {}
     )
     this.monitorPeersStream.on('data', this.addPeer)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetchPeers()
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.monitorPeersStream.destroy()
   }
 
@@ -158,7 +158,7 @@ class Peers extends Component {
     return peers.filter(peer => matchID(peer) || matchAddr(peer))
   }
 
-  render () {
+  render() {
     const filteredPeers = this.filteredPeers()
     const isFiltered = !!this.state.filter.length
 
@@ -168,11 +168,11 @@ class Peers extends Component {
           <Text style={styles.title}>
             {!isFiltered
               ? `Connected Peers: ${filteredPeers.length}/${
-                this.state.peers.length
-              }`
+                  this.state.peers.length
+                }`
               : `Matched Peers: ${filteredPeers.length}/${
-                this.state.peers.length
-              }`}
+                  this.state.peers.length
+                }`}
           </Text>
         </View>
         <SearchBar onChangeText={filter => this.peerFilter(filter)}>

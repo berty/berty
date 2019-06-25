@@ -26,7 +26,7 @@ export class Item extends PureComponent {
     this.setState({ selected: !this.state.selected }, this.props.onPress)
   }
 
-  render () {
+  render() {
     const {
       data: { status, displayName, overrideDisplayName },
       t,
@@ -39,7 +39,7 @@ export class Item extends PureComponent {
 
     return (
       <Flex.Cols
-        align='center'
+        align="center"
         onPress={this.onPress}
         style={[
           {
@@ -49,9 +49,9 @@ export class Item extends PureComponent {
           borderBottom,
         ]}
       >
-        <Flex.Cols size={1} align='center'>
+        <Flex.Cols size={1} align="center">
           <Avatar data={this.props.data} size={40} />
-          <Flex.Rows size={3} justify='start' style={[marginLeft]}>
+          <Flex.Rows size={3} justify="start" style={[marginLeft]}>
             <Text color={colors.fakeBlack} left ellipsed>
               {overrideDisplayName || displayName}
             </Text>
@@ -64,7 +64,7 @@ export class Item extends PureComponent {
             </Text>
           </Flex.Rows>
         </Flex.Cols>
-        <Flex.Rows align='end' self='center'>
+        <Flex.Rows align="end" self="center">
           <View
             style={[
               selected ? null : border,
@@ -77,7 +77,7 @@ export class Item extends PureComponent {
             ]}
           >
             <Text
-              icon='check'
+              icon="check"
               middle
               center
               color={selected ? colors.white : colors.background}
@@ -97,9 +97,9 @@ class ListScreen extends Component {
       <Header
         navigation={navigation}
         title={I18n.t('chats.add-members')}
-        titleIcon='users'
+        titleIcon="users"
         rightBtn={navigation.getParam('rightBtn')}
-        rightBtnIcon='check-circle'
+        rightBtnIcon="check-circle"
         backBtn
         onPressRightBtn={navigation.getParam('onSubmit')}
       />
@@ -120,30 +120,30 @@ class ListScreen extends Component {
     contactsID: [],
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     return false
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setNavigationParams()
   }
 
   onDefaultSubmit = async ({ contactsID }) => {
-    const {
-      ConversationCreate: conversation,
-    } = await this.props.context.node.service.conversationCreate({
-      title: '',
-      topic: '',
-      infos: '',
-      kind: enums.BertyEntityConversationInputKind.Group,
-      contacts: contactsID.map(id => ({
-        id,
-        displayName: '',
-        displayStatus: '',
-        overrideDisplayName: '',
-        overrideDisplayStatus: '',
-      })),
-    })
+    const conversation = await this.props.context.node.service.conversationCreate(
+      {
+        title: '',
+        topic: '',
+        infos: '',
+        kind: enums.BertyEntityConversationInputKind.Group,
+        contacts: contactsID.map(id => ({
+          id,
+          displayName: '',
+          displayStatus: '',
+          overrideDisplayName: '',
+          overrideDisplayStatus: '',
+        })),
+      }
+    )
 
     this.props.navigation.navigate('chats/detail', conversation)
   }
@@ -152,7 +152,7 @@ class ListScreen extends Component {
     try {
       this.setNavigationParams({
         onSubmit: null,
-        rightBtn: <ActivityIndicator size='small' />,
+        rightBtn: <ActivityIndicator size="small" />,
       })
       await onSubmit(this.state)
     } catch (err) {
@@ -161,7 +161,7 @@ class ListScreen extends Component {
     }
   }
 
-  render () {
+  render() {
     const { navigation } = this.props
     const { contactsID } = this.state
     const currentContactIds = navigation.getParam('currentContactIds', [])
@@ -185,17 +185,17 @@ class ListScreen extends Component {
               renderItem={({ item: data }) =>
                 data.status !== 42 &&
                 currentContactIds.indexOf(data.id) === -1 ? (
-                    <Item
-                      data={data}
-                      onPress={() => {
-                        const index = contactsID.lastIndexOf(data.id)
-                        index < 0
-                          ? contactsID.push(data.id)
-                          : contactsID.splice(index, 1)
-                        this.setState({ contactsID })
-                      }}
-                    />
-                  ) : null
+                  <Item
+                    data={data}
+                    onPress={() => {
+                      const index = contactsID.lastIndexOf(data.id)
+                      index < 0
+                        ? contactsID.push(data.id)
+                        : contactsID.splice(index, 1)
+                      this.setState({ contactsID })
+                    }}
+                  />
+                ) : null
               }
               ListEmptyComponent={
                 <View style={padding}>

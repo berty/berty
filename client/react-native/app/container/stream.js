@@ -6,15 +6,15 @@ import { deepFilterEqual, deepEqual } from './helper'
 import Case from 'case'
 
 export class Stream extends Component {
-  get method () {
-    return this.props.method || function () {}
+  get method() {
+    return this.props.method || function() {}
   }
 
-  get request () {
+  get request() {
     return this.props.request
   }
 
-  get response () {
+  get response() {
     return this.props.response
   }
 
@@ -32,11 +32,11 @@ export class Stream extends Component {
     queue: null,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.invoke()
   }
 
-  componentWillUnmount () {}
+  componentWillUnmount() {}
 
   invoke = async () => {
     const stream = await this.method(this.request)
@@ -52,7 +52,7 @@ export class Stream extends Component {
 
   setStateDebounce = throttle(50, this.setState)
 
-  render () {
+  render() {
     if (this.state.queue == null) {
       return this.props.fallback
     }
@@ -69,7 +69,19 @@ export class StreamPagination extends Stream {
 
   loading = true
 
-  componentWillReceiveProps (props) {
+  disposeMap = {}
+
+  componentDidMount() {
+    super.componentDidMount()
+    this.dispose = this.store.observe(this.observe)
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount()
+    this.dispose()
+  }
+
+  componentWillReceiveProps(props) {
     if (!deepEqual(props, this.props)) {
       this.retry()
     }
@@ -140,7 +152,12 @@ export class StreamPagination extends Stream {
     }
 
     // if item must be at end check that it has been forced
-    if (!change.force && newIndex === this.queue.length) {
+    if (
+      !change.force &&
+      newIndex === this.queue.length &&
+      // FIXME: we should not have to do this
+      this.queue.length !== 0
+    ) {
       if (this.queue.length < this.paginate.first) {
         this.invokeDebounce()
       }
@@ -190,7 +207,7 @@ export class StreamPagination extends Stream {
 
   forceUpdateDebounced = debounce(16, this.forceUpdate)
 
-  get request () {
+  get request() {
     const {
       fallback,
       children,
@@ -199,19 +216,20 @@ export class StreamPagination extends Stream {
       response,
       filter,
       paginate,
+      cursorExtractor,
       ...props
     } = this.props
     return { filter: this.filter, paginate: this.paginate, ...props }
   }
 
-  get filter () {
+  get filter() {
     if (this.props.filter) {
       return this.props.filter
     }
     return {}
   }
 
-  get paginate () {
+  get paginate() {
     if (this.props.paginate) {
       return this.props.paginate({
         cursor: this.cursor,
@@ -226,7 +244,7 @@ export class StreamPagination extends Stream {
 
   invokeHashTable = {}
 
-  invokeDebounce = debounce(100, this.invoke)
+  invokeDebounce = debounce(1000, this.invoke)
   invoke = async () => {
     const queue = []
 
@@ -264,7 +282,7 @@ export class StreamPagination extends Stream {
     })
   }
 
-  render () {
+  render() {
     if (this.props.fallback && this.loading && this.queue.length === 0) {
       return this.props.fallback
     }

@@ -62,7 +62,7 @@ class CustomTextInput extends React.PureComponent<Props, State> {
     }))
   }
 
-  render () {
+  render() {
     const {
       renderLeft,
       renderRight,
@@ -108,11 +108,11 @@ class CustomTextInput extends React.PureComponent<Props, State> {
 
           {this.props.error !== undefined &&
             (!!this.props.value && this.props.value.length > 0) && (
-            <Icon
-              name={this.props.error === false ? 'check' : 'x'}
-              style={[margin, largeText]}
-            />
-          )}
+              <Icon
+                name={this.props.error === false ? 'check' : 'x'}
+                style={[margin, largeText]}
+              />
+            )}
 
           {this.props.secureTextEntry ? (
             <TouchableOpacity

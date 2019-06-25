@@ -1,4 +1,4 @@
-import { observable, computed } from 'mobx'
+import { observable } from 'mobx'
 import Stream from 'stream'
 import objectHash from 'object-hash'
 import Mutex from 'await-mutex'
@@ -6,63 +6,53 @@ import Mutex from 'await-mutex'
 export class ConfigEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
-  @observable id = null
-  @observable createdAt = null
-  @observable updatedAt = null
-  @computed get myself () {
+  id = null
+  createdAt = null
+  updatedAt = null
+  get myself() {
     return this.store.entity.contact.get(this.myselfId)
   }
-  set myself (_) {
-    if (this.store.entity.contact.has(_.id)) {
-      const entity = this.store.entity.contact.get(_.id)
-      Object.keys(_).forEach(k => {
-        _[k] = entity[k]
-      })
-    } else {
-      this.store.entity.contact.set(_.id, new ContactEntityStore(this.store, _))
-    }
+  set myself(_) {
+    let entity = this.store.entity.contact.get(_.id)
+    entity = new ContactEntityStore(this.store, _)
+    this.store.entity.contact.set(_.id, entity)
   }
-  @observable myselfId = null
-  @computed get currentDevice () {
+  myselfId = null
+  get currentDevice() {
     return this.store.entity.device.get(this.currentDeviceId)
   }
-  set currentDevice (_) {
-    if (this.store.entity.device.has(_.id)) {
-      const entity = this.store.entity.device.get(_.id)
-      Object.keys(_).forEach(k => {
-        _[k] = entity[k]
-      })
-    } else {
-      this.store.entity.device.set(_.id, new DeviceEntityStore(this.store, _))
-    }
+  set currentDevice(_) {
+    let entity = this.store.entity.device.get(_.id)
+    entity = new DeviceEntityStore(this.store, _)
+    this.store.entity.device.set(_.id, entity)
   }
-  @observable currentDeviceId = null
-  @observable cryptoParams = null
-  @observable pushRelayPubkeyApns = null
-  @observable pushRelayPubkeyFcm = null
-  @observable notificationsEnabled = null
-  @observable notificationsPreviews = null
-  @observable debugNotificationVerbosity = null
+  currentDeviceId = null
+  cryptoParams = null
+  pushRelayPubkeyApns = null
+  pushRelayPubkeyFcm = null
+  notificationsEnabled = null
+  notificationsPreviews = null
+  debugNotificationVerbosity = null
 }
 export class ContactEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
-  @observable id = null
-  @observable createdAt = null
-  @observable updatedAt = null
-  @observable sigchain = null
-  @observable status = null
-  @computed get devices () {
+  id = null
+  createdAt = null
+  updatedAt = null
+  sigchain = null
+  status = null
+  get devices() {
     const devices = []
     for (const [, _] of this.store.entity.device) {
       if (_.contactId === this.id) {
@@ -71,39 +61,34 @@ export class ContactEntityStore {
     }
     return devices
   }
-  set devices (_) {
+  set devices(_) {
     _.forEach(_ => {
-      if (this.store.entity.device.has(_.id)) {
-        const entity = this.store.entity.device.get(_.id)
-        Object.keys(_).forEach(k => {
-          _[k] = entity[k]
-        })
-      } else {
-        this.store.entity.device.set(_.id, new DeviceEntityStore(this.store, _))
-      }
+      let entity = this.store.entity.device.get(_.id)
+      entity = new DeviceEntityStore(this.store, _)
+      this.store.entity.device.set(_.id, entity)
     })
   }
-  @observable displayName = null
-  @observable displayStatus = null
-  @observable overrideDisplayName = null
-  @observable overrideDisplayStatus = null
+  displayName = null
+  displayStatus = null
+  overrideDisplayName = null
+  overrideDisplayStatus = null
 }
 export class DeviceEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
-  @observable id = null
-  @observable createdAt = null
-  @observable updatedAt = null
-  @observable name = null
-  @observable status = null
-  @observable apiVersion = null
-  @observable contactId = null
-  @computed get pushIdentifiers () {
+  id = null
+  createdAt = null
+  updatedAt = null
+  name = null
+  status = null
+  apiVersion = null
+  contactId = null
+  get pushIdentifiers() {
     const pushIdentifiers = []
     for (const [, _] of this.store.entity.devicePushIdentifier) {
       if (_.deviceId === this.id) {
@@ -112,40 +97,32 @@ export class DeviceEntityStore {
     }
     return pushIdentifiers
   }
-  set pushIdentifiers (_) {
+  set pushIdentifiers(_) {
     _.forEach(_ => {
-      if (this.store.entity.devicePushIdentifier.has(_.id)) {
-        const entity = this.store.entity.devicePushIdentifier.get(_.id)
-        Object.keys(_).forEach(k => {
-          _[k] = entity[k]
-        })
-      } else {
-        this.store.entity.devicePushIdentifier.set(
-          _.id,
-          new DevicePushIdentifierEntityStore(this.store, _)
-        )
-      }
+      let entity = this.store.entity.devicePushIdentifier.get(_.id)
+      entity = new DevicePushIdentifierEntityStore(this.store, _)
+      this.store.entity.devicePushIdentifier.set(_.id, entity)
     })
   }
 }
 export class ConversationEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
-  @observable id = null
-  @observable createdAt = null
-  @observable updatedAt = null
-  @observable readAt = null
-  @observable wroteAt = null
-  @observable title = null
-  @observable topic = null
-  @observable infos = null
-  @observable kind = null
-  @computed get members () {
+  id = null
+  createdAt = null
+  updatedAt = null
+  readAt = null
+  wroteAt = null
+  title = null
+  topic = null
+  infos = null
+  kind = null
+  get members() {
     const members = []
     for (const [, _] of this.store.entity.conversationMember) {
       if (_.conversationId === this.id) {
@@ -154,74 +131,61 @@ export class ConversationEntityStore {
     }
     return members
   }
-  set members (_) {
+  set members(_) {
     _.forEach(_ => {
-      if (this.store.entity.conversationMember.has(_.id)) {
-        const entity = this.store.entity.conversationMember.get(_.id)
-        Object.keys(_).forEach(k => {
-          _[k] = entity[k]
-        })
-      } else {
-        this.store.entity.conversationMember.set(
-          _.id,
-          new ConversationMemberEntityStore(this.store, _)
-        )
-      }
+      let entity = this.store.entity.conversationMember.get(_.id)
+      entity = new ConversationMemberEntityStore(this.store, _)
+      this.store.entity.conversationMember.set(_.id, entity)
     })
   }
 }
 export class ConversationMemberEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
-  @observable id = null
-  @observable createdAt = null
-  @observable updatedAt = null
-  @observable readAt = null
-  @observable wroteAt = null
-  @observable status = null
-  @computed get contact () {
+  id = null
+  createdAt = null
+  updatedAt = null
+  readAt = null
+  wroteAt = null
+  status = null
+  get contact() {
     return this.store.entity.contact.get(this.contactId)
   }
-  set contact (_) {
-    if (this.store.entity.contact.has(_.id)) {
-      const entity = this.store.entity.contact.get(_.id)
-      Object.keys(_).forEach(k => {
-        _[k] = entity[k]
-      })
-    } else {
-      this.store.entity.contact.set(_.id, new ContactEntityStore(this.store, _))
-    }
+  set contact(_) {
+    let entity = this.store.entity.contact.get(_.id)
+    entity = new ContactEntityStore(this.store, _)
+    this.store.entity.contact.set(_.id, entity)
   }
-  @observable conversationId = null
-  @observable contactId = null
+  conversationId = null
+  contactId = null
 }
 export class EventEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
-  @observable id = null
-  @observable sourceDeviceId = null
-  @observable createdAt = null
-  @observable updatedAt = null
-  @observable sentAt = null
-  @observable receivedAt = null
-  @observable ackedAt = null
-  @observable direction = null
-  @observable apiVersion = null
-  @observable kind = null
-  @observable attributes = null
-  @observable seenAt = null
-  @observable ackStatus = null
-  @computed get dispatches () {
+  id = null
+  sourceDeviceId = null
+  createdAt = null
+  updatedAt = null
+  sentAt = null
+  receivedAt = null
+  ackedAt = null
+  direction = null
+  apiVersion = null
+  kind = null
+  attributes = null
+  seenAt = null
+  ackStatus = null
+  get dispatches() {
     const dispatches = []
     for (const [, _] of this.store.entity.eventDispatch) {
       if (_.eventId === this.id) {
@@ -230,99 +194,91 @@ export class EventEntityStore {
     }
     return dispatches
   }
-  set dispatches (_) {
+  set dispatches(_) {
     _.forEach(_ => {
-      if (this.store.entity.eventDispatch.has(_.id)) {
-        const entity = this.store.entity.eventDispatch.get(_.id)
-        Object.keys(_).forEach(k => {
-          _[k] = entity[k]
-        })
-      } else {
-        this.store.entity.eventDispatch.set(
-          _.id,
-          new EventDispatchEntityStore(this.store, _)
-        )
-      }
+      let entity = this.store.entity.eventDispatch.get(_.id)
+      entity = new EventDispatchEntityStore(this.store, _)
+      this.store.entity.eventDispatch.set(_.id, entity)
     })
   }
-  @observable sourceContactId = null
-  @observable targetType = null
-  @observable targetAddr = null
-  @observable errProxy = null
-  @observable metadata = []
+  sourceContactId = null
+  targetType = null
+  targetAddr = null
+  errProxy = null
+  metadata = []
 }
 export class DevicePushConfigEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
-  @observable id = null
-  @observable createdAt = null
-  @observable updatedAt = null
-  @observable deviceId = null
-  @observable pushType = null
-  @observable pushId = null
-  @observable relayPubkey = null
+  id = null
+  createdAt = null
+  updatedAt = null
+  deviceId = null
+  pushType = null
+  pushId = null
+  relayPubkey = null
 }
 export class DevicePushIdentifierEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
-  @observable id = null
-  @observable createdAt = null
-  @observable updatedAt = null
-  @observable pushInfo = null
-  @observable relayPubkey = null
-  @observable deviceId = null
+  id = null
+  createdAt = null
+  updatedAt = null
+  pushInfo = null
+  relayPubkey = null
+  deviceId = null
 }
 export class EventDispatchEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
-  @observable eventId = null
-  @observable deviceId = null
-  @observable contactId = null
-  @observable sentAt = null
-  @observable ackedAt = null
-  @observable seenAt = null
-  @observable ackMedium = null
-  @observable seenMedium = null
-  @observable retryBackoff = null
-  @observable sendErrorMessage = null
-  @observable sendErrorDetail = null
+  eventId = null
+  deviceId = null
+  contactId = null
+  sentAt = null
+  ackedAt = null
+  seenAt = null
+  ackMedium = null
+  seenMedium = null
+  retryBackoff = null
+  sendErrorMessage = null
+  sendErrorDetail = null
 }
 export class SenderAliasEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
-  @observable id = null
-  @observable createdAt = null
-  @observable updatedAt = null
-  @observable status = null
-  @observable originDeviceId = null
-  @observable contactId = null
-  @observable conversationId = null
-  @observable aliasIdentifier = null
-  @observable used = null
+  id = null
+  createdAt = null
+  updatedAt = null
+  status = null
+  originDeviceId = null
+  contactId = null
+  conversationId = null
+  aliasIdentifier = null
+  used = null
 }
 
 export class NodeServiceStore {
-  constructor (store, bridge) {
+  constructor(store, bridge) {
     this.store = store
     this.bridge = bridge
     this.commitLogStream({}).then(commitLog => {
@@ -354,286 +310,195 @@ export class NodeServiceStore {
         readableObjectMode: true,
         transform: (output, encoding, callback) => {
           Object.keys(output.entity).forEach(key => {
-            let entity = output.entity[key]
-            if (entity == null) {
+            let _ = output.entity[key]
+            if (_ == null) {
               return
             }
             switch (key) {
               default:
                 break
-              case 'config':
+              case 'config': {
+                let entity = this.store.entity.config.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    if (this.store.entity.config.has(entity.id)) {
-                      const current = this.store.entity.config.get(entity.id)
-                      Object.keys(entity).forEach(_ => {
-                        current[_] = entity[_]
-                      })
-                      entity = current
-                    } else {
-                      entity = new ConfigEntityStore(this.store, entity)
-                      this.store.entity.config.set(entity.id, entity)
-                    }
+                    entity = new ConfigEntityStore(this.store, _)
+                    this.store.entity.config.set(_.id, entity)
                     break
                   case 2:
-                    if (this.store.entity.config.has(entity.id)) {
-                      entity = this.store.entity.config.get(entity.id)
-                      this.store.entity.config.delete(entity.id)
+                    if (entity) {
+                      this.store.entity.config.delete(_.id)
                     }
                     break
                 }
+                _ = entity
                 break
-              case 'contact':
+              }
+              case 'contact': {
+                let entity = this.store.entity.contact.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    if (this.store.entity.contact.has(entity.id)) {
-                      const current = this.store.entity.contact.get(entity.id)
-                      Object.keys(entity).forEach(_ => {
-                        current[_] = entity[_]
-                      })
-                      entity = current
-                    } else {
-                      entity = new ContactEntityStore(this.store, entity)
-                      this.store.entity.contact.set(entity.id, entity)
-                    }
+                    entity = new ContactEntityStore(this.store, _)
+                    this.store.entity.contact.set(_.id, entity)
                     break
                   case 2:
-                    if (this.store.entity.contact.has(entity.id)) {
-                      entity = this.store.entity.contact.get(entity.id)
-                      this.store.entity.contact.delete(entity.id)
+                    if (entity) {
+                      this.store.entity.contact.delete(_.id)
                     }
                     break
                 }
+                _ = entity
                 break
-              case 'device':
+              }
+              case 'device': {
+                let entity = this.store.entity.device.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    if (this.store.entity.device.has(entity.id)) {
-                      const current = this.store.entity.device.get(entity.id)
-                      Object.keys(entity).forEach(_ => {
-                        current[_] = entity[_]
-                      })
-                      entity = current
-                    } else {
-                      entity = new DeviceEntityStore(this.store, entity)
-                      this.store.entity.device.set(entity.id, entity)
-                    }
+                    entity = new DeviceEntityStore(this.store, _)
+                    this.store.entity.device.set(_.id, entity)
                     break
                   case 2:
-                    if (this.store.entity.device.has(entity.id)) {
-                      entity = this.store.entity.device.get(entity.id)
-                      this.store.entity.device.delete(entity.id)
+                    if (entity) {
+                      this.store.entity.device.delete(_.id)
                     }
                     break
                 }
+                _ = entity
                 break
-              case 'conversation':
+              }
+              case 'conversation': {
+                let entity = this.store.entity.conversation.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    if (this.store.entity.conversation.has(entity.id)) {
-                      const current = this.store.entity.conversation.get(
-                        entity.id
-                      )
-                      Object.keys(entity).forEach(_ => {
-                        current[_] = entity[_]
-                      })
-                      entity = current
-                    } else {
-                      entity = new ConversationEntityStore(this.store, entity)
-                      this.store.entity.conversation.set(entity.id, entity)
-                    }
+                    entity = new ConversationEntityStore(this.store, _)
+                    this.store.entity.conversation.set(_.id, entity)
                     break
                   case 2:
-                    if (this.store.entity.conversation.has(entity.id)) {
-                      entity = this.store.entity.conversation.get(entity.id)
-                      this.store.entity.conversation.delete(entity.id)
+                    if (entity) {
+                      this.store.entity.conversation.delete(_.id)
                     }
                     break
                 }
+                _ = entity
                 break
-              case 'conversationMember':
+              }
+              case 'conversationMember': {
+                let entity = this.store.entity.conversationMember.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    if (this.store.entity.conversationMember.has(entity.id)) {
-                      const current = this.store.entity.conversationMember.get(
-                        entity.id
-                      )
-                      Object.keys(entity).forEach(_ => {
-                        current[_] = entity[_]
-                      })
-                      entity = current
-                    } else {
-                      entity = new ConversationMemberEntityStore(
-                        this.store,
-                        entity
-                      )
-                      this.store.entity.conversationMember.set(
-                        entity.id,
-                        entity
-                      )
-                    }
+                    entity = new ConversationMemberEntityStore(this.store, _)
+                    this.store.entity.conversationMember.set(_.id, entity)
                     break
                   case 2:
-                    if (this.store.entity.conversationMember.has(entity.id)) {
-                      entity = this.store.entity.conversationMember.get(
-                        entity.id
-                      )
-                      this.store.entity.conversationMember.delete(entity.id)
+                    if (entity) {
+                      this.store.entity.conversationMember.delete(_.id)
                     }
                     break
                 }
+                _ = entity
                 break
-              case 'event':
+              }
+              case 'event': {
+                let entity = this.store.entity.event.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    if (this.store.entity.event.has(entity.id)) {
-                      const current = this.store.entity.event.get(entity.id)
-                      Object.keys(entity).forEach(_ => {
-                        current[_] = entity[_]
-                      })
-                      entity = current
-                    } else {
-                      entity = new EventEntityStore(this.store, entity)
-                      this.store.entity.event.set(entity.id, entity)
-                    }
+                    entity = new EventEntityStore(this.store, _)
+                    this.store.entity.event.set(_.id, entity)
                     break
                   case 2:
-                    if (this.store.entity.event.has(entity.id)) {
-                      entity = this.store.entity.event.get(entity.id)
-                      this.store.entity.event.delete(entity.id)
+                    if (entity) {
+                      this.store.entity.event.delete(_.id)
                     }
                     break
                 }
+                _ = entity
                 break
-              case 'devicePushConfig':
+              }
+              case 'devicePushConfig': {
+                let entity = this.store.entity.devicePushConfig.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    if (this.store.entity.devicePushConfig.has(entity.id)) {
-                      const current = this.store.entity.devicePushConfig.get(
-                        entity.id
-                      )
-                      Object.keys(entity).forEach(_ => {
-                        current[_] = entity[_]
-                      })
-                      entity = current
-                    } else {
-                      entity = new DevicePushConfigEntityStore(
-                        this.store,
-                        entity
-                      )
-                      this.store.entity.devicePushConfig.set(entity.id, entity)
-                    }
+                    entity = new DevicePushConfigEntityStore(this.store, _)
+                    this.store.entity.devicePushConfig.set(_.id, entity)
                     break
                   case 2:
-                    if (this.store.entity.devicePushConfig.has(entity.id)) {
-                      entity = this.store.entity.devicePushConfig.get(entity.id)
-                      this.store.entity.devicePushConfig.delete(entity.id)
+                    if (entity) {
+                      this.store.entity.devicePushConfig.delete(_.id)
                     }
                     break
                 }
+                _ = entity
                 break
-              case 'devicePushIdentifier':
+              }
+              case 'devicePushIdentifier': {
+                let entity = this.store.entity.devicePushIdentifier.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    if (this.store.entity.devicePushIdentifier.has(entity.id)) {
-                      const current = this.store.entity.devicePushIdentifier.get(
-                        entity.id
-                      )
-                      Object.keys(entity).forEach(_ => {
-                        current[_] = entity[_]
-                      })
-                      entity = current
-                    } else {
-                      entity = new DevicePushIdentifierEntityStore(
-                        this.store,
-                        entity
-                      )
-                      this.store.entity.devicePushIdentifier.set(
-                        entity.id,
-                        entity
-                      )
-                    }
+                    entity = new DevicePushIdentifierEntityStore(this.store, _)
+                    this.store.entity.devicePushIdentifier.set(_.id, entity)
                     break
                   case 2:
-                    if (this.store.entity.devicePushIdentifier.has(entity.id)) {
-                      entity = this.store.entity.devicePushIdentifier.get(
-                        entity.id
-                      )
-                      this.store.entity.devicePushIdentifier.delete(entity.id)
+                    if (entity) {
+                      this.store.entity.devicePushIdentifier.delete(_.id)
                     }
                     break
                 }
+                _ = entity
                 break
-              case 'eventDispatch':
+              }
+              case 'eventDispatch': {
+                let entity = this.store.entity.eventDispatch.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    if (this.store.entity.eventDispatch.has(entity.id)) {
-                      const current = this.store.entity.eventDispatch.get(
-                        entity.id
-                      )
-                      Object.keys(entity).forEach(_ => {
-                        current[_] = entity[_]
-                      })
-                      entity = current
-                    } else {
-                      entity = new EventDispatchEntityStore(this.store, entity)
-                      this.store.entity.eventDispatch.set(entity.id, entity)
-                    }
+                    entity = new EventDispatchEntityStore(this.store, _)
+                    this.store.entity.eventDispatch.set(_.id, entity)
                     break
                   case 2:
-                    if (this.store.entity.eventDispatch.has(entity.id)) {
-                      entity = this.store.entity.eventDispatch.get(entity.id)
-                      this.store.entity.eventDispatch.delete(entity.id)
+                    if (entity) {
+                      this.store.entity.eventDispatch.delete(_.id)
                     }
                     break
                 }
+                _ = entity
                 break
-              case 'senderAlias':
+              }
+              case 'senderAlias': {
+                let entity = this.store.entity.senderAlias.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    if (this.store.entity.senderAlias.has(entity.id)) {
-                      const current = this.store.entity.senderAlias.get(
-                        entity.id
-                      )
-                      Object.keys(entity).forEach(_ => {
-                        current[_] = entity[_]
-                      })
-                      entity = current
-                    } else {
-                      entity = new SenderAliasEntityStore(this.store, entity)
-                      this.store.entity.senderAlias.set(entity.id, entity)
-                    }
+                    entity = new SenderAliasEntityStore(this.store, _)
+                    this.store.entity.senderAlias.set(_.id, entity)
                     break
                   case 2:
-                    if (this.store.entity.senderAlias.has(entity.id)) {
-                      entity = this.store.entity.senderAlias.get(entity.id)
-                      this.store.entity.senderAlias.delete(entity.id)
+                    if (entity) {
+                      this.store.entity.senderAlias.delete(_.id)
                     }
                     break
                 }
+                _ = entity
                 break
+              }
             }
-            output.entity[key] = entity
+            output.entity[key] = _
           })
 
           callback(null, output)
@@ -671,16 +536,10 @@ export class NodeServiceStore {
         writableObjectMode: true,
         readableObjectMode: true,
         transform: (output, encoding, callback) => {
-          if (this.store.entity.event.has(output.id)) {
-            const current = this.store.entity.event.get(output.id)
-            Object.keys(output).forEach(_ => {
-              current[_] = output[_]
-            })
-            output = current
-          } else {
-            output = new EventEntityStore(this.store, output)
-            this.store.entity.event.set(output.id, output)
-          }
+          let entity = this.store.entity.event.get(output.id)
+          entity = new EventEntityStore(this.store, output)
+          this.store.entity.event.set(output.id, entity)
+          output = entity
 
           callback(null, output)
         },
@@ -709,16 +568,10 @@ export class NodeServiceStore {
       writableObjectMode: true,
       readableObjectMode: true,
       transform: (output, encoding, callback) => {
-        if (this.store.entity.event.has(output.id)) {
-          const current = this.store.entity.event.get(output.id)
-          Object.keys(output).forEach(_ => {
-            current[_] = output[_]
-          })
-          output = current
-        } else {
-          output = new EventEntityStore(this.store, output)
-          this.store.entity.event.set(output.id, output)
-        }
+        let entity = this.store.entity.event.get(output.id)
+        entity = new EventEntityStore(this.store, output)
+        this.store.entity.event.set(output.id, entity)
+        output = entity
 
         callback(null, output)
       },
@@ -744,16 +597,10 @@ export class NodeServiceStore {
         writableObjectMode: true,
         readableObjectMode: true,
         transform: (output, encoding, callback) => {
-          if (this.store.entity.event.has(output.id)) {
-            const current = this.store.entity.event.get(output.id)
-            Object.keys(output).forEach(_ => {
-              current[_] = output[_]
-            })
-            output = current
-          } else {
-            output = new EventEntityStore(this.store, output)
-            this.store.entity.event.set(output.id, output)
-          }
+          let entity = this.store.entity.event.get(output.id)
+          entity = new EventEntityStore(this.store, output)
+          this.store.entity.event.set(output.id, entity)
+          output = entity
 
           callback(null, output)
         },
@@ -778,16 +625,10 @@ export class NodeServiceStore {
   getEvent = async (input = {}) => {
     let output = await this.bridge.getEvent(input)
 
-    if (this.store.entity.event.has(output.id)) {
-      const current = this.store.entity.event.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new EventEntityStore(this.store, output)
-      this.store.entity.event.set(output.id, output)
-    }
+    let entity = this.store.entity.event.get(output.id)
+    entity = new EventEntityStore(this.store, output)
+    this.store.entity.event.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -795,16 +636,10 @@ export class NodeServiceStore {
   eventSeen = async (input = {}) => {
     let output = await this.bridge.eventSeen(input)
 
-    if (this.store.entity.event.has(output.id)) {
-      const current = this.store.entity.event.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new EventEntityStore(this.store, output)
-      this.store.entity.event.set(output.id, output)
-    }
+    let entity = this.store.entity.event.get(output.id)
+    entity = new EventEntityStore(this.store, output)
+    this.store.entity.event.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -812,16 +647,10 @@ export class NodeServiceStore {
   eventRetry = async (input = {}) => {
     let output = await this.bridge.eventRetry(input)
 
-    if (this.store.entity.event.has(output.id)) {
-      const current = this.store.entity.event.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new EventEntityStore(this.store, output)
-      this.store.entity.event.set(output.id, output)
-    }
+    let entity = this.store.entity.event.get(output.id)
+    entity = new EventEntityStore(this.store, output)
+    this.store.entity.event.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -829,16 +658,10 @@ export class NodeServiceStore {
   config = async (input = {}) => {
     let output = await this.bridge.config(input)
 
-    if (this.store.entity.config.has(output.id)) {
-      const current = this.store.entity.config.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ConfigEntityStore(this.store, output)
-      this.store.entity.config.set(output.id, output)
-    }
+    let entity = this.store.entity.config.get(output.id)
+    entity = new ConfigEntityStore(this.store, output)
+    this.store.entity.config.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -846,16 +669,10 @@ export class NodeServiceStore {
   configPublic = async (input = {}) => {
     let output = await this.bridge.configPublic(input)
 
-    if (this.store.entity.config.has(output.id)) {
-      const current = this.store.entity.config.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ConfigEntityStore(this.store, output)
-      this.store.entity.config.set(output.id, output)
-    }
+    let entity = this.store.entity.config.get(output.id)
+    entity = new ConfigEntityStore(this.store, output)
+    this.store.entity.config.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -863,16 +680,10 @@ export class NodeServiceStore {
   configUpdate = async (input = {}) => {
     let output = await this.bridge.configUpdate(input)
 
-    if (this.store.entity.config.has(output.id)) {
-      const current = this.store.entity.config.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ConfigEntityStore(this.store, output)
-      this.store.entity.config.set(output.id, output)
-    }
+    let entity = this.store.entity.config.get(output.id)
+    entity = new ConfigEntityStore(this.store, output)
+    this.store.entity.config.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -880,16 +691,10 @@ export class NodeServiceStore {
   contactRequest = async (input = {}) => {
     let output = await this.bridge.contactRequest(input)
 
-    if (this.store.entity.contact.has(output.id)) {
-      const current = this.store.entity.contact.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ContactEntityStore(this.store, output)
-      this.store.entity.contact.set(output.id, output)
-    }
+    let entity = this.store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this.store, output)
+    this.store.entity.contact.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -897,16 +702,10 @@ export class NodeServiceStore {
   contactAcceptRequest = async (input = {}) => {
     let output = await this.bridge.contactAcceptRequest(input)
 
-    if (this.store.entity.contact.has(output.id)) {
-      const current = this.store.entity.contact.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ContactEntityStore(this.store, output)
-      this.store.entity.contact.set(output.id, output)
-    }
+    let entity = this.store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this.store, output)
+    this.store.entity.contact.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -914,10 +713,11 @@ export class NodeServiceStore {
   contactRemove = async (input = {}) => {
     let output = await this.bridge.contactRemove(input)
 
-    if (this.store.entity.contact.has(output.id)) {
-      output = this.store.entity.contact.get(output.id)
+    let entity = this.store.entity.contact.get(output.id)
+    if (entity) {
       this.store.entity.contact.delete(output.id)
     }
+    output = entity
 
     return output
   }
@@ -925,16 +725,10 @@ export class NodeServiceStore {
   contactUpdate = async (input = {}) => {
     let output = await this.bridge.contactUpdate(input)
 
-    if (this.store.entity.contact.has(output.id)) {
-      const current = this.store.entity.contact.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ContactEntityStore(this.store, output)
-      this.store.entity.contact.set(output.id, output)
-    }
+    let entity = this.store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this.store, output)
+    this.store.entity.contact.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -946,16 +740,10 @@ export class NodeServiceStore {
       writableObjectMode: true,
       readableObjectMode: true,
       transform: (output, encoding, callback) => {
-        if (this.store.entity.contact.has(output.id)) {
-          const current = this.store.entity.contact.get(output.id)
-          Object.keys(output).forEach(_ => {
-            current[_] = output[_]
-          })
-          output = current
-        } else {
-          output = new ContactEntityStore(this.store, output)
-          this.store.entity.contact.set(output.id, output)
-        }
+        let entity = this.store.entity.contact.get(output.id)
+        entity = new ContactEntityStore(this.store, output)
+        this.store.entity.contact.set(output.id, entity)
+        output = entity
 
         callback(null, output)
       },
@@ -969,16 +757,10 @@ export class NodeServiceStore {
   contact = async (input = {}) => {
     let output = await this.bridge.contact(input)
 
-    if (this.store.entity.contact.has(output.id)) {
-      const current = this.store.entity.contact.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ContactEntityStore(this.store, output)
-      this.store.entity.contact.set(output.id, output)
-    }
+    let entity = this.store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this.store, output)
+    this.store.entity.contact.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -992,16 +774,10 @@ export class NodeServiceStore {
   conversationCreate = async (input = {}) => {
     let output = await this.bridge.conversationCreate(input)
 
-    if (this.store.entity.conversation.has(output.id)) {
-      const current = this.store.entity.conversation.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ConversationEntityStore(this.store, output)
-      this.store.entity.conversation.set(output.id, output)
-    }
+    let entity = this.store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this.store, output)
+    this.store.entity.conversation.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -1009,16 +785,10 @@ export class NodeServiceStore {
   conversationUpdate = async (input = {}) => {
     let output = await this.bridge.conversationUpdate(input)
 
-    if (this.store.entity.conversation.has(output.id)) {
-      const current = this.store.entity.conversation.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ConversationEntityStore(this.store, output)
-      this.store.entity.conversation.set(output.id, output)
-    }
+    let entity = this.store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this.store, output)
+    this.store.entity.conversation.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -1030,16 +800,10 @@ export class NodeServiceStore {
       writableObjectMode: true,
       readableObjectMode: true,
       transform: (output, encoding, callback) => {
-        if (this.store.entity.conversation.has(output.id)) {
-          const current = this.store.entity.conversation.get(output.id)
-          Object.keys(output).forEach(_ => {
-            current[_] = output[_]
-          })
-          output = current
-        } else {
-          output = new ConversationEntityStore(this.store, output)
-          this.store.entity.conversation.set(output.id, output)
-        }
+        let entity = this.store.entity.conversation.get(output.id)
+        entity = new ConversationEntityStore(this.store, output)
+        this.store.entity.conversation.set(output.id, entity)
+        output = entity
 
         callback(null, output)
       },
@@ -1053,16 +817,10 @@ export class NodeServiceStore {
   conversationInvite = async (input = {}) => {
     let output = await this.bridge.conversationInvite(input)
 
-    if (this.store.entity.conversation.has(output.id)) {
-      const current = this.store.entity.conversation.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ConversationEntityStore(this.store, output)
-      this.store.entity.conversation.set(output.id, output)
-    }
+    let entity = this.store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this.store, output)
+    this.store.entity.conversation.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -1070,16 +828,10 @@ export class NodeServiceStore {
   conversationExclude = async (input = {}) => {
     let output = await this.bridge.conversationExclude(input)
 
-    if (this.store.entity.conversation.has(output.id)) {
-      const current = this.store.entity.conversation.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ConversationEntityStore(this.store, output)
-      this.store.entity.conversation.set(output.id, output)
-    }
+    let entity = this.store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this.store, output)
+    this.store.entity.conversation.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -1087,16 +839,10 @@ export class NodeServiceStore {
   conversationAddMessage = async (input = {}) => {
     let output = await this.bridge.conversationAddMessage(input)
 
-    if (this.store.entity.event.has(output.id)) {
-      const current = this.store.entity.event.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new EventEntityStore(this.store, output)
-      this.store.entity.event.set(output.id, output)
-    }
+    let entity = this.store.entity.event.get(output.id)
+    entity = new EventEntityStore(this.store, output)
+    this.store.entity.event.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -1104,16 +850,10 @@ export class NodeServiceStore {
   conversation = async (input = {}) => {
     let output = await this.bridge.conversation(input)
 
-    if (this.store.entity.conversation.has(output.id)) {
-      const current = this.store.entity.conversation.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ConversationEntityStore(this.store, output)
-      this.store.entity.conversation.set(output.id, output)
-    }
+    let entity = this.store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this.store, output)
+    this.store.entity.conversation.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -1121,16 +861,10 @@ export class NodeServiceStore {
   conversationMember = async (input = {}) => {
     let output = await this.bridge.conversationMember(input)
 
-    if (this.store.entity.conversationMember.has(output.id)) {
-      const current = this.store.entity.conversationMember.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ConversationMemberEntityStore(this.store, output)
-      this.store.entity.conversationMember.set(output.id, output)
-    }
+    let entity = this.store.entity.conversationMember.get(output.id)
+    entity = new ConversationMemberEntityStore(this.store, output)
+    this.store.entity.conversationMember.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -1138,16 +872,10 @@ export class NodeServiceStore {
   conversationRead = async (input = {}) => {
     let output = await this.bridge.conversationRead(input)
 
-    if (this.store.entity.conversation.has(output.id)) {
-      const current = this.store.entity.conversation.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new ConversationEntityStore(this.store, output)
-      this.store.entity.conversation.set(output.id, output)
-    }
+    let entity = this.store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this.store, output)
+    this.store.entity.conversation.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -1155,10 +883,11 @@ export class NodeServiceStore {
   conversationRemove = async (input = {}) => {
     let output = await this.bridge.conversationRemove(input)
 
-    if (this.store.entity.conversation.has(output.id)) {
-      output = this.store.entity.conversation.get(output.id)
+    let entity = this.store.entity.conversation.get(output.id)
+    if (entity) {
       this.store.entity.conversation.delete(output.id)
     }
+    output = entity
 
     return output
   }
@@ -1166,16 +895,10 @@ export class NodeServiceStore {
   conversationLastEvent = async (input = {}) => {
     let output = await this.bridge.conversationLastEvent(input)
 
-    if (this.store.entity.event.has(output.id)) {
-      const current = this.store.entity.event.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new EventEntityStore(this.store, output)
-      this.store.entity.event.set(output.id, output)
-    }
+    let entity = this.store.entity.event.get(output.id)
+    entity = new EventEntityStore(this.store, output)
+    this.store.entity.event.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -1189,16 +912,10 @@ export class NodeServiceStore {
   devicePushConfigCreate = async (input = {}) => {
     let output = await this.bridge.devicePushConfigCreate(input)
 
-    if (this.store.entity.devicePushConfig.has(output.id)) {
-      const current = this.store.entity.devicePushConfig.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new DevicePushConfigEntityStore(this.store, output)
-      this.store.entity.devicePushConfig.set(output.id, output)
-    }
+    let entity = this.store.entity.devicePushConfig.get(output.id)
+    entity = new DevicePushConfigEntityStore(this.store, output)
+    this.store.entity.devicePushConfig.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -1218,10 +935,11 @@ export class NodeServiceStore {
   devicePushConfigRemove = async (input = {}) => {
     let output = await this.bridge.devicePushConfigRemove(input)
 
-    if (this.store.entity.devicePushConfig.has(output.id)) {
-      output = this.store.entity.devicePushConfig.get(output.id)
+    let entity = this.store.entity.devicePushConfig.get(output.id)
+    if (entity) {
       this.store.entity.devicePushConfig.delete(output.id)
     }
+    output = entity
 
     return output
   }
@@ -1229,16 +947,10 @@ export class NodeServiceStore {
   devicePushConfigUpdate = async (input = {}) => {
     let output = await this.bridge.devicePushConfigUpdate(input)
 
-    if (this.store.entity.devicePushConfig.has(output.id)) {
-      const current = this.store.entity.devicePushConfig.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new DevicePushConfigEntityStore(this.store, output)
-      this.store.entity.devicePushConfig.set(output.id, output)
-    }
+    let entity = this.store.entity.devicePushConfig.get(output.id)
+    entity = new DevicePushConfigEntityStore(this.store, output)
+    this.store.entity.devicePushConfig.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -1270,16 +982,10 @@ export class NodeServiceStore {
   debugRequeueEvent = async (input = {}) => {
     let output = await this.bridge.debugRequeueEvent(input)
 
-    if (this.store.entity.event.has(output.id)) {
-      const current = this.store.entity.event.get(output.id)
-      Object.keys(output).forEach(_ => {
-        current[_] = output[_]
-      })
-      output = current
-    } else {
-      output = new EventEntityStore(this.store, output)
-      this.store.entity.event.set(output.id, output)
-    }
+    let entity = this.store.entity.event.get(output.id)
+    entity = new EventEntityStore(this.store, output)
+    this.store.entity.event.set(output.id, entity)
+    output = entity
 
     return output
   }
@@ -1520,7 +1226,7 @@ export class NodeServiceStore {
 }
 
 export class Store {
-  constructor (bridge) {
+  constructor(bridge) {
     this.bridge = bridge
 
     this.entity = {

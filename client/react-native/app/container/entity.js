@@ -2,19 +2,19 @@ import { Component } from 'react'
 import { deepEqual, deepFilterEqual } from './helper'
 
 export class Entity extends Component {
-  componentDidMount () {
+  componentDidMount() {
     if (this.entity == null) {
       this.fetch()
     }
   }
 
-  componentWillReceiveProps (props) {
+  componentWillReceiveProps(props) {
     if (!deepEqual(props, this.props) || this.entity == null) {
       this.fetch()
     }
   }
 
-  get entity () {
+  get entity() {
     const { context, children, id, ...filter } = this.props
 
     if (id) {
@@ -28,7 +28,7 @@ export class Entity extends Component {
     return null
   }
 
-  render () {
+  render() {
     const { children } = this.props
     if (this.entity) {
       return children(this.entity)

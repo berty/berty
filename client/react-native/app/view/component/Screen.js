@@ -36,7 +36,7 @@ export default class Screen extends Component {
     }
   }
 
-  render () {
+  render() {
     const { absolute, style, onResize, ...props } = this.props
     // const { dimensions } = this.state
     return (

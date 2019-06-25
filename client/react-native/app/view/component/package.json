@@ -12,6 +12,7 @@
     "@berty/container": "^0.0.1",
     "@berty/store": "^0.0.1",
     "@berty/update": "^0.0.1",
-    "react": "16.8.3"
+    "react": "16.8.3",
+    "react-native-user-avatar": "^1.0.4"
   }
 }

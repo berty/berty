@@ -36,7 +36,7 @@ const testScenarios = [
 ]
 
 class Observable {
-  constructor () {
+  constructor() {
     this.successHandlers = []
     this.errorHandlers = []
   }
@@ -68,14 +68,14 @@ class Tests extends PureComponent {
     header: (
       <Header
         navigation={navigation}
-        title='Tests'
-        titleIcon='check-circle'
+        title="Tests"
+        titleIcon="check-circle"
         backBtn
       />
     ),
   })
 
-  render () {
+  render() {
     return (
       <Menu>
         <Menu.Section customMarginTop={1}>

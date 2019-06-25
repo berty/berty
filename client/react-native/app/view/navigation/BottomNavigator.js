@@ -21,7 +21,7 @@ import { withStoreContext } from '@berty/store/context'
 
 @withStoreContext
 class TabBarIcon extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     const { context } = props
 
@@ -38,7 +38,7 @@ class TabBarIcon extends Component {
 
   eventUnseen = null
 
-  async componentDidMount () {
+  async componentDidMount() {
     const { context } = this.props
 
     // const stream = await context.node.service.eventUnseen({})
@@ -52,7 +52,7 @@ class TabBarIcon extends Component {
     this.subscriber = await context.node.service.commitLogStream({})
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.subscriber != null) {
       this.subscriber.destroy()
     }
@@ -97,7 +97,7 @@ class TabBarIcon extends Component {
     // }
   }
 
-  render () {
+  render() {
     const { tintColor, routeName, navigation, context } = this.props
     const { stored } = this.state
 
@@ -139,7 +139,7 @@ class TabBarIcon extends Component {
 
 const handleBothNavigationsOptions = ({ navigation }) => {
   return {
-    tabBarIcon: function withTabBarIcon ({ tintColor, focused }) {
+    tabBarIcon: function withTabBarIcon({ tintColor, focused }) {
       return (
         <TabBarIcon
           tintColor={tintColor}

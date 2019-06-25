@@ -7,7 +7,7 @@ import Button from './Button'
 import colors from '@berty/common/constants/colors'
 
 class ModalScreen extends React.PureComponent {
-  componentDidMount () {
+  componentDidMount() {
     if (Platform.OS === 'web') {
       if (this._keyboardListener === undefined) {
         this._keyboardListener = e => this.keyboardListener(e)
@@ -16,13 +16,13 @@ class ModalScreen extends React.PureComponent {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (Platform.OS === 'web') {
       window.removeEventListener('keyup', this._keyboardListener)
     }
   }
 
-  keyboardListener (event) {
+  keyboardListener(event) {
     if (
       (this.props.showDismiss || this.props.keyboardDismiss) &&
       event.key === 'Escape'
@@ -116,7 +116,7 @@ class ModalScreen extends React.PureComponent {
     )
   }
 
-  dismiss () {
+  dismiss() {
     const { navigation } = this.props
     const beforeDismiss = navigation.getParam('beforeDismiss')
 

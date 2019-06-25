@@ -13,10 +13,10 @@ export default class More extends PureComponent {
     ),
   })
 
-  render () {
+  render() {
     return (
-      <Flex.Cols size={1} align='center' justify='between'>
-        <Flex.Rows size={1} align='center' justify='between'>
+      <Flex.Cols size={1} align="center" justify="between">
+        <Flex.Rows size={1} align="center" justify="between">
           <Text big>Display Berty whitepaper?</Text>
         </Flex.Rows>
       </Flex.Cols>

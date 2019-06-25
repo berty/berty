@@ -15,7 +15,7 @@ import { isRTL } from '@berty/common/locale'
 
 export default class Menu extends Component {
   static Header = ({ icon, color, descriptionColor, title, description }) => (
-    <Flex.Cols style={[{ marginTop: 33 }, paddingHorizontal]} align='center'>
+    <Flex.Cols style={[{ marginTop: 33 }, paddingHorizontal]} align="center">
       {icon && (
         <Flex.Rows size={1} align={title ? 'end' : 'center'}>
           {icon}
@@ -24,7 +24,7 @@ export default class Menu extends Component {
       {title && (
         <Flex.Rows
           size={3}
-          justify='between'
+          justify="between"
           style={[paddingLeft, { height: 42 }]}
         >
           <Text medium color={color || colors.fakeBlack}>
@@ -80,7 +80,7 @@ export default class Menu extends Component {
         this.setState({ delete: false })
       })
 
-    render (
+    render(
       {
         icon,
         input,
@@ -105,7 +105,7 @@ export default class Menu extends Component {
             style={[{ backgroundColor: colors.white }, padding]}
             onPress={onPress}
           >
-            <Flex.Cols justify='start' size={5}>
+            <Flex.Cols justify="start" size={5}>
               {children || (
                 <Text
                   input={input}
@@ -114,7 +114,7 @@ export default class Menu extends Component {
                   small
                   icon={icon}
                   color={color || colors.textBlack}
-                  align='center'
+                  align="center"
                   onChangeText={onChangeText}
                   bold={boldLeft ? true : null}
                   {...otherProps}
@@ -128,7 +128,7 @@ export default class Menu extends Component {
                 <ActivityIndicator color={color || colors.textGrey} />
               ) : (
                 <Text
-                  icon='trash-2'
+                  icon="trash-2"
                   color={color}
                   large
                   right
@@ -137,12 +137,12 @@ export default class Menu extends Component {
               ))}
             {onPress && (
               <Text
-                icon='chevron-right'
+                icon="chevron-right"
                 color={color}
                 large
                 right
                 bold={boldRight ? true : null}
-                justify='end'
+                justify="end"
                 flip={isRTL()}
               />
             )}
@@ -151,7 +151,7 @@ export default class Menu extends Component {
                 color={color}
                 small
                 right
-                justify='end'
+                justify="end"
                 bold={boldRight ? true : null}
                 ellipsis
               >
@@ -168,7 +168,7 @@ export default class Menu extends Component {
 
   static Input = props => <Menu.Item {...props} input />
 
-  render () {
+  render() {
     const { style, absolute } = this.props
     return (
       <ScrollView style={[style, absolute && StyleSheet.absoluteFill]}>

@@ -65,7 +65,7 @@ const AddContactTabbedContent = createMaterialTopTabNavigator(
 class AddScreen extends React.Component {
   static router = AddContactTabbedContent.router
 
-  render () {
+  render() {
     const { navigation } = this.props
     return (
       <View style={{ flex: 1 }}>

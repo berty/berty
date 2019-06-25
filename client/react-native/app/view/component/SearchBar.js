@@ -9,7 +9,7 @@ import { withNamespaces } from 'react-i18next'
 const SearchBar = props => (
   <Flex.Cols size={1}>
     <TextInput
-      underlineColorAndroid='transparent'
+      underlineColorAndroid="transparent"
       autoCorrect={
         (props.autoCorrect !== undefined && props.autoCorrect) || false
       }

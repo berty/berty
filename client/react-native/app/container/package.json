@@ -12,6 +12,7 @@
     "await-mutex": "^1.0.2",
     "mobx": "^5.10.0",
     "mobx-react": "^5.4.3",
+    "mobx-utils": "^5.4.1",
     "throttle-debounce": "^2.1.0"
   }
 }

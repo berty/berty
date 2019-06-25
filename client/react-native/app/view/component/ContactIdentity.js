@@ -111,7 +111,7 @@ const ContactIdentityTabbedContent = createMaterialTopTabNavigator(
 class ContactIdentity extends React.Component {
   static router = ContactIdentityTabbedContent.router
 
-  render () {
+  render() {
     const { data = {}, navigation } = this.props
 
     return (

@@ -16,8 +16,8 @@ export const SplitSideContactNavigator = createStackNavigator(
           <Header
             navigation={navigation}
             title={I18n.t('contacts.title')}
-            titleIcon='feather-users'
-            rightBtnIcon='user-plus'
+            titleIcon="feather-users"
+            rightBtnIcon="user-plus"
             onPressRightBtn={() => navigation.navigate('contacts/add')}
           />
         ),

@@ -16,7 +16,7 @@ class List extends PureComponent {
       <Header
         navigation={navigation}
         title={I18n.t('settings.title')}
-        titleIcon='settings'
+        titleIcon="settings"
       />
     ),
     tabBarVisible: true,
@@ -33,12 +33,12 @@ class List extends PureComponent {
         />
         <Menu.Section>
           <Menu.Item
-            icon='user'
+            icon="user"
             title={t('settings.my-account')}
             onPress={() => navigation.navigate('settings/my-account', {})}
           />
           <Menu.Item
-            icon='share'
+            icon="share"
             title={t('settings.my-account-share')}
             onPress={() =>
               navigation.navigate('modal/contacts/card', {
@@ -50,62 +50,62 @@ class List extends PureComponent {
           />
           {availableUpdate ? (
             <Menu.Item
-              icon='arrow-up-circle'
+              icon="arrow-up-circle"
               title={t('settings.update-available')}
               onPress={() => installUpdate(availableUpdate)}
               color={colors.red}
             />
           ) : null}
           <Menu.Item
-            icon='arrow-up-circle'
+            icon="arrow-up-circle"
             title={t('settings.updates-check')}
             onPress={() => navigation.navigate('settings/update')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
-            icon='terminal'
+            icon="terminal"
             title={t('settings.dev-tools')}
             onPress={() => navigation.navigate('settings/devtools')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
-            icon='lock'
+            icon="lock"
             title={t('settings.security-privacy')}
             onPress={() => navigation.navigate('settings/security-and-privacy')}
           />
           <Menu.Item
-            icon='send'
+            icon="send"
             title={t('settings.messages')}
             onPress={() => navigation.navigate('settings/messages-settings')}
           />
           <Menu.Item
-            icon='bell'
+            icon="bell"
             title={t('settings.notifications')}
             onPress={() => navigation.navigate('settings/notifications')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
-            icon='info'
+            icon="info"
             title={t('settings.about')}
             onPress={() => navigation.navigate('settings/about')}
           />
           <Menu.Item
-            icon='activity'
+            icon="activity"
             title={t('settings.news')}
             onPress={() => navigation.navigate('settings/news')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
-            icon='life-buoy'
+            icon="life-buoy"
             title={t('settings.help')}
             onPress={() => navigation.navigate('settings/help')}
           />
           <Menu.Item
-            icon='layers'
+            icon="layers"
             title={t('settings.legal')}
             onPress={() => navigation.navigate('settings/legal')}
           />
@@ -114,7 +114,7 @@ class List extends PureComponent {
     )
   }
 
-  render () {
+  render() {
     const { navigation, t } = this.props
 
     return (

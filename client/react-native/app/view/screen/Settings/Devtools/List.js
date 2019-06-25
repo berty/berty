@@ -14,13 +14,13 @@ class List extends PureComponent {
     header:
       navigation.getParam('restartDaemon') ||
       navigation.getParam('panic') ? null : (
-          <Header
-            navigation={navigation}
-            title='Developer Tools'
-            titleIcon='terminal'
-            backBtn
-          />
-        ),
+        <Header
+          navigation={navigation}
+          title="Developer Tools"
+          titleIcon="terminal"
+          backBtn
+        />
+      ),
     tabBarVisible: false,
   })
 
@@ -188,7 +188,7 @@ class List extends PureComponent {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.getBotState()
     this.getLocalGRPCState()
   }
@@ -208,18 +208,18 @@ class List extends PureComponent {
     console.error('console error')
   }
 
-  render () {
+  render() {
     const { navigation } = this.props
     const { restartDaemon, panic } = this.state
 
     if (restartDaemon || panic) {
       return (
         <Screen style={{ backgroundColor: colors.white }}>
-          <Flex.Rows align='center'>
-            <Flex.Cols align='end'>
-              <ActivityIndicator size='large' />
+          <Flex.Rows align="center">
+            <Flex.Cols align="end">
+              <ActivityIndicator size="large" />
             </Flex.Cols>
-            <Text center margin align='start'>
+            <Text center margin align="start">
               {restartDaemon && 'Daemon is restarting, please wait ...'}
               {panic && 'Daemon has been panicked, please wait ...'}
             </Text>
@@ -231,11 +231,11 @@ class List extends PureComponent {
       <Menu>
         <Menu.Section>
           <Menu.Item
-            icon='cpu'
-            title='Bot mode'
+            icon="cpu"
+            title="Bot mode"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 disabled={!this.state.botStateLoaded}
                 value={this.state.botRunning}
                 onValueChange={this.toggleBotState}
@@ -243,12 +243,12 @@ class List extends PureComponent {
             }
           />
           <Menu.Item
-            icon='refresh-ccw'
-            title='Restart daemon'
+            icon="refresh-ccw"
+            title="Restart daemon"
             onPress={this.restartDaemon}
           />
           <Menu.Item
-            icon='server'
+            icon="server"
             title={
               'Local gRPC (' +
               (this.state.localGRPCAddress === ''
@@ -258,7 +258,7 @@ class List extends PureComponent {
             }
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 disabled={this.state.localGRPCAddress === ''}
                 value={this.state.localGRPCRunning}
                 onValueChange={this.toggleLocalGRPCState}
@@ -268,98 +268,104 @@ class List extends PureComponent {
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
-            icon='info'
-            title='Device infos'
+            icon="info"
+            title="Device infos"
             onPress={() => navigation.navigate('devtools/deviceinfos')}
           />
           <Menu.Item
-            icon='globe'
-            title='Language'
+            icon="globe"
+            title="Language"
             onPress={() => navigation.navigate('devtools/language')}
           />
           <Menu.Item
-            icon='database'
-            title='Database'
+            icon="database"
+            title="Database"
             onPress={() => navigation.navigate('devtools/database')}
           />
           <Menu.Item
-            icon='activity'
-            title='Network'
+            icon="activity"
+            title="Network"
             onPress={() => navigation.navigate('devtools/network')}
           />
           <Menu.Item
-            icon='list'
-            title='List events'
+            icon="list"
+            title="List events"
             onPress={() => navigation.navigate('devtools/eventlist')}
           />
-          {((Platform.OS !== 'android') || RNDeviceInfo.supportedABIs().some(e => e.indexOf('arm64') !== -1)) && (
+          {(Platform.OS !== 'android' ||
+            RNDeviceInfo.supportedABIs().some(
+              e => e.indexOf('arm64') !== -1
+            )) && (
             <Menu.Item
-              icon='file-text'
-              title='Console logs'
+              icon="file-text"
+              title="Console logs"
               onPress={() => navigation.navigate('devtools/logs')}
             />
           )}
-          {((Platform.OS === 'android') && !RNDeviceInfo.supportedABIs().some(e => e.indexOf('arm64') !== -1)) && (
-            <Menu.Item
-              icon='file-text'
-              title='Console logs (crash on Android cf. #627)'
-            />
-          )}
+          {Platform.OS === 'android' &&
+            !RNDeviceInfo.supportedABIs().some(
+              e => e.indexOf('arm64') !== -1
+            ) && (
+              <Menu.Item
+                icon="file-text"
+                title="Console logs (crash on Android cf. #627)"
+              />
+            )}
           <Menu.Item
-            icon='bell'
+            icon="bell"
             title={'Notifications'}
             onPress={() => navigation.navigate('devtools/notifications')}
           />
           <Menu.Item
-            icon='sunrise'
-            title='Show onboarding'
+            icon="sunrise"
+            title="Show onboarding"
             onPress={() => navigation.navigate('switch/onboarding')}
           />
           <Menu.Item
-            icon='check-circle'
-            title='Integration tests'
+            icon="check-circle"
+            title="Integration tests"
             onPress={() => navigation.navigate('devtools/tests')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
-            icon='alert-triangle'
-            title='Panic'
+            icon="alert-triangle"
+            title="Panic"
             onPress={this.testPanic}
           />
           <Menu.Item
-            icon='alert-triangle'
-            title='Error'
+            icon="alert-triangle"
+            title="Error"
             onPress={this.testError}
           />
           <Menu.Item
-            icon='info'
-            title='Log bg Error'
+            icon="info"
+            title="Log bg Error"
             onPress={this.testLogBackgroundError}
           />
           <Menu.Item
-            icon='info'
-            title='Log bg Warn'
+            icon="info"
+            title="Log bg Warn"
             onPress={this.testLogBackgroundWarn}
           />
           <Menu.Item
-            icon='info'
-            title='Log bg Debug'
+            icon="info"
+            title="Log bg Debug"
             onPress={this.testLogBackgroundDebug}
           />
           <Menu.Item
-            icon='slash'
-            title='Throw native exception'
+            icon="slash"
+            title="Throw native exception"
             onPress={this.throwNativeException}
           />
           <Menu.Item
-            icon='slash'
-            title='Throw JS exception'
+            icon="slash"
+            title="Throw JS exception"
             onPress={this.throwJsException}
           />
           <Menu.Item
-            icon='slash'
-            title='JS console error'
+            icon="slash"
+            title="JS console error"
             onPress={this.jsConsoleError}
           />
         </Menu.Section>

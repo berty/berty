@@ -13,7 +13,7 @@ const daemonStateValues = {
 }
 
 class DebugStateBar extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       watchTime: 10000,
@@ -38,7 +38,7 @@ class DebugStateBar extends PureComponent {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetchListenAddrs()
     this.fetchListenInterfaceAddrs()
 
@@ -54,7 +54,7 @@ class DebugStateBar extends PureComponent {
     // })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     const { listenAddrTimer, InterfaceAddrTimer } = this.state
 
     if (listenAddrTimer !== null) {
@@ -226,7 +226,7 @@ class DebugStateBar extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     const {
       bertyColor,
       bleColor,
@@ -250,7 +250,7 @@ class DebugStateBar extends PureComponent {
         {!this.state.collapsed && (
           <View style={{ marginRight: 2 }}>
             <Text
-              icon='berty-berty_picto'
+              icon="berty-berty_picto"
               size={5}
               padding={5}
               rounded
@@ -264,8 +264,8 @@ class DebugStateBar extends PureComponent {
                     this.state.daemonState === daemonStateValues.connected
                       ? 'check'
                       : this.state.daemonState === daemonStateValues.down
-                        ? 'x-circle'
-                        : 'more-horizontal'
+                      ? 'x-circle'
+                      : 'more-horizontal'
                   }
                   color={bertyColor}
                 />
@@ -278,7 +278,7 @@ class DebugStateBar extends PureComponent {
         {!this.state.collapsed && (
           <View style={{ marginRight: 2 }}>
             <Text
-              icon='berty-chart-network-solid'
+              icon="berty-chart-network-solid"
               size={5}
               padding={5}
               rounded
@@ -294,7 +294,7 @@ class DebugStateBar extends PureComponent {
         {!this.state.collapsed && (
           <View style={{ marginRight: 2 }}>
             <Text
-              icon='bluetooth'
+              icon="bluetooth"
               size={5}
               padding={5}
               rounded
@@ -310,7 +310,7 @@ class DebugStateBar extends PureComponent {
         {!this.state.collapsed && (
           <View style={{ marginRight: 2 }}>
             <Text
-              icon='settings'
+              icon="settings"
               size={5}
               padding={5}
               rounded

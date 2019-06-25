@@ -7,11 +7,11 @@ export class Unary extends Component {
     response: null,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.invoke()
   }
 
-  componentDidReceiveProps () {
+  componentDidReceiveProps() {
     this.invoke()
   }
 
@@ -20,7 +20,7 @@ export class Unary extends Component {
     this.setState({ response })
   })
 
-  render () {
+  render() {
     if (this.state.response == null) {
       return this.props.fallback
     }

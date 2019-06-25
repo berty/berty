@@ -1,7 +1,6 @@
 {{~#if (contains filename "api/node/service.proto")~}}
 
 import { observer } from 'mobx-react'
-import { observe } from 'mobx'
 import { Stream, StreamPagination } from './stream'
 import { Unary } from './unary'
 import { Entity } from './entity'
@@ -51,17 +50,9 @@ import { Component } from 'react'
                   {{#with ../../this}}
                     @withStoreContext
                     class {{name}}ServiceNodePagination extends StreamPagination {
-                      componentDidMount () {
-                        super.componentDidMount()
-                        this.dispose = observe(
-                          this.props.context.entity.{{case 'camel' resolvedResponseType.name}},
-                          this.observe,
-                        )
-                      }
 
-                      componentWillUnmount () {
-                        super.componentWillUnmount()
-                        this.dispose()
+                      get store () {
+                        return this.props.context.entity.{{case 'camel' resolvedResponseType.name}}
                       }
 
                       get method () {

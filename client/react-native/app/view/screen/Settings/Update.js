@@ -20,12 +20,12 @@ const VersionInfoBase = ({ version, t }) =>
     [t('settings.update-version-hash'), 'hash'],
   ].map(([label, key]) => (
     <Flex.Cols style={[{ height: 52 }, padding, borderBottom]} key={key}>
-      <Flex.Rows size={2} align='left'>
+      <Flex.Rows size={2} align="left">
         <Text small left>
           {label}
         </Text>
       </Flex.Rows>
-      <Flex.Rows size={5} align='left'>
+      <Flex.Rows size={5} align="left">
         <Text tiny left>
           {version ? String(version[key]) : '...'}
         </Text>
@@ -37,7 +37,7 @@ const VersionInfo = withNamespaces()(VersionInfoBase)
 
 @withNamespaces()
 class Update extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -47,7 +47,7 @@ class Update extends PureComponent {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     getInstalledVersion(this.props.context).then(installed =>
       this.setState({ installed })
     )
@@ -74,8 +74,8 @@ class Update extends PureComponent {
           <VersionInfo version={this.state.latest} />
 
           <Flex.Cols style={[{ height: 52 }, padding, borderBottom]}>
-            <Flex.Rows size={2} align='left' />
-            <Flex.Rows size={5} align='left'>
+            <Flex.Rows size={2} align="left" />
+            <Flex.Rows size={5} align="left">
               {shouldUpdate(this.state.installed, this.state.latest) ? (
                 <Button
                   onPress={() => {
@@ -112,7 +112,7 @@ export default class WrappedUpdate extends PureComponent {
     tabBarVisible: false,
   })
 
-  render () {
+  render() {
     return <Update context={this.props.context} navigator={navigator} />
   }
 }

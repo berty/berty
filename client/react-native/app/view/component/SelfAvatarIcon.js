@@ -13,7 +13,7 @@ class SelfAvatarLink extends PureComponent {
     this.props.navigation.navigate('modal/contacts/card', data)
   }
 
-  render () {
+  render() {
     return (
       <Store.Entity.Contact status={42}>
         {data =>

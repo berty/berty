@@ -52,7 +52,7 @@ class RootNavigator extends PureComponent {
 
   state = {}
 
-  render () {
+  render() {
     const { navigation } = this.props
 
     return (

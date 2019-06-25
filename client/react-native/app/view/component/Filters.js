@@ -9,7 +9,7 @@ import { padding } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
 
 export class FilterModal extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -41,10 +41,10 @@ export class FilterModal extends React.Component {
     )
   }
 
-  render () {
+  render() {
     return (
       <ModalScreen navigation={this.props.navigation}>
-        <Rows style={[padding]} align='center'>
+        <Rows style={[padding]} align="center">
           {this.props.title ? <Text>{this.props.title}</Text> : null}
           {React.Children.map(this.props.children, child =>
             React.cloneElement(child, {

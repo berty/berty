@@ -9,6 +9,8 @@
     "@babel/plugin-proposal-async-generator-functions",
     "transform-export-extensions",
     "transform-inline-environment-variables"
+    "@babel/plugin-proposal-optional-chaining",
+    "@babel/plugin-proposal-nullish-coalescing-operator"
   ],
   "env": {
     "production": {

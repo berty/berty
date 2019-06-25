@@ -18,8 +18,8 @@ class DeviceInfos extends PureComponent {
     header: (
       <Header
         navigation={navigation}
-        title='Device infos'
-        titleIcon='info'
+        title="Device infos"
+        titleIcon="info"
         backBtn
       />
     ),
@@ -38,11 +38,11 @@ class DeviceInfos extends PureComponent {
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetch()
   }
 
-  render () {
+  render() {
     const { infos } = this.state
 
     var fields = []

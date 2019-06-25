@@ -87,7 +87,7 @@ class Details extends PureComponent {
     this.props.goBack(null)
   }
 
-  render () {
+  render() {
     const { navigation, t } = this.props
     const id = navigation.getParam('id')
     return (
@@ -102,19 +102,19 @@ class Details extends PureComponent {
                 />
                 <Menu.Section>
                   <Menu.Item
-                    icon='message-circle'
+                    icon="message-circle"
                     title={t('contacts.send-message')}
                     onPress={() => console.log('Send')}
                   />
                   <Menu.Item
-                    icon='phone'
+                    icon="phone"
                     title={t('contacts.call')}
                     onPress={() => console.log('Call')}
                   />
                 </Menu.Section>
                 <Menu.Section>
                   <Menu.Item
-                    icon='eye'
+                    icon="eye"
                     title={t('contacts.view-pub-key')}
                     onPress={() =>
                       navigation.navigate('modal/contacts/card', data)
@@ -123,7 +123,7 @@ class Details extends PureComponent {
                 </Menu.Section>
                 <Menu.Section>
                   <Menu.Item
-                    icon='slash'
+                    icon="slash"
                     title={t('contacts.block')}
                     color={colors.error}
                     onPress={this.blockConfirm}
@@ -131,7 +131,7 @@ class Details extends PureComponent {
                 </Menu.Section>
                 <Menu.Section>
                   <Menu.Item
-                    icon='slash'
+                    icon="slash"
                     title={t('contacts.delete')}
                     color={colors.error}
                     onPress={this.deleteContact}

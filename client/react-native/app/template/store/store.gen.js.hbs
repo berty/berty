@@ -1,6 +1,6 @@
 {{~#if (contains filename "api/node/service.proto")~}}
 
-import { observable, computed } from 'mobx'
+import { observable } from 'mobx'
 import Stream from 'stream'
 import objectHash from 'object-hash'
 import Mutex from 'await-mutex'
@@ -18,7 +18,7 @@ import Mutex from 'await-mutex'
 
             {{#each fields}}
               {{#if (and resolvedType (get (case 'camel' type) ../../../fields))}}
-                @computed get {{name}} () {
+                get {{name}} () {
                   {{#if repeated}}
                     const {{name}} = []
                     for (const [, _] of this.store.entity.{{case 'camel' type}}) {
@@ -35,24 +35,20 @@ import Mutex from 'await-mutex'
                   {{#if repeated}}
                     _.forEach(_ => {
                   {{/if}}
-                  if (this.store.entity.{{case 'camel' type}}.has(_.id)) {
-                    const entity = this.store.entity.{{case 'camel' type}}.get(_.id)
-                    Object.keys(_).forEach(k => { _[k] = entity[k] })
-                  } else {
-                    this.store.entity.{{case 'camel' type}}.set(
-                      _.id,
-                      new {{type}}EntityStore(this.store, _),
-                    )
-                  }
+
+                  let entity = this.store.entity.{{case 'camel' type}}.get(_.id)
+                  entity = new {{type}}EntityStore(this.store, _)
+                  this.store.entity.{{case 'camel' type}}.set(_.id, entity)
+
                   {{#if repeated}}
                    })
                   {{/if}}
                 }
               {{else}}
                 {{#if repeated}}
-                  @observable {{name}} = []
+                  {{name}} = []
                 {{else}}
-                  @observable {{name}} = null
+                  {{name}} = null
                 {{/if}}
               {{/if}}
             {{/each}}
@@ -109,44 +105,35 @@ import Mutex from 'await-mutex'
             {{#with resolvedResponseType.nested.Entity}}
               Object.keys(output.entity).forEach(
                 key => {
-                  let entity = output.entity[key]
-                  if (entity == null) {
+                  let _ = output.entity[key]
+                  if (_ == null) {
                     return
                   }
                   switch (key) {
                     default:
                       break
                     {{#each fields}}
-                      case '{{name}}':
+                      case '{{name}}': {
+                        let entity = this.store.entity.{{case 'camel' resolvedType.name}}.get(_.id)
                         switch (output.operation) {
                           default:
                           case 0:
                           case 1:
-                            if (this.store.entity.{{case 'camel' resolvedType.name}}.has(entity.id)) {
-                              const current = this.store.entity.{{case 'camel' resolvedType.name}}.get(entity.id)
-                              Object.keys(entity).forEach(_ => {
-                                current[_] = entity[_]
-                              })
-                              entity = current
-                            } else {
-                              entity = new {{resolvedType.name}}EntityStore(this.store, entity)
-                              this.store.entity.{{case 'camel' resolvedType.name}}.set(
-                                entity.id,
-                                entity
-                              )
-                            }
+                            entity = new {{resolvedType.name}}EntityStore(this.store, _)
+                            this.store.entity.{{case 'camel' resolvedType.name}}.set(_.id, entity)
                             break
                           case 2:
-                            if (this.store.entity.{{case 'camel' resolvedType.name}}.has(entity.id)) {
-                              entity = this.store.entity.{{case 'camel' resolvedType.name}}.get(entity.id)
-                              this.store.entity.{{case 'camel' resolvedType.name}}.delete(entity.id)
+                            if (entity) {
+                              this.store.entity.{{case 'camel' resolvedType.name}}.delete(_.id)
                             }
                             break
                         }
+                        _ = entity
                         break
+                      }
                     {{/each}}
                   }
-                  output.entity[key] = entity
+                  output.entity[key] = _
                 }
               )
             {{/with}}
@@ -155,21 +142,16 @@ import Mutex from 'await-mutex'
           {{#with (lookup 'berty.node.CommitLog.Entity')}}
             {{#each fields}}
               {{#if (eq resolvedType.name ../../resolvedResponseType.name)}}
+                let entity = this.store.entity.{{case 'camel' resolvedType.name}}.get(output.id)
                 {{#if (test ../../name (toRegex '(Remove|Delete)$'))}}
-                  if (this.store.entity.{{case 'camel' resolvedType.name}}.has(output.id)) {
-                    output = this.store.entity.{{case 'camel' resolvedType.name}}.get(output.id)
+                  if (entity) {
                     this.store.entity.{{case 'camel' resolvedType.name}}.delete(output.id)
                   }
                 {{else}}
-                  if (this.store.entity.{{case 'camel' resolvedType.name}}.has(output.id)) {
-                    const current = this.store.entity.{{case 'camel' resolvedType.name}}.get(output.id)
-                    Object.keys(output).forEach(_ => { current[_] = output[_] })
-                    output = current
-                  } else {
-                    output = new {{resolvedType.name}}EntityStore(this.store, output)
-                    this.store.entity.{{case 'camel' resolvedType.name}}.set(output.id, output)
-                  }
+                  entity = new {{resolvedType.name}}EntityStore(this.store, output)
+                  this.store.entity.{{case 'camel' resolvedType.name}}.set(output.id, entity)
                 {{/if}}
+                output = entity
               {{/if}}
             {{/each}}
           {{/with}}

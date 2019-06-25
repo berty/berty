@@ -15,7 +15,7 @@ export const permissionsStatus = {
 
 const { CoreModule } = NativeModules
 class QRReader extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       permStatus: permissionsStatus.notDetermined,
@@ -23,7 +23,7 @@ class QRReader extends PureComponent {
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     Permissions.check('camera').then(this.setStatus)
   }
 
@@ -37,11 +37,11 @@ class QRReader extends PureComponent {
     this.setState({ permStatus, onPress })
   }
 
-  reactivate () {
+  reactivate() {
     this.scanner.reactivate()
   }
 
-  render () {
+  render() {
     const { t, onFound, style, cameraStyle, setScanner } = this.props
     const { permStatus, onPress } = this.state
 

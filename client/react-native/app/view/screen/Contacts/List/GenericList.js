@@ -20,7 +20,7 @@ class CondComponent extends PureComponent {
     fontWidth: 0,
   }
 
-  render () {
+  render() {
     const fontSize = this.state.fontWidth * 0.07
     const { onPress } = this.props
 
@@ -75,7 +75,7 @@ class GenericList extends React.Component {
     didFinishInitialAnimation: false,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.handler = InteractionManager.runAfterInteractions(() => {
       // 4: set didFinishInitialAnimation to false
       // This will render the navigation bar and a list of players
@@ -93,7 +93,7 @@ class GenericList extends React.Component {
   //   return true
   // }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     InteractionManager.clearInteractionHandle(this.handler)
     this.setState({
       didFinishInitialAnimation: false,
@@ -193,7 +193,7 @@ class GenericList extends React.Component {
     )
   }
 
-  render () {
+  render() {
     const { didFinishInitialAnimation } = this.state
     if (!didFinishInitialAnimation) {
       return null

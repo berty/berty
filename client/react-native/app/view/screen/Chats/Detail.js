@@ -15,7 +15,7 @@ import { shadow } from '@berty/common/styles'
 import { withStoreContext } from '@berty/store/context'
 import { Store } from '@berty/container'
 import * as KeyboardContext from '@berty/common/helpers/KeyboardContext'
-import React, { PureComponent } from 'react'
+import React, { Component, PureComponent } from 'react'
 import * as dateFns from '@berty/common/locale/dateFns'
 import * as enums from '@berty/common/enums.gen'
 import tDate from '@berty/common/helpers/timestampDate'
@@ -37,9 +37,9 @@ const textStyles = StyleSheet.flatten([
       color: colors.white,
       ...(Platform.OS === 'web'
         ? {
-          wordBreak: 'break-all',
-          overflowWrap: 'break-word',
-        }
+            wordBreak: 'break-all',
+            overflowWrap: 'break-word',
+          }
         : {}),
     },
     listUnorderedItemIcon: {
@@ -71,7 +71,7 @@ export class Message extends PureComponent {
     })
   }
 
-  render () {
+  render() {
     const { conversation, data, t } = this.props
 
     const contactId = data.sourceDeviceId
@@ -156,12 +156,12 @@ export class Message extends PureComponent {
               onPress={
                 failed
                   ? () => {
-                    if (Platform.OS !== 'web') {
-                      this.ActionSheet.show()
-                    } else if (window.confirm('Do you want to retry?')) {
-                      this.messageRetry()
+                      if (Platform.OS !== 'web') {
+                        this.ActionSheet.show()
+                      } else if (window.confirm('Do you want to retry?')) {
+                        this.messageRetry()
+                      }
                     }
-                  }
                   : null
               }
             />
@@ -196,7 +196,7 @@ class TextInputBase extends PureComponent {
     },
   }) => this.setState({ height: height > 80 ? 80 : height })
 
-  render () {
+  render() {
     const { height } = this.state
     const { value, t } = this.props
     return (
@@ -275,25 +275,25 @@ export class Input extends PureComponent {
     this.setState({ input: value })
   }
 
-  render () {
+  render() {
     return (
       <Flex.Cols
         size={0}
-        justify='center'
-        align='center'
+        justify="center"
+        align="center"
         style={
           Platform.OS === 'web'
             ? [
-              {
-                borderTopWidth: 0.5,
-                borderTopColor: colors.borderGrey,
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-              },
-              shadow,
-            ]
+                {
+                  borderTopWidth: 0.5,
+                  borderTopColor: colors.borderGrey,
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                },
+                shadow,
+              ]
             : [shadow]
         }
       >
@@ -310,7 +310,7 @@ export class Input extends PureComponent {
             left
             top
             size={0}
-            icon='edit-2'
+            icon="edit-2"
             padding={{ right: 5, left: 8, vertical: 7 }}
           />
           <TextInput
@@ -326,7 +326,7 @@ export class Input extends PureComponent {
           margin={{ right: 8, ...(Platform.OS === 'web' ? { left: 12 } : {}) }}
           padding
           large
-          icon='send'
+          icon="send"
           color={colors.grey5}
           onPress={this.onSubmit}
         />
@@ -335,14 +335,18 @@ export class Input extends PureComponent {
   }
 }
 
-export class Chat extends PureComponent {
+export class Chat extends Component {
   getItemLayout = (data, index) => ({
     length: 65,
     offset: 65 * index,
     index,
   })
 
-  render () {
+  shouldComponentUpdate(props) {
+    return props.data.id !== this.props.data.id
+  }
+
+  render() {
     const { data, navigation, context } = this.props
 
     return (
@@ -390,7 +394,7 @@ export class Chat extends PureComponent {
 
 @withStoreContext
 class ConversationDetailHeader extends PureComponent {
-  render () {
+  render() {
     const { navigation } = this.props
     return (
       <Store.Entity.Conversation id={navigation.getParam('id')}>
@@ -406,6 +410,7 @@ class ConversationDetailHeader extends PureComponent {
                     justify={
                       navigation.getParam('backBtn') ? 'center' : 'start'
                     }
+                    ellipsis
                     middle
                     size={5}
                   >
@@ -423,7 +428,7 @@ class ConversationDetailHeader extends PureComponent {
                   ) : null}
                 </View>
               }
-              rightBtnIcon='more-vertical'
+              rightBtnIcon="more-vertical"
               onPressRightBtn={() =>
                 navigation.navigate('chats/settings', {
                   conversation: data,
@@ -447,12 +452,25 @@ class ConversationDetailHeader extends PureComponent {
 
 @withStoreContext
 class ConversationDetail extends PureComponent {
-  static navigationOptions = ({ navigation }) => ({
-    header: <ConversationDetailHeader navigation={navigation} />,
-  })
+  static navigationOptions = ({ navigation }) => {
+    const header = navigation.getParam('header', () => null)
+    return {
+      header: header({ navigation }),
+    }
+  }
 
-  async componentDidMount () {
-    this.props.navigation.setParams({ backBtn: this.onConversationRead })
+  header = ({ navigation }) => (
+    <ConversationDetailHeader
+      context={this.props.context}
+      navigation={navigation}
+    />
+  )
+
+  async componentDidMount() {
+    this.props.navigation.setParams({
+      backBtn: this.onConversationRead,
+      header: this.header,
+    })
     this.onConversationRead()
   }
 
@@ -468,7 +486,7 @@ class ConversationDetail extends PureComponent {
     this.props.navigation.setParams(res.ConversationRead)
   }
 
-  render () {
+  render() {
     const { navigation, context } = this.props
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>

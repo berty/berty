@@ -25,7 +25,7 @@ export class Item extends PureComponent {
     return navigation.navigate('contact/detail/list', data)
   }
 
-  render () {
+  render() {
     const { data, ignoreMyself, t } = this.props
     const { overrideDisplayName, displayName, status } = data
 
@@ -35,13 +35,13 @@ export class Item extends PureComponent {
 
     return (
       <Flex.Cols
-        align='center'
+        align="center"
         style={[{ height: 72 }, padding, borderBottom]}
         onPress={this.showDetails}
       >
-        <Flex.Cols size={1} align='center'>
+        <Flex.Cols size={1} align="center">
           <Avatar data={data} size={40} />
-          <Flex.Rows size={3} justify='start' style={[marginLeft]}>
+          <Flex.Rows size={3} justify="start" style={[marginLeft]}>
             <Text color={colors.fakeBlack} left ellipsed>
               {overrideDisplayName || displayName}
             </Text>

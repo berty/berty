@@ -13,6 +13,7 @@ import withDeepLinkHandler from '@berty/common/helpers/withDeepLinkHandler'
 import { withUpdateContext } from '@berty/update/context'
 import { withBridgeContext } from '@berty/bridge/Context'
 import { rpc, service, middleware } from '@berty/bridge'
+import { getAvailableUpdate } from '@berty/update'
 
 @withDeepLinkHandler
 @withBridgeContext
@@ -121,11 +122,11 @@ class Auth extends PureComponent {
         __DEV__ ? middleware.logger.create('NODE-SERVICE') : null // eslint-disable-line
       )
     )
-    // @FIXME: destroyed by refactor
-    // getAvailableUpdate(context).then(update => {
-    //   this.props.updateContext.setState(update)
-    // })
-    //
+
+    getAvailableUpdate(this.props.bridge).then(update => {
+      this.props.updateContext.setState(update)
+    })
+
     this.props.bridge.setContext({
       ...this.props.bridge,
       node: {
@@ -144,7 +145,7 @@ class Auth extends PureComponent {
     this.open(this.state.nickname, { firstLaunch: true }).then(() => {})
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     if (Platform.OS === 'web') {
       NavigationService.setTopLevelNavigator(this.props.navigation)
     }
@@ -152,15 +153,15 @@ class Auth extends PureComponent {
     this.open()
   }
 
-  render () {
+  render() {
     const { t } = this.props
     const { loading, message, current } = this.state
 
     if (loading === true) {
       return ['ios', 'android'].some(_ => _ === Platform.OS) ? (
         <Flex.Rows
-          align='center'
-          justify='center'
+          align="center"
+          justify="center"
           style={{
             width: '100%',
             height: '100%',
@@ -183,7 +184,7 @@ class Auth extends PureComponent {
     if (current === null) {
       return (
         <Screen style={{ backgroundColor: colors.background, flex: 1 }}>
-          <Flex.Cols align='center'>
+          <Flex.Cols align="center">
             <View
               style={{
                 height: 320,

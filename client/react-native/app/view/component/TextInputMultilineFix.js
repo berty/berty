@@ -6,7 +6,7 @@ export default class TextInputMultilineFix extends PureComponent {
     multiline: false,
   }
 
-  render () {
+  render() {
     return (
       <TextInputNative
         {...this.props}

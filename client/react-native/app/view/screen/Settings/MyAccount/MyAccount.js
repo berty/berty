@@ -13,7 +13,7 @@ import { Store } from '@berty/container'
 @withNamespaces()
 @withStoreContext
 class MyAccount extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -22,7 +22,7 @@ class MyAccount extends React.PureComponent {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.navigation.setParams({
       onSave: this.onSave,
     })
@@ -55,7 +55,7 @@ class MyAccount extends React.PureComponent {
           icon={
             <Badge
               background={colors.blue}
-              icon='camera'
+              icon="camera"
               medium
               onPress={this.onChoosePicture}
             >
@@ -71,7 +71,7 @@ class MyAccount extends React.PureComponent {
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
-            icon='trash-2'
+            icon="trash-2"
             title={t('my-account.delete-my-account')}
             color={colors.error}
             onPress={() => console.error('delete my account: not implemented')}
@@ -99,7 +99,7 @@ export default class MyAccountScreen extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <Screen>
         <Store.Entity.Contact status={42}>

@@ -14,8 +14,8 @@ class Database extends PureComponent {
       navigation.getParam('dropDatabase') || (
         <Header
           navigation={navigation}
-          title='Database'
-          titleIcon='database'
+          title="Database"
+          titleIcon="database"
           backBtn
         />
       ),
@@ -47,16 +47,16 @@ class Database extends PureComponent {
     })
   }
 
-  render () {
+  render() {
     const dropDatabase = this.props.navigation.getParam('dropDatabase')
     if (dropDatabase === true) {
       return (
         <Screen style={{ backgroundColor: colors.white }}>
-          <Flex.Rows align='center'>
-            <Flex.Cols align='end'>
-              <ActivityIndicator size='large' />
+          <Flex.Rows align="center">
+            <Flex.Cols align="end">
+              <ActivityIndicator size="large" />
             </Flex.Cols>
-            <Text center margin align='start'>
+            <Text center margin align="start">
               Dropping database, waiting for daemon to restart ...
             </Text>
           </Flex.Rows>
@@ -67,13 +67,13 @@ class Database extends PureComponent {
       <Menu>
         <Menu.Section customMarginTop={1}>
           <Menu.Item
-            icon='database'
-            title='Generate fake data'
+            icon="database"
+            title="Generate fake data"
             onPress={this.generateFakeData}
           />
           <Menu.Item
-            icon='refresh-ccw'
-            title='Drop database'
+            icon="refresh-ccw"
+            title="Drop database"
             onPress={this.dropDatabase}
           />
         </Menu.Section>

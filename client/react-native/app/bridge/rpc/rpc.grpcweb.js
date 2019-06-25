@@ -53,8 +53,8 @@ const stream = (client, hostname) => async (method, request, metadata) => {
   // fix that onEnd is not called
   stream.on('status', status => {
     if (status.code === 0) {
-      ptStream.end()
       stream.cancel()
+      ptStream.end()
     }
   })
   stream.on('error', () => {})

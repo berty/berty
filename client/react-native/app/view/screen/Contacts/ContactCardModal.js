@@ -15,7 +15,7 @@ const modalWidth = 320
 class ContactCardModal extends React.Component {
   static router = ContactIdentity.router
 
-  render () {
+  render() {
     const { navigation } = this.props
     const navigationData = {
       id: navigation.getParam('id'),

@@ -2,7 +2,7 @@ import { Platform, View } from 'react-native'
 import React from 'react'
 
 export class Picker extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.props.navigation.navigate(
@@ -16,7 +16,7 @@ export class Picker extends React.Component {
     )
   }
 
-  render () {
+  render() {
     return <View />
   }
 }

@@ -23,38 +23,38 @@ class List extends PureComponent {
     version: null,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.context.node.service.AppVersion.then(data => {
       this.setState({ version: data.version })
     })
   }
 
-  render () {
+  render() {
     const { navigation, t } = this.props
     const { version } = this.state
     return (
       <View style={{ flex: 1 }}>
         <Image
-          resizeMode='contain'
+          resizeMode="contain"
           style={{ flex: 3, width: null, height: null, marginTop: 42 }}
           source={require('@berty/common/static/img/square_about.png')}
         />
         <Menu>
           <Menu.Section>
             <Menu.Item
-              icon='smartphone'
+              icon="smartphone"
               title={t('settings.version')}
               textRight={version}
             />
             <Menu.Item
-              icon='check-circle'
+              icon="check-circle"
               title={t('settings.changelog')}
               onPress={() => navigation.navigate('about/changelog')}
             />
           </Menu.Section>
           <Menu.Section>
             <Menu.Item
-              icon='info'
+              icon="info"
               title={t('settings.learn-more')}
               onPress={() => navigation.navigate('about/more')}
             />

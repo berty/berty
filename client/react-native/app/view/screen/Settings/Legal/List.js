@@ -16,36 +16,36 @@ class List extends PureComponent {
     tabBarVisible: false,
   })
 
-  render () {
+  render() {
     const { navigation, t } = this.props
     return (
       <View style={{ flex: 1 }}>
         <Image
-          resizeMode='contain'
+          resizeMode="contain"
           style={{ flex: 3, width: null, height: null, marginTop: 42 }}
           source={require('@berty/common/static/img/square_legal.png')}
         />
         <Menu>
           <Menu.Section>
             <Menu.Item
-              icon='book-open'
+              icon="book-open"
               title={t('settings.privacy-policy')}
               onPress={() => navigation.navigate('legal/privacy')}
             />
             <Menu.Item
-              icon='book-open'
+              icon="book-open"
               title={t('settings.terms-of-service')}
               onPress={() => navigation.navigate('legal/terms')}
             />
           </Menu.Section>
           <Menu.Section>
             <Menu.Item
-              icon='layers'
+              icon="layers"
               title={t('settings.app-credits')}
               onPress={() => navigation.navigate('legal/credits')}
             />
             <Menu.Item
-              icon='layers'
+              icon="layers"
               title={t('settings.software-license')}
               onPress={() => navigation.navigate('legal/license')}
             />

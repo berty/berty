@@ -61,27 +61,27 @@ const IconBadge = props => {
       props.badge !== null &&
       props.badge !== '' &&
       props.badge !== 0 ? (
-          <View
-            style={{
-              position:
+        <View
+          style={{
+            position:
               props.position !== undefined ? props.position : 'absolute',
-              right: props.right !== undefined ? props.right : -8,
-              top: props.top !== undefined ? props.top : -5,
-              backgroundColor: colors.red,
-              borderRadius: 9,
-              width: 18,
-              height: 18,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            {props.value !== null ? (
-              <Text style={{ color: props.valueCorlor || colors.borderGrey }}>
-                {props.value}
-              </Text>
-            ) : null}
-          </View>
-        ) : null}
+            right: props.right !== undefined ? props.right : -8,
+            top: props.top !== undefined ? props.top : -5,
+            backgroundColor: colors.red,
+            borderRadius: 9,
+            width: 18,
+            height: 18,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          {props.value !== null ? (
+            <Text style={{ color: props.valueCorlor || colors.borderGrey }}>
+              {props.value}
+            </Text>
+          ) : null}
+        </View>
+      ) : null}
     </View>
   )
 }

@@ -10,7 +10,7 @@ import { withStoreContext } from '@berty/store/context'
 @withStoreContext
 @withNavigation
 class Notifications extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -22,7 +22,7 @@ class Notifications extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     return (
       <Menu>
         <Menu.Section title={'APNS'}>
@@ -101,7 +101,7 @@ class Notifications extends PureComponent {
     )
   }
 
-  async updateConfig (field) {
+  async updateConfig(field) {
     try {
       const config = {
         ...this.props.config,
@@ -126,13 +126,13 @@ export default class NotificationsWrapper extends PureComponent {
       <Header
         navigation={navigation}
         title={'Notifications'}
-        titleIcon='bell'
+        titleIcon="bell"
         backBtn
       />
     ),
   })
 
-  render () {
+  render() {
     return (
       <Store.Entity.Config>
         {data => (data ? <Notifications config={data} /> : <Loader />)}

@@ -31,7 +31,7 @@ export class OptimizedFlatList extends Component {
 
   keyExtractor = (item, index) => item.id || index
 
-  render () {
+  render() {
     const {
       data,
       onEndReached,
@@ -53,7 +53,6 @@ export class OptimizedFlatList extends Component {
         onEndReached={onEndReached}
         getItemLayout={getItemLayout}
         data={data}
-        extraData={data.length}
         refreshing={data.length === 0 && refreshing}
         onRefresh={Platform.OS !== 'web' && onRefresh}
         renderItem={renderItem}

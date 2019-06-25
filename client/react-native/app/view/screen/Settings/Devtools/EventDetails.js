@@ -12,14 +12,14 @@ class EventDetails extends PureComponent {
     header: (
       <Header
         navigation={navigation}
-        title='Details'
-        titleIcon='crosshair'
+        title="Details"
+        titleIcon="crosshair"
         backBtn
       />
     ),
   })
 
-  render () {
+  render() {
     const data = this.props.navigation.getParam('details')
 
     const fields = [

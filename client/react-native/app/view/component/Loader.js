@@ -6,10 +6,10 @@ import Text from './Text'
 import { colors } from '@berty/common/constants'
 
 const Loader = ({ message, color, background, size }) => (
-  <Flex.Cols align='center' justify='center'>
+  <Flex.Cols align="center" justify="center">
     <Flex.Rows
-      align='center'
-      justify='center'
+      align="center"
+      justify="center"
       style={{ backgroundColor: background || colors.transparent }}
     >
       <ActivityIndicator size={size || 'large'} color={color} />

@@ -175,7 +175,7 @@ _ci_prepare:
 		--proto-path $(GOPATH)/src/berty.tech/core \
 		--output-dir $(RN_PATH)/app \
 		--helper-dir $(RN_PATH)/app/template/helper \
-		$(PROTOS)
+		./api/node/service.proto
 	# prettify files
 	cd $(RN_PATH) && make gen.pretty
 	touch $@

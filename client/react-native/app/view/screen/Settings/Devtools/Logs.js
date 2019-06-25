@@ -28,8 +28,8 @@ class FilterModalBase extends PureComponent {
     header: (
       <Header
         navigation={navigation}
-        title='Log settings'
-        titleIcon='settings'
+        title="Log settings"
+        titleIcon="settings"
         rightBtnIcon={'save'}
         onPressRightBtn={
           navigation.state.params && navigation.state.params.updateCallback
@@ -49,7 +49,7 @@ class FilterModalBase extends PureComponent {
 
   antispamTimer = undefined
 
-  componentWillMount () {
+  componentWillMount() {
     this.currentConfig = this.props.navigation.state.params.currentConfig
     this.newConfig = {
       compact: this.currentConfig.compact,
@@ -59,13 +59,13 @@ class FilterModalBase extends PureComponent {
     this.newMaxBufferSize = maxBufferSize
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.antispamTimer = setTimeout(() => {
       antispamModalOpen = false
     }, 2000)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     clearTimeout(this.antispamTimer)
     antispamModalOpen = false
   }
@@ -103,15 +103,15 @@ class FilterModalBase extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     return (
       <Menu>
-        <Menu.Section title='Display & history' customMarginTop={24}>
+        <Menu.Section title="Display & history" customMarginTop={24}>
           <Menu.Item
-            title='Compact logs'
+            title="Compact logs"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.newConfig.compact}
                 onValueChange={value => {
                   this.newConfig.compact = value
@@ -121,10 +121,10 @@ class FilterModalBase extends PureComponent {
             }
           />
           <Menu.Item
-            title='Display max size'
+            title="Display max size"
             customRight={
               <TextInput
-                justify='end'
+                justify="end"
                 size={12}
                 style={{
                   borderBottomWidth: 0.5,
@@ -144,10 +144,10 @@ class FilterModalBase extends PureComponent {
             }
           />
           <Menu.Item
-            title='History max size'
+            title="History max size"
             customRight={
               <TextInput
-                justify='end'
+                justify="end"
                 size={12}
                 style={{
                   borderBottomWidth: 0.5,
@@ -169,12 +169,12 @@ class FilterModalBase extends PureComponent {
             }
           />
         </Menu.Section>
-        <Menu.Section title='Level filtering'>
+        <Menu.Section title="Level filtering">
           <Menu.Item
-            title='Debug'
+            title="Debug"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.newConfig.filters.debug}
                 onValueChange={value => {
                   this.newConfig.filters.debug = value
@@ -184,10 +184,10 @@ class FilterModalBase extends PureComponent {
             }
           />
           <Menu.Item
-            title='Info'
+            title="Info"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.newConfig.filters.info}
                 onValueChange={value => {
                   this.newConfig.filters.info = value
@@ -197,10 +197,10 @@ class FilterModalBase extends PureComponent {
             }
           />
           <Menu.Item
-            title='Warn'
+            title="Warn"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.newConfig.filters.warn}
                 onValueChange={value => {
                   this.newConfig.filters.warn = value
@@ -210,10 +210,10 @@ class FilterModalBase extends PureComponent {
             }
           />
           <Menu.Item
-            title='Error'
+            title="Error"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.newConfig.filters.error}
                 onValueChange={value => {
                   this.newConfig.filters.error = value
@@ -223,14 +223,14 @@ class FilterModalBase extends PureComponent {
             }
           />
         </Menu.Section>
-        <Menu.Section title='Regex filtering'>
+        <Menu.Section title="Regex filtering">
           <Menu.Item
-            title='Namespace'
+            title="Namespace"
             customRight={
               <TextInput
-                justify='end'
+                justify="end"
                 size={30}
-                placeholder='ex: core\.*'
+                placeholder="ex: core\.*"
                 style={{
                   borderBottomWidth: 0.5,
                   borderBottomColor: '#d6d7da',
@@ -247,10 +247,10 @@ class FilterModalBase extends PureComponent {
             }
           />
           <Menu.Item
-            title='Message'
+            title="Message"
             customRight={
               <TextInput
-                justify='end'
+                justify="end"
                 size={30}
                 placeholder='ex: \"dial backoff\"'
                 style={{
@@ -269,7 +269,7 @@ class FilterModalBase extends PureComponent {
             }
           />
           <Menu.Item
-            title='Online JS regex tester'
+            title="Online JS regex tester"
             color={colors.blue}
             onPress={() => Linking.openURL('https://regexr.com/')}
           />
@@ -280,7 +280,7 @@ class FilterModalBase extends PureComponent {
 }
 
 class Line extends PureComponent {
-  render () {
+  render() {
     const { log, compact } = this.props
     return (
       <TouchableOpacity
@@ -296,8 +296,8 @@ class Line extends PureComponent {
           borderBottom,
         ]}
       >
-        <Flex.Cols align='center'>
-          <Flex.Rows align='stretch' justify='center'>
+        <Flex.Cols align="center">
+          <Flex.Rows align="stretch" justify="center">
             <Flex.Cols>
               <Text left bold color={colors.black}>
                 {log.date}
@@ -307,8 +307,8 @@ class Line extends PureComponent {
               </Text>
             </Flex.Cols>
             <Flex.Cols
-              justify='space-between'
-              align='stretch'
+              justify="space-between"
+              align="stretch"
               style={{ marginTop: compact ? 0 : 0.5 }}
             >
               <Text
@@ -350,8 +350,8 @@ export class LogStream extends PureComponent {
     header: (
       <Header
         navigation={navigation}
-        title='Console logs'
-        titleIcon='file-text'
+        title="Console logs"
+        titleIcon="file-text"
         rightBtnIcon={'settings'}
         onPressRightBtn={() => {
           if (!antispamModalOpen) {
@@ -367,7 +367,7 @@ export class LogStream extends PureComponent {
     ),
   })
 
-  async componentDidMount () {
+  async componentDidMount() {
     this.logStream = await this.props.context.node.service.logStream({
       continues: true,
       logLevel: '',
@@ -381,7 +381,7 @@ export class LogStream extends PureComponent {
     })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     clearTimeout(this.timer)
     this.logStream.destroy()
   }
@@ -481,13 +481,13 @@ export class LogStream extends PureComponent {
   }
 
   parseLog = line => {
-    function getValAndDeleteKey (key) {
+    function getValAndDeleteKey(key) {
       let value = lineObject[key]
       delete lineObject[key]
       return value
     }
 
-    function setLevelColor (level) {
+    function setLevelColor(level) {
       switch (level) {
         case 'DEBUG':
           return colors.debug
@@ -502,7 +502,7 @@ export class LogStream extends PureComponent {
       }
     }
 
-    function datePrettier (rawDate) {
+    function datePrettier(rawDate) {
       let date = new Date(rawDate)
       return (
         date.getMonth() +
@@ -539,13 +539,13 @@ export class LogStream extends PureComponent {
     return logObject
   }
 
-  render () {
+  render() {
     return (
       <View style={{ flex: 1, backgroundColor: colors.white }}>
         {this.state.loading && (
-          <Flex.Cols align='center'>
+          <Flex.Cols align="center">
             <Flex.Rows>
-              <ActivityIndicator size='large' />
+              <ActivityIndicator size="large" />
             </Flex.Rows>
           </Flex.Cols>
         )}

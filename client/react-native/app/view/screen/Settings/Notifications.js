@@ -49,7 +49,7 @@ export class Notifications extends PureComponent {
     notificationsPreviews: this.getCurrentConfig().notificationsPreviews,
   }
 
-  async updateConfig () {
+  async updateConfig() {
     try {
       const config = {
         ...this.props.config,
@@ -73,7 +73,7 @@ export class Notifications extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     const { t, context } = this.props
     const nativePushType = getNativePushType()
     const currentMQTTConfigs = this.getCurrentMQTTConfigs()
@@ -86,8 +86,8 @@ export class Notifications extends PureComponent {
             nativePushType ===
               enums.BertyPushDevicePushTypeInputDevicePushType
                 .UnknownDevicePushType && (
-            <Menu.Item title={t('settings.push-transport-not-supported')} />
-          )}
+              <Menu.Item title={t('settings.push-transport-not-supported')} />
+            )}
           {nativePushType !==
             enums.BertyPushDevicePushTypeInputDevicePushType
               .UnknownDevicePushType && (
@@ -105,7 +105,7 @@ export class Notifications extends PureComponent {
               left
               customRight={
                 <Switch
-                  justify='end'
+                  justify="end"
                   disabled={false}
                   value={pushConfigsSwitch}
                   onValueChange={async value =>
@@ -137,7 +137,7 @@ export class Notifications extends PureComponent {
               title={t('settings.push-mqtt-berty-servers')}
               customRight={
                 <Switch
-                  justify='end'
+                  justify="end"
                   disabled={false}
                   value={mqttConfigsSwitch}
                   onValueChange={value =>
@@ -149,14 +149,14 @@ export class Notifications extends PureComponent {
                         try {
                           value
                             ? await enableMQTTNotifications({
-                              context,
-                              relayPubkey: dummyPubKey,
-                              pushId: dummyPushId,
-                            })
+                                context,
+                                relayPubkey: dummyPubKey,
+                                pushId: dummyPushId,
+                              })
                             : await disableMQTTNotifications({
-                              context,
-                              currentPushConfigs: currentMQTTConfigs,
-                            })
+                                context,
+                                currentPushConfigs: currentMQTTConfigs,
+                              })
                           this.props.refresh()
                         } catch (err) {
                           this.setState({
@@ -178,7 +178,7 @@ export class Notifications extends PureComponent {
             left
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 onValueChange={async notificationsEnabled => {
                   if (Platform.OS === 'ios' && notificationsEnabled === true) {
                     if (
@@ -214,7 +214,7 @@ export class Notifications extends PureComponent {
             left
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 onValueChange={async notificationsPreviews => {
                   this.setState({ notificationsPreviews }, () =>
                     this.updateConfig()
@@ -226,7 +226,7 @@ export class Notifications extends PureComponent {
           />
           <Menu.Item
             title={t('chats.notifications-sound')}
-            textRight='Paulette'
+            textRight="Paulette"
             left
           />
         </Menu.Section>
@@ -247,7 +247,7 @@ class NotificationWrapper extends React.PureComponent {
     ),
   })
 
-  render () {
+  render() {
     return null
     // @FIXME: destroyed by refactor
     // const props = this.props

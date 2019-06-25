@@ -7,6 +7,7 @@
   "dependencies": {
     "@berty/common": "^0.0.1",
     "await-mutex": "1.0.1",
-    "mobx": "^5.10.0"
+    "mobx": "^5.10.0",
+    "mobx-utils": "^5.4.1"
   }
 }

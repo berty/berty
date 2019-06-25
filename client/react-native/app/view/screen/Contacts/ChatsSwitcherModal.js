@@ -24,7 +24,7 @@ const FilteredListContext = React.createContext()
 @withNavigationFocus
 @withNamespaces()
 export class SwitcherListComponent extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -38,7 +38,7 @@ export class SwitcherListComponent extends React.PureComponent {
     this.matchedIndices = []
   }
 
-  moveCursor (index, { scroll } = {}) {
+  moveCursor(index, { scroll } = {}) {
     try {
       index = Math.min(index, this.props.data.length - 1)
       index = Math.max(index, 0)
@@ -72,7 +72,7 @@ export class SwitcherListComponent extends React.PureComponent {
     }
   }
 
-  enter () {
+  enter() {
     if (!this.props.isFocused) {
       return
     }
@@ -82,7 +82,7 @@ export class SwitcherListComponent extends React.PureComponent {
     }
   }
 
-  up (e) {
+  up(e) {
     if (!this.props.isFocused) {
       return
     }
@@ -96,7 +96,7 @@ export class SwitcherListComponent extends React.PureComponent {
     e.preventDefault()
   }
 
-  down (e) {
+  down(e) {
     if (!this.props.isFocused) {
       return
     }
@@ -110,15 +110,15 @@ export class SwitcherListComponent extends React.PureComponent {
     e.preventDefault()
   }
 
-  setIndex (index) {
+  setIndex(index) {
     this.moveCursor(index, {})
   }
 
-  setCandidateRoute (route) {
+  setCandidateRoute(route) {
     this.candidateRoute = route
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (
       this._up === undefined ||
       this._down === undefined ||
@@ -135,13 +135,13 @@ export class SwitcherListComponent extends React.PureComponent {
     Mousetrap.bind(['enter'], this._enter)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     Mousetrap.unbind(['up'], this._up)
     Mousetrap.unbind(['down'], this._down)
     Mousetrap.unbind(['enter'], this._enter)
   }
 
-  setQuery (query) {
+  setQuery(query) {
     this.setState({
       listProps: {
         query,
@@ -152,7 +152,7 @@ export class SwitcherListComponent extends React.PureComponent {
     this.matchedIndices = []
   }
 
-  addMatched (index) {
+  addMatched(index) {
     if (this.matchedIndices.indexOf(index) !== -1) {
       return
     }
@@ -164,7 +164,7 @@ export class SwitcherListComponent extends React.PureComponent {
     }
   }
 
-  render () {
+  render() {
     const { data, renderItem, t, navigation, ...props } = this.props
 
     return (
@@ -218,7 +218,7 @@ export class SwitcherListComponent extends React.PureComponent {
 
 @withNavigation
 class ItemBase extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     const item = this.props.data
@@ -248,13 +248,13 @@ class ItemBase extends React.PureComponent {
     }
   }
 
-  testItem () {
+  testItem() {
     const { query } = this.props
 
     return this.testedName.indexOf(query.toLocaleLowerCase()) !== -1
   }
 
-  render () {
+  render() {
     if (this.forceIgnore || !this.testItem()) {
       return null
     }
@@ -292,7 +292,7 @@ class ItemBase extends React.PureComponent {
 
     return (
       <Flex.Cols
-        align='center'
+        align="center"
         onPress={() => navigation.navigate(route)}
         style={[
           { height: 72 },
@@ -301,13 +301,13 @@ class ItemBase extends React.PureComponent {
           index === focusedIndex ? { backgroundColor: colors.blue } : null,
         ]}
       >
-        <Flex.Rows size={1} align='center'>
+        <Flex.Rows size={1} align="center">
           <Avatar data={data} size={40} />
         </Flex.Rows>
         <Flex.Rows
           size={7}
-          align='stretch'
-          justify='center'
+          align="stretch"
+          justify="center"
           style={[marginLeft]}
         >
           <Text
@@ -324,7 +324,7 @@ class ItemBase extends React.PureComponent {
 }
 
 export class Item extends React.PureComponent {
-  render () {
+  render() {
     return (
       <FilteredListContext.Consumer>
         {({ listProps: { focusedIndex, query } }) => {
@@ -342,7 +342,7 @@ export class Item extends React.PureComponent {
 }
 
 class ContactCardModal extends React.Component {
-  render () {
+  render() {
     return null
     // @FIXME destroyed by refactor
     // const {

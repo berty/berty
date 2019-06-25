@@ -6,7 +6,7 @@ export const UpdateContext = React.createContext()
 export const withUpdateContext = Component =>
   withHOC(
     class ComponentWithUpdateContext extends PureComponent {
-      render () {
+      render() {
         return (
           <UpdateContext.Consumer>
             {context => {

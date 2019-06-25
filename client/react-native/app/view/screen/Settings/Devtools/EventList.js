@@ -32,12 +32,12 @@ export const Item = ({ data, navigation }) => (
       borderBottom,
     ]}
   >
-    <Flex.Cols align='center'>
-      <Flex.Rows size={7} align='stretch' justify='center' style={[marginLeft]}>
+    <Flex.Cols align="center">
+      <Flex.Rows size={7} align="stretch" justify="center" style={[marginLeft]}>
         <Text
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
           numberOfLines={1}
-          className='textEllipsis'
+          className="textEllipsis"
           style={{ color: colors.black }}
         >
           {data.ackedAt !== null ? (
@@ -58,27 +58,27 @@ export const Item = ({ data, navigation }) => (
           {' (' + data.kind + ')'}
         </Text>
         <Text
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
           numberOfLines={1}
-          className='textEllipsis'
+          className="textEllipsis"
           style={{ color: colors.blackGrey, fontSize: 12 }}
         >
           <Text style={{ fontWeight: 'bold' }}>ID</Text>
           {' ' + data.id}
         </Text>
         <Text
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
           numberOfLines={1}
-          className='textEllipsis'
+          className="textEllipsis"
           style={{ color: colors.blackGrey, fontSize: 12 }}
         >
           <Text style={{ fontWeight: 'bold' }}>Created</Text>
           {` ${moment(data.createdAt).fromNow()} ${data.createdAt}`}
         </Text>
         <Text
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
           numberOfLines={1}
-          className='textEllipsis'
+          className="textEllipsis"
           style={{ color: colors.blackGrey, fontSize: 12 }}
         >
           <Text style={{ fontWeight: 'bold' }}>Acked</Text>
@@ -113,7 +113,7 @@ class EventList extends PureComponent {
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.navigation.setParams({
       filters: {
         onlyWithoutAckedAt: 0,
@@ -126,8 +126,8 @@ class EventList extends PureComponent {
       header: (
         <Header
           navigation={navigation}
-          title='List events'
-          titleIcon='list'
+          title="List events"
+          titleIcon="list"
           backBtn
         />
       ),
@@ -138,7 +138,7 @@ class EventList extends PureComponent {
     <Item data={data} navigation={this.props.navigation} />
   )
 
-  render () {
+  render() {
     const { navigation } = this.props
     return (
       <Store.Node.Service.EventList.Pagination
@@ -163,7 +163,7 @@ class EventList extends PureComponent {
                   <LibText
                     size={0}
                     height={34}
-                    icon='filter'
+                    icon="filter"
                     padding
                     middle
                     large
@@ -185,7 +185,7 @@ class EventList extends PureComponent {
 }
 
 export class EventListFilterModal extends PureComponent {
-  render () {
+  render() {
     const { navigation } = this.props
     return (
       <FilterModal
@@ -194,7 +194,7 @@ export class EventListFilterModal extends PureComponent {
         defaultData={navigation.getParam('defaultData')}
       >
         <PickerFilter
-          name='onlyWithoutAckedAt'
+          name="onlyWithoutAckedAt"
           choices={[
             { value: 0, label: 'All values' },
             { value: 1, label: 'AckedAt is not defined' },

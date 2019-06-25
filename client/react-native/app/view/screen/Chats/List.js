@@ -29,7 +29,7 @@ import tDate from '@berty/common/helpers/timestampDate'
 @withNamespaces()
 @withNavigation
 export class Item extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     const { data } = props
     this.state = {
@@ -38,12 +38,11 @@ export class Item extends React.PureComponent {
       other:
         data.members.length === 2
           ? data.members.find(
-            element =>
-              element &&
+              element =>
                 element.contact &&
                 element.contact.status !==
                   enums.BertyEntityContactInputStatus.Myself
-          )
+            )
           : null,
       interval:
         data.members.length === 2 ? setInterval(this.getPing, 10000) : null,
@@ -52,10 +51,9 @@ export class Item extends React.PureComponent {
     if (data.members.length === 2) {
       this.getPing()
     }
-    this.subscriber = null
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     // const { context } = this.props
     //
     // this.eventUnseenStream = await context.node.service.eventUnseen({
@@ -75,7 +73,7 @@ export class Item extends React.PureComponent {
     // this.commitLogStream.on('data', this.updateBadge)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     // this.commitLogStream.destroy()
     if (this.state.interval !== null) {
       clearInterval(this.state.interval)
@@ -125,13 +123,11 @@ export class Item extends React.PureComponent {
     //   })
   }
 
-  render () {
+  render() {
     const { data, navigation, t } = this.props
     const { connected, unread } = this.state
 
-    // @FIXME: destroyed by refactor
     const isRead = conversation.isReadByMe(data)
-    // fix when contact request is send after conversation invite
     if (
       data.members.length === 2 &&
       data.members.some(
@@ -144,7 +140,7 @@ export class Item extends React.PureComponent {
     }
     return (
       <Flex.Cols
-        align='center'
+        align="center"
         onPress={() => {
           navigation.navigate({ routeName: 'chats/detail', params: data })
         }}
@@ -156,7 +152,7 @@ export class Item extends React.PureComponent {
           borderBottom,
         ]}
       >
-        <Flex.Rows size={1} align='center'>
+        <Flex.Rows size={1} align="center">
           {data.members.length === 2 && connected ? (
             <View>
               <Badge
@@ -178,14 +174,14 @@ export class Item extends React.PureComponent {
         </Flex.Rows>
         <Flex.Rows
           size={7}
-          align='stretch'
-          justify='center'
+          align="stretch"
+          justify="center"
           style={[marginLeft]}
         >
           <Text color={colors.fakeBlack} left middle bold={!isRead}>
             {conversation.getTitle(data)}
           </Text>
-          <Flex.Cols size={1} justify='flex-start'>
+          <Flex.Cols size={1} justify="flex-start">
             {data.members.length === 2 && connected ? (
               <View>
                 <Text
@@ -205,7 +201,7 @@ export class Item extends React.PureComponent {
             </Text>
           </Flex.Cols>
         </Flex.Rows>
-        <Flex.Rows size={1} justify='flex-end' align='center'>
+        <Flex.Rows size={1} justify="flex-end" align="center">
           <Icon.Badge
             position={'relative'}
             right={0}
@@ -223,7 +219,7 @@ export class Item extends React.PureComponent {
 @withStoreContext
 @hook
 class ConversationList extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     if (Platform.OS !== 'web' && __DEV__) {
@@ -239,8 +235,8 @@ class ConversationList extends PureComponent {
       <Header
         navigation={navigation}
         title={I18n.t('chats.title')}
-        titleIcon='message-circle'
-        rightBtnIcon='edit'
+        titleIcon="message-circle"
+        rightBtnIcon="edit"
         onPressRightBtn={() => ConversationList.onPress(navigation)}
       />
     ),
@@ -278,7 +274,7 @@ class ConversationList extends PureComponent {
     />
   )
 
-  render () {
+  render() {
     const { navigation } = this.props
     return (
       <Screen style={{ backgroundColor: 'white' }}>

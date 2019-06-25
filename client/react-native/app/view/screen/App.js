@@ -44,7 +44,7 @@ export default class App extends PureComponent {
     }),
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     if (Platform.OS !== 'web') {
@@ -65,7 +65,7 @@ export default class App extends PureComponent {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     ReactNativeLanguages.addEventListener('change', this._onLanguageChange)
 
     if (Platform.OS === 'web') {
@@ -83,7 +83,7 @@ export default class App extends PureComponent {
     this.setState({ loading: false })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     ReactNativeLanguages.removeEventListener('change', this._onLanguageChange)
 
     if (Platform.OS === 'web') {
@@ -91,7 +91,7 @@ export default class App extends PureComponent {
     }
   }
 
-  showQuickSwitch () {
+  showQuickSwitch() {
     NavigationService.navigate('modal/chats/switcher')
     return false
   }
@@ -115,7 +115,7 @@ export default class App extends PureComponent {
     this.setState({ availableUpdate: update })
   }
 
-  render () {
+  render() {
     const {
       availableUpdate,
       store: { bridge },
@@ -134,7 +134,7 @@ export default class App extends PureComponent {
                   }}
                 >
                   {this.props.children}
-                  <FlashMessage position='top' />
+                  <FlashMessage position="top" />
                   <View
                     style={{
                       zIndex: 1,

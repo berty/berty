@@ -7,7 +7,7 @@ import { withNamespaces } from 'react-i18next'
 import colors from '@berty/common/constants/colors'
 
 class Welcome extends React.Component {
-  render () {
+  render() {
     const { navigation, t } = this.props
 
     return (

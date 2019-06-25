@@ -14,7 +14,7 @@ import { Store } from '@berty/container'
 @withGoBack
 @withStoreContext
 export class SettingsScreen extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     const conversation = props.navigation.getParam('conversation')
     // @FIXME: destroyed by refactor
@@ -28,7 +28,7 @@ export class SettingsScreen extends PureComponent {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.navigation.setParams({
       onEdit: this.onEdit,
       onSave: this.onSave,
@@ -85,7 +85,7 @@ export class SettingsScreen extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     const conversation = this.props.navigation.getParam('conversation')
     const { edit, t, navigation } = this.props
     const { title, topic, members = [] } = conversation
@@ -114,14 +114,14 @@ export class SettingsScreen extends PureComponent {
           {!edit && (
             <Menu.Section>
               <Menu.Item
-                icon='bell'
+                icon="bell"
                 title={t('chats.notifications')}
                 onPress={() =>
                   navigation.navigate('chats/settings/notifications')
                 }
               />
               <Menu.Item
-                icon='clock'
+                icon="clock"
                 title={t('chats.message-retention')}
                 onPress={() => console.log('Message retention')}
               />
@@ -130,7 +130,7 @@ export class SettingsScreen extends PureComponent {
           {oneToOneContact ? (
             <Menu.Section>
               <Menu.Item
-                icon='user'
+                icon="user"
                 title={t('contacts.details')}
                 onPress={() => {
                   navigation.navigate('chats/contact/detail/list', {
@@ -147,7 +147,7 @@ export class SettingsScreen extends PureComponent {
           ) : (
             <Menu.Section title={`${members.length} members`}>
               <Menu.Item
-                icon='user-plus'
+                icon="user-plus"
                 title={t('chats.add-members')}
                 color={colors.blue}
                 onPress={() =>
@@ -158,7 +158,7 @@ export class SettingsScreen extends PureComponent {
                 }
               />
               <Menu.Item
-                icon='link'
+                icon="link"
                 title={t('chats.link-invite')}
                 color={colors.blue}
                 onPress={() => console.log('Invite to group with a link')}
@@ -186,7 +186,7 @@ export class SettingsScreen extends PureComponent {
           )}
           <Menu.Section>
             <Menu.Item
-              icon='trash-2'
+              icon="trash-2"
               title={t('chats.delete')}
               color={colors.error}
               onPress={this.onDeleteConversation}
@@ -222,7 +222,7 @@ class List extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     const { navigation } = this.props
     const { id } = navigation.getParam('conversation')
     return (
