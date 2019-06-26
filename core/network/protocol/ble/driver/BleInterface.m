@@ -12,11 +12,12 @@
 #import "BertyDevice.h"
 
 static BleManager *manager = nil;
+os_log_t OS_LOG_BLE = nil;
 
 BleManager* getManager(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        os_log(OS_LOG_DEFAULT, "getManager() initialize!");
+        os_log(OS_LOG_BLE, "getManager() initialize!");
         manager = [[BleManager alloc] initScannerAndAdvertiser];
     });
     return manager;
@@ -24,6 +25,7 @@ BleManager* getManager(void) {
 
 // TODO: Check if init failed
 unsigned short StartBleDriver(char *ma, char *peerID) {
+    OS_LOG_BLE = os_log_create("chat.berty.io.core.network.protocol.ble.driver", "CoreModule");
     [getManager() setMa:[NSString stringWithUTF8String:ma]];
     [getManager() setPeerID:[NSString stringWithUTF8String:peerID]];
     [getManager() startScanning];
@@ -61,7 +63,7 @@ unsigned short SendToDevice(char *ma, NSData *data) {
         return 1;
     }
 
-    os_log_error(OS_LOG_DEFAULT, "writeNSData() no device found can't write");
+    os_log_error(OS_LOG_BLE, "writeNSData() no device found can't write");
     return 0;
 }
 

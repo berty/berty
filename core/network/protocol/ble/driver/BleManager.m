@@ -10,6 +10,7 @@
 #import "BleManager.h"
 #import "BertyDevice.h"
 #import <os/log.h>
+#import "BleInterface.h"
 
 @implementation BleManager
 
@@ -27,7 +28,7 @@ static NSString* const __nonnull EOD = @"EOD";
 
 // TODO: No need to check error on this?
 - (instancetype __nonnull) initScannerAndAdvertiser {
-    os_log(OS_LOG_DEFAULT, "peripheralManager: initScannerAndAdvertiser");
+    os_log(OS_LOG_BLE, "peripheralManager: initScannerAndAdvertiser");
     self = [super init];
 
     if (self) {
@@ -55,7 +56,7 @@ static NSString* const __nonnull EOD = @"EOD";
 }
 
 - (void)initService {
-    os_log(OS_LOG_DEFAULT, "peripheralManager: initService");
+    os_log(OS_LOG_BLE, "peripheralManager: initService");
     self.serviceUUID = [CBUUID UUIDWithString:SERVICE_UUID];
     self.maUUID = [CBUUID UUIDWithString:MA_UUID];
     self.peerUUID = [CBUUID UUIDWithString:PEER_ID_UUID];
@@ -111,7 +112,7 @@ static NSString* const __nonnull EOD = @"EOD";
 - (void)addService {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        os_log(OS_LOG_DEFAULT, "peripheralManager: AddService: %@", [self.serviceUUID UUIDString]);
+        os_log(OS_LOG_BLE, "peripheralManager: AddService: %@", [self.serviceUUID UUIDString]);
         [self.statusCount await];
         [self.pManager addService:self.bertyService];
     });
@@ -119,9 +120,9 @@ static NSString* const __nonnull EOD = @"EOD";
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral didAddService:(CBService *)service error:(nullable NSError *)error {
     if (error) {
-        os_log(OS_LOG_DEFAULT, "didAddService() error: %@", [error localizedFailureReason]);
+        os_log(OS_LOG_BLE, "didAddService() error: %@", [error localizedFailureReason]);
     }
-    os_log(OS_LOG_DEFAULT, "peripheralManager: didAddService: %@", [service.UUID UUIDString]);
+    os_log(OS_LOG_BLE, "peripheralManager: didAddService: %@", [service.UUID UUIDString]);
 }
 
 #pragma mark - BertyDevice dict helper
@@ -147,7 +148,7 @@ static NSString* const __nonnull EOD = @"EOD";
 
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     _BERTY_ON_M_THREAD(^{
-        os_log(OS_LOG_DEFAULT, "didConnectPeripheral() %@", [peripheral.identifier UUIDString]);
+        os_log(OS_LOG_BLE, "didConnectPeripheral() %@", [peripheral.identifier UUIDString]);
         BertyDevice *d = [self findPeripheral:peripheral];
         [d handleConnect:nil];
     });
@@ -156,7 +157,7 @@ static NSString* const __nonnull EOD = @"EOD";
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     BertyDevice *d = [self findPeripheral:peripheral];
     [d handleConnect:error];
-    os_log(OS_LOG_DEFAULT, "didFailToConnectPeripheral() %@", [peripheral.identifier UUIDString]);
+    os_log(OS_LOG_BLE, "didFailToConnectPeripheral() %@", [peripheral.identifier UUIDString]);
 }
 
 - (void)centralManager:(CBCentralManager *)central
@@ -169,14 +170,14 @@ static NSString* const __nonnull EOD = @"EOD";
             @synchronized (self.bDevices) {
                     [self.bDevices addObject:nDevice];
             }
-            os_log(OS_LOG_DEFAULT, "didDiscoverPeripheral() device %@ added to BleManager.bDevices", [nDevice.peripheral.identifier UUIDString]);
+            os_log(OS_LOG_BLE, "didDiscoverPeripheral() device %@ added to BleManager.bDevices", [nDevice.peripheral.identifier UUIDString]);
             [nDevice handshake];
         }
     });
 }
 
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
-    os_log(OS_LOG_DEFAULT, "didDisconnectPeripheral() for device %@ with error %@", [peripheral.identifier UUIDString], error);
+    os_log(OS_LOG_BLE, "didDisconnectPeripheral() for device %@ with error %@", [peripheral.identifier UUIDString], error);
     BertyDevice *nDevice = [self findPeripheral:peripheral];
     @synchronized (self.bDevices) {
         [self.bDevices removeObject:nDevice];
@@ -222,7 +223,7 @@ static NSString* const __nonnull EOD = @"EOD";
             break;
         }
     }
-    os_log(OS_LOG_DEFAULT, "peripheralManagerDidUpdateState: %@", stateString);
+    os_log(OS_LOG_BLE, "peripheralManagerDidUpdateState: %@", stateString);
 }
 
 - (void)centralManagerDidUpdateState:(nonnull CBCentralManager *)central {
@@ -254,7 +255,7 @@ static NSString* const __nonnull EOD = @"EOD";
         }
     }
 
-    os_log(OS_LOG_DEFAULT, "centralManagerDidUpdateState: %@", stateString);
+    os_log(OS_LOG_BLE, "centralManagerDidUpdateState: %@", stateString);
 }
 
 - (BertyDevice *)findPeripheralFromIdentifier:(NSUUID *__nonnull)identifier {
@@ -292,7 +293,7 @@ static NSString* const __nonnull EOD = @"EOD";
         // check if we hold a remote device of this type
         BertyDevice *remote = [self findPeripheralFromIdentifier:request.central.identifier];
         if (remote == nil) {
-            os_log(OS_LOG_DEFAULT, "didReceiveWriteRequests() failed peer unknown");
+            os_log(OS_LOG_BLE, "didReceiveWriteRequests() failed peer unknown");
             // TODO: Add error HERE
             [peripheral respondToRequest:request withResult:CBATTErrorInsufficientAuthorization];
             return;
@@ -305,7 +306,7 @@ static NSString* const __nonnull EOD = @"EOD";
         // check if final data was received
         // NSLog(@"request ACTUALDATA=%@ VAL=%@ UUID=%@ P=%p", data, request.value, request.characteristic.UUID, data);
         if ([request.characteristic.UUID isEqual:self.writerUUID]) {
-            os_log(OS_LOG_DEFAULT, "didReceiveWriteRequests() writer called for device %@", [remote.peripheral.identifier UUIDString]);
+            os_log(OS_LOG_BLE, "didReceiveWriteRequests() writer called for device %@", [remote.peripheral.identifier UUIDString]);
             void(^handler)(NSData *) = [remote.characteristicHandlers objectForKey:[request.characteristic.UUID UUIDString]];
             unsigned char zeroByte = 0;
             NSMutableData *tmpData = [NSMutableData dataWithData:request.value];

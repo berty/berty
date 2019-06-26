@@ -8,11 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
+#import <os/log.h>
 #import <signal.h>
 
 #ifndef BleInterface_h
 #define BleInterface_h
 @class BleManager;
+
+extern os_log_t OS_LOG_BLE;
 
 unsigned short StartBleDriver(char *ma, char *peerID);
 unsigned short StopBleDriver(void);

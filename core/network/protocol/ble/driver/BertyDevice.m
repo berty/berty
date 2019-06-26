@@ -83,7 +83,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
 
 - (void)handleMa:(NSData *)maData {
     NSString *remoteMa = [NSString stringWithUTF8String:[maData bytes]];
-    os_log(OS_LOG_DEFAULT, "handlePeerID() device %@ with current Ma %@, new Ma %@", [self.peripheral.identifier UUIDString], self.remoteMa, remoteMa);
+    os_log(OS_LOG_BLE, "handlePeerID() device %@ with current Ma %@, new Ma %@", [self.peripheral.identifier UUIDString], self.remoteMa, remoteMa);
     self.remoteMa = [NSString stringWithUTF8String:[maData bytes]];
     self.maRecv = TRUE;
     [self checkAndHandleFoundPeer];
@@ -91,7 +91,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
 
 - (void)handlePeerID:(NSData *)peerIDData {
     NSString *remotePeerID = [NSString stringWithUTF8String:[peerIDData bytes]];
-    os_log(OS_LOG_DEFAULT, "handlePeerID() device %@ with current peerID %@, new peerID %@", [self.peripheral.identifier UUIDString], self.remotePeerID, remotePeerID);
+    os_log(OS_LOG_BLE, "handlePeerID() device %@ with current peerID %@, new peerID %@", [self.peripheral.identifier UUIDString], self.remotePeerID, remotePeerID);
     self.remotePeerID = remotePeerID;
     self.peerIDRecv = TRUE;
     [self checkAndHandleFoundPeer];
@@ -100,9 +100,9 @@ CBService *getService(NSArray *services, NSString *uuid) {
 - (void)checkAndHandleFoundPeer {
     if (self.maSend == TRUE && self.peerIDSend == TRUE &&
         self.maRecv == TRUE && self.peerIDRecv == TRUE) {
-        os_log(OS_LOG_DEFAULT, "checkAndHandleFoundPeer() handling found peer %@", [self.peripheral.identifier UUIDString]);
+        os_log(OS_LOG_BLE, "checkAndHandleFoundPeer() handling found peer %@", [self.peripheral.identifier UUIDString]);
         if (!handlePeerFound([self.remotePeerID UTF8String], [self.remoteMa UTF8String])) {
-          os_log_error(OS_LOG_DEFAULT, "checkAndHandleFoundPeer() failed: golang can't handle new peer %@", [self.peripheral.identifier UUIDString]);
+          os_log_error(OS_LOG_BLE, "checkAndHandleFoundPeer() failed: golang can't handle new peer %@", [self.peripheral.identifier UUIDString]);
           //TODO: Disconnect device
         }
     }
@@ -113,26 +113,26 @@ CBService *getService(NSArray *services, NSString *uuid) {
         [self connectWithOptions:nil
             withBlock:^(BertyDevice* device, NSError *error){
             if (error) {
-                os_log_error(OS_LOG_DEFAULT, "handshake() device %@ connection failed %@", [device.peripheral.identifier UUIDString], error);
+                os_log_error(OS_LOG_BLE, "handshake() device %@ connection failed %@", [device.peripheral.identifier UUIDString], error);
                 return;
             }
-            os_log(OS_LOG_DEFAULT, "handshake() device %@ connection succeed", [device.peripheral.identifier UUIDString]);
+            os_log(OS_LOG_BLE, "handshake() device %@ connection succeed", [device.peripheral.identifier UUIDString]);
             [self discoverServices:@[self.manager.serviceUUID] withBlock:^(NSArray *services, NSError *error) {
                 if (error) {
-                    os_log_error(OS_LOG_DEFAULT, "handshake() device %@ discover service failed %@", [device.peripheral.identifier UUIDString], error);
+                    os_log_error(OS_LOG_BLE, "handshake() device %@ discover service failed %@", [device.peripheral.identifier UUIDString], error);
                     return;
                 }
-                os_log(OS_LOG_DEFAULT, "handshake() device %@ service discover succeed", [device.peripheral.identifier UUIDString]);
+                os_log(OS_LOG_BLE, "handshake() device %@ service discover succeed", [device.peripheral.identifier UUIDString]);
                 CBService *service = getService(services, [self.manager.serviceUUID UUIDString]);
                 if (service == nil) {
                     return;
                 }
                 [self discoverCharacteristics:@[self.manager.maUUID, self.manager.peerUUID, self.manager.writerUUID, self.manager.closerUUID,] forService:service withBlock:^(NSArray *chars, NSError *error) {
                     if (error) {
-                        os_log_error(OS_LOG_DEFAULT, "handshake() device %@ discover characteristic failed %@", [device.peripheral.identifier UUIDString], error);
+                        os_log_error(OS_LOG_BLE, "handshake() device %@ discover characteristic failed %@", [device.peripheral.identifier UUIDString], error);
                         return;
                     }
-                    os_log(OS_LOG_DEFAULT, "handshake() device %@ discover characteristic succeed", [device.peripheral.identifier UUIDString]);
+                    os_log(OS_LOG_BLE, "handshake() device %@ discover characteristic succeed", [device.peripheral.identifier UUIDString]);
                     for (CBCharacteristic *chr in chars) {
                         if ([chr.UUID isEqual:self.manager.maUUID]) {
                             self.ma = chr;
@@ -145,17 +145,17 @@ CBService *getService(NSArray *services, NSString *uuid) {
 
                     [self writeToCharacteristic:[[self.manager.ma dataUsingEncoding:NSUTF8StringEncoding] mutableCopy] forCharacteristic:self.ma withEOD:TRUE andBlock:^(NSError *error) {
                         if (error) {
-                            os_log_error(OS_LOG_DEFAULT, "handshake() device %@ write Ma failed %@", [device.peripheral.identifier UUIDString], error);
+                            os_log_error(OS_LOG_BLE, "handshake() device %@ write Ma failed %@", [device.peripheral.identifier UUIDString], error);
                             return;
                         }
-                        os_log(OS_LOG_DEFAULT, "handshake() device %@ write Ma succeed", [device.peripheral.identifier UUIDString]);
+                        os_log(OS_LOG_BLE, "handshake() device %@ write Ma succeed", [device.peripheral.identifier UUIDString]);
                         self.maSend = TRUE;
                         [self writeToCharacteristic:[[self.manager.peerID dataUsingEncoding:NSUTF8StringEncoding] mutableCopy] forCharacteristic:self.peerID withEOD:TRUE andBlock:^(NSError *error) {
                             if (error) {
-                                os_log_error(OS_LOG_DEFAULT, "handshake() device %@ write peerID failed %@", [device.peripheral.identifier UUIDString], error);
+                                os_log_error(OS_LOG_BLE, "handshake() device %@ write peerID failed %@", [device.peripheral.identifier UUIDString], error);
                                 return;
                             }
-                            os_log(OS_LOG_DEFAULT, "handshake() device %@ write peerID succeed", [device.peripheral.identifier UUIDString]);
+                            os_log(OS_LOG_BLE, "handshake() device %@ write peerID succeed", [device.peripheral.identifier UUIDString]);
 
                             self.peerIDSend = TRUE;
                             [self checkAndHandleFoundPeer];
@@ -172,7 +172,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
     if (service == nil) {
         return;
     }
-    os_log(OS_LOG_DEFAULT, "didModifyServices() with invalidated %@", invalidatedServices);
+    os_log(OS_LOG_BLE, "didModifyServices() with invalidated %@", invalidatedServices);
     self.maSend = FALSE;
     self.peerIDSend = FALSE;
     self.maRecv = FALSE;
