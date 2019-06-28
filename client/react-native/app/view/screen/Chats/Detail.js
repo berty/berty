@@ -365,7 +365,7 @@ export class Chat extends Component {
         >
           {({ queue, count, retry, loading, paginate }) => (
             <OptimizedFlatList
-              style={{ marginBottom: 50 }}
+              style={{ marginBottom: Platform.OS === 'web' ? 50 : 0 }}
               data={queue}
               onEndReached={paginate}
               getItemLayout={this.getItemLayout}

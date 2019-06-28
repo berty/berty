@@ -128,16 +128,6 @@ export class Item extends React.PureComponent {
     const { connected, unread } = this.state
 
     const isRead = conversation.isReadByMe(data)
-    if (
-      data.members.length === 2 &&
-      data.members.some(
-        m =>
-          m.contact == null ||
-          (m.contact.displayName === '' && m.contact.overrideDisplayName === '')
-      )
-    ) {
-      return null
-    }
     return (
       <Flex.Cols
         align="center"
@@ -292,14 +282,16 @@ class ConversationList extends PureComponent {
         >
           {({ queue, count, retry, loading, paginate }) =>
             count ? (
-              <OptimizedFlatList
-                data={queue}
-                onEndReached={paginate}
-                getItemLayout={this.getItemLayout}
-                renderItem={this.renderItem}
-                onRefresh={retry}
-                refreshing={loading}
-              />
+              <>
+                <OptimizedFlatList
+                  data={queue}
+                  onEndReached={paginate}
+                  getItemLayout={this.getItemLayout}
+                  renderItem={this.renderItem}
+                  onRefresh={retry}
+                  refreshing={loading}
+                />
+              </>
             ) : (
               <EmptyList
                 source={require('@berty/common/static/img/empty-conversation.png')}

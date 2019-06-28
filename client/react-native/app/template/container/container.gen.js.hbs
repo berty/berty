@@ -43,29 +43,26 @@ import { Component } from 'react'
             }
           }
 
-          {{#if (hasOwn resolvedRequestType.fields 'paginate')}}
-            {{#with (lookup 'berty.node.CommitLog.Entity')}}
-              {{#each fields}}
-                {{#if (eq resolvedType.name ../../resolvedResponseType.name)}}
-                  {{#with ../../this}}
+          {{#with (lookup 'berty.node.CommitLog.Entity')}}
+            {{#each fields}}
+              {{#if (eq resolvedType.name ../../resolvedResponseType.name)}}
+                {{#with ../../this}}
+                  {{#if (hasOwn resolvedRequestType.fields 'paginate')}}
                     @withStoreContext
                     class {{name}}ServiceNodePagination extends StreamPagination {
-
                       get store () {
                         return this.props.context.entity.{{case 'camel' resolvedResponseType.name}}
                       }
-
                       get method () {
                         return this.props.context.node.service.{{case 'camel' name}}
                       }
                     }
                     {{name}}ServiceNode.Pagination = {{name}}ServiceNodePagination
-                  {{/with}}
-                {{/if}}
-              {{/each}}
-            {{/with}}
-          {{/if}}
-
+                  {{/if}}
+                {{/with}}
+              {{/if}}
+            {{/each}}
+          {{/with}}
 
         {{else}}
 

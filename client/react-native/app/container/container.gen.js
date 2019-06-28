@@ -164,7 +164,6 @@ class EventListServiceNodePagination extends StreamPagination {
   get store() {
     return this.props.context.entity.event
   }
-
   get method() {
     return this.props.context.node.service.eventList
   }
@@ -183,7 +182,6 @@ class EventUnseenServiceNodePagination extends StreamPagination {
   get store() {
     return this.props.context.entity.event
   }
-
   get method() {
     return this.props.context.node.service.eventUnseen
   }
@@ -272,7 +270,6 @@ class ContactListServiceNodePagination extends StreamPagination {
   get store() {
     return this.props.context.entity.contact
   }
-
   get method() {
     return this.props.context.node.service.contactList
   }
@@ -319,7 +316,6 @@ class ConversationListServiceNodePagination extends StreamPagination {
   get store() {
     return this.props.context.entity.conversation
   }
-
   get method() {
     return this.props.context.node.service.conversationList
   }

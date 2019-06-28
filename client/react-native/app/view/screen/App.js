@@ -39,7 +39,10 @@ export default class App extends PureComponent {
         service: null,
       },
       setContext: bridge => {
-        this.setState({ store: new Store(bridge) })
+        this.setState({
+          store: new Store(bridge),
+          debugBar: <DebugStateBar />,
+        })
       },
     }),
   }
@@ -98,17 +101,6 @@ export default class App extends PureComponent {
 
   _onLanguageChange = ({ language } = {}) => {
     language != null && i18n.changeLanguage(language)
-  }
-
-  setStateContext = (i, f) => {
-    this.setState(i, () => {
-      if (i.loading === false) {
-        this.setState({
-          debugBar: <DebugStateBar />,
-        })
-      }
-      f()
-    })
   }
 
   setStateUpdate = update => {

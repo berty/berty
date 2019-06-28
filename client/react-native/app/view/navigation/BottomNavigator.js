@@ -1,7 +1,7 @@
 import { Platform } from 'react-native'
 import { createBottomTabNavigator } from 'react-navigation'
 import I18n from 'i18next'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 
 import { Icon } from '@berty/component'
 import { UpdateContext } from '@berty/update'
@@ -20,86 +20,9 @@ import SettingsNavigator from './SettingsNavigator'
 import { withStoreContext } from '@berty/store/context'
 
 @withStoreContext
-class TabBarIcon extends Component {
-  constructor(props) {
-    super(props)
-    const { context } = props
-
-    this.state = {
-      stored: [],
-      subscription:
-        props.routeName === 'contacts'
-          ? [context.node.service.contactRequest]
-          : [context.node.service.message],
-    }
-
-    this.subscriber = null
-  }
-
-  eventUnseen = null
-
-  async componentDidMount() {
-    const { context } = this.props
-
-    // const stream = await context.node.service.eventUnseen({})
-    // stream.on('data', e => {
-    //   if (this.state.stored.indexOf(e.targetAddr) === -1) {
-    //     this.setState({
-    //       stored: [...this.state.stored, e],
-    //     })
-    //   }
-    // })
-    this.subscriber = await context.node.service.commitLogStream({})
-  }
-
-  componentWillUnmount() {
-    if (this.subscriber != null) {
-      this.subscriber.destroy()
-    }
-  }
-
-  updateBadge = (store, data) => {
-    const [entity] = [data.CommitLogStream.entity.event]
-    const {
-      stored,
-      queryVariables: {
-        filter: { kind },
-      },
-    } = this.state
-
-    if (entity && entity.kind === kind && entity.direction === 1) {
-      if (entity.seenAt === null && stored.indexOf(entity.targetAddr) === -1) {
-        this.setState({
-          stored: [...stored, entity.targetAddr],
-        })
-      } else if (
-        entity.seenAt !== null &&
-        stored.indexOf(entity.targetAddr) !== -1
-      ) {
-        stored.splice(stored.indexOf(entity.targetAddr), 1)
-        this.setState({
-          stored: stored,
-        })
-      }
-    }
-  }
-
-  contactSeen = async () => {
-    // if (this.state.stored.length > 0) {
-    //   for (const val of this.state.stored) {
-    //     await this.props.context.node.service.eventSeen({
-    //       id: val,
-    //     })
-    //   }
-    //   this.setState({
-    //     stored: [],
-    //   })
-    // }
-  }
-
+class TabBarIcon extends PureComponent {
   render() {
-    const { tintColor, routeName, navigation, context } = this.props
-    const { stored } = this.state
+    const { tintColor, routeName, context } = this.props
 
     context.relay = context.environment
     let iconName = {
@@ -107,10 +30,6 @@ class TabBarIcon extends Component {
       chats: 'berty-berty_conversation',
       settings: 'settings',
     }[routeName]
-
-    if (routeName === 'contacts' && navigation.isFocused() === true) {
-      this.contactSeen()
-    }
 
     return routeName === 'settings' ? (
       <UpdateContext.Consumer>
@@ -124,15 +43,13 @@ class TabBarIcon extends Component {
         )}
       </UpdateContext.Consumer>
     ) : (
-      <>
-        <Icon.Badge
-          name={iconName}
-          size={24}
-          color={tintColor}
-          badge={stored.length > 0 ? '!' : ''}
-          value={stored.length}
-        />
-      </>
+      <Icon.Badge
+        name={iconName}
+        size={24}
+        color={tintColor}
+        badge={''}
+        value={0}
+      />
     )
   }
 }

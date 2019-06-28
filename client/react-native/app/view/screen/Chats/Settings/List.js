@@ -17,7 +17,6 @@ export class SettingsScreen extends PureComponent {
   constructor(props) {
     super(props)
     const conversation = props.navigation.getParam('conversation')
-    // @FIXME: destroyed by refactor
     const title = conversation.title // utils.getTitle(conversation)
 
     this.state = {

@@ -48,9 +48,9 @@ class Update extends PureComponent {
   }
 
   componentDidMount() {
-    getInstalledVersion(this.props.context).then(installed =>
+    getInstalledVersion(this.props.context).then(installed => {
       this.setState({ installed })
-    )
+    })
     getLatestVersion().then(latest => this.setState({ latest }))
   }
 

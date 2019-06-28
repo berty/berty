@@ -354,23 +354,16 @@ func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation)
 		return nil, errors.Wrap(err, "cannot update conversation")
 	}
 
-	// check if last message has been read
-	event := &entity.Event{}
-	filter := &entity.Event{
-		TargetType: entity.Event_ToSpecificConversation,
-		TargetAddr: conversation.ID,
-		Direction:  entity.Event_Incoming,
-	}
-	n.sql(ctx).Model(event).Where(filter).Order("created_at").Last(event)
-	if event.SeenAt == nil {
-		return conversation, nil
-	}
-
 	// send conversation as read
-	return conversation, n.EnqueueOutgoingEvent(ctx,
+	err = n.EnqueueOutgoingEvent(ctx,
 		n.NewEvent(ctx).
 			SetToConversation(conversation).
 			SetConversationReadAttrs(&entity.ConversationReadAttrs{Conversation: conversation.Filtered()}))
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot send conversation read to others")
+	}
+
+	return conversation, nil
 }
 
 func (n *Node) ConversationLastEvent(ctx context.Context, input *entity.Conversation) (*entity.Event, error) {

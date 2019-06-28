@@ -129,7 +129,7 @@ deps.logs:
 
 ### Build release/debug part ###
 .PHONY: debug.react-native
-debug.react-native:
+debug.react-native: deps
 	react-native start --reset-cache
 
 .PHONY: patch.android
@@ -215,12 +215,15 @@ log.ios:
 .PHONY .IGNORE: clean.bundler_and_pkgs
 clean.bundler_and_pkgs:
 	$(LERNA) clean -y
-	cd $(ROOT)					\
-		&& rm -rf node_modules	\
-		&& watchman watch-del-all
-	rm -rf $$TMPDIR/metro-*
-	rm -rf $$TMPDIR/react-*
-	rm -rf $$TMPDIR/haste-*
+	cd $(ROOT) \
+		&& rm -rf \
+			node_modules \
+			$$TMPDIR/react-native-packager-cache-* \
+			$$TMPDIR/metro-* \
+			$$TMPDIR/react-* \
+			$$TMPDIR/haste-* \
+		&& watchman watch-del-all \
+		&& npm cache clean --force
 
 .PHONY .IGNORE: clean.android
 clean.android:

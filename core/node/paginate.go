@@ -29,7 +29,7 @@ func paginate(query *gorm.DB, paginate *node.Pagination) (*gorm.DB, error) {
 			cursor = paginate.Before
 		}
 		break
-	case "created_at", "updated_at", "wrote_at":
+	case "created_at", "updated_at", "wrote_at", "seen_at":
 		var err error
 		if paginate.First > 0 {
 			cursor, err = time.Parse(time.RFC3339Nano, paginate.After)

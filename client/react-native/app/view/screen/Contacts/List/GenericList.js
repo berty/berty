@@ -158,7 +158,7 @@ class GenericList extends React.Component {
     }
   }
 
-  renderList = ({ queue, paginate, count, loading, retry }) => {
+  renderList = ({ queue, paginate, count, cursor, loading, retry }) => {
     if (count) {
       return (
         <>
@@ -206,6 +206,7 @@ class GenericList extends React.Component {
           paginate={({ cursor, count }) => ({
             first: count ? 50 : 50,
             after: cursor,
+            orderDesc: true,
             ...(paginate || {}),
           })}
           fallback={<Loader />}

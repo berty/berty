@@ -43,8 +43,7 @@ export class Stream extends Component {
     const queue = []
 
     stream.on('data', response => {
-      this.props.response(queue, response)
-      this.setStateDebounce({ queue })
+      this.setStateDebounce({ queue: this.props.response(queue, response) })
     })
   }
 
@@ -152,14 +151,9 @@ export class StreamPagination extends Stream {
     }
 
     // if item must be at end check that it has been forced
-    if (
-      !change.force &&
-      newIndex === this.queue.length &&
-      // FIXME: we should not have to do this
-      this.queue.length !== 0
-    ) {
+    if (!change.force && newIndex === this.queue.length) {
       if (this.queue.length < this.paginate.first) {
-        this.invokeDebounce()
+        this.invoke()
       }
       return
     }
@@ -186,12 +180,17 @@ export class StreamPagination extends Stream {
     }
   }
 
-  observeMutex = new Mutex()
-  observe = async change => {
-    this.observeMutex.acquire().then(unlock => {
-      this.change(change)
-      unlock()
-    })
+  observe = change => {
+    this.change(change)
+    if (this.queue.length) {
+      if (this.queue[this.queue.length - 1] % this.paginate.first === 0) {
+        this.cursor = this.queue[this.queue.length - 1][
+          Case.camel(this.paginate.orderBy || 'id')
+        ]
+      }
+    } else {
+      this.cursor = ''
+    }
     this.smartForceUpdate()
   }
 
@@ -244,7 +243,6 @@ export class StreamPagination extends Stream {
 
   invokeHashTable = {}
 
-  invokeDebounce = debounce(1000, this.invoke)
   invoke = async () => {
     const queue = []
 
@@ -270,14 +268,12 @@ export class StreamPagination extends Stream {
 
     stream.on('end', () => {
       this.loading = false
-
-      if (queue.length !== 0) {
-        this.cursor =
-          queue[queue.length - 1][Case.camel(this.paginate.orderBy || 'id')]
-      }
-
+      this.cursor = this.queue.length
+        ? this.queue[this.queue.length - 1][
+            Case.camel(this.paginate.orderBy || 'id')
+          ]
+        : ''
       this.smartForceUpdate()
-
       this.invokeHashTable[requestHash] = false
     })
   }
