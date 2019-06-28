@@ -3,14 +3,15 @@ package daemon
 import (
 	"context"
 	"encoding/json"
-	fmt "fmt"
+	"fmt"
 	"net"
 	"strconv"
 	"strings"
 
-	account "berty.tech/core/manager/account"
+	"berty.tech/core/manager/account"
 	"berty.tech/core/network"
 	network_config "berty.tech/core/network/config"
+	"berty.tech/core/pkg/deviceinfo"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -254,7 +255,7 @@ func (d *Daemon) UpdateNetworkConfig(ctx context.Context, nc *NetworkConfig) (*V
 	if err := currentAccount.UpdateNetwork(
 		d.rootContext,
 		network.WithConfig(cfg),
-		network.OverridePersistConfig(),
+		network.OverridePersistConfig(deviceinfo.GetStoragePath()+"/"+"network-config.json"),
 	); err != nil {
 		return &Void{}, err
 	}

@@ -7,6 +7,7 @@ import (
 	"berty.tech/core/network"
 	network_config "berty.tech/core/network/config"
 	"berty.tech/core/pkg/banner"
+	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/logmanager"
 	"berty.tech/core/push"
 	"go.uber.org/zap"
@@ -74,7 +75,7 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 					HOP:              cfg.Hop,
 					PrivateNetwork:   cfg.PrivateNetwork,
 					Identity:         cfg.Identity,
-					Persist:          true,
+					PersistConfig:    deviceinfo.GetStoragePath() + "/" + "network-config.json",
 					OverridePersist:  false,
 					PeerCache:        cfg.PeerCache,
 					//					DHTKVLogDatastore: cfg.DhtkvLogDatastore,

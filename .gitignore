@@ -1,4 +1,5 @@
 # sub-packages
+/network/
 /go-ipfs-log/
 
 # junk files
