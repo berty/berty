@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "CountDownLatch.h"
-#import "ble.h"
+#import "BleInterface.h"
 #ifndef BleManager_h
 #define BleManager_h
 @class BertyDevice;

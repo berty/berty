@@ -110,7 +110,7 @@ public class GattServer extends BluetoothGattServerCallback {
                 return;
             }
 
-            Core.bytesToConn(bertyDevice.getMultiAddr(), value);
+            Core.receiveFromDevice(bertyDevice.getMultiAddr(), value);
 
             if (responseNeeded) {
                 mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value);

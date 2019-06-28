@@ -1,94 +1,84 @@
 package ble
 
 import (
-	"fmt"
+	"errors"
 	"net"
 
-	// "runtime/debug"
-
+	bledrv "berty.tech/core/network/protocol/ble/driver"
+	blema "berty.tech/core/network/protocol/ble/multiaddr"
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	ma "github.com/multiformats/go-multiaddr"
-	"go.uber.org/zap"
 )
 
-// Listener implement ipfs Listener interface
+// Listener implement lip2p Listener interface
 type Listener struct {
 	tpt.Listener
 	transport       *Transport
-	addr            string
-	network         string
-	incomingBLEUUID chan string
-	incomingPeerID  chan string
+	localMa         ma.Multiaddr
+	incomingConnReq chan connReq
 	closer          chan struct{}
-	lAddr           ma.Multiaddr
 }
 
-var listeners = make(map[string]*Listener)
+type connReq struct {
+	remoteAddr   string
+	remoteMa     ma.Multiaddr
+	remotePeerID peer.ID
+}
 
-func RealAcceptSender(peerID string, ble string, incPeerID string) {
-	for {
-		logger().Debug("ACCEPT\n", zap.String("peer", peerID))
-		if listener, ok := listeners[peerID]; ok {
-			listener.incomingBLEUUID <- ble
-			listener.incomingPeerID <- incPeerID
-			return
-		}
+func newListener(lMa ma.Multiaddr, t *Transport) (*Listener, error) {
+	listener := &Listener{
+		transport:       t,
+		localMa:         lMa,
+		incomingConnReq: make(chan connReq),
+		closer:          make(chan struct{}),
 	}
+
+	if !bledrv.StartBleDriver(listener.Addr().String(), t.host.ID().Pretty()) {
+		return nil, errors.New("listener creation failed: can't start BLE native driver")
+	}
+
+	return listener, nil
 }
 
-func (b *Listener) Addr() net.Addr {
-	m, _ := b.lAddr.ValueForProtocol(P_BLE)
+func (l *Listener) Addr() net.Addr {
+	lAddr, _ := l.localMa.ValueForProtocol(blema.P_BLE)
 	return &Addr{
-		Address: m,
+		Address: lAddr,
 	}
 }
 
-func (b *Listener) Multiaddr() ma.Multiaddr {
-	// logger().Debug("BLEListener Multiaddr") @FIXME: Better log here
-	return b.lAddr
+func (l *Listener) Multiaddr() ma.Multiaddr {
+	return l.localMa
 }
 
-func (b *Listener) Accept() (tpt.Conn, error) {
-	for {
-		select {
-		case _, ok := <-b.closer:
-			if !ok {
-				return nil, fmt.Errorf("ble listener closed")
-			}
-		case bleUUID, _ := <-b.incomingBLEUUID:
-			peerIDb58 := <-b.incomingPeerID
-			for {
-				ci, ok := getConn(bleUUID)
-				if !ok {
-					rAddr, err := ma.NewMultiaddr("/ble/" + bleUUID)
-					if err != nil {
-						return nil, err
-					}
-					rID, err := peer.IDB58Decode(peerIDb58)
-					if err != nil {
-						return nil, err
-					}
-					c := NewConn(b.transport, b.transport.Host.ID(), rID, b.lAddr, rAddr, 1)
-					return &c, nil
-				}
-				return ci, nil
-			}
-		}
-	}
-}
-
-// Close TODO: stop advertising release object etc...
-func (b *Listener) Close() error {
-	// logger().Debug("BLEListener Close") @FIXME: Better log here
+func (l *Listener) Accept() (tpt.Conn, error) {
 	select {
-	case _, ok := <-b.closer:
-		if !ok {
-			return fmt.Errorf("ble listerner already closed")
+	case <-l.closer:
+		return nil, errors.New("listener accept failed: listener already closed")
+	case req := <-l.incomingConnReq:
+		if conn := getConn(req.remoteAddr); conn != nil {
+			return conn, nil
 		}
-	default:
-		b.closeNative()
-		defer close(b.closer)
+		return newConn(
+			l.transport,
+			l.transport.host.ID(),
+			req.remotePeerID,
+			l.localMa,
+			req.remoteMa,
+			server), nil
 	}
-	return nil
+}
+
+func (l *Listener) Close() error {
+	select {
+	case <-l.closer:
+		return errors.New("listener close failed: already closed")
+	default:
+		defer close(l.closer)
+		if !bledrv.StopBleDriver() {
+			return errors.New("listener close failed: can't stop BLE native driver")
+		}
+		return nil
+	}
 }

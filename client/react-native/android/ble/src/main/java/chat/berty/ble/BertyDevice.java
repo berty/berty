@@ -166,7 +166,12 @@ class BertyDevice {
                                             dGatt.requestMtu(MAXIMUM_MTU);
                                         }
 
-                                        Core.addToPeerStore(dPeerID, dMultiAddr);
+                                        if (Core.handlePeerFound(dPeerID, dMultiAddr)) {
+                                            Log.i(TAG, "asyncConnectionToDevice() peer handled successfully by golang with device: " + dDevice + ", caller: " + callerAndThread);
+                                        } else {
+                                            Log.e(TAG, "asyncConnectionToDevice() failed: golang can't handle new peer for device: " + dDevice + ", caller: " + callerAndThread);
+                                            disconnectFromDevice("Berty handshake failed, caller: " + callerAndThread);
+                                        }
                                     } else {
                                         Log.d(TAG, "asyncConnectionToDevice() Berty handshake failed with device: " + dDevice + ", caller: " + callerAndThread);
                                         disconnectFromDevice("Berty handshake failed, caller: " + callerAndThread);
@@ -184,7 +189,7 @@ class BertyDevice {
                                 Log.e(TAG, "asyncConnectionToDevice() reconnection failed: connection lost with previously connected device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID + ", caller: " + callerAndThread);
                                 // TODO: Check with sfroment if it's ok to use connClosed that way
                                 // TODO: Check with sfroment how libp2p handle a reconnection with a different mac address
-                                Core.connClosed(dMultiAddr);
+                                Core.connClosedWithDevice(dMultiAddr);
                             } else {
                                 Log.e(TAG, "asyncConnectionToDevice() failed: can't connect GATT with device: " + dDevice + ", caller: " + callerAndThread);
                             }

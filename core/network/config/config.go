@@ -64,7 +64,7 @@ var BootstrapIpfs = []string{
 
 var DefaultBind = map[string][]string{
 	"tcp":  {"/ip4/0.0.0.0/tcp/0", "/ip6/::/tcp/0"},
-	"ble":  {"/ble/00000000-0000-0000-0000-000000000000"},
+	"ble":  {ble.DefaultBind},
 	"quic": {"/ip4/0.0.0.0/udp/0/quic", "/ip6/::/udp/0/quic"},
 }
 
