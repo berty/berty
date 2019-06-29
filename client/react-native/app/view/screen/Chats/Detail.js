@@ -107,7 +107,7 @@ export class Message extends PureComponent {
               zIndex: 2,
             }}
           >
-            <Avatar
+            <Avatar.Contact
               size={22}
               data={contact}
               style={{ margin: 0, marginBottom: -4, marginRight: 4 }}

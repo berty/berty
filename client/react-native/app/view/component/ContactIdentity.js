@@ -117,7 +117,7 @@ class ContactIdentity extends React.Component {
     return (
       <>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <Avatar data={data} size={78} style={{ marginTop: 0 }} />
+          <Avatar.Contact data={data} size={78} style={{ marginTop: 0 }} />
         </View>
         <Text large color={colors.fakeBlack} center padding>
           {data.overrideDisplayName || data.displayName}

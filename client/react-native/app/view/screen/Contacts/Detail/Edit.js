@@ -40,7 +40,7 @@ export default class Edit extends PureComponent {
                     medium
                     onPress={this.onChoosePicture}
                   >
-                    <Avatar data={contact} size={78} />
+                    <Avatar.Contact data={contact} size={78} />
                   </Badge>
                 }
               />

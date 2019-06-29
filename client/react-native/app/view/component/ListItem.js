@@ -23,7 +23,7 @@ export default class ListItem extends PureComponent {
       >
         <Flex.Cols align="center">
           <Flex.Rows size={1} align="center">
-            <Avatar data={this.props} size={40} />
+            <Avatar.Contact data={this.props} size={40} />
           </Flex.Rows>
           <Flex.Rows
             size={7}

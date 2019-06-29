@@ -1,4 +1,4 @@
-export default {
+const colors = {
   transparent: 'transparent',
 
   white: '#FFFFFF',
@@ -72,3 +72,7 @@ export default {
 
   transparentGrey: 'rgba(161, 161, 178, 0.9)', // based on darkGrey
 }
+
+module.exports = colors
+
+export default colors

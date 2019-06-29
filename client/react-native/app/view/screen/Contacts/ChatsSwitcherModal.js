@@ -302,7 +302,7 @@ class ItemBase extends React.PureComponent {
         ]}
       >
         <Flex.Rows size={1} align="center">
-          <Avatar data={data} size={40} />
+          <Avatar.Conversation data={data} size={40} />
         </Flex.Rows>
         <Flex.Rows
           size={7}
