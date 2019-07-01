@@ -58,7 +58,7 @@ class EventDetails extends PureComponent {
 
     for (let key of Object.keys(data).filter(_ => _ !== 'store')) {
       let value = data[key] || 'null'
-      if (['createdAt', 'updatedAt'].some(_ => _ === key)) {
+      if (value.constructor && value.constructor.name === 'Timestamp') {
         value = formatDateTime(
           new Date(
             value.seconds * 1000 + (value.nanos ? value.nanos % 1000 : 0)

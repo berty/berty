@@ -285,21 +285,6 @@ func (m *ConversationManageMembersInput) Validate() error {
 	}
 	return nil
 }
-func (m *DevicePushConfigListOutput) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Edges - name:"edges" number:1 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.DevicePushConfig" json_name:"edges"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetEdges()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Edges")
-		}
-	}
-
-	return nil
-}
 func (m *DevicePushConfigCreateInput) Validate() error {
 	if m == nil {
 		return nil

@@ -133,7 +133,8 @@
                 },
                 "DevicePushConfigList": {
                   "requestType": "Void",
-                  "responseType": "DevicePushConfigListOutput"
+                  "responseType": "berty.entity.DevicePushConfig",
+                  "responseStream": true
                 },
                 "DevicePushConfigCreate": {
                   "requestType": "DevicePushConfigCreateInput",
@@ -516,15 +517,6 @@
                   "options": {
                     "(validate.min_items)": 1
                   }
-                }
-              }
-            },
-            "DevicePushConfigListOutput": {
-              "fields": {
-                "edges": {
-                  "rule": "repeated",
-                  "type": "entity.DevicePushConfig",
-                  "id": 1
                 }
               }
             },

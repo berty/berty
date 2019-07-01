@@ -122,6 +122,24 @@ func (c *Client) ConversationList(ctx context.Context, input *node.ConversationL
 	}
 	return entries, nil
 }
+func (c *Client) DevicePushConfigList(ctx context.Context, input *node.Void) ([]*entity.DevicePushConfig, error) {
+	stream, err := c.Node().DevicePushConfigList(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	var entries []*entity.DevicePushConfig
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
+}
 func (c *Client) LogStream(ctx context.Context, input *node.LogStreamInput) ([]*node.LogEntry, error) {
 	stream, err := c.Node().LogStream(ctx, input)
 	if err != nil {

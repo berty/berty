@@ -593,9 +593,14 @@ jobs:
           key: node-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
 
       - run:
-          name: bootstrap dependencies
+          name: build web app
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make deps
+          command: /tmp/retry -m 3 make build.web
+
+      - run:
+          name: build dashboard
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: /tmp/retry -m 3 make build.dashboard
 
       - save_cache:
           key: npm-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
@@ -606,16 +611,6 @@ jobs:
           key: node-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
           paths:
             - node_modules
-
-      - run:
-          name: build web app
-          working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make build.web
-
-      - run:
-          name: build dashboard
-          working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make build.dashboard
 
       - persist_to_workspace:
           root: ~/go/src/berty.tech/

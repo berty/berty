@@ -45,7 +45,7 @@ func init() {
 	registerUnary("berty.node.ConversationRead", NodeConversationRead)
 	registerUnary("berty.node.ConversationRemove", NodeConversationRemove)
 	registerUnary("berty.node.ConversationLastEvent", NodeConversationLastEvent)
-	registerUnary("berty.node.DevicePushConfigList", NodeDevicePushConfigList)
+	registerServerStream("berty.node.DevicePushConfigList", NodeDevicePushConfigList)
 	registerUnary("berty.node.DevicePushConfigCreate", NodeDevicePushConfigCreate)
 	registerUnary("berty.node.DevicePushConfigNativeRegister", NodeDevicePushConfigNativeRegister)
 	registerUnary("berty.node.DevicePushConfigNativeUnregister", NodeDevicePushConfigNativeUnregister)
@@ -703,25 +703,33 @@ func NodeConversationLastEvent(client *client.Client, ctx context.Context, jsonI
 	tracer.SetAnyField("trailer", trailer)
 	return ret, header, trailer, err
 }
-func NodeDevicePushConfigList(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
-	tracer := tracing.EnterFunc(ctx, string(jsonInput))
-	defer tracer.Finish()
-	ctx = tracer.Context()
-	tracer.SetTag("full-method", "berty.node.DevicePushConfigList")
+func NodeDevicePushConfigList(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "DevicePushConfigList"),
+		zap.String("input", string(jsonInput)),
+	)
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
-	var header, trailer metadata.MD
-	ret, err := client.Node().DevicePushConfigList(
-		ctx,
-		&typedInput,
-		grpc.Header(&header),
-		grpc.Trailer(&trailer),
-	)
-	tracer.SetAnyField("header", header)
-	tracer.SetAnyField("trailer", trailer)
-	return ret, header, trailer, err
+	stream, err := client.Node().DevicePushConfigList(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+	return streamProxy, nil
 }
 func NodeDevicePushConfigCreate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))

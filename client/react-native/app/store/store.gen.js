@@ -903,10 +903,25 @@ export class NodeServiceStore {
     return output
   }
 
-  devicePushConfigList = async (input = {}) => {
-    let output = await this.bridge.devicePushConfigList(input)
+  devicePushConfigListCache = {}
 
-    return output
+  devicePushConfigList = async (input = {}) => {
+    const transformStream = new Stream.Transform({
+      writableObjectMode: true,
+      readableObjectMode: true,
+      transform: (output, encoding, callback) => {
+        let entity = this.store.entity.devicePushConfig.get(output.id)
+        entity = new DevicePushConfigEntityStore(this.store, output)
+        this.store.entity.devicePushConfig.set(output.id, entity)
+        output = entity
+
+        callback(null, output)
+      },
+    })
+    const stream = await this.bridge.devicePushConfigList(input)
+
+    stream.pipe(transformStream)
+    return transformStream
   }
 
   devicePushConfigCreate = async (input = {}) => {

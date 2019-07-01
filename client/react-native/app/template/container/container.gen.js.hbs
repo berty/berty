@@ -78,13 +78,14 @@ import { Component } from 'react'
       @withStoreContext
       export class ServiceNode extends Component {
         {{#each methods}}
-          {{#if responseStream}}
           static {{name}} = {{name}}ServiceNode
-         {{/if}}
         {{/each}}
 
         render () {
-          return context => this.props.children(context.node)
+          const { context } = this.props
+          return (
+            this.props.children(context)
+          )
         }
       }
     {{/with}}

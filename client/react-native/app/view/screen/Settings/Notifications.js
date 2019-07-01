@@ -1,4 +1,4 @@
-import { Header, Menu } from '@berty/component'
+import { Header, Menu, Loader } from '@berty/component'
 import {
   enableNativeNotifications,
   disableNativeNotifications,
@@ -6,10 +6,10 @@ import {
   enableMQTTNotifications,
   disableMQTTNotifications,
 } from '@berty/common/helpers/notifications'
-import { withBridgeContext } from '@berty/bridge/Context'
+import { withStoreContext } from '@berty/store/context'
+import { Store } from '@berty/container'
 import React, { PureComponent } from 'react'
 import * as enums from '@berty/common/enums.gen'
-
 import { Switch, Platform, NativeModules, Alert } from 'react-native'
 import { showMessage } from 'react-native-flash-message'
 import { withNamespaces } from 'react-i18next'
@@ -30,6 +30,7 @@ export const notificationStatus = {
 }
 
 @withNamespaces()
+@withStoreContext
 export class Notifications extends PureComponent {
   getCurrentPushConfigs = () =>
     this.props.data.filter(elt => elt.pushType === getNativePushType())
@@ -57,7 +58,7 @@ export class Notifications extends PureComponent {
         notificationsPreviews: this.state.notificationsPreviews,
       }
 
-      await this.props.context.mutations.configUpdate(config)
+      await this.props.context.node.service.configUpdate(config)
     } catch (e) {
       showMessage({
         message: String(e),
@@ -235,7 +236,7 @@ export class Notifications extends PureComponent {
   }
 }
 
-@withBridgeContext
+@withStoreContext
 class NotificationWrapper extends React.PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -248,43 +249,27 @@ class NotificationWrapper extends React.PureComponent {
   })
 
   render() {
-    return null
-    // @FIXME: destroyed by refactor
-    // const props = this.props
-    // return (
-    //   <QueryReducer
-    //     query={context.queries.DevicePushConfigList.graphql}
-    //     variables={merge([
-    //       context.queries.DevicePushConfigList.defaultVariables,
-    //     ])}
-    //   >
-    //     {(state, retry) => {
-    //       switch (state.type) {
-    //         default:
-    //         case state.loading:
-    //           return (
-    //             <Flex.Rows align='center'>
-    //               <Flex.Cols align='center'>
-    //                 <ActivityIndicator size='large' />
-    //               </Flex.Cols>
-    //             </Flex.Rows>
-    //           )
-    //         case state.success:
-    //           return (
-    //             <Notifications
-    //               data={state.data.DevicePushConfigList.edges}
-    //               context={context}
-    //               refresh={retry}
-    //               {...props}
-    //             />
-    //           )
-    //         case state.error:
-    //           setTimeout(() => retry(), 1000)
-    //           return null
-    //       }
-    //     }}
-    //   </QueryReducer>
-    // )
+    return (
+      <Store.Entity.Config>
+        {config =>
+          config ? (
+            <Store.Node.Service.DevicePushConfigList
+              response={(queue, data) => {
+                queue.push(data)
+                return queue
+              }}
+              fallback={<Loader />}
+            >
+              {({ queue, retry }) => (
+                <Notifications data={queue} refresh={retry} config={config} />
+              )}
+            </Store.Node.Service.DevicePushConfigList>
+          ) : (
+            <Loader />
+          )
+        }
+      </Store.Entity.Config>
+    )
   }
 }
 

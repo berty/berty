@@ -83,7 +83,7 @@ service Service {
   rpc ConversationRemove (berty.entity.Conversation) returns (berty.entity.Conversation);
   rpc ConversationLastEvent (berty.entity.Conversation) returns (berty.entity.Event);
 
-  rpc DevicePushConfigList (Void) returns (DevicePushConfigListOutput);
+  rpc DevicePushConfigList (Void) returns (stream berty.entity.DevicePushConfig);
   rpc DevicePushConfigCreate (DevicePushConfigCreateInput) returns (berty.entity.DevicePushConfig);
   rpc DevicePushConfigNativeRegister (Void) returns (Void);
   rpc DevicePushConfigNativeUnregister (Void) returns (Void);
@@ -262,10 +262,6 @@ message ConversationCreateInput {
 message ConversationManageMembersInput {
   berty.entity.Conversation conversation = 1 [(validate.required) = true, (validate.skip) = false];
   repeated berty.entity.Contact contacts = 2 [(validate.min_items) = 1];
-}
-
-message DevicePushConfigListOutput {
-  repeated entity.DevicePushConfig edges = 1;
 }
 
 message DevicePushConfigCreateInput {

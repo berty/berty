@@ -379,7 +379,7 @@ export class ConversationLastEventServiceNode extends Unary {
 }
 
 @withStoreContext
-export class DevicePushConfigListServiceNode extends Unary {
+export class DevicePushConfigListServiceNode extends Stream {
   get method() {
     return this.props.context.node.service.devicePushConfigList
   }
@@ -583,20 +583,68 @@ export class Libp2PPingServiceNode extends Unary {
 
 @withStoreContext
 export class ServiceNode extends Component {
+  static ID = IDServiceNode
   static CommitLogStream = CommitLogStreamServiceNode
   static EventStream = EventStreamServiceNode
   static EventList = EventListServiceNode
   static EventUnseen = EventUnseenServiceNode
+  static GetEvent = GetEventServiceNode
+  static EventSeen = EventSeenServiceNode
+  static EventRetry = EventRetryServiceNode
+  static Config = ConfigServiceNode
+  static ConfigPublic = ConfigPublicServiceNode
+  static ConfigUpdate = ConfigUpdateServiceNode
+  static ContactRequest = ContactRequestServiceNode
+  static ContactAcceptRequest = ContactAcceptRequestServiceNode
+  static ContactRemove = ContactRemoveServiceNode
+  static ContactUpdate = ContactUpdateServiceNode
   static ContactList = ContactListServiceNode
+  static Contact = ContactServiceNode
+  static ContactCheckPublicKey = ContactCheckPublicKeyServiceNode
+  static ConversationCreate = ConversationCreateServiceNode
+  static ConversationUpdate = ConversationUpdateServiceNode
   static ConversationList = ConversationListServiceNode
+  static ConversationInvite = ConversationInviteServiceNode
+  static ConversationExclude = ConversationExcludeServiceNode
+  static ConversationAddMessage = ConversationAddMessageServiceNode
+  static Conversation = ConversationServiceNode
+  static ConversationMember = ConversationMemberServiceNode
+  static ConversationRead = ConversationReadServiceNode
+  static ConversationRemove = ConversationRemoveServiceNode
+  static ConversationLastEvent = ConversationLastEventServiceNode
+  static DevicePushConfigList = DevicePushConfigListServiceNode
+  static DevicePushConfigCreate = DevicePushConfigCreateServiceNode
+  static DevicePushConfigNativeRegister = DevicePushConfigNativeRegisterServiceNode
+  static DevicePushConfigNativeUnregister = DevicePushConfigNativeUnregisterServiceNode
+  static DevicePushConfigRemove = DevicePushConfigRemoveServiceNode
+  static DevicePushConfigUpdate = DevicePushConfigUpdateServiceNode
+  static HandleEvent = HandleEventServiceNode
+  static GenerateFakeData = GenerateFakeDataServiceNode
+  static RunIntegrationTests = RunIntegrationTestsServiceNode
+  static DebugPing = DebugPingServiceNode
+  static DebugRequeueEvent = DebugRequeueEventServiceNode
+  static DebugRequeueAll = DebugRequeueAllServiceNode
+  static DeviceInfos = DeviceInfosServiceNode
+  static AppVersion = AppVersionServiceNode
+  static Peers = PeersServiceNode
+  static Protocols = ProtocolsServiceNode
   static LogStream = LogStreamServiceNode
   static LogfileList = LogfileListServiceNode
   static LogfileRead = LogfileReadServiceNode
+  static TestLogBackgroundError = TestLogBackgroundErrorServiceNode
+  static TestLogBackgroundWarn = TestLogBackgroundWarnServiceNode
+  static TestLogBackgroundDebug = TestLogBackgroundDebugServiceNode
+  static TestPanic = TestPanicServiceNode
+  static TestError = TestErrorServiceNode
   static MonitorBandwidth = MonitorBandwidthServiceNode
   static MonitorPeers = MonitorPeersServiceNode
+  static GetListenAddrs = GetListenAddrsServiceNode
+  static GetListenInterfaceAddrs = GetListenInterfaceAddrsServiceNode
+  static Libp2PPing = Libp2PPingServiceNode
 
   render() {
-    return context => this.props.children(context.node)
+    const { context } = this.props
+    return this.props.children(context)
   }
 }
 

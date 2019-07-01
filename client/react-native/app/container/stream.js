@@ -1,5 +1,5 @@
 import { Mutex } from 'async-mutex'
-import { debounce, throttle } from 'throttle-debounce'
+import { debounce } from 'throttle-debounce'
 import { Component } from 'react'
 import objectHash from 'object-hash'
 import { deepFilterEqual, deepEqual } from './helper'
@@ -11,11 +11,11 @@ export class Stream extends Component {
   }
 
   get request() {
-    return this.props.request
+    return this.props.request || {}
   }
 
   get response() {
-    return this.props.response
+    return this.props.response ? this.props.response : (queue, data) => [data]
   }
 
   static defaultProps = {
@@ -28,9 +28,7 @@ export class Stream extends Component {
     children: (data, index) => null,
   }
 
-  state = {
-    queue: null,
-  }
+  queue = []
 
   componentDidMount() {
     this.invoke()
@@ -39,23 +37,37 @@ export class Stream extends Component {
   componentWillUnmount() {}
 
   invoke = async () => {
+    this.loading = true
     const stream = await this.method(this.request)
-    const queue = []
 
     stream.on('data', response => {
-      this.setStateDebounce({ queue: this.props.response(queue, response) })
+      this.setStateDebounce({
+        queue: this.response(this.queue, response),
+      })
+    })
+    stream.on('end', () => {
+      this.loading = false
+      this.forceUpdate()
     })
   }
 
-  setStateDebounce = debounce(50, this.setState)
+  setStateDebounce = debounce(16, this.setState)
 
-  setStateDebounce = throttle(50, this.setState)
+  retry = () => {
+    this.queue = []
+    this.forceUpdate(this.invoke)
+  }
 
   render() {
-    if (this.state.queue == null) {
+    if (this.props.fallback && this.loading && this.queue.length === 0) {
       return this.props.fallback
     }
-    return this.state.queue.map(this.props.children)
+    return this.props.children({
+      queue: this.queue,
+      count: this.queue.length,
+      loading: this.loading,
+      retry: this.retry,
+    })
   }
 }
 

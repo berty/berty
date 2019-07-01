@@ -1,9 +1,8 @@
-import { debounce } from 'throttle-debounce'
-
 import { Component } from 'react'
 
 export class Unary extends Component {
   state = {
+    loading: true,
     response: null,
   }
 
@@ -11,19 +10,26 @@ export class Unary extends Component {
     this.invoke()
   }
 
-  componentDidReceiveProps() {
-    this.invoke()
+  get request() {
+    return this.props.request || {}
   }
 
-  invoke = debounce(100, async () => {
-    const response = await this.service(this.request)
-    this.setState({ response })
-  })
+  invoke = () =>
+    this.setState({ loading: true }, async () =>
+      this.setState({
+        response: await this.method(this.request),
+        loading: false,
+      })
+    )
 
   render() {
-    if (this.state.response == null) {
+    if (
+      this.props.fallback &&
+      this.state.loading &&
+      this.state.response == null
+    ) {
       return this.props.fallback
     }
-    return this.props.children(this.state.response)
+    return this.props.children({ ...this.state, retry: this.invoke })
   }
 }

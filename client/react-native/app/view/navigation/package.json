@@ -11,6 +11,7 @@
     "@berty/bridge": "^0.0.1",
     "@berty/common": "^0.0.1",
     "@berty/component": "^0.0.1",
+    "@berty/container": "^0.0.1",
     "@berty/screen": "^0.0.1",
     "@berty/store": "^0.0.1",
     "@berty/update": "^0.0.1",
