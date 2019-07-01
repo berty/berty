@@ -8,7 +8,9 @@ import ActionsUnknown from '@berty/component/ContactIdentityActions/ActionsUnkno
 import ActionsReceived from '@berty/component/ContactIdentityActions/ActionsReceived'
 import ActionsSent from '@berty/component/ContactIdentityActions/ActionsSent'
 import { withNamespaces } from 'react-i18next'
+import { withStoreContext } from '@berty/store/context'
 
+@withStoreContext
 @withNamespaces()
 @withNavigation
 export class Item extends PureComponent {
@@ -26,7 +28,7 @@ export class Item extends PureComponent {
   }
 
   render() {
-    const { data, ignoreMyself, t } = this.props
+    const { context, data, ignoreMyself, t } = this.props
     const { overrideDisplayName, displayName, status } = data
 
     if (ignoreMyself && status === enums.BertyEntityContactInputStatus.Myself) {
@@ -55,13 +57,13 @@ export class Item extends PureComponent {
           </Flex.Rows>
         </Flex.Cols>
         {status === enums.BertyEntityContactInputStatus.Unknown && (
-          <ActionsUnknown data={data} />
+          <ActionsUnknown data={data} context={context} />
         )}
         {status === enums.BertyEntityContactInputStatus.RequestedMe && (
-          <ActionsReceived data={data} />
+          <ActionsReceived data={data} context={context} />
         )}
         {status === enums.BertyEntityContactInputStatus.IsRequested && (
-          <ActionsSent data={data} />
+          <ActionsSent data={data} context={context} />
         )}
       </Flex.Cols>
     )

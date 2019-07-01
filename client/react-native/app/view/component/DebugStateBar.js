@@ -5,7 +5,6 @@ import Text from './Text'
 import { View, Platform } from 'react-native'
 import Icon from './Icon'
 import NavigationService from '@berty/common/helpers/NavigationService'
-import { withStoreContext } from '@berty/store/context'
 import promiseWithTimeout from '@berty/common/helpers/promiseWithTimeout'
 
 const daemonStateValues = {
@@ -14,7 +13,6 @@ const daemonStateValues = {
   connected: 2,
 }
 
-@withStoreContext
 class DebugStateBar extends PureComponent {
   constructor(props) {
     super(props)

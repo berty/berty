@@ -8,15 +8,17 @@ import {
 } from '@berty/component'
 import { withNavigation } from 'react-navigation'
 import { Store } from '@berty/container'
+import { withStoreContext } from '@berty/store/context'
 
 const modalWidth = 320
 
+@withStoreContext
 @withNavigation
 class ContactCardModal extends React.Component {
   static router = ContactIdentity.router
 
   render() {
-    const { navigation } = this.props
+    const { context, navigation } = this.props
     const navigationData = {
       id: navigation.getParam('id'),
       displayName: navigation.getParam('displayName'),
@@ -36,7 +38,7 @@ class ContactCardModal extends React.Component {
                 <ContactIdentityActions data={data} modalWidth={modalWidth} />
               }
             >
-              <ContactIdentity data={data} />
+              <ContactIdentity data={data} context={context} />
             </ModalScreen>
           </View>
         )}

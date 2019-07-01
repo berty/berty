@@ -39,9 +39,10 @@ export default class App extends PureComponent {
         service: null,
       },
       setContext: bridge => {
+        const store = new Store(bridge)
         this.setState({
-          store: new Store(bridge),
-          debugBar: <DebugStateBar />,
+          store,
+          debugBar: <DebugStateBar context={store} />,
         })
       },
     }),
