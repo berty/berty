@@ -6,7 +6,7 @@ IOS := $(ROOT)/ios
 ANDROID := $(ROOT)/android
 DESKTOP := $(ROOT)/desktop
 
-LERNA ?= ./node_modules/.bin/lerna
+LERNA ?= ./node_modules/.bin/lerna --reject-cycles
 LERNA_RUN := $(LERNA) run --stream
 # Fastlane build related
 
