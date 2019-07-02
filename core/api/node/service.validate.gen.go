@@ -15,6 +15,14 @@ var (
 	_ = errorcodes.IsSubCode
 )
 
+func (m *Badge) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// handling field: Value - name:"value" number:1 label:LABEL_OPTIONAL type:TYPE_INT32 json_name:"value"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	return nil
+}
 func (m *TestErrorInput) Validate() error {
 	if m == nil {
 		return nil

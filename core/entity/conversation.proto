@@ -21,6 +21,7 @@ message Conversation {
   google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp read_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp wrote_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp seen_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   //
   // metadata
@@ -57,6 +58,7 @@ message ConversationMember {
   google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp read_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp wrote_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp seen_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   enum Status {
     Unknown = 0;

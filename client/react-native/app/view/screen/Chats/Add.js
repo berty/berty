@@ -175,9 +175,10 @@ class ListScreen extends Component {
           })}
           fallback={<Loader />}
         >
-          {({ queue, count, retry, loading, paginate }) => (
+          {(queue, paginate, retry, { count, loading, last }) => (
             <OptimizedFlatList
               data={queue}
+              extraData={last}
               onEndReached={paginate}
               getItemLayout={this.getItemLayout}
               onRefresh={retry}

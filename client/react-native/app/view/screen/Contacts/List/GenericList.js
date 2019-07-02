@@ -5,15 +5,21 @@ import {
   InteractionManager,
   TouchableOpacity,
   Platform,
-  FlatList as FlatListWeb,
 } from 'react-native'
-import { FlatList } from 'react-navigation'
-import { Screen, Icon, EmptyList, Loader } from '@berty/component'
+import {
+  OptimizedFlatList,
+  Screen,
+  Icon,
+  EmptyList,
+  Loader,
+} from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { Item } from './Item'
 import I18n from 'i18next'
 import { Store } from '@berty/container'
 import { withStoreContext } from '@berty/store/context'
+import { NavigationEvents, withNavigation } from 'react-navigation'
+import tDate from '@berty/common/helpers/timestampDate'
 
 class CondComponent extends PureComponent {
   state = {
@@ -69,6 +75,153 @@ class CondComponent extends PureComponent {
   }
 }
 
+@withNavigation
+@withStoreContext
+class List extends React.Component {
+  state = {
+    focus: this.props.navigation.routeName === 'mutuals',
+  }
+
+  componentDidMount() {
+    this.onViewableItemsChanged()
+  }
+
+  renderItem = (
+    { item: data, index },
+    { onPress, ignoreMyself } = this.props
+  ) => (
+    <Item
+      data={data}
+      context={this.props.context}
+      onPress={onPress}
+      ignoreMyself={ignoreMyself}
+    />
+  )
+
+  static ITEM_HEIGHT = (() => {
+    switch (Platform.OS) {
+      case 'web':
+        // eslint-disable-next-line
+        return __DEV__ ? 80.5 : 72
+      case 'android':
+      case 'ios':
+      default:
+        return 72
+    }
+  })()
+
+  getItemLayout = (data, index) => ({
+    length: List.ITEM_HEIGHT,
+    offset: List.ITEM_HEIGHT * index,
+    index,
+  })
+
+  keyExtractor = item => item.id
+
+  shouldItemUpdate = (props, nextProps) => {
+    if (props.data.status !== nextProps.data.status) {
+      return true
+    }
+    return false
+  }
+
+  lastIndex = null
+
+  onScroll = paginate => {
+    return e => {
+      if (this.lastIndex) {
+        if (
+          e.nativeEvent.contentOffset.y > this.lastIndex &&
+          e.nativeEvent.contentOffset.y >
+            e.nativeEvent.contentSize.height * 0.666
+        ) {
+          paginate()
+        }
+      }
+      this.lastIndex = e.nativeEvent.contentOffset.y
+    }
+  }
+
+  lastViewableItemsChanged = () => {}
+  onViewableItemsChanged = _ => {
+    if (
+      ['mutuals', 'received'].some(
+        _ => _ === this.props.navigation.state.routeName
+      )
+    ) {
+      this.lastViewableItemsChanged = () =>
+        _.changed.forEach(
+          ({ item: { id, status, seenAt, mutatedAt }, isViewable }) => {
+            if (
+              isViewable &&
+              status === 4 &&
+              tDate(mutatedAt).getTime() > tDate(seenAt).getTime()
+            ) {
+              this.props.context.node.service.contactSeen({
+                id,
+              })
+            }
+          }
+        )
+    }
+    if (this.state.focus) {
+      this.lastViewableItemsChanged()
+    }
+  }
+
+  render() {
+    const {
+      queue,
+      paginate,
+      retry,
+      infos: { count, cursor, loading },
+    } = this.props
+
+    return (
+      <>
+        <NavigationEvents
+          onWillFocus={payload => {
+            this.setState({ focus: true }, this.lastViewableItemsChanged)
+          }}
+          onWillBlur={payload => {
+            this.setState({ focus: false })
+          }}
+        />
+        {count ? (
+          <>
+            <OptimizedFlatList
+              windowSize={11}
+              initialNumToRender={50}
+              maxToRenderPerBatch={5}
+              updateCellsBatchingPeriod={64}
+              onScroll={this.onScroll(paginate)}
+              scrollEventThrottle={128}
+              onEndReached={this.paginate}
+              data={queue}
+              getItemLayout={this.getItemLayout}
+              keyExtractor={this.keyExtractor}
+              extraData={cursor}
+              renderItem={this.renderItem}
+              refreshing={loading}
+              onRefresh={Platform.OS !== 'web' && retry}
+              onViewableItemsChanged={this.onViewableItemsChanged}
+            />
+            {count < 5 ? <CondComponent onPress={this.props.onPress} /> : null}
+          </>
+        ) : (
+          <EmptyList
+            source={require('@berty/common/static/img/empty-contact.png')}
+            text={I18n.t('contacts.empty')}
+            icon={'user-plus'}
+            btnText={I18n.t('contacts.add.title')}
+            onPress={this.props.onPress}
+          />
+        )}
+      </>
+    )
+  }
+}
+
 @withStoreContext
 class GenericList extends React.Component {
   state = {
@@ -100,99 +253,6 @@ class GenericList extends React.Component {
     })
   }
 
-  renderItem = (
-    { item: data, index },
-    { onPress, ignoreMyself } = this.props
-  ) => (
-    <Item
-      data={data}
-      context={this.props.context}
-      onPress={onPress}
-      ignoreMyself={ignoreMyself}
-    />
-  )
-
-  static ITEM_HEIGHT = (() => {
-    switch (Platform.OS) {
-      case 'web':
-        // eslint-disable-next-line
-        return __DEV__ ? 80.5 : 72
-      case 'android':
-      case 'ios':
-      default:
-        return 72
-    }
-  })()
-
-  getItemLayout = (data, index) => ({
-    length: GenericList.ITEM_HEIGHT,
-    offset: GenericList.ITEM_HEIGHT * index,
-    index,
-  })
-
-  keyExtractor = item => item.id
-
-  shouldItemUpdate = (props, nextProps) => {
-    if (props.data.status !== nextProps.data.status) {
-      return true
-    }
-    return false
-  }
-
-  static List = Platform.OS === 'web' ? FlatListWeb : FlatList
-
-  lastIndex = null
-
-  onScroll = paginate => {
-    return e => {
-      if (this.lastIndex) {
-        if (
-          e.nativeEvent.contentOffset.y > this.lastIndex &&
-          e.nativeEvent.contentOffset.y >
-            e.nativeEvent.contentSize.height * 0.666
-        ) {
-          paginate()
-        }
-      }
-      this.lastIndex = e.nativeEvent.contentOffset.y
-    }
-  }
-
-  renderList = ({ queue, paginate, count, cursor, loading, retry }) => {
-    if (count) {
-      return (
-        <>
-          <GenericList.List
-            windowSize={11}
-            initialNumToRender={50}
-            maxToRenderPerBatch={5}
-            updateCellsBatchingPeriod={64}
-            onScroll={this.onScroll(paginate)}
-            scrollEventThrottle={128}
-            onEndReached={this.paginate}
-            data={queue}
-            getItemLayout={this.getItemLayout}
-            keyExtractor={this.keyExtractor}
-            extraData={count}
-            renderItem={this.renderItem}
-            refreshing={count === 0 && loading}
-            onRefresh={Platform.OS !== 'web' && retry}
-          />
-          {count < 5 ? <CondComponent onPress={this.props.onPress} /> : null}
-        </>
-      )
-    }
-    return (
-      <EmptyList
-        source={require('@berty/common/static/img/empty-contact.png')}
-        text={I18n.t('contacts.empty')}
-        icon={'user-plus'}
-        btnText={I18n.t('contacts.add.title')}
-        onPress={this.props.onPress}
-      />
-    )
-  }
-
   render() {
     const { didFinishInitialAnimation } = this.state
     if (!didFinishInitialAnimation) {
@@ -211,7 +271,14 @@ class GenericList extends React.Component {
           })}
           fallback={<Loader />}
         >
-          {this.renderList}
+          {(queue, paginate, retry, infos) => (
+            <List
+              queue={queue}
+              paginate={paginate}
+              retry={retry}
+              infos={infos}
+            />
+          )}
         </Store.Node.Service.ContactList.Pagination>
       </Screen>
     )

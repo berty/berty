@@ -291,6 +291,13 @@ export class ContactCheckPublicKeyServiceNode extends Unary {
 }
 
 @withStoreContext
+export class ContactListBadgeServiceNode extends Unary {
+  get method() {
+    return this.props.context.node.service.contactListBadge
+  }
+}
+
+@withStoreContext
 export class ConversationCreateServiceNode extends Unary {
   get method() {
     return this.props.context.node.service.conversationCreate
@@ -375,6 +382,20 @@ export class ConversationRemoveServiceNode extends Unary {
 export class ConversationLastEventServiceNode extends Unary {
   get method() {
     return this.props.context.node.service.conversationLastEvent
+  }
+}
+
+@withStoreContext
+export class ConversationListBadgeServiceNode extends Unary {
+  get method() {
+    return this.props.context.node.service.conversationListBadge
+  }
+}
+
+@withStoreContext
+export class ConversationBadgeServiceNode extends Unary {
+  get method() {
+    return this.props.context.node.service.conversationBadge
   }
 }
 
@@ -601,6 +622,7 @@ export class ServiceNode extends Component {
   static ContactList = ContactListServiceNode
   static Contact = ContactServiceNode
   static ContactCheckPublicKey = ContactCheckPublicKeyServiceNode
+  static ContactListBadge = ContactListBadgeServiceNode
   static ConversationCreate = ConversationCreateServiceNode
   static ConversationUpdate = ConversationUpdateServiceNode
   static ConversationList = ConversationListServiceNode
@@ -612,6 +634,8 @@ export class ServiceNode extends Component {
   static ConversationRead = ConversationReadServiceNode
   static ConversationRemove = ConversationRemoveServiceNode
   static ConversationLastEvent = ConversationLastEventServiceNode
+  static ConversationListBadge = ConversationListBadgeServiceNode
+  static ConversationBadge = ConversationBadgeServiceNode
   static DevicePushConfigList = DevicePushConfigListServiceNode
   static DevicePushConfigCreate = DevicePushConfigCreateServiceNode
   static DevicePushConfigNativeRegister = DevicePushConfigNativeRegisterServiceNode

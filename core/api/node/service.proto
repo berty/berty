@@ -44,7 +44,7 @@ service Service {
 
   rpc EventUnseen (EventListInput) returns (stream berty.entity.Event);
   rpc GetEvent (berty.entity.Event) returns (berty.entity.Event);
-  rpc EventSeen (berty.entity.Event) returns (berty.entity.Event);
+  rpc EventSeen (berty.entity.Event) returns (Void);
   rpc EventRetry (berty.entity.Event) returns (berty.entity.Event);
 
   //
@@ -66,6 +66,7 @@ service Service {
   rpc ContactList (ContactListInput) returns (stream berty.entity.Contact);
   rpc Contact (berty.entity.Contact) returns (berty.entity.Contact);
   rpc ContactCheckPublicKey (berty.entity.Contact) returns (Bool);
+  rpc ContactListBadge (Void) returns (Badge);
 
   //
   // Conversations
@@ -82,6 +83,8 @@ service Service {
   rpc ConversationRead (berty.entity.Conversation) returns (berty.entity.Conversation);
   rpc ConversationRemove (berty.entity.Conversation) returns (berty.entity.Conversation);
   rpc ConversationLastEvent (berty.entity.Conversation) returns (berty.entity.Event);
+  rpc ConversationListBadge (Void) returns (Badge);
+  rpc ConversationBadge (berty.entity.Conversation) returns (Badge);
 
   rpc DevicePushConfigList (Void) returns (stream berty.entity.DevicePushConfig);
   rpc DevicePushConfigCreate (DevicePushConfigCreateInput) returns (berty.entity.DevicePushConfig);
@@ -149,6 +152,10 @@ service Service {
   rpc GetListenInterfaceAddrs (Void) returns (berty.network.metric.ListAddrs);
 
   rpc Libp2PPing (berty.network.metric.PingReq) returns (Bool);
+}
+
+message Badge {
+  int32 value = 1;
 }
 
 message TestErrorInput {

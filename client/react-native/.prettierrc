@@ -1,4 +1,4 @@
 semi: false
 singleQuote: true
 tabWidth: 2
-trailingComma: true
+trailingComma: es5

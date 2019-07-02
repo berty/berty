@@ -57,6 +57,14 @@ func (m *Conversation) Validate() error {
 		}
 	}
 
+	// handling field: SeenAt - name:"seen_at" number:6 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".google.protobuf.Timestamp" json_name:"seenAt" options:<65001:0 65010:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	if v, ok := interface{}(m.GetSeenAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return errors.Wrap(err, "embedded message verification failed: SeenAt")
+		}
+	}
+
 	// handling field: Title - name:"title" number:20 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"title"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: Topic - name:"topic" number:21 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"topic"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
@@ -114,6 +122,14 @@ func (m *ConversationMember) Validate() error {
 	if v, ok := interface{}(m.GetWroteAt()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return errors.Wrap(err, "embedded message verification failed: WroteAt")
+		}
+	}
+
+	// handling field: SeenAt - name:"seen_at" number:6 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".google.protobuf.Timestamp" json_name:"seenAt" options:<65001:0 65010:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	if v, ok := interface{}(m.GetSeenAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return errors.Wrap(err, "embedded message verification failed: SeenAt")
 		}
 	}
 

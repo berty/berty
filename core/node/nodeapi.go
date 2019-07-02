@@ -154,7 +154,7 @@ func (n *Node) EventRetry(ctx context.Context, input *entity.Event) (*entity.Eve
 	return event, nil
 }
 
-func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Event, error) {
+func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*node.Void, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -164,33 +164,17 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 	return n.eventSeen(ctx, input)
 }
 
-func (n *Node) eventSeen(ctx context.Context, input *entity.Event) (*entity.Event, error) {
+func (n *Node) eventSeen(ctx context.Context, input *entity.Event) (*node.Void, error) {
 	sql := n.sql(ctx)
 
-	// get event
-	event, err := entity.GetEventByID(sql, input.ID)
+	// find events
+	events := []*entity.Event{}
+	err := sql.Where(input).Find(&events).Error
 	if err != nil {
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
 	// set same type of event as seen
-	events := []*entity.Event{}
-	query := sql.
-		Where(&entity.Event{
-			SourceContactID: event.SourceContactID,
-			Direction:       entity.Event_Incoming,
-			TargetType:      event.TargetType,
-			TargetAddr:      event.TargetAddr,
-		}).
-		Where(
-			"received_at <= :time",
-			event.ReceivedAt,
-		).
-		Order("received_at desc")
-	if err := query.Find(&events).Error; err != nil {
-		return nil, err
-	}
-
 	var errLoop error
 	seenAt := time.Now().UTC()
 	for _, e := range events {
@@ -206,11 +190,7 @@ func (n *Node) eventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 		return nil, errLoop
 	}
 
-	event, err = entity.GetEventByID(sql, input.ID)
-	if err != nil {
-		return nil, err
-	}
-	return event, nil
+	return &node.Void{}, nil
 }
 
 // GetEvent implements berty.node.GetEvent
@@ -474,7 +454,10 @@ func (n *Node) Contact(ctx context.Context, input *entity.Contact) (*entity.Cont
 
 	sql := n.sql(ctx)
 	output := &entity.Contact{}
-	if err := sql.Where(input).First(output).Error; err != nil {
+	if err := sql.Where(&entity.Contact{
+		ID:     input.ID,
+		Status: input.Status,
+	}).First(output).Error; err != nil {
 		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 

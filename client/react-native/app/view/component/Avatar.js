@@ -14,6 +14,7 @@ import {
 } from '@berty/common/constants/colors'
 import { fingerprint } from '@berty/common/helpers/fingerprint'
 import { conversation } from '@berty/common/helpers/entity'
+import { Store } from '@berty/container'
 
 // From https://fluentcolors.com/
 const pastels = [
@@ -77,7 +78,11 @@ const Avatar = ({
 }
 
 export const ContactAvatar = ({ data = {}, ...props }) => (
-  <Avatar id={data.id} name={data.displayName} {...props} />
+  <Store.Entity.Contact {...data}>
+    {({ id, displayName } = data) => (
+      <Avatar id={id} name={displayName || id} {...props} />
+    )}
+  </Store.Entity.Contact>
 )
 Avatar.Contact = ContactAvatar
 

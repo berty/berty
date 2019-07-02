@@ -38,7 +38,7 @@ RN_PATH ?= ../client/react-native
 .PHONY: help
 help:
 	@echo "Core commands:"
-	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | grep -v / | sed 's/^/  $(HELP_MSG_PREFIX)make /'
+	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | grep -v / | sed 's/^/	$(HELP_MSG_PREFIX)make /'
 
 .PHONY: callvis
 callvis:
@@ -68,7 +68,7 @@ $(BIN): generate $(OUR_SOURCES)
 .PHONY: testwatch
 testwatch:
 	@if ! command -v watchman &>/dev/null; then brew install watchman; fi
-	while true; do clear; $(BUILD_ENV) $(TEST_CMD); sleep .3; watchman-wait . -p "**/*.go";  done
+	while true; do clear; $(BUILD_ENV) $(TEST_CMD); sleep .3; watchman-wait . -p "**/*.go";	done
 
 .PHONY: test
 test: generate

@@ -1,5 +1,5 @@
-export const deepFilterEqual = (a, b, opts = { exclude: [] }) => {
-  const { exclude } = opts
+export const deepFilterEqual = (a, b, opts = {}) => {
+  const { exclude = [], noPrivate = true } = opts
   if (!a) {
     return true
   }
@@ -13,6 +13,7 @@ export const deepFilterEqual = (a, b, opts = { exclude: [] }) => {
       }
       return Object.keys(a).every(
         k =>
+          (noPrivate && k[0] === '_') ||
           exclude.some(excludeKey => excludeKey === k) ||
           deepFilterEqual(a[k], b[k])
       )
@@ -21,8 +22,8 @@ export const deepFilterEqual = (a, b, opts = { exclude: [] }) => {
   }
 }
 
-export const deepEqual = (a, b, opts = { exclude: [] }) => {
-  const { exclude } = opts
+export const deepEqual = (a, b, opts = {}) => {
+  const { exclude = [], noPrivate = true } = opts
   if (typeof a !== typeof b) {
     return false
   }
@@ -39,6 +40,7 @@ export const deepEqual = (a, b, opts = { exclude: [] }) => {
       }
       return Object.keys(a).every(
         k =>
+          (noPrivate && k[0] === '_') ||
           exclude.some(excludeKey => excludeKey === k) ||
           deepFilterEqual(a[k], b[k])
       )

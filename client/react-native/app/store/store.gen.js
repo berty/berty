@@ -4,10 +4,10 @@ import objectHash from 'object-hash'
 import Mutex from 'await-mutex'
 
 export class ConfigEntityStore {
-  store = null
+  _store = null
 
   constructor(store, data) {
-    this.store = store
+    this._store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
@@ -15,21 +15,21 @@ export class ConfigEntityStore {
   createdAt = null
   updatedAt = null
   get myself() {
-    return this.store.entity.contact.get(this.myselfId)
+    return this._store.entity.contact.get(this.myselfId)
   }
   set myself(_) {
-    let entity = this.store.entity.contact.get(_.id)
-    entity = new ContactEntityStore(this.store, _)
-    this.store.entity.contact.set(_.id, entity)
+    let entity = this._store.entity.contact.get(_.id)
+    entity = new ContactEntityStore(this._store, _)
+    this._store.entity.contact.set(_.id, entity)
   }
   myselfId = null
   get currentDevice() {
-    return this.store.entity.device.get(this.currentDeviceId)
+    return this._store.entity.device.get(this.currentDeviceId)
   }
   set currentDevice(_) {
-    let entity = this.store.entity.device.get(_.id)
-    entity = new DeviceEntityStore(this.store, _)
-    this.store.entity.device.set(_.id, entity)
+    let entity = this._store.entity.device.get(_.id)
+    entity = new DeviceEntityStore(this._store, _)
+    this._store.entity.device.set(_.id, entity)
   }
   currentDeviceId = null
   cryptoParams = null
@@ -40,10 +40,10 @@ export class ConfigEntityStore {
   debugNotificationVerbosity = null
 }
 export class ContactEntityStore {
-  store = null
+  _store = null
 
   constructor(store, data) {
-    this.store = store
+    this._store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
@@ -54,7 +54,7 @@ export class ContactEntityStore {
   status = null
   get devices() {
     const devices = []
-    for (const [, _] of this.store.entity.device) {
+    for (const [, _] of this._store.entity.device) {
       if (_.contactId === this.id) {
         devices.push(_)
       }
@@ -63,9 +63,9 @@ export class ContactEntityStore {
   }
   set devices(_) {
     _.forEach(_ => {
-      let entity = this.store.entity.device.get(_.id)
-      entity = new DeviceEntityStore(this.store, _)
-      this.store.entity.device.set(_.id, entity)
+      let entity = this._store.entity.device.get(_.id)
+      entity = new DeviceEntityStore(this._store, _)
+      this._store.entity.device.set(_.id, entity)
     })
   }
   displayName = null
@@ -74,10 +74,10 @@ export class ContactEntityStore {
   overrideDisplayStatus = null
 }
 export class DeviceEntityStore {
-  store = null
+  _store = null
 
   constructor(store, data) {
-    this.store = store
+    this._store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
@@ -90,7 +90,7 @@ export class DeviceEntityStore {
   contactId = null
   get pushIdentifiers() {
     const pushIdentifiers = []
-    for (const [, _] of this.store.entity.devicePushIdentifier) {
+    for (const [, _] of this._store.entity.devicePushIdentifier) {
       if (_.deviceId === this.id) {
         pushIdentifiers.push(_)
       }
@@ -99,17 +99,17 @@ export class DeviceEntityStore {
   }
   set pushIdentifiers(_) {
     _.forEach(_ => {
-      let entity = this.store.entity.devicePushIdentifier.get(_.id)
-      entity = new DevicePushIdentifierEntityStore(this.store, _)
-      this.store.entity.devicePushIdentifier.set(_.id, entity)
+      let entity = this._store.entity.devicePushIdentifier.get(_.id)
+      entity = new DevicePushIdentifierEntityStore(this._store, _)
+      this._store.entity.devicePushIdentifier.set(_.id, entity)
     })
   }
 }
 export class ConversationEntityStore {
-  store = null
+  _store = null
 
   constructor(store, data) {
-    this.store = store
+    this._store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
@@ -118,13 +118,14 @@ export class ConversationEntityStore {
   updatedAt = null
   readAt = null
   wroteAt = null
+  seenAt = null
   title = null
   topic = null
   infos = null
   kind = null
   get members() {
     const members = []
-    for (const [, _] of this.store.entity.conversationMember) {
+    for (const [, _] of this._store.entity.conversationMember) {
       if (_.conversationId === this.id) {
         members.push(_)
       }
@@ -133,17 +134,17 @@ export class ConversationEntityStore {
   }
   set members(_) {
     _.forEach(_ => {
-      let entity = this.store.entity.conversationMember.get(_.id)
-      entity = new ConversationMemberEntityStore(this.store, _)
-      this.store.entity.conversationMember.set(_.id, entity)
+      let entity = this._store.entity.conversationMember.get(_.id)
+      entity = new ConversationMemberEntityStore(this._store, _)
+      this._store.entity.conversationMember.set(_.id, entity)
     })
   }
 }
 export class ConversationMemberEntityStore {
-  store = null
+  _store = null
 
   constructor(store, data) {
-    this.store = store
+    this._store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
@@ -152,23 +153,24 @@ export class ConversationMemberEntityStore {
   updatedAt = null
   readAt = null
   wroteAt = null
+  seenAt = null
   status = null
   get contact() {
-    return this.store.entity.contact.get(this.contactId)
+    return this._store.entity.contact.get(this.contactId)
   }
   set contact(_) {
-    let entity = this.store.entity.contact.get(_.id)
-    entity = new ContactEntityStore(this.store, _)
-    this.store.entity.contact.set(_.id, entity)
+    let entity = this._store.entity.contact.get(_.id)
+    entity = new ContactEntityStore(this._store, _)
+    this._store.entity.contact.set(_.id, entity)
   }
   conversationId = null
   contactId = null
 }
 export class EventEntityStore {
-  store = null
+  _store = null
 
   constructor(store, data) {
-    this.store = store
+    this._store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
@@ -187,7 +189,7 @@ export class EventEntityStore {
   ackStatus = null
   get dispatches() {
     const dispatches = []
-    for (const [, _] of this.store.entity.eventDispatch) {
+    for (const [, _] of this._store.entity.eventDispatch) {
       if (_.eventId === this.id) {
         dispatches.push(_)
       }
@@ -196,9 +198,9 @@ export class EventEntityStore {
   }
   set dispatches(_) {
     _.forEach(_ => {
-      let entity = this.store.entity.eventDispatch.get(_.id)
-      entity = new EventDispatchEntityStore(this.store, _)
-      this.store.entity.eventDispatch.set(_.id, entity)
+      let entity = this._store.entity.eventDispatch.get(_.id)
+      entity = new EventDispatchEntityStore(this._store, _)
+      this._store.entity.eventDispatch.set(_.id, entity)
     })
   }
   sourceContactId = null
@@ -208,10 +210,10 @@ export class EventEntityStore {
   metadata = []
 }
 export class DevicePushConfigEntityStore {
-  store = null
+  _store = null
 
   constructor(store, data) {
-    this.store = store
+    this._store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
@@ -224,10 +226,10 @@ export class DevicePushConfigEntityStore {
   relayPubkey = null
 }
 export class DevicePushIdentifierEntityStore {
-  store = null
+  _store = null
 
   constructor(store, data) {
-    this.store = store
+    this._store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
@@ -239,10 +241,10 @@ export class DevicePushIdentifierEntityStore {
   deviceId = null
 }
 export class EventDispatchEntityStore {
-  store = null
+  _store = null
 
   constructor(store, data) {
-    this.store = store
+    this._store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
@@ -259,10 +261,10 @@ export class EventDispatchEntityStore {
   sendErrorDetail = null
 }
 export class SenderAliasEntityStore {
-  store = null
+  _store = null
 
   constructor(store, data) {
-    this.store = store
+    this._store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
 
@@ -279,7 +281,7 @@ export class SenderAliasEntityStore {
 
 export class NodeServiceStore {
   constructor(store, bridge) {
-    this.store = store
+    this._store = store
     this.bridge = bridge
     this.commitLogStream({}).then(commitLog => {
       commitLog.on('data', data => {
@@ -318,17 +320,17 @@ export class NodeServiceStore {
               default:
                 break
               case 'config': {
-                let entity = this.store.entity.config.get(_.id)
+                let entity = this._store.entity.config.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    entity = new ConfigEntityStore(this.store, _)
-                    this.store.entity.config.set(_.id, entity)
+                    entity = new ConfigEntityStore(this._store, _)
+                    this._store.entity.config.set(_.id, entity)
                     break
                   case 2:
                     if (entity) {
-                      this.store.entity.config.delete(_.id)
+                      this._store.entity.config.delete(_.id)
                     }
                     break
                 }
@@ -336,17 +338,17 @@ export class NodeServiceStore {
                 break
               }
               case 'contact': {
-                let entity = this.store.entity.contact.get(_.id)
+                let entity = this._store.entity.contact.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    entity = new ContactEntityStore(this.store, _)
-                    this.store.entity.contact.set(_.id, entity)
+                    entity = new ContactEntityStore(this._store, _)
+                    this._store.entity.contact.set(_.id, entity)
                     break
                   case 2:
                     if (entity) {
-                      this.store.entity.contact.delete(_.id)
+                      this._store.entity.contact.delete(_.id)
                     }
                     break
                 }
@@ -354,17 +356,17 @@ export class NodeServiceStore {
                 break
               }
               case 'device': {
-                let entity = this.store.entity.device.get(_.id)
+                let entity = this._store.entity.device.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    entity = new DeviceEntityStore(this.store, _)
-                    this.store.entity.device.set(_.id, entity)
+                    entity = new DeviceEntityStore(this._store, _)
+                    this._store.entity.device.set(_.id, entity)
                     break
                   case 2:
                     if (entity) {
-                      this.store.entity.device.delete(_.id)
+                      this._store.entity.device.delete(_.id)
                     }
                     break
                 }
@@ -372,17 +374,17 @@ export class NodeServiceStore {
                 break
               }
               case 'conversation': {
-                let entity = this.store.entity.conversation.get(_.id)
+                let entity = this._store.entity.conversation.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    entity = new ConversationEntityStore(this.store, _)
-                    this.store.entity.conversation.set(_.id, entity)
+                    entity = new ConversationEntityStore(this._store, _)
+                    this._store.entity.conversation.set(_.id, entity)
                     break
                   case 2:
                     if (entity) {
-                      this.store.entity.conversation.delete(_.id)
+                      this._store.entity.conversation.delete(_.id)
                     }
                     break
                 }
@@ -390,17 +392,17 @@ export class NodeServiceStore {
                 break
               }
               case 'conversationMember': {
-                let entity = this.store.entity.conversationMember.get(_.id)
+                let entity = this._store.entity.conversationMember.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    entity = new ConversationMemberEntityStore(this.store, _)
-                    this.store.entity.conversationMember.set(_.id, entity)
+                    entity = new ConversationMemberEntityStore(this._store, _)
+                    this._store.entity.conversationMember.set(_.id, entity)
                     break
                   case 2:
                     if (entity) {
-                      this.store.entity.conversationMember.delete(_.id)
+                      this._store.entity.conversationMember.delete(_.id)
                     }
                     break
                 }
@@ -408,17 +410,17 @@ export class NodeServiceStore {
                 break
               }
               case 'event': {
-                let entity = this.store.entity.event.get(_.id)
+                let entity = this._store.entity.event.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    entity = new EventEntityStore(this.store, _)
-                    this.store.entity.event.set(_.id, entity)
+                    entity = new EventEntityStore(this._store, _)
+                    this._store.entity.event.set(_.id, entity)
                     break
                   case 2:
                     if (entity) {
-                      this.store.entity.event.delete(_.id)
+                      this._store.entity.event.delete(_.id)
                     }
                     break
                 }
@@ -426,17 +428,17 @@ export class NodeServiceStore {
                 break
               }
               case 'devicePushConfig': {
-                let entity = this.store.entity.devicePushConfig.get(_.id)
+                let entity = this._store.entity.devicePushConfig.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    entity = new DevicePushConfigEntityStore(this.store, _)
-                    this.store.entity.devicePushConfig.set(_.id, entity)
+                    entity = new DevicePushConfigEntityStore(this._store, _)
+                    this._store.entity.devicePushConfig.set(_.id, entity)
                     break
                   case 2:
                     if (entity) {
-                      this.store.entity.devicePushConfig.delete(_.id)
+                      this._store.entity.devicePushConfig.delete(_.id)
                     }
                     break
                 }
@@ -444,17 +446,17 @@ export class NodeServiceStore {
                 break
               }
               case 'devicePushIdentifier': {
-                let entity = this.store.entity.devicePushIdentifier.get(_.id)
+                let entity = this._store.entity.devicePushIdentifier.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    entity = new DevicePushIdentifierEntityStore(this.store, _)
-                    this.store.entity.devicePushIdentifier.set(_.id, entity)
+                    entity = new DevicePushIdentifierEntityStore(this._store, _)
+                    this._store.entity.devicePushIdentifier.set(_.id, entity)
                     break
                   case 2:
                     if (entity) {
-                      this.store.entity.devicePushIdentifier.delete(_.id)
+                      this._store.entity.devicePushIdentifier.delete(_.id)
                     }
                     break
                 }
@@ -462,17 +464,17 @@ export class NodeServiceStore {
                 break
               }
               case 'eventDispatch': {
-                let entity = this.store.entity.eventDispatch.get(_.id)
+                let entity = this._store.entity.eventDispatch.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    entity = new EventDispatchEntityStore(this.store, _)
-                    this.store.entity.eventDispatch.set(_.id, entity)
+                    entity = new EventDispatchEntityStore(this._store, _)
+                    this._store.entity.eventDispatch.set(_.id, entity)
                     break
                   case 2:
                     if (entity) {
-                      this.store.entity.eventDispatch.delete(_.id)
+                      this._store.entity.eventDispatch.delete(_.id)
                     }
                     break
                 }
@@ -480,17 +482,17 @@ export class NodeServiceStore {
                 break
               }
               case 'senderAlias': {
-                let entity = this.store.entity.senderAlias.get(_.id)
+                let entity = this._store.entity.senderAlias.get(_.id)
                 switch (output.operation) {
                   default:
                   case 0:
                   case 1:
-                    entity = new SenderAliasEntityStore(this.store, _)
-                    this.store.entity.senderAlias.set(_.id, entity)
+                    entity = new SenderAliasEntityStore(this._store, _)
+                    this._store.entity.senderAlias.set(_.id, entity)
                     break
                   case 2:
                     if (entity) {
-                      this.store.entity.senderAlias.delete(_.id)
+                      this._store.entity.senderAlias.delete(_.id)
                     }
                     break
                 }
@@ -515,6 +517,10 @@ export class NodeServiceStore {
     const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
+      destroy: () => {
+        this.commitLogStreamCache[inputHash].unpipe(passThroughStream)
+        passThroughStream.push(null)
+      },
     })
     this.commitLogStreamCache[inputHash].pipe(passThroughStream)
     unlock()
@@ -536,9 +542,9 @@ export class NodeServiceStore {
         writableObjectMode: true,
         readableObjectMode: true,
         transform: (output, encoding, callback) => {
-          let entity = this.store.entity.event.get(output.id)
-          entity = new EventEntityStore(this.store, output)
-          this.store.entity.event.set(output.id, entity)
+          let entity = this._store.entity.event.get(output.id)
+          entity = new EventEntityStore(this._store, output)
+          this._store.entity.event.set(output.id, entity)
           output = entity
 
           callback(null, output)
@@ -555,6 +561,10 @@ export class NodeServiceStore {
     const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
+      destroy: () => {
+        this.eventStreamCache[inputHash].unpipe(passThroughStream)
+        passThroughStream.push(null)
+      },
     })
     this.eventStreamCache[inputHash].pipe(passThroughStream)
     unlock()
@@ -568,9 +578,9 @@ export class NodeServiceStore {
       writableObjectMode: true,
       readableObjectMode: true,
       transform: (output, encoding, callback) => {
-        let entity = this.store.entity.event.get(output.id)
-        entity = new EventEntityStore(this.store, output)
-        this.store.entity.event.set(output.id, entity)
+        let entity = this._store.entity.event.get(output.id)
+        entity = new EventEntityStore(this._store, output)
+        this._store.entity.event.set(output.id, entity)
         output = entity
 
         callback(null, output)
@@ -597,9 +607,9 @@ export class NodeServiceStore {
         writableObjectMode: true,
         readableObjectMode: true,
         transform: (output, encoding, callback) => {
-          let entity = this.store.entity.event.get(output.id)
-          entity = new EventEntityStore(this.store, output)
-          this.store.entity.event.set(output.id, entity)
+          let entity = this._store.entity.event.get(output.id)
+          entity = new EventEntityStore(this._store, output)
+          this._store.entity.event.set(output.id, entity)
           output = entity
 
           callback(null, output)
@@ -616,6 +626,10 @@ export class NodeServiceStore {
     const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
+      destroy: () => {
+        this.eventUnseenCache[inputHash].unpipe(passThroughStream)
+        passThroughStream.push(null)
+      },
     })
     this.eventUnseenCache[inputHash].pipe(passThroughStream)
     unlock()
@@ -625,9 +639,9 @@ export class NodeServiceStore {
   getEvent = async (input = {}) => {
     let output = await this.bridge.getEvent(input)
 
-    let entity = this.store.entity.event.get(output.id)
-    entity = new EventEntityStore(this.store, output)
-    this.store.entity.event.set(output.id, entity)
+    let entity = this._store.entity.event.get(output.id)
+    entity = new EventEntityStore(this._store, output)
+    this._store.entity.event.set(output.id, entity)
     output = entity
 
     return output
@@ -636,20 +650,15 @@ export class NodeServiceStore {
   eventSeen = async (input = {}) => {
     let output = await this.bridge.eventSeen(input)
 
-    let entity = this.store.entity.event.get(output.id)
-    entity = new EventEntityStore(this.store, output)
-    this.store.entity.event.set(output.id, entity)
-    output = entity
-
     return output
   }
 
   eventRetry = async (input = {}) => {
     let output = await this.bridge.eventRetry(input)
 
-    let entity = this.store.entity.event.get(output.id)
-    entity = new EventEntityStore(this.store, output)
-    this.store.entity.event.set(output.id, entity)
+    let entity = this._store.entity.event.get(output.id)
+    entity = new EventEntityStore(this._store, output)
+    this._store.entity.event.set(output.id, entity)
     output = entity
 
     return output
@@ -658,9 +667,9 @@ export class NodeServiceStore {
   config = async (input = {}) => {
     let output = await this.bridge.config(input)
 
-    let entity = this.store.entity.config.get(output.id)
-    entity = new ConfigEntityStore(this.store, output)
-    this.store.entity.config.set(output.id, entity)
+    let entity = this._store.entity.config.get(output.id)
+    entity = new ConfigEntityStore(this._store, output)
+    this._store.entity.config.set(output.id, entity)
     output = entity
 
     return output
@@ -669,9 +678,9 @@ export class NodeServiceStore {
   configPublic = async (input = {}) => {
     let output = await this.bridge.configPublic(input)
 
-    let entity = this.store.entity.config.get(output.id)
-    entity = new ConfigEntityStore(this.store, output)
-    this.store.entity.config.set(output.id, entity)
+    let entity = this._store.entity.config.get(output.id)
+    entity = new ConfigEntityStore(this._store, output)
+    this._store.entity.config.set(output.id, entity)
     output = entity
 
     return output
@@ -680,9 +689,9 @@ export class NodeServiceStore {
   configUpdate = async (input = {}) => {
     let output = await this.bridge.configUpdate(input)
 
-    let entity = this.store.entity.config.get(output.id)
-    entity = new ConfigEntityStore(this.store, output)
-    this.store.entity.config.set(output.id, entity)
+    let entity = this._store.entity.config.get(output.id)
+    entity = new ConfigEntityStore(this._store, output)
+    this._store.entity.config.set(output.id, entity)
     output = entity
 
     return output
@@ -691,9 +700,9 @@ export class NodeServiceStore {
   contactRequest = async (input = {}) => {
     let output = await this.bridge.contactRequest(input)
 
-    let entity = this.store.entity.contact.get(output.id)
-    entity = new ContactEntityStore(this.store, output)
-    this.store.entity.contact.set(output.id, entity)
+    let entity = this._store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this._store, output)
+    this._store.entity.contact.set(output.id, entity)
     output = entity
 
     return output
@@ -702,9 +711,9 @@ export class NodeServiceStore {
   contactAcceptRequest = async (input = {}) => {
     let output = await this.bridge.contactAcceptRequest(input)
 
-    let entity = this.store.entity.contact.get(output.id)
-    entity = new ContactEntityStore(this.store, output)
-    this.store.entity.contact.set(output.id, entity)
+    let entity = this._store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this._store, output)
+    this._store.entity.contact.set(output.id, entity)
     output = entity
 
     return output
@@ -713,9 +722,9 @@ export class NodeServiceStore {
   contactRemove = async (input = {}) => {
     let output = await this.bridge.contactRemove(input)
 
-    let entity = this.store.entity.contact.get(output.id)
+    let entity = this._store.entity.contact.get(output.id)
     if (entity) {
-      this.store.entity.contact.delete(output.id)
+      this._store.entity.contact.delete(output.id)
     }
     output = entity
 
@@ -725,9 +734,9 @@ export class NodeServiceStore {
   contactUpdate = async (input = {}) => {
     let output = await this.bridge.contactUpdate(input)
 
-    let entity = this.store.entity.contact.get(output.id)
-    entity = new ContactEntityStore(this.store, output)
-    this.store.entity.contact.set(output.id, entity)
+    let entity = this._store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this._store, output)
+    this._store.entity.contact.set(output.id, entity)
     output = entity
 
     return output
@@ -740,9 +749,9 @@ export class NodeServiceStore {
       writableObjectMode: true,
       readableObjectMode: true,
       transform: (output, encoding, callback) => {
-        let entity = this.store.entity.contact.get(output.id)
-        entity = new ContactEntityStore(this.store, output)
-        this.store.entity.contact.set(output.id, entity)
+        let entity = this._store.entity.contact.get(output.id)
+        entity = new ContactEntityStore(this._store, output)
+        this._store.entity.contact.set(output.id, entity)
         output = entity
 
         callback(null, output)
@@ -757,9 +766,9 @@ export class NodeServiceStore {
   contact = async (input = {}) => {
     let output = await this.bridge.contact(input)
 
-    let entity = this.store.entity.contact.get(output.id)
-    entity = new ContactEntityStore(this.store, output)
-    this.store.entity.contact.set(output.id, entity)
+    let entity = this._store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this._store, output)
+    this._store.entity.contact.set(output.id, entity)
     output = entity
 
     return output
@@ -771,12 +780,18 @@ export class NodeServiceStore {
     return output
   }
 
+  contactListBadge = async (input = {}) => {
+    let output = await this.bridge.contactListBadge(input)
+
+    return output
+  }
+
   conversationCreate = async (input = {}) => {
     let output = await this.bridge.conversationCreate(input)
 
-    let entity = this.store.entity.conversation.get(output.id)
-    entity = new ConversationEntityStore(this.store, output)
-    this.store.entity.conversation.set(output.id, entity)
+    let entity = this._store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this._store, output)
+    this._store.entity.conversation.set(output.id, entity)
     output = entity
 
     return output
@@ -785,9 +800,9 @@ export class NodeServiceStore {
   conversationUpdate = async (input = {}) => {
     let output = await this.bridge.conversationUpdate(input)
 
-    let entity = this.store.entity.conversation.get(output.id)
-    entity = new ConversationEntityStore(this.store, output)
-    this.store.entity.conversation.set(output.id, entity)
+    let entity = this._store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this._store, output)
+    this._store.entity.conversation.set(output.id, entity)
     output = entity
 
     return output
@@ -800,9 +815,9 @@ export class NodeServiceStore {
       writableObjectMode: true,
       readableObjectMode: true,
       transform: (output, encoding, callback) => {
-        let entity = this.store.entity.conversation.get(output.id)
-        entity = new ConversationEntityStore(this.store, output)
-        this.store.entity.conversation.set(output.id, entity)
+        let entity = this._store.entity.conversation.get(output.id)
+        entity = new ConversationEntityStore(this._store, output)
+        this._store.entity.conversation.set(output.id, entity)
         output = entity
 
         callback(null, output)
@@ -817,9 +832,9 @@ export class NodeServiceStore {
   conversationInvite = async (input = {}) => {
     let output = await this.bridge.conversationInvite(input)
 
-    let entity = this.store.entity.conversation.get(output.id)
-    entity = new ConversationEntityStore(this.store, output)
-    this.store.entity.conversation.set(output.id, entity)
+    let entity = this._store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this._store, output)
+    this._store.entity.conversation.set(output.id, entity)
     output = entity
 
     return output
@@ -828,9 +843,9 @@ export class NodeServiceStore {
   conversationExclude = async (input = {}) => {
     let output = await this.bridge.conversationExclude(input)
 
-    let entity = this.store.entity.conversation.get(output.id)
-    entity = new ConversationEntityStore(this.store, output)
-    this.store.entity.conversation.set(output.id, entity)
+    let entity = this._store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this._store, output)
+    this._store.entity.conversation.set(output.id, entity)
     output = entity
 
     return output
@@ -839,9 +854,9 @@ export class NodeServiceStore {
   conversationAddMessage = async (input = {}) => {
     let output = await this.bridge.conversationAddMessage(input)
 
-    let entity = this.store.entity.event.get(output.id)
-    entity = new EventEntityStore(this.store, output)
-    this.store.entity.event.set(output.id, entity)
+    let entity = this._store.entity.event.get(output.id)
+    entity = new EventEntityStore(this._store, output)
+    this._store.entity.event.set(output.id, entity)
     output = entity
 
     return output
@@ -850,9 +865,9 @@ export class NodeServiceStore {
   conversation = async (input = {}) => {
     let output = await this.bridge.conversation(input)
 
-    let entity = this.store.entity.conversation.get(output.id)
-    entity = new ConversationEntityStore(this.store, output)
-    this.store.entity.conversation.set(output.id, entity)
+    let entity = this._store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this._store, output)
+    this._store.entity.conversation.set(output.id, entity)
     output = entity
 
     return output
@@ -861,9 +876,9 @@ export class NodeServiceStore {
   conversationMember = async (input = {}) => {
     let output = await this.bridge.conversationMember(input)
 
-    let entity = this.store.entity.conversationMember.get(output.id)
-    entity = new ConversationMemberEntityStore(this.store, output)
-    this.store.entity.conversationMember.set(output.id, entity)
+    let entity = this._store.entity.conversationMember.get(output.id)
+    entity = new ConversationMemberEntityStore(this._store, output)
+    this._store.entity.conversationMember.set(output.id, entity)
     output = entity
 
     return output
@@ -872,9 +887,9 @@ export class NodeServiceStore {
   conversationRead = async (input = {}) => {
     let output = await this.bridge.conversationRead(input)
 
-    let entity = this.store.entity.conversation.get(output.id)
-    entity = new ConversationEntityStore(this.store, output)
-    this.store.entity.conversation.set(output.id, entity)
+    let entity = this._store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this._store, output)
+    this._store.entity.conversation.set(output.id, entity)
     output = entity
 
     return output
@@ -883,9 +898,9 @@ export class NodeServiceStore {
   conversationRemove = async (input = {}) => {
     let output = await this.bridge.conversationRemove(input)
 
-    let entity = this.store.entity.conversation.get(output.id)
+    let entity = this._store.entity.conversation.get(output.id)
     if (entity) {
-      this.store.entity.conversation.delete(output.id)
+      this._store.entity.conversation.delete(output.id)
     }
     output = entity
 
@@ -895,10 +910,22 @@ export class NodeServiceStore {
   conversationLastEvent = async (input = {}) => {
     let output = await this.bridge.conversationLastEvent(input)
 
-    let entity = this.store.entity.event.get(output.id)
-    entity = new EventEntityStore(this.store, output)
-    this.store.entity.event.set(output.id, entity)
+    let entity = this._store.entity.event.get(output.id)
+    entity = new EventEntityStore(this._store, output)
+    this._store.entity.event.set(output.id, entity)
     output = entity
+
+    return output
+  }
+
+  conversationListBadge = async (input = {}) => {
+    let output = await this.bridge.conversationListBadge(input)
+
+    return output
+  }
+
+  conversationBadge = async (input = {}) => {
+    let output = await this.bridge.conversationBadge(input)
 
     return output
   }
@@ -910,9 +937,9 @@ export class NodeServiceStore {
       writableObjectMode: true,
       readableObjectMode: true,
       transform: (output, encoding, callback) => {
-        let entity = this.store.entity.devicePushConfig.get(output.id)
-        entity = new DevicePushConfigEntityStore(this.store, output)
-        this.store.entity.devicePushConfig.set(output.id, entity)
+        let entity = this._store.entity.devicePushConfig.get(output.id)
+        entity = new DevicePushConfigEntityStore(this._store, output)
+        this._store.entity.devicePushConfig.set(output.id, entity)
         output = entity
 
         callback(null, output)
@@ -927,9 +954,9 @@ export class NodeServiceStore {
   devicePushConfigCreate = async (input = {}) => {
     let output = await this.bridge.devicePushConfigCreate(input)
 
-    let entity = this.store.entity.devicePushConfig.get(output.id)
-    entity = new DevicePushConfigEntityStore(this.store, output)
-    this.store.entity.devicePushConfig.set(output.id, entity)
+    let entity = this._store.entity.devicePushConfig.get(output.id)
+    entity = new DevicePushConfigEntityStore(this._store, output)
+    this._store.entity.devicePushConfig.set(output.id, entity)
     output = entity
 
     return output
@@ -950,9 +977,9 @@ export class NodeServiceStore {
   devicePushConfigRemove = async (input = {}) => {
     let output = await this.bridge.devicePushConfigRemove(input)
 
-    let entity = this.store.entity.devicePushConfig.get(output.id)
+    let entity = this._store.entity.devicePushConfig.get(output.id)
     if (entity) {
-      this.store.entity.devicePushConfig.delete(output.id)
+      this._store.entity.devicePushConfig.delete(output.id)
     }
     output = entity
 
@@ -962,9 +989,9 @@ export class NodeServiceStore {
   devicePushConfigUpdate = async (input = {}) => {
     let output = await this.bridge.devicePushConfigUpdate(input)
 
-    let entity = this.store.entity.devicePushConfig.get(output.id)
-    entity = new DevicePushConfigEntityStore(this.store, output)
-    this.store.entity.devicePushConfig.set(output.id, entity)
+    let entity = this._store.entity.devicePushConfig.get(output.id)
+    entity = new DevicePushConfigEntityStore(this._store, output)
+    this._store.entity.devicePushConfig.set(output.id, entity)
     output = entity
 
     return output
@@ -997,9 +1024,9 @@ export class NodeServiceStore {
   debugRequeueEvent = async (input = {}) => {
     let output = await this.bridge.debugRequeueEvent(input)
 
-    let entity = this.store.entity.event.get(output.id)
-    entity = new EventEntityStore(this.store, output)
-    this.store.entity.event.set(output.id, entity)
+    let entity = this._store.entity.event.get(output.id)
+    entity = new EventEntityStore(this._store, output)
+    this._store.entity.event.set(output.id, entity)
     output = entity
 
     return output
@@ -1064,6 +1091,10 @@ export class NodeServiceStore {
     const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
+      destroy: () => {
+        this.logStreamCache[inputHash].unpipe(passThroughStream)
+        passThroughStream.push(null)
+      },
     })
     this.logStreamCache[inputHash].pipe(passThroughStream)
     unlock()
@@ -1115,6 +1146,10 @@ export class NodeServiceStore {
     const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
+      destroy: () => {
+        this.logfileReadCache[inputHash].unpipe(passThroughStream)
+        passThroughStream.push(null)
+      },
     })
     this.logfileReadCache[inputHash].pipe(passThroughStream)
     unlock()
@@ -1180,6 +1215,10 @@ export class NodeServiceStore {
     const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
+      destroy: () => {
+        this.monitorBandwidthCache[inputHash].unpipe(passThroughStream)
+        passThroughStream.push(null)
+      },
     })
     this.monitorBandwidthCache[inputHash].pipe(passThroughStream)
     unlock()
@@ -1215,6 +1254,10 @@ export class NodeServiceStore {
     const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
+      destroy: () => {
+        this.monitorPeersCache[inputHash].unpipe(passThroughStream)
+        passThroughStream.push(null)
+      },
     })
     this.monitorPeersCache[inputHash].pipe(passThroughStream)
     unlock()

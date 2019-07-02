@@ -39,7 +39,7 @@
                 },
                 "EventSeen": {
                   "requestType": "berty.entity.Event",
-                  "responseType": "berty.entity.Event"
+                  "responseType": "Void"
                 },
                 "EventRetry": {
                   "requestType": "berty.entity.Event",
@@ -86,6 +86,10 @@
                   "requestType": "berty.entity.Contact",
                   "responseType": "Bool"
                 },
+                "ContactListBadge": {
+                  "requestType": "Void",
+                  "responseType": "Badge"
+                },
                 "ConversationCreate": {
                   "requestType": "ConversationCreateInput",
                   "responseType": "berty.entity.Conversation"
@@ -130,6 +134,14 @@
                 "ConversationLastEvent": {
                   "requestType": "berty.entity.Conversation",
                   "responseType": "berty.entity.Event"
+                },
+                "ConversationListBadge": {
+                  "requestType": "Void",
+                  "responseType": "Badge"
+                },
+                "ConversationBadge": {
+                  "requestType": "berty.entity.Conversation",
+                  "responseType": "Badge"
                 },
                 "DevicePushConfigList": {
                   "requestType": "Void",
@@ -252,6 +264,14 @@
                 "Libp2PPing": {
                   "requestType": "berty.network.metric.PingReq",
                   "responseType": "Bool"
+                }
+              }
+            },
+            "Badge": {
+              "fields": {
+                "value": {
+                  "type": "int32",
+                  "id": 1
                 }
               }
             },
@@ -1742,6 +1762,14 @@
                     "(gogoproto.nullable)": false
                   }
                 },
+                "seenAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 6,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
                 "title": {
                   "type": "string",
                   "id": 20
@@ -1815,6 +1843,14 @@
                 "wroteAt": {
                   "type": "google.protobuf.Timestamp",
                   "id": 5,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "seenAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 6,
                   "options": {
                     "(gogoproto.stdtime)": true,
                     "(gogoproto.nullable)": false

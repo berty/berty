@@ -833,6 +833,14 @@
                     "(gogoproto.nullable)": false
                   }
                 },
+                "seenAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 6,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
                 "title": {
                   "type": "string",
                   "id": 20
@@ -906,6 +914,14 @@
                 "wroteAt": {
                   "type": "google.protobuf.Timestamp",
                   "id": 5,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "seenAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 6,
                   "options": {
                     "(gogoproto.stdtime)": true,
                     "(gogoproto.nullable)": false

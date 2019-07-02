@@ -163,21 +163,12 @@ export class SettingsScreen extends PureComponent {
                 onPress={() => console.log('Invite to group with a link')}
               />
               {members.map(member => {
-                const { id, contact, contactId } = member
-                const { displayName, overrideDisplayName } = contact || {
-                  id: contactId,
-                  displayName: 'Unknown',
-                }
+                const { id, contactId, contact = { id: contactId } } = member
                 return (
                   <Menu.Item
                     key={id}
-                    icon={
-                      <Avatar.Contact
-                        data={contact || { id: contactId }}
-                        size={28}
-                      />
-                    }
-                    title={overrideDisplayName || displayName}
+                    icon={<Avatar.Contact data={contact} size={28} />}
+                    title={contact.displayName || contact.id}
                     onPress={() =>
                       navigation.navigate('modal/contacts/card', contact)
                     }

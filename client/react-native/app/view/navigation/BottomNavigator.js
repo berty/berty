@@ -18,9 +18,27 @@ import ContactNavigator, {
 import Placeholder from '@berty/screen/Placeholder'
 import SettingsNavigator from './SettingsNavigator'
 import { withStoreContext } from '@berty/store/context'
+import { Store } from '@berty/container'
+import { debounce } from 'throttle-debounce'
 
 @withStoreContext
 class TabBarIcon extends PureComponent {
+  async componentDidMount() {
+    const { context } = this.props
+    this.commitLogStream = await context.node.service.commitLogStream()
+    this.commitLogStream.on('data', ({ entity }) => {
+      if (entity.conversation || entity.contact) {
+        this.smartForceUpdate()
+      }
+    })
+  }
+
+  componentWillUnmount() {
+    this.commitLogStream && this.commitLogStream.destroy()
+  }
+
+  smartForceUpdate = debounce(16, this.forceUpdate)
+
   render() {
     const { tintColor, routeName, context } = this.props
 
@@ -42,14 +60,28 @@ class TabBarIcon extends PureComponent {
           />
         )}
       </UpdateContext.Consumer>
+    ) : routeName === 'contacts' ? (
+      <Store.Node.Service.ContactListBadge request={{}}>
+        {({ response: badge }) => (
+          <Icon.Badge
+            name={iconName}
+            size={24}
+            color={tintColor}
+            value={badge && badge.value}
+          />
+        )}
+      </Store.Node.Service.ContactListBadge>
     ) : (
-      <Icon.Badge
-        name={iconName}
-        size={24}
-        color={tintColor}
-        badge={''}
-        value={0}
-      />
+      <Store.Node.Service.ConversationListBadge request={{}}>
+        {({ response: badge }) => (
+          <Icon.Badge
+            name={iconName}
+            size={24}
+            color={tintColor}
+            value={badge && badge.value}
+          />
+        )}
+      </Store.Node.Service.ConversationListBadge>
     )
   }
 }

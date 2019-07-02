@@ -1,21 +1,20 @@
 import { BertyEntityContactInputStatus } from '../../enums.gen'
 import tDate from '../timestampDate'
 
-export const getTitle = ({ title, members }) =>
+export const getTitle = ({ id, title, members }) =>
   (title && title !== '' && title) ||
   (members &&
     members
       .filter(m => m.contact && m.contact.status !== 42)
+      .sort((a, b) => (!a.displayName ? 1 : !b.displayName ? 1 : -1))
       .map((m, index) => {
-        const displayName =
-          m.contact &&
-          (m.contact.overrideDisplayName || m.contact.displayName || '?????')
+        const displayName = (m.contact && m.contact.displayName) || m.contactId
         const before =
           index === 0 ? '' : index === members.length - 1 ? ' and ' : ', '
         return `${before}${displayName}`
       })
       .join('')) ||
-  'No name'
+  id
 
 export const isReadByMe = ({ wroteAt, members }) => {
   const myself = members.find(
@@ -27,14 +26,14 @@ export const isReadByMe = ({ wroteAt, members }) => {
   return tDate(myself.readAt).getTime() >= tDate(wroteAt).getTime()
 }
 
-export const isMessageReadByMe = ({ members }, { createdAt }) => {
+export const isMessageReadByMe = ({ members }, { receivedAt }) => {
   const myself = members.find(
     _ => _.contact && _.contact.status === BertyEntityContactInputStatus.Myself
   )
   if (myself == null) {
     return true
   }
-  return tDate(myself.readAt).getTime() >= tDate(createdAt).getTime()
+  return tDate(myself.readAt).getTime() >= tDate(receivedAt).getTime()
 }
 
 export const isReadByOthers = message =>

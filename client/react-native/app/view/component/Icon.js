@@ -57,10 +57,7 @@ const IconBadge = props => {
   return (
     <View>
       <Icon {...props} />
-      {props.badge !== undefined &&
-      props.badge !== null &&
-      props.badge !== '' &&
-      props.badge !== 0 ? (
+      {props.value ? (
         <View
           style={{
             position:

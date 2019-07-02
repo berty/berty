@@ -138,6 +138,7 @@ enum Code {
   ErrConversationMemberUnblock = 13707;
   ErrConversationMemberRead = 13708;
   ErrConversationMemberWrite = 13709;
+  ErrConversationMemberSeen = 13710;
 
   ErrPush = 14000;
   ErrPushUnknownProvider = 14001;

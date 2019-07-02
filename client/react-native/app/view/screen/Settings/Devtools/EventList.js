@@ -150,9 +150,10 @@ class EventList extends PureComponent {
         {...navigation.getParam('filters')}
         fallback={<Loader />}
       >
-        {({ queue, loading, paginate, retry }) => (
+        {(queue, paginate, retry, { loading, last, count, cursor }) => (
           <OptimizedFlatList
             data={queue}
+            extraData={last}
             onEndReached={paginate}
             renderItem={this.renderItem}
             onRefresh={retry}

@@ -20,6 +20,7 @@ import * as dateFns from '@berty/common/locale/dateFns'
 import * as enums from '@berty/common/enums.gen'
 import tDate from '@berty/common/helpers/timestampDate'
 import BertyEntityMessage from '@berty/bridge/service/entity/message'
+import { debounce } from 'throttle-debounce'
 
 import {
   Platform,
@@ -346,6 +347,19 @@ export class Chat extends Component {
     return props.data.id !== this.props.data.id
   }
 
+  onViewableItemsChanged = debounce(300, _ => {
+    const { changed } = _
+    if (!utils.isReadByMe(this.props.data)) {
+      changed.forEach(({ index, isViewable }) => {
+        if (index === 0 && isViewable) {
+          this.props.context.node.service.conversationRead({
+            id: this.props.data.id,
+          })
+        }
+      })
+    }
+  })
+
   render() {
     const { data, navigation, context } = this.props
 
@@ -363,14 +377,16 @@ export class Chat extends Component {
           })}
           cursorExtractor={item => tDate(item.updatedAt).getTime() || 0}
         >
-          {({ queue, count, retry, loading, paginate }) => (
+          {(queue, paginate, retry, { count, last, loading, cursor }) => (
             <OptimizedFlatList
               style={{ marginBottom: Platform.OS === 'web' ? 50 : 0 }}
               data={queue}
+              extraData={last}
               onEndReached={paginate}
               getItemLayout={this.getItemLayout}
               onRefresh={retry}
               refreshing={loading}
+              onViewableItemsChanged={this.onViewableItemsChanged}
               renderItem={({ item }) => (
                 <Message
                   data={item}
