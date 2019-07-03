@@ -8,4 +8,5 @@ module.exports = {
     blacklistRE: blacklist([/desktop\/.*/, /gomobile\/.*/]),
     extraNodeModules: require('node-libs-react-native'),
   },
+  maxWorkers: 2,
 }
