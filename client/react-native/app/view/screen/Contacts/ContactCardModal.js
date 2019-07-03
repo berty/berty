@@ -35,7 +35,11 @@ class ContactCardModal extends React.Component {
               showDismiss
               width={modalWidth}
               footer={
-                <ContactIdentityActions data={data} modalWidth={modalWidth} />
+                <ContactIdentityActions
+                  data={data}
+                  context={context}
+                  modalWidth={modalWidth}
+                />
               }
             >
               <ContactIdentity data={data} context={context} />
