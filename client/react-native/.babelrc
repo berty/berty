@@ -1,5 +1,6 @@
 {
   "presets": [
+    "@babel/preset-env",
     "module:metro-react-native-babel-preset"
   ],
   "plugins": [
@@ -7,8 +8,9 @@
     "@babel/plugin-syntax-export-namespace-from",
     "@babel/plugin-proposal-async-generator-functions",
     "transform-export-extensions",
-    "relay",
-    "transform-inline-environment-variables"
+    "transform-inline-environment-variables",
+    "@babel/plugin-proposal-optional-chaining",
+    "@babel/plugin-proposal-nullish-coalescing-operator"
   ],
   "env": {
     "production": {

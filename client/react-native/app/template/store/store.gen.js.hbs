@@ -1,7 +1,9 @@
 {{~#if (contains filename "api/node/service.proto")~}}
 
-import { observable, computed } from 'mobx'
+import { observable } from 'mobx'
 import Stream from 'stream'
+import objectHash from 'object-hash'
+import Mutex from 'await-mutex'
 
   {{#with (lookup 'berty.node.CommitLog.Entity')}}
     {{#each fields}}
@@ -16,26 +18,30 @@ import Stream from 'stream'
 
             {{#each fields}}
               {{#if (and resolvedType (get (case 'camel' type) ../../../fields))}}
-                @computed get {{name}} () {
+                get {{name}} () {
                   {{#if repeated}}
-                    return this.store.entity.{{case 'camel' type}}.values().filter(
-                      _ => _.{{case 'camel' ../name}}Id === this.id
-                    )
+                    const {{name}} = []
+                    for (const [, _] of this.store.entity.{{case 'camel' type}}) {
+                      if (_.{{case 'camel' ../name}}Id === this.id) {
+                        {{name}}.push(_)
+                      }
+                    }
+                    return {{name}}
                   {{else}}
                     return this.store.entity.{{case 'camel' type}}.get(this.{{name}}Id)
                   {{/if}}
                 }
-                set {{name}} ({{case 'camel' name}}) {
+                set {{name}} (_) {
                   {{#if repeated}}
-                    {{case 'camel' name}}.forEach(_ => this.store.entity.{{case 'camel' type}}.set(
-                      _.id,
-                      new {{type}}EntityStore(this.store, _),
-                    ))
-                  {{else}}
-                    this.store.entity.{{case 'camel' type}}.set(
-                      this.{{name}}Id,
-                      new {{type}}EntityStore(this.store, {{case 'camel' name}}),
-                    )
+                    _.forEach(_ => {
+                  {{/if}}
+
+                  let entity = this.store.entity.{{case 'camel' type}}.get(_.id)
+                  entity = new {{type}}EntityStore(this.store, _)
+                  this.store.entity.{{case 'camel' type}}.set(_.id, entity)
+
+                  {{#if repeated}}
+                   })
                   {{/if}}
                 }
               {{else}}
@@ -66,11 +72,28 @@ import Stream from 'stream'
 
       {{#each methods}}
 
-        {{case 'camel' name}} = async (input) => {
+        {{#if responseStream}}
+          {{case 'camel' name}}Cache = {}
+
+          {{#if (not (test name (toRegex 'List$')))}}
+           {{case 'camel' name}}Mutex = {}
+          {{/if}}
+        {{/if}}
+
+        {{case 'camel' name}} = async (input = {}) => {
 
           {{#if responseStream}}
-            const stream = await this.bridge.{{case 'camel' name}}(input)
-            const transformStream = new Stream.Transform({
+            {{#if (not (test name (toRegex 'List$')))}}
+              const inputHash = objectHash(input)
+              const unlock = await (
+                this.{{case 'camel' name}}Mutex[inputHash]
+                || (this.{{case 'camel' name}}Mutex[inputHash] = new Mutex())
+              ).lock()
+              if (this.{{case 'camel' name}}Cache[inputHash] == null) {
+                this.{{case 'camel' name}}Cache[inputHash] = new Stream.Transform({
+            {{else}}
+              const transformStream = new Stream.Transform({
+            {{/if}}
               writableObjectMode: true,
               readableObjectMode: true,
               transform: (output, encoding, callback) => {
@@ -82,35 +105,35 @@ import Stream from 'stream'
             {{#with resolvedResponseType.nested.Entity}}
               Object.keys(output.entity).forEach(
                 key => {
-                  let entity = output.entity[key]
-                  if (entity == null) {
+                  let _ = output.entity[key]
+                  if (_ == null) {
                     return
                   }
                   switch (key) {
                     default:
                       break
                     {{#each fields}}
-                      case '{{name}}':
+                      case '{{name}}': {
+                        let entity = this.store.entity.{{case 'camel' resolvedType.name}}.get(_.id)
                         switch (output.operation) {
                           default:
                           case 0:
                           case 1:
-                            this.store.entity.{{case 'camel' resolvedType.name}}.set(
-                              entity.id,
-                              new {{resolvedType.name}}EntityStore(this.store, entity),
-                            )
+                            entity = new {{resolvedType.name}}EntityStore(this.store, _)
+                            this.store.entity.{{case 'camel' resolvedType.name}}.set(_.id, entity)
                             break
                           case 2:
-                            if (this.store.entity.{{case 'camel' resolvedType.name}}.has(entity.id)) {
-                              entity = this.store.entity.{{case 'camel' resolvedType.name}}.get(entity.id)
-                              this.store.entity.{{case 'camel' resolvedType.name}}.delete(entity.id)
+                            if (entity) {
+                              this.store.entity.{{case 'camel' resolvedType.name}}.delete(_.id)
                             }
                             break
                         }
+                        _ = entity
                         break
+                      }
                     {{/each}}
                   }
-                  output.entity[key] = entity
+                  output.entity[key] = _
                 }
               )
             {{/with}}
@@ -119,15 +142,16 @@ import Stream from 'stream'
           {{#with (lookup 'berty.node.CommitLog.Entity')}}
             {{#each fields}}
               {{#if (eq resolvedType.name ../../resolvedResponseType.name)}}
+                let entity = this.store.entity.{{case 'camel' resolvedType.name}}.get(output.id)
                 {{#if (test ../../name (toRegex '(Remove|Delete)$'))}}
-                  if (this.store.entity.{{case 'camel' resolvedType.name}}.has(output.id)) {
-                    output = this.store.entity.{{case 'camel' resolvedType.name}}.get(output.id)
+                  if (entity) {
                     this.store.entity.{{case 'camel' resolvedType.name}}.delete(output.id)
                   }
                 {{else}}
-                  output = new {{resolvedType.name}}EntityStore(this.store, output)
-                  this.store.entity.{{case 'camel' resolvedType.name}}.set(output.id, output)
+                  entity = new {{resolvedType.name}}EntityStore(this.store, output)
+                  this.store.entity.{{case 'camel' resolvedType.name}}.set(output.id, entity)
                 {{/if}}
+                output = entity
               {{/if}}
             {{/each}}
           {{/with}}
@@ -136,8 +160,26 @@ import Stream from 'stream'
                 callback(null, output)
               },
             })
-            stream.pipe(transformStream)
-            return transformStream
+            const stream = await this.bridge.{{case 'camel' name}}(input)
+
+            {{#if (not (test name (toRegex 'List$')))}}
+                this.{{case 'camel' name}}Cache[inputHash].setMaxListeners(30)
+                stream.pipe(this.{{case 'camel' name}}Cache[inputHash])
+                this.{{case 'camel' name}}Cache[inputHash].on('end', () => {
+                  delete this.{{case 'camel' name}}Cache[inputHash]
+                })
+              }
+              const passThroughStream = new Stream.PassThrough({
+                  writableObjectMode: true,
+                  readableObjectMode: true,
+              })
+              this.{{case 'camel' name}}Cache[inputHash].pipe(passThroughStream)
+              unlock()
+              return passThroughStream
+            {{else}}
+              stream.pipe(transformStream)
+              return transformStream
+            {{/if}}
           {{else}}
             return output
           {{/if}}
@@ -154,13 +196,13 @@ import Stream from 'stream'
       this.entity = {
         {{#with (lookup 'berty.node.CommitLog.Entity')}}
           {{#each fields}}
-            {{case 'camel' resolvedType.name}}: observable.map({}, { deep: false }),
+            {{case 'camel' resolvedType.name}}: observable.map({}, { deep: true }),
           {{/each}}
         {{/with}}
       }
 
       this.node = {
-        service: this.bridge.node.service && new NodeServiceStore(this, this.bridge.node.service),
+        service: this.bridge && this.bridge.node && this.bridge.node.service && new NodeServiceStore(this, this.bridge.node.service),
       }
 
       this.daemon = this.bridge.daemon

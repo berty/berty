@@ -2,9 +2,11 @@ import React, { PureComponent } from 'react'
 import { View, Image } from 'react-native'
 import { Header, Menu } from '@berty/component'
 import { withNamespaces } from 'react-i18next'
-import { withRelayContext } from '@berty/relay/context'
 import I18n from 'i18next'
+import { withStoreContext } from '@berty/store/context'
 
+@withStoreContext
+@withNamespaces()
 class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -21,38 +23,38 @@ class List extends PureComponent {
     version: null,
   }
 
-  componentDidMount () {
-    this.props.context.queries.AppVersion.fetch().then(data => {
+  componentDidMount() {
+    this.props.context.node.service.AppVersion.then(data => {
       this.setState({ version: data.version })
     })
   }
 
-  render () {
+  render() {
     const { navigation, t } = this.props
     const { version } = this.state
     return (
       <View style={{ flex: 1 }}>
         <Image
-          resizeMode='contain'
+          resizeMode="contain"
           style={{ flex: 3, width: null, height: null, marginTop: 42 }}
           source={require('@berty/common/static/img/square_about.png')}
         />
         <Menu>
           <Menu.Section>
             <Menu.Item
-              icon='smartphone'
+              icon="smartphone"
               title={t('settings.version')}
               textRight={version}
             />
             <Menu.Item
-              icon='check-circle'
+              icon="check-circle"
               title={t('settings.changelog')}
               onPress={() => navigation.navigate('about/changelog')}
             />
           </Menu.Section>
           <Menu.Section>
             <Menu.Item
-              icon='info'
+              icon="info"
               title={t('settings.learn-more')}
               onPress={() => navigation.navigate('about/more')}
             />
@@ -63,4 +65,4 @@ class List extends PureComponent {
   }
 }
 
-export default withRelayContext(withNamespaces()(List))
+export default List

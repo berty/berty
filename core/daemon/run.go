@@ -36,10 +36,6 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 			Bind:         cfg.GrpcBind,
 			Interceptors: true,
 		}),
-		account.WithGQL(&account.GQLOptions{
-			Bind:         cfg.GqlBind,
-			Interceptors: true,
-		}),
 		account.WithGrpcWeb(&account.GrpcWebOptions{
 			Bind:         cfg.GrpcWebBind,
 			Interceptors: true,

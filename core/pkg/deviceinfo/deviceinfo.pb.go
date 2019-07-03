@@ -50,7 +50,6 @@ func (Type) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_29ed7a3d6003a93e, []int{0}
 }
 
-// DeviceInfos is a graphql-friendly, sortable map container
 type DeviceInfos struct {
 	Infos                []*DeviceInfo `protobuf:"bytes,1,rep,name=infos,proto3" json:"infos,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}      `json:"-"`

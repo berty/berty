@@ -1,4 +1,3 @@
-import { DeviceInfos } from '@berty/graphql/queries'
 import { requestAndroidPermission } from '@berty/common/helpers/permissions'
 import RNFetchBlob from '@berty/common/helpers/rn-fetch-blob'
 
@@ -71,7 +70,7 @@ export const getInstalledVersion = async context => {
   }
 
   const { channel } = updateApiSources[bundleId]
-  const deviceData = await DeviceInfos(context).fetch()
+  const deviceData = await context.deviceInfos()
 
   const [rawVersionInfo] = deviceData.infos
     .filter(d => d.key === 'versions')

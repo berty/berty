@@ -52,7 +52,7 @@ func (m *ContactRequestInput) Validate() error {
 		return nil
 	}
 
-	// handling field: ContactID - name:"contact_id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:<53004:1 []:true []:"ContactID" >  (is_contact_key=true, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: ContactID - name:"contact_id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:<[]:true []:"ContactID" >  (is_contact_key=true, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	if err := validator.IsContactKey(m.GetContactID()); err != nil {
 		return err
 	}
@@ -70,7 +70,7 @@ func (m *ContactAcceptRequestInput) Validate() error {
 		return nil
 	}
 
-	// handling field: ContactID - name:"contact_id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:<53004:1 []:1 []:true []:"ContactID" >  (is_contact_key=true, defined_only=false, min_len=1, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: ContactID - name:"contact_id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:<[]:1 []:true []:"ContactID" >  (is_contact_key=true, defined_only=false, min_len=1, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	if len(m.GetContactID()) < 1 {
 		return errors.New("ContactID must be longer than 1")
 	}
@@ -161,50 +161,11 @@ func (m *EventListInput) Validate() error {
 
 	// handling field: OnlyWithoutSeenAt - name:"only_without_seen_at" number:3 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.node.NullableTrueFalse" json_name:"onlyWithoutSeenAt"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: Paginate - name:"paginate" number:99 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.node.Pagination" json_name:"paginate" options:<53006:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Paginate - name:"paginate" number:99 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.node.Pagination" json_name:"paginate"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	if v, ok := interface{}(m.GetPaginate()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return errors.Wrap(err, "embedded message verification failed: Paginate")
-		}
-	}
-
-	return nil
-}
-func (m *EventEdge) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Node - name:"node" number:1 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.entity.Event" json_name:"node"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetNode()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Node")
-		}
-	}
-
-	// handling field: Cursor - name:"cursor" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"cursor"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-	return nil
-}
-func (m *EventListConnection) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Edges - name:"edges" number:1 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.node.EventEdge" json_name:"edges"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetEdges()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Edges")
-		}
-	}
-
-	// handling field: PageInfo - name:"page_info" number:99 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.node.PageInfo" json_name:"pageInfo" options:<53009:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetPageInfo()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: PageInfo")
 		}
 	}
 
@@ -223,50 +184,11 @@ func (m *ContactListInput) Validate() error {
 		}
 	}
 
-	// handling field: Paginate - name:"paginate" number:99 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.node.Pagination" json_name:"paginate" options:<53006:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Paginate - name:"paginate" number:99 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.node.Pagination" json_name:"paginate"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	if v, ok := interface{}(m.GetPaginate()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return errors.Wrap(err, "embedded message verification failed: Paginate")
-		}
-	}
-
-	return nil
-}
-func (m *ContactEdge) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Node - name:"node" number:1 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.entity.Contact" json_name:"node"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetNode()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Node")
-		}
-	}
-
-	// handling field: Cursor - name:"cursor" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"cursor"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-	return nil
-}
-func (m *ContactListConnection) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Edges - name:"edges" number:1 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.node.ContactEdge" json_name:"edges"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetEdges()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Edges")
-		}
-	}
-
-	// handling field: PageInfo - name:"page_info" number:99 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.node.PageInfo" json_name:"pageInfo" options:<53009:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetPageInfo()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: PageInfo")
 		}
 	}
 
@@ -300,50 +222,11 @@ func (m *ConversationListInput) Validate() error {
 		}
 	}
 
-	// handling field: Paginate - name:"paginate" number:99 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.node.Pagination" json_name:"paginate" options:<53006:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Paginate - name:"paginate" number:99 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.node.Pagination" json_name:"paginate"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	if v, ok := interface{}(m.GetPaginate()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return errors.Wrap(err, "embedded message verification failed: Paginate")
-		}
-	}
-
-	return nil
-}
-func (m *ConversationEdge) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Node - name:"node" number:1 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.entity.Conversation" json_name:"node"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetNode()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Node")
-		}
-	}
-
-	// handling field: Cursor - name:"cursor" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"cursor"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-	return nil
-}
-func (m *ConversationListConnection) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Edges - name:"edges" number:1 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.node.ConversationEdge" json_name:"edges"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetEdges()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Edges")
-		}
-	}
-
-	// handling field: PageInfo - name:"page_info" number:99 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.node.PageInfo" json_name:"pageInfo" options:<53009:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetPageInfo()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: PageInfo")
 		}
 	}
 
@@ -402,45 +285,14 @@ func (m *ConversationManageMembersInput) Validate() error {
 	}
 	return nil
 }
-func (m *DevicePushConfigEdge) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Node - name:"node" number:1 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.entity.DevicePushConfig" json_name:"node"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetNode()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Node")
-		}
-	}
-
-	// handling field: Cursor - name:"cursor" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"cursor"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-	return nil
-}
-func (m *DevicePushConfigListOutput) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Edges - name:"edges" number:1 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.DevicePushConfig" json_name:"edges"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetEdges()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Edges")
-		}
-	}
-
-	return nil
-}
 func (m *DevicePushConfigCreateInput) Validate() error {
 	if m == nil {
 		return nil
 	}
 
-	// handling field: RelayPubkey - name:"relay_pubkey" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"relayPubkey" options:<53008:1 []:"RelayPubkey" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: RelayPubkey - name:"relay_pubkey" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"relayPubkey" options:<[]:"RelayPubkey" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: PushID - name:"push_id" number:2 label:LABEL_OPTIONAL type:TYPE_BYTES json_name:"pushId" options:<53008:1 []:"PushID" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: PushID - name:"push_id" number:2 label:LABEL_OPTIONAL type:TYPE_BYTES json_name:"pushId" options:<[]:"PushID" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: PushType - name:"push_type" number:3 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.push.DevicePushType" json_name:"pushType"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	return nil
@@ -454,29 +306,13 @@ func (m *Pagination) Validate() error {
 
 	// handling field: OrderDesc - name:"order_desc" number:2 label:LABEL_OPTIONAL type:TYPE_BOOL json_name:"orderDesc"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: First - name:"first" number:11 label:LABEL_OPTIONAL type:TYPE_INT32 json_name:"first" options:<53008:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: First - name:"first" number:11 label:LABEL_OPTIONAL type:TYPE_INT32 json_name:"first"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: After - name:"after" number:12 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"after" options:<53008:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: After - name:"after" number:12 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"after"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: Last - name:"last" number:13 label:LABEL_OPTIONAL type:TYPE_INT32 json_name:"last" options:<53008:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Last - name:"last" number:13 label:LABEL_OPTIONAL type:TYPE_INT32 json_name:"last"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: Before - name:"before" number:14 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"before" options:<53008:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-	return nil
-}
-func (m *PageInfo) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: StartCursor - name:"start_cursor" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"startCursor"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	// handling field: EndCursor - name:"end_cursor" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"endCursor"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	// handling field: HasNextPage - name:"has_next_page" number:3 label:LABEL_OPTIONAL type:TYPE_BOOL json_name:"hasNextPage"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	// handling field: HasPreviousPage - name:"has_previous_page" number:4 label:LABEL_OPTIONAL type:TYPE_BOOL json_name:"hasPreviousPage"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	// handling field: Count - name:"count" number:5 label:LABEL_OPTIONAL type:TYPE_UINT32 json_name:"count"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Before - name:"before" number:14 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"before"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	return nil
 }
 func (m *IntegrationTestInput) Validate() error {
@@ -537,7 +373,7 @@ func (m *EventIDInput) Validate() error {
 		return nil
 	}
 
-	// handling field: EventID - name:"event_id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"eventId" options:<53004:1 []:"EventID" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: EventID - name:"event_id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"eventId" options:<[]:"EventID" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	return nil
 }
 func (m *LogStreamInput) Validate() error {

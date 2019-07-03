@@ -1,14 +1,16 @@
 import React, { PureComponent } from 'react'
-import { Header, Menu } from '@berty/component'
-import { withConfig } from '@berty/relay/config'
+import { Loader, Header, Menu } from '@berty/component'
 import colors from '@berty/common/constants/colors'
 import { withNavigation } from 'react-navigation'
 import { showMessage } from 'react-native-flash-message'
-import { RelayContext } from '@berty/relay'
 import * as enums from '@berty/common/enums.gen'
+import { Store } from '@berty/container'
+import { withStoreContext } from '@berty/store/context'
 
-class NotificationsBase extends PureComponent {
-  constructor (props) {
+@withStoreContext
+@withNavigation
+class Notifications extends PureComponent {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -20,7 +22,7 @@ class NotificationsBase extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     return (
       <Menu>
         <Menu.Section title={'APNS'}>
@@ -99,14 +101,14 @@ class NotificationsBase extends PureComponent {
     )
   }
 
-  async updateConfig (field) {
+  async updateConfig(field) {
     try {
       const config = {
         ...this.props.config,
         [field]: this.state.config[field],
       }
 
-      await this.props.relayContext.mutations.configUpdate(config)
+      await this.props.context.node.service.configUpdate(config)
     } catch (e) {
       showMessage({
         message: String(e),
@@ -118,27 +120,23 @@ class NotificationsBase extends PureComponent {
   }
 }
 
-const Notifications = withNavigation(
-  withConfig(NotificationsBase, { showOnlyLoaded: true })
-)
-
 export default class NotificationsWrapper extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
         navigation={navigation}
         title={'Notifications'}
-        titleIcon='bell'
+        titleIcon="bell"
         backBtn
       />
     ),
   })
 
-  render () {
+  render() {
     return (
-      <RelayContext.Consumer>
-        {context => <Notifications relayContext={context} />}
-      </RelayContext.Consumer>
+      <Store.Entity.Config>
+        {data => (data ? <Notifications config={data} /> : <Loader />)}
+      </Store.Entity.Config>
     )
   }
 }

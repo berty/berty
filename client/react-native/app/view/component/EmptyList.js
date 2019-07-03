@@ -17,7 +17,7 @@ export default class EmptyList extends PureComponent {
     btnText: '',
   }
 
-  render () {
+  render() {
     const { source, text, onPress, icon, btnText, btnRef } = this.props
     const fontSize = this.state.fontWidth * 0.07
 
@@ -31,7 +31,7 @@ export default class EmptyList extends PureComponent {
             marginHorizontal: 30,
           }}
           source={source}
-          resizeMode='contain'
+          resizeMode="contain"
         />
         <Text style={{ alignSelf: 'center', color: colors.lightGrey, flex: 1 }}>
           {text}

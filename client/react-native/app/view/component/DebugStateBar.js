@@ -1,12 +1,11 @@
 import React, { PureComponent } from 'react'
 import { colors } from '@berty/common/constants'
-import { promiseWithTimeout } from 'react-relay-network-modern/es/middlewares/retry'
 import Flex from './Flex'
 import Text from './Text'
 import { View, Platform } from 'react-native'
 import Icon from './Icon'
 import NavigationService from '@berty/common/helpers/NavigationService'
-import { withRelayContext } from '@berty/relay/context'
+import promiseWithTimeout from '@berty/common/helpers/promiseWithTimeout'
 
 const daemonStateValues = {
   down: 0,
@@ -15,7 +14,7 @@ const daemonStateValues = {
 }
 
 class DebugStateBar extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       watchTime: 10000,
@@ -40,22 +39,19 @@ class DebugStateBar extends PureComponent {
     }
   }
 
-  componentDidMount () {
+  monitorPeers = null
+
+  async componentDidMount() {
     this.fetchListenAddrs()
     this.fetchListenInterfaceAddrs()
 
     this.fetchPeers()
 
-    this.subscriber = this.props.context.subscriptions.monitorPeers.subscribe({
-      iterator: undefined,
-      updater: (store, data) => {
-        const peer = data.MonitorPeers
-        this.addPeer(peer)
-      },
-    })
+    this.monitorPeers = await this.props.context.node.service.monitorPeers()
+    this.monitorPeers.on('data', this.addPeer)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     const { listenAddrTimer, InterfaceAddrTimer } = this.state
 
     if (listenAddrTimer !== null) {
@@ -66,7 +62,7 @@ class DebugStateBar extends PureComponent {
       clearTimeout(InterfaceAddrTimer)
     }
 
-    this.subscriber.unsubscribe()
+    this.monitorPeers.destroy()
   }
 
   timeoutPromise = () => {
@@ -83,9 +79,9 @@ class DebugStateBar extends PureComponent {
   }
 
   fetchPeers = () => {
-    this.props.context.queries.Peers.fetch().then(data =>
-      this.setState({ peers: data.list })
-    )
+    this.props.context.node.service
+      .peers()
+      .then(data => this.setState({ peers: data.list }))
   }
 
   fetchListenAddrs = async () => {
@@ -93,7 +89,7 @@ class DebugStateBar extends PureComponent {
     const { watchTime, requestTimeout, timeouted } = this.state
     try {
       const e = await promiseWithTimeout(
-        context.queries.GetListenAddrs.fetch(),
+        context.node.service.getListenAddrs(),
         requestTimeout,
         this.timeoutPromise
       )
@@ -126,7 +122,7 @@ class DebugStateBar extends PureComponent {
     const { watchTime, requestTimeout, timeouted } = this.state
     try {
       const e = await promiseWithTimeout(
-        context.queries.GetListenInterfaceAddrs.fetch(),
+        context.node.service.getListenInterfaceAddrs(),
         requestTimeout,
         this.timeoutPromise
       )
@@ -225,7 +221,7 @@ class DebugStateBar extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     const {
       bertyColor,
       bleColor,
@@ -249,7 +245,7 @@ class DebugStateBar extends PureComponent {
         {!this.state.collapsed && (
           <View style={{ marginRight: 2 }}>
             <Text
-              icon='berty-berty_picto'
+              icon="berty-berty_picto"
               size={5}
               padding={5}
               rounded
@@ -263,8 +259,8 @@ class DebugStateBar extends PureComponent {
                     this.state.daemonState === daemonStateValues.connected
                       ? 'check'
                       : this.state.daemonState === daemonStateValues.down
-                        ? 'x-circle'
-                        : 'more-horizontal'
+                      ? 'x-circle'
+                      : 'more-horizontal'
                   }
                   color={bertyColor}
                 />
@@ -277,7 +273,7 @@ class DebugStateBar extends PureComponent {
         {!this.state.collapsed && (
           <View style={{ marginRight: 2 }}>
             <Text
-              icon='berty-chart-network-solid'
+              icon="berty-chart-network-solid"
               size={5}
               padding={5}
               rounded
@@ -293,7 +289,7 @@ class DebugStateBar extends PureComponent {
         {!this.state.collapsed && (
           <View style={{ marginRight: 2 }}>
             <Text
-              icon='bluetooth'
+              icon="bluetooth"
               size={5}
               padding={5}
               rounded
@@ -309,7 +305,7 @@ class DebugStateBar extends PureComponent {
         {!this.state.collapsed && (
           <View style={{ marginRight: 2 }}>
             <Text
-              icon='settings'
+              icon="settings"
               size={5}
               padding={5}
               rounded
@@ -342,4 +338,4 @@ class DebugStateBar extends PureComponent {
   }
 }
 
-export default withRelayContext(DebugStateBar)
+export default DebugStateBar

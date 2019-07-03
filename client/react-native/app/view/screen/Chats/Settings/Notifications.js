@@ -4,7 +4,10 @@ import { Header, Menu } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
+import { withNavigation } from 'react-navigation'
 
+@withNavigation
+@withNamespaces()
 class Notifications extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -23,19 +26,19 @@ class Notifications extends PureComponent {
     preview: false,
   }
 
-  render () {
+  render() {
     const { t } = this.props
 
     return (
       <Menu>
         <Menu.Section>
           <Menu.Item
-            icon='bell-off'
+            icon="bell-off"
             title={t('chats.notifications-mute')}
             boldLeft
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 disabled={false}
                 value={this.state.mute}
                 onValueChange={value => {
@@ -47,7 +50,7 @@ class Notifications extends PureComponent {
           />
         </Menu.Section>
         <Text
-          align='center'
+          align="center"
           style={{
             color: colors.textGrey,
             marginTop: 32,
@@ -57,12 +60,12 @@ class Notifications extends PureComponent {
         </Text>
         <Menu.Section customMarginTop={1}>
           <Menu.Item
-            icon='bell'
+            icon="bell"
             title={t('chats.notifications-override')}
             boldLeft
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 disabled={false}
                 value={this.state.override}
                 onValueChange={value => this.setState({ override: value })}
@@ -73,11 +76,11 @@ class Notifications extends PureComponent {
         {this.state.override && (
           <Menu.Section>
             <Menu.Item
-              title='Alert'
+              title="Alert"
               boldLeft
               customRight={
                 <Switch
-                  justify='end'
+                  justify="end"
                   disabled={false}
                   value={this.state.alert}
                   onValueChange={value => {
@@ -92,7 +95,7 @@ class Notifications extends PureComponent {
               boldLeft
               customRight={
                 <Switch
-                  justify='end'
+                  justify="end"
                   disabled={false}
                   value={this.state.preview}
                   onValueChange={value => {
@@ -102,7 +105,7 @@ class Notifications extends PureComponent {
                 />
               }
             />
-            <Menu.Item title='Sound' textRight='Paulette' boldLeft />
+            <Menu.Item title="Sound" textRight="Paulette" boldLeft />
           </Menu.Section>
         )}
       </Menu>
@@ -110,4 +113,4 @@ class Notifications extends PureComponent {
   }
 }
 
-export default withNamespaces()(Notifications)
+export default Notifications

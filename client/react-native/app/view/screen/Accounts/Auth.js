@@ -6,23 +6,20 @@ import React, { PureComponent } from 'react'
 import { Animation, Flex, Loader, Screen } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { defaultUsername } from '@berty/common/helpers/contacts'
-import { environment, contextValue } from '@berty/relay'
-import { getAvailableUpdate } from '@berty/update'
-import {
-  queries,
-  mutations,
-  subscriptions,
-  fragments,
-  updaters,
-} from '@berty/graphql'
+// import { getAvailableUpdate } from '@berty/update'
 import NavigationService from '@berty/common/helpers/NavigationService'
 import sleep from '@berty/common/helpers/sleep'
 import withDeepLinkHandler from '@berty/common/helpers/withDeepLinkHandler'
-import { withRelayContext } from '@berty/relay/context'
 import { withUpdateContext } from '@berty/update/context'
 import { withBridgeContext } from '@berty/bridge/Context'
 import { rpc, service, middleware } from '@berty/bridge'
+import { getAvailableUpdate } from '@berty/update'
 
+@withDeepLinkHandler
+@withBridgeContext
+@withUpdateContext
+@withNamespaces()
+@hook
 class Auth extends PureComponent {
   state = {
     list: [],
@@ -34,7 +31,12 @@ class Auth extends PureComponent {
 
   getIp = async () => {
     if (Platform.OS === 'web' && !Platform.Desktop) {
-      return window.location.hostname || '127.0.0.1'
+      var url = new URL(window.location.href)
+      return (
+        url.searchParams.get('node-host') ||
+        url.searchParams.get('host') ||
+        '127.0.0.1'
+      )
     }
     return '127.0.0.1'
   }
@@ -57,22 +59,6 @@ class Auth extends PureComponent {
       navigation,
     } = this.props
     navigation.navigate(deepLink)
-  }
-
-  getRelayContext = async () => {
-    const test = await contextValue({
-      environment: await environment.setup({
-        getIp: this.getIp,
-        getPort: async () => (await this.getPort()).gqlPort,
-      }),
-      mutations,
-      subscriptions,
-      queries,
-      fragments,
-      updaters,
-    })
-
-    return test
   }
 
   init = async config => {
@@ -127,28 +113,20 @@ class Auth extends PureComponent {
     }
 
     await this.start(nickname) // @FIXME: implement this later
-    const context = await this.getRelayContext()
-    getAvailableUpdate(context).then(update => {
-      this.props.updateContext.setState(update)
-    })
-    this.props.context.setState(
-      {
-        relayContext: context,
-        loading: false,
-      },
-      () => {
-        this.openDeepLink()
-      }
-    )
+
+    const { grpcWebPort } = await this.getPort()
     const nodeService = service.create(
       service.NodeService,
-      rpc.grpcWebWithHostname(
-        'http://localhost:' + (await this.getPort()).grpcWebPort
-      ),
+      rpc.grpcWebWithHostname(`http://${await this.getIp()}:${grpcWebPort}`),
       middleware.chain(
         __DEV__ ? middleware.logger.create('NODE-SERVICE') : null // eslint-disable-line
       )
     )
+
+    getAvailableUpdate(this.props.bridge).then(update => {
+      this.props.updateContext.setState(update)
+    })
+
     this.props.bridge.setContext({
       ...this.props.bridge,
       node: {
@@ -156,6 +134,7 @@ class Auth extends PureComponent {
       },
     })
 
+    this.openDeepLink()
     this.props.navigation.navigate('switch/picker', {
       firstLaunch,
       deepLink: this.props.deepLinkHandler.deepLink,
@@ -166,7 +145,7 @@ class Auth extends PureComponent {
     this.open(this.state.nickname, { firstLaunch: true }).then(() => {})
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     if (Platform.OS === 'web') {
       NavigationService.setTopLevelNavigator(this.props.navigation)
     }
@@ -174,15 +153,15 @@ class Auth extends PureComponent {
     this.open()
   }
 
-  render () {
+  render() {
     const { t } = this.props
     const { loading, message, current } = this.state
 
     if (loading === true) {
       return ['ios', 'android'].some(_ => _ === Platform.OS) ? (
         <Flex.Rows
-          align='center'
-          justify='center'
+          align="center"
+          justify="center"
           style={{
             width: '100%',
             height: '100%',
@@ -205,7 +184,7 @@ class Auth extends PureComponent {
     if (current === null) {
       return (
         <Screen style={{ backgroundColor: colors.background, flex: 1 }}>
-          <Flex.Cols align='center'>
+          <Flex.Cols align="center">
             <View
               style={{
                 height: 320,
@@ -287,13 +266,4 @@ class Auth extends PureComponent {
   }
 }
 
-// const withBridgeContext = Component => (
-//   <BridgeContext.Consumer>
-//     {bridge => <Component bridgeContext={bridge} />}
-//   </BridgeContext.Consumer>
-// )
-export default withDeepLinkHandler(
-  withBridgeContext(
-    withRelayContext(withUpdateContext(withNamespaces()(hook(Auth))))
-  )
-)
+export default Auth

@@ -2,17 +2,17 @@
   "parser": "babel-eslint",
   "extends": [
     "eslint:recommended",
-    "standard",
-    "standard-react",
+    "plugin:prettier/recommended",
+    "prettier/standard",
+    "prettier/react",
     "react-app"
   ],
   "plugins": [
+    "babel",
     "jsx-a11y",
     "react",
-    "prettier",
     "promise",
     "import",
-    "standard",
     "dependencies"
   ],
   "rules": {
@@ -35,7 +35,8 @@
     "jsx-a11y/href-no-hash": "off",
     "dependencies/no-cycles": 1,
     "dependencies/no-unresolved": 1,
-
+    "semi": ["error", "never"],
+    "padded-blocks": ["error", "never"]
   },
   "parserOptions": {
     "ecmaFeatures": {

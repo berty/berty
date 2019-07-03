@@ -230,7 +230,6 @@ module.exports = {
                 require.resolve(
                   '@babel/plugin-proposal-async-generator-functions'
                 ),
-                require.resolve('babel-plugin-relay'),
                 [
                   require.resolve('babel-plugin-named-asset-import'),
                   {
@@ -241,6 +240,10 @@ module.exports = {
                     },
                   },
                 ],
+                require.resolve('@babel/plugin-proposal-optional-chaining'),
+                require.resolve(
+                  '@babel/plugin-proposal-nullish-coalescing-operator'
+                ),
               ],
               // This is a feature of `babel-loader` for webpack (not Babel itself).
               // It enables caching results in ./node_modules/.cache/babel-loader/

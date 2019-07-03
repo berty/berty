@@ -1,7 +1,20 @@
 import grpc from 'grpc-web'
 import { getServiceName } from './utils'
 import Stream from 'stream'
-export const DefautlHostname = 'http://localhost:8989'
+
+let [host, port] = ['127.0.0.1', '8989']
+if (window && window.location && window.location.href) {
+  const url = new URL(window && window.location ? window.location.href : '')
+  host =
+    url.searchParams.get('daemon-host') ||
+    url.searchParams.get('host') ||
+    '127.0.0.1'
+  port =
+    url.searchParams.get('daemon-port') ||
+    url.searchParams.get('port') ||
+    '8989'
+}
+export const DefautlHostname = `http://${host}:${port}`
 
 const { MethodInfo } = grpc.AbstractClientBase
 const lazyMethod = payload => payload
@@ -42,14 +55,22 @@ const stream = (client, hostname) => async (method, request, metadata) => {
     writableObjectMode: true,
   }).wrap(stream)
 
+  let status = null
   // fix that onEnd is not called
-  stream.on('status', status => {
+  stream.on('status', _ => {
+    status = _
     if (status.code === 0) {
-      ptStream.end()
       stream.cancel()
     }
   })
-  stream.on('error', () => {})
+
+  stream.on('error', err => {
+    if (status && status.code === 0) {
+      ptStream.push(null)
+    } else {
+      ptStream.destroy(err)
+    }
+  })
 
   return ptStream
 }

@@ -8,10 +8,11 @@ export const withBridgeContext = Component => {
     static displayName = `withBridgeContext(${Component.displayName ||
       Component.name})`
 
-    render () {
+    render() {
       return (
         <BridgeContext.Consumer>
           {context => {
+            console.log('new context', context)
             return <Component {...this.props} bridge={context} />
           }}
         </BridgeContext.Consumer>

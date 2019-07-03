@@ -101,8 +101,6 @@ func (e Event) CreateSpan(ctx context.Context) (opentracing.Span, context.Contex
 	return span, opentracing.ContextWithSpan(ctx, span)
 }
 
-func (e Event) IsNode() {} // required by gqlgen
-
 func (e Event) TextMapWriter() opentracing.TextMapWriter {
 	return (EventTextMap)(e)
 }

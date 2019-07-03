@@ -1,16 +1,4 @@
-import React, { PureComponent } from 'react'
-import {
-  ActivityIndicator,
-  Switch,
-  Platform,
-  NativeModules,
-  Alert,
-} from 'react-native'
-import { Flex, Header, Menu } from '@berty/component'
-import I18n from 'i18next'
-import { withNamespaces } from 'react-i18next'
-import { QueryReducer, RelayContext } from '@berty/relay'
-import { merge } from '@berty/common/helpers'
+import { Header, Menu, Loader } from '@berty/component'
 import {
   enableNativeNotifications,
   disableNativeNotifications,
@@ -18,10 +6,14 @@ import {
   enableMQTTNotifications,
   disableMQTTNotifications,
 } from '@berty/common/helpers/notifications'
+import { withStoreContext } from '@berty/store/context'
+import { Store } from '@berty/container'
+import React, { PureComponent } from 'react'
 import * as enums from '@berty/common/enums.gen'
-import { withConfig } from '@berty/relay/config'
+import { Switch, Platform, NativeModules, Alert } from 'react-native'
 import { showMessage } from 'react-native-flash-message'
-import { withBridgeContext } from '@berty/bridge/Context'
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 
 const { CoreModule } = NativeModules
 
@@ -37,7 +29,9 @@ export const notificationStatus = {
   provisional: 3,
 }
 
-class NotificationsBase extends PureComponent {
+@withNamespaces()
+@withStoreContext
+export class Notifications extends PureComponent {
   getCurrentPushConfigs = () =>
     this.props.data.filter(elt => elt.pushType === getNativePushType())
 
@@ -56,7 +50,7 @@ class NotificationsBase extends PureComponent {
     notificationsPreviews: this.getCurrentConfig().notificationsPreviews,
   }
 
-  async updateConfig () {
+  async updateConfig() {
     try {
       const config = {
         ...this.props.config,
@@ -64,7 +58,7 @@ class NotificationsBase extends PureComponent {
         notificationsPreviews: this.state.notificationsPreviews,
       }
 
-      await this.props.context.mutations.configUpdate(config)
+      await this.props.context.node.service.configUpdate(config)
     } catch (e) {
       showMessage({
         message: String(e),
@@ -80,7 +74,7 @@ class NotificationsBase extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     const { t, context } = this.props
     const nativePushType = getNativePushType()
     const currentMQTTConfigs = this.getCurrentMQTTConfigs()
@@ -93,8 +87,8 @@ class NotificationsBase extends PureComponent {
             nativePushType ===
               enums.BertyPushDevicePushTypeInputDevicePushType
                 .UnknownDevicePushType && (
-            <Menu.Item title={t('settings.push-transport-not-supported')} />
-          )}
+              <Menu.Item title={t('settings.push-transport-not-supported')} />
+            )}
           {nativePushType !==
             enums.BertyPushDevicePushTypeInputDevicePushType
               .UnknownDevicePushType && (
@@ -112,7 +106,7 @@ class NotificationsBase extends PureComponent {
               left
               customRight={
                 <Switch
-                  justify='end'
+                  justify="end"
                   disabled={false}
                   value={pushConfigsSwitch}
                   onValueChange={async value =>
@@ -144,7 +138,7 @@ class NotificationsBase extends PureComponent {
               title={t('settings.push-mqtt-berty-servers')}
               customRight={
                 <Switch
-                  justify='end'
+                  justify="end"
                   disabled={false}
                   value={mqttConfigsSwitch}
                   onValueChange={value =>
@@ -156,14 +150,14 @@ class NotificationsBase extends PureComponent {
                         try {
                           value
                             ? await enableMQTTNotifications({
-                              context,
-                              relayPubkey: dummyPubKey,
-                              pushId: dummyPushId,
-                            })
+                                context,
+                                relayPubkey: dummyPubKey,
+                                pushId: dummyPushId,
+                              })
                             : await disableMQTTNotifications({
-                              context,
-                              currentPushConfigs: currentMQTTConfigs,
-                            })
+                                context,
+                                currentPushConfigs: currentMQTTConfigs,
+                              })
                           this.props.refresh()
                         } catch (err) {
                           this.setState({
@@ -185,7 +179,7 @@ class NotificationsBase extends PureComponent {
             left
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 onValueChange={async notificationsEnabled => {
                   if (Platform.OS === 'ios' && notificationsEnabled === true) {
                     if (
@@ -221,7 +215,7 @@ class NotificationsBase extends PureComponent {
             left
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 onValueChange={async notificationsPreviews => {
                   this.setState({ notificationsPreviews }, () =>
                     this.updateConfig()
@@ -233,7 +227,7 @@ class NotificationsBase extends PureComponent {
           />
           <Menu.Item
             title={t('chats.notifications-sound')}
-            textRight='Paulette'
+            textRight="Paulette"
             left
           />
         </Menu.Section>
@@ -242,6 +236,7 @@ class NotificationsBase extends PureComponent {
   }
 }
 
+@withStoreContext
 class NotificationWrapper extends React.PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -253,52 +248,29 @@ class NotificationWrapper extends React.PureComponent {
     ),
   })
 
-  render () {
-    const props = this.props
-
+  render() {
     return (
-      <RelayContext.Consumer>
-        {context => (
-          <QueryReducer
-            query={context.queries.DevicePushConfigList.graphql}
-            variables={merge([
-              context.queries.DevicePushConfigList.defaultVariables,
-            ])}
-          >
-            {(state, retry) => {
-              switch (state.type) {
-                default:
-                case state.loading:
-                  return (
-                    <Flex.Rows align='center'>
-                      <Flex.Cols align='center'>
-                        <ActivityIndicator size='large' />
-                      </Flex.Cols>
-                    </Flex.Rows>
-                  )
-                case state.success:
-                  return (
-                    <Notifications
-                      data={state.data.DevicePushConfigList.edges}
-                      context={context}
-                      refresh={retry}
-                      {...props}
-                    />
-                  )
-                case state.error:
-                  setTimeout(() => retry(), 1000)
-                  return null
-              }
-            }}
-          </QueryReducer>
-        )}
-      </RelayContext.Consumer>
+      <Store.Entity.Config>
+        {config =>
+          config ? (
+            <Store.Node.Service.DevicePushConfigList
+              response={(queue, data) => {
+                queue.push(data)
+                return queue
+              }}
+              fallback={<Loader />}
+            >
+              {({ queue, retry }) => (
+                <Notifications data={queue} refresh={retry} config={config} />
+              )}
+            </Store.Node.Service.DevicePushConfigList>
+          ) : (
+            <Loader />
+          )
+        }
+      </Store.Entity.Config>
     )
   }
 }
 
-const Notifications = withConfig(withNamespaces()(NotificationsBase), {
-  showOnlyLoaded: true,
-})
-
-export default withBridgeContext(NotificationWrapper)
+export default NotificationWrapper

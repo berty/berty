@@ -34,7 +34,7 @@ class ActionList extends PureComponent {
 }
 
 class Action extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -44,11 +44,11 @@ class Action extends PureComponent {
     this._mounted = false
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this._mounted = false
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this._mounted = true
   }
 

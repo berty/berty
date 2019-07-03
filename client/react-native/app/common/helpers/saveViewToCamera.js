@@ -5,7 +5,7 @@ import { requestAndroidPermission } from './permissions'
 import I18n from '../locale'
 
 export class ViewExportComponent extends Component {
-  async componentDidMount () {
+  async componentDidMount() {
     const resolve = this.props.navigation.getParam('resolve')
     const reject = this.props.navigation.getParam('reject')
 
@@ -20,12 +20,12 @@ export class ViewExportComponent extends Component {
     this.props.navigation.goBack(null)
   }
 
-  render () {
+  render() {
     const view = this.props.navigation.getParam('view')
 
     return (
       <View style={{ opacity: 0 }}>
-        <ViewShot ref='viewShot'>{view}</ViewShot>
+        <ViewShot ref="viewShot">{view}</ViewShot>
       </View>
     )
   }

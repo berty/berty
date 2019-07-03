@@ -12,10 +12,12 @@ class Network extends PureComponent {
       header: (
         <Header
           navigation={navigation}
-          title='Network configuration'
-          titleIcon='sliders'
+          title="Network configuration"
+          titleIcon="sliders"
           rightBtnIcon={updating ? 'refresh-ccw' : 'save'}
-          onPressRightBtn={() => navigation.state.params && navigation.state.params.onSave()}
+          onPressRightBtn={() =>
+            navigation.state.params && navigation.state.params.onSave()
+          }
           backBtn={!updating}
         />
       ),
@@ -24,7 +26,7 @@ class Network extends PureComponent {
 
   state = null
 
-  async componentDidMount () {
+  async componentDidMount() {
     const { bridge } = this.props
 
     const config = await bridge.daemon.getNetworkConfig({})
@@ -53,92 +55,84 @@ class Network extends PureComponent {
     this.props.navigation.setParams({ updating: false })
   }
 
-  render () {
+  render() {
     if (this.state == null) {
-      return <Loader message='Loading network configuration ...' />
+      return <Loader message="Loading network configuration ..." />
     }
     return (
       <Menu>
-        <Menu.Section title='Swarm key'>
-          <Menu.Input
-            title='Swarm key'
-            value={this.state.SwarmKey}
-            multiline={3}
-            onChangeText={SwarmKey => this.updateConfig({ SwarmKey })}
-          />
-        </Menu.Section>
-        <Menu.Section title='Discovery'>
+        <Menu.Section title="Discovery">
           <Menu.Item
-            title='Multicast DNS'
+            title="Multicast DNS"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.state.MDNS}
                 onValueChange={MDNS => this.updateConfig({ MDNS })}
               />
             }
           />
         </Menu.Section>
-        <Menu.Section title='Transports' customMarginTop={24}>
+        <Menu.Section title="Transports" customMarginTop={24}>
           <Menu.Item
-            title='TCP'
+            title="TCP"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.state.TCP}
                 onValueChange={TCP => this.updateConfig({ TCP })}
               />
             }
           />
           <Menu.Item
-            title='QUIC'
+            title="QUIC"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.state.QUIC}
                 onValueChange={QUIC => this.updateConfig({ QUIC })}
               />
             }
           />
           <Menu.Item
-            title='Bluetooth'
+            title="Bluetooth"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.state.BLE}
                 onValueChange={BLE => this.updateConfig({ BLE })}
               />
             }
           />
           <Menu.Item
-            title='Websocket'
+            title="Websocket"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.state.WS}
                 onValueChange={WS => this.updateConfig({ WS })}
               />
             }
           />
         </Menu.Section>
-        <Menu.Section title='Connections'>
+        <Menu.Section title="Connections">
           <Menu.Item
-            title='Peer cache'
+            title="Peer cache"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.state.PeerCache}
                 onValueChange={PeerCache => this.updateConfig({ PeerCache })}
               />
             }
           />
         </Menu.Section>
-        <Menu.Section title='Bootstrap'>
+        <Menu.Section title="Bootstrap">
           <Menu.Item
-            title='Default bootstrap'
+            title="Default bootstrap"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.state.DefaultBootstrap}
                 onValueChange={DefaultBootstrap =>
                   this.updateConfig({ DefaultBootstrap })
@@ -147,24 +141,24 @@ class Network extends PureComponent {
             }
           />
           <Menu.Item
-            title='IPFS bootstrap (not implem.)'
-            customRight={<Switch justify='end' disaBLEd value={false} />}
+            title="IPFS bootstrap (not implem.)"
+            customRight={<Switch justify="end" disaBLEd value={false} />}
           />
           <Menu.Item
-            title='Custom bootstrap (not implem.)'
+            title="Custom bootstrap (not implem.)"
             onPress={() => {}}
           />
         </Menu.Section>
-        <Menu.Section title='Relay'>
+        <Menu.Section title="Relay">
           <Menu.Item
-            title='Relay HOP'
-            customRight={<Switch justify='end' value={this.state.HOP} />}
+            title="Relay HOP"
+            customRight={<Switch justify="end" value={this.state.HOP} />}
           />
           <Menu.Item
-            title='DHT Bucket'
+            title="DHT Bucket"
             customRight={
               <Switch
-                justify='end'
+                justify="end"
                 value={this.state.DHT}
                 onValueChange={DHT => this.updateConfig({ DHT })}
               />

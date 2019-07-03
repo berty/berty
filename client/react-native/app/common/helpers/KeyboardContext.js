@@ -6,7 +6,7 @@ const KeyboardContext = React.createContext({ keyboardVisible: false })
 export const Consumer = KeyboardContext.Consumer
 
 export class Provider extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -14,7 +14,7 @@ export class Provider extends React.PureComponent {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () =>
       this._keyboardDidShow()
     )
@@ -23,20 +23,20 @@ export class Provider extends React.PureComponent {
     )
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()
   }
 
-  _keyboardDidShow () {
+  _keyboardDidShow() {
     this.setState({ keyboardVisible: true })
   }
 
-  _keyboardDidHide () {
+  _keyboardDidHide() {
     this.setState({ keyboardVisible: false })
   }
 
-  render () {
+  render() {
     return (
       <KeyboardContext.Provider value={this.state}>
         {this.props.children}

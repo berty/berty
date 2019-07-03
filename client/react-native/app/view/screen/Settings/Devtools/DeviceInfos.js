@@ -10,15 +10,16 @@ import React, { PureComponent } from 'react'
 import { Header } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { padding } from '@berty/common/styles'
-import { withRelayContext } from '@berty/relay/context'
+import { withStoreContext } from '@berty/store/context'
 
+@withStoreContext
 class DeviceInfos extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
         navigation={navigation}
-        title='Device infos'
-        titleIcon='info'
+        title="Device infos"
+        titleIcon="info"
         backBtn
       />
     ),
@@ -30,20 +31,18 @@ class DeviceInfos extends PureComponent {
   }
 
   fetch = () => {
-    const {
-      context: { queries },
-    } = this.props
+    const { context } = this.props
     this.setState({ refreshing: true }, async () => {
-      const data = await queries.DeviceInfos.fetch()
+      const data = await context.node.service.deviceInfos({})
       this.setState({ infos: data.infos, refreshing: false })
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetch()
   }
 
-  render () {
+  render() {
     const { infos } = this.state
 
     var fields = []
@@ -91,4 +90,4 @@ class DeviceInfos extends PureComponent {
   }
 }
 
-export default withRelayContext(DeviceInfos)
+export default DeviceInfos

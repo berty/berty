@@ -18,7 +18,7 @@ import {
   smallText,
 } from '@berty/common/styles'
 import Accordion from 'react-native-collapsible/Accordion'
-import { withRelayContext } from '@berty/relay/context'
+import { withStoreContext } from '@berty/store/context'
 
 const Connection = {
   NOT_CONNECTED: 0,
@@ -42,13 +42,14 @@ const ConnectionType = c => {
   }
 }
 
+@withStoreContext
 class Peers extends Component {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
         navigation={navigation}
-        title='Peers List'
-        titleIcon='list'
+        title="Peers List"
+        titleIcon="list"
         backBtn
       />
     ),
@@ -63,28 +64,24 @@ class Peers extends Component {
     watchdog: false,
   }
 
-  componentWillMount () {
-    this.subscriber = this.props.context.subscriptions.monitorPeers.subscribe({
-      iterator: undefined,
-      updater: (store, data) => {
-        const peer = data.MonitorPeers
-        this.addPeer(peer)
-      },
-    })
+  async componentWillMount() {
+    this.monitorPeersStream = await this.props.context.node.service.monitorPeers(
+      {}
+    )
+    this.monitorPeersStream.on('data', this.addPeer)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetchPeers()
   }
 
-  componentWillUnmount () {
-    this.subscriber.unsubscribe()
+  componentWillUnmount() {
+    this.monitorPeersStream.destroy()
   }
 
-  fetchPeers = () => {
-    this.props.context.queries.Peers.fetch().then(data =>
-      this.updatePeers(data.list)
-    )
+  fetchPeers = async () => {
+    const data = await this.props.context.node.service.peers({})
+    this.updatePeers(data.list)
   }
 
   updatePeers = peers => {
@@ -147,7 +144,6 @@ class Peers extends Component {
 
   filteredPeers = () => {
     const { peers } = this.state
-
     if (this.state.filter.length === 0) {
       return peers.filter(peer => peer.connection === Connection.CONNECTED)
     }
@@ -162,7 +158,7 @@ class Peers extends Component {
     return peers.filter(peer => matchID(peer) || matchAddr(peer))
   }
 
-  render () {
+  render() {
     const filteredPeers = this.filteredPeers()
     const isFiltered = !!this.state.filter.length
 
@@ -172,11 +168,11 @@ class Peers extends Component {
           <Text style={styles.title}>
             {!isFiltered
               ? `Connected Peers: ${filteredPeers.length}/${
-                this.state.peers.length
-              }`
+                  this.state.peers.length
+                }`
               : `Matched Peers: ${filteredPeers.length}/${
-                this.state.peers.length
-              }`}
+                  this.state.peers.length
+                }`}
           </Text>
         </View>
         <SearchBar onChangeText={filter => this.peerFilter(filter)}>
@@ -238,4 +234,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default withRelayContext(Peers)
+export default Peers

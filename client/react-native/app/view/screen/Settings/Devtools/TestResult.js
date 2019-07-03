@@ -17,7 +17,7 @@ import {
 } from '@berty/common/styles'
 
 export default class TestResult extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     const resultObserver = props.navigation.getParam('resultObserver')
@@ -44,13 +44,13 @@ export default class TestResult extends PureComponent {
       <Header
         navigation={navigation}
         title={navigation.getParam('title', 'Test result')}
-        titleIcon='check-circle'
+        titleIcon="check-circle"
         backBtn
       />
     ),
   })
 
-  render () {
+  render() {
     let statusMessage = 'Running...'
     let statusColor = colors.black
     let statusIcon = 'more-horizontal'
@@ -67,7 +67,7 @@ export default class TestResult extends PureComponent {
 
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
-        <Flex.Rows style={[padding]} align='center'>
+        <Flex.Rows style={[padding]} align="center">
           <Button
             icon={statusIcon}
             background={statusColor}
@@ -78,7 +78,7 @@ export default class TestResult extends PureComponent {
             medium
             middle
             center
-            self='stretch'
+            self="stretch"
           >
             {statusMessage}
           </Button>
@@ -97,12 +97,12 @@ export default class TestResult extends PureComponent {
               rounded,
             ]}
             multiline
-            placeholder='Test results will be displayed here'
+            placeholder="Test results will be displayed here"
             value={this.state.verbose}
             selectTextOnFocus
           />
           <Button
-            icon='share'
+            icon="share"
             background={colors.blue}
             margin
             padding
@@ -111,7 +111,7 @@ export default class TestResult extends PureComponent {
             medium
             middle
             center
-            self='stretch'
+            self="stretch"
             onPress={() =>
               RN.Share.share({ message: this.state.verbose }).catch(() => null)
             }

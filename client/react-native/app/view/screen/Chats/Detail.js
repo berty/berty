@@ -1,35 +1,34 @@
-import { Pagination, QueryReducer, RelayContext } from '@berty/relay'
-import { fragments } from '@berty/graphql'
-import * as enums from '@berty/common/enums.gen'
-import React, { PureComponent } from 'react'
-import * as dateFns from '@berty/common/locale/dateFns'
-
-import {
-  ActivityIndicator,
-  Platform,
-  TextInput as RNTextInput,
-  StyleSheet,
-  View,
-} from 'react-native'
-import ActionSheet from 'react-native-actionsheet'
 import {
   Avatar,
   Flex,
   Header,
   Icon,
   Markdown,
-  Screen,
   Text,
+  Loader,
+  Screen,
+  OptimizedFlatList,
 } from '@berty/component'
-import { btoa } from 'b64-lite'
 import { colors } from '@berty/common/constants'
-import { merge } from '@berty/common/helpers'
-import { parseEmbedded } from '@berty/common/helpers/json'
+import { conversation as utils } from '@berty/common/helpers/entity'
 import { shadow } from '@berty/common/styles'
-import { conversation as utils } from '@berty/relay/utils'
-import { withNamespaces } from 'react-i18next'
+import { withStoreContext } from '@berty/store/context'
+import { Store } from '@berty/container'
 import * as KeyboardContext from '@berty/common/helpers/KeyboardContext'
-import { withRelayContext } from '@berty/relay/context'
+import React, { Component, PureComponent } from 'react'
+import * as dateFns from '@berty/common/locale/dateFns'
+import * as enums from '@berty/common/enums.gen'
+import tDate from '@berty/common/helpers/timestampDate'
+import BertyEntityMessage from '@berty/bridge/service/entity/message'
+
+import {
+  Platform,
+  TextInput as RNTextInput,
+  StyleSheet,
+  View,
+} from 'react-native'
+import { withNamespaces } from 'react-i18next'
+import ActionSheet from 'react-native-actionsheet'
 
 const textStyles = StyleSheet.flatten([
   Markdown.styles,
@@ -38,9 +37,9 @@ const textStyles = StyleSheet.flatten([
       color: colors.white,
       ...(Platform.OS === 'web'
         ? {
-          wordBreak: 'break-all',
-          overflowWrap: 'break-word',
-        }
+            wordBreak: 'break-all',
+            overflowWrap: 'break-word',
+          }
         : {}),
     },
     listUnorderedItemIcon: {
@@ -58,38 +57,24 @@ const textStyles = StyleSheet.flatten([
   },
 ])
 
-class Message extends React.Component {
-  static contextType = RelayContext
-
+@withNamespaces()
+export class Message extends PureComponent {
   messageSeen = () => {
-    this.props.context.mutations.eventSeen({
-      id: this.props.data.id,
-    })
+    // this.props.context.node.service.eventSeen({
+    //   id: this.props.data.id,
+    // })
   }
 
   messageRetry = () => {
-    this.props.context.mutations.eventRetry({
+    this.props.context.node.service.eventRetry({
       id: this.props.data.id,
     })
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
-    const { data } = this.props
-
-    if (
-      data.seenAt !== nextProps.data.seenAt ||
-      (utils.isReadByOthers(nextProps.data) && !utils.isReadByOthers(data)) ||
-      utils.messageHasError(nextProps.data) !== utils.messageHasError(data)
-    ) {
-      return true
-    }
-    return false
-  }
-
-  render () {
+  render() {
     const { conversation, data, t } = this.props
 
-    const contactId = btoa(`contact:${data.sourceDeviceId}`)
+    const contactId = data.sourceDeviceId
     const { contact } =
       conversation.members.find(m => m.contact && m.contact.id === contactId) ||
       {}
@@ -98,8 +83,8 @@ class Message extends React.Component {
     const isMyself = contact && contact.status === 42
     const isOneToOne =
       conversation.kind === enums.BertyEntityConversationInputKind.OneToOne
-    // TODO: implement message seeni
-    if (new Date(this.props.data.seenAt).getTime() === 0) {
+    // TODO: implement message seen
+    if (tDate(data.seenAt).getTime() <= 0) {
       this.messageSeen()
     }
 
@@ -110,7 +95,6 @@ class Message extends React.Component {
       iconName = 'x-circle'
       iconColor = 'red'
     }
-
     return (
       <Flex.Rows
         align={isMyself ? 'end' : 'start'}
@@ -149,7 +133,7 @@ class Message extends React.Component {
           }}
         >
           <Markdown style={textStyles}>
-            {parseEmbedded(data.attributes).message.text}
+            {BertyEntityMessage.decode(data.attributes).text}
           </Markdown>
         </View>
         <Text
@@ -163,7 +147,7 @@ class Message extends React.Component {
             [isMyself ? 'left' : 'right']: 42,
           }}
         >
-          {dateFns.fuzzyTimeOrFull(new Date(data.createdAt))}{' '}
+          {dateFns.fuzzyTimeOrFull(tDate(data.createdAt))}{' '}
           {isMyself ? (
             <Icon
               name={iconName}
@@ -172,12 +156,12 @@ class Message extends React.Component {
               onPress={
                 failed
                   ? () => {
-                    if (Platform.OS !== 'web') {
-                      this.ActionSheet.show()
-                    } else if (window.confirm('Do you want to retry?')) {
-                      this.messageRetry()
+                      if (Platform.OS !== 'web') {
+                        this.ActionSheet.show()
+                      } else if (window.confirm('Do you want to retry?')) {
+                        this.messageRetry()
+                      }
                     }
-                  }
                   : null
               }
             />
@@ -199,8 +183,6 @@ class Message extends React.Component {
   }
 }
 
-const MessageContainer = fragments.Event(withNamespaces()(Message))
-
 class TextInputBase extends PureComponent {
   state = {
     height: 16,
@@ -214,7 +196,7 @@ class TextInputBase extends PureComponent {
     },
   }) => this.setState({ height: height > 80 ? 80 : height })
 
-  render () {
+  render() {
     const { height } = this.state
     const { value, t } = this.props
     return (
@@ -258,9 +240,7 @@ class TextInputBase extends PureComponent {
 
 const TextInput = withNamespaces()(TextInputBase)
 
-class Input extends PureComponent {
-  static contextType = RelayContext
-
+export class Input extends PureComponent {
   state = {
     input: '',
   }
@@ -272,7 +252,7 @@ class Input extends PureComponent {
       try {
         const conversation = this.props.navigation.state.params || {}
         input &&
-          (await this.props.context.mutations.conversationAddMessage({
+          (await this.props.context.node.service.conversationAddMessage({
             conversation: {
               id: conversation.id,
             },
@@ -295,25 +275,25 @@ class Input extends PureComponent {
     this.setState({ input: value })
   }
 
-  render () {
+  render() {
     return (
       <Flex.Cols
         size={0}
-        justify='center'
-        align='center'
+        justify="center"
+        align="center"
         style={
           Platform.OS === 'web'
             ? [
-              {
-                borderTopWidth: 0.5,
-                borderTopColor: colors.borderGrey,
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-              },
-              shadow,
-            ]
+                {
+                  borderTopWidth: 0.5,
+                  borderTopColor: colors.borderGrey,
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                },
+                shadow,
+              ]
             : [shadow]
         }
       >
@@ -330,7 +310,7 @@ class Input extends PureComponent {
             left
             top
             size={0}
-            icon='edit-2'
+            icon="edit-2"
             padding={{ right: 5, left: 8, vertical: 7 }}
           />
           <TextInput
@@ -346,7 +326,7 @@ class Input extends PureComponent {
           margin={{ right: 8, ...(Platform.OS === 'web' ? { left: 12 } : {}) }}
           padding
           large
-          icon='send'
+          icon="send"
           color={colors.grey5}
           onPress={this.onSubmit}
         />
@@ -355,99 +335,142 @@ class Input extends PureComponent {
   }
 }
 
-const Chat = fragments.Conversation(
-  class Chat extends PureComponent {
-    render () {
-      const {
-        data,
-        navigation,
-        context: { queries, subscriptions, fragments },
-        context,
-      } = this.props
-      return (
-        <Flex.Rows>
-          <Pagination
-            style={[
-              { flex: 1 },
-              Platform.OS === 'web' ? { paddingTop: 48 } : {},
-            ]}
-            direction='forward'
-            query={queries.EventList.graphql}
-            variables={merge([
-              queries.EventList.defaultVariables,
-              {
-                filter: {
-                  kind: 302,
-                  targetAddr: data.id,
-                },
-              },
-            ])}
-            subscriptions={[subscriptions.message]}
-            fragment={fragments.EventList}
-            alias='EventList'
-            renderItem={props => (
-              <MessageContainer
-                {...props}
-                navigation={navigation}
-                context={context}
-                conversation={data}
-              />
-            )}
-            inverted
-          />
-          <Input
-            navigation={this.props.navigation}
-            context={this.props.context}
-          />
-        </Flex.Rows>
-      )
-    }
-  }
-)
-class Detail extends PureComponent {
-  static navigationOptions = ({ navigation }) => ({
-    header: (
-      <Header
-        navigation={navigation}
-        title={
-          <View style={{ flexDirection: 'column' }}>
-            <Text
-              large
-              color={colors.fakeBlack}
-              justify={navigation.getParam('backBtn') ? 'center' : 'start'}
-              middle
-              size={5}
-            >
-              {utils.getTitle(navigation.state.params) || {}}
-            </Text>
-            {navigation.state.params.topic ? (
-              <Text
-                justify={navigation.getParam('backBtn') ? 'center' : 'start'}
-                middle
-              >
-                {navigation.state.params.topic}
-              </Text>
-            ) : null}
-          </View>
-        }
-        rightBtnIcon='more-vertical'
-        onPressRightBtn={() =>
-          navigation.navigate('chats/settings', {
-            conversation: navigation.state.params,
-          })
-        }
-        backBtn={() => {
-          const backBtn = navigation.getParam('backBtn')
-          if (backBtn) {
-            backBtn()
-          }
-        }}
-      />
-    ),
+export class Chat extends Component {
+  getItemLayout = (data, index) => ({
+    length: 65,
+    offset: 65 * index,
+    index,
   })
 
-  async componentDidMount () {
-    this.props.navigation.setParams({ backBtn: this.onConversationRead })
+  shouldComponentUpdate(props) {
+    return props.data.id !== this.props.data.id
+  }
+
+  render() {
+    const { data, navigation, context } = this.props
+
+    return (
+      <Flex.Rows>
+        <Store.Node.Service.EventList.Pagination
+          filter={{ kind: 302, targetAddr: data.id }}
+          paginate={({ cursor }) => ({
+            first: 30,
+            after: cursor
+              ? tDate(cursor).toISOString()
+              : new Date(Date.now()).toISOString(),
+            orderBy: 'created_at',
+            orderDesc: true,
+          })}
+          cursorExtractor={item => tDate(item.updatedAt).getTime() || 0}
+        >
+          {({ queue, count, retry, loading, paginate }) => (
+            <OptimizedFlatList
+              style={{ marginBottom: Platform.OS === 'web' ? 50 : 0 }}
+              data={queue}
+              onEndReached={paginate}
+              getItemLayout={this.getItemLayout}
+              onRefresh={retry}
+              refreshing={loading}
+              renderItem={({ item }) => (
+                <Message
+                  data={item}
+                  navigation={navigation}
+                  context={context}
+                  conversation={data}
+                />
+              )}
+              inverted
+            />
+          )}
+        </Store.Node.Service.EventList.Pagination>
+        <Input
+          navigation={this.props.navigation}
+          context={this.props.context}
+        />
+      </Flex.Rows>
+    )
+  }
+}
+
+@withStoreContext
+class ConversationDetailHeader extends PureComponent {
+  render() {
+    const { navigation } = this.props
+    return (
+      <Store.Entity.Conversation id={navigation.getParam('id')}>
+        {data =>
+          data ? (
+            <Header
+              navigation={navigation}
+              title={
+                <View style={{ flexDirection: 'column' }}>
+                  <Text
+                    large
+                    color={colors.fakeBlack}
+                    justify={
+                      navigation.getParam('backBtn') ? 'center' : 'start'
+                    }
+                    ellipsis
+                    middle
+                    size={5}
+                  >
+                    {utils.getTitle(data)}
+                  </Text>
+                  {data.topic ? (
+                    <Text
+                      justify={
+                        navigation.getParam('backBtn') ? 'center' : 'start'
+                      }
+                      middle
+                    >
+                      {data.topic}
+                    </Text>
+                  ) : null}
+                </View>
+              }
+              rightBtnIcon="more-vertical"
+              onPressRightBtn={() =>
+                navigation.navigate('chats/settings', {
+                  conversation: data,
+                })
+              }
+              backBtn={() => {
+                const backBtn = navigation.getParam('backBtn')
+                if (backBtn) {
+                  backBtn()
+                }
+              }}
+            />
+          ) : (
+            <Loader />
+          )
+        }
+      </Store.Entity.Conversation>
+    )
+  }
+}
+
+@withStoreContext
+class ConversationDetail extends PureComponent {
+  static navigationOptions = ({ navigation }) => {
+    const header = navigation.getParam('header', () => null)
+    return {
+      header: header({ navigation }),
+    }
+  }
+
+  header = ({ navigation }) => (
+    <ConversationDetailHeader
+      context={this.props.context}
+      navigation={navigation}
+    />
+  )
+
+  async componentDidMount() {
+    this.props.navigation.setParams({
+      backBtn: this.onConversationRead,
+      header: this.header,
+    })
     this.onConversationRead()
   }
 
@@ -456,55 +479,29 @@ class Detail extends PureComponent {
     if (!id) {
       return
     }
-    const res = await this.props.context.mutations.conversationRead({
+    const res = await this.props.context.node.service.conversationRead({
       id,
     })
 
     this.props.navigation.setParams(res.ConversationRead)
   }
 
-  render () {
-    const id = this.props.navigation.getParam('id')
-    const {
-      navigation,
-      context,
-      context: { queries },
-    } = this.props
-
+  render() {
+    const { navigation, context } = this.props
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
-        <QueryReducer
-          query={queries.Conversation.graphql}
-          variables={merge([queries.Conversation.defaultVariables, { id }])}
-        >
-          {(state, retry) => {
-            switch (state.type) {
-              default:
-              case state.loading:
-                return (
-                  <Flex.Rows align='center'>
-                    <Flex.Cols align='center'>
-                      <ActivityIndicator size='large' />
-                    </Flex.Cols>
-                  </Flex.Rows>
-                )
-              case state.success:
-                return (
-                  <Chat
-                    navigation={navigation}
-                    context={context}
-                    data={state.data.Conversation}
-                  />
-                )
-              case state.error:
-                setTimeout(() => retry(), 1000)
-                return null
-            }
-          }}
-        </QueryReducer>
+        <Store.Entity.Conversation id={navigation.getParam('id')}>
+          {data =>
+            data ? (
+              <Chat navigation={navigation} context={context} data={data} />
+            ) : (
+              <Loader />
+            )
+          }
+        </Store.Entity.Conversation>
       </Screen>
     )
   }
 }
 
-export default withRelayContext(Detail)
+export default ConversationDetail

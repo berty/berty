@@ -12,7 +12,7 @@ import colors from '@berty/common/constants/colors'
 @withNavigation
 @withStoreContext
 class ByQRCode extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       scanner: null,
@@ -23,14 +23,14 @@ class ByQRCode extends PureComponent {
     this.setState({ scanner })
   }
 
-  reactivate () {
+  reactivate() {
     const { scanner } = this.state
     if (scanner !== null) {
       scanner.reactivate()
     }
   }
 
-  render () {
+  render() {
     const { t, navigation } = this.props
 
     const size = Math.min(Dimensions.get('window').height)

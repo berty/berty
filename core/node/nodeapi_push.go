@@ -14,18 +14,24 @@ import (
 	"github.com/google/uuid"
 )
 
-func (n *Node) DevicePushConfigList(ctx context.Context, input *node.Void) (*node.DevicePushConfigListOutput, error) {
-	tracer := tracing.EnterFunc(ctx, input)
+func (n *Node) DevicePushConfigList(input *node.Void, stream node.Service_DevicePushConfigListServer) error {
+	tracer := tracing.EnterFunc(stream.Context(), input)
 	defer tracer.Finish()
+	ctx := tracer.Context()
 
 	defer n.handleMutex(ctx)()
 
 	var devicePushConfigs []*entity.DevicePushConfig
 	if err := n.sql(ctx).Model(entity.DevicePushConfig{}).Find(&devicePushConfigs).Error; err != nil {
-		return nil, errorcodes.ErrDb.Wrap(err)
+		return errorcodes.ErrDb.Wrap(err)
 	}
 
-	return &node.DevicePushConfigListOutput{Edges: devicePushConfigs}, nil
+	for _, devicePushConfig := range devicePushConfigs {
+		if err := stream.Send(devicePushConfig); err != nil {
+			return errorcodes.ErrNetStream.Wrap(err)
+		}
+	}
+	return nil
 }
 
 func (n *Node) DevicePushConfigCreate(ctx context.Context, input *node.DevicePushConfigCreateInput) (*entity.DevicePushConfig, error) {
@@ -40,7 +46,7 @@ func (n *Node) DevicePushConfigCreate(ctx context.Context, input *node.DevicePus
 	}
 
 	if input.RelayPubkey == "" {
-		config, err := n.Config(ctx)
+		config, err := n.ConfigFromDB(ctx)
 		if err != nil {
 			return nil, sql.GenericError(err)
 		}

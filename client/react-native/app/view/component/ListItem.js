@@ -7,7 +7,7 @@ import Avatar from './Avatar'
 import { marginLeft, padding, borderBottom } from '@berty/common/styles'
 
 export default class ListItem extends PureComponent {
-  render () {
+  render() {
     const { title, subtitle, onPress } = this.props
     return (
       <TouchableOpacity
@@ -21,14 +21,14 @@ export default class ListItem extends PureComponent {
           borderBottom,
         ]}
       >
-        <Flex.Cols align='center'>
-          <Flex.Rows size={1} align='center'>
+        <Flex.Cols align="center">
+          <Flex.Rows size={1} align="center">
             <Avatar data={this.props} size={40} />
           </Flex.Rows>
           <Flex.Rows
             size={7}
-            align='stretch'
-            justify='center'
+            align="stretch"
+            justify="center"
             style={[marginLeft]}
           >
             <Text color={colors.black} left middle>

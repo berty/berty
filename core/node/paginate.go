@@ -2,6 +2,7 @@ package node
 
 import (
 	"fmt"
+	"time"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/pkg/errorcodes"
@@ -18,13 +19,27 @@ func paginate(query *gorm.DB, paginate *node.Pagination) (*gorm.DB, error) {
 	if paginate.Before != "" {
 		return nil, errorcodes.ErrUnimplemented.New()
 	}
+	var cursor interface{}
 	switch paginate.OrderBy {
-	case "":
+	case "", "id":
 		paginate.OrderBy = "id"
+		if paginate.First > 0 {
+			cursor = paginate.After
+		} else {
+			cursor = paginate.Before
+		}
 		break
-	case "id":
-	case "created_at":
-	case "updated_at":
+	case "created_at", "updated_at", "wrote_at", "seen_at":
+		var err error
+		if paginate.First > 0 {
+			cursor, err = time.Parse(time.RFC3339Nano, paginate.After)
+		} else {
+			cursor, err = time.Parse(time.RFC3339Nano, paginate.Before)
+		}
+		if err != nil {
+			return nil, err
+		}
+		cursor = cursor.(time.Time).UTC()
 		break
 	default:
 		return nil, errorcodes.ErrUnimplemented.New()
@@ -48,15 +63,15 @@ func paginate(query *gorm.DB, paginate *node.Pagination) (*gorm.DB, error) {
 	query = query.Order(orderBy, true)
 
 	if paginate.First > 0 && paginate.After != "" {
-		if !paginate.OrderDesc && paginate.First > 0 {
-			query = query.Where(fmt.Sprintf("%s > ?", paginate.OrderBy), paginate.After)
+		if !paginate.OrderDesc {
+			query = query.Where(fmt.Sprintf("%s > ?", paginate.OrderBy), cursor)
 		} else {
-			query = query.Where(fmt.Sprintf("%s < ?", paginate.OrderBy), paginate.After)
+			query = query.Where(fmt.Sprintf("%s < ?", paginate.OrderBy), cursor)
 		}
 	}
 
 	if paginate.Last > 0 && paginate.Before != "" {
-		query = query.Where(fmt.Sprintf("%s > ?", paginate.OrderBy), paginate.Before)
+		query = query.Where(fmt.Sprintf("%s > ?", paginate.OrderBy), cursor)
 	}
 	return query, nil
 }

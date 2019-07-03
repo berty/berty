@@ -12,7 +12,7 @@ import { withStoreContext } from '@berty/store/context'
 @withNamespaces()
 @withStoreContext
 class ByPublicKey extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -37,7 +37,7 @@ class ByPublicKey extends PureComponent {
     })
   }
 
-  render () {
+  render() {
     const { t } = this.props
 
     return (
@@ -83,7 +83,7 @@ class ByPublicKey extends PureComponent {
                   medium
                   middle
                   center
-                  self='stretch'
+                  self="stretch"
                   onPress={async () => {
                     const clipboardContent = await Clipboard.getString()
                     await new Promise(resolve =>
@@ -111,7 +111,7 @@ class ByPublicKey extends PureComponent {
                 medium
                 middle
                 center
-                self='stretch'
+                self="stretch"
                 onPress={async () => {
                   return this.onAdd()
                 }}

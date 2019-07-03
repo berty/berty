@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -160,6 +161,10 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 
 	defer n.handleMutex(ctx)()
 
+	return n.eventSeen(ctx, input)
+}
+
+func (n *Node) eventSeen(ctx context.Context, input *entity.Event) (*entity.Event, error) {
 	sql := n.sql(ctx)
 
 	// get event
@@ -168,19 +173,43 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
-	// // check if event is from another contact
-	// if event.Direction != entity.Event_Incoming {
-	// 	return event, nil
-	// }
-
-	seenAt := time.Now().UTC()
-	event.SeenAt = &seenAt
-
-	// then mark as seen
-	if err := sql.Save(event).Error; err != nil {
-		return nil, errors.Wrap(err, "cannot set event as seen")
+	// set same type of event as seen
+	events := []*entity.Event{}
+	query := sql.
+		Where(&entity.Event{
+			SourceContactID: event.SourceContactID,
+			Direction:       entity.Event_Incoming,
+			TargetType:      event.TargetType,
+			TargetAddr:      event.TargetAddr,
+		}).
+		Where(
+			"received_at <= :time",
+			event.ReceivedAt,
+		).
+		Order("received_at desc")
+	if err := query.Find(&events).Error; err != nil {
+		return nil, err
 	}
 
+	var errLoop error
+	seenAt := time.Now().UTC()
+	for _, e := range events {
+		e.SeenAt = &seenAt
+		if err := sql.Save(e).Error; err != nil {
+			errLoop = errors.Wrap(
+				errLoop,
+				fmt.Sprintf("cannot set event as seen"),
+			)
+		}
+	}
+	if errLoop != nil {
+		return nil, errLoop
+	}
+
+	event, err = entity.GetEventByID(sql, input.ID)
+	if err != nil {
+		return nil, err
+	}
 	return event, nil
 }
 
@@ -425,7 +454,6 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 	if err := query.Find(&contacts).Error; err != nil {
 		return errorcodes.ErrDb.Wrap(err)
 	}
-
 	// stream results
 	for _, contact := range contacts {
 		if err := stream.Send(contact); err != nil {

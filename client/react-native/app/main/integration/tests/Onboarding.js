@@ -1,6 +1,6 @@
-export default function (spec) {
-  spec.describe('Onboarding', function () {
-    spec.it('works', async function () {
+export default function(spec) {
+  spec.describe('Onboarding', function() {
+    spec.it('works', async function() {
       let authScreenExists
       const nickname = process.env['NICKNAME'] || 'Berty'
 

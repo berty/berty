@@ -1,25 +1,24 @@
-import { Text, TouchableOpacity, View } from 'react-native'
-import React, { PureComponent } from 'react'
-import moment from 'moment'
-
 import { FilterModal, PickerFilter } from '@berty/component/Filters'
 import {
   Flex,
   Header,
-  Screen,
-  SearchBar,
   Icon,
+  SearchBar,
+  OptimizedFlatList,
   Text as LibText,
+  Loader,
 } from '@berty/component'
-import { Pagination, RelayContext } from '@berty/relay'
 import { borderBottom, marginLeft, padding } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
-import { fragments } from '@berty/graphql'
-import * as enums from '@berty/common/enums.gen'
 import Button from '@berty/component/Button'
-import { withRelayContext } from '@berty/relay/context'
+import React, { PureComponent } from 'react'
+import * as enums from '@berty/common/enums.gen'
+import { Store } from '@berty/container'
+import { withNavigation } from 'react-navigation'
+import { Text, TouchableOpacity, View } from 'react-native'
+import moment from 'moment'
 
-const Item = fragments.Event(({ data, navigation }) => (
+export const Item = ({ data, navigation }) => (
   <TouchableOpacity
     onPress={() => {
       navigation.navigate('devtools/eventdetails', { details: data })
@@ -33,12 +32,12 @@ const Item = fragments.Event(({ data, navigation }) => (
       borderBottom,
     ]}
   >
-    <Flex.Cols align='center'>
-      <Flex.Rows size={7} align='stretch' justify='center' style={[marginLeft]}>
+    <Flex.Cols align="center">
+      <Flex.Rows size={7} align="stretch" justify="center" style={[marginLeft]}>
         <Text
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
           numberOfLines={1}
-          className='textEllipsis'
+          className="textEllipsis"
           style={{ color: colors.black }}
         >
           {data.ackedAt !== null ? (
@@ -59,27 +58,27 @@ const Item = fragments.Event(({ data, navigation }) => (
           {' (' + data.kind + ')'}
         </Text>
         <Text
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
           numberOfLines={1}
-          className='textEllipsis'
+          className="textEllipsis"
           style={{ color: colors.blackGrey, fontSize: 12 }}
         >
           <Text style={{ fontWeight: 'bold' }}>ID</Text>
           {' ' + data.id}
         </Text>
         <Text
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
           numberOfLines={1}
-          className='textEllipsis'
+          className="textEllipsis"
           style={{ color: colors.blackGrey, fontSize: 12 }}
         >
           <Text style={{ fontWeight: 'bold' }}>Created</Text>
           {` ${moment(data.createdAt).fromNow()} ${data.createdAt}`}
         </Text>
         <Text
-          ellipsizeMode='tail'
+          ellipsizeMode="tail"
           numberOfLines={1}
-          className='textEllipsis'
+          className="textEllipsis"
           style={{ color: colors.blackGrey, fontSize: 12 }}
         >
           <Text style={{ fontWeight: 'bold' }}>Acked</Text>
@@ -90,8 +89,9 @@ const Item = fragments.Event(({ data, navigation }) => (
       </Flex.Rows>
     </Flex.Cols>
   </TouchableOpacity>
-))
+)
 
+@withNavigation
 class EventList extends PureComponent {
   state = {
     search: '',
@@ -113,7 +113,7 @@ class EventList extends PureComponent {
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.navigation.setParams({
       filters: {
         onlyWithoutAckedAt: 0,
@@ -126,59 +126,66 @@ class EventList extends PureComponent {
       header: (
         <Header
           navigation={navigation}
-          title='List events'
-          titleIcon='list'
+          title="List events"
+          titleIcon="list"
           backBtn
         />
       ),
     }
   }
 
-  render () {
-    const {
-      navigation,
-      context: { queries },
-    } = this.props
+  renderItem = ({ item: data }) => (
+    <Item data={data} navigation={this.props.navigation} />
+  )
+
+  render() {
+    const { navigation } = this.props
     return (
-      <Screen style={{ backgroundColor: colors.white }}>
-        <Pagination
-          query={queries.EventList.graphql}
-          variables={{
-            ...queries.EventList.defaultVariables,
-            ...navigation.getParam('filters'),
-          }}
-          fragment={fragments.EventList}
-          alias='EventList'
-          renderItem={props => <Item {...props} navigation={navigation} />}
-          ListHeaderComponent={
-            <View style={padding}>
-              <SearchBar onChangeText={search => this.searchHandler(search)}>
-                <LibText
-                  size={0}
-                  height={34}
-                  icon='filter'
-                  padding
-                  middle
-                  large
-                  onPress={() =>
-                    navigation.navigate('modal/devtools/event/list/filters', {
-                      defaultData: navigation.getParam('filters'),
-                      onSave: filters => navigation.setParams({ filters }),
-                    })
-                  }
-                />
-              </SearchBar>
-            </View>
-          }
-        />
-      </Screen>
+      <Store.Node.Service.EventList.Pagination
+        paginate={({ cursor }) => ({
+          first: 50,
+          after: cursor,
+          sortedBy: 'created_at',
+        })}
+        {...navigation.getParam('filters')}
+        fallback={<Loader />}
+      >
+        {({ queue, loading, paginate, retry }) => (
+          <OptimizedFlatList
+            data={queue}
+            onEndReached={paginate}
+            renderItem={this.renderItem}
+            onRefresh={retry}
+            refreshing={loading}
+            ListHeaderComponent={
+              <View style={padding}>
+                <SearchBar onChangeText={search => this.searchHandler(search)}>
+                  <LibText
+                    size={0}
+                    height={34}
+                    icon="filter"
+                    padding
+                    middle
+                    large
+                    onPress={() =>
+                      navigation.navigate('modal/devtools/event/list/filters', {
+                        defaultData: navigation.getParam('filters'),
+                        onSave: filters => navigation.setParams({ filters }),
+                      })
+                    }
+                  />
+                </SearchBar>
+              </View>
+            }
+          />
+        )}
+      </Store.Node.Service.EventList.Pagination>
     )
   }
 }
 
-class EventListFilterModalWithContext extends PureComponent {
-  static contextType = RelayContext
-  render () {
+export class EventListFilterModal extends PureComponent {
+  render() {
     const { navigation } = this.props
     return (
       <FilterModal
@@ -187,7 +194,7 @@ class EventListFilterModalWithContext extends PureComponent {
         defaultData={navigation.getParam('defaultData')}
       >
         <PickerFilter
-          name='onlyWithoutAckedAt'
+          name="onlyWithoutAckedAt"
           choices={[
             { value: 0, label: 'All values' },
             { value: 1, label: 'AckedAt is not defined' },
@@ -210,7 +217,4 @@ class EventListFilterModalWithContext extends PureComponent {
   }
 }
 
-export const EventListFilterModal = withRelayContext(
-  EventListFilterModalWithContext
-)
-export default withRelayContext(EventList)
+export default EventList

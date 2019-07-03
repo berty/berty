@@ -37,7 +37,6 @@ var sqlConfig = &daemon.SQLConfig{
 var config = &daemon.Config{
 	SqlOpts:          sqlConfig,
 	GrpcBind:         ":1337",
-	GqlBind:          ":8700",
 	GrpcWebBind:      ":8737",
 	HideBanner:       true,
 	DropDatabase:     false,

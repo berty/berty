@@ -542,7 +542,3 @@ func (m ConversationMember) Filtered() *ConversationMember {
 	}
 	return &member
 }
-
-func (c Conversation) IsNode() {} // required by gqlgen
-
-func (m ConversationMember) IsNode() {} // required by gqlgen

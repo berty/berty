@@ -47,7 +47,7 @@ export const withDeepLinkHandler = Component => {
 
     setDeepLink = deepLink => this.setState(deepLink)
 
-    componentDidMount () {
+    componentDidMount() {
       Linking.addEventListener('url', this.handleOpenURL)
 
       Linking.getInitialURL()
@@ -59,11 +59,11 @@ export const withDeepLinkHandler = Component => {
         .catch(() => {})
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
       Linking.removeEventListener('url', this.handleOpenURL)
     }
 
-    render () {
+    render() {
       return (
         <Component
           {...this.props}

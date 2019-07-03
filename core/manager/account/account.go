@@ -52,7 +52,6 @@ func Info(ctx context.Context) map[string]string {
 	a := list[0] // FIXME: support multi accounts
 	return map[string]string{
 		"manager: accounts":      fmt.Sprintf("%d accounts", len(list)),
-		"manager: gql-bind":      a.GQLBind,
 		"manager: grpc-bind":     a.GrpcBind,
 		"manager: grpc-web-bind": a.GrpcWebBind,
 		"manager: db":            a.dbPath(),
@@ -71,11 +70,8 @@ type Account struct {
 	dbDir  string
 	dbDrop bool
 
-	gqlHandler               http.Handler
-	GQLBind                  string
 	ioGrpc                   *helper.IOGrpc
 	ioGrpcListener           net.Listener
-	gqlServer                *http.Server
 	GrpcWebBind              string
 	grpcWebServer            *http.Server
 	grpcWebGrpcServerWrapper *grpc_web.WrappedGrpcServer
@@ -235,10 +231,6 @@ func (a *Account) Open(ctx context.Context) error {
 		a.Close(ctx)
 		return err
 	}
-	if err := a.startGQL(ctx); err != nil {
-		a.Close(ctx)
-		return err
-	}
 	if err := a.startGrpcWeb(ctx); err != nil {
 		a.Close(ctx)
 		return err
@@ -256,7 +248,6 @@ func (a *Account) Open(ctx context.Context) error {
 	logger().Info("account started",
 		zap.String("pubkey", a.node.PubKey()),
 		zap.String("grpc-bind", a.GrpcBind),
-		zap.String("gql-bind", a.GQLBind),
 		zap.Int("p2p-api", int(p2papi.Version)),
 		zap.Int("node-api", int(nodeapi.Version)),
 		zap.String("version", core.Version),
@@ -296,9 +287,6 @@ func (a *Account) Close(ctx context.Context) {
 	}
 	if a.ioGrpcListener != nil {
 		_ = a.ioGrpcListener.Close()
-	}
-	if a.gqlServer != nil {
-		_ = a.gqlServer.Close()
 	}
 	if a.BotRunning {
 		_ = a.StopBot(ctx)
@@ -465,74 +453,6 @@ func (a *Account) startGrpcWeb(ctx context.Context) error {
 				return
 			}
 			time.Sleep(1)
-		}
-	}()
-	return nil
-}
-
-func (a *Account) startGQL(ctx context.Context) error {
-	tracer := tracing.EnterFunc(ctx)
-	defer tracer.Finish()
-	// ctx = tracer.Context()
-
-	if a.gqlHandler == nil {
-		return nil
-	}
-
-	a.ioGrpcListener = a.ioGrpc.Listener()
-
-	go func() {
-		defer a.PanicHandler()
-		errChan := make(chan error, 1)
-		for {
-			go func() {
-				defer a.PanicHandler()
-				errChan <- a.GrpcServer.Serve(a.ioGrpcListener)
-			}()
-			select {
-			case err := <-errChan:
-				a.errChan <- err
-			case <-a.shutdown:
-				logger().Debug("account shutdown grpc server")
-				a.ioGrpcListener.Close()
-				a.GrpcServer.Stop()
-				return
-			}
-		}
-	}()
-
-	addr, err := net.ResolveTCPAddr("tcp", a.GQLBind)
-	if err != nil {
-		return err
-	}
-
-	if addr.IP == nil {
-		addr.IP = net.IP{0, 0, 0, 0}
-	}
-
-	if a.GQLBind == "" {
-		a.GQLBind = ":8700"
-	}
-
-	a.gqlServer = &http.Server{Addr: fmt.Sprintf("%s:%d", addr.IP.String(), addr.Port), Handler: a.gqlHandler}
-
-	// start gql server
-	go func() {
-		defer a.PanicHandler()
-		errChan := make(chan error, 1)
-		for {
-			go func() {
-				defer a.PanicHandler()
-				errChan <- a.gqlServer.ListenAndServe()
-			}()
-			select {
-			case err := <-errChan:
-				a.errChan <- err
-			case <-a.shutdown:
-				logger().Debug("account shutdown gql server")
-				a.gqlServer.Close()
-				return
-			}
 		}
 	}()
 	return nil

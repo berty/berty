@@ -10,9 +10,9 @@ PROTOS = $(strip $(call rwildcard, ./, *.proto))
 OUR_PROTOS = $(filter-out $(call rwildcard,./vendor/, *.proto),$(PROTOS))
 PROTOC_OPTS = --proto_path=/protobuf:./vendor/github.com/gogo/protobuf:vendor:.
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
-GENERATED_PATTERNS = %.validate.gen.go %.service.gen.go %generated.gen.go %kind.gen.go %.pb.go %.gen.js %.gen.graphql
+GENERATED_PATTERNS = %.validate.gen.go %.service.gen.go %generated.gen.go %kind.gen.go %.pb.go %.gen.js
 GENERATED_FILES = $(filter $(GENERATED_PATTERNS),$(filter-out $(call rwildcard ./vendor/,*),$(call rwildcard,./,*)))
-GENERATION_TARGETS = .kind.generated .client.generated .pb.generated .gql.generated .rn.generated
+GENERATION_TARGETS = .kind.generated .client.generated .pb.generated
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
 BUILD_ENV ?= GO111MODULE=on GOPROXY=https://goproxy.berty.io CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
@@ -28,9 +28,7 @@ TEST_OPTS ?= -v
 TEST_TIMEOUT ?= 3m
 TEST_CMD ?= go test -test.timeout $(TEST_TIMEOUT) $(TEST_OPTS) $(TEST_PATHS)
 PROTOC ?= protoc
-GQLGEN ?= gqlgen
 GIN_OPTS ?= --immediate --port=2999 --appPort=1337 --build=./cmd/berty --excludeDir vendor
-IGNORE_GQLGEN ?= 0
 RN_PATH ?= ../client/react-native
 
 ##
@@ -105,18 +103,20 @@ generate: .generated
 		--entrypoint="sh" \
 		--rm \
 		bertychat/protoc:v11 \
-		-xec 'make IGNORE_GQLGEN=$(IGNORE_GQLGEN) generate_local'
+		-xec 'make generate_local'
 	touch $@
 
 .PHONY: clean
 clean:
 	rm -f .generated $(GENERATED_FILES) $(GENERATION_TARGETS) $(BIN)
 	rm -rf vendor
+	@# FIXME: investigate
+	rm -rf google gogoproto github.com google.golang.org
 
 .PHONY: generate_local
 generate_local: $(GENERATION_TARGETS)
 	@# FIXME: investigate why (sometimes?) there are "github.com" and "google.golang.org" directories generated at the root of core/
-	rm -rf github.com google.golang.org
+	rm -rf google gogoproto github.com google.golang.org
 
 	goimports -w `find . -name "*.pb.go" -or -name "*.gen.go" | grep -v /vendor/`
 	gofmt -w -s `find . -name "*.pb.go" -or -name "*.gen.go" | grep -v /vendor/`
@@ -144,13 +144,18 @@ _ci_prepare:
 
 %.pb.json: %.proto
 	mkdir -p "$(dir ../client/react-native/app/bridge/service/$@)"
-	pbjs --path=. -t json "./$<" > ../client/react-native/app/bridge/service/$@
-
-# .json.generated: $(PROTOS)
-	# pbjs -t json ./daemon/daemon.proto > ../client/react-native/app/bridge/service/daemon/daemon.pb.json
+	pbjs \
+		--path /protobuf \
+		--path vendor/github.com/gogo/protobuf/ \
+		--path vendor \
+		--path $(GOPATH)/src/berty.tech/core \
+		--path . \
+		-t json \
+		"./$<" > ../client/react-native/app/bridge/service/$@
 
 # FIXME: use an automated rule that matches every client generated files
 .client.generated: $(PROTOS)
+	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node ./api/node/service.proto
 	@# FIXME: implement `uniq` in make
 	@set -e; for protodir in `echo $(dir $(SERVICE_PROTOS)) | tr " " "\n" | uniq`; do (set -xe; \
 		$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=false,single-package-mode=true,template_dir=./api/client:./api/client $$protodir/*.proto; \
@@ -161,29 +166,6 @@ _ci_prepare:
 	goimports -w ./api/client/*.gen.go ./api/client/jsonclient/*.gen.go
 	sed -i'' '/^$$/d' api/client/*.gen.go api/client/jsonclient/*.gen.go
 	goimports -w ./api/client/*.gen.go ./api/client/jsonclient/*.gen.go
-	touch $@
-
-.kind.generated: $(PROTOS)
-	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./entity:./entity ./entity/kind.proto
-	goimports -w ./entity
-	touch $@
-
-.gql.generated: $(PROTOS) .pb.generated
-	mkdir -p ./api/node/graphql
-	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node ./api/node/service.proto
-	goimports -w `find api/node api -name '*.gen.go'`
-
-	@# gqlgen
-	cd ./api/node/graphql; test "$(IGNORE_GQLGEN)" = "1" || $(GQLGEN) -c gqlgen.gen.yml -v gen
-	test "$(IGNORE_GQLGEN)" = "1" || cp ./api/node/graphql/service.gen.graphql  ../client/react-native/app/schema.graphql
-	test "$(IGNORE_GQLGEN)" = "1" || prettier-eslint --trailing-comma all --single-quote --no-semi --write ./api/node/graphql/enums.gen.js
-	test "$(IGNORE_GQLGEN)" = "1" || cp ./api/node/graphql/enums.gen.js ../client/react-native/app/common/enums.gen.js
-	test "$(IGNORE_GQLGEN)" = "0" || git checkout api/node/graphql/models/generated.gen.go api/node/graphql/graph/generated/generated.gen.go || true
-
-	@# everything worked as expected
-	touch $@
-
-.rn.generated:
 	# generate grpc service
 	pbhbs \
 		--template-dir $(RN_PATH)/app/template \
@@ -193,10 +175,15 @@ _ci_prepare:
 		--proto-path $(GOPATH)/src/berty.tech/core \
 		--output-dir $(RN_PATH)/app \
 		--helper-dir $(RN_PATH)/app/template/helper \
-		$(PROTOS)
+		./api/node/service.proto
 	# prettify files
 	cd $(RN_PATH) && make gen.pretty
+	touch $@
 
+.kind.generated: $(PROTOS)
+	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./entity:./entity ./entity/kind.proto
+	goimports -w ./entity
+	touch $@
 
 .pb.generated: $(patsubst %.proto,%.pb.go,$(OUR_PROTOS)) $(patsubst %.proto,%.pb.json,$(OUR_PROTOS))
 	rm -rf google/ # remove directory generated by protoc-gen-gotemplate for proto deps

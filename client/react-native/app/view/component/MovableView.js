@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { PanResponder, Animated } from 'react-native'
 
 export default class MovableView extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       pan: new Animated.ValueXY(),
@@ -37,13 +37,13 @@ export default class MovableView extends Component {
     })
   }
 
-  componentWillMount () {
+  componentWillMount() {
     if (typeof this.props.onMove === 'function') {
       this.state.pan.addListener(values => this.props.onMove(values))
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.state.pan.removeAllListeners()
   }
 
@@ -53,7 +53,7 @@ export default class MovableView extends Component {
     })
   }
 
-  render () {
+  render() {
     return (
       <Animated.View style={[this.props.style, this.state.pan.getLayout()]}>
         {React.Children.map(this.props.children, child =>

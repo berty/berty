@@ -2,9 +2,8 @@ import React from 'react'
 import { colors } from '@berty/common/constants'
 import ActionList from './ActionList'
 import { withNamespaces } from 'react-i18next'
-import { withStoreContext } from '@berty/store/context'
 
-const ActionsUnknown = withStoreContext(({ data, inModal, t, context }) => (
+const ActionsUnknown = ({ data, inModal, t, context }) => (
   <ActionList inModal={inModal}>
     <ActionList.Action
       icon={'send'}
@@ -29,6 +28,6 @@ const ActionsUnknown = withStoreContext(({ data, inModal, t, context }) => (
       successMessage={t('contacts.cancel-request-action-feedback')}
     />
   </ActionList>
-))
+)
 
 export default withNamespaces()(ActionsUnknown)

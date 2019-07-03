@@ -20,7 +20,7 @@ func (m *Event) Validate() error {
 		return nil
 	}
 
-	// handling field: ID - name:"id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"id" options:<53004:1 []:"ID" 65006:"gorm:\"primary_key\"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: ID - name:"id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"id" options:<[]:"ID" 65006:"gorm:\"primary_key\"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: SourceDeviceID - name:"source_device_id" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"sourceDeviceId" options:<[]:"SourceDeviceID" 65006:"gorm:\"primary_key\"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
@@ -70,7 +70,7 @@ func (m *Event) Validate() error {
 
 	// handling field: Kind - name:"kind" number:13 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Kind" json_name:"kind" options:<[]:0 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: Attributes - name:"attributes" number:14 label:LABEL_OPTIONAL type:TYPE_BYTES json_name:"attributes" options:<53005:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Attributes - name:"attributes" number:14 label:LABEL_OPTIONAL type:TYPE_BYTES json_name:"attributes"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: SeenAt - name:"seen_at" number:16 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".google.protobuf.Timestamp" json_name:"seenAt" options:<65010:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
@@ -94,7 +94,7 @@ func (m *Event) Validate() error {
 
 	// handling field: TargetType - name:"target_type" number:20 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Event.TargetType" json_name:"targetType"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: TargetAddr - name:"target_addr" number:21 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"targetAddr" options:<53004:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: TargetAddr - name:"target_addr" number:21 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"targetAddr"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: ErrProxy - name:"err_proxy" number:98 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.entity.Err" json_name:"errProxy" options:<65006:"gorm:\"-\"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 

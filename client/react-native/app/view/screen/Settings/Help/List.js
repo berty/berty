@@ -12,26 +12,26 @@ class List extends PureComponent {
     tabBarVisible: false,
   })
 
-  render () {
+  render() {
     const { navigation, t } = this.props
     return (
       <View style={{ flex: 1 }}>
         <Image
-          resizeMode='contain'
+          resizeMode="contain"
           style={{ flex: 3, width: null, height: null, marginTop: 42 }}
           source={require('@berty/common/static/img/square_help.png')}
         />
         <Menu>
           <Menu.Section>
             <Menu.Item
-              icon='book-open'
+              icon="book-open"
               title={t('settings.faq')}
               onPress={() => navigation.navigate('help/faq')}
             />
           </Menu.Section>
           <Menu.Section>
             <Menu.Item
-              icon='message-circle'
+              icon="message-circle"
               title={t('settings.contact-us')}
               onPress={() => navigation.navigate('help/contact')}
             />

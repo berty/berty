@@ -1,24 +1,32 @@
+import {
+  Avatar,
+  Flex,
+  Header,
+  Loader,
+  OptimizedFlatList,
+  Screen,
+  SearchBar,
+  Text,
+} from '@berty/component'
+import { border, borderBottom, marginLeft, padding } from '@berty/common/styles'
+import { colors } from '@berty/common/constants'
+import React, { Component, PureComponent } from 'react'
+import * as enums from '@berty/common/enums.gen'
+import { Store } from '@berty/container'
+import { withStoreContext } from '@berty/store/context'
 import { ActivityIndicator, View } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
-import React, { Component, PureComponent } from 'react'
 
-import { Pagination, RelayContext } from '@berty/relay'
-import { Avatar, Flex, Header, Screen, SearchBar, Text } from '@berty/component'
-import { border, borderBottom, marginLeft, padding } from '@berty/common/styles'
-import { colors } from '@berty/common/constants'
-import { fragments } from '@berty/graphql'
-import * as enums from '@berty/common/enums.gen'
-import { withRelayContext } from '@berty/relay/context'
-
-class ItemBase extends PureComponent {
+@withNamespaces()
+export class Item extends PureComponent {
   state = { selected: false }
 
   onPress = () => {
     this.setState({ selected: !this.state.selected }, this.props.onPress)
   }
 
-  render () {
+  render() {
     const {
       data: { status, displayName, overrideDisplayName },
       t,
@@ -31,7 +39,7 @@ class ItemBase extends PureComponent {
 
     return (
       <Flex.Cols
-        align='center'
+        align="center"
         onPress={this.onPress}
         style={[
           {
@@ -41,9 +49,9 @@ class ItemBase extends PureComponent {
           borderBottom,
         ]}
       >
-        <Flex.Cols size={1} align='center'>
+        <Flex.Cols size={1} align="center">
           <Avatar data={this.props.data} size={40} />
-          <Flex.Rows size={3} justify='start' style={[marginLeft]}>
+          <Flex.Rows size={3} justify="start" style={[marginLeft]}>
             <Text color={colors.fakeBlack} left ellipsed>
               {overrideDisplayName || displayName}
             </Text>
@@ -56,7 +64,7 @@ class ItemBase extends PureComponent {
             </Text>
           </Flex.Rows>
         </Flex.Cols>
-        <Flex.Rows align='end' self='center'>
+        <Flex.Rows align="end" self="center">
           <View
             style={[
               selected ? null : border,
@@ -69,7 +77,7 @@ class ItemBase extends PureComponent {
             ]}
           >
             <Text
-              icon='check'
+              icon="check"
               middle
               center
               color={selected ? colors.white : colors.background}
@@ -81,18 +89,17 @@ class ItemBase extends PureComponent {
   }
 }
 
-const Item = withNamespaces()(fragments.Contact(ItemBase))
+@withStoreContext
+@withNamespaces()
 class ListScreen extends Component {
-  static contextType = RelayContext
-
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
         navigation={navigation}
         title={I18n.t('chats.add-members')}
-        titleIcon='users'
+        titleIcon="users"
         rightBtn={navigation.getParam('rightBtn')}
-        rightBtnIcon='check-circle'
+        rightBtnIcon="check-circle"
         backBtn
         onPressRightBtn={navigation.getParam('onSubmit')}
       />
@@ -113,30 +120,30 @@ class ListScreen extends Component {
     contactsID: [],
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     return false
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setNavigationParams()
   }
 
   onDefaultSubmit = async ({ contactsID }) => {
-    const {
-      ConversationCreate: conversation,
-    } = await this.props.context.mutations.conversationCreate({
-      title: '',
-      topic: '',
-      infos: '',
-      kind: enums.BertyEntityConversationInputKind.Group,
-      contacts: contactsID.map(id => ({
-        id,
-        displayName: '',
-        displayStatus: '',
-        overrideDisplayName: '',
-        overrideDisplayStatus: '',
-      })),
-    })
+    const conversation = await this.props.context.node.service.conversationCreate(
+      {
+        title: '',
+        topic: '',
+        infos: '',
+        kind: enums.BertyEntityConversationInputKind.Group,
+        contacts: contactsID.map(id => ({
+          id,
+          displayName: '',
+          displayStatus: '',
+          overrideDisplayName: '',
+          overrideDisplayStatus: '',
+        })),
+      }
+    )
 
     this.props.navigation.navigate('chats/detail', conversation)
   }
@@ -145,7 +152,7 @@ class ListScreen extends Component {
     try {
       this.setNavigationParams({
         onSubmit: null,
-        rightBtn: <ActivityIndicator size='small' />,
+        rightBtn: <ActivityIndicator size="small" />,
       })
       await onSubmit(this.state)
     } catch (err) {
@@ -154,59 +161,69 @@ class ListScreen extends Component {
     }
   }
 
-  render () {
+  render() {
+    const { navigation } = this.props
     const { contactsID } = this.state
-    const { context, navigation } = this.props
-
     const currentContactIds = navigation.getParam('currentContactIds', [])
 
     return (
-      <Screen style={[{ backgroundColor: colors.white }]}>
-        <Pagination
-          context={context}
-          query={context.queries.ContactList.graphql}
-          variables={context.queries.ContactList.defaultVariables}
-          fragment={fragments.ContactList}
-          alias='ContactList'
-          ListHeaderComponent={
-            <View style={padding}>
-              <SearchBar
-                onChangeText={() => {
-                  console.warn('not implemented')
-                }}
-              />
-            </View>
-          }
-          ListEmptyComponent={
-            <View style={padding}>
-              {currentContactIds.length > 0 ? (
-                <Text>You can't add anyone to this conversation</Text>
-              ) : (
-                <Text>
-                  You need to have contacts before you can create a conversation
-                </Text>
-              )}
-            </View>
-          }
-          renderItem={props =>
-            props.data.status !== 42 &&
-            currentContactIds.indexOf(props.data.id) === -1 ? (
-                <Item
-                  {...props}
-                  onPress={() => {
-                    const index = contactsID.lastIndexOf(props.data.id)
-                    index < 0
-                      ? contactsID.push(props.data.id)
-                      : contactsID.splice(index, 1)
-                    this.setState({ contactsID })
-                  }}
-                />
-              ) : null
-          }
-        />
+      <Screen style={{ backgroundColor: 'white' }}>
+        <Store.Node.Service.ContactList.Pagination
+          paginate={({ cursor }) => ({
+            first: 50,
+            cursor: cursor,
+          })}
+          fallback={<Loader />}
+        >
+          {({ queue, count, retry, loading, paginate }) => (
+            <OptimizedFlatList
+              data={queue}
+              onEndReached={paginate}
+              getItemLayout={this.getItemLayout}
+              onRefresh={retry}
+              refreshing={loading}
+              renderItem={({ item: data }) =>
+                data.status !== 42 &&
+                currentContactIds.indexOf(data.id) === -1 ? (
+                  <Item
+                    data={data}
+                    onPress={() => {
+                      const index = contactsID.lastIndexOf(data.id)
+                      index < 0
+                        ? contactsID.push(data.id)
+                        : contactsID.splice(index, 1)
+                      this.setState({ contactsID })
+                    }}
+                  />
+                ) : null
+              }
+              ListEmptyComponent={
+                <View style={padding}>
+                  {currentContactIds.length > 0 ? (
+                    <Text>You can't add anyone to this conversation</Text>
+                  ) : (
+                    <Text>
+                      You need to have contacts before you can create a
+                      conversation
+                    </Text>
+                  )}
+                </View>
+              }
+              ListHeaderComponent={
+                <View style={padding}>
+                  <SearchBar
+                    onChangeText={() => {
+                      console.warn('not implemented')
+                    }}
+                  />
+                </View>
+              }
+            />
+          )}
+        </Store.Node.Service.ContactList.Pagination>
       </Screen>
     )
   }
 }
 
-export default withNamespaces()(withRelayContext(ListScreen))
+export default ListScreen

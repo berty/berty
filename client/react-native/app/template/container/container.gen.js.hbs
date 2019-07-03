@@ -1,7 +1,6 @@
 {{~#if (contains filename "api/node/service.proto")~}}
 
 import { observer } from 'mobx-react'
-import { observe } from 'mobx'
 import { Stream, StreamPagination } from './stream'
 import { Unary } from './unary'
 import { Entity } from './entity'
@@ -18,13 +17,13 @@ import { Component } from 'react'
             @observer
             export class {{name}}Entity extends Entity {
               fetch = () => {
-                const { context, id } = this.props
-                return context.node.service.{{case 'camel' name}}({ id })
+                const { context, children, ...input } = this.props
+                return context.node.service.{{case 'camel' name}}(input)
               }
 
-              get entity () {
-                const { context, id } = this.props
-                return context.entity.{{case 'camel' name}}.get(id)
+              get store () {
+                const { context } = this.props
+                return context.entity.{{case 'camel' name}}
               }
             }
           {{/if}}
@@ -39,42 +38,31 @@ import { Component } from 'react'
 
           @withStoreContext
           export class {{name}}ServiceNode extends Stream {
-            get service () {
+            get method () {
               return this.props.context.node.service.{{case 'camel' name}}
             }
           }
 
-          {{#if (hasOwn resolvedRequestType.fields 'paginate')}}
-            {{#with (lookup 'berty.node.CommitLog.Entity')}}
-              {{#each fields}}
-                {{#if (eq resolvedType.name ../../resolvedResponseType.name)}}
-                  {{#with ../../this}}
+          {{#with (lookup 'berty.node.CommitLog.Entity')}}
+            {{#each fields}}
+              {{#if (eq resolvedType.name ../../resolvedResponseType.name)}}
+                {{#with ../../this}}
+                  {{#if (hasOwn resolvedRequestType.fields 'paginate')}}
                     @withStoreContext
                     class {{name}}ServiceNodePagination extends StreamPagination {
-                      componentDidMount () {
-                        super.componentDidMount()
-                        this.dispose = observe(
-                          this.props.context.entity.{{case 'camel' resolvedResponseType.name}},
-                          this.observe,
-                        )
+                      get store () {
+                        return this.props.context.entity.{{case 'camel' resolvedResponseType.name}}
                       }
-
-                      componentWillUnmount () {
-                        super.componentWillUnmount()
-                        this.dispose()
-                      }
-
                       get method () {
                         return this.props.context.node.service.{{case 'camel' name}}
                       }
                     }
                     {{name}}ServiceNode.Pagination = {{name}}ServiceNodePagination
-                  {{/with}}
-                {{/if}}
-              {{/each}}
-            {{/with}}
-          {{/if}}
-
+                  {{/if}}
+                {{/with}}
+              {{/if}}
+            {{/each}}
+          {{/with}}
 
         {{else}}
 
@@ -90,13 +78,14 @@ import { Component } from 'react'
       @withStoreContext
       export class ServiceNode extends Component {
         {{#each methods}}
-          {{#if responseStream}}
           static {{name}} = {{name}}ServiceNode
-         {{/if}}
         {{/each}}
 
         render () {
-          return context => this.props.children(context.node)
+          const { context } = this.props
+          return (
+            this.props.children(context)
+          )
         }
       }
     {{/with}}

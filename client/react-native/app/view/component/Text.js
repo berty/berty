@@ -90,10 +90,10 @@ const getIconPadding = (
 ) =>
   props.children || props.input
     ? StyleSheet.create({
-      style: {
-        marginRight: find({ inside: props, from: margins, or: 'small' }),
-      },
-    }).style
+        style: {
+          marginRight: find({ inside: props, from: margins, or: 'small' }),
+        },
+      }).style
     : null
 
 const getBorderRadius = (
@@ -214,15 +214,15 @@ const getMargin = (
     case 'object':
       return Array.isArray(props.margin)
         ? props.margin.reduce((a, key) => {
-          a[`margin${key.charAt(0).toUpperCase()}${key.slice(1)}`] =
+            a[`margin${key.charAt(0).toUpperCase()}${key.slice(1)}`] =
               margins[key]
-          return a
-        }, {})
+            return a
+          }, {})
         : Object.keys(margins).reduce((a, key) => {
-          a[`margin${key.charAt(0).toUpperCase()}${key.slice(1)}`] =
+            a[`margin${key.charAt(0).toUpperCase()}${key.slice(1)}`] =
               props.margin[key]
-          return a
-        }, {})
+            return a
+          }, {})
     default:
       return null
   }
@@ -248,6 +248,7 @@ const getHeight = props => {
 
 export class BackgroundText extends PureComponent {
   static styles = {}
+
   static getStyles = ({
     icon,
     input,
@@ -283,7 +284,7 @@ export class BackgroundText extends PureComponent {
     return BackgroundText.styles[propsHash]
   }
 
-  render () {
+  render() {
     const { children, size, justify, align, self } = this.props
     const flexProps = {
       size,
@@ -305,6 +306,7 @@ export class BackgroundText extends PureComponent {
 
 export class ForegroundText extends PureComponent {
   static styles = {}
+
   static getStyles = ({
     icon,
     input,
@@ -354,15 +356,15 @@ export class ForegroundText extends PureComponent {
     return ForegroundText.styles[propsHash]
   }
 
-  focus () {
+  focus() {
     this._input.focus()
   }
 
-  blur () {
+  blur() {
     this._input.blur()
   }
 
-  render () {
+  render() {
     const {
       icon,
       input,
@@ -413,15 +415,15 @@ export class ForegroundText extends PureComponent {
 }
 
 export class Text extends React.PureComponent {
-  focus () {
+  focus() {
     this._text.focus()
   }
 
-  blur () {
+  blur() {
     this._text.blur()
   }
 
-  render () {
+  render() {
     const props = reverse(this.props)
 
     return (

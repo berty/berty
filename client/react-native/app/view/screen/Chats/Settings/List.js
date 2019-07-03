@@ -1,26 +1,23 @@
 import { withNamespaces } from 'react-i18next'
-import { withNavigation } from 'react-navigation'
 import I18n from 'i18next'
 import React, { PureComponent } from 'react'
 
-import { Avatar, Header, Menu, Screen } from '@berty/component'
-import { QueryReducer, RelayContext } from '@berty/relay'
+import { Avatar, Header, Menu, Screen, Loader } from '@berty/component'
 import { choosePicture } from '@berty/common/helpers/react-native-image-picker'
 import { colors } from '@berty/common/constants'
-import {
-  contact as contactUtils,
-  conversation as utils,
-} from '@berty/relay/utils'
 import * as enums from '@berty/common/enums.gen'
-import { merge } from '@berty/common/helpers'
 import { withGoBack } from '@berty/component/BackActionProvider'
-import { withRelayContext } from '@berty/relay/context'
+import { withStoreContext } from '@berty/store/context'
+import { Store } from '@berty/container'
 
-class SettingsScreenBase extends PureComponent {
-  constructor (props) {
+@withNamespaces()
+@withGoBack
+@withStoreContext
+export class SettingsScreen extends PureComponent {
+  constructor(props) {
     super(props)
     const conversation = props.navigation.getParam('conversation')
-    const title = utils.getTitle(conversation)
+    const title = conversation.title // utils.getTitle(conversation)
 
     this.state = {
       edit: false,
@@ -30,7 +27,7 @@ class SettingsScreenBase extends PureComponent {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.navigation.setParams({
       onEdit: this.onEdit,
       onSave: this.onSave,
@@ -44,13 +41,10 @@ class SettingsScreenBase extends PureComponent {
   }
 
   onSave = () => {
-    const { title, topic, conversation } = this.state
-    const {
-      context: { mutations },
-    } = this.props
+    const { title, topic } = this.state
+    const { context } = this.props
 
-    mutations.conversationUpdate({
-      ...conversation,
+    context.node.service.conversationUpdate({
       title,
       topic,
     })
@@ -66,10 +60,9 @@ class SettingsScreenBase extends PureComponent {
   addMembers = async ({ contactsID }) => {
     try {
       const conversation = this.props.navigation.getParam('conversation')
-      await this.props.context.mutations.conversationInvite({
+      await this.props.context.node.service.conversationInvite({
         conversation,
         contacts: contactsID.map(id => ({
-          ...contactUtils.default,
           id,
         })),
       })
@@ -80,17 +73,18 @@ class SettingsScreenBase extends PureComponent {
   }
 
   onDeleteConversation = async () => {
+    const { context } = this.props
     const conversation = this.props.navigation.getParam('conversation')
     const { id } = conversation
     try {
-      await this.props.context.mutations.conversationRemove({ id })
-      this.props.navigation.popToTop()
+      await context.node.service.conversationRemove({ id })
+      this.props.goBack()
     } catch (err) {
       console.error(err)
     }
   }
 
-  render () {
+  render() {
     const conversation = this.props.navigation.getParam('conversation')
     const { edit, t, navigation } = this.props
     const { title, topic, members = [] } = conversation
@@ -119,14 +113,14 @@ class SettingsScreenBase extends PureComponent {
           {!edit && (
             <Menu.Section>
               <Menu.Item
-                icon='bell'
+                icon="bell"
                 title={t('chats.notifications')}
                 onPress={() =>
                   navigation.navigate('chats/settings/notifications')
                 }
               />
               <Menu.Item
-                icon='clock'
+                icon="clock"
                 title={t('chats.message-retention')}
                 onPress={() => console.log('Message retention')}
               />
@@ -135,17 +129,15 @@ class SettingsScreenBase extends PureComponent {
           {oneToOneContact ? (
             <Menu.Section>
               <Menu.Item
-                icon='user'
+                icon="user"
                 title={t('contacts.details')}
                 onPress={() => {
                   navigation.navigate('chats/contact/detail/list', {
-                    id: contactUtils.getCoreID(
-                      members.find(
-                        _ =>
-                          _.contact.status !==
-                          enums.BertyEntityContactInputStatus.Myself
-                      ).contactId
-                    ),
+                    id: members.find(
+                      _ =>
+                        _.contact.status !==
+                        enums.BertyEntityContactInputStatus.Myself
+                    ).contactId,
                     editRoute: 'chats/contact/detail/edit',
                   })
                 }}
@@ -154,7 +146,7 @@ class SettingsScreenBase extends PureComponent {
           ) : (
             <Menu.Section title={`${members.length} members`}>
               <Menu.Item
-                icon='user-plus'
+                icon="user-plus"
                 title={t('chats.add-members')}
                 color={colors.blue}
                 onPress={() =>
@@ -165,7 +157,7 @@ class SettingsScreenBase extends PureComponent {
                 }
               />
               <Menu.Item
-                icon='link'
+                icon="link"
                 title={t('chats.link-invite')}
                 color={colors.blue}
                 onPress={() => console.log('Invite to group with a link')}
@@ -193,7 +185,7 @@ class SettingsScreenBase extends PureComponent {
           )}
           <Menu.Section>
             <Menu.Item
-              icon='trash-2'
+              icon="trash-2"
               title={t('chats.delete')}
               color={colors.error}
               onPress={this.onDeleteConversation}
@@ -205,69 +197,47 @@ class SettingsScreenBase extends PureComponent {
   }
 }
 
-const SettingsScreen = withRelayContext(
-  withNavigation(withNamespaces()(SettingsScreenBase))
-)
+class List extends PureComponent {
+  static navigationOptions = ({ navigation }) => {
+    const [conversation, { edit }, onEdit, onSave] = [
+      navigation.getParam('conversation') || { members: [] },
+      navigation.getParam('state') || {},
+      navigation.getParam('onEdit'),
+      navigation.getParam('onSave'),
+    ]
+    const rightIcon = edit ? 'save' : 'edit-2'
+    const onPressRight = edit ? onSave : onEdit
+    return {
+      tabBarVisible: false,
+      header: (
+        <Header
+          navigation={navigation}
+          title={I18n.t('chats.details')}
+          rightBtnIcon={conversation.members.length > 2 && rightIcon}
+          backBtn
+          onPressRightBtn={conversation.members.length > 2 && onPressRight}
+        />
+      ),
+    }
+  }
 
-class ListBase extends PureComponent {
-  render () {
-    const { navigation, context } = this.props
-    const conversation = navigation.getParam('conversation')
-    const { id } = conversation
-    const { queries } = context
-
+  render() {
+    const { navigation } = this.props
+    const { id } = navigation.getParam('conversation')
     return (
-      <QueryReducer
-        query={queries.Conversation.graphql}
-        variables={merge([queries.Conversation.defaultVariables, { id }])}
-      >
-        {(state, retry) => {
-          if (state.type === state.error) {
-            setTimeout(() => retry(), 1000)
-          }
-
-          return (
+      <Store.Entity.Conversation id={id}>
+        {data =>
+          data ? (
             <SettingsScreen
               navigation={navigation}
-              context={context}
-              conversation={
-                state.type === state.success
-                  ? state.data.Conversation
-                  : conversation
-              }
-              retry={retry}
+              conversation={navigation.getParam('conversation')}
             />
+          ) : (
+            <Loader />
           )
-        }}
-      </QueryReducer>
+        }
+      </Store.Entity.Conversation>
     )
-  }
-}
-
-const List = withGoBack(withRelayContext(ListBase))
-
-List.contextType = RelayContext
-
-List.navigationOptions = ({ navigation }) => {
-  const [conversation, { edit }, onEdit, onSave] = [
-    navigation.getParam('conversation') || { members: [] },
-    navigation.getParam('state') || {},
-    navigation.getParam('onEdit'),
-    navigation.getParam('onSave'),
-  ]
-  const rightIcon = edit ? 'save' : 'edit-2'
-  const onPressRight = edit ? onSave : onEdit
-  return {
-    tabBarVisible: false,
-    header: (
-      <Header
-        navigation={navigation}
-        title={I18n.t('chats.details')}
-        rightBtnIcon={conversation.members.length > 2 && rightIcon}
-        backBtn
-        onPressRightBtn={conversation.members.length > 2 && onPressRight}
-      />
-    ),
   }
 }
 

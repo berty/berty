@@ -2,10 +2,12 @@ import { action } from 'mobx'
 
 export class ServiceStore {
   type = ''
+
   store = null
+
   bridge = null
 
-  constructor (store, bridge) {
+  constructor(store, bridge) {
     if (store) {
       this.name = store
     } else {
@@ -18,7 +20,7 @@ export class ServiceStore {
     }
   }
 
-  @action async invoke (methodName, input) {
+  @action async invoke(methodName, input) {
     return this.bridge[methodName](input)
   }
 }

@@ -3,7 +3,6 @@ syntax = "proto3";
 package berty.node;
 
 import "api/node/kind.proto";
-import "api/protobuf/graphql/graphql.proto";
 import "entity/event.proto";
 import "entity/config.proto";
 import "entity/contact.proto";
@@ -26,147 +25,71 @@ option go_package = "berty.tech/core/api/node";
 
 service Service {
   // return node current ID
-  rpc ID (Void) returns (berty.network.metric.Peer) {
-    option (gql.graphql_type) = "Query";
-  };
+  rpc ID (Void) returns (berty.network.metric.Peer);
 
   //
   // Storage sync
   //
-  rpc CommitLogStream (Void) returns (stream CommitLog) {
-    option (gql.graphql_type) = "Subscription";
-  }
+  rpc CommitLogStream (Void) returns (stream CommitLog);
 
   //
   // Events
   //
 
   // yield new events in real-time
-  rpc EventStream (EventStreamInput) returns (stream berty.entity.Event) {
-    option (gql.graphql_type) = "Subscription";
-  };
-  // list old events
-  rpc EventList (EventListInput) returns (stream berty.entity.Event) {
-    option (gql.graphql_output) = ".berty.node.EventListConnection";
-    option (gql.graphql_type) = "Query";
-  };
+  rpc EventStream (EventStreamInput) returns (stream berty.entity.Event);
 
-  rpc EventUnseen (EventListInput) returns (stream berty.entity.Event) {
-    option (gql.graphql_type) = "Query";
-  };
-  rpc GetEvent (berty.entity.Event) returns (berty.entity.Event) {
-    option (gql.graphql_input) = ".gql.Node";
-    option (gql.graphql_type) = "Query";
-  };
-  rpc EventSeen (berty.entity.Event) returns (berty.entity.Event) {
-    option (gql.graphql_input) = ".gql.Node";
-    option (gql.graphql_type) = "Mutation";
-  }
-  rpc EventRetry (berty.entity.Event) returns (berty.entity.Event) {
-    option (gql.graphql_input) = ".gql.Node";
-    option (gql.graphql_type) = "Mutation";
-  }
+  // list old events
+  rpc EventList (EventListInput) returns (stream berty.entity.Event);
+
+  rpc EventUnseen (EventListInput) returns (stream berty.entity.Event);
+  rpc GetEvent (berty.entity.Event) returns (berty.entity.Event);
+  rpc EventSeen (berty.entity.Event) returns (berty.entity.Event);
+  rpc EventRetry (berty.entity.Event) returns (berty.entity.Event);
 
   //
   // Config
   //
-  rpc ConfigPublic (Void) returns (berty.entity.Config) {
-    option (gql.graphql_type) = "Query";
-  }
+  rpc Config(Void) returns (berty.entity.Config);
+  rpc ConfigPublic (Void) returns (berty.entity.Config);
 
-  rpc ConfigUpdate (berty.entity.Config) returns (berty.entity.Config) {
-    option (gql.graphql_type) = "Mutation";
-  }
+  rpc ConfigUpdate (berty.entity.Config) returns (berty.entity.Config);
 
   //
   // Contacts
   //
 
-  rpc ContactRequest (ContactRequestInput) returns (berty.entity.Contact) {
-    option (gql.graphql_type) = "Mutation";
-  };
-  rpc ContactAcceptRequest (ContactAcceptRequestInput) returns (berty.entity.Contact) {
-    option (gql.graphql_type) = "Mutation";
-  };
-  rpc ContactRemove (berty.entity.Contact) returns (berty.entity.Contact) {
-    option (gql.graphql_type) = "Mutation";
-  };
-  rpc ContactUpdate (berty.entity.Contact) returns (berty.entity.Contact) {
-    option (gql.graphql_type) = "Mutation";
-  };
-  rpc ContactList (ContactListInput) returns (stream berty.entity.Contact) {
-    option (gql.graphql_output) = ".berty.node.ContactListConnection";
-    option (gql.graphql_type) = "Query";
-  };
-  rpc Contact (berty.entity.Contact) returns (berty.entity.Contact) {
-    option (gql.graphql_type) = "Query";
-  };
-  rpc ContactCheckPublicKey (berty.entity.Contact) returns (Bool) {
-    option (gql.graphql_type) = "Query";
-  };
+  rpc ContactRequest (ContactRequestInput) returns (berty.entity.Contact);
+  rpc ContactAcceptRequest (ContactAcceptRequestInput) returns (berty.entity.Contact);
+  rpc ContactRemove (berty.entity.Contact) returns (berty.entity.Contact);
+  rpc ContactUpdate (berty.entity.Contact) returns (berty.entity.Contact);
+  rpc ContactList (ContactListInput) returns (stream berty.entity.Contact);
+  rpc Contact (berty.entity.Contact) returns (berty.entity.Contact);
+  rpc ContactCheckPublicKey (berty.entity.Contact) returns (Bool);
 
   //
   // Conversations
   //
 
-  rpc ConversationCreate (ConversationCreateInput) returns (berty.entity.Conversation) {
-    option (gql.graphql_type) = "Mutation";
-  };
-  rpc ConversationUpdate (berty.entity.Conversation) returns (berty.entity.Conversation) {
-    option (gql.graphql_type) = "Mutation";
-  };
-  rpc ConversationList (ConversationListInput) returns (stream berty.entity.Conversation) {
-    option (gql.graphql_output) = ".berty.node.ConversationListConnection";
-    option (gql.graphql_type) = "Query";
-  };
-  rpc ConversationInvite (ConversationManageMembersInput) returns (berty.entity.Conversation) {
-    option (gql.graphql_type) = "Mutation";
-  };
-  rpc ConversationExclude (ConversationManageMembersInput) returns (berty.entity.Conversation) {
-    option (gql.graphql_type) = "Mutation";
-  };
-  rpc ConversationAddMessage (ConversationAddMessageInput) returns (berty.entity.Event) {
-    option (gql.graphql_type) = "Mutation";
-  };
-  rpc Conversation (berty.entity.Conversation) returns (berty.entity.Conversation) {
-    option (gql.graphql_type) = "Query";
-  };
-  rpc ConversationMember (berty.entity.ConversationMember) returns (berty.entity.ConversationMember) {
-    option (gql.graphql_type) = "Query";
-  };
-  rpc ConversationRead (berty.entity.Conversation) returns (berty.entity.Conversation) {
-    option (gql.graphql_input) = ".gql.Node";
-    option (gql.graphql_type) = "Mutation";
-  }
-  rpc ConversationRemove (berty.entity.Conversation) returns (berty.entity.Conversation) {
-    option (gql.graphql_input) = ".gql.Node";
-    option (gql.graphql_type) = "Mutation";
-  }
-  rpc ConversationLastEvent (berty.entity.Conversation) returns (berty.entity.Event) {
-    option (gql.graphql_input) = ".gql.Node";
-    option (gql.graphql_type) = "Query";
-  }
+  rpc ConversationCreate (ConversationCreateInput) returns (berty.entity.Conversation);
+  rpc ConversationUpdate (berty.entity.Conversation) returns (berty.entity.Conversation);
+  rpc ConversationList (ConversationListInput) returns (stream berty.entity.Conversation);
+  rpc ConversationInvite (ConversationManageMembersInput) returns (berty.entity.Conversation);
+  rpc ConversationExclude (ConversationManageMembersInput) returns (berty.entity.Conversation);
+  rpc ConversationAddMessage (ConversationAddMessageInput) returns (berty.entity.Event);
+  rpc Conversation (berty.entity.Conversation) returns (berty.entity.Conversation);
+  rpc ConversationMember (berty.entity.ConversationMember) returns (berty.entity.ConversationMember);
+  rpc ConversationRead (berty.entity.Conversation) returns (berty.entity.Conversation);
+  rpc ConversationRemove (berty.entity.Conversation) returns (berty.entity.Conversation);
+  rpc ConversationLastEvent (berty.entity.Conversation) returns (berty.entity.Event);
 
-  rpc DevicePushConfigList (Void) returns (DevicePushConfigListOutput) {
-    option (gql.graphql_type) = "Query";
-  };
-  rpc DevicePushConfigCreate (DevicePushConfigCreateInput) returns (berty.entity.DevicePushConfig) {
-    option (gql.graphql_type) = "Mutation";
-  }
-  rpc DevicePushConfigNativeRegister (Void) returns (Void) {
-    option (gql.graphql_type) = "Mutation";
-  }
-  rpc DevicePushConfigNativeUnregister (Void) returns (Void) {
-    option (gql.graphql_type) = "Mutation";
-  }
+  rpc DevicePushConfigList (Void) returns (stream berty.entity.DevicePushConfig);
+  rpc DevicePushConfigCreate (DevicePushConfigCreateInput) returns (berty.entity.DevicePushConfig);
+  rpc DevicePushConfigNativeRegister (Void) returns (Void);
+  rpc DevicePushConfigNativeUnregister (Void) returns (Void);
 
-  rpc DevicePushConfigRemove (berty.entity.DevicePushConfig) returns (berty.entity.DevicePushConfig) {
-    option (gql.graphql_input) = ".gql.Node";
-    option (gql.graphql_type) = "Mutation";
-  }
-  rpc DevicePushConfigUpdate (berty.entity.DevicePushConfig) returns (berty.entity.DevicePushConfig) {
-    option (gql.graphql_type) = "Mutation";
-  }
+  rpc DevicePushConfigRemove (berty.entity.DevicePushConfig) returns (berty.entity.DevicePushConfig);
+  rpc DevicePushConfigUpdate (berty.entity.DevicePushConfig) returns (berty.entity.DevicePushConfig);
 
 
   //rpc ConversationLeave(berty.entity.Conversation) returns (berty.entity.Conversation);
@@ -182,84 +105,50 @@ service Service {
   rpc HandleEvent (berty.entity.Event) returns (Void) {
   };
 
-  rpc GenerateFakeData (Void) returns (Void) {
-    option (gql.graphql_type) = "Mutation";
-  };
+  rpc GenerateFakeData (Void) returns (Void);
 
-  rpc RunIntegrationTests (IntegrationTestInput) returns (IntegrationTestOutput) {
-    option (gql.graphql_type) = "Mutation";
-  };
+  rpc RunIntegrationTests (IntegrationTestInput) returns (IntegrationTestOutput);
 
-  rpc DebugPing (PingDestination) returns (Void) {
-  };
+  rpc DebugPing (PingDestination) returns (Void);
+  rpc DebugRequeueEvent (EventIDInput) returns (berty.entity.Event);
 
-  rpc DebugRequeueEvent (EventIDInput) returns (berty.entity.Event) {
-    option (gql.graphql_type) = "Mutation";
-  };
+  rpc DebugRequeueAll (Void) returns (Void);
 
-  rpc DebugRequeueAll (Void) returns (Void) {
-    option (gql.graphql_type) = "Mutation";
-  };
+  rpc DeviceInfos (Void) returns (berty.pkg.deviceinfo.DeviceInfos);
 
-  rpc DeviceInfos (Void) returns (berty.pkg.deviceinfo.DeviceInfos) {
-    option (gql.graphql_type) = "Query";
-  };
+  rpc AppVersion (Void) returns (AppVersionOutput);
 
-  rpc AppVersion (Void) returns (AppVersionOutput) {
-    option (gql.graphql_type) = "Query";
-  };
+  rpc Peers (Void) returns (berty.network.metric.Peers);
 
-  rpc Peers (Void) returns (berty.network.metric.Peers) {
-    option (gql.graphql_type) = "Query";
-  };
+  rpc Protocols (berty.network.metric.Peer) returns (ProtocolsOutput);
 
-  rpc Protocols (berty.network.metric.Peer) returns (ProtocolsOutput) {
-    option (gql.graphql_type) = "Query";
-  };
+  rpc LogStream (LogStreamInput) returns (stream LogEntry);
 
-  rpc LogStream (LogStreamInput) returns (stream LogEntry) {
-    option (gql.graphql_type) = "Subscription";
-  };
+  rpc LogfileList (Void) returns (stream LogfileEntry);
 
-  rpc LogfileList (Void) returns (stream LogfileEntry) {
-    option (gql.graphql_type) = "Query";
-  }
+  rpc LogfileRead (LogfileReadInput) returns (stream LogEntry);
 
-  rpc LogfileRead (LogfileReadInput) returns (stream LogEntry) {
-    option (gql.graphql_type) = "Subscription";
-  }
-
-  rpc TestLogBackgroundError (Void) returns (Void) { option (gql.graphql_type) = "Query"; };
-  rpc TestLogBackgroundWarn  (Void) returns (Void) { option (gql.graphql_type) = "Query"; };
-  rpc TestLogBackgroundDebug (Void) returns (Void) { option (gql.graphql_type) = "Query"; };
-  rpc TestPanic              (Void) returns (Void) { option (gql.graphql_type) = "Query"; };
-  rpc TestError              (TestErrorInput) returns (Void) { option (gql.graphql_type) = "Query"; };
+  rpc TestLogBackgroundError (Void) returns (Void);
+  rpc TestLogBackgroundWarn  (Void) returns (Void);
+  rpc TestLogBackgroundDebug (Void) returns (Void);
+  rpc TestPanic              (Void) returns (Void);
+  rpc TestError              (TestErrorInput) returns (Void);
 
   //
   // Metrics
   //
 
   // Yield bandwidth in real-time
-  rpc MonitorBandwidth (berty.network.metric.BandwidthStats) returns (stream berty.network.metric.BandwidthStats) {
-    option (gql.graphql_type) = "Subscription";
-  };
+  rpc MonitorBandwidth (berty.network.metric.BandwidthStats) returns (stream berty.network.metric.BandwidthStats);
 
   // Yield new peers in real-time
-  rpc MonitorPeers (Void) returns (stream berty.network.metric.Peer) {
-    option (gql.graphql_type) = "Subscription";
-  };
+  rpc MonitorPeers (Void) returns (stream berty.network.metric.Peer);
 
-  rpc GetListenAddrs (Void) returns (berty.network.metric.ListAddrs) {
-    option (gql.graphql_type) = "Query";
-  };
+  rpc GetListenAddrs (Void) returns (berty.network.metric.ListAddrs);
 
-  rpc GetListenInterfaceAddrs (Void) returns (berty.network.metric.ListAddrs) {
-    option (gql.graphql_type) = "Query";
-  };
+  rpc GetListenInterfaceAddrs (Void) returns (berty.network.metric.ListAddrs);
 
-  rpc Libp2PPing (berty.network.metric.PingReq) returns (Bool) {
-    option (gql.graphql_type) = "Query";
-  };
+  rpc Libp2PPing (berty.network.metric.PingReq) returns (Bool);
 }
 
 message TestErrorInput {
@@ -279,13 +168,20 @@ message PingDestination {
 }
 
 message ContactRequestInput {
-  string contact_id = 1 [(gql.graphql_id) = true, (gogoproto.customname) = "ContactID", (validate.is_contact_key) = true];
+  string contact_id = 1 [
+    (gogoproto.customname) = "ContactID",
+    (validate.is_contact_key) = true
+  ];
   string contact_override_display_name = 2;
   string intro_text = 3 [(validate.max_len) = 256];
 }
 
 message ContactAcceptRequestInput {
-  string contact_id = 1 [(gql.graphql_id) = true, (gogoproto.customname) = "ContactID", (validate.min_len) = 1, (validate.is_contact_key) = true];
+  string contact_id = 1 [
+    (gogoproto.customname) = "ContactID",
+    (validate.min_len) = 1,
+    (validate.is_contact_key) = true
+  ];
 }
 
 message ConversationAddMessageInput {
@@ -330,15 +226,7 @@ message EventListInput {
   berty.entity.Event filter = 1;
   NullableTrueFalse only_without_acked_at = 2;
   NullableTrueFalse only_without_seen_at = 3;
-  Pagination paginate = 99 [(gql.graphql_spread) = true];
-}
-message EventEdge {
-  berty.entity.Event node = 1;
-  string cursor = 2;
-}
-message EventListConnection {
-  repeated EventEdge edges = 1;
-  PageInfo page_info = 99 [(gql.graphql_non_nullable) = true];
+  Pagination paginate = 99;
 }
 
 
@@ -348,15 +236,7 @@ message EventListConnection {
 
 message ContactListInput {
   berty.entity.Contact filter = 1;
-  Pagination paginate = 99 [(gql.graphql_spread) = true];
-}
-message ContactEdge {
-  berty.entity.Contact node = 1;
-  string cursor = 2;
-}
-message ContactListConnection {
-  repeated ContactEdge edges = 1;
-  PageInfo page_info = 99 [(gql.graphql_non_nullable) = true];
+  Pagination paginate = 99;
 }
 message ContactInput {
   berty.entity.Contact filter = 1;
@@ -369,15 +249,7 @@ message ContactInput {
 
 message ConversationListInput {
   berty.entity.Conversation filter = 1;
-  Pagination paginate = 99 [(gql.graphql_spread) = true];
-}
-message ConversationEdge {
-  berty.entity.Conversation node = 1;
-  string cursor = 2;
-}
-message ConversationListConnection{
-  repeated ConversationEdge edges = 1;
-  PageInfo page_info = 99 [(gql.graphql_non_nullable) = true];
+  Pagination paginate = 99;
 }
 
 message ConversationCreateInput {
@@ -392,17 +264,9 @@ message ConversationManageMembersInput {
   repeated berty.entity.Contact contacts = 2 [(validate.min_items) = 1];
 }
 
-message DevicePushConfigEdge {
-  berty.entity.DevicePushConfig node = 1;
-  string cursor = 2;
-}
-message DevicePushConfigListOutput {
-  repeated entity.DevicePushConfig edges = 1;
-}
-
 message DevicePushConfigCreateInput {
-  string relay_pubkey = 1 [(gql.graphql_nullable) = true, (gogoproto.customname) = "RelayPubkey"];
-  bytes push_id = 2 [(gql.graphql_nullable) = true, (gogoproto.customname) = "PushID"];
+  string relay_pubkey = 1 [(gogoproto.customname) = "RelayPubkey"];
+  bytes push_id = 2 [(gogoproto.customname) = "PushID"];
   berty.push.DevicePushType push_type = 3;
 }
 
@@ -416,20 +280,10 @@ message Pagination {
   bool order_desc = 2;
 
   // feed definition
-  int32 first = 11 [(gql.graphql_nullable) = true];
-  string after = 12 [(gql.graphql_nullable) = true];
-  int32 last = 13 [(gql.graphql_nullable) = true];
-  string before = 14 [(gql.graphql_nullable) = true];
-}
-
-message PageInfo {
-  string start_cursor = 1;
-  string end_cursor = 2;
-  bool has_next_page = 3;
-  bool has_previous_page = 4;
-
-  // non-standard
-  uint32 count = 5;
+  int32 first = 11;
+  string after = 12;
+  int32 last = 13;
+  string before = 14;
 }
 
 message IntegrationTestInput {
@@ -459,7 +313,7 @@ enum NullableTrueFalse {
 }
 
 message EventIDInput {
-  string event_id = 1 [(gql.graphql_id) = true, (gogoproto.customname) = "EventID"];
+  string event_id = 1 [(gogoproto.customname) = "EventID"];
 }
 
 //

@@ -5,7 +5,7 @@ go 1.12
 require (
 	cloud.google.com/go v0.34.0 // indirect
 	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21
-	github.com/99designs/gqlgen v0.7.2
+	github.com/99designs/gqlgen v0.7.2 // indirect
 	github.com/NaySoftware/go-fcm v0.0.0-20180207124314-28fff9381d17
 	github.com/brianvoe/gofakeit v3.17.0+incompatible
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
@@ -21,7 +21,6 @@ require (
 	github.com/golang/protobuf v1.3.1
 	github.com/google/uuid v1.1.1
 	github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e // indirect
-	github.com/gorilla/websocket v1.4.0
 	github.com/gosimple/slug v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190222133341-cfaf5686ec79
 	github.com/improbable-eng/grpc-web v0.9.1
@@ -79,7 +78,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/rainycape/unidecode v0.0.0-20150907023854-cb7f23ec59be // indirect
 	github.com/rogpeppe/go-internal v1.2.2 // indirect
-	github.com/rs/cors v1.6.0
+	github.com/rs/cors v1.6.0 // indirect
 	github.com/sideshow/apns2 v0.0.0-20181014012405-060d44b53d05
 	github.com/smartystreets/assertions v0.0.0-20190215210624-980c5ac6f3ac // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa
@@ -91,7 +90,7 @@ require (
 	github.com/uber-go/atomic v1.3.2 // indirect
 	github.com/uber/jaeger-client-go v2.15.0+incompatible
 	github.com/uber/jaeger-lib v1.5.0 // indirect
-	github.com/vektah/gqlparser v1.1.1
+	github.com/vektah/gqlparser v1.1.1 // indirect
 	github.com/whyrusleeping/go-logging v0.0.0-20170515211332-0457bb6b88fc
 	github.com/whyrusleeping/go-smux-multistream v2.0.2+incompatible
 	github.com/whyrusleeping/mafmt v1.2.8

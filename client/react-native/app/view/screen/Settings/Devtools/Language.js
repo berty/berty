@@ -9,13 +9,13 @@ class Language extends PureComponent {
       <Header
         navigation={navigation}
         title={'Language'}
-        titleIcon='globe'
+        titleIcon="globe"
         backBtn
       />
     ),
   })
 
-  render () {
+  render() {
     return (
       <Menu>
         <Menu.Section customMarginTop={1}>
@@ -32,7 +32,7 @@ class Language extends PureComponent {
     )
   }
 
-  setLanguage (k) {
+  setLanguage(k) {
     this.props.i18n.changeLanguage(k)
   }
 }

@@ -9,35 +9,35 @@ import {
 import colors from '@berty/common/constants/colors'
 
 class SplitterView extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = this.getDims()
   }
 
-  getDims () {
+  getDims() {
     return (
       Dimensions.get('window') ||
       Dimensions.get('screen') || { height: 0, width: 0 }
     )
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this._screenSizeWatcher === undefined) {
       this._screenSizeWatcher = (...args) => this.screenSizeWatcher(...args)
     }
     Dimensions.addEventListener('change', this._screenSizeWatcher)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     Dimensions.removeEventListener('change', this._screenSizeWatcher)
   }
 
-  screenSizeWatcher () {
+  screenSizeWatcher() {
     this.setState(this.getDims())
   }
 
-  render () {
+  render() {
     const { renderScene } = this.props
     const { navigation } = this.props
     const { state } = navigation

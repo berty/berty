@@ -14,8 +14,6 @@ export const getNativePushType = () => {
 }
 
 export const enableNativeNotifications = async ({ context }) => {
-  const { mutations } = context
-
   if (Platform.Desktop) {
     return true
   }
@@ -31,7 +29,7 @@ export const enableNativeNotifications = async ({ context }) => {
     return false
   }
 
-  await mutations.devicePushConfigNativeRegister({})
+  await context.node.service.devicePushConfigNativeRegister({})
 
   return true
 }
@@ -41,9 +39,7 @@ export const enableMQTTNotifications = async ({
   relayPubkey,
   pushId,
 }) => {
-  const { mutations } = context
-
-  await mutations.devicePushConfigCreate({
+  await context.node.service.devicePushConfigCreate({
     pushType: enums.BertyPushDevicePushTypeInputDevicePushType.MQTT,
     pushId: pushId.split('').map(e => e.charCodeAt()),
     relayPubkey: relayPubkey,
@@ -56,10 +52,8 @@ export const disableMQTTNotifications = async ({
   context,
   currentPushConfigs,
 }) => {
-  const { mutations } = context
-
   for (let currentPushConfig of currentPushConfigs) {
-    await mutations.devicePushConfigRemove({
+    await context.node.service.devicePushConfigRemove({
       id: currentPushConfig.id,
     })
   }
@@ -68,9 +62,6 @@ export const disableMQTTNotifications = async ({
 }
 
 export const disableNativeNotifications = async ({ context }) => {
-  const { mutations } = context
-
-  await mutations.devicePushConfigNativeUnregister({})
-
+  await context.node.service.devicePushConfigNativeUnregister({})
   return true
 }

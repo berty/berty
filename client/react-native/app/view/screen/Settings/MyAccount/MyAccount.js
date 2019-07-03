@@ -4,30 +4,32 @@ import { colors } from '@berty/common/constants'
 import { choosePicture } from '@berty/common/helpers/react-native-image-picker'
 import I18n from 'i18next'
 import { withNamespaces } from 'react-i18next'
-import { withCurrentUser } from '@berty/relay/utils/contact'
-import RelayContext from '@berty/relay/context'
 import { showMessage } from 'react-native-flash-message'
 import { withGoBack } from '@berty/component/BackActionProvider'
+import { withStoreContext } from '@berty/store/context'
+import { Store } from '@berty/container'
 
-class MyAccountBase extends React.PureComponent {
-  constructor (props) {
+@withGoBack
+@withNamespaces()
+@withStoreContext
+class MyAccount extends React.PureComponent {
+  constructor(props) {
     super(props)
 
     this.state = {
-      displayName: props.currentUser.displayName,
+      displayName: props.data.displayName,
       uri: '',
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.navigation.setParams({
       onSave: this.onSave,
     })
   }
 
   onSave = async () => {
-    await this.props.context.mutations.contactUpdate({
-      ...this.props.currentUser,
+    await this.props.context.node.service.contactUpdate({
       displayName: this.state.displayName,
     })
 
@@ -44,7 +46,7 @@ class MyAccountBase extends React.PureComponent {
   onChoosePicture = async event => this.setState(await choosePicture(event))
 
   render = () => {
-    const { t, currentUser } = this.props
+    const { t, data } = this.props
     const { displayName } = this.state
 
     return (
@@ -53,11 +55,11 @@ class MyAccountBase extends React.PureComponent {
           icon={
             <Badge
               background={colors.blue}
-              icon='camera'
+              icon="camera"
               medium
               onPress={this.onChoosePicture}
             >
-              <Avatar data={currentUser} size={78} />
+              <Avatar data={data} size={78} />
             </Badge>
           }
         />
@@ -69,7 +71,7 @@ class MyAccountBase extends React.PureComponent {
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
-            icon='trash-2'
+            icon="trash-2"
             title={t('my-account.delete-my-account')}
             color={colors.error}
             onPress={() => console.error('delete my account: not implemented')}
@@ -80,11 +82,7 @@ class MyAccountBase extends React.PureComponent {
   }
 }
 
-const MyAccountContent = withGoBack(
-  withNamespaces()(withCurrentUser(MyAccountBase, { showOnlyLoaded: true }))
-)
-
-export default class MyAccount extends React.Component {
+export default class MyAccountScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const onSave = navigation.getParam('onSave')
     return {
@@ -101,17 +99,12 @@ export default class MyAccount extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <Screen>
-        <RelayContext.Consumer>
-          {context => (
-            <MyAccountContent
-              navigation={this.props.navigation}
-              context={context}
-            />
-          )}
-        </RelayContext.Consumer>
+        <Store.Entity.Contact status={42}>
+          {data => <MyAccount navigation={this.props.navigation} data={data} />}
+        </Store.Entity.Contact>
       </Screen>
     )
   }

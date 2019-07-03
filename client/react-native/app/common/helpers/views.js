@@ -7,7 +7,7 @@ export const Children = props =>
 export const withScreenProps = Component =>
   withHOC(
     class WithScreenProps extends PureComponent {
-      render () {
+      render() {
         return <Component {...this.props} {...this.props.screenProps} />
       }
     }
@@ -16,7 +16,7 @@ export const withScreenProps = Component =>
 export const withProps = props => Component =>
   withHOC(
     class WithProps extends PureComponent {
-      render () {
+      render() {
         return <Component {...this.props} {...props} />
       }
     }
@@ -27,7 +27,7 @@ export const withContext = Context => Component =>
     class WithContext extends PureComponent {
       static displayName = `WithContext(${getDisplayName(Context)})`
 
-      render () {
+      render() {
         const { context } = this.props
         if (context && context.constructor && context.constructor === Context) {
           return <Component {...this.props} context={context} />
@@ -44,7 +44,7 @@ export const withContext = Context => Component =>
   )(Component)
 
 export const asFunctional = Component =>
-  hoistNonReactStatic(function AsFunctional (props) {
+  hoistNonReactStatic(function AsFunctional(props) {
     return <Component {...props} />
   }, Component)
 

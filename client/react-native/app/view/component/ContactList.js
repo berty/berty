@@ -14,7 +14,7 @@ export default class ContactList extends PureComponent {
       })
   }
 
-  render () {
+  render() {
     const {
       list,
       state,

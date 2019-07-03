@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import { fragments } from '@berty/graphql'
 import * as enums from '@berty/common/enums.gen'
 import { Avatar, Flex, Text } from '@berty/component'
 import { borderBottom, marginLeft, padding } from '@berty/common/styles'
@@ -9,7 +8,9 @@ import ActionsUnknown from '@berty/component/ContactIdentityActions/ActionsUnkno
 import ActionsReceived from '@berty/component/ContactIdentityActions/ActionsReceived'
 import ActionsSent from '@berty/component/ContactIdentityActions/ActionsSent'
 import { withNamespaces } from 'react-i18next'
+import { withStoreContext } from '@berty/store/context'
 
+@withStoreContext
 @withNamespaces()
 @withNavigation
 export class Item extends PureComponent {
@@ -26,8 +27,8 @@ export class Item extends PureComponent {
     return navigation.navigate('contact/detail/list', data)
   }
 
-  render () {
-    const { data, ignoreMyself, t } = this.props
+  render() {
+    const { context, data, ignoreMyself, t } = this.props
     const { overrideDisplayName, displayName, status } = data
 
     if (ignoreMyself && status === enums.BertyEntityContactInputStatus.Myself) {
@@ -36,13 +37,13 @@ export class Item extends PureComponent {
 
     return (
       <Flex.Cols
-        align='center'
+        align="center"
         style={[{ height: 72 }, padding, borderBottom]}
         onPress={this.showDetails}
       >
-        <Flex.Cols size={1} align='center'>
+        <Flex.Cols size={1} align="center">
           <Avatar data={data} size={40} />
-          <Flex.Rows size={3} justify='start' style={[marginLeft]}>
+          <Flex.Rows size={3} justify="start" style={[marginLeft]}>
             <Text color={colors.fakeBlack} left ellipsed>
               {overrideDisplayName || displayName}
             </Text>
@@ -56,17 +57,17 @@ export class Item extends PureComponent {
           </Flex.Rows>
         </Flex.Cols>
         {status === enums.BertyEntityContactInputStatus.Unknown && (
-          <ActionsUnknown data={data} />
+          <ActionsUnknown data={data} context={context} />
         )}
         {status === enums.BertyEntityContactInputStatus.RequestedMe && (
-          <ActionsReceived data={data} />
+          <ActionsReceived data={data} context={context} />
         )}
         {status === enums.BertyEntityContactInputStatus.IsRequested && (
-          <ActionsSent data={data} />
+          <ActionsSent data={data} context={context} />
         )}
       </Flex.Cols>
     )
   }
 }
 
-export default fragments.Contact(Item)
+export default Item

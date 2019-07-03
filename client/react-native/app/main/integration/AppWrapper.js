@@ -32,7 +32,7 @@ const getReportServerInfos = () => {
 }
 
 export default class AppWrapper extends Component {
-  render () {
+  render() {
     redirectConsoleLogsToTerminal()
     const reportServer = getReportServerInfos()
     return (

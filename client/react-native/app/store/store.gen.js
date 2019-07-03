@@ -1,10 +1,12 @@
-import { observable, computed } from 'mobx'
+import { observable } from 'mobx'
 import Stream from 'stream'
+import objectHash from 'object-hash'
+import Mutex from 'await-mutex'
 
 export class ConfigEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
@@ -12,24 +14,22 @@ export class ConfigEntityStore {
   id = null
   createdAt = null
   updatedAt = null
-  @computed get myself () {
+  get myself() {
     return this.store.entity.contact.get(this.myselfId)
   }
-  set myself (myself) {
-    this.store.entity.contact.set(
-      this.myselfId,
-      new ContactEntityStore(this.store, myself)
-    )
+  set myself(_) {
+    let entity = this.store.entity.contact.get(_.id)
+    entity = new ContactEntityStore(this.store, _)
+    this.store.entity.contact.set(_.id, entity)
   }
   myselfId = null
-  @computed get currentDevice () {
+  get currentDevice() {
     return this.store.entity.device.get(this.currentDeviceId)
   }
-  set currentDevice (currentDevice) {
-    this.store.entity.device.set(
-      this.currentDeviceId,
-      new DeviceEntityStore(this.store, currentDevice)
-    )
+  set currentDevice(_) {
+    let entity = this.store.entity.device.get(_.id)
+    entity = new DeviceEntityStore(this.store, _)
+    this.store.entity.device.set(_.id, entity)
   }
   currentDeviceId = null
   cryptoParams = null
@@ -42,7 +42,7 @@ export class ConfigEntityStore {
 export class ContactEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
@@ -52,15 +52,21 @@ export class ContactEntityStore {
   updatedAt = null
   sigchain = null
   status = null
-  @computed get devices () {
-    return this.store.entity.device
-      .values()
-      .filter(_ => _.contactId === this.id)
+  get devices() {
+    const devices = []
+    for (const [, _] of this.store.entity.device) {
+      if (_.contactId === this.id) {
+        devices.push(_)
+      }
+    }
+    return devices
   }
-  set devices (devices) {
-    devices.forEach(_ =>
-      this.store.entity.device.set(_.id, new DeviceEntityStore(this.store, _))
-    )
+  set devices(_) {
+    _.forEach(_ => {
+      let entity = this.store.entity.device.get(_.id)
+      entity = new DeviceEntityStore(this.store, _)
+      this.store.entity.device.set(_.id, entity)
+    })
   }
   displayName = null
   displayStatus = null
@@ -70,7 +76,7 @@ export class ContactEntityStore {
 export class DeviceEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
@@ -82,24 +88,27 @@ export class DeviceEntityStore {
   status = null
   apiVersion = null
   contactId = null
-  @computed get pushIdentifiers () {
-    return this.store.entity.devicePushIdentifier
-      .values()
-      .filter(_ => _.deviceId === this.id)
+  get pushIdentifiers() {
+    const pushIdentifiers = []
+    for (const [, _] of this.store.entity.devicePushIdentifier) {
+      if (_.deviceId === this.id) {
+        pushIdentifiers.push(_)
+      }
+    }
+    return pushIdentifiers
   }
-  set pushIdentifiers (pushIdentifiers) {
-    pushIdentifiers.forEach(_ =>
-      this.store.entity.devicePushIdentifier.set(
-        _.id,
-        new DevicePushIdentifierEntityStore(this.store, _)
-      )
-    )
+  set pushIdentifiers(_) {
+    _.forEach(_ => {
+      let entity = this.store.entity.devicePushIdentifier.get(_.id)
+      entity = new DevicePushIdentifierEntityStore(this.store, _)
+      this.store.entity.devicePushIdentifier.set(_.id, entity)
+    })
   }
 }
 export class ConversationEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
@@ -113,24 +122,27 @@ export class ConversationEntityStore {
   topic = null
   infos = null
   kind = null
-  @computed get members () {
-    return this.store.entity.conversationMember
-      .values()
-      .filter(_ => _.conversationId === this.id)
+  get members() {
+    const members = []
+    for (const [, _] of this.store.entity.conversationMember) {
+      if (_.conversationId === this.id) {
+        members.push(_)
+      }
+    }
+    return members
   }
-  set members (members) {
-    members.forEach(_ =>
-      this.store.entity.conversationMember.set(
-        _.id,
-        new ConversationMemberEntityStore(this.store, _)
-      )
-    )
+  set members(_) {
+    _.forEach(_ => {
+      let entity = this.store.entity.conversationMember.get(_.id)
+      entity = new ConversationMemberEntityStore(this.store, _)
+      this.store.entity.conversationMember.set(_.id, entity)
+    })
   }
 }
 export class ConversationMemberEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
@@ -141,14 +153,13 @@ export class ConversationMemberEntityStore {
   readAt = null
   wroteAt = null
   status = null
-  @computed get contact () {
+  get contact() {
     return this.store.entity.contact.get(this.contactId)
   }
-  set contact (contact) {
-    this.store.entity.contact.set(
-      this.contactId,
-      new ContactEntityStore(this.store, contact)
-    )
+  set contact(_) {
+    let entity = this.store.entity.contact.get(_.id)
+    entity = new ContactEntityStore(this.store, _)
+    this.store.entity.contact.set(_.id, entity)
   }
   conversationId = null
   contactId = null
@@ -156,7 +167,7 @@ export class ConversationMemberEntityStore {
 export class EventEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
@@ -174,18 +185,21 @@ export class EventEntityStore {
   attributes = null
   seenAt = null
   ackStatus = null
-  @computed get dispatches () {
-    return this.store.entity.eventDispatch
-      .values()
-      .filter(_ => _.eventId === this.id)
+  get dispatches() {
+    const dispatches = []
+    for (const [, _] of this.store.entity.eventDispatch) {
+      if (_.eventId === this.id) {
+        dispatches.push(_)
+      }
+    }
+    return dispatches
   }
-  set dispatches (dispatches) {
-    dispatches.forEach(_ =>
-      this.store.entity.eventDispatch.set(
-        _.id,
-        new EventDispatchEntityStore(this.store, _)
-      )
-    )
+  set dispatches(_) {
+    _.forEach(_ => {
+      let entity = this.store.entity.eventDispatch.get(_.id)
+      entity = new EventDispatchEntityStore(this.store, _)
+      this.store.entity.eventDispatch.set(_.id, entity)
+    })
   }
   sourceContactId = null
   targetType = null
@@ -196,7 +210,7 @@ export class EventEntityStore {
 export class DevicePushConfigEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
@@ -212,7 +226,7 @@ export class DevicePushConfigEntityStore {
 export class DevicePushIdentifierEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
@@ -227,7 +241,7 @@ export class DevicePushIdentifierEntityStore {
 export class EventDispatchEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
@@ -247,7 +261,7 @@ export class EventDispatchEntityStore {
 export class SenderAliasEntityStore {
   store = null
 
-  constructor (store, data) {
+  constructor(store, data) {
     this.store = store
     Object.keys(data).forEach(key => (this[key] = data[key]))
   }
@@ -264,7 +278,7 @@ export class SenderAliasEntityStore {
 }
 
 export class NodeServiceStore {
-  constructor (store, bridge) {
+  constructor(store, bridge) {
     this.store = store
     this.bridge = bridge
     this.commitLogStream({}).then(commitLog => {
@@ -274,601 +288,791 @@ export class NodeServiceStore {
     })
   }
 
-  id = async input => {
+  id = async (input = {}) => {
     let output = await this.bridge.id(input)
 
     return output
   }
 
-  commitLogStream = async input => {
-    const stream = await this.bridge.commitLogStream(input)
+  commitLogStreamCache = {}
+
+  commitLogStreamMutex = {}
+
+  commitLogStream = async (input = {}) => {
+    const inputHash = objectHash(input)
+    const unlock = await (
+      this.commitLogStreamMutex[inputHash] ||
+      (this.commitLogStreamMutex[inputHash] = new Mutex())
+    ).lock()
+    if (this.commitLogStreamCache[inputHash] == null) {
+      this.commitLogStreamCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          Object.keys(output.entity).forEach(key => {
+            let _ = output.entity[key]
+            if (_ == null) {
+              return
+            }
+            switch (key) {
+              default:
+                break
+              case 'config': {
+                let entity = this.store.entity.config.get(_.id)
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    entity = new ConfigEntityStore(this.store, _)
+                    this.store.entity.config.set(_.id, entity)
+                    break
+                  case 2:
+                    if (entity) {
+                      this.store.entity.config.delete(_.id)
+                    }
+                    break
+                }
+                _ = entity
+                break
+              }
+              case 'contact': {
+                let entity = this.store.entity.contact.get(_.id)
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    entity = new ContactEntityStore(this.store, _)
+                    this.store.entity.contact.set(_.id, entity)
+                    break
+                  case 2:
+                    if (entity) {
+                      this.store.entity.contact.delete(_.id)
+                    }
+                    break
+                }
+                _ = entity
+                break
+              }
+              case 'device': {
+                let entity = this.store.entity.device.get(_.id)
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    entity = new DeviceEntityStore(this.store, _)
+                    this.store.entity.device.set(_.id, entity)
+                    break
+                  case 2:
+                    if (entity) {
+                      this.store.entity.device.delete(_.id)
+                    }
+                    break
+                }
+                _ = entity
+                break
+              }
+              case 'conversation': {
+                let entity = this.store.entity.conversation.get(_.id)
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    entity = new ConversationEntityStore(this.store, _)
+                    this.store.entity.conversation.set(_.id, entity)
+                    break
+                  case 2:
+                    if (entity) {
+                      this.store.entity.conversation.delete(_.id)
+                    }
+                    break
+                }
+                _ = entity
+                break
+              }
+              case 'conversationMember': {
+                let entity = this.store.entity.conversationMember.get(_.id)
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    entity = new ConversationMemberEntityStore(this.store, _)
+                    this.store.entity.conversationMember.set(_.id, entity)
+                    break
+                  case 2:
+                    if (entity) {
+                      this.store.entity.conversationMember.delete(_.id)
+                    }
+                    break
+                }
+                _ = entity
+                break
+              }
+              case 'event': {
+                let entity = this.store.entity.event.get(_.id)
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    entity = new EventEntityStore(this.store, _)
+                    this.store.entity.event.set(_.id, entity)
+                    break
+                  case 2:
+                    if (entity) {
+                      this.store.entity.event.delete(_.id)
+                    }
+                    break
+                }
+                _ = entity
+                break
+              }
+              case 'devicePushConfig': {
+                let entity = this.store.entity.devicePushConfig.get(_.id)
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    entity = new DevicePushConfigEntityStore(this.store, _)
+                    this.store.entity.devicePushConfig.set(_.id, entity)
+                    break
+                  case 2:
+                    if (entity) {
+                      this.store.entity.devicePushConfig.delete(_.id)
+                    }
+                    break
+                }
+                _ = entity
+                break
+              }
+              case 'devicePushIdentifier': {
+                let entity = this.store.entity.devicePushIdentifier.get(_.id)
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    entity = new DevicePushIdentifierEntityStore(this.store, _)
+                    this.store.entity.devicePushIdentifier.set(_.id, entity)
+                    break
+                  case 2:
+                    if (entity) {
+                      this.store.entity.devicePushIdentifier.delete(_.id)
+                    }
+                    break
+                }
+                _ = entity
+                break
+              }
+              case 'eventDispatch': {
+                let entity = this.store.entity.eventDispatch.get(_.id)
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    entity = new EventDispatchEntityStore(this.store, _)
+                    this.store.entity.eventDispatch.set(_.id, entity)
+                    break
+                  case 2:
+                    if (entity) {
+                      this.store.entity.eventDispatch.delete(_.id)
+                    }
+                    break
+                }
+                _ = entity
+                break
+              }
+              case 'senderAlias': {
+                let entity = this.store.entity.senderAlias.get(_.id)
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    entity = new SenderAliasEntityStore(this.store, _)
+                    this.store.entity.senderAlias.set(_.id, entity)
+                    break
+                  case 2:
+                    if (entity) {
+                      this.store.entity.senderAlias.delete(_.id)
+                    }
+                    break
+                }
+                _ = entity
+                break
+              }
+            }
+            output.entity[key] = _
+          })
+
+          callback(null, output)
+        },
+      })
+      const stream = await this.bridge.commitLogStream(input)
+
+      this.commitLogStreamCache[inputHash].setMaxListeners(30)
+      stream.pipe(this.commitLogStreamCache[inputHash])
+      this.commitLogStreamCache[inputHash].on('end', () => {
+        delete this.commitLogStreamCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
+    this.commitLogStreamCache[inputHash].pipe(passThroughStream)
+    unlock()
+    return passThroughStream
+  }
+
+  eventStreamCache = {}
+
+  eventStreamMutex = {}
+
+  eventStream = async (input = {}) => {
+    const inputHash = objectHash(input)
+    const unlock = await (
+      this.eventStreamMutex[inputHash] ||
+      (this.eventStreamMutex[inputHash] = new Mutex())
+    ).lock()
+    if (this.eventStreamCache[inputHash] == null) {
+      this.eventStreamCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          let entity = this.store.entity.event.get(output.id)
+          entity = new EventEntityStore(this.store, output)
+          this.store.entity.event.set(output.id, entity)
+          output = entity
+
+          callback(null, output)
+        },
+      })
+      const stream = await this.bridge.eventStream(input)
+
+      this.eventStreamCache[inputHash].setMaxListeners(30)
+      stream.pipe(this.eventStreamCache[inputHash])
+      this.eventStreamCache[inputHash].on('end', () => {
+        delete this.eventStreamCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
+    this.eventStreamCache[inputHash].pipe(passThroughStream)
+    unlock()
+    return passThroughStream
+  }
+
+  eventListCache = {}
+
+  eventList = async (input = {}) => {
     const transformStream = new Stream.Transform({
       writableObjectMode: true,
       readableObjectMode: true,
       transform: (output, encoding, callback) => {
-        Object.keys(output.entity).forEach(key => {
-          let entity = output.entity[key]
-          if (entity == null) {
-            return
-          }
-          switch (key) {
-            default:
-              break
-            case 'config':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.config.set(
-                    entity.id,
-                    new ConfigEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.config.has(entity.id)) {
-                    entity = this.store.entity.config.get(entity.id)
-                    this.store.entity.config.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'contact':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.contact.set(
-                    entity.id,
-                    new ContactEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.contact.has(entity.id)) {
-                    entity = this.store.entity.contact.get(entity.id)
-                    this.store.entity.contact.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'device':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.device.set(
-                    entity.id,
-                    new DeviceEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.device.has(entity.id)) {
-                    entity = this.store.entity.device.get(entity.id)
-                    this.store.entity.device.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'conversation':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.conversation.set(
-                    entity.id,
-                    new ConversationEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.conversation.has(entity.id)) {
-                    entity = this.store.entity.conversation.get(entity.id)
-                    this.store.entity.conversation.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'conversationMember':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.conversationMember.set(
-                    entity.id,
-                    new ConversationMemberEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.conversationMember.has(entity.id)) {
-                    entity = this.store.entity.conversationMember.get(entity.id)
-                    this.store.entity.conversationMember.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'event':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.event.set(
-                    entity.id,
-                    new EventEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.event.has(entity.id)) {
-                    entity = this.store.entity.event.get(entity.id)
-                    this.store.entity.event.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'devicePushConfig':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.devicePushConfig.set(
-                    entity.id,
-                    new DevicePushConfigEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.devicePushConfig.has(entity.id)) {
-                    entity = this.store.entity.devicePushConfig.get(entity.id)
-                    this.store.entity.devicePushConfig.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'devicePushIdentifier':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.devicePushIdentifier.set(
-                    entity.id,
-                    new DevicePushIdentifierEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.devicePushIdentifier.has(entity.id)) {
-                    entity = this.store.entity.devicePushIdentifier.get(
-                      entity.id
-                    )
-                    this.store.entity.devicePushIdentifier.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'eventDispatch':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.eventDispatch.set(
-                    entity.id,
-                    new EventDispatchEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.eventDispatch.has(entity.id)) {
-                    entity = this.store.entity.eventDispatch.get(entity.id)
-                    this.store.entity.eventDispatch.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'senderAlias':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.senderAlias.set(
-                    entity.id,
-                    new SenderAliasEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.senderAlias.has(entity.id)) {
-                    entity = this.store.entity.senderAlias.get(entity.id)
-                    this.store.entity.senderAlias.delete(entity.id)
-                  }
-                  break
-              }
-              break
-          }
-          output.entity[key] = entity
-        })
+        let entity = this.store.entity.event.get(output.id)
+        entity = new EventEntityStore(this.store, output)
+        this.store.entity.event.set(output.id, entity)
+        output = entity
 
         callback(null, output)
       },
     })
-    stream.pipe(transformStream)
-    return transformStream
-  }
-
-  eventStream = async input => {
-    const stream = await this.bridge.eventStream(input)
-    const transformStream = new Stream.Transform({
-      writableObjectMode: true,
-      readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        output = new EventEntityStore(this.store, output)
-        this.store.entity.event.set(output.id, output)
-
-        callback(null, output)
-      },
-    })
-    stream.pipe(transformStream)
-    return transformStream
-  }
-
-  eventList = async input => {
     const stream = await this.bridge.eventList(input)
-    const transformStream = new Stream.Transform({
-      writableObjectMode: true,
-      readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        output = new EventEntityStore(this.store, output)
-        this.store.entity.event.set(output.id, output)
 
-        callback(null, output)
-      },
-    })
     stream.pipe(transformStream)
     return transformStream
   }
 
-  eventUnseen = async input => {
-    const stream = await this.bridge.eventUnseen(input)
-    const transformStream = new Stream.Transform({
+  eventUnseenCache = {}
+
+  eventUnseenMutex = {}
+
+  eventUnseen = async (input = {}) => {
+    const inputHash = objectHash(input)
+    const unlock = await (
+      this.eventUnseenMutex[inputHash] ||
+      (this.eventUnseenMutex[inputHash] = new Mutex())
+    ).lock()
+    if (this.eventUnseenCache[inputHash] == null) {
+      this.eventUnseenCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          let entity = this.store.entity.event.get(output.id)
+          entity = new EventEntityStore(this.store, output)
+          this.store.entity.event.set(output.id, entity)
+          output = entity
+
+          callback(null, output)
+        },
+      })
+      const stream = await this.bridge.eventUnseen(input)
+
+      this.eventUnseenCache[inputHash].setMaxListeners(30)
+      stream.pipe(this.eventUnseenCache[inputHash])
+      this.eventUnseenCache[inputHash].on('end', () => {
+        delete this.eventUnseenCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        output = new EventEntityStore(this.store, output)
-        this.store.entity.event.set(output.id, output)
-
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.eventUnseenCache[inputHash].pipe(passThroughStream)
+    unlock()
+    return passThroughStream
   }
 
-  getEvent = async input => {
+  getEvent = async (input = {}) => {
     let output = await this.bridge.getEvent(input)
 
-    output = new EventEntityStore(this.store, output)
-    this.store.entity.event.set(output.id, output)
+    let entity = this.store.entity.event.get(output.id)
+    entity = new EventEntityStore(this.store, output)
+    this.store.entity.event.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  eventSeen = async input => {
+  eventSeen = async (input = {}) => {
     let output = await this.bridge.eventSeen(input)
 
-    output = new EventEntityStore(this.store, output)
-    this.store.entity.event.set(output.id, output)
+    let entity = this.store.entity.event.get(output.id)
+    entity = new EventEntityStore(this.store, output)
+    this.store.entity.event.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  eventRetry = async input => {
+  eventRetry = async (input = {}) => {
     let output = await this.bridge.eventRetry(input)
 
-    output = new EventEntityStore(this.store, output)
-    this.store.entity.event.set(output.id, output)
+    let entity = this.store.entity.event.get(output.id)
+    entity = new EventEntityStore(this.store, output)
+    this.store.entity.event.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  configPublic = async input => {
+  config = async (input = {}) => {
+    let output = await this.bridge.config(input)
+
+    let entity = this.store.entity.config.get(output.id)
+    entity = new ConfigEntityStore(this.store, output)
+    this.store.entity.config.set(output.id, entity)
+    output = entity
+
+    return output
+  }
+
+  configPublic = async (input = {}) => {
     let output = await this.bridge.configPublic(input)
 
-    output = new ConfigEntityStore(this.store, output)
-    this.store.entity.config.set(output.id, output)
+    let entity = this.store.entity.config.get(output.id)
+    entity = new ConfigEntityStore(this.store, output)
+    this.store.entity.config.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  configUpdate = async input => {
+  configUpdate = async (input = {}) => {
     let output = await this.bridge.configUpdate(input)
 
-    output = new ConfigEntityStore(this.store, output)
-    this.store.entity.config.set(output.id, output)
+    let entity = this.store.entity.config.get(output.id)
+    entity = new ConfigEntityStore(this.store, output)
+    this.store.entity.config.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  contactRequest = async input => {
+  contactRequest = async (input = {}) => {
     let output = await this.bridge.contactRequest(input)
 
-    output = new ContactEntityStore(this.store, output)
-    this.store.entity.contact.set(output.id, output)
+    let entity = this.store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this.store, output)
+    this.store.entity.contact.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  contactAcceptRequest = async input => {
+  contactAcceptRequest = async (input = {}) => {
     let output = await this.bridge.contactAcceptRequest(input)
 
-    output = new ContactEntityStore(this.store, output)
-    this.store.entity.contact.set(output.id, output)
+    let entity = this.store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this.store, output)
+    this.store.entity.contact.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  contactRemove = async input => {
+  contactRemove = async (input = {}) => {
     let output = await this.bridge.contactRemove(input)
 
-    if (this.store.entity.contact.has(output.id)) {
-      output = this.store.entity.contact.get(output.id)
+    let entity = this.store.entity.contact.get(output.id)
+    if (entity) {
       this.store.entity.contact.delete(output.id)
     }
+    output = entity
 
     return output
   }
 
-  contactUpdate = async input => {
+  contactUpdate = async (input = {}) => {
     let output = await this.bridge.contactUpdate(input)
 
-    output = new ContactEntityStore(this.store, output)
-    this.store.entity.contact.set(output.id, output)
+    let entity = this.store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this.store, output)
+    this.store.entity.contact.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  contactList = async input => {
-    const stream = await this.bridge.contactList(input)
+  contactListCache = {}
+
+  contactList = async (input = {}) => {
     const transformStream = new Stream.Transform({
       writableObjectMode: true,
       readableObjectMode: true,
       transform: (output, encoding, callback) => {
-        output = new ContactEntityStore(this.store, output)
-        this.store.entity.contact.set(output.id, output)
+        let entity = this.store.entity.contact.get(output.id)
+        entity = new ContactEntityStore(this.store, output)
+        this.store.entity.contact.set(output.id, entity)
+        output = entity
 
         callback(null, output)
       },
     })
+    const stream = await this.bridge.contactList(input)
+
     stream.pipe(transformStream)
     return transformStream
   }
 
-  contact = async input => {
+  contact = async (input = {}) => {
     let output = await this.bridge.contact(input)
 
-    output = new ContactEntityStore(this.store, output)
-    this.store.entity.contact.set(output.id, output)
+    let entity = this.store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this.store, output)
+    this.store.entity.contact.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  contactCheckPublicKey = async input => {
+  contactCheckPublicKey = async (input = {}) => {
     let output = await this.bridge.contactCheckPublicKey(input)
 
     return output
   }
 
-  conversationCreate = async input => {
+  conversationCreate = async (input = {}) => {
     let output = await this.bridge.conversationCreate(input)
 
-    output = new ConversationEntityStore(this.store, output)
-    this.store.entity.conversation.set(output.id, output)
+    let entity = this.store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this.store, output)
+    this.store.entity.conversation.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  conversationUpdate = async input => {
+  conversationUpdate = async (input = {}) => {
     let output = await this.bridge.conversationUpdate(input)
 
-    output = new ConversationEntityStore(this.store, output)
-    this.store.entity.conversation.set(output.id, output)
+    let entity = this.store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this.store, output)
+    this.store.entity.conversation.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  conversationList = async input => {
-    const stream = await this.bridge.conversationList(input)
+  conversationListCache = {}
+
+  conversationList = async (input = {}) => {
     const transformStream = new Stream.Transform({
       writableObjectMode: true,
       readableObjectMode: true,
       transform: (output, encoding, callback) => {
-        output = new ConversationEntityStore(this.store, output)
-        this.store.entity.conversation.set(output.id, output)
+        let entity = this.store.entity.conversation.get(output.id)
+        entity = new ConversationEntityStore(this.store, output)
+        this.store.entity.conversation.set(output.id, entity)
+        output = entity
 
         callback(null, output)
       },
     })
+    const stream = await this.bridge.conversationList(input)
+
     stream.pipe(transformStream)
     return transformStream
   }
 
-  conversationInvite = async input => {
+  conversationInvite = async (input = {}) => {
     let output = await this.bridge.conversationInvite(input)
 
-    output = new ConversationEntityStore(this.store, output)
-    this.store.entity.conversation.set(output.id, output)
+    let entity = this.store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this.store, output)
+    this.store.entity.conversation.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  conversationExclude = async input => {
+  conversationExclude = async (input = {}) => {
     let output = await this.bridge.conversationExclude(input)
 
-    output = new ConversationEntityStore(this.store, output)
-    this.store.entity.conversation.set(output.id, output)
+    let entity = this.store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this.store, output)
+    this.store.entity.conversation.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  conversationAddMessage = async input => {
+  conversationAddMessage = async (input = {}) => {
     let output = await this.bridge.conversationAddMessage(input)
 
-    output = new EventEntityStore(this.store, output)
-    this.store.entity.event.set(output.id, output)
+    let entity = this.store.entity.event.get(output.id)
+    entity = new EventEntityStore(this.store, output)
+    this.store.entity.event.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  conversation = async input => {
+  conversation = async (input = {}) => {
     let output = await this.bridge.conversation(input)
 
-    output = new ConversationEntityStore(this.store, output)
-    this.store.entity.conversation.set(output.id, output)
+    let entity = this.store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this.store, output)
+    this.store.entity.conversation.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  conversationMember = async input => {
+  conversationMember = async (input = {}) => {
     let output = await this.bridge.conversationMember(input)
 
-    output = new ConversationMemberEntityStore(this.store, output)
-    this.store.entity.conversationMember.set(output.id, output)
+    let entity = this.store.entity.conversationMember.get(output.id)
+    entity = new ConversationMemberEntityStore(this.store, output)
+    this.store.entity.conversationMember.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  conversationRead = async input => {
+  conversationRead = async (input = {}) => {
     let output = await this.bridge.conversationRead(input)
 
-    output = new ConversationEntityStore(this.store, output)
-    this.store.entity.conversation.set(output.id, output)
+    let entity = this.store.entity.conversation.get(output.id)
+    entity = new ConversationEntityStore(this.store, output)
+    this.store.entity.conversation.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  conversationRemove = async input => {
+  conversationRemove = async (input = {}) => {
     let output = await this.bridge.conversationRemove(input)
 
-    if (this.store.entity.conversation.has(output.id)) {
-      output = this.store.entity.conversation.get(output.id)
+    let entity = this.store.entity.conversation.get(output.id)
+    if (entity) {
       this.store.entity.conversation.delete(output.id)
     }
+    output = entity
 
     return output
   }
 
-  conversationLastEvent = async input => {
+  conversationLastEvent = async (input = {}) => {
     let output = await this.bridge.conversationLastEvent(input)
 
-    output = new EventEntityStore(this.store, output)
-    this.store.entity.event.set(output.id, output)
+    let entity = this.store.entity.event.get(output.id)
+    entity = new EventEntityStore(this.store, output)
+    this.store.entity.event.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  devicePushConfigList = async input => {
-    let output = await this.bridge.devicePushConfigList(input)
+  devicePushConfigListCache = {}
 
-    return output
+  devicePushConfigList = async (input = {}) => {
+    const transformStream = new Stream.Transform({
+      writableObjectMode: true,
+      readableObjectMode: true,
+      transform: (output, encoding, callback) => {
+        let entity = this.store.entity.devicePushConfig.get(output.id)
+        entity = new DevicePushConfigEntityStore(this.store, output)
+        this.store.entity.devicePushConfig.set(output.id, entity)
+        output = entity
+
+        callback(null, output)
+      },
+    })
+    const stream = await this.bridge.devicePushConfigList(input)
+
+    stream.pipe(transformStream)
+    return transformStream
   }
 
-  devicePushConfigCreate = async input => {
+  devicePushConfigCreate = async (input = {}) => {
     let output = await this.bridge.devicePushConfigCreate(input)
 
-    output = new DevicePushConfigEntityStore(this.store, output)
-    this.store.entity.devicePushConfig.set(output.id, output)
+    let entity = this.store.entity.devicePushConfig.get(output.id)
+    entity = new DevicePushConfigEntityStore(this.store, output)
+    this.store.entity.devicePushConfig.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  devicePushConfigNativeRegister = async input => {
+  devicePushConfigNativeRegister = async (input = {}) => {
     let output = await this.bridge.devicePushConfigNativeRegister(input)
 
     return output
   }
 
-  devicePushConfigNativeUnregister = async input => {
+  devicePushConfigNativeUnregister = async (input = {}) => {
     let output = await this.bridge.devicePushConfigNativeUnregister(input)
 
     return output
   }
 
-  devicePushConfigRemove = async input => {
+  devicePushConfigRemove = async (input = {}) => {
     let output = await this.bridge.devicePushConfigRemove(input)
 
-    if (this.store.entity.devicePushConfig.has(output.id)) {
-      output = this.store.entity.devicePushConfig.get(output.id)
+    let entity = this.store.entity.devicePushConfig.get(output.id)
+    if (entity) {
       this.store.entity.devicePushConfig.delete(output.id)
     }
+    output = entity
 
     return output
   }
 
-  devicePushConfigUpdate = async input => {
+  devicePushConfigUpdate = async (input = {}) => {
     let output = await this.bridge.devicePushConfigUpdate(input)
 
-    output = new DevicePushConfigEntityStore(this.store, output)
-    this.store.entity.devicePushConfig.set(output.id, output)
+    let entity = this.store.entity.devicePushConfig.get(output.id)
+    entity = new DevicePushConfigEntityStore(this.store, output)
+    this.store.entity.devicePushConfig.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  handleEvent = async input => {
+  handleEvent = async (input = {}) => {
     let output = await this.bridge.handleEvent(input)
 
     return output
   }
 
-  generateFakeData = async input => {
+  generateFakeData = async (input = {}) => {
     let output = await this.bridge.generateFakeData(input)
 
     return output
   }
 
-  runIntegrationTests = async input => {
+  runIntegrationTests = async (input = {}) => {
     let output = await this.bridge.runIntegrationTests(input)
 
     return output
   }
 
-  debugPing = async input => {
+  debugPing = async (input = {}) => {
     let output = await this.bridge.debugPing(input)
 
     return output
   }
 
-  debugRequeueEvent = async input => {
+  debugRequeueEvent = async (input = {}) => {
     let output = await this.bridge.debugRequeueEvent(input)
 
-    output = new EventEntityStore(this.store, output)
-    this.store.entity.event.set(output.id, output)
+    let entity = this.store.entity.event.get(output.id)
+    entity = new EventEntityStore(this.store, output)
+    this.store.entity.event.set(output.id, entity)
+    output = entity
 
     return output
   }
 
-  debugRequeueAll = async input => {
+  debugRequeueAll = async (input = {}) => {
     let output = await this.bridge.debugRequeueAll(input)
 
     return output
   }
 
-  deviceInfos = async input => {
+  deviceInfos = async (input = {}) => {
     let output = await this.bridge.deviceInfos(input)
 
     return output
   }
 
-  appVersion = async input => {
+  appVersion = async (input = {}) => {
     let output = await this.bridge.appVersion(input)
 
     return output
   }
 
-  peers = async input => {
+  peers = async (input = {}) => {
     let output = await this.bridge.peers(input)
 
     return output
   }
 
-  protocols = async input => {
+  protocols = async (input = {}) => {
     let output = await this.bridge.protocols(input)
 
     return output
   }
 
-  logStream = async input => {
-    const stream = await this.bridge.logStream(input)
+  logStreamCache = {}
+
+  logStreamMutex = {}
+
+  logStream = async (input = {}) => {
+    const inputHash = objectHash(input)
+    const unlock = await (
+      this.logStreamMutex[inputHash] ||
+      (this.logStreamMutex[inputHash] = new Mutex())
+    ).lock()
+    if (this.logStreamCache[inputHash] == null) {
+      this.logStreamCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          callback(null, output)
+        },
+      })
+      const stream = await this.bridge.logStream(input)
+
+      this.logStreamCache[inputHash].setMaxListeners(30)
+      stream.pipe(this.logStreamCache[inputHash])
+      this.logStreamCache[inputHash].on('end', () => {
+        delete this.logStreamCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
+    this.logStreamCache[inputHash].pipe(passThroughStream)
+    unlock()
+    return passThroughStream
+  }
+
+  logfileListCache = {}
+
+  logfileList = async (input = {}) => {
     const transformStream = new Stream.Transform({
       writableObjectMode: true,
       readableObjectMode: true,
@@ -876,105 +1080,160 @@ export class NodeServiceStore {
         callback(null, output)
       },
     })
-    stream.pipe(transformStream)
-    return transformStream
-  }
-
-  logfileList = async input => {
     const stream = await this.bridge.logfileList(input)
-    const transformStream = new Stream.Transform({
-      writableObjectMode: true,
-      readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        callback(null, output)
-      },
-    })
+
     stream.pipe(transformStream)
     return transformStream
   }
 
-  logfileRead = async input => {
-    const stream = await this.bridge.logfileRead(input)
-    const transformStream = new Stream.Transform({
+  logfileReadCache = {}
+
+  logfileReadMutex = {}
+
+  logfileRead = async (input = {}) => {
+    const inputHash = objectHash(input)
+    const unlock = await (
+      this.logfileReadMutex[inputHash] ||
+      (this.logfileReadMutex[inputHash] = new Mutex())
+    ).lock()
+    if (this.logfileReadCache[inputHash] == null) {
+      this.logfileReadCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          callback(null, output)
+        },
+      })
+      const stream = await this.bridge.logfileRead(input)
+
+      this.logfileReadCache[inputHash].setMaxListeners(30)
+      stream.pipe(this.logfileReadCache[inputHash])
+      this.logfileReadCache[inputHash].on('end', () => {
+        delete this.logfileReadCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.logfileReadCache[inputHash].pipe(passThroughStream)
+    unlock()
+    return passThroughStream
   }
 
-  testLogBackgroundError = async input => {
+  testLogBackgroundError = async (input = {}) => {
     let output = await this.bridge.testLogBackgroundError(input)
 
     return output
   }
 
-  testLogBackgroundWarn = async input => {
+  testLogBackgroundWarn = async (input = {}) => {
     let output = await this.bridge.testLogBackgroundWarn(input)
 
     return output
   }
 
-  testLogBackgroundDebug = async input => {
+  testLogBackgroundDebug = async (input = {}) => {
     let output = await this.bridge.testLogBackgroundDebug(input)
 
     return output
   }
 
-  testPanic = async input => {
+  testPanic = async (input = {}) => {
     let output = await this.bridge.testPanic(input)
 
     return output
   }
 
-  testError = async input => {
+  testError = async (input = {}) => {
     let output = await this.bridge.testError(input)
 
     return output
   }
 
-  monitorBandwidth = async input => {
-    const stream = await this.bridge.monitorBandwidth(input)
-    const transformStream = new Stream.Transform({
+  monitorBandwidthCache = {}
+
+  monitorBandwidthMutex = {}
+
+  monitorBandwidth = async (input = {}) => {
+    const inputHash = objectHash(input)
+    const unlock = await (
+      this.monitorBandwidthMutex[inputHash] ||
+      (this.monitorBandwidthMutex[inputHash] = new Mutex())
+    ).lock()
+    if (this.monitorBandwidthCache[inputHash] == null) {
+      this.monitorBandwidthCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          callback(null, output)
+        },
+      })
+      const stream = await this.bridge.monitorBandwidth(input)
+
+      this.monitorBandwidthCache[inputHash].setMaxListeners(30)
+      stream.pipe(this.monitorBandwidthCache[inputHash])
+      this.monitorBandwidthCache[inputHash].on('end', () => {
+        delete this.monitorBandwidthCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.monitorBandwidthCache[inputHash].pipe(passThroughStream)
+    unlock()
+    return passThroughStream
   }
 
-  monitorPeers = async input => {
-    const stream = await this.bridge.monitorPeers(input)
-    const transformStream = new Stream.Transform({
+  monitorPeersCache = {}
+
+  monitorPeersMutex = {}
+
+  monitorPeers = async (input = {}) => {
+    const inputHash = objectHash(input)
+    const unlock = await (
+      this.monitorPeersMutex[inputHash] ||
+      (this.monitorPeersMutex[inputHash] = new Mutex())
+    ).lock()
+    if (this.monitorPeersCache[inputHash] == null) {
+      this.monitorPeersCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          callback(null, output)
+        },
+      })
+      const stream = await this.bridge.monitorPeers(input)
+
+      this.monitorPeersCache[inputHash].setMaxListeners(30)
+      stream.pipe(this.monitorPeersCache[inputHash])
+      this.monitorPeersCache[inputHash].on('end', () => {
+        delete this.monitorPeersCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.monitorPeersCache[inputHash].pipe(passThroughStream)
+    unlock()
+    return passThroughStream
   }
 
-  getListenAddrs = async input => {
+  getListenAddrs = async (input = {}) => {
     let output = await this.bridge.getListenAddrs(input)
 
     return output
   }
 
-  getListenInterfaceAddrs = async input => {
+  getListenInterfaceAddrs = async (input = {}) => {
     let output = await this.bridge.getListenInterfaceAddrs(input)
 
     return output
   }
 
-  libp2PPing = async input => {
+  libp2PPing = async (input = {}) => {
     let output = await this.bridge.libp2PPing(input)
 
     return output
@@ -982,24 +1241,26 @@ export class NodeServiceStore {
 }
 
 export class Store {
-  constructor (bridge) {
+  constructor(bridge) {
     this.bridge = bridge
 
     this.entity = {
-      config: observable.map({}, { deep: false }),
-      contact: observable.map({}, { deep: false }),
-      device: observable.map({}, { deep: false }),
-      conversation: observable.map({}, { deep: false }),
-      conversationMember: observable.map({}, { deep: false }),
-      event: observable.map({}, { deep: false }),
-      devicePushConfig: observable.map({}, { deep: false }),
-      devicePushIdentifier: observable.map({}, { deep: false }),
-      eventDispatch: observable.map({}, { deep: false }),
-      senderAlias: observable.map({}, { deep: false }),
+      config: observable.map({}, { deep: true }),
+      contact: observable.map({}, { deep: true }),
+      device: observable.map({}, { deep: true }),
+      conversation: observable.map({}, { deep: true }),
+      conversationMember: observable.map({}, { deep: true }),
+      event: observable.map({}, { deep: true }),
+      devicePushConfig: observable.map({}, { deep: true }),
+      devicePushIdentifier: observable.map({}, { deep: true }),
+      eventDispatch: observable.map({}, { deep: true }),
+      senderAlias: observable.map({}, { deep: true }),
     }
 
     this.node = {
       service:
+        this.bridge &&
+        this.bridge.node &&
         this.bridge.node.service &&
         new NodeServiceStore(this, this.bridge.node.service),
     }

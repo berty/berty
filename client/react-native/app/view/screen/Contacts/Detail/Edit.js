@@ -24,7 +24,7 @@ export default class Edit extends PureComponent {
 
   onChoosePicture = async event => this.setState(await choosePicture(event))
 
-  render () {
+  render() {
     const id = this.props.navigation.getParam('id') || {}
 
     return (
@@ -36,7 +36,7 @@ export default class Edit extends PureComponent {
                 icon={
                   <Badge
                     background={colors.blue}
-                    icon='camera'
+                    icon="camera"
                     medium
                     onPress={this.onChoosePicture}
                   >
@@ -44,7 +44,7 @@ export default class Edit extends PureComponent {
                   </Badge>
                 }
               />
-              <Menu.Section title='Nickname'>
+              <Menu.Section title="Nickname">
                 <Menu.Input
                   value={
                     contact.overrideDisplayName || contact.displayName || ''

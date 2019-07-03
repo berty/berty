@@ -1,26 +1,25 @@
 import React, { PureComponent } from 'react'
 import { Text, ScrollView, TouchableOpacity, Clipboard } from 'react-native'
-import { RelayContext } from '@berty/relay'
 import { Header } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { padding } from '@berty/common/styles'
-import { withRelayContext } from '@berty/relay/context'
+import { withStoreContext } from '@berty/store/context'
+import { formatDateTime } from '@berty/common/locale/dateFns'
 
+@withStoreContext
 class EventDetails extends PureComponent {
-  static contextType = RelayContext
-
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
         navigation={navigation}
-        title='Details'
-        titleIcon='crosshair'
+        title="Details"
+        titleIcon="crosshair"
         backBtn
       />
     ),
   })
 
-  render () {
+  render() {
     const data = this.props.navigation.getParam('details')
 
     const fields = [
@@ -36,7 +35,7 @@ class EventDetails extends PureComponent {
         ]}
         onPress={async () => {
           try {
-            await this.props.context.mutations.debugRequeueEvent({
+            await this.props.context.node.service.debugRequeueEvent({
               eventId: data.id,
             })
           } catch (err) {
@@ -57,8 +56,15 @@ class EventDetails extends PureComponent {
       </TouchableOpacity>,
     ]
 
-    for (let key of Object.keys(data)) {
+    for (let key of Object.keys(data).filter(_ => _ !== 'store')) {
       let value = data[key] || 'null'
+      if (value.constructor && value.constructor.name === 'Timestamp') {
+        value = formatDateTime(
+          new Date(
+            value.seconds * 1000 + (value.nanos ? value.nanos % 1000 : 0)
+          )
+        )
+      }
       fields.push(
         <TouchableOpacity
           key={key}
@@ -94,4 +100,4 @@ class EventDetails extends PureComponent {
   }
 }
 
-export default withRelayContext(EventDetails)
+export default EventDetails

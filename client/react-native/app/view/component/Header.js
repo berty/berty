@@ -15,7 +15,7 @@ export const HeaderButton = ({ icon, color, style, ...otherProps }) => {
 }
 
 class Header extends PureComponent {
-  render () {
+  render() {
     const {
       goBack,
       title,
@@ -51,10 +51,10 @@ class Header extends PureComponent {
         ]}
       >
         <Flex.Rows>
-          <Flex.Cols size={1} justify='between' align='center'>
+          <Flex.Cols size={1} justify="between" align="center">
             {backBtn && (
               <HeaderButton
-                icon='arrow-left'
+                icon="arrow-left"
                 color={colorBtnLeft}
                 onPress={() => {
                   if (typeof backBtn === 'function') {
@@ -63,7 +63,7 @@ class Header extends PureComponent {
                   goBack(null)
                 }}
                 flip={isRTL()}
-                justify='start'
+                justify="start"
                 middle
               />
             )}
@@ -88,7 +88,7 @@ class Header extends PureComponent {
                 icon={rightBtnIcon}
                 color={colorBtnRight}
                 onPress={onPressRightBtn}
-                justify='end'
+                justify="end"
                 middle
               />
             )}

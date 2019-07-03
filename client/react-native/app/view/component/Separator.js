@@ -7,11 +7,11 @@ class Separator extends React.Component {
     vertical: false,
   }
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate() {
     return false
   }
 
-  render () {
+  render() {
     const { vertical, highlighted } = this.props
     const keyStyle = vertical ? 'width' : 'height'
     return (

@@ -16,7 +16,7 @@ export default class Touchable extends PureComponent {
     })
   }
 
-  render () {
+  render() {
     const { loading } = this.state
     const {
       style = {},

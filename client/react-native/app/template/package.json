@@ -9,6 +9,6 @@
   "dependencies": {},
   "devDependencies": {
     "case": "^1.6.1",
-    "pbhbs": "0.0.11"
+    "pbhbs": "^0.1.0"
   }
 }

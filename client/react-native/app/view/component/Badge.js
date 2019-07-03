@@ -100,7 +100,7 @@ const Badge = props => {
         padding={padding}
         middle
         center
-        rounded='circle'
+        rounded={'circle'}
         absolute={absolute}
         background={background || colors.white}
         color={color || colors.white}

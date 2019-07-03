@@ -1,8 +1,8 @@
 import { Platform } from 'react-native'
 
-export default function (spec) {
-  spec.describe('App loading', function () {
-    spec.it('works', async function () {
+export default function(spec) {
+  spec.describe('App loading', function() {
+    spec.it('works', async function() {
       const androidLoadingTimeout = 30000
       const iosLoadingTimeout = 10000
       const webLoadingTimeout = 2000

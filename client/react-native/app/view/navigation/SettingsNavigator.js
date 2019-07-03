@@ -50,7 +50,7 @@ export default createStackNavigator(
         <Header
           navigation={navigation}
           title={I18n.t('settings.title')}
-          titleIcon='settings'
+          titleIcon="settings"
         />
       ),
       tabBarVisible: true,

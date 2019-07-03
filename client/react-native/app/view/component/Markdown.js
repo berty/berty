@@ -124,7 +124,7 @@ const link = (node, children, parent, styles) => (
   <Text
     key={node.key}
     style={styles.link}
-    accessibilityRole='link'
+    accessibilityRole="link"
     onPress={() => openURL(node.attributes.href)}
   >
     {children}

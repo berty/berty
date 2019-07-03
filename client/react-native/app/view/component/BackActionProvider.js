@@ -54,7 +54,7 @@ export const withGoBack = Component =>
   withHOC(
     withNavigation(
       class WithGoBack extends React.PureComponent {
-        render () {
+        render() {
           return (
             <BackActionProvider navigation={this.props.navigation}>
               {({ goBack }) => <Component {...this.props} goBack={goBack} />}

@@ -1,13 +1,12 @@
 import { Platform } from 'react-native'
 import { createBottomTabNavigator } from 'react-navigation'
 import I18n from 'i18next'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 
 import { Icon } from '@berty/component'
 import { UpdateContext } from '@berty/update'
 import { colors } from '@berty/common/constants'
 import { createSplitNavigator } from './SplitNavigator'
-import { merge } from '@berty/common/helpers'
 import ChatNavigator, {
   SubviewsChatNavigator,
   SplitSideChatNavigator,
@@ -18,121 +17,12 @@ import ContactNavigator, {
 } from './ContactNavigator'
 import Placeholder from '@berty/screen/Placeholder'
 import SettingsNavigator from './SettingsNavigator'
-import { withRelayContext } from '@berty/relay/context'
+import { withStoreContext } from '@berty/store/context'
 
-class TabBarIconBase extends Component {
-  constructor (props) {
-    super(props)
-    const {
-      context: { queries, subscriptions },
-    } = props
-
-    this.state = {
-      stored: [],
-      queryList: queries.EventList.graphql,
-      queryVariables:
-        props.routeName === 'contacts'
-          ? merge([
-            queries.EventList.defaultVariables,
-            {
-              filter: {
-                kind: 201,
-                direction: 1,
-              },
-              onlyWithoutSeenAt: 1,
-            },
-          ])
-          : merge([
-            queries.EventList.defaultVariables,
-            {
-              filter: {
-                kind: 302,
-                direction: 1,
-              },
-              onlyWithoutSeenAt: 1,
-            },
-          ]),
-      subscription:
-        props.routeName === 'contacts'
-          ? [subscriptions.contactRequest]
-          : [subscriptions.message],
-    }
-
-    this.subscriber = null
-  }
-
-  componentDidMount () {
-    const {
-      context: { queries, subscriptions },
-    } = this.props
-    const { queryVariables } = this.state
-
-    queries.EventUnseen.fetch(queryVariables).then(e => {
-      this.setState({
-        stored: e.reduce((acc, val) => {
-          if (acc.indexOf(val.targetAddr) === -1) {
-            acc.push(val.targetAddr)
-          }
-          return acc
-        }, []),
-      })
-    })
-    this.subscriber = subscriptions.commitLogStream.subscribe({
-      updater: this.updateBadge,
-    })
-  }
-
-  componentWillUnmount () {
-    if (this.subscriber != null) {
-      this.subscriber.unsubscribe()
-    }
-  }
-
-  updateBadge = (store, data) => {
-    const [entity] = [data.CommitLogStream.entity.event]
-    const {
-      stored,
-      queryVariables: {
-        filter: { kind },
-      },
-    } = this.state
-
-    if (entity && entity.kind === kind && entity.direction === 1) {
-      if (entity.seenAt === null && stored.indexOf(entity.targetAddr) === -1) {
-        this.setState({
-          stored: [...stored, entity.targetAddr],
-        })
-      } else if (
-        entity.seenAt !== null &&
-        stored.indexOf(entity.targetAddr) !== -1
-      ) {
-        stored.splice(stored.indexOf(entity.targetAddr), 1)
-        this.setState({
-          stored: stored,
-        })
-      }
-    }
-  }
-
-  contactSeen = async () => {
-    if (this.state.stored.length > 0) {
-      await Promise.all(
-        this.state.stored.map(val => {
-          return this.props.context.mutations.eventSeen({
-            id: val,
-          })
-        })
-      )
-
-      this.setState({
-        stored: [],
-      })
-    }
-  }
-
-  render () {
-    const { tintColor, routeName, navigation, context } = this.props
-    const { stored } = this.state
+@withStoreContext
+class TabBarIcon extends PureComponent {
+  render() {
+    const { tintColor, routeName, context } = this.props
 
     context.relay = context.environment
     let iconName = {
@@ -140,10 +30,6 @@ class TabBarIconBase extends Component {
       chats: 'berty-berty_conversation',
       settings: 'settings',
     }[routeName]
-
-    if (routeName === 'contacts' && navigation.isFocused() === true) {
-      this.contactSeen()
-    }
 
     return routeName === 'settings' ? (
       <UpdateContext.Consumer>
@@ -157,24 +43,20 @@ class TabBarIconBase extends Component {
         )}
       </UpdateContext.Consumer>
     ) : (
-      <>
-        <Icon.Badge
-          name={iconName}
-          size={24}
-          color={tintColor}
-          badge={stored.length > 0 ? '!' : ''}
-          value={stored.length}
-        />
-      </>
+      <Icon.Badge
+        name={iconName}
+        size={24}
+        color={tintColor}
+        badge={''}
+        value={0}
+      />
     )
   }
 }
 
-const TabBarIcon = withRelayContext(TabBarIconBase)
-
 const handleBothNavigationsOptions = ({ navigation }) => {
   return {
-    tabBarIcon: function withTabBarIcon ({ tintColor, focused }) {
+    tabBarIcon: function withTabBarIcon({ tintColor, focused }) {
       return (
         <TabBarIcon
           tintColor={tintColor}

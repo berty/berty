@@ -55,7 +55,6 @@ func main() {
 	config := &daemon.Config{
 		SqlOpts:          sqlConfig,
 		GrpcBind:         ":1337",
-		GqlBind:          ":1338",
 		GrpcWebBind:      ":1339",
 		HideBanner:       true,
 		DropDatabase:     false,

@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import { ScrollView } from 'react-native'
 import { Screen, Flex, Text, Button, Header, Loader } from '@berty/component'
-import RelayContext from '@berty/relay/context'
 import {
   getInstalledVersion,
   getLatestVersion,
@@ -12,6 +11,7 @@ import colors from '@berty/common/constants/colors'
 import { borderBottom, padding } from '@berty/common/styles'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
+import { withStoreContext } from '@berty/store/context'
 
 const VersionInfoBase = ({ version, t }) =>
   [
@@ -20,12 +20,12 @@ const VersionInfoBase = ({ version, t }) =>
     [t('settings.update-version-hash'), 'hash'],
   ].map(([label, key]) => (
     <Flex.Cols style={[{ height: 52 }, padding, borderBottom]} key={key}>
-      <Flex.Rows size={2} align='left'>
+      <Flex.Rows size={2} align="left">
         <Text small left>
           {label}
         </Text>
       </Flex.Rows>
-      <Flex.Rows size={5} align='left'>
+      <Flex.Rows size={5} align="left">
         <Text tiny left>
           {version ? String(version[key]) : '...'}
         </Text>
@@ -35,8 +35,9 @@ const VersionInfoBase = ({ version, t }) =>
 
 const VersionInfo = withNamespaces()(VersionInfoBase)
 
-class UpdateBase extends PureComponent {
-  constructor (props) {
+@withNamespaces()
+class Update extends PureComponent {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -46,10 +47,10 @@ class UpdateBase extends PureComponent {
     }
   }
 
-  componentDidMount () {
-    getInstalledVersion(this.props.context).then(installed =>
+  componentDidMount() {
+    getInstalledVersion(this.props.context).then(installed => {
       this.setState({ installed })
-    )
+    })
     getLatestVersion().then(latest => this.setState({ latest }))
   }
 
@@ -73,8 +74,8 @@ class UpdateBase extends PureComponent {
           <VersionInfo version={this.state.latest} />
 
           <Flex.Cols style={[{ height: 52 }, padding, borderBottom]}>
-            <Flex.Rows size={2} align='left' />
-            <Flex.Rows size={5} align='left'>
+            <Flex.Rows size={2} align="left" />
+            <Flex.Rows size={5} align="left">
               {shouldUpdate(this.state.installed, this.state.latest) ? (
                 <Button
                   onPress={() => {
@@ -98,8 +99,7 @@ class UpdateBase extends PureComponent {
   }
 }
 
-const Update = withNamespaces()(UpdateBase)
-
+@withStoreContext
 export default class WrappedUpdate extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -112,11 +112,7 @@ export default class WrappedUpdate extends PureComponent {
     tabBarVisible: false,
   })
 
-  render () {
-    return (
-      <RelayContext.Consumer>
-        {context => <Update context={context} navigator={navigator} />}
-      </RelayContext.Consumer>
-    )
+  render() {
+    return <Update context={this.props.context} navigator={navigator} />
   }
 }

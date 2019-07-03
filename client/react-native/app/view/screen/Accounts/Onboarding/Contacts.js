@@ -5,10 +5,10 @@ import { withNavigation } from 'react-navigation'
 import * as onboardingStyle from './style'
 import { NextButton, SkipButton } from './Button'
 import { withNamespaces } from 'react-i18next'
-import { withCurrentUser } from '@berty/relay/utils/contact'
 import { shareLinkSelf } from '@berty/common/helpers/contacts'
 import colors from '@berty/common/constants/colors'
 
+// @withCurrentUser
 const Contacts = ({ navigation, currentUser, t }) => (
   <View style={{ backgroundColor: colors.white, flex: 1 }}>
     <ScrollView alwaysBounceVertical={false}>
@@ -45,6 +45,4 @@ const Contacts = ({ navigation, currentUser, t }) => (
   </View>
 )
 
-export default withCurrentUser(withNamespaces()(withNavigation(Contacts)), {
-  showOnlyLoaded: true,
-})
+export default withNamespaces()(withNavigation(Contacts))
