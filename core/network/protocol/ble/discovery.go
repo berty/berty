@@ -47,17 +47,17 @@ func HandlePeerFound(rID string, rAddr string) bool {
 		return false
 	}
 
-	go addToPeerStoreAndConnect(rPID, rMa, rAddr)
+	go addToPeerstoreAndConnect(rPID, rMa, rAddr)
 
 	return true
 }
 
-func addToPeerStoreAndConnect(rPID peer.ID, rMa ma.Multiaddr, rAddr string) {
-	// Add peer to peerstore
+func addToPeerstoreAndConnect(rPID peer.ID, rMa ma.Multiaddr, rAddr string) {
+	// Adds peer to peerstore
 	disc.transport.host.Peerstore().AddAddr(rPID, rMa, pstore.TempAddrTTL)
 
-	// Peer with smallest addr (lexicographical order) init libp2p connect while
-	// the other wait for incoming connection
+	// Peer with smallest addr (lexicographical order) inits libp2p connection
+	// while the other accepts it
 	if disc.transport.listener.Addr().String() < rAddr {
 		err := disc.transport.host.Connect(context.Background(), pstore.PeerInfo{
 			ID:    rPID,
