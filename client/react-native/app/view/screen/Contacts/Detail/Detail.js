@@ -97,7 +97,7 @@ class Details extends PureComponent {
             <Screen>
               <Menu absolute>
                 <Menu.Header
-                  icon={<Avatar data={data} size={78} />}
+                  icon={<Avatar.Contact data={data} size={78} />}
                   title={data.overrideDisplayName || data.displayName}
                 />
                 <Menu.Section>

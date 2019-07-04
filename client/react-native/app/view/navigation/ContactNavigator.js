@@ -65,7 +65,7 @@ export const SubviewsContactAddNavigator = createStackNavigator(
                         navigation.navigate('modal/contacts/card', data)
                       }
                     >
-                      <Avatar data={data} size={24} />
+                      <Avatar.Contact data={data} size={24} />
                     </TouchableOpacity>
                   ) : (
                     <Loader />

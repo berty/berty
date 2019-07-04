@@ -155,11 +155,11 @@ export class Item extends React.PureComponent {
                   return 18
                 }}
               >
-                <Avatar data={this.props.data} size={40} />
+                <Avatar.Conversation data={data} size={40} />
               </Badge>
             </View>
           ) : (
-            <Avatar data={data} size={40} />
+            <Avatar.Conversation data={data} size={40} />
           )}
         </Flex.Rows>
         <Flex.Rows

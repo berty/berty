@@ -28,7 +28,7 @@ class List extends PureComponent {
     return (
       <Menu absolute>
         <Menu.Header
-          icon={<Avatar data={{ id }} size={78} />}
+          icon={<Avatar.Contact data={data} size={78} />}
           title={overrideDisplayName || displayName}
         />
         <Menu.Section>

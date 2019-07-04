@@ -50,7 +50,7 @@ export class Item extends PureComponent {
         ]}
       >
         <Flex.Cols size={1} align="center">
-          <Avatar data={this.props.data} size={40} />
+          <Avatar.Contact data={this.props.data} size={40} />
           <Flex.Rows size={3} justify="start" style={[marginLeft]}>
             <Text color={colors.fakeBlack} left ellipsed>
               {overrideDisplayName || displayName}

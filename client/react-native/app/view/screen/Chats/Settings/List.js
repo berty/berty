@@ -166,17 +166,20 @@ export class SettingsScreen extends PureComponent {
                 const { id, contact, contactId } = member
                 const { displayName, overrideDisplayName } = contact || {
                   id: contactId,
-                  displayName: '?????',
+                  displayName: 'Unknown',
                 }
                 return (
                   <Menu.Item
                     key={id}
-                    icon={<Avatar data={{ id }} size={28} />}
+                    icon={
+                      <Avatar.Contact
+                        data={contact || { id: contactId }}
+                        size={28}
+                      />
+                    }
                     title={overrideDisplayName || displayName}
                     onPress={() =>
-                      navigation.navigate('modal/contacts/card', {
-                        id,
-                      })
+                      navigation.navigate('modal/contacts/card', contact)
                     }
                   />
                 )

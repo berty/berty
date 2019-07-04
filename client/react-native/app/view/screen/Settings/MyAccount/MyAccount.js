@@ -59,7 +59,7 @@ class MyAccount extends React.PureComponent {
               medium
               onPress={this.onChoosePicture}
             >
-              <Avatar data={data} size={78} />
+              <Avatar.Contact data={{ ...data, displayName }} size={78} />
             </Badge>
           }
         />
