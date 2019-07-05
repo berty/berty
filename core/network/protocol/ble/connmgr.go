@@ -54,14 +54,14 @@ func ReceiveFromDevice(rAddr string, payload []byte) {
 		// Checks 100 times if the conn exists with 10 ms sleep between each try
 		// because remote device can be ready to write while local device is still
 		// creating the new conn.
-		for i := 0; i < 100; i++ {
+		for i := 0; i < 500; i++ {
 			c, ok := connMap.Load(rAddr)
 			if ok {
 				logger().Debug("RECEIVEFROMDEV CALL FOR CONN" + rAddr)
 				c.(*Conn).incomingData <- payload
 				return
 			}
-			time.Sleep(10 * time.Millisecond)
+			time.Sleep(100 * time.Millisecond)
 			logger().Debug("WAIT RECEIVE FOR CONN" + rAddr)
 		}
 		logger().Error(
