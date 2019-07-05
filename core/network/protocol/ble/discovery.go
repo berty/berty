@@ -42,6 +42,7 @@ func addToPeerstoreAndConnect(rPID peer.ID, rMa ma.Multiaddr, rAddr string) bool
 
 	// Peer with lexicographical smallest addr inits libp2p connection
 	// while the other accepts it.
+	logger().Debug("ADDPEERSTORE LADDR '" + gListener.Addr().String() + "' '" + rAddr + "'")
 	if gListener.Addr().String() < rAddr {
 		logger().Debug("ADDPEERSTORE CONNECT WITH " + rPID.Pretty() + " " + rAddr)
 		err := gListener.transport.host.Connect(context.Background(), pstore.PeerInfo{
