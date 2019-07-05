@@ -39,10 +39,12 @@ func newConn(ctx context.Context, t *Transport, rMa ma.Multiaddr, rPID peer.ID, 
 
 	// If CapableConn creation succeeded, store it in map with remoteAddr as key
 	// so native driver can read from it or close it.
-	if err != nil {
+	if err == nil {
 		logger().Debug("ADD NEWCONN TO MAP FOR CONN" + maconn.RemoteAddr().String())
 		connMap.Store(maconn.RemoteAddr().String(), cconn)
 		logger().Debug("RETURN CONN FOR CONN" + maconn.RemoteAddr().String())
+	} else {
+		logger().Error("NEWCONN ERROR: " + err.Error())
 	}
 
 	return cconn, err
