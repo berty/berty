@@ -1,80 +1,80 @@
 package ble
 
 import (
+	"context"
 	"sync"
-	"time"
 
-	blema "berty.tech/core/network/protocol/ble/multiaddr"
+	tpt "github.com/libp2p/go-libp2p-core/transport"
 	peer "github.com/libp2p/go-libp2p-peer"
-	yamux "github.com/libp2p/go-yamux"
 	ma "github.com/multiformats/go-multiaddr"
+	"go.uber.org/zap"
 )
 
-var conns sync.Map
+// Connmgr keeps tracks of opened conn so the native driver can read from them
+// and close them.
+var connMap sync.Map
 
-type side int
-
-const (
-	client side = 0
-	server side = 1
-)
-
-func newConn(transport *Transport, lID, rID peer.ID, lMa, rMa ma.Multiaddr, s side) *Conn {
-	conn := Conn{
+// newConn returns an inbound or outbound tpt.CapableConn upgraded from a Conn.
+func newConn(ctx context.Context, t *Transport, rMa ma.Multiaddr, rPID peer.ID, inbound bool) (tpt.CapableConn, error) {
+	connCtx, cancel := context.WithCancel(ctx)
+	maconn := &Conn{
+		localMa:       t.listener.localMa,
+		remoteMa:      rMa,
 		incomingData:  make(chan []byte),
 		remainingData: make([]byte, 0),
-		transport:     transport,
-		localID:       lID,
-		remoteID:      rID,
-		localMa:       lMa,
-		remoteMa:      rMa,
-		closed:        false,
-		closer:        make(chan struct{}),
+		ctx:           connCtx,
+		cancel:        cancel,
 	}
 
-	configDefault := yamux.DefaultConfig()
-	configDefault.EnableKeepAlive = false            // No need for keepAlive
-	configDefault.ConnectionWriteTimeout = time.Hour // Timeout is handled by BLE driver
-	configDefault.LogOutput = getYamuxLogger()       // Output logs on Berty's logger
-
+	var cconn tpt.CapableConn
 	var err error
-	if s == server {
-		conn.sess, err = yamux.Server(&conn, configDefault)
+
+	if inbound {
+		cconn, err = t.upgrader.UpgradeInbound(ctx, t, maconn)
 	} else {
-		conn.sess, err = yamux.Client(&conn, configDefault)
+		cconn, err = t.upgrader.UpgradeOutbound(ctx, t, maconn, rPID)
 	}
+
+	// If CapableConn creation succeeded, store it in map with remoteAddr as key
+	// so native driver can read from it or close it.
 	if err != nil {
-		panic(err)
+		connMap.Store(maconn.RemoteAddr().String(), cconn)
 	}
 
-	st, _ := rMa.ValueForProtocol(blema.P_BLE)
-	conns.Store(st, &conn)
-
-	return &conn
+	return cconn, err
 }
 
-// Returns an existing Conn or returns nil
-func getConn(rAddr string) *Conn {
-	c, ok := conns.Load(rAddr)
-	if !ok {
-		return nil
-	}
-	return c.(*Conn)
-}
-
-// Called by native driver when peer's device sent data
-func ReceiveFromDevice(rAddr string, b []byte) {
+// ReceiveFromDevice is called by native driver when peer's device sent data.
+func ReceiveFromDevice(rAddr string, payload []byte) {
 	go func() {
-		if conn := getConn(rAddr); conn != nil {
-			conn.incomingData <- b
+		c, ok := connMap.Load(rAddr)
+		if ok {
+			c.(*Conn).incomingData <- payload
+		} else {
+			logger().Error(
+				"connmgr failed to read from conn: unknown conn",
+				zap.String("remote address", rAddr),
+			)
 		}
 	}()
 }
 
-// Called by native driver when peer's device closed the conn
+// ConnClosedWithDevice is called by native driver when peer's device closed the conn.
 func ConnClosedWithDevice(rAddr string) {
-	if conn := getConn(rAddr); conn != nil {
-		conns.Delete(rAddr)
-		conn.sess.Close()
+	c, ok := connMap.Load(rAddr)
+	if ok {
+		connMap.Delete(rAddr)
+		if err := c.(tpt.CapableConn).Close(); err != nil {
+			logger().Error(
+				"connmgr failed to close conn",
+				zap.String("remote address", rAddr),
+				zap.Error(err),
+			)
+		}
+	} else {
+		logger().Error(
+			"connmgr failed to close conn: unknown conn",
+			zap.String("remote address", rAddr),
+		)
 	}
 }

@@ -1,84 +1,96 @@
 package ble
 
 import (
+	"context"
 	"errors"
 	"net"
 
 	bledrv "berty.tech/core/network/protocol/ble/driver"
 	blema "berty.tech/core/network/protocol/ble/multiaddr"
+	tpt "github.com/libp2p/go-libp2p-core/transport"
 	peer "github.com/libp2p/go-libp2p-peer"
-	tpt "github.com/libp2p/go-libp2p-transport"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
-// Listener implement lip2p Listener interface
+// Listener is a BLE tpt.Listener.
+var _ tpt.Listener = &Listener{}
+
+// Listener is an interface closely resembling the net.Listener interface. The
+// only real difference is that Accept() returns Conn's of the type in this
+// package, and also exposes a Multiaddr method as opposed to a regular Addr
+// method.
 type Listener struct {
-	tpt.Listener
-	transport       *Transport
-	localMa         ma.Multiaddr
-	incomingConnReq chan connReq
-	closer          chan struct{}
+	transport      *Transport
+	localMa        ma.Multiaddr
+	inboundConnReq chan connReq // Chan used to accept inbound conn.
+	ctx            context.Context
+	cancel         func()
 }
 
+// connReq holds data necessary for inbound conn creation.
 type connReq struct {
-	remoteAddr   string
 	remoteMa     ma.Multiaddr
 	remotePeerID peer.ID
 }
 
+// newListener starts the native driver then returns a new Listener.
 func newListener(lMa ma.Multiaddr, t *Transport) (*Listener, error) {
+	ctx, cancel := context.WithCancel(context.Background())
 	listener := &Listener{
-		transport:       t,
-		localMa:         lMa,
-		incomingConnReq: make(chan connReq),
-		closer:          make(chan struct{}),
+		transport:      t,
+		localMa:        lMa,
+		inboundConnReq: make(chan connReq),
+		ctx:            ctx,
+		cancel:         cancel,
 	}
 
+	// Starts the native driver.
 	if !bledrv.StartBleDriver(listener.Addr().String(), t.host.ID().Pretty()) {
 		return nil, errors.New("listener creation failed: can't start BLE native driver")
+	}
+
+	// Starts the discovery service.
+	disc = &discovery{
+		transport: t,
 	}
 
 	return listener, nil
 }
 
+// Accept waits for and returns the next connection to the listener.
+// Returns a Multiaddr friendly Conn.
+func (l *Listener) Accept() (tpt.CapableConn, error) {
+	select {
+	case <-l.ctx.Done():
+		return nil, errors.New("listener accept failed: listener already closed")
+	case req := <-l.inboundConnReq:
+		return newConn(l.ctx, l.transport, req.remoteMa, req.remotePeerID, true)
+	}
+}
+
+// Close closes the listener.
+// Any blocked Accept operations will be unblocked and return errors.
+func (l *Listener) Close() error {
+	l.cancel()
+
+	// Stops the native driver.
+	if !bledrv.StopBleDriver() {
+		return errors.New("listener close failed: can't stop BLE native driver")
+	}
+
+	// Stops the discovery service.
+	disc = nil
+
+	return nil
+}
+
+// Multiaddr returns the listener's (local) Multiaddr.
+func (l *Listener) Multiaddr() ma.Multiaddr { return l.localMa }
+
+// Addr returns the net.Listener's network address.
 func (l *Listener) Addr() net.Addr {
 	lAddr, _ := l.localMa.ValueForProtocol(blema.P_BLE)
 	return &Addr{
 		Address: lAddr,
-	}
-}
-
-func (l *Listener) Multiaddr() ma.Multiaddr {
-	return l.localMa
-}
-
-func (l *Listener) Accept() (tpt.Conn, error) {
-	select {
-	case <-l.closer:
-		return nil, errors.New("listener accept failed: listener already closed")
-	case req := <-l.incomingConnReq:
-		if conn := getConn(req.remoteAddr); conn != nil {
-			return conn, nil
-		}
-		return newConn(
-			l.transport,
-			l.transport.host.ID(),
-			req.remotePeerID,
-			l.localMa,
-			req.remoteMa,
-			server), nil
-	}
-}
-
-func (l *Listener) Close() error {
-	select {
-	case <-l.closer:
-		return errors.New("listener close failed: already closed")
-	default:
-		defer close(l.closer)
-		if !bledrv.StopBleDriver() {
-			return errors.New("listener close failed: can't stop BLE native driver")
-		}
-		return nil
 	}
 }

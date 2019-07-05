@@ -10,26 +10,18 @@ import (
 	"go.uber.org/zap"
 )
 
+// This global var is set if service is running.
 var disc *discovery
 
+// discovery needs transport to access host (add to peerstore / connect)
+// and listener (send incoming conn request to Accept()).
 type discovery struct {
 	transport *Transport
 }
 
-func startDiscovery(t *Transport) {
-	disc = &discovery{
-		transport: t,
-	}
-
-	// Disable discovery if listener is closed
-	go func() {
-		<-t.listener.closer
-		disc = nil
-	}()
-}
-
-// Handler called by the native driver when a new peer is found
+// HandlePeerFound is called by the native driver when a new peer is found.
 func HandlePeerFound(rID string, rAddr string) bool {
+	// Checks if discovery service is running.
 	if disc == nil {
 		logger().Error("discovery handle peer failed: discovery service not started")
 		return false
@@ -52,12 +44,13 @@ func HandlePeerFound(rID string, rAddr string) bool {
 	return true
 }
 
+// addToPeerstoreAndConnect adds peer to peerstore and auto-connects to it.
 func addToPeerstoreAndConnect(rPID peer.ID, rMa ma.Multiaddr, rAddr string) {
-	// Adds peer to peerstore
+	// Adds peer to peerstore.
 	disc.transport.host.Peerstore().AddAddr(rPID, rMa, pstore.TempAddrTTL)
 
-	// Peer with smallest addr (lexicographical order) inits libp2p connection
-	// while the other accepts it
+	// Peer with lexicographical smallest addr inits libp2p connection
+	// while the other accepts it.
 	if disc.transport.listener.Addr().String() < rAddr {
 		err := disc.transport.host.Connect(context.Background(), pstore.PeerInfo{
 			ID:    rPID,
@@ -69,9 +62,8 @@ func addToPeerstoreAndConnect(rPID peer.ID, rMa ma.Multiaddr, rAddr string) {
 			logger().Debug("discovery auto connecting succeeded")
 		}
 	} else {
-		logger().Debug("discovery send info to listener for incoming conn request")
-		disc.transport.listener.incomingConnReq <- connReq{
-			remoteAddr:   rAddr,
+		logger().Debug("discovery send request to listener for incoming conn")
+		disc.transport.listener.inboundConnReq <- connReq{
 			remoteMa:     rMa,
 			remotePeerID: rPID,
 		}
