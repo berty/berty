@@ -62,6 +62,7 @@ func ReceiveFromDevice(rAddr string, payload []byte) {
 				return
 			}
 			time.Sleep(10 * time.Millisecond)
+			logger().Debug("WAIT RECEIVE FOR CONN" + rAddr)
 		}
 		logger().Error(
 			"connmgr failed to read from conn: unknown conn",

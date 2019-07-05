@@ -33,6 +33,7 @@ type Conn struct {
 // Read reads data from the connection.
 // Timeout handled by the native driver.
 func (c *Conn) Read(payload []byte) (n int, err error) {
+	logger().Debug("READ CALLED")
 	// If data remains from the last call, reads it.
 	if c.remainingData != nil && len(c.remainingData) > 0 {
 		copied := copy(payload, c.remainingData)
