@@ -44,6 +44,7 @@ func newListener(lMa ma.Multiaddr, t *Transport) (*Listener, error) {
 		cancel:         cancel,
 	}
 
+	logger().Debug("NEW LISTENER CALLED WITH ADDR " + listener.Addr().String() + " PEERID " + t.host.ID().Pretty())
 	// Starts the native driver.
 	if !bledrv.StartBleDriver(listener.Addr().String(), t.host.ID().Pretty()) {
 		return nil, errors.New("listener creation failed: can't start BLE native driver")
@@ -64,6 +65,7 @@ func (l *Listener) Accept() (tpt.CapableConn, error) {
 	case <-l.ctx.Done():
 		return nil, errors.New("listener accept failed: listener already closed")
 	case req := <-l.inboundConnReq:
+		logger().Debug("LIST ACCEPT CALLED FOR CONN" + req.remoteMa.String())
 		return newConn(l.ctx, l.transport, req.remoteMa, req.remotePeerID, true)
 	}
 }
@@ -71,6 +73,7 @@ func (l *Listener) Accept() (tpt.CapableConn, error) {
 // Close closes the listener.
 // Any blocked Accept operations will be unblocked and return errors.
 func (l *Listener) Close() error {
+	logger().Debug("LIST CLOSED CALLED")
 	l.cancel()
 
 	// Stops the native driver.

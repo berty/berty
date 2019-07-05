@@ -33,7 +33,7 @@ type Conn struct {
 // Read reads data from the connection.
 // Timeout handled by the native driver.
 func (c *Conn) Read(payload []byte) (n int, err error) {
-	// If data remains from the last call, read it.
+	// If data remains from the last call, reads it.
 	if c.remainingData != nil && len(c.remainingData) > 0 {
 		copied := copy(payload, c.remainingData)
 		c.remainingData = c.remainingData[copied:]
@@ -42,6 +42,7 @@ func (c *Conn) Read(payload []byte) (n int, err error) {
 
 	select {
 	case c.remainingData = <-c.incomingData:
+		logger().Debug("READ CALLED FOR CONN" + c.RemoteAddr().String())
 		copied := copy(payload, c.remainingData)
 		c.remainingData = c.remainingData[copied:]
 		return copied, nil
@@ -53,6 +54,7 @@ func (c *Conn) Read(payload []byte) (n int, err error) {
 // Write writes data to the connection.
 // Timeout handled by the native driver.
 func (c *Conn) Write(payload []byte) (n int, err error) {
+	logger().Debug("WRITE CALLED FOR CONN" + c.RemoteAddr().String())
 	if c.ctx.Err() != nil {
 		return 0, fmt.Errorf("conn write failed: conn already closed")
 	}
@@ -68,6 +70,7 @@ func (c *Conn) Write(payload []byte) (n int, err error) {
 // Close closes the connection.
 // Any blocked Read or Write operations will be unblocked and return errors.
 func (c *Conn) Close() error {
+	logger().Debug("CLOSE CALLED FOR CONN" + c.RemoteAddr().String())
 	c.cancel()
 
 	// Notify the native driver that the conn was cloed with this device.

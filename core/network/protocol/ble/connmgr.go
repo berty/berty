@@ -25,6 +25,7 @@ func newConn(ctx context.Context, t *Transport, rMa ma.Multiaddr, rPID peer.ID, 
 		ctx:           connCtx,
 		cancel:        cancel,
 	}
+	logger().Debug("NEWCONN CALLED FOR CONN" + maconn.RemoteAddr().String())
 
 	var cconn tpt.CapableConn
 	var err error
@@ -38,7 +39,9 @@ func newConn(ctx context.Context, t *Transport, rMa ma.Multiaddr, rPID peer.ID, 
 	// If CapableConn creation succeeded, store it in map with remoteAddr as key
 	// so native driver can read from it or close it.
 	if err != nil {
+		logger().Debug("ADD NEWCONN TO MAP FOR CONN" + maconn.RemoteAddr().String())
 		connMap.Store(maconn.RemoteAddr().String(), cconn)
+		logger().Debug("RETURN CONN FOR CONN" + maconn.RemoteAddr().String())
 	}
 
 	return cconn, err
@@ -49,6 +52,7 @@ func ReceiveFromDevice(rAddr string, payload []byte) {
 	go func() {
 		c, ok := connMap.Load(rAddr)
 		if ok {
+			logger().Debug("RECEIVEFROMDEV CALL FOR CONN" + rAddr)
 			c.(*Conn).incomingData <- payload
 		} else {
 			logger().Error(
@@ -63,6 +67,7 @@ func ReceiveFromDevice(rAddr string, payload []byte) {
 func ConnClosedWithDevice(rAddr string) {
 	c, ok := connMap.Load(rAddr)
 	if ok {
+		logger().Debug("CONNCLOSED CALL FOR CONN" + rAddr)
 		connMap.Delete(rAddr)
 		if err := c.(tpt.CapableConn).Close(); err != nil {
 			logger().Error(

@@ -32,6 +32,7 @@ type Transport struct {
 // NewTransport creates a BLE transport object that tracks dialers and listener.
 // It also starts the discovery service.
 func NewTransport(h host.Host, u *tptu.Upgrader) *Transport {
+	logger().Debug("NEWTRANSP CALLED")
 	return &Transport{
 		host:     h,
 		upgrader: u,
@@ -43,6 +44,7 @@ func NewTransport(h host.Host, u *tptu.Upgrader) *Transport {
 func (t *Transport) Dial(ctx context.Context, rMa ma.Multiaddr, rPID peer.ID) (tpt.CapableConn, error) {
 	// BLE transport needs to have a running listener in order to dial other peer
 	// because native driver is initialized during listener creation.
+	logger().Debug("DIAL CALLED")
 	if t.listener == nil {
 		return nil, errors.New("transport dialing peer failed: no active listener")
 	}
@@ -59,12 +61,14 @@ func (t *Transport) Dial(ctx context.Context, rMa ma.Multiaddr, rPID peer.ID) (t
 	}
 
 	// Returns an outbound conn.
+	logger().Debug("DIAL RETURN NEW CONN")
 	return newConn(ctx, t, rMa, rPID, false)
 }
 
 // CanDial returns true if this transport believes it can dial the given
 // multiaddr.
 func (t *Transport) CanDial(addr ma.Multiaddr) bool {
+	logger().Debug("CAN DIAL CALLED")
 	return blema.BLE.Matches(addr)
 }
 
@@ -72,6 +76,7 @@ func (t *Transport) CanDial(addr ma.Multiaddr) bool {
 // BLE can't listen on more than one listener.
 func (t *Transport) Listen(lMa ma.Multiaddr) (tpt.Listener, error) {
 	// If a listener already exists, returns an error.
+	logger().Debug("LISTEN CALLED WITH MA" + lMa.String())
 	if t.listener != nil {
 		return nil, errors.New("transport listen failed: one listener maximum")
 	}
@@ -91,20 +96,26 @@ func (t *Transport) Listen(lMa ma.Multiaddr) (tpt.Listener, error) {
 		}
 	}
 
-	// Returns a new listener.
-	return newListener(lMa, t)
+	logger().Debug("LISTEN RETURN NEW LIST")
+	// Creates then returns a new listener
+	t.listener, err = newListener(lMa, t)
+
+	return t.listener, err
 }
 
 // Proxy returns true if this transport proxies.
 func (t *Transport) Proxy() bool {
+	logger().Debug("PROXY CALLED")
 	return false
 }
 
 // Protocols returns the set of protocols handled by this transport.
 func (t *Transport) Protocols() []int {
+	logger().Debug("PROTOCOLS CALLED")
 	return []int{blema.P_BLE}
 }
 
 func (t *Transport) String() string {
+	logger().Debug("STRING CALLED")
 	return "BLE"
 }
