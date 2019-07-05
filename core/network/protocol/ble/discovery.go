@@ -10,21 +10,12 @@ import (
 	"go.uber.org/zap"
 )
 
-// This global var is set if service is running.
-var disc *discovery
-
-// discovery needs transport to access host (add to peerstore / connect)
-// and listener (send incoming conn request to Accept()).
-type discovery struct {
-	transport *Transport
-}
-
 // HandlePeerFound is called by the native driver when a new peer is found.
 func HandlePeerFound(rID string, rAddr string) bool {
 	logger().Debug("HANDLEPEERFOUND CALLED WITH " + rID + " " + rAddr)
-	// Checks if discovery service is running.
-	if disc == nil {
-		logger().Error("discovery handle peer failed: discovery service not started")
+	// Checks if a listener is currently running.
+	if gListener == nil || gListener.ctx.Err() != nil {
+		logger().Error("discovery handle peer failed: listener not running")
 		return false
 	}
 
@@ -40,36 +31,43 @@ func HandlePeerFound(rID string, rAddr string) bool {
 		return false
 	}
 
-	go addToPeerstoreAndConnect(rPID, rMa, rAddr)
-
-	return true
+	return addToPeerstoreAndConnect(rPID, rMa, rAddr)
 }
 
 // addToPeerstoreAndConnect adds peer to peerstore and auto-connects to it.
-func addToPeerstoreAndConnect(rPID peer.ID, rMa ma.Multiaddr, rAddr string) {
+func addToPeerstoreAndConnect(rPID peer.ID, rMa ma.Multiaddr, rAddr string) bool {
 	logger().Debug("ADDPEERSTORE CALLED WITH " + rPID.Pretty() + " " + rAddr)
 	// Adds peer to peerstore.
-	disc.transport.host.Peerstore().AddAddr(rPID, rMa, pstore.TempAddrTTL)
+	gListener.transport.host.Peerstore().AddAddr(rPID, rMa, pstore.TempAddrTTL)
 
 	// Peer with lexicographical smallest addr inits libp2p connection
 	// while the other accepts it.
-	if disc.transport.listener.Addr().String() < rAddr {
+	if gListener.Addr().String() < rAddr {
 		logger().Debug("ADDPEERSTORE CONNECT WITH " + rPID.Pretty() + " " + rAddr)
-		err := disc.transport.host.Connect(context.Background(), pstore.PeerInfo{
+		err := gListener.transport.host.Connect(context.Background(), pstore.PeerInfo{
 			ID:    rPID,
 			Addrs: []ma.Multiaddr{rMa},
 		})
 		if err != nil {
 			logger().Error("discovery auto connecting failed", zap.Error(err))
+			return false
 		} else {
 			logger().Debug("discovery auto connecting succeeded")
+			return true
 		}
 	} else {
 		logger().Debug("discovery send request to listener for incoming conn")
 		logger().Debug("ADDPEERSTORE ACCEPT WITH " + rPID.Pretty() + " " + rAddr)
-		disc.transport.listener.inboundConnReq <- connReq{
+		select {
+		case <-gListener.ctx.Done():
+			logger().Error("discovery auto accept failed: listener closed")
+			return false
+		case gListener.inboundConnReq <- connReq{
 			remoteMa:     rMa,
 			remotePeerID: rPID,
+		}:
+			logger().Debug("discovery auto accept succeeded")
+			return true
 		}
 	}
 }

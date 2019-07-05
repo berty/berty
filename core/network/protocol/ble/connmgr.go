@@ -3,6 +3,7 @@ package ble
 import (
 	"context"
 	"sync"
+	"time"
 
 	tpt "github.com/libp2p/go-libp2p-core/transport"
 	peer "github.com/libp2p/go-libp2p-peer"
@@ -18,7 +19,7 @@ var connMap sync.Map
 func newConn(ctx context.Context, t *Transport, rMa ma.Multiaddr, rPID peer.ID, inbound bool) (tpt.CapableConn, error) {
 	connCtx, cancel := context.WithCancel(ctx)
 	maconn := &Conn{
-		localMa:       t.listener.localMa,
+		localMa:       gListener.localMa,
 		remoteMa:      rMa,
 		incomingData:  make(chan []byte),
 		remainingData: make([]byte, 0),
@@ -50,16 +51,22 @@ func newConn(ctx context.Context, t *Transport, rMa ma.Multiaddr, rPID peer.ID, 
 // ReceiveFromDevice is called by native driver when peer's device sent data.
 func ReceiveFromDevice(rAddr string, payload []byte) {
 	go func() {
-		c, ok := connMap.Load(rAddr)
-		if ok {
-			logger().Debug("RECEIVEFROMDEV CALL FOR CONN" + rAddr)
-			c.(*Conn).incomingData <- payload
-		} else {
-			logger().Error(
-				"connmgr failed to read from conn: unknown conn",
-				zap.String("remote address", rAddr),
-			)
+		// Checks 100 times if the conn exists with 10 ms sleep between each try
+		// because remote device can be ready to write while local device is still
+		// creating the new conn.
+		for i := 0; i < 100; i++ {
+			c, ok := connMap.Load(rAddr)
+			if ok {
+				logger().Debug("RECEIVEFROMDEV CALL FOR CONN" + rAddr)
+				c.(*Conn).incomingData <- payload
+				return
+			}
+			time.Sleep(10 * time.Millisecond)
 		}
+		logger().Error(
+			"connmgr failed to read from conn: unknown conn",
+			zap.String("remote address", rAddr),
+		)
 	}()
 }
 

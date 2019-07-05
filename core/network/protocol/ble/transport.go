@@ -25,7 +25,6 @@ var _ tpt.Transport = &Transport{}
 // connections from other peers.
 type Transport struct {
 	host     host.Host
-	listener *Listener // BLE transport can only have one listener.
 	upgrader *tptu.Upgrader
 }
 
@@ -45,7 +44,7 @@ func (t *Transport) Dial(ctx context.Context, rMa ma.Multiaddr, rPID peer.ID) (t
 	// BLE transport needs to have a running listener in order to dial other peer
 	// because native driver is initialized during listener creation.
 	logger().Debug("DIAL CALLED")
-	if t.listener == nil {
+	if gListener == nil {
 		return nil, errors.New("transport dialing peer failed: no active listener")
 	}
 
@@ -75,9 +74,9 @@ func (t *Transport) CanDial(addr ma.Multiaddr) bool {
 // Listen listens on the given multiaddr.
 // BLE can't listen on more than one listener.
 func (t *Transport) Listen(lMa ma.Multiaddr) (tpt.Listener, error) {
-	// If a listener already exists, returns an error.
+	// If a global listener already exists, returns an error.
 	logger().Debug("LISTEN CALLED WITH MA" + lMa.String())
-	if t.listener != nil {
+	if gListener != nil {
 		return nil, errors.New("transport listen failed: one listener maximum")
 	}
 
@@ -97,10 +96,8 @@ func (t *Transport) Listen(lMa ma.Multiaddr) (tpt.Listener, error) {
 	}
 
 	logger().Debug("LISTEN RETURN NEW LIST")
-	// Creates then returns a new listener
-	t.listener, err = newListener(lMa, t)
 
-	return t.listener, err
+	return newListener(lMa, t)
 }
 
 // Proxy returns true if this transport proxies.

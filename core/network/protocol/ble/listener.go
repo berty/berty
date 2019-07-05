@@ -12,6 +12,10 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 )
 
+// Global listener is used by discovery (to send incoming conn request to Accept())
+// and transport (to ensure that only one listener is running at a time).
+var gListener *Listener
+
 // Listener is a BLE tpt.Listener.
 var _ tpt.Listener = &Listener{}
 
@@ -50,10 +54,8 @@ func newListener(lMa ma.Multiaddr, t *Transport) (*Listener, error) {
 		return nil, errors.New("listener creation failed: can't start BLE native driver")
 	}
 
-	// Starts the discovery service.
-	disc = &discovery{
-		transport: t,
-	}
+	// Sets listener as global listener
+	gListener = listener
 
 	return listener, nil
 }
@@ -81,8 +83,8 @@ func (l *Listener) Close() error {
 		return errors.New("listener close failed: can't stop BLE native driver")
 	}
 
-	// Stops the discovery service.
-	disc = nil
+	// Removes global listener so transport can instanciate a new one later.
+	gListener = nil
 
 	return nil
 }
