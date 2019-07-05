@@ -74,7 +74,7 @@ jobs:
   lint:
     <<: *golang_workspace
     docker:
-      - image: bertychat/linter:v2
+      - image: bertychat/linter:v3
     steps:
       - *install_retry
       - checkout
@@ -85,6 +85,7 @@ jobs:
           name: fetch deps
           command: |
             cd core
+            GO111MODULE=on GOPROXY= go get berty.tech/network
             /tmp/retry -m 3 go mod download
       - run:
           name: prepare CI
@@ -99,7 +100,7 @@ jobs:
 
   generate:
     docker:
-      - image: bertychat/protoc:v11
+      - image: bertychat/protoc:v13
     working_directory: /go/src/berty.tech
     environment:
       GOPATH: /go
@@ -110,6 +111,7 @@ jobs:
       - run:
           name: make generate_local
           command: |
+            GO111MODULE=on GOPROXY= go get berty.tech/network
             # 1. checkout
             # 2. generate prepare
             # 3. generate
@@ -125,13 +127,13 @@ jobs:
               git status | cat && \
               git diff -w | cat && \
               git diff-index -w --quiet HEAD -- \
-            '
+             '
             # IDEA: diff-index -w is not working as expected, maybe we should ignore some of the parts of the output
             # IDEA: try to pass a `goimports -w -s` on files listed in `git diff-index` output to remove whitespaces
 
   docker.build:
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: docker:18.09.6-git
     steps:
       - run:
           name: install ca-certificates
@@ -139,7 +141,8 @@ jobs:
 
       - *install_retry
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 18.09.3
 
       - *master_version
       - restore_cache:
@@ -155,7 +158,7 @@ jobs:
 
       - run:
           name: Build application Docker image
-          command: /tmp/retry -m 3 docker build --cache-from=bertychat/berty -t bertychat/berty .
+          command: env DOCKER_BUILDKIT=1 /tmp/retry -m 3 docker build --no-cache --ssh=default -t bertychat/berty .
 
       - run:
           name: Run application within Docker
@@ -214,6 +217,7 @@ jobs:
           name: install core
           command: |
             cd core
+            GO111MODULE=on GOPROXY= go get berty.tech/network
             BUILD_MODE="ci-${CIRCLE_BRANCH}" /tmp/retry -m 3 make install
       - run:
           name: berty version
@@ -525,7 +529,8 @@ jobs:
       - run:
           name: install core
           working_directory: ~/go/src/berty.tech/client/react-native/gomobile
-          command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
+          command: |
+            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
 
       - restore_cache:
           key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-4
@@ -652,6 +657,7 @@ jobs:
           name: install mac
           working_directory: ~/go/src/berty.tech/client/react-native/desktop
           command: |
+            GO111MODULE=on GOPROXY= go get berty.tech/network
             BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build
             dylibbundler -od -b -x ./output/darwin-amd64/Berty.app/Contents/MacOS/berty -d ./output/darwin-amd64/Berty.app/Contents/libs/
             mv output/darwin-amd64/Berty.app appdmg

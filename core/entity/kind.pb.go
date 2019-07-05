@@ -7,6 +7,7 @@ import (
 	fmt "fmt"
 	io "io"
 	math "math"
+	math_bits "math/bits"
 	time "time"
 
 	push "berty.tech/core/push"
@@ -2956,14 +2957,7 @@ func (m *NodeAttrs) Size() (n int) {
 }
 
 func sovKind(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
+	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozKind(x uint64) (n int) {
 	return sovKind(uint64((x << 1) ^ uint64((int64(x) >> 63))))

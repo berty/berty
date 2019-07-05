@@ -7,6 +7,7 @@ import (
 	fmt "fmt"
 	io "io"
 	math "math"
+	math_bits "math/bits"
 
 	keypair "berty.tech/core/crypto/keypair"
 	_ "github.com/gogo/protobuf/gogoproto"
@@ -208,14 +209,7 @@ func (m *Envelope) Size() (n int) {
 }
 
 func sovEnvelope(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
+	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozEnvelope(x uint64) (n int) {
 	return sovEnvelope(uint64((x << 1) ^ uint64((int64(x) >> 63))))

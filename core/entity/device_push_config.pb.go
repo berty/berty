@@ -7,6 +7,7 @@ import (
 	fmt "fmt"
 	io "io"
 	math "math"
+	math_bits "math/bits"
 	time "time"
 
 	push "berty.tech/core/push"
@@ -270,14 +271,7 @@ func (m *DevicePushConfig) Size() (n int) {
 }
 
 func sovDevicePushConfig(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
+	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozDevicePushConfig(x uint64) (n int) {
 	return sovDevicePushConfig(uint64((x << 1) ^ uint64((int64(x) >> 63))))

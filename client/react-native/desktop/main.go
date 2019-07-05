@@ -8,8 +8,8 @@ import (
 	"os"
 
 	"berty.tech/core/daemon"
-	network_config "berty.tech/core/network/config"
 	"berty.tech/core/pkg/logmanager"
+	network_config "berty.tech/network/config"
 	"go.uber.org/zap"
 
 	"berty.tech/client/react-native/desktop/coreinterface"

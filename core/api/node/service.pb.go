@@ -8,6 +8,7 @@ import (
 	fmt "fmt"
 	io "io"
 	math "math"
+	math_bits "math/bits"
 	time "time"
 
 	entity "berty.tech/core/entity"
@@ -20,6 +21,8 @@ import (
 	proto "github.com/golang/protobuf/proto"
 	_ "github.com/golang/protobuf/ptypes/timestamp"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -2899,6 +2902,185 @@ type ServiceServer interface {
 	GetListenAddrs(context.Context, *Void) (*metric.ListAddrs, error)
 	GetListenInterfaceAddrs(context.Context, *Void) (*metric.ListAddrs, error)
 	Libp2PPing(context.Context, *metric.PingReq) (*Bool, error)
+}
+
+// UnimplementedServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedServiceServer struct {
+}
+
+func (*UnimplementedServiceServer) ID(ctx context.Context, req *Void) (*metric.Peer, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ID not implemented")
+}
+func (*UnimplementedServiceServer) CommitLogStream(req *Void, srv Service_CommitLogStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method CommitLogStream not implemented")
+}
+func (*UnimplementedServiceServer) EventStream(req *EventStreamInput, srv Service_EventStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method EventStream not implemented")
+}
+func (*UnimplementedServiceServer) EventList(req *EventListInput, srv Service_EventListServer) error {
+	return status.Errorf(codes.Unimplemented, "method EventList not implemented")
+}
+func (*UnimplementedServiceServer) EventUnseen(req *EventListInput, srv Service_EventUnseenServer) error {
+	return status.Errorf(codes.Unimplemented, "method EventUnseen not implemented")
+}
+func (*UnimplementedServiceServer) GetEvent(ctx context.Context, req *entity.Event) (*entity.Event, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetEvent not implemented")
+}
+func (*UnimplementedServiceServer) EventSeen(ctx context.Context, req *entity.Event) (*entity.Event, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EventSeen not implemented")
+}
+func (*UnimplementedServiceServer) EventRetry(ctx context.Context, req *entity.Event) (*entity.Event, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EventRetry not implemented")
+}
+func (*UnimplementedServiceServer) Config(ctx context.Context, req *Void) (*entity.Config, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Config not implemented")
+}
+func (*UnimplementedServiceServer) ConfigPublic(ctx context.Context, req *Void) (*entity.Config, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConfigPublic not implemented")
+}
+func (*UnimplementedServiceServer) ConfigUpdate(ctx context.Context, req *entity.Config) (*entity.Config, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConfigUpdate not implemented")
+}
+func (*UnimplementedServiceServer) ContactRequest(ctx context.Context, req *ContactRequestInput) (*entity.Contact, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRequest not implemented")
+}
+func (*UnimplementedServiceServer) ContactAcceptRequest(ctx context.Context, req *ContactAcceptRequestInput) (*entity.Contact, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactAcceptRequest not implemented")
+}
+func (*UnimplementedServiceServer) ContactRemove(ctx context.Context, req *entity.Contact) (*entity.Contact, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRemove not implemented")
+}
+func (*UnimplementedServiceServer) ContactUpdate(ctx context.Context, req *entity.Contact) (*entity.Contact, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactUpdate not implemented")
+}
+func (*UnimplementedServiceServer) ContactList(req *ContactListInput, srv Service_ContactListServer) error {
+	return status.Errorf(codes.Unimplemented, "method ContactList not implemented")
+}
+func (*UnimplementedServiceServer) Contact(ctx context.Context, req *entity.Contact) (*entity.Contact, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Contact not implemented")
+}
+func (*UnimplementedServiceServer) ContactCheckPublicKey(ctx context.Context, req *entity.Contact) (*Bool, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactCheckPublicKey not implemented")
+}
+func (*UnimplementedServiceServer) ConversationCreate(ctx context.Context, req *ConversationCreateInput) (*entity.Conversation, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationCreate not implemented")
+}
+func (*UnimplementedServiceServer) ConversationUpdate(ctx context.Context, req *entity.Conversation) (*entity.Conversation, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationUpdate not implemented")
+}
+func (*UnimplementedServiceServer) ConversationList(req *ConversationListInput, srv Service_ConversationListServer) error {
+	return status.Errorf(codes.Unimplemented, "method ConversationList not implemented")
+}
+func (*UnimplementedServiceServer) ConversationInvite(ctx context.Context, req *ConversationManageMembersInput) (*entity.Conversation, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationInvite not implemented")
+}
+func (*UnimplementedServiceServer) ConversationExclude(ctx context.Context, req *ConversationManageMembersInput) (*entity.Conversation, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationExclude not implemented")
+}
+func (*UnimplementedServiceServer) ConversationAddMessage(ctx context.Context, req *ConversationAddMessageInput) (*entity.Event, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationAddMessage not implemented")
+}
+func (*UnimplementedServiceServer) Conversation(ctx context.Context, req *entity.Conversation) (*entity.Conversation, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Conversation not implemented")
+}
+func (*UnimplementedServiceServer) ConversationMember(ctx context.Context, req *entity.ConversationMember) (*entity.ConversationMember, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationMember not implemented")
+}
+func (*UnimplementedServiceServer) ConversationRead(ctx context.Context, req *entity.Conversation) (*entity.Conversation, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationRead not implemented")
+}
+func (*UnimplementedServiceServer) ConversationRemove(ctx context.Context, req *entity.Conversation) (*entity.Conversation, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationRemove not implemented")
+}
+func (*UnimplementedServiceServer) ConversationLastEvent(ctx context.Context, req *entity.Conversation) (*entity.Event, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationLastEvent not implemented")
+}
+func (*UnimplementedServiceServer) DevicePushConfigList(req *Void, srv Service_DevicePushConfigListServer) error {
+	return status.Errorf(codes.Unimplemented, "method DevicePushConfigList not implemented")
+}
+func (*UnimplementedServiceServer) DevicePushConfigCreate(ctx context.Context, req *DevicePushConfigCreateInput) (*entity.DevicePushConfig, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DevicePushConfigCreate not implemented")
+}
+func (*UnimplementedServiceServer) DevicePushConfigNativeRegister(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DevicePushConfigNativeRegister not implemented")
+}
+func (*UnimplementedServiceServer) DevicePushConfigNativeUnregister(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DevicePushConfigNativeUnregister not implemented")
+}
+func (*UnimplementedServiceServer) DevicePushConfigRemove(ctx context.Context, req *entity.DevicePushConfig) (*entity.DevicePushConfig, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DevicePushConfigRemove not implemented")
+}
+func (*UnimplementedServiceServer) DevicePushConfigUpdate(ctx context.Context, req *entity.DevicePushConfig) (*entity.DevicePushConfig, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DevicePushConfigUpdate not implemented")
+}
+func (*UnimplementedServiceServer) HandleEvent(ctx context.Context, req *entity.Event) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HandleEvent not implemented")
+}
+func (*UnimplementedServiceServer) GenerateFakeData(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerateFakeData not implemented")
+}
+func (*UnimplementedServiceServer) RunIntegrationTests(ctx context.Context, req *IntegrationTestInput) (*IntegrationTestOutput, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RunIntegrationTests not implemented")
+}
+func (*UnimplementedServiceServer) DebugPing(ctx context.Context, req *PingDestination) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DebugPing not implemented")
+}
+func (*UnimplementedServiceServer) DebugRequeueEvent(ctx context.Context, req *EventIDInput) (*entity.Event, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DebugRequeueEvent not implemented")
+}
+func (*UnimplementedServiceServer) DebugRequeueAll(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DebugRequeueAll not implemented")
+}
+func (*UnimplementedServiceServer) DeviceInfos(ctx context.Context, req *Void) (*deviceinfo.DeviceInfos, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceInfos not implemented")
+}
+func (*UnimplementedServiceServer) AppVersion(ctx context.Context, req *Void) (*AppVersionOutput, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AppVersion not implemented")
+}
+func (*UnimplementedServiceServer) Peers(ctx context.Context, req *Void) (*metric.Peers, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Peers not implemented")
+}
+func (*UnimplementedServiceServer) Protocols(ctx context.Context, req *metric.Peer) (*ProtocolsOutput, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Protocols not implemented")
+}
+func (*UnimplementedServiceServer) LogStream(req *LogStreamInput, srv Service_LogStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method LogStream not implemented")
+}
+func (*UnimplementedServiceServer) LogfileList(req *Void, srv Service_LogfileListServer) error {
+	return status.Errorf(codes.Unimplemented, "method LogfileList not implemented")
+}
+func (*UnimplementedServiceServer) LogfileRead(req *LogfileReadInput, srv Service_LogfileReadServer) error {
+	return status.Errorf(codes.Unimplemented, "method LogfileRead not implemented")
+}
+func (*UnimplementedServiceServer) TestLogBackgroundError(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TestLogBackgroundError not implemented")
+}
+func (*UnimplementedServiceServer) TestLogBackgroundWarn(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TestLogBackgroundWarn not implemented")
+}
+func (*UnimplementedServiceServer) TestLogBackgroundDebug(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TestLogBackgroundDebug not implemented")
+}
+func (*UnimplementedServiceServer) TestPanic(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TestPanic not implemented")
+}
+func (*UnimplementedServiceServer) TestError(ctx context.Context, req *TestErrorInput) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TestError not implemented")
+}
+func (*UnimplementedServiceServer) MonitorBandwidth(req *metric.BandwidthStats, srv Service_MonitorBandwidthServer) error {
+	return status.Errorf(codes.Unimplemented, "method MonitorBandwidth not implemented")
+}
+func (*UnimplementedServiceServer) MonitorPeers(req *Void, srv Service_MonitorPeersServer) error {
+	return status.Errorf(codes.Unimplemented, "method MonitorPeers not implemented")
+}
+func (*UnimplementedServiceServer) GetListenAddrs(ctx context.Context, req *Void) (*metric.ListAddrs, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetListenAddrs not implemented")
+}
+func (*UnimplementedServiceServer) GetListenInterfaceAddrs(ctx context.Context, req *Void) (*metric.ListAddrs, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetListenInterfaceAddrs not implemented")
+}
+func (*UnimplementedServiceServer) Libp2PPing(ctx context.Context, req *metric.PingReq) (*Bool, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Libp2PPing not implemented")
 }
 
 func RegisterServiceServer(s *grpc.Server, srv ServiceServer) {
@@ -5997,14 +6179,7 @@ func (m *NodeEvent) Size() (n int) {
 }
 
 func sovService(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
+	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozService(x uint64) (n int) {
 	return sovService(uint64((x << 1) ^ uint64((int64(x) >> 63))))

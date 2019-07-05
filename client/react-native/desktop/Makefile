@@ -8,11 +8,13 @@ GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
 GIT_COMMIT_DATE ?= $(shell git show -s --format=%ct $(GIT_SHA))
 
 deps:
+	GOPROXY= GO111MODULE=on go get berty.tech/network
 	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	GO111MODULE=off go get -u github.com/asticode/go-astilectron-bundler/...
 	GO111MODULE=off go install github.com/asticode/go-astilectron-bundler/astilectron-bundler
 
 build: clean
+	GOPROXY= GO111MODULE=on go get berty.tech/network
 	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	sed s%TMPL_MAKEFILE_PATH%$(MAKEFILE_DIR)%g bundler.json.tmpl > bundler.json
 	cp -rf $(MAKEFILE_DIR)/../web/build $(MAKEFILE_DIR)/../desktop/resources/app

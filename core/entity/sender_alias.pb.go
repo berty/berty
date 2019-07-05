@@ -7,6 +7,7 @@ import (
 	fmt "fmt"
 	io "io"
 	math "math"
+	math_bits "math/bits"
 	time "time"
 
 	_ "github.com/gogo/protobuf/gogoproto"
@@ -344,14 +345,7 @@ func (m *SenderAlias) Size() (n int) {
 }
 
 func sovSenderAlias(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
+	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozSenderAlias(x uint64) (n int) {
 	return sovSenderAlias(uint64((x << 1) ^ uint64((int64(x) >> 63))))

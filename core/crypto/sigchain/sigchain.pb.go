@@ -7,6 +7,7 @@ import (
 	fmt "fmt"
 	io "io"
 	math "math"
+	math_bits "math/bits"
 	time "time"
 
 	_ "github.com/gogo/protobuf/gogoproto"
@@ -572,14 +573,7 @@ func (m *EventExtension) Size() (n int) {
 }
 
 func sovSigchain(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
+	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozSigchain(x uint64) (n int) {
 	return sovSigchain(uint64((x << 1) ^ uint64((int64(x) >> 63))))

@@ -5,8 +5,9 @@ import (
 	"fmt"
 
 	"berty.tech/core/entity"
-	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/network"
+	p2pnet "berty.tech/network"
+	"berty.tech/network/protocol/berty"
 	"go.uber.org/zap"
 )
 
@@ -35,24 +36,29 @@ func (m *SimpleManager) AddPeer(driver *SimpleDriver) {
 	m.peers = append(m.peers, driver)
 }
 
+var _ p2pnet.Driver = (*SimpleDriver)(nil)
+
 //
 // Driver
 //
 
 type SimpleDriver struct {
 	network.Driver
-	contactID            string
-	manager              *SimpleManager
-	channels             []string
-	handler              func(context.Context, *entity.Envelope) (*entity.Void, error)
-	lastSentEnvelope     *entity.Envelope
-	lastReceivedEnvelope *entity.Envelope
+	localContactID      string
+	manager             *SimpleManager
+	channels            []string
+	handler             func(msg *berty.Message, cmeta *berty.ConnMetadata)
+	lastSentMessage     *berty.Message
+	lastReceivedMessage *berty.Message
 }
 
-func (d *SimpleDriver) Emit(ctx context.Context, envelope *entity.Envelope) error {
+func (d *SimpleDriver) EmitMessage(ctx context.Context, msg *berty.Message) error {
 	found := false
 
-	d.lastSentEnvelope = envelope
+	d.lastSentMessage = msg
+	localAddr := &berty.Addr{
+		Full: "/mock/" + d.localContactID,
+	}
 
 	for _, peer := range d.manager.peers {
 		if peer == d {
@@ -60,20 +66,31 @@ func (d *SimpleDriver) Emit(ctx context.Context, envelope *entity.Envelope) erro
 		}
 
 		for _, channel := range peer.channels {
-			if channel == envelope.ChannelID {
+			if channel == msg.RemoteContactID {
 				found = true
 				logger().Debug("Simple.Emit",
-					zap.String("channel", envelope.ChannelID),
+					zap.String("channel", msg.RemoteContactID),
 					zap.Strings("peers", peer.channels),
 				)
 
-				_, err := peer.handler(ctx, envelope)
-
-				if errorcodes.ErrEnvelopeUntrusted.Is(err) {
-					logger().Error("signature check failed", zap.Error(err))
-				} else if err != nil {
-					logger().Error("peer.driver.handler failed", zap.Error(err))
+				remoteAddr := &berty.Addr{
+					Full: "/mock/" + msg.RemoteContactID,
 				}
+
+				cmeta := &berty.ConnMetadata{
+					Direction:  berty.ConnMetadata_DirOutbound,
+					LocalAddr:  localAddr,
+					RemoteAddr: remoteAddr,
+				}
+
+				peer.handler(msg, cmeta)
+
+				// @TODO: this is useless, do something else
+				// if errorcodes.ErrEnvelopeUntrusted.Is(err) {
+				//      logger().Error("signature check failed", zap.Error(err))
+				// } else if err != nil {
+				//      logger().Error("peer.driver.handler failed", zap.Error(err))
+				// }
 			}
 		}
 	}
@@ -87,27 +104,36 @@ func (d *SimpleDriver) PingOtherNode(ctx context.Context, destination string) er
 	return nil
 }
 
-func (d *SimpleDriver) OnEnvelopeHandler(handler func(context.Context, *entity.Envelope) (*entity.Void, error)) {
-	d.handler = func(ctx context.Context, envelope *entity.Envelope) (*entity.Void, error) {
-		d.lastReceivedEnvelope = envelope
-
-		return handler(ctx, envelope)
+func (d *SimpleDriver) OnMessage(handler func(msg *berty.Message, cmeta *berty.ConnMetadata)) {
+	d.handler = func(msg *berty.Message, cmeta *berty.ConnMetadata) {
+		d.lastReceivedMessage = msg
+		handler(msg, cmeta)
 	}
 }
 
-func (d *SimpleDriver) SetContactID(contactID string) {
-	d.contactID = contactID
+func (d *SimpleDriver) SetLocalContactID(lcontactID string) {
+	d.localContactID = lcontactID
 }
 
 func (d *SimpleDriver) Join(_ context.Context) error {
-	d.channels = append(d.channels, d.contactID)
+	d.channels = append(d.channels, d.localContactID)
 	return nil
 }
 
 func (d *SimpleDriver) GetLastReceivedEnvelope() *entity.Envelope {
-	return d.lastReceivedEnvelope
+	e, err := GetEnvelopeFromMessage(d.lastReceivedMessage)
+	if err != nil {
+		panic(err)
+	}
+
+	return e
 }
 
 func (d *SimpleDriver) GetLastSentEnvelope() *entity.Envelope {
-	return d.lastSentEnvelope
+	e, err := GetEnvelopeFromMessage(d.lastSentMessage)
+	if err != nil {
+		panic(err)
+	}
+
+	return e
 }

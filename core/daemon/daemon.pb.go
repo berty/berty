@@ -8,9 +8,12 @@ import (
 	fmt "fmt"
 	io "io"
 	math "math"
+	math_bits "math/bits"
 
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -957,6 +960,59 @@ type DaemonServer interface {
 	StopBot(context.Context, *Void) (*Void, error)
 	StopLocalGRPC(context.Context, *Void) (*Void, error)
 	UpdateNetworkConfig(context.Context, *NetworkConfig) (*Void, error)
+}
+
+// UnimplementedDaemonServer can be embedded to have forward compatible implementations.
+type UnimplementedDaemonServer struct {
+}
+
+func (*UnimplementedDaemonServer) DropDatabase(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DropDatabase not implemented")
+}
+func (*UnimplementedDaemonServer) GetLocalGrpcInfos(ctx context.Context, req *Void) (*GRPCInfos, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLocalGrpcInfos not implemented")
+}
+func (*UnimplementedDaemonServer) GetNetworkConfig(ctx context.Context, req *Void) (*NetworkConfig, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNetworkConfig not implemented")
+}
+func (*UnimplementedDaemonServer) GetPort(ctx context.Context, req *Void) (*GetPortResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPort not implemented")
+}
+func (*UnimplementedDaemonServer) Initialize(ctx context.Context, req *Config) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Initialize not implemented")
+}
+func (*UnimplementedDaemonServer) GetBotState(ctx context.Context, req *Void) (*BotState, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBotState not implemented")
+}
+func (*UnimplementedDaemonServer) ListAccounts(ctx context.Context, req *Void) (*ListAccountsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAccounts not implemented")
+}
+func (*UnimplementedDaemonServer) Panic(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Panic not implemented")
+}
+func (*UnimplementedDaemonServer) Restart(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Restart not implemented")
+}
+func (*UnimplementedDaemonServer) SetCurrentRoute(ctx context.Context, req *SetCurrentRouteRequest) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetCurrentRoute not implemented")
+}
+func (*UnimplementedDaemonServer) Start(ctx context.Context, req *StartRequest) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Start not implemented")
+}
+func (*UnimplementedDaemonServer) StartBot(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StartBot not implemented")
+}
+func (*UnimplementedDaemonServer) StartLocalGRPC(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StartLocalGRPC not implemented")
+}
+func (*UnimplementedDaemonServer) StopBot(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StopBot not implemented")
+}
+func (*UnimplementedDaemonServer) StopLocalGRPC(ctx context.Context, req *Void) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StopLocalGRPC not implemented")
+}
+func (*UnimplementedDaemonServer) UpdateNetworkConfig(ctx context.Context, req *NetworkConfig) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateNetworkConfig not implemented")
 }
 
 func RegisterDaemonServer(s *grpc.Server, srv DaemonServer) {
@@ -2132,14 +2188,7 @@ func (m *ListAccountsResponse) Size() (n int) {
 }
 
 func sovDaemon(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
+	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozDaemon(x uint64) (n int) {
 	return sovDaemon(uint64((x << 1) ^ uint64((int64(x) >> 63))))
