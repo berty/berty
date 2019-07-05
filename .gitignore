@@ -1,3 +1,6 @@
+# berty package
+core/network
+
 # sub-packages
 /go-ipfs-log/
 

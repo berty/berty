@@ -5,9 +5,9 @@ import (
 	"net"
 
 	account "berty.tech/core/manager/account"
-	network_config "berty.tech/core/network/config"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/notification"
+	network_config "berty.tech/network/config"
 )
 
 type localGRPCInfos struct {

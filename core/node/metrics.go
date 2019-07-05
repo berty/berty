@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"berty.tech/core/api/node"
-	network_metric "berty.tech/core/network/metric"
 	"berty.tech/core/pkg/tracing"
+	network_metric "berty.tech/network/metric"
 )
 
 // @FIXME: networkMetric should never be nil

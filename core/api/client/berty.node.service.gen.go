@@ -7,7 +7,7 @@ import (
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/entity"
-	"berty.tech/core/network/metric"
+	"berty.tech/network/metric"
 )
 
 // Service returns the native gRPC client

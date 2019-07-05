@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"berty.tech/core/entity"
-	"berty.tech/core/network/mock"
+	mock "berty.tech/core/test/mock/network"
 )
 
 func init() {

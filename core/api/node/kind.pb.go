@@ -8,7 +8,7 @@ import (
 	io "io"
 	math "math"
 
-	metric "berty.tech/core/network/metric"
+	metric "berty.tech/network/metric"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/golang/protobuf/proto"
 )

@@ -17,10 +17,10 @@ import (
 
 	"berty.tech/core/api/helper"
 	daemon "berty.tech/core/daemon"
-	network_config "berty.tech/core/network/config"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/notification"
+	network_config "berty.tech/network/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"

@@ -9,7 +9,7 @@ import (
 
 	nodeapi "berty.tech/core/api/node"
 	"berty.tech/core/entity"
-	netutil "berty.tech/core/network/helper"
+	netutil "berty.tech/network/helper"
 	. "github.com/smartystreets/goconvey/convey"
 	"google.golang.org/grpc"
 )

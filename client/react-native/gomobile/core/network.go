@@ -1,7 +1,7 @@
 package core
 
 import (
-	"berty.tech/core/network/state"
+	"berty.tech/network/state"
 )
 
 // Device network state related

@@ -15,11 +15,11 @@ import (
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
-	network_metric "berty.tech/core/network/metric"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/sql"
 	bsql "berty.tech/core/sql"
+	network_metric "berty.tech/network/metric"
 )
 
 // WithentityGrpcServer registers the Node as a 'berty.entity' protobuf server implementation

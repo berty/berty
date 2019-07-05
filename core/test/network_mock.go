@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"berty.tech/core/entity"
-	"berty.tech/core/network"
+	"berty.tech/network"
 )
 
 type NetworkMock struct {

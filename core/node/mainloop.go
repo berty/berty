@@ -10,6 +10,7 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/sql"
+	berty_net "berty.tech/network/protocol/berty"
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 )
@@ -357,20 +358,29 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 		tctx, cancel := context.WithTimeout(ctx, time.Minute)
 		defer cancel()
 
-		envCopy := *envelope
-
-		// create a copy of the envelope for the contact and resign
-		// FIXME: envelope should be signed once per channel, not once per contact
-		envCopy.ChannelID = dispatch.ContactID
 		var err error
+
+		envCopy := *envelope
+		envCopy.ChannelID = dispatch.ContactID
 		envCopy.Signature, err = keypair.Sign(n.crypto, &envCopy)
 		if err != nil {
 			n.LogBackgroundError(ctx, errors.Wrap(err, "failed to sign envelope"))
 			return
 		}
 
+		data, err := proto.Marshal(&envCopy)
+		if err != nil {
+			n.LogBackgroundWarn(ctx, errors.Wrap(err, "failed to marshal envelope"))
+			return
+		}
+
+		msg := &berty_net.Message{
+			RemoteContactID: dispatch.ContactID,
+			Data:            data,
+		}
+
 		// FIXME: make something smarter, i.e., grouping events by contact or network driver
-		if err := n.networkDriver.Emit(tctx, &envCopy); err != nil {
+		if err := n.networkDriver.EmitMessage(tctx, msg); err != nil {
 			n.LogBackgroundWarn(ctx, errors.Wrap(err, "failed to emit envelope on network"))
 
 			// push the outgoing event on the client stream

@@ -9,10 +9,10 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
-	p2pnet "berty.tech/core/network"
-	"berty.tech/core/network/mock"
 	"berty.tech/core/pkg/errorcodes"
+	mock "berty.tech/core/test/mock/network"
 	"berty.tech/core/testrunner"
+	p2pnet "berty.tech/network"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

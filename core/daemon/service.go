@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	account "berty.tech/core/manager/account"
-	"berty.tech/core/network"
-	network_config "berty.tech/core/network/config"
+	"berty.tech/network"
+	network_config "berty.tech/network/config"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )

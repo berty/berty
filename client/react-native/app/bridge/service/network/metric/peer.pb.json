@@ -6,7 +6,7 @@
           "nested": {
             "metric": {
               "options": {
-                "go_package": "berty.tech/core/network/metric"
+                "go_package": "berty.tech/network/metric"
               },
               "nested": {
                 "ConnectionType": {

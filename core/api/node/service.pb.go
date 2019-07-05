@@ -11,10 +11,10 @@ import (
 	time "time"
 
 	entity "berty.tech/core/entity"
-	metric "berty.tech/core/network/metric"
 	deviceinfo "berty.tech/core/pkg/deviceinfo"
 	_ "berty.tech/core/pkg/validate"
 	push "berty.tech/core/push"
+	metric "berty.tech/network/metric"
 	_ "github.com/gogo/protobuf/gogoproto"
 	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	proto "github.com/golang/protobuf/proto"
