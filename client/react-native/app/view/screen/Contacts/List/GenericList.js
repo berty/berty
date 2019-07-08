@@ -78,9 +78,7 @@ class CondComponent extends PureComponent {
 @withNavigation
 @withStoreContext
 class List extends React.Component {
-  state = {
-    focus: this.props.navigation.routeName === 'mutuals',
-  }
+  focus = this.props.navigation.routeName === 'mutuals'
 
   componentDidMount() {
     this.onViewableItemsChanged()
@@ -164,7 +162,7 @@ class List extends React.Component {
           }
         )
     }
-    if (this.state.focus) {
+    if (this.focus) {
       this.lastViewableItemsChanged()
     }
   }
@@ -181,10 +179,11 @@ class List extends React.Component {
       <>
         <NavigationEvents
           onWillFocus={payload => {
-            this.setState({ focus: true }, this.lastViewableItemsChanged)
+            this.focus = true
+            this.lastViewableItemsChanged()
           }}
           onWillBlur={payload => {
-            this.setState({ focus: false })
+            this.focus = false
           }}
         />
         {count ? (
@@ -261,6 +260,18 @@ class GenericList extends React.Component {
     const { paginate, filter } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
+        <NavigationEvents
+          onWillFocus={payload => {
+            console.log(payload)
+            console.log('focus')
+            this.setState({ focus: true })
+          }}
+          onWillBlur={payload => {
+            console.log(payload)
+            console.log('blur')
+            this.setState({ focus: false })
+          }}
+        />
         <Store.Node.Service.ContactList.Pagination
           filter={{ ...((filter && filter.filter) || {}) }}
           paginate={({ cursor, count }) => ({

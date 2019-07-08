@@ -89,7 +89,7 @@ Avatar.Contact = ContactAvatar
 export const ConversationAvatar = ({ data = {}, ...props }) =>
   data.kind === 1 ? (
     <ContactAvatar
-      data={data.members.find(_ => _.contact.status !== 42)?.contact}
+      data={data.members.find(_ => _.contact?.status !== 42)?.contact}
       {...props}
     />
   ) : (

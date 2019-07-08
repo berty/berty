@@ -33,6 +33,7 @@ func init() {
 	registerUnary("berty.node.ContactUpdate", NodeContactUpdate)
 	registerServerStream("berty.node.ContactList", NodeContactList)
 	registerUnary("berty.node.Contact", NodeContact)
+	registerUnary("berty.node.ContactSeen", NodeContactSeen)
 	registerUnary("berty.node.ContactCheckPublicKey", NodeContactCheckPublicKey)
 	registerUnary("berty.node.ContactListBadge", NodeContactListBadge)
 	registerUnary("berty.node.ConversationCreate", NodeConversationCreate)
@@ -449,6 +450,26 @@ func NodeContact(client *client.Client, ctx context.Context, jsonInput []byte) (
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().Contact(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeContactSeen(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ContactSeen")
+	var typedInput entity.Contact
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().ContactSeen(
 		ctx,
 		&typedInput,
 		grpc.Header(&header),

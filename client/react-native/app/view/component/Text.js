@@ -404,7 +404,7 @@ export class ForegroundText extends PureComponent {
             className={multiline ? 'textBreak' : 'textEllipsis'}
             style={styles.text}
             ellipsizeMode={!multiline ? 'tail' : undefined}
-            numberOfLines={numberOfLines}
+            numberOfLines={numberOfLines || 1}
           >
             {children}
           </TextNative>

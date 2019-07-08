@@ -29,6 +29,10 @@ func (m *Contact) Validate() error {
 
 	// handling field: UpdatedAt - name:"updated_at" number:3 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".google.protobuf.Timestamp" json_name:"updatedAt" options:<[]:true 65001:0 65010:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=true, required=false, min_items=0, max_items=0)
 
+	// handling field: SeenAt - name:"seen_at" number:4 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".google.protobuf.Timestamp" json_name:"seenAt" options:<[]:true 65001:0 65010:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=true, required=false, min_items=0, max_items=0)
+
+	// handling field: MutatedAt - name:"mutated_at" number:5 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".google.protobuf.Timestamp" json_name:"mutatedAt" options:<[]:true 65001:0 65010:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=true, required=false, min_items=0, max_items=0)
+
 	// handling field: Sigchain - name:"sigchain" number:10 label:LABEL_OPTIONAL type:TYPE_BYTES json_name:"sigchain"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: Status - name:"status" number:11 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Contact.Status" json_name:"status"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)

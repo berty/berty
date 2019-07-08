@@ -42,9 +42,9 @@ func (n *Node) ContactListBadge(ctx context.Context, _ *node.Void) (*node.Badge,
 	err := db.
 		Raw(`
 			SELECT COUNT(*) FROM contact
-			JOIN event ON event.source_contact_id = contact.id AND contact.status = ?
-			WHERE event.direction = 1 AND event.seen_at IS NULL AND event.kind = ?
-		`, entity.Contact_RequestedMe, entity.Kind_ContactRequest).
+			WHERE contact.mutated_at > contact.seen_at
+			AND contact.status == ?
+		`, entity.Contact_RequestedMe).
 		Count(&count).
 		Error
 	if err != nil {

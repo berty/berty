@@ -65,6 +65,7 @@ service Service {
   rpc ContactUpdate (berty.entity.Contact) returns (berty.entity.Contact);
   rpc ContactList (ContactListInput) returns (stream berty.entity.Contact);
   rpc Contact (berty.entity.Contact) returns (berty.entity.Contact);
+  rpc ContactSeen (berty.entity.Contact) returns (berty.entity.Contact);
   rpc ContactCheckPublicKey (berty.entity.Contact) returns (Bool);
   rpc ContactListBadge (Void) returns (Badge);
 

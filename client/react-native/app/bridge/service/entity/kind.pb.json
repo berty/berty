@@ -352,6 +352,24 @@
                     "(validate.skip)": true
                   }
                 },
+                "seenAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 4,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false,
+                    "(validate.skip)": true
+                  }
+                },
+                "mutatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 5,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false,
+                    "(validate.skip)": true
+                  }
+                },
                 "sigchain": {
                   "type": "bytes",
                   "id": 10
@@ -391,6 +409,7 @@
                     "IsRequested": 3,
                     "RequestedMe": 4,
                     "IsBlocked": 5,
+                    "BlockedMe": 6,
                     "Myself": 42
                   }
                 }

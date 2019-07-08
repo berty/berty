@@ -60,12 +60,6 @@ const textStyles = StyleSheet.flatten([
 
 @withNamespaces()
 export class Message extends PureComponent {
-  messageSeen = () => {
-    // this.props.context.node.service.eventSeen({
-    //   id: this.props.data.id,
-    // })
-  }
-
   messageRetry = () => {
     this.props.context.node.service.eventRetry({
       id: this.props.data.id,
@@ -84,10 +78,6 @@ export class Message extends PureComponent {
     const isMyself = contact && contact.status === 42
     const isOneToOne =
       conversation.kind === enums.BertyEntityConversationInputKind.OneToOne
-    // TODO: implement message seen
-    if (tDate(data.seenAt).getTime() <= 0) {
-      this.messageSeen()
-    }
 
     let iconColor = null
     let iconName = utils.isReadByOthers(data) ? 'check-circle' : 'circle'

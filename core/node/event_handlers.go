@@ -36,26 +36,30 @@ func (n *Node) handleContactRequest(ctx context.Context, input *entity.Event) er
 	if err == nil && contact.Status != entity.Contact_Unknown {
 		return errorcodes.ErrContactReqExisting.New()
 	}
-
+	contact, err = entity.NewContact(attrs.Me.ID, attrs.Me.DisplayName, entity.Contact_Unknown)
+	if err != nil {
+		return err
+	}
 	// save requester in db
 	devices := attrs.Me.Devices
 
-	requester := attrs.Me
-	requester.Devices = []*entity.Device{}
-	requester.Status = entity.Contact_RequestedMe
-	if err := sql.Set("gorm:association_autoupdate", true).Save(requester).Error; err != nil {
+	if err := contact.RequestedMe(input.CreatedAt); err != nil {
+		return errors.Wrap(err, "handleContactRequest")
+	}
+
+	if err := sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
 		return err
 	}
 
 	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("ContactRequestTitle", nil),
 		Body: i18n.T("ContactRequestBody", map[string]interface{}{
-			"Name": attrs.Me.DisplayName,
+			"Name": contact.DisplayName,
 		}),
-		DeepLink: "berty://berty.chat/contacts/add#id=" + url.PathEscape(attrs.Me.ID) + "&display-name=" + url.PathEscape(attrs.Me.DisplayName),
+		DeepLink: "berty://berty.chat/contacts/add#id=" + url.PathEscape(contact.ID) + "&display-name=" + url.PathEscape(contact.DisplayName),
 	})
 
-	if err := entity.SaveDevices(sql, attrs.Me.ID, devices); err != nil {
+	if err := entity.SaveDevices(sql, contact.ID, devices); err != nil {
 		return errorcodes.ErrDbCreate.Wrap(err)
 	}
 
@@ -71,7 +75,10 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *entity.E
 		return bsql.GenericError(err)
 	}
 
-	contact.Status = entity.Contact_IsFriend
+	if err := contact.AcceptedMe(input.CreatedAt); err != nil {
+		return err
+	}
+
 	//contact.Devices[0].Key = crypto.NewPublicKey(entity.GetPubkey(ctx))
 	if err := sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
 		return err

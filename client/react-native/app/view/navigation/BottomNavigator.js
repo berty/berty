@@ -19,6 +19,7 @@ import Placeholder from '@berty/screen/Placeholder'
 import SettingsNavigator from './SettingsNavigator'
 import { withStoreContext } from '@berty/store/context'
 import { Store } from '@berty/container'
+
 import { debounce } from 'throttle-debounce'
 
 @withStoreContext

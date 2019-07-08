@@ -221,21 +221,28 @@ func (n *Node) ContactAcceptRequest(ctx context.Context, input *node.ContactAcce
 	ctx = tracer.Context()
 
 	defer n.handleMutex(ctx)()
+	return n.contactAcceptRequest(ctx, input)
+}
 
+func (n *Node) contactAcceptRequest(ctx context.Context, input *node.ContactAcceptRequestInput) (*entity.Contact, error) {
 	// input validation
 	if err := input.Validate(); err != nil {
 		return nil, err
 	}
+
 	sql := n.sql(ctx)
+
 	contact, err := bsql.FindContact(sql, input.ToContact())
 	if err != nil {
 		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
-	// mark contact as friend
-	contact.Status = entity.Contact_IsFriend
-	if err := sql.Save(contact).Error; err != nil {
-		return nil, errorcodes.ErrDb.Wrap(err)
+	if err := contact.Accepted(time.Now()); err != nil {
+		return nil, err
+	}
+
+	if err = bsql.ContactSave(sql, contact); err != nil {
+		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
 	// send ContactRequestAccepted event
@@ -269,28 +276,29 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 
 	// check for duplicate
 	sql := n.sql(ctx)
+
 	contact, err := bsql.FindContact(sql, req.ToContact())
 
 	if errors.Cause(err) == gorm.ErrRecordNotFound || contact.Status == entity.Contact_Unknown {
 		// save contact in database
 		contact = req.ToContact()
-		contact.Status = entity.Contact_IsRequested
+		if err := contact.Requested(time.Now()); err != nil {
+			return nil, err
+		}
 		if err = bsql.ContactSave(sql, contact); err != nil {
 			return nil, errorcodes.ErrDbCreate.Wrap(err)
 		}
 	} else if err != nil {
 		return nil, bsql.GenericError(err)
-
-	} else if contact.Status == entity.Contact_RequestedMe {
+	} else if contact.DidRequestMe() {
 		logger().Info("this contact has already asked us, accepting the request")
-		return n.ContactAcceptRequest(ctx, &node.ContactAcceptRequestInput{
+		return n.contactAcceptRequest(ctx, &node.ContactAcceptRequestInput{
 			ContactID: contact.ID,
 		})
-
-	} else if contact.Status == entity.Contact_IsRequested {
+	} else if contact.IsRequested() {
 		logger().Info("contact has already been requested, sending event again")
 
-	} else if contact.Status == entity.Contact_Myself {
+	} else if contact.IsMyself() {
 		return nil, errorcodes.ErrContactReqMyself.New()
 
 	} else {
@@ -318,6 +326,33 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	); err != nil {
 		return nil, errorcodes.ErrUndefined.Wrap(err)
 	}
+	return contact, nil
+}
+
+func (n *Node) ContactSeen(ctx context.Context, contact *entity.Contact) (*entity.Contact, error) {
+	var err error
+
+	tracer := tracing.EnterFunc(ctx, contact)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	defer n.handleMutex(ctx)()
+
+	sql := n.sql(ctx)
+
+	contact, err = bsql.ContactByID(sql, contact.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := contact.Seen(time.Now()); err != nil {
+		return nil, err
+	}
+
+	if err = bsql.ContactSave(sql, contact); err != nil {
+		return nil, errorcodes.ErrDbUpdate.Wrap(err)
+	}
+
 	return contact, nil
 }
 

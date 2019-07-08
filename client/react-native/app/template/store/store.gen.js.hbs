@@ -24,11 +24,16 @@ import Mutex from 'await-mutex'
                     for (const [, _] of this._store.entity.{{case 'camel' type}}) {
                       if (_.{{case 'camel' ../name}}Id === this.id) {
                         {{name}}.push(_)
+                        continue
                       }
                     }
                     return {{name}}
                   {{else}}
-                    return this._store.entity.{{case 'camel' type}}.get(this.{{name}}Id)
+                    const {{name}} = this._store.entity.{{case 'camel' type}}.get(this.{{name}}Id)
+                    if ({{name}} == null) {
+                        this._store.node.service.{{case 'camel' type}}({ id: this.{{name}}Id })
+                    }
+                    return {{name}}
                   {{/if}}
                 }
                 set {{name}} (_) {

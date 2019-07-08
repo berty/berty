@@ -284,6 +284,13 @@ export class ContactServiceNode extends Unary {
 }
 
 @withStoreContext
+export class ContactSeenServiceNode extends Unary {
+  get method() {
+    return this.props.context.node.service.contactSeen
+  }
+}
+
+@withStoreContext
 export class ContactCheckPublicKeyServiceNode extends Unary {
   get method() {
     return this.props.context.node.service.contactCheckPublicKey
@@ -621,6 +628,7 @@ export class ServiceNode extends Component {
   static ContactUpdate = ContactUpdateServiceNode
   static ContactList = ContactListServiceNode
   static Contact = ContactServiceNode
+  static ContactSeen = ContactSeenServiceNode
   static ContactCheckPublicKey = ContactCheckPublicKeyServiceNode
   static ContactListBadge = ContactListBadgeServiceNode
   static ConversationCreate = ConversationCreateServiceNode

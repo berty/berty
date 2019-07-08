@@ -10,6 +10,7 @@ import (
 	"berty.tech/core/sql/migrations/v0007eventdispatchretry"
 	"berty.tech/core/sql/migrations/v0008eventdispatcherror"
 	"berty.tech/core/sql/migrations/v0009conversationseenat"
+	"berty.tech/core/sql/migrations/v0010contactLogic"
 	gormigrate "gopkg.in/gormigrate.v1"
 )
 
@@ -25,6 +26,7 @@ func GetMigrations() []*gormigrate.Migration {
 	migrations = append(migrations, v0007eventdispatchretry.GetMigration())
 	migrations = append(migrations, v0008eventdispatcherror.GetMigration())
 	migrations = append(migrations, v0009conversationseenat.GetMigration())
+	migrations = append(migrations, v0010contactLogic.GetMigration())
 
 	return migrations
 }

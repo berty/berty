@@ -15,7 +15,11 @@ export class ConfigEntityStore {
   createdAt = null
   updatedAt = null
   get myself() {
-    return this._store.entity.contact.get(this.myselfId)
+    const myself = this._store.entity.contact.get(this.myselfId)
+    if (myself == null) {
+      this._store.node.service.contact({ id: this.myselfId })
+    }
+    return myself
   }
   set myself(_) {
     let entity = this._store.entity.contact.get(_.id)
@@ -24,7 +28,11 @@ export class ConfigEntityStore {
   }
   myselfId = null
   get currentDevice() {
-    return this._store.entity.device.get(this.currentDeviceId)
+    const currentDevice = this._store.entity.device.get(this.currentDeviceId)
+    if (currentDevice == null) {
+      this._store.node.service.device({ id: this.currentDeviceId })
+    }
+    return currentDevice
   }
   set currentDevice(_) {
     let entity = this._store.entity.device.get(_.id)
@@ -50,6 +58,8 @@ export class ContactEntityStore {
   id = null
   createdAt = null
   updatedAt = null
+  seenAt = null
+  mutatedAt = null
   sigchain = null
   status = null
   get devices() {
@@ -57,6 +67,7 @@ export class ContactEntityStore {
     for (const [, _] of this._store.entity.device) {
       if (_.contactId === this.id) {
         devices.push(_)
+        continue
       }
     }
     return devices
@@ -93,6 +104,7 @@ export class DeviceEntityStore {
     for (const [, _] of this._store.entity.devicePushIdentifier) {
       if (_.deviceId === this.id) {
         pushIdentifiers.push(_)
+        continue
       }
     }
     return pushIdentifiers
@@ -128,6 +140,7 @@ export class ConversationEntityStore {
     for (const [, _] of this._store.entity.conversationMember) {
       if (_.conversationId === this.id) {
         members.push(_)
+        continue
       }
     }
     return members
@@ -156,7 +169,11 @@ export class ConversationMemberEntityStore {
   seenAt = null
   status = null
   get contact() {
-    return this._store.entity.contact.get(this.contactId)
+    const contact = this._store.entity.contact.get(this.contactId)
+    if (contact == null) {
+      this._store.node.service.contact({ id: this.contactId })
+    }
+    return contact
   }
   set contact(_) {
     let entity = this._store.entity.contact.get(_.id)
@@ -192,6 +209,7 @@ export class EventEntityStore {
     for (const [, _] of this._store.entity.eventDispatch) {
       if (_.eventId === this.id) {
         dispatches.push(_)
+        continue
       }
     }
     return dispatches
@@ -765,6 +783,17 @@ export class NodeServiceStore {
 
   contact = async (input = {}) => {
     let output = await this.bridge.contact(input)
+
+    let entity = this._store.entity.contact.get(output.id)
+    entity = new ContactEntityStore(this._store, output)
+    this._store.entity.contact.set(output.id, entity)
+    output = entity
+
+    return output
+  }
+
+  contactSeen = async (input = {}) => {
+    let output = await this.bridge.contactSeen(input)
 
     let entity = this._store.entity.contact.get(output.id)
     entity = new ContactEntityStore(this._store, output)
