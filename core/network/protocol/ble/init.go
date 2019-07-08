@@ -8,5 +8,5 @@ func init() {
 	// Bind native to golang bridge functions
 	bledrv.HandlePeerFound = HandlePeerFound
 	bledrv.ReceiveFromDevice = ReceiveFromDevice
-	bledrv.ConnClosedWithDevice = ConnClosedWithDevice
+	bledrv.ConnClosedWithDevice = nil
 }

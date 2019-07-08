@@ -30,12 +30,27 @@ type Transport struct {
 
 // NewTransport creates a BLE transport object that tracks dialers and listener.
 // It also starts the discovery service.
-func NewTransport(h host.Host, u *tptu.Upgrader) *Transport {
+func NewTransport(h host.Host, u *tptu.Upgrader /*, pk crypto.PrivKey */) (*Transport, error) {
+	// import tls "github.com/libp2p/go-libp2p-tls"
 	logger().Debug("NEWTRANSP CALLED")
+	// customSecure, err := tls.New(pk)
+	// if err != nil {
+	// 	return nil, errors.Wrap(err, "transport creation failed")
+	// }
+	//
+	// customMuxer := &mplex.Transport{}
+
+	// customUpgrader := &tptu.Upgrader{
+	// 	Protector: pr,
+	// 	Secure:    customSecure,
+	// 	Muxer:     customMuxer,
+	// 	Filters:   f,
+	// }
+
 	return &Transport{
 		host:     h,
 		upgrader: u,
-	}
+	}, nil
 }
 
 // Dial dials the peer at the remote address.
@@ -43,7 +58,6 @@ func NewTransport(h host.Host, u *tptu.Upgrader) *Transport {
 func (t *Transport) Dial(ctx context.Context, rMa ma.Multiaddr, rPID peer.ID) (tpt.CapableConn, error) {
 	// BLE transport needs to have a running listener in order to dial other peer
 	// because native driver is initialized during listener creation.
-	logger().Debug("DIAL CALLED")
 	if gListener == nil {
 		return nil, errors.New("transport dialing peer failed: no active listener")
 	}
@@ -56,18 +70,22 @@ func (t *Transport) Dial(ctx context.Context, rMa ma.Multiaddr, rPID peer.ID) (t
 	// Check if native driver is already connected to peer's device.
 	// With BLE you can't really dial, only auto-connect with peer nearby.
 	if bledrv.DialDevice(rAddr) == false {
-		return nil, errors.New("transport dialing peer failed")
+		return nil, errors.New("transport dialing peer failed: peer not connected")
+	}
+
+	if _, ok := connMap.Load(rAddr); ok {
+		return nil, errors.New("transport dialing peer failed: already connected to this address")
 	}
 
 	// Returns an outbound conn.
-	logger().Debug("DIAL RETURN NEW CONN")
+	logger().Debug("DIAL CALLED")
+	defer logger().Debug("DIAL RETURN NEW CONN")
 	return newConn(ctx, t, rMa, rPID, false)
 }
 
 // CanDial returns true if this transport believes it can dial the given
 // multiaddr.
 func (t *Transport) CanDial(addr ma.Multiaddr) bool {
-	logger().Debug("CAN DIAL CALLED")
 	return blema.BLE.Matches(addr)
 }
 
@@ -75,7 +93,6 @@ func (t *Transport) CanDial(addr ma.Multiaddr) bool {
 // BLE can't listen on more than one listener.
 func (t *Transport) Listen(lMa ma.Multiaddr) (tpt.Listener, error) {
 	// If a global listener already exists, returns an error.
-	logger().Debug("LISTEN CALLED WITH MA" + lMa.String())
 	if gListener != nil {
 		return nil, errors.New("transport listen failed: one listener maximum")
 	}
@@ -95,24 +112,19 @@ func (t *Transport) Listen(lMa ma.Multiaddr) (tpt.Listener, error) {
 		}
 	}
 
-	logger().Debug("LISTEN RETURN NEW LIST")
-
 	return newListener(lMa, t)
 }
 
 // Proxy returns true if this transport proxies.
 func (t *Transport) Proxy() bool {
-	logger().Debug("PROXY CALLED")
 	return false
 }
 
 // Protocols returns the set of protocols handled by this transport.
 func (t *Transport) Protocols() []int {
-	logger().Debug("PROTOCOLS CALLED")
 	return []int{blema.P_BLE}
 }
 
 func (t *Transport) String() string {
-	logger().Debug("STRING CALLED")
 	return "BLE"
 }

@@ -12,7 +12,6 @@ import (
 
 // HandlePeerFound is called by the native driver when a new peer is found.
 func HandlePeerFound(rID string, rAddr string) bool {
-	logger().Debug("HANDLEPEERFOUND CALLED WITH " + rID + " " + rAddr)
 	// Checks if a listener is currently running.
 	if gListener == nil || gListener.ctx.Err() != nil {
 		logger().Error("discovery handle peer failed: listener not running")
@@ -31,44 +30,43 @@ func HandlePeerFound(rID string, rAddr string) bool {
 		return false
 	}
 
-	return addToPeerstoreAndConnect(rPID, rMa, rAddr)
+	addToPeerstoreAndConnect(rPID, rMa, rAddr)
+
+	return true
 }
 
 // addToPeerstoreAndConnect adds peer to peerstore and auto-connects to it.
-func addToPeerstoreAndConnect(rPID peer.ID, rMa ma.Multiaddr, rAddr string) bool {
-	logger().Debug("ADDPEERSTORE CALLED WITH " + rPID.Pretty() + " " + rAddr)
+func addToPeerstoreAndConnect(rPID peer.ID, rMa ma.Multiaddr, rAddr string) {
 	// Adds peer to peerstore.
 	gListener.transport.host.Peerstore().AddAddr(rPID, rMa, pstore.TempAddrTTL)
 
 	// Peer with lexicographical smallest addr inits libp2p connection
 	// while the other accepts it.
-	logger().Debug("ADDPEERSTORE LADDR '" + gListener.Addr().String() + "' '" + rAddr + "'")
 	if gListener.Addr().String() < rAddr {
-		logger().Debug("ADDPEERSTORE CONNECT WITH " + rPID.Pretty() + " " + rAddr)
-		err := gListener.transport.host.Connect(context.Background(), pstore.PeerInfo{
-			ID:    rPID,
-			Addrs: []ma.Multiaddr{rMa},
-		})
-		if err != nil {
-			logger().Error("discovery auto connecting failed", zap.Error(err))
-			return false
-		} else {
-			logger().Debug("discovery auto connecting succeeded")
-			return true
-		}
+		// Async so HandlePeerFound can return and unlock the native driver.
+		// Needed to read and write during the connect handshake.
+		go func() {
+			err := gListener.transport.host.Connect(context.Background(), pstore.PeerInfo{
+				ID:    rPID,
+				Addrs: []ma.Multiaddr{rMa},
+			})
+			if err != nil {
+				logger().Error("discovery auto connecting failed", zap.Error(err))
+			} else {
+				logger().Debug("discovery auto connecting succeeded")
+			}
+		}()
 	} else {
 		logger().Debug("discovery send request to listener for incoming conn")
-		logger().Debug("ADDPEERSTORE ACCEPT WITH " + rPID.Pretty() + " " + rAddr)
 		select {
 		case <-gListener.ctx.Done():
 			logger().Error("discovery auto accept failed: listener closed")
-			return false
 		case gListener.inboundConnReq <- connReq{
 			remoteMa:     rMa,
 			remotePeerID: rPID,
 		}:
-			logger().Debug("discovery auto accept succeeded")
-			return true
+			logger().Debug("discovery auto accept request sent")
+			return
 		}
 	}
 }
