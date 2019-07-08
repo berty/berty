@@ -280,11 +280,6 @@ export class StreamPagination extends Stream {
 
     stream.on('end', () => {
       this.loading = false
-      this.cursor = this.queue.length
-        ? this.queue[this.queue.length - 1][
-            Case.camel(this.paginate.orderBy || 'id')
-          ]
-        : ''
       this.smartForceUpdate()
       this.invokeHashTable[requestHash] = false
     })
