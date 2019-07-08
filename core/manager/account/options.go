@@ -14,12 +14,12 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"berty.tech/core/network"
-	"berty.tech/core/network/mock"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/jaeger"
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/zapring"
+	mock "berty.tech/core/test/mock/network"
+	"berty.tech/network"
 )
 
 func WithRing(ring *zapring.Ring) NewOption {

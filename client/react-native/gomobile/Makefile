@@ -98,10 +98,12 @@ unsed.ble:
 build.ble: $(BLE_DIR_PATH)/ble.jar
 
 $(BLE_DIR_PATH)/ble.jar:
+	GO111MODULE=on GOPROXY= go get berty.tech/network # HOTFIX
 	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	cd $(ANDROID_PATH) && ./gradlew ble:createJar && cd -
 
 $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
+	GO111MODULE=on GOPROXY= go get berty.tech/network # HOTFIX
 	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	# GOOS=android gobind -lang=go,java -outdir=$(BLE_BIND_PATH) -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar berty.tech/core/network/ble
 	mkdir -p $(ANDROID_BUILD_PATH)
@@ -112,6 +114,7 @@ $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
 build.ios: $(IOS_BUILD_PATH)/core.framework/Core
 
 $(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
+	GO111MODULE=on GOPROXY= go get berty.tech/network # HOTFIX
 	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	mkdir -p $(IOS_BUILD_PATH)
 	GOPROXY=https://goproxy.berty.io GO111MODULE=off CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -target=ios -o $(IOS_BUILD_PATH)/core.framework berty.tech/client/react-native/gomobile/core

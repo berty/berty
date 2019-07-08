@@ -11,6 +11,8 @@ import (
 	entity "berty.tech/core/entity"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -90,6 +92,17 @@ type ServiceServer interface {
 	// HandleEnvelope is the default p2p handler, it receives an envelope containing an encrypted event
 	HandleEnvelope(context.Context, *entity.Envelope) (*entity.Void, error)
 	Ping(context.Context, *entity.Void) (*entity.Void, error)
+}
+
+// UnimplementedServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedServiceServer struct {
+}
+
+func (*UnimplementedServiceServer) HandleEnvelope(ctx context.Context, req *entity.Envelope) (*entity.Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HandleEnvelope not implemented")
+}
+func (*UnimplementedServiceServer) Ping(ctx context.Context, req *entity.Void) (*entity.Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
 
 func RegisterServiceServer(s *grpc.Server, srv ServiceServer) {

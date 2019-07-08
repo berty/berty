@@ -14,7 +14,7 @@ import (
 	"berty.tech/core/api/node"
 
 	"berty.tech/core/entity"
-	netMock "berty.tech/core/network/mock"
+	netMock "berty.tech/core/test/mock/network"
 	"github.com/gofrs/uuid"
 	. "github.com/smartystreets/goconvey/convey"
 )

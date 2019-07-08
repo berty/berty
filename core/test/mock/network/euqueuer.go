@@ -1,19 +1,23 @@
-package mock
+package network
 
 import (
 	"context"
 
 	"berty.tech/core/entity"
-	"berty.tech/core/network"
 	"berty.tech/core/pkg/tracing"
+	"berty.tech/network"
+	p2pnet "berty.tech/network"
+	"berty.tech/network/protocol/berty"
 )
+
+var _ p2pnet.Driver = (*Enqueuer)(nil)
 
 type Enqueuer struct {
 	network.Driver
 
-	contactID string
-	queue     chan *entity.Envelope
-	pingQueue chan string
+	localContactID string
+	queue          chan *entity.Envelope
+	pingQueue      chan string
 }
 
 func NewEnqueuer(ctx context.Context) *Enqueuer {
@@ -31,12 +35,17 @@ func (e *Enqueuer) Queue() chan *entity.Envelope {
 	return e.queue
 }
 
-func (e *Enqueuer) Emit(ctx context.Context, envelope *entity.Envelope) error {
-	tracer := tracing.EnterFunc(ctx, envelope)
+func (e *Enqueuer) EmitMessage(ctx context.Context, msg *berty.Message) error {
+	tracer := tracing.EnterFunc(ctx, msg)
 	defer tracer.Finish()
 	// ctx = tracer.Context()
 
-	e.queue <- envelope
+	env, err := GetEnvelopeFromMessage(msg)
+	if err != nil {
+		return err
+	}
+
+	e.queue <- env
 	return nil
 }
 
@@ -48,7 +57,7 @@ func (e *Enqueuer) Start(ctx context.Context) error {
 	select {} // wait forever
 }
 
-func (e *Enqueuer) OnEnvelopeHandler(_ func(context.Context, *entity.Envelope) (*entity.Void, error)) {
+func (e *Enqueuer) OnMessage(func(msg *berty.Message, cmeta *berty.ConnMetadata)) {
 	// doing nothing, enqueuer does not support receiving events
 }
 
@@ -61,12 +70,12 @@ func (e *Enqueuer) PingOtherNode(ctx context.Context, destination string) error 
 	return nil
 }
 
-func (e *Enqueuer) SetContactID(contactID string) {
-	e.contactID = contactID
+func (e *Enqueuer) SetLocalContactID(lcontactID string) {
+	e.localContactID = lcontactID
 }
 
 func (e *Enqueuer) Join(ctx context.Context) error {
-	tracer := tracing.EnterFunc(ctx, e.contactID)
+	tracer := tracing.EnterFunc(ctx, e.localContactID)
 	defer tracer.Finish()
 	// ctx = tracer.Context()
 

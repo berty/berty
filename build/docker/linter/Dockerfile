@@ -1,7 +1,7 @@
 FROM golang:1.12-alpine
 
 # build deps
-RUN apk --no-cache --update add nodejs-npm git make musl-dev gcc g++
+RUN apk --no-cache --update add nodejs-npm git make musl-dev gcc g++ openssh
 
 # gometalinter
 RUN go get -u github.com/golangci/golangci-lint/cmd/golangci-lint \

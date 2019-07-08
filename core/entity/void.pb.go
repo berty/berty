@@ -7,6 +7,7 @@ import (
 	fmt "fmt"
 	io "io"
 	math "math"
+	math_bits "math/bits"
 
 	proto "github.com/golang/protobuf/proto"
 )
@@ -143,14 +144,7 @@ func (m *Void) Size() (n int) {
 }
 
 func sovVoid(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
+	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozVoid(x uint64) (n int) {
 	return sovVoid(uint64((x << 1) ^ uint64((int64(x) >> 63))))

@@ -1,6 +1,6 @@
 package daemon
 
-import "berty.tech/core/network/protocol/ble"
+import "berty.tech/network/protocol/ble"
 
 // This file contain the configuration by default
 

@@ -7,6 +7,7 @@ import (
 	fmt "fmt"
 	io "io"
 	math "math"
+	math_bits "math/bits"
 
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/golang/protobuf/proto"
@@ -488,14 +489,7 @@ func (m *PushData) Size() (n int) {
 }
 
 func sovPush(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
+	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozPush(x uint64) (n int) {
 	return sovPush(uint64((x << 1) ^ uint64((int64(x) >> 63))))

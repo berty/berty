@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"berty.tech/core/manager/account"
-	"berty.tech/core/network"
-	network_config "berty.tech/core/network/config"
 	"berty.tech/core/pkg/banner"
 	"berty.tech/core/pkg/logmanager"
 	"berty.tech/core/push"
+	"berty.tech/network"
+	network_config "berty.tech/network/config"
 	"go.uber.org/zap"
 )
 
@@ -70,7 +70,6 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 					HOP:              cfg.Hop,
 					PrivateNetwork:   cfg.PrivateNetwork,
 					Identity:         cfg.Identity,
-					Persist:          true,
 					OverridePersist:  false,
 					PeerCache:        cfg.PeerCache,
 					//					DHTKVLogDatastore: cfg.DhtkvLogDatastore,

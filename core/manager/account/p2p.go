@@ -3,9 +3,9 @@ package account
 import (
 	"context"
 
-	"berty.tech/core/network"
-	network_config "berty.tech/core/network/config"
 	"berty.tech/core/pkg/tracing"
+	"berty.tech/network"
+	network_config "berty.tech/network/config"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )

@@ -8,7 +8,7 @@ SOURCES = $(call rwildcard, ./, *.go)
 OUR_SOURCES = $(filter-out $(call rwildcard,./vendor/, *.go),$(SOURCES))
 PROTOS = $(strip $(call rwildcard, ./, *.proto))
 OUR_PROTOS = $(filter-out $(call rwildcard,./vendor/, *.proto),$(PROTOS))
-PROTOC_OPTS = --proto_path=/protobuf:./vendor/github.com/gogo/protobuf:vendor:.
+PROTOC_OPTS = --proto_path=/protobuf:./vendor/berty.tech:./vendor/github.com/gogo/protobuf:vendor:.
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
 GENERATED_PATTERNS = %.validate.gen.go %.service.gen.go %generated.gen.go %kind.gen.go %.pb.go %.gen.js
 GENERATED_FILES = $(filter $(GENERATED_PATTERNS),$(filter-out $(call rwildcard ./vendor/,*),$(call rwildcard,./,*)))
@@ -102,7 +102,7 @@ generate: .generated
 		--workdir="/go/src/$(GO_ROOT_PKG)" \
 		--entrypoint="sh" \
 		--rm \
-		bertychat/protoc:v11 \
+		bertychat/protoc:v13 \
 		-xec 'make generate_local'
 	touch $@
 
@@ -147,6 +147,7 @@ _ci_prepare:
 	pbjs \
 		--path /protobuf \
 		--path vendor/github.com/gogo/protobuf/ \
+		--path vendor/berty.tech \
 		--path vendor \
 		--path $(GOPATH)/src/berty.tech/core \
 		--path . \
@@ -170,6 +171,7 @@ _ci_prepare:
 	pbhbs \
 		--template-dir $(RN_PATH)/app/template \
 		--proto-path /protobuf \
+		--proto-path vendor/berty.tech \
 		--proto-path vendor/github.com/gogo/protobuf/ \
 		--proto-path vendor \
 		--proto-path $(GOPATH)/src/berty.tech/core \

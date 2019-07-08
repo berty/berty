@@ -8,7 +8,7 @@ import (
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/entity"
-	"berty.tech/core/network/mock"
+	mock "berty.tech/core/test/mock/network"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

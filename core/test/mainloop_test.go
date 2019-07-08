@@ -8,7 +8,7 @@ import (
 
 	"berty.tech/core/entity"
 
-	networkmock "berty.tech/core/network/mock"
+	networkmock "berty.tech/core/test/mock/network"
 	"github.com/pkg/errors"
 )
 

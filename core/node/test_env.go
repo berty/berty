@@ -10,7 +10,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	netmock "berty.tech/core/network/mock"
+	netmock "berty.tech/core/test/mock/network"
 	host "github.com/libp2p/go-libp2p-host"
 
 	"berty.tech/core/entity"

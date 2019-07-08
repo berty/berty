@@ -22,8 +22,8 @@ import (
 
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
-	netmock "berty.tech/core/network/mock"
 	"berty.tech/core/test/mock"
+	netmock "berty.tech/core/test/mock/network"
 )
 
 func b64(input []byte) string {
