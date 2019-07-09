@@ -19,6 +19,7 @@ var connMap sync.Map
 
 // newConn returns an inbound or outbound tpt.CapableConn upgraded from a Conn.
 func newConn(ctx context.Context, t *Transport, rMa ma.Multiaddr, rPID peer.ID, inbound bool) (tpt.CapableConn, error) {
+	// Creates a BLE manet.Conn
 	pr, pw := io.Pipe()
 	connCtx, cancel := context.WithCancel(gListener.ctx)
 
@@ -31,8 +32,13 @@ func newConn(ctx context.Context, t *Transport, rMa ma.Multiaddr, rPID peer.ID, 
 		cancel:   cancel,
 	}
 
+	// Unlock gListener locked from discovery.go (HandlePeerFound)
+	gListener.inUse.Done()
+
+	// Stores the conn in connMap, will be deleted during conn.Close()
 	connMap.Store(maconn.RemoteAddr().String(), maconn)
 
+	// Returns an upgraded CapableConn (muxed, addr filtered, secured, etc...)
 	if inbound {
 		return t.upgrader.UpgradeInbound(ctx, t, maconn)
 	} else {
@@ -42,17 +48,16 @@ func newConn(ctx context.Context, t *Transport, rMa ma.Multiaddr, rPID peer.ID, 
 
 // ReceiveFromDevice is called by native driver when peer's device sent data.
 func ReceiveFromDevice(rAddr string, payload []byte) {
+	// TODO: implement a cleaner way to do that
 	// Checks during 100 ms if the conn is available, because remote device can
 	// be ready to write while local device is still creating the new conn.
 	for i := 0; i < 100; i++ {
 		c, ok := connMap.Load(rAddr)
 		if ok {
-			logger().Debug("RECEIVEFROMDEV CALL FOR CONN " + rAddr)
 			c.(*Conn).readIn.Write(payload)
 			return
 		}
 		time.Sleep(1 * time.Millisecond)
-		logger().Debug("WAIT RECEIVE FOR CONN " + rAddr)
 	}
 
 	logger().Error(

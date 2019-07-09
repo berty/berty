@@ -65,7 +65,6 @@ func (c *Conn) Write(payload []byte) (n int, err error) {
 // Close closes the connection.
 // Any blocked Read or Write operations will be unblocked and return errors.
 func (c *Conn) Close() error {
-	rAddr := c.RemoteAddr().String()
 	c.cancel()
 
 	// Closes read pipe
@@ -73,10 +72,10 @@ func (c *Conn) Close() error {
 	c.readOut.Close()
 
 	// Removes conn from connmgr's connMap
-	connMap.Delete(rAddr)
+	connMap.Delete(c.RemoteAddr().String())
 
 	// Notify the native driver that the conn was cloed with this device.
-	bledrv.CloseConnWithDevice(rAddr)
+	bledrv.CloseConnWithDevice(c.RemoteAddr().String())
 
 	return nil
 }

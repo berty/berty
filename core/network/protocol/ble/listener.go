@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net"
+	"sync"
 
 	bledrv "berty.tech/core/network/protocol/ble/driver"
 	blema "berty.tech/core/network/protocol/ble/multiaddr"
@@ -27,6 +28,7 @@ type Listener struct {
 	transport      *Transport
 	localMa        ma.Multiaddr
 	inboundConnReq chan connReq // Chan used to accept inbound conn.
+	inUse          sync.WaitGroup
 	ctx            context.Context
 	cancel         func()
 }
@@ -40,6 +42,7 @@ type connReq struct {
 // newListener starts the native driver then returns a new Listener.
 func newListener(lMa ma.Multiaddr, t *Transport) (*Listener, error) {
 	ctx, cancel := context.WithCancel(context.Background())
+
 	listener := &Listener{
 		transport:      t,
 		localMa:        lMa,
@@ -63,10 +66,10 @@ func newListener(lMa ma.Multiaddr, t *Transport) (*Listener, error) {
 // Returns a Multiaddr friendly Conn.
 func (l *Listener) Accept() (tpt.CapableConn, error) {
 	select {
-	case <-l.ctx.Done():
-		return nil, errors.New("listener accept failed: listener already closed")
 	case req := <-l.inboundConnReq:
 		return newConn(l.ctx, l.transport, req.remoteMa, req.remotePeerID, true)
+	case <-l.ctx.Done():
+		return nil, errors.New("listener accept failed: listener already closed")
 	}
 }
 
@@ -81,6 +84,7 @@ func (l *Listener) Close() error {
 	}
 
 	// Removes global listener so transport can instanciate a new one later.
+	gListener.inUse.Wait()
 	gListener = nil
 
 	return nil

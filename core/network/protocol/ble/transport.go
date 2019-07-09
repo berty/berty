@@ -64,22 +64,21 @@ func (t *Transport) Dial(ctx context.Context, rMa ma.Multiaddr, rPID peer.ID) (t
 
 	rAddr, err := rMa.ValueForProtocol(blema.P_BLE)
 	if err != nil {
-		return nil, errors.Wrap(err, "transport dialing peer failed")
+		return nil, errors.Wrap(err, "transport dialing peer failed: wrong multiaddr")
 	}
 
 	// Check if native driver is already connected to peer's device.
 	// With BLE you can't really dial, only auto-connect with peer nearby.
 	if bledrv.DialDevice(rAddr) == false {
-		return nil, errors.New("transport dialing peer failed: peer not connected")
+		return nil, errors.New("transport dialing peer failed: peer not connected through BLE")
 	}
 
+	// Can't have two connections on the same multiaddr
 	if _, ok := connMap.Load(rAddr); ok {
 		return nil, errors.New("transport dialing peer failed: already connected to this address")
 	}
 
 	// Returns an outbound conn.
-	logger().Debug("DIAL CALLED")
-	defer logger().Debug("DIAL RETURN NEW CONN")
 	return newConn(ctx, t, rMa, rPID, false)
 }
 
