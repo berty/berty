@@ -68,9 +68,8 @@ export const getInstalledVersion = async context => {
   if (!updateApiSources.hasOwnProperty(bundleId)) {
     return null
   }
-
-  const { channel } = updateApiSources[bundleId]
-  const deviceData = await context.deviceInfos()
+  const channel = updateApiSources[bundleId].channel
+  const deviceData = await context.node.service.deviceInfos({})
 
   const [rawVersionInfo] = deviceData.infos
     .filter(d => d.key === 'versions')

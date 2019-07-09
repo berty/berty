@@ -123,16 +123,18 @@ class Auth extends PureComponent {
       )
     )
 
-    getAvailableUpdate(this.props.bridge).then(update => {
-      this.props.updateContext.setState(update)
-    })
-
-    this.props.bridge.setContext({
+    const bridge = {
       ...this.props.bridge,
       node: {
         service: nodeService,
       },
+    }
+
+    getAvailableUpdate(bridge).then(update => {
+      this.props.updateContext.setState(update)
     })
+
+    this.props.bridge.setContext(bridge)
 
     this.openDeepLink()
     this.props.navigation.navigate('switch/picker', {
