@@ -59,7 +59,7 @@ class ByQRCode extends PureComponent {
           onFound={async data => {
             const url = parseUrl(data)
 
-            if (!url || url.pathname !== '/contacts/add') {
+            if (!url || url.pathname !== '/id') {
               showMessage({
                 message: t('contacts.add.qrcode-not-from-berty'),
                 type: 'danger',
@@ -71,8 +71,8 @@ class ByQRCode extends PureComponent {
               return
             }
             navigation.navigate('modal/contacts/card', {
-              id: url.hashParts['id'],
-              displayName: url.hashParts['display-name'] || '',
+              id: url.hashParts['key'],
+              displayName: url.hashParts['name'] || '',
             })
           }}
         />

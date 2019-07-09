@@ -5,9 +5,9 @@ import I18n from 'i18next'
 import { BASE_WEBSITE_URL } from '../constants'
 
 export const makeShareableUrl = ({ id, displayName }) =>
-  `${BASE_WEBSITE_URL}/contacts/add#id=${encodeURIComponent(
+  `${BASE_WEBSITE_URL}/id#key=${encodeURIComponent(
     id
-  )}&display-name=${encodeURIComponent(displayName)}`
+  )}&name=${encodeURIComponent(displayName)}`
 
 export const shareLinkSelf = ({ id, displayName }) => {
   const url = makeShareableUrl({ id, displayName })

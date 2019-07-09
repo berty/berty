@@ -24,7 +24,7 @@ class ByPublicKey extends PureComponent {
     const { navigation } = this.props
     const url = parseUrl(this.state.id)
 
-    if (!url || url.pathname !== '/contacts/add') {
+    if (!url || url.pathname !== '/id') {
       return navigation.navigate('modal/contacts/card', {
         id: this.state.id,
         displayName: '',
@@ -32,8 +32,8 @@ class ByPublicKey extends PureComponent {
     }
 
     return navigation.navigate('modal/contacts/card', {
-      id: url.hashParts['id'],
-      displayName: url.hashParts['display-name'] || '',
+      id: url.hashParts['key'],
+      displayName: url.hashParts['name'] || '',
     })
   }
 
