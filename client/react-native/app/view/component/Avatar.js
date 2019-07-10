@@ -59,14 +59,18 @@ const Avatar = ({
           borderRadius: size / 2,
           margin: margin,
           backgroundColor: pastels[colorIdx].light,
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'col',
         },
         ...style,
       ]}
     >
       <Text
         style={{
+          alignItems: 'center',
+          flexDirection: 'row',
           color: pastels[colorIdx].default,
-          paddingTop: size / 4.4,
           fontSize: size / 2.2,
           textAlign: 'center',
         }}
