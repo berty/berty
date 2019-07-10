@@ -1,44 +1,33 @@
 # berty package
-core/network
-
-# sub-packages
+/core/network/
+/crew/
+/depviz/
 /go-ipfs-log/
+/go-libp2p-ble-transport/
+/go-orbit-db/
+/gomobile-ipfs/
+/gomobile-react-bridge/
+/network/
+/protocol/
 
-# junk files
-/go.mod
-
-# core
-core/.generated
-core/.*.generated
-core/google/
-core/gogoproto/
-core/github.com/
-android/core/core-sources.jar
-gin-bin
-
-#ag
+# junk
+*#
+*~
+.#*
+./package.json
+.DS_Store
 .agignore
 .env
-
-# Android
-google-services.json
-core-sources.jar
-
-# OSX
-.DS_Store
-
-# emacs
 .projectile
-*~
-*#
-.#*
-
-# sub projects
-/depviz/
-
-# version
-./package.json
-
-# go
-vendor/
 /client/react-native/desktop/output/
+/go.mod
+android/core/core-sources.jar
+core-sources.jar
+core/.*.generated
+core/.generated
+core/github.com/
+core/gogoproto/
+core/google/
+gin-bin
+google-services.json
+vendor/
