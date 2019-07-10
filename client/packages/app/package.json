@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "name": "@berty/app",
+  "description": "",
+  "license": "UNLICENSED",
+  "author": "",
+  "version": "0.0.4-alpha.0",
+  "main": "index.js",
+  "dependencies": {
+    "@berty/common": "^0.0.4-alpha.0",
+    "@berty/navigation": "^0.0.4-alpha.0",
+    "@berty/screen": "^0.0.4-alpha.0",
+    "cavy": "^2.1.1"
+  },
+  "devDependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-native": "^0.59.9",
+    "react-native-web": "^0.11.5"
+  },
+  "source": true
+}

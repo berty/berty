@@ -3,7 +3,7 @@ module berty.tech/core
 go 1.12
 
 require (
-	berty.tech/network v0.0.0-20190705175056-c1e3d7d90ac3
+	berty.tech/network v0.0.0-20190712164033-c1e3d7d90ac3
 	cloud.google.com/go v0.34.0 // indirect
 	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21
 	github.com/99designs/gqlgen v0.7.2 // indirect
@@ -20,6 +20,7 @@ require (
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gogo/protobuf v1.2.1
 	github.com/golang/protobuf v1.3.1
+	github.com/google/protobuf v3.8.0+incompatible // indirect
 	github.com/google/uuid v1.1.1
 	github.com/gosimple/slug v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190222133341-cfaf5686ec79

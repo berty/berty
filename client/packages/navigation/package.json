@@ -1,0 +1,29 @@
+{
+  "private": true,
+  "name": "@berty/navigation",
+  "description": "",
+  "license": "UNLICENSED",
+  "author": "",
+  "version": "0.0.4-alpha.0",
+  "main": "index.js",
+  "dependencies": {
+    "@berty/bridge": "^0.0.4-alpha.0",
+    "@berty/common": "^0.0.4-alpha.0",
+    "@berty/component": "^0.0.4-alpha.0",
+    "@berty/container": "^0.0.4-alpha.0",
+    "@berty/screen": "^0.0.4-alpha.0",
+    "@berty/store": "^0.0.4-alpha.0",
+    "@berty/update": "^0.0.4-alpha.0",
+    "b64-lite": "^1.3.1"
+  },
+  "devDependencies": {
+    "i18next": "^17.0.6",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-native": "^0.59.9",
+    "react-native-gesture-handler": "^1.3.0",
+    "react-native-web": "^0.11.5",
+    "react-navigation": "^3.11.1"
+  },
+  "source": true
+}

@@ -1,8 +1,0 @@
-{
-  "name": "@berty/common",
-  "version": "0.0.1",
-  "license": "UNLICENSED",
-  "source": true,
-  "private": true,
-  "dependencies": {}
-}

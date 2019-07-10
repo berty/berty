@@ -1,0 +1,20 @@
+{
+  "name": "@berty/update",
+  "version": "0.0.4-alpha.0",
+  "description": "",
+  "author": "",
+  "license": "UNLICENSED",
+  "source": true,
+  "private": true,
+  "dependencies": {
+    "@berty/common": "^0.0.4-alpha.0"
+  },
+  "devDependencies": {
+    "i18next": "^17.0.6",
+    "react-dom": "^16.8.6",
+    "react-native": "^0.59.9",
+    "react-native-device-info": "^2.2.2",
+    "react-native-flash-message": "^0.1.13",
+    "react-native-web": "^0.11.5"
+  }
+}

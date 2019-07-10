@@ -1,0 +1,64 @@
+{
+  "name": "@berty/platform",
+  "version": "0.0.4-alpha.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "publishConfig": {
+    "access": "private"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berty/berty.git"
+  },
+  "bugs": {
+    "url": "https://github.com/berty/berty/issues"
+  },
+  "bin": {
+    "platform": "Makefile"
+  },
+  "scripts": {
+    "postinstall": "react-native link"
+  },
+  "dependencies": {
+    "@berty/app": "^0.0.4-alpha.0",
+    "@berty/common": "^0.0.4-alpha.0",
+    "instabug-reactnative": "8.1.6",
+    "lottie-react-native": "^2.6.0",
+    "node-libs-browser": "^2.2.1",
+    "node-libs-react-native": "^1.0.3",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-native": "^0.59.9",
+    "react-native-actionsheet": "^2.4.2",
+    "react-native-camera": "^2.1.0",
+    "react-native-collapsible": "^1.4.0",
+    "react-native-config": "^0.11.7",
+    "react-native-dev-menu": "^2.0.2",
+    "react-native-device-info": "^2.2.2",
+    "react-native-exception-handler": "^2.10.8",
+    "react-native-flash-message": "^0.1.13",
+    "react-native-gesture-handler": "^1.3.0",
+    "react-native-image-picker": "^0.28.0",
+    "react-native-keyboard-spacer": "^0.4.1",
+    "react-native-languages": "^3.0.2",
+    "react-native-markdown-renderer": "^3.2.8",
+    "react-native-network-info": "git+https://github.com/pusherman/react-native-network-info#0468d531d3ec303b892f59cf064470a5ef30abb0",
+    "react-native-permissions": "1.1.1",
+    "react-native-qrcode-scanner": "^1.1.0",
+    "react-native-qrcode-svg": "^5.1.2",
+    "react-native-restart": "0.0.12",
+    "react-native-segmented-control-tab": "^3.3.1",
+    "react-native-svg": "^9.5.3",
+    "react-native-vector-icons": "^6.6.0",
+    "react-native-view-shot": "^3.0.0",
+    "react-native-web": "^0.11.5",
+    "rn-fetch-blob": "^0.10.14"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.4"
+  },
+  "alias": {
+    "react-native": "react-native-web",
+    "node-libs-react-native/globals": "node-libs-browser"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "name": "@berty/store",
+  "license": "UNLICENSED",
+  "version": "0.0.4-alpha.0",
+  "dependencies": {
+    "@berty/common": "^0.0.4-alpha.0",
+    "await-mutex": "^1.0.2",
+    "mobx": "^5.11.0",
+    "mobx-utils": "^5.4.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "react": "^16.8.6"
+  },
+  "source": true
+}
