@@ -277,32 +277,26 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	// check for duplicate
 	sql := n.sql(ctx)
 
-	contact, err := bsql.FindContact(sql, req.ToContact())
+	contact, err := bsql.ContactByID(sql, req.ContactID)
 
-	if errors.Cause(err) == gorm.ErrRecordNotFound || contact.Status == entity.Contact_Unknown {
+	if errors.Cause(err) == gorm.ErrRecordNotFound {
 		// save contact in database
-		contact = req.ToContact()
-		if err := contact.Requested(time.Now()); err != nil {
+		contact, err = entity.NewContact(
+			req.ContactID,
+			req.ContactOverrideDisplayName,
+			entity.Contact_Unknown,
+		)
+		if err != nil {
 			return nil, err
 		}
-		if err = bsql.ContactSave(sql, contact); err != nil {
-			return nil, errorcodes.ErrDbCreate.Wrap(err)
-		}
-	} else if err != nil {
-		return nil, bsql.GenericError(err)
-	} else if contact.DidRequestMe() {
-		logger().Info("this contact has already asked us, accepting the request")
-		return n.contactAcceptRequest(ctx, &node.ContactAcceptRequestInput{
-			ContactID: contact.ID,
-		})
-	} else if contact.IsRequested() {
-		logger().Info("contact has already been requested, sending event again")
+	}
 
-	} else if contact.IsMyself() {
-		return nil, errorcodes.ErrContactReqMyself.New()
+	if err := contact.Requested(time.Now()); err != nil {
+		return nil, err
+	}
 
-	} else {
-		return nil, errorcodes.ErrContactReqExisting.New()
+	if err = bsql.ContactSave(sql, contact); err != nil {
+		return nil, errorcodes.ErrDbCreate.Wrap(err)
 	}
 
 	// send request to peer
