@@ -49,9 +49,8 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Alice calls node.ContactRequest", FailureHalts, func() {
 			shouldIContinue(t)
 			res, err := alice.client.Node().ContactRequest(internalCtx, &node.ContactRequestInput{
-				ContactOverrideDisplayName: "Bob from school",
-				ContactID:                  bob.node.UserID(),
-				IntroText:                  "hello, I want to chat!",
+				ContactID: bob.node.UserID(),
+				IntroText: "hello, I want to chat!",
 			})
 			So(err, ShouldBeNil)
 			So(res, ShouldNotBeNil)
@@ -90,7 +89,6 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			// bob
 			So(contacts[0].ID, ShouldNotBeEmpty)
 			So(contacts[0].DisplayName, ShouldEqual, "Bob")
-			So(contacts[0].OverrideDisplayName, ShouldEqual, "Bob from school")
 			So(contacts[0].Status, ShouldEqual, entity.Contact_IsFriend)
 
 			everythingWentFine()

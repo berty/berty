@@ -61,7 +61,7 @@ const Avatar = ({
           backgroundColor: pastels[colorIdx].light,
           justifyContent: 'center',
           alignItems: 'center',
-          flexDirection: 'col',
+          flexDirection: 'column',
         },
         ...style,
       ]}

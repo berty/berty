@@ -552,8 +552,10 @@ func (m *conversationMember) Write(at time.Time, message *Message) error {
 
 func (m conversationMember) Filtered() *ConversationMember {
 	member := ConversationMember{
-		ID:     m.ID,
-		Status: m.Status,
+		ID:             m.ID,
+		Status:         m.Status,
+		ContactID:      m.ContactID,
+		ConversationID: m.ConversationID,
 	}
 	if m.Contact != nil {
 		member.Contact = m.Contact.Filtered()
@@ -563,8 +565,10 @@ func (m conversationMember) Filtered() *ConversationMember {
 
 func (m ConversationMember) Filtered() *ConversationMember {
 	member := ConversationMember{
-		ID:     m.ID,
-		Status: m.Status,
+		ID:             m.ID,
+		Status:         m.Status,
+		ContactID:      m.ContactID,
+		ConversationID: m.ConversationID,
 	}
 	if m.Contact != nil {
 		member.Contact = m.Contact.Filtered()

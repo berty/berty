@@ -85,8 +85,6 @@ integration: install
 	rm -f /tmp/berty.integration.db
 	@# initialize a new daemon on a fresh db
 	$(BIN) daemon --init-only --no-p2p --sql-name=berty.integration.db
-	@# initialize a new daemon based on an existing db
-	$(BIN) daemon --init-only --no-p2p --sql-name=berty.integration.db
 
 .PHONY: lint
 lint: generate

@@ -3021,7 +3021,7 @@ func (*UnimplementedServiceServer) EventUnseen(req *EventListInput, srv Service_
 func (*UnimplementedServiceServer) GetEvent(ctx context.Context, req *entity.Event) (*entity.Event, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEvent not implemented")
 }
-func (*UnimplementedServiceServer) EventSeen(ctx context.Context, req *entity.Event) (*entity.Event, error) {
+func (*UnimplementedServiceServer) EventSeen(ctx context.Context, req *entity.Event) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EventSeen not implemented")
 }
 func (*UnimplementedServiceServer) EventRetry(ctx context.Context, req *entity.Event) (*entity.Event, error) {
@@ -3054,8 +3054,14 @@ func (*UnimplementedServiceServer) ContactList(req *ContactListInput, srv Servic
 func (*UnimplementedServiceServer) Contact(ctx context.Context, req *entity.Contact) (*entity.Contact, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Contact not implemented")
 }
+func (*UnimplementedServiceServer) ContactSeen(ctx context.Context, req *entity.Contact) (*entity.Contact, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactSeen not implemented")
+}
 func (*UnimplementedServiceServer) ContactCheckPublicKey(ctx context.Context, req *entity.Contact) (*Bool, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactCheckPublicKey not implemented")
+}
+func (*UnimplementedServiceServer) ContactListBadge(ctx context.Context, req *Void) (*Badge, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactListBadge not implemented")
 }
 func (*UnimplementedServiceServer) ConversationCreate(ctx context.Context, req *ConversationCreateInput) (*entity.Conversation, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConversationCreate not implemented")
@@ -3089,6 +3095,12 @@ func (*UnimplementedServiceServer) ConversationRemove(ctx context.Context, req *
 }
 func (*UnimplementedServiceServer) ConversationLastEvent(ctx context.Context, req *entity.Conversation) (*entity.Event, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConversationLastEvent not implemented")
+}
+func (*UnimplementedServiceServer) ConversationListBadge(ctx context.Context, req *Void) (*Badge, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationListBadge not implemented")
+}
+func (*UnimplementedServiceServer) ConversationBadge(ctx context.Context, req *entity.Conversation) (*Badge, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationBadge not implemented")
 }
 func (*UnimplementedServiceServer) DevicePushConfigList(req *Void, srv Service_DevicePushConfigListServer) error {
 	return status.Errorf(codes.Unimplemented, "method DevicePushConfigList not implemented")

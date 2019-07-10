@@ -16,6 +16,7 @@ import (
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/push"
 	bsql "berty.tech/core/sql"
+	"github.com/jinzhu/gorm"
 )
 
 type EventHandler func(context.Context, *entity.Event) error
@@ -32,14 +33,19 @@ func (n *Node) handleContactRequest(ctx context.Context, input *entity.Event) er
 	// FIXME: validate input
 
 	sql := n.sql(ctx)
-	contact, err := bsql.FindContact(sql, &entity.Contact{ID: attrs.Me.ID})
-	if err == nil && contact.Status != entity.Contact_Unknown {
-		return errorcodes.ErrContactReqExisting.New()
+	contact, err := bsql.ContactByID(sql, attrs.Me.ID)
+	if errors.Cause(err) == gorm.ErrRecordNotFound {
+		// save contact in database
+		contact, err = entity.NewContact(
+			attrs.Me.ID,
+			attrs.Me.DisplayName,
+			entity.Contact_Unknown,
+		)
+		if err != nil {
+			return err
+		}
 	}
-	contact, err = entity.NewContact(attrs.Me.ID, attrs.Me.DisplayName, entity.Contact_Unknown)
-	if err != nil {
-		return err
-	}
+
 	// save requester in db
 	devices := attrs.Me.Devices
 
@@ -197,6 +203,16 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *entity.Event
 		) {
 			conversation.Kind = entity.Conversation_OneToOne
 		}
+	}
+
+	// legacy hack to have badge notification
+	// member.Invite() alreay does this
+	member, err := conversation.GetMember(input.SourceContactID)
+	if err != nil {
+		return err
+	}
+	if err := member.Write(time.Now(), nil); err != nil {
+		return err
 	}
 
 	if err = bsql.ConversationSave(sql, conversation); err != nil {
