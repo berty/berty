@@ -68,7 +68,7 @@ references:
           make deps
         fi
         brew install dylibbundler
-        sudo npm install --global electron-builder
+        sudo npm install --global electron-builder@20
 
 jobs:
   lint:
@@ -662,6 +662,7 @@ jobs:
             dylibbundler -od -b -x ./output/darwin-amd64/Berty.app/Contents/MacOS/berty -d ./output/darwin-amd64/Berty.app/Contents/libs/
             mv output/darwin-amd64/Berty.app appdmg
             cd appdmg
+            npm install -D electron
             electron-builder build --publish never --prepackaged Berty.app
             mv dist/Berty*.dmg /tmp/Berty.dmg
 

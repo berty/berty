@@ -5,7 +5,7 @@ go 1.12
 require (
 	berty.tech/client/react-native/gomobile v0.0.0
 	berty.tech/core v0.0.0
-	berty.tech/network v0.0.0-20190705175056-c1e3d7d90ac3
+	berty.tech/network v0.0.0-20190708122233-a106cf912c96
 	github.com/akavel/rsrc v0.0.0-20170831122431-f6a15ece2cfd // indirect
 	github.com/asticode/go-astiamqp v1.0.0 // indirect
 	github.com/asticode/go-astilectron v0.8.1-0.20190415090856-5d5f14367434
