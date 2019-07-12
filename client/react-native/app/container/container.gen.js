@@ -284,9 +284,23 @@ export class ContactServiceNode extends Unary {
 }
 
 @withStoreContext
+export class ContactSeenServiceNode extends Unary {
+  get method() {
+    return this.props.context.node.service.contactSeen
+  }
+}
+
+@withStoreContext
 export class ContactCheckPublicKeyServiceNode extends Unary {
   get method() {
     return this.props.context.node.service.contactCheckPublicKey
+  }
+}
+
+@withStoreContext
+export class ContactListBadgeServiceNode extends Unary {
+  get method() {
+    return this.props.context.node.service.contactListBadge
   }
 }
 
@@ -375,6 +389,20 @@ export class ConversationRemoveServiceNode extends Unary {
 export class ConversationLastEventServiceNode extends Unary {
   get method() {
     return this.props.context.node.service.conversationLastEvent
+  }
+}
+
+@withStoreContext
+export class ConversationListBadgeServiceNode extends Unary {
+  get method() {
+    return this.props.context.node.service.conversationListBadge
+  }
+}
+
+@withStoreContext
+export class ConversationBadgeServiceNode extends Unary {
+  get method() {
+    return this.props.context.node.service.conversationBadge
   }
 }
 
@@ -600,7 +628,9 @@ export class ServiceNode extends Component {
   static ContactUpdate = ContactUpdateServiceNode
   static ContactList = ContactListServiceNode
   static Contact = ContactServiceNode
+  static ContactSeen = ContactSeenServiceNode
   static ContactCheckPublicKey = ContactCheckPublicKeyServiceNode
+  static ContactListBadge = ContactListBadgeServiceNode
   static ConversationCreate = ConversationCreateServiceNode
   static ConversationUpdate = ConversationUpdateServiceNode
   static ConversationList = ConversationListServiceNode
@@ -612,6 +642,8 @@ export class ServiceNode extends Component {
   static ConversationRead = ConversationReadServiceNode
   static ConversationRemove = ConversationRemoveServiceNode
   static ConversationLastEvent = ConversationLastEventServiceNode
+  static ConversationListBadge = ConversationListBadgeServiceNode
+  static ConversationBadge = ConversationBadgeServiceNode
   static DevicePushConfigList = DevicePushConfigListServiceNode
   static DevicePushConfigCreate = DevicePushConfigCreateServiceNode
   static DevicePushConfigNativeRegister = DevicePushConfigNativeRegisterServiceNode

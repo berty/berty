@@ -31,6 +31,12 @@ export class OptimizedFlatList extends Component {
 
   keyExtractor = (item, index) => item.id || index
 
+  // viewabilityConfig = {
+  //   minimumViewTime: 666,
+  //   viewAreaCoveragePercentThreshold: 100,
+  //   waitForInteraction: false,
+  // }
+
   render() {
     const {
       data,
@@ -56,6 +62,7 @@ export class OptimizedFlatList extends Component {
         refreshing={data.length === 0 && refreshing}
         onRefresh={Platform.OS !== 'web' && onRefresh}
         renderItem={renderItem}
+        viewabilityConfig={this.viewabilityConfig}
         {...props}
       />
     )

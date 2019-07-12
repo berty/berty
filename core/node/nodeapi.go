@@ -154,7 +154,7 @@ func (n *Node) EventRetry(ctx context.Context, input *entity.Event) (*entity.Eve
 	return event, nil
 }
 
-func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Event, error) {
+func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*node.Void, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -164,33 +164,17 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 	return n.eventSeen(ctx, input)
 }
 
-func (n *Node) eventSeen(ctx context.Context, input *entity.Event) (*entity.Event, error) {
+func (n *Node) eventSeen(ctx context.Context, input *entity.Event) (*node.Void, error) {
 	sql := n.sql(ctx)
 
-	// get event
-	event, err := entity.GetEventByID(sql, input.ID)
+	// find events
+	events := []*entity.Event{}
+	err := sql.Where(input).Find(&events).Error
 	if err != nil {
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
 	// set same type of event as seen
-	events := []*entity.Event{}
-	query := sql.
-		Where(&entity.Event{
-			SourceContactID: event.SourceContactID,
-			Direction:       entity.Event_Incoming,
-			TargetType:      event.TargetType,
-			TargetAddr:      event.TargetAddr,
-		}).
-		Where(
-			"received_at <= :time",
-			event.ReceivedAt,
-		).
-		Order("received_at desc")
-	if err := query.Find(&events).Error; err != nil {
-		return nil, err
-	}
-
 	var errLoop error
 	seenAt := time.Now().UTC()
 	for _, e := range events {
@@ -206,11 +190,7 @@ func (n *Node) eventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 		return nil, errLoop
 	}
 
-	event, err = entity.GetEventByID(sql, input.ID)
-	if err != nil {
-		return nil, err
-	}
-	return event, nil
+	return &node.Void{}, nil
 }
 
 // GetEvent implements berty.node.GetEvent
@@ -241,21 +221,28 @@ func (n *Node) ContactAcceptRequest(ctx context.Context, input *node.ContactAcce
 	ctx = tracer.Context()
 
 	defer n.handleMutex(ctx)()
+	return n.contactAcceptRequest(ctx, input)
+}
 
+func (n *Node) contactAcceptRequest(ctx context.Context, input *node.ContactAcceptRequestInput) (*entity.Contact, error) {
 	// input validation
 	if err := input.Validate(); err != nil {
 		return nil, err
 	}
+
 	sql := n.sql(ctx)
+
 	contact, err := bsql.FindContact(sql, input.ToContact())
 	if err != nil {
 		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
-	// mark contact as friend
-	contact.Status = entity.Contact_IsFriend
-	if err := sql.Save(contact).Error; err != nil {
-		return nil, errorcodes.ErrDb.Wrap(err)
+	if err := contact.Accepted(time.Now()); err != nil {
+		return nil, err
+	}
+
+	if err = bsql.ContactSave(sql, contact); err != nil {
+		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
 	// send ContactRequestAccepted event
@@ -289,32 +276,27 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 
 	// check for duplicate
 	sql := n.sql(ctx)
-	contact, err := bsql.FindContact(sql, req.ToContact())
 
-	if errors.Cause(err) == gorm.ErrRecordNotFound || contact.Status == entity.Contact_Unknown {
+	contact, err := bsql.ContactByID(sql, req.ContactID)
+
+	if errors.Cause(err) == gorm.ErrRecordNotFound {
 		// save contact in database
-		contact = req.ToContact()
-		contact.Status = entity.Contact_IsRequested
-		if err = bsql.ContactSave(sql, contact); err != nil {
-			return nil, errorcodes.ErrDbCreate.Wrap(err)
+		contact, err = entity.NewContact(
+			req.ContactID,
+			req.ContactOverrideDisplayName,
+			entity.Contact_Unknown,
+		)
+		if err != nil {
+			return nil, err
 		}
-	} else if err != nil {
-		return nil, bsql.GenericError(err)
+	}
 
-	} else if contact.Status == entity.Contact_RequestedMe {
-		logger().Info("this contact has already asked us, accepting the request")
-		return n.ContactAcceptRequest(ctx, &node.ContactAcceptRequestInput{
-			ContactID: contact.ID,
-		})
+	if err := contact.Requested(time.Now()); err != nil {
+		return nil, err
+	}
 
-	} else if contact.Status == entity.Contact_IsRequested {
-		logger().Info("contact has already been requested, sending event again")
-
-	} else if contact.Status == entity.Contact_Myself {
-		return nil, errorcodes.ErrContactReqMyself.New()
-
-	} else {
-		return nil, errorcodes.ErrContactReqExisting.New()
+	if err = bsql.ContactSave(sql, contact); err != nil {
+		return nil, errorcodes.ErrDbCreate.Wrap(err)
 	}
 
 	// send request to peer
@@ -338,6 +320,33 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	); err != nil {
 		return nil, errorcodes.ErrUndefined.Wrap(err)
 	}
+	return contact, nil
+}
+
+func (n *Node) ContactSeen(ctx context.Context, contact *entity.Contact) (*entity.Contact, error) {
+	var err error
+
+	tracer := tracing.EnterFunc(ctx, contact)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	defer n.handleMutex(ctx)()
+
+	sql := n.sql(ctx)
+
+	contact, err = bsql.ContactByID(sql, contact.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := contact.Seen(time.Now()); err != nil {
+		return nil, err
+	}
+
+	if err = bsql.ContactSave(sql, contact); err != nil {
+		return nil, errorcodes.ErrDbUpdate.Wrap(err)
+	}
+
 	return contact, nil
 }
 
@@ -474,7 +483,10 @@ func (n *Node) Contact(ctx context.Context, input *entity.Contact) (*entity.Cont
 
 	sql := n.sql(ctx)
 	output := &entity.Contact{}
-	if err := sql.Where(input).First(output).Error; err != nil {
+	if err := sql.Where(&entity.Contact{
+		ID:     input.ID,
+		Status: input.Status,
+	}).First(output).Error; err != nil {
 		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 

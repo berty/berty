@@ -19,6 +19,7 @@ message Contact {
     IsRequested = 3;
     RequestedMe = 4;
     IsBlocked = 5;
+    BlockedMe = 6;
     Myself = 42;
   }
 
@@ -29,6 +30,9 @@ message Contact {
   string id = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID", (validate.is_contact_key) = true];
   google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (validate.skip) = true];
   google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (validate.skip) = true];
+  google.protobuf.Timestamp seen_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (validate.skip) = true];
+  google.protobuf.Timestamp mutated_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (validate.skip) = true];
+
 
   //
   // internal fields

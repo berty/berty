@@ -39,7 +39,7 @@
                 },
                 "EventSeen": {
                   "requestType": "berty.entity.Event",
-                  "responseType": "berty.entity.Event"
+                  "responseType": "Void"
                 },
                 "EventRetry": {
                   "requestType": "berty.entity.Event",
@@ -82,9 +82,17 @@
                   "requestType": "berty.entity.Contact",
                   "responseType": "berty.entity.Contact"
                 },
+                "ContactSeen": {
+                  "requestType": "berty.entity.Contact",
+                  "responseType": "berty.entity.Contact"
+                },
                 "ContactCheckPublicKey": {
                   "requestType": "berty.entity.Contact",
                   "responseType": "Bool"
+                },
+                "ContactListBadge": {
+                  "requestType": "Void",
+                  "responseType": "Badge"
                 },
                 "ConversationCreate": {
                   "requestType": "ConversationCreateInput",
@@ -130,6 +138,14 @@
                 "ConversationLastEvent": {
                   "requestType": "berty.entity.Conversation",
                   "responseType": "berty.entity.Event"
+                },
+                "ConversationListBadge": {
+                  "requestType": "Void",
+                  "responseType": "Badge"
+                },
+                "ConversationBadge": {
+                  "requestType": "berty.entity.Conversation",
+                  "responseType": "Badge"
                 },
                 "DevicePushConfigList": {
                   "requestType": "Void",
@@ -252,6 +268,14 @@
                 "Libp2PPing": {
                   "requestType": "berty.network.metric.PingReq",
                   "responseType": "Bool"
+                }
+              }
+            },
+            "Badge": {
+              "fields": {
+                "value": {
+                  "type": "int32",
+                  "id": 1
                 }
               }
             },
@@ -1546,6 +1570,24 @@
                     "(validate.skip)": true
                   }
                 },
+                "seenAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 4,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false,
+                    "(validate.skip)": true
+                  }
+                },
+                "mutatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 5,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false,
+                    "(validate.skip)": true
+                  }
+                },
                 "sigchain": {
                   "type": "bytes",
                   "id": 10
@@ -1585,6 +1627,7 @@
                     "IsRequested": 3,
                     "RequestedMe": 4,
                     "IsBlocked": 5,
+                    "BlockedMe": 6,
                     "Myself": 42
                   }
                 }
@@ -1742,6 +1785,14 @@
                     "(gogoproto.nullable)": false
                   }
                 },
+                "seenAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 6,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
                 "title": {
                   "type": "string",
                   "id": 20
@@ -1815,6 +1866,14 @@
                 "wroteAt": {
                   "type": "google.protobuf.Timestamp",
                   "id": 5,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "seenAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 6,
                   "options": {
                     "(gogoproto.stdtime)": true,
                     "(gogoproto.nullable)": false

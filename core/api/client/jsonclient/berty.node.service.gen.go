@@ -33,7 +33,9 @@ func init() {
 	registerUnary("berty.node.ContactUpdate", NodeContactUpdate)
 	registerServerStream("berty.node.ContactList", NodeContactList)
 	registerUnary("berty.node.Contact", NodeContact)
+	registerUnary("berty.node.ContactSeen", NodeContactSeen)
 	registerUnary("berty.node.ContactCheckPublicKey", NodeContactCheckPublicKey)
+	registerUnary("berty.node.ContactListBadge", NodeContactListBadge)
 	registerUnary("berty.node.ConversationCreate", NodeConversationCreate)
 	registerUnary("berty.node.ConversationUpdate", NodeConversationUpdate)
 	registerServerStream("berty.node.ConversationList", NodeConversationList)
@@ -45,6 +47,8 @@ func init() {
 	registerUnary("berty.node.ConversationRead", NodeConversationRead)
 	registerUnary("berty.node.ConversationRemove", NodeConversationRemove)
 	registerUnary("berty.node.ConversationLastEvent", NodeConversationLastEvent)
+	registerUnary("berty.node.ConversationListBadge", NodeConversationListBadge)
+	registerUnary("berty.node.ConversationBadge", NodeConversationBadge)
 	registerServerStream("berty.node.DevicePushConfigList", NodeDevicePushConfigList)
 	registerUnary("berty.node.DevicePushConfigCreate", NodeDevicePushConfigCreate)
 	registerUnary("berty.node.DevicePushConfigNativeRegister", NodeDevicePushConfigNativeRegister)
@@ -455,6 +459,26 @@ func NodeContact(client *client.Client, ctx context.Context, jsonInput []byte) (
 	tracer.SetAnyField("trailer", trailer)
 	return ret, header, trailer, err
 }
+func NodeContactSeen(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ContactSeen")
+	var typedInput entity.Contact
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().ContactSeen(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
 func NodeContactCheckPublicKey(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
@@ -466,6 +490,26 @@ func NodeContactCheckPublicKey(client *client.Client, ctx context.Context, jsonI
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ContactCheckPublicKey(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeContactListBadge(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ContactListBadge")
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().ContactListBadge(
 		ctx,
 		&typedInput,
 		grpc.Header(&header),
@@ -694,6 +738,46 @@ func NodeConversationLastEvent(client *client.Client, ctx context.Context, jsonI
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ConversationLastEvent(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeConversationListBadge(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConversationListBadge")
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConversationListBadge(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeConversationBadge(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConversationBadge")
+	var typedInput entity.Conversation
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConversationBadge(
 		ctx,
 		&typedInput,
 		grpc.Header(&header),

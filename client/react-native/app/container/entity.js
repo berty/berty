@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { deepEqual, deepFilterEqual } from './helper'
+import { deepFilterEqual } from './helper'
 
 export class Entity extends Component {
   componentDidMount() {
@@ -8,15 +8,8 @@ export class Entity extends Component {
     }
   }
 
-  componentWillReceiveProps(props) {
-    if (!deepEqual(props, this.props) || this.entity == null) {
-      this.fetch()
-    }
-  }
-
   get entity() {
     const { context, children, id, ...filter } = this.props
-
     if (id) {
       return this.store.get(id)
     }

@@ -9,10 +9,10 @@ import Mutex from 'await-mutex'
     {{#each fields}}
       {{#with resolvedType}}
         export class {{name}}EntityStore {
-            store = null
+            _store = null
 
             constructor (store, data) {
-              this.store = store
+              this._store = store
               Object.keys(data).forEach(key => (this[key] = data[key]))
             }
 
@@ -21,14 +21,19 @@ import Mutex from 'await-mutex'
                 get {{name}} () {
                   {{#if repeated}}
                     const {{name}} = []
-                    for (const [, _] of this.store.entity.{{case 'camel' type}}) {
+                    for (const [, _] of this._store.entity.{{case 'camel' type}}) {
                       if (_.{{case 'camel' ../name}}Id === this.id) {
                         {{name}}.push(_)
+                        continue
                       }
                     }
                     return {{name}}
                   {{else}}
-                    return this.store.entity.{{case 'camel' type}}.get(this.{{name}}Id)
+                    const {{name}} = this._store.entity.{{case 'camel' type}}.get(this.{{name}}Id)
+                    if ({{name}} == null) {
+                        this._store.node.service.{{case 'camel' type}}({ id: this.{{name}}Id })
+                    }
+                    return {{name}}
                   {{/if}}
                 }
                 set {{name}} (_) {
@@ -36,9 +41,9 @@ import Mutex from 'await-mutex'
                     _.forEach(_ => {
                   {{/if}}
 
-                  let entity = this.store.entity.{{case 'camel' type}}.get(_.id)
-                  entity = new {{type}}EntityStore(this.store, _)
-                  this.store.entity.{{case 'camel' type}}.set(_.id, entity)
+                  let entity = this._store.entity.{{case 'camel' type}}.get(_.id)
+                  entity = new {{type}}EntityStore(this._store, _)
+                  this._store.entity.{{case 'camel' type}}.set(_.id, entity)
 
                   {{#if repeated}}
                    })
@@ -61,7 +66,7 @@ import Mutex from 'await-mutex'
 
     export class NodeServiceStore {
       constructor (store, bridge) {
-        this.store = store
+        this._store = store
         this.bridge = bridge
         this.commitLogStream({}).then(commitLog => {
           commitLog.on('data', data => {
@@ -114,17 +119,17 @@ import Mutex from 'await-mutex'
                       break
                     {{#each fields}}
                       case '{{name}}': {
-                        let entity = this.store.entity.{{case 'camel' resolvedType.name}}.get(_.id)
+                        let entity = this._store.entity.{{case 'camel' resolvedType.name}}.get(_.id)
                         switch (output.operation) {
                           default:
                           case 0:
                           case 1:
-                            entity = new {{resolvedType.name}}EntityStore(this.store, _)
-                            this.store.entity.{{case 'camel' resolvedType.name}}.set(_.id, entity)
+                            entity = new {{resolvedType.name}}EntityStore(this._store, _)
+                            this._store.entity.{{case 'camel' resolvedType.name}}.set(_.id, entity)
                             break
                           case 2:
                             if (entity) {
-                              this.store.entity.{{case 'camel' resolvedType.name}}.delete(_.id)
+                              this._store.entity.{{case 'camel' resolvedType.name}}.delete(_.id)
                             }
                             break
                         }
@@ -142,14 +147,14 @@ import Mutex from 'await-mutex'
           {{#with (lookup 'berty.node.CommitLog.Entity')}}
             {{#each fields}}
               {{#if (eq resolvedType.name ../../resolvedResponseType.name)}}
-                let entity = this.store.entity.{{case 'camel' resolvedType.name}}.get(output.id)
+                let entity = this._store.entity.{{case 'camel' resolvedType.name}}.get(output.id)
                 {{#if (test ../../name (toRegex '(Remove|Delete)$'))}}
                   if (entity) {
-                    this.store.entity.{{case 'camel' resolvedType.name}}.delete(output.id)
+                    this._store.entity.{{case 'camel' resolvedType.name}}.delete(output.id)
                   }
                 {{else}}
-                  entity = new {{resolvedType.name}}EntityStore(this.store, output)
-                  this.store.entity.{{case 'camel' resolvedType.name}}.set(output.id, entity)
+                  entity = new {{resolvedType.name}}EntityStore(this._store, output)
+                  this._store.entity.{{case 'camel' resolvedType.name}}.set(output.id, entity)
                 {{/if}}
                 output = entity
               {{/if}}
@@ -172,6 +177,10 @@ import Mutex from 'await-mutex'
               const passThroughStream = new Stream.PassThrough({
                   writableObjectMode: true,
                   readableObjectMode: true,
+                  destroy: () => {
+                    this.{{case 'camel' name}}Cache[inputHash].unpipe(passThroughStream)
+                    passThroughStream.push(null)
+                  },
               })
               this.{{case 'camel' name}}Cache[inputHash].pipe(passThroughStream)
               unlock()

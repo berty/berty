@@ -74,6 +74,8 @@ export class Stream extends Component {
 export class StreamPagination extends Stream {
   queue = []
 
+  last = null
+
   cursor = ''
 
   count = 0
@@ -102,6 +104,7 @@ export class StreamPagination extends Stream {
     this.loading = true
     this.cursor = ''
     this.queue = []
+    this.last = null
     this.invokeHashTable = {}
     this.forceUpdate(this.invoke)
   }
@@ -165,7 +168,7 @@ export class StreamPagination extends Stream {
     // if item must be at end check that it has been forced
     if (!change.force && newIndex === this.queue.length) {
       if (this.queue.length < this.paginate.first) {
-        this.invoke()
+        this.invokeDebounce()
       }
       return
     }
@@ -179,29 +182,29 @@ export class StreamPagination extends Stream {
     // else update the queue
     const min = Math.min(index, newIndex)
     const max = Math.max(index, newIndex)
-
     if (index === min) {
-      this.queue.slice(
+      this.queue.splice(
         min,
         max - min + 1,
         ...this.queue.slice(min + 1, max + 1),
         item
       )
     } else {
-      this.queue.slice(min, max - min + 1, item, ...this.queue.slice(min, max))
+      this.queue.splice(min, max - min + 1, item, ...this.queue.slice(min, max))
     }
   }
 
   observe = change => {
     this.change(change)
-    if (this.queue.length) {
-      if (this.queue[this.queue.length - 1] % this.paginate.first === 0) {
-        this.cursor = this.queue[this.queue.length - 1][
-          Case.camel(this.paginate.orderBy || 'id')
-        ]
-      }
-    } else {
+    this.last = change.newValue
+    const cursorIndex =
+      this.queue.length - (this.queue.length % this.paginate.first) - 1
+    if (cursorIndex === -1) {
       this.cursor = ''
+    } else {
+      this.cursor = this.queue[cursorIndex][
+        Case.camel(this.paginate.orderBy || 'id')
+      ]
     }
     this.smartForceUpdate()
   }
@@ -280,28 +283,23 @@ export class StreamPagination extends Stream {
 
     stream.on('end', () => {
       this.loading = false
-      this.cursor = this.queue.length
-        ? this.queue[this.queue.length - 1][
-            Case.camel(this.paginate.orderBy || 'id')
-          ]
-        : ''
       this.smartForceUpdate()
       this.invokeHashTable[requestHash] = false
     })
   }
+  invokeDebounce = debounce(1000, this.invoke)
 
   render() {
     if (this.props.fallback && this.loading && this.queue.length === 0) {
       return this.props.fallback
     }
-    return this.props.children({
-      queue: this.queue,
-      paginate: this.invoke,
+    const infos = {
+      last: this.last,
       count: this.queue.length,
       cursor: this.cursor,
       loading: this.loading,
-      retry: this.retry,
-    })
+    }
+    return this.props.children(this.queue, this.invoke, this.retry, infos)
   }
 }
 

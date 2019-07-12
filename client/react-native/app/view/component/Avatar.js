@@ -14,6 +14,7 @@ import {
 } from '@berty/common/constants/colors'
 import { fingerprint } from '@berty/common/helpers/fingerprint'
 import { conversation } from '@berty/common/helpers/entity'
+import { Store } from '@berty/container'
 
 // From https://fluentcolors.com/
 const pastels = [
@@ -58,14 +59,18 @@ const Avatar = ({
           borderRadius: size / 2,
           margin: margin,
           backgroundColor: pastels[colorIdx].light,
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
         },
         ...style,
       ]}
     >
       <Text
         style={{
+          alignItems: 'center',
+          flexDirection: 'row',
           color: pastels[colorIdx].default,
-          paddingTop: size / 4.4,
           fontSize: size / 2.2,
           textAlign: 'center',
         }}
@@ -77,14 +82,18 @@ const Avatar = ({
 }
 
 export const ContactAvatar = ({ data = {}, ...props }) => (
-  <Avatar id={data.id} name={data.displayName} {...props} />
+  <Store.Entity.Contact {...data}>
+    {({ id, displayName } = data) => (
+      <Avatar id={id} name={displayName || id} {...props} />
+    )}
+  </Store.Entity.Contact>
 )
 Avatar.Contact = ContactAvatar
 
 export const ConversationAvatar = ({ data = {}, ...props }) =>
   data.kind === 1 ? (
     <ContactAvatar
-      data={data.members.find(_ => _.contact.status !== 42)?.contact}
+      data={data.members.find(_ => _.contact?.status !== 42)?.contact}
       {...props}
     />
   ) : (

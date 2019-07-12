@@ -16,6 +16,7 @@ import (
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/push"
 	bsql "berty.tech/core/sql"
+	"github.com/jinzhu/gorm"
 )
 
 type EventHandler func(context.Context, *entity.Event) error
@@ -32,30 +33,39 @@ func (n *Node) handleContactRequest(ctx context.Context, input *entity.Event) er
 	// FIXME: validate input
 
 	sql := n.sql(ctx)
-	contact, err := bsql.FindContact(sql, &entity.Contact{ID: attrs.Me.ID})
-	if err == nil && contact.Status != entity.Contact_Unknown {
-		return errorcodes.ErrContactReqExisting.New()
+	contact, err := bsql.ContactByID(sql, attrs.Me.ID)
+	if errors.Cause(err) == gorm.ErrRecordNotFound {
+		// save contact in database
+		contact, err = entity.NewContact(
+			attrs.Me.ID,
+			attrs.Me.DisplayName,
+			entity.Contact_Unknown,
+		)
+		if err != nil {
+			return err
+		}
 	}
 
 	// save requester in db
 	devices := attrs.Me.Devices
 
-	requester := attrs.Me
-	requester.Devices = []*entity.Device{}
-	requester.Status = entity.Contact_RequestedMe
-	if err := sql.Set("gorm:association_autoupdate", true).Save(requester).Error; err != nil {
+	if err := contact.RequestedMe(input.CreatedAt); err != nil {
+		return errors.Wrap(err, "handleContactRequest")
+	}
+
+	if err := sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
 		return err
 	}
 
 	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("ContactRequestTitle", nil),
 		Body: i18n.T("ContactRequestBody", map[string]interface{}{
-			"Name": attrs.Me.DisplayName,
+			"Name": contact.DisplayName,
 		}),
-		DeepLink: "berty://berty.chat/contacts/add#id=" + url.PathEscape(attrs.Me.ID) + "&display-name=" + url.PathEscape(attrs.Me.DisplayName),
+		DeepLink: "berty://berty.chat/contacts/add#id=" + url.PathEscape(contact.ID) + "&display-name=" + url.PathEscape(contact.DisplayName),
 	})
 
-	if err := entity.SaveDevices(sql, attrs.Me.ID, devices); err != nil {
+	if err := entity.SaveDevices(sql, contact.ID, devices); err != nil {
 		return errorcodes.ErrDbCreate.Wrap(err)
 	}
 
@@ -71,7 +81,10 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *entity.E
 		return bsql.GenericError(err)
 	}
 
-	contact.Status = entity.Contact_IsFriend
+	if err := contact.AcceptedMe(input.CreatedAt); err != nil {
+		return err
+	}
+
 	//contact.Devices[0].Key = crypto.NewPublicKey(entity.GetPubkey(ctx))
 	if err := sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
 		return err
@@ -190,6 +203,16 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *entity.Event
 		) {
 			conversation.Kind = entity.Conversation_OneToOne
 		}
+	}
+
+	// legacy hack to have badge notification
+	// member.Invite() alreay does this
+	member, err := conversation.GetMember(input.SourceContactID)
+	if err != nil {
+		return err
+	}
+	if err := member.Write(time.Now(), nil); err != nil {
+		return err
 	}
 
 	if err = bsql.ConversationSave(sql, conversation); err != nil {

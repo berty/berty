@@ -28,7 +28,7 @@ import tDate from '@berty/common/helpers/timestampDate'
 
 @withNamespaces()
 @withNavigation
-export class Item extends React.PureComponent {
+export class Item extends React.Component {
   constructor(props) {
     super(props)
     const { data } = props
@@ -201,6 +201,23 @@ export class Item extends React.PureComponent {
             value={unread.length}
           />
         </Flex.Rows>
+        {!isRead ? (
+          <Store.Node.Service.ConversationBadge request={{ id: data.id }}>
+            {({ response: badge }) =>
+              badge && badge.value ? (
+                <View style={{ width: 18, height: 18 }}>
+                  <Badge
+                    color={colors.white}
+                    background={colors.red}
+                    small
+                    bottom
+                    value={badge.value}
+                  />
+                </View>
+              ) : null
+            }
+          </Store.Node.Service.ConversationBadge>
+        ) : null}
       </Flex.Cols>
     )
   }
@@ -280,11 +297,12 @@ class ConversationList extends PureComponent {
           fallback={<Loader />}
           cursorExtractor={item => tDate(item.updatedAt).getTime()}
         >
-          {({ queue, count, retry, loading, paginate }) =>
+          {(queue, paginate, retry, { last, count, cursor, loading }) =>
             count ? (
               <>
                 <OptimizedFlatList
                   data={queue}
+                  extraData={last}
                   onEndReached={paginate}
                   getItemLayout={this.getItemLayout}
                   renderItem={this.renderItem}

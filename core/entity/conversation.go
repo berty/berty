@@ -252,6 +252,7 @@ type ConversationMemberInteractor interface {
 	Block(contactID string) error
 	Unblock(contactID string) error
 
+	Seen(time.Time) error
 	Read(time.Time) error
 	Write(time.Time, *Message) error
 
@@ -348,6 +349,8 @@ func (m *conversationMember) Invite(contact *Contact) error {
 		return errorcodes.ErrConversationMemberInvite.Wrap(err)
 	}
 	m.conversation.Members = append(m.conversation.Members, cm)
+
+	m.Write(time.Now(), nil)
 	return nil
 }
 
@@ -478,6 +481,23 @@ func (m *conversationMember) Unblock(contactID string) error {
 	)
 }
 
+func (m *conversationMember) Seen(at time.Time) error {
+	// check if member have the right to seen
+	if !m.IsActive() {
+		return errorcodes.ErrConversationMemberSeen.Wrap(
+			errorcodes.ErrConversationMemberStatus.New(),
+		)
+	}
+
+	at = at.UTC()
+
+	m.SeenAt = at
+
+	// say that convesation has been seen by at least on user
+	m.conversation.SeenAt = at
+	return nil
+}
+
 func (m *conversationMember) Read(at time.Time) error {
 	// check if member have the right to read
 	if !m.IsActive() {
@@ -488,8 +508,10 @@ func (m *conversationMember) Read(at time.Time) error {
 
 	at = at.UTC()
 
+	m.SeenAt = at
 	m.ReadAt = at
 	// say that conversation has been read by at least one user
+	m.conversation.SeenAt = at
 	m.conversation.ReadAt = at
 	return nil
 }
@@ -504,9 +526,16 @@ func (m *conversationMember) Write(at time.Time, message *Message) error {
 
 	at = at.UTC()
 
+	// make member seen and read of the conversation
+	m.SeenAt = at
 	m.ReadAt = at
 	m.WroteAt = at
+	// just make conversation wrote
 	m.conversation.WroteAt = at
+
+	if message == nil {
+		return nil
+	}
 
 	if m.conversation.IsOneToOne() {
 		m.conversation.Infos = message.Text
@@ -523,8 +552,10 @@ func (m *conversationMember) Write(at time.Time, message *Message) error {
 
 func (m conversationMember) Filtered() *ConversationMember {
 	member := ConversationMember{
-		ID:     m.ID,
-		Status: m.Status,
+		ID:             m.ID,
+		Status:         m.Status,
+		ContactID:      m.ContactID,
+		ConversationID: m.ConversationID,
 	}
 	if m.Contact != nil {
 		member.Contact = m.Contact.Filtered()
@@ -534,8 +565,10 @@ func (m conversationMember) Filtered() *ConversationMember {
 
 func (m ConversationMember) Filtered() *ConversationMember {
 	member := ConversationMember{
-		ID:     m.ID,
-		Status: m.Status,
+		ID:             m.ID,
+		Status:         m.Status,
+		ContactID:      m.ContactID,
+		ConversationID: m.ConversationID,
 	}
 	if m.Contact != nil {
 		member.Contact = m.Contact.Filtered()
