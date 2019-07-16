@@ -65,7 +65,7 @@ _ci_prepare:
 
 .PHONY: docker.build
 docker.build:
-	DOCKER_BUILDKIT=1 docker build --ssh default -t bertychat/berty .
+	DOCKER_BUILDKIT=1 docker build --progress=plain --ssh default -t bertychat/berty .
 
 .PHONY: docker.push
 docker.push: docker.build
