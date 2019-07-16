@@ -3,7 +3,7 @@ module berty.tech/core
 go 1.12
 
 require (
-	berty.tech/network v0.0.0-20190705175056-c1e3d7d90ac3
+	berty.tech/network v0.0.0
 	cloud.google.com/go v0.34.0 // indirect
 	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21
 	github.com/99designs/gqlgen v0.7.2 // indirect
@@ -61,3 +61,5 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.2.2
 )
+
+replace berty.tech/network v0.0.0 => berty.tech/network c1e3d7d90ac3

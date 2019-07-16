@@ -1,8 +1,6 @@
 berty.tech/network v0.0.0-20190705113543-355ac43acb7a/go.mod h1:Hj0UR+ZI+lv+h9YEtP5HQOhBWzTydbVx1tHsYwX4K1Q=
 berty.tech/network v0.0.0-20190705175056-c1e3d7d90ac3 h1:4rXAhaOFt1sQBHzMeTnsY8TnSBCp0sZ5w0CEB/9JhA8=
 berty.tech/network v0.0.0-20190705175056-c1e3d7d90ac3/go.mod h1:i0xFI/jNEHw9qz0AAgSBlwtitoQKTO3ZdbF2xatrrR4=
-berty.tech/network v0.0.0-20190712164033-f7a09d9c96f6 h1:1BbutSM5UW2w0/B9rw+XBaTl1M/w2ah1iKq0xP2m/2g=
-berty.tech/network v0.0.0-20190712164033-f7a09d9c96f6/go.mod h1:TkeBjPOvOGZgUXeuUyH05OIcMU0VnBkiYIEX28kTxts=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.33.1/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
@@ -620,8 +618,6 @@ github.com/spaolacci/murmur3 v1.1.0 h1:7c1g84S4BPRrfL5Xrdp6fOJ206sU9y293DDHaoy0b
 github.com/spaolacci/murmur3 v1.1.0/go.mod h1:JwIasOWyU6f++ZhiEuf87xNszmSA2myDM2Kzu9HwQUA=
 github.com/sparrc/go-ping v0.0.0-20181106165434-ef3ab45e41b0 h1:mu7brOsdaH5Dqf93vdch+mr/0To8Sgc+yInt/jE/RJM=
 github.com/sparrc/go-ping v0.0.0-20181106165434-ef3ab45e41b0/go.mod h1:eMyUVp6f/5jnzM+3zahzl7q6UXLbgSc3MKg/+ow9QW0=
-github.com/sparrc/go-ping v0.0.0-20190613174326-4e5b6552494c h1:gqEdF4VwBu3lTKGHS9rXE9x1/pEaSwCXRLOZRF6qtlw=
-github.com/sparrc/go-ping v0.0.0-20190613174326-4e5b6552494c/go.mod h1:eMyUVp6f/5jnzM+3zahzl7q6UXLbgSc3MKg/+ow9QW0=
 github.com/spf13/afero v1.1.2/go.mod h1:j4pytiNVoe2o6bmDsKpLACNPDBIoEAkihy7loJ1B0CQ=
 github.com/spf13/afero v1.2.0/go.mod h1:9ZxEEn6pIJ8Rxe320qSDBk6AsU0r9pR7Q4OcevTdifk=
 github.com/spf13/cast v1.2.0/go.mod h1:r2rcYCSwa1IExKTDiTfzaxqT2FNHs8hODu4LnUfgKEg=
