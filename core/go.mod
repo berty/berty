@@ -3,10 +3,9 @@ module berty.tech/core
 go 1.12
 
 require (
-	berty.tech/network v0.0.0-20190705175056-c1e3d7d90ac3
+	berty.tech/network v0.0.0
 	cloud.google.com/go v0.34.0 // indirect
 	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21
-	github.com/99designs/gqlgen v0.7.2 // indirect
 	github.com/NaySoftware/go-fcm v0.0.0-20180207124314-28fff9381d17
 	github.com/brianvoe/gofakeit v3.17.0+incompatible
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
@@ -48,7 +47,6 @@ require (
 	github.com/uber-go/atomic v1.3.2 // indirect
 	github.com/uber/jaeger-client-go v2.15.0+incompatible
 	github.com/uber/jaeger-lib v1.5.0 // indirect
-	github.com/vektah/gqlparser v1.1.1 // indirect
 	github.com/whyrusleeping/go-logging v0.0.0-20170515211332-0457bb6b88fc
 	github.com/xeodou/go-sqlcipher v0.0.0-20180523161204-7f9cd319987f
 	go.uber.org/zap v1.9.1
@@ -61,3 +59,5 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.2.2
 )
+
+replace berty.tech/network v0.0.0 => berty.tech/network v0.0.0-20190705175056-c1e3d7d90ac3

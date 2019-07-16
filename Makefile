@@ -18,7 +18,7 @@ lint-dockerfile:
 
 .PHONY: lint-go
 lint-go:
-	golangci-lint run --deadline=5m --verbose  ./core/... ./client/react-native/gomobile/...
+	GO111MODULE=off golangci-lint run --deadline=5m --verbose  ./core/... ./client/react-native/gomobile/...
 
 .PHONY: lint-editorconfig
 lint-editorconfig:
@@ -65,7 +65,7 @@ _ci_prepare:
 
 .PHONY: docker.build
 docker.build:
-	DOCKER_BUILDKIT=1 docker build --ssh default -t bertychat/berty .
+	DOCKER_BUILDKIT=1 docker build --progress=plain --ssh default -t bertychat/berty .
 
 .PHONY: docker.push
 docker.push: docker.build
