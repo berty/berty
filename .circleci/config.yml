@@ -6,11 +6,11 @@ references:
     environment:
       GOPATH: /go
       GOTEST_TIMEOUT: 5m
-      GOPROXY: https://goproxy.berty.io
       GO111MODULE: "on"
       TEST_OPTS: "-coverprofile=profile.out -covermode=count"
     docker:
       - image: circleci/golang:1.12
+
 
   master_version: &master_version
     run:
@@ -581,9 +581,10 @@ jobs:
 
 
   client.rn.web:
+    <<: *golang_workspace
     working_directory: ~/go/src/berty.tech
     docker:
-      - image: circleci/node:8
+      - image: circleci/golang:1.12-node-browsers
     steps:
       - *install_retry
       - checkout
@@ -597,10 +598,41 @@ jobs:
       - restore_cache:
           key: node-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
 
+      - restore_cache:
+          key: v1-go-cache
+
       - run:
-          name: build web app
+          working_directory: ~/go/src/berty.tech/core
+          name: Install berty
+          command: make install
+          no_output_timeout: 1h
+
+      - run:
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make build.web
+          name: Build web client with tests enabled
+          command: ENVIRONMENT=integration_test make build.web
+
+      - run:
+          name: Prepare cavy report server
+          working_directory: ~/go/src/berty.tech/tool/cavy_report_server
+          command: npm i
+
+      - run:
+          working_directory: ~/go/src/berty.tech/core
+          name: Run berty daemon in the background
+          command: berty daemon
+          background: true
+
+      - run:
+          working_directory: ~/go/src/berty.tech/client/react-native/web/build
+          name: Start the app in chrome headless
+          command: chrome --headless --remote-debugging-port=9222 ./index.html
+          background: true
+
+      - run:
+          name: Run cavy report server
+          working_directory: ~/go/src/berty.tech/tool/cavy_report_server
+          command: ./server
 
       - run:
           name: build dashboard
@@ -616,6 +648,11 @@ jobs:
           key: node-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
           paths:
             - node_modules
+
+      - save_cache:
+          key: v1-go-cache
+          paths:
+            - "/go/pkg"
 
       - persist_to_workspace:
           root: ~/go/src/berty.tech/
