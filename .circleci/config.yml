@@ -576,9 +576,10 @@ jobs:
 
 
   client.rn.web:
+    <<: *golang_workspace
     working_directory: ~/go/src/berty.tech
     docker:
-      - image: circleci/node:8
+      - image: circleci/golang:1.12-node-browsers
     steps:
       - *install_retry
       - checkout
@@ -592,10 +593,37 @@ jobs:
       - restore_cache:
           key: node-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
 
+      - setup_remote_docker
+
       - run:
-          name: build web app
+          name: Build application Docker image
+          command: /tmp/retry -m 3 docker build --cache-from=bertychat/berty -t bertychat/berty .
+
+      - run:
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make build.web
+          name: Build web client with tests enabled
+          command: ENVIRONMENT=integration_test make build.web
+
+      - run:
+          name: Prepare cavy report server
+          working_directory: ~/go/src/berty.tech/tool/cavy_report_server
+          command: npm i
+
+      - run:
+          name: Run application within Docker
+          command: /tmp/retry -m 3 docker run --rm bertychat/berty daemon
+          background: true
+
+      - run:
+          working_directory: ~/go/src/berty.tech/client/react-native/web/build
+          name: Start the app in chrome headless
+          command: google-chrome --headless --remote-debugging-port=9222 ./index.html
+          background: true
+
+      - run:
+          name: Run cavy report server
+          working_directory: ~/go/src/berty.tech/tool/cavy_report_server
+          command: ./server
 
       - run:
           name: build dashboard
@@ -616,7 +644,6 @@ jobs:
           root: ~/go/src/berty.tech/
           paths:
             - client/react-native/web
-
 
   client.rn.mac:
     working_directory: ~/go/src/berty.tech
