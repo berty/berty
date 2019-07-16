@@ -80,7 +80,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-go-cache
+            - v1-go-cache
       - run:
           name: fetch deps
           command: |
@@ -94,7 +94,7 @@ jobs:
           name: lint
           command: /tmp/retry -m 3 make lint
       - save_cache:
-          key: v2-go-cache
+          key: v1-go-cache
           paths:
             - "/go/pkg"
 
