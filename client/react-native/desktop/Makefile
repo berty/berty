@@ -15,7 +15,7 @@ deps:
 
 build: clean
 	GOPROXY= GO111MODULE=on go get berty.tech/network
-	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
+	GOPROXY= GO111MODULE=on go mod vendor
 	sed s%TMPL_MAKEFILE_PATH%$(MAKEFILE_DIR)%g bundler.json.tmpl > bundler.json
 	cp -rf $(MAKEFILE_DIR)/../web/build $(MAKEFILE_DIR)/../desktop/resources/app
 	GO111MODULE=on GOCACHE=/tmp/gocache astilectron-bundler -v -ldflags X:berty.tech/core.GitSha=$(GIT_SHA),berty.tech/core.GitTag=$(GIT_TAG),berty.tech/core.GitBranch=$(GIT_BRANCH),berty.tech/core.BuildMode=$(BUILD_MODE),berty.tech/core.commitDate=$(GIT_COMMIT_DATE)
