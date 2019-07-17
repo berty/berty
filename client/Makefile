@@ -53,7 +53,7 @@ packages: $(PACKAGES_PRE) $(PACKAGES)
 
 %/node_modules: %/package.json
 	@echo $@
-	$(LERNA) --reject-cycles bootstrap $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci") --since=HEAD
+	$(LERNA) --reject-cycles bootstrap $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
 	# prevent package without dep to rebootstrap
 	mkdir -p $(PACKAGES)
 	find packages \
