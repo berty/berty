@@ -3,5 +3,10 @@
   "version": "0.0.4-alpha.0",
   "packages": [
     "packages/*"
-  ]
+  ],
+  "command": {
+    "bootstrap": {
+      "hoist": "react-native"
+    }
+  }
 }
