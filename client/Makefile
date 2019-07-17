@@ -53,7 +53,7 @@ packages: $(PACKAGES_PRE) $(PACKAGES)
 
 %/node_modules: %/package.json
 	@echo $@
-	$(LERNA) --reject-cycles bootstrap --hoist $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
+	$(LERNA) --reject-cycles bootstrap $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
 	# prevent package without dep to rebootstrap
 	mkdir -p $(PACKAGES)
 	find packages \
@@ -137,10 +137,10 @@ packages/bridge/service/%.pb.json: ../core/%.proto
 	mkdir -p "$(dir packages/bridge/service/$@)"
 	pbjs \
 		--path node_modules/@google/protobuf/src \
-		--path node_modules/@berty/core/vendor/berty.tech \
-		--path node_modules/@berty/core/vendor/github.com/gogo/protobuf \
-		--path node_modules/@berty/core/vendor \
-		--path node_modules/@berty/core/ \
+		--path node_modules/berty-core/vendor/berty.tech \
+		--path node_modules/berty-core/vendor/github.com/gogo/protobuf \
+		--path node_modules/berty-core/vendor \
+		--path node_modules/berty-core/ \
 		-t json \
 		$< > $@
 
@@ -149,13 +149,13 @@ packages/%: packages/template/%.hbs
 	pbhbs \
 		--template-dir packages/template \
 		--proto-path node_modules/@google/protobuf/src \
-		--proto-path node_modules/@berty/core/vendor/berty.tech \
-		--proto-path node_modules/@berty/core/vendor/github.com/gogo/protobuf \
-		--proto-path node_modules/@berty/core/vendor \
-		--proto-path node_modules/@berty/core \
+		--proto-path node_modules/berty-core/vendor/berty.tech \
+		--proto-path node_modules/berty-core/vendor/github.com/gogo/protobuf \
+		--proto-path node_modules/berty-core/vendor \
+		--proto-path node_modules/berty-core \
 		--output-dir packages \
 		--helper-dir packages/template/helper \
-		node_modules/@berty/core/api/node/service.proto
+		node_modules/berty-core/api/node/service.proto
 	npm run prettify -- $@
 
 .IGNORE \

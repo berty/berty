@@ -7,7 +7,7 @@
   "scripts": {
     "install": "napa",
     "preinstall": "command -v link-module-alias && link-module-alias clean || true",
-    "postinstall": "link-module-alias && cd node_modules/@berty/core && make install",
+    "postinstall": "link-module-alias && cd node_modules/berty-core && make install",
     "start": "react-native start --reset-cache",
     "prettify": "eslint --fix"
   },
@@ -67,7 +67,7 @@
     "@google/protobuf": "git+https://github.com/protocolbuffers/protobuf.git"
   },
   "_moduleAliases": {
-    "@berty": ".."
+    "berty-core": "../core"
   },
   "_moduleAliasIgnoreWarning": true
 }
