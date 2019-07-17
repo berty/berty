@@ -1,6 +1,5 @@
-import { NavigationActions } from '@react-navigation/core'
 import React from 'react'
-import { withNavigation } from 'react-navigation'
+import { withNavigation, NavigationActions } from 'react-navigation'
 import { withHOC } from '@berty/common/helpers/views'
 
 const getSplitNavigator = navigation => {

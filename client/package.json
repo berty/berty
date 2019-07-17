@@ -5,22 +5,24 @@
   "license": "UNLICENSED",
   "main": "index.js",
   "scripts": {
-    "install": "napa",
     "preinstall": "command -v link-module-alias && link-module-alias clean || true",
-    "postinstall": "link-module-alias",
+    "postinstall": "link-module-alias && napa",
     "start": "react-native start --reset-cache",
     "prettify": "eslint --fix"
   },
   "dependencies": {
     "@babel/core": "^7.5.4",
+    "@babel/helper-module-imports": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.5.0",
     "@babel/plugin-proposal-decorators": "^7.4.0",
     "@babel/plugin-proposal-export-default-from": "^7.4.0",
     "@babel/plugin-proposal-export-namespace-from": "^7.4.0",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.4.0",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-modules-commonjs": "^7.5.0",
     "@babel/plugin-transform-runtime": "^7.5.0",
+    "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
     "babel-eslint": "10.0.1",
@@ -65,6 +67,9 @@
   },
   "napa": {
     "@google/protobuf": "git+https://github.com/protocolbuffers/protobuf.git"
+  },
+  "napa-config": {
+    "cache": false
   },
   "_moduleAliases": {
     "berty-core": "../core"

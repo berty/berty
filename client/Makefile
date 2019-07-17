@@ -3,7 +3,7 @@ export PWD = $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
 ROOT := node_modules
-ROOT_PRE ?= package.json
+ROOT_PRE ?= package.json lerna.json
 
 LERNA ?= node_modules/.bin/lerna
 LERNA_PRE ?= $(ROOT)
@@ -15,7 +15,7 @@ PACKAGES := $(patsubst \
 	%/node_modules, \
 	$(shell find packages -type f -name package.json -depth 2 -not -path '*/node_modules/*'))
 
-PACKAGES_PRE = $(LERNA) \
+PACKAGES_PRE = $(LERNA) lerna.json
 
 PROTOS = $(strip $(call rwildcard, ../core, *.proto))
 OUR_PROTOS = $(filter-out $(call rwildcard,../core/vendor/, *.proto),$(PROTOS))
@@ -51,9 +51,9 @@ lerna.clean: root.clean
 ### LERNA PACKAGES
 
 .PHONY: packages
-packages: $(PACKAGES_PRE) $(PACKAGES)
+packages: $(PACKAGES)
 
-%/node_modules: %/package.json
+%/node_modules: %/package.json $(PACKAGES_PRE)
 	@echo $@
 	$(LERNA) --reject-cycles bootstrap --hoist $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
 	# prevent package without dep to rebootstrap
