@@ -29,7 +29,7 @@ export const withDeepLinkHandler = Component => {
             params: url.hashParts,
           })
           break
-        case '/contacts/add':
+        case '/id':
           this.setState({
             routeName: 'modal/contacts/card',
             params: url.hashParts,
