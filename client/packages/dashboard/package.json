@@ -4,6 +4,7 @@
   "description": "Monitor a berty node",
   "private": true,
   "scripts": {
+    "preinstall": "cd node-geoip && npm install",
     "start": "parcel serve public/index.html",
     "build": "parcel build public/index.html"
   },

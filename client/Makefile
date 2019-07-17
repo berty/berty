@@ -30,7 +30,9 @@ package ?= app
 
 .PHONY: root
 root $(ROOT): $(ROOT_PRE)
+	npm set progress=false # speed up install by 38%
 	npm $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "ci" || echo "install")
+	cd ../core && make install
 
 .IGNORE \
 .PHONY: root.clean
@@ -53,7 +55,7 @@ packages: $(PACKAGES_PRE) $(PACKAGES)
 
 %/node_modules: %/package.json
 	@echo $@
-	$(LERNA) --reject-cycles bootstrap $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
+	$(LERNA) --reject-cycles bootstrap --hoist $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
 	# prevent package without dep to rebootstrap
 	mkdir -p $(PACKAGES)
 	find packages \
