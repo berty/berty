@@ -1,7 +1,6 @@
 module.exports = function(api) {
   api.cache(true)
   return {
-    exclude: ['**/*.png', '**/*.jpg', '**/*.gif'],
     presets: [
       [
         '@babel/preset-env',
@@ -9,12 +8,13 @@ module.exports = function(api) {
           targets: {
             browsers: ['last 2 versions', 'safari >= 7'],
           },
+          // useBuiltIns: 'entry',
           debug: true,
           loose: true,
-          sourceType: 'script',
         },
       ],
       '@babel/preset-react',
+      '@babel/preset-flow',
       'module:metro-react-native-babel-preset',
     ],
     plugins: [
@@ -24,9 +24,13 @@ module.exports = function(api) {
       '@babel/plugin-proposal-export-default-from',
       '@babel/plugin-proposal-optional-chaining',
       '@babel/plugin-proposal-nullish-coalescing-operator',
-      '@babel/plugin-transform-runtime',
+      [
+        '@babel/plugin-transform-runtime',
+        {
+          absoluteRuntime: true,
+        },
+      ],
       '@babel/plugin-syntax-dynamic-import',
-      '@babel/plugin-transform-modules-commonjs',
     ],
     env: {
       production: {

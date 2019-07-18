@@ -40,6 +40,8 @@ help:
 .PHONY: deps.root
 deps.root $(ROOT): $(ROOT_PRE)
 	npm $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "ci" || echo "install")
+	./node_modules/.bin/link-module-alias
+	./node_modules/.bin/napa
 
 .IGNORE .PHONY: clean.root
 fclean.root:
@@ -50,6 +52,7 @@ fclean.root:
 .PHONY: deps.lerna
 deps.lerna $(LERNA): $(ROOT) $(LERNA_PACKAGES)
 
+
 %/node_modules: $(ROOT) %/package.json
 	@echo $@
 	find packages \
@@ -58,6 +61,8 @@ deps.lerna $(LERNA): $(ROOT) $(LERNA_PACKAGES)
 		-not -path '*/node_modules/*' \
 		-exec rm -f {}/.updated \;
 	$(LERNA) --reject-cycles bootstrap --hoist $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
+	./node_modules/.bin/link-module-alias
+	./node_modules/.bin/napa
 	# prevent package without dep to rebootstrap
 	mkdir -p $(LERNA_PACKAGES)
 	find packages \
@@ -281,6 +286,16 @@ debug.web: deps.web
 build.web: deps.web
 	cd web && npm run build
 
+.PHONY: deps.dashboard
+deps.dashboard: deps.lerna
+
+.PHONY: debug.dashboard
+debug.dashboard: deps.dashboard
+	cd packages/dashboard && npm run start
+
+.PHONY: build.dashboard
+build.dashboard: deps.dashboard
+	cd packages/dashboard && npm run build
 ##############################
 
 
