@@ -21,7 +21,7 @@
     "@berty/bridge": "^0.0.4-alpha.0",
     "antd": "^3.19.3",
     "chart.js": "^2.8.0",
-    "geoip-lite": "file:./packages/dashboard/node-geoip",
+    "geoip-lite": "file:packages/dashboard/node-geoip",
     "google-palette": "^1.1.0",
     "history": "^4.9.0",
     "leaflet": "^1.5.1",

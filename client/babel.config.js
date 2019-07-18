@@ -9,8 +9,9 @@ module.exports = function(api) {
           targets: {
             browsers: ['last 2 versions', 'safari >= 7'],
           },
-          loose: true,
           debug: true,
+          loose: true,
+          sourceType: 'script',
         },
       ],
       '@babel/preset-react',
@@ -25,6 +26,7 @@ module.exports = function(api) {
       '@babel/plugin-proposal-nullish-coalescing-operator',
       '@babel/plugin-transform-runtime',
       '@babel/plugin-syntax-dynamic-import',
+      '@babel/plugin-transform-modules-commonjs',
     ],
     env: {
       production: {

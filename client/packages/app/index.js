@@ -1,3 +1,7 @@
+import '@berty/common/helpers/crash-handler.js'
+import '@berty/common/helpers/patch-web.js'
+import '@berty/common/helpers/patch-electron.js'
+
 import { Platform, AppRegistry } from 'react-native'
 import React from 'react'
 import ReactDOM from 'react-dom'

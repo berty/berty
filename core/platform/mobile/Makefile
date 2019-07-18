@@ -2,16 +2,14 @@ export PWD = $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
 BUILD_MODE ?= dev
 
-PWD := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-
-CORE_PACKAGE := $(PWD)/../../
+CORE_PACKAGE := $(PWD)/../..
 CORE_MOBILE := $(PWD)/core
 CORE_SOURCES := $(shell find $(CORE_PACKAGE) -type f -name "*.go") \
 				$(shell find $(CORE_MOBILE) -type f -name "*.go")
 
 BUILD_PATCH_PATH :=	$(PWD)/../../build/docker/patch
 
-ANDROID_PATH := $(PWD)/../../../client/packages/platform/android
+ANDROID_PATH := $(PWD)/../../../client/android
 BLE_JAR_PATH := $(ANDROID_PATH)/ble/build/libs/ble.jar
 BLE_DIR_PATH := $(ANDROID_PATH)/ble/build/libs
 BLE_BIND_PATH := /tmp/ble
@@ -20,22 +18,20 @@ GIT_SHA ?= $(shell git rev-parse HEAD)
 GIT_TAG ?= $(shell git describe --tags --always)
 GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
 GIT_COMMIT_DATE ?= $(shell git show -s --format=%ct $(GIT_SHA))
-EXT_LDFLAGS ?= -ldflags="-X \"berty.tech/core.GitTag=$(GIT_TAG)\" -X \"berty.tech/core.GitBranch=$(GIT_BRANCH)\" -X \"berty.tech/core.GitSha=$(GIT_SHA)\" -X \"berty.tech/core.BuildMode=$(BUILD_MODE)\" -X \"berty.tech/core.commitDate=$(GIT_COMMIT_DATE)\""
+EXT_LDFLAGS ?=
 
 GOPATH ?=		$(HOME)/go
 
 CGO_CPPFLAGS ?= -Wno-nullability-completeness \
-								-Wno-error=unused-command-line-argument \
-								-I$(PWD)/openssl/built/include
+				-Wno-error=unused-command-line-argument \
+				-I$(PWD)/openssl/built/include
 
 CGO_OS_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_OS_CPPFLAGS ?= -I/usr/local/opt/openssl/include
 
-
-
 LIBS_PATH := $(PWD)/openssl/built
 
-IOS_BUILD_PATH := $(PWD)/../ios
+IOS_BUILD_PATH := $(PWD)/../../../client/ios
 IOS_LDFLAGS := -L$(LIBS_PATH)/ios
 
 ANDROID_NDK_HOME := /usr/local/share/android-ndk/
@@ -100,12 +96,12 @@ unsed.ble:
 build.ble: $(BLE_DIR_PATH)/ble.jar
 
 $(BLE_DIR_PATH)/ble.jar:
-	GO111MODULE=on GOPROXY= go get berty.tech/network # HOTFIX
+	# GO111MODULE=on GOPROXY= go get berty.tech/network # HOTFIX
 	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	cd $(ANDROID_PATH) && ./gradlew ble:createJar && cd -
 
 $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
-	GO111MODULE=on GOPROXY= go get berty.tech/network # HOTFIX
+	# GO111MODULE=on GOPROXY= go get berty.tech/network # HOTFIX
 	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	# GOOS=android gobind -lang=go,java -outdir=$(BLE_BIND_PATH) -classpath=$(ANDROID_PATH)/ble/libs/jars/ble.jar berty.tech/core/network/ble
 	mkdir -p $(ANDROID_BUILD_PATH)
@@ -116,7 +112,7 @@ $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
 build.ios: $(IOS_BUILD_PATH)/core.framework/Core
 
 $(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
-	GO111MODULE=on GOPROXY= go get berty.tech/network # HOTFIX
+	# GO111MODULE=on GOPROXY= go get berty.tech/network # HOTFIX
 	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	mkdir -p $(IOS_BUILD_PATH)
 	GOPROXY=https://goproxy.berty.io GO111MODULE=off CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -target=ios -o $(IOS_BUILD_PATH)/core.framework berty.tech/core/platform/mobile/core

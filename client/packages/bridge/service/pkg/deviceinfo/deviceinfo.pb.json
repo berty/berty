@@ -1,0 +1,67 @@
+{
+  "nested": {
+    "berty": {
+      "nested": {
+        "pkg": {
+          "nested": {
+            "deviceinfo": {
+              "options": {
+                "go_package": "berty.tech/core/pkg/deviceinfo"
+              },
+              "nested": {
+                "DeviceInfos": {
+                  "fields": {
+                    "infos": {
+                      "rule": "repeated",
+                      "type": "DeviceInfo",
+                      "id": 1
+                    }
+                  }
+                },
+                "Type": {
+                  "values": {
+                    "Unknown": 0,
+                    "Raw": 1,
+                    "Json": 2
+                  }
+                },
+                "DeviceInfo": {
+                  "fields": {
+                    "key": {
+                      "type": "string",
+                      "id": 1
+                    },
+                    "value": {
+                      "type": "string",
+                      "id": 2
+                    },
+                    "category": {
+                      "type": "string",
+                      "id": 3
+                    },
+                    "link": {
+                      "type": "string",
+                      "id": 4
+                    },
+                    "type": {
+                      "type": "Type",
+                      "id": 5
+                    },
+                    "errMsg": {
+                      "type": "string",
+                      "id": 6
+                    },
+                    "weight": {
+                      "type": "int32",
+                      "id": 7
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
