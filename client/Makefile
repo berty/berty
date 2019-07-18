@@ -15,7 +15,7 @@ LERNA_UPDATE := node_modules/.bin/lernaupdate
 LERNA_PACKAGES := $(patsubst \
 	%/package.json, \
 	%/node_modules, \
-	$(shell find packages -type f -name 'package.json' -depth 2 -not -path '*/node_modules/*'))
+	$(shell find packages -type f -name 'package.json' -not -path '*/node_modules/*'))
 
 PROTOS = $(strip $(call rwildcard, ../core, *.proto))
 OUR_PROTOS = $(filter-out $(call rwildcard,../core/vendor/, *.proto),$(PROTOS))
