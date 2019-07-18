@@ -271,7 +271,7 @@ jobs:
           name: install react-native deps
           command: |
             cd client
-            /tmp/retry -m 3 make deps
+            /tmp/retry -m 3 make deps.lerna
 
       - save_cache:
           key: npm-v1-{{ checksum "client/package-lock.json" }}-{{ arch }}
@@ -475,9 +475,9 @@ jobs:
           command: make version.ios
 
       - run:
-          name: make deps
+          name: make deps.ios
           working_directory: ~/go/src/berty.tech/client
-          command: /tmp/retry -m 3 make deps
+          command: /tmp/retry -m 3 make deps.ios
 
       - run:
           name: add environment
@@ -551,9 +551,9 @@ jobs:
           command: make version.ios
 
       - run:
-          name: make deps
+          name: make deps.ios
           working_directory: ~/go/src/berty.tech/client
-          command: /tmp/retry -m 3 make deps
+          command: /tmp/retry -m 3 make deps.ios
 
       - run:
           name: add environment
