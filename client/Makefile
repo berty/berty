@@ -15,7 +15,7 @@ LERNA_UPDATE := node_modules/.bin/lernaupdate
 LERNA_PACKAGES := $(patsubst \
 	%/package.json, \
 	%/node_modules, \
-	$(shell find packages -type f -name package.json -depth 2 -not -path '*/node_modules/*'))
+	$(shell find packages -type f -name 'package.json' -depth 2 -not -path '*/node_modules/*'))
 
 PROTOS = $(strip $(call rwildcard, ../core, *.proto))
 OUR_PROTOS = $(filter-out $(call rwildcard,../core/vendor/, *.proto),$(PROTOS))
@@ -28,7 +28,7 @@ package ?= app
 
 
 .PHONY: all
-all: $(ROOT) $(LERNA_PACKAGES) $(GENERATE)
+all: $(ROOT) $(LERNA_PACKAGES)
 
 .PHONY: help
 help:
@@ -48,11 +48,11 @@ fclean.root:
 ### LERNA
 
 .PHONY: deps.lerna
-deps.lerna $(LERNA): $(ROOT) $(LERNA_PACKAGES) $(GENERATE)
+deps.lerna $(LERNA): $(ROOT) $(LERNA_PACKAGES)
 
 %/node_modules: $(ROOT) %/package.json
 	@echo $@
-	@find packages \
+	find packages \
 		-type d \
 		-name 'node_modules' \
 		-not -path '*/node_modules/*' \

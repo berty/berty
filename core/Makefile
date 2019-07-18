@@ -114,11 +114,13 @@ clean:
 
 .PHONY: generate_local
 generate_local: $(GENERATION_TARGETS)
+	cd ../client && make generate
 	@# FIXME: investigate why (sometimes?) there are "github.com" and "google.golang.org" directories generated at the root of core/
 	rm -rf google gogoproto github.com google.golang.org
 
 	goimports -w `find . -name "*.pb.go" -or -name "*.gen.go" | grep -v /vendor/`
 	gofmt -w -s `find . -name "*.pb.go" -or -name "*.gen.go" | grep -v /vendor/`
+
 
 .PHONY: generate_prepare
 generate_prepare:
