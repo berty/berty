@@ -64,7 +64,7 @@ references:
       name: install mac
       command: |
         if [ ! -f ~/go/bin/astilectron-bundler ]; then
-          cd ~/go/src/berty.tech/client/react-native/desktop
+          cd ~/go/src/berty.tech/client/desktop
           make deps
         fi
         brew install dylibbundler
@@ -230,7 +230,7 @@ jobs:
       - run:
           name: test gomobile
           command: |
-            cd client/react-native/gomobile/core
+            cd client/gomobile/core
             /tmp/retry -m 3 go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
             GOARCH=386 /tmp/retry -m 3 go test -v . | tee /tmp/test-results/go-test-report.out
       - run:
@@ -262,32 +262,32 @@ jobs:
       - *install_retry
       - checkout
       - restore_cache:
-          key: npm-v1-{{ checksum "client/react-native/package-lock.json" }}-{{ arch }}
+          key: npm-v1-{{ checksum "client/package-lock.json" }}-{{ arch }}
 
       - restore_cache:
-          key: node-v1-{{ checksum "client/react-native/package.json" }}-{{ arch }}
+          key: node-v1-{{ checksum "client/package.json" }}-{{ arch }}
 
       - run:
           name: install react-native deps
           command: |
-            cd client/react-native
+            cd client
             /tmp/retry -m 3 make deps
 
       - save_cache:
-          key: npm-v1-{{ checksum "client/react-native/package-lock.json" }}-{{ arch }}
+          key: npm-v1-{{ checksum "client/package-lock.json" }}-{{ arch }}
           paths:
             - ~/.cache/npm
 
       - save_cache:
-          key: node-v1-{{ checksum "client/react-native/package.json" }}-{{ arch }}
+          key: node-v1-{{ checksum "client/package.json" }}-{{ arch }}
           paths:
             - node_modules
 
       - persist_to_workspace:
           root: ~/go/src/berty.tech
           paths:
-            - client/react-native/common
-            - client/react-native/node_modules
+            - client/common
+            - client/node_modules
 
   client.rn.android:
     working_directory: ~/go/src/berty.tech
@@ -314,27 +314,27 @@ jobs:
       - *install_retry
       - run:
           name: setup environment
-          command: echo "export PATH=~/go/src/berty.tech/client/react-native/node_modules/.bin/:/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+          command: echo "export PATH=~/go/src/berty.tech/client/node_modules/.bin/:/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
 
       - run:
           name: gomobile android build
-          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          working_directory: ~/go/src/berty.tech/client/gomobile
           command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
 
       - run:
           name: install bundle
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: |
             bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
 
       - run:
           name: patch android repo
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make patch.android
 
       - run:
           name: set version
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make version.android
 
       - run:
@@ -344,12 +344,12 @@ jobs:
 
       - run:
           name: add environment
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: echo $RN_ENVIRONMENT > .environment
 
       - run:
           name: build app
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: . $BASH_ENV; find gomobile/vendor -name package.json -delete; /tmp/retry -m 3 make fastlane.android.staff
 
       - store_artifacts:
@@ -375,37 +375,37 @@ jobs:
       - *install_retry
       - run:
           name: setup environment
-          command: echo "export PATH=~/go/src/berty.tech/client/react-native/node_modules/.bin/:/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+          command: echo "export PATH=~/go/src/berty.tech/client/node_modules/.bin/:/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
 
       - run:
           name: gomobile android build
-          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          working_directory: ~/go/src/berty.tech/client/gomobile
           command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
 
       - run:
           name: install bundle
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: |
             bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
 
       - run:
           name: patch android repo
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make patch.android
 
       - run:
           name: set version
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make version.android
 
       - run:
           name: add environment
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: echo $RN_ENVIRONMENT > .environment
 
       - run:
           name: build app
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: find gomobile/vendor -name package.json -delete; /tmp/retry -m 3 make fastlane.android.yolo
 
       - *master_version
@@ -453,40 +453,40 @@ jobs:
       - *install_gomobile
       - run:
           name: install core
-          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          working_directory: ~/go/src/berty.tech/client/gomobile
           command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
 
       - restore_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
+          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/Gemfile.lock" }}-3
 
       - run:
           name: install bundle
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
 
       - save_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
+          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/Gemfile.lock" }}-3
           paths:
-            - ~/go/src/berty.tech/client/react-native/vendor/bundle
+            - ~/go/src/berty.tech/client/vendor/bundle
 
       - run:
           name: set version
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make version.ios
 
       - run:
           name: make deps
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: /tmp/retry -m 3 make deps
 
       - run:
           name: add environment
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: echo $RN_ENVIRONMENT > .environment
 
       - run:
           name: build app
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: |
             [[ ! -z "${CIRCLE_PR_NUMBER}" ]] && IOS_CUSTOM_NAME="Berty @${CIRCLE_PR_NUMBER}" make appname.ios || true
             make fastlane.setup_circle
@@ -528,41 +528,41 @@ jobs:
 
       - run:
           name: install core
-          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          working_directory: ~/go/src/berty.tech/client/gomobile
           command: |
             BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
 
       - restore_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-4
+          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/Gemfile.lock" }}-4
 
       - run:
           name: install bundle
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
 
       - save_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-4
+          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/Gemfile.lock" }}-4
           paths:
-            - ~/go/src/berty.tech/client/react-native/vendor/bundle
+            - ~/go/src/berty.tech/client/vendor/bundle
 
       - run:
           name: set version
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make version.ios
 
       - run:
           name: make deps
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: /tmp/retry -m 3 make deps
 
       - run:
           name: add environment
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: echo $RN_ENVIRONMENT > .environment
 
       - run:
           name: build app
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: |
             make fastlane.setup_circle
             find gomobile/vendor -name package.json -delete;
@@ -592,35 +592,35 @@ jobs:
           at: ~/go/src/berty.tech/
 
       - restore_cache:
-          key: npm-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
+          key: npm-v1-{{ checksum "client/web/package-lock.json" }}-{{ arch }}
 
       - restore_cache:
-          key: node-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
+          key: node-v1-{{ checksum "client/web/package-lock.json" }}-{{ arch }}
 
       - run:
           name: build web app
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: /tmp/retry -m 3 make build.web
 
       - run:
           name: build dashboard
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: /tmp/retry -m 3 make build.dashboard
 
       - save_cache:
-          key: npm-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
+          key: npm-v1-{{ checksum "client/web/package-lock.json" }}-{{ arch }}
           paths:
             - ~/.cache/npm
 
       - save_cache:
-          key: node-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
+          key: node-v1-{{ checksum "client/web/package-lock.json" }}-{{ arch }}
           paths:
             - node_modules
 
       - persist_to_workspace:
           root: ~/go/src/berty.tech/
           paths:
-            - client/react-native/web
+            - client/web
 
 
   client.rn.mac:
@@ -655,7 +655,7 @@ jobs:
 
       - run:
           name: install mac
-          working_directory: ~/go/src/berty.tech/client/react-native/desktop
+          working_directory: ~/go/src/berty.tech/client/desktop
           command: |
             GO111MODULE=on GOPROXY= go get berty.tech/network
             BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build
@@ -701,7 +701,7 @@ jobs:
 
       - run:
           name: install mac
-          working_directory: ~/go/src/berty.tech/client/react-native/desktop
+          working_directory: ~/go/src/berty.tech/client/desktop
           command: |
             BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build
             dylibbundler -od -b -x ./output/darwin-amd64/Berty.app/Contents/MacOS/berty -d ./output/darwin-amd64/Berty.app/Contents/libs/
