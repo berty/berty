@@ -40,7 +40,6 @@ help:
 .PHONY: deps.root
 deps.root $(ROOT): $(ROOT_PRE)
 	npm $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "ci" || echo "install")
-	cd ../core && make install
 
 .IGNORE .PHONY: clean.root
 fclean.root:
@@ -104,7 +103,7 @@ generate: $(LERNA) $(GENERATE)
 
 packages/bridge/service/%.pb.json: ../core/%.proto
 	mkdir -p "$(dir packages/bridge/service/$@)"
-	pbjs \
+	./node_modules/.bin/pbjs \
 		--path node_modules/@google/protobuf/src \
 		--path node_modules/berty-core/vendor/berty.tech \
 		--path node_modules/berty-core/vendor/github.com/gogo/protobuf \
@@ -115,7 +114,7 @@ packages/bridge/service/%.pb.json: ../core/%.proto
 
 packages/%: packages/template/%.hbs
 	mkdir -p "$(dir $@)"
-	pbhbs \
+	./node_modules/.bin/pbhbs \
 		--template-dir packages/template \
 		--proto-path node_modules/@google/protobuf/src \
 		--proto-path node_modules/berty-core/vendor/berty.tech \
@@ -201,6 +200,7 @@ get_iphone_udid:
 
 .PHONY: deps.android
 deps.android: deps.lerna $(PWD)/android/app/google-services.json
+	cd ../core/platform/mobile && make build.android
 
 $(PWD)/android/app/google-services.json:
 	@echo 'Error: You need to configure ' $@
