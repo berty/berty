@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 references:
   golang_workspace: &golang_workspace
@@ -11,19 +11,16 @@ references:
     docker:
       - image: circleci/golang:1.12
 
-  master_version: &master_version
+  git_version: &git_version
     run:
-      name: retrieve master version
-      working_directory: ~/go/src/berty.tech
-      command: |
-        mkdir -p ~/.ssh
-        if [ ! -e .git ]; then
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          git init
-          git remote add origin git@github.com:berty/berty
-        fi
-        git fetch origin master
-        echo $(git rev-list --count origin/master) > /tmp/master_version
+        name: git version (via sha1 hash)
+        command: |
+          cd ~/go/src/berty.tech || cd /go/src/berty.tech || cd .
+          git fetch origin master
+          git rev-parse origin/master > /tmp/git_version
+          git rev-parse HEAD~1 > /tmp/last_version
+          echo $CIRCLE_SHA1 > /tmp/current_version
+
 
   install_retry: &install_retry
     run:
@@ -58,16 +55,301 @@ references:
           gomobile init
         fi
 
-  install_mac: &install_mac
-    run:
-      name: install mac
-      command: |
-        if [ ! -f ~/go/bin/astilectron-bundler ]; then
-          cd ~/go/src/berty.tech/client/react-native/desktop
-          make deps
-        fi
-        brew install dylibbundler
-        sudo npm install --global electron-builder@20
+commands:
+  prepare:
+    description: "prepare current job"
+    steps:
+      - checkout
+      - *install_retry
+      - *git_version
+      - run:
+          name: setup environment
+          command: echo "export PATH=$GOPATH/src/berty.tech/client/node_modules/.bin/:/usr/local/go/bin/:$GOPATH/bin:$PATH" >> $BASH_ENV
+
+  generate_restore_cache:
+    description: "restore generate cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v0-generate-{{.Branch}}-{{.Revision}}
+            - v0-generate-{{.Branch}}-
+            - v0-generate-master
+
+  generate_save_cache:
+    description: "save generate cache"
+    steps:
+      - save_cache:
+          key: v0-generate-{{.Branch}}-{{.Revision}}
+          paths:
+            # user
+            - ~/.cache
+            # npm
+            - ~/.cache/.npm/_cacache
+            # go
+            - /go/pkg/mod/cache
+
+  web_restore_cache:
+    description: "restore web cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v0-web-{{.Branch}}-{{.Revision}}
+            - v0-web-{{.Branch}}-
+            - v0-web-master
+
+  web_save_cache:
+    description: "save web cache"
+    steps:
+      - save_cache:
+          key: v0-web-{{.Branch}}-{{.Revision}}
+          paths:
+            # user
+            - ~/.cache
+            # npm
+            - ~/.cache/.npm/_cacache
+            # web
+            - ~/go/src/berty.tech/client/web/build
+            # babel
+            - ~/go/src/berty.tech/client/web/node_modules/.cache
+
+  android_staff_restore_cache:
+    description: "restore android staff cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v0-android-staff-{{.Branch}}-{{.Revision}}
+            - v0-android-staff-{{.Branch}}-
+            - v0-android-staff-master-
+
+  android_staff_save_cache:
+    description: "save android staff cache"
+    steps:
+      - save_cache:
+          key: v0-android-staff-{{.Branch}}-{{.Revision}}
+          paths:
+            # user
+            - ~/.cache
+            # npm
+            - ~/.cache/.npm/_cacache
+            # lerna
+            - ~/go/src/berty.tech/client/node_modules
+            # bundle
+            - ~/go/src/berty.tech/client/vendor/bundle
+            # gomobile
+            - ~/go/pkg
+            # android
+            - ~/.android/build-cache
+            - ~/.android/build-cache.lock
+            - ~/.android/cache
+            # gradle
+            - ~/.gradle/caches
+
+  android_yolo_restore_cache:
+    description: "restore android yolo cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v0-android-yolo-{{.Branch}}-{{.Revision}}
+            - v0-android-yolo-{{.Branch}}-
+            - v0-android-yolo-master-
+
+  android_yolo_save_cache:
+    description: "save android yolo cache"
+    steps:
+      - save_cache:
+          key: v0-android-yolo-{{.Branch}}-{{.Revision}}
+          paths:
+            # user
+            - ~/.cache
+            # npm
+            - ~/.cache/.npm/_cacache
+            # lerna
+            - ~/go/src/berty.tech/client/node_modules
+            # bundle
+            - ~/go/src/berty.tech/client/vendor/bundle
+            # gomobile
+            - ~/go/pkg
+            # android
+            - ~/.android/build-cache
+            - ~/.android/build-cache.lock
+            - ~/.android/cache
+            # gradle
+            - ~/.gradle/caches
+
+  ios_staff_restore_cache:
+    description: "restore ios staff cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v0-ios-staff-{{.Branch}}-{{.Revision}}
+            - v0-ios-staff-{{.Branch}}-
+            - v0-ios-staff-master-
+
+  ios_staff_save_cache:
+    description: "save ios staff cache"
+    steps:
+      - save_cache:
+          key: v0-ios-staff-{{.Branch}}-{{.Revision}}
+          paths:
+            # user
+            - ~/Library/Caches
+            # npm
+            - ~/.cache/.npm/_cacache
+            # lerna
+            - ~/go/src/berty.tech/client/node_modules
+            # bundle
+            - ~/go/src/berty.tech/client/vendor/bundle
+            # gomobile
+            - ~/go/pkg
+            - ~/go/src/berty.tech/client/ios/Core
+            # xcode
+            - ~/Library/Developer/Xcode/DerivedData
+            # ios
+            - ~/go/src/berty.tech/client/ios/build
+
+  ios_staff_test_restore_cache:
+    description: "restore ios staff cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v0-ios-staff-test-{{.Branch}}-{{.Revision}}
+            - v0-ios-staff-test-{{.Branch}}-
+            - v0-ios-staff-test-master-
+
+  ios_staff_test_save_cache:
+    description: "save ios staff cache"
+    steps:
+      - save_cache:
+          key: v0-ios-staff-test-{{.Branch}}-{{.Revision}}
+          paths:
+            # user
+            - ~/Library/Caches
+            # npm
+            - ~/.cache/.npm/_cacache
+            # lerna
+            - ~/go/src/berty.tech/client/node_modules
+            # bundle
+            - ~/go/src/berty.tech/client/vendor/bundle
+            # gomobile
+            - ~/go/pkg
+            - ~/go/src/berty.tech/client/ios/Core
+            # xcode
+            - ~/Library/Developer/Xcode/DerivedData
+            # ios
+            - ~/go/src/berty.tech/client/ios/build
+
+  ios_yolo_restore_cache:
+    description: "restore ios yolo cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v0-ios-yolo-{{.Branch}}-{{.Revision}}
+            - v0-ios-yolo-{{.Branch}}-
+            - v0-ios-yolo-master-
+
+  ios_yolo_save_cache:
+    description: "save ios yolo cache"
+    steps:
+      - save_cache:
+          key: v0-ios-yolo-{{.Branch}}-{{.Revision}}
+          paths:
+            # user
+            - ~/Library/Caches
+            # npm
+            - ~/.cache/.npm/_cacache
+            # lerna
+            - ~/go/src/berty.tech/client/node_modules
+            # bundle
+            - ~/go/src/berty.tech/client/vendor/bundle
+            # gomobile
+            - ~/go/pkg
+            - ~/go/src/berty.tech/client/ios/Core
+            # xcode
+            - ~/Library/Developer/Xcode/DerivedData
+            # ios
+            - ~/go/src/berty.tech/client/ios/build
+
+  ios_yolo_test_restore_cache:
+    description: "restore ios yolo cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v0-ios-yolo-test-{{.Branch}}-{{.Revision}}
+            - v0-ios-yolo-test-{{.Branch}}-
+            - v0-ios-yolo-test-master-
+
+  ios_yolo_test_save_cache:
+    description: "save ios yolo cache"
+    steps:
+      - save_cache:
+          key: v0-ios-yolo-test-{{.Branch}}-{{.Revision}}
+          paths:
+            # user
+            - ~/Library/Caches
+            # npm
+            - ~/.cache/.npm/_cacache
+            # lerna
+            - ~/go/src/berty.tech/client/node_modules
+            # bundle
+            - ~/go/src/berty.tech/client/vendor/bundle
+            # gomobile
+            - ~/go/pkg
+            - ~/go/src/berty.tech/client/ios/Core
+            # xcode
+            - ~/Library/Developer/Xcode/DerivedData
+            # ios
+            - ~/go/src/berty.tech/client/ios/build
+
+  mac_staff_restore_cache:
+    description: "restore mac staff cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v0-mac-staff-{{.Branch}}-{{.Revision}}
+            - v0-mac-staff-{{.Branch}}-
+            - v0-mac-staff-master
+
+  mac_staff_save_cache:
+    description: "save mac staff cache"
+    steps:
+      - save_cache:
+          key: v0-mac-staff-{{.Branch}}-{{.Revision}}
+          paths:
+            # user
+            - ~/Library/Caches
+            # npm
+            - ~/.cache/.npm/_cacache
+            # lerna
+            - ~/go/src/berty.tech/client/node_modules
+            # go
+            - ~/go/pkg
+            # bundler
+            - /usr/local/bin/dylibbundler
+            - /usr/local/Cellar/dylibbundler
+
+  mac_yolo_restore_cache:
+    description: "restore mac yolo cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v0-mac-yolo-{{.Branch}}-{{.Revision}}
+            - v0-mac-yolo-{{.Branch}}-
+            - v0-mac-yolo-master
+
+  mac_yolo_save_cache:
+    description: "save mac yolo cache"
+    steps:
+      - save_cache:
+          key: v0-mac-yolo-{{.Branch}}-{{.Revision}}
+          paths:
+            # user
+            - ~/Library/Caches
+            # npm
+            - ~/.cache/.npm/_cacache
+            # lerna
+            - ~/go/src/berty.tech/client/node_modules
+            # go
+            - ~/go/pkg
 
 jobs:
   lint:
@@ -75,8 +357,7 @@ jobs:
     docker:
       - image: bertychat/linter:v3
     steps:
-      - *install_retry
-      - checkout
+      - prepare
       - restore_cache:
           keys:
             - v2-go-cache
@@ -103,9 +384,9 @@ jobs:
     environment:
       GOPATH: /go
     steps:
-      - *install_retry
-      - checkout
+      - prepare
       - setup_remote_docker
+      - generate_restore_cache
       - run:
           name: make generate_local
           command: |
@@ -127,8 +408,9 @@ jobs:
              '
             # IDEA: diff-index -w is not working as expected, maybe we should ignore some of the parts of the output
             # IDEA: try to pass a `goimports -w -s` on files listed in `git diff-index` output to remove whitespaces
+      - generate_save_cache
 
-  docker.build:
+  docker_build:
     docker:
       - image: docker:18.09.6-git
     steps:
@@ -136,16 +418,15 @@ jobs:
           name: install ca-certificates
           command: apk --no-cache add openssl make
 
-      - *install_retry
-      - checkout
+      - prepare
       - setup_remote_docker:
           version: 18.09.3
 
-      - *master_version
       - restore_cache:
-          key: docker-berty-master-{{checksum "/tmp/master_version"}}
-          paths:
-            - /tmp/caches/berty.tar
+          keys:
+            - docker-berty-{{.Branch}}-{{.Revision}}
+            - docker-berty-{{.Branch}}-
+            - docker-berty-master-
 
       - run:
           name: Load Docker image layer cache
@@ -185,17 +466,16 @@ jobs:
             mkdir -p /tmp/caches
             docker save -o /tmp/caches/berty.tar bertychat/berty
 
-      - *master_version
+      - *git_version
       - save_cache:
-          key: docker-berty-{{ .Revision }}-{{checksum "/tmp/master_version"}}
+          key: docker-berty-{{.Branch}}-{{.Revision}}
           paths:
             - /tmp/caches/berty.tar
 
-  core.go.test:
+  core_go_test:
     <<: *golang_workspace
     steps:
-      - *install_retry
-      - checkout
+      - prepare
       - restore_cache:
           keys:
             - v1-go-cache
@@ -224,12 +504,6 @@ jobs:
             cd core
             TEST_SLEEP_BETWEEN_STEPS=1s TEST_OPTS="$TEST_OPTS" /tmp/retry -m 3 make test | tee /tmp/test-results/go-test-report.out
       - run:
-          name: test gomobile
-          command: |
-            cd client/react-native/gomobile/core
-            /tmp/retry -m 3 go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
-            GOARCH=386 /tmp/retry -m 3 go test -v . | tee /tmp/test-results/go-test-report.out
-      - run:
           name: integration core
           command: |
             cd core
@@ -249,43 +523,7 @@ jobs:
       - store_test_results:
           path: /tmp/test-results
 
-  client.rn.node:
-    working_directory: ~/go/src/berty.tech
-    docker:
-      - image: circleci/node:latest
-    steps:
-
-      - *install_retry
-      - checkout
-      - restore_cache:
-          key: npm-v1-{{ checksum "client/react-native/package-lock.json" }}-{{ arch }}
-
-      - restore_cache:
-          key: node-v1-{{ checksum "client/react-native/package.json" }}-{{ arch }}
-
-      - run:
-          name: install react-native deps
-          command: |
-            cd client/react-native
-            /tmp/retry -m 3 make deps
-
-      - save_cache:
-          key: npm-v1-{{ checksum "client/react-native/package-lock.json" }}-{{ arch }}
-          paths:
-            - ~/.cache/npm
-
-      - save_cache:
-          key: node-v1-{{ checksum "client/react-native/package.json" }}-{{ arch }}
-          paths:
-            - node_modules
-
-      - persist_to_workspace:
-          root: ~/go/src/berty.tech
-          paths:
-            - client/react-native/common
-            - client/react-native/node_modules
-
-  client.rn.android:
+  android_staff:
     working_directory: ~/go/src/berty.tech
     environment:
       FASTLANE_SKIP_UPDATE_CHECK: 1
@@ -294,43 +532,36 @@ jobs:
       BUILD: /tmp/fl/build
 
     docker:
-      - image: bertychat/android-ci:v4
+      - image: bertychat/android-ci:v5
     steps:
 
-      - *master_version
-      - restore_cache:
-          key: android-{{checksum "/tmp/master_version"}}-v1
+      - prepare
+      - android_staff_restore_cache
 
-      - checkout:
-          path: ~/go/src/berty.tech/
-
-      - attach_workspace:
-          at: ~/go/src/berty.tech/
-
-      - *install_retry
       - run:
-          name: setup environment
-          command: echo "export PATH=~/go/src/berty.tech/client/react-native/node_modules/.bin/:/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+          name: make deps
+          working_directory: ~/go/src/berty.tech/client
+          command: /tmp/retry -m 3 make deps.lerna
 
       - run:
           name: gomobile android build
-          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          working_directory: ~/go/src/berty.tech/core/platform/mobile
           command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
 
       - run:
           name: install bundle
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client/
           command: |
             bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
 
       - run:
           name: patch android repo
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make patch.android
 
       - run:
           name: set version
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make version.android
 
       - run:
@@ -339,19 +570,23 @@ jobs:
             [[ ! -z "${CIRCLE_PR_NUMBER}" ]] && echo "export ANDROID_CUSTOM_NAME='Berty @${CIRCLE_PR_NUMBER}'" >> $BASH_ENV || true
 
       - run:
-          name: add environment
-          working_directory: ~/go/src/berty.tech/client/react-native
-          command: echo $RN_ENVIRONMENT > .environment
+          name: add environment and google service
+          working_directory: ~/go/src/berty.tech/client
+          command: |
+            echo $RN_ENVIRONMENT > .environment
+            echo $GOOGLE_SERVICES | base64 -d > android/app/google-services.json
 
       - run:
           name: build app
-          working_directory: ~/go/src/berty.tech/client/react-native
-          command: . $BASH_ENV; find gomobile/vendor -name package.json -delete; /tmp/retry -m 3 make fastlane.android.staff
+          working_directory: ~/go/src/berty.tech/client
+          command: . $BASH_ENV; /tmp/retry -m 3 make fastlane.android.staff
 
       - store_artifacts:
           path: /tmp/fl
 
-  client.rn.android-beta:
+      - android_staff_save_cache
+
+  android_yolo:
     working_directory: ~/go/src/berty.tech
     environment:
       FASTLANE_SKIP_UPDATE_CHECK: 1
@@ -360,65 +595,59 @@ jobs:
       BUILD: /tmp/fl/build
 
     docker:
-      - image: bertychat/android-ci:v4
+      - image: bertychat/android-ci:v5
     steps:
-      - checkout:
-          path: ~/go/src/berty.tech/
 
-      - attach_workspace:
-          at: ~/go/src/berty.tech/
+      - prepare
+      - android_yolo_restore_cache
 
-      - *install_retry
       - run:
-          name: setup environment
-          command: echo "export PATH=~/go/src/berty.tech/client/react-native/node_modules/.bin/:/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+          name: make deps
+          working_directory: ~/go/src/berty.tech/client
+          command: /tmp/retry -m 3 make deps.lerna
 
       - run:
           name: gomobile android build
-          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          working_directory: ~/go/src/berty.tech/core/platform/mobile
           command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
 
       - run:
           name: install bundle
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: |
             bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
 
       - run:
           name: patch android repo
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make patch.android
 
       - run:
           name: set version
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make version.android
 
       - run:
-          name: add environment
-          working_directory: ~/go/src/berty.tech/client/react-native
-          command: echo $RN_ENVIRONMENT > .environment
+          name: add environment and google service
+          working_directory: ~/go/src/berty.tech/client
+          command: |
+            echo $RN_ENVIRONMENT > .environment
+            echo $GOOGLE_SERVICES | base64 -d > android/app/google-services.json
 
       - run:
           name: build app
-          working_directory: ~/go/src/berty.tech/client/react-native
-          command: find gomobile/vendor -name package.json -delete; /tmp/retry -m 3 make fastlane.android.yolo
-
-      - *master_version
-      - save_cache:
-          key: android-{{checksum "/tmp/master_version"}}-v1
-          paths:
-            - ~/go/pkg
-            - ~/go/src
-            - ~/go-install
+          working_directory: ~/go/src/berty.tech/client
+          command: /tmp/retry -m 3 make fastlane.android.yolo
 
       - store_artifacts:
           path: /tmp/fl
 
-  client.rn.ios:
+      - android_yolo_save_cache
+
+  ios_staff:
     working_directory: ~/go/src/berty.tech
     macos:
-      xcode: "10.2.0"
+      xcode: "10.2.1"
     environment:
       FASTLANE_SKIP_UPDATE_CHECK: 1
       FASTLANE_HIDE_CHANGELOG: 1
@@ -430,123 +659,92 @@ jobs:
 
     shell: /bin/bash --login -o pipefail
     steps:
-      - *install_retry
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
 
-      - *master_version
-      - restore_cache:
-          key: ios-{{checksum "/tmp/master_version"}}
+      - prepare
+      - ios_staff_restore_cache
 
-      - checkout:
-          path: ~/go/src/berty.tech/
-
-      - attach_workspace:
-          at: ~/go/src/berty.tech/
+      - run:
+          name: make deps
+          working_directory: ~/go/src/berty.tech/client
+          command: /tmp/retry -m 3 make deps.lerna
 
       - *install_go
       - *install_gomobile
       - run:
           name: install core
-          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          working_directory: ~/go/src/berty.tech/core/platform/mobile
           command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
-
-      - restore_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
 
       - run:
           name: install bundle
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
-
-      - save_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
-          paths:
-            - ~/go/src/berty.tech/client/react-native/vendor/bundle
 
       - run:
           name: set version
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make version.ios
 
       - run:
-          name: make deps
-          working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make deps
-
-      - run:
           name: add environment
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: echo $RN_ENVIRONMENT > .environment
 
       - run:
           name: build app
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: |
             [[ ! -z "${CIRCLE_PR_NUMBER}" ]] && IOS_CUSTOM_NAME="Berty @${CIRCLE_PR_NUMBER}" make appname.ios || true
             make fastlane.setup_circle
-            find gomobile/vendor -name package.json -delete;
             /tmp/retry -m 3 make fastlane.ios.adhoc
 
       - store_artifacts:
           path: /tmp/fl
 
-  client.rn.ios-test:
+      - ios_staff_save_cache
+
+  ios_staff_test:
     working_directory: ~/go/src/berty.tech
     macos:
       xcode: "10.2.0"
 
     shell: /bin/bash --login -o pipefail
     steps:
-      - *install_retry
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
 
-      - *master_version
-      - restore_cache:
-          key: ios-{{checksum "/tmp/master_version"}}
+      - prepare
+      - ios_staff_test_restore_cache
 
-      - checkout:
-          path: ~/go/src/berty.tech/
-
-      - attach_workspace:
-          at: ~/go/src/berty.tech/
+      - run:
+          name: make deps
+          working_directory: ~/go/src/berty.tech/client
+          command: /tmp/retry -m 3 make deps.lerna
 
       - *install_go
       - *install_gomobile
       - run:
           name: install core
-          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          working_directory: ~/go/src/berty.tech/core/platform/mobile
           command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
-
-      - restore_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
 
       - run:
           name: install bundle
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
-
-      - save_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
-          paths:
-            - ~/go/src/berty.tech/client/react-native/vendor/bundle
 
       - run:
           name: set version
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make version.ios
 
       - run:
-          name: make deps
-          working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make deps
-
-      - run:
           name: add environment
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: echo $RN_ENVIRONMENT > .environment
 
       - run:
@@ -555,16 +753,17 @@ jobs:
 
       - run:
           name: run integration tests
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: |
-            ENVIRONMENT=integration_test cavy run-ios --no-packager --configuration=Release --scheme=adhoc
+            # too many open files
+            ulimit -S -n 10240 && make test.adhoc.ios
 
+      - ios_staff_test_save_cache
 
-
-  client.rn.ios-beta:
+  ios_yolo:
     working_directory: ~/go/src/berty.tech
     macos:
-      xcode: "10.2.0"
+      xcode: "10.2.1"
     environment:
       FASTLANE_SKIP_UPDATE_CHECK: 1
       FASTLANE_HIDE_CHANGELOG: 1
@@ -576,127 +775,105 @@ jobs:
 
     shell: /bin/bash --login -o pipefail
     steps:
-      - *install_retry
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
 
-      - checkout:
-          path: ~/go/src/berty.tech/
+      - prepare
+      - ios_yolo_restore_cache
 
-      - attach_workspace:
-          at: ~/go/src/berty.tech/
+      - run:
+          name: make deps
+          working_directory: ~/go/src/berty.tech/client
+          command: /tmp/retry -m 3 make deps.lerna
 
       - *install_go
       - *install_gomobile
 
       - run:
           name: install core
-          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          working_directory: ~/go/src/berty.tech/core/platform/mobile
           command: |
             BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
 
-      - restore_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-4
-
       - run:
           name: install bundle
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
-
-      - save_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-4
-          paths:
-            - ~/go/src/berty.tech/client/react-native/vendor/bundle
 
       - run:
           name: set version
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make version.ios
 
       - run:
           name: make deps
-          working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make deps
+          working_directory: ~/go/src/berty.tech/client
+          command: /tmp/retry -m 3 make deps.lerna
 
       - run:
           name: add environment
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: echo $RN_ENVIRONMENT > .environment
 
       - run:
           name: build app
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: |
             make fastlane.setup_circle
-            find gomobile/vendor -name package.json -delete;
             /tmp/retry -m 3 make fastlane.ios.house
-
-      - *master_version
-      - save_cache:
-          key: ios-{{checksum "/tmp/master_version"}}
-          paths:
-            - ~/go/pkg
-            - ~/go/src
-            - ~/go-install
 
       - store_artifacts:
           path: /tmp/flb
 
+      - ios_yolo_save_cache
 
-  client.rn.ios-beta-test:
+  ios_yolo_test:
     working_directory: ~/go/src/berty.tech
     macos:
       xcode: "10.2.0"
 
     shell: /bin/bash --login -o pipefail
     steps:
-      - *install_retry
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
 
-      - checkout:
-          path: ~/go/src/berty.tech/
+      - prepare
+      - ios_yolo_test_restore_cache
 
-      - attach_workspace:
-          at: ~/go/src/berty.tech/
+      - run:
+          name: make deps
+          working_directory: ~/go/src/berty.tech/client
+          command: /tmp/retry -m 3 make deps.lerna
 
       - *install_go
       - *install_gomobile
 
       - run:
           name: install core
-          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          working_directory: ~/go/src/berty.tech/core/platform/mobile
           command: |
             BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
 
-      - restore_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-4
-
       - run:
           name: install bundle
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
-
-      - save_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-4
-          paths:
-            - ~/go/src/berty.tech/client/react-native/vendor/bundle
 
       - run:
           name: set version
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: make version.ios
 
       - run:
           name: make deps
-          working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make deps
+          working_directory: ~/go/src/berty.tech/client
+          command: /tmp/retry -m 3 make deps.lerna
 
       - run:
           name: add environment
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: echo $RN_ENVIRONMENT > .environment
 
       - run:
@@ -705,46 +882,46 @@ jobs:
 
       - run:
           name: run integration tests
-          working_directory: ~/go/src/berty.tech/client/react-native
+          working_directory: ~/go/src/berty.tech/client
           command: |
-            rm -rf $TMPDIR/react-*
-            rm -rf $TMPDIR/haste-*
-            rm -rf $TMPDIR/metro-*
-            react-native start --reset-cache &
-            cavy run-ios --no-packager --configuration=Release --scheme=house
+            # too many open files
+            ulimit -S -n 10240 && make test.adhoc.ios
 
-      - *master_version
-      - save_cache:
-          key: ios-{{checksum "/tmp/master_version"}}
-          paths:
-            - ~/go/pkg
-            - ~/go/src
-            - ~/go-install
+      - ios_yolo_test_save_cache
 
-  client.rn.web:
-    <<: *golang_workspace
+  web:
     working_directory: ~/go/src/berty.tech
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:latest
     steps:
-      - *install_retry
-      - checkout
+      - prepare
+      - web_restore_cache
 
-      - attach_workspace:
-          at: ~/go/src/berty.tech/
+      - run:
+           working_directory: ~/go/src/berty.tech/client
+           name: Build web client
+           command: REPORT_HOST=cavy-report /tmp/retry -m 3 make build.web
+           no_output_timeout: 1h
 
-      - restore_cache:
-          key: npm-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
+      - web_save_cache
 
-      - restore_cache:
-          key: node-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
+  web_test:
+    working_directory: ~/go/src/berty.tech
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - run: echo 'export COMPOSE_PROJECT_NAME=integration-$CIRCLE_BUILD_NUM-$CIRCLE_JOB' >> $BASH_ENV
 
-      - *master_version
-
-      - restore_cache:
-          key: docker-berty-{{ .Revision }}-{{checksum "/tmp/master_version"}}
-
+      - prepare
       - setup_remote_docker
+      - web_restore_cache
+
+
+      - restore_cache:
+          keys:
+            - docker-berty-{{.Branch}}-{{.Revision}}
+            - docker-berty-{{.Branch}}-
+            - docker-berty-master-
 
       - run:
           name: Load Docker image layer cache
@@ -753,210 +930,139 @@ jobs:
             docker load -i /tmp/caches/berty.tar | true
 
       - run:
-           working_directory: ~/go/src/berty.tech/client/react-native
-           name: Build web client
-           command: REPORT_HOST=cavy-report /tmp/retry -m 3 make build.web
-           no_output_timeout: 1h
-
-      - run:
-           name: Setup compose project name
-           command: |
-            echo "export COMPOSE_PROJECT_NAME=integration-${CIRCLE_BUILD_NUM}" >> $BASH_ENV
-            echo "export DOCKER_COMPOSE=\"docker-compose -f build/docker/integration-tests/docker-compose.yml\"" >> $BASH_ENV
-
-      - run:
-          name: Build integration tests containers
-          command: ${DOCKER_COMPOSE} build
-
-      - run:
-          name: Create integration tests network
-          command: docker network create ${COMPOSE_PROJECT_NAME}_default
-
-      - run:
-          name: Run berty core and client
-          command: ${DOCKER_COMPOSE} up berty-core client
+          name: Run berty-core and client
+          working_directory: ~/go/src/berty.tech/client
+          command: make deps.test.web
           background: true
 
       - run:
           name: Run cavy report server
-          command: ${DOCKER_COMPOSE} up cavy-report
+          working_directory: ~/go/src/berty.tech/client
+          command: make test.web
 
-      - run:
-          name: Kill integration tests containers
-          command: ${DOCKER_COMPOSE} down
-
-      - run:
-          name: Build dashboard
-          working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make build.dashboard
-
-      - save_cache:
-          key: npm-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
-          paths:
-            - ~/.cache/npm
-
-      - save_cache:
-          key: node-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
-          paths:
-            - node_modules
-
-      - persist_to_workspace:
-          root: ~/go/src/berty.tech/
-          paths:
-            - client/react-native/web
-
-  client.rn.mac:
+  mac_staff:
     working_directory: ~/go/src/berty.tech
     macos:
-      xcode: "10.2.0"
+      xcode: "10.2.1"
 
     shell: /bin/bash --login -o pipefail
     steps:
-      - *install_retry
-      - *master_version
 
-      - checkout:
-          path: ~/go/src/berty.tech/
+      - prepare
 
-      - attach_workspace:
-          at: ~/go/src/berty.tech/
+      - mac_staff_restore_cache
 
       - *install_go
 
-      - restore_cache:
-          key: desktop-darwin-v2-{{ arch }}
-
-      - *install_mac
-
-      - save_cache:
-          key: desktop-darwin-v2-{{ arch }}
-          paths:
-            - /usr/local/Homebrew
-            - ~/go/src/github.com
-            - ~/go/bin
-
       - run:
           name: install mac
-          working_directory: ~/go/src/berty.tech/client/react-native/desktop
+          working_directory: ~/go/src/berty.tech/client
           command: |
-            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build
-            dylibbundler -od -b -x ./output/darwin-amd64/Berty.app/Contents/MacOS/berty -d ./output/darwin-amd64/Berty.app/Contents/libs/
-            mv output/darwin-amd64/Berty.app appdmg
-            cd appdmg
-            npm install -D electron
-            electron-builder build --publish never --prepackaged Berty.app
-            mv dist/Berty*.dmg /tmp/Berty.dmg
+            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make release.osx
+            mv osx/dist/Berty*.dmg /tmp/Berty.dmg
 
       - store_artifacts:
           path: /tmp/Berty.dmg
 
-  client.rn.mac-beta:
+      - mac_staff_save_cache
+
+  mac_yolo:
     working_directory: ~/go/src/berty.tech
     macos:
-      xcode: "10.2.0"
+      xcode: "10.2.1"
 
     shell: /bin/bash --login -o pipefail
     steps:
-      - *install_retry
-      - *master_version
+      - prepare
 
-      - checkout:
-          path: ~/go/src/berty.tech/
-
-      - attach_workspace:
-          at: ~/go/src/berty.tech/
+      - mac_yolo_restore_cache
 
       - *install_go
 
-      - restore_cache:
-          key: desktop-darwin-v2-{{ arch }}
-
-      - *install_mac
-
-      - save_cache:
-          key: desktop-darwin-v2-{{ arch }}
-          paths:
-            - /usr/local/Homebrew
-            - ~/go/src/github.com
-            - ~/go/bin
-
       - run:
           name: install mac
-          working_directory: ~/go/src/berty.tech/client/react-native/desktop
+          working_directory: ~/go/src/berty.tech/client
           command: |
-            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build
-            dylibbundler -od -b -x ./output/darwin-amd64/Berty.app/Contents/MacOS/berty -d ./output/darwin-amd64/Berty.app/Contents/libs/
-            mv output/darwin-amd64/Berty.app appdmg
-            cd appdmg
-            electron-builder build --publish never --prepackaged Berty.app
-            mv dist/Berty*.dmg /tmp/Berty.dmg
+            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make release.osx
+            mv osx/dist/Berty*.dmg /tmp/Berty.dmg
 
       - store_artifacts:
           path: /tmp/Berty.dmg
 
+      - mac_yolo_save_cache
 
 workflows:
   version: 2
-  build-client:
+  workflow:
     jobs:
-      - docker.build
-      - client.rn.node
-      # android
-      - client.rn.android:
+      - lint
+      - generate
+      - core_go_test
+
+      - docker_build:
           requires:
-            - client.rn.node
-      - client.rn.android-beta:
-          filters:
-            branches:
-              only: master
+            - lint
+            - generate
+            - core_go_test
+
+      - web_test:
           requires:
-            - client.rn.node
-      # ios
-      - client.rn.ios:
-          requires:
-            - client.rn.node
-      - client.rn.ios-beta:
-          filters:
-            branches:
-              only: master
-          requires:
-            - client.rn.node
+            - web
+            - docker_build
       # web
-      - client.rn.web:
+      - web:
           requires:
-            - client.rn.node
-            - docker.build
+            - lint
+            - generate
+
+      # android
+      - android_staff:
+          requires:
+            - web
+      - android_yolo:
+          requires:
+            - web
+          filters:
+            branches:
+              only: master
+
+      # ios
+      - ios_staff:
+          requires:
+            - web
+      - ios_staff_test:
+          requires:
+            - web
+
+      - ios_yolo:
+         filters:
+            branches:
+             only: master
+         requires:
+           - web
+
+      - ios_yolo_test:
+          filters:
+            branches:
+               only: master
+          requires:
+              - web
+
+
       # desktop
-      - client.rn.mac:
+      - mac_staff:
           filters:
             branches:
               ignore: master
           requires:
-            - client.rn.web
-      - client.rn.mac-beta:
+            - web
+
+      - mac_yolo:
           filters:
             branches:
               only: master
           requires:
-            - client.rn.web
-  ios-inte-tests:
-    jobs:
-      - client.rn.node
-      # ios
-      - client.rn.ios-test:
-          requires:
-            - client.rn.node
-      - client.rn.ios-beta-test:
-          filters:
-            branches:
-              only: master
-          requires:
-            - client.rn.node
-  check-quality:
-    jobs:
-      - lint
-      - generate
-      - core.go.test
-      - docker.build
+            - web
+
 
   # todo later: build-services

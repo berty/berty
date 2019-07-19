@@ -1,6 +1,0 @@
-openssl*
-!include/openssl
-build*
-android-ndk*
-android-toolchain*
-

@@ -7,6 +7,13 @@ require (
 	cloud.google.com/go v0.34.0 // indirect
 	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21
 	github.com/NaySoftware/go-fcm v0.0.0-20180207124314-28fff9381d17
+	github.com/akavel/rsrc v0.0.0-20170831122431-f6a15ece2cfd // indirect
+	github.com/asticode/go-astiamqp v1.0.0 // indirect
+	github.com/asticode/go-astilectron v0.8.1-0.20190415090856-5d5f14367434
+	github.com/asticode/go-astilectron-bootstrap v0.0.0-20180616141213-b3211646d205
+	github.com/asticode/go-astilectron-bundler v0.0.0-20190426172205-155c2a10bbb1 // indirect
+	github.com/asticode/go-astilog v1.0.0
+	github.com/asticode/go-bindata v0.0.0-20151023091102-a0ff2567cfb7 // indirect
 	github.com/brianvoe/gofakeit v3.17.0+incompatible
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20190204142019-df6d76eb9289 // indirect
@@ -35,9 +42,12 @@ require (
 	github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223 // indirect
 	github.com/nicksnyder/go-i18n/v2 v2.0.0-beta.6
 	github.com/opentracing/opentracing-go v1.0.2
+	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/pkg/errors v0.8.1
 	github.com/rogpeppe/go-internal v1.2.2 // indirect
 	github.com/rs/cors v1.6.0 // indirect
+	github.com/sam-kamerer/go-plister v0.0.0-20190202124357-57f251aa88ff // indirect
+	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/sideshow/apns2 v0.0.0-20181014012405-060d44b53d05
 	github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa
 	github.com/spf13/cobra v0.0.3

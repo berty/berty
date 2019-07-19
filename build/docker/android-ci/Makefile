@@ -1,5 +1,5 @@
 MAKEFILE_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-IMAGE ?= bertychat/android-ci:v4
+IMAGE ?= bertychat/android-ci:v5
 
 build:
 	cp $(MAKEFILE_DIR)/../patch/gomobile-env-flag.diff .

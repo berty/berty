@@ -1,4 +1,4 @@
-FROM  circleci/android:api-28-node8-alpha
+FROM  circleci/android:api-29-node
 
 ENV GO_VERSION=1.12.5
 
