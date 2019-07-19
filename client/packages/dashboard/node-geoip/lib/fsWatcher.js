@@ -2,18 +2,18 @@ var fs = require('fs')
 var path = require('path')
 var FSWatcher = {}
 
-function makeFsWatchFilter (name, directory, filename, cooldownDelay, callback) {
+function makeFsWatchFilter(name, directory, filename, cooldownDelay, callback) {
   var cooldownId = null
 
   // Delete the cooldownId and callback the outer function
-  function timeoutCallback () {
+  function timeoutCallback() {
     cooldownId = null
     callback()
   }
 
   // This function is called when there is a change in the data directory
   // It sets a timer to wait for the change to be completed
-  function onWatchEvent (event, changedFile) {
+  function onWatchEvent(event, changedFile) {
     // check to make sure changedFile is not null
     if (!changedFile) {
       return
@@ -22,7 +22,7 @@ function makeFsWatchFilter (name, directory, filename, cooldownDelay, callback) 
     var filePath = path.join(directory, changedFile)
 
     if (!filename || filename === changedFile) {
-      fs.exists(filePath, function onExists (exists) {
+      fs.exists(filePath, function onExists(exists) {
         if (!exists) {
           // if the changed file no longer exists, it was a deletion.
           // we ignore deleted files
@@ -64,7 +64,7 @@ function makeFsWatchFilter (name, directory, filename, cooldownDelay, callback) 
  * @param {string} name: name of the watcher to close
  *
  **/
-function stopWatching (name) {
+function stopWatching(name) {
   FSWatcher[name].close()
 }
 

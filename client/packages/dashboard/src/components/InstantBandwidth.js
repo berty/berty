@@ -20,7 +20,7 @@ const InstantBandwidthView = ({ style, node }) => {
         <Gauge
           value={node.rateIn}
           max={node.maxRateIn}
-          label='Incoming'
+          label="Incoming"
           color={IN_COLOR}
         />
       </div>
@@ -28,7 +28,7 @@ const InstantBandwidthView = ({ style, node }) => {
         <Gauge
           value={node.rateOut}
           max={node.maxRateOut}
-          label='Outgoing'
+          label="Outgoing"
           color={OUT_COLOR}
         />
       </div>

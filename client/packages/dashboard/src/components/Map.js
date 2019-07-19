@@ -12,7 +12,7 @@ export default
 @inject('locations')
 @observer
 class extends Component {
-  render () {
+  render() {
     const { locations, showHeat = true, showMarkers } = this.props
 
     const markers = wu(locations.entries()).reduce((m, [key, value]) => {
@@ -37,22 +37,22 @@ class extends Component {
         <LeafletMap center={[0, 0]} zoom={1}>
           <TileLayer
             // TileLayer skins: https://leaflet-extras.github.io/leaflet-providers/preview/
-            url='https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           />
           {showHeat &&
           heatPoints.length > 1 && ( // can crash if only one point, TODO: check if this comes from wu, otherwise open issue at react-leaflet-heatmap-layer
-            <HeatmapLayer
-              fitBoundsOnLoad // TODO: fit bounds even when only showMarkers is on
-              // fitBoundsOnUpdate
-              radius={10}
-              blur={5}
-              points={heatPoints}
-              longitudeExtractor={m => m[1]}
-              latitudeExtractor={m => m[0]}
-              intensityExtractor={m => m[2] * HEAT_GAIN}
-            />
-          )}
+              <HeatmapLayer
+                fitBoundsOnLoad // TODO: fit bounds even when only showMarkers is on
+                // fitBoundsOnUpdate
+                radius={10}
+                blur={5}
+                points={heatPoints}
+                longitudeExtractor={m => m[1]}
+                latitudeExtractor={m => m[0]}
+                intensityExtractor={m => m[2] * HEAT_GAIN}
+              />
+            )}
           {showMarkers && [
             ...wu(markers.keys()).map(llStr => (
               <Marker key={llStr} position={JSON.parse(llStr)} />

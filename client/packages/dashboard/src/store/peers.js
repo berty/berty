@@ -21,7 +21,7 @@ class Peers {
   @observable countries = new Map()
   @observable protocols = new Map()
 
-  @action.bound addConnected (peer) {
+  @action.bound addConnected(peer) {
     const { connected, addAddress, removeConnected } = this
     const { id, addrs } = peer
 
@@ -30,7 +30,7 @@ class Peers {
     addrs.forEach(addAddress)
   }
 
-  @action.bound removeConnected (id) {
+  @action.bound removeConnected(id) {
     const { connected, removeAddress } = this
 
     const peer = connected.get(id)
@@ -40,7 +40,7 @@ class Peers {
     }
   }
 
-  @action.bound addLocation (location) {
+  @action.bound addLocation(location) {
     const { locations, addCountry } = this
 
     const key = JSON.stringify(location)
@@ -49,7 +49,7 @@ class Peers {
     if (count === 0) addCountry(location.country)
   }
 
-  @action.bound removeLocation (location) {
+  @action.bound removeLocation(location) {
     const { locations, removeCountry } = this
 
     const key = JSON.stringify(location)
@@ -62,7 +62,7 @@ class Peers {
     }
   }
 
-  @action.bound addAddress (address) {
+  @action.bound addAddress(address) {
     const { addresses, addLocation } = this
 
     const existing = addresses.get(address) || {
@@ -78,7 +78,7 @@ class Peers {
     }
   }
 
-  @action.bound removeAddress (address) {
+  @action.bound removeAddress(address) {
     const { addresses, removeLocation } = this
 
     const existing = addresses.get(address)
@@ -94,14 +94,14 @@ class Peers {
     }
   }
 
-  @action.bound addCountry (country) {
+  @action.bound addCountry(country) {
     const { countries } = this
 
     const count = countries.get(country) || 0
     countries.set(country, count + 1)
   }
 
-  @action.bound removeCountry (country) {
+  @action.bound removeCountry(country) {
     const { countries } = this
 
     const count = countries.get(country) || 0
@@ -109,7 +109,7 @@ class Peers {
     else countries.set(country, count - 1)
   }
 
-  @action.bound async reset (api) {
+  @action.bound async reset(api) {
     const {
       addConnected,
       removeConnected,
@@ -125,7 +125,7 @@ class Peers {
 
     // TODO: close previous stream on subsequent calls
     if (api) {
-      (await api.monitorPeers({})).on('data', peer =>
+      ;(await api.monitorPeers({})).on('data', peer =>
         (peer.connection === 1 ? addConnected : removeConnected)(peer)
       )
     }

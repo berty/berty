@@ -98,8 +98,13 @@ install.lerna:
 	$(LERNA_UPDATE)
 
 .PHONY: pretty
-pretty: $(ROOT)
-	npm run prettify -- $$(find app -type f -name '*.js' -not -path '*/node_modules/*')
+pretty: $(LERNA_PACKAGES)
+	npm run prettify -- $$(find packages -type f -name '*.js' -not -path '*/node_modules/*')
+
+
+.PHONY: pretty.gen
+pretty.gen: $(LERNA_PACKAGES)
+	npm run prettify -- $$(find packages -type f -name '*..gen.js' -not -path '*/node_modules/*')
 
 ### GENERATE
 

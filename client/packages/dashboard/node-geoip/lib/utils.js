@@ -1,6 +1,6 @@
 var utils = (module.exports = {})
 
-utils.aton4 = function (a) {
+utils.aton4 = function(a) {
   a = a.split(/\./)
   return (
     ((parseInt(a[0], 10) << 24) >>> 0) +
@@ -10,7 +10,7 @@ utils.aton4 = function (a) {
   )
 }
 
-utils.aton6 = function (a) {
+utils.aton6 = function(a) {
   a = a.replace(/"/g, '').split(/:/)
 
   var l = a.length - 1
@@ -44,7 +44,7 @@ utils.aton6 = function (a) {
   return r
 }
 
-utils.cmp = function (a, b) {
+utils.cmp = function(a, b) {
   if (typeof a === 'number' && typeof b === 'number') {
     return a < b ? -1 : a > b ? 1 : 0
   }
@@ -56,7 +56,7 @@ utils.cmp = function (a, b) {
   return null
 }
 
-utils.cmp6 = function (a, b) {
+utils.cmp6 = function(a, b) {
   for (var ii = 0; ii < 2; ii++) {
     if (a[ii] < b[ii]) {
       return -1
@@ -70,7 +70,7 @@ utils.cmp6 = function (a, b) {
   return 0
 }
 
-utils.isPrivateIP = function (addr) {
+utils.isPrivateIP = function(addr) {
   addr = addr.toString()
 
   return (
@@ -84,7 +84,7 @@ utils.isPrivateIP = function (addr) {
   )
 }
 
-utils.ntoa4 = function (n) {
+utils.ntoa4 = function(n) {
   n = n.toString()
   n =
     '' +
@@ -99,7 +99,7 @@ utils.ntoa4 = function (n) {
   return n
 }
 
-utils.ntoa6 = function (n) {
+utils.ntoa6 = function(n) {
   var a = '['
 
   for (var i = 0; i < n.length; i++) {

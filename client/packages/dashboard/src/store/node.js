@@ -21,13 +21,13 @@ class Node {
   watchdog = undefined
   resetTimeout = undefined
 
-  @computed get infos () {
+  @computed get infos() {
     const raw = get(this, 'deviceInfos.infos')
     if (!raw) return null
     return convertListMap(raw)
   }
 
-  @computed get prettyVersion () {
+  @computed get prettyVersion() {
     const { infos } = this
 
     if (!infos) return null
@@ -36,7 +36,7 @@ class Node {
     return `Version: ${Version}, BuildMode: ${BuildMode}, Branch: ${GitBranch}, Commit: ${GitSha}`
   }
 
-  @computed get prettyDeviceInfos () {
+  @computed get prettyDeviceInfos() {
     const { infos } = this
 
     if (!infos) return null
@@ -45,13 +45,13 @@ class Node {
     return `Host: ${Hostname}, OS: ${OS}, Arch: ${Arch}, NumCPU: ${NumCPU}`
   }
 
-  @computed get url () {
+  @computed get url() {
     const hash = routing.location.hash
     if (!hash || typeof hash != 'string') return null
     return hash.substring(1)
   }
 
-  @action.bound async handleBandwidthData (data) {
+  @action.bound async handleBandwidthData(data) {
     const { rateIn, rateOut } = data
 
     this.rateIn = rateIn
@@ -69,7 +69,7 @@ class Node {
     if (this.rateOutOverTime.length > TIME_SECONDS) this.rateOutOverTime.shift()
   }
 
-  @action.bound reset = flow(function * resetFlow () {
+  @action.bound reset = flow(function* resetFlow() {
     if (this.watchdog !== undefined) {
       this.watchdog = clearInterval(this.watchdog)
     }

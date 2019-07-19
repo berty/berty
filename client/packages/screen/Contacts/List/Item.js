@@ -49,9 +49,7 @@ export class Item extends PureComponent {
             </Text>
             <Text color={colors.subtleGrey} left ellipsed tiny>
               {t(
-                `contacts.statuses.${
-                  enums.ValueBertyEntityContactInputStatus[status]
-                }`
+                `contacts.statuses.${enums.ValueBertyEntityContactInputStatus[status]}`
               )}
             </Text>
           </Flex.Rows>

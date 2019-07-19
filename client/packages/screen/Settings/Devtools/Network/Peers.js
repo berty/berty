@@ -167,12 +167,8 @@ class Peers extends Component {
         <View style={styles.peer}>
           <Text style={styles.title}>
             {!isFiltered
-              ? `Connected Peers: ${filteredPeers.length}/${
-                  this.state.peers.length
-                }`
-              : `Matched Peers: ${filteredPeers.length}/${
-                  this.state.peers.length
-                }`}
+              ? `Connected Peers: ${filteredPeers.length}/${this.state.peers.length}`
+              : `Matched Peers: ${filteredPeers.length}/${this.state.peers.length}`}
           </Text>
         </View>
         <SearchBar onChangeText={filter => this.peerFilter(filter)}>

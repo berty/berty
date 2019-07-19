@@ -1,7 +1,7 @@
 var geoip = require('../lib/geoip')
 
 module.exports = {
-  testLookup: function (test) {
+  testLookup: function(test) {
     test.expect(2)
 
     var ip = '8.8.4.4'
@@ -18,7 +18,7 @@ module.exports = {
     test.done()
   },
 
-  testDataIP4: function (test) {
+  testDataIP4: function(test) {
     test.expect(9)
 
     var ip = '72.229.28.185'
@@ -50,7 +50,7 @@ module.exports = {
     test.done()
   },
 
-  testDataIP6: function (test) {
+  testDataIP6: function(test) {
     test.expect(9)
 
     var ipv6 = '2001:1c04:400::1'
@@ -82,7 +82,7 @@ module.exports = {
     test.done()
   },
 
-  testUTF8: function (test) {
+  testUTF8: function(test) {
     test.expect(2)
 
     var ip = '2.139.175.1'
@@ -95,7 +95,7 @@ module.exports = {
     test.done()
   },
 
-  testMetro: function (test) {
+  testMetro: function(test) {
     test.expect(2)
 
     var actual = geoip.lookup('23.240.63.68')
@@ -106,7 +106,7 @@ module.exports = {
     test.done()
   },
 
-  testIPv4MappedIPv6: function (test) {
+  testIPv4MappedIPv6: function(test) {
     test.expect(2)
 
     var actual = geoip.lookup('::ffff:173.185.182.82')
@@ -117,7 +117,7 @@ module.exports = {
     test.done()
   },
 
-  testSyncReload: function (test) {
+  testSyncReload: function(test) {
     test.expect(6)
 
     // get original data
@@ -148,7 +148,7 @@ module.exports = {
     test.done()
   },
 
-  testAsyncReload: function (test) {
+  testAsyncReload: function(test) {
     test.expect(6)
 
     // get original data
@@ -167,7 +167,7 @@ module.exports = {
     test.equal(none6, null)
 
     // reload data asynchronously
-    geoip.reloadData(function () {
+    geoip.reloadData(function() {
       // make sure we have value from before
       var after4 = geoip.lookup('75.82.117.180')
       test.deepEqual(before4, after4)

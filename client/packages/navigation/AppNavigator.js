@@ -19,6 +19,6 @@ const AppNavigator = createSwitchNavigator(
   }
 )
 
-export default (Platform.OS === 'web'
+export default Platform.OS === 'web'
   ? AppNavigator
-  : createAppContainer(AppNavigator))
+  : createAppContainer(AppNavigator)

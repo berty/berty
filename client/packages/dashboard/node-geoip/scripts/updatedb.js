@@ -56,7 +56,7 @@ var databases = [
   },
 ]
 
-function mkdir (name) {
+function mkdir(name) {
   var dir = path.dirname(name)
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir)
@@ -67,7 +67,7 @@ function mkdir (name) {
 // Return array of string values, or NULL if CSV string not well formed.
 // Return array of string values, or NULL if CSV string not well formed.
 
-function try_fixing_line (line) {
+function try_fixing_line(line) {
   var pos1 = 0
   var pos2 = -1
   // escape quotes
@@ -96,7 +96,7 @@ function try_fixing_line (line) {
   return line
 }
 
-function CSVtoArray (text) {
+function CSVtoArray(text) {
   var re_valid = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/
   var re_value = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g
   // Return NULL if input string is not well formed CSV string.
@@ -107,7 +107,7 @@ function CSVtoArray (text) {
   var a = [] // Initialize array to receive values.
   text.replace(
     re_value, // "Walk" the string using replace with callback.
-    function (m0, m1, m2, m3) {
+    function(m0, m1, m2, m3) {
       // Remove backslash from \' in single quoted values.
       if (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"))
       // Remove backslash from \" in double quoted values.
@@ -122,7 +122,7 @@ function CSVtoArray (text) {
   return a
 }
 
-function getHTTPOptions (downloadUrl) {
+function getHTTPOptions(downloadUrl) {
   var options = url.parse(downloadUrl)
   options.headers = {
     'User-Agent': user_agent,
@@ -143,7 +143,7 @@ function getHTTPOptions (downloadUrl) {
   return options
 }
 
-function check (database, cb) {
+function check(database, cb) {
   if (args.indexOf('force') !== -1) {
     // we are forcing database upgrade,
     // so not even using checksums
@@ -158,7 +158,7 @@ function check (database, cb) {
   }
 
   // read existing checksum file
-  fs.readFile(path.join(dataPath, database.type + '.checksum'), function (
+  fs.readFile(path.join(dataPath, database.type + '.checksum'), function(
     err,
     data
   ) {
@@ -168,7 +168,7 @@ function check (database, cb) {
 
     console.log('Checking ', checksumUrl)
 
-    function onResponse (response) {
+    function onResponse(response) {
       var status = response.statusCode
 
       if (status !== 200) {
@@ -182,11 +182,11 @@ function check (database, cb) {
       }
 
       var str = ''
-      response.on('data', function (chunk) {
+      response.on('data', function(chunk) {
         str += chunk
       })
 
-      response.on('end', function () {
+      response.on('end', function() {
         if (str && str.length) {
           if (str == database.checkValue) {
             console.log(
@@ -215,7 +215,7 @@ function check (database, cb) {
   })
 }
 
-function fetch (database, cb) {
+function fetch(database, cb) {
   if (database.skip) {
     return cb(null, null, null, database)
   }
@@ -236,7 +236,7 @@ function fetch (database, cb) {
 
   console.log('Fetching ', downloadUrl)
 
-  function onResponse (response) {
+  function onResponse(response) {
     var status = response.statusCode
 
     if (status !== 200) {
@@ -258,7 +258,7 @@ function fetch (database, cb) {
       tmpFilePipe = response.pipe(tmpFileStream)
     }
 
-    tmpFilePipe.on('close', function () {
+    tmpFilePipe.on('close', function() {
       console.log(' DONE'.green)
       cb(null, tmpFile, fileName, database)
     })
@@ -271,7 +271,7 @@ function fetch (database, cb) {
   process.stdout.write('Retrieving ' + fileName + ' ...')
 }
 
-function extract (tmpFile, tmpFileName, database, cb) {
+function extract(tmpFile, tmpFileName, database, cb) {
   if (database.skip) {
     return cb(null, database)
   }
@@ -280,7 +280,7 @@ function extract (tmpFile, tmpFileName, database, cb) {
     cb(null, database)
   } else {
     process.stdout.write('Extracting ' + tmpFileName + ' ...')
-    yauzl.open(tmpFile, { autoClose: true, lazyEntries: true }, function (
+    yauzl.open(tmpFile, { autoClose: true, lazyEntries: true }, function(
       err,
       zipfile
     ) {
@@ -288,7 +288,7 @@ function extract (tmpFile, tmpFileName, database, cb) {
         throw err
       }
       zipfile.readEntry()
-      zipfile.on('entry', function (entry) {
+      zipfile.on('entry', function(entry) {
         if (/\/$/.test(entry.fileName)) {
           // Directory file names end with '/'.
           // Note that entries for directories themselves are optional.
@@ -296,11 +296,11 @@ function extract (tmpFile, tmpFileName, database, cb) {
           zipfile.readEntry()
         } else {
           // file entry
-          zipfile.openReadStream(entry, function (err, readStream) {
+          zipfile.openReadStream(entry, function(err, readStream) {
             if (err) {
               throw err
             }
-            readStream.on('end', function () {
+            readStream.on('end', function() {
               zipfile.readEntry()
             })
             var filePath = entry.fileName.split('/')
@@ -310,7 +310,7 @@ function extract (tmpFile, tmpFileName, database, cb) {
           })
         }
       })
-      zipfile.once('end', function () {
+      zipfile.once('end', function() {
         console.log(' DONE'.green)
         cb(null, database)
       })
@@ -318,8 +318,8 @@ function extract (tmpFile, tmpFileName, database, cb) {
   }
 }
 
-function processLookupCountry (src, cb) {
-  function processLine (line) {
+function processLookupCountry(src, cb) {
+  function processLine(line) {
     var fields = CSVtoArray(line)
     if (!fields || fields.length < 6) {
       console.log('weird line: %s::', line)
@@ -332,20 +332,20 @@ function processLookupCountry (src, cb) {
   process.stdout.write('Processing Lookup Data (may take a moment) ...')
 
   lazy(fs.createReadStream(tmpDataFile))
-    .lines.map(function (byteArray) {
+    .lines.map(function(byteArray) {
       return iconv.decode(byteArray, 'latin1')
     })
     .skip(1)
     .map(processLine)
-    .on('pipe', function () {
+    .on('pipe', function() {
       console.log(' DONE'.green)
       cb()
     })
 }
 
-function processCountryData (src, dest, cb) {
+function processCountryData(src, dest, cb) {
   var lines = 0
-  function processLine (line) {
+  function processLine(line) {
     var fields = CSVtoArray(line)
 
     if (!fields || fields.length < 6) {
@@ -412,20 +412,20 @@ function processCountryData (src, dest, cb) {
   var datFile = fs.openSync(dataFile, 'w')
 
   lazy(fs.createReadStream(tmpDataFile))
-    .lines.map(function (byteArray) {
+    .lines.map(function(byteArray) {
       return iconv.decode(byteArray, 'latin1')
     })
     .skip(1)
     .map(processLine)
-    .on('pipe', function () {
+    .on('pipe', function() {
       console.log(' DONE'.green)
       cb()
     })
 }
 
-function processCityData (src, dest, cb) {
+function processCityData(src, dest, cb) {
   var lines = 0
-  function processLine (line) {
+  function processLine(line) {
     if (line.match(/^Copyright/) || !line.match(/\d/)) {
       return
     }
@@ -519,7 +519,7 @@ function processCityData (src, dest, cb) {
   var datFile = fs.openSync(dataFile, 'w')
 
   lazy(fs.createReadStream(tmpDataFile))
-    .lines.map(function (byteArray) {
+    .lines.map(function(byteArray) {
       return iconv.decode(byteArray, 'latin1')
     })
     .skip(1)
@@ -527,10 +527,10 @@ function processCityData (src, dest, cb) {
     .on('pipe', cb)
 }
 
-function processCityDataNames (src, dest, cb) {
+function processCityDataNames(src, dest, cb) {
   var locId = null
   var linesCount = 0
-  function processLine (line) {
+  function processLine(line) {
     if (line.match(/^Copyright/) || !line.match(/\d/)) {
       return
     }
@@ -579,7 +579,7 @@ function processCityDataNames (src, dest, cb) {
   var datFile = fs.openSync(dataFile, 'w')
 
   lazy(fs.createReadStream(tmpDataFile))
-    .lines.map(function (byteArray) {
+    .lines.map(function(byteArray) {
       return iconv.decode(byteArray, 'utf-8')
     })
     .skip(1)
@@ -587,7 +587,7 @@ function processCityDataNames (src, dest, cb) {
     .on('pipe', cb)
 }
 
-function processData (database, cb) {
+function processData(database, cb) {
   if (database.skip) {
     return cb(null, database)
   }
@@ -598,23 +598,23 @@ function processData (database, cb) {
 
   if (type === 'country') {
     if (Array.isArray(src)) {
-      processLookupCountry(src[0], function () {
-        processCountryData(src[1], dest[1], function () {
-          processCountryData(src[2], dest[2], function () {
+      processLookupCountry(src[0], function() {
+        processCountryData(src[1], dest[1], function() {
+          processCountryData(src[2], dest[2], function() {
             cb(null, database)
           })
         })
       })
     } else {
-      processCountryData(src, dest, function () {
+      processCountryData(src, dest, function() {
         cb(null, database)
       })
     }
   } else if (type === 'city') {
-    processCityDataNames(src[0], dest[0], function () {
-      processCityData(src[1], dest[1], function () {
+    processCityDataNames(src[0], dest[0], function() {
+      processCityData(src[1], dest[1], function() {
         console.log('city data processed')
-        processCityData(src[2], dest[2], function () {
+        processCityData(src[2], dest[2], function() {
           console.log(' DONE'.green)
           cb(null, database)
         })
@@ -623,7 +623,7 @@ function processData (database, cb) {
   }
 }
 
-function updateChecksum (database, cb) {
+function updateChecksum(database, cb) {
   if (database.skip || !database.checkValue) {
     // don't need to update checksums cause it was not fetched or did not change
     return cb()
@@ -632,7 +632,7 @@ function updateChecksum (database, cb) {
     path.join(dataPath, database.type + '.checksum'),
     database.checkValue,
     'utf8',
-    function (err) {
+    function(err) {
       if (err) {
         console.log(
           'Failed to Update checksums.'.red,
@@ -650,13 +650,13 @@ mkdir(tmpPath)
 
 async.eachSeries(
   databases,
-  function (database, nextDatabase) {
+  function(database, nextDatabase) {
     async.seq(check, fetch, extract, processData, updateChecksum)(
       database,
       nextDatabase
     )
   },
-  function (err) {
+  function(err) {
     if (err) {
       console.log('Failed to Update Databases from MaxMind.'.red, err)
       process.exit(1)

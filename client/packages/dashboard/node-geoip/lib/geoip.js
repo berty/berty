@@ -2,7 +2,7 @@ var fs = require('fs')
 var path = require('path')
 var isIpLib = require('is-ip')
 
-function isIP (string) {
+function isIP(string) {
   if (isIpLib.v4(string)) return 4
   else if (isIpLib.v6(string)) return 6
   else return 0
@@ -63,7 +63,7 @@ var cache6 = JSON.parse(JSON.stringify(conf6))
 var RECORD_SIZE = 10
 var RECORD_SIZE6 = 34
 
-function lookup4 (ip) {
+function lookup4(ip) {
   var fline = 0
   var floor = cache4.lastIP
   var cline = cache4.lastLine
@@ -176,7 +176,7 @@ function lookup4 (ip) {
   } while (1)
 }
 
-function lookup6 (ip) {
+function lookup6(ip) {
   var buffer = cache6.mainBuffer
   var recordSize = cache6.recordSize
   var locBuffer = cache4.locationBuffer
@@ -189,7 +189,7 @@ function lookup6 (ip) {
     city: '',
     ll: [0, 0],
   }
-  function readip (line, offset) {
+  function readip(line, offset) {
     var ii = 0
     var ip = []
 
@@ -285,7 +285,7 @@ function lookup6 (ip) {
   } while (1)
 }
 
-function get4mapped (ip) {
+function get4mapped(ip) {
   var ipv6 = ip.toUpperCase()
   var v6prefixes = ['0:0:0:0:0:FFFF:', '::FFFF:']
   for (var i = 0; i < v6prefixes.length; i++) {
@@ -297,7 +297,7 @@ function get4mapped (ip) {
   return null
 }
 
-function preload (callback) {
+function preload(callback) {
   var datFile
   var datSize
   var asyncCache = JSON.parse(JSON.stringify(conf4))
@@ -305,35 +305,35 @@ function preload (callback) {
   // when the preload function receives a callback, do the task asynchronously
   if (typeof arguments[0] === 'function') {
     async.series([
-      function (cb) {
+      function(cb) {
         async.series(
           [
-            function (cb2) {
+            function(cb2) {
               datFile = dataFiles.cityNames
               cb2()
             },
-            function (cb2) {
+            function(cb2) {
               datSize = datFile.byteLength
               asyncCache.locationBuffer = Buffer.alloc(datSize)
               cb2()
             },
-            function (cb2) {
+            function(cb2) {
               datFile.copy(asyncCache.locationBuffer)
               cb2()
             },
-            function (cb2) {
+            function(cb2) {
               cb2()
             },
-            function (cb2) {
+            function(cb2) {
               datFile = dataFiles.city
               cb2()
             },
-            function (cb2) {
+            function(cb2) {
               datSize = datFile.byteLength
               cb2()
             },
           ],
-          function (err) {
+          function(err) {
             if (err) {
               if (err.code !== 'ENOENT' && err.code !== 'EBADF') {
                 throw err
@@ -346,20 +346,20 @@ function preload (callback) {
           }
         )
       },
-      function () {
+      function() {
         asyncCache.mainBuffer = Buffer.alloc(datSize)
 
         async.series(
           [
-            function (cb2) {
+            function(cb2) {
               datFile.copy(asyncCache.mainBuffer)
               cb2()
             },
-            function (cb2) {
+            function(cb2) {
               cb2()
             },
           ],
-          function (err) {
+          function(err) {
             if (err) {
               // keep old cache
             } else {
@@ -414,7 +414,7 @@ function preload (callback) {
   }
 }
 
-function preload6 (callback) {
+function preload6(callback) {
   var datFile
   var datSize
   var asyncCache6 = JSON.parse(JSON.stringify(conf6))
@@ -422,19 +422,19 @@ function preload6 (callback) {
   // when the preload function receives a callback, do the task asynchronously
   if (typeof arguments[0] === 'function') {
     async.series([
-      function (cb) {
+      function(cb) {
         async.series(
           [
-            function (cb2) {
+            function(cb2) {
               datFile = dataFiles.city6
               cb2()
             },
-            function (cb2) {
+            function(cb2) {
               datSize = datFile.byteLength
               cb2()
             },
           ],
-          function (err) {
+          function(err) {
             if (err) {
               if (err.code !== 'ENOENT' && err.code !== 'EBADF') {
                 throw err
@@ -447,20 +447,20 @@ function preload6 (callback) {
           }
         )
       },
-      function () {
+      function() {
         asyncCache6.mainBuffer = Buffer.alloc(datSize)
 
         async.series(
           [
-            function (cb2) {
+            function(cb2) {
               datFile.copy(asyncCache6.mainBuffer)
               cb2()
             },
-            function (cb2) {
+            function(cb2) {
               cb2()
             },
           ],
-          function (err) {
+          function(err) {
             if (err) {
               // keep old cache
             } else {
@@ -505,7 +505,7 @@ function preload6 (callback) {
 module.exports = {
   cmp: utils.cmp,
 
-  lookup: function (ip) {
+  lookup: function(ip) {
     if (!ip) {
       return null
     } else if (typeof ip === 'number') {
@@ -524,7 +524,7 @@ module.exports = {
     return null
   },
 
-  pretty: function (n) {
+  pretty: function(n) {
     if (typeof n === 'string') {
       return n
     } else if (typeof n === 'number') {
@@ -538,15 +538,15 @@ module.exports = {
 
   // Start watching for data updates. The watcher waits one minute for file transfer to
   // completete before triggering the callback.
-  startWatchingDataUpdate: function (callback) {
-    fsWatcher.makeFsWatchFilter(watcherName, geodatadir, 60 * 1000, function () {
+  startWatchingDataUpdate: function(callback) {
+    fsWatcher.makeFsWatchFilter(watcherName, geodatadir, 60 * 1000, function() {
       // Reload data
       async.series(
         [
-          function (cb) {
+          function(cb) {
             preload(cb)
           },
-          function (cb) {
+          function(cb) {
             preload6(cb)
           },
         ],
@@ -556,31 +556,31 @@ module.exports = {
   },
 
   // Stop watching for data updates.
-  stopWatchingDataUpdate: function () {
+  stopWatchingDataUpdate: function() {
     fsWatcher.stopWatching(watcherName)
   },
 
   // clear data
-  clear: function () {
+  clear: function() {
     cache4 = JSON.parse(JSON.stringify(conf4))
     cache6 = JSON.parse(JSON.stringify(conf6))
   },
 
   // Reload data synchronously
-  reloadDataSync: function () {
+  reloadDataSync: function() {
     preload()
     preload6()
   },
 
   // Reload data asynchronously
-  reloadData: function (callback) {
+  reloadData: function(callback) {
     // Reload data
     async.series(
       [
-        function (cb) {
+        function(cb) {
           preload(cb)
         },
-        function (cb) {
+        function(cb) {
           preload6(cb)
         },
       ],

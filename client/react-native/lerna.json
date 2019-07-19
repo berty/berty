@@ -1,0 +1,10 @@
+{
+  "lerna": "3.13.4",
+  "packages": [
+    "app/*",
+    "app/view/*",
+    "tools/*",
+    "web"
+  ],
+  "version": "0.0.1"
+}
