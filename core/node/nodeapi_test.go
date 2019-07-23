@@ -7,9 +7,9 @@ import (
 	"io"
 	"testing"
 
+	coreutil "berty.tech/core/api/helper"
 	nodeapi "berty.tech/core/api/node"
 	"berty.tech/core/entity"
-	netutil "berty.tech/network/helper"
 	. "github.com/smartystreets/goconvey/convey"
 	"google.golang.org/grpc"
 )
@@ -39,7 +39,7 @@ func TestPagination(t *testing.T) {
 		// alice.sql = alice.sql(nil).Debug() // temporarily uncomment this line to have gorm debug
 
 		// graphql service
-		ic := netutil.NewIOGrpc()
+		ic := coreutil.NewIOGrpc()
 		icdialer := ic.NewDialer()
 		dialOpts := append([]grpc.DialOption{
 			grpc.WithInsecure(),

@@ -56,9 +56,8 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 
 	// configure network
 	n.networkDriver.OnMessage(n.HandleMessage)
-
 	n.networkDriver.SetLocalContactID(n.UserID())
-	_ = n.networkDriver.Join(ctx)
+	n.networkDriver.Join()
 
 	// FIXME: subscribe to every owned device IDs
 	// var devices []entity.Device
@@ -80,3 +79,16 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 
 	return nil
 }
+
+// func (n *Node) UpdateNetworkHost(ctx context.Context, h *host.BertyHost) error {
+// 	tracer := tracing.EnterFunc(ctx, h)
+// 	defer tracer.Finish()
+// 	ctx = tracer.Context()
+
+// 	if n.networkDriver == nil {
+// 		return fmt.Errorf("no network driver is set")
+// 	}
+
+// 	n.networkDriver.UpdateHost(h)
+// 	return nil
+// }

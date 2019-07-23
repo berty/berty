@@ -20,7 +20,7 @@ import (
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/notification"
-	network_config "berty.tech/network/config"
+	"berty.tech/network"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -59,6 +59,7 @@ type daemonOptions struct {
 	hop            bool     `mapstructure:"hop"` // relay hop
 	ble            bool     `mapstructure:"ble"`
 	mdns           bool     `mapstructure:"mdns"`
+	mobile         bool     `mapstructure:"mobile"`
 	dhtServer      bool     `mapstructure:"dht"`
 	PrivateNetwork bool     `mapstructure:"private-network"`
 	nickname       string   `mapstructure:"nickname"`
@@ -85,12 +86,13 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringSliceVar(&opts.apnsCerts, "apns-certs", []string{}, "Path of APNs certificates, delimited by commas")
 	flags.StringSliceVar(&opts.apnsDevVoipCerts, "apns-dev-voip-certs", []string{}, "Path of APNs VoIP development certificates, delimited by commas")
 	flags.StringSliceVar(&opts.fcmAPIKeys, "fcm-api-keys", []string{}, "API keys for Firebase Cloud Messaging, in the form packageid:token, delimited by commas")
-	flags.StringSliceVar(&opts.bootstrap, "bootstrap", network_config.DefaultBootstrap, "boostrap peers")
+	flags.StringSliceVar(&opts.bootstrap, "bootstrap", network.DefaultBootstrap, "boostrap peers")
 	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Driver")
-	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
+	// flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
 	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
 	flags.BoolVar(&opts.dhtServer, "dht-server", true, "enable dht server")
 	flags.BoolVar(&opts.ble, "ble", false, "enable ble transport")
+	flags.BoolVar(&opts.mobile, "mobile", false, "enable mobile mode")
 	flags.BoolVar(&opts.PrivateNetwork, "private-network", true, "enable private network with the default swarm key")
 	flags.BoolVar(&opts.ipfs, "ipfs", false, "connect to ipfs network (override private-network & boostrap)")
 	flags.BoolVar(&opts.peerCache, "cache-peer", true, "if false, network will ask the dht every time he need to send an envelope (emit)")
@@ -234,8 +236,18 @@ func runDaemon(opts *daemonOptions) error {
 
 	if opts.ipfs {
 		logger().Warn("Connecting to ipfs network")
-		opts.bootstrap = network_config.BootstrapIpfs
+		opts.bootstrap = network.BootstrapIpfs
 		opts.PrivateNetwork = false
+	}
+
+	networkConfig := &daemon.NetworkConfig{
+		PeerCache:      opts.peerCache,
+		Identity:       opts.identity,
+		Bootstrap:      opts.bootstrap,
+		BindP2P:        opts.bindP2P,
+		Mdns:           opts.mdns,
+		PrivateNetwork: opts.PrivateNetwork,
+		Mobile:         opts.mobile,
 	}
 
 	config := &daemon.Config{
@@ -251,17 +263,8 @@ func runDaemon(opts *daemonOptions) error {
 		ApnsDevVoipCerts: opts.apnsDevVoipCerts,
 		FcmAPIKeys:       opts.fcmAPIKeys,
 		PrivateKeyFile:   opts.privateKeyFile,
-		PeerCache:        opts.peerCache,
-		Identity:         opts.identity,
-		Bootstrap:        opts.bootstrap,
 		NoP2P:            opts.noP2P,
-		BindP2P:          opts.bindP2P,
-		TransportP2P:     opts.transportP2P,
-		Hop:              opts.hop,
-		Ble:              opts.ble,
-		Mdns:             opts.mdns,
-		DhtServer:        opts.dhtServer,
-		PrivateNetwork:   opts.PrivateNetwork,
+		NetworkConfig:    networkConfig,
 	}
 
 	startRequest := &daemon.StartRequest{

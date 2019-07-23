@@ -112,9 +112,39 @@
             },
             "NetworkConfig": {
               "fields": {
-                "json": {
-                  "type": "string",
+                "peerCache": {
+                  "type": "bool",
                   "id": 1
+                },
+                "identity": {
+                  "type": "string",
+                  "id": 2
+                },
+                "bootstrap": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 3
+                },
+                "bindP2P": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 5
+                },
+                "mdns": {
+                  "type": "bool",
+                  "id": 6
+                },
+                "privateNetwork": {
+                  "type": "bool",
+                  "id": 7
+                },
+                "swarmKey": {
+                  "type": "string",
+                  "id": 8
+                },
+                "mobile": {
+                  "type": "bool",
+                  "id": 9
                 }
               }
             },
@@ -142,7 +172,7 @@
                 },
                 "grpcWebBind": {
                   "type": "string",
-                  "id": 25
+                  "id": 3
                 },
                 "hideBanner": {
                   "type": "bool",
@@ -183,56 +213,13 @@
                   "type": "string",
                   "id": 12
                 },
-                "peerCache": {
-                  "type": "bool",
+                "networkConfig": {
+                  "type": "NetworkConfig",
                   "id": 13
-                },
-                "identity": {
-                  "type": "string",
-                  "id": 14
-                },
-                "bootstrap": {
-                  "rule": "repeated",
-                  "type": "string",
-                  "id": 15
                 },
                 "noP2P": {
                   "type": "bool",
-                  "id": 16
-                },
-                "bindP2P": {
-                  "rule": "repeated",
-                  "type": "string",
-                  "id": 17
-                },
-                "transportP2P": {
-                  "rule": "repeated",
-                  "type": "string",
-                  "id": 18
-                },
-                "hop": {
-                  "type": "bool",
-                  "id": 19
-                },
-                "ble": {
-                  "type": "bool",
-                  "id": 20
-                },
-                "mdns": {
-                  "type": "bool",
-                  "id": 21
-                },
-                "dhtServer": {
-                  "type": "bool",
-                  "id": 22
-                },
-                "PrivateNetwork": {
-                  "type": "bool",
-                  "id": 23
-                },
-                "SwarmKeyPath": {
-                  "type": "string",
-                  "id": 24
+                  "id": 14
                 }
               }
             },

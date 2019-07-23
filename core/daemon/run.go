@@ -7,8 +7,6 @@ import (
 	"berty.tech/core/pkg/banner"
 	"berty.tech/core/pkg/logmanager"
 	"berty.tech/core/push"
-	"berty.tech/network"
-	network_config "berty.tech/network/config"
 	"go.uber.org/zap"
 )
 
@@ -52,30 +50,7 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 	}
 
 	if !cfg.NoP2P {
-		accountOptions = append(accountOptions, account.WithNetwork(
-			network.New(ctx,
-				network.WithDefaultOptions(),
-				network.WithConfig(&network_config.Config{
-					DefaultBind:      len(cfg.BindP2P) == 0,
-					Bind:             cfg.BindP2P,
-					MDNS:             cfg.Mdns,
-					DHTServer:        cfg.DhtServer,
-					WS:               true,
-					TCP:              true,
-					BLE:              cfg.Ble,
-					QUIC:             true,
-					Metric:           true,
-					DefaultBootstrap: false,
-					Bootstrap:        cfg.Bootstrap,
-					HOP:              cfg.Hop,
-					PrivateNetwork:   cfg.PrivateNetwork,
-					Identity:         cfg.Identity,
-					OverridePersist:  false,
-					PeerCache:        cfg.PeerCache,
-					//					DHTKVLogDatastore: cfg.DhtkvLogDatastore,
-				}),
-			),
-		))
+		accountOptions = append(accountOptions, account.WithNetwork(NewNetworkDriver(ctx, cfg.NetworkConfig)))
 	} else {
 		accountOptions = append(accountOptions, account.WithEnqueurNetwork())
 	}

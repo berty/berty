@@ -34,7 +34,7 @@ func (n *Node) ID(ctx context.Context, _ *node.Void) (*network_metric.Peer, erro
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	return n.networkDriver.ID(ctx), nil
+	return n.networkDriver.ID(), nil
 }
 
 func (n *Node) Protocols(ctx context.Context, p *network_metric.Peer) (*node.ProtocolsOutput, error) {

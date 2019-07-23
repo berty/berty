@@ -8,7 +8,7 @@ import (
 	"berty.tech/core/daemon"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
-	network_config "berty.tech/network/config"
+	network_config "berty.tech/network"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"

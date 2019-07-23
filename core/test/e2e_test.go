@@ -13,6 +13,7 @@ import (
 	mock "berty.tech/core/test/mock/network"
 	"berty.tech/core/testrunner"
 	p2pnet "berty.tech/network"
+	"berty.tech/network/host"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -832,7 +833,17 @@ func TestAliasesFlow(t *testing.T) {
 }
 
 func setupP2PNetwork(ctx context.Context) (*p2pnet.Network, error) {
-	return p2pnet.New(ctx, p2pnet.WithServerTestOptions())
+	bh, err := host.New(ctx, host.WithListeners("/ip4/127.0.0.1/tcp/0"))
+	if err != nil {
+		return nil, err
+	}
+
+	return p2pnet.New(ctx, bh,
+		p2pnet.WithPeerCache(),
+
+		// Disable defaultBootstrap
+		p2pnet.WithBootstrap(),
+	)
 }
 
 func getBootstrap(ctx context.Context, n *p2pnet.Network) []string {
@@ -840,8 +851,8 @@ func getBootstrap(ctx context.Context, n *p2pnet.Network) []string {
 	bootstrap := make([]string, len(addrs))
 
 	for i, a := range addrs {
-		if a.String() != "/p2p-circuit" {
-			bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a.String(), n.ID(ctx).ID)
+		if a != "/p2p-circuit" {
+			bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a, n.ID().ID)
 		}
 	}
 

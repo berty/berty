@@ -255,9 +255,16 @@ func (m *GRPCInfos) GetJson() string {
 	return ""
 }
 
-// @TODO: switch to protobuf message instead of json
+// Network Config
 type NetworkConfig struct {
-	Json                 string   `protobuf:"bytes,1,opt,name=json,proto3" json:"json,omitempty"`
+	PeerCache            bool     `protobuf:"varint,1,opt,name=peerCache,proto3" json:"peerCache,omitempty"`
+	Identity             string   `protobuf:"bytes,2,opt,name=identity,proto3" json:"identity,omitempty"`
+	Bootstrap            []string `protobuf:"bytes,3,rep,name=bootstrap,proto3" json:"bootstrap,omitempty"`
+	BindP2P              []string `protobuf:"bytes,5,rep,name=bindP2P,proto3" json:"bindP2P,omitempty"`
+	Mdns                 bool     `protobuf:"varint,6,opt,name=mdns,proto3" json:"mdns,omitempty"`
+	PrivateNetwork       bool     `protobuf:"varint,7,opt,name=privateNetwork,proto3" json:"privateNetwork,omitempty"`
+	SwarmKey             string   `protobuf:"bytes,8,opt,name=swarmKey,proto3" json:"swarmKey,omitempty"`
+	Mobile               bool     `protobuf:"varint,9,opt,name=mobile,proto3" json:"mobile,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -296,11 +303,60 @@ func (m *NetworkConfig) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_NetworkConfig proto.InternalMessageInfo
 
-func (m *NetworkConfig) GetJson() string {
+func (m *NetworkConfig) GetPeerCache() bool {
 	if m != nil {
-		return m.Json
+		return m.PeerCache
+	}
+	return false
+}
+
+func (m *NetworkConfig) GetIdentity() string {
+	if m != nil {
+		return m.Identity
 	}
 	return ""
+}
+
+func (m *NetworkConfig) GetBootstrap() []string {
+	if m != nil {
+		return m.Bootstrap
+	}
+	return nil
+}
+
+func (m *NetworkConfig) GetBindP2P() []string {
+	if m != nil {
+		return m.BindP2P
+	}
+	return nil
+}
+
+func (m *NetworkConfig) GetMdns() bool {
+	if m != nil {
+		return m.Mdns
+	}
+	return false
+}
+
+func (m *NetworkConfig) GetPrivateNetwork() bool {
+	if m != nil {
+		return m.PrivateNetwork
+	}
+	return false
+}
+
+func (m *NetworkConfig) GetSwarmKey() string {
+	if m != nil {
+		return m.SwarmKey
+	}
+	return ""
+}
+
+func (m *NetworkConfig) GetMobile() bool {
+	if m != nil {
+		return m.Mobile
+	}
+	return false
 }
 
 type SQLConfig struct {
@@ -359,34 +415,23 @@ func (m *SQLConfig) GetKey() string {
 }
 
 type Config struct {
-	SqlOpts          *SQLConfig `protobuf:"bytes,1,opt,name=sqlOpts,proto3" json:"sqlOpts,omitempty"`
-	GrpcBind         string     `protobuf:"bytes,2,opt,name=grpcBind,proto3" json:"grpcBind,omitempty"`
-	GrpcWebBind      string     `protobuf:"bytes,25,opt,name=grpcWebBind,proto3" json:"grpcWebBind,omitempty"`
-	HideBanner       bool       `protobuf:"varint,4,opt,name=hideBanner,proto3" json:"hideBanner,omitempty"`
-	DropDatabase     bool       `protobuf:"varint,5,opt,name=dropDatabase,proto3" json:"dropDatabase,omitempty"`
-	InitOnly         bool       `protobuf:"varint,6,opt,name=initOnly,proto3" json:"initOnly,omitempty"`
-	WithBot          bool       `protobuf:"varint,7,opt,name=withBot,proto3" json:"withBot,omitempty"`
-	Notification     bool       `protobuf:"varint,8,opt,name=notification,proto3" json:"notification,omitempty"`
-	ApnsCerts        []string   `protobuf:"bytes,9,rep,name=apnsCerts,proto3" json:"apnsCerts,omitempty"`
-	ApnsDevVoipCerts []string   `protobuf:"bytes,10,rep,name=apnsDevVoipCerts,proto3" json:"apnsDevVoipCerts,omitempty"`
-	FcmAPIKeys       []string   `protobuf:"bytes,11,rep,name=fcmAPIKeys,proto3" json:"fcmAPIKeys,omitempty"`
-	PrivateKeyFile   string     `protobuf:"bytes,12,opt,name=privateKeyFile,proto3" json:"privateKeyFile,omitempty"`
-	// p2p
-	PeerCache            bool     `protobuf:"varint,13,opt,name=peerCache,proto3" json:"peerCache,omitempty"`
-	Identity             string   `protobuf:"bytes,14,opt,name=identity,proto3" json:"identity,omitempty"`
-	Bootstrap            []string `protobuf:"bytes,15,rep,name=bootstrap,proto3" json:"bootstrap,omitempty"`
-	NoP2P                bool     `protobuf:"varint,16,opt,name=noP2P,proto3" json:"noP2P,omitempty"`
-	BindP2P              []string `protobuf:"bytes,17,rep,name=bindP2P,proto3" json:"bindP2P,omitempty"`
-	TransportP2P         []string `protobuf:"bytes,18,rep,name=transportP2P,proto3" json:"transportP2P,omitempty"`
-	Hop                  bool     `protobuf:"varint,19,opt,name=hop,proto3" json:"hop,omitempty"`
-	Ble                  bool     `protobuf:"varint,20,opt,name=ble,proto3" json:"ble,omitempty"`
-	Mdns                 bool     `protobuf:"varint,21,opt,name=mdns,proto3" json:"mdns,omitempty"`
-	DhtServer            bool     `protobuf:"varint,22,opt,name=dhtServer,proto3" json:"dhtServer,omitempty"`
-	PrivateNetwork       bool     `protobuf:"varint,23,opt,name=PrivateNetwork,proto3" json:"PrivateNetwork,omitempty"`
-	SwarmKeyPath         string   `protobuf:"bytes,24,opt,name=SwarmKeyPath,proto3" json:"SwarmKeyPath,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	SqlOpts              *SQLConfig     `protobuf:"bytes,1,opt,name=sqlOpts,proto3" json:"sqlOpts,omitempty"`
+	GrpcBind             string         `protobuf:"bytes,2,opt,name=grpcBind,proto3" json:"grpcBind,omitempty"`
+	GrpcWebBind          string         `protobuf:"bytes,3,opt,name=grpcWebBind,proto3" json:"grpcWebBind,omitempty"`
+	HideBanner           bool           `protobuf:"varint,4,opt,name=hideBanner,proto3" json:"hideBanner,omitempty"`
+	DropDatabase         bool           `protobuf:"varint,5,opt,name=dropDatabase,proto3" json:"dropDatabase,omitempty"`
+	InitOnly             bool           `protobuf:"varint,6,opt,name=initOnly,proto3" json:"initOnly,omitempty"`
+	WithBot              bool           `protobuf:"varint,7,opt,name=withBot,proto3" json:"withBot,omitempty"`
+	Notification         bool           `protobuf:"varint,8,opt,name=notification,proto3" json:"notification,omitempty"`
+	ApnsCerts            []string       `protobuf:"bytes,9,rep,name=apnsCerts,proto3" json:"apnsCerts,omitempty"`
+	ApnsDevVoipCerts     []string       `protobuf:"bytes,10,rep,name=apnsDevVoipCerts,proto3" json:"apnsDevVoipCerts,omitempty"`
+	FcmAPIKeys           []string       `protobuf:"bytes,11,rep,name=fcmAPIKeys,proto3" json:"fcmAPIKeys,omitempty"`
+	PrivateKeyFile       string         `protobuf:"bytes,12,opt,name=privateKeyFile,proto3" json:"privateKeyFile,omitempty"`
+	NetworkConfig        *NetworkConfig `protobuf:"bytes,13,opt,name=networkConfig,proto3" json:"networkConfig,omitempty"`
+	NoP2P                bool           `protobuf:"varint,14,opt,name=noP2P,proto3" json:"noP2P,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
 }
 
 func (m *Config) Reset()         { *m = Config{} }
@@ -506,23 +551,9 @@ func (m *Config) GetPrivateKeyFile() string {
 	return ""
 }
 
-func (m *Config) GetPeerCache() bool {
+func (m *Config) GetNetworkConfig() *NetworkConfig {
 	if m != nil {
-		return m.PeerCache
-	}
-	return false
-}
-
-func (m *Config) GetIdentity() string {
-	if m != nil {
-		return m.Identity
-	}
-	return ""
-}
-
-func (m *Config) GetBootstrap() []string {
-	if m != nil {
-		return m.Bootstrap
+		return m.NetworkConfig
 	}
 	return nil
 }
@@ -532,62 +563,6 @@ func (m *Config) GetNoP2P() bool {
 		return m.NoP2P
 	}
 	return false
-}
-
-func (m *Config) GetBindP2P() []string {
-	if m != nil {
-		return m.BindP2P
-	}
-	return nil
-}
-
-func (m *Config) GetTransportP2P() []string {
-	if m != nil {
-		return m.TransportP2P
-	}
-	return nil
-}
-
-func (m *Config) GetHop() bool {
-	if m != nil {
-		return m.Hop
-	}
-	return false
-}
-
-func (m *Config) GetBle() bool {
-	if m != nil {
-		return m.Ble
-	}
-	return false
-}
-
-func (m *Config) GetMdns() bool {
-	if m != nil {
-		return m.Mdns
-	}
-	return false
-}
-
-func (m *Config) GetDhtServer() bool {
-	if m != nil {
-		return m.DhtServer
-	}
-	return false
-}
-
-func (m *Config) GetPrivateNetwork() bool {
-	if m != nil {
-		return m.PrivateNetwork
-	}
-	return false
-}
-
-func (m *Config) GetSwarmKeyPath() string {
-	if m != nil {
-		return m.SwarmKeyPath
-	}
-	return ""
 }
 
 // @TODO: list all ports available
@@ -701,63 +676,62 @@ func init() {
 func init() { proto.RegisterFile("daemon/daemon.proto", fileDescriptor_622b4ce7acb47fee) }
 
 var fileDescriptor_622b4ce7acb47fee = []byte{
-	// 895 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x96, 0xdf, 0x6f, 0x23, 0x35,
-	0x10, 0xc7, 0x13, 0xae, 0x69, 0x92, 0x69, 0xfa, 0xe3, 0xdc, 0xd2, 0x33, 0x05, 0x42, 0xb5, 0x20,
-	0x54, 0xdd, 0x43, 0x4e, 0x6d, 0x79, 0xb8, 0x03, 0x09, 0xe9, 0x92, 0x42, 0xae, 0x6a, 0xe1, 0xc2,
-	0x46, 0x1c, 0x12, 0x6f, 0xce, 0xee, 0xb4, 0x31, 0x4d, 0xec, 0x3d, 0xef, 0xa4, 0x55, 0xf8, 0x4b,
-	0xf8, 0x93, 0x78, 0xe4, 0x4f, 0x40, 0xe5, 0x95, 0x77, 0x5e, 0x91, 0xbd, 0x9b, 0xed, 0x6e, 0xd8,
-	0x22, 0xca, 0x53, 0x3c, 0x1f, 0xcf, 0x8c, 0xbd, 0x5f, 0x7b, 0xc6, 0x81, 0xed, 0x50, 0xe0, 0x54,
-	0xab, 0x67, 0xc9, 0x4f, 0x27, 0x32, 0x9a, 0x34, 0x6b, 0x8d, 0xd0, 0xd0, 0xbc, 0x93, 0x30, 0x6f,
-	0x15, 0x56, 0xde, 0x68, 0x19, 0x7a, 0x1d, 0xd8, 0x1d, 0x22, 0xf5, 0x66, 0xc6, 0xa0, 0x22, 0x5f,
-	0xcf, 0x08, 0x7d, 0x7c, 0x3b, 0xc3, 0x98, 0xd8, 0x0e, 0xd4, 0x8c, 0xb5, 0x79, 0x75, 0xbf, 0x7a,
-	0xd0, 0xf4, 0x13, 0xc3, 0xeb, 0x40, 0xa3, 0xab, 0x69, 0x48, 0x82, 0x90, 0x79, 0xd0, 0x92, 0x71,
-	0x57, 0x93, 0x3f, 0x53, 0x4a, 0xaa, 0x4b, 0xe7, 0xd8, 0xf0, 0x0b, 0xcc, 0x7b, 0x0a, 0xad, 0x21,
-	0x09, 0x43, 0x8b, 0xac, 0x7b, 0xd0, 0x50, 0x32, 0xb8, 0x52, 0x62, 0xba, 0x48, 0x9c, 0xd9, 0xde,
-	0x47, 0xd0, 0xec, 0xfb, 0x83, 0xde, 0xa9, 0xba, 0xd0, 0x31, 0x63, 0xb0, 0xf2, 0x53, 0xac, 0x55,
-	0xea, 0xe4, 0xc6, 0xde, 0xc7, 0xb0, 0xfe, 0x2d, 0xd2, 0x8d, 0x36, 0x57, 0x3d, 0xad, 0x2e, 0xe4,
-	0x65, 0xa9, 0xd3, 0x21, 0x34, 0x87, 0xdf, 0x9d, 0xdf, 0x39, 0xe4, 0x96, 0x72, 0x63, 0xb6, 0x05,
-	0x8f, 0xae, 0x70, 0xce, 0xdf, 0x71, 0xc8, 0x0e, 0xbd, 0xbf, 0x6a, 0xb0, 0x9a, 0x06, 0x1c, 0x42,
-	0x3d, 0x7e, 0x3b, 0x79, 0x1d, 0x51, 0xec, 0x62, 0xd6, 0x8e, 0x9e, 0x74, 0xf2, 0xba, 0x75, 0xb2,
-	0xd4, 0xfe, 0xc2, 0xcf, 0x7e, 0xd2, 0xa5, 0x89, 0x82, 0xae, 0x54, 0x61, 0x9a, 0x34, 0xb3, 0xd9,
-	0x3e, 0xac, 0xd9, 0xf1, 0x0f, 0x38, 0x72, 0xd3, 0xef, 0xb9, 0xe9, 0x3c, 0x62, 0x6d, 0x80, 0xb1,
-	0x0c, 0xb1, 0x2b, 0x94, 0x42, 0xc3, 0x57, 0x9c, 0x84, 0x39, 0x62, 0x45, 0x0e, 0x8d, 0x8e, 0x4e,
-	0x04, 0x89, 0x91, 0x88, 0x91, 0xd7, 0x12, 0x91, 0xf3, 0xcc, 0xee, 0x40, 0x2a, 0x49, 0xaf, 0xd5,
-	0x64, 0xce, 0x57, 0xdd, 0x7c, 0x66, 0x33, 0x0e, 0xf5, 0x1b, 0x49, 0xe3, 0xae, 0x26, 0x5e, 0x77,
-	0x53, 0x0b, 0xd3, 0x66, 0x56, 0x9a, 0xe4, 0x85, 0x0c, 0x04, 0x49, 0xad, 0x78, 0x23, 0xc9, 0x9c,
-	0x67, 0xec, 0x03, 0x68, 0x8a, 0x48, 0xc5, 0x3d, 0x34, 0x14, 0xf3, 0xe6, 0xfe, 0xa3, 0x83, 0xa6,
-	0x7f, 0x07, 0xd8, 0x53, 0xd8, 0xb2, 0xc6, 0x09, 0x5e, 0xbf, 0xd1, 0x32, 0x4a, 0x9c, 0xc0, 0x39,
-	0xfd, 0x83, 0xdb, 0xef, 0xbc, 0x08, 0xa6, 0x2f, 0x07, 0xa7, 0x67, 0x38, 0x8f, 0xf9, 0x9a, 0xf3,
-	0xca, 0x11, 0xf6, 0x29, 0x6c, 0x44, 0x46, 0x5e, 0x0b, 0xc2, 0x33, 0x9c, 0x7f, 0x2d, 0x27, 0xc8,
-	0x5b, 0x4e, 0xac, 0x25, 0x6a, 0x77, 0x14, 0x21, 0x9a, 0x9e, 0x08, 0xc6, 0xc8, 0xd7, 0xdd, 0x96,
-	0xef, 0x80, 0x53, 0x22, 0x44, 0x45, 0x92, 0xe6, 0x7c, 0x23, 0x39, 0x8b, 0x85, 0x6d, 0x23, 0x47,
-	0x5a, 0x53, 0x4c, 0x46, 0x44, 0x7c, 0x33, 0xf9, 0x96, 0x0c, 0xd8, 0xeb, 0xae, 0xf4, 0xe0, 0x68,
-	0xc0, 0xb7, 0x5c, 0xce, 0xc4, 0xb0, 0xea, 0x8d, 0xa4, 0x0a, 0x2d, 0x7f, 0xec, 0x22, 0x16, 0xa6,
-	0x55, 0x8f, 0x8c, 0x50, 0x71, 0xa4, 0x0d, 0xd9, 0x69, 0xe6, 0xa6, 0x0b, 0xcc, 0xde, 0xb4, 0xb1,
-	0x8e, 0xf8, 0xb6, 0xcb, 0x68, 0x87, 0x96, 0x8c, 0x26, 0xc8, 0x77, 0x12, 0x32, 0x9a, 0xa0, 0xbd,
-	0xa1, 0xd3, 0x50, 0xc5, 0xfc, 0x5d, 0x87, 0xdc, 0xd8, 0xee, 0x34, 0x1c, 0xd3, 0x10, 0xcd, 0x35,
-	0x1a, 0xbe, 0x9b, 0x7c, 0x63, 0x06, 0xac, 0x52, 0x83, 0x44, 0x93, 0xb4, 0x18, 0xf8, 0x13, 0xe7,
-	0xb2, 0x44, 0xed, 0x0e, 0x87, 0x37, 0xc2, 0x4c, 0xcf, 0x70, 0x3e, 0x10, 0x34, 0xe6, 0xdc, 0xe9,
-	0x51, 0x60, 0xde, 0x31, 0x6c, 0xf6, 0x91, 0x06, 0xda, 0x16, 0x68, 0x1c, 0x69, 0x15, 0x63, 0xee,
-	0xca, 0x5a, 0xec, 0x6e, 0x74, 0xcd, 0xcf, 0x23, 0xef, 0x08, 0x76, 0xce, 0x65, 0x4c, 0x2f, 0x83,
-	0x40, 0xcf, 0x14, 0xc5, 0x59, 0xe4, 0x1e, 0x34, 0x44, 0xca, 0x78, 0xd5, 0xc9, 0x91, 0xd9, 0x47,
-	0x7f, 0xd6, 0x61, 0xf5, 0xc4, 0x95, 0x10, 0x7b, 0x0e, 0xad, 0x93, 0xfc, 0xed, 0x65, 0xc5, 0x0a,
-	0xb3, 0x6d, 0x69, 0xaf, 0x84, 0x79, 0x15, 0xd6, 0x85, 0xc7, 0x7d, 0xa4, 0x73, 0x1d, 0x88, 0x49,
-	0xdf, 0x44, 0x41, 0xda, 0x28, 0x4a, 0xc2, 0x97, 0x8a, 0x36, 0xeb, 0x2a, 0x5e, 0x85, 0x7d, 0x05,
-	0x5b, 0x7d, 0xa4, 0xa5, 0x36, 0x52, 0x92, 0xe2, 0xfd, 0x22, 0x2b, 0x04, 0x78, 0x15, 0xf6, 0x25,
-	0xd4, 0x53, 0xe1, 0x4a, 0xa3, 0x3f, 0x5c, 0xda, 0x40, 0x51, 0x63, 0xaf, 0xc2, 0x9e, 0x03, 0x9c,
-	0x2a, 0x49, 0x52, 0x4c, 0xe4, 0xcf, 0xc8, 0x76, 0x8a, 0xee, 0xc9, 0x2a, 0xf7, 0x88, 0xf0, 0x05,
-	0xac, 0xf5, 0x91, 0xb2, 0x26, 0x5c, 0xb6, 0xfa, 0x6e, 0x91, 0x2d, 0x7c, 0xbd, 0x0a, 0x7b, 0x05,
-	0xad, 0xfc, 0xd1, 0x95, 0x46, 0x7b, 0x45, 0x56, 0x76, 0xd4, 0x5e, 0x85, 0x1d, 0x42, 0x6d, 0x20,
-	0x94, 0x0c, 0x1e, 0x70, 0x7c, 0xc7, 0x50, 0xf7, 0x31, 0xb6, 0xaf, 0xc1, 0x03, 0x82, 0xbe, 0x81,
-	0xcd, 0xa5, 0x07, 0x8a, 0x7d, 0xb2, 0xd4, 0x92, 0x4b, 0xdf, 0xaf, 0x7b, 0xd2, 0xbd, 0x80, 0x9a,
-	0x7b, 0x8f, 0xd8, 0xde, 0x52, 0x92, 0xdc, 0x23, 0x75, 0x4f, 0xe8, 0x67, 0xd0, 0x70, 0x5e, 0xb6,
-	0x77, 0xfe, 0xf7, 0xfd, 0x7f, 0x0e, 0x1b, 0x2e, 0x2a, 0xb9, 0xb5, 0xfe, 0xa0, 0xf7, 0x30, 0xc1,
-	0x86, 0xa4, 0xa3, 0x87, 0x2d, 0xf8, 0x02, 0xd6, 0x6d, 0xd0, 0xff, 0x59, 0xef, 0x15, 0x6c, 0x7f,
-	0x1f, 0x85, 0x77, 0x2d, 0x24, 0x2d, 0x8f, 0x7f, 0x2b, 0x85, 0xf2, 0x4c, 0xdd, 0x83, 0x5f, 0x6f,
-	0xdb, 0xd5, 0xdf, 0x6e, 0xdb, 0xd5, 0xdf, 0x6f, 0xdb, 0xd5, 0x5f, 0xfe, 0x68, 0x57, 0x7e, 0xdc,
-	0x4d, 0xdc, 0x08, 0x83, 0xf1, 0xb3, 0x40, 0x1b, 0x4c, 0xff, 0x9c, 0x8c, 0x56, 0xdd, 0xbf, 0x93,
-	0xe3, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0xac, 0x68, 0x3d, 0x1e, 0xb4, 0x08, 0x00, 0x00,
+	// 867 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x56, 0xcd, 0x6e, 0x23, 0x45,
+	0x10, 0xb6, 0x89, 0x7f, 0x2b, 0x4e, 0x36, 0xf4, 0x46, 0x61, 0x14, 0xc0, 0x44, 0x2d, 0x84, 0xa2,
+	0x3d, 0x78, 0x95, 0x84, 0xc3, 0x2e, 0x48, 0x48, 0xb1, 0x03, 0xde, 0x28, 0x81, 0x35, 0x63, 0xb1,
+	0x48, 0xdc, 0xda, 0x33, 0x95, 0xa4, 0x89, 0xdd, 0x3d, 0x3b, 0x5d, 0xde, 0xc8, 0x1c, 0x79, 0x0a,
+	0x1e, 0x89, 0x23, 0x8f, 0x80, 0xc2, 0x95, 0x0b, 0x6f, 0x80, 0xba, 0x67, 0xc6, 0x99, 0x31, 0x93,
+	0x15, 0xd9, 0x93, 0xbb, 0xbe, 0xa9, 0xff, 0xaf, 0xba, 0xda, 0xf0, 0x38, 0x14, 0x38, 0xd3, 0xea,
+	0x69, 0xf2, 0xd3, 0x8b, 0x62, 0x4d, 0x9a, 0x75, 0x26, 0x18, 0xd3, 0xa2, 0x97, 0x60, 0xbc, 0x01,
+	0xb5, 0x57, 0x5a, 0x86, 0xbc, 0x07, 0x3b, 0x63, 0xa4, 0xc1, 0x3c, 0x8e, 0x51, 0x91, 0xaf, 0xe7,
+	0x84, 0x3e, 0xbe, 0x9e, 0xa3, 0x21, 0xb6, 0x0d, 0xf5, 0xd8, 0xca, 0x5e, 0x75, 0xaf, 0xba, 0xdf,
+	0xf6, 0x13, 0x81, 0xf7, 0xa0, 0xd5, 0xd7, 0x34, 0x26, 0x41, 0xc8, 0x38, 0x74, 0xa4, 0xe9, 0x6b,
+	0xf2, 0xe7, 0x4a, 0x49, 0x75, 0xe9, 0x14, 0x5b, 0x7e, 0x01, 0xe3, 0x4f, 0xa0, 0x33, 0x26, 0x11,
+	0x53, 0xe6, 0x75, 0x17, 0x5a, 0x4a, 0x06, 0xd7, 0x4a, 0xcc, 0x32, 0xc7, 0x4b, 0x99, 0x7f, 0x02,
+	0xed, 0xa1, 0x3f, 0x1a, 0x9c, 0xaa, 0x0b, 0x6d, 0x18, 0x83, 0xda, 0xcf, 0x46, 0xab, 0x54, 0xc9,
+	0x9d, 0xf9, 0x3f, 0x55, 0xd8, 0xf8, 0x0e, 0xe9, 0x46, 0xc7, 0xd7, 0x03, 0xad, 0x2e, 0xe4, 0x25,
+	0xfb, 0x08, 0xda, 0x11, 0x62, 0x3c, 0x10, 0xc1, 0x15, 0xa6, 0xf1, 0xef, 0x00, 0x1b, 0x4c, 0x86,
+	0xa8, 0x48, 0xd2, 0xc2, 0x7b, 0x2f, 0x09, 0x96, 0xc9, 0xd6, 0x72, 0xa2, 0x35, 0x19, 0x8a, 0x45,
+	0xe4, 0xad, 0xed, 0xad, 0xed, 0xb7, 0xfd, 0x3b, 0x80, 0x79, 0xd0, 0x9c, 0x48, 0x15, 0x8e, 0x0e,
+	0x47, 0x5e, 0xdd, 0x7d, 0xcb, 0x44, 0x9b, 0xd7, 0x2c, 0x54, 0xc6, 0x6b, 0xb8, 0x60, 0xee, 0xcc,
+	0x3e, 0x83, 0xcd, 0x28, 0x96, 0x6f, 0x04, 0x61, 0x9a, 0x9d, 0xd7, 0x74, 0x5f, 0x57, 0x50, 0x9b,
+	0x8f, 0xb9, 0x11, 0xf1, 0xec, 0x0c, 0x17, 0x5e, 0x2b, 0xc9, 0x27, 0x93, 0xd9, 0x0e, 0x34, 0x66,
+	0x7a, 0x22, 0xa7, 0xe8, 0xb5, 0x9d, 0x6d, 0x2a, 0xf1, 0x03, 0x68, 0x8f, 0xbf, 0x3f, 0x4f, 0xcb,
+	0x65, 0x50, 0xcb, 0x75, 0xce, 0x9d, 0xd9, 0x16, 0xac, 0x5d, 0x63, 0x56, 0x9f, 0x3d, 0xf2, 0x5f,
+	0x6b, 0xd0, 0x48, 0x0d, 0x0e, 0xa0, 0x69, 0x5e, 0x4f, 0x5f, 0x46, 0x64, 0x9c, 0xcd, 0xfa, 0xe1,
+	0x07, 0xbd, 0xfc, 0x18, 0xf4, 0x96, 0xae, 0xfd, 0x4c, 0xcf, 0x26, 0x79, 0x19, 0x47, 0x41, 0x5f,
+	0xaa, 0x30, 0x6b, 0x5a, 0x26, 0xb3, 0x3d, 0x58, 0xb7, 0xe7, 0x1f, 0x71, 0xe2, 0x3e, 0xaf, 0xb9,
+	0xcf, 0x79, 0x88, 0x75, 0x01, 0xae, 0x64, 0x88, 0x7d, 0xa1, 0x14, 0xc6, 0x5e, 0xcd, 0x95, 0x92,
+	0x43, 0xec, 0xcc, 0x84, 0xb1, 0x8e, 0x4e, 0x04, 0x89, 0x89, 0x30, 0xe8, 0xd5, 0x93, 0x99, 0xc9,
+	0x63, 0x8e, 0x36, 0x25, 0xe9, 0xa5, 0x9a, 0x2e, 0xd2, 0x36, 0x2f, 0x65, 0x4b, 0xcc, 0x8d, 0xa4,
+	0xab, 0xbe, 0xa6, 0xb4, 0xc7, 0x99, 0x68, 0x3d, 0x2b, 0x4d, 0xf2, 0x42, 0x06, 0x82, 0xa4, 0x56,
+	0xae, 0xc1, 0x2d, 0xbf, 0x80, 0x59, 0xd2, 0x45, 0xa4, 0xcc, 0x00, 0x63, 0x32, 0x5e, 0x3b, 0x21,
+	0x7d, 0x09, 0xb0, 0x27, 0xb0, 0x65, 0x85, 0x13, 0x7c, 0xf3, 0x4a, 0xcb, 0x28, 0x51, 0x02, 0xa7,
+	0xf4, 0x1f, 0xdc, 0xd6, 0x79, 0x11, 0xcc, 0x8e, 0x47, 0xa7, 0x67, 0xb8, 0x30, 0xde, 0xba, 0xd3,
+	0xca, 0x21, 0xb9, 0x91, 0x38, 0xc3, 0xc5, 0x37, 0x96, 0xd6, 0x8e, 0x6b, 0xd6, 0x0a, 0xca, 0x8e,
+	0x61, 0x43, 0xe5, 0x27, 0xda, 0xdb, 0x70, 0x34, 0x7d, 0x58, 0xa4, 0xa9, 0x30, 0xf4, 0x7e, 0xd1,
+	0xc2, 0x5e, 0x54, 0xa5, 0xed, 0xa4, 0x6e, 0xba, 0x8a, 0x13, 0x81, 0x1f, 0xc1, 0xa3, 0x21, 0xd2,
+	0x48, 0xdb, 0xab, 0x67, 0x22, 0xad, 0x0c, 0xe6, 0xd8, 0xb3, 0xb0, 0x23, 0xb7, 0xee, 0xe7, 0x21,
+	0x7e, 0x08, 0xdb, 0xe7, 0xd2, 0xd0, 0x71, 0x10, 0xe8, 0xb9, 0x22, 0xb3, 0xb4, 0xdc, 0x85, 0x96,
+	0x48, 0x31, 0xaf, 0xea, 0x6a, 0x5d, 0xca, 0x87, 0x7f, 0x37, 0xa1, 0x71, 0xe2, 0xd2, 0x64, 0xcf,
+	0xa0, 0x73, 0x92, 0x27, 0x92, 0x15, 0xab, 0xb0, 0x0b, 0x67, 0xb7, 0x04, 0xe3, 0x15, 0xd6, 0x87,
+	0xf7, 0x87, 0x48, 0xe7, 0x3a, 0x10, 0xd3, 0x61, 0x1c, 0x05, 0xe9, 0x0a, 0x28, 0x31, 0x5f, 0x99,
+	0xdf, 0xe5, 0xbe, 0xe0, 0x15, 0xf6, 0x35, 0x6c, 0x0d, 0x91, 0x8a, 0xfb, 0xa1, 0xcc, 0xc5, 0xdb,
+	0x7a, 0xcb, 0x2b, 0xec, 0x2b, 0x68, 0xa6, 0x8d, 0x2b, 0xb5, 0xfe, 0x78, 0x25, 0x81, 0x62, 0x8f,
+	0x79, 0x85, 0x3d, 0x03, 0x38, 0x55, 0x92, 0xa4, 0x98, 0xca, 0x5f, 0x90, 0x6d, 0x17, 0xd5, 0x93,
+	0x28, 0xf7, 0x34, 0xe1, 0x4b, 0x58, 0x1f, 0x22, 0x2d, 0xd7, 0x6b, 0x59, 0xf4, 0x9d, 0x22, 0x96,
+	0xe9, 0xf2, 0x0a, 0x7b, 0x01, 0x9d, 0x3c, 0x75, 0xa5, 0xd6, 0xbc, 0x88, 0x95, 0x51, 0xcd, 0x2b,
+	0xec, 0x00, 0xea, 0x23, 0xa1, 0x64, 0xf0, 0x00, 0xfa, 0x8e, 0xa0, 0xe9, 0xa3, 0xb1, 0x7b, 0xfe,
+	0x01, 0x46, 0xdf, 0xc2, 0xa3, 0x95, 0xa7, 0x87, 0x7d, 0xba, 0xb2, 0x9d, 0x4a, 0x5f, 0xa6, 0x7b,
+	0xdc, 0x3d, 0x87, 0xba, 0x7b, 0x69, 0xd8, 0xee, 0x8a, 0x93, 0xdc, 0xf3, 0x73, 0x8f, 0xe9, 0xe7,
+	0xd0, 0x72, 0x5a, 0x76, 0x8d, 0xfc, 0xff, 0xfc, 0xbf, 0x80, 0x4d, 0x67, 0x95, 0x4c, 0xad, 0x3f,
+	0x1a, 0x3c, 0xac, 0x61, 0x63, 0xd2, 0xd1, 0xc3, 0x02, 0x3e, 0x87, 0x0d, 0x6b, 0xf4, 0x2e, 0xf1,
+	0x5e, 0xc0, 0xe3, 0x1f, 0xa2, 0xf0, 0xee, 0x29, 0x4a, 0xaf, 0xc7, 0xdb, 0xae, 0x42, 0xb9, 0xa7,
+	0xfe, 0xfe, 0xef, 0xb7, 0xdd, 0xea, 0x1f, 0xb7, 0xdd, 0xea, 0x9f, 0xb7, 0xdd, 0xea, 0x6f, 0x7f,
+	0x75, 0x2b, 0x3f, 0xed, 0x24, 0x6a, 0x84, 0xc1, 0xd5, 0xd3, 0x40, 0xc7, 0x98, 0xfe, 0xed, 0x98,
+	0x34, 0xdc, 0xff, 0x8e, 0xa3, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x05, 0x3d, 0x22, 0xae, 0x8e,
+	0x08, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1528,11 +1502,87 @@ func (m *NetworkConfig) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Json) > 0 {
-		dAtA[i] = 0xa
+	if m.PeerCache {
+		dAtA[i] = 0x8
 		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Json)))
-		i += copy(dAtA[i:], m.Json)
+		if m.PeerCache {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
+	}
+	if len(m.Identity) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Identity)))
+		i += copy(dAtA[i:], m.Identity)
+	}
+	if len(m.Bootstrap) > 0 {
+		for _, s := range m.Bootstrap {
+			dAtA[i] = 0x1a
+			i++
+			l = len(s)
+			for l >= 1<<7 {
+				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
+				l >>= 7
+				i++
+			}
+			dAtA[i] = uint8(l)
+			i++
+			i += copy(dAtA[i:], s)
+		}
+	}
+	if len(m.BindP2P) > 0 {
+		for _, s := range m.BindP2P {
+			dAtA[i] = 0x2a
+			i++
+			l = len(s)
+			for l >= 1<<7 {
+				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
+				l >>= 7
+				i++
+			}
+			dAtA[i] = uint8(l)
+			i++
+			i += copy(dAtA[i:], s)
+		}
+	}
+	if m.Mdns {
+		dAtA[i] = 0x30
+		i++
+		if m.Mdns {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
+	}
+	if m.PrivateNetwork {
+		dAtA[i] = 0x38
+		i++
+		if m.PrivateNetwork {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
+	}
+	if len(m.SwarmKey) > 0 {
+		dAtA[i] = 0x42
+		i++
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.SwarmKey)))
+		i += copy(dAtA[i:], m.SwarmKey)
+	}
+	if m.Mobile {
+		dAtA[i] = 0x48
+		i++
+		if m.Mobile {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
@@ -1603,6 +1653,12 @@ func (m *Config) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintDaemon(dAtA, i, uint64(len(m.GrpcBind)))
 		i += copy(dAtA[i:], m.GrpcBind)
+	}
+	if len(m.GrpcWebBind) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.GrpcWebBind)))
+		i += copy(dAtA[i:], m.GrpcWebBind)
 	}
 	if m.HideBanner {
 		dAtA[i] = 0x20
@@ -1705,41 +1761,18 @@ func (m *Config) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintDaemon(dAtA, i, uint64(len(m.PrivateKeyFile)))
 		i += copy(dAtA[i:], m.PrivateKeyFile)
 	}
-	if m.PeerCache {
-		dAtA[i] = 0x68
+	if m.NetworkConfig != nil {
+		dAtA[i] = 0x6a
 		i++
-		if m.PeerCache {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
+		i = encodeVarintDaemon(dAtA, i, uint64(m.NetworkConfig.Size()))
+		n2, err2 := m.NetworkConfig.MarshalTo(dAtA[i:])
+		if err2 != nil {
+			return 0, err2
 		}
-		i++
-	}
-	if len(m.Identity) > 0 {
-		dAtA[i] = 0x72
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Identity)))
-		i += copy(dAtA[i:], m.Identity)
-	}
-	if len(m.Bootstrap) > 0 {
-		for _, s := range m.Bootstrap {
-			dAtA[i] = 0x7a
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
+		i += n2
 	}
 	if m.NoP2P {
-		dAtA[i] = 0x80
-		i++
-		dAtA[i] = 0x1
+		dAtA[i] = 0x70
 		i++
 		if m.NoP2P {
 			dAtA[i] = 1
@@ -1747,116 +1780,6 @@ func (m *Config) MarshalTo(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i++
-	}
-	if len(m.BindP2P) > 0 {
-		for _, s := range m.BindP2P {
-			dAtA[i] = 0x8a
-			i++
-			dAtA[i] = 0x1
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
-	}
-	if len(m.TransportP2P) > 0 {
-		for _, s := range m.TransportP2P {
-			dAtA[i] = 0x92
-			i++
-			dAtA[i] = 0x1
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
-	}
-	if m.Hop {
-		dAtA[i] = 0x98
-		i++
-		dAtA[i] = 0x1
-		i++
-		if m.Hop {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.Ble {
-		dAtA[i] = 0xa0
-		i++
-		dAtA[i] = 0x1
-		i++
-		if m.Ble {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.Mdns {
-		dAtA[i] = 0xa8
-		i++
-		dAtA[i] = 0x1
-		i++
-		if m.Mdns {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.DhtServer {
-		dAtA[i] = 0xb0
-		i++
-		dAtA[i] = 0x1
-		i++
-		if m.DhtServer {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.PrivateNetwork {
-		dAtA[i] = 0xb8
-		i++
-		dAtA[i] = 0x1
-		i++
-		if m.PrivateNetwork {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if len(m.SwarmKeyPath) > 0 {
-		dAtA[i] = 0xc2
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.SwarmKeyPath)))
-		i += copy(dAtA[i:], m.SwarmKeyPath)
-	}
-	if len(m.GrpcWebBind) > 0 {
-		dAtA[i] = 0xca
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.GrpcWebBind)))
-		i += copy(dAtA[i:], m.GrpcWebBind)
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
@@ -2016,9 +1939,37 @@ func (m *NetworkConfig) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Json)
+	if m.PeerCache {
+		n += 2
+	}
+	l = len(m.Identity)
 	if l > 0 {
 		n += 1 + l + sovDaemon(uint64(l))
+	}
+	if len(m.Bootstrap) > 0 {
+		for _, s := range m.Bootstrap {
+			l = len(s)
+			n += 1 + l + sovDaemon(uint64(l))
+		}
+	}
+	if len(m.BindP2P) > 0 {
+		for _, s := range m.BindP2P {
+			l = len(s)
+			n += 1 + l + sovDaemon(uint64(l))
+		}
+	}
+	if m.Mdns {
+		n += 2
+	}
+	if m.PrivateNetwork {
+		n += 2
+	}
+	l = len(m.SwarmKey)
+	if l > 0 {
+		n += 1 + l + sovDaemon(uint64(l))
+	}
+	if m.Mobile {
+		n += 2
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -2060,6 +2011,10 @@ func (m *Config) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovDaemon(uint64(l))
 	}
+	l = len(m.GrpcWebBind)
+	if l > 0 {
+		n += 1 + l + sovDaemon(uint64(l))
+	}
 	if m.HideBanner {
 		n += 2
 	}
@@ -2097,56 +2052,12 @@ func (m *Config) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovDaemon(uint64(l))
 	}
-	if m.PeerCache {
-		n += 2
-	}
-	l = len(m.Identity)
-	if l > 0 {
+	if m.NetworkConfig != nil {
+		l = m.NetworkConfig.Size()
 		n += 1 + l + sovDaemon(uint64(l))
 	}
-	if len(m.Bootstrap) > 0 {
-		for _, s := range m.Bootstrap {
-			l = len(s)
-			n += 1 + l + sovDaemon(uint64(l))
-		}
-	}
 	if m.NoP2P {
-		n += 3
-	}
-	if len(m.BindP2P) > 0 {
-		for _, s := range m.BindP2P {
-			l = len(s)
-			n += 2 + l + sovDaemon(uint64(l))
-		}
-	}
-	if len(m.TransportP2P) > 0 {
-		for _, s := range m.TransportP2P {
-			l = len(s)
-			n += 2 + l + sovDaemon(uint64(l))
-		}
-	}
-	if m.Hop {
-		n += 3
-	}
-	if m.Ble {
-		n += 3
-	}
-	if m.Mdns {
-		n += 3
-	}
-	if m.DhtServer {
-		n += 3
-	}
-	if m.PrivateNetwork {
-		n += 3
-	}
-	l = len(m.SwarmKeyPath)
-	if l > 0 {
-		n += 2 + l + sovDaemon(uint64(l))
-	}
-	l = len(m.GrpcWebBind)
-	if l > 0 {
-		n += 2 + l + sovDaemon(uint64(l))
+		n += 2
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -2609,8 +2520,28 @@ func (m *NetworkConfig) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PeerCache", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDaemon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.PeerCache = bool(v != 0)
+		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Json", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Identity", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2638,8 +2569,164 @@ func (m *NetworkConfig) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Json = string(dAtA[iNdEx:postIndex])
+			m.Identity = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bootstrap", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDaemon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDaemon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDaemon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Bootstrap = append(m.Bootstrap, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BindP2P", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDaemon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDaemon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDaemon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BindP2P = append(m.BindP2P, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Mdns", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDaemon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Mdns = bool(v != 0)
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PrivateNetwork", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDaemon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.PrivateNetwork = bool(v != 0)
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SwarmKey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDaemon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDaemon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDaemon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SwarmKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Mobile", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDaemon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Mobile = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipDaemon(dAtA[iNdEx:])
@@ -2880,6 +2967,38 @@ func (m *Config) Unmarshal(dAtA []byte) error {
 			}
 			m.GrpcBind = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GrpcWebBind", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDaemon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDaemon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDaemon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GrpcWebBind = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 4:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field HideBanner", wireType)
@@ -3109,10 +3228,10 @@ func (m *Config) Unmarshal(dAtA []byte) error {
 			m.PrivateKeyFile = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 13:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PeerCache", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NetworkConfig", wireType)
 			}
-			var v int
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowDaemon
@@ -3122,77 +3241,29 @@ func (m *Config) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= int(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			m.PeerCache = bool(v != 0)
+			if msglen < 0 {
+				return ErrInvalidLengthDaemon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthDaemon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.NetworkConfig == nil {
+				m.NetworkConfig = &NetworkConfig{}
+			}
+			if err := m.NetworkConfig.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		case 14:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Identity", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDaemon
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDaemon
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDaemon
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Identity = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 15:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Bootstrap", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDaemon
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDaemon
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDaemon
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Bootstrap = append(m.Bootstrap, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 16:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NoP2P", wireType)
 			}
@@ -3212,234 +3283,6 @@ func (m *Config) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.NoP2P = bool(v != 0)
-		case 17:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BindP2P", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDaemon
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDaemon
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDaemon
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.BindP2P = append(m.BindP2P, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 18:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TransportP2P", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDaemon
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDaemon
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDaemon
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.TransportP2P = append(m.TransportP2P, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 19:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Hop", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDaemon
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Hop = bool(v != 0)
-		case 20:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Ble", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDaemon
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Ble = bool(v != 0)
-		case 21:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Mdns", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDaemon
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Mdns = bool(v != 0)
-		case 22:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DhtServer", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDaemon
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.DhtServer = bool(v != 0)
-		case 23:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PrivateNetwork", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDaemon
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.PrivateNetwork = bool(v != 0)
-		case 24:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SwarmKeyPath", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDaemon
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDaemon
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDaemon
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SwarmKeyPath = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 25:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GrpcWebBind", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDaemon
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDaemon
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDaemon
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.GrpcWebBind = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipDaemon(dAtA[iNdEx:])
