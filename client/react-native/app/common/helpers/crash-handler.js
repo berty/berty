@@ -5,6 +5,7 @@ import {
 } from 'react-native-exception-handler'
 import RNRestart from 'react-native-restart'
 import I18n from 'i18next'
+import { isIntegrationMode } from '../constants/query'
 
 const exceptionHandler = (error, isFatal) => {
   Alert.alert(
@@ -23,7 +24,7 @@ const exceptionHandler = (error, isFatal) => {
   )
 }
 
-if (process.env['ENVIRONMENT'] !== 'integration_test') {
+if (!isIntegrationMode) {
   // eslint-disable-next-line
   if (!__DEV__) {
     console.error = error => exceptionHandler(error, false)

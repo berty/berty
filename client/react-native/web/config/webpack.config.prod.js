@@ -314,7 +314,9 @@ module.exports = {
                 require.resolve(
                   '@babel/plugin-proposal-nullish-coalescing-operator'
                 ),
-                require.resolve('babel-plugin-transform-remove-console'),
+                ...(process.env.ENVIRONMENT === 'integration_test'
+                  ? []
+                  : [require.resolve('babel-plugin-transform-remove-console')]),
               ],
               // This is a feature of `babel-loader` for webpack (not Babel itself).
               // It enables caching results in ./node_modules/.cache/babel-loader/
