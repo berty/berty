@@ -1,6 +1,8 @@
 berty.tech/network v0.0.0-20190705175056-c1e3d7d90ac3 h1:4rXAhaOFt1sQBHzMeTnsY8TnSBCp0sZ5w0CEB/9JhA8=
 berty.tech/network v0.0.0-20190705175056-c1e3d7d90ac3/go.mod h1:i0xFI/jNEHw9qz0AAgSBlwtitoQKTO3ZdbF2xatrrR4=
 berty.tech/network v0.0.0-20190712164033-f7a09d9c96f6 h1:1BbutSM5UW2w0/B9rw+XBaTl1M/w2ah1iKq0xP2m/2g=
+berty.tech/network v0.0.0-20190725074812-0c668fcbee48 h1:hXeSzjNYcBKs2RPxF6HQsL0pfcpyus2paqDU9re4OEI=
+berty.tech/network v0.0.0-20190725074812-0c668fcbee48/go.mod h1:R7w0GE1EKQZV2w4AOmg50felW5MwkPf2434R3fUnaTQ=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.33.1/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0 h1:eOI3/cP2VTU6uZLDYAoic+eyzzB9YyGmJ7eIjl8rOPg=
