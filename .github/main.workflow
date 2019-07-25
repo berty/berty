@@ -1,16 +1,16 @@
-workflow "Test ipa" {
+workflow "Test with ipa" {
+  resolves = ["Upload to sauce"]
   on = "status"
-  resolves = ["berty/test-github-actions/yolo-sauce@master"]
 }
 
-action "n0izn0iz/action-status-filter@master" {
+action "On build success" {
   uses = "n0izn0iz/action-status-filter@master"
   args = ["ci/circleci: build"]
 }
 
-action "berty/test-github-actions/yolo-sauce@master" {
+action "Upload to sauce" {
   uses = "berty/test-github-actions/yolo-sauce@master"
-  needs = ["n0izn0iz/action-status-filter@master"]
   args = "client.rn.ios-beta Berty.ipa"
   secrets = ["SAUCE_USERNAME", "SAUCE_API_KEY"]
+  needs = ["On build success"]
 }
