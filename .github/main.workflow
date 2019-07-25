@@ -5,7 +5,7 @@ workflow "Test with ipa" {
 
 action "On build success" {
   uses = "n0izn0iz/action-status-filter@master"
-  args = ["ci/circleci: build"]
+  args = ["ci/circleci: build-client"]
 }
 
 action "Upload to sauce" {
