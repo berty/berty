@@ -832,7 +832,21 @@ func TestAliasesFlow(t *testing.T) {
 	})
 }
 
-func setupP2PNetwork(ctx context.Context) (*p2pnet.Network, error) {
+func setupP2PNetwork(ctx context.Context, bootstrap ...string) (*p2pnet.Network, error) {
+	bh, err := host.New(ctx,
+		host.WithMobileMode(),
+		host.WithListeners("/ip4/127.0.0.1/tcp/0"))
+	if err != nil {
+		return nil, err
+	}
+
+	return p2pnet.New(ctx, bh,
+		p2pnet.WithPeerCache(),
+		p2pnet.WithBootstrap(bootstrap...),
+	)
+}
+
+func setupBootstrapNode(ctx context.Context) (*p2pnet.Network, error) {
 	bh, err := host.New(ctx, host.WithListeners("/ip4/127.0.0.1/tcp/0"))
 	if err != nil {
 		return nil, err
@@ -840,10 +854,7 @@ func setupP2PNetwork(ctx context.Context) (*p2pnet.Network, error) {
 
 	return p2pnet.New(ctx, bh,
 		p2pnet.WithPeerCache(),
-
-		// Disable defaultBootstrap
-		p2pnet.WithBootstrap(),
-	)
+		p2pnet.WithBootstrap())
 }
 
 func getBootstrap(ctx context.Context, n *p2pnet.Network) []string {
@@ -915,6 +926,7 @@ func TestWithSimpleNetwork(t *testing.T) {
 func TestNodesWithP2PNetwork(t *testing.T) {
 	var (
 		aliceNetwork, bobNetwork, eveNetwork *p2pnet.Network
+		boostrapNode                         *p2pnet.Network
 		alice, bob, eve                      *AppMock
 		err                                  error
 	)
@@ -926,21 +938,23 @@ func TestNodesWithP2PNetwork(t *testing.T) {
 		Convey("setup networks", FailureHalts, func() {
 			shouldIContinue(t)
 
-			aliceNetwork, err = setupP2PNetwork(ctx)
+			boostrapNode, err = setupBootstrapNode(ctx)
 			So(err, ShouldBeNil)
-			bobNetwork, err = setupP2PNetwork(ctx)
+			bootstrapAddr := getBootstrap(ctx, boostrapNode)
+
+			aliceNetwork, err = setupP2PNetwork(ctx, bootstrapAddr...)
 			So(err, ShouldBeNil)
-			eveNetwork, err = setupP2PNetwork(ctx)
+			bobNetwork, err = setupP2PNetwork(ctx, bootstrapAddr...)
+			So(err, ShouldBeNil)
+			eveNetwork, err = setupP2PNetwork(ctx, bootstrapAddr...)
 			So(err, ShouldBeNil)
 
-			aliceBootstrap := getBootstrap(ctx, aliceNetwork)
-			bobBootstrap := getBootstrap(ctx, bobNetwork)
-			eveBootstrap := getBootstrap(ctx, eveNetwork)
-
-			err = bobNetwork.Bootstrap(ctx, true, append(aliceBootstrap, eveBootstrap...)...)
-			So(err, ShouldBeNil)
-			err = eveNetwork.Bootstrap(ctx, true, append(aliceBootstrap, bobBootstrap...)...)
-			So(err, ShouldBeNil)
+			// err = bobNetwork.Bootstrap(ctx, true)
+			// So(err, ShouldBeNil)
+			// err = eveNetwork.Bootstrap(ctx, true)
+			// So(err, ShouldBeNil)
+			// aliceNetwork, err = setupP2PNetwork(ctx, bootstrapAddr)
+			// So(err, ShouldBeNil)
 
 			bob, err = NewAppMock(ctx, &entity.Device{Name: "Bob"}, bobNetwork)
 			So(err, ShouldBeNil)
