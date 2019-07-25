@@ -14,7 +14,12 @@ func (a *Account) UpdateNetworkHost(ctx context.Context, bh *host.BertyHost) err
 	ctx = tracer.Context()
 
 	a.network.UpdateHost(bh)
-	return nil
+
+	// update metric
+	a.node.UseNetworkMetric(ctx, bh.Metric)
+	a.metric = bh.Metric
+
+	return a.network.Join()
 }
 
 func (a *Account) Network() network.Driver {

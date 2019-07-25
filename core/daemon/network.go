@@ -11,9 +11,14 @@ func NewHost(ctx context.Context, cfg *NetworkConfig) (*host.BertyHost, error) {
 	// base config
 	opts := []host.Option{
 		host.WithMetricsReporter(), // @TODO: opt this?
-		host.WithSwarmKey(cfg.SwarmKey),
 		host.WithIdentity(cfg.Identity),
 		host.WithListeners(cfg.BindP2P...),
+	}
+
+	if cfg.PrivateNetwork {
+		opts = append(opts, host.WithSwarmKey(host.DefaultSwarmKey))
+	} else {
+		opts = append(opts, host.WithSwarmKey(""))
 	}
 
 	if cfg.Mobile {

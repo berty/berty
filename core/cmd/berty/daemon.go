@@ -96,7 +96,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.PrivateNetwork, "private-network", true, "enable private network with the default swarm key")
 	flags.BoolVar(&opts.ipfs, "ipfs", false, "connect to ipfs network (override private-network & boostrap)")
 	flags.BoolVar(&opts.peerCache, "cache-peer", true, "if false, network will ask the dht every time he need to send an envelope (emit)")
-	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{}, "p2p listening address")
+	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", nil, "p2p listening address")
 	// flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
 	_ = viper.BindPFlags(flags)
 }
@@ -119,6 +119,120 @@ func newDaemonCommand() *cobra.Command {
 	daemonSetupFlags(cmd.Flags(), opts)
 	sqlSetupFlags(cmd.Flags(), &opts.sql)
 	return cmd
+}
+
+func runDaemon(opts *daemonOptions) error {
+	sqlConfig := &daemon.SQLConfig{
+		Name: opts.sql.name,
+		Key:  opts.sql.key,
+	}
+
+	if opts.ipfs {
+		logger().Warn("Connecting to ipfs network")
+		opts.bootstrap = network.BootstrapIpfs
+		opts.PrivateNetwork = false
+	}
+
+	if opts.bindP2P == nil {
+		opts.bindP2P = []string{
+			"/ip4/0.0.0.0/udp/0/quic",
+			"/ip4/0.0.0.0/tcp/0",
+			"/ble/00000000-0000-0000-0000-000000000000",
+		}
+	}
+
+	networkConfig := &daemon.NetworkConfig{
+		PeerCache:      opts.peerCache,
+		Identity:       opts.identity,
+		Bootstrap:      opts.bootstrap,
+		BindP2P:        opts.bindP2P,
+		Mdns:           opts.mdns,
+		PrivateNetwork: opts.PrivateNetwork,
+		Mobile:         opts.mobile,
+		Ipfs:           opts.ipfs,
+	}
+
+	config := &daemon.Config{
+		SqlOpts:          sqlConfig,
+		GrpcBind:         opts.grpcBind,
+		GrpcWebBind:      opts.grpcWebBind,
+		HideBanner:       opts.hideBanner,
+		DropDatabase:     opts.dropDatabase,
+		InitOnly:         opts.initOnly,
+		WithBot:          opts.withBot,
+		Notification:     opts.notification,
+		ApnsCerts:        opts.apnsCerts,
+		ApnsDevVoipCerts: opts.apnsDevVoipCerts,
+		FcmAPIKeys:       opts.fcmAPIKeys,
+		PrivateKeyFile:   opts.privateKeyFile,
+		NoP2P:            opts.noP2P,
+		NetworkConfig:    networkConfig,
+	}
+
+	startRequest := &daemon.StartRequest{
+		Nickname: opts.nickname,
+	}
+
+	dlogger := zap.L().Named("daemon.grpc")
+	// serverStreamOpts := []grpc.StreamServerInterceptor{
+	// 	// grpc_auth.StreamServerInterceptor(myAuthFunction),
+	// 	grpc_ctxtags.StreamServerInterceptor(),
+	// 	grpc_zap.StreamServerInterceptor(dlogger),
+	// 	grpc_recovery.StreamServerInterceptor(grpc_recovery.WithRecoveryHandler(errorcodes.RecoveryHandler)),
+	// 	errorcodes.StreamServerInterceptor(),
+	// }
+	serverUnaryOpts := []grpc.UnaryServerInterceptor{
+		// grpc_auth.UnaryServerInterceptor(myAuthFunction),
+		grpc_ctxtags.UnaryServerInterceptor(),
+		grpc_zap.UnaryServerInterceptor(dlogger),
+		grpc_recovery.UnaryServerInterceptor(grpc_recovery.WithRecoveryHandler(errorcodes.RecoveryHandler)),
+		errorcodes.UnaryServerInterceptor(),
+	}
+
+	interceptors := []grpc.ServerOption{
+		// grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(serverStreamOpts...)),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(serverUnaryOpts...)),
+	}
+
+	// set storage path
+	if err := deviceinfo.SetStoragePath(opts.sql.path); err != nil {
+		return err
+	}
+
+	d := daemon.New()
+	if opts.notification {
+		d.Notification = notification.NewDesktopNotification()
+	}
+
+	if _, err := d.Initialize(context.Background(), config); err != nil {
+		return err
+	}
+
+	if _, err := d.Start(context.Background(), startRequest); err != nil {
+		return err
+	}
+
+	if opts.daemonWebBind != "" {
+		go func() {
+			if err := serveWeb(d, opts.daemonWebBind, interceptors...); err != nil {
+				logger().Error("serve web", zap.Error(err))
+			}
+		}()
+	}
+
+	if opts.daemonGRPCBind != "" {
+		go func() {
+			if err := serveGrpc(d, opts.daemonGRPCBind, interceptors...); err != nil {
+				logger().Error("serve web", zap.Error(err))
+			}
+		}()
+	}
+
+	if !opts.initOnly {
+		select {}
+	}
+
+	return nil
 }
 
 func serveWeb(d *daemon.Daemon, bind string, interceptors ...grpc.ServerOption) error {
@@ -226,109 +340,4 @@ func serveGrpc(d *daemon.Daemon, bind string, interceptors ...grpc.ServerOption)
 	}
 
 	return gs.Serve(listener)
-}
-
-func runDaemon(opts *daemonOptions) error {
-	sqlConfig := &daemon.SQLConfig{
-		Name: opts.sql.name,
-		Key:  opts.sql.key,
-	}
-
-	if opts.ipfs {
-		logger().Warn("Connecting to ipfs network")
-		opts.bootstrap = network.BootstrapIpfs
-		opts.PrivateNetwork = false
-	}
-
-	networkConfig := &daemon.NetworkConfig{
-		PeerCache:      opts.peerCache,
-		Identity:       opts.identity,
-		Bootstrap:      opts.bootstrap,
-		BindP2P:        opts.bindP2P,
-		Mdns:           opts.mdns,
-		PrivateNetwork: opts.PrivateNetwork,
-		Mobile:         opts.mobile,
-	}
-
-	config := &daemon.Config{
-		SqlOpts:          sqlConfig,
-		GrpcBind:         opts.grpcBind,
-		GrpcWebBind:      opts.grpcWebBind,
-		HideBanner:       opts.hideBanner,
-		DropDatabase:     opts.dropDatabase,
-		InitOnly:         opts.initOnly,
-		WithBot:          opts.withBot,
-		Notification:     opts.notification,
-		ApnsCerts:        opts.apnsCerts,
-		ApnsDevVoipCerts: opts.apnsDevVoipCerts,
-		FcmAPIKeys:       opts.fcmAPIKeys,
-		PrivateKeyFile:   opts.privateKeyFile,
-		NoP2P:            opts.noP2P,
-		NetworkConfig:    networkConfig,
-	}
-
-	startRequest := &daemon.StartRequest{
-		Nickname: opts.nickname,
-	}
-
-	dlogger := zap.L().Named("daemon.grpc")
-	// serverStreamOpts := []grpc.StreamServerInterceptor{
-	// 	// grpc_auth.StreamServerInterceptor(myAuthFunction),
-	// 	grpc_ctxtags.StreamServerInterceptor(),
-	// 	grpc_zap.StreamServerInterceptor(dlogger),
-	// 	grpc_recovery.StreamServerInterceptor(grpc_recovery.WithRecoveryHandler(errorcodes.RecoveryHandler)),
-	// 	errorcodes.StreamServerInterceptor(),
-	// }
-	serverUnaryOpts := []grpc.UnaryServerInterceptor{
-		// grpc_auth.UnaryServerInterceptor(myAuthFunction),
-		grpc_ctxtags.UnaryServerInterceptor(),
-		grpc_zap.UnaryServerInterceptor(dlogger),
-		grpc_recovery.UnaryServerInterceptor(grpc_recovery.WithRecoveryHandler(errorcodes.RecoveryHandler)),
-		errorcodes.UnaryServerInterceptor(),
-	}
-
-	interceptors := []grpc.ServerOption{
-		// grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(serverStreamOpts...)),
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(serverUnaryOpts...)),
-	}
-
-	// set storage path
-	if err := deviceinfo.SetStoragePath(opts.sql.path); err != nil {
-		return err
-	}
-
-	d := daemon.New()
-	if opts.notification {
-		d.Notification = notification.NewDesktopNotification()
-	}
-
-	if _, err := d.Initialize(context.Background(), config); err != nil {
-		return err
-	}
-
-	if _, err := d.Start(context.Background(), startRequest); err != nil {
-		return err
-	}
-
-	if opts.daemonWebBind != "" {
-		go func() {
-			if err := serveWeb(d, opts.daemonWebBind, interceptors...); err != nil {
-				logger().Error("serve web", zap.Error(err))
-			}
-		}()
-	}
-
-	if opts.daemonGRPCBind != "" {
-		go func() {
-			if err := serveGrpc(d, opts.daemonGRPCBind, interceptors...); err != nil {
-				logger().Error("serve web", zap.Error(err))
-			}
-		}()
-	}
-
-	if !opts.initOnly {
-		select {}
-	}
-
-	return nil
 }

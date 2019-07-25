@@ -57,7 +57,7 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 	// configure network
 	n.networkDriver.OnMessage(n.HandleMessage)
 	n.networkDriver.SetLocalContactID(n.UserID())
-	n.networkDriver.Join()
+	go n.networkDriver.Join()
 
 	// FIXME: subscribe to every owned device IDs
 	// var devices []entity.Device

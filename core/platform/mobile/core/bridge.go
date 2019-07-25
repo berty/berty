@@ -8,7 +8,7 @@ import (
 	"berty.tech/core/daemon"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
-	network_config "berty.tech/network"
+	"berty.tech/network"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -34,6 +34,20 @@ var sqlConfig = &daemon.SQLConfig{
 	Key:  "s3cur3",
 }
 
+var networkConfig = &daemon.NetworkConfig{
+	PeerCache: true,
+	Bootstrap: network.DefaultBootstrap,
+	BindP2P: []string{
+		"/ip4/0.0.0.0/udp/0/quic",
+		"/ip4/0.0.0.0/tcp/0",
+		"/ble/00000000-0000-0000-0000-000000000000",
+	},
+	Mdns:           true,
+	Identity:       "",
+	PrivateNetwork: true,
+	Mobile:         true,
+}
+
 var config = &daemon.Config{
 	SqlOpts:          sqlConfig,
 	GrpcBind:         ":1337",
@@ -47,18 +61,7 @@ var config = &daemon.Config{
 	ApnsDevVoipCerts: []string{},
 	FcmAPIKeys:       []string{},
 	PrivateKeyFile:   "",
-	PeerCache:        true,
-	Identity:         "",
-	Bootstrap:        network_config.DefaultBootstrap,
 	NoP2P:            false,
-	BindP2P:          []string{},
-	TransportP2P:     []string{},
-	Hop:              false,
-	Ble:              false,
-	Mdns:             true,
-	DhtServer:        false,
-	PrivateNetwork:   true,
-	SwarmKeyPath:     "",
 }
 
 type NativeBridge interface {

@@ -224,12 +224,18 @@ func (d *Daemon) StopLocalGRPC(context.Context, *Void) (*Void, error) {
 
 func (d *Daemon) UpdateNetworkConfig(ctx context.Context, nc *NetworkConfig) (*Void, error) {
 	currentAccount, _ := account.Get(d.rootContext, d.accountName)
-
-	newHost, err := NewHost(ctx, nc)
+	newHost, err := NewHost(d.rootContext, nc)
 	if err != nil {
 		return nil, err
 	}
 
-	currentAccount.UpdateNetworkHost(ctx, newHost)
+	go func() {
+		if err := currentAccount.UpdateNetworkHost(ctx, newHost); err != nil {
+			logger().Warn("update network error", zap.Error(err))
+		}
+	}()
+
+	// update config
+	d.config.NetworkConfig = nc
 	return &Void{}, nil
 }

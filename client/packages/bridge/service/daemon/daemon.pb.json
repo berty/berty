@@ -138,8 +138,8 @@
                   "type": "bool",
                   "id": 7
                 },
-                "swarmKey": {
-                  "type": "string",
+                "ipfs": {
+                  "type": "bool",
                   "id": 8
                 },
                 "mobile": {

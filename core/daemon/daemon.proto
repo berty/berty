@@ -50,7 +50,7 @@ message NetworkConfig {
   repeated string bindP2P = 5;
   bool mdns = 6;
   bool privateNetwork = 7;
-  string swarmKey = 8;
+  bool ipfs = 8; // @TODO: implement me
   bool mobile = 9;
 }
 

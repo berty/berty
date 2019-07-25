@@ -50,7 +50,9 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 	}
 
 	if !cfg.NoP2P {
-		accountOptions = append(accountOptions, account.WithNetwork(NewNetworkDriver(ctx, cfg.NetworkConfig)))
+		accountOptions = append(accountOptions, account.WithNetwork(
+			NewNetworkDriver(ctx, cfg.NetworkConfig),
+		))
 	} else {
 		accountOptions = append(accountOptions, account.WithEnqueurNetwork())
 	}

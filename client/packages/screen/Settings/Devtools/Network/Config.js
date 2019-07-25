@@ -1,6 +1,7 @@
 import { Switch } from 'react-native'
 import React, { PureComponent } from 'react'
 import { withBridgeContext } from '@berty/bridge/Context'
+import { withNavigation } from 'react-navigation'
 
 import { Header, Loader, Menu } from '@berty/component'
 
@@ -10,6 +11,7 @@ const transports = {
   QUIC: '/ip4/0.0.0.0/udp/0/quic',
 }
 
+@withNavigation
 class Network extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const updating =
@@ -49,36 +51,54 @@ class Network extends PureComponent {
 
   saveConfig = async config => {
     const { bridge } = this.props
-
     this.props.navigation.setParams({ updating: true })
     try {
       await bridge.daemon.updateNetworkConfig(this.state)
     } catch (err) {
       console.error(err)
     }
+
+    // get config back to be sure to reflect config from the back
+    try {
+      const updatedConfig = await bridge.daemon.getNetworkConfig({})
+      this.setState(updatedConfig)
+    } catch (err) {
+      console.error(err)
+    }
+
+    console.warn(this.state)
+
     this.props.navigation.setParams({ updating: false })
   }
 
-  isTransportEnable = (matchPatern) => {
-    return this.state.bindP2P.reduce((acc, currentTransport) => {
-      return acc || currentTransport.indexOf(matchPatern) >= 0
+  isTransportEnable = matchPatern => {
+    let enable = false
+
+    this.state.bindP2P.forEach(transport => {
+      enable = enable || transport.indexOf(matchPatern) >= 0
+    })
+
+    return enable
+  }
+
+  removeTransport = matchPatern => {
+    return this.state.bindP2P.filter(currentTransport => {
+      return currentTransport.indexOf(matchPatern) < 0
     })
   }
 
-  removeTransport = (matchPatern) => {
-    return this.state.bindP2P.filter((currentTransport) => {
-      return currentTransport.indexOf(matchPatern) >= 0
-    })
-  }
-
-  addTransport = (transport) => {
+  addTransport = transport => {
     return this.state.bindP2P.concat(transport)
   }
 
   render() {
-    if (this.state == null) {
+    if (
+      this.state == null ||
+      this.props.navigation.getParam('updating', false)
+    ) {
       return <Loader message="Loading network configuration ..." />
     }
+
     return (
       <Menu>
         <Menu.Section title="Global">
@@ -88,7 +108,7 @@ class Network extends PureComponent {
               <Switch
                 justify="end"
                 value={this.state.mobile}
-                onValueChange={peerCache => this.updateConfig({ mobile })}
+                onValueChange={mobile => this.updateConfig({ mobile })}
               />
             }
           />
@@ -100,8 +120,8 @@ class Network extends PureComponent {
             customRight={
               <Switch
                 justify="end"
-                value={this.state.Mdns}
-                onValueChange={MDNS => this.updateConfig({ Mdns })}
+                value={this.state.mdns}
+                onValueChange={mdns => this.updateConfig({ mdns })}
               />
             }
           />
@@ -134,7 +154,7 @@ class Network extends PureComponent {
                 value={this.isTransportEnable('quic')}
                 onValueChange={enable => {
                   if (enable) {
-                    const bindP2P = this.addTransport(transports.TCP)
+                    const bindP2P = this.addTransport(transports.QUIC)
                     this.updateConfig({ bindP2P })
                   } else {
                     const bindP2P = this.removeTransport('quic')
@@ -152,7 +172,7 @@ class Network extends PureComponent {
                 value={this.isTransportEnable('ble')}
                 onValueChange={enable => {
                   if (enable) {
-                    const bindP2P = this.addTransport(transports.TCP)
+                    const bindP2P = this.addTransport(transports.BLE)
                     this.updateConfig({ bindP2P })
                   } else {
                     const bindP2P = this.removeTransport('ble')

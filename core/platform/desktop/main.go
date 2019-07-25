@@ -9,7 +9,7 @@ import (
 
 	"berty.tech/core/daemon"
 	"berty.tech/core/pkg/logmanager"
-	network_config "berty.tech/network/config"
+	network_config "berty.tech/network"
 	"go.uber.org/zap"
 
 	"berty.tech/core/platform/desktop/coreinterface"
@@ -52,6 +52,21 @@ func main() {
 		Key:  "s3cur3",
 	}
 
+	networkConfig := &daemon.NetworkConfig{
+		PeerCache: true,
+		Identity:  "",
+		Bootstrap: network_config.DefaultBootstrap,
+		BindP2P: []string{
+			"/ip4/0.0.0.0/udp/0/quic",
+			"/ip4/0.0.0.0/tcp/0",
+			"/ble/00000000-0000-0000-0000-000000000000",
+		},
+		Mdns:           true,
+		PrivateNetwork: true,
+		Mobile:         true,
+		Ipfs:           false,
+	}
+
 	config := &daemon.Config{
 		SqlOpts:          sqlConfig,
 		GrpcBind:         ":1337",
@@ -65,18 +80,8 @@ func main() {
 		ApnsDevVoipCerts: []string{},
 		FcmAPIKeys:       []string{},
 		PrivateKeyFile:   "",
-		PeerCache:        true,
-		Identity:         "",
-		Bootstrap:        network_config.DefaultBootstrap,
 		NoP2P:            false,
-		BindP2P:          []string{},
-		TransportP2P:     []string{},
-		Hop:              true,
-		Ble:              true,
-		Mdns:             true,
-		DhtServer:        true,
-		PrivateNetwork:   true,
-		SwarmKeyPath:     "",
+		NetworkConfig:    networkConfig,
 	}
 
 	// Init
