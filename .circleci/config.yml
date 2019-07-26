@@ -700,6 +700,10 @@ jobs:
           command: echo $RN_ENVIRONMENT > .environment
 
       - run:
+          name: globally install clis needed for integration tests
+          command: npm i -g cavy-cli react-native-cli
+
+      - run:
           name: run integration tests
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
