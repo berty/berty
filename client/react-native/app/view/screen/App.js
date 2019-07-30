@@ -17,6 +17,7 @@ import BridgeContext, { rpc, service, middleware } from '@berty/bridge'
 import StoreContext from '@berty/store/context'
 import { Store } from '@berty/store/store.gen'
 import i18n from '@berty/common/locale'
+import { isIntegrationMode } from '@berty/common/constants/query'
 
 const bridgeMiddlewares = middleware.chain(
   __DEV__ ? middleware.logger.create('DAEMON') : null // eslint-disable-line
@@ -25,9 +26,7 @@ const bridgeMiddlewares = middleware.chain(
 export default class App extends PureComponent {
   state = {
     loading: true,
-    showAnim:
-      process.env['ENVIRONMENT'] !== 'integration_test' &&
-      Platform.OS !== 'web',
+    showAnim: !isIntegrationMode && Platform.OS !== 'web',
     availableUpdate: null,
     store: new Store({
       daemon: service.create(

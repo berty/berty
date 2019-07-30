@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  berty-core:
+    image: bertychat/berty
+
+  cavy-report:
+    build:
+      context: ../../..
+      dockerfile: build/docker/integration-tests/cavy-report.Dockerfile
+
+  client:
+    build:
+      context: ../../..
+      dockerfile: build/docker/integration-tests/client.Dockerfile

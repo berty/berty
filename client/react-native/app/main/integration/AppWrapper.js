@@ -40,6 +40,7 @@ export default class AppWrapper extends Component {
         specs={[Onboarding, AppLoading, Contact, Chat, DevTools]}
         store={testHookStore}
         waitTime={4000}
+        startDelay={4000}
         sendReport
         reportServerHost={reportServer.host}
         reportServerPort={reportServer.port}

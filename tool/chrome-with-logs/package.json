@@ -1,0 +1,15 @@
+{
+  "name": "chrome-with-logs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chrome-launcher": "^0.11.1",
+    "chrome-remote-interface": "^0.27.2"
+  }
+}

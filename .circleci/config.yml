@@ -145,17 +145,17 @@ jobs:
       - restore_cache:
           key: docker-berty-master-{{checksum "/tmp/master_version"}}
           paths:
-            - /caches/berty.tar
+            - /tmp/caches/berty.tar
 
       - run:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            docker load -i /caches/berty.tar | true
+            docker load -i /tmp/caches/berty.tar | true
 
       - run:
           name: Build application Docker image
-          command: env DOCKER_BUILDKIT=1 /tmp/retry -m 3 docker build --no-cache --ssh=default -t bertychat/berty .
+          command: env DOCKER_BUILDKIT=1 /tmp/retry -m 3 docker build --ssh=default -t bertychat/berty .
 
       - run:
           name: Run application within Docker
@@ -164,8 +164,8 @@ jobs:
       - run:
           name: Save Docker image layer cache
           command: |
-            mkdir -p /caches
-            docker save -o /caches/berty.tar bertychat/berty
+            mkdir -p /tmp/caches
+            docker save -o /tmp/caches/berty.tar bertychat/berty
 
       - run:
           name: Push image to docker hub
@@ -182,14 +182,14 @@ jobs:
       - run:
           name: Save Docker image layer cache
           command: |
-            mkdir -p /caches
-            docker save -o /caches/berty.tar bertychat/berty
+            mkdir -p /tmp/caches
+            docker save -o /tmp/caches/berty.tar bertychat/berty
 
       - *master_version
       - save_cache:
-          key: docker-berty-{{.Branch}}-{{checksum "/tmp/master_version"}}
+          key: docker-berty-{{ .Revision }}-{{checksum "/tmp/master_version"}}
           paths:
-            - /caches/berty.tar
+            - /tmp/caches/berty.tar
 
   core.go.test:
     <<: *golang_workspace
@@ -209,7 +209,7 @@ jobs:
           name: install openssl 1.0.x
           command: |
             sudo apt-get update
-            sudo apt-get install libssl1.0-dev
+            sudo apt-get install libssl-dev
       - run:
           name: install core
           command: |
@@ -492,6 +492,74 @@ jobs:
       - store_artifacts:
           path: /tmp/fl
 
+  client.rn.ios-test:
+    working_directory: ~/go/src/berty.tech
+    macos:
+      xcode: "10.2.0"
+
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - *install_retry
+      - run:
+          name: set Ruby version
+          command: echo "ruby-2.4" > ~/.ruby-version
+
+      - *master_version
+      - restore_cache:
+          key: ios-{{checksum "/tmp/master_version"}}
+
+      - checkout:
+          path: ~/go/src/berty.tech/
+
+      - attach_workspace:
+          at: ~/go/src/berty.tech/
+
+      - *install_go
+      - *install_gomobile
+      - run:
+          name: install core
+          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
+
+      - restore_cache:
+          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
+
+      - run:
+          name: install bundle
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
+
+      - save_cache:
+          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
+          paths:
+            - ~/go/src/berty.tech/client/react-native/vendor/bundle
+
+      - run:
+          name: set version
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: make version.ios
+
+      - run:
+          name: make deps
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: /tmp/retry -m 3 make deps
+
+      - run:
+          name: add environment
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: echo $RN_ENVIRONMENT > .environment
+
+      - run:
+          name: globally install clis needed for integration tests
+          command: npm i -g cavy-cli react-native-cli
+
+      - run:
+          name: run integration tests
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: |
+            ENVIRONMENT=integration_test cavy run-ios --no-packager --configuration=Release --scheme=adhoc
+
+
 
   client.rn.ios-beta:
     working_directory: ~/go/src/berty.tech
@@ -576,7 +644,85 @@ jobs:
           path: /tmp/flb
 
 
+  client.rn.ios-beta-test:
+    working_directory: ~/go/src/berty.tech
+    macos:
+      xcode: "10.2.0"
+
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - *install_retry
+      - run:
+          name: set Ruby version
+          command: echo "ruby-2.4" > ~/.ruby-version
+
+      - checkout:
+          path: ~/go/src/berty.tech/
+
+      - attach_workspace:
+          at: ~/go/src/berty.tech/
+
+      - *install_go
+      - *install_gomobile
+
+      - run:
+          name: install core
+          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          command: |
+            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
+
+      - restore_cache:
+          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-4
+
+      - run:
+          name: install bundle
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
+
+      - save_cache:
+          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-4
+          paths:
+            - ~/go/src/berty.tech/client/react-native/vendor/bundle
+
+      - run:
+          name: set version
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: make version.ios
+
+      - run:
+          name: make deps
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: /tmp/retry -m 3 make deps
+
+      - run:
+          name: add environment
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: echo $RN_ENVIRONMENT > .environment
+
+      - run:
+          name: globally install clis needed for integration tests
+          command: npm i -g cavy-cli react-native-cli
+
+      - run:
+          name: run integration tests
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: |
+            rm -rf $TMPDIR/react-*
+            rm -rf $TMPDIR/haste-*
+            rm -rf $TMPDIR/metro-*
+            react-native start --reset-cache &
+            cavy run-ios --no-packager --configuration=Release --scheme=house
+
+      - *master_version
+      - save_cache:
+          key: ios-{{checksum "/tmp/master_version"}}
+          paths:
+            - ~/go/pkg
+            - ~/go/src
+            - ~/go-install
+
   client.rn.web:
+    <<: *golang_workspace
     working_directory: ~/go/src/berty.tech
     docker:
       - image: circleci/node:8
@@ -593,13 +739,54 @@ jobs:
       - restore_cache:
           key: node-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
 
-      - run:
-          name: build web app
-          working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make build.web
+      - *master_version
+
+      - restore_cache:
+          key: docker-berty-{{ .Revision }}-{{checksum "/tmp/master_version"}}
+
+      - setup_remote_docker
 
       - run:
-          name: build dashboard
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /tmp/caches/berty.tar | true
+
+      - run:
+           working_directory: ~/go/src/berty.tech/client/react-native
+           name: Build web client
+           command: REPORT_HOST=cavy-report /tmp/retry -m 3 make build.web
+           no_output_timeout: 1h
+
+      - run:
+           name: Setup compose project name
+           command: |
+            echo "export COMPOSE_PROJECT_NAME=integration-${CIRCLE_BUILD_NUM}" >> $BASH_ENV
+            echo "export DOCKER_COMPOSE=\"docker-compose -f build/docker/integration-tests/docker-compose.yml\"" >> $BASH_ENV
+
+      - run:
+          name: Build integration tests containers
+          command: ${DOCKER_COMPOSE} build
+
+      - run:
+          name: Create integration tests network
+          command: docker network create ${COMPOSE_PROJECT_NAME}_default
+
+      - run:
+          name: Run berty core and client
+          command: ${DOCKER_COMPOSE} up berty-core client
+          background: true
+
+      - run:
+          name: Run cavy report server
+          command: ${DOCKER_COMPOSE} up cavy-report
+
+      - run:
+          name: Kill integration tests containers
+          command: ${DOCKER_COMPOSE} down
+
+      - run:
+          name: Build dashboard
           working_directory: ~/go/src/berty.tech/client/react-native
           command: /tmp/retry -m 3 make build.dashboard
 
@@ -617,7 +804,6 @@ jobs:
           root: ~/go/src/berty.tech/
           paths:
             - client/react-native/web
-
 
   client.rn.mac:
     working_directory: ~/go/src/berty.tech
@@ -713,6 +899,7 @@ workflows:
   version: 2
   build-client:
     jobs:
+      - docker.build
       - client.rn.node
       # android
       - client.rn.android:
@@ -738,6 +925,7 @@ workflows:
       - client.rn.web:
           requires:
             - client.rn.node
+            - docker.build
       # desktop
       - client.rn.mac:
           filters:
@@ -751,6 +939,19 @@ workflows:
               only: master
           requires:
             - client.rn.web
+  ios-inte-tests:
+    jobs:
+      - client.rn.node
+      # ios
+      - client.rn.ios-test:
+          requires:
+            - client.rn.node
+      - client.rn.ios-beta-test:
+          filters:
+            branches:
+              only: master
+          requires:
+            - client.rn.node
   check-quality:
     jobs:
       - lint

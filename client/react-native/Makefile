@@ -89,7 +89,7 @@ deps.root:
 
 .PHONY: deps
 deps: deps.root
-	$(LERNA) bootstrap $$([ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
+	$(LERNA) bootstrap $$([ ! -z "$$CIRCLE_JOB" ] && echo "--ci --concurrency=2")
 
 .PHONY: deps.android
 deps.android: deps

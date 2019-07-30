@@ -8,9 +8,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import RootNavigator from '@berty/navigation'
+import { isIntegrationMode } from '@berty/common/constants/query'
 import AppWrapper from './integration/AppWrapper'
-
-const isIntegrationMode = process.env['ENVIRONMENT'] === 'integration_test'
 
 if (Platform.Desktop === undefined) {
   Platform.Desktop = false
