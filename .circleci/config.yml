@@ -162,20 +162,28 @@ commands:
             - ~/go/src/berty.tech/client/web/build               # web
             - ~/go/src/berty.tech/client/web/node_modules/.cache # babel
 
-  android_staff_restore_cache:
-    description: "restore android staff cache"
+  android_restore_cache:
+    description: "restore android << parameters.type >> cache"
+    parameters:
+      type:
+        type: string
+        default: common
     steps:
       - restore_cache:
           keys:
-            - v0-android-staff-{{.Branch}}-{{.Revision}}
-            - v0-android-staff-{{.Branch}}-
-            - v0-android-staff-master-
+            - v0-android-<< parameters.type >>-{{.Branch}}-{{.Revision}}
+            - v0-android-<< parameters.type >>-{{.Branch}}-
+            - v0-android-<< parameters.type >>-master-
 
-  android_staff_save_cache:
-    description: "save android staff cache"
+  android_save_cache:
+    description: "save android << parameters.type >> cache"
+    parameters:
+      type:
+        type: string
+        default: common
     steps:
       - save_cache:
-          key: v0-android-staff-{{.Branch}}-{{.Revision}}
+          key: v0-android-<< parameters.type >>-{{.Branch}}-{{.Revision}}
           paths:
             # user
             - ~/.cache
@@ -194,52 +202,28 @@ commands:
             # gradle
             - ~/.gradle/caches
 
-  android_yolo_restore_cache:
-    description: "restore android yolo cache"
+  ios_restore_cache:
+    description: "restore ios << parameters.type >> cache"
+    parameters:
+      type:
+        type: string
+        default: common
     steps:
       - restore_cache:
           keys:
-            - v0-android-yolo-{{.Branch}}-{{.Revision}}
-            - v0-android-yolo-{{.Branch}}-
-            - v0-android-yolo-master-
+            - v0-ios-<< parameters.type >>-{{.Branch}}-{{.Revision}}
+            - v0-ios-<< parameters.type >>-{{.Branch}}-
+            - v0-ios-<< parameters.type >>-master-
 
-  android_yolo_save_cache:
-    description: "save android yolo cache"
+  ios_save_cache:
+    description: "save ios << parameters.type >> cache"
+    parameters:
+      type:
+        type: string
+        default: common
     steps:
       - save_cache:
-          key: v0-android-yolo-{{.Branch}}-{{.Revision}}
-          paths:
-            # user
-            - ~/.cache
-            # npm
-            - ~/.cache/.npm/_cacache
-            # lerna
-            - ~/go/src/berty.tech/client/node_modules
-            # bundle
-            - ~/go/src/berty.tech/client/vendor/bundle
-            # gomobile
-            - ~/go/pkg
-            # android
-            - ~/.android/build-cache
-            - ~/.android/build-cache.lock
-            - ~/.android/cache
-            # gradle
-            - ~/.gradle/caches
-
-  ios_staff_restore_cache:
-    description: "restore ios staff cache"
-    steps:
-      - restore_cache:
-          keys:
-            - v0-ios-staff-{{.Branch}}-{{.Revision}}
-            - v0-ios-staff-{{.Branch}}-
-            - v0-ios-staff-master-
-
-  ios_staff_save_cache:
-    description: "save ios staff cache"
-    steps:
-      - save_cache:
-          key: v0-ios-staff-{{.Branch}}-{{.Revision}}
+          key: v0-ios-<< parameters.type >>-{{.Branch}}-{{.Revision}}
           paths:
             # user
             - ~/Library/Caches
@@ -257,140 +241,28 @@ commands:
             # ios
             - ~/go/src/berty.tech/client/ios/build
 
-  ios_staff_test_restore_cache:
-    description: "restore ios staff cache"
+  mac_restore_cache:
+    description: "restore mac << parameters.type >> cache"
+    parameters:
+      type:
+        type: string
+        default: common
     steps:
       - restore_cache:
           keys:
-            - v0-ios-staff-test-{{.Branch}}-{{.Revision}}
-            - v0-ios-staff-test-{{.Branch}}-
-            - v0-ios-staff-test-master-
+            - v0-mac-<< parameters.type >>-{{.Branch}}-{{.Revision}}
+            - v0-mac-<< parameters.type >>-{{.Branch}}-
+            - v0-mac-<< parameters.type >>-master-
 
-  ios_staff_test_save_cache:
-    description: "save ios staff cache"
+  mac_save_cache:
+    description: "save mac << parameters.type >> cache"
+    parameters:
+      type:
+        type: string
+        default: common
     steps:
       - save_cache:
-          key: v0-ios-staff-test-{{.Branch}}-{{.Revision}}
-          paths:
-            # user
-            - ~/Library/Caches
-            # npm
-            - ~/.cache/.npm/_cacache
-            # lerna
-            - ~/go/src/berty.tech/client/node_modules
-            # bundle
-            - ~/go/src/berty.tech/client/vendor/bundle
-            # gomobile
-            - ~/go/pkg
-            - ~/go/src/berty.tech/client/ios/Core
-            # xcode
-            - ~/Library/Developer/Xcode/DerivedData
-            # ios
-            - ~/go/src/berty.tech/client/ios/build
-
-  ios_yolo_restore_cache:
-    description: "restore ios yolo cache"
-    steps:
-      - restore_cache:
-          keys:
-            - v0-ios-yolo-{{.Branch}}-{{.Revision}}
-            - v0-ios-yolo-{{.Branch}}-
-            - v0-ios-yolo-master-
-
-  ios_yolo_save_cache:
-    description: "save ios yolo cache"
-    steps:
-      - save_cache:
-          key: v0-ios-yolo-{{.Branch}}-{{.Revision}}
-          paths:
-            # user
-            - ~/Library/Caches
-            # npm
-            - ~/.cache/.npm/_cacache
-            # lerna
-            - ~/go/src/berty.tech/client/node_modules
-            # bundle
-            - ~/go/src/berty.tech/client/vendor/bundle
-            # gomobile
-            - ~/go/pkg
-            - ~/go/src/berty.tech/client/ios/Core
-            # xcode
-            - ~/Library/Developer/Xcode/DerivedData
-            # ios
-            - ~/go/src/berty.tech/client/ios/build
-
-  ios_yolo_test_restore_cache:
-    description: "restore ios yolo cache"
-    steps:
-      - restore_cache:
-          keys:
-            - v0-ios-yolo-test-{{.Branch}}-{{.Revision}}
-            - v0-ios-yolo-test-{{.Branch}}-
-            - v0-ios-yolo-test-master-
-
-  ios_yolo_test_save_cache:
-    description: "save ios yolo cache"
-    steps:
-      - save_cache:
-          key: v0-ios-yolo-test-{{.Branch}}-{{.Revision}}
-          paths:
-            # user
-            - ~/Library/Caches
-            # npm
-            - ~/.cache/.npm/_cacache
-            # lerna
-            - ~/go/src/berty.tech/client/node_modules
-            # bundle
-            - ~/go/src/berty.tech/client/vendor/bundle
-            # gomobile
-            - ~/go/pkg
-            - ~/go/src/berty.tech/client/ios/Core
-            # xcode
-            - ~/Library/Developer/Xcode/DerivedData
-            # ios
-            - ~/go/src/berty.tech/client/ios/build
-
-  mac_staff_restore_cache:
-    description: "restore mac staff cache"
-    steps:
-      - restore_cache:
-          keys:
-            - v0-mac-staff-{{.Branch}}-{{.Revision}}
-            - v0-mac-staff-{{.Branch}}-
-            - v0-mac-staff-master-
-
-  mac_staff_save_cache:
-    description: "save mac staff cache"
-    steps:
-      - save_cache:
-          key: v0-mac-staff-{{.Branch}}-{{.Revision}}
-          paths:
-            # user
-            - ~/Library/Caches
-            # npm
-            - ~/.cache/.npm/_cacache
-            # lerna
-            - ~/go/src/berty.tech/client/node_modules
-            # go
-            - ~/go/pkg
-            # bundler
-            - /usr/local/bin/dylibbundler
-            - /usr/local/Cellar/dylibbundler
-
-  mac_yolo_restore_cache:
-    description: "restore mac yolo cache"
-    steps:
-      - restore_cache:
-          keys:
-            - v0-mac-yolo-{{.Branch}}-{{.Revision}}
-            - v0-mac-yolo-{{.Branch}}-
-            - v0-mac-yolo-master-
-
-  mac_yolo_save_cache:
-    description: "save mac yolo cache"
-    steps:
-      - save_cache:
-          key: v0-mac-yolo-{{.Branch}}-{{.Revision}}
+          key: v0-mac-<< parameters.type >>-{{.Branch}}-{{.Revision}}
           paths:
             # user
             - ~/Library/Caches
@@ -574,7 +446,8 @@ jobs:
     steps:
 
       - prepare
-      - android_staff_restore_cache
+      - android_restore_cache:
+          type: staff
 
       - run:
           name: make deps
@@ -622,14 +495,16 @@ jobs:
       - store_artifacts:
           path: /tmp/fl
 
-      - android_staff_save_cache
+      - android_save_cache:
+          type: staff
 
   android_yolo:
     executor: android
     steps:
 
       - prepare
-      - android_yolo_restore_cache
+      - android_restore_cache:
+          type: yolo
 
       - run:
           name: make deps
@@ -672,7 +547,8 @@ jobs:
       - store_artifacts:
           path: /tmp/fl
 
-      - android_yolo_save_cache
+      - android_save_cache:
+          type: yolo
 
   ios_staff:
     executor: macos
@@ -682,7 +558,8 @@ jobs:
           command: echo "ruby-2.4" > ~/.ruby-version
 
       - prepare
-      - ios_staff_restore_cache
+      - ios_restore_cache:
+          type: staff
 
       - run:
           name: make deps
@@ -722,7 +599,8 @@ jobs:
       - store_artifacts:
           path: /tmp/fl
 
-      - ios_staff_save_cache
+      - ios_save_cache:
+          type: staff
 
   ios_staff_test:
     executor: macos
@@ -732,7 +610,8 @@ jobs:
           command: echo "ruby-2.4" > ~/.ruby-version
 
       - prepare
-      - ios_staff_test_restore_cache
+      - ios_restore_cache:
+          type: staff-test
 
       - run:
           name: make deps
@@ -772,7 +651,8 @@ jobs:
             # too many open files
             ulimit -S -n 10240 && make test.adhoc.ios
 
-      - ios_staff_test_save_cache
+      - ios_save_cache:
+          type: staff-test
 
   ios_yolo:
     executor: macos
@@ -782,7 +662,8 @@ jobs:
           command: echo "ruby-2.4" > ~/.ruby-version
 
       - prepare
-      - ios_yolo_restore_cache
+      - ios_restore_cache:
+          type: yolo
 
       - run:
           name: make deps
@@ -828,7 +709,8 @@ jobs:
       - store_artifacts:
           path: /tmp/fl
 
-      - ios_yolo_save_cache
+      - ios_save_cache:
+          type: yolo
 
   ios_yolo_test:
     executor: macos
@@ -838,7 +720,8 @@ jobs:
           command: echo "ruby-2.4" > ~/.ruby-version
 
       - prepare
-      - ios_yolo_test_restore_cache
+      - ios_restore_cache:
+          type: yolo-test
 
       - run:
           name: make deps
@@ -885,7 +768,8 @@ jobs:
             # too many open files
             ulimit -S -n 10240 && make test.adhoc.ios
 
-      - ios_yolo_test_save_cache
+      - ios_save_cache:
+          type: yolo-test
 
   web:
     executor: node
@@ -931,8 +815,12 @@ jobs:
     executor: macos
     steps:
       - prepare
-      - mac_staff_restore_cache
+
+      - mac_restore_cache:
+          type: staff
+
       - install_go
+
       - run:
           name: install mac
           working_directory: ~/go/src/berty.tech/client
@@ -941,14 +829,20 @@ jobs:
             mv osx/dist/Berty*.dmg /tmp/Berty.dmg
       - store_artifacts:
           path: /tmp/Berty.dmg
-      - mac_staff_save_cache
+
+      - mac_save_cache:
+          type: staff
 
   mac_yolo:
     executor: macos
     steps:
       - prepare
-      - mac_yolo_restore_cache
+
+      - mac_restore_cache:
+          type: yolo
+
       - install_go
+
       - run:
           name: install mac
           working_directory: ~/go/src/berty.tech/client
@@ -957,7 +851,9 @@ jobs:
             mv osx/dist/Berty*.dmg /tmp/Berty.dmg
       - store_artifacts:
           path: /tmp/Berty.dmg
-      - mac_yolo_save_cache
+
+      - mac_save_cache:
+          type: yolo
 
 workflows:
   workflow:
