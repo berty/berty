@@ -16,7 +16,7 @@ import React, { PureComponent } from 'react'
 import * as enums from '@berty/common/enums.gen'
 import { Store } from '@berty/container'
 import { View, Platform } from 'react-native'
-import { hook } from 'cavy'
+import generateTestHook from 'cavy/src/generateTestHook'
 import { withNamespaces } from 'react-i18next'
 import { withNavigation } from 'react-navigation'
 import I18n from 'i18next'
@@ -224,7 +224,8 @@ export class Item extends React.Component {
 }
 
 @withStoreContext
-@hook
+// FIXME: https://github.com/pixielabs/cavy/issues/146
+// @hook
 class ConversationList extends PureComponent {
   constructor(props) {
     super(props)
@@ -315,7 +316,7 @@ class ConversationList extends PureComponent {
                 source={require('@berty/common/static/img/empty-conversation.png')}
                 text={I18n.t('chats.no-new-messages')}
                 icon={'edit'}
-                btnRef={this.props.generateTestHook('ChatList.NewConvButton')}
+                btnRef={generateTestHook('ChatList.NewConvButton')}
                 btnText={I18n.t('chats.new-conversation')}
                 onPress={() => ConversationList.onPress(navigation)}
               />
