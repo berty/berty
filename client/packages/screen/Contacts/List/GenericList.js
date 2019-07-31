@@ -169,8 +169,8 @@ class List extends React.Component {
       paginate,
       retry,
       infos: { count, cursor, loading },
+      onPress,
     } = this.props
-
     return (
       <>
         <NavigationEvents
@@ -201,7 +201,7 @@ class List extends React.Component {
               onRefresh={Platform.OS !== 'web' && retry}
               onViewableItemsChanged={this.onViewableItemsChanged}
             />
-            {count < 5 ? <CondComponent onPress={this.props.onPress} /> : null}
+            {count < 5 ? <CondComponent onPress={onPress} /> : null}
           </>
         ) : (
           <EmptyList
@@ -253,7 +253,7 @@ class GenericList extends React.Component {
     if (!didFinishInitialAnimation) {
       return null
     }
-    const { paginate, filter } = this.props
+    const { paginate, filter, onPress } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Store.Node.Service.ContactList.Pagination
@@ -272,6 +272,7 @@ class GenericList extends React.Component {
               paginate={paginate}
               retry={retry}
               infos={infos}
+              onPress={onPress}
             />
           )}
         </Store.Node.Service.ContactList.Pagination>
