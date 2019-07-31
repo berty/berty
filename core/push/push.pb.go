@@ -106,7 +106,7 @@ func (m *PushDestination) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return xxx_messageInfo_PushDestination.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -168,7 +168,7 @@ func (m *PushNativeIdentifier) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return xxx_messageInfo_PushNativeIdentifier.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -224,7 +224,7 @@ func (m *PushData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_PushData.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -307,7 +307,7 @@ var fileDescriptor_ae0042da44e9a7a7 = []byte{
 func (m *PushDestination) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -315,37 +315,45 @@ func (m *PushDestination) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *PushDestination) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PushDestination) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Nonce) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintPush(dAtA, i, uint64(len(m.Nonce)))
-		i += copy(dAtA[i:], m.Nonce)
-	}
-	if m.PushType != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintPush(dAtA, i, uint64(m.PushType))
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.PushId) > 0 {
-		dAtA[i] = 0x1a
-		i++
+		i -= len(m.PushId)
+		copy(dAtA[i:], m.PushId)
 		i = encodeVarintPush(dAtA, i, uint64(len(m.PushId)))
-		i += copy(dAtA[i:], m.PushId)
+		i--
+		dAtA[i] = 0x1a
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.PushType != 0 {
+		i = encodeVarintPush(dAtA, i, uint64(m.PushType))
+		i--
+		dAtA[i] = 0x10
 	}
-	return i, nil
+	if len(m.Nonce) > 0 {
+		i -= len(m.Nonce)
+		copy(dAtA[i:], m.Nonce)
+		i = encodeVarintPush(dAtA, i, uint64(len(m.Nonce)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *PushNativeIdentifier) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -353,32 +361,40 @@ func (m *PushNativeIdentifier) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *PushNativeIdentifier) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PushNativeIdentifier) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.PackageID) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintPush(dAtA, i, uint64(len(m.PackageID)))
-		i += copy(dAtA[i:], m.PackageID)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.DeviceToken) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.DeviceToken)
+		copy(dAtA[i:], m.DeviceToken)
 		i = encodeVarintPush(dAtA, i, uint64(len(m.DeviceToken)))
-		i += copy(dAtA[i:], m.DeviceToken)
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.PackageID) > 0 {
+		i -= len(m.PackageID)
+		copy(dAtA[i:], m.PackageID)
+		i = encodeVarintPush(dAtA, i, uint64(len(m.PackageID)))
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *PushData) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -386,41 +402,51 @@ func (m *PushData) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *PushData) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PushData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.PushIdentifier) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintPush(dAtA, i, uint64(len(m.PushIdentifier)))
-		i += copy(dAtA[i:], m.PushIdentifier)
-	}
-	if len(m.Envelope) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintPush(dAtA, i, uint64(len(m.Envelope)))
-		i += copy(dAtA[i:], m.Envelope)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.Priority != 0 {
-		dAtA[i] = 0x18
-		i++
 		i = encodeVarintPush(dAtA, i, uint64(m.Priority))
+		i--
+		dAtA[i] = 0x18
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Envelope) > 0 {
+		i -= len(m.Envelope)
+		copy(dAtA[i:], m.Envelope)
+		i = encodeVarintPush(dAtA, i, uint64(len(m.Envelope)))
+		i--
+		dAtA[i] = 0x12
 	}
-	return i, nil
+	if len(m.PushIdentifier) > 0 {
+		i -= len(m.PushIdentifier)
+		copy(dAtA[i:], m.PushIdentifier)
+		i = encodeVarintPush(dAtA, i, uint64(len(m.PushIdentifier)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintPush(dAtA []byte, offset int, v uint64) int {
+	offset -= sovPush(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *PushDestination) Size() (n int) {
 	if m == nil {

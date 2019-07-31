@@ -119,7 +119,7 @@ func (m *Conversation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return xxx_messageInfo_Conversation.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -245,7 +245,7 @@ func (m *ConversationMember) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return xxx_messageInfo_ConversationMember.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -393,7 +393,7 @@ var fileDescriptor_6f1357e67b20af82 = []byte{
 func (m *Conversation) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -401,111 +401,123 @@ func (m *Conversation) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Conversation) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Conversation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ID) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintConversation(dAtA, i, uint64(len(m.ID)))
-		i += copy(dAtA[i:], m.ID)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	dAtA[i] = 0x12
-	i++
-	i = encodeVarintConversation(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)))
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
+	if len(m.Members) > 0 {
+		for iNdEx := len(m.Members) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Members[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintConversation(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x6
+			i--
+			dAtA[i] = 0xa2
+		}
+	}
+	if m.Kind != 0 {
+		i = encodeVarintConversation(dAtA, i, uint64(m.Kind))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xb8
+	}
+	if len(m.Infos) > 0 {
+		i -= len(m.Infos)
+		copy(dAtA[i:], m.Infos)
+		i = encodeVarintConversation(dAtA, i, uint64(len(m.Infos)))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xb2
+	}
+	if len(m.Topic) > 0 {
+		i -= len(m.Topic)
+		copy(dAtA[i:], m.Topic)
+		i = encodeVarintConversation(dAtA, i, uint64(len(m.Topic)))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xaa
+	}
+	if len(m.Title) > 0 {
+		i -= len(m.Title)
+		copy(dAtA[i:], m.Title)
+		i = encodeVarintConversation(dAtA, i, uint64(len(m.Title)))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xa2
+	}
+	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.SeenAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.SeenAt):])
 	if err1 != nil {
 		return 0, err1
 	}
-	i += n1
-	dAtA[i] = 0x1a
-	i++
-	i = encodeVarintConversation(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)))
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
+	i -= n1
+	i = encodeVarintConversation(dAtA, i, uint64(n1))
+	i--
+	dAtA[i] = 0x32
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.WroteAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.WroteAt):])
 	if err2 != nil {
 		return 0, err2
 	}
-	i += n2
-	dAtA[i] = 0x22
-	i++
-	i = encodeVarintConversation(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.ReadAt)))
-	n3, err3 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.ReadAt, dAtA[i:])
+	i -= n2
+	i = encodeVarintConversation(dAtA, i, uint64(n2))
+	i--
+	dAtA[i] = 0x2a
+	n3, err3 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.ReadAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.ReadAt):])
 	if err3 != nil {
 		return 0, err3
 	}
-	i += n3
-	dAtA[i] = 0x2a
-	i++
-	i = encodeVarintConversation(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.WroteAt)))
-	n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.WroteAt, dAtA[i:])
+	i -= n3
+	i = encodeVarintConversation(dAtA, i, uint64(n3))
+	i--
+	dAtA[i] = 0x22
+	n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
 	if err4 != nil {
 		return 0, err4
 	}
-	i += n4
-	dAtA[i] = 0x32
-	i++
-	i = encodeVarintConversation(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.SeenAt)))
-	n5, err5 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.SeenAt, dAtA[i:])
+	i -= n4
+	i = encodeVarintConversation(dAtA, i, uint64(n4))
+	i--
+	dAtA[i] = 0x1a
+	n5, err5 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
 	if err5 != nil {
 		return 0, err5
 	}
-	i += n5
-	if len(m.Title) > 0 {
-		dAtA[i] = 0xa2
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintConversation(dAtA, i, uint64(len(m.Title)))
-		i += copy(dAtA[i:], m.Title)
+	i -= n5
+	i = encodeVarintConversation(dAtA, i, uint64(n5))
+	i--
+	dAtA[i] = 0x12
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintConversation(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
 	}
-	if len(m.Topic) > 0 {
-		dAtA[i] = 0xaa
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintConversation(dAtA, i, uint64(len(m.Topic)))
-		i += copy(dAtA[i:], m.Topic)
-	}
-	if len(m.Infos) > 0 {
-		dAtA[i] = 0xb2
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintConversation(dAtA, i, uint64(len(m.Infos)))
-		i += copy(dAtA[i:], m.Infos)
-	}
-	if m.Kind != 0 {
-		dAtA[i] = 0xb8
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintConversation(dAtA, i, uint64(m.Kind))
-	}
-	if len(m.Members) > 0 {
-		for _, msg := range m.Members {
-			dAtA[i] = 0xa2
-			i++
-			dAtA[i] = 0x6
-			i++
-			i = encodeVarintConversation(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationMember) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -513,103 +525,116 @@ func (m *ConversationMember) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationMember) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationMember) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ID) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintConversation(dAtA, i, uint64(len(m.ID)))
-		i += copy(dAtA[i:], m.ID)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	dAtA[i] = 0x12
-	i++
-	i = encodeVarintConversation(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)))
-	n6, err6 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
-	if err6 != nil {
-		return 0, err6
+	if len(m.ContactID) > 0 {
+		i -= len(m.ContactID)
+		copy(dAtA[i:], m.ContactID)
+		i = encodeVarintConversation(dAtA, i, uint64(len(m.ContactID)))
+		i--
+		dAtA[i] = 0x6
+		i--
+		dAtA[i] = 0xb2
 	}
-	i += n6
-	dAtA[i] = 0x1a
-	i++
-	i = encodeVarintConversation(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)))
-	n7, err7 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
+	if len(m.ConversationID) > 0 {
+		i -= len(m.ConversationID)
+		copy(dAtA[i:], m.ConversationID)
+		i = encodeVarintConversation(dAtA, i, uint64(len(m.ConversationID)))
+		i--
+		dAtA[i] = 0x6
+		i--
+		dAtA[i] = 0xaa
+	}
+	if m.Contact != nil {
+		{
+			size, err := m.Contact.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintConversation(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x6
+		i--
+		dAtA[i] = 0xa2
+	}
+	if m.Status != 0 {
+		i = encodeVarintConversation(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x50
+	}
+	n7, err7 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.SeenAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.SeenAt):])
 	if err7 != nil {
 		return 0, err7
 	}
-	i += n7
-	dAtA[i] = 0x22
-	i++
-	i = encodeVarintConversation(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.ReadAt)))
-	n8, err8 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.ReadAt, dAtA[i:])
+	i -= n7
+	i = encodeVarintConversation(dAtA, i, uint64(n7))
+	i--
+	dAtA[i] = 0x32
+	n8, err8 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.WroteAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.WroteAt):])
 	if err8 != nil {
 		return 0, err8
 	}
-	i += n8
+	i -= n8
+	i = encodeVarintConversation(dAtA, i, uint64(n8))
+	i--
 	dAtA[i] = 0x2a
-	i++
-	i = encodeVarintConversation(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.WroteAt)))
-	n9, err9 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.WroteAt, dAtA[i:])
+	n9, err9 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.ReadAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.ReadAt):])
 	if err9 != nil {
 		return 0, err9
 	}
-	i += n9
-	dAtA[i] = 0x32
-	i++
-	i = encodeVarintConversation(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.SeenAt)))
-	n10, err10 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.SeenAt, dAtA[i:])
+	i -= n9
+	i = encodeVarintConversation(dAtA, i, uint64(n9))
+	i--
+	dAtA[i] = 0x22
+	n10, err10 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
 	if err10 != nil {
 		return 0, err10
 	}
-	i += n10
-	if m.Status != 0 {
-		dAtA[i] = 0x50
-		i++
-		i = encodeVarintConversation(dAtA, i, uint64(m.Status))
+	i -= n10
+	i = encodeVarintConversation(dAtA, i, uint64(n10))
+	i--
+	dAtA[i] = 0x1a
+	n11, err11 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
+	if err11 != nil {
+		return 0, err11
 	}
-	if m.Contact != nil {
-		dAtA[i] = 0xa2
-		i++
-		dAtA[i] = 0x6
-		i++
-		i = encodeVarintConversation(dAtA, i, uint64(m.Contact.Size()))
-		n11, err11 := m.Contact.MarshalTo(dAtA[i:])
-		if err11 != nil {
-			return 0, err11
-		}
-		i += n11
+	i -= n11
+	i = encodeVarintConversation(dAtA, i, uint64(n11))
+	i--
+	dAtA[i] = 0x12
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintConversation(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
 	}
-	if len(m.ConversationID) > 0 {
-		dAtA[i] = 0xaa
-		i++
-		dAtA[i] = 0x6
-		i++
-		i = encodeVarintConversation(dAtA, i, uint64(len(m.ConversationID)))
-		i += copy(dAtA[i:], m.ConversationID)
-	}
-	if len(m.ContactID) > 0 {
-		dAtA[i] = 0xb2
-		i++
-		dAtA[i] = 0x6
-		i++
-		i = encodeVarintConversation(dAtA, i, uint64(len(m.ContactID)))
-		i += copy(dAtA[i:], m.ContactID)
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintConversation(dAtA []byte, offset int, v uint64) int {
+	offset -= sovConversation(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *Conversation) Size() (n int) {
 	if m == nil {

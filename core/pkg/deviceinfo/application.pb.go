@@ -76,7 +76,7 @@ func (m *Application) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_Application.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -137,7 +137,7 @@ var fileDescriptor_56744db749073b57 = []byte{
 func (m *Application) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -145,35 +145,44 @@ func (m *Application) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Application) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Application) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.State != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintApplication(dAtA, i, uint64(m.State))
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.Route) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.Route)
+		copy(dAtA[i:], m.Route)
 		i = encodeVarintApplication(dAtA, i, uint64(len(m.Route)))
-		i += copy(dAtA[i:], m.Route)
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.State != 0 {
+		i = encodeVarintApplication(dAtA, i, uint64(m.State))
+		i--
+		dAtA[i] = 0x8
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintApplication(dAtA []byte, offset int, v uint64) int {
+	offset -= sovApplication(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *Application) Size() (n int) {
 	if m == nil {

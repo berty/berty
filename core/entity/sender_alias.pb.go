@@ -88,7 +88,7 @@ func (m *SenderAlias) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_SenderAlias.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -214,7 +214,7 @@ var fileDescriptor_5a4b242f459f89c7 = []byte{
 func (m *SenderAlias) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -222,85 +222,98 @@ func (m *SenderAlias) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *SenderAlias) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SenderAlias) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ID) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintSenderAlias(dAtA, i, uint64(len(m.ID)))
-		i += copy(dAtA[i:], m.ID)
-	}
-	dAtA[i] = 0x12
-	i++
-	i = encodeVarintSenderAlias(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)))
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
-	if err1 != nil {
-		return 0, err1
-	}
-	i += n1
-	dAtA[i] = 0x1a
-	i++
-	i = encodeVarintSenderAlias(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)))
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
-	if err2 != nil {
-		return 0, err2
-	}
-	i += n2
-	if m.Status != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintSenderAlias(dAtA, i, uint64(m.Status))
-	}
-	if len(m.OriginDeviceID) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintSenderAlias(dAtA, i, uint64(len(m.OriginDeviceID)))
-		i += copy(dAtA[i:], m.OriginDeviceID)
-	}
-	if len(m.ContactID) > 0 {
-		dAtA[i] = 0x3a
-		i++
-		i = encodeVarintSenderAlias(dAtA, i, uint64(len(m.ContactID)))
-		i += copy(dAtA[i:], m.ContactID)
-	}
-	if len(m.ConversationID) > 0 {
-		dAtA[i] = 0x42
-		i++
-		i = encodeVarintSenderAlias(dAtA, i, uint64(len(m.ConversationID)))
-		i += copy(dAtA[i:], m.ConversationID)
-	}
-	if len(m.AliasIdentifier) > 0 {
-		dAtA[i] = 0x4a
-		i++
-		i = encodeVarintSenderAlias(dAtA, i, uint64(len(m.AliasIdentifier)))
-		i += copy(dAtA[i:], m.AliasIdentifier)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.Used {
-		dAtA[i] = 0x50
-		i++
+		i--
 		if m.Used {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x50
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.AliasIdentifier) > 0 {
+		i -= len(m.AliasIdentifier)
+		copy(dAtA[i:], m.AliasIdentifier)
+		i = encodeVarintSenderAlias(dAtA, i, uint64(len(m.AliasIdentifier)))
+		i--
+		dAtA[i] = 0x4a
 	}
-	return i, nil
+	if len(m.ConversationID) > 0 {
+		i -= len(m.ConversationID)
+		copy(dAtA[i:], m.ConversationID)
+		i = encodeVarintSenderAlias(dAtA, i, uint64(len(m.ConversationID)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.ContactID) > 0 {
+		i -= len(m.ContactID)
+		copy(dAtA[i:], m.ContactID)
+		i = encodeVarintSenderAlias(dAtA, i, uint64(len(m.ContactID)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.OriginDeviceID) > 0 {
+		i -= len(m.OriginDeviceID)
+		copy(dAtA[i:], m.OriginDeviceID)
+		i = encodeVarintSenderAlias(dAtA, i, uint64(len(m.OriginDeviceID)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.Status != 0 {
+		i = encodeVarintSenderAlias(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x28
+	}
+	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
+	if err1 != nil {
+		return 0, err1
+	}
+	i -= n1
+	i = encodeVarintSenderAlias(dAtA, i, uint64(n1))
+	i--
+	dAtA[i] = 0x1a
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
+	if err2 != nil {
+		return 0, err2
+	}
+	i -= n2
+	i = encodeVarintSenderAlias(dAtA, i, uint64(n2))
+	i--
+	dAtA[i] = 0x12
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintSenderAlias(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintSenderAlias(dAtA []byte, offset int, v uint64) int {
+	offset -= sovSenderAlias(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *SenderAlias) Size() (n int) {
 	if m == nil {

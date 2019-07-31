@@ -55,7 +55,7 @@ func (m *Chunk) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Chunk.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -157,7 +157,7 @@ var fileDescriptor_fb0ae528605ef806 = []byte{
 func (m *Chunk) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -165,68 +165,79 @@ func (m *Chunk) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Chunk) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Chunk) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ID) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintChunk(dAtA, i, uint64(len(m.ID)))
-		i += copy(dAtA[i:], m.ID)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	dAtA[i] = 0x12
-	i++
-	i = encodeVarintChunk(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)))
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
+	if m.SliceLength != 0 {
+		i = encodeVarintChunk(dAtA, i, uint64(m.SliceLength))
+		i--
+		dAtA[i] = 0x38
+	}
+	if len(m.SliceID) > 0 {
+		i -= len(m.SliceID)
+		copy(dAtA[i:], m.SliceID)
+		i = encodeVarintChunk(dAtA, i, uint64(len(m.SliceID)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Data) > 0 {
+		i -= len(m.Data)
+		copy(dAtA[i:], m.Data)
+		i = encodeVarintChunk(dAtA, i, uint64(len(m.Data)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.Index != 0 {
+		i = encodeVarintChunk(dAtA, i, uint64(m.Index))
+		i--
+		dAtA[i] = 0x20
+	}
+	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
 	if err1 != nil {
 		return 0, err1
 	}
-	i += n1
+	i -= n1
+	i = encodeVarintChunk(dAtA, i, uint64(n1))
+	i--
 	dAtA[i] = 0x1a
-	i++
-	i = encodeVarintChunk(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)))
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
 	if err2 != nil {
 		return 0, err2
 	}
-	i += n2
-	if m.Index != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintChunk(dAtA, i, uint64(m.Index))
+	i -= n2
+	i = encodeVarintChunk(dAtA, i, uint64(n2))
+	i--
+	dAtA[i] = 0x12
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintChunk(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
 	}
-	if len(m.Data) > 0 {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintChunk(dAtA, i, uint64(len(m.Data)))
-		i += copy(dAtA[i:], m.Data)
-	}
-	if len(m.SliceID) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintChunk(dAtA, i, uint64(len(m.SliceID)))
-		i += copy(dAtA[i:], m.SliceID)
-	}
-	if m.SliceLength != 0 {
-		dAtA[i] = 0x38
-		i++
-		i = encodeVarintChunk(dAtA, i, uint64(m.SliceLength))
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintChunk(dAtA []byte, offset int, v uint64) int {
+	offset -= sovChunk(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *Chunk) Size() (n int) {
 	if m == nil {

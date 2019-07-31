@@ -545,7 +545,7 @@ func (m *Metadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Metadata.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -750,7 +750,7 @@ var fileDescriptor_f04d618bf87de955 = []byte{
 func (m *Metadata) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -758,85 +758,100 @@ func (m *Metadata) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Metadata) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Metadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Code != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintErrors(dAtA, i, uint64(m.Code))
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if len(m.ExtendedCodes) > 0 {
-		dAtA2 := make([]byte, len(m.ExtendedCodes)*10)
-		var j1 int
-		for _, num := range m.ExtendedCodes {
-			for num >= 1<<7 {
-				dAtA2[j1] = uint8(uint64(num)&0x7f | 0x80)
-				num >>= 7
-				j1++
+	if len(m.Caller) > 0 {
+		i -= len(m.Caller)
+		copy(dAtA[i:], m.Caller)
+		i = encodeVarintErrors(dAtA, i, uint64(len(m.Caller)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintErrors(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.Parent != nil {
+		{
+			size, err := m.Parent.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
 			}
-			dAtA2[j1] = uint8(num)
-			j1++
+			i -= size
+			i = encodeVarintErrors(dAtA, i, uint64(size))
 		}
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintErrors(dAtA, i, uint64(j1))
-		i += copy(dAtA[i:], dAtA2[:j1])
+		i--
+		dAtA[i] = 0x22
 	}
 	if len(m.Placeholders) > 0 {
 		for k := range m.Placeholders {
-			dAtA[i] = 0x1a
-			i++
 			v := m.Placeholders[k]
-			mapSize := 1 + len(k) + sovErrors(uint64(len(k))) + 1 + len(v) + sovErrors(uint64(len(v)))
-			i = encodeVarintErrors(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintErrors(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x12
-			i++
+			baseI := i
+			i -= len(v)
+			copy(dAtA[i:], v)
 			i = encodeVarintErrors(dAtA, i, uint64(len(v)))
-			i += copy(dAtA[i:], v)
+			i--
+			dAtA[i] = 0x12
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarintErrors(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintErrors(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x1a
 		}
 	}
-	if m.Parent != nil {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintErrors(dAtA, i, uint64(m.Parent.Size()))
-		n3, err3 := m.Parent.MarshalTo(dAtA[i:])
-		if err3 != nil {
-			return 0, err3
+	if len(m.ExtendedCodes) > 0 {
+		dAtA3 := make([]byte, len(m.ExtendedCodes)*10)
+		var j2 int
+		for _, num := range m.ExtendedCodes {
+			for num >= 1<<7 {
+				dAtA3[j2] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j2++
+			}
+			dAtA3[j2] = uint8(num)
+			j2++
 		}
-		i += n3
+		i -= j2
+		copy(dAtA[i:], dAtA3[:j2])
+		i = encodeVarintErrors(dAtA, i, uint64(j2))
+		i--
+		dAtA[i] = 0x12
 	}
-	if len(m.Message) > 0 {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintErrors(dAtA, i, uint64(len(m.Message)))
-		i += copy(dAtA[i:], m.Message)
+	if m.Code != 0 {
+		i = encodeVarintErrors(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
 	}
-	if len(m.Caller) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintErrors(dAtA, i, uint64(len(m.Caller)))
-		i += copy(dAtA[i:], m.Caller)
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintErrors(dAtA []byte, offset int, v uint64) int {
+	offset -= sovErrors(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *Metadata) Size() (n int) {
 	if m == nil {

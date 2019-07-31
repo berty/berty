@@ -99,7 +99,7 @@ func (m *Config) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Config.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -266,7 +266,7 @@ var fileDescriptor_ead0cfdccc316683 = []byte{
 func (m *Config) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -274,121 +274,139 @@ func (m *Config) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Config) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Config) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ID) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.ID)))
-		i += copy(dAtA[i:], m.ID)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	dAtA[i] = 0x12
-	i++
-	i = encodeVarintConfig(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)))
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
-	if err1 != nil {
-		return 0, err1
-	}
-	i += n1
-	dAtA[i] = 0x1a
-	i++
-	i = encodeVarintConfig(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)))
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
-	if err2 != nil {
-		return 0, err2
-	}
-	i += n2
-	if m.Myself != nil {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(m.Myself.Size()))
-		n3, err3 := m.Myself.MarshalTo(dAtA[i:])
-		if err3 != nil {
-			return 0, err3
-		}
-		i += n3
-	}
-	if len(m.MyselfID) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.MyselfID)))
-		i += copy(dAtA[i:], m.MyselfID)
-	}
-	if m.CurrentDevice != nil {
-		dAtA[i] = 0x3a
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(m.CurrentDevice.Size()))
-		n4, err4 := m.CurrentDevice.MarshalTo(dAtA[i:])
-		if err4 != nil {
-			return 0, err4
-		}
-		i += n4
-	}
-	if len(m.CurrentDeviceID) > 0 {
-		dAtA[i] = 0x42
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.CurrentDeviceID)))
-		i += copy(dAtA[i:], m.CurrentDeviceID)
-	}
-	if len(m.CryptoParams) > 0 {
-		dAtA[i] = 0x4a
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.CryptoParams)))
-		i += copy(dAtA[i:], m.CryptoParams)
-	}
-	if len(m.PushRelayPubkeyAPNS) > 0 {
-		dAtA[i] = 0x52
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.PushRelayPubkeyAPNS)))
-		i += copy(dAtA[i:], m.PushRelayPubkeyAPNS)
-	}
-	if len(m.PushRelayPubkeyFCM) > 0 {
-		dAtA[i] = 0x5a
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(len(m.PushRelayPubkeyFCM)))
-		i += copy(dAtA[i:], m.PushRelayPubkeyFCM)
-	}
-	if m.NotificationsEnabled {
-		dAtA[i] = 0x60
-		i++
-		if m.NotificationsEnabled {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
+	if m.DebugNotificationVerbosity != 0 {
+		i = encodeVarintConfig(dAtA, i, uint64(m.DebugNotificationVerbosity))
+		i--
+		dAtA[i] = 0x70
 	}
 	if m.NotificationsPreviews {
-		dAtA[i] = 0x68
-		i++
+		i--
 		if m.NotificationsPreviews {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x68
 	}
-	if m.DebugNotificationVerbosity != 0 {
-		dAtA[i] = 0x70
-		i++
-		i = encodeVarintConfig(dAtA, i, uint64(m.DebugNotificationVerbosity))
+	if m.NotificationsEnabled {
+		i--
+		if m.NotificationsEnabled {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x60
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.PushRelayPubkeyFCM) > 0 {
+		i -= len(m.PushRelayPubkeyFCM)
+		copy(dAtA[i:], m.PushRelayPubkeyFCM)
+		i = encodeVarintConfig(dAtA, i, uint64(len(m.PushRelayPubkeyFCM)))
+		i--
+		dAtA[i] = 0x5a
 	}
-	return i, nil
+	if len(m.PushRelayPubkeyAPNS) > 0 {
+		i -= len(m.PushRelayPubkeyAPNS)
+		copy(dAtA[i:], m.PushRelayPubkeyAPNS)
+		i = encodeVarintConfig(dAtA, i, uint64(len(m.PushRelayPubkeyAPNS)))
+		i--
+		dAtA[i] = 0x52
+	}
+	if len(m.CryptoParams) > 0 {
+		i -= len(m.CryptoParams)
+		copy(dAtA[i:], m.CryptoParams)
+		i = encodeVarintConfig(dAtA, i, uint64(len(m.CryptoParams)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if len(m.CurrentDeviceID) > 0 {
+		i -= len(m.CurrentDeviceID)
+		copy(dAtA[i:], m.CurrentDeviceID)
+		i = encodeVarintConfig(dAtA, i, uint64(len(m.CurrentDeviceID)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if m.CurrentDevice != nil {
+		{
+			size, err := m.CurrentDevice.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintConfig(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.MyselfID) > 0 {
+		i -= len(m.MyselfID)
+		copy(dAtA[i:], m.MyselfID)
+		i = encodeVarintConfig(dAtA, i, uint64(len(m.MyselfID)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.Myself != nil {
+		{
+			size, err := m.Myself.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintConfig(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	n3, err3 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
+	if err3 != nil {
+		return 0, err3
+	}
+	i -= n3
+	i = encodeVarintConfig(dAtA, i, uint64(n3))
+	i--
+	dAtA[i] = 0x1a
+	n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
+	if err4 != nil {
+		return 0, err4
+	}
+	i -= n4
+	i = encodeVarintConfig(dAtA, i, uint64(n4))
+	i--
+	dAtA[i] = 0x12
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintConfig(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintConfig(dAtA []byte, offset int, v uint64) int {
+	offset -= sovConfig(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *Config) Size() (n int) {
 	if m == nil {
