@@ -5,7 +5,7 @@ help:
 	@echo
 	@cd core >/dev/null; HELP_MSG_PREFIX="cd core \\&\\& " $(MAKE) help 2>/dev/null
 	@echo
-	@cd client/react-native >/dev/null; HELP_MSG_PREFIX="cd client\\/react-native \\&\\& " $(MAKE) help 2>/dev/null
+	@cd client >/dev/null; HELP_MSG_PREFIX="cd client\\/react-native \\&\\& " $(MAKE) help 2>/dev/null
 
 .PHONY: lint
 lint: lint-go lint-dockerfile lint-editorconfig
@@ -18,7 +18,7 @@ lint-dockerfile:
 
 .PHONY: lint-go
 lint-go:
-	GO111MODULE=off golangci-lint run --deadline=5m --verbose  ./core/... ./client/react-native/gomobile/...
+	GO111MODULE=off golangci-lint run --deadline=5m --verbose  ./core/... ./client/gomobile/...
 
 .PHONY: lint-editorconfig
 lint-editorconfig:

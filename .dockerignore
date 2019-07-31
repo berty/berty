@@ -5,7 +5,7 @@ vendor/
 node_modules/
 gin-bin
 !client/go
-!client/react-native/web/build
+!client/web/build
 Dockerfile
 *~
 *#

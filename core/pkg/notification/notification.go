@@ -118,7 +118,7 @@ type DesktopNotification struct{}
 func (n *DesktopNotification) Display(p *Payload) error {
 	once.Do(func() {
 		_, filename, _, _ := runtime.Caller(0)
-		iconPath := path.Dir(filename) + "/../../../client/react-native/common/static/img/logo.png"
+		iconPath := path.Dir(filename) + "/../../../client/common/static/img/logo.png"
 		notify = notificator.New(notificator.Options{
 			DefaultIcon: iconPath,
 			AppName:     "Berty",
