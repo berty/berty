@@ -357,7 +357,7 @@ commands:
           keys:
             - v0-mac-staff-{{.Branch}}-{{.Revision}}
             - v0-mac-staff-{{.Branch}}-
-            - v0-mac-staff-master
+            - v0-mac-staff-master-
 
   mac_staff_save_cache:
     description: "save mac staff cache"
@@ -384,7 +384,7 @@ commands:
           keys:
             - v0-mac-yolo-{{.Branch}}-{{.Revision}}
             - v0-mac-yolo-{{.Branch}}-
-            - v0-mac-yolo-master
+            - v0-mac-yolo-master-
 
   mac_yolo_save_cache:
     description: "save mac yolo cache"
@@ -400,6 +400,9 @@ commands:
             - ~/go/src/berty.tech/client/node_modules
             # go
             - ~/go/pkg
+            # bundler
+            - /usr/local/bin/dylibbundler
+            - /usr/local/Cellar/dylibbundler
 
 jobs:
   lint:
