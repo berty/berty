@@ -44,7 +44,7 @@ func (m *LocalRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_LocalRecord.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -92,7 +92,7 @@ var fileDescriptor_b561157065c2b28c = []byte{
 func (m *LocalRecord) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -100,30 +100,39 @@ func (m *LocalRecord) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *LocalRecord) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LocalRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ContactId) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintLocalRecord(dAtA, i, uint64(len(m.ContactId)))
-		i += copy(dAtA[i:], m.ContactId)
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if len(m.ContactId) > 0 {
+		i -= len(m.ContactId)
+		copy(dAtA[i:], m.ContactId)
+		i = encodeVarintLocalRecord(dAtA, i, uint64(len(m.ContactId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintLocalRecord(dAtA []byte, offset int, v uint64) int {
+	offset -= sovLocalRecord(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *LocalRecord) Size() (n int) {
 	if m == nil {
