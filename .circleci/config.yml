@@ -130,7 +130,7 @@ commands:
           keys:
             - v0-generate-{{.Branch}}-{{.Revision}}
             - v0-generate-{{.Branch}}-
-            - v0-generate-master
+            - v0-generate-master-
 
   generate_save_cache:
     description: "save generate cache"
@@ -149,7 +149,7 @@ commands:
           keys:
             - v0-web-{{.Branch}}-{{.Revision}}
             - v0-web-{{.Branch}}-
-            - v0-web-master
+            - v0-web-master-
 
   web_save_cache:
     description: "save web cache"
