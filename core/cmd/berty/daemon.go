@@ -137,7 +137,6 @@ func runDaemon(opts *daemonOptions) error {
 		opts.bindP2P = []string{
 			"/ip4/0.0.0.0/udp/0/quic",
 			"/ip4/0.0.0.0/tcp/0",
-			"/ble/00000000-0000-0000-0000-000000000000",
 		}
 	}
 

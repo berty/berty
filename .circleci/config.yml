@@ -436,7 +436,7 @@ jobs:
 
       - run:
           name: Build application Docker image
-          command: env DOCKER_BUILDKIT=1 /tmp/retry -m 3 docker build --ssh=default -t bertychat/berty .
+          command: /tmp/retry -m 3 docker build -t bertychat/berty .
 
       - run:
           name: Run application within Docker

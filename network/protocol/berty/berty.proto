@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package berty.network.protocol.berty;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "berty.tech/network/protocol/berty";
+
+message Protocol {
+  string name  = 1;
+  string value = 2;
+}
+
+message Addr {
+  repeated Protocol protocols = 1;
+  string full                 = 2;
+}
+
+message ConnMetadata {
+  enum Direction {
+    DirUnknown  = 0;
+    DirInbound  = 1;
+    DirOutbound = 2;
+  }
+
+  Addr remote_addr    = 2;
+  Addr local_addr     = 3;
+  Direction direction = 4;
+}
+
+message Message {
+  string remote_contact_id = 1 [(gogoproto.customname) = "RemoteContactID"];
+  bytes data               = 2;
+}
+
+message LocalRecord {
+  string id = 1 [(gogoproto.customname) = "ID"];
+}

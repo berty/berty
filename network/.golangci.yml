@@ -1,0 +1,35 @@
+run:
+  deadline: 1m
+  tests: false
+  skip-files:
+    - "test/.*"
+    - "test/.*/.*"
+
+linters-settings:
+  golint:
+    min-confidence: 0
+  maligned:
+    suggest-new: true
+  goconst:
+    min-len: 5
+    min-occurrences: 4
+  misspell:
+    locale: US
+
+linters:
+  disable-all: true
+  enable:
+    - goconst
+    - misspell
+    - deadcode
+    - misspell
+    - structcheck
+    - errcheck
+    - unused
+    - varcheck
+    - staticcheck
+    - unconvert
+    - gofmt
+    #- goimports # disabling goimports while we can't configure it to ignore vendors (github.com/whyrusleeping/go-logging seems to be badly formated)
+    - golint
+    - ineffassign
