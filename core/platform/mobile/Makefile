@@ -64,6 +64,7 @@ deps-osx:
 
 .PHONY: deps
 deps: ios-deploy gomobile gobind
+	[ ! -z "$$CIRCLE_JOB" ] || (cd $(PWD)/../.. && make generate)
 
 .PHONY: gomobile
 gomobile: $(GOPATH)/src/golang.org/x/mobile/cmd/gomobile
@@ -71,10 +72,13 @@ gomobile: $(GOPATH)/src/golang.org/x/mobile/cmd/gomobile
 .PHONY: gobind
 gobind: $(GOPATH)/src/golang.org/x/mobile/cmd/gobind
 
-$(GOPATH)/src/golang.org/x/mobile/cmd/%:
+$(GOPATH)/src/golang.org/x/mobile/cmd/gomobile $(GOPATH)/src/golang.org/x/mobile/cmd/gobind:
 	cd $(GOPATH)/src/golang.org/x/mobile && git checkout -- . || true
-	GO111MODULE=off go get -u $(patsubst $(GOPATH)/src/%,%,$@)
+	GO111MODULE=off go get -u $(GOPATH)/src/golang.org/x/mobile/cmd/gomobile
+	GO111MODULE=off go get -u $(GOPATH)/src/golang.org/x/mobile/cmd/gobind
 	patch -N $(GOPATH)/src/golang.org/x/mobile/cmd/gomobile/env.go $(BUILD_PATCH_PATH)/gomobile-env-flag.diff || (rm -rf $(GOPATH)/src/golang.org/x/mobile && false)
+	cd $(GOPATH)/src/golang.org/x/mobile && GO111MODULE=off go install -v ./cmd/...
+	gomobile init -v
 
 ifeq ($(UNAME_S),Darwin)
 IOS_DEPLOY = $(shell which ios-deploy || echo '/usr/local/bin/ios-deploy')
