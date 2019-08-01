@@ -109,7 +109,7 @@ class Auth extends PureComponent {
 
         return
       }
-      nickname = list[0]
+      nickname = list[0] || defaultUsername()
     }
 
     await this.start(nickname) // @FIXME: implement this later
@@ -238,18 +238,25 @@ class Auth extends PureComponent {
                   }
                   e.preventDefault()
                 }}
-                value={this.state.nickname}
+                value={this.state.nickname || ''}
               />
               <TouchableOpacity
                 onPress={() => this.authNewUser()}
-                disabled={this.state.nickname.length === 0}
+                disabled={
+                  this.state.nickname == null ||
+                  this.state.nickname.length === 0
+                }
                 ref={this.props.generateTestHook('Auth.Button')}
               >
                 <Text
                   style={{
                     color: colors.white,
                     backgroundColor: colors.blue,
-                    opacity: this.state.nickname.length === 0 ? 0.3 : 1,
+                    opacity:
+                      this.state.nickname == null &&
+                      this.state.nickname.length === 0
+                        ? 0.3
+                        : 1,
                     textAlign: 'center',
                     fontSize: 18,
                     marginTop: 10,

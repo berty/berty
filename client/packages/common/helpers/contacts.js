@@ -38,39 +38,36 @@ export const isPubKeyValid = async ({ context, id }) => {
 }
 
 export const defaultUsername = () => {
-  if (Platform.OS !== 'ios') {
-    return ''
-  }
-
   let deviceName = DeviceInfo.getDeviceName()
-  const defaultNamesParts = ['iPhone', 'iPad', 'iPod']
-
-  if (!deviceName) {
-    return ''
+  if (deviceName == null) {
+    return Platform.OS
   }
 
-  deviceName = deviceName.replace("'s ", ' ')
+  if (Platform.OS === 'ios') {
+    const defaultNamesParts = ['iPhone', 'iPad', 'iPod']
 
-  const hasDefaultName = defaultNamesParts.some(
-    defaultPart => deviceName.indexOf(defaultPart) !== -1
-  )
+    deviceName = deviceName.replace("'s ", ' ')
 
-  if (hasDefaultName) {
-    return (
-      deviceName
-        // Split device name
-        .split(' ')
-        // Remove product name
-        .filter(
-          part =>
-            !defaultNamesParts.some(
-              defaultPart => part.indexOf(defaultPart) !== -1
-            )
-        )
-        // Keep the longest word
-        .sort((a, b) => b.length - a.length)[0]
+    const hasDefaultName = defaultNamesParts.some(
+      defaultPart => deviceName.indexOf(defaultPart) !== -1
     )
-  }
 
+    if (hasDefaultName) {
+      return (
+        deviceName
+          // Split device name
+          .split(' ')
+          // Remove product name
+          .filter(
+            part =>
+              !defaultNamesParts.some(
+                defaultPart => part.indexOf(defaultPart) !== -1
+              )
+          )
+          // Keep the longest word
+          .sort((a, b) => b.length - a.length)[0]
+      )
+    }
+  }
   return deviceName
 }
