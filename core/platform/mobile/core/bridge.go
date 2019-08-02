@@ -128,7 +128,7 @@ func NewNativeBridge(loggerNative NativeLogger) NativeBridge {
 	listener := iogrpc.Listener()
 	go func() {
 		if err := gs.Serve(listener); err != nil {
-			fmt.Errorf("serve error %s", err)
+			fmt.Printf("serve error: %s\n", err.Error())
 		}
 	}()
 
