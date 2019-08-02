@@ -40,7 +40,6 @@ var networkConfig = &daemon.NetworkConfig{
 	BindP2P: []string{
 		"/ip4/0.0.0.0/udp/0/quic",
 		"/ip4/0.0.0.0/tcp/0",
-		"/ble/00000000-0000-0000-0000-000000000000",
 	},
 	Mdns:           true,
 	Identity:       "",
@@ -62,6 +61,7 @@ var config = &daemon.Config{
 	FcmAPIKeys:       []string{},
 	PrivateKeyFile:   "",
 	NoP2P:            false,
+	NetworkConfig:    networkConfig,
 }
 
 type NativeBridge interface {
