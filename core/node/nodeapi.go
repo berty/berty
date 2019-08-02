@@ -500,13 +500,13 @@ func (n *Node) ContactCheckPublicKey(ctx context.Context, input *entity.Contact)
 }
 
 func (n *Node) DebugPing(ctx context.Context, input *node.PingDestination) (*node.Void, error) {
-	tracer := tracing.EnterFunc(ctx, input)
-	defer tracer.Finish()
-	ctx = tracer.Context()
+	// tracer := tracing.EnterFunc(ctx, input)
+	// defer tracer.Finish()
+	// ctx = tracer.Context()
 
-	defer n.handleMutex(ctx)()
+	// defer n.handleMutex(ctx)()
 
-	err := n.networkDriver.PingOtherNode(ctx, input.Destination)
+	// err := n.networkDriver.PingOtherNode(ctx, input.Destination)
 
-	return &node.Void{}, errorcodes.ErrNet.Wrap(err)
+	return &node.Void{}, errorcodes.ErrNet.Wrap(fmt.Errorf("not implemented"))
 }

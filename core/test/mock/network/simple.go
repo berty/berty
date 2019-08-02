@@ -115,7 +115,7 @@ func (d *SimpleDriver) SetLocalContactID(lcontactID string) {
 	d.localContactID = lcontactID
 }
 
-func (d *SimpleDriver) Join(_ context.Context) error {
+func (d *SimpleDriver) Join() error {
 	d.channels = append(d.channels, d.localContactID)
 	return nil
 }

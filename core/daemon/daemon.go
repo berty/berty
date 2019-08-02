@@ -7,7 +7,6 @@ import (
 	account "berty.tech/core/manager/account"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/notification"
-	network_config "berty.tech/network/config"
 )
 
 type localGRPCInfos struct {
@@ -24,9 +23,6 @@ type Daemon struct {
 	appConfig    *account.StateDB
 	rootContext  context.Context
 	accountName  string
-
-	// Network
-	NetworkConfig network_config.Option
 
 	// Module
 	Logger       NativeLogger

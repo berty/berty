@@ -5,50 +5,21 @@ import (
 
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/network"
-	network_config "berty.tech/network/config"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
+	"berty.tech/network/host"
 )
 
-func (a *Account) UpdateNetwork(ctx context.Context, opts ...network_config.Option) error {
-	tracer := tracing.EnterFunc(ctx, opts)
+func (a *Account) UpdateNetworkHost(ctx context.Context, bh *host.BertyHost) error {
+	tracer := tracing.EnterFunc(ctx, bh)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	updated, err := network.New(ctx, append(
-		[]network_config.Option{
-			network.WithConfig(a.network.Config()),
-			// FIXME: this should not be here, enable metric here
-			// avoid some panic if metric was enable before
-			network.EnableMetric(),
-		},
-		opts...,
-	)...)
+	a.network.UpdateHost(bh)
 
-	if err != nil {
-		return errors.New("account failed to update network")
-	}
-	if err := a.node.UseNetworkDriver(ctx, updated); err != nil {
-		logger().Error("use network driver error", zap.Error(err))
-		return a.node.UseNetworkDriver(ctx, a.network)
-	}
+	// update metric
+	a.node.UseNetworkMetric(ctx, bh.Metric)
+	a.metric = bh.Metric
 
-	metric := updated.Metric()
-	if metric == nil {
-		logger().Info("metric disabled")
-	} else {
-		logger().Info("metric enabled")
-	}
-	a.node.UseNetworkMetric(ctx, updated.Metric())
-
-	err = a.network.Close(ctx)
-	if err != nil {
-		logger().Error("last network cannot be closed: " + err.Error())
-	}
-
-	a.network = updated
-	a.metric = updated.Metric()
-	return nil
+	return a.network.Join()
 }
 
 func (a *Account) Network() network.Driver {

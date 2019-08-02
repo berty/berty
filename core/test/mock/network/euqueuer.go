@@ -74,8 +74,8 @@ func (e *Enqueuer) SetLocalContactID(lcontactID string) {
 	e.localContactID = lcontactID
 }
 
-func (e *Enqueuer) Join(ctx context.Context) error {
-	tracer := tracing.EnterFunc(ctx, e.localContactID)
+func (e *Enqueuer) Join() error {
+	tracer := tracing.EnterFunc(context.Background(), e.localContactID)
 	defer tracer.Finish()
 	// ctx = tracer.Context()
 

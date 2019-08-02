@@ -9,8 +9,6 @@ import (
 	"strings"
 
 	account "berty.tech/core/manager/account"
-	"berty.tech/network"
-	network_config "berty.tech/network/config"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -88,20 +86,7 @@ func (d *Daemon) GetLocalGrpcInfos(ctx context.Context, _ *Void) (*GRPCInfos, er
 }
 
 func (d *Daemon) GetNetworkConfig(ctx context.Context, _ *Void) (*NetworkConfig, error) {
-	a, err := account.Get(d.rootContext, d.accountName)
-	if err != nil {
-		return nil, err
-	}
-
-	cfg := a.Network().Config()
-	data, err := json.Marshal(cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	return &NetworkConfig{
-		Json: string(data),
-	}, nil
+	return d.config.NetworkConfig, nil
 }
 
 func (d *Daemon) GetPort(context.Context, *Void) (*GetPortResponse, error) {
@@ -239,19 +224,18 @@ func (d *Daemon) StopLocalGRPC(context.Context, *Void) (*Void, error) {
 
 func (d *Daemon) UpdateNetworkConfig(ctx context.Context, nc *NetworkConfig) (*Void, error) {
 	currentAccount, _ := account.Get(d.rootContext, d.accountName)
-
-	cfg := &network_config.Config{}
-	if err := json.Unmarshal([]byte(nc.Json), cfg); err != nil {
-		return &Void{}, err
+	newHost, err := NewHost(d.rootContext, nc)
+	if err != nil {
+		return nil, err
 	}
 
-	if err := currentAccount.UpdateNetwork(
-		d.rootContext,
-		network.WithConfig(cfg),
-		network.OverridePersistConfig(),
-	); err != nil {
-		return &Void{}, err
-	}
+	go func() {
+		if err := currentAccount.UpdateNetworkHost(ctx, newHost); err != nil {
+			logger().Warn("update network error", zap.Error(err))
+		}
+	}()
 
+	// update config
+	d.config.NetworkConfig = nc
 	return &Void{}, nil
 }

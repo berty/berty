@@ -44,6 +44,7 @@ require (
 	github.com/opentracing/opentracing-go v1.0.2
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/pkg/errors v0.8.1
+	github.com/rainycape/unidecode v0.0.0-20150907023854-cb7f23ec59be // indirect
 	github.com/rogpeppe/go-internal v1.2.2 // indirect
 	github.com/rs/cors v1.6.0 // indirect
 	github.com/sam-kamerer/go-plister v0.0.0-20190202124357-57f251aa88ff // indirect
@@ -70,4 +71,4 @@ require (
 	gopkg.in/yaml.v2 v2.2.2
 )
 
-replace berty.tech/network v0.0.0 => berty.tech/network v0.0.0-20190705175056-c1e3d7d90ac3
+replace berty.tech/network v0.0.0 => ../network

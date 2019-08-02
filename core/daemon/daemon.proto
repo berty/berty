@@ -42,9 +42,16 @@ message GRPCInfos {
   string json = 1;
 }
 
-// @TODO: switch to protobuf message instead of json
+// Network Config
 message NetworkConfig {
-  string json = 1;
+  bool peerCache = 1;
+  string identity = 2;
+  repeated string bootstrap = 3;
+  repeated string bindP2P = 5;
+  bool mdns = 6;
+  bool privateNetwork = 7;
+  bool ipfs = 8; // @TODO: implement me
+  bool mobile = 9;
 }
 
 message SQLConfig {
@@ -54,9 +61,8 @@ message SQLConfig {
 
 message Config {
   SQLConfig sqlOpts = 1;
-
   string grpcBind = 2;
-  string grpcWebBind = 25;
+  string grpcWebBind = 3;
   bool hideBanner = 4;
   bool dropDatabase = 5;
   bool initOnly = 6;
@@ -66,20 +72,8 @@ message Config {
   repeated string apnsDevVoipCerts = 10;
   repeated string fcmAPIKeys = 11;
   string privateKeyFile = 12;
-
-  // p2p
-  bool peerCache = 13;
-  string identity = 14;
-  repeated string bootstrap = 15;
-  bool noP2P = 16;
-  repeated string bindP2P = 17;
-  repeated string transportP2P = 18;
-  bool hop = 19;
-  bool ble = 20;
-  bool mdns = 21;
-  bool dhtServer = 22;
-  bool PrivateNetwork = 23;
-  string SwarmKeyPath = 24;
+  NetworkConfig networkConfig = 13;
+  bool noP2P = 14;
 }
 
 // @TODO: list all ports available

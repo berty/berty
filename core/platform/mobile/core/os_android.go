@@ -6,7 +6,7 @@ import (
 	"Java/chat/berty/ble/BleManager"
 	"Java/chat/berty/ble/DeviceManager"
 
-	bledrv "berty.tech/network/protocol/ble/driver"
+	bledrv "berty.tech/network/transport/ble/driver"
 	"go.uber.org/zap"
 )
 
@@ -28,8 +28,9 @@ func ReceiveFromDevice(rAddr string, payload []byte) {
 	bledrv.ReceiveFromDevice(rAddr, payload)
 }
 
+// @FIXME: ConnClosedWithDevice is undefined
 func ConnClosedWithDevice(rAddr string) {
-	bledrv.ConnClosedWithDevice(rAddr)
+	// bledrv.ConnClosedWithDevice(rAddr)
 }
 
 // Native logger -> Go zaplogger

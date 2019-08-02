@@ -1,22 +1,18 @@
-# syntax=docker/dockerfile:experimental
 # build core
 FROM            golang:1.12-alpine as core-builder
-RUN             apk --no-cache --update add nodejs-npm make gcc g++ musl-dev openssl-dev git openssh
+RUN             apk --no-cache --update add nodejs-npm make gcc g++ musl-dev openssl-dev git
 ENV             GO111MODULE=on
 COPY            core/go.* /go/src/berty.tech/core/
+COPY            network/go.* /go/src/berty.tech/network/
+
 WORKDIR         /go/src/berty.tech
-COPY            core /go/src/berty.tech/core
 
-#               @HOTFIX manually get berty.tech network & checkout the right commit
-RUN             mkdir -m 700 /root/.ssh
-RUN             echo "StrictHostKeyChecking no " > /root/.ssh/config
-RUN             --mount=type=ssh git clone git@github.com:berty/network.git /tmp/network && \
-                git -C /tmp/network checkout "$(cat core/go.mod | grep 'berty.tech/network v0.0.0-' | sed -E 's/.*-(.+)$/\1/')" && \
-                cd core && \
-                go mod edit -require 'berty.tech/network@v0.0.0' && \
-                go mod edit -replace 'berty.tech/network@v0.0.0=/tmp/network'
-
+RUN             cd network && go get .
 RUN             cd core && go get .
+
+COPY            core /go/src/berty.tech/core
+COPY            network /go/src/berty.tech/network
+
 RUN             cd core && make _ci_prepare # touching generated files
 RUN             cd core && make install
 

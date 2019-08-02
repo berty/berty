@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.12
+    working_directory: /go/src/berty.tech/network
+    environment:
+      GO111MODULE: "on"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v1-{{ arch }}-{{ checksum "go.sum" }}
+            - go-mod-v1-{{ arch }}-
+      - run: go mod download
+      - run: make test
+      #- run: curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- v1.17.1
+      #- run: PATH=$PATH:./bin make lint
+      - save_cache:
+          key: go-mod-v1-{{ arch }}-{{ checksum "go.sum" }}
+          paths:
+            - /go/pkg/mod

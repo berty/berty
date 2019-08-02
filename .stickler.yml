@@ -20,7 +20,9 @@ files:
     - 'vendor/*'
     - '*.gen.*'
     - 'core/.scripts/upgrade-libp2p.sh'
-    - 'client/react-native/android/ble/logger.sh'
-    - 'client/react-native/ios/Reachability.swift'
+    - 'network/.scripts/generate-logger.sh'
+    - 'network/.scripts/upgrade-libp2p.sh'
+    - 'client/android/ble/logger.sh'
+    - 'client/ios/Reachability.swift'
 fixers:
   enable: true

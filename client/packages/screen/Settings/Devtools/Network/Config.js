@@ -1,9 +1,17 @@
 import { Switch } from 'react-native'
 import React, { PureComponent } from 'react'
 import { withBridgeContext } from '@berty/bridge/Context'
+import { withNavigation } from 'react-navigation'
 
 import { Header, Loader, Menu } from '@berty/component'
 
+const transports = {
+  TCP: '/ip4/0.0.0.0/tcp/0',
+  BLE: '/ble/00000000-0000-0000-0000-000000000000',
+  QUIC: '/ip4/0.0.0.0/udp/0/quic',
+}
+
+@withNavigation
 class Network extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const updating =
@@ -30,8 +38,8 @@ class Network extends PureComponent {
     const { bridge } = this.props
 
     const config = await bridge.daemon.getNetworkConfig({})
-    console.warn(config.json)
-    this.setState(JSON.parse(config.json))
+    console.warn(config)
+    this.setState(config)
     this.props.navigation.setParams({
       onSave: this.saveConfig.bind(this),
     })
@@ -43,44 +51,98 @@ class Network extends PureComponent {
 
   saveConfig = async config => {
     const { bridge } = this.props
-
     this.props.navigation.setParams({ updating: true })
     try {
-      await bridge.daemon.updateNetworkConfig({
-        json: JSON.stringify(this.state),
-      })
+      await bridge.daemon.updateNetworkConfig(this.state)
     } catch (err) {
       console.error(err)
     }
+
+    // get config back to be sure to reflect config from the back
+    try {
+      const updatedConfig = await bridge.daemon.getNetworkConfig({})
+      this.setState(updatedConfig)
+    } catch (err) {
+      console.error(err)
+    }
+
+    console.warn(this.state)
+
     this.props.navigation.setParams({ updating: false })
   }
 
+  isTransportEnable = matchPatern => {
+    let enable = false
+
+    this.state.bindP2P.forEach(transport => {
+      enable = enable || transport.indexOf(matchPatern) >= 0
+    })
+
+    return enable
+  }
+
+  removeTransport = matchPatern => {
+    return this.state.bindP2P.filter(currentTransport => {
+      return currentTransport.indexOf(matchPatern) < 0
+    })
+  }
+
+  addTransport = transport => {
+    return this.state.bindP2P.concat(transport)
+  }
+
   render() {
-    if (this.state == null) {
+    if (
+      this.state == null ||
+      this.props.navigation.getParam('updating', false)
+    ) {
       return <Loader message="Loading network configuration ..." />
     }
+
     return (
       <Menu>
+        <Menu.Section title="Global">
+          <Menu.Item
+            title="Mobile Mode"
+            customRight={
+              <Switch
+                justify="end"
+                value={this.state.mobile}
+                onValueChange={mobile => this.updateConfig({ mobile })}
+              />
+            }
+          />
+        </Menu.Section>
+
         <Menu.Section title="Discovery">
           <Menu.Item
             title="Multicast DNS"
             customRight={
               <Switch
                 justify="end"
-                value={this.state.MDNS}
-                onValueChange={MDNS => this.updateConfig({ MDNS })}
+                value={this.state.mdns}
+                onValueChange={mdns => this.updateConfig({ mdns })}
               />
             }
           />
         </Menu.Section>
+
         <Menu.Section title="Transports" customMarginTop={24}>
           <Menu.Item
             title="TCP"
             customRight={
               <Switch
                 justify="end"
-                value={this.state.TCP}
-                onValueChange={TCP => this.updateConfig({ TCP })}
+                value={this.isTransportEnable('tcp')}
+                onValueChange={enable => {
+                  if (enable) {
+                    const bindP2P = this.addTransport(transports.TCP)
+                    this.updateConfig({ bindP2P })
+                  } else {
+                    const bindP2P = this.removeTransport('tcp')
+                    this.updateConfig({ bindP2P })
+                  }
+                }}
               />
             }
           />
@@ -89,8 +151,16 @@ class Network extends PureComponent {
             customRight={
               <Switch
                 justify="end"
-                value={this.state.QUIC}
-                onValueChange={QUIC => this.updateConfig({ QUIC })}
+                value={this.isTransportEnable('quic')}
+                onValueChange={enable => {
+                  if (enable) {
+                    const bindP2P = this.addTransport(transports.QUIC)
+                    this.updateConfig({ bindP2P })
+                  } else {
+                    const bindP2P = this.removeTransport('quic')
+                    this.updateConfig({ bindP2P })
+                  }
+                }}
               />
             }
           />
@@ -99,47 +169,57 @@ class Network extends PureComponent {
             customRight={
               <Switch
                 justify="end"
-                value={this.state.BLE}
-                onValueChange={BLE => this.updateConfig({ BLE })}
+                value={this.isTransportEnable('ble')}
+                onValueChange={enable => {
+                  if (enable) {
+                    const bindP2P = this.addTransport(transports.BLE)
+                    this.updateConfig({ bindP2P })
+                  } else {
+                    const bindP2P = this.removeTransport('ble')
+                    this.updateConfig({ bindP2P })
+                  }
+                }}
               />
             }
           />
-          <Menu.Item
-            title="Websocket"
-            customRight={
-              <Switch
-                justify="end"
-                value={this.state.WS}
-                onValueChange={WS => this.updateConfig({ WS })}
-              />
-            }
-          />
+          {/* <Menu.Item */}
+          {/*   title="Websocket" */}
+          {/*   customRight={ */}
+          {/*     <Switch */}
+          {/*       justify="end" */}
+          {/*       value={this.state.WS} */}
+          {/*       onValueChange={WS => this.updateConfig({ WS })} */}
+          {/*     /> */}
+          {/*   } */}
+          {/* /> */}
         </Menu.Section>
+
         <Menu.Section title="Connections">
           <Menu.Item
             title="Peer cache"
             customRight={
               <Switch
                 justify="end"
-                value={this.state.PeerCache}
-                onValueChange={PeerCache => this.updateConfig({ PeerCache })}
+                value={this.state.peerCache}
+                onValueChange={peerCache => this.updateConfig({ peerCache })}
               />
             }
           />
         </Menu.Section>
+
         <Menu.Section title="Bootstrap">
-          <Menu.Item
-            title="Default bootstrap"
-            customRight={
-              <Switch
-                justify="end"
-                value={this.state.DefaultBootstrap}
-                onValueChange={DefaultBootstrap =>
-                  this.updateConfig({ DefaultBootstrap })
-                }
-              />
-            }
-          />
+          {/* <Menu.Item */}
+          {/*   title="Default bootstrap" */}
+          {/*   customRight={ */}
+          {/*     <Switch */}
+          {/*       justify="end" */}
+          {/*       value={this.state.bootstrap} */}
+          {/*       onValueChange={bootstrap => */}
+          {/*         this.updateConfig({ bootstrap }) */}
+          {/*       } */}
+          {/*     /> */}
+          {/*   } */}
+          {/* /> */}
           <Menu.Item
             title="IPFS bootstrap (not implem.)"
             customRight={<Switch justify="end" disaBLEd value={false} />}
@@ -149,22 +229,23 @@ class Network extends PureComponent {
             onPress={() => {}}
           />
         </Menu.Section>
-        <Menu.Section title="Relay">
-          <Menu.Item
-            title="Relay HOP"
-            customRight={<Switch justify="end" value={this.state.HOP} />}
-          />
-          <Menu.Item
-            title="DHT Bucket"
-            customRight={
-              <Switch
-                justify="end"
-                value={this.state.DHT}
-                onValueChange={DHT => this.updateConfig({ DHT })}
-              />
-            }
-          />
-        </Menu.Section>
+
+        {/* <Menu.Section title="Relay"> */}
+        {/*   <Menu.Item */}
+        {/*     title="Relay HOP" */}
+        {/*     customRight={<Switch justify="end" value={this.state.HOP} />} */}
+        {/*   /> */}
+        {/*   <Menu.Item */}
+        {/*     title="DHT Bucket" */}
+        {/*     customRight={ */}
+        {/*       <Switch */}
+        {/*         justify="end" */}
+        {/*         value={this.state.DHT} */}
+        {/*         onValueChange={DHT => this.updateConfig({ DHT })} */}
+        {/*       /> */}
+        {/*     } */}
+        {/*   /> */}
+        {/* </Menu.Section> */}
       </Menu>
     )
   }
