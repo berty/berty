@@ -7,8 +7,6 @@ import (
 	"strings"
 	"time"
 
-	ble "berty.tech/network/transport/ble"
-	mable "berty.tech/network/transport/ble/multiaddr"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -77,8 +75,8 @@ func (cfg *Config) applyP2POptions(ctx context.Context) error {
 				cfg.libp2p_opts = append(cfg.libp2p_opts, libp2p.Transport(libp2p_quic.NewTransport))
 			case libp2p_ws.WsProtocol.Code:
 				cfg.libp2p_opts = append(cfg.libp2p_opts, libp2p.Transport(libp2p_ws.New))
-			case mable.P_BLE:
-				cfg.libp2p_opts = append(cfg.libp2p_opts, libp2p.Transport(ble.NewTransport))
+			// case mable.P_BLE:
+			// 	cfg.libp2p_opts = append(cfg.libp2p_opts, libp2p.Transport(ble.NewTransport))
 			default: // continue
 				return true
 			}
