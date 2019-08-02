@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package berty.node;
 
-import "network/metric/metric.proto";
+import "berty.tech/network/metric/metric.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "berty.tech/core/api/node";

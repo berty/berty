@@ -23,6 +23,9 @@ clean:
 .PHONY: generate
 generate: $(LOGGER_TARGETS) $(PROTOS_TARGETS)
 
+.PHONY: logger
+logger: $(LOGGER_TARGETS)
+
 $(LOGGER_TARGETS):
 	@./.scripts/generate-logger.sh "./$@"
 

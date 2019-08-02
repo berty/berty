@@ -1539,94 +1539,84 @@ func (m *NetworkConfig) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.PeerCache {
-		dAtA[i] = 0x8
-		i++
-		if m.PeerCache {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if len(m.Identity) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Identity)))
-		i += copy(dAtA[i:], m.Identity)
-	}
-	if len(m.Bootstrap) > 0 {
-		for _, s := range m.Bootstrap {
-			dAtA[i] = 0x1a
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
-	}
-	if len(m.BindP2P) > 0 {
-		for _, s := range m.BindP2P {
-			dAtA[i] = 0x2a
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
-	}
-	if m.Mdns {
-		dAtA[i] = 0x30
-		i++
-		if m.Mdns {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.PrivateNetwork {
-		dAtA[i] = 0x38
-		i++
-		if m.PrivateNetwork {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.Ipfs {
-		dAtA[i] = 0x40
-		i++
-		if m.Ipfs {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.Mobile {
-		dAtA[i] = 0x48
-		i++
+		i--
 		if m.Mobile {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x48
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.Ipfs {
+		i--
+		if m.Ipfs {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.PrivateNetwork {
+		i--
+		if m.PrivateNetwork {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.Mdns {
+		i--
+		if m.Mdns {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.BindP2P) > 0 {
+		for iNdEx := len(m.BindP2P) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.BindP2P[iNdEx])
+			copy(dAtA[i:], m.BindP2P[iNdEx])
+			i = encodeVarintDaemon(dAtA, i, uint64(len(m.BindP2P[iNdEx])))
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if len(m.Bootstrap) > 0 {
+		for iNdEx := len(m.Bootstrap) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Bootstrap[iNdEx])
+			copy(dAtA[i:], m.Bootstrap[iNdEx])
+			i = encodeVarintDaemon(dAtA, i, uint64(len(m.Bootstrap[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Identity) > 0 {
+		i -= len(m.Identity)
+		copy(dAtA[i:], m.Identity)
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Identity)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.PeerCache {
+		i--
+		if m.PeerCache {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1696,140 +1686,145 @@ func (m *Config) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if len(m.GrpcWebBind) > 0 {
-		i -= len(m.GrpcWebBind)
-		copy(dAtA[i:], m.GrpcWebBind)
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.GrpcWebBind)))
+	if m.NoP2P {
 		i--
-		dAtA[i] = 0x1
+		if m.NoP2P {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
 		i--
-		dAtA[i] = 0xca
+		dAtA[i] = 0x70
 	}
-	if len(m.GrpcWebBind) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.GrpcWebBind)))
-		i += copy(dAtA[i:], m.GrpcWebBind)
+	if m.NetworkConfig != nil {
+		{
+			size, err := m.NetworkConfig.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintDaemon(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x6a
+	}
+	if len(m.PrivateKeyFile) > 0 {
+		i -= len(m.PrivateKeyFile)
+		copy(dAtA[i:], m.PrivateKeyFile)
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.PrivateKeyFile)))
+		i--
+		dAtA[i] = 0x62
+	}
+	if len(m.FcmAPIKeys) > 0 {
+		for iNdEx := len(m.FcmAPIKeys) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.FcmAPIKeys[iNdEx])
+			copy(dAtA[i:], m.FcmAPIKeys[iNdEx])
+			i = encodeVarintDaemon(dAtA, i, uint64(len(m.FcmAPIKeys[iNdEx])))
+			i--
+			dAtA[i] = 0x5a
+		}
+	}
+	if len(m.ApnsDevVoipCerts) > 0 {
+		for iNdEx := len(m.ApnsDevVoipCerts) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.ApnsDevVoipCerts[iNdEx])
+			copy(dAtA[i:], m.ApnsDevVoipCerts[iNdEx])
+			i = encodeVarintDaemon(dAtA, i, uint64(len(m.ApnsDevVoipCerts[iNdEx])))
+			i--
+			dAtA[i] = 0x52
+		}
+	}
+	if len(m.ApnsCerts) > 0 {
+		for iNdEx := len(m.ApnsCerts) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.ApnsCerts[iNdEx])
+			copy(dAtA[i:], m.ApnsCerts[iNdEx])
+			i = encodeVarintDaemon(dAtA, i, uint64(len(m.ApnsCerts[iNdEx])))
+			i--
+			dAtA[i] = 0x4a
+		}
+	}
+	if m.Notification {
+		i--
+		if m.Notification {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.WithBot {
+		i--
+		if m.WithBot {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.InitOnly {
+		i--
+		if m.InitOnly {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.DropDatabase {
+		i--
+		if m.DropDatabase {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x28
 	}
 	if m.HideBanner {
-		dAtA[i] = 0x20
-		i++
+		i--
 		if m.HideBanner {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x1
-		i--
-		dAtA[i] = 0xb8
+		dAtA[i] = 0x20
 	}
-	if m.DhtServer {
+	if len(m.GrpcWebBind) > 0 {
+		i -= len(m.GrpcWebBind)
+		copy(dAtA[i:], m.GrpcWebBind)
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.GrpcWebBind)))
 		i--
-		if m.DhtServer {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
+		dAtA[i] = 0x1a
+	}
+	if len(m.GrpcBind) > 0 {
+		i -= len(m.GrpcBind)
+		copy(dAtA[i:], m.GrpcBind)
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.GrpcBind)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.SqlOpts != nil {
+		{
+			size, err := m.SqlOpts.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintDaemon(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x1
-		i--
-		dAtA[i] = 0xb0
+		dAtA[i] = 0xa
 	}
-	if m.Mdns {
-		i--
-		if m.Mdns {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x1
-		i--
-		dAtA[i] = 0xa8
-	}
-	if m.Ble {
-		i--
-		if m.Ble {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x1
-		i--
-		dAtA[i] = 0xa0
-	}
-	if m.Hop {
-		i--
-		if m.Hop {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x1
-		i--
-		dAtA[i] = 0x98
-	}
-	if len(m.TransportP2P) > 0 {
-		for iNdEx := len(m.TransportP2P) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.TransportP2P[iNdEx])
-			copy(dAtA[i:], m.TransportP2P[iNdEx])
-			i = encodeVarintDaemon(dAtA, i, uint64(len(m.TransportP2P[iNdEx])))
-			i--
-			dAtA[i] = 0x1
-			i--
-			dAtA[i] = 0x92
-		}
-	}
-	if len(m.BindP2P) > 0 {
-		for iNdEx := len(m.BindP2P) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.BindP2P[iNdEx])
-			copy(dAtA[i:], m.BindP2P[iNdEx])
-			i = encodeVarintDaemon(dAtA, i, uint64(len(m.BindP2P[iNdEx])))
-			i--
-			dAtA[i] = 0x1
-			i--
-			dAtA[i] = 0x8a
-		}
-	}
-	if len(m.PrivateKeyFile) > 0 {
-		dAtA[i] = 0x62
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.PrivateKeyFile)))
-		i += copy(dAtA[i:], m.PrivateKeyFile)
-	}
-	if m.NetworkConfig != nil {
-		dAtA[i] = 0x6a
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(m.NetworkConfig.Size()))
-		n2, err2 := m.NetworkConfig.MarshalTo(dAtA[i:])
-		if err2 != nil {
-			return 0, err2
-		}
-		i += n2
-	}
-	if m.NoP2P {
-		dAtA[i] = 0x70
-		i++
-		if m.NoP2P {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *GetPortResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1837,25 +1832,31 @@ func (m *GetPortResponse) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GetPortResponse) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetPortResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.GrpcWebPort != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(m.GrpcWebPort))
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if m.GrpcWebPort != 0 {
+		i = encodeVarintDaemon(dAtA, i, uint64(m.GrpcWebPort))
+		i--
+		dAtA[i] = 0x10
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ListAccountsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1863,23 +1864,26 @@ func (m *ListAccountsResponse) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ListAccountsResponse) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListAccountsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
 	if len(m.Accounts) > 0 {
-		for _, s := range m.Accounts {
+		for iNdEx := len(m.Accounts) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Accounts[iNdEx])
+			copy(dAtA[i:], m.Accounts[iNdEx])
+			i = encodeVarintDaemon(dAtA, i, uint64(len(m.Accounts[iNdEx])))
+			i--
 			dAtA[i] = 0xa
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
 		}
 	}
 	return len(dAtA) - i, nil
