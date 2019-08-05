@@ -2,8 +2,8 @@ rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subs
 NAME ?= berty
 # FIXME: create a everythingButVendor helper that runs a wildcard but ignores node_modules/ and vendor/, and simplify variables below
 GOPATH ?= $(HOME)/go
-GO_ROOT_PACKAGES := ../core ../network
-GO_ROOT_PACKAGES_VENDORS := ../core/vendor/% ../network/vendor/%
+GO_ROOT_PACKAGES := . ../network
+GO_ROOT_PACKAGES_VENDORS := ./vendor/% ../network/vendor/%
 BIN ?= $(GOPATH)/bin/berty
 BUILD_MODE ?= dev
 SOURCES = $(strip $(call rwildcard, $(GO_ROOT_PACKAGES), *.go))
@@ -137,6 +137,7 @@ _ci_prepare:
 ##
 
 %.pb.go: %.proto
+	@echo $<
 	$(PROTOC) $(PROTOC_OPTS) \
 		--gofast_out="plugins=grpc:$(GOPATH)/src" \
 		--gotemplate_out=debug=false,all=true,single-package-mode=false,template_dir=./pkg/validate:. \
