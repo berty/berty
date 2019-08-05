@@ -7,8 +7,8 @@ import { NextButton, SkipButton } from './Button'
 import { withNamespaces } from 'react-i18next'
 import { shareLinkSelf } from '@berty/common/helpers/contacts'
 import colors from '@berty/common/constants/colors'
+import { Store } from '@berty/container'
 
-// @withCurrentUser
 const Contacts = ({ navigation, currentUser, t }) => (
   <View style={{ backgroundColor: colors.white, flex: 1 }}>
     <ScrollView alwaysBounceVertical={false}>
@@ -23,16 +23,20 @@ const Contacts = ({ navigation, currentUser, t }) => (
           {t('onboarding.contacts.link-disclaimer')}
         </Text>
         <View style={{ height: 60, flexDirection: 'row' }}>
-          <NextButton
-            onPress={() =>
-              shareLinkSelf({
-                id: currentUser.id,
-                displayName: currentUser.displayName,
-              })
-            }
-          >
-            {t('onboarding.contacts.link-share')}
-          </NextButton>
+          <Store.Entity.Contact status={42}>
+            {currentUser => (
+              <NextButton
+                onPress={() =>
+                  shareLinkSelf({
+                    id: currentUser.id,
+                    displayName: currentUser.displayName,
+                  })
+                }
+              >
+                {t('onboarding.contacts.link-share')}
+              </NextButton>
+            )}
+          </Store.Entity.Contact>
         </View>
         <View style={{ height: 60, flexDirection: 'row' }}>
           <SkipButton />
