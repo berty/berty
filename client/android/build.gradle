@@ -3,52 +3,41 @@
 buildscript {
     ext {
         applicationId = "chat.berty.main"
-
-        compileSdkVersion = 28
-        buildToolsVersion = "28.0.0" // optional
-
+        buildToolsVersion = "28.0.3"
         minSdkVersion = 16
+        compileSdkVersion = 28
         targetSdkVersion = 28
-        supportLibVersion = '28.0.0'
-
-        // googlePlayServicesVersion = "15.0.1"
+        supportLibVersion = "28.0.0"
     }
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.2'
-        classpath 'com.google.gms:google-services:4.2.0'
+        classpath('com.android.tools.build:gradle:3.4.2')
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        classpath 'com.google.gms:google-services:4.2.0'
     }
 }
 
 allprojects {
     repositories {
         mavenLocal()
-        google()
-        jcenter()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-            url "$rootDir/../node_modules/react-native/android"
+            url("$rootDir/../node_modules/react-native/android")
         }
         maven {
             // Android JSC is installed from npm
             url("$rootDir/../node_modules/jsc-android/dist")
         }
-    }
-}
 
-// Set android-tools as maeven url for each broken packages
-subprojects {project ->
-    if (project.name.contains('react-native-')) {
-        buildscript {
-            repositories {
-                maven { url "https://dl.bintray.com/android/android-tools/" }
-            }
-        }
-    }
+        google()
+        jcenter()
+      	maven {
+      	    url "https://sdks.instabug.com/nexus/repository/instabug-cp"
+       	}
+      }
 }

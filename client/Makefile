@@ -18,6 +18,7 @@ LERNA_PACKAGES := $(patsubst \
 PROTOS = $(strip $(call rwildcard, ../core, *.proto))
 OUR_PROTOS = $(filter-out $(call rwildcard,../core/vendor/, *.proto),$(PROTOS))
 TEMPLATES := $(shell find packages -type f -name '*.hbs' -not -path '*/node_modules/*')
+TEMPLATES_GENERATE := $(patsubst packages/template/%.hbs,packages/%,$(TEMPLATES))
 GENERATE := $(patsubst packages/template/%.hbs,packages/%,$(TEMPLATES)) \
 	$(patsubst ../core/%.proto,packages/bridge/service/%.pb.json,$(OUR_PROTOS))
 RN := react-native
@@ -48,8 +49,8 @@ $(LERNA):
 		-not -path '*/node_modules/*' \
 		-exec rm -f {}/.updated \;
 	$(LERNA) --reject-cycles bootstrap --hoist $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci --concurrency=2")
-	./node_modules/.bin/link-module-alias
-	./node_modules/.bin/napa
+	$(PWD)/node_modules/.bin/link-module-alias
+	$(PWD)/node_modules/.bin/napa
 	# prevent package without dep to rebootstrap
 	mkdir -p $(LERNA_PACKAGES)
 	find packages \
@@ -120,8 +121,8 @@ packages/%: packages/template/%.hbs $(OUR_PROTOS)
 		--proto-path node_modules/berty-core \
 		--output-dir packages \
 		--helper-dir packages/template/helper \
-		node_modules/berty-core/api/node/service.proto
-	npm run prettify -- $(GENERATE)
+		$(PWD)/node_modules/berty-core/api/node/service.proto
+	npm run prettify -- $(TEMPLATES_GENERATE)
 
 .IGNORE \
 .PHONY: generate.clean
@@ -197,7 +198,7 @@ get_iphone_udid:
 
 .PHONY: deps.android
 deps.android: deps.lerna $(PWD)/android/app/google-services.json $(PWD)/.environment
-	./node_modules/.bin/react-native link
+	$(PWD)/node_modules/.bin/react-native link --platforms=android
 	./node_modules/.bin/jetify
 	cd ../core/platform/mobile && make build.android
 
@@ -207,10 +208,10 @@ $(PWD)/android/app/google-services.json:
 
 $(PWD)/.environment:
 	@echo 'Error: You need to configure ' $@ ' with INSTABUG_TOKEN'
-	false
+	@false
 
 .PHONY: deps.ios
-deps.ios: deps.lerna $(PWD)/.environment
+deps.ios: deps.lerna $(PWD)/.environment $(PWD)/ios/core.framework $(PWD)/ios/Pods
 	if [ ! -e ./node_modules/react-native/third-party/glog-0.*/Makefile ]; then	\
 		cd ./node_modules/react-native											\
 			&& rm -rf third-party														\
@@ -218,7 +219,14 @@ deps.ios: deps.lerna $(PWD)/.environment
 			&& cd third-party/glog-0.*													\
 			&& ../../scripts/ios-configure-glog.sh;										\
 	fi
-	./node_modules/.bin/react-native link
+
+$(PWD)/ios/Pods: $(PWD)/ios/Podfile
+	$(PWD)/node_modules/.bin/react-native link --platforms=ios
+	([ ! -z "$(shell which pod)" ] && pod --version | grep '1.7.') || sudo gem install cocoapods
+	cd ios && pod install --verbose
+
+.PHONY: $(PWD)/ios/core.framework
+$(PWD)/ios/core.framework:
 	cd ../core/platform/mobile && make build.ios
 
 .PHONY: deps.web
@@ -244,7 +252,6 @@ patch.android:
 		mv node_modules/react-native-network-info/android/build.gradle node_modules/react-native-network-info/android/build.gradle_topatch; \
 		patch node_modules/react-native-network-info/android/build.gradle_topatch -i patch/gradle.patch -o node_modules/react-native-network-info/android/build.gradle; \
 	fi
-
 
 .PHONY: debug.android
 debug.android: deps.android patch.android
@@ -392,6 +399,7 @@ fclean.android: clean.android clean.bundler_and_pkgs
 
 .PHONY .IGNORE: fclean.ios
 fclean.ios: clean.ios clean.bundler_and_pkgs
+	rm -rf ios/Pods
 
 .PHONY .IGNORE: fclean.web
 fclean.web: clean.web clean.bundler_and_pkgs

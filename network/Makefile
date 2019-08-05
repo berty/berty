@@ -13,7 +13,7 @@ lint:
 
 .PHONY: test
 test:
-	go test -v -mod=readonly ./...
+	GO111MODULE=on go test -v -mod=readonly ./...
 
 .PHONY: clean
 clean:
@@ -21,13 +21,19 @@ clean:
 	rm -f $(LOGGER_TARGETS)
 
 .PHONY: generate
-generate: $(LOGGER_TARGETS) $(PROTOS_TARGETS)
+generate: logger proto
+
+.PHONY: logger
+logger: $(LOGGER_TARGETS)
 
 .PHONY: logger
 logger: $(LOGGER_TARGETS)
 
 $(LOGGER_TARGETS):
 	@./.scripts/generate-logger.sh "./$@"
+
+.PHONY: proto
+proto: $(PROTOS_TARGETS)
 
 %.pb.go: %.proto
 	protoc -I . -I $(GOPATH)/src/github.com/gogo/protobuf --gofast_out="plugins=grpc:$(GOPATH)/src" "$<";

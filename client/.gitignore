@@ -117,6 +117,7 @@ android/core/core.aar
 jsconfig.json
 
 # Cocoapods
+/ios/Pods/
 *.xcworkspace/
 ios/Pods
 

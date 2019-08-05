@@ -73,5 +73,3 @@ require (
 )
 
 replace berty.tech/network v0.0.0 => ../network
-
-replace github.com/libp2p/go-libp2p-quic-transport => github.com/berty/go-libp2p-quic-transport v0.1.2-0.20190805113730-01a06cdc5461

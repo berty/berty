@@ -4,7 +4,7 @@ BUILD_MODE ?= dev
 
 CORE_PACKAGE := $(PWD)/../..
 CORE_MOBILE := $(PWD)/core
-CORE_SOURCES := $(shell find $(CORE_PACKAGE) -type f -name "*.go") \
+CORE_SOURCES := $(shell find $(CORE_PACKAGE) -type f -name "*.go" -not -path "$(CORE_PACKAGE)/platform/*") \
 				$(shell find $(CORE_MOBILE) -type f -name "*.go")
 
 BUILD_PATCH_PATH :=	$(PWD)/../../../build/docker/patch
@@ -64,6 +64,7 @@ deps-osx:
 
 .PHONY: deps
 deps: ios-deploy gomobile gobind
+	cd $(PWD)/../.. && make deps
 	[ ! -z "$$CIRCLE_JOB" ] || (cd $(PWD)/../.. && make generate)
 
 .PHONY: gomobile
@@ -94,10 +95,7 @@ test:
 	cd $(CORE_MOBILE) && CGO_LDFLAGS="$(CGO_OS_LDFLAGS)" CGO_CPPFLAGS="$(CGO_OS_CPPFLAGS)" go test -test.timeout $(GOTEST_TIMEOUT) -v ./...
 
 .PHONY: deps.android
-deps.android:
-	$(SED_CMD) "s/.*\/\/implementation project\(':core'\)/implementation project\(':core'\)/g" $(ANDROID_PATH)/ble/build.gradle
-	$(SED_CMD) 's/(goBridge = )(null)/\1new GoBridgeImplem\(\)/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/BleManager.java
-	$(SED_CMD) 's/[\/\/]*(.*GoBridgeImplem.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/BleManager.java
+deps.android: deps
 	cd ../../../client && make deps.lerna
 
 .PHONY: build.core
@@ -109,18 +107,16 @@ build.android: deps.android build.ble build.core build.ble
 .PHONY: build.ble
 build.ble: $(BLE_DIR_PATH)/ble.jar
 
-$(BLE_DIR_PATH)/ble.jar:
+$(BLE_DIR_PATH)/ble.jar: deps.android
 	$(SED_CMD) "s/.*implementation project\(':core'\)/\/\/implementation project\(':core'\)/g" $(ANDROID_PATH)/ble/build.gradle
 	$(SED_CMD) 's/new GoBridgeImplem\(\)/null/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/BleManager.java
 	$(SED_CMD) 's/(.*GoBridgeImplem.*)/\/\/\1/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/BleManager.java
-	GO111MODULE=on go mod vendor
 	cd $(ANDROID_PATH) && ./gradlew ble:createJar && cd -
 
-$(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
+$(ANDROID_BUILD_PATH)/core.aar: deps.android $(CORE_SOURCES)
 	$(SED_CMD) "s/.*\/\/implementation project\(':core'\)/implementation project\(':core'\)/g" $(ANDROID_PATH)/ble/build.gradle
 	$(SED_CMD) 's/(goBridge = )(null)/\1new GoBridgeImplem\(\)/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/BleManager.java
 	$(SED_CMD) 's/[\/\/]*(.*GoBridgeImplem.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/BleManager.java
-	GO111MODULE=on go mod vendor
 	mkdir -p $(ANDROID_BUILD_PATH)
 	GO111MODULE=off GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
 		gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -classpath=$(ANDROID_PATH)/ble/libs/jars/ble.jar -o $(ANDROID_BUILD_PATH)/core.aar berty.tech/core/platform/mobile/core
@@ -129,10 +125,9 @@ $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
 deps.ios: deps
 
 .PHONY: build.ios
-build.ios: deps.ios $(IOS_BUILD_PATH)/core.framework/Core
+build.ios: deps.ios $(IOS_BUILD_PATH)/core.framework
 
-$(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
-	GO111MODULE=on go mod vendor
+$(IOS_BUILD_PATH)/core.framework: deps $(CORE_SOURCES)
 	mkdir -p $(IOS_BUILD_PATH)
 	GO111MODULE=off CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -target=ios -o $(IOS_BUILD_PATH)/core.framework berty.tech/core/platform/mobile/core
 

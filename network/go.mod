@@ -28,7 +28,7 @@ require (
 	github.com/libp2p/go-libp2p-peerstore v0.1.0
 	github.com/libp2p/go-libp2p-pnet v0.1.0
 	github.com/libp2p/go-libp2p-protocol v0.1.0
-	github.com/libp2p/go-libp2p-quic-transport v0.1.2-0.20190805113730-01a06cdc5461
+	github.com/libp2p/go-libp2p-quic-transport v0.1.2-0.20190806085145-cd4717d5c817
 	github.com/libp2p/go-libp2p-record v0.1.0
 	github.com/libp2p/go-libp2p-routing v0.1.0
 	github.com/libp2p/go-libp2p-swarm v0.1.0
@@ -54,7 +54,3 @@ require (
 	golang.org/x/net v0.0.0-20190628185345-da137c7871d7 // indirect
 	golang.org/x/sys v0.0.0-20190626221950-04f50cda93cb // indirect
 )
-
-replace github.com/lucas-clemente/quic-go => github.com/lucas-clemente/quic-go v0.11.2
-
-replace github.com/libp2p/go-libp2p-quic-transport => github.com/berty/go-libp2p-quic-transport v0.1.2-0.20190805113730-01a06cdc5461
