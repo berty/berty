@@ -367,29 +367,27 @@ export class Chat extends Component {
           })}
           cursorExtractor={item => tDate(item.createdAt).getTime() || 0}
         >
-          {(queue, paginate, retry, { count, last, loading, cursor }) =>
-            console.log(queue) || (
-              <OptimizedFlatList
-                style={{ marginBottom: Platform.OS === 'web' ? 50 : 0 }}
-                data={queue}
-                extraData={last}
-                onEndReached={paginate}
-                getItemLayout={this.getItemLayout}
-                onRefresh={retry}
-                refreshing={loading}
-                onViewableItemsChanged={this.onViewableItemsChanged}
-                renderItem={({ item }) => (
-                  <Message
-                    data={item}
-                    navigation={navigation}
-                    context={context}
-                    conversation={data}
-                  />
-                )}
-                inverted
-              />
-            )
-          }
+          {(queue, paginate, retry, { count, last, loading, cursor }) => (
+            <OptimizedFlatList
+              style={{ marginBottom: Platform.OS === 'web' ? 50 : 0 }}
+              data={queue}
+              extraData={last}
+              onEndReached={paginate}
+              getItemLayout={this.getItemLayout}
+              onRefresh={retry}
+              refreshing={loading}
+              onViewableItemsChanged={this.onViewableItemsChanged}
+              renderItem={({ item }) => (
+                <Message
+                  data={item}
+                  navigation={navigation}
+                  context={context}
+                  conversation={data}
+                />
+              )}
+              inverted
+            />
+          )}
         </Store.Node.Service.EventList.Pagination>
         <Input
           navigation={this.props.navigation}
