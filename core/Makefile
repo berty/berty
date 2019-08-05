@@ -2,13 +2,15 @@ rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subs
 NAME ?= berty
 # FIXME: create a everythingButVendor helper that runs a wildcard but ignores node_modules/ and vendor/, and simplify variables below
 GOPATH ?= $(HOME)/go
+GO_ROOT_PACKAGES := . ../network
+GO_ROOT_PACKAGES_VENDORS := ./vendor/% ../network/vendor/%
 BIN ?= $(GOPATH)/bin/berty
 BUILD_MODE ?= dev
-SOURCES = $(call rwildcard, ./, *.go)
-OUR_SOURCES = $(filter-out $(call rwildcard,./vendor/, *.go),$(SOURCES))
-PROTOS = $(strip $(call rwildcard, ./, *.proto))
-OUR_PROTOS = $(filter-out $(call rwildcard,./vendor/, *.proto),$(PROTOS))
-PROTOC_OPTS = --proto_path=/protobuf:./vendor/berty.tech:./vendor/github.com/gogo/protobuf:vendor:.
+SOURCES = $(strip $(call rwildcard, $(GO_ROOT_PACKAGES), *.go))
+OUR_SOURCES = $(filter-out $(GO_ROOT_PACKAGES_VENDORS),$(SOURCES))
+PROTOS = $(strip $(call rwildcard, $(GO_ROOT_PACKAGES), *.proto))
+OUR_PROTOS = $(filter-out $(GO_ROOT_PACKAGES_VENDORS),$(PROTOS))
+PROTOC_OPTS = -I /protobuf:./vendor/berty.tech:./vendor/github.com/gogo/protobuf:vendor:../network:.
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
 GENERATED_PATTERNS = %.validate.gen.go %.service.gen.go %generated.gen.go %kind.gen.go %.pb.go %.gen.js
 GENERATED_FILES = $(filter $(GENERATED_PATTERNS),$(filter-out $(call rwildcard ./vendor/,*),$(call rwildcard,./,*)))
@@ -100,7 +102,7 @@ generate: .generated
 		--workdir="/go/src/$(GO_ROOT_PKG)" \
 		--entrypoint="sh" \
 		--rm \
-		bertychat/protoc:v13 \
+		bertychat/protoc:v14 \
 		-xec 'make generate_local'
 	touch $@
 
@@ -135,6 +137,7 @@ _ci_prepare:
 ##
 
 %.pb.go: %.proto
+	@echo $<
 	$(PROTOC) $(PROTOC_OPTS) \
 		--gofast_out="plugins=grpc:$(GOPATH)/src" \
 		--gotemplate_out=debug=false,all=true,single-package-mode=false,template_dir=./pkg/validate:. \

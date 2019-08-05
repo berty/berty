@@ -174,7 +174,7 @@ func (m *Signature) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Signature.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -231,7 +231,7 @@ func (m *EcdsaSignature) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return xxx_messageInfo_EcdsaSignature.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -306,7 +306,7 @@ func (m *CertificateContent) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return xxx_messageInfo_CertificateContent.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -403,7 +403,7 @@ func (m *Certificate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_Certificate.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -461,7 +461,7 @@ func (m *RevocationContent) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return xxx_messageInfo_RevocationContent.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -537,7 +537,7 @@ func (m *Revocation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Revocation.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -640,7 +640,7 @@ var fileDescriptor_9eccbc907fe67101 = []byte{
 func (m *Signature) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -648,31 +648,38 @@ func (m *Signature) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Signature) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Signature) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Signature) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Signature)))
-		i += copy(dAtA[i:], m.Signature)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.SignatureAlgorithm != 0 {
-		dAtA[i] = 0x10
-		i++
 		i = encodeVarintKeypair(dAtA, i, uint64(m.SignatureAlgorithm))
+		i--
+		dAtA[i] = 0x10
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Signature) > 0 {
+		i -= len(m.Signature)
+		copy(dAtA[i:], m.Signature)
+		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Signature)))
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *EcdsaSignature) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -680,52 +687,60 @@ func (m *EcdsaSignature) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *EcdsaSignature) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EcdsaSignature) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.RNeg {
-		dAtA[i] = 0x8
-		i++
-		if m.RNeg {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if len(m.R) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(len(m.R)))
-		i += copy(dAtA[i:], m.R)
+	if len(m.S) > 0 {
+		i -= len(m.S)
+		copy(dAtA[i:], m.S)
+		i = encodeVarintKeypair(dAtA, i, uint64(len(m.S)))
+		i--
+		dAtA[i] = 0x22
 	}
 	if m.SNeg {
-		dAtA[i] = 0x18
-		i++
+		i--
 		if m.SNeg {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x18
 	}
-	if len(m.S) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(len(m.S)))
-		i += copy(dAtA[i:], m.S)
+	if len(m.R) > 0 {
+		i -= len(m.R)
+		copy(dAtA[i:], m.R)
+		i = encodeVarintKeypair(dAtA, i, uint64(len(m.R)))
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.RNeg {
+		i--
+		if m.RNeg {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *CertificateContent) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -733,70 +748,80 @@ func (m *CertificateContent) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *CertificateContent) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CertificateContent) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Version != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(m.Version))
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if m.PublicKeyAlgorithm != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(m.PublicKeyAlgorithm))
+	if len(m.Extension) > 0 {
+		i -= len(m.Extension)
+		copy(dAtA[i:], m.Extension)
+		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Extension)))
+		i--
+		dAtA[i] = 0x42
 	}
-	if len(m.PublicKey) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(len(m.PublicKey)))
-		i += copy(dAtA[i:], m.PublicKey)
-	}
-	if len(m.Issuer) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Issuer)))
-		i += copy(dAtA[i:], m.Issuer)
-	}
-	if len(m.Subject) > 0 {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Subject)))
-		i += copy(dAtA[i:], m.Subject)
-	}
-	dAtA[i] = 0x32
-	i++
-	i = encodeVarintKeypair(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.NotBefore)))
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.NotBefore, dAtA[i:])
+	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.NotAfter, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.NotAfter):])
 	if err1 != nil {
 		return 0, err1
 	}
-	i += n1
+	i -= n1
+	i = encodeVarintKeypair(dAtA, i, uint64(n1))
+	i--
 	dAtA[i] = 0x3a
-	i++
-	i = encodeVarintKeypair(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.NotAfter)))
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.NotAfter, dAtA[i:])
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.NotBefore, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.NotBefore):])
 	if err2 != nil {
 		return 0, err2
 	}
-	i += n2
-	if len(m.Extension) > 0 {
-		dAtA[i] = 0x42
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Extension)))
-		i += copy(dAtA[i:], m.Extension)
+	i -= n2
+	i = encodeVarintKeypair(dAtA, i, uint64(n2))
+	i--
+	dAtA[i] = 0x32
+	if len(m.Subject) > 0 {
+		i -= len(m.Subject)
+		copy(dAtA[i:], m.Subject)
+		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Subject)))
+		i--
+		dAtA[i] = 0x2a
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Issuer) > 0 {
+		i -= len(m.Issuer)
+		copy(dAtA[i:], m.Issuer)
+		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Issuer)))
+		i--
+		dAtA[i] = 0x22
 	}
-	return i, nil
+	if len(m.PublicKey) > 0 {
+		i -= len(m.PublicKey)
+		copy(dAtA[i:], m.PublicKey)
+		i = encodeVarintKeypair(dAtA, i, uint64(len(m.PublicKey)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.PublicKeyAlgorithm != 0 {
+		i = encodeVarintKeypair(dAtA, i, uint64(m.PublicKeyAlgorithm))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Version != 0 {
+		i = encodeVarintKeypair(dAtA, i, uint64(m.Version))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *Certificate) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -804,40 +829,50 @@ func (m *Certificate) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Certificate) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Certificate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Content != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(m.Content.Size()))
-		n3, err3 := m.Content.MarshalTo(dAtA[i:])
-		if err3 != nil {
-			return 0, err3
-		}
-		i += n3
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.Signature != nil {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(m.Signature.Size()))
-		n4, err4 := m.Signature.MarshalTo(dAtA[i:])
-		if err4 != nil {
-			return 0, err4
+		{
+			size, err := m.Signature.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKeypair(dAtA, i, uint64(size))
 		}
-		i += n4
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.Content != nil {
+		{
+			size, err := m.Content.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKeypair(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *RevocationContent) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -845,51 +880,60 @@ func (m *RevocationContent) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *RevocationContent) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RevocationContent) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Version != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(m.Version))
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if len(m.Issuer) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Issuer)))
-		i += copy(dAtA[i:], m.Issuer)
+	if len(m.Extension) > 0 {
+		i -= len(m.Extension)
+		copy(dAtA[i:], m.Extension)
+		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Extension)))
+		i--
+		dAtA[i] = 0x2a
 	}
-	if len(m.Subject) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Subject)))
-		i += copy(dAtA[i:], m.Subject)
-	}
-	dAtA[i] = 0x22
-	i++
-	i = encodeVarintKeypair(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.IssuedOn)))
-	n5, err5 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.IssuedOn, dAtA[i:])
+	n5, err5 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.IssuedOn, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.IssuedOn):])
 	if err5 != nil {
 		return 0, err5
 	}
-	i += n5
-	if len(m.Extension) > 0 {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Extension)))
-		i += copy(dAtA[i:], m.Extension)
+	i -= n5
+	i = encodeVarintKeypair(dAtA, i, uint64(n5))
+	i--
+	dAtA[i] = 0x22
+	if len(m.Subject) > 0 {
+		i -= len(m.Subject)
+		copy(dAtA[i:], m.Subject)
+		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Subject)))
+		i--
+		dAtA[i] = 0x1a
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Issuer) > 0 {
+		i -= len(m.Issuer)
+		copy(dAtA[i:], m.Issuer)
+		i = encodeVarintKeypair(dAtA, i, uint64(len(m.Issuer)))
+		i--
+		dAtA[i] = 0x12
 	}
-	return i, nil
+	if m.Version != 0 {
+		i = encodeVarintKeypair(dAtA, i, uint64(m.Version))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *Revocation) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -897,44 +941,56 @@ func (m *Revocation) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Revocation) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Revocation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Content != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(m.Content.Size()))
-		n6, err6 := m.Content.MarshalTo(dAtA[i:])
-		if err6 != nil {
-			return 0, err6
-		}
-		i += n6
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.Signature != nil {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintKeypair(dAtA, i, uint64(m.Signature.Size()))
-		n7, err7 := m.Signature.MarshalTo(dAtA[i:])
-		if err7 != nil {
-			return 0, err7
+		{
+			size, err := m.Signature.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKeypair(dAtA, i, uint64(size))
 		}
-		i += n7
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.Content != nil {
+		{
+			size, err := m.Content.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKeypair(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintKeypair(dAtA []byte, offset int, v uint64) int {
+	offset -= sovKeypair(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *Signature) Size() (n int) {
 	if m == nil {

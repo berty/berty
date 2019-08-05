@@ -70,3 +70,9 @@ docker.build:
 .PHONY: docker.push
 docker.push: docker.build
 	docker push bertychat/berty:latest
+
+.PHONY: go-mod-tidy-all
+go-mod-tidy-all:
+	cd core; go mod tidy
+	cd network; go mod tidy
+	cd experiment; go mod tidy

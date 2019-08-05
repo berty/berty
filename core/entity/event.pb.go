@@ -274,7 +274,7 @@ func (m *Event) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Event.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -470,7 +470,7 @@ func (m *EventDispatch) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return xxx_messageInfo_EventDispatch.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -588,7 +588,7 @@ func (m *MetadataKeyValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return xxx_messageInfo_MetadataKeyValue.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -716,7 +716,7 @@ var fileDescriptor_a0737e212f090f50 = []byte{
 func (m *Event) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -724,181 +724,198 @@ func (m *Event) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Event) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Event) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ID) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.ID)))
-		i += copy(dAtA[i:], m.ID)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if len(m.SourceDeviceID) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.SourceDeviceID)))
-		i += copy(dAtA[i:], m.SourceDeviceID)
+	if len(m.Metadata) > 0 {
+		for iNdEx := len(m.Metadata) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Metadata[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintEvent(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x6
+			i--
+			dAtA[i] = 0x9a
+		}
 	}
-	dAtA[i] = 0x1a
-	i++
-	i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)))
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
-	if err1 != nil {
-		return 0, err1
+	if m.ErrProxy != nil {
+		{
+			size, err := m.ErrProxy.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintEvent(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x6
+		i--
+		dAtA[i] = 0x92
 	}
-	i += n1
-	dAtA[i] = 0x22
-	i++
-	i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)))
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
-	if err2 != nil {
-		return 0, err2
+	if len(m.TargetAddr) > 0 {
+		i -= len(m.TargetAddr)
+		copy(dAtA[i:], m.TargetAddr)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TargetAddr)))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xaa
 	}
-	i += n2
-	if m.SentAt != nil {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.SentAt)))
-		n3, err3 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SentAt, dAtA[i:])
+	if m.TargetType != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.TargetType))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xa0
+	}
+	if len(m.SourceContactID) > 0 {
+		i -= len(m.SourceContactID)
+		copy(dAtA[i:], m.SourceContactID)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.SourceContactID)))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x9a
+	}
+	if len(m.Dispatches) > 0 {
+		for iNdEx := len(m.Dispatches) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Dispatches[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintEvent(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0x92
+		}
+	}
+	if m.AckStatus != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.AckStatus))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x88
+	}
+	if m.SeenAt != nil {
+		n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SeenAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.SeenAt):])
+		if err2 != nil {
+			return 0, err2
+		}
+		i -= n2
+		i = encodeVarintEvent(dAtA, i, uint64(n2))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x82
+	}
+	if len(m.Attributes) > 0 {
+		i -= len(m.Attributes)
+		copy(dAtA[i:], m.Attributes)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Attributes)))
+		i--
+		dAtA[i] = 0x72
+	}
+	if m.Kind != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.Kind))
+		i--
+		dAtA[i] = 0x68
+	}
+	if m.APIVersion != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.APIVersion))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.Direction != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.Direction))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.AckedAt != nil {
+		n3, err3 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.AckedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.AckedAt):])
 		if err3 != nil {
 			return 0, err3
 		}
-		i += n3
+		i -= n3
+		i = encodeVarintEvent(dAtA, i, uint64(n3))
+		i--
+		dAtA[i] = 0x42
 	}
 	if m.ReceivedAt != nil {
-		dAtA[i] = 0x3a
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.ReceivedAt)))
-		n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.ReceivedAt, dAtA[i:])
+		n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.ReceivedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.ReceivedAt):])
 		if err4 != nil {
 			return 0, err4
 		}
-		i += n4
+		i -= n4
+		i = encodeVarintEvent(dAtA, i, uint64(n4))
+		i--
+		dAtA[i] = 0x3a
 	}
-	if m.AckedAt != nil {
-		dAtA[i] = 0x42
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.AckedAt)))
-		n5, err5 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.AckedAt, dAtA[i:])
+	if m.SentAt != nil {
+		n5, err5 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SentAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.SentAt):])
 		if err5 != nil {
 			return 0, err5
 		}
-		i += n5
+		i -= n5
+		i = encodeVarintEvent(dAtA, i, uint64(n5))
+		i--
+		dAtA[i] = 0x32
 	}
-	if m.Direction != 0 {
-		dAtA[i] = 0x48
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(m.Direction))
+	n6, err6 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
+	if err6 != nil {
+		return 0, err6
 	}
-	if m.APIVersion != 0 {
-		dAtA[i] = 0x50
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(m.APIVersion))
+	i -= n6
+	i = encodeVarintEvent(dAtA, i, uint64(n6))
+	i--
+	dAtA[i] = 0x22
+	n7, err7 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
+	if err7 != nil {
+		return 0, err7
 	}
-	if m.Kind != 0 {
-		dAtA[i] = 0x68
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(m.Kind))
+	i -= n7
+	i = encodeVarintEvent(dAtA, i, uint64(n7))
+	i--
+	dAtA[i] = 0x1a
+	if len(m.SourceDeviceID) > 0 {
+		i -= len(m.SourceDeviceID)
+		copy(dAtA[i:], m.SourceDeviceID)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.SourceDeviceID)))
+		i--
+		dAtA[i] = 0x12
 	}
-	if len(m.Attributes) > 0 {
-		dAtA[i] = 0x72
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.Attributes)))
-		i += copy(dAtA[i:], m.Attributes)
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
 	}
-	if m.SeenAt != nil {
-		dAtA[i] = 0x82
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.SeenAt)))
-		n6, err6 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SeenAt, dAtA[i:])
-		if err6 != nil {
-			return 0, err6
-		}
-		i += n6
-	}
-	if m.AckStatus != 0 {
-		dAtA[i] = 0x88
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(m.AckStatus))
-	}
-	if len(m.Dispatches) > 0 {
-		for _, msg := range m.Dispatches {
-			dAtA[i] = 0x92
-			i++
-			dAtA[i] = 0x1
-			i++
-			i = encodeVarintEvent(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if len(m.SourceContactID) > 0 {
-		dAtA[i] = 0x9a
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.SourceContactID)))
-		i += copy(dAtA[i:], m.SourceContactID)
-	}
-	if m.TargetType != 0 {
-		dAtA[i] = 0xa0
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(m.TargetType))
-	}
-	if len(m.TargetAddr) > 0 {
-		dAtA[i] = 0xaa
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.TargetAddr)))
-		i += copy(dAtA[i:], m.TargetAddr)
-	}
-	if m.ErrProxy != nil {
-		dAtA[i] = 0x92
-		i++
-		dAtA[i] = 0x6
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(m.ErrProxy.Size()))
-		n7, err7 := m.ErrProxy.MarshalTo(dAtA[i:])
-		if err7 != nil {
-			return 0, err7
-		}
-		i += n7
-	}
-	if len(m.Metadata) > 0 {
-		for _, msg := range m.Metadata {
-			dAtA[i] = 0x9a
-			i++
-			dAtA[i] = 0x6
-			i++
-			i = encodeVarintEvent(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *EventDispatch) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -906,95 +923,106 @@ func (m *EventDispatch) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *EventDispatch) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventDispatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.EventID) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.EventID)))
-		i += copy(dAtA[i:], m.EventID)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if len(m.DeviceID) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.DeviceID)))
-		i += copy(dAtA[i:], m.DeviceID)
+	if len(m.SendErrorDetail) > 0 {
+		i -= len(m.SendErrorDetail)
+		copy(dAtA[i:], m.SendErrorDetail)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.SendErrorDetail)))
+		i--
+		dAtA[i] = 0x5a
 	}
-	if len(m.ContactID) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.ContactID)))
-		i += copy(dAtA[i:], m.ContactID)
+	if len(m.SendErrorMessage) > 0 {
+		i -= len(m.SendErrorMessage)
+		copy(dAtA[i:], m.SendErrorMessage)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.SendErrorMessage)))
+		i--
+		dAtA[i] = 0x52
 	}
-	if m.SentAt != nil {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.SentAt)))
-		n8, err8 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SentAt, dAtA[i:])
+	if m.RetryBackoff != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.RetryBackoff))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.SeenMedium != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.SeenMedium))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.AckMedium != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.AckMedium))
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.SeenAt != nil {
+		n8, err8 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SeenAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.SeenAt):])
 		if err8 != nil {
 			return 0, err8
 		}
-		i += n8
+		i -= n8
+		i = encodeVarintEvent(dAtA, i, uint64(n8))
+		i--
+		dAtA[i] = 0x32
 	}
 	if m.AckedAt != nil {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.AckedAt)))
-		n9, err9 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.AckedAt, dAtA[i:])
+		n9, err9 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.AckedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.AckedAt):])
 		if err9 != nil {
 			return 0, err9
 		}
-		i += n9
+		i -= n9
+		i = encodeVarintEvent(dAtA, i, uint64(n9))
+		i--
+		dAtA[i] = 0x2a
 	}
-	if m.SeenAt != nil {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.SeenAt)))
-		n10, err10 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SeenAt, dAtA[i:])
+	if m.SentAt != nil {
+		n10, err10 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SentAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.SentAt):])
 		if err10 != nil {
 			return 0, err10
 		}
-		i += n10
+		i -= n10
+		i = encodeVarintEvent(dAtA, i, uint64(n10))
+		i--
+		dAtA[i] = 0x22
 	}
-	if m.AckMedium != 0 {
-		dAtA[i] = 0x38
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(m.AckMedium))
+	if len(m.ContactID) > 0 {
+		i -= len(m.ContactID)
+		copy(dAtA[i:], m.ContactID)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.ContactID)))
+		i--
+		dAtA[i] = 0x1a
 	}
-	if m.SeenMedium != 0 {
-		dAtA[i] = 0x40
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(m.SeenMedium))
+	if len(m.DeviceID) > 0 {
+		i -= len(m.DeviceID)
+		copy(dAtA[i:], m.DeviceID)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.DeviceID)))
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.RetryBackoff != 0 {
-		dAtA[i] = 0x48
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(m.RetryBackoff))
+	if len(m.EventID) > 0 {
+		i -= len(m.EventID)
+		copy(dAtA[i:], m.EventID)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.EventID)))
+		i--
+		dAtA[i] = 0xa
 	}
-	if len(m.SendErrorMessage) > 0 {
-		dAtA[i] = 0x52
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.SendErrorMessage)))
-		i += copy(dAtA[i:], m.SendErrorMessage)
-	}
-	if len(m.SendErrorDetail) > 0 {
-		dAtA[i] = 0x5a
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.SendErrorDetail)))
-		i += copy(dAtA[i:], m.SendErrorDetail)
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *MetadataKeyValue) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1002,45 +1030,48 @@ func (m *MetadataKeyValue) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *MetadataKeyValue) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MetadataKeyValue) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Key) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.Key)))
-		i += copy(dAtA[i:], m.Key)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.Values) > 0 {
-		for _, s := range m.Values {
+		for iNdEx := len(m.Values) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Values[iNdEx])
+			copy(dAtA[i:], m.Values[iNdEx])
+			i = encodeVarintEvent(dAtA, i, uint64(len(m.Values[iNdEx])))
+			i--
 			dAtA[i] = 0x12
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
 		}
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintEvent(dAtA []byte, offset int, v uint64) int {
+	offset -= sovEvent(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *Event) Size() (n int) {
 	if m == nil {

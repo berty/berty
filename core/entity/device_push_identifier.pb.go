@@ -54,7 +54,7 @@ func (m *DevicePushIdentifier) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return xxx_messageInfo_DevicePushIdentifier.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -152,7 +152,7 @@ var fileDescriptor_76aa55265fd1e4d6 = []byte{
 func (m *DevicePushIdentifier) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -160,64 +160,76 @@ func (m *DevicePushIdentifier) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *DevicePushIdentifier) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DevicePushIdentifier) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ID) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintDevicePushIdentifier(dAtA, i, uint64(len(m.ID)))
-		i += copy(dAtA[i:], m.ID)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	dAtA[i] = 0x12
-	i++
-	i = encodeVarintDevicePushIdentifier(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)))
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
+	if len(m.DeviceID) > 0 {
+		i -= len(m.DeviceID)
+		copy(dAtA[i:], m.DeviceID)
+		i = encodeVarintDevicePushIdentifier(dAtA, i, uint64(len(m.DeviceID)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.RelayPubkey) > 0 {
+		i -= len(m.RelayPubkey)
+		copy(dAtA[i:], m.RelayPubkey)
+		i = encodeVarintDevicePushIdentifier(dAtA, i, uint64(len(m.RelayPubkey)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.PushInfo) > 0 {
+		i -= len(m.PushInfo)
+		copy(dAtA[i:], m.PushInfo)
+		i = encodeVarintDevicePushIdentifier(dAtA, i, uint64(len(m.PushInfo)))
+		i--
+		dAtA[i] = 0x22
+	}
+	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
 	if err1 != nil {
 		return 0, err1
 	}
-	i += n1
+	i -= n1
+	i = encodeVarintDevicePushIdentifier(dAtA, i, uint64(n1))
+	i--
 	dAtA[i] = 0x1a
-	i++
-	i = encodeVarintDevicePushIdentifier(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)))
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
 	if err2 != nil {
 		return 0, err2
 	}
-	i += n2
-	if len(m.PushInfo) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintDevicePushIdentifier(dAtA, i, uint64(len(m.PushInfo)))
-		i += copy(dAtA[i:], m.PushInfo)
+	i -= n2
+	i = encodeVarintDevicePushIdentifier(dAtA, i, uint64(n2))
+	i--
+	dAtA[i] = 0x12
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintDevicePushIdentifier(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
 	}
-	if len(m.RelayPubkey) > 0 {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintDevicePushIdentifier(dAtA, i, uint64(len(m.RelayPubkey)))
-		i += copy(dAtA[i:], m.RelayPubkey)
-	}
-	if len(m.DeviceID) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintDevicePushIdentifier(dAtA, i, uint64(len(m.DeviceID)))
-		i += copy(dAtA[i:], m.DeviceID)
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintDevicePushIdentifier(dAtA []byte, offset int, v uint64) int {
+	offset -= sovDevicePushIdentifier(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *DevicePushIdentifier) Size() (n int) {
 	if m == nil {

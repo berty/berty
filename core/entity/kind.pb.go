@@ -161,7 +161,7 @@ func (m *SentAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_SentAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -209,7 +209,7 @@ func (m *AckAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_AckAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -263,7 +263,7 @@ func (m *PingAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_PingAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -310,7 +310,7 @@ func (m *SeenAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_SeenAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -358,7 +358,7 @@ func (m *ContactRequestAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return xxx_messageInfo_ContactRequestAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -412,7 +412,7 @@ func (m *ContactRequestAcceptedAttrs) XXX_Marshal(b []byte, deterministic bool) 
 		return xxx_messageInfo_ContactRequestAcceptedAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -459,7 +459,7 @@ func (m *ContactShareMeAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return xxx_messageInfo_ContactShareMeAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -506,7 +506,7 @@ func (m *ContactShareAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return xxx_messageInfo_ContactShareAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -553,7 +553,7 @@ func (m *ConversationInviteAttrs) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return xxx_messageInfo_ConversationInviteAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -600,7 +600,7 @@ func (m *ConversationNewMessageAttrs) XXX_Marshal(b []byte, deterministic bool) 
 		return xxx_messageInfo_ConversationNewMessageAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -647,7 +647,7 @@ func (m *ConversationReadAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return xxx_messageInfo_ConversationReadAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -694,7 +694,7 @@ func (m *ConversationUpdateAttrs) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return xxx_messageInfo_ConversationUpdateAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -748,7 +748,7 @@ func (m *ConversationMemberInviteAttrs) XXX_Marshal(b []byte, deterministic bool
 		return xxx_messageInfo_ConversationMemberInviteAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -809,7 +809,7 @@ func (m *ConversationMemberLeaveAttrs) XXX_Marshal(b []byte, deterministic bool)
 		return xxx_messageInfo_ConversationMemberLeaveAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -857,7 +857,7 @@ func (m *ConversationMemberSetTitleAttrs) XXX_Marshal(b []byte, deterministic bo
 		return xxx_messageInfo_ConversationMemberSetTitleAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -912,7 +912,7 @@ func (m *ConversationMemberSetTopicAttrs) XXX_Marshal(b []byte, deterministic bo
 		return xxx_messageInfo_ConversationMemberSetTopicAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -967,7 +967,7 @@ func (m *ConversationMemberSetOwnerAttrs) XXX_Marshal(b []byte, deterministic bo
 		return xxx_messageInfo_ConversationMemberSetOwnerAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1022,7 +1022,7 @@ func (m *ConversationMemberBlockAttrs) XXX_Marshal(b []byte, deterministic bool)
 		return xxx_messageInfo_ConversationMemberBlockAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1077,7 +1077,7 @@ func (m *ConversationMemberUnblockAttrs) XXX_Marshal(b []byte, deterministic boo
 		return xxx_messageInfo_ConversationMemberUnblockAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1132,7 +1132,7 @@ func (m *ConversationMemberReadAttrs) XXX_Marshal(b []byte, deterministic bool) 
 		return xxx_messageInfo_ConversationMemberReadAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1187,7 +1187,7 @@ func (m *ConversationMemberWriteAttrs) XXX_Marshal(b []byte, deterministic bool)
 		return xxx_messageInfo_ConversationMemberWriteAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1242,7 +1242,7 @@ func (m *DevtoolsMapsetAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return xxx_messageInfo_DevtoolsMapsetAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1296,7 +1296,7 @@ func (m *SenderAliasUpdateAttrs) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return xxx_messageInfo_SenderAliasUpdateAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1343,7 +1343,7 @@ func (m *DeviceUpdatePushConfigAttrs) XXX_Marshal(b []byte, deterministic bool) 
 		return xxx_messageInfo_DeviceUpdatePushConfigAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1392,7 +1392,7 @@ func (m *DevicePushToAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return xxx_messageInfo_DevicePushToAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1456,7 +1456,7 @@ func (m *NodeAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_NodeAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1595,7 +1595,7 @@ var fileDescriptor_8119a288b3154fed = []byte{
 func (m *SentAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1603,35 +1603,35 @@ func (m *SentAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *SentAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SentAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
 	if len(m.IDs) > 0 {
-		for _, s := range m.IDs {
+		for iNdEx := len(m.IDs) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.IDs[iNdEx])
+			copy(dAtA[i:], m.IDs[iNdEx])
+			i = encodeVarintKind(dAtA, i, uint64(len(m.IDs[iNdEx])))
+			i--
 			dAtA[i] = 0xa
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
 		}
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *AckAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1639,41 +1639,42 @@ func (m *AckAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *AckAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AckAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.IDs) > 0 {
-		for _, s := range m.IDs {
-			dAtA[i] = 0xa
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.ErrMsg) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.ErrMsg)
+		copy(dAtA[i:], m.ErrMsg)
 		i = encodeVarintKind(dAtA, i, uint64(len(m.ErrMsg)))
-		i += copy(dAtA[i:], m.ErrMsg)
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.IDs) > 0 {
+		for iNdEx := len(m.IDs) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.IDs[iNdEx])
+			copy(dAtA[i:], m.IDs[iNdEx])
+			i = encodeVarintKind(dAtA, i, uint64(len(m.IDs[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *PingAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1681,30 +1682,36 @@ func (m *PingAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *PingAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PingAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
 	if m.T {
-		dAtA[i] = 0x8
-		i++
+		i--
 		if m.T {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x8
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *SeenAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1712,35 +1719,35 @@ func (m *SeenAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *SeenAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SeenAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
 	if len(m.IDs) > 0 {
-		for _, s := range m.IDs {
+		for iNdEx := len(m.IDs) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.IDs[iNdEx])
+			copy(dAtA[i:], m.IDs[iNdEx])
+			i = encodeVarintKind(dAtA, i, uint64(len(m.IDs[iNdEx])))
+			i--
 			dAtA[i] = 0xa
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
 		}
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *ContactRequestAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1748,36 +1755,45 @@ func (m *ContactRequestAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ContactRequestAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Me != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.Me.Size()))
-		n1, err1 := m.Me.MarshalTo(dAtA[i:])
-		if err1 != nil {
-			return 0, err1
-		}
-		i += n1
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.IntroText) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.IntroText)
+		copy(dAtA[i:], m.IntroText)
 		i = encodeVarintKind(dAtA, i, uint64(len(m.IntroText)))
-		i += copy(dAtA[i:], m.IntroText)
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.Me != nil {
+		{
+			size, err := m.Me.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKind(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *ContactRequestAcceptedAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1785,30 +1801,36 @@ func (m *ContactRequestAcceptedAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ContactRequestAcceptedAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestAcceptedAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
 	if m.T {
-		dAtA[i] = 0x8
-		i++
+		i--
 		if m.T {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x8
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *ContactShareMeAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1816,30 +1838,38 @@ func (m *ContactShareMeAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ContactShareMeAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactShareMeAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Me != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.Me.Size()))
-		n2, err2 := m.Me.MarshalTo(dAtA[i:])
-		if err2 != nil {
-			return 0, err2
-		}
-		i += n2
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if m.Me != nil {
+		{
+			size, err := m.Me.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKind(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ContactShareAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1847,30 +1877,38 @@ func (m *ContactShareAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ContactShareAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactShareAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Contact != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.Contact.Size()))
-		n3, err3 := m.Contact.MarshalTo(dAtA[i:])
-		if err3 != nil {
-			return 0, err3
-		}
-		i += n3
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if m.Contact != nil {
+		{
+			size, err := m.Contact.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKind(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationInviteAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1878,30 +1916,38 @@ func (m *ConversationInviteAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationInviteAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationInviteAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Conversation != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.Conversation.Size()))
-		n4, err4 := m.Conversation.MarshalTo(dAtA[i:])
-		if err4 != nil {
-			return 0, err4
-		}
-		i += n4
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if m.Conversation != nil {
+		{
+			size, err := m.Conversation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKind(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationNewMessageAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1909,30 +1955,38 @@ func (m *ConversationNewMessageAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationNewMessageAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationNewMessageAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Message != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.Message.Size()))
-		n5, err5 := m.Message.MarshalTo(dAtA[i:])
-		if err5 != nil {
-			return 0, err5
-		}
-		i += n5
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if m.Message != nil {
+		{
+			size, err := m.Message.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKind(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationReadAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1940,30 +1994,38 @@ func (m *ConversationReadAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationReadAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationReadAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Conversation != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.Conversation.Size()))
-		n6, err6 := m.Conversation.MarshalTo(dAtA[i:])
-		if err6 != nil {
-			return 0, err6
-		}
-		i += n6
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if m.Conversation != nil {
+		{
+			size, err := m.Conversation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKind(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationUpdateAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1971,30 +2033,38 @@ func (m *ConversationUpdateAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationUpdateAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationUpdateAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Conversation != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.Conversation.Size()))
-		n7, err7 := m.Conversation.MarshalTo(dAtA[i:])
-		if err7 != nil {
-			return 0, err7
-		}
-		i += n7
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if m.Conversation != nil {
+		{
+			size, err := m.Conversation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKind(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationMemberInviteAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2002,46 +2072,57 @@ func (m *ConversationMemberInviteAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationMemberInviteAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationMemberInviteAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Id) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
-		i += copy(dAtA[i:], m.Id)
-	}
-	if m.Contact != nil {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.Contact.Size()))
-		n8, err8 := m.Contact.MarshalTo(dAtA[i:])
-		if err8 != nil {
-			return 0, err8
-		}
-		i += n8
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.Conversation != nil {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.Conversation.Size()))
-		n9, err9 := m.Conversation.MarshalTo(dAtA[i:])
-		if err9 != nil {
-			return 0, err9
+		{
+			size, err := m.Conversation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKind(dAtA, i, uint64(size))
 		}
-		i += n9
+		i--
+		dAtA[i] = 0x1a
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.Contact != nil {
+		{
+			size, err := m.Contact.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKind(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
 	}
-	return i, nil
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationMemberLeaveAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2049,26 +2130,33 @@ func (m *ConversationMemberLeaveAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationMemberLeaveAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationMemberLeaveAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Id) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
-		i += copy(dAtA[i:], m.Id)
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationMemberSetTitleAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2076,32 +2164,40 @@ func (m *ConversationMemberSetTitleAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationMemberSetTitleAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationMemberSetTitleAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Id) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
-		i += copy(dAtA[i:], m.Id)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.Title) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.Title)
+		copy(dAtA[i:], m.Title)
 		i = encodeVarintKind(dAtA, i, uint64(len(m.Title)))
-		i += copy(dAtA[i:], m.Title)
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationMemberSetTopicAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2109,32 +2205,40 @@ func (m *ConversationMemberSetTopicAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationMemberSetTopicAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationMemberSetTopicAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Id) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
-		i += copy(dAtA[i:], m.Id)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.Topic) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.Topic)
+		copy(dAtA[i:], m.Topic)
 		i = encodeVarintKind(dAtA, i, uint64(len(m.Topic)))
-		i += copy(dAtA[i:], m.Topic)
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationMemberSetOwnerAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2142,32 +2246,40 @@ func (m *ConversationMemberSetOwnerAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationMemberSetOwnerAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationMemberSetOwnerAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Id) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
-		i += copy(dAtA[i:], m.Id)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.ContactId) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.ContactId)
+		copy(dAtA[i:], m.ContactId)
 		i = encodeVarintKind(dAtA, i, uint64(len(m.ContactId)))
-		i += copy(dAtA[i:], m.ContactId)
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationMemberBlockAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2175,32 +2287,40 @@ func (m *ConversationMemberBlockAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationMemberBlockAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationMemberBlockAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Id) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
-		i += copy(dAtA[i:], m.Id)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.ContactId) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.ContactId)
+		copy(dAtA[i:], m.ContactId)
 		i = encodeVarintKind(dAtA, i, uint64(len(m.ContactId)))
-		i += copy(dAtA[i:], m.ContactId)
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationMemberUnblockAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2208,32 +2328,40 @@ func (m *ConversationMemberUnblockAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationMemberUnblockAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationMemberUnblockAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Id) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
-		i += copy(dAtA[i:], m.Id)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.ContactId) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.ContactId)
+		copy(dAtA[i:], m.ContactId)
 		i = encodeVarintKind(dAtA, i, uint64(len(m.ContactId)))
-		i += copy(dAtA[i:], m.ContactId)
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationMemberReadAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2241,34 +2369,41 @@ func (m *ConversationMemberReadAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationMemberReadAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationMemberReadAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Id) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
-		i += copy(dAtA[i:], m.Id)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	dAtA[i] = 0x12
-	i++
-	i = encodeVarintKind(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.At)))
-	n10, err10 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.At, dAtA[i:])
+	n10, err10 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.At, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.At):])
 	if err10 != nil {
 		return 0, err10
 	}
-	i += n10
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	i -= n10
+	i = encodeVarintKind(dAtA, i, uint64(n10))
+	i--
+	dAtA[i] = 0x12
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *ConversationMemberWriteAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2276,36 +2411,45 @@ func (m *ConversationMemberWriteAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ConversationMemberWriteAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationMemberWriteAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Id) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
-		i += copy(dAtA[i:], m.Id)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.Message != nil {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.Message.Size()))
-		n11, err11 := m.Message.MarshalTo(dAtA[i:])
-		if err11 != nil {
-			return 0, err11
+		{
+			size, err := m.Message.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKind(dAtA, i, uint64(size))
 		}
-		i += n11
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *DevtoolsMapsetAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2313,32 +2457,40 @@ func (m *DevtoolsMapsetAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *DevtoolsMapsetAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DevtoolsMapsetAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Key) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.Key)))
-		i += copy(dAtA[i:], m.Key)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.Val) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.Val)
+		copy(dAtA[i:], m.Val)
 		i = encodeVarintKind(dAtA, i, uint64(len(m.Val)))
-		i += copy(dAtA[i:], m.Val)
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *SenderAliasUpdateAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2346,32 +2498,40 @@ func (m *SenderAliasUpdateAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *SenderAliasUpdateAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SenderAliasUpdateAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
 	if len(m.Aliases) > 0 {
-		for _, msg := range m.Aliases {
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintKind(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
+		for iNdEx := len(m.Aliases) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Aliases[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintKind(dAtA, i, uint64(size))
 			}
-			i += n
+			i--
+			dAtA[i] = 0xa
 		}
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *DeviceUpdatePushConfigAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2379,30 +2539,38 @@ func (m *DeviceUpdatePushConfigAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *DeviceUpdatePushConfigAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeviceUpdatePushConfigAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Device != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.Device.Size()))
-		n12, err12 := m.Device.MarshalTo(dAtA[i:])
-		if err12 != nil {
-			return 0, err12
-		}
-		i += n12
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if m.Device != nil {
+		{
+			size, err := m.Device.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKind(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *DevicePushToAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2410,37 +2578,45 @@ func (m *DevicePushToAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *DevicePushToAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DevicePushToAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.PushIdentifier) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.PushIdentifier)))
-		i += copy(dAtA[i:], m.PushIdentifier)
-	}
-	if len(m.Envelope) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.Envelope)))
-		i += copy(dAtA[i:], m.Envelope)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.Priority != 0 {
-		dAtA[i] = 0x18
-		i++
 		i = encodeVarintKind(dAtA, i, uint64(m.Priority))
+		i--
+		dAtA[i] = 0x18
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Envelope) > 0 {
+		i -= len(m.Envelope)
+		copy(dAtA[i:], m.Envelope)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Envelope)))
+		i--
+		dAtA[i] = 0x12
 	}
-	return i, nil
+	if len(m.PushIdentifier) > 0 {
+		i -= len(m.PushIdentifier)
+		copy(dAtA[i:], m.PushIdentifier)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.PushIdentifier)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *NodeAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -2448,35 +2624,44 @@ func (m *NodeAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *NodeAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NodeAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Kind != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.Kind))
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.Attributes) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.Attributes)
+		copy(dAtA[i:], m.Attributes)
 		i = encodeVarintKind(dAtA, i, uint64(len(m.Attributes)))
-		i += copy(dAtA[i:], m.Attributes)
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.Kind != 0 {
+		i = encodeVarintKind(dAtA, i, uint64(m.Kind))
+		i--
+		dAtA[i] = 0x8
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintKind(dAtA []byte, offset int, v uint64) int {
+	offset -= sovKind(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *SentAttrs) Size() (n int) {
 	if m == nil {

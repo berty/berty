@@ -104,7 +104,7 @@ func (m *Contact) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Contact.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -256,7 +256,7 @@ var fileDescriptor_5f331b2909c9d43b = []byte{
 func (m *Contact) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -264,111 +264,127 @@ func (m *Contact) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Contact) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Contact) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ID) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintContact(dAtA, i, uint64(len(m.ID)))
-		i += copy(dAtA[i:], m.ID)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	dAtA[i] = 0x12
-	i++
-	i = encodeVarintContact(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)))
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
+	if len(m.OverrideDisplayStatus) > 0 {
+		i -= len(m.OverrideDisplayStatus)
+		copy(dAtA[i:], m.OverrideDisplayStatus)
+		i = encodeVarintContact(dAtA, i, uint64(len(m.OverrideDisplayStatus)))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x82
+	}
+	if len(m.OverrideDisplayName) > 0 {
+		i -= len(m.OverrideDisplayName)
+		copy(dAtA[i:], m.OverrideDisplayName)
+		i = encodeVarintContact(dAtA, i, uint64(len(m.OverrideDisplayName)))
+		i--
+		dAtA[i] = 0x7a
+	}
+	if len(m.DisplayStatus) > 0 {
+		i -= len(m.DisplayStatus)
+		copy(dAtA[i:], m.DisplayStatus)
+		i = encodeVarintContact(dAtA, i, uint64(len(m.DisplayStatus)))
+		i--
+		dAtA[i] = 0x72
+	}
+	if len(m.DisplayName) > 0 {
+		i -= len(m.DisplayName)
+		copy(dAtA[i:], m.DisplayName)
+		i = encodeVarintContact(dAtA, i, uint64(len(m.DisplayName)))
+		i--
+		dAtA[i] = 0x6a
+	}
+	if len(m.Devices) > 0 {
+		for iNdEx := len(m.Devices) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Devices[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintContact(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x62
+		}
+	}
+	if m.Status != 0 {
+		i = encodeVarintContact(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x58
+	}
+	if len(m.Sigchain) > 0 {
+		i -= len(m.Sigchain)
+		copy(dAtA[i:], m.Sigchain)
+		i = encodeVarintContact(dAtA, i, uint64(len(m.Sigchain)))
+		i--
+		dAtA[i] = 0x52
+	}
+	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.MutatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.MutatedAt):])
 	if err1 != nil {
 		return 0, err1
 	}
-	i += n1
-	dAtA[i] = 0x1a
-	i++
-	i = encodeVarintContact(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)))
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
+	i -= n1
+	i = encodeVarintContact(dAtA, i, uint64(n1))
+	i--
+	dAtA[i] = 0x2a
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.SeenAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.SeenAt):])
 	if err2 != nil {
 		return 0, err2
 	}
-	i += n2
+	i -= n2
+	i = encodeVarintContact(dAtA, i, uint64(n2))
+	i--
 	dAtA[i] = 0x22
-	i++
-	i = encodeVarintContact(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.SeenAt)))
-	n3, err3 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.SeenAt, dAtA[i:])
+	n3, err3 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
 	if err3 != nil {
 		return 0, err3
 	}
-	i += n3
-	dAtA[i] = 0x2a
-	i++
-	i = encodeVarintContact(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.MutatedAt)))
-	n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.MutatedAt, dAtA[i:])
+	i -= n3
+	i = encodeVarintContact(dAtA, i, uint64(n3))
+	i--
+	dAtA[i] = 0x1a
+	n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
 	if err4 != nil {
 		return 0, err4
 	}
-	i += n4
-	if len(m.Sigchain) > 0 {
-		dAtA[i] = 0x52
-		i++
-		i = encodeVarintContact(dAtA, i, uint64(len(m.Sigchain)))
-		i += copy(dAtA[i:], m.Sigchain)
+	i -= n4
+	i = encodeVarintContact(dAtA, i, uint64(n4))
+	i--
+	dAtA[i] = 0x12
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintContact(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
 	}
-	if m.Status != 0 {
-		dAtA[i] = 0x58
-		i++
-		i = encodeVarintContact(dAtA, i, uint64(m.Status))
-	}
-	if len(m.Devices) > 0 {
-		for _, msg := range m.Devices {
-			dAtA[i] = 0x62
-			i++
-			i = encodeVarintContact(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if len(m.DisplayName) > 0 {
-		dAtA[i] = 0x6a
-		i++
-		i = encodeVarintContact(dAtA, i, uint64(len(m.DisplayName)))
-		i += copy(dAtA[i:], m.DisplayName)
-	}
-	if len(m.DisplayStatus) > 0 {
-		dAtA[i] = 0x72
-		i++
-		i = encodeVarintContact(dAtA, i, uint64(len(m.DisplayStatus)))
-		i += copy(dAtA[i:], m.DisplayStatus)
-	}
-	if len(m.OverrideDisplayName) > 0 {
-		dAtA[i] = 0x7a
-		i++
-		i = encodeVarintContact(dAtA, i, uint64(len(m.OverrideDisplayName)))
-		i += copy(dAtA[i:], m.OverrideDisplayName)
-	}
-	if len(m.OverrideDisplayStatus) > 0 {
-		dAtA[i] = 0x82
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintContact(dAtA, i, uint64(len(m.OverrideDisplayStatus)))
-		i += copy(dAtA[i:], m.OverrideDisplayStatus)
-	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintContact(dAtA []byte, offset int, v uint64) int {
+	offset -= sovContact(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *Contact) Size() (n int) {
 	if m == nil {

@@ -97,11 +97,11 @@ pretty.gen: $(LERNA_PACKAGES)
 ### GENERATE
 
 .PHONY: generate
-generate: deps.lerna $(GENERATE) pretty.gen
+generate: deps.lerna $(GENERATE)
 
 packages/bridge/service/%.pb.json: ../core/%.proto
 	mkdir -p "$(dir packages/bridge/service/$@)"
-	./node_modules/.bin/pbjs \
+	$(PWD)/node_modules/.bin/pbjs \
 		--path node_modules/@google/protobuf/src \
 		--path node_modules/berty-core/vendor/berty.tech \
 		--path node_modules/berty-core/vendor/github.com/gogo/protobuf \
@@ -111,8 +111,7 @@ packages/bridge/service/%.pb.json: ../core/%.proto
 		$< > $@
 
 packages/%: packages/template/%.hbs $(OUR_PROTOS)
-	mkdir -p "$(dir $@)"
-	./node_modules/.bin/pbhbs \
+	$(PWD)/node_modules/.bin/pbhbs \
 		--template-dir packages/template \
 		--proto-path node_modules/@google/protobuf/src \
 		--proto-path node_modules/berty-core/vendor/berty.tech \
@@ -122,7 +121,7 @@ packages/%: packages/template/%.hbs $(OUR_PROTOS)
 		--output-dir packages \
 		--helper-dir packages/template/helper \
 		node_modules/berty-core/api/node/service.proto
-	npm run prettify -- $@
+	npm run prettify -- $(GENERATE)
 
 .IGNORE \
 .PHONY: generate.clean

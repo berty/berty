@@ -8,11 +8,11 @@ require (
 	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21
 	github.com/NaySoftware/go-fcm v0.0.0-20180207124314-28fff9381d17
 	github.com/akavel/rsrc v0.0.0-20170831122431-f6a15ece2cfd // indirect
-	github.com/asticode/go-astiamqp v1.0.0 // indirect
 	github.com/asticode/go-astilectron v0.8.1-0.20190415090856-5d5f14367434
 	github.com/asticode/go-astilectron-bootstrap v0.0.0-20180616141213-b3211646d205
 	github.com/asticode/go-astilectron-bundler v0.0.0-20190426172205-155c2a10bbb1 // indirect
 	github.com/asticode/go-astilog v1.0.0
+	github.com/asticode/go-astitools v1.0.0 // indirect
 	github.com/asticode/go-bindata v0.0.0-20151023091102-a0ff2567cfb7 // indirect
 	github.com/brianvoe/gofakeit v3.17.0+incompatible
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
@@ -72,3 +72,5 @@ require (
 )
 
 replace berty.tech/network v0.0.0 => ../network
+
+replace github.com/libp2p/go-libp2p-quic-transport => github.com/berty/go-libp2p-quic-transport v0.1.2-0.20190805113730-01a06cdc5461

@@ -1,7 +1,12 @@
 version: 2.1
 
-references:
-  golang_workspace: &golang_workspace
+orbs:
+  retry: moul/retry@0.6.0
+  codecov: codecov/codecov@1.0.5
+  tools: gotest/tools@0.0.9
+
+executors:
+  golang:
     working_directory: /go/src/berty.tech
     environment:
       GOPATH: /go
@@ -11,60 +16,113 @@ references:
     docker:
       - image: circleci/golang:1.12
 
-  git_version: &git_version
-    run:
-        name: git version (via sha1 hash)
-        command: |
-          cd ~/go/src/berty.tech || cd /go/src/berty.tech || cd .
-          git fetch origin master
-          git rev-parse origin/master > /tmp/git_version
-          git rev-parse HEAD~1 > /tmp/last_version
-          echo $CIRCLE_SHA1 > /tmp/current_version
+  linter:
+    working_directory: /go/src/berty.tech
+    environment:
+      GOPATH: /go
+      GOTEST_TIMEOUT: 5m
+      GO111MODULE: "on"
+      TEST_OPTS: "-coverprofile=profile.out -covermode=count"
+    docker:
+      - image: bertychat/linter:v4
+
+  android:
+    working_directory: ~/go/src/berty.tech
+    environment:
+      FASTLANE_SKIP_UPDATE_CHECK: 1
+      FASTLANE_HIDE_CHANGELOG: 1
+      FL_BUILDLOG_PATH: /tmp/fl/log/build/android
+      BUILD: /tmp/fl/build
+    docker:
+      - image: bertychat/android-ci:v5
+
+  protoc:
+    docker:
+      - image: bertychat/protoc:v14
+    working_directory: /go/src/berty.tech
+    environment:
+      GOPATH: /go
+
+  node:
+    working_directory: ~/go/src/berty.tech
+    docker:
+      - image: circleci/node:latest
+
+  docker:
+    docker:
+      - image: docker:18.09.6-git
+
+  macos:
+    working_directory: ~/go/src/berty.tech
+    macos:
+      xcode: "10.2.1"
+    environment:
+      FASTLANE_SKIP_UPDATE_CHECK: 1
+      FASTLANE_HIDE_CHANGELOG: 1
+      SCAN_OUTPUT_DIRECTORY: /tmp/fl/log/scan
+      GYM_OUTPUT_DIRECTORY: /tmp/fl/log/gym
+      FL_BUILDLOG_PATH: /tmp/fl/log/build/ios
+      SCAN_INCLUDE_SIMULATOR_LOGS: true
+      BUILD: /tmp/fl/build
+    shell: /bin/bash --login -o pipefail
 
 
-  install_retry: &install_retry
-    run:
-      name: install retry
-      command: |
-        command -v wget &>/dev/null && wget -O /tmp/retry "https://github.com/moul/retry/releases/download/v0.5.0/retry_$(uname -s)_$(uname -m)" || true
-        if [ ! -f /tmp/retry ]; then command -v curl &>/dev/null && curl -L -o /tmp/retry "https://github.com/moul/retry/releases/download/v0.5.0/retry_$(uname -s)_$(uname -m)"; fi
-        chmod +x /tmp/retry
-        /tmp/retry --version
-
-  install_go: &install_go
-    run:
-      name: install-go
-      command: |
-        if [ ! -f ~/go-install/go/bin/go ]; then
-          cd ~ && git clone https://github.com/udhos/update-golang
-          cd ~/update-golang && mkdir ~/go-install && sudo DESTINATION=~/go-install RELEASE=1.12 ./update-golang.sh
-        fi
-        echo "export PATH=~/go-install/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
-
-  install_gomobile: &install_gomobile
-    run:
-      name: install gomobile
-      command: |
-        if [ ! -f ~/go/bin/gomobile ]; then
-          go get golang.org/x/mobile/cmd/gomobile
-          cd ~/go/src/golang.org/x/mobile
-          git remote add upstream git@github.com:sfroment/mobile
-          git fetch upstream
-          git cherry-pick 85b699489d6f23377f5380e8b3d42ad7eecd4e0a
-          go install golang.org/x/mobile/cmd/gomobile
-          gomobile init
-        fi
-
+# Generic commands / workflows
 commands:
+  git_version:
+    steps:
+      - run:
+            name: git version (via sha1 hash)
+            command: |
+              cd ~/go/src/berty.tech || cd /go/src/berty.tech || cd .
+              git fetch origin master
+              git rev-parse origin/master > /tmp/git_version
+              git rev-parse HEAD~1 > /tmp/last_version
+              echo $CIRCLE_SHA1 > /tmp/current_version
+
+  install_gomobile:
+    description: "install gomobile"
+    steps:
+      - run:
+          name: install gomobile
+          command: |
+            if [ ! -f ~/go/bin/gomobile ]; then
+              go get golang.org/x/mobile/cmd/gomobile
+              cd ~/go/src/golang.org/x/mobile
+              git remote add upstream git@github.com:sfroment/mobile
+              git fetch upstream
+              git cherry-pick 85b699489d6f23377f5380e8b3d42ad7eecd4e0a
+              go install golang.org/x/mobile/cmd/gomobile
+              gomobile init
+            fi
+
+  install_go:
+    description: "install golang"
+    parameters:
+      version:
+        type: string
+        default: "1.12"
+    steps:
+      - run:
+          name: install-go
+          command: |
+            if [ ! -f ~/go-install/go/bin/go ]; then
+              cd ~ && git clone https://github.com/udhos/update-golang
+              cd ~/update-golang && mkdir ~/go-install && sudo DESTINATION=~/go-install RELEASE=<< parameters.version >> ./update-golang.sh
+            fi
+            echo "export PATH=~/go-install/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+
   prepare:
     description: "prepare current job"
     steps:
       - checkout
-      - *install_retry
-      - *git_version
+      - retry/install
+      - git_version
       - run:
           name: setup environment
-          command: echo "export PATH=$GOPATH/src/berty.tech/client/node_modules/.bin/:/usr/local/go/bin/:$GOPATH/bin:$PATH" >> $BASH_ENV
+          command: |
+            echo "export PATH=$GOPATH/src/berty.tech/client/node_modules/.bin/:/usr/local/go/bin/:$GOPATH/bin:$PATH" >> $BASH_ENV
+            echo 'export COMPOSE_PROJECT_NAME=integration-$CIRCLE_BUILD_NUM-$CIRCLE_JOB' >> $BASH_ENV
 
   generate_restore_cache:
     description: "restore generate cache"
@@ -73,7 +131,7 @@ commands:
           keys:
             - v0-generate-{{.Branch}}-{{.Revision}}
             - v0-generate-{{.Branch}}-
-            - v0-generate-master
+            - v0-generate-master-
 
   generate_save_cache:
     description: "save generate cache"
@@ -81,12 +139,9 @@ commands:
       - save_cache:
           key: v0-generate-{{.Branch}}-{{.Revision}}
           paths:
-            # user
-            - ~/.cache
-            # npm
-            - ~/.cache/.npm/_cacache
-            # go
-            - /go/pkg/mod/cache
+            - ~/.cache               # user
+            - ~/.cache/.npm/_cacache # npm
+            - /go/pkg/mod/cache      # cache
 
   web_restore_cache:
     description: "restore web cache"
@@ -95,7 +150,7 @@ commands:
           keys:
             - v0-web-{{.Branch}}-{{.Revision}}
             - v0-web-{{.Branch}}-
-            - v0-web-master
+            - v0-web-master-
 
   web_save_cache:
     description: "save web cache"
@@ -103,29 +158,33 @@ commands:
       - save_cache:
           key: v0-web-{{.Branch}}-{{.Revision}}
           paths:
-            # user
-            - ~/.cache
-            # npm
-            - ~/.cache/.npm/_cacache
-            # web
-            - ~/go/src/berty.tech/client/web/build
-            # babel
-            - ~/go/src/berty.tech/client/web/node_modules/.cache
+            - ~/.cache                                           # user
+            - ~/.cache/.npm/_cacache                             # npm
+            - ~/go/src/berty.tech/client/web/build               # web
+            - ~/go/src/berty.tech/client/web/node_modules/.cache # babel
 
-  android_staff_restore_cache:
-    description: "restore android staff cache"
+  android_restore_cache:
+    description: "restore android << parameters.type >> cache"
+    parameters:
+      type:
+        type: string
+        default: common
     steps:
       - restore_cache:
           keys:
-            - v0-android-staff-{{.Branch}}-{{.Revision}}
-            - v0-android-staff-{{.Branch}}-
-            - v0-android-staff-master-
+            - v0-android-<< parameters.type >>-{{.Branch}}-{{.Revision}}
+            - v0-android-<< parameters.type >>-{{.Branch}}-
+            - v0-android-<< parameters.type >>-master-
 
-  android_staff_save_cache:
-    description: "save android staff cache"
+  android_save_cache:
+    description: "save android << parameters.type >> cache"
+    parameters:
+      type:
+        type: string
+        default: common
     steps:
       - save_cache:
-          key: v0-android-staff-{{.Branch}}-{{.Revision}}
+          key: v0-android-<< parameters.type >>-{{.Branch}}-{{.Revision}}
           paths:
             # user
             - ~/.cache
@@ -144,52 +203,28 @@ commands:
             # gradle
             - ~/.gradle/caches
 
-  android_yolo_restore_cache:
-    description: "restore android yolo cache"
+  ios_restore_cache:
+    description: "restore ios << parameters.type >> cache"
+    parameters:
+      type:
+        type: string
+        default: common
     steps:
       - restore_cache:
           keys:
-            - v0-android-yolo-{{.Branch}}-{{.Revision}}
-            - v0-android-yolo-{{.Branch}}-
-            - v0-android-yolo-master-
+            - v0-ios-<< parameters.type >>-{{.Branch}}-{{.Revision}}
+            - v0-ios-<< parameters.type >>-{{.Branch}}-
+            - v0-ios-<< parameters.type >>-master-
 
-  android_yolo_save_cache:
-    description: "save android yolo cache"
+  ios_save_cache:
+    description: "save ios << parameters.type >> cache"
+    parameters:
+      type:
+        type: string
+        default: common
     steps:
       - save_cache:
-          key: v0-android-yolo-{{.Branch}}-{{.Revision}}
-          paths:
-            # user
-            - ~/.cache
-            # npm
-            - ~/.cache/.npm/_cacache
-            # lerna
-            - ~/go/src/berty.tech/client/node_modules
-            # bundle
-            - ~/go/src/berty.tech/client/vendor/bundle
-            # gomobile
-            - ~/go/pkg
-            # android
-            - ~/.android/build-cache
-            - ~/.android/build-cache.lock
-            - ~/.android/cache
-            # gradle
-            - ~/.gradle/caches
-
-  ios_staff_restore_cache:
-    description: "restore ios staff cache"
-    steps:
-      - restore_cache:
-          keys:
-            - v0-ios-staff-{{.Branch}}-{{.Revision}}
-            - v0-ios-staff-{{.Branch}}-
-            - v0-ios-staff-master-
-
-  ios_staff_save_cache:
-    description: "save ios staff cache"
-    steps:
-      - save_cache:
-          key: v0-ios-staff-{{.Branch}}-{{.Revision}}
+          key: v0-ios-<< parameters.type >>-{{.Branch}}-{{.Revision}}
           paths:
             # user
             - ~/Library/Caches
@@ -207,113 +242,28 @@ commands:
             # ios
             - ~/go/src/berty.tech/client/ios/build
 
-  ios_staff_test_restore_cache:
-    description: "restore ios staff cache"
+  mac_restore_cache:
+    description: "restore mac << parameters.type >> cache"
+    parameters:
+      type:
+        type: string
+        default: common
     steps:
       - restore_cache:
           keys:
-            - v0-ios-staff-test-{{.Branch}}-{{.Revision}}
-            - v0-ios-staff-test-{{.Branch}}-
-            - v0-ios-staff-test-master-
+            - v0-mac-<< parameters.type >>-{{.Branch}}-{{.Revision}}
+            - v0-mac-<< parameters.type >>-{{.Branch}}-
+            - v0-mac-<< parameters.type >>-master-
 
-  ios_staff_test_save_cache:
-    description: "save ios staff cache"
+  mac_save_cache:
+    description: "save mac << parameters.type >> cache"
+    parameters:
+      type:
+        type: string
+        default: common
     steps:
       - save_cache:
-          key: v0-ios-staff-test-{{.Branch}}-{{.Revision}}
-          paths:
-            # user
-            - ~/Library/Caches
-            # npm
-            - ~/.cache/.npm/_cacache
-            # lerna
-            - ~/go/src/berty.tech/client/node_modules
-            # bundle
-            - ~/go/src/berty.tech/client/vendor/bundle
-            # gomobile
-            - ~/go/pkg
-            - ~/go/src/berty.tech/client/ios/Core
-            # xcode
-            - ~/Library/Developer/Xcode/DerivedData
-            # ios
-            - ~/go/src/berty.tech/client/ios/build
-
-  ios_yolo_restore_cache:
-    description: "restore ios yolo cache"
-    steps:
-      - restore_cache:
-          keys:
-            - v0-ios-yolo-{{.Branch}}-{{.Revision}}
-            - v0-ios-yolo-{{.Branch}}-
-            - v0-ios-yolo-master-
-
-  ios_yolo_save_cache:
-    description: "save ios yolo cache"
-    steps:
-      - save_cache:
-          key: v0-ios-yolo-{{.Branch}}-{{.Revision}}
-          paths:
-            # user
-            - ~/Library/Caches
-            # npm
-            - ~/.cache/.npm/_cacache
-            # lerna
-            - ~/go/src/berty.tech/client/node_modules
-            # bundle
-            - ~/go/src/berty.tech/client/vendor/bundle
-            # gomobile
-            - ~/go/pkg
-            - ~/go/src/berty.tech/client/ios/Core
-            # xcode
-            - ~/Library/Developer/Xcode/DerivedData
-            # ios
-            - ~/go/src/berty.tech/client/ios/build
-
-  ios_yolo_test_restore_cache:
-    description: "restore ios yolo cache"
-    steps:
-      - restore_cache:
-          keys:
-            - v0-ios-yolo-test-{{.Branch}}-{{.Revision}}
-            - v0-ios-yolo-test-{{.Branch}}-
-            - v0-ios-yolo-test-master-
-
-  ios_yolo_test_save_cache:
-    description: "save ios yolo cache"
-    steps:
-      - save_cache:
-          key: v0-ios-yolo-test-{{.Branch}}-{{.Revision}}
-          paths:
-            # user
-            - ~/Library/Caches
-            # npm
-            - ~/.cache/.npm/_cacache
-            # lerna
-            - ~/go/src/berty.tech/client/node_modules
-            # bundle
-            - ~/go/src/berty.tech/client/vendor/bundle
-            # gomobile
-            - ~/go/pkg
-            - ~/go/src/berty.tech/client/ios/Core
-            # xcode
-            - ~/Library/Developer/Xcode/DerivedData
-            # ios
-            - ~/go/src/berty.tech/client/ios/build
-
-  mac_staff_restore_cache:
-    description: "restore mac staff cache"
-    steps:
-      - restore_cache:
-          keys:
-            - v0-mac-staff-{{.Branch}}-{{.Revision}}
-            - v0-mac-staff-{{.Branch}}-
-            - v0-mac-staff-master
-
-  mac_staff_save_cache:
-    description: "save mac staff cache"
-    steps:
-      - save_cache:
-          key: v0-mac-staff-{{.Branch}}-{{.Revision}}
+          key: v0-mac-<< parameters.type >>-{{.Branch}}-{{.Revision}}
           paths:
             # user
             - ~/Library/Caches
@@ -327,35 +277,9 @@ commands:
             - /usr/local/bin/dylibbundler
             - /usr/local/Cellar/dylibbundler
 
-  mac_yolo_restore_cache:
-    description: "restore mac yolo cache"
-    steps:
-      - restore_cache:
-          keys:
-            - v0-mac-yolo-{{.Branch}}-{{.Revision}}
-            - v0-mac-yolo-{{.Branch}}-
-            - v0-mac-yolo-master
-
-  mac_yolo_save_cache:
-    description: "save mac yolo cache"
-    steps:
-      - save_cache:
-          key: v0-mac-yolo-{{.Branch}}-{{.Revision}}
-          paths:
-            # user
-            - ~/Library/Caches
-            # npm
-            - ~/.cache/.npm/_cacache
-            # lerna
-            - ~/go/src/berty.tech/client/node_modules
-            # go
-            - ~/go/pkg
-
 jobs:
   lint:
-    <<: *golang_workspace
-    docker:
-      - image: bertychat/linter:v3
+    executor: linter
     steps:
       - prepare
       - restore_cache:
@@ -365,24 +289,20 @@ jobs:
           name: fetch deps
           command: |
             cd core
-            /tmp/retry -m 3 go mod download
+            retry -m 3 go mod download
       - run:
           name: prepare CI
           command: make _ci_prepare
       - run:
           name: lint
-          command: /tmp/retry -m 3 make lint
+          command: retry -m 3 make lint
       - save_cache:
           key: v2-go-cache
           paths:
             - "/go/pkg"
 
   generate:
-    docker:
-      - image: bertychat/protoc:v13
-    working_directory: /go/src/berty.tech
-    environment:
-      GOPATH: /go
+    executor: protoc
     steps:
       - prepare
       - setup_remote_docker
@@ -396,7 +316,7 @@ jobs:
             # 4. ignore go.mod (this file regularly changes with useless information (adding `// indirect`)
             # 5. check if files changed
             cd core
-            /tmp/retry -m 5 -t 300 sh -xec ' \
+            retry -m 5 -t 300 sh -xec ' \
               git checkout . && \
               make clean && \
               make generate_prepare && \
@@ -411,8 +331,7 @@ jobs:
       - generate_save_cache
 
   docker_build:
-    docker:
-      - image: docker:18.09.6-git
+    executor: docker
     steps:
       - run:
           name: install ca-certificates
@@ -436,11 +355,11 @@ jobs:
 
       - run:
           name: Build application Docker image
-          command: /tmp/retry -m 3 docker build -t bertychat/berty .
+          command: retry -m 3 docker build -t bertychat/berty .
 
       - run:
           name: Run application within Docker
-          command: /tmp/retry -m 3 docker run --rm bertychat/berty daemon --init-only --no-p2p
+          command: retry -m 3 docker run --rm bertychat/berty daemon --init-only --no-p2p
 
       - run:
           name: Save Docker image layer cache
@@ -466,14 +385,14 @@ jobs:
             mkdir -p /tmp/caches
             docker save -o /tmp/caches/berty.tar bertychat/berty
 
-      - *git_version
+      - git_version
       - save_cache:
           key: docker-berty-{{.Branch}}-{{.Revision}}
           paths:
             - /tmp/caches/berty.tar
 
   core_go_test:
-    <<: *golang_workspace
+    executor: golang
     steps:
       - prepare
       - restore_cache:
@@ -494,7 +413,7 @@ jobs:
           name: install core
           command: |
             cd core
-            BUILD_MODE="ci-${CIRCLE_BRANCH}" /tmp/retry -m 3 make install
+            BUILD_MODE="ci-${CIRCLE_BRANCH}" retry -m 3 make install
       - run:
           name: berty version
           command: berty --version
@@ -502,12 +421,12 @@ jobs:
           name: test core
           command: |
             cd core
-            TEST_SLEEP_BETWEEN_STEPS=1s TEST_OPTS="$TEST_OPTS" /tmp/retry -m 3 make test | tee /tmp/test-results/go-test-report.out
+            TEST_SLEEP_BETWEEN_STEPS=1s TEST_OPTS="$TEST_OPTS" retry -m 5 make test | tee /tmp/test-results/go-test-report.out
       - run:
           name: integration core
           command: |
             cd core
-            /tmp/retry -m 3 make integration
+            retry -m 3 make integration
       - run:
           name: junit-report
           command: go-junit-report < /tmp/test-results/go-test-report.out > /tmp/test-results/go-test-report.xml
@@ -519,40 +438,34 @@ jobs:
           name: aggretate coverage
           command: |
             cat `find . -name profile.out` > coverage.txt
-            bash <(curl -s https://codecov.io/bash) -t 1eefe35e-d1a9-45f3-910d-3e84db1ec04c
+      - codecov/upload:
+          file: coverage.txt
       - store_test_results:
           path: /tmp/test-results
 
   android_staff:
-    working_directory: ~/go/src/berty.tech
-    environment:
-      FASTLANE_SKIP_UPDATE_CHECK: 1
-      FASTLANE_HIDE_CHANGELOG: 1
-      FL_BUILDLOG_PATH: /tmp/fl/log/build/android
-      BUILD: /tmp/fl/build
-
-    docker:
-      - image: bertychat/android-ci:v5
+    executor: android
     steps:
 
       - prepare
-      - android_staff_restore_cache
+      - android_restore_cache:
+          type: staff
 
       - run:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
-          command: /tmp/retry -m 3 make deps.lerna
+          command: retry -m 3 make deps.lerna
 
       - run:
           name: gomobile android build
           working_directory: ~/go/src/berty.tech/core/platform/mobile
-          command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
+          command: BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.android
 
       - run:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client/
           command: |
-            bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
+            bundle check || retry -m 3 bundle install --path vendor/bundle
 
       - run:
           name: patch android repo
@@ -579,43 +492,37 @@ jobs:
       - run:
           name: build app
           working_directory: ~/go/src/berty.tech/client
-          command: . $BASH_ENV; /tmp/retry -m 3 make fastlane.android.staff
+          command: . $BASH_ENV; retry -m 3 make fastlane.android.staff
 
       - store_artifacts:
           path: /tmp/fl
 
-      - android_staff_save_cache
+      - android_save_cache:
+          type: staff
 
   android_yolo:
-    working_directory: ~/go/src/berty.tech
-    environment:
-      FASTLANE_SKIP_UPDATE_CHECK: 1
-      FASTLANE_HIDE_CHANGELOG: 1
-      FL_BUILDLOG_PATH: /tmp/fl/log/build/android
-      BUILD: /tmp/fl/build
-
-    docker:
-      - image: bertychat/android-ci:v5
+    executor: android
     steps:
 
       - prepare
-      - android_yolo_restore_cache
+      - android_restore_cache:
+          type: yolo
 
       - run:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
-          command: /tmp/retry -m 3 make deps.lerna
+          command: retry -m 3 make deps.lerna
 
       - run:
           name: gomobile android build
           working_directory: ~/go/src/berty.tech/core/platform/mobile
-          command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
+          command: BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.android
 
       - run:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client
           command: |
-            bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
+            bundle check || retry -m 3 bundle install --path vendor/bundle
 
       - run:
           name: patch android repo
@@ -637,51 +544,41 @@ jobs:
       - run:
           name: build app
           working_directory: ~/go/src/berty.tech/client
-          command: /tmp/retry -m 3 make fastlane.android.yolo
+          command: retry -m 3 make fastlane.android.yolo
 
       - store_artifacts:
           path: /tmp/fl
 
-      - android_yolo_save_cache
+      - android_save_cache:
+          type: yolo
 
   ios_staff:
-    working_directory: ~/go/src/berty.tech
-    macos:
-      xcode: "10.2.1"
-    environment:
-      FASTLANE_SKIP_UPDATE_CHECK: 1
-      FASTLANE_HIDE_CHANGELOG: 1
-      SCAN_OUTPUT_DIRECTORY: /tmp/fl/log/scan
-      GYM_OUTPUT_DIRECTORY: /tmp/fl/log/gym
-      FL_BUILDLOG_PATH: /tmp/fl/log/build/ios
-      SCAN_INCLUDE_SIMULATOR_LOGS: true
-      BUILD: /tmp/fl/build
-
-    shell: /bin/bash --login -o pipefail
+    executor: macos
     steps:
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
 
       - prepare
-      - ios_staff_restore_cache
+      - ios_restore_cache:
+          type: staff
 
       - run:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
-          command: /tmp/retry -m 3 make deps.lerna
+          command: retry -m 3 make deps.lerna
 
-      - *install_go
-      - *install_gomobile
+      - install_go
+      - install_gomobile
       - run:
           name: install core
           working_directory: ~/go/src/berty.tech/core/platform/mobile
-          command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
+          command: BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
 
       - run:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client
-          command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
+          command: bundle check || retry -m 3 bundle install --path vendor/bundle
 
       - run:
           name: set version
@@ -699,43 +596,41 @@ jobs:
           command: |
             [[ ! -z "${CIRCLE_PR_NUMBER}" ]] && IOS_CUSTOM_NAME="Berty @${CIRCLE_PR_NUMBER}" make appname.ios || true
             make fastlane.setup_circle
-            /tmp/retry -m 3 make fastlane.ios.adhoc
+            retry -m 3 make fastlane.ios.adhoc
 
       - store_artifacts:
           path: /tmp/fl
 
-      - ios_staff_save_cache
+      - ios_save_cache:
+          type: staff
 
   ios_staff_test:
-    working_directory: ~/go/src/berty.tech
-    macos:
-      xcode: "10.2.0"
-
-    shell: /bin/bash --login -o pipefail
+    executor: macos
     steps:
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
 
       - prepare
-      - ios_staff_test_restore_cache
+      - ios_restore_cache:
+          type: staff-test
 
       - run:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
-          command: /tmp/retry -m 3 make deps.lerna
+          command: retry -m 3 make deps.lerna
 
-      - *install_go
-      - *install_gomobile
+      - install_go
+      - install_gomobile
       - run:
           name: install core
           working_directory: ~/go/src/berty.tech/core/platform/mobile
-          command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
+          command: BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
 
       - run:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client
-          command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
+          command: bundle check || retry -m 3 bundle install --path vendor/bundle
 
       - run:
           name: set version
@@ -758,48 +653,38 @@ jobs:
             # too many open files
             ulimit -S -n 10240 && make test.adhoc.ios
 
-      - ios_staff_test_save_cache
+      - ios_save_cache:
+          type: staff-test
 
   ios_yolo:
-    working_directory: ~/go/src/berty.tech
-    macos:
-      xcode: "10.2.1"
-    environment:
-      FASTLANE_SKIP_UPDATE_CHECK: 1
-      FASTLANE_HIDE_CHANGELOG: 1
-      SCAN_OUTPUT_DIRECTORY: /tmp/flb/log/scan
-      GYM_OUTPUT_DIRECTORY: /tmp/flb/log/gym
-      FL_BUILDLOG_PATH: /tmp/flb/log/build/ios
-      SCAN_INCLUDE_SIMULATOR_LOGS: true
-      BUILD: /tmp/flb/build
-
-    shell: /bin/bash --login -o pipefail
+    executor: macos
     steps:
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
 
       - prepare
-      - ios_yolo_restore_cache
+      - ios_restore_cache:
+          type: yolo
 
       - run:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
-          command: /tmp/retry -m 3 make deps.lerna
+          command: retry -m 3 make deps.lerna
 
-      - *install_go
-      - *install_gomobile
+      - install_go
+      - install_gomobile
 
       - run:
           name: install core
           working_directory: ~/go/src/berty.tech/core/platform/mobile
           command: |
-            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
+            BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
 
       - run:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client
-          command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
+          command: bundle check || retry -m 3 bundle install --path vendor/bundle
 
       - run:
           name: set version
@@ -809,7 +694,7 @@ jobs:
       - run:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
-          command: /tmp/retry -m 3 make deps.lerna
+          command: retry -m 3 make deps.lerna
 
       - run:
           name: add environment
@@ -821,45 +706,43 @@ jobs:
           working_directory: ~/go/src/berty.tech/client
           command: |
             make fastlane.setup_circle
-            /tmp/retry -m 3 make fastlane.ios.house
+            retry -m 3 make fastlane.ios.house
 
       - store_artifacts:
-          path: /tmp/flb
+          path: /tmp/fl
 
-      - ios_yolo_save_cache
+      - ios_save_cache:
+          type: yolo
 
   ios_yolo_test:
-    working_directory: ~/go/src/berty.tech
-    macos:
-      xcode: "10.2.0"
-
-    shell: /bin/bash --login -o pipefail
+    executor: macos
     steps:
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
 
       - prepare
-      - ios_yolo_test_restore_cache
+      - ios_restore_cache:
+          type: yolo-test
 
       - run:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
-          command: /tmp/retry -m 3 make deps.lerna
+          command: retry -m 3 make deps.lerna
 
-      - *install_go
-      - *install_gomobile
+      - install_go
+      - install_gomobile
 
       - run:
           name: install core
           working_directory: ~/go/src/berty.tech/core/platform/mobile
           command: |
-            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
+            BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
 
       - run:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client
-          command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
+          command: bundle check || retry -m 3 bundle install --path vendor/bundle
 
       - run:
           name: set version
@@ -869,7 +752,7 @@ jobs:
       - run:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
-          command: /tmp/retry -m 3 make deps.lerna
+          command: retry -m 3 make deps.lerna
 
       - run:
           name: add environment
@@ -887,12 +770,11 @@ jobs:
             # too many open files
             ulimit -S -n 10240 && make test.adhoc.ios
 
-      - ios_yolo_test_save_cache
+      - ios_save_cache:
+          type: yolo-test
 
   web:
-    working_directory: ~/go/src/berty.tech
-    docker:
-      - image: circleci/node:latest
+    executor: node
     steps:
       - prepare
       - web_restore_cache
@@ -900,99 +782,82 @@ jobs:
       - run:
            working_directory: ~/go/src/berty.tech/client
            name: Build web client
-           command: REPORT_HOST=cavy-report /tmp/retry -m 3 make build.web
+           command: REPORT_HOST=cavy-report retry -m 3 make build.web
            no_output_timeout: 1h
 
       - web_save_cache
 
   web_test:
-    working_directory: ~/go/src/berty.tech
-    docker:
-      - image: circleci/node:latest
+    executor: node
     steps:
-      - run: echo 'export COMPOSE_PROJECT_NAME=integration-$CIRCLE_BUILD_NUM-$CIRCLE_JOB' >> $BASH_ENV
-
       - prepare
       - setup_remote_docker
       - web_restore_cache
-
-
       - restore_cache:
           keys:
             - docker-berty-{{.Branch}}-{{.Revision}}
             - docker-berty-{{.Branch}}-
             - docker-berty-master-
-
       - run:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
             docker load -i /tmp/caches/berty.tar | true
-
       - run:
           name: Run berty-core and client
           working_directory: ~/go/src/berty.tech/client
           command: make deps.test.web
           background: true
-
       - run:
           name: Run cavy report server
           working_directory: ~/go/src/berty.tech/client
           command: make test.web
 
   mac_staff:
-    working_directory: ~/go/src/berty.tech
-    macos:
-      xcode: "10.2.1"
-
-    shell: /bin/bash --login -o pipefail
+    executor: macos
     steps:
-
       - prepare
 
-      - mac_staff_restore_cache
+      - mac_restore_cache:
+          type: staff
 
-      - *install_go
+      - install_go
 
       - run:
           name: install mac
           working_directory: ~/go/src/berty.tech/client
           command: |
-            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make release.osx
+            BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make release.osx
             mv osx/dist/Berty*.dmg /tmp/Berty.dmg
-
       - store_artifacts:
           path: /tmp/Berty.dmg
 
-      - mac_staff_save_cache
+      - mac_save_cache:
+          type: staff
 
   mac_yolo:
-    working_directory: ~/go/src/berty.tech
-    macos:
-      xcode: "10.2.1"
-
-    shell: /bin/bash --login -o pipefail
+    executor: macos
     steps:
       - prepare
 
-      - mac_yolo_restore_cache
+      - mac_restore_cache:
+          type: yolo
 
-      - *install_go
+      - install_go
 
       - run:
           name: install mac
           working_directory: ~/go/src/berty.tech/client
           command: |
-            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make release.osx
+            BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make release.osx
             mv osx/dist/Berty*.dmg /tmp/Berty.dmg
-
       - store_artifacts:
           path: /tmp/Berty.dmg
 
-      - mac_yolo_save_cache
+      - mac_save_cache:
+          type: yolo
 
 workflows:
-  version: 2
   workflow:
     jobs:
       - lint

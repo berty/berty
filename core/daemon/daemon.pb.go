@@ -47,7 +47,7 @@ func (m *Void) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Void.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -87,7 +87,7 @@ func (m *SetCurrentRouteRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return xxx_messageInfo_SetCurrentRouteRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -134,7 +134,7 @@ func (m *BotState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_BotState.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -181,7 +181,7 @@ func (m *StartRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return xxx_messageInfo_StartRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -229,7 +229,7 @@ func (m *GRPCInfos) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_GRPCInfos.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -284,7 +284,7 @@ func (m *NetworkConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return xxx_messageInfo_NetworkConfig.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -381,7 +381,7 @@ func (m *SQLConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_SQLConfig.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -448,7 +448,7 @@ func (m *Config) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Config.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -587,7 +587,7 @@ func (m *GetPortResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return xxx_messageInfo_GetPortResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -634,7 +634,7 @@ func (m *ListAccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return xxx_messageInfo_ListAccountsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1356,7 +1356,7 @@ var _Daemon_serviceDesc = grpc.ServiceDesc{
 func (m *Void) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1364,20 +1364,26 @@ func (m *Void) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Void) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Void) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *SetCurrentRouteRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1385,26 +1391,33 @@ func (m *SetCurrentRouteRequest) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *SetCurrentRouteRequest) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SetCurrentRouteRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Route) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Route)))
-		i += copy(dAtA[i:], m.Route)
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if len(m.Route) > 0 {
+		i -= len(m.Route)
+		copy(dAtA[i:], m.Route)
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Route)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *BotState) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1412,30 +1425,36 @@ func (m *BotState) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *BotState) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *BotState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
 	if m.IsBotRunning {
-		dAtA[i] = 0x8
-		i++
+		i--
 		if m.IsBotRunning {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x8
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *StartRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1443,26 +1462,33 @@ func (m *StartRequest) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *StartRequest) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *StartRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Nickname) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Nickname)))
-		i += copy(dAtA[i:], m.Nickname)
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if len(m.Nickname) > 0 {
+		i -= len(m.Nickname)
+		copy(dAtA[i:], m.Nickname)
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Nickname)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *GRPCInfos) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1470,26 +1496,33 @@ func (m *GRPCInfos) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GRPCInfos) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GRPCInfos) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Json) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Json)))
-		i += copy(dAtA[i:], m.Json)
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if len(m.Json) > 0 {
+		i -= len(m.Json)
+		copy(dAtA[i:], m.Json)
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Json)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *NetworkConfig) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1497,106 +1530,101 @@ func (m *NetworkConfig) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *NetworkConfig) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NetworkConfig) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.PeerCache {
-		dAtA[i] = 0x8
-		i++
-		if m.PeerCache {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if len(m.Identity) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Identity)))
-		i += copy(dAtA[i:], m.Identity)
-	}
-	if len(m.Bootstrap) > 0 {
-		for _, s := range m.Bootstrap {
-			dAtA[i] = 0x1a
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
-	}
-	if len(m.BindP2P) > 0 {
-		for _, s := range m.BindP2P {
-			dAtA[i] = 0x2a
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
-	}
-	if m.Mdns {
-		dAtA[i] = 0x30
-		i++
-		if m.Mdns {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.PrivateNetwork {
-		dAtA[i] = 0x38
-		i++
-		if m.PrivateNetwork {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.Ipfs {
-		dAtA[i] = 0x40
-		i++
-		if m.Ipfs {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.Mobile {
-		dAtA[i] = 0x48
-		i++
+		i--
 		if m.Mobile {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x48
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.Ipfs {
+		i--
+		if m.Ipfs {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x40
 	}
-	return i, nil
+	if m.PrivateNetwork {
+		i--
+		if m.PrivateNetwork {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.Mdns {
+		i--
+		if m.Mdns {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.BindP2P) > 0 {
+		for iNdEx := len(m.BindP2P) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.BindP2P[iNdEx])
+			copy(dAtA[i:], m.BindP2P[iNdEx])
+			i = encodeVarintDaemon(dAtA, i, uint64(len(m.BindP2P[iNdEx])))
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if len(m.Bootstrap) > 0 {
+		for iNdEx := len(m.Bootstrap) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Bootstrap[iNdEx])
+			copy(dAtA[i:], m.Bootstrap[iNdEx])
+			i = encodeVarintDaemon(dAtA, i, uint64(len(m.Bootstrap[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Identity) > 0 {
+		i -= len(m.Identity)
+		copy(dAtA[i:], m.Identity)
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Identity)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.PeerCache {
+		i--
+		if m.PeerCache {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *SQLConfig) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1604,32 +1632,40 @@ func (m *SQLConfig) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *SQLConfig) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SQLConfig) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Name) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Name)))
-		i += copy(dAtA[i:], m.Name)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.Key) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
 		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Key)))
-		i += copy(dAtA[i:], m.Key)
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *Config) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1637,163 +1673,158 @@ func (m *Config) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Config) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Config) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.SqlOpts != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(m.SqlOpts.Size()))
-		n1, err1 := m.SqlOpts.MarshalTo(dAtA[i:])
-		if err1 != nil {
-			return 0, err1
-		}
-		i += n1
-	}
-	if len(m.GrpcBind) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.GrpcBind)))
-		i += copy(dAtA[i:], m.GrpcBind)
-	}
-	if len(m.GrpcWebBind) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.GrpcWebBind)))
-		i += copy(dAtA[i:], m.GrpcWebBind)
-	}
-	if m.HideBanner {
-		dAtA[i] = 0x20
-		i++
-		if m.HideBanner {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.DropDatabase {
-		dAtA[i] = 0x28
-		i++
-		if m.DropDatabase {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.InitOnly {
-		dAtA[i] = 0x30
-		i++
-		if m.InitOnly {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.WithBot {
-		dAtA[i] = 0x38
-		i++
-		if m.WithBot {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.Notification {
-		dAtA[i] = 0x40
-		i++
-		if m.Notification {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if len(m.ApnsCerts) > 0 {
-		for _, s := range m.ApnsCerts {
-			dAtA[i] = 0x4a
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
-	}
-	if len(m.ApnsDevVoipCerts) > 0 {
-		for _, s := range m.ApnsDevVoipCerts {
-			dAtA[i] = 0x52
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
-	}
-	if len(m.FcmAPIKeys) > 0 {
-		for _, s := range m.FcmAPIKeys {
-			dAtA[i] = 0x5a
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
-	}
-	if len(m.PrivateKeyFile) > 0 {
-		dAtA[i] = 0x62
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(len(m.PrivateKeyFile)))
-		i += copy(dAtA[i:], m.PrivateKeyFile)
-	}
-	if m.NetworkConfig != nil {
-		dAtA[i] = 0x6a
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(m.NetworkConfig.Size()))
-		n2, err2 := m.NetworkConfig.MarshalTo(dAtA[i:])
-		if err2 != nil {
-			return 0, err2
-		}
-		i += n2
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.NoP2P {
-		dAtA[i] = 0x70
-		i++
+		i--
 		if m.NoP2P {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x70
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.NetworkConfig != nil {
+		{
+			size, err := m.NetworkConfig.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintDaemon(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x6a
 	}
-	return i, nil
+	if len(m.PrivateKeyFile) > 0 {
+		i -= len(m.PrivateKeyFile)
+		copy(dAtA[i:], m.PrivateKeyFile)
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.PrivateKeyFile)))
+		i--
+		dAtA[i] = 0x62
+	}
+	if len(m.FcmAPIKeys) > 0 {
+		for iNdEx := len(m.FcmAPIKeys) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.FcmAPIKeys[iNdEx])
+			copy(dAtA[i:], m.FcmAPIKeys[iNdEx])
+			i = encodeVarintDaemon(dAtA, i, uint64(len(m.FcmAPIKeys[iNdEx])))
+			i--
+			dAtA[i] = 0x5a
+		}
+	}
+	if len(m.ApnsDevVoipCerts) > 0 {
+		for iNdEx := len(m.ApnsDevVoipCerts) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.ApnsDevVoipCerts[iNdEx])
+			copy(dAtA[i:], m.ApnsDevVoipCerts[iNdEx])
+			i = encodeVarintDaemon(dAtA, i, uint64(len(m.ApnsDevVoipCerts[iNdEx])))
+			i--
+			dAtA[i] = 0x52
+		}
+	}
+	if len(m.ApnsCerts) > 0 {
+		for iNdEx := len(m.ApnsCerts) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.ApnsCerts[iNdEx])
+			copy(dAtA[i:], m.ApnsCerts[iNdEx])
+			i = encodeVarintDaemon(dAtA, i, uint64(len(m.ApnsCerts[iNdEx])))
+			i--
+			dAtA[i] = 0x4a
+		}
+	}
+	if m.Notification {
+		i--
+		if m.Notification {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.WithBot {
+		i--
+		if m.WithBot {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.InitOnly {
+		i--
+		if m.InitOnly {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.DropDatabase {
+		i--
+		if m.DropDatabase {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.HideBanner {
+		i--
+		if m.HideBanner {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.GrpcWebBind) > 0 {
+		i -= len(m.GrpcWebBind)
+		copy(dAtA[i:], m.GrpcWebBind)
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.GrpcWebBind)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.GrpcBind) > 0 {
+		i -= len(m.GrpcBind)
+		copy(dAtA[i:], m.GrpcBind)
+		i = encodeVarintDaemon(dAtA, i, uint64(len(m.GrpcBind)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.SqlOpts != nil {
+		{
+			size, err := m.SqlOpts.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintDaemon(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *GetPortResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1801,25 +1832,31 @@ func (m *GetPortResponse) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GetPortResponse) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetPortResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.GrpcWebPort != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintDaemon(dAtA, i, uint64(m.GrpcWebPort))
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if m.GrpcWebPort != 0 {
+		i = encodeVarintDaemon(dAtA, i, uint64(m.GrpcWebPort))
+		i--
+		dAtA[i] = 0x10
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ListAccountsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1827,39 +1864,41 @@ func (m *ListAccountsResponse) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ListAccountsResponse) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListAccountsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
 	if len(m.Accounts) > 0 {
-		for _, s := range m.Accounts {
+		for iNdEx := len(m.Accounts) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Accounts[iNdEx])
+			copy(dAtA[i:], m.Accounts[iNdEx])
+			i = encodeVarintDaemon(dAtA, i, uint64(len(m.Accounts[iNdEx])))
+			i--
 			dAtA[i] = 0xa
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
 		}
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintDaemon(dAtA []byte, offset int, v uint64) int {
+	offset -= sovDaemon(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *Void) Size() (n int) {
 	if m == nil {

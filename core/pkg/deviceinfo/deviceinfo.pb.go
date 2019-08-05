@@ -72,7 +72,7 @@ func (m *DeviceInfos) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_DeviceInfos.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -125,7 +125,7 @@ func (m *DeviceInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_DeviceInfo.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -227,7 +227,7 @@ var fileDescriptor_29ed7a3d6003a93e = []byte{
 func (m *DeviceInfos) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -235,32 +235,40 @@ func (m *DeviceInfos) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *DeviceInfos) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeviceInfos) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
 	if len(m.Infos) > 0 {
-		for _, msg := range m.Infos {
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintDeviceinfo(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
+		for iNdEx := len(m.Infos) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Infos[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintDeviceinfo(dAtA, i, uint64(size))
 			}
-			i += n
+			i--
+			dAtA[i] = 0xa
 		}
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *DeviceInfo) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -268,64 +276,77 @@ func (m *DeviceInfo) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *DeviceInfo) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeviceInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Key) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.Key)))
-		i += copy(dAtA[i:], m.Key)
-	}
-	if len(m.Value) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.Value)))
-		i += copy(dAtA[i:], m.Value)
-	}
-	if len(m.Category) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.Category)))
-		i += copy(dAtA[i:], m.Category)
-	}
-	if len(m.Link) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.Link)))
-		i += copy(dAtA[i:], m.Link)
-	}
-	if m.Type != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintDeviceinfo(dAtA, i, uint64(m.Type))
-	}
-	if len(m.ErrMsg) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.ErrMsg)))
-		i += copy(dAtA[i:], m.ErrMsg)
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.Weight != 0 {
-		dAtA[i] = 0x38
-		i++
 		i = encodeVarintDeviceinfo(dAtA, i, uint64(m.Weight))
+		i--
+		dAtA[i] = 0x38
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if len(m.ErrMsg) > 0 {
+		i -= len(m.ErrMsg)
+		copy(dAtA[i:], m.ErrMsg)
+		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.ErrMsg)))
+		i--
+		dAtA[i] = 0x32
 	}
-	return i, nil
+	if m.Type != 0 {
+		i = encodeVarintDeviceinfo(dAtA, i, uint64(m.Type))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.Link) > 0 {
+		i -= len(m.Link)
+		copy(dAtA[i:], m.Link)
+		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.Link)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Category) > 0 {
+		i -= len(m.Category)
+		copy(dAtA[i:], m.Category)
+		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.Category)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Value) > 0 {
+		i -= len(m.Value)
+		copy(dAtA[i:], m.Value)
+		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.Value)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintDeviceinfo(dAtA []byte, offset int, v uint64) int {
+	offset -= sovDeviceinfo(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *DeviceInfos) Size() (n int) {
 	if m == nil {

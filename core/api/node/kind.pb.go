@@ -96,7 +96,7 @@ func (m *NodeStartedAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return xxx_messageInfo_NodeStartedAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -143,7 +143,7 @@ func (m *NodeStoppedAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return xxx_messageInfo_NodeStoppedAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -190,7 +190,7 @@ func (m *NodeIsAliveAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return xxx_messageInfo_NodeIsAliveAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -237,7 +237,7 @@ func (m *BackgroundCriticalAttrs) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return xxx_messageInfo_BackgroundCriticalAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -284,7 +284,7 @@ func (m *BackgroundErrorAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return xxx_messageInfo_BackgroundErrorAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -331,7 +331,7 @@ func (m *BackgroundWarnAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return xxx_messageInfo_BackgroundWarnAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -378,7 +378,7 @@ func (m *DebugAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_DebugAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -427,7 +427,7 @@ func (m *StatisticsAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return xxx_messageInfo_StatisticsAttrs.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -482,41 +482,41 @@ func init() {
 func init() { proto.RegisterFile("api/node/kind.proto", fileDescriptor_209eb881e555280a) }
 
 var fileDescriptor_209eb881e555280a = []byte{
-	// 435 bytes of a gzipped FileDescriptorProto
+	// 437 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x93, 0xdf, 0x6a, 0x13, 0x41,
-	0x14, 0xc6, 0x3b, 0x4d, 0x93, 0x34, 0x27, 0xd2, 0x0c, 0x93, 0x6a, 0x42, 0x85, 0x35, 0x04, 0x2f,
+	0x14, 0xc6, 0x3b, 0x4d, 0x93, 0x34, 0x27, 0xd2, 0x0c, 0x93, 0x6a, 0x42, 0x2f, 0xd6, 0x10, 0x44,
 	0x42, 0x85, 0x5d, 0xa8, 0x4f, 0xd0, 0x54, 0x2f, 0x8a, 0xd8, 0x8b, 0xb4, 0x22, 0x88, 0x10, 0x36,
 	0x3b, 0xe3, 0x76, 0xd8, 0x74, 0x66, 0x39, 0x73, 0x62, 0xf0, 0x4d, 0x7c, 0x05, 0x5f, 0xc0, 0x67,
-	0xf0, 0xd2, 0x47, 0x90, 0xf8, 0x22, 0xb2, 0xff, 0x5c, 0xa3, 0xd2, 0x5c, 0xed, 0xe1, 0x3b, 0xbf,
-	0xf3, 0x2d, 0x7c, 0xdf, 0x2e, 0xf4, 0xc3, 0x54, 0x07, 0xc6, 0x4a, 0x15, 0x24, 0xda, 0x48, 0x3f,
-	0x45, 0x4b, 0x56, 0xc0, 0x42, 0x21, 0x7d, 0xf2, 0x33, 0xf9, 0xe4, 0xb1, 0x51, 0xb4, 0xb6, 0x98,
-	0x04, 0x77, 0x8a, 0x50, 0x47, 0xe5, 0xa3, 0x00, 0x4f, 0x8e, 0x63, 0x1b, 0xdb, 0x7c, 0x0c, 0xb2,
-	0xa9, 0x50, 0xc7, 0x23, 0xe0, 0x57, 0x56, 0xaa, 0x6b, 0x0a, 0x91, 0x94, 0x3c, 0x27, 0x42, 0x27,
-	0x1e, 0x00, 0xbb, 0x19, 0xb2, 0x11, 0x9b, 0x1c, 0xce, 0xd8, 0xcd, 0xf8, 0x59, 0x45, 0xd8, 0x34,
-	0xad, 0x88, 0x01, 0xb4, 0x15, 0xe2, 0xfc, 0xce, 0xc5, 0x39, 0xd7, 0x99, 0xb5, 0x14, 0xe2, 0x6b,
-	0x17, 0x57, 0x76, 0x97, 0xee, 0x7c, 0xa9, 0x3f, 0xaa, 0xff, 0xd9, 0x9d, 0xc1, 0x60, 0x1a, 0x46,
-	0x49, 0x8c, 0x76, 0x65, 0xe4, 0x05, 0x6a, 0xd2, 0x51, 0xb8, 0xdc, 0xe1, 0x1a, 0xc0, 0x71, 0x7d,
-	0xf3, 0x12, 0xd1, 0xe2, 0x8e, 0x03, 0x1f, 0xfa, 0xf5, 0xc1, 0xdb, 0x10, 0xcd, 0x0e, 0xde, 0x03,
-	0x78, 0xa1, 0x16, 0xab, 0xb8, 0xc0, 0x38, 0x34, 0x6a, 0x24, 0x1b, 0xc7, 0x5f, 0x18, 0xf4, 0xae,
-	0x29, 0x24, 0xed, 0x48, 0x47, 0xee, 0x7e, 0x33, 0xf1, 0x1e, 0x06, 0x64, 0x29, 0x5c, 0xce, 0xcb,
-	0x36, 0xe6, 0x8b, 0xd0, 0xc8, 0xb5, 0x96, 0x74, 0x3b, 0xdc, 0x1f, 0xb1, 0x49, 0xf7, 0xec, 0xa9,
-	0x5f, 0x76, 0x56, 0xec, 0xfd, 0xb2, 0xa6, 0x69, 0x85, 0x65, 0x6f, 0x72, 0xb3, 0x87, 0xb9, 0xc9,
-	0x55, 0xc1, 0xfc, 0xde, 0x89, 0x27, 0xd0, 0x4d, 0x95, 0x42, 0x37, 0x8f, 0xec, 0xca, 0xd0, 0xb0,
-	0x31, 0x62, 0x93, 0xe6, 0x0c, 0x72, 0xe9, 0x22, 0x53, 0x4e, 0xbf, 0x32, 0x38, 0x78, 0xa5, 0x8d,
-	0x14, 0x5d, 0x68, 0xbf, 0x31, 0x89, 0xb1, 0x6b, 0xc3, 0xf7, 0x44, 0x0f, 0xba, 0x7f, 0xf4, 0xcc,
-	0x59, 0x2d, 0xe4, 0xb5, 0xf2, 0xfd, 0x4a, 0x28, 0xab, 0xe3, 0x0d, 0xf1, 0x08, 0xc4, 0xbf, 0x4d,
-	0xf1, 0x03, 0xd1, 0x87, 0xde, 0x5f, 0x6d, 0xf0, 0xa6, 0x10, 0x70, 0xb4, 0x9d, 0x38, 0x6f, 0x6d,
-	0x6b, 0x97, 0xe6, 0x83, 0xe5, 0x6d, 0xd1, 0x81, 0x66, 0x9e, 0x34, 0x3f, 0x14, 0x47, 0x00, 0x75,
-	0xa6, 0xbc, 0x33, 0x3d, 0xfd, 0xb6, 0xf1, 0xd8, 0xf7, 0x8d, 0xc7, 0x7e, 0x6c, 0x3c, 0xf6, 0xf9,
-	0xa7, 0xb7, 0xf7, 0x6e, 0x58, 0xe4, 0x44, 0x2a, 0xba, 0x0d, 0x22, 0x8b, 0x2a, 0xa8, 0x7e, 0x80,
-	0x45, 0x2b, 0xff, 0x7a, 0x9f, 0xff, 0x0a, 0x00, 0x00, 0xff, 0xff, 0xe1, 0x2f, 0xe0, 0xa7, 0x13,
-	0x03, 0x00, 0x00,
+	0xf0, 0xd2, 0x47, 0x90, 0xf8, 0x22, 0xb2, 0xff, 0xdc, 0x46, 0xc5, 0x5c, 0xed, 0xe1, 0x9b, 0xef,
+	0xfb, 0x16, 0xce, 0x6f, 0x06, 0xfa, 0x61, 0xaa, 0x03, 0x63, 0xa5, 0x0a, 0x12, 0x6d, 0xa4, 0x9f,
+	0xa2, 0x25, 0x2b, 0x60, 0xa1, 0x90, 0x3e, 0xf9, 0x99, 0x7c, 0xf2, 0xb4, 0x98, 0x49, 0x45, 0xb7,
+	0x81, 0x51, 0xb4, 0xb6, 0x98, 0x04, 0x77, 0x8a, 0x50, 0x47, 0xe5, 0xa7, 0xc8, 0x9c, 0x1c, 0xc7,
+	0x36, 0xb6, 0xf9, 0x18, 0x64, 0x53, 0xa1, 0x8e, 0x47, 0xc0, 0xaf, 0xac, 0x54, 0xd7, 0x14, 0x22,
+	0x29, 0x79, 0x4e, 0x84, 0x4e, 0x3c, 0x00, 0x76, 0x33, 0x64, 0x23, 0x36, 0x39, 0x9c, 0xb1, 0x9b,
+	0xf1, 0xb3, 0xca, 0x61, 0xd3, 0xb4, 0x72, 0x0c, 0xa0, 0xad, 0x10, 0xe7, 0x77, 0x2e, 0xce, 0x7d,
+	0x9d, 0x59, 0x4b, 0x21, 0xbe, 0x76, 0x71, 0x55, 0x77, 0xe9, 0xce, 0x97, 0xfa, 0xa3, 0xfa, 0x57,
+	0xdd, 0x19, 0x0c, 0xa6, 0x61, 0x94, 0xc4, 0x68, 0x57, 0x46, 0x5e, 0xa0, 0x26, 0x1d, 0x85, 0xcb,
+	0x1d, 0xad, 0x01, 0x1c, 0xd7, 0x99, 0x97, 0x88, 0x16, 0x77, 0x04, 0x7c, 0xe8, 0xd7, 0x81, 0xb7,
+	0x21, 0x9a, 0x1d, 0x7e, 0x0f, 0xe0, 0x85, 0x5a, 0xac, 0xe2, 0xc2, 0xc6, 0xa1, 0x51, 0x5b, 0xb2,
+	0x71, 0xfc, 0x85, 0x41, 0xef, 0x9a, 0x42, 0xd2, 0x8e, 0x74, 0xe4, 0xfe, 0x5f, 0x26, 0xde, 0xc3,
+	0x80, 0x2c, 0x85, 0xcb, 0x79, 0x49, 0x63, 0xbe, 0x08, 0x8d, 0x5c, 0x6b, 0x49, 0xb7, 0xc3, 0xfd,
+	0x11, 0x9b, 0x74, 0xcf, 0x9e, 0xf8, 0x25, 0xbe, 0xe2, 0xdc, 0x2f, 0x31, 0x4d, 0x2b, 0x5b, 0xf6,
+	0x27, 0x37, 0x7b, 0x98, 0x97, 0x5c, 0x15, 0x9e, 0xdf, 0x67, 0xe2, 0x31, 0x74, 0x53, 0xa5, 0xd0,
+	0xcd, 0x23, 0xbb, 0x32, 0x34, 0x6c, 0x8c, 0xd8, 0xa4, 0x39, 0x83, 0x5c, 0xba, 0xc8, 0x94, 0xd3,
+	0xaf, 0x0c, 0x0e, 0x5e, 0x69, 0x23, 0x45, 0x17, 0xda, 0x6f, 0x4c, 0x62, 0xec, 0xda, 0xf0, 0x3d,
+	0xd1, 0x83, 0xee, 0x3d, 0xce, 0x9c, 0xd5, 0x42, 0x8e, 0x95, 0xef, 0x57, 0x42, 0x89, 0x8e, 0x37,
+	0xc4, 0x23, 0x10, 0x7f, 0x93, 0xe2, 0x07, 0xa2, 0x0f, 0xbd, 0x3f, 0x68, 0xf0, 0xa6, 0x10, 0x70,
+	0xb4, 0xbd, 0x71, 0xde, 0xda, 0xd6, 0x2e, 0xcd, 0x07, 0xcb, 0xdb, 0xa2, 0x03, 0xcd, 0x7c, 0xd3,
+	0xfc, 0x50, 0x1c, 0x01, 0xd4, 0x3b, 0xe5, 0x9d, 0xe9, 0xe9, 0xb7, 0x8d, 0xc7, 0xbe, 0x6f, 0x3c,
+	0xf6, 0x63, 0xe3, 0xb1, 0xcf, 0x3f, 0xbd, 0xbd, 0x77, 0xc3, 0x7b, 0x57, 0x3b, 0xb2, 0xa8, 0x82,
+	0xea, 0x2d, 0x2c, 0x5a, 0xf9, 0xed, 0x7d, 0xfe, 0x2b, 0x00, 0x00, 0xff, 0xff, 0xd7, 0xbc, 0x84,
+	0xb7, 0x1e, 0x03, 0x00, 0x00,
 }
 
 func (m *NodeStartedAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -524,30 +524,36 @@ func (m *NodeStartedAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *NodeStartedAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NodeStartedAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
 	if m.T {
-		dAtA[i] = 0x8
-		i++
+		i--
 		if m.T {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x8
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *NodeStoppedAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -555,26 +561,33 @@ func (m *NodeStoppedAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *NodeStoppedAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NodeStoppedAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ErrMsg) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.ErrMsg)))
-		i += copy(dAtA[i:], m.ErrMsg)
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if len(m.ErrMsg) > 0 {
+		i -= len(m.ErrMsg)
+		copy(dAtA[i:], m.ErrMsg)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.ErrMsg)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *NodeIsAliveAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -582,30 +595,36 @@ func (m *NodeIsAliveAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *NodeIsAliveAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NodeIsAliveAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
 	if m.T {
-		dAtA[i] = 0x8
-		i++
+		i--
 		if m.T {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x8
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *BackgroundCriticalAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -613,26 +632,33 @@ func (m *BackgroundCriticalAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *BackgroundCriticalAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *BackgroundCriticalAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ErrMsg) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.ErrMsg)))
-		i += copy(dAtA[i:], m.ErrMsg)
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if len(m.ErrMsg) > 0 {
+		i -= len(m.ErrMsg)
+		copy(dAtA[i:], m.ErrMsg)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.ErrMsg)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *BackgroundErrorAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -640,26 +666,33 @@ func (m *BackgroundErrorAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *BackgroundErrorAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *BackgroundErrorAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ErrMsg) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.ErrMsg)))
-		i += copy(dAtA[i:], m.ErrMsg)
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if len(m.ErrMsg) > 0 {
+		i -= len(m.ErrMsg)
+		copy(dAtA[i:], m.ErrMsg)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.ErrMsg)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *BackgroundWarnAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -667,26 +700,33 @@ func (m *BackgroundWarnAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *BackgroundWarnAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *BackgroundWarnAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ErrMsg) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.ErrMsg)))
-		i += copy(dAtA[i:], m.ErrMsg)
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if len(m.ErrMsg) > 0 {
+		i -= len(m.ErrMsg)
+		copy(dAtA[i:], m.ErrMsg)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.ErrMsg)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *DebugAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -694,26 +734,33 @@ func (m *DebugAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *DebugAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DebugAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Msg) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.Msg)))
-		i += copy(dAtA[i:], m.Msg)
-	}
 	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	return i, nil
+	if len(m.Msg) > 0 {
+		i -= len(m.Msg)
+		copy(dAtA[i:], m.Msg)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Msg)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *StatisticsAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -721,45 +768,56 @@ func (m *StatisticsAttrs) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *StatisticsAttrs) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *StatisticsAttrs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ErrMsg) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(len(m.ErrMsg)))
-		i += copy(dAtA[i:], m.ErrMsg)
-	}
-	if m.TotalNetworkBandwidth != nil {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintKind(dAtA, i, uint64(m.TotalNetworkBandwidth.Size()))
-		n1, err1 := m.TotalNetworkBandwidth.MarshalTo(dAtA[i:])
-		if err1 != nil {
-			return 0, err1
-		}
-		i += n1
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if m.PeersCount != 0 {
-		dAtA[i] = 0x18
-		i++
 		i = encodeVarintKind(dAtA, i, uint64(m.PeersCount))
+		i--
+		dAtA[i] = 0x18
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.TotalNetworkBandwidth != nil {
+		{
+			size, err := m.TotalNetworkBandwidth.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintKind(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
 	}
-	return i, nil
+	if len(m.ErrMsg) > 0 {
+		i -= len(m.ErrMsg)
+		copy(dAtA[i:], m.ErrMsg)
+		i = encodeVarintKind(dAtA, i, uint64(len(m.ErrMsg)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintKind(dAtA []byte, offset int, v uint64) int {
+	offset -= sovKind(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *NodeStartedAttrs) Size() (n int) {
 	if m == nil {

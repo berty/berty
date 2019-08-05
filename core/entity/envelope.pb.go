@@ -49,7 +49,7 @@ func (m *Envelope) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Envelope.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -125,7 +125,7 @@ var fileDescriptor_37994d2cad929935 = []byte{
 func (m *Envelope) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -133,52 +133,65 @@ func (m *Envelope) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Envelope) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Envelope) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ChannelID) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintEnvelope(dAtA, i, uint64(len(m.ChannelID)))
-		i += copy(dAtA[i:], m.ChannelID)
-	}
-	if len(m.EncryptedEvent) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintEnvelope(dAtA, i, uint64(len(m.EncryptedEvent)))
-		i += copy(dAtA[i:], m.EncryptedEvent)
-	}
-	if m.Signature != nil {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintEnvelope(dAtA, i, uint64(m.Signature.Size()))
-		n1, err1 := m.Signature.MarshalTo(dAtA[i:])
-		if err1 != nil {
-			return 0, err1
-		}
-		i += n1
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	if len(m.Source) > 0 {
-		dAtA[i] = 0x22
-		i++
+		i -= len(m.Source)
+		copy(dAtA[i:], m.Source)
 		i = encodeVarintEnvelope(dAtA, i, uint64(len(m.Source)))
-		i += copy(dAtA[i:], m.Source)
+		i--
+		dAtA[i] = 0x22
 	}
-	if m.XXX_unrecognized != nil {
-		i += copy(dAtA[i:], m.XXX_unrecognized)
+	if m.Signature != nil {
+		{
+			size, err := m.Signature.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintEnvelope(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
 	}
-	return i, nil
+	if len(m.EncryptedEvent) > 0 {
+		i -= len(m.EncryptedEvent)
+		copy(dAtA[i:], m.EncryptedEvent)
+		i = encodeVarintEnvelope(dAtA, i, uint64(len(m.EncryptedEvent)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ChannelID) > 0 {
+		i -= len(m.ChannelID)
+		copy(dAtA[i:], m.ChannelID)
+		i = encodeVarintEnvelope(dAtA, i, uint64(len(m.ChannelID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintEnvelope(dAtA []byte, offset int, v uint64) int {
+	offset -= sovEnvelope(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *Envelope) Size() (n int) {
 	if m == nil {
