@@ -1,8 +1,9 @@
 version: 2.1
 
 orbs:
-  moul: moul/build@1.4.0 # https://github.com/moul/build/blob/master/.circleci/config.yml
-  dl: moul/dl@1.6.0      # https://github.com/moul/dl/blob/master/.circleci/config.yml
+  retry: moul/retry@0.6.0
+  codecov: codecov/codecov@1.0.5
+  tools: gotest/tools@0.0.9
 
 executors:
   golang:
@@ -115,7 +116,7 @@ commands:
     description: "prepare current job"
     steps:
       - checkout
-      - moul/install_retry
+      - retry/install
       - git_version
       - run:
           name: setup environment
@@ -354,7 +355,7 @@ jobs:
 
       - run:
           name: Build application Docker image
-          command: /tmp/retry -m 3 docker build -t bertychat/berty .
+          command: retry -m 3 docker build -t bertychat/berty .
 
       - run:
           name: Run application within Docker
@@ -420,7 +421,7 @@ jobs:
           name: test core
           command: |
             cd core
-            TEST_SLEEP_BETWEEN_STEPS=1s TEST_OPTS="$TEST_OPTS" retry -m 3 make test | tee /tmp/test-results/go-test-report.out
+            TEST_SLEEP_BETWEEN_STEPS=1s TEST_OPTS="$TEST_OPTS" retry -m 5 make test | tee /tmp/test-results/go-test-report.out
       - run:
           name: integration core
           command: |
@@ -437,7 +438,8 @@ jobs:
           name: aggretate coverage
           command: |
             cat `find . -name profile.out` > coverage.txt
-            bash <(curl -s https://codecov.io/bash) -t 1eefe35e-d1a9-45f3-910d-3e84db1ec04c
+      - codecov/upload:
+          file: coverage.txt
       - store_test_results:
           path: /tmp/test-results
 
