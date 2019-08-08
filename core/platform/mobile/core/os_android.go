@@ -3,8 +3,8 @@
 package core
 
 import (
-	"Java/chat/berty/ble/BleManager"
-	"Java/chat/berty/ble/DeviceManager"
+	"Java/libp2p/transport/ble/BleManager"
+	"Java/libp2p/transport/ble/DeviceManager"
 
 	bledrv "berty.tech/network/transport/ble/driver"
 	"go.uber.org/zap"
@@ -28,16 +28,13 @@ func ReceiveFromDevice(rAddr string, payload []byte) {
 	bledrv.ReceiveFromDevice(rAddr, payload)
 }
 
-// @FIXME: ConnClosedWithDevice is undefined
-func ConnClosedWithDevice(rAddr string) {
-	// bledrv.ConnClosedWithDevice(rAddr)
-}
-
 // Native logger -> Go zaplogger
 func GoLogger(tag string, level string, log string) {
 	loggerBLE := zap.L().Named(defaultLoggerName + ".ble." + tag)
 
 	switch level {
+	case "verbose":
+		break // No verbose level in zap :/
 	case "debug":
 		loggerBLE.Debug(log)
 	case "info":
