@@ -94,7 +94,7 @@ test:
 	cd $(CORE_MOBILE) && CGO_LDFLAGS="$(CGO_OS_LDFLAGS)" CGO_CPPFLAGS="$(CGO_OS_CPPFLAGS)" go test -test.timeout $(GOTEST_TIMEOUT) -v ./...
 
 .PHONY: deps.android
-deps.android: deps unsed.ble
+deps.android:
 	cd ../../../client && make deps.lerna
 
 .PHONY: build.core
