@@ -106,14 +106,14 @@ build.android: deps.android sed.ble build.ble unsed.ble build.core build.ble
 .PHONY: sed.ble
 sed.ble:
 	$(SED_CMD) "s/.*implementation project\(':core'\)/\/\/implementation project\(':core'\)/g" $(ANDROID_PATH)/ble/build.gradle
-	$(SED_CMD) 's/(.*Core.*)/\/\/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/*.java
-	$(SED_CMD) 's/[\/\/]*([[:space:]]*if \(\!?Core.*)/if\(true\)\{\/\/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/*.java
+	$(SED_CMD) 's/(.*Core.*)/\/\/\1/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/*.java
+	$(SED_CMD) 's/[\/\/]*([[:space:]]*if \(\!?Core.*)/if\(true\)\{\/\/\1/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/*.java
 
 .PHONY: unsed.ble
 unsed.ble:
 	$(SED_CMD) "s/.*\/\/implementation project\(':core'\)/implementation project\(':core'\)/g" $(ANDROID_PATH)/ble/build.gradle
-	$(SED_CMD) 's/[\/\/]*(.*Core.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/*.java
-	$(SED_CMD) 's/[^[:space:]]*([[:space:]]*if \(\!?Core.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/*.java
+	$(SED_CMD) 's/[\/\/]*(.*Core.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/*.java
+	$(SED_CMD) 's/[^[:space:]]*([[:space:]]*if \(\!?Core.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/*.java
 
 .PHONY: build.ble
 build.ble: $(BLE_DIR_PATH)/ble.jar

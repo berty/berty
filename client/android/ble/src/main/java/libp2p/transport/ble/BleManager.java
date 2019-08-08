@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.ParcelUuid;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.os.Build;
 import android.annotation.TargetApi;
 

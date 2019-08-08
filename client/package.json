@@ -3,10 +3,10 @@
 	"version": "0.0.1",
 	"description": "Berty's react native",
 	"license": "Apache-2.0",
-  "scripts": {
-    "start": "react-native start --reset-cache",
-    "prettify": "eslint_d --fix"
-  },
+	"scripts": {
+		"start": "react-native start --reset-cache",
+		"prettify": "eslint_d --fix"
+	},
 	"dependencies": {
 		"@babel/core": "^7.4.5",
 		"@babel/plugin-transform-runtime": "^7.4.4",
