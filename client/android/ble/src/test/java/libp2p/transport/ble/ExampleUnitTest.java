@@ -1,6 +1,4 @@
-package chat.berty.ble;
-
-import org.junit.Test;
+package libp2p.transport.ble;
 
 import static org.junit.Assert.*;
 

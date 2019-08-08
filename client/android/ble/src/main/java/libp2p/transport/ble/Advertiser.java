@@ -1,4 +1,4 @@
-package chat.berty.ble;
+package libp2p.transport.ble;
 
 import android.os.Build;
 import android.annotation.TargetApi;
@@ -9,10 +9,8 @@ import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class Advertiser extends AdvertiseCallback {
+class Advertiser extends AdvertiseCallback {
     private static final String TAG = "advertise";
-
-    Advertiser() { super(); }
 
     static AdvertiseData buildAdvertiseData() {
         return new AdvertiseData.Builder()
@@ -22,12 +20,12 @@ public class Advertiser extends AdvertiseCallback {
                 .build();
     }
 
-    static AdvertiseSettings buildAdvertiseSettings(boolean connectable, int mode, int power, int timeout) {
+    static AdvertiseSettings buildAdvertiseSettings() {
         return new AdvertiseSettings.Builder()
-                .setAdvertiseMode(mode)
-                .setConnectable(connectable)
-                .setTxPowerLevel(power)
-                .setTimeout(timeout)
+                .setConnectable(true)
+                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
+                .setTimeout(0)
                 .build();
     }
 

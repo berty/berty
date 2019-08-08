@@ -1,4 +1,4 @@
-package chat.berty.ble;
+package libp2p.transport.ble;
 
 import android.os.Build;
 import android.annotation.TargetApi;
@@ -13,10 +13,8 @@ import android.bluetooth.BluetoothDevice;
 import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class Scanner extends ScanCallback {
+class Scanner extends ScanCallback {
     private static final String TAG = "scan";
-
-    Scanner() { super(); }
 
     static ScanSettings createScanSetting() {
         return new ScanSettings.Builder()
@@ -98,21 +96,18 @@ public class Scanner extends ScanCallback {
     private static void parseResult(ScanResult result) {
         Log.v(TAG, "parseResult() called with device: " + result.getDevice());
 
-        if (!BleManager.isScanning()) {
-            Log.i(TAG, "Start scanning succeeded");
-            BleManager.setScanningState(true);
-        }
+        if (BleManager.isDriverEnabled()) {
+            BluetoothDevice device = result.getDevice();
+            PeerDevice peerDevice = DeviceManager.getDeviceFromAddr(device.getAddress());
 
-        BluetoothDevice device = result.getDevice();
-        BertyDevice bertyDevice = DeviceManager.getDeviceFromAddr(device.getAddress());
+            if (peerDevice == null) {
+                Log.i(TAG, "parseResult() scanned a new device: " + device.getAddress());
+                peerDevice = new PeerDevice(device);
+                DeviceManager.addDeviceToIndex(peerDevice);
 
-        if (bertyDevice == null) {
-            Log.i(TAG, "parseResult() scanned a new device: " + device.getAddress());
-            bertyDevice = new BertyDevice(device);
-            DeviceManager.addDeviceToIndex(bertyDevice);
-
-            // Everything is handled in this method: GATT connection/reconnection and handshake if necessary
-            bertyDevice.asyncConnectionToDevice("parseResult()");
+                // Everything is handled in this method: GATT connection/reconnection and handshake if necessary
+                peerDevice.asyncConnectionToDevice("parseResult()");
+            }
         }
     }
 }

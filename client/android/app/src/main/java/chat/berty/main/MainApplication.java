@@ -51,7 +51,7 @@ public class MainApplication extends Application implements ReactApplication {
                 new CorePackage(),
                 new ImagePickerPackage(),
                 new MainReactPackage(),
-            new LottiePackage(),
+                new LottiePackage(),
                 new RNGestureHandlerPackage(),
                 new ReactNativeConfigPackage(),
                 new RNDevMenuPackage(),
