@@ -295,19 +295,19 @@ commands:
             # ios
             - ~/go/src/berty.tech/client/ios/build
 
-  ios_gomobile_restore_cache:
+  ios_core_restore_cache:
     description: "restore ios gomobile cache"
     steps:
       - restore_cache:
           keys:
-            - v2-ios_gomobile-{{.Branch}}
-            - v2-ios_gomobile-master
+            - v0-ios_core-{{.Branch}}
+            - v0-ios_core-master
 
-  ios_gomobile_save_cache:
+  ios_core_save_cache:
     description: "save ios gomobile cache"
     steps:
       - save_cache:
-          key: v2-ios_gomobile-{{.Branch}}
+          key: v0-ios_core-{{.Branch}}
           paths:
             # user
             - ~/Library/Caches
@@ -548,7 +548,7 @@ jobs:
             - /usr/local/bin/ios-deploy
             - ~/go-install
 
-  android_gomobile:
+  android_core:
     executor: android
     working_directory: ~/go/src/berty.tech
     steps:
@@ -565,7 +565,7 @@ jobs:
       - android_save_cache:
           type: gomobile
 
-  ios_gomobile:
+  ios_core:
     executor: macos
     working_directory: ~/go/src/berty.tech
     steps:
@@ -574,7 +574,7 @@ jobs:
       - ios_deps_from_workspace:
           workspace_path: /tmp/workspace
       - prepare
-      - ios_gomobile_restore_cache
+      - ios_core_restore_cache
 
       - run:
           name: gomobile build
@@ -585,7 +585,7 @@ jobs:
           root: ~/go/src/berty.tech
           paths:
             - client/ios/core.framework
-      - ios_gomobile_save_cache
+      - ios_core_save_cache
 
   android_staff:
     executor: android
@@ -1015,33 +1015,33 @@ workflows:
             - docker_build
 
       # android
-      - android_gomobile
+      - android_core
       - android_staff:
           requires:
             - web
-            - android_gomobile
+            - android_core
       - android_yolo:
           requires:
             - web
-            - android_gomobile
+            - android_core
           filters:
             branches:
               only: master
 
       # ios
       - ios_deps
-      - ios_gomobile:
+      - ios_core:
           requires:
             - ios_deps
       - ios_staff:
           requires:
             - web
-            - ios_gomobile
+            - ios_core
             - ios_deps
       - ios_staff_test:
           requires:
             - web
-            - ios_gomobile
+            - ios_core
             - ios_deps
 
       - ios_yolo:
@@ -1050,7 +1050,7 @@ workflows:
              only: master
          requires:
            - web
-           - ios_gomobile
+           - ios_core
 
       - ios_yolo_test:
           filters:
@@ -1058,7 +1058,7 @@ workflows:
                only: master
           requires:
               - web
-              - ios_gomobile
+              - ios_core
 
 
       # desktop
