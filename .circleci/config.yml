@@ -129,15 +129,14 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v0-generate-{{.Branch}}-{{.Revision}}
-            - v0-generate-{{.Branch}}-
-            - v0-generate-master-
+            - v0-generate-{{.Branch}}
+            - v0-generate-master
 
   generate_save_cache:
     description: "save generate cache"
     steps:
       - save_cache:
-          key: v0-generate-{{.Branch}}-{{.Revision}}
+          key: v0-generate-{{.Branch}}
           paths:
             - ~/.cache               # user
             - ~/.cache/.npm/_cacache # npm
@@ -148,15 +147,14 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v0-web-{{.Branch}}-{{.Revision}}
-            - v0-web-{{.Branch}}-
-            - v0-web-master-
+            - v0-web-{{.Branch}}
+            - v0-web-master
 
   web_save_cache:
     description: "save web cache"
     steps:
       - save_cache:
-          key: v0-web-{{.Branch}}-{{.Revision}}
+          key: v0-web-{{.Branch}}
           paths:
             - ~/.cache                                           # user
             - ~/.cache/.npm/_cacache                             # npm
@@ -172,9 +170,8 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v0-android-<< parameters.type >>-{{.Branch}}-{{.Revision}}
-            - v0-android-<< parameters.type >>-{{.Branch}}-
-            - v0-android-<< parameters.type >>-master-
+            - v1-android-<< parameters.type >>-{{.Branch}}
+            - v1-android-<< parameters.type >>-master
 
   android_save_cache:
     description: "save android << parameters.type >> cache"
@@ -184,7 +181,7 @@ commands:
         default: common
     steps:
       - save_cache:
-          key: v0-android-<< parameters.type >>-{{.Branch}}-{{.Revision}}
+          key: v1-android-<< parameters.type >>-{{.Branch}}
           paths:
             # user
             - ~/.cache
@@ -203,6 +200,66 @@ commands:
             # gradle
             - ~/.gradle/caches
 
+  gomobile_from_workspace:
+    description: "Copy gomobile build from workspace"
+    parameters:
+      platform:
+        type: string
+      workspace_path:
+        type: string
+    steps:
+      - run:
+          name: Copy gomobile build from workspace
+          command: |
+            workdir=~/go/src/berty.tech
+            platform_atoms=client/<<parameters.platform>>
+            platform_path=$workdir/$platform_atoms
+
+            mkdir -p $platform_path
+            cp -a <<parameters.workspace_path>>/$platform_atoms/* $platform_path
+            ios_core=$workdir/client/ios/core.framework/Core
+            [ ! -f $ios_core ] || (sleep 1 && touch $ios_core)
+            android_core=$workdir/client/android/core/core.aar
+            [ ! -f $android_core ] || (sleep 1 && touch $android_core)
+
+  ios_persist_deps_to_workspace:
+    description: "Persist ios deps to workspace"
+    steps:
+      - persist_to_workspace:
+          root: /
+          paths:
+            - usr/local/lib/node_modules/ios-deploy
+            - usr/local/bin/ios-deploy
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - go-install
+
+  ios_deps_from_workspace:
+    description: "Copy global node_modules from workspace"
+    parameters:
+      workspace_path:
+        type: string
+    steps:
+      - run:
+          name: Copy ios-deploy from workspace
+          command: |
+            command -v ios-deploy || (
+              cp -a <<parameters.workspace_path>>/usr/local/lib/node_modules/ios-deploy /usr/local/lib/node_modules
+              cp -a <<parameters.workspace_path>>/usr/local/bin/ios-deploy /usr/local/bin
+            )
+      - run:
+          name: Copy and link go-install from workspace
+          command: |
+            go_install=~/go-install
+            go_root=~/go
+            [ -d $go_install ] || (
+              rm -fr $go_install
+              cp -a <<parameters.workspace_path>>/go-install $go_install
+              ln -s $go_install/go $go_root
+              echo "export PATH=$go_install/go/bin/:$go_root/bin:$PATH" >> $BASH_ENV
+            )
+
   ios_restore_cache:
     description: "restore ios << parameters.type >> cache"
     parameters:
@@ -212,9 +269,8 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v0-ios-<< parameters.type >>-{{.Branch}}-{{.Revision}}
-            - v0-ios-<< parameters.type >>-{{.Branch}}-
-            - v0-ios-<< parameters.type >>-master-
+            - v3-ios-<< parameters.type >>-{{.Branch}}
+            - v3-ios-<< parameters.type >>-master
 
   ios_save_cache:
     description: "save ios << parameters.type >> cache"
@@ -224,7 +280,7 @@ commands:
         default: common
     steps:
       - save_cache:
-          key: v0-ios-<< parameters.type >>-{{.Branch}}-{{.Revision}}
+          key: v3-ios-<< parameters.type >>-{{.Branch}}
           paths:
             # user
             - ~/Library/Caches
@@ -234,13 +290,37 @@ commands:
             - ~/go/src/berty.tech/client/node_modules
             # bundle
             - ~/go/src/berty.tech/client/vendor/bundle
-            # gomobile
-            - ~/go/pkg
-            - ~/go/src/berty.tech/client/ios/Core
             # xcode
             - ~/Library/Developer/Xcode/DerivedData
             # ios
             - ~/go/src/berty.tech/client/ios/build
+
+  ios_gomobile_restore_cache:
+    description: "restore ios gomobile cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v2-ios_gomobile-{{.Branch}}
+            - v2-ios_gomobile-master
+
+  ios_gomobile_save_cache:
+    description: "save ios gomobile cache"
+    steps:
+      - save_cache:
+          key: v2-ios_gomobile-{{.Branch}}
+          paths:
+            # user
+            - ~/Library/Caches
+            # npm
+            - ~/.cache/.npm/_cacache
+            # lerna
+            - ~/go/src/berty.tech/client/node_modules
+            # bundle
+            - ~/go/src/berty.tech/client/vendor/bundle
+            # go
+            - ~/go/pkg
+            # core
+            - ~/go/src/berty.tech/client/ios/core.framework
 
   mac_restore_cache:
     description: "restore mac << parameters.type >> cache"
@@ -251,9 +331,8 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v0-mac-<< parameters.type >>-{{.Branch}}-{{.Revision}}
-            - v0-mac-<< parameters.type >>-{{.Branch}}-
-            - v0-mac-<< parameters.type >>-master-
+            - v0-mac-<< parameters.type >>-{{.Branch}}
+            - v0-mac-<< parameters.type >>-master
 
   mac_save_cache:
     description: "save mac << parameters.type >> cache"
@@ -263,7 +342,7 @@ commands:
         default: common
     steps:
       - save_cache:
-          key: v0-mac-<< parameters.type >>-{{.Branch}}-{{.Revision}}
+          key: v0-mac-<< parameters.type >>-{{.Branch}}
           paths:
             # user
             - ~/Library/Caches
@@ -443,6 +522,71 @@ jobs:
       - store_test_results:
           path: /tmp/test-results
 
+  ios_deps:
+    executor: macos
+    working_directory: ~/go/src/berty.tech
+    steps:
+      - restore_cache:
+          key: v5-ios_deps
+      - run:
+          name: link go if in cache
+          command: |
+            [ ! -d ~/go-install ] || (
+              ln -s ~/go-install/go ~/go
+              echo "export PATH=$go_install/go/bin/:$go_root/bin:$PATH" >> $BASH_ENV
+            )
+      - run:
+          name: install ios-deploy
+          command: command -v ios-deploy || npm i -g ios-deploy
+      - install_go
+      - install_gomobile
+      - ios_persist_deps_to_workspace
+      - save_cache:
+          key: v5-ios_deps
+          paths:
+            - /usr/local/lib/node_modules/ios-deploy
+            - /usr/local/bin/ios-deploy
+            - ~/go-install
+
+  android_gomobile:
+    executor: android
+    working_directory: ~/go/src/berty.tech
+    steps:
+      - prepare
+      - android_restore_cache:
+          type: gomobile
+      - run:
+          name: gomobile build
+          command: BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make -C core/platform/mobile build.android
+      - persist_to_workspace:
+          root: ~/go/src/berty.tech
+          paths:
+            - client/android
+      - android_save_cache:
+          type: gomobile
+
+  ios_gomobile:
+    executor: macos
+    working_directory: ~/go/src/berty.tech
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - ios_deps_from_workspace:
+          workspace_path: /tmp/workspace
+      - prepare
+      - ios_gomobile_restore_cache
+
+      - run:
+          name: gomobile build
+          working_directory: ~/go/src/berty.tech/core/platform/mobile
+          command: BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
+
+      - persist_to_workspace:
+          root: ~/go/src/berty.tech
+          paths:
+            - client/ios/core.framework
+      - ios_gomobile_save_cache
+
   android_staff:
     executor: android
     steps:
@@ -450,16 +594,15 @@ jobs:
       - prepare
       - android_restore_cache:
           type: staff
-
+      - attach_workspace:
+          at: /tmp/workspace
+      - gomobile_from_workspace:
+          platform: android
+          workspace_path: /tmp/workspace
       - run:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
           command: retry -m 3 make deps.lerna
-
-      - run:
-          name: gomobile android build
-          working_directory: ~/go/src/berty.tech/core/platform/mobile
-          command: BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.android
 
       - run:
           name: install bundle
@@ -507,16 +650,15 @@ jobs:
       - prepare
       - android_restore_cache:
           type: yolo
-
+      - attach_workspace:
+          at: /tmp/workspace
+      - gomobile_from_workspace:
+          platform: android
+          workspace_path: /tmp/workspace
       - run:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
           command: retry -m 3 make deps.lerna
-
-      - run:
-          name: gomobile android build
-          working_directory: ~/go/src/berty.tech/core/platform/mobile
-          command: BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.android
 
       - run:
           name: install bundle
@@ -558,8 +700,14 @@ jobs:
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
-
       - prepare
+      - attach_workspace:
+          at: /tmp/workspace
+      - ios_deps_from_workspace:
+          workspace_path: /tmp/workspace
+      - gomobile_from_workspace:
+          platform: ios
+          workspace_path: /tmp/workspace
       - ios_restore_cache:
           type: staff
 
@@ -567,13 +715,6 @@ jobs:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
           command: retry -m 3 make deps.lerna
-
-      - install_go
-      - install_gomobile
-      - run:
-          name: install core
-          working_directory: ~/go/src/berty.tech/core/platform/mobile
-          command: BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
 
       - run:
           name: install bundle
@@ -610,8 +751,14 @@ jobs:
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
-
       - prepare
+      - attach_workspace:
+          at: /tmp/workspace
+      - ios_deps_from_workspace:
+          workspace_path: /tmp/workspace
+      - gomobile_from_workspace:
+          platform: ios
+          workspace_path: /tmp/workspace
       - ios_restore_cache:
           type: staff-test
 
@@ -619,13 +766,6 @@ jobs:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
           command: retry -m 3 make deps.lerna
-
-      - install_go
-      - install_gomobile
-      - run:
-          name: install core
-          working_directory: ~/go/src/berty.tech/core/platform/mobile
-          command: BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
 
       - run:
           name: install bundle
@@ -662,8 +802,14 @@ jobs:
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
-
       - prepare
+      - attach_workspace:
+          at: /tmp/workspace
+      - ios_deps_from_workspace:
+          workspace_path: /tmp/workspace
+      - gomobile_from_workspace:
+          platform: ios
+          workspace_path: /tmp/workspace
       - ios_restore_cache:
           type: yolo
 
@@ -671,15 +817,6 @@ jobs:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
           command: retry -m 3 make deps.lerna
-
-      - install_go
-      - install_gomobile
-
-      - run:
-          name: install core
-          working_directory: ~/go/src/berty.tech/core/platform/mobile
-          command: |
-            BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
 
       - run:
           name: install bundle
@@ -720,8 +857,14 @@ jobs:
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
-
       - prepare
+      - attach_workspace:
+          at: /tmp/workspace
+      - ios_deps_from_workspace:
+          workspace_path: /tmp/workspace
+      - gomobile_from_workspace:
+          platform: ios
+          workspace_path: /tmp/workspace
       - ios_restore_cache:
           type: yolo-test
 
@@ -729,15 +872,6 @@ jobs:
           name: make deps
           working_directory: ~/go/src/berty.tech/client
           command: retry -m 3 make deps.lerna
-
-      - install_go
-      - install_gomobile
-
-      - run:
-          name: install core
-          working_directory: ~/go/src/berty.tech/core/platform/mobile
-          command: |
-            BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
 
       - run:
           name: install bundle
@@ -870,34 +1004,45 @@ workflows:
             - generate
             - core_go_test
 
-      - web_test:
-          requires:
-            - web
-            - docker_build
       # web
       - web:
           requires:
             - lint
             - generate
+      - web_test:
+          requires:
+            - web
+            - docker_build
 
       # android
+      - android_gomobile
       - android_staff:
           requires:
             - web
+            - android_gomobile
       - android_yolo:
           requires:
             - web
+            - android_gomobile
           filters:
             branches:
               only: master
 
       # ios
+      - ios_deps
+      - ios_gomobile:
+          requires:
+            - ios_deps
       - ios_staff:
           requires:
             - web
+            - ios_gomobile
+            - ios_deps
       - ios_staff_test:
           requires:
             - web
+            - ios_gomobile
+            - ios_deps
 
       - ios_yolo:
          filters:
@@ -905,6 +1050,7 @@ workflows:
              only: master
          requires:
            - web
+           - ios_gomobile
 
       - ios_yolo_test:
           filters:
@@ -912,6 +1058,7 @@ workflows:
                only: master
           requires:
               - web
+              - ios_gomobile
 
 
       # desktop

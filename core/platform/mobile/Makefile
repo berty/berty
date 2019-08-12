@@ -10,8 +10,10 @@ CORE_SOURCES := $(shell find $(CORE_PACKAGE) -type f -name "*.go") \
 BUILD_PATCH_PATH :=	$(PWD)/../../../build/docker/patch
 
 ANDROID_PATH := $(PWD)/../../../client/android
-BLE_JAR_PATH := $(ANDROID_PATH)/ble/build/libs/ble.jar
-BLE_DIR_PATH := $(ANDROID_PATH)/ble/build/libs
+
+BLE_ROOT := $(ANDROID_PATH)/ble
+BLE_JAR := $(BLE_ROOT)/build/libs/ble.jar
+BLE_CLASSPATH := $(BLE_ROOT)/libs/jars/ble.jar
 BLE_BIND_PATH := /tmp/ble
 
 GIT_SHA ?= $(shell git rev-parse HEAD)
@@ -40,6 +42,7 @@ ANDROID_LIBS_PATHS := $(addprefix $(LIBS_PATH)/android/, $(ANDROID_ARCHS))
 ANDROID_LDFLAGS := $(addprefix -L, $(ANDROID_LIBS_PATHS))
 ANDROID_BUILD_PATH := $(ANDROID_PATH)/core
 ANDROID_BUILD := $(addprefix $(ANDROID_BUILD_PATH)/core., $(addsuffix .aar, $(ANDROID_ARCHS)))
+ANDROID_CORE := $(ANDROID_BUILD_PATH)/core.aar
 
 GOMOBILES_OPT ?=
 
@@ -98,10 +101,19 @@ deps.android: deps unsed.ble
 	cd ../../../client && make deps.lerna
 
 .PHONY: build.core
-build.core: deps.android $(ANDROID_BUILD_PATH)/core.aar
+build.core: deps.android $(ANDROID_CORE)
+
+CIRCLE_CORE_BUILT=$(shell [ -n "$(CIRCLE_JOB)" ] && [ -f $(ANDROID_CORE) ]; echo $$?)
 
 .PHONY: build.android
-build.android: deps.android sed.ble build.ble unsed.ble build.core build.ble
+build.android: deps.android
+ifneq '$(CIRCLE_CORE_BUILT)' '0'
+	$(MAKE) sed.ble
+	$(MAKE) build.ble
+	$(MAKE) unsed.ble
+	$(MAKE) build.core
+	$(MAKE) build.ble
+endif
 
 .PHONY: sed.ble
 sed.ble:
@@ -116,17 +128,17 @@ unsed.ble:
 	$(SED_CMD) 's/[^[:space:]]*([[:space:]]*if \(\!?Core.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/*.java
 
 .PHONY: build.ble
-build.ble: $(BLE_DIR_PATH)/ble.jar
+build.ble: $(BLE_JAR)
 
-$(BLE_DIR_PATH)/ble.jar:
+$(BLE_JAR):
 	GO111MODULE=on go mod vendor
 	cd $(ANDROID_PATH) && ./gradlew ble:createJar && cd -
 
-$(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
+$(ANDROID_CORE): $(CORE_SOURCES)
 	GO111MODULE=on go mod vendor
 	mkdir -p $(ANDROID_BUILD_PATH)
 	GO111MODULE=off GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
-		gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -classpath=$(ANDROID_PATH)/ble/libs/jars/ble.jar -o $(ANDROID_BUILD_PATH)/core.aar berty.tech/core/platform/mobile/core
+		gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -classpath=$(BLE_CLASSPATH) -o $@ berty.tech/core/platform/mobile/core
 
 .PHONY: deps.ios
 deps.ios: deps
