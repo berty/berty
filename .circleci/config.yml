@@ -527,14 +527,9 @@ jobs:
     working_directory: ~/go/src/berty.tech
     steps:
       - restore_cache:
-          key: v5-ios_deps
-      - run:
-          name: link go if in cache
-          command: |
-            [ ! -d ~/go-install ] || (
-              ln -s ~/go-install/go ~/go
-              echo "export PATH=$go_install/go/bin/:$go_root/bin:$PATH" >> $BASH_ENV
-            )
+          keys:
+            - v7-ios_deps-{{.Branch}}
+            - v7-ios_deps-master
       - run:
           name: install ios-deploy
           command: command -v ios-deploy || npm i -g ios-deploy
@@ -542,11 +537,12 @@ jobs:
       - install_gomobile
       - ios_persist_deps_to_workspace
       - save_cache:
-          key: v5-ios_deps
+          key: v7-ios_deps-{{.Branch}}
           paths:
             - /usr/local/lib/node_modules/ios-deploy
             - /usr/local/bin/ios-deploy
             - ~/go-install
+            - ~/go
 
   android_core:
     executor: android
