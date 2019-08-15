@@ -1015,7 +1015,11 @@ workflows:
             - docker_build
 
       # android
-      - android_core
+      - android_core:
+          requires:
+            - lint
+            - generate
+            - core_go_test
       - android_staff:
           requires:
             - web
@@ -1032,6 +1036,9 @@ workflows:
       - ios_deps
       - ios_core:
           requires:
+            - lint
+            - generate
+            - core_go_test
             - ios_deps
       - ios_staff:
           requires:
@@ -1051,14 +1058,16 @@ workflows:
          requires:
            - web
            - ios_core
+           - ios_deps
 
       - ios_yolo_test:
           filters:
             branches:
                only: master
           requires:
-              - web
-              - ios_core
+            - web
+            - ios_core
+            - ios_deps
 
 
       # desktop
