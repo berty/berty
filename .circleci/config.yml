@@ -93,6 +93,7 @@ commands:
               git fetch upstream
               git cherry-pick 85b699489d6f23377f5380e8b3d42ad7eecd4e0a
               go install golang.org/x/mobile/cmd/gomobile
+              go get golang.org/x/tools/go/packages
               gomobile init
             fi
 
