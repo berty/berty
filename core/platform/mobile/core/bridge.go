@@ -38,7 +38,7 @@ var networkConfig = &daemon.NetworkConfig{
 	PeerCache: true,
 	Bootstrap: network.DefaultBootstrap,
 	BindP2P: []string{
-		"/ip4/0.0.0.0/udp/0/quic",
+		// "/ip4/0.0.0.0/udp/0/quic",
 		"/ip4/0.0.0.0/tcp/0",
 	},
 	Mdns:           true,

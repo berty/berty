@@ -1,5 +1,7 @@
 package libp2p.transport.ble;
 
+import core.GoBridgeImplem;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -68,6 +70,15 @@ public final class BleManager {
     private static final BluetoothGattCharacteristic peerIDCharacteristic = new BluetoothGattCharacteristic(PEER_ID_UUID, PROPERTY_READ, PERMISSION_READ);
     private static final BluetoothGattCharacteristic writerCharacteristic = new BluetoothGattCharacteristic(WRITER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
 
+    // Go bridge interface
+    static final GoBridge goBridge = new GoBridgeImplem();
+
+    public interface GoBridge {
+        boolean handlePeerFound(String peerID, String multiAddr);
+        void receiveFromDevice(String multiAddr, byte[] payload);
+        void log(String tag, String level, String log);
+    }
+
     static boolean isDriverEnabled() { return driverEnabled; }
 
     static String getMultiAddr() { return maCharacteristic.getStringValue(0); }
@@ -75,7 +86,6 @@ public final class BleManager {
     static String getPeerID() { return peerIDCharacteristic.getStringValue(0); }
 
     static GattClient getGattCallback() { return mGattCallback; }
-
 
     // Activity and context getters
     private static Activity getCurrentActivity() { // Based on this blog post: https://androidreclib.wordpress.com/2014/11/22/getting-the-current-activity/
@@ -121,8 +131,8 @@ public final class BleManager {
     static class BluetoothStateWatcher extends BroadcastReceiver {
         private static final String TAG = "ble_manager.watcher";
 
-        private static Semaphore enableDriverLock = new Semaphore(1);
-        private static Semaphore disableDriverLock = new Semaphore(1);
+        private static final Semaphore enableDriverLock = new Semaphore(1);
+        private static final Semaphore disableDriverLock = new Semaphore(1);
 
         BluetoothStateWatcher() {
             if (mBluetoothAdapter.isEnabled()) {
@@ -190,9 +200,7 @@ public final class BleManager {
                         advertising = false;
                         driverEnabled = false;
                         try {
-                            Log.d(TAG, "424242 disableDriver() BEFORE CLOSE GATT");
                             mGattServerCallback.closeGattServer();
-                            Log.d(TAG, "424242 disableDriver() BEFORE DISCONNECT DEVS");
                             DeviceManager.disconnectFromAllDevices();
                             Log.d(TAG, "disableDriver() succeeded");
                         } catch (Exception e) {

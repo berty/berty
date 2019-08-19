@@ -1,7 +1,5 @@
 package libp2p.transport.ble;
 
-import core.Core;
-
 import java.util.UUID;
 import android.os.Build;
 import android.annotation.TargetApi;
@@ -172,7 +170,7 @@ class GattServer extends BluetoothGattServerCallback {
                 return;
             }
 
-            Core.receiveFromDevice(peerDevice.getMultiAddr(), value);
+            BleManager.goBridge.receiveFromDevice(peerDevice.getMultiAddr(), value);
 
             if (responseNeeded) {
                 mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, 0, value);

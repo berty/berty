@@ -1,7 +1,5 @@
 package libp2p.transport.ble;
 
-import core.Core;
-
 import android.os.Build;
 import android.content.Context;
 import android.annotation.TargetApi;
@@ -222,7 +220,7 @@ class PeerDevice {
                             Thread.sleep(300); // Wait for new MTU before starting the libp2p connect
                         }
 
-                        if (Core.handlePeerFound(dPeerID, dMultiAddr)) {
+                        if (BleManager.goBridge.handlePeerFound(dPeerID, dMultiAddr)) {
                             Log.i(TAG, "asyncHandshakeWithDevice() peer handled successfully by golang with device: " + dDevice + ", caller: " + callerAndThread);
                         } else {
                             Log.e(TAG, "asyncHandshakeWithDevice() failed: golang can't handle new peer for device: " + dDevice + ", caller: " + callerAndThread);

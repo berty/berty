@@ -3,8 +3,6 @@ package libp2p.transport.ble;
 import android.annotation.TargetApi;
 import android.os.Build;
 
-import core.Core;
-
 import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTED;
 import static android.bluetooth.BluetoothProfile.STATE_CONNECTING;
 import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
@@ -30,19 +28,19 @@ import static android.bluetooth.BluetoothGatt.GATT_WRITE_NOT_PERMITTED;
 final class Log {
 
     static void v(String tag, String log) {
-    Core.goLogger(tag, "verbose", log);
+        BleManager.goBridge.log(tag, "verbose", log);
     }
     static void d(String tag, String log) {
-        Core.goLogger(tag, "debug", log);
+        BleManager.goBridge.log(tag, "debug", log);
     }
     static void i(String tag, String log) {
-        Core.goLogger(tag, "info", log);
+        BleManager.goBridge.log(tag, "info", log);
     }
     static void w(String tag, String log) {
-        Core.goLogger(tag, "warn", log);
+        BleManager.goBridge.log(tag, "warn", log);
     }
     static void e(String tag, String log) {
-        Core.goLogger(tag, "error", log);
+        BleManager.goBridge.log(tag, "error", log);
     }
 
     static String connectionStateToString(int state) {
