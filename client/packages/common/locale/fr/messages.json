@@ -62,6 +62,15 @@
       "help": "Nous espérons que vous apprécierez Berty ! N'hésitez pas à contacter l'équipe si vous avez le moindre souci ou une question à nous poser."
     }
   },
+  "permission": {
+    "buttonPositive": "Accepter",
+    "buttonNegative": "Refuser",
+    "buttonNeutral": "Voir plus tard",
+    "ble": {
+      "title": "Permission Bluetooth Low Energy",
+      "message": "Le BLE sur Android requiert la permission ACCESS_FINE_LOCATION pour fonctionner."
+    }
+  },
   "settings": {
     "title": "Préférences",
     "updates-check": "Vérifier les mises à jour",
