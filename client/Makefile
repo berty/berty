@@ -211,7 +211,7 @@ $(PWD)/.environment:
 	@false
 
 .PHONY: deps.ios
-deps.ios: deps.lerna $(PWD)/.environment $(PWD)/ios/core.framework $(PWD)/ios/Pods
+deps.ios: deps.lerna $(PWD)/.environment $(PWD)/ios/core.framework $(PWD)/ios/Pods/Manifest.lock
 	if [ ! -e ./node_modules/react-native/third-party/glog-0.*/Makefile ]; then	\
 		cd ./node_modules/react-native											\
 			&& rm -rf third-party														\
@@ -220,7 +220,7 @@ deps.ios: deps.lerna $(PWD)/.environment $(PWD)/ios/core.framework $(PWD)/ios/Po
 			&& ../../scripts/ios-configure-glog.sh;										\
 	fi
 
-$(PWD)/ios/Pods: $(PWD)/ios/Podfile
+$(PWD)/ios/Pods/Manifest.lock: $(PWD)/package.json $(PWD)/ios/Podfile
 	$(PWD)/node_modules/.bin/react-native link --platforms=ios
 	([ ! -z "$(shell which pod)" ] && pod --version | grep '1.7.') || sudo gem install cocoapods
 	cd ios && pod install --verbose

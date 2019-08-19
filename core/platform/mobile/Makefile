@@ -113,7 +113,7 @@ $(BLE_DIR_PATH)/ble.jar: deps.android
 	$(SED_CMD) 's/(.*GoBridgeImplem.*)/\/\/\1/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/BleManager.java
 	cd $(ANDROID_PATH) && ./gradlew ble:createJar && cd -
 
-$(ANDROID_BUILD_PATH)/core.aar: deps.android $(CORE_SOURCES)
+$(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES) | deps.android
 	$(SED_CMD) "s/.*\/\/implementation project\(':core'\)/implementation project\(':core'\)/g" $(ANDROID_PATH)/ble/build.gradle
 	$(SED_CMD) 's/(goBridge = )(null)/\1new GoBridgeImplem\(\)/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/BleManager.java
 	$(SED_CMD) 's/[\/\/]*(.*GoBridgeImplem.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/BleManager.java
@@ -127,7 +127,7 @@ deps.ios: deps
 .PHONY: build.ios
 build.ios: deps.ios $(IOS_BUILD_PATH)/core.framework
 
-$(IOS_BUILD_PATH)/core.framework: deps $(CORE_SOURCES)
+$(IOS_BUILD_PATH)/core.framework: $(CORE_SOURCES) | deps
 	mkdir -p $(IOS_BUILD_PATH)
 	GO111MODULE=off CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -target=ios -o $(IOS_BUILD_PATH)/core.framework berty.tech/core/platform/mobile/core
 
