@@ -32,12 +32,11 @@
 		B4DB1353CBB3816CE8622EF6 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B90BBB97C99313A576609CB5 /* libPods-Berty.a */; };
 		EC6310FD1D945D73FCECEB85 /* libPods-Berty-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1310D1F395AAD06A2FF70EDF /* libPods-Berty-tvOSTests.a */; };
 		F80F01A522F9B3780012C157 /* fontello.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 991A116D2201B169006F3200 /* fontello.ttf */; };
-		F82849CB22F879120093A779 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F82849CA22F879120093A779 /* libssl.a */; };
+		F8343A9E230AEC94005FB5CB /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D1BA427216CF8F700FEF0AE /* libssl.a */; };
 		F844DEC121E8C5FD00A810A1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844DEC021E8C5FC00A810A1 /* AppDelegate.swift */; };
 		F8799D7A2136F44B003B9FD7 /* CoreModule.m in Sources */ = {isa = PBXBuildFile; fileRef = F8799D752136F3C5003B9FD7 /* CoreModule.m */; };
 		F8799D7B2136F44E003B9FD7 /* CoreModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8799D782136F3EA003B9FD7 /* CoreModule.swift */; };
 		F893F14A22F88EAA00A4EB3A /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F893F12322F88EAA00A4EB3A /* PushKit.framework */; };
-		F893F14B22F88EB700A4EB3A /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 480E37A42190872400BE10A5 /* libRCTPushNotification.a */; };
 		F893F19322F8943400A4EB3A /* core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EF7F472136A10500FDCCB5 /* core.framework */; };
 /* End PBXBuildFile section */
 
@@ -118,20 +117,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = ADD01A681E09402E00F6D226;
 			remoteInfo = "RCTBlob-tvOS";
-		};
-		2D16E6831FA4F8DC00B85C8A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3DBE0D001F3B181A0099AA32;
-			remoteInfo = fishhook;
-		};
-		2D16E6851FA4F8DC00B85C8A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3DBE0D0D1F3B181C0099AA32;
-			remoteInfo = "fishhook-tvOS";
 		};
 		2DF0FFDE2056DD460020B375 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -266,13 +251,6 @@
 			remoteGlobalIDString = 3D05745F1DE6004600184BB4;
 			remoteInfo = "RCTPushNotification-tvOS";
 		};
-		4854D04D21C41C1000FB71B8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 146833FF1AC3E56700842450 /* React.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 83CBBA2D1A601D0E00E9B192;
-			remoteInfo = React;
-		};
 		5E9157321DD0AC6500FF2AA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */;
@@ -343,6 +321,13 @@
 			remoteGlobalIDString = 58B5115D1A9E6B3D00147676;
 			remoteInfo = RCTCameraRoll;
 		};
+		F8EDBEAC230ADC1A0084CCDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 83CBBA2D1A601D0E00E9B192;
+			remoteInfo = React;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -372,7 +357,6 @@
 		27729C4281337B640FDBA174 /* Pods-Berty-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Berty-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Berty-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Berty-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Berty-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DA256C3D19CC20E03B06E65 /* Pods-Berty-tvOSTests.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.adhoc.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.adhoc.xcconfig"; sourceTree = "<group>"; };
 		3ED3560057DF4AB2B70B81BE /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		3F440C0C10EB428980A58A68 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
@@ -420,7 +404,6 @@
 		DD1A20A38723EDCDB7805F1D /* Pods-Berty.house.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.house.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.house.xcconfig"; sourceTree = "<group>"; };
 		F09B398321C02721000AA9A8 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		F0BAE21221906E73003601A0 /* Berty.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Berty.entitlements; path = Berty/Berty.entitlements; sourceTree = "<group>"; };
-		F82849CA22F879120093A779 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = ../../core/platform/common/openssl/built/ios/libssl.a; sourceTree = "<group>"; };
 		F844DEC021E8C5FC00A810A1 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Berty/AppDelegate.swift; sourceTree = "<group>"; };
 		F844DF1B21E8CDAD00A810A1 /* Berty-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Berty-Bridging-Header.h"; path = "Berty/Berty-Bridging-Header.h"; sourceTree = "<group>"; };
 		F8799D752136F3C5003B9FD7 /* CoreModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreModule.m; sourceTree = "<group>"; };
@@ -443,13 +426,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4DB1353CBB3816CE8622EF6 /* libPods-Berty.a in Frameworks */,
 				F893F19322F8943400A4EB3A /* core.framework in Frameworks */,
-				F893F14B22F88EB700A4EB3A /* libRCTPushNotification.a in Frameworks */,
 				F893F14A22F88EAA00A4EB3A /* PushKit.framework in Frameworks */,
-				F82849CB22F879120093A779 /* libssl.a in Frameworks */,
+				F8343A9E230AEC94005FB5CB /* libssl.a in Frameworks */,
 				8D1BA426216CF8EA00FEF0AE /* libcrypto.a in Frameworks */,
 				998B6ADC2179E1B90029B33C /* CoreBluetooth.framework in Frameworks */,
-				B4DB1353CBB3816CE8622EF6 /* libPods-Berty.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -536,8 +518,6 @@
 			children = (
 				139FDEF41B06529B00C62182 /* libRCTWebSocket.a */,
 				3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */,
-				2D16E6841FA4F8DC00B85C8A /* libfishhook.a */,
-				2D16E6861FA4F8DC00B85C8A /* libfishhook-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -588,13 +568,11 @@
 			isa = PBXGroup;
 			children = (
 				F893F12322F88EAA00A4EB3A /* PushKit.framework */,
-				F82849CA22F879120093A779 /* libssl.a */,
 				99B44285224B89C0000A8A98 /* JavaScriptCore.framework */,
 				998B6ADB2179E1B90029B33C /* CoreBluetooth.framework */,
 				8D1BA427216CF8F700FEF0AE /* libssl.a */,
 				8D1BA425216CF8EA00FEF0AE /* libcrypto.a */,
 				F8EF7F472136A10500FDCCB5 /* core.framework */,
-				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				B90BBB97C99313A576609CB5 /* libPods-Berty.a */,
 				4BC0DC72C388E02C469C54F9 /* libPods-Berty-tvOS.a */,
 				1310D1F395AAD06A2FF70EDF /* libPods-Berty-tvOSTests.a */,
@@ -816,14 +794,11 @@
 				23DF70C2AB18FB5B36E98855 /* [CP] Copy Pods Resources */,
 				F0D1801157F17A0E49E3A320 /* Strip Frameworks */,
 				5619EB106AB23201612FF42A /* Upload Sourcemap */,
-				70DD4A0AD26796A9521F24CB /* Upload Sourcemap */,
-				24A70D89C04F761C0F7FAB6F /* Upload Sourcemap */,
-				B95AA5E4196F862FB0B7748E /* Upload Sourcemap */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				4854D04E21C41C1000FB71B8 /* PBXTargetDependency */,
+				F8EDBEAD230ADC1A0084CCDB /* PBXTargetDependency */,
 				F844BDF422E8C0110099C6FF /* PBXTargetDependency */,
 			);
 			name = Berty;
@@ -1052,20 +1027,6 @@
 			fileType = archive.ar;
 			path = "libRCTBlob-tvOS.a";
 			remoteRef = 2D16E6711FA4F8DC00B85C8A /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		2D16E6841FA4F8DC00B85C8A /* libfishhook.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libfishhook.a;
-			remoteRef = 2D16E6831FA4F8DC00B85C8A /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		2D16E6861FA4F8DC00B85C8A /* libfishhook-tvOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libfishhook-tvOS.a";
-			remoteRef = 2D16E6851FA4F8DC00B85C8A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		2DF0FFDF2056DD460020B375 /* libjsinspector.a */ = {
@@ -1368,24 +1329,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		24A70D89C04F761C0F7FAB6F /* Upload Sourcemap */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Upload Sourcemap";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "export INSTABUG_APP_TOKEN=\"YOUR_APP_TOKEN\"\nbash \"../node_modules/instabug-reactnative/ios/upload_sourcemap.sh\"\n";
-		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1476,24 +1419,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		70DD4A0AD26796A9521F24CB /* Upload Sourcemap */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Upload Sourcemap";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "export INSTABUG_APP_TOKEN=\"YOUR_APP_TOKEN\"\nbash \"../node_modules/instabug-reactnative/ios/upload_sourcemap.sh\"\n";
-		};
 		96BF197B3F1B392ABE36815C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1515,24 +1440,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
-		};
-		B95AA5E4196F862FB0B7748E /* Upload Sourcemap */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Upload Sourcemap";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "export INSTABUG_APP_TOKEN=\"YOUR_APP_TOKEN\"\nbash \"../node_modules/instabug-reactnative/ios/upload_sourcemap.sh\"\n";
 		};
 		D08A7BDEA276BC6F011300DB /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1650,14 +1557,14 @@
 			target = 2D02E47A1E0B4A5D006451C7 /* Berty-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
-		4854D04E21C41C1000FB71B8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = React;
-			targetProxy = 4854D04D21C41C1000FB71B8 /* PBXContainerItemProxy */;
-		};
 		F844BDF422E8C0110099C6FF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Lottie_iOS;
+		};
+		F8EDBEAD230ADC1A0084CCDB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = React;
+			targetProxy = F8EDBEAC230ADC1A0084CCDB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1731,8 +1638,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B98EEB46F05A623A1EB16989 /* Pods-Berty.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Debug";
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Berty/Berty.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1747,6 +1656,12 @@
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)",
 				);
+				GCC_INPUT_FILETYPE = sourcecode.c.objc;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -1759,20 +1674,31 @@
 					"$(inherited)",
 					"$(SRCROOT)/../../core/platform/common/openssl/built/ios",
 				);
+				OTHER_CFLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-fcxx-modules",
+				);
 				OTHER_LDFLAGS = "$(inherited)";
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/lottie-ios/Lottie.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/lottie-react-native/lottie_react_native.modulemap\"";
+				OTHER_SWIFT_FLAGS = "";
+				PODS_BUILD_DIR = "$(BUILD_DIR)";
+				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				PODS_PODFILE_DIR_PATH = "${SRCROOT}/.";
+				PODS_ROOT = "${SRCROOT}/Pods";
 				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.debug;
 				PRODUCT_NAME = Berty;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				REACT_HEADERS_PATH = "";
-				REACT_LIBRARY_PATH = "";
+				REACT_LIBRARY_PATH = "\b";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_INCLUDE_PATHS = "$(inherited) \"${PODS_CONFIGURATION_BUILD_DIR}/lottie-ios\" \"${PODS_CONFIGURATION_BUILD_DIR}/lottie-react-native\"";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Berty/Berty-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
 				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
-				USER_HEADER_SEARCH_PATHS = "$(PODS_ROOT)/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PODS_ROOT}/Headers\"/**";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1781,8 +1707,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 72572BA64462397140A164A5 /* Pods-Berty.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Release";
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Berty/Berty.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -1796,6 +1724,12 @@
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)",
 				);
+				GCC_INPUT_FILETYPE = sourcecode.c.objc;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -1808,19 +1742,30 @@
 					"$(inherited)",
 					"$(SRCROOT)/../../core/platform/common/openssl/built/ios",
 				);
+				OTHER_CFLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-fcxx-modules",
+				);
 				OTHER_LDFLAGS = "$(inherited)";
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/lottie-ios/Lottie.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/lottie-react-native/lottie_react_native.modulemap\"";
+				OTHER_SWIFT_FLAGS = "";
+				PODS_BUILD_DIR = "$(BUILD_DIR)";
+				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				PODS_PODFILE_DIR_PATH = "${SRCROOT}/.";
+				PODS_ROOT = "${SRCROOT}/Pods";
 				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
 				PRODUCT_NAME = Berty;
 				PROVISIONING_PROFILE = "180f67c5-ba82-4ef0-ba95-228b27fcf162";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
 				REACT_HEADERS_PATH = "";
-				REACT_LIBRARY_PATH = "";
+				REACT_LIBRARY_PATH = "\b";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_INCLUDE_PATHS = "$(inherited) \"${PODS_CONFIGURATION_BUILD_DIR}/lottie-ios\" \"${PODS_CONFIGURATION_BUILD_DIR}/lottie-react-native\"";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Berty/Berty-Bridging-Header.h";
 				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
 				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
-				USER_HEADER_SEARCH_PATHS = "$(PODS_ROOT)/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PODS_ROOT}/Headers\"/**";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -1996,8 +1941,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DD1A20A38723EDCDB7805F1D /* Pods-Berty.house.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-House";
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Berty/Berty.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -2011,6 +1958,12 @@
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)",
 				);
+				GCC_INPUT_FILETYPE = sourcecode.c.objc;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -2023,19 +1976,30 @@
 					"$(inherited)",
 					"$(SRCROOT)/../../core/platform/common/openssl/built/ios",
 				);
+				OTHER_CFLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-fcxx-modules",
+				);
 				OTHER_LDFLAGS = "$(inherited)";
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/lottie-ios/Lottie.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/lottie-react-native/lottie_react_native.modulemap\"";
+				OTHER_SWIFT_FLAGS = "";
+				PODS_BUILD_DIR = "$(BUILD_DIR)";
+				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				PODS_PODFILE_DIR_PATH = "${SRCROOT}/.";
+				PODS_ROOT = "${SRCROOT}/Pods";
 				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.yolo;
 				PRODUCT_NAME = Berty;
 				PROVISIONING_PROFILE = "9fce9842-13d9-44c0-877f-f1bd4f500c5e";
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse chat.berty.ios.yolo";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
-				REACT_LIBRARY_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)";
+				REACT_LIBRARY_PATH = "\b";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_INCLUDE_PATHS = "$(inherited) \"${PODS_CONFIGURATION_BUILD_DIR}/lottie-ios\" \"${PODS_CONFIGURATION_BUILD_DIR}/lottie-react-native\"";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Berty/Berty-Bridging-Header.h";
 				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
 				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
-				USER_HEADER_SEARCH_PATHS = "$(PODS_ROOT)/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PODS_ROOT}/Headers\"/**";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = house;
@@ -2172,8 +2136,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 23BA55428718512F2D196782 /* Pods-Berty.adhoc.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Adhoc";
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Berty/Berty.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -2187,6 +2153,12 @@
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)",
 				);
+				GCC_INPUT_FILETYPE = sourcecode.c.objc;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -2199,19 +2171,30 @@
 					"$(inherited)",
 					"$(SRCROOT)/../../core/platform/common/openssl/built/ios",
 				);
+				OTHER_CFLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-fcxx-modules",
+				);
 				OTHER_LDFLAGS = "$(inherited)";
-				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/lottie-ios/Lottie.modulemap\" -Xcc -fmodule-map-file=\"${PODS_CONFIGURATION_BUILD_DIR}/lottie-react-native/lottie_react_native.modulemap\"";
+				OTHER_SWIFT_FLAGS = "";
+				PODS_BUILD_DIR = "$(BUILD_DIR)";
+				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				PODS_PODFILE_DIR_PATH = "${SRCROOT}/.";
+				PODS_ROOT = "${SRCROOT}/Pods";
 				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.staff;
 				PRODUCT_NAME = Berty;
 				PROVISIONING_PROFILE = "a6ff975a-e522-4340-a954-fe68323f6396";
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios.staff";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
-				REACT_LIBRARY_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)";
+				REACT_LIBRARY_PATH = "\b";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_INCLUDE_PATHS = "$(inherited) \"${PODS_CONFIGURATION_BUILD_DIR}/lottie-ios\" \"${PODS_CONFIGURATION_BUILD_DIR}/lottie-react-native\"";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Berty/Berty-Bridging-Header.h";
 				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
 				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
-				USER_HEADER_SEARCH_PATHS = "$(PODS_ROOT)/**";
+				USER_HEADER_SEARCH_PATHS = "\"${PODS_ROOT}/Headers\"/**";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = adhoc;

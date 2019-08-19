@@ -387,7 +387,7 @@ clean.android:
 
 .PHONY .IGNORE: clean.ios
 clean.ios:
-	cd $(IOS) && rm -rf build && xcodebuild clean
+	cd $(IOS); rm -rf build; xcodebuild clean; rm -rf $(HOME)/Library/Developer/Xcode/DerivedData; rm -rf Pods; rm -rf ~/Library/Caches/CocoaPods
 
 .PHONY .IGNORE: clean.web
 clean.web:
@@ -509,39 +509,49 @@ version.android: version
 version.ios: version
 	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) $(IOS)/Berty/Info.plist
 
+.PHONY: fastlane.match.development
 fastlane.match.development: deps.ios
 	time bundle exec fastlane run match type:development app_identifier:$(IOS_BUNDLE_ID_DEBUG) team_id:$(MATCH_COMPANY_TEAM_ID)
 
+.PHONY: fastlane.match.appstore
 fastlane.match.appstore: deps.ios
 	time bundle exec fastlane run match type:appstore app_identifier:$(IOS_BUNDLE_ID_RELEASE) team_id:$(MATCH_COMPANY_TEAM_ID)
 
+.PHONY: fastlane.match.adhoc
 fastlane.match.adhoc: deps.ios
 	time bundle exec fastlane run match force_for_new_devices:true type:adhoc app_identifier:$(IOS_BUNDLE_ID_ADHOC) team_id:$(MATCH_COMPANY_TEAM_ID)
 
+.PHONY: fastlane.match.enterprise
 fastlane.match.enterprise: deps.ios
 	time bundle exec fastlane run match type:enterprise app_identifier:$(IOS_BUNDLE_ID_HOUSE) team_id:$(MATCH_ENTERPRISE_TEAM_ID)
 
+.PHONY: fastlane.match.all
 fastlane.match.all: fastlane.match.development fastlane.match.appstore fastlane.match.adhoc fastlane.match.enterprise
 
+.PHONY: fastlane.pem.development
 fastlane.pem.development: deps.ios
 	time bundle exec fastlane voip_cert app_identifier:$(IOS_BUNDLE_ID_DEBUG) team_id:$(PEM_COMPANY_TEAM_ID) pem_name:$(IOS_BUNDLE_ID_DEBUG)-voip.pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_DEBUG) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_DEBUG)-dev.pem --development
 
+.PHONY: fastlane.pem.appstore
 fastlane.pem.appstore: deps.ios
 	time bundle exec fastlane voip_cert app_identifier:$(IOS_BUNDLE_ID_RELEASE) team_id:$(PEM_COMPANY_TEAM_ID) pem_name:$(IOS_BUNDLE_ID_RELEASE)-voip.pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_RELEASE) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_RELEASE).pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_RELEASE) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_RELEASE)-dev.pem  --development
 
+.PHONY: fastlane.pem.adhoc
 fastlane.pem.adhoc: deps.ios
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_ADHOC) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_ADHOC).pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_ADHOC) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_ADHOC)-dev.pem --development
 	time bundle exec fastlane voip_cert app_identifier:$(IOS_BUNDLE_ID_ADHOC) team_id:$(PEM_COMPANY_TEAM_ID) pem_name:$(IOS_BUNDLE_ID_ADHOC)-voip.pem
 
+.PHONY: fastlane.pem.enterprise
 fastlane.pem.enterprise: deps.ios
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_HOUSE) --team_id $(PEM_ENTERPRISE_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_HOUSE).pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_HOUSE) --team_id $(PEM_ENTERPRISE_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_HOUSE)-dev.pem --development
 	time bundle exec fastlane voip_cert app_identifier:$(IOS_BUNDLE_ID_HOUSE) team_id:$(PEM_ENTERPRISE_TEAM_ID) pem_name:$(IOS_BUNDLE_ID_HOUSE)-voip.pem
 
+.PHONY: fastlane.setup_circle
 fastlane.setup_circle:
 	bundle exec fastlane run create_keychain timeout:3600 default_keychain:true unlock:true add_to_search_list:true
 
@@ -569,30 +579,34 @@ fastlane.setup_circle:
 	security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $(KEYCHAIN_PASSWORD) $(KEYCHAIN_NAME)
 
 
+.PHONY: fastlane.ios.debug
 fastlane.ios.debug: deps.ios
 	mkdir -p $(IOS_BUILD)
 
+	FL_BUILDLOG_PATH=$(IOS_BUILD) \
 	GYM_CLEAN=false \
 	GYM_OPTION_METHOD=development \
 	GYM_OPTION_APP_ID=$(IOS_BUNDLE_ID_DEBUG) \
 	GYM_OPTION_PROVISIONING_PROFILE=$(MATCH_PROVISIONING_PROFILE_DEBUG) \
 	GYM_OUTPUT_NAME=$(NAME) \
 	GYM_OUTPUT_DIRECTORY=$(IOS_BUILD) \
-	GYM_PROJECT=ios/Berty.xcodeproj \
+	GYM_WORKSPACE=ios/Berty.xcworkspace \
 	GYM_SCHEME=debug \
 	GYM_INCLUDE_SYMBOLS=false \
 		time bundle exec fastlane ios build --verbose
 
+.PHONY: fastlane.ios.adhoc
 fastlane.ios.adhoc: deps.ios
 	mkdir -p $(IOS_BUILD)
 
+	FL_BUILDLOG_PATH=$(IOS_BUILD) \
 	GYM_CLEAN=false \
 	GYM_OPTION_METHOD=ad-hoc \
 	GYM_OPTION_APP_ID=$(IOS_BUNDLE_ID_ADHOC) \
 	GYM_OPTION_PROVISIONING_PROFILE=$(MATCH_PROVISIONING_PROFILE_ADHOC) \
 	GYM_OUTPUT_NAME=$(NAME) \
 	GYM_OUTPUT_DIRECTORY=$(IOS_BUILD) \
-	GYM_PROJECT=ios/Berty.xcodeproj \
+	GYM_WORKSPACE=ios/Berty.xcworkspace \
 	GYM_SCHEME=adhoc \
 	GYM_INCLUDE_SYMBOLS=false \
 		time bundle exec fastlane ios build --verbose
@@ -603,16 +617,18 @@ fastlane.ios.adhoc: deps.ios
 	# extract build informations
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
+.PHONY: fastlane.ios.house
 fastlane.ios.house: deps.ios
 	mkdir -p $(IOS_BUILD)
 
+	FL_BUILDLOG_PATH=$(IOS_BUILD) \
 	GYM_CLEAN=true \
 	GYM_OPTION_METHOD=enterprise \
 	GYM_OPTION_APP_ID=$(IOS_BUNDLE_ID_HOUSE) \
 	GYM_OPTION_PROVISIONING_PROFILE=$(MATCH_PROVISIONING_PROFILE_HOUSE) \
 	GYM_OUTPUT_NAME=$(NAME) \
 	GYM_OUTPUT_DIRECTORY=$(IOS_BUILD) \
-	GYM_PROJECT=ios/Berty.xcodeproj \
+	GYM_WORKSPACE=ios/Berty.xcworkspace \
 	GYM_SCHEME=house \
 	GYM_SKIP_PROFILE_DETECTION=true \
 	GYM_INCLUDE_SYMBOLS=false \
@@ -624,16 +640,18 @@ fastlane.ios.house: deps.ios
 	# extract build informations
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
+.PHONY: fastlane.ios.release
 fastlane.ios.release: deps.ios
 	mkdir -p $(IOS_BUILD)
 
+	FL_BUILDLOG_PATH=$(IOS_BUILD) \
 	GYM_CLEAN=true \
 	GYM_OPTION_METHOD=app-store \
 	GYM_OPTION_APP_ID=$(IOS_BUNDLE_ID_RELEASE) \
 	GYM_OPTION_PROVISIONING_PROFILE=$(MATCH_PROVISIONING_PROFILE_RELEASE) \
 	GYM_OUTPUT_NAME=$(NAME) \
 	GYM_OUTPUT_DIRECTORY=$(IOS_BUILD) \
-	GYM_PROJECT=ios/Berty.xcodeproj \
+	GYM_WORKSPACE=ios/Berty.xcworkspace \
 	GYM_SCHEME=house \
 	GYM_SKIP_PROFILE_DETECTION=true \
 	GYM_INCLUDE_SYMBOLS=false \
@@ -645,9 +663,11 @@ fastlane.ios.release: deps.ios
 	# extract build informations
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
+.PHONY: fastlane.ios.release.appstore
 fastlane.ios.release.appstore: fastlane.ios.release
 	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
 
+.PHONY: fastlane.android.staff
 fastlane.android.staff: deps.android
 	# get the google-services.json
 	[ -e $(PWD)/android/app/google-services.json ] \
@@ -665,6 +685,7 @@ fastlane.android.staff: deps.android
 	# check if apk is correctly signed
 	jarsigner -verify $(ANDROID_BUILD)/*.apk
 
+.PHONY: fastlane.android.yolo
 fastlane.android.yolo: deps.android
 	# get the google-services.json
 	[ -e $(PWD)/android/app/google-services.json ] \
@@ -681,6 +702,7 @@ fastlane.android.yolo: deps.android
 	# check if apk is correctly signed
 	jarsigner -verify $(ANDROID_BUILD)/*.apk
 
+.PHONY: fastlane.android.release
 fastlane.android.release: deps.android
 	# get the google-services.json
 	[ -e $(PWD)/android/app/google-services.json ] \

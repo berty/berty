@@ -248,6 +248,7 @@ android {
 }
 
 dependencies {
+    implementation project(':lottie-react-native')
     implementation project(':rn-fetch-blob')
     implementation project(':react-native-view-shot')
     implementation project(':react-native-vector-icons')
@@ -262,7 +263,6 @@ dependencies {
     implementation project(':react-native-dev-menu')
     implementation project(':react-native-config')
     implementation project(':react-native-camera')
-    implementation project(':lottie-react-native')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'com.google.firebase:firebase-messaging:17.3.4'

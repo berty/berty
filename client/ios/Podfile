@@ -6,7 +6,6 @@ target 'Berty' do
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/React'
   pod 'React-DevSupport', :path => '../node_modules/react-native/React'
-  pod 'React-fishhook', :path => '../node_modules/react-native/Libraries/fishhook'
   pod 'React-RCTActionSheet', :path => '../node_modules/react-native/Libraries/ActionSheetIOS'
   pod 'React-RCTAnimation', :path => '../node_modules/react-native/Libraries/NativeAnimation'
   pod 'React-RCTBlob', :path => '../node_modules/react-native/Libraries/Blob'
@@ -31,10 +30,6 @@ target 'Berty' do
 
   # @FIXME: https://github.com/avishayil/react-native-restart/issues/34
   pod 'RCTRestart', :path => '../node_modules/react-native-restart/ios'
-
-  pod 'lottie-ios', :path => '../node_modules/lottie-ios'
-
-  pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
 
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
@@ -64,6 +59,10 @@ target 'Berty' do
 
   pod 'react-native-config', :path => '../node_modules/react-native-config'
 
+  pod 'lottie-ios', :path => '../node_modules/lottie-ios'
+
+  pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
+
   target 'BertyTests' do
     inherit! :search_paths
     # Pods for testing
@@ -92,11 +91,11 @@ post_install do |installer|
       # "Multiple commands produce ... libReact.a"
       # "Multiple commands produce ... libyoga.a"
 
-      targets_to_ignore = %w(React yoga)
+      # targets_to_ignore = %w(React yoga)
 
-      if targets_to_ignore.include? target.name
-        target.remove_from_project
-      end
+      # if targets_to_ignore.include? target.name
+      #   target.remove_from_project
+      # end
 
       if target.name == 'react-native-config'
         phase = target.project.new(Xcodeproj::Project::Object::PBXShellScriptBuildPhase)

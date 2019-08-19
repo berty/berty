@@ -39,7 +39,7 @@ DerivedData
 *.ipa
 *.ipa.meta
 *.xcuserstate
-project.xcworkspace
+# project.xcworkspace
 *.dSYM.zip
 
 # Android/IntelliJ
