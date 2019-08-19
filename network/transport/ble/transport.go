@@ -77,7 +77,10 @@ func (t *Transport) CanDial(addr ma.Multiaddr) bool {
 func (t *Transport) Listen(lMa ma.Multiaddr) (tpt.Listener, error) {
 	// If a global listener already exists, returns an error.
 	if gListener != nil {
-		return nil, errors.New("transport listen failed: one listener maximum")
+		// TODO: restore this when published as generic lib / fixed in Berty network
+		// config update
+		// return nil, errors.New("transport listen failed: one listener maximum")
+		gListener.Close()
 	}
 
 	// Checks if lMa is a valid multiaddr
