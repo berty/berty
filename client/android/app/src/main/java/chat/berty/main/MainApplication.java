@@ -19,20 +19,12 @@ import com.imagepicker.ImagePickerPackage;
 import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
 import org.reactnative.camera.RNCameraPackage;
 import fr.greweb.reactnativeviewshot.RNViewShotPackage;
-import org.reactnative.camera.RNCameraPackage;
-import com.horcrux.svg.SvgPackage;
-import com.avishayil.rnrestart.ReactNativeRestartPackage;
-import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.pusherman.networkinfo.RNNetworkInfoPackage;
-import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
 import java.util.Arrays;
-import java.lang.System;
 import java.util.List;
 
 import chat.berty.core.CorePackage;
