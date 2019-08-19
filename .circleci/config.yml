@@ -233,6 +233,7 @@ commands:
             - ~/Library/Developer/Xcode/DerivedData
             # ios
             - ~/go/src/berty.tech/client/ios/build
+            - ~/go/src/berty.tech/client/ios/Pods
 
   mac_restore_cache:
     description: "restore mac << parameters.type >> cache"
