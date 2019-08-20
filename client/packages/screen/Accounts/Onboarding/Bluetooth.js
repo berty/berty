@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, ScrollView } from 'react-native'
+import { Text, View, ScrollView, Platform } from 'react-native'
 import { Flex } from '@berty/component'
 import { withNavigation } from 'react-navigation'
 import * as onboardingStyle from './style'
@@ -7,6 +7,7 @@ import { NextButton, SkipButton } from './Button'
 import { withNamespaces } from 'react-i18next'
 import colors from '@berty/common/constants/colors'
 import { withBridgeContext } from '@berty/bridge/Context'
+import { requestBLEAndroidPermission } from '@berty/common/helpers/permissions'
 
 const Bluetooth = ({ bridge, navigation, t }) => (
   <View style={{ backgroundColor: colors.white, flex: 1 }}>
@@ -29,13 +30,18 @@ const Bluetooth = ({ bridge, navigation, t }) => (
           </SkipButton>
           <NextButton
             onPress={async () => {
-              const config = await bridge.daemon.getNetworkConfig({})
+              if (
+                Platform.OS === 'ios' ||
+                (await requestBLEAndroidPermission())
+              ) {
+                const config = await bridge.daemon.getNetworkConfig({})
 
-              let currentConfig = JSON.parse(config.json)
-              currentConfig.BLE = true
-              await bridge.daemon.updateNetworkConfig({
-                json: JSON.stringify(currentConfig),
-              })
+                let currentConfig = JSON.parse(config.json)
+                currentConfig.BLE = true
+                await bridge.daemon.updateNetworkConfig({
+                  json: JSON.stringify(currentConfig),
+                })
+              }
               navigation.navigate('onboarding/contacts')
             }}
           >

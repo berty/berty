@@ -2,6 +2,8 @@ import { Switch } from 'react-native'
 import React, { PureComponent } from 'react'
 import { withBridgeContext } from '@berty/bridge/Context'
 import { withNavigation } from 'react-navigation'
+import { Platform } from 'react-native'
+import { requestBLEAndroidPermission } from '@berty/common/helpers/permissions'
 
 import { Header, Loader, Menu } from '@berty/component'
 
@@ -170,10 +172,15 @@ class Network extends PureComponent {
               <Switch
                 justify="end"
                 value={this.isTransportEnable('ble')}
-                onValueChange={enable => {
+                onValueChange={async enable => {
                   if (enable) {
-                    const bindP2P = this.addTransport(transports.BLE)
-                    this.updateConfig({ bindP2P })
+                    if (
+                      Platform.OS === 'ios' ||
+                      (await requestBLEAndroidPermission())
+                    ) {
+                      const bindP2P = this.addTransport(transports.BLE)
+                      this.updateConfig({ bindP2P })
+                    }
                   } else {
                     const bindP2P = this.removeTransport('ble')
                     this.updateConfig({ bindP2P })

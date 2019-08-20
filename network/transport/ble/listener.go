@@ -65,11 +65,18 @@ func newListener(lMa ma.Multiaddr, t *Transport) (*Listener, error) {
 // Accept waits for and returns the next connection to the listener.
 // Returns a Multiaddr friendly Conn.
 func (l *Listener) Accept() (tpt.CapableConn, error) {
-	select {
-	case req := <-l.inboundConnReq:
-		return newConn(l.ctx, l.transport, req.remoteMa, req.remotePeerID, true)
-	case <-l.ctx.Done():
-		return nil, errors.New("listener accept failed: listener already closed")
+	for {
+		select {
+		case req := <-l.inboundConnReq:
+			conn, err := newConn(l.ctx, l.transport, req.remoteMa, req.remotePeerID, true)
+			// If the BLE handshake failed for some reason, Accept won't return an error
+			// because otherwise it will close the listener
+			if err == nil {
+				return conn, nil
+			}
+		case <-l.ctx.Done():
+			return nil, errors.New("listener accept failed: listener already closed")
+		}
 	}
 }
 
