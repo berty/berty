@@ -63,8 +63,8 @@
     }
   },
   "permission": {
-    "buttonPositive": "Accept",
-    "buttonNegative": "Decline",
+    "buttonPositive": "Allow",
+    "buttonNegative": "Deny",
     "buttonNeutral": "Ask Me Later",
     "ble": {
       "title": "Bluetooth Low Energy Permission",

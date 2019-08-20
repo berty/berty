@@ -1,5 +1,5 @@
 import { PermissionsAndroid } from 'react-native'
-import I18n from '@berty/common/locale'
+import I18n from '../locale'
 
 export const requestAndroidPermission = async ({
   permission,
