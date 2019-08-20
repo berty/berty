@@ -3,7 +3,6 @@ package chunk
 import (
 	"errors"
 	fmt "fmt"
-	"sync"
 
 	"berty.tech/core/pkg/errorcodes"
 	"github.com/gofrs/uuid"
@@ -12,9 +11,6 @@ import (
 
 var (
 	db *gorm.DB
-
-	subscribers      = []chan []byte{}
-	subscribersMutex sync.Mutex
 )
 
 // Validate validate chunk slice
