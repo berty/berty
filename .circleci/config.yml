@@ -87,6 +87,7 @@ commands:
           name: install gomobile
           command: |
             if [ ! -f ~/go/bin/gomobile ]; then
+              go get golang.org/x/tools/go/packages
               go get golang.org/x/mobile/cmd/gomobile
               cd ~/go/src/golang.org/x/mobile
               git remote add upstream git@github.com:sfroment/mobile
