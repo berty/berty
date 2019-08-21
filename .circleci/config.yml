@@ -640,11 +640,17 @@ jobs:
           command: npm i -g cavy-cli react-native-cli
 
       - run:
+          name: prepare integration tests
+          working_directory: ~/go/src/berty.tech/client
+          command: |
+            make deps.ios
+
+      - run:
           name: run integration tests
           working_directory: ~/go/src/berty.tech/client
           command: |
-            # too many open files
-            ulimit -Sn 10240 && make test.adhoc.ios
+            ulimit -a
+            ulimit -n 16384 && make test.adhoc.ios
 
       - ios_save_cache:
           type: staff-test
@@ -757,11 +763,17 @@ jobs:
           command: npm i -g cavy-cli react-native-cli
 
       - run:
+          name: prepare integration tests
+          working_directory: ~/go/src/berty.tech/client
+          command: |
+            make deps.ios
+
+      - run:
           name: run integration tests
           working_directory: ~/go/src/berty.tech/client
           command: |
-            # too many open files
-            ulimit -Sn 65536 && make test.adhoc.ios
+            ulimit -a
+            ulimit -n 16384 && make test.house.ios
 
       - ios_save_cache:
           type: yolo-test

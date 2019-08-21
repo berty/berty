@@ -57,7 +57,6 @@ target 'Berty' do
 
   pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
 
-  pod 'react-native-config', :path => '../node_modules/react-native-config'
 
   pod 'lottie-ios', :path => '../node_modules/lottie-ios'
 
@@ -65,6 +64,8 @@ target 'Berty' do
 
 
   pod 'instabug-reactnative', :path => '../node_modules/instabug-reactnative'
+
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
 
   target 'BertyTests' do
     inherit! :search_paths
@@ -94,11 +95,11 @@ post_install do |installer|
       # "Multiple commands produce ... libReact.a"
       # "Multiple commands produce ... libyoga.a"
 
-      targets_to_ignore = %w(React yoga)
+      # targets_to_ignore = %w(React yoga)
 
-      if targets_to_ignore.include? target.name
-        target.remove_from_project
-      end
+      # if targets_to_ignore.include? target.name
+      #   target.remove_from_project
+      # end
 
       if target.name == 'react-native-config'
         phase = target.project.new(Xcodeproj::Project::Object::PBXShellScriptBuildPhase)
