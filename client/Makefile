@@ -286,7 +286,11 @@ fclean.osx:
 .PHONY: debug.ios
 debug.ios: deps.ios get_iphone_udid
 	make debug.react-native
-	$(RN) run-ios --no-packager --configuration=Debug --scheme=debug $(IOS_UDID)
+	$(RN) run-ios \
+		--no-packager \
+		--configuration=Debug \
+		--scheme=debug \
+		$(IOS_UDID)
 
 .PHONY: test.debug.ios
 test.debug.ios: RN = cavy
@@ -295,7 +299,11 @@ test.debug.ios: debug.ios
 
 .PHONY: release.ios
 release.ios: deps.ios get_iphone_udid
-	$(RN) run-ios --no-packager --configuration=Release --scheme=release $(IOS_UDID)
+	$(RN) run-ios \
+		--no-packager \
+		--configuration=Release \
+		--scheme=release \
+		$(IOS_UDID)
 
 .PHONY: test.release.ios
 test.release.ios: RN = cavy
@@ -304,7 +312,11 @@ test.release.ios: release.ios
 
 .PHONY: adhoc.ios
 adhoc.ios: deps.ios get_iphone_udid
-	$(RN) run-ios --no-packager --configuration=Release --scheme=adhoc $(IOS_UDID)
+	$(RN) run-ios \
+		--no-packager \
+		--configuration=adhoc \
+		--scheme=adhoc \
+		$(IOS_UDID)
 
 .PHONY: test.adhoc.ios
 test.adhoc.ios: RN = cavy
@@ -313,7 +325,11 @@ test.adhoc.ios: adhoc.ios
 
 .PHONY: house.ios
 house.ios: deps.ios get_iphone_udid
-	$(RN) run-ios --no-packager --configuration=Release --scheme=house $(IOS_UDID)
+	$(RN) run-ios \
+		--no-packager \
+		--configuration=house \
+		--scheme=house \
+		$(IOS_UDID)
 
 .PHONY: test.house.ios
 test.house.ios: RN = cavy
