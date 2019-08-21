@@ -47,6 +47,7 @@ type daemonOptions struct {
 	fcmAPIKeys       []string `mapstructure:"fcm-api-keys"`
 	privateKeyFile   string   `mapstructure:"private-key-file"`
 	ipfs             bool     `mapstructure:"ipfs"`
+	storePersist     bool     `mapstructure:"persist"`
 
 	// p2p
 
@@ -96,6 +97,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.PrivateNetwork, "private-network", true, "enable private network with the default swarm key")
 	flags.BoolVar(&opts.ipfs, "ipfs", false, "connect to ipfs network (override private-network & boostrap)")
 	flags.BoolVar(&opts.peerCache, "cache-peer", true, "if false, network will ask the dht every time he need to send an envelope (emit)")
+	flags.BoolVar(&opts.storePersist, "persist", false, "if true, store will be persistent")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", nil, "p2p listening address")
 	// flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
 	_ = viper.BindPFlags(flags)
@@ -151,6 +153,11 @@ func runDaemon(opts *daemonOptions) error {
 		Ipfs:           opts.ipfs,
 	}
 
+	storeType := daemon.Config_StoreMemory
+	if opts.storePersist {
+		storeType = daemon.Config_StorePersist
+	}
+
 	config := &daemon.Config{
 		SqlOpts:          sqlConfig,
 		GrpcBind:         opts.grpcBind,
@@ -166,6 +173,7 @@ func runDaemon(opts *daemonOptions) error {
 		PrivateKeyFile:   opts.privateKeyFile,
 		NoP2P:            opts.noP2P,
 		NetworkConfig:    networkConfig,
+		StoreType:        storeType,
 	}
 
 	startRequest := &daemon.StartRequest{

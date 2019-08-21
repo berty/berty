@@ -60,6 +60,12 @@ message SQLConfig {
 }
 
 message Config {
+  enum StoreType {
+    StoreMemory = 0;
+    StorePersist = 1;
+    StoreNoop = 2;
+  }
+
   SQLConfig sqlOpts = 1;
   string grpcBind = 2;
   string grpcWebBind = 3;
@@ -74,6 +80,7 @@ message Config {
   string privateKeyFile = 12;
   NetworkConfig networkConfig = 13;
   bool noP2P = 14;
+  StoreType storeType = 15;
 }
 
 // @TODO: list all ports available

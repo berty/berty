@@ -9,9 +9,12 @@ import (
 	"strings"
 
 	account "berty.tech/core/manager/account"
+	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
+
+const NetworkConfigKey = "NETWORK_CONFIG"
 
 func (d *Daemon) Initialize(ctx context.Context, cfg *Config) (*Void, error) {
 	d.config = cfg
@@ -19,6 +22,9 @@ func (d *Daemon) Initialize(ctx context.Context, cfg *Config) (*Void, error) {
 }
 
 func (d *Daemon) Start(ctx context.Context, req *StartRequest) (*Void, error) {
+	d.muConfig.Lock()
+	defer d.muConfig.Unlock()
+
 	var err error
 
 	if d.config == nil || d.config.SqlOpts == nil {
@@ -39,6 +45,19 @@ func (d *Daemon) Start(ctx context.Context, req *StartRequest) (*Void, error) {
 	if currentAccount != nil {
 		// daemon already started, no errors to return
 		return &Void{}, fmt.Errorf("daemon already started")
+	}
+
+	if err = d.openStore(req.Nickname); err != nil {
+		return nil, err
+	}
+
+	if rawconfig, err := d.store.Get(NetworkConfigKey); err == nil && rawconfig != nil {
+		var netconfig NetworkConfig
+		if err := proto.Unmarshal(rawconfig, &netconfig); err != nil {
+			logger().Warn("failed to loaded network config, fallback on default config", zap.Error(err))
+		} else {
+			d.config.NetworkConfig = &netconfig
+		}
 	}
 
 	d.accountName = req.Nickname
@@ -86,6 +105,9 @@ func (d *Daemon) GetLocalGrpcInfos(ctx context.Context, _ *Void) (*GRPCInfos, er
 }
 
 func (d *Daemon) GetNetworkConfig(ctx context.Context, _ *Void) (*NetworkConfig, error) {
+	d.muConfig.Lock()
+	defer d.muConfig.Unlock()
+
 	return d.config.NetworkConfig, nil
 }
 
@@ -223,6 +245,10 @@ func (d *Daemon) StopLocalGRPC(context.Context, *Void) (*Void, error) {
 }
 
 func (d *Daemon) UpdateNetworkConfig(ctx context.Context, nc *NetworkConfig) (*Void, error) {
+	d.muConfig.Lock()
+	defer d.muConfig.Unlock()
+	var err error
+
 	currentAccount, _ := account.Get(d.rootContext, d.accountName)
 	newHost, err := NewHost(d.rootContext, nc)
 	if err != nil {
@@ -237,5 +263,15 @@ func (d *Daemon) UpdateNetworkConfig(ctx context.Context, nc *NetworkConfig) (*V
 
 	// update config
 	d.config.NetworkConfig = nc
+
+	var raw []byte
+	if raw, err = proto.Marshal(d.config.NetworkConfig); err == nil {
+		err = d.store.Put(NetworkConfigKey, raw)
+	}
+
+	if err != nil {
+		logger().Warn("failed to persist network config through the store", zap.Error(err))
+	}
+
 	return &Void{}, nil
 }
