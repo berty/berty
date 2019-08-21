@@ -18,7 +18,7 @@
 extern os_log_t OS_LOG_BLE;
 
 unsigned short StartBleDriver(char *ma, char *peerID);
-unsigned short StopBleDriver(void);
+void StopBleDriver(void);
 unsigned short DialDevice(char *ma);
 unsigned short SendToDevice(char *ma, NSData *data);
 void CloseConnWithDevice(char *ma);

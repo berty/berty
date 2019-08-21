@@ -110,7 +110,6 @@ class GattServer extends BluetoothGattServerCallback {
             if (offset < 0) {
                 Log.d(TAG, "onCharacteristicReadRequest() remote device: " + device + " tried to read on a negative offset");
                 mBluetoothGattServer.sendResponse(device, requestId, GATT_INVALID_OFFSET, 0, null);
-                return;
             } else {
                 byte[] chunk;
                 int mtu = peerDevice.getMtu();

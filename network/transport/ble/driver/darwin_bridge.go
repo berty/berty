@@ -17,7 +17,7 @@ func StartBleDriver(localMa string, localID string) bool {
 	return native.StartBleDriver(localMa, localID)
 }
 
-func StopBleDriver() bool {
+func StopBleDriver() {
 	return native.StopBleDriver()
 }
 

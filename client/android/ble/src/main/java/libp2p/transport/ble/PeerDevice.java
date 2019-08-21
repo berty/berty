@@ -103,21 +103,7 @@ class PeerDevice {
     // Libp2p identification related
     String getAddr() { return dAddr; }
 
-    void setMultiAddr(String multiAddr) {
-        Log.d(TAG, "setMultiAddr() called for device: " + dDevice + " with current multiAddr: " + dMultiAddr + ", new multiAddr: " + multiAddr);
-
-        dMultiAddr = multiAddr;
-    }
-
     String getMultiAddr() { return dMultiAddr; }
-
-    void setPeerID(String peerID) {
-        Log.d(TAG, "setPeerID() called for device: " + dDevice + " with current peerID: " + dPeerID + ", new peerID: " + peerID);
-
-        dPeerID = peerID;
-    }
-
-    String getPeerID() { return dPeerID; }
 
     int getMtu() { return dMtu; }
 
@@ -262,20 +248,15 @@ class PeerDevice {
 
 
     // GATT related
-    private void setGatt() throws Exception {
+    private void setGatt() {
         Log.d(TAG, "setGatt() called for device: " + dDevice);
 
         if (dGatt == null) {
-            Context context = BleManager.getContext();
-            if (context == null) {
-                throw new Exception("setGatt() cant retrieve context");
-            }
-
-            dGatt = dDevice.connectGatt(BleManager.getContext(), false, BleManager.getGattCallback());
+            dGatt = dDevice.connectGatt(BleManager.getAppContext(), false, BleManager.getGattCallback());
         }
     }
 
-    private boolean connectGatt(String caller) throws Exception {
+    private boolean connectGatt(String caller) throws InterruptedException {
         Log.i(TAG, "connectGatt() called for device: " + dDevice + ", caller: " + caller);
 
         for (int attempt = 0; attempt < gattConnectMaxAttempts; attempt++) {
@@ -337,13 +318,7 @@ class PeerDevice {
     }
 
     private int getGattState(boolean client) {
-        final Context context = BleManager.getContext();
-        if (context == null) {
-            Log.e(TAG, "Can't get context");
-            return STATE_DISCONNECTED;
-        }
-
-        final BluetoothManager manager = (BluetoothManager)context.getSystemService(Context.BLUETOOTH_SERVICE);
+        final BluetoothManager manager = (BluetoothManager)BleManager.getAppContext().getSystemService(Context.BLUETOOTH_SERVICE);
         if (manager == null) {
             Log.e(TAG, "Can't get Bluetooth Manager");
             return STATE_DISCONNECTED;
@@ -421,7 +396,7 @@ class PeerDevice {
             }
         }
 
-        // Wait for services discovery completed and check that Libp2p service is found
+        // Wait for service discovery completed and check that Libp2p service is found
         if (waitServiceCheck.tryAcquire(servCheckTimeout, TimeUnit.MILLISECONDS)) {
             if (libp2pService != null) {
                 Log.i(TAG, "checkLibp2pServiceCompliance() succeeded for device: " + dDevice);
@@ -574,7 +549,6 @@ class PeerDevice {
         Log.d(TAG, "writeOnRemoteWriterCharacteristic() called for device: " + dDevice);
 
         List<byte[]> toSend = new ArrayList<>();
-        boolean writing = true;
         int length = payload.length;
         int offset = 0;
         int writeAttempt = 0;
@@ -619,7 +593,6 @@ class PeerDevice {
 
                 if (writeFailed) {
                     Log.e(TAG, "writeToRemoteWriterCharacteristic() GATT write failed for device: " + dDevice);
-                    continue;
                 }
             }
 

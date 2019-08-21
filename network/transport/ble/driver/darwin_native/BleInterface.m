@@ -34,9 +34,9 @@ unsigned short StartBleDriver(char *ma, char *peerID) {
     return 1;
 }
 
-// TODO: Implement this, check if error
-unsigned short StopBleDriver(void) {
-    return 1;
+// TODO: Implement this
+void StopBleDriver(void) {
+    return;
 }
 
 unsigned short DialDevice(char *ma) {

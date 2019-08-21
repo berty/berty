@@ -86,9 +86,7 @@ func (l *Listener) Close() error {
 	l.cancel()
 
 	// Stops the native driver.
-	if !bledrv.StopBleDriver() {
-		return errors.New("listener close failed: can't stop BLE native driver")
-	}
+	bledrv.StopBleDriver()
 
 	// Removes global listener so transport can instanciate a new one later.
 	gListener.inUse.Wait()

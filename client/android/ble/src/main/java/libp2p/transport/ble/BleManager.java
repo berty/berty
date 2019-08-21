@@ -2,7 +2,7 @@ package libp2p.transport.ble;
 
 import core.GoBridgeImplem;
 
-import android.app.Activity;
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -32,8 +32,6 @@ import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
 import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
 import static android.content.Context.BLUETOOTH_SERVICE;
 
-import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
@@ -87,44 +85,21 @@ public final class BleManager {
 
     static GattClient getGattCallback() { return mGattCallback; }
 
-    // Activity and context getters
-    private static Activity getCurrentActivity() { // Based on this blog post: https://androidreclib.wordpress.com/2014/11/22/getting-the-current-activity/
-        try {
-            Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
-            Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
-            Field activitiesField = activityThreadClass.getDeclaredField("mActivities");
-            activitiesField.setAccessible(true);
-            Object activityList = activitiesField.get(activityThread);
-            Collection activities = (Collection) activityList.getClass().getMethod("values").invoke(activityList);
+    private static Context appContext;
 
-            for (Object activityRecord : activities) {
-                Class activityRecordClass = activityRecord.getClass();
-                Field pausedField = activityRecordClass.getDeclaredField("paused");
-                pausedField.setAccessible(true);
-
-                if (!pausedField.getBoolean(activityRecord)) {
-                    Field activityField = activityRecordClass.getDeclaredField("activity");
-                    activityField.setAccessible(true);
-                    return (Activity) activityField.get(activityRecord);
-                }
+    static Context getAppContext() {
+        if (appContext == null) {
+            try {
+                Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
+                Application application = (Application) activityThreadClass.getMethod("currentApplication").invoke(null);
+                appContext = application.getApplicationContext();
+            } catch (Exception e) {
+                android.util.Log.e(TAG, "getAppContext() failed: " + e.toString());
             }
-        } catch (Exception e) {
-            Log.e(TAG, "getActivity() failed: " + e.toString());
         }
 
-        return null;
+        return appContext;
     }
-
-    static Context getContext() {
-        Activity activity = getCurrentActivity();
-
-        if (activity != null) {
-            return activity.getApplicationContext();
-        }
-
-        return null;
-    }
-
 
     // This inner class will receive update from Android when Bluetooth radio will turn on or off
     // and enable / disable the BLE driver accordingly
@@ -227,13 +202,12 @@ public final class BleManager {
             return false;
         }
 
-        // The method for getting current activity and context directly from this lib is kind of
+        // The method for getting application context directly from this lib is kind of
         // hacky. It might not work in the future. If it doesn't work anymore, we'll make sure
         // to fix it and hope that by then, Android offers a way to do it properly.
-        Activity activity = getCurrentActivity();
-        Context context = (activity != null) ? activity.getApplicationContext() : null;
-        if (activity == null || context == null) {
-            Log.e(TAG, "startBleDriver() failed: can't get current activity/context");
+        Context context = getAppContext();
+        if (context == null) {
+            Log.e(TAG, "startBleDriver() failed: can't get application context");
             return false;
         }
 
@@ -247,7 +221,7 @@ public final class BleManager {
         // ACCESS_FINE_LOCATION permission is required by BLE, you need to request it within your app
         // before calling startBleDriver().
         // See https://developer.android.com/training/permissions/requesting.html#make-the-request
-        if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.e(TAG, "startBleDriver() failed: location permission isn't granted");
             return false;
         }
@@ -266,17 +240,12 @@ public final class BleManager {
         return true;
     }
 
-    public static boolean stopBleDriver() {
+    public static void stopBleDriver() {
         Log.d(TAG, "stopBleDriver() called");
 
         // Disable the Bluetooth state watcher
         if (bleStateWatcher != null) {
-            Context context = getContext();
-
-            if (context != null) {
-                context.unregisterReceiver(bleStateWatcher);
-            }
-
+            appContext.unregisterReceiver(bleStateWatcher);
             bleStateWatcher = null;
         }
 
@@ -287,20 +256,10 @@ public final class BleManager {
 
         mGattServerCallback.closeGattServer();
         DeviceManager.disconnectFromAllDevices();
-
-        // TODO: return void
-        return true;
     }
 
     private static boolean setupService() {
         Log.d(TAG, "setupService() called");
-
-        Context context = getContext();
-
-        if (context == null) {
-            Log.e(TAG, "setupService() failed: can't get context");
-            return false;
-        }
 
         if ((mService.getCharacteristic(MA_UUID) == null && !mService.addCharacteristic(maCharacteristic))          ||
             (mService.getCharacteristic(PEER_ID_UUID) == null && !mService.addCharacteristic(peerIDCharacteristic)) ||
@@ -309,7 +268,7 @@ public final class BleManager {
             return false;
         }
 
-        BluetoothGattServer gattServer = bluetoothManager.openGattServer(context, mGattServerCallback);
+        BluetoothGattServer gattServer = bluetoothManager.openGattServer(appContext, mGattServerCallback);
         gattServer.addService(mService);
         mGattServerCallback.setBluetoothGattServer(gattServer);
 
