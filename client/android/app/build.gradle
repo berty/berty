@@ -248,6 +248,7 @@ android {
 }
 
 dependencies {
+    implementation project(':instabug-reactnative')
     implementation project(':lottie-react-native')
     implementation project(':rn-fetch-blob')
     implementation project(':react-native-view-shot')

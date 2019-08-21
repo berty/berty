@@ -63,6 +63,9 @@ target 'Berty' do
 
   pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
 
+
+  pod 'instabug-reactnative', :path => '../node_modules/instabug-reactnative'
+
   target 'BertyTests' do
     inherit! :search_paths
     # Pods for testing

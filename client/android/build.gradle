@@ -36,7 +36,7 @@ allprojects {
 
         google()
         jcenter()
-      	maven {
+    	maven {
       	    url "https://sdks.instabug.com/nexus/repository/instabug-cp"
        	}
       }
