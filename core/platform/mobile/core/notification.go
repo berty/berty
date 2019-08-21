@@ -28,7 +28,7 @@ type NativeNotificationDriver interface {
 
 type MobileNotification struct {
 	Native                NativeNotificationDriver
-	subscribers           []chan []byte
+	subscribers           []<-chan []byte
 	subscribersMutex      sync.Mutex
 	tokenSubscribers      []chan *notification.Token
 	tokenSubscribersMutex sync.Mutex
@@ -36,7 +36,7 @@ type MobileNotification struct {
 
 func NewMobileNotification() *MobileNotification {
 	return &MobileNotification{
-		subscribers:      []chan []byte{},
+		subscribers:      []<-chan []byte{},
 		tokenSubscribers: []chan *notification.Token{},
 	}
 }
@@ -96,7 +96,7 @@ func (n *MobileNotification) ReceiveToken(token *notification.Token) {
 	n.tokenSubscribersMutex.Unlock()
 }
 
-func (n *MobileNotification) Subscribe() chan []byte {
+func (n *MobileNotification) Subscribe() <-chan []byte {
 	// let chunk manager send reconstructed data
 	sub := chunk.Subscribe()
 	n.subscribersMutex.Lock()
@@ -105,7 +105,7 @@ func (n *MobileNotification) Subscribe() chan []byte {
 	return sub
 }
 
-func (n *MobileNotification) Unsubscribe(sub chan []byte) {
+func (n *MobileNotification) Unsubscribe(sub <-chan []byte) {
 	n.subscribersMutex.Lock()
 	for i := range n.subscribers {
 		if sub == n.subscribers[i] {

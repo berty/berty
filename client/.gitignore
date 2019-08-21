@@ -118,6 +118,7 @@ jsconfig.json
 
 # Cocoapods
 *.xcworkspace/
+ios/Pods
 
 # certificates
 *.ud.wulo.ios.p12

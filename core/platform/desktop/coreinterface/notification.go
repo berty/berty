@@ -52,9 +52,9 @@ func (e *ElectronNotification) Unregister() error { return nil }
 
 func (e *ElectronNotification) RefreshToken() error { return nil }
 
-func (e *ElectronNotification) Subscribe() chan []byte { return nil }
+func (e *ElectronNotification) Subscribe() <-chan []byte { return nil }
 
-func (e *ElectronNotification) Unsubscribe(chan []byte) {}
+func (e *ElectronNotification) Unsubscribe(<-chan []byte) {}
 
 func (e *ElectronNotification) SubscribeToken() chan *notification.Token { return nil }
 
