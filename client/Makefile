@@ -222,7 +222,7 @@ deps.ios: deps.lerna $(PWD)/.environment $(PWD)/ios/core.framework $(PWD)/ios/Po
 
 $(PWD)/ios/Pods/Manifest.lock: $(PWD)/package.json $(PWD)/ios/Podfile
 	$(PWD)/node_modules/.bin/react-native link --platforms=ios
-	([ ! -z "$(shell which pod)" ] && pod --version | grep '1.7.') || sudo gem install cocoapods
+	([ ! -z "$(shell which pod)" ] && [[ "$$(pod --version)" > "1.7." ]]) || sudo gem install cocoapods
 	cd ios && pod install --verbose
 
 .PHONY: $(PWD)/ios/core.framework
