@@ -644,7 +644,7 @@ jobs:
           working_directory: ~/go/src/berty.tech/client
           command: |
             # too many open files
-            ulimit -S -n 10240 && make test.adhoc.ios
+            ulimit -Sn 10240 && make test.adhoc.ios
 
       - ios_save_cache:
           type: staff-test
@@ -761,7 +761,7 @@ jobs:
           working_directory: ~/go/src/berty.tech/client
           command: |
             # too many open files
-            ulimit -S -n 10240 && make test.adhoc.ios
+            ulimit -Sn 65536 && make test.adhoc.ios
 
       - ios_save_cache:
           type: yolo-test

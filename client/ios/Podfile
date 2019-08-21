@@ -94,11 +94,11 @@ post_install do |installer|
       # "Multiple commands produce ... libReact.a"
       # "Multiple commands produce ... libyoga.a"
 
-      # targets_to_ignore = %w(React yoga)
+      targets_to_ignore = %w(React yoga)
 
-      # if targets_to_ignore.include? target.name
-      #   target.remove_from_project
-      # end
+      if targets_to_ignore.include? target.name
+        target.remove_from_project
+      end
 
       if target.name == 'react-native-config'
         phase = target.project.new(Xcodeproj::Project::Object::PBXShellScriptBuildPhase)

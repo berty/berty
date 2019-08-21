@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
@@ -40,6 +41,8 @@
 		F8799D7B2136F44E003B9FD7 /* CoreModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8799D782136F3EA003B9FD7 /* CoreModule.swift */; };
 		F893F14A22F88EAA00A4EB3A /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F893F12322F88EAA00A4EB3A /* PushKit.framework */; };
 		F893F19322F8943400A4EB3A /* core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EF7F472136A10500FDCCB5 /* core.framework */; };
+		F8C706CD230D9DE200F98C9A /* libyoga.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA51DF850E9000B6D8A /* libyoga.a */; };
+		F8C706CE230D9DEF00F98C9A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -444,6 +447,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8C706CE230D9DEF00F98C9A /* libReact.a in Frameworks */,
+				F8C706CD230D9DE200F98C9A /* libyoga.a in Frameworks */,
 				B4DB1353CBB3816CE8622EF6 /* libPods-Berty.a in Frameworks */,
 				F893F19322F8943400A4EB3A /* core.framework in Frameworks */,
 				F893F14A22F88EAA00A4EB3A /* PushKit.framework in Frameworks */,
@@ -883,7 +888,7 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = WMBQ84HN4T;
 						LastSwiftMigration = "";
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
