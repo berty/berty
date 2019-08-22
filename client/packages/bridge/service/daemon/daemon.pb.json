@@ -220,6 +220,19 @@
                 "noP2P": {
                   "type": "bool",
                   "id": 14
+                },
+                "storeType": {
+                  "type": "StoreType",
+                  "id": 15
+                }
+              },
+              "nested": {
+                "StoreType": {
+                  "values": {
+                    "StoreMemory": 0,
+                    "StorePersist": 1,
+                    "StoreNoop": 2
+                  }
                 }
               }
             },

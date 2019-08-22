@@ -3,10 +3,12 @@ package daemon
 import (
 	"context"
 	"net"
+	"sync"
 
 	account "berty.tech/core/manager/account"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/notification"
+	"berty.tech/core/pkg/store"
 )
 
 type localGRPCInfos struct {
@@ -15,9 +17,11 @@ type localGRPCInfos struct {
 }
 
 type Daemon struct {
-	cancel context.CancelFunc
-	config *Config
+	cancel   context.CancelFunc
+	config   *Config
+	muConfig sync.Mutex
 
+	store        store.Store
 	app          *deviceinfo.Application
 	grpcListener net.Listener
 	appConfig    *account.StateDB
@@ -39,5 +43,6 @@ func New() *Daemon {
 		},
 		Notification: notification.NewNoopNotification(),
 		Logger:       &NoopLogger{},
+		store:        store.NewNoopStore(),
 	}
 }

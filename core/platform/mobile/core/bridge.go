@@ -62,6 +62,7 @@ var config = &daemon.Config{
 	PrivateKeyFile:   "",
 	NoP2P:            false,
 	NetworkConfig:    networkConfig,
+	StoreType:        daemon.Config_StorePersist,
 }
 
 type NativeBridge interface {
