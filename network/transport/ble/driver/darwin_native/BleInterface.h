@@ -17,11 +17,11 @@
 
 extern os_log_t OS_LOG_BLE;
 
-unsigned short StartBleDriver(char *ma, char *peerID);
+unsigned short StartBleDriver(char *localPID);
 void StopBleDriver(void);
-unsigned short DialDevice(char *ma);
-unsigned short SendToDevice(char *ma, NSData *data);
-void CloseConnWithDevice(char *ma);
+unsigned short DialPeer(char *remotePID);
+unsigned short SendToPeer(char *remotePID, NSData *payload);
+void CloseConnWithPeer(char *remotePID);
 
 BleManager* getManager(void);
 void handleException(NSException* exception);

@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -49,7 +48,7 @@ class PeerDevice {
     private static final int servCheckTimeout = 30000;
     private static final int charDiscoveryTimeout = 1000;
 
-    // Timeout for waiting that remote device has read local MultiAddr and PeerID
+    // Timeout for waiting that remote device has read local PeerID
     private static final int waitInfosResponseTimeout = 60000;
 
     // Timeout and maximum attempts for read/write operations
@@ -67,18 +66,16 @@ class PeerDevice {
     private static final int MAXIMUM_MTU = 517; // See https://chromium.googlesource.com/aosp/platform/system/bt/+/29e794418452c8b35c2d42fe0cda81acd86bbf43/stack/include/gatt_api.h#123
 
     private BluetoothGattService libp2pService;
-    private BluetoothGattCharacteristic maCharacteristic;
     private BluetoothGattCharacteristic peerIDCharacteristic;
     private BluetoothGattCharacteristic writerCharacteristic;
 
 
     // Libp2p identification attributes
-    private String dPeerID;
-    private String dMultiAddr;
+    private String peerID;
     private boolean identified;
 
     // Semaphores / latch / buffer used for async connection / write operation / infos receptions
-    final CountDownLatch infosResponse = new CountDownLatch(2); // Latch for MultiAddr and PeerID sending to remote device
+    final Semaphore waitPeerIDResponded = new Semaphore(0); // Lock for PeerID sending to remote device
     final Semaphore waitServiceCheck = new Semaphore(0); // Lock for callback that check discovered services
     final Semaphore waitReadDone = new Semaphore(0); // Lock for waiting completion of read operation
     final Semaphore waitWriteDone = new Semaphore(0); // Lock for waiting completion of write operation
@@ -103,7 +100,7 @@ class PeerDevice {
     // Libp2p identification related
     String getAddr() { return dAddr; }
 
-    String getMultiAddr() { return dMultiAddr; }
+    String getPeerID() { return peerID; }
 
     int getMtu() { return dMtu; }
 
@@ -159,7 +156,7 @@ class PeerDevice {
                         }
                     } else {
                         if (identified) {
-                            Log.e(TAG, "asyncConnectionToDevice() reconnection failed: connection lost with previously connected device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID + ", caller: " + callerAndThread);
+                            Log.e(TAG, "asyncConnectionToDevice() reconnection failed: connection lost with previously connected device: " + dDevice + ", PeerID: " + peerID + ", caller: " + callerAndThread);
                         } else {
                             Log.e(TAG, "asyncConnectionToDevice() failed: can't connect GATT with device: " + dDevice + ", caller: " + callerAndThread);
                         }
@@ -183,7 +180,7 @@ class PeerDevice {
         }
     }
 
-    // Attempt to Libp2p handshake with remote device: read each other MultiAddr / PeerID characteristics then create a new libp2p conn
+    // Attempt to Libp2p handshake with remote device: read each other PeerID characteristics then create a new libp2p conn
     private void asyncHandshakeWithDevice(final String caller) {
         Log.d(TAG, "asyncHandshakeWithDevice() called for device: " + dDevice + ", caller: " + caller);
 
@@ -196,7 +193,7 @@ class PeerDevice {
 
                 try {
                     if (libp2pHandshake(callerAndThread)) {
-                        Log.i(TAG, "asyncHandshakeWithDevice() succeeded with device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID + ", caller: " + callerAndThread);
+                        Log.i(TAG, "asyncHandshakeWithDevice() succeeded with device: " + dDevice + ", PeerID: " + peerID + ", caller: " + callerAndThread);
                         identified = true;
 
                         if (dMtu == DEFAULT_MTU) {
@@ -206,7 +203,7 @@ class PeerDevice {
                             Thread.sleep(300); // Wait for new MTU before starting the libp2p connect
                         }
 
-                        if (BleManager.goBridge.handlePeerFound(dPeerID, dMultiAddr)) {
+                        if (BleManager.goBridge.handleFoundPeer(peerID)) {
                             Log.i(TAG, "asyncHandshakeWithDevice() peer handled successfully by golang with device: " + dDevice + ", caller: " + callerAndThread);
                         } else {
                             Log.e(TAG, "asyncHandshakeWithDevice() failed: golang can't handle new peer for device: " + dDevice + ", caller: " + callerAndThread);
@@ -350,11 +347,11 @@ class PeerDevice {
     }
 
 
-    // Check if remote device is Libp2p compliant then, if yes, two-way exchange MultiAddr and PeerID
+    // Check if remote device is Libp2p compliant then, if yes, two-way exchange PeerID
     private boolean libp2pHandshake(String caller) throws Exception {
         Log.i(TAG, "libp2pHandshake() called for device: " + dDevice + ", caller: " + caller);
 
-        if (checkPeerDeviceLibp2pCompliance() && readInfosFromRemoteDevice() && respondInfosToRemoteDevice()) {
+        if (checkPeerDeviceLibp2pCompliance() && readPeerIDFromRemoteDevice() && respondPeerIDToRemoteDevice()) {
             Log.i(TAG, "libp2pHandshake() succeeded for device: " + dDevice);
             return true;
         }
@@ -431,7 +428,6 @@ class PeerDevice {
         ExecutorService es = Executors.newFixedThreadPool(3);
         List<PopulateCharacteristic> todo = new ArrayList<>(3);
 
-        todo.add(new PopulateCharacteristic(BleManager.MA_UUID));
         todo.add(new PopulateCharacteristic(BleManager.PEER_ID_UUID));
         todo.add(new PopulateCharacteristic(BleManager.WRITER_UUID));
 
@@ -441,10 +437,7 @@ class PeerDevice {
 
             if (Thread.interrupted()) throw new InterruptedException("checkLibp2pCharacteristicsCompliance() thread interrupted");
 
-            if (characteristic != null && characteristic.getUuid().equals(BleManager.MA_UUID)) {
-                Log.d(TAG, "checkLibp2pCharacteristicsCompliance() MultiAddr characteristic retrieved: " + characteristic + " on device: " + dDevice);
-                maCharacteristic = characteristic;
-            } else if (characteristic != null && characteristic.getUuid().equals(BleManager.PEER_ID_UUID)) {
+            if (characteristic != null && characteristic.getUuid().equals(BleManager.PEER_ID_UUID)) {
                 Log.d(TAG, "checkLibp2pCharacteristicsCompliance() PeerID characteristic retrieved: " + characteristic + " on device: " + dDevice);
                 peerIDCharacteristic = characteristic;
             } else if (characteristic != null && characteristic.getUuid().equals(BleManager.WRITER_UUID)) {
@@ -458,90 +451,69 @@ class PeerDevice {
             }
         }
 
-        if (maCharacteristic != null && peerIDCharacteristic != null && writerCharacteristic != null) {
+        if (peerIDCharacteristic != null && writerCharacteristic != null) {
             Log.i(TAG, "checkLibp2pCharacteristicsCompliance() succeeded for device: " + dDevice);
             return true;
         } else {
-            Log.e(TAG, "checkLibp2pCharacteristicsCompliance() failed: can't retrieve Libp2p characteristics on device: " + dDevice + ", maCharacteristic: " + maCharacteristic + ", peerIDCharacteristic: " + peerIDCharacteristic + ", writerCharacteristic: " + writerCharacteristic);
+            Log.e(TAG, "checkLibp2pCharacteristicsCompliance() failed: can't retrieve Libp2p characteristics on device: " + dDevice + ", peerIDCharacteristic: " + peerIDCharacteristic + ", writerCharacteristic: " + writerCharacteristic);
         }
 
         return false;
     }
 
 
-    // Wait until remote device has read local MultiAddress and PeerID
-    private boolean respondInfosToRemoteDevice() throws InterruptedException {
-        Log.d(TAG, "respondInfosToRemoteDevice() called for device: " + dDevice);
+    // Wait until remote device has read local PeerID
+    private boolean respondPeerIDToRemoteDevice() throws InterruptedException {
+        Log.d(TAG, "respondPeerIDToRemoteDevice() called for device: " + dDevice);
 
-        if (infosResponse.await(waitInfosResponseTimeout, TimeUnit.MILLISECONDS)) {
-            Log.i(TAG, "respondInfosToRemoteDevice() succeeded for device: " + dDevice);
+        if (waitPeerIDResponded.tryAcquire(waitInfosResponseTimeout, TimeUnit.MILLISECONDS)) {
+            Log.i(TAG, "respondPeerIDToRemoteDevice() succeeded for device: " + dDevice);
             return true;
         }
-        Log.e(TAG, "respondInfosToRemoteDevice() timeouted for device: " + dDevice);
+        Log.e(TAG, "respondPeerIDToRemoteDevice() timeouted for device: " + dDevice);
 
         return false;
     }
 
-    // Wait until finished reading MultiAddress and PeerID from remote device
-    private boolean readInfosFromRemoteDevice() throws InterruptedException {
-        Log.d(TAG, "readInfosFromRemoteDevice() called for device: " + dDevice);
+    // Read a value on remote device's PeerID characteristic
+    private boolean readPeerIDFromRemoteDevice() throws InterruptedException {
+        Log.d(TAG, "readPeerIDFromRemoteDevice() called for device: " + dDevice);
 
-        dPeerID = readFromRemoteCharacteristic(peerIDCharacteristic);
-        if (dPeerID != null) {
-            dMultiAddr = readFromRemoteCharacteristic(maCharacteristic);
-            if (dMultiAddr != null) {
-                Log.i(TAG, "readInfosFromRemoteDevice() succeeded for device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID);
-                return true;
-            } else {
-                Log.e(TAG, "readInfosFromRemoteDevice() failed: can't read MultiAddr from device: " + dDevice);
-            }
-        } else {
-            Log.e(TAG, "readInfosFromRemoteDevice() failed: can't read PeerID from device: " + dDevice);
-        }
-
-        return false;
-    }
-
-
-    // Read a value on remote device's readable characteristic
-    private String readFromRemoteCharacteristic(BluetoothGattCharacteristic characteristic) throws InterruptedException {
-        Log.d(TAG, "readFromRemoteCharacteristic() called for device: " + dDevice + " with characteristic: " + characteristic);
-
-        for (int attempt = 0; dGatt != null && !dGatt.readCharacteristic(characteristic); attempt++) {
-            if (Thread.interrupted()) throw new InterruptedException("readFromRemoteCharacteristic() thread interrupted");
+        for (int attempt = 0; dGatt != null && !dGatt.readCharacteristic(peerIDCharacteristic); attempt++) {
+            if (Thread.interrupted()) throw new InterruptedException("readPeerIDFromRemoteDevice() thread interrupted");
 
             if (attempt == initReadWriteAttemptTimeout) {
-                Log.e(TAG, "readFromRemoteCharacteristic() wait for write init timeouted for device: " + dDevice);
-                return null;
+                Log.e(TAG, "readPeerIDFromRemoteDevice() wait for read init timeouted for device: " + dDevice);
+                return false;
             }
 
-            Log.v(TAG, "readFromRemoteCharacteristic() wait for write init: " + (attempt + 1) + "/" + initReadWriteMaxAttempts + ", device: " + dDevice);
+            Log.v(TAG, "readPeerIDFromRemoteDevice() wait for read init: " + (attempt + 1) + "/" + initReadWriteMaxAttempts + ", device: " + dDevice);
             Thread.sleep(initReadWriteAttemptTimeout);
         }
 
         if (dGatt == null) {
-            Log.e(TAG, "readFromRemoteCharacteristic() device disconnected during write operation: " + dDevice);
-            return null;
+            Log.e(TAG, "readPeerIDFromRemoteDevice() device disconnected during write operation: " + dDevice);
+            return false;
         }
 
         if (!waitReadDone.tryAcquire(readWriteDoneTimeout, TimeUnit.MILLISECONDS)) {
-            Log.e(TAG, "readFromRemoteCharacteristic() timeouted for device: " + dDevice);
-            return null;
+            Log.e(TAG, "readPeerIDFromRemoteDevice() timeouted for device: " + dDevice);
+            return false;
         }
 
         if (readFailed) {
-            Log.e(TAG, "readFromRemoteCharacteristic() GATT read failed for device: " + dDevice);
-            return null;
+            Log.e(TAG, "readPeerIDFromRemoteDevice() GATT read failed for device: " + dDevice);
+            return false;
         }
 
-        String value = characteristic.getStringValue(0);
-        if (value == null || value.length() == 0) {
-            Log.e(TAG, "readFromRemoteCharacteristic() GATT read " + (value == null ? "a null" : "an empty") + " value for device: " + dDevice + " with characteristic: " + characteristic);
-        } else {
-            Log.d(TAG, "readFromRemoteCharacteristic() succeeded for device: " + dDevice + " with characteristic: " + characteristic + " and value: " + value);
+        peerID = peerIDCharacteristic.getStringValue(0);
+        if (peerID == null || peerID.length() == 0) {
+            Log.e(TAG, "readPeerIDFromRemoteDevice() GATT read " + (peerID == null ? "a null" : "an empty") + " value for device: " + dDevice);
+            return false;
         }
 
-        return value;
+        Log.d(TAG, "readPeerIDFromRemoteDevice() succeeded for device: " + dDevice +" and value: " + peerID);
+        return true;
     }
 
     // Write a blob on remote device's writer characteristic

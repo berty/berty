@@ -35,24 +35,24 @@ type Listener struct {
 
 // connReq holds data necessary for inbound conn creation.
 type connReq struct {
-	remoteMa     ma.Multiaddr
-	remotePeerID peer.ID
+	remoteMa  ma.Multiaddr
+	remotePID peer.ID
 }
 
 // newListener starts the native driver then returns a new Listener.
-func newListener(lMa ma.Multiaddr, t *Transport) (*Listener, error) {
+func newListener(localMa ma.Multiaddr, t *Transport) (*Listener, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	listener := &Listener{
 		transport:      t,
-		localMa:        lMa,
+		localMa:        localMa,
 		inboundConnReq: make(chan connReq),
 		ctx:            ctx,
 		cancel:         cancel,
 	}
 
 	// Starts the native driver.
-	if !bledrv.StartBleDriver(listener.Addr().String(), t.host.ID().Pretty()) {
+	if !bledrv.StartBleDriver(t.host.ID().Pretty()) {
 		return nil, errors.New("listener creation failed: can't start BLE native driver")
 	}
 
@@ -68,7 +68,7 @@ func (l *Listener) Accept() (tpt.CapableConn, error) {
 	for {
 		select {
 		case req := <-l.inboundConnReq:
-			conn, err := newConn(l.ctx, l.transport, req.remoteMa, req.remotePeerID, true)
+			conn, err := newConn(l.ctx, l.transport, req.remoteMa, req.remotePID, true)
 			// If the BLE handshake failed for some reason, Accept won't return an error
 			// because otherwise it will close the listener
 			if err == nil {

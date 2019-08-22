@@ -18,8 +18,6 @@ static NSString* const __nonnull SERVICE_UUID = @"A06C6AB8-886F-4D56-82FC-2CF861
 
 static NSString* const __nonnull WRITER_UUID = @"000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1C";
 
-static NSString* const __nonnull MA_UUID = @"9B827770-DC72-4C55-B8AE-0870C7AC15A8";
-
 static NSString* const __nonnull PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A23E6B3";
 
 static NSString* const __nonnull EOD = @"EOD";
@@ -55,15 +53,9 @@ static NSString* const __nonnull EOD = @"EOD";
 - (void)initService {
     os_log(OS_LOG_BLE, "peripheralManager: initService");
     self.serviceUUID = [CBUUID UUIDWithString:SERVICE_UUID];
-    self.maUUID = [CBUUID UUIDWithString:MA_UUID];
     self.peerUUID = [CBUUID UUIDWithString:PEER_ID_UUID];
     self.writerUUID = [CBUUID UUIDWithString:WRITER_UUID];
 
-    self.maCharacteristic = [[CBMutableCharacteristic alloc]
-                             initWithType:self.maUUID
-                             properties:CBCharacteristicPropertyWrite
-                             value:nil
-                             permissions:CBAttributePermissionsWriteable];
     self.peerIDCharacteristic = [[CBMutableCharacteristic alloc]
                                  initWithType:self.peerUUID
                                  properties:CBCharacteristicPropertyWrite
@@ -78,7 +70,6 @@ static NSString* const __nonnull EOD = @"EOD";
     self.bertyService = [[CBMutableService alloc] initWithType:self.serviceUUID
                                                        primary:YES];
     self.bertyService.characteristics = @[self.writerCharacteristic,
-                                          self.maCharacteristic,
                                           self.peerIDCharacteristic];
 }
 
@@ -262,12 +253,12 @@ static NSString* const __nonnull EOD = @"EOD";
     return result;
 }
 
-- (BertyDevice *)findPeripheralFromMa:(NSString *__nonnull)ma {
+- (BertyDevice *)findPeripheralFromPeerID:(NSString *__nonnull)remotePID {
     BertyDevice *result = nil;
     NSArray *devicesCopy = [NSArray arrayWithArray:self.bDevices];
 
     for (BertyDevice *bDevice in devicesCopy) {
-        if ([bDevice.remoteMa isEqual:ma]) {
+        if ([bDevice.remotePeerID isEqual:remotePID]) {
             result = bDevice;
             break;
         }

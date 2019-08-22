@@ -63,37 +63,37 @@ final class DeviceManager {
         return null;
     }
 
-    private static PeerDevice getDeviceFromMultiAddr(String multiAddr) {
-        Log.d(TAG, "getDeviceFromMultiAddr() called with MultiAddr: " + multiAddr);
+    private static PeerDevice getDeviceFromPeerID(String peerID) {
+        Log.d(TAG, "getDeviceFromPeerID() called with PeerID: " + peerID);
 
         synchronized (peerDevices) {
             for (PeerDevice peerDevice : peerDevices.values()) {
-                if (peerDevice.getMultiAddr() != null && peerDevice.getMultiAddr().equals(multiAddr)) {
+                if (peerDevice.getPeerID() != null && peerDevice.getPeerID().equals(peerID)) {
                     return peerDevice;
                 }
             }
         }
 
-        Log.e(TAG, "getDeviceFromMultiAddr() device not found with MultiAddr: " + multiAddr);
+        Log.e(TAG, "getDeviceFromPeerID() device not found with PeerID: " + peerID);
 
         return null;
     }
 
 
     // Libp2p bound functions
-    public static boolean dialDevice(String multiAddr) {
-        Log.i(TAG, "dialDevice() called with MultiAddr: " + multiAddr);
+    public static boolean dialPeer(String remotePID) {
+        Log.i(TAG, "dialDevice() called with PeerID: " + remotePID);
 
-        PeerDevice peerDevice = getDeviceFromMultiAddr(multiAddr);
+        PeerDevice peerDevice = getDeviceFromPeerID(remotePID);
 
         return peerDevice != null && peerDevice.isGattConnected();
 
     }
 
-    public static boolean sendToDevice(String multiAddr, byte[] payload) {
-        Log.i(TAG, "writeToDevice() called with payload: " + Arrays.toString(payload) + ", hashCode: " + Arrays.toString(payload).hashCode() + ", string: " + new String(payload).replaceAll("\\p{C}", "?") + ", length: " + payload.length + ", to MultiAddr: " + multiAddr);
+    public static boolean sendToPeer(String remotePID, byte[] payload) {
+        Log.i(TAG, "writeToDevice() called with payload: " + Arrays.toString(payload) + ", hashCode: " + Arrays.toString(payload).hashCode() + ", string: " + new String(payload).replaceAll("\\p{C}", "?") + ", length: " + payload.length + ", to PeerID: " + remotePID);
 
-        PeerDevice peerDevice = getDeviceFromMultiAddr(multiAddr);
+        PeerDevice peerDevice = getDeviceFromPeerID(remotePID);
 
         if (peerDevice == null) {
             // Could happen if device has fully disconnected and libp2p isn't aware of it
@@ -113,10 +113,10 @@ final class DeviceManager {
         }
     }
 
-    public static void closeConnWithDevice(String multiAddr) {
-        Log.i(TAG, "disconnectFromDevice() called with MultiAddr: " + multiAddr);
+    public static void closeConnWithPeer(String remotePID) {
+        Log.i(TAG, "disconnectFromDevice() called with PeerID: " + remotePID);
 
-        PeerDevice peerDevice = getDeviceFromMultiAddr(multiAddr);
+        PeerDevice peerDevice = getDeviceFromPeerID(remotePID);
 
         if (peerDevice != null) {
             peerDevice.interruptConnectionThread();

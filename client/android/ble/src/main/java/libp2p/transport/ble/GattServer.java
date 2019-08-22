@@ -97,15 +97,15 @@ class GattServer extends BluetoothGattServerCallback {
             return;
         }
 
-        if (charID.equals(BleManager.PEER_ID_UUID) || charID.equals(BleManager.MA_UUID)) {
+        if (charID.equals(BleManager.PEER_ID_UUID)) {
             if (peerDevice.isIdentified()) {
-                Log.e(TAG, "onCharacteristicReadRequest() failed: identified device tried to read on PeerID or MultiAddr characteristic");
+                Log.e(TAG, "onCharacteristicReadRequest() failed: identified device tried to read on PeerID characteristic");
                 peerDevice.disconnectFromDevice("onCharacteristicReadRequest() device already identified");
                 mBluetoothGattServer.sendResponse(device, requestId, GATT_FAILURE, 0, null);
                 return;
             }
 
-            byte[] value = charID.equals(BleManager.PEER_ID_UUID) ? BleManager.getPeerID().getBytes() : BleManager.getMultiAddr().getBytes();
+            byte[] value = BleManager.getLocalPeerID().getBytes();
 
             if (offset < 0) {
                 Log.d(TAG, "onCharacteristicReadRequest() remote device: " + device + " tried to read on a negative offset");
@@ -118,7 +118,7 @@ class GattServer extends BluetoothGattServerCallback {
                     chunk = Arrays.copyOfRange(value, offset, offset + mtu);
                 } else { // Last chunk
                     chunk = Arrays.copyOfRange(value, offset, value.length);
-                    peerDevice.infosResponse.countDown(); // Countdown for PeerID / MultiAddr
+                    peerDevice.waitPeerIDResponded.release(); // Lock for PeerID characteristic response
                 }
 
                 mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, chunk);
@@ -161,7 +161,7 @@ class GattServer extends BluetoothGattServerCallback {
         }
 
         if (charID.equals(BleManager.WRITER_UUID)) {
-            Log.i(TAG, "onCharacteristicWriteRequest() called with payload: " + Arrays.toString(value) + ", hashCode: " + Arrays.toString(value).hashCode() + ", string: " + new String(value).replaceAll("\\p{C}", "?") + ", length: " + value.length + ", from MultiAddr: " + peerDevice.getMultiAddr());
+            Log.i(TAG, "onCharacteristicWriteRequest() called with payload: " + Arrays.toString(value) + ", hashCode: " + Arrays.toString(value).hashCode() + ", string: " + new String(value).replaceAll("\\p{C}", "?") + ", length: " + value.length + ", from PeerID: " + peerDevice.getPeerID());
 
             if (!peerDevice.isIdentified()) {
                 Log.e(TAG, "onCharacteristicWriteRequest() failed: unidentified device tried to write on writer characteristic");
@@ -169,7 +169,7 @@ class GattServer extends BluetoothGattServerCallback {
                 return;
             }
 
-            BleManager.goBridge.receiveFromDevice(peerDevice.getMultiAddr(), value);
+            BleManager.goBridge.receiveFromPeer(peerDevice.getPeerID(), value);
 
             if (responseNeeded) {
                 mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, 0, value);

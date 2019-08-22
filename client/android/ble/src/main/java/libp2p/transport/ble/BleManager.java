@@ -58,13 +58,11 @@ public final class BleManager {
     private static BluetoothLeScanner mBluetoothLeScanner;
 
     static final UUID SERVICE_UUID = UUID.fromString("A06C6AB8-886F-4D56-82FC-2CF8610D668D");
-    static final UUID MA_UUID = UUID.fromString("9B827770-DC72-4C55-B8AE-0870C7AC15A9");
     static final UUID PEER_ID_UUID = UUID.fromString("0EF50D30-E208-4315-B323-D05E0A23E6B5");
     static final UUID WRITER_UUID = UUID.fromString("000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1B");
     static final ParcelUuid P_SERVICE_UUID = new ParcelUuid(SERVICE_UUID);
 
     private static final BluetoothGattService mService = new BluetoothGattService(SERVICE_UUID, SERVICE_TYPE_PRIMARY);
-    private static final BluetoothGattCharacteristic maCharacteristic = new BluetoothGattCharacteristic(MA_UUID, PROPERTY_READ, PERMISSION_READ);
     private static final BluetoothGattCharacteristic peerIDCharacteristic = new BluetoothGattCharacteristic(PEER_ID_UUID, PROPERTY_READ, PERMISSION_READ);
     private static final BluetoothGattCharacteristic writerCharacteristic = new BluetoothGattCharacteristic(WRITER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
 
@@ -72,16 +70,14 @@ public final class BleManager {
     static final GoBridge goBridge = new GoBridgeImplem();
 
     public interface GoBridge {
-        boolean handlePeerFound(String peerID, String multiAddr);
-        void receiveFromDevice(String multiAddr, byte[] payload);
+        boolean handleFoundPeer(String remotePID);
+        void receiveFromPeer(String remotePID, byte[] payload);
         void log(String tag, String level, String log);
     }
 
     static boolean isDriverEnabled() { return driverEnabled; }
 
-    static String getMultiAddr() { return maCharacteristic.getStringValue(0); }
-
-    static String getPeerID() { return peerIDCharacteristic.getStringValue(0); }
+    static String getLocalPeerID() { return peerIDCharacteristic.getStringValue(0); }
 
     static GattClient getGattCallback() { return mGattCallback; }
 
@@ -192,7 +188,7 @@ public final class BleManager {
         }
     }
 
-    public static boolean startBleDriver(String multiAddr, String peerID) {
+    public static boolean startBleDriver(String localPID) {
         Log.d(TAG, "startBleDriver() called");
 
         // This device may not support Bluetooth
@@ -226,9 +222,8 @@ public final class BleManager {
             return false;
         }
 
-        // Set MultiAddr and PeerID characteristics
-        maCharacteristic.setValue(multiAddr);
-        peerIDCharacteristic.setValue(peerID);
+        // Set PeerID as characteristic value
+        peerIDCharacteristic.setValue(localPID);
 
         // If Bluetooth is turned off when calling startBleDriver, it won't fail. A Bluetooth state watcher
         // will run in background and will start/stop BLE driver according to the Bluetooth adapter state.
@@ -261,8 +256,7 @@ public final class BleManager {
     private static boolean setupService() {
         Log.d(TAG, "setupService() called");
 
-        if ((mService.getCharacteristic(MA_UUID) == null && !mService.addCharacteristic(maCharacteristic))          ||
-            (mService.getCharacteristic(PEER_ID_UUID) == null && !mService.addCharacteristic(peerIDCharacteristic)) ||
+        if ((mService.getCharacteristic(PEER_ID_UUID) == null && !mService.addCharacteristic(peerIDCharacteristic)) ||
             (mService.getCharacteristic(WRITER_UUID) == null && !mService.addCharacteristic(writerCharacteristic))) {
             Log.e(TAG, "setupService() failed: can't add characteristics to service");
             return false;

@@ -19,12 +19,12 @@ func NewGoBridgeImplem() *GoBridgeImplem {
 	return &GoBridgeImplem{}
 }
 
-func (gb *GoBridgeImplem) HandlePeerFound(rID string, rAddr string) bool {
-	return bledrv.HandlePeerFound(rID, rAddr)
+func (gb *GoBridgeImplem) HandleFoundPeer(remotePID string) bool {
+	return bledrv.HandleFoundPeer(remotePID)
 }
 
-func (gb *GoBridgeImplem) ReceiveFromDevice(rAddr string, payload []byte) {
-	bledrv.ReceiveFromDevice(rAddr, payload)
+func (gb *GoBridgeImplem) ReceiveFromPeer(remotePID string, payload []byte) {
+	bledrv.ReceiveFromPeer(remotePID, payload)
 }
 
 func (gb *GoBridgeImplem) Log(tag string, level string, log string) {
@@ -50,7 +50,7 @@ func bindBleFunc() {
 	// Bind Go -> Native functions
 	bledrv.StartBleDriver = BleManager.StartBleDriver
 	bledrv.StopBleDriver = BleManager.StopBleDriver
-	bledrv.DialDevice = DeviceManager.DialDevice
-	bledrv.SendToDevice = DeviceManager.SendToDevice
-	bledrv.CloseConnWithDevice = DeviceManager.CloseConnWithDevice
+	bledrv.DialPeer = DeviceManager.DialPeer
+	bledrv.SendToPeer = DeviceManager.SendToPeer
+	bledrv.CloseConnWithPeer = DeviceManager.CloseConnWithPeer
 }

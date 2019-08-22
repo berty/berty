@@ -3,17 +3,17 @@
 package driver
 
 // Native -> Go functions
-var HandlePeerFound func(remoteAddr string, remoteID string) bool = nil
-var ReceiveFromDevice func(remoteMa string, payload []byte) = nil
+var HandleFoundPeer func(remotePID string) bool = nil
+var ReceiveFromPeer func(remotePID string, payload []byte) = nil
 
-func BindNativeToGoFunctions(hpf func(string, string) bool, rfd func(string, []byte)) {
-	HandlePeerFound = hpf
-	ReceiveFromDevice = rfd
+func BindNativeToGoFunctions(hfp func(string) bool, rfp func(string, []byte)) {
+	HandleFoundPeer = hfp
+	ReceiveFromPeer = rfp
 }
 
 // Go -> Native functions
-var StartBleDriver func(localMa string, localID string) bool = nil
+var StartBleDriver func(localPID string) bool = nil
 var StopBleDriver func() = nil
-var DialDevice func(remoteMa string) bool = nil
-var SendToDevice func(remoteMa string, payload []byte) bool = nil
-var CloseConnWithDevice func(remoteMa string) = nil
+var DialPeer func(remotePID string) bool = nil
+var SendToPeer func(remotePID string, payload []byte) bool = nil
+var CloseConnWithPeer func(remotePID string) = nil

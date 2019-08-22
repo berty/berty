@@ -20,13 +20,10 @@
 @interface BleManager : NSObject <CBPeripheralManagerDelegate, CBCentralManagerDelegate>
 
 @property (nonatomic, strong, nonnull) CBMutableService *bertyService;
-@property (nonatomic, strong, nonnull) CBMutableCharacteristic *maCharacteristic;
 @property (nonatomic, strong, nonnull) CBMutableCharacteristic *peerIDCharacteristic;
 @property (nonatomic, strong, nonnull) CBMutableCharacteristic *writerCharacteristic;
-@property (nonatomic, strong, nullable) NSString *ma;
 @property (nonatomic, strong, nullable) NSString *peerID;
 @property (nonatomic, strong, nonnull) CBUUID *serviceUUID;
-@property (nonatomic, strong, nonnull) CBUUID *maUUID;
 @property (nonatomic, strong, nonnull) CBUUID *peerUUID;
 @property (nonatomic, strong, nonnull) CBUUID *writerUUID;
 @property (nonatomic, strong, nonnull) NSMutableArray *bDevices;
@@ -41,7 +38,7 @@
 - (void)startScanning;
 - (void)startAdvertising;
 - (BertyDevice *__nullable)findPeripheralFromIdentifier:(NSUUID *__nonnull)identifier;
-- (BertyDevice *__nullable)findPeripheralFromMa:(NSString *__nonnull)ma;
+- (BertyDevice *__nullable)findPeripheralFromPeerID:(NSString *__nonnull)remotePID;
 
 @end
 

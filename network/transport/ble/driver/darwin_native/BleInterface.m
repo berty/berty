@@ -24,10 +24,9 @@ BleManager* getManager(void) {
 }
 
 // TODO: Check if init failed
-unsigned short StartBleDriver(char *ma, char *peerID) {
+unsigned short StartBleDriver(char *localPID) {
     OS_LOG_BLE = os_log_create("chat.berty.io.network.transport.ble.driver", "CoreModule");
-    [getManager() setMa:[NSString stringWithUTF8String:ma]];
-    [getManager() setPeerID:[NSString stringWithUTF8String:peerID]];
+    [getManager() setPeerID:[NSString stringWithUTF8String:localPID]];
     [getManager() startScanning];
     [getManager() startAdvertising];
     NSSetUncaughtExceptionHandler(handleException);
@@ -39,8 +38,8 @@ void StopBleDriver(void) {
     return;
 }
 
-unsigned short DialDevice(char *ma) {
-    BertyDevice *bDevice = [getManager() findPeripheralFromMa:[NSString stringWithUTF8String:ma]];
+unsigned short DialPeer(char *remotePID) {
+    BertyDevice *bDevice = [getManager() findPeripheralFromPeerID:[NSString stringWithUTF8String:remotePID]];
     if (bDevice != nil) {
         return 1;
     }
@@ -48,13 +47,13 @@ unsigned short DialDevice(char *ma) {
 }
 
 // TODO: Check if write succeeded?
-unsigned short SendToDevice(char *ma, NSData *data) {
-    BertyDevice *bDevice = [getManager() findPeripheralFromMa:[NSString stringWithUTF8String:ma]];
+unsigned short SendToPeer(char *remotePID, NSData *payload) {
+    BertyDevice *bDevice = [getManager() findPeripheralFromPeerID:[NSString stringWithUTF8String:remotePID]];
     if (bDevice != nil) {
         __block NSError *blockError = nil;
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
 
-        [bDevice writeToCharacteristic:[NSMutableData dataWithData:data] forCharacteristic:bDevice.writer withEOD:FALSE andBlock:^(NSError *error) {
+        [bDevice writeToCharacteristic:[NSMutableData dataWithData:payload] forCharacteristic:bDevice.writer withEOD:FALSE andBlock:^(NSError *error) {
             blockError = error;
             dispatch_semaphore_signal(sema);
         }];
@@ -63,12 +62,12 @@ unsigned short SendToDevice(char *ma, NSData *data) {
         return 1;
     }
 
-    os_log_error(OS_LOG_BLE, "writeNSData() no device found can't write");
+    os_log_error(OS_LOG_BLE, "SendToPeer() peer not found: can't write");
     return 0;
 }
 
 // TODO: Implement this
-void CloseConnWithDevice(char *ma) {
+void CloseConnWithPeer(char *remotePID) {
 }
 
 void handleException(NSException* exception) {

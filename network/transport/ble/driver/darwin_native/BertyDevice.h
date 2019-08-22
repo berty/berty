@@ -23,22 +23,18 @@ typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
 
 @property (nonatomic, strong, nonnull) NSDictionary *serviceDict;
 @property (readwrite) BOOL isConnected;
-@property (readwrite) BOOL maSend;
 @property (readwrite) BOOL peerIDSend;
-@property (readwrite) BOOL maRecv;
 @property (readwrite) BOOL peerIDRecv;
 @property (nonatomic, strong, nonnull) CBPeripheral *peripheral;
 @property (nonatomic, strong, nonnull) BleManager *manager;
 @property (nonatomic, strong, nonnull) dispatch_queue_t dQueue;
 @property (nonatomic, strong, nonnull) dispatch_queue_t writeQueue;
-@property (nonatomic, strong, nullable) CBCharacteristic *ma;
 @property (nonatomic, strong, nullable) CBCharacteristic *peerID;
 @property (nonatomic, strong, nullable) CBCharacteristic *writer;
 @property (nonatomic, strong, nonnull) NSDictionary* characteristicHandlers;
 @property (nonatomic, strong, nonnull) NSDictionary* characteristicDatas;
 @property (nonatomic, strong, nullable) CBCentral* remoteCentral;
 @property (nonatomic, strong, nullable) NSMutableData *remainingData;
-@property (nonatomic, strong, nullable) NSString *remoteMa;
 @property (nonatomic, strong, nullable) NSString *remotePeerID;
 
 - (instancetype __nullable)initWithPeripheral:(CBPeripheral *__nonnull)peripheral central:(BleManager *__nonnull)manager;
