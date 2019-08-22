@@ -1,10 +1,12 @@
 package node
 
 import (
+	"berty.tech/core/chunk"
 	"context"
 	"crypto/x509"
 	"encoding/base64"
 	"fmt"
+	"go.uber.org/zap"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
@@ -20,7 +22,11 @@ import (
 	"berty.tech/core/sql"
 	bsql "berty.tech/core/sql"
 	network_metric "berty.tech/network/metric"
+	push "berty.tech/zero-push/proto/push"
+	pushService "berty.tech/zero-push/proto/service"
 )
+
+const pushServerAddr = "dns:///push.berty.tech:1337"
 
 // WithentityGrpcServer registers the Node as a 'berty.entity' protobuf server implementation
 func WithP2PGrpcServer(gs *grpc.Server) NewNodeOption {
@@ -168,23 +174,55 @@ func (n *Node) pushEvent(ctx context.Context, event *entity.Event, envelope *ent
 		return nil
 	}
 
+	logger().Info(fmt.Sprintf("pushing event to %d destinations", len(pushIdentifiers)))
+
 	marshaledEnvelope, err := envelope.Marshal()
 	if err != nil {
 		return errorcodes.ErrSerialization.Wrap(err)
 	}
 
+	chunks, err := chunk.Split(marshaledEnvelope, 2000)
+
+	if err != nil {
+		return errorcodes.ErrPushBroadcast.Wrap(err)
+	}
+
+	conn, err := grpc.Dial(pushServerAddr, grpc.WithInsecure())
+	if err != nil {
+		return errorcodes.ErrPushBroadcast.Wrap(err)
+	}
+
 	for _, pushIdentifier := range pushIdentifiers {
-		if err := n.EnqueueOutgoingEvent(ctx,
-			n.NewEvent(ctx).
-				SetToContactID(pushIdentifier.RelayPubkey).
-				SetDevicePushToAttrs(&entity.DevicePushToAttrs{
-					Priority:       event.PushPriority(),
-					PushIdentifier: pushIdentifier.PushInfo,
-					Envelope:       marshaledEnvelope,
-				}),
-		); err != nil {
-			return errorcodes.ErrPushBroadcast.Wrap(err)
+		var pushMessages []*push.PushData
+
+		logger().Info(fmt.Sprintf("connecting to push notification server on %s", pushServerAddr))
+
+		pushClient := pushService.NewPushServiceClient(conn)
+
+		for _, c := range chunks {
+			pushData := &push.PushData{
+				Priority:       event.PushPriority(),
+				PushIdentifier: pushIdentifier.PushInfo,
+				Envelope:       c.GetData(),
+			}
+
+			pushMessages = append(pushMessages, pushData)
 		}
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		_, err = pushClient.PushTo(ctx, &push.PushToInput{
+			PushData: pushMessages,
+		})
+
+		cancel()
+
+		if err != nil {
+
+			logger().Error("error while pushing data to device", zap.Error(err))
+			continue
+		}
+
+		_ = conn.Close()
 	}
 
 	return nil

@@ -48,21 +48,18 @@ var networkConfig = &daemon.NetworkConfig{
 }
 
 var config = &daemon.Config{
-	SqlOpts:          sqlConfig,
-	GrpcBind:         ":1337",
-	GrpcWebBind:      ":8737",
-	HideBanner:       true,
-	DropDatabase:     false,
-	InitOnly:         false,
-	WithBot:          false,
-	Notification:     true,
-	ApnsCerts:        []string{},
-	ApnsDevVoipCerts: []string{},
-	FcmAPIKeys:       []string{},
-	PrivateKeyFile:   "",
-	NoP2P:            false,
-	NetworkConfig:    networkConfig,
-	StoreType:        daemon.Config_StorePersist,
+	SqlOpts:        sqlConfig,
+	GrpcBind:       ":1337",
+	GrpcWebBind:    ":8737",
+	HideBanner:     true,
+	DropDatabase:   false,
+	InitOnly:       false,
+	WithBot:        false,
+	Notification:   true,
+	PrivateKeyFile: "",
+	NoP2P:          false,
+	NetworkConfig:  networkConfig,
+	StoreType:      daemon.Config_StorePersist,
 }
 
 type NativeBridge interface {

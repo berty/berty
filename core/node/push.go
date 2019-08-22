@@ -8,15 +8,9 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
-	"berty.tech/core/push"
+	push "berty.tech/zero-push/proto/push"
 	"go.uber.org/zap"
 )
-
-func WithPushManager(pushManager *push.Manager) NewNodeOption {
-	return func(n *Node) {
-		n.pushManager = pushManager
-	}
-}
 
 func (n *Node) UsePushTokenSubscriber(ctx context.Context) {
 	var err error

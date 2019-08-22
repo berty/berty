@@ -1,17 +1,17 @@
 package node
 
 import (
-	"context"
-	"crypto/x509"
-	"encoding/base64"
-
 	"berty.tech/core/api/node"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
-	"berty.tech/core/push"
 	"berty.tech/core/sql"
+	"berty.tech/zero-push/proto/push"
+	"context"
+	"crypto/x509"
+	"encoding/base64"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 func (n *Node) DevicePushConfigList(input *node.Void, stream node.Service_DevicePushConfigListServer) error {
@@ -64,6 +64,7 @@ func (n *Node) DevicePushConfigCreate(ctx context.Context, input *node.DevicePus
 	}
 
 	if _, err := x509.ParsePKIXPublicKey(pubKeyBytes); err != nil {
+		logger().Error("unable to parse public key", zap.Error(err))
 		return nil, errorcodes.ErrCryptoKeyDecode.Wrap(err)
 	}
 

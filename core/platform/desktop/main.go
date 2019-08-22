@@ -68,20 +68,17 @@ func main() {
 	}
 
 	config := &daemon.Config{
-		SqlOpts:          sqlConfig,
-		GrpcBind:         ":1337",
-		GrpcWebBind:      ":1339",
-		HideBanner:       true,
-		DropDatabase:     false,
-		InitOnly:         false,
-		WithBot:          false,
-		Notification:     true,
-		ApnsCerts:        []string{},
-		ApnsDevVoipCerts: []string{},
-		FcmAPIKeys:       []string{},
-		PrivateKeyFile:   "",
-		NoP2P:            false,
-		NetworkConfig:    networkConfig,
+		SqlOpts:        sqlConfig,
+		GrpcBind:       ":1337",
+		GrpcWebBind:    ":1339",
+		HideBanner:     true,
+		DropDatabase:   false,
+		InitOnly:       false,
+		WithBot:        false,
+		Notification:   true,
+		PrivateKeyFile: "",
+		NoP2P:          false,
+		NetworkConfig:  networkConfig,
 	}
 
 	// Init

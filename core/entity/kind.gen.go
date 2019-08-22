@@ -536,28 +536,6 @@ func (e *Event) SetDeviceUpdatePushConfigAttrs(attrs *DeviceUpdatePushConfigAttr
 	return e
 }
 
-// GetDevicePushToAttrs is a typesafe version of GetAttrs
-func (e *Event) GetDevicePushToAttrs() (*DevicePushToAttrs, error) {
-	if e.Attributes == nil || len(e.Attributes) == 0 {
-		return &DevicePushToAttrs{}, nil
-	}
-	var attrs DevicePushToAttrs
-	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
-}
-
-// SetDevicePushToAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetDevicePushToAttrs(attrs *DevicePushToAttrs) *Event {
-	e.Kind = Kind_DevicePushTo
-	if attrs != nil {
-		raw, err := proto.Marshal(attrs)
-		if err != nil {
-			e.SetErr(err)
-		}
-		e.Attributes = raw
-	}
-	return e
-}
-
 // GetNodeAttrs is a typesafe version of GetAttrs
 func (e *Event) GetNodeAttrs() (*NodeAttrs, error) {
 	if e.Attributes == nil || len(e.Attributes) == 0 {
@@ -631,8 +609,6 @@ func (e *Event) GetAttrs() (proto.Message, error) {
 		return e.GetSenderAliasUpdateAttrs()
 	case Kind_DeviceUpdatePushConfig:
 		return e.GetDeviceUpdatePushConfigAttrs()
-	case Kind_DevicePushTo:
-		return e.GetDevicePushToAttrs()
 	case Kind_Node:
 		return e.GetNodeAttrs()
 	}

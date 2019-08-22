@@ -16,7 +16,7 @@ import "berty.tech/network/metric/metric.proto";
 import "berty.tech/network/metric/peer.proto";
 import "pkg/deviceinfo/deviceinfo.proto";
 import "pkg/validate/validate.proto";
-import "push/push.proto";
+import "berty.tech/zero-push/proto/push/push.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -275,7 +275,7 @@ message ConversationManageMembersInput {
 message DevicePushConfigCreateInput {
   string relay_pubkey = 1 [(gogoproto.customname) = "RelayPubkey"];
   bytes push_id = 2 [(gogoproto.customname) = "PushID"];
-  berty.push.DevicePushType push_type = 3;
+  push.DevicePushType push_type = 3;
 }
 
 //

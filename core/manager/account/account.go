@@ -26,7 +26,6 @@ import (
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
-	"berty.tech/core/push"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
 	"berty.tech/network"
@@ -98,8 +97,7 @@ type Account struct {
 
 	errChan chan error
 
-	ring        *zapring.Ring
-	pushManager *push.Manager
+	ring *zapring.Ring
 
 	shutdown       chan struct{}
 	privateKeyPath string
@@ -484,7 +482,6 @@ func (a *Account) initNode(ctx context.Context) error {
 		node.WithConfig(),
 		node.WithRing(a.ring),
 		node.WithNotificationDriver(a.notification),
-		node.WithPushManager(a.pushManager),
 	)
 	if err != nil {
 		return errorcodes.ErrAccManagerInitNode.Wrap(err)

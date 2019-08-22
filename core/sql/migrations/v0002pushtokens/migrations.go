@@ -3,11 +3,11 @@ package v0002pushtokens
 import (
 	"time"
 
-	"berty.tech/core/push"
-	gormigrate "gopkg.in/gormigrate.v1"
 	"github.com/jinzhu/gorm"
+	gormigrate "gopkg.in/gormigrate.v1"
 )
 
+type DevicePushType int32
 type Device_Status int32
 
 type DevicePushIdentifier struct {
@@ -37,16 +37,16 @@ type Device struct {
 }
 
 type DevicePushConfig struct {
-	ID                   string              `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" gorm:"primary_key"`
-	CreatedAt            time.Time           `protobuf:"bytes,2,opt,name=created_at,json=createdAt,stdtime" json:"created_at"`
-	UpdatedAt            time.Time           `protobuf:"bytes,3,opt,name=updated_at,json=updatedAt,stdtime" json:"updated_at"`
-	DeviceID             string              `protobuf:"bytes,4,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
-	PushType             push.DevicePushType `protobuf:"varint,5,opt,name=push_type,json=pushType,proto3,enum=berty.push.DevicePushType" json:"push_type,omitempty"`
-	PushID               []byte              `protobuf:"bytes,6,opt,name=push_id,json=pushId,proto3" json:"push_id,omitempty"`
-	RelayPubkey          string              `protobuf:"bytes,7,opt,name=relay_pubkey,json=relayPubkey,proto3" json:"relay_pubkey,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
-	XXX_unrecognized     []byte              `json:"-"`
-	XXX_sizecache        int32               `json:"-"`
+	ID                   string         `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" gorm:"primary_key"`
+	CreatedAt            time.Time      `protobuf:"bytes,2,opt,name=created_at,json=createdAt,stdtime" json:"created_at"`
+	UpdatedAt            time.Time      `protobuf:"bytes,3,opt,name=updated_at,json=updatedAt,stdtime" json:"updated_at"`
+	DeviceID             string         `protobuf:"bytes,4,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
+	PushType             DevicePushType `protobuf:"varint,5,opt,name=push_type,json=pushType,proto3,enum=berty.push.DevicePushType" json:"push_type,omitempty"`
+	PushID               []byte         `protobuf:"bytes,6,opt,name=push_id,json=pushId,proto3" json:"push_id,omitempty"`
+	RelayPubkey          string         `protobuf:"bytes,7,opt,name=relay_pubkey,json=relayPubkey,proto3" json:"relay_pubkey,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
 }
 
 func GetMigration() *gormigrate.Migration {

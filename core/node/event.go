@@ -104,7 +104,6 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 		entity.Kind_SenderAliasUpdate:      n.handleSenderAliasUpdate,
 		entity.Kind_Ack:                    n.handleAck,
 		entity.Kind_Seen:                   n.handleSeen,
-		entity.Kind_DevicePushTo:           n.handleDevicePushTo,
 		entity.Kind_DeviceUpdatePushConfig: n.handleDeviceUpdatePushConfig,
 	}[input.Kind]
 	var handlingError error
@@ -128,20 +127,11 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 		n.LogBackgroundError(ctx, errors.Wrap(handlingError, "entity.Handle event"))
 	}
 
-	if input.Kind != entity.Kind_DevicePushTo {
-		if err := sql.Save(input).Error; err != nil {
-			return errorcodes.ErrDbUpdate.Wrap(err)
-		}
-	}
-
 	// asynchronously ack, maybe we can ignore this one?
 	if err := n.EnqueueOutgoingEventWithOptions(ctx,
 		n.NewEvent(ctx).
 			SetToContactID(input.SourceDeviceID).
 			SetAckAttrs(&entity.AckAttrs{IDs: []string{input.ID}}),
-		&OutgoingEventOptions{
-			DisableEventLogging: input.Kind == entity.Kind_DevicePushTo,
-		},
 	); err != nil {
 		return err
 	}

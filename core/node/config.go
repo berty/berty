@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 
 	"berty.tech/core/pkg/errorcodes"
-	"berty.tech/core/push"
+	"berty.tech/zero-push/proto/push"
 
 	"github.com/gofrs/uuid"
 	"github.com/gogo/protobuf/proto"
@@ -18,6 +18,11 @@ import (
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
 )
+
+var DefaultPushRelayPubkeys = map[push.DevicePushType]string{
+	push.DevicePushType_APNS: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlICvrOxGk1uI7wzTtjiQWlXku8ooMOacggZJ4mjIQQe1mc1W38YTYlFEbnKiwS7FnhqWusimKIi7DVmhmrO3OFl8VTfIsPW/dMrsefBHNSaKM72pTdjVjmVRsypZdchvSgGL2VgKENTyPtUjrG24UBfaeVr3fGYM38d599midNmLJRzOqbqMOeBsomHpKrTnhu/VqF/gvqxKJBbsxvgL0VqXFSkWVgzoOE+hrHIXdL3mOtYtzi/6nZzU+uIcm6guJQoJ6hE2Wl9sO8x/lCPrSPJ/a8QDwOHoS7q9uXx4KX97dr3YZhmVa+aMsT36Z9Np31HBcCodvv5+Vppk1uBGBwIDAQAB",
+	push.DevicePushType_FCM:  "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlICvrOxGk1uI7wzTtjiQWlXku8ooMOacggZJ4mjIQQe1mc1W38YTYlFEbnKiwS7FnhqWusimKIi7DVmhmrO3OFl8VTfIsPW/dMrsefBHNSaKM72pTdjVjmVRsypZdchvSgGL2VgKENTyPtUjrG24UBfaeVr3fGYM38d599midNmLJRzOqbqMOeBsomHpKrTnhu/VqF/gvqxKJBbsxvgL0VqXFSkWVgzoOE+hrHIXdL3mOtYtzi/6nZzU+uIcm6guJQoJ6hE2Wl9sO8x/lCPrSPJ/a8QDwOHoS7q9uXx4KX97dr3YZhmVa+aMsT36Z9Np31HBcCodvv5+Vppk1uBGBwIDAQAB",
+}
 
 func WithRing(ring *zapring.Ring) NewNodeOption {
 	return func(n *Node) {
@@ -43,8 +48,8 @@ func WithInitConfig() NewNodeOption {
 
 			config = &entity.Config{
 				ID:                         ID.String(),
-				PushRelayPubkeyAPNS:        push.DefaultPushRelayPubkeys[push.DevicePushType_APNS],
-				PushRelayPubkeyFCM:         push.DefaultPushRelayPubkeys[push.DevicePushType_FCM],
+				PushRelayPubkeyAPNS:        DefaultPushRelayPubkeys[push.DevicePushType_APNS],
+				PushRelayPubkeyFCM:         DefaultPushRelayPubkeys[push.DevicePushType_FCM],
 				NotificationsEnabled:       false,
 				NotificationsPreviews:      true,
 				DebugNotificationVerbosity: entity.DebugVerbosity_VERBOSITY_LEVEL_ERROR,
