@@ -90,10 +90,12 @@ project.ext.react = [
     bundleInYolo: true,
     devDisabledInYolo: true, // set this to false to enable debug mode on Yolo release
 
-    enableHermes: false,  // clean and rebuild if changing
+    enableHermes: true,  // clean and rebuild if changing
 ]
 
-apply from: "../../node_modules/react-native/react.gradle"
+// FIXME: change path with "../../node_modules/react-native/react.gradle"
+// FIXME: when https://github.com/facebook/react-native/issues/25609 will be fixed
+apply from: "./react.gradle"
 
 project.ext.envConfigFiles = [
     debug: ".environment",
@@ -275,7 +277,9 @@ dependencies {
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermesvm/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")
-            releaseImplementation files(hermesPath + "hermes-release.aar")
+        releaseImplementation files(hermesPath + "hermes-release.aar")
+        staffImplementation files(hermesPath + "hermes-release.aar")
+        yoloImplementation files(hermesPath + "hermes-release.aar")
     } else {
         implementation jscFlavor
     }
