@@ -6,8 +6,10 @@ import {
 import RNRestart from 'react-native-restart'
 import I18n from 'i18next'
 import { isIntegrationMode } from '../constants/query'
+import Reporter from '@berty/reporter'
 
 const exceptionHandler = (error, isFatal) => {
+  Reporter.crash(error)
   Alert.alert(
     I18n.t('unexpected-error'),
     `${isFatal ? 'Fatal: ' : ''}${

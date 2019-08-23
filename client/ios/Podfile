@@ -63,9 +63,11 @@ target 'Berty' do
   pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
 
 
-  pod 'instabug-reactnative', :path => '../node_modules/instabug-reactnative'
 
   pod 'react-native-config', :path => '../node_modules/react-native-config'
+
+
+
 
   target 'BertyTests' do
     inherit! :search_paths
@@ -86,32 +88,32 @@ target 'Berty-tvOS' do
 end
 
 # @FIXME: remove this when react-native-config could be use with react-native >= 0.60
-post_install do |installer|
-    installer.pods_project.targets.each do |target|
-
-      # The following is needed to ensure the "archive" step works in XCode.
-      # It removes React & Yoga from the Pods project, as it is already included in the main project.
-      # Without this, you'd see errors when you archive like:
-      # "Multiple commands produce ... libReact.a"
-      # "Multiple commands produce ... libyoga.a"
-
-      # targets_to_ignore = %w(React yoga)
-
-      # if targets_to_ignore.include? target.name
-      #   target.remove_from_project
-      # end
-
-      if target.name == 'react-native-config'
-        phase = target.project.new(Xcodeproj::Project::Object::PBXShellScriptBuildPhase)
-        phase.shell_script = "cd ../../"\
-                             " && RNC_ROOT=./node_modules/react-native-config/"\
-                             " && export SYMROOT=$RNC_ROOT/ios/ReactNativeConfig"\
-                             " && export BUILD_DIR=$RNC_ROOT/ios/ReactNativeConfig"\
-                             " && ruby $RNC_ROOT/ios/ReactNativeConfig/BuildDotenvConfig.ruby"
-
-        target.build_phases << phase
-        target.build_phases.move(phase,0)
-      end
-
-    end
-  end
+# post_install do |installer|
+#     installer.pods_project.targets.each do |target|
+#
+#       # The following is needed to ensure the "archive" step works in XCode.
+#       # It removes React & Yoga from the Pods project, as it is already included in the main project.
+#       # Without this, you'd see errors when you archive like:
+#       # "Multiple commands produce ... libReact.a"
+#       # "Multiple commands produce ... libyoga.a"
+#
+#       # targets_to_ignore = %w(React yoga)
+#
+#       # if targets_to_ignore.include? target.name
+#       #   target.remove_from_project
+#       # end
+#
+#       if target.name == 'react-native-config'
+#         phase = target.project.new(Xcodeproj::Project::Object::PBXShellScriptBuildPhase)
+#         phase.shell_script = "cd ../../"\
+#                              " && RNC_ROOT=./node_modules/react-native-config/"\
+#                              " && export SYMROOT=$RNC_ROOT/ios/ReactNativeConfig"\
+#                              " && export BUILD_DIR=$RNC_ROOT/ios/ReactNativeConfig"\
+#                              " && ruby $RNC_ROOT/ios/ReactNativeConfig/BuildDotenvConfig.rb"
+#
+#         target.build_phases << phase
+#         target.build_phases.move(phase,0)
+#       end
+#
+#     end
+#   end

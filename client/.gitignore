@@ -41,6 +41,7 @@ DerivedData
 *.xcuserstate
 project.xcworkspace
 *.dSYM.zip
+ios/tmp.xcconfig
 
 # Android/IntelliJ
 #

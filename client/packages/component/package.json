@@ -1,6 +1,6 @@
 {
   "name": "@berty/component",
-  "version": "0.0.1",
+  "version": "0.0.4-alpha.1",
   "description": "",
   "main": "index.js",
   "author": "",
@@ -8,9 +8,9 @@
   "source": true,
   "private": true,
   "dependencies": {
-    "@berty/common": "^0.0.1",
-    "@berty/container": "^0.0.1",
-    "@berty/update": "^0.0.1",
+    "@berty/common": "^0.0.4-alpha.1",
+    "@berty/container": "^0.0.4-alpha.1",
+    "@berty/update": "^0.0.4-alpha.1",
     "async-mutex": "^0.1.3",
     "react": "16.8.3",
     "react-native-user-avatar": "^1.0.4"

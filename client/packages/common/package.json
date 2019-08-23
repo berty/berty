@@ -1,8 +1,10 @@
 {
   "name": "@berty/common",
-  "version": "0.0.1",
+  "version": "0.0.4-alpha.1",
   "license": "UNLICENSED",
   "source": true,
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "@berty/reporter": "^0.0.4-alpha.1"
+  }
 }

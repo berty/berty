@@ -11,7 +11,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - instabug-reactnative (8.5.2):
+  - instabug-reactnative (8.5.6):
     - React
   - lottie-ios (3.0.3)
   - lottie-react-native (3.1.0):
@@ -260,7 +260,7 @@ SPEC CHECKSUMS:
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
-  instabug-reactnative: 2aeed0c4d1dca5545ff550d60d0bd5f730120cda
+  instabug-reactnative: 43e5d918329c7bb592c04f327de2eec6b5d01cc6
   lottie-ios: 6037add6441183d4ffd100d2ac78724aa8d919d4
   lottie-react-native: 86aeee2caa9250e4c8027ac75711a59c6679e532
   RCTRestart: 05aa14bfc0f0f0b02769be197cbd81afa66ea627
@@ -272,7 +272,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 90ad2f9db09513fc763bc757fdc3c4ff8bde2a30
   React-jsinspector: e08662d1bf5b129a3d556eb9ea343a3f40353ae4
   react-native-camera: 96a3c81f27da57b816fbb6808dde20dc96d1431e
-  react-native-config: 55548054279d92e0e4566ea15a8b9b81028ec342
+  react-native-config: 8f6b2b9e017f6a5e92a97353c768e19e67294bb1
   react-native-image-picker: fd93361c666f397bdf72f9c6c23f13d2685b9173
   react-native-network-info: 6c94056a2fb00c27dd759c30fee7b327a9e4c73a
   React-RCTActionSheet: b0f1ea83f4bf75fb966eae9bfc47b78c8d3efd90
@@ -298,6 +298,6 @@ SPEC CHECKSUMS:
   RNViewShot: 5c5b4c5540046e5fb0de4a48a311571816c43c86
   yoga: 312528f5bbbba37b4dcea5ef00e8b4033fdd9411
 
-PODFILE CHECKSUM: 5c52c779fa80ca29a64ad9009c268bb9360a9b32
+PODFILE CHECKSUM: 926be4e5a9613be567c3b58d6d8bb805228626f8
 
 COCOAPODS: 1.7.5
