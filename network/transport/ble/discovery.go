@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	peer "github.com/libp2p/go-libp2p-peer"
-	pstore "github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
+
+	"github.com/libp2p/go-libp2p-core/peer"
+	pstore "github.com/libp2p/go-libp2p-core/peerstore"
 )
 
 // HandleFoundPeer is called by the native driver when a new peer is found.
@@ -18,7 +19,7 @@ func HandleFoundPeer(sRemotePID string) bool {
 	}
 
 	remoteMa, err := ma.NewMultiaddr(fmt.Sprintf("/ble/%s", sRemotePID))
-	if err != nil { // Should never append.
+	if err != nil { // Should never occur.
 		panic(err)
 	}
 
@@ -38,7 +39,7 @@ func HandleFoundPeer(sRemotePID string) bool {
 	if gListener.Addr().String() < sRemotePID {
 		// Async connect so HandleFoundPeer can return and unlock the native driver.
 		// Needed to read and write during the connect handshake.
-		go gListener.transport.host.Connect(context.Background(), pstore.PeerInfo{
+		go gListener.transport.host.Connect(context.Background(), peer.AddrInfo{
 			ID:    remotePID,
 			Addrs: []ma.Multiaddr{remoteMa},
 		})

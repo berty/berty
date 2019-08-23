@@ -7,9 +7,9 @@ import (
 	bledrv "berty.tech/network/transport/ble/driver"
 	blema "berty.tech/network/transport/ble/multiaddr"
 
+	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/peer"
 	tpt "github.com/libp2p/go-libp2p-core/transport"
-	host "github.com/libp2p/go-libp2p-host"
-	peer "github.com/libp2p/go-libp2p-peer"
 	tptu "github.com/libp2p/go-libp2p-transport-upgrader"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
@@ -76,17 +76,9 @@ func (t *Transport) CanDial(remoteMa ma.Multiaddr) bool {
 // Listen listens on the given multiaddr.
 // BLE can't listen on more than one listener.
 func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
-	// If a global listener already exists, returns an error.
-	if gListener != nil {
-		// TODO: restore this when published as generic lib / fixed in Berty network
-		// config update
-		// return nil, errors.New("transport listen failed: one listener maximum")
-		gListener.Close()
-	}
-
 	// localAddr is supposed to be equal to localPID or to DefaultBind since with
 	// BLE transport: multiaddr == /ble/<peerID>
-	localPID := t.host.ID().String()
+	localPID := t.host.ID().Pretty()
 	localAddr, err := localMa.ValueForProtocol(blema.P_BLE)
 	if err != nil || (localMa.String() != DefaultBind && localAddr != localPID) {
 		return nil, errors.Wrap(err, "transport listen failed: wrong multiaddr")
@@ -95,9 +87,17 @@ func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
 	// Replaces default bind by local host peerID.
 	if localMa.String() == DefaultBind {
 		localMa, err = ma.NewMultiaddr(fmt.Sprintf("/ble/%s", localPID))
-		if err != nil { // Should never append.
+		if err != nil { // Should never occur.
 			panic(err)
 		}
+	}
+
+	// If a global listener already exists, returns an error.
+	if gListener != nil {
+		// TODO: restore this when published as generic lib / fixed in Berty network
+		// config update
+		// return nil, errors.New("transport listen failed: one listener maximum")
+		gListener.Close()
 	}
 
 	return newListener(localMa, t)

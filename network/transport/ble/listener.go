@@ -8,8 +8,8 @@ import (
 
 	bledrv "berty.tech/network/transport/ble/driver"
 	blema "berty.tech/network/transport/ble/multiaddr"
+	"github.com/libp2p/go-libp2p-core/peer"
 	tpt "github.com/libp2p/go-libp2p-core/transport"
-	peer "github.com/libp2p/go-libp2p-peer"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
@@ -89,8 +89,10 @@ func (l *Listener) Close() error {
 	bledrv.StopBleDriver()
 
 	// Removes global listener so transport can instanciate a new one later.
-	gListener.inUse.Wait()
-	gListener = nil
+	if gListener != nil {
+		gListener.inUse.Wait()
+		gListener = nil
+	}
 
 	return nil
 }

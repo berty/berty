@@ -176,7 +176,7 @@ class DebugStateBar extends PureComponent {
           }
           if (
             splited[1] === 'ble'
-            // && splited[2] !== '00000000-0000-0000-0000-000000000000'
+            // && splited[2] !== 'Qmeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
           ) {
             bleColor = colors.green
             bgBleColor = colors.green25

@@ -1,7 +1,7 @@
 package multiaddr
 
 import (
-	mafmt "github.com/whyrusleeping/mafmt"
+	mafmt "github.com/multiformats/go-multiaddr-fmt"
 )
 
 // BLE multiaddr validation checker

@@ -34,9 +34,7 @@ unsigned short StartBleDriver(char *localPID) {
 }
 
 // TODO: Implement this
-void StopBleDriver(void) {
-    return;
-}
+void StopBleDriver(void) {}
 
 unsigned short DialPeer(char *remotePID) {
     BertyDevice *bDevice = [getManager() findPeripheralFromPeerID:[NSString stringWithUTF8String:remotePID]];

@@ -7,8 +7,8 @@ import (
 	"time"
 
 	bledrv "berty.tech/network/transport/ble/driver"
+	"github.com/libp2p/go-libp2p-core/peer"
 	tpt "github.com/libp2p/go-libp2p-core/transport"
-	peer "github.com/libp2p/go-libp2p-peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 )
