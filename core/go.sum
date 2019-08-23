@@ -487,8 +487,6 @@ github.com/libp2p/go-libp2p-testing v0.0.2/go.mod h1:gvchhf3FQOtBdr+eFUABet5a4MB
 github.com/libp2p/go-libp2p-testing v0.0.3/go.mod h1:gvchhf3FQOtBdr+eFUABet5a4MBLK8jM3V4Zghvmi+E=
 github.com/libp2p/go-libp2p-testing v0.0.4 h1:Qev57UR47GcLPXWjrunv5aLIQGO4n9mhI/8/EIrEEFc=
 github.com/libp2p/go-libp2p-testing v0.0.4/go.mod h1:gvchhf3FQOtBdr+eFUABet5a4MBLK8jM3V4Zghvmi+E=
-github.com/libp2p/go-libp2p-tls v0.1.0 h1:o4bjjAdnUjNgJoPoDd0wUaZH7K+EenlNWJpgyXB3ulA=
-github.com/libp2p/go-libp2p-tls v0.1.0/go.mod h1:VZdoSWQDeNpIIAFJFv+6uqTqpnIIDHcqZQSTC/A1TT0=
 github.com/libp2p/go-libp2p-tls v0.1.1 h1:tjW7njTM8JX8FbEvqr8/VSKBdZYZ7CtGtv3i6NiFf10=
 github.com/libp2p/go-libp2p-tls v0.1.1/go.mod h1:wZfuewxOndz5RTnCAxFliGjvYSDA40sKitV4c50uI1M=
 github.com/libp2p/go-libp2p-transport-upgrader v0.1.1 h1:PZMS9lhjK9VytzMCW3tWHAXtKXmlURSc3ZdvwEcKCzw=

@@ -3,7 +3,6 @@ module berty.tech/network
 go 1.12
 
 require (
-	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gogo/protobuf v1.2.1
 	github.com/golang/protobuf v1.3.1
 	github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e // indirect
@@ -39,6 +38,7 @@ require (
 	github.com/libp2p/go-tcp-transport v0.1.0
 	github.com/libp2p/go-ws-transport v0.1.0
 	github.com/multiformats/go-multiaddr v0.0.4
+	github.com/multiformats/go-multiaddr-fmt v0.0.1
 	github.com/multiformats/go-multiaddr-net v0.0.1
 	github.com/multiformats/go-multihash v0.0.5
 	github.com/multiformats/go-multistream v0.1.0
@@ -46,7 +46,6 @@ require (
 	github.com/smartystreets/assertions v0.0.0-20190215210624-980c5ac6f3ac // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa
 	github.com/sparrc/go-ping v0.0.0-20190613174326-4e5b6552494c
-	github.com/whyrusleeping/mafmt v1.2.8
 	go.uber.org/atomic v1.3.2 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.9.1
