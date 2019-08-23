@@ -597,63 +597,63 @@ jobs:
       - ios_save_cache:
           type: staff
 
-  ios_staff_test:
-    executor: macos
-    steps:
-      - run:
-          name: set Ruby version
-          command: echo "ruby-2.4" > ~/.ruby-version
+  # ios_staff_test:
+  #   executor: macos
+  #   steps:
+  #     - run:
+  #         name: set Ruby version
+  #         command: echo "ruby-2.4" > ~/.ruby-version
 
-      - prepare
-      - ios_restore_cache:
-          type: staff-test
+  #     - prepare
+  #     - ios_restore_cache:
+  #         type: staff-test
 
-      - run:
-          name: make deps
-          working_directory: ~/go/src/berty.tech/client
-          command: retry -m 3 make deps.lerna
+  #     - run:
+  #         name: make deps
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: retry -m 3 make deps.lerna
 
-      - install_go
-      - install_gomobile
-      - run:
-          name: install core
-          working_directory: ~/go/src/berty.tech/core/platform/mobile
-          command: BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
+  #     - install_go
+  #     - install_gomobile
+  #     - run:
+  #         name: install core
+  #         working_directory: ~/go/src/berty.tech/core/platform/mobile
+  #         command: BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
 
-      - run:
-          name: install bundle
-          working_directory: ~/go/src/berty.tech/client
-          command: bundle check || retry -m 3 bundle install --path vendor/bundle
+  #     - run:
+  #         name: install bundle
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: bundle check || retry -m 3 bundle install --path vendor/bundle
 
-      - run:
-          name: set version
-          working_directory: ~/go/src/berty.tech/client
-          command: make version.ios
+  #     - run:
+  #         name: set version
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: make version.ios
 
-      - run:
-          name: add environment
-          working_directory: ~/go/src/berty.tech/client
-          command: echo $RN_ENVIRONMENT > .environment
+  #     - run:
+  #         name: add environment
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: echo $RN_ENVIRONMENT > .environment
 
-      - run:
-          name: globally install clis needed for integration tests
-          command: npm i -g cavy-cli react-native-cli
+  #     - run:
+  #         name: globally install clis needed for integration tests
+  #         command: npm i -g cavy-cli react-native-cli
 
-      - run:
-          name: prepare integration tests
-          working_directory: ~/go/src/berty.tech/client
-          command: |
-            make deps.ios
+  #     - run:
+  #         name: prepare integration tests
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: |
+  #           make deps.ios
 
-      - run:
-          name: run integration tests
-          working_directory: ~/go/src/berty.tech/client
-          command: |
-            ulimit -a
-            ulimit -n 16384 && make test.adhoc.ios
+  #     - run:
+  #         name: run integration tests
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: |
+  #           ulimit -a
+  #           ulimit -n 16384 && make test.adhoc.ios
 
-      - ios_save_cache:
-          type: staff-test
+  #     - ios_save_cache:
+  #         type: staff-test
 
   ios_yolo:
     executor: macos
@@ -713,70 +713,70 @@ jobs:
       - ios_save_cache:
           type: yolo
 
-  ios_yolo_test:
-    executor: macos
-    steps:
-      - run:
-          name: set Ruby version
-          command: echo "ruby-2.4" > ~/.ruby-version
+  # ios_yolo_test:
+  #   executor: macos
+  #   steps:
+  #     - run:
+  #         name: set Ruby version
+  #         command: echo "ruby-2.4" > ~/.ruby-version
 
-      - prepare
-      - ios_restore_cache:
-          type: yolo-test
+  #     - prepare
+  #     - ios_restore_cache:
+  #         type: yolo-test
 
-      - run:
-          name: make deps
-          working_directory: ~/go/src/berty.tech/client
-          command: retry -m 3 make deps.lerna
+  #     - run:
+  #         name: make deps
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: retry -m 3 make deps.lerna
 
-      - install_go
-      - install_gomobile
+  #     - install_go
+  #     - install_gomobile
 
-      - run:
-          name: install core
-          working_directory: ~/go/src/berty.tech/core/platform/mobile
-          command: |
-            BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
+  #     - run:
+  #         name: install core
+  #         working_directory: ~/go/src/berty.tech/core/platform/mobile
+  #         command: |
+  #           BUILD_MODE=ci-${CIRCLE_BRANCH} retry -m 3 make build.ios
 
-      - run:
-          name: install bundle
-          working_directory: ~/go/src/berty.tech/client
-          command: bundle check || retry -m 3 bundle install --path vendor/bundle
+  #     - run:
+  #         name: install bundle
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: bundle check || retry -m 3 bundle install --path vendor/bundle
 
-      - run:
-          name: set version
-          working_directory: ~/go/src/berty.tech/client
-          command: make version.ios
+  #     - run:
+  #         name: set version
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: make version.ios
 
-      - run:
-          name: make deps
-          working_directory: ~/go/src/berty.tech/client
-          command: retry -m 3 make deps.lerna
+  #     - run:
+  #         name: make deps
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: retry -m 3 make deps.lerna
 
-      - run:
-          name: add environment
-          working_directory: ~/go/src/berty.tech/client
-          command: echo $RN_ENVIRONMENT > .environment
+  #     - run:
+  #         name: add environment
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: echo $RN_ENVIRONMENT > .environment
 
-      - run:
-          name: globally install clis needed for integration tests
-          command: npm i -g cavy-cli react-native-cli
+  #     - run:
+  #         name: globally install clis needed for integration tests
+  #         command: npm i -g cavy-cli react-native-cli
 
-      - run:
-          name: prepare integration tests
-          working_directory: ~/go/src/berty.tech/client
-          command: |
-            make deps.ios
+  #     - run:
+  #         name: prepare integration tests
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: |
+  #           make deps.ios
 
-      - run:
-          name: run integration tests
-          working_directory: ~/go/src/berty.tech/client
-          command: |
-            ulimit -a
-            ulimit -n 16384 && make test.house.ios
+  #     - run:
+  #         name: run integration tests
+  #         working_directory: ~/go/src/berty.tech/client
+  #         command: |
+  #           ulimit -a
+  #           ulimit -n 16384 && make test.house.ios
 
-      - ios_save_cache:
-          type: yolo-test
+  #     - ios_save_cache:
+  #         type: yolo-test
 
   web:
     executor: node
@@ -900,9 +900,9 @@ workflows:
       - ios_staff:
           requires:
             - web
-      - ios_staff_test:
-          requires:
-            - web
+      # - ios_staff_test:
+      #     requires:
+      #       - web
 
       - ios_yolo:
          filters:
@@ -911,12 +911,12 @@ workflows:
          requires:
            - web
 
-      - ios_yolo_test:
-          filters:
-            branches:
-               only: master
-          requires:
-              - web
+      # - ios_yolo_test:
+      #     filters:
+      #       branches:
+      #          only: master
+      #     requires:
+      #         - web
 
 
       # desktop
