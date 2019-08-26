@@ -9,14 +9,14 @@ import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-class Advertiser extends AdvertiseCallback {
+final class Advertiser extends AdvertiseCallback {
     private static final String TAG = "advertise";
 
     static AdvertiseData buildAdvertiseData() {
         return new AdvertiseData.Builder()
                 .setIncludeDeviceName(false)
                 .setIncludeTxPowerLevel(false)
-                .addServiceUuid(BleManager.P_SERVICE_UUID)
+                .addServiceUuid(BleDriver.P_SERVICE_UUID)
                 .build();
     }
 
@@ -39,7 +39,7 @@ class Advertiser extends AdvertiseCallback {
     @Override
     public void onStartSuccess(AdvertiseSettings settingsInEffect) {
         Log.i(TAG, "Start advertising succeeded with settings: " + settingsInEffect);
-        BleManager.setAdvertisingState(true);
+        BleDriver.setAdvertisingState(true);
 
         super.onStartSuccess(settingsInEffect);
     }
@@ -76,7 +76,7 @@ class Advertiser extends AdvertiseCallback {
                 break;
         }
         Log.e(TAG, "Start advertising failed with error: " + errorString);
-        BleManager.setAdvertisingState(advertising);
+        BleDriver.setAdvertisingState(advertising);
 
         super.onStartFailure(errorCode);
     }

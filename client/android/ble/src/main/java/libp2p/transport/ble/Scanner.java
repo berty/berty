@@ -13,7 +13,7 @@ import android.bluetooth.BluetoothDevice;
 import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-class Scanner extends ScanCallback {
+final class Scanner extends ScanCallback {
     private static final String TAG = "scan";
 
     static ScanSettings createScanSetting() {
@@ -24,7 +24,7 @@ class Scanner extends ScanCallback {
 
     static ScanFilter makeFilter() {
         return new ScanFilter.Builder()
-                .setServiceUuid(BleManager.P_SERVICE_UUID)
+                .setServiceUuid(BleDriver.P_SERVICE_UUID)
                 .build();
     }
 
@@ -88,7 +88,7 @@ class Scanner extends ScanCallback {
                 break;
         }
         Log.e(TAG, "Start scanning failed with error: " + errorString);
-        BleManager.setScanningState(scanning);
+        BleDriver.setScanningState(scanning);
 
         super.onScanFailed(errorCode);
     }
@@ -96,7 +96,7 @@ class Scanner extends ScanCallback {
     private static void parseResult(ScanResult result) {
         Log.v(TAG, "parseResult() called with device: " + result.getDevice());
 
-        if (BleManager.isDriverEnabled()) {
+        if (BleDriver.isDriverEnabled()) {
             BluetoothDevice device = result.getDevice();
             PeerDevice peerDevice = DeviceManager.getDeviceFromAddr(device.getAddress());
 

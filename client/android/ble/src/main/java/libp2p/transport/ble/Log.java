@@ -26,21 +26,44 @@ import static android.bluetooth.BluetoothGatt.GATT_WRITE_NOT_PERMITTED;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 final class Log {
+    private static boolean goLoggerEnabled = false;
+
+    static void enableGoLogger() { goLoggerEnabled = true; }
 
     static void v(String tag, String log) {
-        BleManager.goBridge.log(tag, "verbose", log);
+        if (goLoggerEnabled) {
+            JavaToGo.log(tag, "verbose", log);
+        } else {
+            android.util.Log.v(tag, log);
+        }
     }
     static void d(String tag, String log) {
-        BleManager.goBridge.log(tag, "debug", log);
+        if (goLoggerEnabled) {
+            JavaToGo.log(tag, "debug", log);
+        } else {
+            android.util.Log.d(tag, log);
+        }
     }
     static void i(String tag, String log) {
-        BleManager.goBridge.log(tag, "info", log);
+        if (goLoggerEnabled) {
+            JavaToGo.log(tag, "info", log);
+        } else {
+            android.util.Log.i(tag, log);
+        }
     }
     static void w(String tag, String log) {
-        BleManager.goBridge.log(tag, "warn", log);
+        if (goLoggerEnabled) {
+            JavaToGo.log(tag, "warn", log);
+        } else {
+            android.util.Log.w(tag, log);
+        }
     }
     static void e(String tag, String log) {
-        BleManager.goBridge.log(tag, "error", log);
+        if (goLoggerEnabled) {
+            JavaToGo.log(tag, "error", log);
+        } else {
+            android.util.Log.e(tag, log);
+        }
     }
 
     static String connectionStateToString(int state) {
@@ -101,7 +124,7 @@ final class Log {
             case GATT_INVALID_OFFSET:
                 return "invalid offset";
             case GATT_INVALID_ATTRIBUTE_LENGTH:
-                return "invalid attribut length";
+                return "invalid attribute length";
             case GATT_CONNECTION_CONGESTED:
                 return "connection congested";
             case GATT_FAILURE:
@@ -109,7 +132,7 @@ final class Log {
             case GATT_ILLEGAL_PARAMETER:
                 return "illegal parameter";
             case GATT_NO_RESOURCES:
-                return "no ressources";
+                return "no resources";
             case GATT_INTERNAL_ERROR:
                 return "internal error";
             case GATT_WRONG_STATE:

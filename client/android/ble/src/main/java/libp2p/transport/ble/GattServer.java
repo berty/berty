@@ -20,7 +20,7 @@ import static android.bluetooth.BluetoothGatt.GATT_REQUEST_NOT_SUPPORTED;
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-class GattServer extends BluetoothGattServerCallback {
+final class GattServer extends BluetoothGattServerCallback {
     private static final String TAG = "gatt_server";
 
     private BluetoothGattServer mBluetoothGattServer;
@@ -55,7 +55,7 @@ class GattServer extends BluetoothGattServerCallback {
     public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
         Log.d(TAG, "onConnectionStateChange() server called with device: " + device + ", status: " + status + ", newState: " + Log.connectionStateToString(newState));
 
-        if (BleManager.isDriverEnabled()) {
+        if (BleDriver.isDriverEnabled()) {
             PeerDevice peerDevice = DeviceManager.getDeviceFromAddr(device.getAddress());
 
             if (peerDevice == null) {
@@ -97,7 +97,7 @@ class GattServer extends BluetoothGattServerCallback {
             return;
         }
 
-        if (charID.equals(BleManager.PEER_ID_UUID)) {
+        if (charID.equals(BleDriver.PEER_ID_UUID)) {
             if (peerDevice.isIdentified()) {
                 Log.e(TAG, "onCharacteristicReadRequest() failed: identified device tried to read on PeerID characteristic");
                 peerDevice.disconnectFromDevice("onCharacteristicReadRequest() device already identified");
@@ -105,7 +105,7 @@ class GattServer extends BluetoothGattServerCallback {
                 return;
             }
 
-            byte[] value = BleManager.getLocalPeerID().getBytes();
+            byte[] value = BleDriver.getLocalPeerID().getBytes();
 
             if (offset < 0) {
                 Log.d(TAG, "onCharacteristicReadRequest() remote device: " + device + " tried to read on a negative offset");
@@ -160,7 +160,7 @@ class GattServer extends BluetoothGattServerCallback {
             return;
         }
 
-        if (charID.equals(BleManager.WRITER_UUID)) {
+        if (charID.equals(BleDriver.WRITER_UUID)) {
             Log.i(TAG, "onCharacteristicWriteRequest() called with payload: " + Arrays.toString(value) + ", hashCode: " + Arrays.toString(value).hashCode() + ", string: " + new String(value).replaceAll("\\p{C}", "?") + ", length: " + value.length + ", from PeerID: " + peerDevice.getPeerID());
 
             if (!peerDevice.isIdentified()) {
@@ -169,7 +169,7 @@ class GattServer extends BluetoothGattServerCallback {
                 return;
             }
 
-            BleManager.goBridge.receiveFromPeer(peerDevice.getPeerID(), value);
+            JavaToGo.receiveFromPeer(peerDevice.getPeerID(), value);
 
             if (responseNeeded) {
                 mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, 0, value);

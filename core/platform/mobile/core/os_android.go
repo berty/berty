@@ -3,54 +3,75 @@
 package core
 
 import (
-	"Java/libp2p/transport/ble/BleManager"
-	"Java/libp2p/transport/ble/DeviceManager"
+	"Java/libp2p/transport/ble/GoToJava"
+	"Java/libp2p/transport/ble/JavaToGo"
 
 	bledrv "berty.tech/network/transport/ble/driver"
 	"go.uber.org/zap"
 )
 
-// Native -> Go object and functions
-type GoBridgeImplem struct {
-	BleManager.GoBridge // Java interface
+type EventType int32
+
+const (
+	handleFoundPeerEvent EventType = 0
+	receiveFromPeerEvent EventType = 1
+	logEvent             EventType = 2
+)
+
+func bindBleFunc() {
+	// Bind Go -> Java functions
+	bledrv.StartBleDriver = GoToJava.StartBleDriver
+	bledrv.StopBleDriver = GoToJava.StopBleDriver
+	bledrv.DialPeer = GoToJava.DialPeer
+	bledrv.SendToPeer = GoToJava.SendToPeer
+	bledrv.CloseConnWithPeer = GoToJava.CloseConnWithPeer
+
+	GoToJava.EnableGoLogger()
+
+	// Run Java -> Go event loop
+	go javaToGoEventLoop()
 }
 
-func NewGoBridgeImplem() *GoBridgeImplem {
-	return &GoBridgeImplem{}
-}
+func javaToGoEventLoop() {
+	for {
+		event, _ := JavaToGo.GetEvent()
 
-func (gb *GoBridgeImplem) HandleFoundPeer(remotePID string) bool {
-	return bledrv.HandleFoundPeer(remotePID)
-}
-
-func (gb *GoBridgeImplem) ReceiveFromPeer(remotePID string, payload []byte) {
-	bledrv.ReceiveFromPeer(remotePID, payload)
-}
-
-func (gb *GoBridgeImplem) Log(tag string, level string, log string) {
-	loggerBLE := zap.L().Named(defaultLoggerName + ".ble." + tag)
-
-	switch level {
-	case "verbose":
-		break // No verbose level in zap :/
-	case "debug":
-		loggerBLE.Debug(log)
-	case "info":
-		loggerBLE.Info(log)
-	case "warn":
-		loggerBLE.Warn(log)
-	case "error":
-		loggerBLE.Error(log)
-	default:
-		loggerBLE.Error("unknown level: <" + level + "> for log: <" + log + ">")
+		switch event.GetType() {
+		case handleFoundPeerEvent:
+			go handleFoundPeer(event)
+		case receiveFromPeerEvent:
+			go receiveFromPeer(event)
+		case logEvent:
+			go log(event)
+		}
 	}
 }
 
-func bindBleFunc() {
-	// Bind Go -> Native functions
-	bledrv.StartBleDriver = BleManager.StartBleDriver
-	bledrv.StopBleDriver = BleManager.StopBleDriver
-	bledrv.DialPeer = DeviceManager.DialPeer
-	bledrv.SendToPeer = DeviceManager.SendToPeer
-	bledrv.CloseConnWithPeer = DeviceManager.CloseConnWithPeer
+func handleFoundPeer(event JavaToGo.HandleFoundPeerEvent) {
+	success := bledrv.HandleFoundPeer(event.RemotePID())
+	event.SendResponseToJava(success)
+}
+
+func receiveFromPeer(event JavaToGo.ReceiveFromPeerEvent) {
+	bledrv.ReceiveFromPeer(event.GetRemotePID(), event.GetPayload())
+	event.SendResponseToJava()
+}
+
+func log(event JavaToGo.LogEvent) {
+	loggerBLE := zap.L().Named(defaultLoggerName + ".ble." + event.GetTag())
+
+	switch event.GetLevel() {
+	case "verbose":
+		break // No verbose level in zap :/
+	case "debug":
+		loggerBLE.Debug(event.GetLog())
+	case "info":
+		loggerBLE.Info(event.GetLog())
+	case "warn":
+		loggerBLE.Warn(event.GetLog())
+	case "error":
+		loggerBLE.Error(event.GetLog())
+	default:
+		loggerBLE.Error("unknown level: <" + event.GetLevel() + "> for log: <" + event.GetLog() + ">")
+	}
 }

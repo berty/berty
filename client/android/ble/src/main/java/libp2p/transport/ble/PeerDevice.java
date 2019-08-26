@@ -28,7 +28,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-class PeerDevice {
+final class PeerDevice {
     private static final String TAG = "device";
 
     // Timeout and maximum attempts for GATT connection
@@ -139,40 +139,43 @@ class PeerDevice {
         Log.d(TAG, "asyncConnectionToDevice() called for device: " + dDevice + ", caller: " + caller);
 
         if (lockConnAttempt.tryAcquire() && connectionThread == null) {
-            connectionThread = new Thread(() -> {
-                Thread.currentThread().setName("asyncConnectionToDevice() " + dDevice + ", caller: " + caller);
+            connectionThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Thread.currentThread().setName("asyncConnectionToDevice() " + dDevice + ", caller: " + caller);
 
-                String callerAndThread = caller + ", thread: " + Thread.currentThread().getId();
-                Log.i(TAG, "asyncConnectionToDevice() try to connect GATT with device: " + dDevice + ", caller: " + callerAndThread);
+                    String callerAndThread = caller + ", thread: " + Thread.currentThread().getId();
+                    Log.i(TAG, "asyncConnectionToDevice() try to connect GATT with device: " + dDevice + ", caller: " + callerAndThread);
 
-                try {
-                    if (connectGatt(callerAndThread)) {
-                        Thread.sleep(waitAfterHandshakeAndGattConnectAttempt);
+                    try {
+                        if (PeerDevice.this.connectGatt(callerAndThread)) {
+                            Thread.sleep(waitAfterHandshakeAndGattConnectAttempt);
 
-                        if (identified) {
-                            Log.i(TAG, "asyncConnectionToDevice() GATT reconnection succeeded for device: " + dDevice + ", caller: " + callerAndThread);
+                            if (identified) {
+                                Log.i(TAG, "asyncConnectionToDevice() GATT reconnection succeeded for device: " + dDevice + ", caller: " + callerAndThread);
+                            } else {
+                                PeerDevice.this.asyncHandshakeWithDevice(caller);
+                            }
                         } else {
-                            asyncHandshakeWithDevice(caller);
-                        }
-                    } else {
-                        if (identified) {
-                            Log.e(TAG, "asyncConnectionToDevice() reconnection failed: connection lost with previously connected device: " + dDevice + ", PeerID: " + peerID + ", caller: " + callerAndThread);
-                        } else {
-                            Log.e(TAG, "asyncConnectionToDevice() failed: can't connect GATT with device: " + dDevice + ", caller: " + callerAndThread);
-                        }
+                            if (identified) {
+                                Log.e(TAG, "asyncConnectionToDevice() reconnection failed: connection lost with previously connected device: " + dDevice + ", PeerID: " + peerID + ", caller: " + callerAndThread);
+                            } else {
+                                Log.e(TAG, "asyncConnectionToDevice() failed: can't connect GATT with device: " + dDevice + ", caller: " + callerAndThread);
+                            }
 
-                        Thread.sleep(waitAfterHandshakeAndGattConnectAttempt);
-                        lockConnAttempt.release();
-                        disconnectFromDevice("GATT failed, caller: " + callerAndThread);
+                            Thread.sleep(waitAfterHandshakeAndGattConnectAttempt);
+                            lockConnAttempt.release();
+                            PeerDevice.this.disconnectFromDevice("GATT failed, caller: " + callerAndThread);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "asyncConnectionToDevice() failed: " + e.getMessage() + " for device: " + dDevice + ", caller: " + callerAndThread);
                     }
-                } catch (Exception e) {
-                    Log.e(TAG, "asyncConnectionToDevice() failed: " + e.getMessage() + " for device: " + dDevice + ", caller: " + callerAndThread);
-                }
 
-                if (lockConnAttempt.availablePermits() == 0) {
-                    lockConnAttempt.release();
+                    if (lockConnAttempt.availablePermits() == 0) {
+                        lockConnAttempt.release();
+                    }
+                    connectionThread = null;
                 }
-                connectionThread = null;
             });
             connectionThread.start();
         } else {
@@ -185,42 +188,45 @@ class PeerDevice {
         Log.d(TAG, "asyncHandshakeWithDevice() called for device: " + dDevice + ", caller: " + caller);
 
         if (lockHandshakeAttempt.tryAcquire() && handshakeThread == null) {
-            handshakeThread = new Thread(() -> {
-                Thread.currentThread().setName("asyncHandshakeWithDevice() " + dDevice + ", caller: " + caller);
+            handshakeThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Thread.currentThread().setName("asyncHandshakeWithDevice() " + dDevice + ", caller: " + caller);
 
-                String callerAndThread = caller + ", thread: " + Thread.currentThread().getId();
-                Log.i(TAG, "asyncHandshakeWithDevice() try to Libp2p handshake with device: " + dDevice + ", caller: " + callerAndThread);
+                    String callerAndThread = caller + ", thread: " + Thread.currentThread().getId();
+                    Log.i(TAG, "asyncHandshakeWithDevice() try to Libp2p handshake with device: " + dDevice + ", caller: " + callerAndThread);
 
-                try {
-                    if (libp2pHandshake(callerAndThread)) {
-                        Log.i(TAG, "asyncHandshakeWithDevice() succeeded with device: " + dDevice + ", PeerID: " + peerID + ", caller: " + callerAndThread);
-                        identified = true;
+                    try {
+                        if (PeerDevice.this.libp2pHandshake(callerAndThread)) {
+                            Log.i(TAG, "asyncHandshakeWithDevice() succeeded with device: " + dDevice + ", PeerID: " + peerID + ", caller: " + callerAndThread);
+                            identified = true;
 
-                        if (dMtu == DEFAULT_MTU) {
-                            Log.i(TAG, "asyncHandshakeWithDevice() try to agree on a new MTU with device: " + dDevice + ", caller: " + callerAndThread);
-                            dGatt.requestMtu(MAXIMUM_MTU);
-                            dGatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
-                            Thread.sleep(300); // Wait for new MTU before starting the libp2p connect
-                        }
+                            if (dMtu == DEFAULT_MTU) {
+                                Log.i(TAG, "asyncHandshakeWithDevice() try to agree on a new MTU with device: " + dDevice + ", caller: " + callerAndThread);
+                                dGatt.requestMtu(MAXIMUM_MTU);
+                                dGatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
+                                Thread.sleep(300); // Wait for new MTU before starting the libp2p connect
+                            }
 
-                        if (BleManager.goBridge.handleFoundPeer(peerID)) {
-                            Log.i(TAG, "asyncHandshakeWithDevice() peer handled successfully by golang with device: " + dDevice + ", caller: " + callerAndThread);
+                            if (JavaToGo.handleFoundPeer(peerID)) {
+                                Log.i(TAG, "asyncHandshakeWithDevice() peer handled successfully by golang with device: " + dDevice + ", caller: " + callerAndThread);
+                            } else {
+                                Log.e(TAG, "asyncHandshakeWithDevice() failed: golang can't handle new peer for device: " + dDevice + ", caller: " + callerAndThread);
+                                PeerDevice.this.disconnectFromDevice("Libp2p handshake failed, caller: " + callerAndThread);
+                            }
                         } else {
-                            Log.e(TAG, "asyncHandshakeWithDevice() failed: golang can't handle new peer for device: " + dDevice + ", caller: " + callerAndThread);
-                            disconnectFromDevice("Libp2p handshake failed, caller: " + callerAndThread);
+                            Log.d(TAG, "asyncHandshakeWithDevice() Libp2p handshake failed with device: " + dDevice + ", caller: " + callerAndThread);
+                            PeerDevice.this.disconnectFromDevice("Libp2p handshake failed, caller: " + callerAndThread);
                         }
-                    } else {
-                        Log.d(TAG, "asyncHandshakeWithDevice() Libp2p handshake failed with device: " + dDevice + ", caller: " + callerAndThread);
-                        disconnectFromDevice("Libp2p handshake failed, caller: " + callerAndThread);
+
+                        Thread.sleep(waitAfterHandshakeAndGattConnectAttempt);
+                    } catch (Exception e) {
+                        Log.e(TAG, "asyncHandshakeWithDevice() failed: " + e.getMessage() + " for device: " + dDevice + ", caller: " + callerAndThread);
                     }
 
-                    Thread.sleep(waitAfterHandshakeAndGattConnectAttempt);
-                } catch (Exception e) {
-                    Log.e(TAG, "asyncHandshakeWithDevice() failed: " + e.getMessage() + " for device: " + dDevice + ", caller: " + callerAndThread);
+                    lockHandshakeAttempt.release();
+                    handshakeThread = null;
                 }
-
-                lockHandshakeAttempt.release();
-                handshakeThread = null;
             });
             handshakeThread.start();
         } else {
@@ -249,7 +255,7 @@ class PeerDevice {
         Log.d(TAG, "setGatt() called for device: " + dDevice);
 
         if (dGatt == null) {
-            dGatt = dDevice.connectGatt(BleManager.getAppContext(), false, BleManager.getGattCallback());
+            dGatt = dDevice.connectGatt(GoToJava.getContext(), false, BleDriver.getGattCallback());
         }
     }
 
@@ -315,7 +321,7 @@ class PeerDevice {
     }
 
     private int getGattState(boolean client) {
-        final BluetoothManager manager = (BluetoothManager)BleManager.getAppContext().getSystemService(Context.BLUETOOTH_SERVICE);
+        final BluetoothManager manager = (BluetoothManager) GoToJava.getContext().getSystemService(Context.BLUETOOTH_SERVICE);
         if (manager == null) {
             Log.e(TAG, "Can't get Bluetooth Manager");
             return STATE_DISCONNECTED;
@@ -428,8 +434,8 @@ class PeerDevice {
         ExecutorService es = Executors.newFixedThreadPool(3);
         List<PopulateCharacteristic> todo = new ArrayList<>(3);
 
-        todo.add(new PopulateCharacteristic(BleManager.PEER_ID_UUID));
-        todo.add(new PopulateCharacteristic(BleManager.WRITER_UUID));
+        todo.add(new PopulateCharacteristic(BleDriver.PEER_ID_UUID));
+        todo.add(new PopulateCharacteristic(BleDriver.WRITER_UUID));
 
         List<Future<BluetoothGattCharacteristic>> answers = es.invokeAll(todo);
         for (Future<BluetoothGattCharacteristic> future : answers) {
@@ -437,10 +443,10 @@ class PeerDevice {
 
             if (Thread.interrupted()) throw new InterruptedException("checkLibp2pCharacteristicsCompliance() thread interrupted");
 
-            if (characteristic != null && characteristic.getUuid().equals(BleManager.PEER_ID_UUID)) {
+            if (characteristic != null && characteristic.getUuid().equals(BleDriver.PEER_ID_UUID)) {
                 Log.d(TAG, "checkLibp2pCharacteristicsCompliance() PeerID characteristic retrieved: " + characteristic + " on device: " + dDevice);
                 peerIDCharacteristic = characteristic;
-            } else if (characteristic != null && characteristic.getUuid().equals(BleManager.WRITER_UUID)) {
+            } else if (characteristic != null && characteristic.getUuid().equals(BleDriver.WRITER_UUID)) {
                 Log.d(TAG, "checkLibp2pCharacteristicsCompliance() Writer characteristic retrieved: " + characteristic + " on device: " + dDevice);
                 writerCharacteristic = characteristic;
             } else if (characteristic == null) {

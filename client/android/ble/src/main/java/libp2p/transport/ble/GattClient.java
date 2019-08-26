@@ -14,7 +14,7 @@ import android.bluetooth.BluetoothProfile;
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-class GattClient extends BluetoothGattCallback {
+final class GattClient extends BluetoothGattCallback {
     private static final String TAG = "gatt_client";
 
     /**
@@ -32,7 +32,7 @@ class GattClient extends BluetoothGattCallback {
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
         Log.d(TAG, "onConnectionStateChange() client called with gatt: " + gatt + ", status: " + status + ", newState: " + Log.connectionStateToString(newState));
 
-        if (BleManager.isDriverEnabled()) {
+        if (BleDriver.isDriverEnabled()) {
             BluetoothDevice device = gatt.getDevice();
             PeerDevice peerDevice = DeviceManager.getDeviceFromAddr(device.getAddress());
 
@@ -64,7 +64,7 @@ class GattClient extends BluetoothGattCallback {
 
         if (peerDevice != null) {
             for (BluetoothGattService service : gatt.getServices()) {
-                if (service.getUuid().equals(BleManager.SERVICE_UUID)) {
+                if (service.getUuid().equals(BleDriver.SERVICE_UUID)) {
                     Log.d(TAG, "onServicesDiscovered() Libp2p service found on device: " + peerDevice.getAddr());
                     peerDevice.setLibp2pService(service);
                     break;
