@@ -117,8 +117,7 @@ android/core/core.aar
 jsconfig.json
 
 # Cocoapods
-*.xcworkspace/
-ios/Pods
+/ios/Pods/
 
 # certificates
 *.ud.wulo.ios.p12

@@ -52,6 +52,12 @@ callvis:
 		.
 		# -include=berty.tech/core/vendor/github.com/libp2p \
 
+.PHONY: deps
+deps: ./vendor
+
+./vendor: ./go.mod
+	GO111MODULE=on go mod vendor
+
 .PHONY: dev
 dev: install
 	@if ! command -v gin &>/dev/null; then go get github.com/codegangsta/gin; fi
@@ -122,8 +128,7 @@ generate_local: $(GENERATION_TARGETS)
 	gofmt -w -s `find . -name "*.pb.go" -or -name "*.gen.go" | grep -v /vendor/`
 
 .PHONY: generate_prepare
-generate_prepare:
-	$(BUILD_ENV) go mod vendor
+generate_prepare: deps
 
 .PHONY: _ci_prepare
 _ci_prepare:

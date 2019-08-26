@@ -60,9 +60,10 @@
 	<string>Berty would like access to your photo gallery</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>fontello.ttf</string>
+		<string>AntDesign.ttf</string>
 		<string>Entypo.ttf</string>
 		<string>EvilIcons.ttf</string>
-		<string>fontello.ttf</string>
 		<string>Feather.ttf</string>
 		<string>FontAwesome.ttf</string>
 		<string>FontAwesome5_Brands.ttf</string>
@@ -75,7 +76,6 @@
 		<string>Octicons.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
-		<string>AntDesign.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

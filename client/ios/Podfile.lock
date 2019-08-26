@@ -1,0 +1,303 @@
+PODS:
+  - boost-for-react-native (1.63.0)
+  - DoubleConversion (1.1.6)
+  - Folly (2018.10.22.00):
+    - boost-for-react-native
+    - DoubleConversion
+    - Folly/Default (= 2018.10.22.00)
+    - glog
+  - Folly/Default (2018.10.22.00):
+    - boost-for-react-native
+    - DoubleConversion
+    - glog
+  - glog (0.3.5)
+  - instabug-reactnative (8.5.2):
+    - React
+  - lottie-ios (3.0.3)
+  - lottie-react-native (3.1.0):
+    - lottie-ios (~> 3.0.3)
+    - React
+  - RCTRestart (0.0.9):
+    - React
+  - React (0.60.5):
+    - React-Core (= 0.60.5)
+    - React-DevSupport (= 0.60.5)
+    - React-RCTActionSheet (= 0.60.5)
+    - React-RCTAnimation (= 0.60.5)
+    - React-RCTBlob (= 0.60.5)
+    - React-RCTImage (= 0.60.5)
+    - React-RCTLinking (= 0.60.5)
+    - React-RCTNetwork (= 0.60.5)
+    - React-RCTSettings (= 0.60.5)
+    - React-RCTText (= 0.60.5)
+    - React-RCTVibration (= 0.60.5)
+    - React-RCTWebSocket (= 0.60.5)
+  - React-Core (0.60.5):
+    - Folly (= 2018.10.22.00)
+    - React-cxxreact (= 0.60.5)
+    - React-jsiexecutor (= 0.60.5)
+    - yoga (= 0.60.5.React)
+  - React-cxxreact (0.60.5):
+    - boost-for-react-native (= 1.63.0)
+    - DoubleConversion
+    - Folly (= 2018.10.22.00)
+    - glog
+    - React-jsinspector (= 0.60.5)
+  - React-DevSupport (0.60.5):
+    - React-Core (= 0.60.5)
+    - React-RCTWebSocket (= 0.60.5)
+  - React-jsi (0.60.5):
+    - boost-for-react-native (= 1.63.0)
+    - DoubleConversion
+    - Folly (= 2018.10.22.00)
+    - glog
+    - React-jsi/Default (= 0.60.5)
+  - React-jsi/Default (0.60.5):
+    - boost-for-react-native (= 1.63.0)
+    - DoubleConversion
+    - Folly (= 2018.10.22.00)
+    - glog
+  - React-jsiexecutor (0.60.5):
+    - DoubleConversion
+    - Folly (= 2018.10.22.00)
+    - glog
+    - React-cxxreact (= 0.60.5)
+    - React-jsi (= 0.60.5)
+  - React-jsinspector (0.60.5)
+  - react-native-camera (2.11.1):
+    - React
+    - react-native-camera/RCT (= 2.11.1)
+    - react-native-camera/RN (= 2.11.1)
+  - react-native-camera/RCT (2.11.1):
+    - React
+  - react-native-camera/RN (2.11.1):
+    - React
+  - react-native-config (0.11.7):
+    - React
+  - react-native-image-picker (0.28.1):
+    - React
+  - react-native-network-info (4.0.1):
+    - React
+  - React-RCTActionSheet (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTAnimation (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTBlob (0.60.5):
+    - React-Core (= 0.60.5)
+    - React-RCTNetwork (= 0.60.5)
+    - React-RCTWebSocket (= 0.60.5)
+  - React-RCTImage (0.60.5):
+    - React-Core (= 0.60.5)
+    - React-RCTNetwork (= 0.60.5)
+  - React-RCTLinking (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTNetwork (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTPushNotification (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTSettings (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTText (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTVibration (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTWebSocket (0.60.5):
+    - React-Core (= 0.60.5)
+  - ReactNativeExceptionHandler (2.10.7):
+    - React
+  - ReactNativePermissions (1.1.1):
+    - React
+  - rn-fetch-blob (0.10.16):
+    - React-Core
+  - RNDeviceInfo (2.1.3):
+    - React
+  - RNDevMenu (3.0.0):
+    - React-Core
+    - React-DevSupport
+    - React-RCTNetwork
+  - RNGestureHandler (1.1.0):
+    - React
+  - RNLanguages (3.0.2):
+    - React
+  - RNSVG (8.0.11):
+    - React
+  - RNVectorIcons (6.4.2):
+    - React
+  - RNViewShot (2.5.0):
+    - React
+  - yoga (0.60.5.React)
+
+DEPENDENCIES:
+  - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
+  - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
+  - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - instabug-reactnative (from `../node_modules/instabug-reactnative`)
+  - lottie-ios (from `../node_modules/lottie-ios`)
+  - lottie-react-native (from `../node_modules/lottie-react-native`)
+  - RCTRestart (from `../node_modules/react-native-restart/ios`)
+  - React (from `../node_modules/react-native/`)
+  - React-Core (from `../node_modules/react-native/React`)
+  - React-cxxreact (from `../node_modules/react-native/ReactCommon/cxxreact`)
+  - React-DevSupport (from `../node_modules/react-native/React`)
+  - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
+  - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
+  - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-camera (from `../node_modules/react-native-camera`)
+  - react-native-config (from `../node_modules/react-native-config`)
+  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-network-info (from `../node_modules/react-native-network-info`)
+  - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
+  - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
+  - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
+  - React-RCTImage (from `../node_modules/react-native/Libraries/Image`)
+  - React-RCTLinking (from `../node_modules/react-native/Libraries/LinkingIOS`)
+  - React-RCTNetwork (from `../node_modules/react-native/Libraries/Network`)
+  - React-RCTPushNotification (from `../node_modules/react-native/Libraries/PushNotificationIOS`)
+  - React-RCTSettings (from `../node_modules/react-native/Libraries/Settings`)
+  - React-RCTText (from `../node_modules/react-native/Libraries/Text`)
+  - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
+  - React-RCTWebSocket (from `../node_modules/react-native/Libraries/WebSocket`)
+  - ReactNativeExceptionHandler (from `../node_modules/react-native-exception-handler`)
+  - ReactNativePermissions (from `../node_modules/react-native-permissions`)
+  - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
+  - RNDevMenu (from `../node_modules/react-native-dev-menu`)
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNLanguages (from `../node_modules/react-native-languages`)
+  - RNSVG (from `../node_modules/react-native-svg`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - RNViewShot (from `../node_modules/react-native-view-shot`)
+  - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - boost-for-react-native
+
+EXTERNAL SOURCES:
+  DoubleConversion:
+    :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
+  Folly:
+    :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
+  glog:
+    :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  instabug-reactnative:
+    :path: "../node_modules/instabug-reactnative"
+  lottie-ios:
+    :path: "../node_modules/lottie-ios"
+  lottie-react-native:
+    :path: "../node_modules/lottie-react-native"
+  RCTRestart:
+    :path: "../node_modules/react-native-restart/ios"
+  React:
+    :path: "../node_modules/react-native/"
+  React-Core:
+    :path: "../node_modules/react-native/React"
+  React-cxxreact:
+    :path: "../node_modules/react-native/ReactCommon/cxxreact"
+  React-DevSupport:
+    :path: "../node_modules/react-native/React"
+  React-jsi:
+    :path: "../node_modules/react-native/ReactCommon/jsi"
+  React-jsiexecutor:
+    :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
+  React-jsinspector:
+    :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-camera:
+    :path: "../node_modules/react-native-camera"
+  react-native-config:
+    :path: "../node_modules/react-native-config"
+  react-native-image-picker:
+    :path: "../node_modules/react-native-image-picker"
+  react-native-network-info:
+    :path: "../node_modules/react-native-network-info"
+  React-RCTActionSheet:
+    :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
+  React-RCTAnimation:
+    :path: "../node_modules/react-native/Libraries/NativeAnimation"
+  React-RCTBlob:
+    :path: "../node_modules/react-native/Libraries/Blob"
+  React-RCTImage:
+    :path: "../node_modules/react-native/Libraries/Image"
+  React-RCTLinking:
+    :path: "../node_modules/react-native/Libraries/LinkingIOS"
+  React-RCTNetwork:
+    :path: "../node_modules/react-native/Libraries/Network"
+  React-RCTPushNotification:
+    :path: "../node_modules/react-native/Libraries/PushNotificationIOS"
+  React-RCTSettings:
+    :path: "../node_modules/react-native/Libraries/Settings"
+  React-RCTText:
+    :path: "../node_modules/react-native/Libraries/Text"
+  React-RCTVibration:
+    :path: "../node_modules/react-native/Libraries/Vibration"
+  React-RCTWebSocket:
+    :path: "../node_modules/react-native/Libraries/WebSocket"
+  ReactNativeExceptionHandler:
+    :path: "../node_modules/react-native-exception-handler"
+  ReactNativePermissions:
+    :path: "../node_modules/react-native-permissions"
+  rn-fetch-blob:
+    :path: "../node_modules/rn-fetch-blob"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
+  RNDevMenu:
+    :path: "../node_modules/react-native-dev-menu"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
+  RNLanguages:
+    :path: "../node_modules/react-native-languages"
+  RNSVG:
+    :path: "../node_modules/react-native-svg"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
+  RNViewShot:
+    :path: "../node_modules/react-native-view-shot"
+  yoga:
+    :path: "../node_modules/react-native/ReactCommon/yoga"
+
+SPEC CHECKSUMS:
+  boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
+  DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
+  Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
+  glog: 1f3da668190260b06b429bb211bfbee5cd790c28
+  instabug-reactnative: 2aeed0c4d1dca5545ff550d60d0bd5f730120cda
+  lottie-ios: 6037add6441183d4ffd100d2ac78724aa8d919d4
+  lottie-react-native: 86aeee2caa9250e4c8027ac75711a59c6679e532
+  RCTRestart: 05aa14bfc0f0f0b02769be197cbd81afa66ea627
+  React: 53c53c4d99097af47cf60594b8706b4e3321e722
+  React-Core: ba421f6b4f4cbe2fb17c0b6fc675f87622e78a64
+  React-cxxreact: 8384287780c4999351ad9b6e7a149d9ed10a2395
+  React-DevSupport: 197fb409737cff2c4f9986e77c220d7452cb9f9f
+  React-jsi: 4d8c9efb6312a9725b18d6fc818ffc103f60fec2
+  React-jsiexecutor: 90ad2f9db09513fc763bc757fdc3c4ff8bde2a30
+  React-jsinspector: e08662d1bf5b129a3d556eb9ea343a3f40353ae4
+  react-native-camera: 96a3c81f27da57b816fbb6808dde20dc96d1431e
+  react-native-config: 55548054279d92e0e4566ea15a8b9b81028ec342
+  react-native-image-picker: fd93361c666f397bdf72f9c6c23f13d2685b9173
+  react-native-network-info: 6c94056a2fb00c27dd759c30fee7b327a9e4c73a
+  React-RCTActionSheet: b0f1ea83f4bf75fb966eae9bfc47b78c8d3efd90
+  React-RCTAnimation: 359ba1b5690b1e87cc173558a78e82d35919333e
+  React-RCTBlob: 5e2b55f76e9a1c7ae52b826923502ddc3238df24
+  React-RCTImage: f5f1c50922164e89bdda67bcd0153952a5cfe719
+  React-RCTLinking: d0ecbd791e9ddddc41fa1f66b0255de90e8ee1e9
+  React-RCTNetwork: e26946300b0ab7bb6c4a6348090e93fa21f33a9d
+  React-RCTPushNotification: 2ae0eaa3e6ac639aae536e3608b0fc184a034645
+  React-RCTSettings: d0d37cb521b7470c998595a44f05847777cc3f42
+  React-RCTText: b074d89033583d4f2eb5faf7ea2db3a13c7553a2
+  React-RCTVibration: 2105b2e0e2b66a6408fc69a46c8a7fb5b2fdade0
+  React-RCTWebSocket: cd932a16b7214898b6b7f788c8bddb3637246ac4
+  ReactNativeExceptionHandler: 5e46d98b0a1f5acabeac64a3613ff1f345e71b30
+  ReactNativePermissions: 2e324bb3baf12702e3ec27f76c8ae1158fa69fc6
+  rn-fetch-blob: 651b8d076b43d0d7aa294a3d9ec16c00aab8bef9
+  RNDeviceInfo: 5a3ae865d1736d2305be149578928b0c7198e852
+  RNDevMenu: 5d5a7c235bdfc9c8878d6b57361bfead3180f623
+  RNGestureHandler: b65d391f4f570178d657b99a16ec99d09b8656b0
+  RNLanguages: 962e562af0d34ab1958d89bcfdb64fafc37c513e
+  RNSVG: c3d27cf99f8484d3d8f8bb017b5438fd321267cf
+  RNVectorIcons: 6607bd3a30291d0edb56f9bbe7ae411ee2b928b0
+  RNViewShot: 5c5b4c5540046e5fb0de4a48a311571816c43c86
+  yoga: 312528f5bbbba37b4dcea5ef00e8b4033fdd9411
+
+PODFILE CHECKSUM: 5c52c779fa80ca29a64ad9009c268bb9360a9b32
+
+COCOAPODS: 1.7.5
