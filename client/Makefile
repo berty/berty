@@ -233,7 +233,7 @@ get_iphone_udid:
 	$(eval IOS_UDID = $(shell if [ -n '$(IOS_UDID)' ]; then echo '--udid=$(IOS_UDID)'; fi))
 
 .PHONY: deps.android
-deps.android: deps.lerna $(PWD)/android/app/google-services.json $(PWD)/.environment
+deps.android: deps.lerna $(PWD)/android/app/google-services.json $(PWD)/.environment patch.android
 	$(PWD)/node_modules/.bin/react-native link --platforms=android
 	./node_modules/.bin/jetify
 	cd ../core/platform/mobile && make build.android
@@ -285,16 +285,26 @@ patch.android:
 		patch node_modules/react-native-network-info/android/build.gradle_topatch -i patch/gradle.patch -o node_modules/react-native-network-info/android/build.gradle; \
 	fi
 
+
+.PHONY: build.android
+build.android: deps.android
+	$(RN) run-android --variant=$(ANDROID_VARIANT) --no-packager
+
 .PHONY: debug.android
-debug.android: deps.android patch.android config.debug
-	$(RN) run-android --no-packager
-	make debug.react-native
+debug.android: ANDROID_VARIANT := debug
+debug.android: config.debug build.android
 
 .PHONY: release.android
-release.android: deps.android config.release
-	source .environment \
-		&& export APP_TOKEN="$$INSTABUG_TOKEN" \
-		&& $(RN) run-android --variant=release --no-packager
+release.android: ANDROID_VARIANT := release
+release.android: config.release build.android
+
+.PHONY: staff.android
+staff.android: ANDROID_VARIANT := staff
+staff.android: config.staff build.android
+
+.PHONY: yolo.android
+yolo.android: ANDROID_VARIANT := yolo
+yolo.android: config.yolo build.android
 
 .PHONY: deps.osx
 deps.osx: osx/node_modules/.updated
@@ -315,14 +325,19 @@ fclean.osx:
 	rm -rf osx/node_modules
 	rm -rf osx/Berty.app
 
-.PHONY: debug.ios
-debug.ios: deps.ios get_iphone_udid config.debug
-	make debug.react-native
+
+.PHONY: build.ios
+build.ios: deps.ios get_iphone_udid
 	$(RN) run-ios \
 		--no-packager \
-		--configuration=Debug \
-		--scheme=debug \
+		--configuration=$(IOS_CONFIGURATION) \
+		--scheme=$(IOS_SCHEME) \
 		$(IOS_UDID)
+
+.PHONY: debug.ios
+debug.ios: IOS_SCHEME := debug
+debug.ios: IOS_CONFIGURATION ?= Debug
+debug.ios: config.debug debug.react-native build.ios
 
 .PHONY: test.debug.ios
 test.debug.ios: RN = cavy
@@ -330,12 +345,9 @@ test.debug.ios: export REACT_APP_ENVIRONMENT = integration_test
 test.debug.ios: debug.ios
 
 .PHONY: release.ios
-release.ios: deps.ios get_iphone_udid config.release
-	$(RN) run-ios \
-		--no-packager \
-		--configuration=Release \
-		--scheme=release \
-		$(IOS_UDID)
+release.ios: IOS_SCHEME := release
+release.ios: IOS_CONFIGURATION ?= Release
+release.ios: config.release build.ios
 
 .PHONY: test.release.ios
 test.release.ios: RN = cavy
@@ -343,12 +355,9 @@ test.release.ios: export REACT_APP_ENVIRONMENT = integration_test
 test.release.ios: release.ios
 
 .PHONY: adhoc.ios
-adhoc.ios: deps.ios get_iphone_udid config.staff
-	$(RN) run-ios \
-		--no-packager \
-		--configuration=adhoc \
-		--scheme=adhoc \
-		$(IOS_UDID)
+adhoc.ios: IOS_SCHEME := adhoc
+adhoc.ios: IOS_CONFIGURATION ?= adhoc
+adhoc.ios: config.staff build.ios
 
 .PHONY: test.adhoc.ios
 test.adhoc.ios: RN = cavy
@@ -356,12 +365,9 @@ test.adhoc.ios: export REACT_APP_ENVIRONMENT = integration_test
 test.adhoc.ios: adhoc.ios
 
 .PHONY: house.ios
-house.ios: deps.ios get_iphone_udid config.yolo
-	$(RN) run-ios \
-		--no-packager \
-		--configuration=house \
-		--scheme=house \
-		$(IOS_UDID)
+house.ios: IOS_SCHEME := house
+house.ios: IOS_CONFIGURATION ?= house
+house.ios: config.yolo build.ios
 
 .PHONY: test.house.ios
 test.house.ios: RN = cavy

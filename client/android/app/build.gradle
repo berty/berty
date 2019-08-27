@@ -9,6 +9,7 @@ project.ext.envConfigFiles = [
         staff: ".environment",
 ]
 
+
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 /**
@@ -290,12 +291,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-apply from: 'publish.gradle'
 apply plugin: 'com.google.gms.google-services'
-
-task upload_sourcemap(type: Exec) {
-    environment "INSTABUG_APP_TOKEN", project.env.get("INSTABUG_TOKEN")
-    commandLine 'sh', './upload_sourcemap.sh'
-}
-
-
+apply from: 'publish.gradle'
+apply from: 'upload_sourcemap.gradle'

@@ -603,7 +603,7 @@
 		};
 		9556870F82DE361B84770BF2 /* Upload Sourcemap */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -615,7 +615,7 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export INSTABUG_APP_TOKEN=$INSTABUG_TOKEN\nbash \"../node_modules/instabug-reactnative/ios/upload_sourcemap.sh\"\n";
 		};

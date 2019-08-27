@@ -1,6 +1,6 @@
 package libp2p.transport.ble;
 
-import core.GoBridgeImplem;
+//////////////////////////////////////////////////////////////////////////////////////////import core.GoBridgeImplem;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -71,7 +71,7 @@ public final class BleManager {
     private static final BluetoothGattCharacteristic writerCharacteristic = new BluetoothGattCharacteristic(WRITER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
 
     // Go bridge interface
-    static final GoBridge goBridge = new GoBridgeImplem();
+    static final GoBridge goBridge = null;
 
     public interface GoBridge {
         boolean handlePeerFound(String peerID, String multiAddr);
