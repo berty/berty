@@ -104,21 +104,13 @@ deps.android: deps
 .PHONY: build.android
 build.android: deps.android $(ANDROID_BUILD_PATH)/core.aar
 
-<<<<<<< HEAD
-$(BLE_DIR_PATH)/ble.jar: deps.android
-	GO111MODULE=on go mod vendor
-	cd $(ANDROID_PATH) && ./gradlew ble:createJar && cd -
-
-.PHONY: build.core
-build.core: deps.android $(ANDROID_BUILD_PATH)/core.aar
-
 $(ANDROID_BUILD_PATH)/core.aar: $(ANDROID_BLE_JAVA_LIBS) $(CORE_SOURCES) | deps.android
 	GO111MODULE=on go mod vendor
 	mkdir -p $(ANDROID_BUILD_PATH)
 	GO111MODULE=off GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
 		gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -classpath='$(ANDROID_BUILD_PATH)/ble.jar:$(ANDROID_LATEST_SDK_LIB)' -o $(ANDROID_BUILD_PATH)/core.aar berty.tech/core/platform/mobile/core
 
-$(ANDROID_BLE_JAVA_LIBS): $(ANDROID_BLE_DRIVER_PATH) $(ANDROID_BLE_DRIVER_DIRS) $(ANDROID_BLE_DRIVER_FILES)
+$(ANDROID_BLE_JAVA_LIBS): $(ANDROID_BLE_DRIVER_PATH) $(ANDROID_BLE_DRIVER_DIRS) $(ANDROID_BLE_DRIVER_FILES) | deps.android
 	cd $(ANDROID_BLE_DRIVER_PATH) && ./gradlew ble:build
 	cp $(ANDROID_BLE_DRIVER_PATH)/ble/build/intermediates/packaged-classes/release/classes.jar $(ANDROID_BUILD_PATH)/ble.jar
 	cp $(ANDROID_BLE_DRIVER_PATH)/ble/build/outputs/aar/ble-release.aar $(ANDROID_BUILD_PATH)/ble.aar

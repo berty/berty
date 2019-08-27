@@ -84,7 +84,7 @@ public class JavaToGo {
         }
 
         boolean waitResponseFromGo() {
-            try { responseLock.acquire(); } catch(Exception e) {}
+            try { responseLock.acquire(); } catch(Exception e) { /* ignore */ }
             return success;
         }
     }
@@ -107,7 +107,7 @@ public class JavaToGo {
         }
 
         void waitResponseFromGo() {
-            try { responseLock.acquire(); } catch (Exception e) {}
+            try { responseLock.acquire(); } catch (Exception e) { /* ignore */ }
         }
     }
 

@@ -98,7 +98,7 @@ public final class GoToJava {
         // Disable the Bluetooth state watcher
         synchronized (receiverRegistered) {
             if (receiverRegistered.getState()) {
-                try { BleDriver.getContext().unregisterReceiver(BleDriver.getBluetoothStateWatcher()); } catch(Throwable t) {}
+                try { BleDriver.getContext().unregisterReceiver(BleDriver.getBluetoothStateWatcher()); } catch(Throwable t) { /* ignore */ }
                 receiverRegistered.setState(false);
             }
         }
