@@ -260,7 +260,7 @@ build.android: deps.android config.$(ANDROID_VARIANT)
 
 .PHONY: debug.android
 debug.android: ANDROID_VARIANT := debug
-debug.android: build.android
+debug.android: config.debug debug.react-native build.android
 
 .PHONY: release.android
 release.android: ANDROID_VARIANT := release
