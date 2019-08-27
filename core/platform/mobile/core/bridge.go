@@ -95,8 +95,6 @@ func NewNativeBridge(loggerNative NativeLogger) NativeBridge {
 		panic(err)
 	}
 
-	bindBleFunc()
-
 	iogrpc := helper.NewIOGrpc()
 
 	dlogger := zap.L().Named("daemon.grpc")

@@ -269,7 +269,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation project(':ble')
     implementation project(':core')
 
     if (enableHermes) {

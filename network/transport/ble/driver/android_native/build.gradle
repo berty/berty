@@ -1,53 +1,27 @@
-apply plugin: 'com.android.library'
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-android {
-    compileSdkVersion = 28
-
-    defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        
     }
-
-    lintOptions {
-        abortOnError false
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.2'
+        
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
     }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
-    }
-
 }
 
-dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-implementation project(':core')
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        
+    }
 }
 
-task deleteJar(type: Delete) {
-    delete 'libs/jars/ble.jar'
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
-
-task createJar(type: Copy) {
-    from('build/intermediates/packaged-classes/release/')
-    into('libs/jars/')
-    include('classes.jar')
-    rename('classes.jar', 'ble.jar')
-}
-
-createJar.dependsOn(deleteJar, build)
