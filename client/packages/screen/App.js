@@ -17,6 +17,7 @@ import StoreContext from '@berty/store/context'
 import { Store } from '@berty/store/store.gen'
 import i18n from '@berty/common/locale'
 import { isIntegrationMode } from '@berty/common/constants/query'
+import { exceptionHandler } from '@berty/common/helpers/crash-handler'
 
 const bridgeMiddlewares = middleware.chain(
   __DEV__ ? middleware.logger.create('DAEMON') : null // eslint-disable-line
@@ -44,6 +45,10 @@ export default class App extends PureComponent {
         })
       },
     }),
+  }
+
+  componentDidCatch(error, info) {
+    exceptionHandler(error, true)
   }
 
   componentDidMount() {
