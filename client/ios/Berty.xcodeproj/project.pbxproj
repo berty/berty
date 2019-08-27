@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
@@ -700,7 +701,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#- -- SCRIPT BEGIN - --\n# SKIP_SIMULATOR_BUILDS=1\nSCRIPT_SRC=$(find \"$PROJECT_DIR\" -name 'Instabug_dsym_upload.sh' | head -1)\nif [ ! \"${SCRIPT_SRC}\" ]; then\necho \"Instabug: err: script not found. Make sure that you're including InstabugResources.bundle in your project directory\"\nexit 1\nfi\nAPP_TOKEN=$INSTABUG_TOKEN\nsource \"${SCRIPT_SRC}\"\n#- -- SCRIPT END - --\n";
+			shellScript = "#- -- SCRIPT BEGIN - --\n# SKIP_SIMULATOR_BUILDS=1\nSCRIPT_SRC=$PROJECT_DIR/../node_modules/instabug-reactnative/ios/Instabug.framework/InstabugResources.bundle/Instabug_dsym_upload.sh\nif [ ! \"${SCRIPT_SRC}\" ]; then\necho \"Instabug: err: script not found. Make sure that you're including InstabugResources.bundle in your project directory\"\nexit 1\nfi\nAPP_TOKEN=$INSTABUG_TOKEN\nsource \"${SCRIPT_SRC}\"\n#- -- SCRIPT END - --\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
