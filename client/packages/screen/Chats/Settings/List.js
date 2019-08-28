@@ -78,10 +78,14 @@ export class SettingsScreen extends PureComponent {
     const { id } = conversation
     try {
       await context.node.service.conversationRemove({ id })
-      this.props.goBack()
     } catch (err) {
       console.error(err)
+      if (this.props.context.entity.conversation.has(id)) {
+        return
+      }
     }
+    this.props.goBack()
+    this.props.navigation.popToTop()
   }
 
   render() {
