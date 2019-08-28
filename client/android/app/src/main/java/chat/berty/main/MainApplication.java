@@ -7,7 +7,7 @@ import com.facebook.react.PackageList;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
-import com.instabug.reactlibrary.RNInstabugReactnativePackage;
+import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 
 import com.facebook.react.ReactNativeHost;
@@ -34,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
             // Packages that cannot be autolinked yet can be added manually here, for example:
             // packages.add(new MyReactNativePackage());
             packages.add(new CorePackage());
+            // packages.add(new ReactNativeConfigPackage());
             new RNInstabugReactnativePackage.Builder(BuildConfig.INSTABUG_TOKEN, MainApplication.this)
                 .setInvocationEvent(BuildConfig.DEBUG ? "none" : "shake")
                 .setPrimaryColor("#1D82DC")

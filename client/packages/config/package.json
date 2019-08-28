@@ -1,0 +1,17 @@
+{
+  "name": "@berty/config",
+  "version": "0.0.4-alpha.1",
+  "private": true,
+  "description": "> TODO: description",
+  "author": "Godefroy Ponsinet <godefroy.ponsinet@outlook.com>",
+  "homepage": "https://github.com/berty/berty#readme",
+  "license": "UNLICENSED",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berty/berty.git"
+  },
+  "bugs": {
+    "url": "https://github.com/berty/berty/issues"
+  }
+}

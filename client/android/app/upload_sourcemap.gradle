@@ -1,0 +1,36 @@
+/**
+ * replace upload_sourcemap from instabug
+ * it was too long because it rebundled react-native
+ */
+project(':instabug-reactnative') {
+    tasks.whenTaskAdded { task ->
+        if (task.name == 'upload_sourcemap') {
+            task.enabled = false
+        }
+    }
+}
+android.applicationVariants.all { def variant ->
+    // from ../../node_modules/react-native/react.gradle
+    def config = project.hasProperty("react") ? project.react : []
+
+    def bundleAssetName = config.bundleAssetName ?: "index.android.bundle"
+
+    // Create variant and target names
+    def targetName = variant.name.capitalize()
+    def targetPath = variant.dirName
+
+    // React js bundle directories
+    def jsSourceMapsDir = file("$buildDir/generated/sourcemaps/react/${targetPath}")
+    def jsOutputSourceMapFile = file("$jsSourceMapsDir/${bundleAssetName}.map")
+
+
+    variant.assemble.finalizedBy(
+        tasks.create(name: "upload${targetName}SourceMap", type: Exec) {
+            dependsOn "bundle${targetName}JsAndAssets"
+            description "upload source map to reporter"
+            environment "INSTABUG_APP_TOKEN", project.env.get("INSTABUG_TOKEN")
+            environment "JS_OUTPUT_SOURCE_MAP_FILE", jsOutputSourceMapFile
+            commandLine 'sh', './upload_sourcemap.sh'
+        }
+    )
+}

@@ -1,12 +1,12 @@
 {
   "name": "@berty/container",
-  "version": "0.0.1",
+  "version": "0.0.4-alpha.1",
   "license": "UNLICENSED",
   "source": true,
   "private": true,
   "dependencies": {
-    "@berty/common": "^0.0.1",
-    "@berty/store": "^0.0.1",
+    "@berty/common": "^0.0.4-alpha.1",
+    "@berty/store": "^0.0.4-alpha.1",
     "async-mutex": "^0.1.3",
     "await-mutex": "^1.0.2",
     "mobx": "^5.10.0",

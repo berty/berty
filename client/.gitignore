@@ -41,6 +41,9 @@ DerivedData
 *.xcuserstate
 project.xcworkspace
 *.dSYM.zip
+ios/tmp.xcconfig
+ios-sourcemap.*
+ios/main.jsbundle
 
 # Android/IntelliJ
 #
@@ -51,6 +54,7 @@ local.properties
 *.iml
 android-sourcemap.*
 *.hprof
+android/main.jsbundle
 
 # node.js
 #

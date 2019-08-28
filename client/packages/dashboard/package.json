@@ -1,6 +1,6 @@
 {
   "name": "@berty/dashboard",
-  "version": "0.0.1",
+  "version": "0.0.4-alpha.1",
   "description": "Monitor a berty node",
   "private": true,
   "scripts": {
@@ -17,7 +17,7 @@
     "parcel-bundler": "^1.12.3"
   },
   "dependencies": {
-    "@berty/bridge": "^0.0.1",
+    "@berty/bridge": "^0.0.4-alpha.1",
     "antd": "^3.19.3",
     "chart.js": "^2.8.0",
     "geoip-lite": "file:./packages/dashboard/node-geoip",

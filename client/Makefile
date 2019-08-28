@@ -26,6 +26,9 @@ RN := react-native
 platform ?= web
 package ?= app
 
+.PHONY: .FORCE
+.FORCE:
+
 .PHONY: all
 all: deps.lerna
 
@@ -38,11 +41,14 @@ help:
 .PHONY: deps.lerna
 deps.lerna: $(LERNA_PACKAGES)
 
+lerna_test:
+	@echo $(LERNA_PACKAGES)
+
 $(LERNA):
 	npm $(shell [ -z "$$CIRCLE_JOB" ] && echo "install" || echo "ci") lerna
 
 %/node_modules: $(LERNA) $(LERNA_PRE) %/package.json
-	@echo $@
+	@echo $@ $<
 	find packages \
 		-type d \
 		-name 'node_modules' \
@@ -186,48 +192,32 @@ SERV ?=
 # Options
 package ?= app
 
-.PHONY: get_iphone_udid
-get_iphone_udid:
-	$(eval IOS_UDID = $(shell ios-deploy -c | grep 'Found' | head -n 1 | cut -d ' ' -f 3))
-	@if [ -z '$(IOS_UDID)' ]; then						\
-		echo 'No iOS device connected';					\
-	else												\
-		echo 'iOS device found with UDID: $(IOS_UDID)';	\
-	fi
-	$(eval IOS_UDID = $(shell if [ -n '$(IOS_UDID)' ]; then echo '--udid=$(IOS_UDID)'; fi))
+ENV_FILE ?= $(PWD)/.environment
 
-.PHONY: deps.android
-deps.android: deps.lerna $(PWD)/android/app/google-services.json $(PWD)/.environment
-	$(PWD)/node_modules/.bin/react-native link --platforms=android
-	./node_modules/.bin/jetify
-	cd ../core/platform/mobile && make build.android
 
-$(PWD)/android/app/google-services.json:
+### CONFIG
+
+.PHONY: config
+config: /tmp/envfile $(PWD)/ios/tmp.xcconfig
+
+.PHONY: config.debug
+config.debug: config
+
+.PHONY: config.staff config.adhoc
+config.adhoc config.staff: config
+
+.PHONY: config.yolo config.house
+config.house config.yolo: config
+
+.PHONY: config.release
+config.release: config
+
+/tmp/envfile: $(ENV_FILE) .FORCE
+	echo $(ENV_FILE) > /tmp/envfile
+
+$(ENV_FILE):
 	@echo 'Error: You need to configure ' $@
 	@false
-
-$(PWD)/.environment:
-	@echo 'Error: You need to configure ' $@ ' with INSTABUG_TOKEN'
-	@false
-
-.PHONY: deps.ios
-deps.ios: deps.lerna $(PWD)/.environment $(PWD)/ios/core.framework $(PWD)/ios/Pods/Manifest.lock
-	if [ ! -e ./node_modules/react-native/third-party/glog-0.*/Makefile ]; then	\
-		cd ./node_modules/react-native											\
-			&& rm -rf third-party														\
-			&& ./scripts/ios-install-third-party.sh										\
-			&& cd third-party/glog-0.*													\
-			&& ../../scripts/ios-configure-glog.sh;										\
-	fi
-
-$(PWD)/ios/Pods/Manifest.lock: $(PWD)/package.json $(PWD)/ios/Podfile
-	$(PWD)/node_modules/.bin/react-native link --platforms=ios
-	([ ! -z "$(shell which pod)" ] && [[ "$$(pod --version)" > "1.7." ]]) || sudo gem install cocoapods
-	cd ios && pod install --verbose
-
-.PHONY: $(PWD)/ios/core.framework
-$(PWD)/ios/core.framework:
-	cd ../core/platform/mobile && make build.ios
 
 .PHONY: deps.web
 deps.web: deps.lerna web/node_modules/.updated
@@ -246,6 +236,16 @@ deps.logs:
 debug.react-native:
 	$(RN) start --reset-cache &
 
+.PHONY: deps.android
+deps.android: deps.lerna $(PWD)/android/app/google-services.json $(PWD)/.environment patch.android
+	$(PWD)/node_modules/.bin/react-native link --platforms=android
+	./node_modules/.bin/jetify
+	cd ../core/platform/mobile && make build.android
+
+$(PWD)/android/app/google-services.json:
+	@echo 'Error: You need to configure ' $@
+	@false
+
 .PHONY: patch.android
 patch.android:
 	@if [ -z "$$(sed -n 4p node_modules/react-native-network-info/android/build.gradle | grep 'url \"https://maven.google.com\"')" ]; then \
@@ -253,16 +253,26 @@ patch.android:
 		patch node_modules/react-native-network-info/android/build.gradle_topatch -i patch/gradle.patch -o node_modules/react-native-network-info/android/build.gradle; \
 	fi
 
+ANDROID_VARIANT ?= release
+.PHONY: build.android
+build.android: deps.android config.$(ANDROID_VARIANT)
+	$(RN) run-android --variant=$(ANDROID_VARIANT) --no-packager
+
 .PHONY: debug.android
-debug.android: deps.android patch.android
-	$(RN) run-android --no-packager
-	make debug.react-native
+debug.android: ANDROID_VARIANT := debug
+debug.android: build.android
 
 .PHONY: release.android
-release.android: deps.android
-	source .environment \
-		&& export APP_TOKEN="$$INSTABUG_TOKEN" \
-		&& $(RN) run-android --variant=release --no-packager
+release.android: ANDROID_VARIANT := release
+release.android: build.android
+
+.PHONY: staff.android
+staff.android: ANDROID_VARIANT := staff
+staff.android: build.android
+
+.PHONY: yolo.android
+yolo.android: ANDROID_VARIANT := yolo
+yolo.android: build.android
 
 .PHONY: deps.osx
 deps.osx: osx/node_modules/.updated
@@ -283,14 +293,53 @@ fclean.osx:
 	rm -rf osx/node_modules
 	rm -rf osx/Berty.app
 
-.PHONY: debug.ios
-debug.ios: deps.ios get_iphone_udid
-	make debug.react-native
+$(PWD)/ios/tmp.xcconfig: /tmp/envfile
+	$(PWD)/node_modules/react-native-config/ios/ReactNativeConfig/BuildXCConfig.rb "$(PWD)" "$(PWD)/ios/tmp.xcconfig"
+
+.PHONY: get_iphone_udid
+get_iphone_udid:
+	$(eval IOS_UDID = $(shell ios-deploy -c | grep 'Found' | head -n 1 | cut -d ' ' -f 3))
+	@if [ -z '$(IOS_UDID)' ]; then						\
+		echo 'No iOS device connected';					\
+	else												\
+		echo 'iOS device found with UDID: $(IOS_UDID)';	\
+	fi
+	$(eval IOS_UDID = $(shell if [ -n '$(IOS_UDID)' ]; then echo '--udid=$(IOS_UDID)'; fi))
+
+
+.PHONY: deps.ios
+deps.ios: deps.lerna $(PWD)/.environment $(PWD)/ios/core.framework $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
+	if [ ! -e ./node_modules/react-native/third-party/glog-0.*/Makefile ]; then	\
+		cd ./node_modules/react-native											\
+			&& rm -rf third-party														\
+			&& ./scripts/ios-install-third-party.sh										\
+			&& cd third-party/glog-0.*													\
+			&& ../../scripts/ios-configure-glog.sh;						\
+	fi
+
+$(PWD)/ios/Pods/Manifest.lock: $(PWD)/package.json $(PWD)/ios/Podfile
+	$(PWD)/node_modules/.bin/react-native link --platforms=ios
+	([ ! -z "$(shell which pod)" ] && [[ "$$(pod --version)" > "1.7." ]]) || sudo gem install cocoapods
+	cd ios && pod install --verbose
+
+.PHONY: $(PWD)/ios/core.framework
+$(PWD)/ios/core.framework:
+	cd ../core/platform/mobile && make build.ios
+
+IOS_CONFIGURATION ?= Release
+IOS_SCHEME ?= release
+.PHONY: build.ios
+build.ios: deps.ios get_iphone_udid config.$(IOS_SCHEME)
 	$(RN) run-ios \
 		--no-packager \
-		--configuration=Debug \
-		--scheme=debug \
+		--configuration=$(IOS_CONFIGURATION) \
+		--scheme=$(IOS_SCHEME) \
 		$(IOS_UDID)
+
+.PHONY: debug.ios
+debug.ios: IOS_SCHEME := debug
+debug.ios: IOS_CONFIGURATION ?= Debug
+debug.ios: debug.react-native build.ios
 
 .PHONY: test.debug.ios
 test.debug.ios: RN = cavy
@@ -298,12 +347,9 @@ test.debug.ios: export REACT_APP_ENVIRONMENT = integration_test
 test.debug.ios: debug.ios
 
 .PHONY: release.ios
-release.ios: deps.ios get_iphone_udid
-	$(RN) run-ios \
-		--no-packager \
-		--configuration=Release \
-		--scheme=release \
-		$(IOS_UDID)
+release.ios: IOS_SCHEME := release
+release.ios: IOS_CONFIGURATION ?= Release
+release.ios: build.ios
 
 .PHONY: test.release.ios
 test.release.ios: RN = cavy
@@ -311,12 +357,9 @@ test.release.ios: export REACT_APP_ENVIRONMENT = integration_test
 test.release.ios: release.ios
 
 .PHONY: adhoc.ios
-adhoc.ios: deps.ios get_iphone_udid
-	$(RN) run-ios \
-		--no-packager \
-		--configuration=adhoc \
-		--scheme=adhoc \
-		$(IOS_UDID)
+adhoc.ios: IOS_SCHEME := adhoc
+adhoc.ios: IOS_CONFIGURATION ?= adhoc
+adhoc.ios: build.ios
 
 .PHONY: test.adhoc.ios
 test.adhoc.ios: RN = cavy
@@ -324,12 +367,9 @@ test.adhoc.ios: export REACT_APP_ENVIRONMENT = integration_test
 test.adhoc.ios: adhoc.ios
 
 .PHONY: house.ios
-house.ios: deps.ios get_iphone_udid
-	$(RN) run-ios \
-		--no-packager \
-		--configuration=house \
-		--scheme=house \
-		$(IOS_UDID)
+house.ios: IOS_SCHEME := house
+house.ios: IOS_CONFIGURATION ?= house
+house.ios: build.ios
 
 .PHONY: test.house.ios
 test.house.ios: RN = cavy
@@ -526,43 +566,43 @@ version.ios: version
 	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) $(IOS)/Berty/Info.plist
 
 .PHONY: fastlane.match.development
-fastlane.match.development: deps.ios
+fastlane.match.development: deps.ios config.debug
 	time bundle exec fastlane run match type:development app_identifier:$(IOS_BUNDLE_ID_DEBUG) team_id:$(MATCH_COMPANY_TEAM_ID)
 
 .PHONY: fastlane.match.appstore
-fastlane.match.appstore: deps.ios
+fastlane.match.appstore: deps.ios config.release
 	time bundle exec fastlane run match type:appstore app_identifier:$(IOS_BUNDLE_ID_RELEASE) team_id:$(MATCH_COMPANY_TEAM_ID)
 
 .PHONY: fastlane.match.adhoc
-fastlane.match.adhoc: deps.ios
+fastlane.match.adhoc: deps.ios config.staff
 	time bundle exec fastlane run match force_for_new_devices:true type:adhoc app_identifier:$(IOS_BUNDLE_ID_ADHOC) team_id:$(MATCH_COMPANY_TEAM_ID)
 
 .PHONY: fastlane.match.enterprise
-fastlane.match.enterprise: deps.ios
+fastlane.match.enterprise: deps.ios config.yolo
 	time bundle exec fastlane run match type:enterprise app_identifier:$(IOS_BUNDLE_ID_HOUSE) team_id:$(MATCH_ENTERPRISE_TEAM_ID)
 
 .PHONY: fastlane.match.all
 fastlane.match.all: fastlane.match.development fastlane.match.appstore fastlane.match.adhoc fastlane.match.enterprise
 
 .PHONY: fastlane.pem.development
-fastlane.pem.development: deps.ios
+fastlane.pem.development: deps.ios config.debug
 	time bundle exec fastlane voip_cert app_identifier:$(IOS_BUNDLE_ID_DEBUG) team_id:$(PEM_COMPANY_TEAM_ID) pem_name:$(IOS_BUNDLE_ID_DEBUG)-voip.pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_DEBUG) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_DEBUG)-dev.pem --development
 
 .PHONY: fastlane.pem.appstore
-fastlane.pem.appstore: deps.ios
+fastlane.pem.appstore: deps.ios config.release
 	time bundle exec fastlane voip_cert app_identifier:$(IOS_BUNDLE_ID_RELEASE) team_id:$(PEM_COMPANY_TEAM_ID) pem_name:$(IOS_BUNDLE_ID_RELEASE)-voip.pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_RELEASE) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_RELEASE).pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_RELEASE) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_RELEASE)-dev.pem  --development
 
 .PHONY: fastlane.pem.adhoc
-fastlane.pem.adhoc: deps.ios
+fastlane.pem.adhoc: deps.ios config.staff
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_ADHOC) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_ADHOC).pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_ADHOC) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_ADHOC)-dev.pem --development
 	time bundle exec fastlane voip_cert app_identifier:$(IOS_BUNDLE_ID_ADHOC) team_id:$(PEM_COMPANY_TEAM_ID) pem_name:$(IOS_BUNDLE_ID_ADHOC)-voip.pem
 
 .PHONY: fastlane.pem.enterprise
-fastlane.pem.enterprise: deps.ios
+fastlane.pem.enterprise: deps.ios config.yolo
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_HOUSE) --team_id $(PEM_ENTERPRISE_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_HOUSE).pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_HOUSE) --team_id $(PEM_ENTERPRISE_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_HOUSE)-dev.pem --development
 	time bundle exec fastlane voip_cert app_identifier:$(IOS_BUNDLE_ID_HOUSE) team_id:$(PEM_ENTERPRISE_TEAM_ID) pem_name:$(IOS_BUNDLE_ID_HOUSE)-voip.pem
@@ -596,7 +636,7 @@ fastlane.setup_circle:
 
 
 .PHONY: fastlane.ios.debug
-fastlane.ios.debug: deps.ios
+fastlane.ios.debug: deps.ios config.debug
 	mkdir -p $(IOS_BUILD)
 
 	FL_BUILDLOG_PATH=$(IOS_BUILD) \
@@ -612,7 +652,7 @@ fastlane.ios.debug: deps.ios
 		time bundle exec fastlane ios build --verbose
 
 .PHONY: fastlane.ios.adhoc
-fastlane.ios.adhoc: deps.ios
+fastlane.ios.adhoc: deps.ios config.staff
 	mkdir -p $(IOS_BUILD)
 
 	FL_BUILDLOG_PATH=$(IOS_BUILD) \
@@ -634,7 +674,7 @@ fastlane.ios.adhoc: deps.ios
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
 .PHONY: fastlane.ios.house
-fastlane.ios.house: deps.ios
+fastlane.ios.house: deps.ios config.yolo
 	mkdir -p $(IOS_BUILD)
 
 	FL_BUILDLOG_PATH=$(IOS_BUILD) \
@@ -657,7 +697,7 @@ fastlane.ios.house: deps.ios
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
 .PHONY: fastlane.ios.release
-fastlane.ios.release: deps.ios
+fastlane.ios.release: deps.ios config.release
 	mkdir -p $(IOS_BUILD)
 
 	FL_BUILDLOG_PATH=$(IOS_BUILD) \
@@ -680,11 +720,11 @@ fastlane.ios.release: deps.ios
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
 .PHONY: fastlane.ios.release.appstore
-fastlane.ios.release.appstore: fastlane.ios.release
+fastlane.ios.release.appstore: fastlane.ios.release config.release
 	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
 
 .PHONY: fastlane.android.staff
-fastlane.android.staff: deps.android
+fastlane.android.staff: deps.android config.staff
 	# get the google-services.json
 	[ -e $(PWD)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(PWD)/android/app/google-services.json
@@ -702,7 +742,7 @@ fastlane.android.staff: deps.android
 	jarsigner -verify $(ANDROID_BUILD)/*.apk
 
 .PHONY: fastlane.android.yolo
-fastlane.android.yolo: deps.android
+fastlane.android.yolo: deps.android config.yolo
 	# get the google-services.json
 	[ -e $(PWD)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(PWD)/android/app/google-services.json
@@ -719,7 +759,7 @@ fastlane.android.yolo: deps.android
 	jarsigner -verify $(ANDROID_BUILD)/*.apk
 
 .PHONY: fastlane.android.release
-fastlane.android.release: deps.android
+fastlane.android.release: deps.android config.release
 	# get the google-services.json
 	[ -e $(PWD)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(PWD)/android/app/google-services.json

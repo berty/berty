@@ -2,6 +2,16 @@ apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
 
+project.ext.envConfigFiles = [
+        debug: ".environment",
+        release: ".environment",
+        yolo: ".environment",
+        staff: ".environment",
+]
+
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
@@ -94,13 +104,6 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
-
-project.ext.envConfigFiles = [
-    debug: ".environment",
-    release: ".environment",
-    yolo: ".environment",
-    staff: ".environment",
-]
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -248,7 +251,7 @@ android {
 }
 
 dependencies {
-    implementation project(':instabug-reactnative')
+    implementation project(':react-native-config')
     implementation project(':lottie-react-native')
     implementation project(':rn-fetch-blob')
     implementation project(':react-native-view-shot')
@@ -262,7 +265,6 @@ dependencies {
     implementation project(':react-native-exception-handler')
     implementation project(':react-native-device-info')
     implementation project(':react-native-dev-menu')
-    implementation project(':react-native-config')
     implementation project(':react-native-camera')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
@@ -289,6 +291,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
-apply from: 'publish.gradle'
 apply plugin: 'com.google.gms.google-services'
+apply from: 'publish.gradle'
+apply from: 'upload_sourcemap.gradle'
