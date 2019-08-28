@@ -13,7 +13,6 @@ import (
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
-	"berty.tech/core/push"
 	"berty.tech/network"
 	network_metric "berty.tech/network/metric"
 	"github.com/gofrs/uuid"
@@ -46,7 +45,6 @@ type Node struct {
 	ring                        *zapring.Ring // log ring buffer
 	rootSpan                    opentracing.Span
 	rootContext                 context.Context // only used for tracing
-	pushManager                 *push.Manager
 
 	// devtools
 	createdAt time.Time // used for uptime calculation
@@ -70,7 +68,6 @@ func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
 		createdAt:      time.Now().UTC(),
 		rootSpan:       tracer.Span(),
 		rootContext:    ctx,
-		pushManager:    &push.Manager{},
 		shutdown:       make(chan struct{}, 1),
 	}
 

@@ -14,7 +14,7 @@ import (
 
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
-	"berty.tech/core/push"
+	"berty.tech/zero-push/proto/push"
 )
 
 // 1st send backoff ~1600

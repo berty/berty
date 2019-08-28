@@ -74,9 +74,6 @@ message Config {
   bool initOnly = 6;
   bool withBot = 7;
   bool notification = 8;
-  repeated string apnsCerts = 9;
-  repeated string apnsDevVoipCerts = 10;
-  repeated string fcmAPIKeys = 11;
   string privateKeyFile = 12;
   NetworkConfig networkConfig = 13;
   bool noP2P = 14;

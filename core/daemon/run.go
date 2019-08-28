@@ -1,12 +1,10 @@
 package daemon
 
 import (
-	"context"
-
 	"berty.tech/core/manager/account"
 	"berty.tech/core/pkg/banner"
 	"berty.tech/core/pkg/logmanager"
-	"berty.tech/core/push"
+	"context"
 	"go.uber.org/zap"
 )
 
@@ -65,13 +63,6 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 		accountOptions = append(accountOptions, account.WithNotificationDriver(d.Notification))
 	}
 
-	pushDispatchers, err := listPushDispatchers(cfg)
-	if err != nil {
-		return err
-	}
-
-	accountOptions = append(accountOptions, account.WithPushManager(push.New(pushDispatchers...)))
-
 	if cfg.InitOnly {
 		accountOptions = append(accountOptions, account.WithInitOnly())
 	}
@@ -112,35 +103,4 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 
 	// d.currentAccount = a
 	return nil
-}
-
-func listPushDispatchers(cfg *Config) ([]push.Dispatcher, error) {
-	var pushDispatchers []push.Dispatcher
-	for _, certs := range []struct {
-		Certs    []string
-		ForceDev bool
-	}{
-		{Certs: cfg.ApnsCerts, ForceDev: false},
-		{Certs: cfg.ApnsDevVoipCerts, ForceDev: true},
-	} {
-		for _, cert := range certs.Certs {
-			dispatcher, err := push.NewAPNSDispatcher(cert, certs.ForceDev)
-			if err != nil {
-				return nil, err
-			}
-
-			pushDispatchers = append(pushDispatchers, dispatcher)
-		}
-	}
-
-	for _, apiKey := range cfg.FcmAPIKeys {
-		dispatcher, err := push.NewFCMDispatcher(apiKey)
-		if err != nil {
-			return nil, err
-		}
-
-		pushDispatchers = append(pushDispatchers, dispatcher)
-	}
-
-	return pushDispatchers, nil
 }

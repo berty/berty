@@ -12,7 +12,7 @@ import (
 	"berty.tech/core/chunk"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/notification"
-	"berty.tech/core/push"
+	"berty.tech/zero-push/proto/push"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -24,6 +24,10 @@ type NativeNotificationDriver interface {
 	Register() error
 	Unregister() error
 	RefreshToken() error
+}
+
+type Payload struct {
+	Chunk string `json:"chunk"`
 }
 
 type MobileNotification struct {
@@ -43,7 +47,7 @@ func NewMobileNotification() *MobileNotification {
 
 func (n *MobileNotification) Receive(data string) {
 	logger().Debug("receive push notification", zap.String("data", data))
-	payload := push.Payload{}
+	payload := Payload{}
 	if err := json.Unmarshal([]byte(data), &payload); err != nil {
 		logger().Error(errorcodes.ErrNodePushNotifSub.Wrap(err).Error())
 		return

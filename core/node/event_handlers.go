@@ -14,7 +14,6 @@ import (
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/i18n"
 	"berty.tech/core/pkg/notification"
-	"berty.tech/core/push"
 	bsql "berty.tech/core/sql"
 	"github.com/jinzhu/gorm"
 )
@@ -550,37 +549,6 @@ func (n *Node) handleAckSenderAlias(ctx context.Context, ackAttrs *entity.AckAtt
 				zap.Error(errors.New("unable to ack alias"))
 			}
 		}
-	}
-
-	return nil
-}
-
-func (n *Node) handleDevicePushTo(ctx context.Context, event *entity.Event) error {
-	logger().Info("Sending push to device")
-	pushAttrs, err := event.GetDevicePushToAttrs()
-
-	if err != nil {
-		return errorcodes.ErrDeserialization.New()
-	}
-
-	identifier, err := n.crypto.Decrypt(pushAttrs.PushIdentifier)
-
-	if err != nil {
-		return errorcodes.ErrPushUnknownDestination.Wrap(err)
-	}
-
-	pushDestination := &push.PushDestination{}
-
-	if err := pushDestination.Unmarshal(identifier); err != nil {
-		return errorcodes.ErrPushUnknownDestination.Wrap(err)
-	}
-
-	if err := n.pushManager.Dispatch(&push.PushData{
-		PushIdentifier: pushAttrs.PushIdentifier,
-		Envelope:       pushAttrs.Envelope,
-		Priority:       pushAttrs.Priority,
-	}, pushDestination); err != nil {
-		logger().Error(errorcodes.ErrPush.Wrap(err).Error())
 	}
 
 	return nil

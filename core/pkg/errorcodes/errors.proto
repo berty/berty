@@ -4,7 +4,7 @@ package berty.errorcodes;
 
 option go_package = "berty.tech/core/pkg/errorcodes";
 
-import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "gogoproto/gogo.proto";
 //import "google/protobuf/any.proto";
 
 enum Code {

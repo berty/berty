@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"berty.tech/core/push"
+	"berty.tech/zero-push/proto/push"
 
 	"crypto/rand"
 	"crypto/rsa"
@@ -341,5 +341,4 @@ func createPushId(deviceId string, pushType push.DevicePushType, relayPubKeyByte
 		RelayPubkey: b64(relayPubKeyBytes),
 		DeviceID:    deviceId,
 	}
-
 }

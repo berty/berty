@@ -561,7 +561,7 @@
                   }
                 },
                 "pushType": {
-                  "type": "berty.push.DevicePushType",
+                  "type": "push.DevicePushType",
                   "id": 3
                 }
               }
@@ -1252,7 +1252,6 @@
                 "DevtoolsMapset": 401,
                 "SenderAliasUpdate": 501,
                 "DeviceUpdatePushConfig": 601,
-                "DevicePushTo": 602,
                 "Node": 99
               }
             },
@@ -1510,22 +1509,6 @@
                 "device": {
                   "type": "berty.entity.Device",
                   "id": 1
-                }
-              }
-            },
-            "DevicePushToAttrs": {
-              "fields": {
-                "pushIdentifier": {
-                  "type": "bytes",
-                  "id": 1
-                },
-                "envelope": {
-                  "type": "bytes",
-                  "id": 2
-                },
-                "priority": {
-                  "type": "berty.push.Priority",
-                  "id": 3
                 }
               }
             },
@@ -2138,7 +2121,7 @@
                   }
                 },
                 "pushType": {
-                  "type": "berty.push.DevicePushType",
+                  "type": "push.DevicePushType",
                   "id": 5
                 },
                 "pushId": {
@@ -2161,9 +2144,12 @@
         },
         "push": {
           "options": {
-            "go_package": "berty.tech/core/push"
+            "go_package": "berty.tech/zero-push/proto/push"
           },
           "nested": {
+            "Void": {
+              "fields": {}
+            },
             "DevicePushType": {
               "values": {
                 "UnknownDevicePushType": 0,
@@ -2207,6 +2193,15 @@
                 "deviceToken": {
                   "type": "string",
                   "id": 2
+                }
+              }
+            },
+            "PushToInput": {
+              "fields": {
+                "pushData": {
+                  "rule": "repeated",
+                  "type": "PushData",
+                  "id": 1
                 }
               }
             },

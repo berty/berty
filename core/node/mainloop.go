@@ -346,10 +346,19 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 	// tracer := tracing.EnterFunc(ctx, dispatch, envelope)
 	// defer tracer.Finish()
 	// ctx = tracer.Context()
+	var err error
 
 	if dispatch.ContactID == n.UserID() {
 		return nil
 	}
+
+	envCopy := *envelope
+	envCopy.ChannelID = dispatch.ContactID
+	envCopy.Signature, err = keypair.Sign(n.crypto, &envCopy)
+	if err != nil {
+		return errors.Wrap(err, "failed to sign envelope")
+	}
+
 	// Async subscribe to conversation
 	// wait for 1s to simulate a sync subscription,
 	// if too long, the task will be done in background
@@ -357,16 +366,6 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 	go func() {
 		tctx, cancel := context.WithTimeout(ctx, time.Minute)
 		defer cancel()
-
-		var err error
-
-		envCopy := *envelope
-		envCopy.ChannelID = dispatch.ContactID
-		envCopy.Signature, err = keypair.Sign(n.crypto, &envCopy)
-		if err != nil {
-			n.LogBackgroundError(ctx, errors.Wrap(err, "failed to sign envelope"))
-			return
-		}
 
 		data, err := proto.Marshal(&envCopy)
 		if err != nil {
@@ -384,7 +383,7 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 			n.LogBackgroundWarn(ctx, errors.Wrap(err, "failed to emit envelope on network"))
 
 			// push the outgoing event on the client stream
-			go n.queuePushEvent(ctx, event, envelope)
+			go n.queuePushEvent(ctx, event, &envCopy)
 			return
 		}
 
@@ -395,7 +394,7 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 	case <-done:
 	case <-time.After(1 * time.Second):
 		// push the outgoing event on the client stream
-		go n.queuePushEvent(ctx, event, envelope)
+		go n.queuePushEvent(ctx, event, &envCopy)
 	}
 	return nil
 }

@@ -35,19 +35,16 @@ type daemonOptions struct {
 	daemonWebBind  string `mapstructure:"daemon-web-bind"`
 	daemonGRPCBind string `mapstructure:"daemon-grpc-bind"`
 
-	grpcBind         string   `mapstructure:"grpc-bind"`
-	grpcWebBind      string   `mapstructure:"grpc-web-bind"`
-	hideBanner       bool     `mapstructure:"hide-banner"`
-	dropDatabase     bool     `mapstructure:"drop-database"`
-	initOnly         bool     `mapstructure:"init-only"`
-	withBot          bool     `mapstructure:"with-bot"`
-	notification     bool     `mapstructure:"notification"`
-	apnsCerts        []string `mapstructure:"apns-certs"`
-	apnsDevVoipCerts []string `mapstructure:"apns-dev-voip-certs"`
-	fcmAPIKeys       []string `mapstructure:"fcm-api-keys"`
-	privateKeyFile   string   `mapstructure:"private-key-file"`
-	ipfs             bool     `mapstructure:"ipfs"`
-	storePersist     bool     `mapstructure:"persist"`
+	grpcBind       string `mapstructure:"grpc-bind"`
+	grpcWebBind    string `mapstructure:"grpc-web-bind"`
+	hideBanner     bool   `mapstructure:"hide-banner"`
+	dropDatabase   bool   `mapstructure:"drop-database"`
+	initOnly       bool   `mapstructure:"init-only"`
+	withBot        bool   `mapstructure:"with-bot"`
+	notification   bool   `mapstructure:"notification"`
+	privateKeyFile string `mapstructure:"private-key-file"`
+	ipfs           bool   `mapstructure:"ipfs"`
+	storePersist   bool   `mapstructure:"persist"`
 
 	// p2p
 
@@ -84,9 +81,6 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 
 	// network
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
-	flags.StringSliceVar(&opts.apnsCerts, "apns-certs", []string{}, "Path of APNs certificates, delimited by commas")
-	flags.StringSliceVar(&opts.apnsDevVoipCerts, "apns-dev-voip-certs", []string{}, "Path of APNs VoIP development certificates, delimited by commas")
-	flags.StringSliceVar(&opts.fcmAPIKeys, "fcm-api-keys", []string{}, "API keys for Firebase Cloud Messaging, in the form packageid:token, delimited by commas")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", network.DefaultBootstrap, "boostrap peers")
 	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Driver")
 	// flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
@@ -159,21 +153,18 @@ func runDaemon(opts *daemonOptions) error {
 	}
 
 	config := &daemon.Config{
-		SqlOpts:          sqlConfig,
-		GrpcBind:         opts.grpcBind,
-		GrpcWebBind:      opts.grpcWebBind,
-		HideBanner:       opts.hideBanner,
-		DropDatabase:     opts.dropDatabase,
-		InitOnly:         opts.initOnly,
-		WithBot:          opts.withBot,
-		Notification:     opts.notification,
-		ApnsCerts:        opts.apnsCerts,
-		ApnsDevVoipCerts: opts.apnsDevVoipCerts,
-		FcmAPIKeys:       opts.fcmAPIKeys,
-		PrivateKeyFile:   opts.privateKeyFile,
-		NoP2P:            opts.noP2P,
-		NetworkConfig:    networkConfig,
-		StoreType:        storeType,
+		SqlOpts:        sqlConfig,
+		GrpcBind:       opts.grpcBind,
+		GrpcWebBind:    opts.grpcWebBind,
+		HideBanner:     opts.hideBanner,
+		DropDatabase:   opts.dropDatabase,
+		InitOnly:       opts.initOnly,
+		WithBot:        opts.withBot,
+		Notification:   opts.notification,
+		PrivateKeyFile: opts.privateKeyFile,
+		NoP2P:          opts.noP2P,
+		NetworkConfig:  networkConfig,
+		StoreType:      storeType,
 	}
 
 	startRequest := &daemon.StartRequest{

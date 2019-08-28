@@ -44,8 +44,6 @@ export class Notifications extends PureComponent {
   getCurrentConfig = () => this.props.config
 
   state = {
-    pushConfigsSwitch: this.getCurrentPushConfigs().length > 0,
-    mqttConfigsSwitch: this.getCurrentMQTTConfigs().length > 0,
     notificationsEnabled: this.getCurrentConfig().notificationsEnabled,
     notificationsPreviews: this.getCurrentConfig().notificationsPreviews,
   }
@@ -78,7 +76,8 @@ export class Notifications extends PureComponent {
     const { t, context } = this.props
     const nativePushType = getNativePushType()
     const currentMQTTConfigs = this.getCurrentMQTTConfigs()
-    const { pushConfigsSwitch, mqttConfigsSwitch } = this.state
+    const pushConfigsSwitch = this.getCurrentPushConfigs().length > 0
+    const mqttConfigsSwitch = this.getCurrentMQTTConfigs().length > 0
 
     return (
       <Menu>
@@ -261,7 +260,11 @@ class NotificationWrapper extends React.PureComponent {
               fallback={<Loader />}
             >
               {({ queue, retry }) => (
-                <Notifications data={queue} refresh={retry} config={config} />
+                <Notifications
+                  data={[...queue]}
+                  refresh={retry}
+                  config={config}
+                />
               )}
             </Store.Node.Service.DevicePushConfigList>
           ) : (

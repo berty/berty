@@ -34,7 +34,6 @@
                 "DevtoolsMapset": 401,
                 "SenderAliasUpdate": 501,
                 "DeviceUpdatePushConfig": 601,
-                "DevicePushTo": 602,
                 "Node": 99
               }
             },
@@ -292,22 +291,6 @@
                 "device": {
                   "type": "berty.entity.Device",
                   "id": 1
-                }
-              }
-            },
-            "DevicePushToAttrs": {
-              "fields": {
-                "pushIdentifier": {
-                  "type": "bytes",
-                  "id": 1
-                },
-                "envelope": {
-                  "type": "bytes",
-                  "id": 2
-                },
-                "priority": {
-                  "type": "berty.push.Priority",
-                  "id": 3
                 }
               }
             },
@@ -789,75 +772,6 @@
                     "SENT_AND_ACKED": 2,
                     "RECEIVED": 3
                   }
-                }
-              }
-            }
-          }
-        },
-        "push": {
-          "options": {
-            "go_package": "berty.tech/core/push"
-          },
-          "nested": {
-            "DevicePushType": {
-              "values": {
-                "UnknownDevicePushType": 0,
-                "APNS": 1,
-                "FCM": 2,
-                "MQTT": 3
-              }
-            },
-            "Priority": {
-              "values": {
-                "UnknownPriority": 0,
-                "Low": 1,
-                "Normal": 2
-              }
-            },
-            "PushDestination": {
-              "fields": {
-                "nonce": {
-                  "type": "bytes",
-                  "id": 1
-                },
-                "pushType": {
-                  "type": "DevicePushType",
-                  "id": 2
-                },
-                "pushId": {
-                  "type": "bytes",
-                  "id": 3
-                }
-              }
-            },
-            "PushNativeIdentifier": {
-              "fields": {
-                "packageId": {
-                  "type": "string",
-                  "id": 1,
-                  "options": {
-                    "(gogoproto.customname)": "PackageID"
-                  }
-                },
-                "deviceToken": {
-                  "type": "string",
-                  "id": 2
-                }
-              }
-            },
-            "PushData": {
-              "fields": {
-                "pushIdentifier": {
-                  "type": "bytes",
-                  "id": 1
-                },
-                "envelope": {
-                  "type": "bytes",
-                  "id": 2
-                },
-                "priority": {
-                  "type": "Priority",
-                  "id": 3
                 }
               }
             }

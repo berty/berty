@@ -194,21 +194,6 @@
                   "type": "bool",
                   "id": 8
                 },
-                "apnsCerts": {
-                  "rule": "repeated",
-                  "type": "string",
-                  "id": 9
-                },
-                "apnsDevVoipCerts": {
-                  "rule": "repeated",
-                  "type": "string",
-                  "id": 10
-                },
-                "fcmAPIKeys": {
-                  "rule": "repeated",
-                  "type": "string",
-                  "id": 11
-                },
                 "privateKeyFile": {
                   "type": "string",
                   "id": 12

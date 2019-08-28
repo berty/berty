@@ -41,7 +41,7 @@
                   }
                 },
                 "pushType": {
-                  "type": "berty.push.DevicePushType",
+                  "type": "push.DevicePushType",
                   "id": 5
                 },
                 "pushId": {
@@ -64,9 +64,12 @@
         },
         "push": {
           "options": {
-            "go_package": "berty.tech/core/push"
+            "go_package": "berty.tech/zero-push/proto/push"
           },
           "nested": {
+            "Void": {
+              "fields": {}
+            },
             "DevicePushType": {
               "values": {
                 "UnknownDevicePushType": 0,
@@ -110,6 +113,15 @@
                 "deviceToken": {
                   "type": "string",
                   "id": 2
+                }
+              }
+            },
+            "PushToInput": {
+              "fields": {
+                "pushData": {
+                  "rule": "repeated",
+                  "type": "PushData",
+                  "id": 1
                 }
               }
             },

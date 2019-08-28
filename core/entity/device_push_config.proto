@@ -4,7 +4,7 @@ package berty.entity;
 
 option go_package = "berty.tech/core/entity";
 
-import "push/push.proto";
+import "berty.tech/zero-push/proto/push/push.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -16,7 +16,7 @@ message DevicePushConfig {
 
   string device_id = 4 [(gogoproto.customname) = "DeviceID"];
 
-  berty.push.DevicePushType push_type = 5;
+  push.DevicePushType push_type = 5;
   bytes push_id = 6  [(gogoproto.customname) = "PushID"];
   string relay_pubkey = 7  [(gogoproto.customname) = "RelayPubkey"];
 }

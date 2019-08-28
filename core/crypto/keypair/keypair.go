@@ -95,7 +95,12 @@ func (m *Revocation) GetSignedValue() SignableValue {
 }
 
 func CheckSignature(signedValue SignedValue, pubKey crypto.PublicKey) error {
-	hashFunc, err := signedValue.GetSignature().SignatureAlgorithm.GetHashFunction()
+	sig := signedValue.GetSignature()
+	if sig == nil {
+		return errors.New("no signature found")
+	}
+
+	hashFunc, err := sig.SignatureAlgorithm.GetHashFunction()
 
 	if err != nil {
 		return err

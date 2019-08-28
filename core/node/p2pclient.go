@@ -13,10 +13,6 @@ import (
 	"go.uber.org/zap"
 )
 
-type OutgoingEventOptions struct {
-	DisableEventLogging bool
-}
-
 func (n *Node) NewEvent(ctx context.Context) *entity.Event {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
@@ -35,10 +31,10 @@ func (n *Node) NewEvent(ctx context.Context) *entity.Event {
 }
 
 func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *entity.Event) error {
-	return n.EnqueueOutgoingEventWithOptions(ctx, event, &OutgoingEventOptions{})
+	return n.EnqueueOutgoingEventWithOptions(ctx, event)
 }
 
-func (n *Node) EnqueueOutgoingEventWithOptions(ctx context.Context, event *entity.Event, options *OutgoingEventOptions) error {
+func (n *Node) EnqueueOutgoingEventWithOptions(ctx context.Context, event *entity.Event) error {
 	tracer := tracing.EnterFunc(ctx, event)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -52,11 +48,9 @@ func (n *Node) EnqueueOutgoingEventWithOptions(ctx context.Context, event *entit
 		return errorcodes.ErrEventData.Wrap(err)
 	}
 
-	if options.DisableEventLogging == false {
-		sql := n.sql(ctx)
-		if err := sql.Create(event).Error; err != nil {
-			return errorcodes.ErrDbCreate.Wrap(err)
-		}
+	sql := n.sql(ctx)
+	if err := sql.Create(event).Error; err != nil {
+		return errorcodes.ErrDbCreate.Wrap(err)
 	}
 
 	dispatches, err := n.activeDispatchesFromEvent(ctx, event)
@@ -65,10 +59,6 @@ func (n *Node) EnqueueOutgoingEventWithOptions(ctx context.Context, event *entit
 	}
 
 	if len(dispatches) < 1 {
-		// if the event isn't a push notif event type of course there aren't any dispatch to be done
-		if event.Kind == entity.Kind_DevicePushTo {
-			return nil
-		}
 		return errors.New("no active dispatches for a freshly added outgoing event")
 	}
 

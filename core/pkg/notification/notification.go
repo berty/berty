@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"sync"
 
-	"berty.tech/core/push"
+	"berty.tech/zero-push/proto/push"
 	"github.com/0xAX/notificator"
 	"go.uber.org/zap"
 )

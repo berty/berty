@@ -5,7 +5,7 @@ import (
 
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/pkg/errorcodes"
-	"berty.tech/core/push"
+	"berty.tech/zero-push/proto/push"
 	"github.com/google/uuid"
 )
 
