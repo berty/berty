@@ -192,18 +192,24 @@ func (n *Node) pushEvent(ctx context.Context, event *entity.Event, envelope *ent
 		return errorcodes.ErrPushBroadcast.Wrap(err)
 	}
 
+	pushClient := pushService.NewPushServiceClient(conn)
+
 	for _, pushIdentifier := range pushIdentifiers {
 		var pushMessages []*push.PushData
 
 		logger().Info(fmt.Sprintf("connecting to push notification server on %s", pushServerAddr))
 
-		pushClient := pushService.NewPushServiceClient(conn)
-
 		for _, c := range chunks {
+			envelopeData, err := c.Marshal()
+			if err != nil {
+				logger().Error("unable to marshal envelope")
+				break
+			}
+
 			pushData := &push.PushData{
 				Priority:       event.PushPriority(),
 				PushIdentifier: pushIdentifier.PushInfo,
-				Envelope:       c.GetData(),
+				Envelope:       envelopeData,
 			}
 
 			pushMessages = append(pushMessages, pushData)
@@ -221,9 +227,9 @@ func (n *Node) pushEvent(ctx context.Context, event *entity.Event, envelope *ent
 			logger().Error("error while pushing data to device", zap.Error(err))
 			continue
 		}
-
-		_ = conn.Close()
 	}
+
+	_ = conn.Close()
 
 	return nil
 }
