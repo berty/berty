@@ -411,7 +411,7 @@ class ConversationDetailHeader extends PureComponent {
             <Header
               navigation={navigation}
               title={
-                <View style={{ flexDirection: 'column' }}>
+                <Flex.Rows size={6} align={'center'}>
                   <Text
                     large
                     color={colors.fakeBlack}
@@ -420,7 +420,7 @@ class ConversationDetailHeader extends PureComponent {
                     }
                     ellipsis
                     middle
-                    size={5}
+                    size={1}
                   >
                     {utils.getTitle(data)}
                   </Text>
@@ -430,11 +430,12 @@ class ConversationDetailHeader extends PureComponent {
                         navigation.getParam('backBtn') ? 'center' : 'start'
                       }
                       middle
+                      size={1}
                     >
                       {data.topic}
                     </Text>
                   ) : null}
-                </View>
+                </Flex.Rows>
               }
               rightBtnIcon="more-vertical"
               onPressRightBtn={() =>

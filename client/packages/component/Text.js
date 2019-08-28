@@ -290,7 +290,7 @@ export class BackgroundText extends PureComponent {
       size,
       justify: justify || getJustify(this.props),
       align: align || getAlign(this.props),
-      self,
+      self: self || 'stretch',
     }
     return (
       <Flex.Cols

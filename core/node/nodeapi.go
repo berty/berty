@@ -432,7 +432,8 @@ func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*ent
 	// remove one to one conversation
 	_, err = n.conversationRemove(ctx, &entity.Conversation{ID: entity.GetOneToOneID(n.config.Myself, contact)})
 	if err != nil {
-		return nil, err
+		// @TODO: log an error when issue #1325 will be done
+		logger().Warn(err.Error())
 	}
 
 	return contact, nil
