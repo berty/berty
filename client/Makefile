@@ -546,6 +546,12 @@ webapp.rm: webapp.stop
 
 ### Fastlane build part ###
 
+.PHONY: deps.fastlane
+deps.fastlane: deps.fastlane $(PWD)/Gemfile
+
+$(PWD)/Gemfile: $(PWD)/Gemfile.lock
+	bundle install
+
 .PHONY: appname.ios
 appname.ios:
 	@[[ ! -z "$(IOS_CUSTOM_NAME)" ]] \
@@ -566,43 +572,43 @@ version.ios: version
 	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) $(IOS)/Berty/Info.plist
 
 .PHONY: fastlane.match.development
-fastlane.match.development: deps.ios config.debug
+fastlane.match.development: deps.fastlane deps.ios config.debug
 	time bundle exec fastlane run match type:development app_identifier:$(IOS_BUNDLE_ID_DEBUG) team_id:$(MATCH_COMPANY_TEAM_ID)
 
 .PHONY: fastlane.match.appstore
-fastlane.match.appstore: deps.ios config.release
+fastlane.match.appstore: deps.fastlane deps.ios config.release
 	time bundle exec fastlane run match type:appstore app_identifier:$(IOS_BUNDLE_ID_RELEASE) team_id:$(MATCH_COMPANY_TEAM_ID)
 
 .PHONY: fastlane.match.adhoc
-fastlane.match.adhoc: deps.ios config.staff
+fastlane.match.adhoc: deps.fastlane deps.ios config.staff
 	time bundle exec fastlane run match force_for_new_devices:true type:adhoc app_identifier:$(IOS_BUNDLE_ID_ADHOC) team_id:$(MATCH_COMPANY_TEAM_ID)
 
 .PHONY: fastlane.match.enterprise
-fastlane.match.enterprise: deps.ios config.yolo
+fastlane.match.enterprise: deps.fastlane deps.ios config.yolo
 	time bundle exec fastlane run match type:enterprise app_identifier:$(IOS_BUNDLE_ID_HOUSE) team_id:$(MATCH_ENTERPRISE_TEAM_ID)
 
 .PHONY: fastlane.match.all
-fastlane.match.all: fastlane.match.development fastlane.match.appstore fastlane.match.adhoc fastlane.match.enterprise
+fastlane.match.all: deps.fastlane fastlane.match.development fastlane.match.appstore fastlane.match.adhoc fastlane.match.enterprise
 
 .PHONY: fastlane.pem.development
-fastlane.pem.development: deps.ios config.debug
+fastlane.pem.development: deps.fastlane deps.ios config.debug
 	time bundle exec fastlane voip_cert app_identifier:$(IOS_BUNDLE_ID_DEBUG) team_id:$(PEM_COMPANY_TEAM_ID) pem_name:$(IOS_BUNDLE_ID_DEBUG)-voip.pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_DEBUG) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_DEBUG)-dev.pem --development
 
 .PHONY: fastlane.pem.appstore
-fastlane.pem.appstore: deps.ios config.release
+fastlane.pem.appstore: deps.fastlane deps.ios config.release
 	time bundle exec fastlane voip_cert app_identifier:$(IOS_BUNDLE_ID_RELEASE) team_id:$(PEM_COMPANY_TEAM_ID) pem_name:$(IOS_BUNDLE_ID_RELEASE)-voip.pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_RELEASE) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_RELEASE).pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_RELEASE) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_RELEASE)-dev.pem  --development
 
 .PHONY: fastlane.pem.adhoc
-fastlane.pem.adhoc: deps.ios config.staff
+fastlane.pem.adhoc: deps.fastlane deps.ios config.staff
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_ADHOC) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_ADHOC).pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_ADHOC) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_ADHOC)-dev.pem --development
 	time bundle exec fastlane voip_cert app_identifier:$(IOS_BUNDLE_ID_ADHOC) team_id:$(PEM_COMPANY_TEAM_ID) pem_name:$(IOS_BUNDLE_ID_ADHOC)-voip.pem
 
 .PHONY: fastlane.pem.enterprise
-fastlane.pem.enterprise: deps.ios config.yolo
+fastlane.pem.enterprise: deps.fastlane deps.ios config.yolo
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_HOUSE) --team_id $(PEM_ENTERPRISE_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_HOUSE).pem
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_HOUSE) --team_id $(PEM_ENTERPRISE_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_HOUSE)-dev.pem --development
 	time bundle exec fastlane voip_cert app_identifier:$(IOS_BUNDLE_ID_HOUSE) team_id:$(PEM_ENTERPRISE_TEAM_ID) pem_name:$(IOS_BUNDLE_ID_HOUSE)-voip.pem
@@ -636,7 +642,7 @@ fastlane.setup_circle:
 
 
 .PHONY: fastlane.ios.debug
-fastlane.ios.debug: deps.ios config.debug
+fastlane.ios.debug: deps.fastlane deps.ios config.debug
 	mkdir -p $(IOS_BUILD)
 
 	FL_BUILDLOG_PATH=$(IOS_BUILD) \
@@ -652,7 +658,7 @@ fastlane.ios.debug: deps.ios config.debug
 		time bundle exec fastlane ios build --verbose
 
 .PHONY: fastlane.ios.adhoc
-fastlane.ios.adhoc: deps.ios config.staff
+fastlane.ios.adhoc: deps.fastlane deps.ios config.staff
 	mkdir -p $(IOS_BUILD)
 
 	FL_BUILDLOG_PATH=$(IOS_BUILD) \
@@ -674,7 +680,7 @@ fastlane.ios.adhoc: deps.ios config.staff
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
 .PHONY: fastlane.ios.house
-fastlane.ios.house: deps.ios config.yolo
+fastlane.ios.house: deps.fastlane deps.ios config.yolo
 	mkdir -p $(IOS_BUILD)
 
 	FL_BUILDLOG_PATH=$(IOS_BUILD) \
@@ -697,7 +703,7 @@ fastlane.ios.house: deps.ios config.yolo
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
 .PHONY: fastlane.ios.release
-fastlane.ios.release: deps.ios config.release
+fastlane.ios.release: deps.fastlane deps.ios config.release
 	mkdir -p $(IOS_BUILD)
 
 	FL_BUILDLOG_PATH=$(IOS_BUILD) \
@@ -720,11 +726,11 @@ fastlane.ios.release: deps.ios config.release
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
 .PHONY: fastlane.ios.release.appstore
-fastlane.ios.release.appstore: fastlane.ios.release config.release
+fastlane.ios.release.appstore: deps.fastlane fastlane.ios.release config.release
 	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
 
 .PHONY: fastlane.android.staff
-fastlane.android.staff: deps.android config.staff
+fastlane.android.staff: deps.fastlane deps.android config.staff
 	# get the google-services.json
 	[ -e $(PWD)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(PWD)/android/app/google-services.json
@@ -742,7 +748,7 @@ fastlane.android.staff: deps.android config.staff
 	jarsigner -verify $(ANDROID_BUILD)/*.apk
 
 .PHONY: fastlane.android.yolo
-fastlane.android.yolo: deps.android config.yolo
+fastlane.android.yolo: deps.fastlane deps.android config.yolo
 	# get the google-services.json
 	[ -e $(PWD)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(PWD)/android/app/google-services.json
@@ -759,7 +765,7 @@ fastlane.android.yolo: deps.android config.yolo
 	jarsigner -verify $(ANDROID_BUILD)/*.apk
 
 .PHONY: fastlane.android.release
-fastlane.android.release: deps.android config.release
+fastlane.android.release: deps.fastlane deps.android config.release
 	# get the google-services.json
 	[ -e $(PWD)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(PWD)/android/app/google-services.json
