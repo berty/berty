@@ -203,11 +203,11 @@ config: /tmp/envfile $(PWD)/ios/tmp.xcconfig
 .PHONY: config.debug
 config.debug: config
 
-.PHONY: config.staff
-config.staff: config
+.PHONY: config.staff config.adhoc
+config.adhoc config.staff: config
 
-.PHONY: config.yolo
-config.yolo: config
+.PHONY: config.yolo config.house
+config.house config.yolo: config
 
 .PHONY: config.release
 config.release: config
@@ -218,48 +218,6 @@ config.release: config
 $(ENV_FILE):
 	@echo 'Error: You need to configure ' $@
 	@false
-
-$(PWD)/ios/tmp.xcconfig: /tmp/envfile
-	$(PWD)/node_modules/react-native-config/ios/ReactNativeConfig/BuildXCConfig.rb "$(PWD)" "$(PWD)/ios/tmp.xcconfig"
-
-.PHONY: get_iphone_udid
-get_iphone_udid:
-	$(eval IOS_UDID = $(shell ios-deploy -c | grep 'Found' | head -n 1 | cut -d ' ' -f 3))
-	@if [ -z '$(IOS_UDID)' ]; then						\
-		echo 'No iOS device connected';					\
-	else												\
-		echo 'iOS device found with UDID: $(IOS_UDID)';	\
-	fi
-	$(eval IOS_UDID = $(shell if [ -n '$(IOS_UDID)' ]; then echo '--udid=$(IOS_UDID)'; fi))
-
-.PHONY: deps.android
-deps.android: deps.lerna $(PWD)/android/app/google-services.json $(PWD)/.environment patch.android
-	$(PWD)/node_modules/.bin/react-native link --platforms=android
-	./node_modules/.bin/jetify
-	cd ../core/platform/mobile && make build.android
-
-$(PWD)/android/app/google-services.json:
-	@echo 'Error: You need to configure ' $@
-	@false
-
-.PHONY: deps.ios
-deps.ios: deps.lerna $(PWD)/.environment $(PWD)/ios/core.framework $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
-	if [ ! -e ./node_modules/react-native/third-party/glog-0.*/Makefile ]; then	\
-		cd ./node_modules/react-native											\
-			&& rm -rf third-party														\
-			&& ./scripts/ios-install-third-party.sh										\
-			&& cd third-party/glog-0.*													\
-			&& ../../scripts/ios-configure-glog.sh;						\
-	fi
-
-$(PWD)/ios/Pods/Manifest.lock: $(PWD)/package.json $(PWD)/ios/Podfile
-	$(PWD)/node_modules/.bin/react-native link --platforms=ios
-	([ ! -z "$(shell which pod)" ] && [[ "$$(pod --version)" > "1.7." ]]) || sudo gem install cocoapods
-	cd ios && pod install --verbose
-
-.PHONY: $(PWD)/ios/core.framework
-$(PWD)/ios/core.framework:
-	cd ../core/platform/mobile && make build.ios
 
 .PHONY: deps.web
 deps.web: deps.lerna web/node_modules/.updated
@@ -278,6 +236,16 @@ deps.logs:
 debug.react-native:
 	$(RN) start --reset-cache &
 
+.PHONY: deps.android
+deps.android: deps.lerna $(PWD)/android/app/google-services.json $(PWD)/.environment patch.android
+	$(PWD)/node_modules/.bin/react-native link --platforms=android
+	./node_modules/.bin/jetify
+	cd ../core/platform/mobile && make build.android
+
+$(PWD)/android/app/google-services.json:
+	@echo 'Error: You need to configure ' $@
+	@false
+
 .PHONY: patch.android
 patch.android:
 	@if [ -z "$$(sed -n 4p node_modules/react-native-network-info/android/build.gradle | grep 'url \"https://maven.google.com\"')" ]; then \
@@ -285,26 +253,26 @@ patch.android:
 		patch node_modules/react-native-network-info/android/build.gradle_topatch -i patch/gradle.patch -o node_modules/react-native-network-info/android/build.gradle; \
 	fi
 
-
+ANDROID_VARIANT ?= release
 .PHONY: build.android
-build.android: deps.android
+build.android: deps.android config.$(ANDROID_VARIANT)
 	$(RN) run-android --variant=$(ANDROID_VARIANT) --no-packager
 
 .PHONY: debug.android
 debug.android: ANDROID_VARIANT := debug
-debug.android: config.debug build.android
+debug.android: build.android
 
 .PHONY: release.android
 release.android: ANDROID_VARIANT := release
-release.android: config.release build.android
+release.android: build.android
 
 .PHONY: staff.android
 staff.android: ANDROID_VARIANT := staff
-staff.android: config.staff build.android
+staff.android: build.android
 
 .PHONY: yolo.android
 yolo.android: ANDROID_VARIANT := yolo
-yolo.android: config.yolo build.android
+yolo.android: build.android
 
 .PHONY: deps.osx
 deps.osx: osx/node_modules/.updated
@@ -325,9 +293,43 @@ fclean.osx:
 	rm -rf osx/node_modules
 	rm -rf osx/Berty.app
 
+$(PWD)/ios/tmp.xcconfig: /tmp/envfile
+	$(PWD)/node_modules/react-native-config/ios/ReactNativeConfig/BuildXCConfig.rb "$(PWD)" "$(PWD)/ios/tmp.xcconfig"
 
+.PHONY: get_iphone_udid
+get_iphone_udid:
+	$(eval IOS_UDID = $(shell ios-deploy -c | grep 'Found' | head -n 1 | cut -d ' ' -f 3))
+	@if [ -z '$(IOS_UDID)' ]; then						\
+		echo 'No iOS device connected';					\
+	else												\
+		echo 'iOS device found with UDID: $(IOS_UDID)';	\
+	fi
+	$(eval IOS_UDID = $(shell if [ -n '$(IOS_UDID)' ]; then echo '--udid=$(IOS_UDID)'; fi))
+
+
+.PHONY: deps.ios
+deps.ios: deps.lerna $(PWD)/.environment $(PWD)/ios/core.framework $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
+	if [ ! -e ./node_modules/react-native/third-party/glog-0.*/Makefile ]; then	\
+		cd ./node_modules/react-native											\
+			&& rm -rf third-party														\
+			&& ./scripts/ios-install-third-party.sh										\
+			&& cd third-party/glog-0.*													\
+			&& ../../scripts/ios-configure-glog.sh;						\
+	fi
+
+$(PWD)/ios/Pods/Manifest.lock: $(PWD)/package.json $(PWD)/ios/Podfile
+	$(PWD)/node_modules/.bin/react-native link --platforms=ios
+	([ ! -z "$(shell which pod)" ] && [[ "$$(pod --version)" > "1.7." ]]) || sudo gem install cocoapods
+	cd ios && pod install --verbose
+
+.PHONY: $(PWD)/ios/core.framework
+$(PWD)/ios/core.framework:
+	cd ../core/platform/mobile && make build.ios
+
+IOS_CONFIGURATION ?= Release
+IOS_SCHEME ?= release
 .PHONY: build.ios
-build.ios: deps.ios get_iphone_udid
+build.ios: deps.ios get_iphone_udid config.$(IOS_SCHEME)
 	$(RN) run-ios \
 		--no-packager \
 		--configuration=$(IOS_CONFIGURATION) \
@@ -337,7 +339,7 @@ build.ios: deps.ios get_iphone_udid
 .PHONY: debug.ios
 debug.ios: IOS_SCHEME := debug
 debug.ios: IOS_CONFIGURATION ?= Debug
-debug.ios: config.debug debug.react-native build.ios
+debug.ios: debug.react-native build.ios
 
 .PHONY: test.debug.ios
 test.debug.ios: RN = cavy
@@ -347,7 +349,7 @@ test.debug.ios: debug.ios
 .PHONY: release.ios
 release.ios: IOS_SCHEME := release
 release.ios: IOS_CONFIGURATION ?= Release
-release.ios: config.release build.ios
+release.ios: build.ios
 
 .PHONY: test.release.ios
 test.release.ios: RN = cavy
@@ -357,7 +359,7 @@ test.release.ios: release.ios
 .PHONY: adhoc.ios
 adhoc.ios: IOS_SCHEME := adhoc
 adhoc.ios: IOS_CONFIGURATION ?= adhoc
-adhoc.ios: config.staff build.ios
+adhoc.ios: build.ios
 
 .PHONY: test.adhoc.ios
 test.adhoc.ios: RN = cavy
@@ -367,7 +369,7 @@ test.adhoc.ios: adhoc.ios
 .PHONY: house.ios
 house.ios: IOS_SCHEME := house
 house.ios: IOS_CONFIGURATION ?= house
-house.ios: config.yolo build.ios
+house.ios: build.ios
 
 .PHONY: test.house.ios
 test.house.ios: RN = cavy
@@ -375,7 +377,7 @@ test.house.ios: export REACT_APP_ENVIRONMENT = integration_test
 test.house.ios: house.ios
 
 .PHONY: debug.web
-debug.web: deps.web config.debug
+debug.web: deps.web
 	cd web && npm run start
 
 .PHONY: build.web
@@ -407,11 +409,11 @@ clean.test.web:
 deps.dashboard: deps.lerna
 
 .PHONY: debug.dashboard
-debug.dashboard: deps.dashboard config.debug
+debug.dashboard: deps.dashboard
 	cd packages/dashboard && npm run start
 
 .PHONY: build.dashboard
-build.dashboard: deps.dashboard config.release
+build.dashboard: deps.dashboard
 	cd packages/dashboard && npm run build
 ##############################
 
