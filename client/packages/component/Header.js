@@ -38,7 +38,6 @@ class Header extends PureComponent {
       this.props.colorBtnRight == null
         ? defaultTextColor
         : this.props.colorBtnRight
-
     return (
       <View
         style={[
@@ -50,9 +49,9 @@ class Header extends PureComponent {
           padding,
         ]}
       >
-        <Flex.Rows>
-          <Flex.Cols size={1} justify="between" align="center">
-            {backBtn && (
+        <Flex.Cols size={1} justify="between" align="center">
+          {backBtn && (
+            <Flex.Rows size={1}>
               <HeaderButton
                 icon="arrow-left"
                 color={colorBtnLeft}
@@ -66,34 +65,36 @@ class Header extends PureComponent {
                 justify="start"
                 middle
               />
-            )}
-            {typeof title !== 'string' ? (
-              title
-            ) : (
-              <Text
-                icon={titleIcon}
-                left
-                large
-                color={colorText}
-                justify={backBtn ? 'center' : 'start'}
-                middle
-                size={5}
-              >
-                {title}
-              </Text>
-            )}
-            {rightBtn ? <View>{rightBtn}</View> : null}
-            {!rightBtn && rightBtnIcon !== null && (
-              <HeaderButton
-                icon={rightBtnIcon}
-                color={colorBtnRight}
-                onPress={onPressRightBtn}
-                justify="end"
-                middle
-              />
-            )}
-          </Flex.Cols>
-        </Flex.Rows>
+            </Flex.Rows>
+          )}
+          {typeof title !== 'string' ? (
+            title
+          ) : (
+            <Text
+              icon={titleIcon}
+              left
+              large
+              color={colorText}
+              justify={backBtn ? 'center' : 'start'}
+              middle
+              size={5}
+              ellipsis
+            >
+              {title}
+            </Text>
+          )}
+          {rightBtn ? <Flex.Block size={1}>{rightBtn}</Flex.Block> : null}
+          {!rightBtn && rightBtnIcon !== null && (
+            <HeaderButton
+              size={1}
+              icon={rightBtnIcon}
+              color={colorBtnRight}
+              onPress={onPressRightBtn}
+              justify="end"
+              middle
+            />
+          )}
+        </Flex.Cols>
       </View>
     )
   }
