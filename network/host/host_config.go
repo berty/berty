@@ -67,9 +67,16 @@ type Option func(cfg *Config) error
 
 // applyP2POptions configure all libp2p specific options
 func (cfg *Config) applyP2POptions(ctx context.Context) error {
+	enabled := map[int]struct{}{}
+
 	// configure transports & listeners
 	for _, l := range cfg.listeners {
 		ma.ForEach(l, func(c ma.Component) bool {
+			if _, exist := enabled[c.Protocol().Code]; exist {
+				// continue, we already have this transport enabled
+				return true
+			}
+
 			switch c.Protocol().Code {
 			case ma.P_TCP:
 				cfg.libp2p_opts = append(cfg.libp2p_opts, libp2p.Transport(libp2p_tcp.NewTCPTransport))
@@ -82,6 +89,9 @@ func (cfg *Config) applyP2POptions(ctx context.Context) error {
 			default: // continue
 				return true
 			}
+
+			// mark this transport as enabled
+			enabled[c.Protocol().Code] = struct{}{}
 
 			logger().Debug("transport enable",
 				zap.String("type", c.Protocol().Name),
