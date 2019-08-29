@@ -33,15 +33,20 @@ RCT_EXTERN_METHOD(invoke:(NSString)method
 
 RCT_EXTERN_METHOD(setCurrentRoute:(NSString)route);
 
-RCT_EXPORT_METHOD(throwException)
-{
-    @throw [NSException exceptionWithName:@"throw exception" reason:@"throw native exception" userInfo:nil];
-}
-
 RCT_EXTERN_METHOD(getNotificationStatus:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
 RCT_EXTERN_METHOD(openSettings:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(throwException);
+
+RCT_EXTERN_METHOD(crash);
+
+RCT_EXTERN_METHOD(displayNotification:(NSString)title
+                  body:(NSString)body
+                  icon:(NSString *)icon
+                  sound:(NSString *)sound
+                  url:(NSString *)url);
 
 @end

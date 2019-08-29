@@ -1,6 +1,7 @@
 import UIKit
 import Core
 import PushKit
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: AppDelegateObjC {
@@ -46,11 +47,13 @@ class AppDelegate: AppDelegateObjC {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
+
     var err: NSError?
     self.launchOptions = launchOptions
 
     // TODO: Move this line to applicationDidBecomeActive when envelope db with network independant start will be implem
     self.startReact()
+
     // TODO: remote comment when independant start will be implem
     // Core.startNetwork()
 

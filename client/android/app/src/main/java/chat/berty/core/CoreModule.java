@@ -68,7 +68,12 @@ public class CoreModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void throwException() throws Exception {
-        throw new Exception("thrown exception");
+        throw new Exception("Manually thrown exception");
+    }
+
+    @ReactMethod
+    public void crash() {
+        this.crash();
     }
 
     @ReactMethod

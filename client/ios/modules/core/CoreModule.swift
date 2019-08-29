@@ -29,7 +29,7 @@ class CoreModule: NSObject {
   }
 
   @objc func invoke(_ method: NSString, message: NSString,
-                    resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
+                    resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     var err: NSError?
     self.serialCoreQueue.sync {
       do {
@@ -52,17 +52,41 @@ class CoreModule: NSObject {
     return false
   }
 
-  @objc func getNotificationStatus(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+  @objc func getNotificationStatus(
+    _ resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
     let current = UNUserNotificationCenter.current()
-
     current.getNotificationSettings(completionHandler: { (settings) in
       resolve(settings.authorizationStatus.rawValue)
     })
   }
 
-  @objc func openSettings(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+  @objc func displayNotification(
+    _ title: String,
+    body: String,
+    icon: String?,
+    sound: String?,
+    url: String?
+  ) {
+    do {
+      try Core.notificationDriver()?.native?.display(title, body: body, icon: icon, sound: sound, url: url)
+    } catch let error as NSError {
+      logger.format("failed to display notification : %@", level: .error, error.localizedDescription)
+    }
+  }
+
+  @objc func openSettings(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     DispatchQueue.main.async {
       UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
     }
+  }
+
+  @objc func throwException() throws {
+    throw NSError(domain: "Manually thrown exception", code: 0)
+  }
+
+  @objc func crash() {
+    raise(SIGABRT)
   }
 }

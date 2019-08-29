@@ -10,6 +10,10 @@ project(':instabug-reactnative') {
     }
 }
 android.applicationVariants.all { def variant ->
+    if (variant.name == "debug") {
+        return
+    }
+
     // from ../../node_modules/react-native/react.gradle
     def config = project.hasProperty("react") ? project.react : []
 

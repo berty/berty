@@ -5,6 +5,7 @@
   "source": true,
   "private": true,
   "dependencies": {
+    "@berty/notifier": "^0.0.4-alpha.1",
     "@berty/reporter": "^0.0.4-alpha.1"
   }
 }

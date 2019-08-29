@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
@@ -296,10 +297,10 @@
 			isa = PBXGroup;
 			children = (
 				8D43788A225796230098C024 /* ConnectivityUpdateHandler.swift */,
-				486CFCF921C8FE9F00E7113B /* Notification.swift */,
 				F8799D752136F3C5003B9FD7 /* CoreModule.m */,
 				F8799D782136F3EA003B9FD7 /* CoreModule.swift */,
 				48E2A93D2177575C005C6F40 /* Logger.swift */,
+				486CFCF921C8FE9F00E7113B /* Notification.swift */,
 			);
 			path = core;
 			sourceTree = "<group>";
@@ -616,7 +617,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export INSTABUG_APP_TOKEN=$INSTABUG_TOKEN\nbash \"../node_modules/instabug-reactnative/ios/upload_sourcemap.sh\"\n";
+			shellScript = "if [ \"$CONFIGURATION\" != \"Debug\" ]; then\n  export INSTABUG_APP_TOKEN=$INSTABUG_TOKEN\n  bash \"../node_modules/instabug-reactnative/ios/upload_sourcemap.sh\"\nfi\n";
 		};
 		96BF197B3F1B392ABE36815C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -700,7 +701,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#- -- SCRIPT BEGIN - --\n# SKIP_SIMULATOR_BUILDS=1\nSCRIPT_SRC=$PROJECT_DIR/../node_modules/instabug-reactnative/ios/Instabug.framework/InstabugResources.bundle/Instabug_dsym_upload.sh\nif [ ! \"${SCRIPT_SRC}\" ]; then\necho \"Instabug: err: script not found. Make sure that you're including InstabugResources.bundle in your project directory\"\nexit 1\nfi\nAPP_TOKEN=$INSTABUG_TOKEN\nsource \"${SCRIPT_SRC}\"\n#- -- SCRIPT END - --\n";
+			shellScript = "#- -- SCRIPT BEGIN - --\n# SKIP_SIMULATOR_BUILDS=1\nif [ \"$CONFIGURATION\" != \"Debug\" ]; then\n    SCRIPT_SRC=$PROJECT_DIR/../node_modules/instabug-reactnative/ios/Instabug.framework/InstabugResources.bundle/Instabug_dsym_upload.sh\n    if [ ! \"${SCRIPT_SRC}\" ]; then\n        echo \"Instabug: err: script not found. Make sure that you're including InstabugResources.bundle in your project directory\"\n        exit 1\n    fi\n    APP_TOKEN=$INSTABUG_TOKEN\n    source \"${SCRIPT_SRC}\"\nfi\n#- -- SCRIPT END - --\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
