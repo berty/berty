@@ -69,6 +69,13 @@ BugReporting.setAutoScreenRecordingEnabled(
   INSTABUG_BUG_REPORTING_AUTO_SCREEN_RECORDING
 )
 
+BugReporting.onReportSubmitHandler(function() {
+  Notifier.system({
+    title: I18n.t('restart'),
+    body: I18n.t('unexpected-error'),
+  })
+})
+
 Instabug.startWithToken(INSTABUG_TOKEN, [
   Instabug.invocationEvent[INSTABUG_INVOCATION_EVENT],
 ])

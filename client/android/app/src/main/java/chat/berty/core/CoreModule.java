@@ -84,4 +84,13 @@ public class CoreModule extends ReactContextBaseJavaModule {
         intent.setData(uri);
         reactContext.startActivity(intent);
     }
+
+    @ReactMethod
+    public void displayNotification(String title, String body, String icon, String sound, String url) {
+        try {
+            this.notificationDriver.getNative().display(title, body, icon, sound, url);
+        } catch (Exception error) {
+            logger.format(Level.ERROR, this.getName(), error.getMessage());
+        }
+    }
 }

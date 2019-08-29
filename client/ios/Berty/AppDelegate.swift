@@ -47,9 +47,25 @@ class AppDelegate: AppDelegateObjC {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
-
     var err: NSError?
     self.launchOptions = launchOptions
+
+    NSSetUncaughtExceptionHandler { exception in
+      print(Thread.callStackSymbols)
+
+      let center = UNUserNotificationCenter.current()
+      let content = UNMutableNotificationContent()
+      content.title = "test"
+      content.body = "test"
+      content.userInfo = ["url": nil!]
+      content.categoryIdentifier = "berty.core.notification"
+      content.sound = UNNotificationSound.default
+
+      let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+      let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+      center.add(request)
+    };
 
     // TODO: Move this line to applicationDidBecomeActive when envelope db with network independant start will be implem
     self.startReact()
@@ -62,6 +78,7 @@ class AppDelegate: AppDelegateObjC {
 
     // set the notification driver to core
     Core.notificationDriver()?.native = Notification()
+
 
     // activate pushkit if notification activated
     if application.isRegisteredForRemoteNotifications {

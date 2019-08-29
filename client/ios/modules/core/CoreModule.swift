@@ -23,7 +23,7 @@ class CoreModule: NSObject {
   let daemon: CoreNativeBridgeProtocol
 
   override init() {
-    self.daemon = CoreNewNativeBridge(logger)!
+    self.daemon = CoreNewNativeBridge(logger)!z`
 
     super.init()
   }
