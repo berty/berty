@@ -12,6 +12,7 @@ import (
 	tpt "github.com/libp2p/go-libp2p-core/transport"
 	tptu "github.com/libp2p/go-libp2p-transport-upgrader"
 	ma "github.com/multiformats/go-multiaddr"
+
 	"github.com/pkg/errors"
 )
 

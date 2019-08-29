@@ -73,13 +73,23 @@ func log(event JavaToGo.LogEvent) {
 
 // Go -> Native functions
 func StartBleDriver(localPID string) bool {
-	go javaToGoEventLoop()    // Started from Go, stopped from Java
-	GoToJava.EnableGoLogger() // TODO: find a clean way to expose this
+	go javaToGoEventLoop()              // Started from Go, stopped from Java
+	GoToJava.EnableGoLogger()           // TODO: find a clean way to expose this
 	GoToJava.SetApplicationContext(nil) // TODO: find a clean way to expose this
 	return GoToJava.StartBleDriver(localPID)
 }
 
-var StopBleDriver func() = GoToJava.StopBleDriver
-var DialPeer func(remotePID string) bool = GoToJava.DialPeer
-var SendToPeer func(remotePID string, payload []byte) bool = GoToJava.SendToPeer
-var CloseConnWithPeer func(remotePID string) = GoToJava.CloseConnWithPeer
+func StopBleDriver() {
+	GoToJava.StopBleDriver()
+}
+
+func DialPeer(remotePID string) bool {
+	return GoToJava.DialPeer(remotePID)
+}
+func SendToPeer(remotePID string, payload []byte) bool {
+	return GoToJava.SendToPeer(remotePID, payload)
+}
+
+func CloseConnWithPeer(remotePID string) {
+	GoToJava.CloseConnWithPeer(remotePID)
+}

@@ -264,12 +264,11 @@ dependencies {
     implementation project(':react-native-dev-menu')
     implementation project(':react-native-config')
     implementation project(':react-native-camera')
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation fileTree(dir: "libs", include: ["*.aar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation project(':core')
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermesvm/android/";

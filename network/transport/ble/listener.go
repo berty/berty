@@ -8,6 +8,7 @@ import (
 
 	bledrv "berty.tech/network/transport/ble/driver"
 	blema "berty.tech/network/transport/ble/multiaddr"
+
 	"github.com/libp2p/go-libp2p-core/peer"
 	tpt "github.com/libp2p/go-libp2p-core/transport"
 	ma "github.com/multiformats/go-multiaddr"
