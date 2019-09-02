@@ -13,7 +13,7 @@ export class Picker extends React.Component {
         this.props.navigation.getParam('firstLaunch', false) &&
         !isIntegrationMode
         ? 'switch/onboarding'
-        : this.props.navigation.getParam('deepLink')
+        : 'switch/main'
     )
   }
 

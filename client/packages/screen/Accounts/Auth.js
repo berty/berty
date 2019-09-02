@@ -9,13 +9,11 @@ import { defaultUsername } from '@berty/common/helpers/contacts'
 // import { getAvailableUpdate } from '@berty/update'
 import NavigationService from '@berty/common/helpers/NavigationService'
 import sleep from '@berty/common/helpers/sleep'
-import withDeepLinkHandler from '@berty/common/helpers/withDeepLinkHandler'
 import { withUpdateContext } from '@berty/update/context'
 import { withBridgeContext } from '@berty/bridge/Context'
 import { rpc, service, middleware } from '@berty/bridge'
 import { getAvailableUpdate } from '@berty/update'
 
-@withDeepLinkHandler
 @withBridgeContext
 @withUpdateContext
 @withNamespaces()
@@ -51,14 +49,6 @@ class Auth extends PureComponent {
       await sleep(1000)
       return this.getPort()
     }
-  }
-
-  openDeepLink = () => {
-    const {
-      deepLinkHandler: { deepLink },
-      navigation,
-    } = this.props
-    navigation.navigate(deepLink)
   }
 
   init = async config => {
@@ -136,10 +126,8 @@ class Auth extends PureComponent {
 
     this.props.bridge.setContext(bridge)
 
-    this.openDeepLink()
     this.props.navigation.navigate('switch/picker', {
       firstLaunch,
-      deepLink: this.props.deepLinkHandler.deepLink,
     })
   }
 
