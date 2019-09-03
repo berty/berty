@@ -1,0 +1,10 @@
+--- ../node_modules/react-native/scripts/react-native-xcode.sh	1985-10-26 09:15:00.000000000 +0100
++++ react-native-xcode.sh	2019-09-03 16:06:36.000000000 +0200
+@@ -116,7 +116,6 @@
+   --entry-file "$ENTRY_FILE" \
+   --platform ios \
+   --dev $DEV \
+-  --reset-cache \
+   --bundle-output "$BUNDLE_FILE" \
+   --assets-dest "$DEST" \
+   $EXTRA_PACKAGER_ARGS
