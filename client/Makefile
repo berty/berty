@@ -14,6 +14,9 @@ LERNA_PACKAGES := \
 	$(PWD)/package.json \
 	$(shell find packages -type f -name 'package.json' -not -path '*/node_modules/*')
 LERNA_MODS := $(PWD)/node_modules/.bootstraped
+LERNA_PATCH := \
+	$(PWD)/node_modules/react-native/react.gradle \
+	$(PWD)/node_modules/react-native/scripts/react-native-xcode.sh
 
 PROTOS = $(strip $(call rwildcard, ../core, *.proto))
 OUR_PROTOS = $(filter-out $(call rwildcard,../core/vendor/, *.proto),$(PROTOS))
@@ -39,7 +42,13 @@ help:
 ### LERNA
 
 .PHONY: deps.lerna
-deps.lerna: $(LERNA_MODS)
+deps.lerna: $(LERNA_MODS) $(LERNA_PATCH)
+
+$(PWD)/node_modules/react-native/scripts/react-native-xcode.sh: $(PWD)/patch/react-native-xcode.sh.patch $(LERNA_MODS)
+	patch -f $@ $< || true
+
+$(PWD)/node_modules/react-native/react.gradle: $(PWD)/patch/react.gradle.patch $(LERNA_MODS)
+	patch -f $@ $< || true
 
 $(LERNA_MODS): $(LERNA_PACKAGES) $(LERNA)
 	$(LERNA) --reject-cycles bootstrap --hoist $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci --concurrency=2")
@@ -217,7 +226,7 @@ deps.logs:
 ### Build release/debug part ###
 .PHONY: debug.react-native
 debug.react-native:
-	$(RN) start --reset-cache &
+	$(RN) start &
 
 .PHONY: deps.android
 deps.android: deps.lerna $(PWD)/android/app/google-services.json $(PWD)/.environment patch.android
