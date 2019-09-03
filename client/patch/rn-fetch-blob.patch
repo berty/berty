@@ -1,0 +1,23 @@
+From 0b47f3d34a95504eab6ead1784c1646fc7c2e9b3 Mon Sep 17 00:00:00 2001
+From: Michael Gall <michael@wakeless.net>
+Date: Thu, 7 Mar 2019 17:44:46 +1100
+Subject: [PATCH] Add the FLAG_ACTIVITY_NEW_TASK flag.
+
+This is caused by an error on Android 9: 'Error: Calling startActivity() from outside of an Activity  context requires the FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?'
+---
+ android/src/main/java/com/RNFetchBlob/RNFetchBlob.java | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/android/src/main/java/com/RNFetchBlob/RNFetchBlob.java b/android/src/main/java/com/RNFetchBlob/RNFetchBlob.java
+index ac9ce566..be310c87 100644
+--- a/android/src/main/java/com/RNFetchBlob/RNFetchBlob.java
++++ b/android/src/main/java/com/RNFetchBlob/RNFetchBlob.java
+@@ -120,6 +120,8 @@ public void actionViewIntent(String path, String mime, final Promise promise) {
+                 // Set flag to give temporary permission to external app to use FileProvider
+                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
++                // All the activity to be opened outside of an activity
++                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                 // Validate that the device can open the file
+                 PackageManager pm = getCurrentActivity().getPackageManager();
+                 if (intent.resolveActivity(pm) != null) {
