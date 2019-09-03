@@ -3,6 +3,8 @@
 import { Platform } from 'react-native'
 import Instabug, { BugReporting } from 'instabug-reactnative'
 import Config from '@berty/config'
+import Notifier from '@berty/notifier'
+import I18n from 'i18next'
 
 // default configuration
 const {
@@ -17,11 +19,12 @@ const {
   INSTABUG_VIEW_HIERARCHY_ENABLED = true,
   INSTABUG_BUG_REPORTING_ENABLED = true,
   INSTABUG_BUG_REPORTING_AUTO_SCREEN_RECORDING = false,
+  INSTABUG_CRASH_REPORTING_ENABLED = true,
 } = Config
 
 // definition
 const InstabugReporter = {
-  manu: Instabug.show,
+  menu: Instabug.show,
   feedback: () => Instabug.showWithOptions(BugReporting.reportType.feedback),
   question: () => Instabug.showWithOptions(BugReporting.reportType.question),
   bug: () => Instabug.showWithOptions(BugReporting.reportType.bug),
@@ -60,6 +63,7 @@ BugReporting.setInvocationOptions([
 //   BugReporting.reportType.feedback,
 //   BugReporting.reportType.question,
 // ])
+Instabug.setCrashReportingEnabled(INSTABUG_CRASH_REPORTING_ENABLED)
 Platform.OS === 'ios' && BugReporting.setAutoScreenRecordingMaxDuration(20)
 BugReporting.setAutoScreenRecordingEnabled(
   INSTABUG_BUG_REPORTING_AUTO_SCREEN_RECORDING

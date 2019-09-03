@@ -10,10 +10,10 @@ LERNA_PRE ?= package.json lerna.json
 LERNA_RUN := $(LERNA) --reject-cycles exec
 LERNA_UPDATE := node_modules/.bin/lernaupdate
 
-LERNA_PACKAGES := $(patsubst \
-	%/package.json, \
-	%/node_modules, \
-	$(shell find packages -type f -name 'package.json' -not -path '*/node_modules/*'))
+LERNA_PACKAGES := \
+	$(PWD)/package.json \
+	$(shell find packages -type f -name 'package.json' -not -path '*/node_modules/*')
+LERNA_MODS := $(PWD)/node_modules/.bootstraped
 
 PROTOS = $(strip $(call rwildcard, ../core, *.proto))
 OUR_PROTOS = $(filter-out $(call rwildcard,../core/vendor/, *.proto),$(PROTOS))
@@ -39,40 +39,24 @@ help:
 ### LERNA
 
 .PHONY: deps.lerna
-deps.lerna: $(LERNA_PACKAGES)
+deps.lerna: $(LERNA_MODS)
 
-lerna_test:
-	@echo $(LERNA_PACKAGES)
+$(LERNA_MODS): $(LERNA_PACKAGES) $(LERNA)
+	$(LERNA) --reject-cycles bootstrap --hoist $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci --concurrency=2")
+	$(PWD)/node_modules/.bin/link-module-alias
+	$(PWD)/node_modules/.bin/napa
+	touch $@
 
 $(LERNA):
 	npm $(shell [ -z "$$CIRCLE_JOB" ] && echo "install" || echo "ci") lerna
 
-%/node_modules: $(LERNA) $(LERNA_PRE) %/package.json
-	@echo $@ $<
-	find packages \
-		-type d \
-		-name 'node_modules' \
-		-not -path '*/node_modules/*' \
-		-exec rm -f {}/.updated \;
-	$(LERNA) --reject-cycles bootstrap --hoist $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci --concurrency=2")
-	$(PWD)/node_modules/.bin/link-module-alias
-	$(PWD)/node_modules/.bin/napa
-	# prevent package without dep to rebootstrap
-	mkdir -p $(LERNA_PACKAGES)
-	find packages \
-		-type d \
-		-name 'node_modules' \
-		-not -path '*/node_modules/*' \
-		-exec rm -f {}/.updated \; \
-		-exec touch {}/.updated \;
-
 .IGNORE .PHONY: clean.lerna
 clean.lerna:
-	$(LERNA) clean -y && rm -rf $(LERNA_PACKAGES)
+	$(LERNA) clean -y && rm -rf $(LERNA_MODS)
 
 .IGNORE .PHONY: fclean.lerna
 fclean.lerna:
-	$(LERNA) clean -y && rm -rf $(LERNA_PACKAGES) && rm -rf node_modules
+	$(LERNA) clean -y && rm -rf $(LERNA_MODS) && rm -rf node_modules
 
 ### COMMANDS
 .PHONY: update
@@ -220,11 +204,10 @@ $(ENV_FILE):
 	@false
 
 .PHONY: deps.web
-deps.web: deps.lerna web/node_modules/.updated
+deps.web: $(PWD)/web/node_modules
 
-web/node_modules/.updated: web/package.json
-	cd web && npm install
-	touch $@
+$(PWD)/web/node_modules: $(PWD)/web/package.json deps.lerna
+	cd $(PWD)/web && npm install
 
 .PHONY: deps.logs
 deps.logs:
@@ -247,7 +230,7 @@ $(PWD)/android/app/google-services.json:
 	@false
 
 .PHONY: patch.android
-patch.android:
+patch.android: deps.lerna
 	@if [ -z "$$(sed -n 4p node_modules/react-native-network-info/android/build.gradle | grep 'url \"https://maven.google.com\"')" ]; then \
 		mv node_modules/react-native-network-info/android/build.gradle node_modules/react-native-network-info/android/build.gradle_topatch; \
 		patch node_modules/react-native-network-info/android/build.gradle_topatch -i patch/gradle.patch -o node_modules/react-native-network-info/android/build.gradle; \
@@ -293,7 +276,7 @@ fclean.osx:
 	rm -rf osx/node_modules
 	rm -rf osx/Berty.app
 
-$(PWD)/ios/tmp.xcconfig: /tmp/envfile
+$(PWD)/ios/tmp.xcconfig: /tmp/envfile deps.lerna
 	$(PWD)/node_modules/react-native-config/ios/ReactNativeConfig/BuildXCConfig.rb "$(PWD)" "$(PWD)/ios/tmp.xcconfig"
 
 .PHONY: get_iphone_udid
@@ -306,9 +289,8 @@ get_iphone_udid:
 	fi
 	$(eval IOS_UDID = $(shell if [ -n '$(IOS_UDID)' ]; then echo '--udid=$(IOS_UDID)'; fi))
 
-
 .PHONY: deps.ios
-deps.ios: deps.lerna $(PWD)/.environment $(PWD)/ios/core.framework $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
+deps.ios: $(PWD)/.environment $(PWD)/ios/core.framework $(PWD)/ios/Pods/Manifest.lock /tmp/envfile | deps.lerna
 	if [ ! -e ./node_modules/react-native/third-party/glog-0.*/Makefile ]; then	\
 		cd ./node_modules/react-native											\
 			&& rm -rf third-party														\
@@ -317,7 +299,7 @@ deps.ios: deps.lerna $(PWD)/.environment $(PWD)/ios/core.framework $(PWD)/ios/Po
 			&& ../../scripts/ios-configure-glog.sh;						\
 	fi
 
-$(PWD)/ios/Pods/Manifest.lock: $(PWD)/package.json $(PWD)/ios/Podfile
+$(PWD)/ios/Pods/Manifest.lock: $(PWD)/ios/Podfile | deps.lerna
 	$(PWD)/node_modules/.bin/react-native link --platforms=ios
 	([ ! -z "$(shell which pod)" ] && [[ "$$(pod --version)" > "1.7." ]]) || sudo gem install cocoapods
 	cd ios && pod install --verbose
@@ -381,13 +363,10 @@ debug.web: deps.web
 	cd web && npm run start
 
 .PHONY: build.web
-build.web: deps.web web/build
+build.web: $(PWD)/web/build
 
-web/build: \
-	$(shell find packages -type f -name '*.js' -not -path '*/node_modules/*' -not -path '*.gen.js') \
-	$(shell find web -type f -name '*.js' -not -path '*/node_modules/*') \
-	index.js
-	cd web && npm run build
+$(PWD)/web/build: deps.web
+	cd $(PWD)/web && npm run build
 
 export COMPOSE_PROJECT_NAME ?= integration_test
 COMPOSE_TEST_WEB := docker-compose -f ../build/docker/integration-tests/docker-compose.yml

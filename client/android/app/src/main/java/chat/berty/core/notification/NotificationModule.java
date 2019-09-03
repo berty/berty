@@ -2,6 +2,7 @@ package chat.berty.core.notification;
 
 import com.facebook.react.bridge.BaseJavaModule;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactMethod;
 
 import javax.annotation.Nullable;
 
@@ -68,5 +69,10 @@ public class NotificationModule extends BaseJavaModule {
      */
     protected @Nullable final Activity getCurrentActivity() {
         return mReactApplicationContext.getCurrentActivity();
+    }
+
+    @ReactMethod
+    public final void display(String title, String body, String icon, String sound, String url) {
+        new NotificationDisplay(title, body, icon, sound, url).execute();
     }
 }

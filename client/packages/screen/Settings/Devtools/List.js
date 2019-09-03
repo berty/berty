@@ -1,11 +1,17 @@
 import React, { PureComponent } from 'react'
-import { ActivityIndicator, Switch, Alert, Platform } from 'react-native'
+import {
+  ActivityIndicator,
+  Switch,
+  Platform,
+  NativeModules,
+} from 'react-native'
 
 import { Flex, Header, Menu, Screen, Text } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { withBridgeContext } from '@berty/bridge/Context'
 import RNDeviceInfo from 'react-native-device-info'
 import { withStoreContext } from '@berty/store/context'
+import Notifier from '@berty/notifier'
 
 @withStoreContext
 @withBridgeContext
@@ -193,11 +199,12 @@ class List extends PureComponent {
     this.getLocalGRPCState()
   }
 
+  nativeCrash = () => {
+    NativeModules.CoreModule.crash()
+  }
+
   throwNativeException = () => {
-    const { bridge } = this.props
-    bridge.daemon.throwException({}).catch(err => {
-      Alert.alert('Error', `${err}`)
-    })
+    NativeModules.CoreModule.throwException()
   }
 
   throwJsException = () => {
@@ -206,6 +213,13 @@ class List extends PureComponent {
 
   jsConsoleError = () => {
     console.error('console error')
+  }
+
+  systemNotification = () => {
+    Notifier.system({
+      title: 'Manual notification',
+      body: 'Manual notification',
+    })
   }
 
   render() {
@@ -355,6 +369,11 @@ class List extends PureComponent {
           />
           <Menu.Item
             icon="slash"
+            title="Native crash"
+            onPress={this.nativeCrash}
+          />
+          <Menu.Item
+            icon="slash"
             title="Throw native exception"
             onPress={this.throwNativeException}
           />
@@ -367,6 +386,11 @@ class List extends PureComponent {
             icon="slash"
             title="JS console error"
             onPress={this.jsConsoleError}
+          />
+          <Menu.Item
+            icon="send"
+            title="System notification"
+            onPress={this.systemNotification}
           />
         </Menu.Section>
       </Menu>

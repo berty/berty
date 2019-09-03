@@ -40,27 +40,39 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
     _ center: UNUserNotificationCenter,
     willPresent notification: UNNotification,
     withCompletionHandler completionHandler:
-      @escaping (UNNotificationPresentationOptions) -> Void) {
+      @escaping (UNNotificationPresentationOptions
+  ) -> Void) {
     completionHandler([.alert, .badge, .sound])
   }
 
-  func display(_ title: String?, body: String?, icon: String?, sound: String?, url: String?) throws {
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+  ) {
+    print("Test: \(response.notification.request.identifier)")
+    completionHandler()
+  }
+
+  func display(_ title: String?, body: String?, icon: String?, sound: String?, url: String? = "") throws {
     guard let utitle = title, let ubody = body else {
       throw NotificationError.invalidArgument
     }
+    UNUserNotificationCenter.current().delegate = self
+    DispatchQueue.main.async {
+      let center = UNUserNotificationCenter.current()
+      let content = UNMutableNotificationContent()
+      content.title = utitle
+      content.body = ubody
+      content.userInfo = ["url": url ?? "" ]
+      content.categoryIdentifier = "berty.core.notification"
+      content.sound = UNNotificationSound.default
 
-    let center = UNUserNotificationCenter.current()
-    let content = UNMutableNotificationContent()
-    content.title = utitle
-    content.body = ubody
-    content.userInfo = ["url": url!]
-    content.categoryIdentifier = "berty.core.notification"
-    content.sound = UNNotificationSound.default
+      let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+      let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
 
-    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-
-    center.add(request)
+      center.add(request)
+    }
   }
 
   func register () throws {

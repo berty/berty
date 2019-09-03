@@ -1,4 +1,6 @@
-import { Alert, Platform } from 'react-native'
+/* global __DEV__ */
+
+import { Alert } from 'react-native'
 import {
   setJSExceptionHandler,
   setNativeExceptionHandler,
@@ -7,6 +9,7 @@ import RNRestart from 'react-native-restart'
 import I18n from 'i18next'
 import { isIntegrationMode } from '../constants/query'
 import Reporter from '@berty/reporter'
+import Notifier from '@berty/notifier'
 
 const exceptionHandler = (error, isFatal) => {
   Reporter.crash(error)
@@ -27,17 +30,22 @@ const exceptionHandler = (error, isFatal) => {
 }
 
 if (!isIntegrationMode) {
-  // eslint-disable-next-line
   if (!__DEV__) {
     console.error = error => exceptionHandler(error, false)
   }
 
-  if (Platform.OS === 'ios' || Platform.OS === 'android') {
-    const allowInDevMode = false
-    const forceAppQuit = false
-    const executeDefaultHandler = false
+  const allowInDevMode = false
+  const forceAppQuit = false
+  const executeDefaultHandler = true
 
-    setJSExceptionHandler(exceptionHandler, allowInDevMode)
-    setNativeExceptionHandler(() => {}, forceAppQuit, executeDefaultHandler)
-  }
+  setJSExceptionHandler(exceptionHandler, allowInDevMode)
+  setNativeExceptionHandler(
+    () =>
+      Notifier.system({
+        title: I18n.t('restart'),
+        body: I18n.t('unexpected-error'),
+      }),
+    forceAppQuit,
+    executeDefaultHandler
+  )
 }
