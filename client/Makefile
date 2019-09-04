@@ -40,6 +40,9 @@ help:
 
 .PHONY: deps.lerna
 deps.lerna: $(LERNA_MODS)
+	@if [ -z "$$(grep 'intent.addFlags.Intent.FLAG_ACTIVITY_NEW_TASK' $(PWD)/node_modules/rn-fetch-blob/android/src/main/java/com/RNFetchBlob/RNFetchBlob.java)" ]; then \
+		patch $(PWD)/node_modules/rn-fetch-blob/android/src/main/java/com/RNFetchBlob/RNFetchBlob.java $(PWD)/patch/rn-fetch-blob.patch ; \
+	fi
 
 $(LERNA_MODS): $(LERNA_PACKAGES) $(LERNA)
 	$(LERNA) --reject-cycles bootstrap --hoist $(shell [ ! -z "$$CIRCLE_JOB" ] && echo "--ci --concurrency=2")

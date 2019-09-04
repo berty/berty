@@ -19,31 +19,15 @@ const updateApiSources = {
     url: 'https://yolo.berty.io/release/ios-staff.json',
     channel: 'dev',
   },
-  'chat.berty.ios.debug': {
-    url: 'https://yolo.berty.io/release/ios-staff.json',
-    channel: 'dev',
-  },
-  'chat.berty.ios': {
-    url: 'https://yolo.berty.io/release/ios.json',
-    channel: 'dev',
-  },
   'chat.berty.ios.yolo': {
     url: 'https://yolo.berty.io/release/ios.json',
     channel: 'beta',
   },
-  'chat.berty.main.debug': {
-    url: 'https://yolo.berty.io/release/android.json',
-    channel: 'dev',
-  },
   'chat.berty.main.staff': {
-    url: 'https://yolo.berty.io/release/android.json',
+    url: 'https://yolo.berty.io/release/android-staff.json',
     channel: 'beta',
   },
   'chat.berty.main.yolo': {
-    url: 'https://yolo.berty.io/release/android.json',
-    channel: 'beta',
-  },
-  'chat.berty.main': {
     url: 'https://yolo.berty.io/release/android.json',
     channel: 'beta',
   },
@@ -51,6 +35,25 @@ const updateApiSources = {
     url: 'https://yolo.berty.io/release/desktop/mac.json',
     channel: 'staff',
   },
+  //
+  // // Disabled update channels
+  //
+  // 'chat.berty.ios.debug': {
+  //   url: 'https://yolo.berty.io/release/ios-staff.json',
+  //   channel: 'dev',
+  // },
+  // 'chat.berty.ios': {
+  //   url: 'https://yolo.berty.io/release/ios.json',
+  //   channel: 'dev',
+  // },
+  // 'chat.berty.main.debug': {
+  //   url: 'https://yolo.berty.io/release/android.json',
+  //   channel: 'dev',
+  // },
+  // 'chat.berty.main': {
+  //   url: 'https://yolo.berty.io/release/android.json',
+  //   channel: 'beta',
+  // },
 }
 
 export const getAvailableUpdate = async context => {
