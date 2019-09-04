@@ -6,7 +6,7 @@
   - name: run berty relays
     docker_container:
         name: berty_relay_{{item}}
-        image: bertychat/berty:latest
+        image: bertytech/berty:latest
         pull: true
         recreate: yes
         network_mode: host

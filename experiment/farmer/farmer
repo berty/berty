@@ -25,7 +25,7 @@ cmd_up() {
             echo "    ports:" >> $i/docker-compose.part
             echo "      - $grpcport:$grpcport" >> $i/docker-compose.part
             echo "      - $gqlport:$gqlport" >> $i/docker-compose.part
-            echo "    image: bertychat/berty:latest" >> $i/docker-compose.part
+            echo "    image: bertytech/berty:latest" >> $i/docker-compose.part
             echo "    network_mode: bridge" >> $i/docker-compose.part
             echo "    command: daemon --grpc-bind=0.0.0.0:$grpcport --gql-bind=0.0.0.0:$gqlport" >> $i/docker-compose.part
         fi
@@ -76,7 +76,7 @@ cmd_info() {
 
 cmd_build() {
     set -x
-    docker build -t bertychat/berty ../..
+    docker build -t bertytech/berty ../..
 }
 
 # FIXME: implement cmd_client (that runs a 'berty client --node-address=XXX $cmd')

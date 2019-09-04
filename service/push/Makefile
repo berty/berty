@@ -72,7 +72,7 @@ endif
 
 .PHONY: deps
 deps: fcm-opts apns-opts
-	docker pull bertychat/berty:latest
+	docker pull bertytech/berty:latest
 	git clone git@github.com:berty/ios-push-certs || true
 	echo $(apns-private-key) | base64 -D  > apns_private_key
 
@@ -80,13 +80,13 @@ deps: fcm-opts apns-opts
 build: deps
 	docker build --no-cache --rm \
 			--build-arg OPTIONS='$(fcm-opts) $(apns-opts) $(options)' \
-			-t bertychat/push . \
+			-t bertytech/push . \
 
 .PHONY: run
 run: build deps
 	docker rm -f $(name) || true
-	docker run --name $(name) bertychat/push
+	docker run --name $(name) bertytech/push
 
 .PHONY: push
 push: build
-	docker push bertychat/push:$(version)
+	docker push bertytech/push:$(version)

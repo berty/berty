@@ -29,7 +29,7 @@ services:
 
   node:
     build: ../../..
-    image: bertychat/berty
+    image: bertytech/berty
     networks:
       - tools
       - berty

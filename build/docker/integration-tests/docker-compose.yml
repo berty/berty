@@ -2,7 +2,7 @@ version: "3"
 
 services:
   berty-core:
-    image: bertychat/berty
+    image: bertytech/berty
 
   cavy-report:
     build:

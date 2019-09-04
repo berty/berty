@@ -29,7 +29,7 @@ services:
 
   relay:
     build: ../../..
-    image: bertychat/berty
+    image: bertytech/berty
     ports:
       - "8801-8801:8700"
       - "2438-2538:1337"
@@ -46,7 +46,7 @@ services:
 
   node:
     build: ../../..
-    image: bertychat/berty
+    image: bertytech/berty
     networks:
       - tools
       - berty

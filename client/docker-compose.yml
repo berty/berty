@@ -5,7 +5,7 @@ services:
     build:
       context: .
       target: web
-    image: bertychat/dev-web
+    image: bertytech/dev-web
     ports:
       - "3001:3000"
     volumes:
@@ -29,7 +29,7 @@ services:
     build:
       context: .
       target: core
-    image: bertychat/dev-core
+    image: bertytech/dev-core
     ports:
       - "8701-8801:8700"
       - "1338-1438:1337"

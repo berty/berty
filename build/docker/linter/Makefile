@@ -1,4 +1,4 @@
-IMAGE ?= bertychat/linter:v4
+IMAGE ?= bertytech/linter:v4
 
 build:
 	docker build --pull -t $(IMAGE) .
