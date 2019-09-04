@@ -21,10 +21,10 @@ class ContactCardModal extends React.Component {
     const { context, navigation } = this.props
     const navigationData = {
       id: navigation.getParam('id'),
-      displayName: navigation.getParam('displayName'),
+      displayName:
+        navigation.getParam('displayName') || navigation.getParam('name'),
       status: navigation.getParam('status'),
     }
-
     return (
       <Store.Entity.Contact id={navigationData.id}>
         {(data = navigationData) => (
