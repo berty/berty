@@ -45,7 +45,7 @@ type Payload struct {
 	Body     string `json:"body,omitempty"`
 	Icon     string `json:"icon,omitempty"`
 	Sound    string `json:"sound,omitempty"`
-	Badge    string `json:"badge,omitempty"`
+	Badge    *int   `json:"badge,omitempty"`
 	DeepLink string `json:"deep-link,omitempty"`
 }
 
@@ -59,13 +59,18 @@ func NewNoopNotification() Driver {
 }
 
 func (n *NoopNotification) Display(p *Payload) error {
+	badge := -1
+	if p.Badge != nil {
+		badge = *p.Badge
+	}
+
 	// for debug puprpose
 	logger().Debug("Display",
 		zap.String("title", p.Title),
 		zap.String("body", p.Body),
 		zap.String("Icon", p.Icon),
 		zap.String("Sound", p.Sound),
-		zap.String("Badge", p.Badge),
+		zap.Int("Badge", badge),
 	)
 
 	return nil

@@ -25,8 +25,8 @@ public class NotificationNative implements NativeNotificationDriver {
 
     private static MobileNotification gomobile = Core.getNotificationDriver();
 
-    public void display(String title, String body, String icon, String sound, String url) throws Exception {
-        new NotificationDisplay(title, body, icon, sound, url).execute();
+    public void display(String title, String body, String icon, String sound, String url, long badge) throws Exception {
+        new NotificationDisplay(title, body, icon, sound, url, badge).execute();
     }
 
     public void refreshToken() throws Exception {

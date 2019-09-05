@@ -363,6 +363,8 @@ func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation)
 		return nil, errors.Wrap(err, "cannot send conversation read to others")
 	}
 
+	_ = n.updateAppBadge(ctx)
+
 	return conversation, nil
 }
 
@@ -413,6 +415,8 @@ func (n *Node) conversationRemove(ctx context.Context, input *entity.Conversatio
 	if err = im.Leave(); err != nil {
 		return nil, err
 	}
+
+	_ = n.updateAppBadge(ctx)
 
 	return conversation, nil
 }

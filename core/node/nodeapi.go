@@ -190,6 +190,8 @@ func (n *Node) eventSeen(ctx context.Context, input *entity.Event) (*node.Void, 
 		return nil, errLoop
 	}
 
+	_ = n.updateAppBadge(ctx)
+
 	return &node.Void{}, nil
 }
 
@@ -257,6 +259,8 @@ func (n *Node) contactAcceptRequest(ctx context.Context, input *node.ContactAcce
 	if err := n.contactShareMe(ctx, contact); err != nil {
 		return nil, err
 	}
+
+	_ = n.updateAppBadge(ctx)
 
 	return contact, nil
 }
@@ -435,6 +439,8 @@ func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*ent
 		// @TODO: log an error when issue #1325 will be done
 		logger().Warn(err.Error())
 	}
+
+	_ = n.updateAppBadge(ctx)
 
 	return contact, nil
 }

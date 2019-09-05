@@ -1,7 +1,9 @@
 package node
 
 import (
+	"berty.tech/core/pkg/notification"
 	"context"
+	"runtime"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/entity"
@@ -91,4 +93,35 @@ func (n *Node) ConversationBadge(ctx context.Context, c *entity.Conversation) (*
 		return nil, err
 	}
 	return &node.Badge{Value: int32(count)}, err
+}
+
+func (n *Node) countUnread(ctx context.Context) (int, error) {
+	countContacts, err := n.ContactListBadge(ctx, &node.Void{})
+	if err != nil {
+		return 0, err
+	}
+
+	countConversations, err := n.ContactListBadge(ctx, &node.Void{})
+	if err != nil {
+		return 0, err
+	}
+
+	return int(countContacts.Value + countConversations.Value), nil
+}
+
+func (n *Node) updateAppBadge(ctx context.Context) error {
+	if runtime.GOOS != "darwin" {
+		return nil
+	}
+
+	count, err := n.countUnread(ctx)
+	if err != nil {
+		return err
+	}
+
+	n.DisplayNotification(&notification.Payload{
+		Badge: &count,
+	})
+
+	return nil
 }

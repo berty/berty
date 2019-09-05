@@ -56,12 +56,19 @@ func (n *Node) handleContactRequest(ctx context.Context, input *entity.Event) er
 		return err
 	}
 
+	var badgeCount *int
+	count, err := n.countUnread(ctx)
+	if err == nil {
+		badgeCount = &count
+	}
+
 	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("ContactRequestTitle", nil),
 		Body: i18n.T("ContactRequestBody", map[string]interface{}{
 			"Name": contact.DisplayName,
 		}),
 		DeepLink: "berty://berty.tech/id#key=" + url.PathEscape(contact.ID) + "&name=" + url.PathEscape(contact.DisplayName),
+		Badge:    badgeCount,
 	})
 
 	if err := entity.SaveDevices(sql, contact.ID, devices); err != nil {
@@ -100,13 +107,21 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *entity.E
 		deepLink = "berty://berty.chat/chats/detail#id=" + url.PathEscape(conv.ID)
 	}
 
+	var badgeCount *int
+	count, err := n.countUnread(ctx)
+	if err == nil {
+		badgeCount = &count
+	}
+
 	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("ContactRequestAccpetedTitle", nil),
 		Body: i18n.T("ContactRequestAccpetedBody", map[string]interface{}{
 			"Name": contact.DisplayName,
 		}),
 		DeepLink: deepLink,
+		Badge:    badgeCount,
 	})
+
 	return nil
 }
 
@@ -218,10 +233,17 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *entity.Event
 		return err
 	}
 
+	var badgeCount *int
+	count, err := n.countUnread(ctx)
+	if err == nil {
+		badgeCount = &count
+	}
+
 	n.DisplayNotification(&notification.Payload{
 		Title:    i18n.T("ConversationInviteTitle", nil),
 		Body:     i18n.T("ConversationInviteBody", nil),
 		DeepLink: "berty://berty.chat/chats/detail#id=" + url.PathEscape(conversation.ID),
+		Badge:    badgeCount,
 	})
 
 	return nil
@@ -284,11 +306,19 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *entity.E
 		}
 	}
 
+	var badgeCount *int
+	count, err := n.countUnread(ctx)
+	if err == nil {
+		badgeCount = &count
+	}
+
 	n.DisplayNotification(&notification.Payload{
 		Title:    title,
 		Body:     body,
 		DeepLink: "berty://berty.chat/chats/detail#id=" + url.PathEscape(input.TargetAddr),
+		Badge:    badgeCount,
 	})
+
 	return nil
 }
 

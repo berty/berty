@@ -67,10 +67,11 @@ class CoreModule: NSObject {
     body: String,
     icon: String?,
     sound: String?,
-    url: String?
+    url: String?,
+    badge: String?
   ) {
     do {
-      try Core.notificationDriver()?.native?.display(title, body: body, icon: icon, sound: sound, url: url)
+      try Core.notificationDriver()?.native?.display(title, body: body, icon: icon, sound: sound, url: url, badge: badge)
     } catch let error as NSError {
       logger.format("failed to display notification : %@", level: .error, error.localizedDescription)
     }

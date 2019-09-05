@@ -20,7 +20,7 @@ import (
 var _ notification.Driver = (*MobileNotification)(nil)
 
 type NativeNotificationDriver interface {
-	Display(title, body, icon, sound, url string) error
+	Display(title, body, icon, sound, url string, badge int) error
 	Register() error
 	Unregister() error
 	RefreshToken() error
@@ -155,17 +155,32 @@ func (n *MobileNotification) Display(p *notification.Payload) error {
 
 	// force display in this state
 	if p.DeepLink == "" || state != DeviceInfoAppStateForeground {
-		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink)
+		badge := -1
+		if p.Badge != nil {
+			badge = *p.Badge
+		}
+
+		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink, badge)
 	}
 
 	// parse route and deep link
 	url, err := netURL.Parse(route)
 	if err != nil {
-		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink)
+		badge := -1
+		if p.Badge != nil {
+			badge = *p.Badge
+		}
+
+		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink, badge)
 	}
 	dlURL, err := netURL.Parse(p.DeepLink)
 	if err != nil {
-		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink)
+		badge := -1
+		if p.Badge != nil {
+			badge = *p.Badge
+		}
+
+		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink, badge)
 	}
 
 	logger().Debug("display notification",
@@ -186,7 +201,12 @@ func (n *MobileNotification) Display(p *notification.Payload) error {
 
 	// check if route path is equal to deeplink path
 	if url.Path != dlURL.Path {
-		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink)
+		badge := -1
+		if p.Badge != nil {
+			badge = *p.Badge
+		}
+
+		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink, badge)
 	}
 
 	// check if route fragment id is equal to deeplink fragment id
@@ -213,12 +233,22 @@ func (n *MobileNotification) Display(p *notification.Payload) error {
 	dlID, dlOK := dlParams["id"]
 	// if one of two as no id
 	if !ok || !dlOK {
-		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink)
+		badge := -1
+		if p.Badge != nil {
+			badge = *p.Badge
+		}
+
+		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink, badge)
 	}
 
 	// if ids are not equals
 	if id != dlID {
-		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink)
+		badge := -1
+		if p.Badge != nil {
+			badge = *p.Badge
+		}
+
+		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink, badge)
 	}
 
 	return nil

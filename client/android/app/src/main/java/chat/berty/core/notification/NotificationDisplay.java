@@ -42,13 +42,15 @@ public class NotificationDisplay extends AsyncTask {
     private final String icon;
     private final String url;
     private final String sound;
+    private final long badge;
 
-    NotificationDisplay(String title, String body, String icon, String sound, String url) {
+    NotificationDisplay(String title, String body, String icon, String sound, String url, long badge) {
         this.createNotificationChannel();
         this.title = title;
         this.body = body;
         this.icon = icon;
         this.sound = sound;
+        this.badge = badge;
         this.url = url;
     }
 
@@ -112,6 +114,11 @@ public class NotificationDisplay extends AsyncTask {
                 .setAutoCancel(true)
                 .setVibrate(new long[]{0, 1000})
                 .setContentIntent(pendingIntent);
+
+        if (badge != -1) {
+            // mBuilder.setNumber(Math.toIntExact(badge));
+            mBuilder.setNumber(1);
+        }
 
         ((NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(m, mBuilder.build());
         return null;

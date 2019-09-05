@@ -72,7 +72,7 @@ public class NotificationModule extends BaseJavaModule {
     }
 
     @ReactMethod
-    public final void display(String title, String body, String icon, String sound, String url) {
-        new NotificationDisplay(title, body, icon, sound, url).execute();
+    public final void display(String title, String body, String icon, String sound, String url, long badge) {
+        new NotificationDisplay(title, body, icon, sound, url, badge).execute();
     }
 }

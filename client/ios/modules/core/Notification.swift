@@ -54,7 +54,7 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
     completionHandler()
   }
 
-  func display(_ title: String?, body: String?, icon: String?, sound: String?, url: String? = "") throws {
+  func display(_ title: String?, body: String?, icon: String?, sound: String?, url: String? = "", badge: Int? = "") throws {
     guard let utitle = title, let ubody = body else {
       throw NotificationError.invalidArgument
     }
@@ -67,6 +67,10 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
       content.userInfo = ["url": url ?? "" ]
       content.categoryIdentifier = "berty.core.notification"
       content.sound = UNNotificationSound.default
+
+      if badge != nil && badge! != -1 {
+        content.badge = badge! as NSNumber
+      }
 
       let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
       let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
