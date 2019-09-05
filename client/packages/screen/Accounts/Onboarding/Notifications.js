@@ -4,7 +4,7 @@ import { Flex } from '@berty/component'
 import { withNavigation } from 'react-navigation'
 import * as onboardingStyle from './style'
 import { NextButton, SkipButton } from './Button'
-// import { enableNativeNotifications } from '@berty/common/helpers/notifications'
+import { enableNativeNotifications } from '@berty/common/helpers/notifications'
 import { withNamespaces } from 'react-i18next'
 import colors from '@berty/common/constants/colors'
 import { withStoreContext } from '@berty/store/context'
@@ -34,10 +34,11 @@ const Notifications = ({ context, navigation, t, config }) => (
           <NextButton
             onPress={async () => {
               // @FIXME: destroyed by refactor
-              // await enableNativeNotifications({ context })
+              await enableNativeNotifications({ context })
               await context.node.service.configUpdate({
                 ...config,
                 notificationsEnabled: true,
+                notificationsPreviews: true,
               })
               navigation.navigate('onboarding/bluetooth')
             }}

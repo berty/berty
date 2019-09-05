@@ -34,7 +34,7 @@ class Welcome extends React.Component {
                 {t('onboarding.welcome.skip-everything')}
               </SkipButton>
               <NextButton
-                onPress={() => navigation.navigate('onboarding/contacts')}
+                onPress={() => navigation.navigate('onboarding/notifications')}
                 style={onboardingStyle.nextButton}
               >
                 {t('next')}
