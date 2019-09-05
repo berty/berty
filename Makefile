@@ -76,3 +76,11 @@ go-mod-tidy-all:
 	cd core; go mod tidy
 	cd network; go mod tidy
 	cd experiment; go mod tidy
+
+.PHONY: circleci
+circleci: job :=
+circleci: .circleci/config-processed.yml
+	circleci local execute --config=$< --job=$(job)
+
+.circleci/config-processed.yml: .circleci/config.yml
+	circleci config process $< > $@

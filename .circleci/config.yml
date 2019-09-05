@@ -74,6 +74,7 @@ commands:
       - run:
             name: git version (via sha1 hash)
             command: |
+              mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
               cd ~/go/src/berty.tech || cd /go/src/berty.tech || cd .
               git fetch origin master
               git rev-parse origin/master > /tmp/git_version
