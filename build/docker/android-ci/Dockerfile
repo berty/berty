@@ -12,6 +12,8 @@ ENV PATH="/usr/local/go/bin/:/home/circleci/go/bin:${PATH}"
 
 RUN go get -u golang.org/x/mobile/cmd/gomobile
 
+RUN go get -u golang.org/x/tools/go/packages
+
 RUN yes | sdkmanager ndk-bundle || true
 
 COPY ./gomobile-env-flag.diff /tmp/gomobile-env-flag.diff
