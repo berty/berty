@@ -34,13 +34,11 @@ const Bluetooth = ({ bridge, navigation, t }) => (
                 Platform.OS === 'ios' ||
                 (await requestBLEAndroidPermission())
               ) {
-                const config = await bridge.daemon.getNetworkConfig({})
-
-                let currentConfig = JSON.parse(config.json)
-                currentConfig.BLE = true
-                await bridge.daemon.updateNetworkConfig({
-                  json: JSON.stringify(currentConfig),
-                })
+                let config = await bridge.daemon.getNetworkConfig({})
+                config.bindP2P = config.bindP2P.concat(
+                  '/ble/00000000-0000-0000-0000-000000000000'
+                )
+                await bridge.daemon.updateNetworkConfig(config)
               }
               navigation.navigate('onboarding/contacts')
             }}

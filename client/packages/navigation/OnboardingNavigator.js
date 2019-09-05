@@ -1,8 +1,8 @@
 import { tabNavigatorOptions } from '@berty/common/constants/styling'
-// import Bluetooth from '@berty/screen/Accounts/Onboarding/Bluetooth'
+import Bluetooth from '@berty/screen/Accounts/Onboarding/Bluetooth'
 import Contacts from '@berty/screen/Accounts/Onboarding/Contacts'
 import I18n from '@berty/common/locale'
-// import Notifications from '@berty/screen/Accounts/Onboarding/Notifications'
+import Notifications from '@berty/screen/Accounts/Onboarding/Notifications'
 import Ready from '@berty/screen/Accounts/Onboarding/Ready'
 import Welcome from '@berty/screen/Accounts/Onboarding/Welcome'
 import { withProps, asFunctional } from '@berty/common/helpers/views'
@@ -19,20 +19,20 @@ export default createMaterialTopTabNavigator(
         title: I18n.t('onboarding.welcome.tab'),
       }),
     },
-    //     'onboarding/notifications': {
-    //       screen: Notifications,
-    //       navigationOptions: () => ({
-    //         tabBarIcon: asFunctional(withProps({ name: 'bell' })(TabIcon)),
-    //         title: I18n.t('onboarding.notifications.tab'),
-    //       }),
-    //     },
-    //     'onboarding/bluetooth': {
-    //       screen: Bluetooth,
-    //       navigationOptions: () => ({
-    //         tabBarIcon: asFunctional(withProps({ name: 'bluetooth' })(TabIcon)),
-    //         title: I18n.t('onboarding.bluetooth.tab'),
-    //       }),
-    //     },
+    'onboarding/notifications': {
+      screen: Notifications,
+      navigationOptions: () => ({
+        tabBarIcon: asFunctional(withProps({ name: 'bell' })(TabIcon)),
+        title: I18n.t('onboarding.notifications.tab'),
+      }),
+    },
+    'onboarding/bluetooth': {
+      screen: Bluetooth,
+      navigationOptions: () => ({
+        tabBarIcon: asFunctional(withProps({ name: 'bluetooth' })(TabIcon)),
+        title: I18n.t('onboarding.bluetooth.tab'),
+      }),
+    },
     'onboarding/contacts': {
       screen: Contacts,
       navigationOptions: () => ({
