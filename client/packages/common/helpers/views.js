@@ -4,6 +4,15 @@ import hoistNonReactStatic from 'hoist-non-react-statics'
 export const Children = props =>
   React.Children.map(props.children, child => React.cloneElement(child, props))
 
+export const withErrorHandler = handler =>
+  withHOC(
+    class WithErrorHandler extends PureComponent {
+      componentDidCatch(error, info) {
+        handler(this.props, this.state, error, info)
+      }
+    }
+  )
+
 export const withScreenProps = Component =>
   withHOC(
     class WithScreenProps extends PureComponent {
@@ -54,6 +63,13 @@ export const withHOC = HOC => Component =>
       static displayName = `${getDisplayName(HOC)}(${getDisplayName(
         Component
       )})`
+
+      render() {
+        if (super.render) {
+          return super.render()
+        }
+        return <Component {...this.props} />
+      }
     },
     Component
   )
