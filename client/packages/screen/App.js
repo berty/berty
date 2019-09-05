@@ -48,7 +48,7 @@ export default class App extends PureComponent {
   }
 
   componentDidCatch(error, info) {
-    exceptionHandler(error, true)
+    exceptionHandler(error, false)
   }
 
   componentDidMount() {

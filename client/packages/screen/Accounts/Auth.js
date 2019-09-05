@@ -51,17 +51,6 @@ class Auth extends PureComponent {
     }
   }
 
-  init = async config => {
-    const { t, bridge } = this.props
-
-    this.setState({ loading: true, message: t('core.initializing') })
-    try {
-      await bridge.daemon.initialize(config)
-    } catch (err) {
-      console.warn('initialize', err)
-    }
-  }
-
   list = async () => {
     const { t, bridge } = this.props
     this.setState({ loading: true, message: t('core.account-listing') })
@@ -89,7 +78,6 @@ class Auth extends PureComponent {
     let { firstLaunch } = options || {}
 
     if (nickname == null) {
-      // await this.init() @FIXME: remove this ?
       const list = await this.list()
       if (list.length <= 0) {
         const deviceName = defaultUsername()
