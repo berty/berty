@@ -101,9 +101,7 @@ func (n *Node) GenerateFakeData(ctx context.Context, input *node.Void) (*node.Vo
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	// FIXME: enable mutex, but allow calling submethod, i.e., node.SaveConversation
-	//defer n.handleMutex.Lock()
-	//defer defer n.handleMutex.Unlock()
+	defer n.handleMutex(ctx)()
 
 	contacts := []*entity.Contact{}
 	for i := 0; i < 10; i++ {
@@ -130,8 +128,9 @@ func (n *Node) GenerateFakeData(ctx context.Context, input *node.Void) (*node.Vo
 				Contacts: contactsMembers,
 				Title:    strings.Title(fmt.Sprintf("%s %s", gofakeit.HipsterWord(), gofakeit.HackerNoun())),
 				Topic:    gofakeit.HackerPhrase(),
+				Kind:     entity.Conversation_Group,
 			}); err != nil {
-				return errorcodes.ErrDbCreate.Wrap(err)
+				return err
 			}
 			return nil
 		}(); err != nil {
