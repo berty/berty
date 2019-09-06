@@ -1,6 +1,6 @@
 /* global __DEV__ */
 
-import { Alert } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import {
   setJSExceptionHandler,
   setNativeExceptionHandler,
@@ -29,7 +29,7 @@ const exceptionHandler = (error, isFatal) => {
   )
 }
 
-if (!isIntegrationMode) {
+if (!isIntegrationMode && Platform.OS !== 'web') {
   if (!__DEV__) {
     console.error = error => exceptionHandler(error, false)
   }
