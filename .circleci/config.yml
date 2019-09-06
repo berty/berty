@@ -365,7 +365,7 @@ jobs:
           command: |
             if [ "$CIRCLE_BRANCH" = "master" ]; then
               docker login -u $DOCKER_USER -p $DOCKER_PASS
-              docker push bertychat/berty:latest
+              docker push bertytech/berty:latest
               cd service/push && \
                 make push fcm-api-key=$FCM_API_KEY apns-private-key=$APNS_PRIVATE_KEY && \
                 cd -
