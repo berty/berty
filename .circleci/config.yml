@@ -348,24 +348,24 @@ jobs:
 
       - run:
           name: Build application Docker image
-          command: retry -m 3 docker build -t bertychat/berty .
+          command: retry -m 3 docker build -t bertytech/berty .
 
       - run:
           name: Run application within Docker
-          command: retry -m 3 docker run --rm bertychat/berty daemon --init-only --no-p2p
+          command: retry -m 3 docker run --rm bertytech/berty daemon --init-only --no-p2p
 
       - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /tmp/caches
-            docker save -o /tmp/caches/berty.tar bertychat/berty
+            docker save -o /tmp/caches/berty.tar bertytech/berty
 
       - run:
           name: Push image to docker hub
           command: |
             if [ "$CIRCLE_BRANCH" = "master" ]; then
               docker login -u $DOCKER_USER -p $DOCKER_PASS
-              docker push bertychat/berty:latest
+              docker push bertytech/berty:latest
               cd service/push && \
                 make push fcm-api-key=$FCM_API_KEY apns-private-key=$APNS_PRIVATE_KEY && \
                 cd -
@@ -376,7 +376,7 @@ jobs:
           name: Save Docker image layer cache
           command: |
             mkdir -p /tmp/caches
-            docker save -o /tmp/caches/berty.tar bertychat/berty
+            docker save -o /tmp/caches/berty.tar bertytech/berty
 
       - git_version
       - save_cache:

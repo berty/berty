@@ -1,4 +1,4 @@
-FROM bertychat/berty:latest
+FROM bertytech/berty:latest
 
 RUN apk add --no-cache ca-certificates
 

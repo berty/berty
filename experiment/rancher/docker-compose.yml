@@ -1,7 +1,7 @@
 version: '2'
 services:
   berty:
-    image: bertychat/berty
+    image: bertytech/berty
     ports:
       - "8700:8700"
       - "4004:4004"

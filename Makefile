@@ -65,11 +65,11 @@ _ci_prepare:
 
 .PHONY: docker.build
 docker.build:
-	docker build -t bertychat/berty .
+	docker build -t bertytech/berty .
 
 .PHONY: docker.push
 docker.push: docker.build
-	docker push bertychat/berty:latest
+	docker push bertytech/berty:latest
 
 .PHONY: go-mod-tidy-all
 go-mod-tidy-all:
