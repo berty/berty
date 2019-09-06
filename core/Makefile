@@ -108,7 +108,7 @@ generate: .generated
 		--workdir="/go/src/$(GO_ROOT_PKG)" \
 		--entrypoint="sh" \
 		--rm \
-		bertytech/protoc:v14 \
+		bertytech/protoc:v15 \
 		-xec 'make generate_local'
 	touch $@
 

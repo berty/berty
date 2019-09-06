@@ -1,6 +1,6 @@
 module berty.tech/core
 
-go 1.12
+go 1.13
 
 require (
 	berty.tech/network v0.0.0
@@ -69,6 +69,7 @@ require (
 	gopkg.in/yaml.v2 v2.2.2
 )
 
-replace berty.tech/network v0.0.0 => ../network
-
-replace github.com/libp2p/go-libp2p-quic-transport v0.0.0 => github.com/gfanton/go-libp2p-quic-transport v0.1.2-0.20190829111821-82673e2b5c01
+replace (
+	berty.tech/network v0.0.0 => ../network
+	github.com/libp2p/go-libp2p-quic-transport v0.0.0 => github.com/gfanton/go-libp2p-quic-transport v0.1.2-0.20190829111821-82673e2b5c01
+)

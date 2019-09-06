@@ -212,7 +212,7 @@ github.com/libp2p/go-ws-transport v0.1.0/go.mod h1:rjw1MG1LU9YDC6gzmwObkPd/Sqwhw
 github.com/libp2p/go-yamux v1.2.2/go.mod h1:FGTiPvoV/3DVdgWpX+tM0OW3tsM+W5bSE3gZwqQTcow=
 github.com/libp2p/go-yamux v1.2.3 h1:xX8A36vpXb59frIzWFdEgptLMsOANMFq2K7fPRlunYI=
 github.com/libp2p/go-yamux v1.2.3/go.mod h1:FGTiPvoV/3DVdgWpX+tM0OW3tsM+W5bSE3gZwqQTcow=
-github.com/lucas-clemente/quic-go v0.12.0 h1:dYHUyB50gEQlK3KqytmNySzuyzAcaQ3iuI2ZReAfVrE=
+github.com/lucas-clemente/quic-go v0.12.0 h1:TRbvZ6F++sofeGbh+Z2IIyIOhl8KyGnYuA06g2yrHdI=
 github.com/lucas-clemente/quic-go v0.12.0/go.mod h1:UXJJPE4RfFef/xPO5wQm0tITK8gNfqwTxjbE7s3Vb8s=
 github.com/marten-seemann/qpack v0.1.0/go.mod h1:LFt1NU/Ptjip0C2CPkhimBz5CGE3WGDAUWqna+CNTrI=
 github.com/marten-seemann/qtls v0.3.2 h1:O7awy4bHEzSX/K3h+fZig3/Vo03s/RxlxgsAk9sYamI=

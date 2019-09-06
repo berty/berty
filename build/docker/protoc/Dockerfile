@@ -1,6 +1,6 @@
 FROM moul/protoc-gen-gotemplate:latest as pgg
 
-FROM    golang:1.12-alpine as builder
+FROM    golang:1.13-alpine as builder
 
 # install deps
 RUN     apk --no-cache add make git go rsync libc-dev openssh docker npm
@@ -19,7 +19,7 @@ RUN  go get -u github.com/gogo/protobuf/gogoproto \
 
 RUN     rm -f /go/bin/web-editor
 
-FROM    golang:1.12-alpine
+FROM    golang:1.13-alpine
 RUN     apk --no-cache add git openssh make protobuf gcc libc-dev nodejs-npm sudo && mkdir -p /.cache/go-build && chmod -R 777 /.cache
 RUN     mkdir -p /node/ && cd /node && npm install -g npm@6.9.0 protobufjs prettier prettier-eslint prettier-eslint-cli  pbhbs@0.1.0
 RUN     echo 'syntax = "proto3";' | /usr/bin/pbjs - > /dev/null # init pbjs

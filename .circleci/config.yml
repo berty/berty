@@ -14,7 +14,7 @@ executors:
       GO111MODULE: "on"
       TEST_OPTS: "-coverprofile=profile.out -covermode=count"
     docker:
-      - image: circleci/golang:1.12
+      - image: circleci/golang:1.13
 
   linter:
     working_directory: /go/src/berty.tech
@@ -24,7 +24,7 @@ executors:
       GO111MODULE: "on"
       TEST_OPTS: "-coverprofile=profile.out -covermode=count"
     docker:
-      - image: bertytech/linter:v4
+      - image: bertytech/linter:v5
 
   android:
     working_directory: ~/go/src/berty.tech
@@ -34,11 +34,11 @@ executors:
       FL_BUILDLOG_PATH: /tmp/fl/log/build/android
       BUILD: /tmp/fl/build
     docker:
-      - image: bertytech/android-ci:v5
+      - image: bertytech/android-ci:v6
 
   protoc:
     docker:
-      - image: bertytech/protoc:v14
+      - image: bertytech/protoc:v15
     working_directory: /go/src/berty.tech
     environment:
       GOPATH: /go
@@ -94,7 +94,7 @@ commands:
     parameters:
       version:
         type: string
-        default: "1.12"
+        default: "1.13"
     steps:
       - run:
           name: install-go

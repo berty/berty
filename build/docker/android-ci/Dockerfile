@@ -1,6 +1,6 @@
 FROM  circleci/android:api-29-node
 
-ENV GO_VERSION=1.12.5
+ENV GO_VERSION=1.13
 
 RUN cd ~ \
     &&  git clone https://github.com/udhos/update-golang \
