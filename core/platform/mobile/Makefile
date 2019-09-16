@@ -118,8 +118,10 @@ $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES) | deps.android
 	$(SED_CMD) 's/(goBridge = )(null)/\1new GoBridgeImplem\(\)/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/BleManager.java
 	$(SED_CMD) 's/[\/\/]*(.*GoBridgeImplem.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/libp2p/transport/ble/BleManager.java
 	mkdir -p $(ANDROID_BUILD_PATH)
-	GO111MODULE=off GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
+	- mv $(PWD)/core/os_android.go_ $(PWD)/core/os_android.go
+	- GO111MODULE=off GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
 		gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -classpath=$(ANDROID_PATH)/ble/libs/jars/ble.jar -o $(ANDROID_BUILD_PATH)/core.aar berty.tech/core/platform/mobile/core
+	mv $(PWD)/core/os_android.go $(PWD)/core/os_android.go_
 
 .PHONY: deps.ios
 deps.ios: deps
