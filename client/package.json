@@ -1,0 +1,28 @@
+{
+  "name": "@berty/client",
+  "version": "1.0.0",
+  "description": "Berty's client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/berty/berty.git"
+  },
+  "author": "berty",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/berty/berty/issues"
+  },
+  "homepage": "https://github.com/berty/berty#readme",
+  "dependencies": {
+    "create-react-native-module": "^0.10.2",
+    "expo-cli": "^3.0.10",
+    "lerna": "^3.16.4",
+    "lerna-update-wizard": "^0.16.0",
+    "react-native-cli": "^2.0.1",
+    "react-native-create-bridge": "^2.0.1",
+    "react-native-create-library": "^3.1.2"
+  }
+}
