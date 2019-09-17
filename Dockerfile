@@ -1,5 +1,5 @@
 # build core
-FROM            golang:1.12-alpine as core-builder
+FROM            golang:1.13-alpine as core-builder
 RUN             apk --no-cache --update add nodejs-npm make gcc g++ musl-dev openssl-dev git
 ENV             GO111MODULE=on
 COPY            core/go.* /go/src/berty.tech/core/
@@ -7,8 +7,8 @@ COPY            network/go.* /go/src/berty.tech/network/
 
 WORKDIR         /go/src/berty.tech
 
-RUN             cd network && go get .
-RUN             cd core && go get .
+RUN             cd network && go mod download
+RUN             cd core && go mod download
 
 COPY            core /go/src/berty.tech/core
 COPY            network /go/src/berty.tech/network

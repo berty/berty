@@ -14,7 +14,7 @@ executors:
       GO111MODULE: "on"
       TEST_OPTS: "-coverprofile=profile.out -covermode=count"
     docker:
-      - image: circleci/golang:1.12
+      - image: circleci/golang:1.13
 
   linter:
     working_directory: /go/src/berty.tech
@@ -24,7 +24,7 @@ executors:
       GO111MODULE: "on"
       TEST_OPTS: "-coverprofile=profile.out -covermode=count"
     docker:
-      - image: bertychat/linter:v4
+      - image: bertytech/linter:v5
 
   android:
     working_directory: ~/go/src/berty.tech
@@ -34,11 +34,11 @@ executors:
       FL_BUILDLOG_PATH: /tmp/fl/log/build/android
       BUILD: /tmp/fl/build
     docker:
-      - image: bertychat/android-ci:v5
+      - image: bertytech/android-ci:v6
 
   protoc:
     docker:
-      - image: bertychat/protoc:v14
+      - image: bertytech/protoc:v15
     working_directory: /go/src/berty.tech
     environment:
       GOPATH: /go
@@ -74,6 +74,7 @@ commands:
       - run:
             name: git version (via sha1 hash)
             command: |
+              mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
               cd ~/go/src/berty.tech || cd /go/src/berty.tech || cd .
               git fetch origin master
               git rev-parse origin/master > /tmp/git_version
@@ -93,7 +94,7 @@ commands:
     parameters:
       version:
         type: string
-        default: "1.12"
+        default: "1.13"
     steps:
       - run:
           name: install-go

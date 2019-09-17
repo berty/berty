@@ -1,6 +1,6 @@
 FROM  circleci/android:api-29-node
 
-ENV GO_VERSION=1.12.5
+ENV GO_VERSION=1.13
 
 RUN cd ~ \
     &&  git clone https://github.com/udhos/update-golang \
@@ -11,6 +11,8 @@ RUN echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> ~/.bashrc
 ENV PATH="/usr/local/go/bin/:/home/circleci/go/bin:${PATH}"
 
 RUN go get -u golang.org/x/mobile/cmd/gomobile
+
+RUN go get -u golang.org/x/tools/go/packages
 
 RUN yes | sdkmanager ndk-bundle || true
 

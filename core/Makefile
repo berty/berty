@@ -108,7 +108,7 @@ generate: .generated
 		--workdir="/go/src/$(GO_ROOT_PKG)" \
 		--entrypoint="sh" \
 		--rm \
-		bertychat/protoc:v14 \
+		bertytech/protoc:v15 \
 		-xec 'make generate_local'
 	touch $@
 
@@ -118,6 +118,7 @@ clean:
 	rm -rf vendor
 	@# FIXME: investigate
 	rm -rf google gogoproto github.com google.golang.org
+	cd $(PWD)/../client && make clean.generate
 
 .PHONY: generate_local
 generate_local: $(GENERATION_TARGETS)

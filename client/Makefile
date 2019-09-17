@@ -129,8 +129,8 @@ packages/%: packages/template/%.hbs $(OUR_PROTOS)
 	npm run prettify -- $(TEMPLATES_GENERATE)
 
 .IGNORE \
-.PHONY: generate.clean
-generate.clean:
+.PHONY: clean.generate
+clean.generate:
 	rm -rf $(GENERATE)
 
 ### BUNDLER

@@ -1,6 +1,6 @@
 module berty.tech/core
 
-go 1.12
+go 1.13
 
 require (
 	berty.tech/network v0.0.0
@@ -62,6 +62,7 @@ require (
 	golang.org/x/net v0.0.0-20190813141303-74dc4d7220e7
 	golang.org/x/text v0.3.2
 	golang.org/x/tools v0.0.0-20190628222527-fb37f6ba8261 // indirect
+	golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7 // indirect
 	google.golang.org/genproto v0.0.0-20190307195333-5fe7a883aa19
 	google.golang.org/grpc v1.21.0
 	gopkg.in/gormigrate.v1 v1.4.0
@@ -70,5 +71,3 @@ require (
 )
 
 replace berty.tech/network v0.0.0 => ../network
-
-replace github.com/libp2p/go-libp2p-quic-transport v0.0.0 => github.com/gfanton/go-libp2p-quic-transport v0.1.2-0.20190829111821-82673e2b5c01

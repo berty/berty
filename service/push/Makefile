@@ -80,13 +80,13 @@ deps: fcm-opts apns-opts
 build: deps
 	docker build --no-cache --rm \
 			--build-arg OPTIONS='$(fcm-opts) $(apns-opts) $(options)' \
-			-t bertychat/push . \
+			-t bertytech/push . \
 
 .PHONY: run
 run: build deps
 	docker rm -f $(name) || true
-	docker run --name $(name) bertychat/push
+	docker run --name $(name) bertytech/push
 
 .PHONY: push
 push: build
-	docker push bertychat/push:$(version)
+	docker push bertytech/push:$(version)
