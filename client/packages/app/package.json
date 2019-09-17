@@ -1,30 +1,36 @@
 {
-
   "name": "@berty/app",
   "version": "0.0.0",
-  "description": "Berty's application entrypoint",
-  "author": "Berty Technologies <staff@berty.tech>",
-  "license": "Apache-2.0",
-  "main": "node_modules/expo/AppEntry.js",
+  "private": true,
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "eject": "expo eject"
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "expo": "^34.0.1",
-    "react": "16.8.3",
-    "react-dom": "^16.8.6",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
-    "react-native-web": "^0.11.4"
+    "@berty/react-native-example": "^0.0.1",
+    "clisim": "^2.4.0",
+    "react": "16.8.6",
+    "react-native": "0.60.5",
+    "react-native-config": "git+https://github.com/luggit/react-native-config.git#89a602bf8be3808838403a97afaf915caeec76c2"
   },
   "devDependencies": {
-    "@types/react": "^16.8.23",
-    "@types/react-native": "^0.57.65",
-    "babel-preset-expo": "^6.0.0",
-    "typescript": "^3.4.5"
+    "@babel/core": "^7.6.0",
+    "@babel/runtime": "^7.6.0",
+    "@react-native-community/eslint-config": "^0.0.5",
+    "@types/react": "^16.9.2",
+    "@types/react-native": "^0.60.15",
+    "babel-jest": "^24.9.0",
+    "caser": "^0.1.1",
+    "eslint": "^6.4.0",
+    "jest": "^24.9.0",
+    "metro-react-native-babel-preset": "^0.56.0",
+    "react-native-cli": "^2.0.1",
+    "react-native-typescript-transformer": "^1.2.13",
+    "react-test-renderer": "16.8.6",
+    "typescript": "^3.6.3"
   },
-  "private": true
+  "jest": {
+    "preset": "react-native"
+  }
 }

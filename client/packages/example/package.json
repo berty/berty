@@ -1,0 +1,31 @@
+{
+  "name": "@berty/example",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "author": "Godefroy Ponsinet <godefroy.ponsinet@outlook.com>",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/example#readme",
+  "license": "Apache-2.0",
+  "main": "lib/example.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berty/berty.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/berty/berty/issues"
+  }
+}
