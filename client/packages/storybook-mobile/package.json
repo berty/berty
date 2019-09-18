@@ -1,0 +1,60 @@
+{
+  "name": "@berty/storybook-mobile",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Now I’m the model of a modern major general / The venerated Virginian veteran whose men are all / Lining up, to put me up on a pedestal / Writin’ letters to relatives / Embellishin’ my elegance and eloquence / But the elephant is in the room / The truth is in ya face when ya hear the British cannons go / BOOM",
+  "keywords": [],
+  "author": "nmeier <someone@example.net>",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/storybook-mobile#readme",
+  "license": "Apache-2.0",
+  "main": "lib/storybook-mobile.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n0izn0iz/berty.git"
+  },
+  "bugs": {
+    "url": "https://github.com/n0izn0iz/berty/issues"
+  },
+  "scripts": {
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "server": "(adb reverse tcp:7007 tcp:7007 || true) && start-storybook",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@berty/stories": "^0.0.0"
+  },
+  "peerDependencies": {
+    "react": "^16.8.1",
+    "react-native": ">=0.59.0-rc.0 <1.0.x"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.0",
+    "@babel/runtime": "^7.6.0",
+    "@react-native-community/eslint-config": "^0.0.5",
+    "@storybook/react-native": "^5.2.1",
+    "@storybook/react-native-server": "^5.2.1",
+    "babel-jest": "^24.9.0",
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.4.0",
+    "jest": "^24.9.0",
+    "metro-react-native-babel-preset": "^0.56.0",
+    "react": "^16.8.1",
+    "react-native": ">=0.59.0-rc.0 <1.0.x",
+    "react-test-renderer": "16.8.6"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
