@@ -47,6 +47,7 @@
     "@storybook/react-native-server": "^5.2.1",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
+    "clisim": "^2.4.0",
     "eslint": "^6.4.0",
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.56.0",

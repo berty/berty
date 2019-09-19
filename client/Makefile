@@ -24,6 +24,8 @@ pkg := $(shell find $(PWD)/packages -depth 1 -type d)
 pkg_mod := $(patsubst %, %/node_modules, $(pkg))
 
 include packages/app/Makefile
+include packages/storybook-mobile/Makefile
+include packages/storybook-web/Makefile
 
 .DEFAULT_GOAL := deps
 
