@@ -1,14 +1,17 @@
 export PWD = $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
-export SHELL := /bin/bash
 
 UNAME_S ?= $(shell uname -s)
 
 ifeq ($(UNAME_S),Darwin)
+export SHELL = /bin/bash
 npm := /usr/local/bin/npm
+pkg := $(shell find $(PWD)/packages -depth 1 -type d)
 endif
 ifeq ($(UNAME_S),Linux)
+export SHELL = /usr/bin/bash
 npm := /usr/bin/npm
+pkg := $(shell find $(PWD)/packages -maxdepth 1 -type d)
 endif
 npm_flags := --no-progress
 
@@ -28,6 +31,7 @@ pkg_mod := $(patsubst %, %/node_modules, $(pkg))
 include packages/app/Makefile
 include packages/storybook-mobile/Makefile
 include packages/storybook-web/Makefile
+include packages/react-native-core/Makefile
 
 .DEFAULT_GOAL := deps
 
@@ -38,6 +42,8 @@ $(mod) $(mod)/%: package.json
 	$(npm) $(npm_flags) install
 	$(lerna) $(lerna_flags) init
 	touch $(mod)
+
+print-%  : ; @echo $* = $($*)
 
 .NOTPARALLEL: $(pkg_mod) $(pkg_mod)/%
 $(pkg_mod)/%: $(mod) $(patsubst %,%/package.json,$(pkg))

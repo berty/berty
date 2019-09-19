@@ -11,7 +11,11 @@
     "type": "git",
     "url": "git+ssh://git@github.com/berty/berty.git"
   },
-  "author": "berty",
+  "author": {
+    "username": "berty",
+    "name": "Berty Technologies",
+    "email": "staff@berty.tech"
+  },
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/berty/berty/issues"

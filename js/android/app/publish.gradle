@@ -1,0 +1,26 @@
+android {
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            // Copy apk to custom dir
+            if (project.hasProperty('BERTY_APK_OUTPUT_DIR')
+                && output.outputFile != null
+                && output.outputFile.name.endsWith('.apk')) {
+
+                def task = project.tasks.create("copy${variant.name}Apk", Copy)
+                def outputFile = output.outputFile
+                output.outputFileName = "${rootProject.name}.apk"
+
+                task.doFirst {
+                    println "Creating ${BERTY_APK_OUTPUT_DIR}/${output.outputFileName} (${versionName}.${versionCode})"
+                }
+
+                task.from(output.outputFile)
+                task.into(BERTY_APK_OUTPUT_DIR)
+
+                task.dependsOn variant.assemble
+                variant.assemble.finalizedBy(task)
+
+            }
+        }
+    }
+}

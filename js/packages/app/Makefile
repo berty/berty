@@ -33,8 +33,6 @@ $(ENVFILE):
 
 deps: $(PWD)/node_modules config
 
-deps.android: deps
-
 deps.ios: export PWD := $(PWD)
 deps.ios: deps $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
 $(PWD)/ios/Pods/Manifest.lock: $(PWD)/ios/Podfile
@@ -47,7 +45,7 @@ $(PWD)/ios/Podfile: $(PWD)/node_modules
 /tmp/envfile: $(ENVFILE)
 	cat $< > $@
 
-deps.android: deps
+deps.android: deps deps.react-native-core.android
 
 deps.web: deps
 

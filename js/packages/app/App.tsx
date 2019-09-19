@@ -14,6 +14,7 @@ import {
   View,
   Text,
   StatusBar,
+  Button,
 } from 'react-native'
 
 import {
@@ -23,6 +24,23 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen'
+
+import BertyCore from '@berty/react-native-core'
+
+const startDaemon = (): void => {
+  console.log('BertyCore:', BertyCore)
+  if (BertyCore.invoke) {
+    const promise = BertyCore.invoke('/berty.daemon.Daemon/Start', '')
+    console.log('BertyCore.invoke("/berty.daemon.Daemon/Start", "")', promise)
+    if (promise && promise.then) {
+      promise.then((result: any) => console.log('.then():', result))
+    }
+  }
+}
+
+const DebugStartDaemonButton = () => (
+  <Button title="Start daemon" onPress={startDaemon} />
+)
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -63,7 +81,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const App: React.FunctionComponent = () => {
+const App = () => {
   return (
     <Fragment>
       <StatusBar barStyle="dark-content" />
@@ -73,11 +91,14 @@ const App: React.FunctionComponent = () => {
           style={styles.scrollView}
         >
           <Header />
-          {/* global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          ) */}
+          {/*global.HermesInternal == null ? null : (
+						<View style={styles.engine}>
+							<Text style={styles.footer}>Engine: Hermes</Text>
+						</View>
+					)*/}
+          <View style={styles.engine}>
+            <DebugStartDaemonButton />
+          </View>
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>Step One</Text>
