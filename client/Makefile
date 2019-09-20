@@ -20,6 +20,9 @@ lerna_flags := --reject-cycles --concurrency=8
 lerna_upgrade := $(bin)/upd
 lerna_exec := $(lerna) $(lerna_flags) exec --stream --parallel --scope=$1 --
 
+lint := $(bin)/tsc
+lint.watch := $(lint) --watch
+
 pkg := $(shell find $(PWD)/packages -depth 1 -type d)
 pkg_mod := $(patsubst %, %/node_modules, $(pkg))
 
@@ -91,3 +94,12 @@ rnpkg: $(mod)
 		--author-name 'Berty Technologies' \
 		--author-email staff@berty.tech \
 		$(name)
+
+.PHONY: lint
+lint: export PWD := $(PWD)
+lint:
+	$(lint) $(options)
+
+.PHONY: lint.watch
+lint.watch: options += --watch
+lint.watch: lint

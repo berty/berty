@@ -6,6 +6,7 @@ react-native := $(PWD)/node_modules/.bin/react-native
 pod := pod
 bundle := bundle
 
+name ?= berty
 platform ?= ios
 target ?= debug
 config ?= development
@@ -25,8 +26,8 @@ $(ENVFILE):
 
 .PHONY: \
 	deps \
-	deps.android \
 	deps.ios \
+	deps.android \
 	deps.web \
 	deps.darwin \
 
@@ -82,16 +83,16 @@ bundle: deps
 		--asset-dest=$(dest) \
 
 .PHONY: \
-	release.android \
-	release.android.debug \
-	release.android.staff \
-	release.android.yolo \
-	release.android.store \
 	release.ios \
 	release.ios.debug \
 	release.ios.staff \
 	release.ios.yolo \
 	release.ios.store \
+	release.android \
+	release.android.debug \
+	release.android.staff \
+	release.android.yolo \
+	release.android.store \
 	release.web \
 	release.web.debug \
 	release.web.staff \
@@ -103,25 +104,9 @@ bundle: deps
 	release.darwin.yolo \
 	release.darwin.store \
 
-release.android.debug:
-release.android.staff:
-release.android.yolo:
-release.android.store:
-release.android:
-release.web.debug:
-release.web.staff:
-release.web.yolo:
-release.web.store:
-release.web:
-release.darwin.debug:
-release.darwin.staff:
-release.darwin.yolo:
-release.darwin.store:
-release.darwin:
-
 release.ios.debug: target := debug
-release.ios.debug: method := ad-hoc
-release.ios.debug: profile := AdHoc
+release.ios.debug: method := development
+release.ios.debug: profile := Development
 release.ios.debug: team-id := WMBQ84HN4T
 release.ios.debug: release.ios
 release.ios.staff: target := staff
@@ -140,18 +125,19 @@ release.ios.store: profile := AppStore
 release.ios.store: team-id := GR5463T564
 release.ios.store: release.ios
 release.ios: platform := ios
-release.ios: bundle-id = chat.berty.ios.$(target)
+release.ios: bundle-id = tech.berty.$(name).$(platform).$(target)
 release.ios: version = $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
 release.ios: keychain-name ?= berty_keychain
 release.ios: keychain-password ?= berty_pass
+release.ios: git-url ?= git@github.com:berty/berty-ios-certs
 release.ios: export FL_BUILDLOG_PATH = $(dest)
 release.ios: export GYM_CLEAN = false
 release.ios: export GYM_OPTION_METHOD = $(method)
 release.ios: export GYM_OPTION_APP_ID = $(bundle-id)
 release.ios: export GYM_OPTION_PROVISIONING_PROFILE = "match $(profile) $(bundle-id)"
-release.ios: export GYM_OUTPUT_NAME = Berty
+release.ios: export GYM_OUTPUT_NAME = $(shell echo $(name) | caser --pascal)
 release.ios: export GYM_OUTPUT_DIRECTORY = $(dest)
-release.ios: export GYM_WORKSPACE = $(PWD)/ios/Berty.xcworkspace
+release.ios: export GYM_WORKSPACE = $(PWD)/ios/$(shell echo $(name) | caser --pascal).xcworkspace
 release.ios: export GYM_SCHEME = $(target)
 release.ios: export GYM_SKIP_PROFILE_DETECTION = true
 release.ios: export GYM_INCLUDE_SYMBOLS = false
@@ -165,8 +151,24 @@ release.ios: deps.ios
 			app_identifier:$(bundle-id) \
 			readonly:true \
 			team_id:$(team-id) \
-			git_url:git@github.com:berty/berty-ios-certs \
+			$(if $(git-url), git_url:$(git-url)) \
 		&& time $(bundle) exec fastlane $(platform) build --verbose
+
+release.android.debug:
+release.android.staff:
+release.android.yolo:
+release.android.store:
+release.android:
+release.web.debug:
+release.web.staff:
+release.web.yolo:
+release.web.store:
+release.web:
+release.darwin.debug:
+release.darwin.staff:
+release.darwin.yolo:
+release.darwin.store:
+release.darwin:
 
 .PHONY: log
 log:
@@ -187,10 +189,10 @@ config.production: config := production
 	start.web \
 	start.darwin \
 
-start.android: platform := android
-start.android: start
 start.ios: platform := ios
 start.ios: start
+start.android: platform := android
+start.android: start
 start.web: platform := web
 start.web: start
 start.darwin: platform := darwin
@@ -202,10 +204,10 @@ start.darwin: start
 	log.web \
 	log.darwin \
 
-log.android: platform := android
-log.android: log
 log.ios: platform := ios
 log.ios: log
+log.android: platform := android
+log.android: log
 log.web: platform := web
 log.web: log
 log.darwin: platform := darwin
@@ -232,17 +234,6 @@ log.darwin: log
 	bundle.darwin.yolo \
 	bundle.darwin.store \
 
-bundle.android.debug: target := debug
-bundle.android.debug: bundle.android
-bundle.android.staff: target := staff
-bundle.android.staff: bundle.android
-bundle.android.yolo: target := yolo
-bundle.android.yolo: bundle.android
-bundle.android.store: target := store
-bundle.android.store: bundle.android
-bundle.android: platform := android
-bundle.android: bundle
-
 bundle.ios.debug: target := debug
 bundle.ios.debug: bundle.ios
 bundle.ios.staff: target := staff
@@ -253,6 +244,17 @@ bundle.ios.store: target := store
 bundle.ios.store: bundle.ios
 bundle.ios: platform := ios
 bundle.ios: bundle
+
+bundle.android.debug: target := debug
+bundle.android.debug: bundle.android
+bundle.android.staff: target := staff
+bundle.android.staff: bundle.android
+bundle.android.yolo: target := yolo
+bundle.android.yolo: bundle.android
+bundle.android.store: target := store
+bundle.android.store: bundle.android
+bundle.android: platform := android
+bundle.android: bundle
 
 bundle.web.debug: target := debug
 bundle.web.debug: bundle.web
@@ -277,16 +279,16 @@ bundle.darwin: platform := darwin
 bundle.darwin: bundle
 
 .PHONY: \
-	run.android \
-	run.android.debug \
-	run.android.staff \
-	run.android.yolo \
-	run.android.store \
 	run.ios \
 	run.ios.debug \
 	run.ios.staff \
 	run.ios.yolo \
 	run.ios.store \
+	run.android \
+	run.android.debug \
+	run.android.staff \
+	run.android.yolo \
+	run.android.store \
 	run.web \
 	run.web.debug \
 	run.web.staff \
@@ -296,17 +298,6 @@ bundle.darwin: bundle
 	run.darwin.staff \
 	run.darwin.yolo \
 	run.darwin.store \
-
-run.android.debug: target := debug
-run.android.debug: run.android
-run.android.staff: target := staff
-run.android.staff: run.android
-run.android.yolo: target := yolo
-run.android.yolo: run.android
-run.android.store: target := store
-run.android.store: run.android
-run.android: platform := android
-run.android: run
 
 run.ios.debug: target := debug
 run.ios.debug: run.ios
@@ -318,6 +309,17 @@ run.ios.store: target := store
 run.ios.store: run.ios
 run.ios: platform := ios
 run.ios: run
+
+run.android.debug: target := debug
+run.android.debug: run.android
+run.android.staff: target := staff
+run.android.staff: run.android
+run.android.yolo: target := yolo
+run.android.yolo: run.android
+run.android.store: target := store
+run.android.store: run.android
+run.android: platform := android
+run.android: run
 
 run.web.debug: target := debug
 run.web.debug: run.web
@@ -343,17 +345,19 @@ run.darwin: run
 
 .IGNORE \
 .PHONY: \
-	clean.android \
 	clean.ios \
+	clean.android \
 	clean.web \
 	clean.darwin \
 	clean \
 
-clean.android: platform := android
-clean.android: clean
+
 clean.ios: platform := ios
 clean.ios: clean
 	touch $(PWD)/ios/Podfile
+
+clean.android: platform := android
+clean.android: clean
 clean.web: platform := web
 clean.web: clean
 clean.darwin: platform := darwin
@@ -362,14 +366,12 @@ clean:
 
 .IGNORE \
 .PHONY: \
-	fclean.android \
 	fclean.ios \
+	fclean.android \
 	fclean.web \
 	fclean.darwin \
 	fclean \
 
-fclean.android: platform := android
-fclean.android: fclean
 fclean.ios: platform := ios
 fclean.ios: fclean
 	cd $(PWD)/ios; \
@@ -377,6 +379,8 @@ fclean.ios: fclean
 		xcodebuild clean; \
 		rm -rf $(HOME)/Library/Developer/Xcode/DerivedData; \
 		rm -rf Pods; rm -rf ~/Library/Caches/CocoaPods
+fclean.android: platform := android
+fclean.android: fclean
 fclean.web: platform := web
 fclean.web: fclean
 fclean.darwin: platform := darwin
