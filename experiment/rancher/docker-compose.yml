@@ -1,8 +1,0 @@
-version: '2'
-services:
-  berty:
-    image: bertytech/berty
-    ports:
-      - "8700:8700"
-      - "4004:4004"
-    command: "daemon --log-level=debug --log-namespaces='*' --bind-p2p /ip4/0.0.0.0/tcp/4004 --mdns=false"
