@@ -98,7 +98,8 @@ rnpkg: $(mod)
 		--github_account berty \
 		--author-name 'Berty Technologies' \
 		--author-email staff@berty.tech \
-		$(name) \
+		$(name)
+	rm -f packages/$(name)/README.md
 
 .PHONY: lint
 lint: export PWD := $(PWD)
