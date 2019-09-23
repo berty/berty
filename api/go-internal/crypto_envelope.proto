@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package groups;
+
+option go_package = "berty.tech/go/internal/crypto/envelope";
+
+import "google/protobuf/timestamp.proto";
+import "crypto_group_member.proto";
+import "gogoproto/gogo.proto";
+
+message envelope {
+  // group identifier
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+
+  // device id of the sender
+  bytes sender_id = 2 [(gogoproto.customname) = "SenderID"];
+
+  // hotp value of the current counter for the sender
+  bytes counter = 3;
+
+  // encrypted payload
+  bytes event = 4;
+
+  // timestamp ?
+  google.protobuf.Timestamp timestamp = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  // event signature
+  bytes signature = 6;
+}

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package groupmember;
+
+option go_package = "berty.tech/go/internal/datastore/models/groupmember";
+
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+message GroupMember {
+  bytes public_key_bytes = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  bytes group_id = 2 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "GroupID"];
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  bytes group_secret = 5;
+  bytes derivation_state = 6;
+  bytes derivation_counter = 7;
+}

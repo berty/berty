@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package sigchain;
+
+option go_package = "berty.tech/go/internal/datastore/models/sigchain";
+
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+message SigChain {
+  string account_id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;unique\"", (gogoproto.customname) = "AccountID"];
+  bytes sigchain = 2;
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}

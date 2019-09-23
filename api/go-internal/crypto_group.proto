@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package groups;
+
+option go_package = "berty.tech/go/internal/crypto/group";
+
+import "google/protobuf/timestamp.proto";
+import "crypto_group_member.proto";
+import "gogoproto/gogo.proto";
+
+// A group is a set of devices (members) communicating together
+message Group {
+  // An arbitrary unique identifier for this group, used the creator pubkey for disambiguation
+  bytes id = 1 [(gogoproto.customname) = "ID"];
+
+  // The public key of the device which created the group
+  bytes creator_pub_key_bytes = 2;
+
+  // A rendezvous seed for the current group
+  bytes rendezvous_seed = 3;
+
+  // A list of the group members
+  repeated GroupMember member_objects = 4;
+}

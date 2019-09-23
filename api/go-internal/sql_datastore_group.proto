@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package group;
+
+option go_package = "berty.tech/go/internal/datastore/models/group";
+
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+message Group {
+  string group_id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;unique\"", (gogoproto.customname) = "AccountID"];
+  bytes sigchain = 2;
+  bytes rendezvous_seed = 3;
+  bytes creator_pub_key_bytes = 4;
+  google.protobuf.Timestamp created_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package config;
+
+option go_package = "berty.tech/go/internal/datastore/models/config";
+
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+message Config {
+  string key = 1 [(gogoproto.moretags) = "gorm:\"primary_key;unique\""];
+  bytes value = 2;
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}

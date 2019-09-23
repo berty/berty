@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package groups;
+
+option go_package = "berty.tech/go/internal/crypto/group";
+
+import "gogoproto/gogo.proto";
+
+// A group member identifies a device which is part of a group
+message GroupMember {
+  // The device public key (should we replace it with a pub key unique to this group here ?)
+  bytes public_key_bytes = 1;
+
+  // The account id of this group member (same here, should we use aliases unique to this conversation? should we set this only when an identity has been disclosed?)
+  bytes account_id = 2;
+
+  // A secret for this member in this group
+  bytes group_secret = 3;
+
+  // The current derivation state
+  bytes derivation_state = 4;
+
+  // The current derivation counter
+  uint64 derivation_counter = 5;
+}
