@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package berty.entity;
-
-option go_package = "berty.tech/core/entity";
-
-message LocalRecord {
-  string   contact_id = 1;
-}

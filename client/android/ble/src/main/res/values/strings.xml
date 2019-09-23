@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">BLE</string>
-    <string name="title_location_permission">Loc perm</string>
-    <string name="text_location_permission">Loc perm text</string>
-    <string name="ok">OK</string>
-</resources>
