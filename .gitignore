@@ -1,5 +1,4 @@
 # berty package
-/core/network/
 /crew/
 /depviz/
 /go-ipfs-log/
@@ -11,6 +10,7 @@
 /zero-push/
 
 # junk
+profile.out
 *#
 *~
 .#*
@@ -21,13 +21,7 @@
 .projectile
 /client/react-native/desktop/output/
 /go.mod
-android/core/core-sources.jar
 core-sources.jar
-core/.*.generated
-core/.generated
-core/github.com/
-core/gogoproto/
-core/google/
 gin-bin
 google-services.json
 vendor/

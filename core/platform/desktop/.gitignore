@@ -1,6 +1,0 @@
-output/
-resources/app/
-bind_*.go
-bundler.json
-appdmg/dist
-appdmg/Berty.app
