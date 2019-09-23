@@ -1,24 +1,38 @@
 version: 2.1
 
-executors:
-  golang:
-    docker:
-      - image: circleci/golang:1.13
-  docker:
-    docker:
-      - image: docker:18.06.3-ce-git
+orbs:
+  codecov: codecov/codecov@1.0.5
+  docker:  circleci/docker@0.5.13
+  gotools: gotest/tools@0.0.10
+  moul:    moul/build@1.12.1
 
 jobs:
   go-build:
-    executor: golang
+    working_directory: /go/src/berty.tech/go
+    docker:
+      - image: circleci/golang:1.13
     steps:
-      - checkout
-      - run: echo "nothing to do"
+      - checkout:
+          path: /go/src/berty.tech
+      - moul/mod-download
+      - gotools/mod-tidy-check
+      - run: make install
+      - run: make unittest
+      - moul/install_golangci-lint
+      - run: PATH=$PATH:$(pwd)/bin make lint
+      - codecov/upload:
+          file: coverage.txt
   go-docker:
-    executor: docker
+    working_directory: /go/src/berty.tech/go
+    docker:
+      - image: docker:18.06.3-ce-git
     steps:
-      - checkout
-      - run: echo "nothing to do"
+      - checkout:
+          path: /go/src/berty.tech
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - docker/build:
+          image: berty/berty
 
 workflows:
   main:

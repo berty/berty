@@ -18,6 +18,7 @@ profile.out
 .DS_Store
 .agignore
 .env
+coverage.txt
 .projectile
 /client/react-native/desktop/output/
 /go.mod

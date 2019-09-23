@@ -7,7 +7,7 @@ test: unittest lint tidy
 
 .PHONY: unittest
 unittest:
-	go test -v -cover -coverprofile=profile.out -covermode=atomic -race ./...
+	go test -v -cover -coverprofile=coverage.txt -covermode=atomic -race ./...
 
 .PHONY: lint
 lint:
