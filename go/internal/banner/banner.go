@@ -27,10 +27,12 @@ const banner = `
     /__/                           /___/
 `
 
+// Banner returns the ascii-art representation of the Berty bird
 func Banner() string {
 	return banner
 }
 
+// Say returns an ascii-art representation of the Berty bird saying something
 func Say(message string) string {
 	ml := strings.Split(wordwrap(message, stopColumn-startColumn), "\n")
 	// append empty line at the top for short quotes
@@ -71,6 +73,7 @@ func Say(message string) string {
 	return strings.Join(output, "\n") + "\n"
 }
 
+// OfTheDay returns the ascii-art representation of the Berty bird saying the quote of the day
 func OfTheDay() string {
 	q := QOTD()
 	return Say(q.String())
