@@ -13,6 +13,7 @@ deps.storybook.mobile: $(PWD)/node_modules
 run.storybook.ios: export PWD := $(PWD)
 run.storybook.ios: deps.storybook.mobile $(PWD)/ios/Pods
 	cd $(PWD) \
+		&& (kill $$(lsof -t -i :8081) 2>/dev/null || true) \
 		&& react-native run-ios
 
 $(PWD)/ios/Pods: $(PWD)/ios/Podfile

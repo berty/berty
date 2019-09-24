@@ -20,8 +20,7 @@ lerna_flags := --reject-cycles --concurrency=8
 lerna_upgrade := $(bin)/upd
 lerna_exec := $(lerna) $(lerna_flags) exec --stream --parallel --scope=$1 --
 
-lint := $(bin)/tsc
-lint.watch := $(lint) --watch
+eslint := $(bin)/eslint
 
 pkg := $(shell find $(PWD)/packages -depth 1 -type d)
 pkg_mod := $(patsubst %, %/node_modules, $(pkg))
@@ -93,12 +92,20 @@ rnpkg: $(mod)
 		--github_account berty \
 		--author-name 'Berty Technologies' \
 		--author-email staff@berty.tech \
-		$(name)
+		$(name) \
 
 .PHONY: lint
 lint: export PWD := $(PWD)
-lint:
-	$(lint) $(options)
+lint: files = $(shell \
+		find packages -type f -not -path '*/node_modules/*' \
+		| grep -E '(\.js|\.jsx|\.ts|\.tsx)$$'\
+	)
+lint: deps
+	$(eslint) $(options) $(files)
+
+.PHONY: lint.fix
+lint.fix: options += --fix
+lint.fix: lint
 
 .PHONY: lint.watch
 lint.watch: options += --watch

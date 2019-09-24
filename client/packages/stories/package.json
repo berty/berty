@@ -7,7 +7,7 @@
   "author": "nmeier <someone@example.net>",
   "homepage": "https://github.com/berty/berty/tree/master/packages/stories#readme",
   "license": "Apache-2.0",
-  "main": "lib/stories.js",
+  "main": "lib/stories.tsx",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -31,5 +31,8 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.2"
   }
 }

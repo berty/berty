@@ -1,0 +1,21 @@
+{
+  "name": "@berty/prettier-config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Berty's global prettier config",
+  "keywords": [],
+  "author": "Godefroy Ponsinet <godefroy.ponsinet@outlook.com>",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/prettier-config#readme",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berty/berty.git"
+  },
+  "bugs": {
+    "url": "https://github.com/berty/berty/issues"
+  }
+}

@@ -60,6 +60,8 @@
 		3E75BFC43BA97B6AD02320BB /* libPods-Berty-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		47BCC7F82F8AB1AA4384CAF9 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CD98929A02406EA5E799EA4 /* Pods-Berty.development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.development.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.development.xcconfig"; sourceTree = "<group>"; };
+		58D47B235DC2A07AA9E71398 /* Pods-Berty-tvOS.store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.store.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.store.xcconfig"; sourceTree = "<group>"; };
+		5BCE79EF4DD6C5FF92C59342 /* Pods-Berty-tvOSTests.store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.store.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.store.xcconfig"; sourceTree = "<group>"; };
 		6A38AB37F3F29914392FBC68 /* Pods-Berty-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		6EE71DA6E585CA3FD311F10D /* libPods-Berty-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		709B05589F8BB50455D64A22 /* Pods-BertyTests.yolo.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.yolo.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.yolo.xcconfig"; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 		B8549FB8E91710202C39FF34 /* Pods-Berty-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		B8CA196C8C42C2479C21C58E /* Pods-Berty-tvOS.yolo.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.yolo.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.yolo.xcconfig"; sourceTree = "<group>"; };
 		B93EB64D27A143381FEE3E19 /* Pods-Berty.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.production.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.production.xcconfig"; sourceTree = "<group>"; };
+		C5C8BBF1C24A6204839012DF /* Pods-BertyTests.store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.store.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.store.xcconfig"; sourceTree = "<group>"; };
 		D3480A0AAE05EDFE212B5BB6 /* Pods-BertyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.debug.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D8F063471816ABB7D78AEBD0 /* Pods-Berty.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.release.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.release.xcconfig"; sourceTree = "<group>"; };
 		DBB9487A2B1176560C2320DD /* Pods-Berty-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -80,6 +83,7 @@
 		E2B39A475536A8C5DE20A5DA /* Pods-BertyTests.development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.development.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.development.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
+		F28AC402853AE0DBCC94CA98 /* Pods-Berty.store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.store.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.store.xcconfig"; sourceTree = "<group>"; };
 		F2F7681C954B6D76AD310239 /* Pods-Berty-tvOSTests.development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.development.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.development.xcconfig"; sourceTree = "<group>"; };
 		F71B933DAB37FB08DAC0CEEC /* Pods-Berty-tvOS.development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.development.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.development.xcconfig"; sourceTree = "<group>"; };
 		F80071F3F0731C6EEFB272C1 /* Pods-Berty.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.debug.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.debug.xcconfig"; sourceTree = "<group>"; };
@@ -193,6 +197,10 @@
 				982234597AE42C0A55A26083 /* Pods-Berty-tvOSTests.yolo.xcconfig */,
 				71D7446D4DAF97C4179C7533 /* Pods-BertyTests.staff.xcconfig */,
 				709B05589F8BB50455D64A22 /* Pods-BertyTests.yolo.xcconfig */,
+				F28AC402853AE0DBCC94CA98 /* Pods-Berty.store.xcconfig */,
+				58D47B235DC2A07AA9E71398 /* Pods-Berty-tvOS.store.xcconfig */,
+				5BCE79EF4DD6C5FF92C59342 /* Pods-Berty-tvOSTests.store.xcconfig */,
+				C5C8BBF1C24A6204839012DF /* Pods-BertyTests.store.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1156,7 +1164,7 @@
 		};
 		F8F5EE4523326BDE00172342 /* store */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D8F063471816ABB7D78AEBD0 /* Pods-Berty.release.xcconfig */;
+			baseConfigurationReference = F28AC402853AE0DBCC94CA98 /* Pods-Berty.store.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1180,7 +1188,7 @@
 		};
 		F8F5EE4623326BDE00172342 /* store */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 988ECD0D2BAB208194D610A1 /* Pods-BertyTests.release.xcconfig */;
+			baseConfigurationReference = C5C8BBF1C24A6204839012DF /* Pods-BertyTests.store.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1203,7 +1211,7 @@
 		};
 		F8F5EE4723326BDE00172342 /* store */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B8549FB8E91710202C39FF34 /* Pods-Berty-tvOS.release.xcconfig */;
+			baseConfigurationReference = 58D47B235DC2A07AA9E71398 /* Pods-Berty-tvOS.store.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1235,7 +1243,7 @@
 		};
 		F8F5EE4823326BDE00172342 /* store */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6A38AB37F3F29914392FBC68 /* Pods-Berty-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = 5BCE79EF4DD6C5FF92C59342 /* Pods-Berty-tvOSTests.store.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;

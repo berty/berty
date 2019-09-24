@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-module.exports = storybookMobile;
+module.exports = storybookMobile
 
 function storybookMobile() {
-    // TODO
+  // TODO
 }

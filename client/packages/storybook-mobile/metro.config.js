@@ -5,7 +5,7 @@
  * @format
  */
 
-const path = require('path');
+const path = require('path')
 
 module.exports = {
   transformer: {
@@ -21,8 +21,8 @@ module.exports = {
       {},
       {
         get: (target, name) => path.join(process.cwd(), `node_modules/${name}`),
-      },
+      }
     ),
   },
   watchFolders: [path.join(process.cwd(), '../stories')],
-};
+}

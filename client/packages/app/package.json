@@ -3,9 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "react-native start",
-    "test": "jest",
-    "lint": "eslint ."
+    "start": "react-native start"
   },
   "dependencies": {
     "@berty/react-native-example": "^0.0.1",
@@ -22,8 +20,6 @@
     "@types/react-native": "^0.60.15",
     "babel-jest": "^24.9.0",
     "caser": "^0.1.1",
-    "eslint": "^6.4.0",
-    "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.56.0",
     "react-native-cli": "^2.0.1",
     "react-native-typescript-transformer": "^1.2.13",

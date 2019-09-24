@@ -41,7 +41,7 @@ $(PWD)/ios/Pods/Manifest.lock: $(PWD)/ios/Podfile
 	([ ! -z "$(shell which pod)" ] \
 		&& [[ "$$(pod --version)" > "1.7." ]]) \
 		|| sudo gem install cocoapods
-	cd $(PWD) && $(pod) install
+	cd $(PWD)/ios && $(pod) install
 $(PWD)/ios/Podfile: $(PWD)/node_modules
 .PHONY: /tmp/envfile
 /tmp/envfile: $(ENVFILE)
@@ -308,7 +308,7 @@ run.ios.yolo: run.ios
 run.ios.store: target := store
 run.ios.store: run.ios
 run.ios: platform := ios
-run.ios: run
+run.ios: deps.ios run
 
 run.android.debug: target := debug
 run.android.debug: run.android
@@ -319,7 +319,7 @@ run.android.yolo: run.android
 run.android.store: target := store
 run.android.store: run.android
 run.android: platform := android
-run.android: run
+run.android: deps.android run
 
 run.web.debug: target := debug
 run.web.debug: run.web
@@ -330,7 +330,7 @@ run.web.yolo: run.web
 run.web.store: target := store
 run.web.store: run.web
 run.web: platform := web
-run.web: run
+run.web: deps.web run
 
 run.darwin.debug: target := debug
 run.darwin.debug: run.darwin
@@ -341,7 +341,7 @@ run.darwin.yolo: run.darwin
 run.darwin.store: target := store
 run.darwin.store: run.darwin
 run.darwin: platform := darwin
-run.darwin: run
+run.darwin: deps.darwin run
 
 .IGNORE \
 .PHONY: \
