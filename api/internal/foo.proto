@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package berty.internal.foo;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "berty.tech/go/internal/foo";
+option (gogoproto.sizer_all) = true;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+
+message Metadata {
+  string id = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
+  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = true];
+  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = true];
+}
+
+message Foo {
+  Metadata metadata = 1 [(gogoproto.nullable) = false, (gogoproto.embed) = true];
+  bool is_foo = 2;
+}

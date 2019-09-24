@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package berty.internal.foo;
+
+import "internal/foo.proto";
+
+option go_package = "berty.tech/go/internal/bar";
+
+message Bar {
+  foo.Foo foo = 1;
+  bool is_bar = 2;
+}
