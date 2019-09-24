@@ -1,3 +1,4 @@
+
 version: 2.1
 
 orbs:
@@ -40,12 +41,21 @@ jobs:
     steps:
       - checkout:
           path: /go/src/berty.tech
+      - run: go mod vendor
+      - run: rm -f gen.sum && make generate_local
+      - run: make tidy
       - run: |
-          set -e
-          rm -f gen.sum
-          go mod vendor
-          make generate_local
-          make tidy
+          git status | cat
+          git diff -w | cat
+          git diff-index -w --quiet HEAD --
+  githooks:
+    working_directory: /go/src/berty.tech
+    docker:
+      - image: bertytech/githooks:v1
+    steps:
+      - checkout
+      - run: ./githooks/pre-commit
+      - run: |
           git status | cat
           git diff -w | cat
           git diff-index -w --quiet HEAD --
@@ -56,3 +66,4 @@ workflows:
       - go-build
       - go-docker
       - go-generate
+      - githooks
