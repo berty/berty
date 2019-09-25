@@ -1,0 +1,26 @@
+{
+  "name": "@berty-tech/babel-preset",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Berty's global babel preset",
+  "keywords": [],
+  "author": "Berty Technologies <oss@berty.tech>",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/babel-preset#readme",
+  "license": "(Apache-2.0 OR MIT)",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berty/berty.git"
+  },
+  "bugs": {
+    "url": "https://github.com/berty/berty/issues"
+  },
+  "dependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/preset-typescript": "^7.6.0",
+    "metro-react-native-babel-preset": "^0.56.0"
+  }
+}
