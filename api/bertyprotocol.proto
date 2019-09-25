@@ -1,0 +1,333 @@
+syntax = "proto3";
+
+option go_package = "berty.tech/go/pkg/bertyprotocol";
+
+import "google/protobuf/descriptor.proto";
+
+
+// // @To Test
+// extend google.protobuf.MethodOptions {
+//   string id = 53001;
+// }
+
+service Protocol {
+  /// Account
+
+  // Account Module
+  rpc NewAccount(NewAccountRequest) return (NewAccountReply);
+	rpc NewAccountFromExistingDevice(NewAccountFromExistingDeviceRequest) return (NewAccountFromExistingDeviceReply);
+	rpc NewAccountFromExport(NewAccountFromExportRequest) return (NewAccountFromExportReply);
+	rpc OpenAccount(OpenAccountRequest) return (OpenAccountReply);
+	rpc DeleteAccount(DeleteAccountRequest) return (DeleteAccountReply);
+
+  // Account global methods
+  rpc GetContact(GetContactRequest) return (GetContactReply); // { option (id) = "account"; };
+	rpc GetAccountInformation(GetAccountInformationRequest) return (GetAccountInformationReply); // { option (id) = "account"; };
+	rpc GetNetworkConfiguration(GetNetworkConfigurationRequest) return (GetNetworkConfigurationReply) { option (id) = "account"; };
+
+	// Account Rendezvous point methods
+  rpc ResetRendezvousPoint(ResetRendezvousPointRequest) return (ResetRendezvousPointReply); // { option (id) = "account"; };
+	rpc DisableRendezvousPoint(DisableRendezvousPointRequest) return (DisableRendezvousPointReply); // { option (id) = "account"; };
+	rpc EnableRendezvousPoint(EnableRendezvousPointRequest) return (EnableRendezvousPointReply); // { option (id) = "account"; };
+
+	// Account Devices related methods
+	rpc SyncToDevices(SyncToDevicesRequest) return (SyncToDevicesReply); // { option (id) = "account"; };
+	rpc ExportAccountData(ExportAccountDataRequest) return (ExportAccountDataReply); // { option (id) = "account"; };
+	rpc LinkNewDevice(LinkNewDeviceRequest) return (LinkNewDeviceReply); // { option (id) = "account"; };
+
+	// Account Subscriptions methods
+  rpc RegisterEventHandler(RegisterEventHandlerRequest) return (stream EventStream); // { option (id) = "account"; };
+
+
+  /// Device
+
+  // Device Getters
+	rpc GetContact(GetContactRequest) return (GetContactReply);
+
+	// Device Actions
+	rpc OpenStreamToDevice(OpenStreamToDeviceRequest) return (OpenStreamToDeviceReply);
+
+
+  /// Contact
+
+  // Contact module
+  rpc ListContacts(ListContactsRequest) return (ListContactsReply);
+	rpc ListIncomingRequests(ListIncomingRequestsRequest) return (ListIncomingRequestsReply);
+
+	rpc GetByID(GetByIDRequest) return (GetByIDReply);
+	rpc RequestContact(RequestContactRequest) return (RequestContactReply);
+
+  // Contact global methods
+  rpc GetSigChain(GetSigChainRequest) return (Void);
+	rpc ListDevices(ListDevicesRequest) return (ListDevicesReply);
+
+  // Contact Actions
+  rpc AcceptRequest(AcceptRequestRequest) return (AcceptRequestReply);
+  rpc DiscardRequest(DiscardRequestRequest) return (DiscardRequestReply);
+	rpc OpenStream(OpenStreamRequest) return (OpenStreamReply);
+	rpc Remove(RemoveRequest) return (RemoveReply);
+
+
+  /// GroupBroadcastMessage
+
+  // GroupBroadcastMessage Getters
+	rpc GetGroupBroadcast(GetGroupBroadcastRequest) return (GetGroupBroadcastReply);
+	rpc GetPayload(GetPayloadRequest) return (GetPayloadReply);
+
+
+  /// GroupMessage
+
+  rpc GetMember(GetMemberRequest) return (GetMemberReply);
+	rpc GetPayload(GetPayloadRequest) return (GetPayloadReply);
+
+
+  /// GroupMember
+
+  rpc GetGroup(GetGroupRequest) return (GetGroupReply);
+	rpc GetDevice(GetDeviceRequest) return (GetDeviceReply); // Should we replace it with a "unique to this group" contact?
+
+
+  /// GroupInvitation
+
+  // Getters
+	rpc GetGroupID(GetGroupIDRequest) return (GetGroupIDReply);
+
+	// Actions
+	rpc AcceptRequest(AcceptRequestRequest) return (AcceptRequestReply);
+	rpc DiscardRequest(DiscardRequestRequest) return (DiscardRequestReply);
+
+
+  /// Group
+
+  // Group Module
+  rpc ListGroups(ListGroupsRequest) return (ListGroupsReply);
+	rpc ListIncomingInvitations(ListIncomingInvitationsRequest) return (ListIncomingInvitationsReply);
+
+	rpc Create(CreateRequest) return (CreateReply);
+
+  // Getter
+	rpc GetRendezvousSeed(GetRendezvousSeedRequest) return (GetRendezvousSeedReply);
+
+	// Lists
+	rpc ListMessages(ListMessagesRequest) return (ListMessagesReply);
+
+	// Actions
+	rpc InviteContact(InviteContactRequest) return (InviteContactReply);
+	rpc GenerateInviteToken(GenerateInviteTokenRequest) return (GenerateInviteTokenReply);
+	rpc AddMessage(AddMessageRequest) return (AddMessageReply);
+	rpc InitGroupBroadcast(InitGroupBroadcastRequest) return (InitGroupBroadcastReply);
+
+	rpc Leave(LeaveRequest) return (LeaveReply);
+
+
+}
+
+// Account
+message NewAccountRequest {}
+message NewAccountReply {}
+
+message NewAccountFromExistingDeviceRequest {}
+message NewAccountFromExistingDeviceReply {}
+
+message NewAccountFromExportRequest {}
+message NewAccountFromExportReply {}
+
+message OpenAccountRequest {}
+message OpenAccountReply {}
+
+message DeleteAccountRequest {}
+message DeleteAccountReply {}
+
+message GetContactRequest {
+  string account_id = 1;
+}
+message GetContactReply {
+  string contact_id = 1;
+}
+
+message GetAccountInformationRequest {
+  string account_id = 1;
+}
+
+message GetAccountInformationReply {
+  // account information
+}
+
+message GetNetworkConfigurationRequest {
+  string account_id = 1;
+
+}
+message GetNetworkConfigurationReply {
+  // NetworkConfiguration
+}
+
+message ResetRendezvousPointRequest {
+  string account_id = 1;
+}
+message ResetRendezvousPointReply {}
+§
+message DisableRendezvousPointRequest {
+  string account_id = 1;
+}
+message DisableRendezvousPointReply {}
+
+message EnableRendezvousPointRequest {
+  string account_id = 1;
+}
+message EnableRendezvousPointReply {}
+
+message SyncToDevicesRequest {
+  string account_id = 1;
+}
+message SyncToDevicesReply {}
+
+message ExportAccountDataRequest {
+  string account_id = 1;
+}
+message ExportAccountDataReply {}
+
+message LinkNewDeviceRequest {
+  string account_id = 1;
+}
+message LinkNewDeviceReply {}
+
+message ContactsModuleVoidRequest {
+  string account_id = 1;
+}
+message ContactsModuleVoidReply {}
+
+message GroupsModuleVoidRequest {
+  string account_id = 1;
+}
+message GroupsModuleVoidReply {}
+
+message RegisterEventHandlerRequest {
+  string account_id = 1;
+}
+message EventStream {
+  // Account Event
+}
+
+
+// Device
+
+message GetContactRequest {
+  string device_id = 1;
+}
+message GetContactReply {}
+
+message OpenStreamToDeviceRequest {
+  string device_id = 1;
+}
+message OpenStreamToDeviceReply {}
+
+
+// Contact
+
+message GetSigChainRequest {
+  string contact_id = 1;
+
+}
+message GetSigChainReply {}
+
+message ListDevicesRequest {
+  string contact_id = 1;
+}
+message ListDevicesReply {}
+
+message AcceptRequestRequest {
+  string contact_id = 1;
+}
+message AcceptRequestReply {}
+
+message DiscardRequestRequest {
+  string contact_id = 1;
+}
+message DiscardRequestReply {}
+
+message OpenStreamRequest {
+  string contact_id = 1;
+}
+message OpenStreamReply {}
+
+message RemoveRequest {
+  string contact_id = 1;
+}
+message RemoveReply {}
+
+
+// GroupBroadcastMessage
+
+message GetGroupBroadcastRequest {
+  string group_broadcast_message_id = 1;
+}
+message GetGroupBroadcastReply {}
+
+message GetPayloadRequest {
+  string group_broadcast_message_id = 1;
+}
+message GetPayloadReply {}
+
+
+// GroupMessage
+
+message GetMemberRequest {
+  string group_message_id = 1;
+}
+message GetMemberReply {}
+
+message GetPayloadRequest {
+  string group_message_id = 1;
+}
+message GetPayloadReply {}
+
+
+// GroupMember
+
+message GetGroupRequest {
+  string group_member_id = 1;
+}
+message GetGroupReply {}
+
+message GetDeviceRequest {
+  string group_member_id = 1;
+}
+message GetDeviceReply {}
+
+
+// Group
+
+message GetRendezvousSeedRequest {
+  string group_id = 1;
+}
+message GetRendezvousSeedReply {}
+
+message ListMessagesRequest {
+  string group_id = 1;
+}
+message ListMessagesReply {}
+
+message InviteContactRequest {
+  string group_id = 1;
+}
+message InviteContactReply {}
+
+message GenerateInviteTokenRequest {
+  string group_id = 1;
+}
+message GenerateInviteTokenReply {}
+
+message AddMessageRequest {
+  string group_id = 1;
+}
+message AddMessageReply {}
+
+message InitGroupBroadcastRequest {
+  string group_id = 1;
+}
+message InitGroupBroadcastReply {}
+
+message LeaveRequest {
+  string group_id = 1;
+}
+message LeaveReply {}
