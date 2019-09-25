@@ -3,6 +3,10 @@ export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
 UNAME_S ?= $(shell uname -s)
 
+author = Berty Technologies <oss@berty.tech>
+contributor = $(shell git config --get user.name) <$(shell git config --get user.email)>
+license = (Apache-2.0 or MIT)
+
 ifeq ($(UNAME_S),Darwin)
 export SHELL = /bin/bash
 npm := /usr/local/bin/npm
@@ -24,15 +28,13 @@ lerna_flags := --reject-cycles --concurrency=8
 lerna_upgrade := $(bin)/upd
 lerna_exec := $(lerna) $(lerna_flags) exec --stream --parallel --scope=$1 --
 
+json := $(bin)/json
+
 eslint := $(bin)/eslint
 
 pkg ?= $(shell find $(PWD)/packages -depth 1 -type d)
 pkg_mod := $(patsubst %, %/node_modules, $(pkg))
-
-include packages/berty-app/Makefile
-include packages/storybook-mobile/Makefile
-include packages/storybook-web/Makefile
-include packages/react-native-core/Makefile
+pkg_desc := $(patsubst %, %/node_modules, $(pkg))
 
 .DEFAULT_GOAL := deps
 
@@ -80,27 +82,36 @@ fclean: fclean
 
 .PHONY: pkg
 pkg: name ?= example
+pkg: export PWD := $(PWD)
 pkg: $(mod)
 	lerna create @berty-tech/$(name) \
 		--access restricted \
 		--private \
-		--license '(Apache-2.0 OR MIT)' \
-		--yes \
+		--license '$(license)' \
+		--yes
+	cd $(PWD)/packages/$(name) \
+		&& $(json) -I -f package.json -e "this.description=''" \
+		&& $(json) -I -f package.json -e "this.author='$(author)'"
 
 .PHONY: rnpkg
 rnpkg: name ?= example
+rnpkg: export PWD := $(PWD)
 rnpkg: $(mod)
-	cd packages && create-react-native-module \
-		--platforms ios,android \
-		--prefix Berty$(shell echo "$(name)" | caser --pascal $(name)) \
-		--package-identifier tech.berty.$(name) \
-		--license '(Apache-2.0 OR MIT)' \
-		--use-cocoapods \
-		--github-account berty \
-		--author-name 'Berty Technologies' \
-		--author-email oss@berty.tech \
-		$(name)
-	rm -f packages/$(name)/README.md
+	cd $(PWD)/packages \
+		&& create-react-native-module \
+			--platforms ios,android \
+			--prefix Berty$(shell echo "$(name)" | caser --pascal $(name)) \
+			--package-identifier tech.berty.$(name) \
+			--license '$(license)' \
+			--use-cocoapods \
+			--github-account berty \
+			$(name)
+	cd $(PWD)/packages/react-native-$(name) \
+		&& rm -rf README.md \
+		&& $(json) -I -f package.json -e "this.name='@berty-tech/$(name)'" \
+		&& $(json) -I -f package.json -e "this.description=''"
+		&& $(json) -I -f package.json -e "this.author='$(author)'" \
+		&& $(json) -I -f package.json -e "this.licenseFilename=undefined" \
 
 .PHONY: lint
 lint: export PWD := $(PWD)
@@ -118,3 +129,9 @@ lint.fix: lint
 .PHONY: lint.watch
 lint.watch: options += --watch
 lint.watch: lint
+
+include packages/berty-app/Makefile
+include packages/storybook-mobile/Makefile
+include packages/storybook-web/Makefile
+include packages/react-native-core/Makefile
+

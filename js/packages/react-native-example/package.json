@@ -20,7 +20,6 @@
     "email": "staff@berty-tech.tech"
   },
   "license": "(Apache-2.0 OR MIT)",
-  "licenseFilename": "LICENSE",
   "readmeFilename": "README.md",
   "peerDependencies": {
     "react": "^16.8.1",

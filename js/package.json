@@ -11,11 +11,10 @@
     "type": "git",
     "url": "git+ssh://git@github.com/berty/berty.git"
   },
-  "author": {
-    "username": "berty",
-    "name": "Berty Technologies",
-    "email": "oss@berty.tech"
-  },
+  "author": "Berty Technologies <oss@berty.tech>",
+  "contributors": [
+    "Godefroy Ponsinet <godefroy.ponsinet@outlook.com>"
+  ],
   "license": "(Apache-2.0 OR MIT)",
   "bugs": {
     "url": "https://github.com/berty/berty/issues"
@@ -25,6 +24,7 @@
     "caser": "^0.1.1",
     "create-react-native-module": "^0.10.2",
     "eslint-plugin-jest": "^22.17.0",
+    "json": "^9.0.6",
     "lerna": "^3.16.4",
     "lerna-update-wizard": "^0.16.0",
     "react-native-create-library": "^3.1.2",
