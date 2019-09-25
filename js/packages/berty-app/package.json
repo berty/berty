@@ -6,12 +6,11 @@
     "start": "react-native start"
   },
   "dependencies": {
-    "@berty-tech/react-native-example": "^0.0.1",
+    "@berty-tech/react-native-example": "^1.0.0",
     "clisim": "^2.4.0",
     "react": "16.8.6",
     "react-native": "0.60.5",
-    "react-native-config": "git+https://github.com/luggit/react-native-config.git#89a602bf8be3808838403a97afaf915caeec76c2",
-    "@berty-tech/react-native-core": "^1.0.0"
+    "react-native-config": "git+https://github.com/luggit/react-native-config.git#89a602bf8be3808838403a97afaf915caeec76c2"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",

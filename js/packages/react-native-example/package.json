@@ -1,8 +1,8 @@
 {
-  "name": "@berty-tech/example",
+  "name": "@berty-tech/react-native-example",
   "title": "React Native Example",
   "version": "1.0.0",
-  "description": "",
+  "description": "Berty's react-native example library",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

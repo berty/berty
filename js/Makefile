@@ -111,15 +111,15 @@ rnpkg: $(mod)
 			$(name)
 	cd $(PWD)/packages/react-native-$(name) \
 		&& rm -rf README.md \
-		&& $(json) -I -f package.json -e "this.name='@berty-tech/$(name)'" \
-		&& $(json) -I -f package.json -e "this.description=''" \
+		&& $(json) -I -f package.json -e "this.name='@berty-tech/react-native-$(name)'" \
+		&& $(json) -I -f package.json -e "this.description='Berty\'s react-native $(name) library'" \
 		&& $(json) -I -f package.json -e "this.author='$(author)'" \
 		&& $(json) -I -f package.json -e "this.licenseFilename=undefined"
 	cd $(PWD)/packages/react-native-$(name) \
 		&& sed -i.bak 's/s.license      = "MIT"/s.license      = package["license"]/g' react-native-$(name).podspec \
 		&& rm react-native-$(name).podspec.bak
 	cd $(PWD)/packages/react-native-$(name)/ios/Berty$(pascal-name).xcodeproj \
-		&& sed -i.bak 's/ORGANIZATIONNAME = Facebook/ORGANIZATIONNAME = Berty Technologies/g' project.pbxproj \
+		&& sed -i.bak 's/ORGANIZATIONNAME = Facebook/ORGANIZATIONNAME = "Berty Technologies"/g' project.pbxproj \
 		&& rm project.pbxproj.bak
 
 .PHONY: lint
