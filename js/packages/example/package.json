@@ -4,7 +4,7 @@
   "private": true,
   "description": "",
   "keywords": [],
-  "author": "Godefroy Ponsinet <godefroy.ponsinet@outlook.com>",
+  "author": "Berty Technologies <oss@berty.tech>",
   "homepage": "https://github.com/berty/berty/tree/master/packages/example#readme",
   "license": "(Apache-2.0 OR MIT)",
   "main": "lib/example.js",

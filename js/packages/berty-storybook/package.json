@@ -4,7 +4,7 @@
   "private": true,
   "description": "Berty's app storybook",
   "keywords": [],
-  "author": "nmeier <someone@example.net>",
+  "author": "Berty Technologies <oss@berty.tech>",
   "homepage": "https://github.com/berty/berty/tree/master/packages/stories#readme",
   "license": "(Apache-2.0 OR MIT)",
   "main": "lib/stories.tsx",

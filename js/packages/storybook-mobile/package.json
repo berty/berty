@@ -4,7 +4,7 @@
   "private": true,
   "description": "Now I’m the model of a modern major general / The venerated Virginian veteran whose men are all / Lining up, to put me up on a pedestal / Writin’ letters to relatives / Embellishin’ my elegance and eloquence / But the elephant is in the room / The truth is in ya face when ya hear the British cannons go / BOOM",
   "keywords": [],
-  "author": "nmeier <someone@example.net>",
+  "author": "Berty Technologies <oss@berty.tech>",
   "homepage": "https://github.com/berty/berty/tree/master/packages/storybook-mobile#readme",
   "license": "(Apache-2.0 OR MIT)",
   "main": "lib/storybook-mobile.js",

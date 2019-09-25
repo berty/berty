@@ -95,9 +95,9 @@ rnpkg: $(mod)
 		--package-identifier tech.berty.$(name) \
 		--license '(Apache-2.0 OR MIT)' \
 		--use-cocoapods \
-		--github_account berty \
+		--github-account berty \
 		--author-name 'Berty Technologies' \
-		--author-email staff@berty.tech \
+		--author-email oss@berty.tech \
 		$(name)
 	rm -f packages/$(name)/README.md
 
