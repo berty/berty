@@ -5,16 +5,13 @@ export SHELL := /bin/bash
 .PHONY: deps.storybook.mobile
 deps.storybook.mobile: export PWD := $(PWD)
 deps.storybook.mobile: $(PWD)/node_modules
-	cd $(PWD) \
-		&& (kill $$(lsof -t -i :7007) 2>/dev/null || true) \
-		&& echo Y | start-storybook &
+	cd $(PWD) && lsof -t -i :7007 || echo Y | start-storybook &
+	cd $(PWD) && react-native start &
 
 .PHONY: run.storybook.ios
 run.storybook.ios: export PWD := $(PWD)
 run.storybook.ios: deps.storybook.mobile $(PWD)/ios/Pods
-	cd $(PWD) \
-		&& (kill $$(lsof -t -i :8081) 2>/dev/null || true) \
-		&& react-native run-ios
+	cd $(PWD) && react-native run-ios --no-packager
 
 $(PWD)/ios/Pods: $(PWD)/ios/Podfile
 	cd $(PWD)/ios && pod install
@@ -24,8 +21,7 @@ run.storybook.android: export PWD := $(PWD)
 run.storybook.android: deps.storybook.mobile $(PWD)/android/app/debug.keystore
 	cd $(PWD) \
 		&& clisim -af \
-		&& (kill $$(lsof -t -i :8081) 2>/dev/null || true) \
-		&& react-native run-android
+		&& react-native run-android --no-packager
 
 $(PWD)/android/app/debug.keystore: $(HOME)/.android/debug.keystore
 	cp $< $@

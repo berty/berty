@@ -9,7 +9,7 @@ make deps.react-native-core.android
 
 ## Installation
 
-`lerna add --scope=your-pkg-name @berty/react-native-core`
+`lerna add --scope=your-pkg-name @berty-tech/react-native-core`
 
 Make sure you configure the metro resolver correctly and add react-native-core to metro watchFolders
 This should look like this (minus other local dependencies)

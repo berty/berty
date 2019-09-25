@@ -2,6 +2,7 @@
 
 // const storybookMobile = require('..');
 
-// describe('@berty/storybook-mobile', () => {
+// describe('@berty-tech/storybook-mobile', () => {
 //   it('needs tests')
 // })
+

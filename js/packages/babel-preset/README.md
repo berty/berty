@@ -1,11 +1,11 @@
-# `@berty/babel-preset`
+# `@berty-tech/babel-preset`
 
 > TODO: description
 
 ## Usage
 
 ```
-const babelPreset = require('@berty/babel-preset');
+const babelPreset = require('@berty-tech/babel-preset');
 
 // TODO: DEMONSTRATE API
 ```

@@ -10,7 +10,7 @@ module.exports = ({ config: storybookBaseConfig }) => {
 
   babelRule.include = [
     path.resolve(__dirname, 'config.js'),
-    path.resolve(__dirname, '../node_modules/@berty/stories'),
+    path.resolve(__dirname, '../node_modules/@berty-tech/berty-storybook'),
   ]
   babelRule.exclude = []
 

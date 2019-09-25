@@ -1,5 +1,5 @@
 {
-  "name": "@berty/monorepo-client",
+  "name": "@bertytech/monorepo-client",
   "version": "1.0.0",
   "description": "Berty's client",
   "main": "index.js",
@@ -32,9 +32,9 @@
     "update-versions": "^1.5.13"
   },
   "devDependencies": {
-    "@berty/babel-preset": "./packages/babel-preset",
-    "@berty/eslint-config": "./packages/eslint-config",
-    "@berty/prettier-config": "./packages/prettier-config",
+    "@berty-tech/babel-preset": "./packages/babel-preset",
+    "@berty-tech/eslint-config": "./packages/eslint-config",
+    "@berty-tech/prettier-config": "./packages/prettier-config",
     "@react-native-community/eslint-plugin": "^1.0.0",
     "@types/jest": "^24.0.18",
     "@types/lodash": "^4.14.138",

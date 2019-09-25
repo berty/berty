@@ -1,11 +1,11 @@
-# `@berty/eslint-config`
+# `@berty-tech/eslint-config`
 
 > TODO: description
 
 ## Usage
 
 ```
-const eslintConfig = require('@berty/eslint-config');
+const eslintConfig = require('@berty-tech/eslint-config');
 
 // TODO: DEMONSTRATE API
 ```

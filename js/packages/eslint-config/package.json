@@ -1,5 +1,5 @@
 {
-  "name": "@berty/eslint-config",
+  "name": "@berty-tech/eslint-config",
   "version": "0.0.0",
   "private": true,
   "description": "Berty's global eslint config",

@@ -1,5 +1,5 @@
 {
-  "name": "@berty/storybook-mobile",
+  "name": "@berty-tech/storybook-mobile",
   "version": "0.0.0",
   "private": true,
   "description": "Now I’m the model of a modern major general / The venerated Virginian veteran whose men are all / Lining up, to put me up on a pedestal / Writin’ letters to relatives / Embellishin’ my elegance and eloquence / But the elephant is in the room / The truth is in ya face when ya hear the British cannons go / BOOM",
@@ -33,8 +33,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@berty/babel-preset": "^0.0.0",
-    "@berty/stories": "^0.0.0"
+    "@berty-tech/babel-preset": "^0.0.0",
+    "@berty-tech/berty-storybook": "^0.0.0"
   },
   "peerDependencies": {
     "react": "^16.8.1",
