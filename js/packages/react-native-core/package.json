@@ -19,7 +19,7 @@
     "name": "Berty Technologies",
     "email": "staff@berty-tech.tech"
   },
-  "license": "Apache-2.0",
+  "license": "(Apache-2.0 OR MIT)",
   "licenseFilename": "LICENSE",
   "readmeFilename": "README.md",
   "peerDependencies": {

@@ -83,7 +83,7 @@ pkg: $(mod)
 	lerna create @berty-tech/$(name) \
 		--access restricted \
 		--private \
-		--license Apache-2.0 \
+		--license '(Apache-2.0 OR MIT)' \
 		--yes \
 
 .PHONY: rnpkg
@@ -93,7 +93,7 @@ rnpkg: $(mod)
 		--platforms ios,android \
 		--prefix Berty$(shell echo "$(name)" | caser --pascal $(name)) \
 		--package-identifier tech.berty.$(name) \
-		--license Apache-2.0 \
+		--license '(Apache-2.0 OR MIT)' \
 		--use-cocoapods \
 		--github_account berty \
 		--author-name 'Berty Technologies' \

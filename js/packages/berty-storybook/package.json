@@ -6,7 +6,7 @@
   "keywords": [],
   "author": "nmeier <someone@example.net>",
   "homepage": "https://github.com/berty/berty/tree/master/packages/stories#readme",
-  "license": "Apache-2.0",
+  "license": "(Apache-2.0 OR MIT)",
   "main": "lib/stories.tsx",
   "directories": {
     "lib": "lib",

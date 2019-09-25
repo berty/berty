@@ -16,7 +16,7 @@
     "name": "Berty Technologies",
     "email": "staff@berty.tech"
   },
-  "license": "Apache-2.0",
+  "license": "(Apache-2.0 OR MIT)",
   "bugs": {
     "url": "https://github.com/berty/berty/issues"
   },
