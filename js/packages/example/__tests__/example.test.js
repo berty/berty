@@ -2,6 +2,7 @@
 //
 // // const example = require('..')
 //
-// describe('@berty/example', () => {
+// describe('@berty-tech/example', () => {
 //   it('needs tests')
 // })
+

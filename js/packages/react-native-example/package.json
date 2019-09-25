@@ -1,5 +1,5 @@
 {
-  "name": "@berty/react-native-example",
+  "name": "@berty-tech/react-native-example",
   "title": "React Native Example",
   "version": "0.0.1",
   "description": "TODO",
@@ -17,7 +17,7 @@
   ],
   "author": {
     "name": "Berty Technologies",
-    "email": "staff@berty.tech"
+    "email": "staff@berty-tech.tech"
   },
   "license": "Apache-2.0",
   "licenseFilename": "LICENSE",

@@ -1,6 +1,6 @@
 import { AppRegistry } from 'react-native'
 import { getStorybookUI, configure, storiesOf } from '@storybook/react-native'
-import stories from '@berty/stories'
+import stories from '@berty-tech/berty-storybook'
 
 import './rn-addons'
 

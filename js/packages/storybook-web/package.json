@@ -1,5 +1,5 @@
 {
-  "name": "@berty/storybook-web",
+  "name": "@berty-tech/storybook-web",
   "version": "0.0.0",
   "private": true,
   "description": "Now I’m the model of a modern major general / The venerated Virginian veteran whose men are all / Lining up, to put me up on a pedestal / Writin’ letters to relatives / Embellishin’ my elegance and eloquence / But the elephant is in the room / The truth is in ya face when ya hear the British cannons go / BOOM",
@@ -23,7 +23,7 @@
   "dependencies": {
     "react": "^16.8.1",
     "react-native-web": "^0.11.7",
-    "@berty/stories": "^0.0.0"
+    "@berty-tech/berty-storybook": "^0.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",

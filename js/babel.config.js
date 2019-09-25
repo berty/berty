@@ -1,3 +1,4 @@
 module.exports = (api) => ({
-  presets: ['@berty/babel-preset'],
+  presets: ['@berty-tech/babel-preset'],
 })
+

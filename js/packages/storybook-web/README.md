@@ -1,11 +1,11 @@
-# `@berty/storybook-web`
+# `@berty-tech/storybook-web`
 
 > TODO: description
 
 ## Usage
 
 ```
-const storybookWeb = require('@berty/storybook-web');
+const storybookWeb = require('@berty-tech/storybook-web');
 
 // TODO: DEMONSTRATE API
 ```

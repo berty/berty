@@ -2,6 +2,7 @@
 //
 // // const assets = require('..')
 //
-// describe('@berty/assets', () => {
+// describe('@berty-tech/assets', () => {
 //   it('needs tests')
 // })
+

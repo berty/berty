@@ -28,7 +28,7 @@ eslint := $(bin)/eslint
 pkg := $(shell find $(PWD)/packages -depth 1 -type d)
 pkg_mod := $(patsubst %, %/node_modules, $(pkg))
 
-include packages/app/Makefile
+include packages/berty-app/Makefile
 include packages/storybook-mobile/Makefile
 include packages/storybook-web/Makefile
 include packages/react-native-core/Makefile
@@ -80,7 +80,7 @@ fclean: fclean
 .PHONY: pkg
 pkg: name ?= example
 pkg: $(mod)
-	lerna create @berty/$(name) \
+	lerna create @berty-tech/$(name) \
 		--access restricted \
 		--private \
 		--license Apache-2.0 \
