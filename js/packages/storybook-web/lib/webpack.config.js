@@ -1,5 +1,4 @@
 const path = require('path')
-// const webpack = require("webpack")
 
 module.exports = ({ config: storybookBaseConfig }) => {
   storybookBaseConfig.resolve.alias['^react-native$'] = 'react-native-web'
@@ -7,6 +6,9 @@ module.exports = ({ config: storybookBaseConfig }) => {
 
   // TODO: replace by find
   const babelRule = storybookBaseConfig.module.rules[0]
+
+  // Override test because storybook ignores tsx
+  babelRule.test = /\.(mjs|jsx?|tsx?)/
 
   babelRule.include = [
     path.resolve(__dirname, 'config.js'),
@@ -20,7 +22,7 @@ module.exports = ({ config: storybookBaseConfig }) => {
     ...babelConfig,
     options: {
       ...babelConfig.options,
-      presets: ['module:metro-react-native-babel-preset'],
+      presets: ['@berty-tech/babel-preset'],
       plugins: ['react-native-web'],
     },
   }

@@ -27,11 +27,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
+    "@berty-tech/babel-preset": "^0.0.0",
     "@storybook/react": "^5.2.1",
     "babel-loader": "^8.0.6",
     "babel-plugin-react-native-web": "^0.11.7",
-    "babel-preset-react-native": "^4.0.1",
-    "metro-react-native-babel-preset": "^0.56.0",
     "react-scripts": "^3.1.1"
   }
 }
