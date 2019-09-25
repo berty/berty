@@ -11,7 +11,8 @@ endif
 ifeq ($(UNAME_S),Linux)
 export SHELL = /usr/bin/bash
 npm := /usr/bin/npm
-pkg := $(shell find $(PWD)/packages -maxdepth 1 -type d)
+pkg := $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 1 -type d))
+else
 endif
 npm_flags := --no-progress
 
@@ -25,7 +26,7 @@ lerna_exec := $(lerna) $(lerna_flags) exec --stream --parallel --scope=$1 --
 
 eslint := $(bin)/eslint
 
-pkg := $(shell find $(PWD)/packages -depth 1 -type d)
+pkg ?= $(shell find $(PWD)/packages -depth 1 -type d)
 pkg_mod := $(patsubst %, %/node_modules, $(pkg))
 
 include packages/berty-app/Makefile
