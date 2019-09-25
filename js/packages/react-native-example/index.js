@@ -1,5 +1,5 @@
-import { NativeModules } from 'react-native'
+import { NativeModules } from 'react-native';
 
-const { BertyExample } = NativeModules
+const { BertyExample } = NativeModules;
 
-export default BertyExample
+export default BertyExample;

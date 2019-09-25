@@ -31,3 +31,21 @@ $(HOME)/.android/debug.keystore:
 
 .PHONY: run.storybook.mobile
 run.storybook.mobile: run.storybook.ios run.storybook.android
+
+.PHONY: \
+	fclean.storybook.ios \
+	fclean.storybook.android \
+	fclean.storybook
+
+fclean.storybook.ios: export PWD := $(PWD)
+fclean.storybook.ios:
+	cd $(PWD)/ios; \
+		rm -rf build; \
+		xcodebuild clean; \
+		rm -rf $(HOME)/Library/Developer/Xcode/DerivedData; \
+		rm -rf Pods; rm -rf ~/Library/Caches/CocoaPods
+
+fclean.storybook.android: export PWD := $(PWD)
+fclean.storybook.android:
+
+fclean.storybook: fclean.ios fclean.android

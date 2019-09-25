@@ -10,9 +10,8 @@ Pod::Spec.new do |s|
                   react-native-core
                    DESC
   s.homepage     = "https://github.com/github_account/react-native-core"
-  s.license      = "MIT"
-  # s.license    = { :type => "MIT", :file => "FILE_LICENSE" }
-  s.authors      = { "Berty Technologies" => "staff@berty-tech.tech" }
+  s.license      = "(Apache-2.0 OR MIT)"
+  s.authors      = { "Berty Technologies" => "oss@berty-tech.tech" }
   s.platforms    = { :ios => "9.0", :tvos => "10.0" }
   s.source       = { :git => "https://github.com/github_account/react-native-core.git", :tag => "#{s.version}" }
 

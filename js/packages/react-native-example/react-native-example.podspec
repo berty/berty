@@ -9,12 +9,12 @@ Pod::Spec.new do |s|
   s.description  = <<-DESC
                   react-native-example
                    DESC
-  s.homepage     = "https://github.com/github_account/react-native-example"
-  s.license      = "MIT"
+  s.homepage     = "https://github.com/berty/react-native-example"
+  s.license      = package["license"]
   # s.license    = { :type => "MIT", :file => "FILE_LICENSE" }
-  s.authors      = { "Berty Technologies" => "staff@berty-tech.tech" }
+  s.authors      = { "Berty Technologies" => "oss@berty.tech" }
   s.platforms    = { :ios => "9.0", :tvos => "10.0" }
-  s.source       = { :git => "https://github.com/github_account/react-native-example.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/berty/react-native-example.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,swift}"
   s.requires_arc = true

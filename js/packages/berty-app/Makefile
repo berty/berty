@@ -351,15 +351,15 @@ run.darwin: deps.darwin run
 
 
 clean.ios: platform := ios
-clean.ios: clean
+clean.ios: export PWD := $(PWD)
+clean.ios:
 	touch $(PWD)/ios/Podfile
-
 clean.android: platform := android
-clean.android: clean
+clean.android:
 clean.web: platform := web
-clean.web: clean
+clean.web:
 clean.darwin: platform := darwin
-clean.darwin: clean
+clean.darwin:
 clean:
 
 .IGNORE \
@@ -371,16 +371,17 @@ clean:
 	fclean \
 
 fclean.ios: platform := ios
-fclean.ios: fclean
+fclean.ios: export PWD := $(PWD)
+fclean.ios:
 	cd $(PWD)/ios; \
 		rm -rf build; \
 		xcodebuild clean; \
 		rm -rf $(HOME)/Library/Developer/Xcode/DerivedData; \
 		rm -rf Pods; rm -rf ~/Library/Caches/CocoaPods
 fclean.android: platform := android
-fclean.android: fclean
+fclean.android:
 fclean.web: platform := web
-fclean.web: fclean
+fclean.web:
 fclean.darwin: platform := darwin
-fclean.darwin: fclean
-fclean:
+fclean.darwin:
+fclean: fclean.ios fclean.android fclean.darwin fclean.web

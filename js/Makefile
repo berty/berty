@@ -29,7 +29,7 @@ lerna_upgrade := $(bin)/upd
 lerna_exec := $(lerna) $(lerna_flags) exec --stream --parallel --scope=$1 --
 
 json := $(bin)/json
-
+caser := $(bin)/caser
 eslint := $(bin)/eslint
 
 pkg ?= $(shell find $(PWD)/packages -depth 1 -type d)
@@ -75,7 +75,7 @@ clean: clean
 .IGNORE \
 .PHONY: fclean
 fclean: fclean
-	$(lerna_exec) /bin/bash -c '[ ! -f Makefile ] || make fclean'; \
+	$(lerna_exec) /bin/bash -c 'echo $$PWD && [ ! -f Makefile ] || make fclean'; \
 	rm -rf \
 		$(mod) \
 		$(pkg_mod)
@@ -95,23 +95,32 @@ pkg: $(mod)
 
 .PHONY: rnpkg
 rnpkg: name ?= example
+rnpkg: pascal-name = $(shell echo $(name) | $(caser) --pascal)
 rnpkg: export PWD := $(PWD)
 rnpkg: $(mod)
 	cd $(PWD)/packages \
 		&& create-react-native-module \
 			--platforms ios,android \
-			--prefix Berty$(shell echo "$(name)" | caser --pascal $(name)) \
+			--prefix Berty \
 			--package-identifier tech.berty.$(name) \
 			--license '$(license)' \
 			--use-cocoapods \
 			--github-account berty \
+			--author-name 'Berty Technologies' \
+			--author-email oss@berty.tech \
 			$(name)
 	cd $(PWD)/packages/react-native-$(name) \
 		&& rm -rf README.md \
 		&& $(json) -I -f package.json -e "this.name='@berty-tech/$(name)'" \
-		&& $(json) -I -f package.json -e "this.description=''"
+		&& $(json) -I -f package.json -e "this.description=''" \
 		&& $(json) -I -f package.json -e "this.author='$(author)'" \
-		&& $(json) -I -f package.json -e "this.licenseFilename=undefined" \
+		&& $(json) -I -f package.json -e "this.licenseFilename=undefined"
+	cd $(PWD)/packages/react-native-$(name) \
+		&& sed -i.bak 's/s.license      = "MIT"/s.license      = package["license"]/g' react-native-$(name).podspec \
+		&& rm react-native-$(name).podspec.bak
+	cd $(PWD)/packages/react-native-$(name)/ios/Berty$(pascal-name).xcodeproj \
+		&& sed -i.bak 's/ORGANIZATIONNAME = Facebook/ORGANIZATIONNAME = Berty Technologies/g' project.pbxproj \
+		&& rm project.pbxproj.bak
 
 .PHONY: lint
 lint: export PWD := $(PWD)
