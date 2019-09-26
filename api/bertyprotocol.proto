@@ -51,193 +51,115 @@ service Protocol {
   rpc GroupRequestList(GroupRequestListRequest) returns (stream GroupRequestListReply);
 }
 
-// Account
-message ContactGetRequest {
-  string account_id = 1;
-}
-message ContactGetReply {
-  string contact_id = 1;
-}
-
-message AccountGetInformationRequest {
-  string account_id = 1;
-}
-
-message AccountGetInformationReply {
-  // account information
-}
-
-message GetNetworkConfigurationRequest {
-  string account_id = 1;
-
-}
-message GetNetworkConfigurationReply {
-  // NetworkConfiguration
-}
-
-message AccountPublicContactRequestResetLinkRequest {
-  string account_id = 1;
-}
-message AccountPublicContactRequestResetLinkReply {}
-
-message PublicContactRequestDisableRequest {
-  string account_id = 1;
-}
-message PublicContactRequestDisableReply {}
-
-message PublicContactRequestEnableRequest {
-  string account_id = 1;
-}
-message PublicContactRequestEnableReply {}
-
-message AccountExportDataRequest {
-  string account_id = 1;
-}
-message AccountExportDataReply {}
-
-message AccountLinkNewDeviceRequest {
-  string account_id = 1;
-}
-message AccountLinkNewDeviceReply {}
-
-message ContactsModuleVoidRequest {
-  string account_id = 1;
-}
-message ContactsModuleVoidReply {}
-
-message GroupsModuleVoidRequest {
-  string account_id = 1;
-}
-message GroupsModuleVoidReply {}
-
-message EventSubscribeRequest {
-  string account_id = 1;
-}
+message EventSubscribeRequest {}
 message EventStream {
   // Account Event
 }
 
+// Account
 
-// Device
+message AccountExportDataRequest {}
+message AccountExportDataReply {}
 
-message DeviceOpenStreamRequest {
-  string device_id = 1;
+message AccountGetInformationRequest {}
+message AccountGetInformationReply {
+  // account information
 }
-message DeviceOpenStreamReply {}
+
+message GetNetworkConfigurationRequest {}
+message GetNetworkConfigurationReply {
+  // NetworkConfiguration
+}
+
+message AccountLinkNewDeviceRequest {}
+message AccountLinkNewDeviceReply {}
+
+
+// Account Public Contact Request
+
+message PublicContactRequestDisableRequest {}
+message PublicContactRequestDisableReply {}
+
+message PublicContactRequestEnableRequest {}
+message PublicContactRequestEnableReply {}
+
+message AccountPublicContactRequestResetLinkRequest {}
+message AccountPublicContactRequestResetLinkReply {}
+
+
+// Contact Request
+
+message ContactRequestAcceptRequest {}
+message ContactRequestAcceptReply {}
+
+message ContactRequestDiscardRequest {}
+message ContactRequestDiscardReply {}
+
+message ContactRequestListIncomingRequest {};
+message ContactRequestListIncomingReply {};
+
+message ContactRequestListOutgoingRequest {};
+message ContactRequestListOutgoingReply {};
+
+message ContactRequestSendRequest {};
+message ContactRequestSendReply {};
 
 
 // Contact
 
-message ContactRequestAcceptRequest {
-  string contact_id = 1;
-}
-message ContactRequestAcceptReply {}
+message ContactGetRequest {}
+message ContactGetReply {}
 
-message ContactRequestDiscardRequest {
-  string contact_id = 1;
-}
-message ContactRequestDiscardReply {}
-
-message ContactInitStreamRequest {
-  string contact_id = 1;
-}
+message ContactInitStreamRequest {}
 message ContactInitStreamReply {}
 
-message ContactRemoveRequest {
-  string contact_id = 1;
-}
+message ContactRemoveRequest {}
 message ContactRemoveReply {}
 
-// GroupMember
-
-message ContactListRequest {
-
-};
-
-message ContactListReply {
-};
-
-message ContactRequestListIncomingRequest {
-};
-
-message ContactRequestListIncomingReply {
-};
-
-message ContactContactGetRequest {
-};
-
-message ContactContactGetReply {
-};
-
-message ContactRequestSendRequest {
-};
-
-message ContactRequestSendReply {
-};
+message ContactListRequest {};
+message ContactListReply {};
 
 
-message GroupRequestListRequest {
-};
+// Device
 
-message GroupRequestListReply {
-};
+message DeviceOpenStreamRequest {}
+message DeviceOpenStreamReply {}
 
-message GroupRequestAcceptRequest {
-};
 
-message GroupRequestAcceptReply {
-};
+// Group
 
-message GroupRequestDiscardRequest {
-};
+message GroupCreateRequest {};
+message GroupCreateReply {};
 
-message GroupRequestDiscardReply {
-};
+message GroupGenerateInviteLinkRequest {};
+message GroupGenerateInviteLinkReply {};
 
-message GroupRequestCreateRequest {
-};
+message GroupLeaveRequest {};
+message GroupLeaveReply {};
 
-message GroupRequestCreateReply {
-};
+message GroupListRequest {};
+message GroupListReply {};
 
-message GroupListRequest {
-};
 
-message GroupListReply {
-};
+// Group Message
 
-message GroupCreateRequest {
-};
+message GroupMessageCreateRequest {};
+message GroupMessageCreateReply {};
 
-message GroupCreateReply {
-};
+message GroupMessageListRequest {};
+message GroupMessageListReply {};
 
-message GroupGenerateInviteLinkRequest {
-};
 
-message GroupGenerateInviteLinkReply {
-};
+// Group Request
 
-message GroupLeaveRequest {
-};
+message GroupRequestAcceptRequest {};
+message GroupRequestAcceptReply {};
 
-message GroupLeaveReply {
-};
+message GroupRequestCreateRequest {};
+message GroupRequestCreateReply {};
 
-message GroupMessageListRequest {
-};
+message GroupRequestDiscardRequest {};
+message GroupRequestDiscardReply {};
 
-message GroupMessageListReply {
-};
-
-message GroupMessageCreateRequest {
-};
-
-message GroupMessageCreateReply {
-};
-
-message ContactRequestListOutgoingRequest {
-};
-
-message ContactRequestListOutgoingReply {
-};
+message GroupRequestListRequest {};
+message GroupRequestListReply {};
