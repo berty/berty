@@ -7,11 +7,20 @@ option go_package = "berty.tech/go/internal/datastore/models/group";
 import "google/protobuf/timestamp.proto";
 import "gogoproto/gogo.proto";
 
+// A group is a set of devices (members) communicating together
 message Group {
-  string group_id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;unique\"", (gogoproto.customname) = "AccountID"];
-  bytes sigchain = 2;
-  bytes rendezvous_seed = 3;
+  // An arbitrary unique identifier for this group, used the creator pubkey for disambiguation
+  bytes id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;unique\"", (gogoproto.customname) = "ID"];
+
+  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  // The public key of the device which created the group
   bytes creator_pub_key_bytes = 4;
-  google.protobuf.Timestamp created_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  // A rendezvous seed for the current group
+  bytes rendezvous_seed = 5;
+
+  // A list of the group members
+  repeated GroupMember member_objects = 6;
 }

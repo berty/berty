@@ -12,7 +12,7 @@ message GroupMember {
   bytes public_key_bytes = 1;
 
   // The account id of this group member (same here, should we use aliases unique to this conversation? should we set this only when an identity has been disclosed?)
-  bytes account_id = 2;
+  bytes account_public_key_bytes = 2;
 
   // A secret for this member in this group
   bytes group_secret = 3;
@@ -22,4 +22,13 @@ message GroupMember {
 
   // The current derivation counter
   uint64 derivation_counter = 5;
+
+  // Database related fields
+  // A local id for the current group member
+  bytes group_id = 96 [(gogoproto.customname) = "GroupID"];
+
+  // The group id for this group member
+  bytes id = 97 [(gogoproto.customname) = "ID"];
+  google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 99 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }

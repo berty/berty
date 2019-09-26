@@ -8,17 +8,26 @@ import "google/protobuf/timestamp.proto";
 import "crypto_group_member.proto";
 import "gogoproto/gogo.proto";
 
-// A group is a set of devices (members) communicating together
+// A group is a set of devices (members) communicating together, over the wire
+// a group is identified by creator_pub_key_bytes and creator_group_id
 message Group {
-  // An arbitrary unique identifier for this group, used the creator pubkey for disambiguation
-  bytes id = 1 [(gogoproto.customname) = "ID"];
-
   // The public key of the device which created the group
-  bytes creator_pub_key_bytes = 2;
+  bytes creator_pub_key_bytes = 1;
+
+  // An arbitrary unique identifier for this group, used with the creator pubkey for disambiguation
+  bytes creator_group_id = 2 [(gogoproto.customname) = "CreatorGroupID"];
 
   // A rendezvous seed for the current group
   bytes rendezvous_seed = 3;
 
   // A list of the group members
   repeated GroupMember member_objects = 4;
+
+
+  // Database related fields
+
+  // A local id for the current group
+  bytes id = 97 [(gogoproto.customname) = "ID"];
+  google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 99 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }
