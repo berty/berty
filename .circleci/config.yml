@@ -33,9 +33,26 @@ jobs:
           docker_layer_caching: true
       - docker/build:
           image: berty/berty
+  go-generate:
+    working_directory: /go/src/berty.tech/go
+    docker:
+      - image: bertytech/protoc:16
+    steps:
+      - checkout:
+          path: /go/src/berty.tech
+      - run: |
+          set -e
+          rm -f gen.sum
+          go mod vendor
+          make generate_local
+          make tidy
+          git status | cat
+          git diff -w | cat
+          git diff-index -w --quiet HEAD --
 
 workflows:
   main:
     jobs:
       - go-build
       - go-docker
+      - go-generate

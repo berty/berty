@@ -10,20 +10,19 @@
 /zero-push/
 
 # junk
+go/internal/bar
+go/internal/baz
+go/internal/foo
 profile.out
 *#
 *~
 .#*
-./package.json
 .DS_Store
 .agignore
 .env
 coverage.txt
 .projectile
-/client/react-native/desktop/output/
-/go.mod
 core-sources.jar
 gin-bin
 google-services.json
 vendor/
-.circleci/config-processed.yml

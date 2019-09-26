@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package berty.baz;
+
+option go_package = "berty.tech/go/internal/baz";
+
+message Baz {
+  bool is_baz = 1;
+}
