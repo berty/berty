@@ -4,25 +4,19 @@ option go_package = "berty.tech/go/pkg/bertyprotocol";
 
 import "google/protobuf/descriptor.proto";
 
-
-// // @To Test
-// extend google.protobuf.MethodOptions {
-//   string id = 53001;
-// }
-
 service Protocol {
-  rpc EventSubscribe(EventSubscribeRequest) returns (stream EventStream); // { option (id) = "account"; };
+  rpc EventSubscribe(EventSubscribeRequest) returns (stream EventStream);
 
   // Account
-  rpc AccountExportData(AccountExportDataRequest) returns (AccountExportDataReply); // { option (id) = "account"; };
-  rpc AccountGetInformation(AccountGetInformationRequest) returns (AccountGetInformationReply); // { option (id) = "account"; };
-  rpc AccountGetNetworkConfiguration(GetNetworkConfigurationRequest) returns (GetNetworkConfigurationReply); // { option (id) = "account"; };
-  rpc AccountLinkNewDevice(AccountLinkNewDeviceRequest) returns (AccountLinkNewDeviceReply); // { option (id) = "account"; };
+  rpc AccountExportData(AccountExportDataRequest) returns (AccountExportDataReply);
+  rpc AccountGetInformation(AccountGetInformationRequest) returns (AccountGetInformationReply);
+  rpc AccountGetNetworkConfiguration(GetNetworkConfigurationRequest) returns (GetNetworkConfigurationReply);
+  rpc AccountLinkNewDevice(AccountLinkNewDeviceRequest) returns (AccountLinkNewDeviceReply);
 
   // Account Public Contact Request
-  rpc AccountPublicContactRequestDisable(PublicContactRequestDisableRequest) returns (PublicContactRequestDisableReply); // { option (id) = "account"; };
-  rpc AccountPublicContactRequestEnable(PublicContactRequestEnableRequest) returns (PublicContactRequestEnableReply); // { option (id) = "account"; };
-  rpc AccountPublicContactRequestResetLink(AccountPublicContactRequestResetLinkRequest) returns (AccountPublicContactRequestResetLinkReply); // { option (id) = "account"; };
+  rpc AccountPublicContactRequestDisable(PublicContactRequestDisableRequest) returns (PublicContactRequestDisableReply);
+  rpc AccountPublicContactRequestEnable(PublicContactRequestEnableRequest) returns (PublicContactRequestEnableReply);
+  rpc AccountPublicContactRequestResetLink(AccountPublicContactRequestResetLinkRequest) returns (AccountPublicContactRequestResetLinkReply);
 
   // Contact Request
   rpc ContactRequestAccept(ContactRequestAcceptRequest) returns (ContactRequestAcceptReply);
@@ -38,7 +32,7 @@ service Protocol {
   rpc ContactRemove(ContactRemoveRequest) returns (ContactRemoveReply);
 
   // Device
-  rpc DeviceOpenStream(DeviceOpenStreamRequest) returns (DeviceOpenStreamReply);
+  rpc DeviceOpenStream(stream DeviceOpenStreamRequest) returns (stream DeviceOpenStreamReply);
 
   // Group
   rpc GroupCreate(GroupCreateRequest) returns (GroupCreateReply);
