@@ -1,0 +1,14 @@
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+
+proto_library(
+    name = "baz_proto",
+    srcs = ["baz.proto"],
+    visibility = ["//visibility:public"],
+)
+
+go_proto_library(
+    name = "baz_go_proto",
+    importpath = "berty.tech/go/internal/baz",
+    proto = ":baz_proto",
+    visibility = ["//visibility:public"],
+)
