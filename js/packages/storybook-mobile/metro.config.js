@@ -6,6 +6,12 @@
  */
 
 const path = require('path')
+const glob = require('glob')
+
+const watchFolders = [
+  ...glob.sync(path.join(__dirname, '../*-storybook')),
+  path.join(__dirname, './node_modules'),
+]
 
 module.exports = {
   transformer: {
@@ -20,10 +26,9 @@ module.exports = {
     extraNodeModules: new Proxy(
       {},
       {
-        get: (target, name) => path.join(process.cwd(), `node_modules/${name}`),
+        get: (target, name) => path.join(__dirname, `node_modules/${name}`),
       }
     ),
   },
-  watchFolders: [path.join(process.cwd(), '../berty-storybook')],
+  watchFolders,
 }
-

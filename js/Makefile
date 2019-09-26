@@ -74,11 +74,10 @@ clean: clean
 
 .IGNORE \
 .PHONY: fclean
-fclean: fclean
-	$(lerna_exec) /bin/bash -c 'echo $$PWD && [ ! -f Makefile ] || make fclean'; \
-	rm -rf \
-		$(mod) \
-		$(pkg_mod)
+fclean:
+	rm -rf $(pkg_mod)
+	rm -rf $(mod)
+	npm cache clean -f
 
 .PHONY: pkg
 pkg: name ?= example

@@ -5,28 +5,28 @@
   "scripts": {
     "start": "react-native start"
   },
+  "jest": {
+    "preset": "react-native"
+  },
   "dependencies": {
     "@berty-tech/react-native-example": "^1.0.0",
     "clisim": "^2.4.0",
-    "react": "16.8.6",
-    "react-native": "0.60.5",
-    "react-native-config": "git+https://github.com/luggit/react-native-config.git#89a602bf8be3808838403a97afaf915caeec76c2"
+    "react": "^16.9.0",
+    "react-native": "^0.61.1",
+    "react-native-config": "^0.11.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.0",
-    "@babel/runtime": "^7.6.0",
+    "@babel/core": "^7.6.2",
+    "@babel/runtime": "^7.6.2",
     "@react-native-community/eslint-config": "^0.0.5",
-    "@types/react": "^16.9.2",
-    "@types/react-native": "^0.60.15",
+    "@types/react": "^16.9.3",
+    "@types/react-native": "^0.60.16",
     "babel-jest": "^24.9.0",
     "caser": "^0.1.1",
     "metro-react-native-babel-preset": "^0.56.0",
     "react-native-cli": "^2.0.1",
     "react-native-typescript-transformer": "^1.2.13",
-    "react-test-renderer": "16.8.6",
+    "react-test-renderer": "^16.9.0",
     "typescript": "^3.6.3"
-  },
-  "jest": {
-    "preset": "react-native"
   }
 }

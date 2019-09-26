@@ -1,8 +1,6 @@
 import { configure, storiesOf } from '@storybook/react'
 
-import stories from '@berty-tech/berty-storybook'
-
 // import stories
 configure(() => {
-  stories({ storiesOf })
+  require.context(__dirname + '/..', true, /.*-storybook\/storybook.tsx$/)
 }, module)

@@ -1,29 +1,29 @@
 {
   "name": "@berty-tech/react-native-example",
-  "title": "React Native Example",
   "version": "1.0.0",
   "description": "Berty's react-native example library",
+  "license": "(Apache-2.0 or MIT)",
+  "repository": {
+    "baseUrl": "https://github.com/berty/react-native-example",
+    "type": "git",
+    "url": "git+https://github.com/berty/react-native-example.git"
+  },
+  "author": "Berty Technologies <oss@berty.tech>",
+  "keywords": [
+    "react-native"
+  ],
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/berty/react-native-example.git",
-    "baseUrl": "https://github.com/berty/react-native-example"
-  },
-  "keywords": [
-    "react-native"
-  ],
-  "author": "Berty Technologies <oss@berty.tech>",
-  "license": "(Apache-2.0 or MIT)",
   "readmeFilename": "README.md",
+  "title": "React Native Example",
   "peerDependencies": {
     "react": "^16.8.1",
     "react-native": ">=0.59.0-rc.0 <1.0.x"
   },
   "devDependencies": {
-    "react": "^16.8.3",
-    "react-native": "^0.59.10"
+    "react": "^16.9.0",
+    "react-native": "^0.61.1"
   }
 }
