@@ -36,7 +36,7 @@
     "react-native-storybook-loader": "^1.8.1"
   },
   "peerDependencies": {
-    "react": "^16.8.1",
+    "react": "^16.9.0",
     "react-native": ">=0.60.0-rc.0 <1.0.x"
   },
   "devDependencies": {
@@ -51,7 +51,7 @@
     "eslint": "^6.4.0",
     "jest": "^24.9.0",
     "react": "^16.9.0",
-    "react-native": "^0.60.0",
+    "react-native": "^0.61.1",
     "react-test-renderer": "^16.9.0"
   }
 }
