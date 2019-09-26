@@ -35,15 +35,14 @@ jobs:
       - docker/build:
           image: berty/berty
   go-generate:
-    working_directory: /go/src/berty.tech/go
+    working_directory: /go/src/berty.tech
     docker:
-      - image: bertytech/protoc:16
+      - image: bertytech/protoc:17
     steps:
-      - checkout:
-          path: /go/src/berty.tech
-      - run: go mod vendor
-      - run: rm -f gen.sum && make generate_local
-      - run: make tidy
+      - checkout
+      - run: find . -name gen.sum -delete
+      - run: cd go && make generate_local && make tidy
+      - run: cd docs && make generate_local
       - run: |
           git status | cat
           git diff -w | cat

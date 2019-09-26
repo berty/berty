@@ -1,6 +1,3 @@
-PROTOS_SRC := $(wildcard ../api/*.proto) $(wildcard ../api/internal/*.proto)
-PROTOS_GEN := $(patsubst %.proto,%.pb.go,$(PROTOS_SRC))
-
 .PHONY: install
 install: generate
 	go install ./cmd/...
@@ -24,10 +21,23 @@ tidy: generate
 docker.build: generate
 	docker build -t bertytech/berty .
 
+##
+## Code gen
+##
+
+PROTOS_SRC := $(wildcard ../api/*.proto) $(wildcard ../api/internal/*.proto)
+GEN_SRC := $(PROTOS_SRC) Makefile
+GEN_SUM := gen.sum
+
+.PHONY: clean
+clean:
+	rm -f gen.sum $(wildcard */*/*.pb.go)
+
 .PHONY: generate
 generate: gen.sum
-gen.sum: $(PROTOS_SRC) Makefile
-	md5sum -c $@ || ( \
+$(GEN_SUM): $(GEN_SRC)
+	shasum $(GEN_SRC) | sort > $(GEN_SUM).tmp
+	diff -q $(GEN_SUM).tmp $(GEN_SUM) || ( \
 	  set -e; \
 	  GO111MODULE=on go mod vendor; \
 	  docker run \
@@ -36,14 +46,16 @@ gen.sum: $(PROTOS_SRC) Makefile
 	    --workdir="/go/src/berty.tech/go" \
 	    --entrypoint="sh" \
 	    --rm \
-	    bertytech/protoc:16 \
+	    bertytech/protoc:17 \
 	    -xec 'make generate_local' \
 	)
-	touch $@
 
 .PHONY: generate_local
 generate_local:
 	@set -e; for proto in $(PROTOS_SRC); do ( set -xe; \
-	  protoc -I /protobuf:vendor:../api: --gofast_out="plugins=grpc:$(GOPATH)/src" "$$proto" \
+	  protoc -I ../api:../go/vendor:/protobuf --gofast_out="plugins=grpc:$(GOPATH)/src" "$$proto" \
 	); done
-	md5sum $(PROTOS_SRC) | sort -k2 > gen.sum
+	goimports -w ./pkg ./cmd ./internal
+	shasum $(GEN_SRC) | sort > $(GEN_SUM).tmp
+	mv $(GEN_SUM).tmp $(GEN_SUM)
+	make tidy

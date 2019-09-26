@@ -11,6 +11,8 @@ RUN     go get -u \
           github.com/gogo/protobuf/proto \
           github.com/gogo/protobuf/protoc-gen-gofast \
           github.com/gogo/protobuf/protoc-gen-gogo \
+          github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
+          github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
           github.com/spf13/cobra \
           github.com/vektah/gorunpkg \
           golang.org/x/tools/cmd/goimports \
@@ -20,7 +22,7 @@ RUN     go get -d github.com/envoyproxy/protoc-gen-validate \
 
 # runtime
 FROM    golang:1.13-alpine
-RUN     apk --no-cache add git openssh make protobuf gcc libc-dev nodejs-npm sudo \
+RUN     apk --no-cache add git openssh make protobuf gcc libc-dev nodejs-npm sudo perl-utils \
  &&     mkdir -p /.cache/go-build \
  &&     chmod -R 777 /.cache \
  &&     mkdir -p /node/ \

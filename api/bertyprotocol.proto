@@ -2,14 +2,11 @@ syntax = "proto3";
 
 option go_package = "berty.tech/go/pkg/bertyprotocol";
 
+import "google/api/annotations.proto";
 import "google/protobuf/descriptor.proto";
 
-// type Client struct
-
-// c, err := ClientNew(&Config{})
-
 service ClientManager {
-  rpc CurrentDeviceExportData (CurrentDeviceExportDataRequest) returns (CurrentDeviceExportDataReply);
+  rpc CurrentDeviceExportData (CurrentDeviceExportDataRequest) returns (CurrentDeviceExportDataReply) { option (google.api.http) = {post: "/current-device/export-data"}; };
   rpc CurrentDeviceGetConfiguration (CurrentDeviceGetConfigurationRequest) returns (CurrentDeviceGetConfigurationReply);
 }
 
