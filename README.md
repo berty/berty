@@ -26,8 +26,8 @@
     <img src="https://badge.fury.io/gh/berty%2Fberty.svg"
          alt="GitHub version">
   </a>
-  <a href="https://godoc.org/berty.tech/core">
-    <img src="https://godoc.org/berty.tech/core?status.svg"
+  <a href="https://godoc.org/berty.tech/go">
+    <img src="https://godoc.org/berty.tech/go?status.svg"
          alt="GoDoc">
   </a>
   <a href="https://codecov.io/gh/berty/berty">
@@ -38,12 +38,13 @@
 <p align="center"><b>
     <a href="https://berty.tech">berty.tech</a> •
     <a href="https://twitter.com/berty">Twitter</a> •
+    <a href="http://crpt.fyi/berty-discord">Dicord</a> •
     <a href="https://github.com/berty">GitHub</a>
 </b></p>
 
 ## Licensing
 
-© 2018-2019 [Manfred Touron](https://manfred.life)
+© 2018-2019 [Berty Technologies](https://berty.tech)
 
 Licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) ([`LICENSE-APACHE`](LICENSE-APACHE)) or the [MIT license](https://opensource.org/licenses/MIT) ([`LICENSE-MIT`](LICENSE-MIT)), at your option. See the [`COPYRIGHT`](COPYRIGHT) file for more details.
 
