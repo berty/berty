@@ -11,145 +11,65 @@ import "google/protobuf/descriptor.proto";
 // }
 
 service Protocol {
-  /// Account
+  rpc EventSubscribe(EventSubscribeRequest) returns (stream EventStream); // { option (id) = "account"; };
 
-  // Account Module
-  rpc NewAccount(NewAccountRequest) return (NewAccountReply);
-	rpc NewAccountFromExistingDevice(NewAccountFromExistingDeviceRequest) return (NewAccountFromExistingDeviceReply);
-	rpc NewAccountFromExport(NewAccountFromExportRequest) return (NewAccountFromExportReply);
-	rpc OpenAccount(OpenAccountRequest) return (OpenAccountReply);
-	rpc DeleteAccount(DeleteAccountRequest) return (DeleteAccountReply);
+  // Account
+  rpc AccountExportData(AccountExportDataRequest) returns (AccountExportDataReply); // { option (id) = "account"; };
+  rpc AccountGetInformation(AccountGetInformationRequest) returns (AccountGetInformationReply); // { option (id) = "account"; };
+  rpc AccountGetNetworkConfiguration(GetNetworkConfigurationRequest) returns (GetNetworkConfigurationReply); // { option (id) = "account"; };
+  rpc AccountLinkNewDevice(AccountLinkNewDeviceRequest) returns (AccountLinkNewDeviceReply); // { option (id) = "account"; };
 
-  // Account global methods
-  rpc GetContact(GetContactRequest) return (GetContactReply); // { option (id) = "account"; };
-	rpc GetAccountInformation(GetAccountInformationRequest) return (GetAccountInformationReply); // { option (id) = "account"; };
-	rpc GetNetworkConfiguration(GetNetworkConfigurationRequest) return (GetNetworkConfigurationReply) { option (id) = "account"; };
+  // Account Public Contact Request
+  rpc AccountPublicContactRequestDisable(PublicContactRequestDisableRequest) returns (PublicContactRequestDisableReply); // { option (id) = "account"; };
+  rpc AccountPublicContactRequestEnable(PublicContactRequestEnableRequest) returns (PublicContactRequestEnableReply); // { option (id) = "account"; };
+  rpc AccountPublicContactRequestResetLink(AccountPublicContactRequestResetLinkRequest) returns (AccountPublicContactRequestResetLinkReply); // { option (id) = "account"; };
 
-	// Account Rendezvous point methods
-  rpc ResetRendezvousPoint(ResetRendezvousPointRequest) return (ResetRendezvousPointReply); // { option (id) = "account"; };
-	rpc DisableRendezvousPoint(DisableRendezvousPointRequest) return (DisableRendezvousPointReply); // { option (id) = "account"; };
-	rpc EnableRendezvousPoint(EnableRendezvousPointRequest) return (EnableRendezvousPointReply); // { option (id) = "account"; };
+  // Contact Request
+  rpc ContactRequestAccept(ContactRequestAcceptRequest) returns (ContactRequestAcceptReply);
+  rpc ContactRequestDiscard(ContactRequestDiscardRequest) returns (ContactRequestDiscardReply);
+  rpc ContactRequestListIncoming(ContactRequestListIncomingRequest) returns (stream ContactRequestListIncomingReply);
+  rpc ContactRequestListOutgoing(ContactRequestListOutgoingRequest) returns (stream ContactRequestListOutgoingReply);
+  rpc ContactRequestSend(ContactRequestSendRequest) returns (ContactRequestSendReply);
 
-	// Account Devices related methods
-	rpc SyncToDevices(SyncToDevicesRequest) return (SyncToDevicesReply); // { option (id) = "account"; };
-	rpc ExportAccountData(ExportAccountDataRequest) return (ExportAccountDataReply); // { option (id) = "account"; };
-	rpc LinkNewDevice(LinkNewDeviceRequest) return (LinkNewDeviceReply); // { option (id) = "account"; };
+  // Contact
+  rpc ContactGet(ContactGetRequest) returns (ContactGetReply);
+  rpc ContactInitStream(ContactInitStreamRequest) returns (ContactInitStreamReply);
+  rpc ContactList(ContactListRequest) returns (stream ContactListReply);
+  rpc ContactRemove(ContactRemoveRequest) returns (ContactRemoveReply);
 
-	// Account Subscriptions methods
-  rpc RegisterEventHandler(RegisterEventHandlerRequest) return (stream EventStream); // { option (id) = "account"; };
+  // Device
+  rpc DeviceOpenStream(DeviceOpenStreamRequest) returns (DeviceOpenStreamReply);
 
+  // Group
+  rpc GroupCreate(GroupCreateRequest) returns (GroupCreateReply);
+  rpc GroupGenerateInviteLink(GroupGenerateInviteLinkRequest) returns (GroupGenerateInviteLinkReply);
+  rpc GroupLeave(GroupLeaveRequest) returns (GroupLeaveReply);
+  rpc GroupList(GroupListRequest) returns (stream GroupListReply);
 
-  /// Device
+  // Group Message
+  rpc GroupMessageCreate(GroupMessageCreateRequest) returns (GroupMessageCreateReply);
+  rpc GroupMessageList(GroupMessageListRequest) returns (stream GroupMessageListReply);
 
-  // Device Getters
-	rpc GetContact(GetContactRequest) return (GetContactReply);
-
-	// Device Actions
-	rpc OpenStreamToDevice(OpenStreamToDeviceRequest) return (OpenStreamToDeviceReply);
-
-
-  /// Contact
-
-  // Contact module
-  rpc ListContacts(ListContactsRequest) return (ListContactsReply);
-	rpc ListIncomingRequests(ListIncomingRequestsRequest) return (ListIncomingRequestsReply);
-
-	rpc GetByID(GetByIDRequest) return (GetByIDReply);
-	rpc RequestContact(RequestContactRequest) return (RequestContactReply);
-
-  // Contact global methods
-  rpc GetSigChain(GetSigChainRequest) return (Void);
-	rpc ListDevices(ListDevicesRequest) return (ListDevicesReply);
-
-  // Contact Actions
-  rpc AcceptRequest(AcceptRequestRequest) return (AcceptRequestReply);
-  rpc DiscardRequest(DiscardRequestRequest) return (DiscardRequestReply);
-	rpc OpenStream(OpenStreamRequest) return (OpenStreamReply);
-	rpc Remove(RemoveRequest) return (RemoveReply);
-
-
-  /// GroupBroadcastMessage
-
-  // GroupBroadcastMessage Getters
-	rpc GetGroupBroadcast(GetGroupBroadcastRequest) return (GetGroupBroadcastReply);
-	rpc GetPayload(GetPayloadRequest) return (GetPayloadReply);
-
-
-  /// GroupMessage
-
-  rpc GetMember(GetMemberRequest) return (GetMemberReply);
-	rpc GetPayload(GetPayloadRequest) return (GetPayloadReply);
-
-
-  /// GroupMember
-
-  rpc GetGroup(GetGroupRequest) return (GetGroupReply);
-	rpc GetDevice(GetDeviceRequest) return (GetDeviceReply); // Should we replace it with a "unique to this group" contact?
-
-
-  /// GroupInvitation
-
-  // Getters
-	rpc GetGroupID(GetGroupIDRequest) return (GetGroupIDReply);
-
-	// Actions
-	rpc AcceptRequest(AcceptRequestRequest) return (AcceptRequestReply);
-	rpc DiscardRequest(DiscardRequestRequest) return (DiscardRequestReply);
-
-
-  /// Group
-
-  // Group Module
-  rpc ListGroups(ListGroupsRequest) return (ListGroupsReply);
-	rpc ListIncomingInvitations(ListIncomingInvitationsRequest) return (ListIncomingInvitationsReply);
-
-	rpc Create(CreateRequest) return (CreateReply);
-
-  // Getter
-	rpc GetRendezvousSeed(GetRendezvousSeedRequest) return (GetRendezvousSeedReply);
-
-	// Lists
-	rpc ListMessages(ListMessagesRequest) return (ListMessagesReply);
-
-	// Actions
-	rpc InviteContact(InviteContactRequest) return (InviteContactReply);
-	rpc GenerateInviteToken(GenerateInviteTokenRequest) return (GenerateInviteTokenReply);
-	rpc AddMessage(AddMessageRequest) return (AddMessageReply);
-	rpc InitGroupBroadcast(InitGroupBroadcastRequest) return (InitGroupBroadcastReply);
-
-	rpc Leave(LeaveRequest) return (LeaveReply);
-
-
+  // Group Request
+  rpc GroupRequestAccept(GroupRequestAcceptRequest) returns (GroupRequestAcceptReply);
+  rpc GroupRequestCreate(GroupRequestCreateRequest) returns (GroupRequestCreateReply);
+  rpc GroupRequestDiscard(GroupRequestDiscardRequest) returns (GroupRequestDiscardReply);
+  rpc GroupRequestList(GroupRequestListRequest) returns (stream GroupRequestListReply);
 }
 
 // Account
-message NewAccountRequest {}
-message NewAccountReply {}
-
-message NewAccountFromExistingDeviceRequest {}
-message NewAccountFromExistingDeviceReply {}
-
-message NewAccountFromExportRequest {}
-message NewAccountFromExportReply {}
-
-message OpenAccountRequest {}
-message OpenAccountReply {}
-
-message DeleteAccountRequest {}
-message DeleteAccountReply {}
-
-message GetContactRequest {
+message ContactGetRequest {
   string account_id = 1;
 }
-message GetContactReply {
+message ContactGetReply {
   string contact_id = 1;
 }
 
-message GetAccountInformationRequest {
+message AccountGetInformationRequest {
   string account_id = 1;
 }
 
-message GetAccountInformationReply {
+message AccountGetInformationReply {
   // account information
 }
 
@@ -161,35 +81,30 @@ message GetNetworkConfigurationReply {
   // NetworkConfiguration
 }
 
-message ResetRendezvousPointRequest {
+message AccountPublicContactRequestResetLinkRequest {
   string account_id = 1;
 }
-message ResetRendezvousPointReply {}
-§
-message DisableRendezvousPointRequest {
-  string account_id = 1;
-}
-message DisableRendezvousPointReply {}
+message AccountPublicContactRequestResetLinkReply {}
 
-message EnableRendezvousPointRequest {
+message PublicContactRequestDisableRequest {
   string account_id = 1;
 }
-message EnableRendezvousPointReply {}
+message PublicContactRequestDisableReply {}
 
-message SyncToDevicesRequest {
+message PublicContactRequestEnableRequest {
   string account_id = 1;
 }
-message SyncToDevicesReply {}
+message PublicContactRequestEnableReply {}
 
-message ExportAccountDataRequest {
+message AccountExportDataRequest {
   string account_id = 1;
 }
-message ExportAccountDataReply {}
+message AccountExportDataReply {}
 
-message LinkNewDeviceRequest {
+message AccountLinkNewDeviceRequest {
   string account_id = 1;
 }
-message LinkNewDeviceReply {}
+message AccountLinkNewDeviceReply {}
 
 message ContactsModuleVoidRequest {
   string account_id = 1;
@@ -201,7 +116,7 @@ message GroupsModuleVoidRequest {
 }
 message GroupsModuleVoidReply {}
 
-message RegisterEventHandlerRequest {
+message EventSubscribeRequest {
   string account_id = 1;
 }
 message EventStream {
@@ -211,123 +126,124 @@ message EventStream {
 
 // Device
 
-message GetContactRequest {
+message DeviceOpenStreamRequest {
   string device_id = 1;
 }
-message GetContactReply {}
-
-message OpenStreamToDeviceRequest {
-  string device_id = 1;
-}
-message OpenStreamToDeviceReply {}
+message DeviceOpenStreamReply {}
 
 
 // Contact
 
-message GetSigChainRequest {
-  string contact_id = 1;
-
-}
-message GetSigChainReply {}
-
-message ListDevicesRequest {
+message ContactRequestAcceptRequest {
   string contact_id = 1;
 }
-message ListDevicesReply {}
+message ContactRequestAcceptReply {}
 
-message AcceptRequestRequest {
+message ContactRequestDiscardRequest {
   string contact_id = 1;
 }
-message AcceptRequestReply {}
+message ContactRequestDiscardReply {}
 
-message DiscardRequestRequest {
+message ContactInitStreamRequest {
   string contact_id = 1;
 }
-message DiscardRequestReply {}
+message ContactInitStreamReply {}
 
-message OpenStreamRequest {
+message ContactRemoveRequest {
   string contact_id = 1;
 }
-message OpenStreamReply {}
-
-message RemoveRequest {
-  string contact_id = 1;
-}
-message RemoveReply {}
-
-
-// GroupBroadcastMessage
-
-message GetGroupBroadcastRequest {
-  string group_broadcast_message_id = 1;
-}
-message GetGroupBroadcastReply {}
-
-message GetPayloadRequest {
-  string group_broadcast_message_id = 1;
-}
-message GetPayloadReply {}
-
-
-// GroupMessage
-
-message GetMemberRequest {
-  string group_message_id = 1;
-}
-message GetMemberReply {}
-
-message GetPayloadRequest {
-  string group_message_id = 1;
-}
-message GetPayloadReply {}
-
+message ContactRemoveReply {}
 
 // GroupMember
 
-message GetGroupRequest {
-  string group_member_id = 1;
-}
-message GetGroupReply {}
+message ContactListRequest {
 
-message GetDeviceRequest {
-  string group_member_id = 1;
-}
-message GetDeviceReply {}
+};
+
+message ContactListReply {
+};
+
+message ContactRequestListIncomingRequest {
+};
+
+message ContactRequestListIncomingReply {
+};
+
+message ContactContactGetRequest {
+};
+
+message ContactContactGetReply {
+};
+
+message ContactRequestSendRequest {
+};
+
+message ContactRequestSendReply {
+};
 
 
-// Group
+message GroupRequestListRequest {
+};
 
-message GetRendezvousSeedRequest {
-  string group_id = 1;
-}
-message GetRendezvousSeedReply {}
+message GroupRequestListReply {
+};
 
-message ListMessagesRequest {
-  string group_id = 1;
-}
-message ListMessagesReply {}
+message GroupRequestAcceptRequest {
+};
 
-message InviteContactRequest {
-  string group_id = 1;
-}
-message InviteContactReply {}
+message GroupRequestAcceptReply {
+};
 
-message GenerateInviteTokenRequest {
-  string group_id = 1;
-}
-message GenerateInviteTokenReply {}
+message GroupRequestDiscardRequest {
+};
 
-message AddMessageRequest {
-  string group_id = 1;
-}
-message AddMessageReply {}
+message GroupRequestDiscardReply {
+};
 
-message InitGroupBroadcastRequest {
-  string group_id = 1;
-}
-message InitGroupBroadcastReply {}
+message GroupRequestCreateRequest {
+};
 
-message LeaveRequest {
-  string group_id = 1;
-}
-message LeaveReply {}
+message GroupRequestCreateReply {
+};
+
+message GroupListRequest {
+};
+
+message GroupListReply {
+};
+
+message GroupCreateRequest {
+};
+
+message GroupCreateReply {
+};
+
+message GroupGenerateInviteLinkRequest {
+};
+
+message GroupGenerateInviteLinkReply {
+};
+
+message GroupLeaveRequest {
+};
+
+message GroupLeaveReply {
+};
+
+message GroupMessageListRequest {
+};
+
+message GroupMessageListReply {
+};
+
+message GroupMessageCreateRequest {
+};
+
+message GroupMessageCreateReply {
+};
+
+message ContactRequestListOutgoingRequest {
+};
+
+message ContactRequestListOutgoingReply {
+};
