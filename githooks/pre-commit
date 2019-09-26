@@ -8,16 +8,21 @@ fi
 
 GOLINT=$GOPATH/bin/golint
 GOIMPORTS=$GOPATH/bin/goimports
+PASS=true
 
 # Check for golint
 if [[ ! -x "$GOLINT" ]]; then
-    printf "\t\033[41mPlease install golint\033[0m (go get -u golang.org/x/lint/golint)"
-    exit 1
+    printf "\t\033[41mPlease install golint\033[0m (go get -u golang.org/x/lint/golint)\n"
+    PASS=false
 fi
 
 # Check for goimports
 if [[ ! -x "$GOIMPORTS" ]]; then
-    printf "\t\033[41mPlease install goimports\033[0m (go get golang.org/x/tools/cmd/goimports)"
+    printf "\t\033[41mPlease install goimports\033[0m (go get golang.org/x/tools/cmd/goimports)\n"
+    PASS=false
+fi
+
+if ! $PASS; then
     exit 1
 fi
 
