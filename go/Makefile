@@ -29,7 +29,7 @@ generate: gen.sum
 gen.sum: $(PROTOS_SRC) Makefile
 	md5sum -c $@ || ( \
 	  set -e; \
-	  go mod vendor; \
+	  GO111MODULE=on go mod vendor; \
 	  docker run \
 	    --user=`id -u` \
 	    --volume="$(PWD)/..:/go/src/berty.tech" \

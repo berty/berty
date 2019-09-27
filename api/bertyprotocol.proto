@@ -4,72 +4,129 @@ option go_package = "berty.tech/go/pkg/bertyprotocol";
 
 import "google/protobuf/descriptor.proto";
 
-service Protocol {
-  rpc EventSubscribe(EventSubscribeRequest) returns (stream EventStream);
+// type Client struct
 
-  // Account
-  rpc AccountExportData(AccountExportDataRequest) returns (AccountExportDataReply);
-  rpc AccountGetInformation(AccountGetInformationRequest) returns (AccountGetInformationReply);
-  rpc AccountGetNetworkConfiguration(GetNetworkConfigurationRequest) returns (GetNetworkConfigurationReply);
-  rpc AccountLinkNewDevice(AccountLinkNewDeviceRequest) returns (AccountLinkNewDeviceReply);
+// c, err := ClientNew(&Config{})
 
-  // Account Public Contact Request
-  rpc AccountPublicContactRequestDisable(PublicContactRequestDisableRequest) returns (PublicContactRequestDisableReply);
-  rpc AccountPublicContactRequestEnable(PublicContactRequestEnableRequest) returns (PublicContactRequestEnableReply);
-  rpc AccountPublicContactRequestResetLink(AccountPublicContactRequestResetLinkRequest) returns (AccountPublicContactRequestResetLinkReply);
+service ClientManager {
+  rpc CurrentDeviceExportData (CurrentDeviceExportDataRequest) returns (CurrentDeviceExportDataReply);
+  rpc CurrentDeviceGetConfiguration (CurrentDeviceGetConfigurationRequest) returns (CurrentDeviceGetConfigurationReply);
+}
 
-  // Contact Request
-  rpc ContactRequestAccept(ContactRequestAcceptRequest) returns (ContactRequestAcceptReply);
-  rpc ContactRequestDiscard(ContactRequestDiscardRequest) returns (ContactRequestDiscardReply);
-  rpc ContactRequestListIncoming(ContactRequestListIncomingRequest) returns (stream ContactRequestListIncomingReply);
-  rpc ContactRequestListOutgoing(ContactRequestListOutgoingRequest) returns (stream ContactRequestListOutgoingReply);
-  rpc ContactRequestSend(ContactRequestSendRequest) returns (ContactRequestSendReply);
+service AccountManager {
+  rpc AccountGetConfiguration (AccountGetConfigurationRequest) returns (AccountGetConfigurationReply);
+  rpc AccountGetInformation (AccountGetInformationRequest) returns (AccountGetInformationReply);
+  rpc AccountLinkNewDevice (AccountLinkNewDeviceRequest) returns (AccountLinkNewDeviceReply);
+  rpc AccountDisableIncomingContactRequest (AccountDisableIncomingContactRequestRequest) returns (AccountDisableIncomingContactRequestReply);
+  rpc AccountEnableIncomingContactRequest (AccountEnableIncomingContactRequestRequest) returns (AccountEnableIncomingContactRequestReply);
+  rpc AccountResetIncomingContactRequestLink (AccountResetIncomingContactRequestLinkRequest) returns (AccountResetIncomingContactRequestLinkReply);
+}
 
-  // Contact
-  rpc ContactGet(ContactGetRequest) returns (ContactGetReply);
-  rpc ContactInitStream(ContactInitStreamRequest) returns (ContactInitStreamReply);
-  rpc ContactList(ContactListRequest) returns (stream ContactListReply);
-  rpc ContactRemove(ContactRemoveRequest) returns (ContactRemoveReply);
+service EventManager {
+  rpc EventSubscribe (EventSubscribeRequest) returns (stream EventStream);
+}
 
-  // Device
-  rpc DeviceOpenStream(stream DeviceOpenStreamRequest) returns (stream DeviceOpenStreamReply);
+service ContactRequestManager {
+  rpc ContactRequestAccept (ContactRequestAcceptRequest) returns (ContactRequestAcceptReply);
+  rpc ContactRequestDiscard (ContactRequestDiscardRequest) returns (ContactRequestDiscardReply);
+  rpc ContactRequestListIncoming (ContactRequestListIncomingRequest) returns (stream ContactRequestListIncomingReply);
+  rpc ContactRequestListOutgoing (ContactRequestListOutgoingRequest) returns (stream ContactRequestListOutgoingReply);
+  rpc ContactRequestSend (ContactRequestSendRequest) returns (ContactRequestSendReply);
+}
 
-  // Group
-  rpc GroupCreate(GroupCreateRequest) returns (GroupCreateReply);
-  rpc GroupGenerateInviteLink(GroupGenerateInviteLinkRequest) returns (GroupGenerateInviteLinkReply);
-  rpc GroupLeave(GroupLeaveRequest) returns (GroupLeaveReply);
-  rpc GroupList(GroupListRequest) returns (stream GroupListReply);
+service ContactManager {
+  rpc ContactGet (ContactGetRequest) returns (ContactGetReply);
+  rpc ContactList (ContactListRequest) returns (stream ContactListReply);
+  rpc ContactRemove (ContactRemoveRequest) returns (ContactRemoveReply);
+}
 
-  // Group Message
-  rpc GroupMessageCreate(GroupMessageCreateRequest) returns (GroupMessageCreateReply);
-  rpc GroupMessageList(GroupMessageListRequest) returns (stream GroupMessageListReply);
+service StreamManager {
+  rpc StreamManagerRequestToContact (StreamManagerRequestToContactRequest) returns (StreamManagerRequestToContactReply);
+  rpc StreamManagerAccept (stream StreamManagerAcceptRequest) returns (stream StreamManagerAcceptReply);
+}
 
-  // Group Request
-  rpc GroupRequestAccept(GroupRequestAcceptRequest) returns (GroupRequestAcceptReply);
-  rpc GroupRequestCreate(GroupRequestCreateRequest) returns (GroupRequestCreateReply);
-  rpc GroupRequestDiscard(GroupRequestDiscardRequest) returns (GroupRequestDiscardReply);
-  rpc GroupRequestList(GroupRequestListRequest) returns (stream GroupRequestListReply);
+// TODO: check comment below
+// A Group is a set of Devices, which can be between a user own Devices or two or more individuals.
+// All communication between devices except ContactRequests goes through a Group
+
+service GroupManager {
+  rpc GroupCreate (GroupCreateRequest) returns (GroupCreateReply);
+  rpc GroupGenerateInviteLink (GroupGenerateInviteLinkRequest) returns (GroupGenerateInviteLinkReply);
+  rpc GroupLeave (GroupLeaveRequest) returns (GroupLeaveReply);
+  rpc GroupList (GroupListRequest) returns (stream GroupListReply);
+  rpc GroupMessageCreate (GroupMessageCreateRequest) returns (GroupMessageCreateReply);
+  rpc GroupMessageList (GroupMessageListRequest) returns (stream GroupMessageListReply);
+
+  // GroupPubSubTopic uses pub sub to send volatile updates to other group members
+  rpc GroupPubSubTopicInit (stream GroupPubSubTopicInitRequest) returns (GroupPubSubTopicInitReply);
+  rpc GroupPubSubTopicSubscribe (GroupPubSubTopicSubscribeRequest) returns (stream GroupPubSubTopicSubscribeReply);
+}
+
+service GroupInvitationManager {
+  rpc GroupInvitationAccept (GroupInvitationAcceptRequest) returns (GroupInvitationAcceptReply);
+  rpc GroupInvitationCreate (GroupInvitationCreateRequest) returns (GroupInvitationCreateReply);
+  rpc GroupInvitationDiscard (GroupInvitationDiscardRequest) returns (GroupInvitationDiscardReply);
+  rpc GroupInvitationList (GroupInvitationListRequest) returns (stream GroupInvitationListReply);
+}
+
+message SigChainEntry {
+
+}
+
+message SigChain {
+  repeated SigChainEntry entries = 1;
+}
+
+message Contact {
+  enum ContactStatus {
+    Unknown = 0;
+    Myself = 1;
+    Contact = 2;
+    Trusted = 3;
+    Blocked = 4;
+    RequestIn = 5;
+    RequestOut = 6;
+  }
+
+  // AccountID = sig_chain.entries[0].pub_key
+  SigChain sig_chain = 1;
+  bytes metadata = 2; // Display name, profile picture etc.
+  bytes rendezvous_point_seed = 3;
+  bytes shared_secret = 4;
+  ContactStatus contact_status = 5;
+}
+
+message AccountConfig {
+  bool rendezvous_point_enabled = 1;
+}
+
+message DeviceConfig {
+  // ... net config
+}
+
+message Device {
+  bytes device_pub_key = 1;
+  bytes account_pub_key = 2;
 }
 
 message EventSubscribeRequest {}
-message EventStream {
-  // Account Event
-}
+message EventStream {}
 
 // Account
 
-message AccountExportDataRequest {}
-message AccountExportDataReply {}
+message CurrentDeviceExportDataRequest {}
+message CurrentDeviceExportDataReply {}
 
 message AccountGetInformationRequest {}
 message AccountGetInformationReply {
   // account information
 }
 
-message GetNetworkConfigurationRequest {}
-message GetNetworkConfigurationReply {
-  // NetworkConfiguration
-}
+message CurrentDeviceGetConfigurationRequest {}
+message CurrentDeviceGetConfigurationReply {}
+
+message AccountGetConfigurationRequest {}
+message AccountGetConfigurationReply {}
 
 message AccountLinkNewDeviceRequest {}
 message AccountLinkNewDeviceReply {}
@@ -77,14 +134,14 @@ message AccountLinkNewDeviceReply {}
 
 // Account Public Contact Request
 
-message PublicContactRequestDisableRequest {}
-message PublicContactRequestDisableReply {}
+message AccountDisableIncomingContactRequestRequest {}
+message AccountDisableIncomingContactRequestReply {}
 
-message PublicContactRequestEnableRequest {}
-message PublicContactRequestEnableReply {}
+message AccountEnableIncomingContactRequestRequest {}
+message AccountEnableIncomingContactRequestReply {}
 
-message AccountPublicContactRequestResetLinkRequest {}
-message AccountPublicContactRequestResetLinkReply {}
+message AccountResetIncomingContactRequestLinkRequest {}
+message AccountResetIncomingContactRequestLinkReply {}
 
 
 // Contact Request
@@ -110,8 +167,8 @@ message ContactRequestSendReply {};
 message ContactGetRequest {}
 message ContactGetReply {}
 
-message ContactInitStreamRequest {}
-message ContactInitStreamReply {}
+message StreamManagerRequestToContactRequest {}
+message StreamManagerRequestToContactReply {}
 
 message ContactRemoveRequest {}
 message ContactRemoveReply {}
@@ -122,8 +179,8 @@ message ContactListReply {};
 
 // Device
 
-message DeviceOpenStreamRequest {}
-message DeviceOpenStreamReply {}
+message StreamManagerAcceptRequest {}
+message StreamManagerAcceptReply {}
 
 
 // Group
@@ -152,14 +209,23 @@ message GroupMessageListReply {};
 
 // Group Request
 
-message GroupRequestAcceptRequest {};
-message GroupRequestAcceptReply {};
+message GroupInvitationAcceptRequest {};
+message GroupInvitationAcceptReply {};
 
-message GroupRequestCreateRequest {};
-message GroupRequestCreateReply {};
+message GroupInvitationCreateRequest {};
+message GroupInvitationCreateReply {};
 
-message GroupRequestDiscardRequest {};
-message GroupRequestDiscardReply {};
+message GroupInvitationDiscardRequest {};
+message GroupInvitationDiscardReply {};
 
-message GroupRequestListRequest {};
-message GroupRequestListReply {};
+message GroupInvitationListRequest {};
+message GroupInvitationListReply {};
+
+message GroupPubSubTopicInitRequest {};
+message GroupPubSubTopicInitReply {};
+
+message GroupBroadcastSendRequest {};
+message GroupBroadcastSendReply {};
+
+message GroupPubSubTopicSubscribeRequest {};
+message GroupPubSubTopicSubscribeReply {};
