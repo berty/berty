@@ -1,6 +1,6 @@
 module berty.tech/go
 
-go 1.13
+go 1.12
 
 require (
 	github.com/gogo/protobuf v1.3.0

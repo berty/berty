@@ -14,6 +14,6 @@ func (c *client) GroupInvitationDiscard(context.Context, *GroupInvitationDiscard
 	return nil, ErrNotImplemented
 }
 
-func (c *client) GroupInvitationList(*GroupInvitationListRequest, GroupInvitationManager_GroupInvitationListServer) error {
+func (c *client) GroupInvitationList(*GroupInvitationListRequest, Protocol_GroupInvitationListServer) error {
 	return ErrNotImplemented
 }

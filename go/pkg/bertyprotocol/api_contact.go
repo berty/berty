@@ -6,7 +6,7 @@ func (c *client) ContactGet(context.Context, *ContactGetRequest) (*ContactGetRep
 	return nil, ErrNotImplemented
 }
 
-func (c *client) ContactList(*ContactListRequest, ContactManager_ContactListServer) error {
+func (c *client) ContactList(*ContactListRequest, Protocol_ContactListServer) error {
 	return ErrNotImplemented
 }
 

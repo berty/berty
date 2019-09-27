@@ -9,14 +9,7 @@ var _ Client = (*client)(nil)
 
 // Client is the main Berty Protocol interface
 type Client interface {
-	AccountManagerServer
-	ClientManagerServer
-	ContactManagerServer
-	ContactRequestManagerServer
-	EventManagerServer
-	GroupInvitationManagerServer
-	GroupManagerServer
-	StreamManagerServer
+	ProtocolServer
 
 	Close()
 }
@@ -27,14 +20,7 @@ type client struct {
 	opts Opts
 
 	// list of implemented interfaces
-	AccountManagerServer
-	ClientManagerServer
-	ContactManagerServer
-	ContactRequestManagerServer
-	EventManagerServer
-	GroupInvitationManagerServer
-	GroupManagerServer
-	StreamManagerServer
+	ProtocolServer
 	Client
 }
 

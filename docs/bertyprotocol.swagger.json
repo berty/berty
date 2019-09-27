@@ -15,19 +15,20 @@
     "application/json"
   ],
   "paths": {
-    "/current-device/export-data": {
+    "/instance/export-data": {
       "post": {
-        "operationId": "CurrentDeviceExportData",
+        "summary": "InstanceExportData exports instance data",
+        "operationId": "InstanceExportData",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/CurrentDeviceExportDataReply"
+              "$ref": "#/definitions/InstanceExportDataReply"
             }
           }
         },
         "tags": [
-          "ClientManager"
+          "Protocol"
         ]
       }
     }
@@ -75,12 +76,6 @@
     "ContactRequestSendReply": {
       "type": "object"
     },
-    "CurrentDeviceExportDataReply": {
-      "type": "object"
-    },
-    "CurrentDeviceGetConfigurationReply": {
-      "type": "object"
-    },
     "EventStream": {
       "type": "object"
     },
@@ -118,6 +113,12 @@
       "type": "object"
     },
     "GroupPubSubTopicSubscribeReply": {
+      "type": "object"
+    },
+    "InstanceExportDataReply": {
+      "type": "object"
+    },
+    "InstanceGetConfigurationReply": {
       "type": "object"
     },
     "StreamManagerAcceptReply": {

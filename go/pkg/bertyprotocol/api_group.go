@@ -14,7 +14,7 @@ func (c *client) GroupLeave(context.Context, *GroupLeaveRequest) (*GroupLeaveRep
 	return nil, ErrNotImplemented
 }
 
-func (c *client) GroupList(*GroupListRequest, GroupManager_GroupListServer) error {
+func (c *client) GroupList(*GroupListRequest, Protocol_GroupListServer) error {
 	return ErrNotImplemented
 }
 
@@ -22,14 +22,14 @@ func (c *client) GroupMessageCreate(context.Context, *GroupMessageCreateRequest)
 	return nil, ErrNotImplemented
 }
 
-func (c *client) GroupMessageList(*GroupMessageListRequest, GroupManager_GroupMessageListServer) error {
+func (c *client) GroupMessageList(*GroupMessageListRequest, Protocol_GroupMessageListServer) error {
 	return ErrNotImplemented
 }
 
-func (c *client) GroupPubSubTopicInit(GroupManager_GroupPubSubTopicInitServer) error {
+func (c *client) GroupPubSubTopicInit(Protocol_GroupPubSubTopicInitServer) error {
 	return ErrNotImplemented
 }
 
-func (c *client) GroupPubSubTopicSubscribe(*GroupPubSubTopicSubscribeRequest, GroupManager_GroupPubSubTopicSubscribeServer) error {
+func (c *client) GroupPubSubTopicSubscribe(*GroupPubSubTopicSubscribeRequest, Protocol_GroupPubSubTopicSubscribeServer) error {
 	return ErrNotImplemented
 }

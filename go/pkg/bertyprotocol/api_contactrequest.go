@@ -10,11 +10,11 @@ func (c *client) ContactRequestDiscard(context.Context, *ContactRequestDiscardRe
 	return nil, ErrNotImplemented
 }
 
-func (c *client) ContactRequestListIncoming(*ContactRequestListIncomingRequest, ContactRequestManager_ContactRequestListIncomingServer) error {
+func (c *client) ContactRequestListIncoming(*ContactRequestListIncomingRequest, Protocol_ContactRequestListIncomingServer) error {
 	return ErrNotImplemented
 }
 
-func (c *client) ContactRequestListOutgoing(*ContactRequestListOutgoingRequest, ContactRequestManager_ContactRequestListOutgoingServer) error {
+func (c *client) ContactRequestListOutgoing(*ContactRequestListOutgoingRequest, Protocol_ContactRequestListOutgoingServer) error {
 	return ErrNotImplemented
 }
 

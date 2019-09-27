@@ -42,7 +42,7 @@ func main() {
 			var err error
 			logger, err = config.Build()
 			if err != nil {
-				return fmt.Errorf("failed to initialize logger: %w", err)
+				return errors.Wrap(err, "failed to initialize logger")
 			}
 			logger.Debug("logger initialized in debug mode")
 		} else {
@@ -53,7 +53,7 @@ func main() {
 			var err error
 			logger, err = config.Build()
 			if err != nil {
-				return fmt.Errorf("failed to initialize logger: %w", err)
+				return errors.Wrap(err, "failed to initialize logger")
 			}
 		}
 		return nil

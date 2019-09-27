@@ -6,6 +6,6 @@ func (c *client) StreamManagerRequestToContact(context.Context, *StreamManagerRe
 	return nil, ErrNotImplemented
 }
 
-func (c *client) StreamManagerAccept(StreamManager_StreamManagerAcceptServer) error {
+func (c *client) StreamManagerAccept(Protocol_StreamManagerAcceptServer) error {
 	return ErrNotImplemented
 }

@@ -1,5 +1,6 @@
+3cf5157ef5ec9a8eed8660b0843945d384e3bad1  ../api/bertyprotocol.proto
 85030963b9dd2a9e133da98c6d6dbc1ce73993b0  ../api/internal/foo.proto
+961a4952e56eb176d8239981794e0bff5ebe9238  ../api/entity.proto
 a28f3a0f326eadd0a298d4ec789ba8733d8e94da  Makefile
 b139403f729a7cf26f2d2ecbde2d9b6524b5efe2  ../api/baz.proto
 bb0d4bdd5e638b97f5dd350eb3505645de48eda5  ../api/internal/bar.proto
-f233774beb279473e8a77da576775649ad2174c1  ../api/bertyprotocol.proto
