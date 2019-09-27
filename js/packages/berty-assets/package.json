@@ -1,11 +1,13 @@
 {
-  "name": "@berty-tech/assets",
+  "name": "@berty-tech/berty-assets",
   "version": "0.0.0",
-  "description": "Berty's assets",
+  "private": true,
+  "description": "",
+  "keywords": [],
   "author": "Berty Technologies <oss@berty.tech>",
-  "homepage": "https://github.com/berty/berty/tree/master/packages/assets#readme",
-  "license": "(Apache-2.0 OR MIT)",
-  "main": "index.js",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/berty-assets#readme",
+  "license": "(Apache-2.0 or MIT)",
+  "main": "lib/berty-assets.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -14,7 +16,7 @@
     "lib"
   ],
   "publishConfig": {
-    "access": "private"
+    "access": "restricted"
   },
   "repository": {
     "type": "git",

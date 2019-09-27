@@ -3,7 +3,8 @@ const glob = require('glob')
 
 module.exports = ({ config: storybookBaseConfig }) => {
   storybookBaseConfig.resolve.alias['^react-native$'] = 'react-native-web'
-  storybookBaseConfig.resolve.alias['^@storybook/react-native$'] = '@storybook/react'
+  storybookBaseConfig.resolve.alias['^@storybook/react-native$'] =
+    '@storybook/react'
   storybookBaseConfig.resolve.symlinks = true
 
   // TODO: replace by find
@@ -17,7 +18,7 @@ module.exports = ({ config: storybookBaseConfig }) => {
     /node_modules\/@berty-tech\/.*-storybook\//,
   ]
   console.log(
-    ...glob.sync(__dirname + '/../node_modules/@berty-tech/*-storybook'),
+    ...glob.sync(__dirname + '/../node_modules/@berty-tech/*-storybook')
   )
 
   const babelConfig = babelRule.use[0]

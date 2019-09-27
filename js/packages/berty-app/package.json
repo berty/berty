@@ -13,7 +13,8 @@
     "clisim": "^2.4.0",
     "react": "^16.9.0",
     "react-native": "^0.60.5",
-    "react-native-config": "^0.11.7"
+    "react-native-config": "^0.11.7",
+    "react-native-ui-kitten": "^4.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

@@ -13,7 +13,7 @@ deps.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader
 	cd $(PWD) && PWD=$(PWD) react-native start --reset-cache &
 deps.storybook: deps.storybook.mobile
 
-$(PWD)/storybook/storyLoader: $(PWD)/node_modules/@berty-tech/*-storybook
+$(PWD)/storybook/storyLoader:
 	rnstl \
 		--pattern '$(PWD)/node_modules/@berty-tech/*-storybook/storybook.tsx' \
 		--outputFile $(PWD)/storybook/storyLoader.js
