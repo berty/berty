@@ -24,6 +24,9 @@ module.exports = {
       }
     ),
   },
-  watchFolders: [path.join(process.cwd(), '../berty-storybook')],
+  watchFolders: [
+    path.join(process.cwd(), '../berty-storybook'),
+    path.join(process.cwd(), '../shared-storybook'),
+    path.join(process.cwd(), '../components'),
+  ],
 }
-

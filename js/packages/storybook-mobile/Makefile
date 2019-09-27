@@ -5,8 +5,8 @@ export SHELL := /bin/bash
 .PHONY: deps.storybook.mobile
 deps.storybook.mobile: export PWD := $(PWD)
 deps.storybook.mobile: $(PWD)/node_modules
-	cd $(PWD) && lsof -t -i :7007 || echo Y | start-storybook &
-	cd $(PWD) && react-native start &
+	#cd $(PWD) && lsof -t -i :7007 || echo Y | start-storybook
+	#cd $(PWD) && react-native start
 
 .PHONY: run.storybook.ios
 run.storybook.ios: export PWD := $(PWD)
