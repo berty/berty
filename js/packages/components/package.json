@@ -1,5 +1,5 @@
 {
-  "name": "@berty-tech/berty-storybook",
+  "name": "@berty-tech/components",
   "version": "0.0.0",
   "private": true,
   "description": "Berty's app storybook",
@@ -7,7 +7,7 @@
   "author": "Berty Technologies <oss@berty.tech>",
   "homepage": "https://github.com/berty/berty/tree/master/packages/stories#readme",
   "license": "(Apache-2.0 OR MIT)",
-  "main": "lib/stories.tsx",
+  "main": "lib/components.tsx",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -29,15 +29,10 @@
     "url": "https://github.com/n0izn0iz/berty/issues"
   },
   "peerDependencies": {
-    "@storybook/react-native": "*",
     "react": "*",
     "react-native": "*"
   },
-  "devDependencies": {
-    "@babel/core": "^7.6.2"
-  },
   "dependencies": {
-    "@babel/runtime": "^7.6.2",
-    "@berty-tech/components": "^0.0.0"
+    "@babel/runtime": "^7.6.2"
   }
 }

@@ -21,16 +21,16 @@
     "url": "https://github.com/n0izn0iz/berty/issues"
   },
   "dependencies": {
-    "react": "^16.8.1",
-    "react-native-web": "^0.11.7",
-    "@berty-tech/berty-storybook": "^0.0.0"
+    "@berty-tech/berty-storybook": "^0.0.0",
+    "@berty-tech/shared-storybook": "^0.0.0",
+    "glob": "^7.1.4",
+    "react-native-web": "^0.11.7"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
     "@berty-tech/babel-preset": "^0.0.0",
     "@storybook/react": "^5.2.1",
     "babel-loader": "^8.0.6",
-    "babel-plugin-react-native-web": "^0.11.7",
-    "react-scripts": "^3.1.1"
+    "babel-plugin-react-native-web": "^0.11.7"
   }
 }

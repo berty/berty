@@ -6,7 +6,7 @@
     "start": "react-native start"
   },
   "dependencies": {
-    "@berty-tech/react-native-example": "^0.0.1",
+    "@berty-tech/react-native-example": "^1.0.0",
     "clisim": "^2.4.0",
     "react": "16.8.6",
     "react-native": "0.60.5",

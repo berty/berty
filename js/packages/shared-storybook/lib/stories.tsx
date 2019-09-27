@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
+import { Example } from "@berty-tech/components"
 
 namespace Storybook {
 	export interface API {
@@ -24,7 +25,7 @@ export default (api: Storybook.API): void => {
 		return <View style={centeredView}>{props.children}</View>
 	}
 
-	api.storiesOf('BertyCenteredView', module).add('default view', function() {
+	api.storiesOf('SharedCenteredView', module).add('default view', function() {
 		return (
 			<CenteredView>
 				<Text>Hello Storybook</Text>
@@ -32,7 +33,15 @@ export default (api: Storybook.API): void => {
 		)
 	})
 
-	api.storiesOf('BertyOtherCenteredView', module).add('default view', function() {
+	api.storiesOf('SharedExampleComponent', module).add('default view', function() {
+		return (
+			<CenteredView>
+				<Example name="Shared" />
+			</CenteredView>
+		)
+	})
+
+	api.storiesOf('SharedOtherCenteredView', module).add('default view', function() {
 		return (
 			<CenteredView>
 				<Text>Hello Storybook 2</Text>

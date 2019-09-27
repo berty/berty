@@ -1,8 +1,11 @@
 import { configure, storiesOf } from '@storybook/react'
+import bertyStories from '@berty-tech/berty-storybook'
+import sharedStories from '@berty-tech/shared-storybook'
 
-import stories from '@berty-tech/berty-storybook'
-
-// import stories
-configure(() => {
-  stories({ storiesOf })
-}, module)
+configure(
+  () =>
+    [bertyStories, sharedStories].forEach((storybook) =>
+      storybook({ storiesOf })
+    ),
+  module
+)
