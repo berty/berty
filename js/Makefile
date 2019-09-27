@@ -49,7 +49,7 @@ print-%  : ; @echo $* = $($*)
 
 .NOTPARALLEL: $(pkg_mod) $(pkg_mod)/%
 $(pkg_mod)/%: $(mod) $(patsubst %,%/package.json,$(pkg))
-	$(lerna) $(lerna_flags) bootstrap
+	$(lerna) $(lerna_flags) bootstrap --hoist
 	mkdir -p $(pkg_mod)
 	touch $(pkg_mod) $@
 

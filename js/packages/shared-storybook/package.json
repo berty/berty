@@ -21,6 +21,10 @@
   "bugs": {
     "url": "https://github.com/berty/berty/issues"
   },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
   "dependencies": {
     "react-native-easy-grid": "^0.2.2",
     "react-native-ui-kitten": "^4.1.1"

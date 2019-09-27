@@ -49,6 +49,21 @@ run.storybook: run.storybook.mobile
 
 .IGNORE \
 .PHONY: \
+	clean \
+	clean.storybook \
+	clean.storybook.mobile \
+	clean.storybook.ios \
+	clean.storybook.android \
+
+clean.storybook.ios: clean.storybook.mobile
+clean.storybook.android: clean.storybook.mobile
+clean.storybook.mobile:
+	watchman watch-del-all
+clean.storybook: clean.storybook.mobile
+clean: clean.storybook
+
+.IGNORE \
+.PHONY: \
 	fclean \
 	fclean.storybook \
 	fclean.storybook.mobile \
@@ -70,4 +85,4 @@ fclean.storybook.mobile: fclean.storybook.ios fclean.storybook.android
 	watchman watch-del-all
 
 fclean.storybook: fclean.storybook.mobile
-fclean: fclean.storybook.mobile
+fclean: fclean.storybook
