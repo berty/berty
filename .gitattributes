@@ -5,6 +5,10 @@
 vendor/* linguist-vendored
 */vendor/* linguist-vendored
 client/common/openssl/built/* linguist-vendored
+gen.sum linguist-generated
+go.mod linguist-generated
+go.sum linguist-generated
+*.swagger.json linguist-generated
 *.gen.go linguist-generated
 *.gen.yml linguist-generated
 *.gen.graphql linguist-generated
