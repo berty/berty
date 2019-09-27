@@ -47,7 +47,8 @@ $(GEN_SUM): $(GEN_SRC)
 	    --entrypoint="sh" \
 	    --rm \
 	    bertytech/protoc:17 \
-	    -xec 'make generate_local' \
+	    -xec 'make generate_local'; \
+	    make tidy \
 	)
 
 .PHONY: generate_local
@@ -58,4 +59,3 @@ generate_local:
 	goimports -w ./pkg ./cmd ./internal
 	shasum $(GEN_SRC) | sort > $(GEN_SUM).tmp
 	mv $(GEN_SUM).tmp $(GEN_SUM)
-	make tidy
