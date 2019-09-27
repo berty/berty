@@ -7,13 +7,12 @@ author = Berty Technologies <oss@berty.tech>
 contributor = $(shell git config --get user.name) <$(shell git config --get user.email)>
 license = (Apache-2.0 or MIT)
 
+export SHELL = /usr/bin/env bash
 ifeq ($(UNAME_S),Darwin)
-export SHELL = /bin/bash
 npm := /usr/local/bin/npm
 pkg := $(shell find $(PWD)/packages -depth 1 -type d)
 endif
 ifeq ($(UNAME_S),Linux)
-export SHELL = /usr/bin/bash
 npm := /usr/bin/npm
 pkg := $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 1 -type d))
 else
@@ -142,4 +141,3 @@ include packages/berty-app/Makefile
 include packages/storybook-mobile/Makefile
 include packages/storybook-web/Makefile
 include packages/react-native-core/Makefile
-
