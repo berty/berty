@@ -68,8 +68,8 @@ go_repository(
 go_repository(
     name = "com_github_matrix_org_gomatrix",
     importpath = "github.com/matrix-org/gomatrix",
-    sum = "h1:piaIBNQGIHnni27xRB7VKkEwoWCgAmeuYf8pxAyG0bI=",
-    version = "v0.0.0-20190130130140-385f072fe9af",
+    sum = "h1:Hr3zjRsq2bhrnp3Ky1qgx/fzCtCALOoGYylh2tpS9K4=",
+    version = "v0.0.0-20190528120928-7df988a63f26",
 )
 
 go_repository(

@@ -2,7 +2,18 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "go_default_library",
-    srcs = ["doc.go"],
+    srcs = [
+        "doc.go",
+    ],
     importpath = "berty.tech/go/pkg/bertyprotocol",
     visibility = ["//visibility:public"],
+    deps = [
+        "//api:bertyprotocol_go_proto",
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@go_googleapis//google/api:annotations_go_proto",
+        "@io_bazel_rules_go//proto/wkt:descriptor_go_proto",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//codes:go_default_library",
+        "@org_golang_google_grpc//status:go_default_library",
+    ],
 )

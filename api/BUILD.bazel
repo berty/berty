@@ -12,3 +12,22 @@ go_proto_library(
     proto = ":baz_proto",
     visibility = ["//visibility:public"],
 )
+
+proto_library(
+    name = "bertyprotocol_proto",
+    srcs = ["bertyprotocol.proto"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_google_protobuf//:descriptor_proto",
+        "@go_googleapis//google/api:annotations_proto",
+    ],
+)
+
+go_proto_library(
+    name = "bertyprotocol_go_proto",
+    compilers = ["@io_bazel_rules_go//proto:go_grpc"],
+    importpath = "berty.tech/go/pkg/bertyprotocol",
+    proto = ":bertyprotocol_proto",
+    visibility = ["//visibility:public"],
+    deps = ["@go_googleapis//google/api:annotations_go_proto"],
+)

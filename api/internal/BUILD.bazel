@@ -10,8 +10,8 @@ proto_library(
 proto_library(
     name = "foo_proto",
     srcs = ["foo.proto"],
-    visibility = ["//visibility:public"],
     strip_import_prefix = "/api",
+    visibility = ["//visibility:public"],
     deps = [
         "@gogo_special_proto//github.com/gogo/protobuf/gogoproto",
         "@com_google_protobuf//:timestamp_proto",
