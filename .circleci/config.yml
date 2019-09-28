@@ -59,6 +59,55 @@ jobs:
           git diff -w | cat
           git diff-index -w --quiet HEAD --
 
+  bazel-build:
+    working_directory: /go/src/berty.tech
+    docker:
+      - image: n0izn0iz/bazel:0.29.1-ubuntu-18.04
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - bazel_build-v2-{{ .Branch }}
+            - bazel_build-v2-
+      - run: bazel build --sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 //...
+      - run: ls -laR bazel-bin/*
+      - save_cache:
+          key: bazel_build-v2-{{ .Branch }}
+          paths:
+            - "/root/.cache/bazel"
+
+  bazel-test:
+    working_directory: /go/src/berty.tech
+    docker:
+      - image: n0izn0iz/bazel:0.29.1-ubuntu-18.04
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - bazel_test-v2-{{ .Branch }}
+            - bazel_test-v2-
+      - run: bazel test --sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 //...
+      - save_cache:
+          key: bazel_test-v2-{{ .Branch }}
+          paths:
+            - "/root/.cache/bazel"
+
+  bazel-banner:
+    working_directory: /go/src/berty.tech
+    docker:
+      - image: n0izn0iz/bazel:0.29.1-ubuntu-18.04
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - bazel_banner-v2-{{ .Branch }}
+            - bazel_banner-v2-
+      - run: bazel run --sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 //go/cmd/bertychat banner
+      - save_cache:
+          key: bazel_banner-v2-{{ .Branch }}
+          paths:
+            - "/root/.cache/bazel"
+
 workflows:
   main:
     jobs:
@@ -66,3 +115,6 @@ workflows:
       - go-docker
       - go-generate
       - githooks
+      - bazel-build
+      - bazel-test
+      - bazel-banner
