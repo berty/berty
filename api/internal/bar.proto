@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package berty.internal.foo;
 
-import "api/internal/foo.proto";
+import "internal/foo.proto";
 
 option go_package = "berty.tech/go/internal/bar";
 
