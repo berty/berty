@@ -69,7 +69,7 @@ jobs:
           keys:
             - bazel_build-v2-{{ .Branch }}
             - bazel_build-v2-
-      - run: bazel build --sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 //...
+      - run: BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.build
       - run: ls -laR bazel-bin/*
       - save_cache:
           key: bazel_build-v2-{{ .Branch }}
@@ -86,7 +86,7 @@ jobs:
           keys:
             - bazel_test-v2-{{ .Branch }}
             - bazel_test-v2-
-      - run: bazel test --sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 //...
+      - run: BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.test
       - save_cache:
           key: bazel_test-v2-{{ .Branch }}
           paths:
@@ -102,7 +102,7 @@ jobs:
           keys:
             - bazel_banner-v2-{{ .Branch }}
             - bazel_banner-v2-
-      - run: bazel run --sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 //go/cmd/bertychat banner
+      - run: BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.banner
       - save_cache:
           key: bazel_banner-v2-{{ .Branch }}
           paths:
