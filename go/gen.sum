@@ -1,5 +1,5 @@
 85030963b9dd2a9e133da98c6d6dbc1ce73993b0  ../api/internal/foo.proto
-97616cdc1ef8b696099c83e0bc6c05a2e492e135  Makefile
 b139403f729a7cf26f2d2ecbde2d9b6524b5efe2  ../api/baz.proto
 bb0d4bdd5e638b97f5dd350eb3505645de48eda5  ../api/internal/bar.proto
+e62719502fe3cbd2f1fae7f00eb93561bcc05ef5  Makefile
 f233774beb279473e8a77da576775649ad2174c1  ../api/bertyprotocol.proto

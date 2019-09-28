@@ -3,26 +3,34 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 
 	"berty.tech/go/internal/banner"
+	"berty.tech/go/pkg/bertyprotocol"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
+	"github.com/pkg/errors"
 )
 
 func main() {
-	log.SetFlags(0)
+	logger := log.New(ioutil.Discard, "", 0)
 
 	var (
 		globalFlags = flag.NewFlagSet("bertychat", flag.ExitOnError)
 		globalDebug = globalFlags.Bool("debug", false, "debug mode")
 		bannerFlags = flag.NewFlagSet("banner", flag.ExitOnError)
 		bannerLight = bannerFlags.Bool("light", false, "light mode")
+		clientFlags = flag.NewFlagSet("client", flag.ExitOnError)
+		clientURN   = clientFlags.String("urn", ":memory:", "sqlite URN")
 	)
 
 	globalPreRun := func() error {
 		if *globalDebug {
+			logger = log.New(os.Stderr, "hello", 1)
 			log.Print("debug enabled")
 			// here: configure the logger
 		}
@@ -55,11 +63,41 @@ func main() {
 		},
 	}
 
+	daemon := &ffcli.Command{
+		Name:    "daemon",
+		Usage:   "daemon",
+		FlagSet: clientFlags,
+		Exec: func(args []string) error {
+			if err := globalPreRun(); err != nil {
+				return err
+			}
+
+			// initialize sqlite3 gorm
+			db, err := gorm.Open("sqlite3", *clientURN)
+			if err != nil {
+				return errors.Wrap(err, "failed to initialize gorm")
+			}
+			defer db.Close()
+
+			// Opts is optional
+			opts := bertyprotocol.Opts{
+				Logger: logger,
+			}
+
+			// initialize new client
+			client := bertyprotocol.New(db, opts)
+			defer client.Close()
+
+			logger.Println("client initialized, now starting... not implemented.")
+			return nil
+		},
+	}
+
 	root := &ffcli.Command{
 		Usage:       "bertychat [global flags] <subcommand> [flags] [args...]",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
-		Subcommands: []*ffcli.Command{banner, version},
+		Subcommands: []*ffcli.Command{daemon, banner, version},
 		Exec: func([]string) error {
 			return flag.ErrHelp
 		},

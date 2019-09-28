@@ -1,6 +1,6 @@
 .PHONY: install
 install: generate
-	go install ./cmd/...
+	go install -v ./cmd/...
 
 .PHONY: test
 test: unittest lint tidy
