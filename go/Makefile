@@ -46,7 +46,7 @@ $(GEN_SUM): $(GEN_SRC)
 	    --workdir="/go/src/berty.tech/go" \
 	    --entrypoint="sh" \
 	    --rm \
-	    bertytech/protoc:17 \
+	    bertytech/protoc:18 \
 	    -xec 'make generate_local'; \
 	    make tidy \
 	)
@@ -54,7 +54,7 @@ $(GEN_SUM): $(GEN_SRC)
 .PHONY: generate_local
 generate_local:
 	@set -e; for proto in $(PROTOS_SRC); do ( set -xe; \
-	  protoc -I ../api:../go/vendor:/protobuf --gofast_out="plugins=grpc:$(GOPATH)/src" "$$proto" \
+	  protoc -I ../api:../go/vendor:/protobuf --gogofaster_out="plugins=grpc:$(GOPATH)/src" "$$proto" \
 	); done
 	goimports -w ./pkg ./cmd ./internal
 	shasum $(GEN_SRC) | sort > $(GEN_SUM).tmp

@@ -9,7 +9,9 @@ RUN     go get -u \
           github.com/gogo/protobuf/gogoproto \
           github.com/gogo/protobuf/jsonpb \
           github.com/gogo/protobuf/proto \
-          github.com/gogo/protobuf/protoc-gen-gofast \
+          github.com/gogo/protobuf/protoc-gen-gogofast \
+          github.com/gogo/protobuf/protoc-gen-gogofaster \
+          github.com/gogo/protobuf/protoc-gen-gogoslick \
           github.com/gogo/protobuf/protoc-gen-gogo \
           github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
           github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
