@@ -1,9 +1,6 @@
 package bertyprotocol
 
 import (
-	"io/ioutil"
-	"log"
-
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
@@ -17,9 +14,7 @@ func ExampleNew() {
 	defer db.Close()
 
 	// Opts is optional
-	opts := Opts{
-		Logger: log.New(ioutil.Discard, "", 0),
-	}
+	opts := Opts{}
 
 	// initialize new client
 	client := New(db, opts)

@@ -3,9 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
+	"time"
 
 	"berty.tech/go/internal/banner"
 	"berty.tech/go/pkg/bertyprotocol"
@@ -14,12 +15,15 @@ import (
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func main() {
-	logger := log.New(ioutil.Discard, "", 0)
+	log.SetFlags(0)
 
 	var (
+		logger      *zap.Logger
 		globalFlags = flag.NewFlagSet("bertychat", flag.ExitOnError)
 		globalDebug = globalFlags.Bool("debug", false, "debug mode")
 		bannerFlags = flag.NewFlagSet("banner", flag.ExitOnError)
@@ -27,12 +31,35 @@ func main() {
 		clientFlags = flag.NewFlagSet("client", flag.ExitOnError)
 		clientURN   = clientFlags.String("urn", ":memory:", "sqlite URN")
 	)
+	defer func() {
+		if logger != nil {
+			logger.Sync()
+		}
+	}()
 
 	globalPreRun := func() error {
+		rand.Seed(time.Now().UnixNano())
 		if *globalDebug {
-			logger = log.New(os.Stderr, "hello", 1)
-			log.Print("debug enabled")
-			// here: configure the logger
+			config := zap.NewDevelopmentConfig()
+			config.Level.SetLevel(zap.DebugLevel)
+			config.DisableStacktrace = true
+			config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+			var err error
+			logger, err = config.Build()
+			if err != nil {
+				return fmt.Errorf("failed to initialize logger: %w", err)
+			}
+			logger.Debug("logger initialized in debug mode")
+		} else {
+			config := zap.NewDevelopmentConfig()
+			config.Level.SetLevel(zap.InfoLevel)
+			config.DisableStacktrace = true
+			config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+			var err error
+			logger, err = config.Build()
+			if err != nil {
+				return fmt.Errorf("failed to initialize logger: %w", err)
+			}
 		}
 		return nil
 	}
@@ -58,7 +85,7 @@ func main() {
 		Name:  "version",
 		Usage: "version",
 		Exec: func(args []string) error {
-			fmt.Println("latest")
+			fmt.Println("dev")
 			return nil
 		},
 	}
@@ -84,11 +111,14 @@ func main() {
 				Logger: logger,
 			}
 
-			// initialize new client
-			client := bertyprotocol.New(db, opts)
-			defer client.Close()
+			// initialize new protocol client
+			protocol := bertyprotocol.New(db, opts)
+			defer protocol.Close()
 
-			logger.Println("client initialized, now starting... not implemented.")
+			// initialize bertychat client
+			// FIXME: TODO
+
+			logger.Info("client initialized, now starting... not implemented.")
 			return nil
 		},
 	}
@@ -99,6 +129,7 @@ func main() {
 		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
 		Subcommands: []*ffcli.Command{daemon, banner, version},
 		Exec: func([]string) error {
+			globalFlags.Usage()
 			return flag.ErrHelp
 		},
 	}

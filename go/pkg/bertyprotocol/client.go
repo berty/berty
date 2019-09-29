@@ -1,9 +1,8 @@
 package bertyprotocol
 
 import (
-	"log"
-
 	"github.com/jinzhu/gorm"
+	"go.uber.org/zap"
 )
 
 var _ Client = (*client)(nil)
@@ -41,11 +40,14 @@ type client struct {
 
 // Opts contains optional configuration flags for building a new Client
 type Opts struct {
-	Logger *log.Logger
+	Logger *zap.Logger
 }
 
 // New initializes a new Client
 func New(db *gorm.DB, opts Opts) Client {
+	if opts.Logger == nil {
+		opts.Logger = zap.NewNop()
+	}
 	return &client{
 		db:   db,
 		opts: opts,
