@@ -1,13 +1,13 @@
 .PHONY: install
 install: generate
-	go install -v ./cmd/...
+	GO111MODULE=on go install -v ./cmd/...
 
 .PHONY: test
 test: unittest lint tidy
 
 .PHONY: unittest
 unittest: generate
-	go test -v -cover -coverprofile=coverage.txt -covermode=atomic -race ./...
+	GO111MODULE=on go test -v -cover -coverprofile=coverage.txt -covermode=atomic -race ./...
 
 .PHONY: lint
 lint: generate
@@ -15,7 +15,7 @@ lint: generate
 
 .PHONY: tidy
 tidy: generate
-	go mod tidy
+	GO111MODULE=on go mod tidy
 
 .PHONY: docker.build
 docker.build: generate

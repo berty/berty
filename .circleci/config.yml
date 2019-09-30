@@ -8,7 +8,7 @@ orbs:
   moul:    moul/build@1.12.1
 
 jobs:
-  go-build:
+  go-build-113:
     working_directory: /go/src/berty.tech/go
     docker:
       - image: circleci/golang:1.13
@@ -23,6 +23,36 @@ jobs:
       - run: PATH=$PATH:$(pwd)/bin make lint
       - codecov/upload:
           file: coverage.txt
+  go-build-112:
+    working_directory: /go/src/berty.tech/go
+    environment:
+      - GO111MODULE=on
+    docker:
+      - image: circleci/golang:1.12
+    steps:
+      - checkout:
+          path: /go/src/berty.tech
+      - moul/mod-download
+      - gotools/mod-tidy-check
+      - run: make install
+      - run: make unittest
+      - moul/install_golangci-lint
+      - run: PATH=$PATH:$(pwd)/bin make lint
+  go-build-111:
+    working_directory: /go/src/berty.tech/go
+    environment:
+      - GO111MODULE=on
+    docker:
+      - image: circleci/golang:1.11
+    steps:
+      - checkout:
+          path: /go/src/berty.tech
+      - moul/mod-download
+      - gotools/mod-tidy-check
+      - run: make install
+      - run: make unittest
+      - moul/install_golangci-lint
+      - run: PATH=$PATH:$(pwd)/bin make lint
   go-docker:
     working_directory: /go/src/berty.tech/go
     docker:
@@ -86,7 +116,9 @@ jobs:
 workflows:
   main:
     jobs:
-      - go-build
+      - go-build-113
+      - go-build-112
+      - go-build-111
       - go-docker
       - go-generate
       - githooks
