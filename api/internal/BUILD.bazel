@@ -1,5 +1,7 @@
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 
+# gazelle:ignore
+
 proto_library(
     name = "bar_proto",
     srcs = ["bar.proto"],
