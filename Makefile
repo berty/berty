@@ -16,3 +16,6 @@ clean:
 	cd docs; make clean
 
 include bazel.make
+
+print-%:
+	@echo $*: $($*)
