@@ -1,6 +1,8 @@
 3cf5157ef5ec9a8eed8660b0843945d384e3bad1  ../api/bertyprotocol.proto
 85030963b9dd2a9e133da98c6d6dbc1ce73993b0  ../api/internal/foo.proto
 961a4952e56eb176d8239981794e0bff5ebe9238  ../api/entity.proto
+ae05d50ce77bd7f8d80555112b6ebf3a77053992  ../api/internal/crypto_sigchain.proto
+ae3bed2b008dac1f233a6e62c9a98f37a56d508a  ../api/internal/crypto_sigchain_entry.proto
 b139403f729a7cf26f2d2ecbde2d9b6524b5efe2  ../api/baz.proto
 bb0d4bdd5e638b97f5dd350eb3505645de48eda5  ../api/internal/bar.proto
 e42a143c0964f230b4083b6800759ff60a97e167  Makefile

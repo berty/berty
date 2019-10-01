@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package sigchain;
+
+option go_package = "berty.tech/go/internal/cryptosigchain";
+
+import "internal/crypto_sigchain_entry.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+message SigChain {
+  bytes id = 1 [(gogoproto.customname) = "ID"];
+  repeated SigChainEntry entries = 2;
+}
