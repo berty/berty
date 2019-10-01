@@ -1,59 +1,106 @@
 package handshake
 
 import (
+	"crypto/rand"
 	"errors"
 
+	"github.com/libp2p/go-libp2p-core/crypto"
+	sign "github.com/libp2p/go-libp2p-core/crypto"
+
+	"golang.org/x/crypto/nacl/box"
+
 	"berty.tech/go/pkg/iface"
-	p2pCrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
-type module struct {
-	crypto iface.Crypto
+type module struct{}
+
+func bytesSliceToArray(slice []byte) (*[32]byte, error) {
+	var arr [32]byte
+
+	if len(slice) != 32 {
+		return nil, errors.New("invalid key size")
+	}
+
+	for i, c := range slice {
+		arr[i] = c
+	}
+
+	return &arr, nil
 }
 
-func (m *module) Crypto() iface.Crypto {
-	return m.crypto
+func b32Slice(arr *[32]byte) []byte {
+	var ret = make([]byte, 32)
+	for i, c := range arr {
+		ret[i] = c
+	}
+
+	return ret
 }
 
-func (m *module) Init() (iface.HandshakeSession, error) {
+func (m *module) init(ownDevicePrivateKey sign.PrivKey, ownSigChain iface.SigChain) (*handshakeSession, error) {
 	// TODO: make sure to generate the right type of private key
+	boxPub, boxPriv, err := box.GenerateKey(rand.Reader)
+	if err != nil {
+		return nil, err
+	}
 
-	priv, err := m.crypto.GeneratePrivateKey()
+	signPriv, _, err := sign.GenerateEd25519Key(rand.Reader)
+
 	if err != nil {
 		return nil, err
 	}
 
 	return &handshakeSession{
-		crypto:         m.crypto,
-		selfPrivateKey: priv,
-		selfPublicKey:  priv.GetPublic(),
-		nonce:          0,
+		ownDevicePrivateKey:   ownDevicePrivateKey,
+		ownSigChain:           ownSigChain,
+		selfBoxPublicKey:      boxPub,
+		selfBoxPrivateKey:     boxPriv,
+		selfSigningPrivateKey: signPriv,
+		nonce:                 0,
 	}, nil
 }
 
-func (m *module) Join(sigPubKey p2pCrypto.PubKey) (iface.HandshakeSession, error) {
-	// TODO: include cipher suite to allow protocol updates?
-	// TODO: ensure sigPubKey is supported
-
-	session, err := m.Init()
+func (m *module) NewRequest(ownDevicePrivateKey crypto.PrivKey, ownSigChain iface.SigChain, accountToReach crypto.PubKey) (iface.HandshakeSession, error) {
+	session, err := m.init(ownDevicePrivateKey, ownSigChain)
 	if err != nil {
 		return nil, err
 	}
 
-	session.SetOtherPubKey(sigPubKey)
-
-	rawSession, ok := session.(*handshakeSession)
-	if !ok {
-		return nil, errors.New("unable to cast session")
-	}
-
-	rawSession.incrementNonce()
+	session.setAccountKeyToProve(accountToReach)
 
 	return session, nil
 }
 
-func NewHandshakeModule(crypto iface.Crypto) iface.CryptoHandshakeModule {
-	return &module{crypto: crypto}
+func (m *module) NewResponse(ownDevicePrivateKey crypto.PrivKey, ownSigChain iface.SigChain, marshaledSigKey []byte, boxKey []byte) (iface.HandshakeSession, error) {
+	// TODO: include cipher suite to allow protocol updates?
+	sigKey, err := sign.UnmarshalPublicKey(marshaledSigKey)
+	if err != nil {
+		return nil, err
+	}
+
+	if sigKey.Type() != SupportedKeyType {
+		return nil, errors.New("unsupported key type")
+	}
+
+	session, err := m.init(ownDevicePrivateKey, ownSigChain)
+	if err != nil {
+		return nil, err
+	}
+
+	err = session.SetOtherKeys(sigKey, boxKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return session, nil
 }
 
-var _ iface.CryptoHandshakeModule = (*module)(nil)
+func Module() iface.CryptoHandshakeModule {
+	if instance == nil {
+		instance = &module{}
+	}
+
+	return instance
+}
+
+var instance iface.CryptoHandshakeModule = (*module)(nil)

@@ -100,7 +100,7 @@ func (g *wrappedGroup) getCurrentSecretForKey(key crypto.PubKey) (iface.CryptoGr
 }
 
 func (g *wrappedGroup) getOwnCurrentSecret() (iface.CryptoGroupMember, error) {
-	return g.getCurrentSecretForKey(g.crypto.GetPublicKey())
+	return g.getCurrentSecretForKey(g.crypto.GetDevicePublicKey())
 }
 
 //func NewGroupFromIface(group iface.Group) (*Group, error) {

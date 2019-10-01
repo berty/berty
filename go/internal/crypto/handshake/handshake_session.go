@@ -4,55 +4,72 @@ import (
 	"encoding/binary"
 	"errors"
 
-	"berty.tech/go/pkg/iface"
 	"github.com/libp2p/go-libp2p-core/crypto"
+
+	"berty.tech/go/pkg/iface"
 	"golang.org/x/crypto/nacl/box"
 )
 
+const SupportedKeyType = crypto.Ed25519
+
 type handshakeSession struct {
-	crypto         iface.Crypto
-	selfPrivateKey crypto.PrivKey
-	selfPublicKey  crypto.PubKey
-	otherPublicKey crypto.PubKey
-	nonce          uint16
+	ownSigChain           iface.SigChain
+	ownDevicePrivateKey   crypto.PrivKey
+	selfBoxPrivateKey     *[32]byte
+	selfBoxPublicKey      *[32]byte
+	otherBoxPublicKey     *[32]byte
+	nonce                 uint16
+	selfSigningPrivateKey crypto.PrivKey
+	otherSigningPublicKey crypto.PubKey
+	accountKeyToProve     crypto.PubKey
 }
 
-func (h *handshakeSession) SetOtherPubKey(key crypto.PubKey) {
-	h.otherPublicKey = key
+func (h *handshakeSession) SetOtherKeys(sign crypto.PubKey, box []byte) error {
+	keyArr, err := bytesSliceToArray(box)
+	if err != nil {
+		return err
+	}
+
+	if sign.Type() != SupportedKeyType {
+		return errors.New("invalid key type")
+	}
+
+	h.otherSigningPublicKey = sign
+	h.otherBoxPublicKey = keyArr
+
+	return nil
 }
 
-func (h *handshakeSession) Crypto() iface.Crypto {
-	return h.crypto
+func (h *handshakeSession) setAccountKeyToProve(key crypto.PubKey) {
+	h.accountKeyToProve = key
 }
 
-func computeValueToProvePubKey(keyToProve, signerKey crypto.PubKey) ([]byte, error) {
-	if keyToProve == nil || signerKey == nil {
+func (h *handshakeSession) GetPublicKeys() (sign crypto.PubKey, box []byte) {
+	return h.selfSigningPrivateKey.GetPublic(), b32Slice(h.selfBoxPublicKey)
+}
+
+//func (h *handshakeSession) Crypto() iface.Crypto {
+//	return h.crypto
+//}
+
+func computeValueToProvePubKey(keyToProve crypto.PubKey, receiverSigKey *[32]byte) ([]byte, error) {
+	if keyToProve == nil || receiverSigKey == nil {
 		return nil, errors.New("missing a key")
 	}
 
-	otherPubKeyBytes, err := keyToProve.Raw()
+	keyToProveBytes, err := keyToProve.Raw()
 	if err != nil {
 		return nil, err
 	}
 
-	selfPubKeyBytes, err := signerKey.Raw()
-	if err != nil {
-		return nil, err
-	}
-
-	signedValue := append(otherPubKeyBytes, selfPubKeyBytes...)
+	signedValue := append(keyToProveBytes, b32Slice(receiverSigKey)...)
 
 	return signedValue, nil
 }
 
-func computeValueToProveDevicePubKeyAndSigChain(keyToProve crypto.PubKey, chain iface.SigChain) ([]byte, error) {
+func computeValueToProveDevicePubKeyAndSigChain(keyToProve *[32]byte, chain iface.SigChain) ([]byte, error) {
 	if keyToProve == nil || chain == nil {
 		return nil, errors.New("missing a key or sig chain")
-	}
-
-	deviceKeyBytes, err := keyToProve.Raw()
-	if err != nil {
-		return nil, err
 	}
 
 	sigChainBytes, err := chain.Marshal()
@@ -60,23 +77,24 @@ func computeValueToProveDevicePubKeyAndSigChain(keyToProve crypto.PubKey, chain 
 		return nil, err
 	}
 
-	signedValue := append(sigChainBytes, deviceKeyBytes...)
+	signedValue := append(sigChainBytes, b32Slice(keyToProve)...)
 
 	return signedValue, nil
 }
 
-func (h *handshakeSession) ProveOtherKey(key crypto.PubKey) ([]byte, error) {
-	if key == nil {
+func (h *handshakeSession) ProveOtherKey() ([]byte, error) {
+	// Step 3a (out) : sig_a1(B·b1)
+	if h.accountKeyToProve == nil {
 		return nil, errors.New("missing a key to prove")
 	}
 
-	// Step 3a
-	signedValue, err := computeValueToProvePubKey(key, h.selfPublicKey)
+	signedValue, err := computeValueToProvePubKey(h.accountKeyToProve, h.otherBoxPublicKey)
+
 	if err != nil {
 		return nil, err
 	}
 
-	sig, err := h.selfPrivateKey.Sign(signedValue)
+	sig, err := h.selfSigningPrivateKey.Sign(signedValue)
 	if err != nil {
 		return nil, err
 	}
@@ -85,13 +103,18 @@ func (h *handshakeSession) ProveOtherKey(key crypto.PubKey) ([]byte, error) {
 }
 
 func (h *handshakeSession) CheckOwnKeyProof(sig []byte) error {
-	// Step 3a
-	signedValue, err := computeValueToProvePubKey(h.selfPublicKey, h.otherPublicKey)
+	// Step 3a (in) : ensure sig_a1(B·b1) is valid
+	accountPubKey, err := h.ownSigChain.GetInitialEntry().GetSubject()
 	if err != nil {
 		return err
 	}
 
-	ok, err := h.otherPublicKey.Verify(signedValue, sig)
+	signedValue, err := computeValueToProvePubKey(accountPubKey, h.selfBoxPublicKey)
+	if err != nil {
+		return err
+	}
+
+	ok, err := h.otherSigningPublicKey.Verify(signedValue, sig)
 	if err != nil {
 		return err
 	}
@@ -104,13 +127,13 @@ func (h *handshakeSession) CheckOwnKeyProof(sig []byte) error {
 }
 
 func (h *handshakeSession) ProveOwnDeviceKey() ([]byte, error) {
-	// sigB1(BsigChain·a1)
-	signedValue, err := computeValueToProveDevicePubKeyAndSigChain(h.otherPublicKey, h.crypto.GetSigChain())
+	// Step 4a : sig_B1(BsigChain·a1)
+	signedValue, err := computeValueToProveDevicePubKeyAndSigChain(h.otherBoxPublicKey, h.ownSigChain)
 	if err != nil {
 		return nil, err
 	}
 
-	sig, err := h.selfPrivateKey.Sign(signedValue)
+	sig, err := h.ownDevicePrivateKey.Sign(signedValue)
 	if err != nil {
 		return nil, err
 	}
@@ -119,12 +142,14 @@ func (h *handshakeSession) ProveOwnDeviceKey() ([]byte, error) {
 }
 
 func (h *handshakeSession) CheckOtherKeyProof(sig []byte, chain iface.SigChain, deviceKey crypto.PubKey) error {
-	signedValue, err := computeValueToProveDevicePubKeyAndSigChain(h.selfPublicKey, chain)
+	// Step 4a : ensure sig_B1(BsigChain·a1) is valid
+	signedValue, err := computeValueToProveDevicePubKeyAndSigChain(h.selfBoxPublicKey, chain)
 	if err != nil {
 		return err
 	}
 
 	ok, err := deviceKey.Verify(signedValue, sig)
+
 	if err != nil {
 		return err
 	}
@@ -133,20 +158,24 @@ func (h *handshakeSession) CheckOtherKeyProof(sig []byte, chain iface.SigChain, 
 		return errors.New("signature is not valid")
 	}
 
-	return nil
+	entries := chain.ListCurrentPubKeys()
+	for _, e := range entries {
+		if e.Equals(deviceKey) {
+			return nil
+		}
+	}
+
+	return errors.New("key not found in sig chain")
 }
 
 func (h *handshakeSession) ProveOtherKnownAccount() ([]byte, error) {
-	if h.otherPublicKey == nil {
-		return nil, errors.New("handshake session has not been properly initialized")
-	}
-
-	pubKeyBytes, err := h.otherPublicKey.Raw()
+	// Step 3b : sigA1(b1)
+	pubKeyBytes, err := h.otherSigningPublicKey.Raw()
 	if err != nil {
 		return nil, err
 	}
 
-	sig, err := h.crypto.Sign(pubKeyBytes)
+	sig, err := h.ownDevicePrivateKey.Sign(pubKeyBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -155,7 +184,8 @@ func (h *handshakeSession) ProveOtherKnownAccount() ([]byte, error) {
 }
 
 func (h *handshakeSession) CheckOwnKnownAccountProof(attemptedDeviceKey crypto.PubKey, sig []byte) error {
-	pubKeyBytes, err := h.crypto.GetPublicKey().Raw()
+	// Step 3b : Ensure sigA1(b1) is valid
+	pubKeyBytes, err := h.selfSigningPrivateKey.GetPublic().Raw()
 	if err != nil {
 		return err
 	}
@@ -172,42 +202,14 @@ func (h *handshakeSession) CheckOwnKnownAccountProof(attemptedDeviceKey crypto.P
 	return nil
 }
 
-func (h *handshakeSession) getBoxKeys() ([32]byte, [32]byte, error) {
-	var pubKeyBytes [32]byte
-	var privateKeyBytes [32]byte
-
-	if h.otherPublicKey == nil || h.selfPrivateKey == nil {
-		return pubKeyBytes, privateKeyBytes, errors.New("handshake session has not been properly initialized")
-	}
-
-	pubKeySlice, err := h.otherPublicKey.Raw()
-	if err != nil {
-		return pubKeyBytes, privateKeyBytes, err
-	}
-	copy(pubKeySlice[:], pubKeyBytes[:32])
-
-	privKeySlice, err := h.selfPrivateKey.Raw()
-	if err != nil {
-		return pubKeyBytes, privateKeyBytes, err
-	}
-	copy(privKeySlice[:], privateKeyBytes[:32])
-
-	return pubKeyBytes, privateKeyBytes, nil
-}
-
-func (h *handshakeSession) incrementNonce() {
-	h.nonce++
-}
-
 func (h *handshakeSession) Encrypt(data []byte) ([]byte, error) {
+	if h.otherBoxPublicKey == nil || h.selfBoxPrivateKey == nil {
+		return nil, errors.New("handshake session has not been properly initialized")
+	}
+
 	nonce := h.getNonce()
 
-	pubKeyBytes, privateKeyBytes, err := h.getBoxKeys()
-	if err != nil {
-		return nil, err
-	}
-
-	out := box.Seal(nil, data, &nonce, &pubKeyBytes, &privateKeyBytes)
+	out := box.Seal(nil, data, &nonce, h.otherBoxPublicKey, h.selfBoxPrivateKey)
 
 	h.incrementNonce()
 
@@ -215,14 +217,13 @@ func (h *handshakeSession) Encrypt(data []byte) ([]byte, error) {
 }
 
 func (h *handshakeSession) Decrypt(data []byte) ([]byte, error) {
-	nonce := h.getNonce()
-
-	pubKeyBytes, privateKeyBytes, err := h.getBoxKeys()
-	if err != nil {
-		return nil, err
+	if h.otherBoxPublicKey == nil || h.selfBoxPrivateKey == nil {
+		return nil, errors.New("handshake session has not been properly initialized")
 	}
 
-	out, ok := box.Open(nil, data, &nonce, &pubKeyBytes, &privateKeyBytes)
+	nonce := h.getNonce()
+
+	out, ok := box.Open(nil, data, &nonce, h.otherBoxPublicKey, h.selfBoxPrivateKey)
 	if !ok {
 		return nil, errors.New("unable to decrypt data")
 	}
@@ -232,13 +233,19 @@ func (h *handshakeSession) Decrypt(data []byte) ([]byte, error) {
 	return out, nil
 }
 
+func (h *handshakeSession) incrementNonce() {
+	h.nonce++
+}
+
 func (h *handshakeSession) getNonce() [24]byte {
 	var out [24]byte
 	var nonce = make([]byte, 24)
 
 	binary.BigEndian.PutUint16(nonce, h.nonce)
 
-	copy(out[:], nonce)
+	for i, c := range nonce {
+		out[i] = c
+	}
 
 	return out
 }

@@ -67,9 +67,10 @@ type Crypto interface {
 	CryptoModule
 
 	// Getters
-	GetPublicKey() crypto.PubKey
+	GetDevicePublicKey() crypto.PubKey
 	GetPublicRendezvousSeed(ctx context.Context) ([]byte, error)
 	GetSigChain() SigChain
+	GetAccountPublicKey() (crypto.PubKey, error)
 	GetSigChainForAccount(accountID []byte) (SigChain, error)
 
 	// Actions
@@ -80,7 +81,6 @@ type Crypto interface {
 	SetDerivationStatusForGroupMember(ctx context.Context, member CryptoGroupMember, derivationStatus []byte, counter uint64) error
 
 	// Modules
-	Handshake() CryptoHandshakeModule
 	Groups() CryptoGroupsModule
 
 	// Subscriptions
@@ -91,11 +91,14 @@ type Crypto interface {
 
 type HandshakeSession interface {
 	// Parent
-	Crypto() Crypto
+	//Crypto() Crypto
+
+	// Getters/Setters
+	SetOtherKeys(sign crypto.PubKey, box []byte) error
+	GetPublicKeys() (sign crypto.PubKey, box []byte)
 
 	// Actions
-	SetOtherPubKey(key crypto.PubKey)
-	ProveOtherKey(key crypto.PubKey) ([]byte, error)
+	ProveOtherKey() ([]byte, error)
 	CheckOwnKeyProof(sig []byte) error
 	ProveOwnDeviceKey() ([]byte, error)
 	CheckOtherKeyProof(sig []byte, chain SigChain, deviceKey crypto.PubKey) error
@@ -159,17 +162,17 @@ type CryptoGroupsModule interface {
 }
 
 type CryptoHandshakeModule interface {
-	Crypto() Crypto
+	//Crypto() Crypto
 
-	Init() (HandshakeSession, error)
-	Join(sigPubKey crypto.PubKey) (HandshakeSession, error)
+	NewRequest(ownDevicePrivateKey crypto.PrivKey, ownSigChain SigChain, accountKey crypto.PubKey) (HandshakeSession, error)
+	NewResponse(ownDevicePrivateKey crypto.PrivKey, ownSigChain SigChain, sigKey []byte, boxKey []byte) (HandshakeSession, error)
 }
 
 type CryptoModule interface {
 	// Open crypto instance
-	InitNewIdentity(ctx context.Context, ds CryptoDataStore) (Crypto, crypto.PrivKey, error)
-	InitFromOtherDeviceIdentity(ctx context.Context, ds CryptoDataStore /* other params */) (Crypto, crypto.PrivKey, error)
-	OpenIdentity(ctx context.Context, ds CryptoDataStore, key crypto.PrivKey, chain SigChain) (Crypto, error)
+	InitNewIdentity(ctx context.Context, ds DataStore) (Crypto, crypto.PrivKey, error)
+	InitFromOtherDeviceIdentity(ctx context.Context, ds DataStore /* other params */) (Crypto, crypto.PrivKey, error)
+	OpenIdentity(ctx context.Context, ds DataStore, key crypto.PrivKey, chain SigChain) (Crypto, error)
 
 	//
 	InitSigChain(crypto.PrivKey) (SigChain, error)

@@ -2,31 +2,45 @@ package crypto
 
 import (
 	"context"
+	"errors"
 
 	"berty.tech/go/internal/crypto/group"
 
-	"berty.tech/go/internal/crypto/handshake"
 	"berty.tech/go/pkg/iface"
-	p2pCrypto "github.com/libp2p/go-libp2p-core/crypto"
+	sign "github.com/libp2p/go-libp2p-core/crypto"
 )
 
 type crypto struct {
 	iface.CryptoModule
 
-	groups    iface.CryptoGroupsModule
-	handshake iface.CryptoHandshakeModule
+	groups iface.CryptoGroupsModule
 
-	privKey  p2pCrypto.PrivKey
+	privKey  sign.PrivKey
 	sigChain iface.SigChain
-	store    iface.CryptoDataStore
+	store    iface.DataStore
 }
 
 func (c *crypto) GetSigChainForAccount(accountID []byte) (iface.SigChain, error) {
 	panic("implement me")
 }
 
-func (c *crypto) GetPublicKey() p2pCrypto.PubKey {
+func (c *crypto) GetDevicePublicKey() sign.PubKey {
 	return c.privKey.GetPublic()
+}
+
+func (c *crypto) GetAccountPublicKey() (sign.PubKey, error) {
+	initialEntry := c.sigChain.GetInitialEntry()
+
+	if initialEntry.GetEntryType() != iface.SigChainEntryType_INIT_CHAIN {
+		return nil, errors.New("first sig chain node is invalid")
+	}
+
+	pubKey, err := initialEntry.GetSubject()
+	if err != nil {
+		return nil, err
+	}
+
+	return pubKey, nil
 }
 
 func (c *crypto) GetPublicRendezvousSeed(ctx context.Context) ([]byte, error) {
@@ -41,7 +55,7 @@ func (c *crypto) Sign(data []byte) ([]byte, error) {
 	return c.privKey.Sign(data)
 }
 
-func (c *crypto) AddDeviceToOwnSigChain(ctx context.Context, key p2pCrypto.PubKey) error {
+func (c *crypto) AddDeviceToOwnSigChain(ctx context.Context, key sign.PubKey) error {
 	_, err := c.sigChain.AddEntry(c.privKey, key)
 	return err
 }
@@ -60,10 +74,6 @@ func (c *crypto) SetDerivationStatusForGroupMember(ctx context.Context, member i
 	panic("implement me")
 }
 
-func (c *crypto) Handshake() iface.CryptoHandshakeModule {
-	return c.handshake
-}
-
 func (c *crypto) Groups() iface.CryptoGroupsModule {
 	return c.groups
 }
@@ -77,7 +87,7 @@ func (c *crypto) Close() error {
 	return nil
 }
 
-func NewCrypto(module iface.CryptoModule, store iface.CryptoDataStore, privKey p2pCrypto.PrivKey, sigChain iface.SigChain) iface.Crypto {
+func NewCrypto(module iface.CryptoModule, store iface.DataStore, privKey sign.PrivKey, sigChain iface.SigChain) iface.Crypto {
 	c := &crypto{
 		CryptoModule: module,
 		privKey:      privKey,
@@ -85,7 +95,6 @@ func NewCrypto(module iface.CryptoModule, store iface.CryptoDataStore, privKey p
 		store:        store,
 	}
 
-	c.handshake = handshake.NewHandshakeModule(c)
 	c.groups = group.NewGroupsModule(c)
 
 	return c
