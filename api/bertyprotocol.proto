@@ -1,135 +1,200 @@
 syntax = "proto3";
 
-option go_package = "berty.tech/go/pkg/bertyprotocol";
-
 import "google/api/annotations.proto";
 import "google/protobuf/descriptor.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-service ClientManager {
-  rpc CurrentDeviceExportData (CurrentDeviceExportDataRequest) returns (CurrentDeviceExportDataReply) { option (google.api.http) = {post: "/current-device/export-data"}; };
-  rpc CurrentDeviceGetConfiguration (CurrentDeviceGetConfigurationRequest) returns (CurrentDeviceGetConfigurationReply);
-}
+option go_package = "berty.tech/go/pkg/bertyprotocol";
 
-service AccountManager {
+option (gogoproto.benchgen_all) = false;
+option (gogoproto.compare_all) = false;
+option (gogoproto.description_all) = false;
+option (gogoproto.enum_stringer_all) = false;
+option (gogoproto.enumdecl_all) = true;
+option (gogoproto.equal_all) = false;
+option (gogoproto.face_all) = false;
+option (gogoproto.gogoproto_import) = false;
+option (gogoproto.goproto_enum_prefix_all) = true;
+option (gogoproto.goproto_enum_stringer_all) = false;
+option (gogoproto.goproto_extensions_map_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.goproto_registration) = false;
+//option (gogoproto.goproto_sizecache_all) = false;
+option (gogoproto.goproto_stringer_all) = false;
+//option (gogoproto.goproto_unkeyed_all) = false;
+option (gogoproto.goproto_unrecognized_all) = false;
+option (gogoproto.gostring_all) = false;
+option (gogoproto.marshaler_all) = false;
+option (gogoproto.messagename_all) = false;
+option (gogoproto.onlyone_all) = false;
+option (gogoproto.populate_all) = false;
+option (gogoproto.protosizer_all) = false;
+option (gogoproto.sizer_all) = false;
+option (gogoproto.stable_marshaler_all) = false;
+option (gogoproto.stringer_all) = true;
+option (gogoproto.testgen_all) = false;
+option (gogoproto.typedecl_all) = true;
+option (gogoproto.unmarshaler_all) = false;
+option (gogoproto.unsafe_marshaler_all) = false;
+option (gogoproto.unsafe_unmarshaler_all) = false;
+option (gogoproto.verbose_equal_all) = false;
+
+
+// Protocol is the top-level API to manage your account. Each account is associated with a Berty user.
+service Protocol {
+  // InstanceExportData exports instance data
+  rpc InstanceExportData (InstanceExportDataRequest) returns (InstanceExportDataReply) { option (google.api.http) = {post: "/instance/export-data"}; };
+
+  // InstanceGetConfiguration gets current configuration of this protocol instance
+  rpc InstanceGetConfiguration (InstanceGetConfigurationRequest) returns (InstanceGetConfigurationReply);
+
+
+  //// AccountManager
+  // An account is associated with a Berty user
+
+  // AccountGetConfiguration get current account global configuration (shared between all devices linked to current account)
   rpc AccountGetConfiguration (AccountGetConfigurationRequest) returns (AccountGetConfigurationReply);
+
+  // AccountGetInformation get current account global information (shared between all devices linked to current account)
   rpc AccountGetInformation (AccountGetInformationRequest) returns (AccountGetInformationReply);
+
+  // AccountLinkNewDevice link a new device to this account
   rpc AccountLinkNewDevice (AccountLinkNewDeviceRequest) returns (AccountLinkNewDeviceReply);
+
+  // AccountDisableIncomingContactRequest disable incoming contact request, under the hood, this will make you undiscoverable for new contact
   rpc AccountDisableIncomingContactRequest (AccountDisableIncomingContactRequestRequest) returns (AccountDisableIncomingContactRequestReply);
+
+  // AccountEnableIncomingContactRequest enable incoming contact request
   rpc AccountEnableIncomingContactRequest (AccountEnableIncomingContactRequestRequest) returns (AccountEnableIncomingContactRequestReply);
+
+  // AccountResetIncomingContactRequestLink invalidate the request link
   rpc AccountResetIncomingContactRequestLink (AccountResetIncomingContactRequestLinkRequest) returns (AccountResetIncomingContactRequestLinkReply);
-}
 
-service EventManager {
+
+  //// Event Manager
+  // Event Stream is a channel on which all the events of the protocol are
+  // published (contact request, new incoming message, etc...).
+
+  // EventSubscribe listen for real time protocol events
   rpc EventSubscribe (EventSubscribeRequest) returns (stream EventStream);
-}
 
-service ContactRequestManager {
+
+  //// ContactRequestManager
+  // Two accounts can be considered as contacts if a contact request from one has been accepted by the other and secrets
+  // for further communication have been exchanged.
+
+  // ContactRequestAccept accepts the given contact request, the requester signature is included so any of their device
+  // can accept the contact request
   rpc ContactRequestAccept (ContactRequestAcceptRequest) returns (ContactRequestAcceptReply);
+
+  // ContactRequestDiscard discards the given contact request
   rpc ContactRequestDiscard (ContactRequestDiscardRequest) returns (ContactRequestDiscardReply);
+
+  // ContactRequestListIncoming lists incoming contact request sent to your account
   rpc ContactRequestListIncoming (ContactRequestListIncomingRequest) returns (stream ContactRequestListIncomingReply);
+
+  // ContactRequestListIncoming lists pending contact request sent by your account
   rpc ContactRequestListOutgoing (ContactRequestListOutgoingRequest) returns (stream ContactRequestListOutgoingReply);
+
+  // ContactRequestSend sends a contact request to the given contact
   rpc ContactRequestSend (ContactRequestSendRequest) returns (ContactRequestSendReply);
-}
 
-service ContactManager {
+
+  //// Contact Manager
+
+  // ContactGet gets contact's information
   rpc ContactGet (ContactGetRequest) returns (ContactGetReply);
+
+  // ContactList lists contacts of this account
   rpc ContactList (ContactListRequest) returns (stream ContactListReply);
+
+  // ContactList removes the given contact
   rpc ContactRemove (ContactRemoveRequest) returns (ContactRemoveReply);
-}
 
-service StreamManager {
+
+  //// Stream Manager
+
+  // StreamManagerRequestToContact requests a stream to a specific contact
   rpc StreamManagerRequestToContact (StreamManagerRequestToContactRequest) returns (StreamManagerRequestToContactReply);
+
+  // StreamManagerAccept accepts a stream request, and create a stream with the
+  // contact that sent you this request
   rpc StreamManagerAccept (stream StreamManagerAcceptRequest) returns (stream StreamManagerAcceptReply);
-}
 
-// TODO: check comment below
-// A Group is a set of Devices, which can be between a user own Devices or two or more individuals.
-// All communication between devices except ContactRequests goes through a Group
 
-service GroupManager {
+  //// Group Manager
+  // A group is a common communication channel shared by a set of devices. It can be devices from different accounts. In
+  // the context of the Berty messaging application, groups are used for all conversations between contacts, whether
+  // they include two or more contacts.
+
+  // GroupCreate initiate a group locally
   rpc GroupCreate (GroupCreateRequest) returns (GroupCreateReply);
+
+  // GroupGenerateInviteLink generates an invitation link used to send the invitation to
+  // the other group members
   rpc GroupGenerateInviteLink (GroupGenerateInviteLinkRequest) returns (GroupGenerateInviteLinkReply);
+
+  // GroupLeave leaves a group
   rpc GroupLeave (GroupLeaveRequest) returns (GroupLeaveReply);
+
+  // GroupList lists all group for this account
   rpc GroupList (GroupListRequest) returns (stream GroupListReply);
+
+
+  /// Group Message Manager
+
+  // GroupMessageCreate creates a new message for the group, and send the invitation to
+  // the other group members.
   rpc GroupMessageCreate (GroupMessageCreateRequest) returns (GroupMessageCreateReply);
+
+  // GroupMessageList lists messages from this group
   rpc GroupMessageList (GroupMessageListRequest) returns (stream GroupMessageListReply);
 
-  // GroupPubSubTopic uses pub sub to send volatile updates to other group members
+  // GroupPubSubTopic return a stream used to publish volatile updates to other group members
+  // on a specific topic
   rpc GroupPubSubTopicInit (stream GroupPubSubTopicInitRequest) returns (GroupPubSubTopicInitReply);
-  rpc GroupPubSubTopicSubscribe (GroupPubSubTopicSubscribeRequest) returns (stream GroupPubSubTopicSubscribeReply);
-}
 
-service GroupInvitationManager {
+  // GroupPubSubTopicSubscribe subscribes to a topic to receive volatile message from it
+  rpc GroupPubSubTopicSubscribe (GroupPubSubTopicSubscribeRequest) returns (stream GroupPubSubTopicSubscribeReply);
+
+
+  //// Group Invitation Manager
+  // New members will receive a payload similar to the one received on group init. Existing members will receive the
+  // list of the newly added members and the required secrets to open their messages.
+
+  // GroupInvitationAccept accepts an invation to join a group
   rpc GroupInvitationAccept (GroupInvitationAcceptRequest) returns (GroupInvitationAcceptReply);
+
+  // GroupInvitationCreate creates an invitation, that can be sent to join this group
   rpc GroupInvitationCreate (GroupInvitationCreateRequest) returns (GroupInvitationCreateReply);
+
+  // GroupInvitationDiscard discards an invtation sent to you to join a group
   rpc GroupInvitationDiscard (GroupInvitationDiscardRequest) returns (GroupInvitationDiscardReply);
+
+  // GroupInvitationList lists pending invitation to this group
   rpc GroupInvitationList (GroupInvitationListRequest) returns (stream GroupInvitationListReply);
 }
 
-message SigChainEntry {
 
-}
+// Instance Manager
 
-message SigChain {
-  repeated SigChainEntry entries = 1;
-}
+message InstanceExportDataRequest {}
+message InstanceExportDataReply {}
 
-message Contact {
-  enum ContactStatus {
-    Unknown = 0;
-    Myself = 1;
-    Contact = 2;
-    Trusted = 3;
-    Blocked = 4;
-    RequestIn = 5;
-    RequestOut = 6;
-  }
+message InstanceGetConfigurationRequest {}
+message InstanceGetConfigurationReply {}
 
-  // AccountID = sig_chain.entries[0].pub_key
-  SigChain sig_chain = 1;
-  bytes metadata = 2; // Display name, profile picture etc.
-  bytes rendezvous_point_seed = 3;
-  bytes shared_secret = 4;
-  ContactStatus contact_status = 5;
-}
 
-message AccountConfig {
-  bool rendezvous_point_enabled = 1;
-}
-
-message DeviceConfig {
-  // ... net config
-}
-
-message Device {
-  bytes device_pub_key = 1;
-  bytes account_pub_key = 2;
-}
-
-message EventSubscribeRequest {}
-message EventStream {}
-
-// Account
-
-message CurrentDeviceExportDataRequest {}
-message CurrentDeviceExportDataReply {}
-
-message AccountGetInformationRequest {}
-message AccountGetInformationReply {
-  // account information
-}
-
-message CurrentDeviceGetConfigurationRequest {}
-message CurrentDeviceGetConfigurationReply {}
+// AccountManager
 
 message AccountGetConfigurationRequest {}
 message AccountGetConfigurationReply {}
 
+message AccountGetInformationRequest {}
+message AccountGetInformationReply {}
+
 message AccountLinkNewDeviceRequest {}
 message AccountLinkNewDeviceReply {}
-
-
-// Account Public Contact Request
 
 message AccountDisableIncomingContactRequestRequest {}
 message AccountDisableIncomingContactRequestReply {}
@@ -141,7 +206,13 @@ message AccountResetIncomingContactRequestLinkRequest {}
 message AccountResetIncomingContactRequestLinkReply {}
 
 
-// Contact Request
+// EventManager
+
+message EventSubscribeRequest {}
+message EventStream {}
+
+
+// ContactRequestManager
 
 message ContactRequestAcceptRequest {}
 message ContactRequestAcceptReply {}
@@ -159,13 +230,10 @@ message ContactRequestSendRequest {};
 message ContactRequestSendReply {};
 
 
-// Contact
+// ContactManager
 
 message ContactGetRequest {}
 message ContactGetReply {}
-
-message StreamManagerRequestToContactRequest {}
-message StreamManagerRequestToContactReply {}
 
 message ContactRemoveRequest {}
 message ContactRemoveReply {}
@@ -174,7 +242,10 @@ message ContactListRequest {};
 message ContactListReply {};
 
 
-// Device
+// Stream
+
+message StreamManagerRequestToContactRequest {}
+message StreamManagerRequestToContactReply {}
 
 message StreamManagerAcceptRequest {}
 message StreamManagerAcceptReply {}
@@ -204,7 +275,16 @@ message GroupMessageListRequest {};
 message GroupMessageListReply {};
 
 
-// Group Request
+// Group PubSub
+
+message GroupPubSubTopicInitRequest {};
+message GroupPubSubTopicInitReply {};
+
+message GroupPubSubTopicSubscribeRequest {};
+message GroupPubSubTopicSubscribeReply {};
+
+
+// Group Invitation
 
 message GroupInvitationAcceptRequest {};
 message GroupInvitationAcceptReply {};
@@ -217,12 +297,3 @@ message GroupInvitationDiscardReply {};
 
 message GroupInvitationListRequest {};
 message GroupInvitationListReply {};
-
-message GroupPubSubTopicInitRequest {};
-message GroupPubSubTopicInitReply {};
-
-message GroupBroadcastSendRequest {};
-message GroupBroadcastSendReply {};
-
-message GroupPubSubTopicSubscribeRequest {};
-message GroupPubSubTopicSubscribeReply {};
