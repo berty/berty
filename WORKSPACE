@@ -49,6 +49,13 @@ load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
 
 gazelle_dependencies()
 
+# LOCAL
+
+local_repository(
+    name = "tech_berty_experiment",
+    path = "test/experiment"
+)
+
 # DEPENDENCIES
 
 go_repository(
