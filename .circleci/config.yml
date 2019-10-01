@@ -62,7 +62,7 @@ jobs:
   bazel-build:
     working_directory: /go/src/berty.tech
     docker:
-      - image: n0izn0iz/bazel:0.29.1-ubuntu-18.04
+      - image: bertytech/bazel:0.29.1-ubuntu-18.04
     steps:
       - checkout
       - restore_cache:
@@ -79,7 +79,7 @@ jobs:
   bazel-test:
     working_directory: /go/src/berty.tech
     docker:
-      - image: n0izn0iz/bazel:0.29.1-ubuntu-18.04
+      - image: bertytech/bazel:0.29.1-ubuntu-18.04
     steps:
       - checkout
       - restore_cache:
@@ -95,7 +95,7 @@ jobs:
   bazel-banner:
     working_directory: /go/src/berty.tech
     docker:
-      - image: n0izn0iz/bazel:0.29.1-ubuntu-18.04
+      - image: bertytech/bazel:0.29.1-ubuntu-18.04
     steps:
       - checkout
       - restore_cache:

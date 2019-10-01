@@ -1,8 +1,10 @@
-export IMAGE ?=	n0izn0iz/bazel
+export IMAGE ?=	bertytech/bazel
 
-build: build.ubuntu
+build:
+	$(MAKE) build.ubuntu
 
-publish: publish.ubuntu
+publish:
+	$(MAKE) publish.ubuntu
 
 build.%:
 	$(MAKE) -C $* build
