@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package sigchain;
+
+option go_package = "berty.tech/go/internal/cryptosigchain";
+
+import "google/protobuf/timestamp.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+message SigChainEntry {
+  bytes entry_hash = 1;
+  uint32 entry_type_code = 2;
+  bytes parent_entry_hash = 3;
+  google.protobuf.Timestamp created_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp expiring_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  bytes signer_public_key_bytes = 6;
+  bytes subject_public_key_bytes = 7;
+  bytes signature = 8;
+}
