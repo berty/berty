@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_test")
+
+go_test(
+    name = "go_default_test",
+    srcs = ["basic_test.go"],
+    deps = [
+        "//dht:go_default_library",
+        "//dht/src/bittorrent:go_default_library",
+        "//dht/src/chord:go_default_library",
+        "//dht/src/gnunet:go_default_library",
+        "//dht/src/libp2p:go_default_library",
+        "//dht/src/matrix:go_default_library",
+        "@com_github_smartystreets_goconvey//convey:go_default_library",
+    ],
+)

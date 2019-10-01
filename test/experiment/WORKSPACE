@@ -1,0 +1,94 @@
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+
+# PROTO
+
+http_archive(
+    name = "rules_proto",
+    sha256 = "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
+    strip_prefix = "rules_proto-97d8af4dc474595af3900dd85cb3a29ad28cc313",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/97d8af4dc474595af3900dd85cb3a29ad28cc313.tar.gz",
+        "https://github.com/bazelbuild/rules_proto/archive/97d8af4dc474595af3900dd85cb3a29ad28cc313.tar.gz",
+    ],
+)
+
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+
+rules_proto_dependencies()
+
+rules_proto_toolchains()
+
+# latest release still uses old sets
+git_repository(
+    name = "io_bazel_rules_go",
+    remote = "https://github.com/bazelbuild/rules_go.git",
+    commit = "c637b893807128ed8af403df1325fbf2d9553755",
+    shallow_since = "1569453529 -0400",
+)
+
+# Load and call the dependencies
+load("@io_bazel_rules_go//go:deps.bzl", "go_rules_dependencies", "go_register_toolchains")
+
+go_rules_dependencies()
+
+go_register_toolchains()
+
+# Download Gazelle
+http_archive(
+    name = "bazel_gazelle",
+    urls = [
+        "https://storage.googleapis.com/bazel-mirror/github.com/bazelbuild/bazel-gazelle/releases/download/0.18.2/bazel-gazelle-0.18.2.tar.gz",
+        "https://github.com/bazelbuild/bazel-gazelle/releases/download/0.18.2/bazel-gazelle-0.18.2.tar.gz",
+    ],
+    sha256 = "7fc87f4170011201b1690326e8c16c5d802836e3a0d617d8f75c3af2b23180c4",
+)
+
+# Load and call Gazelle dependencies
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
+
+gazelle_dependencies()
+
+# DEPENDENCIES
+
+go_repository(
+    name = "com_github_gopherjs_gopherjs",
+    importpath = "github.com/gopherjs/gopherjs",
+    sum = "h1:EGx4pi6eqNxGaHF6qqu48+N2wcFQ5qg5FXgOdqsJ5d8=",
+    version = "v0.0.0-20181017120253-0766667cb4d1",
+)
+
+go_repository(
+    name = "com_github_jtolds_gls",
+    importpath = "github.com/jtolds/gls",
+    sum = "h1:fSuqC+Gmlu6l/ZYAoZzx2pyucC8Xza35fpRVWLVmUEE=",
+    version = "v4.2.1+incompatible",
+)
+
+go_repository(
+    name = "com_github_matrix_org_gomatrix",
+    importpath = "github.com/matrix-org/gomatrix",
+    sum = "h1:Hr3zjRsq2bhrnp3Ky1qgx/fzCtCALOoGYylh2tpS9K4=",
+    version = "v0.0.0-20190528120928-7df988a63f26",
+)
+
+go_repository(
+    name = "com_github_pkg_errors",
+    importpath = "github.com/pkg/errors",
+    sum = "h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=",
+    version = "v0.8.1",
+)
+
+go_repository(
+    name = "com_github_smartystreets_assertions",
+    importpath = "github.com/smartystreets/assertions",
+    sum = "h1:zE9ykElWQ6/NYmHa3jpm/yHnI4xSofP+UP6SpjHcSeM=",
+    version = "v0.0.0-20180927180507-b2de0cb4f26d",
+)
+
+go_repository(
+    name = "com_github_smartystreets_goconvey",
+    importpath = "github.com/smartystreets/goconvey",
+    sum = "h1:E+gaaifzi2xF65PbDmuKI3PhLWY6G5opMLniFq8vmXA=",
+    version = "v0.0.0-20190222223459-a17d461953aa",
+)

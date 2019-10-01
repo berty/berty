@@ -25,6 +25,7 @@ type DHT struct {
 type Options struct {
 	User     string
 	Password string
+	URL      string
 }
 
 type Bootstrap struct {

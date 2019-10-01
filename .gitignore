@@ -27,3 +27,4 @@ core-sources.jar
 gin-bin
 google-services.json
 vendor/
+/bazel-*
