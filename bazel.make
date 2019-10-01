@@ -15,12 +15,12 @@ bazel.banner: $(BAZEL)
 	$(BAZEL) $(BAZEL_ARGS) run $(BAZEL_CMD_ARGS) //go/cmd/bertychat banner
 
 .PHONY: bazel.build
-bazel.build:
+bazel.build: $(BAZEL)
 	$(BAZEL_BUILD) //api/... //go/...
 	cd test/experiment && $(BAZEL_BUILD) //dht/...
 
 .PHONY: bazel.test
-bazel.test:
+bazel.test: $(BAZEL)
 	bazel $(BAZEL_ARGS) test $(BAZEL_CMD_ARGS) //api/... //go/...
 
 .PHONY: bazel.clean
