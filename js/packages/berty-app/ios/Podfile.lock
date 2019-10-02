@@ -73,7 +73,7 @@ PODS:
   - React-jsinspector (0.60.5)
   - react-native-config (0.11.7):
     - React
-  - react-native-example (0.0.1):
+  - react-native-example (1.0.0):
     - AFNetworking (~> 3.0)
     - React
   - React-RCTActionSheet (0.60.5):
@@ -193,7 +193,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 90ad2f9db09513fc763bc757fdc3c4ff8bde2a30
   React-jsinspector: e08662d1bf5b129a3d556eb9ea343a3f40353ae4
   react-native-config: 8f6b2b9e017f6a5e92a97353c768e19e67294bb1
-  react-native-example: 2a0b45e101c5bdd96525be714e5ad9ab028f7d8b
+  react-native-example: a62e0ddd2e417f3683b0367d9f0a3539d62f8b10
   React-RCTActionSheet: b0f1ea83f4bf75fb966eae9bfc47b78c8d3efd90
   React-RCTAnimation: 359ba1b5690b1e87cc173558a78e82d35919333e
   React-RCTBlob: 5e2b55f76e9a1c7ae52b826923502ddc3238df24

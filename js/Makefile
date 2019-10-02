@@ -7,13 +7,12 @@ author = Berty Technologies <oss@berty.tech>
 contributor = $(shell git config --get user.name) <$(shell git config --get user.email)>
 license = (Apache-2.0 or MIT)
 
+export SHELL = /usr/bin/env bash
 ifeq ($(UNAME_S),Darwin)
-export SHELL = /bin/bash
 npm := /usr/local/bin/npm
 pkg := $(shell find $(PWD)/packages -depth 1 -type d)
 endif
 ifeq ($(UNAME_S),Linux)
-export SHELL = /usr/bin/bash
 npm := /usr/bin/npm
 pkg := $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 1 -type d))
 else
@@ -74,11 +73,10 @@ clean: clean
 
 .IGNORE \
 .PHONY: fclean
-fclean: fclean
-	$(lerna_exec) /bin/bash -c 'echo $$PWD && [ ! -f Makefile ] || make fclean'; \
-	rm -rf \
-		$(mod) \
-		$(pkg_mod)
+fclean:
+	rm -rf $(pkg_mod)
+	rm -rf $(mod)
+	npm cache clean -f
 
 .PHONY: pkg
 pkg: name ?= example
@@ -111,15 +109,15 @@ rnpkg: $(mod)
 			$(name)
 	cd $(PWD)/packages/react-native-$(name) \
 		&& rm -rf README.md \
-		&& $(json) -I -f package.json -e "this.name='@berty-tech/$(name)'" \
-		&& $(json) -I -f package.json -e "this.description=''" \
+		&& $(json) -I -f package.json -e "this.name='@berty-tech/react-native-$(name)'" \
+		&& $(json) -I -f package.json -e "this.description='Berty\'s react-native $(name) library'" \
 		&& $(json) -I -f package.json -e "this.author='$(author)'" \
 		&& $(json) -I -f package.json -e "this.licenseFilename=undefined"
 	cd $(PWD)/packages/react-native-$(name) \
 		&& sed -i.bak 's/s.license      = "MIT"/s.license      = package["license"]/g' react-native-$(name).podspec \
 		&& rm react-native-$(name).podspec.bak
 	cd $(PWD)/packages/react-native-$(name)/ios/Berty$(pascal-name).xcodeproj \
-		&& sed -i.bak 's/ORGANIZATIONNAME = Facebook/ORGANIZATIONNAME = Berty Technologies/g' project.pbxproj \
+		&& sed -i.bak 's/ORGANIZATIONNAME = Facebook/ORGANIZATIONNAME = "Berty Technologies"/g' project.pbxproj \
 		&& rm project.pbxproj.bak
 
 .PHONY: lint
@@ -143,4 +141,3 @@ include packages/berty-app/Makefile
 include packages/storybook-mobile/Makefile
 include packages/storybook-web/Makefile
 include packages/react-native-core/Makefile
-

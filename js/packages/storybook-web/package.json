@@ -1,36 +1,38 @@
 {
   "name": "@berty-tech/storybook-web",
   "version": "0.0.0",
-  "private": true,
   "description": "Now I’m the model of a modern major general / The venerated Virginian veteran whose men are all / Lining up, to put me up on a pedestal / Writin’ letters to relatives / Embellishin’ my elegance and eloquence / But the elephant is in the room / The truth is in ya face when ya hear the British cannons go / BOOM",
-  "keywords": [],
-  "author": "Berty Technologies <oss@berty.tech>",
-  "homepage": "https://github.com/berty/berty/tree/master/packages/storybook-web#readme",
   "license": "(Apache-2.0 OR MIT)",
-  "publishConfig": {
-    "access": "restricted"
-  },
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/n0izn0iz/berty.git"
   },
-  "scripts": {
-    "start": "start-storybook -c ./lib"
-  },
   "bugs": {
     "url": "https://github.com/n0izn0iz/berty/issues"
   },
+  "homepage": "https://github.com/berty/berty/tree/master/packages/storybook-web#readme",
+  "author": "Berty Technologies <oss@berty.tech>",
+  "keywords": [],
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "scripts": {
+    "start": "start-storybook -c ./lib"
+  },
   "dependencies": {
-    "react": "^16.8.1",
-    "react-native-web": "^0.11.7",
-    "@berty-tech/berty-storybook": "^0.0.0"
+    "@berty-tech/berty-storybook": "^0.0.0",
+    "@berty-tech/shared-storybook": "^0.0.0",
+    "glob": "^7.1.4",
+    "react": "^16.9.0",
+    "react-native-web": "^0.11.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.0",
+    "@babel/core": "^7.6.2",
     "@berty-tech/babel-preset": "^0.0.0",
     "@storybook/react": "^5.2.1",
     "babel-loader": "^8.0.6",
     "babel-plugin-react-native-web": "^0.11.7",
-    "react-scripts": "^3.1.1"
+    "react-scripts": "^3.1.2"
   }
 }
