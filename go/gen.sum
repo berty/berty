@@ -3,4 +3,4 @@
 961a4952e56eb176d8239981794e0bff5ebe9238  ../api/entity.proto
 b139403f729a7cf26f2d2ecbde2d9b6524b5efe2  ../api/baz.proto
 bb0d4bdd5e638b97f5dd350eb3505645de48eda5  ../api/internal/bar.proto
-e62719502fe3cbd2f1fae7f00eb93561bcc05ef5  Makefile
+e42a143c0964f230b4083b6800759ff60a97e167  Makefile

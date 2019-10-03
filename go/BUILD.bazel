@@ -1,0 +1,8 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix berty.tech/go
+# gazelle:proto disable_global
+gazelle(
+    name = "gazelle",
+    external = "vendored",
+)

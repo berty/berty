@@ -2,7 +2,12 @@
 
 FROM ubuntu:18.04
 
-RUN apt-get update && apt-get install -y \
+# We need go because we use vendored dependencies
+RUN apt-get update \
+  && apt-get install -y software-properties-common \
+  && add-apt-repository ppa:longsleep/golang-backports \
+  && apt-get update \
+  && apt-get install -y \
     pkg-config \
     zip \
     g++ \
@@ -10,6 +15,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     python3 \
     git \
+    golang-go \
   && rm -rf /var/lib/apt/lists/*
 
 ADD https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel-0.29.1-installer-linux-x86_64.sh \

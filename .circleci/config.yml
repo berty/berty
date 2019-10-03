@@ -59,54 +59,29 @@ jobs:
           git diff -w | cat
           git diff-index -w --quiet HEAD --
 
-  bazel-build:
+  bazel-go-build:
     working_directory: /go/src/berty.tech
     docker:
-      - image: bertytech/bazel:0.29.1-ubuntu-18.04
+      - image: bertytech/bazel:0.29.1-ubuntu-18.04-r0
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - bazel_build-v2-{{ .Branch }}
-            - bazel_build-v2-
-      - run: BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.build
-      - run: ls -laR bazel-bin/*
-      - save_cache:
-          key: bazel_build-v2-{{ .Branch }}
-          paths:
-            - "/root/.cache/bazel"
+      - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.build
 
-  bazel-test:
+  bazel-go-test:
     working_directory: /go/src/berty.tech
     docker:
-      - image: bertytech/bazel:0.29.1-ubuntu-18.04
+      - image: bertytech/bazel:0.29.1-ubuntu-18.04-r0
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - bazel_test-v2-{{ .Branch }}
-            - bazel_test-v2-
-      - run: BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.test
-      - save_cache:
-          key: bazel_test-v2-{{ .Branch }}
-          paths:
-            - "/root/.cache/bazel"
+      - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.test
 
   bazel-banner:
     working_directory: /go/src/berty.tech
     docker:
-      - image: bertytech/bazel:0.29.1-ubuntu-18.04
+      - image: bertytech/bazel:0.29.1-ubuntu-18.04-r0
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - bazel_banner-v2-{{ .Branch }}
-            - bazel_banner-v2-
-      - run: BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.banner
-      - save_cache:
-          key: bazel_banner-v2-{{ .Branch }}
-          paths:
-            - "/root/.cache/bazel"
+      - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.banner
 
 workflows:
   main:
@@ -115,6 +90,6 @@ workflows:
       - go-docker
       - go-generate
       - githooks
-      - bazel-build
-      - bazel-test
+      - bazel-go-build
+      - bazel-go-test
       - bazel-banner

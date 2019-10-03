@@ -59,3 +59,12 @@ generate_local:
 	goimports -w ./pkg ./cmd ./internal
 	shasum $(GEN_SRC) | sort > $(GEN_SUM).tmp
 	mv $(GEN_SUM).tmp $(GEN_SUM)
+
+vendor: go.mod
+	GO111MODULE=on go mod vendor
+	touch $@
+
+print-%:
+	@echo $*: $($*)
+
+include bazel.make
