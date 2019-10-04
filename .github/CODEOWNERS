@@ -1,2 +1,17 @@
 # default is tech team
 * @berty/tech
+
+# internal
+/go/internal/* @berty/go-internal
+/js/ @berty/js-internal
+
+# bertychat
+/go/pkg/bertychat @berty/tech
+/api/bertychat.proto @berty/tech
+
+# bertyprotocol
+/go/pkg/bertyprotocol/ @berty/go-internal @moul
+/api/bertyprotocol.proto @berty/tech @moul
+
+# files at root
+/* @moul
