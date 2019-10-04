@@ -34,6 +34,7 @@
     "@berty-tech/shared-storybook": "^0.0.0",
     "@storybook/addon-links": "^5.2.1",
     "glob": "^7.1.4",
+    "react-native-reanimated": "^1.3.0",
     "react-native-storybook-loader": "^1.8.1"
   },
   "peerDependencies": {
