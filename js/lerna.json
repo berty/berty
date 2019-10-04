@@ -2,5 +2,11 @@
   "packages": [
     "packages/*"
   ],
+  "nohoist": [
+    "**/react-native",
+    "**/react-native/**",
+    "**/react-native-*",
+    "**/react-native-*/**"
+  ],
   "version": "0.0.0"
 }

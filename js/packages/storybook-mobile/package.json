@@ -32,6 +32,7 @@
     "@berty-tech/babel-preset": "^0.0.0",
     "@berty-tech/berty-storybook": "^0.0.0",
     "@berty-tech/shared-storybook": "^0.0.0",
+    "@storybook/addon-links": "^5.2.1",
     "glob": "^7.1.4",
     "react-native-storybook-loader": "^1.8.1"
   },

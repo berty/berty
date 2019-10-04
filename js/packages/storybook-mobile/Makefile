@@ -13,7 +13,7 @@ deps.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader
 	cd $(PWD) && PWD=$(PWD) react-native start --reset-cache &
 deps.storybook: deps.storybook.mobile
 
-$(PWD)/storybook/storyLoader: $(PWD)/node_modules/@berty-tech/*-storybook
+$(PWD)/storybook/storyLoader:
 	rnstl \
 		--pattern '$(PWD)/node_modules/@berty-tech/*-storybook/storybook.tsx' \
 		--outputFile $(PWD)/storybook/storyLoader.js
@@ -49,6 +49,21 @@ run.storybook: run.storybook.mobile
 
 .IGNORE \
 .PHONY: \
+	clean \
+	clean.storybook \
+	clean.storybook.mobile \
+	clean.storybook.ios \
+	clean.storybook.android \
+
+clean.storybook.ios: clean.storybook.mobile
+clean.storybook.android: clean.storybook.mobile
+clean.storybook.mobile:
+	watchman watch-del-all
+clean.storybook: clean.storybook.mobile
+clean: clean.storybook
+
+.IGNORE \
+.PHONY: \
 	fclean \
 	fclean.storybook \
 	fclean.storybook.mobile \
@@ -70,4 +85,4 @@ fclean.storybook.mobile: fclean.storybook.ios fclean.storybook.android
 	watchman watch-del-all
 
 fclean.storybook: fclean.storybook.mobile
-fclean: fclean.storybook.mobile
+fclean: fclean.storybook

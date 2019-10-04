@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   extends: [
-    "@berty/eslint-config",
+    "@berty-tech/eslint-config",
   ],
 }
   // https://eslint.org/docs/user-guide/configuring#specifying-parser-options

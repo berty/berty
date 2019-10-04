@@ -1,6 +1,7 @@
 {
-  "name": "@bertytech/monorepo-client",
+  "name": "@berty-tech/js-monorepo",
   "version": "1.0.0",
+  "private": true,
   "description": "Berty's client",
   "license": "(Apache-2.0 OR MIT)",
   "repository": {
