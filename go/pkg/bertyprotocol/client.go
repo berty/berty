@@ -9,19 +9,15 @@ var _ Client = (*client)(nil)
 
 // Client is the main Berty Protocol interface
 type Client interface {
-	ProtocolServer
+	InstanceServer
 
-	Close()
+	Close() error
 }
 
 type client struct {
 	// variables
 	db   *gorm.DB
 	opts Opts
-
-	// list of implemented interfaces
-	ProtocolServer
-	Client
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -40,4 +36,6 @@ func New(db *gorm.DB, opts Opts) Client {
 	}
 }
 
-func (c *client) Close() {}
+func (c *client) Close() error {
+	return nil
+}

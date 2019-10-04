@@ -1,6 +1,6 @@
 package bertyprotocol
 
-import context "context"
+import "context"
 
 func (c *client) ContactRequestAccept(context.Context, *ContactRequestAcceptRequest) (*ContactRequestAcceptReply, error) {
 	return nil, ErrNotImplemented
@@ -10,11 +10,11 @@ func (c *client) ContactRequestDiscard(context.Context, *ContactRequestDiscardRe
 	return nil, ErrNotImplemented
 }
 
-func (c *client) ContactRequestListIncoming(*ContactRequestListIncomingRequest, Protocol_ContactRequestListIncomingServer) error {
+func (c *client) ContactRequestListIncoming(*ContactRequestListIncomingRequest, Instance_ContactRequestListIncomingServer) error {
 	return ErrNotImplemented
 }
 
-func (c *client) ContactRequestListOutgoing(*ContactRequestListOutgoingRequest, Protocol_ContactRequestListOutgoingServer) error {
+func (c *client) ContactRequestListOutgoing(*ContactRequestListOutgoingRequest, Instance_ContactRequestListOutgoingServer) error {
 	return ErrNotImplemented
 }
 

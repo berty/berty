@@ -23,110 +23,17 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/InstanceExportDataReply"
+              "$ref": "#/definitions/protocolInstanceExportDataReply"
             }
           }
         },
         "tags": [
-          "Protocol"
+          "Instance"
         ]
       }
     }
   },
   "definitions": {
-    "AccountDisableIncomingContactRequestReply": {
-      "type": "object"
-    },
-    "AccountEnableIncomingContactRequestReply": {
-      "type": "object"
-    },
-    "AccountGetConfigurationReply": {
-      "type": "object"
-    },
-    "AccountGetInformationReply": {
-      "type": "object"
-    },
-    "AccountLinkNewDeviceReply": {
-      "type": "object"
-    },
-    "AccountResetIncomingContactRequestLinkReply": {
-      "type": "object"
-    },
-    "ContactGetReply": {
-      "type": "object"
-    },
-    "ContactListReply": {
-      "type": "object"
-    },
-    "ContactRemoveReply": {
-      "type": "object"
-    },
-    "ContactRequestAcceptReply": {
-      "type": "object"
-    },
-    "ContactRequestDiscardReply": {
-      "type": "object"
-    },
-    "ContactRequestListIncomingReply": {
-      "type": "object"
-    },
-    "ContactRequestListOutgoingReply": {
-      "type": "object"
-    },
-    "ContactRequestSendReply": {
-      "type": "object"
-    },
-    "EventStream": {
-      "type": "object"
-    },
-    "GroupCreateReply": {
-      "type": "object"
-    },
-    "GroupGenerateInviteLinkReply": {
-      "type": "object"
-    },
-    "GroupInvitationAcceptReply": {
-      "type": "object"
-    },
-    "GroupInvitationCreateReply": {
-      "type": "object"
-    },
-    "GroupInvitationDiscardReply": {
-      "type": "object"
-    },
-    "GroupInvitationListReply": {
-      "type": "object"
-    },
-    "GroupLeaveReply": {
-      "type": "object"
-    },
-    "GroupListReply": {
-      "type": "object"
-    },
-    "GroupMessageCreateReply": {
-      "type": "object"
-    },
-    "GroupMessageListReply": {
-      "type": "object"
-    },
-    "GroupPubSubTopicInitReply": {
-      "type": "object"
-    },
-    "GroupPubSubTopicSubscribeReply": {
-      "type": "object"
-    },
-    "InstanceExportDataReply": {
-      "type": "object"
-    },
-    "InstanceGetConfigurationReply": {
-      "type": "object"
-    },
-    "StreamManagerAcceptReply": {
-      "type": "object"
-    },
-    "StreamManagerRequestToContactReply": {
-      "type": "object"
-    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -138,6 +45,99 @@
           "format": "byte"
         }
       }
+    },
+    "protocolAccountDisableIncomingContactRequestReply": {
+      "type": "object"
+    },
+    "protocolAccountEnableIncomingContactRequestReply": {
+      "type": "object"
+    },
+    "protocolAccountGetConfigurationReply": {
+      "type": "object"
+    },
+    "protocolAccountGetInformationReply": {
+      "type": "object"
+    },
+    "protocolAccountLinkNewDeviceReply": {
+      "type": "object"
+    },
+    "protocolAccountResetIncomingContactRequestLinkReply": {
+      "type": "object"
+    },
+    "protocolContactGetReply": {
+      "type": "object"
+    },
+    "protocolContactListReply": {
+      "type": "object"
+    },
+    "protocolContactRemoveReply": {
+      "type": "object"
+    },
+    "protocolContactRequestAcceptReply": {
+      "type": "object"
+    },
+    "protocolContactRequestDiscardReply": {
+      "type": "object"
+    },
+    "protocolContactRequestListIncomingReply": {
+      "type": "object"
+    },
+    "protocolContactRequestListOutgoingReply": {
+      "type": "object"
+    },
+    "protocolContactRequestSendReply": {
+      "type": "object"
+    },
+    "protocolEventStream": {
+      "type": "object"
+    },
+    "protocolGroupCreateReply": {
+      "type": "object"
+    },
+    "protocolGroupGenerateInviteLinkReply": {
+      "type": "object"
+    },
+    "protocolGroupInvitationAcceptReply": {
+      "type": "object"
+    },
+    "protocolGroupInvitationCreateReply": {
+      "type": "object"
+    },
+    "protocolGroupInvitationDiscardReply": {
+      "type": "object"
+    },
+    "protocolGroupInvitationListReply": {
+      "type": "object"
+    },
+    "protocolGroupLeaveReply": {
+      "type": "object"
+    },
+    "protocolGroupListReply": {
+      "type": "object"
+    },
+    "protocolGroupMessageCreateReply": {
+      "type": "object"
+    },
+    "protocolGroupMessageListReply": {
+      "type": "object"
+    },
+    "protocolGroupPubSubTopicInitReply": {
+      "type": "object"
+    },
+    "protocolGroupPubSubTopicSubscribeReply": {
+      "type": "object"
+    },
+    "protocolInstanceExportDataReply": {
+      "type": "object"
+    },
+    "protocolInstanceGetConfigurationReply": {
+      "type": "object"
+    },
+    "protocolStreamManagerAcceptReply": {
+      "type": "object"
+    },
+    "protocolStreamManagerRequestToContactReply": {
+      "type": "object"
     },
     "runtimeStreamError": {
       "type": "object",
@@ -166,113 +166,113 @@
     }
   },
   "x-stream-definitions": {
-    "ContactListReply": {
+    "protocolContactListReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/ContactListReply"
+          "$ref": "#/definitions/protocolContactListReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of ContactListReply"
+      "title": "Stream result of protocolContactListReply"
     },
-    "ContactRequestListIncomingReply": {
+    "protocolContactRequestListIncomingReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/ContactRequestListIncomingReply"
+          "$ref": "#/definitions/protocolContactRequestListIncomingReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of ContactRequestListIncomingReply"
+      "title": "Stream result of protocolContactRequestListIncomingReply"
     },
-    "ContactRequestListOutgoingReply": {
+    "protocolContactRequestListOutgoingReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/ContactRequestListOutgoingReply"
+          "$ref": "#/definitions/protocolContactRequestListOutgoingReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of ContactRequestListOutgoingReply"
+      "title": "Stream result of protocolContactRequestListOutgoingReply"
     },
-    "EventStream": {
+    "protocolEventStream": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/EventStream"
+          "$ref": "#/definitions/protocolEventStream"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of EventStream"
+      "title": "Stream result of protocolEventStream"
     },
-    "GroupInvitationListReply": {
+    "protocolGroupInvitationListReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/GroupInvitationListReply"
+          "$ref": "#/definitions/protocolGroupInvitationListReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of GroupInvitationListReply"
+      "title": "Stream result of protocolGroupInvitationListReply"
     },
-    "GroupListReply": {
+    "protocolGroupListReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/GroupListReply"
+          "$ref": "#/definitions/protocolGroupListReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of GroupListReply"
+      "title": "Stream result of protocolGroupListReply"
     },
-    "GroupMessageListReply": {
+    "protocolGroupMessageListReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/GroupMessageListReply"
+          "$ref": "#/definitions/protocolGroupMessageListReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of GroupMessageListReply"
+      "title": "Stream result of protocolGroupMessageListReply"
     },
-    "GroupPubSubTopicSubscribeReply": {
+    "protocolGroupPubSubTopicSubscribeReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/GroupPubSubTopicSubscribeReply"
+          "$ref": "#/definitions/protocolGroupPubSubTopicSubscribeReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of GroupPubSubTopicSubscribeReply"
+      "title": "Stream result of protocolGroupPubSubTopicSubscribeReply"
     },
-    "StreamManagerAcceptReply": {
+    "protocolStreamManagerAcceptReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/StreamManagerAcceptReply"
+          "$ref": "#/definitions/protocolStreamManagerAcceptReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of StreamManagerAcceptReply"
+      "title": "Stream result of protocolStreamManagerAcceptReply"
     }
   }
 }

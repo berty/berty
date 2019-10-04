@@ -1,0 +1,141 @@
+syntax = "proto3";
+
+package berty.chat;
+
+import "google/api/annotations.proto";
+import "google/protobuf/descriptor.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "bertyprotocol.proto";
+
+option go_package = "berty.tech/go/pkg/bertychat";
+
+option (gogoproto.benchgen_all) = false;
+option (gogoproto.compare_all) = false;
+option (gogoproto.description_all) = false;
+option (gogoproto.enum_stringer_all) = false;
+option (gogoproto.enumdecl_all) = true;
+option (gogoproto.equal_all) = false;
+option (gogoproto.face_all) = false;
+option (gogoproto.gogoproto_import) = false;
+option (gogoproto.goproto_enum_prefix_all) = true;
+option (gogoproto.goproto_enum_stringer_all) = false;
+option (gogoproto.goproto_extensions_map_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.goproto_registration) = false;
+//option (gogoproto.goproto_sizecache_all) = false;
+option (gogoproto.goproto_stringer_all) = false;
+//option (gogoproto.goproto_unkeyed_all) = false;
+option (gogoproto.goproto_unrecognized_all) = false;
+option (gogoproto.gostring_all) = false;
+option (gogoproto.marshaler_all) = false;
+option (gogoproto.messagename_all) = false;
+option (gogoproto.onlyone_all) = false;
+option (gogoproto.populate_all) = false;
+option (gogoproto.protosizer_all) = false;
+option (gogoproto.sizer_all) = false;
+option (gogoproto.stable_marshaler_all) = false;
+option (gogoproto.stringer_all) = true;
+option (gogoproto.testgen_all) = false;
+option (gogoproto.typedecl_all) = true;
+option (gogoproto.unmarshaler_all) = false;
+option (gogoproto.unsafe_marshaler_all) = false;
+option (gogoproto.unsafe_unmarshaler_all) = false;
+option (gogoproto.verbose_equal_all) = false;
+
+service Account {
+  rpc EventSubscribe (EventSubscribeRequest) returns (stream EventSubscribeReply) {};
+  rpc ConversationList (ConversationListRequest) returns (stream ConversationListReply) {};
+  rpc ConversationGet (ConversationGetRequest) returns (ConversationGetReply) { option (google.api.http) = {get: "/conversation/get"}; };
+  rpc ConversationCreate (ConversationCreateRequest) returns (ConversationCreateReply) {};
+  rpc ConversationLeave (ConversationLeaveRequest) returns (ConversationLeaveReply) {};
+  rpc ConversationErase (ConversationEraseRequest) returns (ConversationEraseReply) {};
+  rpc ConversationSetReadingPosition (ConversationSetReadingPositionRequest) returns (ConversationSetReadingPositionReply) {};
+  rpc ConversationMessageList (ConversationMessageListRequest) returns (stream ConversationMessageListReply) {};
+  rpc ConversationMessageSend (ConversationMessageSendRequest) returns (ConversationMessageSendReply) {};
+  rpc ConversationMessageEdit (ConversationMessageEditRequest) returns (ConversationMessageEditReply) {};
+  rpc ConversationMessageHide (ConversationMessageHideRequest) returns (ConversationMessageHideReply) {};
+  rpc ConversationUpdateSettings (ConversationUpdateSettingsRequest) returns (ConversationUpdateSettingsReply) {};
+  rpc ConversationInvitationAccept (ConversationInvitationAcceptRequest) returns (ConversationInvitationAcceptReply) {};
+  rpc ConversationInvitationCreate (ConversationInvitationCreateRequest) returns (ConversationInvitationCreateReply) {};
+  rpc ConversationInvitationDiscard (ConversationInvitationDiscardRequest) returns (ConversationInvitationDiscardReply) {};
+  rpc ContactList (ContactListRequest) returns (stream ContactListReply) {};
+  rpc ContactGet (ContactGetRequest) returns (ContactGetReply) {};
+  rpc ContactUpdate (ContactUpdateRequest) returns (ContactUpdateReply) {};
+  rpc ContactRemove (ContactRemoveRequest) returns (ContactRemoveReply) {};
+  rpc ContactRequestCreate (ContactRequestCreateRequest) returns (ContactRequestCreateReply) {};
+  rpc ContactRequestAccept (ContactRequestAcceptRequest) returns (ContactRequestAcceptReply) {};
+  rpc ContactRequestDiscard (ContactRequestDiscardRequest) returns (ContactRequestDiscardReply) {};
+  rpc Search (SearchRequest) returns (stream SearchReply) {};
+  rpc AccountSettingsGet (AccountSettingsGetRequest) returns (AccountSettingsGetReply) {};
+  rpc AccountSettingsUpdate (AccountSettingsUpdateRequest) returns (AccountSettingsUpdateReply) {};
+  rpc AccountPaperKeyCreate (AccountPaperKeyCreateRequest) returns (AccountPaperKeyCreateReply) {};
+  rpc AccountPairingInvitationCreate (AccountPairingInvitationCreateRequest) returns (AccountPairingInvitationCreateReply) {};
+  rpc AccountRenewIncomingContactRequestLink (AccountRenewIncomingContactRequestLinkRequest) returns (AccountRenewIncomingContactRequestLinkReply) {};
+  rpc DevtoolDebugBar (DevtoolDebugBarRequest) returns (stream DevtoolDebugBarReply) {};
+
+  // FIXME: calls
+  // FIXME: live location sharing (broadcast)
+  // FIXME: ConversationMessageAddReaction
+  // FIXME: ConversationMessageQuote
+}
+
+
+
+message EventSubscribeRequest {}
+message EventSubscribeReply {}
+message ConversationListRequest {}
+message ConversationListReply {}
+message ConversationGetRequest {}
+message ConversationGetReply {}
+message ConversationCreateRequest {}
+message ConversationCreateReply {}
+message ConversationLeaveRequest {}
+message ConversationLeaveReply {}
+message ConversationEraseRequest {}
+message ConversationEraseReply {}
+message ConversationSetReadingPositionRequest {}
+message ConversationSetReadingPositionReply {}
+message ConversationMessageListRequest {}
+message ConversationMessageListReply {}
+message ConversationMessageSendRequest {}
+message ConversationMessageSendReply {}
+message ConversationMessageEditRequest {}
+message ConversationMessageEditReply {}
+message ConversationMessageHideRequest {}
+message ConversationMessageHideReply {}
+message ConversationUpdateSettingsRequest {}
+message ConversationUpdateSettingsReply {}
+message ConversationInvitationAcceptRequest {}
+message ConversationInvitationAcceptReply {}
+message ConversationInvitationCreateRequest {}
+message ConversationInvitationCreateReply {}
+message ConversationInvitationDiscardRequest {}
+message ConversationInvitationDiscardReply {}
+message ContactListRequest {}
+message ContactListReply {}
+message ContactGetRequest {}
+message ContactGetReply {}
+message ContactUpdateRequest {}
+message ContactUpdateReply {}
+message ContactRemoveRequest {}
+message ContactRemoveReply {}
+message ContactRequestCreateRequest {}
+message ContactRequestCreateReply {}
+message ContactRequestAcceptRequest {}
+message ContactRequestAcceptReply {}
+message ContactRequestDiscardRequest {}
+message ContactRequestDiscardReply {}
+message SearchRequest {}
+message SearchReply {}
+message AccountSettingsGetRequest {}
+message AccountSettingsGetReply {}
+message AccountSettingsUpdateRequest {}
+message AccountSettingsUpdateReply {}
+message AccountPaperKeyCreateRequest {}
+message AccountPaperKeyCreateReply {}
+message AccountPairingInvitationCreateRequest {}
+message AccountPairingInvitationCreateReply {}
+message AccountRenewIncomingContactRequestLinkRequest {}
+message AccountRenewIncomingContactRequestLinkReply {}
+message DevtoolDebugBarRequest {}
+message DevtoolDebugBarReply {}

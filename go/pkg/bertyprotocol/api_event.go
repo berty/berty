@@ -1,5 +1,5 @@
 package bertyprotocol
 
-func (c *client) EventSubscribe(*EventSubscribeRequest, Protocol_EventSubscribeServer) error {
+func (c *client) EventSubscribe(*EventSubscribeRequest, Instance_EventSubscribeServer) error {
 	return ErrNotImplemented
 }

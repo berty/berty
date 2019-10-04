@@ -36,7 +36,7 @@ clean:
 .PHONY: generate
 generate: gen.sum
 $(GEN_SUM): $(GEN_SRC)
-	shasum $(GEN_SRC) | sort > $(GEN_SUM).tmp
+	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
 	diff -q $(GEN_SUM).tmp $(GEN_SUM) || ( \
 	  set -e; \
 	  GO111MODULE=on go mod vendor; \
@@ -57,7 +57,7 @@ generate_local:
 	  protoc -I ../api:../go/vendor:/protobuf --gogofaster_out="plugins=grpc:$(GOPATH)/src" "$$proto" \
 	); done
 	goimports -w ./pkg ./cmd ./internal
-	shasum $(GEN_SRC) | sort > $(GEN_SUM).tmp
+	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
 	mv $(GEN_SUM).tmp $(GEN_SUM)
 
 vendor: go.mod

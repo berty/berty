@@ -1,6 +1,6 @@
 package bertyprotocol
 
-import context "context"
+import "context"
 
 func (c *client) GroupCreate(context.Context, *GroupCreateRequest) (*GroupCreateReply, error) {
 	return nil, ErrNotImplemented
@@ -14,7 +14,7 @@ func (c *client) GroupLeave(context.Context, *GroupLeaveRequest) (*GroupLeaveRep
 	return nil, ErrNotImplemented
 }
 
-func (c *client) GroupList(*GroupListRequest, Protocol_GroupListServer) error {
+func (c *client) GroupList(*GroupListRequest, Instance_GroupListServer) error {
 	return ErrNotImplemented
 }
 
@@ -22,14 +22,14 @@ func (c *client) GroupMessageCreate(context.Context, *GroupMessageCreateRequest)
 	return nil, ErrNotImplemented
 }
 
-func (c *client) GroupMessageList(*GroupMessageListRequest, Protocol_GroupMessageListServer) error {
+func (c *client) GroupMessageList(*GroupMessageListRequest, Instance_GroupMessageListServer) error {
 	return ErrNotImplemented
 }
 
-func (c *client) GroupPubSubTopicInit(Protocol_GroupPubSubTopicInitServer) error {
+func (c *client) GroupPubSubTopicInit(Instance_GroupPubSubTopicInitServer) error {
 	return ErrNotImplemented
 }
 
-func (c *client) GroupPubSubTopicSubscribe(*GroupPubSubTopicSubscribeRequest, Protocol_GroupPubSubTopicSubscribeServer) error {
+func (c *client) GroupPubSubTopicSubscribe(*GroupPubSubTopicSubscribeRequest, Instance_GroupPubSubTopicSubscribeServer) error {
 	return ErrNotImplemented
 }
