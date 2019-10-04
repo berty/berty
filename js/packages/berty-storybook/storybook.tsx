@@ -6,6 +6,8 @@ import { storiesOf } from '@storybook/react-native'
 
 import * as Onboarding from './Onboarding'
 
+import * as Main from './Main'
+
 const stories = storiesOf('Berty', module)
 
 stories.addDecorator((storyFn) => (
@@ -46,5 +48,16 @@ stories
         })
       }
       startApp={linkTo('Onboarding.Privacy')}
+    />
+  ))
+  .add('Main.List', () => (
+    <Main.List
+      requests={{ items: [] }}
+      conversations={{ items: [] }}
+      footer={{
+        search: (): void => {},
+        plus: (): void => {},
+        account: (): void => {},
+      }}
     />
   ))

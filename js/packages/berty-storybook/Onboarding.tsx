@@ -12,7 +12,7 @@ import { Card, TouchableCard } from '@berty-tech/shared-storybook'
 import styles from './styles'
 
 type Navigation = () => void
-type Form<T> = (arg0: object) => Promise<void>
+type Form<T> = (arg0: T) => Promise<void>
 
 const _styles = StyleSheet.create({
   swiperCard: {
