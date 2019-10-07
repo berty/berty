@@ -49,7 +49,7 @@ service Account {
   rpc ConversationCreate (ConversationCreateRequest) returns (ConversationCreateReply) {};
   rpc ConversationLeave (ConversationLeaveRequest) returns (ConversationLeaveReply) {};
   rpc ConversationErase (ConversationEraseRequest) returns (ConversationEraseReply) {};
-  rpc ConversationSetReadingPosition (ConversationSetReadingPositionRequest) returns (ConversationSetReadingPositionReply) {};
+  rpc ConversationSetSeenPosition (ConversationSetSeenPositionRequest) returns (ConversationSetSeenPositionReply) {};
   rpc ConversationMessageList (ConversationMessageListRequest) returns (stream ConversationMessageListReply) {};
   rpc ConversationMessageSend (ConversationMessageSendRequest) returns (ConversationMessageSendReply) {};
   rpc ConversationMessageEdit (ConversationMessageEditRequest) returns (ConversationMessageEditReply) {};
