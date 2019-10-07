@@ -13,6 +13,7 @@ type Client interface {
 	AccountServer
 
 	Close() error
+	Status() Status
 }
 
 type client struct {
@@ -41,4 +42,23 @@ func New(db *gorm.DB, protocol bertyprotocol.Client, opts Opts) (Client, error) 
 
 func (c *client) Close() error {
 	return nil
+}
+
+// Status contains results of status checks
+type Status struct {
+	DB       error
+	Protocol bertyprotocol.Status
+	Chat     error
+	// Network
+	// Crypto
+}
+
+func (c *client) Status() Status {
+	return Status{
+		DB:       c.db.DB().Ping(),
+		Protocol: c.protocol.Status(),
+		Chat:     nil,
+		// Network
+		// Crypto
+	}
 }
