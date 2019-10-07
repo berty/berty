@@ -22,8 +22,8 @@
     "url": "https://github.com/berty/berty/issues"
   },
   "peerDependencies": {
-    "react": "*",
-    "react-native": "*"
+    "react": "^16.9.0",
+    "react-native": "0.61.0"
   },
   "dependencies": {
     "react-native-easy-grid": "^0.2.2",

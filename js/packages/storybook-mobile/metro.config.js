@@ -5,6 +5,7 @@
  * @format
  */
 
+const fs = require('fs')
 const path = require('path')
 const glob = require('glob')
 
@@ -27,7 +28,14 @@ module.exports = {
     extraNodeModules: new Proxy(
       {},
       {
-        get: (target, name) => path.join(__dirname, `node_modules/${name}`),
+        get: (target, name) => {
+          const current = path.join(__dirname, `node_modules/${name}`)
+          const root = path.join(__dirname, `../node_modules/${name}`)
+          if (fs.existsSync(current)) {
+            return current
+          }
+          return root
+        },
       }
     ),
   },

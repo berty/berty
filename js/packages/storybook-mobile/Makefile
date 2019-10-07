@@ -7,7 +7,7 @@ export SHELL ?= env bash
 	deps.storybook.mobile\
 
 deps.storybook.mobile: export PWD := $(PWD)
-deps.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader
+deps.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader.js
 	cd $(PWD) && lsof -t -i :7007 || echo Y | start-storybook --config-dir storybook &
 	kill $$(lsof -t -i :8081) || true
 	cd $(PWD) && PWD=$(PWD) react-native start --reset-cache &

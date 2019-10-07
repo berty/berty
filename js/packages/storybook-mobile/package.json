@@ -14,14 +14,6 @@
   "homepage": "https://github.com/berty/berty/tree/master/packages/storybook-mobile#readme",
   "author": "Berty Technologies <oss@berty.tech>",
   "keywords": [],
-  "main": "lib/storybook-mobile.js",
-  "files": [
-    "lib"
-  ],
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
   "publishConfig": {
     "access": "restricted"
   },
@@ -34,7 +26,6 @@
     "@berty-tech/shared-storybook": "^0.0.0",
     "@storybook/addon-links": "^5.2.1",
     "glob": "^7.1.4",
-    "react-native-reanimated": "^1.3.0",
     "react-native-storybook-loader": "^1.8.1",
     "@babel/core": "^7.6.2",
     "@babel/runtime": "^7.6.2",
@@ -47,7 +38,8 @@
     "eslint": "^6.4.0",
     "jest": "^24.9.0",
     "react": "^16.9.0",
-    "react-native": "^0.61.1",
-    "react-test-renderer": "^16.9.0"
+    "react-native": "0.61.0",
+    "react-test-renderer": "^16.9.0",
+    "react-native-reanimated": "^1.3.0"
   }
 }

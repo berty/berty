@@ -8,8 +8,6 @@ author = Berty Technologies <oss@berty.tech>
 contributor = $(shell git config --get user.name) <$(shell git config --get user.email)>
 license = (Apache-2.0 or MIT)
 
-export SHELL = /usr/bin/env bash
-
 global_bin := /usr/local/bin
 ifeq ($(UNAME_S),Linux)
 global_bin := /usr/bin
@@ -47,7 +45,7 @@ env:
 .PHONY: deps
 deps: $(mod) $(pkg_mod)
 
-$(mod): $(PWD)/package.json
+$(mod): $(PWD)/package.json $(pkg_desc)
 	$(lerna) $(lerna_flags) init
 	$(lerna) $(lerna_flags) bootstrap
 	touch $(mod)
@@ -60,11 +58,9 @@ $(lerna): $(yarn)
 	$(yarn) global add lerna
 
 .NOTPARALLEL: $(pkg_mod) $(pkg_mod)/%
-$(pkg_mod)/%: $(patsubst %,%/package.json,$(pkg))
+$(pkg_mod)/%: $(patsubst %,%/package.json,$(pkg)) $(mod)
 	mkdir -p $(pkg_mod)
 	touch $(pkg_mod) $@
-
-$(pkg_desc): $(mod)
 
 .PHONY: yarn
 yarn $(yarn):
