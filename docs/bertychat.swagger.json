@@ -108,7 +108,7 @@
     "chatConversationUpdateSettingsReply": {
       "type": "object"
     },
-    "chatDevtoolDebugBarReply": {
+    "chatDevEventSubscribeReply": {
       "type": "object"
     },
     "chatEventSubscribeReply": {
@@ -192,17 +192,17 @@
       },
       "title": "Stream result of chatConversationMessageListReply"
     },
-    "chatDevtoolDebugBarReply": {
+    "chatDevEventSubscribeReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/chatDevtoolDebugBarReply"
+          "$ref": "#/definitions/chatDevEventSubscribeReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of chatDevtoolDebugBarReply"
+      "title": "Stream result of chatDevEventSubscribeReply"
     },
     "chatEventSubscribeReply": {
       "type": "object",

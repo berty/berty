@@ -70,7 +70,7 @@ service Account {
   rpc AccountSettingsUpdate (AccountSettingsUpdateRequest) returns (AccountSettingsUpdateReply) {};
   rpc AccountPairingInvitationCreate (AccountPairingInvitationCreateRequest) returns (AccountPairingInvitationCreateReply) {};
   rpc AccountRenewIncomingContactRequestLink (AccountRenewIncomingContactRequestLinkRequest) returns (AccountRenewIncomingContactRequestLinkReply) {};
-  rpc DevtoolDebugBar (DevtoolDebugBarRequest) returns (stream DevtoolDebugBarReply) {};
+  rpc DevEventSubscribe (DevEventSubscribeRequest) returns (stream DevEventSubscribeReply) {};
 
   // FIXME: calls
   // FIXME: live location sharing (broadcast)
@@ -134,5 +134,5 @@ message AccountPairingInvitationCreateRequest {}
 message AccountPairingInvitationCreateReply {}
 message AccountRenewIncomingContactRequestLinkRequest {}
 message AccountRenewIncomingContactRequestLinkReply {}
-message DevtoolDebugBarRequest {}
-message DevtoolDebugBarReply {}
+message DevEventSubscribeRequest {}
+message DevEventSubscribeReply {}
