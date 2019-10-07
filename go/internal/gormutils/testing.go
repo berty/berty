@@ -9,9 +9,10 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // we'll test migrations using sqlite and this is required
 	"github.com/smartystreets/goconvey/convey"
+	"go.uber.org/zap"
 )
 
-type ColumnInfo struct {
+type columnInfo struct {
 	ColumnID  string
 	Name      string
 	Type      string
@@ -20,12 +21,12 @@ type ColumnInfo struct {
 	PK        string
 }
 
-func (t *ColumnInfo) Equals(other *ColumnInfo) bool {
+func (t *columnInfo) Equals(other *columnInfo) bool {
 	return t.Name == other.Name && t.Type == other.Type && *t.NotNull == *other.NotNull
 }
 
 // compareTableSchemas all fields from first must be in second
-func compareTableSchemas(first []*ColumnInfo, second []*ColumnInfo, tableName string) []error {
+func compareTableSchemas(first []*columnInfo, second []*columnInfo, tableName string) []error {
 	foundErrors := []error{}
 
 	for _, firstField := range first {
@@ -46,13 +47,13 @@ func compareTableSchemas(first []*ColumnInfo, second []*ColumnInfo, tableName st
 	return foundErrors
 }
 
-func GetDbTablesSchemas(db *gorm.DB) (map[string][]*ColumnInfo, error) {
+func getDbTablesSchemas(db *gorm.DB) (map[string][]*columnInfo, error) {
 	type NameSQL struct {
 		Name string
 		SQL  string
 	}
 
-	schemas := map[string][]*ColumnInfo{}
+	schemas := map[string][]*columnInfo{}
 	tableNamesAndSQL := []NameSQL{}
 
 	err := db.Raw("SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';").Scan(&tableNamesAndSQL).Error
@@ -61,7 +62,7 @@ func GetDbTablesSchemas(db *gorm.DB) (map[string][]*ColumnInfo, error) {
 	}
 
 	for _, tableNameAndSQL := range tableNamesAndSQL {
-		tableInfos := []*ColumnInfo{}
+		tableInfos := []*columnInfo{}
 		rows, err := db.Raw("PRAGMA table_info(" + tableNameAndSQL.Name + ");").Rows()
 		if err != nil {
 			return nil, err
@@ -72,7 +73,7 @@ func GetDbTablesSchemas(db *gorm.DB) (map[string][]*ColumnInfo, error) {
 				break
 			}
 
-			columnInfo := ColumnInfo{}
+			columnInfo := columnInfo{}
 
 			err = rows.Scan(
 				&columnInfo.ColumnID,
@@ -99,7 +100,16 @@ func GetDbTablesSchemas(db *gorm.DB) (map[string][]*ColumnInfo, error) {
 	return schemas, nil
 }
 
-func TestAllTables(t *testing.T, initFunc func(db *gorm.DB) (*gorm.DB, error), migrateFunc func(db *gorm.DB, forceViaMigrations bool) error, expectedColumns []string) {
+// TestAllTables is a testing helper
+func TestAllTables(
+	t *testing.T,
+	initFunc func(db *gorm.DB, logger *zap.Logger) (*gorm.DB, error),
+	migrateFunc func(db *gorm.DB, forceViaMigrations bool, logger *zap.Logger) error,
+	expectedColumns []string,
+	logger *zap.Logger,
+) {
+	t.Helper()
+
 	convey.Convey("testing Init", t, func() {
 		tmpFile, err := ioutil.TempFile("", "sqlite")
 		convey.So(err, convey.ShouldBeNil)
@@ -115,14 +125,14 @@ func TestAllTables(t *testing.T, initFunc func(db *gorm.DB) (*gorm.DB, error), m
 		db.LogMode(false)
 
 		// call init
-		db, err = initFunc(db)
+		db, err = initFunc(db, logger)
 		convey.So(err, convey.ShouldBeNil)
 		convey.So(db, convey.ShouldNotBeNil)
 
-		err = migrateFunc(db, false)
+		err = migrateFunc(db, false, logger)
 		convey.So(err, convey.ShouldBeNil)
 
-		schemas, err := GetDbTablesSchemas(db)
+		schemas, err := getDbTablesSchemas(db)
 		convey.So(err, convey.ShouldBeNil)
 
 		allTables := expectedColumns
@@ -148,8 +158,14 @@ func TestAllTables(t *testing.T, initFunc func(db *gorm.DB) (*gorm.DB, error), m
 	})
 }
 
-func TestAllMigrations(t *testing.T, initFunc func(db *gorm.DB) (*gorm.DB, error), migrateFunc func(db *gorm.DB, forceViaMigrations bool) error) {
-	tablesSchemes := map[string][]*ColumnInfo{}
+// TestAllMigrations is a testing helper
+func TestAllMigrations(
+	t *testing.T,
+	initFunc func(db *gorm.DB, logger *zap.Logger) (*gorm.DB, error),
+	migrateFunc func(db *gorm.DB, forceViaMigrations bool, logger *zap.Logger) error,
+	logger *zap.Logger,
+) {
+	tablesSchemes := map[string][]*columnInfo{}
 
 	convey.Convey("testing Init", t, func() {
 		tmpFile, err := ioutil.TempFile("", "sqlite")
@@ -166,14 +182,14 @@ func TestAllMigrations(t *testing.T, initFunc func(db *gorm.DB) (*gorm.DB, error
 		db.LogMode(false)
 
 		// call init
-		db, err = initFunc(db)
+		db, err = initFunc(db, logger)
 		convey.So(err, convey.ShouldBeNil)
 		convey.So(db, convey.ShouldNotBeNil)
 
-		err = migrateFunc(db, false)
+		err = migrateFunc(db, false, logger)
 		convey.So(err, convey.ShouldBeNil)
 
-		tablesSchemes, err = GetDbTablesSchemas(db)
+		tablesSchemes, err = getDbTablesSchemas(db)
 		convey.So(err, convey.ShouldBeNil)
 	})
 
@@ -192,14 +208,14 @@ func TestAllMigrations(t *testing.T, initFunc func(db *gorm.DB) (*gorm.DB, error
 		db.LogMode(false)
 
 		// call init
-		db, err = initFunc(db)
+		db, err = initFunc(db, logger)
 		convey.So(err, convey.ShouldBeNil)
 		convey.So(db, convey.ShouldNotBeNil)
 
-		err = migrateFunc(db, true)
+		err = migrateFunc(db, true, logger)
 		convey.So(err, convey.ShouldBeNil)
 
-		migratedTablesSchemes, err := GetDbTablesSchemas(db)
+		migratedTablesSchemes, err := getDbTablesSchemas(db)
 		convey.So(err, convey.ShouldBeNil)
 
 		for tableName, tableScheme := range tablesSchemes {
@@ -216,7 +232,13 @@ func TestAllMigrations(t *testing.T, initFunc func(db *gorm.DB) (*gorm.DB, error
 	})
 }
 
-func TestDropDatabase(t *testing.T, migrateFunc func(db *gorm.DB, forceViaMigrations bool) error, dropDatabaseFunc func(db *gorm.DB) error) {
+// TestDropDatabase is a testing helper
+func TestDropDatabase(
+	t *testing.T,
+	migrateFunc func(db *gorm.DB, forceViaMigrations bool, logger *zap.Logger) error,
+	dropDatabaseFunc func(db *gorm.DB) error,
+	logger *zap.Logger,
+) {
 	convey.Convey("testing Init", t, func() {
 		tmpFile, err := ioutil.TempFile("", "sqlite")
 		convey.So(err, convey.ShouldBeNil)
@@ -232,17 +254,17 @@ func TestDropDatabase(t *testing.T, migrateFunc func(db *gorm.DB, forceViaMigrat
 		db.LogMode(false)
 
 		// call init
-		db, err = Init(db)
+		db, err = Init(db, logger)
 		convey.So(err, convey.ShouldBeNil)
 		convey.So(db, convey.ShouldNotBeNil)
 
-		err = migrateFunc(db, false)
+		err = migrateFunc(db, false, logger)
 		convey.So(err, convey.ShouldBeNil)
 
 		err = dropDatabaseFunc(db)
 		convey.So(err, convey.ShouldBeNil)
 
-		tables, err := GetDbTablesSchemas(db)
+		tables, err := getDbTablesSchemas(db)
 		convey.So(err, convey.ShouldBeNil)
 		convey.So(len(tables), convey.ShouldEqual, 0)
 	})

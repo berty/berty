@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"berty.tech/go/internal/banner"
+	"berty.tech/go/internal/datastore"
 	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
 	"github.com/jinzhu/gorm"
@@ -101,6 +102,13 @@ func main() {
 				return errors.Wrap(err, "failed to initialize gorm")
 			}
 			defer db.Close()
+
+			// initialize datastore
+			db, err = datastore.InitMigrate(db, logger.Named("datastore"))
+			if err != nil {
+				return errors.Wrap(err, "failed to initialize datastore")
+			}
+			// FIXME: use different datastores for protocol and chat
 
 			// initialize new protocol client
 			protocolOpts := bertyprotocol.Opts{

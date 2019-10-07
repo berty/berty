@@ -5,23 +5,27 @@ import (
 	models "berty.tech/go/internal/datastoremodels"
 	"berty.tech/go/internal/gormutils"
 	"github.com/jinzhu/gorm"
+	"go.uber.org/zap"
 )
 
-func Init(db *gorm.DB) (*gorm.DB, error) {
-	return gormutils.Init(db)
+// Init configures an active gorm connection
+func Init(db *gorm.DB, logger *zap.Logger) (*gorm.DB, error) {
+	return gormutils.Init(db, logger)
 }
 
-func Migrate(db *gorm.DB, forceViaMigrations bool) error {
-	return gormutils.Migrate(db, datastoremigrations.GetMigrations, models.AllModels, forceViaMigrations)
+// Migrate runs migrations
+func Migrate(db *gorm.DB, forceViaMigrations bool, logger *zap.Logger) error {
+	return gormutils.Migrate(db, datastoremigrations.GetMigrations, models.AllModels, forceViaMigrations, logger)
 }
 
-func InitMigrate(db *gorm.DB) (*gorm.DB, error) {
-	db, err := Init(db)
+// InitMigrate is an alias for Init() and Migrate()
+func InitMigrate(db *gorm.DB, logger *zap.Logger) (*gorm.DB, error) {
+	db, err := Init(db, logger)
 	if err != nil {
 		return nil, err
 	}
 
-	err = Migrate(db, false)
+	err = Migrate(db, false, logger)
 	if err != nil {
 		return nil, err
 	}
@@ -29,6 +33,7 @@ func InitMigrate(db *gorm.DB) (*gorm.DB, error) {
 	return db, nil
 }
 
+// DropDatabase drops all the tables of a database
 func DropDatabase(db *gorm.DB) error {
 	return gormutils.DropDatabase(db, models.AllTables)
 }

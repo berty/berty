@@ -7,10 +7,10 @@ import (
 )
 
 // Init configures an active gorm connection
-func Init(db *gorm.DB) (*gorm.DB, error) {
+func Init(db *gorm.DB, logger *zap.Logger) (*gorm.DB, error) {
 	db = db.Set("gorm:auto_preload", true)
 	db = db.Set("gorm:association_autoupdate", false)
-	db.SetLogger(&zapLogger{logger: zap.L().Named("vendor.gorm")})
+	db.SetLogger(&zapLogger{logger: logger})
 	db.SingularTable(true)
 	db.BlockGlobalUpdate(true)
 	db.LogMode(true)
@@ -18,7 +18,14 @@ func Init(db *gorm.DB) (*gorm.DB, error) {
 	return db, nil
 }
 
-func Migrate(db *gorm.DB, migrationsGetter func() []*gormigrate.Migration, modelsGetter func() []interface{}, forceViaMigrations bool) error {
+// Migrate runs migrations
+func Migrate(
+	db *gorm.DB,
+	migrationsGetter func() []*gormigrate.Migration,
+	modelsGetter func() []interface{},
+	forceViaMigrations bool,
+	logger *zap.Logger,
+) error {
 	m := gormigrate.New(db, gormigrate.DefaultOptions, migrationsGetter())
 
 	if !forceViaMigrations {
@@ -29,13 +36,10 @@ func Migrate(db *gorm.DB, migrationsGetter func() []*gormigrate.Migration, model
 		})
 	}
 
-	if err := m.Migrate(); err != nil {
-		return err
-	}
-
-	return nil
+	return m.Migrate()
 }
 
+// DropDatabase drops all tables of a database
 func DropDatabase(db *gorm.DB, tableNamesGetter func() []string) error {
 	var tables []interface{}
 	for _, table := range tableNamesGetter() {
