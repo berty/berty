@@ -26,6 +26,8 @@ linters:
     - misspell
     - deadcode
     - misspell
+    - gochecknoglobals
+    - gochecknoinits
     - structcheck
     - errcheck
     - unused
