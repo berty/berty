@@ -51,9 +51,6 @@
     "chatAccountPairingInvitationCreateReply": {
       "type": "object"
     },
-    "chatAccountPaperKeyCreateReply": {
-      "type": "object"
-    },
     "chatAccountRenewIncomingContactRequestLinkReply": {
       "type": "object"
     },

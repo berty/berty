@@ -10,10 +10,6 @@ func (c *client) AccountSettingsUpdate(context.Context, *AccountSettingsUpdateRe
 	return nil, ErrNotImplemented
 }
 
-func (c *client) AccountPaperKeyCreate(context.Context, *AccountPaperKeyCreateRequest) (*AccountPaperKeyCreateReply, error) {
-	return nil, ErrNotImplemented
-}
-
 func (c *client) AccountPairingInvitationCreate(context.Context, *AccountPairingInvitationCreateRequest) (*AccountPairingInvitationCreateReply, error) {
 	return nil, ErrNotImplemented
 }

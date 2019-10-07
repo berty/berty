@@ -68,7 +68,6 @@ service Account {
   rpc Search (SearchRequest) returns (stream SearchReply) {};
   rpc AccountSettingsGet (AccountSettingsGetRequest) returns (AccountSettingsGetReply) {};
   rpc AccountSettingsUpdate (AccountSettingsUpdateRequest) returns (AccountSettingsUpdateReply) {};
-  rpc AccountPaperKeyCreate (AccountPaperKeyCreateRequest) returns (AccountPaperKeyCreateReply) {};
   rpc AccountPairingInvitationCreate (AccountPairingInvitationCreateRequest) returns (AccountPairingInvitationCreateReply) {};
   rpc AccountRenewIncomingContactRequestLink (AccountRenewIncomingContactRequestLinkRequest) returns (AccountRenewIncomingContactRequestLinkReply) {};
   rpc DevtoolDebugBar (DevtoolDebugBarRequest) returns (stream DevtoolDebugBarReply) {};
@@ -131,8 +130,6 @@ message AccountSettingsGetRequest {}
 message AccountSettingsGetReply {}
 message AccountSettingsUpdateRequest {}
 message AccountSettingsUpdateReply {}
-message AccountPaperKeyCreateRequest {}
-message AccountPaperKeyCreateReply {}
 message AccountPairingInvitationCreateRequest {}
 message AccountPairingInvitationCreateReply {}
 message AccountRenewIncomingContactRequestLinkRequest {}
