@@ -1,6 +1,6 @@
 package bertyprotocol
 
-import context "context"
+import "context"
 
 func (c *client) GroupInvitationAccept(context.Context, *GroupInvitationAcceptRequest) (*GroupInvitationAcceptReply, error) {
 	return nil, ErrNotImplemented
@@ -14,6 +14,6 @@ func (c *client) GroupInvitationDiscard(context.Context, *GroupInvitationDiscard
 	return nil, ErrNotImplemented
 }
 
-func (c *client) GroupInvitationList(*GroupInvitationListRequest, Protocol_GroupInvitationListServer) error {
+func (c *client) GroupInvitationList(*GroupInvitationListRequest, Instance_GroupInvitationListServer) error {
 	return ErrNotImplemented
 }

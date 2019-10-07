@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package berty.protocol;
+
 import "google/api/annotations.proto";
 import "google/protobuf/descriptor.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
@@ -40,8 +42,9 @@ option (gogoproto.unsafe_unmarshaler_all) = false;
 option (gogoproto.verbose_equal_all) = false;
 
 
-// Protocol is the top-level API to manage your account. Each account is associated with a Berty user.
-service Protocol {
+// Instance is the top-level API to manage an instance of the Berty Protocol.
+// Each Berty Protocol Instance is considered as a Berty device and is associated with a Berty user.
+service Instance {
   // InstanceExportData exports instance data
   rpc InstanceExportData (InstanceExportDataRequest) returns (InstanceExportDataReply) { option (google.api.http) = {post: "/instance/export-data"}; };
 

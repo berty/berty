@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"berty.tech/go/internal/banner"
+	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -101,17 +102,25 @@ func main() {
 			}
 			defer db.Close()
 
-			// Opts is optional
-			opts := bertyprotocol.Opts{
-				Logger: logger,
-			}
-
 			// initialize new protocol client
-			protocol := bertyprotocol.New(db, opts)
+			protocolOpts := bertyprotocol.Opts{
+				Logger: logger.Named("bertyprotocol"),
+			}
+			protocol, err := bertyprotocol.New(db, protocolOpts)
+			if err != nil {
+				return errors.Wrap(err, "failed to initialize protocol")
+			}
 			defer protocol.Close()
 
 			// initialize bertychat client
-			// FIXME: TODO
+			chatOpts := bertychat.Opts{
+				Logger: logger.Named("bertychat"),
+			}
+			chat, err := bertychat.New(db, protocol, chatOpts)
+			if err != nil {
+				return errors.Wrap(err, "failed to initialize chat")
+			}
+			defer chat.Close()
 
 			logger.Info("client initialized, now starting... not implemented.")
 			return nil

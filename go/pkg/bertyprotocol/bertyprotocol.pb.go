@@ -1655,157 +1655,161 @@ func (m *GroupInvitationListReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_GroupInvitationListReply proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*InstanceExportDataRequest)(nil), "InstanceExportDataRequest")
-	proto.RegisterType((*InstanceExportDataReply)(nil), "InstanceExportDataReply")
-	proto.RegisterType((*InstanceGetConfigurationRequest)(nil), "InstanceGetConfigurationRequest")
-	proto.RegisterType((*InstanceGetConfigurationReply)(nil), "InstanceGetConfigurationReply")
-	proto.RegisterType((*AccountGetConfigurationRequest)(nil), "AccountGetConfigurationRequest")
-	proto.RegisterType((*AccountGetConfigurationReply)(nil), "AccountGetConfigurationReply")
-	proto.RegisterType((*AccountGetInformationRequest)(nil), "AccountGetInformationRequest")
-	proto.RegisterType((*AccountGetInformationReply)(nil), "AccountGetInformationReply")
-	proto.RegisterType((*AccountLinkNewDeviceRequest)(nil), "AccountLinkNewDeviceRequest")
-	proto.RegisterType((*AccountLinkNewDeviceReply)(nil), "AccountLinkNewDeviceReply")
-	proto.RegisterType((*AccountDisableIncomingContactRequestRequest)(nil), "AccountDisableIncomingContactRequestRequest")
-	proto.RegisterType((*AccountDisableIncomingContactRequestReply)(nil), "AccountDisableIncomingContactRequestReply")
-	proto.RegisterType((*AccountEnableIncomingContactRequestRequest)(nil), "AccountEnableIncomingContactRequestRequest")
-	proto.RegisterType((*AccountEnableIncomingContactRequestReply)(nil), "AccountEnableIncomingContactRequestReply")
-	proto.RegisterType((*AccountResetIncomingContactRequestLinkRequest)(nil), "AccountResetIncomingContactRequestLinkRequest")
-	proto.RegisterType((*AccountResetIncomingContactRequestLinkReply)(nil), "AccountResetIncomingContactRequestLinkReply")
-	proto.RegisterType((*EventSubscribeRequest)(nil), "EventSubscribeRequest")
-	proto.RegisterType((*EventStream)(nil), "EventStream")
-	proto.RegisterType((*ContactRequestAcceptRequest)(nil), "ContactRequestAcceptRequest")
-	proto.RegisterType((*ContactRequestAcceptReply)(nil), "ContactRequestAcceptReply")
-	proto.RegisterType((*ContactRequestDiscardRequest)(nil), "ContactRequestDiscardRequest")
-	proto.RegisterType((*ContactRequestDiscardReply)(nil), "ContactRequestDiscardReply")
-	proto.RegisterType((*ContactRequestListIncomingRequest)(nil), "ContactRequestListIncomingRequest")
-	proto.RegisterType((*ContactRequestListIncomingReply)(nil), "ContactRequestListIncomingReply")
-	proto.RegisterType((*ContactRequestListOutgoingRequest)(nil), "ContactRequestListOutgoingRequest")
-	proto.RegisterType((*ContactRequestListOutgoingReply)(nil), "ContactRequestListOutgoingReply")
-	proto.RegisterType((*ContactRequestSendRequest)(nil), "ContactRequestSendRequest")
-	proto.RegisterType((*ContactRequestSendReply)(nil), "ContactRequestSendReply")
-	proto.RegisterType((*ContactGetRequest)(nil), "ContactGetRequest")
-	proto.RegisterType((*ContactGetReply)(nil), "ContactGetReply")
-	proto.RegisterType((*ContactRemoveRequest)(nil), "ContactRemoveRequest")
-	proto.RegisterType((*ContactRemoveReply)(nil), "ContactRemoveReply")
-	proto.RegisterType((*ContactListRequest)(nil), "ContactListRequest")
-	proto.RegisterType((*ContactListReply)(nil), "ContactListReply")
-	proto.RegisterType((*StreamManagerRequestToContactRequest)(nil), "StreamManagerRequestToContactRequest")
-	proto.RegisterType((*StreamManagerRequestToContactReply)(nil), "StreamManagerRequestToContactReply")
-	proto.RegisterType((*StreamManagerAcceptRequest)(nil), "StreamManagerAcceptRequest")
-	proto.RegisterType((*StreamManagerAcceptReply)(nil), "StreamManagerAcceptReply")
-	proto.RegisterType((*GroupCreateRequest)(nil), "GroupCreateRequest")
-	proto.RegisterType((*GroupCreateReply)(nil), "GroupCreateReply")
-	proto.RegisterType((*GroupGenerateInviteLinkRequest)(nil), "GroupGenerateInviteLinkRequest")
-	proto.RegisterType((*GroupGenerateInviteLinkReply)(nil), "GroupGenerateInviteLinkReply")
-	proto.RegisterType((*GroupLeaveRequest)(nil), "GroupLeaveRequest")
-	proto.RegisterType((*GroupLeaveReply)(nil), "GroupLeaveReply")
-	proto.RegisterType((*GroupListRequest)(nil), "GroupListRequest")
-	proto.RegisterType((*GroupListReply)(nil), "GroupListReply")
-	proto.RegisterType((*GroupMessageCreateRequest)(nil), "GroupMessageCreateRequest")
-	proto.RegisterType((*GroupMessageCreateReply)(nil), "GroupMessageCreateReply")
-	proto.RegisterType((*GroupMessageListRequest)(nil), "GroupMessageListRequest")
-	proto.RegisterType((*GroupMessageListReply)(nil), "GroupMessageListReply")
-	proto.RegisterType((*GroupPubSubTopicInitRequest)(nil), "GroupPubSubTopicInitRequest")
-	proto.RegisterType((*GroupPubSubTopicInitReply)(nil), "GroupPubSubTopicInitReply")
-	proto.RegisterType((*GroupPubSubTopicSubscribeRequest)(nil), "GroupPubSubTopicSubscribeRequest")
-	proto.RegisterType((*GroupPubSubTopicSubscribeReply)(nil), "GroupPubSubTopicSubscribeReply")
-	proto.RegisterType((*GroupInvitationAcceptRequest)(nil), "GroupInvitationAcceptRequest")
-	proto.RegisterType((*GroupInvitationAcceptReply)(nil), "GroupInvitationAcceptReply")
-	proto.RegisterType((*GroupInvitationCreateRequest)(nil), "GroupInvitationCreateRequest")
-	proto.RegisterType((*GroupInvitationCreateReply)(nil), "GroupInvitationCreateReply")
-	proto.RegisterType((*GroupInvitationDiscardRequest)(nil), "GroupInvitationDiscardRequest")
-	proto.RegisterType((*GroupInvitationDiscardReply)(nil), "GroupInvitationDiscardReply")
-	proto.RegisterType((*GroupInvitationListRequest)(nil), "GroupInvitationListRequest")
-	proto.RegisterType((*GroupInvitationListReply)(nil), "GroupInvitationListReply")
+	proto.RegisterType((*InstanceExportDataRequest)(nil), "berty.protocol.InstanceExportDataRequest")
+	proto.RegisterType((*InstanceExportDataReply)(nil), "berty.protocol.InstanceExportDataReply")
+	proto.RegisterType((*InstanceGetConfigurationRequest)(nil), "berty.protocol.InstanceGetConfigurationRequest")
+	proto.RegisterType((*InstanceGetConfigurationReply)(nil), "berty.protocol.InstanceGetConfigurationReply")
+	proto.RegisterType((*AccountGetConfigurationRequest)(nil), "berty.protocol.AccountGetConfigurationRequest")
+	proto.RegisterType((*AccountGetConfigurationReply)(nil), "berty.protocol.AccountGetConfigurationReply")
+	proto.RegisterType((*AccountGetInformationRequest)(nil), "berty.protocol.AccountGetInformationRequest")
+	proto.RegisterType((*AccountGetInformationReply)(nil), "berty.protocol.AccountGetInformationReply")
+	proto.RegisterType((*AccountLinkNewDeviceRequest)(nil), "berty.protocol.AccountLinkNewDeviceRequest")
+	proto.RegisterType((*AccountLinkNewDeviceReply)(nil), "berty.protocol.AccountLinkNewDeviceReply")
+	proto.RegisterType((*AccountDisableIncomingContactRequestRequest)(nil), "berty.protocol.AccountDisableIncomingContactRequestRequest")
+	proto.RegisterType((*AccountDisableIncomingContactRequestReply)(nil), "berty.protocol.AccountDisableIncomingContactRequestReply")
+	proto.RegisterType((*AccountEnableIncomingContactRequestRequest)(nil), "berty.protocol.AccountEnableIncomingContactRequestRequest")
+	proto.RegisterType((*AccountEnableIncomingContactRequestReply)(nil), "berty.protocol.AccountEnableIncomingContactRequestReply")
+	proto.RegisterType((*AccountResetIncomingContactRequestLinkRequest)(nil), "berty.protocol.AccountResetIncomingContactRequestLinkRequest")
+	proto.RegisterType((*AccountResetIncomingContactRequestLinkReply)(nil), "berty.protocol.AccountResetIncomingContactRequestLinkReply")
+	proto.RegisterType((*EventSubscribeRequest)(nil), "berty.protocol.EventSubscribeRequest")
+	proto.RegisterType((*EventStream)(nil), "berty.protocol.EventStream")
+	proto.RegisterType((*ContactRequestAcceptRequest)(nil), "berty.protocol.ContactRequestAcceptRequest")
+	proto.RegisterType((*ContactRequestAcceptReply)(nil), "berty.protocol.ContactRequestAcceptReply")
+	proto.RegisterType((*ContactRequestDiscardRequest)(nil), "berty.protocol.ContactRequestDiscardRequest")
+	proto.RegisterType((*ContactRequestDiscardReply)(nil), "berty.protocol.ContactRequestDiscardReply")
+	proto.RegisterType((*ContactRequestListIncomingRequest)(nil), "berty.protocol.ContactRequestListIncomingRequest")
+	proto.RegisterType((*ContactRequestListIncomingReply)(nil), "berty.protocol.ContactRequestListIncomingReply")
+	proto.RegisterType((*ContactRequestListOutgoingRequest)(nil), "berty.protocol.ContactRequestListOutgoingRequest")
+	proto.RegisterType((*ContactRequestListOutgoingReply)(nil), "berty.protocol.ContactRequestListOutgoingReply")
+	proto.RegisterType((*ContactRequestSendRequest)(nil), "berty.protocol.ContactRequestSendRequest")
+	proto.RegisterType((*ContactRequestSendReply)(nil), "berty.protocol.ContactRequestSendReply")
+	proto.RegisterType((*ContactGetRequest)(nil), "berty.protocol.ContactGetRequest")
+	proto.RegisterType((*ContactGetReply)(nil), "berty.protocol.ContactGetReply")
+	proto.RegisterType((*ContactRemoveRequest)(nil), "berty.protocol.ContactRemoveRequest")
+	proto.RegisterType((*ContactRemoveReply)(nil), "berty.protocol.ContactRemoveReply")
+	proto.RegisterType((*ContactListRequest)(nil), "berty.protocol.ContactListRequest")
+	proto.RegisterType((*ContactListReply)(nil), "berty.protocol.ContactListReply")
+	proto.RegisterType((*StreamManagerRequestToContactRequest)(nil), "berty.protocol.StreamManagerRequestToContactRequest")
+	proto.RegisterType((*StreamManagerRequestToContactReply)(nil), "berty.protocol.StreamManagerRequestToContactReply")
+	proto.RegisterType((*StreamManagerAcceptRequest)(nil), "berty.protocol.StreamManagerAcceptRequest")
+	proto.RegisterType((*StreamManagerAcceptReply)(nil), "berty.protocol.StreamManagerAcceptReply")
+	proto.RegisterType((*GroupCreateRequest)(nil), "berty.protocol.GroupCreateRequest")
+	proto.RegisterType((*GroupCreateReply)(nil), "berty.protocol.GroupCreateReply")
+	proto.RegisterType((*GroupGenerateInviteLinkRequest)(nil), "berty.protocol.GroupGenerateInviteLinkRequest")
+	proto.RegisterType((*GroupGenerateInviteLinkReply)(nil), "berty.protocol.GroupGenerateInviteLinkReply")
+	proto.RegisterType((*GroupLeaveRequest)(nil), "berty.protocol.GroupLeaveRequest")
+	proto.RegisterType((*GroupLeaveReply)(nil), "berty.protocol.GroupLeaveReply")
+	proto.RegisterType((*GroupListRequest)(nil), "berty.protocol.GroupListRequest")
+	proto.RegisterType((*GroupListReply)(nil), "berty.protocol.GroupListReply")
+	proto.RegisterType((*GroupMessageCreateRequest)(nil), "berty.protocol.GroupMessageCreateRequest")
+	proto.RegisterType((*GroupMessageCreateReply)(nil), "berty.protocol.GroupMessageCreateReply")
+	proto.RegisterType((*GroupMessageListRequest)(nil), "berty.protocol.GroupMessageListRequest")
+	proto.RegisterType((*GroupMessageListReply)(nil), "berty.protocol.GroupMessageListReply")
+	proto.RegisterType((*GroupPubSubTopicInitRequest)(nil), "berty.protocol.GroupPubSubTopicInitRequest")
+	proto.RegisterType((*GroupPubSubTopicInitReply)(nil), "berty.protocol.GroupPubSubTopicInitReply")
+	proto.RegisterType((*GroupPubSubTopicSubscribeRequest)(nil), "berty.protocol.GroupPubSubTopicSubscribeRequest")
+	proto.RegisterType((*GroupPubSubTopicSubscribeReply)(nil), "berty.protocol.GroupPubSubTopicSubscribeReply")
+	proto.RegisterType((*GroupInvitationAcceptRequest)(nil), "berty.protocol.GroupInvitationAcceptRequest")
+	proto.RegisterType((*GroupInvitationAcceptReply)(nil), "berty.protocol.GroupInvitationAcceptReply")
+	proto.RegisterType((*GroupInvitationCreateRequest)(nil), "berty.protocol.GroupInvitationCreateRequest")
+	proto.RegisterType((*GroupInvitationCreateReply)(nil), "berty.protocol.GroupInvitationCreateReply")
+	proto.RegisterType((*GroupInvitationDiscardRequest)(nil), "berty.protocol.GroupInvitationDiscardRequest")
+	proto.RegisterType((*GroupInvitationDiscardReply)(nil), "berty.protocol.GroupInvitationDiscardReply")
+	proto.RegisterType((*GroupInvitationListRequest)(nil), "berty.protocol.GroupInvitationListRequest")
+	proto.RegisterType((*GroupInvitationListReply)(nil), "berty.protocol.GroupInvitationListReply")
 }
 
 func init() { proto.RegisterFile("bertyprotocol.proto", fileDescriptor_047e04c733cf8554) }
 
 var fileDescriptor_047e04c733cf8554 = []byte{
-	// 1325 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x98, 0x3d, 0x8c, 0x1b, 0x45,
-	0x14, 0xc7, 0x67, 0x29, 0x10, 0xbc, 0x90, 0xe4, 0xee, 0xdd, 0xf7, 0xd8, 0x1e, 0xdf, 0x39, 0x21,
-	0xca, 0xd7, 0x3d, 0x9b, 0x20, 0x04, 0x12, 0x55, 0xc8, 0x85, 0xd3, 0xa1, 0x84, 0x84, 0x5c, 0x84,
-	0x04, 0xa2, 0x59, 0xef, 0x4d, 0x9c, 0x55, 0xee, 0x76, 0xcd, 0x7a, 0x7d, 0x90, 0x02, 0x29, 0xa2,
-	0x40, 0x29, 0x91, 0x68, 0x28, 0xa1, 0x4b, 0x99, 0x32, 0x65, 0xca, 0x94, 0x91, 0x68, 0x22, 0xaa,
-	0x78, 0x4d, 0x91, 0x32, 0x65, 0x4a, 0x34, 0x7b, 0x6b, 0x7b, 0x3f, 0x66, 0xd6, 0x4e, 0xe7, 0x9d,
-	0xff, 0xff, 0xbd, 0x9d, 0x7d, 0x6f, 0x76, 0xdf, 0x4f, 0x86, 0x85, 0xb6, 0x0c, 0xc2, 0xfb, 0xdd,
-	0xc0, 0x0f, 0x7d, 0xc7, 0xdf, 0xa7, 0xf8, 0x07, 0xaf, 0x76, 0x7c, 0xbf, 0xb3, 0x2f, 0x9b, 0x76,
-	0xd7, 0x6d, 0xda, 0x9e, 0xe7, 0x87, 0x76, 0xe8, 0xfa, 0x5e, 0x2f, 0x51, 0xd7, 0x13, 0x35, 0xbe,
-	0x6a, 0xf7, 0xef, 0x34, 0xf7, 0x64, 0xcf, 0x09, 0xdc, 0x6e, 0xe8, 0x07, 0x89, 0x63, 0xb3, 0xe3,
-	0x86, 0x77, 0xfb, 0x6d, 0x72, 0xfc, 0x83, 0x66, 0xc7, 0xef, 0xf8, 0x13, 0xab, 0xba, 0x8a, 0x2f,
-	0xe2, 0x5f, 0x47, 0xf6, 0x46, 0x05, 0xd6, 0x76, 0xbc, 0x5e, 0x68, 0x7b, 0x8e, 0xbc, 0xfa, 0x73,
-	0xd7, 0x0f, 0xc2, 0x2d, 0x3b, 0xb4, 0x6f, 0xc9, 0x1f, 0xfb, 0xb2, 0x17, 0x36, 0xd6, 0x60, 0x45,
-	0x27, 0x76, 0xf7, 0xef, 0x37, 0x36, 0xa0, 0x3e, 0x92, 0xb6, 0x65, 0x78, 0xc5, 0xf7, 0xee, 0xb8,
-	0x9d, 0x7e, 0x10, 0xef, 0x75, 0x14, 0x5d, 0x87, 0x9a, 0xd9, 0xa2, 0x72, 0xac, 0x83, 0xb8, 0xec,
-	0x38, 0x7e, 0xdf, 0x0b, 0x4d, 0x29, 0x04, 0x54, 0x8d, 0x0e, 0x95, 0x21, 0xa3, 0xef, 0x78, 0x77,
-	0xfc, 0xe0, 0x20, 0x13, 0x5f, 0x05, 0x6e, 0xd0, 0x55, 0x74, 0x0d, 0x2a, 0x89, 0x7a, 0xcd, 0xf5,
-	0xee, 0x7d, 0x2d, 0x7f, 0xda, 0x92, 0x87, 0xae, 0x23, 0x47, 0xc1, 0x15, 0x58, 0xd3, 0xcb, 0x2a,
-	0x76, 0x13, 0x2e, 0x24, 0xe2, 0x96, 0xdb, 0xb3, 0xdb, 0xfb, 0x72, 0xc7, 0x73, 0xfc, 0x03, 0xd7,
-	0xeb, 0x5c, 0xf1, 0xbd, 0xd0, 0x76, 0xc2, 0x24, 0xc9, 0x28, 0xd7, 0x05, 0x38, 0x37, 0x9b, 0x5d,
-	0xe5, 0xbe, 0x08, 0xe7, 0x13, 0xf3, 0x55, 0x6f, 0x7a, 0xea, 0xf3, 0x70, 0x76, 0x26, 0xb7, 0xca,
-	0xdc, 0x84, 0xcd, 0xc4, 0x7b, 0x4b, 0xf6, 0x54, 0x45, 0x74, 0x56, 0xf5, 0xb4, 0xa3, 0xe4, 0x93,
-	0xc7, 0x9c, 0x1a, 0xa0, 0xf2, 0xaf, 0xc0, 0xd2, 0xd5, 0x43, 0xe9, 0x85, 0xbb, 0xfd, 0xb6, 0x3a,
-	0x96, 0xed, 0x71, 0x2d, 0x8f, 0xc3, 0xb1, 0x23, 0x21, 0x0c, 0xa4, 0x7d, 0xa0, 0x2a, 0x9f, 0x4d,
-	0x71, 0xd9, 0x71, 0x64, 0x37, 0x4c, 0x55, 0x5e, 0x2f, 0x27, 0x3d, 0xcf, 0x8a, 0x5b, 0x6e, 0xcf,
-	0xb1, 0x83, 0xbd, 0x54, 0xcf, 0x0d, 0xba, 0x8a, 0x3e, 0x05, 0x1b, 0xf9, 0xcd, 0xf7, 0xc6, 0x8f,
-	0x35, 0x4a, 0xb1, 0x01, 0xf5, 0x32, 0x93, 0x31, 0xcf, 0x8d, 0x7e, 0xd8, 0xf1, 0xa7, 0xe5, 0x99,
-	0x98, 0x54, 0x9e, 0xc2, 0xa3, 0xee, 0x4a, 0x6f, 0x2f, 0xf5, 0xfe, 0xe9, 0x44, 0x15, 0xb7, 0x00,
-	0xf3, 0x89, 0xb4, 0x2d, 0xc7, 0x75, 0x9b, 0x87, 0x93, 0xe9, 0x45, 0xe5, 0x5b, 0x86, 0xc5, 0x71,
-	0x8a, 0x03, 0xff, 0x70, 0xdc, 0x90, 0x45, 0xc0, 0xdc, 0xba, 0x72, 0x4f, 0x56, 0xd5, 0x4e, 0x47,
-	0x5e, 0x84, 0xb9, 0xcc, 0xaa, 0x72, 0x9e, 0x81, 0xd3, 0x47, 0xbd, 0xbc, 0x6e, 0x7b, 0x76, 0x47,
-	0x06, 0x89, 0xf7, 0xb6, 0x9f, 0xdd, 0x70, 0xe3, 0x34, 0x34, 0xa6, 0xf8, 0x54, 0xb6, 0x2a, 0xf0,
-	0x8c, 0x2b, 0x7b, 0x1c, 0x38, 0xac, 0x6a, 0xd5, 0x64, 0xc7, 0xdb, 0x81, 0xdf, 0xef, 0x5e, 0x09,
-	0xa4, 0x1d, 0xca, 0xd4, 0x8e, 0x33, 0xab, 0xc9, 0xd7, 0x26, 0x5e, 0xdb, 0x96, 0x9e, 0x0c, 0xec,
-	0x50, 0xee, 0x78, 0x87, 0x6e, 0x28, 0xd3, 0x87, 0x5d, 0x40, 0xd5, 0xe8, 0x48, 0x6a, 0x1e, 0xeb,
-	0xd7, 0xa4, 0x3d, 0x29, 0xe4, 0x3c, 0x9c, 0x4c, 0x2f, 0x2a, 0xdf, 0xe8, 0xee, 0xe9, 0x1a, 0xce,
-	0xc1, 0x89, 0xd4, 0x5a, 0xd2, 0xf9, 0x78, 0xe5, 0xba, 0xec, 0xf5, 0xec, 0x8e, 0xcc, 0x3e, 0xc0,
-	0x1a, 0xac, 0xe8, 0x44, 0x15, 0x97, 0x93, 0xd2, 0x37, 0x59, 0x81, 0xa5, 0xa2, 0x94, 0x7c, 0xe9,
-	0x62, 0xe1, 0x66, 0xbf, 0xbd, 0xdb, 0x6f, 0xdf, 0xf6, 0xbb, 0xae, 0xb3, 0xe3, 0xb9, 0xe9, 0xf7,
-	0x4d, 0x2f, 0xab, 0xd8, 0x06, 0xac, 0xe7, 0xc5, 0xc2, 0xeb, 0x3d, 0xaa, 0xad, 0xde, 0x93, 0xbc,
-	0xb5, 0xb1, 0x23, 0xae, 0x69, 0xfc, 0x0d, 0xce, 0xf6, 0xb8, 0x0a, 0xdc, 0xa0, 0xeb, 0xa3, 0xb3,
-	0xe5, 0x2a, 0x46, 0xa7, 0x2b, 0x56, 0x87, 0x5a, 0x4e, 0xcd, 0x7d, 0x32, 0x46, 0xe5, 0xd1, 0x18,
-	0x92, 0xd3, 0x99, 0x93, 0xd3, 0x45, 0xe7, 0xb0, 0xaa, 0x55, 0xbb, 0xfb, 0xf7, 0x2f, 0xfd, 0xbb,
-	0x08, 0xef, 0xdd, 0x4c, 0xe6, 0x3b, 0xba, 0x80, 0xc5, 0x69, 0x8a, 0x9c, 0x8c, 0xf3, 0x97, 0xaf,
-	0x92, 0x69, 0xfc, 0xd6, 0x7e, 0xfd, 0xe7, 0xbf, 0x3f, 0xde, 0x59, 0x69, 0x2c, 0x35, 0xdd, 0xc4,
-	0xd1, 0x94, 0xb1, 0x65, 0x73, 0x4f, 0x25, 0xfd, 0x01, 0x56, 0x4d, 0xa3, 0x17, 0xd7, 0x69, 0xca,
-	0xe0, 0xe6, 0x82, 0x4a, 0xe7, 0x36, 0x7e, 0x07, 0x2b, 0x86, 0xa9, 0x8c, 0x75, 0x2a, 0x9f, 0xe8,
-	0xbc, 0x46, 0x65, 0x03, 0x1d, 0x77, 0x61, 0x49, 0x3b, 0xb0, 0x31, 0x1d, 0x57, 0x1c, 0xf4, 0xbc,
-	0x42, 0xe6, 0x39, 0x8f, 0x37, 0x61, 0x51, 0x37, 0xc8, 0xb1, 0x4a, 0x25, 0xe3, 0x9f, 0x73, 0x32,
-	0x4e, 0x7f, 0x7c, 0x60, 0xc1, 0xe9, 0x59, 0xe6, 0x39, 0x5e, 0xa4, 0xb7, 0xa0, 0x04, 0x7e, 0x9e,
-	0x66, 0x86, 0x04, 0xfc, 0x05, 0x4e, 0xcd, 0x30, 0xf6, 0xf1, 0x02, 0xcd, 0x8e, 0x12, 0xfc, 0x1c,
-	0xcd, 0x4a, 0x12, 0xf8, 0x9b, 0x05, 0x67, 0x66, 0x23, 0x03, 0x24, 0x7a, 0x2b, 0xe6, 0xe0, 0x17,
-	0xe9, 0x2d, 0x90, 0x03, 0x3f, 0x83, 0x13, 0x59, 0xe4, 0xc0, 0x65, 0xd2, 0x32, 0x08, 0xff, 0x80,
-	0x52, 0x08, 0xd2, 0xb2, 0xd4, 0xb1, 0xd0, 0x51, 0x06, 0x56, 0xa9, 0x84, 0x4d, 0x38, 0x27, 0x23,
-	0x9a, 0xa8, 0xd3, 0xab, 0x45, 0x0f, 0xac, 0x51, 0x19, 0xb2, 0xf0, 0x0a, 0x99, 0x89, 0x05, 0xf7,
-	0xf2, 0x3c, 0x93, 0x86, 0x11, 0x6c, 0xd0, 0x54, 0x9c, 0xe1, 0xeb, 0x34, 0x85, 0x66, 0x5a, 0x96,
-	0xfe, 0x2e, 0x23, 0x54, 0xd1, 0xde, 0x25, 0x07, 0x3b, 0xda, 0xbb, 0x64, 0x58, 0xa7, 0x65, 0xe1,
-	0x57, 0x29, 0xea, 0x18, 0x03, 0x0d, 0xe6, 0x4b, 0x9a, 0x42, 0x20, 0xbe, 0x4a, 0x06, 0x02, 0xc2,
-	0x4b, 0x00, 0x13, 0xd8, 0x41, 0xa4, 0x02, 0x0e, 0xf1, 0x39, 0xca, 0xd1, 0x10, 0x7e, 0x0a, 0xc7,
-	0x52, 0x24, 0x83, 0x0b, 0x54, 0xa4, 0x1d, 0x3e, 0x4f, 0x79, 0xd8, 0x69, 0x59, 0xf8, 0x39, 0x1c,
-	0xcf, 0xe0, 0x12, 0x2e, 0x91, 0x0e, 0xab, 0xf8, 0x02, 0x15, 0xa9, 0x0a, 0xef, 0x41, 0xad, 0x94,
-	0x81, 0xf0, 0x43, 0x9a, 0x85, 0xa5, 0xf8, 0x29, 0x9a, 0x8e, 0x52, 0xf8, 0x0d, 0x2c, 0x68, 0x60,
-	0x09, 0x2b, 0x64, 0x06, 0x2c, 0xbe, 0x46, 0x26, 0xbe, 0x3a, 0x6b, 0xb5, 0x2c, 0xfc, 0x04, 0x8e,
-	0xa5, 0x68, 0x0a, 0x17, 0xa8, 0x48, 0x5c, 0x7c, 0x9e, 0xf2, 0xc0, 0xa5, 0xc6, 0x84, 0x01, 0xa7,
-	0xb0, 0x4e, 0xe5, 0x28, 0xc6, 0x6b, 0x54, 0x46, 0x62, 0xaa, 0xf7, 0x13, 0xe8, 0x42, 0xa4, 0x02,
-	0x96, 0xf1, 0x39, 0xca, 0x51, 0x19, 0x7e, 0x04, 0xef, 0x8f, 0x09, 0x0c, 0x93, 0xed, 0xa6, 0xfb,
-	0x7e, 0x92, 0xb2, 0x80, 0x76, 0x74, 0x5c, 0x8b, 0x14, 0x86, 0x9c, 0x8c, 0xdc, 0xc6, 0x57, 0xc9,
-	0x80, 0x6d, 0xf8, 0x65, 0x02, 0x85, 0x29, 0x36, 0xc3, 0xac, 0x3b, 0xbd, 0x99, 0x65, 0xd2, 0x82,
-	0x5c, 0xcb, 0xc2, 0x5b, 0xb0, 0xa8, 0x63, 0x35, 0xac, 0x52, 0x09, 0xe1, 0x71, 0x4e, 0x46, 0xc0,
-	0x3b, 0x6b, 0xa1, 0x5d, 0xe4, 0xbf, 0xc9, 0xe7, 0x74, 0x83, 0xa6, 0xe1, 0x1f, 0xaf, 0x53, 0x39,
-	0xfd, 0xb5, 0x2c, 0xf5, 0x69, 0xd4, 0xf2, 0x1d, 0x26, 0x9d, 0x36, 0x70, 0x21, 0xaf, 0x90, 0x19,
-	0x0b, 0x35, 0x49, 0x93, 0x16, 0x15, 0x92, 0x66, 0xbb, 0x54, 0x21, 0x33, 0x2d, 0xe2, 0xb7, 0xb0,
-	0xac, 0x87, 0x41, 0x14, 0x54, 0x8a, 0x91, 0xbc, 0x4a, 0x25, 0x14, 0x89, 0x37, 0x60, 0x41, 0xc3,
-	0x89, 0x58, 0xd8, 0x4b, 0xfa, 0x18, 0xac, 0x91, 0x09, 0x2d, 0x5b, 0xd6, 0x17, 0x7f, 0x5b, 0xcf,
-	0x06, 0x82, 0x3d, 0x1f, 0x08, 0xeb, 0xc5, 0x40, 0xb0, 0x97, 0x03, 0xc1, 0x5e, 0x0d, 0x04, 0x7b,
-	0x3d, 0x10, 0xec, 0xcd, 0x40, 0xb0, 0x07, 0x91, 0xb0, 0x1e, 0x46, 0x82, 0x3d, 0x8a, 0x04, 0x7b,
-	0x1c, 0x09, 0xf6, 0x24, 0x12, 0xec, 0x69, 0x24, 0xd8, 0xb3, 0x48, 0xb0, 0xe7, 0x91, 0x60, 0x2f,
-	0x22, 0xc1, 0x5e, 0x46, 0x82, 0xbd, 0x8a, 0x04, 0x7b, 0x1d, 0x09, 0xf6, 0x26, 0x12, 0xec, 0xc1,
-	0x50, 0xb0, 0x87, 0x43, 0xc1, 0x7e, 0x1f, 0x0a, 0xf6, 0xe7, 0x50, 0xb0, 0xbf, 0x86, 0x82, 0x3d,
-	0x1a, 0x0a, 0xf6, 0x78, 0x28, 0xac, 0x27, 0x43, 0x61, 0x3d, 0x1d, 0x0a, 0xf6, 0x6c, 0x28, 0xd8,
-	0xf3, 0xa1, 0x60, 0x2f, 0x86, 0x82, 0x7d, 0x5f, 0x8f, 0xff, 0xc1, 0xa2, 0x50, 0x3a, 0x77, 0x9b,
-	0x1d, 0xbf, 0xd9, 0xbd, 0xd7, 0x69, 0x66, 0xfe, 0xd3, 0x6a, 0xbf, 0x1b, 0xff, 0xfa, 0xf8, 0xff,
-	0x00, 0x00, 0x00, 0xff, 0xff, 0xed, 0x43, 0x08, 0x69, 0xeb, 0x12, 0x00, 0x00,
+	// 1380 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x58, 0x3f, 0x6c, 0x14, 0xc7,
+	0x17, 0x9e, 0xfd, 0x15, 0x3f, 0x25, 0x0f, 0xf1, 0x6f, 0x6c, 0x63, 0xbc, 0x3e, 0x8f, 0xed, 0xc3,
+	0x10, 0xff, 0xc1, 0xb7, 0x0e, 0x49, 0x91, 0x04, 0xa5, 0x20, 0x18, 0x59, 0x96, 0x20, 0x20, 0x4c,
+	0x22, 0x25, 0xdd, 0xde, 0x7a, 0x58, 0x56, 0x9c, 0x77, 0x96, 0xbd, 0x3d, 0x13, 0xa7, 0x09, 0xa1,
+	0x09, 0xe9, 0x22, 0xa5, 0x89, 0x14, 0x29, 0x4a, 0xa4, 0x14, 0x94, 0x94, 0x94, 0x94, 0x94, 0x48,
+	0x69, 0x28, 0xb9, 0xdd, 0x14, 0x94, 0x94, 0x94, 0xd1, 0xec, 0xed, 0xde, 0xcd, 0xee, 0xcc, 0xec,
+	0x2d, 0xee, 0x7c, 0xf3, 0xbe, 0xf7, 0xcd, 0x9b, 0x37, 0x6f, 0xf6, 0x7d, 0xcf, 0x30, 0xd1, 0xa6,
+	0x61, 0x74, 0x10, 0x84, 0x2c, 0x62, 0x0e, 0xeb, 0xb4, 0xd2, 0x3f, 0xf0, 0xb1, 0x74, 0xb1, 0x95,
+	0xaf, 0x9a, 0x0d, 0x97, 0x31, 0xb7, 0x43, 0x2d, 0x3b, 0xf0, 0x2c, 0xdb, 0xf7, 0x59, 0x64, 0x47,
+	0x1e, 0xf3, 0xbb, 0x03, 0x80, 0xb9, 0x90, 0x59, 0xd3, 0x5f, 0xed, 0xde, 0x6d, 0x6b, 0x97, 0x76,
+	0x9d, 0xd0, 0x0b, 0x22, 0x16, 0x66, 0x88, 0x75, 0xd7, 0x8b, 0xee, 0xf4, 0xda, 0x2d, 0x87, 0xed,
+	0x59, 0x2e, 0x73, 0xd9, 0x08, 0xca, 0x7f, 0xa5, 0x3f, 0xd2, 0xbf, 0x06, 0xf0, 0xe6, 0x2c, 0xcc,
+	0x6c, 0xfb, 0xdd, 0xc8, 0xf6, 0x1d, 0x7a, 0xe5, 0xbb, 0x80, 0x85, 0xd1, 0xa6, 0x1d, 0xd9, 0x37,
+	0xe9, 0xbd, 0x1e, 0xed, 0x46, 0xcd, 0x19, 0x98, 0x56, 0x19, 0x83, 0xce, 0x41, 0x73, 0x11, 0xe6,
+	0x73, 0xd3, 0x16, 0x8d, 0x2e, 0x33, 0xff, 0xb6, 0xe7, 0xf6, 0xc2, 0x34, 0xd6, 0xdc, 0x7b, 0x1e,
+	0xe6, 0xf4, 0x10, 0xce, 0xb1, 0x00, 0xe4, 0x92, 0xe3, 0xb0, 0x9e, 0x1f, 0xe9, 0x28, 0x08, 0x34,
+	0xb4, 0x08, 0xce, 0x50, 0xb0, 0x6f, 0xfb, 0xb7, 0x59, 0xb8, 0x57, 0xf0, 0x6f, 0x80, 0xa9, 0xb1,
+	0x73, 0xef, 0x39, 0x98, 0xcd, 0xac, 0x57, 0x3d, 0xff, 0xee, 0x97, 0xf4, 0xfe, 0x26, 0xdd, 0xf7,
+	0x1c, 0x9a, 0x3b, 0xcf, 0xc2, 0x8c, 0xda, 0xcc, 0x7d, 0xd7, 0x61, 0x2d, 0x33, 0x6e, 0x7a, 0x5d,
+	0xbb, 0xdd, 0xa1, 0xdb, 0xbe, 0xc3, 0xf6, 0x3c, 0xdf, 0xbd, 0xcc, 0xfc, 0xc8, 0x76, 0xa2, 0x8c,
+	0x24, 0xe7, 0x5a, 0x83, 0x95, 0x7a, 0x70, 0xce, 0x7d, 0x1e, 0x56, 0x33, 0xf0, 0x15, 0x7f, 0x3c,
+	0xf5, 0x2a, 0x2c, 0xd7, 0x42, 0x73, 0x66, 0x0b, 0xd6, 0x33, 0xec, 0x4d, 0xda, 0xe5, 0x19, 0x51,
+	0x41, 0xf9, 0x69, 0x73, 0xf2, 0xd1, 0x31, 0xc7, 0x3a, 0x70, 0xfe, 0x69, 0x98, 0xba, 0xb2, 0x4f,
+	0xfd, 0x68, 0xa7, 0xd7, 0xe6, 0x65, 0xd9, 0x1e, 0xe6, 0xf2, 0x28, 0x1c, 0x19, 0x18, 0xa2, 0x90,
+	0xda, 0x7b, 0x3c, 0xf3, 0x45, 0x8a, 0x4b, 0x8e, 0x43, 0x83, 0x48, 0xc8, 0xbc, 0xda, 0x9c, 0xdd,
+	0x79, 0xd1, 0xb8, 0xe9, 0x75, 0x1d, 0x3b, 0xdc, 0x15, 0xee, 0x5c, 0x63, 0xe7, 0xde, 0x67, 0x60,
+	0xb1, 0x1c, 0x7c, 0x77, 0x78, 0xac, 0x9c, 0x62, 0x11, 0xe6, 0xab, 0x40, 0x5a, 0x9e, 0xeb, 0xbd,
+	0xc8, 0x65, 0xe3, 0x78, 0x46, 0x20, 0xce, 0x23, 0x1d, 0x75, 0x87, 0xfa, 0xbb, 0xc2, 0xfb, 0x53,
+	0x19, 0xb9, 0xdf, 0x04, 0x9c, 0xcc, 0x4c, 0x5b, 0x74, 0x98, 0xb7, 0x93, 0x70, 0x5c, 0x5c, 0xe4,
+	0xb8, 0x53, 0x30, 0x39, 0xa4, 0xd8, 0x63, 0xfb, 0xc3, 0x0b, 0x99, 0x04, 0x5c, 0x5a, 0xe7, 0xe8,
+	0xd1, 0x2a, 0x8f, 0x34, 0xc7, 0x62, 0x38, 0x51, 0x58, 0xe5, 0xc8, 0x73, 0xb0, 0x34, 0xb8, 0xcb,
+	0x6b, 0xb6, 0x6f, 0xbb, 0x34, 0xcc, 0xb0, 0xb7, 0x58, 0x31, 0xe0, 0xe6, 0x12, 0x34, 0xc7, 0xe0,
+	0x38, 0x5b, 0x03, 0xcc, 0x02, 0xaa, 0x58, 0x0e, 0x26, 0x9c, 0x56, 0x5a, 0xb3, 0x88, 0xb7, 0x42,
+	0xd6, 0x0b, 0x2e, 0x87, 0xd4, 0x8e, 0xa8, 0x10, 0x71, 0x61, 0x35, 0xfb, 0xda, 0xa4, 0x6b, 0x5b,
+	0xd4, 0xa7, 0xa1, 0x1d, 0xd1, 0x6d, 0x7f, 0xdf, 0x8b, 0xa8, 0x58, 0xec, 0x04, 0x1a, 0x5a, 0x44,
+	0x96, 0xf3, 0xd4, 0x7e, 0x95, 0xda, 0xa3, 0x44, 0x9e, 0x84, 0xe3, 0xe2, 0x22, 0xc7, 0xe5, 0xbb,
+	0x8b, 0x39, 0x3c, 0x01, 0xc7, 0x84, 0xb5, 0xec, 0xe6, 0xd3, 0x95, 0x6b, 0xb4, 0xdb, 0xb5, 0x5d,
+	0x5a, 0x3c, 0xc0, 0x0c, 0x4c, 0xab, 0x8c, 0xdc, 0xaf, 0x64, 0x12, 0x37, 0x99, 0x86, 0x29, 0xd9,
+	0x94, 0x7d, 0xe9, 0x52, 0xc3, 0x8d, 0x5e, 0x7b, 0xa7, 0xd7, 0xbe, 0xc5, 0x02, 0xcf, 0xd9, 0xf6,
+	0x3d, 0xf1, 0xbd, 0xa9, 0xcd, 0xdc, 0xb7, 0x09, 0x0b, 0x65, 0xa3, 0xf4, 0xbc, 0xf3, 0xdc, 0xaa,
+	0x31, 0xd9, 0xab, 0x4d, 0x11, 0x69, 0x4e, 0xd3, 0x6f, 0x70, 0xf1, 0x8e, 0x1b, 0x60, 0x6a, 0xec,
+	0x6a, 0xef, 0x62, 0xba, 0x64, 0x6f, 0x31, 0x63, 0xf3, 0x30, 0x57, 0xb2, 0x96, 0x3e, 0x19, 0x79,
+	0x7a, 0x14, 0x80, 0xac, 0x3a, 0x4b, 0x66, 0x31, 0xe9, 0x26, 0x9c, 0x56, 0x5a, 0x83, 0xce, 0xc1,
+	0x85, 0x1f, 0x1b, 0xf0, 0x5e, 0xde, 0x03, 0xf1, 0x4f, 0x06, 0x60, 0xb9, 0x9d, 0xe2, 0x95, 0x56,
+	0x51, 0x01, 0xb4, 0xb4, 0xfd, 0xd8, 0xfc, 0xa0, 0x0e, 0x34, 0xbd, 0xef, 0x87, 0xff, 0xfc, 0xfb,
+	0xeb, 0xff, 0xa6, 0x9b, 0x53, 0x96, 0x97, 0x21, 0x2c, 0x9a, 0x42, 0xd6, 0x77, 0xf9, 0x96, 0xdf,
+	0xc3, 0x69, 0x5d, 0x67, 0xc6, 0x96, 0x6e, 0x0f, 0x4d, 0x8f, 0x36, 0xd7, 0xeb, 0x3b, 0x04, 0x9d,
+	0x03, 0x7c, 0x1f, 0xa6, 0x35, 0x2d, 0x1d, 0xb7, 0xca, 0x4c, 0xd5, 0xea, 0xc0, 0x3c, 0x5f, 0x1b,
+	0xcf, 0x37, 0xbe, 0x07, 0x53, 0x4a, 0x2d, 0x80, 0x2b, 0x68, 0x64, 0x49, 0x61, 0xae, 0xd6, 0x44,
+	0xf3, 0x2d, 0x7d, 0x98, 0x54, 0x29, 0x08, 0xbc, 0xa6, 0xe1, 0x50, 0xc9, 0x10, 0x73, 0xa5, 0x1e,
+	0x98, 0xef, 0xf7, 0x87, 0x01, 0x4b, 0x75, 0x64, 0x06, 0xbe, 0xa8, 0xe1, 0xac, 0xa3, 0x65, 0xcc,
+	0x4f, 0x0f, 0xe7, 0xcc, 0x03, 0xfc, 0xdd, 0x80, 0x33, 0x35, 0xc4, 0x0a, 0xfe, 0x4c, 0xb3, 0x45,
+	0x0d, 0x3d, 0x64, 0x7e, 0x72, 0x28, 0x5f, 0x1e, 0xdd, 0xdf, 0x06, 0x9c, 0xab, 0xa7, 0x76, 0xf0,
+	0xe7, 0x9a, 0x4d, 0xea, 0xc9, 0x2a, 0xf3, 0xe2, 0x61, 0xdd, 0x79, 0x98, 0x5f, 0xc3, 0xb1, 0xa2,
+	0xc8, 0xc2, 0x67, 0xcb, 0x74, 0x4a, 0x11, 0x66, 0xce, 0xaa, 0x61, 0x69, 0x6b, 0xdd, 0x30, 0x78,
+	0xb5, 0xaa, 0x54, 0x97, 0x5c, 0xad, 0x15, 0xd2, 0x4d, 0xae, 0x56, 0xad, 0x90, 0xe3, 0x0f, 0x52,
+	0x29, 0xd4, 0xe4, 0x07, 0x59, 0xa5, 0xf7, 0xe4, 0x07, 0xa9, 0x57, 0x7f, 0xf8, 0xa1, 0x51, 0x16,
+	0x87, 0xa2, 0xb2, 0xc3, 0x1f, 0x56, 0x53, 0x29, 0xa4, 0xa2, 0x69, 0xbd, 0x8b, 0x4b, 0xd0, 0x39,
+	0xd8, 0x30, 0x34, 0x41, 0xe4, 0xb2, 0xb0, 0x4e, 0x10, 0x25, 0x9d, 0x59, 0x27, 0x88, 0x82, 0xea,
+	0xdc, 0x30, 0xf0, 0x1d, 0x41, 0xff, 0x0d, 0xa5, 0x25, 0x1e, 0x73, 0x7b, 0x82, 0x36, 0x95, 0x7b,
+	0x91, 0x46, 0xa9, 0xe2, 0x1b, 0x00, 0x23, 0x51, 0x8a, 0x17, 0x35, 0x6e, 0x23, 0x15, 0x6b, 0xce,
+	0x57, 0x41, 0x38, 0xe3, 0x57, 0x70, 0x44, 0xd0, 0xa3, 0xb8, 0xa9, 0xc1, 0x0b, 0x4d, 0xda, 0x5c,
+	0xa8, 0xc4, 0x0c, 0x52, 0xf2, 0x0d, 0x1c, 0x2d, 0x48, 0x62, 0xbc, 0xa4, 0x3d, 0xa2, 0xa0, 0xa4,
+	0xcd, 0xe6, 0x18, 0x14, 0x8f, 0xf8, 0x67, 0x03, 0xe6, 0x2a, 0x65, 0x30, 0xfe, 0xb8, 0xcc, 0x52,
+	0x47, 0x5d, 0x9b, 0x17, 0xde, 0xd1, 0x8b, 0xc7, 0xc2, 0x60, 0x42, 0xa1, 0xa6, 0xf1, 0x6a, 0x25,
+	0x55, 0xf1, 0x91, 0x2f, 0xd7, 0xc2, 0x06, 0x9d, 0x83, 0x65, 0x63, 0xc3, 0xc0, 0x3b, 0x70, 0x44,
+	0x10, 0xe3, 0xf2, 0x75, 0xc9, 0xfa, 0x5d, 0xbe, 0xae, 0xb2, 0x9a, 0xe7, 0x32, 0x42, 0xa3, 0xd5,
+	0x65, 0x19, 0x51, 0x2d, 0xfb, 0x65, 0x19, 0x51, 0x35, 0x04, 0xf0, 0x72, 0x1e, 0xe9, 0x7d, 0xb9,
+	0x9c, 0xa5, 0x01, 0x41, 0x2e, 0xe7, 0xd2, 0xb8, 0x80, 0xaf, 0xc3, 0xfb, 0xc3, 0xd1, 0x00, 0xab,
+	0x4f, 0x2e, 0x96, 0x32, 0xa9, 0x40, 0x0c, 0xdf, 0xb6, 0x3c, 0x3c, 0xc8, 0x6f, 0x5b, 0x3b, 0x7d,
+	0xc8, 0x6f, 0x5b, 0x33, 0x8b, 0xe0, 0xdd, 0x6c, 0xd2, 0x11, 0x06, 0x0e, 0x5c, 0xe9, 0x2c, 0x1e,
+	0xe4, 0xec, 0x78, 0xe0, 0xe0, 0x3c, 0x01, 0x4c, 0xaa, 0xc6, 0x13, 0xb9, 0x31, 0x55, 0xcc, 0x38,
+	0xe6, 0x4a, 0x3d, 0x70, 0x5a, 0xb4, 0xf8, 0x07, 0x79, 0x20, 0x1a, 0x75, 0xdb, 0x8d, 0x71, 0x4c,
+	0x52, 0xe3, 0x6d, 0xbd, 0x83, 0xc7, 0xe0, 0xc8, 0xf7, 0xb2, 0x49, 0xae, 0x3c, 0x0e, 0x61, 0x75,
+	0xb1, 0x6a, 0xa6, 0x2a, 0xb9, 0x37, 0xea, 0x67, 0x2c, 0xc5, 0x96, 0x59, 0xe1, 0x8c, 0xdb, 0xb2,
+	0x58, 0x3b, 0xab, 0x35, 0xd1, 0x7c, 0xcb, 0x08, 0x4e, 0xa9, 0xe7, 0x2e, 0xbc, 0x3e, 0x86, 0xa5,
+	0xa4, 0x01, 0xd6, 0xea, 0xc2, 0xf9, 0xae, 0x7b, 0x30, 0xa1, 0x18, 0xd8, 0xf0, 0xb8, 0xc0, 0xc5,
+	0xd2, 0x5d, 0xae, 0x85, 0x4d, 0xaf, 0xf2, 0x8b, 0xbf, 0x8c, 0xe7, 0x7d, 0x82, 0x5e, 0xf4, 0x89,
+	0xf1, 0xb2, 0x4f, 0xd0, 0xab, 0x3e, 0x41, 0xaf, 0xfb, 0x04, 0xbd, 0xe9, 0x13, 0xf4, 0xb6, 0x4f,
+	0xd0, 0x83, 0x98, 0x18, 0x8f, 0x62, 0x82, 0x1e, 0xc7, 0x04, 0x3d, 0x89, 0x09, 0x7a, 0x1a, 0x13,
+	0xf4, 0x2c, 0x26, 0xe8, 0x79, 0x4c, 0xd0, 0x8b, 0x98, 0xa0, 0x97, 0x31, 0x41, 0xaf, 0x62, 0x82,
+	0x5e, 0xc7, 0x04, 0xbd, 0x89, 0x09, 0x7a, 0x1b, 0x13, 0xf4, 0x20, 0x21, 0xe8, 0x51, 0x42, 0xd0,
+	0x2f, 0x09, 0x41, 0xbf, 0x25, 0x04, 0xfd, 0x99, 0x10, 0xf4, 0x38, 0x21, 0xe8, 0x49, 0x42, 0x8c,
+	0xa7, 0x09, 0x31, 0x9e, 0x25, 0x04, 0x3d, 0x4f, 0x08, 0x7a, 0x91, 0x10, 0xf4, 0x32, 0x21, 0xe8,
+	0xdb, 0xf9, 0x41, 0xb4, 0x11, 0x75, 0xee, 0x58, 0x2e, 0xb3, 0x82, 0xbb, 0xae, 0x55, 0xf8, 0x57,
+	0x74, 0xfb, 0xff, 0xe9, 0x5f, 0x1f, 0xfd, 0x17, 0x00, 0x00, 0xff, 0xff, 0xc3, 0x2e, 0x17, 0x49,
+	0xa2, 0x16, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1816,10 +1820,10 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// ProtocolClient is the client API for Protocol service.
+// InstanceClient is the client API for Instance service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type ProtocolClient interface {
+type InstanceClient interface {
 	// InstanceExportData exports instance data
 	InstanceExportData(ctx context.Context, in *InstanceExportDataRequest, opts ...grpc.CallOption) (*InstanceExportDataReply, error)
 	// InstanceGetConfiguration gets current configuration of this protocol instance
@@ -1837,29 +1841,29 @@ type ProtocolClient interface {
 	// AccountResetIncomingContactRequestLink invalidate the request link
 	AccountResetIncomingContactRequestLink(ctx context.Context, in *AccountResetIncomingContactRequestLinkRequest, opts ...grpc.CallOption) (*AccountResetIncomingContactRequestLinkReply, error)
 	// EventSubscribe listen for real time protocol events
-	EventSubscribe(ctx context.Context, in *EventSubscribeRequest, opts ...grpc.CallOption) (Protocol_EventSubscribeClient, error)
+	EventSubscribe(ctx context.Context, in *EventSubscribeRequest, opts ...grpc.CallOption) (Instance_EventSubscribeClient, error)
 	// ContactRequestAccept accepts the given contact request, the requester signature is included so any of their device
 	// can accept the contact request
 	ContactRequestAccept(ctx context.Context, in *ContactRequestAcceptRequest, opts ...grpc.CallOption) (*ContactRequestAcceptReply, error)
 	// ContactRequestDiscard discards the given contact request
 	ContactRequestDiscard(ctx context.Context, in *ContactRequestDiscardRequest, opts ...grpc.CallOption) (*ContactRequestDiscardReply, error)
 	// ContactRequestListIncoming lists incoming contact request sent to your account
-	ContactRequestListIncoming(ctx context.Context, in *ContactRequestListIncomingRequest, opts ...grpc.CallOption) (Protocol_ContactRequestListIncomingClient, error)
+	ContactRequestListIncoming(ctx context.Context, in *ContactRequestListIncomingRequest, opts ...grpc.CallOption) (Instance_ContactRequestListIncomingClient, error)
 	// ContactRequestListIncoming lists pending contact request sent by your account
-	ContactRequestListOutgoing(ctx context.Context, in *ContactRequestListOutgoingRequest, opts ...grpc.CallOption) (Protocol_ContactRequestListOutgoingClient, error)
+	ContactRequestListOutgoing(ctx context.Context, in *ContactRequestListOutgoingRequest, opts ...grpc.CallOption) (Instance_ContactRequestListOutgoingClient, error)
 	// ContactRequestSend sends a contact request to the given contact
 	ContactRequestSend(ctx context.Context, in *ContactRequestSendRequest, opts ...grpc.CallOption) (*ContactRequestSendReply, error)
 	// ContactGet gets contact's information
 	ContactGet(ctx context.Context, in *ContactGetRequest, opts ...grpc.CallOption) (*ContactGetReply, error)
 	// ContactList lists contacts of this account
-	ContactList(ctx context.Context, in *ContactListRequest, opts ...grpc.CallOption) (Protocol_ContactListClient, error)
+	ContactList(ctx context.Context, in *ContactListRequest, opts ...grpc.CallOption) (Instance_ContactListClient, error)
 	// ContactList removes the given contact
 	ContactRemove(ctx context.Context, in *ContactRemoveRequest, opts ...grpc.CallOption) (*ContactRemoveReply, error)
 	// StreamManagerRequestToContact requests a stream to a specific contact
 	StreamManagerRequestToContact(ctx context.Context, in *StreamManagerRequestToContactRequest, opts ...grpc.CallOption) (*StreamManagerRequestToContactReply, error)
 	// StreamManagerAccept accepts a stream request, and create a stream with the
 	// contact that sent you this request
-	StreamManagerAccept(ctx context.Context, opts ...grpc.CallOption) (Protocol_StreamManagerAcceptClient, error)
+	StreamManagerAccept(ctx context.Context, opts ...grpc.CallOption) (Instance_StreamManagerAcceptClient, error)
 	// GroupCreate initiate a group locally
 	GroupCreate(ctx context.Context, in *GroupCreateRequest, opts ...grpc.CallOption) (*GroupCreateReply, error)
 	// GroupGenerateInviteLink generates an invitation link used to send the invitation to
@@ -1868,17 +1872,17 @@ type ProtocolClient interface {
 	// GroupLeave leaves a group
 	GroupLeave(ctx context.Context, in *GroupLeaveRequest, opts ...grpc.CallOption) (*GroupLeaveReply, error)
 	// GroupList lists all group for this account
-	GroupList(ctx context.Context, in *GroupListRequest, opts ...grpc.CallOption) (Protocol_GroupListClient, error)
+	GroupList(ctx context.Context, in *GroupListRequest, opts ...grpc.CallOption) (Instance_GroupListClient, error)
 	// GroupMessageCreate creates a new message for the group, and send the invitation to
 	// the other group members.
 	GroupMessageCreate(ctx context.Context, in *GroupMessageCreateRequest, opts ...grpc.CallOption) (*GroupMessageCreateReply, error)
 	// GroupMessageList lists messages from this group
-	GroupMessageList(ctx context.Context, in *GroupMessageListRequest, opts ...grpc.CallOption) (Protocol_GroupMessageListClient, error)
+	GroupMessageList(ctx context.Context, in *GroupMessageListRequest, opts ...grpc.CallOption) (Instance_GroupMessageListClient, error)
 	// GroupPubSubTopic return a stream used to publish volatile updates to other group members
 	// on a specific topic
-	GroupPubSubTopicInit(ctx context.Context, opts ...grpc.CallOption) (Protocol_GroupPubSubTopicInitClient, error)
+	GroupPubSubTopicInit(ctx context.Context, opts ...grpc.CallOption) (Instance_GroupPubSubTopicInitClient, error)
 	// GroupPubSubTopicSubscribe subscribes to a topic to receive volatile message from it
-	GroupPubSubTopicSubscribe(ctx context.Context, in *GroupPubSubTopicSubscribeRequest, opts ...grpc.CallOption) (Protocol_GroupPubSubTopicSubscribeClient, error)
+	GroupPubSubTopicSubscribe(ctx context.Context, in *GroupPubSubTopicSubscribeRequest, opts ...grpc.CallOption) (Instance_GroupPubSubTopicSubscribeClient, error)
 	// GroupInvitationAccept accepts an invation to join a group
 	GroupInvitationAccept(ctx context.Context, in *GroupInvitationAcceptRequest, opts ...grpc.CallOption) (*GroupInvitationAcceptReply, error)
 	// GroupInvitationCreate creates an invitation, that can be sent to join this group
@@ -1886,95 +1890,95 @@ type ProtocolClient interface {
 	// GroupInvitationDiscard discards an invtation sent to you to join a group
 	GroupInvitationDiscard(ctx context.Context, in *GroupInvitationDiscardRequest, opts ...grpc.CallOption) (*GroupInvitationDiscardReply, error)
 	// GroupInvitationList lists pending invitation to this group
-	GroupInvitationList(ctx context.Context, in *GroupInvitationListRequest, opts ...grpc.CallOption) (Protocol_GroupInvitationListClient, error)
+	GroupInvitationList(ctx context.Context, in *GroupInvitationListRequest, opts ...grpc.CallOption) (Instance_GroupInvitationListClient, error)
 }
 
-type protocolClient struct {
+type instanceClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewProtocolClient(cc *grpc.ClientConn) ProtocolClient {
-	return &protocolClient{cc}
+func NewInstanceClient(cc *grpc.ClientConn) InstanceClient {
+	return &instanceClient{cc}
 }
 
-func (c *protocolClient) InstanceExportData(ctx context.Context, in *InstanceExportDataRequest, opts ...grpc.CallOption) (*InstanceExportDataReply, error) {
+func (c *instanceClient) InstanceExportData(ctx context.Context, in *InstanceExportDataRequest, opts ...grpc.CallOption) (*InstanceExportDataReply, error) {
 	out := new(InstanceExportDataReply)
-	err := c.cc.Invoke(ctx, "/Protocol/InstanceExportData", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/InstanceExportData", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) InstanceGetConfiguration(ctx context.Context, in *InstanceGetConfigurationRequest, opts ...grpc.CallOption) (*InstanceGetConfigurationReply, error) {
+func (c *instanceClient) InstanceGetConfiguration(ctx context.Context, in *InstanceGetConfigurationRequest, opts ...grpc.CallOption) (*InstanceGetConfigurationReply, error) {
 	out := new(InstanceGetConfigurationReply)
-	err := c.cc.Invoke(ctx, "/Protocol/InstanceGetConfiguration", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/InstanceGetConfiguration", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) AccountGetConfiguration(ctx context.Context, in *AccountGetConfigurationRequest, opts ...grpc.CallOption) (*AccountGetConfigurationReply, error) {
+func (c *instanceClient) AccountGetConfiguration(ctx context.Context, in *AccountGetConfigurationRequest, opts ...grpc.CallOption) (*AccountGetConfigurationReply, error) {
 	out := new(AccountGetConfigurationReply)
-	err := c.cc.Invoke(ctx, "/Protocol/AccountGetConfiguration", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/AccountGetConfiguration", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) AccountGetInformation(ctx context.Context, in *AccountGetInformationRequest, opts ...grpc.CallOption) (*AccountGetInformationReply, error) {
+func (c *instanceClient) AccountGetInformation(ctx context.Context, in *AccountGetInformationRequest, opts ...grpc.CallOption) (*AccountGetInformationReply, error) {
 	out := new(AccountGetInformationReply)
-	err := c.cc.Invoke(ctx, "/Protocol/AccountGetInformation", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/AccountGetInformation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) AccountLinkNewDevice(ctx context.Context, in *AccountLinkNewDeviceRequest, opts ...grpc.CallOption) (*AccountLinkNewDeviceReply, error) {
+func (c *instanceClient) AccountLinkNewDevice(ctx context.Context, in *AccountLinkNewDeviceRequest, opts ...grpc.CallOption) (*AccountLinkNewDeviceReply, error) {
 	out := new(AccountLinkNewDeviceReply)
-	err := c.cc.Invoke(ctx, "/Protocol/AccountLinkNewDevice", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/AccountLinkNewDevice", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) AccountDisableIncomingContactRequest(ctx context.Context, in *AccountDisableIncomingContactRequestRequest, opts ...grpc.CallOption) (*AccountDisableIncomingContactRequestReply, error) {
+func (c *instanceClient) AccountDisableIncomingContactRequest(ctx context.Context, in *AccountDisableIncomingContactRequestRequest, opts ...grpc.CallOption) (*AccountDisableIncomingContactRequestReply, error) {
 	out := new(AccountDisableIncomingContactRequestReply)
-	err := c.cc.Invoke(ctx, "/Protocol/AccountDisableIncomingContactRequest", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/AccountDisableIncomingContactRequest", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) AccountEnableIncomingContactRequest(ctx context.Context, in *AccountEnableIncomingContactRequestRequest, opts ...grpc.CallOption) (*AccountEnableIncomingContactRequestReply, error) {
+func (c *instanceClient) AccountEnableIncomingContactRequest(ctx context.Context, in *AccountEnableIncomingContactRequestRequest, opts ...grpc.CallOption) (*AccountEnableIncomingContactRequestReply, error) {
 	out := new(AccountEnableIncomingContactRequestReply)
-	err := c.cc.Invoke(ctx, "/Protocol/AccountEnableIncomingContactRequest", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/AccountEnableIncomingContactRequest", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) AccountResetIncomingContactRequestLink(ctx context.Context, in *AccountResetIncomingContactRequestLinkRequest, opts ...grpc.CallOption) (*AccountResetIncomingContactRequestLinkReply, error) {
+func (c *instanceClient) AccountResetIncomingContactRequestLink(ctx context.Context, in *AccountResetIncomingContactRequestLinkRequest, opts ...grpc.CallOption) (*AccountResetIncomingContactRequestLinkReply, error) {
 	out := new(AccountResetIncomingContactRequestLinkReply)
-	err := c.cc.Invoke(ctx, "/Protocol/AccountResetIncomingContactRequestLink", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/AccountResetIncomingContactRequestLink", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) EventSubscribe(ctx context.Context, in *EventSubscribeRequest, opts ...grpc.CallOption) (Protocol_EventSubscribeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Protocol_serviceDesc.Streams[0], "/Protocol/EventSubscribe", opts...)
+func (c *instanceClient) EventSubscribe(ctx context.Context, in *EventSubscribeRequest, opts ...grpc.CallOption) (Instance_EventSubscribeClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Instance_serviceDesc.Streams[0], "/berty.protocol.Instance/EventSubscribe", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolEventSubscribeClient{stream}
+	x := &instanceEventSubscribeClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -1984,16 +1988,16 @@ func (c *protocolClient) EventSubscribe(ctx context.Context, in *EventSubscribeR
 	return x, nil
 }
 
-type Protocol_EventSubscribeClient interface {
+type Instance_EventSubscribeClient interface {
 	Recv() (*EventStream, error)
 	grpc.ClientStream
 }
 
-type protocolEventSubscribeClient struct {
+type instanceEventSubscribeClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolEventSubscribeClient) Recv() (*EventStream, error) {
+func (x *instanceEventSubscribeClient) Recv() (*EventStream, error) {
 	m := new(EventStream)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -2001,30 +2005,30 @@ func (x *protocolEventSubscribeClient) Recv() (*EventStream, error) {
 	return m, nil
 }
 
-func (c *protocolClient) ContactRequestAccept(ctx context.Context, in *ContactRequestAcceptRequest, opts ...grpc.CallOption) (*ContactRequestAcceptReply, error) {
+func (c *instanceClient) ContactRequestAccept(ctx context.Context, in *ContactRequestAcceptRequest, opts ...grpc.CallOption) (*ContactRequestAcceptReply, error) {
 	out := new(ContactRequestAcceptReply)
-	err := c.cc.Invoke(ctx, "/Protocol/ContactRequestAccept", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/ContactRequestAccept", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) ContactRequestDiscard(ctx context.Context, in *ContactRequestDiscardRequest, opts ...grpc.CallOption) (*ContactRequestDiscardReply, error) {
+func (c *instanceClient) ContactRequestDiscard(ctx context.Context, in *ContactRequestDiscardRequest, opts ...grpc.CallOption) (*ContactRequestDiscardReply, error) {
 	out := new(ContactRequestDiscardReply)
-	err := c.cc.Invoke(ctx, "/Protocol/ContactRequestDiscard", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/ContactRequestDiscard", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) ContactRequestListIncoming(ctx context.Context, in *ContactRequestListIncomingRequest, opts ...grpc.CallOption) (Protocol_ContactRequestListIncomingClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Protocol_serviceDesc.Streams[1], "/Protocol/ContactRequestListIncoming", opts...)
+func (c *instanceClient) ContactRequestListIncoming(ctx context.Context, in *ContactRequestListIncomingRequest, opts ...grpc.CallOption) (Instance_ContactRequestListIncomingClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Instance_serviceDesc.Streams[1], "/berty.protocol.Instance/ContactRequestListIncoming", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolContactRequestListIncomingClient{stream}
+	x := &instanceContactRequestListIncomingClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -2034,16 +2038,16 @@ func (c *protocolClient) ContactRequestListIncoming(ctx context.Context, in *Con
 	return x, nil
 }
 
-type Protocol_ContactRequestListIncomingClient interface {
+type Instance_ContactRequestListIncomingClient interface {
 	Recv() (*ContactRequestListIncomingReply, error)
 	grpc.ClientStream
 }
 
-type protocolContactRequestListIncomingClient struct {
+type instanceContactRequestListIncomingClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolContactRequestListIncomingClient) Recv() (*ContactRequestListIncomingReply, error) {
+func (x *instanceContactRequestListIncomingClient) Recv() (*ContactRequestListIncomingReply, error) {
 	m := new(ContactRequestListIncomingReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -2051,12 +2055,12 @@ func (x *protocolContactRequestListIncomingClient) Recv() (*ContactRequestListIn
 	return m, nil
 }
 
-func (c *protocolClient) ContactRequestListOutgoing(ctx context.Context, in *ContactRequestListOutgoingRequest, opts ...grpc.CallOption) (Protocol_ContactRequestListOutgoingClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Protocol_serviceDesc.Streams[2], "/Protocol/ContactRequestListOutgoing", opts...)
+func (c *instanceClient) ContactRequestListOutgoing(ctx context.Context, in *ContactRequestListOutgoingRequest, opts ...grpc.CallOption) (Instance_ContactRequestListOutgoingClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Instance_serviceDesc.Streams[2], "/berty.protocol.Instance/ContactRequestListOutgoing", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolContactRequestListOutgoingClient{stream}
+	x := &instanceContactRequestListOutgoingClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -2066,16 +2070,16 @@ func (c *protocolClient) ContactRequestListOutgoing(ctx context.Context, in *Con
 	return x, nil
 }
 
-type Protocol_ContactRequestListOutgoingClient interface {
+type Instance_ContactRequestListOutgoingClient interface {
 	Recv() (*ContactRequestListOutgoingReply, error)
 	grpc.ClientStream
 }
 
-type protocolContactRequestListOutgoingClient struct {
+type instanceContactRequestListOutgoingClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolContactRequestListOutgoingClient) Recv() (*ContactRequestListOutgoingReply, error) {
+func (x *instanceContactRequestListOutgoingClient) Recv() (*ContactRequestListOutgoingReply, error) {
 	m := new(ContactRequestListOutgoingReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -2083,30 +2087,30 @@ func (x *protocolContactRequestListOutgoingClient) Recv() (*ContactRequestListOu
 	return m, nil
 }
 
-func (c *protocolClient) ContactRequestSend(ctx context.Context, in *ContactRequestSendRequest, opts ...grpc.CallOption) (*ContactRequestSendReply, error) {
+func (c *instanceClient) ContactRequestSend(ctx context.Context, in *ContactRequestSendRequest, opts ...grpc.CallOption) (*ContactRequestSendReply, error) {
 	out := new(ContactRequestSendReply)
-	err := c.cc.Invoke(ctx, "/Protocol/ContactRequestSend", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/ContactRequestSend", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) ContactGet(ctx context.Context, in *ContactGetRequest, opts ...grpc.CallOption) (*ContactGetReply, error) {
+func (c *instanceClient) ContactGet(ctx context.Context, in *ContactGetRequest, opts ...grpc.CallOption) (*ContactGetReply, error) {
 	out := new(ContactGetReply)
-	err := c.cc.Invoke(ctx, "/Protocol/ContactGet", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/ContactGet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) ContactList(ctx context.Context, in *ContactListRequest, opts ...grpc.CallOption) (Protocol_ContactListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Protocol_serviceDesc.Streams[3], "/Protocol/ContactList", opts...)
+func (c *instanceClient) ContactList(ctx context.Context, in *ContactListRequest, opts ...grpc.CallOption) (Instance_ContactListClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Instance_serviceDesc.Streams[3], "/berty.protocol.Instance/ContactList", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolContactListClient{stream}
+	x := &instanceContactListClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -2116,16 +2120,16 @@ func (c *protocolClient) ContactList(ctx context.Context, in *ContactListRequest
 	return x, nil
 }
 
-type Protocol_ContactListClient interface {
+type Instance_ContactListClient interface {
 	Recv() (*ContactListReply, error)
 	grpc.ClientStream
 }
 
-type protocolContactListClient struct {
+type instanceContactListClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolContactListClient) Recv() (*ContactListReply, error) {
+func (x *instanceContactListClient) Recv() (*ContactListReply, error) {
 	m := new(ContactListReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -2133,48 +2137,48 @@ func (x *protocolContactListClient) Recv() (*ContactListReply, error) {
 	return m, nil
 }
 
-func (c *protocolClient) ContactRemove(ctx context.Context, in *ContactRemoveRequest, opts ...grpc.CallOption) (*ContactRemoveReply, error) {
+func (c *instanceClient) ContactRemove(ctx context.Context, in *ContactRemoveRequest, opts ...grpc.CallOption) (*ContactRemoveReply, error) {
 	out := new(ContactRemoveReply)
-	err := c.cc.Invoke(ctx, "/Protocol/ContactRemove", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/ContactRemove", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) StreamManagerRequestToContact(ctx context.Context, in *StreamManagerRequestToContactRequest, opts ...grpc.CallOption) (*StreamManagerRequestToContactReply, error) {
+func (c *instanceClient) StreamManagerRequestToContact(ctx context.Context, in *StreamManagerRequestToContactRequest, opts ...grpc.CallOption) (*StreamManagerRequestToContactReply, error) {
 	out := new(StreamManagerRequestToContactReply)
-	err := c.cc.Invoke(ctx, "/Protocol/StreamManagerRequestToContact", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/StreamManagerRequestToContact", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) StreamManagerAccept(ctx context.Context, opts ...grpc.CallOption) (Protocol_StreamManagerAcceptClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Protocol_serviceDesc.Streams[4], "/Protocol/StreamManagerAccept", opts...)
+func (c *instanceClient) StreamManagerAccept(ctx context.Context, opts ...grpc.CallOption) (Instance_StreamManagerAcceptClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Instance_serviceDesc.Streams[4], "/berty.protocol.Instance/StreamManagerAccept", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolStreamManagerAcceptClient{stream}
+	x := &instanceStreamManagerAcceptClient{stream}
 	return x, nil
 }
 
-type Protocol_StreamManagerAcceptClient interface {
+type Instance_StreamManagerAcceptClient interface {
 	Send(*StreamManagerAcceptRequest) error
 	Recv() (*StreamManagerAcceptReply, error)
 	grpc.ClientStream
 }
 
-type protocolStreamManagerAcceptClient struct {
+type instanceStreamManagerAcceptClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolStreamManagerAcceptClient) Send(m *StreamManagerAcceptRequest) error {
+func (x *instanceStreamManagerAcceptClient) Send(m *StreamManagerAcceptRequest) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *protocolStreamManagerAcceptClient) Recv() (*StreamManagerAcceptReply, error) {
+func (x *instanceStreamManagerAcceptClient) Recv() (*StreamManagerAcceptReply, error) {
 	m := new(StreamManagerAcceptReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -2182,39 +2186,39 @@ func (x *protocolStreamManagerAcceptClient) Recv() (*StreamManagerAcceptReply, e
 	return m, nil
 }
 
-func (c *protocolClient) GroupCreate(ctx context.Context, in *GroupCreateRequest, opts ...grpc.CallOption) (*GroupCreateReply, error) {
+func (c *instanceClient) GroupCreate(ctx context.Context, in *GroupCreateRequest, opts ...grpc.CallOption) (*GroupCreateReply, error) {
 	out := new(GroupCreateReply)
-	err := c.cc.Invoke(ctx, "/Protocol/GroupCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/GroupCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) GroupGenerateInviteLink(ctx context.Context, in *GroupGenerateInviteLinkRequest, opts ...grpc.CallOption) (*GroupGenerateInviteLinkReply, error) {
+func (c *instanceClient) GroupGenerateInviteLink(ctx context.Context, in *GroupGenerateInviteLinkRequest, opts ...grpc.CallOption) (*GroupGenerateInviteLinkReply, error) {
 	out := new(GroupGenerateInviteLinkReply)
-	err := c.cc.Invoke(ctx, "/Protocol/GroupGenerateInviteLink", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/GroupGenerateInviteLink", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) GroupLeave(ctx context.Context, in *GroupLeaveRequest, opts ...grpc.CallOption) (*GroupLeaveReply, error) {
+func (c *instanceClient) GroupLeave(ctx context.Context, in *GroupLeaveRequest, opts ...grpc.CallOption) (*GroupLeaveReply, error) {
 	out := new(GroupLeaveReply)
-	err := c.cc.Invoke(ctx, "/Protocol/GroupLeave", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/GroupLeave", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) GroupList(ctx context.Context, in *GroupListRequest, opts ...grpc.CallOption) (Protocol_GroupListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Protocol_serviceDesc.Streams[5], "/Protocol/GroupList", opts...)
+func (c *instanceClient) GroupList(ctx context.Context, in *GroupListRequest, opts ...grpc.CallOption) (Instance_GroupListClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Instance_serviceDesc.Streams[5], "/berty.protocol.Instance/GroupList", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolGroupListClient{stream}
+	x := &instanceGroupListClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -2224,16 +2228,16 @@ func (c *protocolClient) GroupList(ctx context.Context, in *GroupListRequest, op
 	return x, nil
 }
 
-type Protocol_GroupListClient interface {
+type Instance_GroupListClient interface {
 	Recv() (*GroupListReply, error)
 	grpc.ClientStream
 }
 
-type protocolGroupListClient struct {
+type instanceGroupListClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolGroupListClient) Recv() (*GroupListReply, error) {
+func (x *instanceGroupListClient) Recv() (*GroupListReply, error) {
 	m := new(GroupListReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -2241,21 +2245,21 @@ func (x *protocolGroupListClient) Recv() (*GroupListReply, error) {
 	return m, nil
 }
 
-func (c *protocolClient) GroupMessageCreate(ctx context.Context, in *GroupMessageCreateRequest, opts ...grpc.CallOption) (*GroupMessageCreateReply, error) {
+func (c *instanceClient) GroupMessageCreate(ctx context.Context, in *GroupMessageCreateRequest, opts ...grpc.CallOption) (*GroupMessageCreateReply, error) {
 	out := new(GroupMessageCreateReply)
-	err := c.cc.Invoke(ctx, "/Protocol/GroupMessageCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/GroupMessageCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) GroupMessageList(ctx context.Context, in *GroupMessageListRequest, opts ...grpc.CallOption) (Protocol_GroupMessageListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Protocol_serviceDesc.Streams[6], "/Protocol/GroupMessageList", opts...)
+func (c *instanceClient) GroupMessageList(ctx context.Context, in *GroupMessageListRequest, opts ...grpc.CallOption) (Instance_GroupMessageListClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Instance_serviceDesc.Streams[6], "/berty.protocol.Instance/GroupMessageList", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolGroupMessageListClient{stream}
+	x := &instanceGroupMessageListClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -2265,16 +2269,16 @@ func (c *protocolClient) GroupMessageList(ctx context.Context, in *GroupMessageL
 	return x, nil
 }
 
-type Protocol_GroupMessageListClient interface {
+type Instance_GroupMessageListClient interface {
 	Recv() (*GroupMessageListReply, error)
 	grpc.ClientStream
 }
 
-type protocolGroupMessageListClient struct {
+type instanceGroupMessageListClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolGroupMessageListClient) Recv() (*GroupMessageListReply, error) {
+func (x *instanceGroupMessageListClient) Recv() (*GroupMessageListReply, error) {
 	m := new(GroupMessageListReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -2282,30 +2286,30 @@ func (x *protocolGroupMessageListClient) Recv() (*GroupMessageListReply, error) 
 	return m, nil
 }
 
-func (c *protocolClient) GroupPubSubTopicInit(ctx context.Context, opts ...grpc.CallOption) (Protocol_GroupPubSubTopicInitClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Protocol_serviceDesc.Streams[7], "/Protocol/GroupPubSubTopicInit", opts...)
+func (c *instanceClient) GroupPubSubTopicInit(ctx context.Context, opts ...grpc.CallOption) (Instance_GroupPubSubTopicInitClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Instance_serviceDesc.Streams[7], "/berty.protocol.Instance/GroupPubSubTopicInit", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolGroupPubSubTopicInitClient{stream}
+	x := &instanceGroupPubSubTopicInitClient{stream}
 	return x, nil
 }
 
-type Protocol_GroupPubSubTopicInitClient interface {
+type Instance_GroupPubSubTopicInitClient interface {
 	Send(*GroupPubSubTopicInitRequest) error
 	CloseAndRecv() (*GroupPubSubTopicInitReply, error)
 	grpc.ClientStream
 }
 
-type protocolGroupPubSubTopicInitClient struct {
+type instanceGroupPubSubTopicInitClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolGroupPubSubTopicInitClient) Send(m *GroupPubSubTopicInitRequest) error {
+func (x *instanceGroupPubSubTopicInitClient) Send(m *GroupPubSubTopicInitRequest) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *protocolGroupPubSubTopicInitClient) CloseAndRecv() (*GroupPubSubTopicInitReply, error) {
+func (x *instanceGroupPubSubTopicInitClient) CloseAndRecv() (*GroupPubSubTopicInitReply, error) {
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
@@ -2316,12 +2320,12 @@ func (x *protocolGroupPubSubTopicInitClient) CloseAndRecv() (*GroupPubSubTopicIn
 	return m, nil
 }
 
-func (c *protocolClient) GroupPubSubTopicSubscribe(ctx context.Context, in *GroupPubSubTopicSubscribeRequest, opts ...grpc.CallOption) (Protocol_GroupPubSubTopicSubscribeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Protocol_serviceDesc.Streams[8], "/Protocol/GroupPubSubTopicSubscribe", opts...)
+func (c *instanceClient) GroupPubSubTopicSubscribe(ctx context.Context, in *GroupPubSubTopicSubscribeRequest, opts ...grpc.CallOption) (Instance_GroupPubSubTopicSubscribeClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Instance_serviceDesc.Streams[8], "/berty.protocol.Instance/GroupPubSubTopicSubscribe", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolGroupPubSubTopicSubscribeClient{stream}
+	x := &instanceGroupPubSubTopicSubscribeClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -2331,16 +2335,16 @@ func (c *protocolClient) GroupPubSubTopicSubscribe(ctx context.Context, in *Grou
 	return x, nil
 }
 
-type Protocol_GroupPubSubTopicSubscribeClient interface {
+type Instance_GroupPubSubTopicSubscribeClient interface {
 	Recv() (*GroupPubSubTopicSubscribeReply, error)
 	grpc.ClientStream
 }
 
-type protocolGroupPubSubTopicSubscribeClient struct {
+type instanceGroupPubSubTopicSubscribeClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolGroupPubSubTopicSubscribeClient) Recv() (*GroupPubSubTopicSubscribeReply, error) {
+func (x *instanceGroupPubSubTopicSubscribeClient) Recv() (*GroupPubSubTopicSubscribeReply, error) {
 	m := new(GroupPubSubTopicSubscribeReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -2348,39 +2352,39 @@ func (x *protocolGroupPubSubTopicSubscribeClient) Recv() (*GroupPubSubTopicSubsc
 	return m, nil
 }
 
-func (c *protocolClient) GroupInvitationAccept(ctx context.Context, in *GroupInvitationAcceptRequest, opts ...grpc.CallOption) (*GroupInvitationAcceptReply, error) {
+func (c *instanceClient) GroupInvitationAccept(ctx context.Context, in *GroupInvitationAcceptRequest, opts ...grpc.CallOption) (*GroupInvitationAcceptReply, error) {
 	out := new(GroupInvitationAcceptReply)
-	err := c.cc.Invoke(ctx, "/Protocol/GroupInvitationAccept", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/GroupInvitationAccept", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) GroupInvitationCreate(ctx context.Context, in *GroupInvitationCreateRequest, opts ...grpc.CallOption) (*GroupInvitationCreateReply, error) {
+func (c *instanceClient) GroupInvitationCreate(ctx context.Context, in *GroupInvitationCreateRequest, opts ...grpc.CallOption) (*GroupInvitationCreateReply, error) {
 	out := new(GroupInvitationCreateReply)
-	err := c.cc.Invoke(ctx, "/Protocol/GroupInvitationCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/GroupInvitationCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) GroupInvitationDiscard(ctx context.Context, in *GroupInvitationDiscardRequest, opts ...grpc.CallOption) (*GroupInvitationDiscardReply, error) {
+func (c *instanceClient) GroupInvitationDiscard(ctx context.Context, in *GroupInvitationDiscardRequest, opts ...grpc.CallOption) (*GroupInvitationDiscardReply, error) {
 	out := new(GroupInvitationDiscardReply)
-	err := c.cc.Invoke(ctx, "/Protocol/GroupInvitationDiscard", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.Instance/GroupInvitationDiscard", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolClient) GroupInvitationList(ctx context.Context, in *GroupInvitationListRequest, opts ...grpc.CallOption) (Protocol_GroupInvitationListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Protocol_serviceDesc.Streams[9], "/Protocol/GroupInvitationList", opts...)
+func (c *instanceClient) GroupInvitationList(ctx context.Context, in *GroupInvitationListRequest, opts ...grpc.CallOption) (Instance_GroupInvitationListClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Instance_serviceDesc.Streams[9], "/berty.protocol.Instance/GroupInvitationList", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolGroupInvitationListClient{stream}
+	x := &instanceGroupInvitationListClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -2390,16 +2394,16 @@ func (c *protocolClient) GroupInvitationList(ctx context.Context, in *GroupInvit
 	return x, nil
 }
 
-type Protocol_GroupInvitationListClient interface {
+type Instance_GroupInvitationListClient interface {
 	Recv() (*GroupInvitationListReply, error)
 	grpc.ClientStream
 }
 
-type protocolGroupInvitationListClient struct {
+type instanceGroupInvitationListClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolGroupInvitationListClient) Recv() (*GroupInvitationListReply, error) {
+func (x *instanceGroupInvitationListClient) Recv() (*GroupInvitationListReply, error) {
 	m := new(GroupInvitationListReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -2407,8 +2411,8 @@ func (x *protocolGroupInvitationListClient) Recv() (*GroupInvitationListReply, e
 	return m, nil
 }
 
-// ProtocolServer is the server API for Protocol service.
-type ProtocolServer interface {
+// InstanceServer is the server API for Instance service.
+type InstanceServer interface {
 	// InstanceExportData exports instance data
 	InstanceExportData(context.Context, *InstanceExportDataRequest) (*InstanceExportDataReply, error)
 	// InstanceGetConfiguration gets current configuration of this protocol instance
@@ -2426,29 +2430,29 @@ type ProtocolServer interface {
 	// AccountResetIncomingContactRequestLink invalidate the request link
 	AccountResetIncomingContactRequestLink(context.Context, *AccountResetIncomingContactRequestLinkRequest) (*AccountResetIncomingContactRequestLinkReply, error)
 	// EventSubscribe listen for real time protocol events
-	EventSubscribe(*EventSubscribeRequest, Protocol_EventSubscribeServer) error
+	EventSubscribe(*EventSubscribeRequest, Instance_EventSubscribeServer) error
 	// ContactRequestAccept accepts the given contact request, the requester signature is included so any of their device
 	// can accept the contact request
 	ContactRequestAccept(context.Context, *ContactRequestAcceptRequest) (*ContactRequestAcceptReply, error)
 	// ContactRequestDiscard discards the given contact request
 	ContactRequestDiscard(context.Context, *ContactRequestDiscardRequest) (*ContactRequestDiscardReply, error)
 	// ContactRequestListIncoming lists incoming contact request sent to your account
-	ContactRequestListIncoming(*ContactRequestListIncomingRequest, Protocol_ContactRequestListIncomingServer) error
+	ContactRequestListIncoming(*ContactRequestListIncomingRequest, Instance_ContactRequestListIncomingServer) error
 	// ContactRequestListIncoming lists pending contact request sent by your account
-	ContactRequestListOutgoing(*ContactRequestListOutgoingRequest, Protocol_ContactRequestListOutgoingServer) error
+	ContactRequestListOutgoing(*ContactRequestListOutgoingRequest, Instance_ContactRequestListOutgoingServer) error
 	// ContactRequestSend sends a contact request to the given contact
 	ContactRequestSend(context.Context, *ContactRequestSendRequest) (*ContactRequestSendReply, error)
 	// ContactGet gets contact's information
 	ContactGet(context.Context, *ContactGetRequest) (*ContactGetReply, error)
 	// ContactList lists contacts of this account
-	ContactList(*ContactListRequest, Protocol_ContactListServer) error
+	ContactList(*ContactListRequest, Instance_ContactListServer) error
 	// ContactList removes the given contact
 	ContactRemove(context.Context, *ContactRemoveRequest) (*ContactRemoveReply, error)
 	// StreamManagerRequestToContact requests a stream to a specific contact
 	StreamManagerRequestToContact(context.Context, *StreamManagerRequestToContactRequest) (*StreamManagerRequestToContactReply, error)
 	// StreamManagerAccept accepts a stream request, and create a stream with the
 	// contact that sent you this request
-	StreamManagerAccept(Protocol_StreamManagerAcceptServer) error
+	StreamManagerAccept(Instance_StreamManagerAcceptServer) error
 	// GroupCreate initiate a group locally
 	GroupCreate(context.Context, *GroupCreateRequest) (*GroupCreateReply, error)
 	// GroupGenerateInviteLink generates an invitation link used to send the invitation to
@@ -2457,17 +2461,17 @@ type ProtocolServer interface {
 	// GroupLeave leaves a group
 	GroupLeave(context.Context, *GroupLeaveRequest) (*GroupLeaveReply, error)
 	// GroupList lists all group for this account
-	GroupList(*GroupListRequest, Protocol_GroupListServer) error
+	GroupList(*GroupListRequest, Instance_GroupListServer) error
 	// GroupMessageCreate creates a new message for the group, and send the invitation to
 	// the other group members.
 	GroupMessageCreate(context.Context, *GroupMessageCreateRequest) (*GroupMessageCreateReply, error)
 	// GroupMessageList lists messages from this group
-	GroupMessageList(*GroupMessageListRequest, Protocol_GroupMessageListServer) error
+	GroupMessageList(*GroupMessageListRequest, Instance_GroupMessageListServer) error
 	// GroupPubSubTopic return a stream used to publish volatile updates to other group members
 	// on a specific topic
-	GroupPubSubTopicInit(Protocol_GroupPubSubTopicInitServer) error
+	GroupPubSubTopicInit(Instance_GroupPubSubTopicInitServer) error
 	// GroupPubSubTopicSubscribe subscribes to a topic to receive volatile message from it
-	GroupPubSubTopicSubscribe(*GroupPubSubTopicSubscribeRequest, Protocol_GroupPubSubTopicSubscribeServer) error
+	GroupPubSubTopicSubscribe(*GroupPubSubTopicSubscribeRequest, Instance_GroupPubSubTopicSubscribeServer) error
 	// GroupInvitationAccept accepts an invation to join a group
 	GroupInvitationAccept(context.Context, *GroupInvitationAcceptRequest) (*GroupInvitationAcceptReply, error)
 	// GroupInvitationCreate creates an invitation, that can be sent to join this group
@@ -2475,466 +2479,466 @@ type ProtocolServer interface {
 	// GroupInvitationDiscard discards an invtation sent to you to join a group
 	GroupInvitationDiscard(context.Context, *GroupInvitationDiscardRequest) (*GroupInvitationDiscardReply, error)
 	// GroupInvitationList lists pending invitation to this group
-	GroupInvitationList(*GroupInvitationListRequest, Protocol_GroupInvitationListServer) error
+	GroupInvitationList(*GroupInvitationListRequest, Instance_GroupInvitationListServer) error
 }
 
-// UnimplementedProtocolServer can be embedded to have forward compatible implementations.
-type UnimplementedProtocolServer struct {
+// UnimplementedInstanceServer can be embedded to have forward compatible implementations.
+type UnimplementedInstanceServer struct {
 }
 
-func (*UnimplementedProtocolServer) InstanceExportData(ctx context.Context, req *InstanceExportDataRequest) (*InstanceExportDataReply, error) {
+func (*UnimplementedInstanceServer) InstanceExportData(ctx context.Context, req *InstanceExportDataRequest) (*InstanceExportDataReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InstanceExportData not implemented")
 }
-func (*UnimplementedProtocolServer) InstanceGetConfiguration(ctx context.Context, req *InstanceGetConfigurationRequest) (*InstanceGetConfigurationReply, error) {
+func (*UnimplementedInstanceServer) InstanceGetConfiguration(ctx context.Context, req *InstanceGetConfigurationRequest) (*InstanceGetConfigurationReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InstanceGetConfiguration not implemented")
 }
-func (*UnimplementedProtocolServer) AccountGetConfiguration(ctx context.Context, req *AccountGetConfigurationRequest) (*AccountGetConfigurationReply, error) {
+func (*UnimplementedInstanceServer) AccountGetConfiguration(ctx context.Context, req *AccountGetConfigurationRequest) (*AccountGetConfigurationReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountGetConfiguration not implemented")
 }
-func (*UnimplementedProtocolServer) AccountGetInformation(ctx context.Context, req *AccountGetInformationRequest) (*AccountGetInformationReply, error) {
+func (*UnimplementedInstanceServer) AccountGetInformation(ctx context.Context, req *AccountGetInformationRequest) (*AccountGetInformationReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountGetInformation not implemented")
 }
-func (*UnimplementedProtocolServer) AccountLinkNewDevice(ctx context.Context, req *AccountLinkNewDeviceRequest) (*AccountLinkNewDeviceReply, error) {
+func (*UnimplementedInstanceServer) AccountLinkNewDevice(ctx context.Context, req *AccountLinkNewDeviceRequest) (*AccountLinkNewDeviceReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountLinkNewDevice not implemented")
 }
-func (*UnimplementedProtocolServer) AccountDisableIncomingContactRequest(ctx context.Context, req *AccountDisableIncomingContactRequestRequest) (*AccountDisableIncomingContactRequestReply, error) {
+func (*UnimplementedInstanceServer) AccountDisableIncomingContactRequest(ctx context.Context, req *AccountDisableIncomingContactRequestRequest) (*AccountDisableIncomingContactRequestReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountDisableIncomingContactRequest not implemented")
 }
-func (*UnimplementedProtocolServer) AccountEnableIncomingContactRequest(ctx context.Context, req *AccountEnableIncomingContactRequestRequest) (*AccountEnableIncomingContactRequestReply, error) {
+func (*UnimplementedInstanceServer) AccountEnableIncomingContactRequest(ctx context.Context, req *AccountEnableIncomingContactRequestRequest) (*AccountEnableIncomingContactRequestReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountEnableIncomingContactRequest not implemented")
 }
-func (*UnimplementedProtocolServer) AccountResetIncomingContactRequestLink(ctx context.Context, req *AccountResetIncomingContactRequestLinkRequest) (*AccountResetIncomingContactRequestLinkReply, error) {
+func (*UnimplementedInstanceServer) AccountResetIncomingContactRequestLink(ctx context.Context, req *AccountResetIncomingContactRequestLinkRequest) (*AccountResetIncomingContactRequestLinkReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountResetIncomingContactRequestLink not implemented")
 }
-func (*UnimplementedProtocolServer) EventSubscribe(req *EventSubscribeRequest, srv Protocol_EventSubscribeServer) error {
+func (*UnimplementedInstanceServer) EventSubscribe(req *EventSubscribeRequest, srv Instance_EventSubscribeServer) error {
 	return status.Errorf(codes.Unimplemented, "method EventSubscribe not implemented")
 }
-func (*UnimplementedProtocolServer) ContactRequestAccept(ctx context.Context, req *ContactRequestAcceptRequest) (*ContactRequestAcceptReply, error) {
+func (*UnimplementedInstanceServer) ContactRequestAccept(ctx context.Context, req *ContactRequestAcceptRequest) (*ContactRequestAcceptReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestAccept not implemented")
 }
-func (*UnimplementedProtocolServer) ContactRequestDiscard(ctx context.Context, req *ContactRequestDiscardRequest) (*ContactRequestDiscardReply, error) {
+func (*UnimplementedInstanceServer) ContactRequestDiscard(ctx context.Context, req *ContactRequestDiscardRequest) (*ContactRequestDiscardReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestDiscard not implemented")
 }
-func (*UnimplementedProtocolServer) ContactRequestListIncoming(req *ContactRequestListIncomingRequest, srv Protocol_ContactRequestListIncomingServer) error {
+func (*UnimplementedInstanceServer) ContactRequestListIncoming(req *ContactRequestListIncomingRequest, srv Instance_ContactRequestListIncomingServer) error {
 	return status.Errorf(codes.Unimplemented, "method ContactRequestListIncoming not implemented")
 }
-func (*UnimplementedProtocolServer) ContactRequestListOutgoing(req *ContactRequestListOutgoingRequest, srv Protocol_ContactRequestListOutgoingServer) error {
+func (*UnimplementedInstanceServer) ContactRequestListOutgoing(req *ContactRequestListOutgoingRequest, srv Instance_ContactRequestListOutgoingServer) error {
 	return status.Errorf(codes.Unimplemented, "method ContactRequestListOutgoing not implemented")
 }
-func (*UnimplementedProtocolServer) ContactRequestSend(ctx context.Context, req *ContactRequestSendRequest) (*ContactRequestSendReply, error) {
+func (*UnimplementedInstanceServer) ContactRequestSend(ctx context.Context, req *ContactRequestSendRequest) (*ContactRequestSendReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestSend not implemented")
 }
-func (*UnimplementedProtocolServer) ContactGet(ctx context.Context, req *ContactGetRequest) (*ContactGetReply, error) {
+func (*UnimplementedInstanceServer) ContactGet(ctx context.Context, req *ContactGetRequest) (*ContactGetReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactGet not implemented")
 }
-func (*UnimplementedProtocolServer) ContactList(req *ContactListRequest, srv Protocol_ContactListServer) error {
+func (*UnimplementedInstanceServer) ContactList(req *ContactListRequest, srv Instance_ContactListServer) error {
 	return status.Errorf(codes.Unimplemented, "method ContactList not implemented")
 }
-func (*UnimplementedProtocolServer) ContactRemove(ctx context.Context, req *ContactRemoveRequest) (*ContactRemoveReply, error) {
+func (*UnimplementedInstanceServer) ContactRemove(ctx context.Context, req *ContactRemoveRequest) (*ContactRemoveReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRemove not implemented")
 }
-func (*UnimplementedProtocolServer) StreamManagerRequestToContact(ctx context.Context, req *StreamManagerRequestToContactRequest) (*StreamManagerRequestToContactReply, error) {
+func (*UnimplementedInstanceServer) StreamManagerRequestToContact(ctx context.Context, req *StreamManagerRequestToContactRequest) (*StreamManagerRequestToContactReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StreamManagerRequestToContact not implemented")
 }
-func (*UnimplementedProtocolServer) StreamManagerAccept(srv Protocol_StreamManagerAcceptServer) error {
+func (*UnimplementedInstanceServer) StreamManagerAccept(srv Instance_StreamManagerAcceptServer) error {
 	return status.Errorf(codes.Unimplemented, "method StreamManagerAccept not implemented")
 }
-func (*UnimplementedProtocolServer) GroupCreate(ctx context.Context, req *GroupCreateRequest) (*GroupCreateReply, error) {
+func (*UnimplementedInstanceServer) GroupCreate(ctx context.Context, req *GroupCreateRequest) (*GroupCreateReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupCreate not implemented")
 }
-func (*UnimplementedProtocolServer) GroupGenerateInviteLink(ctx context.Context, req *GroupGenerateInviteLinkRequest) (*GroupGenerateInviteLinkReply, error) {
+func (*UnimplementedInstanceServer) GroupGenerateInviteLink(ctx context.Context, req *GroupGenerateInviteLinkRequest) (*GroupGenerateInviteLinkReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupGenerateInviteLink not implemented")
 }
-func (*UnimplementedProtocolServer) GroupLeave(ctx context.Context, req *GroupLeaveRequest) (*GroupLeaveReply, error) {
+func (*UnimplementedInstanceServer) GroupLeave(ctx context.Context, req *GroupLeaveRequest) (*GroupLeaveReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupLeave not implemented")
 }
-func (*UnimplementedProtocolServer) GroupList(req *GroupListRequest, srv Protocol_GroupListServer) error {
+func (*UnimplementedInstanceServer) GroupList(req *GroupListRequest, srv Instance_GroupListServer) error {
 	return status.Errorf(codes.Unimplemented, "method GroupList not implemented")
 }
-func (*UnimplementedProtocolServer) GroupMessageCreate(ctx context.Context, req *GroupMessageCreateRequest) (*GroupMessageCreateReply, error) {
+func (*UnimplementedInstanceServer) GroupMessageCreate(ctx context.Context, req *GroupMessageCreateRequest) (*GroupMessageCreateReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupMessageCreate not implemented")
 }
-func (*UnimplementedProtocolServer) GroupMessageList(req *GroupMessageListRequest, srv Protocol_GroupMessageListServer) error {
+func (*UnimplementedInstanceServer) GroupMessageList(req *GroupMessageListRequest, srv Instance_GroupMessageListServer) error {
 	return status.Errorf(codes.Unimplemented, "method GroupMessageList not implemented")
 }
-func (*UnimplementedProtocolServer) GroupPubSubTopicInit(srv Protocol_GroupPubSubTopicInitServer) error {
+func (*UnimplementedInstanceServer) GroupPubSubTopicInit(srv Instance_GroupPubSubTopicInitServer) error {
 	return status.Errorf(codes.Unimplemented, "method GroupPubSubTopicInit not implemented")
 }
-func (*UnimplementedProtocolServer) GroupPubSubTopicSubscribe(req *GroupPubSubTopicSubscribeRequest, srv Protocol_GroupPubSubTopicSubscribeServer) error {
+func (*UnimplementedInstanceServer) GroupPubSubTopicSubscribe(req *GroupPubSubTopicSubscribeRequest, srv Instance_GroupPubSubTopicSubscribeServer) error {
 	return status.Errorf(codes.Unimplemented, "method GroupPubSubTopicSubscribe not implemented")
 }
-func (*UnimplementedProtocolServer) GroupInvitationAccept(ctx context.Context, req *GroupInvitationAcceptRequest) (*GroupInvitationAcceptReply, error) {
+func (*UnimplementedInstanceServer) GroupInvitationAccept(ctx context.Context, req *GroupInvitationAcceptRequest) (*GroupInvitationAcceptReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInvitationAccept not implemented")
 }
-func (*UnimplementedProtocolServer) GroupInvitationCreate(ctx context.Context, req *GroupInvitationCreateRequest) (*GroupInvitationCreateReply, error) {
+func (*UnimplementedInstanceServer) GroupInvitationCreate(ctx context.Context, req *GroupInvitationCreateRequest) (*GroupInvitationCreateReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInvitationCreate not implemented")
 }
-func (*UnimplementedProtocolServer) GroupInvitationDiscard(ctx context.Context, req *GroupInvitationDiscardRequest) (*GroupInvitationDiscardReply, error) {
+func (*UnimplementedInstanceServer) GroupInvitationDiscard(ctx context.Context, req *GroupInvitationDiscardRequest) (*GroupInvitationDiscardReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInvitationDiscard not implemented")
 }
-func (*UnimplementedProtocolServer) GroupInvitationList(req *GroupInvitationListRequest, srv Protocol_GroupInvitationListServer) error {
+func (*UnimplementedInstanceServer) GroupInvitationList(req *GroupInvitationListRequest, srv Instance_GroupInvitationListServer) error {
 	return status.Errorf(codes.Unimplemented, "method GroupInvitationList not implemented")
 }
 
-func RegisterProtocolServer(s *grpc.Server, srv ProtocolServer) {
-	s.RegisterService(&_Protocol_serviceDesc, srv)
+func RegisterInstanceServer(s *grpc.Server, srv InstanceServer) {
+	s.RegisterService(&_Instance_serviceDesc, srv)
 }
 
-func _Protocol_InstanceExportData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_InstanceExportData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InstanceExportDataRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).InstanceExportData(ctx, in)
+		return srv.(InstanceServer).InstanceExportData(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/InstanceExportData",
+		FullMethod: "/berty.protocol.Instance/InstanceExportData",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).InstanceExportData(ctx, req.(*InstanceExportDataRequest))
+		return srv.(InstanceServer).InstanceExportData(ctx, req.(*InstanceExportDataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_InstanceGetConfiguration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_InstanceGetConfiguration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InstanceGetConfigurationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).InstanceGetConfiguration(ctx, in)
+		return srv.(InstanceServer).InstanceGetConfiguration(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/InstanceGetConfiguration",
+		FullMethod: "/berty.protocol.Instance/InstanceGetConfiguration",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).InstanceGetConfiguration(ctx, req.(*InstanceGetConfigurationRequest))
+		return srv.(InstanceServer).InstanceGetConfiguration(ctx, req.(*InstanceGetConfigurationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_AccountGetConfiguration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_AccountGetConfiguration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccountGetConfigurationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).AccountGetConfiguration(ctx, in)
+		return srv.(InstanceServer).AccountGetConfiguration(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/AccountGetConfiguration",
+		FullMethod: "/berty.protocol.Instance/AccountGetConfiguration",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).AccountGetConfiguration(ctx, req.(*AccountGetConfigurationRequest))
+		return srv.(InstanceServer).AccountGetConfiguration(ctx, req.(*AccountGetConfigurationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_AccountGetInformation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_AccountGetInformation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccountGetInformationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).AccountGetInformation(ctx, in)
+		return srv.(InstanceServer).AccountGetInformation(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/AccountGetInformation",
+		FullMethod: "/berty.protocol.Instance/AccountGetInformation",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).AccountGetInformation(ctx, req.(*AccountGetInformationRequest))
+		return srv.(InstanceServer).AccountGetInformation(ctx, req.(*AccountGetInformationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_AccountLinkNewDevice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_AccountLinkNewDevice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccountLinkNewDeviceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).AccountLinkNewDevice(ctx, in)
+		return srv.(InstanceServer).AccountLinkNewDevice(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/AccountLinkNewDevice",
+		FullMethod: "/berty.protocol.Instance/AccountLinkNewDevice",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).AccountLinkNewDevice(ctx, req.(*AccountLinkNewDeviceRequest))
+		return srv.(InstanceServer).AccountLinkNewDevice(ctx, req.(*AccountLinkNewDeviceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_AccountDisableIncomingContactRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_AccountDisableIncomingContactRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccountDisableIncomingContactRequestRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).AccountDisableIncomingContactRequest(ctx, in)
+		return srv.(InstanceServer).AccountDisableIncomingContactRequest(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/AccountDisableIncomingContactRequest",
+		FullMethod: "/berty.protocol.Instance/AccountDisableIncomingContactRequest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).AccountDisableIncomingContactRequest(ctx, req.(*AccountDisableIncomingContactRequestRequest))
+		return srv.(InstanceServer).AccountDisableIncomingContactRequest(ctx, req.(*AccountDisableIncomingContactRequestRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_AccountEnableIncomingContactRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_AccountEnableIncomingContactRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccountEnableIncomingContactRequestRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).AccountEnableIncomingContactRequest(ctx, in)
+		return srv.(InstanceServer).AccountEnableIncomingContactRequest(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/AccountEnableIncomingContactRequest",
+		FullMethod: "/berty.protocol.Instance/AccountEnableIncomingContactRequest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).AccountEnableIncomingContactRequest(ctx, req.(*AccountEnableIncomingContactRequestRequest))
+		return srv.(InstanceServer).AccountEnableIncomingContactRequest(ctx, req.(*AccountEnableIncomingContactRequestRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_AccountResetIncomingContactRequestLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_AccountResetIncomingContactRequestLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccountResetIncomingContactRequestLinkRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).AccountResetIncomingContactRequestLink(ctx, in)
+		return srv.(InstanceServer).AccountResetIncomingContactRequestLink(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/AccountResetIncomingContactRequestLink",
+		FullMethod: "/berty.protocol.Instance/AccountResetIncomingContactRequestLink",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).AccountResetIncomingContactRequestLink(ctx, req.(*AccountResetIncomingContactRequestLinkRequest))
+		return srv.(InstanceServer).AccountResetIncomingContactRequestLink(ctx, req.(*AccountResetIncomingContactRequestLinkRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_EventSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _Instance_EventSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(EventSubscribeRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ProtocolServer).EventSubscribe(m, &protocolEventSubscribeServer{stream})
+	return srv.(InstanceServer).EventSubscribe(m, &instanceEventSubscribeServer{stream})
 }
 
-type Protocol_EventSubscribeServer interface {
+type Instance_EventSubscribeServer interface {
 	Send(*EventStream) error
 	grpc.ServerStream
 }
 
-type protocolEventSubscribeServer struct {
+type instanceEventSubscribeServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolEventSubscribeServer) Send(m *EventStream) error {
+func (x *instanceEventSubscribeServer) Send(m *EventStream) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Protocol_ContactRequestAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_ContactRequestAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ContactRequestAcceptRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).ContactRequestAccept(ctx, in)
+		return srv.(InstanceServer).ContactRequestAccept(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/ContactRequestAccept",
+		FullMethod: "/berty.protocol.Instance/ContactRequestAccept",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).ContactRequestAccept(ctx, req.(*ContactRequestAcceptRequest))
+		return srv.(InstanceServer).ContactRequestAccept(ctx, req.(*ContactRequestAcceptRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_ContactRequestDiscard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_ContactRequestDiscard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ContactRequestDiscardRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).ContactRequestDiscard(ctx, in)
+		return srv.(InstanceServer).ContactRequestDiscard(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/ContactRequestDiscard",
+		FullMethod: "/berty.protocol.Instance/ContactRequestDiscard",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).ContactRequestDiscard(ctx, req.(*ContactRequestDiscardRequest))
+		return srv.(InstanceServer).ContactRequestDiscard(ctx, req.(*ContactRequestDiscardRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_ContactRequestListIncoming_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _Instance_ContactRequestListIncoming_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(ContactRequestListIncomingRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ProtocolServer).ContactRequestListIncoming(m, &protocolContactRequestListIncomingServer{stream})
+	return srv.(InstanceServer).ContactRequestListIncoming(m, &instanceContactRequestListIncomingServer{stream})
 }
 
-type Protocol_ContactRequestListIncomingServer interface {
+type Instance_ContactRequestListIncomingServer interface {
 	Send(*ContactRequestListIncomingReply) error
 	grpc.ServerStream
 }
 
-type protocolContactRequestListIncomingServer struct {
+type instanceContactRequestListIncomingServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolContactRequestListIncomingServer) Send(m *ContactRequestListIncomingReply) error {
+func (x *instanceContactRequestListIncomingServer) Send(m *ContactRequestListIncomingReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Protocol_ContactRequestListOutgoing_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _Instance_ContactRequestListOutgoing_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(ContactRequestListOutgoingRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ProtocolServer).ContactRequestListOutgoing(m, &protocolContactRequestListOutgoingServer{stream})
+	return srv.(InstanceServer).ContactRequestListOutgoing(m, &instanceContactRequestListOutgoingServer{stream})
 }
 
-type Protocol_ContactRequestListOutgoingServer interface {
+type Instance_ContactRequestListOutgoingServer interface {
 	Send(*ContactRequestListOutgoingReply) error
 	grpc.ServerStream
 }
 
-type protocolContactRequestListOutgoingServer struct {
+type instanceContactRequestListOutgoingServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolContactRequestListOutgoingServer) Send(m *ContactRequestListOutgoingReply) error {
+func (x *instanceContactRequestListOutgoingServer) Send(m *ContactRequestListOutgoingReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Protocol_ContactRequestSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_ContactRequestSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ContactRequestSendRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).ContactRequestSend(ctx, in)
+		return srv.(InstanceServer).ContactRequestSend(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/ContactRequestSend",
+		FullMethod: "/berty.protocol.Instance/ContactRequestSend",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).ContactRequestSend(ctx, req.(*ContactRequestSendRequest))
+		return srv.(InstanceServer).ContactRequestSend(ctx, req.(*ContactRequestSendRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_ContactGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_ContactGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ContactGetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).ContactGet(ctx, in)
+		return srv.(InstanceServer).ContactGet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/ContactGet",
+		FullMethod: "/berty.protocol.Instance/ContactGet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).ContactGet(ctx, req.(*ContactGetRequest))
+		return srv.(InstanceServer).ContactGet(ctx, req.(*ContactGetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_ContactList_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _Instance_ContactList_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(ContactListRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ProtocolServer).ContactList(m, &protocolContactListServer{stream})
+	return srv.(InstanceServer).ContactList(m, &instanceContactListServer{stream})
 }
 
-type Protocol_ContactListServer interface {
+type Instance_ContactListServer interface {
 	Send(*ContactListReply) error
 	grpc.ServerStream
 }
 
-type protocolContactListServer struct {
+type instanceContactListServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolContactListServer) Send(m *ContactListReply) error {
+func (x *instanceContactListServer) Send(m *ContactListReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Protocol_ContactRemove_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_ContactRemove_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ContactRemoveRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).ContactRemove(ctx, in)
+		return srv.(InstanceServer).ContactRemove(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/ContactRemove",
+		FullMethod: "/berty.protocol.Instance/ContactRemove",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).ContactRemove(ctx, req.(*ContactRemoveRequest))
+		return srv.(InstanceServer).ContactRemove(ctx, req.(*ContactRemoveRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_StreamManagerRequestToContact_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_StreamManagerRequestToContact_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(StreamManagerRequestToContactRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).StreamManagerRequestToContact(ctx, in)
+		return srv.(InstanceServer).StreamManagerRequestToContact(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/StreamManagerRequestToContact",
+		FullMethod: "/berty.protocol.Instance/StreamManagerRequestToContact",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).StreamManagerRequestToContact(ctx, req.(*StreamManagerRequestToContactRequest))
+		return srv.(InstanceServer).StreamManagerRequestToContact(ctx, req.(*StreamManagerRequestToContactRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_StreamManagerAccept_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ProtocolServer).StreamManagerAccept(&protocolStreamManagerAcceptServer{stream})
+func _Instance_StreamManagerAccept_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(InstanceServer).StreamManagerAccept(&instanceStreamManagerAcceptServer{stream})
 }
 
-type Protocol_StreamManagerAcceptServer interface {
+type Instance_StreamManagerAcceptServer interface {
 	Send(*StreamManagerAcceptReply) error
 	Recv() (*StreamManagerAcceptRequest, error)
 	grpc.ServerStream
 }
 
-type protocolStreamManagerAcceptServer struct {
+type instanceStreamManagerAcceptServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolStreamManagerAcceptServer) Send(m *StreamManagerAcceptReply) error {
+func (x *instanceStreamManagerAcceptServer) Send(m *StreamManagerAcceptReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *protocolStreamManagerAcceptServer) Recv() (*StreamManagerAcceptRequest, error) {
+func (x *instanceStreamManagerAcceptServer) Recv() (*StreamManagerAcceptRequest, error) {
 	m := new(StreamManagerAcceptRequest)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -2942,139 +2946,139 @@ func (x *protocolStreamManagerAcceptServer) Recv() (*StreamManagerAcceptRequest,
 	return m, nil
 }
 
-func _Protocol_GroupCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_GroupCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GroupCreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).GroupCreate(ctx, in)
+		return srv.(InstanceServer).GroupCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/GroupCreate",
+		FullMethod: "/berty.protocol.Instance/GroupCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).GroupCreate(ctx, req.(*GroupCreateRequest))
+		return srv.(InstanceServer).GroupCreate(ctx, req.(*GroupCreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_GroupGenerateInviteLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_GroupGenerateInviteLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GroupGenerateInviteLinkRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).GroupGenerateInviteLink(ctx, in)
+		return srv.(InstanceServer).GroupGenerateInviteLink(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/GroupGenerateInviteLink",
+		FullMethod: "/berty.protocol.Instance/GroupGenerateInviteLink",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).GroupGenerateInviteLink(ctx, req.(*GroupGenerateInviteLinkRequest))
+		return srv.(InstanceServer).GroupGenerateInviteLink(ctx, req.(*GroupGenerateInviteLinkRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_GroupLeave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_GroupLeave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GroupLeaveRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).GroupLeave(ctx, in)
+		return srv.(InstanceServer).GroupLeave(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/GroupLeave",
+		FullMethod: "/berty.protocol.Instance/GroupLeave",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).GroupLeave(ctx, req.(*GroupLeaveRequest))
+		return srv.(InstanceServer).GroupLeave(ctx, req.(*GroupLeaveRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_GroupList_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _Instance_GroupList_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(GroupListRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ProtocolServer).GroupList(m, &protocolGroupListServer{stream})
+	return srv.(InstanceServer).GroupList(m, &instanceGroupListServer{stream})
 }
 
-type Protocol_GroupListServer interface {
+type Instance_GroupListServer interface {
 	Send(*GroupListReply) error
 	grpc.ServerStream
 }
 
-type protocolGroupListServer struct {
+type instanceGroupListServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolGroupListServer) Send(m *GroupListReply) error {
+func (x *instanceGroupListServer) Send(m *GroupListReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Protocol_GroupMessageCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_GroupMessageCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GroupMessageCreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).GroupMessageCreate(ctx, in)
+		return srv.(InstanceServer).GroupMessageCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/GroupMessageCreate",
+		FullMethod: "/berty.protocol.Instance/GroupMessageCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).GroupMessageCreate(ctx, req.(*GroupMessageCreateRequest))
+		return srv.(InstanceServer).GroupMessageCreate(ctx, req.(*GroupMessageCreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_GroupMessageList_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _Instance_GroupMessageList_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(GroupMessageListRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ProtocolServer).GroupMessageList(m, &protocolGroupMessageListServer{stream})
+	return srv.(InstanceServer).GroupMessageList(m, &instanceGroupMessageListServer{stream})
 }
 
-type Protocol_GroupMessageListServer interface {
+type Instance_GroupMessageListServer interface {
 	Send(*GroupMessageListReply) error
 	grpc.ServerStream
 }
 
-type protocolGroupMessageListServer struct {
+type instanceGroupMessageListServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolGroupMessageListServer) Send(m *GroupMessageListReply) error {
+func (x *instanceGroupMessageListServer) Send(m *GroupMessageListReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Protocol_GroupPubSubTopicInit_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ProtocolServer).GroupPubSubTopicInit(&protocolGroupPubSubTopicInitServer{stream})
+func _Instance_GroupPubSubTopicInit_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(InstanceServer).GroupPubSubTopicInit(&instanceGroupPubSubTopicInitServer{stream})
 }
 
-type Protocol_GroupPubSubTopicInitServer interface {
+type Instance_GroupPubSubTopicInitServer interface {
 	SendAndClose(*GroupPubSubTopicInitReply) error
 	Recv() (*GroupPubSubTopicInitRequest, error)
 	grpc.ServerStream
 }
 
-type protocolGroupPubSubTopicInitServer struct {
+type instanceGroupPubSubTopicInitServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolGroupPubSubTopicInitServer) SendAndClose(m *GroupPubSubTopicInitReply) error {
+func (x *instanceGroupPubSubTopicInitServer) SendAndClose(m *GroupPubSubTopicInitReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *protocolGroupPubSubTopicInitServer) Recv() (*GroupPubSubTopicInitRequest, error) {
+func (x *instanceGroupPubSubTopicInitServer) Recv() (*GroupPubSubTopicInitRequest, error) {
 	m := new(GroupPubSubTopicInitRequest)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -3082,241 +3086,241 @@ func (x *protocolGroupPubSubTopicInitServer) Recv() (*GroupPubSubTopicInitReques
 	return m, nil
 }
 
-func _Protocol_GroupPubSubTopicSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _Instance_GroupPubSubTopicSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(GroupPubSubTopicSubscribeRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ProtocolServer).GroupPubSubTopicSubscribe(m, &protocolGroupPubSubTopicSubscribeServer{stream})
+	return srv.(InstanceServer).GroupPubSubTopicSubscribe(m, &instanceGroupPubSubTopicSubscribeServer{stream})
 }
 
-type Protocol_GroupPubSubTopicSubscribeServer interface {
+type Instance_GroupPubSubTopicSubscribeServer interface {
 	Send(*GroupPubSubTopicSubscribeReply) error
 	grpc.ServerStream
 }
 
-type protocolGroupPubSubTopicSubscribeServer struct {
+type instanceGroupPubSubTopicSubscribeServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolGroupPubSubTopicSubscribeServer) Send(m *GroupPubSubTopicSubscribeReply) error {
+func (x *instanceGroupPubSubTopicSubscribeServer) Send(m *GroupPubSubTopicSubscribeReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Protocol_GroupInvitationAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_GroupInvitationAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GroupInvitationAcceptRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).GroupInvitationAccept(ctx, in)
+		return srv.(InstanceServer).GroupInvitationAccept(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/GroupInvitationAccept",
+		FullMethod: "/berty.protocol.Instance/GroupInvitationAccept",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).GroupInvitationAccept(ctx, req.(*GroupInvitationAcceptRequest))
+		return srv.(InstanceServer).GroupInvitationAccept(ctx, req.(*GroupInvitationAcceptRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_GroupInvitationCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_GroupInvitationCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GroupInvitationCreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).GroupInvitationCreate(ctx, in)
+		return srv.(InstanceServer).GroupInvitationCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/GroupInvitationCreate",
+		FullMethod: "/berty.protocol.Instance/GroupInvitationCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).GroupInvitationCreate(ctx, req.(*GroupInvitationCreateRequest))
+		return srv.(InstanceServer).GroupInvitationCreate(ctx, req.(*GroupInvitationCreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_GroupInvitationDiscard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Instance_GroupInvitationDiscard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GroupInvitationDiscardRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServer).GroupInvitationDiscard(ctx, in)
+		return srv.(InstanceServer).GroupInvitationDiscard(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Protocol/GroupInvitationDiscard",
+		FullMethod: "/berty.protocol.Instance/GroupInvitationDiscard",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServer).GroupInvitationDiscard(ctx, req.(*GroupInvitationDiscardRequest))
+		return srv.(InstanceServer).GroupInvitationDiscard(ctx, req.(*GroupInvitationDiscardRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Protocol_GroupInvitationList_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _Instance_GroupInvitationList_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(GroupInvitationListRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ProtocolServer).GroupInvitationList(m, &protocolGroupInvitationListServer{stream})
+	return srv.(InstanceServer).GroupInvitationList(m, &instanceGroupInvitationListServer{stream})
 }
 
-type Protocol_GroupInvitationListServer interface {
+type Instance_GroupInvitationListServer interface {
 	Send(*GroupInvitationListReply) error
 	grpc.ServerStream
 }
 
-type protocolGroupInvitationListServer struct {
+type instanceGroupInvitationListServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolGroupInvitationListServer) Send(m *GroupInvitationListReply) error {
+func (x *instanceGroupInvitationListServer) Send(m *GroupInvitationListReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-var _Protocol_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "Protocol",
-	HandlerType: (*ProtocolServer)(nil),
+var _Instance_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "berty.protocol.Instance",
+	HandlerType: (*InstanceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "InstanceExportData",
-			Handler:    _Protocol_InstanceExportData_Handler,
+			Handler:    _Instance_InstanceExportData_Handler,
 		},
 		{
 			MethodName: "InstanceGetConfiguration",
-			Handler:    _Protocol_InstanceGetConfiguration_Handler,
+			Handler:    _Instance_InstanceGetConfiguration_Handler,
 		},
 		{
 			MethodName: "AccountGetConfiguration",
-			Handler:    _Protocol_AccountGetConfiguration_Handler,
+			Handler:    _Instance_AccountGetConfiguration_Handler,
 		},
 		{
 			MethodName: "AccountGetInformation",
-			Handler:    _Protocol_AccountGetInformation_Handler,
+			Handler:    _Instance_AccountGetInformation_Handler,
 		},
 		{
 			MethodName: "AccountLinkNewDevice",
-			Handler:    _Protocol_AccountLinkNewDevice_Handler,
+			Handler:    _Instance_AccountLinkNewDevice_Handler,
 		},
 		{
 			MethodName: "AccountDisableIncomingContactRequest",
-			Handler:    _Protocol_AccountDisableIncomingContactRequest_Handler,
+			Handler:    _Instance_AccountDisableIncomingContactRequest_Handler,
 		},
 		{
 			MethodName: "AccountEnableIncomingContactRequest",
-			Handler:    _Protocol_AccountEnableIncomingContactRequest_Handler,
+			Handler:    _Instance_AccountEnableIncomingContactRequest_Handler,
 		},
 		{
 			MethodName: "AccountResetIncomingContactRequestLink",
-			Handler:    _Protocol_AccountResetIncomingContactRequestLink_Handler,
+			Handler:    _Instance_AccountResetIncomingContactRequestLink_Handler,
 		},
 		{
 			MethodName: "ContactRequestAccept",
-			Handler:    _Protocol_ContactRequestAccept_Handler,
+			Handler:    _Instance_ContactRequestAccept_Handler,
 		},
 		{
 			MethodName: "ContactRequestDiscard",
-			Handler:    _Protocol_ContactRequestDiscard_Handler,
+			Handler:    _Instance_ContactRequestDiscard_Handler,
 		},
 		{
 			MethodName: "ContactRequestSend",
-			Handler:    _Protocol_ContactRequestSend_Handler,
+			Handler:    _Instance_ContactRequestSend_Handler,
 		},
 		{
 			MethodName: "ContactGet",
-			Handler:    _Protocol_ContactGet_Handler,
+			Handler:    _Instance_ContactGet_Handler,
 		},
 		{
 			MethodName: "ContactRemove",
-			Handler:    _Protocol_ContactRemove_Handler,
+			Handler:    _Instance_ContactRemove_Handler,
 		},
 		{
 			MethodName: "StreamManagerRequestToContact",
-			Handler:    _Protocol_StreamManagerRequestToContact_Handler,
+			Handler:    _Instance_StreamManagerRequestToContact_Handler,
 		},
 		{
 			MethodName: "GroupCreate",
-			Handler:    _Protocol_GroupCreate_Handler,
+			Handler:    _Instance_GroupCreate_Handler,
 		},
 		{
 			MethodName: "GroupGenerateInviteLink",
-			Handler:    _Protocol_GroupGenerateInviteLink_Handler,
+			Handler:    _Instance_GroupGenerateInviteLink_Handler,
 		},
 		{
 			MethodName: "GroupLeave",
-			Handler:    _Protocol_GroupLeave_Handler,
+			Handler:    _Instance_GroupLeave_Handler,
 		},
 		{
 			MethodName: "GroupMessageCreate",
-			Handler:    _Protocol_GroupMessageCreate_Handler,
+			Handler:    _Instance_GroupMessageCreate_Handler,
 		},
 		{
 			MethodName: "GroupInvitationAccept",
-			Handler:    _Protocol_GroupInvitationAccept_Handler,
+			Handler:    _Instance_GroupInvitationAccept_Handler,
 		},
 		{
 			MethodName: "GroupInvitationCreate",
-			Handler:    _Protocol_GroupInvitationCreate_Handler,
+			Handler:    _Instance_GroupInvitationCreate_Handler,
 		},
 		{
 			MethodName: "GroupInvitationDiscard",
-			Handler:    _Protocol_GroupInvitationDiscard_Handler,
+			Handler:    _Instance_GroupInvitationDiscard_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "EventSubscribe",
-			Handler:       _Protocol_EventSubscribe_Handler,
+			Handler:       _Instance_EventSubscribe_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "ContactRequestListIncoming",
-			Handler:       _Protocol_ContactRequestListIncoming_Handler,
+			Handler:       _Instance_ContactRequestListIncoming_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "ContactRequestListOutgoing",
-			Handler:       _Protocol_ContactRequestListOutgoing_Handler,
+			Handler:       _Instance_ContactRequestListOutgoing_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "ContactList",
-			Handler:       _Protocol_ContactList_Handler,
+			Handler:       _Instance_ContactList_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "StreamManagerAccept",
-			Handler:       _Protocol_StreamManagerAccept_Handler,
+			Handler:       _Instance_StreamManagerAccept_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},
 		{
 			StreamName:    "GroupList",
-			Handler:       _Protocol_GroupList_Handler,
+			Handler:       _Instance_GroupList_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "GroupMessageList",
-			Handler:       _Protocol_GroupMessageList_Handler,
+			Handler:       _Instance_GroupMessageList_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "GroupPubSubTopicInit",
-			Handler:       _Protocol_GroupPubSubTopicInit_Handler,
+			Handler:       _Instance_GroupPubSubTopicInit_Handler,
 			ClientStreams: true,
 		},
 		{
 			StreamName:    "GroupPubSubTopicSubscribe",
-			Handler:       _Protocol_GroupPubSubTopicSubscribe_Handler,
+			Handler:       _Instance_GroupPubSubTopicSubscribe_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "GroupInvitationList",
-			Handler:       _Protocol_GroupInvitationList_Handler,
+			Handler:       _Instance_GroupInvitationList_Handler,
 			ServerStreams: true,
 		},
 	},

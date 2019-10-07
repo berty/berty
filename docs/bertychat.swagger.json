@@ -1,0 +1,232 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "bertychat.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/conversation/get": {
+      "get": {
+        "operationId": "ConversationGet",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/chatConversationGetReply"
+            }
+          }
+        },
+        "tags": [
+          "Account"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "bertychatContactGetReply": {
+      "type": "object"
+    },
+    "bertychatContactListReply": {
+      "type": "object"
+    },
+    "bertychatContactRemoveReply": {
+      "type": "object"
+    },
+    "bertychatContactRequestAcceptReply": {
+      "type": "object"
+    },
+    "bertychatContactRequestDiscardReply": {
+      "type": "object"
+    },
+    "chatAccountPairingInvitationCreateReply": {
+      "type": "object"
+    },
+    "chatAccountRenewIncomingContactRequestLinkReply": {
+      "type": "object"
+    },
+    "chatAccountSettingsGetReply": {
+      "type": "object"
+    },
+    "chatAccountSettingsUpdateReply": {
+      "type": "object"
+    },
+    "chatContactRequestCreateReply": {
+      "type": "object"
+    },
+    "chatContactUpdateReply": {
+      "type": "object"
+    },
+    "chatConversationCreateReply": {
+      "type": "object"
+    },
+    "chatConversationEraseReply": {
+      "type": "object"
+    },
+    "chatConversationGetReply": {
+      "type": "object"
+    },
+    "chatConversationInvitationAcceptReply": {
+      "type": "object"
+    },
+    "chatConversationInvitationCreateReply": {
+      "type": "object"
+    },
+    "chatConversationInvitationDiscardReply": {
+      "type": "object"
+    },
+    "chatConversationLeaveReply": {
+      "type": "object"
+    },
+    "chatConversationListReply": {
+      "type": "object"
+    },
+    "chatConversationMessageEditReply": {
+      "type": "object"
+    },
+    "chatConversationMessageHideReply": {
+      "type": "object"
+    },
+    "chatConversationMessageListReply": {
+      "type": "object"
+    },
+    "chatConversationMessageSendReply": {
+      "type": "object"
+    },
+    "chatConversationSetSeenPositionReply": {
+      "type": "object"
+    },
+    "chatConversationUpdateSettingsReply": {
+      "type": "object"
+    },
+    "chatDevEventSubscribeReply": {
+      "type": "object"
+    },
+    "chatEventSubscribeReply": {
+      "type": "object"
+    },
+    "chatSearchReply": {
+      "type": "object"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeStreamError": {
+      "type": "object",
+      "properties": {
+        "grpc_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "http_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "http_status": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  },
+  "x-stream-definitions": {
+    "bertychatContactListReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/bertychatContactListReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of bertychatContactListReply"
+    },
+    "chatConversationListReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatConversationListReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatConversationListReply"
+    },
+    "chatConversationMessageListReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatConversationMessageListReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatConversationMessageListReply"
+    },
+    "chatDevEventSubscribeReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatDevEventSubscribeReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatDevEventSubscribeReply"
+    },
+    "chatEventSubscribeReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatEventSubscribeReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatEventSubscribeReply"
+    },
+    "chatSearchReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatSearchReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatSearchReply"
+    }
+  }
+}

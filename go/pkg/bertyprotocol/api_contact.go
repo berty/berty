@@ -1,12 +1,12 @@
 package bertyprotocol
 
-import context "context"
+import "context"
 
 func (c *client) ContactGet(context.Context, *ContactGetRequest) (*ContactGetReply, error) {
 	return nil, ErrNotImplemented
 }
 
-func (c *client) ContactList(*ContactListRequest, Protocol_ContactListServer) error {
+func (c *client) ContactList(*ContactListRequest, Instance_ContactListServer) error {
 	return ErrNotImplemented
 }
 
