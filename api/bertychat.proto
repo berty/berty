@@ -93,8 +93,8 @@ message ConversationLeaveRequest {}
 message ConversationLeaveReply {}
 message ConversationEraseRequest {}
 message ConversationEraseReply {}
-message ConversationSetReadingPositionRequest {}
-message ConversationSetReadingPositionReply {}
+message ConversationSetSeenPositionRequest {}
+message ConversationSetSeenPositionReply {}
 message ConversationMessageListRequest {}
 message ConversationMessageListReply {}
 message ConversationMessageSendRequest {}
