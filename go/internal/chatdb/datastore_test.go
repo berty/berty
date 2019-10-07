@@ -1,10 +1,10 @@
-package datastore
+package chatdb
 
 import (
 	"testing"
 
-	"berty.tech/go/internal/datastoremigrations"
-	models "berty.tech/go/internal/datastoremodels"
+	"berty.tech/go/internal/chatmigrations"
+	"berty.tech/go/internal/chatmodel"
 	"berty.tech/go/internal/gormutils"
 	"go.uber.org/zap"
 )
@@ -14,11 +14,11 @@ func TestDropDatabase(t *testing.T) {
 }
 
 func TestAllTables(t *testing.T) {
-	gormutils.TestAllTables(t, Init, Migrate, models.AllTables(), zap.NewNop())
+	gormutils.TestAllTables(t, Init, Migrate, chatmodel.AllTables(), zap.NewNop())
 }
 
 func TestAllMigrations(t *testing.T) {
-	migrations := datastoremigrations.GetMigrations()
+	migrations := chatmigrations.GetMigrations()
 	if len(migrations) == 0 {
 		t.Log("No migrations specified")
 		t.Skip()

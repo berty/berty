@@ -1,5 +1,6 @@
-package datastoremodels
+package chatmodel
 
+// AllTables returns the full list of tables for chat database
 func AllTables() []string {
 	return []string{
 		// internal
@@ -7,6 +8,7 @@ func AllTables() []string {
 	}
 }
 
+// AllModels returns the full list of chat entity models
 func AllModels() []interface{} {
 	return []interface{}{}
 }
