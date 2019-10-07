@@ -21,6 +21,17 @@
     "postinstall": "touch node_modules",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/react-native",
+      "**/react-native/**",
+      "**/react-native-*",
+      "**/react-native-*/**"
+    ]
+  },
   "dependencies": {
     "caser": "^0.1.1",
     "create-react-native-module": "^0.11.1",

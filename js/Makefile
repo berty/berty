@@ -1,5 +1,6 @@
 export PWD = $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
+export SHELL := env bash
 
 UNAME_S ?= $(shell uname -s)
 
@@ -8,21 +9,21 @@ contributor = $(shell git config --get user.name) <$(shell git config --get user
 license = (Apache-2.0 or MIT)
 
 export SHELL = /usr/bin/env bash
-ifeq ($(UNAME_S),Darwin)
-npm := /usr/local/bin/npm
-pkg := $(shell find $(PWD)/packages -depth 1 -type d)
-endif
+
+global_bin := /usr/local/bin
 ifeq ($(UNAME_S),Linux)
-npm := /usr/bin/npm
-pkg := $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 1 -type d))
-else
+global_bin := /usr/bin
 endif
-npm_flags := --no-progress
+
+yarn := $(global_bin)/yarn
+pkg := $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 1 -type d))
+
+yarn_flags :=
 
 mod := $(PWD)/node_modules
 bin := $(mod)/.bin
 
-lerna := $(bin)/lerna
+lerna := $(global_bin)/lerna
 lerna_flags := --reject-cycles --concurrency=8
 lerna_upgrade := $(bin)/upd
 lerna_exec := $(lerna) $(lerna_flags) exec --stream --parallel --scope=$1 --
@@ -33,28 +34,40 @@ eslint := $(bin)/eslint
 
 pkg ?= $(shell find $(PWD)/packages -depth 1 -type d)
 pkg_mod := $(patsubst %, %/node_modules, $(pkg))
-pkg_desc := $(patsubst %, %/node_modules, $(pkg))
+pkg_desc := $(patsubst %, %/package.json, $(pkg))
 
 .DEFAULT_GOAL := deps
 
-.PHONY: bootstrap
-deps: $(mod) $(pkg_mod)
-
-$(mod) $(mod)/%: package.json
-	$(npm) $(npm_flags) install
-	$(lerna) $(lerna_flags) init
-	touch $(mod)
-
 print-%  : ; @echo $* = $($*)
 
+.PHONY: env
+env:
+	@env
+
+.PHONY: deps
+deps: $(mod) $(pkg_mod)
+
+$(mod): $(PWD)/package.json
+	$(lerna) $(lerna_flags) init
+	$(lerna) $(lerna_flags) bootstrap
+	touch $(mod)
+
+$(mod)/%: $(mod)
+
+$(PWD)/package.json: $(lerna)
+
+$(lerna): $(yarn)
+	$(yarn) global add lerna
+
 .NOTPARALLEL: $(pkg_mod) $(pkg_mod)/%
-$(pkg_mod)/%: $(mod) $(patsubst %,%/package.json,$(pkg))
-	$(lerna) $(lerna_flags) bootstrap --hoist
+$(pkg_mod)/%: $(patsubst %,%/package.json,$(pkg))
 	mkdir -p $(pkg_mod)
 	touch $(pkg_mod) $@
 
-.PHONY: npm
-npm $(npm):
+$(pkg_desc): $(mod)
+
+.PHONY: yarn
+yarn $(yarn):
 ifeq ($(UNAME_S),Darwin)
 	brew install node
 endif
@@ -63,7 +76,7 @@ ifeq ($(UNAME_S),Linux)
 endif
 
 .PHONY: upgrade
-upgrade: $(lerna_upgrade)
+upgrade: deps
 	$(lerna_upgrade)
 
 .IGNORE \
@@ -76,7 +89,7 @@ clean: clean
 fclean:
 	rm -rf $(pkg_mod)
 	rm -rf $(mod)
-	npm cache clean -f
+	yarn cache clean -f
 
 .PHONY: pkg
 pkg: name ?= example

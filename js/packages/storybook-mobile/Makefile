@@ -1,6 +1,6 @@
 export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
-export SHELL := /bin/bash
+export SHELL ?= env bash
 
 .PHONY: \
 	deps.storybook \
@@ -14,7 +14,8 @@ deps.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader
 deps.storybook: deps.storybook.mobile
 
 $(PWD)/storybook/storyLoader:
-	rnstl \
+	env | grep PATH
+	PATH=$(PATH) rnstl \
 		--pattern '$(PWD)/node_modules/@berty-tech/*-storybook/storybook.tsx' \
 		--outputFile $(PWD)/storybook/storyLoader.js
 	sed -i.bak 's/\(.*\)\.\.\/node_modules\/\(.*\)\/storybook/\1\2\/storybook.tsx/g' $(PWD)/storybook/storyLoader.js
