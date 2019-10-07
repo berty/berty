@@ -30,14 +30,17 @@ module.exports = {
       {
         get: (target, name) => {
           const current = path.join(__dirname, `node_modules/${name}`)
-          const root = path.join(__dirname, `../node_modules/${name}`)
-          if (fs.existsSync(current)) {
-            return current
+          const root = path.join(__dirname, `../../node_modules/${name}`)
+          if (fs.existsSync(root)) {
+            return root
           }
-          return root
+          return current
         },
       }
     ),
   },
   watchFolders,
+  server: {
+    enableVisualizer: true,
+  },
 }

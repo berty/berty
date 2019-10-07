@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, SafeAreaView, ScrollView } from 'react-native'
+import { View, Image, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text, Button } from 'react-native-ui-kitten'
 import { Card } from '@berty-tech/shared-storybook'
 import styles from './styles'
@@ -56,8 +56,9 @@ const RequestsItem: React.FC<RequestsItemProps> = ({
   discard,
 }) => (
   <Card>
+    <Image source={{ uri: avatar }} />
     <Text>{name}</Text>
-    <Text category="s4">{`Received ${at.toLocaleDateString()}`}</Text>
+    <Text category="s2">{`Received ${at.toLocaleDateString()}`}</Text>
     <View style={styles.row}>
       <Button
         onPress={(): void => {
@@ -78,13 +79,17 @@ const RequestsItem: React.FC<RequestsItemProps> = ({
 )
 
 const Requests: React.FC<RequestsProps> = ({ items }) => (
-  <SafeAreaView>
-    <Text style={styles.textWhite}>Requests</Text>
-    <ScrollView horizontal>
-      {items.map((props) => (
-        <RequestsItem {...props} />
-      ))}
-    </ScrollView>
+  <SafeAreaView style={styles.bgBlue}>
+    <View style={[styles.paddingVertical]}>
+      <Text category="h4" style={[styles.textWhite, styles.paddingHorizontal]}>
+        Requests
+      </Text>
+      <ScrollView horizontal>
+        {items.map((props) => (
+          <RequestsItem {...props} />
+        ))}
+      </ScrollView>
+    </View>
   </SafeAreaView>
 )
 
@@ -99,26 +104,37 @@ const ConversationsItem: React.FC<ConversationsItemProps> = ({
 }) => (
   <View style={styles.row}>
     <Text>{title}</Text>
-    <Text category="s5">{intro}</Text>
+    <Text category="s2">{intro}</Text>
   </View>
 )
 
 const Conversations: React.FC<ConversationsProps> = ({ items }) => (
-  <Layout style={styles.padding}>
-    <Text category="h4">Conversations</Text>
-    <ScrollView>
-      {items.map((props) => (
-        <ConversationsItem {...props} />
-      ))}
-    </ScrollView>
-  </Layout>
+  <SafeAreaView>
+    <Layout style={styles.padding}>
+      <Text category="h4">Messages</Text>
+      <ScrollView>
+        {items.map((props) => (
+          <ConversationsItem {...props} />
+        ))}
+      </ScrollView>
+    </Layout>
+  </SafeAreaView>
 )
 
 const Footer: React.FC<FooterProps> = ({ search, plus, account }) => (
   <View
-    style={[styles.absolute, styles.bottom, styles.row, styles.spaceEvenly]}
+    style={[
+      styles.absolute,
+      styles.bottom,
+      styles.left,
+      styles.right,
+      styles.padding,
+      styles.margin,
+      styles.row,
+      styles.spaceAround,
+    ]}
   >
-    <Button>Q</Button>
+    <Button>S</Button>
     <Button>+</Button>
     <Button>A</Button>
   </View>
@@ -129,7 +145,7 @@ export const List: React.FC<ListProps> = ({
   conversations,
   footer,
 }) => (
-  <Layout style={styles.flex}>
+  <Layout style={StyleSheet.absoluteFill}>
     <Requests {...requests} />
     <Conversations {...conversations} />
     <Footer {...footer} />

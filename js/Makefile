@@ -45,10 +45,11 @@ env:
 .PHONY: deps
 deps: $(mod) $(pkg_mod)
 
-$(mod): $(PWD)/package.json $(pkg_desc)
+$(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
 	$(lerna) $(lerna_flags) init
 	$(lerna) $(lerna_flags) bootstrap
-	touch $(mod)
+	mkdir -p $(mod) $(pkg_mod)
+	touch $(mod) $(pkg_mod)
 
 $(mod)/%: $(mod)
 
@@ -59,8 +60,7 @@ $(lerna): $(yarn)
 
 .NOTPARALLEL: $(pkg_mod) $(pkg_mod)/%
 $(pkg_mod)/%: $(patsubst %,%/package.json,$(pkg)) $(mod)
-	mkdir -p $(pkg_mod)
-	touch $(pkg_mod) $@
+
 
 .PHONY: yarn
 yarn $(yarn):

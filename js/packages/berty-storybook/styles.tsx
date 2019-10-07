@@ -31,6 +31,7 @@ export const styles = StyleSheet.create({
   stretch: { alignSelf: 'stretch' },
 
   spaceEvenly: { justifyContent: 'space-evenly' },
+  spaceAround: { justifyContent: 'space-around' },
 
   bottom: { bottom: 0 },
   left: { left: 0 },

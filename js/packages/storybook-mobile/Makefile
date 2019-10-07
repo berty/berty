@@ -19,6 +19,10 @@ $(PWD)/storybook/storyLoader.js: $(PWD)/node_modules
 		--pattern '$(PWD)/../*-storybook/storybook.tsx' \
 		--outputFile $(PWD)/storybook/storyLoader.js
 	sed -i.bak 's/\(.*\)\.\.\/node_modules\/\(.*\)\/storybook/\1\2\/storybook.tsx/g' $(PWD)/storybook/storyLoader.js
+	# sed \
+		-i.bak \
+		's/\(.*\)\.\.\/\.\.\//\1@berty-tech\//g' \
+		$(PWD)/storybook/storyLoader.js
 	rm -f $(PWD)/storybook/storyLoader.js.bak
 
 .PHONY: run.storybook.ios
@@ -82,7 +86,10 @@ fclean.storybook.ios:
 fclean.storybook.android: export PWD := $(PWD)
 fclean.storybook.android:
 
-fclean.storybook.mobile: fclean.storybook.ios fclean.storybook.android
+fclean.storybook.mobile: export PWD := $(PWD)
+fclean.storybook.mobile:
+	rm -rf $$TMPDIR/react-native-packager-cache-*
+	rm -rf $$TMPDIR/metro-bundler-cache-*
 	watchman watch-del-all
 
 fclean.storybook: fclean.storybook.mobile
