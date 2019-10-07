@@ -1,4 +1,4 @@
-package cryptosigchain
+package bertyprotocol
 
 import (
 	"berty.tech/go/pkg/iface"

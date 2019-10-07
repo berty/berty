@@ -1,4 +1,4 @@
-package cryptosigchain
+package bertyprotocol
 
 import (
 	"errors"
@@ -181,3 +181,5 @@ func (m *SigChain) Check() error {
 func NewSigChain() iface.SigChain {
 	return &SigChain{}
 }
+
+var _ iface.SigChain = (*SigChain)(nil)

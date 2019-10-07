@@ -71,26 +71,6 @@ type Crypto interface {
 	Close() error
 }
 
-type HandshakeSession interface {
-	// Getters/Setters
-	SetOtherKeys(sign crypto.PubKey, box []byte) error
-	GetPublicKeys() (sign crypto.PubKey, box []byte)
-
-	// Actions
-	ProveOtherKey() ([]byte, error)
-	CheckOwnKeyProof(sig []byte) error
-	ProveOwnDeviceKey() ([]byte, error)
-	CheckOtherKeyProof(sig []byte, chain SigChain, deviceKey crypto.PubKey) error
-	ProveOtherKnownAccount() ([]byte, error)
-	CheckOwnKnownAccountProof(attemptedDeviceKey crypto.PubKey, proof []byte) error
-
-	// Utils
-	Encrypt(data []byte) ([]byte, error)
-	Decrypt(data []byte) ([]byte, error)
-
-	Close() error
-}
-
 //type CryptoEnvelope interface {
 //	// Getters
 //	GetGroupID() []byte

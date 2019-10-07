@@ -1,4 +1,4 @@
-package cryptohandshake
+package handshake
 
 import (
 	"crypto/rand"
@@ -58,7 +58,7 @@ func initHandshake(ownDevicePrivateKey sign.PrivKey, ownSigChain iface.SigChain)
 	}, nil
 }
 
-func NewRequest(ownDevicePrivateKey crypto.PrivKey, ownSigChain iface.SigChain, accountToReach crypto.PubKey) (iface.HandshakeSession, error) {
+func newCryptoRequest(ownDevicePrivateKey crypto.PrivKey, ownSigChain iface.SigChain, accountToReach crypto.PubKey) (*handshakeSession, error) {
 	session, err := initHandshake(ownDevicePrivateKey, ownSigChain)
 	if err != nil {
 		return nil, err
@@ -69,23 +69,8 @@ func NewRequest(ownDevicePrivateKey crypto.PrivKey, ownSigChain iface.SigChain, 
 	return session, nil
 }
 
-func NewResponse(ownDevicePrivateKey crypto.PrivKey, ownSigChain iface.SigChain, marshaledSigKey []byte, boxKey []byte) (iface.HandshakeSession, error) {
-	// TODO: include cipher suite to allow protocol updates?
-	sigKey, err := sign.UnmarshalPublicKey(marshaledSigKey)
-	if err != nil {
-		return nil, err
-	}
-
-	if sigKey.Type() != SupportedKeyType {
-		return nil, errors.New("unsupported key type")
-	}
-
+func newCryptoResponse(ownDevicePrivateKey crypto.PrivKey, ownSigChain iface.SigChain) (*handshakeSession, error) {
 	session, err := initHandshake(ownDevicePrivateKey, ownSigChain)
-	if err != nil {
-		return nil, err
-	}
-
-	err = session.SetOtherKeys(sigKey, boxKey)
 	if err != nil {
 		return nil, err
 	}

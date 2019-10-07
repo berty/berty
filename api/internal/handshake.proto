@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package handshake;
+
+option go_package = "berty.tech/go/internal/handshake";
+
+import "entity.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+message HandshakeFrame {
+  enum HandshakeStep {
+    STEP_1_KEY_AGREEMENT = 0;
+    STEP_2_KEY_AGREEMENT = 1;
+
+    STEP_3_DISPATCH = 10; // Should not be used directly
+
+    STEP_3A_KNOWN_IDENTITY_PROOF = 20;
+    STEP_4A_KNOWN_IDENTITY_DISCLOSURE = 21;
+    STEP_5A_KNOWN_IDENTITY_DISCLOSURE = 22;
+
+    STEP_3B_KNOWN_DEVICE_PROOF = 30;
+    STEP_4B_KNOWN_DEVICE_DISCLOSURE = 31;
+
+    STEP_9_DONE = 999; // Should not be used directly
+  }
+
+  HandshakeStep step = 1;
+  bytes signatureKey = 2;
+  bytes encryptionKey = 3;
+  bytes encryptedPayload = 4;
+}
+
+message HandshakePayload {
+  bytes signature = 1;
+  SigChain sigChain = 2;
+  bytes deviceKey = 3;
+}

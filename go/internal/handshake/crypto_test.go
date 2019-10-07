@@ -1,17 +1,13 @@
-package cryptohandshake_test
+package handshake
 
 import (
 	"context"
 	"crypto/rand"
 	"testing"
 
-	"berty.tech/go/internal/cryptohandshake"
-
 	"berty.tech/go/pkg/iface"
 
 	p2pCrypto "github.com/libp2p/go-libp2p-core/crypto"
-
-	"github.com/stretchr/testify/assert"
 
 	"berty.tech/go/internal/crypto"
 )
@@ -21,33 +17,44 @@ func createNewIdentity(t *testing.T, ctx context.Context) (iface.Crypto, p2pCryp
 	ds := &struct{ TODO int }{}
 
 	c, privateKey, err := crypto.InitNewIdentity(ctx, ds)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("can't create new identity")
+	}
 
 	return c, privateKey
 }
 
-func createTwoDevices(t *testing.T, ctx context.Context) (iface.HandshakeSession, iface.Crypto, iface.HandshakeSession, iface.Crypto) {
+func createTwoDevices(t *testing.T, ctx context.Context) (*handshakeSession, iface.Crypto, *handshakeSession, iface.Crypto) {
 	c1, pk1 := createNewIdentity(t, ctx)
 	c2, pk2 := createNewIdentity(t, ctx)
 
 	accountPublicKey, err := c2.GetAccountPublicKey()
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("can't get public key for account")
+	}
 
-	hss1, err := cryptohandshake.NewRequest(pk1, c1.GetSigChain(), accountPublicKey)
-	assert.Nil(t, err)
-	assert.NotNil(t, hss1)
+	hss1, err := newCryptoRequest(pk1, c1.GetSigChain(), accountPublicKey)
+	if err != nil || hss1 == nil {
+		t.Fatalf("can't get crypto request for c1")
+	}
 
 	sign, box := hss1.GetPublicKeys()
-	signBytes, err := sign.Bytes()
-	assert.Nil(t, err)
 
-	hss2, err := cryptohandshake.NewResponse(pk2, c2.GetSigChain(), signBytes, box)
-	assert.Nil(t, err)
-	assert.NotNil(t, hss2)
+	hss2, err := newCryptoResponse(pk2, c2.GetSigChain())
+	if err != nil || hss2 == nil {
+		t.Fatalf("can't get crypto request for c2")
+	}
+
+	err = hss2.SetOtherKeys(sign, box)
+	if err != nil {
+		t.Fatalf("can't set other keys on hss2")
+	}
 
 	sign, box = hss2.GetPublicKeys()
 	err = hss1.SetOtherKeys(sign, box)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("can't set other keys on hss1")
+	}
 
 	return hss1, c1, hss2, c2
 }
@@ -67,11 +74,14 @@ func TestModule_NewRequest(t *testing.T) {
 	c2, _ := createNewIdentity(t, ctx)
 
 	accountPubKey, err := c2.GetAccountPublicKey()
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("can't get account public key for c2")
+	}
 
-	hss, err := cryptohandshake.NewRequest(pk1, c1.GetSigChain(), accountPubKey)
-	assert.Nil(t, err)
-	assert.NotNil(t, hss)
+	hss, err := newCryptoRequest(pk1, c1.GetSigChain(), accountPubKey)
+	if err != nil || hss == nil {
+		t.Fatalf("can't get initiate crypto handshake request")
+	}
 }
 
 func TestModule_NewResponse(t *testing.T) {
@@ -82,19 +92,26 @@ func TestModule_NewResponse(t *testing.T) {
 	c2, pk2 := createNewIdentity(t, ctx)
 
 	accountPubKey, err := c2.GetAccountPublicKey()
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("err should be nil")
+	}
 
-	hss1, err := cryptohandshake.NewRequest(pk1, c1.GetSigChain(), accountPubKey)
-	assert.Nil(t, err)
-	assert.NotNil(t, hss1)
+	hss1, err := newCryptoRequest(pk1, c1.GetSigChain(), accountPubKey)
+	if err != nil || hss1 == nil {
+		t.Fatalf("err should be nil")
+	}
 
 	sign, box := hss1.GetPublicKeys()
-	signBytes, err := sign.Bytes()
-	assert.Nil(t, err)
 
-	hss2, err := cryptohandshake.NewResponse(pk2, c2.GetSigChain(), signBytes, box)
-	assert.Nil(t, err)
-	assert.NotNil(t, hss2)
+	hss2, err := newCryptoResponse(pk2, c2.GetSigChain())
+	if err != nil || hss2 == nil {
+		t.Fatalf("err should be nil")
+	}
+
+	err = hss2.SetOtherKeys(sign, box)
+	if err != nil {
+		t.Fatalf("err should be nil")
+	}
 }
 
 func TestHandshakeSession_SetOtherKeys(t *testing.T) {
@@ -104,16 +121,24 @@ func TestHandshakeSession_SetOtherKeys(t *testing.T) {
 	hss1, _, hss2, _ := createTwoDevices(t, ctx)
 	sign, box := hss2.GetPublicKeys()
 	err := hss1.SetOtherKeys(sign, box)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("err should be nil")
+	}
 
 	err = hss1.SetOtherKeys(sign, box[0:3])
-	assert.NotNil(t, err)
+	if err == nil {
+		t.Fatalf("err should not be nil")
+	}
 
 	_, badSigningPubKey, err := p2pCrypto.GenerateSecp256k1Key(rand.Reader)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("err should be nil")
+	}
 
 	err = hss1.SetOtherKeys(badSigningPubKey, box)
-	assert.NotNil(t, err)
+	if err == nil {
+		t.Fatalf("err should not be nil")
+	}
 }
 
 func TestHandshakeSession_GetPublicKeys(t *testing.T) {
@@ -123,8 +148,9 @@ func TestHandshakeSession_GetPublicKeys(t *testing.T) {
 	hss1, _, _, _ := createTwoDevices(t, ctx)
 	sign, box := hss1.GetPublicKeys()
 
-	assert.Equal(t, int(sign.Type()), cryptohandshake.SupportedKeyType)
-	assert.Len(t, box, 32)
+	if int(sign.Type()) != SupportedKeyType || len(box) != 32 {
+		t.Fatalf("public keys seems improperly returned")
+	}
 }
 
 func TestHandshakeSession_ProveOtherKey_CheckOwnKeyProof(t *testing.T) {
@@ -134,15 +160,21 @@ func TestHandshakeSession_ProveOtherKey_CheckOwnKeyProof(t *testing.T) {
 	hss1, _, hss2, _ := createTwoDevices(t, ctx)
 	proof, err := hss1.ProveOtherKey()
 
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("err should be nil")
+	}
 
 	err = hss2.CheckOwnKeyProof(proof)
 
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("err should be nil")
+	}
 
 	err = hss2.CheckOwnKeyProof([]byte("oops"))
 
-	assert.NotNil(t, err)
+	if err == nil {
+		t.Fatalf("err should not be nil")
+	}
 }
 
 func TestHandshakeSession_ProveOwnDeviceKey_CheckOtherKeyProof(t *testing.T) {
@@ -152,23 +184,33 @@ func TestHandshakeSession_ProveOwnDeviceKey_CheckOtherKeyProof(t *testing.T) {
 	hss1, c1, hss2, c2 := createTwoDevices(t, ctx)
 	proof, err := hss1.ProveOwnDeviceKey()
 
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("err should be nil")
+	}
 
 	// Correct
 	err = hss2.CheckOtherKeyProof(proof, c1.GetSigChain(), c1.GetDevicePublicKey())
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("err should be nil")
+	}
 
 	// Wrong signature
 	err = hss2.CheckOtherKeyProof([]byte("oops"), c1.GetSigChain(), c1.GetDevicePublicKey())
-	assert.NotNil(t, err)
+	if err == nil {
+		t.Fatalf("err should not be nil")
+	}
 
 	// Wrong sig chain
 	err = hss2.CheckOtherKeyProof(proof, c2.GetSigChain(), c1.GetDevicePublicKey())
-	assert.NotNil(t, err)
+	if err == nil {
+		t.Fatalf("err should not be nil")
+	}
 
 	// Key not found in sig chain
 	err = hss1.CheckOtherKeyProof(proof, c1.GetSigChain(), c1.GetDevicePublicKey())
-	assert.NotNil(t, err)
+	if err == nil {
+		t.Fatalf("err should not be nil")
+	}
 }
 
 func TestHandshakeSession_ProveOtherKnownAccount_CheckOwnKnownAccountProof(t *testing.T) {
@@ -178,10 +220,14 @@ func TestHandshakeSession_ProveOtherKnownAccount_CheckOwnKnownAccountProof(t *te
 	hss1, c1, hss2, _ := createTwoDevices(t, ctx)
 	proof, err := hss1.ProveOtherKnownAccount()
 
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("can't prove other known account")
+	}
 
 	err = hss2.CheckOwnKnownAccountProof(c1.GetDevicePublicKey(), proof)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("can't check self account proof")
+	}
 }
 
 func TestHandshakeSession_Encrypt_Decrypt(t *testing.T) {
@@ -196,49 +242,51 @@ func TestHandshakeSession_Encrypt_Decrypt(t *testing.T) {
 
 	// Should be able to encode the message
 	encrypted, err := hss1.Encrypt(testData1)
-	assert.Nil(t, err)
-	assert.NotNil(t, encrypted)
-	assert.NotEmpty(t, encrypted)
+	if err != nil || len(encrypted) == 0 || string(testData1) == string(encrypted) {
+		t.Fatalf("err should be nil and encrypted should not be empty, encrypted value should not be clear text")
+	}
 
 	// Should decode the message properly
 	decrypted, err := hss2.Decrypt(encrypted)
-	assert.Nil(t, err)
-	assert.Equal(t, string(testData1), string(decrypted))
+	if err != nil || string(testData1) != string(decrypted) {
+		t.Fatalf("err should be nil and decrypted should equal testData1")
+	}
 
 	// Should not decode the message twice
 	decrypted, err = hss2.Decrypt(encrypted)
-	assert.NotNil(t, err)
-	assert.NotEqual(t, string(testData1), string(decrypted))
+	if err != ErrDecrypt || string(decrypted) != "" {
+		t.Fatalf("err should be ErrDecrypt and decrypted should be empty")
+	}
 
 	// Should not decode a random string
 	decrypted, err = hss2.Decrypt([]byte("blahblah"))
-	assert.NotNil(t, err)
-	assert.NotEqual(t, string(testData1), string(decrypted))
+	if err != ErrDecrypt || string(decrypted) != "" {
+		t.Fatalf("err should be ErrDecrypt and decrypted should be empty")
+	}
 
 	// Should be able to encode a second message
 	encrypted2, err := hss1.Encrypt(testData2)
-	assert.Nil(t, err)
-	assert.NotNil(t, encrypted)
-	assert.NotEmpty(t, encrypted)
-	assert.NotEqual(t, string(encrypted), string(encrypted2))
+	if err != nil || len(encrypted2) == 0 || string(testData2) == string(encrypted2) {
+		t.Fatalf("err should be nil and encrypted2 should not be empty, encrypted2 value should not be clear text")
+	}
 
 	// Should decode the second message properly
 	decrypted, err = hss2.Decrypt(encrypted2)
-	assert.Nil(t, err)
-	assert.Equal(t, string(testData2), string(decrypted))
+	if err != nil || string(testData2) != string(decrypted) {
+		t.Fatalf("err should be nil and decrypted should equal testData2")
+	}
 
 	// Should be able to encode a message from second peer
 	encrypted3, err := hss2.Encrypt(testData3)
-	assert.Nil(t, err)
-	assert.NotNil(t, encrypted2)
-	assert.NotEmpty(t, encrypted2)
-	assert.NotEqual(t, string(encrypted2), string(encrypted3))
+	if err != nil || len(encrypted3) == 0 || string(testData3) == string(encrypted3) {
+		t.Fatalf("err should be nil and encrypted3 should not be empty, encrypted3 value should not be clear text")
+	}
 
 	// Should decode the third message properly
 	decrypted, err = hss1.Decrypt(encrypted3)
-	assert.Nil(t, err)
-	assert.Equal(t, string(testData3), string(decrypted))
-
+	if err != nil || string(testData3) != string(decrypted) {
+		t.Fatalf("err should be nil and decrypted should equal testData3")
+	}
 }
 
 func TestHandshakeSession_Close(t *testing.T) {
@@ -246,6 +294,11 @@ func TestHandshakeSession_Close(t *testing.T) {
 	defer cancel()
 
 	hss1, _, hss2, _ := createTwoDevices(t, ctx)
-	assert.Nil(t, hss1.Close())
-	assert.Nil(t, hss2.Close())
+	if err := hss1.Close(); err != nil {
+		t.Fatalf("can't close hss1 properly")
+	}
+
+	if err := hss2.Close(); err != nil {
+		t.Fatalf("can't close hss2 properly")
+	}
 }

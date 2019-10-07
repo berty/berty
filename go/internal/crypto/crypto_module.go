@@ -9,7 +9,7 @@ import (
 	"errors"
 	"time"
 
-	sigchain "berty.tech/go/internal/cryptosigchain"
+	"berty.tech/go/pkg/bertyprotocol"
 	"berty.tech/go/pkg/iface"
 	sign "github.com/libp2p/go-libp2p-core/crypto"
 )
@@ -47,7 +47,7 @@ func InitSigChain(key sign.PrivKey) (iface.SigChain, error) {
 		return nil, err
 	}
 
-	sigChain := sigchain.NewSigChain()
+	sigChain := bertyprotocol.NewSigChain()
 
 	_, err = sigChain.Init(accountKey)
 	if err != nil {

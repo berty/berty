@@ -3,14 +3,34 @@ syntax = "proto3";
 
 option go_package = "berty.tech/go/pkg/bertyprotocol";
 
+import "google/protobuf/timestamp.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
 message Device {
   bytes device_pub_key = 1;
   bytes account_pub_key = 2;
 }
 
-message SigChainEntry {}
+message SigChainEntry {
+  enum SigChainEntryType {
+    SigChainEntryTypeUndefined = 0;
+    SigChainEntryTypeInitChain = 1;
+    SigChainEntryTypeAddKey    = 2;
+    SigChainEntryTypeRemoveKey = 3;
+  }
+
+  bytes entry_hash = 1;
+  SigChainEntryType entry_type_code = 2;
+  bytes parent_entry_hash = 3;
+  google.protobuf.Timestamp created_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp expiring_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  bytes signer_public_key_bytes = 6;
+  bytes subject_public_key_bytes = 7;
+  bytes signature = 8;
+}
 message SigChain {
-  repeated SigChainEntry entries = 1;
+  bytes id = 1 [(gogoproto.customname) = "ID"];
+  repeated SigChainEntry entries = 2;
 }
 
 message Contact {
