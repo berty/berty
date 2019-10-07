@@ -1,4 +1,4 @@
-VERSION ?= 0.29.1-ubuntu-18.04-r0
+VERSION ?= 0.29.1-ubuntu-18.04-r1
 
 build:
 	docker build -t $(IMAGE):$(VERSION) .

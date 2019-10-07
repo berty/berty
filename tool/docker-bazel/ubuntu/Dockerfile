@@ -16,6 +16,7 @@ RUN apt-get update \
     python3 \
     git \
     golang-go \
+    libssl-dev \
   && rm -rf /var/lib/apt/lists/*
 
 ADD https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel-0.29.1-installer-linux-x86_64.sh \
