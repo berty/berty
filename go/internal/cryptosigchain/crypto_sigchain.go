@@ -40,9 +40,9 @@ func (m *SigChain) ListCurrentPubKeys() []crypto.PubKey {
 
 	for _, e := range m.Entries {
 		entryType := iface.SigChainEntryType(e.EntryTypeCode)
-		if entryType == iface.SigChainEntryType_UNDEFINED {
+		if entryType == iface.SigChainEntryTypeUndefined {
 			continue
-		} else if entryType == iface.SigChainEntryType_REVOKE_KEY {
+		} else if entryType == iface.SigChainEntryTypeRemoveKey {
 			delete(pubKeys, string(e.SubjectPublicKeyBytes))
 		} else {
 			pubKeys[string(e.SubjectPublicKeyBytes)] = e.SubjectPublicKeyBytes
@@ -72,7 +72,7 @@ func (m *SigChain) Init(privKey crypto.PrivKey) (iface.SigChainEntry, error) {
 	}
 
 	return m.appendEntry(privKey, &SigChainEntry{
-		EntryTypeCode:         uint32(iface.SigChainEntryType_INIT_CHAIN),
+		EntryTypeCode:         uint32(iface.SigChainEntryTypeInitChain),
 		SubjectPublicKeyBytes: subjectKeyBytes,
 	})
 }
@@ -96,7 +96,7 @@ func (m *SigChain) AddEntry(privKey crypto.PrivKey, pubKey crypto.PubKey) (iface
 	}
 
 	return m.appendEntry(privKey, &SigChainEntry{
-		EntryTypeCode:         uint32(iface.SigChainEntryType_ADD_KEY),
+		EntryTypeCode:         uint32(iface.SigChainEntryTypeAddKey),
 		SubjectPublicKeyBytes: subjectKeyBytes,
 	})
 }
@@ -120,7 +120,7 @@ func (m *SigChain) RemoveEntry(privKey crypto.PrivKey, pubKey crypto.PubKey) (if
 	}
 
 	return m.appendEntry(privKey, &SigChainEntry{
-		EntryTypeCode:         uint32(iface.SigChainEntryType_REVOKE_KEY),
+		EntryTypeCode:         uint32(iface.SigChainEntryTypeRemoveKey),
 		SubjectPublicKeyBytes: subjectKeyBytes,
 	})
 }

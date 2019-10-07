@@ -26,7 +26,7 @@ func (c *crypto) GetDevicePublicKey() sign.PubKey {
 func (c *crypto) GetAccountPublicKey() (sign.PubKey, error) {
 	initialEntry := c.sigChain.GetInitialEntry()
 
-	if initialEntry.GetEntryType() != iface.SigChainEntryType_INIT_CHAIN {
+	if initialEntry.GetEntryType() != iface.SigChainEntryTypeInitChain {
 		return nil, errors.New("first sig chain node is invalid")
 	}
 

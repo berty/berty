@@ -25,6 +25,9 @@ func InitNewIdentity(ctx context.Context, store interface{}) (iface.Crypto, sign
 	}
 
 	sigChain, err := InitSigChain(privKey)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	return NewCrypto(store, privKey, sigChain), privKey, nil
 }
@@ -80,7 +83,10 @@ func GetRendezvousPointForTime(id, seed []byte, date time.Time) ([]byte, error) 
 	mac := hmac.New(sha256.New, seed)
 	binary.BigEndian.PutUint64(buf, uint64(date.Unix()))
 
-	mac.Write(buf)
+	if _, err := mac.Write(buf); err != nil {
+		return nil, err
+	}
+
 	sum := mac.Sum(nil)
 
 	rendezvousPoint := sha256.Sum256(append(id, sum...))

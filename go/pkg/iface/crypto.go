@@ -10,10 +10,10 @@ import (
 type SigChainEntryType int8
 
 const (
-	SigChainEntryType_UNDEFINED  SigChainEntryType = 0
-	SigChainEntryType_INIT_CHAIN SigChainEntryType = 1
-	SigChainEntryType_ADD_KEY    SigChainEntryType = 2
-	SigChainEntryType_REVOKE_KEY SigChainEntryType = 3
+	SigChainEntryTypeUndefined SigChainEntryType = 0
+	SigChainEntryTypeInitChain SigChainEntryType = 1
+	SigChainEntryTypeAddKey    SigChainEntryType = 2
+	SigChainEntryTypeRemoveKey SigChainEntryType = 3
 )
 
 type SigChainEntry interface {

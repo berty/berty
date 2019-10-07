@@ -27,3 +27,5 @@ require (
 	google.golang.org/grpc v1.20.1
 	gopkg.in/gormigrate.v1 v1.6.0
 )
+
+replace github.com/libp2p/go-openssl v0.0.2 => github.com/berty/go-openssl v0.0.3-0.20191007152928-66bd988d235e
