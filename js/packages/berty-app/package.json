@@ -27,7 +27,6 @@
     "babel-jest": "^24.9.0",
     "caser": "^0.1.1",
     "metro-react-native-babel-preset": "^0.56.0",
-    "react-native-cli": "^2.0.1",
     "react-native-typescript-transformer": "^1.2.13",
     "react-test-renderer": "^16.9.0",
     "typescript": "^3.6.3"

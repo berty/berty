@@ -8,15 +8,15 @@ export SHELL ?= env bash
 
 deps.storybook.mobile: export PWD := $(PWD)
 deps.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader
-	cd $(PWD) && lsof -t -i :7007 || echo Y | start-storybook &
+	cd $(PWD) && lsof -t -i :7007 || echo Y | start-storybook --config-dir storybook &
 	kill $$(lsof -t -i :8081) || true
 	cd $(PWD) && PWD=$(PWD) react-native start --reset-cache &
 deps.storybook: deps.storybook.mobile
 
-$(PWD)/storybook/storyLoader:
+$(PWD)/storybook/storyLoader.js: $(PWD)/node_modules
 	env | grep PATH
 	PATH=$(PATH) rnstl \
-		--pattern '$(PWD)/node_modules/@berty-tech/*-storybook/storybook.tsx' \
+		--pattern '$(PWD)/../*-storybook/storybook.tsx' \
 		--outputFile $(PWD)/storybook/storyLoader.js
 	sed -i.bak 's/\(.*\)\.\.\/node_modules\/\(.*\)\/storybook/\1\2\/storybook.tsx/g' $(PWD)/storybook/storyLoader.js
 	rm -f $(PWD)/storybook/storyLoader.js.bak
@@ -24,7 +24,7 @@ $(PWD)/storybook/storyLoader:
 .PHONY: run.storybook.ios
 run.storybook.ios: export PWD := $(PWD)
 run.storybook.ios: $(PWD)/node_modules $(PWD)/ios/Pods deps.storybook.mobile
-	cd $(PWD) && react-native run-ios --no-packager
+	cd $(PWD) && react-native run-ios --simulator='iPhone 11' --no-packager
 
 $(PWD)/ios/Pods: $(PWD)/ios/Podfile $(PWD)/node_modules
 	cd $(PWD)/ios && pod install
