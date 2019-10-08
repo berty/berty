@@ -2,8 +2,8 @@ package protocoldb
 
 import (
 	"berty.tech/go/internal/gormutils"
-	"berty.tech/go/internal/protocolmigrations"
-	"berty.tech/go/internal/protocolmodel"
+	"berty.tech/go/internal/protocoldb/migrations"
+	"berty.tech/go/pkg/protocolmodel"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 )
@@ -15,7 +15,7 @@ func Init(db *gorm.DB, logger *zap.Logger) (*gorm.DB, error) {
 
 // Migrate runs migrations
 func Migrate(db *gorm.DB, forceViaMigrations bool, logger *zap.Logger) error {
-	return gormutils.Migrate(db, protocolmigrations.GetMigrations, protocolmodel.AllModels, forceViaMigrations, logger)
+	return gormutils.Migrate(db, migrations.GetMigrations, protocolmodel.AllModels, forceViaMigrations, logger)
 }
 
 // InitMigrate is an alias for Init() and Migrate()

@@ -1,9 +1,9 @@
 package chatdb
 
 import (
-	"berty.tech/go/internal/chatmigrations"
-	"berty.tech/go/internal/chatmodel"
+	"berty.tech/go/internal/chatdb/migrations"
 	"berty.tech/go/internal/gormutils"
+	"berty.tech/go/pkg/chatmodel"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 )
@@ -15,7 +15,7 @@ func Init(db *gorm.DB, logger *zap.Logger) (*gorm.DB, error) {
 
 // Migrate runs migrations
 func Migrate(db *gorm.DB, forceViaMigrations bool, logger *zap.Logger) error {
-	return gormutils.Migrate(db, chatmigrations.GetMigrations, chatmodel.AllModels, forceViaMigrations, logger)
+	return gormutils.Migrate(db, migrations.GetMigrations, chatmodel.AllModels, forceViaMigrations, logger)
 }
 
 // InitMigrate is an alias for Init() and Migrate()

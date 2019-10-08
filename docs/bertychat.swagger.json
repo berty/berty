@@ -88,7 +88,15 @@
       "type": "object"
     },
     "chatConversationListReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "conversations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/chatmodelConversation"
+          }
+        }
+      }
     },
     "chatConversationMessageEditReply": {
       "type": "object"
@@ -116,6 +124,53 @@
     },
     "chatSearchReply": {
       "type": "object"
+    },
+    "chatmodelConversation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/chatmodelConversationMessage"
+          }
+        }
+      }
+    },
+    "chatmodelConversationMessage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "body": {
+          "type": "string"
+        },
+        "conversation_id": {
+          "type": "string"
+        },
+        "conversation": {
+          "$ref": "#/definitions/chatmodelConversation"
+        }
+      }
     },
     "protobufAny": {
       "type": "object",

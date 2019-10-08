@@ -3,9 +3,9 @@ package chatdb
 import (
 	"testing"
 
-	"berty.tech/go/internal/chatmigrations"
-	"berty.tech/go/internal/chatmodel"
+	"berty.tech/go/internal/chatdb/migrations"
 	"berty.tech/go/internal/gormutils"
+	"berty.tech/go/pkg/chatmodel"
 	"go.uber.org/zap"
 )
 
@@ -18,7 +18,7 @@ func TestAllTables(t *testing.T) {
 }
 
 func TestAllMigrations(t *testing.T) {
-	migrations := chatmigrations.GetMigrations()
+	migrations := migrations.GetMigrations()
 	if len(migrations) == 0 {
 		t.Log("No migrations specified")
 		t.Skip()

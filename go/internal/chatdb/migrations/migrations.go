@@ -1,11 +1,11 @@
-package protocolmigrations
+package migrations
 
 import (
-	//"berty.tech/go/internal/protocolmigrations/v0001initial"
+	//"berty.tech/go/internal/chatdb/migrations/v0001initial"
 	"gopkg.in/gormigrate.v1"
 )
 
-// GetMigrations returns a list of migrations for protocol database
+// GetMigrations returns migrations for chat database
 func GetMigrations() []*gormigrate.Migration {
 	return []*gormigrate.Migration{
 		//v0001initial.GetMigration(),
