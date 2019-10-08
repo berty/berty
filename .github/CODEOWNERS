@@ -1,2 +1,46 @@
+##
+## CODEOWNERS files are read from top to bottom; last mathing rule "wins"
+##
+
 # default is tech team
 * @berty/tech
+
+##
+## by folders
+##
+
+# root files (config, doc, etc)
+/* @moul
+
+# doc
+/docs/ @berty/tech
+
+# js files
+/js/ @berty/js-owners
+
+# golang files
+/go/ @berty/go-owners @moul
+/go/internal/ @berty/go-owners
+
+# protos
+/api/ @berty/tech
+/api/go-internal/ @berty/go-owners
+
+##
+## by filetype
+##
+
+# build
+WORKSPACE @berty/build-owners
+*.bazel @berty/build-owners
+bazel.make @berty/build-owners
+Makefile @berty/build-owners
+
+##
+## by specific domain
+##
+
+# bertychat && bertyprotocol
+/go/pkg/bertyprotocol/ @berty/go-owners @moul
+/api/bertychat.proto @berty/go-owners @berty/js-owners
+/api/bertyprotocol.proto @berty/go-owners @berty/js-owners @moul
