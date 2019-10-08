@@ -1,4 +1,4 @@
-package gormutils
+package gormutil
 
 import (
 	"time"

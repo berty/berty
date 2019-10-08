@@ -21,7 +21,7 @@ func TestingSqliteDB(t *testing.T, logger *zap.Logger) *gorm.DB {
 		t.Fatalf("failed to configure database: %v", err)
 	}
 
-	err = Migrate(db, false, logger)
+	err = Migrate(db, false)
 	if err != nil {
 		t.Fatalf("failed to run migrations: %v", err)
 	}

@@ -1,4 +1,4 @@
-package gormutils
+package gormutil
 
 import (
 	"github.com/jinzhu/gorm"
@@ -19,20 +19,12 @@ func Init(db *gorm.DB, logger *zap.Logger) (*gorm.DB, error) {
 }
 
 // Migrate runs migrations
-func Migrate(
-	db *gorm.DB,
-	migrationsGetter func() []*gormigrate.Migration,
-	modelsGetter func() []interface{},
-	forceViaMigrations bool,
-	logger *zap.Logger,
-) error {
-	m := gormigrate.New(db, gormigrate.DefaultOptions, migrationsGetter())
+func Migrate(db *gorm.DB, migrations []*gormigrate.Migration, models []interface{}, forceViaMigrations bool) error {
+	m := gormigrate.New(db, gormigrate.DefaultOptions, migrations)
 
 	if !forceViaMigrations {
 		m.InitSchema(func(tx *gorm.DB) error {
-			return tx.AutoMigrate(
-				modelsGetter()...,
-			).Error
+			return tx.AutoMigrate(models...).Error
 		})
 	}
 
@@ -40,9 +32,9 @@ func Migrate(
 }
 
 // DropDatabase drops all tables of a database
-func DropDatabase(db *gorm.DB, tableNamesGetter func() []string) error {
+func DropDatabase(db *gorm.DB, tableNames []string) error {
 	var tables []interface{}
-	for _, table := range tableNamesGetter() {
+	for _, table := range tableNames {
 		tables = append(tables, table)
 	}
 	return db.DropTableIfExists(tables...).Error
