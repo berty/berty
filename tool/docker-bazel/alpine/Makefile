@@ -1,9 +1,0 @@
-VERSION ?= 0.26.1-alpine-3
-
-build:
-	docker build -t $(IMAGE):$(VERSION) .
-
-publish: build
-	docker tag $(IMAGE):$(VERSION) $(IMAGE):latest
-	docker push $(IMAGE):$(VERSION)
-	docker push $(IMAGE):latest
