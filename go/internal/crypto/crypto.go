@@ -2,7 +2,6 @@ package crypto
 
 import (
 	"context"
-	"errors"
 
 	"berty.tech/go/pkg/iface"
 	sign "github.com/libp2p/go-libp2p-core/crypto"
@@ -24,10 +23,9 @@ func (c *crypto) GetDevicePublicKey() sign.PubKey {
 }
 
 func (c *crypto) GetAccountPublicKey() (sign.PubKey, error) {
-	initialEntry := c.sigChain.GetInitialEntry()
-
-	if initialEntry.GetEntryType() != iface.SigChainEntryTypeInitChain {
-		return nil, errors.New("first sig chain node is invalid")
+	initialEntry, err := c.sigChain.GetInitialEntry()
+	if err != nil {
+		return nil, err
 	}
 
 	pubKey, err := initialEntry.GetSubject()

@@ -8,8 +8,15 @@ import "google/protobuf/timestamp.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 message SigChainEntry {
+  enum SigChainEntryType {
+    SigChainEntryTypeUndefined = 0;
+    SigChainEntryTypeInitChain = 1;
+    SigChainEntryTypeAddKey    = 2;
+    SigChainEntryTypeRemoveKey = 3;
+  }
+
   bytes entry_hash = 1;
-  uint32 entry_type_code = 2;
+  SigChainEntryType entry_type_code = 2;
   bytes parent_entry_hash = 3;
   google.protobuf.Timestamp created_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp expiring_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];

@@ -104,7 +104,12 @@ func (h *handshakeSession) ProveOtherKey() ([]byte, error) {
 
 func (h *handshakeSession) CheckOwnKeyProof(sig []byte) error {
 	// Step 3a (in) : ensure sig_a1(B·b1) is valid
-	accountPubKey, err := h.ownSigChain.GetInitialEntry().GetSubject()
+	initEntry, err := h.ownSigChain.GetInitialEntry()
+	if err != nil {
+		return err
+	}
+
+	accountPubKey, err := initEntry.GetSubject()
 	if err != nil {
 		return err
 	}

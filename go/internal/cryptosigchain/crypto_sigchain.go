@@ -10,8 +10,22 @@ import (
 
 var theFuture = time.Date(2199, time.December, 31, 0, 0, 0, 0, time.UTC)
 
-func (m *SigChain) GetInitialEntry() iface.SigChainEntry {
-	return m.ListEntries()[0]
+func (m *SigChain) GetInitialEntry() (iface.SigChainEntry, error) {
+	entries := m.ListEntries()
+	if len(entries) == 0 {
+		return nil, errors.New("unable to find first entry")
+	}
+
+	e, ok := entries[0].(*SigChainEntry)
+	if !ok {
+		return nil, errors.New("unable to cast first entry")
+	}
+
+	if e.EntryTypeCode != SigChainEntry_SigChainEntryTypeInitChain {
+		return nil, errors.New("invalid type for first entry")
+	}
+
+	return e, nil
 }
 
 func (m *SigChain) GetLastEntry() iface.SigChainEntry {
@@ -25,10 +39,9 @@ func (m *SigChain) GetLastEntry() iface.SigChainEntry {
 }
 
 func (m *SigChain) ListEntries() []iface.SigChainEntry {
-	var entries []iface.SigChainEntry
-
-	for _, e := range m.Entries {
-		entries = append(entries, NewWrappedSigChainEntry(m, e))
+	entries := make([]iface.SigChainEntry, len(m.Entries))
+	for i, e := range m.Entries {
+		entries[i] = e
 	}
 
 	return entries
@@ -39,10 +52,9 @@ func (m *SigChain) ListCurrentPubKeys() []crypto.PubKey {
 	var pubKeysSlice []crypto.PubKey
 
 	for _, e := range m.Entries {
-		entryType := iface.SigChainEntryType(e.EntryTypeCode)
-		if entryType == iface.SigChainEntryTypeUndefined {
+		if e.EntryTypeCode == SigChainEntry_SigChainEntryTypeUndefined {
 			continue
-		} else if entryType == iface.SigChainEntryTypeRemoveKey {
+		} else if e.EntryTypeCode == SigChainEntry_SigChainEntryTypeRemoveKey {
 			delete(pubKeys, string(e.SubjectPublicKeyBytes))
 		} else {
 			pubKeys[string(e.SubjectPublicKeyBytes)] = e.SubjectPublicKeyBytes
@@ -72,7 +84,7 @@ func (m *SigChain) Init(privKey crypto.PrivKey) (iface.SigChainEntry, error) {
 	}
 
 	return m.appendEntry(privKey, &SigChainEntry{
-		EntryTypeCode:         uint32(iface.SigChainEntryTypeInitChain),
+		EntryTypeCode:         SigChainEntry_SigChainEntryTypeInitChain,
 		SubjectPublicKeyBytes: subjectKeyBytes,
 	})
 }
@@ -96,7 +108,7 @@ func (m *SigChain) AddEntry(privKey crypto.PrivKey, pubKey crypto.PubKey) (iface
 	}
 
 	return m.appendEntry(privKey, &SigChainEntry{
-		EntryTypeCode:         uint32(iface.SigChainEntryTypeAddKey),
+		EntryTypeCode:         SigChainEntry_SigChainEntryTypeAddKey,
 		SubjectPublicKeyBytes: subjectKeyBytes,
 	})
 }
@@ -120,7 +132,7 @@ func (m *SigChain) RemoveEntry(privKey crypto.PrivKey, pubKey crypto.PubKey) (if
 	}
 
 	return m.appendEntry(privKey, &SigChainEntry{
-		EntryTypeCode:         uint32(iface.SigChainEntryTypeRemoveKey),
+		EntryTypeCode:         SigChainEntry_SigChainEntryTypeRemoveKey,
 		SubjectPublicKeyBytes: subjectKeyBytes,
 	})
 }
@@ -150,15 +162,14 @@ func (m *SigChain) appendEntry(privKey crypto.PrivKey, entry *SigChainEntry) (if
 	entry.ExpiringAt = theFuture
 	entry.SignerPublicKeyBytes = signerPubKeyBytes
 
-	wrappedEntry := NewWrappedSigChainEntry(m, entry)
-	err = wrappedEntry.Sign(privKey)
+	err = entry.Sign(privKey)
 	if err != nil {
 		return nil, err
 	}
 
 	m.Entries = append(m.Entries, entry)
 
-	return wrappedEntry, nil
+	return entry, nil
 }
 
 func (m *SigChain) Check() error {
@@ -170,5 +181,3 @@ func (m *SigChain) Check() error {
 func NewSigChain() iface.SigChain {
 	return &SigChain{}
 }
-
-var _ iface.SigChain = (*SigChain)(nil)

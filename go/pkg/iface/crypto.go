@@ -7,21 +7,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-type SigChainEntryType int8
-
-const (
-	SigChainEntryTypeUndefined SigChainEntryType = 0
-	SigChainEntryTypeInitChain SigChainEntryType = 1
-	SigChainEntryTypeAddKey    SigChainEntryType = 2
-	SigChainEntryTypeRemoveKey SigChainEntryType = 3
-)
-
 type SigChainEntry interface {
-	// Parent item
-	GetSigChain() SigChain
-
 	// Getters
-	GetEntryType() SigChainEntryType
 	GetEntryHash() []byte
 	GetParentEntryHash() []byte
 	GetCreatedAt() time.Time
@@ -42,7 +29,7 @@ type SigChainEntry interface {
 type SigChain interface {
 	// Getters
 	GetID() []byte
-	GetInitialEntry() SigChainEntry
+	GetInitialEntry() (SigChainEntry, error)
 	GetLastEntry() SigChainEntry
 	ListEntries() []SigChainEntry
 	ListCurrentPubKeys() []crypto.PubKey

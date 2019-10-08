@@ -5,7 +5,7 @@ ff391d728348f29cc5717259c34c3e5ac09d111c  ../api/bertychat.proto
 961a4952e56eb176d8239981794e0bff5ebe9238  ../api/entity.proto
 bb0d4bdd5e638b97f5dd350eb3505645de48eda5  ../api/internal/bar.proto
 ae05d50ce77bd7f8d80555112b6ebf3a77053992  ../api/internal/crypto_sigchain.proto
-ae3bed2b008dac1f233a6e62c9a98f37a56d508a  ../api/internal/crypto_sigchain_entry.proto
+8415f8071ae068eb5cb4c31adcd1a6513473588f  ../api/internal/crypto_sigchain_entry.proto
 85030963b9dd2a9e133da98c6d6dbc1ce73993b0  ../api/internal/foo.proto
 2d16fa7cd2c7dd30a9480df3d1aac433c120ce32  ../api/protocolmodel.proto
 d410cf3ad81cac7fc0ead9ea91ca0f592d86b4e8  Makefile

@@ -6,19 +6,14 @@ import (
 	mh "github.com/multiformats/go-multihash"
 )
 
-type wrappedSigChainEntry struct {
-	*SigChainEntry
-	sigChain iface.SigChain
-}
-
-func (s *wrappedSigChainEntry) Sign(key crypto.PrivKey) error {
+func (m *SigChainEntry) Sign(key crypto.PrivKey) error {
 	entryToSign := &SigChainEntry{
-		EntryTypeCode:         s.EntryTypeCode,
-		ParentEntryHash:       s.ParentEntryHash,
-		CreatedAt:             s.CreatedAt,
-		ExpiringAt:            s.ExpiringAt,
-		SignerPublicKeyBytes:  s.SignerPublicKeyBytes,
-		SubjectPublicKeyBytes: s.SubjectPublicKeyBytes,
+		EntryTypeCode:         m.EntryTypeCode,
+		ParentEntryHash:       m.ParentEntryHash,
+		CreatedAt:             m.CreatedAt,
+		ExpiringAt:            m.ExpiringAt,
+		SignerPublicKeyBytes:  m.SignerPublicKeyBytes,
+		SubjectPublicKeyBytes: m.SubjectPublicKeyBytes,
 	}
 
 	entryBytes, err := entryToSign.Marshal()
@@ -38,22 +33,14 @@ func (s *wrappedSigChainEntry) Sign(key crypto.PrivKey) error {
 		return err
 	}
 
-	s.EntryHash = entryHash
-	s.Signature = sig
+	m.EntryHash = entryHash
+	m.Signature = sig
 
 	return nil
 }
 
-func (s *wrappedSigChainEntry) GetSigChain() iface.SigChain {
-	return s.sigChain
-}
-
-func (s *wrappedSigChainEntry) GetEntryType() iface.SigChainEntryType {
-	return iface.SigChainEntryType(s.EntryTypeCode)
-}
-
-func (s *wrappedSigChainEntry) GetSignedBy() (crypto.PubKey, error) {
-	pubKey, err := crypto.UnmarshalPublicKey(s.SignerPublicKeyBytes)
+func (m *SigChainEntry) GetSignedBy() (crypto.PubKey, error) {
+	pubKey, err := crypto.UnmarshalPublicKey(m.SignerPublicKeyBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -61,8 +48,8 @@ func (s *wrappedSigChainEntry) GetSignedBy() (crypto.PubKey, error) {
 	return pubKey, nil
 }
 
-func (s *wrappedSigChainEntry) GetSubject() (crypto.PubKey, error) {
-	pubKey, err := crypto.UnmarshalPublicKey(s.SubjectPublicKeyBytes)
+func (m *SigChainEntry) GetSubject() (crypto.PubKey, error) {
+	pubKey, err := crypto.UnmarshalPublicKey(m.SubjectPublicKeyBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +57,7 @@ func (s *wrappedSigChainEntry) GetSubject() (crypto.PubKey, error) {
 	return pubKey, nil
 }
 
-func (s *wrappedSigChainEntry) Check() error {
+func (m *SigChainEntry) Check() error {
 	// TODO: implement me
 
 	// TODO: Check parent present in sigchain and valid (except 1st item)
@@ -83,11 +70,4 @@ func (s *wrappedSigChainEntry) Check() error {
 	return nil
 }
 
-func NewWrappedSigChainEntry(chain iface.SigChain, entry *SigChainEntry) iface.SigChainEntry {
-	return &wrappedSigChainEntry{
-		SigChainEntry: entry,
-		sigChain:      chain,
-	}
-}
-
-var _ iface.SigChainEntry = (*wrappedSigChainEntry)(nil)
+var _ iface.SigChainEntry = (*SigChainEntry)(nil)
