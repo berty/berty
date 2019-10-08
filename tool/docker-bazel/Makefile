@@ -1,13 +1,10 @@
-export IMAGE ?=	bertytech/bazel
+IMAGE ?=	bertytech/bazel
+VERSION ?= 0.29.1-buster-r0
 
 build:
-	$(MAKE) build.ubuntu
+	docker build -t $(IMAGE):$(VERSION) .
 
-publish:
-	$(MAKE) publish.ubuntu
-
-build.%:
-	$(MAKE) -C $* build
-
-publish.%:
-	$(MAKE) -C $* publish
+publish: build
+	docker tag $(IMAGE):$(VERSION) $(IMAGE):latest
+	docker push $(IMAGE):$(VERSION)
+	docker push $(IMAGE):latest

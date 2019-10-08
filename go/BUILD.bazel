@@ -2,6 +2,7 @@ load("@bazel_gazelle//:def.bzl", "gazelle")
 
 # gazelle:prefix berty.tech/go
 # gazelle:proto disable_global
+# gazelle:exclude vendor/golang.org/x/crypto/ed25519/ed25519_go113.go
 gazelle(
     name = "gazelle",
     external = "vendored",
