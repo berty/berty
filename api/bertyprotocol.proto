@@ -5,6 +5,7 @@ package berty.protocol;
 import "google/api/annotations.proto";
 import "google/protobuf/descriptor.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "protocolmodel.proto";
 
 option go_package = "berty.tech/go/pkg/bertyprotocol";
 
@@ -242,7 +243,9 @@ message ContactRemoveRequest {}
 message ContactRemoveReply {}
 
 message ContactListRequest {};
-message ContactListReply {};
+message ContactListReply {
+  repeated protocolmodel.Contact contacts = 1;
+};
 
 
 // Stream

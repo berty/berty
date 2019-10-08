@@ -68,7 +68,15 @@
       "type": "object"
     },
     "protocolContactListReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "contacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protocolmodelContact"
+          }
+        }
+      }
     },
     "protocolContactRemoveReply": {
       "type": "object"
@@ -138,6 +146,22 @@
     },
     "protocolStreamManagerRequestToContactReply": {
       "type": "object"
+    },
+    "protocolmodelContact": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
     },
     "runtimeStreamError": {
       "type": "object",

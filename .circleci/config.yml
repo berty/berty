@@ -41,6 +41,7 @@ jobs:
     steps:
       - checkout
       - run: find . -name gen.sum -delete
+      - run: cd go && go mod vendor
       - run: cd go && make generate_local && make tidy
       - run: cd docs && make generate_local
       - run: |

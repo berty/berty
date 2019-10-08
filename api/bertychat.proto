@@ -6,6 +6,7 @@ import "google/api/annotations.proto";
 import "google/protobuf/descriptor.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "bertyprotocol.proto";
+import "chatmodel.proto";
 
 option go_package = "berty.tech/go/pkg/bertychat";
 
@@ -83,7 +84,9 @@ service Account {
 message EventSubscribeRequest {}
 message EventSubscribeReply {}
 message ConversationListRequest {}
-message ConversationListReply {}
+message ConversationListReply {
+  repeated chatmodel.Conversation conversations = 1;
+}
 message ConversationGetRequest {}
 message ConversationGetReply {}
 message ConversationCreateRequest {}

@@ -1,9 +1,9 @@
-package datastore
+package protocoldb
 
 import (
-	"berty.tech/go/internal/datastoremigrations"
-	models "berty.tech/go/internal/datastoremodels"
 	"berty.tech/go/internal/gormutils"
+	"berty.tech/go/internal/protocoldb/migrations"
+	"berty.tech/go/pkg/protocolmodel"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 )
@@ -15,7 +15,7 @@ func Init(db *gorm.DB, logger *zap.Logger) (*gorm.DB, error) {
 
 // Migrate runs migrations
 func Migrate(db *gorm.DB, forceViaMigrations bool, logger *zap.Logger) error {
-	return gormutils.Migrate(db, datastoremigrations.GetMigrations, models.AllModels, forceViaMigrations, logger)
+	return gormutils.Migrate(db, migrations.GetMigrations, protocolmodel.AllModels, forceViaMigrations, logger)
 }
 
 // InitMigrate is an alias for Init() and Migrate()
@@ -35,5 +35,5 @@ func InitMigrate(db *gorm.DB, logger *zap.Logger) (*gorm.DB, error) {
 
 // DropDatabase drops all the tables of a database
 func DropDatabase(db *gorm.DB) error {
-	return gormutils.DropDatabase(db, models.AllTables)
+	return gormutils.DropDatabase(db, protocolmodel.AllTables)
 }

@@ -10,7 +10,8 @@ import (
 
 	"berty.tech/go/internal/banner"
 	_ "berty.tech/go/internal/buildconstraints" // fail if bad go version
-	"berty.tech/go/internal/datastore"
+	"berty.tech/go/internal/chatdb"
+	"berty.tech/go/internal/protocoldb"
 	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
 	"github.com/jinzhu/gorm"
@@ -26,13 +27,14 @@ func main() {
 	log.SetFlags(0)
 
 	var (
-		logger      *zap.Logger
-		globalFlags = flag.NewFlagSet("bertychat", flag.ExitOnError)
-		globalDebug = globalFlags.Bool("debug", false, "debug mode")
-		bannerFlags = flag.NewFlagSet("banner", flag.ExitOnError)
-		bannerLight = bannerFlags.Bool("light", false, "light mode")
-		clientFlags = flag.NewFlagSet("client", flag.ExitOnError)
-		clientURN   = clientFlags.String("urn", ":memory:", "sqlite URN")
+		logger            *zap.Logger
+		globalFlags       = flag.NewFlagSet("bertychat", flag.ExitOnError)
+		globalDebug       = globalFlags.Bool("debug", false, "debug mode")
+		bannerFlags       = flag.NewFlagSet("banner", flag.ExitOnError)
+		bannerLight       = bannerFlags.Bool("light", false, "light mode")
+		clientFlags       = flag.NewFlagSet("client", flag.ExitOnError)
+		clientProtocolURN = clientFlags.String("protocol-urn", ":memory:", "protocol sqlite URN")
+		clientChatURN     = clientFlags.String("chat-urn", ":memory:", "chat sqlite URN")
 	)
 
 	globalPreRun := func() error {
@@ -97,39 +99,58 @@ func main() {
 				return err
 			}
 
-			// initialize sqlite3 gorm
-			db, err := gorm.Open("sqlite3", *clientURN)
-			if err != nil {
-				return errors.Wrap(err, "failed to initialize gorm")
-			}
-			defer db.Close()
+			// protocol
+			var protocol bertyprotocol.Client
+			{
+				// initialize sqlite3 gorm database
+				db, err := gorm.Open("sqlite3", *clientProtocolURN)
+				if err != nil {
+					return errors.Wrap(err, "failed to initialize gorm")
+				}
+				defer db.Close()
 
-			// initialize datastore
-			db, err = datastore.InitMigrate(db, logger.Named("datastore"))
-			if err != nil {
-				return errors.Wrap(err, "failed to initialize datastore")
-			}
-			// FIXME: use different datastores for protocol and chat
+				// initialize datastore
+				db, err = protocoldb.InitMigrate(db, logger.Named("datastore"))
+				if err != nil {
+					return errors.Wrap(err, "failed to initialize datastore")
+				}
 
-			// initialize new protocol client
-			protocolOpts := bertyprotocol.Opts{
-				Logger: logger.Named("bertyprotocol"),
+				// initialize new protocol client
+				protocolOpts := bertyprotocol.Opts{
+					Logger: logger.Named("bertyprotocol"),
+				}
+				protocol, err = bertyprotocol.New(db, protocolOpts)
+				if err != nil {
+					return errors.Wrap(err, "failed to initialize protocol")
+				}
+				defer protocol.Close()
 			}
-			protocol, err := bertyprotocol.New(db, protocolOpts)
-			if err != nil {
-				return errors.Wrap(err, "failed to initialize protocol")
-			}
-			defer protocol.Close()
 
-			// initialize bertychat client
-			chatOpts := bertychat.Opts{
-				Logger: logger.Named("bertychat"),
+			// chat
+			{
+				// initialize sqlite3 gorm database
+				db, err := gorm.Open("sqlite3", *clientChatURN)
+				if err != nil {
+					return errors.Wrap(err, "failed to initialize gorm")
+				}
+				defer db.Close()
+
+				// initialize datastore
+				db, err = chatdb.InitMigrate(db, logger.Named("datastore"))
+				if err != nil {
+					return errors.Wrap(err, "failed to initialize datastore")
+				}
+
+				// initialize bertychat client
+				chatOpts := bertychat.Opts{
+					Logger: logger.Named("bertychat"),
+				}
+				chat, err := bertychat.New(db, protocol, chatOpts)
+				if err != nil {
+					return errors.Wrap(err, "failed to initialize chat")
+				}
+				defer chat.Close()
 			}
-			chat, err := bertychat.New(db, protocol, chatOpts)
-			if err != nil {
-				return errors.Wrap(err, "failed to initialize chat")
-			}
-			defer chat.Close()
 
 			logger.Info("client initialized, now starting... not implemented.")
 			return nil
