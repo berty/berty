@@ -1,5 +1,5 @@
 # build
-FROM            golang:1.13-alpine as builder
+FROM            golang:1.12-alpine as builder
 RUN             apk add --no-cache git gcc musl-dev make
 ENV             GO111MODULE=on
 WORKDIR         /go/src/berty.tech/go

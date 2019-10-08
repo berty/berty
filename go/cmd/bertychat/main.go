@@ -9,11 +9,12 @@ import (
 	"time"
 
 	"berty.tech/go/internal/banner"
+	_ "berty.tech/go/internal/buildconstraints" // fail if bad go version
 	"berty.tech/go/internal/datastore"
 	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
 	"github.com/pkg/errors"
