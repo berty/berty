@@ -1,8 +1,10 @@
 package bertyprotocol
 
 import (
+	context "context"
 	"testing"
 
+	"berty.tech/go/internal/ipfsutil"
 	"berty.tech/go/internal/protocoldb"
 	"go.uber.org/zap"
 )
@@ -15,9 +17,14 @@ func TestingClient(t *testing.T, opts Opts) (Client, func()) {
 		opts.Logger = zap.NewNop()
 	}
 
+	coreapi, err := ipfsutil.NewMockCoreAPI(context.TODO())
+	if err != nil {
+		t.Fatalf("failed to initialize ipfs: %v", err)
+	}
+
 	db := protocoldb.TestingSqliteDB(t, opts.Logger)
 
-	client, err := New(db, opts)
+	client, err := New(db, coreapi, opts)
 	if err != nil {
 		t.Fatalf("failed to initialize client: %v", err)
 	}

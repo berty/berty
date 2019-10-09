@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -11,6 +12,7 @@ import (
 	"berty.tech/go/internal/banner"
 	_ "berty.tech/go/internal/buildconstraints" // fail if bad go version
 	"berty.tech/go/internal/chatdb"
+	"berty.tech/go/internal/ipfsutil"
 	"berty.tech/go/internal/protocoldb"
 	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
@@ -115,14 +117,24 @@ func main() {
 					return errors.Wrap(err, "failed to initialize datastore")
 				}
 
+				// initialize ipfs
+				coreapi, err := ipfsutil.NewInMemoryCoreAPI(context.TODO())
+				if err != nil {
+					return errors.Wrap(err, "failed to initialize ipfsutil")
+				}
+
 				// initialize new protocol client
 				protocolOpts := bertyprotocol.Opts{
 					Logger: logger.Named("bertyprotocol"),
 				}
-				protocol, err = bertyprotocol.New(db, protocolOpts)
+				protocol, err = bertyprotocol.New(db, coreapi, protocolOpts)
 				if err != nil {
 					return errors.Wrap(err, "failed to initialize protocol")
 				}
+
+				// log ipfs informations
+				protocol.LogIPFSInformations()
+
 				defer protocol.Close()
 			}
 
@@ -149,6 +161,7 @@ func main() {
 				if err != nil {
 					return errors.Wrap(err, "failed to initialize chat")
 				}
+
 				defer chat.Close()
 			}
 
