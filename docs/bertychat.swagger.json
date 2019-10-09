@@ -26,6 +26,14 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "Account"
         ]
@@ -73,7 +81,12 @@
       "type": "object"
     },
     "chatConversationGetReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "conversation": {
+          "$ref": "#/definitions/chatmodelConversation"
+        }
+      }
     },
     "chatConversationInvitationAcceptReply": {
       "type": "object"
@@ -90,11 +103,8 @@
     "chatConversationListReply": {
       "type": "object",
       "properties": {
-        "conversations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/chatmodelConversation"
-          }
+        "conversation": {
+          "$ref": "#/definitions/chatmodelConversation"
         }
       }
     },
@@ -138,6 +148,9 @@
         "updated_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "title": {
+          "type": "string"
         },
         "messages": {
           "type": "array",

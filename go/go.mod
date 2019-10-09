@@ -3,6 +3,7 @@ module berty.tech/go
 go 1.12
 
 require (
+	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/gogo/protobuf v1.3.0
 	github.com/golang/protobuf v1.3.2
 	github.com/ipfs/go-datastore v0.1.1
