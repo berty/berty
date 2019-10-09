@@ -3,18 +3,29 @@ package protocoldb
 import (
 	"testing"
 
-	"berty.tech/go/internal/gormutils"
+	"berty.tech/go/internal/gormutil"
 	"berty.tech/go/internal/protocoldb/migrations"
 	"berty.tech/go/pkg/protocolmodel"
 	"go.uber.org/zap"
 )
 
 func TestDropDatabase(t *testing.T) {
-	gormutils.TestDropDatabase(t, Migrate, DropDatabase, zap.NewNop())
+	db := TestingSqliteDB(t, zap.NewNop())
+
+	err := DropDatabase(db)
+	if err != nil {
+		t.Fatalf("DropDatabase failed: %v", err)
+	}
+
+	count := len(gormutil.TestingGetTableNames(t, db))
+	if count > 0 {
+		t.Fatalf("Expected 0 tables, got %d.", count)
+	}
 }
 
 func TestAllTables(t *testing.T) {
-	gormutils.TestAllTables(t, Init, Migrate, protocolmodel.AllTables(), zap.NewNop())
+	db := TestingSqliteDB(t, zap.NewNop())
+	gormutil.TestingHasExpectedTables(t, db, protocolmodel.AllTables())
 }
 
 func TestAllMigrations(t *testing.T) {
@@ -24,5 +35,5 @@ func TestAllMigrations(t *testing.T) {
 		t.Skip()
 	}
 
-	gormutils.TestAllMigrations(t, Init, Migrate, zap.NewNop())
+	gormutil.TestingMigrationsVSAutoMigrate(t, migrations, protocolmodel.AllModels(), zap.NewNop())
 }
