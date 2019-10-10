@@ -45,12 +45,14 @@ github.com/btcsuite/winsvc v1.0.0/go.mod h1:jsenWakMcC0zFBFurPLEAyrnc/teJEM1O46f
 github.com/cenkalti/backoff v2.1.1+incompatible h1:tKJnvO2kl0zmb/jA5UKAt4VoEVw1qxKWjE/Bpp46npY=
 github.com/cenkalti/backoff v2.1.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
+github.com/cheekybits/genny v1.0.0 h1:uGGa4nei+j20rOSeDeP5Of12XVm7TGUd4dJA9RDitfE=
 github.com/cheekybits/genny v1.0.0/go.mod h1:+tQajlRqAUrPI7DOSpB0XAqZYtQakVtB7wXkRAgjxjQ=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/coreos/etcd v3.3.10+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
 github.com/coreos/go-etcd v2.0.0+incompatible/go.mod h1:Jez6KQU2B/sWsbdaef3ED8NzMklzPG4d5KIOhIy30Tk=
 github.com/coreos/go-semver v0.2.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3EedlOD2RNk=
 github.com/coreos/go-semver v0.2.1-0.20180108230905-e214231b295a/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3EedlOD2RNk=
+github.com/coreos/go-semver v0.3.0 h1:wkHLiw0WNATZnSG7epLsujiMCgPAc9xhjJ4tgnAxmfM=
 github.com/coreos/go-semver v0.3.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3EedlOD2RNk=
 github.com/cpuguy83/go-md2man v1.0.10/go.mod h1:SmD6nW6nTyfqj6ABTjUi3V3JVMnlJmwcJI5acqYI6dE=
 github.com/cskr/pubsub v1.0.2 h1:vlOzMhl6PFn60gRlTQQsIfVwaPB/B/8MziK8FhEPt/0=
@@ -117,6 +119,7 @@ github.com/gogo/protobuf v1.3.0/go.mod h1:SlYgWuQ5SjCEi6WLHjHCa1yvBfUnHcTbrrZtXP
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b h1:VKtxabqXZkF25pY9ekfRL6a582T4P37/31XEstQ5p58=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/mock v1.1.1/go.mod h1:oTYuIxOrZwtPieC+H1uAHpcLFnEyAGVDL/k47Jfbm0A=
+github.com/golang/mock v1.2.0 h1:28o5sBqPkBsMGnC6b4MvE2TzSr5/AT4c/1fLqVGIwlk=
 github.com/golang/mock v1.2.0/go.mod h1:oTYuIxOrZwtPieC+H1uAHpcLFnEyAGVDL/k47Jfbm0A=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/golang/protobuf v1.3.0/go.mod h1:Qd/q+1AKNOZr9uGQzbzCmRO6sUih6GTPZv6a1/R87v0=
@@ -222,6 +225,7 @@ github.com/ipfs/go-ipfs-blockstore v0.0.1 h1:O9n3PbmTYZoNhkgkEyrXTznbmktIXif62xL
 github.com/ipfs/go-ipfs-blockstore v0.0.1/go.mod h1:d3WClOmRQKFnJ0Jz/jj/zmksX0ma1gROTlovZKBmN08=
 github.com/ipfs/go-ipfs-blocksutil v0.0.1 h1:Eh/H4pc1hsvhzsQoMEP3Bke/aW5P5rVM1IWFJMcGIPQ=
 github.com/ipfs/go-ipfs-blocksutil v0.0.1/go.mod h1:Yq4M86uIOmxmGPUHv/uI7uKqZNtLb449gwKqXjIsnRk=
+github.com/ipfs/go-ipfs-chunker v0.0.1 h1:cHUUxKFQ99pozdahi+uSC/3Y6HeRpi9oTeUHbE27SEw=
 github.com/ipfs/go-ipfs-chunker v0.0.1/go.mod h1:tWewYK0we3+rMbOh7pPFGDyypCtvGcBFymgY4rSDLAw=
 github.com/ipfs/go-ipfs-cmds v0.0.8 h1:ZMo0ZeQOr10ZKY4yxYA3lRHUbnF/ZYcV9cpU0IrlGFI=
 github.com/ipfs/go-ipfs-cmds v0.0.8/go.mod h1:TiK4e7/V31tuEb8YWDF8lN3qrnDH+BS7ZqWIeYJlAs8=
@@ -350,6 +354,7 @@ github.com/libp2p/go-conn-security v0.0.1/go.mod h1:bGmu51N0KU9IEjX7kl2PQjgZa40J
 github.com/libp2p/go-conn-security-multistream v0.0.1/go.mod h1:nc9vud7inQ+d6SO0I/6dSWrdMnHnzZNHeyUQqrAJulE=
 github.com/libp2p/go-conn-security-multistream v0.0.2 h1:Ykz0lnNjxk+0SdslUmlLNyrleqdpS1S/VW+dxFdt74Y=
 github.com/libp2p/go-conn-security-multistream v0.0.2/go.mod h1:nc9vud7inQ+d6SO0I/6dSWrdMnHnzZNHeyUQqrAJulE=
+github.com/libp2p/go-flow-metrics v0.0.1 h1:0gxuFd2GuK7IIP5pKljLwps6TvcuYgvG7Atqi3INF5s=
 github.com/libp2p/go-flow-metrics v0.0.1/go.mod h1:Iv1GH0sG8DtYN3SVJ2eG221wMiNpZxBdp967ls1g+k8=
 github.com/libp2p/go-libp2p v0.0.2/go.mod h1:Qu8bWqFXiocPloabFGUcVG4kk94fLvfC8mWTDdFC9wE=
 github.com/libp2p/go-libp2p v0.0.27/go.mod h1:kjeVlESxQisK2DvyKp38/UMHYd9gAMTj3C3XOB/DEZo=
@@ -399,6 +404,7 @@ github.com/libp2p/go-libp2p-kbucket v0.1.1 h1:ZrvW3qCM+lAuv7nrNts/zfEiClq+GZe8OI
 github.com/libp2p/go-libp2p-kbucket v0.1.1/go.mod h1:Y0iQDHRTk/ZgM8PC4jExoF+E4j+yXWwRkdldkMa5Xm4=
 github.com/libp2p/go-libp2p-loggables v0.0.1 h1:HVww9oAnINIxbt69LJNkxD8lnbfgteXR97Xm4p3l9ps=
 github.com/libp2p/go-libp2p-loggables v0.0.1/go.mod h1:lDipDlBNYbpyqyPX/KcoO+eq0sJYEVR2JgOexcivchg=
+github.com/libp2p/go-libp2p-metrics v0.0.1 h1:yumdPC/P2VzINdmcKZd0pciSUCpou+s0lwYCjBbzQZU=
 github.com/libp2p/go-libp2p-metrics v0.0.1/go.mod h1:jQJ95SXXA/K1VZi13h52WZMa9ja78zjyy5rspMsC/08=
 github.com/libp2p/go-libp2p-mplex v0.1.1 h1:lSPS1VJ36P01gGO//KgcsmSah5uoC3X9r7WY5j+iP4c=
 github.com/libp2p/go-libp2p-mplex v0.1.1/go.mod h1:KUQWpGkCzfV7UIpi8SKsAVxyBgz1c9R5EvxgnwLsb/I=
@@ -430,9 +436,11 @@ github.com/libp2p/go-libp2p-pubsub v0.0.3/go.mod h1:fYKlZBOF2yrJzYlgeEVFSbYWfbS+
 github.com/libp2p/go-libp2p-pubsub-router v0.0.3 h1:2EF+8nueIsA9Unpj1MxdlS9+dX29kwCxSttchMMfXsI=
 github.com/libp2p/go-libp2p-pubsub-router v0.0.3/go.mod h1:h5z0kyMFRu2J46tt15eEuLHKEmu1MrFghsGHqTc/iII=
 github.com/libp2p/go-libp2p-quic-transport v0.0.0-20190301030811-862195d91de1/go.mod h1:bw/6H57fSVn44ldP1Js6hnzpoiUm9YgBDKSv+ch+hWc=
+github.com/libp2p/go-libp2p-quic-transport v0.0.3 h1:FGEPXsjpY9K6P3iMtJQPKGl45eXickBY1+xSJ84lVVI=
 github.com/libp2p/go-libp2p-quic-transport v0.0.3/go.mod h1:v2oVuaFLkxlFpkFbXUty3dfEYSlNb0sCzvf8cRi1m/k=
 github.com/libp2p/go-libp2p-record v0.0.1 h1:zN7AS3X46qmwsw5JLxdDuI43cH5UYwovKxHPjKBYQxw=
 github.com/libp2p/go-libp2p-record v0.0.1/go.mod h1:grzqg263Rug/sRex85QrDOLntdFAymLDLm7lxMgU79Q=
+github.com/libp2p/go-libp2p-routing v0.0.1 h1:hPMAWktf9rYi3ME4MG48qE7dq1ofJxiQbfdvpNntjhc=
 github.com/libp2p/go-libp2p-routing v0.0.1/go.mod h1:N51q3yTr4Zdr7V8Jt2JIktVU+3xBBylx1MZeVA6t1Ys=
 github.com/libp2p/go-libp2p-routing-helpers v0.0.2 h1:SLX7eDQE8Xo197NwNM/hM7WnH3w6fSGY9+G9HkiYwqQ=
 github.com/libp2p/go-libp2p-routing-helpers v0.0.2/go.mod h1:zf1ook9HoOQpfnVXrF4gGorkPrGGf1g25vgH5+4SRNU=
@@ -443,10 +451,12 @@ github.com/libp2p/go-libp2p-swarm v0.0.1/go.mod h1:mh+KZxkbd3lQnveQ3j2q60BM1Cw2m
 github.com/libp2p/go-libp2p-swarm v0.0.5/go.mod h1:+nkJir4feiXtWQjb/4CQHMEK8Vw+c5nVVxT8R5bs0yY=
 github.com/libp2p/go-libp2p-swarm v0.0.6 h1:gE0P/v2h+KEXtAi9YTw2UBOSODJ4m9VuuJ+ktc2LVUo=
 github.com/libp2p/go-libp2p-swarm v0.0.6/go.mod h1:s5GZvzg9xXe8sbeESuFpjt8CJPTCa8mhEusweJqyFy8=
+github.com/libp2p/go-libp2p-tls v0.0.1 h1:UIslpmpKDbjEymuidtP2D9up00GfWrOs6eyTKf83uBA=
 github.com/libp2p/go-libp2p-tls v0.0.1/go.mod h1:DInSFKxm9XHHSbCdJRbcWctRYkmtPGnqiaUtgjiEa7g=
 github.com/libp2p/go-libp2p-transport v0.0.0-20190226201958-e8580c8a519d/go.mod h1:lcwgOszllbhvQXul37Kv5YbSYXPoUhRB2Z+Nr3jaBmo=
 github.com/libp2p/go-libp2p-transport v0.0.1/go.mod h1:UzbUs9X+PHOSw7S3ZmeOxfnwaQY5vGDzZmKPod3N3tk=
 github.com/libp2p/go-libp2p-transport v0.0.4/go.mod h1:StoY3sx6IqsP6XKoabsPnHCwqKXWUMWU7Rfcsubee/A=
+github.com/libp2p/go-libp2p-transport v0.0.5 h1:pV6+UlRxyDpASSGD+60vMvdifSCby6JkJDfi+yUMHac=
 github.com/libp2p/go-libp2p-transport v0.0.5/go.mod h1:StoY3sx6IqsP6XKoabsPnHCwqKXWUMWU7Rfcsubee/A=
 github.com/libp2p/go-libp2p-transport-upgrader v0.0.1/go.mod h1:NJpUAgQab/8K6K0m+JmZCe5RUXG10UMEx4kWe9Ipj5c=
 github.com/libp2p/go-libp2p-transport-upgrader v0.0.3/go.mod h1:Ng1HzfMIopyYscMHNFmJqiMMcpgDlj0t+NyjVWW89ws=
@@ -494,10 +504,12 @@ github.com/libp2p/go-yamux v1.2.3/go.mod h1:FGTiPvoV/3DVdgWpX+tM0OW3tsM+W5bSE3gZ
 github.com/logrusorgru/aurora v0.0.0-20181002194514-a7b3b318ed4e/go.mod h1:7rIyQOR62GCctdiQpZ/zOJlFyk6y+94wXzv6RNZgaR4=
 github.com/lucas-clemente/aes12 v0.0.0-20171027163421-cd47fb39b79f/go.mod h1:JpH9J1c9oX6otFSgdUHwUBUizmKlrMjxWnIAjff4m04=
 github.com/lucas-clemente/quic-go v0.10.0/go.mod h1:wuD+2XqEx8G9jtwx5ou2BEYBsE+whgQmlj0Vz/77PrY=
+github.com/lucas-clemente/quic-go v0.11.1 h1:zasajC848Dqq/+WqfqBCkmPw+YHNe1MBts/z7y7nXf4=
 github.com/lucas-clemente/quic-go v0.11.1/go.mod h1:PpMmPfPKO9nKJ/psF49ESTAGQSdfXxlg1otPbEB2nOw=
 github.com/lucas-clemente/quic-go-certificates v0.0.0-20160823095156-d2f86524cced/go.mod h1:NCcRLrOTZbzhZvixZLlERbJtDtYsmMw8Jc4vS8Z0g58=
 github.com/magiconair/properties v1.7.6/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
+github.com/marten-seemann/qtls v0.2.3 h1:0yWJ43C62LsZt08vuQJDK1uC1czUc3FJeCLPoNAI4vA=
 github.com/marten-seemann/qtls v0.2.3/go.mod h1:xzjG7avBwGGbdZ8dTGxlBnLArsVKLvwmjgmPuiQEcYk=
 github.com/mattn/go-colorable v0.0.9/go.mod h1:9vuHe8Xs5qXnSaW/c/ABM9alt+Vo+STaOChaDxuIBZU=
 github.com/mattn/go-colorable v0.1.1 h1:G1f5SKeVxmagw/IyvzvtZE4Gybcc4Tr1tf7I8z0XgOg=
@@ -547,6 +559,7 @@ github.com/multiformats/go-multiaddr-net v0.0.1 h1:76O59E3FavvHqNg7jvzWzsPSW5JSi
 github.com/multiformats/go-multiaddr-net v0.0.1/go.mod h1:nw6HSxNmCIQH27XPGBuX+d1tnvM7ihcFwHMSstNAVUU=
 github.com/multiformats/go-multibase v0.0.1 h1:PN9/v21eLywrFWdFNsFKaU04kLJzuYzmrJR+ubhT9qA=
 github.com/multiformats/go-multibase v0.0.1/go.mod h1:bja2MqRZ3ggyXtZSEDKpl0uO/gviWFaSteVbWT51qgs=
+github.com/multiformats/go-multicodec v0.1.6 h1:4u6lcjbE4VVVoigU4QJSSVYsGVP4j2jtDkR8lPwOrLE=
 github.com/multiformats/go-multicodec v0.1.6/go.mod h1:lliaRHbcG8q33yf4Ot9BGD7JqR/Za9HE7HTyVyKwrUQ=
 github.com/multiformats/go-multihash v0.0.1/go.mod h1:w/5tugSrLEbWqlcgJabL3oHFKTwfvkofsjW2Qa1ct4U=
 github.com/multiformats/go-multihash v0.0.5 h1:1wxmCvTXAifAepIMyF39vZinRw5sbqjPs/UIi93+uik=
@@ -652,7 +665,9 @@ github.com/warpfork/go-wish v0.0.0-20180510122957-5ad1f5abf436 h1:qOpVTI+BrstcjT
 github.com/warpfork/go-wish v0.0.0-20180510122957-5ad1f5abf436/go.mod h1:x6AKhvSSexNrVSrViXSHUEbICjmGXhtgABaHIySUSGw=
 github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc h1:BCPnHtcboadS0DvysUuJXZ4lWVv5Bh5i7+tbIyi+ck4=
 github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc/go.mod h1:r45hJU7yEoA81k6MWNhpMj/kms0n14dkzkxYHoB96UM=
+github.com/whyrusleeping/cbor v0.0.0-20171005072247-63513f603b11 h1:5HZfQkwe0mIfyDmc1Em5GqlNRzcdtlv4HTNmdpt7XH0=
 github.com/whyrusleeping/cbor v0.0.0-20171005072247-63513f603b11/go.mod h1:Wlo/SzPmxVp6vXpGt/zaXhHH0fn4IxgqZc82aKg6bpQ=
+github.com/whyrusleeping/chunker v0.0.0-20181014151217-fe64bd25879f h1:jQa4QT2UP9WYv2nzyawpKMOCl+Z/jW7djv2/J50lj9E=
 github.com/whyrusleeping/chunker v0.0.0-20181014151217-fe64bd25879f/go.mod h1:p9UJB6dDgdPgMJZs7UjUOdulKyRr9fqkS+6JKAInPy8=
 github.com/whyrusleeping/go-ctrlnet v0.0.0-20180313164037-f564fbbdaa95/go.mod h1:SJqKCCPXRfBFCwXjfNT/skfsceF7+MBFLI2OrvuRA7g=
 github.com/whyrusleeping/go-keyspace v0.0.0-20160322163242-5b898ac5add1 h1:EKhdznlJHPMoKr0XTrX+IlJs1LH3lyx2nfr1dOlZ79k=
@@ -673,6 +688,7 @@ github.com/whyrusleeping/mafmt v1.2.8 h1:TCghSl5kkwEE0j+sU/gudyhVMRlpBin8fMBBHg5
 github.com/whyrusleeping/mafmt v1.2.8/go.mod h1:faQJFPbLSxzD9xpA02ttW/tS9vZykNvXwGvqIpk20FA=
 github.com/whyrusleeping/mdns v0.0.0-20180901202407-ef14215e6b30 h1:nMCC9Pwz1pxfC1Y6mYncdk+kq8d5aLx0Q+/gyZGE44M=
 github.com/whyrusleeping/mdns v0.0.0-20180901202407-ef14215e6b30/go.mod h1:j4l84WPFclQPj320J9gp0XwNKBb3U0zt5CBqjPp22G4=
+github.com/whyrusleeping/multiaddr-filter v0.0.0-20160516205228-e903e4adabd7 h1:E9S12nwJwEOXe2d6gT6qxdvqMnNq+VnSsKPgm2ZZNds=
 github.com/whyrusleeping/multiaddr-filter v0.0.0-20160516205228-e903e4adabd7/go.mod h1:X2c0RVCI1eSUFI8eLcY3c0423ykwiUdxLJtkDvruhjI=
 github.com/whyrusleeping/tar-utils v0.0.0-20180509141711-8c6c8ba81d5c/go.mod h1:xxcJeBb7SIUl/Wzkz1eVKJE/CB34YNrqX2TQI6jY9zs=
 github.com/whyrusleeping/timecache v0.0.0-20160911033111-cfcb2f1abfee h1:lYbXeSvJi5zk5GLKVuid9TVjS9a0OmLIDKTfoZBL6Ow=
@@ -711,6 +727,7 @@ golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACk
 golang.org/x/crypto v0.0.0-20190313024323-a1f597ede03a/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20190426145343-a29dc8fdc734/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
+golang.org/x/crypto v0.0.0-20190513172903-22d7a77e9e5f h1:R423Cnkcp5JABoeemiGEPlt9tHXFfw5kvc0yqlxRPWo=
 golang.org/x/crypto v0.0.0-20190513172903-22d7a77e9e5f/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
 golang.org/x/exp v0.0.0-20190121172915-509febef88a4/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3/go.mod h1:UVdnD1Gm6xHRNCYTkRU2/jEulfH38KcIWyp/GAMgvoE=

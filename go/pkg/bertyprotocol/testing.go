@@ -1,7 +1,7 @@
 package bertyprotocol
 
 import (
-	context "context"
+	"context"
 	"testing"
 
 	"berty.tech/go/internal/ipfsutil"
@@ -13,18 +13,22 @@ import (
 func TestingClient(t *testing.T, opts Opts) (Client, func()) {
 	t.Helper()
 
+	ctx := opts.RootContext
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
 	}
 
-	coreapi, err := ipfsutil.NewMockCoreAPI(context.TODO())
-	if err != nil {
-		t.Fatalf("failed to initialize ipfs: %v", err)
+	if opts.IpfsCoreAPI == nil {
+		opts.IpfsCoreAPI = ipfsutil.TestingCoreAPI(ctx, t)
 	}
 
 	db := protocoldb.TestingSqliteDB(t, opts.Logger)
 
-	client, err := New(db, coreapi, opts)
+	client, err := New(db, opts)
 	if err != nil {
 		t.Fatalf("failed to initialize client: %v", err)
 	}

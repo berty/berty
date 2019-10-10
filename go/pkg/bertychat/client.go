@@ -1,8 +1,10 @@
 package bertychat
 
 import (
+	"berty.tech/go/internal/chatdb"
 	"berty.tech/go/pkg/bertyprotocol"
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -20,7 +22,7 @@ type client struct {
 	// variables
 	db       *gorm.DB
 	protocol bertyprotocol.Client
-	opts     Opts
+	logger   *zap.Logger
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -30,14 +32,23 @@ type Opts struct {
 
 // New initializes a new Client
 func New(db *gorm.DB, protocol bertyprotocol.Client, opts Opts) (Client, error) {
-	if opts.Logger == nil {
-		opts.Logger = zap.NewNop()
-	}
-	return &client{
+	client := client{
 		db:       db,
 		protocol: protocol,
-		opts:     opts,
-	}, nil
+		logger:   opts.Logger,
+	}
+
+	if opts.Logger == nil {
+		client.logger = zap.NewNop()
+	}
+
+	var err error
+	client.db, err = chatdb.InitMigrate(client.db, client.logger.Named("datastore"))
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to initialize datastore")
+	}
+
+	return &client, nil
 }
 
 func (c *client) Close() error {

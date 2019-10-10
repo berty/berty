@@ -195,7 +195,10 @@ message AccountGetConfigurationRequest {}
 message AccountGetConfigurationReply {}
 
 message AccountGetInformationRequest {}
-message AccountGetInformationReply {}
+message AccountGetInformationReply {
+  string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+  repeated string listeners = 2;
+}
 
 message AccountLinkNewDeviceRequest {}
 message AccountLinkNewDeviceReply {}

@@ -1,10 +1,13 @@
 package bertyprotocol
 
 import (
-	context "context"
+	"context"
 
+	"berty.tech/go/internal/ipfsutil"
+	"berty.tech/go/internal/protocoldb"
 	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -16,57 +19,53 @@ type Client interface {
 
 	Close() error
 	Status() Status
-
-	LogIPFSInformations()
 }
 
 type client struct {
 	// variables
 	db          *gorm.DB
-	opts        Opts
+	logger      *zap.Logger
 	ipfsCoreAPI ipfs_coreapi.CoreAPI
 }
 
 // Opts contains optional configuration flags for building a new Client
 type Opts struct {
-	Logger *zap.Logger
+	Logger      *zap.Logger
+	IpfsCoreAPI ipfs_coreapi.CoreAPI
+	RootContext context.Context
 }
 
 // New initializes a new Client
-func New(db *gorm.DB, IpfsCoreAPI ipfs_coreapi.CoreAPI, opts Opts) (Client, error) {
-	if opts.Logger == nil {
-		opts.Logger = zap.NewNop()
-	}
-
-	return &client{
+func New(db *gorm.DB, opts Opts) (Client, error) {
+	client := &client{
 		db:          db,
-		opts:        opts,
-		ipfsCoreAPI: IpfsCoreAPI,
-	}, nil
-}
+		ipfsCoreAPI: opts.IpfsCoreAPI,
+		logger:      opts.Logger,
+	}
 
-func (c *client) LogIPFSInformations() {
-	key, err := c.ipfsCoreAPI.Key().Self(context.TODO())
+	if opts.Logger == nil {
+		client.logger = zap.NewNop()
+	}
+
+	var err error
+	client.db, err = protocoldb.InitMigrate(db, client.logger.Named("datastore"))
 	if err != nil {
-		c.opts.Logger.Error("unable to log ipfs identity", zap.Error(err))
-		return
+		return nil, errors.Wrap(err, "failed to initialize datastore")
 	}
 
-	maddrs, err := c.ipfsCoreAPI.Swarm().ListenAddrs(context.TODO())
-	if err != nil {
-		c.opts.Logger.Error("unable to log ipfs listener", zap.Error(err))
-		return
+	ctx := opts.RootContext
+	if ctx == nil {
+		ctx = context.TODO()
+	}
+	if opts.IpfsCoreAPI == nil {
+		var err error
+		client.ipfsCoreAPI, err = ipfsutil.NewInMemoryCoreAPI(ctx)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to initialize ipfsutil")
+		}
 	}
 
-	addrs := make([]string, len(maddrs))
-	for i, addr := range maddrs {
-		addrs[i] = addr.String()
-	}
-
-	c.opts.Logger.Info("ipfs node",
-		zap.String("PeerID", key.ID().Pretty()),
-		zap.Strings("Listeners", addrs),
-	)
+	return client, nil
 }
 
 func (c *client) Close() error {

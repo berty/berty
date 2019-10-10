@@ -1,10 +1,8 @@
 package bertyprotocol
 
 import (
-	context "context"
 	"testing"
 
-	"berty.tech/go/internal/ipfsutil"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
@@ -22,15 +20,8 @@ func ExampleNew() {
 	}
 	defer db.Close()
 
-	// Opts is optional
-	opts := Opts{}
-
-	coreapi, err := ipfsutil.NewInMemoryCoreAPI(context.TODO())
-	if err != nil {
-		panic(err)
-	}
 	// initialize new client
-	client, err := New(db, coreapi, opts)
+	client, err := New(db, Opts{})
 	if err != nil {
 		panic(err)
 	}

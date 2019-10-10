@@ -14,13 +14,12 @@ import (
 	ipfs_libp2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
-
 	libp2p_ci "github.com/libp2p/go-libp2p-crypto" // nolint:staticcheck
 	libp2p_peer "github.com/libp2p/go-libp2p-peer" // nolint:staticcheck
-
 	"github.com/pkg/errors"
 )
 
+// NewInMemoryCoreAPI returns an IPFS CoreAPI based on an opininated ipfs_node.BuildCfg
 func NewInMemoryCoreAPI(ctx context.Context) (ipfs_interface.CoreAPI, error) {
 	cfg, err := createBuildConfig()
 	if err != nil {
