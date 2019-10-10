@@ -21,12 +21,22 @@
     "postinstall": "touch node_modules",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/react-native",
+      "**/react-native-*",
+      "**/@react-native-community/*"
+    ]
+  },
   "dependencies": {
     "caser": "^0.1.1",
     "create-react-native-module": "^0.11.1",
     "eslint-plugin-jest": "^22.17.0",
     "json": "^9.0.6",
-    "lerna": "^3.16.4",
+    "lerna": "^3.17.0",
     "lerna-update-wizard": "^0.16.0",
     "react-native-create-library": "^3.1.2",
     "text-transform-cli": "^1.5.0",

@@ -1,29 +1,34 @@
 export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
-export SHELL := /bin/bash
+export SHELL ?= env bash
 
 .PHONY: \
 	deps.storybook \
 	deps.storybook.mobile\
 
 deps.storybook.mobile: export PWD := $(PWD)
-deps.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader
-	cd $(PWD) && lsof -t -i :7007 || echo Y | start-storybook &
+deps.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader.js
+	cd $(PWD) && lsof -t -i :7007 || echo Y | start-storybook --config-dir storybook &
 	kill $$(lsof -t -i :8081) || true
 	cd $(PWD) && PWD=$(PWD) react-native start --reset-cache &
 deps.storybook: deps.storybook.mobile
 
-$(PWD)/storybook/storyLoader:
-	rnstl \
-		--pattern '$(PWD)/node_modules/@berty-tech/*-storybook/storybook.tsx' \
+$(PWD)/storybook/storyLoader.js: $(PWD)/node_modules
+	env | grep PATH
+	PATH=$(PATH) rnstl \
+		--pattern '$(PWD)/../*-storybook/storybook.tsx' \
 		--outputFile $(PWD)/storybook/storyLoader.js
 	sed -i.bak 's/\(.*\)\.\.\/node_modules\/\(.*\)\/storybook/\1\2\/storybook.tsx/g' $(PWD)/storybook/storyLoader.js
+	# sed \
+		-i.bak \
+		's/\(.*\)\.\.\/\.\.\//\1@berty-tech\//g' \
+		$(PWD)/storybook/storyLoader.js
 	rm -f $(PWD)/storybook/storyLoader.js.bak
 
 .PHONY: run.storybook.ios
 run.storybook.ios: export PWD := $(PWD)
 run.storybook.ios: $(PWD)/node_modules $(PWD)/ios/Pods deps.storybook.mobile
-	cd $(PWD) && react-native run-ios --no-packager
+	cd $(PWD) && react-native run-ios --simulator='iPhone 11' --no-packager
 
 $(PWD)/ios/Pods: $(PWD)/ios/Podfile $(PWD)/node_modules
 	cd $(PWD)/ios && pod install
@@ -81,7 +86,10 @@ fclean.storybook.ios:
 fclean.storybook.android: export PWD := $(PWD)
 fclean.storybook.android:
 
-fclean.storybook.mobile: fclean.storybook.ios fclean.storybook.android
+fclean.storybook.mobile: export PWD := $(PWD)
+fclean.storybook.mobile:
+	rm -rf $$TMPDIR/react-native-packager-cache-*
+	rm -rf $$TMPDIR/metro-bundler-cache-*
 	watchman watch-del-all
 
 fclean.storybook: fclean.storybook.mobile

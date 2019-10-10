@@ -8,6 +8,7 @@ bundle := bundle
 
 name ?= berty
 platform ?= ios
+device ?= iPhone 11
 target ?= debug
 config ?= development
 entry-file ?= index.js
@@ -70,7 +71,7 @@ run: deps $(if $(filter $(target), debug), start)
 		$(if $(filter $(platform), android), --variant=$(target)) \
 		$(if $(filter $(platform), ios), --configuration=$(target)) \
 		$(if $(filter $(platform), ios), --scheme=$(target)) \
-		$(if $(filter $(platform), ios), $(if $(filter $(config), development), --simulator)) \
+		$(if $(filter $(platform), ios), $(if $(filter $(config), development), --simulator='$(device)')) \
 
 .PHONY: bundle
 bundle: deps
@@ -298,6 +299,7 @@ bundle.darwin: bundle
 	run.darwin.store \
 
 run.ios.debug: target := debug
+run.ios.debug: device := iPhone 11
 run.ios.debug: run.ios
 run.ios.staff: target := staff
 run.ios.staff: run.ios

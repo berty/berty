@@ -30,6 +30,9 @@ export const styles = StyleSheet.create({
   end: { alignSelf: 'flex-end' },
   stretch: { alignSelf: 'stretch' },
 
+  spaceEvenly: { justifyContent: 'space-evenly' },
+  spaceAround: { justifyContent: 'space-around' },
+
   bottom: { bottom: 0 },
   left: { left: 0 },
   top: { top: 0 },

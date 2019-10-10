@@ -1,5 +1,6 @@
 export PWD = $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
+export SHELL := env bash
 
 UNAME_S ?= $(shell uname -s)
 
@@ -7,17 +8,9 @@ author = Berty Technologies <oss@berty.tech>
 contributor = $(shell git config --get user.name) <$(shell git config --get user.email)>
 license = (Apache-2.0 or MIT)
 
-export SHELL = /usr/bin/env bash
-ifeq ($(UNAME_S),Darwin)
-npm := /usr/local/bin/npm
-pkg := $(shell find $(PWD)/packages -depth 1 -type d)
-endif
-ifeq ($(UNAME_S),Linux)
-npm := /usr/bin/npm
-pkg := $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 1 -type d))
-else
-endif
-npm_flags := --no-progress
+yarn := $(shell which yarn || echo '/usr/local/bin/yarn')
+
+yarn_flags :=
 
 mod := $(PWD)/node_modules
 bin := $(mod)/.bin
@@ -31,39 +24,42 @@ json := $(bin)/json
 caser := $(bin)/caser
 eslint := $(bin)/eslint
 
-pkg ?= $(shell find $(PWD)/packages -depth 1 -type d)
+pkg := $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 1 -type d))
 pkg_mod := $(patsubst %, %/node_modules, $(pkg))
-pkg_desc := $(patsubst %, %/node_modules, $(pkg))
+pkg_desc := $(patsubst %, %/package.json, $(pkg))
 
 .DEFAULT_GOAL := deps
 
-.PHONY: bootstrap
-deps: $(mod) $(pkg_mod)
-
-$(mod) $(mod)/%: package.json
-	$(npm) $(npm_flags) install
-	$(lerna) $(lerna_flags) init
-	touch $(mod)
-
 print-%  : ; @echo $* = $($*)
 
-.NOTPARALLEL: $(pkg_mod) $(pkg_mod)/%
-$(pkg_mod)/%: $(mod) $(patsubst %,%/package.json,$(pkg))
-	$(lerna) $(lerna_flags) bootstrap --hoist
-	mkdir -p $(pkg_mod)
-	touch $(pkg_mod) $@
+.PHONY: env
+env:
+	@env
 
-.PHONY: npm
-npm $(npm):
-ifeq ($(UNAME_S),Darwin)
-	brew install node
-endif
-ifeq ($(UNAME_S),Linux)
-	apt-get install nodejs
-endif
+$(yarn):
+	$(error "yarn is not installed")
+
+.PHONY: deps
+deps: $(yarn) $(lerna) $(mod) $(pkg_mod)
+
+$(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
+	$(lerna) $(lerna_flags) init
+	$(lerna) $(lerna_flags) bootstrap
+	mkdir -p $(mod) $(pkg_mod)
+	touch $(mod) $(pkg_mod)
+
+$(mod)/%: $(mod)
+
+$(PWD)/package.json: $(lerna)
+
+$(lerna): | $(yarn)
+	$(yarn) add -W lerna@latest
+
+.NOTPARALLEL: $(pkg_mod) $(pkg_mod)/%
+$(pkg_mod)/%: $(patsubst %,%/package.json,$(pkg)) $(mod)
 
 .PHONY: upgrade
-upgrade: $(lerna_upgrade)
+upgrade: deps
 	$(lerna_upgrade)
 
 .IGNORE \
@@ -76,7 +72,7 @@ clean: clean
 fclean:
 	rm -rf $(pkg_mod)
 	rm -rf $(mod)
-	npm cache clean -f
+	yarn cache clean -f
 
 .PHONY: pkg
 pkg: name ?= example

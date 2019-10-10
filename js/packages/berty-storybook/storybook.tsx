@@ -3,8 +3,9 @@ import { linkTo } from '@storybook/addon-links'
 import { mapping, light } from '@eva-design/eva'
 import React from 'react'
 import { storiesOf } from '@storybook/react-native'
-
+import { promiseResolved, fakeRequests, fakeConversations } from './faker'
 import * as Onboarding from './Onboarding'
+import * as Main from './Main'
 
 const stories = storiesOf('Berty', module)
 
@@ -26,25 +27,28 @@ stories
   ))
   .add('Onboarding.Performance', () => (
     <Onboarding.Performance
-      createAccount={(): Promise<void> => Promise.resolve()}
-      generateKey={(): Promise<void> =>
-        new Promise((resolve): void => {
-          setTimeout(resolve, 1000)
-        })
-      }
-      authorizeNotifications={(): Promise<void> => Promise.resolve()}
-      authorizeBluetooth={(): Promise<void> => Promise.resolve()}
+      createAccount={promiseResolved}
+      generateKey={promiseResolved}
+      authorizeNotifications={promiseResolved}
+      authorizeBluetooth={promiseResolved}
       startApp={linkTo('Onboarding.Privacy')}
     />
   ))
   .add('Onboarding.Privacy', () => (
     <Onboarding.Privacy
-      createAccount={(): Promise<void> => Promise.resolve()}
-      generateKey={(): Promise<void> =>
-        new Promise((resolve): void => {
-          setTimeout(resolve, 1000)
-        })
-      }
+      createAccount={promiseResolved}
+      generateKey={promiseResolved}
       startApp={linkTo('Onboarding.Privacy')}
+    />
+  ))
+  .add('Main.List', () => (
+    <Main.List
+      requests={fakeRequests}
+      conversations={fakeConversations}
+      footer={{
+        search: (): void => {},
+        plus: (): void => {},
+        account: (): void => {},
+      }}
     />
   ))
