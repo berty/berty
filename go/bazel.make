@@ -40,6 +40,7 @@ bazel.watch-test:
 bazel.clean: $(BAZEL)
 	rm -fr */**/BUILD.bazel
 	$(BAZEL) clean
+	rm -fr vendor
 
 .PHONY: bazel.expunge
 bazel.expunge: $(BAZEL)
