@@ -40,33 +40,212 @@ option (gogoproto.unsafe_marshaler_all) = false;
 option (gogoproto.unsafe_unmarshaler_all) = false;
 option (gogoproto.verbose_equal_all) = false;
 
-message Conversation {
-  string id = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
-  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = true];
-  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = true];
+message Account {
+  uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
 
   // fields
+  string name = 100;
+  string avatar_uri = 101;
 
-  string title = 100;
-
-  // associations
-
-  repeated ConversationMessage messages = 200 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+  // settings
+  bool contact_requests_enabled = 102;
+  string contact_requests_link = 103;
 }
 
-message ConversationMessage {
-  // metadata
+message Conversation {
+  uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
+  string protocol_id = 2 [(gogoproto.moretags) = "gorm:\"unique\"", (gogoproto.customname) = "ProtocolID"];
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
 
-  string id = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
-  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = true];
-  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = true];
+  // TODO: repeated PinningService pinning_services ...
 
   // fields
+  string title = 100;
+  string topic = 101;
+  string avatar_uri = 102;
 
-  string body = 100;
+  Kind kind = 103;
+  enum Kind {
+    Unknown = 0;
+    Self = 1;
+    OneToOne = 2;
+    PrivateGroup = 3;
+    // PublicGroup = 4;
+    // ...
+  }
+
+  uint32 badge = 105;
+
+  enum MutePolicy {
+    Nothing = 0;
+    All = 1;
+    Notifications = 2;
+  };
+  MutePolicy mute_policy = 107;
 
   // associations
+  repeated Message messages = 200 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+  repeated Member members = 201 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
 
-  string conversation_id = 200 [(gogoproto.customname) = "ConversationID", (gogoproto.moretags) = "sql:\"not null\" gorm:\"index\""];
-  Conversation conversation = 201 [(gogoproto.moretags) = "gorm:\"foreignkey:ConversationID\""];
+  uint64 last_message_id = 202;
+  Message last_message = 203 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+}
+
+message Member {
+  uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
+  string protocol_id = 2 [(gogoproto.moretags) = "gorm:\"unique\"", (gogoproto.customname) = "ProtocolID"];
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp read_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+
+  // fields
+  string name = 100;
+  string avatar_uri = 101;
+
+  Role role = 102;
+  enum Role {
+    Unknown = 0;
+    // Guest = 1; ...
+    Regular = 2;
+    Admin = 3;
+    Owner = 4;
+  }
+
+  // associations
+  uint64 conversation_id = 200 [(gogoproto.customname) = "ConversationID", (gogoproto.moretags) = "gorm:\"not null;index\""];
+  Conversation conversation = 201 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+
+  // non-empty mean verified member
+  uint64 contact_id = 202 [(gogoproto.customname) = "ContactID", (gogoproto.moretags) = "gorm:\"not null;index\""];
+  Contact contact = 203 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+}
+
+message Message {
+  // metadata
+  uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
+  string protocol_id = 2 [(gogoproto.moretags) = "gorm:\"unique\"", (gogoproto.customname) = "ProtocolID"];
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp sent_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+
+  // fields
+  Kind kind = 100;
+  enum Kind {
+    Unknown = 0;
+    Text = 1;
+    MemberJoined = 2;
+    MemberLeave = 3;
+    MemberSetTitleTo = 4;
+    // ...
+  }
+
+  Body body = 101 [(gogoproto.moretags) = "gorm:\"embedded;embedded_prefix:body_\""];
+  message Body {
+    string text = 1;
+    uint64 member_joined = 2;
+    uint64 member_left = 3;
+    string member_set_title_to = 4;
+    // ...
+  }
+
+ // associations
+
+  uint64 conversation_id = 200 [(gogoproto.customname) = "ConversationID", (gogoproto.moretags) = "gorm:\"not null;index\""];
+  Conversation conversation = 201 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+
+  uint64 member_id = 202 [(gogoproto.customname) = "MemberID", (gogoproto.moretags) = "gorm:\"not null;index\""];
+  Member member = 203 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+
+  repeated Attachment attachments = 204 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+  repeated Reaction reactions = 205 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+}
+
+message Attachment {
+  // metadata
+  uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+
+  // fields
+  string uri = 100;
+  string content_type = 101;
+
+  // associations
+  uint64 message_id = 200 [(gogoproto.customname) = "MessageID", (gogoproto.moretags) = "gorm:\"not null;index\""];
+  Message message = 201 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+}
+
+message Reaction {
+
+  // metadata
+  uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+
+  // fields
+  bytes emoji = 100;
+
+  // associations
+  uint64 message_id = 200 [(gogoproto.customname) = "MessageID", (gogoproto.moretags) = "gorm:\"not null;index\""];
+  Message message = 201 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+
+  uint64 member_id = 202 [(gogoproto.customname) = "MemberID", (gogoproto.moretags) = "gorm:\"not null;index\""];
+  Member member = 203 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+}
+
+message Contact {
+  uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
+  string protocol_id = 2 [(gogoproto.moretags) = "gorm:\"unique\"", (gogoproto.customname) = "ProtocolID"];
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp seen_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+
+  // fields
+  string name = 100;
+  string avatar_uri = 101;
+  bytes status_emoji = 102;
+  string status_text = 103;
+
+  Kind kind = 104;
+  enum Kind {
+    Unknown = 0;
+    PendingInc = 1;
+    PendingOut = 2;
+    Friend = 3;
+    Trusted = 4;
+    Myself = 42;
+  }
+
+  bool blocked = 105;
+
+  // associations
+  repeated Device devices = 200 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+}
+
+message Device {
+  uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
+  string protocol_id = 2 [(gogoproto.moretags) = "gorm:\"unique\"", (gogoproto.customname) = "ProtocolID"];
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp last_seen_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+
+  // fields
+  Kind kind = 100;
+  enum Kind {
+    Unknown = 0;
+    Phone = 1;
+    Desktop = 2;
+    Laptop = 3;
+    // ...
+  }
+
+  bool can_relay = 101;
+  bool can_ble = 102;
+
+  // associations
+  uint64 contact_id = 200 [(gogoproto.customname) = "ContactID", (gogoproto.moretags) = "gorm:\"not null;index\""];
+  Contact contact = 201 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
 }

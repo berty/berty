@@ -30,6 +30,7 @@ $(GEN_SUM): $(GEN_SRC)
 .PHONY: generate_local
 generate_local:
 	protoc -I ../api:../go/vendor:/protobuf --swagger_out=logtostderr=true:. ../api/bertyprotocol.proto
+	protoc -I ../api:../go/vendor:/protobuf --swagger_out=logtostderr=true:. ../api/chatmodel.proto
 	protoc -I ../api:../go/vendor:/protobuf --swagger_out=logtostderr=true:. ../api/bertychat.proto
 	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
 	mv $(GEN_SUM).tmp $(GEN_SUM)
