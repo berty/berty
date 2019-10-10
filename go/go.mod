@@ -12,7 +12,7 @@ require (
 	github.com/ipfs/interface-go-ipfs-core v0.0.8
 	github.com/jinzhu/gorm v1.9.11
 	github.com/libp2p/go-libp2p v0.0.28
-	github.com/libp2p/go-libp2p-core v0.2.3
+	github.com/libp2p/go-libp2p-core v0.0.1
 	github.com/libp2p/go-libp2p-crypto v0.1.0
 	github.com/libp2p/go-libp2p-peer v0.2.0
 	github.com/multiformats/go-multihash v0.0.8
