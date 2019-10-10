@@ -12,11 +12,10 @@ import (
 	"berty.tech/go/internal/crypto"
 )
 
-func createNewIdentity(t *testing.T, ctx context.Context) (iface.Crypto, p2pCrypto.PrivKey) {
-	// TODO
-	ds := &struct{ TODO int }{}
+func createNewIdentity(t *testing.T, ctx context.Context) (iface.CryptoManager, p2pCrypto.PrivKey) {
+	t.Helper()
 
-	c, privateKey, err := crypto.InitNewIdentity(ctx, ds)
+	c, privateKey, err := crypto.InitNewIdentity(ctx)
 	if err != nil {
 		t.Fatalf("can't create new identity")
 	}
@@ -24,7 +23,9 @@ func createNewIdentity(t *testing.T, ctx context.Context) (iface.Crypto, p2pCryp
 	return c, privateKey
 }
 
-func createTwoDevices(t *testing.T, ctx context.Context) (*handshakeSession, iface.Crypto, *handshakeSession, iface.Crypto) {
+func createTwoDevices(t *testing.T, ctx context.Context) (*handshakeSession, iface.CryptoManager, *handshakeSession, iface.CryptoManager) {
+	t.Helper()
+
 	c1, pk1 := createNewIdentity(t, ctx)
 	c2, pk2 := createNewIdentity(t, ctx)
 

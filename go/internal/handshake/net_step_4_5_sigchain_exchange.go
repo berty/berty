@@ -3,18 +3,19 @@ package handshake
 import (
 	"context"
 
-	"berty.tech/go/pkg/bertyprotocol"
+	"berty.tech/go/internal/crypto"
+
 	"berty.tech/go/pkg/iface"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
 type step4or5CheckSigChainProof struct {
 	next HandshakeFrame_HandshakeStep
 }
 
-func sigChainAsProto(chain iface.SigChain) (*bertyprotocol.SigChain, error) {
-	p, ok := chain.(*bertyprotocol.SigChain)
+func sigChainAsProto(chain iface.SigChain) (*crypto.SigChain, error) {
+	p, ok := chain.(*crypto.SigChain)
 	if !ok {
 		return nil, ErrSigChainCast
 	}
@@ -29,7 +30,7 @@ func (s *step4or5CheckSigChainProof) action(ctx context.Context, f *flow, step H
 		return nil, err
 	}
 
-	signKey, err := crypto.UnmarshalPublicKey(payload.DeviceKey)
+	signKey, err := p2pcrypto.UnmarshalPublicKey(payload.DeviceKey)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +56,7 @@ func (s *step4or5SendSigChainProof) action(ctx context.Context, f *flow, step Ha
 		return nil, err
 	}
 
-	devicePubKey, err := crypto.MarshalPublicKey(f.ownDevicePubKey)
+	devicePubKey, err := p2pcrypto.MarshalPublicKey(f.ownDevicePubKey)
 	if err != nil {
 		return nil, err
 	}

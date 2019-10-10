@@ -4,7 +4,7 @@ package handshake;
 
 option go_package = "berty.tech/go/internal/handshake";
 
-import "entity.proto";
+import "internal/sigchain.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 message HandshakeFrame {

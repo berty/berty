@@ -1,12 +1,12 @@
-package bertyprotocol
+package crypto
 
 import (
 	"berty.tech/go/pkg/iface"
-	"github.com/libp2p/go-libp2p-core/crypto"
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	mh "github.com/multiformats/go-multihash"
 )
 
-func (m *SigChainEntry) Sign(key crypto.PrivKey) error {
+func (m *SigChainEntry) Sign(key p2pcrypto.PrivKey) error {
 	entryToSign := &SigChainEntry{
 		EntryTypeCode:         m.EntryTypeCode,
 		ParentEntryHash:       m.ParentEntryHash,
@@ -39,8 +39,8 @@ func (m *SigChainEntry) Sign(key crypto.PrivKey) error {
 	return nil
 }
 
-func (m *SigChainEntry) GetSignedBy() (crypto.PubKey, error) {
-	pubKey, err := crypto.UnmarshalPublicKey(m.SignerPublicKeyBytes)
+func (m *SigChainEntry) GetSignedBy() (p2pcrypto.PubKey, error) {
+	pubKey, err := p2pcrypto.UnmarshalPublicKey(m.SignerPublicKeyBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -48,8 +48,8 @@ func (m *SigChainEntry) GetSignedBy() (crypto.PubKey, error) {
 	return pubKey, nil
 }
 
-func (m *SigChainEntry) GetSubject() (crypto.PubKey, error) {
-	pubKey, err := crypto.UnmarshalPublicKey(m.SubjectPublicKeyBytes)
+func (m *SigChainEntry) GetSubject() (p2pcrypto.PubKey, error) {
+	pubKey, err := p2pcrypto.UnmarshalPublicKey(m.SubjectPublicKeyBytes)
 	if err != nil {
 		return nil, err
 	}

@@ -1,11 +1,11 @@
-package bertyprotocol
+package crypto
 
 import (
 	"errors"
 	"time"
 
 	"berty.tech/go/pkg/iface"
-	"github.com/libp2p/go-libp2p-core/crypto"
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
 var theFuture = time.Date(2199, time.December, 31, 0, 0, 0, 0, time.UTC)
@@ -47,9 +47,9 @@ func (m *SigChain) ListEntries() []iface.SigChainEntry {
 	return entries
 }
 
-func (m *SigChain) ListCurrentPubKeys() []crypto.PubKey {
+func (m *SigChain) ListCurrentPubKeys() []p2pcrypto.PubKey {
 	pubKeys := map[string][]byte{}
-	var pubKeysSlice []crypto.PubKey
+	var pubKeysSlice []p2pcrypto.PubKey
 
 	for _, e := range m.Entries {
 		if e.EntryTypeCode == SigChainEntry_SigChainEntryTypeUndefined {
@@ -62,7 +62,7 @@ func (m *SigChain) ListCurrentPubKeys() []crypto.PubKey {
 	}
 
 	for _, p := range pubKeys {
-		pubKey, err := crypto.UnmarshalPublicKey(p)
+		pubKey, err := p2pcrypto.UnmarshalPublicKey(p)
 		if err != nil {
 			continue
 		}
@@ -73,7 +73,7 @@ func (m *SigChain) ListCurrentPubKeys() []crypto.PubKey {
 	return pubKeysSlice
 }
 
-func (m *SigChain) Init(privKey crypto.PrivKey) (iface.SigChainEntry, error) {
+func (m *SigChain) Init(privKey p2pcrypto.PrivKey) (iface.SigChainEntry, error) {
 	if len(m.Entries) > 0 {
 		return nil, errors.New("sig chain already initialized")
 	}
@@ -89,7 +89,7 @@ func (m *SigChain) Init(privKey crypto.PrivKey) (iface.SigChainEntry, error) {
 	})
 }
 
-func (m *SigChain) AddEntry(privKey crypto.PrivKey, pubKey crypto.PubKey) (iface.SigChainEntry, error) {
+func (m *SigChain) AddEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) (iface.SigChainEntry, error) {
 	if !m.isKeyCurrentlyPresent(privKey.GetPublic()) {
 		return nil, errors.New("not allowed to add entry")
 	}
@@ -113,7 +113,7 @@ func (m *SigChain) AddEntry(privKey crypto.PrivKey, pubKey crypto.PubKey) (iface
 	})
 }
 
-func (m *SigChain) RemoveEntry(privKey crypto.PrivKey, pubKey crypto.PubKey) (iface.SigChainEntry, error) {
+func (m *SigChain) RemoveEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) (iface.SigChainEntry, error) {
 	if !m.isKeyCurrentlyPresent(privKey.GetPublic()) {
 		return nil, errors.New("not allowed to remove entry")
 	}
@@ -137,7 +137,7 @@ func (m *SigChain) RemoveEntry(privKey crypto.PrivKey, pubKey crypto.PubKey) (if
 	})
 }
 
-func (m *SigChain) isKeyCurrentlyPresent(pubKey crypto.PubKey) bool {
+func (m *SigChain) isKeyCurrentlyPresent(pubKey p2pcrypto.PubKey) bool {
 	for _, allowedPubKey := range m.ListCurrentPubKeys() {
 		if allowedPubKey.Equals(pubKey) {
 			return true
@@ -147,7 +147,7 @@ func (m *SigChain) isKeyCurrentlyPresent(pubKey crypto.PubKey) bool {
 	return false
 }
 
-func (m *SigChain) appendEntry(privKey crypto.PrivKey, entry *SigChainEntry) (iface.SigChainEntry, error) {
+func (m *SigChain) appendEntry(privKey p2pcrypto.PrivKey, entry *SigChainEntry) (iface.SigChainEntry, error) {
 	lastEntry := m.GetLastEntry()
 	if lastEntry != nil {
 		entry.ParentEntryHash = lastEntry.GetEntryHash()

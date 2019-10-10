@@ -9,16 +9,11 @@ import (
 	"errors"
 	"time"
 
-	"berty.tech/go/pkg/bertyprotocol"
 	"berty.tech/go/pkg/iface"
-	sign "github.com/libp2p/go-libp2p-core/crypto"
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func InitNewIdentity(ctx context.Context, store interface{}) (iface.Crypto, sign.PrivKey, error) {
-	if store == nil {
-		return nil, nil, errors.New("no datastore defined")
-	}
-
+func InitNewIdentity(ctx context.Context) (iface.CryptoManager, p2pcrypto.PrivKey, error) {
 	privKey, err := GeneratePrivateKey()
 	if err != nil {
 		return nil, nil, err
@@ -29,25 +24,25 @@ func InitNewIdentity(ctx context.Context, store interface{}) (iface.Crypto, sign
 		return nil, nil, err
 	}
 
-	return NewCrypto(store, privKey, sigChain), privKey, nil
+	return NewCrypto(privKey, sigChain), privKey, nil
 }
 
-func InitFromOtherDeviceIdentity(ctx context.Context, store interface{} /* other params */) (iface.Crypto, sign.PrivKey, error) {
+func InitFromOtherDeviceIdentity(ctx context.Context /* other params */) (iface.CryptoManager, p2pcrypto.PrivKey, error) {
 	// TODO:
 	panic("implement me")
 }
 
-func OpenIdentity(ctx context.Context, store interface{}, key sign.PrivKey, chain iface.SigChain) (iface.Crypto, error) {
-	return NewCrypto(store, key, chain), nil
+func OpenIdentity(ctx context.Context, key p2pcrypto.PrivKey, chain iface.SigChain) (iface.CryptoManager, error) {
+	return NewCrypto(key, chain), nil
 }
 
-func InitSigChain(key sign.PrivKey) (iface.SigChain, error) {
+func InitSigChain(key p2pcrypto.PrivKey) (iface.SigChain, error) {
 	accountKey, err := GeneratePrivateKey()
 	if err != nil {
 		return nil, err
 	}
 
-	sigChain := bertyprotocol.NewSigChain()
+	sigChain := NewSigChain()
 
 	_, err = sigChain.Init(accountKey)
 	if err != nil {
@@ -62,8 +57,8 @@ func InitSigChain(key sign.PrivKey) (iface.SigChain, error) {
 	return sigChain, nil
 }
 
-func GeneratePrivateKey() (sign.PrivKey, error) {
-	key, _, err := sign.GenerateEd25519Key(rand.Reader)
+func GeneratePrivateKey() (p2pcrypto.PrivKey, error) {
+	key, _, err := p2pcrypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +89,7 @@ func GetRendezvousPointForTime(id, seed []byte, date time.Time) ([]byte, error) 
 	return rendezvousPoint[:], nil
 }
 
-func VerifySig(data []byte, sig []byte, key sign.PubKey) error {
+func VerifySig(data []byte, sig []byte, key p2pcrypto.PubKey) error {
 	ok, err := key.Verify(data, sig)
 	if err != nil {
 		return err

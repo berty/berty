@@ -47,25 +47,27 @@ func newHandshakeFlow(ctx context.Context, conn net.Conn, devPubKey crypto.PubKe
 }
 
 func (f *flow) close() error {
+	var retErr error
+
 	if f.writer != nil {
 		if err := f.writer.Close(); err != nil {
-			return err
+			retErr = err
 		}
 	}
 
 	if f.reader != nil {
 		if err := f.reader.Close(); err != nil {
-			return err
+			retErr = err
 		}
 	}
 
 	if f.session != nil {
 		if err := f.session.Close(); err != nil {
-			return err
+			retErr = err
 		}
 	}
 
-	return nil
+	return retErr
 }
 
 func (f *flow) performFlow(ctx context.Context) (iface.SigChain, crypto.PubKey, error) {

@@ -45,70 +45,15 @@ type SigChain interface {
 	Check() error
 }
 
-type CryptoEvent interface {
-	// New Contact
-	// New Contact Device
-}
-
-type Crypto interface {
+type CryptoManager interface {
 	// Getters
 	GetDevicePublicKey() crypto.PubKey
-	GetPublicRendezvousSeed(ctx context.Context) ([]byte, error)
 	GetSigChain() SigChain
 	GetAccountPublicKey() (crypto.PubKey, error)
-	GetSigChainForAccount(accountID []byte) (SigChain, error)
 
 	// Actions
 	Sign([]byte) ([]byte, error)
 	AddDeviceToOwnSigChain(ctx context.Context, key crypto.PubKey) error
-	SaveContactSigChain(ctx context.Context, chain SigChain) error
-	ResetPublicRendezvousSeed(ctx context.Context) ([]byte, error)
-	SetDerivationStatusForGroupMember(ctx context.Context, member CryptoGroupMember, derivationStatus []byte, counter uint64) error
-
-	// Subscriptions
-	RegisterEventHandler(ctx context.Context) (chan<- CryptoEvent, error)
 
 	Close() error
 }
-
-//type CryptoEnvelope interface {
-//	// Getters
-//	GetGroupID() []byte
-//	GetSenderID() []byte
-//	GetCounter() []byte
-//	GetEvent() []byte
-//	GetTimestamp() time.Time
-//	GetSignature() []byte
-//}
-
-type CryptoGroupMember interface {
-	//	GetID() []byte
-	//
-	//	GetGroup() CryptoGroup
-	//	GetPublicKey() (crypto.PubKey, error)
-	//	GetAccountPublicKey() (crypto.PubKey, error)
-	//	GetSigChain() (SigChain, error)
-	//	GetGroupSecret() []byte
-	//	GetDerivationState() []byte
-	//	GetDerivationCounter() uint64
-	//
-	//	// Secrets
-	//	GetCounterValue() []byte
-	//	GetCounterValueAt(value uint64) []byte
-	//	DeriveKey(ctx context.Context, salt []byte) error
-	//	GetNextSymmetricKey() ([]byte, error)
-}
-
-//type CryptoGroup interface {
-//	GetID() []byte
-//
-//	GetRendezvousSeed() []byte
-//	GetCreatorPubKey() (crypto.PubKey, error)
-//
-//	GetMembers() []CryptoGroupMember
-//
-//	SealMessage(ctx context.Context, payload []byte) (envelope CryptoEnvelope, symKey []byte, err error)
-//	OpenMessage(env CryptoEnvelope) (payload []byte, symKey []byte, err error)
-//
-//	AddMembers([]CryptoGroupMember) ([]CryptoGroupMember, error)
-//}

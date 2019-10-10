@@ -10,13 +10,12 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/go/pkg/bertyprotocol"
 	"berty.tech/go/pkg/iface"
-	"github.com/libp2p/go-libp2p-core/crypto"
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 
 	"github.com/gogo/protobuf/proto"
 
-	internalCrypto "berty.tech/go/internal/crypto"
+	"berty.tech/go/internal/crypto"
 	ggio "github.com/gogo/protobuf/io"
 )
 
@@ -68,18 +67,18 @@ func (s *dummyStep) action(ctx context.Context, f *flow, step HandshakeFrame_Han
 type dummySetCredsStep struct {
 	next         HandshakeFrame_HandshakeStep
 	sigChain     iface.SigChain
-	devicePubKey crypto.PubKey
+	devicePubKey p2pcrypto.PubKey
 }
 
 func (s *dummySetCredsStep) isReadAction() bool { return false }
 func (s *dummySetCredsStep) action(ctx context.Context, f *flow, step HandshakeFrame_HandshakeStep, readMsg *HandshakeFrame) (*HandshakeFrame_HandshakeStep, error) {
-	_, provedDevicePubKey, err := crypto.GenerateEd25519Key(rand.Reader)
+	_, provedDevicePubKey, err := p2pcrypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
 		return nil, err
 	}
 
 	f.provedDevicePubKey = provedDevicePubKey
-	f.provedSigChain = &bertyprotocol.SigChain{}
+	f.provedSigChain = &crypto.SigChain{}
 
 	return &s.next, nil
 }
@@ -210,15 +209,13 @@ func Test_Request_Response(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
 	defer cancel()
 
-	ds := &struct{ TODO int }{}
-
-	reqCrypto, reqPrivateKey, err := internalCrypto.InitNewIdentity(ctx, ds)
+	reqCrypto, reqPrivateKey, err := crypto.InitNewIdentity(ctx)
 	if err != nil {
 		t.Fatalf("unable to create an identity")
 		return
 	}
 
-	resCrypto, resPrivateKey, err := internalCrypto.InitNewIdentity(ctx, ds)
+	resCrypto, resPrivateKey, err := crypto.InitNewIdentity(ctx)
 	if err != nil {
 		t.Fatalf("unable to create an identity")
 		return

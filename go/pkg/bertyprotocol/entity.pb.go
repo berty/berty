@@ -8,11 +8,10 @@ import (
 	io "io"
 	math "math"
 	math_bits "math/bits"
-	time "time"
 
+	crypto "berty.tech/go/internal/crypto"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	_ "github.com/golang/protobuf/ptypes/timestamp"
 )
 
@@ -20,44 +19,12 @@ import (
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
-var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
-
-type SigChainEntry_SigChainEntryType int32
-
-const (
-	SigChainEntry_SigChainEntryTypeUndefined SigChainEntry_SigChainEntryType = 0
-	SigChainEntry_SigChainEntryTypeInitChain SigChainEntry_SigChainEntryType = 1
-	SigChainEntry_SigChainEntryTypeAddKey    SigChainEntry_SigChainEntryType = 2
-	SigChainEntry_SigChainEntryTypeRemoveKey SigChainEntry_SigChainEntryType = 3
-)
-
-var SigChainEntry_SigChainEntryType_name = map[int32]string{
-	0: "SigChainEntryTypeUndefined",
-	1: "SigChainEntryTypeInitChain",
-	2: "SigChainEntryTypeAddKey",
-	3: "SigChainEntryTypeRemoveKey",
-}
-
-var SigChainEntry_SigChainEntryType_value = map[string]int32{
-	"SigChainEntryTypeUndefined": 0,
-	"SigChainEntryTypeInitChain": 1,
-	"SigChainEntryTypeAddKey":    2,
-	"SigChainEntryTypeRemoveKey": 3,
-}
-
-func (x SigChainEntry_SigChainEntryType) String() string {
-	return proto.EnumName(SigChainEntry_SigChainEntryType_name, int32(x))
-}
-
-func (SigChainEntry_SigChainEntryType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_cf50d946d740d100, []int{1, 0}
-}
 
 type Contact_ContactStatus int32
 
@@ -96,7 +63,7 @@ func (x Contact_ContactStatus) String() string {
 }
 
 func (Contact_ContactStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_cf50d946d740d100, []int{3, 0}
+	return fileDescriptor_cf50d946d740d100, []int{1, 0}
 }
 
 type Device struct {
@@ -151,161 +118,9 @@ func (m *Device) GetAccountPubKey() []byte {
 	return nil
 }
 
-type SigChainEntry struct {
-	EntryHash             []byte                          `protobuf:"bytes,1,opt,name=entry_hash,json=entryHash,proto3" json:"entry_hash,omitempty"`
-	EntryTypeCode         SigChainEntry_SigChainEntryType `protobuf:"varint,2,opt,name=entry_type_code,json=entryTypeCode,proto3,enum=SigChainEntry_SigChainEntryType" json:"entry_type_code,omitempty"`
-	ParentEntryHash       []byte                          `protobuf:"bytes,3,opt,name=parent_entry_hash,json=parentEntryHash,proto3" json:"parent_entry_hash,omitempty"`
-	CreatedAt             time.Time                       `protobuf:"bytes,4,opt,name=created_at,json=createdAt,proto3,stdtime" json:"created_at"`
-	ExpiringAt            time.Time                       `protobuf:"bytes,5,opt,name=expiring_at,json=expiringAt,proto3,stdtime" json:"expiring_at"`
-	SignerPublicKeyBytes  []byte                          `protobuf:"bytes,6,opt,name=signer_public_key_bytes,json=signerPublicKeyBytes,proto3" json:"signer_public_key_bytes,omitempty"`
-	SubjectPublicKeyBytes []byte                          `protobuf:"bytes,7,opt,name=subject_public_key_bytes,json=subjectPublicKeyBytes,proto3" json:"subject_public_key_bytes,omitempty"`
-	Signature             []byte                          `protobuf:"bytes,8,opt,name=signature,proto3" json:"signature,omitempty"`
-}
-
-func (m *SigChainEntry) Reset()         { *m = SigChainEntry{} }
-func (m *SigChainEntry) String() string { return proto.CompactTextString(m) }
-func (*SigChainEntry) ProtoMessage()    {}
-func (*SigChainEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cf50d946d740d100, []int{1}
-}
-func (m *SigChainEntry) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SigChainEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SigChainEntry.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SigChainEntry) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SigChainEntry.Merge(m, src)
-}
-func (m *SigChainEntry) XXX_Size() int {
-	return m.Size()
-}
-func (m *SigChainEntry) XXX_DiscardUnknown() {
-	xxx_messageInfo_SigChainEntry.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SigChainEntry proto.InternalMessageInfo
-
-func (m *SigChainEntry) GetEntryHash() []byte {
-	if m != nil {
-		return m.EntryHash
-	}
-	return nil
-}
-
-func (m *SigChainEntry) GetEntryTypeCode() SigChainEntry_SigChainEntryType {
-	if m != nil {
-		return m.EntryTypeCode
-	}
-	return SigChainEntry_SigChainEntryTypeUndefined
-}
-
-func (m *SigChainEntry) GetParentEntryHash() []byte {
-	if m != nil {
-		return m.ParentEntryHash
-	}
-	return nil
-}
-
-func (m *SigChainEntry) GetCreatedAt() time.Time {
-	if m != nil {
-		return m.CreatedAt
-	}
-	return time.Time{}
-}
-
-func (m *SigChainEntry) GetExpiringAt() time.Time {
-	if m != nil {
-		return m.ExpiringAt
-	}
-	return time.Time{}
-}
-
-func (m *SigChainEntry) GetSignerPublicKeyBytes() []byte {
-	if m != nil {
-		return m.SignerPublicKeyBytes
-	}
-	return nil
-}
-
-func (m *SigChainEntry) GetSubjectPublicKeyBytes() []byte {
-	if m != nil {
-		return m.SubjectPublicKeyBytes
-	}
-	return nil
-}
-
-func (m *SigChainEntry) GetSignature() []byte {
-	if m != nil {
-		return m.Signature
-	}
-	return nil
-}
-
-type SigChain struct {
-	ID      []byte           `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Entries []*SigChainEntry `protobuf:"bytes,2,rep,name=entries,proto3" json:"entries,omitempty"`
-}
-
-func (m *SigChain) Reset()         { *m = SigChain{} }
-func (m *SigChain) String() string { return proto.CompactTextString(m) }
-func (*SigChain) ProtoMessage()    {}
-func (*SigChain) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cf50d946d740d100, []int{2}
-}
-func (m *SigChain) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SigChain) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SigChain.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SigChain) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SigChain.Merge(m, src)
-}
-func (m *SigChain) XXX_Size() int {
-	return m.Size()
-}
-func (m *SigChain) XXX_DiscardUnknown() {
-	xxx_messageInfo_SigChain.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SigChain proto.InternalMessageInfo
-
-func (m *SigChain) GetID() []byte {
-	if m != nil {
-		return m.ID
-	}
-	return nil
-}
-
-func (m *SigChain) GetEntries() []*SigChainEntry {
-	if m != nil {
-		return m.Entries
-	}
-	return nil
-}
-
 type Contact struct {
 	// AccountID = sig_chain.entries[0].pub_key
-	SigChain            *SigChain             `protobuf:"bytes,1,opt,name=sig_chain,json=sigChain,proto3" json:"sig_chain,omitempty"`
+	SigChain            *crypto.SigChain      `protobuf:"bytes,1,opt,name=sig_chain,json=sigChain,proto3" json:"sig_chain,omitempty"`
 	Metadata            []byte                `protobuf:"bytes,2,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	RendezvousPointSeed []byte                `protobuf:"bytes,3,opt,name=rendezvous_point_seed,json=rendezvousPointSeed,proto3" json:"rendezvous_point_seed,omitempty"`
 	SharedSecret        []byte                `protobuf:"bytes,4,opt,name=shared_secret,json=sharedSecret,proto3" json:"shared_secret,omitempty"`
@@ -316,7 +131,7 @@ func (m *Contact) Reset()         { *m = Contact{} }
 func (m *Contact) String() string { return proto.CompactTextString(m) }
 func (*Contact) ProtoMessage()    {}
 func (*Contact) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cf50d946d740d100, []int{3}
+	return fileDescriptor_cf50d946d740d100, []int{1}
 }
 func (m *Contact) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -345,7 +160,7 @@ func (m *Contact) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Contact proto.InternalMessageInfo
 
-func (m *Contact) GetSigChain() *SigChain {
+func (m *Contact) GetSigChain() *crypto.SigChain {
 	if m != nil {
 		return m.SigChain
 	}
@@ -388,7 +203,7 @@ func (m *AccountConfig) Reset()         { *m = AccountConfig{} }
 func (m *AccountConfig) String() string { return proto.CompactTextString(m) }
 func (*AccountConfig) ProtoMessage()    {}
 func (*AccountConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cf50d946d740d100, []int{4}
+	return fileDescriptor_cf50d946d740d100, []int{2}
 }
 func (m *AccountConfig) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -431,7 +246,7 @@ func (m *DeviceConfig) Reset()         { *m = DeviceConfig{} }
 func (m *DeviceConfig) String() string { return proto.CompactTextString(m) }
 func (*DeviceConfig) ProtoMessage()    {}
 func (*DeviceConfig) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cf50d946d740d100, []int{5}
+	return fileDescriptor_cf50d946d740d100, []int{3}
 }
 func (m *DeviceConfig) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -461,11 +276,8 @@ func (m *DeviceConfig) XXX_DiscardUnknown() {
 var xxx_messageInfo_DeviceConfig proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterEnum("SigChainEntry_SigChainEntryType", SigChainEntry_SigChainEntryType_name, SigChainEntry_SigChainEntryType_value)
 	proto.RegisterEnum("Contact_ContactStatus", Contact_ContactStatus_name, Contact_ContactStatus_value)
 	proto.RegisterType((*Device)(nil), "Device")
-	proto.RegisterType((*SigChainEntry)(nil), "SigChainEntry")
-	proto.RegisterType((*SigChain)(nil), "SigChain")
 	proto.RegisterType((*Contact)(nil), "Contact")
 	proto.RegisterType((*AccountConfig)(nil), "AccountConfig")
 	proto.RegisterType((*DeviceConfig)(nil), "DeviceConfig")
@@ -474,54 +286,37 @@ func init() {
 func init() { proto.RegisterFile("entity.proto", fileDescriptor_cf50d946d740d100) }
 
 var fileDescriptor_cf50d946d740d100 = []byte{
-	// 752 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0xcf, 0x6f, 0xe3, 0x44,
-	0x14, 0x8e, 0xd3, 0x6e, 0x9a, 0xbc, 0xfc, 0xa8, 0x77, 0x60, 0xbb, 0x51, 0x81, 0xa4, 0x0a, 0x68,
-	0x55, 0x21, 0x91, 0x48, 0x41, 0x08, 0x38, 0x70, 0x68, 0xb2, 0x95, 0xb6, 0x2a, 0x88, 0xca, 0xed,
-	0x72, 0xe0, 0x62, 0x8d, 0x67, 0x5e, 0x9d, 0xa1, 0xc9, 0x8c, 0xf1, 0x8c, 0x0b, 0xe6, 0xaf, 0xe8,
-	0x9f, 0xb5, 0xc7, 0xe5, 0x80, 0xc4, 0x69, 0x41, 0xed, 0x3f, 0x82, 0x3c, 0x63, 0x67, 0xb7, 0x9b,
-	0x5e, 0x38, 0xf9, 0x7d, 0xdf, 0xf7, 0x7e, 0x8c, 0xbe, 0x79, 0x1e, 0xe8, 0xa0, 0x34, 0xc2, 0xe4,
-	0xe3, 0x24, 0x55, 0x46, 0xed, 0x0f, 0x63, 0xa5, 0xe2, 0x25, 0x4e, 0x2c, 0x8a, 0xb2, 0xcb, 0x89,
-	0x11, 0x2b, 0xd4, 0x86, 0xae, 0x92, 0x32, 0xe1, 0x8b, 0x58, 0x98, 0x45, 0x16, 0x8d, 0x99, 0x5a,
-	0x4d, 0x62, 0x15, 0xab, 0xb7, 0x99, 0x05, 0xb2, 0xc0, 0x46, 0x2e, 0x7d, 0xf4, 0x13, 0x34, 0x9e,
-	0xe3, 0xb5, 0x60, 0x48, 0x3e, 0x83, 0x1e, 0xb7, 0x51, 0x98, 0x64, 0x51, 0x78, 0x85, 0x79, 0xdf,
-	0x3b, 0xf0, 0x0e, 0x3b, 0x41, 0xc7, 0xb1, 0x67, 0x59, 0x74, 0x8a, 0x39, 0x79, 0x06, 0xbb, 0x94,
-	0x31, 0x95, 0x49, 0xb3, 0x4e, 0xab, 0xdb, 0xb4, 0x6e, 0x49, 0xbb, 0xbc, 0xd1, 0x9f, 0xdb, 0xd0,
-	0x3d, 0x17, 0xf1, 0x7c, 0x41, 0x85, 0x3c, 0x96, 0x26, 0xcd, 0xc9, 0x27, 0x00, 0x58, 0x04, 0xe1,
-	0x82, 0xea, 0x45, 0xd9, 0xbb, 0x65, 0x99, 0x17, 0x54, 0x2f, 0xc8, 0x0b, 0xd8, 0x75, 0xb2, 0xc9,
-	0x13, 0x0c, 0x99, 0xe2, 0x68, 0x1b, 0xf7, 0xa6, 0x07, 0xe3, 0x7b, 0x7d, 0xee, 0xa3, 0x8b, 0x3c,
-	0xc1, 0xa0, 0x8b, 0x55, 0x38, 0x57, 0x1c, 0xc9, 0xe7, 0xf0, 0x38, 0xa1, 0x29, 0x4a, 0x13, 0xbe,
-	0x33, 0x6f, 0xcb, 0xce, 0xdb, 0x75, 0xc2, 0xf1, 0x7a, 0xea, 0x1c, 0x80, 0xa5, 0x48, 0x0d, 0xf2,
-	0x90, 0x9a, 0xfe, 0xf6, 0x81, 0x77, 0xd8, 0x9e, 0xee, 0x8f, 0x9d, 0xc7, 0xe3, 0xca, 0xb9, 0xf1,
-	0x45, 0xe5, 0xf1, 0xac, 0xf9, 0xea, 0xcd, 0xb0, 0x76, 0xf3, 0xcf, 0xd0, 0x0b, 0x5a, 0x65, 0xdd,
-	0x91, 0x21, 0xc7, 0xd0, 0xc6, 0xdf, 0x13, 0x91, 0x0a, 0x19, 0x17, 0x5d, 0x1e, 0xfd, 0x8f, 0x2e,
-	0x50, 0x15, 0x1e, 0x19, 0xf2, 0x15, 0x3c, 0xd5, 0x22, 0x96, 0x98, 0x16, 0xce, 0x2e, 0x05, 0x2b,
-	0xcc, 0x0d, 0xa3, 0xdc, 0xa0, 0xee, 0x37, 0xec, 0xe9, 0x3f, 0x74, 0xf2, 0x99, 0x55, 0x4f, 0x31,
-	0x9f, 0x15, 0x1a, 0xf9, 0x1a, 0xfa, 0x3a, 0x8b, 0x7e, 0x41, 0x66, 0x36, 0xeb, 0x76, 0x6c, 0xdd,
-	0x93, 0x52, 0x7f, 0xaf, 0xf0, 0x63, 0x68, 0x15, 0x0d, 0xa9, 0xc9, 0x52, 0xec, 0x37, 0xdd, 0x7d,
-	0xac, 0x89, 0xd1, 0x8d, 0x07, 0x8f, 0x37, 0xac, 0x26, 0x03, 0xd8, 0xdf, 0x20, 0x5f, 0x4a, 0x8e,
-	0x97, 0x42, 0x22, 0xf7, 0x6b, 0x0f, 0xea, 0x27, 0x52, 0x18, 0xcb, 0xf8, 0x1e, 0xf9, 0x08, 0x9e,
-	0x6e, 0xe8, 0x47, 0x9c, 0x9f, 0x62, 0xee, 0xd7, 0x1f, 0x2c, 0x0e, 0x70, 0xa5, 0xae, 0xb1, 0xd0,
-	0xb7, 0x46, 0xdf, 0x43, 0xb3, 0xd2, 0xc9, 0x1e, 0xd4, 0x05, 0x77, 0x5b, 0x34, 0x6b, 0xdc, 0xbe,
-	0x19, 0xd6, 0x4f, 0x9e, 0x07, 0x75, 0xc1, 0xc9, 0x21, 0xec, 0x14, 0xb7, 0x2e, 0x50, 0xf7, 0xeb,
-	0x07, 0x5b, 0x87, 0xed, 0x69, 0xef, 0xfe, 0xc2, 0x04, 0x95, 0x3c, 0xfa, 0xab, 0x0e, 0x3b, 0x73,
-	0x25, 0x0d, 0x65, 0x86, 0x3c, 0xb3, 0x56, 0x84, 0xac, 0x48, 0xb3, 0x4d, 0xdb, 0xd3, 0xd6, 0xba,
-	0x2e, 0x68, 0xea, 0x6a, 0xea, 0x3e, 0x34, 0x57, 0x68, 0x28, 0xa7, 0x86, 0x96, 0x6b, 0xbf, 0xc6,
-	0x64, 0x0a, 0x4f, 0x52, 0x94, 0x1c, 0xff, 0xb8, 0x56, 0x99, 0x0e, 0x13, 0x25, 0xa4, 0x09, 0x35,
-	0x22, 0x2f, 0x57, 0xef, 0x83, 0xb7, 0xe2, 0x59, 0xa1, 0x9d, 0x23, 0x72, 0xf2, 0x29, 0x74, 0xf5,
-	0x82, 0xa6, 0xc8, 0x43, 0x8d, 0x2c, 0x45, 0xb7, 0x81, 0x9d, 0xa0, 0xe3, 0xc8, 0x73, 0xcb, 0x91,
-	0xef, 0xa0, 0xc7, 0xdc, 0x39, 0x43, 0x6d, 0xa8, 0xc9, 0xb4, 0xdd, 0xb0, 0xde, 0x74, 0x6f, 0x5c,
-	0x1e, 0xbf, 0xfa, 0x9e, 0x5b, 0x35, 0xe8, 0xb2, 0x77, 0xe1, 0x48, 0x42, 0xf7, 0x9e, 0x4e, 0xda,
-	0xb0, 0xf3, 0x52, 0x5e, 0x49, 0xf5, 0x9b, 0xf4, 0x6b, 0x04, 0xa0, 0xf1, 0x43, 0xae, 0x71, 0x79,
-	0xe9, 0x7b, 0x85, 0x50, 0x66, 0xfa, 0xf5, 0x02, 0x5c, 0xa4, 0x99, 0x36, 0xc8, 0xfd, 0xad, 0x02,
-	0xcc, 0x96, 0x8a, 0x5d, 0x21, 0xf7, 0xb7, 0x49, 0x17, 0x5a, 0x01, 0xfe, 0x9a, 0xa1, 0x36, 0x27,
-	0xd2, 0x7f, 0x44, 0x7a, 0x00, 0x25, 0xfc, 0x31, 0x33, 0x7e, 0x63, 0x74, 0x02, 0xdd, 0x23, 0xf7,
-	0x14, 0xcc, 0x95, 0xbc, 0x14, 0x31, 0xf9, 0x06, 0xfa, 0x1b, 0xc6, 0xa0, 0xa4, 0xd1, 0x12, 0xdd,
-	0x05, 0x36, 0x83, 0xbd, 0xf7, 0xbc, 0x39, 0x76, 0xea, 0xa8, 0x07, 0x1d, 0xf7, 0x38, 0xb9, 0x4e,
-	0xb3, 0x6f, 0x5f, 0xdd, 0x0e, 0xbc, 0xd7, 0xb7, 0x03, 0xef, 0xdf, 0xdb, 0x81, 0x77, 0x73, 0x37,
-	0xa8, 0xbd, 0xbe, 0x1b, 0xd4, 0xfe, 0xbe, 0x1b, 0xd4, 0x7e, 0x1e, 0x46, 0x98, 0x9a, 0x7c, 0x6c,
-	0x90, 0x2d, 0x26, 0xc5, 0x9b, 0x77, 0x15, 0x4f, 0x2c, 0x63, 0x7f, 0x3e, 0xa6, 0x96, 0x51, 0xc3,
-	0x46, 0x5f, 0xfe, 0x17, 0x00, 0x00, 0xff, 0xff, 0x7a, 0x53, 0xfd, 0x71, 0x4e, 0x05, 0x00, 0x00,
+	// 472 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x92, 0x41, 0x6f, 0xd3, 0x40,
+	0x10, 0x85, 0xe3, 0xb4, 0x4d, 0x93, 0x69, 0x1c, 0xac, 0x45, 0x94, 0xa8, 0x07, 0xb7, 0x0a, 0xa8,
+	0xea, 0x85, 0x58, 0x0a, 0x17, 0x38, 0x70, 0xa0, 0x81, 0x43, 0x85, 0x10, 0x55, 0x02, 0x1c, 0xb8,
+	0x58, 0xeb, 0xf5, 0xc4, 0x59, 0xc5, 0xd9, 0x0d, 0xde, 0x71, 0x51, 0xf8, 0x15, 0xfc, 0x2c, 0x8e,
+	0xbd, 0x20, 0x71, 0x44, 0xc9, 0x1f, 0x41, 0xde, 0x35, 0x2d, 0xd0, 0x93, 0xe7, 0xbd, 0xf7, 0x69,
+	0xbc, 0x7e, 0x5e, 0xe8, 0xa2, 0x22, 0x49, 0xeb, 0xe1, 0xaa, 0xd0, 0xa4, 0x8f, 0x8e, 0x33, 0xad,
+	0xb3, 0x1c, 0x23, 0xab, 0x92, 0x72, 0x16, 0x91, 0x5c, 0xa2, 0x21, 0xbe, 0x5c, 0xd5, 0xc0, 0x93,
+	0x4c, 0xd2, 0xbc, 0x4c, 0x86, 0x42, 0x2f, 0xa3, 0x4c, 0x67, 0xfa, 0x96, 0xac, 0x94, 0x15, 0x76,
+	0xaa, 0xf1, 0x87, 0x52, 0x11, 0x16, 0x8a, 0xe7, 0x91, 0x91, 0x99, 0x98, 0x73, 0xa9, 0x5c, 0x30,
+	0xf8, 0x08, 0xad, 0x57, 0x78, 0x25, 0x05, 0xb2, 0xc7, 0xd0, 0x4b, 0xed, 0x14, 0xaf, 0xca, 0x24,
+	0x5e, 0xe0, 0xba, 0xef, 0x9d, 0x78, 0x67, 0xdd, 0x49, 0xd7, 0xb9, 0x97, 0x65, 0xf2, 0x06, 0xd7,
+	0xec, 0x14, 0xee, 0x71, 0x21, 0x74, 0xa9, 0xe8, 0x06, 0x6b, 0x5a, 0xcc, 0xaf, 0x6d, 0xc7, 0x0d,
+	0x7e, 0x34, 0x61, 0x7f, 0xac, 0x15, 0x71, 0x41, 0xec, 0x14, 0x3a, 0x46, 0x66, 0xb1, 0x7d, 0xad,
+	0x5d, 0x7a, 0x30, 0xea, 0x0c, 0xa7, 0x32, 0x1b, 0x57, 0xc6, 0xa4, 0x6d, 0xea, 0x89, 0x1d, 0x41,
+	0x7b, 0x89, 0xc4, 0x53, 0x4e, 0xbc, 0x5e, 0x7a, 0xa3, 0xd9, 0x08, 0x1e, 0x14, 0xa8, 0x52, 0xfc,
+	0x7a, 0xa5, 0x4b, 0x13, 0xaf, 0xb4, 0x54, 0x14, 0x1b, 0xc4, 0xb4, 0xbf, 0x63, 0xc1, 0xfb, 0xb7,
+	0xe1, 0x65, 0x95, 0x4d, 0x11, 0x53, 0xf6, 0x08, 0x7c, 0x33, 0xe7, 0x05, 0xa6, 0xb1, 0x41, 0x51,
+	0x20, 0xf5, 0x77, 0xdd, 0x07, 0x39, 0x73, 0x6a, 0x3d, 0xf6, 0x02, 0x7a, 0xc2, 0x9d, 0x33, 0x36,
+	0xc4, 0xa9, 0x34, 0xfd, 0xbd, 0x13, 0xef, 0xac, 0x37, 0x3a, 0x1c, 0xd6, 0xc7, 0xff, 0xf3, 0x9c,
+	0xda, 0x74, 0xe2, 0x8b, 0xbf, 0xe5, 0x40, 0x81, 0xff, 0x4f, 0xce, 0x0e, 0x60, 0xff, 0x83, 0x5a,
+	0x28, 0xfd, 0x45, 0x05, 0x0d, 0x06, 0xd0, 0x7a, 0xbb, 0x36, 0x98, 0xcf, 0x02, 0xaf, 0x0a, 0x6a,
+	0x32, 0x68, 0x56, 0xe2, 0x7d, 0x51, 0x1a, 0xc2, 0x34, 0xd8, 0xa9, 0xc4, 0x79, 0xae, 0xc5, 0x02,
+	0xd3, 0x60, 0x97, 0xf9, 0xd0, 0x99, 0xe0, 0xe7, 0x12, 0x0d, 0x5d, 0xa8, 0x60, 0x8f, 0xf5, 0x00,
+	0x6a, 0xf9, 0xae, 0xa4, 0xa0, 0x35, 0xb8, 0x00, 0xff, 0xa5, 0x2b, 0x7a, 0xac, 0xd5, 0x4c, 0x66,
+	0xec, 0x19, 0xf4, 0xef, 0x14, 0x83, 0x8a, 0x27, 0x39, 0xa6, 0xb6, 0xeb, 0xf6, 0xe4, 0xf0, 0xbf,
+	0x6e, 0x5e, 0xbb, 0x74, 0xd0, 0x83, 0xae, 0xfb, 0xf5, 0x6e, 0xd3, 0xf9, 0xf3, 0xef, 0x9b, 0xd0,
+	0xbb, 0xde, 0x84, 0xde, 0xaf, 0x4d, 0xe8, 0x7d, 0xdb, 0x86, 0x8d, 0xeb, 0x6d, 0xd8, 0xf8, 0xb9,
+	0x0d, 0x1b, 0x9f, 0x8e, 0x13, 0x2c, 0x68, 0x3d, 0x24, 0x14, 0xf3, 0xa8, 0xba, 0x6a, 0x8b, 0x2c,
+	0xb2, 0x8e, 0xbd, 0x42, 0x42, 0xe7, 0x49, 0xcb, 0x4e, 0x4f, 0x7f, 0x07, 0x00, 0x00, 0xff, 0xff,
+	0xbe, 0x6f, 0x5f, 0xb9, 0xc5, 0x02, 0x00, 0x00,
 }
 
 func (m *Device) Marshal() (dAtA []byte, err error) {
@@ -555,129 +350,6 @@ func (m *Device) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.DevicePubKey)
 		copy(dAtA[i:], m.DevicePubKey)
 		i = encodeVarintEntity(dAtA, i, uint64(len(m.DevicePubKey)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SigChainEntry) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SigChainEntry) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SigChainEntry) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Signature) > 0 {
-		i -= len(m.Signature)
-		copy(dAtA[i:], m.Signature)
-		i = encodeVarintEntity(dAtA, i, uint64(len(m.Signature)))
-		i--
-		dAtA[i] = 0x42
-	}
-	if len(m.SubjectPublicKeyBytes) > 0 {
-		i -= len(m.SubjectPublicKeyBytes)
-		copy(dAtA[i:], m.SubjectPublicKeyBytes)
-		i = encodeVarintEntity(dAtA, i, uint64(len(m.SubjectPublicKeyBytes)))
-		i--
-		dAtA[i] = 0x3a
-	}
-	if len(m.SignerPublicKeyBytes) > 0 {
-		i -= len(m.SignerPublicKeyBytes)
-		copy(dAtA[i:], m.SignerPublicKeyBytes)
-		i = encodeVarintEntity(dAtA, i, uint64(len(m.SignerPublicKeyBytes)))
-		i--
-		dAtA[i] = 0x32
-	}
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.ExpiringAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.ExpiringAt):])
-	if err1 != nil {
-		return 0, err1
-	}
-	i -= n1
-	i = encodeVarintEntity(dAtA, i, uint64(n1))
-	i--
-	dAtA[i] = 0x2a
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
-	if err2 != nil {
-		return 0, err2
-	}
-	i -= n2
-	i = encodeVarintEntity(dAtA, i, uint64(n2))
-	i--
-	dAtA[i] = 0x22
-	if len(m.ParentEntryHash) > 0 {
-		i -= len(m.ParentEntryHash)
-		copy(dAtA[i:], m.ParentEntryHash)
-		i = encodeVarintEntity(dAtA, i, uint64(len(m.ParentEntryHash)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if m.EntryTypeCode != 0 {
-		i = encodeVarintEntity(dAtA, i, uint64(m.EntryTypeCode))
-		i--
-		dAtA[i] = 0x10
-	}
-	if len(m.EntryHash) > 0 {
-		i -= len(m.EntryHash)
-		copy(dAtA[i:], m.EntryHash)
-		i = encodeVarintEntity(dAtA, i, uint64(len(m.EntryHash)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SigChain) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SigChain) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SigChain) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Entries) > 0 {
-		for iNdEx := len(m.Entries) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Entries[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintEntity(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x12
-		}
-	}
-	if len(m.ID) > 0 {
-		i -= len(m.ID)
-		copy(dAtA[i:], m.ID)
-		i = encodeVarintEntity(dAtA, i, uint64(len(m.ID)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -825,61 +497,6 @@ func (m *Device) Size() (n int) {
 	l = len(m.AccountPubKey)
 	if l > 0 {
 		n += 1 + l + sovEntity(uint64(l))
-	}
-	return n
-}
-
-func (m *SigChainEntry) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.EntryHash)
-	if l > 0 {
-		n += 1 + l + sovEntity(uint64(l))
-	}
-	if m.EntryTypeCode != 0 {
-		n += 1 + sovEntity(uint64(m.EntryTypeCode))
-	}
-	l = len(m.ParentEntryHash)
-	if l > 0 {
-		n += 1 + l + sovEntity(uint64(l))
-	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)
-	n += 1 + l + sovEntity(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.ExpiringAt)
-	n += 1 + l + sovEntity(uint64(l))
-	l = len(m.SignerPublicKeyBytes)
-	if l > 0 {
-		n += 1 + l + sovEntity(uint64(l))
-	}
-	l = len(m.SubjectPublicKeyBytes)
-	if l > 0 {
-		n += 1 + l + sovEntity(uint64(l))
-	}
-	l = len(m.Signature)
-	if l > 0 {
-		n += 1 + l + sovEntity(uint64(l))
-	}
-	return n
-}
-
-func (m *SigChain) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.ID)
-	if l > 0 {
-		n += 1 + l + sovEntity(uint64(l))
-	}
-	if len(m.Entries) > 0 {
-		for _, e := range m.Entries {
-			l = e.Size()
-			n += 1 + l + sovEntity(uint64(l))
-		}
 	}
 	return n
 }
@@ -1060,435 +677,6 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SigChainEntry) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowEntity
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SigChainEntry: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SigChainEntry: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EntryHash", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEntity
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthEntity
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.EntryHash = append(m.EntryHash[:0], dAtA[iNdEx:postIndex]...)
-			if m.EntryHash == nil {
-				m.EntryHash = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EntryTypeCode", wireType)
-			}
-			m.EntryTypeCode = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEntity
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.EntryTypeCode |= SigChainEntry_SigChainEntryType(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ParentEntryHash", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEntity
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthEntity
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ParentEntryHash = append(m.ParentEntryHash[:0], dAtA[iNdEx:postIndex]...)
-			if m.ParentEntryHash == nil {
-				m.ParentEntryHash = []byte{}
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEntity
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthEntity
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ExpiringAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEntity
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthEntity
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.ExpiringAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SignerPublicKeyBytes", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEntity
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthEntity
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SignerPublicKeyBytes = append(m.SignerPublicKeyBytes[:0], dAtA[iNdEx:postIndex]...)
-			if m.SignerPublicKeyBytes == nil {
-				m.SignerPublicKeyBytes = []byte{}
-			}
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SubjectPublicKeyBytes", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEntity
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthEntity
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SubjectPublicKeyBytes = append(m.SubjectPublicKeyBytes[:0], dAtA[iNdEx:postIndex]...)
-			if m.SubjectPublicKeyBytes == nil {
-				m.SubjectPublicKeyBytes = []byte{}
-			}
-			iNdEx = postIndex
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Signature", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEntity
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthEntity
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Signature = append(m.Signature[:0], dAtA[iNdEx:postIndex]...)
-			if m.Signature == nil {
-				m.Signature = []byte{}
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipEntity(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SigChain) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowEntity
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SigChain: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SigChain: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEntity
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthEntity
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ID = append(m.ID[:0], dAtA[iNdEx:postIndex]...)
-			if m.ID == nil {
-				m.ID = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Entries", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEntity
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthEntity
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Entries = append(m.Entries, &SigChainEntry{})
-			if err := m.Entries[len(m.Entries)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipEntity(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthEntity
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
 func (m *Contact) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1548,7 +736,7 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.SigChain == nil {
-				m.SigChain = &SigChain{}
+				m.SigChain = &crypto.SigChain{}
 			}
 			if err := m.SigChain.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
