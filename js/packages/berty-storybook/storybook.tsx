@@ -6,7 +6,7 @@ import { storiesOf } from '@storybook/react-native'
 import { View, Button } from 'react-native'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import { IconRegistry } from 'react-native-ui-kitten'
-import { promiseResolved, fakeRequests, fakeConversations, fakeUsers, fakeOneUser } from './faker'
+import { promiseResolved, fakeContacts, fakeConversations, fakeUsers, fakeOneUser } from './faker'
 import * as Onboarding from './Onboarding'
 import * as Main from './Main'
 import * as Settings from './settings/Settings'
@@ -16,6 +16,9 @@ import { I18nextProvider } from 'react-i18next'
 import i18n from '@berty-tech/berty-i18n'
 import { faker } from './faker.gen'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
+import { berty } from '@berty-tech/berty-api'
+
+console.disableYellowBox = true
 
 const stories = storiesOf('Berty', module)
 
@@ -29,6 +32,25 @@ stories.addDecorator((storyFn) => (
 		</I18nextProvider>
 	</Store.Provider>
 ))
+
+const mainListProps = {
+	requests: {
+		items: fakeContacts
+			.filter((_) => _.kind === berty.chatmodel.Contact.Kind.PendingInc)
+			.map((_) => ({
+				..._,
+				accept: promiseResolved,
+				discard: promiseResolved,
+			})),
+	},
+	conversations: { items: fakeConversations.map((_) => ({ ..._, navigate: () => {} })) },
+	footer: {
+		search: (): void => {},
+		plus: (): void => {},
+		account: (): void => {},
+	},
+	user: fakeOneUser,
+}
 
 // Stories
 stories
@@ -57,17 +79,16 @@ stories
 			startApp={linkTo('Onboarding.Privacy')}
 		/>
 	))
-	.add('Main.List', () => (
-		<Main.List
-			requests={fakeRequests}
-			conversations={fakeConversations}
-			footer={{
-				search: (): void => {},
-				plus: (): void => {},
-				account: (): void => {},
-			}}
-		/>
-	))
+	.add('Main.List', () => <Main.List {...mainListProps} />)
+	.add('Main.Request', () => <Main.Request user={fakeOneUser} />)
+	.add('Main.RequestGroup', () => <Main.GroupRequest user={fakeOneUser} />)
+	.add('Main.ChatGroup', () => <Main.ChatGroup user={fakeOneUser} />)
+	.add('Main.Chat', () => <Main.Chat user={fakeOneUser} />)
+	.add('Main.ScanRequest', () => <Main.ScanRequest user={fakeOneUser} />)
+	.add('Main.Scan', () => <Main.Scan />)
+	.add('Main.InvalidScan', () => <Main.InvalidScan />)
+	.add('Main.ChatSettings', () => <Main.ChatSettings user={fakeOneUser} />)
+	.add('Main.ChatSettingsContact', () => <Main.ChatSettingsContact user={fakeOneUser} />)
 	.add('Settings.Home', () => <Settings.Home user={fakeOneUser} />)
 	.add('Settings.MyBertyId', () => <Settings.MyBertyId />)
 	.add('Settings.EditProfile', () => <Settings.EditProfile />)

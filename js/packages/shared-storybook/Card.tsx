@@ -39,5 +39,3 @@ export const Card: React.FunctionComponent<ViewProps> = (props) => (
 )
 
 export default Card
-
-export default Card

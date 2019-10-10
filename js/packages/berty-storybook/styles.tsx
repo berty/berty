@@ -1,5 +1,4 @@
-import { StyleSheet } from 'react-native'
-import { Platform } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 
 export const colors = {
 	white: '#FFFFFF',
@@ -8,11 +7,26 @@ export const colors = {
 	red: '#F64278',
 	yellow: '#FFBF47',
 	green: '#20D6B5',
+	grey: '#979797',
+
 	// Light
 	lightBlue: '#CED2FF',
 	lightRed: '#FFCED8',
 	lightGreen: '#D3F8F2',
+	lightGrey: '#EDEFF3',
+	lightBlueGrey: '#E8E9FC',
+	lightYellow: '#FFF2DA',
+
+	// Light Message
+	lightMsgBlue: '#CED2FF99',
+	lightMsgRed: '#FFCED899',
+	lightMsgGreen: '#D3F8F299',
+	lightMsgGrey: '#EDEFF399',
+	lightMsgBlueGrey: '#E8E9FC99',
+	lightMsgYellow: '#FFF2DA99',
+
 	textLight: '#8F9BB3',
+
 	// Dark
 	darkBlue: '#3E49EA',
 	darkGray: '#3F426D',
@@ -23,13 +37,22 @@ export const styles = StyleSheet.create({
 	test: { borderWidth: 1, borderColor: 'red' },
 	// Use
 	fontFamily: { fontFamily: 'Avenir' },
+	fontCourier: { fontFamily: 'Courier' },
+
 	textWhite: { color: colors.white },
 	textBlack: { color: colors.black },
 	textBlue: { color: colors.blue },
+	textLightBlue: { color: colors.lightBlue },
 	textRed: { color: colors.red },
 	textYellow: { color: colors.yellow },
 	textGreen: { color: colors.green },
 	textLight: { color: colors.textLight },
+	textGrey: { color: colors.grey },
+	textLightGrey: { color: colors.lightGrey },
+	textLightBlueGrey: { color: colors.lightBlueGrey },
+
+	textBold: { fontWeight: 'bold' },
+
 	bgWhite: { backgroundColor: colors.white },
 	bgBlack: { backgroundColor: colors.black },
 	bgBlue: { backgroundColor: colors.blue },
@@ -39,6 +62,9 @@ export const styles = StyleSheet.create({
 	bgLightRed: { backgroundColor: colors.lightRed },
 	bgLightGreen: { backgroundColor: colors.lightGreen },
 	bgDarkgray: { backgroundColor: colors.darkGray },
+	bgGrey: { backgroundColor: colors.grey },
+	bgLightGrey: { backgroundColor: colors.lightGrey },
+	bgLightBlueGrey: { backgroundColor: colors.lightBlueGrey },
 
 	flex: { flex: 1 },
 	wrap: { flexWrap: 'wrap' },
@@ -53,6 +79,11 @@ export const styles = StyleSheet.create({
 	end: { alignSelf: 'flex-end' },
 	stretch: { alignSelf: 'stretch' },
 
+	centerItems: { alignItems: 'center' },
+	startItems: { alignItems: 'flex-start' },
+	endItems: { alignItems: 'flex-end' },
+	stretchItems: { alignItems: 'stretch' },
+
 	spaceEvenly: { justifyContent: 'space-evenly' },
 	spaceAround: { justifyContent: 'space-around' },
 	spaceBetween: { justifyContent: 'space-between' },
@@ -60,6 +91,13 @@ export const styles = StyleSheet.create({
 
 	alignItems: { alignItems: 'center' },
 	justifyContent: { justifyContent: 'center' },
+
+	border: { borderWidth: 0.5, borderColor: colors.lightGrey },
+	borderTop: { borderTopWidth: 0.5, borderColor: colors.lightGrey },
+	borderBottom: { borderBottomWidth: 0.5, borderColor: colors.lightGrey },
+
+	rounded: { borderRadius: 20 },
+	roundedTop: { borderTopLeftRadius: 20, borderTopRightRadius: 20 },
 
 	bottom: { bottom: 0 },
 	left: { left: 0 },
@@ -107,6 +145,7 @@ export const styles = StyleSheet.create({
 	bigPaddingBottom: { paddingBottom: 30, bottom: 30 },
 	bigPaddingTop: { paddingTop: 30 },
 
+	littleMargin: { margin: 12 },
 	littleMarginTop: { marginTop: 12 },
 	littleMarginBottom: { marginBottom: 12 },
 	littleMarginRight: { marginRight: 12 },
@@ -126,17 +165,39 @@ export const styles = StyleSheet.create({
 
 	borderRadius: { borderRadius: 16 },
 	littleBorderRadius: { borderRadius: 10 },
-	buttonShadow: Platform.select({
-		ios: {
-			shadowOffset: { width: 0, height: 8 },
-			shadowColor: '#ABAED1',
-			shadowOpacity: 0.3,
-			shadowRadius: 9,
-		},
-		android: {
-			elevation: 4,
-		},
-	}),
+	overflow: { overflow: 'visible' },
+
+	shadow: {
+		...Platform.select({
+			ios: {
+				shadowOffset: { width: 3, height: 3 },
+				shadowColor: '#ABAED1',
+				shadowOpacity: 0.5,
+				shadowRadius: 9,
+			},
+			android: {
+				elevation: 4,
+			},
+		}),
+	},
+
+	footerShadow: {
+		...Platform.select({
+			ios: {
+				shadowOffset: { width: 0, height: 0 },
+				shadowColor: '#000000',
+				shadowOpacity: 1,
+				shadowRadius: 20,
+			},
+		}),
+	},
+
+	textTiny: {
+		fontSize: 10,
+	},
+	textSmall: {
+		fontSize: 12,
+	},
 })
 
 export default styles

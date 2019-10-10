@@ -113,7 +113,7 @@ rnpkg: deps
 .PHONY: lint
 lint: export PWD := $(PWD)
 lint: files = .
-lint: options += --cache --ext=.js,.jsx,.ts,.tsx
+lint: options += --cache --quiet --ext=.js,.jsx,.ts,.tsx
 lint: deps
 	cat $(PWD)/.gitignore > $(PWD)/.eslintignore
 	echo "*.pb.*" >> $(PWD)/.eslintignore
