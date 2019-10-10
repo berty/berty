@@ -14,5 +14,5 @@ generate:
 .PHONY: clean
 clean:
 	cd go; make clean
-	#cd js; make clean
+	cd js; make clean
 	cd docs; make clean

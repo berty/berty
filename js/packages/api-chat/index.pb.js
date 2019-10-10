@@ -17,14 +17,38 @@
           chat: {
             options: {
               go_package: "berty.tech/go/pkg/bertychat",
+              "(gogoproto.benchgen_all)": false,
+              "(gogoproto.compare_all)": false,
+              "(gogoproto.description_all)": false,
+              "(gogoproto.enum_stringer_all)": false,
+              "(gogoproto.enumdecl_all)": true,
+              "(gogoproto.equal_all)": false,
+              "(gogoproto.face_all)": false,
+              "(gogoproto.gogoproto_import)": false,
+              "(gogoproto.goproto_enum_prefix_all)": true,
+              "(gogoproto.goproto_enum_stringer_all)": false,
+              "(gogoproto.goproto_extensions_map_all)": false,
               "(gogoproto.goproto_getters_all)": false,
+              "(gogoproto.goproto_registration)": false,
+              "(gogoproto.goproto_sizecache_all)": false,
+              "(gogoproto.goproto_stringer_all)": false,
+              "(gogoproto.goproto_unkeyed_all)": false,
+              "(gogoproto.goproto_unrecognized_all)": false,
+              "(gogoproto.gostring_all)": false,
               "(gogoproto.marshaler_all)": true,
-              "(gogoproto.unmarshaler_all)": true,
+              "(gogoproto.messagename_all)": false,
+              "(gogoproto.onlyone_all)": false,
+              "(gogoproto.populate_all)": false,
+              "(gogoproto.protosizer_all)": false,
               "(gogoproto.sizer_all)": true,
-              "(gogoproto.goproto_registration)": true,
-              "(gogoproto.populate_all)": true,
-              "(gogoproto.equal_all)": true,
-              "(gogoproto.testgen_all)": true
+              "(gogoproto.stable_marshaler_all)": false,
+              "(gogoproto.stringer_all)": true,
+              "(gogoproto.testgen_all)": false,
+              "(gogoproto.typedecl_all)": true,
+              "(gogoproto.unmarshaler_all)": true,
+              "(gogoproto.unsafe_marshaler_all)": false,
+              "(gogoproto.unsafe_unmarshaler_all)": false,
+              "(gogoproto.verbose_equal_all)": false
             },
             nested: {
               Account: {
@@ -343,14 +367,36 @@
           chatmodel: {
             options: {
               go_package: "berty.tech/go/pkg/chatmodel",
+              "(gogoproto.benchgen_all)": false,
+              "(gogoproto.compare_all)": false,
+              "(gogoproto.description_all)": false,
+              "(gogoproto.enum_stringer_all)": false,
+              "(gogoproto.enumdecl_all)": true,
+              "(gogoproto.equal_all)": false,
+              "(gogoproto.face_all)": false,
+              "(gogoproto.gogoproto_import)": false,
+              "(gogoproto.goproto_enum_prefix_all)": true,
+              "(gogoproto.goproto_enum_stringer_all)": false,
+              "(gogoproto.goproto_extensions_map_all)": false,
               "(gogoproto.goproto_getters_all)": false,
+              "(gogoproto.goproto_registration)": false,
+              "(gogoproto.goproto_stringer_all)": false,
+              "(gogoproto.goproto_unrecognized_all)": false,
+              "(gogoproto.gostring_all)": false,
               "(gogoproto.marshaler_all)": true,
-              "(gogoproto.unmarshaler_all)": true,
+              "(gogoproto.messagename_all)": false,
+              "(gogoproto.onlyone_all)": false,
+              "(gogoproto.populate_all)": false,
+              "(gogoproto.protosizer_all)": false,
               "(gogoproto.sizer_all)": true,
-              "(gogoproto.goproto_registration)": true,
-              "(gogoproto.populate_all)": true,
-              "(gogoproto.equal_all)": true,
-              "(gogoproto.testgen_all)": true
+              "(gogoproto.stable_marshaler_all)": false,
+              "(gogoproto.stringer_all)": true,
+              "(gogoproto.testgen_all)": false,
+              "(gogoproto.typedecl_all)": true,
+              "(gogoproto.unmarshaler_all)": true,
+              "(gogoproto.unsafe_marshaler_all)": false,
+              "(gogoproto.unsafe_unmarshaler_all)": false,
+              "(gogoproto.verbose_equal_all)": false
             },
             nested: {
               Account: {
@@ -650,6 +696,22 @@
                       "(gogoproto.moretags)": "gorm:embedded;embedded_prefix:body_"
                     }
                   },
+                  attachments: {
+                    rule: "repeated",
+                    type: "Attachment",
+                    id: 102,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                    }
+                  },
+                  reactions: {
+                    rule: "repeated",
+                    type: "Reaction",
+                    id: 103,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                    }
+                  },
                   conversationId: {
                     type: "uint64",
                     id: 200,
@@ -676,22 +738,6 @@
                   member: {
                     type: "Member",
                     id: 203,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:PRELOAD:false"
-                    }
-                  },
-                  attachments: {
-                    rule: "repeated",
-                    type: "Attachment",
-                    id: 204,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:PRELOAD:false"
-                    }
-                  },
-                  reactions: {
-                    rule: "repeated",
-                    type: "Reaction",
-                    id: 205,
                     options: {
                       "(gogoproto.moretags)": "gorm:PRELOAD:false"
                     }
@@ -726,118 +772,118 @@
                         id: 4
                       }
                     }
-                  }
-                }
-              },
-              Attachment: {
-                fields: {
-                  id: {
-                    type: "uint64",
-                    id: 1,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
-                      "(gogoproto.customname)": "ID"
+                  },
+                  Attachment: {
+                    fields: {
+                      id: {
+                        type: "uint64",
+                        id: 1,
+                        options: {
+                          "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
+                          "(gogoproto.customname)": "ID"
+                        }
+                      },
+                      createdAt: {
+                        type: "google.protobuf.Timestamp",
+                        id: 3,
+                        options: {
+                          "(gogoproto.stdtime)": true,
+                          "(gogoproto.nullable)": false
+                        }
+                      },
+                      updatedAt: {
+                        type: "google.protobuf.Timestamp",
+                        id: 4,
+                        options: {
+                          "(gogoproto.stdtime)": true,
+                          "(gogoproto.nullable)": false
+                        }
+                      },
+                      uri: {
+                        type: "string",
+                        id: 100
+                      },
+                      contentType: {
+                        type: "string",
+                        id: 101
+                      },
+                      messageId: {
+                        type: "uint64",
+                        id: 200,
+                        options: {
+                          "(gogoproto.customname)": "MessageID",
+                          "(gogoproto.moretags)": "gorm:not null;index"
+                        }
+                      },
+                      message: {
+                        type: "Message",
+                        id: 201,
+                        options: {
+                          "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                        }
+                      }
                     }
                   },
-                  createdAt: {
-                    type: "google.protobuf.Timestamp",
-                    id: 3,
-                    options: {
-                      "(gogoproto.stdtime)": true,
-                      "(gogoproto.nullable)": false
-                    }
-                  },
-                  updatedAt: {
-                    type: "google.protobuf.Timestamp",
-                    id: 4,
-                    options: {
-                      "(gogoproto.stdtime)": true,
-                      "(gogoproto.nullable)": false
-                    }
-                  },
-                  uri: {
-                    type: "string",
-                    id: 100
-                  },
-                  contentType: {
-                    type: "string",
-                    id: 101
-                  },
-                  messageId: {
-                    type: "uint64",
-                    id: 200,
-                    options: {
-                      "(gogoproto.customname)": "MessageID",
-                      "(gogoproto.moretags)": "gorm:not null;index"
-                    }
-                  },
-                  message: {
-                    type: "Message",
-                    id: 201,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:PRELOAD:false"
-                    }
-                  }
-                }
-              },
-              Reaction: {
-                fields: {
-                  id: {
-                    type: "uint64",
-                    id: 1,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
-                      "(gogoproto.customname)": "ID"
-                    }
-                  },
-                  createdAt: {
-                    type: "google.protobuf.Timestamp",
-                    id: 3,
-                    options: {
-                      "(gogoproto.stdtime)": true,
-                      "(gogoproto.nullable)": false
-                    }
-                  },
-                  updatedAt: {
-                    type: "google.protobuf.Timestamp",
-                    id: 4,
-                    options: {
-                      "(gogoproto.stdtime)": true,
-                      "(gogoproto.nullable)": false
-                    }
-                  },
-                  emoji: {
-                    type: "bytes",
-                    id: 100
-                  },
-                  messageId: {
-                    type: "uint64",
-                    id: 200,
-                    options: {
-                      "(gogoproto.customname)": "MessageID",
-                      "(gogoproto.moretags)": "gorm:not null;index"
-                    }
-                  },
-                  message: {
-                    type: "Message",
-                    id: 201,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:PRELOAD:false"
-                    }
-                  },
-                  memberId: {
-                    type: "uint64",
-                    id: 202,
-                    options: {
-                      "(gogoproto.customname)": "MemberID",
-                      "(gogoproto.moretags)": "gorm:not null;index"
-                    }
-                  },
-                  member: {
-                    type: "Member",
-                    id: 203,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                  Reaction: {
+                    fields: {
+                      id: {
+                        type: "uint64",
+                        id: 1,
+                        options: {
+                          "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
+                          "(gogoproto.customname)": "ID"
+                        }
+                      },
+                      createdAt: {
+                        type: "google.protobuf.Timestamp",
+                        id: 3,
+                        options: {
+                          "(gogoproto.stdtime)": true,
+                          "(gogoproto.nullable)": false
+                        }
+                      },
+                      updatedAt: {
+                        type: "google.protobuf.Timestamp",
+                        id: 4,
+                        options: {
+                          "(gogoproto.stdtime)": true,
+                          "(gogoproto.nullable)": false
+                        }
+                      },
+                      emoji: {
+                        type: "bytes",
+                        id: 100
+                      },
+                      messageId: {
+                        type: "uint64",
+                        id: 200,
+                        options: {
+                          "(gogoproto.customname)": "MessageID",
+                          "(gogoproto.moretags)": "gorm:not null;index"
+                        }
+                      },
+                      message: {
+                        type: "Message",
+                        id: 201,
+                        options: {
+                          "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                        }
+                      },
+                      memberId: {
+                        type: "uint64",
+                        id: 202,
+                        options: {
+                          "(gogoproto.customname)": "MemberID",
+                          "(gogoproto.moretags)": "gorm:not null;index"
+                        }
+                      },
+                      member: {
+                        type: "Member",
+                        id: 203,
+                        options: {
+                          "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                        }
+                      }
                     }
                   }
                 }
