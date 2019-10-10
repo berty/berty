@@ -4,9 +4,10 @@ import (
 	"context"
 	"net"
 
-	"berty.tech/go/pkg/iface"
+	"berty.tech/go/internal/crypto"
+
 	ggio "github.com/gogo/protobuf/io"
-	"github.com/libp2p/go-libp2p-core/crypto"
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	inet "github.com/libp2p/go-libp2p-core/network"
 )
 
@@ -20,13 +21,13 @@ type flow struct {
 	writer             ggio.WriteCloser
 	session            *handshakeSession
 	steps              map[HandshakeFrame_HandshakeStep]flowStep
-	ownSigChain        iface.SigChain
-	ownDevicePubKey    crypto.PubKey
-	provedSigChain     iface.SigChain
-	provedDevicePubKey crypto.PubKey
+	ownSigChain        *crypto.SigChain
+	ownDevicePubKey    p2pcrypto.PubKey
+	provedSigChain     *crypto.SigChain
+	provedDevicePubKey p2pcrypto.PubKey
 }
 
-func newHandshakeFlow(ctx context.Context, conn net.Conn, devPubKey crypto.PubKey, ownSigChain iface.SigChain, session *handshakeSession, steps map[HandshakeFrame_HandshakeStep]flowStep) (iface.SigChain, crypto.PubKey, error) {
+func newHandshakeFlow(ctx context.Context, conn net.Conn, devPubKey p2pcrypto.PubKey, ownSigChain *crypto.SigChain, session *handshakeSession, steps map[HandshakeFrame_HandshakeStep]flowStep) (*crypto.SigChain, p2pcrypto.PubKey, error) {
 	if conn == nil || session == nil || steps == nil {
 		return nil, nil, ErrParams
 	}
@@ -50,27 +51,21 @@ func (f *flow) close() error {
 	var retErr error
 
 	if f.writer != nil {
-		if err := f.writer.Close(); err != nil {
-			retErr = err
-		}
+		_ = f.writer.Close()
 	}
 
 	if f.reader != nil {
-		if err := f.reader.Close(); err != nil {
-			retErr = err
-		}
+		_ = f.reader.Close()
 	}
 
 	if f.session != nil {
-		if err := f.session.Close(); err != nil {
-			retErr = err
-		}
+		_ = f.session.Close()
 	}
 
 	return retErr
 }
 
-func (f *flow) performFlow(ctx context.Context) (iface.SigChain, crypto.PubKey, error) {
+func (f *flow) performFlow(ctx context.Context) (*crypto.SigChain, p2pcrypto.PubKey, error) {
 	var err error
 	defer func() { _ = f.close() }()
 
@@ -115,7 +110,7 @@ func (f *flow) performFlow(ctx context.Context) (iface.SigChain, crypto.PubKey, 
 	return nil, nil, ErrInvalidFlow
 }
 
-func Request(ctx context.Context, conn net.Conn, devicePrivateKey crypto.PrivKey, sigChain iface.SigChain, accountToReach crypto.PubKey) (iface.SigChain, crypto.PubKey, error) {
+func Request(ctx context.Context, conn net.Conn, devicePrivateKey p2pcrypto.PrivKey, sigChain *crypto.SigChain, accountToReach p2pcrypto.PubKey) (*crypto.SigChain, p2pcrypto.PubKey, error) {
 	session, err := newCryptoRequest(devicePrivateKey, sigChain, accountToReach)
 	if err != nil {
 		return nil, nil, err
@@ -130,7 +125,7 @@ func Request(ctx context.Context, conn net.Conn, devicePrivateKey crypto.PrivKey
 	})
 }
 
-func Response(ctx context.Context, conn net.Conn, devicePrivateKey crypto.PrivKey, sigChain iface.SigChain) (iface.SigChain, crypto.PubKey, error) {
+func Response(ctx context.Context, conn net.Conn, devicePrivateKey p2pcrypto.PrivKey, sigChain *crypto.SigChain) (*crypto.SigChain, p2pcrypto.PubKey, error) {
 	session, err := newCryptoResponse(devicePrivateKey, sigChain)
 	if err != nil {
 		return nil, nil, err

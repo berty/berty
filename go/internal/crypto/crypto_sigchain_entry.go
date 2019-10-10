@@ -1,7 +1,6 @@
 package crypto
 
 import (
-	"berty.tech/go/pkg/iface"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	mh "github.com/multiformats/go-multihash"
 )
@@ -70,4 +69,4 @@ func (m *SigChainEntry) Check() error {
 	return nil
 }
 
-var _ iface.SigChainEntry = (*SigChainEntry)(nil)
+var _ *SigChainEntry = (*SigChainEntry)(nil)

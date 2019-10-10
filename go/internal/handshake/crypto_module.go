@@ -4,12 +4,11 @@ import (
 	"crypto/rand"
 	"errors"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
-	sign "github.com/libp2p/go-libp2p-core/crypto"
+	"berty.tech/go/internal/crypto"
+
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 
 	"golang.org/x/crypto/nacl/box"
-
-	"berty.tech/go/pkg/iface"
 )
 
 func bytesSliceToArray(slice []byte) (*[32]byte, error) {
@@ -35,14 +34,14 @@ func b32Slice(arr *[32]byte) []byte {
 	return ret
 }
 
-func initHandshake(ownDevicePrivateKey sign.PrivKey, ownSigChain iface.SigChain) (*handshakeSession, error) {
+func initHandshake(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain *crypto.SigChain) (*handshakeSession, error) {
 	// TODO: make sure to generate the right type of private key
 	boxPub, boxPriv, err := box.GenerateKey(rand.Reader)
 	if err != nil {
 		return nil, err
 	}
 
-	signPriv, _, err := sign.GenerateEd25519Key(rand.Reader)
+	signPriv, _, err := p2pcrypto.GenerateEd25519Key(rand.Reader)
 
 	if err != nil {
 		return nil, err
@@ -58,7 +57,7 @@ func initHandshake(ownDevicePrivateKey sign.PrivKey, ownSigChain iface.SigChain)
 	}, nil
 }
 
-func newCryptoRequest(ownDevicePrivateKey crypto.PrivKey, ownSigChain iface.SigChain, accountToReach crypto.PubKey) (*handshakeSession, error) {
+func newCryptoRequest(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain *crypto.SigChain, accountToReach p2pcrypto.PubKey) (*handshakeSession, error) {
 	session, err := initHandshake(ownDevicePrivateKey, ownSigChain)
 	if err != nil {
 		return nil, err
@@ -69,7 +68,7 @@ func newCryptoRequest(ownDevicePrivateKey crypto.PrivKey, ownSigChain iface.SigC
 	return session, nil
 }
 
-func newCryptoResponse(ownDevicePrivateKey crypto.PrivKey, ownSigChain iface.SigChain) (*handshakeSession, error) {
+func newCryptoResponse(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain *crypto.SigChain) (*handshakeSession, error) {
 	session, err := initHandshake(ownDevicePrivateKey, ownSigChain)
 	if err != nil {
 		return nil, err

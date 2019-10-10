@@ -3,27 +3,28 @@ package handshake
 import (
 	"encoding/binary"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
+	"berty.tech/go/internal/crypto"
 
-	"berty.tech/go/pkg/iface"
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
+
 	"golang.org/x/crypto/nacl/box"
 )
 
-const SupportedKeyType = crypto.Ed25519
+const SupportedKeyType = p2pcrypto.Ed25519
 
 type handshakeSession struct {
-	ownSigChain           iface.SigChain
-	ownDevicePrivateKey   crypto.PrivKey
+	ownSigChain           *crypto.SigChain
+	ownDevicePrivateKey   p2pcrypto.PrivKey
 	selfBoxPrivateKey     *[32]byte
 	selfBoxPublicKey      *[32]byte
 	otherBoxPublicKey     *[32]byte
 	nonce                 uint16
-	selfSigningPrivateKey crypto.PrivKey
-	otherSigningPublicKey crypto.PubKey
-	accountKeyToProve     crypto.PubKey
+	selfSigningPrivateKey p2pcrypto.PrivKey
+	otherSigningPublicKey p2pcrypto.PubKey
+	accountKeyToProve     p2pcrypto.PubKey
 }
 
-func (h *handshakeSession) SetOtherKeys(sign crypto.PubKey, box []byte) error {
+func (h *handshakeSession) SetOtherKeys(sign p2pcrypto.PubKey, box []byte) error {
 	keyArr, err := bytesSliceToArray(box)
 	if err != nil {
 		return err
@@ -39,15 +40,15 @@ func (h *handshakeSession) SetOtherKeys(sign crypto.PubKey, box []byte) error {
 	return nil
 }
 
-func (h *handshakeSession) setAccountKeyToProve(key crypto.PubKey) {
+func (h *handshakeSession) setAccountKeyToProve(key p2pcrypto.PubKey) {
 	h.accountKeyToProve = key
 }
 
-func (h *handshakeSession) GetPublicKeys() (sign crypto.PubKey, box []byte) {
+func (h *handshakeSession) GetPublicKeys() (sign p2pcrypto.PubKey, box []byte) {
 	return h.selfSigningPrivateKey.GetPublic(), b32Slice(h.selfBoxPublicKey)
 }
 
-func computeValueToProvePubKey(keyToProve crypto.PubKey, receiverSigKey *[32]byte) ([]byte, error) {
+func computeValueToProvePubKey(keyToProve p2pcrypto.PubKey, receiverSigKey *[32]byte) ([]byte, error) {
 	if keyToProve == nil || receiverSigKey == nil {
 		return nil, ErrParams
 	}
@@ -62,7 +63,7 @@ func computeValueToProvePubKey(keyToProve crypto.PubKey, receiverSigKey *[32]byt
 	return signedValue, nil
 }
 
-func computeValueToProveDevicePubKeyAndSigChain(keyToProve *[32]byte, chain iface.SigChain) ([]byte, error) {
+func computeValueToProveDevicePubKeyAndSigChain(keyToProve *[32]byte, chain *crypto.SigChain) ([]byte, error) {
 	if keyToProve == nil || chain == nil {
 		return nil, ErrParams
 	}
@@ -141,7 +142,7 @@ func (h *handshakeSession) ProveOwnDeviceKey() ([]byte, error) {
 	return sig, nil
 }
 
-func (h *handshakeSession) CheckOtherKeyProof(sig []byte, chain iface.SigChain, deviceKey crypto.PubKey) error {
+func (h *handshakeSession) CheckOtherKeyProof(sig []byte, chain *crypto.SigChain, deviceKey p2pcrypto.PubKey) error {
 	// Step 4a : ensure sig_B1(BsigChain·a1) is valid
 	signedValue, err := computeValueToProveDevicePubKeyAndSigChain(h.selfBoxPublicKey, chain)
 	if err != nil {
@@ -183,7 +184,7 @@ func (h *handshakeSession) ProveOtherKnownAccount() ([]byte, error) {
 	return sig, nil
 }
 
-func (h *handshakeSession) CheckOwnKnownAccountProof(attemptedDeviceKey crypto.PubKey, sig []byte) error {
+func (h *handshakeSession) CheckOwnKnownAccountProof(attemptedDeviceKey p2pcrypto.PubKey, sig []byte) error {
 	// Step 3b : Ensure sigA1(b1) is valid
 	pubKeyBytes, err := h.selfSigningPrivateKey.GetPublic().Raw()
 	if err != nil {

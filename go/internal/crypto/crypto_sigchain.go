@@ -4,22 +4,18 @@ import (
 	"errors"
 	"time"
 
-	"berty.tech/go/pkg/iface"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
 var theFuture = time.Date(2199, time.December, 31, 0, 0, 0, 0, time.UTC)
 
-func (m *SigChain) GetInitialEntry() (iface.SigChainEntry, error) {
+func (m *SigChain) GetInitialEntry() (*SigChainEntry, error) {
 	entries := m.ListEntries()
 	if len(entries) == 0 {
 		return nil, errors.New("unable to find first entry")
 	}
 
-	e, ok := entries[0].(*SigChainEntry)
-	if !ok {
-		return nil, errors.New("unable to cast first entry")
-	}
+	e := entries[0]
 
 	if e.EntryTypeCode != SigChainEntry_SigChainEntryTypeInitChain {
 		return nil, errors.New("invalid type for first entry")
@@ -28,7 +24,7 @@ func (m *SigChain) GetInitialEntry() (iface.SigChainEntry, error) {
 	return e, nil
 }
 
-func (m *SigChain) GetLastEntry() iface.SigChainEntry {
+func (m *SigChain) GetLastEntry() *SigChainEntry {
 	entries := m.ListEntries()
 
 	if len(entries) == 0 {
@@ -38,8 +34,8 @@ func (m *SigChain) GetLastEntry() iface.SigChainEntry {
 	return entries[len(entries)-1]
 }
 
-func (m *SigChain) ListEntries() []iface.SigChainEntry {
-	entries := make([]iface.SigChainEntry, len(m.Entries))
+func (m *SigChain) ListEntries() []*SigChainEntry {
+	entries := make([]*SigChainEntry, len(m.Entries))
 	for i, e := range m.Entries {
 		entries[i] = e
 	}
@@ -73,7 +69,7 @@ func (m *SigChain) ListCurrentPubKeys() []p2pcrypto.PubKey {
 	return pubKeysSlice
 }
 
-func (m *SigChain) Init(privKey p2pcrypto.PrivKey) (iface.SigChainEntry, error) {
+func (m *SigChain) Init(privKey p2pcrypto.PrivKey) (*SigChainEntry, error) {
 	if len(m.Entries) > 0 {
 		return nil, errors.New("sig chain already initialized")
 	}
@@ -89,7 +85,7 @@ func (m *SigChain) Init(privKey p2pcrypto.PrivKey) (iface.SigChainEntry, error) 
 	})
 }
 
-func (m *SigChain) AddEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) (iface.SigChainEntry, error) {
+func (m *SigChain) AddEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) (*SigChainEntry, error) {
 	if !m.isKeyCurrentlyPresent(privKey.GetPublic()) {
 		return nil, errors.New("not allowed to add entry")
 	}
@@ -113,7 +109,7 @@ func (m *SigChain) AddEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) 
 	})
 }
 
-func (m *SigChain) RemoveEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) (iface.SigChainEntry, error) {
+func (m *SigChain) RemoveEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) (*SigChainEntry, error) {
 	if !m.isKeyCurrentlyPresent(privKey.GetPublic()) {
 		return nil, errors.New("not allowed to remove entry")
 	}
@@ -147,7 +143,7 @@ func (m *SigChain) isKeyCurrentlyPresent(pubKey p2pcrypto.PubKey) bool {
 	return false
 }
 
-func (m *SigChain) appendEntry(privKey p2pcrypto.PrivKey, entry *SigChainEntry) (iface.SigChainEntry, error) {
+func (m *SigChain) appendEntry(privKey p2pcrypto.PrivKey, entry *SigChainEntry) (*SigChainEntry, error) {
 	lastEntry := m.GetLastEntry()
 	if lastEntry != nil {
 		entry.ParentEntryHash = lastEntry.GetEntryHash()
@@ -178,8 +174,8 @@ func (m *SigChain) Check() error {
 	return nil
 }
 
-func NewSigChain() iface.SigChain {
+func NewSigChain() *SigChain {
 	return &SigChain{}
 }
 
-var _ iface.SigChain = (*SigChain)(nil)
+var _ *SigChain = (*SigChain)(nil)

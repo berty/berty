@@ -5,14 +5,12 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"berty.tech/go/pkg/iface"
-
 	p2pCrypto "github.com/libp2p/go-libp2p-core/crypto"
 
 	"berty.tech/go/internal/crypto"
 )
 
-func createNewIdentity(t *testing.T, ctx context.Context) (iface.CryptoManager, p2pCrypto.PrivKey) {
+func createNewIdentity(t *testing.T, ctx context.Context) (crypto.Manager, p2pCrypto.PrivKey) {
 	t.Helper()
 
 	c, privateKey, err := crypto.InitNewIdentity(ctx)
@@ -23,7 +21,7 @@ func createNewIdentity(t *testing.T, ctx context.Context) (iface.CryptoManager, 
 	return c, privateKey
 }
 
-func createTwoDevices(t *testing.T, ctx context.Context) (*handshakeSession, iface.CryptoManager, *handshakeSession, iface.CryptoManager) {
+func createTwoDevices(t *testing.T, ctx context.Context) (*handshakeSession, crypto.Manager, *handshakeSession, crypto.Manager) {
 	t.Helper()
 
 	c1, pk1 := createNewIdentity(t, ctx)

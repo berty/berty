@@ -10,7 +10,6 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/go/pkg/iface"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 
 	"github.com/gogo/protobuf/proto"
@@ -66,7 +65,7 @@ func (s *dummyStep) action(ctx context.Context, f *flow, step HandshakeFrame_Han
 
 type dummySetCredsStep struct {
 	next         HandshakeFrame_HandshakeStep
-	sigChain     iface.SigChain
+	sigChain     *crypto.SigChain
 	devicePubKey p2pcrypto.PubKey
 }
 

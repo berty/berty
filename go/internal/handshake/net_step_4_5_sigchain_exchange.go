@@ -3,24 +3,11 @@ package handshake
 import (
 	"context"
 
-	"berty.tech/go/internal/crypto"
-
-	"berty.tech/go/pkg/iface"
-
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
 type step4or5CheckSigChainProof struct {
 	next HandshakeFrame_HandshakeStep
-}
-
-func sigChainAsProto(chain iface.SigChain) (*crypto.SigChain, error) {
-	p, ok := chain.(*crypto.SigChain)
-	if !ok {
-		return nil, ErrSigChainCast
-	}
-
-	return p, nil
 }
 
 func (s *step4or5CheckSigChainProof) isReadAction() bool { return true }
@@ -61,14 +48,9 @@ func (s *step4or5SendSigChainProof) action(ctx context.Context, f *flow, step Ha
 		return nil, err
 	}
 
-	sigChain, err := sigChainAsProto(f.ownSigChain)
-	if err != nil {
-		return nil, err
-	}
-
 	if err := writeEncryptedPayload(f.session, f.writer, step, &HandshakePayload{
 		Signature: proof,
-		SigChain:  sigChain,
+		SigChain:  f.ownSigChain,
 		DeviceKey: devicePubKey,
 	}); err != nil {
 		return nil, err

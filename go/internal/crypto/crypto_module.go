@@ -9,11 +9,10 @@ import (
 	"errors"
 	"time"
 
-	"berty.tech/go/pkg/iface"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func InitNewIdentity(ctx context.Context) (iface.CryptoManager, p2pcrypto.PrivKey, error) {
+func InitNewIdentity(ctx context.Context) (Manager, p2pcrypto.PrivKey, error) {
 	privKey, err := GeneratePrivateKey()
 	if err != nil {
 		return nil, nil, err
@@ -27,16 +26,16 @@ func InitNewIdentity(ctx context.Context) (iface.CryptoManager, p2pcrypto.PrivKe
 	return NewCrypto(privKey, sigChain), privKey, nil
 }
 
-func InitFromOtherDeviceIdentity(ctx context.Context /* other params */) (iface.CryptoManager, p2pcrypto.PrivKey, error) {
+func InitFromOtherDeviceIdentity(ctx context.Context /* other params */) (Manager, p2pcrypto.PrivKey, error) {
 	// TODO:
 	panic("implement me")
 }
 
-func OpenIdentity(ctx context.Context, key p2pcrypto.PrivKey, chain iface.SigChain) (iface.CryptoManager, error) {
+func OpenIdentity(ctx context.Context, key p2pcrypto.PrivKey, chain *SigChain) (Manager, error) {
 	return NewCrypto(key, chain), nil
 }
 
-func InitSigChain(key p2pcrypto.PrivKey) (iface.SigChain, error) {
+func InitSigChain(key p2pcrypto.PrivKey) (*SigChain, error) {
 	accountKey, err := GeneratePrivateKey()
 	if err != nil {
 		return nil, err

@@ -3,13 +3,12 @@ package crypto
 import (
 	"context"
 
-	"berty.tech/go/pkg/iface"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
 type crypto struct {
 	privKey  p2pcrypto.PrivKey
-	sigChain iface.SigChain
+	sigChain *SigChain
 }
 
 func (c *crypto) GetDevicePublicKey() p2pcrypto.PubKey {
@@ -30,7 +29,7 @@ func (c *crypto) GetAccountPublicKey() (p2pcrypto.PubKey, error) {
 	return pubKey, nil
 }
 
-func (c *crypto) GetSigChain() iface.SigChain {
+func (c *crypto) GetSigChain() *SigChain {
 	return c.sigChain
 }
 
@@ -47,7 +46,7 @@ func (c *crypto) Close() error {
 	return nil
 }
 
-func NewCrypto(privKey p2pcrypto.PrivKey, sigChain iface.SigChain) iface.CryptoManager {
+func NewCrypto(privKey p2pcrypto.PrivKey, sigChain *SigChain) Manager {
 	c := &crypto{
 		privKey:  privKey,
 		sigChain: sigChain,
@@ -56,4 +55,4 @@ func NewCrypto(privKey p2pcrypto.PrivKey, sigChain iface.SigChain) iface.CryptoM
 	return c
 }
 
-var _ iface.CryptoManager = (*crypto)(nil)
+var _ Manager = (*crypto)(nil)
