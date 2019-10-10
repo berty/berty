@@ -40,9 +40,9 @@ $(yarn):
 	$(error "yarn is not installed")
 
 .PHONY: deps
-deps: $(yarn) $(lerna) $(mod) $(pkg_mod)
+deps: $(yarn) $(lerna) $(mod) $(pkg_mod) generate
 
-$(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
+%/node_modules: $(lerna) %/package.json
 	$(lerna) $(lerna_flags) init
 	$(lerna) $(lerna_flags) bootstrap
 	mkdir -p $(mod) $(pkg_mod)
@@ -50,9 +50,7 @@ $(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
 
 $(mod)/%: $(mod)
 
-$(PWD)/package.json: $(lerna)
-
-$(lerna): | $(yarn)
+$(lerna): $(yarn)
 	$(yarn) add -W lerna@latest
 
 .NOTPARALLEL: $(pkg_mod) $(pkg_mod)/%
@@ -64,12 +62,11 @@ upgrade: deps
 
 .IGNORE \
 .PHONY: clean
-clean: clean
-	$(lerna_exec) /bin/bash -c '[ ! -f Makefile ] || make clean'; \
+clean:
 
 .IGNORE \
 .PHONY: fclean
-fclean:
+fclean: clean
 	rm -rf $(pkg_mod)
 	rm -rf $(mod)
 	yarn cache clean -f
@@ -133,6 +130,7 @@ lint.fix: lint
 lint.watch: options += --watch
 lint.watch: lint
 
+include packages/api-chat/Makefile
 include packages/berty-app/Makefile
 include packages/storybook-mobile/Makefile
 include packages/storybook-web/Makefile

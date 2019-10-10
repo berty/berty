@@ -3,6 +3,7 @@ import { View, Image, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text, Button } from 'react-native-ui-kitten'
 import { Card } from '@berty-tech/shared-storybook'
 import styles from './styles'
+import { berty } from '@berty-tech/api-chat'
 
 type Navigation = () => void
 type Form<T> = (arg0: T) => Promise<void>
@@ -25,7 +26,7 @@ enum ConversationsItemStatus {
   Failed,
   Seen,
 }
-type ConversationsItemProps = {
+type ConversationsItemProps = berty.chatmodel.IConversation & {
   avatar: string
   title: string
   intro: string
