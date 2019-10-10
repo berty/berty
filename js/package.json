@@ -36,7 +36,7 @@
     "create-react-native-module": "^0.11.1",
     "eslint-plugin-jest": "^22.17.0",
     "json": "^9.0.6",
-    "lerna": "^3.16.4",
+    "lerna": "^3.17.0",
     "lerna-update-wizard": "^0.16.0",
     "react-native-create-library": "^3.1.2",
     "text-transform-cli": "^1.5.0",

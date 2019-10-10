@@ -8,20 +8,14 @@ author = Berty Technologies <oss@berty.tech>
 contributor = $(shell git config --get user.name) <$(shell git config --get user.email)>
 license = (Apache-2.0 or MIT)
 
-global_bin := /usr/local/bin
-ifeq ($(UNAME_S),Linux)
-global_bin := /usr/bin
-endif
-
-yarn := $(global_bin)/yarn
-pkg := $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 1 -type d))
+yarn := $(shell which yarn || echo '/usr/local/bin/yarn')
 
 yarn_flags :=
 
 mod := $(PWD)/node_modules
 bin := $(mod)/.bin
 
-lerna := $(global_bin)/lerna
+lerna := $(bin)/lerna
 lerna_flags := --reject-cycles --concurrency=8
 lerna_upgrade := $(bin)/upd
 lerna_exec := $(lerna) $(lerna_flags) exec --stream --parallel --scope=$1 --
@@ -30,7 +24,7 @@ json := $(bin)/json
 caser := $(bin)/caser
 eslint := $(bin)/eslint
 
-pkg ?= $(shell find $(PWD)/packages -depth 1 -type d)
+pkg := $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 1 -type d))
 pkg_mod := $(patsubst %, %/node_modules, $(pkg))
 pkg_desc := $(patsubst %, %/package.json, $(pkg))
 
@@ -42,8 +36,11 @@ print-%  : ; @echo $* = $($*)
 env:
 	@env
 
+$(yarn):
+	$(error "yarn is not installed")
+
 .PHONY: deps
-deps: $(mod) $(pkg_mod)
+deps: $(yarn) $(lerna) $(mod) $(pkg_mod)
 
 $(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
 	$(lerna) $(lerna_flags) init
@@ -55,21 +52,11 @@ $(mod)/%: $(mod)
 
 $(PWD)/package.json: $(lerna)
 
-$(lerna): $(yarn)
-	$(yarn) global add lerna
+$(lerna): | $(yarn)
+	$(yarn) add -W lerna@latest
 
 .NOTPARALLEL: $(pkg_mod) $(pkg_mod)/%
 $(pkg_mod)/%: $(patsubst %,%/package.json,$(pkg)) $(mod)
-
-
-.PHONY: yarn
-yarn $(yarn):
-ifeq ($(UNAME_S),Darwin)
-	brew install node
-endif
-ifeq ($(UNAME_S),Linux)
-	apt-get install nodejs
-endif
 
 .PHONY: upgrade
 upgrade: deps
