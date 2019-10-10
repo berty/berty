@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -10,8 +11,6 @@ import (
 
 	"berty.tech/go/internal/banner"
 	_ "berty.tech/go/internal/buildconstraints" // fail if bad go version
-	"berty.tech/go/internal/chatdb"
-	"berty.tech/go/internal/protocoldb"
 	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
 	"github.com/jinzhu/gorm"
@@ -99,6 +98,8 @@ func main() {
 				return err
 			}
 
+			ctx := context.Background()
+
 			// protocol
 			var protocol bertyprotocol.Client
 			{
@@ -109,24 +110,20 @@ func main() {
 				}
 				defer db.Close()
 
-				// initialize datastore
-				db, err = protocoldb.InitMigrate(db, logger.Named("datastore"))
-				if err != nil {
-					return errors.Wrap(err, "failed to initialize datastore")
-				}
-
 				// initialize new protocol client
-				protocolOpts := bertyprotocol.Opts{
+				opts := bertyprotocol.Opts{
 					Logger: logger.Named("bertyprotocol"),
 				}
-				protocol, err = bertyprotocol.New(db, protocolOpts)
+				protocol, err = bertyprotocol.New(db, opts)
 				if err != nil {
 					return errors.Wrap(err, "failed to initialize protocol")
 				}
+
 				defer protocol.Close()
 			}
 
 			// chat
+			var chat bertychat.Client
 			{
 				// initialize sqlite3 gorm database
 				db, err := gorm.Open("sqlite3", *clientChatURN)
@@ -135,24 +132,24 @@ func main() {
 				}
 				defer db.Close()
 
-				// initialize datastore
-				db, err = chatdb.InitMigrate(db, logger.Named("datastore"))
-				if err != nil {
-					return errors.Wrap(err, "failed to initialize datastore")
-				}
-
 				// initialize bertychat client
 				chatOpts := bertychat.Opts{
 					Logger: logger.Named("bertychat"),
 				}
-				chat, err := bertychat.New(db, protocol, chatOpts)
+				chat, err = bertychat.New(db, protocol, chatOpts)
 				if err != nil {
 					return errors.Wrap(err, "failed to initialize chat")
 				}
+
 				defer chat.Close()
 			}
 
-			logger.Info("client initialized, now starting... not implemented.")
+			info, err := protocol.AccountGetInformation(ctx, nil)
+			if err != nil {
+				return errors.Wrap(err, "failed to get protocol information")
+			}
+
+			logger.Info("client initialized", zap.String("peer-id", info.PeerID), zap.Strings("listeners", info.Listeners))
 			return nil
 		},
 	}

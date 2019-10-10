@@ -13,7 +13,12 @@ IBAZEL ?= $(shell which ibazel 2>/dev/null || echo ibazel)
 
 SAMPLE_BUILD_FILE = pkg/bertyprotocol/BUILD.bazel
 
-cmd/bertychat/BUILD.bazel $(SAMPLE_BUILD_FILE): $(BAZEL) WORKSPACE vendor
+VENDORED_BUILD_FILES = vendor/github.com/spacemonkeygo/openssl/BUILD.bazel
+
+vendor/github.com/spacemonkeygo/openssl/BUILD.bazel: $(abspath ../bazel/com_github_spacemonkeygo_openssl.BUILD.bazel) vendor
+	cp $< $@
+
+cmd/bertychat/BUILD.bazel $(SAMPLE_BUILD_FILE): $(BAZEL) WORKSPACE vendor $(VENDORED_BUILD_FILES)
 	$(BAZEL) $(BAZEL_ARGS) run $(BAZEL_CMD_ARGS) //:gazelle
 
 .PHONY: bazel.banner
@@ -35,6 +40,7 @@ bazel.watch-test:
 bazel.clean: $(BAZEL)
 	rm -fr */**/BUILD.bazel
 	$(BAZEL) clean
+	rm -fr vendor
 
 .PHONY: bazel.expunge
 bazel.expunge: $(BAZEL)

@@ -1,8 +1,10 @@
 package bertyprotocol
 
 import (
+	"context"
 	"testing"
 
+	"berty.tech/go/internal/ipfsutil"
 	"berty.tech/go/internal/protocoldb"
 	"go.uber.org/zap"
 )
@@ -11,8 +13,17 @@ import (
 func TestingClient(t *testing.T, opts Opts) (Client, func()) {
 	t.Helper()
 
+	ctx := opts.RootContext
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
+	}
+
+	if opts.IpfsCoreAPI == nil {
+		opts.IpfsCoreAPI = ipfsutil.TestingCoreAPI(ctx, t)
 	}
 
 	db := protocoldb.TestingSqliteDB(t, opts.Logger)

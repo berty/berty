@@ -20,11 +20,8 @@ func ExampleNew() {
 	}
 	defer db.Close()
 
-	// Opts is optional
-	opts := Opts{}
-
 	// initialize new client
-	client, err := New(db, opts)
+	client, err := New(db, Opts{})
 	if err != nil {
 		panic(err)
 	}

@@ -37,7 +37,9 @@ jobs:
   go-generate:
     working_directory: /go/src/berty.tech
     docker:
-      - image: bertytech/protoc:18
+      - image: bertytech/protoc:19
+    environment:
+      - GO111MODULE=on
     steps:
       - checkout
       - run: find . -name gen.sum -delete

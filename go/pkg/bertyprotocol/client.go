@@ -1,7 +1,13 @@
 package bertyprotocol
 
 import (
+	"context"
+
+	"berty.tech/go/internal/ipfsutil"
+	"berty.tech/go/internal/protocoldb"
+	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -17,24 +23,49 @@ type Client interface {
 
 type client struct {
 	// variables
-	db   *gorm.DB
-	opts Opts
+	db          *gorm.DB
+	logger      *zap.Logger
+	ipfsCoreAPI ipfs_coreapi.CoreAPI
 }
 
 // Opts contains optional configuration flags for building a new Client
 type Opts struct {
-	Logger *zap.Logger
+	Logger      *zap.Logger
+	IpfsCoreAPI ipfs_coreapi.CoreAPI
+	RootContext context.Context
 }
 
 // New initializes a new Client
 func New(db *gorm.DB, opts Opts) (Client, error) {
-	if opts.Logger == nil {
-		opts.Logger = zap.NewNop()
+	client := &client{
+		db:          db,
+		ipfsCoreAPI: opts.IpfsCoreAPI,
+		logger:      opts.Logger,
 	}
-	return &client{
-		db:   db,
-		opts: opts,
-	}, nil
+
+	if opts.Logger == nil {
+		client.logger = zap.NewNop()
+	}
+
+	var err error
+	client.db, err = protocoldb.InitMigrate(db, client.logger.Named("datastore"))
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to initialize datastore")
+	}
+
+	ctx := opts.RootContext
+	if ctx == nil {
+		ctx = context.TODO()
+	}
+	if opts.IpfsCoreAPI == nil {
+		var err error
+		client.ipfsCoreAPI, err = ipfsutil.NewInMemoryCoreAPI(ctx)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to initialize ipfsutil")
+		}
+	}
+
+	return client, nil
 }
 
 func (c *client) Close() error {

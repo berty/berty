@@ -56,7 +56,18 @@
       "type": "object"
     },
     "protocolAccountGetInformationReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "peer_id": {
+          "type": "string"
+        },
+        "listeners": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     },
     "protocolAccountLinkNewDeviceReply": {
       "type": "object"
