@@ -46,7 +46,7 @@ autotest: ibazel.unittest
 unittest: bazel.unittest
 
 .PHONY: generate
-generate: pb.generate bazel.generate
+generate: pb.generate
 
 .PHONY: lint
 lint: pb.generate
@@ -115,10 +115,7 @@ bazel.unittest: bazel.generate
 	$(BAZEL_WRAPPER) $(BAZEL_ARGS) test //...
 
 .PHONY: bazel.generate
-bazel.generate:
-	$(MAKE) pb.generate
-	$(MAKE) vendor
-	$(MAKE) $(SAMPLE_GAZELLE_GENERATED_FILE)
+bazel.generate: pb.generate $(SAMPLE_GAZELLE_GENERATED_FILE)
 
 .PHONY: bazel.clean
 bazel.clean:
@@ -160,9 +157,6 @@ vendor/github.com/spacemonkeygo/openssl/BUILD.bazel: $(abspath ../build/bazel/co
 $(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE vendor $(VENDOR_BAZEL_OVERRIDEN_FILES)
 	$(call check-program, $(BAZEL))
 	$(BAZEL) $(BAZEL_ARGS) run //:gazelle
-	touch $<
-	sleep 1
-	touch $@
 
 vendor: go.mod
 	$(call check-program, $(GO))
@@ -183,12 +177,13 @@ pb.clean:
 
 .PHONY: pb.generate
 pb.generate: gen.sum
-$(GEN_SUM): $(GEN_SRC) vendor
+$(GEN_SUM): $(GEN_SRC)
 	$(call check-program, shasum docker $(GO))
 	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
 	@diff -q $(GEN_SUM).tmp $(GEN_SUM) || ( \
 	  uid=`id -u`; \
 	  set -xe; \
+	  $(GO) mod vendor; \
 	  docker run \
 	    --user="$$uid" \
 	    --volume="$(PWD)/..:/go/src/berty.tech" \
@@ -197,7 +192,7 @@ $(GEN_SUM): $(GEN_SRC) vendor
 	    --rm \
 	    bertytech/protoc:19 \
 	    -xec 'make generate_local'; \
-	    make tidy \
+	    $(MAKE) tidy \
 	)
 
 .PHONY: generate_local
