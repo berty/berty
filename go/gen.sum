@@ -6,4 +6,4 @@ b139403f729a7cf26f2d2ecbde2d9b6524b5efe2  ../api/baz.proto
 bb0d4bdd5e638b97f5dd350eb3505645de48eda5  ../api/internal/bar.proto
 85030963b9dd2a9e133da98c6d6dbc1ce73993b0  ../api/internal/foo.proto
 2d16fa7cd2c7dd30a9480df3d1aac433c120ce32  ../api/protocolmodel.proto
-14cea0c4918713389309632538b3f3503164ecf0  Makefile
+0885b232117faa98c70fef3ac1a7e8af51fc30b8  Makefile
