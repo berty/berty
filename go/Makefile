@@ -109,7 +109,10 @@ bazel.unittest: bazel.generate
 	$(BAZEL) $(BAZEL_ARGS) test //...
 
 .PHONY: bazel.generate
-bazel.generate: pb.generate vendor $(SAMPLE_GAZELLE_GENERATED_FILE)
+bazel.generate:
+	$(MAKE) pb.generate
+	$(MAKE) vendor
+	$(MAKE) $(SAMPLE_GAZELLE_GENERATED_FILE)
 
 .PHONY: bazel.clean
 bazel.clean:
