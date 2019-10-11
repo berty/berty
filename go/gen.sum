@@ -1,9 +1,9 @@
 b139403f729a7cf26f2d2ecbde2d9b6524b5efe2  ../api/baz.proto
-158ac7e2d5214cfec29faf01d272736cdda0ba24  ../api/bertychat.proto
-72ed3ae8d0d04176da21eb7f4c4cd6ce24207c37  ../api/bertyprotocol.proto
+4a4443709cc0d65956dfaf7c9278d6ba8f123940  ../api/bertychat.proto
+1a823fbf1707f7d29c2b82967b3ca04dbe901354  ../api/bertyprotocol.proto
 27b924a169c312853fdef75d3b539a8c7e6184f3  ../api/chatmodel.proto
 961a4952e56eb176d8239981794e0bff5ebe9238  ../api/entity.proto
 bb0d4bdd5e638b97f5dd350eb3505645de48eda5  ../api/internal/bar.proto
 85030963b9dd2a9e133da98c6d6dbc1ce73993b0  ../api/internal/foo.proto
 2d16fa7cd2c7dd30a9480df3d1aac433c120ce32  ../api/protocolmodel.proto
-9b18781a092873f9e0fdd4841e02ce692e08191d  Makefile
+14cea0c4918713389309632538b3f3503164ecf0  Makefile

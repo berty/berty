@@ -1,4 +1,3 @@
-
 version: 2.1
 
 orbs:
@@ -19,8 +18,10 @@ jobs:
           path: /go/src/berty.tech
       - moul/mod-download
       - gotools/mod-tidy-check
-      - run: make install
-      - run: make unittest
+      - run: make go.install
+      - run: make go.unittest
+      - run: make lint
+      - run: make tidy
       - moul/install_golangci-lint
       - run: PATH=$PATH:$(pwd)/bin make lint
   go-docker:

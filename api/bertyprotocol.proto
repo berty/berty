@@ -3,7 +3,7 @@ syntax = "proto3";
 package berty.protocol;
 
 import "google/api/annotations.proto";
-import "google/protobuf/descriptor.proto";
+//import "google/protobuf/descriptor.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "protocolmodel.proto";
 
