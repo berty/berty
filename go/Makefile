@@ -7,6 +7,12 @@ BAZEL_ARGS ?=
 GO ?= go
 GOPATH ?= $(HOME)/go
 IBAZEL ?= ibazel
+USE_IBAZEL ?= false
+BAZEL_WRAPPER ?= $(BAZEL)
+
+ifeq ($(USE_IBAZEL),true)
+BAZEL_WRAPPER=$(IBAZEL)
+endif
 
 ##
 ## Functions
@@ -91,22 +97,22 @@ VENDOR_BAZEL_OVERRIDEN_FILES = vendor/github.com/spacemonkeygo/openssl/BUILD.baz
 .PHONY: bazel.build
 bazel.build: bazel.generate
 	$(call check-program, $(BAZEL))
-	$(BAZEL) $(BAZEL_ARGS) build //...
+	$(BAZEL_WRAPPER) $(BAZEL_ARGS) build //...
 
 .PHONY: bazel.daemon
 bazel.daemon: bazel.generate
 	$(call check-program, $(BAZEL))
-	$(BAZEL) $(BAZEL_ARGS) run //cmd/bertychat -- daemon
+	$(BAZEL_WRAPPER) $(BAZEL_ARGS) run //cmd/bertychat -- daemon
 
 .PHONY: bazel.banner
 bazel.banner: bazel.generate
 	$(call check-program, $(BAZEL))
-	$(BAZEL) $(BAZEL_ARGS) run //cmd/bertychat -- banner
+	$(BAZEL_WRAPPER) $(BAZEL_ARGS) run //cmd/bertychat -- banner
 
 .PHONY: bazel.unittest
 bazel.unittest: bazel.generate
 	$(call check-program, $(BAZEL))
-	$(BAZEL) $(BAZEL_ARGS) test //...
+	$(BAZEL_WRAPPER) $(BAZEL_ARGS) test //...
 
 .PHONY: bazel.generate
 bazel.generate:
@@ -130,19 +136,19 @@ bazel.fclean:
 
 .PHONY: ibazel.daemon
 ibazel.daemon: bazel.generate
-	BAZEL=ibazel make bazel.daemon
+	USE_IBAZEL=true make bazel.daemon
 
 .PHONY: ibazel.build
 ibazel.build: bazel.generate
-	BAZEL=ibazel make bazel.build
+	USE_IBAZEL=true make bazel.build
 
 .PHONY: ibazel.banner
 ibazel.banner: bazel.generate
-	BAZEL=ibazel make bazel.banner
+	USE_IBAZEL=true make bazel.banner
 
 .PHONY: ibazel.unittest
 ibazel.unittest: bazel.generate
-	BAZEL=ibazel make bazel.unittest
+	USE_IBAZEL=true make bazel.unittest
 
 ##
 ## Deps
