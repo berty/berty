@@ -7,4 +7,4 @@ bb0d4bdd5e638b97f5dd350eb3505645de48eda5  ../api/internal/bar.proto
 8ea2902f3114a2e50ffb763eba4456b077c4b76c  ../api/internal/handshake.proto
 50384eff13181fb905dee2b7df62276408e3dc62  ../api/internal/sigchain.proto
 2d16fa7cd2c7dd30a9480df3d1aac433c120ce32  ../api/protocolmodel.proto
-446518533a108ddc3025e677ec502abfade6aff7  Makefile
+cd708a9732784ab394cd94cdca5cfd0a09915bab  Makefile

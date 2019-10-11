@@ -18,7 +18,7 @@ endif
 ## Functions
 ##
 
-check-program = $(foreach exec,$(1),$(if $(shell PATH=$(PATH) which $(exec)),,$(error "No $(exec) in PATH")))
+check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "No $(exec) in PATH")))
 
 ##
 ## General rules
