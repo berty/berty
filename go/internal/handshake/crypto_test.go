@@ -5,6 +5,8 @@ import (
 	"crypto/rand"
 	"testing"
 
+	"go.uber.org/zap"
+
 	p2pCrypto "github.com/libp2p/go-libp2p-core/crypto"
 
 	"berty.tech/go/internal/crypto"
@@ -13,7 +15,7 @@ import (
 func createNewIdentity(t *testing.T, ctx context.Context) (crypto.Manager, p2pCrypto.PrivKey) {
 	t.Helper()
 
-	c, privateKey, err := crypto.InitNewIdentity(ctx)
+	c, privateKey, err := crypto.InitNewIdentity(ctx, zap.NewNop())
 	if err != nil {
 		t.Fatalf("can't create new identity")
 	}
@@ -180,6 +182,8 @@ func TestHandshakeSession_ProveOwnDeviceKey_CheckOtherKeyProof(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	l := zap.NewNop()
+
 	hss1, c1, hss2, c2 := createTwoDevices(t, ctx)
 	proof, err := hss1.ProveOwnDeviceKey()
 
@@ -188,25 +192,25 @@ func TestHandshakeSession_ProveOwnDeviceKey_CheckOtherKeyProof(t *testing.T) {
 	}
 
 	// Correct
-	err = hss2.CheckOtherKeyProof(proof, c1.GetSigChain(), c1.GetDevicePublicKey())
+	err = hss2.CheckOtherKeyProof(l, proof, c1.GetSigChain(), c1.GetDevicePublicKey())
 	if err != nil {
 		t.Fatalf("err should be nil")
 	}
 
 	// Wrong signature
-	err = hss2.CheckOtherKeyProof([]byte("oops"), c1.GetSigChain(), c1.GetDevicePublicKey())
+	err = hss2.CheckOtherKeyProof(l, []byte("oops"), c1.GetSigChain(), c1.GetDevicePublicKey())
 	if err == nil {
 		t.Fatalf("err should not be nil")
 	}
 
 	// Wrong sig chain
-	err = hss2.CheckOtherKeyProof(proof, c2.GetSigChain(), c1.GetDevicePublicKey())
+	err = hss2.CheckOtherKeyProof(l, proof, c2.GetSigChain(), c1.GetDevicePublicKey())
 	if err == nil {
 		t.Fatalf("err should not be nil")
 	}
 
 	// Key not found in sig chain
-	err = hss1.CheckOtherKeyProof(proof, c1.GetSigChain(), c1.GetDevicePublicKey())
+	err = hss1.CheckOtherKeyProof(l, proof, c1.GetSigChain(), c1.GetDevicePublicKey())
 	if err == nil {
 		t.Fatalf("err should not be nil")
 	}

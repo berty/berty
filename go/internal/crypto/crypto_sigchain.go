@@ -1,10 +1,12 @@
 package crypto
 
 import (
-	"errors"
 	"time"
 
+	"go.uber.org/zap"
+
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/pkg/errors"
 )
 
 var theFuture = time.Date(2199, time.December, 31, 0, 0, 0, 0, time.UTC)
@@ -12,13 +14,13 @@ var theFuture = time.Date(2199, time.December, 31, 0, 0, 0, 0, time.UTC)
 func (m *SigChain) GetInitialEntry() (*SigChainEntry, error) {
 	entries := m.ListEntries()
 	if len(entries) == 0 {
-		return nil, errors.New("unable to find first entry")
+		return nil, ErrSigChainNoEntries
 	}
 
 	e := entries[0]
 
 	if e.EntryTypeCode != SigChainEntry_SigChainEntryTypeInitChain {
-		return nil, errors.New("invalid type for first entry")
+		return nil, ErrSigChainInvalidEntryType
 	}
 
 	return e, nil
@@ -43,7 +45,7 @@ func (m *SigChain) ListEntries() []*SigChainEntry {
 	return entries
 }
 
-func (m *SigChain) ListCurrentPubKeys() []p2pcrypto.PubKey {
+func (m *SigChain) ListCurrentPubKeys(logger *zap.Logger) []p2pcrypto.PubKey {
 	pubKeys := map[string][]byte{}
 	var pubKeysSlice []p2pcrypto.PubKey
 
@@ -60,6 +62,7 @@ func (m *SigChain) ListCurrentPubKeys() []p2pcrypto.PubKey {
 	for _, p := range pubKeys {
 		pubKey, err := p2pcrypto.UnmarshalPublicKey(p)
 		if err != nil {
+			logger.Warn("unable to unmarshal public key")
 			continue
 		}
 
@@ -71,12 +74,12 @@ func (m *SigChain) ListCurrentPubKeys() []p2pcrypto.PubKey {
 
 func (m *SigChain) Init(privKey p2pcrypto.PrivKey) (*SigChainEntry, error) {
 	if len(m.Entries) > 0 {
-		return nil, errors.New("sig chain already initialized")
+		return nil, ErrSigChainAlreadyInitialized
 	}
 
 	subjectKeyBytes, err := privKey.GetPublic().Bytes()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "unable to get subject key bytes")
 	}
 
 	return m.appendEntry(privKey, &SigChainEntry{
@@ -85,22 +88,18 @@ func (m *SigChain) Init(privKey p2pcrypto.PrivKey) (*SigChainEntry, error) {
 	})
 }
 
-func (m *SigChain) AddEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) (*SigChainEntry, error) {
-	if !m.isKeyCurrentlyPresent(privKey.GetPublic()) {
-		return nil, errors.New("not allowed to add entry")
+func (m *SigChain) AddEntry(logger *zap.Logger, privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) (*SigChainEntry, error) {
+	if !m.isKeyCurrentlyPresent(logger, privKey.GetPublic()) {
+		return nil, ErrSigChainPermission
 	}
 
-	if m.isKeyCurrentlyPresent(pubKey) {
-		return nil, errors.New("pub key is already listed in the sig chain")
+	if m.isKeyCurrentlyPresent(logger, pubKey) {
+		return nil, ErrSigChainOperationAlreadyDone
 	}
 
 	subjectKeyBytes, err := pubKey.Bytes()
 	if err != nil {
-		return nil, err
-	}
-
-	if len(m.Entries) == 0 {
-		return nil, errors.New("sig chain has not been initialized yet")
+		return nil, errors.Wrap(err, "unable to get subject key bytes")
 	}
 
 	return m.appendEntry(privKey, &SigChainEntry{
@@ -109,22 +108,18 @@ func (m *SigChain) AddEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) 
 	})
 }
 
-func (m *SigChain) RemoveEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) (*SigChainEntry, error) {
-	if !m.isKeyCurrentlyPresent(privKey.GetPublic()) {
-		return nil, errors.New("not allowed to remove entry")
+func (m *SigChain) RemoveEntry(logger *zap.Logger, privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) (*SigChainEntry, error) {
+	if !m.isKeyCurrentlyPresent(logger, privKey.GetPublic()) {
+		return nil, ErrSigChainPermission
 	}
 
-	if !m.isKeyCurrentlyPresent(pubKey) {
-		return nil, errors.New("pub key is not currently listed in the sig chain")
+	if !m.isKeyCurrentlyPresent(logger, pubKey) {
+		return nil, ErrSigChainOperationAlreadyDone
 	}
 
 	subjectKeyBytes, err := pubKey.Bytes()
 	if err != nil {
-		return nil, err
-	}
-
-	if len(m.Entries) == 0 {
-		return nil, errors.New("sig chain has not been initialized yet")
+		return nil, errors.Wrap(err, "unable to get subject key bytes")
 	}
 
 	return m.appendEntry(privKey, &SigChainEntry{
@@ -133,8 +128,8 @@ func (m *SigChain) RemoveEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKe
 	})
 }
 
-func (m *SigChain) isKeyCurrentlyPresent(pubKey p2pcrypto.PubKey) bool {
-	for _, allowedPubKey := range m.ListCurrentPubKeys() {
+func (m *SigChain) isKeyCurrentlyPresent(logger *zap.Logger, pubKey p2pcrypto.PubKey) bool {
+	for _, allowedPubKey := range m.ListCurrentPubKeys(logger) {
 		if allowedPubKey.Equals(pubKey) {
 			return true
 		}
@@ -151,7 +146,7 @@ func (m *SigChain) appendEntry(privKey p2pcrypto.PrivKey, entry *SigChainEntry) 
 
 	signerPubKeyBytes, err := privKey.GetPublic().Bytes()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "unable to get signer key bytes")
 	}
 
 	entry.CreatedAt = time.Now()
@@ -160,7 +155,7 @@ func (m *SigChain) appendEntry(privKey p2pcrypto.PrivKey, entry *SigChainEntry) 
 
 	err = entry.Sign(privKey)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "unable to sign entry")
 	}
 
 	m.Entries = append(m.Entries, entry)

@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"go.uber.org/zap"
+
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 
 	"github.com/gogo/protobuf/proto"
@@ -208,17 +210,19 @@ func Test_Request_Response(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
 	defer cancel()
 
-	reqCrypto, reqPrivateKey, err := crypto.InitNewIdentity(ctx)
+	reqCrypto, reqPrivateKey, err := crypto.InitNewIdentity(ctx, zap.NewNop())
 	if err != nil {
 		t.Fatalf("unable to create an identity")
 		return
 	}
 
-	resCrypto, resPrivateKey, err := crypto.InitNewIdentity(ctx)
+	resCrypto, resPrivateKey, err := crypto.InitNewIdentity(ctx, zap.NewNop())
 	if err != nil {
 		t.Fatalf("unable to create an identity")
 		return
 	}
+
+	l := zap.NewNop()
 
 	wg := sync.WaitGroup{}
 	wg.Add(2)
@@ -240,7 +244,7 @@ func Test_Request_Response(t *testing.T) {
 			return
 		}
 
-		reqProvedSigChain, reqProvedKey, err := Request(ctx, reqConn, reqPrivateKey, reqCrypto.GetSigChain(), accountPk)
+		reqProvedSigChain, reqProvedKey, err := Request(ctx, l, reqConn, reqPrivateKey, reqCrypto.GetSigChain(), accountPk)
 		if err != nil {
 			t.Fatalf("unable to perform handshake on requester side: %v", err)
 			return
@@ -258,7 +262,7 @@ func Test_Request_Response(t *testing.T) {
 	go func() {
 		defer wg.Done()
 
-		resProvedSigChain, resProvedKey, err := Response(ctx, resConn, resPrivateKey, resCrypto.GetSigChain())
+		resProvedSigChain, resProvedKey, err := Response(ctx, l, resConn, resPrivateKey, resCrypto.GetSigChain())
 		if err != nil {
 			t.Fatalf("unable to perform handshake on requestee side: %v", err)
 			return

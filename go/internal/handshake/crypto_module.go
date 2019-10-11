@@ -2,7 +2,6 @@ package handshake
 
 import (
 	"crypto/rand"
-	"errors"
 
 	"berty.tech/go/internal/crypto"
 
@@ -15,7 +14,7 @@ func bytesSliceToArray(slice []byte) (*[32]byte, error) {
 	var arr [32]byte
 
 	if len(slice) != 32 {
-		return nil, errors.New("invalid key size")
+		return nil, ErrInvalidKeyType
 	}
 
 	for i, c := range slice {

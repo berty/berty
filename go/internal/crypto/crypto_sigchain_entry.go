@@ -3,6 +3,7 @@ package crypto
 import (
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	mh "github.com/multiformats/go-multihash"
+	"github.com/pkg/errors"
 )
 
 func (m *SigChainEntry) Sign(key p2pcrypto.PrivKey) error {
@@ -17,19 +18,19 @@ func (m *SigChainEntry) Sign(key p2pcrypto.PrivKey) error {
 
 	entryBytes, err := entryToSign.Marshal()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "unable to marshal entry to sign")
 	}
 
 	h, err := mh.Sum(entryBytes, mh.SHA2_256, -1)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "unable to make hash of entry to sign")
 	}
 
 	entryHash := []byte(h.B58String())
 
 	sig, err := key.Sign(entryHash)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "unable to sign entry to add")
 	}
 
 	m.EntryHash = entryHash
@@ -41,7 +42,7 @@ func (m *SigChainEntry) Sign(key p2pcrypto.PrivKey) error {
 func (m *SigChainEntry) GetSignedBy() (p2pcrypto.PubKey, error) {
 	pubKey, err := p2pcrypto.UnmarshalPublicKey(m.SignerPublicKeyBytes)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "unable to unmarshal entry signer")
 	}
 
 	return pubKey, nil
@@ -50,7 +51,7 @@ func (m *SigChainEntry) GetSignedBy() (p2pcrypto.PubKey, error) {
 func (m *SigChainEntry) GetSubject() (p2pcrypto.PubKey, error) {
 	pubKey, err := p2pcrypto.UnmarshalPublicKey(m.SubjectPublicKeyBytes)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "unable to unmarshal entry subject")
 	}
 
 	return pubKey, nil

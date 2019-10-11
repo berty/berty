@@ -3,6 +3,8 @@ package handshake
 import (
 	"context"
 
+	"github.com/pkg/errors"
+
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
@@ -14,16 +16,16 @@ func (s *step4or5CheckSigChainProof) isReadAction() bool { return true }
 func (s *step4or5CheckSigChainProof) action(ctx context.Context, f *flow, step HandshakeFrame_HandshakeStep, readMsg *HandshakeFrame) (*HandshakeFrame_HandshakeStep, error) {
 	payload, err := decryptPayload(f.session, readMsg.EncryptedPayload)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "can't decrypt payload")
 	}
 
 	signKey, err := p2pcrypto.UnmarshalPublicKey(payload.DeviceKey)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "can't unmarshal public key")
 	}
 
-	if err = f.session.CheckOtherKeyProof(payload.Signature, payload.SigChain, signKey); err != nil {
-		return nil, err
+	if err = f.session.CheckOtherKeyProof(f.logger, payload.Signature, payload.SigChain, signKey); err != nil {
+		return nil, errors.Wrap(err, "can't check other peer key proof")
 	}
 
 	f.provedDevicePubKey = signKey
@@ -40,12 +42,12 @@ func (s *step4or5SendSigChainProof) isReadAction() bool { return false }
 func (s *step4or5SendSigChainProof) action(ctx context.Context, f *flow, step HandshakeFrame_HandshakeStep, readMsg *HandshakeFrame) (*HandshakeFrame_HandshakeStep, error) {
 	proof, err := f.session.ProveOwnDeviceKey()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "can't prove own device key")
 	}
 
 	devicePubKey, err := p2pcrypto.MarshalPublicKey(f.ownDevicePubKey)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "can't marshal public key")
 	}
 
 	if err := writeEncryptedPayload(f.session, f.writer, step, &HandshakePayload{
@@ -53,7 +55,7 @@ func (s *step4or5SendSigChainProof) action(ctx context.Context, f *flow, step Ha
 		SigChain:  f.ownSigChain,
 		DeviceKey: devicePubKey,
 	}); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "can't write on conn")
 	}
 
 	return &s.next, nil
