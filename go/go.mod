@@ -6,6 +6,7 @@ require (
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/gogo/protobuf v1.3.0
 	github.com/golang/protobuf v1.3.2
+	github.com/improbable-eng/grpc-web v0.11.0
 	github.com/ipfs/go-datastore v0.1.1
 	github.com/ipfs/go-ipfs v0.4.22
 	github.com/ipfs/go-ipfs-config v0.0.3
@@ -16,6 +17,7 @@ require (
 	github.com/libp2p/go-libp2p-crypto v0.1.0
 	github.com/libp2p/go-libp2p-peer v0.2.0
 	github.com/multiformats/go-multihash v0.0.8
+	github.com/oklog/run v1.0.0
 	github.com/peterbourgon/ff v1.6.0
 	github.com/pkg/errors v0.8.1
 	github.com/smartystreets/goconvey v0.0.0-20190731233626-505e41936337 // indirect
