@@ -23,7 +23,7 @@ export ENVFILE ?= $(shell \
 config: $(ENVFILE)
 	@echo $(ENVFILE)
 $(ENVFILE):
-	$(error "config file $@ does not exist")
+	$(error "config file $@.$(config) does not exist")
 
 .PHONY: \
 	deps \
@@ -46,7 +46,12 @@ $(PWD)/ios/Podfile: $(PWD)/node_modules
 /tmp/envfile: $(ENVFILE)
 	cat $< > $@
 
-deps.android: deps deps.react-native-core.android
+deps.android: export PWD := $(PWD)
+deps.android: deps $(PWD)/node_modules/react-native/react.gradle
+
+$(PWD)/node_modules/react-native/react.gradle: $(PWD)/patch/react.gradle.patch
+	@echo "patching file $<"
+	@patch -f $@ $< 1>/dev/null || true
 
 deps.web: deps
 
@@ -56,7 +61,8 @@ deps.darwin: deps
 start: port ?= 8081
 start: host ?= 127.0.0.1
 start: deps
-	lsof -t -i :$(port) || $(react-native) start \
+	kill $$(lsof -t -i :$(port)) || true
+	cd $(PWD) && $(react-native) start \
 		--port=$(port) \
 		--host=$(host) \
 		& \
@@ -69,12 +75,15 @@ run: deps $(if $(filter $(target), debug), start)
 	cd $(PWD) && $(react-native) run-$(platform) \
 		--no-packager \
 		$(if $(filter $(platform), android), --variant=$(target)) \
-		$(if $(filter $(platform), ios), --configuration=$(target)) \
+		$(if $(filter $(platform), android), --deviceId='$(device)') \
+		$(if $(filter $(platform), android), \
+			$(if $(filter-out $(target), store), --appIdSuffix=$(target))) \
+		$(if $(filter $(platform), ios), --configuration=$(config)) \
 		$(if $(filter $(platform), ios), --scheme=$(target)) \
-		$(if $(filter $(platform), ios), $(if $(filter $(config), development), --simulator='$(device)')) \
+		$(if $(filter $(platform), ios), --simulator='$(device)') \
 
 .PHONY: bundle
-bundle: deps
+bundle: deps.$(platform)
 	cd $(PWD) && $(react-native) bundle \
 		--entry-file=$(entry) \
 		--platform=$(platform) \
@@ -116,12 +125,12 @@ release.ios.staff: release.ios
 release.ios.yolo: target := yolo
 release.ios.yolo: method := enterprise
 release.ios.yolo: profile := InHouse
-release.ios.yolo: team-id := WMBQ84HN4T
+release.ios.yolo: team-id := GR5463T564
 release.ios.yolo: release.ios
 release.ios.store: target := store
 release.ios.store: method := app-store
 release.ios.store: profile := AppStore
-release.ios.store: team-id := GR5463T564
+release.ios.store: team-id := WMBQ84HN4T
 release.ios.store: release.ios
 release.ios: platform := ios
 release.ios: bundle-id = chat.berty.ios.$(target)
@@ -233,45 +242,61 @@ log.darwin: log
 	bundle.darwin.yolo \
 	bundle.darwin.store \
 
+bundle.ios.debug: config := development
 bundle.ios.debug: target := debug
 bundle.ios.debug: bundle.ios
+bundle.ios.staff: config := production
 bundle.ios.staff: target := staff
 bundle.ios.staff: bundle.ios
+bundle.ios.yolo: config := production
 bundle.ios.yolo: target := yolo
 bundle.ios.yolo: bundle.ios
+bundle.ios.store: config := production
 bundle.ios.store: target := store
 bundle.ios.store: bundle.ios
 bundle.ios: platform := ios
 bundle.ios: bundle
 
+bundle.android.debug: config := development
 bundle.android.debug: target := debug
 bundle.android.debug: bundle.android
+bundle.android.staff: config := production
 bundle.android.staff: target := staff
 bundle.android.staff: bundle.android
+bundle.android.yolo: config := production
 bundle.android.yolo: target := yolo
 bundle.android.yolo: bundle.android
+bundle.android.store: config := production
 bundle.android.store: target := store
 bundle.android.store: bundle.android
 bundle.android: platform := android
 bundle.android: bundle
 
+bundle.web.debug: config := development
 bundle.web.debug: target := debug
 bundle.web.debug: bundle.web
+bundle.web.staff: config := production
 bundle.web.staff: target := staff
 bundle.web.staff: bundle.web
+bundle.web.yolo: config := production
 bundle.web.yolo: target := yolo
 bundle.web.yolo: bundle.web
+bundle.web.store: config := production
 bundle.web.store: target := store
 bundle.web.store: bundle.web
 bundle.web: platform := web
 bundle.web: bundle
 
+bundle.darwin.debug: config := development
 bundle.darwin.debug: target := debug
 bundle.darwin.debug: bundle.darwin
+bundle.darwin.staff: config := production
 bundle.darwin.staff: target := staff
 bundle.darwin.staff: bundle.darwin
+bundle.darwin.yolo: config := production
 bundle.darwin.yolo: target := yolo
 bundle.darwin.yolo: bundle.darwin
+bundle.darwin.store: config := production
 bundle.darwin.store: target := store
 bundle.darwin.store: bundle.darwin
 bundle.darwin: platform := darwin
@@ -298,46 +323,62 @@ bundle.darwin: bundle
 	run.darwin.yolo \
 	run.darwin.store \
 
+run.ios.debug: config := development
 run.ios.debug: target := debug
-run.ios.debug: device := iPhone 11
 run.ios.debug: run.ios
+run.ios.staff: config := production
 run.ios.staff: target := staff
 run.ios.staff: run.ios
+run.ios.yolo: config := production
 run.ios.yolo: target := yolo
 run.ios.yolo: run.ios
+run.ios.store: config := production
 run.ios.store: target := store
 run.ios.store: run.ios
 run.ios: platform := ios
 run.ios: deps.ios run
 
+run.android.debug: config := development
 run.android.debug: target := debug
 run.android.debug: run.android
+run.android.staff: config := production
 run.android.staff: target := staff
 run.android.staff: run.android
+run.android.yolo: config := production
 run.android.yolo: target := yolo
 run.android.yolo: run.android
+run.android.store: config := production
 run.android.store: target := store
 run.android.store: run.android
 run.android: platform := android
+run.android: device := $(shell adb devices | tail +2 | head -1 | cut -f 1)
 run.android: deps.android run
 
+run.web.debug: config := development
 run.web.debug: target := debug
 run.web.debug: run.web
+run.web.staff: config := production
 run.web.staff: target := staff
 run.web.staff: run.web
+run.web.yolo: config := production
 run.web.yolo: target := yolo
 run.web.yolo: run.web
+run.web.store: config := production
 run.web.store: target := store
 run.web.store: run.web
 run.web: platform := web
 run.web: deps.web run
 
+run.darwin.debug: config := development
 run.darwin.debug: target := debug
 run.darwin.debug: run.darwin
+run.darwin.staff: config := production
 run.darwin.staff: target := staff
 run.darwin.staff: run.darwin
+run.darwin.yolo: config := production
 run.darwin.yolo: target := yolo
 run.darwin.yolo: run.darwin
+run.darwin.store: config := production
 run.darwin.store: target := store
 run.darwin.store: run.darwin
 run.darwin: platform := darwin
@@ -356,8 +397,13 @@ clean.ios: platform := ios
 clean.ios: export PWD := $(PWD)
 clean.ios:
 	touch $(PWD)/ios/Podfile
+clean.android: export PWD := $(PWD)
 clean.android: platform := android
 clean.android:
+	cd $(PWD)/android; \
+		./gradlew clean; \
+		rm -rf .gradle; \
+
 clean.web: platform := web
 clean.web:
 clean.darwin: platform := darwin
@@ -381,7 +427,10 @@ fclean.ios:
 		rm -rf $(HOME)/Library/Developer/Xcode/DerivedData; \
 		rm -rf Pods; rm -rf ~/Library/Caches/CocoaPods
 fclean.android: platform := android
-fclean.android:
+fclean.android: clean.android
+	cd $(PWD)/android; \
+		rm -rf app/build; \
+		rm -rf $$HOME/.gradle/caches;
 fclean.web: platform := web
 fclean.web:
 fclean.darwin: platform := darwin

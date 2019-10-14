@@ -67,6 +67,7 @@ lerna-debug.log
 buck-out/
 \.buckd/
 *.keystore
+!debug.keystore
 
 # Firebase
 google-services.json
@@ -130,6 +131,7 @@ jsconfig.json
 
 # Environment
 .env.*
+!.env.development
 
 # Fix code factor __generated__ exclude patterns
 __generated__/
