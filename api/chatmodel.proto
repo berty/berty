@@ -7,38 +7,14 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 option go_package = "berty.tech/go/pkg/chatmodel";
 
-option (gogoproto.benchgen_all) = false;
-option (gogoproto.compare_all) = false;
-option (gogoproto.description_all) = false;
-option (gogoproto.enum_stringer_all) = false;
-option (gogoproto.enumdecl_all) = true;
-option (gogoproto.equal_all) = false;
-option (gogoproto.face_all) = false;
-option (gogoproto.gogoproto_import) = false;
-option (gogoproto.goproto_enum_prefix_all) = true;
-option (gogoproto.goproto_enum_stringer_all) = false;
-option (gogoproto.goproto_extensions_map_all) = false;
 option (gogoproto.goproto_getters_all) = false;
-option (gogoproto.goproto_registration) = false;
-//option (gogoproto.goproto_sizecache_all) = false;
-option (gogoproto.goproto_stringer_all) = false;
-//option (gogoproto.goproto_unkeyed_all) = false;
-option (gogoproto.goproto_unrecognized_all) = false;
-option (gogoproto.gostring_all) = false;
 option (gogoproto.marshaler_all) = true;
-option (gogoproto.messagename_all) = false;
-option (gogoproto.onlyone_all) = false;
-option (gogoproto.populate_all) = false;
-option (gogoproto.protosizer_all) = false;
-option (gogoproto.sizer_all) = true;
-option (gogoproto.stable_marshaler_all) = false;
-option (gogoproto.stringer_all) = true;
-option (gogoproto.testgen_all) = false;
-option (gogoproto.typedecl_all) = true;
 option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.unsafe_marshaler_all) = false;
-option (gogoproto.unsafe_unmarshaler_all) = false;
-option (gogoproto.verbose_equal_all) = false;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.goproto_registration) = true;
+option (gogoproto.populate_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.testgen_all) = true;
 
 message Account {
   uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];

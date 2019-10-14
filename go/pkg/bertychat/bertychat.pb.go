@@ -9,12 +9,11 @@ import (
 	io "io"
 	math "math"
 	math_bits "math/bits"
-	reflect "reflect"
-	strings "strings"
 
 	chatmodel "berty.tech/go/pkg/chatmodel"
 	_ "github.com/gogo/protobuf/gogoproto"
-	proto "github.com/golang/protobuf/proto"
+	proto "github.com/gogo/protobuf/proto"
+	golang_proto "github.com/golang/protobuf/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -23,6 +22,7 @@ import (
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = golang_proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
@@ -30,13 +30,14 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type EventSubscribeRequest struct {
 }
 
-func (m *EventSubscribeRequest) Reset()      { *m = EventSubscribeRequest{} }
-func (*EventSubscribeRequest) ProtoMessage() {}
+func (m *EventSubscribeRequest) Reset()         { *m = EventSubscribeRequest{} }
+func (m *EventSubscribeRequest) String() string { return proto.CompactTextString(m) }
+func (*EventSubscribeRequest) ProtoMessage()    {}
 func (*EventSubscribeRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{0}
 }
@@ -70,8 +71,9 @@ var xxx_messageInfo_EventSubscribeRequest proto.InternalMessageInfo
 type EventSubscribeReply struct {
 }
 
-func (m *EventSubscribeReply) Reset()      { *m = EventSubscribeReply{} }
-func (*EventSubscribeReply) ProtoMessage() {}
+func (m *EventSubscribeReply) Reset()         { *m = EventSubscribeReply{} }
+func (m *EventSubscribeReply) String() string { return proto.CompactTextString(m) }
+func (*EventSubscribeReply) ProtoMessage()    {}
 func (*EventSubscribeReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{1}
 }
@@ -105,8 +107,9 @@ var xxx_messageInfo_EventSubscribeReply proto.InternalMessageInfo
 type ConversationListRequest struct {
 }
 
-func (m *ConversationListRequest) Reset()      { *m = ConversationListRequest{} }
-func (*ConversationListRequest) ProtoMessage() {}
+func (m *ConversationListRequest) Reset()         { *m = ConversationListRequest{} }
+func (m *ConversationListRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationListRequest) ProtoMessage()    {}
 func (*ConversationListRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{2}
 }
@@ -141,8 +144,9 @@ type ConversationListReply struct {
 	Conversation *chatmodel.Conversation `protobuf:"bytes,1,opt,name=conversation,proto3" json:"conversation,omitempty"`
 }
 
-func (m *ConversationListReply) Reset()      { *m = ConversationListReply{} }
-func (*ConversationListReply) ProtoMessage() {}
+func (m *ConversationListReply) Reset()         { *m = ConversationListReply{} }
+func (m *ConversationListReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationListReply) ProtoMessage()    {}
 func (*ConversationListReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{3}
 }
@@ -177,8 +181,9 @@ type ConversationGetRequest struct {
 	ID string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (m *ConversationGetRequest) Reset()      { *m = ConversationGetRequest{} }
-func (*ConversationGetRequest) ProtoMessage() {}
+func (m *ConversationGetRequest) Reset()         { *m = ConversationGetRequest{} }
+func (m *ConversationGetRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationGetRequest) ProtoMessage()    {}
 func (*ConversationGetRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{4}
 }
@@ -213,8 +218,9 @@ type ConversationGetReply struct {
 	Conversation *chatmodel.Conversation `protobuf:"bytes,1,opt,name=conversation,proto3" json:"conversation,omitempty"`
 }
 
-func (m *ConversationGetReply) Reset()      { *m = ConversationGetReply{} }
-func (*ConversationGetReply) ProtoMessage() {}
+func (m *ConversationGetReply) Reset()         { *m = ConversationGetReply{} }
+func (m *ConversationGetReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationGetReply) ProtoMessage()    {}
 func (*ConversationGetReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{5}
 }
@@ -248,8 +254,9 @@ var xxx_messageInfo_ConversationGetReply proto.InternalMessageInfo
 type ConversationCreateRequest struct {
 }
 
-func (m *ConversationCreateRequest) Reset()      { *m = ConversationCreateRequest{} }
-func (*ConversationCreateRequest) ProtoMessage() {}
+func (m *ConversationCreateRequest) Reset()         { *m = ConversationCreateRequest{} }
+func (m *ConversationCreateRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationCreateRequest) ProtoMessage()    {}
 func (*ConversationCreateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{6}
 }
@@ -283,8 +290,9 @@ var xxx_messageInfo_ConversationCreateRequest proto.InternalMessageInfo
 type ConversationCreateReply struct {
 }
 
-func (m *ConversationCreateReply) Reset()      { *m = ConversationCreateReply{} }
-func (*ConversationCreateReply) ProtoMessage() {}
+func (m *ConversationCreateReply) Reset()         { *m = ConversationCreateReply{} }
+func (m *ConversationCreateReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationCreateReply) ProtoMessage()    {}
 func (*ConversationCreateReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{7}
 }
@@ -318,8 +326,9 @@ var xxx_messageInfo_ConversationCreateReply proto.InternalMessageInfo
 type ConversationLeaveRequest struct {
 }
 
-func (m *ConversationLeaveRequest) Reset()      { *m = ConversationLeaveRequest{} }
-func (*ConversationLeaveRequest) ProtoMessage() {}
+func (m *ConversationLeaveRequest) Reset()         { *m = ConversationLeaveRequest{} }
+func (m *ConversationLeaveRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationLeaveRequest) ProtoMessage()    {}
 func (*ConversationLeaveRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{8}
 }
@@ -353,8 +362,9 @@ var xxx_messageInfo_ConversationLeaveRequest proto.InternalMessageInfo
 type ConversationLeaveReply struct {
 }
 
-func (m *ConversationLeaveReply) Reset()      { *m = ConversationLeaveReply{} }
-func (*ConversationLeaveReply) ProtoMessage() {}
+func (m *ConversationLeaveReply) Reset()         { *m = ConversationLeaveReply{} }
+func (m *ConversationLeaveReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationLeaveReply) ProtoMessage()    {}
 func (*ConversationLeaveReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{9}
 }
@@ -388,8 +398,9 @@ var xxx_messageInfo_ConversationLeaveReply proto.InternalMessageInfo
 type ConversationEraseRequest struct {
 }
 
-func (m *ConversationEraseRequest) Reset()      { *m = ConversationEraseRequest{} }
-func (*ConversationEraseRequest) ProtoMessage() {}
+func (m *ConversationEraseRequest) Reset()         { *m = ConversationEraseRequest{} }
+func (m *ConversationEraseRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationEraseRequest) ProtoMessage()    {}
 func (*ConversationEraseRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{10}
 }
@@ -423,8 +434,9 @@ var xxx_messageInfo_ConversationEraseRequest proto.InternalMessageInfo
 type ConversationEraseReply struct {
 }
 
-func (m *ConversationEraseReply) Reset()      { *m = ConversationEraseReply{} }
-func (*ConversationEraseReply) ProtoMessage() {}
+func (m *ConversationEraseReply) Reset()         { *m = ConversationEraseReply{} }
+func (m *ConversationEraseReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationEraseReply) ProtoMessage()    {}
 func (*ConversationEraseReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{11}
 }
@@ -458,8 +470,9 @@ var xxx_messageInfo_ConversationEraseReply proto.InternalMessageInfo
 type ConversationSetSeenPositionRequest struct {
 }
 
-func (m *ConversationSetSeenPositionRequest) Reset()      { *m = ConversationSetSeenPositionRequest{} }
-func (*ConversationSetSeenPositionRequest) ProtoMessage() {}
+func (m *ConversationSetSeenPositionRequest) Reset()         { *m = ConversationSetSeenPositionRequest{} }
+func (m *ConversationSetSeenPositionRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationSetSeenPositionRequest) ProtoMessage()    {}
 func (*ConversationSetSeenPositionRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{12}
 }
@@ -493,8 +506,9 @@ var xxx_messageInfo_ConversationSetSeenPositionRequest proto.InternalMessageInfo
 type ConversationSetSeenPositionReply struct {
 }
 
-func (m *ConversationSetSeenPositionReply) Reset()      { *m = ConversationSetSeenPositionReply{} }
-func (*ConversationSetSeenPositionReply) ProtoMessage() {}
+func (m *ConversationSetSeenPositionReply) Reset()         { *m = ConversationSetSeenPositionReply{} }
+func (m *ConversationSetSeenPositionReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationSetSeenPositionReply) ProtoMessage()    {}
 func (*ConversationSetSeenPositionReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{13}
 }
@@ -528,8 +542,9 @@ var xxx_messageInfo_ConversationSetSeenPositionReply proto.InternalMessageInfo
 type ConversationMessageListRequest struct {
 }
 
-func (m *ConversationMessageListRequest) Reset()      { *m = ConversationMessageListRequest{} }
-func (*ConversationMessageListRequest) ProtoMessage() {}
+func (m *ConversationMessageListRequest) Reset()         { *m = ConversationMessageListRequest{} }
+func (m *ConversationMessageListRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationMessageListRequest) ProtoMessage()    {}
 func (*ConversationMessageListRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{14}
 }
@@ -563,8 +578,9 @@ var xxx_messageInfo_ConversationMessageListRequest proto.InternalMessageInfo
 type ConversationMessageListReply struct {
 }
 
-func (m *ConversationMessageListReply) Reset()      { *m = ConversationMessageListReply{} }
-func (*ConversationMessageListReply) ProtoMessage() {}
+func (m *ConversationMessageListReply) Reset()         { *m = ConversationMessageListReply{} }
+func (m *ConversationMessageListReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationMessageListReply) ProtoMessage()    {}
 func (*ConversationMessageListReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{15}
 }
@@ -598,8 +614,9 @@ var xxx_messageInfo_ConversationMessageListReply proto.InternalMessageInfo
 type ConversationMessageSendRequest struct {
 }
 
-func (m *ConversationMessageSendRequest) Reset()      { *m = ConversationMessageSendRequest{} }
-func (*ConversationMessageSendRequest) ProtoMessage() {}
+func (m *ConversationMessageSendRequest) Reset()         { *m = ConversationMessageSendRequest{} }
+func (m *ConversationMessageSendRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationMessageSendRequest) ProtoMessage()    {}
 func (*ConversationMessageSendRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{16}
 }
@@ -633,8 +650,9 @@ var xxx_messageInfo_ConversationMessageSendRequest proto.InternalMessageInfo
 type ConversationMessageSendReply struct {
 }
 
-func (m *ConversationMessageSendReply) Reset()      { *m = ConversationMessageSendReply{} }
-func (*ConversationMessageSendReply) ProtoMessage() {}
+func (m *ConversationMessageSendReply) Reset()         { *m = ConversationMessageSendReply{} }
+func (m *ConversationMessageSendReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationMessageSendReply) ProtoMessage()    {}
 func (*ConversationMessageSendReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{17}
 }
@@ -668,8 +686,9 @@ var xxx_messageInfo_ConversationMessageSendReply proto.InternalMessageInfo
 type ConversationMessageEditRequest struct {
 }
 
-func (m *ConversationMessageEditRequest) Reset()      { *m = ConversationMessageEditRequest{} }
-func (*ConversationMessageEditRequest) ProtoMessage() {}
+func (m *ConversationMessageEditRequest) Reset()         { *m = ConversationMessageEditRequest{} }
+func (m *ConversationMessageEditRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationMessageEditRequest) ProtoMessage()    {}
 func (*ConversationMessageEditRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{18}
 }
@@ -703,8 +722,9 @@ var xxx_messageInfo_ConversationMessageEditRequest proto.InternalMessageInfo
 type ConversationMessageEditReply struct {
 }
 
-func (m *ConversationMessageEditReply) Reset()      { *m = ConversationMessageEditReply{} }
-func (*ConversationMessageEditReply) ProtoMessage() {}
+func (m *ConversationMessageEditReply) Reset()         { *m = ConversationMessageEditReply{} }
+func (m *ConversationMessageEditReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationMessageEditReply) ProtoMessage()    {}
 func (*ConversationMessageEditReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{19}
 }
@@ -738,8 +758,9 @@ var xxx_messageInfo_ConversationMessageEditReply proto.InternalMessageInfo
 type ConversationMessageHideRequest struct {
 }
 
-func (m *ConversationMessageHideRequest) Reset()      { *m = ConversationMessageHideRequest{} }
-func (*ConversationMessageHideRequest) ProtoMessage() {}
+func (m *ConversationMessageHideRequest) Reset()         { *m = ConversationMessageHideRequest{} }
+func (m *ConversationMessageHideRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationMessageHideRequest) ProtoMessage()    {}
 func (*ConversationMessageHideRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{20}
 }
@@ -773,8 +794,9 @@ var xxx_messageInfo_ConversationMessageHideRequest proto.InternalMessageInfo
 type ConversationMessageHideReply struct {
 }
 
-func (m *ConversationMessageHideReply) Reset()      { *m = ConversationMessageHideReply{} }
-func (*ConversationMessageHideReply) ProtoMessage() {}
+func (m *ConversationMessageHideReply) Reset()         { *m = ConversationMessageHideReply{} }
+func (m *ConversationMessageHideReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationMessageHideReply) ProtoMessage()    {}
 func (*ConversationMessageHideReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{21}
 }
@@ -808,8 +830,9 @@ var xxx_messageInfo_ConversationMessageHideReply proto.InternalMessageInfo
 type ConversationUpdateSettingsRequest struct {
 }
 
-func (m *ConversationUpdateSettingsRequest) Reset()      { *m = ConversationUpdateSettingsRequest{} }
-func (*ConversationUpdateSettingsRequest) ProtoMessage() {}
+func (m *ConversationUpdateSettingsRequest) Reset()         { *m = ConversationUpdateSettingsRequest{} }
+func (m *ConversationUpdateSettingsRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationUpdateSettingsRequest) ProtoMessage()    {}
 func (*ConversationUpdateSettingsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{22}
 }
@@ -843,8 +866,9 @@ var xxx_messageInfo_ConversationUpdateSettingsRequest proto.InternalMessageInfo
 type ConversationUpdateSettingsReply struct {
 }
 
-func (m *ConversationUpdateSettingsReply) Reset()      { *m = ConversationUpdateSettingsReply{} }
-func (*ConversationUpdateSettingsReply) ProtoMessage() {}
+func (m *ConversationUpdateSettingsReply) Reset()         { *m = ConversationUpdateSettingsReply{} }
+func (m *ConversationUpdateSettingsReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationUpdateSettingsReply) ProtoMessage()    {}
 func (*ConversationUpdateSettingsReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{23}
 }
@@ -878,8 +902,9 @@ var xxx_messageInfo_ConversationUpdateSettingsReply proto.InternalMessageInfo
 type ConversationInvitationAcceptRequest struct {
 }
 
-func (m *ConversationInvitationAcceptRequest) Reset()      { *m = ConversationInvitationAcceptRequest{} }
-func (*ConversationInvitationAcceptRequest) ProtoMessage() {}
+func (m *ConversationInvitationAcceptRequest) Reset()         { *m = ConversationInvitationAcceptRequest{} }
+func (m *ConversationInvitationAcceptRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationInvitationAcceptRequest) ProtoMessage()    {}
 func (*ConversationInvitationAcceptRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{24}
 }
@@ -913,8 +938,9 @@ var xxx_messageInfo_ConversationInvitationAcceptRequest proto.InternalMessageInf
 type ConversationInvitationAcceptReply struct {
 }
 
-func (m *ConversationInvitationAcceptReply) Reset()      { *m = ConversationInvitationAcceptReply{} }
-func (*ConversationInvitationAcceptReply) ProtoMessage() {}
+func (m *ConversationInvitationAcceptReply) Reset()         { *m = ConversationInvitationAcceptReply{} }
+func (m *ConversationInvitationAcceptReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationInvitationAcceptReply) ProtoMessage()    {}
 func (*ConversationInvitationAcceptReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{25}
 }
@@ -948,8 +974,9 @@ var xxx_messageInfo_ConversationInvitationAcceptReply proto.InternalMessageInfo
 type ConversationInvitationCreateRequest struct {
 }
 
-func (m *ConversationInvitationCreateRequest) Reset()      { *m = ConversationInvitationCreateRequest{} }
-func (*ConversationInvitationCreateRequest) ProtoMessage() {}
+func (m *ConversationInvitationCreateRequest) Reset()         { *m = ConversationInvitationCreateRequest{} }
+func (m *ConversationInvitationCreateRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationInvitationCreateRequest) ProtoMessage()    {}
 func (*ConversationInvitationCreateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{26}
 }
@@ -983,8 +1010,9 @@ var xxx_messageInfo_ConversationInvitationCreateRequest proto.InternalMessageInf
 type ConversationInvitationCreateReply struct {
 }
 
-func (m *ConversationInvitationCreateReply) Reset()      { *m = ConversationInvitationCreateReply{} }
-func (*ConversationInvitationCreateReply) ProtoMessage() {}
+func (m *ConversationInvitationCreateReply) Reset()         { *m = ConversationInvitationCreateReply{} }
+func (m *ConversationInvitationCreateReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationInvitationCreateReply) ProtoMessage()    {}
 func (*ConversationInvitationCreateReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{27}
 }
@@ -1018,8 +1046,9 @@ var xxx_messageInfo_ConversationInvitationCreateReply proto.InternalMessageInfo
 type ConversationInvitationDiscardRequest struct {
 }
 
-func (m *ConversationInvitationDiscardRequest) Reset()      { *m = ConversationInvitationDiscardRequest{} }
-func (*ConversationInvitationDiscardRequest) ProtoMessage() {}
+func (m *ConversationInvitationDiscardRequest) Reset()         { *m = ConversationInvitationDiscardRequest{} }
+func (m *ConversationInvitationDiscardRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationInvitationDiscardRequest) ProtoMessage()    {}
 func (*ConversationInvitationDiscardRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{28}
 }
@@ -1053,8 +1082,9 @@ var xxx_messageInfo_ConversationInvitationDiscardRequest proto.InternalMessageIn
 type ConversationInvitationDiscardReply struct {
 }
 
-func (m *ConversationInvitationDiscardReply) Reset()      { *m = ConversationInvitationDiscardReply{} }
-func (*ConversationInvitationDiscardReply) ProtoMessage() {}
+func (m *ConversationInvitationDiscardReply) Reset()         { *m = ConversationInvitationDiscardReply{} }
+func (m *ConversationInvitationDiscardReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationInvitationDiscardReply) ProtoMessage()    {}
 func (*ConversationInvitationDiscardReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{29}
 }
@@ -1088,8 +1118,9 @@ var xxx_messageInfo_ConversationInvitationDiscardReply proto.InternalMessageInfo
 type ContactListRequest struct {
 }
 
-func (m *ContactListRequest) Reset()      { *m = ContactListRequest{} }
-func (*ContactListRequest) ProtoMessage() {}
+func (m *ContactListRequest) Reset()         { *m = ContactListRequest{} }
+func (m *ContactListRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactListRequest) ProtoMessage()    {}
 func (*ContactListRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{30}
 }
@@ -1123,8 +1154,9 @@ var xxx_messageInfo_ContactListRequest proto.InternalMessageInfo
 type ContactListReply struct {
 }
 
-func (m *ContactListReply) Reset()      { *m = ContactListReply{} }
-func (*ContactListReply) ProtoMessage() {}
+func (m *ContactListReply) Reset()         { *m = ContactListReply{} }
+func (m *ContactListReply) String() string { return proto.CompactTextString(m) }
+func (*ContactListReply) ProtoMessage()    {}
 func (*ContactListReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{31}
 }
@@ -1158,8 +1190,9 @@ var xxx_messageInfo_ContactListReply proto.InternalMessageInfo
 type ContactGetRequest struct {
 }
 
-func (m *ContactGetRequest) Reset()      { *m = ContactGetRequest{} }
-func (*ContactGetRequest) ProtoMessage() {}
+func (m *ContactGetRequest) Reset()         { *m = ContactGetRequest{} }
+func (m *ContactGetRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactGetRequest) ProtoMessage()    {}
 func (*ContactGetRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{32}
 }
@@ -1193,8 +1226,9 @@ var xxx_messageInfo_ContactGetRequest proto.InternalMessageInfo
 type ContactGetReply struct {
 }
 
-func (m *ContactGetReply) Reset()      { *m = ContactGetReply{} }
-func (*ContactGetReply) ProtoMessage() {}
+func (m *ContactGetReply) Reset()         { *m = ContactGetReply{} }
+func (m *ContactGetReply) String() string { return proto.CompactTextString(m) }
+func (*ContactGetReply) ProtoMessage()    {}
 func (*ContactGetReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{33}
 }
@@ -1228,8 +1262,9 @@ var xxx_messageInfo_ContactGetReply proto.InternalMessageInfo
 type ContactUpdateRequest struct {
 }
 
-func (m *ContactUpdateRequest) Reset()      { *m = ContactUpdateRequest{} }
-func (*ContactUpdateRequest) ProtoMessage() {}
+func (m *ContactUpdateRequest) Reset()         { *m = ContactUpdateRequest{} }
+func (m *ContactUpdateRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactUpdateRequest) ProtoMessage()    {}
 func (*ContactUpdateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{34}
 }
@@ -1263,8 +1298,9 @@ var xxx_messageInfo_ContactUpdateRequest proto.InternalMessageInfo
 type ContactUpdateReply struct {
 }
 
-func (m *ContactUpdateReply) Reset()      { *m = ContactUpdateReply{} }
-func (*ContactUpdateReply) ProtoMessage() {}
+func (m *ContactUpdateReply) Reset()         { *m = ContactUpdateReply{} }
+func (m *ContactUpdateReply) String() string { return proto.CompactTextString(m) }
+func (*ContactUpdateReply) ProtoMessage()    {}
 func (*ContactUpdateReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{35}
 }
@@ -1298,8 +1334,9 @@ var xxx_messageInfo_ContactUpdateReply proto.InternalMessageInfo
 type ContactRemoveRequest struct {
 }
 
-func (m *ContactRemoveRequest) Reset()      { *m = ContactRemoveRequest{} }
-func (*ContactRemoveRequest) ProtoMessage() {}
+func (m *ContactRemoveRequest) Reset()         { *m = ContactRemoveRequest{} }
+func (m *ContactRemoveRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactRemoveRequest) ProtoMessage()    {}
 func (*ContactRemoveRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{36}
 }
@@ -1333,8 +1370,9 @@ var xxx_messageInfo_ContactRemoveRequest proto.InternalMessageInfo
 type ContactRemoveReply struct {
 }
 
-func (m *ContactRemoveReply) Reset()      { *m = ContactRemoveReply{} }
-func (*ContactRemoveReply) ProtoMessage() {}
+func (m *ContactRemoveReply) Reset()         { *m = ContactRemoveReply{} }
+func (m *ContactRemoveReply) String() string { return proto.CompactTextString(m) }
+func (*ContactRemoveReply) ProtoMessage()    {}
 func (*ContactRemoveReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{37}
 }
@@ -1368,8 +1406,9 @@ var xxx_messageInfo_ContactRemoveReply proto.InternalMessageInfo
 type ContactRequestCreateRequest struct {
 }
 
-func (m *ContactRequestCreateRequest) Reset()      { *m = ContactRequestCreateRequest{} }
-func (*ContactRequestCreateRequest) ProtoMessage() {}
+func (m *ContactRequestCreateRequest) Reset()         { *m = ContactRequestCreateRequest{} }
+func (m *ContactRequestCreateRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestCreateRequest) ProtoMessage()    {}
 func (*ContactRequestCreateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{38}
 }
@@ -1403,8 +1442,9 @@ var xxx_messageInfo_ContactRequestCreateRequest proto.InternalMessageInfo
 type ContactRequestCreateReply struct {
 }
 
-func (m *ContactRequestCreateReply) Reset()      { *m = ContactRequestCreateReply{} }
-func (*ContactRequestCreateReply) ProtoMessage() {}
+func (m *ContactRequestCreateReply) Reset()         { *m = ContactRequestCreateReply{} }
+func (m *ContactRequestCreateReply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestCreateReply) ProtoMessage()    {}
 func (*ContactRequestCreateReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{39}
 }
@@ -1438,8 +1478,9 @@ var xxx_messageInfo_ContactRequestCreateReply proto.InternalMessageInfo
 type ContactRequestAcceptRequest struct {
 }
 
-func (m *ContactRequestAcceptRequest) Reset()      { *m = ContactRequestAcceptRequest{} }
-func (*ContactRequestAcceptRequest) ProtoMessage() {}
+func (m *ContactRequestAcceptRequest) Reset()         { *m = ContactRequestAcceptRequest{} }
+func (m *ContactRequestAcceptRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestAcceptRequest) ProtoMessage()    {}
 func (*ContactRequestAcceptRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{40}
 }
@@ -1473,8 +1514,9 @@ var xxx_messageInfo_ContactRequestAcceptRequest proto.InternalMessageInfo
 type ContactRequestAcceptReply struct {
 }
 
-func (m *ContactRequestAcceptReply) Reset()      { *m = ContactRequestAcceptReply{} }
-func (*ContactRequestAcceptReply) ProtoMessage() {}
+func (m *ContactRequestAcceptReply) Reset()         { *m = ContactRequestAcceptReply{} }
+func (m *ContactRequestAcceptReply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestAcceptReply) ProtoMessage()    {}
 func (*ContactRequestAcceptReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{41}
 }
@@ -1508,8 +1550,9 @@ var xxx_messageInfo_ContactRequestAcceptReply proto.InternalMessageInfo
 type ContactRequestDiscardRequest struct {
 }
 
-func (m *ContactRequestDiscardRequest) Reset()      { *m = ContactRequestDiscardRequest{} }
-func (*ContactRequestDiscardRequest) ProtoMessage() {}
+func (m *ContactRequestDiscardRequest) Reset()         { *m = ContactRequestDiscardRequest{} }
+func (m *ContactRequestDiscardRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDiscardRequest) ProtoMessage()    {}
 func (*ContactRequestDiscardRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{42}
 }
@@ -1543,8 +1586,9 @@ var xxx_messageInfo_ContactRequestDiscardRequest proto.InternalMessageInfo
 type ContactRequestDiscardReply struct {
 }
 
-func (m *ContactRequestDiscardReply) Reset()      { *m = ContactRequestDiscardReply{} }
-func (*ContactRequestDiscardReply) ProtoMessage() {}
+func (m *ContactRequestDiscardReply) Reset()         { *m = ContactRequestDiscardReply{} }
+func (m *ContactRequestDiscardReply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDiscardReply) ProtoMessage()    {}
 func (*ContactRequestDiscardReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{43}
 }
@@ -1578,8 +1622,9 @@ var xxx_messageInfo_ContactRequestDiscardReply proto.InternalMessageInfo
 type SearchRequest struct {
 }
 
-func (m *SearchRequest) Reset()      { *m = SearchRequest{} }
-func (*SearchRequest) ProtoMessage() {}
+func (m *SearchRequest) Reset()         { *m = SearchRequest{} }
+func (m *SearchRequest) String() string { return proto.CompactTextString(m) }
+func (*SearchRequest) ProtoMessage()    {}
 func (*SearchRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{44}
 }
@@ -1613,8 +1658,9 @@ var xxx_messageInfo_SearchRequest proto.InternalMessageInfo
 type SearchReply struct {
 }
 
-func (m *SearchReply) Reset()      { *m = SearchReply{} }
-func (*SearchReply) ProtoMessage() {}
+func (m *SearchReply) Reset()         { *m = SearchReply{} }
+func (m *SearchReply) String() string { return proto.CompactTextString(m) }
+func (*SearchReply) ProtoMessage()    {}
 func (*SearchReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{45}
 }
@@ -1648,8 +1694,9 @@ var xxx_messageInfo_SearchReply proto.InternalMessageInfo
 type AccountSettingsGetRequest struct {
 }
 
-func (m *AccountSettingsGetRequest) Reset()      { *m = AccountSettingsGetRequest{} }
-func (*AccountSettingsGetRequest) ProtoMessage() {}
+func (m *AccountSettingsGetRequest) Reset()         { *m = AccountSettingsGetRequest{} }
+func (m *AccountSettingsGetRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountSettingsGetRequest) ProtoMessage()    {}
 func (*AccountSettingsGetRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{46}
 }
@@ -1683,8 +1730,9 @@ var xxx_messageInfo_AccountSettingsGetRequest proto.InternalMessageInfo
 type AccountSettingsGetReply struct {
 }
 
-func (m *AccountSettingsGetReply) Reset()      { *m = AccountSettingsGetReply{} }
-func (*AccountSettingsGetReply) ProtoMessage() {}
+func (m *AccountSettingsGetReply) Reset()         { *m = AccountSettingsGetReply{} }
+func (m *AccountSettingsGetReply) String() string { return proto.CompactTextString(m) }
+func (*AccountSettingsGetReply) ProtoMessage()    {}
 func (*AccountSettingsGetReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{47}
 }
@@ -1718,8 +1766,9 @@ var xxx_messageInfo_AccountSettingsGetReply proto.InternalMessageInfo
 type AccountSettingsUpdateRequest struct {
 }
 
-func (m *AccountSettingsUpdateRequest) Reset()      { *m = AccountSettingsUpdateRequest{} }
-func (*AccountSettingsUpdateRequest) ProtoMessage() {}
+func (m *AccountSettingsUpdateRequest) Reset()         { *m = AccountSettingsUpdateRequest{} }
+func (m *AccountSettingsUpdateRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountSettingsUpdateRequest) ProtoMessage()    {}
 func (*AccountSettingsUpdateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{48}
 }
@@ -1753,8 +1802,9 @@ var xxx_messageInfo_AccountSettingsUpdateRequest proto.InternalMessageInfo
 type AccountSettingsUpdateReply struct {
 }
 
-func (m *AccountSettingsUpdateReply) Reset()      { *m = AccountSettingsUpdateReply{} }
-func (*AccountSettingsUpdateReply) ProtoMessage() {}
+func (m *AccountSettingsUpdateReply) Reset()         { *m = AccountSettingsUpdateReply{} }
+func (m *AccountSettingsUpdateReply) String() string { return proto.CompactTextString(m) }
+func (*AccountSettingsUpdateReply) ProtoMessage()    {}
 func (*AccountSettingsUpdateReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{49}
 }
@@ -1788,8 +1838,9 @@ var xxx_messageInfo_AccountSettingsUpdateReply proto.InternalMessageInfo
 type AccountPairingInvitationCreateRequest struct {
 }
 
-func (m *AccountPairingInvitationCreateRequest) Reset()      { *m = AccountPairingInvitationCreateRequest{} }
-func (*AccountPairingInvitationCreateRequest) ProtoMessage() {}
+func (m *AccountPairingInvitationCreateRequest) Reset()         { *m = AccountPairingInvitationCreateRequest{} }
+func (m *AccountPairingInvitationCreateRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountPairingInvitationCreateRequest) ProtoMessage()    {}
 func (*AccountPairingInvitationCreateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{50}
 }
@@ -1823,8 +1874,9 @@ var xxx_messageInfo_AccountPairingInvitationCreateRequest proto.InternalMessageI
 type AccountPairingInvitationCreateReply struct {
 }
 
-func (m *AccountPairingInvitationCreateReply) Reset()      { *m = AccountPairingInvitationCreateReply{} }
-func (*AccountPairingInvitationCreateReply) ProtoMessage() {}
+func (m *AccountPairingInvitationCreateReply) Reset()         { *m = AccountPairingInvitationCreateReply{} }
+func (m *AccountPairingInvitationCreateReply) String() string { return proto.CompactTextString(m) }
+func (*AccountPairingInvitationCreateReply) ProtoMessage()    {}
 func (*AccountPairingInvitationCreateReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{51}
 }
@@ -1860,6 +1912,9 @@ type AccountRenewIncomingContactRequestLinkRequest struct {
 
 func (m *AccountRenewIncomingContactRequestLinkRequest) Reset() {
 	*m = AccountRenewIncomingContactRequestLinkRequest{}
+}
+func (m *AccountRenewIncomingContactRequestLinkRequest) String() string {
+	return proto.CompactTextString(m)
 }
 func (*AccountRenewIncomingContactRequestLinkRequest) ProtoMessage() {}
 func (*AccountRenewIncomingContactRequestLinkRequest) Descriptor() ([]byte, []int) {
@@ -1898,6 +1953,9 @@ type AccountRenewIncomingContactRequestLinkReply struct {
 func (m *AccountRenewIncomingContactRequestLinkReply) Reset() {
 	*m = AccountRenewIncomingContactRequestLinkReply{}
 }
+func (m *AccountRenewIncomingContactRequestLinkReply) String() string {
+	return proto.CompactTextString(m)
+}
 func (*AccountRenewIncomingContactRequestLinkReply) ProtoMessage() {}
 func (*AccountRenewIncomingContactRequestLinkReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{53}
@@ -1932,8 +1990,9 @@ var xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply proto.InternalMe
 type DevEventSubscribeRequest struct {
 }
 
-func (m *DevEventSubscribeRequest) Reset()      { *m = DevEventSubscribeRequest{} }
-func (*DevEventSubscribeRequest) ProtoMessage() {}
+func (m *DevEventSubscribeRequest) Reset()         { *m = DevEventSubscribeRequest{} }
+func (m *DevEventSubscribeRequest) String() string { return proto.CompactTextString(m) }
+func (*DevEventSubscribeRequest) ProtoMessage()    {}
 func (*DevEventSubscribeRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{54}
 }
@@ -1967,8 +2026,9 @@ var xxx_messageInfo_DevEventSubscribeRequest proto.InternalMessageInfo
 type DevEventSubscribeReply struct {
 }
 
-func (m *DevEventSubscribeReply) Reset()      { *m = DevEventSubscribeReply{} }
-func (*DevEventSubscribeReply) ProtoMessage() {}
+func (m *DevEventSubscribeReply) Reset()         { *m = DevEventSubscribeReply{} }
+func (m *DevEventSubscribeReply) String() string { return proto.CompactTextString(m) }
+func (*DevEventSubscribeReply) ProtoMessage()    {}
 func (*DevEventSubscribeReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{55}
 }
@@ -2001,147 +2061,1385 @@ var xxx_messageInfo_DevEventSubscribeReply proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*EventSubscribeRequest)(nil), "berty.chat.EventSubscribeRequest")
+	golang_proto.RegisterType((*EventSubscribeRequest)(nil), "berty.chat.EventSubscribeRequest")
 	proto.RegisterType((*EventSubscribeReply)(nil), "berty.chat.EventSubscribeReply")
+	golang_proto.RegisterType((*EventSubscribeReply)(nil), "berty.chat.EventSubscribeReply")
 	proto.RegisterType((*ConversationListRequest)(nil), "berty.chat.ConversationListRequest")
+	golang_proto.RegisterType((*ConversationListRequest)(nil), "berty.chat.ConversationListRequest")
 	proto.RegisterType((*ConversationListReply)(nil), "berty.chat.ConversationListReply")
+	golang_proto.RegisterType((*ConversationListReply)(nil), "berty.chat.ConversationListReply")
 	proto.RegisterType((*ConversationGetRequest)(nil), "berty.chat.ConversationGetRequest")
+	golang_proto.RegisterType((*ConversationGetRequest)(nil), "berty.chat.ConversationGetRequest")
 	proto.RegisterType((*ConversationGetReply)(nil), "berty.chat.ConversationGetReply")
+	golang_proto.RegisterType((*ConversationGetReply)(nil), "berty.chat.ConversationGetReply")
 	proto.RegisterType((*ConversationCreateRequest)(nil), "berty.chat.ConversationCreateRequest")
+	golang_proto.RegisterType((*ConversationCreateRequest)(nil), "berty.chat.ConversationCreateRequest")
 	proto.RegisterType((*ConversationCreateReply)(nil), "berty.chat.ConversationCreateReply")
+	golang_proto.RegisterType((*ConversationCreateReply)(nil), "berty.chat.ConversationCreateReply")
 	proto.RegisterType((*ConversationLeaveRequest)(nil), "berty.chat.ConversationLeaveRequest")
+	golang_proto.RegisterType((*ConversationLeaveRequest)(nil), "berty.chat.ConversationLeaveRequest")
 	proto.RegisterType((*ConversationLeaveReply)(nil), "berty.chat.ConversationLeaveReply")
+	golang_proto.RegisterType((*ConversationLeaveReply)(nil), "berty.chat.ConversationLeaveReply")
 	proto.RegisterType((*ConversationEraseRequest)(nil), "berty.chat.ConversationEraseRequest")
+	golang_proto.RegisterType((*ConversationEraseRequest)(nil), "berty.chat.ConversationEraseRequest")
 	proto.RegisterType((*ConversationEraseReply)(nil), "berty.chat.ConversationEraseReply")
+	golang_proto.RegisterType((*ConversationEraseReply)(nil), "berty.chat.ConversationEraseReply")
 	proto.RegisterType((*ConversationSetSeenPositionRequest)(nil), "berty.chat.ConversationSetSeenPositionRequest")
+	golang_proto.RegisterType((*ConversationSetSeenPositionRequest)(nil), "berty.chat.ConversationSetSeenPositionRequest")
 	proto.RegisterType((*ConversationSetSeenPositionReply)(nil), "berty.chat.ConversationSetSeenPositionReply")
+	golang_proto.RegisterType((*ConversationSetSeenPositionReply)(nil), "berty.chat.ConversationSetSeenPositionReply")
 	proto.RegisterType((*ConversationMessageListRequest)(nil), "berty.chat.ConversationMessageListRequest")
+	golang_proto.RegisterType((*ConversationMessageListRequest)(nil), "berty.chat.ConversationMessageListRequest")
 	proto.RegisterType((*ConversationMessageListReply)(nil), "berty.chat.ConversationMessageListReply")
+	golang_proto.RegisterType((*ConversationMessageListReply)(nil), "berty.chat.ConversationMessageListReply")
 	proto.RegisterType((*ConversationMessageSendRequest)(nil), "berty.chat.ConversationMessageSendRequest")
+	golang_proto.RegisterType((*ConversationMessageSendRequest)(nil), "berty.chat.ConversationMessageSendRequest")
 	proto.RegisterType((*ConversationMessageSendReply)(nil), "berty.chat.ConversationMessageSendReply")
+	golang_proto.RegisterType((*ConversationMessageSendReply)(nil), "berty.chat.ConversationMessageSendReply")
 	proto.RegisterType((*ConversationMessageEditRequest)(nil), "berty.chat.ConversationMessageEditRequest")
+	golang_proto.RegisterType((*ConversationMessageEditRequest)(nil), "berty.chat.ConversationMessageEditRequest")
 	proto.RegisterType((*ConversationMessageEditReply)(nil), "berty.chat.ConversationMessageEditReply")
+	golang_proto.RegisterType((*ConversationMessageEditReply)(nil), "berty.chat.ConversationMessageEditReply")
 	proto.RegisterType((*ConversationMessageHideRequest)(nil), "berty.chat.ConversationMessageHideRequest")
+	golang_proto.RegisterType((*ConversationMessageHideRequest)(nil), "berty.chat.ConversationMessageHideRequest")
 	proto.RegisterType((*ConversationMessageHideReply)(nil), "berty.chat.ConversationMessageHideReply")
+	golang_proto.RegisterType((*ConversationMessageHideReply)(nil), "berty.chat.ConversationMessageHideReply")
 	proto.RegisterType((*ConversationUpdateSettingsRequest)(nil), "berty.chat.ConversationUpdateSettingsRequest")
+	golang_proto.RegisterType((*ConversationUpdateSettingsRequest)(nil), "berty.chat.ConversationUpdateSettingsRequest")
 	proto.RegisterType((*ConversationUpdateSettingsReply)(nil), "berty.chat.ConversationUpdateSettingsReply")
+	golang_proto.RegisterType((*ConversationUpdateSettingsReply)(nil), "berty.chat.ConversationUpdateSettingsReply")
 	proto.RegisterType((*ConversationInvitationAcceptRequest)(nil), "berty.chat.ConversationInvitationAcceptRequest")
+	golang_proto.RegisterType((*ConversationInvitationAcceptRequest)(nil), "berty.chat.ConversationInvitationAcceptRequest")
 	proto.RegisterType((*ConversationInvitationAcceptReply)(nil), "berty.chat.ConversationInvitationAcceptReply")
+	golang_proto.RegisterType((*ConversationInvitationAcceptReply)(nil), "berty.chat.ConversationInvitationAcceptReply")
 	proto.RegisterType((*ConversationInvitationCreateRequest)(nil), "berty.chat.ConversationInvitationCreateRequest")
+	golang_proto.RegisterType((*ConversationInvitationCreateRequest)(nil), "berty.chat.ConversationInvitationCreateRequest")
 	proto.RegisterType((*ConversationInvitationCreateReply)(nil), "berty.chat.ConversationInvitationCreateReply")
+	golang_proto.RegisterType((*ConversationInvitationCreateReply)(nil), "berty.chat.ConversationInvitationCreateReply")
 	proto.RegisterType((*ConversationInvitationDiscardRequest)(nil), "berty.chat.ConversationInvitationDiscardRequest")
+	golang_proto.RegisterType((*ConversationInvitationDiscardRequest)(nil), "berty.chat.ConversationInvitationDiscardRequest")
 	proto.RegisterType((*ConversationInvitationDiscardReply)(nil), "berty.chat.ConversationInvitationDiscardReply")
+	golang_proto.RegisterType((*ConversationInvitationDiscardReply)(nil), "berty.chat.ConversationInvitationDiscardReply")
 	proto.RegisterType((*ContactListRequest)(nil), "berty.chat.ContactListRequest")
+	golang_proto.RegisterType((*ContactListRequest)(nil), "berty.chat.ContactListRequest")
 	proto.RegisterType((*ContactListReply)(nil), "berty.chat.ContactListReply")
+	golang_proto.RegisterType((*ContactListReply)(nil), "berty.chat.ContactListReply")
 	proto.RegisterType((*ContactGetRequest)(nil), "berty.chat.ContactGetRequest")
+	golang_proto.RegisterType((*ContactGetRequest)(nil), "berty.chat.ContactGetRequest")
 	proto.RegisterType((*ContactGetReply)(nil), "berty.chat.ContactGetReply")
+	golang_proto.RegisterType((*ContactGetReply)(nil), "berty.chat.ContactGetReply")
 	proto.RegisterType((*ContactUpdateRequest)(nil), "berty.chat.ContactUpdateRequest")
+	golang_proto.RegisterType((*ContactUpdateRequest)(nil), "berty.chat.ContactUpdateRequest")
 	proto.RegisterType((*ContactUpdateReply)(nil), "berty.chat.ContactUpdateReply")
+	golang_proto.RegisterType((*ContactUpdateReply)(nil), "berty.chat.ContactUpdateReply")
 	proto.RegisterType((*ContactRemoveRequest)(nil), "berty.chat.ContactRemoveRequest")
+	golang_proto.RegisterType((*ContactRemoveRequest)(nil), "berty.chat.ContactRemoveRequest")
 	proto.RegisterType((*ContactRemoveReply)(nil), "berty.chat.ContactRemoveReply")
+	golang_proto.RegisterType((*ContactRemoveReply)(nil), "berty.chat.ContactRemoveReply")
 	proto.RegisterType((*ContactRequestCreateRequest)(nil), "berty.chat.ContactRequestCreateRequest")
+	golang_proto.RegisterType((*ContactRequestCreateRequest)(nil), "berty.chat.ContactRequestCreateRequest")
 	proto.RegisterType((*ContactRequestCreateReply)(nil), "berty.chat.ContactRequestCreateReply")
+	golang_proto.RegisterType((*ContactRequestCreateReply)(nil), "berty.chat.ContactRequestCreateReply")
 	proto.RegisterType((*ContactRequestAcceptRequest)(nil), "berty.chat.ContactRequestAcceptRequest")
+	golang_proto.RegisterType((*ContactRequestAcceptRequest)(nil), "berty.chat.ContactRequestAcceptRequest")
 	proto.RegisterType((*ContactRequestAcceptReply)(nil), "berty.chat.ContactRequestAcceptReply")
+	golang_proto.RegisterType((*ContactRequestAcceptReply)(nil), "berty.chat.ContactRequestAcceptReply")
 	proto.RegisterType((*ContactRequestDiscardRequest)(nil), "berty.chat.ContactRequestDiscardRequest")
+	golang_proto.RegisterType((*ContactRequestDiscardRequest)(nil), "berty.chat.ContactRequestDiscardRequest")
 	proto.RegisterType((*ContactRequestDiscardReply)(nil), "berty.chat.ContactRequestDiscardReply")
+	golang_proto.RegisterType((*ContactRequestDiscardReply)(nil), "berty.chat.ContactRequestDiscardReply")
 	proto.RegisterType((*SearchRequest)(nil), "berty.chat.SearchRequest")
+	golang_proto.RegisterType((*SearchRequest)(nil), "berty.chat.SearchRequest")
 	proto.RegisterType((*SearchReply)(nil), "berty.chat.SearchReply")
+	golang_proto.RegisterType((*SearchReply)(nil), "berty.chat.SearchReply")
 	proto.RegisterType((*AccountSettingsGetRequest)(nil), "berty.chat.AccountSettingsGetRequest")
+	golang_proto.RegisterType((*AccountSettingsGetRequest)(nil), "berty.chat.AccountSettingsGetRequest")
 	proto.RegisterType((*AccountSettingsGetReply)(nil), "berty.chat.AccountSettingsGetReply")
+	golang_proto.RegisterType((*AccountSettingsGetReply)(nil), "berty.chat.AccountSettingsGetReply")
 	proto.RegisterType((*AccountSettingsUpdateRequest)(nil), "berty.chat.AccountSettingsUpdateRequest")
+	golang_proto.RegisterType((*AccountSettingsUpdateRequest)(nil), "berty.chat.AccountSettingsUpdateRequest")
 	proto.RegisterType((*AccountSettingsUpdateReply)(nil), "berty.chat.AccountSettingsUpdateReply")
+	golang_proto.RegisterType((*AccountSettingsUpdateReply)(nil), "berty.chat.AccountSettingsUpdateReply")
 	proto.RegisterType((*AccountPairingInvitationCreateRequest)(nil), "berty.chat.AccountPairingInvitationCreateRequest")
+	golang_proto.RegisterType((*AccountPairingInvitationCreateRequest)(nil), "berty.chat.AccountPairingInvitationCreateRequest")
 	proto.RegisterType((*AccountPairingInvitationCreateReply)(nil), "berty.chat.AccountPairingInvitationCreateReply")
+	golang_proto.RegisterType((*AccountPairingInvitationCreateReply)(nil), "berty.chat.AccountPairingInvitationCreateReply")
 	proto.RegisterType((*AccountRenewIncomingContactRequestLinkRequest)(nil), "berty.chat.AccountRenewIncomingContactRequestLinkRequest")
+	golang_proto.RegisterType((*AccountRenewIncomingContactRequestLinkRequest)(nil), "berty.chat.AccountRenewIncomingContactRequestLinkRequest")
 	proto.RegisterType((*AccountRenewIncomingContactRequestLinkReply)(nil), "berty.chat.AccountRenewIncomingContactRequestLinkReply")
+	golang_proto.RegisterType((*AccountRenewIncomingContactRequestLinkReply)(nil), "berty.chat.AccountRenewIncomingContactRequestLinkReply")
 	proto.RegisterType((*DevEventSubscribeRequest)(nil), "berty.chat.DevEventSubscribeRequest")
+	golang_proto.RegisterType((*DevEventSubscribeRequest)(nil), "berty.chat.DevEventSubscribeRequest")
 	proto.RegisterType((*DevEventSubscribeReply)(nil), "berty.chat.DevEventSubscribeReply")
+	golang_proto.RegisterType((*DevEventSubscribeReply)(nil), "berty.chat.DevEventSubscribeReply")
 }
 
 func init() { proto.RegisterFile("bertychat.proto", fileDescriptor_45ccc435ebdc714a) }
+func init() { golang_proto.RegisterFile("bertychat.proto", fileDescriptor_45ccc435ebdc714a) }
 
 var fileDescriptor_45ccc435ebdc714a = []byte{
-	// 1277 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x98, 0x4f, 0x6c, 0xdc, 0x44,
-	0x14, 0xc6, 0xc7, 0x39, 0x14, 0xf1, 0x4a, 0x08, 0x99, 0x34, 0xff, 0x9c, 0x64, 0x92, 0x6c, 0xb2,
-	0x69, 0x44, 0xd9, 0x75, 0x28, 0x07, 0xc4, 0x8d, 0x34, 0x89, 0x20, 0xa8, 0x88, 0x2a, 0x2b, 0x24,
-	0xe8, 0x01, 0xe4, 0xf5, 0x0e, 0x8e, 0x95, 0xc4, 0xde, 0xae, 0x9d, 0x45, 0x41, 0x42, 0x8a, 0x40,
-	0x42, 0x3d, 0x22, 0x71, 0xe1, 0x02, 0xe2, 0xd8, 0x63, 0x8f, 0x3d, 0xf6, 0x98, 0x63, 0x24, 0x2e,
-	0x11, 0x07, 0xd4, 0xb5, 0x39, 0xf4, 0xd8, 0x63, 0x8f, 0xc8, 0x1e, 0x7b, 0x77, 0xc6, 0x3b, 0x63,
-	0x6f, 0x11, 0xb7, 0x66, 0xde, 0xf7, 0xbe, 0x37, 0x7e, 0x9e, 0xf1, 0xfb, 0x75, 0x61, 0xa2, 0x49,
-	0x3b, 0xc1, 0x99, 0x75, 0x68, 0x06, 0xf5, 0x76, 0xc7, 0x0b, 0x3c, 0x0c, 0xc9, 0x42, 0x3d, 0x5e,
-	0xd1, 0x17, 0x6d, 0xcf, 0xb3, 0x8f, 0xa9, 0x61, 0xb6, 0x1d, 0xc3, 0x74, 0x5d, 0x2f, 0x30, 0x03,
-	0xc7, 0x73, 0x7d, 0xa6, 0xd4, 0x6b, 0xb6, 0x13, 0x1c, 0x9e, 0x36, 0xeb, 0x96, 0x77, 0x62, 0xd8,
-	0x9e, 0xed, 0x19, 0xc9, 0x72, 0xf3, 0xf4, 0x9b, 0xe4, 0xaf, 0xe4, 0x8f, 0xe4, 0x5f, 0xa9, 0x7c,
-	0x22, 0xb6, 0x3c, 0xf1, 0x5a, 0xf4, 0x98, 0x2d, 0x54, 0x66, 0x61, 0x7a, 0xaf, 0x4b, 0xdd, 0xa0,
-	0x71, 0xda, 0xf4, 0xad, 0x8e, 0xd3, 0xa4, 0x07, 0xf4, 0xc1, 0x29, 0xf5, 0x83, 0xca, 0x34, 0x4c,
-	0xe5, 0x03, 0xed, 0xe3, 0xb3, 0xca, 0x3c, 0xcc, 0xee, 0x78, 0x6e, 0x97, 0x76, 0xfc, 0x64, 0x1b,
-	0x77, 0x1d, 0x3f, 0xc8, 0x32, 0xee, 0xc3, 0xf4, 0x70, 0xa8, 0x7d, 0x7c, 0x86, 0xb7, 0xe1, 0x0d,
-	0x8b, 0x0b, 0xcc, 0x69, 0x2b, 0xda, 0xe6, 0xf5, 0xdb, 0x4b, 0xf5, 0xc1, 0x43, 0xb2, 0x1d, 0xf1,
-	0xd9, 0x07, 0x42, 0x4a, 0x65, 0x0b, 0x66, 0xf8, 0xe8, 0x47, 0x34, 0xab, 0x8a, 0x67, 0x60, 0xcc,
-	0x69, 0x25, 0x96, 0xaf, 0xdf, 0xb9, 0x16, 0xfe, 0xbd, 0x3c, 0xb6, 0xbf, 0x7b, 0x30, 0xe6, 0xb4,
-	0x2a, 0x5f, 0xc2, 0x8d, 0xa1, 0x8c, 0xff, 0x69, 0x33, 0x0b, 0x30, 0xcf, 0x47, 0x77, 0x3a, 0xd4,
-	0x0c, 0xfa, 0x7d, 0xcb, 0x35, 0x28, 0x0b, 0xc6, 0xbd, 0xd3, 0x61, 0x4e, 0x68, 0x10, 0x35, 0xbb,
-	0xfd, 0xb4, 0x39, 0xf1, 0x01, 0xd3, 0x98, 0x24, 0x6b, 0xaf, 0x63, 0xfa, 0xaa, 0xac, 0x34, 0x16,
-	0x67, 0xad, 0x43, 0x85, 0x8f, 0x34, 0x68, 0xd0, 0xa0, 0xd4, 0xbd, 0xe7, 0xf9, 0x4e, 0xf2, 0x40,
-	0x69, 0x7e, 0x05, 0x56, 0x0a, 0x55, 0xb1, 0xd3, 0x0a, 0x10, 0x5e, 0xf3, 0x29, 0xf5, 0x7d, 0xd3,
-	0xa6, 0xfc, 0x8b, 0x27, 0xb0, 0xa8, 0x54, 0xa8, 0x1d, 0x1a, 0xd4, 0x6d, 0x15, 0x3b, 0x30, 0x85,
-	0xda, 0x61, 0xaf, 0xe5, 0x94, 0xec, 0x81, 0x29, 0xd4, 0x0e, 0x1f, 0x3b, 0x2d, 0x5a, 0xec, 0xc0,
-	0x14, 0xb1, 0xc3, 0x1a, 0xac, 0xf2, 0xf1, 0xcf, 0xdb, 0x2d, 0x33, 0xa0, 0x0d, 0x1a, 0x04, 0x8e,
-	0x6b, 0xfb, 0x99, 0xc9, 0x2a, 0x2c, 0x17, 0x89, 0x62, 0x9f, 0x2a, 0xac, 0xf1, 0x92, 0x7d, 0xb7,
-	0xeb, 0xb0, 0x2b, 0xbd, 0x6d, 0x59, 0xb4, 0xdd, 0x7f, 0xa0, 0x5c, 0xb9, 0x61, 0x59, 0xa1, 0x97,
-	0x78, 0x26, 0x95, 0x5e, 0xfc, 0xe9, 0xdc, 0x80, 0x75, 0xb9, 0x68, 0xd7, 0xf1, 0x2d, 0xb3, 0xd3,
-	0x7f, 0x57, 0xb9, 0x93, 0x25, 0xd1, 0xc5, 0x6e, 0x37, 0x00, 0xef, 0x78, 0x6e, 0x60, 0x5a, 0x01,
-	0x7f, 0x52, 0x30, 0xbc, 0x25, 0xac, 0xc6, 0xca, 0x29, 0x98, 0x4c, 0xd7, 0x06, 0xb7, 0xba, 0x32,
-	0x09, 0x13, 0xfc, 0x62, 0xac, 0x9b, 0x49, 0x2e, 0x74, 0xbc, 0xc4, 0xba, 0x9a, 0x49, 0x07, 0x95,
-	0xb2, 0x75, 0x51, 0x7d, 0x40, 0x4f, 0xbc, 0xae, 0x44, 0x9d, 0xad, 0xc7, 0xea, 0x25, 0x58, 0xe8,
-	0xaf, 0x26, 0x3a, 0xb1, 0x7f, 0xec, 0xc2, 0x4b, 0xc2, 0xd2, 0x5c, 0xf1, 0x3d, 0x0e, 0xe5, 0xf2,
-	0xef, 0x8f, 0x9d, 0x39, 0x2e, 0x98, 0xeb, 0xf5, 0x22, 0xe8, 0x8a, 0x78, 0x9c, 0x3d, 0x01, 0xe3,
-	0x0d, 0x6a, 0x76, 0xac, 0xc3, 0x4c, 0x3e, 0x0e, 0xd7, 0xb3, 0x85, 0x38, 0xbe, 0x00, 0xf3, 0xdb,
-	0x96, 0xe5, 0x9d, 0xba, 0x41, 0x76, 0x02, 0xb9, 0x0e, 0xcf, 0xc3, 0xac, 0x2c, 0x98, 0xee, 0x2a,
-	0x17, 0x12, 0x3b, 0xbe, 0x08, 0xba, 0x22, 0x1e, 0x67, 0xdf, 0x84, 0x6a, 0x1a, 0xbd, 0x67, 0x3a,
-	0x1d, 0xc7, 0xb5, 0x55, 0xa7, 0xb2, 0x0a, 0x6b, 0x65, 0xc2, 0xd8, 0xcf, 0x80, 0x5a, 0x2a, 0x3b,
-	0xa0, 0x2e, 0xfd, 0x76, 0xdf, 0xb5, 0xbc, 0x13, 0xc7, 0xb5, 0xc5, 0xbe, 0xdc, 0x75, 0xdc, 0xa3,
-	0xcc, 0xb7, 0x06, 0xb7, 0x46, 0x4d, 0x48, 0xbf, 0xaf, 0xbb, 0xb4, 0x2b, 0x1f, 0x82, 0x73, 0x30,
-	0x23, 0x89, 0xb5, 0x8f, 0xcf, 0x6e, 0xff, 0x35, 0x0b, 0xaf, 0xa5, 0x55, 0xf0, 0x17, 0xf0, 0xa6,
-	0x28, 0xc1, 0xab, 0xdc, 0x38, 0xa9, 0x4b, 0xad, 0xf5, 0xe5, 0x22, 0x49, 0xbc, 0x2f, 0xb4, 0xa5,
-	0xe1, 0xaf, 0x92, 0xfb, 0x22, 0x8c, 0x54, 0xbc, 0xc6, 0x27, 0x2a, 0x66, 0xb1, 0xbe, 0x5a, 0x2c,
-	0xca, 0xfc, 0x3b, 0xc9, 0x35, 0xe3, 0x87, 0x24, 0xae, 0xa8, 0x32, 0x07, 0x67, 0x47, 0x5f, 0x29,
-	0xd4, 0x24, 0x98, 0xf0, 0xc3, 0x9f, 0xff, 0xfc, 0x32, 0x36, 0x85, 0x27, 0x0d, 0x7e, 0x72, 0x1a,
-	0x36, 0x0d, 0x70, 0x33, 0xb9, 0x81, 0xb9, 0x01, 0x89, 0xab, 0x2a, 0x4b, 0xe1, 0xcc, 0xe8, 0x6b,
-	0x65, 0xb2, 0xe4, 0xc9, 0xf0, 0xd7, 0xc9, 0x37, 0x45, 0x9c, 0xa6, 0x78, 0x5d, 0xd9, 0x13, 0x6e,
-	0x10, 0xeb, 0x95, 0x12, 0x95, 0xb4, 0x40, 0x32, 0x78, 0xd5, 0x05, 0xf8, 0x99, 0xad, 0x2e, 0xc0,
-	0x4d, 0x6f, 0x84, 0xbf, 0x4f, 0xbe, 0x2a, 0xaa, 0xc9, 0x8c, 0xeb, 0x2a, 0x13, 0xf9, 0xa0, 0xd7,
-	0xdf, 0x19, 0x59, 0xcf, 0xca, 0xfb, 0x22, 0xc5, 0x70, 0x23, 0x1d, 0xbf, 0xad, 0xb2, 0x1a, 0x26,
-	0x03, 0x7d, 0x73, 0x24, 0x6d, 0x76, 0x1a, 0x1f, 0x48, 0x8b, 0xc6, 0x14, 0x50, 0x5a, 0x94, 0x83,
-	0x89, 0xd2, 0xa2, 0x03, 0xac, 0x40, 0x8a, 0x92, 0x31, 0x36, 0x94, 0x96, 0xe4, 0xe8, 0xa3, 0xb4,
-	0xe4, 0x80, 0x43, 0x54, 0x25, 0x63, 0xce, 0x28, 0x2d, 0xc9, 0xe1, 0x4a, 0x69, 0xc9, 0x01, 0xb8,
-	0x20, 0xfc, 0x5d, 0x32, 0x46, 0x14, 0x54, 0x82, 0x6b, 0x2a, 0x27, 0x29, 0xe2, 0xe8, 0xb7, 0x46,
-	0x95, 0xb3, 0xda, 0xe7, 0x9a, 0xc8, 0x55, 0x79, 0x90, 0xc1, 0x86, 0xca, 0x4f, 0x41, 0x46, 0x7a,
-	0x6d, 0xf4, 0x84, 0xb2, 0x2d, 0xa4, 0x1f, 0x9f, 0x11, 0xb6, 0x20, 0x7e, 0x86, 0x6a, 0xa3, 0x27,
-	0xb0, 0x2d, 0xfc, 0xa8, 0xc1, 0x52, 0x21, 0x35, 0xe1, 0xad, 0x72, 0x4b, 0x11, 0x0e, 0xf4, 0xfa,
-	0x2b, 0x64, 0xb0, 0x5d, 0x7c, 0x06, 0xd7, 0x39, 0xfc, 0xc2, 0x24, 0x67, 0x90, 0xa3, 0x35, 0x7d,
-	0x51, 0x19, 0xcf, 0x6e, 0xec, 0x27, 0x00, 0x03, 0x4c, 0xc3, 0x4b, 0x12, 0x3d, 0x37, 0x35, 0x16,
-	0x54, 0x61, 0xb6, 0xb9, 0x06, 0x8c, 0x0b, 0x1c, 0x87, 0x57, 0x24, 0x7a, 0x01, 0x44, 0x74, 0x52,
-	0xa0, 0xc8, 0x9b, 0x32, 0xdc, 0x93, 0x9a, 0x0a, 0x84, 0x28, 0x35, 0xe5, 0x59, 0x11, 0xe1, 0x43,
-	0x8e, 0x2d, 0x39, 0x1c, 0xc4, 0x37, 0xa5, 0x99, 0xc3, 0x3c, 0xa9, 0x57, 0xcb, 0x85, 0x8a, 0x4a,
-	0xe9, 0x9d, 0x29, 0xa8, 0x24, 0xde, 0x95, 0x6a, 0xb9, 0x90, 0x55, 0x3a, 0x4a, 0xfe, 0xf3, 0x3e,
-	0x4c, 0x9a, 0x78, 0x53, 0xed, 0x90, 0x3b, 0x8f, 0x1b, 0x23, 0x28, 0x59, 0xb1, 0x0f, 0xe1, 0x1a,
-	0xe3, 0x54, 0x3c, 0xcf, 0xe7, 0x08, 0x30, 0xab, 0xcf, 0xca, 0x42, 0xd9, 0xc1, 0x6b, 0x02, 0x1e,
-	0xa6, 0x57, 0x11, 0x22, 0x94, 0xe8, 0x2b, 0x42, 0x84, 0x0a, 0x82, 0x93, 0x96, 0x48, 0x31, 0x57,
-	0x6c, 0x49, 0x11, 0x29, 0x8b, 0x2d, 0x29, 0x60, 0x66, 0x84, 0x7f, 0xd2, 0x80, 0x14, 0xd3, 0x30,
-	0x7e, 0x57, 0x62, 0x56, 0x8c, 0xd8, 0xba, 0xf1, 0x2a, 0x29, 0x6c, 0x23, 0xbf, 0x6b, 0xb0, 0x31,
-	0x1a, 0x3e, 0xe3, 0x0f, 0x24, 0xee, 0xa3, 0x31, 0xba, 0xfe, 0xfe, 0x7f, 0x49, 0x65, 0x1b, 0x34,
-	0x61, 0x72, 0x88, 0xc9, 0x45, 0xf4, 0x52, 0xe1, 0xbc, 0x88, 0x5e, 0x72, 0xb0, 0x8f, 0x4f, 0xd7,
-	0x9d, 0xdf, 0xb4, 0x8b, 0x1e, 0x41, 0x97, 0x3d, 0xa2, 0x5d, 0xf5, 0x08, 0x7a, 0xd6, 0x23, 0xe8,
-	0x79, 0x8f, 0xa0, 0x17, 0x3d, 0x82, 0x5e, 0xf6, 0x08, 0x3a, 0x0f, 0x89, 0xf6, 0x30, 0x24, 0xe8,
-	0x51, 0x48, 0xd0, 0xe3, 0x90, 0xa0, 0x27, 0x21, 0x41, 0x4f, 0x43, 0x82, 0x2e, 0x42, 0xa2, 0x5d,
-	0x86, 0x44, 0xbb, 0x0a, 0x09, 0x7a, 0x16, 0x12, 0xed, 0x79, 0x48, 0xd0, 0x8b, 0x90, 0xa0, 0x97,
-	0x21, 0x41, 0xe7, 0x11, 0x41, 0x0f, 0x23, 0x82, 0x7e, 0x8e, 0x08, 0xfa, 0x35, 0x22, 0xe8, 0x8f,
-	0x88, 0xa0, 0x47, 0x11, 0x41, 0x8f, 0x23, 0xa2, 0x3d, 0x89, 0x88, 0xf6, 0x34, 0x22, 0xe8, 0x22,
-	0x22, 0xe8, 0x32, 0x22, 0xe8, 0x2a, 0x22, 0xe8, 0xfe, 0x02, 0xdb, 0x69, 0x40, 0xad, 0x43, 0xc3,
-	0xf6, 0x8c, 0xf6, 0x91, 0x6d, 0xf4, 0x7f, 0x24, 0x6c, 0x5e, 0x4b, 0x7e, 0xbb, 0x7b, 0xef, 0xdf,
-	0x00, 0x00, 0x00, 0xff, 0xff, 0xcf, 0x09, 0x67, 0xdc, 0x38, 0x14, 0x00, 0x00,
+	// 1198 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x98, 0xcf, 0x6f, 0xdc, 0x44,
+	0x14, 0xc7, 0xed, 0x1c, 0x82, 0x78, 0x21, 0x84, 0x4c, 0x9a, 0x5f, 0x93, 0xc4, 0x49, 0x9c, 0x6c,
+	0x1a, 0x51, 0x76, 0x1d, 0xca, 0x01, 0x71, 0x23, 0x4d, 0x22, 0x08, 0x2a, 0xa2, 0xca, 0x0a, 0x09,
+	0x7a, 0x00, 0x79, 0xbd, 0x83, 0x63, 0x65, 0x63, 0x6f, 0x6d, 0xef, 0xa2, 0x20, 0x21, 0x21, 0x90,
+	0x38, 0x23, 0x71, 0xe7, 0xcc, 0x9f, 0xc0, 0x91, 0x63, 0x8f, 0x95, 0xb8, 0x20, 0x0e, 0x88, 0x6e,
+	0xf8, 0x23, 0x38, 0xa2, 0x99, 0xb1, 0x77, 0x67, 0xbc, 0x33, 0xb6, 0x8b, 0xb8, 0x35, 0xf3, 0xbe,
+	0xef, 0xfb, 0xc6, 0xcf, 0x33, 0x7e, 0x9f, 0x2e, 0x2c, 0x74, 0x48, 0x9c, 0xde, 0x78, 0x97, 0x6e,
+	0xda, 0xea, 0xc7, 0x51, 0x1a, 0x21, 0x60, 0x0b, 0x2d, 0xba, 0x82, 0x37, 0xfd, 0x28, 0xf2, 0x7b,
+	0xc4, 0x71, 0xfb, 0x81, 0xe3, 0x86, 0x61, 0x94, 0xba, 0x69, 0x10, 0x85, 0x09, 0x57, 0xe2, 0xa6,
+	0x1f, 0xa4, 0x97, 0x83, 0x4e, 0xcb, 0x8b, 0xae, 0x1d, 0x3f, 0xf2, 0x23, 0x87, 0x2d, 0x77, 0x06,
+	0x5f, 0xb0, 0xbf, 0xd8, 0x1f, 0xec, 0x5f, 0x99, 0x7c, 0x81, 0x5a, 0x5e, 0x47, 0x5d, 0xd2, 0xe3,
+	0x0b, 0xf6, 0x2a, 0x2c, 0x9f, 0x0d, 0x49, 0x98, 0xb6, 0x07, 0x9d, 0xc4, 0x8b, 0x83, 0x0e, 0xb9,
+	0x20, 0x4f, 0x06, 0x24, 0x49, 0xed, 0x65, 0x58, 0x2a, 0x06, 0xfa, 0xbd, 0x1b, 0x7b, 0x1d, 0x56,
+	0x4f, 0xa2, 0x70, 0x48, 0xe2, 0x84, 0x6d, 0xe3, 0x61, 0x90, 0xa4, 0x79, 0xc6, 0x63, 0x58, 0x9e,
+	0x0e, 0xf5, 0x7b, 0x37, 0xe8, 0x18, 0x5e, 0xf1, 0x84, 0xc0, 0x9a, 0xb9, 0x63, 0x1e, 0xce, 0xdd,
+	0xdf, 0x6a, 0x4d, 0x1e, 0x92, 0xef, 0x48, 0xcc, 0xbe, 0x90, 0x52, 0xec, 0x23, 0x58, 0x11, 0xa3,
+	0xef, 0x91, 0xbc, 0x2a, 0x5a, 0x81, 0x99, 0xa0, 0xcb, 0x2c, 0x5f, 0x7e, 0x30, 0x3b, 0xfa, 0x73,
+	0x7b, 0xe6, 0xfc, 0xf4, 0x62, 0x26, 0xe8, 0xda, 0x9f, 0xc2, 0x9d, 0xa9, 0x8c, 0xff, 0x69, 0x33,
+	0x1b, 0xb0, 0x2e, 0x46, 0x4f, 0x62, 0xe2, 0xa6, 0xe3, 0xbe, 0x15, 0x1a, 0x94, 0x07, 0x69, 0xef,
+	0x30, 0xac, 0x49, 0x0d, 0x22, 0xee, 0x70, 0x9c, 0xb6, 0x26, 0x3f, 0x60, 0x16, 0x53, 0x64, 0x9d,
+	0xc5, 0x6e, 0xa2, 0xcb, 0xca, 0x62, 0x34, 0x6b, 0x1f, 0x6c, 0x31, 0xd2, 0x26, 0x69, 0x9b, 0x90,
+	0xf0, 0x51, 0x94, 0x04, 0xec, 0x81, 0xb2, 0x7c, 0x1b, 0x76, 0x4a, 0x55, 0xd4, 0x69, 0x07, 0x2c,
+	0x51, 0xf3, 0x21, 0x49, 0x12, 0xd7, 0x27, 0xe2, 0x8b, 0xb7, 0x60, 0x53, 0xab, 0xd0, 0x3b, 0xb4,
+	0x49, 0xd8, 0x2d, 0x77, 0xe0, 0x0a, 0xbd, 0xc3, 0x59, 0x37, 0xa8, 0xd8, 0x03, 0x57, 0xe8, 0x1d,
+	0xde, 0x0f, 0xba, 0xa4, 0xdc, 0x81, 0x2b, 0xa8, 0xc3, 0x1e, 0xec, 0x8a, 0xf1, 0x8f, 0xfb, 0x5d,
+	0x37, 0x25, 0x6d, 0x92, 0xa6, 0x41, 0xe8, 0x27, 0xb9, 0xc9, 0x2e, 0x6c, 0x97, 0x89, 0xa8, 0x4f,
+	0x03, 0xf6, 0x44, 0xc9, 0x79, 0x38, 0x0c, 0xf8, 0x95, 0x3e, 0xf6, 0x3c, 0xd2, 0x1f, 0x3f, 0x50,
+	0xa1, 0xdc, 0xb4, 0xac, 0xd4, 0x4b, 0x3e, 0x93, 0x5a, 0x2f, 0xf1, 0x74, 0x1e, 0xc0, 0xbe, 0x5a,
+	0x74, 0x1a, 0x24, 0x9e, 0x1b, 0x8f, 0xdf, 0x55, 0xe1, 0x64, 0x29, 0x74, 0xd4, 0xed, 0x0e, 0xa0,
+	0x93, 0x28, 0x4c, 0x5d, 0x2f, 0x15, 0x4f, 0x0a, 0x82, 0xd7, 0xa4, 0x55, 0xaa, 0x5c, 0x82, 0xc5,
+	0x6c, 0x6d, 0x72, 0xab, 0xed, 0x45, 0x58, 0x10, 0x17, 0xa9, 0x6e, 0x85, 0x5d, 0x68, 0xba, 0xc4,
+	0xbb, 0x9a, 0x4b, 0x27, 0x95, 0xf2, 0x75, 0x59, 0x7d, 0x41, 0xae, 0xa3, 0xa1, 0x42, 0x9d, 0xaf,
+	0x53, 0xf5, 0x16, 0x6c, 0x8c, 0x57, 0x99, 0x4e, 0xee, 0x1f, 0xbf, 0xf0, 0x8a, 0xb0, 0x32, 0x57,
+	0x7e, 0x8f, 0x53, 0xb9, 0xe2, 0xfb, 0xe3, 0x67, 0x4e, 0x08, 0x16, 0x7a, 0xbd, 0x09, 0x58, 0x13,
+	0xa7, 0xd9, 0x0b, 0x30, 0xdf, 0x26, 0x6e, 0xec, 0x5d, 0xe6, 0xf2, 0x79, 0x98, 0xcb, 0x17, 0x68,
+	0x7c, 0x03, 0xd6, 0x8f, 0x3d, 0x2f, 0x1a, 0x84, 0x69, 0x7e, 0x02, 0x85, 0x0e, 0xaf, 0xc3, 0xaa,
+	0x2a, 0x98, 0xed, 0xaa, 0x10, 0x92, 0x3b, 0xbe, 0x09, 0x58, 0x13, 0xa7, 0xd9, 0x77, 0xa1, 0x91,
+	0x45, 0x1f, 0xb9, 0x41, 0x1c, 0x84, 0xbe, 0xee, 0x54, 0x36, 0x60, 0xaf, 0x4a, 0x48, 0xfd, 0x1c,
+	0x68, 0x66, 0xb2, 0x0b, 0x12, 0x92, 0x2f, 0xcf, 0x43, 0x2f, 0xba, 0x0e, 0x42, 0x5f, 0xee, 0xcb,
+	0xc3, 0x20, 0xbc, 0xca, 0x7d, 0x9b, 0x70, 0xaf, 0x6e, 0x42, 0xf6, 0x7d, 0x3d, 0x25, 0x43, 0xf5,
+	0x10, 0x5c, 0x83, 0x15, 0x45, 0xac, 0xdf, 0xbb, 0xb9, 0xff, 0xc7, 0x2a, 0xbc, 0x94, 0x55, 0x41,
+	0x9f, 0xc0, 0xab, 0xb2, 0x04, 0xed, 0x0a, 0xe3, 0xa4, 0xa5, 0xb4, 0xc6, 0xdb, 0x65, 0x12, 0xba,
+	0x2f, 0xe3, 0xc8, 0x44, 0x9f, 0xb1, 0xfb, 0x22, 0x8d, 0x54, 0xb4, 0x27, 0x26, 0x6a, 0x66, 0x31,
+	0xde, 0x2d, 0x17, 0xe5, 0xfe, 0x31, 0xbb, 0x66, 0xe2, 0x90, 0x44, 0xb6, 0x2e, 0x73, 0x72, 0x76,
+	0xf0, 0x4e, 0xa9, 0x86, 0x61, 0xc2, 0xb7, 0xbf, 0xfd, 0xfd, 0xe3, 0xcc, 0x12, 0x5a, 0x74, 0xc4,
+	0xc9, 0xe9, 0xf8, 0x24, 0x45, 0x1d, 0x76, 0x03, 0x0b, 0x03, 0x12, 0x35, 0x74, 0x96, 0xd2, 0x99,
+	0xc1, 0x7b, 0x55, 0x32, 0xf6, 0x64, 0xe8, 0x73, 0xf6, 0x4d, 0x91, 0xa7, 0x29, 0xda, 0xd7, 0xf6,
+	0x44, 0x18, 0xc4, 0xd8, 0xae, 0x50, 0x29, 0x0b, 0xb0, 0xc1, 0xab, 0x2f, 0x20, 0xce, 0x6c, 0x7d,
+	0x01, 0x61, 0x7a, 0x1b, 0xe8, 0x6b, 0xf6, 0x55, 0xd1, 0x4d, 0x66, 0xd4, 0xd2, 0x99, 0xa8, 0x07,
+	0x3d, 0x7e, 0xa3, 0xb6, 0x9e, 0x97, 0x4f, 0x64, 0x8a, 0x11, 0x46, 0x3a, 0x7a, 0x5d, 0x67, 0x35,
+	0x4d, 0x06, 0xf8, 0xb0, 0x96, 0x36, 0x3f, 0x8d, 0x4f, 0x94, 0x45, 0x29, 0x05, 0x54, 0x16, 0x15,
+	0x60, 0xa2, 0xb2, 0xe8, 0x04, 0x2b, 0x0c, 0x4d, 0x49, 0x8a, 0x0d, 0x95, 0x25, 0x05, 0xfa, 0xa8,
+	0x2c, 0x39, 0xe1, 0x10, 0x5d, 0x49, 0xca, 0x19, 0x95, 0x25, 0x05, 0x5c, 0xa9, 0x2c, 0x39, 0x01,
+	0x17, 0x03, 0x7d, 0xc5, 0xc6, 0x88, 0x86, 0x4a, 0x50, 0x53, 0xe7, 0xa4, 0x44, 0x1c, 0x7c, 0xaf,
+	0xae, 0x9c, 0xd7, 0xfe, 0xc6, 0x94, 0xb9, 0xaa, 0x08, 0x32, 0xc8, 0xd1, 0xf9, 0x69, 0xc8, 0x08,
+	0x37, 0xeb, 0x27, 0x54, 0x6d, 0x21, 0xfb, 0xf8, 0xd4, 0xd8, 0x82, 0xfc, 0x19, 0x6a, 0xd6, 0x4f,
+	0xe0, 0x5b, 0xf8, 0xce, 0x84, 0xad, 0x52, 0x6a, 0x42, 0x47, 0xd5, 0x96, 0x32, 0x1c, 0xe0, 0xd6,
+	0x0b, 0x64, 0xf0, 0x5d, 0x7c, 0x04, 0x73, 0x02, 0x7e, 0x21, 0xab, 0x60, 0x50, 0xa0, 0x35, 0xbc,
+	0xa9, 0x8d, 0xe7, 0x37, 0xf6, 0x03, 0x80, 0x09, 0xa6, 0xa1, 0x2d, 0x85, 0x5e, 0x98, 0x1a, 0x1b,
+	0xba, 0x30, 0xdf, 0x5c, 0x1b, 0xe6, 0x25, 0x8e, 0x43, 0x3b, 0x0a, 0xbd, 0x04, 0x22, 0xd8, 0x2a,
+	0x51, 0x14, 0x4d, 0x39, 0xee, 0x29, 0x4d, 0x25, 0x42, 0x54, 0x9a, 0x8a, 0xac, 0x68, 0xa0, 0x4b,
+	0x81, 0x2d, 0x05, 0x1c, 0x44, 0x77, 0x95, 0x99, 0xd3, 0x3c, 0x89, 0x1b, 0xd5, 0x42, 0x4d, 0xa5,
+	0xec, 0xce, 0x94, 0x54, 0x92, 0xef, 0x4a, 0xa3, 0x5a, 0xc8, 0x2b, 0x5d, 0xb1, 0xff, 0xbc, 0x4f,
+	0x93, 0x26, 0x3a, 0xd4, 0x3b, 0x14, 0xce, 0xe3, 0x41, 0x0d, 0x25, 0x2f, 0xf6, 0x2e, 0xcc, 0x72,
+	0x4e, 0x45, 0xeb, 0x62, 0x8e, 0x04, 0xb3, 0x78, 0x55, 0x15, 0xca, 0x0f, 0x5e, 0x07, 0xd0, 0x34,
+	0xbd, 0xca, 0x10, 0xa1, 0x45, 0x5f, 0x19, 0x22, 0x74, 0x10, 0xcc, 0x5a, 0xa2, 0xc4, 0x5c, 0xb9,
+	0x25, 0x65, 0xa4, 0x2c, 0xb7, 0xa4, 0x84, 0x99, 0x0d, 0xf4, 0xbd, 0x09, 0x56, 0x39, 0x0d, 0xa3,
+	0x37, 0x15, 0x66, 0xe5, 0x88, 0x8d, 0x9d, 0x17, 0x49, 0xe1, 0x1b, 0xf9, 0xc9, 0x84, 0x83, 0x7a,
+	0xf8, 0x8c, 0xde, 0x51, 0xb8, 0xd7, 0x63, 0x74, 0xfc, 0xf6, 0x7f, 0x49, 0xe5, 0x1b, 0x74, 0x61,
+	0x71, 0x8a, 0xc9, 0x65, 0xf4, 0xd2, 0xe1, 0xbc, 0x8c, 0x5e, 0x6a, 0xb0, 0xa7, 0xa7, 0xeb, 0xc1,
+	0xf9, 0xd3, 0xe7, 0x96, 0xf1, 0xcf, 0x73, 0xcb, 0xfc, 0x79, 0x64, 0x99, 0xbf, 0x8c, 0x2c, 0xf3,
+	0xe9, 0xc8, 0x32, 0x9f, 0x8d, 0x2c, 0xf3, 0xaf, 0x91, 0x65, 0xfe, 0x70, 0x6b, 0x19, 0xbf, 0xde,
+	0x5a, 0xe6, 0xb3, 0x5b, 0xcb, 0xf8, 0xfd, 0xd6, 0x32, 0x1e, 0x6f, 0x70, 0xd3, 0x94, 0x78, 0x97,
+	0x8e, 0x1f, 0x39, 0xfd, 0x2b, 0xdf, 0x19, 0xff, 0x9e, 0xd7, 0x99, 0x65, 0x3f, 0xb3, 0xbd, 0xf5,
+	0x6f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x39, 0x6b, 0x1c, 0x37, 0xe3, 0x13, 0x00, 0x00,
+}
+
+func (this *EventSubscribeRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*EventSubscribeRequest)
+	if !ok {
+		that2, ok := that.(EventSubscribeRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *EventSubscribeReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*EventSubscribeReply)
+	if !ok {
+		that2, ok := that.(EventSubscribeReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationListRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationListRequest)
+	if !ok {
+		that2, ok := that.(ConversationListRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationListReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationListReply)
+	if !ok {
+		that2, ok := that.(ConversationListReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.Conversation.Equal(that1.Conversation) {
+		return false
+	}
+	return true
+}
+func (this *ConversationGetRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationGetRequest)
+	if !ok {
+		that2, ok := that.(ConversationGetRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.ID != that1.ID {
+		return false
+	}
+	return true
+}
+func (this *ConversationGetReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationGetReply)
+	if !ok {
+		that2, ok := that.(ConversationGetReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.Conversation.Equal(that1.Conversation) {
+		return false
+	}
+	return true
+}
+func (this *ConversationCreateRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationCreateRequest)
+	if !ok {
+		that2, ok := that.(ConversationCreateRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationCreateReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationCreateReply)
+	if !ok {
+		that2, ok := that.(ConversationCreateReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationLeaveRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationLeaveRequest)
+	if !ok {
+		that2, ok := that.(ConversationLeaveRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationLeaveReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationLeaveReply)
+	if !ok {
+		that2, ok := that.(ConversationLeaveReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationEraseRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationEraseRequest)
+	if !ok {
+		that2, ok := that.(ConversationEraseRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationEraseReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationEraseReply)
+	if !ok {
+		that2, ok := that.(ConversationEraseReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationSetSeenPositionRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationSetSeenPositionRequest)
+	if !ok {
+		that2, ok := that.(ConversationSetSeenPositionRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationSetSeenPositionReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationSetSeenPositionReply)
+	if !ok {
+		that2, ok := that.(ConversationSetSeenPositionReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationMessageListRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationMessageListRequest)
+	if !ok {
+		that2, ok := that.(ConversationMessageListRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationMessageListReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationMessageListReply)
+	if !ok {
+		that2, ok := that.(ConversationMessageListReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationMessageSendRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationMessageSendRequest)
+	if !ok {
+		that2, ok := that.(ConversationMessageSendRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationMessageSendReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationMessageSendReply)
+	if !ok {
+		that2, ok := that.(ConversationMessageSendReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationMessageEditRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationMessageEditRequest)
+	if !ok {
+		that2, ok := that.(ConversationMessageEditRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationMessageEditReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationMessageEditReply)
+	if !ok {
+		that2, ok := that.(ConversationMessageEditReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationMessageHideRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationMessageHideRequest)
+	if !ok {
+		that2, ok := that.(ConversationMessageHideRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationMessageHideReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationMessageHideReply)
+	if !ok {
+		that2, ok := that.(ConversationMessageHideReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationUpdateSettingsRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationUpdateSettingsRequest)
+	if !ok {
+		that2, ok := that.(ConversationUpdateSettingsRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationUpdateSettingsReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationUpdateSettingsReply)
+	if !ok {
+		that2, ok := that.(ConversationUpdateSettingsReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationInvitationAcceptRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationInvitationAcceptRequest)
+	if !ok {
+		that2, ok := that.(ConversationInvitationAcceptRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationInvitationAcceptReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationInvitationAcceptReply)
+	if !ok {
+		that2, ok := that.(ConversationInvitationAcceptReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationInvitationCreateRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationInvitationCreateRequest)
+	if !ok {
+		that2, ok := that.(ConversationInvitationCreateRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationInvitationCreateReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationInvitationCreateReply)
+	if !ok {
+		that2, ok := that.(ConversationInvitationCreateReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationInvitationDiscardRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationInvitationDiscardRequest)
+	if !ok {
+		that2, ok := that.(ConversationInvitationDiscardRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ConversationInvitationDiscardReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ConversationInvitationDiscardReply)
+	if !ok {
+		that2, ok := that.(ConversationInvitationDiscardReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactListRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactListRequest)
+	if !ok {
+		that2, ok := that.(ContactListRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactListReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactListReply)
+	if !ok {
+		that2, ok := that.(ContactListReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactGetRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactGetRequest)
+	if !ok {
+		that2, ok := that.(ContactGetRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactGetReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactGetReply)
+	if !ok {
+		that2, ok := that.(ContactGetReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactUpdateRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactUpdateRequest)
+	if !ok {
+		that2, ok := that.(ContactUpdateRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactUpdateReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactUpdateReply)
+	if !ok {
+		that2, ok := that.(ContactUpdateReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactRemoveRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactRemoveRequest)
+	if !ok {
+		that2, ok := that.(ContactRemoveRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactRemoveReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactRemoveReply)
+	if !ok {
+		that2, ok := that.(ContactRemoveReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactRequestCreateRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactRequestCreateRequest)
+	if !ok {
+		that2, ok := that.(ContactRequestCreateRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactRequestCreateReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactRequestCreateReply)
+	if !ok {
+		that2, ok := that.(ContactRequestCreateReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactRequestAcceptRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactRequestAcceptRequest)
+	if !ok {
+		that2, ok := that.(ContactRequestAcceptRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactRequestAcceptReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactRequestAcceptReply)
+	if !ok {
+		that2, ok := that.(ContactRequestAcceptReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactRequestDiscardRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactRequestDiscardRequest)
+	if !ok {
+		that2, ok := that.(ContactRequestDiscardRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *ContactRequestDiscardReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ContactRequestDiscardReply)
+	if !ok {
+		that2, ok := that.(ContactRequestDiscardReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *SearchRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*SearchRequest)
+	if !ok {
+		that2, ok := that.(SearchRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *SearchReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*SearchReply)
+	if !ok {
+		that2, ok := that.(SearchReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *AccountSettingsGetRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AccountSettingsGetRequest)
+	if !ok {
+		that2, ok := that.(AccountSettingsGetRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *AccountSettingsGetReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AccountSettingsGetReply)
+	if !ok {
+		that2, ok := that.(AccountSettingsGetReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *AccountSettingsUpdateRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AccountSettingsUpdateRequest)
+	if !ok {
+		that2, ok := that.(AccountSettingsUpdateRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *AccountSettingsUpdateReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AccountSettingsUpdateReply)
+	if !ok {
+		that2, ok := that.(AccountSettingsUpdateReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *AccountPairingInvitationCreateRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AccountPairingInvitationCreateRequest)
+	if !ok {
+		that2, ok := that.(AccountPairingInvitationCreateRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *AccountPairingInvitationCreateReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AccountPairingInvitationCreateReply)
+	if !ok {
+		that2, ok := that.(AccountPairingInvitationCreateReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *AccountRenewIncomingContactRequestLinkRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AccountRenewIncomingContactRequestLinkRequest)
+	if !ok {
+		that2, ok := that.(AccountRenewIncomingContactRequestLinkRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *AccountRenewIncomingContactRequestLinkReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AccountRenewIncomingContactRequestLinkReply)
+	if !ok {
+		that2, ok := that.(AccountRenewIncomingContactRequestLinkReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *DevEventSubscribeRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*DevEventSubscribeRequest)
+	if !ok {
+		that2, ok := that.(DevEventSubscribeRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *DevEventSubscribeReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*DevEventSubscribeReply)
+	if !ok {
+		that2, ok := that.(DevEventSubscribeReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -4689,6 +5987,477 @@ func encodeVarintBertychat(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func NewPopulatedEventSubscribeRequest(r randyBertychat, easy bool) *EventSubscribeRequest {
+	this := &EventSubscribeRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedEventSubscribeReply(r randyBertychat, easy bool) *EventSubscribeReply {
+	this := &EventSubscribeReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationListRequest(r randyBertychat, easy bool) *ConversationListRequest {
+	this := &ConversationListRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationListReply(r randyBertychat, easy bool) *ConversationListReply {
+	this := &ConversationListReply{}
+	if r.Intn(5) == 0 {
+		this.Conversation = chatmodel.NewPopulatedConversation(r, easy)
+	}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationGetRequest(r randyBertychat, easy bool) *ConversationGetRequest {
+	this := &ConversationGetRequest{}
+	this.ID = string(randStringBertychat(r))
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationGetReply(r randyBertychat, easy bool) *ConversationGetReply {
+	this := &ConversationGetReply{}
+	if r.Intn(5) == 0 {
+		this.Conversation = chatmodel.NewPopulatedConversation(r, easy)
+	}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationCreateRequest(r randyBertychat, easy bool) *ConversationCreateRequest {
+	this := &ConversationCreateRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationCreateReply(r randyBertychat, easy bool) *ConversationCreateReply {
+	this := &ConversationCreateReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationLeaveRequest(r randyBertychat, easy bool) *ConversationLeaveRequest {
+	this := &ConversationLeaveRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationLeaveReply(r randyBertychat, easy bool) *ConversationLeaveReply {
+	this := &ConversationLeaveReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationEraseRequest(r randyBertychat, easy bool) *ConversationEraseRequest {
+	this := &ConversationEraseRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationEraseReply(r randyBertychat, easy bool) *ConversationEraseReply {
+	this := &ConversationEraseReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationSetSeenPositionRequest(r randyBertychat, easy bool) *ConversationSetSeenPositionRequest {
+	this := &ConversationSetSeenPositionRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationSetSeenPositionReply(r randyBertychat, easy bool) *ConversationSetSeenPositionReply {
+	this := &ConversationSetSeenPositionReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationMessageListRequest(r randyBertychat, easy bool) *ConversationMessageListRequest {
+	this := &ConversationMessageListRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationMessageListReply(r randyBertychat, easy bool) *ConversationMessageListReply {
+	this := &ConversationMessageListReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationMessageSendRequest(r randyBertychat, easy bool) *ConversationMessageSendRequest {
+	this := &ConversationMessageSendRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationMessageSendReply(r randyBertychat, easy bool) *ConversationMessageSendReply {
+	this := &ConversationMessageSendReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationMessageEditRequest(r randyBertychat, easy bool) *ConversationMessageEditRequest {
+	this := &ConversationMessageEditRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationMessageEditReply(r randyBertychat, easy bool) *ConversationMessageEditReply {
+	this := &ConversationMessageEditReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationMessageHideRequest(r randyBertychat, easy bool) *ConversationMessageHideRequest {
+	this := &ConversationMessageHideRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationMessageHideReply(r randyBertychat, easy bool) *ConversationMessageHideReply {
+	this := &ConversationMessageHideReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationUpdateSettingsRequest(r randyBertychat, easy bool) *ConversationUpdateSettingsRequest {
+	this := &ConversationUpdateSettingsRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationUpdateSettingsReply(r randyBertychat, easy bool) *ConversationUpdateSettingsReply {
+	this := &ConversationUpdateSettingsReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationInvitationAcceptRequest(r randyBertychat, easy bool) *ConversationInvitationAcceptRequest {
+	this := &ConversationInvitationAcceptRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationInvitationAcceptReply(r randyBertychat, easy bool) *ConversationInvitationAcceptReply {
+	this := &ConversationInvitationAcceptReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationInvitationCreateRequest(r randyBertychat, easy bool) *ConversationInvitationCreateRequest {
+	this := &ConversationInvitationCreateRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationInvitationCreateReply(r randyBertychat, easy bool) *ConversationInvitationCreateReply {
+	this := &ConversationInvitationCreateReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationInvitationDiscardRequest(r randyBertychat, easy bool) *ConversationInvitationDiscardRequest {
+	this := &ConversationInvitationDiscardRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedConversationInvitationDiscardReply(r randyBertychat, easy bool) *ConversationInvitationDiscardReply {
+	this := &ConversationInvitationDiscardReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactListRequest(r randyBertychat, easy bool) *ContactListRequest {
+	this := &ContactListRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactListReply(r randyBertychat, easy bool) *ContactListReply {
+	this := &ContactListReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactGetRequest(r randyBertychat, easy bool) *ContactGetRequest {
+	this := &ContactGetRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactGetReply(r randyBertychat, easy bool) *ContactGetReply {
+	this := &ContactGetReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactUpdateRequest(r randyBertychat, easy bool) *ContactUpdateRequest {
+	this := &ContactUpdateRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactUpdateReply(r randyBertychat, easy bool) *ContactUpdateReply {
+	this := &ContactUpdateReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactRemoveRequest(r randyBertychat, easy bool) *ContactRemoveRequest {
+	this := &ContactRemoveRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactRemoveReply(r randyBertychat, easy bool) *ContactRemoveReply {
+	this := &ContactRemoveReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactRequestCreateRequest(r randyBertychat, easy bool) *ContactRequestCreateRequest {
+	this := &ContactRequestCreateRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactRequestCreateReply(r randyBertychat, easy bool) *ContactRequestCreateReply {
+	this := &ContactRequestCreateReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactRequestAcceptRequest(r randyBertychat, easy bool) *ContactRequestAcceptRequest {
+	this := &ContactRequestAcceptRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactRequestAcceptReply(r randyBertychat, easy bool) *ContactRequestAcceptReply {
+	this := &ContactRequestAcceptReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactRequestDiscardRequest(r randyBertychat, easy bool) *ContactRequestDiscardRequest {
+	this := &ContactRequestDiscardRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContactRequestDiscardReply(r randyBertychat, easy bool) *ContactRequestDiscardReply {
+	this := &ContactRequestDiscardReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedSearchRequest(r randyBertychat, easy bool) *SearchRequest {
+	this := &SearchRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedSearchReply(r randyBertychat, easy bool) *SearchReply {
+	this := &SearchReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedAccountSettingsGetRequest(r randyBertychat, easy bool) *AccountSettingsGetRequest {
+	this := &AccountSettingsGetRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedAccountSettingsGetReply(r randyBertychat, easy bool) *AccountSettingsGetReply {
+	this := &AccountSettingsGetReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedAccountSettingsUpdateRequest(r randyBertychat, easy bool) *AccountSettingsUpdateRequest {
+	this := &AccountSettingsUpdateRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedAccountSettingsUpdateReply(r randyBertychat, easy bool) *AccountSettingsUpdateReply {
+	this := &AccountSettingsUpdateReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedAccountPairingInvitationCreateRequest(r randyBertychat, easy bool) *AccountPairingInvitationCreateRequest {
+	this := &AccountPairingInvitationCreateRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedAccountPairingInvitationCreateReply(r randyBertychat, easy bool) *AccountPairingInvitationCreateReply {
+	this := &AccountPairingInvitationCreateReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedAccountRenewIncomingContactRequestLinkRequest(r randyBertychat, easy bool) *AccountRenewIncomingContactRequestLinkRequest {
+	this := &AccountRenewIncomingContactRequestLinkRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedAccountRenewIncomingContactRequestLinkReply(r randyBertychat, easy bool) *AccountRenewIncomingContactRequestLinkReply {
+	this := &AccountRenewIncomingContactRequestLinkReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedDevEventSubscribeRequest(r randyBertychat, easy bool) *DevEventSubscribeRequest {
+	this := &DevEventSubscribeRequest{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedDevEventSubscribeReply(r randyBertychat, easy bool) *DevEventSubscribeReply {
+	this := &DevEventSubscribeReply{}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+type randyBertychat interface {
+	Float32() float32
+	Float64() float64
+	Int63() int64
+	Int31() int32
+	Uint32() uint32
+	Intn(n int) int
+}
+
+func randUTF8RuneBertychat(r randyBertychat) rune {
+	ru := r.Intn(62)
+	if ru < 10 {
+		return rune(ru + 48)
+	} else if ru < 36 {
+		return rune(ru + 55)
+	}
+	return rune(ru + 61)
+}
+func randStringBertychat(r randyBertychat) string {
+	v1 := r.Intn(100)
+	tmps := make([]rune, v1)
+	for i := 0; i < v1; i++ {
+		tmps[i] = randUTF8RuneBertychat(r)
+	}
+	return string(tmps)
+}
+func randUnrecognizedBertychat(r randyBertychat, maxFieldNumber int) (dAtA []byte) {
+	l := r.Intn(5)
+	for i := 0; i < l; i++ {
+		wire := r.Intn(4)
+		if wire == 3 {
+			wire = 5
+		}
+		fieldNumber := maxFieldNumber + r.Intn(100)
+		dAtA = randFieldBertychat(dAtA, r, fieldNumber, wire)
+	}
+	return dAtA
+}
+func randFieldBertychat(dAtA []byte, r randyBertychat, fieldNumber int, wire int) []byte {
+	key := uint32(fieldNumber)<<3 | uint32(wire)
+	switch wire {
+	case 0:
+		dAtA = encodeVarintPopulateBertychat(dAtA, uint64(key))
+		v2 := r.Int63()
+		if r.Intn(2) == 0 {
+			v2 *= -1
+		}
+		dAtA = encodeVarintPopulateBertychat(dAtA, uint64(v2))
+	case 1:
+		dAtA = encodeVarintPopulateBertychat(dAtA, uint64(key))
+		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
+	case 2:
+		dAtA = encodeVarintPopulateBertychat(dAtA, uint64(key))
+		ll := r.Intn(100)
+		dAtA = encodeVarintPopulateBertychat(dAtA, uint64(ll))
+		for j := 0; j < ll; j++ {
+			dAtA = append(dAtA, byte(r.Intn(256)))
+		}
+	default:
+		dAtA = encodeVarintPopulateBertychat(dAtA, uint64(key))
+		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
+	}
+	return dAtA
+}
+func encodeVarintPopulateBertychat(dAtA []byte, v uint64) []byte {
+	for v >= 1<<7 {
+		dAtA = append(dAtA, uint8(uint64(v)&0x7f|0x80))
+		v >>= 7
+	}
+	dAtA = append(dAtA, uint8(v))
+	return dAtA
+}
 func (m *EventSubscribeRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -5210,521 +6979,6 @@ func sovBertychat(x uint64) (n int) {
 }
 func sozBertychat(x uint64) (n int) {
 	return sovBertychat(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (this *EventSubscribeRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&EventSubscribeRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *EventSubscribeReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&EventSubscribeReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationListRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationListRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationListReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationListReply{`,
-		`Conversation:` + strings.Replace(fmt.Sprintf("%v", this.Conversation), "Conversation", "chatmodel.Conversation", 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationGetRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationGetRequest{`,
-		`ID:` + fmt.Sprintf("%v", this.ID) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationGetReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationGetReply{`,
-		`Conversation:` + strings.Replace(fmt.Sprintf("%v", this.Conversation), "Conversation", "chatmodel.Conversation", 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationCreateRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationCreateRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationCreateReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationCreateReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationLeaveRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationLeaveRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationLeaveReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationLeaveReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationEraseRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationEraseRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationEraseReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationEraseReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationSetSeenPositionRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationSetSeenPositionRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationSetSeenPositionReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationSetSeenPositionReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationMessageListRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationMessageListRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationMessageListReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationMessageListReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationMessageSendRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationMessageSendRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationMessageSendReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationMessageSendReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationMessageEditRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationMessageEditRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationMessageEditReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationMessageEditReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationMessageHideRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationMessageHideRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationMessageHideReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationMessageHideReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationUpdateSettingsRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationUpdateSettingsRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationUpdateSettingsReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationUpdateSettingsReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationInvitationAcceptRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationInvitationAcceptRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationInvitationAcceptReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationInvitationAcceptReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationInvitationCreateRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationInvitationCreateRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationInvitationCreateReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationInvitationCreateReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationInvitationDiscardRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationInvitationDiscardRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ConversationInvitationDiscardReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ConversationInvitationDiscardReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactListRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactListRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactListReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactListReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactGetRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactGetRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactGetReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactGetReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactUpdateRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactUpdateRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactUpdateReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactUpdateReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactRemoveRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactRemoveRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactRemoveReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactRemoveReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactRequestCreateRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactRequestCreateRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactRequestCreateReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactRequestCreateReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactRequestAcceptRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactRequestAcceptRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactRequestAcceptReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactRequestAcceptReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactRequestDiscardRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactRequestDiscardRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ContactRequestDiscardReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ContactRequestDiscardReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *SearchRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&SearchRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *SearchReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&SearchReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *AccountSettingsGetRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AccountSettingsGetRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *AccountSettingsGetReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AccountSettingsGetReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *AccountSettingsUpdateRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AccountSettingsUpdateRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *AccountSettingsUpdateReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AccountSettingsUpdateReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *AccountPairingInvitationCreateRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AccountPairingInvitationCreateRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *AccountPairingInvitationCreateReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AccountPairingInvitationCreateReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *AccountRenewIncomingContactRequestLinkRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AccountRenewIncomingContactRequestLinkRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *AccountRenewIncomingContactRequestLinkReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&AccountRenewIncomingContactRequestLinkReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *DevEventSubscribeRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&DevEventSubscribeRequest{`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *DevEventSubscribeReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&DevEventSubscribeReply{`,
-		`}`,
-	}, "")
-	return s
-}
-func valueToStringBertychat(v interface{}) string {
-	rv := reflect.ValueOf(v)
-	if rv.IsNil() {
-		return "nil"
-	}
-	pv := reflect.Indirect(rv).Interface()
-	return fmt.Sprintf("*%v", pv)
 }
 func (m *EventSubscribeRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
