@@ -5,12 +5,15 @@ package protocolmodel
 
 import (
 	fmt "fmt"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 	reflect "reflect"
 	strings "strings"
 	time "time"
 
 	_ "github.com/gogo/protobuf/gogoproto"
+	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	proto "github.com/golang/protobuf/proto"
 	_ "github.com/golang/protobuf/ptypes/timestamp"
 )
@@ -39,16 +42,25 @@ func (*Contact) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cff888de946c583b, []int{0}
 }
 func (m *Contact) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Contact.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 func (m *Contact) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Contact.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_Contact.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 func (m *Contact) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Contact.Merge(m, src)
 }
 func (m *Contact) XXX_Size() int {
-	return xxx_messageInfo_Contact.Size(m)
+	return m.Size()
 }
 func (m *Contact) XXX_DiscardUnknown() {
 	xxx_messageInfo_Contact.DiscardUnknown(m)
@@ -82,14 +94,102 @@ var fileDescriptor_cff888de946c583b = []byte{
 	0x66, 0x8f, 0x57, 0x27, 0xee, 0x5e, 0x1e, 0x24, 0xc3, 0x2c, 0x6c, 0x24, 0x2f, 0x9e, 0x23, 0x39,
 	0x71, 0xf7, 0xb2, 0xf3, 0x9b, 0x95, 0x15, 0x68, 0x59, 0x81, 0xad, 0x2a, 0xd0, 0xa6, 0x02, 0x6d,
 	0x2b, 0xd0, 0xae, 0x02, 0xed, 0x2b, 0xd0, 0x48, 0x81, 0x8d, 0x15, 0x68, 0xaa, 0x40, 0x33, 0x05,
-	0x9a, 0x2b, 0xd0, 0x42, 0x81, 0x4a, 0x05, 0x5a, 0x2a, 0xd0, 0x4a, 0x81, 0x36, 0x0a, 0xb4, 0x55,
-	0xa0, 0x9d, 0x02, 0xed, 0x15, 0x68, 0xa4, 0x41, 0x63, 0x0d, 0x9a, 0x68, 0xd0, 0x4f, 0x0d, 0xfa,
-	0xa5, 0x41, 0x53, 0x0d, 0x9a, 0x69, 0xb0, 0xb9, 0x06, 0x5b, 0x68, 0x50, 0xa9, 0x41, 0x4b, 0x0d,
-	0x5a, 0x69, 0xd0, 0x77, 0xfb, 0xd8, 0xa3, 0xe4, 0x41, 0xd7, 0x3d, 0xfc, 0x79, 0xef, 0x54, 0x59,
-	0xd3, 0xa9, 0xff, 0xb2, 0x8e, 0x1f, 0xff, 0x07, 0x00, 0x00, 0xff, 0xff, 0x0e, 0x1d, 0xf5, 0xf0,
+	0x9a, 0x2b, 0xd0, 0x42, 0x81, 0x4a, 0x05, 0xb6, 0x54, 0x60, 0x2b, 0x05, 0xda, 0x28, 0xb0, 0xad,
+	0x02, 0xed, 0x14, 0x68, 0xaf, 0x40, 0x23, 0x0d, 0x1a, 0x6b, 0xd0, 0x44, 0x83, 0x7e, 0x6a, 0xd0,
+	0x2f, 0x0d, 0x9a, 0x6a, 0xd0, 0x4c, 0x83, 0xcd, 0x35, 0xd8, 0x42, 0x83, 0x4a, 0x0d, 0x5a, 0x6a,
+	0xd0, 0x4a, 0x83, 0xbe, 0xdb, 0xc7, 0x1e, 0x25, 0x0f, 0xba, 0xee, 0xe1, 0xcf, 0x7b, 0xa7, 0xca,
+	0x9a, 0x4e, 0xfd, 0x97, 0x75, 0xfc, 0xf8, 0x3f, 0x00, 0x00, 0xff, 0xff, 0x61, 0xf0, 0x62, 0x8f,
 	0x06, 0x02, 0x00, 0x00,
 }
 
+func (m *Contact) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Contact) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Contact) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.UpdatedAt != nil {
+		n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.UpdatedAt):])
+		if err1 != nil {
+			return 0, err1
+		}
+		i -= n1
+		i = encodeVarintProtocolmodel(dAtA, i, uint64(n1))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.CreatedAt != nil {
+		n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.CreatedAt):])
+		if err2 != nil {
+			return 0, err2
+		}
+		i -= n2
+		i = encodeVarintProtocolmodel(dAtA, i, uint64(n2))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintProtocolmodel(dAtA []byte, offset int, v uint64) int {
+	offset -= sovProtocolmodel(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+func (m *Contact) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ID)
+	if l > 0 {
+		n += 1 + l + sovProtocolmodel(uint64(l))
+	}
+	if m.CreatedAt != nil {
+		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.CreatedAt)
+		n += 1 + l + sovProtocolmodel(uint64(l))
+	}
+	if m.UpdatedAt != nil {
+		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.UpdatedAt)
+		n += 1 + l + sovProtocolmodel(uint64(l))
+	}
+	return n
+}
+
+func sovProtocolmodel(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+func sozProtocolmodel(x uint64) (n int) {
+	return sovProtocolmodel(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
 func (this *Contact) String() string {
 	if this == nil {
 		return "nil"
@@ -110,3 +210,270 @@ func valueToStringProtocolmodel(v interface{}) string {
 	pv := reflect.Indirect(rv).Interface()
 	return fmt.Sprintf("*%v", pv)
 }
+func (m *Contact) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProtocolmodel
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Contact: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Contact: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProtocolmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProtocolmodel
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthProtocolmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProtocolmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthProtocolmodel
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthProtocolmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.CreatedAt == nil {
+				m.CreatedAt = new(time.Time)
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProtocolmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthProtocolmodel
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthProtocolmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.UpdatedAt == nil {
+				m.UpdatedAt = new(time.Time)
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.UpdatedAt, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProtocolmodel(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProtocolmodel
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthProtocolmodel
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipProtocolmodel(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowProtocolmodel
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowProtocolmodel
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+			return iNdEx, nil
+		case 1:
+			iNdEx += 8
+			return iNdEx, nil
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowProtocolmodel
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthProtocolmodel
+			}
+			iNdEx += length
+			if iNdEx < 0 {
+				return 0, ErrInvalidLengthProtocolmodel
+			}
+			return iNdEx, nil
+		case 3:
+			for {
+				var innerWire uint64
+				var start int = iNdEx
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return 0, ErrIntOverflowProtocolmodel
+					}
+					if iNdEx >= l {
+						return 0, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					innerWire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				innerWireType := int(innerWire & 0x7)
+				if innerWireType == 4 {
+					break
+				}
+				next, err := skipProtocolmodel(dAtA[start:])
+				if err != nil {
+					return 0, err
+				}
+				iNdEx = start + next
+				if iNdEx < 0 {
+					return 0, ErrInvalidLengthProtocolmodel
+				}
+			}
+			return iNdEx, nil
+		case 4:
+			return iNdEx, nil
+		case 5:
+			iNdEx += 4
+			return iNdEx, nil
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+	}
+	panic("unreachable")
+}
+
+var (
+	ErrInvalidLengthProtocolmodel = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowProtocolmodel   = fmt.Errorf("proto: integer overflow")
+)
