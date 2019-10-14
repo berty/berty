@@ -1,13 +1,34 @@
 package bertychat
 
-import context "context"
+import (
+	"context"
+	"math/rand"
 
-func (c *client) ConversationList(*ConversationListRequest, Account_ConversationListServer) error {
-	return ErrNotImplemented
+	"github.com/pkg/errors"
+)
+
+func (c *client) ConversationList(req *ConversationListRequest, stream Account_ConversationListServer) error {
+	max := rand.Intn(11) + 5 // 5-15
+	for i := 0; i < max; i++ {
+		conversation := fakeConversation(c.logger)
+		err := stream.Send(&ConversationListReply{Conversation: conversation})
+		if err != nil {
+			return errors.Wrap(err, "failed to send conversation to stream")
+		}
+	}
+	return nil
 }
 
-func (c *client) ConversationGet(context.Context, *ConversationGetRequest) (*ConversationGetReply, error) {
-	return nil, ErrNotImplemented
+func (c *client) ConversationGet(ctx context.Context, input *ConversationGetRequest) (*ConversationGetReply, error) {
+	if input == nil || input.ID == "" {
+		return nil, ErrMissingInput
+	}
+	if input.ID == "invalid" { // simulating an invalid ID (tmp)
+		return nil, ErrInvalidInput
+	}
+	return &ConversationGetReply{
+		Conversation: fakeConversation(c.logger),
+	}, nil
 }
 
 func (c *client) ConversationCreate(context.Context, *ConversationCreateRequest) (*ConversationCreateReply, error) {

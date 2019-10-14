@@ -47,6 +47,8 @@ message Conversation {
 
   // fields
 
+  string title = 100;
+
   // associations
 
   repeated ConversationMessage messages = 200 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];

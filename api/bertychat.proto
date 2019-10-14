@@ -85,10 +85,14 @@ message EventSubscribeRequest {}
 message EventSubscribeReply {}
 message ConversationListRequest {}
 message ConversationListReply {
-  repeated chatmodel.Conversation conversations = 1;
+  chatmodel.Conversation conversation = 1;
 }
-message ConversationGetRequest {}
-message ConversationGetReply {}
+message ConversationGetRequest {
+  string id = 1 [(gogoproto.customname) = "ID"];
+}
+message ConversationGetReply {
+  chatmodel.Conversation conversation = 1;
+}
 message ConversationCreateRequest {}
 message ConversationCreateReply {}
 message ConversationLeaveRequest {}
