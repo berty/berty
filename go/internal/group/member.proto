@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option go_package = "berty.tech/go/internal/group";
+
+message MemberEntry {
+  bytes group_account_pub_key = 1;
+  bytes group_device_pub_key = 2;
+  bytes group_device_pub_key_signature = 3;
+
+  bytes derivation_state = 4;
+  uint64 counter = 5;
+  bytes real_account_binder = 6;
+
+  bytes inviter_group_account_pub_key = 7;
+  bytes invitation_pub_key = 8;
+  bytes invitation_pub_key_signature = 9;
+  bytes group_account_pub_key_signature = 10;
+
+  // Timestamp?
+}

@@ -144,6 +144,12 @@ service Instance {
   // GroupList lists all group for this account
   rpc GroupList (GroupListRequest) returns (stream GroupListReply);
 
+  // GroupGetSettings returns group pinning config, metadata, member list, etc...
+  rpc GroupGetSettings (GroupGetSettingsRequest) returns (GroupGetSettingsReply);
+
+  // GroupEditSettings edits group pinning config, metadata, etc...
+  rpc GroupEditSettings (GroupEditSettingsRequest) returns (GroupEditSettingsReply);
+
 
   /// Group Message Manager
 
@@ -166,13 +172,13 @@ service Instance {
   // New members will receive a payload similar to the one received on group init. Existing members will receive the
   // list of the newly added members and the required secrets to open their messages.
 
-  // GroupInvitationAccept accepts an invation to join a group
-  rpc GroupInvitationAccept (GroupInvitationAcceptRequest) returns (GroupInvitationAcceptReply);
-
   // GroupInvitationCreate creates an invitation, that can be sent to join this group
   rpc GroupInvitationCreate (GroupInvitationCreateRequest) returns (GroupInvitationCreateReply);
 
-  // GroupInvitationDiscard discards an invtation sent to you to join a group
+  // GroupInvitationAccept accepts an invitation to join a group
+  rpc GroupInvitationAccept (GroupInvitationAcceptRequest) returns (GroupInvitationAcceptReply);
+
+  // GroupInvitationDiscard discards an invitation sent to you to join a group
   rpc GroupInvitationDiscard (GroupInvitationDiscardRequest) returns (GroupInvitationDiscardReply);
 
   // GroupInvitationList lists pending invitation to this group
@@ -262,17 +268,54 @@ message StreamManagerAcceptReply {}
 
 // Group
 
-message GroupCreateRequest {};
-message GroupCreateReply {};
+message GroupCreateRequest {
+  bytes pinning_service_id = 1
+  repeated bytes contact_ids = 2
+  bytes metadata = 3
+};
+message GroupCreateReply {
+  bytes group_id = 1
+};
 
-message GroupGenerateInviteLinkRequest {};
-message GroupGenerateInviteLinkReply {};
+message GroupGenerateInviteLinkRequest {
+  bytes group_id = 1
+};
+message GroupGenerateInviteLinkReply {
+  bytes inviter_pub_key = 1
+  bytes invitation_priv_key = 2
+  bytes invitation_pub_key_signature = 3
 
-message GroupLeaveRequest {};
+  bytes group_id = 4
+  bytes group_shared_secret = 5
+  bytes group_messages_log_cid = 6
+  bytes group_members_log_cid = 7
+  bytes group_secrets_log_cid = 8
+  bytes group_settings_log_cid = 9
+};
+
+message GroupLeaveRequest {
+  bytes group_id = 1
+};
 message GroupLeaveReply {};
 
 message GroupListRequest {};
-message GroupListReply {};
+message GroupListReply {
+  repeated protocolmodel.Group groups = 1;
+};
+
+// Should we use 4 methods bellow for group settings (display name, etc...)
+// and member settings (edit own display name, avatar, etc...)?
+message GroupGetSettingsRequest {
+  bytes group_id = 1;
+};
+message GroupGetSettingsReply {};
+
+message GroupEditSettingsRequest {
+  bytes group_id = 1;
+
+  // Settings
+};
+message GroupEditSettingsReply {};
 
 
 // Group Message
@@ -295,13 +338,21 @@ message GroupPubSubTopicSubscribeReply {};
 
 // Group Invitation
 
-message GroupInvitationAcceptRequest {};
-message GroupInvitationAcceptReply {};
-
-message GroupInvitationCreateRequest {};
+message GroupInvitationCreateRequest {
+  bytes group_id = 1
+  repeated bytes contact_id = 2
+};
 message GroupInvitationCreateReply {};
 
-message GroupInvitationDiscardRequest {};
+message GroupInvitationAcceptRequest {
+  bytes invitation_id = 1
+  bytes member_metadata = 2 // Display name, avatar, bind real identity toggle
+};
+message GroupInvitationAcceptReply {};
+
+message GroupInvitationDiscardRequest {
+  bytes invitation_id = 1
+};
 message GroupInvitationDiscardReply {};
 
 message GroupInvitationListRequest {};

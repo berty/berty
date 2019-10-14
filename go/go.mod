@@ -3,6 +3,7 @@ module berty.tech/go
 go 1.12
 
 require (
+	berty.tech/go-orbit-db v0.0.1
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/gogo/protobuf v1.3.0
 	github.com/golang/protobuf v1.3.2
@@ -13,7 +14,7 @@ require (
 	github.com/ipfs/interface-go-ipfs-core v0.0.8
 	github.com/jinzhu/gorm v1.9.11
 	github.com/libp2p/go-libp2p v0.0.28
-	github.com/libp2p/go-libp2p-core v0.0.1
+	github.com/libp2p/go-libp2p-core v0.0.6
 	github.com/libp2p/go-libp2p-crypto v0.1.0
 	github.com/libp2p/go-libp2p-peer v0.2.0
 	github.com/multiformats/go-multihash v0.0.8
@@ -30,3 +31,5 @@ require (
 )
 
 replace github.com/libp2p/go-openssl v0.0.2 => github.com/berty/go-openssl v0.0.3-0.20191007152928-66bd988d235e
+
+replace github.com/dgraph-io/badger => github.com/dgraph-io/badger v0.0.0-20190809121831-9d7b751e85c9

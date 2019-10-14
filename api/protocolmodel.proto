@@ -49,3 +49,19 @@ message Contact {
 
   // associations
 }
+
+message Group {
+  string id = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
+  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = true];
+  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = true];
+  string metadata = 4
+  repeated GroupMember = 5
+}
+
+message GroupMember {
+  string member_id = 1
+  GroupMember inviter = 2
+  string metadata = 3
+  string contact_id = 4 // bind to real contact
+  // joined_at_time with timestamp or/and joined_at_msg with message id?
+}

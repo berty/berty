@@ -3,6 +3,7 @@ package bertyprotocol
 import (
 	"context"
 
+	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go/internal/ipfsutil"
 	"berty.tech/go/internal/protocoldb"
 	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
@@ -26,6 +27,7 @@ type client struct {
 	db          *gorm.DB
 	logger      *zap.Logger
 	ipfsCoreAPI ipfs_coreapi.CoreAPI
+	odb         orbitdb.OrbitDB
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -33,6 +35,7 @@ type Opts struct {
 	Logger      *zap.Logger
 	IpfsCoreAPI ipfs_coreapi.CoreAPI
 	RootContext context.Context
+	OrbitDB     orbitdb.OrbitDB
 }
 
 // New initializes a new Client
@@ -40,6 +43,7 @@ func New(db *gorm.DB, opts Opts) (Client, error) {
 	client := &client{
 		db:          db,
 		ipfsCoreAPI: opts.IpfsCoreAPI,
+		odb:         opts.OrbitDB,
 		logger:      opts.Logger,
 	}
 
@@ -65,7 +69,19 @@ func New(db *gorm.DB, opts Opts) (Client, error) {
 		}
 	}
 
+	if opts.OrbitDB == nil {
+		client.odb, err = openOrCreateOrbitDB(client.ipfsCoreAPI)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to initialize orbitdb")
+		}
+	}
+
 	return client, nil
+}
+
+func openOrCreateOrbitDB(ipfsCore ipfs_coreapi.CoreAPI) (orbitdb.OrbitDB, error) {
+	// TODO: implement this
+	return orbitdb.NewOrbitDB(context.TODO(), ipfsCore, nil)
 }
 
 func (c *client) Close() error {
