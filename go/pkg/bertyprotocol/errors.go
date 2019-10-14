@@ -1,8 +1,11 @@
 package bertyprotocol
 
-import "errors"
+// See https://dave.cheney.net/2016/04/07/constant-errors
+type Error string
 
-var (
+func (e Error) Error() string { return string(e) }
+
+const (
 	// ErrNotImplemented is a placeholder for functions that will be implemented later
-	ErrNotImplemented = errors.New("not implemented")
+	ErrNotImplemented = Error("not implemented")
 )
