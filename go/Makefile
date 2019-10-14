@@ -4,6 +4,7 @@
 
 BAZEL ?= bazel
 BAZEL_ARGS ?=
+BAZEL_CMD_ARGS ?=
 GO ?= go
 GOPATH ?= $(HOME)/go
 IBAZEL ?= ibazel
@@ -18,6 +19,7 @@ endif
 ## Functions
 ##
 
+bazel = $(BAZEL_WRAPPER) $(BAZEL_ARGS) $(1) $(BAZEL_CMD_ARGS) $(2)
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "No $(exec) in PATH")))
 
 ##
@@ -97,22 +99,22 @@ VENDOR_BAZEL_OVERRIDEN_FILES = vendor/github.com/spacemonkeygo/openssl/BUILD.baz
 .PHONY: bazel.build
 bazel.build: bazel.generate
 	$(call check-program, $(BAZEL))
-	$(BAZEL_WRAPPER) $(BAZEL_ARGS) build //...
+	$(call bazel, build, //...)
 
 .PHONY: bazel.daemon
 bazel.daemon: bazel.generate
 	$(call check-program, $(BAZEL))
-	$(BAZEL_WRAPPER) $(BAZEL_ARGS) run //cmd/bertychat -- daemon
+	$(call bazel, run, //cmd/bertychat -- daemon)
 
 .PHONY: bazel.banner
 bazel.banner: bazel.generate
 	$(call check-program, $(BAZEL))
-	$(BAZEL_WRAPPER) $(BAZEL_ARGS) run //cmd/bertychat -- banner
+	$(call bazel, run, //cmd/bertychat -- banner)
 
 .PHONY: bazel.unittest
 bazel.unittest: bazel.generate
 	$(call check-program, $(BAZEL))
-	$(BAZEL_WRAPPER) $(BAZEL_ARGS) test //...
+	$(call bazel, test, //...)
 
 .PHONY: bazel.generate
 bazel.generate: pb.generate $(SAMPLE_GAZELLE_GENERATED_FILE)
@@ -156,7 +158,7 @@ vendor/github.com/spacemonkeygo/openssl/BUILD.bazel: $(abspath ../build/bazel/co
 
 $(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE vendor $(VENDOR_BAZEL_OVERRIDEN_FILES)
 	$(call check-program, $(BAZEL))
-	$(BAZEL) $(BAZEL_ARGS) run //:gazelle
+	$(BAZEL) $(BAZEL_ARGS) run $(BAZEL_CMD_ARGS) //:gazelle
 
 vendor: go.mod
 	$(call check-program, $(GO))
