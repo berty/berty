@@ -33,7 +33,7 @@ func b32Slice(arr *[32]byte) []byte {
 	return ret
 }
 
-func initHandshake(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain *crypto.SigChain) (*handshakeSession, error) {
+func initHandshake(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain crypto.SigChainManager, opts *crypto.Opts) (*handshakeSession, error) {
 	// TODO: make sure to generate the right type of private key
 	boxPub, boxPriv, err := box.GenerateKey(rand.Reader)
 	if err != nil {
@@ -46,18 +46,21 @@ func initHandshake(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain *crypto.Si
 		return nil, err
 	}
 
-	return &handshakeSession{
+	hs := &handshakeSession{
 		ownDevicePrivateKey:   ownDevicePrivateKey,
 		ownSigChain:           ownSigChain,
 		selfBoxPublicKey:      boxPub,
 		selfBoxPrivateKey:     boxPriv,
 		selfSigningPrivateKey: signPriv,
 		nonce:                 0,
-	}, nil
+		opts:                  opts,
+	}
+
+	return hs, nil
 }
 
-func newCryptoRequest(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain *crypto.SigChain, accountToReach p2pcrypto.PubKey) (*handshakeSession, error) {
-	session, err := initHandshake(ownDevicePrivateKey, ownSigChain)
+func newCryptoRequest(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain crypto.SigChainManager, accountToReach p2pcrypto.PubKey, opts *crypto.Opts) (*handshakeSession, error) {
+	session, err := initHandshake(ownDevicePrivateKey, ownSigChain, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -67,8 +70,8 @@ func newCryptoRequest(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain *crypto
 	return session, nil
 }
 
-func newCryptoResponse(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain *crypto.SigChain) (*handshakeSession, error) {
-	session, err := initHandshake(ownDevicePrivateKey, ownSigChain)
+func newCryptoResponse(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain crypto.SigChainManager, opts *crypto.Opts) (*handshakeSession, error) {
+	session, err := initHandshake(ownDevicePrivateKey, ownSigChain, opts)
 	if err != nil {
 		return nil, err
 	}

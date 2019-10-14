@@ -3,6 +3,8 @@ package handshake
 import (
 	"context"
 
+	"berty.tech/go/internal/crypto"
+
 	"github.com/pkg/errors"
 
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
@@ -24,12 +26,14 @@ func (s *step4or5CheckSigChainProof) action(ctx context.Context, f *flow, step H
 		return nil, errors.Wrap(err, "can't unmarshal public key")
 	}
 
-	if err = f.session.CheckOtherKeyProof(f.logger, payload.Signature, payload.SigChain, signKey); err != nil {
+	chain := crypto.WrapSigChain(payload.SigChain, f.session.opts)
+
+	if err = f.session.CheckOtherKeyProof(payload.Signature, chain, signKey); err != nil {
 		return nil, errors.Wrap(err, "can't check other peer key proof")
 	}
 
 	f.provedDevicePubKey = signKey
-	f.provedSigChain = payload.SigChain
+	f.provedSigChain = chain
 
 	return &s.next, nil
 }
@@ -52,7 +56,7 @@ func (s *step4or5SendSigChainProof) action(ctx context.Context, f *flow, step Ha
 
 	if err := writeEncryptedPayload(f.session, f.writer, step, &HandshakePayload{
 		Signature: proof,
-		SigChain:  f.ownSigChain,
+		SigChain:  f.ownSigChain.Unwrap(),
 		DeviceKey: devicePubKey,
 	}); err != nil {
 		return nil, errors.Wrap(err, "can't write on conn")

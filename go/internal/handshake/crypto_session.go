@@ -3,8 +3,6 @@ package handshake
 import (
 	"encoding/binary"
 
-	"go.uber.org/zap"
-
 	"berty.tech/go/internal/crypto"
 
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
@@ -15,7 +13,7 @@ import (
 const SupportedKeyType = p2pcrypto.Ed25519
 
 type handshakeSession struct {
-	ownSigChain           *crypto.SigChain
+	ownSigChain           crypto.SigChainManager
 	ownDevicePrivateKey   p2pcrypto.PrivKey
 	selfBoxPrivateKey     *[32]byte
 	selfBoxPublicKey      *[32]byte
@@ -24,6 +22,7 @@ type handshakeSession struct {
 	selfSigningPrivateKey p2pcrypto.PrivKey
 	otherSigningPublicKey p2pcrypto.PubKey
 	accountKeyToProve     p2pcrypto.PubKey
+	opts                  *crypto.Opts
 }
 
 func (h *handshakeSession) SetOtherKeys(sign p2pcrypto.PubKey, box []byte) error {
@@ -65,7 +64,7 @@ func computeValueToProvePubKey(keyToProve p2pcrypto.PubKey, receiverSigKey *[32]
 	return signedValue, nil
 }
 
-func computeValueToProveDevicePubKeyAndSigChain(keyToProve *[32]byte, chain *crypto.SigChain) ([]byte, error) {
+func computeValueToProveDevicePubKeyAndSigChain(keyToProve *[32]byte, chain crypto.SigChainManager) ([]byte, error) {
 	if keyToProve == nil || chain == nil {
 		return nil, ErrParams
 	}
@@ -144,7 +143,7 @@ func (h *handshakeSession) ProveOwnDeviceKey() ([]byte, error) {
 	return sig, nil
 }
 
-func (h *handshakeSession) CheckOtherKeyProof(logger *zap.Logger, sig []byte, chain *crypto.SigChain, deviceKey p2pcrypto.PubKey) error {
+func (h *handshakeSession) CheckOtherKeyProof(sig []byte, chain crypto.SigChainManager, deviceKey p2pcrypto.PubKey) error {
 	// Step 4a : ensure sig_B1(BsigChain·a1) is valid
 	signedValue, err := computeValueToProveDevicePubKeyAndSigChain(h.selfBoxPublicKey, chain)
 	if err != nil {
@@ -161,7 +160,7 @@ func (h *handshakeSession) CheckOtherKeyProof(logger *zap.Logger, sig []byte, ch
 		return ErrInvalidSignature
 	}
 
-	entries := chain.ListCurrentPubKeys(logger)
+	entries := chain.ListCurrentPubKeys()
 	for _, e := range entries {
 		if e.Equals(deviceKey) {
 			return nil

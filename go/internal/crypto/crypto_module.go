@@ -14,43 +14,47 @@ import (
 	"github.com/pkg/errors"
 )
 
-func InitNewIdentity(ctx context.Context, logger *zap.Logger) (Manager, p2pcrypto.PrivKey, error) {
+type Opts struct {
+	Logger *zap.Logger
+}
+
+func InitNewIdentity(ctx context.Context, opts *Opts) (Manager, p2pcrypto.PrivKey, error) {
 	privKey, err := GeneratePrivateKey()
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "unable to generate a private key")
 	}
 
-	sigChain, err := InitSigChain(logger, privKey)
+	sigChain, err := InitSigChain(privKey, opts)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "unable to get initial sig chain entry")
 	}
 
-	return NewCrypto(logger, privKey, sigChain), privKey, nil
+	return NewCrypto(privKey, sigChain, opts), privKey, nil
 }
 
-func InitFromOtherDeviceIdentity(ctx context.Context /* other params */) (Manager, p2pcrypto.PrivKey, error) {
+func InitFromOtherDeviceIdentity(ctx context.Context, opts *Opts /* other params */) (Manager, p2pcrypto.PrivKey, error) {
 	// TODO:
 	panic("implement me")
 }
 
-func OpenIdentity(ctx context.Context, logger *zap.Logger, key p2pcrypto.PrivKey, chain *SigChain) (Manager, error) {
-	return NewCrypto(logger, key, chain), nil
+func OpenIdentity(ctx context.Context, key p2pcrypto.PrivKey, chain SigChainManager, opts *Opts) (Manager, error) {
+	return NewCrypto(key, chain, opts), nil
 }
 
-func InitSigChain(logger *zap.Logger, key p2pcrypto.PrivKey) (*SigChain, error) {
+func InitSigChain(key p2pcrypto.PrivKey, opts *Opts) (SigChainManager, error) {
 	accountKey, err := GeneratePrivateKey()
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to get generate a private key")
 	}
 
-	sigChain := NewSigChain()
+	sigChain := NewSigChain(opts)
 
 	_, err = sigChain.Init(accountKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to initiate sig chain")
 	}
 
-	_, err = sigChain.AddEntry(logger, accountKey, key.GetPublic())
+	_, err = sigChain.AddEntry(accountKey, key.GetPublic(), opts)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to add a sig chain entry")
 	}

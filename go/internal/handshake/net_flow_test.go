@@ -10,8 +10,6 @@ import (
 	"testing"
 	"time"
 
-	"go.uber.org/zap"
-
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 
 	"github.com/gogo/protobuf/proto"
@@ -79,7 +77,7 @@ func (s *dummySetCredsStep) action(ctx context.Context, f *flow, step HandshakeF
 	}
 
 	f.provedDevicePubKey = provedDevicePubKey
-	f.provedSigChain = &crypto.SigChain{}
+	f.provedSigChain = crypto.WrapSigChain(&crypto.SigChain{}, nil)
 
 	return &s.next, nil
 }
@@ -210,19 +208,17 @@ func Test_Request_Response(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
 	defer cancel()
 
-	reqCrypto, reqPrivateKey, err := crypto.InitNewIdentity(ctx, zap.NewNop())
+	reqCrypto, reqPrivateKey, err := crypto.InitNewIdentity(ctx, nil)
 	if err != nil {
 		t.Fatalf("unable to create an identity")
 		return
 	}
 
-	resCrypto, resPrivateKey, err := crypto.InitNewIdentity(ctx, zap.NewNop())
+	resCrypto, resPrivateKey, err := crypto.InitNewIdentity(ctx, nil)
 	if err != nil {
 		t.Fatalf("unable to create an identity")
 		return
 	}
-
-	l := zap.NewNop()
 
 	wg := sync.WaitGroup{}
 	wg.Add(2)
@@ -244,7 +240,7 @@ func Test_Request_Response(t *testing.T) {
 			return
 		}
 
-		reqProvedSigChain, reqProvedKey, err := Request(ctx, l, reqConn, reqPrivateKey, reqCrypto.GetSigChain(), accountPk)
+		reqProvedSigChain, reqProvedKey, err := Request(ctx, reqConn, reqPrivateKey, reqCrypto.GetSigChain(), accountPk, nil)
 		if err != nil {
 			t.Fatalf("unable to perform handshake on requester side: %v", err)
 			return
@@ -262,7 +258,7 @@ func Test_Request_Response(t *testing.T) {
 	go func() {
 		defer wg.Done()
 
-		resProvedSigChain, resProvedKey, err := Response(ctx, l, resConn, resPrivateKey, resCrypto.GetSigChain())
+		resProvedSigChain, resProvedKey, err := Response(ctx, resConn, resPrivateKey, resCrypto.GetSigChain(), nil)
 		if err != nil {
 			t.Fatalf("unable to perform handshake on requestee side: %v", err)
 			return

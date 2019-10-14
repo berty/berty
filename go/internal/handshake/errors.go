@@ -1,14 +1,18 @@
 package handshake
 
-import "errors"
+type Error string
 
-var ErrNoPayload = errors.New("handshake: no payload specified")
-var ErrInvalidFlow = errors.New("handshake: invalid flow")
-var ErrInvalidFlowStepNotFound = errors.New("handshake: invalid flow, step not found")
-var ErrParams = errors.New("handshake: can't init with supplied parameters")
-var ErrNoAuthReturned = errors.New("handshake: no authenticated sig chain or device key returned")
-var ErrInvalidKeyType = errors.New("handshake: invalid key type")
-var ErrInvalidSignature = errors.New("handshake: signature is not valid")
-var ErrSessionInvalid = errors.New("handshake: session has not been properly initialized")
-var ErrKeyNotInSigChain = errors.New("handshake: key not found in sig chain")
-var ErrDecrypt = errors.New("handshake: unable to decrypt data")
+func (e Error) Error() string { return string(e) }
+
+var (
+	ErrNoPayload               = Error("handshake: no payload specified")
+	ErrInvalidFlow             = Error("handshake: invalid flow")
+	ErrInvalidFlowStepNotFound = Error("handshake: invalid flow, step not found")
+	ErrParams                  = Error("handshake: can't init with supplied parameters")
+	ErrNoAuthReturned          = Error("handshake: no authenticated sig chain or device key returned")
+	ErrInvalidKeyType          = Error("handshake: invalid key type")
+	ErrInvalidSignature        = Error("handshake: signature is not valid")
+	ErrSessionInvalid          = Error("handshake: session has not been properly initialized")
+	ErrKeyNotInSigChain        = Error("handshake: key not found in sig chain")
+	ErrDecrypt                 = Error("handshake: unable to decrypt data")
+)

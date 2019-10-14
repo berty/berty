@@ -11,7 +11,12 @@ import (
 
 var theFuture = time.Date(2199, time.December, 31, 0, 0, 0, 0, time.UTC)
 
-func (m *SigChain) GetInitialEntry() (*SigChainEntry, error) {
+type wrappedSigChain struct {
+	*SigChain
+	logger *zap.Logger
+}
+
+func (m *wrappedSigChain) GetInitialEntry() (*SigChainEntry, error) {
 	entries := m.ListEntries()
 	if len(entries) == 0 {
 		return nil, ErrSigChainNoEntries
@@ -26,7 +31,7 @@ func (m *SigChain) GetInitialEntry() (*SigChainEntry, error) {
 	return e, nil
 }
 
-func (m *SigChain) GetLastEntry() *SigChainEntry {
+func (m *wrappedSigChain) GetLastEntry() *SigChainEntry {
 	entries := m.ListEntries()
 
 	if len(entries) == 0 {
@@ -36,7 +41,7 @@ func (m *SigChain) GetLastEntry() *SigChainEntry {
 	return entries[len(entries)-1]
 }
 
-func (m *SigChain) ListEntries() []*SigChainEntry {
+func (m *wrappedSigChain) ListEntries() []*SigChainEntry {
 	entries := make([]*SigChainEntry, len(m.Entries))
 	for i, e := range m.Entries {
 		entries[i] = e
@@ -45,7 +50,7 @@ func (m *SigChain) ListEntries() []*SigChainEntry {
 	return entries
 }
 
-func (m *SigChain) ListCurrentPubKeys(logger *zap.Logger) []p2pcrypto.PubKey {
+func (m *wrappedSigChain) ListCurrentPubKeys() []p2pcrypto.PubKey {
 	pubKeys := map[string][]byte{}
 	var pubKeysSlice []p2pcrypto.PubKey
 
@@ -62,7 +67,7 @@ func (m *SigChain) ListCurrentPubKeys(logger *zap.Logger) []p2pcrypto.PubKey {
 	for _, p := range pubKeys {
 		pubKey, err := p2pcrypto.UnmarshalPublicKey(p)
 		if err != nil {
-			logger.Warn("unable to unmarshal public key")
+			m.logger.Warn("unable to unmarshal public key")
 			continue
 		}
 
@@ -72,7 +77,7 @@ func (m *SigChain) ListCurrentPubKeys(logger *zap.Logger) []p2pcrypto.PubKey {
 	return pubKeysSlice
 }
 
-func (m *SigChain) Init(privKey p2pcrypto.PrivKey) (*SigChainEntry, error) {
+func (m *wrappedSigChain) Init(privKey p2pcrypto.PrivKey) (*SigChainEntry, error) {
 	if len(m.Entries) > 0 {
 		return nil, ErrSigChainAlreadyInitialized
 	}
@@ -88,12 +93,12 @@ func (m *SigChain) Init(privKey p2pcrypto.PrivKey) (*SigChainEntry, error) {
 	})
 }
 
-func (m *SigChain) AddEntry(logger *zap.Logger, privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) (*SigChainEntry, error) {
-	if !m.isKeyCurrentlyPresent(logger, privKey.GetPublic()) {
+func (m *wrappedSigChain) AddEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey, opts *Opts) (*SigChainEntry, error) {
+	if !m.isKeyCurrentlyPresent(privKey.GetPublic(), opts) {
 		return nil, ErrSigChainPermission
 	}
 
-	if m.isKeyCurrentlyPresent(logger, pubKey) {
+	if m.isKeyCurrentlyPresent(pubKey, opts) {
 		return nil, ErrSigChainOperationAlreadyDone
 	}
 
@@ -108,12 +113,12 @@ func (m *SigChain) AddEntry(logger *zap.Logger, privKey p2pcrypto.PrivKey, pubKe
 	})
 }
 
-func (m *SigChain) RemoveEntry(logger *zap.Logger, privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey) (*SigChainEntry, error) {
-	if !m.isKeyCurrentlyPresent(logger, privKey.GetPublic()) {
+func (m *wrappedSigChain) RemoveEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey, opts *Opts) (*SigChainEntry, error) {
+	if !m.isKeyCurrentlyPresent(privKey.GetPublic(), opts) {
 		return nil, ErrSigChainPermission
 	}
 
-	if !m.isKeyCurrentlyPresent(logger, pubKey) {
+	if !m.isKeyCurrentlyPresent(pubKey, opts) {
 		return nil, ErrSigChainOperationAlreadyDone
 	}
 
@@ -128,8 +133,8 @@ func (m *SigChain) RemoveEntry(logger *zap.Logger, privKey p2pcrypto.PrivKey, pu
 	})
 }
 
-func (m *SigChain) isKeyCurrentlyPresent(logger *zap.Logger, pubKey p2pcrypto.PubKey) bool {
-	for _, allowedPubKey := range m.ListCurrentPubKeys(logger) {
+func (m *wrappedSigChain) isKeyCurrentlyPresent(pubKey p2pcrypto.PubKey, opts *Opts) bool {
+	for _, allowedPubKey := range m.ListCurrentPubKeys() {
 		if allowedPubKey.Equals(pubKey) {
 			return true
 		}
@@ -138,7 +143,7 @@ func (m *SigChain) isKeyCurrentlyPresent(logger *zap.Logger, pubKey p2pcrypto.Pu
 	return false
 }
 
-func (m *SigChain) appendEntry(privKey p2pcrypto.PrivKey, entry *SigChainEntry) (*SigChainEntry, error) {
+func (m *wrappedSigChain) appendEntry(privKey p2pcrypto.PrivKey, entry *SigChainEntry) (*SigChainEntry, error) {
 	lastEntry := m.GetLastEntry()
 	if lastEntry != nil {
 		entry.ParentEntryHash = lastEntry.GetEntryHash()
@@ -163,14 +168,48 @@ func (m *SigChain) appendEntry(privKey p2pcrypto.PrivKey, entry *SigChainEntry) 
 	return entry, nil
 }
 
-func (m *SigChain) Check() error {
+func (m *wrappedSigChain) Check() error {
 	// TODO: implement me
 
 	return nil
 }
 
-func NewSigChain() *SigChain {
-	return &SigChain{}
+func NewSigChain(opts *Opts) SigChainManager {
+	if opts == nil {
+		opts = &Opts{}
+	}
+
+	chain := &wrappedSigChain{
+		SigChain: &SigChain{},
+		logger:   zap.NewNop(),
+	}
+
+	if opts.Logger != nil {
+		chain.logger = opts.Logger
+	}
+
+	return chain
 }
 
-var _ *SigChain = (*SigChain)(nil)
+func WrapSigChain(sigChain *SigChain, opts *Opts) SigChainManager {
+	if opts == nil {
+		opts = &Opts{}
+	}
+
+	chain := &wrappedSigChain{
+		SigChain: sigChain,
+		logger:   zap.NewNop(),
+	}
+
+	if opts.Logger != nil {
+		chain.logger = opts.Logger
+	}
+
+	return chain
+}
+
+func (m *wrappedSigChain) Unwrap() *SigChain {
+	return m.SigChain
+}
+
+var _ SigChainManager = (*wrappedSigChain)(nil)

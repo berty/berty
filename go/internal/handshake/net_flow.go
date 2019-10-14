@@ -4,8 +4,6 @@ import (
 	"context"
 	"net"
 
-	"go.uber.org/zap"
-
 	"berty.tech/go/internal/crypto"
 
 	ggio "github.com/gogo/protobuf/io"
@@ -23,14 +21,13 @@ type flow struct {
 	writer             ggio.WriteCloser
 	session            *handshakeSession
 	steps              map[HandshakeFrame_HandshakeStep]flowStep
-	ownSigChain        *crypto.SigChain
+	ownSigChain        crypto.SigChainManager
 	ownDevicePubKey    p2pcrypto.PubKey
-	provedSigChain     *crypto.SigChain
+	provedSigChain     crypto.SigChainManager
 	provedDevicePubKey p2pcrypto.PubKey
-	logger             *zap.Logger
 }
 
-func newHandshakeFlow(ctx context.Context, logger *zap.Logger, conn net.Conn, devPubKey p2pcrypto.PubKey, ownSigChain *crypto.SigChain, session *handshakeSession, steps map[HandshakeFrame_HandshakeStep]flowStep) (*crypto.SigChain, p2pcrypto.PubKey, error) {
+func newHandshakeFlow(ctx context.Context, conn net.Conn, devPubKey p2pcrypto.PubKey, ownSigChain crypto.SigChainManager, session *handshakeSession, steps map[HandshakeFrame_HandshakeStep]flowStep) (crypto.SigChainManager, p2pcrypto.PubKey, error) {
 	if conn == nil || session == nil || steps == nil {
 		return nil, nil, ErrParams
 	}
@@ -39,7 +36,6 @@ func newHandshakeFlow(ctx context.Context, logger *zap.Logger, conn net.Conn, de
 	reader := ggio.NewDelimitedReader(conn, inet.MessageSizeMax)
 
 	f := flow{
-		logger:          logger,
 		reader:          reader,
 		writer:          writer,
 		session:         session,
@@ -69,7 +65,7 @@ func (f *flow) close() error {
 	return retErr
 }
 
-func (f *flow) performFlow(ctx context.Context) (*crypto.SigChain, p2pcrypto.PubKey, error) {
+func (f *flow) performFlow(ctx context.Context) (crypto.SigChainManager, p2pcrypto.PubKey, error) {
 	var err error
 	defer func() { _ = f.close() }()
 
@@ -114,13 +110,13 @@ func (f *flow) performFlow(ctx context.Context) (*crypto.SigChain, p2pcrypto.Pub
 	return nil, nil, ErrInvalidFlow
 }
 
-func Request(ctx context.Context, logger *zap.Logger, conn net.Conn, devicePrivateKey p2pcrypto.PrivKey, sigChain *crypto.SigChain, accountToReach p2pcrypto.PubKey) (*crypto.SigChain, p2pcrypto.PubKey, error) {
-	session, err := newCryptoRequest(devicePrivateKey, sigChain, accountToReach)
+func Request(ctx context.Context, conn net.Conn, devicePrivateKey p2pcrypto.PrivKey, sigChain crypto.SigChainManager, accountToReach p2pcrypto.PubKey, opts *crypto.Opts) (crypto.SigChainManager, p2pcrypto.PubKey, error) {
+	session, err := newCryptoRequest(devicePrivateKey, sigChain, accountToReach, opts)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return newHandshakeFlow(ctx, logger, conn, devicePrivateKey.GetPublic(), sigChain, session, map[HandshakeFrame_HandshakeStep]flowStep{
+	return newHandshakeFlow(ctx, conn, devicePrivateKey.GetPublic(), sigChain, session, map[HandshakeFrame_HandshakeStep]flowStep{
 		HandshakeFrame_STEP_1_KEY_AGREEMENT:              &step1or2SendKeys{next: HandshakeFrame_STEP_2_KEY_AGREEMENT},
 		HandshakeFrame_STEP_2_KEY_AGREEMENT:              &step1or2ReceiveKey{next: HandshakeFrame_STEP_3A_KNOWN_IDENTITY_PROOF},
 		HandshakeFrame_STEP_3A_KNOWN_IDENTITY_PROOF:      &step3ProveOtherKey{next: HandshakeFrame_STEP_4A_KNOWN_IDENTITY_DISCLOSURE},
@@ -129,13 +125,13 @@ func Request(ctx context.Context, logger *zap.Logger, conn net.Conn, devicePriva
 	})
 }
 
-func Response(ctx context.Context, logger *zap.Logger, conn net.Conn, devicePrivateKey p2pcrypto.PrivKey, sigChain *crypto.SigChain) (*crypto.SigChain, p2pcrypto.PubKey, error) {
-	session, err := newCryptoResponse(devicePrivateKey, sigChain)
+func Response(ctx context.Context, conn net.Conn, devicePrivateKey p2pcrypto.PrivKey, sigChain crypto.SigChainManager, opts *crypto.Opts) (crypto.SigChainManager, p2pcrypto.PubKey, error) {
+	session, err := newCryptoResponse(devicePrivateKey, sigChain, opts)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return newHandshakeFlow(ctx, logger, conn, devicePrivateKey.GetPublic(), sigChain, session, map[HandshakeFrame_HandshakeStep]flowStep{
+	return newHandshakeFlow(ctx, conn, devicePrivateKey.GetPublic(), sigChain, session, map[HandshakeFrame_HandshakeStep]flowStep{
 		HandshakeFrame_STEP_1_KEY_AGREEMENT:              &step1or2ReceiveKey{next: HandshakeFrame_STEP_2_KEY_AGREEMENT},
 		HandshakeFrame_STEP_2_KEY_AGREEMENT:              &step1or2SendKeys{next: HandshakeFrame_STEP_3A_KNOWN_IDENTITY_PROOF},
 		HandshakeFrame_STEP_3A_KNOWN_IDENTITY_PROOF:      &step3CheckOwnKey{next: HandshakeFrame_STEP_4A_KNOWN_IDENTITY_DISCLOSURE},

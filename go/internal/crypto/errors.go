@@ -1,9 +1,13 @@
 package crypto
 
-import "errors"
+type Error string
 
-var ErrSigChainNoEntries = errors.New("sigchain: no entries found")
-var ErrSigChainInvalidEntryType = errors.New("sigchain: invalid entry type")
-var ErrSigChainAlreadyInitialized = errors.New("sigchain: chain already initialized")
-var ErrSigChainPermission = errors.New("sigchain: not allowed to perform operation")
-var ErrSigChainOperationAlreadyDone = errors.New("sigchain: operation already performed")
+func (e Error) Error() string { return string(e) }
+
+var (
+	ErrSigChainNoEntries            = Error("sigchain: no entries found")
+	ErrSigChainInvalidEntryType     = Error("sigchain: invalid entry type")
+	ErrSigChainAlreadyInitialized   = Error("sigchain: chain already initialized")
+	ErrSigChainPermission           = Error("sigchain: not allowed to perform operation")
+	ErrSigChainOperationAlreadyDone = Error("sigchain: operation already performed")
+)
