@@ -6,7 +6,7 @@ WORKDIR         /go/src/berty.tech/go
 COPY            go.* ./
 RUN             go mod download
 COPY            . ./
-RUN             make install
+RUN             make go.install
 
 # minimalist runtime
 FROM            alpine:3.10

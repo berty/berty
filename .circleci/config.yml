@@ -1,4 +1,3 @@
-
 version: 2.1
 
 orbs:
@@ -19,8 +18,9 @@ jobs:
           path: /go/src/berty.tech
       - moul/mod-download
       - gotools/mod-tidy-check
-      - run: make install
-      - run: make unittest
+      - run: make go.install
+      - run: make go.unittest
+      - run: make tidy
       - moul/install_golangci-lint
       - run: PATH=$PATH:$(pwd)/bin make lint
   go-docker:
@@ -76,7 +76,7 @@ jobs:
       - image: bertytech/bazel:0.29.1-buster-r0
     steps:
       - checkout
-      - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.test
+      - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.unittest
 
   bazel-banner:
     working_directory: /go/src/berty.tech

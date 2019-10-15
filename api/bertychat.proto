@@ -3,9 +3,9 @@ syntax = "proto3";
 package berty.chat;
 
 import "google/api/annotations.proto";
-import "google/protobuf/descriptor.proto";
+//import "google/protobuf/descriptor.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "bertyprotocol.proto";
+//import "bertyprotocol.proto";
 import "chatmodel.proto";
 
 option go_package = "berty.tech/go/pkg/bertychat";

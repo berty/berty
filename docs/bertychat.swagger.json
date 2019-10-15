@@ -41,21 +41,6 @@
     }
   },
   "definitions": {
-    "bertychatContactGetReply": {
-      "type": "object"
-    },
-    "bertychatContactListReply": {
-      "type": "object"
-    },
-    "bertychatContactRemoveReply": {
-      "type": "object"
-    },
-    "bertychatContactRequestAcceptReply": {
-      "type": "object"
-    },
-    "bertychatContactRequestDiscardReply": {
-      "type": "object"
-    },
     "chatAccountPairingInvitationCreateReply": {
       "type": "object"
     },
@@ -68,7 +53,22 @@
     "chatAccountSettingsUpdateReply": {
       "type": "object"
     },
+    "chatContactGetReply": {
+      "type": "object"
+    },
+    "chatContactListReply": {
+      "type": "object"
+    },
+    "chatContactRemoveReply": {
+      "type": "object"
+    },
+    "chatContactRequestAcceptReply": {
+      "type": "object"
+    },
     "chatContactRequestCreateReply": {
+      "type": "object"
+    },
+    "chatContactRequestDiscardReply": {
       "type": "object"
     },
     "chatContactUpdateReply": {
@@ -224,17 +224,17 @@
     }
   },
   "x-stream-definitions": {
-    "bertychatContactListReply": {
+    "chatContactListReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/bertychatContactListReply"
+          "$ref": "#/definitions/chatContactListReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of bertychatContactListReply"
+      "title": "Stream result of chatContactListReply"
     },
     "chatConversationListReply": {
       "type": "object",
