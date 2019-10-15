@@ -40,10 +40,21 @@ go_library(
         "tickets.go",
     ],
     cgo = True,
-    clinkopts = [
+    clinkopts = select({
+        "@bazel_tools//src/conditions:darwin": [
+            "-L/usr/local/opt/openssl/lib"
+        ],
+        "//conditions:default": [],
+    }) + [
         "-lssl",
         "-lcrypto",
     ],
+    copts = select({
+        "@bazel_tools//src/conditions:darwin": [
+            "-I/usr/local/opt/openssl/include"
+        ],
+        "//conditions:default": [],
+    }),
     importmap = "berty.tech/go/vendor/github.com/spacemonkeygo/openssl",
     importpath = "github.com/spacemonkeygo/openssl",
     visibility = ["//visibility:public"],
