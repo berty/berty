@@ -5,35 +5,33 @@ import (
 
 	"berty.tech/go/pkg/bertychat"
 	"github.com/gogo/protobuf/proto"
+	"go.uber.org/zap"
 )
 
 func TestBridge(t *testing.T) {
 	var (
-		err error
-
-		bridge *Bridge
-		client *Client
-
+		err      error
+		bridge   *Bridge
+		client   *Client
 		req, res []byte
 	)
 
-	bridge = NewBridge()
+	bridge, err = newBridge(zap.NewNop())
+	if err != nil {
+		t.Fatalf("create bridge: %v", err)
+	}
 	defer func() {
-		if err = bridge.Stop(); err != nil {
-			t.Fatalf("failed to stop bridge: %v", err)
+		if err = bridge.Close(); err != nil {
+			t.Fatalf("stop bridge: %v", err)
 		}
 	}()
 
-	if err = bridge.SetupLogger(); err != nil {
-		t.Fatalf("failed to setup logger: %v", err)
+	if _, err = bridge.AddGRPCListener(":0"); err != nil {
+		t.Fatalf("add grpc listener: %v", err)
 	}
 
-	if _, err = bridge.RegisterGRPCService(":0"); err != nil {
-		t.Fatalf("register grpc listener failed: %v", err)
-	}
-
-	if _, err = bridge.RegisterGRPCWebService(":0"); err != nil {
-		t.Fatalf("register grpc web listener failed: %v", err)
+	if _, err = bridge.AddGRPCWebListener(":0"); err != nil {
+		t.Fatalf("add grpc-web listener: %v", err)
 	}
 
 	client, err = bridge.NewGRPCClient()
