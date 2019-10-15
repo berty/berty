@@ -224,8 +224,7 @@ func (b *Bridge) AddGRPCWebListener(addr string) (string, error) {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Handle preflight CORS
 
-		// FIXME: enable tls, add authentification and remove wildcard
-		// on Allow-Origin
+		// FIXME: enable tls, add authentification and remove wildcard on Allow-Origin
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, XMLHttpRequest, x-user-agent, x-grpc-web, grpc-status, grpc-message, x-method")
@@ -259,6 +258,7 @@ func (b *Bridge) AddGRPCWebListener(addr string) (string, error) {
 	}, func(error) {
 		b.logger.Debug("closing grpc web server")
 		s.Close()
+		l.Close()
 	})
 
 	return l.Addr().String(), nil

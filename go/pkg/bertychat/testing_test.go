@@ -1,16 +1,17 @@
 package bertychat
 
 import (
-	context "context"
-	reflect "reflect"
+	"context"
+	"reflect"
 	"testing"
 
+	"berty.tech/go/internal/testutil"
 	"berty.tech/go/pkg/bertyprotocol"
 	"github.com/jinzhu/gorm"
 )
 
 func TestTestingClient_impl(t *testing.T) {
-	client, cleanup := TestingClient(t, Opts{})
+	client, cleanup := TestingClient(t, Opts{Logger: testutil.Logger(t)})
 	defer cleanup()
 
 	db := testingClientDB(t, client)

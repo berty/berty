@@ -5,12 +5,12 @@ import (
 
 	"berty.tech/go/internal/gormutil"
 	"berty.tech/go/internal/protocoldb/migrations"
+	"berty.tech/go/internal/testutil"
 	"berty.tech/go/pkg/protocolmodel"
-	"go.uber.org/zap"
 )
 
 func TestDropDatabase(t *testing.T) {
-	db := TestingSqliteDB(t, zap.NewNop())
+	db := TestingSqliteDB(t, testutil.Logger(t))
 
 	err := DropDatabase(db)
 	if err != nil {
@@ -24,7 +24,7 @@ func TestDropDatabase(t *testing.T) {
 }
 
 func TestAllTables(t *testing.T) {
-	db := TestingSqliteDB(t, zap.NewNop())
+	db := TestingSqliteDB(t, testutil.Logger(t))
 	gormutil.TestingHasExpectedTables(t, db, protocolmodel.AllTables())
 }
 
@@ -35,5 +35,5 @@ func TestAllMigrations(t *testing.T) {
 		t.Skip()
 	}
 
-	gormutil.TestingMigrationsVSAutoMigrate(t, migrations, protocolmodel.AllModels(), zap.NewNop())
+	gormutil.TestingMigrationsVSAutoMigrate(t, migrations, protocolmodel.AllModels(), testutil.Logger(t))
 }
