@@ -5,12 +5,15 @@ package chatmodel
 
 import (
 	fmt "fmt"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 	reflect "reflect"
 	strings "strings"
 	time "time"
 
 	_ "github.com/gogo/protobuf/gogoproto"
+	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	proto "github.com/golang/protobuf/proto"
 	_ "github.com/golang/protobuf/ptypes/timestamp"
 )
@@ -41,16 +44,25 @@ func (*Conversation) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6cd7a680dd32e495, []int{0}
 }
 func (m *Conversation) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Conversation.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 func (m *Conversation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Conversation.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_Conversation.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 func (m *Conversation) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Conversation.Merge(m, src)
 }
 func (m *Conversation) XXX_Size() int {
-	return xxx_messageInfo_Conversation.Size(m)
+	return m.Size()
 }
 func (m *Conversation) XXX_DiscardUnknown() {
 	xxx_messageInfo_Conversation.DiscardUnknown(m)
@@ -73,16 +85,25 @@ func (*ConversationMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6cd7a680dd32e495, []int{1}
 }
 func (m *ConversationMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationMessage.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 func (m *ConversationMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationMessage.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_ConversationMessage.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 func (m *ConversationMessage) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationMessage.Merge(m, src)
 }
 func (m *ConversationMessage) XXX_Size() int {
-	return xxx_messageInfo_ConversationMessage.Size(m)
+	return m.Size()
 }
 func (m *ConversationMessage) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationMessage.DiscardUnknown(m)
@@ -128,14 +149,252 @@ var fileDescriptor_6cd7a680dd32e495 = []byte{
 	0x5c, 0x1f, 0xfa, 0xee, 0xb3, 0x84, 0xfa, 0x5e, 0x74, 0x40, 0xb3, 0xd6, 0xf4, 0x26, 0x86, 0x3d,
 	0xe5, 0xdc, 0xfe, 0x42, 0x06, 0x05, 0xc2, 0x45, 0x81, 0xe4, 0xb2, 0x40, 0xb8, 0x2a, 0x10, 0xae,
 	0x0b, 0x84, 0x9b, 0x02, 0xe1, 0xae, 0x40, 0x38, 0x14, 0x48, 0x8e, 0x04, 0xc2, 0x89, 0x40, 0x38,
-	0x15, 0x08, 0x67, 0x02, 0xe1, 0x5c, 0x20, 0x0c, 0x04, 0xc2, 0x85, 0x40, 0xb8, 0x14, 0x08, 0x57,
-	0x02, 0xe1, 0x5a, 0x20, 0xdc, 0x08, 0x84, 0x3b, 0x81, 0x70, 0x28, 0x11, 0x8e, 0x24, 0xc2, 0xb1,
-	0x44, 0xf8, 0x2c, 0x11, 0xbe, 0x4a, 0x84, 0x13, 0x89, 0x70, 0x2a, 0x91, 0x9c, 0x49, 0x24, 0xe7,
-	0x12, 0x61, 0x20, 0x11, 0x2e, 0x24, 0xc2, 0xa5, 0x44, 0x78, 0xbf, 0x5a, 0x43, 0x71, 0xda, 0xed,
-	0x59, 0xe5, 0x6f, 0x79, 0xe0, 0x59, 0x63, 0xc0, 0xce, 0x83, 0xea, 0x46, 0xcf, 0x7f, 0x06, 0x00,
-	0x00, 0xff, 0xff, 0xcb, 0x3e, 0x29, 0xfe, 0x1d, 0x04, 0x00, 0x00,
+	0x15, 0x08, 0x67, 0x02, 0xe1, 0x5c, 0x20, 0x0c, 0x04, 0x92, 0x0b, 0x81, 0xe4, 0x52, 0x20, 0x5c,
+	0x09, 0x24, 0xd7, 0x02, 0xe1, 0x46, 0x20, 0xdc, 0x09, 0x84, 0x43, 0x89, 0x70, 0x24, 0x11, 0x8e,
+	0x25, 0xc2, 0x67, 0x89, 0xf0, 0x55, 0x22, 0x9c, 0x48, 0x84, 0x53, 0x89, 0xe4, 0x4c, 0x22, 0x39,
+	0x97, 0x08, 0x03, 0x89, 0x70, 0x21, 0x11, 0x2e, 0x25, 0xc2, 0xfb, 0xd5, 0x1a, 0x8a, 0xd3, 0x6e,
+	0xcf, 0x2a, 0x7f, 0xcb, 0x03, 0xcf, 0x1a, 0x03, 0x76, 0x1e, 0x54, 0x37, 0x7a, 0xfe, 0x33, 0x00,
+	0x00, 0xff, 0xff, 0x79, 0xc8, 0x20, 0x53, 0x1d, 0x04, 0x00, 0x00,
 }
 
+func (m *Conversation) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Conversation) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Conversation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Messages) > 0 {
+		for iNdEx := len(m.Messages) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Messages[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintChatmodel(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xc
+			i--
+			dAtA[i] = 0xc2
+		}
+	}
+	if len(m.Title) > 0 {
+		i -= len(m.Title)
+		copy(dAtA[i:], m.Title)
+		i = encodeVarintChatmodel(dAtA, i, uint64(len(m.Title)))
+		i--
+		dAtA[i] = 0x6
+		i--
+		dAtA[i] = 0xa2
+	}
+	if m.UpdatedAt != nil {
+		n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.UpdatedAt):])
+		if err1 != nil {
+			return 0, err1
+		}
+		i -= n1
+		i = encodeVarintChatmodel(dAtA, i, uint64(n1))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.CreatedAt != nil {
+		n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.CreatedAt):])
+		if err2 != nil {
+			return 0, err2
+		}
+		i -= n2
+		i = encodeVarintChatmodel(dAtA, i, uint64(n2))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintChatmodel(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ConversationMessage) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConversationMessage) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConversationMessage) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Conversation != nil {
+		{
+			size, err := m.Conversation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintChatmodel(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xc
+		i--
+		dAtA[i] = 0xca
+	}
+	if len(m.ConversationID) > 0 {
+		i -= len(m.ConversationID)
+		copy(dAtA[i:], m.ConversationID)
+		i = encodeVarintChatmodel(dAtA, i, uint64(len(m.ConversationID)))
+		i--
+		dAtA[i] = 0xc
+		i--
+		dAtA[i] = 0xc2
+	}
+	if len(m.Body) > 0 {
+		i -= len(m.Body)
+		copy(dAtA[i:], m.Body)
+		i = encodeVarintChatmodel(dAtA, i, uint64(len(m.Body)))
+		i--
+		dAtA[i] = 0x6
+		i--
+		dAtA[i] = 0xa2
+	}
+	if m.UpdatedAt != nil {
+		n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.UpdatedAt):])
+		if err4 != nil {
+			return 0, err4
+		}
+		i -= n4
+		i = encodeVarintChatmodel(dAtA, i, uint64(n4))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.CreatedAt != nil {
+		n5, err5 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.CreatedAt):])
+		if err5 != nil {
+			return 0, err5
+		}
+		i -= n5
+		i = encodeVarintChatmodel(dAtA, i, uint64(n5))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintChatmodel(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintChatmodel(dAtA []byte, offset int, v uint64) int {
+	offset -= sovChatmodel(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+func (m *Conversation) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ID)
+	if l > 0 {
+		n += 1 + l + sovChatmodel(uint64(l))
+	}
+	if m.CreatedAt != nil {
+		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.CreatedAt)
+		n += 1 + l + sovChatmodel(uint64(l))
+	}
+	if m.UpdatedAt != nil {
+		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.UpdatedAt)
+		n += 1 + l + sovChatmodel(uint64(l))
+	}
+	l = len(m.Title)
+	if l > 0 {
+		n += 2 + l + sovChatmodel(uint64(l))
+	}
+	if len(m.Messages) > 0 {
+		for _, e := range m.Messages {
+			l = e.Size()
+			n += 2 + l + sovChatmodel(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *ConversationMessage) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ID)
+	if l > 0 {
+		n += 1 + l + sovChatmodel(uint64(l))
+	}
+	if m.CreatedAt != nil {
+		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.CreatedAt)
+		n += 1 + l + sovChatmodel(uint64(l))
+	}
+	if m.UpdatedAt != nil {
+		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.UpdatedAt)
+		n += 1 + l + sovChatmodel(uint64(l))
+	}
+	l = len(m.Body)
+	if l > 0 {
+		n += 2 + l + sovChatmodel(uint64(l))
+	}
+	l = len(m.ConversationID)
+	if l > 0 {
+		n += 2 + l + sovChatmodel(uint64(l))
+	}
+	if m.Conversation != nil {
+		l = m.Conversation.Size()
+		n += 2 + l + sovChatmodel(uint64(l))
+	}
+	return n
+}
+
+func sovChatmodel(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+func sozChatmodel(x uint64) (n int) {
+	return sovChatmodel(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
 func (this *Conversation) String() string {
 	if this == nil {
 		return "nil"
@@ -178,3 +437,593 @@ func valueToStringChatmodel(v interface{}) string {
 	pv := reflect.Indirect(rv).Interface()
 	return fmt.Sprintf("*%v", pv)
 }
+func (m *Conversation) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowChatmodel
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Conversation: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Conversation: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.CreatedAt == nil {
+				m.CreatedAt = new(time.Time)
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.UpdatedAt == nil {
+				m.UpdatedAt = new(time.Time)
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.UpdatedAt, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 100:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Title = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 200:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Messages", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Messages = append(m.Messages, &ConversationMessage{})
+			if err := m.Messages[len(m.Messages)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipChatmodel(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConversationMessage) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowChatmodel
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConversationMessage: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConversationMessage: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.CreatedAt == nil {
+				m.CreatedAt = new(time.Time)
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.UpdatedAt == nil {
+				m.UpdatedAt = new(time.Time)
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.UpdatedAt, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 100:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Body", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Body = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 200:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ConversationID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ConversationID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 201:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Conversation", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Conversation == nil {
+				m.Conversation = &Conversation{}
+			}
+			if err := m.Conversation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipChatmodel(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthChatmodel
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipChatmodel(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowChatmodel
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+			return iNdEx, nil
+		case 1:
+			iNdEx += 8
+			return iNdEx, nil
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowChatmodel
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthChatmodel
+			}
+			iNdEx += length
+			if iNdEx < 0 {
+				return 0, ErrInvalidLengthChatmodel
+			}
+			return iNdEx, nil
+		case 3:
+			for {
+				var innerWire uint64
+				var start int = iNdEx
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return 0, ErrIntOverflowChatmodel
+					}
+					if iNdEx >= l {
+						return 0, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					innerWire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				innerWireType := int(innerWire & 0x7)
+				if innerWireType == 4 {
+					break
+				}
+				next, err := skipChatmodel(dAtA[start:])
+				if err != nil {
+					return 0, err
+				}
+				iNdEx = start + next
+				if iNdEx < 0 {
+					return 0, ErrInvalidLengthChatmodel
+				}
+			}
+			return iNdEx, nil
+		case 4:
+			return iNdEx, nil
+		case 5:
+			iNdEx += 4
+			return iNdEx, nil
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+	}
+	panic("unreachable")
+}
+
+var (
+	ErrInvalidLengthChatmodel = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowChatmodel   = fmt.Errorf("proto: integer overflow")
+)
