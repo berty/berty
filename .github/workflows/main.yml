@@ -1,0 +1,21 @@
+name: CI
+
+on: push
+
+jobs:
+  macos-bazel-go-test:
+    runs-on: macOS-10.14
+    steps:
+    - name: Install bazel
+      working-directory: /tmp
+      run: |
+        curl -LO https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel-0.29.1-installer-darwin-x86_64.sh
+        chmod +x bazel-0.29.1-installer-darwin-x86_64.sh
+        ./bazel-0.29.1-installer-darwin-x86_64.sh --user
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Build and run
+      working-directory: ./go
+      env:
+        BAZEL_CMD_ARGS: --sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5
+      run: make bazel.unittest
