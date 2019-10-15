@@ -1,10 +1,11 @@
 package crypto
 
+// Error is a simple error struct. See https://dave.cheney.net/2016/04/07/constant-errors
 type Error string
 
 func (e Error) Error() string { return string(e) }
 
-var (
+const (
 	ErrSigChainNoEntries            = Error("sigchain: no entries found")
 	ErrSigChainInvalidEntryType     = Error("sigchain: invalid entry type")
 	ErrSigChainAlreadyInitialized   = Error("sigchain: chain already initialized")
