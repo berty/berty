@@ -10,12 +10,10 @@ import (
 	"testing"
 	"time"
 
-	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-
-	"github.com/gogo/protobuf/proto"
-
 	"berty.tech/go/internal/crypto"
 	ggio "github.com/gogo/protobuf/io"
+	"github.com/gogo/protobuf/proto"
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
 var ErrDummy = errors.New("handshake: dummy")

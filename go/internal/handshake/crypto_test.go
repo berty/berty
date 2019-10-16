@@ -5,12 +5,11 @@ import (
 	"crypto/rand"
 	"testing"
 
-	p2pCrypto "github.com/libp2p/go-libp2p-core/crypto"
-
 	"berty.tech/go/internal/crypto"
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func createNewIdentity(t *testing.T, ctx context.Context) (crypto.Manager, p2pCrypto.PrivKey) {
+func createNewIdentity(ctx context.Context, t *testing.T) (crypto.Manager, p2pcrypto.PrivKey) {
 	t.Helper()
 
 	c, privateKey, err := crypto.InitNewIdentity(ctx, nil)
@@ -21,11 +20,11 @@ func createNewIdentity(t *testing.T, ctx context.Context) (crypto.Manager, p2pCr
 	return c, privateKey
 }
 
-func createTwoDevices(t *testing.T, ctx context.Context) (*handshakeSession, crypto.Manager, *handshakeSession, crypto.Manager) {
+func createTwoDevices(ctx context.Context, t *testing.T) (*handshakeSession, crypto.Manager, *handshakeSession, crypto.Manager) {
 	t.Helper()
 
-	c1, pk1 := createNewIdentity(t, ctx)
-	c2, pk2 := createNewIdentity(t, ctx)
+	c1, pk1 := createNewIdentity(ctx, t)
+	c2, pk2 := createNewIdentity(ctx, t)
 
 	accountPublicKey, err := c2.GetAccountPublicKey()
 	if err != nil {
@@ -62,15 +61,15 @@ func TestNewHandshakeModule(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	_, _ = createNewIdentity(t, ctx)
+	_, _ = createNewIdentity(ctx, t)
 }
 
 func TestModule_NewRequest(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	c1, pk1 := createNewIdentity(t, ctx)
-	c2, _ := createNewIdentity(t, ctx)
+	c1, pk1 := createNewIdentity(ctx, t)
+	c2, _ := createNewIdentity(ctx, t)
 
 	accountPubKey, err := c2.GetAccountPublicKey()
 	if err != nil {
@@ -87,8 +86,8 @@ func TestModule_NewResponse(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	c1, pk1 := createNewIdentity(t, ctx)
-	c2, pk2 := createNewIdentity(t, ctx)
+	c1, pk1 := createNewIdentity(ctx, t)
+	c2, pk2 := createNewIdentity(ctx, t)
 
 	accountPubKey, err := c2.GetAccountPublicKey()
 	if err != nil {
@@ -117,7 +116,7 @@ func TestHandshakeSession_SetOtherKeys(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	hss1, _, hss2, _ := createTwoDevices(t, ctx)
+	hss1, _, hss2, _ := createTwoDevices(ctx, t)
 	sign, box := hss2.GetPublicKeys()
 	err := hss1.SetOtherKeys(sign, box)
 	if err != nil {
@@ -129,7 +128,7 @@ func TestHandshakeSession_SetOtherKeys(t *testing.T) {
 		t.Fatalf("err should not be nil")
 	}
 
-	_, badSigningPubKey, err := p2pCrypto.GenerateSecp256k1Key(rand.Reader)
+	_, badSigningPubKey, err := p2pcrypto.GenerateSecp256k1Key(rand.Reader)
 	if err != nil {
 		t.Fatalf("err should be nil")
 	}
@@ -144,7 +143,7 @@ func TestHandshakeSession_GetPublicKeys(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	hss1, _, _, _ := createTwoDevices(t, ctx)
+	hss1, _, _, _ := createTwoDevices(ctx, t)
 	sign, box := hss1.GetPublicKeys()
 
 	if int(sign.Type()) != SupportedKeyType || len(box) != 32 {
@@ -156,7 +155,7 @@ func TestHandshakeSession_ProveOtherKey_CheckOwnKeyProof(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	hss1, _, hss2, _ := createTwoDevices(t, ctx)
+	hss1, _, hss2, _ := createTwoDevices(ctx, t)
 	proof, err := hss1.ProveOtherKey()
 
 	if err != nil {
@@ -180,7 +179,7 @@ func TestHandshakeSession_ProveOwnDeviceKey_CheckOtherKeyProof(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	hss1, c1, hss2, c2 := createTwoDevices(t, ctx)
+	hss1, c1, hss2, c2 := createTwoDevices(ctx, t)
 	proof, err := hss1.ProveOwnDeviceKey()
 
 	if err != nil {
@@ -216,7 +215,7 @@ func TestHandshakeSession_ProveOtherKnownAccount_CheckOwnKnownAccountProof(t *te
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	hss1, c1, hss2, _ := createTwoDevices(t, ctx)
+	hss1, c1, hss2, _ := createTwoDevices(ctx, t)
 	proof, err := hss1.ProveOtherKnownAccount()
 
 	if err != nil {
@@ -237,7 +236,7 @@ func TestHandshakeSession_Encrypt_Decrypt(t *testing.T) {
 	testData2 := []byte("test2")
 	testData3 := []byte("test3")
 
-	hss1, _, hss2, _ := createTwoDevices(t, ctx)
+	hss1, _, hss2, _ := createTwoDevices(ctx, t)
 
 	// Should be able to encode the message
 	encrypted, err := hss1.Encrypt(testData1)
@@ -292,7 +291,7 @@ func TestHandshakeSession_Close(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	hss1, _, hss2, _ := createTwoDevices(t, ctx)
+	hss1, _, hss2, _ := createTwoDevices(ctx, t)
 	if err := hss1.Close(); err != nil {
 		t.Fatalf("can't close hss1 properly")
 	}

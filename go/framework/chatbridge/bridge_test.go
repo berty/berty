@@ -3,9 +3,9 @@ package chatbridge
 import (
 	"testing"
 
+	"berty.tech/go/internal/testutil"
 	"berty.tech/go/pkg/bertychat"
 	"github.com/gogo/protobuf/proto"
-	"go.uber.org/zap"
 )
 
 func TestBridge(t *testing.T) {
@@ -16,7 +16,7 @@ func TestBridge(t *testing.T) {
 		req, res []byte
 	)
 
-	bridge, err = newBridge(zap.NewNop())
+	bridge, err = newBridge(testutil.Logger(t))
 	if err != nil {
 		t.Fatalf("create bridge: %v", err)
 	}

@@ -33,7 +33,10 @@ for FILE in $STAGED_GO_FILES; do
     $GOIMPORTS -w "$FILE"
 
     # Run golint on the staged files and check the exit status
-    lint_filters=( "should have comment or be unexported" )
+    lint_filters=(
+        "should have comment or be unexported"
+        "should have comment \(or a comment on this block\) or be unexported"
+    )
     command="$GOLINT $FILE"
     for filter in "${lint_filters[@]}"; do
         command="$command | grep -v -E \"$filter\""
