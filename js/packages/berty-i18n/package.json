@@ -1,0 +1,34 @@
+{
+  "name": "@berty-tech/berty-i18n",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "author": "Berty Technologies <oss@berty.tech>",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/berty-i18n#readme",
+  "license": "(Apache-2.0 or MIT)",
+  "main": "lib/berty-i18n.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berty/berty.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/berty/berty/issues"
+  },
+  "dependencies": {
+    "i18n": "^0.8.3"
+  }
+}
