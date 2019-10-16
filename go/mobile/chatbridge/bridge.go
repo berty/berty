@@ -2,6 +2,7 @@ package chatbridge
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"net/http"
 	"sync"
@@ -11,8 +12,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"  // required by gorm
 
 	"berty.tech/go/internal/bridgeutil"
-	"berty.tech/go/internal/chatdb"
-	"berty.tech/go/internal/protocoldb"
 	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
 
@@ -26,79 +25,50 @@ import (
 )
 
 type Bridge struct {
-	cerr   chan error
-	cclose chan struct{}
-	once   sync.Once
-
-	serviceGroup run.Group
-	grpcServer   *grpc.Server
-
-	logger *zap.Logger
+	cerr           chan error
+	cclose         chan struct{}
+	once           sync.Once
+	workers        run.Group
+	grpcServer     *grpc.Server
+	logger         *zap.Logger
+	chatDB         *gorm.DB
+	protocolDB     *gorm.DB
+	chatClient     bertychat.Client
+	protocolClient bertyprotocol.Client
 }
 
-var ErrInterrupted = errors.New("bridge has been interrupted")
+// NewBridge is the main entrypoint for gomobile and should only take simple configuration as argument
+func NewBridge(logLevel string) (*Bridge, error) {
+	logger, err := setupLogger(logLevel)
+	if err != nil {
+		return nil, errors.Wrap(err, "logger setup")
+	}
+	return newBridge(logger)
+}
 
-func NewBridge() (bridge *Bridge) {
-	bridge = &Bridge{
-		cerr:   make(chan error),
-		cclose: make(chan struct{}),
-
+func newBridge(logger *zap.Logger) (*Bridge, error) {
+	b := &Bridge{
+		cerr:       make(chan error),
+		cclose:     make(chan struct{}),
 		grpcServer: grpc.NewServer(),
-		logger:     zap.NewNop(),
+		logger:     logger,
 	}
 
 	// Create cancel service
-	bridge.serviceGroup.Add(func() error {
+	b.workers.Add(func() error {
 		// wait for closing signal
-		<-bridge.cclose
+		<-b.cclose
 		return ErrInterrupted
 	}, func(error) {
-		bridge.once.Do(func() { close(bridge.cclose) })
+		b.once.Do(func() { close(b.cclose) })
 	})
 
-	return
-}
-
-func (b *Bridge) SetupLogger() (err error) {
-	// setup logger
-	var logger *zap.Logger
-
-	config := zap.NewDevelopmentConfig()
-	config.Level.SetLevel(zap.DebugLevel)
-	config.DisableStacktrace = true
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	if logger, err = config.Build(); err != nil {
-		return
-
-	}
-
-	logger = logger.Named("bridge")
-	logger.Debug("logger initialized in debug mode")
-
-	b.logger = logger
-	return
-
-}
-
-func (b *Bridge) run() error {
-	var err error
-
 	// setup protocol
-	var protocol bertyprotocol.Client
 	{
-		var db *gorm.DB
-
-		db, err = gorm.Open("sqlite3", ":memory:")
+		var err error
+		b.protocolDB, err = gorm.Open("sqlite3", ":memory:")
 		if err != nil {
-			return errors.Wrap(err, "failed to initialize gorm")
-		}
-
-		defer db.Close()
-
-		// initialize datastore
-		db, err = protocoldb.InitMigrate(db, b.logger.Named("datastore"))
-		if err != nil {
-			return errors.Wrap(err, "failed to initialize datastore")
+			return nil, errors.Wrap(err, "failed to initialize gorm")
 		}
 
 		// initialize new protocol client
@@ -106,31 +76,19 @@ func (b *Bridge) run() error {
 			Logger: b.logger.Named("bertyprotocol"),
 		}
 
-		protocol, err = bertyprotocol.New(db, protocolOpts)
+		b.protocolClient, err = bertyprotocol.New(b.protocolDB, protocolOpts)
 		if err != nil {
-			return errors.Wrap(err, "failed to initialize protocol")
+			return nil, errors.Wrap(err, "failed to initialize protocol")
 		}
-
-		defer protocol.Close()
 	}
 
 	// setup chat
-	var chat bertychat.Client
 	{
-		var db *gorm.DB
-
+		var err error
 		// initialize sqlite3 gorm database
-		db, err = gorm.Open("sqlite3", ":memory:")
+		b.chatDB, err = gorm.Open("sqlite3", ":memory:")
 		if err != nil {
-			return errors.Wrap(err, "failed to initialize gorm")
-		}
-
-		defer db.Close()
-
-		// initialize datastore
-		db, err = chatdb.InitMigrate(db, b.logger.Named("datastore"))
-		if err != nil {
-			return errors.Wrap(err, "failed to initialize datastore")
+			return nil, errors.Wrap(err, "failed to initialize gorm")
 		}
 
 		// initialize bertychat client
@@ -138,31 +96,44 @@ func (b *Bridge) run() error {
 			Logger: b.logger.Named("bertychat"),
 		}
 
-		chat, err = bertychat.New(db, protocol, chatOpts)
+		b.chatClient, err = bertychat.New(b.chatDB, b.protocolClient, chatOpts)
 		if err != nil {
-			return errors.Wrap(err, "failed to initialize chat")
+			return nil, errors.Wrap(err, "failed to initialize chat")
 		}
-
-		defer chat.Close()
-
 	}
 
 	// register service
-	bertychat.RegisterAccountServer(b.grpcServer, chat)
+	bertychat.RegisterAccountServer(b.grpcServer, b.chatClient)
 
-	// run
-	return b.serviceGroup.Run()
+	return b, nil
+}
+
+func setupLogger(level string) (*zap.Logger, error) {
+	config := zap.NewDevelopmentConfig()
+	config.DisableStacktrace = true
+	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	switch level {
+	case "warn":
+		config.Level.SetLevel(zap.WarnLevel)
+	case "info":
+		config.Level.SetLevel(zap.InfoLevel)
+	case "debug":
+		config.Level.SetLevel(zap.DebugLevel)
+	default:
+		return nil, fmt.Errorf("unsupported log level: %q", level)
+	}
+	return config.Build()
 }
 
 // Start bridge
 func (b *Bridge) Start() {
 	b.logger.Debug("starting bridge")
 	go func() {
-		b.cerr <- b.run()
+		b.cerr <- b.workers.Run()
 	}()
 }
 
-func (b *Bridge) isStopped() bool {
+func (b *Bridge) isClosed() bool {
 	select {
 	case <-b.cclose:
 		return true
@@ -171,20 +142,20 @@ func (b *Bridge) isStopped() bool {
 	}
 }
 
-// Stop bridge, once the bridge is stopped you will not be able to start it
+// Close bridge, once the bridge is closed you will not be able to start it
 // again until you create a new bridge instance
-func (b *Bridge) Stop() (err error) {
-	// is bridge stopped
-	if b.isStopped() {
-		return errors.New("bridge is not running or has already been stopped")
+func (b *Bridge) Close() (err error) {
+	// is bridge closed
+	if b.isClosed() {
+		return ErrNotRunning
 	}
 
-	b.logger.Warn("stopping bridge")
+	b.logger.Info("bridge.Close called")
 
 	// send close signal
 	b.once.Do(func() { close(b.cclose) })
 
-	// set stop timeout
+	// set close timeout
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*4)
 	defer cancel()
 
@@ -195,23 +166,29 @@ func (b *Bridge) Stop() (err error) {
 		err = ctx.Err()
 	}
 
-	if err == ErrInterrupted {
-		return nil
+	// close clients and dbs after listeners
+	b.chatClient.Close()
+	b.chatDB.Close()
+	b.protocolClient.Close()
+	b.protocolDB.Close()
+
+	if err != ErrInterrupted {
+		return errors.Wrap(err, "failed close bridge gracefully")
 	}
 
-	return errors.Wrap(err, "failed stop bridge gracefully")
+	return nil
 }
 
-// RegisterGRPCService start a new grpc listener
+// AddGRPCListener start a new grpc listener
 // `:0` will listen on localhost with a random port
 // Return current listening port on success
-func (b *Bridge) RegisterGRPCService(addr string) (string, error) {
+func (b *Bridge) AddGRPCListener(addr string) (string, error) {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to listen")
 	}
 
-	b.serviceGroup.Add(func() error {
+	b.workers.Add(func() error {
 		b.logger.Info("starting grpc server", zap.String("addr", l.Addr().String()))
 		return b.grpcServer.Serve(l)
 	}, func(error) {
@@ -223,10 +200,10 @@ func (b *Bridge) RegisterGRPCService(addr string) (string, error) {
 	return l.Addr().String(), nil
 }
 
-// RegisterGRPCWebService start a new grpc listener
+// AddGRPCWebListener start a new grpc listener
 // `:0` will listen on localhost with a random port
 // Return current listening port on success
-func (b *Bridge) RegisterGRPCWebService(addr string) (string, error) {
+func (b *Bridge) AddGRPCWebListener(addr string) (string, error) {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to listen")
@@ -276,7 +253,7 @@ func (b *Bridge) RegisterGRPCWebService(addr string) (string, error) {
 		Handler: handler,
 	}
 
-	b.serviceGroup.Add(func() error {
+	b.workers.Add(func() error {
 		b.logger.Info("starting grpc web server", zap.String("addr", l.Addr().String()))
 		return s.Serve(l)
 	}, func(error) {
@@ -306,7 +283,7 @@ func (b *Bridge) NewGRPCClient() (client *Client, err error) {
 		grpc.WithContextDialer(dialer), // set pipe dialer
 	}
 
-	b.serviceGroup.Add(func() error {
+	b.workers.Add(func() error {
 		return b.grpcServer.Serve(listener)
 	}, func(error) {
 		listener.Close()
@@ -314,20 +291,5 @@ func (b *Bridge) NewGRPCClient() (client *Client, err error) {
 
 	grpcClient, err = grpc.Dial("pipe", dialOpts...)
 	client = &Client{grpcClient}
-	return
-}
-
-type Client struct {
-	grpcClient *grpc.ClientConn
-}
-
-// UnaryRequest request make an unary request to the given method.
-// the request need to be already serialized
-func (c *Client) UnaryRequest(method string, req []byte) (res []byte, err error) {
-	codec := bridgeutil.NewLazyCodec()
-	in := bridgeutil.NewLazyMessage().FromBytes(req)
-	out := bridgeutil.NewLazyMessage()
-	err = c.grpcClient.Invoke(context.Background(), method, in, out, grpc.ForceCodec(codec))
-	res = out.Bytes()
 	return
 }
