@@ -77,8 +77,8 @@ fclean:
 .PHONY: pkg
 pkg: name ?= example
 pkg: export PWD := $(PWD)
-pkg: $(mod)
-	lerna create @berty-tech/$(name) \
+pkg: deps
+	$(lerna) create @berty-tech/$(name) \
 		--access restricted \
 		--private \
 		--license '$(license)' \
@@ -91,7 +91,7 @@ pkg: $(mod)
 rnpkg: name ?= example
 rnpkg: pascal-name = $(shell echo $(name) | $(caser) --pascal)
 rnpkg: export PWD := $(PWD)
-rnpkg: $(mod)
+rnpkg: deps
 	cd $(PWD)/packages \
 		&& create-react-native-module \
 			--platforms ios,android \
