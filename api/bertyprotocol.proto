@@ -269,49 +269,44 @@ message StreamManagerAcceptReply {}
 // Group
 
 message GroupCreateRequest {
-  bytes pinning_service_id = 1
-  repeated bytes contact_ids = 2
-  bytes metadata = 3
+  bytes pinning_service_id = 1 [(gogoproto.customname) = "PinningServiceID"];
+  repeated bytes contact_ids = 2 [(gogoproto.customname) = "ContactIDs"];
+  bytes metadata = 3;
 };
 message GroupCreateReply {
-  bytes group_id = 1
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
 };
 
 message GroupGenerateInviteLinkRequest {
-  bytes group_id = 1
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
 };
 message GroupGenerateInviteLinkReply {
-  bytes inviter_pub_key = 1
-  bytes invitation_priv_key = 2
-  bytes invitation_pub_key_signature = 3
+  bytes inviter_member_pub_key = 1;
+  bytes invitation_priv_key = 2;
+  bytes invitation_pub_key_signature = 3;
 
-  bytes group_id = 4
-  bytes group_shared_secret = 5
-  bytes group_messages_log_cid = 6
-  bytes group_members_log_cid = 7
-  bytes group_secrets_log_cid = 8
-  bytes group_settings_log_cid = 9
+  uint32 group_version = 4;
+  bytes group_id = 5 [(gogoproto.customname) = "GroupID"];
+  bytes group_shared_secret = 6;
 };
 
 message GroupLeaveRequest {
-  bytes group_id = 1
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
 };
 message GroupLeaveReply {};
 
 message GroupListRequest {};
-message GroupListReply {
-  repeated protocolmodel.Group groups = 1;
-};
+message GroupListReply {};
 
 // Should we use 4 methods bellow for group settings (display name, etc...)
 // and member settings (edit own display name, avatar, etc...)?
 message GroupGetSettingsRequest {
-  bytes group_id = 1;
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
 };
 message GroupGetSettingsReply {};
 
 message GroupEditSettingsRequest {
-  bytes group_id = 1;
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
 
   // Settings
 };
@@ -339,19 +334,19 @@ message GroupPubSubTopicSubscribeReply {};
 // Group Invitation
 
 message GroupInvitationCreateRequest {
-  bytes group_id = 1
-  repeated bytes contact_id = 2
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+  repeated bytes contact_id = 2 [(gogoproto.customname) = "ContactID"];
 };
 message GroupInvitationCreateReply {};
 
 message GroupInvitationAcceptRequest {
-  bytes invitation_id = 1
-  bytes member_metadata = 2 // Display name, avatar, bind real identity toggle
+  bytes invitation_id = 1 [(gogoproto.customname) = "InvitationID"];
+  bytes member_metadata = 2; // Display name, avatar, bind real identity toggle, etc...
 };
 message GroupInvitationAcceptReply {};
 
 message GroupInvitationDiscardRequest {
-  bytes invitation_id = 1
+  bytes invitation_id = 1 [(gogoproto.customname) = "InvitationID"];
 };
 message GroupInvitationDiscardReply {};
 

@@ -111,9 +111,47 @@
       "type": "object"
     },
     "protocolGroupCreateReply": {
+      "type": "object",
+      "properties": {
+        "group_id": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "protocolGroupEditSettingsReply": {
       "type": "object"
     },
     "protocolGroupGenerateInviteLinkReply": {
+      "type": "object",
+      "properties": {
+        "inviter_member_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "invitation_priv_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "invitation_pub_key_signature": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_version": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "group_id": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_shared_secret": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "protocolGroupGetSettingsReply": {
       "type": "object"
     },
     "protocolGroupInvitationAcceptReply": {

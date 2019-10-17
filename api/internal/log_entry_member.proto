@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "berty.tech/go/internal/group";
+
+message MemberEntryEnvelope {
+  bytes encrypted_member_payload = 1;
+  bytes member_payload_signature = 2;
+}
+
+message MemberEntryPayload {
+  bytes member_pub_key = 1;
+  bytes member_device_pub_key = 2;
+  bytes member_device_pub_key_signature = 3;
+
+  bytes inviter_member_pub_key = 4;
+  bytes invitation_pub_key = 5;
+  bytes invitation_pub_key_signature = 6;
+}
