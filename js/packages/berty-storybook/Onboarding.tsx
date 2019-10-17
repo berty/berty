@@ -6,6 +6,7 @@ import {
   ActivityIndicator as Spinner,
 } from 'react-native'
 import { Text, Button, Layout, Input } from 'react-native-ui-kitten'
+import { Translation } from 'react-i18next'
 import { Grid, Row, Col } from 'react-native-easy-grid'
 import Swiper from 'react-native-swiper'
 import { Card, TouchableCard } from '@berty-tech/shared-storybook'
@@ -25,28 +26,34 @@ const _styles = StyleSheet.create({
 
 export const GetStarted: React.FC<{
   selectMode?: Navigation
-}> = ({ selectMode }) => (
-  <Layout style={[styles.flex]}>
-    <Grid>
-      <Row size={5} />
-      <Row size={2}>
-        <Col>
-          <Text style={[styles.textCenter, styles.padding]}>
-            The secure peer-to-peer messaging app that works with or without
-            internet access, cellular data or trust in the network
-          </Text>
-        </Col>
-      </Row>
-      <Row size={2}>
-        <Col>
-          <Button style={[styles.center]} onPress={selectMode}>
-            GET STARTED
-          </Button>
-        </Col>
-      </Row>
-    </Grid>
-  </Layout>
-)
+}> = ({ selectMode }) => {
+  return (
+    <Translation>
+      {(t, { i18n }) => (
+        <Layout style={[styles.flex]}>
+          <Grid>
+            <Row size={5} />
+            <Row size={2}>
+              <Col>
+                <Text style={[styles.textCenter, styles.padding]}>
+                  {t('getstarted')}
+                </Text>
+              </Col>
+            </Row>
+            <Row size={2}>
+              <Col>
+                <Button style={[styles.center]} onPress={selectMode}>
+                  GET STARTED
+                </Button>
+              </Col>
+            </Row>
+          </Grid>
+        </Layout>
+      )
+      }
+    </Translation>
+  );
+}
 
 export const SelectMode: React.FC<{
   privacy?: Navigation
