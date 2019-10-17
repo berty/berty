@@ -995,6 +995,19 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@berty-tech/babel-preset@file:./packages/babel-preset":
+  version "0.0.0"
+  dependencies:
+    "@babel/core" "^7.6.2"
+    "@babel/preset-typescript" "^7.6.0"
+    metro-react-native-babel-preset "^0.56.0"
+
+"@berty-tech/eslint-config@file:./packages/eslint-config":
+  version "0.0.0"
+
+"@berty-tech/prettier-config@file:./packages/prettier-config":
+  version "0.0.0"
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.3.tgz#099139eaec7ebf07a27c1786a3ff64f39464d2ef"

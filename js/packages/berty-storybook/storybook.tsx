@@ -1,9 +1,13 @@
 import { ApplicationProvider } from 'react-native-ui-kitten'
 import { linkTo } from '@storybook/addon-links'
 import { mapping, light } from '@eva-design/eva'
-import React from 'react'
-import { storiesOf, addParameters } from '@storybook/react-native'
-import { View, Button, Text } from 'react-native';
+import React, { useState } from 'react'
+import { storiesOf } from '@storybook/react-native'
+import { View, Button } from 'react-native';
+import {
+  Layout,
+  Select,
+} from 'react-native-ui-kitten';
 import { promiseResolved, fakeRequests, fakeConversations } from './faker'
 import * as Onboarding from './Onboarding'
 import * as Main from './Main'
@@ -65,19 +69,19 @@ stories
 addons.register('i18n', () => {
   const channel = addons.getChannel();
   addons.addPanel('i18n', {
-      title: 'i18n',
+      title: 'language',
       // eslint-disable-next-line react/prop-types
       render: () => React.createElement(() => {
-          return (
-              <View>
-                  <Button title="en" onPress={() => i18n.changeLanguage('en')}>
-                      En
-                  </Button>
-                  <Button title="fr" onPress={() => i18n.changeLanguage('fr')}>
-                      Fr
-                  </Button>
-              </View>
-          );
-      }), paramKey: 'i18n',
+        return (
+            <View>
+                <Button title="en" onPress={() => i18n.changeLanguage('en')}>
+                    En
+                </Button>
+                <Button title="fr" onPress={() => i18n.changeLanguage('fr')}>
+                    Fr
+                </Button>
+            </View>
+        );
+    }), paramKey: 'i18n',
   });
 });
