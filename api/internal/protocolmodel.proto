@@ -1,0 +1,197 @@
+syntax = "proto3";
+
+package berty.protocolmodel;
+
+import "github.com/golang/protobuf/ptypes/timestamp/timestamp.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option go_package = "berty.tech/go/internal/protocoldb";
+
+option (gogoproto.benchgen_all) = false;
+option (gogoproto.compare_all) = false;
+option (gogoproto.description_all) = false;
+option (gogoproto.enum_stringer_all) = false;
+option (gogoproto.enumdecl_all) = true;
+option (gogoproto.equal_all) = false;
+option (gogoproto.face_all) = false;
+option (gogoproto.gogoproto_import) = false;
+option (gogoproto.goproto_enum_prefix_all) = true;
+option (gogoproto.goproto_enum_stringer_all) = false;
+option (gogoproto.goproto_extensions_map_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.goproto_registration) = false;
+//option (gogoproto.goproto_sizecache_all) = false;
+option (gogoproto.goproto_stringer_all) = false;
+//option (gogoproto.goproto_unkeyed_all) = false;
+option (gogoproto.goproto_unrecognized_all) = false;
+option (gogoproto.gostring_all) = false;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.messagename_all) = false;
+option (gogoproto.onlyone_all) = false;
+option (gogoproto.populate_all) = false;
+option (gogoproto.protosizer_all) = false;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.stable_marshaler_all) = false;
+option (gogoproto.stringer_all) = true;
+option (gogoproto.testgen_all) = false;
+option (gogoproto.typedecl_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.unsafe_marshaler_all) = false;
+option (gogoproto.unsafe_unmarshaler_all) = false;
+option (gogoproto.verbose_equal_all) = false;
+
+message GroupInfo { // group clashes with reserved SQL keyword
+  enum GroupAudience {
+    Undefined = 0;
+    OneToOne = 1;
+    Group = 2;
+    Self = 3;
+  }
+
+  // Fields
+  // - Group details/meta
+  bytes group_pub_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  bytes shared_secret = 2;
+  bytes metadata = 3;
+  GroupAudience audience = 4 [(gogoproto.moretags) = "gorm:\"index\""];
+  uint32 version = 5;
+  // - Own secrets
+  bytes self_priv_key_account = 6;
+  bytes self_priv_key_device = 7;
+  bytes self_inviter_pub_key = 8;
+  // - OrbitDB current log positions
+  bytes orbitdb_current_cid_message = 9 [(gogoproto.customname) = "OrbitDBCurrentCIDMessage"];
+  bytes orbitdb_current_cid_secret = 10 [(gogoproto.customname) = "OrbitDBCurrentCIDSecret"];
+  bytes orbitdb_current_cid_setting = 11 [(gogoproto.customname) = "OrbitDBCurrentCIDSetting"];
+  bytes orbitdb_current_cid_member = 12 [(gogoproto.customname) = "OrbitDBCurrentCIDMember"];
+
+  // Relation
+  repeated GroupMember members = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_pub_key\""];
+
+  // GORM meta
+  google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 99 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+message GroupIncomingRequest {
+  // Fields
+  bytes group_pub_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  bytes inviter_member_pub_key = 2;
+  bytes invitation_sig = 3;
+  bytes invitation_priv_key = 4;
+  bytes group_shared_secret = 5;
+  bytes group_version = 6;
+  bytes essential_metadata = 7;
+  bytes inviter_contact_pub_key = 9;
+
+  // Relations
+  Contact inviter_contact = 8 [(gogoproto.moretags) = "gorm:\"foreignkey:inviter_contact_pub_key\""];
+
+  // GORM meta
+  google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 99 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+message GroupMember {
+  // Fields
+  bytes group_member_pub_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  bytes group_pub_key = 2 [(gogoproto.moretags) = "gorm:\"not null\""];
+  bytes inviter_pub_key = 3; // Will be null for first member of the group
+  bytes contact_account_pub_key = 4;
+  bytes contact_account_binding_proof = 5;
+  bytes metadata = 6;
+
+  // Relations
+  repeated GroupMemberDevice devices = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_member_pub_key\""];
+  GroupInfo group_info = 81 [(gogoproto.moretags) = "gorm:\"foreignkey:group_pub_key\"", (gogoproto.nullable) = false];
+  GroupMember inviter = 82 [(gogoproto.moretags) = "gorm:\"foreignkey:inviter_pub_key\""];
+  Contact contact = 83 [(gogoproto.moretags) = "gorm:\"foreignkey:contact_account_pub_key\""];
+
+  // GORM meta
+  google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 99 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+message GroupMemberDevice {
+  // Fields
+  bytes group_member_device_pub_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  bytes group_member_pub_key = 2;
+  bytes derivation_state = 3;
+  uint64 derivation_counter = 4;
+  bytes derivation_next_hotp = 5 [(gogoproto.moretags) = "gorm:\"index\""];
+
+  // Relations
+  GroupMember group_member = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_member_pub_key\"", (gogoproto.nullable) = false];
+
+  // GORM meta
+  google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 99 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+message Contact {
+  enum TrustLevel {
+    Unknown = 0;
+    Contact = 1;
+    TrustedContact = 2;
+    IgnoredContact = 3;
+  }
+
+  // Fields
+  bytes account_pub_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  bytes group_pub_key = 2;
+  bytes binder_pub_key = 3;
+  TrustLevel trust_level = 4 [(gogoproto.moretags) = "gorm:\"index\""];
+  bytes metadata = 5;
+
+  // Relations
+  GroupInfo group_info = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_pub_key\""];
+
+  // GORM meta
+  google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 99 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+message Message {
+  // Fields
+  bytes group_pub_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  bytes entry_cid = 2 [(gogoproto.moretags) = "gorm:\"index\""];
+  bytes message_key = 3;
+  bytes group_member_device_pub_key = 4;
+
+  // Relations
+  GroupMemberDevice device = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_member_device_pub_key\""];
+
+  // GORM meta
+  google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 99 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+message MyselfAccount {
+  // Fields
+  bytes account_pub_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  bytes account_binding_priv_key = 2;
+  bytes shared_secret = 3;
+  bytes public_rendezvous_point_seed = 4;
+  bool public_rendezvous_point_enabled = 5;
+  bytes sig_chain = 6;
+
+  // Relations
+  repeated MyselfDevice devices = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:account_pub_key\""];
+
+  // GORM meta
+  google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 99 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+message MyselfDevice {
+  // Fields
+  bytes device_priv_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  bytes account_pub_key = 2;
+
+  // Relations
+  MyselfAccount account = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:account_pub_key\"", (gogoproto.nullable) = false];
+
+  // GORM meta
+  google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 99 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
