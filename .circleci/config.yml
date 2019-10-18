@@ -23,6 +23,8 @@ jobs:
       - run: make tidy
       - moul/install_golangci-lint
       - run: PATH=$PATH:$(pwd)/bin make lint
+      - codecov/upload:
+          file: coverage.txt
   go-docker:
     working_directory: /go/src/berty.tech/go
     docker:
