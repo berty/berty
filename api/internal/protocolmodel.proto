@@ -59,14 +59,16 @@ message GroupInfo { // group clashes with reserved SQL keyword
   bytes self_priv_key_account = 6;
   bytes self_priv_key_device = 7;
   bytes self_inviter_pub_key = 8;
+  bytes inviter_contact_pub_key = 9;
   // - OrbitDB current log positions
-  bytes orbitdb_current_cid_message = 9 [(gogoproto.customname) = "OrbitDBCurrentCIDMessage"];
-  bytes orbitdb_current_cid_secret = 10 [(gogoproto.customname) = "OrbitDBCurrentCIDSecret"];
-  bytes orbitdb_current_cid_setting = 11 [(gogoproto.customname) = "OrbitDBCurrentCIDSetting"];
-  bytes orbitdb_current_cid_member = 12 [(gogoproto.customname) = "OrbitDBCurrentCIDMember"];
+  bytes orbitdb_current_cid_message = 10 [(gogoproto.customname) = "OrbitDBCurrentCIDMessage"];
+  bytes orbitdb_current_cid_secret = 11 [(gogoproto.customname) = "OrbitDBCurrentCIDSecret"];
+  bytes orbitdb_current_cid_setting = 12 [(gogoproto.customname) = "OrbitDBCurrentCIDSetting"];
+  bytes orbitdb_current_cid_member = 13 [(gogoproto.customname) = "OrbitDBCurrentCIDMember"];
 
   // Relation
   repeated GroupMember members = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_pub_key\""];
+  Contact inviter = 81 [(gogoproto.moretags) = "gorm:\"foreignkey:inviter_contact_pub_key\""];
 
   // GORM meta
   google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
@@ -131,20 +133,22 @@ message GroupMemberDevice {
 message Contact {
   enum TrustLevel {
     Unknown = 0;
-    Contact = 1;
-    TrustedContact = 2;
-    IgnoredContact = 3;
+    Untrusted = 1;
+    Accepted = 2;
+    Trusted = 3;
+    UltimateTrust = 4;
   }
 
   // Fields
   bytes account_pub_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
-  bytes group_pub_key = 2;
+  bytes one_to_one_group_pub_key = 2;
   bytes binder_pub_key = 3;
   TrustLevel trust_level = 4 [(gogoproto.moretags) = "gorm:\"index\""];
   bytes metadata = 5;
+  bool blocked = 6;
 
   // Relations
-  GroupInfo group_info = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_pub_key\""];
+  GroupInfo one_to_one_group = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_pub_key\""];
 
   // GORM meta
   google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
@@ -185,8 +189,9 @@ message MyselfAccount {
 
 message MyselfDevice {
   // Fields
-  bytes device_priv_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
-  bytes account_pub_key = 2;
+  bytes device_pub_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  bytes device_priv_key = 2;
+  bytes account_pub_key = 3;
 
   // Relations
   MyselfAccount account = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:account_pub_key\"", (gogoproto.nullable) = false];
