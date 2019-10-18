@@ -48,7 +48,7 @@ lint: go.lint
 autotest: ibazel.unittest
 
 .PHONY: unittest
-unittest: bazel.unittest
+unittest: go.unittest
 
 .PHONY: generate
 generate: pb.generate
