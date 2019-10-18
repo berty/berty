@@ -10,7 +10,9 @@ const path = require('path')
 const glob = require('glob')
 
 const watchFolders = [
-  ...glob.sync(path.join(__dirname, '../*-storybook')),
+  ...glob.sync(path.join(__dirname, '../../node_modules/@berty-tech/*'), {
+    realpath: true,
+  }),
   path.join(__dirname, './node_modules'),
   path.join(__dirname, '../../node_modules'),
 ]
