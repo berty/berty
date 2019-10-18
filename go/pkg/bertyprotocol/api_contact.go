@@ -1,15 +1,19 @@
 package bertyprotocol
 
-import "context"
+import (
+	"context"
+
+	"berty.tech/go/pkg/errcode"
+)
 
 func (c *client) ContactGet(context.Context, *ContactGetRequest) (*ContactGetReply, error) {
-	return nil, ErrNotImplemented
+	return nil, errcode.ErrNotImplemented
 }
 
 func (c *client) ContactList(*ContactListRequest, Instance_ContactListServer) error {
-	return ErrNotImplemented
+	return errcode.ErrNotImplemented
 }
 
 func (c *client) ContactRemove(context.Context, *ContactRemoveRequest) (*ContactRemoveReply, error) {
-	return nil, ErrNotImplemented
+	return nil, errcode.ErrNotImplemented
 }

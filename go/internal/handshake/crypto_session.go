@@ -4,9 +4,8 @@ import (
 	"encoding/binary"
 
 	"berty.tech/go/internal/crypto"
-
+	"berty.tech/go/pkg/errcode"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-
 	"golang.org/x/crypto/nacl/box"
 )
 
@@ -32,7 +31,7 @@ func (h *handshakeSession) SetOtherKeys(sign p2pcrypto.PubKey, box []byte) error
 	}
 
 	if sign.Type() != SupportedKeyType {
-		return ErrInvalidKeyType
+		return errcode.ErrHandshakeInvalidKeyType
 	}
 
 	h.otherSigningPublicKey = sign
@@ -51,7 +50,7 @@ func (h *handshakeSession) GetPublicKeys() (sign p2pcrypto.PubKey, box []byte) {
 
 func computeValueToProvePubKey(keyToProve p2pcrypto.PubKey, receiverSigKey *[32]byte) ([]byte, error) {
 	if keyToProve == nil || receiverSigKey == nil {
-		return nil, ErrParams
+		return nil, errcode.ErrHandshakeParams
 	}
 
 	keyToProveBytes, err := keyToProve.Raw()
@@ -66,7 +65,7 @@ func computeValueToProvePubKey(keyToProve p2pcrypto.PubKey, receiverSigKey *[32]
 
 func computeValueToProveDevicePubKeyAndSigChain(keyToProve *[32]byte, chain crypto.SigChainManager) ([]byte, error) {
 	if keyToProve == nil || chain == nil {
-		return nil, ErrParams
+		return nil, errcode.ErrHandshakeParams
 	}
 
 	sigChainBytes, err := chain.Marshal()
@@ -82,7 +81,7 @@ func computeValueToProveDevicePubKeyAndSigChain(keyToProve *[32]byte, chain cryp
 func (h *handshakeSession) ProveOtherKey() ([]byte, error) {
 	// Step 3a (out) : sig_a1(B·b1)
 	if h.accountKeyToProve == nil {
-		return nil, ErrSessionInvalid
+		return nil, errcode.ErrHandshakeSessionInvalid
 	}
 
 	signedValue, err := computeValueToProvePubKey(h.accountKeyToProve, h.otherBoxPublicKey)
@@ -122,7 +121,7 @@ func (h *handshakeSession) CheckOwnKeyProof(sig []byte) error {
 	}
 
 	if !ok {
-		return ErrInvalidSignature
+		return errcode.ErrHandshakeInvalidSignature
 	}
 
 	return nil
@@ -157,7 +156,7 @@ func (h *handshakeSession) CheckOtherKeyProof(sig []byte, chain crypto.SigChainM
 	}
 
 	if !ok {
-		return ErrInvalidSignature
+		return errcode.ErrHandshakeInvalidSignature
 	}
 
 	entries := chain.ListCurrentPubKeys()
@@ -167,7 +166,7 @@ func (h *handshakeSession) CheckOtherKeyProof(sig []byte, chain crypto.SigChainM
 		}
 	}
 
-	return ErrKeyNotInSigChain
+	return errcode.ErrHandshakeKeyNotInSigChain
 }
 
 func (h *handshakeSession) ProveOtherKnownAccount() ([]byte, error) {
@@ -198,7 +197,7 @@ func (h *handshakeSession) CheckOwnKnownAccountProof(attemptedDeviceKey p2pcrypt
 	}
 
 	if !ok {
-		return ErrInvalidSignature
+		return errcode.ErrHandshakeInvalidSignature
 	}
 
 	return nil
@@ -206,7 +205,7 @@ func (h *handshakeSession) CheckOwnKnownAccountProof(attemptedDeviceKey p2pcrypt
 
 func (h *handshakeSession) Encrypt(data []byte) ([]byte, error) {
 	if h.otherBoxPublicKey == nil || h.selfBoxPrivateKey == nil {
-		return nil, ErrSessionInvalid
+		return nil, errcode.ErrHandshakeSessionInvalid
 	}
 
 	nonce := h.getNonce()
@@ -220,14 +219,14 @@ func (h *handshakeSession) Encrypt(data []byte) ([]byte, error) {
 
 func (h *handshakeSession) Decrypt(data []byte) ([]byte, error) {
 	if h.otherBoxPublicKey == nil || h.selfBoxPrivateKey == nil {
-		return nil, ErrSessionInvalid
+		return nil, errcode.ErrHandshakeSessionInvalid
 	}
 
 	nonce := h.getNonce()
 
 	out, ok := box.Open(nil, data, &nonce, h.otherBoxPublicKey, h.selfBoxPrivateKey)
 	if !ok {
-		return nil, ErrDecrypt
+		return nil, errcode.ErrHandshakeDecrypt
 	}
 
 	h.incrementNonce()

@@ -1,11 +1,15 @@
 package bertyprotocol
 
-import "context"
+import (
+	"context"
+
+	"berty.tech/go/pkg/errcode"
+)
 
 func (c *client) InstanceExportData(context.Context, *InstanceExportDataRequest) (*InstanceExportDataReply, error) {
-	return nil, ErrNotImplemented
+	return nil, errcode.ErrNotImplemented
 }
 
 func (c *client) InstanceGetConfiguration(context.Context, *InstanceGetConfigurationRequest) (*InstanceGetConfigurationReply, error) {
-	return nil, ErrNotImplemented
+	return nil, errcode.ErrNotImplemented
 }

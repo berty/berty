@@ -1,15 +1,19 @@
 package bertychat
 
-import context "context"
+import (
+	"context"
+
+	"berty.tech/go/pkg/errcode"
+)
 
 func (c *client) ConversationInvitationAccept(context.Context, *ConversationInvitationAcceptRequest) (*ConversationInvitationAcceptReply, error) {
-	return nil, ErrNotImplemented
+	return nil, errcode.ErrNotImplemented
 }
 
 func (c *client) ConversationInvitationCreate(context.Context, *ConversationInvitationCreateRequest) (*ConversationInvitationCreateReply, error) {
-	return nil, ErrNotImplemented
+	return nil, errcode.ErrNotImplemented
 }
 
 func (c *client) ConversationInvitationDiscard(context.Context, *ConversationInvitationDiscardRequest) (*ConversationInvitationDiscardReply, error) {
-	return nil, ErrNotImplemented
+	return nil, errcode.ErrNotImplemented
 }

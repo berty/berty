@@ -8,10 +8,9 @@ import (
 	"encoding/binary"
 	"time"
 
-	"go.uber.org/zap"
-
+	"berty.tech/go/pkg/errcode"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 type Opts struct {
@@ -21,12 +20,12 @@ type Opts struct {
 func InitNewIdentity(ctx context.Context, opts *Opts) (Manager, p2pcrypto.PrivKey, error) {
 	privKey, err := GeneratePrivateKey()
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "unable to generate a private key")
+		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
 	sigChain, err := InitSigChain(privKey, opts)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "unable to get initial sig chain entry")
+		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
 	return NewCrypto(privKey, sigChain, opts), privKey, nil
@@ -44,19 +43,19 @@ func OpenIdentity(ctx context.Context, key p2pcrypto.PrivKey, chain SigChainMana
 func InitSigChain(key p2pcrypto.PrivKey, opts *Opts) (SigChainManager, error) {
 	accountKey, err := GeneratePrivateKey()
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get generate a private key")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	sigChain := NewSigChain(opts)
 
 	_, err = sigChain.Init(accountKey)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to initiate sig chain")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	_, err = sigChain.AddEntry(accountKey, key.GetPublic(), opts)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to add a sig chain entry")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return sigChain, nil
@@ -65,7 +64,7 @@ func InitSigChain(key p2pcrypto.PrivKey, opts *Opts) (SigChainManager, error) {
 func GeneratePrivateKey() (p2pcrypto.PrivKey, error) {
 	key, _, err := p2pcrypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to generate a key pair")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return key, nil
@@ -84,7 +83,7 @@ func GetRendezvousPointForTime(id, seed []byte, date time.Time) ([]byte, error) 
 	binary.BigEndian.PutUint64(buf, uint64(date.Unix()))
 
 	if _, err := mac.Write(buf); err != nil {
-		return nil, errors.Wrap(err, "unable to write to buffer")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	sum := mac.Sum(nil)

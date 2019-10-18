@@ -3,10 +3,9 @@ package crypto
 import (
 	"time"
 
-	"go.uber.org/zap"
-
+	"berty.tech/go/pkg/errcode"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 var theFuture = time.Date(2199, time.December, 31, 0, 0, 0, 0, time.UTC)
@@ -19,13 +18,13 @@ type wrappedSigChain struct {
 func (m *wrappedSigChain) GetInitialEntry() (*SigChainEntry, error) {
 	entries := m.ListEntries()
 	if len(entries) == 0 {
-		return nil, ErrSigChainNoEntries
+		return nil, errcode.ErrSigChainNoEntries
 	}
 
 	e := entries[0]
 
 	if e.EntryTypeCode != SigChainEntry_SigChainEntryTypeInitChain {
-		return nil, ErrSigChainInvalidEntryType
+		return nil, errcode.ErrSigChainInvalidEntryType
 	}
 
 	return e, nil
@@ -79,12 +78,12 @@ func (m *wrappedSigChain) ListCurrentPubKeys() []p2pcrypto.PubKey {
 
 func (m *wrappedSigChain) Init(privKey p2pcrypto.PrivKey) (*SigChainEntry, error) {
 	if len(m.Entries) > 0 {
-		return nil, ErrSigChainAlreadyInitialized
+		return nil, errcode.ErrSigChainAlreadyInitialized
 	}
 
 	subjectKeyBytes, err := privKey.GetPublic().Bytes()
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get subject key bytes")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return m.appendEntry(privKey, &SigChainEntry{
@@ -95,16 +94,16 @@ func (m *wrappedSigChain) Init(privKey p2pcrypto.PrivKey) (*SigChainEntry, error
 
 func (m *wrappedSigChain) AddEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey, opts *Opts) (*SigChainEntry, error) {
 	if !m.isKeyCurrentlyPresent(privKey.GetPublic(), opts) {
-		return nil, ErrSigChainPermission
+		return nil, errcode.ErrSigChainPermission
 	}
 
 	if m.isKeyCurrentlyPresent(pubKey, opts) {
-		return nil, ErrSigChainOperationAlreadyDone
+		return nil, errcode.ErrSigChainOperationAlreadyDone
 	}
 
 	subjectKeyBytes, err := pubKey.Bytes()
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get subject key bytes")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return m.appendEntry(privKey, &SigChainEntry{
@@ -115,16 +114,16 @@ func (m *wrappedSigChain) AddEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.P
 
 func (m *wrappedSigChain) RemoveEntry(privKey p2pcrypto.PrivKey, pubKey p2pcrypto.PubKey, opts *Opts) (*SigChainEntry, error) {
 	if !m.isKeyCurrentlyPresent(privKey.GetPublic(), opts) {
-		return nil, ErrSigChainPermission
+		return nil, errcode.ErrSigChainPermission
 	}
 
 	if !m.isKeyCurrentlyPresent(pubKey, opts) {
-		return nil, ErrSigChainOperationAlreadyDone
+		return nil, errcode.ErrSigChainOperationAlreadyDone
 	}
 
 	subjectKeyBytes, err := pubKey.Bytes()
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get subject key bytes")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return m.appendEntry(privKey, &SigChainEntry{
@@ -151,7 +150,7 @@ func (m *wrappedSigChain) appendEntry(privKey p2pcrypto.PrivKey, entry *SigChain
 
 	signerPubKeyBytes, err := privKey.GetPublic().Bytes()
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get signer key bytes")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	entry.CreatedAt = time.Now()
@@ -160,7 +159,7 @@ func (m *wrappedSigChain) appendEntry(privKey p2pcrypto.PrivKey, entry *SigChain
 
 	err = entry.Sign(privKey)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to sign entry")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	m.Entries = append(m.Entries, entry)

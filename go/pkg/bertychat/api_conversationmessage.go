@@ -1,19 +1,23 @@
 package bertychat
 
-import context "context"
+import (
+	"context"
+
+	"berty.tech/go/pkg/errcode"
+)
 
 func (c *client) ConversationMessageList(*ConversationMessageListRequest, Account_ConversationMessageListServer) error {
-	return ErrNotImplemented
+	return errcode.ErrNotImplemented
 }
 
 func (c *client) ConversationMessageSend(context.Context, *ConversationMessageSendRequest) (*ConversationMessageSendReply, error) {
-	return nil, ErrNotImplemented
+	return nil, errcode.ErrNotImplemented
 }
 
 func (c *client) ConversationMessageEdit(context.Context, *ConversationMessageEditRequest) (*ConversationMessageEditReply, error) {
-	return nil, ErrNotImplemented
+	return nil, errcode.ErrNotImplemented
 }
 
 func (c *client) ConversationMessageHide(context.Context, *ConversationMessageHideRequest) (*ConversationMessageHideReply, error) {
-	return nil, ErrNotImplemented
+	return nil, errcode.ErrNotImplemented
 }

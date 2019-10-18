@@ -3,8 +3,8 @@ package bertychat
 import (
 	"berty.tech/go/internal/chatdb"
 	"berty.tech/go/pkg/bertyprotocol"
+	"berty.tech/go/pkg/errcode"
 	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -45,7 +45,7 @@ func New(db *gorm.DB, protocol bertyprotocol.Client, opts Opts) (Client, error) 
 	var err error
 	client.db, err = chatdb.InitMigrate(client.db, client.logger.Named("datastore"))
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to initialize datastore")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return &client, nil

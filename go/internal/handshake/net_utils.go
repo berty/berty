@@ -1,14 +1,14 @@
 package handshake
 
 import (
+	"berty.tech/go/pkg/errcode"
 	ggio "github.com/gogo/protobuf/io"
-	"github.com/pkg/errors"
 )
 
 func encryptPayload(session *handshakeSession, payload *HandshakePayload) ([]byte, error) {
 	data, err := payload.Marshal()
 	if err != nil {
-		return nil, errors.Wrap(err, "can't marshal payload")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return session.Encrypt(data)
@@ -21,12 +21,12 @@ func writeEncryptedPayload(session *handshakeSession, writer ggio.WriteCloser, s
 	)
 
 	if payload == nil {
-		return ErrNoPayload
+		return errcode.ErrHandshakeNoPayload
 	}
 
 	data, err = encryptPayload(session, payload)
 	if err != nil {
-		return errors.Wrap(err, "can't encrypt payload")
+		return errcode.TODO.Wrap(err)
 	}
 
 	return writer.WriteMsg(&HandshakeFrame{
@@ -40,11 +40,11 @@ func decryptPayload(session *handshakeSession, payload []byte) (*HandshakePayloa
 
 	clear, err := session.Decrypt(payload)
 	if err != nil {
-		return nil, errors.Wrap(err, "can't decrypt payload")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	if err = instance.Unmarshal(clear); err != nil {
-		return nil, errors.Wrap(err, "can't unmarshal payload")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return instance, nil
