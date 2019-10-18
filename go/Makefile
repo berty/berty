@@ -41,6 +41,9 @@ dev: ibazel.daemon
 .PHONY: test
 test: unittest lint tidy
 
+.PHONY: lint
+lint: go.lint
+
 .PHONY: autotest
 autotest: ibazel.unittest
 
@@ -49,11 +52,6 @@ unittest: bazel.unittest
 
 .PHONY: generate
 generate: pb.generate
-
-.PHONY: lint
-lint: pb.generate
-	$(call check-program, golangci-lint)
-	golangci-lint run --verbose ./...
 
 .PHONY: tidy
 tidy: pb.generate
@@ -79,6 +77,11 @@ re: clean build
 ## Go rules (without bazel)
 ##
 
+.PHONY: go.lint
+go.lint: pb.generate
+	$(call check-program, golangci-lint)
+	golangci-lint run --verbose ./...
+
 .PHONY: nobazel.unittest
 go.unittest: pb.generate
 	$(call check-program, $(GO))
@@ -95,6 +98,12 @@ go.install: pb.generate
 
 SAMPLE_GAZELLE_GENERATED_FILE ?= pkg/bertyprotocol/BUILD.bazel # should be the path of a git-ignored bazel-generated file
 VENDOR_BAZEL_OVERRIDEN_FILES = vendor/github.com/spacemonkeygo/openssl/BUILD.bazel
+
+
+.PHONY: bazel.lint
+bazel.lint: pb.generate
+	$(call check-program, $(BAZEL))
+	$(BAZEL_WRAPPER) $(BAZEL_ARGS) run //:golangcilint
 
 .PHONY: bazel.build
 bazel.build: bazel.generate
