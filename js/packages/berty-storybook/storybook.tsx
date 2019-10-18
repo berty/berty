@@ -3,15 +3,12 @@ import { linkTo } from '@storybook/addon-links'
 import { mapping, light } from '@eva-design/eva'
 import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react-native'
-import { View, Button } from 'react-native';
-import {
-  Layout,
-  Select,
-} from 'react-native-ui-kitten';
+import { View, Button } from 'react-native'
+import { Layout, Select } from 'react-native-ui-kitten'
 import { promiseResolved, fakeRequests, fakeConversations } from './faker'
 import * as Onboarding from './Onboarding'
 import * as Main from './Main'
-import addons from '@storybook/addons';
+import addons from '@storybook/addons'
 
 import { I18nextProvider } from 'react-i18next'
 import i18n from '@berty-tech/berty-i18n'
@@ -67,21 +64,23 @@ stories
 
 // Addons
 addons.register('i18n', () => {
-  const channel = addons.getChannel();
+  const channel = addons.getChannel()
   addons.addPanel('i18n', {
-      title: 'language',
-      // eslint-disable-next-line react/prop-types
-      render: () => React.createElement(() => {
+    title: 'language',
+    // eslint-disable-next-line react/prop-types
+    render: () =>
+      React.createElement(() => {
         return (
-            <View>
-                <Button title="en" onPress={() => i18n.changeLanguage('en')}>
-                    En
-                </Button>
-                <Button title="fr" onPress={() => i18n.changeLanguage('fr')}>
-                    Fr
-                </Button>
-            </View>
-        );
-    }), paramKey: 'i18n',
-  });
-});
+          <View>
+            <Button title="en" onPress={() => i18n.changeLanguage('en')}>
+              En
+            </Button>
+            <Button title="fr" onPress={() => i18n.changeLanguage('fr')}>
+              Fr
+            </Button>
+          </View>
+        )
+      }),
+    paramKey: 'i18n',
+  })
+})

@@ -29,7 +29,7 @@ export const GetStarted: React.FC<{
 }> = ({ selectMode }) => {
   return (
     <Translation>
-      {t => (
+      {(t) => (
         <Layout style={[styles.flex]}>
           <Grid>
             <Row size={5} />
@@ -49,10 +49,9 @@ export const GetStarted: React.FC<{
             </Row>
           </Grid>
         </Layout>
-      )
-      }
+      )}
     </Translation>
-  );
+  )
 }
 
 export const SelectMode: React.FC<{
@@ -60,7 +59,7 @@ export const SelectMode: React.FC<{
   performance?: Navigation
 }> = ({ privacy, performance }) => (
   <Translation>
-    {t => (
+    {(t) => (
       <Layout style={[styles.flex]}>
         <SafeAreaView style={styles.flex}>
           <Text
@@ -102,7 +101,10 @@ export const SelectMode: React.FC<{
                 {t('onboarding.select-mode.performance.fast-message')}
               </Text>
             </TouchableCard>
-            <TouchableCard style={[styles.bgRed, styles.stretch]} onPress={privacy}>
+            <TouchableCard
+              style={[styles.bgRed, styles.stretch]}
+              onPress={privacy}
+            >
               <Text category="h5" style={[styles.textWhite]}>
                 {t('onboarding.select-mode.high-level.title')}
               </Text>
@@ -113,14 +115,19 @@ export const SelectMode: React.FC<{
                 {t('onboarding.select-mode.high-level.disable-push-notif')}
               </Text>
               <Text category="c1" style={[styles.textWhite]}>
-                {t('onboarding.select-mode.high-level.disable-local-peer-discovery')}
+                {t(
+                  'onboarding.select-mode.high-level.disable-local-peer-discovery'
+                )}
               </Text>
               <Text category="c1" style={[styles.textWhite]}>
                 {t('onboarding.select-mode.high-level.disable-contact-request')}
               </Text>
             </TouchableCard>
           </View>
-          <Text style={[styles.textCenter, styles.paddingVertical]} category="c1">
+          <Text
+            style={[styles.textCenter, styles.paddingVertical]}
+            category="c1"
+          >
             All this presets can be modified at any time in the settings
           </Text>
         </SafeAreaView>
@@ -138,39 +145,42 @@ const CreateYourAccount: React.FC<{
   const [, setErr] = useState(null)
   return (
     <Translation>
-      {t => (
+      {(t) => (
         <Card style={[styles.bgWhite, _styles.swiperCard]}>
-        <Text status="danger" style={styles.textRight}>
-          {t('onboarding.create-account.required')}
-        </Text>
-        <Text category="h4" style={[styles.paddingTop, styles.textCenter]}>
-          {t('onboarding.create-account.title')}
-        </Text>
-        <Text category="c1" style={[styles.paddingVertical, styles.textCenter]}>
-          {t('onboarding.create-account.desc')}
-        </Text>
-        <Input
-          placeholder={t('onboarding.create-account.placeholder')}
-          style={styles.marginTop}
-          onChangeText={setName}
-        />
-        <Button
-          style={styles.marginTop}
-          disabled={loading ? true : false}
-          onPress={async (): Promise<void> => {
-            try {
-              setLoading(true)
-              await submit({ name })
-              next()
-            } catch (err) {
-              setErr(err)
-            } finally {
-              setLoading(false)
-            }
-          }}
-        >
-          {loading ? '' : t('onboarding.create-account.button')}
-        </Button>
+          <Text status="danger" style={styles.textRight}>
+            {t('onboarding.create-account.required')}
+          </Text>
+          <Text category="h4" style={[styles.paddingTop, styles.textCenter]}>
+            {t('onboarding.create-account.title')}
+          </Text>
+          <Text
+            category="c1"
+            style={[styles.paddingVertical, styles.textCenter]}
+          >
+            {t('onboarding.create-account.desc')}
+          </Text>
+          <Input
+            placeholder={t('onboarding.create-account.placeholder')}
+            style={styles.marginTop}
+            onChangeText={setName}
+          />
+          <Button
+            style={styles.marginTop}
+            disabled={loading ? true : false}
+            onPress={async (): Promise<void> => {
+              try {
+                setLoading(true)
+                await submit({ name })
+                next()
+              } catch (err) {
+                setErr(err)
+              } finally {
+                setLoading(false)
+              }
+            }}
+          >
+            {loading ? '' : t('onboarding.create-account.button')}
+          </Button>
         </Card>
       )}
     </Translation>
@@ -179,7 +189,7 @@ const CreateYourAccount: React.FC<{
 
 const GeneratingYourKey: React.FC<{}> = () => (
   <Translation>
-    {t => (
+    {(t) => (
       <Card style={[styles.bgWhite, _styles.swiperCard]}>
         <Text />
         <Text category="h4" style={[styles.paddingTop, styles.textCenter]}>
@@ -199,7 +209,7 @@ const Notifications: React.FC<{
   next: Navigation
 }> = ({ submit, next }) => (
   <Translation>
-    {t => (
+    {(t) => (
       <>
         <Text
           category="h5"
@@ -210,7 +220,7 @@ const Notifications: React.FC<{
             styles.margin,
           ]}
         >
-        {t('onboarding.notifications.header')}
+          {t('onboarding.notifications.header')}
         </Text>
         <Card style={[styles.bgWhite, _styles.swiperCard]}>
           <Text status="success" style={styles.textRight}>
@@ -219,7 +229,10 @@ const Notifications: React.FC<{
           <Text category="h4" style={[styles.paddingTop, styles.textCenter]}>
             {t('onboarding.notifications.title')}
           </Text>
-          <Text category="c1" style={[styles.paddingVertical, styles.textCenter]}>
+          <Text
+            category="c1"
+            style={[styles.paddingVertical, styles.textCenter]}
+          >
             {t('onboarding.notifications.desc')}
           </Text>
           <Button
@@ -246,7 +259,6 @@ const Notifications: React.FC<{
         </Card>
       </>
     )}
-    
   </Translation>
 )
 
@@ -255,7 +267,7 @@ const Bluetooth: React.FC<{
   next: Navigation
 }> = ({ submit, next }) => (
   <Translation>
-    {t => (
+    {(t) => (
       <>
         <Text
           category="h5"
@@ -275,7 +287,10 @@ const Bluetooth: React.FC<{
           <Text category="h4" style={[styles.paddingTop, styles.textCenter]}>
             {t('onboarding.bluetooth.title')}
           </Text>
-          <Text category="c1" style={[styles.paddingVertical, styles.textCenter]}>
+          <Text
+            category="c1"
+            style={[styles.paddingVertical, styles.textCenter]}
+          >
             {t('onboarding.bluetooth.desc')}
           </Text>
           <Button
@@ -303,19 +318,21 @@ const Bluetooth: React.FC<{
       </>
     )}
   </Translation>
-  
 )
 
 const SetupFinished: React.FC<{ next: Navigation }> = ({ next }) => (
   <Translation>
-    {t => (
+    {(t) => (
       <>
         <Card style={[styles.bgWhite, _styles.swiperCard]}>
           <Text />
           <Text category="h4" style={[styles.paddingTop, styles.textCenter]}>
             {t('onboarding.setup-finished.title')}
           </Text>
-          <Text category="c1" style={[styles.paddingVertical, styles.textCenter]}>
+          <Text
+            category="c1"
+            style={[styles.paddingVertical, styles.textCenter]}
+          >
             {t('onboarding.setup-finished.desc')}
           </Text>
           <Button style={styles.marginTop} onPress={next}>
@@ -325,7 +342,6 @@ const SetupFinished: React.FC<{ next: Navigation }> = ({ next }) => (
       </>
     )}
   </Translation>
-  
 )
 
 export const Performance: React.FC<{
