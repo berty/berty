@@ -4,7 +4,8 @@ package bertychat
 // if you add new functions in this file, try to always put an annoying warning log message, as a reminder.
 
 import (
-	fmt "fmt"
+	"fmt"
+	"math/rand"
 
 	"berty.tech/go/pkg/chatmodel"
 	"github.com/brianvoe/gofakeit"
@@ -17,9 +18,9 @@ func fakeConversation(logger *zap.Logger) *chatmodel.Conversation {
 	created := gofakeit.Date()
 	updated := gofakeit.Date()
 	return &chatmodel.Conversation{
-		ID:        gofakeit.UUID(),
-		CreatedAt: &created,
-		UpdatedAt: &updated,
+		ID:        uint64(rand.Uint32())<<32 + uint64(rand.Uint32()),
+		CreatedAt: created,
+		UpdatedAt: updated,
 		Title:     fmt.Sprintf("%s %s", gofakeit.HackerIngverb(), gofakeit.HackerAdjective()),
 	}
 }

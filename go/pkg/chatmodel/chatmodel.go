@@ -7,15 +7,25 @@ func AllTables() []string {
 		"migrations",
 
 		// public
+		"device",
+		"contact",
 		"conversation",
-		"conversation_message",
+		"member",
+		"message",
+		"attachment",
+		"reaction",
 	}
 }
 
 // AllModels returns the full list of models
 func AllModels() []interface{} {
 	return []interface{}{
-		Conversation{},
-		ConversationMessage{},
+		&Device{},
+		&Contact{},
+		&Conversation{},
+		&Member{},
+		&Message{},
+		&Attachment{},
+		&Reaction{},
 	}
 }
