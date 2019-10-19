@@ -11,9 +11,6 @@ gen.sum.tmp
 /zero-push/
 
 # junk
-go/internal/bar
-go/internal/baz
-go/internal/foo
 profile.out
 *#
 *~

@@ -1,9 +1,6 @@
-b139403f729a7cf26f2d2ecbde2d9b6524b5efe2  ../api/baz.proto
 0180e8663e363e1a15c3e06e134d60b9e9fa7674  ../api/bertychat.proto
 1a823fbf1707f7d29c2b82967b3ca04dbe901354  ../api/bertyprotocol.proto
 1363f1dee70709ee230be301a08d8e0a483274e9  ../api/chatmodel.proto
-bb0d4bdd5e638b97f5dd350eb3505645de48eda5  ../api/internal/bar.proto
-85030963b9dd2a9e133da98c6d6dbc1ce73993b0  ../api/internal/foo.proto
 8ea2902f3114a2e50ffb763eba4456b077c4b76c  ../api/internal/handshake.proto
 88541d15f9988c5043d39d8f10132e4cdfa99d0e  ../api/internal/protocolmodel.proto
 50384eff13181fb905dee2b7df62276408e3dc62  ../api/internal/sigchain.proto
