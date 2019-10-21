@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@berty-tech/berty-i18n": "^0.0.0",
+    "@berty-tech/api-chat": "^0.0.0",
     "@berty-tech/shared-storybook": "^0.0.0",
     "@eva-design/eva": "^1.0.1",
     "@storybook/addon-notes": "^5.2.4",
