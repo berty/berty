@@ -178,7 +178,7 @@ vendor: go.mod
 ## Code gen
 ##
 
-PROTOS_SRC := $(wildcard ../api/*.proto) $(wildcard ../api/internal/*.proto)
+PROTOS_SRC := $(wildcard ../api/*.proto) $(wildcard ../api/go-internal/*.proto)
 GEN_SRC := $(PROTOS_SRC) Makefile
 GEN_SUM := gen.sum
 
