@@ -6,7 +6,6 @@ import (
 	"berty.tech/go/internal/gormutil"
 	"berty.tech/go/internal/protocoldb/migrations"
 	"berty.tech/go/internal/testutil"
-	"berty.tech/go/pkg/protocolmodel"
 )
 
 func TestDropDatabase(t *testing.T) {
@@ -25,7 +24,7 @@ func TestDropDatabase(t *testing.T) {
 
 func TestAllTables(t *testing.T) {
 	db := TestingSqliteDB(t, testutil.Logger(t))
-	gormutil.TestingHasExpectedTables(t, db, protocolmodel.AllTables())
+	gormutil.TestingHasExpectedTables(t, db, AllTables())
 }
 
 func TestAllMigrations(t *testing.T) {
@@ -35,5 +34,5 @@ func TestAllMigrations(t *testing.T) {
 		t.Skip()
 	}
 
-	gormutil.TestingMigrationsVSAutoMigrate(t, migrations, protocolmodel.AllModels(), testutil.Logger(t))
+	gormutil.TestingMigrationsVSAutoMigrate(t, migrations, AllModels(), testutil.Logger(t))
 }
