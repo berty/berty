@@ -13,6 +13,7 @@ go.sum linguist-generated
 *.gen.yml linguist-generated
 *.gen.graphql linguist-generated
 *.pb.go linguist-generated
+*pb_test.go linguist-generated
 client/react-native/common/schema.graphql linguist-generated
 
 # Reduce conflicts on markdown files
