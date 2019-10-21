@@ -21,72 +21,94 @@ func TestError(t *testing.T) {
 		errCodeUndef = ErrCode(65530) // simulate a client receiving an error generated from a more recent API
 	)
 	var tests = []struct {
-		name           string
-		input          error
-		expectedString string
-		expectedCode   int32
-		expectedCause  error
+		name              string
+		input             error
+		expectedString    string
+		expectedCause     error
+		expectedCode      int32
+		expectedFirstCode int32
+		expectedLastCode  int32
 	}{
 		{
 			"ErrNotImplemented",
 			ErrNotImplemented,
 			"ErrNotImplemented(#777)",
-			777,
 			ErrNotImplemented,
+			777,
+			777,
+			777,
 		}, {
 			"ErrInternal",
 			ErrInternal,
 			"ErrInternal(#999)",
-			999,
 			ErrInternal,
+			999,
+			999,
+			999,
 		}, {
 			"ErrNotImplemented.Wrap(errStdHello)",
 			ErrNotImplemented.Wrap(errStdHello),
 			"ErrNotImplemented(#777): hello",
-			777,
 			errStdHello,
+			777,
+			777,
+			777,
 		}, {
 			"ErrNotImplemented.Wrap(ErrInternal)",
 			ErrNotImplemented.Wrap(ErrInternal),
 			"ErrNotImplemented(#777): ErrInternal(#999)",
-			777,
 			ErrInternal,
+			777,
+			777,
+			999,
 		}, {
 			"ErrNotImplemented.Wrap(ErrInternal.Wrap(errStdHello))",
 			ErrNotImplemented.Wrap(ErrInternal.Wrap(errStdHello)),
 			"ErrNotImplemented(#777): ErrInternal(#999): hello",
-			777,
 			errStdHello,
+			777,
+			777,
+			999,
 		}, {
-			`errors.Wrap(ErrNotImplemented, "blah")`,
+			`errors.Wrap(ErrNotImplemented,blah)`,
 			errors.Wrap(ErrNotImplemented, "blah"),
 			"blah: ErrNotImplemented(#777)",
-			-1,
 			ErrNotImplemented,
+			-1,
+			777,
+			777,
 		}, {
-			`errors.Wrap(ErrNotImplemented.Wrap(ErrInternal), "blah")`,
+			`errors.Wrap(ErrNotImplemented.Wrap(ErrInternal),blah)`,
 			errors.Wrap(ErrNotImplemented.Wrap(ErrInternal), "blah"),
 			"blah: ErrNotImplemented(#777): ErrInternal(#999)",
-			-1,
 			ErrInternal,
+			-1,
+			777,
+			999,
 		}, {
 			"nil",
 			nil,
 			"<nil>",
-			-1,
 			nil,
+			-1,
+			-1,
+			-1,
 		}, {
 			"errStdHello",
 			errStdHello,
 			"hello",
-			-1,
 			errStdHello,
+			-1,
+			-1,
+			-1,
 		}, {
 			"errCodeUndef",
 			errCodeUndef,
 			"UNKNOWN_ERRCODE(#65530)",
-			65530,
 			errCodeUndef,
+			65530,
+			65530,
+			65530,
 		},
 	}
 
@@ -100,6 +122,16 @@ func TestError(t *testing.T) {
 			actualCode := Code(test.input)
 			if test.expectedCode != actualCode {
 				t.Errorf("Expected code to be %d, got %d.", test.expectedCode, actualCode)
+			}
+
+			actualCode = FirstCode(test.input)
+			if test.expectedFirstCode != actualCode {
+				t.Errorf("Expected first-code to be %d, got %d.", test.expectedCode, actualCode)
+			}
+
+			actualCode = LastCode(test.input)
+			if test.expectedLastCode != actualCode {
+				t.Errorf("Expected last-code to be %d, got %d.", test.expectedCode, actualCode)
 			}
 
 			actualCause := errors.Cause(test.input)
