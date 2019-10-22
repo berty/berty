@@ -1,4 +1,4 @@
-module.exports.register = handlebars => {
+module.exports.register = (handlebars) => {
   // permit to lookup at package, message, enum ...
   // ex: {{lookup 'google.protobuf.Timestamp'}}
   // see https://github.com/protobufjs/protobuf.js/blob/69623a91c1e4a99d5210b5295a9e5b39d9517554/index.d.ts#L79://github.com/protobufjs/protobuf.js/blob/69623a91c1e4a99d5210b5295a9e5b39d9517554/index.d.ts#L793

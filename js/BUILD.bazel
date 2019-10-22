@@ -42,8 +42,6 @@ nodejs_test(
         exclude = [
             "**/node_modules/**/*",
             "**/*.pb.js",
-            "**/storyLoader.js",
-            "packages/api-chat/helpers/**",
         ],
     ),
     entry_point = "@npm//:node_modules/eslint/bin/eslint.js",

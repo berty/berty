@@ -1,4 +1,4 @@
-module.exports.register = handlebars => {
+module.exports.register = (handlebars) => {
   const templates = {}
 
   handlebars.registerHelper('declare', function(name, options) {
