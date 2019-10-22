@@ -122,9 +122,17 @@ lint: files = $(shell \
 lint: deps
 	$(eslint) $(options) $(files)
 
+.PHONY: bazel.lint
+bazel.lint:
+	bazel test //:eslint
+
 .PHONY: lint.fix
 lint.fix: options += --fix
 lint.fix: lint
+
+.PHONY: bazel.lint.fix
+bazel.lint.fix:
+	bazel run //:eslint -- --fix
 
 .PHONY: lint.watch
 lint.watch: options += --watch
