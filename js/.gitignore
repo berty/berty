@@ -139,3 +139,6 @@ __generated__/
 # osx
 dist/
 osx/Berty.app
+
+# bazel
+/bazel-*

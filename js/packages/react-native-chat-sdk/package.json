@@ -1,0 +1,29 @@
+{
+  "name": "@berty-tech/react-native-chat-sdk",
+  "title": "React Native Chat Sdk",
+  "version": "1.0.0",
+  "description": "Berty's react-native chat-sdk library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berty/react-native-chat-sdk.git",
+    "baseUrl": "https://github.com/berty/react-native-chat-sdk"
+  },
+  "keywords": [
+    "react-native"
+  ],
+  "author": "Berty Technologies <oss@berty.tech>",
+  "license": "(Apache-2.0 or MIT)",
+  "readmeFilename": "README.md",
+  "peerDependencies": {
+    "react": "16.9.0",
+    "react-native": "0.61.2"
+  },
+  "devDependencies": {
+    "react": "16.9.0",
+    "react-native": "0.61.2"
+  }
+}

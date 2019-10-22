@@ -1,0 +1,347 @@
+From d4f963abda8f03f8b77d4915a517e9177f566705 Mon Sep 17 00:00:00 2001
+From: Steeve Morin <steeve@zen.ly>
+Date: Wed, 7 Aug 2019 22:04:59 +0200
+Subject: [PATCH] go_path: add go_archive_aspect properties
+
+GoPath can trigger compilation via include_pkg, thus, it should
+propagate the mode via go_archive_aspect.
+
+Signed-off-by: Steeve Morin <steeve@zen.ly>
+
+go_path: add include_transitive to optionally remove transitive deps
+
+It can be useful when combined with include_pkg=True. Sometimes the
+transitive GOPATH is not needed.
+
+Signed-off-by: Steeve Morin <steeve@zen.ly>
+---
+ go/core.rst                              | 83 +++++++++++++++++++++++-
+ go/private/tools/path.bzl                | 72 +++++++++++++++++++-
+ tests/core/go_path/BUILD.bazel           | 10 +++
+ tests/core/go_path/go_path_test.go       | 13 +++-
+ tests/core/go_path/pkg/lib/BUILD.bazel   |  8 +++
+ tests/core/go_path/pkg/lib/transitive.go |  5 ++
+ 6 files changed, 186 insertions(+), 5 deletions(-)
+ create mode 100644 tests/core/go_path/pkg/lib/transitive.go
+
+diff --git a/go/core.rst b/go/core.rst
+index 0bd0d242..e5ed564d 100644
+--- a/go/core.rst
++++ b/go/core.rst
+@@ -61,7 +61,7 @@ These mappings are collected up across the entire transitive dependancies of a
+ binary. This means you can set a value using :param:`x_defs` in a
+ ``go_library``, and any binary that links that library will be stamped with that
+ value. You can also override stamp values from libraries using :param:`x_defs`
+-on the ``go_binary`` rule if needed. The ``--[no]stamp`` option controls whether 
++on the ``go_binary`` rule if needed. The ``--[no]stamp`` option controls whether
+ stamping of workspace variables is enabled.
+ 
+ Example
+@@ -998,6 +998,87 @@ Attributes
+ | included in the output directory. Files listed in the :param:`data` attribute                    |
+ | for this rule will be included regardless of this attribute.                                     |
+ +----------------------------+-----------------------------+---------------------------------------+
++| :param:`include_transitive`| :type:`bool`                | :value:`True`                         |
+++----------------------------+-----------------------------+---------------------------------------+
++| When true, transitive dependencies are included in the output directory. Setting this to `False` |
++| can sometimes be useful when needing a specific set of packages, thus limiting the potential for |
++| build graph invalidation.                                                                        |
+++----------------------------+-----------------------------+---------------------------------------+
++| :param:`include_pkg`       | :type:`bool`                | :value:`False`                        |
+++----------------------------+-----------------------------+---------------------------------------+
++| When true, targets in `deps` will get compiled as archives and put in the `pkg/` directory of    |
++| the output directory. Because this will trigger compilation of packages, like `go_binary`, the   |
++| rule has `mode attributes`_. See below.                                                          |
+++----------------------------+-----------------------------+---------------------------------------+
++| :param:`pure`              | :type:`string`              | :value:`auto`                         |
+++----------------------------+-----------------------------+---------------------------------------+
++| This is one of the `mode attributes`_ that controls whether to link in pure_ mode.               |
++| It should be one of :value:`on`, :value:`off` or :value:`auto`.                                  |
+++----------------------------+-----------------------------+---------------------------------------+
++| :param:`static`            | :type:`string`              | :value:`auto`                         |
+++----------------------------+-----------------------------+---------------------------------------+
++| This is one of the `mode attributes`_ that controls whether to link in static_ mode.             |
++| It should be one of :value:`on`, :value:`off` or :value:`auto`.                                  |
+++----------------------------+-----------------------------+---------------------------------------+
++| :param:`race`              | :type:`string`              | :value:`auto`                         |
+++----------------------------+-----------------------------+---------------------------------------+
++| This is one of the `mode attributes`_ that controls whether to instrument                        |
++| code for data race detection. It may be :value:`on`, :value:`off`, or                            |
++| :value:`auto`. In most cases, it's better to enable race detection globally                      |
++| with ``--features=race`` on the command line.                                                    |
+++----------------------------+-----------------------------+---------------------------------------+
++| :param:`msan`              | :type:`string`              | :value:`auto`                         |
+++----------------------------+-----------------------------+---------------------------------------+
++| This is one of the `mode attributes`_ that controls whether to instrument                        |
++| code for memory santization. It may be :value:`on`, :value:`off`, or                             |
++| :value:`auto`. In most cases, it's better to enable memory sanitization                          |
++| globally with ``--features=msan`` on the command line.                                           |
+++----------------------------+-----------------------------+---------------------------------------+
++| :param:`goos`              | :type:`string`              | :value:`auto`                         |
+++----------------------------+-----------------------------+---------------------------------------+
++| This is one of the `mode attributes`_ that controls which goos_ to compile and link for.         |
++|                                                                                                  |
++| If set to anything other than :value:`auto` this overrides the default as set by the current     |
++| target platform and allows for single builds to make binaries for multiple architectures.        |
++|                                                                                                  |
++| Because this has no control over the cc toolchain, it does not work for cgo, so if this          |
++| attribute is set then :param:`pure` must be set to :value:`on`.                                  |
++|                                                                                                  |
++| This attribute has several limitations and should only be used in situations where the           |
++| ``--platforms`` flag does not work. See `Cross compilation`_ and `Note on goos and goarch        |
++| attributes`_ for more information.                                                               |
+++----------------------------+-----------------------------+---------------------------------------+
++| :param:`goarch`            | :type:`string`              | :value:`auto`                         |
+++----------------------------+-----------------------------+---------------------------------------+
++| This is one of the `mode attributes`_ that controls which goarch_ to compile and link for.       |
++|                                                                                                  |
++| If set to anything other than :value:`auto` this overrides the default as set by the current     |
++| target platform and allows for single builds to make binaries for multiple architectures.        |
++|                                                                                                  |
++| Because this has no control over the cc toolchain, it does not work for cgo, so if this          |
++| attribute is set then :param:`pure` must be set to :value:`on`.                                  |
++|                                                                                                  |
++| This attribute has several limitations and should only be used in situations where the           |
++| ``--platforms`` flag does not work. See `Cross compilation`_ and `Note on goos and goarch        |
++| attributes`_ for more information.                                                               |
+++----------------------------+-----------------------------+---------------------------------------+
++| :param:`linkmode`          | :type:`string`              | :value:`"normal"`                     |
+++----------------------------+-----------------------------+---------------------------------------+
++| Determines how the binary should be built and linked. This accepts some of                       |
++| the same values as ``go build -buildmode`` and works the same way.                               |
++|                                                                                                  |
++| :value:`normal`                                                                                  |
++|     Builds a normal executable with position-dependent code.                                     |
++| :value:`pie`                                                                                     |
++|     Builds a position-independent executable.                                                    |
++| :value:`plugin`                                                                                  |
++|     Builds a shared library that can be loaded as a Go plugin. Only supported                    |
++|     on platforms that support plugins.                                                           |
++| :value:`c-shared`                                                                                |
++|     Builds a shared library that can be linked into a C program.                                 |
++| :value:`c-archive`                                                                               |
++|     Builds an archive that can be linked into a C program.                                       |
+++----------------------------+-----------------------------+---------------------------------------+
+ 
+ go_rule
+ ~~~~~~~
+diff --git a/go/private/tools/path.bzl b/go/private/tools/path.bzl
+index 261b9696..43788c42 100644
+--- a/go/private/tools/path.bzl
++++ b/go/private/tools/path.bzl
+@@ -28,11 +28,30 @@ load(
+     "as_iterable",
+     "as_list",
+ )
++load(
++    "@io_bazel_rules_go//go/private:rules/rule.bzl",
++    "go_rule",
++)
++load(
++    "@io_bazel_rules_go//go/private:rules/aspect.bzl",
++    "go_archive_aspect",
++)
++load(
++    "@io_bazel_rules_go//go/platform:list.bzl",
++    "GOARCH",
++    "GOOS",
++)
++load(
++    "@io_bazel_rules_go//go/private:mode.bzl",
++    "LINKMODES",
++    "LINKMODE_NORMAL",
++)
+ 
+ def _go_path_impl(ctx):
+     # Gather all archives. Note that there may be multiple packages with the same
+     # importpath (e.g., multiple vendored libraries, internal tests). The same
+     # package may also appear in different modes.
++    go = go_context(ctx)
+     mode_to_deps = {}
+     for dep in ctx.attr.deps:
+         archive = get_archive(dep)
+@@ -42,7 +61,9 @@ def _go_path_impl(ctx):
+     mode_to_archive = {}
+     for mode, archives in mode_to_deps.items():
+         direct = [a.data for a in archives]
+-        transitive = [a.transitive for a in archives]
++        transitive = []
++        if ctx.attr.include_transitive:
++            transitive = [a.transitive for a in archives]
+         mode_to_archive[mode] = depset(direct = direct, transitive = transitive)
+ 
+     # Collect sources and data files from archives. Merge archives into packages.
+@@ -152,10 +173,13 @@ def _go_path_impl(ctx):
+         ),
+     ]
+ 
+-go_path = rule(
++go_path = go_rule(
+     _go_path_impl,
+     attrs = {
+-        "deps": attr.label_list(providers = [GoArchive]),
++        "deps": attr.label_list(
++            providers = [GoArchive],
++            aspects = [go_archive_aspect],
++        ),
+         "data": attr.label_list(allow_files = True),
+         "mode": attr.string(
+             default = "copy",
+@@ -167,6 +191,48 @@ go_path = rule(
+         ),
+         "include_data": attr.bool(default = True),
+         "include_pkg": attr.bool(default = False),
++        "include_transitive": attr.bool(default = True),
++        "pure": attr.string(
++            values = [
++                "on",
++                "off",
++                "auto",
++            ],
++            default = "auto",
++        ),
++        "static": attr.string(
++            values = [
++                "on",
++                "off",
++                "auto",
++            ],
++            default = "auto",
++        ),
++        "race": attr.string(
++            values = [
++                "on",
++                "off",
++                "auto",
++            ],
++            default = "auto",
++        ),
++        "msan": attr.string(
++            values = [
++                "on",
++                "off",
++                "auto",
++            ],
++            default = "auto",
++        ),
++        "goos": attr.string(
++            values = GOOS.keys() + ["auto"],
++            default = "auto",
++        ),
++        "goarch": attr.string(
++            values = GOARCH.keys() + ["auto"],
++            default = "auto",
++        ),
++        "linkmode": attr.string(values = LINKMODES, default = LINKMODE_NORMAL),
+         "_go_path": attr.label(
+             default = "@io_bazel_rules_go//go/tools/builders:go_path",
+             executable = True,
+diff --git a/tests/core/go_path/BUILD.bazel b/tests/core/go_path/BUILD.bazel
+index a594ad93..5c91eb4a 100644
+--- a/tests/core/go_path/BUILD.bazel
++++ b/tests/core/go_path/BUILD.bazel
+@@ -27,6 +27,14 @@ go_path(
+     deps = ["//tests/core/go_path/pkg/lib:go_default_library"],
+ )
+ 
++go_path(
++    name = "notransitive_path",
++    testonly = True,
++    include_transitive = False,
++    mode = "copy",
++    deps = ["//tests/core/go_path/pkg/lib:go_default_library"],
++)
++
+ go_test(
+     name = "go_path_test",
+     srcs = ["go_path_test.go"],
+@@ -35,12 +43,14 @@ go_test(
+         "-copy_path=$(location :copy_path)",
+         "-link_path=tests/core/go_path/link_path",  # can't use location; not a single file
+         "-nodata_path=$(location :nodata_path)",
++        "-notransitive_path=$(location :notransitive_path)",
+     ],
+     data = [
+         ":archive_path",
+         ":copy_path",
+         ":link_path",
+         ":nodata_path",
++        ":notransitive_path",
+     ],
+     deps = ["//go/tools/bazel:go_default_library"],
+     rundir = ".",
+diff --git a/tests/core/go_path/go_path_test.go b/tests/core/go_path/go_path_test.go
+index c1181741..0ed22127 100644
+--- a/tests/core/go_path/go_path_test.go
++++ b/tests/core/go_path/go_path_test.go
+@@ -29,7 +29,7 @@ import (
+	"github.com/bazelbuild/rules_go/go/tools/bazel"
+ )
+ 
+-var copyPath, linkPath, archivePath, nodataPath string
++var copyPath, linkPath, archivePath, nodataPath, notransitivePath string
+ 
+ var defaultMode = runtime.GOOS + "_" + runtime.GOARCH
+ 
+@@ -58,6 +58,7 @@ func TestMain(m *testing.M) {
+	flag.StringVar(&linkPath, "link_path", "", "path to symlinked go_path")
+	flag.StringVar(&archivePath, "archive_path", "", "path to archive go_path")
+	flag.StringVar(&nodataPath, "nodata_path", "", "path to go_path without data")
++	flag.StringVar(&notransitivePath, "notransitive_path", "", "path to go_path without transitive dependencies")
+	flag.Parse()
+	os.Exit(m.Run())
+ }
+@@ -133,6 +134,16 @@ func TestNoDataPath(t *testing.T) {
+	checkPath(t, nodataPath, files)
+ }
+ 
++func TestNoTransitivePath(t *testing.T) {
++	if notransitivePath == "" {
++		t.Fatal("-notransitive_path not set")
++	}
++	files := []string{
++		"-src/example.com/repo/pkg/lib/transitive/transitive.go",
++	}
++	checkPath(t, notransitivePath, files)
++}
++
+ // checkPath checks that dir contains a list of files. files is a list of
+ // slash-separated paths relative to dir. Files that start with "-" should be
+ // absent. Files that end with "/" should be directories.
+diff --git a/tests/core/go_path/pkg/lib/BUILD.bazel b/tests/core/go_path/pkg/lib/BUILD.bazel
+index 7dd03ae3..1aa7ad03 100644
+--- a/tests/core/go_path/pkg/lib/BUILD.bazel
++++ b/tests/core/go_path/pkg/lib/BUILD.bazel
+@@ -8,6 +8,7 @@ go_library(
+         "data.txt",
+         "testdata/testdata.txt",
+     ],
++    deps = [":transitive_lib"],
+     importpath = "example.com/repo/pkg/lib",
+     visibility = ["//visibility:public"],
+ )
+@@ -42,3 +43,10 @@ go_library(
+     importmap = "example.com/repo/vendor/example.com/repo2",
+     visibility = ["//visibility:public"],
+ )
++
++go_library(
++    name = "transitive_lib",
++    srcs = ["transitive.go"],
++    importpath = "example.com/repo/pkg/lib/transitive",
++    visibility = ["//visibility:public"],
++)
+diff --git a/tests/core/go_path/pkg/lib/transitive.go b/tests/core/go_path/pkg/lib/transitive.go
+new file mode 100644
+index 00000000..a505a296
+--- /dev/null
++++ b/tests/core/go_path/pkg/lib/transitive.go
+@@ -0,0 +1,5 @@
++package transitive
++
++var (
++	_ = ""
++)
+-- 
+2.21.0 (Apple Git-122)
+

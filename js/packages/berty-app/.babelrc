@@ -1,0 +1,6 @@
+common                  --experimental_allow_incremental_repository_updates
+build                   --ios_minimum_os=9.0
+build                   --strip=never
+build                   --extra_toolchains=@androidndk//:all
+build                   --fat_apk_cpu=x86,x86_64,arm64-v8a
+build                   --ios_multi_cpus=armv7,arm64,x86_64,i386

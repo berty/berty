@@ -435,3 +435,8 @@ fclean.web:
 fclean.darwin: platform := darwin
 fclean.darwin:
 fclean: fclean.ios fclean.android fclean.darwin fclean.web
+
+
+bazel.android.install:
+	$(MAKE) -C $(abspath $(PWD)/../react-native-chat-sdk) bazel.build.sdk.android 
+	bazel mobile-install --sandbox_debug --fat_apk_cpu=x86_64,x86,armeabi-v7a //android/app/src/main:app

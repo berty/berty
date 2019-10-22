@@ -1,0 +1,149 @@
+From 0e819e967266e99c2238a206f72fc94589a218c5 Mon Sep 17 00:00:00 2001
+From: Steeve Morin <steeve@zen.ly>
+Date: Tue, 20 Aug 2019 16:51:34 +0200
+Subject: [PATCH] Fetch public headers via the multi arch split
+
+Fetch headers via the apple_common.multi_arch_split so that proper
+transitions are done. Since headers are assumed to be the same for all
+architectures, only the headers from the first split will be used.
+
+This is mostly useful if headers are generated.
+
+Fixes #466
+
+Signed-off-by: Steeve Morin <steeve@zen.ly>
+---
+ apple/internal/ios_rules.bzl    |  8 ++++++--
+ apple/internal/rule_factory.bzl |  4 ++++
+ apple/internal/tvos_rules.bzl   |  6 +++++-
+ apple/internal/utils/split.bzl  | 25 +++++++++++++++++++++++++
+ 4 files changed, 40 insertions(+), 3 deletions(-)
+ create mode 100644 apple/internal/utils/split.bzl
+
+diff --git a/apple/internal/ios_rules.bzl b/apple/internal/ios_rules.bzl
+index 986e59f..d771865 100644
+--- a/apple/internal/ios_rules.bzl
++++ b/apple/internal/ios_rules.bzl
+@@ -58,6 +58,10 @@ load(
+     "@build_bazel_rules_apple//apple/internal/aspects:swift_static_framework_aspect.bzl",
+     "SwiftStaticFrameworkInfo",
+ )
++load(
++    "@build_bazel_rules_apple//apple/internal/utils:split.bzl",
++    "split",
++)
+ load(
+     "@build_bazel_rules_apple//apple:providers.bzl",
+     "IosApplicationBundleInfo",
+@@ -215,7 +219,7 @@ def _ios_framework_impl(ctx):
+             embeddable_targets = ctx.attr.frameworks,
+         ),
+         partials.extension_safe_validation_partial(is_extension_safe = ctx.attr.extension_safe),
+-        partials.framework_headers_partial(hdrs = ctx.files.hdrs),
++        partials.framework_headers_partial(hdrs = split.files(ctx.attr.hdrs)),
+         partials.framework_provider_partial(
+             binary_provider = binary_target[apple_common.AppleDylibBinary],
+         ),
+@@ -328,7 +332,7 @@ def _ios_static_framework_impl(ctx):
+     else:
+         processor_partials.append(
+             partials.static_framework_header_modulemap_partial(
+-                hdrs = ctx.files.hdrs,
++                hdrs = split.files(ctx.attr.hdrs),
+                 umbrella_header = ctx.file.umbrella_header,
+                 binary_objc_provider = binary_target[apple_common.Objc],
+             ),
+diff --git a/apple/internal/rule_factory.bzl b/apple/internal/rule_factory.bzl
+index 81f0eee..4e609ac 100644
+--- a/apple/internal/rule_factory.bzl
++++ b/apple/internal/rule_factory.bzl
+@@ -537,6 +537,7 @@ Required.
+             # what to do with this.
+             "hdrs": attr.label_list(
+                 allow_files = [".h"],
++                cfg = apple_common.multi_arch_split,
+             ),
+             "extension_safe": attr.bool(
+                 default = False,
+@@ -550,6 +551,7 @@ use only extension-safe APIs.
+         attrs.append({
+             "hdrs": attr.label_list(
+                 allow_files = [".h"],
++                cfg = apple_common.multi_arch_split,
+                 doc = """
+ A list of `.h` files that will be publicly exposed by this framework. These headers should have
+ framework-relative imports, and if non-empty, an umbrella header named `%{bundle_name}.h` will also
+@@ -558,6 +560,7 @@ be generated that imports all of the headers listed here.
+             ),
+             "umbrella_header": attr.label(
+                 allow_single_file = [".h"],
++                cfg = apple_common.multi_arch_split,
+                 doc = """
+ An optional single .h file to use as the umbrella header for this framework. Usually, this header
+ will have the same name as this target, so that clients can load the header using the #import
+@@ -720,6 +723,7 @@ def _get_tvos_attrs(rule_descriptor):
+             # what to do with this.
+             "hdrs": attr.label_list(
+                 allow_files = [".h"],
++                cfg = apple_common.multi_arch_split,
+             ),
+             "extension_safe": attr.bool(
+                 default = False,
+diff --git a/apple/internal/tvos_rules.bzl b/apple/internal/tvos_rules.bzl
+index 3a55630..17d12c9 100644
+--- a/apple/internal/tvos_rules.bzl
++++ b/apple/internal/tvos_rules.bzl
+@@ -50,6 +50,10 @@ load(
+     "@build_bazel_rules_apple//apple/internal/aspects:swift_static_framework_aspect.bzl",
+     "SwiftStaticFrameworkInfo",
+ )
++load(
++    "@build_bazel_rules_apple//apple/internal/utils:split.bzl",
++    "split",
++)
+ load(
+     "@build_bazel_rules_apple//apple:providers.bzl",
+     "TvosApplicationBundleInfo",
+@@ -174,7 +178,7 @@ def _tvos_framework_impl(ctx):
+             embeddable_targets = ctx.attr.frameworks,
+         ),
+         partials.extension_safe_validation_partial(is_extension_safe = ctx.attr.extension_safe),
+-        partials.framework_headers_partial(hdrs = ctx.files.hdrs),
++        partials.framework_headers_partial(hdrs = split.files(ctx.attr.hdrs)),
+         partials.framework_provider_partial(binary_provider = binary_provider),
+         partials.resources_partial(
+             bundle_id = bundle_id,
+diff --git a/apple/internal/utils/split.bzl b/apple/internal/utils/split.bzl
+new file mode 100644
+index 0000000..2ee4816
+--- /dev/null
++++ b/apple/internal/utils/split.bzl
+@@ -0,0 +1,25 @@
++# Copyright 2019 The Bazel Authors. All rights reserved.
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#    http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++
++"""Convenience functions for split_attr."""
++
++def _files(attr):
++    """Get the files from the first split."""
++    for v in attr:
++        return v.files.to_list()
++    return []
++
++split = struct(
++    files = _files,
++)
+-- 
+2.21.0 (Apple Git-122)
+

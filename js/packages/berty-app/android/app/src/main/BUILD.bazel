@@ -1,0 +1,55 @@
+aar_import(
+    name = "org_webkit_android_jsc",
+    aar = "@berty_app//:jsc_aar_file",
+)
+
+aar_import(
+    name = "com_facebook_react_react_native",
+    aar = "@berty_app//:react_native_aar_file",
+    # srcjar = "@berty_app//:react_native_aar_file",
+    exports = [
+        "@maven//:com_facebook_soloader_soloader",
+    ],
+    deps = [
+        # these values come from the .pom next to the aar
+        "@maven//:androidx_appcompat_appcompat",
+        "@maven//:com_facebook_fresco_fresco",
+        "@maven//:com_facebook_fresco_imagepipeline_okhttp3",
+        "@maven//:com_facebook_infer_annotation_infer_annotation",
+        "@maven//:com_facebook_soloader_soloader",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:com_squareup_okhttp3_okhttp",
+        "@maven//:com_squareup_okhttp3_okhttp_urlconnection",
+        "@maven//:com_squareup_okio_okio",
+        "@maven//:javax_inject_javax_inject",
+    ],
+)
+
+aar_import(
+    name = "chat_sdk",
+    aar = "@chat_sdk//:prebuilt_aar",
+    deps = [
+        ":com_facebook_react_react_native",
+    ],
+)
+
+android_binary(
+    name = "app",
+    srcs = glob(
+        ["java/**/*.java"],
+        exclude = ["**/*.template.java"],
+    ),
+    manifest = "AndroidManifest.xml",
+    manifest_values = {
+        "minSdkVersion": "16",
+        "compileSdkVersion": "28",
+        "targetSdkVersion": "28",
+    },
+    resource_files = glob(["res/**"]),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":chat_sdk",
+        ":com_facebook_react_react_native",
+        ":org_webkit_android_jsc",
+    ],
+)
