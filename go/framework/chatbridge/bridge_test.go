@@ -6,6 +6,7 @@ import (
 	"berty.tech/go/internal/testutil"
 	"berty.tech/go/pkg/bertychat"
 	"github.com/gogo/protobuf/proto"
+	"go.uber.org/zap"
 )
 
 func TestBridge(t *testing.T) {
@@ -16,7 +17,11 @@ func TestBridge(t *testing.T) {
 		req, res []byte
 	)
 
-	bridge, err = newBridge(testutil.Logger(t))
+	logger := testutil.Logger(t)
+	bridge, err = newBridge(logger, Opts{
+		GRPCListener:    ":0",
+		GRPCWebListener: ":0",
+	})
 	if err != nil {
 		t.Fatalf("create bridge: %v", err)
 	}
@@ -26,21 +31,16 @@ func TestBridge(t *testing.T) {
 		}
 	}()
 
-	if _, err = bridge.AddGRPCListener(":0"); err != nil {
-		t.Fatalf("add grpc listener: %v", err)
-	}
+	logger.Info(
+		"listeners",
+		zap.String("gRPC", bridge.GRPCListenerAddr()),
+		zap.String("gRPC web", bridge.GRPCWebListenerAddr()),
+	)
 
-	if _, err = bridge.AddGRPCWebListener(":0"); err != nil {
-		t.Fatalf("add grpc-web listener: %v", err)
+	client = bridge.GRPCClient()
+	if client == nil {
+		t.Fatalf("expected client to be initialized, got nil.")
 	}
-
-	client, err = bridge.NewGRPCClient()
-	if err != nil {
-		t.Fatalf("failed to setup client: %v", err)
-	}
-
-	// start bridge
-	bridge.Start()
 
 	msg := &bertychat.ConversationGetRequest{
 		ID: "testid",
