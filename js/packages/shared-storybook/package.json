@@ -25,6 +25,9 @@
     "react": "^16.9.0",
     "react-native": "0.61.0"
   },
+  "optionalDependencies": {
+    "react-native": "0.61.0"
+  },
   "dependencies": {
     "react-native-easy-grid": "^0.2.2",
     "react-native-ui-kitten": "^4.1.1"

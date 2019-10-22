@@ -1,0 +1,53 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_binary", "nodejs_test")
+
+exports_files(
+    ["tsconfig.json"],
+    visibility = ["//visibility:public"],
+)
+
+nodejs_binary(
+    name = "lerna",
+    entry_point = "//:node_modules/lerna/bin/lerna",
+)
+
+nodejs_test(
+    name = "eslint",
+    data = [
+        "@npm//eslint",
+        "@npm//@berty-tech/eslint-config",
+        "@npm//@berty-tech/prettier-config",
+        "@npm//eslint-config-prettier",
+        "@npm//eslint-plugin-prettier",
+        "@npm//@typescript-eslint/eslint-plugin",
+        "@npm//babel-eslint",
+        "@npm//eslint-plugin-flowtype",
+        "@npm//eslint-plugin-eslint-comments",
+        "@npm//eslint-plugin-react",
+        "@npm//eslint-plugin-react-hooks",
+        "@npm//eslint-plugin-react-native",
+        "@npm//@react-native-community/eslint-plugin",
+        "@npm//eslint-plugin-jest",
+        ".eslintrc.js",
+    ] + glob(
+        include = [
+            "packages/**/*.js",
+            "packages/**/*.jsx",
+            "packages/**/*.ts",
+            "packages/**/*.tsx",
+            "*.js",
+            "*.json",
+        ],
+        exclude = [
+            "**/node_modules/**/*",
+            "**/*.pb.js",
+            "**/storyLoader.js",
+            "packages/api-chat/helpers/**",
+        ],
+    ),
+    entry_point = "@npm//:node_modules/eslint/bin/eslint.js",
+    templated_args = [
+        "packages",
+    ],
+)

@@ -1,0 +1,9 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "npm_package")
+
+npm_package(
+    name = "babel-preset",
+    srcs = [
+        "index.js",
+        "package.json",
+    ],
+)

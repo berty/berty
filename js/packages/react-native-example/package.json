@@ -19,8 +19,9 @@
   "readmeFilename": "README.md",
   "title": "React Native Example",
   "peerDependencies": {
-    "react": "^16.9.0",
+    "react": "^16.9.0"
+  },
+  "optionalDependencies": {
     "react-native": "0.61.0"
   }
 }
-

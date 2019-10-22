@@ -30,6 +30,7 @@
     "@types/node": "^12.7.12",
     "case": "^1.6.2",
     "espree": "^3.5.4",
+    "google-protobuf": "^3.10.0",
     "jsdoc": "^3.5.5",
     "minimist": "^1.2.0",
     "pbhbs": "^0.2.2",

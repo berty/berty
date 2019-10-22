@@ -44,6 +44,8 @@
     "update-versions": "^2.0.0"
   },
   "devDependencies": {
+    "@bazel/hide-bazel-files": "^0.38.3",
+    "@bazel/typescript": "^0.38.3",
     "@berty-tech/babel-preset": "file:./packages/babel-preset",
     "@berty-tech/eslint-config": "file:./packages/eslint-config",
     "@berty-tech/prettier-config": "file:./packages/prettier-config",

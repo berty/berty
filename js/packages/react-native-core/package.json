@@ -22,8 +22,9 @@
   "license": "(Apache-2.0 OR MIT)",
   "readmeFilename": "README.md",
   "peerDependencies": {
-    "react": "^16.8.1",
+    "react": "^16.8.1"
+  },
+  "optionalDependencies": {
     "react-native": "0.61.0"
   }
 }
-
