@@ -34,6 +34,27 @@
     }
   },
   "definitions": {
+    "ContactTrustLevel": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "Untrusted",
+        "Accepted",
+        "Trusted",
+        "UltimateTrust"
+      ],
+      "default": "Unknown"
+    },
+    "GroupInfoGroupAudience": {
+      "type": "string",
+      "enum": [
+        "Undefined",
+        "OneToOne",
+        "Group",
+        "Self"
+      ],
+      "default": "Undefined"
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -161,12 +182,210 @@
     "protocolmodelContact": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
+        "account_pub_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "Fields"
+        },
+        "one_to_one_group_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "binder_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "trust_level": {
+          "$ref": "#/definitions/ContactTrustLevel"
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte"
+        },
+        "blocked": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "one_to_one_group": {
+          "$ref": "#/definitions/protocolmodelGroupInfo",
+          "title": "Relations"
         },
         "created_at": {
           "type": "string",
+          "format": "date-time",
+          "title": "GORM meta"
+        },
+        "updated_at": {
+          "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "protocolmodelGroupInfo": {
+      "type": "object",
+      "properties": {
+        "group_pub_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "Fields\n- Group details/meta"
+        },
+        "shared_secret": {
+          "type": "string",
+          "format": "byte"
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte"
+        },
+        "audience": {
+          "$ref": "#/definitions/GroupInfoGroupAudience"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "self_priv_key_account": {
+          "type": "string",
+          "format": "byte",
+          "title": "- Own secrets"
+        },
+        "self_priv_key_device": {
+          "type": "string",
+          "format": "byte"
+        },
+        "self_inviter_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "inviter_contact_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "orbitdb_current_cid_message": {
+          "type": "string",
+          "format": "byte",
+          "title": "- OrbitDB current log positions"
+        },
+        "orbitdb_current_cid_secret": {
+          "type": "string",
+          "format": "byte"
+        },
+        "orbitdb_current_cid_setting": {
+          "type": "string",
+          "format": "byte"
+        },
+        "orbitdb_current_cid_member": {
+          "type": "string",
+          "format": "byte"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protocolmodelGroupMember"
+          },
+          "title": "Relation"
+        },
+        "inviter": {
+          "$ref": "#/definitions/protocolmodelContact"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "GORM meta"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "protocolmodelGroupMember": {
+      "type": "object",
+      "properties": {
+        "group_member_pub_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "Fields"
+        },
+        "group_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "inviter_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "contact_account_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "contact_account_binding_proof": {
+          "type": "string",
+          "format": "byte"
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protocolmodelGroupMemberDevice"
+          },
+          "title": "Relations"
+        },
+        "group_info": {
+          "$ref": "#/definitions/protocolmodelGroupInfo"
+        },
+        "inviter": {
+          "$ref": "#/definitions/protocolmodelGroupMember"
+        },
+        "contact": {
+          "$ref": "#/definitions/protocolmodelContact"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "GORM meta"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "protocolmodelGroupMemberDevice": {
+      "type": "object",
+      "properties": {
+        "group_member_device_pub_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "Fields"
+        },
+        "group_member_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "derivation_state": {
+          "type": "string",
+          "format": "byte"
+        },
+        "derivation_counter": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "derivation_next_hotp": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_member": {
+          "$ref": "#/definitions/protocolmodelGroupMember",
+          "title": "Relations"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "GORM meta"
         },
         "updated_at": {
           "type": "string",

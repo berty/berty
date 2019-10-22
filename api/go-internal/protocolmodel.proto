@@ -7,38 +7,14 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 option go_package = "berty.tech/go/internal/protocoldb";
 
-option (gogoproto.benchgen_all) = false;
-option (gogoproto.compare_all) = false;
-option (gogoproto.description_all) = false;
-option (gogoproto.enum_stringer_all) = false;
-option (gogoproto.enumdecl_all) = true;
-option (gogoproto.equal_all) = false;
-option (gogoproto.face_all) = false;
-option (gogoproto.gogoproto_import) = false;
-option (gogoproto.goproto_enum_prefix_all) = true;
-option (gogoproto.goproto_enum_stringer_all) = false;
-option (gogoproto.goproto_extensions_map_all) = false;
 option (gogoproto.goproto_getters_all) = false;
-option (gogoproto.goproto_registration) = false;
-//option (gogoproto.goproto_sizecache_all) = false;
-option (gogoproto.goproto_stringer_all) = false;
-//option (gogoproto.goproto_unkeyed_all) = false;
-option (gogoproto.goproto_unrecognized_all) = false;
-option (gogoproto.gostring_all) = false;
 option (gogoproto.marshaler_all) = true;
-option (gogoproto.messagename_all) = false;
-option (gogoproto.onlyone_all) = false;
-option (gogoproto.populate_all) = false;
-option (gogoproto.protosizer_all) = false;
-option (gogoproto.sizer_all) = true;
-option (gogoproto.stable_marshaler_all) = false;
-option (gogoproto.stringer_all) = true;
-option (gogoproto.testgen_all) = false;
-option (gogoproto.typedecl_all) = true;
 option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.unsafe_marshaler_all) = false;
-option (gogoproto.unsafe_unmarshaler_all) = false;
-option (gogoproto.verbose_equal_all) = false;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.goproto_registration) = true;
+option (gogoproto.populate_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.testgen_all) = false; // should be set to false, because of loops in message dependencies
 
 message GroupInfo { // group clashes with reserved SQL keyword
   enum GroupAudience {
@@ -67,8 +43,8 @@ message GroupInfo { // group clashes with reserved SQL keyword
   bytes orbitdb_current_cid_member = 13 [(gogoproto.customname) = "OrbitDBCurrentCIDMember"];
 
   // Relation
-  repeated GroupMember members = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_pub_key\""];
-  Contact inviter = 81 [(gogoproto.moretags) = "gorm:\"foreignkey:inviter_contact_pub_key\""];
+  repeated GroupMember members = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_pub_key;PRELOAD:false\""];
+  Contact inviter = 81 [(gogoproto.moretags) = "gorm:\"foreignkey:inviter_contact_pub_key;PRELOAD:false\""];
 
   // GORM meta
   google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
@@ -87,7 +63,7 @@ message GroupIncomingRequest {
   bytes inviter_contact_pub_key = 9;
 
   // Relations
-  Contact inviter_contact = 8 [(gogoproto.moretags) = "gorm:\"foreignkey:inviter_contact_pub_key\""];
+  Contact inviter_contact = 8 [(gogoproto.moretags) = "gorm:\"foreignkey:inviter_contact_pub_key;PRELOAD:false\""];
 
   // GORM meta
   google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
@@ -104,10 +80,10 @@ message GroupMember {
   bytes metadata = 6;
 
   // Relations
-  repeated GroupMemberDevice devices = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_member_pub_key\""];
-  GroupInfo group_info = 81 [(gogoproto.moretags) = "gorm:\"foreignkey:group_pub_key\"", (gogoproto.nullable) = false];
-  GroupMember inviter = 82 [(gogoproto.moretags) = "gorm:\"foreignkey:inviter_pub_key\""];
-  Contact contact = 83 [(gogoproto.moretags) = "gorm:\"foreignkey:contact_account_pub_key\""];
+  repeated GroupMemberDevice devices = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_member_pub_key;PRELOAD:false\""];
+  GroupInfo group_info = 81 [(gogoproto.moretags) = "gorm:\"foreignkey:group_pub_key;PRELOAD:false\"", (gogoproto.nullable) = false];
+  GroupMember inviter = 82 [(gogoproto.moretags) = "gorm:\"foreignkey:inviter_pub_key;PRELOAD:false\""];
+  Contact contact = 83 [(gogoproto.moretags) = "gorm:\"foreignkey:contact_account_pub_key;PRELOAD:false\""];
 
   // GORM meta
   google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
@@ -123,7 +99,7 @@ message GroupMemberDevice {
   bytes derivation_next_hotp = 5 [(gogoproto.moretags) = "gorm:\"index\""];
 
   // Relations
-  GroupMember group_member = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_member_pub_key\"", (gogoproto.nullable) = false];
+  GroupMember group_member = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_member_pub_key;PRELOAD:false\"", (gogoproto.nullable) = false];
 
   // GORM meta
   google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
@@ -148,7 +124,7 @@ message Contact {
   bool blocked = 6;
 
   // Relations
-  GroupInfo one_to_one_group = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_pub_key\""];
+  GroupInfo one_to_one_group = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_pub_key:PRELOAD:false\""];
 
   // GORM meta
   google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
@@ -163,7 +139,7 @@ message Message {
   bytes group_member_device_pub_key = 4;
 
   // Relations
-  GroupMemberDevice device = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_member_device_pub_key\""];
+  GroupMemberDevice device = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:group_member_device_pub_key;PRELOAD:false\""];
 
   // GORM meta
   google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
@@ -180,7 +156,7 @@ message MyselfAccount {
   bytes sig_chain = 6;
 
   // Relations
-  repeated MyselfDevice devices = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:account_pub_key\""];
+  repeated MyselfDevice devices = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:account_pub_key;PRELOAD:false\""];
 
   // GORM meta
   google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
@@ -194,7 +170,7 @@ message MyselfDevice {
   bytes account_pub_key = 3;
 
   // Relations
-  MyselfAccount account = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:account_pub_key\"", (gogoproto.nullable) = false];
+  MyselfAccount account = 80 [(gogoproto.moretags) = "gorm:\"foreignkey:account_pub_key;PRELOAD:false\"", (gogoproto.nullable) = false];
 
   // GORM meta
   google.protobuf.Timestamp created_at = 98 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];

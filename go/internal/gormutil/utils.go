@@ -8,7 +8,7 @@ import (
 
 // Init configures an active gorm connection
 func Init(db *gorm.DB, logger *zap.Logger) (*gorm.DB, error) {
-	db = db.Set("gorm:auto_preload", true)
+	db = db.Set("gorm:auto_preload", false) // WARNING: if true, we need to be 100% sure that we don't have circular dependencies in our model definitions
 	db = db.Set("gorm:association_autoupdate", false)
 	db.SetLogger(&zapLogger{logger: logger})
 	db.SingularTable(true)

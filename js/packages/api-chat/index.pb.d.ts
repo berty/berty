@@ -5846,12 +5846,6 @@ export namespace berty {
             /** Message body */
             body?: (berty.chatmodel.Message.IBody|null);
 
-            /** Message attachments */
-            attachments?: (berty.chatmodel.Message.IAttachment[]|null);
-
-            /** Message reactions */
-            reactions?: (berty.chatmodel.Message.IReaction[]|null);
-
             /** Message conversationId */
             conversationId?: (number|Long|null);
 
@@ -5863,6 +5857,12 @@ export namespace berty {
 
             /** Message member */
             member?: (berty.chatmodel.IMember|null);
+
+            /** Message attachments */
+            attachments?: (berty.chatmodel.IAttachment[]|null);
+
+            /** Message reactions */
+            reactions?: (berty.chatmodel.IReaction[]|null);
         }
 
         /** Represents a Message. */
@@ -5895,12 +5895,6 @@ export namespace berty {
             /** Message body. */
             public body?: (berty.chatmodel.Message.IBody|null);
 
-            /** Message attachments. */
-            public attachments: berty.chatmodel.Message.IAttachment[];
-
-            /** Message reactions. */
-            public reactions: berty.chatmodel.Message.IReaction[];
-
             /** Message conversationId. */
             public conversationId: (number|Long);
 
@@ -5912,6 +5906,12 @@ export namespace berty {
 
             /** Message member. */
             public member?: (berty.chatmodel.IMember|null);
+
+            /** Message attachments. */
+            public attachments: berty.chatmodel.IAttachment[];
+
+            /** Message reactions. */
+            public reactions: berty.chatmodel.IReaction[];
 
             /**
              * Creates a new Message instance using the specified properties.
@@ -6102,264 +6102,264 @@ export namespace berty {
                  */
                 public toJSON(): { [k: string]: any };
             }
+        }
 
-            /** Properties of an Attachment. */
-            interface IAttachment {
+        /** Properties of an Attachment. */
+        interface IAttachment {
 
-                /** Attachment id */
-                id?: (number|Long|null);
+            /** Attachment id */
+            id?: (number|Long|null);
 
-                /** Attachment createdAt */
-                createdAt?: (google.protobuf.ITimestamp|null);
+            /** Attachment createdAt */
+            createdAt?: (google.protobuf.ITimestamp|null);
 
-                /** Attachment updatedAt */
-                updatedAt?: (google.protobuf.ITimestamp|null);
+            /** Attachment updatedAt */
+            updatedAt?: (google.protobuf.ITimestamp|null);
 
-                /** Attachment uri */
-                uri?: (string|null);
+            /** Attachment uri */
+            uri?: (string|null);
 
-                /** Attachment contentType */
-                contentType?: (string|null);
+            /** Attachment contentType */
+            contentType?: (string|null);
 
-                /** Attachment messageId */
-                messageId?: (number|Long|null);
+            /** Attachment messageId */
+            messageId?: (number|Long|null);
 
-                /** Attachment message */
-                message?: (berty.chatmodel.IMessage|null);
-            }
+            /** Attachment message */
+            message?: (berty.chatmodel.IMessage|null);
+        }
 
-            /** Represents an Attachment. */
-            class Attachment implements IAttachment {
+        /** Represents an Attachment. */
+        class Attachment implements IAttachment {
 
-                /**
-                 * Constructs a new Attachment.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: berty.chatmodel.Message.IAttachment);
+            /**
+             * Constructs a new Attachment.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: berty.chatmodel.IAttachment);
 
-                /** Attachment id. */
-                public id: (number|Long);
+            /** Attachment id. */
+            public id: (number|Long);
 
-                /** Attachment createdAt. */
-                public createdAt?: (google.protobuf.ITimestamp|null);
+            /** Attachment createdAt. */
+            public createdAt?: (google.protobuf.ITimestamp|null);
 
-                /** Attachment updatedAt. */
-                public updatedAt?: (google.protobuf.ITimestamp|null);
+            /** Attachment updatedAt. */
+            public updatedAt?: (google.protobuf.ITimestamp|null);
 
-                /** Attachment uri. */
-                public uri: string;
+            /** Attachment uri. */
+            public uri: string;
 
-                /** Attachment contentType. */
-                public contentType: string;
+            /** Attachment contentType. */
+            public contentType: string;
 
-                /** Attachment messageId. */
-                public messageId: (number|Long);
+            /** Attachment messageId. */
+            public messageId: (number|Long);
 
-                /** Attachment message. */
-                public message?: (berty.chatmodel.IMessage|null);
+            /** Attachment message. */
+            public message?: (berty.chatmodel.IMessage|null);
 
-                /**
-                 * Creates a new Attachment instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns Attachment instance
-                 */
-                public static create(properties?: berty.chatmodel.Message.IAttachment): berty.chatmodel.Message.Attachment;
+            /**
+             * Creates a new Attachment instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Attachment instance
+             */
+            public static create(properties?: berty.chatmodel.IAttachment): berty.chatmodel.Attachment;
 
-                /**
-                 * Encodes the specified Attachment message. Does not implicitly {@link berty.chatmodel.Message.Attachment.verify|verify} messages.
-                 * @param message Attachment message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: berty.chatmodel.Message.IAttachment, writer?: $protobuf.Writer): $protobuf.Writer;
+            /**
+             * Encodes the specified Attachment message. Does not implicitly {@link berty.chatmodel.Attachment.verify|verify} messages.
+             * @param message Attachment message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: berty.chatmodel.IAttachment, writer?: $protobuf.Writer): $protobuf.Writer;
 
-                /**
-                 * Encodes the specified Attachment message, length delimited. Does not implicitly {@link berty.chatmodel.Message.Attachment.verify|verify} messages.
-                 * @param message Attachment message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: berty.chatmodel.Message.IAttachment, writer?: $protobuf.Writer): $protobuf.Writer;
+            /**
+             * Encodes the specified Attachment message, length delimited. Does not implicitly {@link berty.chatmodel.Attachment.verify|verify} messages.
+             * @param message Attachment message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: berty.chatmodel.IAttachment, writer?: $protobuf.Writer): $protobuf.Writer;
 
-                /**
-                 * Decodes an Attachment message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns Attachment
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chatmodel.Message.Attachment;
+            /**
+             * Decodes an Attachment message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Attachment
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chatmodel.Attachment;
 
-                /**
-                 * Decodes an Attachment message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns Attachment
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chatmodel.Message.Attachment;
+            /**
+             * Decodes an Attachment message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Attachment
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chatmodel.Attachment;
 
-                /**
-                 * Verifies an Attachment message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
+            /**
+             * Verifies an Attachment message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
 
-                /**
-                 * Creates an Attachment message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns Attachment
-                 */
-                public static fromObject(object: { [k: string]: any }): berty.chatmodel.Message.Attachment;
+            /**
+             * Creates an Attachment message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Attachment
+             */
+            public static fromObject(object: { [k: string]: any }): berty.chatmodel.Attachment;
 
-                /**
-                 * Creates a plain object from an Attachment message. Also converts values to other types if specified.
-                 * @param message Attachment
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: berty.chatmodel.Message.Attachment, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            /**
+             * Creates a plain object from an Attachment message. Also converts values to other types if specified.
+             * @param message Attachment
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: berty.chatmodel.Attachment, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
-                /**
-                 * Converts this Attachment to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
+            /**
+             * Converts this Attachment to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
 
-            /** Properties of a Reaction. */
-            interface IReaction {
+        /** Properties of a Reaction. */
+        interface IReaction {
 
-                /** Reaction id */
-                id?: (number|Long|null);
+            /** Reaction id */
+            id?: (number|Long|null);
 
-                /** Reaction createdAt */
-                createdAt?: (google.protobuf.ITimestamp|null);
+            /** Reaction createdAt */
+            createdAt?: (google.protobuf.ITimestamp|null);
 
-                /** Reaction updatedAt */
-                updatedAt?: (google.protobuf.ITimestamp|null);
+            /** Reaction updatedAt */
+            updatedAt?: (google.protobuf.ITimestamp|null);
 
-                /** Reaction emoji */
-                emoji?: (Uint8Array|null);
+            /** Reaction emoji */
+            emoji?: (Uint8Array|null);
 
-                /** Reaction messageId */
-                messageId?: (number|Long|null);
+            /** Reaction messageId */
+            messageId?: (number|Long|null);
 
-                /** Reaction message */
-                message?: (berty.chatmodel.IMessage|null);
+            /** Reaction message */
+            message?: (berty.chatmodel.IMessage|null);
 
-                /** Reaction memberId */
-                memberId?: (number|Long|null);
+            /** Reaction memberId */
+            memberId?: (number|Long|null);
 
-                /** Reaction member */
-                member?: (berty.chatmodel.IMember|null);
-            }
+            /** Reaction member */
+            member?: (berty.chatmodel.IMember|null);
+        }
 
-            /** Represents a Reaction. */
-            class Reaction implements IReaction {
+        /** Represents a Reaction. */
+        class Reaction implements IReaction {
 
-                /**
-                 * Constructs a new Reaction.
-                 * @param [properties] Properties to set
-                 */
-                constructor(properties?: berty.chatmodel.Message.IReaction);
+            /**
+             * Constructs a new Reaction.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: berty.chatmodel.IReaction);
 
-                /** Reaction id. */
-                public id: (number|Long);
+            /** Reaction id. */
+            public id: (number|Long);
 
-                /** Reaction createdAt. */
-                public createdAt?: (google.protobuf.ITimestamp|null);
+            /** Reaction createdAt. */
+            public createdAt?: (google.protobuf.ITimestamp|null);
 
-                /** Reaction updatedAt. */
-                public updatedAt?: (google.protobuf.ITimestamp|null);
+            /** Reaction updatedAt. */
+            public updatedAt?: (google.protobuf.ITimestamp|null);
 
-                /** Reaction emoji. */
-                public emoji: Uint8Array;
+            /** Reaction emoji. */
+            public emoji: Uint8Array;
 
-                /** Reaction messageId. */
-                public messageId: (number|Long);
+            /** Reaction messageId. */
+            public messageId: (number|Long);
 
-                /** Reaction message. */
-                public message?: (berty.chatmodel.IMessage|null);
+            /** Reaction message. */
+            public message?: (berty.chatmodel.IMessage|null);
 
-                /** Reaction memberId. */
-                public memberId: (number|Long);
+            /** Reaction memberId. */
+            public memberId: (number|Long);
 
-                /** Reaction member. */
-                public member?: (berty.chatmodel.IMember|null);
+            /** Reaction member. */
+            public member?: (berty.chatmodel.IMember|null);
 
-                /**
-                 * Creates a new Reaction instance using the specified properties.
-                 * @param [properties] Properties to set
-                 * @returns Reaction instance
-                 */
-                public static create(properties?: berty.chatmodel.Message.IReaction): berty.chatmodel.Message.Reaction;
+            /**
+             * Creates a new Reaction instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Reaction instance
+             */
+            public static create(properties?: berty.chatmodel.IReaction): berty.chatmodel.Reaction;
 
-                /**
-                 * Encodes the specified Reaction message. Does not implicitly {@link berty.chatmodel.Message.Reaction.verify|verify} messages.
-                 * @param message Reaction message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encode(message: berty.chatmodel.Message.IReaction, writer?: $protobuf.Writer): $protobuf.Writer;
+            /**
+             * Encodes the specified Reaction message. Does not implicitly {@link berty.chatmodel.Reaction.verify|verify} messages.
+             * @param message Reaction message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: berty.chatmodel.IReaction, writer?: $protobuf.Writer): $protobuf.Writer;
 
-                /**
-                 * Encodes the specified Reaction message, length delimited. Does not implicitly {@link berty.chatmodel.Message.Reaction.verify|verify} messages.
-                 * @param message Reaction message or plain object to encode
-                 * @param [writer] Writer to encode to
-                 * @returns Writer
-                 */
-                public static encodeDelimited(message: berty.chatmodel.Message.IReaction, writer?: $protobuf.Writer): $protobuf.Writer;
+            /**
+             * Encodes the specified Reaction message, length delimited. Does not implicitly {@link berty.chatmodel.Reaction.verify|verify} messages.
+             * @param message Reaction message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: berty.chatmodel.IReaction, writer?: $protobuf.Writer): $protobuf.Writer;
 
-                /**
-                 * Decodes a Reaction message from the specified reader or buffer.
-                 * @param reader Reader or buffer to decode from
-                 * @param [length] Message length if known beforehand
-                 * @returns Reaction
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chatmodel.Message.Reaction;
+            /**
+             * Decodes a Reaction message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Reaction
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chatmodel.Reaction;
 
-                /**
-                 * Decodes a Reaction message from the specified reader or buffer, length delimited.
-                 * @param reader Reader or buffer to decode from
-                 * @returns Reaction
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chatmodel.Message.Reaction;
+            /**
+             * Decodes a Reaction message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Reaction
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chatmodel.Reaction;
 
-                /**
-                 * Verifies a Reaction message.
-                 * @param message Plain object to verify
-                 * @returns `null` if valid, otherwise the reason why it is not
-                 */
-                public static verify(message: { [k: string]: any }): (string|null);
+            /**
+             * Verifies a Reaction message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
 
-                /**
-                 * Creates a Reaction message from a plain object. Also converts values to their respective internal types.
-                 * @param object Plain object
-                 * @returns Reaction
-                 */
-                public static fromObject(object: { [k: string]: any }): berty.chatmodel.Message.Reaction;
+            /**
+             * Creates a Reaction message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Reaction
+             */
+            public static fromObject(object: { [k: string]: any }): berty.chatmodel.Reaction;
 
-                /**
-                 * Creates a plain object from a Reaction message. Also converts values to other types if specified.
-                 * @param message Reaction
-                 * @param [options] Conversion options
-                 * @returns Plain object
-                 */
-                public static toObject(message: berty.chatmodel.Message.Reaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            /**
+             * Creates a plain object from a Reaction message. Also converts values to other types if specified.
+             * @param message Reaction
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: berty.chatmodel.Reaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
-                /**
-                 * Converts this Reaction to JSON.
-                 * @returns JSON object
-                 */
-                public toJSON(): { [k: string]: any };
-            }
+            /**
+             * Converts this Reaction to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
         }
 
         /** Properties of a Contact. */

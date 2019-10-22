@@ -4,7 +4,7 @@ package berty.protocol;
 
 import "google/api/annotations.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "protocolmodel.proto";
+import "go-internal/protocolmodel.proto";
 
 option go_package = "berty.tech/go/pkg/bertyprotocol";
 
@@ -15,7 +15,7 @@ option (gogoproto.sizer_all) = true;
 option (gogoproto.goproto_registration) = true;
 option (gogoproto.populate_all) = true;
 option (gogoproto.equal_all) = true;
-option (gogoproto.testgen_all) = true;
+option (gogoproto.testgen_all) = false; // should be set to false, because of loops in message dependencies
 
 // Instance is the top-level API to manage an instance of the Berty Protocol.
 // Each Berty Protocol Instance is considered as a Berty device and is associated with a Berty user.

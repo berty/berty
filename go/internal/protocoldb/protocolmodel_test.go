@@ -112,47 +112,56 @@ func TestUsage(t *testing.T) {
 		t.Fatalf("unable to create data for account, err: %v", err)
 	}
 
-	for _, q := range []struct {
+	tests := []struct {
+		name          string
 		query         string
 		params        []interface{}
 		expectedCount int
 	}{
 		{
+			name:          "group_info_1",
 			query:         "SELECT COUNT(*) AS c FROM group_info WHERE inviter_contact_pub_key = ?",
 			params:        []interface{}{contactA.AccountPubKey},
 			expectedCount: 1,
 		},
 		{
+			name:          "group_member_1",
 			query:         "SELECT COUNT(*) AS c FROM group_member WHERE inviter_pub_key = ? AND contact_account_pub_key = ? AND group_pub_key = ?",
 			params:        []interface{}{memberB.GroupMemberPubKey, contactA.AccountPubKey, groupAB.GroupPubKey},
 			expectedCount: 1,
 		},
 		{
+			name:          "group_member_device_1",
 			query:         "SELECT COUNT(*) AS c FROM group_member_device WHERE group_member_pub_key = ?",
 			params:        []interface{}{memberA.GroupMemberPubKey},
 			expectedCount: 2,
 		},
 		{
+			name:          "myself_device_1",
 			query:         "SELECT COUNT(*) AS c FROM myself_device WHERE account_pub_key = ?",
 			params:        []interface{}{account.AccountPubKey},
 			expectedCount: 2,
 		},
 		{
+			name:          "myself_device_2",
 			query:         "SELECT COUNT(*) AS c FROM myself_device WHERE account_pub_key = ? AND device_priv_key = ?",
 			params:        []interface{}{account.AccountPubKey, []byte("accountADevice1PrivateKey")},
 			expectedCount: 1,
 		},
-	} {
-		result := &struct {
-			C int
-		}{}
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			result := &struct {
+				C int
+			}{}
 
-		if err := db.LogMode(true).Raw(q.query, q.params...).Scan(&result).Error; err != nil {
-			t.Fatalf("unable to perform query: err %v", err)
-		}
+			if err := db.LogMode(true).Raw(test.query, test.params...).Scan(&result).Error; err != nil {
+				t.Fatalf("unable to perform query: err %v", err)
+			}
 
-		if result.C != q.expectedCount {
-			t.Fatalf("invalid result count for query: %s, expected %d, got %d", q.query, q.expectedCount, result.C)
-		}
+			if result.C != test.expectedCount {
+				t.Fatalf("invalid result count for query: %s, expected %d, got %d", test.query, test.expectedCount, result.C)
+			}
+		})
 	}
 }
