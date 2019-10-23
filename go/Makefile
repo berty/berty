@@ -6,6 +6,7 @@ BAZEL ?= bazel
 BAZEL_ARGS ?=
 BAZEL_CMD_ARGS ?=
 GO ?= go
+GO_TEST_OPTS ?= -test.timeout=20s
 GOPATH ?= $(HOME)/go
 IBAZEL ?= ibazel
 USE_IBAZEL ?= false
@@ -85,7 +86,7 @@ go.lint: pb.generate
 .PHONY: nobazel.unittest
 go.unittest: pb.generate
 	$(call check-program, $(GO))
-	GO111MODULE=on $(GO) test -v -cover -coverprofile=coverage.txt -covermode=atomic -race ./...
+	GO111MODULE=on $(GO) test $(GO_TEST_OPTS) -cover -coverprofile=coverage.txt -covermode=atomic -race ./...
 
 .PHONY: go.install
 go.install: pb.generate
@@ -184,7 +185,7 @@ GEN_SUM := gen.sum
 
 .PHONY: pb.clean
 pb.clean:
-	rm -f gen.sum $(wildcard */*/*.pb.go)
+	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go)
 
 .PHONY: pb.generate
 pb.generate: gen.sum

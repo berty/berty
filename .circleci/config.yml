@@ -19,7 +19,7 @@ jobs:
       - moul/mod-download
       - gotools/mod-tidy-check
       - run: make go.install
-      - run: make go.unittest
+      - run: make go.unittest GO_TEST_OPTS="-v -test.timeout=120s"
       - run: make tidy
       - moul/install_golangci-lint
       - run: PATH=$PATH:$(pwd)/bin make lint

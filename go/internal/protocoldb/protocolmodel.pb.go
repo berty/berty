@@ -4,22 +4,23 @@
 package protocoldb
 
 import (
+	bytes "bytes"
 	fmt "fmt"
 	io "io"
 	math "math"
 	math_bits "math/bits"
-	reflect "reflect"
-	strings "strings"
 	time "time"
 
 	_ "github.com/gogo/protobuf/gogoproto"
+	proto "github.com/gogo/protobuf/proto"
 	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
-	proto "github.com/golang/protobuf/proto"
+	golang_proto "github.com/golang/protobuf/proto"
 	_ "github.com/golang/protobuf/ptypes/timestamp"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = golang_proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 var _ = time.Kitchen
@@ -28,7 +29,7 @@ var _ = time.Kitchen
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type GroupInfo_GroupAudience int32
 
@@ -51,6 +52,10 @@ var GroupInfo_GroupAudience_value = map[string]int32{
 	"OneToOne":  1,
 	"Group":     2,
 	"Self":      3,
+}
+
+func (x GroupInfo_GroupAudience) String() string {
+	return proto.EnumName(GroupInfo_GroupAudience_name, int32(x))
 }
 
 func (GroupInfo_GroupAudience) EnumDescriptor() ([]byte, []int) {
@@ -83,6 +88,10 @@ var Contact_TrustLevel_value = map[string]int32{
 	"UltimateTrust": 4,
 }
 
+func (x Contact_TrustLevel) String() string {
+	return proto.EnumName(Contact_TrustLevel_name, int32(x))
+}
+
 func (Contact_TrustLevel) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{4, 0}
 }
@@ -106,15 +115,16 @@ type GroupInfo struct {
 	OrbitDBCurrentCIDSetting []byte `protobuf:"bytes,12,opt,name=orbitdb_current_cid_setting,json=orbitdbCurrentCidSetting,proto3" json:"orbitdb_current_cid_setting,omitempty"`
 	OrbitDBCurrentCIDMember  []byte `protobuf:"bytes,13,opt,name=orbitdb_current_cid_member,json=orbitdbCurrentCidMember,proto3" json:"orbitdb_current_cid_member,omitempty"`
 	// Relation
-	Members []*GroupMember `protobuf:"bytes,80,rep,name=members,proto3" json:"members,omitempty" gorm:"foreignkey:group_pub_key"`
-	Inviter *Contact       `protobuf:"bytes,81,opt,name=inviter,proto3" json:"inviter,omitempty" gorm:"foreignkey:inviter_contact_pub_key"`
+	Members []*GroupMember `protobuf:"bytes,80,rep,name=members,proto3" json:"members,omitempty" gorm:"foreignkey:group_pub_key;PRELOAD:false"`
+	Inviter *Contact       `protobuf:"bytes,81,opt,name=inviter,proto3" json:"inviter,omitempty" gorm:"foreignkey:inviter_contact_pub_key;PRELOAD:false"`
 	// GORM meta
 	CreatedAt time.Time `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3,stdtime" json:"created_at"`
 	UpdatedAt time.Time `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3,stdtime" json:"updated_at"`
 }
 
-func (m *GroupInfo) Reset()      { *m = GroupInfo{} }
-func (*GroupInfo) ProtoMessage() {}
+func (m *GroupInfo) Reset()         { *m = GroupInfo{} }
+func (m *GroupInfo) String() string { return proto.CompactTextString(m) }
+func (*GroupInfo) ProtoMessage()    {}
 func (*GroupInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{0}
 }
@@ -156,14 +166,15 @@ type GroupIncomingRequest struct {
 	EssentialMetadata    []byte `protobuf:"bytes,7,opt,name=essential_metadata,json=essentialMetadata,proto3" json:"essential_metadata,omitempty"`
 	InviterContactPubKey []byte `protobuf:"bytes,9,opt,name=inviter_contact_pub_key,json=inviterContactPubKey,proto3" json:"inviter_contact_pub_key,omitempty"`
 	// Relations
-	InviterContact *Contact `protobuf:"bytes,8,opt,name=inviter_contact,json=inviterContact,proto3" json:"inviter_contact,omitempty" gorm:"foreignkey:inviter_contact_pub_key"`
+	InviterContact *Contact `protobuf:"bytes,8,opt,name=inviter_contact,json=inviterContact,proto3" json:"inviter_contact,omitempty" gorm:"foreignkey:inviter_contact_pub_key;PRELOAD:false"`
 	// GORM meta
 	CreatedAt time.Time `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3,stdtime" json:"created_at"`
 	UpdatedAt time.Time `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3,stdtime" json:"updated_at"`
 }
 
-func (m *GroupIncomingRequest) Reset()      { *m = GroupIncomingRequest{} }
-func (*GroupIncomingRequest) ProtoMessage() {}
+func (m *GroupIncomingRequest) Reset()         { *m = GroupIncomingRequest{} }
+func (m *GroupIncomingRequest) String() string { return proto.CompactTextString(m) }
+func (*GroupIncomingRequest) ProtoMessage()    {}
 func (*GroupIncomingRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{1}
 }
@@ -203,17 +214,18 @@ type GroupMember struct {
 	ContactAccountBindingProof []byte `protobuf:"bytes,5,opt,name=contact_account_binding_proof,json=contactAccountBindingProof,proto3" json:"contact_account_binding_proof,omitempty"`
 	Metadata                   []byte `protobuf:"bytes,6,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Relations
-	Devices   []*GroupMemberDevice `protobuf:"bytes,80,rep,name=devices,proto3" json:"devices,omitempty" gorm:"foreignkey:group_member_pub_key"`
-	GroupInfo GroupInfo            `protobuf:"bytes,81,opt,name=group_info,json=groupInfo,proto3" json:"group_info" gorm:"foreignkey:group_pub_key"`
-	Inviter   *GroupMember         `protobuf:"bytes,82,opt,name=inviter,proto3" json:"inviter,omitempty" gorm:"foreignkey:inviter_pub_key"`
-	Contact   *Contact             `protobuf:"bytes,83,opt,name=contact,proto3" json:"contact,omitempty" gorm:"foreignkey:contact_account_pub_key"`
+	Devices   []*GroupMemberDevice `protobuf:"bytes,80,rep,name=devices,proto3" json:"devices,omitempty" gorm:"foreignkey:group_member_pub_key;PRELOAD:false"`
+	GroupInfo GroupInfo            `protobuf:"bytes,81,opt,name=group_info,json=groupInfo,proto3" json:"group_info" gorm:"foreignkey:group_pub_key;PRELOAD:false"`
+	Inviter   *GroupMember         `protobuf:"bytes,82,opt,name=inviter,proto3" json:"inviter,omitempty" gorm:"foreignkey:inviter_pub_key;PRELOAD:false"`
+	Contact   *Contact             `protobuf:"bytes,83,opt,name=contact,proto3" json:"contact,omitempty" gorm:"foreignkey:contact_account_pub_key;PRELOAD:false"`
 	// GORM meta
 	CreatedAt time.Time `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3,stdtime" json:"created_at"`
 	UpdatedAt time.Time `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3,stdtime" json:"updated_at"`
 }
 
-func (m *GroupMember) Reset()      { *m = GroupMember{} }
-func (*GroupMember) ProtoMessage() {}
+func (m *GroupMember) Reset()         { *m = GroupMember{} }
+func (m *GroupMember) String() string { return proto.CompactTextString(m) }
+func (*GroupMember) ProtoMessage()    {}
 func (*GroupMember) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{2}
 }
@@ -252,14 +264,15 @@ type GroupMemberDevice struct {
 	DerivationCounter       uint64 `protobuf:"varint,4,opt,name=derivation_counter,json=derivationCounter,proto3" json:"derivation_counter,omitempty"`
 	DerivationNextHotp      []byte `protobuf:"bytes,5,opt,name=derivation_next_hotp,json=derivationNextHotp,proto3" json:"derivation_next_hotp,omitempty" gorm:"index"`
 	// Relations
-	GroupMember GroupMember `protobuf:"bytes,80,opt,name=group_member,json=groupMember,proto3" json:"group_member" gorm:"foreignkey:group_member_pub_key"`
+	GroupMember GroupMember `protobuf:"bytes,80,opt,name=group_member,json=groupMember,proto3" json:"group_member" gorm:"foreignkey:group_member_pub_key;PRELOAD:false"`
 	// GORM meta
 	CreatedAt time.Time `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3,stdtime" json:"created_at"`
 	UpdatedAt time.Time `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3,stdtime" json:"updated_at"`
 }
 
-func (m *GroupMemberDevice) Reset()      { *m = GroupMemberDevice{} }
-func (*GroupMemberDevice) ProtoMessage() {}
+func (m *GroupMemberDevice) Reset()         { *m = GroupMemberDevice{} }
+func (m *GroupMemberDevice) String() string { return proto.CompactTextString(m) }
+func (*GroupMemberDevice) ProtoMessage()    {}
 func (*GroupMemberDevice) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{3}
 }
@@ -299,14 +312,15 @@ type Contact struct {
 	Metadata            []byte             `protobuf:"bytes,5,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Blocked             bool               `protobuf:"varint,6,opt,name=blocked,proto3" json:"blocked,omitempty"`
 	// Relations
-	OneToOneGroup *GroupInfo `protobuf:"bytes,80,opt,name=one_to_one_group,json=oneToOneGroup,proto3" json:"one_to_one_group,omitempty" gorm:"foreignkey:group_pub_key"`
+	OneToOneGroup *GroupInfo `protobuf:"bytes,80,opt,name=one_to_one_group,json=oneToOneGroup,proto3" json:"one_to_one_group,omitempty" gorm:"foreignkey:group_pub_key:PRELOAD:false"`
 	// GORM meta
 	CreatedAt time.Time `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3,stdtime" json:"created_at"`
 	UpdatedAt time.Time `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3,stdtime" json:"updated_at"`
 }
 
-func (m *Contact) Reset()      { *m = Contact{} }
-func (*Contact) ProtoMessage() {}
+func (m *Contact) Reset()         { *m = Contact{} }
+func (m *Contact) String() string { return proto.CompactTextString(m) }
+func (*Contact) ProtoMessage()    {}
 func (*Contact) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{4}
 }
@@ -344,14 +358,15 @@ type Message struct {
 	MessageKey              []byte `protobuf:"bytes,3,opt,name=message_key,json=messageKey,proto3" json:"message_key,omitempty"`
 	GroupMemberDevicePubKey []byte `protobuf:"bytes,4,opt,name=group_member_device_pub_key,json=groupMemberDevicePubKey,proto3" json:"group_member_device_pub_key,omitempty"`
 	// Relations
-	Device *GroupMemberDevice `protobuf:"bytes,80,opt,name=device,proto3" json:"device,omitempty" gorm:"foreignkey:group_member_device_pub_key"`
+	Device *GroupMemberDevice `protobuf:"bytes,80,opt,name=device,proto3" json:"device,omitempty" gorm:"foreignkey:group_member_device_pub_key;PRELOAD:false"`
 	// GORM meta
 	CreatedAt time.Time `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3,stdtime" json:"created_at"`
 	UpdatedAt time.Time `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3,stdtime" json:"updated_at"`
 }
 
-func (m *Message) Reset()      { *m = Message{} }
-func (*Message) ProtoMessage() {}
+func (m *Message) Reset()         { *m = Message{} }
+func (m *Message) String() string { return proto.CompactTextString(m) }
+func (*Message) ProtoMessage()    {}
 func (*Message) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{5}
 }
@@ -391,14 +406,15 @@ type MyselfAccount struct {
 	PublicRendezvousPointEnabled bool   `protobuf:"varint,5,opt,name=public_rendezvous_point_enabled,json=publicRendezvousPointEnabled,proto3" json:"public_rendezvous_point_enabled,omitempty"`
 	SigChain                     []byte `protobuf:"bytes,6,opt,name=sig_chain,json=sigChain,proto3" json:"sig_chain,omitempty"`
 	// Relations
-	Devices []*MyselfDevice `protobuf:"bytes,80,rep,name=devices,proto3" json:"devices,omitempty" gorm:"foreignkey:account_pub_key"`
+	Devices []*MyselfDevice `protobuf:"bytes,80,rep,name=devices,proto3" json:"devices,omitempty" gorm:"foreignkey:account_pub_key;PRELOAD:false"`
 	// GORM meta
 	CreatedAt time.Time `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3,stdtime" json:"created_at"`
 	UpdatedAt time.Time `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3,stdtime" json:"updated_at"`
 }
 
-func (m *MyselfAccount) Reset()      { *m = MyselfAccount{} }
-func (*MyselfAccount) ProtoMessage() {}
+func (m *MyselfAccount) Reset()         { *m = MyselfAccount{} }
+func (m *MyselfAccount) String() string { return proto.CompactTextString(m) }
+func (*MyselfAccount) ProtoMessage()    {}
 func (*MyselfAccount) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{6}
 }
@@ -435,14 +451,15 @@ type MyselfDevice struct {
 	DevicePrivKey []byte `protobuf:"bytes,2,opt,name=device_priv_key,json=devicePrivKey,proto3" json:"device_priv_key,omitempty"`
 	AccountPubKey []byte `protobuf:"bytes,3,opt,name=account_pub_key,json=accountPubKey,proto3" json:"account_pub_key,omitempty"`
 	// Relations
-	Account MyselfAccount `protobuf:"bytes,80,opt,name=account,proto3" json:"account" gorm:"foreignkey:account_pub_key"`
+	Account MyselfAccount `protobuf:"bytes,80,opt,name=account,proto3" json:"account" gorm:"foreignkey:account_pub_key;PRELOAD:false"`
 	// GORM meta
 	CreatedAt time.Time `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3,stdtime" json:"created_at"`
 	UpdatedAt time.Time `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3,stdtime" json:"updated_at"`
 }
 
-func (m *MyselfDevice) Reset()      { *m = MyselfDevice{} }
-func (*MyselfDevice) ProtoMessage() {}
+func (m *MyselfDevice) Reset()         { *m = MyselfDevice{} }
+func (m *MyselfDevice) String() string { return proto.CompactTextString(m) }
+func (*MyselfDevice) ProtoMessage()    {}
 func (*MyselfDevice) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{7}
 }
@@ -475,132 +492,562 @@ var xxx_messageInfo_MyselfDevice proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterEnum("berty.protocolmodel.GroupInfo_GroupAudience", GroupInfo_GroupAudience_name, GroupInfo_GroupAudience_value)
+	golang_proto.RegisterEnum("berty.protocolmodel.GroupInfo_GroupAudience", GroupInfo_GroupAudience_name, GroupInfo_GroupAudience_value)
 	proto.RegisterEnum("berty.protocolmodel.Contact_TrustLevel", Contact_TrustLevel_name, Contact_TrustLevel_value)
+	golang_proto.RegisterEnum("berty.protocolmodel.Contact_TrustLevel", Contact_TrustLevel_name, Contact_TrustLevel_value)
 	proto.RegisterType((*GroupInfo)(nil), "berty.protocolmodel.GroupInfo")
+	golang_proto.RegisterType((*GroupInfo)(nil), "berty.protocolmodel.GroupInfo")
 	proto.RegisterType((*GroupIncomingRequest)(nil), "berty.protocolmodel.GroupIncomingRequest")
+	golang_proto.RegisterType((*GroupIncomingRequest)(nil), "berty.protocolmodel.GroupIncomingRequest")
 	proto.RegisterType((*GroupMember)(nil), "berty.protocolmodel.GroupMember")
+	golang_proto.RegisterType((*GroupMember)(nil), "berty.protocolmodel.GroupMember")
 	proto.RegisterType((*GroupMemberDevice)(nil), "berty.protocolmodel.GroupMemberDevice")
+	golang_proto.RegisterType((*GroupMemberDevice)(nil), "berty.protocolmodel.GroupMemberDevice")
 	proto.RegisterType((*Contact)(nil), "berty.protocolmodel.Contact")
+	golang_proto.RegisterType((*Contact)(nil), "berty.protocolmodel.Contact")
 	proto.RegisterType((*Message)(nil), "berty.protocolmodel.Message")
+	golang_proto.RegisterType((*Message)(nil), "berty.protocolmodel.Message")
 	proto.RegisterType((*MyselfAccount)(nil), "berty.protocolmodel.MyselfAccount")
+	golang_proto.RegisterType((*MyselfAccount)(nil), "berty.protocolmodel.MyselfAccount")
 	proto.RegisterType((*MyselfDevice)(nil), "berty.protocolmodel.MyselfDevice")
+	golang_proto.RegisterType((*MyselfDevice)(nil), "berty.protocolmodel.MyselfDevice")
 }
 
 func init() { proto.RegisterFile("go-internal/protocolmodel.proto", fileDescriptor_e2f5bc4155f6089b) }
-
-var fileDescriptor_e2f5bc4155f6089b = []byte{
-	// 1740 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x58, 0x3d, 0x70, 0x1b, 0xc7,
-	0x15, 0x3e, 0x88, 0x3f, 0x00, 0x1e, 0x00, 0x12, 0x5c, 0xd2, 0xd6, 0x85, 0x52, 0x16, 0x14, 0x14,
-	0xd3, 0x54, 0x26, 0x04, 0xc7, 0xf2, 0x78, 0x3c, 0xa3, 0x78, 0x92, 0x21, 0x28, 0x8f, 0xa2, 0x71,
-	0x14, 0x31, 0x47, 0xca, 0x93, 0x51, 0x8a, 0x9b, 0xc3, 0xdd, 0xe2, 0xb8, 0xa3, 0xc3, 0x2e, 0x7c,
-	0xb7, 0x60, 0x84, 0x54, 0x2e, 0xd5, 0xc5, 0x65, 0xd2, 0x65, 0x26, 0x8d, 0x4b, 0x77, 0x71, 0xa9,
-	0x52, 0x4d, 0x66, 0x54, 0xaa, 0x42, 0x4c, 0xa0, 0x71, 0xe9, 0x61, 0x13, 0x97, 0x99, 0xbb, 0xdd,
-	0x03, 0xee, 0xf0, 0x27, 0xda, 0x72, 0xc1, 0x0a, 0xd8, 0x7d, 0xdf, 0x7b, 0xb7, 0xb7, 0xef, 0x7b,
-	0xdf, 0xbe, 0x3d, 0xa8, 0xb8, 0x7c, 0x97, 0x32, 0x41, 0x7c, 0x66, 0x79, 0x7b, 0x6d, 0x9f, 0x0b,
-	0x6e, 0x73, 0xaf, 0xc5, 0x1d, 0xe2, 0xd5, 0xa2, 0x11, 0x5a, 0x6f, 0x10, 0x5f, 0x74, 0x6b, 0x29,
-	0xd3, 0xe6, 0xaf, 0x5d, 0x2a, 0x4e, 0x3a, 0x8d, 0x9a, 0xcd, 0x5b, 0x7b, 0x2e, 0xf7, 0x2c, 0xe6,
-	0x4a, 0xdf, 0x46, 0xa7, 0xb9, 0xd7, 0x16, 0xdd, 0x36, 0x09, 0xf6, 0x04, 0x6d, 0x91, 0x40, 0x58,
-	0xad, 0xf6, 0xe8, 0x9f, 0x0c, 0xb2, 0xb9, 0x9b, 0x72, 0x76, 0xf9, 0xc8, 0x35, 0x1c, 0x45, 0x83,
-	0xe8, 0x9f, 0x84, 0x57, 0xff, 0x93, 0x87, 0xfc, 0x3d, 0x9f, 0x77, 0xda, 0xf7, 0x59, 0x93, 0xa3,
-	0x3b, 0x50, 0x72, 0xc3, 0x81, 0xd9, 0xee, 0x34, 0xcc, 0x27, 0xa4, 0xab, 0x67, 0xb6, 0x32, 0x3b,
-	0xc5, 0xfa, 0xdb, 0xe7, 0xbd, 0x0a, 0x72, 0xb9, 0xdf, 0xba, 0x53, 0x6d, 0xfb, 0xb4, 0x65, 0xf9,
-	0xdd, 0xd0, 0x58, 0x35, 0x0a, 0x11, 0xf8, 0xb0, 0xd3, 0xf8, 0x84, 0x74, 0xd1, 0x4d, 0x28, 0x05,
-	0x27, 0x96, 0x4f, 0x1c, 0x33, 0x20, 0xb6, 0x4f, 0x84, 0x7e, 0x25, 0xf4, 0x35, 0x8a, 0x72, 0xf2,
-	0x28, 0x9a, 0x43, 0x9b, 0x90, 0x6b, 0x11, 0x61, 0x39, 0x96, 0xb0, 0xf4, 0x85, 0xc8, 0x3e, 0x1c,
-	0xa3, 0xc7, 0x90, 0xb3, 0x3a, 0x0e, 0x25, 0xcc, 0x26, 0xfa, 0xe2, 0x56, 0x66, 0x67, 0xe5, 0xf6,
-	0xaf, 0x6a, 0x53, 0xb6, 0xa7, 0x36, 0x5c, 0xae, 0xfc, 0xb7, 0xaf, 0x7c, 0xea, 0xe5, 0xf3, 0x5e,
-	0xa5, 0x28, 0x57, 0x49, 0x99, 0x43, 0x9e, 0x56, 0x8d, 0x61, 0x3c, 0xa4, 0x43, 0xf6, 0x94, 0xf8,
-	0x01, 0xe5, 0x4c, 0x5f, 0xda, 0xca, 0xec, 0x94, 0x8c, 0x78, 0x88, 0xde, 0x83, 0xb7, 0x02, 0xe2,
-	0x35, 0xcd, 0xb6, 0x4f, 0x4f, 0xc3, 0xb7, 0x32, 0x2d, 0xdb, 0xe6, 0x1d, 0x26, 0xf4, 0xe5, 0x68,
-	0x79, 0x28, 0x34, 0x1e, 0xfa, 0xf4, 0xf4, 0x13, 0xd2, 0xdd, 0x97, 0x16, 0xb4, 0x07, 0x1b, 0x69,
-	0x17, 0x87, 0x9c, 0x52, 0x9b, 0xe8, 0xd9, 0xc8, 0x63, 0x2d, 0xe1, 0x71, 0x37, 0x32, 0x0c, 0x1d,
-	0x28, 0x3b, 0xa5, 0x82, 0xf8, 0xc3, 0xdd, 0xcd, 0x8d, 0x1c, 0xee, 0x4b, 0x93, 0xda, 0xcb, 0x0f,
-	0xe0, 0x6a, 0x8c, 0xb5, 0x39, 0x13, 0x96, 0x2d, 0x86, 0x3e, 0xf9, 0xc8, 0x67, 0x43, 0x99, 0x0f,
-	0xa4, 0x55, 0xb9, 0xfd, 0x19, 0xae, 0x71, 0xbf, 0x41, 0x85, 0xd3, 0x30, 0xed, 0x8e, 0xef, 0x13,
-	0x26, 0x4c, 0x9b, 0x3a, 0x66, 0x8b, 0x04, 0x81, 0xe5, 0x12, 0x1d, 0xa2, 0x64, 0x5e, 0xef, 0xf7,
-	0x2a, 0xfa, 0xc3, 0x10, 0x76, 0xb7, 0x7e, 0x20, 0x51, 0x07, 0xf7, 0xef, 0x3e, 0x90, 0x18, 0x43,
-	0x57, 0x01, 0x62, 0x0b, 0x75, 0x94, 0x05, 0xfd, 0x09, 0x36, 0xa7, 0x05, 0x57, 0xc9, 0x2e, 0x44,
-	0xb1, 0xaf, 0xf5, 0x7b, 0x95, 0xab, 0x13, 0xb1, 0x65, 0xee, 0x8d, 0xab, 0x13, 0xa1, 0x15, 0x29,
-	0x66, 0x2c, 0x3b, 0x20, 0x42, 0x50, 0xe6, 0xea, 0xc5, 0x39, 0xcb, 0x3e, 0x92, 0x98, 0x29, 0xcb,
-	0x56, 0x96, 0x59, 0xcb, 0x6e, 0x91, 0x56, 0x83, 0xf8, 0x7a, 0x69, 0xce, 0xb2, 0x1f, 0x44, 0x90,
-	0x29, 0xcb, 0x96, 0x06, 0x64, 0x42, 0x56, 0x46, 0x09, 0xf4, 0xc3, 0xad, 0x85, 0x9d, 0xc2, 0xed,
-	0xad, 0xd9, 0x74, 0x95, 0x2e, 0xf5, 0x9b, 0xe7, 0xbd, 0x4a, 0x45, 0x52, 0xb4, 0xc9, 0x7d, 0x42,
-	0x5d, 0xf6, 0x84, 0x74, 0xef, 0xa4, 0x4a, 0xae, 0x6a, 0xc4, 0x51, 0x11, 0x81, 0xac, 0x4a, 0xb3,
-	0xfe, 0xc7, 0xad, 0xcc, 0x4e, 0xe1, 0xf6, 0xf5, 0xa9, 0x0f, 0x50, 0x1c, 0xa8, 0xef, 0x9e, 0xf7,
-	0x2a, 0xb7, 0x26, 0x82, 0xcf, 0xe0, 0x51, 0xd5, 0x88, 0x63, 0xa3, 0x03, 0x00, 0xdb, 0x27, 0x96,
-	0x20, 0x8e, 0x69, 0x09, 0xbd, 0x11, 0x3d, 0x69, 0xb3, 0xe6, 0x72, 0xee, 0x7a, 0xa4, 0x16, 0xab,
-	0x47, 0xed, 0x38, 0xd6, 0x99, 0x7a, 0xee, 0x45, 0xaf, 0xa2, 0x7d, 0xf1, 0xdf, 0x4a, 0xc6, 0xc8,
-	0x2b, 0xbf, 0x7d, 0x11, 0x06, 0xe9, 0xb4, 0x9d, 0x38, 0x88, 0xfd, 0x43, 0x82, 0x28, 0xbf, 0x7d,
-	0x51, 0xdd, 0x87, 0x52, 0xaa, 0xa4, 0x51, 0x09, 0xf2, 0x8f, 0x98, 0x43, 0x9a, 0x94, 0x11, 0xa7,
-	0xac, 0xa1, 0x22, 0xe4, 0x1e, 0x32, 0x72, 0xcc, 0x1f, 0x32, 0x52, 0xce, 0xa0, 0x3c, 0x2c, 0x45,
-	0xe8, 0xf2, 0x15, 0x94, 0x83, 0xc5, 0x23, 0xe2, 0x35, 0xcb, 0x0b, 0xd5, 0x7f, 0x2c, 0xc1, 0x86,
-	0x12, 0x08, 0x9b, 0xb7, 0x42, 0x6a, 0x90, 0xcf, 0x3a, 0x24, 0x10, 0x6f, 0x24, 0x6d, 0xef, 0xc3,
-	0xdb, 0xf1, 0x36, 0xca, 0xdc, 0x0c, 0x83, 0x48, 0x8d, 0x5b, 0x57, 0x56, 0x99, 0x65, 0xe5, 0xf4,
-	0x0e, 0xac, 0x44, 0xd3, 0x96, 0xa0, 0x9c, 0x99, 0x01, 0x75, 0x95, 0xe0, 0x95, 0x46, 0xb3, 0x47,
-	0xd4, 0x45, 0x35, 0x58, 0x4f, 0xc0, 0x62, 0x49, 0x89, 0x04, 0xb0, 0x68, 0xac, 0x8d, 0x4c, 0x4a,
-	0x51, 0x42, 0xbc, 0x7c, 0x8f, 0xb4, 0xd8, 0x2e, 0x49, 0x7c, 0x64, 0x3a, 0x4a, 0x2a, 0xee, 0xcd,
-	0xf8, 0xbd, 0x63, 0xfd, 0x93, 0xba, 0x56, 0x8c, 0x26, 0x3f, 0x55, 0x22, 0xb8, 0x0b, 0x88, 0x04,
-	0x01, 0x61, 0x82, 0x5a, 0x9e, 0x39, 0x14, 0x68, 0xa5, 0x67, 0x43, 0xcb, 0x83, 0x58, 0xa9, 0x7f,
-	0xa4, 0x3c, 0x09, 0x58, 0x1d, 0x73, 0x8b, 0x14, 0xf0, 0x27, 0xe6, 0xf5, 0x4a, 0xfa, 0xd9, 0x97,
-	0x88, 0xde, 0xff, 0x5b, 0x86, 0x42, 0x42, 0x0d, 0xd0, 0x3d, 0xd8, 0x90, 0xa9, 0x19, 0x23, 0xd5,
-	0x7c, 0x66, 0xca, 0x1c, 0xa7, 0xa8, 0xf6, 0xe1, 0x38, 0xb7, 0x23, 0x5a, 0xd6, 0xd7, 0xcf, 0x7b,
-	0x95, 0x55, 0x19, 0x81, 0x71, 0xb1, 0xc5, 0x3a, 0x9e, 0x37, 0x46, 0xec, 0xed, 0x51, 0x46, 0x62,
-	0xd7, 0x24, 0x49, 0x93, 0xe7, 0x51, 0xbc, 0xcf, 0xea, 0x78, 0x1c, 0xe2, 0x25, 0x51, 0x37, 0x94,
-	0x59, 0x1d, 0x91, 0xca, 0x6d, 0x1f, 0x7e, 0x3e, 0xee, 0xd6, 0xa0, 0xcc, 0xa1, 0xcc, 0x35, 0xdb,
-	0x3e, 0xe7, 0x4d, 0xc5, 0xda, 0xcd, 0xb4, 0x73, 0x5d, 0x42, 0x0e, 0x43, 0x44, 0xaa, 0x61, 0x58,
-	0x1e, 0x6b, 0x18, 0x3c, 0xc8, 0xca, 0x93, 0x37, 0x16, 0xe0, 0xed, 0xd7, 0x09, 0xb0, 0x3c, 0x8f,
-	0xeb, 0xbf, 0x3c, 0xef, 0x55, 0xb6, 0x67, 0xc8, 0x70, 0x3a, 0x17, 0x55, 0x23, 0x7e, 0x04, 0x6a,
-	0x02, 0x48, 0x04, 0x65, 0x4d, 0xae, 0x04, 0x19, 0xcf, 0x6f, 0x50, 0xea, 0xef, 0x86, 0x34, 0xb8,
-	0x88, 0xe6, 0xe7, 0xdd, 0x61, 0x0f, 0x66, 0x8d, 0x54, 0xdf, 0x88, 0x1e, 0xf2, 0xfa, 0x63, 0xe5,
-	0x9d, 0xf3, 0x5e, 0xe5, 0xc6, 0xcc, 0x0a, 0x99, 0x54, 0x7c, 0x02, 0xd9, 0xb8, 0x00, 0x8f, 0x7e,
-	0x74, 0x01, 0xce, 0x20, 0x44, 0xd5, 0x88, 0x63, 0x5f, 0xa2, 0xca, 0xfb, 0xf7, 0x22, 0xac, 0x4d,
-	0xd0, 0x00, 0x1d, 0xc3, 0xb5, 0x54, 0xce, 0x65, 0xa6, 0x2f, 0x58, 0x86, 0x57, 0xdd, 0xf1, 0x78,
-	0x8a, 0xf4, 0x7b, 0x33, 0xaa, 0xfa, 0x4a, 0x42, 0xa1, 0x53, 0xd5, 0x7b, 0x0b, 0xca, 0x0e, 0xf1,
-	0xe9, 0xa9, 0x3a, 0x28, 0x84, 0x25, 0x88, 0xaa, 0xc2, 0xd5, 0xd1, 0xfc, 0x51, 0x38, 0x1d, 0xea,
-	0x74, 0x02, 0x1a, 0xed, 0x3b, 0xf1, 0xa3, 0x12, 0x5c, 0x34, 0xd6, 0x46, 0x96, 0x03, 0x69, 0x40,
-	0x75, 0xd8, 0x48, 0xc0, 0x19, 0x79, 0x2a, 0xcc, 0x13, 0x2e, 0xda, 0xb2, 0xec, 0xa6, 0xf4, 0xcb,
-	0x89, 0xe0, 0x7f, 0x20, 0x4f, 0xc5, 0xef, 0xb8, 0x68, 0xa3, 0x00, 0x8a, 0xc9, 0xd7, 0xd1, 0x0f,
-	0x2f, 0xc8, 0xc9, 0x9a, 0xa2, 0xfe, 0x45, 0xeb, 0xac, 0x90, 0xd8, 0x98, 0x4b, 0xc4, 0x9c, 0x67,
-	0x4b, 0x90, 0x8d, 0x4f, 0x92, 0xdf, 0xc0, 0xea, 0xb8, 0xfa, 0xcd, 0xe7, 0x48, 0xc9, 0x4a, 0xc9,
-	0xe1, 0x07, 0xa0, 0x73, 0x46, 0x4c, 0xc1, 0xcd, 0xf0, 0x67, 0x8a, 0x62, 0x1b, 0xeb, 0x5c, 0xb5,
-	0x37, 0xf7, 0x12, 0x22, 0xfd, 0x0b, 0x58, 0x09, 0x55, 0x73, 0x42, 0xa3, 0x8b, 0x72, 0x56, 0xa1,
-	0x1e, 0x43, 0x41, 0xf8, 0x9d, 0x40, 0x98, 0x1e, 0x39, 0x25, 0x9e, 0xba, 0x40, 0xbd, 0x3b, 0xaf,
-	0xae, 0x6b, 0xc7, 0x21, 0xfe, 0xf7, 0x21, 0x7c, 0x0a, 0x17, 0x40, 0x0c, 0xad, 0x29, 0x11, 0x5e,
-	0x1a, 0x13, 0x61, 0x1d, 0xb2, 0x0d, 0x8f, 0xdb, 0x4f, 0x88, 0x13, 0xe9, 0x73, 0xce, 0x88, 0x87,
-	0xc8, 0x83, 0xf2, 0xf8, 0xeb, 0x2a, 0xf6, 0xbc, 0x4e, 0x36, 0x2f, 0xd4, 0x26, 0x97, 0x52, 0x7b,
-	0x75, 0x89, 0x28, 0xf3, 0x29, 0xc0, 0x68, 0x67, 0x51, 0x01, 0xb2, 0x8f, 0xd8, 0x13, 0xc6, 0xff,
-	0xc2, 0xca, 0x9a, 0xec, 0x67, 0xa3, 0x8d, 0x25, 0x4e, 0x39, 0x13, 0xf6, 0xb3, 0xfb, 0xb6, 0x4d,
-	0xda, 0xe1, 0xe8, 0x4a, 0x88, 0x3c, 0x56, 0xa6, 0x05, 0xb4, 0x06, 0xa5, 0x47, 0x9e, 0xa0, 0x2d,
-	0x4b, 0x90, 0x68, 0xb2, 0xbc, 0x58, 0x7d, 0xb9, 0x00, 0xd9, 0xf8, 0x32, 0xf6, 0x26, 0xdd, 0xec,
-	0x2e, 0xe4, 0x09, 0x13, 0x7e, 0x37, 0xbc, 0x07, 0xa9, 0x4e, 0x61, 0xca, 0xd5, 0x39, 0x82, 0x1c,
-	0x50, 0x07, 0x55, 0xa0, 0xa0, 0x2e, 0x90, 0x09, 0xee, 0x81, 0x9a, 0x0a, 0xe3, 0x7d, 0x34, 0x5f,
-	0x46, 0x65, 0x83, 0x30, 0x53, 0x2e, 0x3f, 0x83, 0x65, 0x75, 0x7d, 0x96, 0xdc, 0xb8, 0xe8, 0x19,
-	0xfe, 0xde, 0x79, 0xaf, 0xb2, 0x3b, 0x5f, 0x5b, 0xd2, 0x0b, 0xa9, 0x1a, 0xea, 0x41, 0x97, 0x88,
-	0x2a, 0xcf, 0x17, 0xa1, 0xf4, 0xa0, 0x1b, 0xde, 0xff, 0xe3, 0x6f, 0x0b, 0x6f, 0xaa, 0x31, 0x1f,
-	0x82, 0x3e, 0xd9, 0x6a, 0xa9, 0x3b, 0x85, 0xd4, 0x98, 0xb7, 0xac, 0xb1, 0x36, 0x4b, 0xde, 0x2b,
-	0x26, 0x3e, 0xdf, 0x2c, 0x4c, 0xf9, 0x7c, 0xf3, 0x5b, 0xb8, 0xde, 0xee, 0x34, 0x3c, 0x6a, 0x9b,
-	0x3e, 0x61, 0x0e, 0xf9, 0xeb, 0x29, 0xef, 0x04, 0x66, 0x9b, 0x53, 0x26, 0xcc, 0x80, 0x10, 0x47,
-	0xe5, 0xfa, 0x67, 0x12, 0x63, 0x0c, 0x21, 0x87, 0x21, 0xe2, 0x88, 0x10, 0x07, 0x7d, 0x0c, 0x95,
-	0x59, 0x01, 0x08, 0xb3, 0x1a, 0x1e, 0x71, 0x22, 0x81, 0xc9, 0x19, 0xd7, 0xa7, 0xc6, 0xf8, 0x58,
-	0x62, 0xd0, 0x35, 0xc8, 0x07, 0xd4, 0x35, 0xed, 0x13, 0x8b, 0xc6, 0x17, 0x9a, 0x5c, 0x40, 0xdd,
-	0x83, 0x70, 0x8c, 0x1a, 0xe3, 0x6d, 0xe1, 0x8d, 0xa9, 0x94, 0x92, 0xfb, 0xae, 0xd8, 0x34, 0xbd,
-	0x83, 0x9a, 0x6c, 0x6d, 0xe2, 0x66, 0xf0, 0xf2, 0x50, 0xe8, 0x6f, 0x0b, 0x50, 0x4c, 0xbe, 0x0a,
-	0xfa, 0x08, 0x56, 0x7e, 0x50, 0x23, 0x53, 0x74, 0x92, 0xe5, 0xb8, 0x0d, 0xab, 0xb1, 0x77, 0x9a,
-	0x36, 0x25, 0x05, 0x53, 0x74, 0xd9, 0x9e, 0xe4, 0xa9, 0xba, 0x39, 0xa4, 0xf9, 0xe8, 0x42, 0x36,
-	0xfe, 0xa0, 0x26, 0xeb, 0xbb, 0x3a, 0x27, 0x19, 0xf1, 0x05, 0xe0, 0x96, 0xea, 0x1d, 0x2e, 0x92,
-	0x11, 0x35, 0x73, 0x79, 0x32, 0x52, 0xff, 0x57, 0xe6, 0xc5, 0x19, 0xd6, 0x5e, 0x9e, 0xe1, 0xcc,
-	0xab, 0x33, 0xac, 0x7d, 0x73, 0x86, 0xb5, 0x6f, 0xcf, 0xb0, 0xf6, 0xdd, 0x19, 0xd6, 0xbe, 0x3f,
-	0xc3, 0xda, 0xe7, 0x7d, 0x9c, 0x79, 0xd6, 0xc7, 0xda, 0x97, 0x7d, 0xac, 0x7d, 0xd5, 0xc7, 0xda,
-	0xd7, 0x7d, 0xac, 0x3d, 0xef, 0x63, 0xed, 0x45, 0x1f, 0x67, 0x5e, 0xf6, 0x71, 0xe6, 0x55, 0x1f,
-	0x6b, 0xdf, 0xf4, 0x71, 0xe6, 0xdb, 0x3e, 0xd6, 0xbe, 0xeb, 0x63, 0xed, 0xfb, 0x3e, 0xd6, 0x3e,
-	0x1f, 0x60, 0xed, 0xd9, 0x00, 0x6b, 0x5f, 0x0c, 0xb0, 0xf6, 0xf7, 0x01, 0xd6, 0xfe, 0x39, 0xc0,
-	0xda, 0x97, 0x03, 0xac, 0x7d, 0x35, 0xc0, 0x99, 0xaf, 0x07, 0x38, 0xf3, 0x7c, 0x80, 0xb5, 0x17,
-	0x03, 0xac, 0xbd, 0x1c, 0x60, 0xed, 0xd5, 0x00, 0x6b, 0x8f, 0x6f, 0xc8, 0x3d, 0x16, 0xc4, 0x3e,
-	0xd9, 0x73, 0xf9, 0xde, 0xc4, 0x27, 0x68, 0xa7, 0xd1, 0x58, 0x8e, 0xfe, 0xbf, 0xff, 0xff, 0x00,
-	0x00, 0x00, 0xff, 0xff, 0x26, 0x95, 0x7a, 0x53, 0xa3, 0x16, 0x00, 0x00,
+func init() {
+	golang_proto.RegisterFile("go-internal/protocolmodel.proto", fileDescriptor_e2f5bc4155f6089b)
 }
 
+var fileDescriptor_e2f5bc4155f6089b = []byte{
+	// 1681 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x58, 0xcf, 0x6f, 0xdb, 0xc8,
+	0x15, 0x36, 0x63, 0x3b, 0x92, 0x9e, 0x24, 0x5b, 0x1e, 0x7b, 0x37, 0xac, 0x93, 0x4a, 0x5e, 0x6d,
+	0x9b, 0xba, 0x40, 0x2d, 0x61, 0x93, 0x06, 0x29, 0x9c, 0xa0, 0x0b, 0xcb, 0x09, 0xd2, 0x60, 0x37,
+	0xb5, 0x4b, 0x3b, 0x8b, 0x22, 0x3d, 0x10, 0x14, 0xf9, 0x44, 0x0f, 0x42, 0xcd, 0xb0, 0xe4, 0xc8,
+	0x8d, 0x72, 0x29, 0xda, 0xbf, 0x60, 0x4f, 0xbd, 0xf5, 0xbe, 0xb7, 0x5e, 0x7b, 0xec, 0xa9, 0xc8,
+	0xa9, 0xd8, 0x63, 0x4f, 0x6a, 0xd7, 0x39, 0xf5, 0xea, 0x53, 0x8f, 0x05, 0x39, 0x43, 0x89, 0xd4,
+	0x2f, 0xc7, 0x09, 0x0a, 0xf8, 0x24, 0xcd, 0xbc, 0xef, 0xbd, 0xf9, 0xf5, 0xbd, 0x6f, 0xde, 0x10,
+	0x6a, 0x2e, 0xdf, 0xa1, 0x4c, 0x60, 0xc0, 0x2c, 0xaf, 0xe9, 0x07, 0x5c, 0x70, 0x9b, 0x7b, 0x5d,
+	0xee, 0xa0, 0xd7, 0x88, 0x5b, 0x64, 0xbd, 0x8d, 0x81, 0xe8, 0x37, 0x32, 0xa6, 0xcd, 0x07, 0x2e,
+	0x15, 0x27, 0xbd, 0x76, 0xc3, 0xe6, 0xdd, 0xa6, 0xcb, 0x3d, 0x8b, 0xb9, 0xd2, 0xb7, 0xdd, 0xeb,
+	0x34, 0x7d, 0xd1, 0xf7, 0x31, 0x6c, 0x0a, 0xda, 0xc5, 0x50, 0x58, 0x5d, 0x7f, 0xf4, 0x4f, 0x06,
+	0xd9, 0xdc, 0xc9, 0x38, 0xbb, 0x7c, 0xe4, 0x1a, 0xb5, 0xe2, 0x46, 0xfc, 0x4f, 0xc2, 0xeb, 0xff,
+	0x29, 0x40, 0xe1, 0x49, 0xc0, 0x7b, 0xfe, 0x53, 0xd6, 0xe1, 0x64, 0x17, 0xca, 0x6e, 0xd4, 0x30,
+	0xfd, 0x5e, 0xdb, 0x7c, 0x89, 0x7d, 0x5d, 0xdb, 0xd2, 0xb6, 0x4b, 0xad, 0x8f, 0xcf, 0x07, 0x35,
+	0xe2, 0xf2, 0xa0, 0xbb, 0x5b, 0xf7, 0x03, 0xda, 0xb5, 0x82, 0x7e, 0x64, 0xac, 0x1b, 0xc5, 0x18,
+	0x7c, 0xd8, 0x6b, 0x7f, 0x81, 0x7d, 0xf2, 0x29, 0x94, 0xc3, 0x13, 0x2b, 0x40, 0xc7, 0x0c, 0xd1,
+	0x0e, 0x50, 0xe8, 0xd7, 0x22, 0x5f, 0xa3, 0x24, 0x3b, 0x8f, 0xe2, 0x3e, 0xb2, 0x09, 0xf9, 0x2e,
+	0x0a, 0xcb, 0xb1, 0x84, 0xa5, 0x2f, 0xc6, 0xf6, 0x61, 0x9b, 0xbc, 0x80, 0xbc, 0xd5, 0x73, 0x28,
+	0x32, 0x1b, 0xf5, 0xa5, 0x2d, 0x6d, 0x7b, 0xe5, 0xce, 0x4f, 0x1a, 0x53, 0xb6, 0xa7, 0x31, 0x9c,
+	0xae, 0xfc, 0xb7, 0xa7, 0x7c, 0x5a, 0x95, 0xf3, 0x41, 0xad, 0x24, 0x67, 0x49, 0x99, 0x83, 0xaf,
+	0xea, 0xc6, 0x30, 0x1e, 0xd1, 0x21, 0x77, 0x8a, 0x41, 0x48, 0x39, 0xd3, 0x97, 0xb7, 0xb4, 0xed,
+	0xb2, 0x91, 0x34, 0xc9, 0x67, 0xf0, 0x51, 0x88, 0x5e, 0xc7, 0xf4, 0x03, 0x7a, 0x1a, 0xad, 0xca,
+	0xb4, 0x6c, 0x9b, 0xf7, 0x98, 0xd0, 0xaf, 0xc7, 0xd3, 0x23, 0x91, 0xf1, 0x30, 0xa0, 0xa7, 0x5f,
+	0x60, 0x7f, 0x4f, 0x5a, 0x48, 0x13, 0x36, 0xb2, 0x2e, 0x0e, 0x9e, 0x52, 0x1b, 0xf5, 0x5c, 0xec,
+	0xb1, 0x96, 0xf2, 0x78, 0x14, 0x1b, 0x86, 0x0e, 0x94, 0x9d, 0x52, 0x81, 0xc1, 0x70, 0x77, 0xf3,
+	0x23, 0x87, 0xa7, 0xd2, 0xa4, 0xf6, 0xf2, 0x1e, 0xdc, 0x48, 0xb0, 0x36, 0x67, 0xc2, 0xb2, 0xc5,
+	0xd0, 0xa7, 0x10, 0xfb, 0x6c, 0x28, 0xf3, 0xbe, 0xb4, 0x2a, 0xb7, 0xdf, 0xc0, 0x4d, 0x1e, 0xb4,
+	0xa9, 0x70, 0xda, 0xa6, 0xdd, 0x0b, 0x02, 0x64, 0xc2, 0xb4, 0xa9, 0x63, 0x76, 0x31, 0x0c, 0x2d,
+	0x17, 0x75, 0x88, 0x0f, 0xf3, 0xd6, 0xd9, 0xa0, 0xa6, 0x1f, 0x44, 0xb0, 0x47, 0xad, 0x7d, 0x89,
+	0xda, 0x7f, 0xfa, 0xe8, 0x99, 0xc4, 0x18, 0xba, 0x0a, 0x90, 0x58, 0xa8, 0xa3, 0x2c, 0xe4, 0xd7,
+	0xb0, 0x39, 0x2d, 0xb8, 0x3a, 0xec, 0x62, 0x1c, 0xfb, 0xe6, 0xd9, 0xa0, 0x76, 0x63, 0x22, 0xb6,
+	0x3c, 0x7b, 0xe3, 0xc6, 0x44, 0x68, 0x45, 0x8a, 0x19, 0xd3, 0x0e, 0x51, 0x08, 0xca, 0x5c, 0xbd,
+	0x34, 0x67, 0xda, 0x47, 0x12, 0x33, 0x65, 0xda, 0xca, 0x32, 0x6b, 0xda, 0x5d, 0xec, 0xb6, 0x31,
+	0xd0, 0xcb, 0x73, 0xa6, 0xfd, 0x2c, 0x86, 0x4c, 0x99, 0xb6, 0x34, 0x90, 0x2e, 0xe4, 0x64, 0x94,
+	0x50, 0x3f, 0xdc, 0x5a, 0xdc, 0x2e, 0xde, 0xd9, 0x9a, 0x4d, 0x57, 0xe9, 0xd2, 0xfa, 0xec, 0x7c,
+	0x50, 0xdb, 0x91, 0x14, 0xed, 0xf0, 0x00, 0xa9, 0xcb, 0x5e, 0x62, 0x7f, 0x37, 0x93, 0x72, 0x0f,
+	0x0e, 0x8d, 0xc7, 0x5f, 0x1e, 0xec, 0x3d, 0xda, 0xed, 0x58, 0x5e, 0x88, 0x75, 0x23, 0x19, 0x83,
+	0x84, 0x90, 0x53, 0x87, 0xae, 0xff, 0x6a, 0x4b, 0xdb, 0x2e, 0xde, 0xb9, 0x35, 0x75, 0x38, 0xc5,
+	0x88, 0xd6, 0x83, 0xf3, 0x41, 0xed, 0xfe, 0xc4, 0x50, 0x33, 0x58, 0x35, 0x31, 0xa8, 0xc2, 0x91,
+	0x7d, 0x00, 0x3b, 0x40, 0x4b, 0xa0, 0x63, 0x5a, 0x42, 0x6f, 0xc7, 0xe3, 0x6e, 0x36, 0x5c, 0xce,
+	0x5d, 0x0f, 0x1b, 0x89, 0xb2, 0x34, 0x8e, 0x13, 0x0d, 0x6a, 0xe5, 0xdf, 0x0c, 0x6a, 0x0b, 0x5f,
+	0xff, 0xab, 0xa6, 0x19, 0x05, 0xe5, 0xb7, 0x27, 0xa2, 0x20, 0x3d, 0xdf, 0x49, 0x82, 0xd8, 0x97,
+	0x09, 0xa2, 0xfc, 0xf6, 0x44, 0x7d, 0x0f, 0xca, 0x99, 0x74, 0x27, 0x65, 0x28, 0x3c, 0x67, 0x0e,
+	0x76, 0x28, 0x43, 0xa7, 0xb2, 0x40, 0x4a, 0x90, 0x3f, 0x60, 0x78, 0xcc, 0x0f, 0x18, 0x56, 0x34,
+	0x52, 0x80, 0xe5, 0x18, 0x5d, 0xb9, 0x46, 0xf2, 0xb0, 0x74, 0x84, 0x5e, 0xa7, 0xb2, 0x58, 0xff,
+	0x66, 0x19, 0x36, 0x94, 0x78, 0xd8, 0xbc, 0x1b, 0xd1, 0x06, 0x7f, 0xdb, 0xc3, 0x50, 0x7c, 0x90,
+	0xec, 0xdd, 0x85, 0x8f, 0x93, 0x4d, 0x95, 0x27, 0x35, 0x0c, 0x22, 0xf5, 0x6f, 0x5d, 0x59, 0x25,
+	0x03, 0x94, 0xd3, 0x0f, 0x61, 0x25, 0xee, 0xb6, 0x04, 0xe5, 0xcc, 0x0c, 0xa9, 0xab, 0xc4, 0xb0,
+	0x3c, 0xea, 0x3d, 0xa2, 0x2e, 0x69, 0xc0, 0x7a, 0x0a, 0x96, 0xc8, 0x4d, 0x2c, 0x8e, 0x25, 0x63,
+	0x6d, 0x64, 0x52, 0x6a, 0x13, 0xe1, 0xe5, 0x3a, 0xb2, 0x42, 0xbc, 0x2c, 0xf1, 0xb1, 0xe9, 0x28,
+	0xad, 0xc6, 0x9f, 0x26, 0xeb, 0x4e, 0xb4, 0x51, 0x6a, 0x5e, 0x29, 0xee, 0xfc, 0x4a, 0x09, 0xe4,
+	0x0e, 0x10, 0x0c, 0x43, 0x64, 0x82, 0x5a, 0x9e, 0x39, 0x14, 0x6f, 0xa5, 0x75, 0x43, 0xcb, 0xb3,
+	0x44, 0xc5, 0xdf, 0x53, 0xba, 0xfe, 0xa8, 0xc1, 0xea, 0x98, 0x5f, 0x2c, 0x8f, 0xff, 0x57, 0x9a,
+	0xaf, 0x64, 0xa7, 0x72, 0x85, 0xd8, 0xfe, 0x97, 0x1c, 0x14, 0x53, 0xc2, 0x41, 0x9e, 0xc0, 0x86,
+	0x3c, 0xa9, 0x31, 0x8e, 0xcd, 0x27, 0xaa, 0x3c, 0xf2, 0x0c, 0xf3, 0xee, 0x8f, 0x53, 0x3d, 0x66,
+	0x69, 0x6b, 0xfd, 0x7c, 0x50, 0x5b, 0x95, 0x11, 0x18, 0x17, 0x5b, 0xac, 0xe7, 0x79, 0x63, 0x3c,
+	0xbf, 0x3d, 0x3a, 0x9f, 0xc4, 0x35, 0xcd, 0xd9, 0xf4, 0xd5, 0x95, 0xec, 0xba, 0xba, 0x49, 0x87,
+	0x78, 0xc9, 0xdb, 0x0d, 0x65, 0x56, 0xb7, 0xa9, 0x72, 0xdb, 0x83, 0xef, 0x8f, 0xbb, 0xb5, 0x29,
+	0x73, 0x28, 0x73, 0x4d, 0x3f, 0xe0, 0xbc, 0xa3, 0x48, 0xbc, 0x99, 0x75, 0x6e, 0x49, 0xc8, 0x61,
+	0x84, 0xc8, 0xd4, 0x16, 0xd7, 0xc7, 0x6a, 0x8b, 0xd7, 0x90, 0x93, 0x97, 0x74, 0xa2, 0xd5, 0xb7,
+	0x2f, 0xd2, 0x6a, 0x79, 0x75, 0xb7, 0x7e, 0x76, 0x3e, 0xa8, 0xfd, 0x74, 0x86, 0x62, 0x67, 0xcf,
+	0x62, 0x42, 0x43, 0xd5, 0x80, 0x44, 0x00, 0x48, 0x3c, 0x65, 0x1d, 0xae, 0xb4, 0xbb, 0x3a, 0xbf,
+	0xb2, 0x69, 0xdd, 0x8b, 0x48, 0x71, 0xf9, 0xcb, 0xa2, 0xe0, 0x0e, 0x4b, 0x39, 0x3e, 0xba, 0x2e,
+	0x8c, 0x78, 0xc8, 0x8b, 0x6f, 0xa7, 0xbb, 0xe7, 0x83, 0x5a, 0x73, 0x66, 0x2e, 0x5d, 0x74, 0x55,
+	0x84, 0x90, 0x4b, 0x12, 0xf7, 0xe8, 0xbd, 0x13, 0x77, 0x06, 0x75, 0x26, 0x06, 0xb5, 0xaf, 0x5c,
+	0xc6, 0xfe, 0x7d, 0x09, 0xd6, 0x26, 0xe8, 0x43, 0x8e, 0xe1, 0x66, 0x86, 0x2b, 0x92, 0x13, 0xef,
+	0x98, 0xbe, 0x37, 0xdc, 0xf1, 0x78, 0x2a, 0x59, 0x9a, 0x33, 0xd4, 0xe0, 0x5a, 0x4a, 0xe8, 0x33,
+	0x59, 0xff, 0x63, 0xa8, 0x38, 0x18, 0xd0, 0x53, 0x75, 0xdf, 0x08, 0x4b, 0xa0, 0xca, 0xde, 0xd5,
+	0x51, 0xff, 0x51, 0xd4, 0x1d, 0xc9, 0x7d, 0x0a, 0x1a, 0x9f, 0x02, 0x06, 0x71, 0xea, 0x2e, 0x19,
+	0x6b, 0x23, 0xcb, 0xbe, 0x34, 0x90, 0x16, 0x6c, 0xa4, 0xe0, 0x0c, 0x5f, 0x09, 0xf3, 0x84, 0x0b,
+	0x5f, 0xa6, 0xeb, 0x94, 0x92, 0x3c, 0x15, 0xfc, 0x97, 0xf8, 0x4a, 0xfc, 0x82, 0x0b, 0x9f, 0xfc,
+	0x41, 0x83, 0x52, 0x7a, 0x3d, 0xfa, 0xe1, 0x3b, 0x12, 0xf6, 0xa1, 0xca, 0x92, 0xf7, 0x4b, 0xd0,
+	0x62, 0x6a, 0x9f, 0xae, 0x10, 0x91, 0xfe, 0xb4, 0x0c, 0xb9, 0xe4, 0x42, 0xfa, 0x39, 0xac, 0x8e,
+	0x8b, 0xe8, 0x7c, 0xca, 0x94, 0xad, 0x8c, 0xaa, 0xde, 0x03, 0x9d, 0x33, 0x34, 0x05, 0x37, 0xa3,
+	0x9f, 0x29, 0xc2, 0x6f, 0xac, 0x73, 0x55, 0x34, 0x3d, 0x49, 0x69, 0xfd, 0x0f, 0x60, 0x25, 0x12,
+	0xdf, 0x09, 0xa9, 0x2f, 0xc9, 0x5e, 0x85, 0x7a, 0x01, 0x45, 0x11, 0xf4, 0x42, 0x61, 0x7a, 0x78,
+	0x8a, 0x9e, 0x7a, 0xb2, 0xfd, 0x68, 0x5e, 0xd2, 0x37, 0x8e, 0x23, 0xfc, 0x97, 0x11, 0x7c, 0x0a,
+	0x35, 0x40, 0x0c, 0xad, 0x19, 0x2d, 0x5f, 0x1e, 0xd3, 0x72, 0x1d, 0x72, 0x6d, 0x8f, 0xdb, 0x2f,
+	0xd1, 0x89, 0x65, 0x3e, 0x6f, 0x24, 0x4d, 0xf2, 0x1a, 0x2a, 0xe3, 0xcb, 0x55, 0x5c, 0xba, 0x48,
+	0x6f, 0xdf, 0xa1, 0x30, 0xdf, 0x1d, 0xa3, 0x4f, 0x39, 0xb3, 0x73, 0x57, 0x88, 0x40, 0x5f, 0x01,
+	0x8c, 0xf6, 0x99, 0x14, 0x21, 0xf7, 0x9c, 0xbd, 0x64, 0xfc, 0x77, 0xac, 0xb2, 0x20, 0x6b, 0xe6,
+	0x78, 0x9b, 0xd1, 0xa9, 0x68, 0x51, 0xcd, 0xbc, 0x67, 0xdb, 0xe8, 0x47, 0xad, 0x6b, 0x11, 0xf2,
+	0x58, 0x99, 0x16, 0xc9, 0x1a, 0x94, 0x9f, 0x7b, 0x82, 0x76, 0x2d, 0x81, 0x71, 0x67, 0x65, 0xa9,
+	0x3e, 0x58, 0x84, 0x5c, 0xf2, 0x18, 0xfc, 0x90, 0x8a, 0x79, 0x07, 0x0a, 0xc8, 0x44, 0xd0, 0x8f,
+	0xde, 0x61, 0xaa, 0xfc, 0x98, 0xf2, 0x74, 0x8f, 0x21, 0xfb, 0xd4, 0x21, 0x35, 0x28, 0xaa, 0x07,
+	0x6c, 0x8a, 0x89, 0xa0, 0xba, 0xa2, 0x78, 0x0f, 0xe7, 0x6b, 0xac, 0xac, 0x3a, 0x66, 0x6a, 0xe9,
+	0xef, 0xe1, 0xba, 0x7a, 0xbe, 0x4b, 0xa6, 0xbc, 0x6b, 0x61, 0xf0, 0xf9, 0xf9, 0xa0, 0xf6, 0x60,
+	0xbe, 0xee, 0x64, 0x27, 0x32, 0x2e, 0x3f, 0x6a, 0xd8, 0x2b, 0x44, 0x9c, 0x7f, 0x2c, 0x41, 0xf9,
+	0x59, 0x3f, 0x44, 0xaf, 0x93, 0x7c, 0xe9, 0xf8, 0x50, 0xfd, 0xb9, 0x0f, 0xfa, 0x64, 0x35, 0xa7,
+	0x5e, 0x31, 0x52, 0x7f, 0x3e, 0xb2, 0xc6, 0x2a, 0x39, 0xf9, 0x92, 0x99, 0xf8, 0x98, 0xb4, 0x38,
+	0xe5, 0x63, 0xd2, 0xe7, 0x70, 0xcb, 0xef, 0xb5, 0x3d, 0x6a, 0x9b, 0x01, 0x32, 0x07, 0x5f, 0x9f,
+	0xf2, 0x5e, 0x68, 0xfa, 0x9c, 0x32, 0x61, 0x86, 0x88, 0x8e, 0x3a, 0xf9, 0xef, 0x49, 0x8c, 0x31,
+	0x84, 0x1c, 0x46, 0x88, 0x23, 0x44, 0x87, 0x3c, 0x86, 0xda, 0xac, 0x00, 0xc8, 0xac, 0xb6, 0x87,
+	0x4e, 0x2c, 0x3e, 0x79, 0xe3, 0xd6, 0xd4, 0x18, 0x8f, 0x25, 0x86, 0xdc, 0x84, 0x42, 0x48, 0x5d,
+	0xd3, 0x3e, 0xb1, 0x68, 0xf2, 0x84, 0xca, 0x87, 0xd4, 0xdd, 0x8f, 0xda, 0xc4, 0x1f, 0xaf, 0x3c,
+	0x3f, 0x99, 0x4a, 0x30, 0xb9, 0xef, 0x8a, 0x5b, 0xd3, 0x0b, 0xb1, 0x8b, 0x6a, 0xa2, 0xa4, 0xde,
+	0xbc, 0x3a, 0x84, 0xfa, 0xf3, 0x22, 0x94, 0xd2, 0x0b, 0x23, 0x0f, 0x61, 0xe5, 0x52, 0x15, 0x50,
+	0xc9, 0x49, 0xa7, 0xea, 0x6d, 0x58, 0x4d, 0xbc, 0xb3, 0x24, 0x2a, 0x2b, 0x98, 0x22, 0xcf, 0xed,
+	0x49, 0xd6, 0xaa, 0xa7, 0x4a, 0x96, 0x9d, 0x3d, 0xc8, 0x25, 0x1f, 0xfb, 0x64, 0xee, 0xd7, 0xe7,
+	0x1c, 0x4d, 0xf2, 0xe2, 0xb8, 0xaf, 0x6a, 0x8e, 0xcb, 0x9f, 0x8f, 0xb2, 0x5f, 0x9d, 0xf3, 0x69,
+	0x1d, 0xbc, 0xf9, 0xae, 0xba, 0xf0, 0xdf, 0xef, 0xaa, 0xda, 0x37, 0x67, 0x55, 0xed, 0xaf, 0x67,
+	0xd5, 0x85, 0x37, 0x67, 0x55, 0xed, 0xdb, 0xb3, 0xaa, 0xf6, 0xef, 0xb3, 0xaa, 0xf6, 0xf5, 0xdb,
+	0xea, 0xc2, 0xdf, 0xde, 0x56, 0xb5, 0x6f, 0xdf, 0x56, 0x17, 0xfe, 0xf9, 0xb6, 0xba, 0xf0, 0xe2,
+	0x13, 0xb9, 0x39, 0x02, 0xed, 0x93, 0xa6, 0xcb, 0x9b, 0x13, 0xdf, 0xb5, 0x9d, 0x76, 0xfb, 0x7a,
+	0xfc, 0xff, 0xee, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff, 0x57, 0x48, 0x2c, 0xd2, 0xf8, 0x16, 0x00,
+	0x00,
+}
+
+func (this *GroupInfo) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*GroupInfo)
+	if !ok {
+		that2, ok := that.(GroupInfo)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.GroupPubKey, that1.GroupPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.SharedSecret, that1.SharedSecret) {
+		return false
+	}
+	if !bytes.Equal(this.Metadata, that1.Metadata) {
+		return false
+	}
+	if this.Audience != that1.Audience {
+		return false
+	}
+	if this.Version != that1.Version {
+		return false
+	}
+	if !bytes.Equal(this.SelfPrivKeyAccount, that1.SelfPrivKeyAccount) {
+		return false
+	}
+	if !bytes.Equal(this.SelfPrivKeyDevice, that1.SelfPrivKeyDevice) {
+		return false
+	}
+	if !bytes.Equal(this.SelfInviterPubKey, that1.SelfInviterPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.InviterContactPubKey, that1.InviterContactPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.OrbitDBCurrentCIDMessage, that1.OrbitDBCurrentCIDMessage) {
+		return false
+	}
+	if !bytes.Equal(this.OrbitDBCurrentCIDSecret, that1.OrbitDBCurrentCIDSecret) {
+		return false
+	}
+	if !bytes.Equal(this.OrbitDBCurrentCIDSetting, that1.OrbitDBCurrentCIDSetting) {
+		return false
+	}
+	if !bytes.Equal(this.OrbitDBCurrentCIDMember, that1.OrbitDBCurrentCIDMember) {
+		return false
+	}
+	if len(this.Members) != len(that1.Members) {
+		return false
+	}
+	for i := range this.Members {
+		if !this.Members[i].Equal(that1.Members[i]) {
+			return false
+		}
+	}
+	if !this.Inviter.Equal(that1.Inviter) {
+		return false
+	}
+	if !this.CreatedAt.Equal(that1.CreatedAt) {
+		return false
+	}
+	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
+		return false
+	}
+	return true
+}
+func (this *GroupIncomingRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*GroupIncomingRequest)
+	if !ok {
+		that2, ok := that.(GroupIncomingRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.GroupPubKey, that1.GroupPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.InviterMemberPubKey, that1.InviterMemberPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.InvitationSig, that1.InvitationSig) {
+		return false
+	}
+	if !bytes.Equal(this.InvitationPrivKey, that1.InvitationPrivKey) {
+		return false
+	}
+	if !bytes.Equal(this.GroupSharedSecret, that1.GroupSharedSecret) {
+		return false
+	}
+	if !bytes.Equal(this.GroupVersion, that1.GroupVersion) {
+		return false
+	}
+	if !bytes.Equal(this.EssentialMetadata, that1.EssentialMetadata) {
+		return false
+	}
+	if !bytes.Equal(this.InviterContactPubKey, that1.InviterContactPubKey) {
+		return false
+	}
+	if !this.InviterContact.Equal(that1.InviterContact) {
+		return false
+	}
+	if !this.CreatedAt.Equal(that1.CreatedAt) {
+		return false
+	}
+	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
+		return false
+	}
+	return true
+}
+func (this *GroupMember) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*GroupMember)
+	if !ok {
+		that2, ok := that.(GroupMember)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.GroupMemberPubKey, that1.GroupMemberPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.GroupPubKey, that1.GroupPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.InviterPubKey, that1.InviterPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.ContactAccountPubKey, that1.ContactAccountPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.ContactAccountBindingProof, that1.ContactAccountBindingProof) {
+		return false
+	}
+	if !bytes.Equal(this.Metadata, that1.Metadata) {
+		return false
+	}
+	if len(this.Devices) != len(that1.Devices) {
+		return false
+	}
+	for i := range this.Devices {
+		if !this.Devices[i].Equal(that1.Devices[i]) {
+			return false
+		}
+	}
+	if !this.GroupInfo.Equal(&that1.GroupInfo) {
+		return false
+	}
+	if !this.Inviter.Equal(that1.Inviter) {
+		return false
+	}
+	if !this.Contact.Equal(that1.Contact) {
+		return false
+	}
+	if !this.CreatedAt.Equal(that1.CreatedAt) {
+		return false
+	}
+	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
+		return false
+	}
+	return true
+}
+func (this *GroupMemberDevice) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*GroupMemberDevice)
+	if !ok {
+		that2, ok := that.(GroupMemberDevice)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.GroupMemberDevicePubKey, that1.GroupMemberDevicePubKey) {
+		return false
+	}
+	if !bytes.Equal(this.GroupMemberPubKey, that1.GroupMemberPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.DerivationState, that1.DerivationState) {
+		return false
+	}
+	if this.DerivationCounter != that1.DerivationCounter {
+		return false
+	}
+	if !bytes.Equal(this.DerivationNextHotp, that1.DerivationNextHotp) {
+		return false
+	}
+	if !this.GroupMember.Equal(&that1.GroupMember) {
+		return false
+	}
+	if !this.CreatedAt.Equal(that1.CreatedAt) {
+		return false
+	}
+	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
+		return false
+	}
+	return true
+}
+func (this *Contact) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Contact)
+	if !ok {
+		that2, ok := that.(Contact)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.AccountPubKey, that1.AccountPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.OneToOneGroupPubKey, that1.OneToOneGroupPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.BinderPubKey, that1.BinderPubKey) {
+		return false
+	}
+	if this.TrustLevel != that1.TrustLevel {
+		return false
+	}
+	if !bytes.Equal(this.Metadata, that1.Metadata) {
+		return false
+	}
+	if this.Blocked != that1.Blocked {
+		return false
+	}
+	if !this.OneToOneGroup.Equal(that1.OneToOneGroup) {
+		return false
+	}
+	if !this.CreatedAt.Equal(that1.CreatedAt) {
+		return false
+	}
+	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
+		return false
+	}
+	return true
+}
+func (this *Message) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Message)
+	if !ok {
+		that2, ok := that.(Message)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.GroupPubKey, that1.GroupPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.EntryCid, that1.EntryCid) {
+		return false
+	}
+	if !bytes.Equal(this.MessageKey, that1.MessageKey) {
+		return false
+	}
+	if !bytes.Equal(this.GroupMemberDevicePubKey, that1.GroupMemberDevicePubKey) {
+		return false
+	}
+	if !this.Device.Equal(that1.Device) {
+		return false
+	}
+	if !this.CreatedAt.Equal(that1.CreatedAt) {
+		return false
+	}
+	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
+		return false
+	}
+	return true
+}
+func (this *MyselfAccount) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MyselfAccount)
+	if !ok {
+		that2, ok := that.(MyselfAccount)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.AccountPubKey, that1.AccountPubKey) {
+		return false
+	}
+	if !bytes.Equal(this.AccountBindingPrivKey, that1.AccountBindingPrivKey) {
+		return false
+	}
+	if !bytes.Equal(this.SharedSecret, that1.SharedSecret) {
+		return false
+	}
+	if !bytes.Equal(this.PublicRendezvousPointSeed, that1.PublicRendezvousPointSeed) {
+		return false
+	}
+	if this.PublicRendezvousPointEnabled != that1.PublicRendezvousPointEnabled {
+		return false
+	}
+	if !bytes.Equal(this.SigChain, that1.SigChain) {
+		return false
+	}
+	if len(this.Devices) != len(that1.Devices) {
+		return false
+	}
+	for i := range this.Devices {
+		if !this.Devices[i].Equal(that1.Devices[i]) {
+			return false
+		}
+	}
+	if !this.CreatedAt.Equal(that1.CreatedAt) {
+		return false
+	}
+	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
+		return false
+	}
+	return true
+}
+func (this *MyselfDevice) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MyselfDevice)
+	if !ok {
+		that2, ok := that.(MyselfDevice)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.DevicePubKey, that1.DevicePubKey) {
+		return false
+	}
+	if !bytes.Equal(this.DevicePrivKey, that1.DevicePrivKey) {
+		return false
+	}
+	if !bytes.Equal(this.AccountPubKey, that1.AccountPubKey) {
+		return false
+	}
+	if !this.Account.Equal(&that1.Account) {
+		return false
+	}
+	if !this.CreatedAt.Equal(that1.CreatedAt) {
+		return false
+	}
+	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
+		return false
+	}
+	return true
+}
 func (m *GroupInfo) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1477,6 +1924,442 @@ func encodeVarintProtocolmodel(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func NewPopulatedGroupInfo(r randyProtocolmodel, easy bool) *GroupInfo {
+	this := &GroupInfo{}
+	v1 := r.Intn(100)
+	this.GroupPubKey = make([]byte, v1)
+	for i := 0; i < v1; i++ {
+		this.GroupPubKey[i] = byte(r.Intn(256))
+	}
+	v2 := r.Intn(100)
+	this.SharedSecret = make([]byte, v2)
+	for i := 0; i < v2; i++ {
+		this.SharedSecret[i] = byte(r.Intn(256))
+	}
+	v3 := r.Intn(100)
+	this.Metadata = make([]byte, v3)
+	for i := 0; i < v3; i++ {
+		this.Metadata[i] = byte(r.Intn(256))
+	}
+	this.Audience = GroupInfo_GroupAudience([]int32{0, 1, 2, 3}[r.Intn(4)])
+	this.Version = uint32(r.Uint32())
+	v4 := r.Intn(100)
+	this.SelfPrivKeyAccount = make([]byte, v4)
+	for i := 0; i < v4; i++ {
+		this.SelfPrivKeyAccount[i] = byte(r.Intn(256))
+	}
+	v5 := r.Intn(100)
+	this.SelfPrivKeyDevice = make([]byte, v5)
+	for i := 0; i < v5; i++ {
+		this.SelfPrivKeyDevice[i] = byte(r.Intn(256))
+	}
+	v6 := r.Intn(100)
+	this.SelfInviterPubKey = make([]byte, v6)
+	for i := 0; i < v6; i++ {
+		this.SelfInviterPubKey[i] = byte(r.Intn(256))
+	}
+	v7 := r.Intn(100)
+	this.InviterContactPubKey = make([]byte, v7)
+	for i := 0; i < v7; i++ {
+		this.InviterContactPubKey[i] = byte(r.Intn(256))
+	}
+	v8 := r.Intn(100)
+	this.OrbitDBCurrentCIDMessage = make([]byte, v8)
+	for i := 0; i < v8; i++ {
+		this.OrbitDBCurrentCIDMessage[i] = byte(r.Intn(256))
+	}
+	v9 := r.Intn(100)
+	this.OrbitDBCurrentCIDSecret = make([]byte, v9)
+	for i := 0; i < v9; i++ {
+		this.OrbitDBCurrentCIDSecret[i] = byte(r.Intn(256))
+	}
+	v10 := r.Intn(100)
+	this.OrbitDBCurrentCIDSetting = make([]byte, v10)
+	for i := 0; i < v10; i++ {
+		this.OrbitDBCurrentCIDSetting[i] = byte(r.Intn(256))
+	}
+	v11 := r.Intn(100)
+	this.OrbitDBCurrentCIDMember = make([]byte, v11)
+	for i := 0; i < v11; i++ {
+		this.OrbitDBCurrentCIDMember[i] = byte(r.Intn(256))
+	}
+	if r.Intn(5) == 0 {
+		v12 := r.Intn(5)
+		this.Members = make([]*GroupMember, v12)
+		for i := 0; i < v12; i++ {
+			this.Members[i] = NewPopulatedGroupMember(r, easy)
+		}
+	}
+	if r.Intn(5) == 0 {
+		this.Inviter = NewPopulatedContact(r, easy)
+	}
+	v13 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.CreatedAt = *v13
+	v14 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.UpdatedAt = *v14
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedGroupIncomingRequest(r randyProtocolmodel, easy bool) *GroupIncomingRequest {
+	this := &GroupIncomingRequest{}
+	v15 := r.Intn(100)
+	this.GroupPubKey = make([]byte, v15)
+	for i := 0; i < v15; i++ {
+		this.GroupPubKey[i] = byte(r.Intn(256))
+	}
+	v16 := r.Intn(100)
+	this.InviterMemberPubKey = make([]byte, v16)
+	for i := 0; i < v16; i++ {
+		this.InviterMemberPubKey[i] = byte(r.Intn(256))
+	}
+	v17 := r.Intn(100)
+	this.InvitationSig = make([]byte, v17)
+	for i := 0; i < v17; i++ {
+		this.InvitationSig[i] = byte(r.Intn(256))
+	}
+	v18 := r.Intn(100)
+	this.InvitationPrivKey = make([]byte, v18)
+	for i := 0; i < v18; i++ {
+		this.InvitationPrivKey[i] = byte(r.Intn(256))
+	}
+	v19 := r.Intn(100)
+	this.GroupSharedSecret = make([]byte, v19)
+	for i := 0; i < v19; i++ {
+		this.GroupSharedSecret[i] = byte(r.Intn(256))
+	}
+	v20 := r.Intn(100)
+	this.GroupVersion = make([]byte, v20)
+	for i := 0; i < v20; i++ {
+		this.GroupVersion[i] = byte(r.Intn(256))
+	}
+	v21 := r.Intn(100)
+	this.EssentialMetadata = make([]byte, v21)
+	for i := 0; i < v21; i++ {
+		this.EssentialMetadata[i] = byte(r.Intn(256))
+	}
+	if r.Intn(5) == 0 {
+		this.InviterContact = NewPopulatedContact(r, easy)
+	}
+	v22 := r.Intn(100)
+	this.InviterContactPubKey = make([]byte, v22)
+	for i := 0; i < v22; i++ {
+		this.InviterContactPubKey[i] = byte(r.Intn(256))
+	}
+	v23 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.CreatedAt = *v23
+	v24 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.UpdatedAt = *v24
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedGroupMember(r randyProtocolmodel, easy bool) *GroupMember {
+	this := &GroupMember{}
+	v25 := r.Intn(100)
+	this.GroupMemberPubKey = make([]byte, v25)
+	for i := 0; i < v25; i++ {
+		this.GroupMemberPubKey[i] = byte(r.Intn(256))
+	}
+	v26 := r.Intn(100)
+	this.GroupPubKey = make([]byte, v26)
+	for i := 0; i < v26; i++ {
+		this.GroupPubKey[i] = byte(r.Intn(256))
+	}
+	v27 := r.Intn(100)
+	this.InviterPubKey = make([]byte, v27)
+	for i := 0; i < v27; i++ {
+		this.InviterPubKey[i] = byte(r.Intn(256))
+	}
+	v28 := r.Intn(100)
+	this.ContactAccountPubKey = make([]byte, v28)
+	for i := 0; i < v28; i++ {
+		this.ContactAccountPubKey[i] = byte(r.Intn(256))
+	}
+	v29 := r.Intn(100)
+	this.ContactAccountBindingProof = make([]byte, v29)
+	for i := 0; i < v29; i++ {
+		this.ContactAccountBindingProof[i] = byte(r.Intn(256))
+	}
+	v30 := r.Intn(100)
+	this.Metadata = make([]byte, v30)
+	for i := 0; i < v30; i++ {
+		this.Metadata[i] = byte(r.Intn(256))
+	}
+	if r.Intn(5) == 0 {
+		v31 := r.Intn(5)
+		this.Devices = make([]*GroupMemberDevice, v31)
+		for i := 0; i < v31; i++ {
+			this.Devices[i] = NewPopulatedGroupMemberDevice(r, easy)
+		}
+	}
+	v32 := NewPopulatedGroupInfo(r, easy)
+	this.GroupInfo = *v32
+	if r.Intn(5) == 0 {
+		this.Inviter = NewPopulatedGroupMember(r, easy)
+	}
+	if r.Intn(5) == 0 {
+		this.Contact = NewPopulatedContact(r, easy)
+	}
+	v33 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.CreatedAt = *v33
+	v34 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.UpdatedAt = *v34
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedGroupMemberDevice(r randyProtocolmodel, easy bool) *GroupMemberDevice {
+	this := &GroupMemberDevice{}
+	v35 := r.Intn(100)
+	this.GroupMemberDevicePubKey = make([]byte, v35)
+	for i := 0; i < v35; i++ {
+		this.GroupMemberDevicePubKey[i] = byte(r.Intn(256))
+	}
+	v36 := r.Intn(100)
+	this.GroupMemberPubKey = make([]byte, v36)
+	for i := 0; i < v36; i++ {
+		this.GroupMemberPubKey[i] = byte(r.Intn(256))
+	}
+	v37 := r.Intn(100)
+	this.DerivationState = make([]byte, v37)
+	for i := 0; i < v37; i++ {
+		this.DerivationState[i] = byte(r.Intn(256))
+	}
+	this.DerivationCounter = uint64(uint64(r.Uint32()))
+	v38 := r.Intn(100)
+	this.DerivationNextHotp = make([]byte, v38)
+	for i := 0; i < v38; i++ {
+		this.DerivationNextHotp[i] = byte(r.Intn(256))
+	}
+	v39 := NewPopulatedGroupMember(r, easy)
+	this.GroupMember = *v39
+	v40 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.CreatedAt = *v40
+	v41 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.UpdatedAt = *v41
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedContact(r randyProtocolmodel, easy bool) *Contact {
+	this := &Contact{}
+	v42 := r.Intn(100)
+	this.AccountPubKey = make([]byte, v42)
+	for i := 0; i < v42; i++ {
+		this.AccountPubKey[i] = byte(r.Intn(256))
+	}
+	v43 := r.Intn(100)
+	this.OneToOneGroupPubKey = make([]byte, v43)
+	for i := 0; i < v43; i++ {
+		this.OneToOneGroupPubKey[i] = byte(r.Intn(256))
+	}
+	v44 := r.Intn(100)
+	this.BinderPubKey = make([]byte, v44)
+	for i := 0; i < v44; i++ {
+		this.BinderPubKey[i] = byte(r.Intn(256))
+	}
+	this.TrustLevel = Contact_TrustLevel([]int32{0, 1, 2, 3, 4}[r.Intn(5)])
+	v45 := r.Intn(100)
+	this.Metadata = make([]byte, v45)
+	for i := 0; i < v45; i++ {
+		this.Metadata[i] = byte(r.Intn(256))
+	}
+	this.Blocked = bool(bool(r.Intn(2) == 0))
+	if r.Intn(5) == 0 {
+		this.OneToOneGroup = NewPopulatedGroupInfo(r, easy)
+	}
+	v46 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.CreatedAt = *v46
+	v47 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.UpdatedAt = *v47
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedMessage(r randyProtocolmodel, easy bool) *Message {
+	this := &Message{}
+	v48 := r.Intn(100)
+	this.GroupPubKey = make([]byte, v48)
+	for i := 0; i < v48; i++ {
+		this.GroupPubKey[i] = byte(r.Intn(256))
+	}
+	v49 := r.Intn(100)
+	this.EntryCid = make([]byte, v49)
+	for i := 0; i < v49; i++ {
+		this.EntryCid[i] = byte(r.Intn(256))
+	}
+	v50 := r.Intn(100)
+	this.MessageKey = make([]byte, v50)
+	for i := 0; i < v50; i++ {
+		this.MessageKey[i] = byte(r.Intn(256))
+	}
+	v51 := r.Intn(100)
+	this.GroupMemberDevicePubKey = make([]byte, v51)
+	for i := 0; i < v51; i++ {
+		this.GroupMemberDevicePubKey[i] = byte(r.Intn(256))
+	}
+	if r.Intn(5) == 0 {
+		this.Device = NewPopulatedGroupMemberDevice(r, easy)
+	}
+	v52 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.CreatedAt = *v52
+	v53 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.UpdatedAt = *v53
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedMyselfAccount(r randyProtocolmodel, easy bool) *MyselfAccount {
+	this := &MyselfAccount{}
+	v54 := r.Intn(100)
+	this.AccountPubKey = make([]byte, v54)
+	for i := 0; i < v54; i++ {
+		this.AccountPubKey[i] = byte(r.Intn(256))
+	}
+	v55 := r.Intn(100)
+	this.AccountBindingPrivKey = make([]byte, v55)
+	for i := 0; i < v55; i++ {
+		this.AccountBindingPrivKey[i] = byte(r.Intn(256))
+	}
+	v56 := r.Intn(100)
+	this.SharedSecret = make([]byte, v56)
+	for i := 0; i < v56; i++ {
+		this.SharedSecret[i] = byte(r.Intn(256))
+	}
+	v57 := r.Intn(100)
+	this.PublicRendezvousPointSeed = make([]byte, v57)
+	for i := 0; i < v57; i++ {
+		this.PublicRendezvousPointSeed[i] = byte(r.Intn(256))
+	}
+	this.PublicRendezvousPointEnabled = bool(bool(r.Intn(2) == 0))
+	v58 := r.Intn(100)
+	this.SigChain = make([]byte, v58)
+	for i := 0; i < v58; i++ {
+		this.SigChain[i] = byte(r.Intn(256))
+	}
+	if r.Intn(5) == 0 {
+		v59 := r.Intn(5)
+		this.Devices = make([]*MyselfDevice, v59)
+		for i := 0; i < v59; i++ {
+			this.Devices[i] = NewPopulatedMyselfDevice(r, easy)
+		}
+	}
+	v60 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.CreatedAt = *v60
+	v61 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.UpdatedAt = *v61
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedMyselfDevice(r randyProtocolmodel, easy bool) *MyselfDevice {
+	this := &MyselfDevice{}
+	v62 := r.Intn(100)
+	this.DevicePubKey = make([]byte, v62)
+	for i := 0; i < v62; i++ {
+		this.DevicePubKey[i] = byte(r.Intn(256))
+	}
+	v63 := r.Intn(100)
+	this.DevicePrivKey = make([]byte, v63)
+	for i := 0; i < v63; i++ {
+		this.DevicePrivKey[i] = byte(r.Intn(256))
+	}
+	v64 := r.Intn(100)
+	this.AccountPubKey = make([]byte, v64)
+	for i := 0; i < v64; i++ {
+		this.AccountPubKey[i] = byte(r.Intn(256))
+	}
+	v65 := NewPopulatedMyselfAccount(r, easy)
+	this.Account = *v65
+	v66 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.CreatedAt = *v66
+	v67 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
+	this.UpdatedAt = *v67
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+type randyProtocolmodel interface {
+	Float32() float32
+	Float64() float64
+	Int63() int64
+	Int31() int32
+	Uint32() uint32
+	Intn(n int) int
+}
+
+func randUTF8RuneProtocolmodel(r randyProtocolmodel) rune {
+	ru := r.Intn(62)
+	if ru < 10 {
+		return rune(ru + 48)
+	} else if ru < 36 {
+		return rune(ru + 55)
+	}
+	return rune(ru + 61)
+}
+func randStringProtocolmodel(r randyProtocolmodel) string {
+	v68 := r.Intn(100)
+	tmps := make([]rune, v68)
+	for i := 0; i < v68; i++ {
+		tmps[i] = randUTF8RuneProtocolmodel(r)
+	}
+	return string(tmps)
+}
+func randUnrecognizedProtocolmodel(r randyProtocolmodel, maxFieldNumber int) (dAtA []byte) {
+	l := r.Intn(5)
+	for i := 0; i < l; i++ {
+		wire := r.Intn(4)
+		if wire == 3 {
+			wire = 5
+		}
+		fieldNumber := maxFieldNumber + r.Intn(100)
+		dAtA = randFieldProtocolmodel(dAtA, r, fieldNumber, wire)
+	}
+	return dAtA
+}
+func randFieldProtocolmodel(dAtA []byte, r randyProtocolmodel, fieldNumber int, wire int) []byte {
+	key := uint32(fieldNumber)<<3 | uint32(wire)
+	switch wire {
+	case 0:
+		dAtA = encodeVarintPopulateProtocolmodel(dAtA, uint64(key))
+		v69 := r.Int63()
+		if r.Intn(2) == 0 {
+			v69 *= -1
+		}
+		dAtA = encodeVarintPopulateProtocolmodel(dAtA, uint64(v69))
+	case 1:
+		dAtA = encodeVarintPopulateProtocolmodel(dAtA, uint64(key))
+		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
+	case 2:
+		dAtA = encodeVarintPopulateProtocolmodel(dAtA, uint64(key))
+		ll := r.Intn(100)
+		dAtA = encodeVarintPopulateProtocolmodel(dAtA, uint64(ll))
+		for j := 0; j < ll; j++ {
+			dAtA = append(dAtA, byte(r.Intn(256)))
+		}
+	default:
+		dAtA = encodeVarintPopulateProtocolmodel(dAtA, uint64(key))
+		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
+	}
+	return dAtA
+}
+func encodeVarintPopulateProtocolmodel(dAtA []byte, v uint64) []byte {
+	for v >= 1<<7 {
+		dAtA = append(dAtA, uint8(uint64(v)&0x7f|0x80))
+		v >>= 7
+	}
+	dAtA = append(dAtA, uint8(v))
+	return dAtA
+}
 func (m *GroupInfo) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1832,180 +2715,6 @@ func sovProtocolmodel(x uint64) (n int) {
 }
 func sozProtocolmodel(x uint64) (n int) {
 	return sovProtocolmodel(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (this *GroupInfo) String() string {
-	if this == nil {
-		return "nil"
-	}
-	repeatedStringForMembers := "[]*GroupMember{"
-	for _, f := range this.Members {
-		repeatedStringForMembers += strings.Replace(f.String(), "GroupMember", "GroupMember", 1) + ","
-	}
-	repeatedStringForMembers += "}"
-	s := strings.Join([]string{`&GroupInfo{`,
-		`GroupPubKey:` + fmt.Sprintf("%v", this.GroupPubKey) + `,`,
-		`SharedSecret:` + fmt.Sprintf("%v", this.SharedSecret) + `,`,
-		`Metadata:` + fmt.Sprintf("%v", this.Metadata) + `,`,
-		`Audience:` + fmt.Sprintf("%v", this.Audience) + `,`,
-		`Version:` + fmt.Sprintf("%v", this.Version) + `,`,
-		`SelfPrivKeyAccount:` + fmt.Sprintf("%v", this.SelfPrivKeyAccount) + `,`,
-		`SelfPrivKeyDevice:` + fmt.Sprintf("%v", this.SelfPrivKeyDevice) + `,`,
-		`SelfInviterPubKey:` + fmt.Sprintf("%v", this.SelfInviterPubKey) + `,`,
-		`InviterContactPubKey:` + fmt.Sprintf("%v", this.InviterContactPubKey) + `,`,
-		`OrbitDBCurrentCIDMessage:` + fmt.Sprintf("%v", this.OrbitDBCurrentCIDMessage) + `,`,
-		`OrbitDBCurrentCIDSecret:` + fmt.Sprintf("%v", this.OrbitDBCurrentCIDSecret) + `,`,
-		`OrbitDBCurrentCIDSetting:` + fmt.Sprintf("%v", this.OrbitDBCurrentCIDSetting) + `,`,
-		`OrbitDBCurrentCIDMember:` + fmt.Sprintf("%v", this.OrbitDBCurrentCIDMember) + `,`,
-		`Members:` + repeatedStringForMembers + `,`,
-		`Inviter:` + strings.Replace(this.Inviter.String(), "Contact", "Contact", 1) + `,`,
-		`CreatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.CreatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`UpdatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.UpdatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *GroupIncomingRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&GroupIncomingRequest{`,
-		`GroupPubKey:` + fmt.Sprintf("%v", this.GroupPubKey) + `,`,
-		`InviterMemberPubKey:` + fmt.Sprintf("%v", this.InviterMemberPubKey) + `,`,
-		`InvitationSig:` + fmt.Sprintf("%v", this.InvitationSig) + `,`,
-		`InvitationPrivKey:` + fmt.Sprintf("%v", this.InvitationPrivKey) + `,`,
-		`GroupSharedSecret:` + fmt.Sprintf("%v", this.GroupSharedSecret) + `,`,
-		`GroupVersion:` + fmt.Sprintf("%v", this.GroupVersion) + `,`,
-		`EssentialMetadata:` + fmt.Sprintf("%v", this.EssentialMetadata) + `,`,
-		`InviterContact:` + strings.Replace(this.InviterContact.String(), "Contact", "Contact", 1) + `,`,
-		`InviterContactPubKey:` + fmt.Sprintf("%v", this.InviterContactPubKey) + `,`,
-		`CreatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.CreatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`UpdatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.UpdatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *GroupMember) String() string {
-	if this == nil {
-		return "nil"
-	}
-	repeatedStringForDevices := "[]*GroupMemberDevice{"
-	for _, f := range this.Devices {
-		repeatedStringForDevices += strings.Replace(f.String(), "GroupMemberDevice", "GroupMemberDevice", 1) + ","
-	}
-	repeatedStringForDevices += "}"
-	s := strings.Join([]string{`&GroupMember{`,
-		`GroupMemberPubKey:` + fmt.Sprintf("%v", this.GroupMemberPubKey) + `,`,
-		`GroupPubKey:` + fmt.Sprintf("%v", this.GroupPubKey) + `,`,
-		`InviterPubKey:` + fmt.Sprintf("%v", this.InviterPubKey) + `,`,
-		`ContactAccountPubKey:` + fmt.Sprintf("%v", this.ContactAccountPubKey) + `,`,
-		`ContactAccountBindingProof:` + fmt.Sprintf("%v", this.ContactAccountBindingProof) + `,`,
-		`Metadata:` + fmt.Sprintf("%v", this.Metadata) + `,`,
-		`Devices:` + repeatedStringForDevices + `,`,
-		`GroupInfo:` + strings.Replace(strings.Replace(this.GroupInfo.String(), "GroupInfo", "GroupInfo", 1), `&`, ``, 1) + `,`,
-		`Inviter:` + strings.Replace(this.Inviter.String(), "GroupMember", "GroupMember", 1) + `,`,
-		`Contact:` + strings.Replace(this.Contact.String(), "Contact", "Contact", 1) + `,`,
-		`CreatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.CreatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`UpdatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.UpdatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *GroupMemberDevice) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&GroupMemberDevice{`,
-		`GroupMemberDevicePubKey:` + fmt.Sprintf("%v", this.GroupMemberDevicePubKey) + `,`,
-		`GroupMemberPubKey:` + fmt.Sprintf("%v", this.GroupMemberPubKey) + `,`,
-		`DerivationState:` + fmt.Sprintf("%v", this.DerivationState) + `,`,
-		`DerivationCounter:` + fmt.Sprintf("%v", this.DerivationCounter) + `,`,
-		`DerivationNextHotp:` + fmt.Sprintf("%v", this.DerivationNextHotp) + `,`,
-		`GroupMember:` + strings.Replace(strings.Replace(this.GroupMember.String(), "GroupMember", "GroupMember", 1), `&`, ``, 1) + `,`,
-		`CreatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.CreatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`UpdatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.UpdatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *Contact) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&Contact{`,
-		`AccountPubKey:` + fmt.Sprintf("%v", this.AccountPubKey) + `,`,
-		`OneToOneGroupPubKey:` + fmt.Sprintf("%v", this.OneToOneGroupPubKey) + `,`,
-		`BinderPubKey:` + fmt.Sprintf("%v", this.BinderPubKey) + `,`,
-		`TrustLevel:` + fmt.Sprintf("%v", this.TrustLevel) + `,`,
-		`Metadata:` + fmt.Sprintf("%v", this.Metadata) + `,`,
-		`Blocked:` + fmt.Sprintf("%v", this.Blocked) + `,`,
-		`OneToOneGroup:` + strings.Replace(this.OneToOneGroup.String(), "GroupInfo", "GroupInfo", 1) + `,`,
-		`CreatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.CreatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`UpdatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.UpdatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *Message) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&Message{`,
-		`GroupPubKey:` + fmt.Sprintf("%v", this.GroupPubKey) + `,`,
-		`EntryCid:` + fmt.Sprintf("%v", this.EntryCid) + `,`,
-		`MessageKey:` + fmt.Sprintf("%v", this.MessageKey) + `,`,
-		`GroupMemberDevicePubKey:` + fmt.Sprintf("%v", this.GroupMemberDevicePubKey) + `,`,
-		`Device:` + strings.Replace(this.Device.String(), "GroupMemberDevice", "GroupMemberDevice", 1) + `,`,
-		`CreatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.CreatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`UpdatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.UpdatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *MyselfAccount) String() string {
-	if this == nil {
-		return "nil"
-	}
-	repeatedStringForDevices := "[]*MyselfDevice{"
-	for _, f := range this.Devices {
-		repeatedStringForDevices += strings.Replace(f.String(), "MyselfDevice", "MyselfDevice", 1) + ","
-	}
-	repeatedStringForDevices += "}"
-	s := strings.Join([]string{`&MyselfAccount{`,
-		`AccountPubKey:` + fmt.Sprintf("%v", this.AccountPubKey) + `,`,
-		`AccountBindingPrivKey:` + fmt.Sprintf("%v", this.AccountBindingPrivKey) + `,`,
-		`SharedSecret:` + fmt.Sprintf("%v", this.SharedSecret) + `,`,
-		`PublicRendezvousPointSeed:` + fmt.Sprintf("%v", this.PublicRendezvousPointSeed) + `,`,
-		`PublicRendezvousPointEnabled:` + fmt.Sprintf("%v", this.PublicRendezvousPointEnabled) + `,`,
-		`SigChain:` + fmt.Sprintf("%v", this.SigChain) + `,`,
-		`Devices:` + repeatedStringForDevices + `,`,
-		`CreatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.CreatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`UpdatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.UpdatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *MyselfDevice) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&MyselfDevice{`,
-		`DevicePubKey:` + fmt.Sprintf("%v", this.DevicePubKey) + `,`,
-		`DevicePrivKey:` + fmt.Sprintf("%v", this.DevicePrivKey) + `,`,
-		`AccountPubKey:` + fmt.Sprintf("%v", this.AccountPubKey) + `,`,
-		`Account:` + strings.Replace(strings.Replace(this.Account.String(), "MyselfAccount", "MyselfAccount", 1), `&`, ``, 1) + `,`,
-		`CreatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.CreatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`UpdatedAt:` + strings.Replace(strings.Replace(fmt.Sprintf("%v", this.UpdatedAt), "Timestamp", "timestamp.Timestamp", 1), `&`, ``, 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func valueToStringProtocolmodel(v interface{}) string {
-	rv := reflect.ValueOf(v)
-	if rv.IsNil() {
-		return "nil"
-	}
-	pv := reflect.Indirect(rv).Interface()
-	return fmt.Sprintf("*%v", pv)
 }
 func (m *GroupInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
