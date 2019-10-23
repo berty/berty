@@ -29,6 +29,7 @@
     "nohoist": [
       "**/react-native",
       "**/react-native-*",
+      "**/jsc-*",
       "**/@react-native-community/*",
       "**/hermes-engine"
     ]
