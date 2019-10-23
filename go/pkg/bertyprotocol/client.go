@@ -5,9 +5,9 @@ import (
 
 	"berty.tech/go/internal/ipfsutil"
 	"berty.tech/go/internal/protocoldb"
+	"berty.tech/go/pkg/errcode"
 	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -50,7 +50,7 @@ func New(db *gorm.DB, opts Opts) (Client, error) {
 	var err error
 	client.db, err = protocoldb.InitMigrate(db, client.logger.Named("datastore"))
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to initialize datastore")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	ctx := opts.RootContext
@@ -61,7 +61,7 @@ func New(db *gorm.DB, opts Opts) (Client, error) {
 		var err error
 		client.ipfsCoreAPI, err = ipfsutil.NewInMemoryCoreAPI(ctx)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to initialize ipfsutil")
+			return nil, errcode.TODO.Wrap(err)
 		}
 	}
 

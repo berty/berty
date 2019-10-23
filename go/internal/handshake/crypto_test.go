@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"berty.tech/go/internal/crypto"
+	"berty.tech/go/pkg/errcode"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
@@ -252,14 +253,14 @@ func TestHandshakeSession_Encrypt_Decrypt(t *testing.T) {
 
 	// Should not decode the message twice
 	decrypted, err = hss2.Decrypt(encrypted)
-	if err != ErrDecrypt || string(decrypted) != "" {
-		t.Fatalf("err should be ErrDecrypt and decrypted should be empty")
+	if err != errcode.ErrHandshakeDecrypt || string(decrypted) != "" {
+		t.Fatalf("err should be errcode.ErrHandshakeDecrypt and decrypted should be empty")
 	}
 
 	// Should not decode a random string
 	decrypted, err = hss2.Decrypt([]byte("blahblah"))
-	if err != ErrDecrypt || string(decrypted) != "" {
-		t.Fatalf("err should be ErrDecrypt and decrypted should be empty")
+	if err != errcode.ErrHandshakeDecrypt || string(decrypted) != "" {
+		t.Fatalf("err should be errcode.ErrHandshakeDecrypt and decrypted should be empty")
 	}
 
 	// Should be able to encode a second message

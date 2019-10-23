@@ -1,11 +1,15 @@
 package bertyprotocol
 
-import "context"
+import (
+	"context"
+
+	"berty.tech/go/pkg/errcode"
+)
 
 func (c *client) StreamManagerRequestToContact(context.Context, *StreamManagerRequestToContactRequest) (*StreamManagerRequestToContactReply, error) {
-	return nil, ErrNotImplemented
+	return nil, errcode.ErrNotImplemented
 }
 
 func (c *client) StreamManagerAccept(Instance_StreamManagerAcceptServer) error {
-	return ErrNotImplemented
+	return errcode.ErrNotImplemented
 }

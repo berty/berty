@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package berty.errcode;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option go_package = "berty.tech/go/pkg/errcode";
+
+option (gogoproto.benchgen_all) = false;
+option (gogoproto.compare_all) = false;
+option (gogoproto.description_all) = false;
+option (gogoproto.enum_stringer_all) = false;
+option (gogoproto.enumdecl_all) = true;
+option (gogoproto.equal_all) = false;
+option (gogoproto.face_all) = false;
+option (gogoproto.gogoproto_import) = false;
+option (gogoproto.goproto_enum_prefix_all) = false;
+option (gogoproto.goproto_enum_stringer_all) = false;
+option (gogoproto.goproto_extensions_map_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.goproto_registration) = false;
+//option (gogoproto.goproto_sizecache_all) = false;
+option (gogoproto.goproto_stringer_all) = false;
+//option (gogoproto.goproto_unkeyed_all) = false;
+option (gogoproto.goproto_unrecognized_all) = false;
+option (gogoproto.gostring_all) = false;
+option (gogoproto.marshaler_all) = false;
+option (gogoproto.messagename_all) = false;
+option (gogoproto.onlyone_all) = false;
+option (gogoproto.populate_all) = false;
+option (gogoproto.protosizer_all) = false;
+option (gogoproto.sizer_all) = false;
+option (gogoproto.stable_marshaler_all) = false;
+option (gogoproto.stringer_all) = false;
+option (gogoproto.testgen_all) = false;
+option (gogoproto.typedecl_all) = false;
+option (gogoproto.unmarshaler_all) = false;
+option (gogoproto.unsafe_marshaler_all) = false;
+option (gogoproto.unsafe_unmarshaler_all) = false;
+option (gogoproto.verbose_equal_all) = false;
+
+enum ErrCode {
+  Undefined = 0; // default value, should never be set manually
+
+  TODO = 666; // indicates that you plan to write a custom error handler later
+  ErrNotImplemented = 777;
+  ErrInternal = 999; // can be used to translate an "unknown" error (without Code), i.e., in gRPC
+
+  //
+  // Generic helpers (try to use a more specific error when possible)
+  //
+
+  ErrInvalidInput = 101;
+  ErrMissingInput = 102;
+
+  //
+  // Berty Chat (starting at 1001)
+  //
+
+  //
+  // Berty Protocol (starting at 2001)
+  //
+
+  ErrSigChainNoEntries = 2001;
+  ErrSigChainInvalidEntryType = 2002;
+  ErrSigChainAlreadyInitialized = 2003;
+  ErrSigChainPermission = 2004;
+  ErrSigChainOperationAlreadyDone = 2005;
+  ErrHandshakeNoPayload = 2006;
+  ErrHandshakeInvalidFlow = 2007;
+  ErrHandshakeInvalidFlowStepNotFound = 2008;
+  ErrHandshakeParams = 2009;
+  ErrHandshakeNoAuthReturned = 2010;
+  ErrHandshakeInvalidKeyType = 2011;
+  ErrHandshakeInvalidSignature = 2012;
+  ErrHandshakeSessionInvalid = 2013;
+  ErrHandshakeKeyNotInSigChain = 2014;
+  ErrHandshakeDecrypt = 2015;
+
+  //
+  // Chat Bridge (starting at 3001)
+  //
+
+  ErrBridgeInterrupted = 3001;
+  ErrBridgeNotRunning = 3002;
+}

@@ -3,11 +3,9 @@ package crypto
 import (
 	"context"
 
-	"github.com/pkg/errors"
-
-	"go.uber.org/zap"
-
+	"berty.tech/go/pkg/errcode"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/zap"
 )
 
 type crypto struct {
@@ -24,12 +22,12 @@ func (c *crypto) GetDevicePublicKey() p2pcrypto.PubKey {
 func (c *crypto) GetAccountPublicKey() (p2pcrypto.PubKey, error) {
 	initialEntry, err := c.sigChain.GetInitialEntry()
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get initial sig chain entry")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	pubKey, err := initialEntry.GetSubject()
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get entry subject")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return pubKey, nil
@@ -45,7 +43,7 @@ func (c *crypto) Sign(data []byte) ([]byte, error) {
 
 func (c *crypto) AddDeviceToOwnSigChain(ctx context.Context, key p2pcrypto.PubKey) error {
 	_, err := c.sigChain.AddEntry(c.privKey, key, c.opts)
-	return errors.Wrap(err, "unable to add device to sig chain")
+	return errcode.TODO.Wrap(err)
 }
 
 func (c *crypto) Close() error {

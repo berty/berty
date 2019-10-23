@@ -1,4 +1,5 @@
 091c2c356ed6594b6c0e078f2826e85b0236a8d5  ../api/bertychat.proto
 02c94a7ec8a717d89c8b95b20fabf942f8934724  ../api/bertyprotocol.proto
 03fd21adc9eb2846c2d6cd62eac6184bbffaf455  ../api/chatmodel.proto
+a433caf96caafdf90f3190cfb1763dfc73b075c4  ../api/errcode.proto
 dd607c85fc7a1cc1e523a59873634b362cc72824  Makefile

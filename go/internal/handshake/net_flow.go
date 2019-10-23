@@ -5,7 +5,7 @@ import (
 	"net"
 
 	"berty.tech/go/internal/crypto"
-
+	"berty.tech/go/pkg/errcode"
 	ggio "github.com/gogo/protobuf/io"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	inet "github.com/libp2p/go-libp2p-core/network"
@@ -29,7 +29,7 @@ type flow struct {
 
 func newHandshakeFlow(ctx context.Context, conn net.Conn, devPubKey p2pcrypto.PubKey, ownSigChain crypto.SigChainManager, session *handshakeSession, steps map[HandshakeFrame_HandshakeStep]flowStep) (crypto.SigChainManager, p2pcrypto.PubKey, error) {
 	if conn == nil || session == nil || steps == nil {
-		return nil, nil, ErrParams
+		return nil, nil, errcode.ErrHandshakeParams
 	}
 
 	writer := ggio.NewDelimitedWriter(conn)
@@ -48,8 +48,6 @@ func newHandshakeFlow(ctx context.Context, conn net.Conn, devPubKey p2pcrypto.Pu
 }
 
 func (f *flow) close() error {
-	var retErr error
-
 	if f.writer != nil {
 		_ = f.writer.Close()
 	}
@@ -62,7 +60,7 @@ func (f *flow) close() error {
 		_ = f.session.Close()
 	}
 
-	return retErr
+	return nil
 }
 
 func (f *flow) performFlow(ctx context.Context) (crypto.SigChainManager, p2pcrypto.PubKey, error) {
@@ -75,7 +73,7 @@ func (f *flow) performFlow(ctx context.Context) (crypto.SigChainManager, p2pcryp
 	for nextStep != nil {
 		if *nextStep == HandshakeFrame_STEP_9_DONE {
 			if f.provedSigChain == nil || f.provedDevicePubKey == nil {
-				return nil, nil, ErrNoAuthReturned
+				return nil, nil, errcode.ErrHandshakeNoAuthReturned
 			}
 
 			return f.provedSigChain, f.provedDevicePubKey, nil
@@ -85,7 +83,7 @@ func (f *flow) performFlow(ctx context.Context) (crypto.SigChainManager, p2pcryp
 
 		step, ok := f.steps[*nextStep]
 		if !ok {
-			return nil, nil, ErrInvalidFlowStepNotFound
+			return nil, nil, errcode.ErrHandshakeInvalidFlowStepNotFound
 		}
 
 		var readMsg = &HandshakeFrame{}
@@ -103,11 +101,11 @@ func (f *flow) performFlow(ctx context.Context) (crypto.SigChainManager, p2pcryp
 		}
 
 		if *nextStep == currentStep {
-			return nil, nil, ErrInvalidFlow
+			return nil, nil, errcode.ErrHandshakeInvalidFlow
 		}
 	}
 
-	return nil, nil, ErrInvalidFlow
+	return nil, nil, errcode.ErrHandshakeInvalidFlow
 }
 
 func Request(ctx context.Context, conn net.Conn, devicePrivateKey p2pcrypto.PrivKey, sigChain crypto.SigChainManager, accountToReach p2pcrypto.PubKey, opts *crypto.Opts) (crypto.SigChainManager, p2pcrypto.PubKey, error) {

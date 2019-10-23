@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"berty.tech/go/internal/crypto"
+	"berty.tech/go/pkg/errcode"
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/gogo/protobuf/proto"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
@@ -97,7 +98,7 @@ func Test_flow_performFlow(t *testing.T) {
 		{
 			name:     "no steps",
 			steps:    map[HandshakeFrame_HandshakeStep]flowStep{},
-			expected: ErrInvalidFlowStepNotFound,
+			expected: errcode.ErrHandshakeInvalidFlowStepNotFound,
 		},
 		{
 			name: "single valid, no authenticated returned",
@@ -106,7 +107,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_9_DONE,
 				},
 			},
-			expected: ErrNoAuthReturned,
+			expected: errcode.ErrHandshakeNoAuthReturned,
 		},
 		{
 			name: "single valid, read, no authenticated returned",
@@ -118,7 +119,7 @@ func Test_flow_performFlow(t *testing.T) {
 				},
 			},
 			reader:   &dummyReader{msg: expectedMsg},
-			expected: ErrNoAuthReturned,
+			expected: errcode.ErrHandshakeNoAuthReturned,
 		},
 		{
 			name: "single invalid looping",
@@ -127,7 +128,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_1_KEY_AGREEMENT,
 				},
 			},
-			expected: ErrInvalidFlow,
+			expected: errcode.ErrHandshakeInvalidFlow,
 		},
 		{
 			name: "single invalid end",
@@ -136,7 +137,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_2_KEY_AGREEMENT,
 				},
 			},
-			expected: ErrInvalidFlowStepNotFound,
+			expected: errcode.ErrHandshakeInvalidFlowStepNotFound,
 		},
 		{
 			name: "single invalid start",
@@ -145,7 +146,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_9_DONE,
 				},
 			},
-			expected: ErrInvalidFlowStepNotFound,
+			expected: errcode.ErrHandshakeInvalidFlowStepNotFound,
 		},
 		{
 			name: "multiple valid, no authenticated returned",
@@ -157,7 +158,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_9_DONE,
 				},
 			},
-			expected: ErrNoAuthReturned,
+			expected: errcode.ErrHandshakeNoAuthReturned,
 		},
 		{
 			name: "multiple valid, authenticated returned",

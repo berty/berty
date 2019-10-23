@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 
+	"berty.tech/go/pkg/errcode"
 	ipfs_datastore "github.com/ipfs/go-datastore"
 	ipfs_datastoresync "github.com/ipfs/go-datastore/sync"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
@@ -16,19 +17,18 @@ import (
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	libp2p_ci "github.com/libp2p/go-libp2p-crypto" // nolint:staticcheck
 	libp2p_peer "github.com/libp2p/go-libp2p-peer" // nolint:staticcheck
-	"github.com/pkg/errors"
 )
 
 // NewInMemoryCoreAPI returns an IPFS CoreAPI based on an opininated ipfs_node.BuildCfg
 func NewInMemoryCoreAPI(ctx context.Context) (ipfs_interface.CoreAPI, error) {
 	cfg, err := createBuildConfig()
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create ipfs build config")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	node, err := ipfs_core.NewNode(ctx, cfg)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create a new ipfs node")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return ipfs_coreapi.NewCoreAPI(node)
@@ -38,7 +38,7 @@ func createBuildConfig() (*ipfs_node.BuildCfg, error) {
 	ds := ipfs_datastore.NewMapDatastore()
 	repo, err := createRepo(ipfs_datastoresync.MutexWrap(ds))
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create ipfs repo")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	routing := ipfs_libp2p.DHTOption
@@ -58,17 +58,17 @@ func createRepo(dstore ipfs_repo.Datastore) (ipfs_repo.Repo, error) {
 	c := ipfs_cfg.Config{}
 	priv, pub, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, rand.Reader) // nolint:staticcheck
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create ipfs build config")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	pid, err := libp2p_peer.IDFromPublicKey(pub) // nolint:staticcheck
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to convert public key to PeerID")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	privkeyb, err := priv.Bytes()
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get serialized private key")
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	c.Bootstrap = ipfs_cfg.DefaultBootstrapAddresses

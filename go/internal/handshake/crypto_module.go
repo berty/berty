@@ -4,9 +4,8 @@ import (
 	"crypto/rand"
 
 	"berty.tech/go/internal/crypto"
-
+	"berty.tech/go/pkg/errcode"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-
 	"golang.org/x/crypto/nacl/box"
 )
 
@@ -14,7 +13,7 @@ func bytesSliceToArray(slice []byte) (*[32]byte, error) {
 	var arr [32]byte
 
 	if len(slice) != 32 {
-		return nil, ErrInvalidKeyType
+		return nil, errcode.ErrHandshakeInvalidKeyType
 	}
 
 	for i, c := range slice {
