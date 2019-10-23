@@ -4,7 +4,7 @@ package berty.errcode;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-option go_package = "berty.tech/go/pkg/errcode";
+option go_package = "berty.tech/go/internal/chaterrcode";
 
 option (gogoproto.benchgen_all) = false;
 option (gogoproto.compare_all) = false;
@@ -40,17 +40,17 @@ option (gogoproto.unsafe_unmarshaler_all) = false;
 option (gogoproto.verbose_equal_all) = false;
 
 enum ChatErrCode {
-  ChatUndefined = 0; // default value, should never be set manually
+  Undefined = 0; // default value, should never be set manually
 
   //
   // Berty Chat (starting at 1001)
   //
 
-  ChatTODO = 1001; // indicates that you plan to write a custom error handler later
-  ErrChatNotImplemented = 1002;
-  ErrChatInternal = 1003; // can be used to translate an "unknown" error (without Code), i.e., in gRPC
-  ErrChatInvalidInput = 1004;
-  ErrChatMissingInput = 1005;
-  ErrChatBridgeInterrupted = 1006;
-  ErrChatBridgeNotRunning = 1007;
+  TODO = 1001; // indicates that you plan to write a custom error handler later
+  ErrNotImplemented = 1002;
+  ErrInternal = 1003; // can be used to translate an "unknown" error (without Code), i.e., in gRPC
+  ErrInvalidInput = 1004;
+  ErrMissingInput = 1005;
+  ErrBridgeInterrupted = 1006;
+  ErrBridgeNotRunning = 1007;
 }

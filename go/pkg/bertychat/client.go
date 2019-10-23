@@ -2,8 +2,8 @@ package bertychat
 
 import (
 	"berty.tech/go/internal/chatdb"
+	"berty.tech/go/internal/chaterrcode"
 	"berty.tech/go/pkg/bertyprotocol"
-	"berty.tech/go/pkg/errcode"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 )
@@ -45,7 +45,7 @@ func New(db *gorm.DB, protocol bertyprotocol.Client, opts Opts) (Client, error) 
 	var err error
 	client.db, err = chatdb.InitMigrate(client.db, client.logger.Named("datastore"))
 	if err != nil {
-		return nil, errcode.ChatTODO.Wrap(err)
+		return nil, chaterrcode.TODO.Wrap(err)
 	}
 
 	return &client, nil

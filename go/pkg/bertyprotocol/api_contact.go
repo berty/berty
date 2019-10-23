@@ -3,17 +3,17 @@ package bertyprotocol
 import (
 	"context"
 
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/go/internal/protocolerrcode"
 )
 
 func (c *client) ContactGet(context.Context, *ContactGetRequest) (*ContactGetReply, error) {
-	return nil, errcode.ErrProtocolNotImplemented
+	return nil, protocolerrcode.ErrNotImplemented
 }
 
 func (c *client) ContactList(*ContactListRequest, Instance_ContactListServer) error {
-	return errcode.ErrProtocolNotImplemented
+	return protocolerrcode.ErrNotImplemented
 }
 
 func (c *client) ContactRemove(context.Context, *ContactRemoveRequest) (*ContactRemoveReply, error) {
-	return nil, errcode.ErrProtocolNotImplemented
+	return nil, protocolerrcode.ErrNotImplemented
 }

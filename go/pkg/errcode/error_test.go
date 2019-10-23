@@ -4,24 +4,26 @@ import (
 	"fmt"
 	"testing"
 
+	"berty.tech/go/internal/chaterrcode"
+	"berty.tech/go/internal/protocolerrcode"
 	"github.com/pkg/errors"
 )
 
 func TestError(t *testing.T) {
 	// test instance
 	var (
-		_ ProtocolErrCode = ErrProtocolNotImplemented
-		_ error           = ErrProtocolNotImplemented
-		_ WithCode        = ErrProtocolNotImplemented
-		_ ChatErrCode     = ErrChatNotImplemented
-		_ error           = ErrChatNotImplemented
-		_ WithCode        = ErrChatNotImplemented
+		_ protocolerrcode.ProtocolErrCode = protocolerrcode.ErrNotImplemented
+		_ error                           = protocolerrcode.ErrNotImplemented
+		_ WithCode                        = protocolerrcode.ErrNotImplemented
+		_ chaterrcode.ChatErrCode         = chaterrcode.ErrNotImplemented
+		_ error                           = chaterrcode.ErrNotImplemented
+		_ WithCode                        = chaterrcode.ErrNotImplemented
 	)
 
 	// table-driven tests
 	var (
 		errStdHello  = fmt.Errorf("hello")
-		errCodeUndef = ProtocolErrCode(65530) // simulate a client receiving an error generated from a more recent API
+		errCodeUndef = protocolerrcode.ProtocolErrCode(65530) // simulate a client receiving an error generated from a more recent API
 	)
 	var tests = []struct {
 		name              string
@@ -33,58 +35,58 @@ func TestError(t *testing.T) {
 		expectedLastCode  int32
 	}{
 		{
-			"ErrProtocolNotImplemented",
-			ErrProtocolNotImplemented,
-			"ErrProtocolNotImplemented(#2002)",
-			ErrProtocolNotImplemented,
+			"protocolerrcode.ErrNotImplemented",
+			protocolerrcode.ErrNotImplemented,
+			"ErrNotImplemented(#2002)",
+			protocolerrcode.ErrNotImplemented,
 			2002,
 			2002,
 			2002,
 		}, {
-			"ErrChatInternal",
-			ErrChatInternal,
-			"ErrChatInternal(#1003)",
-			ErrChatInternal,
+			"chaterrcode.ErrInternal",
+			chaterrcode.ErrInternal,
+			"ErrInternal(#1003)",
+			chaterrcode.ErrInternal,
 			1003,
 			1003,
 			1003,
 		}, {
-			"ErrProtocolNotImplemented.Wrap(errStdHello)",
-			ErrProtocolNotImplemented.Wrap(errStdHello),
-			"ErrProtocolNotImplemented(#2002): hello",
+			"protocolerrcode.ErrNotImplemented.Wrap(errStdHello)",
+			protocolerrcode.ErrNotImplemented.Wrap(errStdHello),
+			"ErrNotImplemented(#2002): hello",
 			errStdHello,
 			2002,
 			2002,
 			2002,
 		}, {
-			"ErrProtocolNotImplemented.Wrap(ErrChatInternal)",
-			ErrProtocolNotImplemented.Wrap(ErrChatInternal),
-			"ErrProtocolNotImplemented(#2002): ErrChatInternal(#1003)",
-			ErrChatInternal,
+			"protocolerrcode.ErrNotImplemented.Wrap(chaterrcode.ErrInternal)",
+			protocolerrcode.ErrNotImplemented.Wrap(chaterrcode.ErrInternal),
+			"ErrNotImplemented(#2002): ErrInternal(#1003)",
+			chaterrcode.ErrInternal,
 			2002,
 			2002,
 			1003,
 		}, {
-			"ErrProtocolNotImplemented.Wrap(ErrChatInternal.Wrap(errStdHello))",
-			ErrProtocolNotImplemented.Wrap(ErrChatInternal.Wrap(errStdHello)),
-			"ErrProtocolNotImplemented(#2002): ErrChatInternal(#1003): hello",
+			"protocolerrcode.ErrNotImplemented.Wrap(chaterrcode.ErrInternal.Wrap(errStdHello))",
+			protocolerrcode.ErrNotImplemented.Wrap(chaterrcode.ErrInternal.Wrap(errStdHello)),
+			"ErrNotImplemented(#2002): ErrInternal(#1003): hello",
 			errStdHello,
 			2002,
 			2002,
 			1003,
 		}, {
-			`errors.Wrap(ErrProtocolNotImplemented,blah)`,
-			errors.Wrap(ErrProtocolNotImplemented, "blah"),
-			"blah: ErrProtocolNotImplemented(#2002)",
-			ErrProtocolNotImplemented,
+			`errors.Wrap(protocolerrcode.ErrNotImplemented,blah)`,
+			errors.Wrap(protocolerrcode.ErrNotImplemented, "blah"),
+			"blah: ErrNotImplemented(#2002)",
+			protocolerrcode.ErrNotImplemented,
 			-1,
 			2002,
 			2002,
 		}, {
-			`errors.Wrap(ErrProtocolNotImplemented.Wrap(ErrChatInternal),blah)`,
-			errors.Wrap(ErrProtocolNotImplemented.Wrap(ErrChatInternal), "blah"),
-			"blah: ErrProtocolNotImplemented(#2002): ErrChatInternal(#1003)",
-			ErrChatInternal,
+			`errors.Wrap(protocolerrcode.ErrNotImplemented.Wrap(chaterrcode.ErrInternal),blah)`,
+			errors.Wrap(protocolerrcode.ErrNotImplemented.Wrap(chaterrcode.ErrInternal), "blah"),
+			"blah: ErrNotImplemented(#2002): ErrInternal(#1003)",
+			chaterrcode.ErrInternal,
 			-1,
 			2002,
 			1003,

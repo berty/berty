@@ -4,7 +4,7 @@ package berty.errcode;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-option go_package = "berty.tech/go/pkg/errcode";
+option go_package = "berty.tech/go/internal/protocolerrcode";
 
 option (gogoproto.benchgen_all) = false;
 option (gogoproto.compare_all) = false;
@@ -40,30 +40,30 @@ option (gogoproto.unsafe_unmarshaler_all) = false;
 option (gogoproto.verbose_equal_all) = false;
 
 enum ProtocolErrCode {
-  ProtocolUndefined = 0; // default value, should never be set manually
+  Undefined = 0; // default value, should never be set manually
 
   //
   // Berty Protocol (starting at 2001)
   //
 
-  ProtocolTODO = 2001; // indicates that you plan to write a custom error handler later
-  ErrProtocolNotImplemented = 2002;
-  ErrProtocolInternal = 2003; // can be used to translate an "unknown" error (without Code), i.e., in gRPC
-  ErrProtocolSigChainNoEntries = 2004;
-  ErrProtocolSigChainInvalidEntryType = 2005;
-  ErrProtocolSigChainAlreadyInitialized = 2006;
-  ErrProtocolSigChainPermission = 2007;
-  ErrProtocolSigChainOperationAlreadyDone = 2008;
-  ErrProtocolHandshakeNoPayload = 2009;
-  ErrProtocolHandshakeInvalidFlow = 2010;
-  ErrProtocolHandshakeInvalidFlowStepNotFound = 2011;
-  ErrProtocolHandshakeParams = 2012;
-  ErrProtocolHandshakeNoAuthReturned = 2013;
-  ErrProtocolHandshakeInvalidKeyType = 2014;
-  ErrProtocolHandshakeInvalidSignature = 2015;
-  ErrProtocolHandshakeSessionInvalid = 2016;
-  ErrProtocolHandshakeKeyNotInSigChain = 2017;
-  ErrProtocolHandshakeDecrypt = 2018;
-  ErrProtocolInvalidInput = 2019;
-  ErrProtocolMissingInput = 2020;
+  TODO = 2001; // indicates that you plan to write a custom error handler later
+  ErrNotImplemented = 2002;
+  ErrInternal = 2003; // can be used to translate an "unknown" error (without Code), i.e., in gRPC
+  ErrSigChainNoEntries = 2004;
+  ErrSigChainInvalidEntryType = 2005;
+  ErrSigChainAlreadyInitialized = 2006;
+  ErrSigChainPermission = 2007;
+  ErrSigChainOperationAlreadyDone = 2008;
+  ErrHandshakeNoPayload = 2009;
+  ErrHandshakeInvalidFlow = 2010;
+  ErrHandshakeInvalidFlowStepNotFound = 2011;
+  ErrHandshakeParams = 2012;
+  ErrHandshakeNoAuthReturned = 2013;
+  ErrHandshakeInvalidKeyType = 2014;
+  ErrHandshakeInvalidSignature = 2015;
+  ErrHandshakeSessionInvalid = 2016;
+  ErrHandshakeKeyNotInSigChain = 2017;
+  ErrHandshakeDecrypt = 2018;
+  ErrInvalidInput = 2019;
+  ErrMissingInput = 2020;
 }

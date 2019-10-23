@@ -1,7 +1,7 @@
 package bertychat
 
-import "berty.tech/go/pkg/errcode"
+import "berty.tech/go/internal/chaterrcode"
 
 func (c *client) Search(*SearchRequest, Account_SearchServer) error {
-	return errcode.ErrChatNotImplemented
+	return chaterrcode.ErrNotImplemented
 }

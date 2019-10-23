@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"berty.tech/go/internal/crypto"
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/go/internal/protocolerrcode"
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/gogo/protobuf/proto"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
@@ -98,7 +98,7 @@ func Test_flow_performFlow(t *testing.T) {
 		{
 			name:     "no steps",
 			steps:    map[HandshakeFrame_HandshakeStep]flowStep{},
-			expected: errcode.ErrProtocolHandshakeInvalidFlowStepNotFound,
+			expected: protocolerrcode.ErrHandshakeInvalidFlowStepNotFound,
 		},
 		{
 			name: "single valid, no authenticated returned",
@@ -107,7 +107,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_9_DONE,
 				},
 			},
-			expected: errcode.ErrProtocolHandshakeNoAuthReturned,
+			expected: protocolerrcode.ErrHandshakeNoAuthReturned,
 		},
 		{
 			name: "single valid, read, no authenticated returned",
@@ -119,7 +119,7 @@ func Test_flow_performFlow(t *testing.T) {
 				},
 			},
 			reader:   &dummyReader{msg: expectedMsg},
-			expected: errcode.ErrProtocolHandshakeNoAuthReturned,
+			expected: protocolerrcode.ErrHandshakeNoAuthReturned,
 		},
 		{
 			name: "single invalid looping",
@@ -128,7 +128,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_1_KEY_AGREEMENT,
 				},
 			},
-			expected: errcode.ErrProtocolHandshakeInvalidFlow,
+			expected: protocolerrcode.ErrHandshakeInvalidFlow,
 		},
 		{
 			name: "single invalid end",
@@ -137,7 +137,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_2_KEY_AGREEMENT,
 				},
 			},
-			expected: errcode.ErrProtocolHandshakeInvalidFlowStepNotFound,
+			expected: protocolerrcode.ErrHandshakeInvalidFlowStepNotFound,
 		},
 		{
 			name: "single invalid start",
@@ -146,7 +146,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_9_DONE,
 				},
 			},
-			expected: errcode.ErrProtocolHandshakeInvalidFlowStepNotFound,
+			expected: protocolerrcode.ErrHandshakeInvalidFlowStepNotFound,
 		},
 		{
 			name: "multiple valid, no authenticated returned",
@@ -158,7 +158,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_9_DONE,
 				},
 			},
-			expected: errcode.ErrProtocolHandshakeNoAuthReturned,
+			expected: protocolerrcode.ErrHandshakeNoAuthReturned,
 		},
 		{
 			name: "multiple valid, authenticated returned",

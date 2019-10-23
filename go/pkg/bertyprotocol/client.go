@@ -5,7 +5,7 @@ import (
 
 	"berty.tech/go/internal/ipfsutil"
 	"berty.tech/go/internal/protocoldb"
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/go/internal/protocolerrcode"
 	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
@@ -50,7 +50,7 @@ func New(db *gorm.DB, opts Opts) (Client, error) {
 	var err error
 	client.db, err = protocoldb.InitMigrate(db, client.logger.Named("datastore"))
 	if err != nil {
-		return nil, errcode.ProtocolTODO.Wrap(err)
+		return nil, protocolerrcode.TODO.Wrap(err)
 	}
 
 	ctx := opts.RootContext
@@ -61,7 +61,7 @@ func New(db *gorm.DB, opts Opts) (Client, error) {
 		var err error
 		client.ipfsCoreAPI, err = ipfsutil.NewInMemoryCoreAPI(ctx)
 		if err != nil {
-			return nil, errcode.ProtocolTODO.Wrap(err)
+			return nil, protocolerrcode.TODO.Wrap(err)
 		}
 	}
 

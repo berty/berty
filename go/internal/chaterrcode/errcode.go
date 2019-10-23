@@ -1,6 +1,8 @@
-package errcode
+package chaterrcode
 
-import fmt "fmt"
+import (
+	fmt "fmt"
+)
 
 func (e ChatErrCode) Error() string {
 	name, ok := ChatErrCode_name[int32(e)]
@@ -14,7 +16,7 @@ func (e ChatErrCode) Code() int32 {
 	return int32(e)
 }
 
-func (e ChatErrCode) Wrap(inner error) WithCode {
+func (e ChatErrCode) Wrap(inner error) error { // returns an error that implements errcode.WithCode, but we cannot specify it because of a diammond dependency
 	return chatWrappedError{
 		code:  int32(e),
 		inner: inner,

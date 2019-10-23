@@ -3,21 +3,21 @@ package bertychat
 import (
 	"context"
 
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/go/internal/chaterrcode"
 )
 
 func (c *client) ConversationMessageList(*ConversationMessageListRequest, Account_ConversationMessageListServer) error {
-	return errcode.ErrChatNotImplemented
+	return chaterrcode.ErrNotImplemented
 }
 
 func (c *client) ConversationMessageSend(context.Context, *ConversationMessageSendRequest) (*ConversationMessageSendReply, error) {
-	return nil, errcode.ErrChatNotImplemented
+	return nil, chaterrcode.ErrNotImplemented
 }
 
 func (c *client) ConversationMessageEdit(context.Context, *ConversationMessageEditRequest) (*ConversationMessageEditReply, error) {
-	return nil, errcode.ErrChatNotImplemented
+	return nil, chaterrcode.ErrNotImplemented
 }
 
 func (c *client) ConversationMessageHide(context.Context, *ConversationMessageHideRequest) (*ConversationMessageHideReply, error) {
-	return nil, errcode.ErrChatNotImplemented
+	return nil, chaterrcode.ErrNotImplemented
 }

@@ -9,13 +9,13 @@ import (
 	"time"
 
 	_ "berty.tech/go/internal/buildconstraints" // fail if bad go version
-	_ "github.com/jinzhu/gorm/dialects/sqlite"  // required by gorm
+	"berty.tech/go/internal/chaterrcode"
+	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
 	"github.com/pkg/errors"
 
 	"berty.tech/go/internal/bridgeutil"
 	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
-	"berty.tech/go/pkg/errcode"
 
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/jinzhu/gorm"
@@ -87,7 +87,7 @@ func newBridge(logger *zap.Logger, opts Opts) (*Bridge, error) {
 	b.workers.Add(func() error {
 		// wait for closing signal
 		<-b.cclose
-		return errcode.ErrChatBridgeInterrupted
+		return chaterrcode.ErrBridgeInterrupted
 	}, func(error) {
 		b.once.Do(func() { close(b.cclose) })
 	})
@@ -97,7 +97,7 @@ func newBridge(logger *zap.Logger, opts Opts) (*Bridge, error) {
 		var err error
 		b.protocolDB, err = gorm.Open("sqlite3", ":memory:")
 		if err != nil {
-			return nil, errcode.ChatTODO.Wrap(err)
+			return nil, chaterrcode.TODO.Wrap(err)
 		}
 
 		// initialize new protocol client
@@ -107,7 +107,7 @@ func newBridge(logger *zap.Logger, opts Opts) (*Bridge, error) {
 
 		b.protocolClient, err = bertyprotocol.New(b.protocolDB, protocolOpts)
 		if err != nil {
-			return nil, errcode.ChatTODO.Wrap(err)
+			return nil, chaterrcode.TODO.Wrap(err)
 		}
 	}
 
@@ -117,7 +117,7 @@ func newBridge(logger *zap.Logger, opts Opts) (*Bridge, error) {
 		// initialize sqlite3 gorm database
 		b.chatDB, err = gorm.Open("sqlite3", ":memory:")
 		if err != nil {
-			return nil, errcode.ChatTODO.Wrap(err)
+			return nil, chaterrcode.TODO.Wrap(err)
 		}
 
 		// initialize bertychat client
@@ -127,7 +127,7 @@ func newBridge(logger *zap.Logger, opts Opts) (*Bridge, error) {
 
 		b.chatClient, err = bertychat.New(b.chatDB, b.protocolClient, chatOpts)
 		if err != nil {
-			return nil, errcode.ChatTODO.Wrap(err)
+			return nil, chaterrcode.TODO.Wrap(err)
 		}
 	}
 
@@ -185,7 +185,7 @@ func (b *Bridge) isClosed() bool {
 // Close bridge
 func (b *Bridge) Close() (err error) {
 	if b.isClosed() {
-		return errcode.ErrChatBridgeNotRunning
+		return chaterrcode.ErrBridgeNotRunning
 	}
 
 	b.logger.Info("bridge.Close called")
@@ -210,8 +210,8 @@ func (b *Bridge) Close() (err error) {
 	b.protocolClient.Close()
 	b.protocolDB.Close()
 
-	if err != errcode.ErrChatBridgeInterrupted {
-		return errcode.ChatTODO.Wrap(err)
+	if err != chaterrcode.ErrBridgeInterrupted {
+		return chaterrcode.TODO.Wrap(err)
 	}
 
 	return nil
@@ -223,7 +223,7 @@ func (b *Bridge) Close() (err error) {
 func (b *Bridge) addGRPCListener(addr string) (string, error) {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		return "", errcode.ChatTODO.Wrap(err)
+		return "", chaterrcode.TODO.Wrap(err)
 	}
 
 	b.workers.Add(func() error {
@@ -243,7 +243,7 @@ func (b *Bridge) addGRPCListener(addr string) (string, error) {
 func (b *Bridge) addGRPCWebListener(addr string) (string, error) {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		return "", errcode.ChatTODO.Wrap(err)
+		return "", chaterrcode.TODO.Wrap(err)
 	}
 
 	// setup grpc web
@@ -304,7 +304,7 @@ func (b *Bridge) addGRPCWebListener(addr string) (string, error) {
 // NewGRPCClient return client service on success
 func (b *Bridge) newGRPCClient() (client *Client, err error) {
 	if b.isClosed() {
-		return nil, errcode.ErrChatBridgeNotRunning
+		return nil, chaterrcode.ErrBridgeNotRunning
 	}
 
 	var grpcClient *grpc.ClientConn

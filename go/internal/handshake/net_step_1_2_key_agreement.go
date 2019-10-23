@@ -3,7 +3,7 @@ package handshake
 import (
 	"context"
 
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/go/internal/protocolerrcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
@@ -16,7 +16,7 @@ func (s *step1or2SendKeys) action(ctx context.Context, f *flow, step HandshakeFr
 	signKey, encryptKey := f.session.GetPublicKeys()
 	signKeyProto, err := crypto.MarshalPublicKey(signKey)
 	if err != nil {
-		return nil, errcode.ProtocolTODO.Wrap(err)
+		return nil, protocolerrcode.TODO.Wrap(err)
 	}
 
 	if err = f.writer.WriteMsg(&HandshakeFrame{
@@ -24,7 +24,7 @@ func (s *step1or2SendKeys) action(ctx context.Context, f *flow, step HandshakeFr
 		SignatureKey:  signKeyProto,
 		EncryptionKey: encryptKey,
 	}); err != nil {
-		return nil, errcode.ProtocolTODO.Wrap(err)
+		return nil, protocolerrcode.TODO.Wrap(err)
 	}
 
 	return &s.next, nil
@@ -38,11 +38,11 @@ func (s *step1or2ReceiveKey) isReadAction() bool { return true }
 func (s *step1or2ReceiveKey) action(ctx context.Context, f *flow, step HandshakeFrame_HandshakeStep, readMsg *HandshakeFrame) (*HandshakeFrame_HandshakeStep, error) {
 	signKey, err := crypto.UnmarshalPublicKey(readMsg.SignatureKey)
 	if err != nil {
-		return nil, errcode.ProtocolTODO.Wrap(err)
+		return nil, protocolerrcode.TODO.Wrap(err)
 	}
 
 	if err := f.session.SetOtherKeys(signKey, readMsg.EncryptionKey); err != nil {
-		return nil, errcode.ProtocolTODO.Wrap(err)
+		return nil, protocolerrcode.TODO.Wrap(err)
 	}
 
 	return &s.next, nil

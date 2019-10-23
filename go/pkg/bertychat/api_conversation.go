@@ -4,7 +4,7 @@ import (
 	"context"
 	"math/rand"
 
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/go/internal/chaterrcode"
 )
 
 func (c *client) ConversationList(req *ConversationListRequest, stream Account_ConversationListServer) error {
@@ -13,7 +13,7 @@ func (c *client) ConversationList(req *ConversationListRequest, stream Account_C
 		conversation := fakeConversation(c.logger)
 		err := stream.Send(&ConversationListReply{Conversation: conversation})
 		if err != nil {
-			return errcode.ChatTODO.Wrap(err)
+			return chaterrcode.TODO.Wrap(err)
 		}
 	}
 	return nil
@@ -21,10 +21,10 @@ func (c *client) ConversationList(req *ConversationListRequest, stream Account_C
 
 func (c *client) ConversationGet(ctx context.Context, input *ConversationGetRequest) (*ConversationGetReply, error) {
 	if input == nil || input.ID == "" {
-		return nil, errcode.ErrChatMissingInput
+		return nil, chaterrcode.ErrMissingInput
 	}
 	if input.ID == "invalid" { // simulating an invalid ID (tmp)
-		return nil, errcode.ErrChatInvalidInput
+		return nil, chaterrcode.ErrInvalidInput
 	}
 	return &ConversationGetReply{
 		Conversation: fakeConversation(c.logger),
@@ -32,21 +32,21 @@ func (c *client) ConversationGet(ctx context.Context, input *ConversationGetRequ
 }
 
 func (c *client) ConversationCreate(context.Context, *ConversationCreateRequest) (*ConversationCreateReply, error) {
-	return nil, errcode.ErrChatNotImplemented
+	return nil, chaterrcode.ErrNotImplemented
 }
 
 func (c *client) ConversationLeave(context.Context, *ConversationLeaveRequest) (*ConversationLeaveReply, error) {
-	return nil, errcode.ErrChatNotImplemented
+	return nil, chaterrcode.ErrNotImplemented
 }
 
 func (c *client) ConversationErase(context.Context, *ConversationEraseRequest) (*ConversationEraseReply, error) {
-	return nil, errcode.ErrChatNotImplemented
+	return nil, chaterrcode.ErrNotImplemented
 }
 
 func (c *client) ConversationSetSeenPosition(context.Context, *ConversationSetSeenPositionRequest) (*ConversationSetSeenPositionReply, error) {
-	return nil, errcode.ErrChatNotImplemented
+	return nil, chaterrcode.ErrNotImplemented
 }
 
 func (c *client) ConversationUpdateSettings(context.Context, *ConversationUpdateSettingsRequest) (*ConversationUpdateSettingsReply, error) {
-	return nil, errcode.ErrChatNotImplemented
+	return nil, chaterrcode.ErrNotImplemented
 }

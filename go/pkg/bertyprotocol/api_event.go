@@ -1,7 +1,7 @@
 package bertyprotocol
 
-import "berty.tech/go/pkg/errcode"
+import "berty.tech/go/internal/protocolerrcode"
 
 func (c *client) EventSubscribe(*EventSubscribeRequest, Instance_EventSubscribeServer) error {
-	return errcode.ErrProtocolNotImplemented
+	return protocolerrcode.ErrNotImplemented
 }

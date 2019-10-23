@@ -1,6 +1,8 @@
-package errcode
+package protocolerrcode
 
-import fmt "fmt"
+import (
+	fmt "fmt"
+)
 
 func (e ProtocolErrCode) Error() string {
 	name, ok := ProtocolErrCode_name[int32(e)]
@@ -14,7 +16,7 @@ func (e ProtocolErrCode) Code() int32 {
 	return int32(e)
 }
 
-func (e ProtocolErrCode) Wrap(inner error) WithCode {
+func (e ProtocolErrCode) Wrap(inner error) error { // returns an error that implements errcode.WithCode, but we cannot specify it because of a diammond dependency
 	return protocolWrappedError{
 		code:  int32(e),
 		inner: inner,

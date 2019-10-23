@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"berty.tech/go/internal/chaterrcode"
 	"berty.tech/go/internal/testutil"
-	"berty.tech/go/pkg/errcode"
 )
 
 func TestClient_ConversationGet(t *testing.T) {
@@ -19,11 +19,11 @@ func TestClient_ConversationGet(t *testing.T) {
 		{
 			"no-input",
 			nil,
-			errcode.ErrChatMissingInput,
+			chaterrcode.ErrMissingInput,
 		}, {
 			"invalid-id",
 			&ConversationGetRequest{ID: "invalid"},
-			errcode.ErrChatInvalidInput,
+			chaterrcode.ErrInvalidInput,
 		}, {
 			"valid-id",
 			&ConversationGetRequest{ID: "lorem-ipsum"},
