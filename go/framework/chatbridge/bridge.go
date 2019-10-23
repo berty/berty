@@ -25,28 +25,56 @@ import (
 )
 
 type Bridge struct {
-	cerr           chan error
-	cclose         chan struct{}
-	once           sync.Once
-	workers        run.Group
-	grpcServer     *grpc.Server
-	logger         *zap.Logger
-	chatDB         *gorm.DB
-	protocolDB     *gorm.DB
-	chatClient     bertychat.Client
-	protocolClient bertyprotocol.Client
+	cerr                chan error
+	cclose              chan struct{}
+	once                sync.Once
+	workers             run.Group
+	grpcServer          *grpc.Server
+	logger              *zap.Logger
+	chatDB              *gorm.DB
+	protocolDB          *gorm.DB
+	chatClient          bertychat.Client
+	protocolClient      bertyprotocol.Client
+	grpcListenerAddr    string
+	grpcWebListenerAddr string
+	grpcClient          *Client
+}
+
+type Opts struct {
+	LogLevel        string
+	GRPCListener    string
+	GRPCWebListener string
+	NoGRPCClient    bool
 }
 
 // NewBridge is the main entrypoint for gomobile and should only take simple configuration as argument
-func NewBridge(logLevel string) (*Bridge, error) {
-	logger, err := setupLogger(logLevel)
-	if err != nil {
-		return nil, errors.Wrap(err, "logger setup")
+func NewBridge(opts Opts) (*Bridge, error) {
+	var logger *zap.Logger
+	{
+		config := zap.NewDevelopmentConfig()
+		config.DisableStacktrace = true
+		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		switch opts.LogLevel {
+		case "warn":
+			config.Level.SetLevel(zap.WarnLevel)
+		case "info":
+			config.Level.SetLevel(zap.InfoLevel)
+		case "debug":
+			config.Level.SetLevel(zap.DebugLevel)
+		default:
+			return nil, fmt.Errorf("unsupported log level: %q", opts.LogLevel)
+		}
+		var err error
+		logger, err = config.Build()
+		if err != nil {
+			return nil, errors.Wrap(err, "logger setup")
+		}
 	}
-	return newBridge(logger)
+
+	return newBridge(logger, opts)
 }
 
-func newBridge(logger *zap.Logger) (*Bridge, error) {
+func newBridge(logger *zap.Logger, opts Opts) (*Bridge, error) {
 	b := &Bridge{
 		cerr:       make(chan error),
 		cclose:     make(chan struct{}),
@@ -68,7 +96,7 @@ func newBridge(logger *zap.Logger) (*Bridge, error) {
 		var err error
 		b.protocolDB, err = gorm.Open("sqlite3", ":memory:")
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to initialize gorm")
+			return nil, errors.Wrap(err, "initialize gorm")
 		}
 
 		// initialize new protocol client
@@ -78,7 +106,7 @@ func newBridge(logger *zap.Logger) (*Bridge, error) {
 
 		b.protocolClient, err = bertyprotocol.New(b.protocolDB, protocolOpts)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to initialize protocol")
+			return nil, errors.Wrap(err, "initialize protocol")
 		}
 	}
 
@@ -88,7 +116,7 @@ func newBridge(logger *zap.Logger) (*Bridge, error) {
 		// initialize sqlite3 gorm database
 		b.chatDB, err = gorm.Open("sqlite3", ":memory:")
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to initialize gorm")
+			return nil, errors.Wrap(err, "initialize gorm")
 		}
 
 		// initialize bertychat client
@@ -98,40 +126,51 @@ func newBridge(logger *zap.Logger) (*Bridge, error) {
 
 		b.chatClient, err = bertychat.New(b.chatDB, b.protocolClient, chatOpts)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to initialize chat")
+			return nil, errors.Wrap(err, "initialize chat")
 		}
 	}
 
 	// register service
 	bertychat.RegisterAccountServer(b.grpcServer, b.chatClient)
 
-	return b, nil
-}
-
-func setupLogger(level string) (*zap.Logger, error) {
-	config := zap.NewDevelopmentConfig()
-	config.DisableStacktrace = true
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	switch level {
-	case "warn":
-		config.Level.SetLevel(zap.WarnLevel)
-	case "info":
-		config.Level.SetLevel(zap.InfoLevel)
-	case "debug":
-		config.Level.SetLevel(zap.DebugLevel)
-	default:
-		return nil, fmt.Errorf("unsupported log level: %q", level)
+	// optional gRPC listener
+	if opts.GRPCListener != "" {
+		var err error
+		b.grpcListenerAddr, err = b.addGRPCListener(opts.GRPCListener)
+		if err != nil {
+			return nil, errors.Wrap(err, "add gRPC listener")
+		}
 	}
-	return config.Build()
-}
 
-// Start bridge
-func (b *Bridge) Start() {
+	// optional gRPC web listener
+	if opts.GRPCWebListener != "" {
+		var err error
+		b.grpcWebListenerAddr, err = b.addGRPCWebListener(opts.GRPCWebListener)
+		if err != nil {
+			return nil, errors.Wrap(err, "add gRPC web listener")
+		}
+	}
+
+	if !opts.NoGRPCClient {
+		var err error
+		b.grpcClient, err = b.newGRPCClient()
+		if err != nil {
+			return nil, errors.Wrap(err, "init gRPC client")
+		}
+	}
+
+	// start bridge
 	b.logger.Debug("starting bridge")
 	go func() {
 		b.cerr <- b.workers.Run()
 	}()
+
+	return b, nil
 }
+
+func (b *Bridge) GRPCListenerAddr() string    { return b.grpcListenerAddr }
+func (b *Bridge) GRPCWebListenerAddr() string { return b.grpcWebListenerAddr }
+func (b *Bridge) GRPCClient() *Client         { return b.grpcClient }
 
 func (b *Bridge) isClosed() bool {
 	select {
@@ -142,10 +181,8 @@ func (b *Bridge) isClosed() bool {
 	}
 }
 
-// Close bridge, once the bridge is closed you will not be able to start it
-// again until you create a new bridge instance
+// Close bridge
 func (b *Bridge) Close() (err error) {
-	// is bridge closed
 	if b.isClosed() {
 		return ErrNotRunning
 	}
@@ -182,10 +219,10 @@ func (b *Bridge) Close() (err error) {
 // AddGRPCListener start a new grpc listener
 // `:0` will listen on localhost with a random port
 // Return current listening port on success
-func (b *Bridge) AddGRPCListener(addr string) (string, error) {
+func (b *Bridge) addGRPCListener(addr string) (string, error) {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to listen")
+		return "", errors.Wrap(err, "listen")
 	}
 
 	b.workers.Add(func() error {
@@ -194,7 +231,6 @@ func (b *Bridge) AddGRPCListener(addr string) (string, error) {
 	}, func(error) {
 		b.logger.Debug("closing grpc server")
 		l.Close()
-
 	})
 
 	return l.Addr().String(), nil
@@ -203,10 +239,10 @@ func (b *Bridge) AddGRPCListener(addr string) (string, error) {
 // AddGRPCWebListener start a new grpc listener
 // `:0` will listen on localhost with a random port
 // Return current listening port on success
-func (b *Bridge) AddGRPCWebListener(addr string) (string, error) {
+func (b *Bridge) addGRPCWebListener(addr string) (string, error) {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to listen")
+		return "", errors.Wrap(err, "listen")
 	}
 
 	// setup grpc web
@@ -265,7 +301,11 @@ func (b *Bridge) AddGRPCWebListener(addr string) (string, error) {
 }
 
 // NewGRPCClient return client service on success
-func (b *Bridge) NewGRPCClient() (client *Client, err error) {
+func (b *Bridge) newGRPCClient() (client *Client, err error) {
+	if b.isClosed() {
+		return nil, ErrNotRunning
+	}
+
 	var grpcClient *grpc.ClientConn
 
 	// create pipe listener
