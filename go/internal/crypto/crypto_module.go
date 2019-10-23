@@ -32,7 +32,7 @@ func InitNewIdentity(ctx context.Context, opts *Opts) (Manager, p2pcrypto.PrivKe
 }
 
 func InitFromOtherDeviceIdentity(ctx context.Context, opts *Opts /* other params */) (Manager, p2pcrypto.PrivKey, error) {
-	// ProtocolTODO:
+	// TODO:
 	panic("implement me")
 }
 
