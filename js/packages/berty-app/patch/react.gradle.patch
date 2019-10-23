@@ -1,0 +1,16 @@
+119c119
+<                 || targetName.toLowerCase().contains("release"))
+---
+>                 || !targetName.toLowerCase().contains("debug"))
+144c144
+<                         if (targetName.toLowerCase().contains("release")) {
+---
+>                         if (!targetName.toLowerCase().contains("debug")) {
+183c183
+<                     : targetName.toLowerCase().contains("release")
+---
+>                     : !targetName.toLowerCase().contains("debug")
+275c275
+<         def isRelease = targetName.toLowerCase().contains("release")
+---
+>         def isRelease = !targetName.toLowerCase().contains("debug")

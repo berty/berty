@@ -62,7 +62,7 @@ def configureReactNativePom(def pom) {
         name packageJson.title
         artifactId packageJson.name
         version = packageJson.version
-        group = "tech.berty.example"
+        group = "tech.berty.app.example"
         description packageJson.description
         url packageJson.repository.baseUrl
 
@@ -76,8 +76,7 @@ def configureReactNativePom(def pom) {
 
         developers {
             developer {
-                id packageJson.author.username
-                name packageJson.author.name
+                id packageJson.author
             }
         }
     }

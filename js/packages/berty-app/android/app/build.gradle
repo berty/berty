@@ -130,7 +130,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.berty"
+        applicationId "tech.berty.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -151,19 +151,85 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('BERTY_RELEASE_STORE_RAW_B64')) {
+                print "decoding base64 keystore... "
+                def rawFile = BERTY_RELEASE_STORE_RAW_B64.decodeBase64()
+                println "SUCCESS"
+                def file = File.createTempFile("berty", "keystore", null)
+                print "generating keystore into ${file.getAbsolutePath()}... "
+                def stream = new FileOutputStream(file.getAbsolutePath())
+                stream.write(rawFile)
+                project.ext { BERTY_RELEASE_STORE_FILE = file.getAbsolutePath() }
+                println "SUCCESS"
+            } else if (project.hasProperty('BERTY_RELEASE_STORE_FILE')) {
+                println "app will be signed using ${BERTY_RELEASE_STORE_FILE}"
+                storeFile file(BERTY_RELEASE_STORE_FILE)
+                storePassword BERTY_RELEASE_STORE_PASSWORD
+                keyAlias BERTY_RELEASE_KEY_ALIAS
+                keyPassword BERTY_RELEASE_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
+            initWith buildTypes.debug
+
+            resValue "string", "app_name", "Berty Debug"
+
+            applicationIdSuffix ".debug"
+            debuggable true
             signingConfig signingConfigs.debug
         }
         release {
+            resValue "string", "app_name", "Berty"
+        }
+        staff {
+            def appname = "Berty Staff"
+            if (project.hasProperty('BERTY_CUSTOM_NAME') && BERTY_CUSTOM_NAME?.trim()) {
+                appname = BERTY_CUSTOM_NAME
+            }
+            resValue "string", "app_name", appname
+
+            applicationIdSuffix ".staff"
+            matchingFallbacks = ['release']
+
             // Caution! In production, you need to generate your own keystore file.
             // see https://facebook.github.io/react-native/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
+        yolo {
+            def appname = "Berty Yolo"
+            if (project.hasProperty('BERTY_CUSTOM_NAME') && BERTY_CUSTOM_NAME?.trim()) {
+                appname = BERTY_CUSTOM_NAME
+            }
+            resValue "string", "app_name", appname
+
+            applicationIdSuffix ".yolo"
+            matchingFallbacks = ['release']
+
+            // Caution! In production, you need to generate your own keystore file.
+            // see https://facebook.github.io/react-native/docs/signed-apk-android.
+            signingConfig signingConfigs.release
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+        store {
+            resValue "string", "app_name", "Berty"
+
+            matchingFallbacks = ['release']
+
+            // Caution! In production, you need to generate your own keystore file.
+            // see https://facebook.github.io/react-native/docs/signed-apk-android.
+            signingConfig signingConfigs.release
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+
+        }
     }
+
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
@@ -178,15 +244,6 @@ android {
 
         }
     }
-
-    packagingOptions {
-        pickFirst '**/armeabi-v7a/libc++_shared.so'
-        pickFirst '**/x86/libc++_shared.so'
-        pickFirst '**/arm64-v8a/libc++_shared.so'
-        pickFirst '**/x86_64/libc++_shared.so'
-        pickFirst '**/x86/libjsc.so'
-        pickFirst '**/armeabi-v7a/libjsc.so'
-    }
 }
 
 dependencies {
@@ -194,11 +251,13 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     if (enableHermes) {
-      def hermesPath = "../../node_modules/hermesvm/android/";
-      debugImplementation files(hermesPath + "hermes-debug.aar")
-      releaseImplementation files(hermesPath + "hermes-release.aar")
+        def hermesPath = "../../node_modules/hermes-engine/android/";
+        debugImplementation files(hermesPath + "hermes-debug.aar")
+        staffImplementation files(hermesPath + "hermes-release.aar")
+        yoloImplementation files(hermesPath + "hermes-release.aar")
+        storeImplementation files(hermesPath + "hermes-release.aar")
     } else {
-      implementation jscFlavor
+        implementation jscFlavor
     }
 }
 

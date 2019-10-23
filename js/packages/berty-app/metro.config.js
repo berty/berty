@@ -5,16 +5,20 @@
  * @format
  */
 
+const fs = require('fs')
 const path = require('path')
+const glob = require('glob')
+
+const watchFolders = [
+  ...glob.sync(path.join(__dirname, '../../node_modules/@berty-tech/*'), {
+    realpath: true,
+  }),
+  path.join(__dirname, './node_modules'),
+  path.join(__dirname, '../../node_modules'),
+]
 
 module.exports = {
   transformer: {
-    getTransformModulePath: () => {
-      return require.resolve('react-native-typescript-transformer')
-    },
-    getSourceExts: () => {
-      return ['ts', 'tsx']
-    },
     getTransformOptions: async () => ({
       transform: {
         experimentalImportSupport: false,
@@ -26,9 +30,19 @@ module.exports = {
     extraNodeModules: new Proxy(
       {},
       {
-        get: (target, name) => path.join(process.cwd(), `node_modules/${name}`),
+        get: (target, name) => {
+          const current = path.join(__dirname, `./node_modules/${name}`)
+          const root = path.join(__dirname, `../../node_modules/${name}`)
+          if (fs.existsSync(root)) {
+            return root
+          }
+          return current
+        },
       }
     ),
   },
-  watchFolders: [path.join(process.cwd(), '../react-native-core')],
+  watchFolders,
+  server: {
+    enableVisualizer: true,
+  },
 }

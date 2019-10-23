@@ -29,7 +29,9 @@
     "nohoist": [
       "**/react-native",
       "**/react-native-*",
-      "**/@react-native-community/*"
+      "**/jsc-*",
+      "**/@react-native-community/*",
+      "**/hermes-engine"
     ]
   },
   "dependencies": {
