@@ -7,9 +7,9 @@ import (
 )
 
 func (c *client) StreamManagerRequestToContact(context.Context, *StreamManagerRequestToContactRequest) (*StreamManagerRequestToContactReply, error) {
-	return nil, errcode.ErrNotImplemented
+	return nil, errcode.ErrProtocolNotImplemented
 }
 
 func (c *client) StreamManagerAccept(Instance_StreamManagerAcceptServer) error {
-	return errcode.ErrNotImplemented
+	return errcode.ErrProtocolNotImplemented
 }

@@ -45,7 +45,7 @@ func New(db *gorm.DB, protocol bertyprotocol.Client, opts Opts) (Client, error) 
 	var err error
 	client.db, err = chatdb.InitMigrate(client.db, client.logger.Named("datastore"))
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ChatTODO.Wrap(err)
 	}
 
 	return &client, nil

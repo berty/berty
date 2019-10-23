@@ -10,15 +10,18 @@ import (
 func TestError(t *testing.T) {
 	// test instance
 	var (
-		_ ErrCode  = ErrNotImplemented
-		_ error    = ErrNotImplemented
-		_ WithCode = ErrNotImplemented
+		_ ProtocolErrCode = ErrProtocolNotImplemented
+		_ error           = ErrProtocolNotImplemented
+		_ WithCode        = ErrProtocolNotImplemented
+		_ ChatErrCode     = ErrChatNotImplemented
+		_ error           = ErrChatNotImplemented
+		_ WithCode        = ErrChatNotImplemented
 	)
 
 	// table-driven tests
 	var (
 		errStdHello  = fmt.Errorf("hello")
-		errCodeUndef = ErrCode(65530) // simulate a client receiving an error generated from a more recent API
+		errCodeUndef = ProtocolErrCode(65530) // simulate a client receiving an error generated from a more recent API
 	)
 	var tests = []struct {
 		name              string
@@ -30,61 +33,61 @@ func TestError(t *testing.T) {
 		expectedLastCode  int32
 	}{
 		{
-			"ErrNotImplemented",
-			ErrNotImplemented,
-			"ErrNotImplemented(#777)",
-			ErrNotImplemented,
-			777,
-			777,
-			777,
+			"ErrProtocolNotImplemented",
+			ErrProtocolNotImplemented,
+			"ErrProtocolNotImplemented(#2002)",
+			ErrProtocolNotImplemented,
+			2002,
+			2002,
+			2002,
 		}, {
-			"ErrInternal",
-			ErrInternal,
-			"ErrInternal(#999)",
-			ErrInternal,
-			999,
-			999,
-			999,
+			"ErrChatInternal",
+			ErrChatInternal,
+			"ErrChatInternal(#1003)",
+			ErrChatInternal,
+			1003,
+			1003,
+			1003,
 		}, {
-			"ErrNotImplemented.Wrap(errStdHello)",
-			ErrNotImplemented.Wrap(errStdHello),
-			"ErrNotImplemented(#777): hello",
+			"ErrProtocolNotImplemented.Wrap(errStdHello)",
+			ErrProtocolNotImplemented.Wrap(errStdHello),
+			"ErrProtocolNotImplemented(#2002): hello",
 			errStdHello,
-			777,
-			777,
-			777,
+			2002,
+			2002,
+			2002,
 		}, {
-			"ErrNotImplemented.Wrap(ErrInternal)",
-			ErrNotImplemented.Wrap(ErrInternal),
-			"ErrNotImplemented(#777): ErrInternal(#999)",
-			ErrInternal,
-			777,
-			777,
-			999,
+			"ErrProtocolNotImplemented.Wrap(ErrChatInternal)",
+			ErrProtocolNotImplemented.Wrap(ErrChatInternal),
+			"ErrProtocolNotImplemented(#2002): ErrChatInternal(#1003)",
+			ErrChatInternal,
+			2002,
+			2002,
+			1003,
 		}, {
-			"ErrNotImplemented.Wrap(ErrInternal.Wrap(errStdHello))",
-			ErrNotImplemented.Wrap(ErrInternal.Wrap(errStdHello)),
-			"ErrNotImplemented(#777): ErrInternal(#999): hello",
+			"ErrProtocolNotImplemented.Wrap(ErrChatInternal.Wrap(errStdHello))",
+			ErrProtocolNotImplemented.Wrap(ErrChatInternal.Wrap(errStdHello)),
+			"ErrProtocolNotImplemented(#2002): ErrChatInternal(#1003): hello",
 			errStdHello,
-			777,
-			777,
-			999,
+			2002,
+			2002,
+			1003,
 		}, {
-			`errors.Wrap(ErrNotImplemented,blah)`,
-			errors.Wrap(ErrNotImplemented, "blah"),
-			"blah: ErrNotImplemented(#777)",
-			ErrNotImplemented,
+			`errors.Wrap(ErrProtocolNotImplemented,blah)`,
+			errors.Wrap(ErrProtocolNotImplemented, "blah"),
+			"blah: ErrProtocolNotImplemented(#2002)",
+			ErrProtocolNotImplemented,
 			-1,
-			777,
-			777,
+			2002,
+			2002,
 		}, {
-			`errors.Wrap(ErrNotImplemented.Wrap(ErrInternal),blah)`,
-			errors.Wrap(ErrNotImplemented.Wrap(ErrInternal), "blah"),
-			"blah: ErrNotImplemented(#777): ErrInternal(#999)",
-			ErrInternal,
+			`errors.Wrap(ErrProtocolNotImplemented.Wrap(ErrChatInternal),blah)`,
+			errors.Wrap(ErrProtocolNotImplemented.Wrap(ErrChatInternal), "blah"),
+			"blah: ErrProtocolNotImplemented(#2002): ErrChatInternal(#1003)",
+			ErrChatInternal,
 			-1,
-			777,
-			999,
+			2002,
+			1003,
 		}, {
 			"nil",
 			nil,

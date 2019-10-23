@@ -29,7 +29,7 @@ type flow struct {
 
 func newHandshakeFlow(ctx context.Context, conn net.Conn, devPubKey p2pcrypto.PubKey, ownSigChain crypto.SigChainManager, session *handshakeSession, steps map[HandshakeFrame_HandshakeStep]flowStep) (crypto.SigChainManager, p2pcrypto.PubKey, error) {
 	if conn == nil || session == nil || steps == nil {
-		return nil, nil, errcode.ErrHandshakeParams
+		return nil, nil, errcode.ErrProtocolHandshakeParams
 	}
 
 	writer := ggio.NewDelimitedWriter(conn)
@@ -73,7 +73,7 @@ func (f *flow) performFlow(ctx context.Context) (crypto.SigChainManager, p2pcryp
 	for nextStep != nil {
 		if *nextStep == HandshakeFrame_STEP_9_DONE {
 			if f.provedSigChain == nil || f.provedDevicePubKey == nil {
-				return nil, nil, errcode.ErrHandshakeNoAuthReturned
+				return nil, nil, errcode.ErrProtocolHandshakeNoAuthReturned
 			}
 
 			return f.provedSigChain, f.provedDevicePubKey, nil
@@ -83,7 +83,7 @@ func (f *flow) performFlow(ctx context.Context) (crypto.SigChainManager, p2pcryp
 
 		step, ok := f.steps[*nextStep]
 		if !ok {
-			return nil, nil, errcode.ErrHandshakeInvalidFlowStepNotFound
+			return nil, nil, errcode.ErrProtocolHandshakeInvalidFlowStepNotFound
 		}
 
 		var readMsg = &HandshakeFrame{}
@@ -101,11 +101,11 @@ func (f *flow) performFlow(ctx context.Context) (crypto.SigChainManager, p2pcryp
 		}
 
 		if *nextStep == currentStep {
-			return nil, nil, errcode.ErrHandshakeInvalidFlow
+			return nil, nil, errcode.ErrProtocolHandshakeInvalidFlow
 		}
 	}
 
-	return nil, nil, errcode.ErrHandshakeInvalidFlow
+	return nil, nil, errcode.ErrProtocolHandshakeInvalidFlow
 }
 
 func Request(ctx context.Context, conn net.Conn, devicePrivateKey p2pcrypto.PrivKey, sigChain crypto.SigChainManager, accountToReach p2pcrypto.PubKey, opts *crypto.Opts) (crypto.SigChainManager, p2pcrypto.PubKey, error) {

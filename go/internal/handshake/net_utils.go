@@ -8,7 +8,7 @@ import (
 func encryptPayload(session *handshakeSession, payload *HandshakePayload) ([]byte, error) {
 	data, err := payload.Marshal()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	return session.Encrypt(data)
@@ -21,12 +21,12 @@ func writeEncryptedPayload(session *handshakeSession, writer ggio.WriteCloser, s
 	)
 
 	if payload == nil {
-		return errcode.ErrHandshakeNoPayload
+		return errcode.ErrProtocolHandshakeNoPayload
 	}
 
 	data, err = encryptPayload(session, payload)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ProtocolTODO.Wrap(err)
 	}
 
 	return writer.WriteMsg(&HandshakeFrame{
@@ -40,11 +40,11 @@ func decryptPayload(session *handshakeSession, payload []byte) (*HandshakePayloa
 
 	clear, err := session.Decrypt(payload)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	if err = instance.Unmarshal(clear); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	return instance, nil

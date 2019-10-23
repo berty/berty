@@ -253,14 +253,14 @@ func TestHandshakeSession_Encrypt_Decrypt(t *testing.T) {
 
 	// Should not decode the message twice
 	decrypted, err = hss2.Decrypt(encrypted)
-	if err != errcode.ErrHandshakeDecrypt || string(decrypted) != "" {
-		t.Fatalf("err should be errcode.ErrHandshakeDecrypt and decrypted should be empty")
+	if err != errcode.ErrProtocolHandshakeDecrypt || string(decrypted) != "" {
+		t.Fatalf("err should be errcode.ErrProtocolHandshakeDecrypt and decrypted should be empty")
 	}
 
 	// Should not decode a random string
 	decrypted, err = hss2.Decrypt([]byte("blahblah"))
-	if err != errcode.ErrHandshakeDecrypt || string(decrypted) != "" {
-		t.Fatalf("err should be errcode.ErrHandshakeDecrypt and decrypted should be empty")
+	if err != errcode.ErrProtocolHandshakeDecrypt || string(decrypted) != "" {
+		t.Fatalf("err should be errcode.ErrProtocolHandshakeDecrypt and decrypted should be empty")
 	}
 
 	// Should be able to encode a second message

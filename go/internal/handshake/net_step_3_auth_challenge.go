@@ -14,14 +14,14 @@ func (s *step3ProveOtherKey) isReadAction() bool { return false }
 func (s *step3ProveOtherKey) action(ctx context.Context, f *flow, step HandshakeFrame_HandshakeStep, readMsg *HandshakeFrame) (*HandshakeFrame_HandshakeStep, error) {
 	sig, err := f.session.ProveOtherKey()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	err = writeEncryptedPayload(f.session, f.writer, step, &HandshakePayload{
 		Signature: sig,
 	})
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	return &s.next, nil
@@ -35,11 +35,11 @@ func (s *step3CheckOwnKey) isReadAction() bool { return true }
 func (s *step3CheckOwnKey) action(ctx context.Context, f *flow, step HandshakeFrame_HandshakeStep, readMsg *HandshakeFrame) (*HandshakeFrame_HandshakeStep, error) {
 	payload, err := decryptPayload(f.session, readMsg.EncryptedPayload)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	if err := f.session.CheckOwnKeyProof(payload.Signature); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	return &s.next, nil

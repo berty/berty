@@ -13,7 +13,7 @@ func bytesSliceToArray(slice []byte) (*[32]byte, error) {
 	var arr [32]byte
 
 	if len(slice) != 32 {
-		return nil, errcode.ErrHandshakeInvalidKeyType
+		return nil, errcode.ErrProtocolHandshakeInvalidKeyType
 	}
 
 	for i, c := range slice {

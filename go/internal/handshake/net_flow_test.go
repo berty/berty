@@ -98,7 +98,7 @@ func Test_flow_performFlow(t *testing.T) {
 		{
 			name:     "no steps",
 			steps:    map[HandshakeFrame_HandshakeStep]flowStep{},
-			expected: errcode.ErrHandshakeInvalidFlowStepNotFound,
+			expected: errcode.ErrProtocolHandshakeInvalidFlowStepNotFound,
 		},
 		{
 			name: "single valid, no authenticated returned",
@@ -107,7 +107,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_9_DONE,
 				},
 			},
-			expected: errcode.ErrHandshakeNoAuthReturned,
+			expected: errcode.ErrProtocolHandshakeNoAuthReturned,
 		},
 		{
 			name: "single valid, read, no authenticated returned",
@@ -119,7 +119,7 @@ func Test_flow_performFlow(t *testing.T) {
 				},
 			},
 			reader:   &dummyReader{msg: expectedMsg},
-			expected: errcode.ErrHandshakeNoAuthReturned,
+			expected: errcode.ErrProtocolHandshakeNoAuthReturned,
 		},
 		{
 			name: "single invalid looping",
@@ -128,7 +128,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_1_KEY_AGREEMENT,
 				},
 			},
-			expected: errcode.ErrHandshakeInvalidFlow,
+			expected: errcode.ErrProtocolHandshakeInvalidFlow,
 		},
 		{
 			name: "single invalid end",
@@ -137,7 +137,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_2_KEY_AGREEMENT,
 				},
 			},
-			expected: errcode.ErrHandshakeInvalidFlowStepNotFound,
+			expected: errcode.ErrProtocolHandshakeInvalidFlowStepNotFound,
 		},
 		{
 			name: "single invalid start",
@@ -146,7 +146,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_9_DONE,
 				},
 			},
-			expected: errcode.ErrHandshakeInvalidFlowStepNotFound,
+			expected: errcode.ErrProtocolHandshakeInvalidFlowStepNotFound,
 		},
 		{
 			name: "multiple valid, no authenticated returned",
@@ -158,7 +158,7 @@ func Test_flow_performFlow(t *testing.T) {
 					next: HandshakeFrame_STEP_9_DONE,
 				},
 			},
-			expected: errcode.ErrHandshakeNoAuthReturned,
+			expected: errcode.ErrProtocolHandshakeNoAuthReturned,
 		},
 		{
 			name: "multiple valid, authenticated returned",

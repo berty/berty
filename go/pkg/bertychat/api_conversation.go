@@ -13,7 +13,7 @@ func (c *client) ConversationList(req *ConversationListRequest, stream Account_C
 		conversation := fakeConversation(c.logger)
 		err := stream.Send(&ConversationListReply{Conversation: conversation})
 		if err != nil {
-			return errcode.TODO.Wrap(err)
+			return errcode.ChatTODO.Wrap(err)
 		}
 	}
 	return nil
@@ -21,10 +21,10 @@ func (c *client) ConversationList(req *ConversationListRequest, stream Account_C
 
 func (c *client) ConversationGet(ctx context.Context, input *ConversationGetRequest) (*ConversationGetReply, error) {
 	if input == nil || input.ID == "" {
-		return nil, errcode.ErrMissingInput
+		return nil, errcode.ErrChatMissingInput
 	}
 	if input.ID == "invalid" { // simulating an invalid ID (tmp)
-		return nil, errcode.ErrInvalidInput
+		return nil, errcode.ErrChatInvalidInput
 	}
 	return &ConversationGetReply{
 		Conversation: fakeConversation(c.logger),
@@ -32,21 +32,21 @@ func (c *client) ConversationGet(ctx context.Context, input *ConversationGetRequ
 }
 
 func (c *client) ConversationCreate(context.Context, *ConversationCreateRequest) (*ConversationCreateReply, error) {
-	return nil, errcode.ErrNotImplemented
+	return nil, errcode.ErrChatNotImplemented
 }
 
 func (c *client) ConversationLeave(context.Context, *ConversationLeaveRequest) (*ConversationLeaveReply, error) {
-	return nil, errcode.ErrNotImplemented
+	return nil, errcode.ErrChatNotImplemented
 }
 
 func (c *client) ConversationErase(context.Context, *ConversationEraseRequest) (*ConversationEraseReply, error) {
-	return nil, errcode.ErrNotImplemented
+	return nil, errcode.ErrChatNotImplemented
 }
 
 func (c *client) ConversationSetSeenPosition(context.Context, *ConversationSetSeenPositionRequest) (*ConversationSetSeenPositionReply, error) {
-	return nil, errcode.ErrNotImplemented
+	return nil, errcode.ErrChatNotImplemented
 }
 
 func (c *client) ConversationUpdateSettings(context.Context, *ConversationUpdateSettingsRequest) (*ConversationUpdateSettingsReply, error) {
-	return nil, errcode.ErrNotImplemented
+	return nil, errcode.ErrChatNotImplemented
 }

@@ -20,19 +20,19 @@ type Opts struct {
 func InitNewIdentity(ctx context.Context, opts *Opts) (Manager, p2pcrypto.PrivKey, error) {
 	privKey, err := GeneratePrivateKey()
 	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	sigChain, err := InitSigChain(privKey, opts)
 	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	return NewCrypto(privKey, sigChain, opts), privKey, nil
 }
 
 func InitFromOtherDeviceIdentity(ctx context.Context, opts *Opts /* other params */) (Manager, p2pcrypto.PrivKey, error) {
-	// TODO:
+	// ProtocolTODO:
 	panic("implement me")
 }
 
@@ -43,19 +43,19 @@ func OpenIdentity(ctx context.Context, key p2pcrypto.PrivKey, chain SigChainMana
 func InitSigChain(key p2pcrypto.PrivKey, opts *Opts) (SigChainManager, error) {
 	accountKey, err := GeneratePrivateKey()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	sigChain := NewSigChain(opts)
 
 	_, err = sigChain.Init(accountKey)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	_, err = sigChain.AddEntry(accountKey, key.GetPublic(), opts)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	return sigChain, nil
@@ -64,7 +64,7 @@ func InitSigChain(key p2pcrypto.PrivKey, opts *Opts) (SigChainManager, error) {
 func GeneratePrivateKey() (p2pcrypto.PrivKey, error) {
 	key, _, err := p2pcrypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	return key, nil
@@ -83,7 +83,7 @@ func GetRendezvousPointForTime(id, seed []byte, date time.Time) ([]byte, error) 
 	binary.BigEndian.PutUint64(buf, uint64(date.Unix()))
 
 	if _, err := mac.Write(buf); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	sum := mac.Sum(nil)

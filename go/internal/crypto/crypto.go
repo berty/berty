@@ -22,12 +22,12 @@ func (c *crypto) GetDevicePublicKey() p2pcrypto.PubKey {
 func (c *crypto) GetAccountPublicKey() (p2pcrypto.PubKey, error) {
 	initialEntry, err := c.sigChain.GetInitialEntry()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	pubKey, err := initialEntry.GetSubject()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	return pubKey, nil
@@ -43,7 +43,7 @@ func (c *crypto) Sign(data []byte) ([]byte, error) {
 
 func (c *crypto) AddDeviceToOwnSigChain(ctx context.Context, key p2pcrypto.PubKey) error {
 	_, err := c.sigChain.AddEntry(c.privKey, key, c.opts)
-	return errcode.TODO.Wrap(err)
+	return errcode.ProtocolTODO.Wrap(err)
 }
 
 func (c *crypto) Close() error {

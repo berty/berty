@@ -1,8 +1,9 @@
 091c2c356ed6594b6c0e078f2826e85b0236a8d5  ../api/bertychat.proto
 02c94a7ec8a717d89c8b95b20fabf942f8934724  ../api/bertyprotocol.proto
+f30b4e4343b09ae4fe98708618fa0d119d0d269d  ../api/chaterrcode.proto
 03fd21adc9eb2846c2d6cd62eac6184bbffaf455  ../api/chatmodel.proto
-a433caf96caafdf90f3190cfb1763dfc73b075c4  ../api/errcode.proto
 74e397e248a9c7e7d094109a02e873df24e80367  ../api/go-internal/handshake.proto
 d8c797e0f3efd2b4f26a9ff949bedb786891a850  ../api/go-internal/protocolmodel.proto
 50384eff13181fb905dee2b7df62276408e3dc62  ../api/go-internal/sigchain.proto
+27b1634a3678b7ac5f987fb5aba88499843ff706  ../api/protocolerrcode.proto
 a9a319bd3ea6c4b93fff7ddc849663eeb1015f56  Makefile

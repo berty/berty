@@ -50,7 +50,7 @@ func New(db *gorm.DB, opts Opts) (Client, error) {
 	var err error
 	client.db, err = protocoldb.InitMigrate(db, client.logger.Named("datastore"))
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	ctx := opts.RootContext
@@ -61,7 +61,7 @@ func New(db *gorm.DB, opts Opts) (Client, error) {
 		var err error
 		client.ipfsCoreAPI, err = ipfsutil.NewInMemoryCoreAPI(ctx)
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ProtocolTODO.Wrap(err)
 		}
 	}
 

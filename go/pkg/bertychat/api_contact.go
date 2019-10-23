@@ -7,17 +7,17 @@ import (
 )
 
 func (c *client) ContactList(*ContactListRequest, Account_ContactListServer) error {
-	return errcode.ErrNotImplemented
+	return errcode.ErrChatNotImplemented
 }
 
 func (c *client) ContactGet(context.Context, *ContactGetRequest) (*ContactGetReply, error) {
-	return nil, errcode.ErrNotImplemented
+	return nil, errcode.ErrChatNotImplemented
 }
 
 func (c *client) ContactUpdate(context.Context, *ContactUpdateRequest) (*ContactUpdateReply, error) {
-	return nil, errcode.ErrNotImplemented
+	return nil, errcode.ErrChatNotImplemented
 }
 
 func (c *client) ContactRemove(context.Context, *ContactRemoveRequest) (*ContactRemoveReply, error) {
-	return nil, errcode.ErrNotImplemented
+	return nil, errcode.ErrChatNotImplemented
 }

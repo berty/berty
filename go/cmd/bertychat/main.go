@@ -46,7 +46,7 @@ func main() {
 			var err error
 			logger, err = config.Build()
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ChatTODO.Wrap(err)
 			}
 			logger.Debug("logger initialized in debug mode")
 		} else {
@@ -57,7 +57,7 @@ func main() {
 			var err error
 			logger, err = config.Build()
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ChatTODO.Wrap(err)
 			}
 		}
 		return nil
@@ -106,7 +106,7 @@ func main() {
 				// initialize sqlite3 gorm database
 				db, err := gorm.Open("sqlite3", *clientProtocolURN)
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ChatTODO.Wrap(err)
 				}
 				defer db.Close()
 
@@ -116,7 +116,7 @@ func main() {
 				}
 				protocol, err = bertyprotocol.New(db, opts)
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ChatTODO.Wrap(err)
 				}
 
 				defer protocol.Close()
@@ -128,7 +128,7 @@ func main() {
 				// initialize sqlite3 gorm database
 				db, err := gorm.Open("sqlite3", *clientChatURN)
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ChatTODO.Wrap(err)
 				}
 				defer db.Close()
 
@@ -138,7 +138,7 @@ func main() {
 				}
 				chat, err = bertychat.New(db, protocol, chatOpts)
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ChatTODO.Wrap(err)
 				}
 
 				defer chat.Close()
@@ -146,7 +146,7 @@ func main() {
 
 			info, err := protocol.AccountGetInformation(ctx, nil)
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ChatTODO.Wrap(err)
 			}
 
 			logger.Info("client initialized", zap.String("peer-id", info.PeerID), zap.Strings("listeners", info.Listeners))

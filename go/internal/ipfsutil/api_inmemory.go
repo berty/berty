@@ -23,12 +23,12 @@ import (
 func NewInMemoryCoreAPI(ctx context.Context) (ipfs_interface.CoreAPI, error) {
 	cfg, err := createBuildConfig()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	node, err := ipfs_core.NewNode(ctx, cfg)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	return ipfs_coreapi.NewCoreAPI(node)
@@ -38,7 +38,7 @@ func createBuildConfig() (*ipfs_node.BuildCfg, error) {
 	ds := ipfs_datastore.NewMapDatastore()
 	repo, err := createRepo(ipfs_datastoresync.MutexWrap(ds))
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	routing := ipfs_libp2p.DHTOption
@@ -58,17 +58,17 @@ func createRepo(dstore ipfs_repo.Datastore) (ipfs_repo.Repo, error) {
 	c := ipfs_cfg.Config{}
 	priv, pub, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, rand.Reader) // nolint:staticcheck
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	pid, err := libp2p_peer.IDFromPublicKey(pub) // nolint:staticcheck
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	privkeyb, err := priv.Bytes()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	c.Bootstrap = ipfs_cfg.DefaultBootstrapAddresses

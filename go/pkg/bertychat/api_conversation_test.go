@@ -19,11 +19,11 @@ func TestClient_ConversationGet(t *testing.T) {
 		{
 			"no-input",
 			nil,
-			errcode.ErrMissingInput,
+			errcode.ErrChatMissingInput,
 		}, {
 			"invalid-id",
 			&ConversationGetRequest{ID: "invalid"},
-			errcode.ErrInvalidInput,
+			errcode.ErrChatInvalidInput,
 		}, {
 			"valid-id",
 			&ConversationGetRequest{ID: "lorem-ipsum"},

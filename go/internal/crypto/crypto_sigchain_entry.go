@@ -18,19 +18,19 @@ func (m *SigChainEntry) Sign(key p2pcrypto.PrivKey) error {
 
 	entryBytes, err := entryToSign.Marshal()
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ProtocolTODO.Wrap(err)
 	}
 
 	h, err := mh.Sum(entryBytes, mh.SHA2_256, -1)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ProtocolTODO.Wrap(err)
 	}
 
 	entryHash := []byte(h.B58String())
 
 	sig, err := key.Sign(entryHash)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ProtocolTODO.Wrap(err)
 	}
 
 	m.EntryHash = entryHash
@@ -42,7 +42,7 @@ func (m *SigChainEntry) Sign(key p2pcrypto.PrivKey) error {
 func (m *SigChainEntry) GetSignedBy() (p2pcrypto.PubKey, error) {
 	pubKey, err := p2pcrypto.UnmarshalPublicKey(m.SignerPublicKeyBytes)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	return pubKey, nil
@@ -51,21 +51,21 @@ func (m *SigChainEntry) GetSignedBy() (p2pcrypto.PubKey, error) {
 func (m *SigChainEntry) GetSubject() (p2pcrypto.PubKey, error) {
 	pubKey, err := p2pcrypto.UnmarshalPublicKey(m.SubjectPublicKeyBytes)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ProtocolTODO.Wrap(err)
 	}
 
 	return pubKey, nil
 }
 
 func (m *SigChainEntry) Check() error {
-	// TODO: implement me
+	// ProtocolTODO: implement me
 
-	// TODO: Check parent present in sigchain and valid (except 1st item)
-	// TODO: Check signer pubkey valid
-	// TODO: Check subject pubkey valid
-	// TODO: Check signature valid
-	// TODO: Check not self signed (except 1st item)
-	// TODO: Check signer not previously revoked
+	// ProtocolTODO: Check parent present in sigchain and valid (except 1st item)
+	// ProtocolTODO: Check signer pubkey valid
+	// ProtocolTODO: Check subject pubkey valid
+	// ProtocolTODO: Check signature valid
+	// ProtocolTODO: Check not self signed (except 1st item)
+	// ProtocolTODO: Check signer not previously revoked
 
 	return nil
 }
