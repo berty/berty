@@ -25,13 +25,7 @@ indent_size = 4
 [*.tmpl]
 indent_size = 2
 
-[*.js]
-indent_size = 2
-indent_style = tab
-block_comment_start = /*
-block_comment_end = */
-
-[*.ts]
+[*.{js,jsx,ts,tsx}]
 indent_size = 2
 indent_style = tab
 block_comment_start = /*
