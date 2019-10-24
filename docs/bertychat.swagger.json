@@ -1,0 +1,672 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "bertychat.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/conversation/get": {
+      "get": {
+        "operationId": "ConversationGet",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/chatConversationGetReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Account"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ConversationMutePolicy": {
+      "type": "string",
+      "enum": [
+        "Nothing",
+        "All",
+        "Notifications"
+      ],
+      "default": "Nothing"
+    },
+    "MemberRole": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "Regular",
+        "Admin",
+        "Owner"
+      ],
+      "default": "Unknown",
+      "description": " - Regular: Guest = 1; ..."
+    },
+    "MessageBody": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "member_joined": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "member_left": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "member_set_title_to": {
+          "type": "string"
+        }
+      }
+    },
+    "chatAccountPairingInvitationCreateReply": {
+      "type": "object"
+    },
+    "chatAccountRenewIncomingContactRequestLinkReply": {
+      "type": "object"
+    },
+    "chatAccountSettingsGetReply": {
+      "type": "object"
+    },
+    "chatAccountSettingsUpdateReply": {
+      "type": "object"
+    },
+    "chatContactGetReply": {
+      "type": "object",
+      "properties": {
+        "contact": {
+          "$ref": "#/definitions/chatmodelContact"
+        }
+      }
+    },
+    "chatContactListReply": {
+      "type": "object"
+    },
+    "chatContactRemoveReply": {
+      "type": "object"
+    },
+    "chatContactRequestAcceptReply": {
+      "type": "object"
+    },
+    "chatContactRequestCreateReply": {
+      "type": "object"
+    },
+    "chatContactRequestDiscardReply": {
+      "type": "object"
+    },
+    "chatContactUpdateReply": {
+      "type": "object"
+    },
+    "chatConversationCreateReply": {
+      "type": "object"
+    },
+    "chatConversationEraseReply": {
+      "type": "object"
+    },
+    "chatConversationGetReply": {
+      "type": "object",
+      "properties": {
+        "conversation": {
+          "$ref": "#/definitions/chatmodelConversation"
+        }
+      }
+    },
+    "chatConversationInvitationAcceptReply": {
+      "type": "object"
+    },
+    "chatConversationInvitationCreateReply": {
+      "type": "object"
+    },
+    "chatConversationInvitationDiscardReply": {
+      "type": "object"
+    },
+    "chatConversationLeaveReply": {
+      "type": "object"
+    },
+    "chatConversationListReply": {
+      "type": "object",
+      "properties": {
+        "conversation": {
+          "$ref": "#/definitions/chatmodelConversation"
+        }
+      }
+    },
+    "chatConversationMessageEditReply": {
+      "type": "object"
+    },
+    "chatConversationMessageHideReply": {
+      "type": "object"
+    },
+    "chatConversationMessageListReply": {
+      "type": "object"
+    },
+    "chatConversationMessageSendReply": {
+      "type": "object"
+    },
+    "chatConversationSetSeenPositionReply": {
+      "type": "object"
+    },
+    "chatConversationUpdateSettingsReply": {
+      "type": "object"
+    },
+    "chatDevEventSubscribeReply": {
+      "type": "object"
+    },
+    "chatEventSubscribeReply": {
+      "type": "object"
+    },
+    "chatSearchReply": {
+      "type": "object"
+    },
+    "chatmodelAttachment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64",
+          "title": "metadata"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "uri": {
+          "type": "string",
+          "title": "fields"
+        },
+        "content_type": {
+          "type": "string"
+        },
+        "message_id": {
+          "type": "string",
+          "format": "uint64",
+          "title": "associations"
+        },
+        "message": {
+          "$ref": "#/definitions/chatmodelMessage"
+        }
+      }
+    },
+    "chatmodelContact": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "protocol_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "seen_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "name": {
+          "type": "string",
+          "title": "fields"
+        },
+        "avatar_uri": {
+          "type": "string"
+        },
+        "status_emoji": {
+          "type": "string",
+          "format": "byte"
+        },
+        "status_text": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/definitions/chatmodelContactKind"
+        },
+        "blocked": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/chatmodelDevice"
+          },
+          "title": "associations"
+        }
+      }
+    },
+    "chatmodelContactKind": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "PendingInc",
+        "PendingOut",
+        "Friend",
+        "Trusted",
+        "Myself"
+      ],
+      "default": "Unknown"
+    },
+    "chatmodelConversation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "protocol_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "title": {
+          "type": "string",
+          "title": "fields"
+        },
+        "topic": {
+          "type": "string"
+        },
+        "avatar_uri": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/definitions/chatmodelConversationKind"
+        },
+        "badge": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "mute_policy": {
+          "$ref": "#/definitions/ConversationMutePolicy"
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/chatmodelMessage"
+          },
+          "title": "associations"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/chatmodelMember"
+          }
+        },
+        "last_message_id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "last_message": {
+          "$ref": "#/definitions/chatmodelMessage"
+        }
+      }
+    },
+    "chatmodelConversationKind": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "Self",
+        "OneToOne",
+        "PrivateGroup"
+      ],
+      "default": "Unknown"
+    },
+    "chatmodelDevice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "protocol_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "last_seen_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "kind": {
+          "$ref": "#/definitions/chatmodelDeviceKind",
+          "title": "fields"
+        },
+        "can_relay": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "can_ble": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "contact_id": {
+          "type": "string",
+          "format": "uint64",
+          "title": "associations"
+        },
+        "contact": {
+          "$ref": "#/definitions/chatmodelContact"
+        }
+      }
+    },
+    "chatmodelDeviceKind": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "Phone",
+        "Desktop",
+        "Laptop"
+      ],
+      "default": "Unknown"
+    },
+    "chatmodelMember": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "protocol_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "read_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "name": {
+          "type": "string",
+          "title": "fields"
+        },
+        "avatar_uri": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/MemberRole"
+        },
+        "conversation_id": {
+          "type": "string",
+          "format": "uint64",
+          "title": "associations"
+        },
+        "conversation": {
+          "$ref": "#/definitions/chatmodelConversation"
+        },
+        "contact_id": {
+          "type": "string",
+          "format": "uint64",
+          "title": "non-empty mean verified member"
+        },
+        "contact": {
+          "$ref": "#/definitions/chatmodelContact"
+        }
+      }
+    },
+    "chatmodelMessage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64",
+          "title": "metadata"
+        },
+        "protocol_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sent_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "kind": {
+          "$ref": "#/definitions/chatmodelMessageKind",
+          "title": "fields"
+        },
+        "body": {
+          "$ref": "#/definitions/MessageBody"
+        },
+        "conversation_id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "conversation": {
+          "$ref": "#/definitions/chatmodelConversation"
+        },
+        "member_id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "member": {
+          "$ref": "#/definitions/chatmodelMember"
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/chatmodelAttachment"
+          }
+        },
+        "reactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/chatmodelReaction"
+          }
+        }
+      }
+    },
+    "chatmodelMessageKind": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "Text",
+        "MemberJoined",
+        "MemberLeave",
+        "MemberSetTitleTo"
+      ],
+      "default": "Unknown"
+    },
+    "chatmodelReaction": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64",
+          "title": "metadata"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "emoji": {
+          "type": "string",
+          "format": "byte",
+          "title": "fields"
+        },
+        "message_id": {
+          "type": "string",
+          "format": "uint64",
+          "title": "associations"
+        },
+        "message": {
+          "$ref": "#/definitions/chatmodelMessage"
+        },
+        "member_id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "member": {
+          "$ref": "#/definitions/chatmodelMember"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeStreamError": {
+      "type": "object",
+      "properties": {
+        "grpc_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "http_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "http_status": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  },
+  "x-stream-definitions": {
+    "chatContactListReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatContactListReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatContactListReply"
+    },
+    "chatConversationListReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatConversationListReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatConversationListReply"
+    },
+    "chatConversationMessageListReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatConversationMessageListReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatConversationMessageListReply"
+    },
+    "chatDevEventSubscribeReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatDevEventSubscribeReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatDevEventSubscribeReply"
+    },
+    "chatEventSubscribeReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatEventSubscribeReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatEventSubscribeReply"
+    },
+    "chatSearchReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatSearchReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatSearchReply"
+    }
+  }
+}
