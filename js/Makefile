@@ -119,6 +119,7 @@ lint: files = $(shell \
 		find packages -type f -not -path '*/node_modules/*' \
 		| grep -E '(\.js|\.jsx|\.ts|\.tsx)$$'\
 	)
+lint: options += --cache
 lint: deps
 	$(eslint) $(options) $(files)
 

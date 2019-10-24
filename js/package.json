@@ -38,6 +38,7 @@
     "caser": "^0.1.1",
     "create-react-native-module": "^0.11.1",
     "eslint-plugin-jest": "^22.17.0",
+    "eslint_d": "^8.0.0",
     "json": "^9.0.6",
     "lerna": "^3.18.3",
     "lerna-update-wizard": "^0.16.0",
@@ -46,9 +47,9 @@
     "update-versions": "^2.0.0"
   },
   "devDependencies": {
-    "@berty-tech/babel-preset": "file:./packages/babel-preset",
-    "@berty-tech/eslint-config": "file:./packages/eslint-config",
-    "@berty-tech/prettier-config": "file:./packages/prettier-config",
+    "@berty-tech/babel-preset": "^0.0.0",
+    "@berty-tech/eslint-config": "^0.0.0",
+    "@berty-tech/prettier-config": "^0.0.0",
     "@react-native-community/eslint-plugin": "^1.0.0",
     "@types/jest": "^24.0.18",
     "@types/lodash": "^4.14.139",
