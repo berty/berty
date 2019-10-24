@@ -1,6 +1,5 @@
 export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
-export SHELL ?= env bash
 
 .PHONY: \
 	deps.storybook \

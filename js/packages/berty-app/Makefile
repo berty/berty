@@ -1,6 +1,5 @@
 export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
-export SHELL := /bin/bash
 
 react-native := $(PWD)/node_modules/.bin/react-native
 pod := pod
