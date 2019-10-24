@@ -23,6 +23,8 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
+
+	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 )
 
 type Bridge struct {
@@ -42,6 +44,7 @@ type Bridge struct {
 }
 
 type Opts struct {
+	coreAPI         ipfs_interface.CoreAPI
 	LogLevel        string
 	GRPCListener    string
 	GRPCWebListener string
@@ -102,7 +105,8 @@ func newBridge(logger *zap.Logger, opts Opts) (*Bridge, error) {
 
 		// initialize new protocol client
 		protocolOpts := bertyprotocol.Opts{
-			Logger: b.logger.Named("bertyprotocol"),
+			Logger:      b.logger.Named("bertyprotocol"),
+			IpfsCoreAPI: opts.coreAPI,
 		}
 
 		b.protocolClient, err = bertyprotocol.New(b.protocolDB, protocolOpts)
@@ -284,17 +288,11 @@ func (b *Bridge) addGRPCWebListener(addr string) (string, error) {
 		http.DefaultServeMux.ServeHTTP(w, r)
 	})
 
-	s := &http.Server{
-		Addr:    addr,
-		Handler: handler,
-	}
-
 	b.workers.Add(func() error {
 		b.logger.Info("starting grpc web server", zap.String("addr", l.Addr().String()))
-		return s.Serve(l)
+		return http.Serve(l, handler)
 	}, func(error) {
 		b.logger.Debug("closing grpc web server")
-		s.Close()
 		l.Close()
 	})
 
