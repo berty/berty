@@ -21,8 +21,9 @@ commands:
     steps:
       - restore_cache:
           keys:
+            - v0-js-{{.Branch}}-{{.Revision}}
             - v0-js-{{.Branch}}-
-            - v0-js-master
+            - v0-js-master-
             - v0-js-
 
 jobs:
@@ -78,14 +79,14 @@ jobs:
       - image: bertytech/protoc:20
     steps:
       - checkout
-      - restore_js_cache
+      - js_restore_cache
       - run: cd js && (git diff --quiet master . && make deps) || true
-      - run: cd js && (git diff --quiet master . && make generate) || true
-      - save_js_cache
+      - run: cd js && (git diff --quiet master ../api . && make gen.clean gen) || true
       - run: |
           git status | cat
           git diff -w | cat
           git diff-index -w --quiet HEAD --
+      - js_save_cache
 
   js-lint:
     working_directory: /go/src/berty.tech
@@ -93,14 +94,14 @@ jobs:
       - image: bertytech/protoc:20
     steps:
       - checkout
-      - restore_js_cache
+      - js_restore_cache
       - run: cd js && (git diff --quiet master . && make deps) || true
       - run: cd js && (git diff --quiet master . && make lint) || true
-      - save_js_cache
       - run: |
           git status | cat
           git diff -w | cat
           git diff-index -w --quiet HEAD --
+      - js_save_cache
 
   githooks:
     working_directory: /go/src/berty.tech

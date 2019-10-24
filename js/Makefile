@@ -39,7 +39,7 @@ $(yarn):
 	$(error "yarn is not installed")
 
 .PHONY: deps
-deps: $(yarn) $(lerna) $(mod) $(pkg_mod) generate
+deps: $(yarn) $(lerna) $(mod) $(pkg_mod) gen
 
 $(mod) $(pkg_mod): $(PWD)/package.json $(pkg)
 	$(lerna) $(lerna_flags) init

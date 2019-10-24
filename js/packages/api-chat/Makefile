@@ -63,16 +63,16 @@ $(PWD)/index.js: $(PWD)/templates/index.js.hbs $(api_chat_berty_files) $(PWD)/Ma
 	$(api_chat_pbhbs) $(api_chat_pbhbs_flags) $(api_chat_berty_files)
 	$(api_chat_lint) $(api_chat_lint_options) $@
 
-.PHONY: generate.api.chat
-generate.api.chat: $(api_chat_deps) $(api_chat_targets)
+.PHONY: gen.api.chat
+gen.api.chat: $(api_chat_deps) $(api_chat_targets)
 
-.PHONY: generate
-generate: generate.api.chat
+.PHONY: gen
+gen: gen.api.chat
 
-.PHONY: clean.api.chat
-clean.api.chat: export PWD := $(PWD)
-clean.api.chat:
+.PHONY: gen.clean.api.chat
+gen.clean.api.chat: export PWD := $(PWD)
+gen.clean.api.chat:
 	rm -rf $(api_chat_targets)
 
-.PHONY: clean
-clean: clean.api.chat
+.PHONY: gen.clean
+gen.clean: gen.clean.api.chat
