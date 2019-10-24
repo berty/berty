@@ -52,6 +52,32 @@ jobs:
           git status | cat
           git diff -w | cat
           git diff-index -w --quiet HEAD --
+
+  js-generate:
+    working_directory: /go/src/berty.tech
+    docker:
+      - image: bertytech/protoc:19
+    steps:
+      - checkout
+      - run: cd js && make deps
+      - run: cd js && make generate
+      - run: |
+          git status | cat
+          git diff -w | cat
+          git diff-index -w --quiet HEAD --
+
+  js-lint:
+    working_directory: /go/src/berty.tech
+    docker:
+      - image: bertytech/protoc:19
+    steps:
+      - checkout
+      - run: cd js && make lint
+      - run: |
+          git status | cat
+          git diff -w | cat
+          git diff-index -w --quiet HEAD --
+
   githooks:
     working_directory: /go/src/berty.tech
     docker:
@@ -94,6 +120,8 @@ workflows:
       - go-build-112
       - go-docker
       - go-generate
+      - js-generate
+      - js-lint
       - githooks
       - bazel-go-build
       - bazel-go-test

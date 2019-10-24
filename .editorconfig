@@ -27,6 +27,13 @@ indent_size = 2
 
 [*.js]
 indent_size = 2
+indent_style = tab
+block_comment_start = /*
+block_comment_end = */
+
+[*.ts]
+indent_size = 2
+indent_style = tab
 block_comment_start = /*
 block_comment_end = */
 
