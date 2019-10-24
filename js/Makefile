@@ -41,19 +41,14 @@ $(yarn):
 .PHONY: deps
 deps: $(yarn) $(lerna) $(mod) $(pkg_mod) generate
 
-%/node_modules: $(lerna) %/package.json
+$(mod) $(pkg_mod): $(PWD)/package.json $(pkg)
 	$(lerna) $(lerna_flags) init
 	$(lerna) $(lerna_flags) bootstrap
 	mkdir -p $(mod) $(pkg_mod)
 	touch $(mod) $(pkg_mod)
 
-$(mod)/%: $(mod)
-
 $(lerna): $(yarn)
 	$(yarn) add -W lerna@latest
-
-.NOTPARALLEL: $(pkg_mod) $(pkg_mod)/%
-$(pkg_mod)/%: $(patsubst %,%/package.json,$(pkg)) $(mod)
 
 .PHONY: upgrade
 upgrade: deps
