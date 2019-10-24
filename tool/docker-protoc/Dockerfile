@@ -24,19 +24,8 @@ RUN     go get -d github.com/envoyproxy/protoc-gen-validate \
 
 # runtime
 FROM    golang:1.12-alpine
-RUN     apk --no-cache add git openssh make protobuf gcc libc-dev nodejs-npm sudo perl-utils \
- &&     mkdir -p /.cache/go-build \
- &&     chmod -R 777 /.cache \
- &&     mkdir -p /node/ \
- &&     cd /node \
- &&     npm install -g \
-          npm@6.9.0 \
-          protobufjs \
-          prettier \
-          prettier-eslint \
-          prettier-eslint-cli \
-          pbhbs@0.1.0 \
- &&     echo 'syntax = "proto3";' | /usr/bin/pbjs - > /dev/null
+RUN     apk --no-cache add git openssh make protobuf gcc libc-dev nodejs-npm yarn sudo perl-utils \
+ &&     mkdir -p /.cache/go-build
 COPY    --from=pgg     /go/bin/* /go/bin/
 COPY    --from=builder /go/bin/* /go/bin/
 COPY    --from=pgg     /protobuf /protobuf

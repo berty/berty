@@ -39,7 +39,7 @@ jobs:
   go-generate:
     working_directory: /go/src/berty.tech
     docker:
-      - image: bertytech/protoc:19
+      - image: bertytech/protoc:20
     environment:
       - GO111MODULE=on
     steps:
@@ -56,11 +56,11 @@ jobs:
   js-generate:
     working_directory: /go/src/berty.tech
     docker:
-      - image: bertytech/protoc:19
+      - image: bertytech/protoc:20
     steps:
       - checkout
-      - run: cd js && make deps
-      - run: cd js && make generate
+      - run: cd js && (git diff --quiet master . && make deps) || true
+      - run: cd js && (git diff --quiet master . && make generate) || true
       - run: |
           git status | cat
           git diff -w | cat
@@ -69,10 +69,10 @@ jobs:
   js-lint:
     working_directory: /go/src/berty.tech
     docker:
-      - image: bertytech/protoc:19
+      - image: bertytech/protoc:20
     steps:
       - checkout
-      - run: cd js && make lint
+      - run: cd js && (git diff --quiet master . && make lint) || true
       - run: |
           git status | cat
           git diff -w | cat

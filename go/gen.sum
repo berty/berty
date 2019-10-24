@@ -5,4 +5,4 @@ a433caf96caafdf90f3190cfb1763dfc73b075c4  ../api/errcode.proto
 74e397e248a9c7e7d094109a02e873df24e80367  ../api/go-internal/handshake.proto
 d8c797e0f3efd2b4f26a9ff949bedb786891a850  ../api/go-internal/protocolmodel.proto
 50384eff13181fb905dee2b7df62276408e3dc62  ../api/go-internal/sigchain.proto
-a9a319bd3ea6c4b93fff7ddc849663eeb1015f56  Makefile
+dc14642318675a039c2fb0fc38bce57036854760  Makefile
