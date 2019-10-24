@@ -6,6 +6,25 @@ orbs:
   gotools: gotest/tools@0.0.10
   moul:    moul/build@1.12.1
 
+commands:
+  js_save_cache:
+    description: "save js cache"
+    steps:
+      - save_cache:
+          key: v0-js-{{.Branch}}-{{.Revision}}
+          paths:
+            - ~/.cache
+            - ~/go/src/berty.tech/js/node_modules
+
+  js_restore_cache:
+    description: "restore js cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v0-js-{{.Branch}}-
+            - v0-js-master
+            - v0-js-
+
 jobs:
   go-build-112:
     working_directory: /go/src/berty.tech/go
@@ -59,8 +78,10 @@ jobs:
       - image: bertytech/protoc:20
     steps:
       - checkout
+      - restore_js_cache
       - run: cd js && (git diff --quiet master . && make deps) || true
       - run: cd js && (git diff --quiet master . && make generate) || true
+      - save_js_cache
       - run: |
           git status | cat
           git diff -w | cat
@@ -72,7 +93,10 @@ jobs:
       - image: bertytech/protoc:20
     steps:
       - checkout
+      - restore_js_cache
+      - run: cd js && (git diff --quiet master . && make deps) || true
       - run: cd js && (git diff --quiet master . && make lint) || true
+      - save_js_cache
       - run: |
           git status | cat
           git diff -w | cat
