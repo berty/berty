@@ -365,7 +365,7 @@ export namespace berty {
 		}
 
 		interface IConversationGetRequest {
-			id?: string | null
+			id: string
 		}
 
 		class ConversationGetRequest implements IConversationGetRequest {
@@ -1678,20 +1678,20 @@ export namespace berty {
 
 	namespace chatmodel {
 		interface IAccount {
-			id?: number | Long | null
-			createdAt?: google.protobuf.ITimestamp | null
-			updatedAt?: google.protobuf.ITimestamp | null
-			name?: string | null
-			avatarUri?: string | null
-			contactRequestsEnabled?: boolean | null
-			contactRequestsLink?: string | null
+			id: number | Long
+			createdAt: google.protobuf.ITimestamp
+			updatedAt: google.protobuf.ITimestamp
+			name: string
+			avatarUri: string
+			contactRequestsEnabled: boolean
+			contactRequestsLink: string
 		}
 
 		class Account implements IAccount {
 			constructor(properties?: berty.chatmodel.IAccount)
 			public id: number | Long
-			public createdAt?: google.protobuf.ITimestamp | null
-			public updatedAt?: google.protobuf.ITimestamp | null
+			public createdAt: google.protobuf.ITimestamp
+			public updatedAt: google.protobuf.ITimestamp
 			public name: string
 			public avatarUri: string
 			public contactRequestsEnabled: boolean
@@ -1711,19 +1711,19 @@ export namespace berty {
 		}
 
 		interface IConversation {
-			id?: number | Long | null
-			protocolId?: string | null
-			createdAt?: google.protobuf.ITimestamp | null
-			updatedAt?: google.protobuf.ITimestamp | null
-			title?: string | null
-			topic?: string | null
-			avatarUri?: string | null
-			kind?: berty.chatmodel.Conversation.Kind | null
-			badge?: number | null
-			mutePolicy?: berty.chatmodel.Conversation.MutePolicy | null
+			id: number | Long
+			protocolId: string
+			createdAt: google.protobuf.ITimestamp
+			updatedAt: google.protobuf.ITimestamp
+			title: string
+			topic: string
+			avatarUri: string
+			kind: berty.chatmodel.Conversation.Kind
+			badge: number
+			mutePolicy: berty.chatmodel.Conversation.MutePolicy
 			messages?: berty.chatmodel.IMessage[] | null
 			members?: berty.chatmodel.IMember[] | null
-			lastMessageId?: number | Long | null
+			lastMessageId: number | Long
 			lastMessage?: berty.chatmodel.IMessage | null
 		}
 
@@ -1731,8 +1731,8 @@ export namespace berty {
 			constructor(properties?: berty.chatmodel.IConversation)
 			public id: number | Long
 			public protocolId: string
-			public createdAt?: google.protobuf.ITimestamp | null
-			public updatedAt?: google.protobuf.ITimestamp | null
+			public createdAt: google.protobuf.ITimestamp
+			public updatedAt: google.protobuf.ITimestamp
 			public title: string
 			public topic: string
 			public avatarUri: string
@@ -1773,17 +1773,17 @@ export namespace berty {
 		}
 
 		interface IMember {
-			id?: number | Long | null
-			protocolId?: string | null
-			createdAt?: google.protobuf.ITimestamp | null
-			updatedAt?: google.protobuf.ITimestamp | null
-			readAt?: google.protobuf.ITimestamp | null
-			name?: string | null
-			avatarUri?: string | null
-			role?: berty.chatmodel.Member.Role | null
-			conversationId?: number | Long | null
+			id: number | Long
+			protocolId: string
+			createdAt: google.protobuf.ITimestamp
+			updatedAt: google.protobuf.ITimestamp
+			readAt: google.protobuf.ITimestamp
+			name: string
+			avatarUri: string
+			role: berty.chatmodel.Member.Role
+			conversationId: number | Long
 			conversation?: berty.chatmodel.IConversation | null
-			contactId?: number | Long | null
+			contactId: number | Long
 			contact?: berty.chatmodel.IContact | null
 		}
 
@@ -1791,9 +1791,9 @@ export namespace berty {
 			constructor(properties?: berty.chatmodel.IMember)
 			public id: number | Long
 			public protocolId: string
-			public createdAt?: google.protobuf.ITimestamp | null
-			public updatedAt?: google.protobuf.ITimestamp | null
-			public readAt?: google.protobuf.ITimestamp | null
+			public createdAt: google.protobuf.ITimestamp
+			public updatedAt: google.protobuf.ITimestamp
+			public readAt: google.protobuf.ITimestamp
 			public name: string
 			public avatarUri: string
 			public role: berty.chatmodel.Member.Role
@@ -1825,16 +1825,16 @@ export namespace berty {
 		}
 
 		interface IMessage {
-			id?: number | Long | null
-			protocolId?: string | null
-			createdAt?: google.protobuf.ITimestamp | null
-			updatedAt?: google.protobuf.ITimestamp | null
-			sentAt?: google.protobuf.ITimestamp | null
-			kind?: berty.chatmodel.Message.Kind | null
+			id: number | Long
+			protocolId: string
+			createdAt: google.protobuf.ITimestamp
+			updatedAt: google.protobuf.ITimestamp
+			sentAt: google.protobuf.ITimestamp
+			kind: berty.chatmodel.Message.Kind
 			body?: berty.chatmodel.Message.IBody | null
-			conversationId?: number | Long | null
+			conversationId: number | Long
 			conversation?: berty.chatmodel.IConversation | null
-			memberId?: number | Long | null
+			memberId: number | Long
 			member?: berty.chatmodel.IMember | null
 			attachments?: berty.chatmodel.IAttachment[] | null
 			reactions?: berty.chatmodel.IReaction[] | null
@@ -1844,9 +1844,9 @@ export namespace berty {
 			constructor(properties?: berty.chatmodel.IMessage)
 			public id: number | Long
 			public protocolId: string
-			public createdAt?: google.protobuf.ITimestamp | null
-			public updatedAt?: google.protobuf.ITimestamp | null
-			public sentAt?: google.protobuf.ITimestamp | null
+			public createdAt: google.protobuf.ITimestamp
+			public updatedAt: google.protobuf.ITimestamp
+			public sentAt: google.protobuf.ITimestamp
 			public kind: berty.chatmodel.Message.Kind
 			public body?: berty.chatmodel.Message.IBody | null
 			public conversationId: number | Long
@@ -1879,10 +1879,10 @@ export namespace berty {
 			}
 
 			interface IBody {
-				text?: string | null
-				memberJoined?: number | Long | null
-				memberLeft?: number | Long | null
-				memberSetTitleTo?: string | null
+				text: string
+				memberJoined: number | Long
+				memberLeft: number | Long
+				memberSetTitleTo: string
 			}
 
 			class Body implements IBody {
@@ -1910,20 +1910,20 @@ export namespace berty {
 		}
 
 		interface IAttachment {
-			id?: number | Long | null
-			createdAt?: google.protobuf.ITimestamp | null
-			updatedAt?: google.protobuf.ITimestamp | null
-			uri?: string | null
-			contentType?: string | null
-			messageId?: number | Long | null
+			id: number | Long
+			createdAt: google.protobuf.ITimestamp
+			updatedAt: google.protobuf.ITimestamp
+			uri: string
+			contentType: string
+			messageId: number | Long
 			message?: berty.chatmodel.IMessage | null
 		}
 
 		class Attachment implements IAttachment {
 			constructor(properties?: berty.chatmodel.IAttachment)
 			public id: number | Long
-			public createdAt?: google.protobuf.ITimestamp | null
-			public updatedAt?: google.protobuf.ITimestamp | null
+			public createdAt: google.protobuf.ITimestamp
+			public updatedAt: google.protobuf.ITimestamp
 			public uri: string
 			public contentType: string
 			public messageId: number | Long
@@ -1943,21 +1943,21 @@ export namespace berty {
 		}
 
 		interface IReaction {
-			id?: number | Long | null
-			createdAt?: google.protobuf.ITimestamp | null
-			updatedAt?: google.protobuf.ITimestamp | null
-			emoji?: Uint8Array | null
-			messageId?: number | Long | null
+			id: number | Long
+			createdAt: google.protobuf.ITimestamp
+			updatedAt: google.protobuf.ITimestamp
+			emoji: Uint8Array
+			messageId: number | Long
 			message?: berty.chatmodel.IMessage | null
-			memberId?: number | Long | null
+			memberId: number | Long
 			member?: berty.chatmodel.IMember | null
 		}
 
 		class Reaction implements IReaction {
 			constructor(properties?: berty.chatmodel.IReaction)
 			public id: number | Long
-			public createdAt?: google.protobuf.ITimestamp | null
-			public updatedAt?: google.protobuf.ITimestamp | null
+			public createdAt: google.protobuf.ITimestamp
+			public updatedAt: google.protobuf.ITimestamp
 			public emoji: Uint8Array
 			public messageId: number | Long
 			public message?: berty.chatmodel.IMessage | null
@@ -1978,17 +1978,17 @@ export namespace berty {
 		}
 
 		interface IContact {
-			id?: number | Long | null
-			protocolId?: string | null
-			createdAt?: google.protobuf.ITimestamp | null
-			updatedAt?: google.protobuf.ITimestamp | null
-			seenAt?: google.protobuf.ITimestamp | null
-			name?: string | null
-			avatarUri?: string | null
-			statusEmoji?: Uint8Array | null
-			statusText?: string | null
-			kind?: berty.chatmodel.Contact.Kind | null
-			blocked?: boolean | null
+			id: number | Long
+			protocolId: string
+			createdAt: google.protobuf.ITimestamp
+			updatedAt: google.protobuf.ITimestamp
+			seenAt: google.protobuf.ITimestamp
+			name: string
+			avatarUri: string
+			statusEmoji: Uint8Array
+			statusText: string
+			kind: berty.chatmodel.Contact.Kind
+			blocked: boolean
 			devices?: berty.chatmodel.IDevice[] | null
 		}
 
@@ -1996,9 +1996,9 @@ export namespace berty {
 			constructor(properties?: berty.chatmodel.IContact)
 			public id: number | Long
 			public protocolId: string
-			public createdAt?: google.protobuf.ITimestamp | null
-			public updatedAt?: google.protobuf.ITimestamp | null
-			public seenAt?: google.protobuf.ITimestamp | null
+			public createdAt: google.protobuf.ITimestamp
+			public updatedAt: google.protobuf.ITimestamp
+			public seenAt: google.protobuf.ITimestamp
 			public name: string
 			public avatarUri: string
 			public statusEmoji: Uint8Array
@@ -2032,15 +2032,15 @@ export namespace berty {
 		}
 
 		interface IDevice {
-			id?: number | Long | null
-			protocolId?: string | null
-			createdAt?: google.protobuf.ITimestamp | null
-			updatedAt?: google.protobuf.ITimestamp | null
-			lastSeenAt?: google.protobuf.ITimestamp | null
-			kind?: berty.chatmodel.Device.Kind | null
-			canRelay?: boolean | null
-			canBle?: boolean | null
-			contactId?: number | Long | null
+			id: number | Long
+			protocolId: string
+			createdAt: google.protobuf.ITimestamp
+			updatedAt: google.protobuf.ITimestamp
+			lastSeenAt: google.protobuf.ITimestamp
+			kind: berty.chatmodel.Device.Kind
+			canRelay: boolean
+			canBle: boolean
+			contactId: number | Long
 			contact?: berty.chatmodel.IContact | null
 		}
 
@@ -2048,9 +2048,9 @@ export namespace berty {
 			constructor(properties?: berty.chatmodel.IDevice)
 			public id: number | Long
 			public protocolId: string
-			public createdAt?: google.protobuf.ITimestamp | null
-			public updatedAt?: google.protobuf.ITimestamp | null
-			public lastSeenAt?: google.protobuf.ITimestamp | null
+			public createdAt: google.protobuf.ITimestamp
+			public updatedAt: google.protobuf.ITimestamp
+			public lastSeenAt: google.protobuf.ITimestamp
 			public kind: berty.chatmodel.Device.Kind
 			public canRelay: boolean
 			public canBle: boolean
@@ -2102,14 +2102,14 @@ export namespace google {
 		}
 
 		interface IHttpRule {
-			selector?: string | null
-			get?: string | null
-			put?: string | null
-			post?: string | null
-			delete?: string | null
-			patch?: string | null
+			selector: string
+			get: string
+			put: string
+			post: string
+			delete: string
+			patch: string
 			custom?: google.api.ICustomHttpPattern | null
-			body?: string | null
+			body: string
 			additionalBindings?: google.api.IHttpRule[] | null
 		}
 
@@ -2137,8 +2137,8 @@ export namespace google {
 		}
 
 		interface ICustomHttpPattern {
-			kind?: string | null
-			path?: string | null
+			kind: string
+			path: string
 		}
 
 		class CustomHttpPattern implements ICustomHttpPattern {
@@ -2186,18 +2186,18 @@ export namespace google {
 		}
 
 		interface IFileDescriptorProto {
-			name?: string | null
-			package?: string | null
-			dependency?: string[] | null
-			publicDependency?: number[] | null
-			weakDependency?: number[] | null
+			name: string
+			package: string
+			dependency: string[]
+			publicDependency: number[]
+			weakDependency: number[]
 			messageType?: google.protobuf.IDescriptorProto[] | null
 			enumType?: google.protobuf.IEnumDescriptorProto[] | null
 			service?: google.protobuf.IServiceDescriptorProto[] | null
 			extension?: google.protobuf.IFieldDescriptorProto[] | null
 			options?: google.protobuf.IFileOptions | null
 			sourceCodeInfo?: google.protobuf.ISourceCodeInfo | null
-			syntax?: string | null
+			syntax: string
 		}
 
 		class FileDescriptorProto implements IFileDescriptorProto {
@@ -2232,7 +2232,7 @@ export namespace google {
 		}
 
 		interface IDescriptorProto {
-			name?: string | null
+			name: string
 			field?: google.protobuf.IFieldDescriptorProto[] | null
 			extension?: google.protobuf.IFieldDescriptorProto[] | null
 			nestedType?: google.protobuf.IDescriptorProto[] | null
@@ -2241,7 +2241,7 @@ export namespace google {
 			oneofDecl?: google.protobuf.IOneofDescriptorProto[] | null
 			options?: google.protobuf.IMessageOptions | null
 			reservedRange?: google.protobuf.DescriptorProto.IReservedRange[] | null
-			reservedName?: string[] | null
+			reservedName: string[]
 		}
 
 		class DescriptorProto implements IDescriptorProto {
@@ -2275,8 +2275,8 @@ export namespace google {
 
 		namespace DescriptorProto {
 			interface IExtensionRange {
-				start?: number | null
-				end?: number | null
+				start: number
+				end: number
 				options?: google.protobuf.IExtensionRangeOptions | null
 			}
 
@@ -2313,8 +2313,8 @@ export namespace google {
 			}
 
 			interface IReservedRange {
-				start?: number | null
-				end?: number | null
+				start: number
+				end: number
 			}
 
 			class ReservedRange implements IReservedRange {
@@ -2377,15 +2377,15 @@ export namespace google {
 		}
 
 		interface IFieldDescriptorProto {
-			name?: string | null
-			number?: number | null
-			label?: google.protobuf.FieldDescriptorProto.Label | null
-			type?: google.protobuf.FieldDescriptorProto.Type | null
-			typeName?: string | null
-			extendee?: string | null
-			defaultValue?: string | null
-			oneofIndex?: number | null
-			jsonName?: string | null
+			name: string
+			number: number
+			label: google.protobuf.FieldDescriptorProto.Label
+			type: google.protobuf.FieldDescriptorProto.Type
+			typeName: string
+			extendee: string
+			defaultValue: string
+			oneofIndex: number
+			jsonName: string
 			options?: google.protobuf.IFieldOptions | null
 		}
 
@@ -2448,7 +2448,7 @@ export namespace google {
 		}
 
 		interface IOneofDescriptorProto {
-			name?: string | null
+			name: string
 			options?: google.protobuf.IOneofOptions | null
 		}
 
@@ -2474,11 +2474,11 @@ export namespace google {
 		}
 
 		interface IEnumDescriptorProto {
-			name?: string | null
+			name: string
 			value?: google.protobuf.IEnumValueDescriptorProto[] | null
 			options?: google.protobuf.IEnumOptions | null
 			reservedRange?: google.protobuf.EnumDescriptorProto.IEnumReservedRange[] | null
-			reservedName?: string[] | null
+			reservedName: string[]
 		}
 
 		class EnumDescriptorProto implements IEnumDescriptorProto {
@@ -2507,8 +2507,8 @@ export namespace google {
 
 		namespace EnumDescriptorProto {
 			interface IEnumReservedRange {
-				start?: number | null
-				end?: number | null
+				start: number
+				end: number
 			}
 
 			class EnumReservedRange implements IEnumReservedRange {
@@ -2544,8 +2544,8 @@ export namespace google {
 		}
 
 		interface IEnumValueDescriptorProto {
-			name?: string | null
-			number?: number | null
+			name: string
+			number: number
 			options?: google.protobuf.IEnumValueOptions | null
 		}
 
@@ -2580,7 +2580,7 @@ export namespace google {
 		}
 
 		interface IServiceDescriptorProto {
-			name?: string | null
+			name: string
 			method?: google.protobuf.IMethodDescriptorProto[] | null
 			options?: google.protobuf.IServiceOptions | null
 		}
@@ -2614,12 +2614,12 @@ export namespace google {
 		}
 
 		interface IMethodDescriptorProto {
-			name?: string | null
-			inputType?: string | null
-			outputType?: string | null
+			name: string
+			inputType: string
+			outputType: string
 			options?: google.protobuf.IMethodOptions | null
-			clientStreaming?: boolean | null
-			serverStreaming?: boolean | null
+			clientStreaming: boolean
+			serverStreaming: boolean
 		}
 
 		class MethodDescriptorProto implements IMethodDescriptorProto {
@@ -2651,59 +2651,59 @@ export namespace google {
 		}
 
 		interface IFileOptions {
-			javaPackage?: string | null
-			javaOuterClassname?: string | null
-			javaMultipleFiles?: boolean | null
-			javaGenerateEqualsAndHash?: boolean | null
-			javaStringCheckUtf8?: boolean | null
-			optimizeFor?: google.protobuf.FileOptions.OptimizeMode | null
-			goPackage?: string | null
-			ccGenericServices?: boolean | null
-			javaGenericServices?: boolean | null
-			pyGenericServices?: boolean | null
-			phpGenericServices?: boolean | null
-			deprecated?: boolean | null
-			ccEnableArenas?: boolean | null
-			objcClassPrefix?: string | null
-			csharpNamespace?: string | null
-			swiftPrefix?: string | null
-			phpClassPrefix?: string | null
-			phpNamespace?: string | null
-			phpMetadataNamespace?: string | null
-			rubyPackage?: string | null
+			javaPackage: string
+			javaOuterClassname: string
+			javaMultipleFiles: boolean
+			javaGenerateEqualsAndHash: boolean
+			javaStringCheckUtf8: boolean
+			optimizeFor: google.protobuf.FileOptions.OptimizeMode
+			goPackage: string
+			ccGenericServices: boolean
+			javaGenericServices: boolean
+			pyGenericServices: boolean
+			phpGenericServices: boolean
+			deprecated: boolean
+			ccEnableArenas: boolean
+			objcClassPrefix: string
+			csharpNamespace: string
+			swiftPrefix: string
+			phpClassPrefix: string
+			phpNamespace: string
+			phpMetadataNamespace: string
+			rubyPackage: string
 			uninterpretedOption?: google.protobuf.IUninterpretedOption[] | null
-			'.gogoproto.goprotoGettersAll'?: boolean | null
-			'.gogoproto.goprotoEnumPrefixAll'?: boolean | null
-			'.gogoproto.goprotoStringerAll'?: boolean | null
-			'.gogoproto.verboseEqualAll'?: boolean | null
-			'.gogoproto.faceAll'?: boolean | null
-			'.gogoproto.gostringAll'?: boolean | null
-			'.gogoproto.populateAll'?: boolean | null
-			'.gogoproto.stringerAll'?: boolean | null
-			'.gogoproto.onlyoneAll'?: boolean | null
-			'.gogoproto.equalAll'?: boolean | null
-			'.gogoproto.descriptionAll'?: boolean | null
-			'.gogoproto.testgenAll'?: boolean | null
-			'.gogoproto.benchgenAll'?: boolean | null
-			'.gogoproto.marshalerAll'?: boolean | null
-			'.gogoproto.unmarshalerAll'?: boolean | null
-			'.gogoproto.stableMarshalerAll'?: boolean | null
-			'.gogoproto.sizerAll'?: boolean | null
-			'.gogoproto.goprotoEnumStringerAll'?: boolean | null
-			'.gogoproto.enumStringerAll'?: boolean | null
-			'.gogoproto.unsafeMarshalerAll'?: boolean | null
-			'.gogoproto.unsafeUnmarshalerAll'?: boolean | null
-			'.gogoproto.goprotoExtensionsMapAll'?: boolean | null
-			'.gogoproto.goprotoUnrecognizedAll'?: boolean | null
-			'.gogoproto.gogoprotoImport'?: boolean | null
-			'.gogoproto.protosizerAll'?: boolean | null
-			'.gogoproto.compareAll'?: boolean | null
-			'.gogoproto.typedeclAll'?: boolean | null
-			'.gogoproto.enumdeclAll'?: boolean | null
-			'.gogoproto.goprotoRegistration'?: boolean | null
-			'.gogoproto.messagenameAll'?: boolean | null
-			'.gogoproto.goprotoSizecacheAll'?: boolean | null
-			'.gogoproto.goprotoUnkeyedAll'?: boolean | null
+			'.gogoproto.goprotoGettersAll': boolean
+			'.gogoproto.goprotoEnumPrefixAll': boolean
+			'.gogoproto.goprotoStringerAll': boolean
+			'.gogoproto.verboseEqualAll': boolean
+			'.gogoproto.faceAll': boolean
+			'.gogoproto.gostringAll': boolean
+			'.gogoproto.populateAll': boolean
+			'.gogoproto.stringerAll': boolean
+			'.gogoproto.onlyoneAll': boolean
+			'.gogoproto.equalAll': boolean
+			'.gogoproto.descriptionAll': boolean
+			'.gogoproto.testgenAll': boolean
+			'.gogoproto.benchgenAll': boolean
+			'.gogoproto.marshalerAll': boolean
+			'.gogoproto.unmarshalerAll': boolean
+			'.gogoproto.stableMarshalerAll': boolean
+			'.gogoproto.sizerAll': boolean
+			'.gogoproto.goprotoEnumStringerAll': boolean
+			'.gogoproto.enumStringerAll': boolean
+			'.gogoproto.unsafeMarshalerAll': boolean
+			'.gogoproto.unsafeUnmarshalerAll': boolean
+			'.gogoproto.goprotoExtensionsMapAll': boolean
+			'.gogoproto.goprotoUnrecognizedAll': boolean
+			'.gogoproto.gogoprotoImport': boolean
+			'.gogoproto.protosizerAll': boolean
+			'.gogoproto.compareAll': boolean
+			'.gogoproto.typedeclAll': boolean
+			'.gogoproto.enumdeclAll': boolean
+			'.gogoproto.goprotoRegistration': boolean
+			'.gogoproto.messagenameAll': boolean
+			'.gogoproto.goprotoSizecacheAll': boolean
+			'.gogoproto.goprotoUnkeyedAll': boolean
 		}
 
 		class FileOptions implements IFileOptions {
@@ -2752,37 +2752,37 @@ export namespace google {
 		}
 
 		interface IMessageOptions {
-			messageSetWireFormat?: boolean | null
-			noStandardDescriptorAccessor?: boolean | null
-			deprecated?: boolean | null
-			mapEntry?: boolean | null
+			messageSetWireFormat: boolean
+			noStandardDescriptorAccessor: boolean
+			deprecated: boolean
+			mapEntry: boolean
 			uninterpretedOption?: google.protobuf.IUninterpretedOption[] | null
-			'.gogoproto.goprotoGetters'?: boolean | null
-			'.gogoproto.goprotoStringer'?: boolean | null
-			'.gogoproto.verboseEqual'?: boolean | null
-			'.gogoproto.face'?: boolean | null
-			'.gogoproto.gostring'?: boolean | null
-			'.gogoproto.populate'?: boolean | null
-			'.gogoproto.stringer'?: boolean | null
-			'.gogoproto.onlyone'?: boolean | null
-			'.gogoproto.equal'?: boolean | null
-			'.gogoproto.description'?: boolean | null
-			'.gogoproto.testgen'?: boolean | null
-			'.gogoproto.benchgen'?: boolean | null
-			'.gogoproto.marshaler'?: boolean | null
-			'.gogoproto.unmarshaler'?: boolean | null
-			'.gogoproto.stableMarshaler'?: boolean | null
-			'.gogoproto.sizer'?: boolean | null
-			'.gogoproto.unsafeMarshaler'?: boolean | null
-			'.gogoproto.unsafeUnmarshaler'?: boolean | null
-			'.gogoproto.goprotoExtensionsMap'?: boolean | null
-			'.gogoproto.goprotoUnrecognized'?: boolean | null
-			'.gogoproto.protosizer'?: boolean | null
-			'.gogoproto.compare'?: boolean | null
-			'.gogoproto.typedecl'?: boolean | null
-			'.gogoproto.messagename'?: boolean | null
-			'.gogoproto.goprotoSizecache'?: boolean | null
-			'.gogoproto.goprotoUnkeyed'?: boolean | null
+			'.gogoproto.goprotoGetters': boolean
+			'.gogoproto.goprotoStringer': boolean
+			'.gogoproto.verboseEqual': boolean
+			'.gogoproto.face': boolean
+			'.gogoproto.gostring': boolean
+			'.gogoproto.populate': boolean
+			'.gogoproto.stringer': boolean
+			'.gogoproto.onlyone': boolean
+			'.gogoproto.equal': boolean
+			'.gogoproto.description': boolean
+			'.gogoproto.testgen': boolean
+			'.gogoproto.benchgen': boolean
+			'.gogoproto.marshaler': boolean
+			'.gogoproto.unmarshaler': boolean
+			'.gogoproto.stableMarshaler': boolean
+			'.gogoproto.sizer': boolean
+			'.gogoproto.unsafeMarshaler': boolean
+			'.gogoproto.unsafeUnmarshaler': boolean
+			'.gogoproto.goprotoExtensionsMap': boolean
+			'.gogoproto.goprotoUnrecognized': boolean
+			'.gogoproto.protosizer': boolean
+			'.gogoproto.compare': boolean
+			'.gogoproto.typedecl': boolean
+			'.gogoproto.messagename': boolean
+			'.gogoproto.goprotoSizecache': boolean
+			'.gogoproto.goprotoUnkeyed': boolean
 		}
 
 		class MessageOptions implements IMessageOptions {
@@ -2810,25 +2810,25 @@ export namespace google {
 		}
 
 		interface IFieldOptions {
-			ctype?: google.protobuf.FieldOptions.CType | null
-			packed?: boolean | null
-			jstype?: google.protobuf.FieldOptions.JSType | null
-			lazy?: boolean | null
-			deprecated?: boolean | null
-			weak?: boolean | null
+			ctype: google.protobuf.FieldOptions.CType
+			packed: boolean
+			jstype: google.protobuf.FieldOptions.JSType
+			lazy: boolean
+			deprecated: boolean
+			weak: boolean
 			uninterpretedOption?: google.protobuf.IUninterpretedOption[] | null
-			'.gogoproto.nullable'?: boolean | null
-			'.gogoproto.embed'?: boolean | null
-			'.gogoproto.customtype'?: string | null
-			'.gogoproto.customname'?: string | null
-			'.gogoproto.jsontag'?: string | null
-			'.gogoproto.moretags'?: string | null
-			'.gogoproto.casttype'?: string | null
-			'.gogoproto.castkey'?: string | null
-			'.gogoproto.castvalue'?: string | null
-			'.gogoproto.stdtime'?: boolean | null
-			'.gogoproto.stdduration'?: boolean | null
-			'.gogoproto.wktpointer'?: boolean | null
+			'.gogoproto.nullable': boolean
+			'.gogoproto.embed': boolean
+			'.gogoproto.customtype': string
+			'.gogoproto.customname': string
+			'.gogoproto.jsontag': string
+			'.gogoproto.moretags': string
+			'.gogoproto.casttype': string
+			'.gogoproto.castkey': string
+			'.gogoproto.castvalue': string
+			'.gogoproto.stdtime': boolean
+			'.gogoproto.stdduration': boolean
+			'.gogoproto.wktpointer': boolean
 		}
 
 		class FieldOptions implements IFieldOptions {
@@ -2890,14 +2890,14 @@ export namespace google {
 		}
 
 		interface IEnumOptions {
-			allowAlias?: boolean | null
-			deprecated?: boolean | null
+			allowAlias: boolean
+			deprecated: boolean
 			uninterpretedOption?: google.protobuf.IUninterpretedOption[] | null
-			'.gogoproto.goprotoEnumPrefix'?: boolean | null
-			'.gogoproto.goprotoEnumStringer'?: boolean | null
-			'.gogoproto.enumStringer'?: boolean | null
-			'.gogoproto.enumCustomname'?: string | null
-			'.gogoproto.enumdecl'?: boolean | null
+			'.gogoproto.goprotoEnumPrefix': boolean
+			'.gogoproto.goprotoEnumStringer': boolean
+			'.gogoproto.enumStringer': boolean
+			'.gogoproto.enumCustomname': string
+			'.gogoproto.enumdecl': boolean
 		}
 
 		class EnumOptions implements IEnumOptions {
@@ -2920,9 +2920,9 @@ export namespace google {
 		}
 
 		interface IEnumValueOptions {
-			deprecated?: boolean | null
+			deprecated: boolean
 			uninterpretedOption?: google.protobuf.IUninterpretedOption[] | null
-			'.gogoproto.enumvalueCustomname'?: string | null
+			'.gogoproto.enumvalueCustomname': string
 		}
 
 		class EnumValueOptions implements IEnumValueOptions {
@@ -2947,7 +2947,7 @@ export namespace google {
 		}
 
 		interface IServiceOptions {
-			deprecated?: boolean | null
+			deprecated: boolean
 			uninterpretedOption?: google.protobuf.IUninterpretedOption[] | null
 		}
 
@@ -2973,7 +2973,7 @@ export namespace google {
 		}
 
 		interface IMethodOptions {
-			deprecated?: boolean | null
+			deprecated: boolean
 			idempotencyLevel?: google.protobuf.MethodOptions.IdempotencyLevel | null
 			uninterpretedOption?: google.protobuf.IUninterpretedOption[] | null
 			'.google.api.http'?: google.api.IHttpRule | null
@@ -3011,12 +3011,12 @@ export namespace google {
 
 		interface IUninterpretedOption {
 			name?: google.protobuf.UninterpretedOption.INamePart[] | null
-			identifierValue?: string | null
-			positiveIntValue?: number | Long | null
-			negativeIntValue?: number | Long | null
-			doubleValue?: number | null
-			stringValue?: Uint8Array | null
-			aggregateValue?: string | null
+			identifierValue: string
+			positiveIntValue: number | Long
+			negativeIntValue: number | Long
+			doubleValue: number
+			stringValue: Uint8Array
+			aggregateValue: string
 		}
 
 		class UninterpretedOption implements IUninterpretedOption {
@@ -3109,11 +3109,11 @@ export namespace google {
 
 		namespace SourceCodeInfo {
 			interface ILocation {
-				path?: number[] | null
-				span?: number[] | null
-				leadingComments?: string | null
-				trailingComments?: string | null
-				leadingDetachedComments?: string[] | null
+				path: number[]
+				span: number[]
+				leadingComments: string
+				trailingComments: string
+				leadingDetachedComments: string[]
 			}
 
 			class Location implements ILocation {
@@ -3175,10 +3175,10 @@ export namespace google {
 
 		namespace GeneratedCodeInfo {
 			interface IAnnotation {
-				path?: number[] | null
-				sourceFile?: string | null
-				begin?: number | null
-				end?: number | null
+				path: number[]
+				sourceFile: string
+				begin: number
+				end: number
 			}
 
 			class Annotation implements IAnnotation {
@@ -3216,8 +3216,8 @@ export namespace google {
 		}
 
 		interface ITimestamp {
-			seconds?: number | Long | null
-			nanos?: number | null
+			seconds: number | Long
+			nanos: number
 		}
 
 		class Timestamp implements ITimestamp {
