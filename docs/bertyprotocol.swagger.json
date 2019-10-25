@@ -102,11 +102,8 @@
     "protocolContactListReply": {
       "type": "object",
       "properties": {
-        "contacts": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protocolmodelContact"
-          }
+        "contact": {
+          "$ref": "#/definitions/protocolmodelContact"
         }
       }
     },
