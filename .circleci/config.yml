@@ -33,10 +33,20 @@ commands:
         type: string
     steps:
       - checkout
-
+      - restore_cache:
+          keys:
+            - v3-bazel_<< parameters.target >>-{{.Branch}}-{{.Revision}}
+            - v3-bazel_<< parameters.target >>-{{.Branch}}-
+            - v3-bazel_<< parameters.target >>-master-
+            - v3-bazel_<< parameters.target >>-
       - run: cd go && make vendor
       - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 --remote_cache=https://$BAZEL_CACHE_CREDENTIALS@bazel-cache.berty.io" make bazel.generate
       - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 --remote_cache=https://$BAZEL_CACHE_CREDENTIALS@bazel-cache.berty.io" make bazel.<< parameters.target >>
+      - save_cache:
+          key: v3-bazel_<< parameters.target >>-{{.Branch}}-{{.Revision}}
+          paths:
+            - /go/src/berty.tech/go/vendor
+            - /go/pkg/mod
 
 jobs:
   go-build-112:
