@@ -26,6 +26,15 @@ commands:
             - v0-js-master-
             - v0-js-
 
+  make_bazel_go:
+    description: "call a bazel rule exported in go/Makefile, use as single step in jobs with bertytech/bazel"
+    parameters:
+      target:
+        type: string
+    steps:
+      - checkout
+      - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 --remote_cache=https://$BAZEL_CACHE_CREDENTIALS@bazel-cache.berty.io" make bazel.<< parameters.target >>
+
 jobs:
   go-build-112:
     working_directory: /go/src/berty.tech/go
@@ -120,24 +129,24 @@ jobs:
     docker:
       - image: bertytech/bazel:0.29.1-buster-r0
     steps:
-      - checkout
-      - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.build
+      - make_bazel_go:
+          target: build
 
   bazel-go-test:
     working_directory: /go/src/berty.tech
     docker:
       - image: bertytech/bazel:0.29.1-buster-r0
     steps:
-      - checkout
-      - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.unittest
+      - make_bazel_go:
+          target: unittest
 
   bazel-banner:
     working_directory: /go/src/berty.tech
     docker:
       - image: bertytech/bazel:0.29.1-buster-r0
     steps:
-      - checkout
-      - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5" make bazel.banner
+      - make_bazel_go:
+          target: banner
 
 workflows:
   main:
