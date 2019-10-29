@@ -41,7 +41,7 @@ $(yarn):
 .PHONY: deps
 deps: $(yarn) $(lerna) $(mod) $(pkg_mod) gen
 
-$(mod) $(pkg_mod): $(PWD)/package.json $(pkg)
+$(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
 	$(lerna) $(lerna_flags) init
 	$(lerna) $(lerna_flags) bootstrap
 	mkdir -p $(mod) $(pkg_mod)
@@ -109,10 +109,7 @@ rnpkg: deps
 
 .PHONY: lint
 lint: export PWD := $(PWD)
-lint: files = $(shell \
-		find packages -type f -not -path '*/node_modules/*' \
-		| grep -E '(\.js|\.jsx|\.ts|\.tsx)$$'\
-	)
+lint: files = .
 lint: options += --cache
 lint: deps
 	$(eslint) $(options) $(files)

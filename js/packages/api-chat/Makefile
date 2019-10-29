@@ -53,18 +53,18 @@ $(berty_go_path)/vendor:
 $(PWD)/index.pb.js: api_chat_pbjs_flags += --no-comments --es6 -w es6
 $(PWD)/index.pb.js: $(api_chat_berty_files) $(PWD)/Makefile
 	$(api_chat_pbjs) $(api_chat_pbjs_flags) -t json-module -o $@ $(api_chat_berty_files)
-	$(api_chat_lint) $(api_chat_lint_options) $@
+	@# $(api_chat_lint) $(api_chat_lint_options) $@
 
 $(PWD)/index.pb.d.ts: $(api_chat_berty_files) $(PWD)/Makefile
 	$(api_chat_pbjs) $(api_chat_pbjs_flags) -t static-module $(api_chat_berty_files) | $(api_chat_pbts) $(api_chat_pbts_flags) -o $@ -
 	sed -E -i.bak 's/(.*)\?(.*\(.*)\|null(\).*)/\1\2\3/g' $@
 	sed -E -i.bak 's/(.*)(:.*\(.*\.I[^(Timestamp)].*)(\))/\1?\2\|null\3/g' $@
 	rm $@.bak
-	$(api_chat_lint) $(api_chat_lint_options) $@
+	@# $(api_chat_lint) $(api_chat_lint_options) $@
 
 $(PWD)/index.js: $(PWD)/templates/index.js.hbs $(api_chat_berty_files) $(PWD)/Makefile
 	$(api_chat_pbhbs) $(api_chat_pbhbs_flags) $(api_chat_berty_files)
-	$(api_chat_lint) $(api_chat_lint_options) $@
+	@# $(api_chat_lint) $(api_chat_lint_options) $@
 
 .PHONY: gen.api.chat
 gen.api.chat: $(api_chat_deps) $(api_chat_targets)
