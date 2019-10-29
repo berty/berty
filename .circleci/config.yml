@@ -33,6 +33,9 @@ commands:
         type: string
     steps:
       - checkout
+
+      - run: cd go && make vendor
+      - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 --remote_cache=https://$BAZEL_CACHE_CREDENTIALS@bazel-cache.berty.io" make bazel.generate
       - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 --remote_cache=https://$BAZEL_CACHE_CREDENTIALS@bazel-cache.berty.io" make bazel.<< parameters.target >>
 
 jobs:
