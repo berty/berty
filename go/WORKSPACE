@@ -48,6 +48,7 @@ gazelle_dependencies()
 
 http_archive(
     name = "com_github_atlassian_bazel_tools",
+    sha256 = "9db3d3eededb398ae7d5a00b428d32b59577da0b3f4b4eb07daf710509008bfc",
     strip_prefix = "bazel-tools-a2138311856f55add11cd7009a5abc8d4fd6f163",
     urls = ["https://github.com/atlassian/bazel-tools/archive/a2138311856f55add11cd7009a5abc8d4fd6f163.zip"],
 )
