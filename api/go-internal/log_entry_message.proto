@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option go_package = "berty.tech/go/internal/group";
+
+message MessageEntryEnvelope {
+  uint64 counter = 1;
+  bytes encrypted_payload = 2;
+  bytes signature = 3; // Signed with member_device_pub_key of author
+}
+
+message MessageEntryPayload {
+  enum PayloadType {
+    PayloadTypeMessage = 0;
+    PayloadTypeInvitation = 1;
+  }
+
+  PayloadType type = 1;
+  bytes message_body = 2;
+  Invitation invitation = 3;
+}
+
+message Invitation {
+  bytes inviter_member_pub_key = 1;
+  bytes invitation_priv_key = 2;
+  bytes invitation_pub_key_signature = 3; // Signed by inviter_member_priv_key
+
+  uint32 group_version = 4;
+  bytes group_id_pub_key = 5;
+  bytes shared_secret = 6;
+}
