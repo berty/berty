@@ -9,8 +9,9 @@ message SettingsEntryEnvelope {
 
 message SettingsEntryPayload {
   enum PayloadType {
-    PayloadTypeGroupSetting = 0;
-    PayloadTypeMemberSetting = 1;
+    PayloadTypeUnknown = 0;
+    PayloadTypeGroupSetting = 1;
+    PayloadTypeMemberSetting = 2;
   }
 
   PayloadType type = 1;

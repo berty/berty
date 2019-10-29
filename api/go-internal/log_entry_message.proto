@@ -10,8 +10,9 @@ message MessageEntryEnvelope {
 
 message MessageEntryPayload {
   enum PayloadType {
-    PayloadTypeMessage = 0;
-    PayloadTypeInvitation = 1;
+    PayloadTypeUnknown = 0;
+    PayloadTypeMessage = 1;
+    PayloadTypeInvitation = 2;
   }
 
   PayloadType type = 1;
