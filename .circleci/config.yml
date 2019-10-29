@@ -35,17 +35,19 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - v1-bazel_<< parameters.target >>-{{.Branch}}-{{.Revision}}
-            - v1-bazel_<< parameters.target >>-{{.Branch}}-
-            - v1-bazel_<< parameters.target >>-master-
-            - v1-bazel_<< parameters.target >>-
+            - v3-bazel_<< parameters.target >>-{{.Branch}}-{{.Revision}}
+            - v3-bazel_<< parameters.target >>-{{.Branch}}-
+            - v3-bazel_<< parameters.target >>-master-
+            - v3-bazel_<< parameters.target >>-
       - run: cd go && make vendor
       - run: cd go && make bazel.generate
       - run: cd go && BAZEL_CMD_ARGS="--sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 --disk_cache=/tmp/bazel_remote_cache" make bazel.<< parameters.target >>
       - save_cache:
-          key: v1-bazel_<< parameters.target >>-{{.Branch}}-{{.Revision}}
+          key: v3-bazel_<< parameters.target >>-{{.Branch}}-{{.Revision}}
           paths:
             - /tmp/bazel_remote_cache
+            - /go/src/berty.tech/go/vendor
+            - /go/pkg/mod
 
 jobs:
   go-build-112:
