@@ -3,6 +3,10 @@
 03fd21adc9eb2846c2d6cd62eac6184bbffaf455  ../api/chatmodel.proto
 a433caf96caafdf90f3190cfb1763dfc73b075c4  ../api/errcode.proto
 74e397e248a9c7e7d094109a02e873df24e80367  ../api/go-internal/handshake.proto
+d065506424cab800ecca466ceca2f07dd71893ce  ../api/go-internal/log_entry_member.proto
+47cca8cbef29c059d3b9a7295c86e51ab20d2994  ../api/go-internal/log_entry_message.proto
+734c4c245c493f3f09df2f6c32d29e642fcbde83  ../api/go-internal/log_entry_secret.proto
+c4d8ae1bb2b1e3119bed152e705f4e84129f48c6  ../api/go-internal/log_entry_setting.proto
 d8c797e0f3efd2b4f26a9ff949bedb786891a850  ../api/go-internal/protocolmodel.proto
 50384eff13181fb905dee2b7df62276408e3dc62  ../api/go-internal/sigchain.proto
 dc14642318675a039c2fb0fc38bce57036854760  Makefile

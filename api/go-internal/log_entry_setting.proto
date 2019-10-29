@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "berty.tech/go/internal/group";
+
+message SettingsEntryEnvelope {
+  bytes encrypted_settings_payload = 1;
+  bytes settings_payload_signature = 2;
+}
+
+message SettingsEntryPayload {
+  enum PayloadType {
+    PayloadTypeUnknown = 0;
+    PayloadTypeGroupSetting = 1;
+    PayloadTypeMemberSetting = 2;
+  }
+
+  PayloadType type = 1;
+  bytes member_pub_key = 2;
+  bytes key = 3;
+  bytes value = 4;
+}
