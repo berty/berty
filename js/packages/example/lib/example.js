@@ -3,5 +3,5 @@
 module.exports = example
 
 function example() {
-  // TODO
+	// TODO
 }

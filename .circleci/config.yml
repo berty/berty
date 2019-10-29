@@ -6,6 +6,26 @@ orbs:
   gotools: gotest/tools@0.0.10
   moul:    moul/build@1.12.1
 
+commands:
+  js_save_cache:
+    description: "save js cache"
+    steps:
+      - save_cache:
+          key: v0-js-{{.Branch}}-{{.Revision}}
+          paths:
+            - ~/.cache
+            - ~/go/src/berty.tech/js/node_modules
+
+  js_restore_cache:
+    description: "restore js cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v0-js-{{.Branch}}-{{.Revision}}
+            - v0-js-{{.Branch}}-
+            - v0-js-master-
+            - v0-js-
+
 jobs:
   go-build-112:
     working_directory: /go/src/berty.tech/go
@@ -39,7 +59,7 @@ jobs:
   go-generate:
     working_directory: /go/src/berty.tech
     docker:
-      - image: bertytech/protoc:19
+      - image: bertytech/protoc:20
     environment:
       - GO111MODULE=on
     steps:
@@ -52,6 +72,37 @@ jobs:
           git status | cat
           git diff -w | cat
           git diff-index -w --quiet HEAD --
+
+  js-generate:
+    working_directory: /go/src/berty.tech
+    docker:
+      - image: bertytech/protoc:20
+    steps:
+      - checkout
+      - js_restore_cache
+      - run: cd js && (git diff --quiet master . && make deps) || true
+      - run: cd js && (git diff --quiet master ../api . && make gen.clean gen) || true
+      - run: |
+          git status | cat
+          git diff -w | cat
+          git diff-index -w --quiet HEAD --
+      - js_save_cache
+
+  js-lint:
+    working_directory: /go/src/berty.tech
+    docker:
+      - image: bertytech/protoc:20
+    steps:
+      - checkout
+      - js_restore_cache
+      - run: cd js && (git diff --quiet master . && make deps) || true
+      - run: cd js && (git diff --quiet master . && make lint) || true
+      - run: |
+          git status | cat
+          git diff -w | cat
+          git diff-index -w --quiet HEAD --
+      - js_save_cache
+
   githooks:
     working_directory: /go/src/berty.tech
     docker:
@@ -94,6 +145,8 @@ workflows:
       - go-build-112
       - go-docker
       - go-generate
+      - js-generate
+      - js-lint
       - githooks
       - bazel-go-build
       - bazel-go-test

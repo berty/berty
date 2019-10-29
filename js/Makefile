@@ -1,6 +1,5 @@
 export PWD = $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
-export SHELL := env bash
 
 UNAME_S ?= $(shell uname -s)
 
@@ -40,21 +39,16 @@ $(yarn):
 	$(error "yarn is not installed")
 
 .PHONY: deps
-deps: $(yarn) $(lerna) $(mod) $(pkg_mod) generate
+deps: $(yarn) $(lerna) $(mod) $(pkg_mod) gen
 
-%/node_modules: $(lerna) %/package.json
+$(mod) $(pkg_mod): $(PWD)/package.json $(pkg)
 	$(lerna) $(lerna_flags) init
 	$(lerna) $(lerna_flags) bootstrap
 	mkdir -p $(mod) $(pkg_mod)
 	touch $(mod) $(pkg_mod)
 
-$(mod)/%: $(mod)
-
 $(lerna): $(yarn)
 	$(yarn) add -W lerna@latest
-
-.NOTPARALLEL: $(pkg_mod) $(pkg_mod)/%
-$(pkg_mod)/%: $(patsubst %,%/package.json,$(pkg)) $(mod)
 
 .PHONY: upgrade
 upgrade: deps
@@ -119,6 +113,7 @@ lint: files = $(shell \
 		find packages -type f -not -path '*/node_modules/*' \
 		| grep -E '(\.js|\.jsx|\.ts|\.tsx)$$'\
 	)
+lint: options += --cache
 lint: deps
 	$(eslint) $(options) $(files)
 

@@ -1,5 +1,5 @@
 IMAGE ?=	bertytech/protoc
-VERSION ?=	19
+VERSION ?=	20
 
 build:
 	docker build -t $(IMAGE):$(VERSION) .

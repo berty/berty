@@ -7,7 +7,7 @@
   "author": "Berty Technologies <oss@berty.tech>",
   "homepage": "https://github.com/berty/berty/tree/master/packages/protobuf#readme",
   "license": "(Apache-2.0 or MIT)",
-  "main": "index.pb.js",
+  "main": "index.js",
   "types": "index.pb.d.ts",
   "publishConfig": {
     "access": "restricted"
@@ -22,6 +22,9 @@
   "bugs": {
     "url": "https://github.com/berty/berty/issues"
   },
+  "workspaces": {
+    "nohoist": ["**/semver"]
+  },
   "dependencies": {
     "@googleapis/googleapis": "googleapis/googleapis#common-protos-1_3_1",
     "@improbable-eng/grpc-web": "^0.11.0",
@@ -29,6 +32,7 @@
     "@types/long": "^4.0.0",
     "@types/node": "^12.7.12",
     "case": "^1.6.2",
+    "eslint": "^6.5.1",
     "espree": "^3.5.4",
     "jsdoc": "^3.5.5",
     "minimist": "^1.2.0",
