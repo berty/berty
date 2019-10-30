@@ -10,6 +10,9 @@ license = (Apache-2.0 or MIT)
 yarn := $(shell which yarn || echo '/usr/local/bin/yarn')
 yarn_flags :=
 
+go := $(abspath $(PWD)/../go)
+go_vendor := $(go)/vendor
+
 mod := $(PWD)/node_modules
 bin := $(mod)/.bin
 
@@ -39,9 +42,13 @@ $(yarn):
 
 .PHONY: deps
 deps: $(yarn) $(mod) $(pkg_mod)
+deps: $(go_vendor) $(yarn) $(lerna) $(mod) $(pkg_mod)
+
+$(go_vendor):
+	cd $(berty_go_path) && GO111MODULE=on go mod vendor
 
 $(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
-	$(yarn) $(if $CIRCLE_JOB, '--frozen-lockfile')
+	$(yarn) $(if $(CIRCLE_JOB), '--frozen-lockfile')
 	$(lerna) $(lerna_flags) bootstrap
 	mkdir -p $(mod) $(pkg_mod)
 	touch $(mod) $(pkg_mod)
@@ -124,7 +131,9 @@ lint.watch: lint
 .PHONY: gen
 gen: deps
 
-include packages/api-chat/Makefile
+include packages/berty-store/Makefile
+include packages/berty-templates/Makefile
+include packages/berty-api/Makefile
 include packages/react-native-chat-sdk/Makefile
 include packages/berty-app/Makefile
 include packages/storybook-mobile/Makefile

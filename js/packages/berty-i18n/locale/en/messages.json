@@ -50,5 +50,20 @@
             "desc": "You can now use the app, start adding contacts and talk freely and privately with them",
             "button": "START USING APP"
         }
+    },
+    "main": {
+      "requests": {
+        "title": "Requests",
+        "received-at": "Received",
+        "accept": "Accept"
+      },
+      "messages": {
+        "title": "Messages",
+        "error": {
+          "title": "We're having a hard time loading your conversations.",
+          "showDetails": "Show details",
+          "hideDetails": "Hide details"
+        }
+      }
     }
 }

@@ -28,7 +28,6 @@
     "@berty-tech/shared-storybook": "^0.0.0",
     "@react-native-community/eslint-config": "^0.0.5",
     "@storybook/addon-links": "^5.2.1",
-    "@react-native-community/blur": "@berty-tech/berty-storybook/node_modules/@react-native-community/blur",
     "@storybook/addon-ondevice-knobs": "^5.2.4",
     "@storybook/addon-ondevice-notes": "^5.2.4",
     "@storybook/react-native": "^5.2.1",

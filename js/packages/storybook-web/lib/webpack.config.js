@@ -12,7 +12,10 @@ module.exports = ({ config: storybookBaseConfig }) => {
 	// Override test because storybook ignores tsx
 	babelRule.test = /\.(mjs|jsx|ts|tsx)$/
 
-	babelRule.include = [path.resolve(__dirname, 'config.js'), /node_modules\/@berty-tech\/.*-storybook\//]
+	babelRule.include = [
+		path.resolve(__dirname, 'config.js'),
+		/node_modules\/@berty-tech\/.*-storybook\//,
+	]
 	console.log(...glob.sync(__dirname + '/../node_modules/@berty-tech/*-storybook'))
 
 	const babelConfig = babelRule.use[0]

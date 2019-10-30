@@ -1,0 +1,26 @@
+{{!
+	TODO: override messages class to implement:
+	https://github.com/improbable-eng/grpc-web/tree/master/client/grpc-web/src/message.ts
+
+	TODO: wrap improbable-eng/client/grpc-web/src/client.ts in  protobuf.RPCImpl from pbjs
+	see: https://github.com/protobufjs/protobuf.js/blob/7bacfc8f34a1e096bca38a0ea38ecee089e8cdb5/README.md#using-services
+}}
+
+import jsonPb from './index.pb.js'
+{{#declare "recursive"}}
+	{{#each nested}}
+		{{#if (eq (typeof this) "Namespace")}}
+			{{name}}: {
+				{{call "recursive" this}}
+			},
+		{{else}}
+			{{name}}: jsonPb.lookup('{{namespace this}}'),
+		{{/if}}
+	{{/each}}
+{{/declare}}
+
+{{#each nested}}
+export const {{name}} = {
+	{{call "recursive" this}}
+}
+{{/each}}

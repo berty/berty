@@ -14,7 +14,14 @@ module.exports = {
 		'plugin:prettier/recommended', // https://github.com/prettier/eslint-plugin-prettier#recommended-configuration
 	],
 
-	plugins: ['eslint-comments', 'react', 'react-hooks', 'react-native', '@react-native-community', 'jest'],
+	plugins: [
+		'eslint-comments',
+		'react',
+		'react-hooks',
+		'react-native',
+		'@react-native-community',
+		'jest',
+	],
 
 	settings: {
 		react: {
@@ -41,7 +48,10 @@ module.exports = {
 			plugins: ['@typescript-eslint'],
 			extends: ['plugin:@typescript-eslint/recommended'],
 			rules: {
-				'@typescript-eslint/no-unused-vars': [1, { vars: 'all', args: 'none', ignoreRestSiblings: true }],
+				'@typescript-eslint/no-unused-vars': [
+					1,
+					{ vars: 'all', args: 'none', ignoreRestSiblings: true },
+				],
 				'no-unused-vars': 'off',
 				'@typescript-eslint/no-namespace': [
 					0,
@@ -264,7 +274,7 @@ module.exports = {
 		'max-len': 0, // specify the maximum length of a line in your program (off by default)
 		'max-params': 0, // limits the number of parameters that can be used in the function declaration. (off by default)
 		'max-statements': 0, // specify the maximum number of statement allowed in a function (off by default)
-		'no-bitwise': 1, // disallow use of bitwise operators (off by default)
+		'no-bitwise': 0, // disallow use of bitwise operators (off by default)
 		'no-plusplus': 0, // disallow use of unary operators, ++ and -- (off by default)
 
 		// React Plugin

@@ -36,8 +36,6 @@ target 'storybook' do
 
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
-  pod 'react-native-blur', :path => '../node_modules/@react-native-community/blur'
-
   target 'storybookTests' do
     inherit! :search_paths
     # Pods for testing

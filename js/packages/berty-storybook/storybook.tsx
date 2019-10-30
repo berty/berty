@@ -1,11 +1,11 @@
 import { ApplicationProvider } from 'react-native-ui-kitten'
 import { linkTo } from '@storybook/addon-links'
 import { mapping, light } from '@eva-design/eva'
-import React, { useState } from 'react'
+import React from 'react'
 import { storiesOf } from '@storybook/react-native'
 import { View, Button } from 'react-native'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
-import { Layout, Select, IconRegistry } from 'react-native-ui-kitten'
+import { IconRegistry } from 'react-native-ui-kitten'
 import { promiseResolved, fakeRequests, fakeConversations, fakeUsers, fakeOneUser } from './faker'
 import * as Onboarding from './Onboarding'
 import * as Main from './Main'
@@ -28,9 +28,14 @@ stories.addDecorator((storyFn) => (
 
 // Stories
 stories
-	.add('Onboarding.GetStarted', () => <Onboarding.GetStarted selectMode={linkTo('Onboarding.SelectMode')} />)
+	.add('Onboarding.GetStarted', () => (
+		<Onboarding.GetStarted selectMode={linkTo('Onboarding.SelectMode')} />
+	))
 	.add('Onboarding.SelectMode', () => (
-		<Onboarding.SelectMode performance={linkTo('Onboarding.Performance')} privacy={linkTo('Onboarding.Privacy')} />
+		<Onboarding.SelectMode
+			performance={linkTo('Onboarding.Performance')}
+			privacy={linkTo('Onboarding.Privacy')}
+		/>
 	))
 	.add('Onboarding.Performance', () => (
 		<Onboarding.Performance

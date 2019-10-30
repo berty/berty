@@ -1,5 +1,11 @@
 import React, { Fragment } from 'react'
-import { View, ViewProps, TouchableHighlight, TouchableHighlightProps, StyleSheet } from 'react-native'
+import {
+	View,
+	ViewProps,
+	TouchableHighlight,
+	TouchableHighlightProps,
+	StyleSheet,
+} from 'react-native'
 // import { Text } from 'react-native-ui-kitten'
 
 const style = StyleSheet.create({
@@ -23,7 +29,11 @@ export const TouchableCard: React.FunctionComponent<TouchableHighlightProps> = (
 )
 
 export const Card: React.FunctionComponent<ViewProps> = (props) => (
-	<View {...props} style={[style.default, props.style]} onPress={props.onPress ? props.onPress : (): null => null}>
+	<View
+		{...props}
+		style={[style.default, props.style]}
+		onPress={props.onPress ? props.onPress : (): null => null}
+	>
 		<Fragment>{props.children}</Fragment>
 	</View>
 )

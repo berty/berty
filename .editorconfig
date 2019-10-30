@@ -31,6 +31,12 @@ indent_style = tab
 block_comment_start = /*
 block_comment_end = */
 
+[*.hbs]
+indent_size = 4
+indent_style = tab
+block_comment_start = {{!
+block_comment_end = }}
+
 [*.html]
 indent_size = 2
 
