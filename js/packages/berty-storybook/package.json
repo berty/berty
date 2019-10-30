@@ -31,15 +31,18 @@
     "@storybook/addon-links": "^5.2.1"
   },
   "dependencies": {
-    "@berty-tech/berty-i18n": "^0.0.0",
     "@berty-tech/api-chat": "^0.0.0",
+    "@berty-tech/berty-i18n": "^0.0.0",
     "@berty-tech/shared-storybook": "^0.0.0",
     "@eva-design/eva": "^1.0.1",
+    "@react-native-community/blur": "^3.3.1",
     "@storybook/addon-notes": "^5.2.4",
+    "@ui-kitten/eva-icons": "^4.2.0",
     "i18next": "^17.2.0",
     "react-i18next": "^10.13.1",
     "react-native-easy-grid": "^0.2.2",
     "react-native-elements": "^1.2.3",
+    "react-native-eva-icons": "^1.2.1",
     "react-native-swiper": "^1.6.0-rc.1",
     "react-native-ui-kitten": "^4.1.1",
     "storybook-addon-i18n": "^5.1.11"

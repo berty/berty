@@ -34,6 +34,10 @@ target 'storybook' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
+  pod 'react-native-blur', :path => '../node_modules/@react-native-community/blur'
+
   target 'storybookTests' do
     inherit! :search_paths
     # Pods for testing

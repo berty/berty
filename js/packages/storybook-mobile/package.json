@@ -28,6 +28,7 @@
     "@berty-tech/shared-storybook": "^0.0.0",
     "@react-native-community/eslint-config": "^0.0.5",
     "@storybook/addon-links": "^5.2.1",
+    "@react-native-community/blur": "@berty-tech/berty-storybook/node_modules/@react-native-community/blur",
     "@storybook/addon-ondevice-knobs": "^5.2.4",
     "@storybook/addon-ondevice-notes": "^5.2.4",
     "@storybook/react-native": "^5.2.1",
@@ -42,6 +43,7 @@
     "react-native": "0.61.0",
     "react-native-reanimated": "^1.3.0",
     "react-native-storybook-loader": "^1.8.1",
+    "react-native-svg": "^9.12.0",
     "react-test-renderer": "^16.9.0",
     "storybook-addon-i18n": "^5.1.11"
   },
