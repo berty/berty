@@ -195,28 +195,46 @@ message EventStream {}
 
 // ContactRequestManager
 
-message ContactRequestAcceptRequest {}
+message ContactRequestAcceptRequest {
+  bytes contact_account_pub_key = 1;
+}
 message ContactRequestAcceptReply {}
 
-message ContactRequestDiscardRequest {}
+message ContactRequestDiscardRequest {
+  bytes contact_account_pub_key = 1;
+}
 message ContactRequestDiscardReply {}
 
 message ContactRequestListIncomingRequest {};
-message ContactRequestListIncomingReply {};
+message ContactRequestListIncomingReply { // streamed
+  protocolmodel.Contact contact = 1;
+}
 
 message ContactRequestListOutgoingRequest {};
-message ContactRequestListOutgoingReply {};
+message ContactRequestListOutgoingReply { // streamed
+  protocolmodel.Contact contact = 1;
+}
 
-message ContactRequestSendRequest {};
-message ContactRequestSendReply {};
+message ContactRequestSendRequest {
+  bytes rendezvous_point_seed = 1;
+  bytes contact_account_pub_key = 2;
+  bytes metadata = 3;
+}
+message ContactRequestSendReply {}
 
 
 // ContactManager
 
-message ContactGetRequest {}
-message ContactGetReply {}
+message ContactGetRequest {
+  bytes contact_account_pub_key = 1;
+}
+message ContactGetReply {
+  protocolmodel.Contact contact = 1;
+}
 
-message ContactRemoveRequest {}
+message ContactRemoveRequest {
+  bytes contact_account_pub_key = 1;
+}
 message ContactRemoveReply {}
 
 message ContactListRequest {};

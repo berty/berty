@@ -97,7 +97,12 @@
       "type": "object"
     },
     "protocolContactGetReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "contact": {
+          "$ref": "#/definitions/protocolmodelContact"
+        }
+      }
     },
     "protocolContactListReply": {
       "type": "object",
@@ -117,10 +122,20 @@
       "type": "object"
     },
     "protocolContactRequestListIncomingReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "contact": {
+          "$ref": "#/definitions/protocolmodelContact"
+        }
+      }
     },
     "protocolContactRequestListOutgoingReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "contact": {
+          "$ref": "#/definitions/protocolmodelContact"
+        }
+      }
     },
     "protocolContactRequestSendReply": {
       "type": "object"
