@@ -275,7 +275,7 @@ index c1181741..0ed22127 100644
 --- a/tests/core/go_path/go_path_test.go
 +++ b/tests/core/go_path/go_path_test.go
 @@ -29,7 +29,7 @@ import (
-	"github.com/bazelbuild/rules_go/go/tools/bazel"
+ 	"github.com/bazelbuild/rules_go/go/tools/bazel"
  )
  
 -var copyPath, linkPath, archivePath, nodataPath string
@@ -284,15 +284,15 @@ index c1181741..0ed22127 100644
  var defaultMode = runtime.GOOS + "_" + runtime.GOARCH
  
 @@ -58,6 +58,7 @@ func TestMain(m *testing.M) {
-	flag.StringVar(&linkPath, "link_path", "", "path to symlinked go_path")
-	flag.StringVar(&archivePath, "archive_path", "", "path to archive go_path")
-	flag.StringVar(&nodataPath, "nodata_path", "", "path to go_path without data")
+ 	flag.StringVar(&linkPath, "link_path", "", "path to symlinked go_path")
+ 	flag.StringVar(&archivePath, "archive_path", "", "path to archive go_path")
+ 	flag.StringVar(&nodataPath, "nodata_path", "", "path to go_path without data")
 +	flag.StringVar(&notransitivePath, "notransitive_path", "", "path to go_path without transitive dependencies")
-	flag.Parse()
-	os.Exit(m.Run())
+ 	flag.Parse()
+ 	os.Exit(m.Run())
  }
 @@ -133,6 +134,16 @@ func TestNoDataPath(t *testing.T) {
-	checkPath(t, nodataPath, files)
+ 	checkPath(t, nodataPath, files)
  }
  
 +func TestNoTransitivePath(t *testing.T) {

@@ -42,7 +42,7 @@ gobind_java(
 android_library(
     name = "bridge_library",
     srcs = [":bridge.java.artifacts"] + glob(["src/**/*.java"]),
-    custom_package = "berty.chat.tech",
+    custom_package = "tech.berty.chat",
     visibility = ["//visibility:public"],
     exports = [":bridge.java.cc"],
     deps = [

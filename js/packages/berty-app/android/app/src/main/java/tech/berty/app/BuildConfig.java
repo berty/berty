@@ -1,5 +1,5 @@
 /**
- * Automatically generated file. DO NOT MODIFY
+ * TODO: generate this file with bazel
  */
 package tech.berty.app;
 

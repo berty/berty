@@ -1,3 +1,4 @@
+// TODO: generate this file with bazel
 
 package com.facebook.react;
 
