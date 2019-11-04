@@ -123,6 +123,7 @@ lint.watch: options += --watch
 lint.watch: lint
 
 include packages/api-chat/Makefile
+include packages/react-native-chat-sdk/Makefile
 include packages/berty-app/Makefile
 include packages/storybook-mobile/Makefile
 include packages/storybook-web/Makefile

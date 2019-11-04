@@ -1,0 +1,18 @@
+alias(
+    name = "prebuilt_aar",
+    actual = "bazel-bin/android/bridge_library.aar",
+    visibility = ["//visibility:public"],
+)
+
+
+alias(
+    name = "react_native_aar_file",
+    actual = "//:node_modules/react-native/android/com/facebook/react/react-native/0.61.2/react-native-0.61.2.aar",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "jsc_aar_file",
+    actual = "//:node_modules/jsc-android/dist/org/webkit/android-jsc-intl/r245459/android-jsc-intl-r245459.aar",
+    visibility = ["//visibility:public"],
+)

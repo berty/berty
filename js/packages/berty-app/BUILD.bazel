@@ -1,0 +1,31 @@
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+
+alias(
+    name = "react_native_aar_file",
+    actual = "//:node_modules/react-native/android/com/facebook/react/react-native/0.61.2/react-native-0.61.2.aar",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "jsc_aar_file",
+    actual = "//:node_modules/jsc-android/dist/org/webkit/android-jsc-intl/r245459/android-jsc-intl-r245459.aar",
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "node_modules",
+    srcs = glob(
+        include = ["node_modules/**/*"],
+        exclude = [
+            # Files under test & docs may contain file names that
+            # are not legal Bazel labels (e.g.,
+            # node_modules/ecstatic/test/public/中文/檔案.html)
+            "node_modules/test/**",
+            "node_modules/docs/**",
+            # Files with spaces are not allowed in Bazel runfiles
+            # See https://github.com/bazelbuild/bazel/issues/4327
+            "node_modules/**/* */**",
+            "node_modules/**/* *",
+        ],
+    ),
+)

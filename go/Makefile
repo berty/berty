@@ -131,13 +131,13 @@ bazel.generate: pb.generate $(SAMPLE_GAZELLE_GENERATED_FILE)
 
 .PHONY: bazel.clean
 bazel.clean:
-	rm -rf */**/BUILD.bazel
+	rm -rf {internal,cmd,pkg}/**/BUILD.bazel
 
 .PHONY: bazel.clean
 bazel.fclean:
 	$(call check-program, $(BAZEL))
 	$(BAZEL) clean --expunge
-	rm -rf */**/BUILD.bazel
+	rm -rf {internal,cmd,pkg}/**/BUILD.bazel
 
 ##
 ## ibazel

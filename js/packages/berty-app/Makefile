@@ -435,3 +435,13 @@ fclean.web:
 fclean.darwin: platform := darwin
 fclean.darwin:
 fclean: fclean.ios fclean.android fclean.darwin fclean.web
+
+
+# FIXME(@n0izn0iz): this make rule doesn't work out of the box for me:
+# the problem is here https://github.com/berty/berty/pull/1447/files#diff-7231a913a8b27c628fe4fa6137140148R16
+# - if we keep using bazel-managed dependencies the label should be @npm//:node_modules/etc..
+# - if we don't: we should call lerna bootstrap or some other form of npm install
+#   in this make rule or as a dependency of it
+bazel.android.install:
+	$(MAKE) -C $(abspath $(PWD)/../react-native-chat-sdk) bazel.build.sdk.android
+	bazel mobile-install --sandbox_debug --fat_apk_cpu=x86_64,x86,armeabi-v7a //android/app/src/main:app
