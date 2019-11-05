@@ -6,20 +6,33 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"net"
+	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"berty.tech/go/internal/banner"
 	_ "berty.tech/go/internal/buildconstraints" // fail if bad go version
+	"berty.tech/go/internal/grpcutil"
 	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
 	"berty.tech/go/pkg/errcode"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
+	"github.com/oklog/run"
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	grpcw "github.com/grpc-ecosystem/grpc-gateway/runtime"
+	grpcweb "github.com/improbable-eng/grpc-web/go/grpcweb"
+	grpc "google.golang.org/grpc"
+
+	ma "github.com/multiformats/go-multiaddr"
+	manet "github.com/multiformats/go-multiaddr-net"
 )
 
 func main() {
@@ -34,6 +47,7 @@ func main() {
 		clientFlags       = flag.NewFlagSet("client", flag.ExitOnError)
 		clientProtocolURN = clientFlags.String("protocol-urn", ":memory:", "protocol sqlite URN")
 		clientChatURN     = clientFlags.String("chat-urn", ":memory:", "chat sqlite URN")
+		clientListeners   = clientFlags.String("listeners", ":9091", "client listeners")
 	)
 
 	globalPreRun := func() error {
@@ -144,13 +158,101 @@ func main() {
 				defer chat.Close()
 			}
 
+			// listeners for bertychat
+			var workers run.Group
+			{
+				// setup grpc server
+				grpcServer := grpc.NewServer()
+				bertychat.RegisterAccountServer(grpcServer, chat)
+
+				// setup listeners
+				for _, addr := range strings.Split(*clientListeners, ",") {
+					maddr, err := parseAddr(addr)
+					if err != nil {
+						return errcode.TODO.Wrap(err)
+					}
+
+					var listener manet.Listener
+					var serveFunc func(net.Listener) error = grpcServer.Serve // set grpcServer by default
+					ma.ForEach(maddr, func(c ma.Component) bool {
+						switch c.Protocol().Code {
+						case ma.P_IP4, ma.P_IP6: // skip
+						case ma.P_TCP, ma.P_UNIX:
+							if listener, err = manet.Listen(maddr); err != nil {
+								return false // end
+							}
+
+						case grpcutil.P_GRPC:
+							if listener == nil {
+								return false // end
+							}
+
+							serveFunc = grpcServer.Serve
+
+						case grpcutil.P_GRPC_WEB, grpcutil.P_GRPC_WEBSOCKET:
+							if listener == nil {
+								return false // end
+							}
+
+							wgrpc := grpcweb.WrapServer(grpcServer,
+								grpcweb.WithOriginFunc(func(string) bool { return true }), // @FIXME: this is very insecure
+								grpcweb.WithWebsockets(grpcutil.P_GRPC_WEBSOCKET == c.Protocol().Code),
+							)
+							serverWeb := http.Server{
+								Handler: grpcWebHandler(wgrpc),
+							}
+
+							serveFunc = serverWeb.Serve
+
+						case grpcutil.P_GRPC_GATEWAY:
+							if listener == nil {
+								return false // end
+							}
+
+							gwmux := grpcw.NewServeMux()
+							gatewayServer := http.Server{
+								Handler: gwmux,
+							}
+
+							dialOpts := []grpc.DialOption{grpc.WithInsecure()}
+							target := "127.0.0.1:" + c.Value()
+							err = bertychat.RegisterAccountHandlerFromEndpoint(ctx, gwmux, target, dialOpts)
+
+							serveFunc = gatewayServer.Serve
+
+						default:
+							err = fmt.Errorf("protocol not supported: %s", c.Protocol().Name)
+							return false // end
+						}
+
+						return true // continue
+					})
+
+					if err != nil {
+						return errcode.TODO.Wrap(err)
+					}
+
+					if listener == nil {
+						return errcode.TODO.Wrap(fmt.Errorf("invalid addr: `%s`", addr))
+					}
+
+					workers.Add(func() error {
+						logger.Info("starting server", zap.String("addr", maddr.String()))
+						return serveFunc(manet.NetListener(listener))
+					}, func(error) {
+						logger.Debug("closing grpc server")
+						listener.Close()
+					})
+				}
+			}
+
 			info, err := protocol.AccountGetInformation(ctx, nil)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
 
 			logger.Info("client initialized", zap.String("peer-id", info.PeerID), zap.Strings("listeners", info.Listeners))
-			return nil
+			return workers.Run()
 		},
 	}
 
@@ -168,4 +270,52 @@ func main() {
 	if err := root.Run(os.Args[1:]); err != nil {
 		log.Fatalf("error: %v", err)
 	}
+}
+
+func grpcWebHandler(wgrpc *grpcweb.WrappedGrpcServer) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Handle preflight CORS
+
+		// FIXME: enable tls, add authentification and remove wildcard on Allow-Origin
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, XMLHttpRequest, x-user-agent, x-grpc-web, grpc-status, grpc-message, x-method")
+		w.Header().Add("Access-Control-Expose-Headers", "grpc-status, grpc-message")
+
+		if r.Method == "OPTIONS" {
+			return
+		}
+
+		// handle grpc web
+		if wgrpc.IsGrpcWebRequest(r) {
+			// set this headers to avoid unsafe header
+			w.Header().Set("grpc-status", "")
+			w.Header().Set("grpc-message", "")
+
+			wgrpc.ServeHTTP(w, r)
+			return
+		}
+
+		http.DefaultServeMux.ServeHTTP(w, r)
+	}
+}
+
+func parseAddr(addr string) (maddr ma.Multiaddr, err error) {
+	maddr, err = ma.NewMultiaddr(addr)
+	if err != nil {
+		// try to get a tcp multiaddr from host:port
+		host, port, serr := net.SplitHostPort(addr)
+		if serr != nil {
+			return
+		}
+
+		if host == "" {
+			host = "127.0.0.1"
+		}
+
+		addr = fmt.Sprintf("/ip4/%s/tcp/%s/", host, port)
+		maddr, err = ma.NewMultiaddr(addr)
+	}
+
+	return
 }

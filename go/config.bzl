@@ -1,6 +1,7 @@
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
 load("@com_github_atlassian_bazel_tools//golangcilint:deps.bzl", "golangcilint_dependencies")
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 def berty_go_config():
     # go config
@@ -9,21 +10,27 @@ def berty_go_config():
 
     go_register_toolchains(go_version = "1.12.10")
 
-    # gomobile config
-    # load("@co_znly_rules_gomobile//:repositories.bzl", "gomobile_repositories")
-    # gomobile_repositories()
+    # proto deps
+
+    protobuf_deps()
 
     # gazelle config
 
     gazelle_dependencies()
 
-
     # golangci-lint
 
     golangcilint_dependencies()
 
-
     # grpc
+
+    go_repository(
+        name = "org_golang_google_grpc",
+        build_file_proto_mode = "disable",
+        importpath = "google.golang.org/grpc",
+        sum = "h1:J0UbZOIrCAl+fpTOf8YLs4dJo8L/owV4LYVtAXQoPkw=",
+        version = "v1.22.0",
+    )
 
     go_repository(
         name = "org_golang_google_grpc",

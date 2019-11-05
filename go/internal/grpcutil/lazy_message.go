@@ -1,4 +1,4 @@
-package bridgeutil
+package grpcutil
 
 import (
 	"encoding/base64"

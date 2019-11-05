@@ -12,7 +12,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"  // required by gorm
 	"github.com/pkg/errors"
 
-	"berty.tech/go/internal/bridgeutil"
+	"berty.tech/go/internal/grpcutil"
 	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
 	"berty.tech/go/pkg/errcode"
@@ -308,7 +308,7 @@ func (b *Bridge) newGRPCClient() (client *Client, err error) {
 	var grpcClient *grpc.ClientConn
 
 	// create pipe listener
-	listener := bridgeutil.NewPipeListener()
+	listener := grpcutil.NewPipeListener()
 
 	// create pipe dialer
 	dialer := func(context.Context, string) (net.Conn, error) {

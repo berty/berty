@@ -185,7 +185,7 @@ GEN_SUM := gen.sum
 
 .PHONY: pb.clean
 pb.clean:
-	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go)
+	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go) $(wildcard */*/*.pb.gw.go)
 
 .PHONY: pb.generate
 pb.generate: gen.sum
@@ -211,7 +211,10 @@ $(GEN_SUM): $(GEN_SRC)
 generate_local:
 	$(call check-program, goimports shasum protoc)
 	@set -e; for proto in $(PROTOS_SRC); do ( set -xe; \
-	  protoc -I ../api:../go/vendor:/protobuf --gogofaster_out="plugins=grpc:$(GOPATH)/src" "$$proto" \
+	  protoc -I ../api:../go/vendor:/protobuf \
+				--gogofaster_out="plugins=grpc:$(GOPATH)/src" \
+				--grpc-gateway_out="logtostderr=true:$(GOPATH)/src" \
+				"$$proto" \
 	); done
 	goimports -w ./pkg ./cmd ./internal
 	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
