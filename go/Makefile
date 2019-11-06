@@ -185,7 +185,7 @@ GEN_SUM := gen.sum
 
 .PHONY: pb.clean
 pb.clean:
-	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go) $(wildcard */*/*.pb.gw.go)
+	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go)
 
 .PHONY: pb.generate
 pb.generate: gen.sum
@@ -213,7 +213,6 @@ generate_local:
 	@set -e; for proto in $(PROTOS_SRC); do ( set -xe; \
 	  protoc -I ../api:../go/vendor:/protobuf \
 				--gogofaster_out="plugins=grpc:$(GOPATH)/src" \
-				--grpc-gateway_out="logtostderr=true:$(GOPATH)/src" \
 				"$$proto" \
 	); done
 	goimports -w ./pkg ./cmd ./internal

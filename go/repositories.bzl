@@ -34,15 +34,6 @@ def berty_go_repositories():
         patch_args = ["apply"],
     )
 
-    # protobuf
-    maybe(
-        git_repository,
-        name = "com_google_protobuf",
-        commit = "d09d649aea36f02c03f8396ba39a8d4db8a607e4",
-        shallow_since = "1571943965 -0700",
-        remote = "https://github.com/protocolbuffers/protobuf",
-    )
-
     # gazelle
     maybe(
         http_archive,
