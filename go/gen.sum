@@ -9,4 +9,4 @@ d065506424cab800ecca466ceca2f07dd71893ce  ../api/go-internal/log_entry_member.pr
 c4d8ae1bb2b1e3119bed152e705f4e84129f48c6  ../api/go-internal/log_entry_setting.proto
 d8c797e0f3efd2b4f26a9ff949bedb786891a850  ../api/go-internal/protocolmodel.proto
 50384eff13181fb905dee2b7df62276408e3dc62  ../api/go-internal/sigchain.proto
-263c18edf44ebd2a08a4b31e5b93746e04502aaa  Makefile
+fb3f2cb9e9403abd4cd80767b00d408cb59665a9  Makefile
