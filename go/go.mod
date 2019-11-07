@@ -16,6 +16,8 @@ require (
 	github.com/libp2p/go-libp2p-core v0.0.1
 	github.com/libp2p/go-libp2p-crypto v0.1.0
 	github.com/libp2p/go-libp2p-peer v0.2.0
+	github.com/multiformats/go-multiaddr v0.0.4
+	github.com/multiformats/go-multiaddr-net v0.0.1
 	github.com/multiformats/go-multihash v0.0.8
 	github.com/oklog/run v1.0.0
 	github.com/peterbourgon/ff v1.6.0
@@ -24,10 +26,11 @@ require (
 	go.uber.org/multierr v1.2.0 // indirect
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.0.0-20190923035154-9ee001bba392
-	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
-	google.golang.org/genproto v0.0.0-20190425155659-357c62f0e4bb
-	google.golang.org/grpc v1.20.1
+	golang.org/x/net v0.0.0-20191002035440-2ec189313ef0
+	google.golang.org/genproto v0.0.0-20190927181202-20e1ac93f88c
+	google.golang.org/grpc v1.24.0
 	gopkg.in/gormigrate.v1 v1.6.0
+	gopkg.in/yaml.v2 v2.2.3 // indirect
 )
 
 replace github.com/libp2p/go-openssl v0.0.2 => github.com/berty/go-openssl v0.0.3-0.20191007152928-66bd988d235e

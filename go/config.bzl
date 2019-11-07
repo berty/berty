@@ -9,19 +9,13 @@ def berty_go_config():
 
     go_register_toolchains(go_version = "1.12.10")
 
-    # gomobile config
-    # load("@co_znly_rules_gomobile//:repositories.bzl", "gomobile_repositories")
-    # gomobile_repositories()
-
     # gazelle config
 
     gazelle_dependencies()
 
-
     # golangci-lint
 
     golangcilint_dependencies()
-
 
     # grpc
 

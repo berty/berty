@@ -211,7 +211,9 @@ $(GEN_SUM): $(GEN_SRC)
 generate_local:
 	$(call check-program, goimports shasum protoc)
 	@set -e; for proto in $(PROTOS_SRC); do ( set -xe; \
-	  protoc -I ../api:../go/vendor:/protobuf --gogofaster_out="plugins=grpc:$(GOPATH)/src" "$$proto" \
+	  protoc -I ../api:../go/vendor:/protobuf \
+				--gogofaster_out="plugins=grpc:$(GOPATH)/src" \
+				"$$proto" \
 	); done
 	goimports -w ./pkg ./cmd ./internal
 	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp

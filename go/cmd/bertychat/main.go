@@ -6,20 +6,29 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"net"
 	"os"
+	"strings"
 	"time"
 
 	"berty.tech/go/internal/banner"
 	_ "berty.tech/go/internal/buildconstraints" // fail if bad go version
+	"berty.tech/go/internal/grpcutil"
 	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
 	"berty.tech/go/pkg/errcode"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
+	"github.com/oklog/run"
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	grpc "google.golang.org/grpc"
+
+	ma "github.com/multiformats/go-multiaddr"
 )
 
 func main() {
@@ -34,6 +43,7 @@ func main() {
 		clientFlags       = flag.NewFlagSet("client", flag.ExitOnError)
 		clientProtocolURN = clientFlags.String("protocol-urn", ":memory:", "protocol sqlite URN")
 		clientChatURN     = clientFlags.String("chat-urn", ":memory:", "chat sqlite URN")
+		clientListeners   = clientFlags.String("l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
 	)
 
 	globalPreRun := func() error {
@@ -144,13 +154,42 @@ func main() {
 				defer chat.Close()
 			}
 
+			// listeners for bertychat
+			var workers run.Group
+			{
+				// setup grpc server
+				grpcServer := grpc.NewServer()
+				bertychat.RegisterAccountServer(grpcServer, chat)
+
+				// setup listeners
+				addrs := strings.Split(*clientListeners, ",")
+				for _, addr := range addrs {
+					maddr, err := parseAddr(addr)
+					if err != nil {
+						return errcode.TODO.Wrap(err)
+					}
+
+					wgrpc, err := grpcutil.NewWrappedServer(maddr, grpcServer)
+					if err != nil {
+						return errcode.TODO.Wrap(err)
+					}
+
+					workers.Add(func() error {
+						logger.Info("serving", zap.String("addr", maddr.String()))
+						return wgrpc.ListenAndServe()
+					}, func(error) {
+						wgrpc.Close()
+					})
+				}
+			}
+
 			info, err := protocol.AccountGetInformation(ctx, nil)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
 
 			logger.Info("client initialized", zap.String("peer-id", info.PeerID), zap.Strings("listeners", info.Listeners))
-			return nil
+			return workers.Run()
 		},
 	}
 
@@ -168,4 +207,24 @@ func main() {
 	if err := root.Run(os.Args[1:]); err != nil {
 		log.Fatalf("error: %v", err)
 	}
+}
+
+func parseAddr(addr string) (maddr ma.Multiaddr, err error) {
+	maddr, err = ma.NewMultiaddr(addr)
+	if err != nil {
+		// try to get a tcp multiaddr from host:port
+		host, port, serr := net.SplitHostPort(addr)
+		if serr != nil {
+			return
+		}
+
+		if host == "" {
+			host = "127.0.0.1"
+		}
+
+		addr = fmt.Sprintf("/ip4/%s/tcp/%s/", host, port)
+		maddr, err = ma.NewMultiaddr(addr)
+	}
+
+	return
 }
