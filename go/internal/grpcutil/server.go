@@ -107,34 +107,8 @@ func NewWrappedServer(maddr ma.Multiaddr, grpcServer *grpc.Server) (WrappedServe
 				grpcweb.WithWebsockets(P_GRPC_WEBSOCKET == c.Protocol().Code),
 			)
 
-			handler := func(w http.ResponseWriter, r *http.Request) {
-				// Handle preflight CORS
-
-				// FIXME: enable tls, add authentification and remove wildcard on Allow-Origin
-				w.Header().Set("Access-Control-Allow-Origin", "*")
-				w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-				w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, XMLHttpRequest, x-user-agent, x-grpc-web, grpc-status, grpc-message, x-method")
-				w.Header().Add("Access-Control-Expose-Headers", "grpc-status, grpc-message")
-
-				if r.Method == "OPTIONS" {
-					return
-				}
-
-				// handle grpc web
-				if wgrpc.IsGrpcWebRequest(r) {
-					// set this headers to avoid unsafe header
-					w.Header().Set("grpc-status", "")
-					w.Header().Set("grpc-message", "")
-
-					wgrpc.ServeHTTP(w, r)
-					return
-				}
-
-				http.DefaultServeMux.ServeHTTP(w, r)
-			}
-
 			serverWeb := http.Server{
-				Handler: http.HandlerFunc(handler),
+				Handler: http.HandlerFunc(wgrpc.ServeHTTP),
 			}
 
 			s.serve = serverWeb.Serve
