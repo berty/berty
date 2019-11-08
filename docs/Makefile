@@ -2,13 +2,15 @@
 ## Code gen
 ##
 
-PROTOS_SRC := $(wildcard ../api/*.proto) # $(wildcard ../api/go-internal/*.proto) $(wildcard ../api/js-internal/*.proto)
+PROTOS_SRC := $(wildcard ../api/*.proto)
 GEN_SRC := $(PROTOS_SRC) Makefile
 GEN_SUM := gen.sum
 
+all: generate
+
 .PHONY: clean
 clean:
-	rm -f gen.sum $(wildcard *.swagger.json) $(wildcard *.swagger.yaml)
+	rm -f gen.sum $(wildcard */*.md.tmp)
 
 .PHONY: generate
 generate: gen.sum
@@ -23,14 +25,18 @@ $(GEN_SUM): $(GEN_SRC)
 	    --workdir="/go/src/berty.tech/docs" \
 	    --entrypoint="sh" \
 	    --rm \
-	    bertytech/protoc:20 \
+	    bertytech/protoc:21 \
 	    -xec 'make generate_local' \
 	)
 
+PROTOC_OPTS = -I ../go/vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../go/vendor:/protobuf
 .PHONY: generate_local
 generate_local:
-	protoc -I ../api:../go/vendor:/protobuf --swagger_out=logtostderr=true:./protocol ../api/bertyprotocol.proto
-	protoc -I ../api:../go/vendor:/protobuf --swagger_out=logtostderr=true:./chat ../api/chatmodel.proto
-	protoc -I ../api:../go/vendor:/protobuf --swagger_out=logtostderr=true:./chat ../api/bertychat.proto
+	protoc $(PROTOC_OPTS) --doc_out=./protocol --doc_opt=markdown,api.md.tmp ../api/bertyprotocol.proto
+	protoc $(PROTOC_OPTS) --doc_out=./chat --doc_opt=markdown,api.md.tmp ../api/bertychat.proto ../api/chatmodel.proto
+	@# repace multiple empty lines with one
+	cat protocol/api.md.tmp | sed '/^$$/N;/^\n$$/D' > protocol/api.md
+	cat chat/api.md.tmp     | sed '/^$$/N;/^\n$$/D' > chat/api.md
+	rm -f */*.md.tmp
 	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
 	mv $(GEN_SUM).tmp $(GEN_SUM)

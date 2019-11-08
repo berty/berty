@@ -57,7 +57,7 @@ jobs:
   go-generate:
     working_directory: /go/src/berty.tech
     docker:
-      - image: bertytech/protoc:20
+      - image: bertytech/protoc:21
     environment:
       - GO111MODULE=on
     steps:
@@ -74,7 +74,7 @@ jobs:
   js-generate:
     working_directory: /go/src/berty.tech
     docker:
-      - image: bertytech/protoc:20
+      - image: bertytech/protoc:21
     steps:
       - checkout
       - js_restore_cache
@@ -88,7 +88,7 @@ jobs:
   js-lint:
     working_directory: /go/src/berty.tech
     docker:
-      - image: bertytech/protoc:20
+      - image: bertytech/protoc:21
     steps:
       - checkout
       - js_restore_cache

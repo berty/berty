@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package berty.protocol;
 
-import "google/api/annotations.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "github.com/golang/protobuf/ptypes/timestamp/timestamp.proto";
 
@@ -12,7 +11,7 @@ option go_package = "berty.tech/go/pkg/bertyprotocol";
 // Each Berty Protocol Instance is considered as a Berty device and is associated with a Berty user.
 service ProtocolService {
   // InstanceExportData exports instance data
-  rpc InstanceExportData (InstanceExportData.Request) returns (InstanceExportData.Reply) { option (google.api.http) = {post: "/instance/export-data"}; };
+  rpc InstanceExportData (InstanceExportData.Request) returns (InstanceExportData.Reply);
 
   // InstanceGetConfiguration gets current configuration of this protocol instance
   rpc InstanceGetConfiguration (InstanceGetConfiguration.Request) returns (InstanceGetConfiguration.Reply);
