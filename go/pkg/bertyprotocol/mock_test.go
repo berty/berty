@@ -67,7 +67,7 @@ func TestMock_single(t *testing.T) {
 	})
 
 	t.Run("call ContactList", func(t *testing.T) {
-		stream, err := mock.GRPCClient.ContactList(ctx, nil)
+		stream, err := mock.GRPCClient.ContactList(ctx, &ContactListRequest{})
 		if err != nil {
 			t.Fatalf("Expected nil, got %v.", err)
 		}

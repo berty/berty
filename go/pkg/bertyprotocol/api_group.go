@@ -30,10 +30,10 @@ func (c *client) GroupMessageList(*GroupMessageListRequest, Instance_GroupMessag
 	return errcode.ErrNotImplemented
 }
 
-func (c *client) GroupPubSubTopicInit(Instance_GroupPubSubTopicInitServer) error {
+func (c *client) GroupTopicPublish(Instance_GroupTopicPublishServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (c *client) GroupPubSubTopicSubscribe(*GroupPubSubTopicSubscribeRequest, Instance_GroupPubSubTopicSubscribeServer) error {
+func (c *client) GroupTopicSubscribe(*GroupTopicSubscribeRequest, Instance_GroupTopicSubscribeServer) error {
 	return errcode.ErrNotImplemented
 }

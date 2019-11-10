@@ -217,11 +217,11 @@ func (m *Mock) GroupMessageList(*GroupMessageListRequest, Instance_GroupMessageL
 	return errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupPubSubTopicInit(Instance_GroupPubSubTopicInitServer) error {
+func (m *Mock) GroupTopicPublish(Instance_GroupTopicPublishServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupPubSubTopicSubscribe(*GroupPubSubTopicSubscribeRequest, Instance_GroupPubSubTopicSubscribeServer) error {
+func (m *Mock) GroupTopicSubscribe(*GroupTopicSubscribeRequest, Instance_GroupTopicSubscribeServer) error {
 	return errcode.ErrNotImplemented
 }
 

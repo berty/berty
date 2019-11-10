@@ -4,23 +4,17 @@
 package protocoldb
 
 import (
-	bytes "bytes"
 	fmt "fmt"
-	io "io"
 	math "math"
-	math_bits "math/bits"
 	time "time"
 
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
-	golang_proto "github.com/golang/protobuf/proto"
 	_ "github.com/golang/protobuf/ptypes/timestamp"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
-var _ = golang_proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 var _ = time.Kitchen
@@ -129,31 +123,141 @@ func (*GroupInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{0}
 }
 func (m *GroupInfo) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_GroupInfo.Unmarshal(m, b)
 }
 func (m *GroupInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GroupInfo.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_GroupInfo.Marshal(b, m, deterministic)
 }
 func (m *GroupInfo) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GroupInfo.Merge(m, src)
 }
 func (m *GroupInfo) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_GroupInfo.Size(m)
 }
 func (m *GroupInfo) XXX_DiscardUnknown() {
 	xxx_messageInfo_GroupInfo.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_GroupInfo proto.InternalMessageInfo
+
+func (m *GroupInfo) GetGroupPubKey() []byte {
+	if m != nil {
+		return m.GroupPubKey
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetSharedSecret() []byte {
+	if m != nil {
+		return m.SharedSecret
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetMetadata() []byte {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetAudience() GroupInfo_GroupAudience {
+	if m != nil {
+		return m.Audience
+	}
+	return GroupInfo_Undefined
+}
+
+func (m *GroupInfo) GetVersion() uint32 {
+	if m != nil {
+		return m.Version
+	}
+	return 0
+}
+
+func (m *GroupInfo) GetSelfPrivKeyAccount() []byte {
+	if m != nil {
+		return m.SelfPrivKeyAccount
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetSelfPrivKeyDevice() []byte {
+	if m != nil {
+		return m.SelfPrivKeyDevice
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetSelfInviterPubKey() []byte {
+	if m != nil {
+		return m.SelfInviterPubKey
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetInviterContactPubKey() []byte {
+	if m != nil {
+		return m.InviterContactPubKey
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetOrbitDBCurrentCIDMessage() []byte {
+	if m != nil {
+		return m.OrbitDBCurrentCIDMessage
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetOrbitDBCurrentCIDSecret() []byte {
+	if m != nil {
+		return m.OrbitDBCurrentCIDSecret
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetOrbitDBCurrentCIDSetting() []byte {
+	if m != nil {
+		return m.OrbitDBCurrentCIDSetting
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetOrbitDBCurrentCIDMember() []byte {
+	if m != nil {
+		return m.OrbitDBCurrentCIDMember
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetMembers() []*GroupMember {
+	if m != nil {
+		return m.Members
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetInviter() *Contact {
+	if m != nil {
+		return m.Inviter
+	}
+	return nil
+}
+
+func (m *GroupInfo) GetCreatedAt() time.Time {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return time.Time{}
+}
+
+func (m *GroupInfo) GetUpdatedAt() time.Time {
+	if m != nil {
+		return m.UpdatedAt
+	}
+	return time.Time{}
+}
 
 type GroupIncomingRequest struct {
 	// Fields
@@ -179,31 +283,99 @@ func (*GroupIncomingRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{1}
 }
 func (m *GroupIncomingRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_GroupIncomingRequest.Unmarshal(m, b)
 }
 func (m *GroupIncomingRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GroupIncomingRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_GroupIncomingRequest.Marshal(b, m, deterministic)
 }
 func (m *GroupIncomingRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GroupIncomingRequest.Merge(m, src)
 }
 func (m *GroupIncomingRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_GroupIncomingRequest.Size(m)
 }
 func (m *GroupIncomingRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_GroupIncomingRequest.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_GroupIncomingRequest proto.InternalMessageInfo
+
+func (m *GroupIncomingRequest) GetGroupPubKey() []byte {
+	if m != nil {
+		return m.GroupPubKey
+	}
+	return nil
+}
+
+func (m *GroupIncomingRequest) GetInviterMemberPubKey() []byte {
+	if m != nil {
+		return m.InviterMemberPubKey
+	}
+	return nil
+}
+
+func (m *GroupIncomingRequest) GetInvitationSig() []byte {
+	if m != nil {
+		return m.InvitationSig
+	}
+	return nil
+}
+
+func (m *GroupIncomingRequest) GetInvitationPrivKey() []byte {
+	if m != nil {
+		return m.InvitationPrivKey
+	}
+	return nil
+}
+
+func (m *GroupIncomingRequest) GetGroupSharedSecret() []byte {
+	if m != nil {
+		return m.GroupSharedSecret
+	}
+	return nil
+}
+
+func (m *GroupIncomingRequest) GetGroupVersion() []byte {
+	if m != nil {
+		return m.GroupVersion
+	}
+	return nil
+}
+
+func (m *GroupIncomingRequest) GetEssentialMetadata() []byte {
+	if m != nil {
+		return m.EssentialMetadata
+	}
+	return nil
+}
+
+func (m *GroupIncomingRequest) GetInviterContactPubKey() []byte {
+	if m != nil {
+		return m.InviterContactPubKey
+	}
+	return nil
+}
+
+func (m *GroupIncomingRequest) GetInviterContact() *Contact {
+	if m != nil {
+		return m.InviterContact
+	}
+	return nil
+}
+
+func (m *GroupIncomingRequest) GetCreatedAt() time.Time {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return time.Time{}
+}
+
+func (m *GroupIncomingRequest) GetUpdatedAt() time.Time {
+	if m != nil {
+		return m.UpdatedAt
+	}
+	return time.Time{}
+}
 
 type GroupMember struct {
 	// Fields
@@ -230,31 +402,106 @@ func (*GroupMember) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{2}
 }
 func (m *GroupMember) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_GroupMember.Unmarshal(m, b)
 }
 func (m *GroupMember) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GroupMember.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_GroupMember.Marshal(b, m, deterministic)
 }
 func (m *GroupMember) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GroupMember.Merge(m, src)
 }
 func (m *GroupMember) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_GroupMember.Size(m)
 }
 func (m *GroupMember) XXX_DiscardUnknown() {
 	xxx_messageInfo_GroupMember.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_GroupMember proto.InternalMessageInfo
+
+func (m *GroupMember) GetGroupMemberPubKey() []byte {
+	if m != nil {
+		return m.GroupMemberPubKey
+	}
+	return nil
+}
+
+func (m *GroupMember) GetGroupPubKey() []byte {
+	if m != nil {
+		return m.GroupPubKey
+	}
+	return nil
+}
+
+func (m *GroupMember) GetInviterPubKey() []byte {
+	if m != nil {
+		return m.InviterPubKey
+	}
+	return nil
+}
+
+func (m *GroupMember) GetContactAccountPubKey() []byte {
+	if m != nil {
+		return m.ContactAccountPubKey
+	}
+	return nil
+}
+
+func (m *GroupMember) GetContactAccountBindingProof() []byte {
+	if m != nil {
+		return m.ContactAccountBindingProof
+	}
+	return nil
+}
+
+func (m *GroupMember) GetMetadata() []byte {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+func (m *GroupMember) GetDevices() []*GroupMemberDevice {
+	if m != nil {
+		return m.Devices
+	}
+	return nil
+}
+
+func (m *GroupMember) GetGroupInfo() GroupInfo {
+	if m != nil {
+		return m.GroupInfo
+	}
+	return GroupInfo{}
+}
+
+func (m *GroupMember) GetInviter() *GroupMember {
+	if m != nil {
+		return m.Inviter
+	}
+	return nil
+}
+
+func (m *GroupMember) GetContact() *Contact {
+	if m != nil {
+		return m.Contact
+	}
+	return nil
+}
+
+func (m *GroupMember) GetCreatedAt() time.Time {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return time.Time{}
+}
+
+func (m *GroupMember) GetUpdatedAt() time.Time {
+	if m != nil {
+		return m.UpdatedAt
+	}
+	return time.Time{}
+}
 
 type GroupMemberDevice struct {
 	// Fields
@@ -277,31 +524,78 @@ func (*GroupMemberDevice) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{3}
 }
 func (m *GroupMemberDevice) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_GroupMemberDevice.Unmarshal(m, b)
 }
 func (m *GroupMemberDevice) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GroupMemberDevice.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_GroupMemberDevice.Marshal(b, m, deterministic)
 }
 func (m *GroupMemberDevice) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GroupMemberDevice.Merge(m, src)
 }
 func (m *GroupMemberDevice) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_GroupMemberDevice.Size(m)
 }
 func (m *GroupMemberDevice) XXX_DiscardUnknown() {
 	xxx_messageInfo_GroupMemberDevice.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_GroupMemberDevice proto.InternalMessageInfo
+
+func (m *GroupMemberDevice) GetGroupMemberDevicePubKey() []byte {
+	if m != nil {
+		return m.GroupMemberDevicePubKey
+	}
+	return nil
+}
+
+func (m *GroupMemberDevice) GetGroupMemberPubKey() []byte {
+	if m != nil {
+		return m.GroupMemberPubKey
+	}
+	return nil
+}
+
+func (m *GroupMemberDevice) GetDerivationState() []byte {
+	if m != nil {
+		return m.DerivationState
+	}
+	return nil
+}
+
+func (m *GroupMemberDevice) GetDerivationCounter() uint64 {
+	if m != nil {
+		return m.DerivationCounter
+	}
+	return 0
+}
+
+func (m *GroupMemberDevice) GetDerivationNextHotp() []byte {
+	if m != nil {
+		return m.DerivationNextHotp
+	}
+	return nil
+}
+
+func (m *GroupMemberDevice) GetGroupMember() GroupMember {
+	if m != nil {
+		return m.GroupMember
+	}
+	return GroupMember{}
+}
+
+func (m *GroupMemberDevice) GetCreatedAt() time.Time {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return time.Time{}
+}
+
+func (m *GroupMemberDevice) GetUpdatedAt() time.Time {
+	if m != nil {
+		return m.UpdatedAt
+	}
+	return time.Time{}
+}
 
 type Contact struct {
 	// Fields
@@ -325,31 +619,85 @@ func (*Contact) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{4}
 }
 func (m *Contact) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_Contact.Unmarshal(m, b)
 }
 func (m *Contact) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_Contact.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_Contact.Marshal(b, m, deterministic)
 }
 func (m *Contact) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Contact.Merge(m, src)
 }
 func (m *Contact) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_Contact.Size(m)
 }
 func (m *Contact) XXX_DiscardUnknown() {
 	xxx_messageInfo_Contact.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_Contact proto.InternalMessageInfo
+
+func (m *Contact) GetAccountPubKey() []byte {
+	if m != nil {
+		return m.AccountPubKey
+	}
+	return nil
+}
+
+func (m *Contact) GetOneToOneGroupPubKey() []byte {
+	if m != nil {
+		return m.OneToOneGroupPubKey
+	}
+	return nil
+}
+
+func (m *Contact) GetBinderPubKey() []byte {
+	if m != nil {
+		return m.BinderPubKey
+	}
+	return nil
+}
+
+func (m *Contact) GetTrustLevel() Contact_TrustLevel {
+	if m != nil {
+		return m.TrustLevel
+	}
+	return Contact_Unknown
+}
+
+func (m *Contact) GetMetadata() []byte {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+func (m *Contact) GetBlocked() bool {
+	if m != nil {
+		return m.Blocked
+	}
+	return false
+}
+
+func (m *Contact) GetOneToOneGroup() *GroupInfo {
+	if m != nil {
+		return m.OneToOneGroup
+	}
+	return nil
+}
+
+func (m *Contact) GetCreatedAt() time.Time {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return time.Time{}
+}
+
+func (m *Contact) GetUpdatedAt() time.Time {
+	if m != nil {
+		return m.UpdatedAt
+	}
+	return time.Time{}
+}
 
 type Message struct {
 	// Fields
@@ -371,31 +719,71 @@ func (*Message) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{5}
 }
 func (m *Message) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_Message.Unmarshal(m, b)
 }
 func (m *Message) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_Message.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_Message.Marshal(b, m, deterministic)
 }
 func (m *Message) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Message.Merge(m, src)
 }
 func (m *Message) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_Message.Size(m)
 }
 func (m *Message) XXX_DiscardUnknown() {
 	xxx_messageInfo_Message.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_Message proto.InternalMessageInfo
+
+func (m *Message) GetGroupPubKey() []byte {
+	if m != nil {
+		return m.GroupPubKey
+	}
+	return nil
+}
+
+func (m *Message) GetEntryCid() []byte {
+	if m != nil {
+		return m.EntryCid
+	}
+	return nil
+}
+
+func (m *Message) GetMessageKey() []byte {
+	if m != nil {
+		return m.MessageKey
+	}
+	return nil
+}
+
+func (m *Message) GetGroupMemberDevicePubKey() []byte {
+	if m != nil {
+		return m.GroupMemberDevicePubKey
+	}
+	return nil
+}
+
+func (m *Message) GetDevice() *GroupMemberDevice {
+	if m != nil {
+		return m.Device
+	}
+	return nil
+}
+
+func (m *Message) GetCreatedAt() time.Time {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return time.Time{}
+}
+
+func (m *Message) GetUpdatedAt() time.Time {
+	if m != nil {
+		return m.UpdatedAt
+	}
+	return time.Time{}
+}
 
 type MyselfAccount struct {
 	// Fields
@@ -419,31 +807,85 @@ func (*MyselfAccount) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{6}
 }
 func (m *MyselfAccount) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_MyselfAccount.Unmarshal(m, b)
 }
 func (m *MyselfAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MyselfAccount.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_MyselfAccount.Marshal(b, m, deterministic)
 }
 func (m *MyselfAccount) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MyselfAccount.Merge(m, src)
 }
 func (m *MyselfAccount) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_MyselfAccount.Size(m)
 }
 func (m *MyselfAccount) XXX_DiscardUnknown() {
 	xxx_messageInfo_MyselfAccount.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_MyselfAccount proto.InternalMessageInfo
+
+func (m *MyselfAccount) GetAccountPubKey() []byte {
+	if m != nil {
+		return m.AccountPubKey
+	}
+	return nil
+}
+
+func (m *MyselfAccount) GetAccountBindingPrivKey() []byte {
+	if m != nil {
+		return m.AccountBindingPrivKey
+	}
+	return nil
+}
+
+func (m *MyselfAccount) GetSharedSecret() []byte {
+	if m != nil {
+		return m.SharedSecret
+	}
+	return nil
+}
+
+func (m *MyselfAccount) GetPublicRendezvousPointSeed() []byte {
+	if m != nil {
+		return m.PublicRendezvousPointSeed
+	}
+	return nil
+}
+
+func (m *MyselfAccount) GetPublicRendezvousPointEnabled() bool {
+	if m != nil {
+		return m.PublicRendezvousPointEnabled
+	}
+	return false
+}
+
+func (m *MyselfAccount) GetSigChain() []byte {
+	if m != nil {
+		return m.SigChain
+	}
+	return nil
+}
+
+func (m *MyselfAccount) GetDevices() []*MyselfDevice {
+	if m != nil {
+		return m.Devices
+	}
+	return nil
+}
+
+func (m *MyselfAccount) GetCreatedAt() time.Time {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return time.Time{}
+}
+
+func (m *MyselfAccount) GetUpdatedAt() time.Time {
+	if m != nil {
+		return m.UpdatedAt
+	}
+	return time.Time{}
+}
 
 type MyselfDevice struct {
 	// Fields
@@ -464,25 +906,16 @@ func (*MyselfDevice) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e2f5bc4155f6089b, []int{7}
 }
 func (m *MyselfDevice) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_MyselfDevice.Unmarshal(m, b)
 }
 func (m *MyselfDevice) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MyselfDevice.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_MyselfDevice.Marshal(b, m, deterministic)
 }
 func (m *MyselfDevice) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MyselfDevice.Merge(m, src)
 }
 func (m *MyselfDevice) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_MyselfDevice.Size(m)
 }
 func (m *MyselfDevice) XXX_DiscardUnknown() {
 	xxx_messageInfo_MyselfDevice.DiscardUnknown(m)
@@ -490,5328 +923,166 @@ func (m *MyselfDevice) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MyselfDevice proto.InternalMessageInfo
 
+func (m *MyselfDevice) GetDevicePubKey() []byte {
+	if m != nil {
+		return m.DevicePubKey
+	}
+	return nil
+}
+
+func (m *MyselfDevice) GetDevicePrivKey() []byte {
+	if m != nil {
+		return m.DevicePrivKey
+	}
+	return nil
+}
+
+func (m *MyselfDevice) GetAccountPubKey() []byte {
+	if m != nil {
+		return m.AccountPubKey
+	}
+	return nil
+}
+
+func (m *MyselfDevice) GetAccount() MyselfAccount {
+	if m != nil {
+		return m.Account
+	}
+	return MyselfAccount{}
+}
+
+func (m *MyselfDevice) GetCreatedAt() time.Time {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return time.Time{}
+}
+
+func (m *MyselfDevice) GetUpdatedAt() time.Time {
+	if m != nil {
+		return m.UpdatedAt
+	}
+	return time.Time{}
+}
+
 func init() {
 	proto.RegisterEnum("berty.protocolmodel.GroupInfo_GroupAudience", GroupInfo_GroupAudience_name, GroupInfo_GroupAudience_value)
-	golang_proto.RegisterEnum("berty.protocolmodel.GroupInfo_GroupAudience", GroupInfo_GroupAudience_name, GroupInfo_GroupAudience_value)
 	proto.RegisterEnum("berty.protocolmodel.Contact_TrustLevel", Contact_TrustLevel_name, Contact_TrustLevel_value)
-	golang_proto.RegisterEnum("berty.protocolmodel.Contact_TrustLevel", Contact_TrustLevel_name, Contact_TrustLevel_value)
 	proto.RegisterType((*GroupInfo)(nil), "berty.protocolmodel.GroupInfo")
-	golang_proto.RegisterType((*GroupInfo)(nil), "berty.protocolmodel.GroupInfo")
 	proto.RegisterType((*GroupIncomingRequest)(nil), "berty.protocolmodel.GroupIncomingRequest")
-	golang_proto.RegisterType((*GroupIncomingRequest)(nil), "berty.protocolmodel.GroupIncomingRequest")
 	proto.RegisterType((*GroupMember)(nil), "berty.protocolmodel.GroupMember")
-	golang_proto.RegisterType((*GroupMember)(nil), "berty.protocolmodel.GroupMember")
 	proto.RegisterType((*GroupMemberDevice)(nil), "berty.protocolmodel.GroupMemberDevice")
-	golang_proto.RegisterType((*GroupMemberDevice)(nil), "berty.protocolmodel.GroupMemberDevice")
 	proto.RegisterType((*Contact)(nil), "berty.protocolmodel.Contact")
-	golang_proto.RegisterType((*Contact)(nil), "berty.protocolmodel.Contact")
 	proto.RegisterType((*Message)(nil), "berty.protocolmodel.Message")
-	golang_proto.RegisterType((*Message)(nil), "berty.protocolmodel.Message")
 	proto.RegisterType((*MyselfAccount)(nil), "berty.protocolmodel.MyselfAccount")
-	golang_proto.RegisterType((*MyselfAccount)(nil), "berty.protocolmodel.MyselfAccount")
 	proto.RegisterType((*MyselfDevice)(nil), "berty.protocolmodel.MyselfDevice")
-	golang_proto.RegisterType((*MyselfDevice)(nil), "berty.protocolmodel.MyselfDevice")
 }
 
 func init() { proto.RegisterFile("go-internal/protocolmodel.proto", fileDescriptor_e2f5bc4155f6089b) }
-func init() {
-	golang_proto.RegisterFile("go-internal/protocolmodel.proto", fileDescriptor_e2f5bc4155f6089b)
-}
 
 var fileDescriptor_e2f5bc4155f6089b = []byte{
-	// 1681 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x58, 0xcf, 0x6f, 0xdb, 0xc8,
-	0x15, 0x36, 0x63, 0x3b, 0x92, 0x9e, 0x24, 0x5b, 0x1e, 0x7b, 0x37, 0xac, 0x93, 0x4a, 0x5e, 0x6d,
-	0x9b, 0xba, 0x40, 0x2d, 0x61, 0x93, 0x06, 0x29, 0x9c, 0xa0, 0x0b, 0xcb, 0x09, 0xd2, 0x60, 0x37,
-	0xb5, 0x4b, 0x3b, 0x8b, 0x22, 0x3d, 0x10, 0x14, 0xf9, 0x44, 0x0f, 0x42, 0xcd, 0xb0, 0xe4, 0xc8,
-	0x8d, 0x72, 0x29, 0xda, 0xbf, 0x60, 0x4f, 0xbd, 0xf5, 0xbe, 0xb7, 0x5e, 0x7b, 0xec, 0xa9, 0xc8,
-	0xa9, 0xd8, 0x63, 0x4f, 0x6a, 0xd7, 0x39, 0xf5, 0xea, 0x53, 0x8f, 0x05, 0x39, 0x43, 0x89, 0xd4,
-	0x2f, 0xc7, 0x09, 0x0a, 0xf8, 0x24, 0xcd, 0xbc, 0xef, 0xbd, 0xf9, 0xf5, 0xbd, 0x6f, 0xde, 0x10,
-	0x6a, 0x2e, 0xdf, 0xa1, 0x4c, 0x60, 0xc0, 0x2c, 0xaf, 0xe9, 0x07, 0x5c, 0x70, 0x9b, 0x7b, 0x5d,
-	0xee, 0xa0, 0xd7, 0x88, 0x5b, 0x64, 0xbd, 0x8d, 0x81, 0xe8, 0x37, 0x32, 0xa6, 0xcd, 0x07, 0x2e,
-	0x15, 0x27, 0xbd, 0x76, 0xc3, 0xe6, 0xdd, 0xa6, 0xcb, 0x3d, 0x8b, 0xb9, 0xd2, 0xb7, 0xdd, 0xeb,
-	0x34, 0x7d, 0xd1, 0xf7, 0x31, 0x6c, 0x0a, 0xda, 0xc5, 0x50, 0x58, 0x5d, 0x7f, 0xf4, 0x4f, 0x06,
-	0xd9, 0xdc, 0xc9, 0x38, 0xbb, 0x7c, 0xe4, 0x1a, 0xb5, 0xe2, 0x46, 0xfc, 0x4f, 0xc2, 0xeb, 0xff,
-	0x29, 0x40, 0xe1, 0x49, 0xc0, 0x7b, 0xfe, 0x53, 0xd6, 0xe1, 0x64, 0x17, 0xca, 0x6e, 0xd4, 0x30,
-	0xfd, 0x5e, 0xdb, 0x7c, 0x89, 0x7d, 0x5d, 0xdb, 0xd2, 0xb6, 0x4b, 0xad, 0x8f, 0xcf, 0x07, 0x35,
-	0xe2, 0xf2, 0xa0, 0xbb, 0x5b, 0xf7, 0x03, 0xda, 0xb5, 0x82, 0x7e, 0x64, 0xac, 0x1b, 0xc5, 0x18,
-	0x7c, 0xd8, 0x6b, 0x7f, 0x81, 0x7d, 0xf2, 0x29, 0x94, 0xc3, 0x13, 0x2b, 0x40, 0xc7, 0x0c, 0xd1,
-	0x0e, 0x50, 0xe8, 0xd7, 0x22, 0x5f, 0xa3, 0x24, 0x3b, 0x8f, 0xe2, 0x3e, 0xb2, 0x09, 0xf9, 0x2e,
-	0x0a, 0xcb, 0xb1, 0x84, 0xa5, 0x2f, 0xc6, 0xf6, 0x61, 0x9b, 0xbc, 0x80, 0xbc, 0xd5, 0x73, 0x28,
-	0x32, 0x1b, 0xf5, 0xa5, 0x2d, 0x6d, 0x7b, 0xe5, 0xce, 0x4f, 0x1a, 0x53, 0xb6, 0xa7, 0x31, 0x9c,
-	0xae, 0xfc, 0xb7, 0xa7, 0x7c, 0x5a, 0x95, 0xf3, 0x41, 0xad, 0x24, 0x67, 0x49, 0x99, 0x83, 0xaf,
-	0xea, 0xc6, 0x30, 0x1e, 0xd1, 0x21, 0x77, 0x8a, 0x41, 0x48, 0x39, 0xd3, 0x97, 0xb7, 0xb4, 0xed,
-	0xb2, 0x91, 0x34, 0xc9, 0x67, 0xf0, 0x51, 0x88, 0x5e, 0xc7, 0xf4, 0x03, 0x7a, 0x1a, 0xad, 0xca,
-	0xb4, 0x6c, 0x9b, 0xf7, 0x98, 0xd0, 0xaf, 0xc7, 0xd3, 0x23, 0x91, 0xf1, 0x30, 0xa0, 0xa7, 0x5f,
-	0x60, 0x7f, 0x4f, 0x5a, 0x48, 0x13, 0x36, 0xb2, 0x2e, 0x0e, 0x9e, 0x52, 0x1b, 0xf5, 0x5c, 0xec,
-	0xb1, 0x96, 0xf2, 0x78, 0x14, 0x1b, 0x86, 0x0e, 0x94, 0x9d, 0x52, 0x81, 0xc1, 0x70, 0x77, 0xf3,
-	0x23, 0x87, 0xa7, 0xd2, 0xa4, 0xf6, 0xf2, 0x1e, 0xdc, 0x48, 0xb0, 0x36, 0x67, 0xc2, 0xb2, 0xc5,
-	0xd0, 0xa7, 0x10, 0xfb, 0x6c, 0x28, 0xf3, 0xbe, 0xb4, 0x2a, 0xb7, 0xdf, 0xc0, 0x4d, 0x1e, 0xb4,
-	0xa9, 0x70, 0xda, 0xa6, 0xdd, 0x0b, 0x02, 0x64, 0xc2, 0xb4, 0xa9, 0x63, 0x76, 0x31, 0x0c, 0x2d,
-	0x17, 0x75, 0x88, 0x0f, 0xf3, 0xd6, 0xd9, 0xa0, 0xa6, 0x1f, 0x44, 0xb0, 0x47, 0xad, 0x7d, 0x89,
-	0xda, 0x7f, 0xfa, 0xe8, 0x99, 0xc4, 0x18, 0xba, 0x0a, 0x90, 0x58, 0xa8, 0xa3, 0x2c, 0xe4, 0xd7,
-	0xb0, 0x39, 0x2d, 0xb8, 0x3a, 0xec, 0x62, 0x1c, 0xfb, 0xe6, 0xd9, 0xa0, 0x76, 0x63, 0x22, 0xb6,
-	0x3c, 0x7b, 0xe3, 0xc6, 0x44, 0x68, 0x45, 0x8a, 0x19, 0xd3, 0x0e, 0x51, 0x08, 0xca, 0x5c, 0xbd,
-	0x34, 0x67, 0xda, 0x47, 0x12, 0x33, 0x65, 0xda, 0xca, 0x32, 0x6b, 0xda, 0x5d, 0xec, 0xb6, 0x31,
-	0xd0, 0xcb, 0x73, 0xa6, 0xfd, 0x2c, 0x86, 0x4c, 0x99, 0xb6, 0x34, 0x90, 0x2e, 0xe4, 0x64, 0x94,
-	0x50, 0x3f, 0xdc, 0x5a, 0xdc, 0x2e, 0xde, 0xd9, 0x9a, 0x4d, 0x57, 0xe9, 0xd2, 0xfa, 0xec, 0x7c,
-	0x50, 0xdb, 0x91, 0x14, 0xed, 0xf0, 0x00, 0xa9, 0xcb, 0x5e, 0x62, 0x7f, 0x37, 0x93, 0x72, 0x0f,
-	0x0e, 0x8d, 0xc7, 0x5f, 0x1e, 0xec, 0x3d, 0xda, 0xed, 0x58, 0x5e, 0x88, 0x75, 0x23, 0x19, 0x83,
-	0x84, 0x90, 0x53, 0x87, 0xae, 0xff, 0x6a, 0x4b, 0xdb, 0x2e, 0xde, 0xb9, 0x35, 0x75, 0x38, 0xc5,
-	0x88, 0xd6, 0x83, 0xf3, 0x41, 0xed, 0xfe, 0xc4, 0x50, 0x33, 0x58, 0x35, 0x31, 0xa8, 0xc2, 0x91,
-	0x7d, 0x00, 0x3b, 0x40, 0x4b, 0xa0, 0x63, 0x5a, 0x42, 0x6f, 0xc7, 0xe3, 0x6e, 0x36, 0x5c, 0xce,
-	0x5d, 0x0f, 0x1b, 0x89, 0xb2, 0x34, 0x8e, 0x13, 0x0d, 0x6a, 0xe5, 0xdf, 0x0c, 0x6a, 0x0b, 0x5f,
-	0xff, 0xab, 0xa6, 0x19, 0x05, 0xe5, 0xb7, 0x27, 0xa2, 0x20, 0x3d, 0xdf, 0x49, 0x82, 0xd8, 0x97,
-	0x09, 0xa2, 0xfc, 0xf6, 0x44, 0x7d, 0x0f, 0xca, 0x99, 0x74, 0x27, 0x65, 0x28, 0x3c, 0x67, 0x0e,
-	0x76, 0x28, 0x43, 0xa7, 0xb2, 0x40, 0x4a, 0x90, 0x3f, 0x60, 0x78, 0xcc, 0x0f, 0x18, 0x56, 0x34,
-	0x52, 0x80, 0xe5, 0x18, 0x5d, 0xb9, 0x46, 0xf2, 0xb0, 0x74, 0x84, 0x5e, 0xa7, 0xb2, 0x58, 0xff,
-	0x66, 0x19, 0x36, 0x94, 0x78, 0xd8, 0xbc, 0x1b, 0xd1, 0x06, 0x7f, 0xdb, 0xc3, 0x50, 0x7c, 0x90,
-	0xec, 0xdd, 0x85, 0x8f, 0x93, 0x4d, 0x95, 0x27, 0x35, 0x0c, 0x22, 0xf5, 0x6f, 0x5d, 0x59, 0x25,
-	0x03, 0x94, 0xd3, 0x0f, 0x61, 0x25, 0xee, 0xb6, 0x04, 0xe5, 0xcc, 0x0c, 0xa9, 0xab, 0xc4, 0xb0,
-	0x3c, 0xea, 0x3d, 0xa2, 0x2e, 0x69, 0xc0, 0x7a, 0x0a, 0x96, 0xc8, 0x4d, 0x2c, 0x8e, 0x25, 0x63,
-	0x6d, 0x64, 0x52, 0x6a, 0x13, 0xe1, 0xe5, 0x3a, 0xb2, 0x42, 0xbc, 0x2c, 0xf1, 0xb1, 0xe9, 0x28,
-	0xad, 0xc6, 0x9f, 0x26, 0xeb, 0x4e, 0xb4, 0x51, 0x6a, 0x5e, 0x29, 0xee, 0xfc, 0x4a, 0x09, 0xe4,
-	0x0e, 0x10, 0x0c, 0x43, 0x64, 0x82, 0x5a, 0x9e, 0x39, 0x14, 0x6f, 0xa5, 0x75, 0x43, 0xcb, 0xb3,
-	0x44, 0xc5, 0xdf, 0x53, 0xba, 0xfe, 0xa8, 0xc1, 0xea, 0x98, 0x5f, 0x2c, 0x8f, 0xff, 0x57, 0x9a,
-	0xaf, 0x64, 0xa7, 0x72, 0x85, 0xd8, 0xfe, 0x97, 0x1c, 0x14, 0x53, 0xc2, 0x41, 0x9e, 0xc0, 0x86,
-	0x3c, 0xa9, 0x31, 0x8e, 0xcd, 0x27, 0xaa, 0x3c, 0xf2, 0x0c, 0xf3, 0xee, 0x8f, 0x53, 0x3d, 0x66,
-	0x69, 0x6b, 0xfd, 0x7c, 0x50, 0x5b, 0x95, 0x11, 0x18, 0x17, 0x5b, 0xac, 0xe7, 0x79, 0x63, 0x3c,
-	0xbf, 0x3d, 0x3a, 0x9f, 0xc4, 0x35, 0xcd, 0xd9, 0xf4, 0xd5, 0x95, 0xec, 0xba, 0xba, 0x49, 0x87,
-	0x78, 0xc9, 0xdb, 0x0d, 0x65, 0x56, 0xb7, 0xa9, 0x72, 0xdb, 0x83, 0xef, 0x8f, 0xbb, 0xb5, 0x29,
-	0x73, 0x28, 0x73, 0x4d, 0x3f, 0xe0, 0xbc, 0xa3, 0x48, 0xbc, 0x99, 0x75, 0x6e, 0x49, 0xc8, 0x61,
-	0x84, 0xc8, 0xd4, 0x16, 0xd7, 0xc7, 0x6a, 0x8b, 0xd7, 0x90, 0x93, 0x97, 0x74, 0xa2, 0xd5, 0xb7,
-	0x2f, 0xd2, 0x6a, 0x79, 0x75, 0xb7, 0x7e, 0x76, 0x3e, 0xa8, 0xfd, 0x74, 0x86, 0x62, 0x67, 0xcf,
-	0x62, 0x42, 0x43, 0xd5, 0x80, 0x44, 0x00, 0x48, 0x3c, 0x65, 0x1d, 0xae, 0xb4, 0xbb, 0x3a, 0xbf,
-	0xb2, 0x69, 0xdd, 0x8b, 0x48, 0x71, 0xf9, 0xcb, 0xa2, 0xe0, 0x0e, 0x4b, 0x39, 0x3e, 0xba, 0x2e,
-	0x8c, 0x78, 0xc8, 0x8b, 0x6f, 0xa7, 0xbb, 0xe7, 0x83, 0x5a, 0x73, 0x66, 0x2e, 0x5d, 0x74, 0x55,
-	0x84, 0x90, 0x4b, 0x12, 0xf7, 0xe8, 0xbd, 0x13, 0x77, 0x06, 0x75, 0x26, 0x06, 0xb5, 0xaf, 0x5c,
-	0xc6, 0xfe, 0x7d, 0x09, 0xd6, 0x26, 0xe8, 0x43, 0x8e, 0xe1, 0x66, 0x86, 0x2b, 0x92, 0x13, 0xef,
-	0x98, 0xbe, 0x37, 0xdc, 0xf1, 0x78, 0x2a, 0x59, 0x9a, 0x33, 0xd4, 0xe0, 0x5a, 0x4a, 0xe8, 0x33,
-	0x59, 0xff, 0x63, 0xa8, 0x38, 0x18, 0xd0, 0x53, 0x75, 0xdf, 0x08, 0x4b, 0xa0, 0xca, 0xde, 0xd5,
-	0x51, 0xff, 0x51, 0xd4, 0x1d, 0xc9, 0x7d, 0x0a, 0x1a, 0x9f, 0x02, 0x06, 0x71, 0xea, 0x2e, 0x19,
-	0x6b, 0x23, 0xcb, 0xbe, 0x34, 0x90, 0x16, 0x6c, 0xa4, 0xe0, 0x0c, 0x5f, 0x09, 0xf3, 0x84, 0x0b,
-	0x5f, 0xa6, 0xeb, 0x94, 0x92, 0x3c, 0x15, 0xfc, 0x97, 0xf8, 0x4a, 0xfc, 0x82, 0x0b, 0x9f, 0xfc,
-	0x41, 0x83, 0x52, 0x7a, 0x3d, 0xfa, 0xe1, 0x3b, 0x12, 0xf6, 0xa1, 0xca, 0x92, 0xf7, 0x4b, 0xd0,
-	0x62, 0x6a, 0x9f, 0xae, 0x10, 0x91, 0xfe, 0xb4, 0x0c, 0xb9, 0xe4, 0x42, 0xfa, 0x39, 0xac, 0x8e,
-	0x8b, 0xe8, 0x7c, 0xca, 0x94, 0xad, 0x8c, 0xaa, 0xde, 0x03, 0x9d, 0x33, 0x34, 0x05, 0x37, 0xa3,
-	0x9f, 0x29, 0xc2, 0x6f, 0xac, 0x73, 0x55, 0x34, 0x3d, 0x49, 0x69, 0xfd, 0x0f, 0x60, 0x25, 0x12,
-	0xdf, 0x09, 0xa9, 0x2f, 0xc9, 0x5e, 0x85, 0x7a, 0x01, 0x45, 0x11, 0xf4, 0x42, 0x61, 0x7a, 0x78,
-	0x8a, 0x9e, 0x7a, 0xb2, 0xfd, 0x68, 0x5e, 0xd2, 0x37, 0x8e, 0x23, 0xfc, 0x97, 0x11, 0x7c, 0x0a,
-	0x35, 0x40, 0x0c, 0xad, 0x19, 0x2d, 0x5f, 0x1e, 0xd3, 0x72, 0x1d, 0x72, 0x6d, 0x8f, 0xdb, 0x2f,
-	0xd1, 0x89, 0x65, 0x3e, 0x6f, 0x24, 0x4d, 0xf2, 0x1a, 0x2a, 0xe3, 0xcb, 0x55, 0x5c, 0xba, 0x48,
-	0x6f, 0xdf, 0xa1, 0x30, 0xdf, 0x1d, 0xa3, 0x4f, 0x39, 0xb3, 0x73, 0x57, 0x88, 0x40, 0x5f, 0x01,
-	0x8c, 0xf6, 0x99, 0x14, 0x21, 0xf7, 0x9c, 0xbd, 0x64, 0xfc, 0x77, 0xac, 0xb2, 0x20, 0x6b, 0xe6,
-	0x78, 0x9b, 0xd1, 0xa9, 0x68, 0x51, 0xcd, 0xbc, 0x67, 0xdb, 0xe8, 0x47, 0xad, 0x6b, 0x11, 0xf2,
-	0x58, 0x99, 0x16, 0xc9, 0x1a, 0x94, 0x9f, 0x7b, 0x82, 0x76, 0x2d, 0x81, 0x71, 0x67, 0x65, 0xa9,
-	0x3e, 0x58, 0x84, 0x5c, 0xf2, 0x18, 0xfc, 0x90, 0x8a, 0x79, 0x07, 0x0a, 0xc8, 0x44, 0xd0, 0x8f,
-	0xde, 0x61, 0xaa, 0xfc, 0x98, 0xf2, 0x74, 0x8f, 0x21, 0xfb, 0xd4, 0x21, 0x35, 0x28, 0xaa, 0x07,
-	0x6c, 0x8a, 0x89, 0xa0, 0xba, 0xa2, 0x78, 0x0f, 0xe7, 0x6b, 0xac, 0xac, 0x3a, 0x66, 0x6a, 0xe9,
-	0xef, 0xe1, 0xba, 0x7a, 0xbe, 0x4b, 0xa6, 0xbc, 0x6b, 0x61, 0xf0, 0xf9, 0xf9, 0xa0, 0xf6, 0x60,
-	0xbe, 0xee, 0x64, 0x27, 0x32, 0x2e, 0x3f, 0x6a, 0xd8, 0x2b, 0x44, 0x9c, 0x7f, 0x2c, 0x41, 0xf9,
-	0x59, 0x3f, 0x44, 0xaf, 0x93, 0x7c, 0xe9, 0xf8, 0x50, 0xfd, 0xb9, 0x0f, 0xfa, 0x64, 0x35, 0xa7,
-	0x5e, 0x31, 0x52, 0x7f, 0x3e, 0xb2, 0xc6, 0x2a, 0x39, 0xf9, 0x92, 0x99, 0xf8, 0x98, 0xb4, 0x38,
-	0xe5, 0x63, 0xd2, 0xe7, 0x70, 0xcb, 0xef, 0xb5, 0x3d, 0x6a, 0x9b, 0x01, 0x32, 0x07, 0x5f, 0x9f,
-	0xf2, 0x5e, 0x68, 0xfa, 0x9c, 0x32, 0x61, 0x86, 0x88, 0x8e, 0x3a, 0xf9, 0xef, 0x49, 0x8c, 0x31,
-	0x84, 0x1c, 0x46, 0x88, 0x23, 0x44, 0x87, 0x3c, 0x86, 0xda, 0xac, 0x00, 0xc8, 0xac, 0xb6, 0x87,
-	0x4e, 0x2c, 0x3e, 0x79, 0xe3, 0xd6, 0xd4, 0x18, 0x8f, 0x25, 0x86, 0xdc, 0x84, 0x42, 0x48, 0x5d,
-	0xd3, 0x3e, 0xb1, 0x68, 0xf2, 0x84, 0xca, 0x87, 0xd4, 0xdd, 0x8f, 0xda, 0xc4, 0x1f, 0xaf, 0x3c,
-	0x3f, 0x99, 0x4a, 0x30, 0xb9, 0xef, 0x8a, 0x5b, 0xd3, 0x0b, 0xb1, 0x8b, 0x6a, 0xa2, 0xa4, 0xde,
-	0xbc, 0x3a, 0x84, 0xfa, 0xf3, 0x22, 0x94, 0xd2, 0x0b, 0x23, 0x0f, 0x61, 0xe5, 0x52, 0x15, 0x50,
-	0xc9, 0x49, 0xa7, 0xea, 0x6d, 0x58, 0x4d, 0xbc, 0xb3, 0x24, 0x2a, 0x2b, 0x98, 0x22, 0xcf, 0xed,
-	0x49, 0xd6, 0xaa, 0xa7, 0x4a, 0x96, 0x9d, 0x3d, 0xc8, 0x25, 0x1f, 0xfb, 0x64, 0xee, 0xd7, 0xe7,
-	0x1c, 0x4d, 0xf2, 0xe2, 0xb8, 0xaf, 0x6a, 0x8e, 0xcb, 0x9f, 0x8f, 0xb2, 0x5f, 0x9d, 0xf3, 0x69,
-	0x1d, 0xbc, 0xf9, 0xae, 0xba, 0xf0, 0xdf, 0xef, 0xaa, 0xda, 0x37, 0x67, 0x55, 0xed, 0xaf, 0x67,
-	0xd5, 0x85, 0x37, 0x67, 0x55, 0xed, 0xdb, 0xb3, 0xaa, 0xf6, 0xef, 0xb3, 0xaa, 0xf6, 0xf5, 0xdb,
-	0xea, 0xc2, 0xdf, 0xde, 0x56, 0xb5, 0x6f, 0xdf, 0x56, 0x17, 0xfe, 0xf9, 0xb6, 0xba, 0xf0, 0xe2,
-	0x13, 0xb9, 0x39, 0x02, 0xed, 0x93, 0xa6, 0xcb, 0x9b, 0x13, 0xdf, 0xb5, 0x9d, 0x76, 0xfb, 0x7a,
-	0xfc, 0xff, 0xee, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff, 0x57, 0x48, 0x2c, 0xd2, 0xf8, 0x16, 0x00,
-	0x00,
+	// 1644 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x58, 0x4f, 0x6f, 0xdb, 0xc8,
+	0x15, 0xb7, 0x62, 0x3b, 0x92, 0x9e, 0x24, 0x5b, 0x1e, 0x7b, 0x37, 0xac, 0x93, 0x46, 0x5e, 0x6d,
+	0x9b, 0xba, 0x40, 0x2d, 0x61, 0x93, 0x06, 0x29, 0x9c, 0xa0, 0x0b, 0xc9, 0x09, 0xd2, 0x60, 0xd7,
+	0xb5, 0x4b, 0x39, 0x8b, 0x22, 0x3d, 0x10, 0x14, 0xf9, 0x44, 0x0f, 0x4c, 0xcd, 0xb0, 0xe4, 0x48,
+	0x8d, 0x72, 0x29, 0xda, 0x4f, 0xb0, 0xa7, 0xde, 0x7a, 0xef, 0xad, 0xdf, 0xa2, 0xe8, 0xa9, 0xe8,
+	0xb1, 0x27, 0x15, 0xd8, 0x9c, 0x7a, 0xd5, 0x27, 0x28, 0xc8, 0x19, 0x4a, 0xa4, 0xfe, 0xd9, 0x4e,
+	0xb0, 0x80, 0x4f, 0xd2, 0xcc, 0xfb, 0xbd, 0x37, 0xff, 0x7e, 0xef, 0x37, 0x6f, 0x08, 0x15, 0x87,
+	0x1f, 0x50, 0x26, 0xd0, 0x67, 0xa6, 0x5b, 0xf7, 0x7c, 0x2e, 0xb8, 0xc5, 0xdd, 0x2e, 0xb7, 0xd1,
+	0xad, 0x45, 0x2d, 0xb2, 0xdd, 0x46, 0x5f, 0x0c, 0x6a, 0x29, 0xd3, 0xee, 0x53, 0x87, 0x8a, 0xf3,
+	0x5e, 0xbb, 0x66, 0xf1, 0x6e, 0xdd, 0xe1, 0xae, 0xc9, 0x1c, 0xe9, 0xdb, 0xee, 0x75, 0xea, 0x9e,
+	0x18, 0x78, 0x18, 0xd4, 0x05, 0xed, 0x62, 0x20, 0xcc, 0xae, 0x37, 0xf9, 0x27, 0x83, 0xec, 0x1e,
+	0xa4, 0x9c, 0x1d, 0x3e, 0x71, 0x0d, 0x5b, 0x51, 0x23, 0xfa, 0x27, 0xe1, 0xd5, 0xff, 0xe5, 0x21,
+	0xff, 0xd2, 0xe7, 0x3d, 0xef, 0x15, 0xeb, 0x70, 0x72, 0x08, 0x25, 0x27, 0x6c, 0x18, 0x5e, 0xaf,
+	0x6d, 0x5c, 0xe0, 0x40, 0xcb, 0xec, 0x65, 0xf6, 0x8b, 0xcd, 0x4f, 0x47, 0xc3, 0x0a, 0x71, 0xb8,
+	0xdf, 0x3d, 0xac, 0x7a, 0x3e, 0xed, 0x9a, 0xfe, 0x20, 0x34, 0x56, 0xf5, 0x42, 0x04, 0x3e, 0xed,
+	0xb5, 0xbf, 0xc2, 0x01, 0xf9, 0x1c, 0x4a, 0xc1, 0xb9, 0xe9, 0xa3, 0x6d, 0x04, 0x68, 0xf9, 0x28,
+	0xb4, 0x5b, 0xa1, 0xaf, 0x5e, 0x94, 0x9d, 0xad, 0xa8, 0x8f, 0xec, 0x42, 0xae, 0x8b, 0xc2, 0xb4,
+	0x4d, 0x61, 0x6a, 0xab, 0x91, 0x7d, 0xdc, 0x26, 0x6f, 0x20, 0x67, 0xf6, 0x6c, 0x8a, 0xcc, 0x42,
+	0x6d, 0x6d, 0x2f, 0xb3, 0xbf, 0xf1, 0xf0, 0x67, 0xb5, 0x39, 0xdb, 0x53, 0x1b, 0x4f, 0x57, 0xfe,
+	0x6b, 0x28, 0x9f, 0x66, 0x79, 0x34, 0xac, 0x14, 0xe5, 0x2c, 0x29, 0xb3, 0xf1, 0x6d, 0x55, 0x1f,
+	0xc7, 0x23, 0x1a, 0x64, 0xfb, 0xe8, 0x07, 0x94, 0x33, 0x6d, 0x7d, 0x2f, 0xb3, 0x5f, 0xd2, 0xe3,
+	0x26, 0xf9, 0x02, 0x3e, 0x09, 0xd0, 0xed, 0x18, 0x9e, 0x4f, 0xfb, 0xe1, 0xaa, 0x0c, 0xd3, 0xb2,
+	0x78, 0x8f, 0x09, 0xed, 0x76, 0x34, 0x3d, 0x12, 0x1a, 0x4f, 0x7d, 0xda, 0xff, 0x0a, 0x07, 0x0d,
+	0x69, 0x21, 0x75, 0xd8, 0x49, 0xbb, 0xd8, 0xd8, 0xa7, 0x16, 0x6a, 0xd9, 0xc8, 0x63, 0x2b, 0xe1,
+	0xf1, 0x3c, 0x32, 0x8c, 0x1d, 0x28, 0xeb, 0x53, 0x81, 0xfe, 0x78, 0x77, 0x73, 0x13, 0x87, 0x57,
+	0xd2, 0xa4, 0xf6, 0xf2, 0x31, 0xdc, 0x89, 0xb1, 0x16, 0x67, 0xc2, 0xb4, 0xc4, 0xd8, 0x27, 0x1f,
+	0xf9, 0xec, 0x28, 0xf3, 0x91, 0xb4, 0x2a, 0xb7, 0xdf, 0xc1, 0x5d, 0xee, 0xb7, 0xa9, 0xb0, 0xdb,
+	0x86, 0xd5, 0xf3, 0x7d, 0x64, 0xc2, 0xb0, 0xa8, 0x6d, 0x74, 0x31, 0x08, 0x4c, 0x07, 0x35, 0x88,
+	0x0e, 0xf3, 0xde, 0x77, 0xc3, 0x8a, 0x76, 0x12, 0xc2, 0x9e, 0x37, 0x8f, 0x24, 0xea, 0xe8, 0xd5,
+	0xf3, 0x63, 0x89, 0xd1, 0x35, 0x15, 0x20, 0xb6, 0x50, 0x5b, 0x59, 0xc8, 0x6f, 0x61, 0x77, 0x5e,
+	0x70, 0x75, 0xd8, 0x85, 0x28, 0xf6, 0xdd, 0xef, 0x86, 0x95, 0x3b, 0x33, 0xb1, 0xe5, 0xd9, 0xeb,
+	0x77, 0x66, 0x42, 0x2b, 0x52, 0x2c, 0x98, 0x76, 0x80, 0x42, 0x50, 0xe6, 0x68, 0xc5, 0x25, 0xd3,
+	0x6e, 0x49, 0xcc, 0x9c, 0x69, 0x2b, 0xcb, 0xa2, 0x69, 0x77, 0xb1, 0xdb, 0x46, 0x5f, 0x2b, 0x2d,
+	0x99, 0xf6, 0x71, 0x04, 0x99, 0x33, 0x6d, 0x69, 0x20, 0x5d, 0xc8, 0xca, 0x28, 0x81, 0x76, 0xba,
+	0xb7, 0xba, 0x5f, 0x78, 0xb8, 0xb7, 0x98, 0xae, 0xd2, 0xa5, 0xf9, 0xc5, 0x68, 0x58, 0x39, 0x90,
+	0x14, 0xed, 0x70, 0x1f, 0xa9, 0xc3, 0x2e, 0x70, 0x70, 0x98, 0x4a, 0xb9, 0xa7, 0xa7, 0xfa, 0x8b,
+	0xaf, 0x4f, 0x1a, 0xcf, 0x0f, 0x3b, 0xa6, 0x1b, 0x60, 0x55, 0x8f, 0xc7, 0x20, 0x01, 0x64, 0xd5,
+	0xa1, 0x6b, 0xbf, 0xd9, 0xcb, 0xec, 0x17, 0x1e, 0xde, 0x9b, 0x3b, 0x9c, 0x62, 0x44, 0xf3, 0xe9,
+	0x68, 0x58, 0x79, 0x32, 0x33, 0xd4, 0x02, 0x56, 0xcd, 0x0c, 0xaa, 0x70, 0xe4, 0x08, 0xc0, 0xf2,
+	0xd1, 0x14, 0x68, 0x1b, 0xa6, 0xd0, 0xda, 0xd1, 0xb8, 0xbb, 0x35, 0x87, 0x73, 0xc7, 0xc5, 0x5a,
+	0xac, 0x2c, 0xb5, 0xb3, 0x58, 0x83, 0x9a, 0xb9, 0x7f, 0x0e, 0x2b, 0x2b, 0xdf, 0xfe, 0xb7, 0x92,
+	0xd1, 0xf3, 0xca, 0xaf, 0x21, 0xc2, 0x20, 0x3d, 0xcf, 0x8e, 0x83, 0x58, 0xd7, 0x09, 0xa2, 0xfc,
+	0x1a, 0xa2, 0xda, 0x80, 0x52, 0x2a, 0xdd, 0x49, 0x09, 0xf2, 0xaf, 0x99, 0x8d, 0x1d, 0xca, 0xd0,
+	0x2e, 0xaf, 0x90, 0x22, 0xe4, 0x4e, 0x18, 0x9e, 0xf1, 0x13, 0x86, 0xe5, 0x0c, 0xc9, 0xc3, 0x7a,
+	0x84, 0x2e, 0xdf, 0x22, 0x39, 0x58, 0x6b, 0xa1, 0xdb, 0x29, 0xaf, 0x56, 0xff, 0xb6, 0x0e, 0x3b,
+	0x4a, 0x3c, 0x2c, 0xde, 0x0d, 0x69, 0x83, 0xbf, 0xef, 0x61, 0x20, 0x3e, 0x4a, 0xf6, 0x1e, 0xc1,
+	0xa7, 0xf1, 0xa6, 0xca, 0x93, 0x1a, 0x07, 0x91, 0xfa, 0xb7, 0xad, 0xac, 0x92, 0x01, 0xca, 0xe9,
+	0xc7, 0xb0, 0x11, 0x75, 0x9b, 0x82, 0x72, 0x66, 0x04, 0xd4, 0x51, 0x62, 0x58, 0x9a, 0xf4, 0xb6,
+	0xa8, 0x43, 0x6a, 0xb0, 0x9d, 0x80, 0xc5, 0x72, 0x13, 0x89, 0x63, 0x51, 0xdf, 0x9a, 0x98, 0x94,
+	0xda, 0x84, 0x78, 0xb9, 0x8e, 0xb4, 0x10, 0xaf, 0x4b, 0x7c, 0x64, 0x6a, 0x25, 0xd5, 0xf8, 0xf3,
+	0x78, 0xdd, 0xb1, 0x36, 0x4a, 0xcd, 0x2b, 0x46, 0x9d, 0xdf, 0x28, 0x81, 0x3c, 0x00, 0x82, 0x41,
+	0x80, 0x4c, 0x50, 0xd3, 0x35, 0xc6, 0xe2, 0xad, 0xb4, 0x6e, 0x6c, 0x39, 0x8e, 0x55, 0xfc, 0x03,
+	0xa5, 0xeb, 0xcf, 0x19, 0xd8, 0x9c, 0xf2, 0x8b, 0xe4, 0xf1, 0x7b, 0xa5, 0xf9, 0x46, 0x7a, 0x2a,
+	0x37, 0x88, 0xed, 0x7f, 0xcf, 0x42, 0x21, 0x21, 0x1c, 0xe4, 0x25, 0xec, 0xc8, 0x93, 0x9a, 0xe2,
+	0xd8, 0x72, 0xa2, 0xca, 0x23, 0x4f, 0x31, 0xef, 0xc9, 0x34, 0xd5, 0x23, 0x96, 0x36, 0xb7, 0x47,
+	0xc3, 0xca, 0xa6, 0x8c, 0xc0, 0xb8, 0xd8, 0x63, 0x3d, 0xd7, 0x9d, 0xe2, 0xf9, 0x83, 0xc9, 0xf9,
+	0xc4, 0xae, 0x49, 0xce, 0x26, 0xaf, 0xae, 0x78, 0xd7, 0xd5, 0x4d, 0x3a, 0xc6, 0x4b, 0xde, 0xee,
+	0x28, 0xb3, 0xba, 0x4d, 0x95, 0x5b, 0x03, 0x7e, 0x38, 0xed, 0xd6, 0xa6, 0xcc, 0xa6, 0xcc, 0x31,
+	0x3c, 0x9f, 0xf3, 0x8e, 0x22, 0xf1, 0x6e, 0xda, 0xb9, 0x29, 0x21, 0xa7, 0x21, 0x22, 0x55, 0x5b,
+	0xdc, 0x9e, 0xaa, 0x2d, 0xde, 0x41, 0x56, 0x5e, 0xd2, 0xb1, 0x56, 0x3f, 0xb8, 0x4c, 0xab, 0xe5,
+	0xd5, 0xdd, 0xfc, 0xc5, 0x68, 0x58, 0xf9, 0xf9, 0x02, 0xc5, 0x4e, 0x9f, 0xc5, 0x8c, 0x86, 0xaa,
+	0x01, 0x89, 0x00, 0x90, 0x78, 0xca, 0x3a, 0x5c, 0x69, 0xf7, 0xfd, 0xe5, 0x95, 0x4d, 0xf3, 0x71,
+	0x48, 0x8a, 0xeb, 0x5f, 0x16, 0x79, 0x67, 0x5c, 0xca, 0xf1, 0xc9, 0x75, 0xa1, 0x47, 0x43, 0x5e,
+	0x7e, 0x3b, 0x3d, 0x1a, 0x0d, 0x2b, 0xf5, 0x85, 0xb9, 0x74, 0xd9, 0x55, 0x11, 0x40, 0x36, 0x4e,
+	0xdc, 0xd6, 0x07, 0x27, 0xee, 0x02, 0xea, 0xcc, 0x0c, 0x6a, 0xdd, 0xb8, 0x8c, 0xfd, 0xc7, 0x1a,
+	0x6c, 0xcd, 0xd0, 0x87, 0x9c, 0xc1, 0xdd, 0x14, 0x57, 0x24, 0x27, 0xae, 0x98, 0xbe, 0x77, 0x9c,
+	0xe9, 0x78, 0x2a, 0x59, 0xea, 0x0b, 0xd4, 0xe0, 0x56, 0x42, 0xe8, 0x53, 0x59, 0xff, 0x53, 0x28,
+	0xdb, 0xe8, 0xd3, 0xbe, 0xba, 0x6f, 0x84, 0x29, 0x50, 0x65, 0xef, 0xe6, 0xa4, 0xbf, 0x15, 0x76,
+	0x87, 0x72, 0x9f, 0x80, 0x46, 0xa7, 0x80, 0x7e, 0x94, 0xba, 0x6b, 0xfa, 0xd6, 0xc4, 0x72, 0x24,
+	0x0d, 0xa4, 0x09, 0x3b, 0x09, 0x38, 0xc3, 0xb7, 0xc2, 0x38, 0xe7, 0xc2, 0x93, 0xe9, 0x3a, 0xa7,
+	0x24, 0x4f, 0x04, 0xff, 0x35, 0xbe, 0x15, 0xbf, 0xe2, 0xc2, 0x23, 0x7f, 0xca, 0x40, 0x31, 0xb9,
+	0x1e, 0xed, 0xf4, 0x8a, 0x84, 0x7d, 0xa6, 0xb2, 0xe4, 0xc3, 0x12, 0xb4, 0x90, 0xd8, 0xa7, 0x1b,
+	0x44, 0xa4, 0xbf, 0xac, 0x43, 0x36, 0xbe, 0x90, 0x7e, 0x09, 0x9b, 0xd3, 0x22, 0xba, 0x9c, 0x32,
+	0x25, 0x33, 0xa5, 0xaa, 0x8f, 0x41, 0xe3, 0x0c, 0x0d, 0xc1, 0x8d, 0xf0, 0x67, 0x8e, 0xf0, 0xeb,
+	0xdb, 0x5c, 0x15, 0x4d, 0x2f, 0x13, 0x5a, 0xff, 0x23, 0xd8, 0x08, 0xc5, 0x77, 0x46, 0xea, 0x8b,
+	0xb2, 0x57, 0xa1, 0xde, 0x40, 0x41, 0xf8, 0xbd, 0x40, 0x18, 0x2e, 0xf6, 0xd1, 0x55, 0x4f, 0xb6,
+	0x9f, 0x2c, 0x4b, 0xfa, 0xda, 0x59, 0x88, 0xff, 0x3a, 0x84, 0xcf, 0xa1, 0x06, 0x88, 0xb1, 0x35,
+	0xa5, 0xe5, 0xeb, 0x53, 0x5a, 0xae, 0x41, 0xb6, 0xed, 0x72, 0xeb, 0x02, 0xed, 0x48, 0xe6, 0x73,
+	0x7a, 0xdc, 0x24, 0xef, 0xa0, 0x3c, 0xbd, 0x5c, 0xc5, 0xa5, 0xcb, 0xf4, 0xf6, 0x0a, 0x85, 0xf9,
+	0xe1, 0x14, 0x7d, 0x4a, 0xa9, 0x9d, 0xbb, 0x41, 0x04, 0xfa, 0x06, 0x60, 0xb2, 0xcf, 0xa4, 0x00,
+	0xd9, 0xd7, 0xec, 0x82, 0xf1, 0x3f, 0xb0, 0xf2, 0x8a, 0xac, 0x99, 0xa3, 0x6d, 0x46, 0xbb, 0x9c,
+	0x09, 0x6b, 0xe6, 0x86, 0x65, 0xa1, 0x17, 0xb6, 0x6e, 0x85, 0xc8, 0x33, 0x65, 0x5a, 0x25, 0x5b,
+	0x50, 0x7a, 0xed, 0x0a, 0xda, 0x35, 0x05, 0x46, 0x9d, 0xe5, 0xb5, 0xea, 0x70, 0x15, 0xb2, 0xf1,
+	0x63, 0xf0, 0x63, 0x2a, 0xe6, 0x03, 0xc8, 0x23, 0x13, 0xfe, 0x20, 0x7c, 0x87, 0xa9, 0xf2, 0x63,
+	0xce, 0xd3, 0x3d, 0x82, 0x1c, 0x51, 0x9b, 0x54, 0xa0, 0xa0, 0x1e, 0xb0, 0x09, 0x26, 0x82, 0xea,
+	0x0a, 0xe3, 0x3d, 0x5b, 0xae, 0xb1, 0xb2, 0xea, 0x58, 0xa8, 0xa5, 0x7f, 0x84, 0xdb, 0xea, 0xf9,
+	0x2e, 0x99, 0x72, 0xd5, 0xc2, 0xe0, 0xcb, 0xd1, 0xb0, 0xf2, 0x74, 0xb9, 0xee, 0xa4, 0x27, 0x32,
+	0x2d, 0x3f, 0x6a, 0xd8, 0x1b, 0x44, 0x9c, 0x7f, 0xad, 0x41, 0xe9, 0x78, 0x10, 0xa0, 0xdb, 0x89,
+	0xbf, 0x74, 0x7c, 0xac, 0xfe, 0x3c, 0x01, 0x6d, 0xb6, 0x9a, 0x53, 0xaf, 0x18, 0xa9, 0x3f, 0x9f,
+	0x98, 0x53, 0x95, 0x9c, 0x7c, 0xc9, 0xcc, 0x7c, 0x4c, 0x5a, 0x9d, 0xf3, 0x31, 0xe9, 0x4b, 0xb8,
+	0xe7, 0xf5, 0xda, 0x2e, 0xb5, 0x0c, 0x1f, 0x99, 0x8d, 0xef, 0xfa, 0xbc, 0x17, 0x18, 0x1e, 0xa7,
+	0x4c, 0x18, 0x01, 0xa2, 0xad, 0x4e, 0xfe, 0x07, 0x12, 0xa3, 0x8f, 0x21, 0xa7, 0x21, 0xa2, 0x85,
+	0x68, 0x93, 0x17, 0x50, 0x59, 0x14, 0x00, 0x99, 0xd9, 0x76, 0xd1, 0x8e, 0xc4, 0x27, 0xa7, 0xdf,
+	0x9b, 0x1b, 0xe3, 0x85, 0xc4, 0x90, 0xbb, 0x90, 0x0f, 0xa8, 0x63, 0x58, 0xe7, 0x26, 0x8d, 0x9f,
+	0x50, 0xb9, 0x80, 0x3a, 0x47, 0x61, 0x9b, 0x78, 0xd3, 0x95, 0xe7, 0x67, 0x73, 0x09, 0x26, 0xf7,
+	0x5d, 0x71, 0x6b, 0x7e, 0x21, 0x76, 0x59, 0x4d, 0x14, 0xd7, 0x9b, 0x37, 0x87, 0x50, 0x7f, 0x5d,
+	0x85, 0x62, 0x72, 0x61, 0xe4, 0x19, 0x6c, 0x5c, 0xab, 0x02, 0x2a, 0xda, 0xc9, 0x54, 0x7d, 0x00,
+	0x9b, 0xb1, 0x77, 0x9a, 0x44, 0x25, 0x05, 0x53, 0xe4, 0x79, 0x30, 0xcb, 0x5a, 0xf5, 0x54, 0x49,
+	0xb3, 0xb3, 0x07, 0xd9, 0xf8, 0x63, 0x9f, 0xcc, 0xfd, 0xea, 0x92, 0xa3, 0x89, 0x5f, 0x1c, 0x4f,
+	0x54, 0xcd, 0x71, 0xfd, 0xf3, 0x51, 0xf6, 0x9b, 0x73, 0x3e, 0xcd, 0xfa, 0xb7, 0xef, 0xef, 0xaf,
+	0xfc, 0xfb, 0xfd, 0xfd, 0x95, 0xff, 0xbc, 0xbf, 0xbf, 0xf2, 0xe6, 0x33, 0xb9, 0x78, 0x81, 0xd6,
+	0x79, 0xdd, 0xe1, 0xf5, 0x99, 0xef, 0xd6, 0x76, 0xbb, 0x7d, 0x3b, 0xfa, 0xff, 0xe8, 0xff, 0x01,
+	0x00, 0x00, 0xff, 0xff, 0x3b, 0x99, 0x9b, 0x99, 0xd8, 0x16, 0x00, 0x00,
 }
-
-func (this *GroupInfo) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*GroupInfo)
-	if !ok {
-		that2, ok := that.(GroupInfo)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !bytes.Equal(this.GroupPubKey, that1.GroupPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.SharedSecret, that1.SharedSecret) {
-		return false
-	}
-	if !bytes.Equal(this.Metadata, that1.Metadata) {
-		return false
-	}
-	if this.Audience != that1.Audience {
-		return false
-	}
-	if this.Version != that1.Version {
-		return false
-	}
-	if !bytes.Equal(this.SelfPrivKeyAccount, that1.SelfPrivKeyAccount) {
-		return false
-	}
-	if !bytes.Equal(this.SelfPrivKeyDevice, that1.SelfPrivKeyDevice) {
-		return false
-	}
-	if !bytes.Equal(this.SelfInviterPubKey, that1.SelfInviterPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.InviterContactPubKey, that1.InviterContactPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.OrbitDBCurrentCIDMessage, that1.OrbitDBCurrentCIDMessage) {
-		return false
-	}
-	if !bytes.Equal(this.OrbitDBCurrentCIDSecret, that1.OrbitDBCurrentCIDSecret) {
-		return false
-	}
-	if !bytes.Equal(this.OrbitDBCurrentCIDSetting, that1.OrbitDBCurrentCIDSetting) {
-		return false
-	}
-	if !bytes.Equal(this.OrbitDBCurrentCIDMember, that1.OrbitDBCurrentCIDMember) {
-		return false
-	}
-	if len(this.Members) != len(that1.Members) {
-		return false
-	}
-	for i := range this.Members {
-		if !this.Members[i].Equal(that1.Members[i]) {
-			return false
-		}
-	}
-	if !this.Inviter.Equal(that1.Inviter) {
-		return false
-	}
-	if !this.CreatedAt.Equal(that1.CreatedAt) {
-		return false
-	}
-	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
-		return false
-	}
-	return true
-}
-func (this *GroupIncomingRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*GroupIncomingRequest)
-	if !ok {
-		that2, ok := that.(GroupIncomingRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !bytes.Equal(this.GroupPubKey, that1.GroupPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.InviterMemberPubKey, that1.InviterMemberPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.InvitationSig, that1.InvitationSig) {
-		return false
-	}
-	if !bytes.Equal(this.InvitationPrivKey, that1.InvitationPrivKey) {
-		return false
-	}
-	if !bytes.Equal(this.GroupSharedSecret, that1.GroupSharedSecret) {
-		return false
-	}
-	if !bytes.Equal(this.GroupVersion, that1.GroupVersion) {
-		return false
-	}
-	if !bytes.Equal(this.EssentialMetadata, that1.EssentialMetadata) {
-		return false
-	}
-	if !bytes.Equal(this.InviterContactPubKey, that1.InviterContactPubKey) {
-		return false
-	}
-	if !this.InviterContact.Equal(that1.InviterContact) {
-		return false
-	}
-	if !this.CreatedAt.Equal(that1.CreatedAt) {
-		return false
-	}
-	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
-		return false
-	}
-	return true
-}
-func (this *GroupMember) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*GroupMember)
-	if !ok {
-		that2, ok := that.(GroupMember)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !bytes.Equal(this.GroupMemberPubKey, that1.GroupMemberPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.GroupPubKey, that1.GroupPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.InviterPubKey, that1.InviterPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.ContactAccountPubKey, that1.ContactAccountPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.ContactAccountBindingProof, that1.ContactAccountBindingProof) {
-		return false
-	}
-	if !bytes.Equal(this.Metadata, that1.Metadata) {
-		return false
-	}
-	if len(this.Devices) != len(that1.Devices) {
-		return false
-	}
-	for i := range this.Devices {
-		if !this.Devices[i].Equal(that1.Devices[i]) {
-			return false
-		}
-	}
-	if !this.GroupInfo.Equal(&that1.GroupInfo) {
-		return false
-	}
-	if !this.Inviter.Equal(that1.Inviter) {
-		return false
-	}
-	if !this.Contact.Equal(that1.Contact) {
-		return false
-	}
-	if !this.CreatedAt.Equal(that1.CreatedAt) {
-		return false
-	}
-	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
-		return false
-	}
-	return true
-}
-func (this *GroupMemberDevice) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*GroupMemberDevice)
-	if !ok {
-		that2, ok := that.(GroupMemberDevice)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !bytes.Equal(this.GroupMemberDevicePubKey, that1.GroupMemberDevicePubKey) {
-		return false
-	}
-	if !bytes.Equal(this.GroupMemberPubKey, that1.GroupMemberPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.DerivationState, that1.DerivationState) {
-		return false
-	}
-	if this.DerivationCounter != that1.DerivationCounter {
-		return false
-	}
-	if !bytes.Equal(this.DerivationNextHotp, that1.DerivationNextHotp) {
-		return false
-	}
-	if !this.GroupMember.Equal(&that1.GroupMember) {
-		return false
-	}
-	if !this.CreatedAt.Equal(that1.CreatedAt) {
-		return false
-	}
-	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
-		return false
-	}
-	return true
-}
-func (this *Contact) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*Contact)
-	if !ok {
-		that2, ok := that.(Contact)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !bytes.Equal(this.AccountPubKey, that1.AccountPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.OneToOneGroupPubKey, that1.OneToOneGroupPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.BinderPubKey, that1.BinderPubKey) {
-		return false
-	}
-	if this.TrustLevel != that1.TrustLevel {
-		return false
-	}
-	if !bytes.Equal(this.Metadata, that1.Metadata) {
-		return false
-	}
-	if this.Blocked != that1.Blocked {
-		return false
-	}
-	if !this.OneToOneGroup.Equal(that1.OneToOneGroup) {
-		return false
-	}
-	if !this.CreatedAt.Equal(that1.CreatedAt) {
-		return false
-	}
-	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
-		return false
-	}
-	return true
-}
-func (this *Message) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*Message)
-	if !ok {
-		that2, ok := that.(Message)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !bytes.Equal(this.GroupPubKey, that1.GroupPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.EntryCid, that1.EntryCid) {
-		return false
-	}
-	if !bytes.Equal(this.MessageKey, that1.MessageKey) {
-		return false
-	}
-	if !bytes.Equal(this.GroupMemberDevicePubKey, that1.GroupMemberDevicePubKey) {
-		return false
-	}
-	if !this.Device.Equal(that1.Device) {
-		return false
-	}
-	if !this.CreatedAt.Equal(that1.CreatedAt) {
-		return false
-	}
-	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
-		return false
-	}
-	return true
-}
-func (this *MyselfAccount) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MyselfAccount)
-	if !ok {
-		that2, ok := that.(MyselfAccount)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !bytes.Equal(this.AccountPubKey, that1.AccountPubKey) {
-		return false
-	}
-	if !bytes.Equal(this.AccountBindingPrivKey, that1.AccountBindingPrivKey) {
-		return false
-	}
-	if !bytes.Equal(this.SharedSecret, that1.SharedSecret) {
-		return false
-	}
-	if !bytes.Equal(this.PublicRendezvousPointSeed, that1.PublicRendezvousPointSeed) {
-		return false
-	}
-	if this.PublicRendezvousPointEnabled != that1.PublicRendezvousPointEnabled {
-		return false
-	}
-	if !bytes.Equal(this.SigChain, that1.SigChain) {
-		return false
-	}
-	if len(this.Devices) != len(that1.Devices) {
-		return false
-	}
-	for i := range this.Devices {
-		if !this.Devices[i].Equal(that1.Devices[i]) {
-			return false
-		}
-	}
-	if !this.CreatedAt.Equal(that1.CreatedAt) {
-		return false
-	}
-	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
-		return false
-	}
-	return true
-}
-func (this *MyselfDevice) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MyselfDevice)
-	if !ok {
-		that2, ok := that.(MyselfDevice)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !bytes.Equal(this.DevicePubKey, that1.DevicePubKey) {
-		return false
-	}
-	if !bytes.Equal(this.DevicePrivKey, that1.DevicePrivKey) {
-		return false
-	}
-	if !bytes.Equal(this.AccountPubKey, that1.AccountPubKey) {
-		return false
-	}
-	if !this.Account.Equal(&that1.Account) {
-		return false
-	}
-	if !this.CreatedAt.Equal(that1.CreatedAt) {
-		return false
-	}
-	if !this.UpdatedAt.Equal(that1.UpdatedAt) {
-		return false
-	}
-	return true
-}
-func (m *GroupInfo) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GroupInfo) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GroupInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
-	if err1 != nil {
-		return 0, err1
-	}
-	i -= n1
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n1))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x9a
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
-	if err2 != nil {
-		return 0, err2
-	}
-	i -= n2
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n2))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x92
-	if m.Inviter != nil {
-		{
-			size, err := m.Inviter.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintProtocolmodel(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x5
-		i--
-		dAtA[i] = 0x8a
-	}
-	if len(m.Members) > 0 {
-		for iNdEx := len(m.Members) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Members[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintProtocolmodel(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x5
-			i--
-			dAtA[i] = 0x82
-		}
-	}
-	if len(m.OrbitDBCurrentCIDMember) > 0 {
-		i -= len(m.OrbitDBCurrentCIDMember)
-		copy(dAtA[i:], m.OrbitDBCurrentCIDMember)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.OrbitDBCurrentCIDMember)))
-		i--
-		dAtA[i] = 0x6a
-	}
-	if len(m.OrbitDBCurrentCIDSetting) > 0 {
-		i -= len(m.OrbitDBCurrentCIDSetting)
-		copy(dAtA[i:], m.OrbitDBCurrentCIDSetting)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.OrbitDBCurrentCIDSetting)))
-		i--
-		dAtA[i] = 0x62
-	}
-	if len(m.OrbitDBCurrentCIDSecret) > 0 {
-		i -= len(m.OrbitDBCurrentCIDSecret)
-		copy(dAtA[i:], m.OrbitDBCurrentCIDSecret)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.OrbitDBCurrentCIDSecret)))
-		i--
-		dAtA[i] = 0x5a
-	}
-	if len(m.OrbitDBCurrentCIDMessage) > 0 {
-		i -= len(m.OrbitDBCurrentCIDMessage)
-		copy(dAtA[i:], m.OrbitDBCurrentCIDMessage)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.OrbitDBCurrentCIDMessage)))
-		i--
-		dAtA[i] = 0x52
-	}
-	if len(m.InviterContactPubKey) > 0 {
-		i -= len(m.InviterContactPubKey)
-		copy(dAtA[i:], m.InviterContactPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.InviterContactPubKey)))
-		i--
-		dAtA[i] = 0x4a
-	}
-	if len(m.SelfInviterPubKey) > 0 {
-		i -= len(m.SelfInviterPubKey)
-		copy(dAtA[i:], m.SelfInviterPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.SelfInviterPubKey)))
-		i--
-		dAtA[i] = 0x42
-	}
-	if len(m.SelfPrivKeyDevice) > 0 {
-		i -= len(m.SelfPrivKeyDevice)
-		copy(dAtA[i:], m.SelfPrivKeyDevice)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.SelfPrivKeyDevice)))
-		i--
-		dAtA[i] = 0x3a
-	}
-	if len(m.SelfPrivKeyAccount) > 0 {
-		i -= len(m.SelfPrivKeyAccount)
-		copy(dAtA[i:], m.SelfPrivKeyAccount)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.SelfPrivKeyAccount)))
-		i--
-		dAtA[i] = 0x32
-	}
-	if m.Version != 0 {
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(m.Version))
-		i--
-		dAtA[i] = 0x28
-	}
-	if m.Audience != 0 {
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(m.Audience))
-		i--
-		dAtA[i] = 0x20
-	}
-	if len(m.Metadata) > 0 {
-		i -= len(m.Metadata)
-		copy(dAtA[i:], m.Metadata)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.Metadata)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.SharedSecret) > 0 {
-		i -= len(m.SharedSecret)
-		copy(dAtA[i:], m.SharedSecret)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.SharedSecret)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.GroupPubKey) > 0 {
-		i -= len(m.GroupPubKey)
-		copy(dAtA[i:], m.GroupPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.GroupPubKey)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *GroupIncomingRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GroupIncomingRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GroupIncomingRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
-	if err4 != nil {
-		return 0, err4
-	}
-	i -= n4
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n4))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x9a
-	n5, err5 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
-	if err5 != nil {
-		return 0, err5
-	}
-	i -= n5
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n5))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x92
-	if len(m.InviterContactPubKey) > 0 {
-		i -= len(m.InviterContactPubKey)
-		copy(dAtA[i:], m.InviterContactPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.InviterContactPubKey)))
-		i--
-		dAtA[i] = 0x4a
-	}
-	if m.InviterContact != nil {
-		{
-			size, err := m.InviterContact.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintProtocolmodel(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x42
-	}
-	if len(m.EssentialMetadata) > 0 {
-		i -= len(m.EssentialMetadata)
-		copy(dAtA[i:], m.EssentialMetadata)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.EssentialMetadata)))
-		i--
-		dAtA[i] = 0x3a
-	}
-	if len(m.GroupVersion) > 0 {
-		i -= len(m.GroupVersion)
-		copy(dAtA[i:], m.GroupVersion)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.GroupVersion)))
-		i--
-		dAtA[i] = 0x32
-	}
-	if len(m.GroupSharedSecret) > 0 {
-		i -= len(m.GroupSharedSecret)
-		copy(dAtA[i:], m.GroupSharedSecret)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.GroupSharedSecret)))
-		i--
-		dAtA[i] = 0x2a
-	}
-	if len(m.InvitationPrivKey) > 0 {
-		i -= len(m.InvitationPrivKey)
-		copy(dAtA[i:], m.InvitationPrivKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.InvitationPrivKey)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.InvitationSig) > 0 {
-		i -= len(m.InvitationSig)
-		copy(dAtA[i:], m.InvitationSig)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.InvitationSig)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.InviterMemberPubKey) > 0 {
-		i -= len(m.InviterMemberPubKey)
-		copy(dAtA[i:], m.InviterMemberPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.InviterMemberPubKey)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.GroupPubKey) > 0 {
-		i -= len(m.GroupPubKey)
-		copy(dAtA[i:], m.GroupPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.GroupPubKey)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *GroupMember) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GroupMember) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GroupMember) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	n7, err7 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
-	if err7 != nil {
-		return 0, err7
-	}
-	i -= n7
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n7))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x9a
-	n8, err8 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
-	if err8 != nil {
-		return 0, err8
-	}
-	i -= n8
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n8))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x92
-	if m.Contact != nil {
-		{
-			size, err := m.Contact.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintProtocolmodel(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x5
-		i--
-		dAtA[i] = 0x9a
-	}
-	if m.Inviter != nil {
-		{
-			size, err := m.Inviter.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintProtocolmodel(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x5
-		i--
-		dAtA[i] = 0x92
-	}
-	{
-		size, err := m.GroupInfo.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x5
-	i--
-	dAtA[i] = 0x8a
-	if len(m.Devices) > 0 {
-		for iNdEx := len(m.Devices) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Devices[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintProtocolmodel(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x5
-			i--
-			dAtA[i] = 0x82
-		}
-	}
-	if len(m.Metadata) > 0 {
-		i -= len(m.Metadata)
-		copy(dAtA[i:], m.Metadata)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.Metadata)))
-		i--
-		dAtA[i] = 0x32
-	}
-	if len(m.ContactAccountBindingProof) > 0 {
-		i -= len(m.ContactAccountBindingProof)
-		copy(dAtA[i:], m.ContactAccountBindingProof)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.ContactAccountBindingProof)))
-		i--
-		dAtA[i] = 0x2a
-	}
-	if len(m.ContactAccountPubKey) > 0 {
-		i -= len(m.ContactAccountPubKey)
-		copy(dAtA[i:], m.ContactAccountPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.ContactAccountPubKey)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.InviterPubKey) > 0 {
-		i -= len(m.InviterPubKey)
-		copy(dAtA[i:], m.InviterPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.InviterPubKey)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.GroupPubKey) > 0 {
-		i -= len(m.GroupPubKey)
-		copy(dAtA[i:], m.GroupPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.GroupPubKey)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.GroupMemberPubKey) > 0 {
-		i -= len(m.GroupMemberPubKey)
-		copy(dAtA[i:], m.GroupMemberPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.GroupMemberPubKey)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *GroupMemberDevice) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GroupMemberDevice) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GroupMemberDevice) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	n12, err12 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
-	if err12 != nil {
-		return 0, err12
-	}
-	i -= n12
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n12))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x9a
-	n13, err13 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
-	if err13 != nil {
-		return 0, err13
-	}
-	i -= n13
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n13))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x92
-	{
-		size, err := m.GroupMember.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x5
-	i--
-	dAtA[i] = 0x82
-	if len(m.DerivationNextHotp) > 0 {
-		i -= len(m.DerivationNextHotp)
-		copy(dAtA[i:], m.DerivationNextHotp)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.DerivationNextHotp)))
-		i--
-		dAtA[i] = 0x2a
-	}
-	if m.DerivationCounter != 0 {
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(m.DerivationCounter))
-		i--
-		dAtA[i] = 0x20
-	}
-	if len(m.DerivationState) > 0 {
-		i -= len(m.DerivationState)
-		copy(dAtA[i:], m.DerivationState)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.DerivationState)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.GroupMemberPubKey) > 0 {
-		i -= len(m.GroupMemberPubKey)
-		copy(dAtA[i:], m.GroupMemberPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.GroupMemberPubKey)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.GroupMemberDevicePubKey) > 0 {
-		i -= len(m.GroupMemberDevicePubKey)
-		copy(dAtA[i:], m.GroupMemberDevicePubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.GroupMemberDevicePubKey)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *Contact) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Contact) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *Contact) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	n15, err15 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
-	if err15 != nil {
-		return 0, err15
-	}
-	i -= n15
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n15))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x9a
-	n16, err16 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
-	if err16 != nil {
-		return 0, err16
-	}
-	i -= n16
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n16))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x92
-	if m.OneToOneGroup != nil {
-		{
-			size, err := m.OneToOneGroup.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintProtocolmodel(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x5
-		i--
-		dAtA[i] = 0x82
-	}
-	if m.Blocked {
-		i--
-		if m.Blocked {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x30
-	}
-	if len(m.Metadata) > 0 {
-		i -= len(m.Metadata)
-		copy(dAtA[i:], m.Metadata)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.Metadata)))
-		i--
-		dAtA[i] = 0x2a
-	}
-	if m.TrustLevel != 0 {
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(m.TrustLevel))
-		i--
-		dAtA[i] = 0x20
-	}
-	if len(m.BinderPubKey) > 0 {
-		i -= len(m.BinderPubKey)
-		copy(dAtA[i:], m.BinderPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.BinderPubKey)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.OneToOneGroupPubKey) > 0 {
-		i -= len(m.OneToOneGroupPubKey)
-		copy(dAtA[i:], m.OneToOneGroupPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.OneToOneGroupPubKey)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.AccountPubKey) > 0 {
-		i -= len(m.AccountPubKey)
-		copy(dAtA[i:], m.AccountPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.AccountPubKey)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *Message) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Message) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *Message) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	n18, err18 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
-	if err18 != nil {
-		return 0, err18
-	}
-	i -= n18
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n18))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x9a
-	n19, err19 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
-	if err19 != nil {
-		return 0, err19
-	}
-	i -= n19
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n19))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x92
-	if m.Device != nil {
-		{
-			size, err := m.Device.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintProtocolmodel(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x5
-		i--
-		dAtA[i] = 0x82
-	}
-	if len(m.GroupMemberDevicePubKey) > 0 {
-		i -= len(m.GroupMemberDevicePubKey)
-		copy(dAtA[i:], m.GroupMemberDevicePubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.GroupMemberDevicePubKey)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.MessageKey) > 0 {
-		i -= len(m.MessageKey)
-		copy(dAtA[i:], m.MessageKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.MessageKey)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.EntryCid) > 0 {
-		i -= len(m.EntryCid)
-		copy(dAtA[i:], m.EntryCid)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.EntryCid)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.GroupPubKey) > 0 {
-		i -= len(m.GroupPubKey)
-		copy(dAtA[i:], m.GroupPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.GroupPubKey)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MyselfAccount) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MyselfAccount) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MyselfAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	n21, err21 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
-	if err21 != nil {
-		return 0, err21
-	}
-	i -= n21
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n21))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x9a
-	n22, err22 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
-	if err22 != nil {
-		return 0, err22
-	}
-	i -= n22
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n22))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x92
-	if len(m.Devices) > 0 {
-		for iNdEx := len(m.Devices) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Devices[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintProtocolmodel(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x5
-			i--
-			dAtA[i] = 0x82
-		}
-	}
-	if len(m.SigChain) > 0 {
-		i -= len(m.SigChain)
-		copy(dAtA[i:], m.SigChain)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.SigChain)))
-		i--
-		dAtA[i] = 0x32
-	}
-	if m.PublicRendezvousPointEnabled {
-		i--
-		if m.PublicRendezvousPointEnabled {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x28
-	}
-	if len(m.PublicRendezvousPointSeed) > 0 {
-		i -= len(m.PublicRendezvousPointSeed)
-		copy(dAtA[i:], m.PublicRendezvousPointSeed)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.PublicRendezvousPointSeed)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.SharedSecret) > 0 {
-		i -= len(m.SharedSecret)
-		copy(dAtA[i:], m.SharedSecret)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.SharedSecret)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.AccountBindingPrivKey) > 0 {
-		i -= len(m.AccountBindingPrivKey)
-		copy(dAtA[i:], m.AccountBindingPrivKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.AccountBindingPrivKey)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.AccountPubKey) > 0 {
-		i -= len(m.AccountPubKey)
-		copy(dAtA[i:], m.AccountPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.AccountPubKey)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MyselfDevice) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MyselfDevice) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MyselfDevice) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	n23, err23 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt):])
-	if err23 != nil {
-		return 0, err23
-	}
-	i -= n23
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n23))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x9a
-	n24, err24 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt):])
-	if err24 != nil {
-		return 0, err24
-	}
-	i -= n24
-	i = encodeVarintProtocolmodel(dAtA, i, uint64(n24))
-	i--
-	dAtA[i] = 0x6
-	i--
-	dAtA[i] = 0x92
-	{
-		size, err := m.Account.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x5
-	i--
-	dAtA[i] = 0x82
-	if len(m.AccountPubKey) > 0 {
-		i -= len(m.AccountPubKey)
-		copy(dAtA[i:], m.AccountPubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.AccountPubKey)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.DevicePrivKey) > 0 {
-		i -= len(m.DevicePrivKey)
-		copy(dAtA[i:], m.DevicePrivKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.DevicePrivKey)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.DevicePubKey) > 0 {
-		i -= len(m.DevicePubKey)
-		copy(dAtA[i:], m.DevicePubKey)
-		i = encodeVarintProtocolmodel(dAtA, i, uint64(len(m.DevicePubKey)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func encodeVarintProtocolmodel(dAtA []byte, offset int, v uint64) int {
-	offset -= sovProtocolmodel(v)
-	base := offset
-	for v >= 1<<7 {
-		dAtA[offset] = uint8(v&0x7f | 0x80)
-		v >>= 7
-		offset++
-	}
-	dAtA[offset] = uint8(v)
-	return base
-}
-func NewPopulatedGroupInfo(r randyProtocolmodel, easy bool) *GroupInfo {
-	this := &GroupInfo{}
-	v1 := r.Intn(100)
-	this.GroupPubKey = make([]byte, v1)
-	for i := 0; i < v1; i++ {
-		this.GroupPubKey[i] = byte(r.Intn(256))
-	}
-	v2 := r.Intn(100)
-	this.SharedSecret = make([]byte, v2)
-	for i := 0; i < v2; i++ {
-		this.SharedSecret[i] = byte(r.Intn(256))
-	}
-	v3 := r.Intn(100)
-	this.Metadata = make([]byte, v3)
-	for i := 0; i < v3; i++ {
-		this.Metadata[i] = byte(r.Intn(256))
-	}
-	this.Audience = GroupInfo_GroupAudience([]int32{0, 1, 2, 3}[r.Intn(4)])
-	this.Version = uint32(r.Uint32())
-	v4 := r.Intn(100)
-	this.SelfPrivKeyAccount = make([]byte, v4)
-	for i := 0; i < v4; i++ {
-		this.SelfPrivKeyAccount[i] = byte(r.Intn(256))
-	}
-	v5 := r.Intn(100)
-	this.SelfPrivKeyDevice = make([]byte, v5)
-	for i := 0; i < v5; i++ {
-		this.SelfPrivKeyDevice[i] = byte(r.Intn(256))
-	}
-	v6 := r.Intn(100)
-	this.SelfInviterPubKey = make([]byte, v6)
-	for i := 0; i < v6; i++ {
-		this.SelfInviterPubKey[i] = byte(r.Intn(256))
-	}
-	v7 := r.Intn(100)
-	this.InviterContactPubKey = make([]byte, v7)
-	for i := 0; i < v7; i++ {
-		this.InviterContactPubKey[i] = byte(r.Intn(256))
-	}
-	v8 := r.Intn(100)
-	this.OrbitDBCurrentCIDMessage = make([]byte, v8)
-	for i := 0; i < v8; i++ {
-		this.OrbitDBCurrentCIDMessage[i] = byte(r.Intn(256))
-	}
-	v9 := r.Intn(100)
-	this.OrbitDBCurrentCIDSecret = make([]byte, v9)
-	for i := 0; i < v9; i++ {
-		this.OrbitDBCurrentCIDSecret[i] = byte(r.Intn(256))
-	}
-	v10 := r.Intn(100)
-	this.OrbitDBCurrentCIDSetting = make([]byte, v10)
-	for i := 0; i < v10; i++ {
-		this.OrbitDBCurrentCIDSetting[i] = byte(r.Intn(256))
-	}
-	v11 := r.Intn(100)
-	this.OrbitDBCurrentCIDMember = make([]byte, v11)
-	for i := 0; i < v11; i++ {
-		this.OrbitDBCurrentCIDMember[i] = byte(r.Intn(256))
-	}
-	if r.Intn(5) == 0 {
-		v12 := r.Intn(5)
-		this.Members = make([]*GroupMember, v12)
-		for i := 0; i < v12; i++ {
-			this.Members[i] = NewPopulatedGroupMember(r, easy)
-		}
-	}
-	if r.Intn(5) == 0 {
-		this.Inviter = NewPopulatedContact(r, easy)
-	}
-	v13 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.CreatedAt = *v13
-	v14 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.UpdatedAt = *v14
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedGroupIncomingRequest(r randyProtocolmodel, easy bool) *GroupIncomingRequest {
-	this := &GroupIncomingRequest{}
-	v15 := r.Intn(100)
-	this.GroupPubKey = make([]byte, v15)
-	for i := 0; i < v15; i++ {
-		this.GroupPubKey[i] = byte(r.Intn(256))
-	}
-	v16 := r.Intn(100)
-	this.InviterMemberPubKey = make([]byte, v16)
-	for i := 0; i < v16; i++ {
-		this.InviterMemberPubKey[i] = byte(r.Intn(256))
-	}
-	v17 := r.Intn(100)
-	this.InvitationSig = make([]byte, v17)
-	for i := 0; i < v17; i++ {
-		this.InvitationSig[i] = byte(r.Intn(256))
-	}
-	v18 := r.Intn(100)
-	this.InvitationPrivKey = make([]byte, v18)
-	for i := 0; i < v18; i++ {
-		this.InvitationPrivKey[i] = byte(r.Intn(256))
-	}
-	v19 := r.Intn(100)
-	this.GroupSharedSecret = make([]byte, v19)
-	for i := 0; i < v19; i++ {
-		this.GroupSharedSecret[i] = byte(r.Intn(256))
-	}
-	v20 := r.Intn(100)
-	this.GroupVersion = make([]byte, v20)
-	for i := 0; i < v20; i++ {
-		this.GroupVersion[i] = byte(r.Intn(256))
-	}
-	v21 := r.Intn(100)
-	this.EssentialMetadata = make([]byte, v21)
-	for i := 0; i < v21; i++ {
-		this.EssentialMetadata[i] = byte(r.Intn(256))
-	}
-	if r.Intn(5) == 0 {
-		this.InviterContact = NewPopulatedContact(r, easy)
-	}
-	v22 := r.Intn(100)
-	this.InviterContactPubKey = make([]byte, v22)
-	for i := 0; i < v22; i++ {
-		this.InviterContactPubKey[i] = byte(r.Intn(256))
-	}
-	v23 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.CreatedAt = *v23
-	v24 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.UpdatedAt = *v24
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedGroupMember(r randyProtocolmodel, easy bool) *GroupMember {
-	this := &GroupMember{}
-	v25 := r.Intn(100)
-	this.GroupMemberPubKey = make([]byte, v25)
-	for i := 0; i < v25; i++ {
-		this.GroupMemberPubKey[i] = byte(r.Intn(256))
-	}
-	v26 := r.Intn(100)
-	this.GroupPubKey = make([]byte, v26)
-	for i := 0; i < v26; i++ {
-		this.GroupPubKey[i] = byte(r.Intn(256))
-	}
-	v27 := r.Intn(100)
-	this.InviterPubKey = make([]byte, v27)
-	for i := 0; i < v27; i++ {
-		this.InviterPubKey[i] = byte(r.Intn(256))
-	}
-	v28 := r.Intn(100)
-	this.ContactAccountPubKey = make([]byte, v28)
-	for i := 0; i < v28; i++ {
-		this.ContactAccountPubKey[i] = byte(r.Intn(256))
-	}
-	v29 := r.Intn(100)
-	this.ContactAccountBindingProof = make([]byte, v29)
-	for i := 0; i < v29; i++ {
-		this.ContactAccountBindingProof[i] = byte(r.Intn(256))
-	}
-	v30 := r.Intn(100)
-	this.Metadata = make([]byte, v30)
-	for i := 0; i < v30; i++ {
-		this.Metadata[i] = byte(r.Intn(256))
-	}
-	if r.Intn(5) == 0 {
-		v31 := r.Intn(5)
-		this.Devices = make([]*GroupMemberDevice, v31)
-		for i := 0; i < v31; i++ {
-			this.Devices[i] = NewPopulatedGroupMemberDevice(r, easy)
-		}
-	}
-	v32 := NewPopulatedGroupInfo(r, easy)
-	this.GroupInfo = *v32
-	if r.Intn(5) == 0 {
-		this.Inviter = NewPopulatedGroupMember(r, easy)
-	}
-	if r.Intn(5) == 0 {
-		this.Contact = NewPopulatedContact(r, easy)
-	}
-	v33 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.CreatedAt = *v33
-	v34 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.UpdatedAt = *v34
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedGroupMemberDevice(r randyProtocolmodel, easy bool) *GroupMemberDevice {
-	this := &GroupMemberDevice{}
-	v35 := r.Intn(100)
-	this.GroupMemberDevicePubKey = make([]byte, v35)
-	for i := 0; i < v35; i++ {
-		this.GroupMemberDevicePubKey[i] = byte(r.Intn(256))
-	}
-	v36 := r.Intn(100)
-	this.GroupMemberPubKey = make([]byte, v36)
-	for i := 0; i < v36; i++ {
-		this.GroupMemberPubKey[i] = byte(r.Intn(256))
-	}
-	v37 := r.Intn(100)
-	this.DerivationState = make([]byte, v37)
-	for i := 0; i < v37; i++ {
-		this.DerivationState[i] = byte(r.Intn(256))
-	}
-	this.DerivationCounter = uint64(uint64(r.Uint32()))
-	v38 := r.Intn(100)
-	this.DerivationNextHotp = make([]byte, v38)
-	for i := 0; i < v38; i++ {
-		this.DerivationNextHotp[i] = byte(r.Intn(256))
-	}
-	v39 := NewPopulatedGroupMember(r, easy)
-	this.GroupMember = *v39
-	v40 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.CreatedAt = *v40
-	v41 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.UpdatedAt = *v41
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContact(r randyProtocolmodel, easy bool) *Contact {
-	this := &Contact{}
-	v42 := r.Intn(100)
-	this.AccountPubKey = make([]byte, v42)
-	for i := 0; i < v42; i++ {
-		this.AccountPubKey[i] = byte(r.Intn(256))
-	}
-	v43 := r.Intn(100)
-	this.OneToOneGroupPubKey = make([]byte, v43)
-	for i := 0; i < v43; i++ {
-		this.OneToOneGroupPubKey[i] = byte(r.Intn(256))
-	}
-	v44 := r.Intn(100)
-	this.BinderPubKey = make([]byte, v44)
-	for i := 0; i < v44; i++ {
-		this.BinderPubKey[i] = byte(r.Intn(256))
-	}
-	this.TrustLevel = Contact_TrustLevel([]int32{0, 1, 2, 3, 4}[r.Intn(5)])
-	v45 := r.Intn(100)
-	this.Metadata = make([]byte, v45)
-	for i := 0; i < v45; i++ {
-		this.Metadata[i] = byte(r.Intn(256))
-	}
-	this.Blocked = bool(bool(r.Intn(2) == 0))
-	if r.Intn(5) == 0 {
-		this.OneToOneGroup = NewPopulatedGroupInfo(r, easy)
-	}
-	v46 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.CreatedAt = *v46
-	v47 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.UpdatedAt = *v47
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedMessage(r randyProtocolmodel, easy bool) *Message {
-	this := &Message{}
-	v48 := r.Intn(100)
-	this.GroupPubKey = make([]byte, v48)
-	for i := 0; i < v48; i++ {
-		this.GroupPubKey[i] = byte(r.Intn(256))
-	}
-	v49 := r.Intn(100)
-	this.EntryCid = make([]byte, v49)
-	for i := 0; i < v49; i++ {
-		this.EntryCid[i] = byte(r.Intn(256))
-	}
-	v50 := r.Intn(100)
-	this.MessageKey = make([]byte, v50)
-	for i := 0; i < v50; i++ {
-		this.MessageKey[i] = byte(r.Intn(256))
-	}
-	v51 := r.Intn(100)
-	this.GroupMemberDevicePubKey = make([]byte, v51)
-	for i := 0; i < v51; i++ {
-		this.GroupMemberDevicePubKey[i] = byte(r.Intn(256))
-	}
-	if r.Intn(5) == 0 {
-		this.Device = NewPopulatedGroupMemberDevice(r, easy)
-	}
-	v52 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.CreatedAt = *v52
-	v53 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.UpdatedAt = *v53
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedMyselfAccount(r randyProtocolmodel, easy bool) *MyselfAccount {
-	this := &MyselfAccount{}
-	v54 := r.Intn(100)
-	this.AccountPubKey = make([]byte, v54)
-	for i := 0; i < v54; i++ {
-		this.AccountPubKey[i] = byte(r.Intn(256))
-	}
-	v55 := r.Intn(100)
-	this.AccountBindingPrivKey = make([]byte, v55)
-	for i := 0; i < v55; i++ {
-		this.AccountBindingPrivKey[i] = byte(r.Intn(256))
-	}
-	v56 := r.Intn(100)
-	this.SharedSecret = make([]byte, v56)
-	for i := 0; i < v56; i++ {
-		this.SharedSecret[i] = byte(r.Intn(256))
-	}
-	v57 := r.Intn(100)
-	this.PublicRendezvousPointSeed = make([]byte, v57)
-	for i := 0; i < v57; i++ {
-		this.PublicRendezvousPointSeed[i] = byte(r.Intn(256))
-	}
-	this.PublicRendezvousPointEnabled = bool(bool(r.Intn(2) == 0))
-	v58 := r.Intn(100)
-	this.SigChain = make([]byte, v58)
-	for i := 0; i < v58; i++ {
-		this.SigChain[i] = byte(r.Intn(256))
-	}
-	if r.Intn(5) == 0 {
-		v59 := r.Intn(5)
-		this.Devices = make([]*MyselfDevice, v59)
-		for i := 0; i < v59; i++ {
-			this.Devices[i] = NewPopulatedMyselfDevice(r, easy)
-		}
-	}
-	v60 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.CreatedAt = *v60
-	v61 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.UpdatedAt = *v61
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedMyselfDevice(r randyProtocolmodel, easy bool) *MyselfDevice {
-	this := &MyselfDevice{}
-	v62 := r.Intn(100)
-	this.DevicePubKey = make([]byte, v62)
-	for i := 0; i < v62; i++ {
-		this.DevicePubKey[i] = byte(r.Intn(256))
-	}
-	v63 := r.Intn(100)
-	this.DevicePrivKey = make([]byte, v63)
-	for i := 0; i < v63; i++ {
-		this.DevicePrivKey[i] = byte(r.Intn(256))
-	}
-	v64 := r.Intn(100)
-	this.AccountPubKey = make([]byte, v64)
-	for i := 0; i < v64; i++ {
-		this.AccountPubKey[i] = byte(r.Intn(256))
-	}
-	v65 := NewPopulatedMyselfAccount(r, easy)
-	this.Account = *v65
-	v66 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.CreatedAt = *v66
-	v67 := github_com_gogo_protobuf_types.NewPopulatedStdTime(r, easy)
-	this.UpdatedAt = *v67
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-type randyProtocolmodel interface {
-	Float32() float32
-	Float64() float64
-	Int63() int64
-	Int31() int32
-	Uint32() uint32
-	Intn(n int) int
-}
-
-func randUTF8RuneProtocolmodel(r randyProtocolmodel) rune {
-	ru := r.Intn(62)
-	if ru < 10 {
-		return rune(ru + 48)
-	} else if ru < 36 {
-		return rune(ru + 55)
-	}
-	return rune(ru + 61)
-}
-func randStringProtocolmodel(r randyProtocolmodel) string {
-	v68 := r.Intn(100)
-	tmps := make([]rune, v68)
-	for i := 0; i < v68; i++ {
-		tmps[i] = randUTF8RuneProtocolmodel(r)
-	}
-	return string(tmps)
-}
-func randUnrecognizedProtocolmodel(r randyProtocolmodel, maxFieldNumber int) (dAtA []byte) {
-	l := r.Intn(5)
-	for i := 0; i < l; i++ {
-		wire := r.Intn(4)
-		if wire == 3 {
-			wire = 5
-		}
-		fieldNumber := maxFieldNumber + r.Intn(100)
-		dAtA = randFieldProtocolmodel(dAtA, r, fieldNumber, wire)
-	}
-	return dAtA
-}
-func randFieldProtocolmodel(dAtA []byte, r randyProtocolmodel, fieldNumber int, wire int) []byte {
-	key := uint32(fieldNumber)<<3 | uint32(wire)
-	switch wire {
-	case 0:
-		dAtA = encodeVarintPopulateProtocolmodel(dAtA, uint64(key))
-		v69 := r.Int63()
-		if r.Intn(2) == 0 {
-			v69 *= -1
-		}
-		dAtA = encodeVarintPopulateProtocolmodel(dAtA, uint64(v69))
-	case 1:
-		dAtA = encodeVarintPopulateProtocolmodel(dAtA, uint64(key))
-		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
-	case 2:
-		dAtA = encodeVarintPopulateProtocolmodel(dAtA, uint64(key))
-		ll := r.Intn(100)
-		dAtA = encodeVarintPopulateProtocolmodel(dAtA, uint64(ll))
-		for j := 0; j < ll; j++ {
-			dAtA = append(dAtA, byte(r.Intn(256)))
-		}
-	default:
-		dAtA = encodeVarintPopulateProtocolmodel(dAtA, uint64(key))
-		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
-	}
-	return dAtA
-}
-func encodeVarintPopulateProtocolmodel(dAtA []byte, v uint64) []byte {
-	for v >= 1<<7 {
-		dAtA = append(dAtA, uint8(uint64(v)&0x7f|0x80))
-		v >>= 7
-	}
-	dAtA = append(dAtA, uint8(v))
-	return dAtA
-}
-func (m *GroupInfo) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.GroupPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.SharedSecret)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.Metadata)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	if m.Audience != 0 {
-		n += 1 + sovProtocolmodel(uint64(m.Audience))
-	}
-	if m.Version != 0 {
-		n += 1 + sovProtocolmodel(uint64(m.Version))
-	}
-	l = len(m.SelfPrivKeyAccount)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.SelfPrivKeyDevice)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.SelfInviterPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.InviterContactPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.OrbitDBCurrentCIDMessage)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.OrbitDBCurrentCIDSecret)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.OrbitDBCurrentCIDSetting)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.OrbitDBCurrentCIDMember)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	if len(m.Members) > 0 {
-		for _, e := range m.Members {
-			l = e.Size()
-			n += 2 + l + sovProtocolmodel(uint64(l))
-		}
-	}
-	if m.Inviter != nil {
-		l = m.Inviter.Size()
-		n += 2 + l + sovProtocolmodel(uint64(l))
-	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	return n
-}
-
-func (m *GroupIncomingRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.GroupPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.InviterMemberPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.InvitationSig)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.InvitationPrivKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.GroupSharedSecret)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.GroupVersion)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.EssentialMetadata)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	if m.InviterContact != nil {
-		l = m.InviterContact.Size()
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.InviterContactPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	return n
-}
-
-func (m *GroupMember) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.GroupMemberPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.GroupPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.InviterPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.ContactAccountPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.ContactAccountBindingProof)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.Metadata)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	if len(m.Devices) > 0 {
-		for _, e := range m.Devices {
-			l = e.Size()
-			n += 2 + l + sovProtocolmodel(uint64(l))
-		}
-	}
-	l = m.GroupInfo.Size()
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	if m.Inviter != nil {
-		l = m.Inviter.Size()
-		n += 2 + l + sovProtocolmodel(uint64(l))
-	}
-	if m.Contact != nil {
-		l = m.Contact.Size()
-		n += 2 + l + sovProtocolmodel(uint64(l))
-	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	return n
-}
-
-func (m *GroupMemberDevice) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.GroupMemberDevicePubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.GroupMemberPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.DerivationState)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	if m.DerivationCounter != 0 {
-		n += 1 + sovProtocolmodel(uint64(m.DerivationCounter))
-	}
-	l = len(m.DerivationNextHotp)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = m.GroupMember.Size()
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	return n
-}
-
-func (m *Contact) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.AccountPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.OneToOneGroupPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.BinderPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	if m.TrustLevel != 0 {
-		n += 1 + sovProtocolmodel(uint64(m.TrustLevel))
-	}
-	l = len(m.Metadata)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	if m.Blocked {
-		n += 2
-	}
-	if m.OneToOneGroup != nil {
-		l = m.OneToOneGroup.Size()
-		n += 2 + l + sovProtocolmodel(uint64(l))
-	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	return n
-}
-
-func (m *Message) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.GroupPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.EntryCid)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.MessageKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.GroupMemberDevicePubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	if m.Device != nil {
-		l = m.Device.Size()
-		n += 2 + l + sovProtocolmodel(uint64(l))
-	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	return n
-}
-
-func (m *MyselfAccount) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.AccountPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.AccountBindingPrivKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.SharedSecret)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.PublicRendezvousPointSeed)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	if m.PublicRendezvousPointEnabled {
-		n += 2
-	}
-	l = len(m.SigChain)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	if len(m.Devices) > 0 {
-		for _, e := range m.Devices {
-			l = e.Size()
-			n += 2 + l + sovProtocolmodel(uint64(l))
-		}
-	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	return n
-}
-
-func (m *MyselfDevice) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.DevicePubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.DevicePrivKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = len(m.AccountPubKey)
-	if l > 0 {
-		n += 1 + l + sovProtocolmodel(uint64(l))
-	}
-	l = m.Account.Size()
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)
-	n += 2 + l + sovProtocolmodel(uint64(l))
-	return n
-}
-
-func sovProtocolmodel(x uint64) (n int) {
-	return (math_bits.Len64(x|1) + 6) / 7
-}
-func sozProtocolmodel(x uint64) (n int) {
-	return sovProtocolmodel(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *GroupInfo) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProtocolmodel
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GroupInfo: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GroupInfo: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GroupPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.GroupPubKey = append(m.GroupPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.GroupPubKey == nil {
-				m.GroupPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SharedSecret", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SharedSecret = append(m.SharedSecret[:0], dAtA[iNdEx:postIndex]...)
-			if m.SharedSecret == nil {
-				m.SharedSecret = []byte{}
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Metadata = append(m.Metadata[:0], dAtA[iNdEx:postIndex]...)
-			if m.Metadata == nil {
-				m.Metadata = []byte{}
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Audience", wireType)
-			}
-			m.Audience = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Audience |= GroupInfo_GroupAudience(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
-			}
-			m.Version = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Version |= uint32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SelfPrivKeyAccount", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SelfPrivKeyAccount = append(m.SelfPrivKeyAccount[:0], dAtA[iNdEx:postIndex]...)
-			if m.SelfPrivKeyAccount == nil {
-				m.SelfPrivKeyAccount = []byte{}
-			}
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SelfPrivKeyDevice", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SelfPrivKeyDevice = append(m.SelfPrivKeyDevice[:0], dAtA[iNdEx:postIndex]...)
-			if m.SelfPrivKeyDevice == nil {
-				m.SelfPrivKeyDevice = []byte{}
-			}
-			iNdEx = postIndex
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SelfInviterPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SelfInviterPubKey = append(m.SelfInviterPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.SelfInviterPubKey == nil {
-				m.SelfInviterPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 9:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InviterContactPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.InviterContactPubKey = append(m.InviterContactPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.InviterContactPubKey == nil {
-				m.InviterContactPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 10:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrbitDBCurrentCIDMessage", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OrbitDBCurrentCIDMessage = append(m.OrbitDBCurrentCIDMessage[:0], dAtA[iNdEx:postIndex]...)
-			if m.OrbitDBCurrentCIDMessage == nil {
-				m.OrbitDBCurrentCIDMessage = []byte{}
-			}
-			iNdEx = postIndex
-		case 11:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrbitDBCurrentCIDSecret", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OrbitDBCurrentCIDSecret = append(m.OrbitDBCurrentCIDSecret[:0], dAtA[iNdEx:postIndex]...)
-			if m.OrbitDBCurrentCIDSecret == nil {
-				m.OrbitDBCurrentCIDSecret = []byte{}
-			}
-			iNdEx = postIndex
-		case 12:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrbitDBCurrentCIDSetting", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OrbitDBCurrentCIDSetting = append(m.OrbitDBCurrentCIDSetting[:0], dAtA[iNdEx:postIndex]...)
-			if m.OrbitDBCurrentCIDSetting == nil {
-				m.OrbitDBCurrentCIDSetting = []byte{}
-			}
-			iNdEx = postIndex
-		case 13:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrbitDBCurrentCIDMember", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OrbitDBCurrentCIDMember = append(m.OrbitDBCurrentCIDMember[:0], dAtA[iNdEx:postIndex]...)
-			if m.OrbitDBCurrentCIDMember == nil {
-				m.OrbitDBCurrentCIDMember = []byte{}
-			}
-			iNdEx = postIndex
-		case 80:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Members", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Members = append(m.Members, &GroupMember{})
-			if err := m.Members[len(m.Members)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 81:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Inviter", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Inviter == nil {
-				m.Inviter = &Contact{}
-			}
-			if err := m.Inviter.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 98:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 99:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.UpdatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProtocolmodel(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GroupIncomingRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProtocolmodel
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GroupIncomingRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GroupIncomingRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GroupPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.GroupPubKey = append(m.GroupPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.GroupPubKey == nil {
-				m.GroupPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InviterMemberPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.InviterMemberPubKey = append(m.InviterMemberPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.InviterMemberPubKey == nil {
-				m.InviterMemberPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InvitationSig", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.InvitationSig = append(m.InvitationSig[:0], dAtA[iNdEx:postIndex]...)
-			if m.InvitationSig == nil {
-				m.InvitationSig = []byte{}
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InvitationPrivKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.InvitationPrivKey = append(m.InvitationPrivKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.InvitationPrivKey == nil {
-				m.InvitationPrivKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GroupSharedSecret", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.GroupSharedSecret = append(m.GroupSharedSecret[:0], dAtA[iNdEx:postIndex]...)
-			if m.GroupSharedSecret == nil {
-				m.GroupSharedSecret = []byte{}
-			}
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GroupVersion", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.GroupVersion = append(m.GroupVersion[:0], dAtA[iNdEx:postIndex]...)
-			if m.GroupVersion == nil {
-				m.GroupVersion = []byte{}
-			}
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EssentialMetadata", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.EssentialMetadata = append(m.EssentialMetadata[:0], dAtA[iNdEx:postIndex]...)
-			if m.EssentialMetadata == nil {
-				m.EssentialMetadata = []byte{}
-			}
-			iNdEx = postIndex
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InviterContact", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.InviterContact == nil {
-				m.InviterContact = &Contact{}
-			}
-			if err := m.InviterContact.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 9:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InviterContactPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.InviterContactPubKey = append(m.InviterContactPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.InviterContactPubKey == nil {
-				m.InviterContactPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 98:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 99:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.UpdatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProtocolmodel(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GroupMember) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProtocolmodel
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GroupMember: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GroupMember: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GroupMemberPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.GroupMemberPubKey = append(m.GroupMemberPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.GroupMemberPubKey == nil {
-				m.GroupMemberPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GroupPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.GroupPubKey = append(m.GroupPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.GroupPubKey == nil {
-				m.GroupPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InviterPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.InviterPubKey = append(m.InviterPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.InviterPubKey == nil {
-				m.InviterPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ContactAccountPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ContactAccountPubKey = append(m.ContactAccountPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.ContactAccountPubKey == nil {
-				m.ContactAccountPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ContactAccountBindingProof", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ContactAccountBindingProof = append(m.ContactAccountBindingProof[:0], dAtA[iNdEx:postIndex]...)
-			if m.ContactAccountBindingProof == nil {
-				m.ContactAccountBindingProof = []byte{}
-			}
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Metadata = append(m.Metadata[:0], dAtA[iNdEx:postIndex]...)
-			if m.Metadata == nil {
-				m.Metadata = []byte{}
-			}
-			iNdEx = postIndex
-		case 80:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Devices", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Devices = append(m.Devices, &GroupMemberDevice{})
-			if err := m.Devices[len(m.Devices)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 81:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GroupInfo", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.GroupInfo.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 82:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Inviter", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Inviter == nil {
-				m.Inviter = &GroupMember{}
-			}
-			if err := m.Inviter.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 83:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Contact", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Contact == nil {
-				m.Contact = &Contact{}
-			}
-			if err := m.Contact.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 98:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 99:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.UpdatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProtocolmodel(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GroupMemberDevice) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProtocolmodel
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GroupMemberDevice: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GroupMemberDevice: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GroupMemberDevicePubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.GroupMemberDevicePubKey = append(m.GroupMemberDevicePubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.GroupMemberDevicePubKey == nil {
-				m.GroupMemberDevicePubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GroupMemberPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.GroupMemberPubKey = append(m.GroupMemberPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.GroupMemberPubKey == nil {
-				m.GroupMemberPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DerivationState", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DerivationState = append(m.DerivationState[:0], dAtA[iNdEx:postIndex]...)
-			if m.DerivationState == nil {
-				m.DerivationState = []byte{}
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DerivationCounter", wireType)
-			}
-			m.DerivationCounter = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.DerivationCounter |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DerivationNextHotp", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DerivationNextHotp = append(m.DerivationNextHotp[:0], dAtA[iNdEx:postIndex]...)
-			if m.DerivationNextHotp == nil {
-				m.DerivationNextHotp = []byte{}
-			}
-			iNdEx = postIndex
-		case 80:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GroupMember", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.GroupMember.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 98:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 99:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.UpdatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProtocolmodel(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Contact) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProtocolmodel
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Contact: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Contact: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccountPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AccountPubKey = append(m.AccountPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.AccountPubKey == nil {
-				m.AccountPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OneToOneGroupPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OneToOneGroupPubKey = append(m.OneToOneGroupPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.OneToOneGroupPubKey == nil {
-				m.OneToOneGroupPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BinderPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.BinderPubKey = append(m.BinderPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.BinderPubKey == nil {
-				m.BinderPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TrustLevel", wireType)
-			}
-			m.TrustLevel = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.TrustLevel |= Contact_TrustLevel(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Metadata = append(m.Metadata[:0], dAtA[iNdEx:postIndex]...)
-			if m.Metadata == nil {
-				m.Metadata = []byte{}
-			}
-			iNdEx = postIndex
-		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Blocked", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Blocked = bool(v != 0)
-		case 80:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OneToOneGroup", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.OneToOneGroup == nil {
-				m.OneToOneGroup = &GroupInfo{}
-			}
-			if err := m.OneToOneGroup.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 98:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 99:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.UpdatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProtocolmodel(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Message) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProtocolmodel
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Message: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Message: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GroupPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.GroupPubKey = append(m.GroupPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.GroupPubKey == nil {
-				m.GroupPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EntryCid", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.EntryCid = append(m.EntryCid[:0], dAtA[iNdEx:postIndex]...)
-			if m.EntryCid == nil {
-				m.EntryCid = []byte{}
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MessageKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.MessageKey = append(m.MessageKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.MessageKey == nil {
-				m.MessageKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GroupMemberDevicePubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.GroupMemberDevicePubKey = append(m.GroupMemberDevicePubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.GroupMemberDevicePubKey == nil {
-				m.GroupMemberDevicePubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 80:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Device", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Device == nil {
-				m.Device = &GroupMemberDevice{}
-			}
-			if err := m.Device.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 98:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 99:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.UpdatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProtocolmodel(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MyselfAccount) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProtocolmodel
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MyselfAccount: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MyselfAccount: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccountPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AccountPubKey = append(m.AccountPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.AccountPubKey == nil {
-				m.AccountPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccountBindingPrivKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AccountBindingPrivKey = append(m.AccountBindingPrivKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.AccountBindingPrivKey == nil {
-				m.AccountBindingPrivKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SharedSecret", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SharedSecret = append(m.SharedSecret[:0], dAtA[iNdEx:postIndex]...)
-			if m.SharedSecret == nil {
-				m.SharedSecret = []byte{}
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PublicRendezvousPointSeed", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PublicRendezvousPointSeed = append(m.PublicRendezvousPointSeed[:0], dAtA[iNdEx:postIndex]...)
-			if m.PublicRendezvousPointSeed == nil {
-				m.PublicRendezvousPointSeed = []byte{}
-			}
-			iNdEx = postIndex
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PublicRendezvousPointEnabled", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.PublicRendezvousPointEnabled = bool(v != 0)
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SigChain", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SigChain = append(m.SigChain[:0], dAtA[iNdEx:postIndex]...)
-			if m.SigChain == nil {
-				m.SigChain = []byte{}
-			}
-			iNdEx = postIndex
-		case 80:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Devices", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Devices = append(m.Devices, &MyselfDevice{})
-			if err := m.Devices[len(m.Devices)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 98:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 99:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.UpdatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProtocolmodel(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MyselfDevice) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProtocolmodel
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MyselfDevice: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MyselfDevice: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DevicePubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DevicePubKey = append(m.DevicePubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.DevicePubKey == nil {
-				m.DevicePubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DevicePrivKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DevicePrivKey = append(m.DevicePrivKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.DevicePrivKey == nil {
-				m.DevicePrivKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccountPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AccountPubKey = append(m.AccountPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.AccountPubKey == nil {
-				m.AccountPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 80:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.Account.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 98:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 99:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.UpdatedAt, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProtocolmodel(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthProtocolmodel
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func skipProtocolmodel(dAtA []byte) (n int, err error) {
-	l := len(dAtA)
-	iNdEx := 0
-	depth := 0
-	for iNdEx < l {
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return 0, ErrIntOverflowProtocolmodel
-			}
-			if iNdEx >= l {
-				return 0, io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		wireType := int(wire & 0x7)
-		switch wireType {
-		case 0:
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return 0, ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return 0, io.ErrUnexpectedEOF
-				}
-				iNdEx++
-				if dAtA[iNdEx-1] < 0x80 {
-					break
-				}
-			}
-		case 1:
-			iNdEx += 8
-		case 2:
-			var length int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return 0, ErrIntOverflowProtocolmodel
-				}
-				if iNdEx >= l {
-					return 0, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				length |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if length < 0 {
-				return 0, ErrInvalidLengthProtocolmodel
-			}
-			iNdEx += length
-		case 3:
-			depth++
-		case 4:
-			if depth == 0 {
-				return 0, ErrUnexpectedEndOfGroupProtocolmodel
-			}
-			depth--
-		case 5:
-			iNdEx += 4
-		default:
-			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
-		}
-		if iNdEx < 0 {
-			return 0, ErrInvalidLengthProtocolmodel
-		}
-		if depth == 0 {
-			return iNdEx, nil
-		}
-	}
-	return 0, io.ErrUnexpectedEOF
-}
-
-var (
-	ErrInvalidLengthProtocolmodel        = fmt.Errorf("proto: negative length found during unmarshaling")
-	ErrIntOverflowProtocolmodel          = fmt.Errorf("proto: integer overflow")
-	ErrUnexpectedEndOfGroupProtocolmodel = fmt.Errorf("proto: unexpected end of group")
-)

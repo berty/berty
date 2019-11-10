@@ -5,6 +5,10 @@ option go_package = "berty.tech/go/internal/crypto";
 import "google/protobuf/timestamp.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+
 message SigChainEntry {
   enum SigChainEntryType {
     SigChainEntryTypeUndefined = 0;

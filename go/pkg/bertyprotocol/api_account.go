@@ -11,24 +11,7 @@ func (c *client) AccountGetConfiguration(context.Context, *AccountGetConfigurati
 }
 
 func (c *client) AccountGetInformation(ctx context.Context, req *AccountGetInformationRequest) (*AccountGetInformationReply, error) {
-	ret := &AccountGetInformationReply{}
-
-	key, err := c.ipfsCoreAPI.Key().Self(ctx)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-	ret.PeerID = key.ID().Pretty()
-
-	maddrs, err := c.ipfsCoreAPI.Swarm().ListenAddrs(ctx)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-	ret.Listeners = make([]string, len(maddrs))
-	for i, addr := range maddrs {
-		ret.Listeners[i] = addr.String()
-	}
-
-	return ret, nil
+	return nil, errcode.ErrNotImplemented
 }
 
 func (c *client) AccountLinkNewDevice(context.Context, *AccountLinkNewDeviceRequest) (*AccountLinkNewDeviceReply, error) {

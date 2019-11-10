@@ -8,15 +8,6 @@ import "chatmodel.proto";
 
 option go_package = "berty.tech/go/pkg/bertychat";
 
-option (gogoproto.goproto_getters_all) = false;
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.sizer_all) = true;
-option (gogoproto.goproto_registration) = true;
-option (gogoproto.populate_all) = true;
-option (gogoproto.equal_all) = true;
-option (gogoproto.testgen_all) = true;
-
 service Account {
   rpc EventSubscribe (EventSubscribeRequest) returns (stream EventSubscribeReply) {};
   rpc ConversationList (ConversationListRequest) returns (stream ConversationListReply) {};
