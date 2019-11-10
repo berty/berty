@@ -6,14 +6,11 @@ package bertychat
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
 	math "math"
-	math_bits "math/bits"
 
 	chatmodel "berty.tech/go/pkg/chatmodel"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	golang_proto "github.com/golang/protobuf/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -22,7 +19,6 @@ import (
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
-var _ = golang_proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
@@ -33,6 +29,9 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type EventSubscribeRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *EventSubscribeRequest) Reset()         { *m = EventSubscribeRequest{} }
@@ -42,25 +41,16 @@ func (*EventSubscribeRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{0}
 }
 func (m *EventSubscribeRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_EventSubscribeRequest.Unmarshal(m, b)
 }
 func (m *EventSubscribeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_EventSubscribeRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_EventSubscribeRequest.Marshal(b, m, deterministic)
 }
 func (m *EventSubscribeRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventSubscribeRequest.Merge(m, src)
 }
 func (m *EventSubscribeRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_EventSubscribeRequest.Size(m)
 }
 func (m *EventSubscribeRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventSubscribeRequest.DiscardUnknown(m)
@@ -69,6 +59,9 @@ func (m *EventSubscribeRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_EventSubscribeRequest proto.InternalMessageInfo
 
 type EventSubscribeReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *EventSubscribeReply) Reset()         { *m = EventSubscribeReply{} }
@@ -78,25 +71,16 @@ func (*EventSubscribeReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{1}
 }
 func (m *EventSubscribeReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_EventSubscribeReply.Unmarshal(m, b)
 }
 func (m *EventSubscribeReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_EventSubscribeReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_EventSubscribeReply.Marshal(b, m, deterministic)
 }
 func (m *EventSubscribeReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventSubscribeReply.Merge(m, src)
 }
 func (m *EventSubscribeReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_EventSubscribeReply.Size(m)
 }
 func (m *EventSubscribeReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventSubscribeReply.DiscardUnknown(m)
@@ -105,6 +89,9 @@ func (m *EventSubscribeReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_EventSubscribeReply proto.InternalMessageInfo
 
 type ConversationListRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationListRequest) Reset()         { *m = ConversationListRequest{} }
@@ -114,25 +101,16 @@ func (*ConversationListRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{2}
 }
 func (m *ConversationListRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationListRequest.Unmarshal(m, b)
 }
 func (m *ConversationListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationListRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationListRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationListRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationListRequest.Merge(m, src)
 }
 func (m *ConversationListRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationListRequest.Size(m)
 }
 func (m *ConversationListRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationListRequest.DiscardUnknown(m)
@@ -141,7 +119,10 @@ func (m *ConversationListRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationListRequest proto.InternalMessageInfo
 
 type ConversationListReply struct {
-	Conversation *chatmodel.Conversation `protobuf:"bytes,1,opt,name=conversation,proto3" json:"conversation,omitempty"`
+	Conversation         *chatmodel.Conversation `protobuf:"bytes,1,opt,name=conversation,proto3" json:"conversation,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
 }
 
 func (m *ConversationListReply) Reset()         { *m = ConversationListReply{} }
@@ -151,25 +132,16 @@ func (*ConversationListReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{3}
 }
 func (m *ConversationListReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationListReply.Unmarshal(m, b)
 }
 func (m *ConversationListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationListReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationListReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationListReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationListReply.Merge(m, src)
 }
 func (m *ConversationListReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationListReply.Size(m)
 }
 func (m *ConversationListReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationListReply.DiscardUnknown(m)
@@ -177,8 +149,18 @@ func (m *ConversationListReply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ConversationListReply proto.InternalMessageInfo
 
+func (m *ConversationListReply) GetConversation() *chatmodel.Conversation {
+	if m != nil {
+		return m.Conversation
+	}
+	return nil
+}
+
 type ConversationGetRequest struct {
-	ID string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ID                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationGetRequest) Reset()         { *m = ConversationGetRequest{} }
@@ -188,25 +170,16 @@ func (*ConversationGetRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{4}
 }
 func (m *ConversationGetRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationGetRequest.Unmarshal(m, b)
 }
 func (m *ConversationGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationGetRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationGetRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationGetRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationGetRequest.Merge(m, src)
 }
 func (m *ConversationGetRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationGetRequest.Size(m)
 }
 func (m *ConversationGetRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationGetRequest.DiscardUnknown(m)
@@ -214,8 +187,18 @@ func (m *ConversationGetRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ConversationGetRequest proto.InternalMessageInfo
 
+func (m *ConversationGetRequest) GetID() string {
+	if m != nil {
+		return m.ID
+	}
+	return ""
+}
+
 type ConversationGetReply struct {
-	Conversation *chatmodel.Conversation `protobuf:"bytes,1,opt,name=conversation,proto3" json:"conversation,omitempty"`
+	Conversation         *chatmodel.Conversation `protobuf:"bytes,1,opt,name=conversation,proto3" json:"conversation,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
 }
 
 func (m *ConversationGetReply) Reset()         { *m = ConversationGetReply{} }
@@ -225,25 +208,16 @@ func (*ConversationGetReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{5}
 }
 func (m *ConversationGetReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationGetReply.Unmarshal(m, b)
 }
 func (m *ConversationGetReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationGetReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationGetReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationGetReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationGetReply.Merge(m, src)
 }
 func (m *ConversationGetReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationGetReply.Size(m)
 }
 func (m *ConversationGetReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationGetReply.DiscardUnknown(m)
@@ -251,7 +225,17 @@ func (m *ConversationGetReply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ConversationGetReply proto.InternalMessageInfo
 
+func (m *ConversationGetReply) GetConversation() *chatmodel.Conversation {
+	if m != nil {
+		return m.Conversation
+	}
+	return nil
+}
+
 type ConversationCreateRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationCreateRequest) Reset()         { *m = ConversationCreateRequest{} }
@@ -261,25 +245,16 @@ func (*ConversationCreateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{6}
 }
 func (m *ConversationCreateRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationCreateRequest.Unmarshal(m, b)
 }
 func (m *ConversationCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationCreateRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationCreateRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationCreateRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationCreateRequest.Merge(m, src)
 }
 func (m *ConversationCreateRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationCreateRequest.Size(m)
 }
 func (m *ConversationCreateRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationCreateRequest.DiscardUnknown(m)
@@ -288,6 +263,9 @@ func (m *ConversationCreateRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationCreateRequest proto.InternalMessageInfo
 
 type ConversationCreateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationCreateReply) Reset()         { *m = ConversationCreateReply{} }
@@ -297,25 +275,16 @@ func (*ConversationCreateReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{7}
 }
 func (m *ConversationCreateReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationCreateReply.Unmarshal(m, b)
 }
 func (m *ConversationCreateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationCreateReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationCreateReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationCreateReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationCreateReply.Merge(m, src)
 }
 func (m *ConversationCreateReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationCreateReply.Size(m)
 }
 func (m *ConversationCreateReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationCreateReply.DiscardUnknown(m)
@@ -324,6 +293,9 @@ func (m *ConversationCreateReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationCreateReply proto.InternalMessageInfo
 
 type ConversationLeaveRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationLeaveRequest) Reset()         { *m = ConversationLeaveRequest{} }
@@ -333,25 +305,16 @@ func (*ConversationLeaveRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{8}
 }
 func (m *ConversationLeaveRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationLeaveRequest.Unmarshal(m, b)
 }
 func (m *ConversationLeaveRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationLeaveRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationLeaveRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationLeaveRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationLeaveRequest.Merge(m, src)
 }
 func (m *ConversationLeaveRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationLeaveRequest.Size(m)
 }
 func (m *ConversationLeaveRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationLeaveRequest.DiscardUnknown(m)
@@ -360,6 +323,9 @@ func (m *ConversationLeaveRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationLeaveRequest proto.InternalMessageInfo
 
 type ConversationLeaveReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationLeaveReply) Reset()         { *m = ConversationLeaveReply{} }
@@ -369,25 +335,16 @@ func (*ConversationLeaveReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{9}
 }
 func (m *ConversationLeaveReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationLeaveReply.Unmarshal(m, b)
 }
 func (m *ConversationLeaveReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationLeaveReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationLeaveReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationLeaveReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationLeaveReply.Merge(m, src)
 }
 func (m *ConversationLeaveReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationLeaveReply.Size(m)
 }
 func (m *ConversationLeaveReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationLeaveReply.DiscardUnknown(m)
@@ -396,6 +353,9 @@ func (m *ConversationLeaveReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationLeaveReply proto.InternalMessageInfo
 
 type ConversationEraseRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationEraseRequest) Reset()         { *m = ConversationEraseRequest{} }
@@ -405,25 +365,16 @@ func (*ConversationEraseRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{10}
 }
 func (m *ConversationEraseRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationEraseRequest.Unmarshal(m, b)
 }
 func (m *ConversationEraseRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationEraseRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationEraseRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationEraseRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationEraseRequest.Merge(m, src)
 }
 func (m *ConversationEraseRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationEraseRequest.Size(m)
 }
 func (m *ConversationEraseRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationEraseRequest.DiscardUnknown(m)
@@ -432,6 +383,9 @@ func (m *ConversationEraseRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationEraseRequest proto.InternalMessageInfo
 
 type ConversationEraseReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationEraseReply) Reset()         { *m = ConversationEraseReply{} }
@@ -441,25 +395,16 @@ func (*ConversationEraseReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{11}
 }
 func (m *ConversationEraseReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationEraseReply.Unmarshal(m, b)
 }
 func (m *ConversationEraseReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationEraseReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationEraseReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationEraseReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationEraseReply.Merge(m, src)
 }
 func (m *ConversationEraseReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationEraseReply.Size(m)
 }
 func (m *ConversationEraseReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationEraseReply.DiscardUnknown(m)
@@ -468,6 +413,9 @@ func (m *ConversationEraseReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationEraseReply proto.InternalMessageInfo
 
 type ConversationSetSeenPositionRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationSetSeenPositionRequest) Reset()         { *m = ConversationSetSeenPositionRequest{} }
@@ -477,25 +425,16 @@ func (*ConversationSetSeenPositionRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{12}
 }
 func (m *ConversationSetSeenPositionRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationSetSeenPositionRequest.Unmarshal(m, b)
 }
 func (m *ConversationSetSeenPositionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationSetSeenPositionRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationSetSeenPositionRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationSetSeenPositionRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationSetSeenPositionRequest.Merge(m, src)
 }
 func (m *ConversationSetSeenPositionRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationSetSeenPositionRequest.Size(m)
 }
 func (m *ConversationSetSeenPositionRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationSetSeenPositionRequest.DiscardUnknown(m)
@@ -504,6 +443,9 @@ func (m *ConversationSetSeenPositionRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationSetSeenPositionRequest proto.InternalMessageInfo
 
 type ConversationSetSeenPositionReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationSetSeenPositionReply) Reset()         { *m = ConversationSetSeenPositionReply{} }
@@ -513,25 +455,16 @@ func (*ConversationSetSeenPositionReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{13}
 }
 func (m *ConversationSetSeenPositionReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationSetSeenPositionReply.Unmarshal(m, b)
 }
 func (m *ConversationSetSeenPositionReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationSetSeenPositionReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationSetSeenPositionReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationSetSeenPositionReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationSetSeenPositionReply.Merge(m, src)
 }
 func (m *ConversationSetSeenPositionReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationSetSeenPositionReply.Size(m)
 }
 func (m *ConversationSetSeenPositionReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationSetSeenPositionReply.DiscardUnknown(m)
@@ -540,6 +473,9 @@ func (m *ConversationSetSeenPositionReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationSetSeenPositionReply proto.InternalMessageInfo
 
 type ConversationMessageListRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationMessageListRequest) Reset()         { *m = ConversationMessageListRequest{} }
@@ -549,25 +485,16 @@ func (*ConversationMessageListRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{14}
 }
 func (m *ConversationMessageListRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationMessageListRequest.Unmarshal(m, b)
 }
 func (m *ConversationMessageListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationMessageListRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationMessageListRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationMessageListRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationMessageListRequest.Merge(m, src)
 }
 func (m *ConversationMessageListRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationMessageListRequest.Size(m)
 }
 func (m *ConversationMessageListRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationMessageListRequest.DiscardUnknown(m)
@@ -576,6 +503,9 @@ func (m *ConversationMessageListRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationMessageListRequest proto.InternalMessageInfo
 
 type ConversationMessageListReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationMessageListReply) Reset()         { *m = ConversationMessageListReply{} }
@@ -585,25 +515,16 @@ func (*ConversationMessageListReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{15}
 }
 func (m *ConversationMessageListReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationMessageListReply.Unmarshal(m, b)
 }
 func (m *ConversationMessageListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationMessageListReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationMessageListReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationMessageListReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationMessageListReply.Merge(m, src)
 }
 func (m *ConversationMessageListReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationMessageListReply.Size(m)
 }
 func (m *ConversationMessageListReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationMessageListReply.DiscardUnknown(m)
@@ -612,6 +533,9 @@ func (m *ConversationMessageListReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationMessageListReply proto.InternalMessageInfo
 
 type ConversationMessageSendRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationMessageSendRequest) Reset()         { *m = ConversationMessageSendRequest{} }
@@ -621,25 +545,16 @@ func (*ConversationMessageSendRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{16}
 }
 func (m *ConversationMessageSendRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationMessageSendRequest.Unmarshal(m, b)
 }
 func (m *ConversationMessageSendRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationMessageSendRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationMessageSendRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationMessageSendRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationMessageSendRequest.Merge(m, src)
 }
 func (m *ConversationMessageSendRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationMessageSendRequest.Size(m)
 }
 func (m *ConversationMessageSendRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationMessageSendRequest.DiscardUnknown(m)
@@ -648,6 +563,9 @@ func (m *ConversationMessageSendRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationMessageSendRequest proto.InternalMessageInfo
 
 type ConversationMessageSendReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationMessageSendReply) Reset()         { *m = ConversationMessageSendReply{} }
@@ -657,25 +575,16 @@ func (*ConversationMessageSendReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{17}
 }
 func (m *ConversationMessageSendReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationMessageSendReply.Unmarshal(m, b)
 }
 func (m *ConversationMessageSendReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationMessageSendReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationMessageSendReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationMessageSendReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationMessageSendReply.Merge(m, src)
 }
 func (m *ConversationMessageSendReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationMessageSendReply.Size(m)
 }
 func (m *ConversationMessageSendReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationMessageSendReply.DiscardUnknown(m)
@@ -684,6 +593,9 @@ func (m *ConversationMessageSendReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationMessageSendReply proto.InternalMessageInfo
 
 type ConversationMessageEditRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationMessageEditRequest) Reset()         { *m = ConversationMessageEditRequest{} }
@@ -693,25 +605,16 @@ func (*ConversationMessageEditRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{18}
 }
 func (m *ConversationMessageEditRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationMessageEditRequest.Unmarshal(m, b)
 }
 func (m *ConversationMessageEditRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationMessageEditRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationMessageEditRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationMessageEditRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationMessageEditRequest.Merge(m, src)
 }
 func (m *ConversationMessageEditRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationMessageEditRequest.Size(m)
 }
 func (m *ConversationMessageEditRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationMessageEditRequest.DiscardUnknown(m)
@@ -720,6 +623,9 @@ func (m *ConversationMessageEditRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationMessageEditRequest proto.InternalMessageInfo
 
 type ConversationMessageEditReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationMessageEditReply) Reset()         { *m = ConversationMessageEditReply{} }
@@ -729,25 +635,16 @@ func (*ConversationMessageEditReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{19}
 }
 func (m *ConversationMessageEditReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationMessageEditReply.Unmarshal(m, b)
 }
 func (m *ConversationMessageEditReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationMessageEditReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationMessageEditReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationMessageEditReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationMessageEditReply.Merge(m, src)
 }
 func (m *ConversationMessageEditReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationMessageEditReply.Size(m)
 }
 func (m *ConversationMessageEditReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationMessageEditReply.DiscardUnknown(m)
@@ -756,6 +653,9 @@ func (m *ConversationMessageEditReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationMessageEditReply proto.InternalMessageInfo
 
 type ConversationMessageHideRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationMessageHideRequest) Reset()         { *m = ConversationMessageHideRequest{} }
@@ -765,25 +665,16 @@ func (*ConversationMessageHideRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{20}
 }
 func (m *ConversationMessageHideRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationMessageHideRequest.Unmarshal(m, b)
 }
 func (m *ConversationMessageHideRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationMessageHideRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationMessageHideRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationMessageHideRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationMessageHideRequest.Merge(m, src)
 }
 func (m *ConversationMessageHideRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationMessageHideRequest.Size(m)
 }
 func (m *ConversationMessageHideRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationMessageHideRequest.DiscardUnknown(m)
@@ -792,6 +683,9 @@ func (m *ConversationMessageHideRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationMessageHideRequest proto.InternalMessageInfo
 
 type ConversationMessageHideReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationMessageHideReply) Reset()         { *m = ConversationMessageHideReply{} }
@@ -801,25 +695,16 @@ func (*ConversationMessageHideReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{21}
 }
 func (m *ConversationMessageHideReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationMessageHideReply.Unmarshal(m, b)
 }
 func (m *ConversationMessageHideReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationMessageHideReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationMessageHideReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationMessageHideReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationMessageHideReply.Merge(m, src)
 }
 func (m *ConversationMessageHideReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationMessageHideReply.Size(m)
 }
 func (m *ConversationMessageHideReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationMessageHideReply.DiscardUnknown(m)
@@ -828,6 +713,9 @@ func (m *ConversationMessageHideReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationMessageHideReply proto.InternalMessageInfo
 
 type ConversationUpdateSettingsRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationUpdateSettingsRequest) Reset()         { *m = ConversationUpdateSettingsRequest{} }
@@ -837,25 +725,16 @@ func (*ConversationUpdateSettingsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{22}
 }
 func (m *ConversationUpdateSettingsRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationUpdateSettingsRequest.Unmarshal(m, b)
 }
 func (m *ConversationUpdateSettingsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationUpdateSettingsRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationUpdateSettingsRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationUpdateSettingsRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationUpdateSettingsRequest.Merge(m, src)
 }
 func (m *ConversationUpdateSettingsRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationUpdateSettingsRequest.Size(m)
 }
 func (m *ConversationUpdateSettingsRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationUpdateSettingsRequest.DiscardUnknown(m)
@@ -864,6 +743,9 @@ func (m *ConversationUpdateSettingsRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationUpdateSettingsRequest proto.InternalMessageInfo
 
 type ConversationUpdateSettingsReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationUpdateSettingsReply) Reset()         { *m = ConversationUpdateSettingsReply{} }
@@ -873,25 +755,16 @@ func (*ConversationUpdateSettingsReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{23}
 }
 func (m *ConversationUpdateSettingsReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationUpdateSettingsReply.Unmarshal(m, b)
 }
 func (m *ConversationUpdateSettingsReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationUpdateSettingsReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationUpdateSettingsReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationUpdateSettingsReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationUpdateSettingsReply.Merge(m, src)
 }
 func (m *ConversationUpdateSettingsReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationUpdateSettingsReply.Size(m)
 }
 func (m *ConversationUpdateSettingsReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationUpdateSettingsReply.DiscardUnknown(m)
@@ -900,6 +773,9 @@ func (m *ConversationUpdateSettingsReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationUpdateSettingsReply proto.InternalMessageInfo
 
 type ConversationInvitationAcceptRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationInvitationAcceptRequest) Reset()         { *m = ConversationInvitationAcceptRequest{} }
@@ -909,25 +785,16 @@ func (*ConversationInvitationAcceptRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{24}
 }
 func (m *ConversationInvitationAcceptRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationInvitationAcceptRequest.Unmarshal(m, b)
 }
 func (m *ConversationInvitationAcceptRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationInvitationAcceptRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationInvitationAcceptRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationInvitationAcceptRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationInvitationAcceptRequest.Merge(m, src)
 }
 func (m *ConversationInvitationAcceptRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationInvitationAcceptRequest.Size(m)
 }
 func (m *ConversationInvitationAcceptRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationInvitationAcceptRequest.DiscardUnknown(m)
@@ -936,6 +803,9 @@ func (m *ConversationInvitationAcceptRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationInvitationAcceptRequest proto.InternalMessageInfo
 
 type ConversationInvitationAcceptReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationInvitationAcceptReply) Reset()         { *m = ConversationInvitationAcceptReply{} }
@@ -945,25 +815,16 @@ func (*ConversationInvitationAcceptReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{25}
 }
 func (m *ConversationInvitationAcceptReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationInvitationAcceptReply.Unmarshal(m, b)
 }
 func (m *ConversationInvitationAcceptReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationInvitationAcceptReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationInvitationAcceptReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationInvitationAcceptReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationInvitationAcceptReply.Merge(m, src)
 }
 func (m *ConversationInvitationAcceptReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationInvitationAcceptReply.Size(m)
 }
 func (m *ConversationInvitationAcceptReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationInvitationAcceptReply.DiscardUnknown(m)
@@ -972,6 +833,9 @@ func (m *ConversationInvitationAcceptReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationInvitationAcceptReply proto.InternalMessageInfo
 
 type ConversationInvitationCreateRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationInvitationCreateRequest) Reset()         { *m = ConversationInvitationCreateRequest{} }
@@ -981,25 +845,16 @@ func (*ConversationInvitationCreateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{26}
 }
 func (m *ConversationInvitationCreateRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationInvitationCreateRequest.Unmarshal(m, b)
 }
 func (m *ConversationInvitationCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationInvitationCreateRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationInvitationCreateRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationInvitationCreateRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationInvitationCreateRequest.Merge(m, src)
 }
 func (m *ConversationInvitationCreateRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationInvitationCreateRequest.Size(m)
 }
 func (m *ConversationInvitationCreateRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationInvitationCreateRequest.DiscardUnknown(m)
@@ -1008,6 +863,9 @@ func (m *ConversationInvitationCreateRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationInvitationCreateRequest proto.InternalMessageInfo
 
 type ConversationInvitationCreateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationInvitationCreateReply) Reset()         { *m = ConversationInvitationCreateReply{} }
@@ -1017,25 +875,16 @@ func (*ConversationInvitationCreateReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{27}
 }
 func (m *ConversationInvitationCreateReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationInvitationCreateReply.Unmarshal(m, b)
 }
 func (m *ConversationInvitationCreateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationInvitationCreateReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationInvitationCreateReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationInvitationCreateReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationInvitationCreateReply.Merge(m, src)
 }
 func (m *ConversationInvitationCreateReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationInvitationCreateReply.Size(m)
 }
 func (m *ConversationInvitationCreateReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationInvitationCreateReply.DiscardUnknown(m)
@@ -1044,6 +893,9 @@ func (m *ConversationInvitationCreateReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationInvitationCreateReply proto.InternalMessageInfo
 
 type ConversationInvitationDiscardRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationInvitationDiscardRequest) Reset()         { *m = ConversationInvitationDiscardRequest{} }
@@ -1053,25 +905,16 @@ func (*ConversationInvitationDiscardRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{28}
 }
 func (m *ConversationInvitationDiscardRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationInvitationDiscardRequest.Unmarshal(m, b)
 }
 func (m *ConversationInvitationDiscardRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationInvitationDiscardRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationInvitationDiscardRequest.Marshal(b, m, deterministic)
 }
 func (m *ConversationInvitationDiscardRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationInvitationDiscardRequest.Merge(m, src)
 }
 func (m *ConversationInvitationDiscardRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationInvitationDiscardRequest.Size(m)
 }
 func (m *ConversationInvitationDiscardRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationInvitationDiscardRequest.DiscardUnknown(m)
@@ -1080,6 +923,9 @@ func (m *ConversationInvitationDiscardRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationInvitationDiscardRequest proto.InternalMessageInfo
 
 type ConversationInvitationDiscardReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ConversationInvitationDiscardReply) Reset()         { *m = ConversationInvitationDiscardReply{} }
@@ -1089,25 +935,16 @@ func (*ConversationInvitationDiscardReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{29}
 }
 func (m *ConversationInvitationDiscardReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ConversationInvitationDiscardReply.Unmarshal(m, b)
 }
 func (m *ConversationInvitationDiscardReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ConversationInvitationDiscardReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ConversationInvitationDiscardReply.Marshal(b, m, deterministic)
 }
 func (m *ConversationInvitationDiscardReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationInvitationDiscardReply.Merge(m, src)
 }
 func (m *ConversationInvitationDiscardReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ConversationInvitationDiscardReply.Size(m)
 }
 func (m *ConversationInvitationDiscardReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationInvitationDiscardReply.DiscardUnknown(m)
@@ -1116,6 +953,9 @@ func (m *ConversationInvitationDiscardReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ConversationInvitationDiscardReply proto.InternalMessageInfo
 
 type ContactListRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactListRequest) Reset()         { *m = ContactListRequest{} }
@@ -1125,25 +965,16 @@ func (*ContactListRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{30}
 }
 func (m *ContactListRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactListRequest.Unmarshal(m, b)
 }
 func (m *ContactListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactListRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactListRequest.Marshal(b, m, deterministic)
 }
 func (m *ContactListRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactListRequest.Merge(m, src)
 }
 func (m *ContactListRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactListRequest.Size(m)
 }
 func (m *ContactListRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactListRequest.DiscardUnknown(m)
@@ -1152,6 +983,9 @@ func (m *ContactListRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactListRequest proto.InternalMessageInfo
 
 type ContactListReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactListReply) Reset()         { *m = ContactListReply{} }
@@ -1161,25 +995,16 @@ func (*ContactListReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{31}
 }
 func (m *ContactListReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactListReply.Unmarshal(m, b)
 }
 func (m *ContactListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactListReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactListReply.Marshal(b, m, deterministic)
 }
 func (m *ContactListReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactListReply.Merge(m, src)
 }
 func (m *ContactListReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactListReply.Size(m)
 }
 func (m *ContactListReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactListReply.DiscardUnknown(m)
@@ -1188,6 +1013,9 @@ func (m *ContactListReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactListReply proto.InternalMessageInfo
 
 type ContactGetRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactGetRequest) Reset()         { *m = ContactGetRequest{} }
@@ -1197,25 +1025,16 @@ func (*ContactGetRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{32}
 }
 func (m *ContactGetRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactGetRequest.Unmarshal(m, b)
 }
 func (m *ContactGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactGetRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactGetRequest.Marshal(b, m, deterministic)
 }
 func (m *ContactGetRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactGetRequest.Merge(m, src)
 }
 func (m *ContactGetRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactGetRequest.Size(m)
 }
 func (m *ContactGetRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactGetRequest.DiscardUnknown(m)
@@ -1224,6 +1043,9 @@ func (m *ContactGetRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactGetRequest proto.InternalMessageInfo
 
 type ContactGetReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactGetReply) Reset()         { *m = ContactGetReply{} }
@@ -1233,25 +1055,16 @@ func (*ContactGetReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{33}
 }
 func (m *ContactGetReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactGetReply.Unmarshal(m, b)
 }
 func (m *ContactGetReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactGetReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactGetReply.Marshal(b, m, deterministic)
 }
 func (m *ContactGetReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactGetReply.Merge(m, src)
 }
 func (m *ContactGetReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactGetReply.Size(m)
 }
 func (m *ContactGetReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactGetReply.DiscardUnknown(m)
@@ -1260,6 +1073,9 @@ func (m *ContactGetReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactGetReply proto.InternalMessageInfo
 
 type ContactUpdateRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactUpdateRequest) Reset()         { *m = ContactUpdateRequest{} }
@@ -1269,25 +1085,16 @@ func (*ContactUpdateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{34}
 }
 func (m *ContactUpdateRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactUpdateRequest.Unmarshal(m, b)
 }
 func (m *ContactUpdateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactUpdateRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactUpdateRequest.Marshal(b, m, deterministic)
 }
 func (m *ContactUpdateRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactUpdateRequest.Merge(m, src)
 }
 func (m *ContactUpdateRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactUpdateRequest.Size(m)
 }
 func (m *ContactUpdateRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactUpdateRequest.DiscardUnknown(m)
@@ -1296,6 +1103,9 @@ func (m *ContactUpdateRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactUpdateRequest proto.InternalMessageInfo
 
 type ContactUpdateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactUpdateReply) Reset()         { *m = ContactUpdateReply{} }
@@ -1305,25 +1115,16 @@ func (*ContactUpdateReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{35}
 }
 func (m *ContactUpdateReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactUpdateReply.Unmarshal(m, b)
 }
 func (m *ContactUpdateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactUpdateReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactUpdateReply.Marshal(b, m, deterministic)
 }
 func (m *ContactUpdateReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactUpdateReply.Merge(m, src)
 }
 func (m *ContactUpdateReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactUpdateReply.Size(m)
 }
 func (m *ContactUpdateReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactUpdateReply.DiscardUnknown(m)
@@ -1332,6 +1133,9 @@ func (m *ContactUpdateReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactUpdateReply proto.InternalMessageInfo
 
 type ContactRemoveRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactRemoveRequest) Reset()         { *m = ContactRemoveRequest{} }
@@ -1341,25 +1145,16 @@ func (*ContactRemoveRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{36}
 }
 func (m *ContactRemoveRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactRemoveRequest.Unmarshal(m, b)
 }
 func (m *ContactRemoveRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactRemoveRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactRemoveRequest.Marshal(b, m, deterministic)
 }
 func (m *ContactRemoveRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactRemoveRequest.Merge(m, src)
 }
 func (m *ContactRemoveRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactRemoveRequest.Size(m)
 }
 func (m *ContactRemoveRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactRemoveRequest.DiscardUnknown(m)
@@ -1368,6 +1163,9 @@ func (m *ContactRemoveRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactRemoveRequest proto.InternalMessageInfo
 
 type ContactRemoveReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactRemoveReply) Reset()         { *m = ContactRemoveReply{} }
@@ -1377,25 +1175,16 @@ func (*ContactRemoveReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{37}
 }
 func (m *ContactRemoveReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactRemoveReply.Unmarshal(m, b)
 }
 func (m *ContactRemoveReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactRemoveReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactRemoveReply.Marshal(b, m, deterministic)
 }
 func (m *ContactRemoveReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactRemoveReply.Merge(m, src)
 }
 func (m *ContactRemoveReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactRemoveReply.Size(m)
 }
 func (m *ContactRemoveReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactRemoveReply.DiscardUnknown(m)
@@ -1404,6 +1193,9 @@ func (m *ContactRemoveReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactRemoveReply proto.InternalMessageInfo
 
 type ContactRequestCreateRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactRequestCreateRequest) Reset()         { *m = ContactRequestCreateRequest{} }
@@ -1413,25 +1205,16 @@ func (*ContactRequestCreateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{38}
 }
 func (m *ContactRequestCreateRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactRequestCreateRequest.Unmarshal(m, b)
 }
 func (m *ContactRequestCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactRequestCreateRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactRequestCreateRequest.Marshal(b, m, deterministic)
 }
 func (m *ContactRequestCreateRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactRequestCreateRequest.Merge(m, src)
 }
 func (m *ContactRequestCreateRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactRequestCreateRequest.Size(m)
 }
 func (m *ContactRequestCreateRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactRequestCreateRequest.DiscardUnknown(m)
@@ -1440,6 +1223,9 @@ func (m *ContactRequestCreateRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactRequestCreateRequest proto.InternalMessageInfo
 
 type ContactRequestCreateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactRequestCreateReply) Reset()         { *m = ContactRequestCreateReply{} }
@@ -1449,25 +1235,16 @@ func (*ContactRequestCreateReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{39}
 }
 func (m *ContactRequestCreateReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactRequestCreateReply.Unmarshal(m, b)
 }
 func (m *ContactRequestCreateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactRequestCreateReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactRequestCreateReply.Marshal(b, m, deterministic)
 }
 func (m *ContactRequestCreateReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactRequestCreateReply.Merge(m, src)
 }
 func (m *ContactRequestCreateReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactRequestCreateReply.Size(m)
 }
 func (m *ContactRequestCreateReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactRequestCreateReply.DiscardUnknown(m)
@@ -1476,6 +1253,9 @@ func (m *ContactRequestCreateReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactRequestCreateReply proto.InternalMessageInfo
 
 type ContactRequestAcceptRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactRequestAcceptRequest) Reset()         { *m = ContactRequestAcceptRequest{} }
@@ -1485,25 +1265,16 @@ func (*ContactRequestAcceptRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{40}
 }
 func (m *ContactRequestAcceptRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactRequestAcceptRequest.Unmarshal(m, b)
 }
 func (m *ContactRequestAcceptRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactRequestAcceptRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactRequestAcceptRequest.Marshal(b, m, deterministic)
 }
 func (m *ContactRequestAcceptRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactRequestAcceptRequest.Merge(m, src)
 }
 func (m *ContactRequestAcceptRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactRequestAcceptRequest.Size(m)
 }
 func (m *ContactRequestAcceptRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactRequestAcceptRequest.DiscardUnknown(m)
@@ -1512,6 +1283,9 @@ func (m *ContactRequestAcceptRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactRequestAcceptRequest proto.InternalMessageInfo
 
 type ContactRequestAcceptReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactRequestAcceptReply) Reset()         { *m = ContactRequestAcceptReply{} }
@@ -1521,25 +1295,16 @@ func (*ContactRequestAcceptReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{41}
 }
 func (m *ContactRequestAcceptReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactRequestAcceptReply.Unmarshal(m, b)
 }
 func (m *ContactRequestAcceptReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactRequestAcceptReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactRequestAcceptReply.Marshal(b, m, deterministic)
 }
 func (m *ContactRequestAcceptReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactRequestAcceptReply.Merge(m, src)
 }
 func (m *ContactRequestAcceptReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactRequestAcceptReply.Size(m)
 }
 func (m *ContactRequestAcceptReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactRequestAcceptReply.DiscardUnknown(m)
@@ -1548,6 +1313,9 @@ func (m *ContactRequestAcceptReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactRequestAcceptReply proto.InternalMessageInfo
 
 type ContactRequestDiscardRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactRequestDiscardRequest) Reset()         { *m = ContactRequestDiscardRequest{} }
@@ -1557,25 +1325,16 @@ func (*ContactRequestDiscardRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{42}
 }
 func (m *ContactRequestDiscardRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactRequestDiscardRequest.Unmarshal(m, b)
 }
 func (m *ContactRequestDiscardRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactRequestDiscardRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactRequestDiscardRequest.Marshal(b, m, deterministic)
 }
 func (m *ContactRequestDiscardRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactRequestDiscardRequest.Merge(m, src)
 }
 func (m *ContactRequestDiscardRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactRequestDiscardRequest.Size(m)
 }
 func (m *ContactRequestDiscardRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactRequestDiscardRequest.DiscardUnknown(m)
@@ -1584,6 +1343,9 @@ func (m *ContactRequestDiscardRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactRequestDiscardRequest proto.InternalMessageInfo
 
 type ContactRequestDiscardReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ContactRequestDiscardReply) Reset()         { *m = ContactRequestDiscardReply{} }
@@ -1593,25 +1355,16 @@ func (*ContactRequestDiscardReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{43}
 }
 func (m *ContactRequestDiscardReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_ContactRequestDiscardReply.Unmarshal(m, b)
 }
 func (m *ContactRequestDiscardReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ContactRequestDiscardReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_ContactRequestDiscardReply.Marshal(b, m, deterministic)
 }
 func (m *ContactRequestDiscardReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactRequestDiscardReply.Merge(m, src)
 }
 func (m *ContactRequestDiscardReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_ContactRequestDiscardReply.Size(m)
 }
 func (m *ContactRequestDiscardReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactRequestDiscardReply.DiscardUnknown(m)
@@ -1620,6 +1373,9 @@ func (m *ContactRequestDiscardReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_ContactRequestDiscardReply proto.InternalMessageInfo
 
 type SearchRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *SearchRequest) Reset()         { *m = SearchRequest{} }
@@ -1629,25 +1385,16 @@ func (*SearchRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{44}
 }
 func (m *SearchRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_SearchRequest.Unmarshal(m, b)
 }
 func (m *SearchRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SearchRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_SearchRequest.Marshal(b, m, deterministic)
 }
 func (m *SearchRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SearchRequest.Merge(m, src)
 }
 func (m *SearchRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_SearchRequest.Size(m)
 }
 func (m *SearchRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_SearchRequest.DiscardUnknown(m)
@@ -1656,6 +1403,9 @@ func (m *SearchRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_SearchRequest proto.InternalMessageInfo
 
 type SearchReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *SearchReply) Reset()         { *m = SearchReply{} }
@@ -1665,25 +1415,16 @@ func (*SearchReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{45}
 }
 func (m *SearchReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_SearchReply.Unmarshal(m, b)
 }
 func (m *SearchReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SearchReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_SearchReply.Marshal(b, m, deterministic)
 }
 func (m *SearchReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SearchReply.Merge(m, src)
 }
 func (m *SearchReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_SearchReply.Size(m)
 }
 func (m *SearchReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_SearchReply.DiscardUnknown(m)
@@ -1692,6 +1433,9 @@ func (m *SearchReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_SearchReply proto.InternalMessageInfo
 
 type AccountSettingsGetRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *AccountSettingsGetRequest) Reset()         { *m = AccountSettingsGetRequest{} }
@@ -1701,25 +1445,16 @@ func (*AccountSettingsGetRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{46}
 }
 func (m *AccountSettingsGetRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_AccountSettingsGetRequest.Unmarshal(m, b)
 }
 func (m *AccountSettingsGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_AccountSettingsGetRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_AccountSettingsGetRequest.Marshal(b, m, deterministic)
 }
 func (m *AccountSettingsGetRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountSettingsGetRequest.Merge(m, src)
 }
 func (m *AccountSettingsGetRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_AccountSettingsGetRequest.Size(m)
 }
 func (m *AccountSettingsGetRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountSettingsGetRequest.DiscardUnknown(m)
@@ -1728,6 +1463,9 @@ func (m *AccountSettingsGetRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_AccountSettingsGetRequest proto.InternalMessageInfo
 
 type AccountSettingsGetReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *AccountSettingsGetReply) Reset()         { *m = AccountSettingsGetReply{} }
@@ -1737,25 +1475,16 @@ func (*AccountSettingsGetReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{47}
 }
 func (m *AccountSettingsGetReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_AccountSettingsGetReply.Unmarshal(m, b)
 }
 func (m *AccountSettingsGetReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_AccountSettingsGetReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_AccountSettingsGetReply.Marshal(b, m, deterministic)
 }
 func (m *AccountSettingsGetReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountSettingsGetReply.Merge(m, src)
 }
 func (m *AccountSettingsGetReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_AccountSettingsGetReply.Size(m)
 }
 func (m *AccountSettingsGetReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountSettingsGetReply.DiscardUnknown(m)
@@ -1764,6 +1493,9 @@ func (m *AccountSettingsGetReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_AccountSettingsGetReply proto.InternalMessageInfo
 
 type AccountSettingsUpdateRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *AccountSettingsUpdateRequest) Reset()         { *m = AccountSettingsUpdateRequest{} }
@@ -1773,25 +1505,16 @@ func (*AccountSettingsUpdateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{48}
 }
 func (m *AccountSettingsUpdateRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_AccountSettingsUpdateRequest.Unmarshal(m, b)
 }
 func (m *AccountSettingsUpdateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_AccountSettingsUpdateRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_AccountSettingsUpdateRequest.Marshal(b, m, deterministic)
 }
 func (m *AccountSettingsUpdateRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountSettingsUpdateRequest.Merge(m, src)
 }
 func (m *AccountSettingsUpdateRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_AccountSettingsUpdateRequest.Size(m)
 }
 func (m *AccountSettingsUpdateRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountSettingsUpdateRequest.DiscardUnknown(m)
@@ -1800,6 +1523,9 @@ func (m *AccountSettingsUpdateRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_AccountSettingsUpdateRequest proto.InternalMessageInfo
 
 type AccountSettingsUpdateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *AccountSettingsUpdateReply) Reset()         { *m = AccountSettingsUpdateReply{} }
@@ -1809,25 +1535,16 @@ func (*AccountSettingsUpdateReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{49}
 }
 func (m *AccountSettingsUpdateReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_AccountSettingsUpdateReply.Unmarshal(m, b)
 }
 func (m *AccountSettingsUpdateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_AccountSettingsUpdateReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_AccountSettingsUpdateReply.Marshal(b, m, deterministic)
 }
 func (m *AccountSettingsUpdateReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountSettingsUpdateReply.Merge(m, src)
 }
 func (m *AccountSettingsUpdateReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_AccountSettingsUpdateReply.Size(m)
 }
 func (m *AccountSettingsUpdateReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountSettingsUpdateReply.DiscardUnknown(m)
@@ -1836,6 +1553,9 @@ func (m *AccountSettingsUpdateReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_AccountSettingsUpdateReply proto.InternalMessageInfo
 
 type AccountPairingInvitationCreateRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *AccountPairingInvitationCreateRequest) Reset()         { *m = AccountPairingInvitationCreateRequest{} }
@@ -1845,25 +1565,16 @@ func (*AccountPairingInvitationCreateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{50}
 }
 func (m *AccountPairingInvitationCreateRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_AccountPairingInvitationCreateRequest.Unmarshal(m, b)
 }
 func (m *AccountPairingInvitationCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_AccountPairingInvitationCreateRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_AccountPairingInvitationCreateRequest.Marshal(b, m, deterministic)
 }
 func (m *AccountPairingInvitationCreateRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountPairingInvitationCreateRequest.Merge(m, src)
 }
 func (m *AccountPairingInvitationCreateRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_AccountPairingInvitationCreateRequest.Size(m)
 }
 func (m *AccountPairingInvitationCreateRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountPairingInvitationCreateRequest.DiscardUnknown(m)
@@ -1872,6 +1583,9 @@ func (m *AccountPairingInvitationCreateRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_AccountPairingInvitationCreateRequest proto.InternalMessageInfo
 
 type AccountPairingInvitationCreateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *AccountPairingInvitationCreateReply) Reset()         { *m = AccountPairingInvitationCreateReply{} }
@@ -1881,25 +1595,16 @@ func (*AccountPairingInvitationCreateReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{51}
 }
 func (m *AccountPairingInvitationCreateReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_AccountPairingInvitationCreateReply.Unmarshal(m, b)
 }
 func (m *AccountPairingInvitationCreateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_AccountPairingInvitationCreateReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_AccountPairingInvitationCreateReply.Marshal(b, m, deterministic)
 }
 func (m *AccountPairingInvitationCreateReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountPairingInvitationCreateReply.Merge(m, src)
 }
 func (m *AccountPairingInvitationCreateReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_AccountPairingInvitationCreateReply.Size(m)
 }
 func (m *AccountPairingInvitationCreateReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountPairingInvitationCreateReply.DiscardUnknown(m)
@@ -1908,6 +1613,9 @@ func (m *AccountPairingInvitationCreateReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_AccountPairingInvitationCreateReply proto.InternalMessageInfo
 
 type AccountRenewIncomingContactRequestLinkRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *AccountRenewIncomingContactRequestLinkRequest) Reset() {
@@ -1921,25 +1629,16 @@ func (*AccountRenewIncomingContactRequestLinkRequest) Descriptor() ([]byte, []in
 	return fileDescriptor_45ccc435ebdc714a, []int{52}
 }
 func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Unmarshal(m, b)
 }
 func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Marshal(b, m, deterministic)
 }
 func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Merge(m, src)
 }
 func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Size(m)
 }
 func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.DiscardUnknown(m)
@@ -1948,6 +1647,9 @@ func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest proto.InternalMessageInfo
 
 type AccountRenewIncomingContactRequestLinkReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *AccountRenewIncomingContactRequestLinkReply) Reset() {
@@ -1961,25 +1663,16 @@ func (*AccountRenewIncomingContactRequestLinkReply) Descriptor() ([]byte, []int)
 	return fileDescriptor_45ccc435ebdc714a, []int{53}
 }
 func (m *AccountRenewIncomingContactRequestLinkReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Unmarshal(m, b)
 }
 func (m *AccountRenewIncomingContactRequestLinkReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Marshal(b, m, deterministic)
 }
 func (m *AccountRenewIncomingContactRequestLinkReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Merge(m, src)
 }
 func (m *AccountRenewIncomingContactRequestLinkReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Size(m)
 }
 func (m *AccountRenewIncomingContactRequestLinkReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.DiscardUnknown(m)
@@ -1988,6 +1681,9 @@ func (m *AccountRenewIncomingContactRequestLinkReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply proto.InternalMessageInfo
 
 type DevEventSubscribeRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *DevEventSubscribeRequest) Reset()         { *m = DevEventSubscribeRequest{} }
@@ -1997,25 +1693,16 @@ func (*DevEventSubscribeRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{54}
 }
 func (m *DevEventSubscribeRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_DevEventSubscribeRequest.Unmarshal(m, b)
 }
 func (m *DevEventSubscribeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_DevEventSubscribeRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_DevEventSubscribeRequest.Marshal(b, m, deterministic)
 }
 func (m *DevEventSubscribeRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DevEventSubscribeRequest.Merge(m, src)
 }
 func (m *DevEventSubscribeRequest) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_DevEventSubscribeRequest.Size(m)
 }
 func (m *DevEventSubscribeRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_DevEventSubscribeRequest.DiscardUnknown(m)
@@ -2024,6 +1711,9 @@ func (m *DevEventSubscribeRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_DevEventSubscribeRequest proto.InternalMessageInfo
 
 type DevEventSubscribeReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *DevEventSubscribeReply) Reset()         { *m = DevEventSubscribeReply{} }
@@ -2033,25 +1723,16 @@ func (*DevEventSubscribeReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45ccc435ebdc714a, []int{55}
 }
 func (m *DevEventSubscribeReply) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_DevEventSubscribeReply.Unmarshal(m, b)
 }
 func (m *DevEventSubscribeReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_DevEventSubscribeReply.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_DevEventSubscribeReply.Marshal(b, m, deterministic)
 }
 func (m *DevEventSubscribeReply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DevEventSubscribeReply.Merge(m, src)
 }
 func (m *DevEventSubscribeReply) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_DevEventSubscribeReply.Size(m)
 }
 func (m *DevEventSubscribeReply) XXX_DiscardUnknown() {
 	xxx_messageInfo_DevEventSubscribeReply.DiscardUnknown(m)
@@ -2061,1385 +1742,139 @@ var xxx_messageInfo_DevEventSubscribeReply proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*EventSubscribeRequest)(nil), "berty.chat.EventSubscribeRequest")
-	golang_proto.RegisterType((*EventSubscribeRequest)(nil), "berty.chat.EventSubscribeRequest")
 	proto.RegisterType((*EventSubscribeReply)(nil), "berty.chat.EventSubscribeReply")
-	golang_proto.RegisterType((*EventSubscribeReply)(nil), "berty.chat.EventSubscribeReply")
 	proto.RegisterType((*ConversationListRequest)(nil), "berty.chat.ConversationListRequest")
-	golang_proto.RegisterType((*ConversationListRequest)(nil), "berty.chat.ConversationListRequest")
 	proto.RegisterType((*ConversationListReply)(nil), "berty.chat.ConversationListReply")
-	golang_proto.RegisterType((*ConversationListReply)(nil), "berty.chat.ConversationListReply")
 	proto.RegisterType((*ConversationGetRequest)(nil), "berty.chat.ConversationGetRequest")
-	golang_proto.RegisterType((*ConversationGetRequest)(nil), "berty.chat.ConversationGetRequest")
 	proto.RegisterType((*ConversationGetReply)(nil), "berty.chat.ConversationGetReply")
-	golang_proto.RegisterType((*ConversationGetReply)(nil), "berty.chat.ConversationGetReply")
 	proto.RegisterType((*ConversationCreateRequest)(nil), "berty.chat.ConversationCreateRequest")
-	golang_proto.RegisterType((*ConversationCreateRequest)(nil), "berty.chat.ConversationCreateRequest")
 	proto.RegisterType((*ConversationCreateReply)(nil), "berty.chat.ConversationCreateReply")
-	golang_proto.RegisterType((*ConversationCreateReply)(nil), "berty.chat.ConversationCreateReply")
 	proto.RegisterType((*ConversationLeaveRequest)(nil), "berty.chat.ConversationLeaveRequest")
-	golang_proto.RegisterType((*ConversationLeaveRequest)(nil), "berty.chat.ConversationLeaveRequest")
 	proto.RegisterType((*ConversationLeaveReply)(nil), "berty.chat.ConversationLeaveReply")
-	golang_proto.RegisterType((*ConversationLeaveReply)(nil), "berty.chat.ConversationLeaveReply")
 	proto.RegisterType((*ConversationEraseRequest)(nil), "berty.chat.ConversationEraseRequest")
-	golang_proto.RegisterType((*ConversationEraseRequest)(nil), "berty.chat.ConversationEraseRequest")
 	proto.RegisterType((*ConversationEraseReply)(nil), "berty.chat.ConversationEraseReply")
-	golang_proto.RegisterType((*ConversationEraseReply)(nil), "berty.chat.ConversationEraseReply")
 	proto.RegisterType((*ConversationSetSeenPositionRequest)(nil), "berty.chat.ConversationSetSeenPositionRequest")
-	golang_proto.RegisterType((*ConversationSetSeenPositionRequest)(nil), "berty.chat.ConversationSetSeenPositionRequest")
 	proto.RegisterType((*ConversationSetSeenPositionReply)(nil), "berty.chat.ConversationSetSeenPositionReply")
-	golang_proto.RegisterType((*ConversationSetSeenPositionReply)(nil), "berty.chat.ConversationSetSeenPositionReply")
 	proto.RegisterType((*ConversationMessageListRequest)(nil), "berty.chat.ConversationMessageListRequest")
-	golang_proto.RegisterType((*ConversationMessageListRequest)(nil), "berty.chat.ConversationMessageListRequest")
 	proto.RegisterType((*ConversationMessageListReply)(nil), "berty.chat.ConversationMessageListReply")
-	golang_proto.RegisterType((*ConversationMessageListReply)(nil), "berty.chat.ConversationMessageListReply")
 	proto.RegisterType((*ConversationMessageSendRequest)(nil), "berty.chat.ConversationMessageSendRequest")
-	golang_proto.RegisterType((*ConversationMessageSendRequest)(nil), "berty.chat.ConversationMessageSendRequest")
 	proto.RegisterType((*ConversationMessageSendReply)(nil), "berty.chat.ConversationMessageSendReply")
-	golang_proto.RegisterType((*ConversationMessageSendReply)(nil), "berty.chat.ConversationMessageSendReply")
 	proto.RegisterType((*ConversationMessageEditRequest)(nil), "berty.chat.ConversationMessageEditRequest")
-	golang_proto.RegisterType((*ConversationMessageEditRequest)(nil), "berty.chat.ConversationMessageEditRequest")
 	proto.RegisterType((*ConversationMessageEditReply)(nil), "berty.chat.ConversationMessageEditReply")
-	golang_proto.RegisterType((*ConversationMessageEditReply)(nil), "berty.chat.ConversationMessageEditReply")
 	proto.RegisterType((*ConversationMessageHideRequest)(nil), "berty.chat.ConversationMessageHideRequest")
-	golang_proto.RegisterType((*ConversationMessageHideRequest)(nil), "berty.chat.ConversationMessageHideRequest")
 	proto.RegisterType((*ConversationMessageHideReply)(nil), "berty.chat.ConversationMessageHideReply")
-	golang_proto.RegisterType((*ConversationMessageHideReply)(nil), "berty.chat.ConversationMessageHideReply")
 	proto.RegisterType((*ConversationUpdateSettingsRequest)(nil), "berty.chat.ConversationUpdateSettingsRequest")
-	golang_proto.RegisterType((*ConversationUpdateSettingsRequest)(nil), "berty.chat.ConversationUpdateSettingsRequest")
 	proto.RegisterType((*ConversationUpdateSettingsReply)(nil), "berty.chat.ConversationUpdateSettingsReply")
-	golang_proto.RegisterType((*ConversationUpdateSettingsReply)(nil), "berty.chat.ConversationUpdateSettingsReply")
 	proto.RegisterType((*ConversationInvitationAcceptRequest)(nil), "berty.chat.ConversationInvitationAcceptRequest")
-	golang_proto.RegisterType((*ConversationInvitationAcceptRequest)(nil), "berty.chat.ConversationInvitationAcceptRequest")
 	proto.RegisterType((*ConversationInvitationAcceptReply)(nil), "berty.chat.ConversationInvitationAcceptReply")
-	golang_proto.RegisterType((*ConversationInvitationAcceptReply)(nil), "berty.chat.ConversationInvitationAcceptReply")
 	proto.RegisterType((*ConversationInvitationCreateRequest)(nil), "berty.chat.ConversationInvitationCreateRequest")
-	golang_proto.RegisterType((*ConversationInvitationCreateRequest)(nil), "berty.chat.ConversationInvitationCreateRequest")
 	proto.RegisterType((*ConversationInvitationCreateReply)(nil), "berty.chat.ConversationInvitationCreateReply")
-	golang_proto.RegisterType((*ConversationInvitationCreateReply)(nil), "berty.chat.ConversationInvitationCreateReply")
 	proto.RegisterType((*ConversationInvitationDiscardRequest)(nil), "berty.chat.ConversationInvitationDiscardRequest")
-	golang_proto.RegisterType((*ConversationInvitationDiscardRequest)(nil), "berty.chat.ConversationInvitationDiscardRequest")
 	proto.RegisterType((*ConversationInvitationDiscardReply)(nil), "berty.chat.ConversationInvitationDiscardReply")
-	golang_proto.RegisterType((*ConversationInvitationDiscardReply)(nil), "berty.chat.ConversationInvitationDiscardReply")
 	proto.RegisterType((*ContactListRequest)(nil), "berty.chat.ContactListRequest")
-	golang_proto.RegisterType((*ContactListRequest)(nil), "berty.chat.ContactListRequest")
 	proto.RegisterType((*ContactListReply)(nil), "berty.chat.ContactListReply")
-	golang_proto.RegisterType((*ContactListReply)(nil), "berty.chat.ContactListReply")
 	proto.RegisterType((*ContactGetRequest)(nil), "berty.chat.ContactGetRequest")
-	golang_proto.RegisterType((*ContactGetRequest)(nil), "berty.chat.ContactGetRequest")
 	proto.RegisterType((*ContactGetReply)(nil), "berty.chat.ContactGetReply")
-	golang_proto.RegisterType((*ContactGetReply)(nil), "berty.chat.ContactGetReply")
 	proto.RegisterType((*ContactUpdateRequest)(nil), "berty.chat.ContactUpdateRequest")
-	golang_proto.RegisterType((*ContactUpdateRequest)(nil), "berty.chat.ContactUpdateRequest")
 	proto.RegisterType((*ContactUpdateReply)(nil), "berty.chat.ContactUpdateReply")
-	golang_proto.RegisterType((*ContactUpdateReply)(nil), "berty.chat.ContactUpdateReply")
 	proto.RegisterType((*ContactRemoveRequest)(nil), "berty.chat.ContactRemoveRequest")
-	golang_proto.RegisterType((*ContactRemoveRequest)(nil), "berty.chat.ContactRemoveRequest")
 	proto.RegisterType((*ContactRemoveReply)(nil), "berty.chat.ContactRemoveReply")
-	golang_proto.RegisterType((*ContactRemoveReply)(nil), "berty.chat.ContactRemoveReply")
 	proto.RegisterType((*ContactRequestCreateRequest)(nil), "berty.chat.ContactRequestCreateRequest")
-	golang_proto.RegisterType((*ContactRequestCreateRequest)(nil), "berty.chat.ContactRequestCreateRequest")
 	proto.RegisterType((*ContactRequestCreateReply)(nil), "berty.chat.ContactRequestCreateReply")
-	golang_proto.RegisterType((*ContactRequestCreateReply)(nil), "berty.chat.ContactRequestCreateReply")
 	proto.RegisterType((*ContactRequestAcceptRequest)(nil), "berty.chat.ContactRequestAcceptRequest")
-	golang_proto.RegisterType((*ContactRequestAcceptRequest)(nil), "berty.chat.ContactRequestAcceptRequest")
 	proto.RegisterType((*ContactRequestAcceptReply)(nil), "berty.chat.ContactRequestAcceptReply")
-	golang_proto.RegisterType((*ContactRequestAcceptReply)(nil), "berty.chat.ContactRequestAcceptReply")
 	proto.RegisterType((*ContactRequestDiscardRequest)(nil), "berty.chat.ContactRequestDiscardRequest")
-	golang_proto.RegisterType((*ContactRequestDiscardRequest)(nil), "berty.chat.ContactRequestDiscardRequest")
 	proto.RegisterType((*ContactRequestDiscardReply)(nil), "berty.chat.ContactRequestDiscardReply")
-	golang_proto.RegisterType((*ContactRequestDiscardReply)(nil), "berty.chat.ContactRequestDiscardReply")
 	proto.RegisterType((*SearchRequest)(nil), "berty.chat.SearchRequest")
-	golang_proto.RegisterType((*SearchRequest)(nil), "berty.chat.SearchRequest")
 	proto.RegisterType((*SearchReply)(nil), "berty.chat.SearchReply")
-	golang_proto.RegisterType((*SearchReply)(nil), "berty.chat.SearchReply")
 	proto.RegisterType((*AccountSettingsGetRequest)(nil), "berty.chat.AccountSettingsGetRequest")
-	golang_proto.RegisterType((*AccountSettingsGetRequest)(nil), "berty.chat.AccountSettingsGetRequest")
 	proto.RegisterType((*AccountSettingsGetReply)(nil), "berty.chat.AccountSettingsGetReply")
-	golang_proto.RegisterType((*AccountSettingsGetReply)(nil), "berty.chat.AccountSettingsGetReply")
 	proto.RegisterType((*AccountSettingsUpdateRequest)(nil), "berty.chat.AccountSettingsUpdateRequest")
-	golang_proto.RegisterType((*AccountSettingsUpdateRequest)(nil), "berty.chat.AccountSettingsUpdateRequest")
 	proto.RegisterType((*AccountSettingsUpdateReply)(nil), "berty.chat.AccountSettingsUpdateReply")
-	golang_proto.RegisterType((*AccountSettingsUpdateReply)(nil), "berty.chat.AccountSettingsUpdateReply")
 	proto.RegisterType((*AccountPairingInvitationCreateRequest)(nil), "berty.chat.AccountPairingInvitationCreateRequest")
-	golang_proto.RegisterType((*AccountPairingInvitationCreateRequest)(nil), "berty.chat.AccountPairingInvitationCreateRequest")
 	proto.RegisterType((*AccountPairingInvitationCreateReply)(nil), "berty.chat.AccountPairingInvitationCreateReply")
-	golang_proto.RegisterType((*AccountPairingInvitationCreateReply)(nil), "berty.chat.AccountPairingInvitationCreateReply")
 	proto.RegisterType((*AccountRenewIncomingContactRequestLinkRequest)(nil), "berty.chat.AccountRenewIncomingContactRequestLinkRequest")
-	golang_proto.RegisterType((*AccountRenewIncomingContactRequestLinkRequest)(nil), "berty.chat.AccountRenewIncomingContactRequestLinkRequest")
 	proto.RegisterType((*AccountRenewIncomingContactRequestLinkReply)(nil), "berty.chat.AccountRenewIncomingContactRequestLinkReply")
-	golang_proto.RegisterType((*AccountRenewIncomingContactRequestLinkReply)(nil), "berty.chat.AccountRenewIncomingContactRequestLinkReply")
 	proto.RegisterType((*DevEventSubscribeRequest)(nil), "berty.chat.DevEventSubscribeRequest")
-	golang_proto.RegisterType((*DevEventSubscribeRequest)(nil), "berty.chat.DevEventSubscribeRequest")
 	proto.RegisterType((*DevEventSubscribeReply)(nil), "berty.chat.DevEventSubscribeReply")
-	golang_proto.RegisterType((*DevEventSubscribeReply)(nil), "berty.chat.DevEventSubscribeReply")
 }
 
 func init() { proto.RegisterFile("bertychat.proto", fileDescriptor_45ccc435ebdc714a) }
-func init() { golang_proto.RegisterFile("bertychat.proto", fileDescriptor_45ccc435ebdc714a) }
 
 var fileDescriptor_45ccc435ebdc714a = []byte{
-	// 1198 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x98, 0xcf, 0x6f, 0xdc, 0x44,
-	0x14, 0xc7, 0xed, 0x1c, 0x82, 0x78, 0x21, 0x84, 0x4c, 0x9a, 0x5f, 0x93, 0xc4, 0x49, 0x9c, 0x6c,
-	0x1a, 0x51, 0x76, 0x1d, 0xca, 0x01, 0x71, 0x23, 0x4d, 0x22, 0x08, 0x2a, 0xa2, 0xca, 0x0a, 0x09,
-	0x7a, 0x00, 0x79, 0xbd, 0x83, 0x63, 0x65, 0x63, 0x6f, 0x6d, 0xef, 0xa2, 0x20, 0x21, 0x21, 0x90,
-	0x38, 0x23, 0x71, 0xe7, 0xcc, 0x9f, 0xc0, 0x91, 0x63, 0x8f, 0x95, 0xb8, 0x20, 0x0e, 0x88, 0x6e,
-	0xf8, 0x23, 0x38, 0xa2, 0x99, 0xb1, 0x77, 0x67, 0xbc, 0x33, 0xb6, 0x8b, 0xb8, 0x35, 0xf3, 0xbe,
-	0xef, 0xfb, 0xc6, 0xcf, 0x33, 0x7e, 0x9f, 0x2e, 0x2c, 0x74, 0x48, 0x9c, 0xde, 0x78, 0x97, 0x6e,
-	0xda, 0xea, 0xc7, 0x51, 0x1a, 0x21, 0x60, 0x0b, 0x2d, 0xba, 0x82, 0x37, 0xfd, 0x28, 0xf2, 0x7b,
-	0xc4, 0x71, 0xfb, 0x81, 0xe3, 0x86, 0x61, 0x94, 0xba, 0x69, 0x10, 0x85, 0x09, 0x57, 0xe2, 0xa6,
-	0x1f, 0xa4, 0x97, 0x83, 0x4e, 0xcb, 0x8b, 0xae, 0x1d, 0x3f, 0xf2, 0x23, 0x87, 0x2d, 0x77, 0x06,
-	0x5f, 0xb0, 0xbf, 0xd8, 0x1f, 0xec, 0x5f, 0x99, 0x7c, 0x81, 0x5a, 0x5e, 0x47, 0x5d, 0xd2, 0xe3,
-	0x0b, 0xf6, 0x2a, 0x2c, 0x9f, 0x0d, 0x49, 0x98, 0xb6, 0x07, 0x9d, 0xc4, 0x8b, 0x83, 0x0e, 0xb9,
-	0x20, 0x4f, 0x06, 0x24, 0x49, 0xed, 0x65, 0x58, 0x2a, 0x06, 0xfa, 0xbd, 0x1b, 0x7b, 0x1d, 0x56,
-	0x4f, 0xa2, 0x70, 0x48, 0xe2, 0x84, 0x6d, 0xe3, 0x61, 0x90, 0xa4, 0x79, 0xc6, 0x63, 0x58, 0x9e,
-	0x0e, 0xf5, 0x7b, 0x37, 0xe8, 0x18, 0x5e, 0xf1, 0x84, 0xc0, 0x9a, 0xb9, 0x63, 0x1e, 0xce, 0xdd,
-	0xdf, 0x6a, 0x4d, 0x1e, 0x92, 0xef, 0x48, 0xcc, 0xbe, 0x90, 0x52, 0xec, 0x23, 0x58, 0x11, 0xa3,
-	0xef, 0x91, 0xbc, 0x2a, 0x5a, 0x81, 0x99, 0xa0, 0xcb, 0x2c, 0x5f, 0x7e, 0x30, 0x3b, 0xfa, 0x73,
-	0x7b, 0xe6, 0xfc, 0xf4, 0x62, 0x26, 0xe8, 0xda, 0x9f, 0xc2, 0x9d, 0xa9, 0x8c, 0xff, 0x69, 0x33,
-	0x1b, 0xb0, 0x2e, 0x46, 0x4f, 0x62, 0xe2, 0xa6, 0xe3, 0xbe, 0x15, 0x1a, 0x94, 0x07, 0x69, 0xef,
-	0x30, 0xac, 0x49, 0x0d, 0x22, 0xee, 0x70, 0x9c, 0xb6, 0x26, 0x3f, 0x60, 0x16, 0x53, 0x64, 0x9d,
-	0xc5, 0x6e, 0xa2, 0xcb, 0xca, 0x62, 0x34, 0x6b, 0x1f, 0x6c, 0x31, 0xd2, 0x26, 0x69, 0x9b, 0x90,
-	0xf0, 0x51, 0x94, 0x04, 0xec, 0x81, 0xb2, 0x7c, 0x1b, 0x76, 0x4a, 0x55, 0xd4, 0x69, 0x07, 0x2c,
-	0x51, 0xf3, 0x21, 0x49, 0x12, 0xd7, 0x27, 0xe2, 0x8b, 0xb7, 0x60, 0x53, 0xab, 0xd0, 0x3b, 0xb4,
-	0x49, 0xd8, 0x2d, 0x77, 0xe0, 0x0a, 0xbd, 0xc3, 0x59, 0x37, 0xa8, 0xd8, 0x03, 0x57, 0xe8, 0x1d,
-	0xde, 0x0f, 0xba, 0xa4, 0xdc, 0x81, 0x2b, 0xa8, 0xc3, 0x1e, 0xec, 0x8a, 0xf1, 0x8f, 0xfb, 0x5d,
-	0x37, 0x25, 0x6d, 0x92, 0xa6, 0x41, 0xe8, 0x27, 0xb9, 0xc9, 0x2e, 0x6c, 0x97, 0x89, 0xa8, 0x4f,
-	0x03, 0xf6, 0x44, 0xc9, 0x79, 0x38, 0x0c, 0xf8, 0x95, 0x3e, 0xf6, 0x3c, 0xd2, 0x1f, 0x3f, 0x50,
-	0xa1, 0xdc, 0xb4, 0xac, 0xd4, 0x4b, 0x3e, 0x93, 0x5a, 0x2f, 0xf1, 0x74, 0x1e, 0xc0, 0xbe, 0x5a,
-	0x74, 0x1a, 0x24, 0x9e, 0x1b, 0x8f, 0xdf, 0x55, 0xe1, 0x64, 0x29, 0x74, 0xd4, 0xed, 0x0e, 0xa0,
-	0x93, 0x28, 0x4c, 0x5d, 0x2f, 0x15, 0x4f, 0x0a, 0x82, 0xd7, 0xa4, 0x55, 0xaa, 0x5c, 0x82, 0xc5,
-	0x6c, 0x6d, 0x72, 0xab, 0xed, 0x45, 0x58, 0x10, 0x17, 0xa9, 0x6e, 0x85, 0x5d, 0x68, 0xba, 0xc4,
-	0xbb, 0x9a, 0x4b, 0x27, 0x95, 0xf2, 0x75, 0x59, 0x7d, 0x41, 0xae, 0xa3, 0xa1, 0x42, 0x9d, 0xaf,
-	0x53, 0xf5, 0x16, 0x6c, 0x8c, 0x57, 0x99, 0x4e, 0xee, 0x1f, 0xbf, 0xf0, 0x8a, 0xb0, 0x32, 0x57,
-	0x7e, 0x8f, 0x53, 0xb9, 0xe2, 0xfb, 0xe3, 0x67, 0x4e, 0x08, 0x16, 0x7a, 0xbd, 0x09, 0x58, 0x13,
-	0xa7, 0xd9, 0x0b, 0x30, 0xdf, 0x26, 0x6e, 0xec, 0x5d, 0xe6, 0xf2, 0x79, 0x98, 0xcb, 0x17, 0x68,
-	0x7c, 0x03, 0xd6, 0x8f, 0x3d, 0x2f, 0x1a, 0x84, 0x69, 0x7e, 0x02, 0x85, 0x0e, 0xaf, 0xc3, 0xaa,
-	0x2a, 0x98, 0xed, 0xaa, 0x10, 0x92, 0x3b, 0xbe, 0x09, 0x58, 0x13, 0xa7, 0xd9, 0x77, 0xa1, 0x91,
-	0x45, 0x1f, 0xb9, 0x41, 0x1c, 0x84, 0xbe, 0xee, 0x54, 0x36, 0x60, 0xaf, 0x4a, 0x48, 0xfd, 0x1c,
-	0x68, 0x66, 0xb2, 0x0b, 0x12, 0x92, 0x2f, 0xcf, 0x43, 0x2f, 0xba, 0x0e, 0x42, 0x5f, 0xee, 0xcb,
-	0xc3, 0x20, 0xbc, 0xca, 0x7d, 0x9b, 0x70, 0xaf, 0x6e, 0x42, 0xf6, 0x7d, 0x3d, 0x25, 0x43, 0xf5,
-	0x10, 0x5c, 0x83, 0x15, 0x45, 0xac, 0xdf, 0xbb, 0xb9, 0xff, 0xc7, 0x2a, 0xbc, 0x94, 0x55, 0x41,
-	0x9f, 0xc0, 0xab, 0xb2, 0x04, 0xed, 0x0a, 0xe3, 0xa4, 0xa5, 0xb4, 0xc6, 0xdb, 0x65, 0x12, 0xba,
-	0x2f, 0xe3, 0xc8, 0x44, 0x9f, 0xb1, 0xfb, 0x22, 0x8d, 0x54, 0xb4, 0x27, 0x26, 0x6a, 0x66, 0x31,
-	0xde, 0x2d, 0x17, 0xe5, 0xfe, 0x31, 0xbb, 0x66, 0xe2, 0x90, 0x44, 0xb6, 0x2e, 0x73, 0x72, 0x76,
-	0xf0, 0x4e, 0xa9, 0x86, 0x61, 0xc2, 0xb7, 0xbf, 0xfd, 0xfd, 0xe3, 0xcc, 0x12, 0x5a, 0x74, 0xc4,
-	0xc9, 0xe9, 0xf8, 0x24, 0x45, 0x1d, 0x76, 0x03, 0x0b, 0x03, 0x12, 0x35, 0x74, 0x96, 0xd2, 0x99,
-	0xc1, 0x7b, 0x55, 0x32, 0xf6, 0x64, 0xe8, 0x73, 0xf6, 0x4d, 0x91, 0xa7, 0x29, 0xda, 0xd7, 0xf6,
-	0x44, 0x18, 0xc4, 0xd8, 0xae, 0x50, 0x29, 0x0b, 0xb0, 0xc1, 0xab, 0x2f, 0x20, 0xce, 0x6c, 0x7d,
-	0x01, 0x61, 0x7a, 0x1b, 0xe8, 0x6b, 0xf6, 0x55, 0xd1, 0x4d, 0x66, 0xd4, 0xd2, 0x99, 0xa8, 0x07,
-	0x3d, 0x7e, 0xa3, 0xb6, 0x9e, 0x97, 0x4f, 0x64, 0x8a, 0x11, 0x46, 0x3a, 0x7a, 0x5d, 0x67, 0x35,
-	0x4d, 0x06, 0xf8, 0xb0, 0x96, 0x36, 0x3f, 0x8d, 0x4f, 0x94, 0x45, 0x29, 0x05, 0x54, 0x16, 0x15,
-	0x60, 0xa2, 0xb2, 0xe8, 0x04, 0x2b, 0x0c, 0x4d, 0x49, 0x8a, 0x0d, 0x95, 0x25, 0x05, 0xfa, 0xa8,
-	0x2c, 0x39, 0xe1, 0x10, 0x5d, 0x49, 0xca, 0x19, 0x95, 0x25, 0x05, 0x5c, 0xa9, 0x2c, 0x39, 0x01,
-	0x17, 0x03, 0x7d, 0xc5, 0xc6, 0x88, 0x86, 0x4a, 0x50, 0x53, 0xe7, 0xa4, 0x44, 0x1c, 0x7c, 0xaf,
-	0xae, 0x9c, 0xd7, 0xfe, 0xc6, 0x94, 0xb9, 0xaa, 0x08, 0x32, 0xc8, 0xd1, 0xf9, 0x69, 0xc8, 0x08,
-	0x37, 0xeb, 0x27, 0x54, 0x6d, 0x21, 0xfb, 0xf8, 0xd4, 0xd8, 0x82, 0xfc, 0x19, 0x6a, 0xd6, 0x4f,
-	0xe0, 0x5b, 0xf8, 0xce, 0x84, 0xad, 0x52, 0x6a, 0x42, 0x47, 0xd5, 0x96, 0x32, 0x1c, 0xe0, 0xd6,
-	0x0b, 0x64, 0xf0, 0x5d, 0x7c, 0x04, 0x73, 0x02, 0x7e, 0x21, 0xab, 0x60, 0x50, 0xa0, 0x35, 0xbc,
-	0xa9, 0x8d, 0xe7, 0x37, 0xf6, 0x03, 0x80, 0x09, 0xa6, 0xa1, 0x2d, 0x85, 0x5e, 0x98, 0x1a, 0x1b,
-	0xba, 0x30, 0xdf, 0x5c, 0x1b, 0xe6, 0x25, 0x8e, 0x43, 0x3b, 0x0a, 0xbd, 0x04, 0x22, 0xd8, 0x2a,
-	0x51, 0x14, 0x4d, 0x39, 0xee, 0x29, 0x4d, 0x25, 0x42, 0x54, 0x9a, 0x8a, 0xac, 0x68, 0xa0, 0x4b,
-	0x81, 0x2d, 0x05, 0x1c, 0x44, 0x77, 0x95, 0x99, 0xd3, 0x3c, 0x89, 0x1b, 0xd5, 0x42, 0x4d, 0xa5,
-	0xec, 0xce, 0x94, 0x54, 0x92, 0xef, 0x4a, 0xa3, 0x5a, 0xc8, 0x2b, 0x5d, 0xb1, 0xff, 0xbc, 0x4f,
-	0x93, 0x26, 0x3a, 0xd4, 0x3b, 0x14, 0xce, 0xe3, 0x41, 0x0d, 0x25, 0x2f, 0xf6, 0x2e, 0xcc, 0x72,
-	0x4e, 0x45, 0xeb, 0x62, 0x8e, 0x04, 0xb3, 0x78, 0x55, 0x15, 0xca, 0x0f, 0x5e, 0x07, 0xd0, 0x34,
-	0xbd, 0xca, 0x10, 0xa1, 0x45, 0x5f, 0x19, 0x22, 0x74, 0x10, 0xcc, 0x5a, 0xa2, 0xc4, 0x5c, 0xb9,
-	0x25, 0x65, 0xa4, 0x2c, 0xb7, 0xa4, 0x84, 0x99, 0x0d, 0xf4, 0xbd, 0x09, 0x56, 0x39, 0x0d, 0xa3,
-	0x37, 0x15, 0x66, 0xe5, 0x88, 0x8d, 0x9d, 0x17, 0x49, 0xe1, 0x1b, 0xf9, 0xc9, 0x84, 0x83, 0x7a,
-	0xf8, 0x8c, 0xde, 0x51, 0xb8, 0xd7, 0x63, 0x74, 0xfc, 0xf6, 0x7f, 0x49, 0xe5, 0x1b, 0x74, 0x61,
-	0x71, 0x8a, 0xc9, 0x65, 0xf4, 0xd2, 0xe1, 0xbc, 0x8c, 0x5e, 0x6a, 0xb0, 0xa7, 0xa7, 0xeb, 0xc1,
-	0xf9, 0xd3, 0xe7, 0x96, 0xf1, 0xcf, 0x73, 0xcb, 0xfc, 0x79, 0x64, 0x99, 0xbf, 0x8c, 0x2c, 0xf3,
-	0xe9, 0xc8, 0x32, 0x9f, 0x8d, 0x2c, 0xf3, 0xaf, 0x91, 0x65, 0xfe, 0x70, 0x6b, 0x19, 0xbf, 0xde,
-	0x5a, 0xe6, 0xb3, 0x5b, 0xcb, 0xf8, 0xfd, 0xd6, 0x32, 0x1e, 0x6f, 0x70, 0xd3, 0x94, 0x78, 0x97,
-	0x8e, 0x1f, 0x39, 0xfd, 0x2b, 0xdf, 0x19, 0xff, 0x9e, 0xd7, 0x99, 0x65, 0x3f, 0xb3, 0xbd, 0xf5,
-	0x6f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x39, 0x6b, 0x1c, 0x37, 0xe3, 0x13, 0x00, 0x00,
-}
-
-func (this *EventSubscribeRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*EventSubscribeRequest)
-	if !ok {
-		that2, ok := that.(EventSubscribeRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *EventSubscribeReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*EventSubscribeReply)
-	if !ok {
-		that2, ok := that.(EventSubscribeReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationListRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationListRequest)
-	if !ok {
-		that2, ok := that.(ConversationListRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationListReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationListReply)
-	if !ok {
-		that2, ok := that.(ConversationListReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !this.Conversation.Equal(that1.Conversation) {
-		return false
-	}
-	return true
-}
-func (this *ConversationGetRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationGetRequest)
-	if !ok {
-		that2, ok := that.(ConversationGetRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.ID != that1.ID {
-		return false
-	}
-	return true
-}
-func (this *ConversationGetReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationGetReply)
-	if !ok {
-		that2, ok := that.(ConversationGetReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if !this.Conversation.Equal(that1.Conversation) {
-		return false
-	}
-	return true
-}
-func (this *ConversationCreateRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationCreateRequest)
-	if !ok {
-		that2, ok := that.(ConversationCreateRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationCreateReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationCreateReply)
-	if !ok {
-		that2, ok := that.(ConversationCreateReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationLeaveRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationLeaveRequest)
-	if !ok {
-		that2, ok := that.(ConversationLeaveRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationLeaveReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationLeaveReply)
-	if !ok {
-		that2, ok := that.(ConversationLeaveReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationEraseRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationEraseRequest)
-	if !ok {
-		that2, ok := that.(ConversationEraseRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationEraseReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationEraseReply)
-	if !ok {
-		that2, ok := that.(ConversationEraseReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationSetSeenPositionRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationSetSeenPositionRequest)
-	if !ok {
-		that2, ok := that.(ConversationSetSeenPositionRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationSetSeenPositionReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationSetSeenPositionReply)
-	if !ok {
-		that2, ok := that.(ConversationSetSeenPositionReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationMessageListRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationMessageListRequest)
-	if !ok {
-		that2, ok := that.(ConversationMessageListRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationMessageListReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationMessageListReply)
-	if !ok {
-		that2, ok := that.(ConversationMessageListReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationMessageSendRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationMessageSendRequest)
-	if !ok {
-		that2, ok := that.(ConversationMessageSendRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationMessageSendReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationMessageSendReply)
-	if !ok {
-		that2, ok := that.(ConversationMessageSendReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationMessageEditRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationMessageEditRequest)
-	if !ok {
-		that2, ok := that.(ConversationMessageEditRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationMessageEditReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationMessageEditReply)
-	if !ok {
-		that2, ok := that.(ConversationMessageEditReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationMessageHideRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationMessageHideRequest)
-	if !ok {
-		that2, ok := that.(ConversationMessageHideRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationMessageHideReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationMessageHideReply)
-	if !ok {
-		that2, ok := that.(ConversationMessageHideReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationUpdateSettingsRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationUpdateSettingsRequest)
-	if !ok {
-		that2, ok := that.(ConversationUpdateSettingsRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationUpdateSettingsReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationUpdateSettingsReply)
-	if !ok {
-		that2, ok := that.(ConversationUpdateSettingsReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationInvitationAcceptRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationInvitationAcceptRequest)
-	if !ok {
-		that2, ok := that.(ConversationInvitationAcceptRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationInvitationAcceptReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationInvitationAcceptReply)
-	if !ok {
-		that2, ok := that.(ConversationInvitationAcceptReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationInvitationCreateRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationInvitationCreateRequest)
-	if !ok {
-		that2, ok := that.(ConversationInvitationCreateRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationInvitationCreateReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationInvitationCreateReply)
-	if !ok {
-		that2, ok := that.(ConversationInvitationCreateReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationInvitationDiscardRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationInvitationDiscardRequest)
-	if !ok {
-		that2, ok := that.(ConversationInvitationDiscardRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ConversationInvitationDiscardReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ConversationInvitationDiscardReply)
-	if !ok {
-		that2, ok := that.(ConversationInvitationDiscardReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactListRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactListRequest)
-	if !ok {
-		that2, ok := that.(ContactListRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactListReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactListReply)
-	if !ok {
-		that2, ok := that.(ContactListReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactGetRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactGetRequest)
-	if !ok {
-		that2, ok := that.(ContactGetRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactGetReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactGetReply)
-	if !ok {
-		that2, ok := that.(ContactGetReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactUpdateRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactUpdateRequest)
-	if !ok {
-		that2, ok := that.(ContactUpdateRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactUpdateReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactUpdateReply)
-	if !ok {
-		that2, ok := that.(ContactUpdateReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactRemoveRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactRemoveRequest)
-	if !ok {
-		that2, ok := that.(ContactRemoveRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactRemoveReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactRemoveReply)
-	if !ok {
-		that2, ok := that.(ContactRemoveReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactRequestCreateRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactRequestCreateRequest)
-	if !ok {
-		that2, ok := that.(ContactRequestCreateRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactRequestCreateReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactRequestCreateReply)
-	if !ok {
-		that2, ok := that.(ContactRequestCreateReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactRequestAcceptRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactRequestAcceptRequest)
-	if !ok {
-		that2, ok := that.(ContactRequestAcceptRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactRequestAcceptReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactRequestAcceptReply)
-	if !ok {
-		that2, ok := that.(ContactRequestAcceptReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactRequestDiscardRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactRequestDiscardRequest)
-	if !ok {
-		that2, ok := that.(ContactRequestDiscardRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *ContactRequestDiscardReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ContactRequestDiscardReply)
-	if !ok {
-		that2, ok := that.(ContactRequestDiscardReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *SearchRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*SearchRequest)
-	if !ok {
-		that2, ok := that.(SearchRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *SearchReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*SearchReply)
-	if !ok {
-		that2, ok := that.(SearchReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *AccountSettingsGetRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*AccountSettingsGetRequest)
-	if !ok {
-		that2, ok := that.(AccountSettingsGetRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *AccountSettingsGetReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*AccountSettingsGetReply)
-	if !ok {
-		that2, ok := that.(AccountSettingsGetReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *AccountSettingsUpdateRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*AccountSettingsUpdateRequest)
-	if !ok {
-		that2, ok := that.(AccountSettingsUpdateRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *AccountSettingsUpdateReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*AccountSettingsUpdateReply)
-	if !ok {
-		that2, ok := that.(AccountSettingsUpdateReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *AccountPairingInvitationCreateRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*AccountPairingInvitationCreateRequest)
-	if !ok {
-		that2, ok := that.(AccountPairingInvitationCreateRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *AccountPairingInvitationCreateReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*AccountPairingInvitationCreateReply)
-	if !ok {
-		that2, ok := that.(AccountPairingInvitationCreateReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *AccountRenewIncomingContactRequestLinkRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*AccountRenewIncomingContactRequestLinkRequest)
-	if !ok {
-		that2, ok := that.(AccountRenewIncomingContactRequestLinkRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *AccountRenewIncomingContactRequestLinkReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*AccountRenewIncomingContactRequestLinkReply)
-	if !ok {
-		that2, ok := that.(AccountRenewIncomingContactRequestLinkReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *DevEventSubscribeRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*DevEventSubscribeRequest)
-	if !ok {
-		that2, ok := that.(DevEventSubscribeRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *DevEventSubscribeReply) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*DevEventSubscribeReply)
-	if !ok {
-		that2, ok := that.(DevEventSubscribeReply)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
+	// 1145 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x98, 0xcf, 0x6f, 0xe3, 0x44,
+	0x14, 0xc7, 0x93, 0x1e, 0x8a, 0x78, 0xa5, 0x94, 0x4e, 0xb7, 0x3f, 0x32, 0xf9, 0xd1, 0xd4, 0x69,
+	0xba, 0x15, 0x4b, 0xe2, 0xb2, 0x1c, 0x10, 0x37, 0xba, 0x6d, 0x05, 0x45, 0x8b, 0x58, 0x25, 0x42,
+	0x82, 0x3d, 0x80, 0x1c, 0x67, 0x70, 0xac, 0xa6, 0x76, 0xd6, 0x9e, 0x04, 0x15, 0x09, 0x09, 0x81,
+	0xc4, 0x3f, 0xc0, 0x9d, 0x7f, 0x8a, 0x1b, 0x07, 0x0e, 0x88, 0x3f, 0x04, 0xcd, 0x8c, 0x9d, 0xcc,
+	0x38, 0x33, 0xb6, 0x17, 0x71, 0xdb, 0xce, 0xfb, 0xbe, 0xef, 0x1b, 0x3f, 0xcf, 0xf8, 0x7d, 0x36,
+	0xb0, 0x33, 0x22, 0x11, 0x7d, 0x70, 0x27, 0x0e, 0xed, 0xcf, 0xa2, 0x90, 0x86, 0x08, 0xf8, 0x42,
+	0x9f, 0xad, 0xe0, 0x86, 0x17, 0x86, 0xde, 0x94, 0xd8, 0xce, 0xcc, 0xb7, 0x9d, 0x20, 0x08, 0xa9,
+	0x43, 0xfd, 0x30, 0x88, 0x85, 0x12, 0xf7, 0x3c, 0x9f, 0x4e, 0xe6, 0xa3, 0xbe, 0x1b, 0xde, 0xdb,
+	0x5e, 0xe8, 0x85, 0x36, 0x5f, 0x1e, 0xcd, 0xbf, 0xe3, 0x7f, 0xf1, 0x3f, 0xf8, 0xbf, 0x12, 0xf9,
+	0x0e, 0xb3, 0xbc, 0x0f, 0xc7, 0x64, 0x2a, 0x16, 0xac, 0x43, 0xd8, 0xbf, 0x59, 0x90, 0x80, 0x0e,
+	0xe7, 0xa3, 0xd8, 0x8d, 0xfc, 0x11, 0x19, 0x90, 0x57, 0x73, 0x12, 0x53, 0x6b, 0x1f, 0xf6, 0xb2,
+	0x81, 0xd9, 0xf4, 0xc1, 0xaa, 0xc1, 0xe1, 0x55, 0x18, 0x2c, 0x48, 0x14, 0xf3, 0x6d, 0x3c, 0xf7,
+	0x63, 0x9a, 0x66, 0xbc, 0x84, 0xfd, 0xf5, 0xd0, 0x6c, 0xfa, 0x80, 0x2e, 0xe1, 0x2d, 0x57, 0x0a,
+	0x1c, 0x55, 0xdb, 0xd5, 0xf3, 0xad, 0xa7, 0xcd, 0xfe, 0xea, 0x21, 0xc5, 0x8e, 0xe4, 0xec, 0x81,
+	0x92, 0x62, 0x5d, 0xc0, 0x81, 0x1c, 0xfd, 0x84, 0xa4, 0x55, 0xd1, 0x01, 0x6c, 0xf8, 0x63, 0x6e,
+	0xf9, 0xe6, 0xb3, 0xcd, 0xbf, 0xff, 0x3a, 0xde, 0xb8, 0xbd, 0x1e, 0x6c, 0xf8, 0x63, 0xeb, 0x6b,
+	0x78, 0xb4, 0x96, 0xf1, 0x3f, 0x6d, 0xa6, 0x0e, 0x35, 0x39, 0x7a, 0x15, 0x11, 0x87, 0x2e, 0xfb,
+	0x96, 0x69, 0x50, 0x1a, 0x64, 0xbd, 0xc3, 0x70, 0xa4, 0x34, 0x88, 0x38, 0x8b, 0x65, 0xda, 0x91,
+	0xfa, 0x80, 0x49, 0x4c, 0x93, 0x75, 0x13, 0x39, 0xb1, 0x29, 0x2b, 0x89, 0xb1, 0xac, 0x53, 0xb0,
+	0xe4, 0xc8, 0x90, 0xd0, 0x21, 0x21, 0xc1, 0x8b, 0x30, 0xf6, 0xf9, 0x03, 0x25, 0xf9, 0x16, 0xb4,
+	0x73, 0x55, 0xcc, 0xa9, 0x0d, 0x2d, 0x59, 0xf3, 0x39, 0x89, 0x63, 0xc7, 0x23, 0xf2, 0x8b, 0x6f,
+	0x41, 0xc3, 0xa8, 0x30, 0x3b, 0x0c, 0x49, 0x30, 0xce, 0x77, 0x10, 0x0a, 0xb3, 0xc3, 0xcd, 0xd8,
+	0x2f, 0xd8, 0x83, 0x50, 0x98, 0x1d, 0x3e, 0xf5, 0xc7, 0x24, 0xdf, 0x41, 0x28, 0x98, 0x43, 0x07,
+	0x4e, 0xe4, 0xf8, 0x97, 0xb3, 0xb1, 0x43, 0xc9, 0x90, 0x50, 0xea, 0x07, 0x5e, 0x9c, 0x9a, 0x9c,
+	0xc0, 0x71, 0x9e, 0x88, 0xf9, 0x74, 0xa1, 0x23, 0x4b, 0x6e, 0x83, 0x85, 0x2f, 0xae, 0xf4, 0xa5,
+	0xeb, 0x92, 0xd9, 0xf2, 0x81, 0x32, 0xe5, 0xd6, 0x65, 0xb9, 0x5e, 0xea, 0x99, 0x34, 0x7a, 0xc9,
+	0xa7, 0xf3, 0x0c, 0x4e, 0xf5, 0xa2, 0x6b, 0x3f, 0x76, 0x9d, 0x68, 0xf9, 0xae, 0x32, 0x27, 0x4b,
+	0xa3, 0x63, 0x6e, 0x8f, 0x00, 0x5d, 0x85, 0x01, 0x75, 0x5c, 0x2a, 0x9f, 0x14, 0x04, 0xef, 0x28,
+	0xab, 0x4c, 0xb9, 0x07, 0xbb, 0xc9, 0xda, 0xea, 0x56, 0x5b, 0xbb, 0xb0, 0x23, 0x2f, 0x32, 0xdd,
+	0x01, 0xbf, 0xd0, 0x6c, 0x49, 0x74, 0x35, 0x95, 0xae, 0x2a, 0xa5, 0xeb, 0xaa, 0x7a, 0x40, 0xee,
+	0xc3, 0x85, 0x46, 0x9d, 0xae, 0x33, 0x75, 0x13, 0xea, 0xcb, 0x55, 0xae, 0x53, 0xfb, 0x27, 0x2e,
+	0xbc, 0x26, 0xac, 0xcd, 0x55, 0xdf, 0xe3, 0x5a, 0xae, 0xfc, 0xfe, 0xc4, 0x99, 0x93, 0x82, 0x99,
+	0x5e, 0x37, 0x00, 0x1b, 0xe2, 0x2c, 0x7b, 0x07, 0xb6, 0x87, 0xc4, 0x89, 0xdc, 0x49, 0x2a, 0xdf,
+	0x86, 0xad, 0x74, 0x81, 0xc5, 0xeb, 0x50, 0xbb, 0x74, 0xdd, 0x70, 0x1e, 0xd0, 0xf4, 0x04, 0x4a,
+	0x1d, 0xae, 0xc1, 0xa1, 0x2e, 0x98, 0xec, 0x2a, 0x13, 0x52, 0x3b, 0xde, 0x00, 0x6c, 0x88, 0xb3,
+	0xec, 0xc7, 0xd0, 0x4d, 0xa2, 0x2f, 0x1c, 0x3f, 0xf2, 0x03, 0xcf, 0x74, 0x2a, 0xbb, 0xd0, 0x29,
+	0x12, 0x32, 0x3f, 0x1b, 0x7a, 0x89, 0x6c, 0x40, 0x02, 0xf2, 0xfd, 0x6d, 0xe0, 0x86, 0xf7, 0x7e,
+	0xe0, 0xa9, 0x7d, 0x79, 0xee, 0x07, 0x77, 0xa9, 0x6f, 0x0f, 0x9e, 0x94, 0x4d, 0x48, 0xbe, 0xaf,
+	0xd7, 0x64, 0xa1, 0x1f, 0x82, 0x47, 0x70, 0xa0, 0x89, 0xcd, 0xa6, 0x0f, 0x4f, 0xff, 0x3c, 0x84,
+	0x37, 0x92, 0x2a, 0xe8, 0x2b, 0x78, 0x5b, 0x95, 0xa0, 0x13, 0x69, 0x9c, 0xf4, 0xb5, 0xd6, 0xf8,
+	0x38, 0x4f, 0xc2, 0xf6, 0x55, 0xb9, 0xa8, 0xa2, 0x6f, 0xf8, 0x7d, 0x51, 0x46, 0x2a, 0xea, 0xc8,
+	0x89, 0x86, 0x59, 0x8c, 0x4f, 0xf2, 0x45, 0xa9, 0x7f, 0xc4, 0xaf, 0x99, 0x3c, 0x24, 0x91, 0x65,
+	0xca, 0x5c, 0x9d, 0x1d, 0xdc, 0xce, 0xd5, 0x70, 0x4c, 0xf8, 0xf9, 0x8f, 0x7f, 0x7e, 0xdb, 0xd8,
+	0x43, 0xbb, 0xb6, 0x3c, 0x39, 0x6d, 0x8f, 0x50, 0x34, 0xe2, 0x37, 0x30, 0x33, 0x20, 0x51, 0xd7,
+	0x64, 0xa9, 0x9c, 0x19, 0xdc, 0x29, 0x92, 0xf1, 0x27, 0x43, 0xdf, 0xf2, 0x6f, 0x8a, 0x3a, 0x4d,
+	0xd1, 0xa9, 0xb1, 0x27, 0xd2, 0x20, 0xc6, 0x56, 0x81, 0x4a, 0x5b, 0x80, 0x0f, 0x5e, 0x73, 0x01,
+	0x79, 0x66, 0x9b, 0x0b, 0x48, 0xd3, 0xbb, 0x82, 0x7e, 0xe4, 0x5f, 0x15, 0xd3, 0x64, 0x46, 0x7d,
+	0x93, 0x89, 0x7e, 0xd0, 0xe3, 0xf7, 0x4a, 0xeb, 0x45, 0xf9, 0x58, 0xa5, 0x18, 0x69, 0xa4, 0xa3,
+	0x77, 0x4d, 0x56, 0xeb, 0x64, 0x80, 0xcf, 0x4b, 0x69, 0xd3, 0xd3, 0xf8, 0x4a, 0x5b, 0x94, 0x51,
+	0x40, 0x61, 0x51, 0x09, 0x26, 0x0a, 0x8b, 0xae, 0xb0, 0xa2, 0x62, 0x28, 0xc9, 0xb0, 0xa1, 0xb0,
+	0xa4, 0x44, 0x1f, 0x85, 0x25, 0x57, 0x1c, 0x62, 0x2a, 0xc9, 0x38, 0xa3, 0xb0, 0xa4, 0x84, 0x2b,
+	0x85, 0x25, 0x57, 0xe0, 0x52, 0x41, 0x3f, 0xf0, 0x31, 0x62, 0xa0, 0x12, 0xd4, 0x33, 0x39, 0x69,
+	0x11, 0x07, 0x3f, 0x29, 0x2b, 0x17, 0xb5, 0x7f, 0xaa, 0xaa, 0x5c, 0x95, 0x05, 0x19, 0x64, 0x9b,
+	0xfc, 0x0c, 0x64, 0x84, 0x7b, 0xe5, 0x13, 0x8a, 0xb6, 0x90, 0x7c, 0x7c, 0x4a, 0x6c, 0x41, 0xfd,
+	0x0c, 0xf5, 0xca, 0x27, 0x88, 0x2d, 0xfc, 0x52, 0x85, 0x66, 0x2e, 0x35, 0xa1, 0x8b, 0x62, 0x4b,
+	0x15, 0x0e, 0x70, 0xff, 0x35, 0x32, 0xc4, 0x2e, 0xbe, 0x80, 0x2d, 0x09, 0xbf, 0x50, 0x2b, 0x63,
+	0x90, 0xa1, 0x35, 0xdc, 0x30, 0xc6, 0xd3, 0x1b, 0xfb, 0x19, 0xc0, 0x0a, 0xd3, 0x50, 0x53, 0xa3,
+	0x97, 0xa6, 0x46, 0xdd, 0x14, 0x16, 0x9b, 0x1b, 0xc2, 0xb6, 0xc2, 0x71, 0xa8, 0xad, 0xd1, 0x2b,
+	0x20, 0x82, 0x5b, 0x39, 0x8a, 0xac, 0xa9, 0xc0, 0x3d, 0xad, 0xa9, 0x42, 0x88, 0x5a, 0x53, 0x99,
+	0x15, 0x2b, 0x68, 0x22, 0xb1, 0xa5, 0x84, 0x83, 0xe8, 0xb1, 0x36, 0x73, 0x9d, 0x27, 0x71, 0xb7,
+	0x58, 0x68, 0xa8, 0x94, 0xdc, 0x99, 0x9c, 0x4a, 0xea, 0x5d, 0xe9, 0x16, 0x0b, 0x45, 0xa5, 0x3b,
+	0xfe, 0x9f, 0xf7, 0x75, 0xd2, 0x44, 0xe7, 0x66, 0x87, 0xcc, 0x79, 0x3c, 0x2b, 0xa1, 0x14, 0xc5,
+	0x3e, 0x86, 0x4d, 0xc1, 0xa9, 0xa8, 0x26, 0xe7, 0x28, 0x30, 0x8b, 0x0f, 0x75, 0xa1, 0xf4, 0xe0,
+	0x8d, 0x00, 0xad, 0xd3, 0xab, 0x0a, 0x11, 0x46, 0xf4, 0x55, 0x21, 0xc2, 0x04, 0xc1, 0xbc, 0x25,
+	0x5a, 0xcc, 0x55, 0x5b, 0x92, 0x47, 0xca, 0x6a, 0x4b, 0x72, 0x98, 0xb9, 0x82, 0x7e, 0xad, 0x42,
+	0x2b, 0x9f, 0x86, 0xd1, 0xfb, 0x1a, 0xb3, 0x7c, 0xc4, 0xc6, 0xf6, 0xeb, 0xa4, 0x88, 0x8d, 0xfc,
+	0x5e, 0x85, 0xb3, 0x72, 0xf8, 0x8c, 0x3e, 0xd2, 0xb8, 0x97, 0x63, 0x74, 0xfc, 0xe1, 0x7f, 0x49,
+	0x15, 0x1b, 0x74, 0x60, 0x77, 0x8d, 0xc9, 0x55, 0xf4, 0x32, 0xe1, 0xbc, 0x8a, 0x5e, 0x7a, 0xb0,
+	0x67, 0xa7, 0xeb, 0x59, 0xf3, 0x65, 0x5d, 0x08, 0x29, 0x71, 0x27, 0xb6, 0x17, 0xda, 0xb3, 0x3b,
+	0xcf, 0x5e, 0xfe, 0x46, 0x37, 0xda, 0xe4, 0x3f, 0x9d, 0x7d, 0xf0, 0x6f, 0x00, 0x00, 0x00, 0xff,
+	0xff, 0xd7, 0x50, 0xe5, 0xa3, 0xb7, 0x13, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -4656,5483 +3091,3 @@ var _Account_serviceDesc = grpc.ServiceDesc{
 	},
 	Metadata: "bertychat.proto",
 }
-
-func (m *EventSubscribeRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *EventSubscribeRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *EventSubscribeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *EventSubscribeReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *EventSubscribeReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *EventSubscribeReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationListRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationListRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationListRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationListReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationListReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationListReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Conversation != nil {
-		{
-			size, err := m.Conversation.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintBertychat(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationGetRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationGetRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationGetRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.ID) > 0 {
-		i -= len(m.ID)
-		copy(dAtA[i:], m.ID)
-		i = encodeVarintBertychat(dAtA, i, uint64(len(m.ID)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationGetReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationGetReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationGetReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Conversation != nil {
-		{
-			size, err := m.Conversation.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintBertychat(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationCreateRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationCreateRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationCreateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationCreateReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationCreateReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationCreateReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationLeaveRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationLeaveRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationLeaveRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationLeaveReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationLeaveReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationLeaveReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationEraseRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationEraseRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationEraseRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationEraseReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationEraseReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationEraseReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationSetSeenPositionRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationSetSeenPositionRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationSetSeenPositionRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationSetSeenPositionReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationSetSeenPositionReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationSetSeenPositionReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationMessageListRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationMessageListRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationMessageListRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationMessageListReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationMessageListReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationMessageListReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationMessageSendRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationMessageSendRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationMessageSendRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationMessageSendReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationMessageSendReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationMessageSendReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationMessageEditRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationMessageEditRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationMessageEditRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationMessageEditReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationMessageEditReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationMessageEditReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationMessageHideRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationMessageHideRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationMessageHideRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationMessageHideReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationMessageHideReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationMessageHideReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationUpdateSettingsRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationUpdateSettingsRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationUpdateSettingsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationUpdateSettingsReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationUpdateSettingsReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationUpdateSettingsReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationInvitationAcceptRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationInvitationAcceptRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationInvitationAcceptRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationInvitationAcceptReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationInvitationAcceptReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationInvitationAcceptReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationInvitationCreateRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationInvitationCreateRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationInvitationCreateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationInvitationCreateReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationInvitationCreateReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationInvitationCreateReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationInvitationDiscardRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationInvitationDiscardRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationInvitationDiscardRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ConversationInvitationDiscardReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ConversationInvitationDiscardReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ConversationInvitationDiscardReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactListRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactListRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactListRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactListReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactListReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactListReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactGetRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactGetRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactGetRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactGetReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactGetReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactGetReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactUpdateRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactUpdateRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactUpdateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactUpdateReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactUpdateReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactUpdateReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactRemoveRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactRemoveRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactRemoveRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactRemoveReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactRemoveReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactRemoveReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactRequestCreateRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactRequestCreateRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactRequestCreateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactRequestCreateReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactRequestCreateReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactRequestCreateReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactRequestAcceptRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactRequestAcceptRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactRequestAcceptRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactRequestAcceptReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactRequestAcceptReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactRequestAcceptReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactRequestDiscardRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactRequestDiscardRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactRequestDiscardRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *ContactRequestDiscardReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ContactRequestDiscardReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ContactRequestDiscardReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *SearchRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SearchRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SearchRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *SearchReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SearchReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SearchReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *AccountSettingsGetRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AccountSettingsGetRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AccountSettingsGetRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *AccountSettingsGetReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AccountSettingsGetReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AccountSettingsGetReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *AccountSettingsUpdateRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AccountSettingsUpdateRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AccountSettingsUpdateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *AccountSettingsUpdateReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AccountSettingsUpdateReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AccountSettingsUpdateReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *AccountPairingInvitationCreateRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AccountPairingInvitationCreateRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AccountPairingInvitationCreateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *AccountPairingInvitationCreateReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AccountPairingInvitationCreateReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AccountPairingInvitationCreateReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *AccountRenewIncomingContactRequestLinkRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AccountRenewIncomingContactRequestLinkRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AccountRenewIncomingContactRequestLinkRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *AccountRenewIncomingContactRequestLinkReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AccountRenewIncomingContactRequestLinkReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AccountRenewIncomingContactRequestLinkReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *DevEventSubscribeRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *DevEventSubscribeRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *DevEventSubscribeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *DevEventSubscribeReply) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *DevEventSubscribeReply) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *DevEventSubscribeReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func encodeVarintBertychat(dAtA []byte, offset int, v uint64) int {
-	offset -= sovBertychat(v)
-	base := offset
-	for v >= 1<<7 {
-		dAtA[offset] = uint8(v&0x7f | 0x80)
-		v >>= 7
-		offset++
-	}
-	dAtA[offset] = uint8(v)
-	return base
-}
-func NewPopulatedEventSubscribeRequest(r randyBertychat, easy bool) *EventSubscribeRequest {
-	this := &EventSubscribeRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedEventSubscribeReply(r randyBertychat, easy bool) *EventSubscribeReply {
-	this := &EventSubscribeReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationListRequest(r randyBertychat, easy bool) *ConversationListRequest {
-	this := &ConversationListRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationListReply(r randyBertychat, easy bool) *ConversationListReply {
-	this := &ConversationListReply{}
-	if r.Intn(5) == 0 {
-		this.Conversation = chatmodel.NewPopulatedConversation(r, easy)
-	}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationGetRequest(r randyBertychat, easy bool) *ConversationGetRequest {
-	this := &ConversationGetRequest{}
-	this.ID = string(randStringBertychat(r))
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationGetReply(r randyBertychat, easy bool) *ConversationGetReply {
-	this := &ConversationGetReply{}
-	if r.Intn(5) == 0 {
-		this.Conversation = chatmodel.NewPopulatedConversation(r, easy)
-	}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationCreateRequest(r randyBertychat, easy bool) *ConversationCreateRequest {
-	this := &ConversationCreateRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationCreateReply(r randyBertychat, easy bool) *ConversationCreateReply {
-	this := &ConversationCreateReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationLeaveRequest(r randyBertychat, easy bool) *ConversationLeaveRequest {
-	this := &ConversationLeaveRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationLeaveReply(r randyBertychat, easy bool) *ConversationLeaveReply {
-	this := &ConversationLeaveReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationEraseRequest(r randyBertychat, easy bool) *ConversationEraseRequest {
-	this := &ConversationEraseRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationEraseReply(r randyBertychat, easy bool) *ConversationEraseReply {
-	this := &ConversationEraseReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationSetSeenPositionRequest(r randyBertychat, easy bool) *ConversationSetSeenPositionRequest {
-	this := &ConversationSetSeenPositionRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationSetSeenPositionReply(r randyBertychat, easy bool) *ConversationSetSeenPositionReply {
-	this := &ConversationSetSeenPositionReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationMessageListRequest(r randyBertychat, easy bool) *ConversationMessageListRequest {
-	this := &ConversationMessageListRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationMessageListReply(r randyBertychat, easy bool) *ConversationMessageListReply {
-	this := &ConversationMessageListReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationMessageSendRequest(r randyBertychat, easy bool) *ConversationMessageSendRequest {
-	this := &ConversationMessageSendRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationMessageSendReply(r randyBertychat, easy bool) *ConversationMessageSendReply {
-	this := &ConversationMessageSendReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationMessageEditRequest(r randyBertychat, easy bool) *ConversationMessageEditRequest {
-	this := &ConversationMessageEditRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationMessageEditReply(r randyBertychat, easy bool) *ConversationMessageEditReply {
-	this := &ConversationMessageEditReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationMessageHideRequest(r randyBertychat, easy bool) *ConversationMessageHideRequest {
-	this := &ConversationMessageHideRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationMessageHideReply(r randyBertychat, easy bool) *ConversationMessageHideReply {
-	this := &ConversationMessageHideReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationUpdateSettingsRequest(r randyBertychat, easy bool) *ConversationUpdateSettingsRequest {
-	this := &ConversationUpdateSettingsRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationUpdateSettingsReply(r randyBertychat, easy bool) *ConversationUpdateSettingsReply {
-	this := &ConversationUpdateSettingsReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationInvitationAcceptRequest(r randyBertychat, easy bool) *ConversationInvitationAcceptRequest {
-	this := &ConversationInvitationAcceptRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationInvitationAcceptReply(r randyBertychat, easy bool) *ConversationInvitationAcceptReply {
-	this := &ConversationInvitationAcceptReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationInvitationCreateRequest(r randyBertychat, easy bool) *ConversationInvitationCreateRequest {
-	this := &ConversationInvitationCreateRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationInvitationCreateReply(r randyBertychat, easy bool) *ConversationInvitationCreateReply {
-	this := &ConversationInvitationCreateReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationInvitationDiscardRequest(r randyBertychat, easy bool) *ConversationInvitationDiscardRequest {
-	this := &ConversationInvitationDiscardRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedConversationInvitationDiscardReply(r randyBertychat, easy bool) *ConversationInvitationDiscardReply {
-	this := &ConversationInvitationDiscardReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactListRequest(r randyBertychat, easy bool) *ContactListRequest {
-	this := &ContactListRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactListReply(r randyBertychat, easy bool) *ContactListReply {
-	this := &ContactListReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactGetRequest(r randyBertychat, easy bool) *ContactGetRequest {
-	this := &ContactGetRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactGetReply(r randyBertychat, easy bool) *ContactGetReply {
-	this := &ContactGetReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactUpdateRequest(r randyBertychat, easy bool) *ContactUpdateRequest {
-	this := &ContactUpdateRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactUpdateReply(r randyBertychat, easy bool) *ContactUpdateReply {
-	this := &ContactUpdateReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactRemoveRequest(r randyBertychat, easy bool) *ContactRemoveRequest {
-	this := &ContactRemoveRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactRemoveReply(r randyBertychat, easy bool) *ContactRemoveReply {
-	this := &ContactRemoveReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactRequestCreateRequest(r randyBertychat, easy bool) *ContactRequestCreateRequest {
-	this := &ContactRequestCreateRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactRequestCreateReply(r randyBertychat, easy bool) *ContactRequestCreateReply {
-	this := &ContactRequestCreateReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactRequestAcceptRequest(r randyBertychat, easy bool) *ContactRequestAcceptRequest {
-	this := &ContactRequestAcceptRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactRequestAcceptReply(r randyBertychat, easy bool) *ContactRequestAcceptReply {
-	this := &ContactRequestAcceptReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactRequestDiscardRequest(r randyBertychat, easy bool) *ContactRequestDiscardRequest {
-	this := &ContactRequestDiscardRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedContactRequestDiscardReply(r randyBertychat, easy bool) *ContactRequestDiscardReply {
-	this := &ContactRequestDiscardReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedSearchRequest(r randyBertychat, easy bool) *SearchRequest {
-	this := &SearchRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedSearchReply(r randyBertychat, easy bool) *SearchReply {
-	this := &SearchReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedAccountSettingsGetRequest(r randyBertychat, easy bool) *AccountSettingsGetRequest {
-	this := &AccountSettingsGetRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedAccountSettingsGetReply(r randyBertychat, easy bool) *AccountSettingsGetReply {
-	this := &AccountSettingsGetReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedAccountSettingsUpdateRequest(r randyBertychat, easy bool) *AccountSettingsUpdateRequest {
-	this := &AccountSettingsUpdateRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedAccountSettingsUpdateReply(r randyBertychat, easy bool) *AccountSettingsUpdateReply {
-	this := &AccountSettingsUpdateReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedAccountPairingInvitationCreateRequest(r randyBertychat, easy bool) *AccountPairingInvitationCreateRequest {
-	this := &AccountPairingInvitationCreateRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedAccountPairingInvitationCreateReply(r randyBertychat, easy bool) *AccountPairingInvitationCreateReply {
-	this := &AccountPairingInvitationCreateReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedAccountRenewIncomingContactRequestLinkRequest(r randyBertychat, easy bool) *AccountRenewIncomingContactRequestLinkRequest {
-	this := &AccountRenewIncomingContactRequestLinkRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedAccountRenewIncomingContactRequestLinkReply(r randyBertychat, easy bool) *AccountRenewIncomingContactRequestLinkReply {
-	this := &AccountRenewIncomingContactRequestLinkReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedDevEventSubscribeRequest(r randyBertychat, easy bool) *DevEventSubscribeRequest {
-	this := &DevEventSubscribeRequest{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-func NewPopulatedDevEventSubscribeReply(r randyBertychat, easy bool) *DevEventSubscribeReply {
-	this := &DevEventSubscribeReply{}
-	if !easy && r.Intn(10) != 0 {
-	}
-	return this
-}
-
-type randyBertychat interface {
-	Float32() float32
-	Float64() float64
-	Int63() int64
-	Int31() int32
-	Uint32() uint32
-	Intn(n int) int
-}
-
-func randUTF8RuneBertychat(r randyBertychat) rune {
-	ru := r.Intn(62)
-	if ru < 10 {
-		return rune(ru + 48)
-	} else if ru < 36 {
-		return rune(ru + 55)
-	}
-	return rune(ru + 61)
-}
-func randStringBertychat(r randyBertychat) string {
-	v1 := r.Intn(100)
-	tmps := make([]rune, v1)
-	for i := 0; i < v1; i++ {
-		tmps[i] = randUTF8RuneBertychat(r)
-	}
-	return string(tmps)
-}
-func randUnrecognizedBertychat(r randyBertychat, maxFieldNumber int) (dAtA []byte) {
-	l := r.Intn(5)
-	for i := 0; i < l; i++ {
-		wire := r.Intn(4)
-		if wire == 3 {
-			wire = 5
-		}
-		fieldNumber := maxFieldNumber + r.Intn(100)
-		dAtA = randFieldBertychat(dAtA, r, fieldNumber, wire)
-	}
-	return dAtA
-}
-func randFieldBertychat(dAtA []byte, r randyBertychat, fieldNumber int, wire int) []byte {
-	key := uint32(fieldNumber)<<3 | uint32(wire)
-	switch wire {
-	case 0:
-		dAtA = encodeVarintPopulateBertychat(dAtA, uint64(key))
-		v2 := r.Int63()
-		if r.Intn(2) == 0 {
-			v2 *= -1
-		}
-		dAtA = encodeVarintPopulateBertychat(dAtA, uint64(v2))
-	case 1:
-		dAtA = encodeVarintPopulateBertychat(dAtA, uint64(key))
-		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
-	case 2:
-		dAtA = encodeVarintPopulateBertychat(dAtA, uint64(key))
-		ll := r.Intn(100)
-		dAtA = encodeVarintPopulateBertychat(dAtA, uint64(ll))
-		for j := 0; j < ll; j++ {
-			dAtA = append(dAtA, byte(r.Intn(256)))
-		}
-	default:
-		dAtA = encodeVarintPopulateBertychat(dAtA, uint64(key))
-		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
-	}
-	return dAtA
-}
-func encodeVarintPopulateBertychat(dAtA []byte, v uint64) []byte {
-	for v >= 1<<7 {
-		dAtA = append(dAtA, uint8(uint64(v)&0x7f|0x80))
-		v >>= 7
-	}
-	dAtA = append(dAtA, uint8(v))
-	return dAtA
-}
-func (m *EventSubscribeRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *EventSubscribeReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationListRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationListReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Conversation != nil {
-		l = m.Conversation.Size()
-		n += 1 + l + sovBertychat(uint64(l))
-	}
-	return n
-}
-
-func (m *ConversationGetRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.ID)
-	if l > 0 {
-		n += 1 + l + sovBertychat(uint64(l))
-	}
-	return n
-}
-
-func (m *ConversationGetReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Conversation != nil {
-		l = m.Conversation.Size()
-		n += 1 + l + sovBertychat(uint64(l))
-	}
-	return n
-}
-
-func (m *ConversationCreateRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationCreateReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationLeaveRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationLeaveReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationEraseRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationEraseReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationSetSeenPositionRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationSetSeenPositionReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationMessageListRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationMessageListReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationMessageSendRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationMessageSendReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationMessageEditRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationMessageEditReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationMessageHideRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationMessageHideReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationUpdateSettingsRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationUpdateSettingsReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationInvitationAcceptRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationInvitationAcceptReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationInvitationCreateRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationInvitationCreateReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationInvitationDiscardRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ConversationInvitationDiscardReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactListRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactListReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactGetRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactGetReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactUpdateRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactUpdateReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactRemoveRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactRemoveReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactRequestCreateRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactRequestCreateReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactRequestAcceptRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactRequestAcceptReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactRequestDiscardRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *ContactRequestDiscardReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *SearchRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *SearchReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *AccountSettingsGetRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *AccountSettingsGetReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *AccountSettingsUpdateRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *AccountSettingsUpdateReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *AccountPairingInvitationCreateRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *AccountPairingInvitationCreateReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *AccountRenewIncomingContactRequestLinkRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *AccountRenewIncomingContactRequestLinkReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *DevEventSubscribeRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *DevEventSubscribeReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func sovBertychat(x uint64) (n int) {
-	return (math_bits.Len64(x|1) + 6) / 7
-}
-func sozBertychat(x uint64) (n int) {
-	return sovBertychat(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *EventSubscribeRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: EventSubscribeRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventSubscribeRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *EventSubscribeReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: EventSubscribeReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventSubscribeReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationListRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationListRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationListRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationListReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationListReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationListReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Conversation", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowBertychat
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Conversation == nil {
-				m.Conversation = &chatmodel.Conversation{}
-			}
-			if err := m.Conversation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationGetRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationGetRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationGetRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowBertychat
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ID = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationGetReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationGetReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationGetReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Conversation", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowBertychat
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Conversation == nil {
-				m.Conversation = &chatmodel.Conversation{}
-			}
-			if err := m.Conversation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationCreateRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationCreateRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationCreateRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationCreateReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationCreateReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationCreateReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationLeaveRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationLeaveRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationLeaveRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationLeaveReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationLeaveReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationLeaveReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationEraseRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationEraseRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationEraseRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationEraseReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationEraseReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationEraseReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationSetSeenPositionRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationSetSeenPositionRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationSetSeenPositionRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationSetSeenPositionReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationSetSeenPositionReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationSetSeenPositionReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationMessageListRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationMessageListRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationMessageListRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationMessageListReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationMessageListReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationMessageListReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationMessageSendRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationMessageSendRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationMessageSendRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationMessageSendReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationMessageSendReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationMessageSendReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationMessageEditRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationMessageEditRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationMessageEditRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationMessageEditReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationMessageEditReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationMessageEditReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationMessageHideRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationMessageHideRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationMessageHideRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationMessageHideReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationMessageHideReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationMessageHideReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationUpdateSettingsRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationUpdateSettingsRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationUpdateSettingsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationUpdateSettingsReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationUpdateSettingsReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationUpdateSettingsReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationInvitationAcceptRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationInvitationAcceptRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationInvitationAcceptRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationInvitationAcceptReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationInvitationAcceptReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationInvitationAcceptReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationInvitationCreateRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationInvitationCreateRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationInvitationCreateRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationInvitationCreateReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationInvitationCreateReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationInvitationCreateReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationInvitationDiscardRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationInvitationDiscardRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationInvitationDiscardRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ConversationInvitationDiscardReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ConversationInvitationDiscardReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ConversationInvitationDiscardReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactListRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactListRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactListRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactListReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactListReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactListReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactGetRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactGetRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactGetRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactGetReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactGetReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactGetReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactUpdateRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactUpdateRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactUpdateRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactUpdateReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactUpdateReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactUpdateReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactRemoveRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactRemoveRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactRemoveRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactRemoveReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactRemoveReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactRemoveReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactRequestCreateRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactRequestCreateRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactRequestCreateRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactRequestCreateReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactRequestCreateReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactRequestCreateReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactRequestAcceptRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactRequestAcceptRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactRequestAcceptRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactRequestAcceptReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactRequestAcceptReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactRequestAcceptReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactRequestDiscardRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactRequestDiscardRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactRequestDiscardRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ContactRequestDiscardReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ContactRequestDiscardReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ContactRequestDiscardReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SearchRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SearchRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SearchRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SearchReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SearchReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SearchReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *AccountSettingsGetRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AccountSettingsGetRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AccountSettingsGetRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *AccountSettingsGetReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AccountSettingsGetReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AccountSettingsGetReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *AccountSettingsUpdateRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AccountSettingsUpdateRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AccountSettingsUpdateRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *AccountSettingsUpdateReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AccountSettingsUpdateReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AccountSettingsUpdateReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *AccountPairingInvitationCreateRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AccountPairingInvitationCreateRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AccountPairingInvitationCreateRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *AccountPairingInvitationCreateReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AccountPairingInvitationCreateReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AccountPairingInvitationCreateReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *AccountRenewIncomingContactRequestLinkRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AccountRenewIncomingContactRequestLinkRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AccountRenewIncomingContactRequestLinkRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *AccountRenewIncomingContactRequestLinkReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AccountRenewIncomingContactRequestLinkReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AccountRenewIncomingContactRequestLinkReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *DevEventSubscribeRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: DevEventSubscribeRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: DevEventSubscribeRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *DevEventSubscribeReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: DevEventSubscribeReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: DevEventSubscribeReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBertychat(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthBertychat
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func skipBertychat(dAtA []byte) (n int, err error) {
-	l := len(dAtA)
-	iNdEx := 0
-	depth := 0
-	for iNdEx < l {
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return 0, ErrIntOverflowBertychat
-			}
-			if iNdEx >= l {
-				return 0, io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		wireType := int(wire & 0x7)
-		switch wireType {
-		case 0:
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return 0, ErrIntOverflowBertychat
-				}
-				if iNdEx >= l {
-					return 0, io.ErrUnexpectedEOF
-				}
-				iNdEx++
-				if dAtA[iNdEx-1] < 0x80 {
-					break
-				}
-			}
-		case 1:
-			iNdEx += 8
-		case 2:
-			var length int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return 0, ErrIntOverflowBertychat
-				}
-				if iNdEx >= l {
-					return 0, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				length |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if length < 0 {
-				return 0, ErrInvalidLengthBertychat
-			}
-			iNdEx += length
-		case 3:
-			depth++
-		case 4:
-			if depth == 0 {
-				return 0, ErrUnexpectedEndOfGroupBertychat
-			}
-			depth--
-		case 5:
-			iNdEx += 4
-		default:
-			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
-		}
-		if iNdEx < 0 {
-			return 0, ErrInvalidLengthBertychat
-		}
-		if depth == 0 {
-			return iNdEx, nil
-		}
-	}
-	return 0, io.ErrUnexpectedEOF
-}
-
-var (
-	ErrInvalidLengthBertychat        = fmt.Errorf("proto: negative length found during unmarshaling")
-	ErrIntOverflowBertychat          = fmt.Errorf("proto: integer overflow")
-	ErrUnexpectedEndOfGroupBertychat = fmt.Errorf("proto: unexpected end of group")
-)

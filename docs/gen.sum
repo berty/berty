@@ -1,5 +1,5 @@
-091c2c356ed6594b6c0e078f2826e85b0236a8d5  ../api/bertychat.proto
-6df02d965792690136c0e0768dc8d3da6d76abfb  ../api/bertyprotocol.proto
-03fd21adc9eb2846c2d6cd62eac6184bbffaf455  ../api/chatmodel.proto
-a433caf96caafdf90f3190cfb1763dfc73b075c4  ../api/errcode.proto
+cd258577585afbfca802378748520bdc21579ebd  ../api/bertychat.proto
+cec7c6f208dabe330af02eb06e20e2243f8b8eea  ../api/bertyprotocol.proto
+68d7a62532e2887cb2a02909146bb0e141ba7e3d  ../api/chatmodel.proto
+6382cb3045cd2e12ffa65a326138570df867cbc3  ../api/errcode.proto
 c45b2153d08577d35b8f5dd86e959c8ad2c1244d  Makefile

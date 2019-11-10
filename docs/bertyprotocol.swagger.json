@@ -45,6 +45,81 @@
       ],
       "default": "Unknown"
     },
+    "EventStreamBroadcastEvent": {
+      "type": "object",
+      "properties": {
+        "group_id": {
+          "type": "string",
+          "format": "byte"
+        },
+        "member_id": {
+          "type": "string",
+          "format": "byte"
+        },
+        "topic_id": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "EventStreamContactRequestEvent": {
+      "type": "object",
+      "properties": {
+        "contact_account_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "EventStreamEventType": {
+      "type": "string",
+      "enum": [
+        "EventUnknown",
+        "EventMessage",
+        "EventContactRequest",
+        "EventGroupInvitation",
+        "EventBroadcastAvailable"
+      ],
+      "default": "EventUnknown"
+    },
+    "EventStreamGroupInvitationEvent": {
+      "type": "object",
+      "properties": {
+        "group_id": {
+          "type": "string",
+          "format": "byte"
+        },
+        "inviter_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "EventStreamMessageEvent": {
+      "type": "object",
+      "properties": {
+        "group_id": {
+          "type": "string",
+          "format": "byte"
+        },
+        "member_id": {
+          "type": "string",
+          "format": "byte"
+        },
+        "payload": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
     "GroupInfoGroupAudience": {
       "type": "string",
       "enum": [
@@ -71,30 +146,60 @@
       "type": "object"
     },
     "protocolAccountEnableIncomingContactRequestReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "contact_request_link": {
+          "$ref": "#/definitions/protocolContactRequestLink"
+        }
+      }
     },
     "protocolAccountGetConfigurationReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "contact_requestable": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "default_pinning_service": {
+          "type": "string",
+          "format": "byte"
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
     },
     "protocolAccountGetInformationReply": {
       "type": "object",
       "properties": {
-        "peer_id": {
-          "type": "string"
+        "account_pub_key": {
+          "type": "string",
+          "format": "byte"
         },
-        "listeners": {
+        "devices": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/protocolDevice"
           }
         }
       }
     },
     "protocolAccountLinkNewDeviceReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "invitation": {
+          "$ref": "#/definitions/protocolInvitation"
+        }
+      }
     },
     "protocolAccountResetIncomingContactRequestLinkReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "contact_request_link": {
+          "$ref": "#/definitions/protocolContactRequestLink"
+        }
+      }
     },
     "protocolContactGetReply": {
       "type": "object",
@@ -121,6 +226,23 @@
     "protocolContactRequestDiscardReply": {
       "type": "object"
     },
+    "protocolContactRequestLink": {
+      "type": "object",
+      "properties": {
+        "rendezvous_point_seed": {
+          "type": "string",
+          "format": "byte"
+        },
+        "contact_account_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
     "protocolContactRequestListIncomingReply": {
       "type": "object",
       "properties": {
@@ -140,14 +262,74 @@
     "protocolContactRequestSendReply": {
       "type": "object"
     },
+    "protocolDevice": {
+      "type": "object",
+      "properties": {
+        "device_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "parent_device_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "linked_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ble_capable": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "wifi_p2p_capable": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "relay_capable": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
     "protocolEventStream": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/EventStreamEventType"
+        },
+        "event_id": {
+          "type": "string",
+          "format": "byte"
+        },
+        "message_event": {
+          "$ref": "#/definitions/EventStreamMessageEvent"
+        },
+        "contact_request_event": {
+          "$ref": "#/definitions/EventStreamContactRequestEvent"
+        },
+        "group_invitation_event": {
+          "$ref": "#/definitions/EventStreamGroupInvitationEvent"
+        },
+        "broadcast_event": {
+          "$ref": "#/definitions/EventStreamBroadcastEvent"
+        }
+      }
     },
     "protocolGroupCreateReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "group_info": {
+          "$ref": "#/definitions/protocolmodelGroupInfo"
+        }
+      }
     },
     "protocolGroupGenerateInviteLinkReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "invitation": {
+          "$ref": "#/definitions/protocolInvitation"
+        }
+      }
     },
     "protocolGroupInvitationAcceptReply": {
       "type": "object"
@@ -159,31 +341,127 @@
       "type": "object"
     },
     "protocolGroupInvitationListReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "inviter_account_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_info": {
+          "$ref": "#/definitions/protocolmodelGroupInfo"
+        }
+      }
     },
     "protocolGroupLeaveReply": {
       "type": "object"
     },
     "protocolGroupListReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "group_info": {
+          "$ref": "#/definitions/protocolmodelGroupInfo"
+        }
+      }
     },
     "protocolGroupMessageCreateReply": {
       "type": "object"
     },
     "protocolGroupMessageListReply": {
+      "type": "object",
+      "properties": {
+        "message_id": {
+          "type": "string",
+          "format": "byte"
+        },
+        "member_id": {
+          "type": "string",
+          "format": "byte"
+        },
+        "payload": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "protocolGroupTopicPublishReply": {
       "type": "object"
     },
-    "protocolGroupPubSubTopicInitReply": {
-      "type": "object"
-    },
-    "protocolGroupPubSubTopicSubscribeReply": {
-      "type": "object"
+    "protocolGroupTopicSubscribeReply": {
+      "type": "object",
+      "properties": {
+        "volatile_data": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
     },
     "protocolInstanceExportDataReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "exported_data": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
     },
     "protocolInstanceGetConfigurationReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "peer_id": {
+          "type": "string"
+        },
+        "listeners": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ble_enabled": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "wifi_p2p_enabled": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "mdns_enabled": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "relay_enabled": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "protocolInvitation": {
+      "type": "object",
+      "properties": {
+        "inviter_member_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "invitation_priv_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "invitation_pub_key_signature": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_version": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "group_id_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "shared_secret": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
     },
     "protocolStreamManagerAcceptReply": {
       "type": "object"
@@ -516,17 +794,17 @@
       },
       "title": "Stream result of protocolGroupMessageListReply"
     },
-    "protocolGroupPubSubTopicSubscribeReply": {
+    "protocolGroupTopicSubscribeReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/protocolGroupPubSubTopicSubscribeReply"
+          "$ref": "#/definitions/protocolGroupTopicSubscribeReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of protocolGroupPubSubTopicSubscribeReply"
+      "title": "Stream result of protocolGroupTopicSubscribeReply"
     },
     "protocolStreamManagerAcceptReply": {
       "type": "object",

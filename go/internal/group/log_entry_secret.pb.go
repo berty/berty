@@ -5,9 +5,7 @@ package group
 
 import (
 	fmt "fmt"
-	io "io"
 	math "math"
-	math_bits "math/bits"
 
 	proto "github.com/gogo/protobuf/proto"
 )
@@ -24,8 +22,11 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type SecretEntryEnvelope struct {
-	EncryptedSecretPayload []byte `protobuf:"bytes,1,opt,name=encrypted_secret_payload,json=encryptedSecretPayload,proto3" json:"encrypted_secret_payload,omitempty"`
-	SecretPayloadSignature []byte `protobuf:"bytes,2,opt,name=secret_payload_signature,json=secretPayloadSignature,proto3" json:"secret_payload_signature,omitempty"`
+	EncryptedSecretPayload []byte   `protobuf:"bytes,1,opt,name=encrypted_secret_payload,json=encryptedSecretPayload,proto3" json:"encrypted_secret_payload,omitempty"`
+	SecretPayloadSignature []byte   `protobuf:"bytes,2,opt,name=secret_payload_signature,json=secretPayloadSignature,proto3" json:"secret_payload_signature,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{} `json:"-"`
+	XXX_unrecognized       []byte   `json:"-"`
+	XXX_sizecache          int32    `json:"-"`
 }
 
 func (m *SecretEntryEnvelope) Reset()         { *m = SecretEntryEnvelope{} }
@@ -35,25 +36,16 @@ func (*SecretEntryEnvelope) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5e1711af9e257970, []int{0}
 }
 func (m *SecretEntryEnvelope) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_SecretEntryEnvelope.Unmarshal(m, b)
 }
 func (m *SecretEntryEnvelope) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SecretEntryEnvelope.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_SecretEntryEnvelope.Marshal(b, m, deterministic)
 }
 func (m *SecretEntryEnvelope) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SecretEntryEnvelope.Merge(m, src)
 }
 func (m *SecretEntryEnvelope) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_SecretEntryEnvelope.Size(m)
 }
 func (m *SecretEntryEnvelope) XXX_DiscardUnknown() {
 	xxx_messageInfo_SecretEntryEnvelope.DiscardUnknown(m)
@@ -76,9 +68,12 @@ func (m *SecretEntryEnvelope) GetSecretPayloadSignature() []byte {
 }
 
 type SecretEntryPayload struct {
-	DestMemberPubKey      []byte `protobuf:"bytes,1,opt,name=dest_member_pub_key,json=destMemberPubKey,proto3" json:"dest_member_pub_key,omitempty"`
-	SenderDevicePubKey    []byte `protobuf:"bytes,2,opt,name=sender_device_pub_key,json=senderDevicePubKey,proto3" json:"sender_device_pub_key,omitempty"`
-	EncryptedDeviceSecret []byte `protobuf:"bytes,3,opt,name=encrypted_device_secret,json=encryptedDeviceSecret,proto3" json:"encrypted_device_secret,omitempty"`
+	DestMemberPubKey      []byte   `protobuf:"bytes,1,opt,name=dest_member_pub_key,json=destMemberPubKey,proto3" json:"dest_member_pub_key,omitempty"`
+	SenderDevicePubKey    []byte   `protobuf:"bytes,2,opt,name=sender_device_pub_key,json=senderDevicePubKey,proto3" json:"sender_device_pub_key,omitempty"`
+	EncryptedDeviceSecret []byte   `protobuf:"bytes,3,opt,name=encrypted_device_secret,json=encryptedDeviceSecret,proto3" json:"encrypted_device_secret,omitempty"`
+	XXX_NoUnkeyedLiteral  struct{} `json:"-"`
+	XXX_unrecognized      []byte   `json:"-"`
+	XXX_sizecache         int32    `json:"-"`
 }
 
 func (m *SecretEntryPayload) Reset()         { *m = SecretEntryPayload{} }
@@ -88,25 +83,16 @@ func (*SecretEntryPayload) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5e1711af9e257970, []int{1}
 }
 func (m *SecretEntryPayload) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_SecretEntryPayload.Unmarshal(m, b)
 }
 func (m *SecretEntryPayload) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SecretEntryPayload.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_SecretEntryPayload.Marshal(b, m, deterministic)
 }
 func (m *SecretEntryPayload) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SecretEntryPayload.Merge(m, src)
 }
 func (m *SecretEntryPayload) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_SecretEntryPayload.Size(m)
 }
 func (m *SecretEntryPayload) XXX_DiscardUnknown() {
 	xxx_messageInfo_SecretEntryPayload.DiscardUnknown(m)
@@ -136,8 +122,11 @@ func (m *SecretEntryPayload) GetEncryptedDeviceSecret() []byte {
 }
 
 type DeviceSecret struct {
-	DerivationState []byte `protobuf:"bytes,1,opt,name=derivation_state,json=derivationState,proto3" json:"derivation_state,omitempty"`
-	Counter         uint64 `protobuf:"varint,2,opt,name=counter,proto3" json:"counter,omitempty"`
+	DerivationState      []byte   `protobuf:"bytes,1,opt,name=derivation_state,json=derivationState,proto3" json:"derivation_state,omitempty"`
+	Counter              uint64   `protobuf:"varint,2,opt,name=counter,proto3" json:"counter,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *DeviceSecret) Reset()         { *m = DeviceSecret{} }
@@ -147,25 +136,16 @@ func (*DeviceSecret) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5e1711af9e257970, []int{2}
 }
 func (m *DeviceSecret) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
+	return xxx_messageInfo_DeviceSecret.Unmarshal(m, b)
 }
 func (m *DeviceSecret) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_DeviceSecret.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
+	return xxx_messageInfo_DeviceSecret.Marshal(b, m, deterministic)
 }
 func (m *DeviceSecret) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DeviceSecret.Merge(m, src)
 }
 func (m *DeviceSecret) XXX_Size() int {
-	return m.Size()
+	return xxx_messageInfo_DeviceSecret.Size(m)
 }
 func (m *DeviceSecret) XXX_DiscardUnknown() {
 	xxx_messageInfo_DeviceSecret.DiscardUnknown(m)
@@ -196,680 +176,24 @@ func init() {
 func init() { proto.RegisterFile("go-internal/log_entry_secret.proto", fileDescriptor_5e1711af9e257970) }
 
 var fileDescriptor_5e1711af9e257970 = []byte{
-	// 324 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x54, 0x91, 0x4f, 0x4b, 0xc3, 0x30,
-	0x18, 0xc6, 0x17, 0x15, 0x85, 0x30, 0x70, 0x74, 0x4c, 0x7b, 0x90, 0x22, 0x3d, 0xe9, 0x61, 0x1b,
-	0x22, 0x0c, 0xcf, 0xe2, 0x4e, 0x22, 0x8c, 0xf5, 0xe6, 0x25, 0xf4, 0xcf, 0x4b, 0x2d, 0x76, 0x49,
-	0x48, 0xde, 0x0e, 0xf2, 0x11, 0xbc, 0xf9, 0x49, 0xfc, 0x1c, 0x1e, 0x77, 0xf4, 0x28, 0xdb, 0x17,
-	0x91, 0x26, 0x5d, 0x57, 0x8f, 0xef, 0xfb, 0xcb, 0x2f, 0x79, 0xc2, 0x43, 0xc3, 0x5c, 0x8c, 0x0b,
-	0x8e, 0xa0, 0x78, 0x5c, 0x4e, 0x4b, 0x91, 0x33, 0xe0, 0xa8, 0x0c, 0xd3, 0x90, 0x2a, 0xc0, 0x89,
-	0x54, 0x02, 0x45, 0xf8, 0x41, 0xe8, 0x30, 0xb2, 0x8b, 0x79, 0x0d, 0xe7, 0x7c, 0x0d, 0xa5, 0x90,
-	0xe0, 0x3d, 0x50, 0x1f, 0x78, 0xaa, 0x8c, 0x44, 0xc8, 0x1a, 0x83, 0xc9, 0xd8, 0x94, 0x22, 0xce,
-	0x7c, 0x72, 0x4d, 0x6e, 0xfa, 0xcb, 0x8b, 0x96, 0x3b, 0x7f, 0xe1, 0x68, 0x6d, 0xfe, 0x3f, 0xcf,
-	0x74, 0x91, 0xf3, 0x18, 0x2b, 0x05, 0xfe, 0x91, 0x33, 0x75, 0x57, 0x88, 0xf6, 0x34, 0xfc, 0x22,
-	0xd4, 0xeb, 0x64, 0xd9, 0x5f, 0x38, 0xa6, 0xc3, 0x0c, 0x34, 0xb2, 0x15, 0xac, 0x12, 0x50, 0x4c,
-	0x56, 0x09, 0x7b, 0x07, 0xd3, 0xa4, 0x18, 0xd4, 0xe8, 0xc5, 0x92, 0x45, 0x95, 0x3c, 0x83, 0xf1,
-	0xee, 0xe8, 0x48, 0x03, 0xcf, 0x40, 0xb1, 0x0c, 0xd6, 0x45, 0x0a, 0xad, 0xe0, 0x1e, 0xf7, 0x1c,
-	0x7c, 0xb2, 0xac, 0x51, 0x66, 0xf4, 0xf2, 0xf0, 0xd9, 0xc6, 0x72, 0x19, 0xfd, 0x63, 0x2b, 0x8d,
-	0x5a, 0xec, 0x3c, 0x97, 0x32, 0x8c, 0x68, 0xbf, 0x3b, 0x7b, 0xb7, 0x74, 0x90, 0x81, 0x2a, 0xd6,
-	0x31, 0x16, 0x82, 0x33, 0x8d, 0x31, 0x42, 0x13, 0xf3, 0xfc, 0xb0, 0x8f, 0xea, 0xb5, 0xe7, 0xd3,
-	0xb3, 0x54, 0x54, 0x75, 0x39, 0x36, 0xd7, 0xc9, 0x72, 0x3f, 0x3e, 0xce, 0xbe, 0xb7, 0x01, 0xd9,
-	0x6c, 0x03, 0xf2, 0xbb, 0x0d, 0xc8, 0xe7, 0x2e, 0xe8, 0x6d, 0x76, 0x41, 0xef, 0x67, 0x17, 0xf4,
-	0x5e, 0xaf, 0x12, 0x50, 0x68, 0x26, 0x08, 0xe9, 0xdb, 0x34, 0x17, 0xd3, 0xb6, 0xda, 0x5c, 0x89,
-	0x4a, 0x26, 0xa7, 0xb6, 0xd0, 0xfb, 0xbf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x08, 0x6e, 0xa2, 0x70,
-	0xf6, 0x01, 0x00, 0x00,
+	// 293 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x54, 0x91, 0x41, 0x4b, 0xc3, 0x30,
+	0x14, 0xc7, 0xa9, 0x8a, 0x42, 0x18, 0x38, 0x32, 0xa6, 0x3d, 0x88, 0x48, 0x4f, 0x7a, 0xd8, 0x86,
+	0x08, 0xe2, 0x59, 0xdc, 0x49, 0x84, 0xb1, 0xde, 0xbc, 0x84, 0xb4, 0x79, 0xd4, 0x62, 0x97, 0x84,
+	0x97, 0xd7, 0x41, 0x3e, 0x82, 0x5f, 0xc6, 0xcf, 0x28, 0x4d, 0xba, 0xae, 0x1e, 0xdf, 0xfb, 0xe5,
+	0x97, 0xfc, 0xc3, 0x9f, 0x65, 0x95, 0x59, 0xd4, 0x9a, 0x00, 0xb5, 0x6c, 0x56, 0x8d, 0xa9, 0x04,
+	0x68, 0x42, 0x2f, 0x1c, 0x94, 0x08, 0xb4, 0xb4, 0x68, 0xc8, 0x64, 0x3f, 0x09, 0x9b, 0xe5, 0x61,
+	0xb1, 0xee, 0xe0, 0x5a, 0xef, 0xa1, 0x31, 0x16, 0xf8, 0x0b, 0x4b, 0x41, 0x97, 0xe8, 0x2d, 0x81,
+	0xea, 0x0d, 0x61, 0xa5, 0x6f, 0x8c, 0x54, 0x69, 0x72, 0x97, 0xdc, 0x4f, 0xb6, 0x57, 0x03, 0x8f,
+	0xfe, 0x26, 0xd2, 0xce, 0xfc, 0x7f, 0x5e, 0xb8, 0xba, 0xd2, 0x92, 0x5a, 0x84, 0xf4, 0x24, 0x9a,
+	0x6e, 0x2c, 0xe4, 0x07, 0x9a, 0xfd, 0x26, 0x8c, 0x8f, 0xb2, 0x1c, 0x2e, 0x5c, 0xb0, 0x99, 0x02,
+	0x47, 0x62, 0x07, 0xbb, 0x02, 0x50, 0xd8, 0xb6, 0x10, 0xdf, 0xe0, 0xfb, 0x14, 0xd3, 0x0e, 0x7d,
+	0x04, 0xb2, 0x69, 0x8b, 0x77, 0xf0, 0xfc, 0x91, 0xcd, 0x1d, 0x68, 0x05, 0x28, 0x14, 0xec, 0xeb,
+	0x12, 0x06, 0x21, 0x3e, 0xce, 0x23, 0x7c, 0x0b, 0xac, 0x57, 0x9e, 0xd9, 0xf5, 0xf1, 0xb3, 0xbd,
+	0x15, 0x33, 0xa6, 0xa7, 0x41, 0x9a, 0x0f, 0x38, 0x7a, 0x31, 0x65, 0x96, 0xb3, 0xc9, 0x78, 0xe6,
+	0x0f, 0x6c, 0xaa, 0x00, 0xeb, 0xbd, 0xa4, 0xda, 0x68, 0xe1, 0x48, 0x12, 0xf4, 0x31, 0x2f, 0x8f,
+	0xfb, 0xbc, 0x5b, 0xf3, 0x94, 0x5d, 0x94, 0xa6, 0xed, 0xca, 0x09, 0xb9, 0xce, 0xb6, 0x87, 0xf1,
+	0xf5, 0xf6, 0xf3, 0xa6, 0x00, 0x24, 0xbf, 0x24, 0x28, 0xbf, 0x56, 0x95, 0x59, 0x0d, 0x15, 0x56,
+	0x68, 0x5a, 0x5b, 0x9c, 0x87, 0xe2, 0x9e, 0xfe, 0x02, 0x00, 0x00, 0xff, 0xff, 0xf0, 0x35, 0xc1,
+	0x02, 0xde, 0x01, 0x00, 0x00,
 }
-
-func (m *SecretEntryEnvelope) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SecretEntryEnvelope) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SecretEntryEnvelope) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.SecretPayloadSignature) > 0 {
-		i -= len(m.SecretPayloadSignature)
-		copy(dAtA[i:], m.SecretPayloadSignature)
-		i = encodeVarintLogEntrySecret(dAtA, i, uint64(len(m.SecretPayloadSignature)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.EncryptedSecretPayload) > 0 {
-		i -= len(m.EncryptedSecretPayload)
-		copy(dAtA[i:], m.EncryptedSecretPayload)
-		i = encodeVarintLogEntrySecret(dAtA, i, uint64(len(m.EncryptedSecretPayload)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SecretEntryPayload) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SecretEntryPayload) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SecretEntryPayload) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.EncryptedDeviceSecret) > 0 {
-		i -= len(m.EncryptedDeviceSecret)
-		copy(dAtA[i:], m.EncryptedDeviceSecret)
-		i = encodeVarintLogEntrySecret(dAtA, i, uint64(len(m.EncryptedDeviceSecret)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.SenderDevicePubKey) > 0 {
-		i -= len(m.SenderDevicePubKey)
-		copy(dAtA[i:], m.SenderDevicePubKey)
-		i = encodeVarintLogEntrySecret(dAtA, i, uint64(len(m.SenderDevicePubKey)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.DestMemberPubKey) > 0 {
-		i -= len(m.DestMemberPubKey)
-		copy(dAtA[i:], m.DestMemberPubKey)
-		i = encodeVarintLogEntrySecret(dAtA, i, uint64(len(m.DestMemberPubKey)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *DeviceSecret) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *DeviceSecret) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *DeviceSecret) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Counter != 0 {
-		i = encodeVarintLogEntrySecret(dAtA, i, uint64(m.Counter))
-		i--
-		dAtA[i] = 0x10
-	}
-	if len(m.DerivationState) > 0 {
-		i -= len(m.DerivationState)
-		copy(dAtA[i:], m.DerivationState)
-		i = encodeVarintLogEntrySecret(dAtA, i, uint64(len(m.DerivationState)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func encodeVarintLogEntrySecret(dAtA []byte, offset int, v uint64) int {
-	offset -= sovLogEntrySecret(v)
-	base := offset
-	for v >= 1<<7 {
-		dAtA[offset] = uint8(v&0x7f | 0x80)
-		v >>= 7
-		offset++
-	}
-	dAtA[offset] = uint8(v)
-	return base
-}
-func (m *SecretEntryEnvelope) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.EncryptedSecretPayload)
-	if l > 0 {
-		n += 1 + l + sovLogEntrySecret(uint64(l))
-	}
-	l = len(m.SecretPayloadSignature)
-	if l > 0 {
-		n += 1 + l + sovLogEntrySecret(uint64(l))
-	}
-	return n
-}
-
-func (m *SecretEntryPayload) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.DestMemberPubKey)
-	if l > 0 {
-		n += 1 + l + sovLogEntrySecret(uint64(l))
-	}
-	l = len(m.SenderDevicePubKey)
-	if l > 0 {
-		n += 1 + l + sovLogEntrySecret(uint64(l))
-	}
-	l = len(m.EncryptedDeviceSecret)
-	if l > 0 {
-		n += 1 + l + sovLogEntrySecret(uint64(l))
-	}
-	return n
-}
-
-func (m *DeviceSecret) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.DerivationState)
-	if l > 0 {
-		n += 1 + l + sovLogEntrySecret(uint64(l))
-	}
-	if m.Counter != 0 {
-		n += 1 + sovLogEntrySecret(uint64(m.Counter))
-	}
-	return n
-}
-
-func sovLogEntrySecret(x uint64) (n int) {
-	return (math_bits.Len64(x|1) + 6) / 7
-}
-func sozLogEntrySecret(x uint64) (n int) {
-	return sovLogEntrySecret(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *SecretEntryEnvelope) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowLogEntrySecret
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SecretEntryEnvelope: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SecretEntryEnvelope: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EncryptedSecretPayload", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowLogEntrySecret
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.EncryptedSecretPayload = append(m.EncryptedSecretPayload[:0], dAtA[iNdEx:postIndex]...)
-			if m.EncryptedSecretPayload == nil {
-				m.EncryptedSecretPayload = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SecretPayloadSignature", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowLogEntrySecret
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SecretPayloadSignature = append(m.SecretPayloadSignature[:0], dAtA[iNdEx:postIndex]...)
-			if m.SecretPayloadSignature == nil {
-				m.SecretPayloadSignature = []byte{}
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipLogEntrySecret(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SecretEntryPayload) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowLogEntrySecret
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SecretEntryPayload: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SecretEntryPayload: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DestMemberPubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowLogEntrySecret
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DestMemberPubKey = append(m.DestMemberPubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.DestMemberPubKey == nil {
-				m.DestMemberPubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SenderDevicePubKey", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowLogEntrySecret
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SenderDevicePubKey = append(m.SenderDevicePubKey[:0], dAtA[iNdEx:postIndex]...)
-			if m.SenderDevicePubKey == nil {
-				m.SenderDevicePubKey = []byte{}
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EncryptedDeviceSecret", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowLogEntrySecret
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.EncryptedDeviceSecret = append(m.EncryptedDeviceSecret[:0], dAtA[iNdEx:postIndex]...)
-			if m.EncryptedDeviceSecret == nil {
-				m.EncryptedDeviceSecret = []byte{}
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipLogEntrySecret(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *DeviceSecret) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowLogEntrySecret
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: DeviceSecret: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: DeviceSecret: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DerivationState", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowLogEntrySecret
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DerivationState = append(m.DerivationState[:0], dAtA[iNdEx:postIndex]...)
-			if m.DerivationState == nil {
-				m.DerivationState = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Counter", wireType)
-			}
-			m.Counter = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowLogEntrySecret
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Counter |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipLogEntrySecret(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthLogEntrySecret
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func skipLogEntrySecret(dAtA []byte) (n int, err error) {
-	l := len(dAtA)
-	iNdEx := 0
-	depth := 0
-	for iNdEx < l {
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return 0, ErrIntOverflowLogEntrySecret
-			}
-			if iNdEx >= l {
-				return 0, io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		wireType := int(wire & 0x7)
-		switch wireType {
-		case 0:
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return 0, ErrIntOverflowLogEntrySecret
-				}
-				if iNdEx >= l {
-					return 0, io.ErrUnexpectedEOF
-				}
-				iNdEx++
-				if dAtA[iNdEx-1] < 0x80 {
-					break
-				}
-			}
-		case 1:
-			iNdEx += 8
-		case 2:
-			var length int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return 0, ErrIntOverflowLogEntrySecret
-				}
-				if iNdEx >= l {
-					return 0, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				length |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if length < 0 {
-				return 0, ErrInvalidLengthLogEntrySecret
-			}
-			iNdEx += length
-		case 3:
-			depth++
-		case 4:
-			if depth == 0 {
-				return 0, ErrUnexpectedEndOfGroupLogEntrySecret
-			}
-			depth--
-		case 5:
-			iNdEx += 4
-		default:
-			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
-		}
-		if iNdEx < 0 {
-			return 0, ErrInvalidLengthLogEntrySecret
-		}
-		if depth == 0 {
-			return iNdEx, nil
-		}
-	}
-	return 0, io.ErrUnexpectedEOF
-}
-
-var (
-	ErrInvalidLengthLogEntrySecret        = fmt.Errorf("proto: negative length found during unmarshaling")
-	ErrIntOverflowLogEntrySecret          = fmt.Errorf("proto: integer overflow")
-	ErrUnexpectedEndOfGroupLogEntrySecret = fmt.Errorf("proto: unexpected end of group")
-)

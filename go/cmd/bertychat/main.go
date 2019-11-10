@@ -183,7 +183,7 @@ func main() {
 				}
 			}
 
-			info, err := protocol.AccountGetInformation(ctx, nil)
+			info, err := protocol.InstanceGetConfiguration(ctx, nil)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}

@@ -7,15 +7,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
     nested: {
       chat: {
         options: {
-          go_package: "berty.tech/go/pkg/bertychat",
-          "(gogoproto.goproto_getters_all)": false,
-          "(gogoproto.marshaler_all)": true,
-          "(gogoproto.unmarshaler_all)": true,
-          "(gogoproto.sizer_all)": true,
-          "(gogoproto.goproto_registration)": true,
-          "(gogoproto.populate_all)": true,
-          "(gogoproto.equal_all)": true,
-          "(gogoproto.testgen_all)": true
+          go_package: "berty.tech/go/pkg/bertychat"
         },
         nested: {
           Account: {
@@ -334,14 +326,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
       chatmodel: {
         options: {
           go_package: "berty.tech/go/pkg/chatmodel",
-          "(gogoproto.goproto_getters_all)": false,
-          "(gogoproto.marshaler_all)": true,
-          "(gogoproto.unmarshaler_all)": true,
-          "(gogoproto.sizer_all)": true,
-          "(gogoproto.goproto_registration)": true,
-          "(gogoproto.populate_all)": true,
-          "(gogoproto.equal_all)": true,
-          "(gogoproto.testgen_all)": true
+          "(gogoproto.goproto_unkeyed_all)": false,
+          "(gogoproto.goproto_sizecache_all)": false,
+          "(gogoproto.goproto_unrecognized_all)": false
         },
         nested: {
           Account: {

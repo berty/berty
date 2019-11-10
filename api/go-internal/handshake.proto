@@ -7,6 +7,10 @@ option go_package = "berty.tech/go/internal/handshake";
 import "go-internal/sigchain.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+
 message HandshakeFrame {
   enum HandshakeStep {
     STEP_1_KEY_AGREEMENT = 0;

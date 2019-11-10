@@ -5,17 +5,9 @@ package berty.protocol;
 import "google/api/annotations.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "go-internal/protocolmodel.proto";
+import "github.com/golang/protobuf/ptypes/timestamp/timestamp.proto";
 
 option go_package = "berty.tech/go/pkg/bertyprotocol";
-
-option (gogoproto.goproto_getters_all) = false;
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.sizer_all) = true;
-option (gogoproto.goproto_registration) = true;
-option (gogoproto.populate_all) = true;
-option (gogoproto.equal_all) = true;
-option (gogoproto.testgen_all) = false; // should be set to false, because of loops in message dependencies
 
 // Instance is the top-level API to manage an instance of the Berty Protocol.
 // Each Berty Protocol Instance is considered as a Berty device and is associated with a Berty user.
@@ -128,12 +120,12 @@ service Instance {
   // GroupMessageList lists messages from this group
   rpc GroupMessageList (GroupMessageListRequest) returns (stream GroupMessageListReply);
 
-  // GroupPubSubTopic return a stream used to publish volatile updates to other group members
+  // GroupTopicPublish return a stream used to publish volatile updates to other group members
   // on a specific topic
-  rpc GroupPubSubTopicInit (stream GroupPubSubTopicInitRequest) returns (GroupPubSubTopicInitReply);
+  rpc GroupTopicPublish (stream GroupTopicPublishRequest) returns (GroupTopicPublishReply);
 
-  // GroupPubSubTopicSubscribe subscribes to a topic to receive volatile message from it
-  rpc GroupPubSubTopicSubscribe (GroupPubSubTopicSubscribeRequest) returns (stream GroupPubSubTopicSubscribeReply);
+  // GroupTopicSubscribe subscribes to a topic to receive volatile message from it
+  rpc GroupTopicSubscribe (GroupTopicSubscribeRequest) returns (stream GroupTopicSubscribeReply);
 
 
   //// Group Invitation Manager
@@ -157,40 +149,123 @@ service Instance {
 // Instance Manager
 
 message InstanceExportDataRequest {}
-message InstanceExportDataReply {}
+message InstanceExportDataReply {
+  bytes exported_data = 1;
+}
 
 message InstanceGetConfigurationRequest {}
-message InstanceGetConfigurationReply {}
+message InstanceGetConfigurationReply {
+  string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+  repeated string listeners = 2;
+  bool ble_enabled = 3;
+  bool wifi_p2p_enabled = 4; // MultiPeerConnectivity for Darwin and Nearby for Android
+  bool mdns_enabled = 5;
+  bool relay_enabled = 6;
+}
 
 
 // AccountManager
 
 message AccountGetConfigurationRequest {}
-message AccountGetConfigurationReply {}
+message AccountGetConfigurationReply {
+  bool contact_requestable = 1;
+  bytes default_pinning_service = 2;
+  bytes metadata = 3;
+}
 
 message AccountGetInformationRequest {}
 message AccountGetInformationReply {
-  string peer_id = 1 [(gogoproto.customname) = "PeerID"];
-  repeated string listeners = 2;
+  bytes account_pub_key = 1;
+  repeated Device devices = 2;
+}
+
+message Device {
+  bytes device_pub_key = 1;
+  bytes parent_device_pub_key = 2; // Equal to account_pub_key for the first device
+  google.protobuf.Timestamp linked_at = 3;
+  bool ble_capable = 4;
+  bool wifi_p2p_capable = 5;
+  bool relay_capable = 6;
+}
+
+message Invitation {
+  bytes inviter_member_pub_key = 1;
+  bytes invitation_priv_key = 2;
+  bytes invitation_pub_key_signature = 3; // Signed by inviter_member_priv_key
+
+  uint32 group_version = 4;
+  bytes group_id_pub_key = 5;
+  bytes shared_secret = 6;
 }
 
 message AccountLinkNewDeviceRequest {}
-message AccountLinkNewDeviceReply {}
+message AccountLinkNewDeviceReply {
+  Invitation invitation = 1;
+}
+
+message ContactRequestLink {
+  bytes rendezvous_point_seed = 1;
+  bytes contact_account_pub_key = 2;
+  bytes metadata = 3;
+}
 
 message AccountDisableIncomingContactRequestRequest {}
 message AccountDisableIncomingContactRequestReply {}
 
 message AccountEnableIncomingContactRequestRequest {}
-message AccountEnableIncomingContactRequestReply {}
+message AccountEnableIncomingContactRequestReply {
+  ContactRequestLink contact_request_link = 1;
+}
 
 message AccountResetIncomingContactRequestLinkRequest {}
-message AccountResetIncomingContactRequestLinkReply {}
+message AccountResetIncomingContactRequestLinkReply {
+  ContactRequestLink contact_request_link = 1; // Reset rdv_point_seed and rotation_time_point
+}
 
 
 // EventManager
 
 message EventSubscribeRequest {}
-message EventStream {}
+message EventStream {
+  enum EventType {
+    EventUnknown = 0;
+    EventMessage = 1;
+    EventContactRequest = 2;
+    EventGroupInvitation = 3;
+    EventBroadcastAvailable = 4;
+  }
+
+  message MessageEvent {
+    bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+    bytes member_id = 2 [(gogoproto.customname) = "MemberID"];
+    bytes payload = 3;
+  }
+
+  message ContactRequestEvent {
+    bytes contact_account_pub_key = 1;
+    bytes metadata = 2;
+  }
+
+  message GroupInvitationEvent {
+    bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+    bytes inviter_pub_key = 2;
+    bytes metadata = 3;
+  }
+
+  message BroadcastEvent {
+    bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+    bytes member_id = 2 [(gogoproto.customname) = "MemberID"];
+    bytes topic_id = 3 [(gogoproto.customname) = "TopicID"];
+  }
+
+  EventType type = 1;
+  bytes event_id = 2 [(gogoproto.customname) = "EventID"];
+
+  MessageEvent message_event = 3;
+  ContactRequestEvent contact_request_event = 4;
+  GroupInvitationEvent group_invitation_event = 5;
+  BroadcastEvent broadcast_event = 6;
+}
 
 
 // ContactRequestManager
@@ -216,9 +291,7 @@ message ContactRequestListOutgoingReply { // streamed
 }
 
 message ContactRequestSendRequest {
-  bytes rendezvous_point_seed = 1;
-  bytes contact_account_pub_key = 2;
-  bytes metadata = 3;
+  ContactRequestLink contact_request_link = 1;
 }
 message ContactRequestSendReply {}
 
@@ -254,47 +327,91 @@ message StreamManagerAcceptReply {}
 
 // Group
 
-message GroupCreateRequest {};
-message GroupCreateReply {};
+message GroupCreateRequest {
+  repeated bytes contact_account_pub_key = 1; // Invitees
+  bytes pinning_service = 2;
+  bytes metadata = 3;
+};
+message GroupCreateReply {
+  protocolmodel.GroupInfo group_info = 1;
+};
 
-message GroupGenerateInviteLinkRequest {};
-message GroupGenerateInviteLinkReply {};
+message GroupGenerateInviteLinkRequest {
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+};
+message GroupGenerateInviteLinkReply {
+  Invitation invitation = 1;
+};
 
-message GroupLeaveRequest {};
+message GroupLeaveRequest {
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+};
 message GroupLeaveReply {};
 
 message GroupListRequest {};
-message GroupListReply {};
+message GroupListReply { // streamed
+  protocolmodel.GroupInfo group_info = 1;
+};
 
 
 // Group Message
 
-message GroupMessageCreateRequest {};
+message GroupMessageCreateRequest {
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+  bytes payload = 2;
+};
 message GroupMessageCreateReply {};
 
-message GroupMessageListRequest {};
-message GroupMessageListReply {};
+message GroupMessageListRequest {
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+  uint64 from_index = 2;
+  uint64 to_index = 3;
+};
+message GroupMessageListReply { // streamed
+  bytes message_id = 1 [(gogoproto.customname) = "MessageID"];
+  bytes member_id = 2 [(gogoproto.customname) = "MemberID"];
+  bytes payload = 3;
+};
 
 
 // Group PubSub
 
-message GroupPubSubTopicInitRequest {};
-message GroupPubSubTopicInitReply {};
+message GroupTopicPublishRequest { // streamed
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+  bytes topic_id = 2 [(gogoproto.customname) = "TopicID"];
+  bytes volatile_data = 3;
+};
+message GroupTopicPublishReply {};
 
-message GroupPubSubTopicSubscribeRequest {};
-message GroupPubSubTopicSubscribeReply {};
+message GroupTopicSubscribeRequest {
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+  bytes topic_id = 2 [(gogoproto.customname) = "TopicID"];
+};
+message GroupTopicSubscribeReply { // streamed
+  bytes volatile_data = 1;
+};
 
 
 // Group Invitation
 
-message GroupInvitationAcceptRequest {};
+message GroupInvitationAcceptRequest {
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+};
 message GroupInvitationAcceptReply {};
 
-message GroupInvitationCreateRequest {};
+message GroupInvitationCreateRequest {
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+  repeated bytes contact_account_pub_key = 2;
+};
 message GroupInvitationCreateReply {};
 
-message GroupInvitationDiscardRequest {};
+message GroupInvitationDiscardRequest {
+  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+};
 message GroupInvitationDiscardReply {};
 
 message GroupInvitationListRequest {};
-message GroupInvitationListReply {};
+message GroupInvitationListReply { // streamed
+  bytes inviter_account_pub_key = 1;
+  protocolmodel.GroupInfo group_info = 2;
+};

@@ -7,14 +7,9 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 option go_package = "berty.tech/go/pkg/chatmodel";
 
-option (gogoproto.goproto_getters_all) = false;
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.sizer_all) = true;
-option (gogoproto.goproto_registration) = true;
-option (gogoproto.populate_all) = true;
-option (gogoproto.equal_all) = true;
-option (gogoproto.testgen_all) = true;
+option (gogoproto.goproto_unkeyed_all) = false;
+option (gogoproto.goproto_sizecache_all) = false;
+option (gogoproto.goproto_unrecognized_all) = false;
 
 message Account {
   uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
