@@ -211,11 +211,39 @@
         }
       }
     },
+    "protocolContact": {
+      "type": "object",
+      "properties": {
+        "account_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "one_to_one_group_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "trust_level": {
+          "$ref": "#/definitions/ContactTrustLevel"
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte"
+        },
+        "blocked": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "one_to_one_group": {
+          "$ref": "#/definitions/protocolGroupInfo"
+        }
+      },
+      "title": "Contact is the public version of protocolmodel.Contact and should stay in sync"
+    },
     "protocolContactGetReply": {
       "type": "object",
       "properties": {
         "contact": {
-          "$ref": "#/definitions/protocolmodelContact"
+          "$ref": "#/definitions/protocolContact"
         }
       }
     },
@@ -223,7 +251,7 @@
       "type": "object",
       "properties": {
         "contact": {
-          "$ref": "#/definitions/protocolmodelContact"
+          "$ref": "#/definitions/protocolContact"
         }
       }
     },
@@ -257,7 +285,7 @@
       "type": "object",
       "properties": {
         "contact": {
-          "$ref": "#/definitions/protocolmodelContact"
+          "$ref": "#/definitions/protocolContact"
         }
       }
     },
@@ -265,7 +293,7 @@
       "type": "object",
       "properties": {
         "contact": {
-          "$ref": "#/definitions/protocolmodelContact"
+          "$ref": "#/definitions/protocolContact"
         }
       }
     },
@@ -329,7 +357,7 @@
       "type": "object",
       "properties": {
         "group_info": {
-          "$ref": "#/definitions/protocolmodelGroupInfo"
+          "$ref": "#/definitions/protocolGroupInfo"
         }
       }
     },
@@ -340,6 +368,40 @@
           "$ref": "#/definitions/protocolInvitation"
         }
       }
+    },
+    "protocolGroupInfo": {
+      "type": "object",
+      "properties": {
+        "group_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte"
+        },
+        "audience": {
+          "$ref": "#/definitions/GroupInfoGroupAudience"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "inviter_contact_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protocolGroupMember"
+          }
+        },
+        "inviter": {
+          "$ref": "#/definitions/protocolContact"
+        }
+      },
+      "title": "GroupInfo is the public version of protocolmodel.GroupInfo and should stay in sync"
     },
     "protocolGroupInvitationAcceptReply": {
       "type": "object"
@@ -358,7 +420,7 @@
           "format": "byte"
         },
         "group_info": {
-          "$ref": "#/definitions/protocolmodelGroupInfo"
+          "$ref": "#/definitions/protocolGroupInfo"
         }
       }
     },
@@ -369,9 +431,44 @@
       "type": "object",
       "properties": {
         "group_info": {
-          "$ref": "#/definitions/protocolmodelGroupInfo"
+          "$ref": "#/definitions/protocolGroupInfo"
         }
       }
+    },
+    "protocolGroupMember": {
+      "type": "object",
+      "properties": {
+        "group_member_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "inviter_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "contact_account_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_info": {
+          "$ref": "#/definitions/protocolGroupInfo"
+        },
+        "inviter": {
+          "$ref": "#/definitions/protocolGroupMember"
+        },
+        "contact": {
+          "$ref": "#/definitions/protocolContact"
+        }
+      },
+      "title": "GroupMember is the public version of protocolmodel.GroupMember and should stay in sync"
     },
     "protocolGroupMessageCreateReply": {
       "type": "object"
@@ -474,220 +571,6 @@
     },
     "protocolStreamManagerRequestToContactReply": {
       "type": "object"
-    },
-    "protocolmodelContact": {
-      "type": "object",
-      "properties": {
-        "account_pub_key": {
-          "type": "string",
-          "format": "byte",
-          "title": "Fields"
-        },
-        "one_to_one_group_pub_key": {
-          "type": "string",
-          "format": "byte"
-        },
-        "binder_pub_key": {
-          "type": "string",
-          "format": "byte"
-        },
-        "trust_level": {
-          "$ref": "#/definitions/ContactTrustLevel"
-        },
-        "metadata": {
-          "type": "string",
-          "format": "byte"
-        },
-        "blocked": {
-          "type": "boolean",
-          "format": "boolean"
-        },
-        "one_to_one_group": {
-          "$ref": "#/definitions/protocolmodelGroupInfo",
-          "title": "Relations"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time",
-          "title": "GORM meta"
-        },
-        "updated_at": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "protocolmodelGroupInfo": {
-      "type": "object",
-      "properties": {
-        "group_pub_key": {
-          "type": "string",
-          "format": "byte",
-          "title": "Fields\n- Group details/meta"
-        },
-        "shared_secret": {
-          "type": "string",
-          "format": "byte"
-        },
-        "metadata": {
-          "type": "string",
-          "format": "byte"
-        },
-        "audience": {
-          "$ref": "#/definitions/GroupInfoGroupAudience"
-        },
-        "version": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "self_priv_key_account": {
-          "type": "string",
-          "format": "byte",
-          "title": "- Own secrets"
-        },
-        "self_priv_key_device": {
-          "type": "string",
-          "format": "byte"
-        },
-        "self_inviter_pub_key": {
-          "type": "string",
-          "format": "byte"
-        },
-        "inviter_contact_pub_key": {
-          "type": "string",
-          "format": "byte"
-        },
-        "orbitdb_current_cid_message": {
-          "type": "string",
-          "format": "byte",
-          "title": "- OrbitDB current log positions"
-        },
-        "orbitdb_current_cid_secret": {
-          "type": "string",
-          "format": "byte"
-        },
-        "orbitdb_current_cid_setting": {
-          "type": "string",
-          "format": "byte"
-        },
-        "orbitdb_current_cid_member": {
-          "type": "string",
-          "format": "byte"
-        },
-        "members": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protocolmodelGroupMember"
-          },
-          "title": "Relation"
-        },
-        "inviter": {
-          "$ref": "#/definitions/protocolmodelContact"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time",
-          "title": "GORM meta"
-        },
-        "updated_at": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "protocolmodelGroupMember": {
-      "type": "object",
-      "properties": {
-        "group_member_pub_key": {
-          "type": "string",
-          "format": "byte",
-          "title": "Fields"
-        },
-        "group_pub_key": {
-          "type": "string",
-          "format": "byte"
-        },
-        "inviter_pub_key": {
-          "type": "string",
-          "format": "byte"
-        },
-        "contact_account_pub_key": {
-          "type": "string",
-          "format": "byte"
-        },
-        "contact_account_binding_proof": {
-          "type": "string",
-          "format": "byte"
-        },
-        "metadata": {
-          "type": "string",
-          "format": "byte"
-        },
-        "devices": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protocolmodelGroupMemberDevice"
-          },
-          "title": "Relations"
-        },
-        "group_info": {
-          "$ref": "#/definitions/protocolmodelGroupInfo"
-        },
-        "inviter": {
-          "$ref": "#/definitions/protocolmodelGroupMember"
-        },
-        "contact": {
-          "$ref": "#/definitions/protocolmodelContact"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time",
-          "title": "GORM meta"
-        },
-        "updated_at": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "protocolmodelGroupMemberDevice": {
-      "type": "object",
-      "properties": {
-        "group_member_device_pub_key": {
-          "type": "string",
-          "format": "byte",
-          "title": "Fields"
-        },
-        "group_member_pub_key": {
-          "type": "string",
-          "format": "byte"
-        },
-        "derivation_state": {
-          "type": "string",
-          "format": "byte"
-        },
-        "derivation_counter": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "derivation_next_hotp": {
-          "type": "string",
-          "format": "byte"
-        },
-        "group_member": {
-          "$ref": "#/definitions/protocolmodelGroupMember",
-          "title": "Relations"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time",
-          "title": "GORM meta"
-        },
-        "updated_at": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
     },
     "runtimeStreamError": {
       "type": "object",

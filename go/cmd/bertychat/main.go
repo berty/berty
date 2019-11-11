@@ -17,18 +17,15 @@ import (
 	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
 	"berty.tech/go/pkg/errcode"
-
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
+	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-
 	grpc "google.golang.org/grpc"
-
-	ma "github.com/multiformats/go-multiaddr"
 )
 
 func main() {

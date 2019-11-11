@@ -2,16 +2,14 @@ package bertyprotocol
 
 import (
 	"context"
-	fmt "fmt"
+	"fmt"
 	"net"
-	"time"
 
-	protocoldb "berty.tech/go/internal/protocoldb"
 	"berty.tech/go/pkg/errcode"
 	"github.com/jinzhu/gorm"
 	"github.com/oklog/run"
 	"go.uber.org/zap"
-	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc"
 )
 
 func NewMock(db *gorm.DB, opts Opts) (*Mock, error) {
@@ -130,26 +128,20 @@ func (m *Mock) ContactGet(context.Context, *ContactGetRequest) (*ContactGetReply
 }
 
 func (m *Mock) ContactList(req *ContactListRequest, stream Instance_ContactListServer) error {
-	contacts := []*protocoldb.Contact{ // FIXME: get from DB
+	contacts := []*Contact{ // FIXME: get from DB
 		{
 			AccountPubKey:       []byte("lorem1"),
 			Metadata:            []byte("ipsum1"),
 			OneToOneGroupPubKey: []byte("dolor1"),
-			BinderPubKey:        []byte("sit amet1"),
-			TrustLevel:          protocoldb.Contact_Trusted,
+			TrustLevel:          Contact_Trusted,
 			Blocked:             false,
-			CreatedAt:           time.Now(),
-			UpdatedAt:           time.Now(),
 		},
 		{
 			AccountPubKey:       []byte("lorem2"),
 			Metadata:            []byte("ipsum2"),
 			OneToOneGroupPubKey: []byte("dolor2"),
-			BinderPubKey:        []byte("sit amet2"),
-			TrustLevel:          protocoldb.Contact_Trusted,
+			TrustLevel:          Contact_Trusted,
 			Blocked:             false,
-			CreatedAt:           time.Now(),
-			UpdatedAt:           time.Now(),
 		},
 	}
 
