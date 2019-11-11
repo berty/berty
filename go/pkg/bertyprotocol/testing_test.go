@@ -1,6 +1,7 @@
 package bertyprotocol
 
 import (
+	"bytes"
 	"context"
 	"reflect"
 	"testing"
@@ -35,4 +36,60 @@ func testingClientDB(t *testing.T, c Client) *gorm.DB {
 
 	typed := c.(*client)
 	return typed.db
+}
+
+func checkErr(t *testing.T, err error) {
+	t.Helper()
+
+	if err != nil {
+		t.Fatalf("err: %v", err)
+	}
+}
+
+func checkSameBytes(t *testing.T, expected, got []byte) {
+	t.Helper()
+
+	if !bytes.Equal(expected, got) {
+		t.Errorf("Expected %v, got %v.", expected, got)
+	}
+}
+
+func checkSameInt64s(t *testing.T, expected, got int64) {
+	t.Helper()
+
+	if expected != got {
+		t.Errorf("Expected %d, got %d.", expected, got)
+	}
+}
+
+func checkSameInts(t *testing.T, expected, got int) {
+	t.Helper()
+
+	if expected != got {
+		t.Errorf("Expected %d, got %d.", expected, got)
+	}
+}
+
+func checkSameInt32s(t *testing.T, expected, got int32) {
+	t.Helper()
+
+	if expected != got {
+		t.Errorf("Expected %d, got %d.", expected, got)
+	}
+}
+
+func checkSameDeep(t *testing.T, expected, got interface{}) {
+	t.Helper()
+
+	if !reflect.DeepEqual(expected, got) {
+		t.Errorf("Expected %v, got %v.", expected, got)
+	}
+}
+
+func checkNotNil(t *testing.T, got interface{}) {
+	t.Helper()
+
+	if got == nil {
+		t.Errorf("Expected non-nil, got nil.")
+	}
 }

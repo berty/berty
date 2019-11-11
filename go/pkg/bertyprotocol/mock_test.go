@@ -52,39 +52,102 @@ func TestMock_single(t *testing.T) {
 	db := protocoldb.TestingSqliteDB(t, logger.Named("gorm"))
 	defer db.Close()
 	mock, err := NewMock(db, Opts{Logger: logger.Named("client")})
-	if err != nil {
-		t.Fatalf("NewMock failed: %v", err)
-	}
+	checkErr(t, err)
 	defer mock.Close()
 	ctx := context.Background()
 
-	t.Run("direct Status call", func(t *testing.T) {
-		expected := Status{}
-		actual := mock.Status()
-		if expected != actual {
-			t.Errorf("Expected %v, got %v.", expected, actual)
+	t.Run("internal endpoints", func(t *testing.T) {
+		{ // get status
+			expected := Status{}
+			actual := mock.Status()
+			checkSameDeep(t, expected, actual)
 		}
 	})
 
-	t.Run("call ContactList", func(t *testing.T) {
-		stream, err := mock.GRPCClient.ContactList(ctx, &ContactList_Request{})
-		if err != nil {
-			t.Fatalf("Expected nil, got %v.", err)
+	t.Run("first-run flow", func(t *testing.T) {
+		{ // list empty contact list
+			stream, err := mock.GRPCClient.ContactList(ctx, &ContactList_Request{})
+			checkErr(t, err)
+			entries := []*Contact{}
+			for {
+				entry, err := stream.Recv()
+				if err == io.EOF {
+					break
+				}
+				checkErr(t, err)
+				entries = append(entries, entry.Contact)
+			}
+			checkSameInts(t, 0, len(entries))
+		}
+	})
+
+	t.Run("basic flow with no peer", func(t *testing.T) {
+		var created *Contact
+
+		{ // send request
+			in := ContactRequestSend_Request{
+				ContactRequestLink: &ContactRequestLink{
+					RendezvousPointSeed:  []byte("foo"),
+					ContactAccountPubKey: []byte("bar"),
+					Metadata:             []byte("baz"),
+				},
+			}
+			ret, err := mock.GRPCClient.ContactRequestSend(ctx, &in)
+			checkErr(t, err)
+			created = ret.Contact
+			checkSameBytes(t, in.ContactRequestLink.ContactAccountPubKey, created.AccountPubKey)
+			checkSameBytes(t, in.ContactRequestLink.Metadata, created.Metadata)
+			checkSameInts(t, int(protocoldb.Contact_Untrusted), int(created.TrustLevel))
 		}
 
-		entries := []*Contact{}
-		for {
-			entry, err := stream.Recv()
-			if err == io.EOF {
-				break
+		{ // list it
+			in := ContactList_Request{}
+			stream, err := mock.GRPCClient.ContactList(ctx, &in)
+			checkErr(t, err)
+			entries := []*Contact{}
+			for {
+				entry, err := stream.Recv()
+				if err == io.EOF {
+					break
+				}
+				checkErr(t, err)
+				entries = append(entries, entry.Contact)
 			}
-			if err != nil {
-				t.Fatalf("Expected nil, got %v.", err)
-			}
-			entries = append(entries, entry.Contact)
+			checkSameInts(t, 1, len(entries))
+			checkSameDeep(t, created, entries[0])
 		}
-		if len(entries) != 2 {
-			t.Errorf("Expected len(entries)=2, got %d.", len(entries))
+
+		{ // get it specifically
+			in := ContactGet_Request{
+				ContactAccountPubKey: created.AccountPubKey,
+			}
+			ret, err := mock.GRPCClient.ContactGet(ctx, &in)
+			checkErr(t, err)
+			checkSameDeep(t, created, ret.Contact)
+		}
+
+		{ // delete it
+			in := ContactRemove_Request{
+				ContactAccountPubKey: created.AccountPubKey,
+			}
+			_, err := mock.GRPCClient.ContactRemove(ctx, &in)
+			checkErr(t, err)
+		}
+
+		{ // list contact list again
+			in := ContactList_Request{}
+			stream, err := mock.GRPCClient.ContactList(ctx, &in)
+			checkErr(t, err)
+			entries := []*Contact{}
+			for {
+				entry, err := stream.Recv()
+				if err == io.EOF {
+					break
+				}
+				checkErr(t, err)
+				entries = append(entries, entry.Contact)
+			}
+			checkSameInts(t, 0, len(entries))
 		}
 	})
 }
@@ -94,24 +157,25 @@ func TestMock_multiple(t *testing.T) {
 	logger := testutil.Logger(t).Named("mock")
 	db := protocoldb.TestingSqliteDB(t, logger.Named("gorm"))
 	defer db.Close()
+
 	alice, err := NewMock(db, Opts{Logger: logger.Named("client")})
-	if err != nil {
-		t.Fatalf("NewMock failed: %v", err)
-	}
+	checkErr(t, err)
 	defer alice.Close()
 
 	// init bob & charly peers
 	bob, err := alice.NewPeerMock()
-	if err != nil {
-		t.Fatalf("NewPeerMock failed: %v.", err)
-	}
+	checkErr(t, err)
 	charly, err := alice.NewPeerMock()
-	if err != nil {
-		t.Fatalf("NewPeerMock failed: %v.", err)
-	}
+	checkErr(t, err)
 
 	// simulate some actions
-	if alice == nil || bob == nil || charly == nil {
-		t.Fatal("Expected: alice, bob and charly to be not nil.")
-	}
+	checkNotNil(t, alice)
+	checkNotNil(t, bob)
+	checkNotNil(t, charly)
+
+	// alice adds bob as contact
+	//in := ContactRequestSend_Request{}
+	//ret, err := alice.ContactRequestSend(alice.Context, &in)
+	//checkErr(t, err)
+	//fmt.Println(godev.PrettyJSON(ret))
 }

@@ -312,7 +312,9 @@ message ContactRequestSend {
   message Request {
     ContactRequestLink contact_request_link = 1;
   }
-  message Reply {}
+  message Reply {
+    Contact contact = 1;
+  }
 }
 
 //
