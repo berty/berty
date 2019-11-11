@@ -1,5 +1,5 @@
 cd258577585afbfca802378748520bdc21579ebd  ../api/bertychat.proto
-cec7c6f208dabe330af02eb06e20e2243f8b8eea  ../api/bertyprotocol.proto
+cc54802abcbff42f92345777fd3814ea4b768661  ../api/bertyprotocol.proto
 68d7a62532e2887cb2a02909146bb0e141ba7e3d  ../api/chatmodel.proto
 6382cb3045cd2e12ffa65a326138570df867cbc3  ../api/errcode.proto
 c45b2153d08577d35b8f5dd86e959c8ad2c1244d  Makefile
