@@ -130,6 +130,16 @@
       ],
       "default": "Undefined"
     },
+    "InstanceGetConfigurationReplySettingState": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "Enabled",
+        "Disabled",
+        "Unavailable"
+      ],
+      "default": "Unknown"
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -417,20 +427,16 @@
           }
         },
         "ble_enabled": {
-          "type": "boolean",
-          "format": "boolean"
+          "$ref": "#/definitions/InstanceGetConfigurationReplySettingState"
         },
         "wifi_p2p_enabled": {
-          "type": "boolean",
-          "format": "boolean"
+          "$ref": "#/definitions/InstanceGetConfigurationReplySettingState"
         },
         "mdns_enabled": {
-          "type": "boolean",
-          "format": "boolean"
+          "$ref": "#/definitions/InstanceGetConfigurationReplySettingState"
         },
         "relay_enabled": {
-          "type": "boolean",
-          "format": "boolean"
+          "$ref": "#/definitions/InstanceGetConfigurationReplySettingState"
         }
       }
     },

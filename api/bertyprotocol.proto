@@ -155,12 +155,19 @@ message InstanceExportDataReply {
 
 message InstanceGetConfigurationRequest {}
 message InstanceGetConfigurationReply {
+  enum SettingState {
+    Unknown = 0;
+    Enabled = 1;
+    Disabled = 2;
+    Unavailable = 3;
+  }
+
   string peer_id = 1 [(gogoproto.customname) = "PeerID"];
   repeated string listeners = 2;
-  bool ble_enabled = 3;
-  bool wifi_p2p_enabled = 4; // MultiPeerConnectivity for Darwin and Nearby for Android
-  bool mdns_enabled = 5;
-  bool relay_enabled = 6;
+  SettingState ble_enabled = 3;
+  SettingState wifi_p2p_enabled = 4; // MultiPeerConnectivity for Darwin and Nearby for Android
+  SettingState mdns_enabled = 5;
+  SettingState relay_enabled = 6;
 }
 
 
