@@ -42,13 +42,12 @@ $(yarn):
 deps: $(yarn) $(lerna) $(mod) $(pkg_mod) gen
 
 $(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
-	$(lerna) $(lerna_flags) init
 	$(lerna) $(lerna_flags) bootstrap
 	mkdir -p $(mod) $(pkg_mod)
 	touch $(mod) $(pkg_mod)
 
 $(lerna): $(yarn)
-	$(yarn) add -W lerna@latest
+	$(yarn)
 
 .PHONY: upgrade
 upgrade: deps
