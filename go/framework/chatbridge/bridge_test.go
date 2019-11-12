@@ -67,9 +67,7 @@ func TestBridge(t *testing.T) {
 	}
 
 	// setup unary test
-	msg := &bertychat.ConversationGetRequest{
-		ID: "testid",
-	}
+	msg := &bertychat.ConversationGetRequest{}
 
 	req, err = proto.Marshal(msg)
 	if err != nil {
@@ -77,7 +75,7 @@ func TestBridge(t *testing.T) {
 	}
 
 	// bridgeClient test
-	res, err = bridgeClient.UnaryRequest("/berty.chat.Account/ConversationGet", req)
+	res, err = bridgeClient.UnaryRequest("/berty.chat.ChatService/ConversationGet", req)
 	if err != nil {
 		t.Fatalf("failed to send unary request: %v", err)
 	}
@@ -88,7 +86,7 @@ func TestBridge(t *testing.T) {
 	}
 
 	// webclient test
-	cc := bertychat.NewAccountClient(grpcClient)
+	cc := bertychat.NewChatServiceClient(grpcClient)
 	_, err = cc.ConversationGet(context.Background(), msg)
 	if err != nil {
 		t.Fatalf("failed to send unary request: %v", err)
@@ -96,7 +94,7 @@ func TestBridge(t *testing.T) {
 
 	results, err = makeGrpcRequest(
 		bridge.GRPCWebListenerAddr(),
-		"/berty.chat.Account/ConversationGet",
+		"/berty.chat.ChatService/ConversationGet",
 		[][]byte{req},
 		false,
 	)

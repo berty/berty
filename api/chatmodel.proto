@@ -16,13 +16,15 @@ message Account {
   google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
   google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
 
-  // fields
-  string name = 100;
-  string avatar_uri = 101;
+  uint64 contact_id = 100 [(gogoproto.customname) = "ContactID", (gogoproto.moretags) = "gorm:\"not null;index\""];
+  chatmodel.Contact myself = 101;
 
   // settings
   bool contact_requests_enabled = 102;
   string contact_requests_link = 103;
+
+  bool hidden = 104;
+  bool locked = 105;
 }
 
 message Conversation {
@@ -49,13 +51,6 @@ message Conversation {
   }
 
   uint32 badge = 105;
-
-  enum MutePolicy {
-    Nothing = 0;
-    All = 1;
-    Notifications = 2;
-  };
-  MutePolicy mute_policy = 107;
 
   // associations
   repeated Message messages = 200 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
@@ -85,6 +80,13 @@ message Member {
     Owner = 4;
   }
 
+  MutePolicy mute_policy = 103;
+  enum MutePolicy {
+    Nothing = 0;
+    All = 1;
+    Notifications = 2;
+  };
+
   // associations
   uint64 conversation_id = 200 [(gogoproto.customname) = "ConversationID", (gogoproto.moretags) = "gorm:\"not null;index\""];
   Conversation conversation = 201 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
@@ -101,6 +103,7 @@ message Message {
   google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
   google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
   google.protobuf.Timestamp sent_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp edited_at = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
 
   // fields
   Kind kind = 100;
@@ -122,8 +125,18 @@ message Message {
     // ...
   }
 
- // associations
+  bool hidden = 103;
 
+  State state = 104;
+  enum State {
+    UnSent = 0;
+    Sending = 1;
+    Failed = 2;
+    Retrying = 3;
+    Sent = 4;
+  }
+
+  // associations
   uint64 conversation_id = 200 [(gogoproto.customname) = "ConversationID", (gogoproto.moretags) = "gorm:\"not null;index\""];
   Conversation conversation = 201 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
 
@@ -150,7 +163,6 @@ message Attachment {
 }
 
 message Reaction {
-
   // metadata
   uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
   google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];

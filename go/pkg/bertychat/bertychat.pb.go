@@ -28,1350 +28,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type EventSubscribeRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *EventSubscribeRequest) Reset()         { *m = EventSubscribeRequest{} }
-func (m *EventSubscribeRequest) String() string { return proto.CompactTextString(m) }
-func (*EventSubscribeRequest) ProtoMessage()    {}
-func (*EventSubscribeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{0}
-}
-func (m *EventSubscribeRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EventSubscribeRequest.Unmarshal(m, b)
-}
-func (m *EventSubscribeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EventSubscribeRequest.Marshal(b, m, deterministic)
-}
-func (m *EventSubscribeRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventSubscribeRequest.Merge(m, src)
-}
-func (m *EventSubscribeRequest) XXX_Size() int {
-	return xxx_messageInfo_EventSubscribeRequest.Size(m)
-}
-func (m *EventSubscribeRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventSubscribeRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EventSubscribeRequest proto.InternalMessageInfo
-
-type EventSubscribeReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *EventSubscribeReply) Reset()         { *m = EventSubscribeReply{} }
-func (m *EventSubscribeReply) String() string { return proto.CompactTextString(m) }
-func (*EventSubscribeReply) ProtoMessage()    {}
-func (*EventSubscribeReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{1}
-}
-func (m *EventSubscribeReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EventSubscribeReply.Unmarshal(m, b)
-}
-func (m *EventSubscribeReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EventSubscribeReply.Marshal(b, m, deterministic)
-}
-func (m *EventSubscribeReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventSubscribeReply.Merge(m, src)
-}
-func (m *EventSubscribeReply) XXX_Size() int {
-	return xxx_messageInfo_EventSubscribeReply.Size(m)
-}
-func (m *EventSubscribeReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventSubscribeReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EventSubscribeReply proto.InternalMessageInfo
-
-type ConversationListRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationListRequest) Reset()         { *m = ConversationListRequest{} }
-func (m *ConversationListRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationListRequest) ProtoMessage()    {}
-func (*ConversationListRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{2}
-}
-func (m *ConversationListRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationListRequest.Unmarshal(m, b)
-}
-func (m *ConversationListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationListRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationListRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationListRequest.Merge(m, src)
-}
-func (m *ConversationListRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationListRequest.Size(m)
-}
-func (m *ConversationListRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationListRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationListRequest proto.InternalMessageInfo
-
-type ConversationListReply struct {
-	Conversation         *chatmodel.Conversation `protobuf:"bytes,1,opt,name=conversation,proto3" json:"conversation,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
-	XXX_unrecognized     []byte                  `json:"-"`
-	XXX_sizecache        int32                   `json:"-"`
-}
-
-func (m *ConversationListReply) Reset()         { *m = ConversationListReply{} }
-func (m *ConversationListReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationListReply) ProtoMessage()    {}
-func (*ConversationListReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{3}
-}
-func (m *ConversationListReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationListReply.Unmarshal(m, b)
-}
-func (m *ConversationListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationListReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationListReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationListReply.Merge(m, src)
-}
-func (m *ConversationListReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationListReply.Size(m)
-}
-func (m *ConversationListReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationListReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationListReply proto.InternalMessageInfo
-
-func (m *ConversationListReply) GetConversation() *chatmodel.Conversation {
-	if m != nil {
-		return m.Conversation
-	}
-	return nil
-}
-
-type ConversationGetRequest struct {
-	ID                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationGetRequest) Reset()         { *m = ConversationGetRequest{} }
-func (m *ConversationGetRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationGetRequest) ProtoMessage()    {}
-func (*ConversationGetRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{4}
-}
-func (m *ConversationGetRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationGetRequest.Unmarshal(m, b)
-}
-func (m *ConversationGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationGetRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationGetRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationGetRequest.Merge(m, src)
-}
-func (m *ConversationGetRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationGetRequest.Size(m)
-}
-func (m *ConversationGetRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationGetRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationGetRequest proto.InternalMessageInfo
-
-func (m *ConversationGetRequest) GetID() string {
-	if m != nil {
-		return m.ID
-	}
-	return ""
-}
-
-type ConversationGetReply struct {
-	Conversation         *chatmodel.Conversation `protobuf:"bytes,1,opt,name=conversation,proto3" json:"conversation,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
-	XXX_unrecognized     []byte                  `json:"-"`
-	XXX_sizecache        int32                   `json:"-"`
-}
-
-func (m *ConversationGetReply) Reset()         { *m = ConversationGetReply{} }
-func (m *ConversationGetReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationGetReply) ProtoMessage()    {}
-func (*ConversationGetReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{5}
-}
-func (m *ConversationGetReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationGetReply.Unmarshal(m, b)
-}
-func (m *ConversationGetReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationGetReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationGetReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationGetReply.Merge(m, src)
-}
-func (m *ConversationGetReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationGetReply.Size(m)
-}
-func (m *ConversationGetReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationGetReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationGetReply proto.InternalMessageInfo
-
-func (m *ConversationGetReply) GetConversation() *chatmodel.Conversation {
-	if m != nil {
-		return m.Conversation
-	}
-	return nil
-}
-
-type ConversationCreateRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationCreateRequest) Reset()         { *m = ConversationCreateRequest{} }
-func (m *ConversationCreateRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationCreateRequest) ProtoMessage()    {}
-func (*ConversationCreateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{6}
-}
-func (m *ConversationCreateRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationCreateRequest.Unmarshal(m, b)
-}
-func (m *ConversationCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationCreateRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationCreateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationCreateRequest.Merge(m, src)
-}
-func (m *ConversationCreateRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationCreateRequest.Size(m)
-}
-func (m *ConversationCreateRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationCreateRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationCreateRequest proto.InternalMessageInfo
-
-type ConversationCreateReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationCreateReply) Reset()         { *m = ConversationCreateReply{} }
-func (m *ConversationCreateReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationCreateReply) ProtoMessage()    {}
-func (*ConversationCreateReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{7}
-}
-func (m *ConversationCreateReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationCreateReply.Unmarshal(m, b)
-}
-func (m *ConversationCreateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationCreateReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationCreateReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationCreateReply.Merge(m, src)
-}
-func (m *ConversationCreateReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationCreateReply.Size(m)
-}
-func (m *ConversationCreateReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationCreateReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationCreateReply proto.InternalMessageInfo
-
-type ConversationLeaveRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationLeaveRequest) Reset()         { *m = ConversationLeaveRequest{} }
-func (m *ConversationLeaveRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationLeaveRequest) ProtoMessage()    {}
-func (*ConversationLeaveRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{8}
-}
-func (m *ConversationLeaveRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationLeaveRequest.Unmarshal(m, b)
-}
-func (m *ConversationLeaveRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationLeaveRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationLeaveRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationLeaveRequest.Merge(m, src)
-}
-func (m *ConversationLeaveRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationLeaveRequest.Size(m)
-}
-func (m *ConversationLeaveRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationLeaveRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationLeaveRequest proto.InternalMessageInfo
-
-type ConversationLeaveReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationLeaveReply) Reset()         { *m = ConversationLeaveReply{} }
-func (m *ConversationLeaveReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationLeaveReply) ProtoMessage()    {}
-func (*ConversationLeaveReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{9}
-}
-func (m *ConversationLeaveReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationLeaveReply.Unmarshal(m, b)
-}
-func (m *ConversationLeaveReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationLeaveReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationLeaveReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationLeaveReply.Merge(m, src)
-}
-func (m *ConversationLeaveReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationLeaveReply.Size(m)
-}
-func (m *ConversationLeaveReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationLeaveReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationLeaveReply proto.InternalMessageInfo
-
-type ConversationEraseRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationEraseRequest) Reset()         { *m = ConversationEraseRequest{} }
-func (m *ConversationEraseRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationEraseRequest) ProtoMessage()    {}
-func (*ConversationEraseRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{10}
-}
-func (m *ConversationEraseRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationEraseRequest.Unmarshal(m, b)
-}
-func (m *ConversationEraseRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationEraseRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationEraseRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationEraseRequest.Merge(m, src)
-}
-func (m *ConversationEraseRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationEraseRequest.Size(m)
-}
-func (m *ConversationEraseRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationEraseRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationEraseRequest proto.InternalMessageInfo
-
-type ConversationEraseReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationEraseReply) Reset()         { *m = ConversationEraseReply{} }
-func (m *ConversationEraseReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationEraseReply) ProtoMessage()    {}
-func (*ConversationEraseReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{11}
-}
-func (m *ConversationEraseReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationEraseReply.Unmarshal(m, b)
-}
-func (m *ConversationEraseReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationEraseReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationEraseReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationEraseReply.Merge(m, src)
-}
-func (m *ConversationEraseReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationEraseReply.Size(m)
-}
-func (m *ConversationEraseReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationEraseReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationEraseReply proto.InternalMessageInfo
-
-type ConversationSetSeenPositionRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationSetSeenPositionRequest) Reset()         { *m = ConversationSetSeenPositionRequest{} }
-func (m *ConversationSetSeenPositionRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationSetSeenPositionRequest) ProtoMessage()    {}
-func (*ConversationSetSeenPositionRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{12}
-}
-func (m *ConversationSetSeenPositionRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationSetSeenPositionRequest.Unmarshal(m, b)
-}
-func (m *ConversationSetSeenPositionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationSetSeenPositionRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationSetSeenPositionRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationSetSeenPositionRequest.Merge(m, src)
-}
-func (m *ConversationSetSeenPositionRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationSetSeenPositionRequest.Size(m)
-}
-func (m *ConversationSetSeenPositionRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationSetSeenPositionRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationSetSeenPositionRequest proto.InternalMessageInfo
-
-type ConversationSetSeenPositionReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationSetSeenPositionReply) Reset()         { *m = ConversationSetSeenPositionReply{} }
-func (m *ConversationSetSeenPositionReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationSetSeenPositionReply) ProtoMessage()    {}
-func (*ConversationSetSeenPositionReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{13}
-}
-func (m *ConversationSetSeenPositionReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationSetSeenPositionReply.Unmarshal(m, b)
-}
-func (m *ConversationSetSeenPositionReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationSetSeenPositionReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationSetSeenPositionReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationSetSeenPositionReply.Merge(m, src)
-}
-func (m *ConversationSetSeenPositionReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationSetSeenPositionReply.Size(m)
-}
-func (m *ConversationSetSeenPositionReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationSetSeenPositionReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationSetSeenPositionReply proto.InternalMessageInfo
-
-type ConversationMessageListRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationMessageListRequest) Reset()         { *m = ConversationMessageListRequest{} }
-func (m *ConversationMessageListRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationMessageListRequest) ProtoMessage()    {}
-func (*ConversationMessageListRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{14}
-}
-func (m *ConversationMessageListRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationMessageListRequest.Unmarshal(m, b)
-}
-func (m *ConversationMessageListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationMessageListRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationMessageListRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationMessageListRequest.Merge(m, src)
-}
-func (m *ConversationMessageListRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationMessageListRequest.Size(m)
-}
-func (m *ConversationMessageListRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationMessageListRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationMessageListRequest proto.InternalMessageInfo
-
-type ConversationMessageListReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationMessageListReply) Reset()         { *m = ConversationMessageListReply{} }
-func (m *ConversationMessageListReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationMessageListReply) ProtoMessage()    {}
-func (*ConversationMessageListReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{15}
-}
-func (m *ConversationMessageListReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationMessageListReply.Unmarshal(m, b)
-}
-func (m *ConversationMessageListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationMessageListReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationMessageListReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationMessageListReply.Merge(m, src)
-}
-func (m *ConversationMessageListReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationMessageListReply.Size(m)
-}
-func (m *ConversationMessageListReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationMessageListReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationMessageListReply proto.InternalMessageInfo
-
-type ConversationMessageSendRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationMessageSendRequest) Reset()         { *m = ConversationMessageSendRequest{} }
-func (m *ConversationMessageSendRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationMessageSendRequest) ProtoMessage()    {}
-func (*ConversationMessageSendRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{16}
-}
-func (m *ConversationMessageSendRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationMessageSendRequest.Unmarshal(m, b)
-}
-func (m *ConversationMessageSendRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationMessageSendRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationMessageSendRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationMessageSendRequest.Merge(m, src)
-}
-func (m *ConversationMessageSendRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationMessageSendRequest.Size(m)
-}
-func (m *ConversationMessageSendRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationMessageSendRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationMessageSendRequest proto.InternalMessageInfo
-
-type ConversationMessageSendReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationMessageSendReply) Reset()         { *m = ConversationMessageSendReply{} }
-func (m *ConversationMessageSendReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationMessageSendReply) ProtoMessage()    {}
-func (*ConversationMessageSendReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{17}
-}
-func (m *ConversationMessageSendReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationMessageSendReply.Unmarshal(m, b)
-}
-func (m *ConversationMessageSendReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationMessageSendReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationMessageSendReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationMessageSendReply.Merge(m, src)
-}
-func (m *ConversationMessageSendReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationMessageSendReply.Size(m)
-}
-func (m *ConversationMessageSendReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationMessageSendReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationMessageSendReply proto.InternalMessageInfo
-
-type ConversationMessageEditRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationMessageEditRequest) Reset()         { *m = ConversationMessageEditRequest{} }
-func (m *ConversationMessageEditRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationMessageEditRequest) ProtoMessage()    {}
-func (*ConversationMessageEditRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{18}
-}
-func (m *ConversationMessageEditRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationMessageEditRequest.Unmarshal(m, b)
-}
-func (m *ConversationMessageEditRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationMessageEditRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationMessageEditRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationMessageEditRequest.Merge(m, src)
-}
-func (m *ConversationMessageEditRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationMessageEditRequest.Size(m)
-}
-func (m *ConversationMessageEditRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationMessageEditRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationMessageEditRequest proto.InternalMessageInfo
-
-type ConversationMessageEditReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationMessageEditReply) Reset()         { *m = ConversationMessageEditReply{} }
-func (m *ConversationMessageEditReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationMessageEditReply) ProtoMessage()    {}
-func (*ConversationMessageEditReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{19}
-}
-func (m *ConversationMessageEditReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationMessageEditReply.Unmarshal(m, b)
-}
-func (m *ConversationMessageEditReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationMessageEditReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationMessageEditReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationMessageEditReply.Merge(m, src)
-}
-func (m *ConversationMessageEditReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationMessageEditReply.Size(m)
-}
-func (m *ConversationMessageEditReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationMessageEditReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationMessageEditReply proto.InternalMessageInfo
-
-type ConversationMessageHideRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationMessageHideRequest) Reset()         { *m = ConversationMessageHideRequest{} }
-func (m *ConversationMessageHideRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationMessageHideRequest) ProtoMessage()    {}
-func (*ConversationMessageHideRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{20}
-}
-func (m *ConversationMessageHideRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationMessageHideRequest.Unmarshal(m, b)
-}
-func (m *ConversationMessageHideRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationMessageHideRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationMessageHideRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationMessageHideRequest.Merge(m, src)
-}
-func (m *ConversationMessageHideRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationMessageHideRequest.Size(m)
-}
-func (m *ConversationMessageHideRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationMessageHideRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationMessageHideRequest proto.InternalMessageInfo
-
-type ConversationMessageHideReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationMessageHideReply) Reset()         { *m = ConversationMessageHideReply{} }
-func (m *ConversationMessageHideReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationMessageHideReply) ProtoMessage()    {}
-func (*ConversationMessageHideReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{21}
-}
-func (m *ConversationMessageHideReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationMessageHideReply.Unmarshal(m, b)
-}
-func (m *ConversationMessageHideReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationMessageHideReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationMessageHideReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationMessageHideReply.Merge(m, src)
-}
-func (m *ConversationMessageHideReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationMessageHideReply.Size(m)
-}
-func (m *ConversationMessageHideReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationMessageHideReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationMessageHideReply proto.InternalMessageInfo
-
-type ConversationUpdateSettingsRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationUpdateSettingsRequest) Reset()         { *m = ConversationUpdateSettingsRequest{} }
-func (m *ConversationUpdateSettingsRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationUpdateSettingsRequest) ProtoMessage()    {}
-func (*ConversationUpdateSettingsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{22}
-}
-func (m *ConversationUpdateSettingsRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationUpdateSettingsRequest.Unmarshal(m, b)
-}
-func (m *ConversationUpdateSettingsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationUpdateSettingsRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationUpdateSettingsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationUpdateSettingsRequest.Merge(m, src)
-}
-func (m *ConversationUpdateSettingsRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationUpdateSettingsRequest.Size(m)
-}
-func (m *ConversationUpdateSettingsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationUpdateSettingsRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationUpdateSettingsRequest proto.InternalMessageInfo
-
-type ConversationUpdateSettingsReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationUpdateSettingsReply) Reset()         { *m = ConversationUpdateSettingsReply{} }
-func (m *ConversationUpdateSettingsReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationUpdateSettingsReply) ProtoMessage()    {}
-func (*ConversationUpdateSettingsReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{23}
-}
-func (m *ConversationUpdateSettingsReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationUpdateSettingsReply.Unmarshal(m, b)
-}
-func (m *ConversationUpdateSettingsReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationUpdateSettingsReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationUpdateSettingsReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationUpdateSettingsReply.Merge(m, src)
-}
-func (m *ConversationUpdateSettingsReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationUpdateSettingsReply.Size(m)
-}
-func (m *ConversationUpdateSettingsReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationUpdateSettingsReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationUpdateSettingsReply proto.InternalMessageInfo
-
-type ConversationInvitationAcceptRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationInvitationAcceptRequest) Reset()         { *m = ConversationInvitationAcceptRequest{} }
-func (m *ConversationInvitationAcceptRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationInvitationAcceptRequest) ProtoMessage()    {}
-func (*ConversationInvitationAcceptRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{24}
-}
-func (m *ConversationInvitationAcceptRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationInvitationAcceptRequest.Unmarshal(m, b)
-}
-func (m *ConversationInvitationAcceptRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationInvitationAcceptRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationInvitationAcceptRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationInvitationAcceptRequest.Merge(m, src)
-}
-func (m *ConversationInvitationAcceptRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationInvitationAcceptRequest.Size(m)
-}
-func (m *ConversationInvitationAcceptRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationInvitationAcceptRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationInvitationAcceptRequest proto.InternalMessageInfo
-
-type ConversationInvitationAcceptReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationInvitationAcceptReply) Reset()         { *m = ConversationInvitationAcceptReply{} }
-func (m *ConversationInvitationAcceptReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationInvitationAcceptReply) ProtoMessage()    {}
-func (*ConversationInvitationAcceptReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{25}
-}
-func (m *ConversationInvitationAcceptReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationInvitationAcceptReply.Unmarshal(m, b)
-}
-func (m *ConversationInvitationAcceptReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationInvitationAcceptReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationInvitationAcceptReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationInvitationAcceptReply.Merge(m, src)
-}
-func (m *ConversationInvitationAcceptReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationInvitationAcceptReply.Size(m)
-}
-func (m *ConversationInvitationAcceptReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationInvitationAcceptReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationInvitationAcceptReply proto.InternalMessageInfo
-
-type ConversationInvitationCreateRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationInvitationCreateRequest) Reset()         { *m = ConversationInvitationCreateRequest{} }
-func (m *ConversationInvitationCreateRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationInvitationCreateRequest) ProtoMessage()    {}
-func (*ConversationInvitationCreateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{26}
-}
-func (m *ConversationInvitationCreateRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationInvitationCreateRequest.Unmarshal(m, b)
-}
-func (m *ConversationInvitationCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationInvitationCreateRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationInvitationCreateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationInvitationCreateRequest.Merge(m, src)
-}
-func (m *ConversationInvitationCreateRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationInvitationCreateRequest.Size(m)
-}
-func (m *ConversationInvitationCreateRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationInvitationCreateRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationInvitationCreateRequest proto.InternalMessageInfo
-
-type ConversationInvitationCreateReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationInvitationCreateReply) Reset()         { *m = ConversationInvitationCreateReply{} }
-func (m *ConversationInvitationCreateReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationInvitationCreateReply) ProtoMessage()    {}
-func (*ConversationInvitationCreateReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{27}
-}
-func (m *ConversationInvitationCreateReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationInvitationCreateReply.Unmarshal(m, b)
-}
-func (m *ConversationInvitationCreateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationInvitationCreateReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationInvitationCreateReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationInvitationCreateReply.Merge(m, src)
-}
-func (m *ConversationInvitationCreateReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationInvitationCreateReply.Size(m)
-}
-func (m *ConversationInvitationCreateReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationInvitationCreateReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationInvitationCreateReply proto.InternalMessageInfo
-
-type ConversationInvitationDiscardRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationInvitationDiscardRequest) Reset()         { *m = ConversationInvitationDiscardRequest{} }
-func (m *ConversationInvitationDiscardRequest) String() string { return proto.CompactTextString(m) }
-func (*ConversationInvitationDiscardRequest) ProtoMessage()    {}
-func (*ConversationInvitationDiscardRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{28}
-}
-func (m *ConversationInvitationDiscardRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationInvitationDiscardRequest.Unmarshal(m, b)
-}
-func (m *ConversationInvitationDiscardRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationInvitationDiscardRequest.Marshal(b, m, deterministic)
-}
-func (m *ConversationInvitationDiscardRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationInvitationDiscardRequest.Merge(m, src)
-}
-func (m *ConversationInvitationDiscardRequest) XXX_Size() int {
-	return xxx_messageInfo_ConversationInvitationDiscardRequest.Size(m)
-}
-func (m *ConversationInvitationDiscardRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationInvitationDiscardRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationInvitationDiscardRequest proto.InternalMessageInfo
-
-type ConversationInvitationDiscardReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ConversationInvitationDiscardReply) Reset()         { *m = ConversationInvitationDiscardReply{} }
-func (m *ConversationInvitationDiscardReply) String() string { return proto.CompactTextString(m) }
-func (*ConversationInvitationDiscardReply) ProtoMessage()    {}
-func (*ConversationInvitationDiscardReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{29}
-}
-func (m *ConversationInvitationDiscardReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConversationInvitationDiscardReply.Unmarshal(m, b)
-}
-func (m *ConversationInvitationDiscardReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConversationInvitationDiscardReply.Marshal(b, m, deterministic)
-}
-func (m *ConversationInvitationDiscardReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConversationInvitationDiscardReply.Merge(m, src)
-}
-func (m *ConversationInvitationDiscardReply) XXX_Size() int {
-	return xxx_messageInfo_ConversationInvitationDiscardReply.Size(m)
-}
-func (m *ConversationInvitationDiscardReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConversationInvitationDiscardReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConversationInvitationDiscardReply proto.InternalMessageInfo
-
-type ContactListRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactListRequest) Reset()         { *m = ContactListRequest{} }
-func (m *ContactListRequest) String() string { return proto.CompactTextString(m) }
-func (*ContactListRequest) ProtoMessage()    {}
-func (*ContactListRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{30}
-}
-func (m *ContactListRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactListRequest.Unmarshal(m, b)
-}
-func (m *ContactListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactListRequest.Marshal(b, m, deterministic)
-}
-func (m *ContactListRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactListRequest.Merge(m, src)
-}
-func (m *ContactListRequest) XXX_Size() int {
-	return xxx_messageInfo_ContactListRequest.Size(m)
-}
-func (m *ContactListRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactListRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactListRequest proto.InternalMessageInfo
-
-type ContactListReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactListReply) Reset()         { *m = ContactListReply{} }
-func (m *ContactListReply) String() string { return proto.CompactTextString(m) }
-func (*ContactListReply) ProtoMessage()    {}
-func (*ContactListReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{31}
-}
-func (m *ContactListReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactListReply.Unmarshal(m, b)
-}
-func (m *ContactListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactListReply.Marshal(b, m, deterministic)
-}
-func (m *ContactListReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactListReply.Merge(m, src)
-}
-func (m *ContactListReply) XXX_Size() int {
-	return xxx_messageInfo_ContactListReply.Size(m)
-}
-func (m *ContactListReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactListReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactListReply proto.InternalMessageInfo
-
-type ContactGetRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactGetRequest) Reset()         { *m = ContactGetRequest{} }
-func (m *ContactGetRequest) String() string { return proto.CompactTextString(m) }
-func (*ContactGetRequest) ProtoMessage()    {}
-func (*ContactGetRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{32}
-}
-func (m *ContactGetRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactGetRequest.Unmarshal(m, b)
-}
-func (m *ContactGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactGetRequest.Marshal(b, m, deterministic)
-}
-func (m *ContactGetRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactGetRequest.Merge(m, src)
-}
-func (m *ContactGetRequest) XXX_Size() int {
-	return xxx_messageInfo_ContactGetRequest.Size(m)
-}
-func (m *ContactGetRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactGetRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactGetRequest proto.InternalMessageInfo
-
-type ContactGetReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactGetReply) Reset()         { *m = ContactGetReply{} }
-func (m *ContactGetReply) String() string { return proto.CompactTextString(m) }
-func (*ContactGetReply) ProtoMessage()    {}
-func (*ContactGetReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{33}
-}
-func (m *ContactGetReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactGetReply.Unmarshal(m, b)
-}
-func (m *ContactGetReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactGetReply.Marshal(b, m, deterministic)
-}
-func (m *ContactGetReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactGetReply.Merge(m, src)
-}
-func (m *ContactGetReply) XXX_Size() int {
-	return xxx_messageInfo_ContactGetReply.Size(m)
-}
-func (m *ContactGetReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactGetReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactGetReply proto.InternalMessageInfo
-
-type ContactUpdateRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactUpdateRequest) Reset()         { *m = ContactUpdateRequest{} }
-func (m *ContactUpdateRequest) String() string { return proto.CompactTextString(m) }
-func (*ContactUpdateRequest) ProtoMessage()    {}
-func (*ContactUpdateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{34}
-}
-func (m *ContactUpdateRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactUpdateRequest.Unmarshal(m, b)
-}
-func (m *ContactUpdateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactUpdateRequest.Marshal(b, m, deterministic)
-}
-func (m *ContactUpdateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactUpdateRequest.Merge(m, src)
-}
-func (m *ContactUpdateRequest) XXX_Size() int {
-	return xxx_messageInfo_ContactUpdateRequest.Size(m)
-}
-func (m *ContactUpdateRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactUpdateRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactUpdateRequest proto.InternalMessageInfo
-
-type ContactUpdateReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactUpdateReply) Reset()         { *m = ContactUpdateReply{} }
-func (m *ContactUpdateReply) String() string { return proto.CompactTextString(m) }
-func (*ContactUpdateReply) ProtoMessage()    {}
-func (*ContactUpdateReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{35}
-}
-func (m *ContactUpdateReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactUpdateReply.Unmarshal(m, b)
-}
-func (m *ContactUpdateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactUpdateReply.Marshal(b, m, deterministic)
-}
-func (m *ContactUpdateReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactUpdateReply.Merge(m, src)
-}
-func (m *ContactUpdateReply) XXX_Size() int {
-	return xxx_messageInfo_ContactUpdateReply.Size(m)
-}
-func (m *ContactUpdateReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactUpdateReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactUpdateReply proto.InternalMessageInfo
-
-type ContactRemoveRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRemoveRequest) Reset()         { *m = ContactRemoveRequest{} }
-func (m *ContactRemoveRequest) String() string { return proto.CompactTextString(m) }
-func (*ContactRemoveRequest) ProtoMessage()    {}
-func (*ContactRemoveRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{36}
-}
-func (m *ContactRemoveRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRemoveRequest.Unmarshal(m, b)
-}
-func (m *ContactRemoveRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRemoveRequest.Marshal(b, m, deterministic)
-}
-func (m *ContactRemoveRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRemoveRequest.Merge(m, src)
-}
-func (m *ContactRemoveRequest) XXX_Size() int {
-	return xxx_messageInfo_ContactRemoveRequest.Size(m)
-}
-func (m *ContactRemoveRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRemoveRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRemoveRequest proto.InternalMessageInfo
-
-type ContactRemoveReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRemoveReply) Reset()         { *m = ContactRemoveReply{} }
-func (m *ContactRemoveReply) String() string { return proto.CompactTextString(m) }
-func (*ContactRemoveReply) ProtoMessage()    {}
-func (*ContactRemoveReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{37}
-}
-func (m *ContactRemoveReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRemoveReply.Unmarshal(m, b)
-}
-func (m *ContactRemoveReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRemoveReply.Marshal(b, m, deterministic)
-}
-func (m *ContactRemoveReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRemoveReply.Merge(m, src)
-}
-func (m *ContactRemoveReply) XXX_Size() int {
-	return xxx_messageInfo_ContactRemoveReply.Size(m)
-}
-func (m *ContactRemoveReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRemoveReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRemoveReply proto.InternalMessageInfo
-
-type ContactRequestCreateRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestCreateRequest) Reset()         { *m = ContactRequestCreateRequest{} }
-func (m *ContactRequestCreateRequest) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestCreateRequest) ProtoMessage()    {}
-func (*ContactRequestCreateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{38}
-}
-func (m *ContactRequestCreateRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestCreateRequest.Unmarshal(m, b)
-}
-func (m *ContactRequestCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestCreateRequest.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestCreateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestCreateRequest.Merge(m, src)
-}
-func (m *ContactRequestCreateRequest) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestCreateRequest.Size(m)
-}
-func (m *ContactRequestCreateRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestCreateRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestCreateRequest proto.InternalMessageInfo
-
-type ContactRequestCreateReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestCreateReply) Reset()         { *m = ContactRequestCreateReply{} }
-func (m *ContactRequestCreateReply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestCreateReply) ProtoMessage()    {}
-func (*ContactRequestCreateReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{39}
-}
-func (m *ContactRequestCreateReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestCreateReply.Unmarshal(m, b)
-}
-func (m *ContactRequestCreateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestCreateReply.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestCreateReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestCreateReply.Merge(m, src)
-}
-func (m *ContactRequestCreateReply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestCreateReply.Size(m)
-}
-func (m *ContactRequestCreateReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestCreateReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestCreateReply proto.InternalMessageInfo
-
-type ContactRequestAcceptRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestAcceptRequest) Reset()         { *m = ContactRequestAcceptRequest{} }
-func (m *ContactRequestAcceptRequest) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestAcceptRequest) ProtoMessage()    {}
-func (*ContactRequestAcceptRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{40}
-}
-func (m *ContactRequestAcceptRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestAcceptRequest.Unmarshal(m, b)
-}
-func (m *ContactRequestAcceptRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestAcceptRequest.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestAcceptRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestAcceptRequest.Merge(m, src)
-}
-func (m *ContactRequestAcceptRequest) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestAcceptRequest.Size(m)
-}
-func (m *ContactRequestAcceptRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestAcceptRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestAcceptRequest proto.InternalMessageInfo
-
-type ContactRequestAcceptReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestAcceptReply) Reset()         { *m = ContactRequestAcceptReply{} }
-func (m *ContactRequestAcceptReply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestAcceptReply) ProtoMessage()    {}
-func (*ContactRequestAcceptReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{41}
-}
-func (m *ContactRequestAcceptReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestAcceptReply.Unmarshal(m, b)
-}
-func (m *ContactRequestAcceptReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestAcceptReply.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestAcceptReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestAcceptReply.Merge(m, src)
-}
-func (m *ContactRequestAcceptReply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestAcceptReply.Size(m)
-}
-func (m *ContactRequestAcceptReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestAcceptReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestAcceptReply proto.InternalMessageInfo
-
-type ContactRequestDiscardRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestDiscardRequest) Reset()         { *m = ContactRequestDiscardRequest{} }
-func (m *ContactRequestDiscardRequest) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestDiscardRequest) ProtoMessage()    {}
-func (*ContactRequestDiscardRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{42}
-}
-func (m *ContactRequestDiscardRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestDiscardRequest.Unmarshal(m, b)
-}
-func (m *ContactRequestDiscardRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestDiscardRequest.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestDiscardRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestDiscardRequest.Merge(m, src)
-}
-func (m *ContactRequestDiscardRequest) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestDiscardRequest.Size(m)
-}
-func (m *ContactRequestDiscardRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestDiscardRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestDiscardRequest proto.InternalMessageInfo
-
-type ContactRequestDiscardReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestDiscardReply) Reset()         { *m = ContactRequestDiscardReply{} }
-func (m *ContactRequestDiscardReply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestDiscardReply) ProtoMessage()    {}
-func (*ContactRequestDiscardReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{43}
-}
-func (m *ContactRequestDiscardReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestDiscardReply.Unmarshal(m, b)
-}
-func (m *ContactRequestDiscardReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestDiscardReply.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestDiscardReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestDiscardReply.Merge(m, src)
-}
-func (m *ContactRequestDiscardReply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestDiscardReply.Size(m)
-}
-func (m *ContactRequestDiscardReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestDiscardReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestDiscardReply proto.InternalMessageInfo
-
+// Search
 type SearchRequest struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -1382,7 +39,7 @@ func (m *SearchRequest) Reset()         { *m = SearchRequest{} }
 func (m *SearchRequest) String() string { return proto.CompactTextString(m) }
 func (*SearchRequest) ProtoMessage()    {}
 func (*SearchRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{44}
+	return fileDescriptor_45ccc435ebdc714a, []int{0}
 }
 func (m *SearchRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SearchRequest.Unmarshal(m, b)
@@ -1412,7 +69,7 @@ func (m *SearchReply) Reset()         { *m = SearchReply{} }
 func (m *SearchReply) String() string { return proto.CompactTextString(m) }
 func (*SearchReply) ProtoMessage()    {}
 func (*SearchReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{45}
+	return fileDescriptor_45ccc435ebdc714a, []int{1}
 }
 func (m *SearchReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SearchReply.Unmarshal(m, b)
@@ -1432,253 +89,66 @@ func (m *SearchReply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SearchReply proto.InternalMessageInfo
 
-type AccountSettingsGetRequest struct {
+// Event
+type EventSubscribeRequest struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AccountSettingsGetRequest) Reset()         { *m = AccountSettingsGetRequest{} }
-func (m *AccountSettingsGetRequest) String() string { return proto.CompactTextString(m) }
-func (*AccountSettingsGetRequest) ProtoMessage()    {}
-func (*AccountSettingsGetRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{46}
+func (m *EventSubscribeRequest) Reset()         { *m = EventSubscribeRequest{} }
+func (m *EventSubscribeRequest) String() string { return proto.CompactTextString(m) }
+func (*EventSubscribeRequest) ProtoMessage()    {}
+func (*EventSubscribeRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{2}
 }
-func (m *AccountSettingsGetRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountSettingsGetRequest.Unmarshal(m, b)
+func (m *EventSubscribeRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EventSubscribeRequest.Unmarshal(m, b)
 }
-func (m *AccountSettingsGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountSettingsGetRequest.Marshal(b, m, deterministic)
+func (m *EventSubscribeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EventSubscribeRequest.Marshal(b, m, deterministic)
 }
-func (m *AccountSettingsGetRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountSettingsGetRequest.Merge(m, src)
+func (m *EventSubscribeRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventSubscribeRequest.Merge(m, src)
 }
-func (m *AccountSettingsGetRequest) XXX_Size() int {
-	return xxx_messageInfo_AccountSettingsGetRequest.Size(m)
+func (m *EventSubscribeRequest) XXX_Size() int {
+	return xxx_messageInfo_EventSubscribeRequest.Size(m)
 }
-func (m *AccountSettingsGetRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountSettingsGetRequest.DiscardUnknown(m)
+func (m *EventSubscribeRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventSubscribeRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AccountSettingsGetRequest proto.InternalMessageInfo
+var xxx_messageInfo_EventSubscribeRequest proto.InternalMessageInfo
 
-type AccountSettingsGetReply struct {
+type EventSubscribeReply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AccountSettingsGetReply) Reset()         { *m = AccountSettingsGetReply{} }
-func (m *AccountSettingsGetReply) String() string { return proto.CompactTextString(m) }
-func (*AccountSettingsGetReply) ProtoMessage()    {}
-func (*AccountSettingsGetReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{47}
+func (m *EventSubscribeReply) Reset()         { *m = EventSubscribeReply{} }
+func (m *EventSubscribeReply) String() string { return proto.CompactTextString(m) }
+func (*EventSubscribeReply) ProtoMessage()    {}
+func (*EventSubscribeReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{3}
 }
-func (m *AccountSettingsGetReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountSettingsGetReply.Unmarshal(m, b)
+func (m *EventSubscribeReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EventSubscribeReply.Unmarshal(m, b)
 }
-func (m *AccountSettingsGetReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountSettingsGetReply.Marshal(b, m, deterministic)
+func (m *EventSubscribeReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EventSubscribeReply.Marshal(b, m, deterministic)
 }
-func (m *AccountSettingsGetReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountSettingsGetReply.Merge(m, src)
+func (m *EventSubscribeReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventSubscribeReply.Merge(m, src)
 }
-func (m *AccountSettingsGetReply) XXX_Size() int {
-	return xxx_messageInfo_AccountSettingsGetReply.Size(m)
+func (m *EventSubscribeReply) XXX_Size() int {
+	return xxx_messageInfo_EventSubscribeReply.Size(m)
 }
-func (m *AccountSettingsGetReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountSettingsGetReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountSettingsGetReply proto.InternalMessageInfo
-
-type AccountSettingsUpdateRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *EventSubscribeReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventSubscribeReply.DiscardUnknown(m)
 }
 
-func (m *AccountSettingsUpdateRequest) Reset()         { *m = AccountSettingsUpdateRequest{} }
-func (m *AccountSettingsUpdateRequest) String() string { return proto.CompactTextString(m) }
-func (*AccountSettingsUpdateRequest) ProtoMessage()    {}
-func (*AccountSettingsUpdateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{48}
-}
-func (m *AccountSettingsUpdateRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountSettingsUpdateRequest.Unmarshal(m, b)
-}
-func (m *AccountSettingsUpdateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountSettingsUpdateRequest.Marshal(b, m, deterministic)
-}
-func (m *AccountSettingsUpdateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountSettingsUpdateRequest.Merge(m, src)
-}
-func (m *AccountSettingsUpdateRequest) XXX_Size() int {
-	return xxx_messageInfo_AccountSettingsUpdateRequest.Size(m)
-}
-func (m *AccountSettingsUpdateRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountSettingsUpdateRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountSettingsUpdateRequest proto.InternalMessageInfo
-
-type AccountSettingsUpdateReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountSettingsUpdateReply) Reset()         { *m = AccountSettingsUpdateReply{} }
-func (m *AccountSettingsUpdateReply) String() string { return proto.CompactTextString(m) }
-func (*AccountSettingsUpdateReply) ProtoMessage()    {}
-func (*AccountSettingsUpdateReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{49}
-}
-func (m *AccountSettingsUpdateReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountSettingsUpdateReply.Unmarshal(m, b)
-}
-func (m *AccountSettingsUpdateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountSettingsUpdateReply.Marshal(b, m, deterministic)
-}
-func (m *AccountSettingsUpdateReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountSettingsUpdateReply.Merge(m, src)
-}
-func (m *AccountSettingsUpdateReply) XXX_Size() int {
-	return xxx_messageInfo_AccountSettingsUpdateReply.Size(m)
-}
-func (m *AccountSettingsUpdateReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountSettingsUpdateReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountSettingsUpdateReply proto.InternalMessageInfo
-
-type AccountPairingInvitationCreateRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountPairingInvitationCreateRequest) Reset()         { *m = AccountPairingInvitationCreateRequest{} }
-func (m *AccountPairingInvitationCreateRequest) String() string { return proto.CompactTextString(m) }
-func (*AccountPairingInvitationCreateRequest) ProtoMessage()    {}
-func (*AccountPairingInvitationCreateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{50}
-}
-func (m *AccountPairingInvitationCreateRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountPairingInvitationCreateRequest.Unmarshal(m, b)
-}
-func (m *AccountPairingInvitationCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountPairingInvitationCreateRequest.Marshal(b, m, deterministic)
-}
-func (m *AccountPairingInvitationCreateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountPairingInvitationCreateRequest.Merge(m, src)
-}
-func (m *AccountPairingInvitationCreateRequest) XXX_Size() int {
-	return xxx_messageInfo_AccountPairingInvitationCreateRequest.Size(m)
-}
-func (m *AccountPairingInvitationCreateRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountPairingInvitationCreateRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountPairingInvitationCreateRequest proto.InternalMessageInfo
-
-type AccountPairingInvitationCreateReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountPairingInvitationCreateReply) Reset()         { *m = AccountPairingInvitationCreateReply{} }
-func (m *AccountPairingInvitationCreateReply) String() string { return proto.CompactTextString(m) }
-func (*AccountPairingInvitationCreateReply) ProtoMessage()    {}
-func (*AccountPairingInvitationCreateReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{51}
-}
-func (m *AccountPairingInvitationCreateReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountPairingInvitationCreateReply.Unmarshal(m, b)
-}
-func (m *AccountPairingInvitationCreateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountPairingInvitationCreateReply.Marshal(b, m, deterministic)
-}
-func (m *AccountPairingInvitationCreateReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountPairingInvitationCreateReply.Merge(m, src)
-}
-func (m *AccountPairingInvitationCreateReply) XXX_Size() int {
-	return xxx_messageInfo_AccountPairingInvitationCreateReply.Size(m)
-}
-func (m *AccountPairingInvitationCreateReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountPairingInvitationCreateReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountPairingInvitationCreateReply proto.InternalMessageInfo
-
-type AccountRenewIncomingContactRequestLinkRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountRenewIncomingContactRequestLinkRequest) Reset() {
-	*m = AccountRenewIncomingContactRequestLinkRequest{}
-}
-func (m *AccountRenewIncomingContactRequestLinkRequest) String() string {
-	return proto.CompactTextString(m)
-}
-func (*AccountRenewIncomingContactRequestLinkRequest) ProtoMessage() {}
-func (*AccountRenewIncomingContactRequestLinkRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{52}
-}
-func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Unmarshal(m, b)
-}
-func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Marshal(b, m, deterministic)
-}
-func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Merge(m, src)
-}
-func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_Size() int {
-	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Size(m)
-}
-func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest proto.InternalMessageInfo
-
-type AccountRenewIncomingContactRequestLinkReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountRenewIncomingContactRequestLinkReply) Reset() {
-	*m = AccountRenewIncomingContactRequestLinkReply{}
-}
-func (m *AccountRenewIncomingContactRequestLinkReply) String() string {
-	return proto.CompactTextString(m)
-}
-func (*AccountRenewIncomingContactRequestLinkReply) ProtoMessage() {}
-func (*AccountRenewIncomingContactRequestLinkReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{53}
-}
-func (m *AccountRenewIncomingContactRequestLinkReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Unmarshal(m, b)
-}
-func (m *AccountRenewIncomingContactRequestLinkReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Marshal(b, m, deterministic)
-}
-func (m *AccountRenewIncomingContactRequestLinkReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Merge(m, src)
-}
-func (m *AccountRenewIncomingContactRequestLinkReply) XXX_Size() int {
-	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Size(m)
-}
-func (m *AccountRenewIncomingContactRequestLinkReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply proto.InternalMessageInfo
+var xxx_messageInfo_EventSubscribeReply proto.InternalMessageInfo
 
 type DevEventSubscribeRequest struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -1690,7 +160,7 @@ func (m *DevEventSubscribeRequest) Reset()         { *m = DevEventSubscribeReque
 func (m *DevEventSubscribeRequest) String() string { return proto.CompactTextString(m) }
 func (*DevEventSubscribeRequest) ProtoMessage()    {}
 func (*DevEventSubscribeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{54}
+	return fileDescriptor_45ccc435ebdc714a, []int{4}
 }
 func (m *DevEventSubscribeRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DevEventSubscribeRequest.Unmarshal(m, b)
@@ -1720,7 +190,7 @@ func (m *DevEventSubscribeReply) Reset()         { *m = DevEventSubscribeReply{}
 func (m *DevEventSubscribeReply) String() string { return proto.CompactTextString(m) }
 func (*DevEventSubscribeReply) ProtoMessage()    {}
 func (*DevEventSubscribeReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_45ccc435ebdc714a, []int{55}
+	return fileDescriptor_45ccc435ebdc714a, []int{5}
 }
 func (m *DevEventSubscribeReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DevEventSubscribeReply.Unmarshal(m, b)
@@ -1740,141 +210,2891 @@ func (m *DevEventSubscribeReply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_DevEventSubscribeReply proto.InternalMessageInfo
 
+// Conversation
+type ConversationListRequest struct {
+	Filter               *chatmodel.Conversation `protobuf:"bytes,1,opt,name=filter,proto3" json:"filter,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
+}
+
+func (m *ConversationListRequest) Reset()         { *m = ConversationListRequest{} }
+func (m *ConversationListRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationListRequest) ProtoMessage()    {}
+func (*ConversationListRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{6}
+}
+func (m *ConversationListRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationListRequest.Unmarshal(m, b)
+}
+func (m *ConversationListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationListRequest.Marshal(b, m, deterministic)
+}
+func (m *ConversationListRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationListRequest.Merge(m, src)
+}
+func (m *ConversationListRequest) XXX_Size() int {
+	return xxx_messageInfo_ConversationListRequest.Size(m)
+}
+func (m *ConversationListRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationListRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationListRequest proto.InternalMessageInfo
+
+func (m *ConversationListRequest) GetFilter() *chatmodel.Conversation {
+	if m != nil {
+		return m.Filter
+	}
+	return nil
+}
+
+type ConversationListReply struct {
+	Conversation         *chatmodel.Conversation `protobuf:"bytes,1,opt,name=conversation,proto3" json:"conversation,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
+}
+
+func (m *ConversationListReply) Reset()         { *m = ConversationListReply{} }
+func (m *ConversationListReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationListReply) ProtoMessage()    {}
+func (*ConversationListReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{7}
+}
+func (m *ConversationListReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationListReply.Unmarshal(m, b)
+}
+func (m *ConversationListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationListReply.Marshal(b, m, deterministic)
+}
+func (m *ConversationListReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationListReply.Merge(m, src)
+}
+func (m *ConversationListReply) XXX_Size() int {
+	return xxx_messageInfo_ConversationListReply.Size(m)
+}
+func (m *ConversationListReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationListReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationListReply proto.InternalMessageInfo
+
+func (m *ConversationListReply) GetConversation() *chatmodel.Conversation {
+	if m != nil {
+		return m.Conversation
+	}
+	return nil
+}
+
+type ConversationGetRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationGetRequest) Reset()         { *m = ConversationGetRequest{} }
+func (m *ConversationGetRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationGetRequest) ProtoMessage()    {}
+func (*ConversationGetRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{8}
+}
+func (m *ConversationGetRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationGetRequest.Unmarshal(m, b)
+}
+func (m *ConversationGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationGetRequest.Marshal(b, m, deterministic)
+}
+func (m *ConversationGetRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationGetRequest.Merge(m, src)
+}
+func (m *ConversationGetRequest) XXX_Size() int {
+	return xxx_messageInfo_ConversationGetRequest.Size(m)
+}
+func (m *ConversationGetRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationGetRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationGetRequest proto.InternalMessageInfo
+
+func (m *ConversationGetRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type ConversationCreateRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Topic                string   `protobuf:"bytes,3,opt,name=topic,proto3" json:"topic,omitempty"`
+	AvatarURI            string   `protobuf:"bytes,4,opt,name=avatar_uri,json=avatarUri,proto3" json:"avatar_uri,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationCreateRequest) Reset()         { *m = ConversationCreateRequest{} }
+func (m *ConversationCreateRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationCreateRequest) ProtoMessage()    {}
+func (*ConversationCreateRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{9}
+}
+func (m *ConversationCreateRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationCreateRequest.Unmarshal(m, b)
+}
+func (m *ConversationCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationCreateRequest.Marshal(b, m, deterministic)
+}
+func (m *ConversationCreateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationCreateRequest.Merge(m, src)
+}
+func (m *ConversationCreateRequest) XXX_Size() int {
+	return xxx_messageInfo_ConversationCreateRequest.Size(m)
+}
+func (m *ConversationCreateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationCreateRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationCreateRequest proto.InternalMessageInfo
+
+func (m *ConversationCreateRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+func (m *ConversationCreateRequest) GetTitle() string {
+	if m != nil {
+		return m.Title
+	}
+	return ""
+}
+
+func (m *ConversationCreateRequest) GetTopic() string {
+	if m != nil {
+		return m.Topic
+	}
+	return ""
+}
+
+func (m *ConversationCreateRequest) GetAvatarURI() string {
+	if m != nil {
+		return m.AvatarURI
+	}
+	return ""
+}
+
+type ConversationCreateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationCreateReply) Reset()         { *m = ConversationCreateReply{} }
+func (m *ConversationCreateReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationCreateReply) ProtoMessage()    {}
+func (*ConversationCreateReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{10}
+}
+func (m *ConversationCreateReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationCreateReply.Unmarshal(m, b)
+}
+func (m *ConversationCreateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationCreateReply.Marshal(b, m, deterministic)
+}
+func (m *ConversationCreateReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationCreateReply.Merge(m, src)
+}
+func (m *ConversationCreateReply) XXX_Size() int {
+	return xxx_messageInfo_ConversationCreateReply.Size(m)
+}
+func (m *ConversationCreateReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationCreateReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationCreateReply proto.InternalMessageInfo
+
+type ConversationGetReply struct {
+	Conversation         *chatmodel.Conversation `protobuf:"bytes,1,opt,name=conversation,proto3" json:"conversation,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
+}
+
+func (m *ConversationGetReply) Reset()         { *m = ConversationGetReply{} }
+func (m *ConversationGetReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationGetReply) ProtoMessage()    {}
+func (*ConversationGetReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{11}
+}
+func (m *ConversationGetReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationGetReply.Unmarshal(m, b)
+}
+func (m *ConversationGetReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationGetReply.Marshal(b, m, deterministic)
+}
+func (m *ConversationGetReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationGetReply.Merge(m, src)
+}
+func (m *ConversationGetReply) XXX_Size() int {
+	return xxx_messageInfo_ConversationGetReply.Size(m)
+}
+func (m *ConversationGetReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationGetReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationGetReply proto.InternalMessageInfo
+
+func (m *ConversationGetReply) GetConversation() *chatmodel.Conversation {
+	if m != nil {
+		return m.Conversation
+	}
+	return nil
+}
+
+type ConversationUpdateRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Topic                string   `protobuf:"bytes,3,opt,name=topic,proto3" json:"topic,omitempty"`
+	AvatarURI            string   `protobuf:"bytes,4,opt,name=avatar_uri,json=avatarUri,proto3" json:"avatar_uri,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationUpdateRequest) Reset()         { *m = ConversationUpdateRequest{} }
+func (m *ConversationUpdateRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationUpdateRequest) ProtoMessage()    {}
+func (*ConversationUpdateRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{12}
+}
+func (m *ConversationUpdateRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationUpdateRequest.Unmarshal(m, b)
+}
+func (m *ConversationUpdateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationUpdateRequest.Marshal(b, m, deterministic)
+}
+func (m *ConversationUpdateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationUpdateRequest.Merge(m, src)
+}
+func (m *ConversationUpdateRequest) XXX_Size() int {
+	return xxx_messageInfo_ConversationUpdateRequest.Size(m)
+}
+func (m *ConversationUpdateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationUpdateRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationUpdateRequest proto.InternalMessageInfo
+
+func (m *ConversationUpdateRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+func (m *ConversationUpdateRequest) GetTitle() string {
+	if m != nil {
+		return m.Title
+	}
+	return ""
+}
+
+func (m *ConversationUpdateRequest) GetTopic() string {
+	if m != nil {
+		return m.Topic
+	}
+	return ""
+}
+
+func (m *ConversationUpdateRequest) GetAvatarURI() string {
+	if m != nil {
+		return m.AvatarURI
+	}
+	return ""
+}
+
+type ConversationUpdateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationUpdateReply) Reset()         { *m = ConversationUpdateReply{} }
+func (m *ConversationUpdateReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationUpdateReply) ProtoMessage()    {}
+func (*ConversationUpdateReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{13}
+}
+func (m *ConversationUpdateReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationUpdateReply.Unmarshal(m, b)
+}
+func (m *ConversationUpdateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationUpdateReply.Marshal(b, m, deterministic)
+}
+func (m *ConversationUpdateReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationUpdateReply.Merge(m, src)
+}
+func (m *ConversationUpdateReply) XXX_Size() int {
+	return xxx_messageInfo_ConversationUpdateReply.Size(m)
+}
+func (m *ConversationUpdateReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationUpdateReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationUpdateReply proto.InternalMessageInfo
+
+type ConversationMuteRequest struct {
+	Policy               chatmodel.Member_MutePolicy `protobuf:"varint,1,opt,name=policy,proto3,enum=berty.chatmodel.Member_MutePolicy" json:"policy,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                    `json:"-"`
+	XXX_unrecognized     []byte                      `json:"-"`
+	XXX_sizecache        int32                       `json:"-"`
+}
+
+func (m *ConversationMuteRequest) Reset()         { *m = ConversationMuteRequest{} }
+func (m *ConversationMuteRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationMuteRequest) ProtoMessage()    {}
+func (*ConversationMuteRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{14}
+}
+func (m *ConversationMuteRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationMuteRequest.Unmarshal(m, b)
+}
+func (m *ConversationMuteRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationMuteRequest.Marshal(b, m, deterministic)
+}
+func (m *ConversationMuteRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationMuteRequest.Merge(m, src)
+}
+func (m *ConversationMuteRequest) XXX_Size() int {
+	return xxx_messageInfo_ConversationMuteRequest.Size(m)
+}
+func (m *ConversationMuteRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationMuteRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationMuteRequest proto.InternalMessageInfo
+
+func (m *ConversationMuteRequest) GetPolicy() chatmodel.Member_MutePolicy {
+	if m != nil {
+		return m.Policy
+	}
+	return chatmodel.Member_Nothing
+}
+
+type ConversationMuteReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationMuteReply) Reset()         { *m = ConversationMuteReply{} }
+func (m *ConversationMuteReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationMuteReply) ProtoMessage()    {}
+func (*ConversationMuteReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{15}
+}
+func (m *ConversationMuteReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationMuteReply.Unmarshal(m, b)
+}
+func (m *ConversationMuteReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationMuteReply.Marshal(b, m, deterministic)
+}
+func (m *ConversationMuteReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationMuteReply.Merge(m, src)
+}
+func (m *ConversationMuteReply) XXX_Size() int {
+	return xxx_messageInfo_ConversationMuteReply.Size(m)
+}
+func (m *ConversationMuteReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationMuteReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationMuteReply proto.InternalMessageInfo
+
+type ConversationLeaveRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationLeaveRequest) Reset()         { *m = ConversationLeaveRequest{} }
+func (m *ConversationLeaveRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationLeaveRequest) ProtoMessage()    {}
+func (*ConversationLeaveRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{16}
+}
+func (m *ConversationLeaveRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationLeaveRequest.Unmarshal(m, b)
+}
+func (m *ConversationLeaveRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationLeaveRequest.Marshal(b, m, deterministic)
+}
+func (m *ConversationLeaveRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationLeaveRequest.Merge(m, src)
+}
+func (m *ConversationLeaveRequest) XXX_Size() int {
+	return xxx_messageInfo_ConversationLeaveRequest.Size(m)
+}
+func (m *ConversationLeaveRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationLeaveRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationLeaveRequest proto.InternalMessageInfo
+
+func (m *ConversationLeaveRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type ConversationLeaveReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationLeaveReply) Reset()         { *m = ConversationLeaveReply{} }
+func (m *ConversationLeaveReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationLeaveReply) ProtoMessage()    {}
+func (*ConversationLeaveReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{17}
+}
+func (m *ConversationLeaveReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationLeaveReply.Unmarshal(m, b)
+}
+func (m *ConversationLeaveReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationLeaveReply.Marshal(b, m, deterministic)
+}
+func (m *ConversationLeaveReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationLeaveReply.Merge(m, src)
+}
+func (m *ConversationLeaveReply) XXX_Size() int {
+	return xxx_messageInfo_ConversationLeaveReply.Size(m)
+}
+func (m *ConversationLeaveReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationLeaveReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationLeaveReply proto.InternalMessageInfo
+
+type ConversationEraseRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationEraseRequest) Reset()         { *m = ConversationEraseRequest{} }
+func (m *ConversationEraseRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationEraseRequest) ProtoMessage()    {}
+func (*ConversationEraseRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{18}
+}
+func (m *ConversationEraseRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationEraseRequest.Unmarshal(m, b)
+}
+func (m *ConversationEraseRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationEraseRequest.Marshal(b, m, deterministic)
+}
+func (m *ConversationEraseRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationEraseRequest.Merge(m, src)
+}
+func (m *ConversationEraseRequest) XXX_Size() int {
+	return xxx_messageInfo_ConversationEraseRequest.Size(m)
+}
+func (m *ConversationEraseRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationEraseRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationEraseRequest proto.InternalMessageInfo
+
+func (m *ConversationEraseRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type ConversationEraseReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationEraseReply) Reset()         { *m = ConversationEraseReply{} }
+func (m *ConversationEraseReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationEraseReply) ProtoMessage()    {}
+func (*ConversationEraseReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{19}
+}
+func (m *ConversationEraseReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationEraseReply.Unmarshal(m, b)
+}
+func (m *ConversationEraseReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationEraseReply.Marshal(b, m, deterministic)
+}
+func (m *ConversationEraseReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationEraseReply.Merge(m, src)
+}
+func (m *ConversationEraseReply) XXX_Size() int {
+	return xxx_messageInfo_ConversationEraseReply.Size(m)
+}
+func (m *ConversationEraseReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationEraseReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationEraseReply proto.InternalMessageInfo
+
+type ConversationInvitationSendRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	ContactID            uint64   `protobuf:"varint,2,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationInvitationSendRequest) Reset()         { *m = ConversationInvitationSendRequest{} }
+func (m *ConversationInvitationSendRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationInvitationSendRequest) ProtoMessage()    {}
+func (*ConversationInvitationSendRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{20}
+}
+func (m *ConversationInvitationSendRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationInvitationSendRequest.Unmarshal(m, b)
+}
+func (m *ConversationInvitationSendRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationInvitationSendRequest.Marshal(b, m, deterministic)
+}
+func (m *ConversationInvitationSendRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationInvitationSendRequest.Merge(m, src)
+}
+func (m *ConversationInvitationSendRequest) XXX_Size() int {
+	return xxx_messageInfo_ConversationInvitationSendRequest.Size(m)
+}
+func (m *ConversationInvitationSendRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationInvitationSendRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationInvitationSendRequest proto.InternalMessageInfo
+
+func (m *ConversationInvitationSendRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+func (m *ConversationInvitationSendRequest) GetContactID() uint64 {
+	if m != nil {
+		return m.ContactID
+	}
+	return 0
+}
+
+type ConversationInvitationSendReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationInvitationSendReply) Reset()         { *m = ConversationInvitationSendReply{} }
+func (m *ConversationInvitationSendReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationInvitationSendReply) ProtoMessage()    {}
+func (*ConversationInvitationSendReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{21}
+}
+func (m *ConversationInvitationSendReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationInvitationSendReply.Unmarshal(m, b)
+}
+func (m *ConversationInvitationSendReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationInvitationSendReply.Marshal(b, m, deterministic)
+}
+func (m *ConversationInvitationSendReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationInvitationSendReply.Merge(m, src)
+}
+func (m *ConversationInvitationSendReply) XXX_Size() int {
+	return xxx_messageInfo_ConversationInvitationSendReply.Size(m)
+}
+func (m *ConversationInvitationSendReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationInvitationSendReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationInvitationSendReply proto.InternalMessageInfo
+
+type ConversationInvitationAcceptRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	ContactID            uint64   `protobuf:"varint,2,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationInvitationAcceptRequest) Reset()         { *m = ConversationInvitationAcceptRequest{} }
+func (m *ConversationInvitationAcceptRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationInvitationAcceptRequest) ProtoMessage()    {}
+func (*ConversationInvitationAcceptRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{22}
+}
+func (m *ConversationInvitationAcceptRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationInvitationAcceptRequest.Unmarshal(m, b)
+}
+func (m *ConversationInvitationAcceptRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationInvitationAcceptRequest.Marshal(b, m, deterministic)
+}
+func (m *ConversationInvitationAcceptRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationInvitationAcceptRequest.Merge(m, src)
+}
+func (m *ConversationInvitationAcceptRequest) XXX_Size() int {
+	return xxx_messageInfo_ConversationInvitationAcceptRequest.Size(m)
+}
+func (m *ConversationInvitationAcceptRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationInvitationAcceptRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationInvitationAcceptRequest proto.InternalMessageInfo
+
+func (m *ConversationInvitationAcceptRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+func (m *ConversationInvitationAcceptRequest) GetContactID() uint64 {
+	if m != nil {
+		return m.ContactID
+	}
+	return 0
+}
+
+type ConversationInvitationAcceptReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationInvitationAcceptReply) Reset()         { *m = ConversationInvitationAcceptReply{} }
+func (m *ConversationInvitationAcceptReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationInvitationAcceptReply) ProtoMessage()    {}
+func (*ConversationInvitationAcceptReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{23}
+}
+func (m *ConversationInvitationAcceptReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationInvitationAcceptReply.Unmarshal(m, b)
+}
+func (m *ConversationInvitationAcceptReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationInvitationAcceptReply.Marshal(b, m, deterministic)
+}
+func (m *ConversationInvitationAcceptReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationInvitationAcceptReply.Merge(m, src)
+}
+func (m *ConversationInvitationAcceptReply) XXX_Size() int {
+	return xxx_messageInfo_ConversationInvitationAcceptReply.Size(m)
+}
+func (m *ConversationInvitationAcceptReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationInvitationAcceptReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationInvitationAcceptReply proto.InternalMessageInfo
+
+type ConversationInvitationDeclineRequest struct {
+	ConversationID       uint64   `protobuf:"varint,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationInvitationDeclineRequest) Reset()         { *m = ConversationInvitationDeclineRequest{} }
+func (m *ConversationInvitationDeclineRequest) String() string { return proto.CompactTextString(m) }
+func (*ConversationInvitationDeclineRequest) ProtoMessage()    {}
+func (*ConversationInvitationDeclineRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{24}
+}
+func (m *ConversationInvitationDeclineRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationInvitationDeclineRequest.Unmarshal(m, b)
+}
+func (m *ConversationInvitationDeclineRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationInvitationDeclineRequest.Marshal(b, m, deterministic)
+}
+func (m *ConversationInvitationDeclineRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationInvitationDeclineRequest.Merge(m, src)
+}
+func (m *ConversationInvitationDeclineRequest) XXX_Size() int {
+	return xxx_messageInfo_ConversationInvitationDeclineRequest.Size(m)
+}
+func (m *ConversationInvitationDeclineRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationInvitationDeclineRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationInvitationDeclineRequest proto.InternalMessageInfo
+
+func (m *ConversationInvitationDeclineRequest) GetConversationID() uint64 {
+	if m != nil {
+		return m.ConversationID
+	}
+	return 0
+}
+
+type ConversationInvitationDeclineReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationInvitationDeclineReply) Reset()         { *m = ConversationInvitationDeclineReply{} }
+func (m *ConversationInvitationDeclineReply) String() string { return proto.CompactTextString(m) }
+func (*ConversationInvitationDeclineReply) ProtoMessage()    {}
+func (*ConversationInvitationDeclineReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{25}
+}
+func (m *ConversationInvitationDeclineReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ConversationInvitationDeclineReply.Unmarshal(m, b)
+}
+func (m *ConversationInvitationDeclineReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ConversationInvitationDeclineReply.Marshal(b, m, deterministic)
+}
+func (m *ConversationInvitationDeclineReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationInvitationDeclineReply.Merge(m, src)
+}
+func (m *ConversationInvitationDeclineReply) XXX_Size() int {
+	return xxx_messageInfo_ConversationInvitationDeclineReply.Size(m)
+}
+func (m *ConversationInvitationDeclineReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationInvitationDeclineReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationInvitationDeclineReply proto.InternalMessageInfo
+
+// Message
+type MessageListRequest struct {
+	Filter               *chatmodel.Message `protobuf:"bytes,1,opt,name=filter,proto3" json:"filter,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *MessageListRequest) Reset()         { *m = MessageListRequest{} }
+func (m *MessageListRequest) String() string { return proto.CompactTextString(m) }
+func (*MessageListRequest) ProtoMessage()    {}
+func (*MessageListRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{26}
+}
+func (m *MessageListRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageListRequest.Unmarshal(m, b)
+}
+func (m *MessageListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageListRequest.Marshal(b, m, deterministic)
+}
+func (m *MessageListRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageListRequest.Merge(m, src)
+}
+func (m *MessageListRequest) XXX_Size() int {
+	return xxx_messageInfo_MessageListRequest.Size(m)
+}
+func (m *MessageListRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageListRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageListRequest proto.InternalMessageInfo
+
+func (m *MessageListRequest) GetFilter() *chatmodel.Message {
+	if m != nil {
+		return m.Filter
+	}
+	return nil
+}
+
+type MessageListReply struct {
+	Message              *chatmodel.Message `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *MessageListReply) Reset()         { *m = MessageListReply{} }
+func (m *MessageListReply) String() string { return proto.CompactTextString(m) }
+func (*MessageListReply) ProtoMessage()    {}
+func (*MessageListReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{27}
+}
+func (m *MessageListReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageListReply.Unmarshal(m, b)
+}
+func (m *MessageListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageListReply.Marshal(b, m, deterministic)
+}
+func (m *MessageListReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageListReply.Merge(m, src)
+}
+func (m *MessageListReply) XXX_Size() int {
+	return xxx_messageInfo_MessageListReply.Size(m)
+}
+func (m *MessageListReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageListReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageListReply proto.InternalMessageInfo
+
+func (m *MessageListReply) GetMessage() *chatmodel.Message {
+	if m != nil {
+		return m.Message
+	}
+	return nil
+}
+
+type MessageGetRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MessageGetRequest) Reset()         { *m = MessageGetRequest{} }
+func (m *MessageGetRequest) String() string { return proto.CompactTextString(m) }
+func (*MessageGetRequest) ProtoMessage()    {}
+func (*MessageGetRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{28}
+}
+func (m *MessageGetRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageGetRequest.Unmarshal(m, b)
+}
+func (m *MessageGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageGetRequest.Marshal(b, m, deterministic)
+}
+func (m *MessageGetRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageGetRequest.Merge(m, src)
+}
+func (m *MessageGetRequest) XXX_Size() int {
+	return xxx_messageInfo_MessageGetRequest.Size(m)
+}
+func (m *MessageGetRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageGetRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageGetRequest proto.InternalMessageInfo
+
+func (m *MessageGetRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type MessageGetReply struct {
+	Message              *chatmodel.Message `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *MessageGetReply) Reset()         { *m = MessageGetReply{} }
+func (m *MessageGetReply) String() string { return proto.CompactTextString(m) }
+func (*MessageGetReply) ProtoMessage()    {}
+func (*MessageGetReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{29}
+}
+func (m *MessageGetReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageGetReply.Unmarshal(m, b)
+}
+func (m *MessageGetReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageGetReply.Marshal(b, m, deterministic)
+}
+func (m *MessageGetReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageGetReply.Merge(m, src)
+}
+func (m *MessageGetReply) XXX_Size() int {
+	return xxx_messageInfo_MessageGetReply.Size(m)
+}
+func (m *MessageGetReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageGetReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageGetReply proto.InternalMessageInfo
+
+func (m *MessageGetReply) GetMessage() *chatmodel.Message {
+	if m != nil {
+		return m.Message
+	}
+	return nil
+}
+
+type MessageSendRequest struct {
+	ConversationID       uint64                  `protobuf:"varint,1,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+	Kind                 chatmodel.Message_Kind  `protobuf:"varint,2,opt,name=kind,proto3,enum=berty.chatmodel.Message_Kind" json:"kind,omitempty"`
+	Body                 *chatmodel.Message_Body `protobuf:"bytes,3,opt,name=body,proto3" json:"body,omitempty"`
+	Attachments          []*chatmodel.Attachment `protobuf:"bytes,4,rep,name=attachments,proto3" json:"attachments,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
+}
+
+func (m *MessageSendRequest) Reset()         { *m = MessageSendRequest{} }
+func (m *MessageSendRequest) String() string { return proto.CompactTextString(m) }
+func (*MessageSendRequest) ProtoMessage()    {}
+func (*MessageSendRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{30}
+}
+func (m *MessageSendRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageSendRequest.Unmarshal(m, b)
+}
+func (m *MessageSendRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageSendRequest.Marshal(b, m, deterministic)
+}
+func (m *MessageSendRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageSendRequest.Merge(m, src)
+}
+func (m *MessageSendRequest) XXX_Size() int {
+	return xxx_messageInfo_MessageSendRequest.Size(m)
+}
+func (m *MessageSendRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageSendRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageSendRequest proto.InternalMessageInfo
+
+func (m *MessageSendRequest) GetConversationID() uint64 {
+	if m != nil {
+		return m.ConversationID
+	}
+	return 0
+}
+
+func (m *MessageSendRequest) GetKind() chatmodel.Message_Kind {
+	if m != nil {
+		return m.Kind
+	}
+	return chatmodel.Message_Unknown
+}
+
+func (m *MessageSendRequest) GetBody() *chatmodel.Message_Body {
+	if m != nil {
+		return m.Body
+	}
+	return nil
+}
+
+func (m *MessageSendRequest) GetAttachments() []*chatmodel.Attachment {
+	if m != nil {
+		return m.Attachments
+	}
+	return nil
+}
+
+type MessageSendReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MessageSendReply) Reset()         { *m = MessageSendReply{} }
+func (m *MessageSendReply) String() string { return proto.CompactTextString(m) }
+func (*MessageSendReply) ProtoMessage()    {}
+func (*MessageSendReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{31}
+}
+func (m *MessageSendReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageSendReply.Unmarshal(m, b)
+}
+func (m *MessageSendReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageSendReply.Marshal(b, m, deterministic)
+}
+func (m *MessageSendReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageSendReply.Merge(m, src)
+}
+func (m *MessageSendReply) XXX_Size() int {
+	return xxx_messageInfo_MessageSendReply.Size(m)
+}
+func (m *MessageSendReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageSendReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageSendReply proto.InternalMessageInfo
+
+type MessageEditRequest struct {
+	ID                   uint64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Body                 *chatmodel.Message_Body `protobuf:"bytes,2,opt,name=body,proto3" json:"body,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
+}
+
+func (m *MessageEditRequest) Reset()         { *m = MessageEditRequest{} }
+func (m *MessageEditRequest) String() string { return proto.CompactTextString(m) }
+func (*MessageEditRequest) ProtoMessage()    {}
+func (*MessageEditRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{32}
+}
+func (m *MessageEditRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageEditRequest.Unmarshal(m, b)
+}
+func (m *MessageEditRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageEditRequest.Marshal(b, m, deterministic)
+}
+func (m *MessageEditRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageEditRequest.Merge(m, src)
+}
+func (m *MessageEditRequest) XXX_Size() int {
+	return xxx_messageInfo_MessageEditRequest.Size(m)
+}
+func (m *MessageEditRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageEditRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageEditRequest proto.InternalMessageInfo
+
+func (m *MessageEditRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+func (m *MessageEditRequest) GetBody() *chatmodel.Message_Body {
+	if m != nil {
+		return m.Body
+	}
+	return nil
+}
+
+type MessageEditReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MessageEditReply) Reset()         { *m = MessageEditReply{} }
+func (m *MessageEditReply) String() string { return proto.CompactTextString(m) }
+func (*MessageEditReply) ProtoMessage()    {}
+func (*MessageEditReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{33}
+}
+func (m *MessageEditReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageEditReply.Unmarshal(m, b)
+}
+func (m *MessageEditReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageEditReply.Marshal(b, m, deterministic)
+}
+func (m *MessageEditReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageEditReply.Merge(m, src)
+}
+func (m *MessageEditReply) XXX_Size() int {
+	return xxx_messageInfo_MessageEditReply.Size(m)
+}
+func (m *MessageEditReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageEditReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageEditReply proto.InternalMessageInfo
+
+type MessageHideRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MessageHideRequest) Reset()         { *m = MessageHideRequest{} }
+func (m *MessageHideRequest) String() string { return proto.CompactTextString(m) }
+func (*MessageHideRequest) ProtoMessage()    {}
+func (*MessageHideRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{34}
+}
+func (m *MessageHideRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageHideRequest.Unmarshal(m, b)
+}
+func (m *MessageHideRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageHideRequest.Marshal(b, m, deterministic)
+}
+func (m *MessageHideRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageHideRequest.Merge(m, src)
+}
+func (m *MessageHideRequest) XXX_Size() int {
+	return xxx_messageInfo_MessageHideRequest.Size(m)
+}
+func (m *MessageHideRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageHideRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageHideRequest proto.InternalMessageInfo
+
+func (m *MessageHideRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type MessageHideReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MessageHideReply) Reset()         { *m = MessageHideReply{} }
+func (m *MessageHideReply) String() string { return proto.CompactTextString(m) }
+func (*MessageHideReply) ProtoMessage()    {}
+func (*MessageHideReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{35}
+}
+func (m *MessageHideReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageHideReply.Unmarshal(m, b)
+}
+func (m *MessageHideReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageHideReply.Marshal(b, m, deterministic)
+}
+func (m *MessageHideReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageHideReply.Merge(m, src)
+}
+func (m *MessageHideReply) XXX_Size() int {
+	return xxx_messageInfo_MessageHideReply.Size(m)
+}
+func (m *MessageHideReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageHideReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageHideReply proto.InternalMessageInfo
+
+type MessageReactRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Emoji                []byte   `protobuf:"bytes,2,opt,name=emoji,proto3" json:"emoji,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MessageReactRequest) Reset()         { *m = MessageReactRequest{} }
+func (m *MessageReactRequest) String() string { return proto.CompactTextString(m) }
+func (*MessageReactRequest) ProtoMessage()    {}
+func (*MessageReactRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{36}
+}
+func (m *MessageReactRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageReactRequest.Unmarshal(m, b)
+}
+func (m *MessageReactRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageReactRequest.Marshal(b, m, deterministic)
+}
+func (m *MessageReactRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageReactRequest.Merge(m, src)
+}
+func (m *MessageReactRequest) XXX_Size() int {
+	return xxx_messageInfo_MessageReactRequest.Size(m)
+}
+func (m *MessageReactRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageReactRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageReactRequest proto.InternalMessageInfo
+
+func (m *MessageReactRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+func (m *MessageReactRequest) GetEmoji() []byte {
+	if m != nil {
+		return m.Emoji
+	}
+	return nil
+}
+
+type MessageReactReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MessageReactReply) Reset()         { *m = MessageReactReply{} }
+func (m *MessageReactReply) String() string { return proto.CompactTextString(m) }
+func (*MessageReactReply) ProtoMessage()    {}
+func (*MessageReactReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{37}
+}
+func (m *MessageReactReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageReactReply.Unmarshal(m, b)
+}
+func (m *MessageReactReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageReactReply.Marshal(b, m, deterministic)
+}
+func (m *MessageReactReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageReactReply.Merge(m, src)
+}
+func (m *MessageReactReply) XXX_Size() int {
+	return xxx_messageInfo_MessageReactReply.Size(m)
+}
+func (m *MessageReactReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageReactReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageReactReply proto.InternalMessageInfo
+
+type MessageReadRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MessageReadRequest) Reset()         { *m = MessageReadRequest{} }
+func (m *MessageReadRequest) String() string { return proto.CompactTextString(m) }
+func (*MessageReadRequest) ProtoMessage()    {}
+func (*MessageReadRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{38}
+}
+func (m *MessageReadRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageReadRequest.Unmarshal(m, b)
+}
+func (m *MessageReadRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageReadRequest.Marshal(b, m, deterministic)
+}
+func (m *MessageReadRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageReadRequest.Merge(m, src)
+}
+func (m *MessageReadRequest) XXX_Size() int {
+	return xxx_messageInfo_MessageReadRequest.Size(m)
+}
+func (m *MessageReadRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageReadRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageReadRequest proto.InternalMessageInfo
+
+func (m *MessageReadRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type MessageReadReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MessageReadReply) Reset()         { *m = MessageReadReply{} }
+func (m *MessageReadReply) String() string { return proto.CompactTextString(m) }
+func (*MessageReadReply) ProtoMessage()    {}
+func (*MessageReadReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{39}
+}
+func (m *MessageReadReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MessageReadReply.Unmarshal(m, b)
+}
+func (m *MessageReadReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MessageReadReply.Marshal(b, m, deterministic)
+}
+func (m *MessageReadReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageReadReply.Merge(m, src)
+}
+func (m *MessageReadReply) XXX_Size() int {
+	return xxx_messageInfo_MessageReadReply.Size(m)
+}
+func (m *MessageReadReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageReadReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageReadReply proto.InternalMessageInfo
+
+// Member
+type MemberListRequest struct {
+	Filter               *chatmodel.Member `protobuf:"bytes,1,opt,name=filter,proto3" json:"filter,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *MemberListRequest) Reset()         { *m = MemberListRequest{} }
+func (m *MemberListRequest) String() string { return proto.CompactTextString(m) }
+func (*MemberListRequest) ProtoMessage()    {}
+func (*MemberListRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{40}
+}
+func (m *MemberListRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MemberListRequest.Unmarshal(m, b)
+}
+func (m *MemberListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MemberListRequest.Marshal(b, m, deterministic)
+}
+func (m *MemberListRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MemberListRequest.Merge(m, src)
+}
+func (m *MemberListRequest) XXX_Size() int {
+	return xxx_messageInfo_MemberListRequest.Size(m)
+}
+func (m *MemberListRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MemberListRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MemberListRequest proto.InternalMessageInfo
+
+func (m *MemberListRequest) GetFilter() *chatmodel.Member {
+	if m != nil {
+		return m.Filter
+	}
+	return nil
+}
+
+type MemberListReply struct {
+	Member               *chatmodel.Member `protobuf:"bytes,1,opt,name=member,proto3" json:"member,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *MemberListReply) Reset()         { *m = MemberListReply{} }
+func (m *MemberListReply) String() string { return proto.CompactTextString(m) }
+func (*MemberListReply) ProtoMessage()    {}
+func (*MemberListReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{41}
+}
+func (m *MemberListReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MemberListReply.Unmarshal(m, b)
+}
+func (m *MemberListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MemberListReply.Marshal(b, m, deterministic)
+}
+func (m *MemberListReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MemberListReply.Merge(m, src)
+}
+func (m *MemberListReply) XXX_Size() int {
+	return xxx_messageInfo_MemberListReply.Size(m)
+}
+func (m *MemberListReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MemberListReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MemberListReply proto.InternalMessageInfo
+
+func (m *MemberListReply) GetMember() *chatmodel.Member {
+	if m != nil {
+		return m.Member
+	}
+	return nil
+}
+
+type MemberGetRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MemberGetRequest) Reset()         { *m = MemberGetRequest{} }
+func (m *MemberGetRequest) String() string { return proto.CompactTextString(m) }
+func (*MemberGetRequest) ProtoMessage()    {}
+func (*MemberGetRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{42}
+}
+func (m *MemberGetRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MemberGetRequest.Unmarshal(m, b)
+}
+func (m *MemberGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MemberGetRequest.Marshal(b, m, deterministic)
+}
+func (m *MemberGetRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MemberGetRequest.Merge(m, src)
+}
+func (m *MemberGetRequest) XXX_Size() int {
+	return xxx_messageInfo_MemberGetRequest.Size(m)
+}
+func (m *MemberGetRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MemberGetRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MemberGetRequest proto.InternalMessageInfo
+
+func (m *MemberGetRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type MemberGetReply struct {
+	Member               *chatmodel.Member `protobuf:"bytes,1,opt,name=member,proto3" json:"member,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *MemberGetReply) Reset()         { *m = MemberGetReply{} }
+func (m *MemberGetReply) String() string { return proto.CompactTextString(m) }
+func (*MemberGetReply) ProtoMessage()    {}
+func (*MemberGetReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{43}
+}
+func (m *MemberGetReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MemberGetReply.Unmarshal(m, b)
+}
+func (m *MemberGetReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MemberGetReply.Marshal(b, m, deterministic)
+}
+func (m *MemberGetReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MemberGetReply.Merge(m, src)
+}
+func (m *MemberGetReply) XXX_Size() int {
+	return xxx_messageInfo_MemberGetReply.Size(m)
+}
+func (m *MemberGetReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MemberGetReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MemberGetReply proto.InternalMessageInfo
+
+func (m *MemberGetReply) GetMember() *chatmodel.Member {
+	if m != nil {
+		return m.Member
+	}
+	return nil
+}
+
+type MemberUpdateRequest struct {
+	ID                   uint64                `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name                 string                `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Role                 chatmodel.Member_Role `protobuf:"varint,3,opt,name=role,proto3,enum=berty.chatmodel.Member_Role" json:"role,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
+	XXX_unrecognized     []byte                `json:"-"`
+	XXX_sizecache        int32                 `json:"-"`
+}
+
+func (m *MemberUpdateRequest) Reset()         { *m = MemberUpdateRequest{} }
+func (m *MemberUpdateRequest) String() string { return proto.CompactTextString(m) }
+func (*MemberUpdateRequest) ProtoMessage()    {}
+func (*MemberUpdateRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{44}
+}
+func (m *MemberUpdateRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MemberUpdateRequest.Unmarshal(m, b)
+}
+func (m *MemberUpdateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MemberUpdateRequest.Marshal(b, m, deterministic)
+}
+func (m *MemberUpdateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MemberUpdateRequest.Merge(m, src)
+}
+func (m *MemberUpdateRequest) XXX_Size() int {
+	return xxx_messageInfo_MemberUpdateRequest.Size(m)
+}
+func (m *MemberUpdateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MemberUpdateRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MemberUpdateRequest proto.InternalMessageInfo
+
+func (m *MemberUpdateRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+func (m *MemberUpdateRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MemberUpdateRequest) GetRole() chatmodel.Member_Role {
+	if m != nil {
+		return m.Role
+	}
+	return chatmodel.Member_Unknown
+}
+
+type MemberUpdateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MemberUpdateReply) Reset()         { *m = MemberUpdateReply{} }
+func (m *MemberUpdateReply) String() string { return proto.CompactTextString(m) }
+func (*MemberUpdateReply) ProtoMessage()    {}
+func (*MemberUpdateReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{45}
+}
+func (m *MemberUpdateReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MemberUpdateReply.Unmarshal(m, b)
+}
+func (m *MemberUpdateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MemberUpdateReply.Marshal(b, m, deterministic)
+}
+func (m *MemberUpdateReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MemberUpdateReply.Merge(m, src)
+}
+func (m *MemberUpdateReply) XXX_Size() int {
+	return xxx_messageInfo_MemberUpdateReply.Size(m)
+}
+func (m *MemberUpdateReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MemberUpdateReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MemberUpdateReply proto.InternalMessageInfo
+
+// Contact
+type ContactListRequest struct {
+	Filter               *chatmodel.Contact `protobuf:"bytes,1,opt,name=filter,proto3" json:"filter,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *ContactListRequest) Reset()         { *m = ContactListRequest{} }
+func (m *ContactListRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactListRequest) ProtoMessage()    {}
+func (*ContactListRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{46}
+}
+func (m *ContactListRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactListRequest.Unmarshal(m, b)
+}
+func (m *ContactListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactListRequest.Marshal(b, m, deterministic)
+}
+func (m *ContactListRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactListRequest.Merge(m, src)
+}
+func (m *ContactListRequest) XXX_Size() int {
+	return xxx_messageInfo_ContactListRequest.Size(m)
+}
+func (m *ContactListRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactListRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactListRequest proto.InternalMessageInfo
+
+func (m *ContactListRequest) GetFilter() *chatmodel.Contact {
+	if m != nil {
+		return m.Filter
+	}
+	return nil
+}
+
+type ContactListReply struct {
+	Contact              *chatmodel.Contact `protobuf:"bytes,1,opt,name=contact,proto3" json:"contact,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *ContactListReply) Reset()         { *m = ContactListReply{} }
+func (m *ContactListReply) String() string { return proto.CompactTextString(m) }
+func (*ContactListReply) ProtoMessage()    {}
+func (*ContactListReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{47}
+}
+func (m *ContactListReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactListReply.Unmarshal(m, b)
+}
+func (m *ContactListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactListReply.Marshal(b, m, deterministic)
+}
+func (m *ContactListReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactListReply.Merge(m, src)
+}
+func (m *ContactListReply) XXX_Size() int {
+	return xxx_messageInfo_ContactListReply.Size(m)
+}
+func (m *ContactListReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactListReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactListReply proto.InternalMessageInfo
+
+func (m *ContactListReply) GetContact() *chatmodel.Contact {
+	if m != nil {
+		return m.Contact
+	}
+	return nil
+}
+
+type ContactGetRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactGetRequest) Reset()         { *m = ContactGetRequest{} }
+func (m *ContactGetRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactGetRequest) ProtoMessage()    {}
+func (*ContactGetRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{48}
+}
+func (m *ContactGetRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactGetRequest.Unmarshal(m, b)
+}
+func (m *ContactGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactGetRequest.Marshal(b, m, deterministic)
+}
+func (m *ContactGetRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactGetRequest.Merge(m, src)
+}
+func (m *ContactGetRequest) XXX_Size() int {
+	return xxx_messageInfo_ContactGetRequest.Size(m)
+}
+func (m *ContactGetRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactGetRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactGetRequest proto.InternalMessageInfo
+
+func (m *ContactGetRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type ContactGetReply struct {
+	Contact              *chatmodel.Contact `protobuf:"bytes,1,opt,name=contact,proto3" json:"contact,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *ContactGetReply) Reset()         { *m = ContactGetReply{} }
+func (m *ContactGetReply) String() string { return proto.CompactTextString(m) }
+func (*ContactGetReply) ProtoMessage()    {}
+func (*ContactGetReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{49}
+}
+func (m *ContactGetReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactGetReply.Unmarshal(m, b)
+}
+func (m *ContactGetReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactGetReply.Marshal(b, m, deterministic)
+}
+func (m *ContactGetReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactGetReply.Merge(m, src)
+}
+func (m *ContactGetReply) XXX_Size() int {
+	return xxx_messageInfo_ContactGetReply.Size(m)
+}
+func (m *ContactGetReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactGetReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactGetReply proto.InternalMessageInfo
+
+func (m *ContactGetReply) GetContact() *chatmodel.Contact {
+	if m != nil {
+		return m.Contact
+	}
+	return nil
+}
+
+type ContactBlockRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactBlockRequest) Reset()         { *m = ContactBlockRequest{} }
+func (m *ContactBlockRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactBlockRequest) ProtoMessage()    {}
+func (*ContactBlockRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{50}
+}
+func (m *ContactBlockRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactBlockRequest.Unmarshal(m, b)
+}
+func (m *ContactBlockRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactBlockRequest.Marshal(b, m, deterministic)
+}
+func (m *ContactBlockRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactBlockRequest.Merge(m, src)
+}
+func (m *ContactBlockRequest) XXX_Size() int {
+	return xxx_messageInfo_ContactBlockRequest.Size(m)
+}
+func (m *ContactBlockRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactBlockRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactBlockRequest proto.InternalMessageInfo
+
+type ContactBlockReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactBlockReply) Reset()         { *m = ContactBlockReply{} }
+func (m *ContactBlockReply) String() string { return proto.CompactTextString(m) }
+func (*ContactBlockReply) ProtoMessage()    {}
+func (*ContactBlockReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{51}
+}
+func (m *ContactBlockReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactBlockReply.Unmarshal(m, b)
+}
+func (m *ContactBlockReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactBlockReply.Marshal(b, m, deterministic)
+}
+func (m *ContactBlockReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactBlockReply.Merge(m, src)
+}
+func (m *ContactBlockReply) XXX_Size() int {
+	return xxx_messageInfo_ContactBlockReply.Size(m)
+}
+func (m *ContactBlockReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactBlockReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactBlockReply proto.InternalMessageInfo
+
+type ContactRemoveRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRemoveRequest) Reset()         { *m = ContactRemoveRequest{} }
+func (m *ContactRemoveRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactRemoveRequest) ProtoMessage()    {}
+func (*ContactRemoveRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{52}
+}
+func (m *ContactRemoveRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRemoveRequest.Unmarshal(m, b)
+}
+func (m *ContactRemoveRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRemoveRequest.Marshal(b, m, deterministic)
+}
+func (m *ContactRemoveRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRemoveRequest.Merge(m, src)
+}
+func (m *ContactRemoveRequest) XXX_Size() int {
+	return xxx_messageInfo_ContactRemoveRequest.Size(m)
+}
+func (m *ContactRemoveRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRemoveRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRemoveRequest proto.InternalMessageInfo
+
+func (m *ContactRemoveRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type ContactRemoveReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRemoveReply) Reset()         { *m = ContactRemoveReply{} }
+func (m *ContactRemoveReply) String() string { return proto.CompactTextString(m) }
+func (*ContactRemoveReply) ProtoMessage()    {}
+func (*ContactRemoveReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{53}
+}
+func (m *ContactRemoveReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRemoveReply.Unmarshal(m, b)
+}
+func (m *ContactRemoveReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRemoveReply.Marshal(b, m, deterministic)
+}
+func (m *ContactRemoveReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRemoveReply.Merge(m, src)
+}
+func (m *ContactRemoveReply) XXX_Size() int {
+	return xxx_messageInfo_ContactRemoveReply.Size(m)
+}
+func (m *ContactRemoveReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRemoveReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRemoveReply proto.InternalMessageInfo
+
+type ContactRequestSendRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestSendRequest) Reset()         { *m = ContactRequestSendRequest{} }
+func (m *ContactRequestSendRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestSendRequest) ProtoMessage()    {}
+func (*ContactRequestSendRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{54}
+}
+func (m *ContactRequestSendRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestSendRequest.Unmarshal(m, b)
+}
+func (m *ContactRequestSendRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestSendRequest.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestSendRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestSendRequest.Merge(m, src)
+}
+func (m *ContactRequestSendRequest) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestSendRequest.Size(m)
+}
+func (m *ContactRequestSendRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestSendRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestSendRequest proto.InternalMessageInfo
+
+func (m *ContactRequestSendRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type ContactRequestSendReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestSendReply) Reset()         { *m = ContactRequestSendReply{} }
+func (m *ContactRequestSendReply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestSendReply) ProtoMessage()    {}
+func (*ContactRequestSendReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{55}
+}
+func (m *ContactRequestSendReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestSendReply.Unmarshal(m, b)
+}
+func (m *ContactRequestSendReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestSendReply.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestSendReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestSendReply.Merge(m, src)
+}
+func (m *ContactRequestSendReply) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestSendReply.Size(m)
+}
+func (m *ContactRequestSendReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestSendReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestSendReply proto.InternalMessageInfo
+
+type ContactRequestAcceptRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestAcceptRequest) Reset()         { *m = ContactRequestAcceptRequest{} }
+func (m *ContactRequestAcceptRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestAcceptRequest) ProtoMessage()    {}
+func (*ContactRequestAcceptRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{56}
+}
+func (m *ContactRequestAcceptRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestAcceptRequest.Unmarshal(m, b)
+}
+func (m *ContactRequestAcceptRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestAcceptRequest.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestAcceptRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestAcceptRequest.Merge(m, src)
+}
+func (m *ContactRequestAcceptRequest) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestAcceptRequest.Size(m)
+}
+func (m *ContactRequestAcceptRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestAcceptRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestAcceptRequest proto.InternalMessageInfo
+
+func (m *ContactRequestAcceptRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type ContactRequestAcceptReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestAcceptReply) Reset()         { *m = ContactRequestAcceptReply{} }
+func (m *ContactRequestAcceptReply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestAcceptReply) ProtoMessage()    {}
+func (*ContactRequestAcceptReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{57}
+}
+func (m *ContactRequestAcceptReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestAcceptReply.Unmarshal(m, b)
+}
+func (m *ContactRequestAcceptReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestAcceptReply.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestAcceptReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestAcceptReply.Merge(m, src)
+}
+func (m *ContactRequestAcceptReply) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestAcceptReply.Size(m)
+}
+func (m *ContactRequestAcceptReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestAcceptReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestAcceptReply proto.InternalMessageInfo
+
+type ContactRequestDeclineRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestDeclineRequest) Reset()         { *m = ContactRequestDeclineRequest{} }
+func (m *ContactRequestDeclineRequest) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDeclineRequest) ProtoMessage()    {}
+func (*ContactRequestDeclineRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{58}
+}
+func (m *ContactRequestDeclineRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestDeclineRequest.Unmarshal(m, b)
+}
+func (m *ContactRequestDeclineRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestDeclineRequest.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestDeclineRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestDeclineRequest.Merge(m, src)
+}
+func (m *ContactRequestDeclineRequest) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestDeclineRequest.Size(m)
+}
+func (m *ContactRequestDeclineRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestDeclineRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestDeclineRequest proto.InternalMessageInfo
+
+func (m *ContactRequestDeclineRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type ContactRequestDeclineReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestDeclineReply) Reset()         { *m = ContactRequestDeclineReply{} }
+func (m *ContactRequestDeclineReply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDeclineReply) ProtoMessage()    {}
+func (*ContactRequestDeclineReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{59}
+}
+func (m *ContactRequestDeclineReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestDeclineReply.Unmarshal(m, b)
+}
+func (m *ContactRequestDeclineReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestDeclineReply.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestDeclineReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestDeclineReply.Merge(m, src)
+}
+func (m *ContactRequestDeclineReply) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestDeclineReply.Size(m)
+}
+func (m *ContactRequestDeclineReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestDeclineReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestDeclineReply proto.InternalMessageInfo
+
+// Account
+type AccountListRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountListRequest) Reset()         { *m = AccountListRequest{} }
+func (m *AccountListRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountListRequest) ProtoMessage()    {}
+func (*AccountListRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{60}
+}
+func (m *AccountListRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountListRequest.Unmarshal(m, b)
+}
+func (m *AccountListRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountListRequest.Marshal(b, m, deterministic)
+}
+func (m *AccountListRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountListRequest.Merge(m, src)
+}
+func (m *AccountListRequest) XXX_Size() int {
+	return xxx_messageInfo_AccountListRequest.Size(m)
+}
+func (m *AccountListRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountListRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountListRequest proto.InternalMessageInfo
+
+type AccountListReply struct {
+	Account              *chatmodel.Account `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *AccountListReply) Reset()         { *m = AccountListReply{} }
+func (m *AccountListReply) String() string { return proto.CompactTextString(m) }
+func (*AccountListReply) ProtoMessage()    {}
+func (*AccountListReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{61}
+}
+func (m *AccountListReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountListReply.Unmarshal(m, b)
+}
+func (m *AccountListReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountListReply.Marshal(b, m, deterministic)
+}
+func (m *AccountListReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountListReply.Merge(m, src)
+}
+func (m *AccountListReply) XXX_Size() int {
+	return xxx_messageInfo_AccountListReply.Size(m)
+}
+func (m *AccountListReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountListReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountListReply proto.InternalMessageInfo
+
+func (m *AccountListReply) GetAccount() *chatmodel.Account {
+	if m != nil {
+		return m.Account
+	}
+	return nil
+}
+
+type AccountGetRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountGetRequest) Reset()         { *m = AccountGetRequest{} }
+func (m *AccountGetRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountGetRequest) ProtoMessage()    {}
+func (*AccountGetRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{62}
+}
+func (m *AccountGetRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountGetRequest.Unmarshal(m, b)
+}
+func (m *AccountGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountGetRequest.Marshal(b, m, deterministic)
+}
+func (m *AccountGetRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountGetRequest.Merge(m, src)
+}
+func (m *AccountGetRequest) XXX_Size() int {
+	return xxx_messageInfo_AccountGetRequest.Size(m)
+}
+func (m *AccountGetRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountGetRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountGetRequest proto.InternalMessageInfo
+
+func (m *AccountGetRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type AccountGetReply struct {
+	Account              *chatmodel.Account `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *AccountGetReply) Reset()         { *m = AccountGetReply{} }
+func (m *AccountGetReply) String() string { return proto.CompactTextString(m) }
+func (*AccountGetReply) ProtoMessage()    {}
+func (*AccountGetReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{63}
+}
+func (m *AccountGetReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountGetReply.Unmarshal(m, b)
+}
+func (m *AccountGetReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountGetReply.Marshal(b, m, deterministic)
+}
+func (m *AccountGetReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountGetReply.Merge(m, src)
+}
+func (m *AccountGetReply) XXX_Size() int {
+	return xxx_messageInfo_AccountGetReply.Size(m)
+}
+func (m *AccountGetReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountGetReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountGetReply proto.InternalMessageInfo
+
+func (m *AccountGetReply) GetAccount() *chatmodel.Account {
+	if m != nil {
+		return m.Account
+	}
+	return nil
+}
+
+type AccountCreateRequest struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountCreateRequest) Reset()         { *m = AccountCreateRequest{} }
+func (m *AccountCreateRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountCreateRequest) ProtoMessage()    {}
+func (*AccountCreateRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{64}
+}
+func (m *AccountCreateRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountCreateRequest.Unmarshal(m, b)
+}
+func (m *AccountCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountCreateRequest.Marshal(b, m, deterministic)
+}
+func (m *AccountCreateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountCreateRequest.Merge(m, src)
+}
+func (m *AccountCreateRequest) XXX_Size() int {
+	return xxx_messageInfo_AccountCreateRequest.Size(m)
+}
+func (m *AccountCreateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountCreateRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountCreateRequest proto.InternalMessageInfo
+
+func (m *AccountCreateRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type AccountCreateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountCreateReply) Reset()         { *m = AccountCreateReply{} }
+func (m *AccountCreateReply) String() string { return proto.CompactTextString(m) }
+func (*AccountCreateReply) ProtoMessage()    {}
+func (*AccountCreateReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{65}
+}
+func (m *AccountCreateReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountCreateReply.Unmarshal(m, b)
+}
+func (m *AccountCreateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountCreateReply.Marshal(b, m, deterministic)
+}
+func (m *AccountCreateReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountCreateReply.Merge(m, src)
+}
+func (m *AccountCreateReply) XXX_Size() int {
+	return xxx_messageInfo_AccountCreateReply.Size(m)
+}
+func (m *AccountCreateReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountCreateReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountCreateReply proto.InternalMessageInfo
+
+type AccountUpdateRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	StatusEmoji          string   `protobuf:"bytes,3,opt,name=status_emoji,json=statusEmoji,proto3" json:"status_emoji,omitempty"`
+	StatusText           string   `protobuf:"bytes,4,opt,name=status_text,json=statusText,proto3" json:"status_text,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountUpdateRequest) Reset()         { *m = AccountUpdateRequest{} }
+func (m *AccountUpdateRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountUpdateRequest) ProtoMessage()    {}
+func (*AccountUpdateRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{66}
+}
+func (m *AccountUpdateRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountUpdateRequest.Unmarshal(m, b)
+}
+func (m *AccountUpdateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountUpdateRequest.Marshal(b, m, deterministic)
+}
+func (m *AccountUpdateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountUpdateRequest.Merge(m, src)
+}
+func (m *AccountUpdateRequest) XXX_Size() int {
+	return xxx_messageInfo_AccountUpdateRequest.Size(m)
+}
+func (m *AccountUpdateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountUpdateRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountUpdateRequest proto.InternalMessageInfo
+
+func (m *AccountUpdateRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+func (m *AccountUpdateRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *AccountUpdateRequest) GetStatusEmoji() string {
+	if m != nil {
+		return m.StatusEmoji
+	}
+	return ""
+}
+
+func (m *AccountUpdateRequest) GetStatusText() string {
+	if m != nil {
+		return m.StatusText
+	}
+	return ""
+}
+
+type AccountUpdateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountUpdateReply) Reset()         { *m = AccountUpdateReply{} }
+func (m *AccountUpdateReply) String() string { return proto.CompactTextString(m) }
+func (*AccountUpdateReply) ProtoMessage()    {}
+func (*AccountUpdateReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{67}
+}
+func (m *AccountUpdateReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountUpdateReply.Unmarshal(m, b)
+}
+func (m *AccountUpdateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountUpdateReply.Marshal(b, m, deterministic)
+}
+func (m *AccountUpdateReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountUpdateReply.Merge(m, src)
+}
+func (m *AccountUpdateReply) XXX_Size() int {
+	return xxx_messageInfo_AccountUpdateReply.Size(m)
+}
+func (m *AccountUpdateReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountUpdateReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountUpdateReply proto.InternalMessageInfo
+
+type AccountOpenRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Pin                  string   `protobuf:"bytes,2,opt,name=pin,proto3" json:"pin,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountOpenRequest) Reset()         { *m = AccountOpenRequest{} }
+func (m *AccountOpenRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountOpenRequest) ProtoMessage()    {}
+func (*AccountOpenRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{68}
+}
+func (m *AccountOpenRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountOpenRequest.Unmarshal(m, b)
+}
+func (m *AccountOpenRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountOpenRequest.Marshal(b, m, deterministic)
+}
+func (m *AccountOpenRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountOpenRequest.Merge(m, src)
+}
+func (m *AccountOpenRequest) XXX_Size() int {
+	return xxx_messageInfo_AccountOpenRequest.Size(m)
+}
+func (m *AccountOpenRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountOpenRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountOpenRequest proto.InternalMessageInfo
+
+func (m *AccountOpenRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+func (m *AccountOpenRequest) GetPin() string {
+	if m != nil {
+		return m.Pin
+	}
+	return ""
+}
+
+type AccountOpenReply struct {
+	Token                []byte   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountOpenReply) Reset()         { *m = AccountOpenReply{} }
+func (m *AccountOpenReply) String() string { return proto.CompactTextString(m) }
+func (*AccountOpenReply) ProtoMessage()    {}
+func (*AccountOpenReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{69}
+}
+func (m *AccountOpenReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountOpenReply.Unmarshal(m, b)
+}
+func (m *AccountOpenReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountOpenReply.Marshal(b, m, deterministic)
+}
+func (m *AccountOpenReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountOpenReply.Merge(m, src)
+}
+func (m *AccountOpenReply) XXX_Size() int {
+	return xxx_messageInfo_AccountOpenReply.Size(m)
+}
+func (m *AccountOpenReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountOpenReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountOpenReply proto.InternalMessageInfo
+
+func (m *AccountOpenReply) GetToken() []byte {
+	if m != nil {
+		return m.Token
+	}
+	return nil
+}
+
+type AccountCloseRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountCloseRequest) Reset()         { *m = AccountCloseRequest{} }
+func (m *AccountCloseRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountCloseRequest) ProtoMessage()    {}
+func (*AccountCloseRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{70}
+}
+func (m *AccountCloseRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountCloseRequest.Unmarshal(m, b)
+}
+func (m *AccountCloseRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountCloseRequest.Marshal(b, m, deterministic)
+}
+func (m *AccountCloseRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountCloseRequest.Merge(m, src)
+}
+func (m *AccountCloseRequest) XXX_Size() int {
+	return xxx_messageInfo_AccountCloseRequest.Size(m)
+}
+func (m *AccountCloseRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountCloseRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountCloseRequest proto.InternalMessageInfo
+
+func (m *AccountCloseRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type AccountCloseReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountCloseReply) Reset()         { *m = AccountCloseReply{} }
+func (m *AccountCloseReply) String() string { return proto.CompactTextString(m) }
+func (*AccountCloseReply) ProtoMessage()    {}
+func (*AccountCloseReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{71}
+}
+func (m *AccountCloseReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountCloseReply.Unmarshal(m, b)
+}
+func (m *AccountCloseReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountCloseReply.Marshal(b, m, deterministic)
+}
+func (m *AccountCloseReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountCloseReply.Merge(m, src)
+}
+func (m *AccountCloseReply) XXX_Size() int {
+	return xxx_messageInfo_AccountCloseReply.Size(m)
+}
+func (m *AccountCloseReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountCloseReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountCloseReply proto.InternalMessageInfo
+
+type AccountRemoveRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountRemoveRequest) Reset()         { *m = AccountRemoveRequest{} }
+func (m *AccountRemoveRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountRemoveRequest) ProtoMessage()    {}
+func (*AccountRemoveRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{72}
+}
+func (m *AccountRemoveRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountRemoveRequest.Unmarshal(m, b)
+}
+func (m *AccountRemoveRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountRemoveRequest.Marshal(b, m, deterministic)
+}
+func (m *AccountRemoveRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountRemoveRequest.Merge(m, src)
+}
+func (m *AccountRemoveRequest) XXX_Size() int {
+	return xxx_messageInfo_AccountRemoveRequest.Size(m)
+}
+func (m *AccountRemoveRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountRemoveRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountRemoveRequest proto.InternalMessageInfo
+
+func (m *AccountRemoveRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type AccountRemoveReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountRemoveReply) Reset()         { *m = AccountRemoveReply{} }
+func (m *AccountRemoveReply) String() string { return proto.CompactTextString(m) }
+func (*AccountRemoveReply) ProtoMessage()    {}
+func (*AccountRemoveReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{73}
+}
+func (m *AccountRemoveReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountRemoveReply.Unmarshal(m, b)
+}
+func (m *AccountRemoveReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountRemoveReply.Marshal(b, m, deterministic)
+}
+func (m *AccountRemoveReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountRemoveReply.Merge(m, src)
+}
+func (m *AccountRemoveReply) XXX_Size() int {
+	return xxx_messageInfo_AccountRemoveReply.Size(m)
+}
+func (m *AccountRemoveReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountRemoveReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountRemoveReply proto.InternalMessageInfo
+
+type AccountPairingInvitationCreateRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountPairingInvitationCreateRequest) Reset()         { *m = AccountPairingInvitationCreateRequest{} }
+func (m *AccountPairingInvitationCreateRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountPairingInvitationCreateRequest) ProtoMessage()    {}
+func (*AccountPairingInvitationCreateRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{74}
+}
+func (m *AccountPairingInvitationCreateRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountPairingInvitationCreateRequest.Unmarshal(m, b)
+}
+func (m *AccountPairingInvitationCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountPairingInvitationCreateRequest.Marshal(b, m, deterministic)
+}
+func (m *AccountPairingInvitationCreateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountPairingInvitationCreateRequest.Merge(m, src)
+}
+func (m *AccountPairingInvitationCreateRequest) XXX_Size() int {
+	return xxx_messageInfo_AccountPairingInvitationCreateRequest.Size(m)
+}
+func (m *AccountPairingInvitationCreateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountPairingInvitationCreateRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountPairingInvitationCreateRequest proto.InternalMessageInfo
+
+func (m *AccountPairingInvitationCreateRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type AccountPairingInvitationCreateReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountPairingInvitationCreateReply) Reset()         { *m = AccountPairingInvitationCreateReply{} }
+func (m *AccountPairingInvitationCreateReply) String() string { return proto.CompactTextString(m) }
+func (*AccountPairingInvitationCreateReply) ProtoMessage()    {}
+func (*AccountPairingInvitationCreateReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{75}
+}
+func (m *AccountPairingInvitationCreateReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountPairingInvitationCreateReply.Unmarshal(m, b)
+}
+func (m *AccountPairingInvitationCreateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountPairingInvitationCreateReply.Marshal(b, m, deterministic)
+}
+func (m *AccountPairingInvitationCreateReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountPairingInvitationCreateReply.Merge(m, src)
+}
+func (m *AccountPairingInvitationCreateReply) XXX_Size() int {
+	return xxx_messageInfo_AccountPairingInvitationCreateReply.Size(m)
+}
+func (m *AccountPairingInvitationCreateReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountPairingInvitationCreateReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountPairingInvitationCreateReply proto.InternalMessageInfo
+
+type AccountRenewIncomingContactRequestLinkRequest struct {
+	ID                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountRenewIncomingContactRequestLinkRequest) Reset() {
+	*m = AccountRenewIncomingContactRequestLinkRequest{}
+}
+func (m *AccountRenewIncomingContactRequestLinkRequest) String() string {
+	return proto.CompactTextString(m)
+}
+func (*AccountRenewIncomingContactRequestLinkRequest) ProtoMessage() {}
+func (*AccountRenewIncomingContactRequestLinkRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{76}
+}
+func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Unmarshal(m, b)
+}
+func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Marshal(b, m, deterministic)
+}
+func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Merge(m, src)
+}
+func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_Size() int {
+	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.Size(m)
+}
+func (m *AccountRenewIncomingContactRequestLinkRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountRenewIncomingContactRequestLinkRequest proto.InternalMessageInfo
+
+func (m *AccountRenewIncomingContactRequestLinkRequest) GetID() uint64 {
+	if m != nil {
+		return m.ID
+	}
+	return 0
+}
+
+type AccountRenewIncomingContactRequestLinkReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountRenewIncomingContactRequestLinkReply) Reset() {
+	*m = AccountRenewIncomingContactRequestLinkReply{}
+}
+func (m *AccountRenewIncomingContactRequestLinkReply) String() string {
+	return proto.CompactTextString(m)
+}
+func (*AccountRenewIncomingContactRequestLinkReply) ProtoMessage() {}
+func (*AccountRenewIncomingContactRequestLinkReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_45ccc435ebdc714a, []int{77}
+}
+func (m *AccountRenewIncomingContactRequestLinkReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Unmarshal(m, b)
+}
+func (m *AccountRenewIncomingContactRequestLinkReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Marshal(b, m, deterministic)
+}
+func (m *AccountRenewIncomingContactRequestLinkReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Merge(m, src)
+}
+func (m *AccountRenewIncomingContactRequestLinkReply) XXX_Size() int {
+	return xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.Size(m)
+}
+func (m *AccountRenewIncomingContactRequestLinkReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountRenewIncomingContactRequestLinkReply proto.InternalMessageInfo
+
 func init() {
+	proto.RegisterType((*SearchRequest)(nil), "berty.chat.SearchRequest")
+	proto.RegisterType((*SearchReply)(nil), "berty.chat.SearchReply")
 	proto.RegisterType((*EventSubscribeRequest)(nil), "berty.chat.EventSubscribeRequest")
 	proto.RegisterType((*EventSubscribeReply)(nil), "berty.chat.EventSubscribeReply")
+	proto.RegisterType((*DevEventSubscribeRequest)(nil), "berty.chat.DevEventSubscribeRequest")
+	proto.RegisterType((*DevEventSubscribeReply)(nil), "berty.chat.DevEventSubscribeReply")
 	proto.RegisterType((*ConversationListRequest)(nil), "berty.chat.ConversationListRequest")
 	proto.RegisterType((*ConversationListReply)(nil), "berty.chat.ConversationListReply")
 	proto.RegisterType((*ConversationGetRequest)(nil), "berty.chat.ConversationGetRequest")
-	proto.RegisterType((*ConversationGetReply)(nil), "berty.chat.ConversationGetReply")
 	proto.RegisterType((*ConversationCreateRequest)(nil), "berty.chat.ConversationCreateRequest")
 	proto.RegisterType((*ConversationCreateReply)(nil), "berty.chat.ConversationCreateReply")
+	proto.RegisterType((*ConversationGetReply)(nil), "berty.chat.ConversationGetReply")
+	proto.RegisterType((*ConversationUpdateRequest)(nil), "berty.chat.ConversationUpdateRequest")
+	proto.RegisterType((*ConversationUpdateReply)(nil), "berty.chat.ConversationUpdateReply")
+	proto.RegisterType((*ConversationMuteRequest)(nil), "berty.chat.ConversationMuteRequest")
+	proto.RegisterType((*ConversationMuteReply)(nil), "berty.chat.ConversationMuteReply")
 	proto.RegisterType((*ConversationLeaveRequest)(nil), "berty.chat.ConversationLeaveRequest")
 	proto.RegisterType((*ConversationLeaveReply)(nil), "berty.chat.ConversationLeaveReply")
 	proto.RegisterType((*ConversationEraseRequest)(nil), "berty.chat.ConversationEraseRequest")
 	proto.RegisterType((*ConversationEraseReply)(nil), "berty.chat.ConversationEraseReply")
-	proto.RegisterType((*ConversationSetSeenPositionRequest)(nil), "berty.chat.ConversationSetSeenPositionRequest")
-	proto.RegisterType((*ConversationSetSeenPositionReply)(nil), "berty.chat.ConversationSetSeenPositionReply")
-	proto.RegisterType((*ConversationMessageListRequest)(nil), "berty.chat.ConversationMessageListRequest")
-	proto.RegisterType((*ConversationMessageListReply)(nil), "berty.chat.ConversationMessageListReply")
-	proto.RegisterType((*ConversationMessageSendRequest)(nil), "berty.chat.ConversationMessageSendRequest")
-	proto.RegisterType((*ConversationMessageSendReply)(nil), "berty.chat.ConversationMessageSendReply")
-	proto.RegisterType((*ConversationMessageEditRequest)(nil), "berty.chat.ConversationMessageEditRequest")
-	proto.RegisterType((*ConversationMessageEditReply)(nil), "berty.chat.ConversationMessageEditReply")
-	proto.RegisterType((*ConversationMessageHideRequest)(nil), "berty.chat.ConversationMessageHideRequest")
-	proto.RegisterType((*ConversationMessageHideReply)(nil), "berty.chat.ConversationMessageHideReply")
-	proto.RegisterType((*ConversationUpdateSettingsRequest)(nil), "berty.chat.ConversationUpdateSettingsRequest")
-	proto.RegisterType((*ConversationUpdateSettingsReply)(nil), "berty.chat.ConversationUpdateSettingsReply")
+	proto.RegisterType((*ConversationInvitationSendRequest)(nil), "berty.chat.ConversationInvitationSendRequest")
+	proto.RegisterType((*ConversationInvitationSendReply)(nil), "berty.chat.ConversationInvitationSendReply")
 	proto.RegisterType((*ConversationInvitationAcceptRequest)(nil), "berty.chat.ConversationInvitationAcceptRequest")
 	proto.RegisterType((*ConversationInvitationAcceptReply)(nil), "berty.chat.ConversationInvitationAcceptReply")
-	proto.RegisterType((*ConversationInvitationCreateRequest)(nil), "berty.chat.ConversationInvitationCreateRequest")
-	proto.RegisterType((*ConversationInvitationCreateReply)(nil), "berty.chat.ConversationInvitationCreateReply")
-	proto.RegisterType((*ConversationInvitationDiscardRequest)(nil), "berty.chat.ConversationInvitationDiscardRequest")
-	proto.RegisterType((*ConversationInvitationDiscardReply)(nil), "berty.chat.ConversationInvitationDiscardReply")
+	proto.RegisterType((*ConversationInvitationDeclineRequest)(nil), "berty.chat.ConversationInvitationDeclineRequest")
+	proto.RegisterType((*ConversationInvitationDeclineReply)(nil), "berty.chat.ConversationInvitationDeclineReply")
+	proto.RegisterType((*MessageListRequest)(nil), "berty.chat.MessageListRequest")
+	proto.RegisterType((*MessageListReply)(nil), "berty.chat.MessageListReply")
+	proto.RegisterType((*MessageGetRequest)(nil), "berty.chat.MessageGetRequest")
+	proto.RegisterType((*MessageGetReply)(nil), "berty.chat.MessageGetReply")
+	proto.RegisterType((*MessageSendRequest)(nil), "berty.chat.MessageSendRequest")
+	proto.RegisterType((*MessageSendReply)(nil), "berty.chat.MessageSendReply")
+	proto.RegisterType((*MessageEditRequest)(nil), "berty.chat.MessageEditRequest")
+	proto.RegisterType((*MessageEditReply)(nil), "berty.chat.MessageEditReply")
+	proto.RegisterType((*MessageHideRequest)(nil), "berty.chat.MessageHideRequest")
+	proto.RegisterType((*MessageHideReply)(nil), "berty.chat.MessageHideReply")
+	proto.RegisterType((*MessageReactRequest)(nil), "berty.chat.MessageReactRequest")
+	proto.RegisterType((*MessageReactReply)(nil), "berty.chat.MessageReactReply")
+	proto.RegisterType((*MessageReadRequest)(nil), "berty.chat.MessageReadRequest")
+	proto.RegisterType((*MessageReadReply)(nil), "berty.chat.MessageReadReply")
+	proto.RegisterType((*MemberListRequest)(nil), "berty.chat.MemberListRequest")
+	proto.RegisterType((*MemberListReply)(nil), "berty.chat.MemberListReply")
+	proto.RegisterType((*MemberGetRequest)(nil), "berty.chat.MemberGetRequest")
+	proto.RegisterType((*MemberGetReply)(nil), "berty.chat.MemberGetReply")
+	proto.RegisterType((*MemberUpdateRequest)(nil), "berty.chat.MemberUpdateRequest")
+	proto.RegisterType((*MemberUpdateReply)(nil), "berty.chat.MemberUpdateReply")
 	proto.RegisterType((*ContactListRequest)(nil), "berty.chat.ContactListRequest")
 	proto.RegisterType((*ContactListReply)(nil), "berty.chat.ContactListReply")
 	proto.RegisterType((*ContactGetRequest)(nil), "berty.chat.ContactGetRequest")
 	proto.RegisterType((*ContactGetReply)(nil), "berty.chat.ContactGetReply")
-	proto.RegisterType((*ContactUpdateRequest)(nil), "berty.chat.ContactUpdateRequest")
-	proto.RegisterType((*ContactUpdateReply)(nil), "berty.chat.ContactUpdateReply")
+	proto.RegisterType((*ContactBlockRequest)(nil), "berty.chat.ContactBlockRequest")
+	proto.RegisterType((*ContactBlockReply)(nil), "berty.chat.ContactBlockReply")
 	proto.RegisterType((*ContactRemoveRequest)(nil), "berty.chat.ContactRemoveRequest")
 	proto.RegisterType((*ContactRemoveReply)(nil), "berty.chat.ContactRemoveReply")
-	proto.RegisterType((*ContactRequestCreateRequest)(nil), "berty.chat.ContactRequestCreateRequest")
-	proto.RegisterType((*ContactRequestCreateReply)(nil), "berty.chat.ContactRequestCreateReply")
+	proto.RegisterType((*ContactRequestSendRequest)(nil), "berty.chat.ContactRequestSendRequest")
+	proto.RegisterType((*ContactRequestSendReply)(nil), "berty.chat.ContactRequestSendReply")
 	proto.RegisterType((*ContactRequestAcceptRequest)(nil), "berty.chat.ContactRequestAcceptRequest")
 	proto.RegisterType((*ContactRequestAcceptReply)(nil), "berty.chat.ContactRequestAcceptReply")
-	proto.RegisterType((*ContactRequestDiscardRequest)(nil), "berty.chat.ContactRequestDiscardRequest")
-	proto.RegisterType((*ContactRequestDiscardReply)(nil), "berty.chat.ContactRequestDiscardReply")
-	proto.RegisterType((*SearchRequest)(nil), "berty.chat.SearchRequest")
-	proto.RegisterType((*SearchReply)(nil), "berty.chat.SearchReply")
-	proto.RegisterType((*AccountSettingsGetRequest)(nil), "berty.chat.AccountSettingsGetRequest")
-	proto.RegisterType((*AccountSettingsGetReply)(nil), "berty.chat.AccountSettingsGetReply")
-	proto.RegisterType((*AccountSettingsUpdateRequest)(nil), "berty.chat.AccountSettingsUpdateRequest")
-	proto.RegisterType((*AccountSettingsUpdateReply)(nil), "berty.chat.AccountSettingsUpdateReply")
+	proto.RegisterType((*ContactRequestDeclineRequest)(nil), "berty.chat.ContactRequestDeclineRequest")
+	proto.RegisterType((*ContactRequestDeclineReply)(nil), "berty.chat.ContactRequestDeclineReply")
+	proto.RegisterType((*AccountListRequest)(nil), "berty.chat.AccountListRequest")
+	proto.RegisterType((*AccountListReply)(nil), "berty.chat.AccountListReply")
+	proto.RegisterType((*AccountGetRequest)(nil), "berty.chat.AccountGetRequest")
+	proto.RegisterType((*AccountGetReply)(nil), "berty.chat.AccountGetReply")
+	proto.RegisterType((*AccountCreateRequest)(nil), "berty.chat.AccountCreateRequest")
+	proto.RegisterType((*AccountCreateReply)(nil), "berty.chat.AccountCreateReply")
+	proto.RegisterType((*AccountUpdateRequest)(nil), "berty.chat.AccountUpdateRequest")
+	proto.RegisterType((*AccountUpdateReply)(nil), "berty.chat.AccountUpdateReply")
+	proto.RegisterType((*AccountOpenRequest)(nil), "berty.chat.AccountOpenRequest")
+	proto.RegisterType((*AccountOpenReply)(nil), "berty.chat.AccountOpenReply")
+	proto.RegisterType((*AccountCloseRequest)(nil), "berty.chat.AccountCloseRequest")
+	proto.RegisterType((*AccountCloseReply)(nil), "berty.chat.AccountCloseReply")
+	proto.RegisterType((*AccountRemoveRequest)(nil), "berty.chat.AccountRemoveRequest")
+	proto.RegisterType((*AccountRemoveReply)(nil), "berty.chat.AccountRemoveReply")
 	proto.RegisterType((*AccountPairingInvitationCreateRequest)(nil), "berty.chat.AccountPairingInvitationCreateRequest")
 	proto.RegisterType((*AccountPairingInvitationCreateReply)(nil), "berty.chat.AccountPairingInvitationCreateReply")
 	proto.RegisterType((*AccountRenewIncomingContactRequestLinkRequest)(nil), "berty.chat.AccountRenewIncomingContactRequestLinkRequest")
 	proto.RegisterType((*AccountRenewIncomingContactRequestLinkReply)(nil), "berty.chat.AccountRenewIncomingContactRequestLinkReply")
-	proto.RegisterType((*DevEventSubscribeRequest)(nil), "berty.chat.DevEventSubscribeRequest")
-	proto.RegisterType((*DevEventSubscribeReply)(nil), "berty.chat.DevEventSubscribeReply")
 }
 
 func init() { proto.RegisterFile("bertychat.proto", fileDescriptor_45ccc435ebdc714a) }
 
 var fileDescriptor_45ccc435ebdc714a = []byte{
-	// 1145 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x98, 0xcf, 0x6f, 0xe3, 0x44,
-	0x14, 0xc7, 0x93, 0x1e, 0x8a, 0x78, 0xa5, 0x94, 0x4e, 0xb7, 0x3f, 0x32, 0xf9, 0xd1, 0xd4, 0x69,
-	0xba, 0x15, 0x4b, 0xe2, 0xb2, 0x1c, 0x10, 0x37, 0xba, 0x6d, 0x05, 0x45, 0x8b, 0x58, 0x25, 0x42,
-	0x82, 0x3d, 0x80, 0x1c, 0x67, 0x70, 0xac, 0xa6, 0x76, 0xd6, 0x9e, 0x04, 0x15, 0x09, 0x09, 0x81,
-	0xc4, 0x3f, 0xc0, 0x9d, 0x7f, 0x8a, 0x1b, 0x07, 0x0e, 0x88, 0x3f, 0x04, 0xcd, 0x8c, 0x9d, 0xcc,
-	0x38, 0x33, 0xb6, 0x17, 0x71, 0xdb, 0xce, 0xfb, 0xbe, 0xef, 0x1b, 0x3f, 0xcf, 0xf8, 0x7d, 0x36,
-	0xb0, 0x33, 0x22, 0x11, 0x7d, 0x70, 0x27, 0x0e, 0xed, 0xcf, 0xa2, 0x90, 0x86, 0x08, 0xf8, 0x42,
-	0x9f, 0xad, 0xe0, 0x86, 0x17, 0x86, 0xde, 0x94, 0xd8, 0xce, 0xcc, 0xb7, 0x9d, 0x20, 0x08, 0xa9,
-	0x43, 0xfd, 0x30, 0x88, 0x85, 0x12, 0xf7, 0x3c, 0x9f, 0x4e, 0xe6, 0xa3, 0xbe, 0x1b, 0xde, 0xdb,
-	0x5e, 0xe8, 0x85, 0x36, 0x5f, 0x1e, 0xcd, 0xbf, 0xe3, 0x7f, 0xf1, 0x3f, 0xf8, 0xbf, 0x12, 0xf9,
-	0x0e, 0xb3, 0xbc, 0x0f, 0xc7, 0x64, 0x2a, 0x16, 0xac, 0x43, 0xd8, 0xbf, 0x59, 0x90, 0x80, 0x0e,
-	0xe7, 0xa3, 0xd8, 0x8d, 0xfc, 0x11, 0x19, 0x90, 0x57, 0x73, 0x12, 0x53, 0x6b, 0x1f, 0xf6, 0xb2,
-	0x81, 0xd9, 0xf4, 0xc1, 0xaa, 0xc1, 0xe1, 0x55, 0x18, 0x2c, 0x48, 0x14, 0xf3, 0x6d, 0x3c, 0xf7,
-	0x63, 0x9a, 0x66, 0xbc, 0x84, 0xfd, 0xf5, 0xd0, 0x6c, 0xfa, 0x80, 0x2e, 0xe1, 0x2d, 0x57, 0x0a,
-	0x1c, 0x55, 0xdb, 0xd5, 0xf3, 0xad, 0xa7, 0xcd, 0xfe, 0xea, 0x21, 0xc5, 0x8e, 0xe4, 0xec, 0x81,
-	0x92, 0x62, 0x5d, 0xc0, 0x81, 0x1c, 0xfd, 0x84, 0xa4, 0x55, 0xd1, 0x01, 0x6c, 0xf8, 0x63, 0x6e,
-	0xf9, 0xe6, 0xb3, 0xcd, 0xbf, 0xff, 0x3a, 0xde, 0xb8, 0xbd, 0x1e, 0x6c, 0xf8, 0x63, 0xeb, 0x6b,
-	0x78, 0xb4, 0x96, 0xf1, 0x3f, 0x6d, 0xa6, 0x0e, 0x35, 0x39, 0x7a, 0x15, 0x11, 0x87, 0x2e, 0xfb,
-	0x96, 0x69, 0x50, 0x1a, 0x64, 0xbd, 0xc3, 0x70, 0xa4, 0x34, 0x88, 0x38, 0x8b, 0x65, 0xda, 0x91,
-	0xfa, 0x80, 0x49, 0x4c, 0x93, 0x75, 0x13, 0x39, 0xb1, 0x29, 0x2b, 0x89, 0xb1, 0xac, 0x53, 0xb0,
-	0xe4, 0xc8, 0x90, 0xd0, 0x21, 0x21, 0xc1, 0x8b, 0x30, 0xf6, 0xf9, 0x03, 0x25, 0xf9, 0x16, 0xb4,
-	0x73, 0x55, 0xcc, 0xa9, 0x0d, 0x2d, 0x59, 0xf3, 0x39, 0x89, 0x63, 0xc7, 0x23, 0xf2, 0x8b, 0x6f,
-	0x41, 0xc3, 0xa8, 0x30, 0x3b, 0x0c, 0x49, 0x30, 0xce, 0x77, 0x10, 0x0a, 0xb3, 0xc3, 0xcd, 0xd8,
-	0x2f, 0xd8, 0x83, 0x50, 0x98, 0x1d, 0x3e, 0xf5, 0xc7, 0x24, 0xdf, 0x41, 0x28, 0x98, 0x43, 0x07,
-	0x4e, 0xe4, 0xf8, 0x97, 0xb3, 0xb1, 0x43, 0xc9, 0x90, 0x50, 0xea, 0x07, 0x5e, 0x9c, 0x9a, 0x9c,
-	0xc0, 0x71, 0x9e, 0x88, 0xf9, 0x74, 0xa1, 0x23, 0x4b, 0x6e, 0x83, 0x85, 0x2f, 0xae, 0xf4, 0xa5,
-	0xeb, 0x92, 0xd9, 0xf2, 0x81, 0x32, 0xe5, 0xd6, 0x65, 0xb9, 0x5e, 0xea, 0x99, 0x34, 0x7a, 0xc9,
-	0xa7, 0xf3, 0x0c, 0x4e, 0xf5, 0xa2, 0x6b, 0x3f, 0x76, 0x9d, 0x68, 0xf9, 0xae, 0x32, 0x27, 0x4b,
-	0xa3, 0x63, 0x6e, 0x8f, 0x00, 0x5d, 0x85, 0x01, 0x75, 0x5c, 0x2a, 0x9f, 0x14, 0x04, 0xef, 0x28,
-	0xab, 0x4c, 0xb9, 0x07, 0xbb, 0xc9, 0xda, 0xea, 0x56, 0x5b, 0xbb, 0xb0, 0x23, 0x2f, 0x32, 0xdd,
-	0x01, 0xbf, 0xd0, 0x6c, 0x49, 0x74, 0x35, 0x95, 0xae, 0x2a, 0xa5, 0xeb, 0xaa, 0x7a, 0x40, 0xee,
-	0xc3, 0x85, 0x46, 0x9d, 0xae, 0x33, 0x75, 0x13, 0xea, 0xcb, 0x55, 0xae, 0x53, 0xfb, 0x27, 0x2e,
-	0xbc, 0x26, 0xac, 0xcd, 0x55, 0xdf, 0xe3, 0x5a, 0xae, 0xfc, 0xfe, 0xc4, 0x99, 0x93, 0x82, 0x99,
-	0x5e, 0x37, 0x00, 0x1b, 0xe2, 0x2c, 0x7b, 0x07, 0xb6, 0x87, 0xc4, 0x89, 0xdc, 0x49, 0x2a, 0xdf,
-	0x86, 0xad, 0x74, 0x81, 0xc5, 0xeb, 0x50, 0xbb, 0x74, 0xdd, 0x70, 0x1e, 0xd0, 0xf4, 0x04, 0x4a,
-	0x1d, 0xae, 0xc1, 0xa1, 0x2e, 0x98, 0xec, 0x2a, 0x13, 0x52, 0x3b, 0xde, 0x00, 0x6c, 0x88, 0xb3,
-	0xec, 0xc7, 0xd0, 0x4d, 0xa2, 0x2f, 0x1c, 0x3f, 0xf2, 0x03, 0xcf, 0x74, 0x2a, 0xbb, 0xd0, 0x29,
-	0x12, 0x32, 0x3f, 0x1b, 0x7a, 0x89, 0x6c, 0x40, 0x02, 0xf2, 0xfd, 0x6d, 0xe0, 0x86, 0xf7, 0x7e,
-	0xe0, 0xa9, 0x7d, 0x79, 0xee, 0x07, 0x77, 0xa9, 0x6f, 0x0f, 0x9e, 0x94, 0x4d, 0x48, 0xbe, 0xaf,
-	0xd7, 0x64, 0xa1, 0x1f, 0x82, 0x47, 0x70, 0xa0, 0x89, 0xcd, 0xa6, 0x0f, 0x4f, 0xff, 0x3c, 0x84,
-	0x37, 0x92, 0x2a, 0xe8, 0x2b, 0x78, 0x5b, 0x95, 0xa0, 0x13, 0x69, 0x9c, 0xf4, 0xb5, 0xd6, 0xf8,
-	0x38, 0x4f, 0xc2, 0xf6, 0x55, 0xb9, 0xa8, 0xa2, 0x6f, 0xf8, 0x7d, 0x51, 0x46, 0x2a, 0xea, 0xc8,
-	0x89, 0x86, 0x59, 0x8c, 0x4f, 0xf2, 0x45, 0xa9, 0x7f, 0xc4, 0xaf, 0x99, 0x3c, 0x24, 0x91, 0x65,
-	0xca, 0x5c, 0x9d, 0x1d, 0xdc, 0xce, 0xd5, 0x70, 0x4c, 0xf8, 0xf9, 0x8f, 0x7f, 0x7e, 0xdb, 0xd8,
-	0x43, 0xbb, 0xb6, 0x3c, 0x39, 0x6d, 0x8f, 0x50, 0x34, 0xe2, 0x37, 0x30, 0x33, 0x20, 0x51, 0xd7,
-	0x64, 0xa9, 0x9c, 0x19, 0xdc, 0x29, 0x92, 0xf1, 0x27, 0x43, 0xdf, 0xf2, 0x6f, 0x8a, 0x3a, 0x4d,
-	0xd1, 0xa9, 0xb1, 0x27, 0xd2, 0x20, 0xc6, 0x56, 0x81, 0x4a, 0x5b, 0x80, 0x0f, 0x5e, 0x73, 0x01,
-	0x79, 0x66, 0x9b, 0x0b, 0x48, 0xd3, 0xbb, 0x82, 0x7e, 0xe4, 0x5f, 0x15, 0xd3, 0x64, 0x46, 0x7d,
-	0x93, 0x89, 0x7e, 0xd0, 0xe3, 0xf7, 0x4a, 0xeb, 0x45, 0xf9, 0x58, 0xa5, 0x18, 0x69, 0xa4, 0xa3,
-	0x77, 0x4d, 0x56, 0xeb, 0x64, 0x80, 0xcf, 0x4b, 0x69, 0xd3, 0xd3, 0xf8, 0x4a, 0x5b, 0x94, 0x51,
-	0x40, 0x61, 0x51, 0x09, 0x26, 0x0a, 0x8b, 0xae, 0xb0, 0xa2, 0x62, 0x28, 0xc9, 0xb0, 0xa1, 0xb0,
-	0xa4, 0x44, 0x1f, 0x85, 0x25, 0x57, 0x1c, 0x62, 0x2a, 0xc9, 0x38, 0xa3, 0xb0, 0xa4, 0x84, 0x2b,
-	0x85, 0x25, 0x57, 0xe0, 0x52, 0x41, 0x3f, 0xf0, 0x31, 0x62, 0xa0, 0x12, 0xd4, 0x33, 0x39, 0x69,
-	0x11, 0x07, 0x3f, 0x29, 0x2b, 0x17, 0xb5, 0x7f, 0xaa, 0xaa, 0x5c, 0x95, 0x05, 0x19, 0x64, 0x9b,
-	0xfc, 0x0c, 0x64, 0x84, 0x7b, 0xe5, 0x13, 0x8a, 0xb6, 0x90, 0x7c, 0x7c, 0x4a, 0x6c, 0x41, 0xfd,
-	0x0c, 0xf5, 0xca, 0x27, 0x88, 0x2d, 0xfc, 0x52, 0x85, 0x66, 0x2e, 0x35, 0xa1, 0x8b, 0x62, 0x4b,
-	0x15, 0x0e, 0x70, 0xff, 0x35, 0x32, 0xc4, 0x2e, 0xbe, 0x80, 0x2d, 0x09, 0xbf, 0x50, 0x2b, 0x63,
-	0x90, 0xa1, 0x35, 0xdc, 0x30, 0xc6, 0xd3, 0x1b, 0xfb, 0x19, 0xc0, 0x0a, 0xd3, 0x50, 0x53, 0xa3,
-	0x97, 0xa6, 0x46, 0xdd, 0x14, 0x16, 0x9b, 0x1b, 0xc2, 0xb6, 0xc2, 0x71, 0xa8, 0xad, 0xd1, 0x2b,
-	0x20, 0x82, 0x5b, 0x39, 0x8a, 0xac, 0xa9, 0xc0, 0x3d, 0xad, 0xa9, 0x42, 0x88, 0x5a, 0x53, 0x99,
-	0x15, 0x2b, 0x68, 0x22, 0xb1, 0xa5, 0x84, 0x83, 0xe8, 0xb1, 0x36, 0x73, 0x9d, 0x27, 0x71, 0xb7,
-	0x58, 0x68, 0xa8, 0x94, 0xdc, 0x99, 0x9c, 0x4a, 0xea, 0x5d, 0xe9, 0x16, 0x0b, 0x45, 0xa5, 0x3b,
-	0xfe, 0x9f, 0xf7, 0x75, 0xd2, 0x44, 0xe7, 0x66, 0x87, 0xcc, 0x79, 0x3c, 0x2b, 0xa1, 0x14, 0xc5,
-	0x3e, 0x86, 0x4d, 0xc1, 0xa9, 0xa8, 0x26, 0xe7, 0x28, 0x30, 0x8b, 0x0f, 0x75, 0xa1, 0xf4, 0xe0,
-	0x8d, 0x00, 0xad, 0xd3, 0xab, 0x0a, 0x11, 0x46, 0xf4, 0x55, 0x21, 0xc2, 0x04, 0xc1, 0xbc, 0x25,
-	0x5a, 0xcc, 0x55, 0x5b, 0x92, 0x47, 0xca, 0x6a, 0x4b, 0x72, 0x98, 0xb9, 0x82, 0x7e, 0xad, 0x42,
-	0x2b, 0x9f, 0x86, 0xd1, 0xfb, 0x1a, 0xb3, 0x7c, 0xc4, 0xc6, 0xf6, 0xeb, 0xa4, 0x88, 0x8d, 0xfc,
-	0x5e, 0x85, 0xb3, 0x72, 0xf8, 0x8c, 0x3e, 0xd2, 0xb8, 0x97, 0x63, 0x74, 0xfc, 0xe1, 0x7f, 0x49,
-	0x15, 0x1b, 0x74, 0x60, 0x77, 0x8d, 0xc9, 0x55, 0xf4, 0x32, 0xe1, 0xbc, 0x8a, 0x5e, 0x7a, 0xb0,
-	0x67, 0xa7, 0xeb, 0x59, 0xf3, 0x65, 0x5d, 0x08, 0x29, 0x71, 0x27, 0xb6, 0x17, 0xda, 0xb3, 0x3b,
-	0xcf, 0x5e, 0xfe, 0x46, 0x37, 0xda, 0xe4, 0x3f, 0x9d, 0x7d, 0xf0, 0x6f, 0x00, 0x00, 0x00, 0xff,
-	0xff, 0xd7, 0x50, 0xe5, 0xa3, 0xb7, 0x13, 0x00, 0x00,
+	// 1829 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x59, 0x5b, 0x6f, 0xdb, 0x36,
+	0x14, 0x8e, 0xd3, 0x2c, 0x43, 0x8e, 0x73, 0x69, 0x99, 0xa4, 0x71, 0x95, 0xbb, 0xd2, 0x74, 0x41,
+	0xdb, 0xd8, 0x69, 0x8a, 0x6e, 0xd8, 0x86, 0x5d, 0x72, 0x6b, 0x97, 0xad, 0x41, 0x33, 0x65, 0x01,
+	0xd6, 0x62, 0x58, 0x20, 0xcb, 0xac, 0xa3, 0xc5, 0x96, 0x3c, 0x59, 0xce, 0x9a, 0x3d, 0x0d, 0x18,
+	0xd0, 0xb7, 0xfd, 0x85, 0xfd, 0xb4, 0x3c, 0xf4, 0x47, 0xec, 0x79, 0xe0, 0x45, 0x12, 0x29, 0x91,
+	0x96, 0x92, 0xf5, 0x61, 0x6f, 0x16, 0xf9, 0x9d, 0xef, 0x1c, 0x92, 0x87, 0x87, 0xfc, 0x68, 0x98,
+	0xa8, 0xe3, 0x20, 0xbc, 0x70, 0x4e, 0xed, 0xb0, 0xda, 0x09, 0xfc, 0xd0, 0x47, 0x40, 0x1b, 0xaa,
+	0xa4, 0xc5, 0x98, 0x6b, 0xfa, 0x7e, 0xb3, 0x85, 0x6b, 0x76, 0xc7, 0xad, 0xd9, 0x9e, 0xe7, 0x87,
+	0x76, 0xe8, 0xfa, 0x5e, 0x97, 0x21, 0x8d, 0xf5, 0xa6, 0x1b, 0x9e, 0xf6, 0xea, 0x55, 0xc7, 0x6f,
+	0xd7, 0x9a, 0x7e, 0xd3, 0xaf, 0xd1, 0xe6, 0x7a, 0xef, 0x35, 0xfd, 0xa2, 0x1f, 0xf4, 0x17, 0x87,
+	0x4f, 0x10, 0xca, 0xb6, 0xdf, 0xc0, 0x2d, 0xd6, 0x60, 0x4e, 0xc0, 0xd8, 0x11, 0xb6, 0x03, 0xe7,
+	0xd4, 0xc2, 0xbf, 0xf6, 0x70, 0x37, 0x34, 0xc7, 0xa0, 0x1c, 0x35, 0x74, 0x5a, 0x17, 0xe6, 0x0c,
+	0x4c, 0xef, 0x9d, 0x63, 0x2f, 0x3c, 0xea, 0xd5, 0xbb, 0x4e, 0xe0, 0xd6, 0x71, 0x84, 0x9b, 0x86,
+	0xc9, 0x74, 0x07, 0xc1, 0x1b, 0x50, 0xd9, 0xc5, 0xe7, 0x6a, 0x93, 0x0a, 0xdc, 0x56, 0xf4, 0x11,
+	0xab, 0x43, 0x98, 0xd9, 0xf1, 0xbd, 0x73, 0x1c, 0x74, 0xe9, 0xe0, 0x9e, 0xbb, 0xdd, 0x90, 0x1b,
+	0xa1, 0x27, 0x30, 0xfc, 0xda, 0x6d, 0x85, 0x38, 0xa8, 0x94, 0x96, 0x4a, 0x6b, 0xe5, 0xcd, 0xf9,
+	0x6a, 0x32, 0x37, 0x6c, 0x20, 0xa2, 0xa5, 0xc5, 0xc1, 0xe6, 0x2b, 0x98, 0xce, 0x32, 0x76, 0x5a,
+	0x17, 0x68, 0x0b, 0x46, 0x1d, 0xa1, 0xa3, 0x18, 0xab, 0x64, 0x62, 0x6e, 0xc0, 0x6d, 0xb1, 0xf7,
+	0x19, 0x8e, 0x83, 0xbd, 0x0d, 0x83, 0x6e, 0x83, 0x52, 0x0e, 0x6d, 0x0f, 0xbf, 0xbb, 0x5c, 0x1c,
+	0xdc, 0xdf, 0xb5, 0x06, 0xdd, 0x86, 0xf9, 0x57, 0x09, 0xee, 0x88, 0x26, 0x3b, 0x01, 0xb6, 0x43,
+	0x9c, 0x63, 0x85, 0xa6, 0xe0, 0x83, 0xd0, 0x0d, 0x5b, 0xb8, 0x32, 0xb8, 0x54, 0x5a, 0x1b, 0xb1,
+	0xd8, 0x07, 0x6d, 0xf5, 0x3b, 0xae, 0x53, 0xb9, 0xc1, 0x5b, 0xc9, 0x07, 0x7a, 0x08, 0x60, 0x9f,
+	0xdb, 0xa1, 0x1d, 0x9c, 0xf4, 0x02, 0xb7, 0x32, 0x44, 0xba, 0xb6, 0xc7, 0xde, 0x5d, 0x2e, 0x8e,
+	0x6c, 0xd1, 0xd6, 0x63, 0x6b, 0xdf, 0x1a, 0x61, 0x80, 0xe3, 0xc0, 0x35, 0xef, 0xc8, 0xf3, 0x1d,
+	0x85, 0x43, 0x96, 0xe2, 0x25, 0x4c, 0x65, 0x06, 0xf7, 0x9e, 0xe6, 0x2d, 0x3d, 0x0b, 0xc7, 0x9d,
+	0xc6, 0xff, 0x69, 0x16, 0xa2, 0x70, 0xc8, 0x2c, 0x1c, 0xcb, 0x5d, 0x07, 0xbd, 0x24, 0xce, 0xcf,
+	0x60, 0xb8, 0xe3, 0xb7, 0x5c, 0xe7, 0x82, 0xc6, 0x3a, 0xbe, 0x69, 0x66, 0xa6, 0xe0, 0x00, 0xb7,
+	0xeb, 0x38, 0xa8, 0x12, 0xa3, 0x43, 0x8a, 0xb4, 0xb8, 0x05, 0xd9, 0x4d, 0x59, 0x5a, 0xe2, 0x6f,
+	0x13, 0x2a, 0x52, 0xba, 0x62, 0xfb, 0x3c, 0x6f, 0x62, 0xc8, 0x76, 0x52, 0xd8, 0x28, 0xd8, 0xf6,
+	0x02, 0xbb, 0x7b, 0x55, 0x36, 0x6e, 0x43, 0xd8, 0x5c, 0x58, 0x16, 0x7b, 0xf6, 0xbd, 0x73, 0x97,
+	0xd5, 0xa0, 0x23, 0xec, 0x35, 0xf2, 0x56, 0xef, 0x21, 0x80, 0xe3, 0x7b, 0xa1, 0xed, 0x84, 0x27,
+	0x6e, 0x83, 0x2e, 0xe1, 0x10, 0x5b, 0x91, 0x1d, 0xd6, 0xba, 0xbf, 0x6b, 0x8d, 0x70, 0xc0, 0x7e,
+	0xc3, 0x5c, 0x86, 0xc5, 0x7e, 0xae, 0x48, 0x34, 0x67, 0xb0, 0xa2, 0x86, 0x6c, 0x39, 0x0e, 0xee,
+	0x84, 0xef, 0x37, 0x9e, 0x15, 0xdd, 0xd0, 0x23, 0x67, 0x24, 0x22, 0x07, 0xee, 0xaa, 0x41, 0xbb,
+	0xd8, 0x69, 0xb9, 0x5e, 0x3c, 0xf3, 0x9f, 0xc3, 0x84, 0xb8, 0x1d, 0x4e, 0xe2, 0xf8, 0xd0, 0xbb,
+	0xcb, 0xc5, 0x71, 0x89, 0x62, 0xd7, 0x1a, 0x17, 0xa1, 0xfb, 0x0d, 0xf3, 0x2e, 0x98, 0x39, 0x4e,
+	0x48, 0x28, 0x4f, 0x01, 0x1d, 0xe0, 0x6e, 0xd7, 0x6e, 0x62, 0xb1, 0x84, 0x6e, 0xa4, 0x4a, 0x68,
+	0x45, 0x91, 0xb1, 0xd4, 0x28, 0xae, 0x9e, 0x4f, 0xe1, 0xa6, 0xc4, 0x43, 0x0a, 0xc0, 0x26, 0x7c,
+	0xd8, 0x66, 0x6d, 0xb9, 0x34, 0x11, 0xd0, 0x7c, 0x00, 0xb7, 0x78, 0x5b, 0x81, 0x22, 0xb9, 0x07,
+	0x13, 0x22, 0xf8, 0xba, 0x3e, 0xff, 0x29, 0xc5, 0x93, 0x20, 0x26, 0xe8, 0x7f, 0x99, 0x7d, 0xf4,
+	0x08, 0x86, 0xce, 0x5c, 0x8f, 0xe5, 0xcb, 0xb8, 0xa2, 0xe8, 0x71, 0x7f, 0xd5, 0xef, 0x5c, 0xaf,
+	0x61, 0x51, 0x28, 0x31, 0xa9, 0xfb, 0x8d, 0x0b, 0x5a, 0x9f, 0xca, 0x7d, 0x4c, 0xb6, 0xfd, 0xc6,
+	0x85, 0x45, 0xa1, 0xe8, 0x0b, 0x28, 0xdb, 0x61, 0x68, 0x3b, 0xa7, 0x6d, 0xec, 0x85, 0xdd, 0xca,
+	0xd0, 0xd2, 0x8d, 0xb5, 0xf2, 0xe6, 0x6c, 0xc6, 0x72, 0x2b, 0xc6, 0x58, 0x22, 0xde, 0x44, 0xf1,
+	0xa2, 0x25, 0xbb, 0xe5, 0x24, 0x9e, 0x8b, 0xbd, 0x86, 0x9b, 0xbb, 0x39, 0xa2, 0x98, 0x07, 0x0b,
+	0xc7, 0x2c, 0x38, 0x65, 0x0e, 0x88, 0xd3, 0x87, 0xb1, 0xd3, 0x6f, 0xdc, 0x46, 0x6e, 0xe1, 0x49,
+	0x18, 0x18, 0x9a, 0x30, 0xec, 0xc0, 0x64, 0xb4, 0xae, 0xd8, 0x76, 0xc2, 0x02, 0x47, 0x04, 0x6e,
+	0xfb, 0xbf, 0xb8, 0x34, 0xf0, 0x51, 0x8b, 0x7d, 0x98, 0x93, 0x71, 0xf2, 0x71, 0x12, 0x39, 0x36,
+	0x0b, 0xdb, 0x8d, 0xe2, 0xb1, 0x31, 0x34, 0x61, 0xd8, 0x25, 0xb4, 0xa4, 0xc0, 0x8b, 0x5b, 0xac,
+	0x96, 0xda, 0x62, 0x33, 0x9a, 0x43, 0x21, 0xde, 0x61, 0xdb, 0x24, 0xd9, 0x13, 0x16, 0x92, 0xec,
+	0x35, 0x18, 0x6e, 0xd3, 0xa6, 0x5c, 0x0e, 0x06, 0x33, 0xef, 0x93, 0xe8, 0xc8, 0xaf, 0x02, 0x9b,
+	0x6b, 0x0b, 0xc6, 0x05, 0xec, 0xb5, 0xdc, 0x75, 0xc9, 0xa2, 0x90, 0x5f, 0xc5, 0xce, 0x6d, 0x04,
+	0x43, 0x9e, 0xdd, 0x8e, 0x8e, 0x6d, 0xfa, 0x1b, 0x6d, 0xc0, 0x50, 0xe0, 0xb7, 0x30, 0xdd, 0x14,
+	0xe3, 0x9b, 0x73, 0xba, 0x93, 0xd3, 0xf2, 0x5b, 0xd8, 0xa2, 0x48, 0xb6, 0x88, 0xa2, 0x53, 0x5e,
+	0xe6, 0x78, 0xb9, 0xbe, 0x5a, 0x99, 0xe3, 0x46, 0x62, 0x99, 0x93, 0x78, 0x78, 0xc9, 0xe1, 0xf5,
+	0x3f, 0x97, 0x26, 0x02, 0x92, 0x32, 0xc7, 0xdb, 0x8a, 0x95, 0x39, 0x11, 0x7c, 0x5d, 0x9f, 0xd3,
+	0x30, 0xc9, 0xdb, 0xb6, 0x5b, 0xbe, 0x73, 0x16, 0xdd, 0xb1, 0x27, 0xe3, 0x50, 0x78, 0x33, 0x99,
+	0xaf, 0x2a, 0xbd, 0xd3, 0x51, 0x7b, 0xdc, 0xf6, 0xf3, 0x6f, 0x16, 0x53, 0xf1, 0xfc, 0x46, 0x78,
+	0xc2, 0xf2, 0x98, 0xde, 0xde, 0xc2, 0x64, 0x3f, 0x16, 0x38, 0xff, 0xf9, 0x1d, 0x2b, 0x63, 0x44,
+	0xf8, 0x9e, 0xc0, 0xac, 0xdc, 0x55, 0xe8, 0x04, 0x37, 0x67, 0xd3, 0x61, 0x88, 0x67, 0xf1, 0xc7,
+	0x30, 0x27, 0x77, 0xa6, 0xce, 0x60, 0x1d, 0xe9, 0x1c, 0x18, 0x1a, 0x3b, 0xc2, 0x3a, 0x05, 0x68,
+	0xcb, 0x71, 0xfc, 0x9e, 0x27, 0xe6, 0x1b, 0xc9, 0x1e, 0xa9, 0x95, 0xaf, 0xa4, 0xcd, 0xda, 0xb4,
+	0x2b, 0xc9, 0x6d, 0xac, 0x08, 0x48, 0xb2, 0x87, 0xb7, 0x15, 0xcb, 0x1e, 0x11, 0x7c, 0x5d, 0x9f,
+	0xf7, 0x61, 0x8a, 0xb7, 0xc9, 0x52, 0x24, 0xda, 0xb4, 0xa5, 0x64, 0xd3, 0x0a, 0xa3, 0x17, 0x75,
+	0xc2, 0xdb, 0x52, 0x4c, 0x71, 0xfd, 0x7a, 0xb0, 0x0c, 0xa3, 0xdd, 0xd0, 0x0e, 0x7b, 0xdd, 0x13,
+	0x56, 0xbf, 0xd9, 0x65, 0xbe, 0xcc, 0xda, 0xf6, 0x48, 0x13, 0x5a, 0x04, 0xfe, 0x79, 0x12, 0xe2,
+	0x37, 0x21, 0xbb, 0xd3, 0x5b, 0xc0, 0x9a, 0x7e, 0xc0, 0x6f, 0x42, 0x21, 0x3c, 0xb1, 0x44, 0x7c,
+	0x19, 0xb7, 0xbe, 0xe8, 0x60, 0x2f, 0x2f, 0xb6, 0x9b, 0x70, 0xa3, 0xe3, 0x7a, 0x3c, 0x34, 0xf2,
+	0xd3, 0x5c, 0x8b, 0x17, 0x97, 0xd9, 0x93, 0x89, 0xa6, 0x9a, 0xe3, 0x0c, 0x33, 0xed, 0x33, 0x6a,
+	0xb1, 0x0f, 0x73, 0x1d, 0x26, 0xa3, 0xe9, 0x69, 0xf9, 0xf9, 0xf7, 0xec, 0xc9, 0x78, 0xb5, 0x39,
+	0x9c, 0x6f, 0xd0, 0x68, 0x89, 0x8a, 0x6e, 0xd0, 0x14, 0x9e, 0xb0, 0x7c, 0x05, 0xab, 0xbc, 0xf5,
+	0xd0, 0x76, 0x03, 0xd7, 0x6b, 0x26, 0xb7, 0xc4, 0x42, 0x82, 0xd3, 0x5c, 0x85, 0x95, 0x3c, 0x02,
+	0xe2, 0xe7, 0x19, 0xac, 0xc7, 0xde, 0x3d, 0xfc, 0xdb, 0xbe, 0xe7, 0xf8, 0x6d, 0xd7, 0x6b, 0xca,
+	0x1b, 0xe8, 0xb9, 0xeb, 0x9d, 0xe5, 0xf9, 0x5b, 0x87, 0x07, 0x45, 0x89, 0x3a, 0xad, 0x8b, 0xcd,
+	0xcb, 0x59, 0x28, 0xef, 0x9c, 0xda, 0xe1, 0x11, 0x0e, 0xce, 0x5d, 0x07, 0xa3, 0xaf, 0x61, 0x98,
+	0x3d, 0x55, 0xa0, 0x3b, 0x42, 0xc6, 0x57, 0xa5, 0xf7, 0x0c, 0x63, 0x46, 0xd5, 0x45, 0x46, 0x31,
+	0xb0, 0x51, 0x42, 0x3f, 0xc2, 0xb8, 0xfc, 0x1c, 0x81, 0x96, 0x45, 0xb8, 0xf2, 0x19, 0xc3, 0x58,
+	0xec, 0x07, 0x89, 0x98, 0x6d, 0xb8, 0x95, 0x79, 0xeb, 0x40, 0x77, 0x45, 0x4b, 0xdd, 0x33, 0x89,
+	0x61, 0xe6, 0xa0, 0x22, 0x17, 0x3f, 0xd3, 0xd3, 0x4b, 0x7a, 0xe2, 0x40, 0x2b, 0xa2, 0xad, 0xe6,
+	0x49, 0xc5, 0x58, 0xee, 0x0f, 0x8a, 0xf8, 0x5f, 0xd2, 0x83, 0x4a, 0x7c, 0x09, 0x40, 0xa6, 0xce,
+	0x32, 0xa9, 0x5c, 0xc6, 0x52, 0x5f, 0x0c, 0x25, 0x47, 0x75, 0x7a, 0xc0, 0xa4, 0xde, 0x1f, 0xd0,
+	0xaa, 0xce, 0x52, 0xca, 0x5e, 0x63, 0x25, 0x0f, 0xa6, 0xf4, 0xc1, 0x8a, 0x83, 0xde, 0x87, 0x54,
+	0xc4, 0xf4, 0x3e, 0xc4, 0x1a, 0x33, 0x80, 0x7e, 0x92, 0x97, 0x80, 0xe8, 0x79, 0xfd, 0x12, 0x08,
+	0x8f, 0x08, 0xfa, 0x25, 0x48, 0x9e, 0x04, 0x06, 0xd0, 0x09, 0x3d, 0xcb, 0x65, 0x81, 0x2f, 0xe7,
+	0x90, 0xee, 0xcd, 0xc0, 0x30, 0x73, 0x50, 0x4a, 0x07, 0x54, 0xf3, 0xeb, 0x1d, 0x88, 0xcf, 0x08,
+	0x7a, 0x07, 0xc2, 0xc3, 0xc1, 0x00, 0xfa, 0x9d, 0x1e, 0xab, 0x1a, 0x3d, 0x8f, 0xd6, 0x75, 0x1c,
+	0xca, 0x27, 0x06, 0xe3, 0x41, 0x51, 0x38, 0xf3, 0xfd, 0x47, 0x89, 0xde, 0x05, 0xb4, 0xe2, 0x1d,
+	0xd5, 0xf2, 0xf9, 0xa4, 0x1b, 0x89, 0xb1, 0x5e, 0xdc, 0x80, 0x85, 0xf0, 0x67, 0x09, 0xe6, 0xfb,
+	0xaa, 0x76, 0xb4, 0x91, 0x4f, 0x29, 0xdf, 0x60, 0x8c, 0xea, 0x15, 0x2c, 0x58, 0x14, 0x2f, 0xa0,
+	0x2c, 0x88, 0x79, 0xb4, 0x20, 0x12, 0x64, 0x5f, 0x0b, 0x8c, 0x39, 0x6d, 0x7f, 0x54, 0x18, 0xbe,
+	0x05, 0x48, 0x84, 0x3a, 0x9a, 0x57, 0xe0, 0x85, 0x72, 0x30, 0xab, 0xeb, 0x66, 0xc1, 0x1d, 0xc4,
+	0xc1, 0xd1, 0x94, 0x50, 0x05, 0x27, 0xe6, 0xc0, 0x9c, 0xb6, 0x3f, 0x4d, 0x47, 0xe4, 0xa8, 0x92,
+	0x4e, 0x10, 0xc2, 0x4a, 0xba, 0x44, 0xc7, 0x8a, 0x74, 0x44, 0x9b, 0x2a, 0xe9, 0x04, 0x89, 0xab,
+	0xa4, 0x4b, 0x44, 0xed, 0x00, 0x3a, 0x84, 0x51, 0x51, 0x91, 0xa2, 0x45, 0x05, 0x5e, 0x14, 0xbc,
+	0xc6, 0xbc, 0x1e, 0x90, 0x0e, 0x90, 0x08, 0x54, 0x65, 0x80, 0x82, 0xce, 0x55, 0x06, 0x98, 0x28,
+	0xdb, 0x01, 0xf4, 0x9c, 0xac, 0x6c, 0xa4, 0x4a, 0xd3, 0x2b, 0x9b, 0xd2, 0xbc, 0xe9, 0x95, 0x95,
+	0xc4, 0x2c, 0xcd, 0x93, 0x67, 0x30, 0x12, 0x6b, 0x4e, 0x34, 0x97, 0x45, 0x0b, 0x59, 0x62, 0x68,
+	0x7a, 0xe3, 0x0c, 0x16, 0x74, 0x9a, 0x3c, 0xca, 0xac, 0x10, 0x94, 0x47, 0x99, 0x16, 0x78, 0x51,
+	0x06, 0x27, 0x1a, 0x4c, 0x1e, 0x67, 0x46, 0xc8, 0xc9, 0xe3, 0x4c, 0x49, 0x37, 0xb6, 0xa8, 0xa2,
+	0xe2, 0x92, 0x17, 0x55, 0x21, 0xd1, 0x8c, 0x79, 0x3d, 0x80, 0x31, 0x1e, 0xc1, 0x98, 0x24, 0xbf,
+	0xd0, 0x92, 0xc2, 0x42, 0xba, 0x28, 0x1a, 0x0b, 0x7d, 0x10, 0xe2, 0x71, 0x98, 0x12, 0x62, 0x99,
+	0xe3, 0x50, 0xad, 0xee, 0x32, 0xc7, 0xa1, 0x52, 0xcf, 0x0d, 0xa0, 0x53, 0x41, 0x67, 0x0a, 0xd2,
+	0x0c, 0x7d, 0xa4, 0x37, 0x97, 0x2b, 0xec, 0x6a, 0x3e, 0x90, 0x79, 0x3a, 0xa3, 0x0f, 0xe9, 0x59,
+	0xbd, 0x86, 0xd6, 0xf4, 0x0c, 0xa9, 0x42, 0x7a, 0xaf, 0x00, 0x92, 0x39, 0xfb, 0x1e, 0xca, 0x82,
+	0xd0, 0x93, 0xd3, 0x2f, 0xab, 0x0b, 0x8d, 0x9c, 0xfe, 0x28, 0x01, 0x13, 0x19, 0x27, 0x27, 0x60,
+	0x46, 0x0b, 0xca, 0x09, 0x98, 0x52, 0x7f, 0x2c, 0x5d, 0x24, 0x7d, 0x26, 0xa7, 0x8b, 0x4a, 0xe6,
+	0x29, 0x43, 0x94, 0x6f, 0x4f, 0x09, 0x29, 0xbf, 0x38, 0xa9, 0x48, 0xe5, 0x3b, 0xd3, 0x42, 0x1f,
+	0x44, 0x5c, 0xad, 0x04, 0x51, 0xa5, 0x9c, 0x48, 0x41, 0xad, 0xc9, 0xfb, 0x38, 0xad, 0xc6, 0xd8,
+	0xce, 0x13, 0xa5, 0x94, 0xbc, 0xf3, 0x14, 0x9a, 0xcc, 0x98, 0xd7, 0x03, 0xd2, 0xa3, 0x56, 0xed,
+	0x3c, 0x95, 0x44, 0x53, 0x8e, 0x5a, 0xde, 0x79, 0x6f, 0x4b, 0xb0, 0xd0, 0x5f, 0x56, 0xa1, 0x47,
+	0x0a, 0x92, 0xfe, 0x1a, 0xce, 0xa8, 0x5d, 0xc5, 0x84, 0x05, 0xf2, 0x77, 0x09, 0xee, 0x15, 0xd3,
+	0x5b, 0xe8, 0x53, 0xe5, 0xa8, 0x8a, 0x88, 0x3d, 0xe3, 0x93, 0xeb, 0x98, 0xd2, 0x00, 0xb7, 0xe7,
+	0x5f, 0xcd, 0x32, 0xdb, 0x10, 0x3b, 0xa7, 0xb5, 0xa6, 0x5f, 0xeb, 0x9c, 0x35, 0x6b, 0xf1, 0x7f,
+	0xe3, 0xf5, 0x61, 0xfa, 0x97, 0xf5, 0xe3, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x19, 0x82, 0x98,
+	0xd6, 0x2f, 0x1f, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1885,54 +3105,71 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// AccountClient is the client API for Account service.
+// ChatServiceClient is the client API for ChatService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type AccountClient interface {
-	EventSubscribe(ctx context.Context, in *EventSubscribeRequest, opts ...grpc.CallOption) (Account_EventSubscribeClient, error)
-	ConversationList(ctx context.Context, in *ConversationListRequest, opts ...grpc.CallOption) (Account_ConversationListClient, error)
+type ChatServiceClient interface {
+	// Search
+	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (ChatService_SearchClient, error)
+	// Event
+	EventSubscribe(ctx context.Context, in *EventSubscribeRequest, opts ...grpc.CallOption) (ChatService_EventSubscribeClient, error)
+	DevEventSubscribe(ctx context.Context, in *DevEventSubscribeRequest, opts ...grpc.CallOption) (ChatService_DevEventSubscribeClient, error)
+	// Conversation
+	ConversationList(ctx context.Context, in *ConversationListRequest, opts ...grpc.CallOption) (ChatService_ConversationListClient, error)
 	ConversationGet(ctx context.Context, in *ConversationGetRequest, opts ...grpc.CallOption) (*ConversationGetReply, error)
 	ConversationCreate(ctx context.Context, in *ConversationCreateRequest, opts ...grpc.CallOption) (*ConversationCreateReply, error)
+	ConversationUpdate(ctx context.Context, in *ConversationUpdateRequest, opts ...grpc.CallOption) (*ConversationUpdateReply, error)
+	ConversationMute(ctx context.Context, in *ConversationMuteRequest, opts ...grpc.CallOption) (*ConversationMuteReply, error)
 	ConversationLeave(ctx context.Context, in *ConversationLeaveRequest, opts ...grpc.CallOption) (*ConversationLeaveReply, error)
 	ConversationErase(ctx context.Context, in *ConversationEraseRequest, opts ...grpc.CallOption) (*ConversationEraseReply, error)
-	ConversationSetSeenPosition(ctx context.Context, in *ConversationSetSeenPositionRequest, opts ...grpc.CallOption) (*ConversationSetSeenPositionReply, error)
-	ConversationMessageList(ctx context.Context, in *ConversationMessageListRequest, opts ...grpc.CallOption) (Account_ConversationMessageListClient, error)
-	ConversationMessageSend(ctx context.Context, in *ConversationMessageSendRequest, opts ...grpc.CallOption) (*ConversationMessageSendReply, error)
-	ConversationMessageEdit(ctx context.Context, in *ConversationMessageEditRequest, opts ...grpc.CallOption) (*ConversationMessageEditReply, error)
-	ConversationMessageHide(ctx context.Context, in *ConversationMessageHideRequest, opts ...grpc.CallOption) (*ConversationMessageHideReply, error)
-	ConversationUpdateSettings(ctx context.Context, in *ConversationUpdateSettingsRequest, opts ...grpc.CallOption) (*ConversationUpdateSettingsReply, error)
+	ConversationInvitationSend(ctx context.Context, in *ConversationInvitationSendRequest, opts ...grpc.CallOption) (*ConversationInvitationSendReply, error)
 	ConversationInvitationAccept(ctx context.Context, in *ConversationInvitationAcceptRequest, opts ...grpc.CallOption) (*ConversationInvitationAcceptReply, error)
-	ConversationInvitationCreate(ctx context.Context, in *ConversationInvitationCreateRequest, opts ...grpc.CallOption) (*ConversationInvitationCreateReply, error)
-	ConversationInvitationDiscard(ctx context.Context, in *ConversationInvitationDiscardRequest, opts ...grpc.CallOption) (*ConversationInvitationDiscardReply, error)
-	ContactList(ctx context.Context, in *ContactListRequest, opts ...grpc.CallOption) (Account_ContactListClient, error)
+	ConversationInvitationDecline(ctx context.Context, in *ConversationInvitationDeclineRequest, opts ...grpc.CallOption) (*ConversationInvitationDeclineReply, error)
+	// Message
+	MessageList(ctx context.Context, in *MessageListRequest, opts ...grpc.CallOption) (ChatService_MessageListClient, error)
+	MessageGet(ctx context.Context, in *MessageGetRequest, opts ...grpc.CallOption) (*MessageGetReply, error)
+	MessageSend(ctx context.Context, in *MessageSendRequest, opts ...grpc.CallOption) (*MessageSendReply, error)
+	MessageEdit(ctx context.Context, in *MessageEditRequest, opts ...grpc.CallOption) (*MessageEditReply, error)
+	MessageHide(ctx context.Context, in *MessageHideRequest, opts ...grpc.CallOption) (*MessageHideReply, error)
+	MessageReact(ctx context.Context, in *MessageReactRequest, opts ...grpc.CallOption) (*MessageReactReply, error)
+	MessageRead(ctx context.Context, in *MessageReadRequest, opts ...grpc.CallOption) (*MessageReadReply, error)
+	// Member
+	MemberList(ctx context.Context, in *MemberListRequest, opts ...grpc.CallOption) (ChatService_MemberListClient, error)
+	MemberGet(ctx context.Context, in *MemberGetRequest, opts ...grpc.CallOption) (*MemberGetReply, error)
+	// Contact
+	ContactList(ctx context.Context, in *ContactListRequest, opts ...grpc.CallOption) (ChatService_ContactListClient, error)
 	ContactGet(ctx context.Context, in *ContactGetRequest, opts ...grpc.CallOption) (*ContactGetReply, error)
-	ContactUpdate(ctx context.Context, in *ContactUpdateRequest, opts ...grpc.CallOption) (*ContactUpdateReply, error)
+	ContactBlock(ctx context.Context, in *ContactBlockRequest, opts ...grpc.CallOption) (*ContactBlockReply, error)
 	ContactRemove(ctx context.Context, in *ContactRemoveRequest, opts ...grpc.CallOption) (*ContactRemoveReply, error)
-	ContactRequestCreate(ctx context.Context, in *ContactRequestCreateRequest, opts ...grpc.CallOption) (*ContactRequestCreateReply, error)
+	ContactRequestSend(ctx context.Context, in *ContactRequestSendRequest, opts ...grpc.CallOption) (*ContactRequestSendReply, error)
 	ContactRequestAccept(ctx context.Context, in *ContactRequestAcceptRequest, opts ...grpc.CallOption) (*ContactRequestAcceptReply, error)
-	ContactRequestDiscard(ctx context.Context, in *ContactRequestDiscardRequest, opts ...grpc.CallOption) (*ContactRequestDiscardReply, error)
-	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (Account_SearchClient, error)
-	AccountSettingsGet(ctx context.Context, in *AccountSettingsGetRequest, opts ...grpc.CallOption) (*AccountSettingsGetReply, error)
-	AccountSettingsUpdate(ctx context.Context, in *AccountSettingsUpdateRequest, opts ...grpc.CallOption) (*AccountSettingsUpdateReply, error)
+	ContactRequestDecline(ctx context.Context, in *ContactRequestDeclineRequest, opts ...grpc.CallOption) (*ContactRequestDeclineReply, error)
+	// Account
+	AccountList(ctx context.Context, in *AccountListRequest, opts ...grpc.CallOption) (ChatService_AccountListClient, error)
+	AccountGet(ctx context.Context, in *AccountGetRequest, opts ...grpc.CallOption) (*AccountGetReply, error)
+	AccountCreate(ctx context.Context, in *AccountCreateRequest, opts ...grpc.CallOption) (*AccountCreateReply, error)
+	AccountUpdate(ctx context.Context, in *AccountUpdateRequest, opts ...grpc.CallOption) (*AccountUpdateReply, error)
+	AccountOpen(ctx context.Context, in *AccountOpenRequest, opts ...grpc.CallOption) (*AccountOpenReply, error)
+	AccountClose(ctx context.Context, in *AccountCloseRequest, opts ...grpc.CallOption) (*AccountCloseReply, error)
+	AccountRemove(ctx context.Context, in *AccountRemoveRequest, opts ...grpc.CallOption) (*AccountRemoveReply, error)
 	AccountPairingInvitationCreate(ctx context.Context, in *AccountPairingInvitationCreateRequest, opts ...grpc.CallOption) (*AccountPairingInvitationCreateReply, error)
 	AccountRenewIncomingContactRequestLink(ctx context.Context, in *AccountRenewIncomingContactRequestLinkRequest, opts ...grpc.CallOption) (*AccountRenewIncomingContactRequestLinkReply, error)
-	DevEventSubscribe(ctx context.Context, in *DevEventSubscribeRequest, opts ...grpc.CallOption) (Account_DevEventSubscribeClient, error)
 }
 
-type accountClient struct {
+type chatServiceClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewAccountClient(cc *grpc.ClientConn) AccountClient {
-	return &accountClient{cc}
+func NewChatServiceClient(cc *grpc.ClientConn) ChatServiceClient {
+	return &chatServiceClient{cc}
 }
 
-func (c *accountClient) EventSubscribe(ctx context.Context, in *EventSubscribeRequest, opts ...grpc.CallOption) (Account_EventSubscribeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Account_serviceDesc.Streams[0], "/berty.chat.Account/EventSubscribe", opts...)
+func (c *chatServiceClient) Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (ChatService_SearchClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ChatService_serviceDesc.Streams[0], "/berty.chat.ChatService/Search", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &accountEventSubscribeClient{stream}
+	x := &chatServiceSearchClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -1942,306 +3179,16 @@ func (c *accountClient) EventSubscribe(ctx context.Context, in *EventSubscribeRe
 	return x, nil
 }
 
-type Account_EventSubscribeClient interface {
-	Recv() (*EventSubscribeReply, error)
-	grpc.ClientStream
-}
-
-type accountEventSubscribeClient struct {
-	grpc.ClientStream
-}
-
-func (x *accountEventSubscribeClient) Recv() (*EventSubscribeReply, error) {
-	m := new(EventSubscribeReply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *accountClient) ConversationList(ctx context.Context, in *ConversationListRequest, opts ...grpc.CallOption) (Account_ConversationListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Account_serviceDesc.Streams[1], "/berty.chat.Account/ConversationList", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &accountConversationListClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type Account_ConversationListClient interface {
-	Recv() (*ConversationListReply, error)
-	grpc.ClientStream
-}
-
-type accountConversationListClient struct {
-	grpc.ClientStream
-}
-
-func (x *accountConversationListClient) Recv() (*ConversationListReply, error) {
-	m := new(ConversationListReply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *accountClient) ConversationGet(ctx context.Context, in *ConversationGetRequest, opts ...grpc.CallOption) (*ConversationGetReply, error) {
-	out := new(ConversationGetReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ConversationGet", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ConversationCreate(ctx context.Context, in *ConversationCreateRequest, opts ...grpc.CallOption) (*ConversationCreateReply, error) {
-	out := new(ConversationCreateReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ConversationCreate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ConversationLeave(ctx context.Context, in *ConversationLeaveRequest, opts ...grpc.CallOption) (*ConversationLeaveReply, error) {
-	out := new(ConversationLeaveReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ConversationLeave", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ConversationErase(ctx context.Context, in *ConversationEraseRequest, opts ...grpc.CallOption) (*ConversationEraseReply, error) {
-	out := new(ConversationEraseReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ConversationErase", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ConversationSetSeenPosition(ctx context.Context, in *ConversationSetSeenPositionRequest, opts ...grpc.CallOption) (*ConversationSetSeenPositionReply, error) {
-	out := new(ConversationSetSeenPositionReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ConversationSetSeenPosition", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ConversationMessageList(ctx context.Context, in *ConversationMessageListRequest, opts ...grpc.CallOption) (Account_ConversationMessageListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Account_serviceDesc.Streams[2], "/berty.chat.Account/ConversationMessageList", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &accountConversationMessageListClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type Account_ConversationMessageListClient interface {
-	Recv() (*ConversationMessageListReply, error)
-	grpc.ClientStream
-}
-
-type accountConversationMessageListClient struct {
-	grpc.ClientStream
-}
-
-func (x *accountConversationMessageListClient) Recv() (*ConversationMessageListReply, error) {
-	m := new(ConversationMessageListReply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *accountClient) ConversationMessageSend(ctx context.Context, in *ConversationMessageSendRequest, opts ...grpc.CallOption) (*ConversationMessageSendReply, error) {
-	out := new(ConversationMessageSendReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ConversationMessageSend", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ConversationMessageEdit(ctx context.Context, in *ConversationMessageEditRequest, opts ...grpc.CallOption) (*ConversationMessageEditReply, error) {
-	out := new(ConversationMessageEditReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ConversationMessageEdit", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ConversationMessageHide(ctx context.Context, in *ConversationMessageHideRequest, opts ...grpc.CallOption) (*ConversationMessageHideReply, error) {
-	out := new(ConversationMessageHideReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ConversationMessageHide", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ConversationUpdateSettings(ctx context.Context, in *ConversationUpdateSettingsRequest, opts ...grpc.CallOption) (*ConversationUpdateSettingsReply, error) {
-	out := new(ConversationUpdateSettingsReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ConversationUpdateSettings", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ConversationInvitationAccept(ctx context.Context, in *ConversationInvitationAcceptRequest, opts ...grpc.CallOption) (*ConversationInvitationAcceptReply, error) {
-	out := new(ConversationInvitationAcceptReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ConversationInvitationAccept", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ConversationInvitationCreate(ctx context.Context, in *ConversationInvitationCreateRequest, opts ...grpc.CallOption) (*ConversationInvitationCreateReply, error) {
-	out := new(ConversationInvitationCreateReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ConversationInvitationCreate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ConversationInvitationDiscard(ctx context.Context, in *ConversationInvitationDiscardRequest, opts ...grpc.CallOption) (*ConversationInvitationDiscardReply, error) {
-	out := new(ConversationInvitationDiscardReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ConversationInvitationDiscard", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ContactList(ctx context.Context, in *ContactListRequest, opts ...grpc.CallOption) (Account_ContactListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Account_serviceDesc.Streams[3], "/berty.chat.Account/ContactList", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &accountContactListClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type Account_ContactListClient interface {
-	Recv() (*ContactListReply, error)
-	grpc.ClientStream
-}
-
-type accountContactListClient struct {
-	grpc.ClientStream
-}
-
-func (x *accountContactListClient) Recv() (*ContactListReply, error) {
-	m := new(ContactListReply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *accountClient) ContactGet(ctx context.Context, in *ContactGetRequest, opts ...grpc.CallOption) (*ContactGetReply, error) {
-	out := new(ContactGetReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ContactGet", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ContactUpdate(ctx context.Context, in *ContactUpdateRequest, opts ...grpc.CallOption) (*ContactUpdateReply, error) {
-	out := new(ContactUpdateReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ContactUpdate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ContactRemove(ctx context.Context, in *ContactRemoveRequest, opts ...grpc.CallOption) (*ContactRemoveReply, error) {
-	out := new(ContactRemoveReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ContactRemove", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ContactRequestCreate(ctx context.Context, in *ContactRequestCreateRequest, opts ...grpc.CallOption) (*ContactRequestCreateReply, error) {
-	out := new(ContactRequestCreateReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ContactRequestCreate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ContactRequestAccept(ctx context.Context, in *ContactRequestAcceptRequest, opts ...grpc.CallOption) (*ContactRequestAcceptReply, error) {
-	out := new(ContactRequestAcceptReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ContactRequestAccept", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) ContactRequestDiscard(ctx context.Context, in *ContactRequestDiscardRequest, opts ...grpc.CallOption) (*ContactRequestDiscardReply, error) {
-	out := new(ContactRequestDiscardReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/ContactRequestDiscard", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (Account_SearchClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Account_serviceDesc.Streams[4], "/berty.chat.Account/Search", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &accountSearchClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type Account_SearchClient interface {
+type ChatService_SearchClient interface {
 	Recv() (*SearchReply, error)
 	grpc.ClientStream
 }
 
-type accountSearchClient struct {
+type chatServiceSearchClient struct {
 	grpc.ClientStream
 }
 
-func (x *accountSearchClient) Recv() (*SearchReply, error) {
+func (x *chatServiceSearchClient) Recv() (*SearchReply, error) {
 	m := new(SearchReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -2249,48 +3196,12 @@ func (x *accountSearchClient) Recv() (*SearchReply, error) {
 	return m, nil
 }
 
-func (c *accountClient) AccountSettingsGet(ctx context.Context, in *AccountSettingsGetRequest, opts ...grpc.CallOption) (*AccountSettingsGetReply, error) {
-	out := new(AccountSettingsGetReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/AccountSettingsGet", in, out, opts...)
+func (c *chatServiceClient) EventSubscribe(ctx context.Context, in *EventSubscribeRequest, opts ...grpc.CallOption) (ChatService_EventSubscribeClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ChatService_serviceDesc.Streams[1], "/berty.chat.ChatService/EventSubscribe", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
-}
-
-func (c *accountClient) AccountSettingsUpdate(ctx context.Context, in *AccountSettingsUpdateRequest, opts ...grpc.CallOption) (*AccountSettingsUpdateReply, error) {
-	out := new(AccountSettingsUpdateReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/AccountSettingsUpdate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) AccountPairingInvitationCreate(ctx context.Context, in *AccountPairingInvitationCreateRequest, opts ...grpc.CallOption) (*AccountPairingInvitationCreateReply, error) {
-	out := new(AccountPairingInvitationCreateReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/AccountPairingInvitationCreate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) AccountRenewIncomingContactRequestLink(ctx context.Context, in *AccountRenewIncomingContactRequestLinkRequest, opts ...grpc.CallOption) (*AccountRenewIncomingContactRequestLinkReply, error) {
-	out := new(AccountRenewIncomingContactRequestLinkReply)
-	err := c.cc.Invoke(ctx, "/berty.chat.Account/AccountRenewIncomingContactRequestLink", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *accountClient) DevEventSubscribe(ctx context.Context, in *DevEventSubscribeRequest, opts ...grpc.CallOption) (Account_DevEventSubscribeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Account_serviceDesc.Streams[5], "/berty.chat.Account/DevEventSubscribe", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &accountDevEventSubscribeClient{stream}
+	x := &chatServiceEventSubscribeClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -2300,16 +3211,48 @@ func (c *accountClient) DevEventSubscribe(ctx context.Context, in *DevEventSubsc
 	return x, nil
 }
 
-type Account_DevEventSubscribeClient interface {
+type ChatService_EventSubscribeClient interface {
+	Recv() (*EventSubscribeReply, error)
+	grpc.ClientStream
+}
+
+type chatServiceEventSubscribeClient struct {
+	grpc.ClientStream
+}
+
+func (x *chatServiceEventSubscribeClient) Recv() (*EventSubscribeReply, error) {
+	m := new(EventSubscribeReply)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *chatServiceClient) DevEventSubscribe(ctx context.Context, in *DevEventSubscribeRequest, opts ...grpc.CallOption) (ChatService_DevEventSubscribeClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ChatService_serviceDesc.Streams[2], "/berty.chat.ChatService/DevEventSubscribe", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &chatServiceDevEventSubscribeClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ChatService_DevEventSubscribeClient interface {
 	Recv() (*DevEventSubscribeReply, error)
 	grpc.ClientStream
 }
 
-type accountDevEventSubscribeClient struct {
+type chatServiceDevEventSubscribeClient struct {
 	grpc.ClientStream
 }
 
-func (x *accountDevEventSubscribeClient) Recv() (*DevEventSubscribeReply, error) {
+func (x *chatServiceDevEventSubscribeClient) Recv() (*DevEventSubscribeReply, error) {
 	m := new(DevEventSubscribeReply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -2317,775 +3260,1480 @@ func (x *accountDevEventSubscribeClient) Recv() (*DevEventSubscribeReply, error)
 	return m, nil
 }
 
-// AccountServer is the server API for Account service.
-type AccountServer interface {
-	EventSubscribe(*EventSubscribeRequest, Account_EventSubscribeServer) error
-	ConversationList(*ConversationListRequest, Account_ConversationListServer) error
+func (c *chatServiceClient) ConversationList(ctx context.Context, in *ConversationListRequest, opts ...grpc.CallOption) (ChatService_ConversationListClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ChatService_serviceDesc.Streams[3], "/berty.chat.ChatService/ConversationList", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &chatServiceConversationListClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ChatService_ConversationListClient interface {
+	Recv() (*ConversationListReply, error)
+	grpc.ClientStream
+}
+
+type chatServiceConversationListClient struct {
+	grpc.ClientStream
+}
+
+func (x *chatServiceConversationListClient) Recv() (*ConversationListReply, error) {
+	m := new(ConversationListReply)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *chatServiceClient) ConversationGet(ctx context.Context, in *ConversationGetRequest, opts ...grpc.CallOption) (*ConversationGetReply, error) {
+	out := new(ConversationGetReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ConversationGet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ConversationCreate(ctx context.Context, in *ConversationCreateRequest, opts ...grpc.CallOption) (*ConversationCreateReply, error) {
+	out := new(ConversationCreateReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ConversationCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ConversationUpdate(ctx context.Context, in *ConversationUpdateRequest, opts ...grpc.CallOption) (*ConversationUpdateReply, error) {
+	out := new(ConversationUpdateReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ConversationUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ConversationMute(ctx context.Context, in *ConversationMuteRequest, opts ...grpc.CallOption) (*ConversationMuteReply, error) {
+	out := new(ConversationMuteReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ConversationMute", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ConversationLeave(ctx context.Context, in *ConversationLeaveRequest, opts ...grpc.CallOption) (*ConversationLeaveReply, error) {
+	out := new(ConversationLeaveReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ConversationLeave", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ConversationErase(ctx context.Context, in *ConversationEraseRequest, opts ...grpc.CallOption) (*ConversationEraseReply, error) {
+	out := new(ConversationEraseReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ConversationErase", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ConversationInvitationSend(ctx context.Context, in *ConversationInvitationSendRequest, opts ...grpc.CallOption) (*ConversationInvitationSendReply, error) {
+	out := new(ConversationInvitationSendReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ConversationInvitationSend", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ConversationInvitationAccept(ctx context.Context, in *ConversationInvitationAcceptRequest, opts ...grpc.CallOption) (*ConversationInvitationAcceptReply, error) {
+	out := new(ConversationInvitationAcceptReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ConversationInvitationAccept", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ConversationInvitationDecline(ctx context.Context, in *ConversationInvitationDeclineRequest, opts ...grpc.CallOption) (*ConversationInvitationDeclineReply, error) {
+	out := new(ConversationInvitationDeclineReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ConversationInvitationDecline", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) MessageList(ctx context.Context, in *MessageListRequest, opts ...grpc.CallOption) (ChatService_MessageListClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ChatService_serviceDesc.Streams[4], "/berty.chat.ChatService/MessageList", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &chatServiceMessageListClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ChatService_MessageListClient interface {
+	Recv() (*MessageListReply, error)
+	grpc.ClientStream
+}
+
+type chatServiceMessageListClient struct {
+	grpc.ClientStream
+}
+
+func (x *chatServiceMessageListClient) Recv() (*MessageListReply, error) {
+	m := new(MessageListReply)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *chatServiceClient) MessageGet(ctx context.Context, in *MessageGetRequest, opts ...grpc.CallOption) (*MessageGetReply, error) {
+	out := new(MessageGetReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/MessageGet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) MessageSend(ctx context.Context, in *MessageSendRequest, opts ...grpc.CallOption) (*MessageSendReply, error) {
+	out := new(MessageSendReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/MessageSend", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) MessageEdit(ctx context.Context, in *MessageEditRequest, opts ...grpc.CallOption) (*MessageEditReply, error) {
+	out := new(MessageEditReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/MessageEdit", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) MessageHide(ctx context.Context, in *MessageHideRequest, opts ...grpc.CallOption) (*MessageHideReply, error) {
+	out := new(MessageHideReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/MessageHide", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) MessageReact(ctx context.Context, in *MessageReactRequest, opts ...grpc.CallOption) (*MessageReactReply, error) {
+	out := new(MessageReactReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/MessageReact", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) MessageRead(ctx context.Context, in *MessageReadRequest, opts ...grpc.CallOption) (*MessageReadReply, error) {
+	out := new(MessageReadReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/MessageRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) MemberList(ctx context.Context, in *MemberListRequest, opts ...grpc.CallOption) (ChatService_MemberListClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ChatService_serviceDesc.Streams[5], "/berty.chat.ChatService/MemberList", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &chatServiceMemberListClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ChatService_MemberListClient interface {
+	Recv() (*MemberListReply, error)
+	grpc.ClientStream
+}
+
+type chatServiceMemberListClient struct {
+	grpc.ClientStream
+}
+
+func (x *chatServiceMemberListClient) Recv() (*MemberListReply, error) {
+	m := new(MemberListReply)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *chatServiceClient) MemberGet(ctx context.Context, in *MemberGetRequest, opts ...grpc.CallOption) (*MemberGetReply, error) {
+	out := new(MemberGetReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/MemberGet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ContactList(ctx context.Context, in *ContactListRequest, opts ...grpc.CallOption) (ChatService_ContactListClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ChatService_serviceDesc.Streams[6], "/berty.chat.ChatService/ContactList", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &chatServiceContactListClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ChatService_ContactListClient interface {
+	Recv() (*ContactListReply, error)
+	grpc.ClientStream
+}
+
+type chatServiceContactListClient struct {
+	grpc.ClientStream
+}
+
+func (x *chatServiceContactListClient) Recv() (*ContactListReply, error) {
+	m := new(ContactListReply)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *chatServiceClient) ContactGet(ctx context.Context, in *ContactGetRequest, opts ...grpc.CallOption) (*ContactGetReply, error) {
+	out := new(ContactGetReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ContactGet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ContactBlock(ctx context.Context, in *ContactBlockRequest, opts ...grpc.CallOption) (*ContactBlockReply, error) {
+	out := new(ContactBlockReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ContactBlock", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ContactRemove(ctx context.Context, in *ContactRemoveRequest, opts ...grpc.CallOption) (*ContactRemoveReply, error) {
+	out := new(ContactRemoveReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ContactRemove", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ContactRequestSend(ctx context.Context, in *ContactRequestSendRequest, opts ...grpc.CallOption) (*ContactRequestSendReply, error) {
+	out := new(ContactRequestSendReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ContactRequestSend", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ContactRequestAccept(ctx context.Context, in *ContactRequestAcceptRequest, opts ...grpc.CallOption) (*ContactRequestAcceptReply, error) {
+	out := new(ContactRequestAcceptReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ContactRequestAccept", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) ContactRequestDecline(ctx context.Context, in *ContactRequestDeclineRequest, opts ...grpc.CallOption) (*ContactRequestDeclineReply, error) {
+	out := new(ContactRequestDeclineReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/ContactRequestDecline", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) AccountList(ctx context.Context, in *AccountListRequest, opts ...grpc.CallOption) (ChatService_AccountListClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ChatService_serviceDesc.Streams[7], "/berty.chat.ChatService/AccountList", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &chatServiceAccountListClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ChatService_AccountListClient interface {
+	Recv() (*AccountListRequest, error)
+	grpc.ClientStream
+}
+
+type chatServiceAccountListClient struct {
+	grpc.ClientStream
+}
+
+func (x *chatServiceAccountListClient) Recv() (*AccountListRequest, error) {
+	m := new(AccountListRequest)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *chatServiceClient) AccountGet(ctx context.Context, in *AccountGetRequest, opts ...grpc.CallOption) (*AccountGetReply, error) {
+	out := new(AccountGetReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/AccountGet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) AccountCreate(ctx context.Context, in *AccountCreateRequest, opts ...grpc.CallOption) (*AccountCreateReply, error) {
+	out := new(AccountCreateReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/AccountCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) AccountUpdate(ctx context.Context, in *AccountUpdateRequest, opts ...grpc.CallOption) (*AccountUpdateReply, error) {
+	out := new(AccountUpdateReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/AccountUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) AccountOpen(ctx context.Context, in *AccountOpenRequest, opts ...grpc.CallOption) (*AccountOpenReply, error) {
+	out := new(AccountOpenReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/AccountOpen", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) AccountClose(ctx context.Context, in *AccountCloseRequest, opts ...grpc.CallOption) (*AccountCloseReply, error) {
+	out := new(AccountCloseReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/AccountClose", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) AccountRemove(ctx context.Context, in *AccountRemoveRequest, opts ...grpc.CallOption) (*AccountRemoveReply, error) {
+	out := new(AccountRemoveReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/AccountRemove", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) AccountPairingInvitationCreate(ctx context.Context, in *AccountPairingInvitationCreateRequest, opts ...grpc.CallOption) (*AccountPairingInvitationCreateReply, error) {
+	out := new(AccountPairingInvitationCreateReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/AccountPairingInvitationCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatServiceClient) AccountRenewIncomingContactRequestLink(ctx context.Context, in *AccountRenewIncomingContactRequestLinkRequest, opts ...grpc.CallOption) (*AccountRenewIncomingContactRequestLinkReply, error) {
+	out := new(AccountRenewIncomingContactRequestLinkReply)
+	err := c.cc.Invoke(ctx, "/berty.chat.ChatService/AccountRenewIncomingContactRequestLink", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ChatServiceServer is the server API for ChatService service.
+type ChatServiceServer interface {
+	// Search
+	Search(*SearchRequest, ChatService_SearchServer) error
+	// Event
+	EventSubscribe(*EventSubscribeRequest, ChatService_EventSubscribeServer) error
+	DevEventSubscribe(*DevEventSubscribeRequest, ChatService_DevEventSubscribeServer) error
+	// Conversation
+	ConversationList(*ConversationListRequest, ChatService_ConversationListServer) error
 	ConversationGet(context.Context, *ConversationGetRequest) (*ConversationGetReply, error)
 	ConversationCreate(context.Context, *ConversationCreateRequest) (*ConversationCreateReply, error)
+	ConversationUpdate(context.Context, *ConversationUpdateRequest) (*ConversationUpdateReply, error)
+	ConversationMute(context.Context, *ConversationMuteRequest) (*ConversationMuteReply, error)
 	ConversationLeave(context.Context, *ConversationLeaveRequest) (*ConversationLeaveReply, error)
 	ConversationErase(context.Context, *ConversationEraseRequest) (*ConversationEraseReply, error)
-	ConversationSetSeenPosition(context.Context, *ConversationSetSeenPositionRequest) (*ConversationSetSeenPositionReply, error)
-	ConversationMessageList(*ConversationMessageListRequest, Account_ConversationMessageListServer) error
-	ConversationMessageSend(context.Context, *ConversationMessageSendRequest) (*ConversationMessageSendReply, error)
-	ConversationMessageEdit(context.Context, *ConversationMessageEditRequest) (*ConversationMessageEditReply, error)
-	ConversationMessageHide(context.Context, *ConversationMessageHideRequest) (*ConversationMessageHideReply, error)
-	ConversationUpdateSettings(context.Context, *ConversationUpdateSettingsRequest) (*ConversationUpdateSettingsReply, error)
+	ConversationInvitationSend(context.Context, *ConversationInvitationSendRequest) (*ConversationInvitationSendReply, error)
 	ConversationInvitationAccept(context.Context, *ConversationInvitationAcceptRequest) (*ConversationInvitationAcceptReply, error)
-	ConversationInvitationCreate(context.Context, *ConversationInvitationCreateRequest) (*ConversationInvitationCreateReply, error)
-	ConversationInvitationDiscard(context.Context, *ConversationInvitationDiscardRequest) (*ConversationInvitationDiscardReply, error)
-	ContactList(*ContactListRequest, Account_ContactListServer) error
+	ConversationInvitationDecline(context.Context, *ConversationInvitationDeclineRequest) (*ConversationInvitationDeclineReply, error)
+	// Message
+	MessageList(*MessageListRequest, ChatService_MessageListServer) error
+	MessageGet(context.Context, *MessageGetRequest) (*MessageGetReply, error)
+	MessageSend(context.Context, *MessageSendRequest) (*MessageSendReply, error)
+	MessageEdit(context.Context, *MessageEditRequest) (*MessageEditReply, error)
+	MessageHide(context.Context, *MessageHideRequest) (*MessageHideReply, error)
+	MessageReact(context.Context, *MessageReactRequest) (*MessageReactReply, error)
+	MessageRead(context.Context, *MessageReadRequest) (*MessageReadReply, error)
+	// Member
+	MemberList(*MemberListRequest, ChatService_MemberListServer) error
+	MemberGet(context.Context, *MemberGetRequest) (*MemberGetReply, error)
+	// Contact
+	ContactList(*ContactListRequest, ChatService_ContactListServer) error
 	ContactGet(context.Context, *ContactGetRequest) (*ContactGetReply, error)
-	ContactUpdate(context.Context, *ContactUpdateRequest) (*ContactUpdateReply, error)
+	ContactBlock(context.Context, *ContactBlockRequest) (*ContactBlockReply, error)
 	ContactRemove(context.Context, *ContactRemoveRequest) (*ContactRemoveReply, error)
-	ContactRequestCreate(context.Context, *ContactRequestCreateRequest) (*ContactRequestCreateReply, error)
+	ContactRequestSend(context.Context, *ContactRequestSendRequest) (*ContactRequestSendReply, error)
 	ContactRequestAccept(context.Context, *ContactRequestAcceptRequest) (*ContactRequestAcceptReply, error)
-	ContactRequestDiscard(context.Context, *ContactRequestDiscardRequest) (*ContactRequestDiscardReply, error)
-	Search(*SearchRequest, Account_SearchServer) error
-	AccountSettingsGet(context.Context, *AccountSettingsGetRequest) (*AccountSettingsGetReply, error)
-	AccountSettingsUpdate(context.Context, *AccountSettingsUpdateRequest) (*AccountSettingsUpdateReply, error)
+	ContactRequestDecline(context.Context, *ContactRequestDeclineRequest) (*ContactRequestDeclineReply, error)
+	// Account
+	AccountList(*AccountListRequest, ChatService_AccountListServer) error
+	AccountGet(context.Context, *AccountGetRequest) (*AccountGetReply, error)
+	AccountCreate(context.Context, *AccountCreateRequest) (*AccountCreateReply, error)
+	AccountUpdate(context.Context, *AccountUpdateRequest) (*AccountUpdateReply, error)
+	AccountOpen(context.Context, *AccountOpenRequest) (*AccountOpenReply, error)
+	AccountClose(context.Context, *AccountCloseRequest) (*AccountCloseReply, error)
+	AccountRemove(context.Context, *AccountRemoveRequest) (*AccountRemoveReply, error)
 	AccountPairingInvitationCreate(context.Context, *AccountPairingInvitationCreateRequest) (*AccountPairingInvitationCreateReply, error)
 	AccountRenewIncomingContactRequestLink(context.Context, *AccountRenewIncomingContactRequestLinkRequest) (*AccountRenewIncomingContactRequestLinkReply, error)
-	DevEventSubscribe(*DevEventSubscribeRequest, Account_DevEventSubscribeServer) error
 }
 
-// UnimplementedAccountServer can be embedded to have forward compatible implementations.
-type UnimplementedAccountServer struct {
+// UnimplementedChatServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedChatServiceServer struct {
 }
 
-func (*UnimplementedAccountServer) EventSubscribe(req *EventSubscribeRequest, srv Account_EventSubscribeServer) error {
-	return status.Errorf(codes.Unimplemented, "method EventSubscribe not implemented")
-}
-func (*UnimplementedAccountServer) ConversationList(req *ConversationListRequest, srv Account_ConversationListServer) error {
-	return status.Errorf(codes.Unimplemented, "method ConversationList not implemented")
-}
-func (*UnimplementedAccountServer) ConversationGet(ctx context.Context, req *ConversationGetRequest) (*ConversationGetReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConversationGet not implemented")
-}
-func (*UnimplementedAccountServer) ConversationCreate(ctx context.Context, req *ConversationCreateRequest) (*ConversationCreateReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConversationCreate not implemented")
-}
-func (*UnimplementedAccountServer) ConversationLeave(ctx context.Context, req *ConversationLeaveRequest) (*ConversationLeaveReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConversationLeave not implemented")
-}
-func (*UnimplementedAccountServer) ConversationErase(ctx context.Context, req *ConversationEraseRequest) (*ConversationEraseReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConversationErase not implemented")
-}
-func (*UnimplementedAccountServer) ConversationSetSeenPosition(ctx context.Context, req *ConversationSetSeenPositionRequest) (*ConversationSetSeenPositionReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConversationSetSeenPosition not implemented")
-}
-func (*UnimplementedAccountServer) ConversationMessageList(req *ConversationMessageListRequest, srv Account_ConversationMessageListServer) error {
-	return status.Errorf(codes.Unimplemented, "method ConversationMessageList not implemented")
-}
-func (*UnimplementedAccountServer) ConversationMessageSend(ctx context.Context, req *ConversationMessageSendRequest) (*ConversationMessageSendReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConversationMessageSend not implemented")
-}
-func (*UnimplementedAccountServer) ConversationMessageEdit(ctx context.Context, req *ConversationMessageEditRequest) (*ConversationMessageEditReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConversationMessageEdit not implemented")
-}
-func (*UnimplementedAccountServer) ConversationMessageHide(ctx context.Context, req *ConversationMessageHideRequest) (*ConversationMessageHideReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConversationMessageHide not implemented")
-}
-func (*UnimplementedAccountServer) ConversationUpdateSettings(ctx context.Context, req *ConversationUpdateSettingsRequest) (*ConversationUpdateSettingsReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConversationUpdateSettings not implemented")
-}
-func (*UnimplementedAccountServer) ConversationInvitationAccept(ctx context.Context, req *ConversationInvitationAcceptRequest) (*ConversationInvitationAcceptReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConversationInvitationAccept not implemented")
-}
-func (*UnimplementedAccountServer) ConversationInvitationCreate(ctx context.Context, req *ConversationInvitationCreateRequest) (*ConversationInvitationCreateReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConversationInvitationCreate not implemented")
-}
-func (*UnimplementedAccountServer) ConversationInvitationDiscard(ctx context.Context, req *ConversationInvitationDiscardRequest) (*ConversationInvitationDiscardReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConversationInvitationDiscard not implemented")
-}
-func (*UnimplementedAccountServer) ContactList(req *ContactListRequest, srv Account_ContactListServer) error {
-	return status.Errorf(codes.Unimplemented, "method ContactList not implemented")
-}
-func (*UnimplementedAccountServer) ContactGet(ctx context.Context, req *ContactGetRequest) (*ContactGetReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactGet not implemented")
-}
-func (*UnimplementedAccountServer) ContactUpdate(ctx context.Context, req *ContactUpdateRequest) (*ContactUpdateReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactUpdate not implemented")
-}
-func (*UnimplementedAccountServer) ContactRemove(ctx context.Context, req *ContactRemoveRequest) (*ContactRemoveReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactRemove not implemented")
-}
-func (*UnimplementedAccountServer) ContactRequestCreate(ctx context.Context, req *ContactRequestCreateRequest) (*ContactRequestCreateReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestCreate not implemented")
-}
-func (*UnimplementedAccountServer) ContactRequestAccept(ctx context.Context, req *ContactRequestAcceptRequest) (*ContactRequestAcceptReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestAccept not implemented")
-}
-func (*UnimplementedAccountServer) ContactRequestDiscard(ctx context.Context, req *ContactRequestDiscardRequest) (*ContactRequestDiscardReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestDiscard not implemented")
-}
-func (*UnimplementedAccountServer) Search(req *SearchRequest, srv Account_SearchServer) error {
+func (*UnimplementedChatServiceServer) Search(req *SearchRequest, srv ChatService_SearchServer) error {
 	return status.Errorf(codes.Unimplemented, "method Search not implemented")
 }
-func (*UnimplementedAccountServer) AccountSettingsGet(ctx context.Context, req *AccountSettingsGetRequest) (*AccountSettingsGetReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccountSettingsGet not implemented")
+func (*UnimplementedChatServiceServer) EventSubscribe(req *EventSubscribeRequest, srv ChatService_EventSubscribeServer) error {
+	return status.Errorf(codes.Unimplemented, "method EventSubscribe not implemented")
 }
-func (*UnimplementedAccountServer) AccountSettingsUpdate(ctx context.Context, req *AccountSettingsUpdateRequest) (*AccountSettingsUpdateReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccountSettingsUpdate not implemented")
-}
-func (*UnimplementedAccountServer) AccountPairingInvitationCreate(ctx context.Context, req *AccountPairingInvitationCreateRequest) (*AccountPairingInvitationCreateReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccountPairingInvitationCreate not implemented")
-}
-func (*UnimplementedAccountServer) AccountRenewIncomingContactRequestLink(ctx context.Context, req *AccountRenewIncomingContactRequestLinkRequest) (*AccountRenewIncomingContactRequestLinkReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccountRenewIncomingContactRequestLink not implemented")
-}
-func (*UnimplementedAccountServer) DevEventSubscribe(req *DevEventSubscribeRequest, srv Account_DevEventSubscribeServer) error {
+func (*UnimplementedChatServiceServer) DevEventSubscribe(req *DevEventSubscribeRequest, srv ChatService_DevEventSubscribeServer) error {
 	return status.Errorf(codes.Unimplemented, "method DevEventSubscribe not implemented")
 }
-
-func RegisterAccountServer(s *grpc.Server, srv AccountServer) {
-	s.RegisterService(&_Account_serviceDesc, srv)
+func (*UnimplementedChatServiceServer) ConversationList(req *ConversationListRequest, srv ChatService_ConversationListServer) error {
+	return status.Errorf(codes.Unimplemented, "method ConversationList not implemented")
+}
+func (*UnimplementedChatServiceServer) ConversationGet(ctx context.Context, req *ConversationGetRequest) (*ConversationGetReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationGet not implemented")
+}
+func (*UnimplementedChatServiceServer) ConversationCreate(ctx context.Context, req *ConversationCreateRequest) (*ConversationCreateReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationCreate not implemented")
+}
+func (*UnimplementedChatServiceServer) ConversationUpdate(ctx context.Context, req *ConversationUpdateRequest) (*ConversationUpdateReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationUpdate not implemented")
+}
+func (*UnimplementedChatServiceServer) ConversationMute(ctx context.Context, req *ConversationMuteRequest) (*ConversationMuteReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationMute not implemented")
+}
+func (*UnimplementedChatServiceServer) ConversationLeave(ctx context.Context, req *ConversationLeaveRequest) (*ConversationLeaveReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationLeave not implemented")
+}
+func (*UnimplementedChatServiceServer) ConversationErase(ctx context.Context, req *ConversationEraseRequest) (*ConversationEraseReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationErase not implemented")
+}
+func (*UnimplementedChatServiceServer) ConversationInvitationSend(ctx context.Context, req *ConversationInvitationSendRequest) (*ConversationInvitationSendReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationInvitationSend not implemented")
+}
+func (*UnimplementedChatServiceServer) ConversationInvitationAccept(ctx context.Context, req *ConversationInvitationAcceptRequest) (*ConversationInvitationAcceptReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationInvitationAccept not implemented")
+}
+func (*UnimplementedChatServiceServer) ConversationInvitationDecline(ctx context.Context, req *ConversationInvitationDeclineRequest) (*ConversationInvitationDeclineReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConversationInvitationDecline not implemented")
+}
+func (*UnimplementedChatServiceServer) MessageList(req *MessageListRequest, srv ChatService_MessageListServer) error {
+	return status.Errorf(codes.Unimplemented, "method MessageList not implemented")
+}
+func (*UnimplementedChatServiceServer) MessageGet(ctx context.Context, req *MessageGetRequest) (*MessageGetReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MessageGet not implemented")
+}
+func (*UnimplementedChatServiceServer) MessageSend(ctx context.Context, req *MessageSendRequest) (*MessageSendReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MessageSend not implemented")
+}
+func (*UnimplementedChatServiceServer) MessageEdit(ctx context.Context, req *MessageEditRequest) (*MessageEditReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MessageEdit not implemented")
+}
+func (*UnimplementedChatServiceServer) MessageHide(ctx context.Context, req *MessageHideRequest) (*MessageHideReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MessageHide not implemented")
+}
+func (*UnimplementedChatServiceServer) MessageReact(ctx context.Context, req *MessageReactRequest) (*MessageReactReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MessageReact not implemented")
+}
+func (*UnimplementedChatServiceServer) MessageRead(ctx context.Context, req *MessageReadRequest) (*MessageReadReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MessageRead not implemented")
+}
+func (*UnimplementedChatServiceServer) MemberList(req *MemberListRequest, srv ChatService_MemberListServer) error {
+	return status.Errorf(codes.Unimplemented, "method MemberList not implemented")
+}
+func (*UnimplementedChatServiceServer) MemberGet(ctx context.Context, req *MemberGetRequest) (*MemberGetReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MemberGet not implemented")
+}
+func (*UnimplementedChatServiceServer) ContactList(req *ContactListRequest, srv ChatService_ContactListServer) error {
+	return status.Errorf(codes.Unimplemented, "method ContactList not implemented")
+}
+func (*UnimplementedChatServiceServer) ContactGet(ctx context.Context, req *ContactGetRequest) (*ContactGetReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactGet not implemented")
+}
+func (*UnimplementedChatServiceServer) ContactBlock(ctx context.Context, req *ContactBlockRequest) (*ContactBlockReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactBlock not implemented")
+}
+func (*UnimplementedChatServiceServer) ContactRemove(ctx context.Context, req *ContactRemoveRequest) (*ContactRemoveReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRemove not implemented")
+}
+func (*UnimplementedChatServiceServer) ContactRequestSend(ctx context.Context, req *ContactRequestSendRequest) (*ContactRequestSendReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestSend not implemented")
+}
+func (*UnimplementedChatServiceServer) ContactRequestAccept(ctx context.Context, req *ContactRequestAcceptRequest) (*ContactRequestAcceptReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestAccept not implemented")
+}
+func (*UnimplementedChatServiceServer) ContactRequestDecline(ctx context.Context, req *ContactRequestDeclineRequest) (*ContactRequestDeclineReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestDecline not implemented")
+}
+func (*UnimplementedChatServiceServer) AccountList(req *AccountListRequest, srv ChatService_AccountListServer) error {
+	return status.Errorf(codes.Unimplemented, "method AccountList not implemented")
+}
+func (*UnimplementedChatServiceServer) AccountGet(ctx context.Context, req *AccountGetRequest) (*AccountGetReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountGet not implemented")
+}
+func (*UnimplementedChatServiceServer) AccountCreate(ctx context.Context, req *AccountCreateRequest) (*AccountCreateReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountCreate not implemented")
+}
+func (*UnimplementedChatServiceServer) AccountUpdate(ctx context.Context, req *AccountUpdateRequest) (*AccountUpdateReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountUpdate not implemented")
+}
+func (*UnimplementedChatServiceServer) AccountOpen(ctx context.Context, req *AccountOpenRequest) (*AccountOpenReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountOpen not implemented")
+}
+func (*UnimplementedChatServiceServer) AccountClose(ctx context.Context, req *AccountCloseRequest) (*AccountCloseReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountClose not implemented")
+}
+func (*UnimplementedChatServiceServer) AccountRemove(ctx context.Context, req *AccountRemoveRequest) (*AccountRemoveReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountRemove not implemented")
+}
+func (*UnimplementedChatServiceServer) AccountPairingInvitationCreate(ctx context.Context, req *AccountPairingInvitationCreateRequest) (*AccountPairingInvitationCreateReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountPairingInvitationCreate not implemented")
+}
+func (*UnimplementedChatServiceServer) AccountRenewIncomingContactRequestLink(ctx context.Context, req *AccountRenewIncomingContactRequestLinkRequest) (*AccountRenewIncomingContactRequestLinkReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountRenewIncomingContactRequestLink not implemented")
 }
 
-func _Account_EventSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
+func RegisterChatServiceServer(s *grpc.Server, srv ChatServiceServer) {
+	s.RegisterService(&_ChatService_serviceDesc, srv)
+}
+
+func _ChatService_Search_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(SearchRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ChatServiceServer).Search(m, &chatServiceSearchServer{stream})
+}
+
+type ChatService_SearchServer interface {
+	Send(*SearchReply) error
+	grpc.ServerStream
+}
+
+type chatServiceSearchServer struct {
+	grpc.ServerStream
+}
+
+func (x *chatServiceSearchServer) Send(m *SearchReply) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _ChatService_EventSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(EventSubscribeRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(AccountServer).EventSubscribe(m, &accountEventSubscribeServer{stream})
+	return srv.(ChatServiceServer).EventSubscribe(m, &chatServiceEventSubscribeServer{stream})
 }
 
-type Account_EventSubscribeServer interface {
+type ChatService_EventSubscribeServer interface {
 	Send(*EventSubscribeReply) error
 	grpc.ServerStream
 }
 
-type accountEventSubscribeServer struct {
+type chatServiceEventSubscribeServer struct {
 	grpc.ServerStream
 }
 
-func (x *accountEventSubscribeServer) Send(m *EventSubscribeReply) error {
+func (x *chatServiceEventSubscribeServer) Send(m *EventSubscribeReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Account_ConversationList_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _ChatService_DevEventSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(DevEventSubscribeRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ChatServiceServer).DevEventSubscribe(m, &chatServiceDevEventSubscribeServer{stream})
+}
+
+type ChatService_DevEventSubscribeServer interface {
+	Send(*DevEventSubscribeReply) error
+	grpc.ServerStream
+}
+
+type chatServiceDevEventSubscribeServer struct {
+	grpc.ServerStream
+}
+
+func (x *chatServiceDevEventSubscribeServer) Send(m *DevEventSubscribeReply) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _ChatService_ConversationList_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(ConversationListRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(AccountServer).ConversationList(m, &accountConversationListServer{stream})
+	return srv.(ChatServiceServer).ConversationList(m, &chatServiceConversationListServer{stream})
 }
 
-type Account_ConversationListServer interface {
+type ChatService_ConversationListServer interface {
 	Send(*ConversationListReply) error
 	grpc.ServerStream
 }
 
-type accountConversationListServer struct {
+type chatServiceConversationListServer struct {
 	grpc.ServerStream
 }
 
-func (x *accountConversationListServer) Send(m *ConversationListReply) error {
+func (x *chatServiceConversationListServer) Send(m *ConversationListReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Account_ConversationGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChatService_ConversationGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ConversationGetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ConversationGet(ctx, in)
+		return srv.(ChatServiceServer).ConversationGet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ConversationGet",
+		FullMethod: "/berty.chat.ChatService/ConversationGet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ConversationGet(ctx, req.(*ConversationGetRequest))
+		return srv.(ChatServiceServer).ConversationGet(ctx, req.(*ConversationGetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ConversationCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChatService_ConversationCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ConversationCreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ConversationCreate(ctx, in)
+		return srv.(ChatServiceServer).ConversationCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ConversationCreate",
+		FullMethod: "/berty.chat.ChatService/ConversationCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ConversationCreate(ctx, req.(*ConversationCreateRequest))
+		return srv.(ChatServiceServer).ConversationCreate(ctx, req.(*ConversationCreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ConversationLeave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChatService_ConversationUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConversationUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).ConversationUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.chat.ChatService/ConversationUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).ConversationUpdate(ctx, req.(*ConversationUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_ConversationMute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConversationMuteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).ConversationMute(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.chat.ChatService/ConversationMute",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).ConversationMute(ctx, req.(*ConversationMuteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_ConversationLeave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ConversationLeaveRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ConversationLeave(ctx, in)
+		return srv.(ChatServiceServer).ConversationLeave(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ConversationLeave",
+		FullMethod: "/berty.chat.ChatService/ConversationLeave",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ConversationLeave(ctx, req.(*ConversationLeaveRequest))
+		return srv.(ChatServiceServer).ConversationLeave(ctx, req.(*ConversationLeaveRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ConversationErase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChatService_ConversationErase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ConversationEraseRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ConversationErase(ctx, in)
+		return srv.(ChatServiceServer).ConversationErase(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ConversationErase",
+		FullMethod: "/berty.chat.ChatService/ConversationErase",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ConversationErase(ctx, req.(*ConversationEraseRequest))
+		return srv.(ChatServiceServer).ConversationErase(ctx, req.(*ConversationEraseRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ConversationSetSeenPosition_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConversationSetSeenPositionRequest)
+func _ChatService_ConversationInvitationSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConversationInvitationSendRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ConversationSetSeenPosition(ctx, in)
+		return srv.(ChatServiceServer).ConversationInvitationSend(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ConversationSetSeenPosition",
+		FullMethod: "/berty.chat.ChatService/ConversationInvitationSend",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ConversationSetSeenPosition(ctx, req.(*ConversationSetSeenPositionRequest))
+		return srv.(ChatServiceServer).ConversationInvitationSend(ctx, req.(*ConversationInvitationSendRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ConversationMessageList_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ConversationMessageListRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(AccountServer).ConversationMessageList(m, &accountConversationMessageListServer{stream})
-}
-
-type Account_ConversationMessageListServer interface {
-	Send(*ConversationMessageListReply) error
-	grpc.ServerStream
-}
-
-type accountConversationMessageListServer struct {
-	grpc.ServerStream
-}
-
-func (x *accountConversationMessageListServer) Send(m *ConversationMessageListReply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _Account_ConversationMessageSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConversationMessageSendRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AccountServer).ConversationMessageSend(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.chat.Account/ConversationMessageSend",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ConversationMessageSend(ctx, req.(*ConversationMessageSendRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Account_ConversationMessageEdit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConversationMessageEditRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AccountServer).ConversationMessageEdit(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.chat.Account/ConversationMessageEdit",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ConversationMessageEdit(ctx, req.(*ConversationMessageEditRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Account_ConversationMessageHide_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConversationMessageHideRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AccountServer).ConversationMessageHide(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.chat.Account/ConversationMessageHide",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ConversationMessageHide(ctx, req.(*ConversationMessageHideRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Account_ConversationUpdateSettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConversationUpdateSettingsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AccountServer).ConversationUpdateSettings(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.chat.Account/ConversationUpdateSettings",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ConversationUpdateSettings(ctx, req.(*ConversationUpdateSettingsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Account_ConversationInvitationAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChatService_ConversationInvitationAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ConversationInvitationAcceptRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ConversationInvitationAccept(ctx, in)
+		return srv.(ChatServiceServer).ConversationInvitationAccept(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ConversationInvitationAccept",
+		FullMethod: "/berty.chat.ChatService/ConversationInvitationAccept",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ConversationInvitationAccept(ctx, req.(*ConversationInvitationAcceptRequest))
+		return srv.(ChatServiceServer).ConversationInvitationAccept(ctx, req.(*ConversationInvitationAcceptRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ConversationInvitationCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConversationInvitationCreateRequest)
+func _ChatService_ConversationInvitationDecline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConversationInvitationDeclineRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ConversationInvitationCreate(ctx, in)
+		return srv.(ChatServiceServer).ConversationInvitationDecline(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ConversationInvitationCreate",
+		FullMethod: "/berty.chat.ChatService/ConversationInvitationDecline",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ConversationInvitationCreate(ctx, req.(*ConversationInvitationCreateRequest))
+		return srv.(ChatServiceServer).ConversationInvitationDecline(ctx, req.(*ConversationInvitationDeclineRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ConversationInvitationDiscard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConversationInvitationDiscardRequest)
+func _ChatService_MessageList_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(MessageListRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ChatServiceServer).MessageList(m, &chatServiceMessageListServer{stream})
+}
+
+type ChatService_MessageListServer interface {
+	Send(*MessageListReply) error
+	grpc.ServerStream
+}
+
+type chatServiceMessageListServer struct {
+	grpc.ServerStream
+}
+
+func (x *chatServiceMessageListServer) Send(m *MessageListReply) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _ChatService_MessageGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MessageGetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ConversationInvitationDiscard(ctx, in)
+		return srv.(ChatServiceServer).MessageGet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ConversationInvitationDiscard",
+		FullMethod: "/berty.chat.ChatService/MessageGet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ConversationInvitationDiscard(ctx, req.(*ConversationInvitationDiscardRequest))
+		return srv.(ChatServiceServer).MessageGet(ctx, req.(*MessageGetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ContactList_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _ChatService_MessageSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MessageSendRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).MessageSend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.chat.ChatService/MessageSend",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).MessageSend(ctx, req.(*MessageSendRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_MessageEdit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MessageEditRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).MessageEdit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.chat.ChatService/MessageEdit",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).MessageEdit(ctx, req.(*MessageEditRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_MessageHide_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MessageHideRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).MessageHide(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.chat.ChatService/MessageHide",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).MessageHide(ctx, req.(*MessageHideRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_MessageReact_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MessageReactRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).MessageReact(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.chat.ChatService/MessageReact",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).MessageReact(ctx, req.(*MessageReactRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_MessageRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MessageReadRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).MessageRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.chat.ChatService/MessageRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).MessageRead(ctx, req.(*MessageReadRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_MemberList_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(MemberListRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ChatServiceServer).MemberList(m, &chatServiceMemberListServer{stream})
+}
+
+type ChatService_MemberListServer interface {
+	Send(*MemberListReply) error
+	grpc.ServerStream
+}
+
+type chatServiceMemberListServer struct {
+	grpc.ServerStream
+}
+
+func (x *chatServiceMemberListServer) Send(m *MemberListReply) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _ChatService_MemberGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MemberGetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).MemberGet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.chat.ChatService/MemberGet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).MemberGet(ctx, req.(*MemberGetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_ContactList_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(ContactListRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(AccountServer).ContactList(m, &accountContactListServer{stream})
+	return srv.(ChatServiceServer).ContactList(m, &chatServiceContactListServer{stream})
 }
 
-type Account_ContactListServer interface {
+type ChatService_ContactListServer interface {
 	Send(*ContactListReply) error
 	grpc.ServerStream
 }
 
-type accountContactListServer struct {
+type chatServiceContactListServer struct {
 	grpc.ServerStream
 }
 
-func (x *accountContactListServer) Send(m *ContactListReply) error {
+func (x *chatServiceContactListServer) Send(m *ContactListReply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Account_ContactGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChatService_ContactGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ContactGetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ContactGet(ctx, in)
+		return srv.(ChatServiceServer).ContactGet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ContactGet",
+		FullMethod: "/berty.chat.ChatService/ContactGet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ContactGet(ctx, req.(*ContactGetRequest))
+		return srv.(ChatServiceServer).ContactGet(ctx, req.(*ContactGetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ContactUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContactUpdateRequest)
+func _ChatService_ContactBlock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactBlockRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ContactUpdate(ctx, in)
+		return srv.(ChatServiceServer).ContactBlock(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ContactUpdate",
+		FullMethod: "/berty.chat.ChatService/ContactBlock",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ContactUpdate(ctx, req.(*ContactUpdateRequest))
+		return srv.(ChatServiceServer).ContactBlock(ctx, req.(*ContactBlockRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ContactRemove_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChatService_ContactRemove_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ContactRemoveRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ContactRemove(ctx, in)
+		return srv.(ChatServiceServer).ContactRemove(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ContactRemove",
+		FullMethod: "/berty.chat.ChatService/ContactRemove",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ContactRemove(ctx, req.(*ContactRemoveRequest))
+		return srv.(ChatServiceServer).ContactRemove(ctx, req.(*ContactRemoveRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ContactRequestCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContactRequestCreateRequest)
+func _ChatService_ContactRequestSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactRequestSendRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ContactRequestCreate(ctx, in)
+		return srv.(ChatServiceServer).ContactRequestSend(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ContactRequestCreate",
+		FullMethod: "/berty.chat.ChatService/ContactRequestSend",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ContactRequestCreate(ctx, req.(*ContactRequestCreateRequest))
+		return srv.(ChatServiceServer).ContactRequestSend(ctx, req.(*ContactRequestSendRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ContactRequestAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChatService_ContactRequestAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ContactRequestAcceptRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ContactRequestAccept(ctx, in)
+		return srv.(ChatServiceServer).ContactRequestAccept(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ContactRequestAccept",
+		FullMethod: "/berty.chat.ChatService/ContactRequestAccept",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ContactRequestAccept(ctx, req.(*ContactRequestAcceptRequest))
+		return srv.(ChatServiceServer).ContactRequestAccept(ctx, req.(*ContactRequestAcceptRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_ContactRequestDiscard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContactRequestDiscardRequest)
+func _ChatService_ContactRequestDecline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactRequestDeclineRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).ContactRequestDiscard(ctx, in)
+		return srv.(ChatServiceServer).ContactRequestDecline(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/ContactRequestDiscard",
+		FullMethod: "/berty.chat.ChatService/ContactRequestDecline",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).ContactRequestDiscard(ctx, req.(*ContactRequestDiscardRequest))
+		return srv.(ChatServiceServer).ContactRequestDecline(ctx, req.(*ContactRequestDeclineRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_Search_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(SearchRequest)
+func _ChatService_AccountList_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(AccountListRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(AccountServer).Search(m, &accountSearchServer{stream})
+	return srv.(ChatServiceServer).AccountList(m, &chatServiceAccountListServer{stream})
 }
 
-type Account_SearchServer interface {
-	Send(*SearchReply) error
+type ChatService_AccountListServer interface {
+	Send(*AccountListRequest) error
 	grpc.ServerStream
 }
 
-type accountSearchServer struct {
+type chatServiceAccountListServer struct {
 	grpc.ServerStream
 }
 
-func (x *accountSearchServer) Send(m *SearchReply) error {
+func (x *chatServiceAccountListServer) Send(m *AccountListRequest) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Account_AccountSettingsGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountSettingsGetRequest)
+func _ChatService_AccountGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountGetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).AccountSettingsGet(ctx, in)
+		return srv.(ChatServiceServer).AccountGet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/AccountSettingsGet",
+		FullMethod: "/berty.chat.ChatService/AccountGet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).AccountSettingsGet(ctx, req.(*AccountSettingsGetRequest))
+		return srv.(ChatServiceServer).AccountGet(ctx, req.(*AccountGetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_AccountSettingsUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountSettingsUpdateRequest)
+func _ChatService_AccountCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountCreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).AccountSettingsUpdate(ctx, in)
+		return srv.(ChatServiceServer).AccountCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/AccountSettingsUpdate",
+		FullMethod: "/berty.chat.ChatService/AccountCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).AccountSettingsUpdate(ctx, req.(*AccountSettingsUpdateRequest))
+		return srv.(ChatServiceServer).AccountCreate(ctx, req.(*AccountCreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_AccountPairingInvitationCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChatService_AccountUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).AccountUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.chat.ChatService/AccountUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).AccountUpdate(ctx, req.(*AccountUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_AccountOpen_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountOpenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).AccountOpen(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.chat.ChatService/AccountOpen",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).AccountOpen(ctx, req.(*AccountOpenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_AccountClose_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountCloseRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).AccountClose(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.chat.ChatService/AccountClose",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).AccountClose(ctx, req.(*AccountCloseRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_AccountRemove_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountRemoveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).AccountRemove(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.chat.ChatService/AccountRemove",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).AccountRemove(ctx, req.(*AccountRemoveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatService_AccountPairingInvitationCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccountPairingInvitationCreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).AccountPairingInvitationCreate(ctx, in)
+		return srv.(ChatServiceServer).AccountPairingInvitationCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/AccountPairingInvitationCreate",
+		FullMethod: "/berty.chat.ChatService/AccountPairingInvitationCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).AccountPairingInvitationCreate(ctx, req.(*AccountPairingInvitationCreateRequest))
+		return srv.(ChatServiceServer).AccountPairingInvitationCreate(ctx, req.(*AccountPairingInvitationCreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_AccountRenewIncomingContactRequestLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChatService_AccountRenewIncomingContactRequestLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccountRenewIncomingContactRequestLinkRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).AccountRenewIncomingContactRequestLink(ctx, in)
+		return srv.(ChatServiceServer).AccountRenewIncomingContactRequestLink(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.chat.Account/AccountRenewIncomingContactRequestLink",
+		FullMethod: "/berty.chat.ChatService/AccountRenewIncomingContactRequestLink",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).AccountRenewIncomingContactRequestLink(ctx, req.(*AccountRenewIncomingContactRequestLinkRequest))
+		return srv.(ChatServiceServer).AccountRenewIncomingContactRequestLink(ctx, req.(*AccountRenewIncomingContactRequestLinkRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Account_DevEventSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(DevEventSubscribeRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(AccountServer).DevEventSubscribe(m, &accountDevEventSubscribeServer{stream})
-}
-
-type Account_DevEventSubscribeServer interface {
-	Send(*DevEventSubscribeReply) error
-	grpc.ServerStream
-}
-
-type accountDevEventSubscribeServer struct {
-	grpc.ServerStream
-}
-
-func (x *accountDevEventSubscribeServer) Send(m *DevEventSubscribeReply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-var _Account_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "berty.chat.Account",
-	HandlerType: (*AccountServer)(nil),
+var _ChatService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "berty.chat.ChatService",
+	HandlerType: (*ChatServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "ConversationGet",
-			Handler:    _Account_ConversationGet_Handler,
+			Handler:    _ChatService_ConversationGet_Handler,
 		},
 		{
 			MethodName: "ConversationCreate",
-			Handler:    _Account_ConversationCreate_Handler,
+			Handler:    _ChatService_ConversationCreate_Handler,
+		},
+		{
+			MethodName: "ConversationUpdate",
+			Handler:    _ChatService_ConversationUpdate_Handler,
+		},
+		{
+			MethodName: "ConversationMute",
+			Handler:    _ChatService_ConversationMute_Handler,
 		},
 		{
 			MethodName: "ConversationLeave",
-			Handler:    _Account_ConversationLeave_Handler,
+			Handler:    _ChatService_ConversationLeave_Handler,
 		},
 		{
 			MethodName: "ConversationErase",
-			Handler:    _Account_ConversationErase_Handler,
+			Handler:    _ChatService_ConversationErase_Handler,
 		},
 		{
-			MethodName: "ConversationSetSeenPosition",
-			Handler:    _Account_ConversationSetSeenPosition_Handler,
-		},
-		{
-			MethodName: "ConversationMessageSend",
-			Handler:    _Account_ConversationMessageSend_Handler,
-		},
-		{
-			MethodName: "ConversationMessageEdit",
-			Handler:    _Account_ConversationMessageEdit_Handler,
-		},
-		{
-			MethodName: "ConversationMessageHide",
-			Handler:    _Account_ConversationMessageHide_Handler,
-		},
-		{
-			MethodName: "ConversationUpdateSettings",
-			Handler:    _Account_ConversationUpdateSettings_Handler,
+			MethodName: "ConversationInvitationSend",
+			Handler:    _ChatService_ConversationInvitationSend_Handler,
 		},
 		{
 			MethodName: "ConversationInvitationAccept",
-			Handler:    _Account_ConversationInvitationAccept_Handler,
+			Handler:    _ChatService_ConversationInvitationAccept_Handler,
 		},
 		{
-			MethodName: "ConversationInvitationCreate",
-			Handler:    _Account_ConversationInvitationCreate_Handler,
+			MethodName: "ConversationInvitationDecline",
+			Handler:    _ChatService_ConversationInvitationDecline_Handler,
 		},
 		{
-			MethodName: "ConversationInvitationDiscard",
-			Handler:    _Account_ConversationInvitationDiscard_Handler,
+			MethodName: "MessageGet",
+			Handler:    _ChatService_MessageGet_Handler,
+		},
+		{
+			MethodName: "MessageSend",
+			Handler:    _ChatService_MessageSend_Handler,
+		},
+		{
+			MethodName: "MessageEdit",
+			Handler:    _ChatService_MessageEdit_Handler,
+		},
+		{
+			MethodName: "MessageHide",
+			Handler:    _ChatService_MessageHide_Handler,
+		},
+		{
+			MethodName: "MessageReact",
+			Handler:    _ChatService_MessageReact_Handler,
+		},
+		{
+			MethodName: "MessageRead",
+			Handler:    _ChatService_MessageRead_Handler,
+		},
+		{
+			MethodName: "MemberGet",
+			Handler:    _ChatService_MemberGet_Handler,
 		},
 		{
 			MethodName: "ContactGet",
-			Handler:    _Account_ContactGet_Handler,
+			Handler:    _ChatService_ContactGet_Handler,
 		},
 		{
-			MethodName: "ContactUpdate",
-			Handler:    _Account_ContactUpdate_Handler,
+			MethodName: "ContactBlock",
+			Handler:    _ChatService_ContactBlock_Handler,
 		},
 		{
 			MethodName: "ContactRemove",
-			Handler:    _Account_ContactRemove_Handler,
+			Handler:    _ChatService_ContactRemove_Handler,
 		},
 		{
-			MethodName: "ContactRequestCreate",
-			Handler:    _Account_ContactRequestCreate_Handler,
+			MethodName: "ContactRequestSend",
+			Handler:    _ChatService_ContactRequestSend_Handler,
 		},
 		{
 			MethodName: "ContactRequestAccept",
-			Handler:    _Account_ContactRequestAccept_Handler,
+			Handler:    _ChatService_ContactRequestAccept_Handler,
 		},
 		{
-			MethodName: "ContactRequestDiscard",
-			Handler:    _Account_ContactRequestDiscard_Handler,
+			MethodName: "ContactRequestDecline",
+			Handler:    _ChatService_ContactRequestDecline_Handler,
 		},
 		{
-			MethodName: "AccountSettingsGet",
-			Handler:    _Account_AccountSettingsGet_Handler,
+			MethodName: "AccountGet",
+			Handler:    _ChatService_AccountGet_Handler,
 		},
 		{
-			MethodName: "AccountSettingsUpdate",
-			Handler:    _Account_AccountSettingsUpdate_Handler,
+			MethodName: "AccountCreate",
+			Handler:    _ChatService_AccountCreate_Handler,
+		},
+		{
+			MethodName: "AccountUpdate",
+			Handler:    _ChatService_AccountUpdate_Handler,
+		},
+		{
+			MethodName: "AccountOpen",
+			Handler:    _ChatService_AccountOpen_Handler,
+		},
+		{
+			MethodName: "AccountClose",
+			Handler:    _ChatService_AccountClose_Handler,
+		},
+		{
+			MethodName: "AccountRemove",
+			Handler:    _ChatService_AccountRemove_Handler,
 		},
 		{
 			MethodName: "AccountPairingInvitationCreate",
-			Handler:    _Account_AccountPairingInvitationCreate_Handler,
+			Handler:    _ChatService_AccountPairingInvitationCreate_Handler,
 		},
 		{
 			MethodName: "AccountRenewIncomingContactRequestLink",
-			Handler:    _Account_AccountRenewIncomingContactRequestLink_Handler,
+			Handler:    _ChatService_AccountRenewIncomingContactRequestLink_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "EventSubscribe",
-			Handler:       _Account_EventSubscribe_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "ConversationList",
-			Handler:       _Account_ConversationList_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "ConversationMessageList",
-			Handler:       _Account_ConversationMessageList_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "ContactList",
-			Handler:       _Account_ContactList_Handler,
-			ServerStreams: true,
-		},
-		{
 			StreamName:    "Search",
-			Handler:       _Account_Search_Handler,
+			Handler:       _ChatService_Search_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "EventSubscribe",
+			Handler:       _ChatService_EventSubscribe_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "DevEventSubscribe",
-			Handler:       _Account_DevEventSubscribe_Handler,
+			Handler:       _ChatService_DevEventSubscribe_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "ConversationList",
+			Handler:       _ChatService_ConversationList_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "MessageList",
+			Handler:       _ChatService_MessageList_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "MemberList",
+			Handler:       _ChatService_MemberList_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "ContactList",
+			Handler:       _ChatService_ContactList_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "AccountList",
+			Handler:       _ChatService_AccountList_Handler,
 			ServerStreams: true,
 		},
 	},

@@ -14,34 +14,9 @@
   "produces": [
     "application/json"
   ],
-  "paths": {
-    "/conversation/get": {
-      "get": {
-        "operationId": "ConversationGet",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/chatConversationGetReply"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "Account"
-        ]
-      }
-    }
-  },
+  "paths": {},
   "definitions": {
-    "ConversationMutePolicy": {
+    "MemberMutePolicy": {
       "type": "string",
       "enum": [
         "Nothing",
@@ -80,23 +55,74 @@
         }
       }
     },
+    "MessageState": {
+      "type": "string",
+      "enum": [
+        "UnSent",
+        "Sending",
+        "Failed",
+        "Retrying",
+        "Sent"
+      ],
+      "default": "UnSent"
+    },
+    "chatAccountCloseReply": {
+      "type": "object"
+    },
+    "chatAccountCreateReply": {
+      "type": "object"
+    },
+    "chatAccountGetReply": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/chatmodelAccount"
+        }
+      }
+    },
+    "chatAccountListRequest": {
+      "type": "object",
+      "title": "Account"
+    },
+    "chatAccountOpenReply": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
     "chatAccountPairingInvitationCreateReply": {
+      "type": "object"
+    },
+    "chatAccountRemoveReply": {
       "type": "object"
     },
     "chatAccountRenewIncomingContactRequestLinkReply": {
       "type": "object"
     },
-    "chatAccountSettingsGetReply": {
+    "chatAccountUpdateReply": {
       "type": "object"
     },
-    "chatAccountSettingsUpdateReply": {
+    "chatContactBlockReply": {
       "type": "object"
     },
     "chatContactGetReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "contact": {
+          "$ref": "#/definitions/chatmodelContact"
+        }
+      }
     },
     "chatContactListReply": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "contact": {
+          "$ref": "#/definitions/chatmodelContact"
+        }
+      }
     },
     "chatContactRemoveReply": {
       "type": "object"
@@ -104,13 +130,10 @@
     "chatContactRequestAcceptReply": {
       "type": "object"
     },
-    "chatContactRequestCreateReply": {
+    "chatContactRequestDeclineReply": {
       "type": "object"
     },
-    "chatContactRequestDiscardReply": {
-      "type": "object"
-    },
-    "chatContactUpdateReply": {
+    "chatContactRequestSendReply": {
       "type": "object"
     },
     "chatConversationCreateReply": {
@@ -130,10 +153,10 @@
     "chatConversationInvitationAcceptReply": {
       "type": "object"
     },
-    "chatConversationInvitationCreateReply": {
+    "chatConversationInvitationDeclineReply": {
       "type": "object"
     },
-    "chatConversationInvitationDiscardReply": {
+    "chatConversationInvitationSendReply": {
       "type": "object"
     },
     "chatConversationLeaveReply": {
@@ -147,22 +170,10 @@
         }
       }
     },
-    "chatConversationMessageEditReply": {
+    "chatConversationMuteReply": {
       "type": "object"
     },
-    "chatConversationMessageHideReply": {
-      "type": "object"
-    },
-    "chatConversationMessageListReply": {
-      "type": "object"
-    },
-    "chatConversationMessageSendReply": {
-      "type": "object"
-    },
-    "chatConversationSetSeenPositionReply": {
-      "type": "object"
-    },
-    "chatConversationUpdateSettingsReply": {
+    "chatConversationUpdateReply": {
       "type": "object"
     },
     "chatDevEventSubscribeReply": {
@@ -171,8 +182,95 @@
     "chatEventSubscribeReply": {
       "type": "object"
     },
+    "chatMemberGetReply": {
+      "type": "object",
+      "properties": {
+        "member": {
+          "$ref": "#/definitions/chatmodelMember"
+        }
+      }
+    },
+    "chatMemberListReply": {
+      "type": "object",
+      "properties": {
+        "member": {
+          "$ref": "#/definitions/chatmodelMember"
+        }
+      }
+    },
+    "chatMessageEditReply": {
+      "type": "object"
+    },
+    "chatMessageGetReply": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "$ref": "#/definitions/chatmodelMessage"
+        }
+      }
+    },
+    "chatMessageHideReply": {
+      "type": "object"
+    },
+    "chatMessageListReply": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "$ref": "#/definitions/chatmodelMessage"
+        }
+      }
+    },
+    "chatMessageReactReply": {
+      "type": "object"
+    },
+    "chatMessageReadReply": {
+      "type": "object"
+    },
+    "chatMessageSendReply": {
+      "type": "object"
+    },
     "chatSearchReply": {
       "type": "object"
+    },
+    "chatmodelAccount": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "contact_id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "myself": {
+          "$ref": "#/definitions/chatmodelContact"
+        },
+        "contact_requests_enabled": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "settings"
+        },
+        "contact_requests_link": {
+          "type": "string"
+        },
+        "hidden": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "locked": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
     },
     "chatmodelAttachment": {
       "type": "object",
@@ -306,9 +404,6 @@
           "type": "integer",
           "format": "int64"
         },
-        "mute_policy": {
-          "$ref": "#/definitions/ConversationMutePolicy"
-        },
         "messages": {
           "type": "array",
           "items": {
@@ -427,6 +522,9 @@
         "role": {
           "$ref": "#/definitions/MemberRole"
         },
+        "mute_policy": {
+          "$ref": "#/definitions/MemberMutePolicy"
+        },
         "conversation_id": {
           "type": "string",
           "format": "uint64",
@@ -468,6 +566,10 @@
           "type": "string",
           "format": "date-time"
         },
+        "edited_at": {
+          "type": "string",
+          "format": "date-time"
+        },
         "kind": {
           "$ref": "#/definitions/chatmodelMessageKind",
           "title": "fields"
@@ -475,9 +577,17 @@
         "body": {
           "$ref": "#/definitions/MessageBody"
         },
+        "hidden": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "state": {
+          "$ref": "#/definitions/MessageState"
+        },
         "conversation_id": {
           "type": "string",
-          "format": "uint64"
+          "format": "uint64",
+          "title": "associations"
         },
         "conversation": {
           "$ref": "#/definitions/chatmodelConversation"
@@ -591,6 +701,18 @@
     }
   },
   "x-stream-definitions": {
+    "chatAccountListRequest": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatAccountListRequest"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatAccountListRequest"
+    },
     "chatContactListReply": {
       "type": "object",
       "properties": {
@@ -615,18 +737,6 @@
       },
       "title": "Stream result of chatConversationListReply"
     },
-    "chatConversationMessageListReply": {
-      "type": "object",
-      "properties": {
-        "result": {
-          "$ref": "#/definitions/chatConversationMessageListReply"
-        },
-        "error": {
-          "$ref": "#/definitions/runtimeStreamError"
-        }
-      },
-      "title": "Stream result of chatConversationMessageListReply"
-    },
     "chatDevEventSubscribeReply": {
       "type": "object",
       "properties": {
@@ -650,6 +760,30 @@
         }
       },
       "title": "Stream result of chatEventSubscribeReply"
+    },
+    "chatMemberListReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatMemberListReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatMemberListReply"
+    },
+    "chatMessageListReply": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/chatMessageListReply"
+        },
+        "error": {
+          "$ref": "#/definitions/runtimeStreamError"
+        }
+      },
+      "title": "Stream result of chatMessageListReply"
     },
     "chatSearchReply": {
       "type": "object",
