@@ -109,7 +109,7 @@ rnpkg: deps
 .PHONY: lint
 lint: export PWD := $(PWD)
 lint: files = .
-lint: options += --cache
+lint: options += --cache --ignore-path=$(PWD)/.gitignore
 lint: deps
 	$(eslint) $(options) $(files)
 
