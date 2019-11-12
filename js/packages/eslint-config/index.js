@@ -221,12 +221,12 @@ module.exports = {
 
 		// Stylistic Issues
 		// These rules are purely matters of style and are quite subjective.
-		indent: [1, 'tab'],
+		indent: 0,
 		'key-spacing': 0,
 		'keyword-spacing': 1, // enforce spacing before and after keywords
-		'jsx-quotes': [1, 'prefer-double'], // enforces the usage of double quotes for all JSX attribute values which doesnÕt contain a double quote
+		'jsx-quotes': [1, 'prefer-single'], // enforces the usage of double quotes for all JSX attribute values which doesnÕt contain a double quote
 		'comma-spacing': 0,
-		'no-multi-spaces': 0,
+		'no-multi-spaces': 1,
 		'brace-style': 0, // enforce one true brace style (off by default)
 		camelcase: 0, // require camel case names
 		'consistent-this': 1, // enforces consistent naming when capturing the current execution context (off by default)

@@ -1,3 +1,3 @@
 declare interface Window {
-    location: string
+	location: string
 }

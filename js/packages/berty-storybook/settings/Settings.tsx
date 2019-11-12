@@ -851,10 +851,10 @@ export const AppUpdates: React.FC<{}> = () => {
 		<Layout style={[styles.flex, styles.bgWhite]}>
 			<ScrollView>
 				<HeaderSettings
-					title="App updates"
+					title='App updates'
 					action={setUpdate}
 					actionValue={update}
-					desc={!update ? 'Your app is up to date' : null}
+					desc={!update ? 'Your app is up to date' : undefined}
 				>
 					<HeaderAppUpdates update={update} />
 				</HeaderSettings>
@@ -971,7 +971,7 @@ const BodyHelp: React.FC<{}> = () => (
 export const Help: React.FC<{}> = () => (
 	<Layout style={[styles.bgWhite, styles.flex]}>
 		<ScrollView>
-			<HeaderSettings title="Help" bgColor={colors.red}>
+			<HeaderSettings title='Help' bgColor={colors.red}>
 				<HeaderHelp />
 			</HeaderSettings>
 			<BodyHelp />
@@ -1045,9 +1045,9 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => (
 			state={
 				isMode
 					? {
-						value: 'Enabled',
-						color: colors.green,
-						bgColor: colors.lightGreen,
+							value: 'Enabled',
+							color: colors.green,
+							bgColor: colors.lightGreen,
 					  }
 					: { value: 'Disabled', color: colors.red, bgColor: colors.lightRed }
 			}
@@ -1061,14 +1061,14 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => (
 			state={
 				isMode
 					? {
-						value: 'Enabled',
-						color: colors.green,
-						bgColor: colors.lightGreen,
+							value: 'Enabled',
+							color: colors.green,
+							bgColor: colors.lightGreen,
 					  }
 					: {
-						value: 'Disabled',
-						color: colors.red,
-						bgColor: colors.lightRed,
+							value: 'Disabled',
+							color: colors.red,
+							bgColor: colors.lightRed,
 					  }
 			}
 			actionIcon='arrow-ios-forward'
@@ -1123,10 +1123,10 @@ export const Mode: React.FC<{}> = () => {
 		<Layout style={[styles.flex, styles.bgWhite]}>
 			<ScrollView>
 				<HeaderSettings
-					title="Settings"
+					title='Settings'
 					action={setIsMode}
 					actionValue={isMode}
-					desc="Customize everything to get the app that fits your needs"
+					desc='Customize everything to get the app that fits your needs'
 				/>
 				<BodyMode isMode={isMode} />
 			</ScrollView>
@@ -1208,7 +1208,7 @@ const BodyBlockedContacts: React.FC<BlockedContactsListProps> = ({ items }) => (
 export const BlockedContacts: React.FC<BlockedContactsProps> = ({ blocked }) => (
 	<Layout style={[styles.flex, styles.bgWhite]}>
 		<ScrollView>
-			<HeaderSettings title="Blocked contacts" desc="Blocked contacts can't send you contact requests">
+			<HeaderSettings title='Blocked contacts' desc="Blocked contacts can't send you contact requests">
 				<HeaderBlockedContacts />
 			</HeaderSettings>
 			<BodyBlockedContacts {...blocked} />
@@ -1327,10 +1327,10 @@ export const Notifications: React.FC<{}> = () => {
 		<Layout style={[styles.flex, styles.bgWhite]}>
 			<ScrollView>
 				<HeaderSettings
-					title="Notifications"
+					title='Notifications'
 					action={setIsAuthorize}
 					actionValue={isAuthorize}
-					desc="You have not yet activated notifications for this app"
+					desc='You have not yet activated notifications for this app'
 				>
 					<HeaderNotifications isAuthorize={isAuthorize} />
 				</HeaderSettings>
@@ -1402,7 +1402,7 @@ export const Bluetooth: React.FC<{}> = () => {
 		<Layout style={[styles.flex, styles.bgWhite]}>
 			<ScrollView>
 				<HeaderSettings
-					title="Bluetooth"
+					title='Bluetooth'
 					action={setIsBluetooth}
 					actionValue={isBluetooth}
 					desc="Bluetooth allows you to use the Berty app when you don't have a network connection (wifi or data) by connecting
@@ -1507,7 +1507,7 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => (
 						<Icon name='lock-outline' width={30} height={30} fill={colors.yellow} />
 						<Text
 							style={[styles.fontFamily, styles.textBlack, styles.textCenter, { paddingTop: 6, fontWeight: 'bold' }]}
-							category="s4"
+							category='s4'
 						>
 							Private & Secure
 						</Text>
@@ -1646,7 +1646,7 @@ export const AboutBerty: React.FC<{}> = () => {
 	return (
 		<Layout style={[styles.flex, styles.bgWhite]}>
 			<ScrollView>
-				<HeaderSettings title="About Berty" action={setVersion} actionValue={version}>
+				<HeaderSettings title='About Berty' action={setVersion} actionValue={version}>
 					<HeaderAboutBerty version={version} />
 				</HeaderSettings>
 				<BodyAboutBerty version={version} />
@@ -1715,7 +1715,7 @@ const BodyTermsOfUse: React.FC<{}> = () => (
 export const TermsOfUse: React.FC<{}> = () => (
 	<Layout style={[styles.flex, styles.bgWhite]}>
 		<ScrollView>
-			<HeaderSettings title="Terms of use" desc="Last updated: August 29th 2019" />
+			<HeaderSettings title='Terms of use' desc='Last updated: August 29th 2019' />
 			<BodyTermsOfUse />
 		</ScrollView>
 	</Layout>
