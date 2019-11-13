@@ -3,7 +3,7 @@ package bertyprotocol
 import (
 	"context"
 	"fmt"
-	io "io"
+	"io"
 	"testing"
 
 	"berty.tech/go/internal/protocoldb"
@@ -72,7 +72,7 @@ func TestMock_single(t *testing.T) {
 			t.Fatalf("Expected nil, got %v.", err)
 		}
 
-		entries := []*protocoldb.Contact{}
+		entries := []*Contact{}
 		for {
 			entry, err := stream.Recv()
 			if err == io.EOF {

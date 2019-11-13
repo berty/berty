@@ -4,7 +4,6 @@ package berty.protocol;
 
 import "google/api/annotations.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "go-internal/protocolmodel.proto";
 import "github.com/golang/protobuf/ptypes/timestamp/timestamp.proto";
 
 option go_package = "berty.tech/go/pkg/bertyprotocol";
@@ -18,8 +17,10 @@ service Instance {
   // InstanceGetConfiguration gets current configuration of this protocol instance
   rpc InstanceGetConfiguration (InstanceGetConfigurationRequest) returns (InstanceGetConfigurationReply);
 
-
+  ////
   //// AccountManager
+  ////
+
   // An account is associated with a Berty user
 
   // AccountGetConfiguration get current account global configuration (shared between all devices linked to current account)
@@ -40,16 +41,19 @@ service Instance {
   // AccountResetIncomingContactRequestLink invalidate the request link
   rpc AccountResetIncomingContactRequestLink (AccountResetIncomingContactRequestLinkRequest) returns (AccountResetIncomingContactRequestLinkReply);
 
-
+  ////
   //// Event Manager
+  ////
+
   // Event Stream is a channel on which all the events of the protocol are
   // published (contact request, new incoming message, etc...).
 
   // EventSubscribe listen for real time protocol events
   rpc EventSubscribe (EventSubscribeRequest) returns (stream EventStream);
 
-
+  ////
   //// ContactRequestManager
+  ////
   // Two accounts can be considered as contacts if a contact request from one has been accepted by the other and secrets
   // for further communication have been exchanged.
 
@@ -69,8 +73,9 @@ service Instance {
   // ContactRequestSend sends a contact request to the given contact
   rpc ContactRequestSend (ContactRequestSendRequest) returns (ContactRequestSendReply);
 
-
+  ////
   //// Contact Manager
+  ////
 
   // ContactGet gets contact's information
   rpc ContactGet (ContactGetRequest) returns (ContactGetReply);
@@ -81,8 +86,9 @@ service Instance {
   // ContactList removes the given contact
   rpc ContactRemove (ContactRemoveRequest) returns (ContactRemoveReply);
 
-
+  ////
   //// Stream Manager
+  ////
 
   // StreamManagerRequestToContact requests a stream to a specific contact
   rpc StreamManagerRequestToContact (StreamManagerRequestToContactRequest) returns (StreamManagerRequestToContactReply);
@@ -91,8 +97,9 @@ service Instance {
   // contact that sent you this request
   rpc StreamManagerAccept (stream StreamManagerAcceptRequest) returns (stream StreamManagerAcceptReply);
 
-
+  ////
   //// Group Manager
+  ////
   // A group is a common communication channel shared by a set of devices. It can be devices from different accounts. In
   // the context of the Berty messaging application, groups are used for all conversations between contacts, whether
   // they include two or more contacts.
@@ -110,8 +117,9 @@ service Instance {
   // GroupList lists all group for this account
   rpc GroupList (GroupListRequest) returns (stream GroupListReply);
 
-
-  /// Group Message Manager
+  ////
+  //// Group Message Manager
+  ////
 
   // GroupMessageCreate creates a new message for the group, and send the invitation to
   // the other group members.
@@ -127,8 +135,9 @@ service Instance {
   // GroupTopicSubscribe subscribes to a topic to receive volatile message from it
   rpc GroupTopicSubscribe (GroupTopicSubscribeRequest) returns (stream GroupTopicSubscribeReply);
 
-
+  ////
   //// Group Invitation Manager
+  ////
   // New members will receive a payload similar to the one received on group init. Existing members will receive the
   // list of the newly added members and the required secrets to open their messages.
 
@@ -144,7 +153,6 @@ service Instance {
   // GroupInvitationList lists pending invitation to this group
   rpc GroupInvitationList (GroupInvitationListRequest) returns (stream GroupInvitationListReply);
 }
-
 
 // Instance Manager
 
@@ -170,7 +178,6 @@ message InstanceGetConfigurationReply {
   SettingState relay_enabled = 6;
 }
 
-
 // AccountManager
 
 message AccountGetConfigurationRequest {}
@@ -184,25 +191,6 @@ message AccountGetInformationRequest {}
 message AccountGetInformationReply {
   bytes account_pub_key = 1;
   repeated Device devices = 2;
-}
-
-message Device {
-  bytes device_pub_key = 1;
-  bytes parent_device_pub_key = 2; // Equal to account_pub_key for the first device
-  google.protobuf.Timestamp linked_at = 3;
-  bool ble_capable = 4;
-  bool wifi_p2p_capable = 5;
-  bool relay_capable = 6;
-}
-
-message Invitation {
-  bytes inviter_member_pub_key = 1;
-  bytes invitation_priv_key = 2;
-  bytes invitation_pub_key_signature = 3; // Signed by inviter_member_priv_key
-
-  uint32 group_version = 4;
-  bytes group_id_pub_key = 5;
-  bytes shared_secret = 6;
 }
 
 message AccountLinkNewDeviceRequest {}
@@ -228,7 +216,6 @@ message AccountResetIncomingContactRequestLinkRequest {}
 message AccountResetIncomingContactRequestLinkReply {
   ContactRequestLink contact_request_link = 1; // Reset rdv_point_seed and rotation_time_point
 }
-
 
 // EventManager
 
@@ -289,12 +276,12 @@ message ContactRequestDiscardReply {}
 
 message ContactRequestListIncomingRequest {};
 message ContactRequestListIncomingReply { // streamed
-  protocolmodel.Contact contact = 1;
+  Contact contact = 1;
 }
 
 message ContactRequestListOutgoingRequest {};
 message ContactRequestListOutgoingReply { // streamed
-  protocolmodel.Contact contact = 1;
+  Contact contact = 1;
 }
 
 message ContactRequestSendRequest {
@@ -302,14 +289,13 @@ message ContactRequestSendRequest {
 }
 message ContactRequestSendReply {}
 
-
 // ContactManager
 
 message ContactGetRequest {
   bytes contact_account_pub_key = 1;
 }
 message ContactGetReply {
-  protocolmodel.Contact contact = 1;
+  Contact contact = 1;
 }
 
 message ContactRemoveRequest {
@@ -319,9 +305,8 @@ message ContactRemoveReply {}
 
 message ContactListRequest {};
 message ContactListReply { // streamed
-  protocolmodel.Contact contact = 1;
+  Contact contact = 1;
 };
-
 
 // Stream
 
@@ -331,7 +316,6 @@ message StreamManagerRequestToContactReply {}
 message StreamManagerAcceptRequest {}
 message StreamManagerAcceptReply {}
 
-
 // Group
 
 message GroupCreateRequest {
@@ -340,7 +324,7 @@ message GroupCreateRequest {
   bytes metadata = 3;
 };
 message GroupCreateReply {
-  protocolmodel.GroupInfo group_info = 1;
+  GroupInfo group_info = 1;
 };
 
 message GroupGenerateInviteLinkRequest {
@@ -357,9 +341,8 @@ message GroupLeaveReply {};
 
 message GroupListRequest {};
 message GroupListReply { // streamed
-  protocolmodel.GroupInfo group_info = 1;
+  GroupInfo group_info = 1;
 };
-
 
 // Group Message
 
@@ -380,7 +363,6 @@ message GroupMessageListReply { // streamed
   bytes payload = 3;
 };
 
-
 // Group PubSub
 
 message GroupTopicPublishRequest { // streamed
@@ -397,7 +379,6 @@ message GroupTopicSubscribeRequest {
 message GroupTopicSubscribeReply { // streamed
   bytes volatile_data = 1;
 };
-
 
 // Group Invitation
 
@@ -420,5 +401,88 @@ message GroupInvitationDiscardReply {};
 message GroupInvitationListRequest {};
 message GroupInvitationListReply { // streamed
   bytes inviter_account_pub_key = 1;
-  protocolmodel.GroupInfo group_info = 2;
+  GroupInfo group_info = 2;
 };
+
+// Common entities
+
+message Device {
+  bytes device_pub_key = 1;
+  bytes parent_device_pub_key = 2; // Equal to account_pub_key for the first device
+  google.protobuf.Timestamp linked_at = 3;
+  bool ble_capable = 4;
+  bool wifi_p2p_capable = 5;
+  bool relay_capable = 6;
+}
+
+message Invitation {
+  bytes inviter_member_pub_key = 1;
+  bytes invitation_priv_key = 2;
+  bytes invitation_pub_key_signature = 3; // Signed by inviter_member_priv_key
+  uint32 group_version = 4;
+  bytes group_id_pub_key = 5;
+  bytes shared_secret = 6;
+}
+
+// Contact is the public version of protocolmodel.Contact and should stay in sync
+message Contact {
+  enum TrustLevel {
+    Unknown = 0;
+    Untrusted = 1;
+    Accepted = 2;
+    Trusted = 3;
+    UltimateTrust = 4;
+  }
+  bytes account_pub_key = 1;
+  bytes one_to_one_group_pub_key = 2;
+  reserved 3;
+  TrustLevel trust_level = 4;
+  bytes metadata = 5;
+  bool blocked = 6;
+  GroupInfo one_to_one_group = 80;
+  reserved 98;
+  reserved 99;
+}
+
+// GroupInfo is the public version of protocolmodel.GroupInfo and should stay in sync
+message GroupInfo { // group clashes with reserved SQL keyword
+  enum GroupAudience {
+    Undefined = 0;
+    OneToOne = 1;
+    Group = 2;
+    Self = 3;
+  }
+  bytes group_pub_key = 1;
+  reserved 2;
+  bytes metadata = 3;
+  GroupAudience audience = 4;
+  uint32 version = 5;
+  reserved 6;
+  reserved 7;
+  reserved 8;
+  bytes inviter_contact_pub_key = 9;
+  reserved 10;
+  reserved 11;
+  reserved 12;
+  reserved 13;
+  repeated GroupMember members = 80;
+  Contact inviter = 81;
+  reserved 98;
+  reserved 99;
+}
+
+// GroupMember is the public version of protocolmodel.GroupMember and should stay in sync
+message GroupMember {
+  bytes group_member_pub_key = 1;
+  bytes group_pub_key = 2;
+  bytes inviter_pub_key = 3; // Will be null for first member of the group
+  bytes contact_account_pub_key = 4;
+  reserved 5;
+  bytes metadata = 6;
+  reserved 80;
+  GroupInfo group_info = 81;
+  GroupMember inviter = 82;
+  Contact contact = 83;
+  reserved 98;
+  reserved 99;
+}
