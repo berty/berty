@@ -8,7 +8,6 @@ contributor = $(shell git config --get user.name) <$(shell git config --get user
 license = (Apache-2.0 or MIT)
 
 yarn := $(shell which yarn || echo '/usr/local/bin/yarn')
-
 yarn_flags :=
 
 mod := $(PWD)/node_modules
@@ -39,16 +38,13 @@ $(yarn):
 	$(error "yarn is not installed")
 
 .PHONY: deps
-deps: $(yarn) $(lerna) $(mod) $(pkg_mod) gen
+deps: $(yarn) $(mod) $(pkg_mod)
 
 $(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
-	$(lerna) $(lerna_flags) init
+	$(yarn) $(if $CIRCLE_JOB, '--frozen-lockfile')
 	$(lerna) $(lerna_flags) bootstrap
 	mkdir -p $(mod) $(pkg_mod)
 	touch $(mod) $(pkg_mod)
-
-$(lerna): $(yarn)
-	$(yarn) add -W lerna@latest
 
 .PHONY: upgrade
 upgrade: deps
@@ -110,8 +106,11 @@ rnpkg: deps
 .PHONY: lint
 lint: export PWD := $(PWD)
 lint: files = .
-lint: options += --cache
+lint: options += --cache --ext=.js,.jsx,.ts,.tsx
 lint: deps
+	cat $(PWD)/.gitignore > $(PWD)/.eslintignore
+	echo "*.pb.*" >> $(PWD)/.eslintignore
+	echo "*.gen.*" >> $(PWD)/.eslintignore
 	$(eslint) $(options) $(files)
 
 .PHONY: lint.fix
@@ -121,6 +120,9 @@ lint.fix: lint
 .PHONY: lint.watch
 lint.watch: options += --watch
 lint.watch: lint
+
+.PHONY: gen
+gen: deps
 
 include packages/api-chat/Makefile
 include packages/react-native-chat-sdk/Makefile

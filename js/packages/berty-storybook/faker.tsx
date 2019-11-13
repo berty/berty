@@ -33,15 +33,15 @@ export const generateConversations = () => ({
 })
 
 export const generateUsers = () => ({
-  items: randomArray().map(() => ({
-    avatarUri: faker.internet.avatar(),
-    name: faker.name.findName(),
-  }))
+	items: randomArray().map(() => ({
+		avatarUri: faker.internet.avatar(),
+		name: faker.name.findName(),
+	})),
 })
 
 export const generateOneUser = () => ({
-  avatarUri: faker.internet.avatar(),
-  name: faker.name.findName(),
+	avatarUri: faker.internet.avatar(),
+	name: faker.name.findName(),
 })
 
 export const fakeRequests = generateRequests()

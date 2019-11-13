@@ -14,7 +14,8 @@ commands:
           key: v0-js-{{.Branch}}-{{.Revision}}
           paths:
             - ~/.cache
-            - ~/go/src/berty.tech/js/node_modules
+            - /usr/local/share/.cache/yarn/v4
+            - /go/src/berty.tech/js/node_modules
 
   js_restore_cache:
     description: "restore js cache"
@@ -80,8 +81,7 @@ jobs:
     steps:
       - checkout
       - js_restore_cache
-      - run: cd js && (git diff --quiet master . && make deps) || true
-      - run: cd js && (git diff --quiet master ../api . && make gen.clean gen) || true
+      - run: git diff --quiet origin master -- api js || (cd js && make gen.clean gen)
       - run: |
           git status | cat
           git diff -w | cat
@@ -95,12 +95,7 @@ jobs:
     steps:
       - checkout
       - js_restore_cache
-      - run: cd js && (git diff --quiet master . && make deps) || true
-      - run: cd js && (git diff --quiet master . && make lint) || true
-      - run: |
-          git status | cat
-          git diff -w | cat
-          git diff-index -w --quiet HEAD --
+      - run: git diff --quiet origin master -- js || (cd js && make lint)
       - js_save_cache
 
   githooks:
@@ -151,8 +146,8 @@ workflows:
       - go-build-112
       - go-docker
       - go-generate
-      #- js-generate   # temporarily disabled because it breaks without code change
-      #- js-lint       # temporarily disabled because it breaks without code change
+      - js-generate   # temporarily disabled because it breaks without code change
+      - js-lint       # temporarily disabled because it breaks without code change
       - githooks
       - bazel-go-build
       - bazel-go-test

@@ -18,7 +18,7 @@ api_chat_berty_files := $(api_chat_berty_path)/bertychat.proto $(api_chat_berty_
 api_chat_berty_targets := \
 	$(PWD)/index.pb.js \
 	$(PWD)/index.pb.d.ts \
-	$(PWD)/index.js \
+	$(PWD)/index.gen.js \
 
 api_chat_files := $(api_chat_berty_files) \
 
@@ -29,7 +29,6 @@ api_chat_pbjs_flags := \
 	-p $(api_chat_googleapis_path) \
 	-p $(api_chat_go_path) \
 	-p $(api_chat_protobuf_path) \
-
 
 api_chat_pbts := $(abspath $(PWD)/node_modules/.bin/pbts)
 api_chat_pbts_flags := --no-comments
@@ -62,7 +61,7 @@ $(PWD)/index.pb.d.ts: $(api_chat_berty_files) $(PWD)/Makefile
 	rm $@.bak
 	@# $(api_chat_lint) $(api_chat_lint_options) $@
 
-$(PWD)/index.js: $(PWD)/templates/index.js.hbs $(api_chat_berty_files) $(PWD)/Makefile
+$(PWD)/index.gen.js: $(PWD)/templates/index.gen.js.hbs $(api_chat_berty_files) $(PWD)/Makefile
 	$(api_chat_pbhbs) $(api_chat_pbhbs_flags) $(api_chat_berty_files)
 	@# $(api_chat_lint) $(api_chat_lint_options) $@
 

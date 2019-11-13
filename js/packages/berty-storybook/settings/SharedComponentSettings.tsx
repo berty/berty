@@ -286,7 +286,7 @@ type HeaderSettingsProps = {
 	undoIconColor?: string
 	desc?: string
 	descFontSize?: number
-	descColor: string
+	descColor?: string
 	action?: React.Dispatch<any>
 	actionValue?: boolean
 	actionIcon?: string
