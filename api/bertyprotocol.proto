@@ -8,227 +8,251 @@ import "github.com/golang/protobuf/ptypes/timestamp/timestamp.proto";
 
 option go_package = "berty.tech/go/pkg/bertyprotocol";
 
-// Instance is the top-level API to manage an instance of the Berty Protocol.
+// ProtocolService is the top-level API to manage an instance of the Berty Protocol.
 // Each Berty Protocol Instance is considered as a Berty device and is associated with a Berty user.
-service Instance {
+service ProtocolService {
   // InstanceExportData exports instance data
-  rpc InstanceExportData (InstanceExportDataRequest) returns (InstanceExportDataReply) { option (google.api.http) = {post: "/instance/export-data"}; };
+  rpc InstanceExportData (InstanceExportData.Request) returns (InstanceExportData.Reply) { option (google.api.http) = {post: "/instance/export-data"}; };
 
   // InstanceGetConfiguration gets current configuration of this protocol instance
-  rpc InstanceGetConfiguration (InstanceGetConfigurationRequest) returns (InstanceGetConfigurationReply);
+  rpc InstanceGetConfiguration (InstanceGetConfiguration.Request) returns (InstanceGetConfiguration.Reply);
 
-  ////
-  //// AccountManager
-  ////
+  //
+  // AccountManager
+  //
 
   // An account is associated with a Berty user
 
   // AccountGetConfiguration get current account global configuration (shared between all devices linked to current account)
-  rpc AccountGetConfiguration (AccountGetConfigurationRequest) returns (AccountGetConfigurationReply);
+  rpc AccountGetConfiguration (AccountGetConfiguration.Request) returns (AccountGetConfiguration.Reply);
 
   // AccountGetInformation get current account global information (shared between all devices linked to current account)
-  rpc AccountGetInformation (AccountGetInformationRequest) returns (AccountGetInformationReply);
+  rpc AccountGetInformation (AccountGetInformation.Request) returns (AccountGetInformation.Reply);
 
   // AccountLinkNewDevice link a new device to this account
-  rpc AccountLinkNewDevice (AccountLinkNewDeviceRequest) returns (AccountLinkNewDeviceReply);
+  rpc AccountLinkNewDevice (AccountLinkNewDevice.Request) returns (AccountLinkNewDevice.Reply);
 
   // AccountDisableIncomingContactRequest disable incoming contact request, under the hood, this will make you undiscoverable for new contact
-  rpc AccountDisableIncomingContactRequest (AccountDisableIncomingContactRequestRequest) returns (AccountDisableIncomingContactRequestReply);
+  rpc AccountDisableIncomingContactRequest (AccountDisableIncomingContactRequest.Request) returns (AccountDisableIncomingContactRequest.Reply);
 
   // AccountEnableIncomingContactRequest enable incoming contact request
-  rpc AccountEnableIncomingContactRequest (AccountEnableIncomingContactRequestRequest) returns (AccountEnableIncomingContactRequestReply);
+  rpc AccountEnableIncomingContactRequest (AccountEnableIncomingContactRequest.Request) returns (AccountEnableIncomingContactRequest.Reply);
 
   // AccountResetIncomingContactRequestLink invalidate the request link
-  rpc AccountResetIncomingContactRequestLink (AccountResetIncomingContactRequestLinkRequest) returns (AccountResetIncomingContactRequestLinkReply);
+  rpc AccountResetIncomingContactRequestLink (AccountResetIncomingContactRequestLink.Request) returns (AccountResetIncomingContactRequestLink.Reply);
 
-  ////
-  //// Event Manager
-  ////
+  //
+  // Event Manager
+  //
 
   // Event Stream is a channel on which all the events of the protocol are
   // published (contact request, new incoming message, etc...).
 
   // EventSubscribe listen for real time protocol events
-  rpc EventSubscribe (EventSubscribeRequest) returns (stream EventStream);
+  rpc EventSubscribe (EventSubscribe.Request) returns (stream EventSubscribe.Reply);
 
-  ////
-  //// ContactRequestManager
-  ////
+  //
+  // ContactRequestManager
+  //
   // Two accounts can be considered as contacts if a contact request from one has been accepted by the other and secrets
   // for further communication have been exchanged.
 
   // ContactRequestAccept accepts the given contact request, the requester signature is included so any of their device
   // can accept the contact request
-  rpc ContactRequestAccept (ContactRequestAcceptRequest) returns (ContactRequestAcceptReply);
+  rpc ContactRequestAccept (ContactRequestAccept.Request) returns (ContactRequestAccept.Reply);
 
   // ContactRequestDiscard discards the given contact request
-  rpc ContactRequestDiscard (ContactRequestDiscardRequest) returns (ContactRequestDiscardReply);
+  rpc ContactRequestDiscard (ContactRequestDiscard.Request) returns (ContactRequestDiscard.Reply);
 
   // ContactRequestListIncoming lists incoming contact request sent to your account
-  rpc ContactRequestListIncoming (ContactRequestListIncomingRequest) returns (stream ContactRequestListIncomingReply);
+  rpc ContactRequestListIncoming (ContactRequestListIncoming.Request) returns (stream ContactRequestListIncoming.Reply);
 
   // ContactRequestListIncoming lists pending contact request sent by your account
-  rpc ContactRequestListOutgoing (ContactRequestListOutgoingRequest) returns (stream ContactRequestListOutgoingReply);
+  rpc ContactRequestListOutgoing (ContactRequestListOutgoing.Request) returns (stream ContactRequestListOutgoing.Reply);
 
   // ContactRequestSend sends a contact request to the given contact
-  rpc ContactRequestSend (ContactRequestSendRequest) returns (ContactRequestSendReply);
+  rpc ContactRequestSend (ContactRequestSend.Request) returns (ContactRequestSend.Reply);
 
-  ////
-  //// Contact Manager
-  ////
+  //
+  // Contact Manager
+  //
 
   // ContactGet gets contact's information
-  rpc ContactGet (ContactGetRequest) returns (ContactGetReply);
+  rpc ContactGet (ContactGet.Request) returns (ContactGet.Reply);
 
   // ContactList lists contacts of this account
-  rpc ContactList (ContactListRequest) returns (stream ContactListReply);
+  rpc ContactList (ContactList.Request) returns (stream ContactList.Reply);
 
   // ContactList removes the given contact
-  rpc ContactRemove (ContactRemoveRequest) returns (ContactRemoveReply);
+  rpc ContactRemove (ContactRemove.Request) returns (ContactRemove.Reply);
 
-  ////
-  //// Stream Manager
-  ////
+  //
+  // Stream Manager
+  //
 
   // StreamManagerRequestToContact requests a stream to a specific contact
-  rpc StreamManagerRequestToContact (StreamManagerRequestToContactRequest) returns (StreamManagerRequestToContactReply);
+  rpc StreamManagerRequestToContact (StreamManagerRequestToContact.Request) returns (StreamManagerRequestToContact.Reply);
 
   // StreamManagerAccept accepts a stream request, and create a stream with the
   // contact that sent you this request
-  rpc StreamManagerAccept (stream StreamManagerAcceptRequest) returns (stream StreamManagerAcceptReply);
+  rpc StreamManagerAccept (stream StreamManagerAccept.Request) returns (stream StreamManagerAccept.Reply);
 
-  ////
-  //// Group Manager
-  ////
+  //
+  // Group Manager
+  //
   // A group is a common communication channel shared by a set of devices. It can be devices from different accounts. In
   // the context of the Berty messaging application, groups are used for all conversations between contacts, whether
   // they include two or more contacts.
 
   // GroupCreate initiate a group locally
-  rpc GroupCreate (GroupCreateRequest) returns (GroupCreateReply);
+  rpc GroupCreate (GroupCreate.Request) returns (GroupCreate.Reply);
 
   // GroupGenerateInviteLink generates an invitation link used to send the invitation to
   // the other group members
-  rpc GroupGenerateInviteLink (GroupGenerateInviteLinkRequest) returns (GroupGenerateInviteLinkReply);
+  rpc GroupGenerateInviteLink (GroupGenerateInviteLink.Request) returns (GroupGenerateInviteLink.Reply);
 
   // GroupLeave leaves a group
-  rpc GroupLeave (GroupLeaveRequest) returns (GroupLeaveReply);
+  rpc GroupLeave (GroupLeave.Request) returns (GroupLeave.Reply);
 
   // GroupList lists all group for this account
-  rpc GroupList (GroupListRequest) returns (stream GroupListReply);
+  rpc GroupList (GroupList.Request) returns (stream GroupList.Reply);
 
-  ////
-  //// Group Message Manager
-  ////
+  //
+  // Group Message Manager
+  //
 
   // GroupMessageCreate creates a new message for the group, and send the invitation to
   // the other group members.
-  rpc GroupMessageCreate (GroupMessageCreateRequest) returns (GroupMessageCreateReply);
+  rpc GroupMessageCreate (GroupMessageCreate.Request) returns (GroupMessageCreate.Reply);
 
   // GroupMessageList lists messages from this group
-  rpc GroupMessageList (GroupMessageListRequest) returns (stream GroupMessageListReply);
+  rpc GroupMessageList (GroupMessageList.Request) returns (stream GroupMessageList.Reply);
 
   // GroupTopicPublish return a stream used to publish volatile updates to other group members
   // on a specific topic
-  rpc GroupTopicPublish (stream GroupTopicPublishRequest) returns (GroupTopicPublishReply);
+  rpc GroupTopicPublish (stream GroupTopicPublish.Request) returns (GroupTopicPublish.Reply);
 
   // GroupTopicSubscribe subscribes to a topic to receive volatile message from it
-  rpc GroupTopicSubscribe (GroupTopicSubscribeRequest) returns (stream GroupTopicSubscribeReply);
+  rpc GroupTopicSubscribe (GroupTopicSubscribe.Request) returns (stream GroupTopicSubscribe.Reply);
 
-  ////
-  //// Group Invitation Manager
-  ////
+  //
+  // Group Invitation Manager
+  //
   // New members will receive a payload similar to the one received on group init. Existing members will receive the
   // list of the newly added members and the required secrets to open their messages.
 
   // GroupInvitationAccept accepts an invation to join a group
-  rpc GroupInvitationAccept (GroupInvitationAcceptRequest) returns (GroupInvitationAcceptReply);
+  rpc GroupInvitationAccept (GroupInvitationAccept.Request) returns (GroupInvitationAccept.Reply);
 
   // GroupInvitationCreate creates an invitation, that can be sent to join this group
-  rpc GroupInvitationCreate (GroupInvitationCreateRequest) returns (GroupInvitationCreateReply);
+  rpc GroupInvitationCreate (GroupInvitationCreate.Request) returns (GroupInvitationCreate.Reply);
 
   // GroupInvitationDiscard discards an invtation sent to you to join a group
-  rpc GroupInvitationDiscard (GroupInvitationDiscardRequest) returns (GroupInvitationDiscardReply);
+  rpc GroupInvitationDiscard (GroupInvitationDiscard.Request) returns (GroupInvitationDiscard.Reply);
 
   // GroupInvitationList lists pending invitation to this group
-  rpc GroupInvitationList (GroupInvitationListRequest) returns (stream GroupInvitationListReply);
+  rpc GroupInvitationList (GroupInvitationList.Request) returns (stream GroupInvitationList.Reply);
 }
 
+//
 // Instance Manager
+//
 
-message InstanceExportDataRequest {}
-message InstanceExportDataReply {
-  bytes exported_data = 1;
+message InstanceExportData {
+  message Request {}
+  message Reply {
+    bytes exported_data = 1;
+  }
 }
 
-message InstanceGetConfigurationRequest {}
-message InstanceGetConfigurationReply {
+message InstanceGetConfiguration {
   enum SettingState {
     Unknown = 0;
     Enabled = 1;
     Disabled = 2;
     Unavailable = 3;
   }
-
-  string peer_id = 1 [(gogoproto.customname) = "PeerID"];
-  repeated string listeners = 2;
-  SettingState ble_enabled = 3;
-  SettingState wifi_p2p_enabled = 4; // MultiPeerConnectivity for Darwin and Nearby for Android
-  SettingState mdns_enabled = 5;
-  SettingState relay_enabled = 6;
+  message Request {}
+  message Reply {
+    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+    repeated string listeners = 2;
+    SettingState ble_enabled = 3;
+    SettingState wifi_p2p_enabled = 4; // MultiPeerConnectivity for Darwin and Nearby for Android
+    SettingState mdns_enabled = 5;
+    SettingState relay_enabled = 6;
+  }
 }
 
-// AccountManager
+//
+// Account Manager
+//
 
-message AccountGetConfigurationRequest {}
-message AccountGetConfigurationReply {
-  bool contact_requestable = 1;
-  bytes default_pinning_service = 2;
-  bytes metadata = 3;
+message AccountGetConfiguration {
+  message Request {}
+  message Reply {
+    bool contact_requestable = 1;
+    bytes default_pinning_service = 2;
+    bytes metadata = 3;
+  }
 }
 
-message AccountGetInformationRequest {}
-message AccountGetInformationReply {
-  bytes account_pub_key = 1;
-  repeated Device devices = 2;
+message AccountGetInformation {
+  message Request {}
+  message Reply {
+    bytes account_pub_key = 1;
+    repeated Device devices = 2;
+  }
 }
 
-message AccountLinkNewDeviceRequest {}
-message AccountLinkNewDeviceReply {
-  Invitation invitation = 1;
+message AccountLinkNewDevice {
+  message Request {}
+  message Reply {
+    Invitation invitation = 1;
+  }
 }
 
-message ContactRequestLink {
-  bytes rendezvous_point_seed = 1;
-  bytes contact_account_pub_key = 2;
-  bytes metadata = 3;
+message AccountDisableIncomingContactRequest {
+  message Request {}
+  message Reply {}
 }
 
-message AccountDisableIncomingContactRequestRequest {}
-message AccountDisableIncomingContactRequestReply {}
-
-message AccountEnableIncomingContactRequestRequest {}
-message AccountEnableIncomingContactRequestReply {
-  ContactRequestLink contact_request_link = 1;
+message AccountEnableIncomingContactRequest {
+  message Request {}
+  message Reply {
+    ContactRequestLink contact_request_link = 1;
+  }
 }
 
-message AccountResetIncomingContactRequestLinkRequest {}
-message AccountResetIncomingContactRequestLinkReply {
-  ContactRequestLink contact_request_link = 1; // Reset rdv_point_seed and rotation_time_point
+message AccountResetIncomingContactRequestLink {
+  message Request {}
+  message Reply {
+    ContactRequestLink contact_request_link = 1; // Reset rdv_point_seed and rotation_time_point
+  }
 }
 
-// EventManager
+//
+// Event Manager
+//
 
-message EventSubscribeRequest {}
-message EventStream {
-  enum EventType {
+message EventSubscribe {
+  message Request {}
+  message Reply {
+    Type type = 1;
+    bytes event_id = 2 [(gogoproto.customname) = "EventID"];
+
+    MessageEvent message_event = 3;
+    ContactRequestEvent contact_request_event = 4;
+    GroupInvitationEvent group_invitation_event = 5;
+    BroadcastEvent broadcast_event = 6;
+  }
+
+  enum Type {
     EventUnknown = 0;
     EventMessage = 1;
     EventContactRequest = 2;
     EventGroupInvitation = 3;
     EventBroadcastAvailable = 4;
   }
-
   message MessageEvent {
     bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
     bytes member_id = 2 [(gogoproto.customname) = "MemberID"];
@@ -251,160 +275,211 @@ message EventStream {
     bytes member_id = 2 [(gogoproto.customname) = "MemberID"];
     bytes topic_id = 3 [(gogoproto.customname) = "TopicID"];
   }
-
-  EventType type = 1;
-  bytes event_id = 2 [(gogoproto.customname) = "EventID"];
-
-  MessageEvent message_event = 3;
-  ContactRequestEvent contact_request_event = 4;
-  GroupInvitationEvent group_invitation_event = 5;
-  BroadcastEvent broadcast_event = 6;
 }
 
+//
+// ContactRequest Manager
+//
 
-// ContactRequestManager
-
-message ContactRequestAcceptRequest {
-  bytes contact_account_pub_key = 1;
-}
-message ContactRequestAcceptReply {}
-
-message ContactRequestDiscardRequest {
-  bytes contact_account_pub_key = 1;
-}
-message ContactRequestDiscardReply {}
-
-message ContactRequestListIncomingRequest {};
-message ContactRequestListIncomingReply { // streamed
-  Contact contact = 1;
+message ContactRequestAccept {
+  message Request {
+    bytes contact_account_pub_key = 1;
+  }
+  message Reply {}
 }
 
-message ContactRequestListOutgoingRequest {};
-message ContactRequestListOutgoingReply { // streamed
-  Contact contact = 1;
+message ContactRequestDiscard {
+  message Request {
+    bytes contact_account_pub_key = 1;
+  }
+  message Reply {}
 }
 
-message ContactRequestSendRequest {
-  ContactRequestLink contact_request_link = 1;
-}
-message ContactRequestSendReply {}
-
-// ContactManager
-
-message ContactGetRequest {
-  bytes contact_account_pub_key = 1;
-}
-message ContactGetReply {
-  Contact contact = 1;
+message ContactRequestListIncoming {
+  message Request {}
+  message Reply { // streamed
+    Contact contact = 1;
+  }
 }
 
-message ContactRemoveRequest {
-  bytes contact_account_pub_key = 1;
+message ContactRequestListOutgoing {
+  message Request {}
+  message Reply { // streamed
+    Contact contact = 1;
+  }
 }
-message ContactRemoveReply {}
 
-message ContactListRequest {};
-message ContactListReply { // streamed
-  Contact contact = 1;
-};
+message ContactRequestSend {
+  message Request {
+    ContactRequestLink contact_request_link = 1;
+  }
+  message Reply {}
+}
 
-// Stream
+//
+// Contact Manager
+//
 
-message StreamManagerRequestToContactRequest {}
-message StreamManagerRequestToContactReply {}
+message ContactGet {
+  message Request {
+    bytes contact_account_pub_key = 1;
+  }
+  message Reply {
+    Contact contact = 1;
+  }
+}
 
-message StreamManagerAcceptRequest {}
-message StreamManagerAcceptReply {}
+message ContactRemove {
+  message Request {
+    bytes contact_account_pub_key = 1;
+  }
+  message Reply {}
+}
 
-// Group
+message ContactList {
+  message Request {}
+  message Reply { // streamed
+    Contact contact = 1;
+  }
+}
 
-message GroupCreateRequest {
-  repeated bytes contact_account_pub_key = 1; // Invitees
-  bytes pinning_service = 2;
-  bytes metadata = 3;
-};
-message GroupCreateReply {
-  GroupInfo group_info = 1;
-};
+//
+// Stream Manager
+//
 
-message GroupGenerateInviteLinkRequest {
-  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
-};
-message GroupGenerateInviteLinkReply {
-  Invitation invitation = 1;
-};
+message StreamManagerRequestToContact {
+  message Request {}
+  message Reply {}
+}
 
-message GroupLeaveRequest {
-  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
-};
-message GroupLeaveReply {};
+message StreamManagerAccept {
+  message Request {}
+  message Reply {} // streamed
+}
 
-message GroupListRequest {};
-message GroupListReply { // streamed
-  GroupInfo group_info = 1;
-};
+//
+// Group Manager
+//
 
-// Group Message
+message GroupCreate {
+  message Request {
+    repeated bytes contact_account_pub_key = 1; // Invitees
+    bytes pinning_service = 2;
+    bytes metadata = 3;
+  }
+  message Reply {
+    GroupInfo group_info = 1;
+  }
+}
 
-message GroupMessageCreateRequest {
-  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
-  bytes payload = 2;
-};
-message GroupMessageCreateReply {};
+message GroupGenerateInviteLink {
+  message Request {
+    bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+  }
+  message Reply {
+    Invitation invitation = 1;
+  }
+}
 
-message GroupMessageListRequest {
-  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
-  uint64 from_index = 2;
-  uint64 to_index = 3;
-};
-message GroupMessageListReply { // streamed
-  bytes message_id = 1 [(gogoproto.customname) = "MessageID"];
-  bytes member_id = 2 [(gogoproto.customname) = "MemberID"];
-  bytes payload = 3;
-};
+message GroupLeave {
+  message Request {
+    bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+  }
+  message Reply {}
+}
 
-// Group PubSub
+message GroupList {
+  message Request {}
+  message Reply { // streamed
+    GroupInfo group_info = 1;
+  }
+}
 
-message GroupTopicPublishRequest { // streamed
-  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
-  bytes topic_id = 2 [(gogoproto.customname) = "TopicID"];
-  bytes volatile_data = 3;
-};
-message GroupTopicPublishReply {};
+//
+// GroupMessage Manager
+//
 
-message GroupTopicSubscribeRequest {
-  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
-  bytes topic_id = 2 [(gogoproto.customname) = "TopicID"];
-};
-message GroupTopicSubscribeReply { // streamed
-  bytes volatile_data = 1;
-};
+message GroupMessageCreate {
+  message Request {
+    bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+    bytes payload = 2;
+  }
+  message Reply {}
+}
 
-// Group Invitation
+message GroupMessageList {
+  message Request {
+    bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+    uint64 from_index = 2;
+    uint64 to_index = 3;
+  }
+  message Reply { // streamed
+    bytes message_id = 1 [(gogoproto.customname) = "MessageID"];
+    bytes member_id = 2 [(gogoproto.customname) = "MemberID"];
+    bytes payload = 3;
+  }
+}
 
-message GroupInvitationAcceptRequest {
-  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
-};
-message GroupInvitationAcceptReply {};
+//
+// GroupTopic Manager
+//
 
-message GroupInvitationCreateRequest {
-  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
-  repeated bytes contact_account_pub_key = 2;
-};
-message GroupInvitationCreateReply {};
+message GroupTopicPublish {
+  message Request { // streamed
+    bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+    bytes topic_id = 2 [(gogoproto.customname) = "TopicID"];
+    bytes volatile_data = 3;
+  }
+  message Reply {}
+}
 
-message GroupInvitationDiscardRequest {
-  bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
-};
-message GroupInvitationDiscardReply {};
+message GroupTopicSubscribe {
+  message Request {
+    bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+    bytes topic_id = 2 [(gogoproto.customname) = "TopicID"];
+  }
+  message Reply { // streamed
+    bytes volatile_data = 1;
+  }
+}
 
-message GroupInvitationListRequest {};
-message GroupInvitationListReply { // streamed
-  bytes inviter_account_pub_key = 1;
-  GroupInfo group_info = 2;
-};
+//
+// GroupInvitation Manager
+//
 
+message GroupInvitationAccept {
+  message Request {
+    bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+  }
+  message Reply {}
+}
+
+message GroupInvitationCreate {
+  message Request {
+    bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+    repeated bytes contact_account_pub_key = 2;
+  }
+  message Reply {}
+}
+
+message GroupInvitationDiscard {
+  message Request {
+    bytes group_id = 1 [(gogoproto.customname) = "GroupID"];
+  }
+  message Reply {}
+}
+
+message GroupInvitationList {
+  message Request {}
+  message Reply { // streamed
+    bytes inviter_account_pub_key = 1;
+    GroupInfo group_info = 2;
+  }
+}
+
+//
 // Common entities
+//
 
 message Device {
   bytes device_pub_key = 1;
@@ -485,4 +560,10 @@ message GroupMember {
   Contact contact = 83;
   reserved 98;
   reserved 99;
+}
+
+message ContactRequestLink {
+  bytes rendezvous_point_seed = 1;
+  bytes contact_account_pub_key = 2;
+  bytes metadata = 3;
 }

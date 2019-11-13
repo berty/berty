@@ -28,7 +28,7 @@
           }
         },
         "tags": [
-          "Instance"
+          "ProtocolService"
         ]
       }
     }
@@ -45,7 +45,7 @@
       ],
       "default": "Unknown"
     },
-    "EventStreamBroadcastEvent": {
+    "EventSubscribeBroadcastEvent": {
       "type": "object",
       "properties": {
         "group_id": {
@@ -62,7 +62,7 @@
         }
       }
     },
-    "EventStreamContactRequestEvent": {
+    "EventSubscribeContactRequestEvent": {
       "type": "object",
       "properties": {
         "contact_account_pub_key": {
@@ -75,18 +75,7 @@
         }
       }
     },
-    "EventStreamEventType": {
-      "type": "string",
-      "enum": [
-        "EventUnknown",
-        "EventMessage",
-        "EventContactRequest",
-        "EventGroupInvitation",
-        "EventBroadcastAvailable"
-      ],
-      "default": "EventUnknown"
-    },
-    "EventStreamGroupInvitationEvent": {
+    "EventSubscribeGroupInvitationEvent": {
       "type": "object",
       "properties": {
         "group_id": {
@@ -103,7 +92,7 @@
         }
       }
     },
-    "EventStreamMessageEvent": {
+    "EventSubscribeMessageEvent": {
       "type": "object",
       "properties": {
         "group_id": {
@@ -130,7 +119,7 @@
       ],
       "default": "Undefined"
     },
-    "InstanceGetConfigurationReplySettingState": {
+    "InstanceGetConfigurationSettingState": {
       "type": "string",
       "enum": [
         "Unknown",
@@ -329,29 +318,40 @@
         }
       }
     },
-    "protocolEventStream": {
+    "protocolEventSubscribeReply": {
       "type": "object",
       "properties": {
         "type": {
-          "$ref": "#/definitions/EventStreamEventType"
+          "$ref": "#/definitions/protocolEventSubscribeType"
         },
         "event_id": {
           "type": "string",
           "format": "byte"
         },
         "message_event": {
-          "$ref": "#/definitions/EventStreamMessageEvent"
+          "$ref": "#/definitions/EventSubscribeMessageEvent"
         },
         "contact_request_event": {
-          "$ref": "#/definitions/EventStreamContactRequestEvent"
+          "$ref": "#/definitions/EventSubscribeContactRequestEvent"
         },
         "group_invitation_event": {
-          "$ref": "#/definitions/EventStreamGroupInvitationEvent"
+          "$ref": "#/definitions/EventSubscribeGroupInvitationEvent"
         },
         "broadcast_event": {
-          "$ref": "#/definitions/EventStreamBroadcastEvent"
+          "$ref": "#/definitions/EventSubscribeBroadcastEvent"
         }
       }
+    },
+    "protocolEventSubscribeType": {
+      "type": "string",
+      "enum": [
+        "EventUnknown",
+        "EventMessage",
+        "EventContactRequest",
+        "EventGroupInvitation",
+        "EventBroadcastAvailable"
+      ],
+      "default": "EventUnknown"
     },
     "protocolGroupCreateReply": {
       "type": "object",
@@ -524,16 +524,16 @@
           }
         },
         "ble_enabled": {
-          "$ref": "#/definitions/InstanceGetConfigurationReplySettingState"
+          "$ref": "#/definitions/InstanceGetConfigurationSettingState"
         },
         "wifi_p2p_enabled": {
-          "$ref": "#/definitions/InstanceGetConfigurationReplySettingState"
+          "$ref": "#/definitions/InstanceGetConfigurationSettingState"
         },
         "mdns_enabled": {
-          "$ref": "#/definitions/InstanceGetConfigurationReplySettingState"
+          "$ref": "#/definitions/InstanceGetConfigurationSettingState"
         },
         "relay_enabled": {
-          "$ref": "#/definitions/InstanceGetConfigurationReplySettingState"
+          "$ref": "#/definitions/InstanceGetConfigurationSettingState"
         }
       }
     },
@@ -635,17 +635,17 @@
       },
       "title": "Stream result of protocolContactRequestListOutgoingReply"
     },
-    "protocolEventStream": {
+    "protocolEventSubscribeReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/protocolEventStream"
+          "$ref": "#/definitions/protocolEventSubscribeReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of protocolEventStream"
+      "title": "Stream result of protocolEventSubscribeReply"
     },
     "protocolGroupInvitationListReply": {
       "type": "object",

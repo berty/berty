@@ -81,8 +81,7 @@
       }
     },
     "chatAccountListRequest": {
-      "type": "object",
-      "title": "Account"
+      "type": "object"
     },
     "chatAccountOpenReply": {
       "type": "object",

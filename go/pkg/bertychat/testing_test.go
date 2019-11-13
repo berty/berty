@@ -23,7 +23,7 @@ func TestTestingClient_impl(t *testing.T) {
 	}
 
 	protocol := testingClientProtocol(t, client)
-	_, _ = protocol.InstanceGetConfiguration(context.Background(), &bertyprotocol.InstanceGetConfigurationRequest{})
+	_, _ = protocol.InstanceGetConfiguration(context.Background(), &bertyprotocol.InstanceGetConfiguration_Request{})
 
 	status := client.Status()
 	expected := Status{}

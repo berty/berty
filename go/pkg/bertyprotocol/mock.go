@@ -23,7 +23,7 @@ func NewMock(db *gorm.DB, opts Opts) (*Mock, error) {
 	if opts.Logger == nil {
 		mock.Logger = zap.NewNop()
 	}
-	RegisterInstanceServer(mock.GRPCServer, &mock)
+	RegisterProtocolServiceServer(mock.GRPCServer, &mock)
 
 	{ // gRPC server & client
 		var err error
@@ -44,7 +44,7 @@ func NewMock(db *gorm.DB, opts Opts) (*Mock, error) {
 			return nil, err
 		}
 
-		mock.GRPCClient = NewInstanceClient(mock.GRPCClientConn)
+		mock.GRPCClient = NewProtocolServiceClient(mock.GRPCClientConn)
 	}
 
 	go func() {
@@ -62,7 +62,7 @@ type Mock struct {
 	Peers              []*Mock
 	GRPCServer         *grpc.Server
 	GRPCServerListener net.Listener
-	GRPCClient         InstanceClient
+	GRPCClient         ProtocolServiceClient
 	GRPCClientConn     *grpc.ClientConn
 	Workers            run.Group
 }
@@ -91,43 +91,43 @@ func (m *Mock) Close() error {
 
 func (m *Mock) Status() Status { return Status{DB: nil, Protocol: nil} }
 
-func (m *Mock) AccountGetConfiguration(context.Context, *AccountGetConfigurationRequest) (*AccountGetConfigurationReply, error) {
+func (m *Mock) AccountGetConfiguration(context.Context, *AccountGetConfiguration_Request) (*AccountGetConfiguration_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) AccountGetInformation(ctx context.Context, req *AccountGetInformationRequest) (*AccountGetInformationReply, error) {
+func (m *Mock) AccountGetInformation(ctx context.Context, req *AccountGetInformation_Request) (*AccountGetInformation_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) AccountLinkNewDevice(context.Context, *AccountLinkNewDeviceRequest) (*AccountLinkNewDeviceReply, error) {
+func (m *Mock) AccountLinkNewDevice(context.Context, *AccountLinkNewDevice_Request) (*AccountLinkNewDevice_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) AccountDisableIncomingContactRequest(context.Context, *AccountDisableIncomingContactRequestRequest) (*AccountDisableIncomingContactRequestReply, error) {
+func (m *Mock) AccountDisableIncomingContactRequest(context.Context, *AccountDisableIncomingContactRequest_Request) (*AccountDisableIncomingContactRequest_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) AccountEnableIncomingContactRequest(context.Context, *AccountEnableIncomingContactRequestRequest) (*AccountEnableIncomingContactRequestReply, error) {
+func (m *Mock) AccountEnableIncomingContactRequest(context.Context, *AccountEnableIncomingContactRequest_Request) (*AccountEnableIncomingContactRequest_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) AccountResetIncomingContactRequestLink(context.Context, *AccountResetIncomingContactRequestLinkRequest) (*AccountResetIncomingContactRequestLinkReply, error) {
+func (m *Mock) AccountResetIncomingContactRequestLink(context.Context, *AccountResetIncomingContactRequestLink_Request) (*AccountResetIncomingContactRequestLink_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) InstanceExportData(context.Context, *InstanceExportDataRequest) (*InstanceExportDataReply, error) {
+func (m *Mock) InstanceExportData(context.Context, *InstanceExportData_Request) (*InstanceExportData_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) InstanceGetConfiguration(context.Context, *InstanceGetConfigurationRequest) (*InstanceGetConfigurationReply, error) {
+func (m *Mock) InstanceGetConfiguration(context.Context, *InstanceGetConfiguration_Request) (*InstanceGetConfiguration_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) ContactGet(context.Context, *ContactGetRequest) (*ContactGetReply, error) {
+func (m *Mock) ContactGet(context.Context, *ContactGet_Request) (*ContactGet_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) ContactList(req *ContactListRequest, stream Instance_ContactListServer) error {
+func (m *Mock) ContactList(req *ContactList_Request, stream ProtocolService_ContactListServer) error {
 	contacts := []*Contact{ // FIXME: get from DB
 		{
 			AccountPubKey:       []byte("lorem1"),
@@ -146,7 +146,7 @@ func (m *Mock) ContactList(req *ContactListRequest, stream Instance_ContactListS
 	}
 
 	for _, contact := range contacts {
-		err := stream.Send(&ContactListReply{
+		err := stream.Send(&ContactList_Reply{
 			Contact: contact,
 		})
 
@@ -157,86 +157,86 @@ func (m *Mock) ContactList(req *ContactListRequest, stream Instance_ContactListS
 	return nil
 }
 
-func (m *Mock) ContactRemove(context.Context, *ContactRemoveRequest) (*ContactRemoveReply, error) {
+func (m *Mock) ContactRemove(context.Context, *ContactRemove_Request) (*ContactRemove_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) ContactRequestAccept(context.Context, *ContactRequestAcceptRequest) (*ContactRequestAcceptReply, error) {
+func (m *Mock) ContactRequestAccept(context.Context, *ContactRequestAccept_Request) (*ContactRequestAccept_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) ContactRequestDiscard(context.Context, *ContactRequestDiscardRequest) (*ContactRequestDiscardReply, error) {
+func (m *Mock) ContactRequestDiscard(context.Context, *ContactRequestDiscard_Request) (*ContactRequestDiscard_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) ContactRequestListIncoming(*ContactRequestListIncomingRequest, Instance_ContactRequestListIncomingServer) error {
+func (m *Mock) ContactRequestListIncoming(*ContactRequestListIncoming_Request, ProtocolService_ContactRequestListIncomingServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (m *Mock) ContactRequestListOutgoing(*ContactRequestListOutgoingRequest, Instance_ContactRequestListOutgoingServer) error {
+func (m *Mock) ContactRequestListOutgoing(*ContactRequestListOutgoing_Request, ProtocolService_ContactRequestListOutgoingServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (m *Mock) ContactRequestSend(context.Context, *ContactRequestSendRequest) (*ContactRequestSendReply, error) {
+func (m *Mock) ContactRequestSend(context.Context, *ContactRequestSend_Request) (*ContactRequestSend_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) EventSubscribe(*EventSubscribeRequest, Instance_EventSubscribeServer) error {
+func (m *Mock) EventSubscribe(*EventSubscribe_Request, ProtocolService_EventSubscribeServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupCreate(context.Context, *GroupCreateRequest) (*GroupCreateReply, error) {
+func (m *Mock) GroupCreate(context.Context, *GroupCreate_Request) (*GroupCreate_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupGenerateInviteLink(context.Context, *GroupGenerateInviteLinkRequest) (*GroupGenerateInviteLinkReply, error) {
+func (m *Mock) GroupGenerateInviteLink(context.Context, *GroupGenerateInviteLink_Request) (*GroupGenerateInviteLink_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupLeave(context.Context, *GroupLeaveRequest) (*GroupLeaveReply, error) {
+func (m *Mock) GroupLeave(context.Context, *GroupLeave_Request) (*GroupLeave_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupList(*GroupListRequest, Instance_GroupListServer) error {
+func (m *Mock) GroupList(*GroupList_Request, ProtocolService_GroupListServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupMessageCreate(context.Context, *GroupMessageCreateRequest) (*GroupMessageCreateReply, error) {
+func (m *Mock) GroupMessageCreate(context.Context, *GroupMessageCreate_Request) (*GroupMessageCreate_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupMessageList(*GroupMessageListRequest, Instance_GroupMessageListServer) error {
+func (m *Mock) GroupMessageList(*GroupMessageList_Request, ProtocolService_GroupMessageListServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupTopicPublish(Instance_GroupTopicPublishServer) error {
+func (m *Mock) GroupTopicPublish(ProtocolService_GroupTopicPublishServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupTopicSubscribe(*GroupTopicSubscribeRequest, Instance_GroupTopicSubscribeServer) error {
+func (m *Mock) GroupTopicSubscribe(*GroupTopicSubscribe_Request, ProtocolService_GroupTopicSubscribeServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupInvitationAccept(context.Context, *GroupInvitationAcceptRequest) (*GroupInvitationAcceptReply, error) {
+func (m *Mock) GroupInvitationAccept(context.Context, *GroupInvitationAccept_Request) (*GroupInvitationAccept_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupInvitationCreate(context.Context, *GroupInvitationCreateRequest) (*GroupInvitationCreateReply, error) {
+func (m *Mock) GroupInvitationCreate(context.Context, *GroupInvitationCreate_Request) (*GroupInvitationCreate_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupInvitationDiscard(context.Context, *GroupInvitationDiscardRequest) (*GroupInvitationDiscardReply, error) {
+func (m *Mock) GroupInvitationDiscard(context.Context, *GroupInvitationDiscard_Request) (*GroupInvitationDiscard_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) GroupInvitationList(*GroupInvitationListRequest, Instance_GroupInvitationListServer) error {
+func (m *Mock) GroupInvitationList(*GroupInvitationList_Request, ProtocolService_GroupInvitationListServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (m *Mock) StreamManagerRequestToContact(context.Context, *StreamManagerRequestToContactRequest) (*StreamManagerRequestToContactReply, error) {
+func (m *Mock) StreamManagerRequestToContact(context.Context, *StreamManagerRequestToContact_Request) (*StreamManagerRequestToContact_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) StreamManagerAccept(Instance_StreamManagerAcceptServer) error {
+func (m *Mock) StreamManagerAccept(ProtocolService_StreamManagerAcceptServer) error {
 	return errcode.ErrNotImplemented
 }

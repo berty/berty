@@ -9,7 +9,7 @@ import (
 
 func TestClient_impl(t *testing.T) {
 	var _ Client = (*client)(nil)
-	var _ InstanceServer = (*client)(nil)
+	var _ ProtocolServiceServer = (*client)(nil)
 }
 
 func ExampleNew() {
