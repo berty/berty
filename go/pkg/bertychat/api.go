@@ -9,6 +9,7 @@ import (
 
 // Search
 func (c *client) Search(*SearchRequest, ChatService_SearchServer) error {
+
 	return errcode.ErrNotImplemented
 }
 
