@@ -10,7 +10,7 @@ on:
 jobs:
   js-generate:
     name: "Js: Check generation"
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     container:
       image: bertytech/protoc:20
     steps:
@@ -25,7 +25,7 @@ jobs:
 
   js-lint:
     name: "Js: Lint"
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     container:
       image: bertytech/protoc:20
     steps:

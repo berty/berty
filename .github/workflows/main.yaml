@@ -4,7 +4,7 @@ on: [push, pull_request]
 jobs:
   go-docker:
     name: "Docker: Build berty/berty"
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -16,7 +16,7 @@ jobs:
 
   go-generate:
     name: "Go: Check generation"
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     container:
       image: bertytech/protoc:20
     steps:
@@ -33,7 +33,7 @@ jobs:
 
   githooks:
     name: "Githooks"
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     container:
       image: bertytech/githooks:v1
     steps:
@@ -98,18 +98,9 @@ jobs:
     strategy:
       matrix:
         bazel-target: [unittest, banner, build]
-        os: [macos-latest, ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: self-hosted
     steps:
-    - if: contains(matrix.os, 'macos-')
-      name: Install bazel (darwin)
-      working-directory: /tmp
-      run: |
-        curl -LO https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel-0.29.1-installer-darwin-x86_64.sh
-        chmod +x bazel-0.29.1-installer-darwin-x86_64.sh
-        ./bazel-0.29.1-installer-darwin-x86_64.sh --user
-    - if: contains(matrix.os, 'ubuntu-')
-      name: Install bazel (linux)
+    - name: Install bazel (linux)
       working-directory: /tmp
       run: |
         curl -LO https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel-0.29.1-installer-linux-x86_64.sh
