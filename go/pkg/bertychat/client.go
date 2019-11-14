@@ -12,7 +12,7 @@ var _ Client = (*client)(nil)
 
 // Client is the main Berty Protocol interface
 type Client interface {
-	AccountServer
+	ChatServiceServer
 
 	Close() error
 	Status() Status

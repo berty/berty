@@ -156,7 +156,7 @@ func main() {
 			{
 				// setup grpc server
 				grpcServer := grpc.NewServer()
-				bertychat.RegisterAccountServer(grpcServer, chat)
+				bertychat.RegisterChatServiceServer(grpcServer, chat)
 
 				// setup listeners
 				addrs := strings.Split(*clientListeners, ",")

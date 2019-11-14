@@ -10,11 +10,21 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           go_package: "berty.tech/go/pkg/bertychat"
         },
         nested: {
-          Account: {
+          ChatService: {
             methods: {
+              Search: {
+                requestType: "SearchRequest",
+                responseType: "SearchReply",
+                responseStream: true
+              },
               EventSubscribe: {
                 requestType: "EventSubscribeRequest",
                 responseType: "EventSubscribeReply",
+                responseStream: true
+              },
+              DevEventSubscribe: {
+                requestType: "DevEventSubscribeRequest",
+                responseType: "DevEventSubscribeReply",
                 responseStream: true
               },
               ConversationList: {
@@ -24,14 +34,19 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               ConversationGet: {
                 requestType: "ConversationGetRequest",
-                responseType: "ConversationGetReply",
-                options: {
-                  "(google.api.http).get": "/conversation/get"
-                }
+                responseType: "ConversationGetReply"
               },
               ConversationCreate: {
                 requestType: "ConversationCreateRequest",
                 responseType: "ConversationCreateReply"
+              },
+              ConversationUpdate: {
+                requestType: "ConversationUpdateRequest",
+                responseType: "ConversationUpdateReply"
+              },
+              ConversationMute: {
+                requestType: "ConversationMuteRequest",
+                responseType: "ConversationMuteReply"
               },
               ConversationLeave: {
                 requestType: "ConversationLeaveRequest",
@@ -41,42 +56,55 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 requestType: "ConversationEraseRequest",
                 responseType: "ConversationEraseReply"
               },
-              ConversationSetSeenPosition: {
-                requestType: "ConversationSetSeenPositionRequest",
-                responseType: "ConversationSetSeenPositionReply"
-              },
-              ConversationMessageList: {
-                requestType: "ConversationMessageListRequest",
-                responseType: "ConversationMessageListReply",
-                responseStream: true
-              },
-              ConversationMessageSend: {
-                requestType: "ConversationMessageSendRequest",
-                responseType: "ConversationMessageSendReply"
-              },
-              ConversationMessageEdit: {
-                requestType: "ConversationMessageEditRequest",
-                responseType: "ConversationMessageEditReply"
-              },
-              ConversationMessageHide: {
-                requestType: "ConversationMessageHideRequest",
-                responseType: "ConversationMessageHideReply"
-              },
-              ConversationUpdateSettings: {
-                requestType: "ConversationUpdateSettingsRequest",
-                responseType: "ConversationUpdateSettingsReply"
+              ConversationInvitationSend: {
+                requestType: "ConversationInvitationSendRequest",
+                responseType: "ConversationInvitationSendReply"
               },
               ConversationInvitationAccept: {
                 requestType: "ConversationInvitationAcceptRequest",
                 responseType: "ConversationInvitationAcceptReply"
               },
-              ConversationInvitationCreate: {
-                requestType: "ConversationInvitationCreateRequest",
-                responseType: "ConversationInvitationCreateReply"
+              ConversationInvitationDecline: {
+                requestType: "ConversationInvitationDeclineRequest",
+                responseType: "ConversationInvitationDeclineReply"
               },
-              ConversationInvitationDiscard: {
-                requestType: "ConversationInvitationDiscardRequest",
-                responseType: "ConversationInvitationDiscardReply"
+              MessageList: {
+                requestType: "MessageListRequest",
+                responseType: "MessageListReply",
+                responseStream: true
+              },
+              MessageGet: {
+                requestType: "MessageGetRequest",
+                responseType: "MessageGetReply"
+              },
+              MessageSend: {
+                requestType: "MessageSendRequest",
+                responseType: "MessageSendReply"
+              },
+              MessageEdit: {
+                requestType: "MessageEditRequest",
+                responseType: "MessageEditReply"
+              },
+              MessageHide: {
+                requestType: "MessageHideRequest",
+                responseType: "MessageHideReply"
+              },
+              MessageReact: {
+                requestType: "MessageReactRequest",
+                responseType: "MessageReactReply"
+              },
+              MessageRead: {
+                requestType: "MessageReadRequest",
+                responseType: "MessageReadReply"
+              },
+              MemberList: {
+                requestType: "MemberListRequest",
+                responseType: "MemberListReply",
+                responseStream: true
+              },
+              MemberGet: {
+                requestType: "MemberGetRequest",
+                responseType: "MemberGetReply"
               },
               ContactList: {
                 requestType: "ContactListRequest",
@@ -87,38 +115,54 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 requestType: "ContactGetRequest",
                 responseType: "ContactGetReply"
               },
-              ContactUpdate: {
-                requestType: "ContactUpdateRequest",
-                responseType: "ContactUpdateReply"
+              ContactBlock: {
+                requestType: "ContactBlockRequest",
+                responseType: "ContactBlockReply"
               },
               ContactRemove: {
                 requestType: "ContactRemoveRequest",
                 responseType: "ContactRemoveReply"
               },
-              ContactRequestCreate: {
-                requestType: "ContactRequestCreateRequest",
-                responseType: "ContactRequestCreateReply"
+              ContactRequestSend: {
+                requestType: "ContactRequestSendRequest",
+                responseType: "ContactRequestSendReply"
               },
               ContactRequestAccept: {
                 requestType: "ContactRequestAcceptRequest",
                 responseType: "ContactRequestAcceptReply"
               },
-              ContactRequestDiscard: {
-                requestType: "ContactRequestDiscardRequest",
-                responseType: "ContactRequestDiscardReply"
+              ContactRequestDecline: {
+                requestType: "ContactRequestDeclineRequest",
+                responseType: "ContactRequestDeclineReply"
               },
-              Search: {
-                requestType: "SearchRequest",
-                responseType: "SearchReply",
+              AccountList: {
+                requestType: "AccountListRequest",
+                responseType: "AccountListRequest",
                 responseStream: true
               },
-              AccountSettingsGet: {
-                requestType: "AccountSettingsGetRequest",
-                responseType: "AccountSettingsGetReply"
+              AccountGet: {
+                requestType: "AccountGetRequest",
+                responseType: "AccountGetReply"
               },
-              AccountSettingsUpdate: {
-                requestType: "AccountSettingsUpdateRequest",
-                responseType: "AccountSettingsUpdateReply"
+              AccountCreate: {
+                requestType: "AccountCreateRequest",
+                responseType: "AccountCreateReply"
+              },
+              AccountUpdate: {
+                requestType: "AccountUpdateRequest",
+                responseType: "AccountUpdateReply"
+              },
+              AccountOpen: {
+                requestType: "AccountOpenRequest",
+                responseType: "AccountOpenReply"
+              },
+              AccountClose: {
+                requestType: "AccountCloseRequest",
+                responseType: "AccountCloseReply"
+              },
+              AccountRemove: {
+                requestType: "AccountRemoveRequest",
+                responseType: "AccountRemoveReply"
               },
               AccountPairingInvitationCreate: {
                 requestType: "AccountPairingInvitationCreateRequest",
@@ -127,13 +171,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               AccountRenewIncomingContactRequestLink: {
                 requestType: "AccountRenewIncomingContactRequestLinkRequest",
                 responseType: "AccountRenewIncomingContactRequestLinkReply"
-              },
-              DevEventSubscribe: {
-                requestType: "DevEventSubscribeRequest",
-                responseType: "DevEventSubscribeReply",
-                responseStream: true
               }
             }
+          },
+          SearchRequest: {
+            fields: {}
+          },
+          SearchReply: {
+            fields: {}
           },
           EventSubscribeRequest: {
             fields: {}
@@ -141,8 +186,19 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           EventSubscribeReply: {
             fields: {}
           },
-          ConversationListRequest: {
+          DevEventSubscribeRequest: {
             fields: {}
+          },
+          DevEventSubscribeReply: {
+            fields: {}
+          },
+          ConversationListRequest: {
+            fields: {
+              filter: {
+                type: "chatmodel.Conversation",
+                id: 1
+              }
+            }
           },
           ConversationListReply: {
             fields: {
@@ -155,13 +211,42 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           ConversationGetRequest: {
             fields: {
               id: {
-                type: "string",
+                type: "uint64",
                 id: 1,
                 options: {
                   "(gogoproto.customname)": "ID"
                 }
               }
             }
+          },
+          ConversationCreateRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              title: {
+                type: "string",
+                id: 2
+              },
+              topic: {
+                type: "string",
+                id: 3
+              },
+              avatarUri: {
+                type: "string",
+                id: 4,
+                options: {
+                  "(gogoproto.customname)": "AvatarURI"
+                }
+              }
+            }
+          },
+          ConversationCreateReply: {
+            fields: {}
           },
           ConversationGetReply: {
             fields: {
@@ -171,154 +256,554 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               }
             }
           },
-          ConversationCreateRequest: {
+          ConversationUpdateRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              title: {
+                type: "string",
+                id: 2
+              },
+              topic: {
+                type: "string",
+                id: 3
+              },
+              avatarUri: {
+                type: "string",
+                id: 4,
+                options: {
+                  "(gogoproto.customname)": "AvatarURI"
+                }
+              }
+            }
+          },
+          ConversationUpdateReply: {
             fields: {}
           },
-          ConversationCreateReply: {
+          ConversationMuteRequest: {
+            fields: {
+              policy: {
+                type: "chatmodel.Member.MutePolicy",
+                id: 1
+              }
+            }
+          },
+          ConversationMuteReply: {
             fields: {}
           },
           ConversationLeaveRequest: {
-            fields: {}
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
           },
           ConversationLeaveReply: {
             fields: {}
           },
           ConversationEraseRequest: {
-            fields: {}
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
           },
           ConversationEraseReply: {
             fields: {}
           },
-          ConversationSetSeenPositionRequest: {
-            fields: {}
+          ConversationInvitationSendRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              contactId: {
+                type: "uint64",
+                id: 2,
+                options: {
+                  "(gogoproto.customname)": "ContactID"
+                }
+              }
+            }
           },
-          ConversationSetSeenPositionReply: {
-            fields: {}
-          },
-          ConversationMessageListRequest: {
-            fields: {}
-          },
-          ConversationMessageListReply: {
-            fields: {}
-          },
-          ConversationMessageSendRequest: {
-            fields: {}
-          },
-          ConversationMessageSendReply: {
-            fields: {}
-          },
-          ConversationMessageEditRequest: {
-            fields: {}
-          },
-          ConversationMessageEditReply: {
-            fields: {}
-          },
-          ConversationMessageHideRequest: {
-            fields: {}
-          },
-          ConversationMessageHideReply: {
-            fields: {}
-          },
-          ConversationUpdateSettingsRequest: {
-            fields: {}
-          },
-          ConversationUpdateSettingsReply: {
+          ConversationInvitationSendReply: {
             fields: {}
           },
           ConversationInvitationAcceptRequest: {
-            fields: {}
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              contactId: {
+                type: "uint64",
+                id: 2,
+                options: {
+                  "(gogoproto.customname)": "ContactID"
+                }
+              }
+            }
           },
           ConversationInvitationAcceptReply: {
             fields: {}
           },
-          ConversationInvitationCreateRequest: {
+          ConversationInvitationDeclineRequest: {
+            fields: {
+              conversationId: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ConversationID"
+                }
+              }
+            }
+          },
+          ConversationInvitationDeclineReply: {
             fields: {}
           },
-          ConversationInvitationCreateReply: {
+          MessageListRequest: {
+            fields: {
+              filter: {
+                type: "chatmodel.Message",
+                id: 1
+              }
+            }
+          },
+          MessageListReply: {
+            fields: {
+              message: {
+                type: "chatmodel.Message",
+                id: 1
+              }
+            }
+          },
+          MessageGetRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
+          },
+          MessageGetReply: {
+            fields: {
+              message: {
+                type: "chatmodel.Message",
+                id: 1
+              }
+            }
+          },
+          MessageSendRequest: {
+            fields: {
+              conversationId: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ConversationID"
+                }
+              },
+              kind: {
+                type: "chatmodel.Message.Kind",
+                id: 2
+              },
+              body: {
+                type: "chatmodel.Message.Body",
+                id: 3
+              },
+              attachments: {
+                rule: "repeated",
+                type: "chatmodel.Attachment",
+                id: 4
+              }
+            }
+          },
+          MessageSendReply: {
             fields: {}
           },
-          ConversationInvitationDiscardRequest: {
+          MessageEditRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              body: {
+                type: "chatmodel.Message.Body",
+                id: 2
+              }
+            }
+          },
+          MessageEditReply: {
             fields: {}
           },
-          ConversationInvitationDiscardReply: {
+          MessageHideRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
+          },
+          MessageHideReply: {
+            fields: {}
+          },
+          MessageReactRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              emoji: {
+                type: "bytes",
+                id: 2
+              }
+            }
+          },
+          MessageReactReply: {
+            fields: {}
+          },
+          MessageReadRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
+          },
+          MessageReadReply: {
+            fields: {}
+          },
+          MemberListRequest: {
+            fields: {
+              filter: {
+                type: "chatmodel.Member",
+                id: 1
+              }
+            }
+          },
+          MemberListReply: {
+            fields: {
+              member: {
+                type: "chatmodel.Member",
+                id: 1
+              }
+            }
+          },
+          MemberGetRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
+          },
+          MemberGetReply: {
+            fields: {
+              member: {
+                type: "chatmodel.Member",
+                id: 1
+              }
+            }
+          },
+          MemberUpdateRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              name: {
+                type: "string",
+                id: 2
+              },
+              role: {
+                type: "chatmodel.Member.Role",
+                id: 3
+              }
+            }
+          },
+          MemberUpdateReply: {
             fields: {}
           },
           ContactListRequest: {
-            fields: {}
+            fields: {
+              filter: {
+                type: "chatmodel.Contact",
+                id: 1
+              }
+            }
           },
           ContactListReply: {
-            fields: {}
+            fields: {
+              contact: {
+                type: "chatmodel.Contact",
+                id: 1
+              }
+            }
           },
           ContactGetRequest: {
-            fields: {}
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
           },
           ContactGetReply: {
+            fields: {
+              contact: {
+                type: "chatmodel.Contact",
+                id: 1
+              }
+            }
+          },
+          ContactBlockRequest: {
             fields: {}
           },
-          ContactUpdateRequest: {
-            fields: {}
-          },
-          ContactUpdateReply: {
+          ContactBlockReply: {
             fields: {}
           },
           ContactRemoveRequest: {
-            fields: {}
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
           },
           ContactRemoveReply: {
             fields: {}
           },
-          ContactRequestCreateRequest: {
-            fields: {}
+          ContactRequestSendRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
           },
-          ContactRequestCreateReply: {
+          ContactRequestSendReply: {
             fields: {}
           },
           ContactRequestAcceptRequest: {
-            fields: {}
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
           },
           ContactRequestAcceptReply: {
             fields: {}
           },
-          ContactRequestDiscardRequest: {
+          ContactRequestDeclineRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
+          },
+          ContactRequestDeclineReply: {
             fields: {}
           },
-          ContactRequestDiscardReply: {
+          AccountListRequest: {
             fields: {}
           },
-          SearchRequest: {
+          AccountListReply: {
+            fields: {
+              account: {
+                type: "chatmodel.Account",
+                id: 1
+              }
+            }
+          },
+          AccountGetRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
+          },
+          AccountGetReply: {
+            fields: {
+              account: {
+                type: "chatmodel.Account",
+                id: 1
+              }
+            }
+          },
+          AccountCreateRequest: {
+            fields: {
+              name: {
+                type: "string",
+                id: 1
+              }
+            }
+          },
+          AccountCreateReply: {
             fields: {}
           },
-          SearchReply: {
+          AccountUpdateRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              name: {
+                type: "string",
+                id: 2
+              },
+              statusEmoji: {
+                type: "string",
+                id: 3
+              },
+              statusText: {
+                type: "string",
+                id: 4
+              }
+            }
+          },
+          AccountUpdateReply: {
             fields: {}
           },
-          AccountSettingsGetRequest: {
+          AccountOpenRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              pin: {
+                type: "string",
+                id: 2
+              }
+            }
+          },
+          AccountOpenReply: {
+            fields: {
+              token: {
+                type: "bytes",
+                id: 1
+              }
+            }
+          },
+          AccountCloseRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
+          },
+          AccountCloseReply: {
             fields: {}
           },
-          AccountSettingsGetReply: {
-            fields: {}
+          AccountRemoveRequest: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
           },
-          AccountSettingsUpdateRequest: {
-            fields: {}
-          },
-          AccountSettingsUpdateReply: {
+          AccountRemoveReply: {
             fields: {}
           },
           AccountPairingInvitationCreateRequest: {
-            fields: {}
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
           },
           AccountPairingInvitationCreateReply: {
             fields: {}
           },
           AccountRenewIncomingContactRequestLinkRequest: {
-            fields: {}
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "ID"
+                }
+              }
+            }
           },
           AccountRenewIncomingContactRequestLinkReply: {
-            fields: {}
-          },
-          DevEventSubscribeRequest: {
-            fields: {}
-          },
-          DevEventSubscribeReply: {
             fields: {}
           }
         }
@@ -357,12 +842,16 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   "(gogoproto.nullable)": false
                 }
               },
-              name: {
-                type: "string",
-                id: 100
+              contactId: {
+                type: "uint64",
+                id: 100,
+                options: {
+                  "(gogoproto.customname)": "ContactID",
+                  "(gogoproto.moretags)": "gorm:not null;index"
+                }
               },
-              avatarUri: {
-                type: "string",
+              myself: {
+                type: "chatmodel.Contact",
                 id: 101
               },
               contactRequestsEnabled: {
@@ -372,6 +861,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               contactRequestsLink: {
                 type: "string",
                 id: 103
+              },
+              hidden: {
+                type: "bool",
+                id: 104
+              },
+              locked: {
+                type: "bool",
+                id: 105
               }
             }
           },
@@ -429,10 +926,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 type: "uint32",
                 id: 105
               },
-              mutePolicy: {
-                type: "MutePolicy",
-                id: 107
-              },
               messages: {
                 rule: "repeated",
                 type: "Message",
@@ -468,13 +961,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   Self: 1,
                   OneToOne: 2,
                   PrivateGroup: 3
-                }
-              },
-              MutePolicy: {
-                values: {
-                  Nothing: 0,
-                  All: 1,
-                  Notifications: 2
                 }
               }
             }
@@ -533,6 +1019,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 type: "Role",
                 id: 102
               },
+              mutePolicy: {
+                type: "MutePolicy",
+                id: 103
+              },
               conversationId: {
                 type: "uint64",
                 id: 200,
@@ -571,6 +1061,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   Regular: 2,
                   Admin: 3,
                   Owner: 4
+                }
+              },
+              MutePolicy: {
+                values: {
+                  Nothing: 0,
+                  All: 1,
+                  Notifications: 2
                 }
               }
             }
@@ -617,6 +1114,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   "(gogoproto.nullable)": false
                 }
               },
+              editedAt: {
+                type: "google.protobuf.Timestamp",
+                id: 7,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
               kind: {
                 type: "Kind",
                 id: 100
@@ -627,6 +1132,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 options: {
                   "(gogoproto.moretags)": "gorm:embedded;embedded_prefix:body_"
                 }
+              },
+              hidden: {
+                type: "bool",
+                id: 103
+              },
+              state: {
+                type: "State",
+                id: 104
               },
               conversationId: {
                 type: "uint64",
@@ -703,6 +1216,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 4
                   }
+                }
+              },
+              State: {
+                values: {
+                  UnSent: 0,
+                  Sending: 1,
+                  Failed: 2,
+                  Retrying: 3,
+                  Sent: 4
                 }
               }
             }

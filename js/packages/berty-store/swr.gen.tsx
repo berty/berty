@@ -7,187 +7,260 @@ import { listHandler, streamHandler, getHandler } from './helpers'
 
 export namespace berty {
 	export namespace chat {
-		export namespace Account {
+		export namespace ChatService {
 			export const Context = createContext(
-				_api.berty.chat.Account.create(bridge({ host: 'http://localhost:1337' })),
+				_api.berty.chat.ChatService.create(bridge({ host: 'http://localhost:1337' })),
 			)
 
 			export const Provider: React.FC<{ rpcImpl: pb.RPCImpl; children: React.ReactNode }> = ({
 				rpcImpl,
 				children,
 			}) => (
-				<Account.Context.Provider value={_api.berty.chat.Account.create(rpcImpl)}>
+				<ChatService.Context.Provider value={_api.berty.chat.ChatService.create(rpcImpl)}>
 					{children}
-				</Account.Context.Provider>
+				</ChatService.Context.Provider>
 			)
 
+			export const search = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.ISearchRequest,
+			): Promise<_api.berty.chat.ISearchReply> => streamHandler(api.search.bind(api), request)
+
 			export const eventSubscribe = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IEventSubscribeRequest,
 			): Promise<_api.berty.chat.IEventSubscribeReply> =>
 				streamHandler(api.eventSubscribe.bind(api), request)
 
+			export const devEventSubscribe = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IDevEventSubscribeRequest,
+			): Promise<_api.berty.chat.IDevEventSubscribeReply> =>
+				streamHandler(api.devEventSubscribe.bind(api), request)
+
 			export const conversationList = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IConversationListRequest,
 			): Promise<Array<_api.berty.chat.IConversationListReply>> =>
 				listHandler(api.conversationList.bind(api), request)
 
 			export const conversationGet = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IConversationGetRequest,
 			): Promise<_api.berty.chat.IConversationGetReply> =>
 				getHandler(api.conversationGet.bind(api), request)
 
 			export const conversationCreate = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IConversationCreateRequest,
 			): Promise<_api.berty.chat.IConversationCreateReply> =>
 				streamHandler(api.conversationCreate.bind(api), request)
 
+			export const conversationUpdate = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IConversationUpdateRequest,
+			): Promise<_api.berty.chat.IConversationUpdateReply> =>
+				streamHandler(api.conversationUpdate.bind(api), request)
+
+			export const conversationMute = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IConversationMuteRequest,
+			): Promise<_api.berty.chat.IConversationMuteReply> =>
+				streamHandler(api.conversationMute.bind(api), request)
+
 			export const conversationLeave = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IConversationLeaveRequest,
 			): Promise<_api.berty.chat.IConversationLeaveReply> =>
 				streamHandler(api.conversationLeave.bind(api), request)
 
 			export const conversationErase = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IConversationEraseRequest,
 			): Promise<_api.berty.chat.IConversationEraseReply> =>
 				streamHandler(api.conversationErase.bind(api), request)
 
-			export const conversationSetSeenPosition = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IConversationSetSeenPositionRequest,
-			): Promise<_api.berty.chat.IConversationSetSeenPositionReply> =>
-				streamHandler(api.conversationSetSeenPosition.bind(api), request)
-
-			export const conversationMessageList = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IConversationMessageListRequest,
-			): Promise<Array<_api.berty.chat.IConversationMessageListReply>> =>
-				listHandler(api.conversationMessageList.bind(api), request)
-
-			export const conversationMessageSend = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IConversationMessageSendRequest,
-			): Promise<_api.berty.chat.IConversationMessageSendReply> =>
-				streamHandler(api.conversationMessageSend.bind(api), request)
-
-			export const conversationMessageEdit = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IConversationMessageEditRequest,
-			): Promise<_api.berty.chat.IConversationMessageEditReply> =>
-				streamHandler(api.conversationMessageEdit.bind(api), request)
-
-			export const conversationMessageHide = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IConversationMessageHideRequest,
-			): Promise<_api.berty.chat.IConversationMessageHideReply> =>
-				streamHandler(api.conversationMessageHide.bind(api), request)
-
-			export const conversationUpdateSettings = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IConversationUpdateSettingsRequest,
-			): Promise<_api.berty.chat.IConversationUpdateSettingsReply> =>
-				streamHandler(api.conversationUpdateSettings.bind(api), request)
+			export const conversationInvitationSend = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IConversationInvitationSendRequest,
+			): Promise<_api.berty.chat.IConversationInvitationSendReply> =>
+				streamHandler(api.conversationInvitationSend.bind(api), request)
 
 			export const conversationInvitationAccept = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IConversationInvitationAcceptRequest,
 			): Promise<_api.berty.chat.IConversationInvitationAcceptReply> =>
 				streamHandler(api.conversationInvitationAccept.bind(api), request)
 
-			export const conversationInvitationCreate = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IConversationInvitationCreateRequest,
-			): Promise<_api.berty.chat.IConversationInvitationCreateReply> =>
-				streamHandler(api.conversationInvitationCreate.bind(api), request)
+			export const conversationInvitationDecline = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IConversationInvitationDeclineRequest,
+			): Promise<_api.berty.chat.IConversationInvitationDeclineReply> =>
+				streamHandler(api.conversationInvitationDecline.bind(api), request)
 
-			export const conversationInvitationDiscard = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IConversationInvitationDiscardRequest,
-			): Promise<_api.berty.chat.IConversationInvitationDiscardReply> =>
-				streamHandler(api.conversationInvitationDiscard.bind(api), request)
+			export const messageList = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IMessageListRequest,
+			): Promise<Array<_api.berty.chat.IMessageListReply>> =>
+				listHandler(api.messageList.bind(api), request)
+
+			export const messageGet = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IMessageGetRequest,
+			): Promise<_api.berty.chat.IMessageGetReply> => getHandler(api.messageGet.bind(api), request)
+
+			export const messageSend = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IMessageSendRequest,
+			): Promise<_api.berty.chat.IMessageSendReply> =>
+				streamHandler(api.messageSend.bind(api), request)
+
+			export const messageEdit = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IMessageEditRequest,
+			): Promise<_api.berty.chat.IMessageEditReply> =>
+				streamHandler(api.messageEdit.bind(api), request)
+
+			export const messageHide = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IMessageHideRequest,
+			): Promise<_api.berty.chat.IMessageHideReply> =>
+				streamHandler(api.messageHide.bind(api), request)
+
+			export const messageReact = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IMessageReactRequest,
+			): Promise<_api.berty.chat.IMessageReactReply> =>
+				streamHandler(api.messageReact.bind(api), request)
+
+			export const messageRead = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IMessageReadRequest,
+			): Promise<_api.berty.chat.IMessageReadReply> =>
+				streamHandler(api.messageRead.bind(api), request)
+
+			export const memberList = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IMemberListRequest,
+			): Promise<Array<_api.berty.chat.IMemberListReply>> =>
+				listHandler(api.memberList.bind(api), request)
+
+			export const memberGet = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IMemberGetRequest,
+			): Promise<_api.berty.chat.IMemberGetReply> => getHandler(api.memberGet.bind(api), request)
 
 			export const contactList = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IContactListRequest,
 			): Promise<Array<_api.berty.chat.IContactListReply>> =>
 				listHandler(api.contactList.bind(api), request)
 
 			export const contactGet = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IContactGetRequest,
 			): Promise<_api.berty.chat.IContactGetReply> => getHandler(api.contactGet.bind(api), request)
 
-			export const contactUpdate = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IContactUpdateRequest,
-			): Promise<_api.berty.chat.IContactUpdateReply> =>
-				streamHandler(api.contactUpdate.bind(api), request)
+			export const contactBlock = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IContactBlockRequest,
+			): Promise<_api.berty.chat.IContactBlockReply> =>
+				streamHandler(api.contactBlock.bind(api), request)
 
 			export const contactRemove = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IContactRemoveRequest,
 			): Promise<_api.berty.chat.IContactRemoveReply> =>
 				streamHandler(api.contactRemove.bind(api), request)
 
-			export const contactRequestCreate = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IContactRequestCreateRequest,
-			): Promise<_api.berty.chat.IContactRequestCreateReply> =>
-				streamHandler(api.contactRequestCreate.bind(api), request)
+			export const contactRequestSend = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IContactRequestSendRequest,
+			): Promise<_api.berty.chat.IContactRequestSendReply> =>
+				streamHandler(api.contactRequestSend.bind(api), request)
 
 			export const contactRequestAccept = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IContactRequestAcceptRequest,
 			): Promise<_api.berty.chat.IContactRequestAcceptReply> =>
 				streamHandler(api.contactRequestAccept.bind(api), request)
 
-			export const contactRequestDiscard = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IContactRequestDiscardRequest,
-			): Promise<_api.berty.chat.IContactRequestDiscardReply> =>
-				streamHandler(api.contactRequestDiscard.bind(api), request)
+			export const contactRequestDecline = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IContactRequestDeclineRequest,
+			): Promise<_api.berty.chat.IContactRequestDeclineReply> =>
+				streamHandler(api.contactRequestDecline.bind(api), request)
 
-			export const search = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.ISearchRequest,
-			): Promise<_api.berty.chat.ISearchReply> => streamHandler(api.search.bind(api), request)
+			export const accountList = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IAccountListRequest,
+			): Promise<Array<_api.berty.chat.IAccountListRequest>> =>
+				listHandler(api.accountList.bind(api), request)
 
-			export const accountSettingsGet = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IAccountSettingsGetRequest,
-			): Promise<_api.berty.chat.IAccountSettingsGetReply> =>
-				getHandler(api.accountSettingsGet.bind(api), request)
+			export const accountGet = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IAccountGetRequest,
+			): Promise<_api.berty.chat.IAccountGetReply> => getHandler(api.accountGet.bind(api), request)
 
-			export const accountSettingsUpdate = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IAccountSettingsUpdateRequest,
-			): Promise<_api.berty.chat.IAccountSettingsUpdateReply> =>
-				streamHandler(api.accountSettingsUpdate.bind(api), request)
+			export const accountCreate = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IAccountCreateRequest,
+			): Promise<_api.berty.chat.IAccountCreateReply> =>
+				streamHandler(api.accountCreate.bind(api), request)
+
+			export const accountUpdate = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IAccountUpdateRequest,
+			): Promise<_api.berty.chat.IAccountUpdateReply> =>
+				streamHandler(api.accountUpdate.bind(api), request)
+
+			export const accountOpen = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IAccountOpenRequest,
+			): Promise<_api.berty.chat.IAccountOpenReply> =>
+				streamHandler(api.accountOpen.bind(api), request)
+
+			export const accountClose = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IAccountCloseRequest,
+			): Promise<_api.berty.chat.IAccountCloseReply> =>
+				streamHandler(api.accountClose.bind(api), request)
+
+			export const accountRemove = async (
+				api: _api.berty.chat.ChatService,
+				request: _api.berty.chat.IAccountRemoveRequest,
+			): Promise<_api.berty.chat.IAccountRemoveReply> =>
+				streamHandler(api.accountRemove.bind(api), request)
 
 			export const accountPairingInvitationCreate = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IAccountPairingInvitationCreateRequest,
 			): Promise<_api.berty.chat.IAccountPairingInvitationCreateReply> =>
 				streamHandler(api.accountPairingInvitationCreate.bind(api), request)
 
 			export const accountRenewIncomingContactRequestLink = async (
-				api: _api.berty.chat.Account,
+				api: _api.berty.chat.ChatService,
 				request: _api.berty.chat.IAccountRenewIncomingContactRequestLinkRequest,
 			): Promise<_api.berty.chat.IAccountRenewIncomingContactRequestLinkReply> =>
 				streamHandler(api.accountRenewIncomingContactRequestLink.bind(api), request)
 
-			export const devEventSubscribe = async (
-				api: _api.berty.chat.Account,
-				request: _api.berty.chat.IDevEventSubscribeRequest,
-			): Promise<_api.berty.chat.IDevEventSubscribeReply> =>
-				streamHandler(api.devEventSubscribe.bind(api), request)
-
 			// Containers
+			type SearchProps = {
+				request: _api.berty.chat.ISearchRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.ISearchReply) => React.ReactElement
+			}
+			export const Search: React.FC<SearchProps> = ({ request, fallback: Fallback, children }) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`Search:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.search(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
 			type EventSubscribeProps = {
 				request: _api.berty.chat.IEventSubscribeRequest
 				fallback?: React.FC<{ error?: Error }>
@@ -198,9 +271,29 @@ export namespace berty {
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(`EventSubscribe:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.eventSubscribe(ctx, request),
+					berty.chat.ChatService.eventSubscribe(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type DevEventSubscribeProps = {
+				request: _api.berty.chat.IDevEventSubscribeRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IDevEventSubscribeReply) => React.ReactElement
+			}
+			export const DevEventSubscribe: React.FC<DevEventSubscribeProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`DevEventSubscribe:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.devEventSubscribe(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -218,9 +311,9 @@ export namespace berty {
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(`ConversationList:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.conversationList(ctx, request),
+					berty.chat.ChatService.conversationList(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -238,9 +331,9 @@ export namespace berty {
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(`ConversationGet:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.conversationGet(ctx, request),
+					berty.chat.ChatService.conversationGet(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -258,9 +351,49 @@ export namespace berty {
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(`ConversationCreate:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.conversationCreate(ctx, request),
+					berty.chat.ChatService.conversationCreate(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type ConversationUpdateProps = {
+				request: _api.berty.chat.IConversationUpdateRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IConversationUpdateReply) => React.ReactElement
+			}
+			export const ConversationUpdate: React.FC<ConversationUpdateProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`ConversationUpdate:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.conversationUpdate(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type ConversationMuteProps = {
+				request: _api.berty.chat.IConversationMuteRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IConversationMuteReply) => React.ReactElement
+			}
+			export const ConversationMute: React.FC<ConversationMuteProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`ConversationMute:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.conversationMute(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -278,9 +411,9 @@ export namespace berty {
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(`ConversationLeave:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.conversationLeave(ctx, request),
+					berty.chat.ChatService.conversationLeave(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -298,9 +431,9 @@ export namespace berty {
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(`ConversationErase:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.conversationErase(ctx, request),
+					berty.chat.ChatService.conversationErase(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -308,127 +441,22 @@ export namespace berty {
 				return children ? children(data) : null
 			}
 
-			type ConversationSetSeenPositionProps = {
-				request: _api.berty.chat.IConversationSetSeenPositionRequest
+			type ConversationInvitationSendProps = {
+				request: _api.berty.chat.IConversationInvitationSendRequest
 				fallback?: React.FC<{ error?: Error }>
 				children?: (
-					response: _api.berty.chat.IConversationSetSeenPositionReply,
+					response: _api.berty.chat.IConversationInvitationSendReply,
 				) => React.ReactElement
 			}
-			export const ConversationSetSeenPosition: React.FC<ConversationSetSeenPositionProps> = ({
+			export const ConversationInvitationSend: React.FC<ConversationInvitationSendProps> = ({
 				request,
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(
-					`ConversationSetSeenPosition:${JSON.stringify(request)}`,
-					() => berty.chat.Account.conversationSetSeenPosition(ctx, request),
-				)
-				if (error != null || data == null) {
-					return Fallback ? <Fallback error={error} /> : null
-				}
-				return children ? children(data) : null
-			}
-
-			type ConversationMessageListProps = {
-				request: _api.berty.chat.IConversationMessageListRequest
-				fallback?: React.FC<{ error?: Error }>
-				children?: (
-					response: Array<_api.berty.chat.IConversationMessageListReply>,
-				) => React.ReactElement
-			}
-			export const ConversationMessageList: React.FC<ConversationMessageListProps> = ({
-				request,
-				fallback: Fallback,
-				children,
-			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(`ConversationMessageList:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.conversationMessageList(ctx, request),
-				)
-				if (error != null || data == null) {
-					return Fallback ? <Fallback error={error} /> : null
-				}
-				return children ? children(data) : null
-			}
-
-			type ConversationMessageSendProps = {
-				request: _api.berty.chat.IConversationMessageSendRequest
-				fallback?: React.FC<{ error?: Error }>
-				children?: (response: _api.berty.chat.IConversationMessageSendReply) => React.ReactElement
-			}
-			export const ConversationMessageSend: React.FC<ConversationMessageSendProps> = ({
-				request,
-				fallback: Fallback,
-				children,
-			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(`ConversationMessageSend:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.conversationMessageSend(ctx, request),
-				)
-				if (error != null || data == null) {
-					return Fallback ? <Fallback error={error} /> : null
-				}
-				return children ? children(data) : null
-			}
-
-			type ConversationMessageEditProps = {
-				request: _api.berty.chat.IConversationMessageEditRequest
-				fallback?: React.FC<{ error?: Error }>
-				children?: (response: _api.berty.chat.IConversationMessageEditReply) => React.ReactElement
-			}
-			export const ConversationMessageEdit: React.FC<ConversationMessageEditProps> = ({
-				request,
-				fallback: Fallback,
-				children,
-			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(`ConversationMessageEdit:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.conversationMessageEdit(ctx, request),
-				)
-				if (error != null || data == null) {
-					return Fallback ? <Fallback error={error} /> : null
-				}
-				return children ? children(data) : null
-			}
-
-			type ConversationMessageHideProps = {
-				request: _api.berty.chat.IConversationMessageHideRequest
-				fallback?: React.FC<{ error?: Error }>
-				children?: (response: _api.berty.chat.IConversationMessageHideReply) => React.ReactElement
-			}
-			export const ConversationMessageHide: React.FC<ConversationMessageHideProps> = ({
-				request,
-				fallback: Fallback,
-				children,
-			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(`ConversationMessageHide:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.conversationMessageHide(ctx, request),
-				)
-				if (error != null || data == null) {
-					return Fallback ? <Fallback error={error} /> : null
-				}
-				return children ? children(data) : null
-			}
-
-			type ConversationUpdateSettingsProps = {
-				request: _api.berty.chat.IConversationUpdateSettingsRequest
-				fallback?: React.FC<{ error?: Error }>
-				children?: (
-					response: _api.berty.chat.IConversationUpdateSettingsReply,
-				) => React.ReactElement
-			}
-			export const ConversationUpdateSettings: React.FC<ConversationUpdateSettingsProps> = ({
-				request,
-				fallback: Fallback,
-				children,
-			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(
-					`ConversationUpdateSettings:${JSON.stringify(request)}`,
-					() => berty.chat.Account.conversationUpdateSettings(ctx, request),
+					`ConversationInvitationSend:${JSON.stringify(request)}`,
+					() => berty.chat.ChatService.conversationInvitationSend(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -448,10 +476,10 @@ export namespace berty {
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(
 					`ConversationInvitationAccept:${JSON.stringify(request)}`,
-					() => berty.chat.Account.conversationInvitationAccept(ctx, request),
+					() => berty.chat.ChatService.conversationInvitationAccept(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -459,22 +487,22 @@ export namespace berty {
 				return children ? children(data) : null
 			}
 
-			type ConversationInvitationCreateProps = {
-				request: _api.berty.chat.IConversationInvitationCreateRequest
+			type ConversationInvitationDeclineProps = {
+				request: _api.berty.chat.IConversationInvitationDeclineRequest
 				fallback?: React.FC<{ error?: Error }>
 				children?: (
-					response: _api.berty.chat.IConversationInvitationCreateReply,
+					response: _api.berty.chat.IConversationInvitationDeclineReply,
 				) => React.ReactElement
 			}
-			export const ConversationInvitationCreate: React.FC<ConversationInvitationCreateProps> = ({
+			export const ConversationInvitationDecline: React.FC<ConversationInvitationDeclineProps> = ({
 				request,
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(
-					`ConversationInvitationCreate:${JSON.stringify(request)}`,
-					() => berty.chat.Account.conversationInvitationCreate(ctx, request),
+					`ConversationInvitationDecline:${JSON.stringify(request)}`,
+					() => berty.chat.ChatService.conversationInvitationDecline(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -482,22 +510,179 @@ export namespace berty {
 				return children ? children(data) : null
 			}
 
-			type ConversationInvitationDiscardProps = {
-				request: _api.berty.chat.IConversationInvitationDiscardRequest
+			type MessageListProps = {
+				request: _api.berty.chat.IMessageListRequest
 				fallback?: React.FC<{ error?: Error }>
-				children?: (
-					response: _api.berty.chat.IConversationInvitationDiscardReply,
-				) => React.ReactElement
+				children?: (response: Array<_api.berty.chat.IMessageListReply>) => React.ReactElement
 			}
-			export const ConversationInvitationDiscard: React.FC<ConversationInvitationDiscardProps> = ({
+			export const MessageList: React.FC<MessageListProps> = ({
 				request,
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(
-					`ConversationInvitationDiscard:${JSON.stringify(request)}`,
-					() => berty.chat.Account.conversationInvitationDiscard(ctx, request),
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`MessageList:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.messageList(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type MessageGetProps = {
+				request: _api.berty.chat.IMessageGetRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IMessageGetReply) => React.ReactElement
+			}
+			export const MessageGet: React.FC<MessageGetProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`MessageGet:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.messageGet(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type MessageSendProps = {
+				request: _api.berty.chat.IMessageSendRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IMessageSendReply) => React.ReactElement
+			}
+			export const MessageSend: React.FC<MessageSendProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`MessageSend:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.messageSend(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type MessageEditProps = {
+				request: _api.berty.chat.IMessageEditRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IMessageEditReply) => React.ReactElement
+			}
+			export const MessageEdit: React.FC<MessageEditProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`MessageEdit:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.messageEdit(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type MessageHideProps = {
+				request: _api.berty.chat.IMessageHideRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IMessageHideReply) => React.ReactElement
+			}
+			export const MessageHide: React.FC<MessageHideProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`MessageHide:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.messageHide(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type MessageReactProps = {
+				request: _api.berty.chat.IMessageReactRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IMessageReactReply) => React.ReactElement
+			}
+			export const MessageReact: React.FC<MessageReactProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`MessageReact:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.messageReact(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type MessageReadProps = {
+				request: _api.berty.chat.IMessageReadRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IMessageReadReply) => React.ReactElement
+			}
+			export const MessageRead: React.FC<MessageReadProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`MessageRead:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.messageRead(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type MemberListProps = {
+				request: _api.berty.chat.IMemberListRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: Array<_api.berty.chat.IMemberListReply>) => React.ReactElement
+			}
+			export const MemberList: React.FC<MemberListProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`MemberList:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.memberList(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type MemberGetProps = {
+				request: _api.berty.chat.IMemberGetRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IMemberGetReply) => React.ReactElement
+			}
+			export const MemberGet: React.FC<MemberGetProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`MemberGet:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.memberGet(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -515,9 +700,9 @@ export namespace berty {
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(`ContactList:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.contactList(ctx, request),
+					berty.chat.ChatService.contactList(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -535,9 +720,9 @@ export namespace berty {
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(`ContactGet:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.contactGet(ctx, request),
+					berty.chat.ChatService.contactGet(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -545,19 +730,19 @@ export namespace berty {
 				return children ? children(data) : null
 			}
 
-			type ContactUpdateProps = {
-				request: _api.berty.chat.IContactUpdateRequest
+			type ContactBlockProps = {
+				request: _api.berty.chat.IContactBlockRequest
 				fallback?: React.FC<{ error?: Error }>
-				children?: (response: _api.berty.chat.IContactUpdateReply) => React.ReactElement
+				children?: (response: _api.berty.chat.IContactBlockReply) => React.ReactElement
 			}
-			export const ContactUpdate: React.FC<ContactUpdateProps> = ({
+			export const ContactBlock: React.FC<ContactBlockProps> = ({
 				request,
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(`ContactUpdate:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.contactUpdate(ctx, request),
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`ContactBlock:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.contactBlock(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -575,9 +760,9 @@ export namespace berty {
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(`ContactRemove:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.contactRemove(ctx, request),
+					berty.chat.ChatService.contactRemove(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -585,19 +770,19 @@ export namespace berty {
 				return children ? children(data) : null
 			}
 
-			type ContactRequestCreateProps = {
-				request: _api.berty.chat.IContactRequestCreateRequest
+			type ContactRequestSendProps = {
+				request: _api.berty.chat.IContactRequestSendRequest
 				fallback?: React.FC<{ error?: Error }>
-				children?: (response: _api.berty.chat.IContactRequestCreateReply) => React.ReactElement
+				children?: (response: _api.berty.chat.IContactRequestSendReply) => React.ReactElement
 			}
-			export const ContactRequestCreate: React.FC<ContactRequestCreateProps> = ({
+			export const ContactRequestSend: React.FC<ContactRequestSendProps> = ({
 				request,
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(`ContactRequestCreate:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.contactRequestCreate(ctx, request),
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`ContactRequestSend:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.contactRequestSend(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -615,9 +800,9 @@ export namespace berty {
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(`ContactRequestAccept:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.contactRequestAccept(ctx, request),
+					berty.chat.ChatService.contactRequestAccept(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -625,19 +810,19 @@ export namespace berty {
 				return children ? children(data) : null
 			}
 
-			type ContactRequestDiscardProps = {
-				request: _api.berty.chat.IContactRequestDiscardRequest
+			type ContactRequestDeclineProps = {
+				request: _api.berty.chat.IContactRequestDeclineRequest
 				fallback?: React.FC<{ error?: Error }>
-				children?: (response: _api.berty.chat.IContactRequestDiscardReply) => React.ReactElement
+				children?: (response: _api.berty.chat.IContactRequestDeclineReply) => React.ReactElement
 			}
-			export const ContactRequestDiscard: React.FC<ContactRequestDiscardProps> = ({
+			export const ContactRequestDecline: React.FC<ContactRequestDeclineProps> = ({
 				request,
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(`ContactRequestDiscard:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.contactRequestDiscard(ctx, request),
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`ContactRequestDecline:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.contactRequestDecline(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -645,35 +830,19 @@ export namespace berty {
 				return children ? children(data) : null
 			}
 
-			type SearchProps = {
-				request: _api.berty.chat.ISearchRequest
+			type AccountListProps = {
+				request: _api.berty.chat.IAccountListRequest
 				fallback?: React.FC<{ error?: Error }>
-				children?: (response: _api.berty.chat.ISearchReply) => React.ReactElement
+				children?: (response: Array<_api.berty.chat.IAccountListRequest>) => React.ReactElement
 			}
-			export const Search: React.FC<SearchProps> = ({ request, fallback: Fallback, children }) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(`Search:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.search(ctx, request),
-				)
-				if (error != null || data == null) {
-					return Fallback ? <Fallback error={error} /> : null
-				}
-				return children ? children(data) : null
-			}
-
-			type AccountSettingsGetProps = {
-				request: _api.berty.chat.IAccountSettingsGetRequest
-				fallback?: React.FC<{ error?: Error }>
-				children?: (response: _api.berty.chat.IAccountSettingsGetReply) => React.ReactElement
-			}
-			export const AccountSettingsGet: React.FC<AccountSettingsGetProps> = ({
+			export const AccountList: React.FC<AccountListProps> = ({
 				request,
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(`AccountSettingsGet:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.accountSettingsGet(ctx, request),
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`AccountList:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.accountList(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -681,19 +850,119 @@ export namespace berty {
 				return children ? children(data) : null
 			}
 
-			type AccountSettingsUpdateProps = {
-				request: _api.berty.chat.IAccountSettingsUpdateRequest
+			type AccountGetProps = {
+				request: _api.berty.chat.IAccountGetRequest
 				fallback?: React.FC<{ error?: Error }>
-				children?: (response: _api.berty.chat.IAccountSettingsUpdateReply) => React.ReactElement
+				children?: (response: _api.berty.chat.IAccountGetReply) => React.ReactElement
 			}
-			export const AccountSettingsUpdate: React.FC<AccountSettingsUpdateProps> = ({
+			export const AccountGet: React.FC<AccountGetProps> = ({
 				request,
 				fallback: Fallback,
 				children,
 			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(`AccountSettingsUpdate:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.accountSettingsUpdate(ctx, request),
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`AccountGet:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.accountGet(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type AccountCreateProps = {
+				request: _api.berty.chat.IAccountCreateRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IAccountCreateReply) => React.ReactElement
+			}
+			export const AccountCreate: React.FC<AccountCreateProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`AccountCreate:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.accountCreate(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type AccountUpdateProps = {
+				request: _api.berty.chat.IAccountUpdateRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IAccountUpdateReply) => React.ReactElement
+			}
+			export const AccountUpdate: React.FC<AccountUpdateProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`AccountUpdate:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.accountUpdate(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type AccountOpenProps = {
+				request: _api.berty.chat.IAccountOpenRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IAccountOpenReply) => React.ReactElement
+			}
+			export const AccountOpen: React.FC<AccountOpenProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`AccountOpen:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.accountOpen(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type AccountCloseProps = {
+				request: _api.berty.chat.IAccountCloseRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IAccountCloseReply) => React.ReactElement
+			}
+			export const AccountClose: React.FC<AccountCloseProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`AccountClose:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.accountClose(ctx, request),
+				)
+				if (error != null || data == null) {
+					return Fallback ? <Fallback error={error} /> : null
+				}
+				return children ? children(data) : null
+			}
+
+			type AccountRemoveProps = {
+				request: _api.berty.chat.IAccountRemoveRequest
+				fallback?: React.FC<{ error?: Error }>
+				children?: (response: _api.berty.chat.IAccountRemoveReply) => React.ReactElement
+			}
+			export const AccountRemove: React.FC<AccountRemoveProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
+				const ctx = useContext(berty.chat.ChatService.Context)
+				const { data, error } = useSWR(`AccountRemove:${JSON.stringify(request)}`, () =>
+					berty.chat.ChatService.accountRemove(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -711,10 +980,10 @@ export namespace berty {
 			export const AccountPairingInvitationCreate: React.FC<
 				AccountPairingInvitationCreateProps
 			> = ({ request, fallback: Fallback, children }) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(
 					`AccountPairingInvitationCreate:${JSON.stringify(request)}`,
-					() => berty.chat.Account.accountPairingInvitationCreate(ctx, request),
+					() => berty.chat.ChatService.accountPairingInvitationCreate(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -732,30 +1001,10 @@ export namespace berty {
 			export const AccountRenewIncomingContactRequestLink: React.FC<
 				AccountRenewIncomingContactRequestLinkProps
 			> = ({ request, fallback: Fallback, children }) => {
-				const ctx = useContext(berty.chat.Account.Context)
+				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(
 					`AccountRenewIncomingContactRequestLink:${JSON.stringify(request)}`,
-					() => berty.chat.Account.accountRenewIncomingContactRequestLink(ctx, request),
-				)
-				if (error != null || data == null) {
-					return Fallback ? <Fallback error={error} /> : null
-				}
-				return children ? children(data) : null
-			}
-
-			type DevEventSubscribeProps = {
-				request: _api.berty.chat.IDevEventSubscribeRequest
-				fallback?: React.FC<{ error?: Error }>
-				children?: (response: _api.berty.chat.IDevEventSubscribeReply) => React.ReactElement
-			}
-			export const DevEventSubscribe: React.FC<DevEventSubscribeProps> = ({
-				request,
-				fallback: Fallback,
-				children,
-			}) => {
-				const ctx = useContext(berty.chat.Account.Context)
-				const { data, error } = useSWR(`DevEventSubscribe:${JSON.stringify(request)}`, () =>
-					berty.chat.Account.devEventSubscribe(ctx, request),
+					() => berty.chat.ChatService.accountRenewIncomingContactRequestLink(ctx, request),
 				)
 				if (error != null || data == null) {
 					return Fallback ? <Fallback error={error} /> : null
@@ -772,4 +1021,4 @@ export namespace google {
 }
 export namespace gogoproto {}
 
-export const BertyChatAccount = berty.chat.Account
+export const BertyChatChatservice = berty.chat.ChatService

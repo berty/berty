@@ -136,7 +136,7 @@ func newBridge(logger *zap.Logger, opts Opts) (*Bridge, error) {
 	}
 
 	// register service
-	bertychat.RegisterAccountServer(b.grpcServer, b.chatClient)
+	bertychat.RegisterChatServiceServer(b.grpcServer, b.chatClient)
 
 	// optional gRPC listener
 	if opts.GRPCListener != "" {
