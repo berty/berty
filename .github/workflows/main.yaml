@@ -61,7 +61,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-      # TODO: cache $GOPATH/pkg/mod
+      - name: "Set env: GOPATH=$(go env GOPATH)"
+        run: echo ::set-env name=GOPATH::$(go env GOPATH)
+      - name: Cache ${{ env.GOPATH }}/pkg/mod
+        uses: actions/cache@v1
+        id: cache-gomod
+        with:
+          path: ${{ env.GOPATH }}/pkg/mod
+          key: ${{ runner.os }}-${{ hashFiles('go/go.sum') }}
       - run: go mod download
         working-directory: ./go
 
@@ -81,7 +88,7 @@ jobs:
         working-directory: ./go
       - name: Setup golangci-lint
         working-directory: ./go
-        run: curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s v1.21.0
+        run: curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.21.0
       - run: PATH=$PATH:$(pwd)/bin  make lint
         working-directory: ./go
       - if: matrix.os == 'ubuntu-latest'
