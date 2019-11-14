@@ -4,7 +4,7 @@ export namespace berty {
     namespace chat {
 
         class Account extends $protobuf.rpc.Service {
-            constructor(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean);
+
             public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): Account;
             public eventSubscribe(request: berty.chat.IEventSubscribeRequest, callback: berty.chat.Account.EventSubscribeCallback): void;
             public eventSubscribe(request: berty.chat.IEventSubscribeRequest): Promise<berty.chat.EventSubscribeReply>;
@@ -127,7 +127,7 @@ export namespace berty {
         }
 
         class EventSubscribeRequest implements IEventSubscribeRequest {
-            constructor(properties?: berty.chat.IEventSubscribeRequest);
+
             public static create(properties?: berty.chat.IEventSubscribeRequest): berty.chat.EventSubscribeRequest;
             public static encode(message: berty.chat.IEventSubscribeRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IEventSubscribeRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -143,7 +143,7 @@ export namespace berty {
         }
 
         class EventSubscribeReply implements IEventSubscribeReply {
-            constructor(properties?: berty.chat.IEventSubscribeReply);
+
             public static create(properties?: berty.chat.IEventSubscribeReply): berty.chat.EventSubscribeReply;
             public static encode(message: berty.chat.IEventSubscribeReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IEventSubscribeReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -159,7 +159,7 @@ export namespace berty {
         }
 
         class ConversationListRequest implements IConversationListRequest {
-            constructor(properties?: berty.chat.IConversationListRequest);
+
             public static create(properties?: berty.chat.IConversationListRequest): berty.chat.ConversationListRequest;
             public static encode(message: berty.chat.IConversationListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -176,7 +176,7 @@ export namespace berty {
         }
 
         class ConversationListReply implements IConversationListReply {
-            constructor(properties?: berty.chat.IConversationListReply);
+
             public conversation?: (berty.chatmodel.IConversation|null);
             public static create(properties?: berty.chat.IConversationListReply): berty.chat.ConversationListReply;
             public static encode(message: berty.chat.IConversationListReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -194,7 +194,7 @@ export namespace berty {
         }
 
         class ConversationGetRequest implements IConversationGetRequest {
-            constructor(properties?: berty.chat.IConversationGetRequest);
+
             public id: string;
             public static create(properties?: berty.chat.IConversationGetRequest): berty.chat.ConversationGetRequest;
             public static encode(message: berty.chat.IConversationGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -212,7 +212,7 @@ export namespace berty {
         }
 
         class ConversationGetReply implements IConversationGetReply {
-            constructor(properties?: berty.chat.IConversationGetReply);
+
             public conversation?: (berty.chatmodel.IConversation|null);
             public static create(properties?: berty.chat.IConversationGetReply): berty.chat.ConversationGetReply;
             public static encode(message: berty.chat.IConversationGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -229,7 +229,7 @@ export namespace berty {
         }
 
         class ConversationCreateRequest implements IConversationCreateRequest {
-            constructor(properties?: berty.chat.IConversationCreateRequest);
+
             public static create(properties?: berty.chat.IConversationCreateRequest): berty.chat.ConversationCreateRequest;
             public static encode(message: berty.chat.IConversationCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -245,7 +245,7 @@ export namespace berty {
         }
 
         class ConversationCreateReply implements IConversationCreateReply {
-            constructor(properties?: berty.chat.IConversationCreateReply);
+
             public static create(properties?: berty.chat.IConversationCreateReply): berty.chat.ConversationCreateReply;
             public static encode(message: berty.chat.IConversationCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -261,7 +261,7 @@ export namespace berty {
         }
 
         class ConversationLeaveRequest implements IConversationLeaveRequest {
-            constructor(properties?: berty.chat.IConversationLeaveRequest);
+
             public static create(properties?: berty.chat.IConversationLeaveRequest): berty.chat.ConversationLeaveRequest;
             public static encode(message: berty.chat.IConversationLeaveRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationLeaveRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -277,7 +277,7 @@ export namespace berty {
         }
 
         class ConversationLeaveReply implements IConversationLeaveReply {
-            constructor(properties?: berty.chat.IConversationLeaveReply);
+
             public static create(properties?: berty.chat.IConversationLeaveReply): berty.chat.ConversationLeaveReply;
             public static encode(message: berty.chat.IConversationLeaveReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationLeaveReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -293,7 +293,7 @@ export namespace berty {
         }
 
         class ConversationEraseRequest implements IConversationEraseRequest {
-            constructor(properties?: berty.chat.IConversationEraseRequest);
+
             public static create(properties?: berty.chat.IConversationEraseRequest): berty.chat.ConversationEraseRequest;
             public static encode(message: berty.chat.IConversationEraseRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationEraseRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -309,7 +309,7 @@ export namespace berty {
         }
 
         class ConversationEraseReply implements IConversationEraseReply {
-            constructor(properties?: berty.chat.IConversationEraseReply);
+
             public static create(properties?: berty.chat.IConversationEraseReply): berty.chat.ConversationEraseReply;
             public static encode(message: berty.chat.IConversationEraseReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationEraseReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -325,7 +325,7 @@ export namespace berty {
         }
 
         class ConversationSetSeenPositionRequest implements IConversationSetSeenPositionRequest {
-            constructor(properties?: berty.chat.IConversationSetSeenPositionRequest);
+
             public static create(properties?: berty.chat.IConversationSetSeenPositionRequest): berty.chat.ConversationSetSeenPositionRequest;
             public static encode(message: berty.chat.IConversationSetSeenPositionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationSetSeenPositionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -341,7 +341,7 @@ export namespace berty {
         }
 
         class ConversationSetSeenPositionReply implements IConversationSetSeenPositionReply {
-            constructor(properties?: berty.chat.IConversationSetSeenPositionReply);
+
             public static create(properties?: berty.chat.IConversationSetSeenPositionReply): berty.chat.ConversationSetSeenPositionReply;
             public static encode(message: berty.chat.IConversationSetSeenPositionReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationSetSeenPositionReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -357,7 +357,7 @@ export namespace berty {
         }
 
         class ConversationMessageListRequest implements IConversationMessageListRequest {
-            constructor(properties?: berty.chat.IConversationMessageListRequest);
+
             public static create(properties?: berty.chat.IConversationMessageListRequest): berty.chat.ConversationMessageListRequest;
             public static encode(message: berty.chat.IConversationMessageListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationMessageListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -373,7 +373,7 @@ export namespace berty {
         }
 
         class ConversationMessageListReply implements IConversationMessageListReply {
-            constructor(properties?: berty.chat.IConversationMessageListReply);
+
             public static create(properties?: berty.chat.IConversationMessageListReply): berty.chat.ConversationMessageListReply;
             public static encode(message: berty.chat.IConversationMessageListReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationMessageListReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -389,7 +389,7 @@ export namespace berty {
         }
 
         class ConversationMessageSendRequest implements IConversationMessageSendRequest {
-            constructor(properties?: berty.chat.IConversationMessageSendRequest);
+
             public static create(properties?: berty.chat.IConversationMessageSendRequest): berty.chat.ConversationMessageSendRequest;
             public static encode(message: berty.chat.IConversationMessageSendRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationMessageSendRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -405,7 +405,7 @@ export namespace berty {
         }
 
         class ConversationMessageSendReply implements IConversationMessageSendReply {
-            constructor(properties?: berty.chat.IConversationMessageSendReply);
+
             public static create(properties?: berty.chat.IConversationMessageSendReply): berty.chat.ConversationMessageSendReply;
             public static encode(message: berty.chat.IConversationMessageSendReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationMessageSendReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -421,7 +421,7 @@ export namespace berty {
         }
 
         class ConversationMessageEditRequest implements IConversationMessageEditRequest {
-            constructor(properties?: berty.chat.IConversationMessageEditRequest);
+
             public static create(properties?: berty.chat.IConversationMessageEditRequest): berty.chat.ConversationMessageEditRequest;
             public static encode(message: berty.chat.IConversationMessageEditRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationMessageEditRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -437,7 +437,7 @@ export namespace berty {
         }
 
         class ConversationMessageEditReply implements IConversationMessageEditReply {
-            constructor(properties?: berty.chat.IConversationMessageEditReply);
+
             public static create(properties?: berty.chat.IConversationMessageEditReply): berty.chat.ConversationMessageEditReply;
             public static encode(message: berty.chat.IConversationMessageEditReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationMessageEditReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -453,7 +453,7 @@ export namespace berty {
         }
 
         class ConversationMessageHideRequest implements IConversationMessageHideRequest {
-            constructor(properties?: berty.chat.IConversationMessageHideRequest);
+
             public static create(properties?: berty.chat.IConversationMessageHideRequest): berty.chat.ConversationMessageHideRequest;
             public static encode(message: berty.chat.IConversationMessageHideRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationMessageHideRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -469,7 +469,7 @@ export namespace berty {
         }
 
         class ConversationMessageHideReply implements IConversationMessageHideReply {
-            constructor(properties?: berty.chat.IConversationMessageHideReply);
+
             public static create(properties?: berty.chat.IConversationMessageHideReply): berty.chat.ConversationMessageHideReply;
             public static encode(message: berty.chat.IConversationMessageHideReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationMessageHideReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -485,7 +485,7 @@ export namespace berty {
         }
 
         class ConversationUpdateSettingsRequest implements IConversationUpdateSettingsRequest {
-            constructor(properties?: berty.chat.IConversationUpdateSettingsRequest);
+
             public static create(properties?: berty.chat.IConversationUpdateSettingsRequest): berty.chat.ConversationUpdateSettingsRequest;
             public static encode(message: berty.chat.IConversationUpdateSettingsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationUpdateSettingsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -501,7 +501,7 @@ export namespace berty {
         }
 
         class ConversationUpdateSettingsReply implements IConversationUpdateSettingsReply {
-            constructor(properties?: berty.chat.IConversationUpdateSettingsReply);
+
             public static create(properties?: berty.chat.IConversationUpdateSettingsReply): berty.chat.ConversationUpdateSettingsReply;
             public static encode(message: berty.chat.IConversationUpdateSettingsReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationUpdateSettingsReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -517,7 +517,7 @@ export namespace berty {
         }
 
         class ConversationInvitationAcceptRequest implements IConversationInvitationAcceptRequest {
-            constructor(properties?: berty.chat.IConversationInvitationAcceptRequest);
+
             public static create(properties?: berty.chat.IConversationInvitationAcceptRequest): berty.chat.ConversationInvitationAcceptRequest;
             public static encode(message: berty.chat.IConversationInvitationAcceptRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationInvitationAcceptRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -533,7 +533,7 @@ export namespace berty {
         }
 
         class ConversationInvitationAcceptReply implements IConversationInvitationAcceptReply {
-            constructor(properties?: berty.chat.IConversationInvitationAcceptReply);
+
             public static create(properties?: berty.chat.IConversationInvitationAcceptReply): berty.chat.ConversationInvitationAcceptReply;
             public static encode(message: berty.chat.IConversationInvitationAcceptReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationInvitationAcceptReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -549,7 +549,7 @@ export namespace berty {
         }
 
         class ConversationInvitationCreateRequest implements IConversationInvitationCreateRequest {
-            constructor(properties?: berty.chat.IConversationInvitationCreateRequest);
+
             public static create(properties?: berty.chat.IConversationInvitationCreateRequest): berty.chat.ConversationInvitationCreateRequest;
             public static encode(message: berty.chat.IConversationInvitationCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationInvitationCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -565,7 +565,7 @@ export namespace berty {
         }
 
         class ConversationInvitationCreateReply implements IConversationInvitationCreateReply {
-            constructor(properties?: berty.chat.IConversationInvitationCreateReply);
+
             public static create(properties?: berty.chat.IConversationInvitationCreateReply): berty.chat.ConversationInvitationCreateReply;
             public static encode(message: berty.chat.IConversationInvitationCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationInvitationCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -581,7 +581,7 @@ export namespace berty {
         }
 
         class ConversationInvitationDiscardRequest implements IConversationInvitationDiscardRequest {
-            constructor(properties?: berty.chat.IConversationInvitationDiscardRequest);
+
             public static create(properties?: berty.chat.IConversationInvitationDiscardRequest): berty.chat.ConversationInvitationDiscardRequest;
             public static encode(message: berty.chat.IConversationInvitationDiscardRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationInvitationDiscardRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -597,7 +597,7 @@ export namespace berty {
         }
 
         class ConversationInvitationDiscardReply implements IConversationInvitationDiscardReply {
-            constructor(properties?: berty.chat.IConversationInvitationDiscardReply);
+
             public static create(properties?: berty.chat.IConversationInvitationDiscardReply): berty.chat.ConversationInvitationDiscardReply;
             public static encode(message: berty.chat.IConversationInvitationDiscardReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IConversationInvitationDiscardReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -613,7 +613,7 @@ export namespace berty {
         }
 
         class ContactListRequest implements IContactListRequest {
-            constructor(properties?: berty.chat.IContactListRequest);
+
             public static create(properties?: berty.chat.IContactListRequest): berty.chat.ContactListRequest;
             public static encode(message: berty.chat.IContactListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -629,7 +629,7 @@ export namespace berty {
         }
 
         class ContactListReply implements IContactListReply {
-            constructor(properties?: berty.chat.IContactListReply);
+
             public static create(properties?: berty.chat.IContactListReply): berty.chat.ContactListReply;
             public static encode(message: berty.chat.IContactListReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactListReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -645,7 +645,7 @@ export namespace berty {
         }
 
         class ContactGetRequest implements IContactGetRequest {
-            constructor(properties?: berty.chat.IContactGetRequest);
+
             public static create(properties?: berty.chat.IContactGetRequest): berty.chat.ContactGetRequest;
             public static encode(message: berty.chat.IContactGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -661,7 +661,7 @@ export namespace berty {
         }
 
         class ContactGetReply implements IContactGetReply {
-            constructor(properties?: berty.chat.IContactGetReply);
+
             public static create(properties?: berty.chat.IContactGetReply): berty.chat.ContactGetReply;
             public static encode(message: berty.chat.IContactGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -677,7 +677,7 @@ export namespace berty {
         }
 
         class ContactUpdateRequest implements IContactUpdateRequest {
-            constructor(properties?: berty.chat.IContactUpdateRequest);
+
             public static create(properties?: berty.chat.IContactUpdateRequest): berty.chat.ContactUpdateRequest;
             public static encode(message: berty.chat.IContactUpdateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactUpdateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -693,7 +693,7 @@ export namespace berty {
         }
 
         class ContactUpdateReply implements IContactUpdateReply {
-            constructor(properties?: berty.chat.IContactUpdateReply);
+
             public static create(properties?: berty.chat.IContactUpdateReply): berty.chat.ContactUpdateReply;
             public static encode(message: berty.chat.IContactUpdateReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactUpdateReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -709,7 +709,7 @@ export namespace berty {
         }
 
         class ContactRemoveRequest implements IContactRemoveRequest {
-            constructor(properties?: berty.chat.IContactRemoveRequest);
+
             public static create(properties?: berty.chat.IContactRemoveRequest): berty.chat.ContactRemoveRequest;
             public static encode(message: berty.chat.IContactRemoveRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactRemoveRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -725,7 +725,7 @@ export namespace berty {
         }
 
         class ContactRemoveReply implements IContactRemoveReply {
-            constructor(properties?: berty.chat.IContactRemoveReply);
+
             public static create(properties?: berty.chat.IContactRemoveReply): berty.chat.ContactRemoveReply;
             public static encode(message: berty.chat.IContactRemoveReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactRemoveReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -741,7 +741,7 @@ export namespace berty {
         }
 
         class ContactRequestCreateRequest implements IContactRequestCreateRequest {
-            constructor(properties?: berty.chat.IContactRequestCreateRequest);
+
             public static create(properties?: berty.chat.IContactRequestCreateRequest): berty.chat.ContactRequestCreateRequest;
             public static encode(message: berty.chat.IContactRequestCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactRequestCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -757,7 +757,7 @@ export namespace berty {
         }
 
         class ContactRequestCreateReply implements IContactRequestCreateReply {
-            constructor(properties?: berty.chat.IContactRequestCreateReply);
+
             public static create(properties?: berty.chat.IContactRequestCreateReply): berty.chat.ContactRequestCreateReply;
             public static encode(message: berty.chat.IContactRequestCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactRequestCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -773,7 +773,7 @@ export namespace berty {
         }
 
         class ContactRequestAcceptRequest implements IContactRequestAcceptRequest {
-            constructor(properties?: berty.chat.IContactRequestAcceptRequest);
+
             public static create(properties?: berty.chat.IContactRequestAcceptRequest): berty.chat.ContactRequestAcceptRequest;
             public static encode(message: berty.chat.IContactRequestAcceptRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactRequestAcceptRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -789,7 +789,7 @@ export namespace berty {
         }
 
         class ContactRequestAcceptReply implements IContactRequestAcceptReply {
-            constructor(properties?: berty.chat.IContactRequestAcceptReply);
+
             public static create(properties?: berty.chat.IContactRequestAcceptReply): berty.chat.ContactRequestAcceptReply;
             public static encode(message: berty.chat.IContactRequestAcceptReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactRequestAcceptReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -805,7 +805,7 @@ export namespace berty {
         }
 
         class ContactRequestDiscardRequest implements IContactRequestDiscardRequest {
-            constructor(properties?: berty.chat.IContactRequestDiscardRequest);
+
             public static create(properties?: berty.chat.IContactRequestDiscardRequest): berty.chat.ContactRequestDiscardRequest;
             public static encode(message: berty.chat.IContactRequestDiscardRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactRequestDiscardRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -821,7 +821,7 @@ export namespace berty {
         }
 
         class ContactRequestDiscardReply implements IContactRequestDiscardReply {
-            constructor(properties?: berty.chat.IContactRequestDiscardReply);
+
             public static create(properties?: berty.chat.IContactRequestDiscardReply): berty.chat.ContactRequestDiscardReply;
             public static encode(message: berty.chat.IContactRequestDiscardReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IContactRequestDiscardReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -837,7 +837,7 @@ export namespace berty {
         }
 
         class SearchRequest implements ISearchRequest {
-            constructor(properties?: berty.chat.ISearchRequest);
+
             public static create(properties?: berty.chat.ISearchRequest): berty.chat.SearchRequest;
             public static encode(message: berty.chat.ISearchRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.ISearchRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -853,7 +853,7 @@ export namespace berty {
         }
 
         class SearchReply implements ISearchReply {
-            constructor(properties?: berty.chat.ISearchReply);
+
             public static create(properties?: berty.chat.ISearchReply): berty.chat.SearchReply;
             public static encode(message: berty.chat.ISearchReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.ISearchReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -869,7 +869,7 @@ export namespace berty {
         }
 
         class AccountSettingsGetRequest implements IAccountSettingsGetRequest {
-            constructor(properties?: berty.chat.IAccountSettingsGetRequest);
+
             public static create(properties?: berty.chat.IAccountSettingsGetRequest): berty.chat.AccountSettingsGetRequest;
             public static encode(message: berty.chat.IAccountSettingsGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IAccountSettingsGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -885,7 +885,7 @@ export namespace berty {
         }
 
         class AccountSettingsGetReply implements IAccountSettingsGetReply {
-            constructor(properties?: berty.chat.IAccountSettingsGetReply);
+
             public static create(properties?: berty.chat.IAccountSettingsGetReply): berty.chat.AccountSettingsGetReply;
             public static encode(message: berty.chat.IAccountSettingsGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IAccountSettingsGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -901,7 +901,7 @@ export namespace berty {
         }
 
         class AccountSettingsUpdateRequest implements IAccountSettingsUpdateRequest {
-            constructor(properties?: berty.chat.IAccountSettingsUpdateRequest);
+
             public static create(properties?: berty.chat.IAccountSettingsUpdateRequest): berty.chat.AccountSettingsUpdateRequest;
             public static encode(message: berty.chat.IAccountSettingsUpdateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IAccountSettingsUpdateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -917,7 +917,7 @@ export namespace berty {
         }
 
         class AccountSettingsUpdateReply implements IAccountSettingsUpdateReply {
-            constructor(properties?: berty.chat.IAccountSettingsUpdateReply);
+
             public static create(properties?: berty.chat.IAccountSettingsUpdateReply): berty.chat.AccountSettingsUpdateReply;
             public static encode(message: berty.chat.IAccountSettingsUpdateReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IAccountSettingsUpdateReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -933,7 +933,7 @@ export namespace berty {
         }
 
         class AccountPairingInvitationCreateRequest implements IAccountPairingInvitationCreateRequest {
-            constructor(properties?: berty.chat.IAccountPairingInvitationCreateRequest);
+
             public static create(properties?: berty.chat.IAccountPairingInvitationCreateRequest): berty.chat.AccountPairingInvitationCreateRequest;
             public static encode(message: berty.chat.IAccountPairingInvitationCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IAccountPairingInvitationCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -949,7 +949,7 @@ export namespace berty {
         }
 
         class AccountPairingInvitationCreateReply implements IAccountPairingInvitationCreateReply {
-            constructor(properties?: berty.chat.IAccountPairingInvitationCreateReply);
+
             public static create(properties?: berty.chat.IAccountPairingInvitationCreateReply): berty.chat.AccountPairingInvitationCreateReply;
             public static encode(message: berty.chat.IAccountPairingInvitationCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IAccountPairingInvitationCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -965,7 +965,7 @@ export namespace berty {
         }
 
         class AccountRenewIncomingContactRequestLinkRequest implements IAccountRenewIncomingContactRequestLinkRequest {
-            constructor(properties?: berty.chat.IAccountRenewIncomingContactRequestLinkRequest);
+
             public static create(properties?: berty.chat.IAccountRenewIncomingContactRequestLinkRequest): berty.chat.AccountRenewIncomingContactRequestLinkRequest;
             public static encode(message: berty.chat.IAccountRenewIncomingContactRequestLinkRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IAccountRenewIncomingContactRequestLinkRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -981,7 +981,7 @@ export namespace berty {
         }
 
         class AccountRenewIncomingContactRequestLinkReply implements IAccountRenewIncomingContactRequestLinkReply {
-            constructor(properties?: berty.chat.IAccountRenewIncomingContactRequestLinkReply);
+
             public static create(properties?: berty.chat.IAccountRenewIncomingContactRequestLinkReply): berty.chat.AccountRenewIncomingContactRequestLinkReply;
             public static encode(message: berty.chat.IAccountRenewIncomingContactRequestLinkReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IAccountRenewIncomingContactRequestLinkReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -997,7 +997,7 @@ export namespace berty {
         }
 
         class DevEventSubscribeRequest implements IDevEventSubscribeRequest {
-            constructor(properties?: berty.chat.IDevEventSubscribeRequest);
+
             public static create(properties?: berty.chat.IDevEventSubscribeRequest): berty.chat.DevEventSubscribeRequest;
             public static encode(message: berty.chat.IDevEventSubscribeRequest, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IDevEventSubscribeRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1013,7 +1013,7 @@ export namespace berty {
         }
 
         class DevEventSubscribeReply implements IDevEventSubscribeReply {
-            constructor(properties?: berty.chat.IDevEventSubscribeReply);
+
             public static create(properties?: berty.chat.IDevEventSubscribeReply): berty.chat.DevEventSubscribeReply;
             public static encode(message: berty.chat.IDevEventSubscribeReply, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.chat.IDevEventSubscribeReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1039,7 +1039,7 @@ export namespace berty {
         }
 
         class Account implements IAccount {
-            constructor(properties?: berty.chatmodel.IAccount);
+
             public id: (number|Long);
             public createdAt: (google.protobuf.ITimestamp);
             public updatedAt: (google.protobuf.ITimestamp);
@@ -1076,7 +1076,7 @@ export namespace berty {
         }
 
         class Conversation implements IConversation {
-            constructor(properties?: berty.chatmodel.IConversation);
+
             public id: (number|Long);
             public protocolId: string;
             public createdAt: (google.protobuf.ITimestamp);
@@ -1134,7 +1134,7 @@ export namespace berty {
         }
 
         class Member implements IMember {
-            constructor(properties?: berty.chatmodel.IMember);
+
             public id: (number|Long);
             public protocolId: string;
             public createdAt: (google.protobuf.ITimestamp);
@@ -1185,7 +1185,7 @@ export namespace berty {
         }
 
         class Message implements IMessage {
-            constructor(properties?: berty.chatmodel.IMessage);
+
             public id: (number|Long);
             public protocolId: string;
             public createdAt: (google.protobuf.ITimestamp);
@@ -1228,7 +1228,7 @@ export namespace berty {
             }
 
             class Body implements IBody {
-                constructor(properties?: berty.chatmodel.Message.IBody);
+
                 public text: string;
                 public memberJoined: (number|Long);
                 public memberLeft: (number|Long);
@@ -1256,7 +1256,7 @@ export namespace berty {
         }
 
         class Attachment implements IAttachment {
-            constructor(properties?: berty.chatmodel.IAttachment);
+
             public id: (number|Long);
             public createdAt: (google.protobuf.ITimestamp);
             public updatedAt: (google.protobuf.ITimestamp);
@@ -1287,7 +1287,7 @@ export namespace berty {
         }
 
         class Reaction implements IReaction {
-            constructor(properties?: berty.chatmodel.IReaction);
+
             public id: (number|Long);
             public createdAt: (google.protobuf.ITimestamp);
             public updatedAt: (google.protobuf.ITimestamp);
@@ -1323,7 +1323,7 @@ export namespace berty {
         }
 
         class Contact implements IContact {
-            constructor(properties?: berty.chatmodel.IContact);
+
             public id: (number|Long);
             public protocolId: string;
             public createdAt: (google.protobuf.ITimestamp);
@@ -1373,7 +1373,7 @@ export namespace berty {
         }
 
         class Device implements IDevice {
-            constructor(properties?: berty.chatmodel.IDevice);
+
             public id: (number|Long);
             public protocolId: string;
             public createdAt: (google.protobuf.ITimestamp);
@@ -1416,7 +1416,7 @@ export namespace google {
         }
 
         class Http implements IHttp {
-            constructor(properties?: google.api.IHttp);
+
             public rules: google.api.IHttpRule[];
             public static create(properties?: google.api.IHttp): google.api.Http;
             public static encode(message: google.api.IHttp, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1442,7 +1442,7 @@ export namespace google {
         }
 
         class HttpRule implements IHttpRule {
-            constructor(properties?: google.api.IHttpRule);
+
             public selector: string;
             public get: string;
             public put: string;
@@ -1470,7 +1470,7 @@ export namespace google {
         }
 
         class CustomHttpPattern implements ICustomHttpPattern {
-            constructor(properties?: google.api.ICustomHttpPattern);
+
             public kind: string;
             public path: string;
             public static create(properties?: google.api.ICustomHttpPattern): google.api.CustomHttpPattern;
@@ -1492,7 +1492,7 @@ export namespace google {
         }
 
         class FileDescriptorSet implements IFileDescriptorSet {
-            constructor(properties?: google.protobuf.IFileDescriptorSet);
+
             public file: google.protobuf.IFileDescriptorProto[];
             public static create(properties?: google.protobuf.IFileDescriptorSet): google.protobuf.FileDescriptorSet;
             public static encode(message: google.protobuf.IFileDescriptorSet, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1521,7 +1521,7 @@ export namespace google {
         }
 
         class FileDescriptorProto implements IFileDescriptorProto {
-            constructor(properties?: google.protobuf.IFileDescriptorProto);
+
             public name: string;
             public package: string;
             public dependency: string[];
@@ -1559,7 +1559,7 @@ export namespace google {
         }
 
         class DescriptorProto implements IDescriptorProto {
-            constructor(properties?: google.protobuf.IDescriptorProto);
+
             public name: string;
             public field: google.protobuf.IFieldDescriptorProto[];
             public extension: google.protobuf.IFieldDescriptorProto[];
@@ -1590,7 +1590,7 @@ export namespace google {
             }
 
             class ExtensionRange implements IExtensionRange {
-                constructor(properties?: google.protobuf.DescriptorProto.IExtensionRange);
+
                 public start: number;
                 public end: number;
                 public options?: (google.protobuf.IExtensionRangeOptions|null);
@@ -1611,7 +1611,7 @@ export namespace google {
             }
 
             class ReservedRange implements IReservedRange {
-                constructor(properties?: google.protobuf.DescriptorProto.IReservedRange);
+
                 public start: number;
                 public end: number;
                 public static create(properties?: google.protobuf.DescriptorProto.IReservedRange): google.protobuf.DescriptorProto.ReservedRange;
@@ -1631,7 +1631,7 @@ export namespace google {
         }
 
         class ExtensionRangeOptions implements IExtensionRangeOptions {
-            constructor(properties?: google.protobuf.IExtensionRangeOptions);
+
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
             public static create(properties?: google.protobuf.IExtensionRangeOptions): google.protobuf.ExtensionRangeOptions;
             public static encode(message: google.protobuf.IExtensionRangeOptions, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1658,7 +1658,7 @@ export namespace google {
         }
 
         class FieldDescriptorProto implements IFieldDescriptorProto {
-            constructor(properties?: google.protobuf.IFieldDescriptorProto);
+
             public name: string;
             public number: number;
             public label: google.protobuf.FieldDescriptorProto.Label;
@@ -1716,7 +1716,7 @@ export namespace google {
         }
 
         class OneofDescriptorProto implements IOneofDescriptorProto {
-            constructor(properties?: google.protobuf.IOneofDescriptorProto);
+
             public name: string;
             public options?: (google.protobuf.IOneofOptions|null);
             public static create(properties?: google.protobuf.IOneofDescriptorProto): google.protobuf.OneofDescriptorProto;
@@ -1739,7 +1739,7 @@ export namespace google {
         }
 
         class EnumDescriptorProto implements IEnumDescriptorProto {
-            constructor(properties?: google.protobuf.IEnumDescriptorProto);
+
             public name: string;
             public value: google.protobuf.IEnumValueDescriptorProto[];
             public options?: (google.protobuf.IEnumOptions|null);
@@ -1764,7 +1764,7 @@ export namespace google {
             }
 
             class EnumReservedRange implements IEnumReservedRange {
-                constructor(properties?: google.protobuf.EnumDescriptorProto.IEnumReservedRange);
+
                 public start: number;
                 public end: number;
                 public static create(properties?: google.protobuf.EnumDescriptorProto.IEnumReservedRange): google.protobuf.EnumDescriptorProto.EnumReservedRange;
@@ -1786,7 +1786,7 @@ export namespace google {
         }
 
         class EnumValueDescriptorProto implements IEnumValueDescriptorProto {
-            constructor(properties?: google.protobuf.IEnumValueDescriptorProto);
+
             public name: string;
             public number: number;
             public options?: (google.protobuf.IEnumValueOptions|null);
@@ -1808,7 +1808,7 @@ export namespace google {
         }
 
         class ServiceDescriptorProto implements IServiceDescriptorProto {
-            constructor(properties?: google.protobuf.IServiceDescriptorProto);
+
             public name: string;
             public method: google.protobuf.IMethodDescriptorProto[];
             public options?: (google.protobuf.IServiceOptions|null);
@@ -1833,7 +1833,7 @@ export namespace google {
         }
 
         class MethodDescriptorProto implements IMethodDescriptorProto {
-            constructor(properties?: google.protobuf.IMethodDescriptorProto);
+
             public name: string;
             public inputType: string;
             public outputType: string;
@@ -1908,7 +1908,7 @@ export namespace google {
         }
 
         class FileOptions implements IFileOptions {
-            constructor(properties?: google.protobuf.IFileOptions);
+
             public javaPackage: string;
             public javaOuterClassname: string;
             public javaMultipleFiles: boolean;
@@ -1985,7 +1985,7 @@ export namespace google {
         }
 
         class MessageOptions implements IMessageOptions {
-            constructor(properties?: google.protobuf.IMessageOptions);
+
             public messageSetWireFormat: boolean;
             public noStandardDescriptorAccessor: boolean;
             public deprecated: boolean;
@@ -2025,7 +2025,7 @@ export namespace google {
         }
 
         class FieldOptions implements IFieldOptions {
-            constructor(properties?: google.protobuf.IFieldOptions);
+
             public ctype: google.protobuf.FieldOptions.CType;
             public packed: boolean;
             public jstype: google.protobuf.FieldOptions.JSType;
@@ -2064,7 +2064,7 @@ export namespace google {
         }
 
         class OneofOptions implements IOneofOptions {
-            constructor(properties?: google.protobuf.IOneofOptions);
+
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
             public static create(properties?: google.protobuf.IOneofOptions): google.protobuf.OneofOptions;
             public static encode(message: google.protobuf.IOneofOptions, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2089,7 +2089,7 @@ export namespace google {
         }
 
         class EnumOptions implements IEnumOptions {
-            constructor(properties?: google.protobuf.IEnumOptions);
+
             public allowAlias: boolean;
             public deprecated: boolean;
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -2111,7 +2111,7 @@ export namespace google {
         }
 
         class EnumValueOptions implements IEnumValueOptions {
-            constructor(properties?: google.protobuf.IEnumValueOptions);
+
             public deprecated: boolean;
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
             public static create(properties?: google.protobuf.IEnumValueOptions): google.protobuf.EnumValueOptions;
@@ -2131,7 +2131,7 @@ export namespace google {
         }
 
         class ServiceOptions implements IServiceOptions {
-            constructor(properties?: google.protobuf.IServiceOptions);
+
             public deprecated: boolean;
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
             public static create(properties?: google.protobuf.IServiceOptions): google.protobuf.ServiceOptions;
@@ -2153,7 +2153,7 @@ export namespace google {
         }
 
         class MethodOptions implements IMethodOptions {
-            constructor(properties?: google.protobuf.IMethodOptions);
+
             public deprecated: boolean;
             public idempotencyLevel: google.protobuf.MethodOptions.IdempotencyLevel;
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -2188,7 +2188,7 @@ export namespace google {
         }
 
         class UninterpretedOption implements IUninterpretedOption {
-            constructor(properties?: google.protobuf.IUninterpretedOption);
+
             public name: google.protobuf.UninterpretedOption.INamePart[];
             public identifierValue: string;
             public positiveIntValue: (number|Long);
@@ -2215,7 +2215,7 @@ export namespace google {
             }
 
             class NamePart implements INamePart {
-                constructor(properties?: google.protobuf.UninterpretedOption.INamePart);
+
                 public namePart: string;
                 public isExtension: boolean;
                 public static create(properties?: google.protobuf.UninterpretedOption.INamePart): google.protobuf.UninterpretedOption.NamePart;
@@ -2235,7 +2235,7 @@ export namespace google {
         }
 
         class SourceCodeInfo implements ISourceCodeInfo {
-            constructor(properties?: google.protobuf.ISourceCodeInfo);
+
             public location: google.protobuf.SourceCodeInfo.ILocation[];
             public static create(properties?: google.protobuf.ISourceCodeInfo): google.protobuf.SourceCodeInfo;
             public static encode(message: google.protobuf.ISourceCodeInfo, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2259,7 +2259,7 @@ export namespace google {
             }
 
             class Location implements ILocation {
-                constructor(properties?: google.protobuf.SourceCodeInfo.ILocation);
+
                 public path: number[];
                 public span: number[];
                 public leadingComments: string;
@@ -2282,7 +2282,7 @@ export namespace google {
         }
 
         class GeneratedCodeInfo implements IGeneratedCodeInfo {
-            constructor(properties?: google.protobuf.IGeneratedCodeInfo);
+
             public annotation: google.protobuf.GeneratedCodeInfo.IAnnotation[];
             public static create(properties?: google.protobuf.IGeneratedCodeInfo): google.protobuf.GeneratedCodeInfo;
             public static encode(message: google.protobuf.IGeneratedCodeInfo, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2305,7 +2305,7 @@ export namespace google {
             }
 
             class Annotation implements IAnnotation {
-                constructor(properties?: google.protobuf.GeneratedCodeInfo.IAnnotation);
+
                 public path: number[];
                 public sourceFile: string;
                 public begin: number;
@@ -2328,7 +2328,7 @@ export namespace google {
         }
 
         class Timestamp implements ITimestamp {
-            constructor(properties?: google.protobuf.ITimestamp);
+
             public seconds: (number|Long);
             public nanos: number;
             public static create(properties?: google.protobuf.ITimestamp): google.protobuf.Timestamp;

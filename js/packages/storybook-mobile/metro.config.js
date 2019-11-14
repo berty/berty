@@ -31,7 +31,7 @@ module.exports = {
 			{},
 			{
 				get: (target, name) => {
-					const current = path.join(__dirname, `node_modules/${name}`)
+					const current = path.join(__dirname, `./node_modules/${name}`)
 					const root = path.join(__dirname, `../../node_modules/${name}`)
 					if (fs.existsSync(root)) {
 						return root

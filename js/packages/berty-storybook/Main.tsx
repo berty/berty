@@ -3,7 +3,7 @@ import { View, Image, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text, Button } from 'react-native-ui-kitten'
 import { Card } from '@berty-tech/shared-storybook'
 import styles from './styles'
-import { berty } from '@berty-tech/api-chat'
+import { berty } from '@berty-tech/berty-api'
 
 type Navigation = () => void
 type Form<T> = (arg0: T) => Promise<void>
@@ -43,11 +43,7 @@ type FooterProps = {
 	plus: Navigation
 	account: Navigation
 }
-type ListProps = {
-	conversations: ConversationsProps
-	requests: RequestsProps
-	footer: FooterProps
-}
+type ListProps = {}
 
 const RequestsItem: React.FC<RequestsItemProps> = ({ name, avatar, at, accept, discard }) => (
 	<Card>
@@ -88,7 +84,15 @@ const Requests: React.FC<RequestsProps> = ({ items }) => (
 	</SafeAreaView>
 )
 
-const ConversationsItem: React.FC<ConversationsItemProps> = ({ avatar, title, intro, at, badge, verified, status }) => (
+const ConversationsItem: React.FC<ConversationsItemProps> = ({
+	avatar,
+	title,
+	intro,
+	at,
+	badge,
+	verified,
+	status,
+}) => (
 	<View style={styles.row}>
 		<Text>{title}</Text>
 		<Text category='s2'>{intro}</Text>

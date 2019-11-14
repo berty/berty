@@ -30,7 +30,9 @@ export const GetStarted: React.FC<{
 						<Row size={5} />
 						<Row size={2}>
 							<Col>
-								<Text style={[styles.textCenter, styles.padding]}>{t('onboarding.getstarted')}</Text>
+								<Text style={[styles.textCenter, styles.padding]}>
+									{t('onboarding.getstarted')}
+								</Text>
 							</Col>
 						</Row>
 						<Row size={2}>
@@ -187,7 +189,10 @@ const Notifications: React.FC<{
 	<Translation>
 		{(t) => (
 			<>
-				<Text category='h5' style={[styles.textWhite, styles.textCenter, styles.padding, styles.margin]}>
+				<Text
+					category='h5'
+					style={[styles.textWhite, styles.textCenter, styles.padding, styles.margin]}
+				>
 					{t('onboarding.notifications.header')}
 				</Text>
 				<Card style={[styles.bgWhite, _styles.swiperCard]}>
@@ -229,7 +234,10 @@ const Bluetooth: React.FC<{
 	<Translation>
 		{(t) => (
 			<>
-				<Text category='h5' style={[styles.textWhite, styles.textCenter, styles.padding, styles.margin]}>
+				<Text
+					category='h5'
+					style={[styles.textWhite, styles.textCenter, styles.padding, styles.margin]}
+				>
 					{t('onboarding.bluetooth.header')}
 				</Text>
 				<Card style={[styles.bgWhite, _styles.swiperCard]}>
@@ -300,7 +308,12 @@ export const Performance: React.FC<{
 	return (
 		<Layout style={[styles.flex, styles.bgBlue]}>
 			<SafeAreaView style={[styles.flex]}>
-				<Swiper index={0} ref={swiperRef} activeDotStyle={[styles.bgWhite, styles.relative]} scrollEnabled={false}>
+				<Swiper
+					index={0}
+					ref={swiperRef}
+					activeDotStyle={[styles.bgWhite, styles.relative]}
+					scrollEnabled={false}
+				>
 					<CreateYourAccount
 						submit={createAccount}
 						next={(): void => {
@@ -333,7 +346,11 @@ export const Privacy: React.FC<{
 	return (
 		<Layout style={[styles.flex, styles.bgRed]}>
 			<SafeAreaView style={[styles.flex]}>
-				<Swiper ref={swiperRef} activeDotStyle={[styles.bgWhite, styles.relative]} scrollEnabled={false}>
+				<Swiper
+					ref={swiperRef}
+					activeDotStyle={[styles.bgWhite, styles.relative]}
+					scrollEnabled={false}
+				>
 					<CreateYourAccount
 						submit={createAccount}
 						next={(): void => {

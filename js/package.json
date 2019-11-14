@@ -19,8 +19,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "postinstall": "touch node_modules",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "cli": "babel-node --extensions '.es6,.js,.es,.jsx,.mjs,.ts,.tsx'"
   },
   "workspaces": {
     "packages": [
@@ -31,7 +30,8 @@
       "**/react-native-*",
       "**/jsc-*",
       "**/@react-native-community/*",
-      "**/hermes-engine"
+      "**/hermes-engine",
+      "**/metro-*"
     ]
   },
   "dependencies": {

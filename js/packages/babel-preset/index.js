@@ -1,3 +1,6 @@
 module.exports = () => ({
-	presets: ['module:metro-react-native-babel-preset', ['@babel/preset-typescript', { allowNamespaces: true }]],
+	presets: [
+		__dirname + '/node_modules/metro-react-native-babel-preset',
+		['@babel/preset-typescript', { allowNamespaces: true }],
+	],
 })

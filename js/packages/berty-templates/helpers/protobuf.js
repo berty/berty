@@ -1,7 +1,4 @@
 module.exports.register = (handlebars) => {
-	// permit to lookup at package, message, enum ...
-	// ex: {{lookup 'google.protobuf.Timestamp'}}
-	// see https://github.com/protobufjs/protobuf.js/blob/69623a91c1e4a99d5210b5295a9e5b39d9517554/index.d.ts#L79://github.com/protobufjs/protobuf.js/blob/69623a91c1e4a99d5210b5295a9e5b39d9517554/index.d.ts#L793
 	handlebars.registerHelper('lookup', function() {
 		const options = arguments[arguments.length - 1]
 		delete arguments[arguments.length - 1]
@@ -43,8 +40,13 @@ module.exports.register = (handlebars) => {
 		return options.data.root
 	})
 
-	handlebars.registerHelper('namespace', function namespace(context, options) {
+	function namespace(context, options) {
 		return (context.parent ? namespace(context.parent, options) + '.' : '') + context.name
+	}
+	handlebars.registerHelper('namespace', namespace)
+
+	handlebars.registerHelper('inamespace', function(context, options) {
+		return (context.parent ? namespace(context.parent, options) + '.' : '') + 'I' + context.name
 	})
 
 	handlebars.registerHelper('importPaths', function(options) {

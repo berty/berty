@@ -1,0 +1,32 @@
+{
+  "name": "@berty-tech/berty-store",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "author": "Berty Technologies <oss@berty.tech>",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/berty-store#readme",
+  "license": "(Apache-2.0 or MIT)",
+  "main": "index.ts",
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berty/berty.git"
+  },
+  "bugs": {
+    "url": "https://github.com/berty/berty/issues"
+  },
+  "dependencies": {
+    "@berty-tech/berty-api": "^0.0.0",
+    "@improbable-eng/grpc-web": "^0.11.0",
+    "faker": "^4.1.0",
+    "mobx": "^5.14.2",
+    "mobx-react": "^6.1.4",
+    "mobx-react-lite": "^1.5.0",
+    "protobufjs": "^6.8.8",
+    "random-emoji": "^1.0.2",
+    "swr": "^0.1.6"
+  }
+}

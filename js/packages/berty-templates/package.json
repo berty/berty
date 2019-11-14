@@ -1,0 +1,27 @@
+{
+  "name": "@berty-tech/pbhbs-templates",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "author": "Berty Technologies <oss@berty.tech>",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/pbhbs-templates#readme",
+  "license": "(Apache-2.0 or MIT)",
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berty/berty.git"
+  },
+  "bugs": {
+    "url": "https://github.com/berty/berty/issues"
+  },
+  "dependencies": {
+    "@googleapis/googleapis": "googleapis/googleapis#common-protos-1_3_1",
+    "@protocolbuffers/protobuf": "protocolbuffers/protobuf#3.10.0",
+    "case": "^1.6.2",
+    "eslint": "^6.6.0",
+    "pbhbs": "^0.2.2"
+  }
+}

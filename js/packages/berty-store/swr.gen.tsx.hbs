@@ -1,0 +1,87 @@
+import * as _api from '@berty-tech/berty-api'
+import React, { createContext, useContext } from 'react'
+import * as pb from 'protobufjs'
+import bridge from '@berty-tech/grpc-bridge'
+import useSWR from 'swr'
+import { listHandler, streamHandler, getHandler } from './helpers'
+
+{{#declare 'store_swr'}}
+	{{#each nested}}
+		{{#if (eq (typeof this) "Namespace")}}
+			export namespace {{name}} {
+				{{call "store_swr" this}}
+			}
+		{{else if (eq (typeof this) "Service")}}
+			export namespace {{name}} {
+				export const Context = createContext(
+					_api{{namespace this}}.create(bridge({ host: 'http://localhost:1337' })),
+				)
+
+				export const Provider: React.FC<{ rpcImpl: pb.RPCImpl, children: React.ReactNode }> =
+					({
+						rpcImpl,
+						children
+					}) => (
+						<{{name}}.Context.Provider value={_api{{namespace this}}.create(rpcImpl)}>
+							{children}
+						</{{name}}.Context.Provider>
+					)
+
+				{{#each methods}}
+					export const {{case 'camel' name}} = async (
+						api: _api{{namespace parent}},
+						request: _api{{inamespace resolvedRequestType}},
+						{{~#if (test name (toRegex ".*List$"))~}}
+					): Promise<Array<_api{{inamespace resolvedResponseType}}>> =>
+							listHandler(api.{{case 'camel' name}}.bind(api), request)
+						{{else if (test name (toRegex ".*Get$"))~}}
+					): Promise<_api{{inamespace resolvedResponseType}}> =>
+							getHandler(api.{{case 'camel' name}}.bind(api), request)
+						{{else~}}
+					): Promise<_api{{inamespace resolvedResponseType}}> =>
+							streamHandler(api.{{case 'camel' name}}.bind(api), request)
+						{{/if}}
+
+				{{/each}}
+
+				// Containers
+				{{#each methods}}
+					type {{name}}Props = {
+						request: _api{{inamespace resolvedRequestType}}
+						fallback?: React.FC<{error?: Error}>
+						{{#if (test name (toRegex ".*List$"))}}
+						children?: (response: Array<_api{{inamespace resolvedResponseType}}>) => React.ReactElement
+						{{else}}
+						children?: (response: _api{{inamespace resolvedResponseType}}) => React.ReactElement
+						{{/if}}
+					}
+					export const {{name}}: React.FC<{{name}}Props> = ({ request, fallback: Fallback, children }) => {
+						const ctx = useContext({{chop (namespace parent)}}.Context)
+						const { data, error } = useSWR(
+							`{{name}}:${JSON.stringify(request)}`,
+							() => {{chop (namespace parent)}}.{{case 'camel' name}}(ctx, request)
+						)
+						if (error != null || data == null) {
+							return Fallback ? <Fallback error={error} /> : null
+						}
+						return children ? children(data) : null
+					}
+
+				{{/each}}
+			}
+		{{/if}}
+	{{/each}}
+{{/declare}}
+
+{{#declare 'alias_swr'}}
+	{{#each nested}}
+		{{#if (eq (typeof this) "Namespace")}}
+			{{call 'alias_swr' this}}
+		{{else if (eq (typeof this) "Service")}}
+			export const {{pascalcase (namespace this)}} = {{chop (namespace this)}}
+		{{/if}}
+	{{/each}}
+{{/declare}}
+
+{{call 'store_swr' this}}
+{{call 'alias_swr' this}}

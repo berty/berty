@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { View, TouchableOpacity, StyleSheet, LayoutChangeEvent, SafeAreaView, StyleProp } from 'react-native'
+import {
+	View,
+	TouchableOpacity,
+	StyleSheet,
+	LayoutChangeEvent,
+	SafeAreaView,
+	StyleProp,
+} from 'react-native'
 import { Text, Icon, Toggle } from 'react-native-ui-kitten'
 import { styles, colors } from '../styles'
 
@@ -98,12 +105,18 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 						</View>
 					)}
 					<View>
-						<Text style={[styles.fontFamily, styles.littlePaddingLeft, { color: colors.black }]} category='s4'>
+						<Text
+							style={[styles.fontFamily, styles.littlePaddingLeft, { color: colors.black }]}
+							category='s4'
+						>
 							{name}
 						</Text>
 					</View>
 				</View>
-				<View onLayout={(e) => handleLayout(e)} style={[styles.row, styles.center, styles.alignItems]}>
+				<View
+					onLayout={(e) => handleLayout(e)}
+					style={[styles.row, styles.center, styles.alignItems]}
+				>
 					{state && state.value && state.color && state.bgColor && (
 						<View style={[styles.row, styles.marginRight, styles.alignItems]}>
 							{state && state.icon && (
@@ -134,7 +147,9 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 										fill={state.stateIconColor}
 									/>
 								)}
-								<Text style={[styles.center, { color: state.color, fontSize: 8, fontWeight: 'bold' }]}>
+								<Text
+									style={[styles.center, { color: state.color, fontSize: 8, fontWeight: 'bold' }]}
+								>
 									{state.value}
 								</Text>
 							</View>
@@ -143,7 +158,11 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					{previewValue && (
 						<View>
 							<Text
-								style={[styles.fontFamily, styles.littlePaddingRight, { fontWeight: 'bold', color: colors.black }]}
+								style={[
+									styles.fontFamily,
+									styles.littlePaddingRight,
+									{ fontWeight: 'bold', color: colors.black },
+								]}
 								category='s4'
 							>
 								{previewValue}
@@ -151,10 +170,20 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 						</View>
 					)}
 					{actionIcon && (
-						<Icon name={actionIcon} width={actionIconSize} height={actionIconSize} fill={actionIconColor} />
+						<Icon
+							name={actionIcon}
+							width={actionIconSize}
+							height={actionIconSize}
+							fill={actionIconColor}
+						/>
 					)}
 					{toggled && (
-						<Toggle style={{ paddingRight: 5 }} status='primary' checked={isToggle} onChange={handleChangeToggle} />
+						<Toggle
+							style={{ paddingRight: 5 }}
+							status='primary'
+							checked={isToggle}
+							onChange={handleChangeToggle}
+						/>
 					)}
 				</View>
 			</View>
@@ -206,7 +235,10 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 						</View>
 					)}
 					<View>
-						<Text style={[styles.fontFamily, styles.littlePaddingLeft, { fontWeight: 'bold' }]} category='s4'>
+						<Text
+							style={[styles.fontFamily, styles.littlePaddingLeft, { fontWeight: 'bold' }]}
+							category='s4'
+						>
 							{name}
 						</Text>
 					</View>
@@ -312,7 +344,12 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	actionIconColor = colors.white,
 }) => (
 	<SafeAreaView
-		style={[styles.flex, styles.borderBottomLeftRadius, styles.borderBottomRightRadius, { backgroundColor: bgColor }]}
+		style={[
+			styles.flex,
+			styles.borderBottomLeftRadius,
+			styles.borderBottomRightRadius,
+			{ backgroundColor: bgColor },
+		]}
 	>
 		<View style={[styles.padding]}>
 			<View style={[styles.row, styles.justifyContent]}>
@@ -329,7 +366,12 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 				<View style={[styles.flex, styles.end, styles.center]}>
 					{action && (
 						<TouchableOpacity style={[styles.end]} onPress={() => action(!actionValue)}>
-							<Icon name={actionIcon} width={actionIconSize} height={actionIconSize} fill={actionIconColor} />
+							<Icon
+								name={actionIcon}
+								width={actionIconSize}
+								height={actionIconSize}
+								fill={actionIconColor}
+							/>
 						</TouchableOpacity>
 					)}
 				</View>

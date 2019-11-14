@@ -13,7 +13,12 @@ import {
 } from 'react-native'
 import { Layout, Text, Icon, Input } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
-import { ButtonSetting, HeaderInfoSettings, FactionButtonSetting, HeaderSettings } from './SharedComponentSettings'
+import {
+	ButtonSetting,
+	HeaderInfoSettings,
+	FactionButtonSetting,
+	HeaderSettings,
+} from './SharedComponentSettings'
 
 //
 // Home Vue
@@ -48,7 +53,9 @@ const _stylesHome = StyleSheet.create({
 })
 
 const HomeHeaderButton: React.FC<HeaderButtonProps> = ({ name, icon, color }) => (
-	<TouchableOpacity style={[_stylesHome.homeButtonBox, styles.bgWhite, styles.borderRadius, styles.buttonShadow]}>
+	<TouchableOpacity
+		style={[_stylesHome.homeButtonBox, styles.bgWhite, styles.borderRadius, styles.buttonShadow]}
+	>
 		<View style={[styles.center, styles.littlePaddingTop]}>
 			<Icon name={icon} width={35} height={35} fill={color} />
 		</View>
@@ -61,7 +68,17 @@ const HomeHeaderButton: React.FC<HeaderButtonProps> = ({ name, icon, color }) =>
 )
 
 const HomeHeaderGroupButton: React.FC<{}> = () => (
-	<View style={[styles.top, styles.left, styles.right, styles.row, styles.spaceEvenly, styles.marginTop, styles.flex]}>
+	<View
+		style={[
+			styles.top,
+			styles.left,
+			styles.right,
+			styles.row,
+			styles.spaceEvenly,
+			styles.marginTop,
+			styles.flex,
+		]}
+	>
 		<HomeHeaderButton name='Updates' icon='arrow-upward-outline' color={colors.blue} />
 		<HomeHeaderButton name='Help' icon='question-mark-circle-outline' color={colors.red} />
 		<HomeHeaderButton name='Settings' icon='settings-2-outline' color={colors.blue} />
@@ -82,7 +99,10 @@ const HomeHeaderAvatar: React.FC<UserProps> = ({ avatarUri, name }) => (
 						styles.alignItems,
 					]}
 				>
-					<Image source={{ uri: avatarUri }} style={{ width: 65, height: 65, borderRadius: 32.5 }} />
+					<Image
+						source={{ uri: avatarUri }}
+						style={{ width: 65, height: 65, borderRadius: 32.5 }}
+					/>
 				</View>
 				<View style={[styles.center]}>
 					<Text style={[styles.fontFamily, styles.littlePaddingTop, { fontSize: 13 }]}>{name}</Text>
@@ -113,7 +133,15 @@ const HomeHeader: React.FC<HomeProps> = ({ user }) => (
 )
 
 const HomeBodySettings: React.FC<{}> = () => (
-	<View style={[styles.flex, styles.paddingLeft, styles.paddingRight, styles.marginTop, _stylesHome.homePaddingFooter]}>
+	<View
+		style={[
+			styles.flex,
+			styles.paddingLeft,
+			styles.paddingRight,
+			styles.marginTop,
+			_stylesHome.homePaddingFooter,
+		]}
+	>
 		<ButtonSetting
 			name='Notifications'
 			icon='bell-outline'
@@ -129,7 +157,13 @@ const HomeBodySettings: React.FC<{}> = () => (
 			iconColor={colors.blue}
 			actionIcon='arrow-ios-forward'
 		/>
-		<ButtonSetting name='Dark mode' icon='moon-outline' iconSize={30} iconColor={colors.blue} toggled={true} />
+		<ButtonSetting
+			name='Dark mode'
+			icon='moon-outline'
+			iconSize={30}
+			iconColor={colors.blue}
+			toggled={true}
+		/>
 		<ButtonSetting
 			name='About Berty'
 			icon='info-outline'
@@ -176,18 +210,57 @@ const HomeFooter: React.FC<{}> = () => (
 		]}
 	>
 		<TouchableOpacity>
-			<View style={[_stylesHome.homeFooterButton, styles.bgWhite, styles.buttonShadow, styles.justifyContent]}>
-				<Icon style={[styles.center]} name='search-outline' width={30} height={30} fill={colors.blue} />
+			<View
+				style={[
+					_stylesHome.homeFooterButton,
+					styles.bgWhite,
+					styles.buttonShadow,
+					styles.justifyContent,
+				]}
+			>
+				<Icon
+					style={[styles.center]}
+					name='search-outline'
+					width={30}
+					height={30}
+					fill={colors.blue}
+				/>
 			</View>
 		</TouchableOpacity>
 		<TouchableOpacity>
-			<View style={[_stylesHome.homeFooterButton, styles.bgWhite, styles.buttonShadow, styles.justifyContent]}>
-				<Icon style={[styles.center]} name='message-circle-outline' width={30} height={30} fill={colors.blue} />
+			<View
+				style={[
+					_stylesHome.homeFooterButton,
+					styles.bgWhite,
+					styles.buttonShadow,
+					styles.justifyContent,
+				]}
+			>
+				<Icon
+					style={[styles.center]}
+					name='message-circle-outline'
+					width={30}
+					height={30}
+					fill={colors.blue}
+				/>
 			</View>
 		</TouchableOpacity>
 		<TouchableOpacity>
-			<View style={[_stylesHome.homeFooterButton, styles.bgWhite, styles.buttonShadow, styles.justifyContent]}>
-				<Icon style={[styles.center]} name='person-outline' width={30} height={30} fill={colors.blue} />
+			<View
+				style={[
+					_stylesHome.homeFooterButton,
+					styles.bgWhite,
+					styles.buttonShadow,
+					styles.justifyContent,
+				]}
+			>
+				<Icon
+					style={[styles.center]}
+					name='person-outline'
+					width={30}
+					height={30}
+					fill={colors.blue}
+				/>
 			</View>
 		</TouchableOpacity>
 	</View>
@@ -250,7 +323,14 @@ const BertyIdHeader: React.FC<{}> = () => (
 
 const BertyIdAvatar: React.FC<{}> = () => (
 	<View style={[_stylesBertyId.bertyIdAvatar]}>
-		<View style={[_stylesBertyId.bertyIdCircleAvatar, styles.bgWhite, styles.center, styles.buttonShadow]} />
+		<View
+			style={[
+				_stylesBertyId.bertyIdCircleAvatar,
+				styles.bgWhite,
+				styles.center,
+				styles.buttonShadow,
+			]}
+		/>
 		<View style={[styles.center]}>
 			<Text style={styles.paddingTop} category='s1'>
 				Bob
@@ -263,7 +343,9 @@ const BertyIdTab: React.FC<BertyIdTabProps> = ({ name, icon, enable = false }) =
 	<View style={[styles.alignItems, !enable ? _stylesBertyId.bertyIdTabDisable : null]}>
 		<Icon fill={enable ? colors.blue : colors.black} name={icon} width={30} height={30} />
 		<Text style={[enable ? styles.textBlue : styles.textBlack, styles.fontFamily]}>{name}</Text>
-		<View style={[enable ? _stylesBertyId.bertyIdTabBarEnable : _stylesBertyId.bertyIdTabBarDisable]} />
+		<View
+			style={[enable ? _stylesBertyId.bertyIdTabBarEnable : _stylesBertyId.bertyIdTabBarDisable]}
+		/>
 	</View>
 )
 
@@ -280,14 +362,35 @@ const BertyIdContent: React.FC<{}> = () => {
 
 	return (
 		<View style={[styles.flex, styles.marginLeft, styles.marginRight, styles.paddingBottom]}>
-			<View style={[styles.row, styles.spaceEvenly, styles.marginLeft, styles.marginRight, styles.paddingBottom]}>
-				<TouchableOpacity onPress={() => handleEnable('QRCode')} style={[styles.flex, _stylesBertyId.bertyIdTab]}>
+			<View
+				style={[
+					styles.row,
+					styles.spaceEvenly,
+					styles.marginLeft,
+					styles.marginRight,
+					styles.paddingBottom,
+				]}
+			>
+				<TouchableOpacity
+					onPress={() => handleEnable('QRCode')}
+					style={[styles.flex, _stylesBertyId.bertyIdTab]}
+				>
 					<BertyIdTab name='QRCode' icon='code-outline' enable={enable === 'QRCode'} />
 				</TouchableOpacity>
-				<TouchableOpacity onPress={() => handleEnable('Fingerprint')} style={[styles.flex, _stylesBertyId.bertyIdTab]}>
-					<BertyIdTab name='Fingerprint' icon='pricetags-outline' enable={enable === 'Fingerprint'} />
+				<TouchableOpacity
+					onPress={() => handleEnable('Fingerprint')}
+					style={[styles.flex, _stylesBertyId.bertyIdTab]}
+				>
+					<BertyIdTab
+						name='Fingerprint'
+						icon='pricetags-outline'
+						enable={enable === 'Fingerprint'}
+					/>
 				</TouchableOpacity>
-				<TouchableOpacity onPress={() => handleEnable('Devices')} style={[styles.flex, _stylesBertyId.bertyIdTab]}>
+				<TouchableOpacity
+					onPress={() => handleEnable('Devices')}
+					style={[styles.flex, _stylesBertyId.bertyIdTab]}
+				>
 					<BertyIdTab name='Devices' icon='smartphone-outline' enable={enable === 'Devices'} />
 				</TouchableOpacity>
 			</View>
@@ -322,7 +425,13 @@ export const MyBertyId: React.FC<{}> = () => (
 					]}
 				>
 					<View style={[styles.flex, styles.justifyContent]}>
-						<Icon style={[styles.center]} name='share-outline' width={40} height={40} fill={colors.blue} />
+						<Icon
+							style={[styles.center]}
+							name='share-outline'
+							width={40}
+							height={40}
+							fill={colors.blue}
+						/>
 					</View>
 				</TouchableOpacity>
 			</View>
@@ -418,9 +527,18 @@ const handleSetMinHeight = (
 }
 
 const EditMyProfile: React.FC<{}> = () => (
-	<View style={[styles.bigPaddingLeft, styles.bigPaddingRight, styles.bigMarginTop, styles.bigMarginBottom]}>
+	<View
+		style={[
+			styles.bigPaddingLeft,
+			styles.bigPaddingRight,
+			styles.bigMarginTop,
+			styles.bigMarginBottom,
+		]}
+	>
 		<View style={[styles.row, styles.marginBottom]}>
-			<View style={[_stylesEditProfile.profileCircleAvatar, styles.bgLightBlue, styles.buttonShadow]} />
+			<View
+				style={[_stylesEditProfile.profileCircleAvatar, styles.bgLightBlue, styles.buttonShadow]}
+			/>
 			<View style={[styles.flex, styles.bigMarginLeft, styles.alignItems]}>
 				<Input label='Name' placeholder='Name...' />
 			</View>
@@ -460,7 +578,14 @@ const EditMyProfile: React.FC<{}> = () => (
 )
 
 const ResetMyQrCode: React.FC<{}> = () => (
-	<View style={[styles.bigPaddingLeft, styles.bigPaddingRight, styles.bigMarginTop, styles.bigMarginBottom]}>
+	<View
+		style={[
+			styles.bigPaddingLeft,
+			styles.bigPaddingRight,
+			styles.bigMarginTop,
+			styles.bigMarginBottom,
+		]}
+	>
 		<TouchableOpacity
 			style={[
 				styles.center,
@@ -557,7 +682,13 @@ const Toggle: React.FC<ToggleProps> = ({
 					<Text style={[styles.fontFamily]} category='h4'>
 						{label}
 					</Text>
-					<Icon style={[styles.flex, styles.right]} name={icon} width={50} height={50} fill={colorIcon} />
+					<Icon
+						style={[styles.flex, styles.right]}
+						name={icon}
+						width={50}
+						height={50}
+						fill={colorIcon}
+					/>
 				</View>
 			</TouchableWithoutFeedback>
 			<View onLayout={(e) => handleSetMaxHeight(e, toggle1, setToggle1)}>{children}</View>
@@ -622,7 +753,10 @@ export const EditProfile: React.FC<{}> = () => {
 							<Text>Dismiss Modal</Text>
 						</TouchableOpacity>
 						<View style={styles.flex}>
-							<ScrollView bounces={false} style={[styles.absolute, styles.bottom, styles.left, styles.right]}>
+							<ScrollView
+								bounces={false}
+								style={[styles.absolute, styles.bottom, styles.left, styles.right]}
+							>
 								<ToggleMenu />
 							</ScrollView>
 						</View>
@@ -656,7 +790,13 @@ type HeaderAppUpdatesProps = {
 	update: boolean
 }
 
-const UpdateFeature: React.FC<UpdateFeatureProps> = ({ value, color, icon, iconSize, iconColor }) => (
+const UpdateFeature: React.FC<UpdateFeatureProps> = ({
+	value,
+	color,
+	icon,
+	iconSize,
+	iconColor,
+}) => (
 	<View style={[styles.row, styles.littlePaddingLeft, styles.alignItems]}>
 		<Icon name={icon} width={iconSize} height={iconSize} fill={iconColor} />
 		<Text style={[{ color, fontSize: 11, fontWeight: 'bold', paddingLeft: 8 }]}>{value}</Text>
@@ -702,7 +842,10 @@ const HeaderAppUpdates: React.FC<HeaderAppUpdatesProps> = ({ update }) => (
 					]}
 				>
 					<Icon name='download-outline' width={30} height={30} fill={colors.white} />
-					<Text style={[styles.textWhite, styles.marginLeft, styles.littlePaddingRight]} category='s'>
+					<Text
+						style={[styles.textWhite, styles.marginLeft, styles.littlePaddingRight]}
+						category='s'
+					>
 						Download latest version on app
 					</Text>
 				</TouchableOpacity>
@@ -931,7 +1074,9 @@ const BodyHelp: React.FC<{}> = () => (
 			iconColor={colors.red}
 			actionIcon='arrow-ios-forward'
 		/>
-		<View style={[styles.flex, styles.row, styles.spaceBetween, styles.alignItems, { marginTop: 20 }]}>
+		<View
+			style={[styles.flex, styles.row, styles.spaceBetween, styles.alignItems, { marginTop: 20 }]}
+		>
 			<TouchableOpacity
 				style={[
 					styles.flex,
@@ -944,7 +1089,10 @@ const BodyHelp: React.FC<{}> = () => (
 				]}
 			>
 				<Icon name='question-mark-circle-outline' width={30} height={30} fill={colors.red} />
-				<Text style={[styles.fontFamily, styles.textBlack, { paddingTop: 6, fontWeight: 'bold' }]} category='s4'>
+				<Text
+					style={[styles.fontFamily, styles.textBlack, { paddingTop: 6, fontWeight: 'bold' }]}
+					category='s4'
+				>
 					Ask a question
 				</Text>
 			</TouchableOpacity>
@@ -960,7 +1108,10 @@ const BodyHelp: React.FC<{}> = () => (
 				]}
 			>
 				<Icon name='bulb-outline' width={30} height={30} fill={colors.red} />
-				<Text style={[styles.fontFamily, styles.textBlack, { paddingTop: 6, fontWeight: 'bold' }]} category='s4'>
+				<Text
+					style={[styles.fontFamily, styles.textBlack, { paddingTop: 6, fontWeight: 'bold' }]}
+					category='s4'
+				>
 					Report a bug
 				</Text>
 			</TouchableOpacity>
@@ -1080,7 +1231,13 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => (
 			iconSize={30}
 			toggled={true}
 		/>
-		<ButtonSetting name='Multicast DNS' icon='share-outline' iconColor={colors.blue} iconSize={30} toggled={true}>
+		<ButtonSetting
+			name='Multicast DNS'
+			icon='share-outline'
+			iconColor={colors.blue}
+			iconSize={30}
+			toggled={true}
+		>
 			<Text
 				style={[
 					{
@@ -1208,7 +1365,10 @@ const BodyBlockedContacts: React.FC<BlockedContactsListProps> = ({ items }) => (
 export const BlockedContacts: React.FC<BlockedContactsProps> = ({ blocked }) => (
 	<Layout style={[styles.flex, styles.bgWhite]}>
 		<ScrollView>
-			<HeaderSettings title='Blocked contacts' desc="Blocked contacts can't send you contact requests">
+			<HeaderSettings
+				title='Blocked contacts'
+				desc="Blocked contacts can't send you contact requests"
+			>
 				<HeaderBlockedContacts />
 			</HeaderSettings>
 			<BodyBlockedContacts {...blocked} />
@@ -1243,17 +1403,44 @@ const HeaderNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => (
 						</Text>
 					</View>
 					<View style={[styles.center, styles.marginTop, styles.marginLeft, styles.marginRight]}>
-						<Text style={[{ fontSize: 11, fontWeight: 'bold' }, styles.textCenter, styles.textWhite, styles.center]}>
-							You need to authorize notifications for the Berty app in order to receive notifications for new messages
-							and contact requests
+						<Text
+							style={[
+								{ fontSize: 11, fontWeight: 'bold' },
+								styles.textCenter,
+								styles.textWhite,
+								styles.center,
+							]}
+						>
+							You need to authorize notifications for the Berty app in order to receive
+							notifications for new messages and contact requests
 						</Text>
 					</View>
 					<TouchableOpacity
-						style={[styles.bgBlue, styles.borderRadius, styles.marginTop, styles.marginLeft, styles.marginRight]}
+						style={[
+							styles.bgBlue,
+							styles.borderRadius,
+							styles.marginTop,
+							styles.marginLeft,
+							styles.marginRight,
+						]}
 					>
-						<View style={[styles.marginTop, styles.marginBottom, styles.row, styles.spaceCenter, styles.alignItems]}>
+						<View
+							style={[
+								styles.marginTop,
+								styles.marginBottom,
+								styles.row,
+								styles.spaceCenter,
+								styles.alignItems,
+							]}
+						>
 							<Icon name='bell-outline' width={20} height={20} fill={colors.white} />
-							<Text style={[{ fontSize: 15, fontWeight: 'bold' }, styles.textWhite, styles.littlePaddingLeft]}>
+							<Text
+								style={[
+									{ fontSize: 15, fontWeight: 'bold' },
+									styles.textWhite,
+									styles.littlePaddingLeft,
+								]}
+							>
 								Authorize notifications
 							</Text>
 						</View>
@@ -1265,7 +1452,14 @@ const HeaderNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => (
 )
 
 const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => (
-	<View style={[styles.flex, styles.padding, styles.marginBottom, !isAuthorize ? { opacity: 0.3 } : null]}>
+	<View
+		style={[
+			styles.flex,
+			styles.padding,
+			styles.marginBottom,
+			!isAuthorize ? { opacity: 0.3 } : null,
+		]}
+	>
 		<ButtonSetting
 			name='Activate notifications'
 			icon='bell-outline'
@@ -1293,8 +1487,18 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => (
 		>
 			<ButtonSetting name='Display noitifications' toggled={true} alone={false} />
 			<ButtonSetting name='Messages preview' toggled={true} alone={false} />
-			<ButtonSetting name='Sound' actionIcon='arrow-ios-forward' previewValue='Note' alone={false} />
-			<ButtonSetting name='Exceptions' actionIcon='arrow-ios-forward' previewValue='Add' alone={false} />
+			<ButtonSetting
+				name='Sound'
+				actionIcon='arrow-ios-forward'
+				previewValue='Note'
+				alone={false}
+			/>
+			<ButtonSetting
+				name='Exceptions'
+				actionIcon='arrow-ios-forward'
+				previewValue='Add'
+				alone={false}
+			/>
 		</FactionButtonSetting>
 		<FactionButtonSetting
 			name='Groups notifications'
@@ -1305,7 +1509,12 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => (
 		>
 			<ButtonSetting name='Display noitifications' toggled={true} alone={false} />
 			<ButtonSetting name='Messages preview' toggled={true} alone={false} />
-			<ButtonSetting name='Sound' actionIcon='arrow-ios-forward' previewValue='Bambou' alone={false} />
+			<ButtonSetting
+				name='Sound'
+				actionIcon='arrow-ios-forward'
+				previewValue='Bambou'
+				alone={false}
+			/>
 			<ButtonSetting
 				name='Exceptions'
 				actionIcon='arrow-ios-forward'
@@ -1364,16 +1573,43 @@ const HeaderBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => (
 					</Text>
 				</View>
 				<View style={[styles.center, styles.marginTop, styles.marginLeft, styles.marginRight]}>
-					<Text style={[{ fontSize: 11, fontWeight: 'bold' }, styles.textCenter, styles.textWhite, styles.center]}>
+					<Text
+						style={[
+							{ fontSize: 11, fontWeight: 'bold' },
+							styles.textCenter,
+							styles.textWhite,
+							styles.center,
+						]}
+					>
 						To use this feature you need to authorize the Berty app to use Bluetooth on your phone
 					</Text>
 				</View>
 				<TouchableOpacity
-					style={[styles.bgBlue, styles.borderRadius, styles.marginTop, styles.marginLeft, styles.marginRight]}
+					style={[
+						styles.bgBlue,
+						styles.borderRadius,
+						styles.marginTop,
+						styles.marginLeft,
+						styles.marginRight,
+					]}
 				>
-					<View style={[styles.marginTop, styles.marginBottom, styles.row, styles.spaceCenter, styles.alignItems]}>
+					<View
+						style={[
+							styles.marginTop,
+							styles.marginBottom,
+							styles.row,
+							styles.spaceCenter,
+							styles.alignItems,
+						]}
+					>
 						<Icon name='bluetooth-outline' width={20} height={20} fill={colors.white} />
-						<Text style={[{ fontSize: 15, fontWeight: 'bold' }, styles.textWhite, styles.littlePaddingLeft]}>
+						<Text
+							style={[
+								{ fontSize: 15, fontWeight: 'bold' },
+								styles.textWhite,
+								styles.littlePaddingLeft,
+							]}
+						>
 							Authorize Bluetooth
 						</Text>
 					</View>
@@ -1384,7 +1620,14 @@ const HeaderBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => (
 )
 
 const BodyBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => (
-	<View style={[styles.flex, styles.padding, styles.marginBottom, !isBluetooth ? { opacity: 0.3 } : null]}>
+	<View
+		style={[
+			styles.flex,
+			styles.padding,
+			styles.marginBottom,
+			!isBluetooth ? { opacity: 0.3 } : null,
+		]}
+	>
 		<ButtonSetting
 			name='Activate Bluetooth'
 			icon='bluetooth-outline'
@@ -1431,7 +1674,11 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => (
 			<HeaderInfoSettings>
 				<Text
 					category='h6'
-					style={[styles.textWhite, styles.littleMarginBottom, { fontWeight: 'bold', paddingLeft: 10 }]}
+					style={[
+						styles.textWhite,
+						styles.littleMarginBottom,
+						{ fontWeight: 'bold', paddingLeft: 10 },
+					]}
 				>
 					The berty app :
 				</Text>
@@ -1464,7 +1711,13 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => (
 					iconColor={colors.lightBlue}
 				/>
 				<TouchableOpacity
-					style={[styles.bgBlue, styles.borderRadius, styles.marginTop, styles.marginLeft, styles.marginRight]}
+					style={[
+						styles.bgBlue,
+						styles.borderRadius,
+						styles.marginTop,
+						styles.marginLeft,
+						styles.marginRight,
+					]}
 				>
 					<View
 						style={[
@@ -1491,7 +1744,15 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => (
 			</HeaderInfoSettings>
 		) : (
 			<View>
-				<View style={[styles.flex, styles.row, styles.spaceBetween, styles.alignItems, { marginTop: 20 }]}>
+				<View
+					style={[
+						styles.flex,
+						styles.row,
+						styles.spaceBetween,
+						styles.alignItems,
+						{ marginTop: 20 },
+					]}
+				>
 					<TouchableOpacity
 						style={[
 							styles.flex,
@@ -1506,7 +1767,12 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => (
 					>
 						<Icon name='lock-outline' width={30} height={30} fill={colors.yellow} />
 						<Text
-							style={[styles.fontFamily, styles.textBlack, styles.textCenter, { paddingTop: 6, fontWeight: 'bold' }]}
+							style={[
+								styles.fontFamily,
+								styles.textBlack,
+								styles.textCenter,
+								{ paddingTop: 6, fontWeight: 'bold' },
+							]}
 							category='s4'
 						>
 							Private & Secure
@@ -1526,14 +1792,27 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => (
 					>
 						<Icon name='globe-outline' width={30} height={30} fill={colors.blue} />
 						<Text
-							style={[styles.fontFamily, styles.textBlack, styles.textCenter, { paddingTop: 6, fontWeight: 'bold' }]}
+							style={[
+								styles.fontFamily,
+								styles.textBlack,
+								styles.textCenter,
+								{ paddingTop: 6, fontWeight: 'bold' },
+							]}
 							category='s4'
 						>
 							Peer to peer network
 						</Text>
 					</TouchableOpacity>
 				</View>
-				<View style={[styles.flex, styles.row, styles.spaceBetween, styles.alignItems, { marginTop: 20 }]}>
+				<View
+					style={[
+						styles.flex,
+						styles.row,
+						styles.spaceBetween,
+						styles.alignItems,
+						{ marginTop: 20 },
+					]}
+				>
 					<TouchableOpacity
 						style={[
 							styles.flex,
@@ -1548,7 +1827,12 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => (
 					>
 						<Icon name='wifi-off-outline' width={30} height={30} fill={colors.red} />
 						<Text
-							style={[styles.fontFamily, styles.textBlack, styles.textCenter, { paddingTop: 6, fontWeight: 'bold' }]}
+							style={[
+								styles.fontFamily,
+								styles.textBlack,
+								styles.textCenter,
+								{ paddingTop: 6, fontWeight: 'bold' },
+							]}
 							category='s4'
 						>
 							No internet or data required
@@ -1568,7 +1852,12 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => (
 					>
 						<Icon name='alert-triangle-outline' width={30} height={30} fill={colors.green} />
 						<Text
-							style={[styles.fontFamily, styles.textBlack, styles.textCenter, { paddingTop: 6, fontWeight: 'bold' }]}
+							style={[
+								styles.fontFamily,
+								styles.textBlack,
+								styles.textCenter,
+								{ paddingTop: 6, fontWeight: 'bold' },
+							]}
 							category='s4'
 						>
 							No network trust required
@@ -1603,7 +1892,9 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => (
 			iconColor={colors.blue}
 			actionIcon='arrow-ios-forward'
 		/>
-		<View style={[styles.flex, styles.row, styles.spaceBetween, styles.alignItems, { marginTop: 20 }]}>
+		<View
+			style={[styles.flex, styles.row, styles.spaceBetween, styles.alignItems, { marginTop: 20 }]}
+		>
 			<TouchableOpacity
 				style={[
 					styles.flex,
@@ -1616,7 +1907,10 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => (
 				]}
 			>
 				<Icon name='email-outline' width={30} height={30} fill={colors.blue} />
-				<Text style={[styles.fontFamily, styles.textBlack, { paddingTop: 6, fontWeight: 'bold' }]} category='s4'>
+				<Text
+					style={[styles.fontFamily, styles.textBlack, { paddingTop: 6, fontWeight: 'bold' }]}
+					category='s4'
+				>
 					Contact us
 				</Text>
 			</TouchableOpacity>
@@ -1632,7 +1926,10 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => (
 				]}
 			>
 				<Icon name='globe-outline' width={30} height={30} fill={colors.blue} />
-				<Text style={[styles.fontFamily, styles.textBlack, { paddingTop: 6, fontWeight: 'bold' }]} category='s4'>
+				<Text
+					style={[styles.fontFamily, styles.textBlack, { paddingTop: 6, fontWeight: 'bold' }]}
+					category='s4'
+				>
 					Website
 				</Text>
 			</TouchableOpacity>
@@ -1671,15 +1968,16 @@ const BodyTermsOfUse: React.FC<{}> = () => (
 		]}
 	>
 		<Text style={[styles.fontFamily, { fontSize: 12 }]}>
-			Berty Technologies (“Berty”) utilizes state-of-the-art security and end-to-end encryption to provide private
-			messaging, Internet calling, and other services to users worldwide. You agree to our Terms of Service (“Terms”) by
-			installing or using our apps, services, or website (together, “Services”).
+			Berty Technologies (“Berty”) utilizes state-of-the-art security and end-to-end encryption to
+			provide private messaging, Internet calling, and other services to users worldwide. You agree
+			to our Terms of Service (“Terms”) by installing or using our apps, services, or website
+			(together, “Services”).
 		</Text>
 		<View style={[styles.bigMarginTop]}>
 			<Text style={[{ fontSize: 15, fontWeight: 'bold' }]}>Minimum Age</Text>
 			<Text style={[styles.fontFamily, { fontSize: 12 }]}>
-				You must be at least 13 years old to use our Services. The minimum age to use our Services without parental
-				approval may be higher in your home country.
+				You must be at least 13 years old to use our Services. The minimum age to use our Services
+				without parental approval may be higher in your home country.
 			</Text>
 		</View>
 		<View style={[styles.bigMarginTop]}>
@@ -1690,23 +1988,23 @@ const BodyTermsOfUse: React.FC<{}> = () => (
 		</View>
 		<View style={[styles.marginTop]}>
 			<Text style={[styles.fontFamily, { fontSize: 12 }]}>
-				Please read our Privacy Policy to understand how we safeguard the information you provide when using our
-				Services. For the purpose of operating our Services, you agree to our data practices as described in our Privacy
-				Policy.
+				Please read our Privacy Policy to understand how we safeguard the information you provide
+				when using our Services. For the purpose of operating our Services, you agree to our data
+				practices as described in our Privacy Policy.
 			</Text>
 		</View>
 		<View style={[styles.bigMarginTop]}>
 			<Text style={[{ fontSize: 15, fontWeight: 'bold' }]}>Software</Text>
 			<Text style={[styles.fontFamily, { fontSize: 12 }]}>
-				In order to enable new features and enhanced functionality, you consent to downloading and installing updates to
-				our Services.
+				In order to enable new features and enhanced functionality, you consent to downloading and
+				installing updates to our Services.
 			</Text>
 		</View>
 		<View style={[styles.bigMarginTop]}>
 			<Text style={[{ fontSize: 15, fontWeight: 'bold' }]}>Fees and Taxes</Text>
 			<Text style={[styles.fontFamily, { fontSize: 12 }]}>
-				You are responsible for data and mobile carrier fees and taxes associated with the devices on which you use our
-				Services.
+				You are responsible for data and mobile carrier fees and taxes associated with the devices
+				on which you use our Services.
 			</Text>
 		</View>
 	</View>
@@ -1726,7 +2024,9 @@ export const TermsOfUse: React.FC<{}> = () => (
 //
 
 const HeaderDevTools: React.FC<{}> = () => (
-	<View style={[styles.flex, styles.row, styles.spaceBetween, styles.alignItems, { marginTop: 20 }]}>
+	<View
+		style={[styles.flex, styles.row, styles.spaceBetween, styles.alignItems, { marginTop: 20 }]}
+	>
 		<TouchableOpacity
 			style={[
 				styles.flex,
@@ -1741,7 +2041,12 @@ const HeaderDevTools: React.FC<{}> = () => (
 		>
 			<Icon name='smartphone-outline' width={30} height={30} fill={colors.darkGray} />
 			<Text
-				style={[styles.fontFamily, styles.textBlack, styles.textCenter, { paddingTop: 6, fontWeight: 'bold' }]}
+				style={[
+					styles.fontFamily,
+					styles.textBlack,
+					styles.textCenter,
+					{ paddingTop: 6, fontWeight: 'bold' },
+				]}
 				category='s4'
 			>
 				Device infos
@@ -1761,7 +2066,12 @@ const HeaderDevTools: React.FC<{}> = () => (
 		>
 			<Icon name='list-outline' width={30} height={30} fill={colors.darkGray} />
 			<Text
-				style={[styles.fontFamily, styles.textBlack, styles.textCenter, { paddingTop: 6, fontWeight: 'bold' }]}
+				style={[
+					styles.fontFamily,
+					styles.textBlack,
+					styles.textCenter,
+					{ paddingTop: 6, fontWeight: 'bold' },
+				]}
 				category='s4'
 			>
 				List events
@@ -1781,7 +2091,12 @@ const HeaderDevTools: React.FC<{}> = () => (
 		>
 			<Icon name='repeat-outline' width={30} height={30} fill={colors.blue} />
 			<Text
-				style={[styles.fontFamily, styles.textBlack, styles.textCenter, { paddingTop: 6, fontWeight: 'bold' }]}
+				style={[
+					styles.fontFamily,
+					styles.textBlack,
+					styles.textCenter,
+					{ paddingTop: 6, fontWeight: 'bold' },
+				]}
 				category='s4'
 				numberOfLines={2}
 			>
@@ -1793,7 +2108,13 @@ const HeaderDevTools: React.FC<{}> = () => (
 
 const BodyDevTools: React.FC<{}> = () => (
 	<View style={[styles.padding, styles.flex, styles.littleMarginBottom]}>
-		<ButtonSetting name='Bot mode' icon='briefcase-outline' iconSize={30} iconColor={colors.green} toggled={true} />
+		<ButtonSetting
+			name='Bot mode'
+			icon='briefcase-outline'
+			iconSize={30}
+			iconColor={colors.green}
+			toggled={true}
+		/>
 		<ButtonSetting
 			name='local gRPC'
 			icon='hard-drive-outline'
@@ -1823,7 +2144,9 @@ const BodyDevTools: React.FC<{}> = () => (
 			actionIcon='arrow-ios-forward'
 		/>
 
-		<View style={[styles.flex, styles.row, styles.spaceBetween, styles.alignItems, { marginTop: 20 }]}>
+		<View
+			style={[styles.flex, styles.row, styles.spaceBetween, styles.alignItems, { marginTop: 20 }]}
+		>
 			<TouchableOpacity
 				style={[
 					styles.flex,
@@ -1838,7 +2161,12 @@ const BodyDevTools: React.FC<{}> = () => (
 			>
 				<Icon name='smartphone-outline' width={30} height={30} fill={colors.darkGray} />
 				<Text
-					style={[styles.fontFamily, styles.textBlack, styles.textCenter, { paddingTop: 6, fontWeight: 'bold' }]}
+					style={[
+						styles.fontFamily,
+						styles.textBlack,
+						styles.textCenter,
+						{ paddingTop: 6, fontWeight: 'bold' },
+					]}
 					category='s4'
 				>
 					Device infos
@@ -1858,7 +2186,12 @@ const BodyDevTools: React.FC<{}> = () => (
 			>
 				<Icon name='book-outline' width={30} height={30} fill={colors.darkGray} />
 				<Text
-					style={[styles.fontFamily, styles.textBlack, styles.textCenter, { paddingTop: 6, fontWeight: 'bold' }]}
+					style={[
+						styles.fontFamily,
+						styles.textBlack,
+						styles.textCenter,
+						{ paddingTop: 6, fontWeight: 'bold' },
+					]}
 					category='s4'
 					numberOfLines={2}
 				>
@@ -1879,7 +2212,12 @@ const BodyDevTools: React.FC<{}> = () => (
 			>
 				<Icon name='trash-outline' width={30} height={30} fill={colors.red} />
 				<Text
-					style={[styles.fontFamily, styles.textBlack, styles.textCenter, { paddingTop: 6, fontWeight: 'bold' }]}
+					style={[
+						styles.fontFamily,
+						styles.textBlack,
+						styles.textCenter,
+						{ paddingTop: 6, fontWeight: 'bold' },
+					]}
 					category='s4'
 					numberOfLines={2}
 				>
