@@ -14,16 +14,20 @@ import * as Settings from './settings/Settings'
 import addons from '@storybook/addons'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '@berty-tech/berty-i18n'
+import { faker } from './faker.gen'
+import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 
 const stories = storiesOf('Berty', module)
 
 stories.addDecorator((storyFn) => (
-	<I18nextProvider i18n={i18n}>
-		<IconRegistry icons={EvaIconsPack} />
-		<ApplicationProvider mapping={mapping} theme={light}>
-			{storyFn()}
-		</ApplicationProvider>
-	</I18nextProvider>
+	<Store.Provider rpcImpl={faker.berty.chat.ChatService.rpcImpl}>
+		<I18nextProvider i18n={i18n}>
+			<IconRegistry icons={EvaIconsPack} />
+			<ApplicationProvider mapping={mapping} theme={light}>
+				{storyFn()}
+			</ApplicationProvider>
+		</I18nextProvider>
+	</Store.Provider>
 ))
 
 // Stories

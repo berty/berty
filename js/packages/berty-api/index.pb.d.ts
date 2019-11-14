@@ -1542,38 +1542,102 @@ export namespace berty {
 
     namespace chatmodel {
 
-        interface IAccount {
+        interface IContact {
             id: (number|Long);
+            protocolId: (string);
             createdAt: (google.protobuf.ITimestamp);
             updatedAt: (google.protobuf.ITimestamp);
-            contactId: (number|Long);
-            myself?: (berty.chatmodel.IContact|null);
-            contactRequestsEnabled: (boolean);
-            contactRequestsLink: (string);
-            hidden: (boolean);
-            locked: (boolean);
+            seenAt: (google.protobuf.ITimestamp);
+            name: (string);
+            avatarUri: (string);
+            statusEmoji: (Uint8Array);
+            statusText: (string);
+            kind: (berty.chatmodel.Contact.Kind);
+            blocked: (boolean);
+            devices?: (berty.chatmodel.IDevice[]|null);
         }
 
-        class Account implements IAccount {
+        class Contact implements IContact {
 
             public id: (number|Long);
+            public protocolId: string;
             public createdAt: (google.protobuf.ITimestamp);
             public updatedAt: (google.protobuf.ITimestamp);
-            public contactId: (number|Long);
-            public myself?: (berty.chatmodel.IContact|null);
-            public contactRequestsEnabled: boolean;
-            public contactRequestsLink: string;
-            public hidden: boolean;
-            public locked: boolean;
-            public static create(properties?: berty.chatmodel.IAccount): berty.chatmodel.Account;
-            public static encode(message: berty.chatmodel.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chatmodel.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chatmodel.Account;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chatmodel.Account;
+            public seenAt: (google.protobuf.ITimestamp);
+            public name: string;
+            public avatarUri: string;
+            public statusEmoji: Uint8Array;
+            public statusText: string;
+            public kind: berty.chatmodel.Contact.Kind;
+            public blocked: boolean;
+            public devices: berty.chatmodel.IDevice[];
+            public static create(properties?: berty.chatmodel.IContact): berty.chatmodel.Contact;
+            public static encode(message: berty.chatmodel.IContact, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chatmodel.IContact, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chatmodel.Contact;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chatmodel.Contact;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chatmodel.Account;
-            public static toObject(message: berty.chatmodel.Account, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chatmodel.Contact;
+            public static toObject(message: berty.chatmodel.Contact, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
+        }
+
+        namespace Contact {
+
+            enum Kind {
+                Unknown = 0,
+                PendingInc = 1,
+                PendingOut = 2,
+                Friend = 3,
+                Trusted = 4,
+                Myself = 42
+            }
+        }
+
+        interface IDevice {
+            id: (number|Long);
+            protocolId: (string);
+            createdAt: (google.protobuf.ITimestamp);
+            updatedAt: (google.protobuf.ITimestamp);
+            lastSeenAt: (google.protobuf.ITimestamp);
+            kind: (berty.chatmodel.Device.Kind);
+            canRelay: (boolean);
+            canBle: (boolean);
+            contactId: (number|Long);
+            contact?: (berty.chatmodel.IContact|null);
+        }
+
+        class Device implements IDevice {
+
+            public id: (number|Long);
+            public protocolId: string;
+            public createdAt: (google.protobuf.ITimestamp);
+            public updatedAt: (google.protobuf.ITimestamp);
+            public lastSeenAt: (google.protobuf.ITimestamp);
+            public kind: berty.chatmodel.Device.Kind;
+            public canRelay: boolean;
+            public canBle: boolean;
+            public contactId: (number|Long);
+            public contact?: (berty.chatmodel.IContact|null);
+            public static create(properties?: berty.chatmodel.IDevice): berty.chatmodel.Device;
+            public static encode(message: berty.chatmodel.IDevice, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chatmodel.IDevice, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chatmodel.Device;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chatmodel.Device;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.chatmodel.Device;
+            public static toObject(message: berty.chatmodel.Device, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        namespace Device {
+
+            enum Kind {
+                Unknown = 0,
+                Phone = 1,
+                Desktop = 2,
+                Laptop = 3
+            }
         }
 
         interface IConversation {
@@ -1839,102 +1903,38 @@ export namespace berty {
             public toJSON(): { [k: string]: any };
         }
 
-        interface IContact {
+        interface IAccount {
             id: (number|Long);
-            protocolId: (string);
             createdAt: (google.protobuf.ITimestamp);
             updatedAt: (google.protobuf.ITimestamp);
-            seenAt: (google.protobuf.ITimestamp);
-            name: (string);
-            avatarUri: (string);
-            statusEmoji: (Uint8Array);
-            statusText: (string);
-            kind: (berty.chatmodel.Contact.Kind);
-            blocked: (boolean);
-            devices?: (berty.chatmodel.IDevice[]|null);
-        }
-
-        class Contact implements IContact {
-
-            public id: (number|Long);
-            public protocolId: string;
-            public createdAt: (google.protobuf.ITimestamp);
-            public updatedAt: (google.protobuf.ITimestamp);
-            public seenAt: (google.protobuf.ITimestamp);
-            public name: string;
-            public avatarUri: string;
-            public statusEmoji: Uint8Array;
-            public statusText: string;
-            public kind: berty.chatmodel.Contact.Kind;
-            public blocked: boolean;
-            public devices: berty.chatmodel.IDevice[];
-            public static create(properties?: berty.chatmodel.IContact): berty.chatmodel.Contact;
-            public static encode(message: berty.chatmodel.IContact, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chatmodel.IContact, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chatmodel.Contact;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chatmodel.Contact;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chatmodel.Contact;
-            public static toObject(message: berty.chatmodel.Contact, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-        }
-
-        namespace Contact {
-
-            enum Kind {
-                Unknown = 0,
-                PendingInc = 1,
-                PendingOut = 2,
-                Friend = 3,
-                Trusted = 4,
-                Myself = 42
-            }
-        }
-
-        interface IDevice {
-            id: (number|Long);
-            protocolId: (string);
-            createdAt: (google.protobuf.ITimestamp);
-            updatedAt: (google.protobuf.ITimestamp);
-            lastSeenAt: (google.protobuf.ITimestamp);
-            kind: (berty.chatmodel.Device.Kind);
-            canRelay: (boolean);
-            canBle: (boolean);
             contactId: (number|Long);
-            contact?: (berty.chatmodel.IContact|null);
+            myself?: (berty.chatmodel.IContact|null);
+            contactRequestsEnabled: (boolean);
+            contactRequestsLink: (string);
+            hidden: (boolean);
+            locked: (boolean);
         }
 
-        class Device implements IDevice {
+        class Account implements IAccount {
 
             public id: (number|Long);
-            public protocolId: string;
             public createdAt: (google.protobuf.ITimestamp);
             public updatedAt: (google.protobuf.ITimestamp);
-            public lastSeenAt: (google.protobuf.ITimestamp);
-            public kind: berty.chatmodel.Device.Kind;
-            public canRelay: boolean;
-            public canBle: boolean;
             public contactId: (number|Long);
-            public contact?: (berty.chatmodel.IContact|null);
-            public static create(properties?: berty.chatmodel.IDevice): berty.chatmodel.Device;
-            public static encode(message: berty.chatmodel.IDevice, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chatmodel.IDevice, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chatmodel.Device;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chatmodel.Device;
+            public myself?: (berty.chatmodel.IContact|null);
+            public contactRequestsEnabled: boolean;
+            public contactRequestsLink: string;
+            public hidden: boolean;
+            public locked: boolean;
+            public static create(properties?: berty.chatmodel.IAccount): berty.chatmodel.Account;
+            public static encode(message: berty.chatmodel.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chatmodel.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chatmodel.Account;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chatmodel.Account;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chatmodel.Device;
-            public static toObject(message: berty.chatmodel.Device, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chatmodel.Account;
+            public static toObject(message: berty.chatmodel.Account, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
-        }
-
-        namespace Device {
-
-            enum Kind {
-                Unknown = 0,
-                Phone = 1,
-                Desktop = 2,
-                Laptop = 3
-            }
         }
     }
 }
