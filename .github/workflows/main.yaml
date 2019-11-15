@@ -1,5 +1,5 @@
 name: Main
-on: [push, pull_request]
+on: push
 
 jobs:
   go-docker:
