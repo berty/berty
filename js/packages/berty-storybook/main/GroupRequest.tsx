@@ -2,10 +2,10 @@ import React from 'react'
 import { View, Image, ScrollView, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { styles, colors } from '../styles'
-import { UserProps, RequestProps } from '../shared-props/User'
-import { RequestButtons, RequestAvatar } from '../shared-components/Request'
-import { TabBar } from '../shared-components/TabBar'
-import { Modal } from '../shared-components/Modal'
+import { RequestButtons, RequestAvatar, Fallback, TabBar, Modal } from '../shared-components'
+import { BertyChatChatService as Store } from '@berty-tech/berty-store'
+import { berty } from '@berty-tech/berty-api'
+import { ScreenProps } from '@berty-tech/berty-navigation'
 
 // Types
 type BodyGroupRequestContentItemProps = {
@@ -56,22 +56,20 @@ const _groupRequestStyles = StyleSheet.create({
 	},
 })
 
-const BodyGroupRequestContentItem: React.FC<BodyGroupRequestContentItemProps> = ({
-	avatarUri,
-	name,
-	state = {},
-	separateBar = true,
-	isConnected = false,
-	previewValue = null,
-}) => (
+const BodyGroupRequestContentItem: React.FC<berty.chatmodel.IMember & {
+	separateBar: boolean
+	isConnected?: boolean
+}> = ({ avatarUri, name, role, state = {}, separateBar = true, isConnected = false }) => (
 	<View>
 		<View style={[styles.row, styles.paddingLeft, styles.paddingRight]}>
 			<View style={[styles.row, styles.alignVertical]}>
 				<Image
 					style={[styles.marginRight, _groupRequestStyles.avatar]}
-					source={{ uri: avatarUri }}
+					source={{ uri: avatarUri || '' }}
 				/>
-				<Text numberOfLines={1}>{name}</Text>
+				<Text numberOfLines={1} ellipsizeMode='tail'>
+					{name}
+				</Text>
 				{isConnected && (
 					<Icon
 						style={[styles.littleMarginLeft]}
@@ -105,56 +103,52 @@ const BodyGroupRequestContentItem: React.FC<BodyGroupRequestContentItemProps> = 
 					</View>
 				</View>
 			)}
-			{previewValue && (
+			{role &&
+			[berty.chatmodel.Member.Role.Admin, berty.chatmodel.Member.Role.Owner].some(
+				(_) => _ === role,
+			) ? (
 				<View style={[styles.center, styles.alignItems]}>
-					<Text style={[styles.textBlue, _groupRequestStyles.previewValue]}>{previewValue}</Text>
+					<Text style={[styles.textBlue, _groupRequestStyles.previewValue]}>
+						{berty.chatmodel.Member.Role[role]}
+					</Text>
 				</View>
-			)}
+			) : null}
 		</View>
-		{separateBar && <View style={[styles.littleMargin, _groupRequestStyles.separateBar]} />}
+		{separateBar ? <View style={[styles.littleMargin, _groupRequestStyles.separateBar]} /> : null}
 	</View>
 )
 
-const BodyGroupRequestContent: React.FC<UserProps> = ({ avatarUri, name }) => (
-	<ScrollView style={{ maxHeight: 300 }} contentContainerStyle={[styles.paddingTop]}>
-		<BodyGroupRequestContentItem
-			avatarUri={avatarUri}
-			name={name}
-			state={{ value: 'Creator', color: colors.white, bgColor: colors.blue }}
-		/>
-		<BodyGroupRequestContentItem avatarUri={avatarUri} name={name} />
-		<BodyGroupRequestContentItem avatarUri={avatarUri} name={name} isConnected={true} />
-		<BodyGroupRequestContentItem avatarUri={avatarUri} name={name} />
-		<BodyGroupRequestContentItem avatarUri={avatarUri} name={name} isConnected={true} />
-		<BodyGroupRequestContentItem avatarUri={avatarUri} name={name} isConnected={true} />
-		<BodyGroupRequestContentItem avatarUri={avatarUri} name={name} />
-		<BodyGroupRequestContentItem avatarUri={avatarUri} name={name} />
-		<BodyGroupRequestContentItem avatarUri={avatarUri} name={name} />
-		<BodyGroupRequestContentItem avatarUri={avatarUri} name={name} />
-		<BodyGroupRequestContentItem
-			avatarUri={avatarUri}
-			name={name}
-			previewValue='Me'
-			separateBar={false}
-		/>
-	</ScrollView>
+const BodyGroupRequestContent: React.FC<berty.chatmodel.IConversation> = ({ id }) => (
+	<Store.MemberList request={{ filter: { conversationId: id } }} fallback={Fallback}>
+		{(list) => (
+			<ScrollView style={{ maxHeight: 300 }} contentContainerStyle={[styles.paddingTop]}>
+				{list
+					?.map((_) => _?.member)
+					.map((member, index) => (
+						<BodyGroupRequestContentItem {...member} separateBar={list.length !== index - 1} />
+					)) ?? null}
+			</ScrollView>
+		)}
+	</Store.MemberList>
 )
 
-const BodyGroupRequest: React.FC<RequestProps> = ({ user }) => (
+const BodyGroupRequest: React.FC<berty.chatmodel.IConversation> = (conversation) => (
 	<View style={[styles.paddingHorizontal, styles.paddingBottom]}>
-		<RequestAvatar style={[styles.alignItems]} {...user} size={90} />
+		<RequestAvatar style={[styles.alignItems]} {...conversation} size={90} />
 		<View style={[styles.paddingRight, styles.paddingLeft]}>
 			<TabBar tabType='group' />
-			<BodyGroupRequestContent {...user} />
+			<BodyGroupRequestContent {...conversation} />
 		</View>
 		<RequestButtons />
 	</View>
 )
 
-export const GroupRequest: React.FC<RequestProps> = ({ user }) => (
-	<Layout style={[styles.flex, styles.bgBlue]}>
+export const GroupRequest: React.FC<ScreenProps.Main.GroupRequest> = ({ route: { params } }) => {
+	return (
 		<Modal>
-			<BodyGroupRequest user={user} />
+			<Store.ConversationGet request={{ id: params.id }} fallback={Fallback}>
+				{(_) => console.log(_) || <BodyGroupRequest {...(_?.conversation || {})} />}
+			</Store.ConversationGet>
 		</Modal>
-	</Layout>
-)
+	)
+}

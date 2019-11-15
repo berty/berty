@@ -14,6 +14,7 @@ import Navigation from '@berty-tech/berty-navigation'
 import { faker } from '@berty-tech/berty-storybook/faker.gen'
 import { Theme } from '@berty-tech/berty-storybook'
 import { NavigationNativeContainer } from '@react-navigation/native'
+import '@berty-tech/berty-i18n'
 import { enableScreens } from 'react-native-screens'
 
 enableScreens()

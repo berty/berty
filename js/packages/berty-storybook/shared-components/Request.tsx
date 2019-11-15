@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, StyleProp, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, StyleProp, TouchableOpacity, ScrollView } from 'react-native'
 import { Text, Icon, Toggle } from 'react-native-ui-kitten'
 import { styles, colors } from '../styles'
-import { RequestProps } from '../shared-props/User'
 import { TabBar } from './TabBar'
 import { FingerprintContent } from './FingerprintContent'
 import { Modal } from './Modal'
@@ -13,6 +12,11 @@ import { CircleAvatar, GroupCircleAvatar } from './CircleAvatar'
 //
 
 // Types
+type RequestProps = {
+	accept: (arg0: { id: number }) => Promise<{}>
+	decline: (arg0: { id: number }) => Promise<{}>
+}
+
 type RequestButtonItemProps = {
 	// icon
 	icon: string
@@ -203,7 +207,12 @@ const BodyRequestContent: React.FC<{}> = () => (
 
 const BodyRequest: React.FC<RequestProps> = ({ user }) => (
 	<View style={[styles.paddingHorizontal, styles.paddingBottom]}>
-		<RequestAvatar style={styles.alignItems} {...user} size={100} />
+		<RequestAvatar
+			style={styles.alignItems}
+			size={100}
+			avatarUri={user?.avatarUri}
+			name={user?.name}
+		/>
 		<View style={[styles.paddingRight, styles.paddingLeft]}>
 			<TabBar tabType='contact' />
 			<BodyRequestContent />
@@ -212,8 +221,10 @@ const BodyRequest: React.FC<RequestProps> = ({ user }) => (
 	</View>
 )
 
-export const Request: React.FC<RequestProps> = ({ user }) => (
-	<Modal>
-		<BodyRequest user={user} />
-	</Modal>
-)
+export const Request: React.FC<RequestProps> = ({ user }) => {
+	return (
+		<Modal>
+			<BodyRequest user={user} />
+		</Modal>
+	)
+}

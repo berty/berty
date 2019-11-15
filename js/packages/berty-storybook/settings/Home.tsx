@@ -1,13 +1,13 @@
 import React from 'react'
-import { View, ScrollView, StyleSheet } from 'react-native'
+import { View, ScrollView, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { RequestProps, UserProps } from '../shared-props/User'
-import { Footer } from '../shared-components/Footer'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import HeaderSettings from '../shared-components/Header'
-
+import { BertyChatChatService as Store } from '@berty-tech/berty-store'
+import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
+import { berty } from '@berty-tech/berty-api'
 //
 // Home Vue
 //
@@ -37,41 +37,46 @@ const _homeStyles = StyleSheet.create({
 	},
 })
 
-const HomeHeaderGroupButton: React.FC<{}> = () => (
-	<View style={[styles.paddingRight, styles.paddingLeft]}>
-		<ButtonSettingRow
-			state={[
-				{
-					name: 'Updates',
-					icon: 'arrow-upward-outline',
-					color: colors.blue,
-					style: _homeStyles.firstHeaderButton,
-				},
-				{
-					name: 'Help',
-					icon: 'question-mark-circle-outline',
-					color: colors.red,
-					style: _homeStyles.secondHeaderButton,
-				},
-				{
-					name: 'Settings',
-					icon: 'settings-2-outline',
-					color: colors.blue,
-					style: _homeStyles.thirdHeaderButton,
-				},
-			]}
-		/>
-	</View>
-)
-
-const HomeHeaderAvatar: React.FC<UserProps> = ({ avatarUri, name }) => (
+const HomeHeaderGroupButton: React.FC<berty.chatmodel.Account> = () => {
+	const { navigate } = useNavigation()
+	return (
+		<View style={[styles.paddingRight, styles.paddingLeft]}>
+			<ButtonSettingRow
+				state={[
+					{
+						name: 'Updates',
+						icon: 'arrow-upward-outline',
+						color: colors.blue,
+						style: _homeStyles.firstHeaderButton,
+						onPress: navigate.settings.appUpdates,
+					},
+					{
+						name: 'Help',
+						icon: 'question-mark-circle-outline',
+						color: colors.red,
+						style: _homeStyles.secondHeaderButton,
+						onPress: navigate.settings.help,
+					},
+					{
+						name: 'Settings',
+						icon: 'settings-2-outline',
+						color: colors.blue,
+						style: _homeStyles.thirdHeaderButton,
+						onPress: navigate.settings.mode,
+					},
+				]}
+			/>
+		</View>
+	)
+}
+const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => (
 	<View style={[styles.center, styles.marginTop]}>
 		<View style={[_homeStyles.homeAvatarBox, styles.bgWhite, styles.borderRadius]}>
 			<View style={[_homeStyles.homeAvatar]}>
-				<CircleAvatar style={styles.centerItems} avatarUri={avatarUri} size={75} />
+				<CircleAvatar style={styles.centerItems} avatarUri={contact?.avatarUri || ''} size={75} />
 				<View style={[styles.center]}>
 					<Text style={[styles.fontFamily, styles.littlePaddingTop, _homeStyles.headerNameText]}>
-						{name}
+						{contact?.name || ''}
 					</Text>
 				</View>
 			</View>
@@ -79,43 +84,81 @@ const HomeHeaderAvatar: React.FC<UserProps> = ({ avatarUri, name }) => (
 	</View>
 )
 
-const HomeHeader: React.FC<RequestProps> = ({ user }) => (
-	<View style={[styles.alignVertical, styles.marginBottom]}>
-		<HomeHeaderAvatar {...user} />
-	</View>
+const HomeHeader: React.FC = () => (
+	<SafeAreaView style={[styles.alignVertical, styles.marginBottom]}>
+		<HomeHeaderAvatar />
+	</SafeAreaView>
 )
 
-const HomeBodySettings: React.FC<{}> = () => (
-	<View style={[styles.flex, styles.paddingLeft, styles.paddingRight, styles.marginTop]}>
-		<ButtonSetting
-			name='Notifications'
-			icon='bell-outline'
-			state={{ value: 'Current', color: colors.white, bgColor: colors.blue }}
-		/>
-		<ButtonSetting name='Bluetooth' icon='bluetooth-outline' />
-		<ButtonSetting name='Dark mode' icon='moon-outline' toggled />
-		<ButtonSetting name='About Berty' icon='info-outline' />
-		<ButtonSetting name='Devtools' icon='options-2-outline' />
-		<ButtonSetting name='Devtools' icon='options-2-outline' />
-		<ButtonSetting name='Devtools' icon='options-2-outline' />
-	</View>
-)
+const HomeBodySettings: React.FC<{}> = () => {
+	const { navigate } = useNavigation()
+	return (
+		<View style={[styles.flex, styles.paddingLeft, styles.paddingRight, styles.marginTop]}>
+			<ButtonSetting
+				name='Notifications'
+				icon='bell-outline'
+				state={{ value: 'Current', color: colors.white, bgColor: colors.blue }}
+				onPress={navigate.settings.notifications}
+			/>
+			<ButtonSetting
+				name='Bluetooth'
+				icon='bluetooth-outline'
+				onPress={navigate.settings.bluetooth}
+			/>
+			<ButtonSetting name='Dark mode' icon='moon-outline' toggled />
+			<ButtonSetting
+				name='About Berty'
+				icon='info-outline'
+				onPress={navigate.settings.aboutBerty}
+			/>
+			<ButtonSetting
+				name='DevTools'
+				icon='options-2-outline'
+				onPress={navigate.settings.devTools}
+			/>
+		</View>
+	)
+}
 
-export const Home: React.FC<RequestProps> = ({ user }) => (
-	<Layout style={[styles.flex, styles.bgWhite]}>
-		<ScrollView contentContainerStyle={[_homeStyles.scrollViewPadding]}>
-			<HeaderSettings undo={false} actionIcon='edit-outline'>
-				<View>
-					<HomeHeader user={user} />
-					<HomeHeaderGroupButton />
-				</View>
-			</HeaderSettings>
-			<HomeBodySettings />
-		</ScrollView>
-		<Footer
-			left={{ icon: 'search-outline' }}
-			center={{ icon: 'message-circle-outline' }}
-			right={{ avatarUri: user.avatarUri, backgroundColor: colors.blue, size: 50, elemSize: 45 }}
-		/>
-	</Layout>
-)
+export const useAccount = () => {
+	const [accountGet, accountGetError] = Store.useAccountGet({ id: 0 })
+	const [contactGet, contactGetError] = Store.useContactGet({
+		id: accountGet?.account?.contactId || -1,
+	})
+	if (accountGetError || accountGet == null || accountGet?.account == null) {
+		accountGetError && console.error(accountGetError)
+		return null
+	}
+	if (contactGetError || contactGet?.contact == null) {
+		contactGetError && console.error(contactGetError)
+		return null
+	}
+	return {
+		...accountGet.account,
+		contact: {
+			...contactGet.contact,
+		},
+	}
+}
+
+export const Home: React.FC<ScreenProps.Settings.Home> = () => {
+	const { navigate } = useNavigation()
+	const account = useAccount()
+	return (
+		<View style={[styles.flex, styles.justifyContent, styles.bgWhite]}>
+			{account == null ? (
+				<ActivityIndicator size='large' style={[styles.center]} />
+			) : (
+				<ScrollView contentContainerStyle={[_homeStyles.scrollViewPadding]}>
+					<HeaderSettings actionIcon='edit-outline' action={navigate.settings.editProfile}>
+						<View>
+							<HomeHeader {...account} />
+							<HomeHeaderGroupButton {...account} />
+						</View>
+					</HeaderSettings>
+					<HomeBodySettings />
+				</ScrollView>
+			)}
+		</View>
+	)
+}

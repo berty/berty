@@ -1,7 +1,7 @@
 import * as _api from '@berty-tech/berty-api'
 import _faker from 'faker'
 import * as pb from 'protobufjs'
-import { deepFilterEqual, timestamp, randomArray, randomValue } from './helpers'
+import { deepFilterEqual, deepEqual, timestamp, randomArray, randomValue } from './helpers'
 
 export namespace faker {
 	export namespace berty {
@@ -15,9 +15,7 @@ export namespace faker {
 					}
 					const _ = faker.berty.chat.ChatService as { [key: string]: any }
 					_[method.name](
-						method &&
-							method.resolvedResponseType &&
-							method.resolvedResponseType.decode(requestData),
+						method && method.resolvedRequestType && method.resolvedRequestType.decode(requestData),
 						callback,
 					)
 				}
@@ -47,8 +45,10 @@ export namespace faker {
 					request: _api.berty.chat.ConversationList.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					faker.berty.chatmodel.Conversation.filter((_) =>
-						deepFilterEqual(request.filter, _),
+					faker.berty.chatmodel.Conversation.filter(
+						(_) =>
+							(request.filter == null || deepFilterEqual(request.filter, _)) &&
+							(request.not == null || !deepEqual(request.not, _)),
 					).forEach((_, index) =>
 						callback(
 							null,
@@ -131,14 +131,17 @@ export namespace faker {
 					request: _api.berty.chat.MessageList.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					faker.berty.chatmodel.Message.filter((_) => deepFilterEqual(request.filter, _)).forEach(
-						(_, index) =>
-							callback(
-								null,
-								_api.berty.chat.MessageList.Reply.encode({
-									message: faker.berty.chatmodel.Message[index],
-								}).finish(),
-							),
+					faker.berty.chatmodel.Message.filter(
+						(_) =>
+							(request.filter == null || deepFilterEqual(request.filter, _)) &&
+							(request.not == null || !deepEqual(request.not, _)),
+					).forEach((_, index) =>
+						callback(
+							null,
+							_api.berty.chat.MessageList.Reply.encode({
+								message: faker.berty.chatmodel.Message[index],
+							}).finish(),
+						),
 					)
 				}
 
@@ -193,14 +196,17 @@ export namespace faker {
 					request: _api.berty.chat.MemberList.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					faker.berty.chatmodel.Member.filter((_) => deepFilterEqual(request.filter, _)).forEach(
-						(_, index) =>
-							callback(
-								null,
-								_api.berty.chat.MemberList.Reply.encode({
-									member: faker.berty.chatmodel.Member[index],
-								}).finish(),
-							),
+					faker.berty.chatmodel.Member.filter(
+						(_) =>
+							(request.filter == null || deepFilterEqual(request.filter, _)) &&
+							(request.not == null || !deepEqual(request.not, _)),
+					).forEach((_, index) =>
+						callback(
+							null,
+							_api.berty.chat.MemberList.Reply.encode({
+								member: faker.berty.chatmodel.Member[index],
+							}).finish(),
+						),
 					)
 				}
 
@@ -220,14 +226,17 @@ export namespace faker {
 					request: _api.berty.chat.ContactList.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					faker.berty.chatmodel.Contact.filter((_) => deepFilterEqual(request.filter, _)).forEach(
-						(_, index) =>
-							callback(
-								null,
-								_api.berty.chat.ContactList.Reply.encode({
-									contact: faker.berty.chatmodel.Contact[index],
-								}).finish(),
-							),
+					faker.berty.chatmodel.Contact.filter(
+						(_) =>
+							(request.filter == null || deepFilterEqual(request.filter, _)) &&
+							(request.not == null || !deepEqual(request.not, _)),
+					).forEach((_, index) =>
+						callback(
+							null,
+							_api.berty.chat.ContactList.Reply.encode({
+								contact: faker.berty.chatmodel.Contact[index],
+							}).finish(),
+						),
 					)
 				}
 
@@ -281,7 +290,20 @@ export namespace faker {
 				export const AccountList: (
 					request: _api.berty.chat.AccountList.IRequest,
 					callback: pb.RPCImplCallback,
-				) => void = (request, callback) => {}
+				) => void = (request, callback) => {
+					faker.berty.chatmodel.Account.filter(
+						(_) =>
+							(request.filter == null || deepFilterEqual(request.filter, _)) &&
+							(request.not == null || !deepEqual(request.not, _)),
+					).forEach((_, index) =>
+						callback(
+							null,
+							_api.berty.chat.AccountList.Reply.encode({
+								account: faker.berty.chatmodel.Account[index],
+							}).finish(),
+						),
+					)
+				}
 
 				export const AccountGet: (
 					request: _api.berty.chat.AccountGet.IRequest,
@@ -349,7 +371,7 @@ export namespace faker {
 			}
 		}
 		export namespace chatmodel {
-			export const Contact: Array<_api.berty.chatmodel.IContact> = randomArray(50)
+			export const Contact: Array<_api.berty.chatmodel.IContact> = randomArray(20)
 				.fill({})
 				.map((_, index) => ({
 					id: index,
@@ -365,7 +387,7 @@ export namespace faker {
 					blocked: _faker.random.boolean(),
 					devices: [],
 				}))
-			export const Device: Array<_api.berty.chatmodel.IDevice> = randomArray(50)
+			export const Device: Array<_api.berty.chatmodel.IDevice> = randomArray(20)
 				.fill({})
 				.map((_, index) => ({
 					id: index,
@@ -377,9 +399,9 @@ export namespace faker {
 					canRelay: _faker.random.boolean(),
 					canBle: _faker.random.boolean(),
 					contactId: _faker.random.number() % faker.berty.chatmodel.Contact.length,
-					contact: null,
+					contact: faker.berty.chatmodel.Contact[_.contactId],
 				}))
-			export const Conversation: Array<_api.berty.chatmodel.IConversation> = randomArray(50)
+			export const Conversation: Array<_api.berty.chatmodel.IConversation> = randomArray(20)
 				.fill({})
 				.map((_, index) => ({
 					id: index,
@@ -396,7 +418,7 @@ export namespace faker {
 					lastMessageId: _faker.random.number() % 50,
 					lastMessage: null,
 				}))
-			export const Member: Array<_api.berty.chatmodel.IMember> = randomArray(50)
+			export const Member: Array<_api.berty.chatmodel.IMember> = randomArray(20)
 				.fill({})
 				.map((_, index) => ({
 					id: index,
@@ -409,11 +431,11 @@ export namespace faker {
 					role: randomValue(_api.berty.chatmodel.Member.Role),
 					mutePolicy: randomValue(_api.berty.chatmodel.Member.MutePolicy),
 					conversationId: _faker.random.number() % faker.berty.chatmodel.Conversation.length,
-					conversation: null,
+					conversation: faker.berty.chatmodel.Conversation[_.conversationId],
 					contactId: _faker.random.number() % faker.berty.chatmodel.Contact.length,
-					contact: null,
+					contact: faker.berty.chatmodel.Contact[_.contactId],
 				}))
-			export const Message: Array<_api.berty.chatmodel.IMessage> = randomArray(50)
+			export const Message: Array<_api.berty.chatmodel.IMessage> = randomArray(20)
 				.fill({})
 				.map((_, index) => ({
 					id: index,
@@ -427,13 +449,13 @@ export namespace faker {
 					hidden: _faker.random.boolean(),
 					state: randomValue(_api.berty.chatmodel.Message.State),
 					conversationId: _faker.random.number() % faker.berty.chatmodel.Conversation.length,
-					conversation: null,
+					conversation: faker.berty.chatmodel.Conversation[_.conversationId],
 					memberId: _faker.random.number() % faker.berty.chatmodel.Member.length,
-					member: null,
+					member: faker.berty.chatmodel.Member[_.memberId],
 					attachments: [],
 					reactions: [],
 				}))
-			export const Attachment: Array<_api.berty.chatmodel.IAttachment> = randomArray(50)
+			export const Attachment: Array<_api.berty.chatmodel.IAttachment> = randomArray(20)
 				.fill({})
 				.map((_, index) => ({
 					id: index,
@@ -442,9 +464,9 @@ export namespace faker {
 					uri: _faker.random.words(),
 					contentType: _faker.random.words(),
 					messageId: _faker.random.number() % faker.berty.chatmodel.Message.length,
-					message: null,
+					message: faker.berty.chatmodel.Message[_.messageId],
 				}))
-			export const Reaction: Array<_api.berty.chatmodel.IReaction> = randomArray(50)
+			export const Reaction: Array<_api.berty.chatmodel.IReaction> = randomArray(20)
 				.fill({})
 				.map((_, index) => ({
 					id: index,
@@ -452,18 +474,18 @@ export namespace faker {
 					updatedAt: timestamp(_faker.date.recent()),
 					emoji: new Uint8Array(),
 					messageId: _faker.random.number() % faker.berty.chatmodel.Message.length,
-					message: null,
+					message: faker.berty.chatmodel.Message[_.messageId],
 					memberId: _faker.random.number() % faker.berty.chatmodel.Member.length,
-					member: null,
+					member: faker.berty.chatmodel.Member[_.memberId],
 				}))
-			export const Account: Array<_api.berty.chatmodel.IAccount> = randomArray(50)
+			export const Account: Array<_api.berty.chatmodel.IAccount> = randomArray(20)
 				.fill({})
 				.map((_, index) => ({
 					id: index,
 					createdAt: timestamp(_faker.date.recent()),
 					updatedAt: timestamp(_faker.date.recent()),
 					contactId: _faker.random.number() % faker.berty.chatmodel.Contact.length,
-					myself: null,
+					contact: faker.berty.chatmodel.Contact[_.contactId],
 					contactRequestsEnabled: _faker.random.boolean(),
 					contactRequestsLink: _faker.random.words(),
 					hidden: _faker.random.boolean(),

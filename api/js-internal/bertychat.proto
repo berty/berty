@@ -70,7 +70,7 @@ service ChatService {
   // Account
   //
 
-  rpc AccountList (AccountList.Request) returns (stream AccountList.Request) {};
+  rpc AccountList (AccountList.Request) returns (stream AccountList.Reply) {};
   rpc AccountGet (AccountGet.Request) returns (AccountGet.Reply) {};
   rpc AccountCreate (AccountCreate.Request) returns (AccountCreate.Reply) {};
   rpc AccountUpdate (AccountUpdate.Request) returns (AccountUpdate.Reply) {};
@@ -117,6 +117,7 @@ message DevEventSubscribe {
 message ConversationList {
   message Request {
     chatmodel.Conversation filter = 1;
+    chatmodel.Conversation not = 2;
   }
   message Reply { // streamed
     chatmodel.Conversation conversation = 1;
@@ -204,6 +205,7 @@ message ConversationInvitationDecline {
 message MessageList {
   message Request {
     chatmodel.Message filter = 1;
+    chatmodel.Message not = 2;
   }
   message Reply { // streamed
     chatmodel.Message message = 1;
@@ -266,6 +268,7 @@ message MessageRead {
 message MemberList {
   message Request {
     chatmodel.Member filter = 1;
+    chatmodel.Member not = 2;
   }
   message Reply { // streamed
     chatmodel.Member member = 1;
@@ -288,6 +291,7 @@ message MemberGet {
 message ContactList {
   message Request {
     chatmodel.Contact filter = 1;
+    chatmodel.Contact not = 2;
   }
   message Reply { // streamed
     chatmodel.Contact contact = 1;

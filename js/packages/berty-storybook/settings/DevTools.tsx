@@ -4,6 +4,7 @@ import { Layout } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
+import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 
 //
 // DevTools
@@ -118,13 +119,16 @@ const BodyDevTools: React.FC<{}> = () => (
 	</View>
 )
 
-export const DevTools: React.FC<{}> = () => (
-	<Layout style={[styles.bgWhite, styles.flex]}>
-		<ScrollView>
-			<HeaderSettings title='Dev tools' bgColor={colors.darkGray}>
-				<HeaderDevTools />
-			</HeaderSettings>
-			<BodyDevTools />
-		</ScrollView>
-	</Layout>
-)
+export const DevTools: React.FC<ScreenProps.Settings.DevTools> = () => {
+	const { goBack } = useNavigation()
+	return (
+		<Layout style={[styles.bgWhite, styles.flex]}>
+			<ScrollView>
+				<HeaderSettings title='Dev tools' bgColor={colors.darkGray} undo={goBack}>
+					<HeaderDevTools />
+				</HeaderSettings>
+				<BodyDevTools />
+			</ScrollView>
+		</Layout>
+	)
+}

@@ -1,10 +1,10 @@
 import React from 'react'
-import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, ScrollView, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-
+import { useNavigation, ScreenProps } from '@berty-tech/berty-navigation'
 //
 // Help
 //
@@ -102,13 +102,16 @@ const BodyHelp: React.FC<{}> = () => (
 	</View>
 )
 
-export const Help: React.FC<{}> = () => (
-	<Layout style={[styles.bgWhite, styles.flex]}>
-		<ScrollView>
-			<HeaderSettings title='Help' bgColor={colors.red}>
-				<HeaderHelp />
-			</HeaderSettings>
-			<BodyHelp />
-		</ScrollView>
-	</Layout>
-)
+export const Help: React.FC<ScreenProps.Settings.Help> = () => {
+	const { goBack } = useNavigation()
+	return (
+		<Layout style={[styles.bgWhite, styles.flex]}>
+			<ScrollView>
+				<HeaderSettings title='Help' bgColor={colors.red} undo={goBack}>
+					<HeaderHelp />
+				</HeaderSettings>
+				<BodyHelp />
+			</ScrollView>
+		</Layout>
+	)
+}

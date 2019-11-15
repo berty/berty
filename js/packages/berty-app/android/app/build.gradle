@@ -135,6 +135,15 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        // see @react-native-community/blur
+        renderscriptTargetApi rootProject.ext.targetSdkVersion
+        renderscriptSupportModeEnabled true
+
+        // see java.lang.NoClassDefFoundError
+        multiDexEnabled true
+
+        ndk { abiFilters "armeabi", "armeabi-v7a", "x86" }
     }
     splits {
         abi {
@@ -253,11 +262,15 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
-    // react-native-screens dependencies
+    // see react-native-screens dependencies
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
+
+    // see java.lang.NoClassDefFoundError
+    implementation 'com.android.support:multidex:1.0.3'
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

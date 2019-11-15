@@ -7,9 +7,10 @@ import {
 	FactionButtonSetting,
 	ButtonSettingRow,
 } from '../shared-components/SettingsButtons'
-import { UserProps, RequestProps } from '../shared-props/User'
 import { GroupCircleAvatar } from '../shared-components/CircleAvatar'
 import HeaderSettings from '../shared-components/Header'
+import { useNavigation, ScreenProps } from '@berty-tech/berty-navigation'
+import { berty } from '@berty-tech/berty-api'
 
 //
 // GroupChatSettings
@@ -57,16 +58,26 @@ const GroupChatSettingsHeaderButtons: React.FC<{}> = () => (
 	</View>
 )
 
-const GroupChatSettingsHeader: React.FC<UserProps> = ({ avatarUri, name }) => (
-	<View>
-		<GroupCircleAvatar firstAvatarUri={avatarUri} secondAvatarUri={avatarUri} size={80} />
-		<Text style={[styles.textCenter, styles.textWhite, styles.littleMarginTop, styles.textBold]}>
-			{name}
-		</Text>
-	</View>
-)
+const GroupChatSettingsHeader: React.FC<berty.chatmodel.IConversation> = ({ avatarUri, title }) => {
+	return (
+		<View>
+			<GroupCircleAvatar
+				firstAvatarUri={avatarUri || ''}
+				secondAvatarUri={avatarUri || ''}
+				size={80}
+			/>
+			<Text
+				numberOfLines={1}
+				ellipsizeMode='tail'
+				style={[styles.textCenter, styles.textWhite, styles.littleMarginTop, styles.textBold]}
+			>
+				{title || ''}
+			</Text>
+		</View>
+	)
+}
 
-const GroupChatSettingsBody: React.FC<UserProps> = ({ avatarUri, name }) => (
+const GroupChatSettingsBody: React.FC<berty.chatmodel.IConversation> = ({ avatarUri, name }) => (
 	<View style={[styles.padding]}>
 		<ButtonSetting name='Medias, links & docs' icon='image-outline' />
 		<ButtonSetting name='Receive notifications' icon='bell-outline' toggled />
@@ -117,16 +128,21 @@ const GroupChatSettingsBody: React.FC<UserProps> = ({ avatarUri, name }) => (
 	</View>
 )
 
-export const GroupChatSettings: React.FC<RequestProps> = ({ user }) => (
-	<Layout style={[styles.flex]}>
-		<ScrollView contentContainerStyle={[styles.paddingBottom]}>
-			<HeaderSettings actionIcon='edit-outline'>
-				<View>
-					<GroupChatSettingsHeader {...user} />
-					<GroupChatSettingsHeaderButtons />
-				</View>
-			</HeaderSettings>
-			<GroupChatSettingsBody {...user} />
-		</ScrollView>
-	</Layout>
-)
+export const GroupChatSettings: React.FC<ScreenProps.Main.GroupChatSettings> = ({
+	route: { params },
+}) => {
+	const { goBack } = useNavigation()
+	return (
+		<Layout style={[styles.flex]}>
+			<ScrollView contentContainerStyle={[styles.paddingBottom]}>
+				<HeaderSettings actionIcon='edit-outline' undo={goBack}>
+					<View>
+						<GroupChatSettingsHeader {...params} />
+						<GroupChatSettingsHeaderButtons />
+					</View>
+				</HeaderSettings>
+				<GroupChatSettingsBody {...params} />
+			</ScrollView>
+		</Layout>
+	)
+}

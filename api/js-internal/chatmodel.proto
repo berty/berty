@@ -106,7 +106,7 @@ message Member {
   Role role = 102;
   enum Role {
     Unknown = 0;
-    // Guest = 1; ...
+    Invited = 1;
     Regular = 2;
     Admin = 3;
     Owner = 4;
@@ -161,7 +161,7 @@ message Message {
 
   State state = 104;
   enum State {
-    UnSent = 0;
+    Unsent = 0;
     Sending = 1;
     Failed = 2;
     Retrying = 3;
@@ -217,7 +217,7 @@ message Account {
   google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
 
   uint64 contact_id = 100 [(gogoproto.customname) = "ContactID", (gogoproto.moretags) = "gorm:\"not null;index\""];
-  chatmodel.Contact myself = 101;
+  chatmodel.Contact contact = 101;
 
   // settings
   bool contact_requests_enabled = 102;

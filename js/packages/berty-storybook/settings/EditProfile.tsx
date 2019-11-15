@@ -6,13 +6,15 @@ import {
 	TouchableWithoutFeedback,
 	ScrollView,
 	TouchableOpacity,
-	Modal,
 	LayoutChangeEvent,
 	StyleSheet,
 	StyleProp,
+	KeyboardAvoidingView,
 } from 'react-native'
-import { Layout, Text, Icon, Input } from 'react-native-ui-kitten'
+import { Text, Icon, Input } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
+import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
+import { BlurView } from '@react-native-community/blur'
 
 //
 // Edit Profile
@@ -327,45 +329,33 @@ const ToggleMenu: React.FC<{}> = () => {
 	)
 }
 
-export const EditProfile: React.FC<{}> = () => {
-	const [visible, setVisible] = useState(false)
-
-	const handleVisible = (bool: boolean) => {
-		setVisible(bool)
-	}
-
+export const EditProfile: React.FC<ScreenProps.Settings.EditProfile> = () => {
+	const { goBack } = useNavigation()
 	return (
-		<Layout style={[styles.bgBlue, styles.flex]}>
-			<SafeAreaView>
-				<Modal visible={visible} transparent={true}>
-					<SafeAreaView style={[styles.flex]}>
-						<TouchableOpacity style={[styles.center]} onPress={() => handleVisible(false)}>
-							<Text>Dismiss Modal</Text>
-						</TouchableOpacity>
-						<View style={styles.flex}>
-							<ScrollView
-								bounces={false}
-								style={[
-									styles.absolute,
-									styles.bottom,
-									styles.left,
-									styles.right,
-									styles.bgWhite,
-									styles.borderTopLeftRadius,
-									styles.borderTopRightRadius,
-								]}
-							>
-								<ToggleMenu />
-							</ScrollView>
-						</View>
-					</SafeAreaView>
-				</Modal>
-				{!visible ? (
-					<TouchableOpacity style={[styles.center]} onPress={() => handleVisible(true)}>
-						<Text>Show Modal</Text>
-					</TouchableOpacity>
-				) : null}
+		<>
+			<TouchableWithoutFeedback onPress={goBack} style={[StyleSheet.absoluteFill]}>
+				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
+			</TouchableWithoutFeedback>
+			<SafeAreaView style={[styles.absolute, styles.bottom, styles.left, styles.right]}>
+				<KeyboardAvoidingView style={[styles.flex]} behavior='padding'>
+					<View style={styles.flex}>
+						<ScrollView
+							bounces={false}
+							style={[
+								styles.absolute,
+								styles.bottom,
+								styles.left,
+								styles.right,
+								styles.bgWhite,
+								styles.borderTopLeftRadius,
+								styles.borderTopRightRadius,
+							]}
+						>
+							<ToggleMenu />
+						</ScrollView>
+					</View>
+				</KeyboardAvoidingView>
 			</SafeAreaView>
-		</Layout>
+		</>
 	)
 }

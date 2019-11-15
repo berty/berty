@@ -2,15 +2,27 @@
 <                 || targetName.toLowerCase().contains("release"))
 ---
 >                 || !targetName.toLowerCase().contains("debug"))
+131c131
+<                     "--reset-cache", "--entry-file", entryFile, "--bundle-output", jsBundleFile, "--assets-dest", resourcesDir,
+---
+>                     "--entry-file", entryFile, "--bundle-output", jsBundleFile, "--assets-dest", resourcesDir,
+135c135
+<                     "--reset-cache", "--entry-file", entryFile, "--bundle-output", jsBundleFile, "--assets-dest", resourcesDir,
+---
+>                     "--entry-file", entryFile, "--bundle-output", jsBundleFile, "--assets-dest", resourcesDir,
 144c144
 <                         if (targetName.toLowerCase().contains("release")) {
 ---
 >                         if (!targetName.toLowerCase().contains("debug")) {
-183c183
+152c152
+<                         
+---
+> 
+188c188
 <                     : targetName.toLowerCase().contains("release")
 ---
 >                     : !targetName.toLowerCase().contains("debug")
-275c275
+280c280
 <         def isRelease = targetName.toLowerCase().contains("release")
 ---
 >         def isRelease = !targetName.toLowerCase().contains("debug")
