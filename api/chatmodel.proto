@@ -16,7 +16,7 @@ message Contact {
   string protocol_id = 2 [(gogoproto.moretags) = "gorm:\"unique\"", (gogoproto.customname) = "ProtocolID"];
   google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
   google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
-  google.protobuf.Timestamp seen_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp seen_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  true];
 
   // fields
   string name = 100;
@@ -45,7 +45,7 @@ message Device {
   string protocol_id = 2 [(gogoproto.moretags) = "gorm:\"unique\"", (gogoproto.customname) = "ProtocolID"];
   google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
   google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
-  google.protobuf.Timestamp last_seen_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp last_seen_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  true];
 
   // fields
   Kind kind = 100;

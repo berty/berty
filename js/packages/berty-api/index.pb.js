@@ -855,7 +855,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 id: 5,
                 options: {
                   "(gogoproto.stdtime)": true,
-                  "(gogoproto.nullable)": false
+                  "(gogoproto.nullable)": true
                 }
               },
               name: {
@@ -943,7 +943,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 id: 5,
                 options: {
                   "(gogoproto.stdtime)": true,
-                  "(gogoproto.nullable)": false
+                  "(gogoproto.nullable)": true
                 }
               },
               kind: {
