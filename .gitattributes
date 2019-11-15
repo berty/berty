@@ -8,7 +8,6 @@ client/common/openssl/built/* linguist-vendored
 gen.sum linguist-generated
 go.mod linguist-generated
 go.sum linguist-generated
-*.swagger.json linguist-generated
 *.gen.go linguist-generated
 *.gen.yml linguist-generated
 *.gen.graphql linguist-generated
@@ -19,6 +18,7 @@ client/react-native/common/schema.graphql linguist-generated
 *.pb.d.ts linguist-generated
 yarn.lock linguist-generated
 *.gen.js linguist-generated
+docs/*/api.md linguist-generated
 
 # Reduce conflicts on markdown files
 *.md merge=union

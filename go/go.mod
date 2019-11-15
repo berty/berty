@@ -30,7 +30,6 @@ require (
 	google.golang.org/genproto v0.0.0-20190927181202-20e1ac93f88c
 	google.golang.org/grpc v1.24.0
 	gopkg.in/gormigrate.v1 v1.6.0
-	gopkg.in/yaml.v2 v2.2.3 // indirect
 )
 
 replace github.com/libp2p/go-openssl v0.0.2 => github.com/berty/go-openssl v0.0.3-0.20191007152928-66bd988d235e

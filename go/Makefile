@@ -202,18 +202,17 @@ $(GEN_SUM): $(GEN_SRC)
 	    --workdir="/go/src/berty.tech/go" \
 	    --entrypoint="sh" \
 	    --rm \
-	    bertytech/protoc:20 \
+	    bertytech/protoc:21 \
 	    -xec 'make generate_local'; \
 	    $(MAKE) tidy \
 	)
 
+PROTOC_OPTS = -I ../go/vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../go/vendor:/protobuf
 .PHONY: generate_local
 generate_local:
 	$(call check-program, goimports shasum protoc)
 	@set -e; for proto in $(PROTOS_SRC); do ( set -xe; \
-	  protoc -I ../api:../go/vendor:/protobuf \
-				--gogo_out="plugins=grpc:$(GOPATH)/src" \
-				"$$proto" \
+	  protoc $(PROTOC_OPTS) --gogo_out="plugins=grpc:$(GOPATH)/src" "$$proto" \
 	); done
 	goimports -w ./pkg ./cmd ./internal
 	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
