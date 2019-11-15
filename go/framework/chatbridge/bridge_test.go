@@ -67,7 +67,7 @@ func TestBridge(t *testing.T) {
 	}
 
 	// setup unary test
-	msg := &bertychat.ConversationGetRequest{}
+	msg := &bertychat.ConversationGet_Request{}
 
 	req, err = proto.Marshal(msg)
 	if err != nil {
@@ -80,7 +80,7 @@ func TestBridge(t *testing.T) {
 		t.Fatalf("failed to send unary request: %v", err)
 	}
 
-	out := &bertychat.ConversationGetReply{}
+	out := &bertychat.ConversationGet_Reply{}
 	if err = proto.Unmarshal(res, out); err != nil {
 		t.Fatalf("failed to unmarshal proto: %v", err)
 	}
@@ -104,7 +104,7 @@ func TestBridge(t *testing.T) {
 	}
 
 	for _, res = range results {
-		out := &bertychat.ConversationGetReply{}
+		out := &bertychat.ConversationGet_Reply{}
 		if err = proto.Unmarshal(res, out); err != nil {
 			t.Fatalf("failed to unmarshal proto: %v", err)
 		}
@@ -155,7 +155,7 @@ func decodeMultipleBase64Chunks(b []byte) ([]byte, error) {
 		if paddingIndex != -1 {
 			// find the consecutive =
 			for {
-				paddingIndex += 1
+				paddingIndex++
 				if paddingIndex >= len(chunk) || chunk[paddingIndex] != '=' {
 					break
 				}

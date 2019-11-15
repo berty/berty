@@ -23,28 +23,28 @@ export namespace faker {
 				}
 
 				export const Search: (
-					request: _api.berty.chat.ISearchRequest,
+					request: _api.berty.chat.Search.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.SearchReply.encode({}).finish())
+					callback(null, _api.berty.chat.Search.Reply.encode({}).finish())
 				}
 
 				export const EventSubscribe: (
-					request: _api.berty.chat.IEventSubscribeRequest,
+					request: _api.berty.chat.EventSubscribe.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.EventSubscribeReply.encode({}).finish())
+					callback(null, _api.berty.chat.EventSubscribe.Reply.encode({}).finish())
 				}
 
 				export const DevEventSubscribe: (
-					request: _api.berty.chat.IDevEventSubscribeRequest,
+					request: _api.berty.chat.DevEventSubscribe.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.DevEventSubscribeReply.encode({}).finish())
+					callback(null, _api.berty.chat.DevEventSubscribe.Reply.encode({}).finish())
 				}
 
 				export const ConversationList: (
-					request: _api.berty.chat.IConversationListRequest,
+					request: _api.berty.chat.ConversationList.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
 					faker.berty.chatmodel.Conversation.filter((_) =>
@@ -52,7 +52,7 @@ export namespace faker {
 					).forEach((_, index) =>
 						callback(
 							null,
-							_api.berty.chat.ConversationListReply.encode({
+							_api.berty.chat.ConversationList.Reply.encode({
 								conversation: faker.berty.chatmodel.Conversation[index],
 							}).finish(),
 						),
@@ -60,82 +60,82 @@ export namespace faker {
 				}
 
 				export const ConversationGet: (
-					request: _api.berty.chat.IConversationGetRequest,
+					request: _api.berty.chat.ConversationGet.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
 					callback(
 						null,
-						_api.berty.chat.ConversationGetReply.encode({
+						_api.berty.chat.ConversationGet.Reply.encode({
 							conversation: faker.berty.chatmodel.Conversation[request.id as number],
 						}).finish(),
 					)
 				}
 
 				export const ConversationCreate: (
-					request: _api.berty.chat.IConversationCreateRequest,
+					request: _api.berty.chat.ConversationCreate.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ConversationCreateReply.encode({}).finish())
+					callback(null, _api.berty.chat.ConversationCreate.Reply.encode({}).finish())
 				}
 
 				export const ConversationUpdate: (
-					request: _api.berty.chat.IConversationUpdateRequest,
+					request: _api.berty.chat.ConversationUpdate.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ConversationUpdateReply.encode({}).finish())
+					callback(null, _api.berty.chat.ConversationUpdate.Reply.encode({}).finish())
 				}
 
 				export const ConversationMute: (
-					request: _api.berty.chat.IConversationMuteRequest,
+					request: _api.berty.chat.ConversationMute.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ConversationMuteReply.encode({}).finish())
+					callback(null, _api.berty.chat.ConversationMute.Reply.encode({}).finish())
 				}
 
 				export const ConversationLeave: (
-					request: _api.berty.chat.IConversationLeaveRequest,
+					request: _api.berty.chat.ConversationLeave.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ConversationLeaveReply.encode({}).finish())
+					callback(null, _api.berty.chat.ConversationLeave.Reply.encode({}).finish())
 				}
 
 				export const ConversationErase: (
-					request: _api.berty.chat.IConversationEraseRequest,
+					request: _api.berty.chat.ConversationErase.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ConversationEraseReply.encode({}).finish())
+					callback(null, _api.berty.chat.ConversationErase.Reply.encode({}).finish())
 				}
 
 				export const ConversationInvitationSend: (
-					request: _api.berty.chat.IConversationInvitationSendRequest,
+					request: _api.berty.chat.ConversationInvitationSend.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ConversationInvitationSendReply.encode({}).finish())
+					callback(null, _api.berty.chat.ConversationInvitationSend.Reply.encode({}).finish())
 				}
 
 				export const ConversationInvitationAccept: (
-					request: _api.berty.chat.IConversationInvitationAcceptRequest,
+					request: _api.berty.chat.ConversationInvitationAccept.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ConversationInvitationAcceptReply.encode({}).finish())
+					callback(null, _api.berty.chat.ConversationInvitationAccept.Reply.encode({}).finish())
 				}
 
 				export const ConversationInvitationDecline: (
-					request: _api.berty.chat.IConversationInvitationDeclineRequest,
+					request: _api.berty.chat.ConversationInvitationDecline.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ConversationInvitationDeclineReply.encode({}).finish())
+					callback(null, _api.berty.chat.ConversationInvitationDecline.Reply.encode({}).finish())
 				}
 
 				export const MessageList: (
-					request: _api.berty.chat.IMessageListRequest,
+					request: _api.berty.chat.MessageList.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
 					faker.berty.chatmodel.Message.filter((_) => deepFilterEqual(request.filter, _)).forEach(
 						(_, index) =>
 							callback(
 								null,
-								_api.berty.chat.MessageListReply.encode({
+								_api.berty.chat.MessageList.Reply.encode({
 									message: faker.berty.chatmodel.Message[index],
 								}).finish(),
 							),
@@ -143,61 +143,61 @@ export namespace faker {
 				}
 
 				export const MessageGet: (
-					request: _api.berty.chat.IMessageGetRequest,
+					request: _api.berty.chat.MessageGet.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
 					callback(
 						null,
-						_api.berty.chat.MessageGetReply.encode({
+						_api.berty.chat.MessageGet.Reply.encode({
 							message: faker.berty.chatmodel.Message[request.id as number],
 						}).finish(),
 					)
 				}
 
 				export const MessageSend: (
-					request: _api.berty.chat.IMessageSendRequest,
+					request: _api.berty.chat.MessageSend.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.MessageSendReply.encode({}).finish())
+					callback(null, _api.berty.chat.MessageSend.Reply.encode({}).finish())
 				}
 
 				export const MessageEdit: (
-					request: _api.berty.chat.IMessageEditRequest,
+					request: _api.berty.chat.MessageEdit.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.MessageEditReply.encode({}).finish())
+					callback(null, _api.berty.chat.MessageEdit.Reply.encode({}).finish())
 				}
 
 				export const MessageHide: (
-					request: _api.berty.chat.IMessageHideRequest,
+					request: _api.berty.chat.MessageHide.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.MessageHideReply.encode({}).finish())
+					callback(null, _api.berty.chat.MessageHide.Reply.encode({}).finish())
 				}
 
 				export const MessageReact: (
-					request: _api.berty.chat.IMessageReactRequest,
+					request: _api.berty.chat.MessageReact.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.MessageReactReply.encode({}).finish())
+					callback(null, _api.berty.chat.MessageReact.Reply.encode({}).finish())
 				}
 
 				export const MessageRead: (
-					request: _api.berty.chat.IMessageReadRequest,
+					request: _api.berty.chat.MessageRead.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.MessageReadReply.encode({}).finish())
+					callback(null, _api.berty.chat.MessageRead.Reply.encode({}).finish())
 				}
 
 				export const MemberList: (
-					request: _api.berty.chat.IMemberListRequest,
+					request: _api.berty.chat.MemberList.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
 					faker.berty.chatmodel.Member.filter((_) => deepFilterEqual(request.filter, _)).forEach(
 						(_, index) =>
 							callback(
 								null,
-								_api.berty.chat.MemberListReply.encode({
+								_api.berty.chat.MemberList.Reply.encode({
 									member: faker.berty.chatmodel.Member[index],
 								}).finish(),
 							),
@@ -205,26 +205,26 @@ export namespace faker {
 				}
 
 				export const MemberGet: (
-					request: _api.berty.chat.IMemberGetRequest,
+					request: _api.berty.chat.MemberGet.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
 					callback(
 						null,
-						_api.berty.chat.MemberGetReply.encode({
+						_api.berty.chat.MemberGet.Reply.encode({
 							member: faker.berty.chatmodel.Member[request.id as number],
 						}).finish(),
 					)
 				}
 
 				export const ContactList: (
-					request: _api.berty.chat.IContactListRequest,
+					request: _api.berty.chat.ContactList.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
 					faker.berty.chatmodel.Contact.filter((_) => deepFilterEqual(request.filter, _)).forEach(
 						(_, index) =>
 							callback(
 								null,
-								_api.berty.chat.ContactListReply.encode({
+								_api.berty.chat.ContactList.Reply.encode({
 									contact: faker.berty.chatmodel.Contact[index],
 								}).finish(),
 							),
@@ -232,118 +232,118 @@ export namespace faker {
 				}
 
 				export const ContactGet: (
-					request: _api.berty.chat.IContactGetRequest,
+					request: _api.berty.chat.ContactGet.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
 					callback(
 						null,
-						_api.berty.chat.ContactGetReply.encode({
+						_api.berty.chat.ContactGet.Reply.encode({
 							contact: faker.berty.chatmodel.Contact[request.id as number],
 						}).finish(),
 					)
 				}
 
 				export const ContactBlock: (
-					request: _api.berty.chat.IContactBlockRequest,
+					request: _api.berty.chat.ContactBlock.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ContactBlockReply.encode({}).finish())
+					callback(null, _api.berty.chat.ContactBlock.Reply.encode({}).finish())
 				}
 
 				export const ContactRemove: (
-					request: _api.berty.chat.IContactRemoveRequest,
+					request: _api.berty.chat.ContactRemove.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ContactRemoveReply.encode({}).finish())
+					callback(null, _api.berty.chat.ContactRemove.Reply.encode({}).finish())
 				}
 
 				export const ContactRequestSend: (
-					request: _api.berty.chat.IContactRequestSendRequest,
+					request: _api.berty.chat.ContactRequestSend.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ContactRequestSendReply.encode({}).finish())
+					callback(null, _api.berty.chat.ContactRequestSend.Reply.encode({}).finish())
 				}
 
 				export const ContactRequestAccept: (
-					request: _api.berty.chat.IContactRequestAcceptRequest,
+					request: _api.berty.chat.ContactRequestAccept.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ContactRequestAcceptReply.encode({}).finish())
+					callback(null, _api.berty.chat.ContactRequestAccept.Reply.encode({}).finish())
 				}
 
 				export const ContactRequestDecline: (
-					request: _api.berty.chat.IContactRequestDeclineRequest,
+					request: _api.berty.chat.ContactRequestDecline.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.ContactRequestDeclineReply.encode({}).finish())
+					callback(null, _api.berty.chat.ContactRequestDecline.Reply.encode({}).finish())
 				}
 
 				export const AccountList: (
-					request: _api.berty.chat.IAccountListRequest,
+					request: _api.berty.chat.AccountList.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {}
 
 				export const AccountGet: (
-					request: _api.berty.chat.IAccountGetRequest,
+					request: _api.berty.chat.AccountGet.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
 					callback(
 						null,
-						_api.berty.chat.AccountGetReply.encode({
+						_api.berty.chat.AccountGet.Reply.encode({
 							account: faker.berty.chatmodel.Account[request.id as number],
 						}).finish(),
 					)
 				}
 
 				export const AccountCreate: (
-					request: _api.berty.chat.IAccountCreateRequest,
+					request: _api.berty.chat.AccountCreate.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.AccountCreateReply.encode({}).finish())
+					callback(null, _api.berty.chat.AccountCreate.Reply.encode({}).finish())
 				}
 
 				export const AccountUpdate: (
-					request: _api.berty.chat.IAccountUpdateRequest,
+					request: _api.berty.chat.AccountUpdate.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.AccountUpdateReply.encode({}).finish())
+					callback(null, _api.berty.chat.AccountUpdate.Reply.encode({}).finish())
 				}
 
 				export const AccountOpen: (
-					request: _api.berty.chat.IAccountOpenRequest,
+					request: _api.berty.chat.AccountOpen.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.AccountOpenReply.encode({}).finish())
+					callback(null, _api.berty.chat.AccountOpen.Reply.encode({}).finish())
 				}
 
 				export const AccountClose: (
-					request: _api.berty.chat.IAccountCloseRequest,
+					request: _api.berty.chat.AccountClose.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.AccountCloseReply.encode({}).finish())
+					callback(null, _api.berty.chat.AccountClose.Reply.encode({}).finish())
 				}
 
 				export const AccountRemove: (
-					request: _api.berty.chat.IAccountRemoveRequest,
+					request: _api.berty.chat.AccountRemove.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.AccountRemoveReply.encode({}).finish())
+					callback(null, _api.berty.chat.AccountRemove.Reply.encode({}).finish())
 				}
 
 				export const AccountPairingInvitationCreate: (
-					request: _api.berty.chat.IAccountPairingInvitationCreateRequest,
+					request: _api.berty.chat.AccountPairingInvitationCreate.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.AccountPairingInvitationCreateReply.encode({}).finish())
+					callback(null, _api.berty.chat.AccountPairingInvitationCreate.Reply.encode({}).finish())
 				}
 
 				export const AccountRenewIncomingContactRequestLink: (
-					request: _api.berty.chat.IAccountRenewIncomingContactRequestLinkRequest,
+					request: _api.berty.chat.AccountRenewIncomingContactRequestLink.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
 					callback(
 						null,
-						_api.berty.chat.AccountRenewIncomingContactRequestLinkReply.encode({}).finish(),
+						_api.berty.chat.AccountRenewIncomingContactRequestLink.Reply.encode({}).finish(),
 					)
 				}
 			}

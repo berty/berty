@@ -6,34 +6,34 @@ import (
 	"berty.tech/go/pkg/errcode"
 )
 
-func (c *client) GroupCreate(context.Context, *GroupCreateRequest) (*GroupCreateReply, error) {
+func (c *client) GroupCreate(context.Context, *GroupCreate_Request) (*GroupCreate_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (c *client) GroupGenerateInviteLink(context.Context, *GroupGenerateInviteLinkRequest) (*GroupGenerateInviteLinkReply, error) {
+func (c *client) GroupGenerateInviteLink(context.Context, *GroupGenerateInviteLink_Request) (*GroupGenerateInviteLink_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (c *client) GroupLeave(context.Context, *GroupLeaveRequest) (*GroupLeaveReply, error) {
+func (c *client) GroupLeave(context.Context, *GroupLeave_Request) (*GroupLeave_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (c *client) GroupList(*GroupListRequest, Instance_GroupListServer) error {
+func (c *client) GroupList(*GroupList_Request, ProtocolService_GroupListServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (c *client) GroupMessageCreate(context.Context, *GroupMessageCreateRequest) (*GroupMessageCreateReply, error) {
+func (c *client) GroupMessageCreate(context.Context, *GroupMessageCreate_Request) (*GroupMessageCreate_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (c *client) GroupMessageList(*GroupMessageListRequest, Instance_GroupMessageListServer) error {
+func (c *client) GroupMessageList(*GroupMessageList_Request, ProtocolService_GroupMessageListServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (c *client) GroupTopicPublish(Instance_GroupTopicPublishServer) error {
+func (c *client) GroupTopicPublish(ProtocolService_GroupTopicPublishServer) error {
 	return errcode.ErrNotImplemented
 }
 
-func (c *client) GroupTopicSubscribe(*GroupTopicSubscribeRequest, Instance_GroupTopicSubscribeServer) error {
+func (c *client) GroupTopicSubscribe(*GroupTopicSubscribe_Request, ProtocolService_GroupTopicSubscribeServer) error {
 	return errcode.ErrNotImplemented
 }

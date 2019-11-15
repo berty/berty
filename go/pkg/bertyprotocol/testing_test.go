@@ -21,7 +21,7 @@ func TestTestingClient_impl(t *testing.T) {
 		t.Fatal("Expected table 'migrations' exists.")
 	}
 
-	_, _ = client.InstanceGetConfiguration(context.Background(), &InstanceGetConfigurationRequest{})
+	_, _ = client.InstanceGetConfiguration(context.Background(), &InstanceGetConfiguration_Request{})
 
 	status := client.Status()
 	expected := Status{}

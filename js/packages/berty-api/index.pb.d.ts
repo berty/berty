@@ -6,1537 +6,2221 @@ export namespace berty {
         class ChatService extends $protobuf.rpc.Service {
 
             public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): ChatService;
-            public search(request: berty.chat.ISearchRequest, callback: berty.chat.ChatService.SearchCallback): void;
-            public search(request: berty.chat.ISearchRequest): Promise<berty.chat.SearchReply>;
-            public eventSubscribe(request: berty.chat.IEventSubscribeRequest, callback: berty.chat.ChatService.EventSubscribeCallback): void;
-            public eventSubscribe(request: berty.chat.IEventSubscribeRequest): Promise<berty.chat.EventSubscribeReply>;
-            public devEventSubscribe(request: berty.chat.IDevEventSubscribeRequest, callback: berty.chat.ChatService.DevEventSubscribeCallback): void;
-            public devEventSubscribe(request: berty.chat.IDevEventSubscribeRequest): Promise<berty.chat.DevEventSubscribeReply>;
-            public conversationList(request: berty.chat.IConversationListRequest, callback: berty.chat.ChatService.ConversationListCallback): void;
-            public conversationList(request: berty.chat.IConversationListRequest): Promise<berty.chat.ConversationListReply>;
-            public conversationGet(request: berty.chat.IConversationGetRequest, callback: berty.chat.ChatService.ConversationGetCallback): void;
-            public conversationGet(request: berty.chat.IConversationGetRequest): Promise<berty.chat.ConversationGetReply>;
-            public conversationCreate(request: berty.chat.IConversationCreateRequest, callback: berty.chat.ChatService.ConversationCreateCallback): void;
-            public conversationCreate(request: berty.chat.IConversationCreateRequest): Promise<berty.chat.ConversationCreateReply>;
-            public conversationUpdate(request: berty.chat.IConversationUpdateRequest, callback: berty.chat.ChatService.ConversationUpdateCallback): void;
-            public conversationUpdate(request: berty.chat.IConversationUpdateRequest): Promise<berty.chat.ConversationUpdateReply>;
-            public conversationMute(request: berty.chat.IConversationMuteRequest, callback: berty.chat.ChatService.ConversationMuteCallback): void;
-            public conversationMute(request: berty.chat.IConversationMuteRequest): Promise<berty.chat.ConversationMuteReply>;
-            public conversationLeave(request: berty.chat.IConversationLeaveRequest, callback: berty.chat.ChatService.ConversationLeaveCallback): void;
-            public conversationLeave(request: berty.chat.IConversationLeaveRequest): Promise<berty.chat.ConversationLeaveReply>;
-            public conversationErase(request: berty.chat.IConversationEraseRequest, callback: berty.chat.ChatService.ConversationEraseCallback): void;
-            public conversationErase(request: berty.chat.IConversationEraseRequest): Promise<berty.chat.ConversationEraseReply>;
-            public conversationInvitationSend(request: berty.chat.IConversationInvitationSendRequest, callback: berty.chat.ChatService.ConversationInvitationSendCallback): void;
-            public conversationInvitationSend(request: berty.chat.IConversationInvitationSendRequest): Promise<berty.chat.ConversationInvitationSendReply>;
-            public conversationInvitationAccept(request: berty.chat.IConversationInvitationAcceptRequest, callback: berty.chat.ChatService.ConversationInvitationAcceptCallback): void;
-            public conversationInvitationAccept(request: berty.chat.IConversationInvitationAcceptRequest): Promise<berty.chat.ConversationInvitationAcceptReply>;
-            public conversationInvitationDecline(request: berty.chat.IConversationInvitationDeclineRequest, callback: berty.chat.ChatService.ConversationInvitationDeclineCallback): void;
-            public conversationInvitationDecline(request: berty.chat.IConversationInvitationDeclineRequest): Promise<berty.chat.ConversationInvitationDeclineReply>;
-            public messageList(request: berty.chat.IMessageListRequest, callback: berty.chat.ChatService.MessageListCallback): void;
-            public messageList(request: berty.chat.IMessageListRequest): Promise<berty.chat.MessageListReply>;
-            public messageGet(request: berty.chat.IMessageGetRequest, callback: berty.chat.ChatService.MessageGetCallback): void;
-            public messageGet(request: berty.chat.IMessageGetRequest): Promise<berty.chat.MessageGetReply>;
-            public messageSend(request: berty.chat.IMessageSendRequest, callback: berty.chat.ChatService.MessageSendCallback): void;
-            public messageSend(request: berty.chat.IMessageSendRequest): Promise<berty.chat.MessageSendReply>;
-            public messageEdit(request: berty.chat.IMessageEditRequest, callback: berty.chat.ChatService.MessageEditCallback): void;
-            public messageEdit(request: berty.chat.IMessageEditRequest): Promise<berty.chat.MessageEditReply>;
-            public messageHide(request: berty.chat.IMessageHideRequest, callback: berty.chat.ChatService.MessageHideCallback): void;
-            public messageHide(request: berty.chat.IMessageHideRequest): Promise<berty.chat.MessageHideReply>;
-            public messageReact(request: berty.chat.IMessageReactRequest, callback: berty.chat.ChatService.MessageReactCallback): void;
-            public messageReact(request: berty.chat.IMessageReactRequest): Promise<berty.chat.MessageReactReply>;
-            public messageRead(request: berty.chat.IMessageReadRequest, callback: berty.chat.ChatService.MessageReadCallback): void;
-            public messageRead(request: berty.chat.IMessageReadRequest): Promise<berty.chat.MessageReadReply>;
-            public memberList(request: berty.chat.IMemberListRequest, callback: berty.chat.ChatService.MemberListCallback): void;
-            public memberList(request: berty.chat.IMemberListRequest): Promise<berty.chat.MemberListReply>;
-            public memberGet(request: berty.chat.IMemberGetRequest, callback: berty.chat.ChatService.MemberGetCallback): void;
-            public memberGet(request: berty.chat.IMemberGetRequest): Promise<berty.chat.MemberGetReply>;
-            public contactList(request: berty.chat.IContactListRequest, callback: berty.chat.ChatService.ContactListCallback): void;
-            public contactList(request: berty.chat.IContactListRequest): Promise<berty.chat.ContactListReply>;
-            public contactGet(request: berty.chat.IContactGetRequest, callback: berty.chat.ChatService.ContactGetCallback): void;
-            public contactGet(request: berty.chat.IContactGetRequest): Promise<berty.chat.ContactGetReply>;
-            public contactBlock(request: berty.chat.IContactBlockRequest, callback: berty.chat.ChatService.ContactBlockCallback): void;
-            public contactBlock(request: berty.chat.IContactBlockRequest): Promise<berty.chat.ContactBlockReply>;
-            public contactRemove(request: berty.chat.IContactRemoveRequest, callback: berty.chat.ChatService.ContactRemoveCallback): void;
-            public contactRemove(request: berty.chat.IContactRemoveRequest): Promise<berty.chat.ContactRemoveReply>;
-            public contactRequestSend(request: berty.chat.IContactRequestSendRequest, callback: berty.chat.ChatService.ContactRequestSendCallback): void;
-            public contactRequestSend(request: berty.chat.IContactRequestSendRequest): Promise<berty.chat.ContactRequestSendReply>;
-            public contactRequestAccept(request: berty.chat.IContactRequestAcceptRequest, callback: berty.chat.ChatService.ContactRequestAcceptCallback): void;
-            public contactRequestAccept(request: berty.chat.IContactRequestAcceptRequest): Promise<berty.chat.ContactRequestAcceptReply>;
-            public contactRequestDecline(request: berty.chat.IContactRequestDeclineRequest, callback: berty.chat.ChatService.ContactRequestDeclineCallback): void;
-            public contactRequestDecline(request: berty.chat.IContactRequestDeclineRequest): Promise<berty.chat.ContactRequestDeclineReply>;
-            public accountList(request: berty.chat.IAccountListRequest, callback: berty.chat.ChatService.AccountListCallback): void;
-            public accountList(request: berty.chat.IAccountListRequest): Promise<berty.chat.AccountListRequest>;
-            public accountGet(request: berty.chat.IAccountGetRequest, callback: berty.chat.ChatService.AccountGetCallback): void;
-            public accountGet(request: berty.chat.IAccountGetRequest): Promise<berty.chat.AccountGetReply>;
-            public accountCreate(request: berty.chat.IAccountCreateRequest, callback: berty.chat.ChatService.AccountCreateCallback): void;
-            public accountCreate(request: berty.chat.IAccountCreateRequest): Promise<berty.chat.AccountCreateReply>;
-            public accountUpdate(request: berty.chat.IAccountUpdateRequest, callback: berty.chat.ChatService.AccountUpdateCallback): void;
-            public accountUpdate(request: berty.chat.IAccountUpdateRequest): Promise<berty.chat.AccountUpdateReply>;
-            public accountOpen(request: berty.chat.IAccountOpenRequest, callback: berty.chat.ChatService.AccountOpenCallback): void;
-            public accountOpen(request: berty.chat.IAccountOpenRequest): Promise<berty.chat.AccountOpenReply>;
-            public accountClose(request: berty.chat.IAccountCloseRequest, callback: berty.chat.ChatService.AccountCloseCallback): void;
-            public accountClose(request: berty.chat.IAccountCloseRequest): Promise<berty.chat.AccountCloseReply>;
-            public accountRemove(request: berty.chat.IAccountRemoveRequest, callback: berty.chat.ChatService.AccountRemoveCallback): void;
-            public accountRemove(request: berty.chat.IAccountRemoveRequest): Promise<berty.chat.AccountRemoveReply>;
-            public accountPairingInvitationCreate(request: berty.chat.IAccountPairingInvitationCreateRequest, callback: berty.chat.ChatService.AccountPairingInvitationCreateCallback): void;
-            public accountPairingInvitationCreate(request: berty.chat.IAccountPairingInvitationCreateRequest): Promise<berty.chat.AccountPairingInvitationCreateReply>;
-            public accountRenewIncomingContactRequestLink(request: berty.chat.IAccountRenewIncomingContactRequestLinkRequest, callback: berty.chat.ChatService.AccountRenewIncomingContactRequestLinkCallback): void;
-            public accountRenewIncomingContactRequestLink(request: berty.chat.IAccountRenewIncomingContactRequestLinkRequest): Promise<berty.chat.AccountRenewIncomingContactRequestLinkReply>;
+            public search(request: berty.chat.Search.IRequest, callback: berty.chat.ChatService.SearchCallback): void;
+            public search(request: berty.chat.Search.IRequest): Promise<berty.chat.Search.Reply>;
+            public eventSubscribe(request: berty.chat.EventSubscribe.IRequest, callback: berty.chat.ChatService.EventSubscribeCallback): void;
+            public eventSubscribe(request: berty.chat.EventSubscribe.IRequest): Promise<berty.chat.EventSubscribe.Reply>;
+            public devEventSubscribe(request: berty.chat.DevEventSubscribe.IRequest, callback: berty.chat.ChatService.DevEventSubscribeCallback): void;
+            public devEventSubscribe(request: berty.chat.DevEventSubscribe.IRequest): Promise<berty.chat.DevEventSubscribe.Reply>;
+            public conversationList(request: berty.chat.ConversationList.IRequest, callback: berty.chat.ChatService.ConversationListCallback): void;
+            public conversationList(request: berty.chat.ConversationList.IRequest): Promise<berty.chat.ConversationList.Reply>;
+            public conversationGet(request: berty.chat.ConversationGet.IRequest, callback: berty.chat.ChatService.ConversationGetCallback): void;
+            public conversationGet(request: berty.chat.ConversationGet.IRequest): Promise<berty.chat.ConversationGet.Reply>;
+            public conversationCreate(request: berty.chat.ConversationCreate.IRequest, callback: berty.chat.ChatService.ConversationCreateCallback): void;
+            public conversationCreate(request: berty.chat.ConversationCreate.IRequest): Promise<berty.chat.ConversationCreate.Reply>;
+            public conversationUpdate(request: berty.chat.ConversationUpdate.IRequest, callback: berty.chat.ChatService.ConversationUpdateCallback): void;
+            public conversationUpdate(request: berty.chat.ConversationUpdate.IRequest): Promise<berty.chat.ConversationUpdate.Reply>;
+            public conversationMute(request: berty.chat.ConversationMute.IRequest, callback: berty.chat.ChatService.ConversationMuteCallback): void;
+            public conversationMute(request: berty.chat.ConversationMute.IRequest): Promise<berty.chat.ConversationMute.Reply>;
+            public conversationLeave(request: berty.chat.ConversationLeave.IRequest, callback: berty.chat.ChatService.ConversationLeaveCallback): void;
+            public conversationLeave(request: berty.chat.ConversationLeave.IRequest): Promise<berty.chat.ConversationLeave.Reply>;
+            public conversationErase(request: berty.chat.ConversationErase.IRequest, callback: berty.chat.ChatService.ConversationEraseCallback): void;
+            public conversationErase(request: berty.chat.ConversationErase.IRequest): Promise<berty.chat.ConversationErase.Reply>;
+            public conversationInvitationSend(request: berty.chat.ConversationInvitationSend.IRequest, callback: berty.chat.ChatService.ConversationInvitationSendCallback): void;
+            public conversationInvitationSend(request: berty.chat.ConversationInvitationSend.IRequest): Promise<berty.chat.ConversationInvitationSend.Reply>;
+            public conversationInvitationAccept(request: berty.chat.ConversationInvitationAccept.IRequest, callback: berty.chat.ChatService.ConversationInvitationAcceptCallback): void;
+            public conversationInvitationAccept(request: berty.chat.ConversationInvitationAccept.IRequest): Promise<berty.chat.ConversationInvitationAccept.Reply>;
+            public conversationInvitationDecline(request: berty.chat.ConversationInvitationDecline.IRequest, callback: berty.chat.ChatService.ConversationInvitationDeclineCallback): void;
+            public conversationInvitationDecline(request: berty.chat.ConversationInvitationDecline.IRequest): Promise<berty.chat.ConversationInvitationDecline.Reply>;
+            public messageList(request: berty.chat.MessageList.IRequest, callback: berty.chat.ChatService.MessageListCallback): void;
+            public messageList(request: berty.chat.MessageList.IRequest): Promise<berty.chat.MessageList.Reply>;
+            public messageGet(request: berty.chat.MessageGet.IRequest, callback: berty.chat.ChatService.MessageGetCallback): void;
+            public messageGet(request: berty.chat.MessageGet.IRequest): Promise<berty.chat.MessageGet.Reply>;
+            public messageSend(request: berty.chat.MessageSend.IRequest, callback: berty.chat.ChatService.MessageSendCallback): void;
+            public messageSend(request: berty.chat.MessageSend.IRequest): Promise<berty.chat.MessageSend.Reply>;
+            public messageEdit(request: berty.chat.MessageEdit.IRequest, callback: berty.chat.ChatService.MessageEditCallback): void;
+            public messageEdit(request: berty.chat.MessageEdit.IRequest): Promise<berty.chat.MessageEdit.Reply>;
+            public messageHide(request: berty.chat.MessageHide.IRequest, callback: berty.chat.ChatService.MessageHideCallback): void;
+            public messageHide(request: berty.chat.MessageHide.IRequest): Promise<berty.chat.MessageHide.Reply>;
+            public messageReact(request: berty.chat.MessageReact.IRequest, callback: berty.chat.ChatService.MessageReactCallback): void;
+            public messageReact(request: berty.chat.MessageReact.IRequest): Promise<berty.chat.MessageReact.Reply>;
+            public messageRead(request: berty.chat.MessageRead.IRequest, callback: berty.chat.ChatService.MessageReadCallback): void;
+            public messageRead(request: berty.chat.MessageRead.IRequest): Promise<berty.chat.MessageRead.Reply>;
+            public memberList(request: berty.chat.MemberList.IRequest, callback: berty.chat.ChatService.MemberListCallback): void;
+            public memberList(request: berty.chat.MemberList.IRequest): Promise<berty.chat.MemberList.Reply>;
+            public memberGet(request: berty.chat.MemberGet.IRequest, callback: berty.chat.ChatService.MemberGetCallback): void;
+            public memberGet(request: berty.chat.MemberGet.IRequest): Promise<berty.chat.MemberGet.Reply>;
+            public contactList(request: berty.chat.ContactList.IRequest, callback: berty.chat.ChatService.ContactListCallback): void;
+            public contactList(request: berty.chat.ContactList.IRequest): Promise<berty.chat.ContactList.Reply>;
+            public contactGet(request: berty.chat.ContactGet.IRequest, callback: berty.chat.ChatService.ContactGetCallback): void;
+            public contactGet(request: berty.chat.ContactGet.IRequest): Promise<berty.chat.ContactGet.Reply>;
+            public contactBlock(request: berty.chat.ContactBlock.IRequest, callback: berty.chat.ChatService.ContactBlockCallback): void;
+            public contactBlock(request: berty.chat.ContactBlock.IRequest): Promise<berty.chat.ContactBlock.Reply>;
+            public contactRemove(request: berty.chat.ContactRemove.IRequest, callback: berty.chat.ChatService.ContactRemoveCallback): void;
+            public contactRemove(request: berty.chat.ContactRemove.IRequest): Promise<berty.chat.ContactRemove.Reply>;
+            public contactRequestSend(request: berty.chat.ContactRequestSend.IRequest, callback: berty.chat.ChatService.ContactRequestSendCallback): void;
+            public contactRequestSend(request: berty.chat.ContactRequestSend.IRequest): Promise<berty.chat.ContactRequestSend.Reply>;
+            public contactRequestAccept(request: berty.chat.ContactRequestAccept.IRequest, callback: berty.chat.ChatService.ContactRequestAcceptCallback): void;
+            public contactRequestAccept(request: berty.chat.ContactRequestAccept.IRequest): Promise<berty.chat.ContactRequestAccept.Reply>;
+            public contactRequestDecline(request: berty.chat.ContactRequestDecline.IRequest, callback: berty.chat.ChatService.ContactRequestDeclineCallback): void;
+            public contactRequestDecline(request: berty.chat.ContactRequestDecline.IRequest): Promise<berty.chat.ContactRequestDecline.Reply>;
+            public accountList(request: berty.chat.AccountList.IRequest, callback: berty.chat.ChatService.AccountListCallback): void;
+            public accountList(request: berty.chat.AccountList.IRequest): Promise<berty.chat.AccountList.Request>;
+            public accountGet(request: berty.chat.AccountGet.IRequest, callback: berty.chat.ChatService.AccountGetCallback): void;
+            public accountGet(request: berty.chat.AccountGet.IRequest): Promise<berty.chat.AccountGet.Reply>;
+            public accountCreate(request: berty.chat.AccountCreate.IRequest, callback: berty.chat.ChatService.AccountCreateCallback): void;
+            public accountCreate(request: berty.chat.AccountCreate.IRequest): Promise<berty.chat.AccountCreate.Reply>;
+            public accountUpdate(request: berty.chat.AccountUpdate.IRequest, callback: berty.chat.ChatService.AccountUpdateCallback): void;
+            public accountUpdate(request: berty.chat.AccountUpdate.IRequest): Promise<berty.chat.AccountUpdate.Reply>;
+            public accountOpen(request: berty.chat.AccountOpen.IRequest, callback: berty.chat.ChatService.AccountOpenCallback): void;
+            public accountOpen(request: berty.chat.AccountOpen.IRequest): Promise<berty.chat.AccountOpen.Reply>;
+            public accountClose(request: berty.chat.AccountClose.IRequest, callback: berty.chat.ChatService.AccountCloseCallback): void;
+            public accountClose(request: berty.chat.AccountClose.IRequest): Promise<berty.chat.AccountClose.Reply>;
+            public accountRemove(request: berty.chat.AccountRemove.IRequest, callback: berty.chat.ChatService.AccountRemoveCallback): void;
+            public accountRemove(request: berty.chat.AccountRemove.IRequest): Promise<berty.chat.AccountRemove.Reply>;
+            public accountPairingInvitationCreate(request: berty.chat.AccountPairingInvitationCreate.IRequest, callback: berty.chat.ChatService.AccountPairingInvitationCreateCallback): void;
+            public accountPairingInvitationCreate(request: berty.chat.AccountPairingInvitationCreate.IRequest): Promise<berty.chat.AccountPairingInvitationCreate.Reply>;
+            public accountRenewIncomingContactRequestLink(request: berty.chat.AccountRenewIncomingContactRequestLink.IRequest, callback: berty.chat.ChatService.AccountRenewIncomingContactRequestLinkCallback): void;
+            public accountRenewIncomingContactRequestLink(request: berty.chat.AccountRenewIncomingContactRequestLink.IRequest): Promise<berty.chat.AccountRenewIncomingContactRequestLink.Reply>;
         }
 
         namespace ChatService {
 
-            type SearchCallback = (error: (Error|null), response?: berty.chat.SearchReply) => void;
+            type SearchCallback = (error: (Error|null), response?: berty.chat.Search.Reply) => void;
 
-            type EventSubscribeCallback = (error: (Error|null), response?: berty.chat.EventSubscribeReply) => void;
+            type EventSubscribeCallback = (error: (Error|null), response?: berty.chat.EventSubscribe.Reply) => void;
 
-            type DevEventSubscribeCallback = (error: (Error|null), response?: berty.chat.DevEventSubscribeReply) => void;
+            type DevEventSubscribeCallback = (error: (Error|null), response?: berty.chat.DevEventSubscribe.Reply) => void;
 
-            type ConversationListCallback = (error: (Error|null), response?: berty.chat.ConversationListReply) => void;
+            type ConversationListCallback = (error: (Error|null), response?: berty.chat.ConversationList.Reply) => void;
 
-            type ConversationGetCallback = (error: (Error|null), response?: berty.chat.ConversationGetReply) => void;
+            type ConversationGetCallback = (error: (Error|null), response?: berty.chat.ConversationGet.Reply) => void;
 
-            type ConversationCreateCallback = (error: (Error|null), response?: berty.chat.ConversationCreateReply) => void;
+            type ConversationCreateCallback = (error: (Error|null), response?: berty.chat.ConversationCreate.Reply) => void;
 
-            type ConversationUpdateCallback = (error: (Error|null), response?: berty.chat.ConversationUpdateReply) => void;
+            type ConversationUpdateCallback = (error: (Error|null), response?: berty.chat.ConversationUpdate.Reply) => void;
 
-            type ConversationMuteCallback = (error: (Error|null), response?: berty.chat.ConversationMuteReply) => void;
+            type ConversationMuteCallback = (error: (Error|null), response?: berty.chat.ConversationMute.Reply) => void;
 
-            type ConversationLeaveCallback = (error: (Error|null), response?: berty.chat.ConversationLeaveReply) => void;
+            type ConversationLeaveCallback = (error: (Error|null), response?: berty.chat.ConversationLeave.Reply) => void;
 
-            type ConversationEraseCallback = (error: (Error|null), response?: berty.chat.ConversationEraseReply) => void;
+            type ConversationEraseCallback = (error: (Error|null), response?: berty.chat.ConversationErase.Reply) => void;
 
-            type ConversationInvitationSendCallback = (error: (Error|null), response?: berty.chat.ConversationInvitationSendReply) => void;
+            type ConversationInvitationSendCallback = (error: (Error|null), response?: berty.chat.ConversationInvitationSend.Reply) => void;
 
-            type ConversationInvitationAcceptCallback = (error: (Error|null), response?: berty.chat.ConversationInvitationAcceptReply) => void;
+            type ConversationInvitationAcceptCallback = (error: (Error|null), response?: berty.chat.ConversationInvitationAccept.Reply) => void;
 
-            type ConversationInvitationDeclineCallback = (error: (Error|null), response?: berty.chat.ConversationInvitationDeclineReply) => void;
+            type ConversationInvitationDeclineCallback = (error: (Error|null), response?: berty.chat.ConversationInvitationDecline.Reply) => void;
 
-            type MessageListCallback = (error: (Error|null), response?: berty.chat.MessageListReply) => void;
+            type MessageListCallback = (error: (Error|null), response?: berty.chat.MessageList.Reply) => void;
 
-            type MessageGetCallback = (error: (Error|null), response?: berty.chat.MessageGetReply) => void;
+            type MessageGetCallback = (error: (Error|null), response?: berty.chat.MessageGet.Reply) => void;
 
-            type MessageSendCallback = (error: (Error|null), response?: berty.chat.MessageSendReply) => void;
+            type MessageSendCallback = (error: (Error|null), response?: berty.chat.MessageSend.Reply) => void;
 
-            type MessageEditCallback = (error: (Error|null), response?: berty.chat.MessageEditReply) => void;
+            type MessageEditCallback = (error: (Error|null), response?: berty.chat.MessageEdit.Reply) => void;
 
-            type MessageHideCallback = (error: (Error|null), response?: berty.chat.MessageHideReply) => void;
+            type MessageHideCallback = (error: (Error|null), response?: berty.chat.MessageHide.Reply) => void;
 
-            type MessageReactCallback = (error: (Error|null), response?: berty.chat.MessageReactReply) => void;
+            type MessageReactCallback = (error: (Error|null), response?: berty.chat.MessageReact.Reply) => void;
 
-            type MessageReadCallback = (error: (Error|null), response?: berty.chat.MessageReadReply) => void;
+            type MessageReadCallback = (error: (Error|null), response?: berty.chat.MessageRead.Reply) => void;
 
-            type MemberListCallback = (error: (Error|null), response?: berty.chat.MemberListReply) => void;
+            type MemberListCallback = (error: (Error|null), response?: berty.chat.MemberList.Reply) => void;
 
-            type MemberGetCallback = (error: (Error|null), response?: berty.chat.MemberGetReply) => void;
+            type MemberGetCallback = (error: (Error|null), response?: berty.chat.MemberGet.Reply) => void;
 
-            type ContactListCallback = (error: (Error|null), response?: berty.chat.ContactListReply) => void;
+            type ContactListCallback = (error: (Error|null), response?: berty.chat.ContactList.Reply) => void;
 
-            type ContactGetCallback = (error: (Error|null), response?: berty.chat.ContactGetReply) => void;
+            type ContactGetCallback = (error: (Error|null), response?: berty.chat.ContactGet.Reply) => void;
 
-            type ContactBlockCallback = (error: (Error|null), response?: berty.chat.ContactBlockReply) => void;
+            type ContactBlockCallback = (error: (Error|null), response?: berty.chat.ContactBlock.Reply) => void;
 
-            type ContactRemoveCallback = (error: (Error|null), response?: berty.chat.ContactRemoveReply) => void;
+            type ContactRemoveCallback = (error: (Error|null), response?: berty.chat.ContactRemove.Reply) => void;
 
-            type ContactRequestSendCallback = (error: (Error|null), response?: berty.chat.ContactRequestSendReply) => void;
+            type ContactRequestSendCallback = (error: (Error|null), response?: berty.chat.ContactRequestSend.Reply) => void;
 
-            type ContactRequestAcceptCallback = (error: (Error|null), response?: berty.chat.ContactRequestAcceptReply) => void;
+            type ContactRequestAcceptCallback = (error: (Error|null), response?: berty.chat.ContactRequestAccept.Reply) => void;
 
-            type ContactRequestDeclineCallback = (error: (Error|null), response?: berty.chat.ContactRequestDeclineReply) => void;
+            type ContactRequestDeclineCallback = (error: (Error|null), response?: berty.chat.ContactRequestDecline.Reply) => void;
 
-            type AccountListCallback = (error: (Error|null), response?: berty.chat.AccountListRequest) => void;
+            type AccountListCallback = (error: (Error|null), response?: berty.chat.AccountList.Request) => void;
 
-            type AccountGetCallback = (error: (Error|null), response?: berty.chat.AccountGetReply) => void;
+            type AccountGetCallback = (error: (Error|null), response?: berty.chat.AccountGet.Reply) => void;
 
-            type AccountCreateCallback = (error: (Error|null), response?: berty.chat.AccountCreateReply) => void;
+            type AccountCreateCallback = (error: (Error|null), response?: berty.chat.AccountCreate.Reply) => void;
 
-            type AccountUpdateCallback = (error: (Error|null), response?: berty.chat.AccountUpdateReply) => void;
+            type AccountUpdateCallback = (error: (Error|null), response?: berty.chat.AccountUpdate.Reply) => void;
 
-            type AccountOpenCallback = (error: (Error|null), response?: berty.chat.AccountOpenReply) => void;
+            type AccountOpenCallback = (error: (Error|null), response?: berty.chat.AccountOpen.Reply) => void;
 
-            type AccountCloseCallback = (error: (Error|null), response?: berty.chat.AccountCloseReply) => void;
+            type AccountCloseCallback = (error: (Error|null), response?: berty.chat.AccountClose.Reply) => void;
 
-            type AccountRemoveCallback = (error: (Error|null), response?: berty.chat.AccountRemoveReply) => void;
+            type AccountRemoveCallback = (error: (Error|null), response?: berty.chat.AccountRemove.Reply) => void;
 
-            type AccountPairingInvitationCreateCallback = (error: (Error|null), response?: berty.chat.AccountPairingInvitationCreateReply) => void;
+            type AccountPairingInvitationCreateCallback = (error: (Error|null), response?: berty.chat.AccountPairingInvitationCreate.Reply) => void;
 
-            type AccountRenewIncomingContactRequestLinkCallback = (error: (Error|null), response?: berty.chat.AccountRenewIncomingContactRequestLinkReply) => void;
+            type AccountRenewIncomingContactRequestLinkCallback = (error: (Error|null), response?: berty.chat.AccountRenewIncomingContactRequestLink.Reply) => void;
         }
 
-        interface ISearchRequest {
+        interface ISearch {
         }
 
-        class SearchRequest implements ISearchRequest {
+        class Search implements ISearch {
 
-            public static create(properties?: berty.chat.ISearchRequest): berty.chat.SearchRequest;
-            public static encode(message: berty.chat.ISearchRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.ISearchRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.SearchRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.SearchRequest;
+            public static create(properties?: berty.chat.ISearch): berty.chat.Search;
+            public static encode(message: berty.chat.ISearch, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.ISearch, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.Search;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.Search;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.SearchRequest;
-            public static toObject(message: berty.chat.SearchRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.Search;
+            public static toObject(message: berty.chat.Search, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface ISearchReply {
-        }
+        namespace Search {
 
-        class SearchReply implements ISearchReply {
+            interface IRequest {
+            }
 
-            public static create(properties?: berty.chat.ISearchReply): berty.chat.SearchReply;
-            public static encode(message: berty.chat.ISearchReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.ISearchReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.SearchReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.SearchReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.SearchReply;
-            public static toObject(message: berty.chat.SearchReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-        }
+            class Request implements IRequest {
 
-        interface IEventSubscribeRequest {
-        }
+                public static create(properties?: berty.chat.Search.IRequest): berty.chat.Search.Request;
+                public static encode(message: berty.chat.Search.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.Search.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.Search.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.Search.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.Search.Request;
+                public static toObject(message: berty.chat.Search.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
 
-        class EventSubscribeRequest implements IEventSubscribeRequest {
+            interface IReply {
+            }
 
-            public static create(properties?: berty.chat.IEventSubscribeRequest): berty.chat.EventSubscribeRequest;
-            public static encode(message: berty.chat.IEventSubscribeRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IEventSubscribeRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.EventSubscribeRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.EventSubscribeRequest;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.EventSubscribeRequest;
-            public static toObject(message: berty.chat.EventSubscribeRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.Search.IReply): berty.chat.Search.Reply;
+                public static encode(message: berty.chat.Search.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.Search.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.Search.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.Search.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.Search.Reply;
+                public static toObject(message: berty.chat.Search.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IEventSubscribeReply {
+        interface IEventSubscribe {
         }
 
-        class EventSubscribeReply implements IEventSubscribeReply {
+        class EventSubscribe implements IEventSubscribe {
 
-            public static create(properties?: berty.chat.IEventSubscribeReply): berty.chat.EventSubscribeReply;
-            public static encode(message: berty.chat.IEventSubscribeReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IEventSubscribeReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.EventSubscribeReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.EventSubscribeReply;
+            public static create(properties?: berty.chat.IEventSubscribe): berty.chat.EventSubscribe;
+            public static encode(message: berty.chat.IEventSubscribe, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IEventSubscribe, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.EventSubscribe;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.EventSubscribe;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.EventSubscribeReply;
-            public static toObject(message: berty.chat.EventSubscribeReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.EventSubscribe;
+            public static toObject(message: berty.chat.EventSubscribe, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IDevEventSubscribeRequest {
-        }
+        namespace EventSubscribe {
 
-        class DevEventSubscribeRequest implements IDevEventSubscribeRequest {
+            interface IRequest {
+            }
 
-            public static create(properties?: berty.chat.IDevEventSubscribeRequest): berty.chat.DevEventSubscribeRequest;
-            public static encode(message: berty.chat.IDevEventSubscribeRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IDevEventSubscribeRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.DevEventSubscribeRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.DevEventSubscribeRequest;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.DevEventSubscribeRequest;
-            public static toObject(message: berty.chat.DevEventSubscribeRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-        }
+            class Request implements IRequest {
 
-        interface IDevEventSubscribeReply {
-        }
+                public static create(properties?: berty.chat.EventSubscribe.IRequest): berty.chat.EventSubscribe.Request;
+                public static encode(message: berty.chat.EventSubscribe.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.EventSubscribe.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.EventSubscribe.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.EventSubscribe.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.EventSubscribe.Request;
+                public static toObject(message: berty.chat.EventSubscribe.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
 
-        class DevEventSubscribeReply implements IDevEventSubscribeReply {
+            interface IReply {
+            }
 
-            public static create(properties?: berty.chat.IDevEventSubscribeReply): berty.chat.DevEventSubscribeReply;
-            public static encode(message: berty.chat.IDevEventSubscribeReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IDevEventSubscribeReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.DevEventSubscribeReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.DevEventSubscribeReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.DevEventSubscribeReply;
-            public static toObject(message: berty.chat.DevEventSubscribeReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.EventSubscribe.IReply): berty.chat.EventSubscribe.Reply;
+                public static encode(message: berty.chat.EventSubscribe.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.EventSubscribe.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.EventSubscribe.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.EventSubscribe.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.EventSubscribe.Reply;
+                public static toObject(message: berty.chat.EventSubscribe.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IConversationListRequest {
-            filter?: (berty.chatmodel.IConversation|null);
+        interface IDevEventSubscribe {
         }
 
-        class ConversationListRequest implements IConversationListRequest {
+        class DevEventSubscribe implements IDevEventSubscribe {
 
-            public filter?: (berty.chatmodel.IConversation|null);
-            public static create(properties?: berty.chat.IConversationListRequest): berty.chat.ConversationListRequest;
-            public static encode(message: berty.chat.IConversationListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationListRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationListRequest;
+            public static create(properties?: berty.chat.IDevEventSubscribe): berty.chat.DevEventSubscribe;
+            public static encode(message: berty.chat.IDevEventSubscribe, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IDevEventSubscribe, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.DevEventSubscribe;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.DevEventSubscribe;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationListRequest;
-            public static toObject(message: berty.chat.ConversationListRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.DevEventSubscribe;
+            public static toObject(message: berty.chat.DevEventSubscribe, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IConversationListReply {
-            conversation?: (berty.chatmodel.IConversation|null);
-        }
+        namespace DevEventSubscribe {
 
-        class ConversationListReply implements IConversationListReply {
+            interface IRequest {
+            }
 
-            public conversation?: (berty.chatmodel.IConversation|null);
-            public static create(properties?: berty.chat.IConversationListReply): berty.chat.ConversationListReply;
-            public static encode(message: berty.chat.IConversationListReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationListReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationListReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationListReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationListReply;
-            public static toObject(message: berty.chat.ConversationListReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public static create(properties?: berty.chat.DevEventSubscribe.IRequest): berty.chat.DevEventSubscribe.Request;
+                public static encode(message: berty.chat.DevEventSubscribe.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.DevEventSubscribe.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.DevEventSubscribe.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.DevEventSubscribe.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.DevEventSubscribe.Request;
+                public static toObject(message: berty.chat.DevEventSubscribe.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.DevEventSubscribe.IReply): berty.chat.DevEventSubscribe.Reply;
+                public static encode(message: berty.chat.DevEventSubscribe.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.DevEventSubscribe.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.DevEventSubscribe.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.DevEventSubscribe.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.DevEventSubscribe.Reply;
+                public static toObject(message: berty.chat.DevEventSubscribe.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IConversationGetRequest {
-            id: (number|Long);
+        interface IConversationList {
         }
 
-        class ConversationGetRequest implements IConversationGetRequest {
+        class ConversationList implements IConversationList {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IConversationGetRequest): berty.chat.ConversationGetRequest;
-            public static encode(message: berty.chat.IConversationGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationGetRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationGetRequest;
+            public static create(properties?: berty.chat.IConversationList): berty.chat.ConversationList;
+            public static encode(message: berty.chat.IConversationList, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IConversationList, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationList;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationList;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationGetRequest;
-            public static toObject(message: berty.chat.ConversationGetRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationList;
+            public static toObject(message: berty.chat.ConversationList, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IConversationCreateRequest {
-            id: (number|Long);
-            title: (string);
-            topic: (string);
-            avatarUri: (string);
-        }
+        namespace ConversationList {
 
-        class ConversationCreateRequest implements IConversationCreateRequest {
+            interface IRequest {
+                filter?: (berty.chatmodel.IConversation|null);
+            }
 
-            public id: (number|Long);
-            public title: string;
-            public topic: string;
-            public avatarUri: string;
-            public static create(properties?: berty.chat.IConversationCreateRequest): berty.chat.ConversationCreateRequest;
-            public static encode(message: berty.chat.IConversationCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationCreateRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationCreateRequest;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationCreateRequest;
-            public static toObject(message: berty.chat.ConversationCreateRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public filter?: (berty.chatmodel.IConversation|null);
+                public static create(properties?: berty.chat.ConversationList.IRequest): berty.chat.ConversationList.Request;
+                public static encode(message: berty.chat.ConversationList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationList.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationList.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationList.Request;
+                public static toObject(message: berty.chat.ConversationList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                conversation?: (berty.chatmodel.IConversation|null);
+            }
+
+            class Reply implements IReply {
+
+                public conversation?: (berty.chatmodel.IConversation|null);
+                public static create(properties?: berty.chat.ConversationList.IReply): berty.chat.ConversationList.Reply;
+                public static encode(message: berty.chat.ConversationList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationList.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationList.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationList.Reply;
+                public static toObject(message: berty.chat.ConversationList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IConversationCreateReply {
+        interface IConversationGet {
         }
 
-        class ConversationCreateReply implements IConversationCreateReply {
+        class ConversationGet implements IConversationGet {
 
-            public static create(properties?: berty.chat.IConversationCreateReply): berty.chat.ConversationCreateReply;
-            public static encode(message: berty.chat.IConversationCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationCreateReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationCreateReply;
+            public static create(properties?: berty.chat.IConversationGet): berty.chat.ConversationGet;
+            public static encode(message: berty.chat.IConversationGet, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IConversationGet, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationGet;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationGet;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationCreateReply;
-            public static toObject(message: berty.chat.ConversationCreateReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationGet;
+            public static toObject(message: berty.chat.ConversationGet, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IConversationGetReply {
-            conversation?: (berty.chatmodel.IConversation|null);
-        }
+        namespace ConversationGet {
 
-        class ConversationGetReply implements IConversationGetReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public conversation?: (berty.chatmodel.IConversation|null);
-            public static create(properties?: berty.chat.IConversationGetReply): berty.chat.ConversationGetReply;
-            public static encode(message: berty.chat.IConversationGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationGetReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationGetReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationGetReply;
-            public static toObject(message: berty.chat.ConversationGetReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.ConversationGet.IRequest): berty.chat.ConversationGet.Request;
+                public static encode(message: berty.chat.ConversationGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationGet.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationGet.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationGet.Request;
+                public static toObject(message: berty.chat.ConversationGet.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                conversation?: (berty.chatmodel.IConversation|null);
+            }
+
+            class Reply implements IReply {
+
+                public conversation?: (berty.chatmodel.IConversation|null);
+                public static create(properties?: berty.chat.ConversationGet.IReply): berty.chat.ConversationGet.Reply;
+                public static encode(message: berty.chat.ConversationGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationGet.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationGet.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationGet.Reply;
+                public static toObject(message: berty.chat.ConversationGet.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IConversationUpdateRequest {
-            id: (number|Long);
-            title: (string);
-            topic: (string);
-            avatarUri: (string);
+        interface IConversationCreate {
         }
 
-        class ConversationUpdateRequest implements IConversationUpdateRequest {
+        class ConversationCreate implements IConversationCreate {
 
-            public id: (number|Long);
-            public title: string;
-            public topic: string;
-            public avatarUri: string;
-            public static create(properties?: berty.chat.IConversationUpdateRequest): berty.chat.ConversationUpdateRequest;
-            public static encode(message: berty.chat.IConversationUpdateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationUpdateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationUpdateRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationUpdateRequest;
+            public static create(properties?: berty.chat.IConversationCreate): berty.chat.ConversationCreate;
+            public static encode(message: berty.chat.IConversationCreate, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IConversationCreate, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationCreate;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationCreate;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationUpdateRequest;
-            public static toObject(message: berty.chat.ConversationUpdateRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationCreate;
+            public static toObject(message: berty.chat.ConversationCreate, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IConversationUpdateReply {
-        }
+        namespace ConversationCreate {
 
-        class ConversationUpdateReply implements IConversationUpdateReply {
+            interface IRequest {
+                id: (number|Long);
+                title: (string);
+                topic: (string);
+                avatarUri: (string);
+            }
 
-            public static create(properties?: berty.chat.IConversationUpdateReply): berty.chat.ConversationUpdateReply;
-            public static encode(message: berty.chat.IConversationUpdateReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationUpdateReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationUpdateReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationUpdateReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationUpdateReply;
-            public static toObject(message: berty.chat.ConversationUpdateReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public title: string;
+                public topic: string;
+                public avatarUri: string;
+                public static create(properties?: berty.chat.ConversationCreate.IRequest): berty.chat.ConversationCreate.Request;
+                public static encode(message: berty.chat.ConversationCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationCreate.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationCreate.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationCreate.Request;
+                public static toObject(message: berty.chat.ConversationCreate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ConversationCreate.IReply): berty.chat.ConversationCreate.Reply;
+                public static encode(message: berty.chat.ConversationCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationCreate.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationCreate.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationCreate.Reply;
+                public static toObject(message: berty.chat.ConversationCreate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IConversationMuteRequest {
-            policy: (berty.chatmodel.Member.MutePolicy);
+        interface IConversationUpdate {
         }
 
-        class ConversationMuteRequest implements IConversationMuteRequest {
+        class ConversationUpdate implements IConversationUpdate {
 
-            public policy: berty.chatmodel.Member.MutePolicy;
-            public static create(properties?: berty.chat.IConversationMuteRequest): berty.chat.ConversationMuteRequest;
-            public static encode(message: berty.chat.IConversationMuteRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationMuteRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationMuteRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationMuteRequest;
+            public static create(properties?: berty.chat.IConversationUpdate): berty.chat.ConversationUpdate;
+            public static encode(message: berty.chat.IConversationUpdate, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IConversationUpdate, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationUpdate;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationUpdate;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationMuteRequest;
-            public static toObject(message: berty.chat.ConversationMuteRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationUpdate;
+            public static toObject(message: berty.chat.ConversationUpdate, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IConversationMuteReply {
-        }
+        namespace ConversationUpdate {
 
-        class ConversationMuteReply implements IConversationMuteReply {
+            interface IRequest {
+                id: (number|Long);
+                title: (string);
+                topic: (string);
+                avatarUri: (string);
+            }
 
-            public static create(properties?: berty.chat.IConversationMuteReply): berty.chat.ConversationMuteReply;
-            public static encode(message: berty.chat.IConversationMuteReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationMuteReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationMuteReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationMuteReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationMuteReply;
-            public static toObject(message: berty.chat.ConversationMuteReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public title: string;
+                public topic: string;
+                public avatarUri: string;
+                public static create(properties?: berty.chat.ConversationUpdate.IRequest): berty.chat.ConversationUpdate.Request;
+                public static encode(message: berty.chat.ConversationUpdate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationUpdate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationUpdate.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationUpdate.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationUpdate.Request;
+                public static toObject(message: berty.chat.ConversationUpdate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ConversationUpdate.IReply): berty.chat.ConversationUpdate.Reply;
+                public static encode(message: berty.chat.ConversationUpdate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationUpdate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationUpdate.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationUpdate.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationUpdate.Reply;
+                public static toObject(message: berty.chat.ConversationUpdate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IConversationLeaveRequest {
-            id: (number|Long);
+        interface IConversationMute {
         }
 
-        class ConversationLeaveRequest implements IConversationLeaveRequest {
+        class ConversationMute implements IConversationMute {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IConversationLeaveRequest): berty.chat.ConversationLeaveRequest;
-            public static encode(message: berty.chat.IConversationLeaveRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationLeaveRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationLeaveRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationLeaveRequest;
+            public static create(properties?: berty.chat.IConversationMute): berty.chat.ConversationMute;
+            public static encode(message: berty.chat.IConversationMute, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IConversationMute, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationMute;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationMute;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationLeaveRequest;
-            public static toObject(message: berty.chat.ConversationLeaveRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationMute;
+            public static toObject(message: berty.chat.ConversationMute, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IConversationLeaveReply {
-        }
+        namespace ConversationMute {
 
-        class ConversationLeaveReply implements IConversationLeaveReply {
+            interface IRequest {
+                policy: (berty.chatmodel.Member.MutePolicy);
+            }
 
-            public static create(properties?: berty.chat.IConversationLeaveReply): berty.chat.ConversationLeaveReply;
-            public static encode(message: berty.chat.IConversationLeaveReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationLeaveReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationLeaveReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationLeaveReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationLeaveReply;
-            public static toObject(message: berty.chat.ConversationLeaveReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public policy: berty.chatmodel.Member.MutePolicy;
+                public static create(properties?: berty.chat.ConversationMute.IRequest): berty.chat.ConversationMute.Request;
+                public static encode(message: berty.chat.ConversationMute.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationMute.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationMute.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationMute.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationMute.Request;
+                public static toObject(message: berty.chat.ConversationMute.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ConversationMute.IReply): berty.chat.ConversationMute.Reply;
+                public static encode(message: berty.chat.ConversationMute.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationMute.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationMute.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationMute.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationMute.Reply;
+                public static toObject(message: berty.chat.ConversationMute.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IConversationEraseRequest {
-            id: (number|Long);
+        interface IConversationLeave {
         }
 
-        class ConversationEraseRequest implements IConversationEraseRequest {
+        class ConversationLeave implements IConversationLeave {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IConversationEraseRequest): berty.chat.ConversationEraseRequest;
-            public static encode(message: berty.chat.IConversationEraseRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationEraseRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationEraseRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationEraseRequest;
+            public static create(properties?: berty.chat.IConversationLeave): berty.chat.ConversationLeave;
+            public static encode(message: berty.chat.IConversationLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IConversationLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationLeave;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationLeave;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationEraseRequest;
-            public static toObject(message: berty.chat.ConversationEraseRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationLeave;
+            public static toObject(message: berty.chat.ConversationLeave, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IConversationEraseReply {
-        }
+        namespace ConversationLeave {
 
-        class ConversationEraseReply implements IConversationEraseReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IConversationEraseReply): berty.chat.ConversationEraseReply;
-            public static encode(message: berty.chat.IConversationEraseReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationEraseReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationEraseReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationEraseReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationEraseReply;
-            public static toObject(message: berty.chat.ConversationEraseReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.ConversationLeave.IRequest): berty.chat.ConversationLeave.Request;
+                public static encode(message: berty.chat.ConversationLeave.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationLeave.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationLeave.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationLeave.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationLeave.Request;
+                public static toObject(message: berty.chat.ConversationLeave.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ConversationLeave.IReply): berty.chat.ConversationLeave.Reply;
+                public static encode(message: berty.chat.ConversationLeave.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationLeave.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationLeave.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationLeave.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationLeave.Reply;
+                public static toObject(message: berty.chat.ConversationLeave.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IConversationInvitationSendRequest {
-            id: (number|Long);
-            contactId: (number|Long);
+        interface IConversationErase {
         }
 
-        class ConversationInvitationSendRequest implements IConversationInvitationSendRequest {
+        class ConversationErase implements IConversationErase {
 
-            public id: (number|Long);
-            public contactId: (number|Long);
-            public static create(properties?: berty.chat.IConversationInvitationSendRequest): berty.chat.ConversationInvitationSendRequest;
-            public static encode(message: berty.chat.IConversationInvitationSendRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationInvitationSendRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationSendRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationSendRequest;
+            public static create(properties?: berty.chat.IConversationErase): berty.chat.ConversationErase;
+            public static encode(message: berty.chat.IConversationErase, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IConversationErase, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationErase;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationErase;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationSendRequest;
-            public static toObject(message: berty.chat.ConversationInvitationSendRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationErase;
+            public static toObject(message: berty.chat.ConversationErase, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IConversationInvitationSendReply {
-        }
+        namespace ConversationErase {
 
-        class ConversationInvitationSendReply implements IConversationInvitationSendReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IConversationInvitationSendReply): berty.chat.ConversationInvitationSendReply;
-            public static encode(message: berty.chat.IConversationInvitationSendReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationInvitationSendReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationSendReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationSendReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationSendReply;
-            public static toObject(message: berty.chat.ConversationInvitationSendReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.ConversationErase.IRequest): berty.chat.ConversationErase.Request;
+                public static encode(message: berty.chat.ConversationErase.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationErase.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationErase.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationErase.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationErase.Request;
+                public static toObject(message: berty.chat.ConversationErase.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ConversationErase.IReply): berty.chat.ConversationErase.Reply;
+                public static encode(message: berty.chat.ConversationErase.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationErase.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationErase.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationErase.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationErase.Reply;
+                public static toObject(message: berty.chat.ConversationErase.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IConversationInvitationAcceptRequest {
-            id: (number|Long);
-            contactId: (number|Long);
+        interface IConversationInvitationSend {
         }
 
-        class ConversationInvitationAcceptRequest implements IConversationInvitationAcceptRequest {
+        class ConversationInvitationSend implements IConversationInvitationSend {
 
-            public id: (number|Long);
-            public contactId: (number|Long);
-            public static create(properties?: berty.chat.IConversationInvitationAcceptRequest): berty.chat.ConversationInvitationAcceptRequest;
-            public static encode(message: berty.chat.IConversationInvitationAcceptRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationInvitationAcceptRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationAcceptRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationAcceptRequest;
+            public static create(properties?: berty.chat.IConversationInvitationSend): berty.chat.ConversationInvitationSend;
+            public static encode(message: berty.chat.IConversationInvitationSend, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IConversationInvitationSend, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationSend;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationSend;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationAcceptRequest;
-            public static toObject(message: berty.chat.ConversationInvitationAcceptRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationSend;
+            public static toObject(message: berty.chat.ConversationInvitationSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IConversationInvitationAcceptReply {
-        }
+        namespace ConversationInvitationSend {
 
-        class ConversationInvitationAcceptReply implements IConversationInvitationAcceptReply {
+            interface IRequest {
+                id: (number|Long);
+                contactId: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IConversationInvitationAcceptReply): berty.chat.ConversationInvitationAcceptReply;
-            public static encode(message: berty.chat.IConversationInvitationAcceptReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationInvitationAcceptReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationAcceptReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationAcceptReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationAcceptReply;
-            public static toObject(message: berty.chat.ConversationInvitationAcceptReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public contactId: (number|Long);
+                public static create(properties?: berty.chat.ConversationInvitationSend.IRequest): berty.chat.ConversationInvitationSend.Request;
+                public static encode(message: berty.chat.ConversationInvitationSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationInvitationSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationSend.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationSend.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationSend.Request;
+                public static toObject(message: berty.chat.ConversationInvitationSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ConversationInvitationSend.IReply): berty.chat.ConversationInvitationSend.Reply;
+                public static encode(message: berty.chat.ConversationInvitationSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationInvitationSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationSend.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationSend.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationSend.Reply;
+                public static toObject(message: berty.chat.ConversationInvitationSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IConversationInvitationDeclineRequest {
-            conversationId: (number|Long);
+        interface IConversationInvitationAccept {
         }
 
-        class ConversationInvitationDeclineRequest implements IConversationInvitationDeclineRequest {
+        class ConversationInvitationAccept implements IConversationInvitationAccept {
 
-            public conversationId: (number|Long);
-            public static create(properties?: berty.chat.IConversationInvitationDeclineRequest): berty.chat.ConversationInvitationDeclineRequest;
-            public static encode(message: berty.chat.IConversationInvitationDeclineRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationInvitationDeclineRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationDeclineRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationDeclineRequest;
+            public static create(properties?: berty.chat.IConversationInvitationAccept): berty.chat.ConversationInvitationAccept;
+            public static encode(message: berty.chat.IConversationInvitationAccept, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IConversationInvitationAccept, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationAccept;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationAccept;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationDeclineRequest;
-            public static toObject(message: berty.chat.ConversationInvitationDeclineRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationAccept;
+            public static toObject(message: berty.chat.ConversationInvitationAccept, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IConversationInvitationDeclineReply {
-        }
+        namespace ConversationInvitationAccept {
 
-        class ConversationInvitationDeclineReply implements IConversationInvitationDeclineReply {
+            interface IRequest {
+                id: (number|Long);
+                contactId: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IConversationInvitationDeclineReply): berty.chat.ConversationInvitationDeclineReply;
-            public static encode(message: berty.chat.IConversationInvitationDeclineReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IConversationInvitationDeclineReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationDeclineReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationDeclineReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationDeclineReply;
-            public static toObject(message: berty.chat.ConversationInvitationDeclineReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public contactId: (number|Long);
+                public static create(properties?: berty.chat.ConversationInvitationAccept.IRequest): berty.chat.ConversationInvitationAccept.Request;
+                public static encode(message: berty.chat.ConversationInvitationAccept.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationInvitationAccept.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationAccept.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationAccept.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationAccept.Request;
+                public static toObject(message: berty.chat.ConversationInvitationAccept.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ConversationInvitationAccept.IReply): berty.chat.ConversationInvitationAccept.Reply;
+                public static encode(message: berty.chat.ConversationInvitationAccept.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationInvitationAccept.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationAccept.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationAccept.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationAccept.Reply;
+                public static toObject(message: berty.chat.ConversationInvitationAccept.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IMessageListRequest {
-            filter?: (berty.chatmodel.IMessage|null);
+        interface IConversationInvitationDecline {
         }
 
-        class MessageListRequest implements IMessageListRequest {
+        class ConversationInvitationDecline implements IConversationInvitationDecline {
 
-            public filter?: (berty.chatmodel.IMessage|null);
-            public static create(properties?: berty.chat.IMessageListRequest): berty.chat.MessageListRequest;
-            public static encode(message: berty.chat.IMessageListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageListRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageListRequest;
+            public static create(properties?: berty.chat.IConversationInvitationDecline): berty.chat.ConversationInvitationDecline;
+            public static encode(message: berty.chat.IConversationInvitationDecline, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IConversationInvitationDecline, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationDecline;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationDecline;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageListRequest;
-            public static toObject(message: berty.chat.MessageListRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationDecline;
+            public static toObject(message: berty.chat.ConversationInvitationDecline, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IMessageListReply {
-            message?: (berty.chatmodel.IMessage|null);
-        }
+        namespace ConversationInvitationDecline {
 
-        class MessageListReply implements IMessageListReply {
+            interface IRequest {
+                conversationId: (number|Long);
+            }
 
-            public message?: (berty.chatmodel.IMessage|null);
-            public static create(properties?: berty.chat.IMessageListReply): berty.chat.MessageListReply;
-            public static encode(message: berty.chat.IMessageListReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageListReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageListReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageListReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageListReply;
-            public static toObject(message: berty.chat.MessageListReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public conversationId: (number|Long);
+                public static create(properties?: berty.chat.ConversationInvitationDecline.IRequest): berty.chat.ConversationInvitationDecline.Request;
+                public static encode(message: berty.chat.ConversationInvitationDecline.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationInvitationDecline.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationDecline.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationDecline.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationDecline.Request;
+                public static toObject(message: berty.chat.ConversationInvitationDecline.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ConversationInvitationDecline.IReply): berty.chat.ConversationInvitationDecline.Reply;
+                public static encode(message: berty.chat.ConversationInvitationDecline.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ConversationInvitationDecline.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ConversationInvitationDecline.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ConversationInvitationDecline.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ConversationInvitationDecline.Reply;
+                public static toObject(message: berty.chat.ConversationInvitationDecline.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IMessageGetRequest {
-            id: (number|Long);
+        interface IMessageList {
         }
 
-        class MessageGetRequest implements IMessageGetRequest {
+        class MessageList implements IMessageList {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IMessageGetRequest): berty.chat.MessageGetRequest;
-            public static encode(message: berty.chat.IMessageGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageGetRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageGetRequest;
+            public static create(properties?: berty.chat.IMessageList): berty.chat.MessageList;
+            public static encode(message: berty.chat.IMessageList, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IMessageList, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageList;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageList;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageGetRequest;
-            public static toObject(message: berty.chat.MessageGetRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.MessageList;
+            public static toObject(message: berty.chat.MessageList, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IMessageGetReply {
-            message?: (berty.chatmodel.IMessage|null);
-        }
+        namespace MessageList {
 
-        class MessageGetReply implements IMessageGetReply {
+            interface IRequest {
+                filter?: (berty.chatmodel.IMessage|null);
+            }
 
-            public message?: (berty.chatmodel.IMessage|null);
-            public static create(properties?: berty.chat.IMessageGetReply): berty.chat.MessageGetReply;
-            public static encode(message: berty.chat.IMessageGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageGetReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageGetReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageGetReply;
-            public static toObject(message: berty.chat.MessageGetReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public filter?: (berty.chatmodel.IMessage|null);
+                public static create(properties?: berty.chat.MessageList.IRequest): berty.chat.MessageList.Request;
+                public static encode(message: berty.chat.MessageList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageList.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageList.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageList.Request;
+                public static toObject(message: berty.chat.MessageList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                message?: (berty.chatmodel.IMessage|null);
+            }
+
+            class Reply implements IReply {
+
+                public message?: (berty.chatmodel.IMessage|null);
+                public static create(properties?: berty.chat.MessageList.IReply): berty.chat.MessageList.Reply;
+                public static encode(message: berty.chat.MessageList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageList.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageList.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageList.Reply;
+                public static toObject(message: berty.chat.MessageList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IMessageSendRequest {
-            conversationId: (number|Long);
-            kind: (berty.chatmodel.Message.Kind);
-            body?: (berty.chatmodel.Message.IBody|null);
-            attachments?: (berty.chatmodel.IAttachment[]|null);
+        interface IMessageGet {
         }
 
-        class MessageSendRequest implements IMessageSendRequest {
+        class MessageGet implements IMessageGet {
 
-            public conversationId: (number|Long);
-            public kind: berty.chatmodel.Message.Kind;
-            public body?: (berty.chatmodel.Message.IBody|null);
-            public attachments: berty.chatmodel.IAttachment[];
-            public static create(properties?: berty.chat.IMessageSendRequest): berty.chat.MessageSendRequest;
-            public static encode(message: berty.chat.IMessageSendRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageSendRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageSendRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageSendRequest;
+            public static create(properties?: berty.chat.IMessageGet): berty.chat.MessageGet;
+            public static encode(message: berty.chat.IMessageGet, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IMessageGet, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageGet;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageGet;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageSendRequest;
-            public static toObject(message: berty.chat.MessageSendRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.MessageGet;
+            public static toObject(message: berty.chat.MessageGet, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IMessageSendReply {
-        }
+        namespace MessageGet {
 
-        class MessageSendReply implements IMessageSendReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IMessageSendReply): berty.chat.MessageSendReply;
-            public static encode(message: berty.chat.IMessageSendReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageSendReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageSendReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageSendReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageSendReply;
-            public static toObject(message: berty.chat.MessageSendReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.MessageGet.IRequest): berty.chat.MessageGet.Request;
+                public static encode(message: berty.chat.MessageGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageGet.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageGet.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageGet.Request;
+                public static toObject(message: berty.chat.MessageGet.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                message?: (berty.chatmodel.IMessage|null);
+            }
+
+            class Reply implements IReply {
+
+                public message?: (berty.chatmodel.IMessage|null);
+                public static create(properties?: berty.chat.MessageGet.IReply): berty.chat.MessageGet.Reply;
+                public static encode(message: berty.chat.MessageGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageGet.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageGet.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageGet.Reply;
+                public static toObject(message: berty.chat.MessageGet.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IMessageEditRequest {
-            id: (number|Long);
-            body?: (berty.chatmodel.Message.IBody|null);
+        interface IMessageSend {
         }
 
-        class MessageEditRequest implements IMessageEditRequest {
+        class MessageSend implements IMessageSend {
 
-            public id: (number|Long);
-            public body?: (berty.chatmodel.Message.IBody|null);
-            public static create(properties?: berty.chat.IMessageEditRequest): berty.chat.MessageEditRequest;
-            public static encode(message: berty.chat.IMessageEditRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageEditRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageEditRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageEditRequest;
+            public static create(properties?: berty.chat.IMessageSend): berty.chat.MessageSend;
+            public static encode(message: berty.chat.IMessageSend, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IMessageSend, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageSend;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageSend;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageEditRequest;
-            public static toObject(message: berty.chat.MessageEditRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.MessageSend;
+            public static toObject(message: berty.chat.MessageSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IMessageEditReply {
-        }
+        namespace MessageSend {
 
-        class MessageEditReply implements IMessageEditReply {
+            interface IRequest {
+                conversationId: (number|Long);
+                kind: (berty.chatmodel.Message.Kind);
+                body?: (berty.chatmodel.Message.IBody|null);
+                attachments?: (berty.chatmodel.IAttachment[]|null);
+            }
 
-            public static create(properties?: berty.chat.IMessageEditReply): berty.chat.MessageEditReply;
-            public static encode(message: berty.chat.IMessageEditReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageEditReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageEditReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageEditReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageEditReply;
-            public static toObject(message: berty.chat.MessageEditReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public conversationId: (number|Long);
+                public kind: berty.chatmodel.Message.Kind;
+                public body?: (berty.chatmodel.Message.IBody|null);
+                public attachments: berty.chatmodel.IAttachment[];
+                public static create(properties?: berty.chat.MessageSend.IRequest): berty.chat.MessageSend.Request;
+                public static encode(message: berty.chat.MessageSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageSend.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageSend.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageSend.Request;
+                public static toObject(message: berty.chat.MessageSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.MessageSend.IReply): berty.chat.MessageSend.Reply;
+                public static encode(message: berty.chat.MessageSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageSend.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageSend.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageSend.Reply;
+                public static toObject(message: berty.chat.MessageSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IMessageHideRequest {
-            id: (number|Long);
+        interface IMessageEdit {
         }
 
-        class MessageHideRequest implements IMessageHideRequest {
+        class MessageEdit implements IMessageEdit {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IMessageHideRequest): berty.chat.MessageHideRequest;
-            public static encode(message: berty.chat.IMessageHideRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageHideRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageHideRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageHideRequest;
+            public static create(properties?: berty.chat.IMessageEdit): berty.chat.MessageEdit;
+            public static encode(message: berty.chat.IMessageEdit, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IMessageEdit, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageEdit;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageEdit;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageHideRequest;
-            public static toObject(message: berty.chat.MessageHideRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.MessageEdit;
+            public static toObject(message: berty.chat.MessageEdit, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IMessageHideReply {
-        }
+        namespace MessageEdit {
 
-        class MessageHideReply implements IMessageHideReply {
+            interface IRequest {
+                id: (number|Long);
+                body?: (berty.chatmodel.Message.IBody|null);
+            }
 
-            public static create(properties?: berty.chat.IMessageHideReply): berty.chat.MessageHideReply;
-            public static encode(message: berty.chat.IMessageHideReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageHideReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageHideReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageHideReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageHideReply;
-            public static toObject(message: berty.chat.MessageHideReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public body?: (berty.chatmodel.Message.IBody|null);
+                public static create(properties?: berty.chat.MessageEdit.IRequest): berty.chat.MessageEdit.Request;
+                public static encode(message: berty.chat.MessageEdit.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageEdit.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageEdit.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageEdit.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageEdit.Request;
+                public static toObject(message: berty.chat.MessageEdit.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.MessageEdit.IReply): berty.chat.MessageEdit.Reply;
+                public static encode(message: berty.chat.MessageEdit.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageEdit.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageEdit.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageEdit.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageEdit.Reply;
+                public static toObject(message: berty.chat.MessageEdit.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IMessageReactRequest {
-            id: (number|Long);
-            emoji: (Uint8Array);
+        interface IMessageHide {
         }
 
-        class MessageReactRequest implements IMessageReactRequest {
+        class MessageHide implements IMessageHide {
 
-            public id: (number|Long);
-            public emoji: Uint8Array;
-            public static create(properties?: berty.chat.IMessageReactRequest): berty.chat.MessageReactRequest;
-            public static encode(message: berty.chat.IMessageReactRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageReactRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageReactRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageReactRequest;
+            public static create(properties?: berty.chat.IMessageHide): berty.chat.MessageHide;
+            public static encode(message: berty.chat.IMessageHide, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IMessageHide, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageHide;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageHide;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageReactRequest;
-            public static toObject(message: berty.chat.MessageReactRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.MessageHide;
+            public static toObject(message: berty.chat.MessageHide, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IMessageReactReply {
-        }
+        namespace MessageHide {
 
-        class MessageReactReply implements IMessageReactReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IMessageReactReply): berty.chat.MessageReactReply;
-            public static encode(message: berty.chat.IMessageReactReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageReactReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageReactReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageReactReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageReactReply;
-            public static toObject(message: berty.chat.MessageReactReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.MessageHide.IRequest): berty.chat.MessageHide.Request;
+                public static encode(message: berty.chat.MessageHide.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageHide.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageHide.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageHide.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageHide.Request;
+                public static toObject(message: berty.chat.MessageHide.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.MessageHide.IReply): berty.chat.MessageHide.Reply;
+                public static encode(message: berty.chat.MessageHide.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageHide.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageHide.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageHide.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageHide.Reply;
+                public static toObject(message: berty.chat.MessageHide.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IMessageReadRequest {
-            id: (number|Long);
+        interface IMessageReact {
         }
 
-        class MessageReadRequest implements IMessageReadRequest {
+        class MessageReact implements IMessageReact {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IMessageReadRequest): berty.chat.MessageReadRequest;
-            public static encode(message: berty.chat.IMessageReadRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageReadRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageReadRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageReadRequest;
+            public static create(properties?: berty.chat.IMessageReact): berty.chat.MessageReact;
+            public static encode(message: berty.chat.IMessageReact, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IMessageReact, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageReact;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageReact;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageReadRequest;
-            public static toObject(message: berty.chat.MessageReadRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.MessageReact;
+            public static toObject(message: berty.chat.MessageReact, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IMessageReadReply {
-        }
+        namespace MessageReact {
 
-        class MessageReadReply implements IMessageReadReply {
+            interface IRequest {
+                id: (number|Long);
+                emoji: (Uint8Array);
+            }
 
-            public static create(properties?: berty.chat.IMessageReadReply): berty.chat.MessageReadReply;
-            public static encode(message: berty.chat.IMessageReadReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMessageReadReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageReadReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageReadReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MessageReadReply;
-            public static toObject(message: berty.chat.MessageReadReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public emoji: Uint8Array;
+                public static create(properties?: berty.chat.MessageReact.IRequest): berty.chat.MessageReact.Request;
+                public static encode(message: berty.chat.MessageReact.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageReact.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageReact.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageReact.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageReact.Request;
+                public static toObject(message: berty.chat.MessageReact.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.MessageReact.IReply): berty.chat.MessageReact.Reply;
+                public static encode(message: berty.chat.MessageReact.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageReact.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageReact.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageReact.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageReact.Reply;
+                public static toObject(message: berty.chat.MessageReact.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IMemberListRequest {
-            filter?: (berty.chatmodel.IMember|null);
+        interface IMessageRead {
         }
 
-        class MemberListRequest implements IMemberListRequest {
+        class MessageRead implements IMessageRead {
 
-            public filter?: (berty.chatmodel.IMember|null);
-            public static create(properties?: berty.chat.IMemberListRequest): berty.chat.MemberListRequest;
-            public static encode(message: berty.chat.IMemberListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMemberListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MemberListRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MemberListRequest;
+            public static create(properties?: berty.chat.IMessageRead): berty.chat.MessageRead;
+            public static encode(message: berty.chat.IMessageRead, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IMessageRead, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageRead;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageRead;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MemberListRequest;
-            public static toObject(message: berty.chat.MemberListRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.MessageRead;
+            public static toObject(message: berty.chat.MessageRead, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IMemberListReply {
-            member?: (berty.chatmodel.IMember|null);
-        }
+        namespace MessageRead {
 
-        class MemberListReply implements IMemberListReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public member?: (berty.chatmodel.IMember|null);
-            public static create(properties?: berty.chat.IMemberListReply): berty.chat.MemberListReply;
-            public static encode(message: berty.chat.IMemberListReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMemberListReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MemberListReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MemberListReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MemberListReply;
-            public static toObject(message: berty.chat.MemberListReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.MessageRead.IRequest): berty.chat.MessageRead.Request;
+                public static encode(message: berty.chat.MessageRead.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageRead.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageRead.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageRead.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageRead.Request;
+                public static toObject(message: berty.chat.MessageRead.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.MessageRead.IReply): berty.chat.MessageRead.Reply;
+                public static encode(message: berty.chat.MessageRead.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MessageRead.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MessageRead.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MessageRead.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MessageRead.Reply;
+                public static toObject(message: berty.chat.MessageRead.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IMemberGetRequest {
-            id: (number|Long);
+        interface IMemberList {
         }
 
-        class MemberGetRequest implements IMemberGetRequest {
+        class MemberList implements IMemberList {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IMemberGetRequest): berty.chat.MemberGetRequest;
-            public static encode(message: berty.chat.IMemberGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMemberGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MemberGetRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MemberGetRequest;
+            public static create(properties?: berty.chat.IMemberList): berty.chat.MemberList;
+            public static encode(message: berty.chat.IMemberList, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IMemberList, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MemberList;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MemberList;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MemberGetRequest;
-            public static toObject(message: berty.chat.MemberGetRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.MemberList;
+            public static toObject(message: berty.chat.MemberList, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IMemberGetReply {
-            member?: (berty.chatmodel.IMember|null);
-        }
+        namespace MemberList {
 
-        class MemberGetReply implements IMemberGetReply {
+            interface IRequest {
+                filter?: (berty.chatmodel.IMember|null);
+            }
 
-            public member?: (berty.chatmodel.IMember|null);
-            public static create(properties?: berty.chat.IMemberGetReply): berty.chat.MemberGetReply;
-            public static encode(message: berty.chat.IMemberGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMemberGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MemberGetReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MemberGetReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MemberGetReply;
-            public static toObject(message: berty.chat.MemberGetReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public filter?: (berty.chatmodel.IMember|null);
+                public static create(properties?: berty.chat.MemberList.IRequest): berty.chat.MemberList.Request;
+                public static encode(message: berty.chat.MemberList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MemberList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MemberList.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MemberList.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MemberList.Request;
+                public static toObject(message: berty.chat.MemberList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                member?: (berty.chatmodel.IMember|null);
+            }
+
+            class Reply implements IReply {
+
+                public member?: (berty.chatmodel.IMember|null);
+                public static create(properties?: berty.chat.MemberList.IReply): berty.chat.MemberList.Reply;
+                public static encode(message: berty.chat.MemberList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MemberList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MemberList.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MemberList.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MemberList.Reply;
+                public static toObject(message: berty.chat.MemberList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IMemberUpdateRequest {
-            id: (number|Long);
-            name: (string);
-            role: (berty.chatmodel.Member.Role);
+        interface IMemberGet {
         }
 
-        class MemberUpdateRequest implements IMemberUpdateRequest {
+        class MemberGet implements IMemberGet {
 
-            public id: (number|Long);
-            public name: string;
-            public role: berty.chatmodel.Member.Role;
-            public static create(properties?: berty.chat.IMemberUpdateRequest): berty.chat.MemberUpdateRequest;
-            public static encode(message: berty.chat.IMemberUpdateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMemberUpdateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MemberUpdateRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MemberUpdateRequest;
+            public static create(properties?: berty.chat.IMemberGet): berty.chat.MemberGet;
+            public static encode(message: berty.chat.IMemberGet, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IMemberGet, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MemberGet;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MemberGet;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MemberUpdateRequest;
-            public static toObject(message: berty.chat.MemberUpdateRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.MemberGet;
+            public static toObject(message: berty.chat.MemberGet, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IMemberUpdateReply {
-        }
+        namespace MemberGet {
 
-        class MemberUpdateReply implements IMemberUpdateReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IMemberUpdateReply): berty.chat.MemberUpdateReply;
-            public static encode(message: berty.chat.IMemberUpdateReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IMemberUpdateReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MemberUpdateReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MemberUpdateReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.MemberUpdateReply;
-            public static toObject(message: berty.chat.MemberUpdateReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.MemberGet.IRequest): berty.chat.MemberGet.Request;
+                public static encode(message: berty.chat.MemberGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MemberGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MemberGet.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MemberGet.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MemberGet.Request;
+                public static toObject(message: berty.chat.MemberGet.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                member?: (berty.chatmodel.IMember|null);
+            }
+
+            class Reply implements IReply {
+
+                public member?: (berty.chatmodel.IMember|null);
+                public static create(properties?: berty.chat.MemberGet.IReply): berty.chat.MemberGet.Reply;
+                public static encode(message: berty.chat.MemberGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.MemberGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.MemberGet.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.MemberGet.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.MemberGet.Reply;
+                public static toObject(message: berty.chat.MemberGet.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IContactListRequest {
-            filter?: (berty.chatmodel.IContact|null);
+        interface IContactList {
         }
 
-        class ContactListRequest implements IContactListRequest {
+        class ContactList implements IContactList {
 
-            public filter?: (berty.chatmodel.IContact|null);
-            public static create(properties?: berty.chat.IContactListRequest): berty.chat.ContactListRequest;
-            public static encode(message: berty.chat.IContactListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactListRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactListRequest;
+            public static create(properties?: berty.chat.IContactList): berty.chat.ContactList;
+            public static encode(message: berty.chat.IContactList, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IContactList, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactList;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactList;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactListRequest;
-            public static toObject(message: berty.chat.ContactListRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ContactList;
+            public static toObject(message: berty.chat.ContactList, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IContactListReply {
-            contact?: (berty.chatmodel.IContact|null);
-        }
+        namespace ContactList {
 
-        class ContactListReply implements IContactListReply {
+            interface IRequest {
+                filter?: (berty.chatmodel.IContact|null);
+            }
 
-            public contact?: (berty.chatmodel.IContact|null);
-            public static create(properties?: berty.chat.IContactListReply): berty.chat.ContactListReply;
-            public static encode(message: berty.chat.IContactListReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactListReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactListReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactListReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactListReply;
-            public static toObject(message: berty.chat.ContactListReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public filter?: (berty.chatmodel.IContact|null);
+                public static create(properties?: berty.chat.ContactList.IRequest): berty.chat.ContactList.Request;
+                public static encode(message: berty.chat.ContactList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactList.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactList.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactList.Request;
+                public static toObject(message: berty.chat.ContactList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                contact?: (berty.chatmodel.IContact|null);
+            }
+
+            class Reply implements IReply {
+
+                public contact?: (berty.chatmodel.IContact|null);
+                public static create(properties?: berty.chat.ContactList.IReply): berty.chat.ContactList.Reply;
+                public static encode(message: berty.chat.ContactList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactList.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactList.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactList.Reply;
+                public static toObject(message: berty.chat.ContactList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IContactGetRequest {
-            id: (number|Long);
+        interface IContactGet {
         }
 
-        class ContactGetRequest implements IContactGetRequest {
+        class ContactGet implements IContactGet {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IContactGetRequest): berty.chat.ContactGetRequest;
-            public static encode(message: berty.chat.IContactGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactGetRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactGetRequest;
+            public static create(properties?: berty.chat.IContactGet): berty.chat.ContactGet;
+            public static encode(message: berty.chat.IContactGet, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IContactGet, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactGet;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactGet;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactGetRequest;
-            public static toObject(message: berty.chat.ContactGetRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ContactGet;
+            public static toObject(message: berty.chat.ContactGet, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IContactGetReply {
-            contact?: (berty.chatmodel.IContact|null);
-        }
+        namespace ContactGet {
 
-        class ContactGetReply implements IContactGetReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public contact?: (berty.chatmodel.IContact|null);
-            public static create(properties?: berty.chat.IContactGetReply): berty.chat.ContactGetReply;
-            public static encode(message: berty.chat.IContactGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactGetReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactGetReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactGetReply;
-            public static toObject(message: berty.chat.ContactGetReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.ContactGet.IRequest): berty.chat.ContactGet.Request;
+                public static encode(message: berty.chat.ContactGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactGet.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactGet.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactGet.Request;
+                public static toObject(message: berty.chat.ContactGet.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                contact?: (berty.chatmodel.IContact|null);
+            }
+
+            class Reply implements IReply {
+
+                public contact?: (berty.chatmodel.IContact|null);
+                public static create(properties?: berty.chat.ContactGet.IReply): berty.chat.ContactGet.Reply;
+                public static encode(message: berty.chat.ContactGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactGet.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactGet.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactGet.Reply;
+                public static toObject(message: berty.chat.ContactGet.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IContactBlockRequest {
+        interface IContactBlock {
         }
 
-        class ContactBlockRequest implements IContactBlockRequest {
+        class ContactBlock implements IContactBlock {
 
-            public static create(properties?: berty.chat.IContactBlockRequest): berty.chat.ContactBlockRequest;
-            public static encode(message: berty.chat.IContactBlockRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactBlockRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactBlockRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactBlockRequest;
+            public static create(properties?: berty.chat.IContactBlock): berty.chat.ContactBlock;
+            public static encode(message: berty.chat.IContactBlock, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IContactBlock, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactBlock;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactBlock;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactBlockRequest;
-            public static toObject(message: berty.chat.ContactBlockRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ContactBlock;
+            public static toObject(message: berty.chat.ContactBlock, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IContactBlockReply {
-        }
+        namespace ContactBlock {
 
-        class ContactBlockReply implements IContactBlockReply {
+            interface IRequest {
+            }
 
-            public static create(properties?: berty.chat.IContactBlockReply): berty.chat.ContactBlockReply;
-            public static encode(message: berty.chat.IContactBlockReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactBlockReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactBlockReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactBlockReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactBlockReply;
-            public static toObject(message: berty.chat.ContactBlockReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public static create(properties?: berty.chat.ContactBlock.IRequest): berty.chat.ContactBlock.Request;
+                public static encode(message: berty.chat.ContactBlock.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactBlock.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactBlock.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactBlock.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactBlock.Request;
+                public static toObject(message: berty.chat.ContactBlock.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ContactBlock.IReply): berty.chat.ContactBlock.Reply;
+                public static encode(message: berty.chat.ContactBlock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactBlock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactBlock.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactBlock.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactBlock.Reply;
+                public static toObject(message: berty.chat.ContactBlock.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IContactRemoveRequest {
-            id: (number|Long);
+        interface IContactRemove {
         }
 
-        class ContactRemoveRequest implements IContactRemoveRequest {
+        class ContactRemove implements IContactRemove {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IContactRemoveRequest): berty.chat.ContactRemoveRequest;
-            public static encode(message: berty.chat.IContactRemoveRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactRemoveRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRemoveRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRemoveRequest;
+            public static create(properties?: berty.chat.IContactRemove): berty.chat.ContactRemove;
+            public static encode(message: berty.chat.IContactRemove, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IContactRemove, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRemove;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRemove;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactRemoveRequest;
-            public static toObject(message: berty.chat.ContactRemoveRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ContactRemove;
+            public static toObject(message: berty.chat.ContactRemove, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IContactRemoveReply {
-        }
+        namespace ContactRemove {
 
-        class ContactRemoveReply implements IContactRemoveReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IContactRemoveReply): berty.chat.ContactRemoveReply;
-            public static encode(message: berty.chat.IContactRemoveReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactRemoveReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRemoveReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRemoveReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactRemoveReply;
-            public static toObject(message: berty.chat.ContactRemoveReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.ContactRemove.IRequest): berty.chat.ContactRemove.Request;
+                public static encode(message: berty.chat.ContactRemove.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactRemove.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRemove.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRemove.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactRemove.Request;
+                public static toObject(message: berty.chat.ContactRemove.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ContactRemove.IReply): berty.chat.ContactRemove.Reply;
+                public static encode(message: berty.chat.ContactRemove.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactRemove.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRemove.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRemove.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactRemove.Reply;
+                public static toObject(message: berty.chat.ContactRemove.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IContactRequestSendRequest {
-            id: (number|Long);
+        interface IContactRequestSend {
         }
 
-        class ContactRequestSendRequest implements IContactRequestSendRequest {
+        class ContactRequestSend implements IContactRequestSend {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IContactRequestSendRequest): berty.chat.ContactRequestSendRequest;
-            public static encode(message: berty.chat.IContactRequestSendRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactRequestSendRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestSendRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestSendRequest;
+            public static create(properties?: berty.chat.IContactRequestSend): berty.chat.ContactRequestSend;
+            public static encode(message: berty.chat.IContactRequestSend, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IContactRequestSend, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestSend;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestSend;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestSendRequest;
-            public static toObject(message: berty.chat.ContactRequestSendRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestSend;
+            public static toObject(message: berty.chat.ContactRequestSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IContactRequestSendReply {
-        }
+        namespace ContactRequestSend {
 
-        class ContactRequestSendReply implements IContactRequestSendReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IContactRequestSendReply): berty.chat.ContactRequestSendReply;
-            public static encode(message: berty.chat.IContactRequestSendReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactRequestSendReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestSendReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestSendReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestSendReply;
-            public static toObject(message: berty.chat.ContactRequestSendReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.ContactRequestSend.IRequest): berty.chat.ContactRequestSend.Request;
+                public static encode(message: berty.chat.ContactRequestSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactRequestSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestSend.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestSend.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestSend.Request;
+                public static toObject(message: berty.chat.ContactRequestSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ContactRequestSend.IReply): berty.chat.ContactRequestSend.Reply;
+                public static encode(message: berty.chat.ContactRequestSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactRequestSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestSend.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestSend.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestSend.Reply;
+                public static toObject(message: berty.chat.ContactRequestSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IContactRequestAcceptRequest {
-            id: (number|Long);
+        interface IContactRequestAccept {
         }
 
-        class ContactRequestAcceptRequest implements IContactRequestAcceptRequest {
+        class ContactRequestAccept implements IContactRequestAccept {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IContactRequestAcceptRequest): berty.chat.ContactRequestAcceptRequest;
-            public static encode(message: berty.chat.IContactRequestAcceptRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactRequestAcceptRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestAcceptRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestAcceptRequest;
+            public static create(properties?: berty.chat.IContactRequestAccept): berty.chat.ContactRequestAccept;
+            public static encode(message: berty.chat.IContactRequestAccept, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IContactRequestAccept, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestAccept;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestAccept;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestAcceptRequest;
-            public static toObject(message: berty.chat.ContactRequestAcceptRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestAccept;
+            public static toObject(message: berty.chat.ContactRequestAccept, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IContactRequestAcceptReply {
-        }
+        namespace ContactRequestAccept {
 
-        class ContactRequestAcceptReply implements IContactRequestAcceptReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IContactRequestAcceptReply): berty.chat.ContactRequestAcceptReply;
-            public static encode(message: berty.chat.IContactRequestAcceptReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactRequestAcceptReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestAcceptReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestAcceptReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestAcceptReply;
-            public static toObject(message: berty.chat.ContactRequestAcceptReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.ContactRequestAccept.IRequest): berty.chat.ContactRequestAccept.Request;
+                public static encode(message: berty.chat.ContactRequestAccept.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactRequestAccept.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestAccept.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestAccept.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestAccept.Request;
+                public static toObject(message: berty.chat.ContactRequestAccept.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ContactRequestAccept.IReply): berty.chat.ContactRequestAccept.Reply;
+                public static encode(message: berty.chat.ContactRequestAccept.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactRequestAccept.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestAccept.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestAccept.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestAccept.Reply;
+                public static toObject(message: berty.chat.ContactRequestAccept.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IContactRequestDeclineRequest {
-            id: (number|Long);
+        interface IContactRequestDecline {
         }
 
-        class ContactRequestDeclineRequest implements IContactRequestDeclineRequest {
+        class ContactRequestDecline implements IContactRequestDecline {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IContactRequestDeclineRequest): berty.chat.ContactRequestDeclineRequest;
-            public static encode(message: berty.chat.IContactRequestDeclineRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactRequestDeclineRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestDeclineRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestDeclineRequest;
+            public static create(properties?: berty.chat.IContactRequestDecline): berty.chat.ContactRequestDecline;
+            public static encode(message: berty.chat.IContactRequestDecline, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IContactRequestDecline, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestDecline;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestDecline;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestDeclineRequest;
-            public static toObject(message: berty.chat.ContactRequestDeclineRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestDecline;
+            public static toObject(message: berty.chat.ContactRequestDecline, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IContactRequestDeclineReply {
-        }
+        namespace ContactRequestDecline {
 
-        class ContactRequestDeclineReply implements IContactRequestDeclineReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IContactRequestDeclineReply): berty.chat.ContactRequestDeclineReply;
-            public static encode(message: berty.chat.IContactRequestDeclineReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IContactRequestDeclineReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestDeclineReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestDeclineReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestDeclineReply;
-            public static toObject(message: berty.chat.ContactRequestDeclineReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.ContactRequestDecline.IRequest): berty.chat.ContactRequestDecline.Request;
+                public static encode(message: berty.chat.ContactRequestDecline.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactRequestDecline.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestDecline.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestDecline.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestDecline.Request;
+                public static toObject(message: berty.chat.ContactRequestDecline.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.ContactRequestDecline.IReply): berty.chat.ContactRequestDecline.Reply;
+                public static encode(message: berty.chat.ContactRequestDecline.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.ContactRequestDecline.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.ContactRequestDecline.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.ContactRequestDecline.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.ContactRequestDecline.Reply;
+                public static toObject(message: berty.chat.ContactRequestDecline.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IAccountListRequest {
+        interface IAccountList {
         }
 
-        class AccountListRequest implements IAccountListRequest {
+        class AccountList implements IAccountList {
 
-            public static create(properties?: berty.chat.IAccountListRequest): berty.chat.AccountListRequest;
-            public static encode(message: berty.chat.IAccountListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountListRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountListRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountListRequest;
+            public static create(properties?: berty.chat.IAccountList): berty.chat.AccountList;
+            public static encode(message: berty.chat.IAccountList, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IAccountList, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountList;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountList;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountListRequest;
-            public static toObject(message: berty.chat.AccountListRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.AccountList;
+            public static toObject(message: berty.chat.AccountList, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IAccountListReply {
-            account?: (berty.chatmodel.IAccount|null);
-        }
+        namespace AccountList {
 
-        class AccountListReply implements IAccountListReply {
+            interface IRequest {
+            }
 
-            public account?: (berty.chatmodel.IAccount|null);
-            public static create(properties?: berty.chat.IAccountListReply): berty.chat.AccountListReply;
-            public static encode(message: berty.chat.IAccountListReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountListReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountListReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountListReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountListReply;
-            public static toObject(message: berty.chat.AccountListReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public static create(properties?: berty.chat.AccountList.IRequest): berty.chat.AccountList.Request;
+                public static encode(message: berty.chat.AccountList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountList.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountList.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountList.Request;
+                public static toObject(message: berty.chat.AccountList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                account?: (berty.chatmodel.IAccount|null);
+            }
+
+            class Reply implements IReply {
+
+                public account?: (berty.chatmodel.IAccount|null);
+                public static create(properties?: berty.chat.AccountList.IReply): berty.chat.AccountList.Reply;
+                public static encode(message: berty.chat.AccountList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountList.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountList.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountList.Reply;
+                public static toObject(message: berty.chat.AccountList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IAccountGetRequest {
-            id: (number|Long);
+        interface IAccountGet {
         }
 
-        class AccountGetRequest implements IAccountGetRequest {
+        class AccountGet implements IAccountGet {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IAccountGetRequest): berty.chat.AccountGetRequest;
-            public static encode(message: berty.chat.IAccountGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountGetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountGetRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountGetRequest;
+            public static create(properties?: berty.chat.IAccountGet): berty.chat.AccountGet;
+            public static encode(message: berty.chat.IAccountGet, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IAccountGet, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountGet;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountGet;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountGetRequest;
-            public static toObject(message: berty.chat.AccountGetRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.AccountGet;
+            public static toObject(message: berty.chat.AccountGet, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IAccountGetReply {
-            account?: (berty.chatmodel.IAccount|null);
-        }
+        namespace AccountGet {
 
-        class AccountGetReply implements IAccountGetReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public account?: (berty.chatmodel.IAccount|null);
-            public static create(properties?: berty.chat.IAccountGetReply): berty.chat.AccountGetReply;
-            public static encode(message: berty.chat.IAccountGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountGetReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountGetReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountGetReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountGetReply;
-            public static toObject(message: berty.chat.AccountGetReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.AccountGet.IRequest): berty.chat.AccountGet.Request;
+                public static encode(message: berty.chat.AccountGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountGet.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountGet.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountGet.Request;
+                public static toObject(message: berty.chat.AccountGet.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                account?: (berty.chatmodel.IAccount|null);
+            }
+
+            class Reply implements IReply {
+
+                public account?: (berty.chatmodel.IAccount|null);
+                public static create(properties?: berty.chat.AccountGet.IReply): berty.chat.AccountGet.Reply;
+                public static encode(message: berty.chat.AccountGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountGet.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountGet.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountGet.Reply;
+                public static toObject(message: berty.chat.AccountGet.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IAccountCreateRequest {
-            name: (string);
+        interface IAccountCreate {
         }
 
-        class AccountCreateRequest implements IAccountCreateRequest {
+        class AccountCreate implements IAccountCreate {
 
-            public name: string;
-            public static create(properties?: berty.chat.IAccountCreateRequest): berty.chat.AccountCreateRequest;
-            public static encode(message: berty.chat.IAccountCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountCreateRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountCreateRequest;
+            public static create(properties?: berty.chat.IAccountCreate): berty.chat.AccountCreate;
+            public static encode(message: berty.chat.IAccountCreate, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IAccountCreate, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountCreate;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountCreate;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountCreateRequest;
-            public static toObject(message: berty.chat.AccountCreateRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.AccountCreate;
+            public static toObject(message: berty.chat.AccountCreate, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IAccountCreateReply {
-        }
+        namespace AccountCreate {
 
-        class AccountCreateReply implements IAccountCreateReply {
+            interface IRequest {
+                name: (string);
+            }
 
-            public static create(properties?: berty.chat.IAccountCreateReply): berty.chat.AccountCreateReply;
-            public static encode(message: berty.chat.IAccountCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountCreateReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountCreateReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountCreateReply;
-            public static toObject(message: berty.chat.AccountCreateReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public name: string;
+                public static create(properties?: berty.chat.AccountCreate.IRequest): berty.chat.AccountCreate.Request;
+                public static encode(message: berty.chat.AccountCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountCreate.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountCreate.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountCreate.Request;
+                public static toObject(message: berty.chat.AccountCreate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.AccountCreate.IReply): berty.chat.AccountCreate.Reply;
+                public static encode(message: berty.chat.AccountCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountCreate.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountCreate.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountCreate.Reply;
+                public static toObject(message: berty.chat.AccountCreate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IAccountUpdateRequest {
-            id: (number|Long);
-            name: (string);
-            statusEmoji: (string);
-            statusText: (string);
+        interface IAccountUpdate {
         }
 
-        class AccountUpdateRequest implements IAccountUpdateRequest {
+        class AccountUpdate implements IAccountUpdate {
 
-            public id: (number|Long);
-            public name: string;
-            public statusEmoji: string;
-            public statusText: string;
-            public static create(properties?: berty.chat.IAccountUpdateRequest): berty.chat.AccountUpdateRequest;
-            public static encode(message: berty.chat.IAccountUpdateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountUpdateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountUpdateRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountUpdateRequest;
+            public static create(properties?: berty.chat.IAccountUpdate): berty.chat.AccountUpdate;
+            public static encode(message: berty.chat.IAccountUpdate, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IAccountUpdate, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountUpdate;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountUpdate;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountUpdateRequest;
-            public static toObject(message: berty.chat.AccountUpdateRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.AccountUpdate;
+            public static toObject(message: berty.chat.AccountUpdate, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IAccountUpdateReply {
-        }
+        namespace AccountUpdate {
 
-        class AccountUpdateReply implements IAccountUpdateReply {
+            interface IRequest {
+                id: (number|Long);
+                name: (string);
+                statusEmoji: (string);
+                statusText: (string);
+            }
 
-            public static create(properties?: berty.chat.IAccountUpdateReply): berty.chat.AccountUpdateReply;
-            public static encode(message: berty.chat.IAccountUpdateReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountUpdateReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountUpdateReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountUpdateReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountUpdateReply;
-            public static toObject(message: berty.chat.AccountUpdateReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public name: string;
+                public statusEmoji: string;
+                public statusText: string;
+                public static create(properties?: berty.chat.AccountUpdate.IRequest): berty.chat.AccountUpdate.Request;
+                public static encode(message: berty.chat.AccountUpdate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountUpdate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountUpdate.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountUpdate.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountUpdate.Request;
+                public static toObject(message: berty.chat.AccountUpdate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.AccountUpdate.IReply): berty.chat.AccountUpdate.Reply;
+                public static encode(message: berty.chat.AccountUpdate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountUpdate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountUpdate.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountUpdate.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountUpdate.Reply;
+                public static toObject(message: berty.chat.AccountUpdate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IAccountOpenRequest {
-            id: (number|Long);
-            pin: (string);
+        interface IAccountOpen {
         }
 
-        class AccountOpenRequest implements IAccountOpenRequest {
+        class AccountOpen implements IAccountOpen {
 
-            public id: (number|Long);
-            public pin: string;
-            public static create(properties?: berty.chat.IAccountOpenRequest): berty.chat.AccountOpenRequest;
-            public static encode(message: berty.chat.IAccountOpenRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountOpenRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountOpenRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountOpenRequest;
+            public static create(properties?: berty.chat.IAccountOpen): berty.chat.AccountOpen;
+            public static encode(message: berty.chat.IAccountOpen, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IAccountOpen, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountOpen;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountOpen;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountOpenRequest;
-            public static toObject(message: berty.chat.AccountOpenRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.AccountOpen;
+            public static toObject(message: berty.chat.AccountOpen, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IAccountOpenReply {
-            token: (Uint8Array);
-        }
+        namespace AccountOpen {
 
-        class AccountOpenReply implements IAccountOpenReply {
+            interface IRequest {
+                id: (number|Long);
+                pin: (string);
+            }
 
-            public token: Uint8Array;
-            public static create(properties?: berty.chat.IAccountOpenReply): berty.chat.AccountOpenReply;
-            public static encode(message: berty.chat.IAccountOpenReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountOpenReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountOpenReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountOpenReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountOpenReply;
-            public static toObject(message: berty.chat.AccountOpenReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public pin: string;
+                public static create(properties?: berty.chat.AccountOpen.IRequest): berty.chat.AccountOpen.Request;
+                public static encode(message: berty.chat.AccountOpen.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountOpen.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountOpen.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountOpen.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountOpen.Request;
+                public static toObject(message: berty.chat.AccountOpen.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                token: (Uint8Array);
+            }
+
+            class Reply implements IReply {
+
+                public token: Uint8Array;
+                public static create(properties?: berty.chat.AccountOpen.IReply): berty.chat.AccountOpen.Reply;
+                public static encode(message: berty.chat.AccountOpen.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountOpen.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountOpen.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountOpen.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountOpen.Reply;
+                public static toObject(message: berty.chat.AccountOpen.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IAccountCloseRequest {
-            id: (number|Long);
+        interface IAccountClose {
         }
 
-        class AccountCloseRequest implements IAccountCloseRequest {
+        class AccountClose implements IAccountClose {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IAccountCloseRequest): berty.chat.AccountCloseRequest;
-            public static encode(message: berty.chat.IAccountCloseRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountCloseRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountCloseRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountCloseRequest;
+            public static create(properties?: berty.chat.IAccountClose): berty.chat.AccountClose;
+            public static encode(message: berty.chat.IAccountClose, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IAccountClose, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountClose;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountClose;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountCloseRequest;
-            public static toObject(message: berty.chat.AccountCloseRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.AccountClose;
+            public static toObject(message: berty.chat.AccountClose, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IAccountCloseReply {
-        }
+        namespace AccountClose {
 
-        class AccountCloseReply implements IAccountCloseReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IAccountCloseReply): berty.chat.AccountCloseReply;
-            public static encode(message: berty.chat.IAccountCloseReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountCloseReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountCloseReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountCloseReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountCloseReply;
-            public static toObject(message: berty.chat.AccountCloseReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.AccountClose.IRequest): berty.chat.AccountClose.Request;
+                public static encode(message: berty.chat.AccountClose.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountClose.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountClose.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountClose.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountClose.Request;
+                public static toObject(message: berty.chat.AccountClose.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.AccountClose.IReply): berty.chat.AccountClose.Reply;
+                public static encode(message: berty.chat.AccountClose.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountClose.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountClose.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountClose.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountClose.Reply;
+                public static toObject(message: berty.chat.AccountClose.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IAccountRemoveRequest {
-            id: (number|Long);
+        interface IAccountRemove {
         }
 
-        class AccountRemoveRequest implements IAccountRemoveRequest {
+        class AccountRemove implements IAccountRemove {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IAccountRemoveRequest): berty.chat.AccountRemoveRequest;
-            public static encode(message: berty.chat.IAccountRemoveRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountRemoveRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountRemoveRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountRemoveRequest;
+            public static create(properties?: berty.chat.IAccountRemove): berty.chat.AccountRemove;
+            public static encode(message: berty.chat.IAccountRemove, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IAccountRemove, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountRemove;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountRemove;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountRemoveRequest;
-            public static toObject(message: berty.chat.AccountRemoveRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.AccountRemove;
+            public static toObject(message: berty.chat.AccountRemove, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IAccountRemoveReply {
-        }
+        namespace AccountRemove {
 
-        class AccountRemoveReply implements IAccountRemoveReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IAccountRemoveReply): berty.chat.AccountRemoveReply;
-            public static encode(message: berty.chat.IAccountRemoveReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountRemoveReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountRemoveReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountRemoveReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountRemoveReply;
-            public static toObject(message: berty.chat.AccountRemoveReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.AccountRemove.IRequest): berty.chat.AccountRemove.Request;
+                public static encode(message: berty.chat.AccountRemove.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountRemove.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountRemove.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountRemove.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountRemove.Request;
+                public static toObject(message: berty.chat.AccountRemove.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.AccountRemove.IReply): berty.chat.AccountRemove.Reply;
+                public static encode(message: berty.chat.AccountRemove.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountRemove.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountRemove.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountRemove.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountRemove.Reply;
+                public static toObject(message: berty.chat.AccountRemove.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IAccountPairingInvitationCreateRequest {
-            id: (number|Long);
+        interface IAccountPairingInvitationCreate {
         }
 
-        class AccountPairingInvitationCreateRequest implements IAccountPairingInvitationCreateRequest {
+        class AccountPairingInvitationCreate implements IAccountPairingInvitationCreate {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IAccountPairingInvitationCreateRequest): berty.chat.AccountPairingInvitationCreateRequest;
-            public static encode(message: berty.chat.IAccountPairingInvitationCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountPairingInvitationCreateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountPairingInvitationCreateRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountPairingInvitationCreateRequest;
+            public static create(properties?: berty.chat.IAccountPairingInvitationCreate): berty.chat.AccountPairingInvitationCreate;
+            public static encode(message: berty.chat.IAccountPairingInvitationCreate, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IAccountPairingInvitationCreate, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountPairingInvitationCreate;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountPairingInvitationCreate;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountPairingInvitationCreateRequest;
-            public static toObject(message: berty.chat.AccountPairingInvitationCreateRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.AccountPairingInvitationCreate;
+            public static toObject(message: berty.chat.AccountPairingInvitationCreate, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IAccountPairingInvitationCreateReply {
-        }
+        namespace AccountPairingInvitationCreate {
 
-        class AccountPairingInvitationCreateReply implements IAccountPairingInvitationCreateReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IAccountPairingInvitationCreateReply): berty.chat.AccountPairingInvitationCreateReply;
-            public static encode(message: berty.chat.IAccountPairingInvitationCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountPairingInvitationCreateReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountPairingInvitationCreateReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountPairingInvitationCreateReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountPairingInvitationCreateReply;
-            public static toObject(message: berty.chat.AccountPairingInvitationCreateReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.AccountPairingInvitationCreate.IRequest): berty.chat.AccountPairingInvitationCreate.Request;
+                public static encode(message: berty.chat.AccountPairingInvitationCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountPairingInvitationCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountPairingInvitationCreate.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountPairingInvitationCreate.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountPairingInvitationCreate.Request;
+                public static toObject(message: berty.chat.AccountPairingInvitationCreate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.AccountPairingInvitationCreate.IReply): berty.chat.AccountPairingInvitationCreate.Reply;
+                public static encode(message: berty.chat.AccountPairingInvitationCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountPairingInvitationCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountPairingInvitationCreate.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountPairingInvitationCreate.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountPairingInvitationCreate.Reply;
+                public static toObject(message: berty.chat.AccountPairingInvitationCreate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
 
-        interface IAccountRenewIncomingContactRequestLinkRequest {
-            id: (number|Long);
+        interface IAccountRenewIncomingContactRequestLink {
         }
 
-        class AccountRenewIncomingContactRequestLinkRequest implements IAccountRenewIncomingContactRequestLinkRequest {
+        class AccountRenewIncomingContactRequestLink implements IAccountRenewIncomingContactRequestLink {
 
-            public id: (number|Long);
-            public static create(properties?: berty.chat.IAccountRenewIncomingContactRequestLinkRequest): berty.chat.AccountRenewIncomingContactRequestLinkRequest;
-            public static encode(message: berty.chat.IAccountRenewIncomingContactRequestLinkRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountRenewIncomingContactRequestLinkRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountRenewIncomingContactRequestLinkRequest;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountRenewIncomingContactRequestLinkRequest;
+            public static create(properties?: berty.chat.IAccountRenewIncomingContactRequestLink): berty.chat.AccountRenewIncomingContactRequestLink;
+            public static encode(message: berty.chat.IAccountRenewIncomingContactRequestLink, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IAccountRenewIncomingContactRequestLink, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountRenewIncomingContactRequestLink;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountRenewIncomingContactRequestLink;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountRenewIncomingContactRequestLinkRequest;
-            public static toObject(message: berty.chat.AccountRenewIncomingContactRequestLinkRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.chat.AccountRenewIncomingContactRequestLink;
+            public static toObject(message: berty.chat.AccountRenewIncomingContactRequestLink, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
-        interface IAccountRenewIncomingContactRequestLinkReply {
-        }
+        namespace AccountRenewIncomingContactRequestLink {
 
-        class AccountRenewIncomingContactRequestLinkReply implements IAccountRenewIncomingContactRequestLinkReply {
+            interface IRequest {
+                id: (number|Long);
+            }
 
-            public static create(properties?: berty.chat.IAccountRenewIncomingContactRequestLinkReply): berty.chat.AccountRenewIncomingContactRequestLinkReply;
-            public static encode(message: berty.chat.IAccountRenewIncomingContactRequestLinkReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IAccountRenewIncomingContactRequestLinkReply, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountRenewIncomingContactRequestLinkReply;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountRenewIncomingContactRequestLinkReply;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.AccountRenewIncomingContactRequestLinkReply;
-            public static toObject(message: berty.chat.AccountRenewIncomingContactRequestLinkReply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
+            class Request implements IRequest {
+
+                public id: (number|Long);
+                public static create(properties?: berty.chat.AccountRenewIncomingContactRequestLink.IRequest): berty.chat.AccountRenewIncomingContactRequestLink.Request;
+                public static encode(message: berty.chat.AccountRenewIncomingContactRequestLink.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountRenewIncomingContactRequestLink.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountRenewIncomingContactRequestLink.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountRenewIncomingContactRequestLink.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountRenewIncomingContactRequestLink.Request;
+                public static toObject(message: berty.chat.AccountRenewIncomingContactRequestLink.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.AccountRenewIncomingContactRequestLink.IReply): berty.chat.AccountRenewIncomingContactRequestLink.Reply;
+                public static encode(message: berty.chat.AccountRenewIncomingContactRequestLink.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.AccountRenewIncomingContactRequestLink.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.AccountRenewIncomingContactRequestLink.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.AccountRenewIncomingContactRequestLink.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.AccountRenewIncomingContactRequestLink.Reply;
+                public static toObject(message: berty.chat.AccountRenewIncomingContactRequestLink.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
     }
 

@@ -9,263 +9,405 @@ import "chatmodel.proto";
 option go_package = "berty.tech/go/pkg/bertychat";
 
 service ChatService {
+  //
   // Search
-  rpc Search (SearchRequest) returns (stream SearchReply) {};
+  //
 
+  rpc Search (Search.Request) returns (stream Search.Reply) {};
+
+  //
   // Event
-  rpc EventSubscribe (EventSubscribeRequest) returns (stream EventSubscribeReply) {};
-  rpc DevEventSubscribe (DevEventSubscribeRequest) returns (stream DevEventSubscribeReply) {};
+  //
 
+  rpc EventSubscribe (EventSubscribe.Request) returns (stream EventSubscribe.Reply) {};
+  rpc DevEventSubscribe (DevEventSubscribe.Request) returns (stream DevEventSubscribe.Reply) {};
+
+  //
   // Conversation
-  rpc ConversationList (ConversationListRequest) returns (stream ConversationListReply) {};
-  rpc ConversationGet (ConversationGetRequest) returns (ConversationGetReply) {};
-  rpc ConversationCreate (ConversationCreateRequest) returns (ConversationCreateReply) {};
-  rpc ConversationUpdate (ConversationUpdateRequest) returns (ConversationUpdateReply) {};
-  rpc ConversationMute (ConversationMuteRequest) returns (ConversationMuteReply) {};
-  rpc ConversationLeave (ConversationLeaveRequest) returns (ConversationLeaveReply) {};
-  rpc ConversationErase (ConversationEraseRequest) returns (ConversationEraseReply) {};
-  rpc ConversationInvitationSend (ConversationInvitationSendRequest) returns (ConversationInvitationSendReply) {};
-  rpc ConversationInvitationAccept (ConversationInvitationAcceptRequest) returns (ConversationInvitationAcceptReply) {};
-  rpc ConversationInvitationDecline (ConversationInvitationDeclineRequest) returns (ConversationInvitationDeclineReply) {};
+  //
 
+  rpc ConversationList (ConversationList.Request) returns (stream ConversationList.Reply) {};
+  rpc ConversationGet (ConversationGet.Request) returns (ConversationGet.Reply) {};
+  rpc ConversationCreate (ConversationCreate.Request) returns (ConversationCreate.Reply) {};
+  rpc ConversationUpdate (ConversationUpdate.Request) returns (ConversationUpdate.Reply) {};
+  rpc ConversationMute (ConversationMute.Request) returns (ConversationMute.Reply) {};
+  rpc ConversationLeave (ConversationLeave.Request) returns (ConversationLeave.Reply) {};
+  rpc ConversationErase (ConversationErase.Request) returns (ConversationErase.Reply) {};
+  rpc ConversationInvitationSend (ConversationInvitationSend.Request) returns (ConversationInvitationSend.Reply) {};
+  rpc ConversationInvitationAccept (ConversationInvitationAccept.Request) returns (ConversationInvitationAccept.Reply) {};
+  rpc ConversationInvitationDecline (ConversationInvitationDecline.Request) returns (ConversationInvitationDecline.Reply) {};
+
+  //
   // Message
-  rpc MessageList (MessageListRequest) returns (stream MessageListReply) {};
-  rpc MessageGet (MessageGetRequest) returns (MessageGetReply) {};
-  rpc MessageSend (MessageSendRequest) returns (MessageSendReply) {};
-  rpc MessageEdit (MessageEditRequest) returns (MessageEditReply) {};
-  rpc MessageHide (MessageHideRequest) returns (MessageHideReply) {};
-  rpc MessageReact (MessageReactRequest) returns (MessageReactReply) {};
-  rpc MessageRead (MessageReadRequest) returns (MessageReadReply) {};
+  //
 
+  rpc MessageList (MessageList.Request) returns (stream MessageList.Reply) {};
+  rpc MessageGet (MessageGet.Request) returns (MessageGet.Reply) {};
+  rpc MessageSend (MessageSend.Request) returns (MessageSend.Reply) {};
+  rpc MessageEdit (MessageEdit.Request) returns (MessageEdit.Reply) {};
+  rpc MessageHide (MessageHide.Request) returns (MessageHide.Reply) {};
+  rpc MessageReact (MessageReact.Request) returns (MessageReact.Reply) {};
+  rpc MessageRead (MessageRead.Request) returns (MessageRead.Reply) {};
+
+  //
   // Member
-  rpc MemberList (MemberListRequest) returns (stream MemberListReply) {};
-  rpc MemberGet (MemberGetRequest) returns (MemberGetReply) {};
-  // rpc MemberUpdate (MemberUpdateRequest) returns (MemberUpdateReply) {};
+  //
 
+  rpc MemberList (MemberList.Request) returns (stream MemberList.Reply) {};
+  rpc MemberGet (MemberGet.Request) returns (MemberGet.Reply) {};
+
+  //
   // Contact
-  rpc ContactList (ContactListRequest) returns (stream ContactListReply) {};
-  rpc ContactGet (ContactGetRequest) returns (ContactGetReply) {};
-  rpc ContactBlock (ContactBlockRequest) returns (ContactBlockReply) {};
-  rpc ContactRemove (ContactRemoveRequest) returns (ContactRemoveReply) {};
-  rpc ContactRequestSend (ContactRequestSendRequest) returns (ContactRequestSendReply) {};
-  rpc ContactRequestAccept (ContactRequestAcceptRequest) returns (ContactRequestAcceptReply) {};
-  rpc ContactRequestDecline (ContactRequestDeclineRequest) returns (ContactRequestDeclineReply) {};
+  //
 
+  rpc ContactList (ContactList.Request) returns (stream ContactList.Reply) {};
+  rpc ContactGet (ContactGet.Request) returns (ContactGet.Reply) {};
+  rpc ContactBlock (ContactBlock.Request) returns (ContactBlock.Reply) {};
+  rpc ContactRemove (ContactRemove.Request) returns (ContactRemove.Reply) {};
+  rpc ContactRequestSend (ContactRequestSend.Request) returns (ContactRequestSend.Reply) {};
+  rpc ContactRequestAccept (ContactRequestAccept.Request) returns (ContactRequestAccept.Reply) {};
+  rpc ContactRequestDecline (ContactRequestDecline.Request) returns (ContactRequestDecline.Reply) {};
+
+  //
   // Account
-  rpc AccountList (AccountListRequest) returns (stream AccountListRequest) {};
-  rpc AccountGet (AccountGetRequest) returns (AccountGetReply) {};
-  rpc AccountCreate (AccountCreateRequest) returns (AccountCreateReply) {};
-  rpc AccountUpdate (AccountUpdateRequest) returns (AccountUpdateReply) {};
-  rpc AccountOpen (AccountOpenRequest) returns (AccountOpenReply) {};
-  rpc AccountClose (AccountCloseRequest) returns (AccountCloseReply) {};
-  rpc AccountRemove (AccountRemoveRequest) returns (AccountRemoveReply) {};
-  rpc AccountPairingInvitationCreate (AccountPairingInvitationCreateRequest) returns (AccountPairingInvitationCreateReply) {};
-  rpc AccountRenewIncomingContactRequestLink (AccountRenewIncomingContactRequestLinkRequest) returns (AccountRenewIncomingContactRequestLinkReply) {};
+  //
+
+  rpc AccountList (AccountList.Request) returns (stream AccountList.Request) {};
+  rpc AccountGet (AccountGet.Request) returns (AccountGet.Reply) {};
+  rpc AccountCreate (AccountCreate.Request) returns (AccountCreate.Reply) {};
+  rpc AccountUpdate (AccountUpdate.Request) returns (AccountUpdate.Reply) {};
+  rpc AccountOpen (AccountOpen.Request) returns (AccountOpen.Reply) {};
+  rpc AccountClose (AccountClose.Request) returns (AccountClose.Reply) {};
+  rpc AccountRemove (AccountRemove.Request) returns (AccountRemove.Reply) {};
+  rpc AccountPairingInvitationCreate (AccountPairingInvitationCreate.Request) returns (AccountPairingInvitationCreate.Reply) {};
+  rpc AccountRenewIncomingContactRequestLink (AccountRenewIncomingContactRequestLink.Request) returns (AccountRenewIncomingContactRequestLink.Reply) {};
 
   // FIXME: calls
   // FIXME: live location sharing (broadcast)
   // FIXME: MessageAddReaction
   // FIXME: MessageQuote
+  // FIXME: MemberUpdate
 }
 
+//
 // Search
-message SearchRequest {}
-message SearchReply {}
+//
 
+message Search {
+  message Request {}
+  message Reply {}
+}
+
+//
 // Event
-message EventSubscribeRequest {}
-message EventSubscribeReply {}
-message DevEventSubscribeRequest {}
-message DevEventSubscribeReply {}
+//
 
+message EventSubscribe {
+  message Request {}
+  message Reply {} // streamed
+}
+
+message DevEventSubscribe {
+  message Request {}
+  message Reply {} // streamed
+}
+
+//
 // Conversation
-message ConversationListRequest {
-  chatmodel.Conversation filter = 1;
-}
-message ConversationListReply { // streamed
-  chatmodel.Conversation conversation = 1;
-}
-message ConversationGetRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message ConversationCreateRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-  string title = 2;
-  string topic = 3;
-  string avatar_uri = 4 [(gogoproto.customname) = "AvatarURI"];
-}
-message ConversationCreateReply {}
-message ConversationGetReply {
-  chatmodel.Conversation conversation = 1;
-}
-message ConversationUpdateRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-  string title = 2;
-  string topic = 3;
-  string avatar_uri = 4 [(gogoproto.customname) = "AvatarURI"];
-}
-message ConversationUpdateReply {}
-message ConversationMuteRequest {
-  chatmodel.Member.MutePolicy policy = 1;
-}
-message ConversationMuteReply {}
-message ConversationLeaveRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message ConversationLeaveReply {}
-message ConversationEraseRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message ConversationEraseReply {}
+//
 
-message ConversationInvitationSendRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-  uint64 contact_id = 2 [(gogoproto.customname) = "ContactID"];
+message ConversationList {
+  message Request {
+    chatmodel.Conversation filter = 1;
+  }
+  message Reply { // streamed
+    chatmodel.Conversation conversation = 1;
+  }
 }
-message ConversationInvitationSendReply {}
-message ConversationInvitationAcceptRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-  uint64 contact_id = 2 [(gogoproto.customname) = "ContactID"];
-}
-message ConversationInvitationAcceptReply {}
-message ConversationInvitationDeclineRequest {
-  uint64 conversation_id = 1 [(gogoproto.customname) = "ConversationID"];
-}
-message ConversationInvitationDeclineReply {}
 
+message ConversationGet {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {
+    chatmodel.Conversation conversation = 1;
+  }
+}
+
+message ConversationCreate {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+    string title = 2;
+    string topic = 3;
+    string avatar_uri = 4 [(gogoproto.customname) = "AvatarURI"];
+  }
+  message Reply {}
+}
+
+message ConversationUpdate {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+    string title = 2;
+    string topic = 3;
+    string avatar_uri = 4 [(gogoproto.customname) = "AvatarURI"];
+  }
+  message Reply {}
+}
+
+message ConversationMute {
+  message Request {
+    chatmodel.Member.MutePolicy policy = 1;
+  }
+  message Reply {}
+}
+
+message ConversationLeave {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {}
+}
+
+message ConversationErase {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {}
+}
+
+message ConversationInvitationSend {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+    uint64 contact_id = 2 [(gogoproto.customname) = "ContactID"];
+  }
+  message Reply {}
+}
+
+message ConversationInvitationAccept {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+    uint64 contact_id = 2 [(gogoproto.customname) = "ContactID"];
+  }
+  message Reply {}
+}
+
+message ConversationInvitationDecline {
+  message Request {
+    uint64 conversation_id = 1 [(gogoproto.customname) = "ConversationID"];
+  }
+  message Reply {}
+}
+
+//
 // Message
-message MessageListRequest {
-  chatmodel.Message filter = 1;
-}
-message MessageListReply { // streamed
-  chatmodel.Message message = 1;
-}
-message MessageGetRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message MessageGetReply {
-  chatmodel.Message message = 1;
-}
-message MessageSendRequest {
-  uint64 conversation_id = 1 [(gogoproto.customname) = "ConversationID"];
-  chatmodel.Message.Kind kind = 2;
-  chatmodel.Message.Body body = 3;
-  repeated chatmodel.Attachment attachments = 4;
-}
-message MessageSendReply {}
-message MessageEditRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-  chatmodel.Message.Body body = 2;
-}
-message MessageEditReply {}
-message MessageHideRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message MessageHideReply {}
-message MessageReactRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-  bytes emoji = 2;
-}
-message MessageReactReply {}
-message MessageReadRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message MessageReadReply {}
+//
 
+message MessageList {
+  message Request {
+    chatmodel.Message filter = 1;
+  }
+  message Reply { // streamed
+    chatmodel.Message message = 1;
+  }
+}
+
+message MessageGet {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {
+    chatmodel.Message message = 1;
+  }
+}
+
+message MessageSend {
+  message Request {
+    uint64 conversation_id = 1 [(gogoproto.customname) = "ConversationID"];
+    chatmodel.Message.Kind kind = 2;
+    chatmodel.Message.Body body = 3;
+    repeated chatmodel.Attachment attachments = 4;
+  }
+  message Reply {}
+}
+
+message MessageEdit {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+    chatmodel.Message.Body body = 2;
+  }
+  message Reply {}
+}
+
+message MessageHide {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {}
+}
+
+message MessageReact {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+    bytes emoji = 2;
+  }
+  message Reply {}
+}
+
+message MessageRead {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {}
+}
+
+//
 // Member
-message MemberListRequest {
-  chatmodel.Member filter = 1;
-}
-message MemberListReply { // streamed
-  chatmodel.Member member = 1;
-}
-message MemberGetRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message MemberGetReply {
-  chatmodel.Member member = 1;
-}
-message MemberUpdateRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-  string name = 2;
-  chatmodel.Member.Role role = 3;
-}
-message MemberUpdateReply {}
+//
 
+message MemberList {
+  message Request {
+    chatmodel.Member filter = 1;
+  }
+  message Reply { // streamed
+    chatmodel.Member member = 1;
+  }
+}
+
+message MemberGet {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {
+    chatmodel.Member member = 1;
+  }
+}
+
+//
 // Contact
-message ContactListRequest {
-  chatmodel.Contact filter = 1;
-}
-message ContactListReply { // streamed
-  chatmodel.Contact contact = 1;
-}
-message ContactGetRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message ContactGetReply {
-  chatmodel.Contact contact = 1;
-}
-message ContactBlockRequest {}
-message ContactBlockReply {}
-message ContactRemoveRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message ContactRemoveReply {}
-message ContactRequestSendRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message ContactRequestSendReply {}
-message ContactRequestAcceptRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message ContactRequestAcceptReply {}
-message ContactRequestDeclineRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message ContactRequestDeclineReply {}
+//
 
+message ContactList {
+  message Request {
+    chatmodel.Contact filter = 1;
+  }
+  message Reply { // streamed
+    chatmodel.Contact contact = 1;
+  }
+}
+
+message ContactGet {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {
+    chatmodel.Contact contact = 1;
+  }
+}
+
+message ContactBlock {
+  message Request {}
+  message Reply {}
+}
+
+message ContactRemove {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {}
+}
+
+message ContactRequestSend {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {}
+}
+
+message ContactRequestAccept {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {}
+}
+
+message ContactRequestDecline {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {}
+}
+
+//
 // Account
-message AccountListRequest {}
-message AccountListReply { // streamed
-  chatmodel.Account account = 1;
+//
+
+message AccountList {
+  message Request {}
+  message Reply { // streamed
+    chatmodel.Account account = 1;
+  }
 }
-message AccountGetRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+
+message AccountGet {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {
+    chatmodel.Account account =  1;
+  }
 }
-message AccountGetReply {
-  chatmodel.Account account =  1;
+
+message AccountCreate {
+  message Request {
+    string name = 1;
+  }
+  message Reply {}
 }
-message AccountCreateRequest {
-  string name = 1;
+
+message AccountUpdate {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+    string name = 2;
+    string status_emoji = 3;
+    string status_text = 4;
+  }
+  message Reply {}
 }
-message AccountCreateReply {}
-message AccountUpdateRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-  string name = 2;
-  string status_emoji = 3;
-  string status_text = 4;
+
+message AccountOpen {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+    string pin = 2;
+  }
+  message Reply {
+    bytes token = 1;
+  }
 }
-message AccountUpdateReply {}
-message AccountOpenRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-  string pin = 2;
+
+message AccountClose {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {}
 }
-message AccountOpenReply {
-  bytes token = 1;
+
+message AccountRemove {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {}
 }
-message AccountCloseRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+
+message AccountPairingInvitationCreate {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {}
 }
-message AccountCloseReply {}
-message AccountRemoveRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
+
+message AccountRenewIncomingContactRequestLink {
+  message Request {
+    uint64 id = 1 [(gogoproto.customname) = "ID"];
+  }
+  message Reply {}
 }
-message AccountRemoveReply {}
-message AccountPairingInvitationCreateRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message AccountPairingInvitationCreateReply {}
-message AccountRenewIncomingContactRequestLinkRequest {
-  uint64 id = 1 [(gogoproto.customname) = "ID"];
-}
-message AccountRenewIncomingContactRequestLinkReply {}
