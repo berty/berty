@@ -9,7 +9,7 @@ jobs:
     name: "Js: Check generation"
     runs-on: ubuntu-latest
     container:
-      image: bertytech/protoc:20
+      image: bertytech/protoc:21
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -24,7 +24,7 @@ jobs:
     name: "Js: Lint"
     runs-on: ubuntu-latest
     container:
-      image: bertytech/protoc:20
+      image: bertytech/protoc:21
     steps:
       - name: Checkout
         uses: actions/checkout@master
