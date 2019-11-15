@@ -95,7 +95,8 @@ jobs:
     strategy:
       matrix:
         bazel-target: [unittest, banner, build]
-        os: [macos-latest, ubuntu-latest]
+        #os: [macos-latest, ubuntu-latest]
+        os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - if: contains(matrix.os, 'macos-')

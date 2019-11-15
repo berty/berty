@@ -18,6 +18,7 @@ client/react-native/common/schema.graphql linguist-generated
 *.pb.js linguist-generated
 *.pb.d.ts linguist-generated
 yarn.lock linguist-generated
+*.gen.js linguist-generated
 
 # Reduce conflicts on markdown files
 *.md merge=union
