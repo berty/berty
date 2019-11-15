@@ -78,7 +78,7 @@ import { listHandler, streamHandler, getHandler } from './helpers'
 		{{#if (eq (typeof this) "Namespace")}}
 			{{call 'alias_swr' this}}
 		{{else if (eq (typeof this) "Service")}}
-			export const {{pascalcase (namespace this)}} = {{chop (namespace this)}}
+			export const {{case 'pascal' (namespace this)}} = {{chop (namespace this)}}
 		{{/if}}
 	{{/each}}
 {{/declare}}

@@ -1,0 +1,122 @@
+import * as _api from '@berty-tech/berty-api'
+import _faker from 'faker'
+import * as pb from 'protobufjs'
+import { deepFilterEqual, timestamp, randomArray, randomValue } from './helpers'
+
+{{#declare "faker_list"}}
+	{{#each fields}}
+		{{#if (eq (typeof resolvedType) "Type")}}
+			{{#if resolvedType.fields.id}}
+				faker{{namespace resolvedType}}.filter(_ => deepFilterEqual(request.filter, _)).forEach((_, index) =>
+					callback(null, _api{{namespace ../this}}.encode({
+						{{name}}: faker{{namespace resolvedType}}[index]
+					}).finish())
+				)
+			{{/if}}
+		{{/if}}
+	{{/each}}
+{{/declare}}
+
+{{#declare "faker_get"}}
+	{{#each fields}}
+		{{#if (eq (typeof resolvedType) "Type")}}
+			{{#if resolvedType.fields.id}}
+				callback(null, _api{{namespace ../this}}.encode({
+					{{name}}: faker{{namespace resolvedType}}[request.id as number],
+				}).finish())
+			{{/if}}
+		{{/if}}
+	{{/each}}
+{{/declare}}
+
+{{#declare "faker_default"}}
+	callback(null, _api{{namespace this}}.encode({}).finish())
+{{/declare}}
+
+{{#declare "faker_recursive"}}
+	{{#each nested}}
+		{{#if (eq (typeof this) "Namespace")}}
+			export namespace {{name}} {
+				{{call "faker_recursive" this}}
+			}
+		{{else if (eq (typeof this) "Service")~}}
+			export namespace {{name}} {
+				export const rpcImpl: pb.RPCImpl = (method, requestData, callback) => {
+					// map pbjs method descriptor to grpc method descriptor
+					if (!(method instanceof pb.Method)) {
+						console.error("bridge doesn't support protobuf.rpc.ServiceMethod")
+						return
+					}
+					const _ = faker{{namespace this}} as { [key: string]: any }
+					_[method.name](
+						method && method.resolvedResponseType && method.resolvedResponseType.decode(requestData),
+						callback,
+					)
+				}
+
+				{{#each methods~}}
+					export const {{name}}: (
+						request: _api{{inamespace resolvedRequestType}},
+						callback: pb.RPCImplCallback,
+					) => void = (request, callback) => {
+						{{#if (test name (toRegex ".*List$"))}}
+							{{call "faker_list" resolvedResponseType}}
+						{{else if (test name (toRegex ".*Get$"))}}
+							{{call "faker_get" resolvedResponseType}}
+						{{else}}
+							{{call "faker_default" resolvedResponseType}}
+						{{/if}}
+					}
+
+				{{/each}}
+			}
+		{{else if (eq (typeof this) "Type")}}
+			{{#if (and fields.id (and fields.createdAt fields.updatedAt))}}
+			export const {{name}}: Array<_api{{inamespace this}}> = randomArray(50)
+				.fill({})
+				.map((_, index) => ({
+					{{#each fields}}
+						{{#if (eq @key "id")}}
+							id: index,
+						{{else if (eq @key "protocolId")}}
+							{{@key}}: '',
+						{{else if (eq name "lastMessageId")}}
+							{{@key}}: _faker.random.number() % 50,
+						{{else if (test @key (toRegex ".*Id$"))}}
+							{{@key}}: _faker.random.number()
+								% faker{{namespace ../parent}}.{{case 'pascal' (remove @key "Id")}}.length,
+						{{else if (contains name "avatar")}}
+							{{@key}}: _faker.internet.avatar(),
+						{{else if (or (contains name "name")  (contains name "title"))}}
+							{{@key}}: _faker.name.findName(),
+						{{else if (contains name "badge")}}
+							{{@key}}: _faker.random.number() % 20,
+						{{else if (eq type "google.protobuf.Timestamp")}}
+							{{@key}}: timestamp(_faker.date.recent()),
+						{{else if repeated}}
+							{{@key}}: [],
+						{{else if (eq (typeof resolvedType) "Type")}}
+							{{@key}}: null,
+						{{else if (eq (typeof resolvedType) "Enum")}}
+							{{@key}}: randomValue(_api{{namespace resolvedType}}),
+						{{else if (eq type "string")}}
+							{{@key}}: _faker.random.words(),
+						{{else if (eq type "bool")}}
+							{{@key}}: _faker.random.boolean(),
+						{{else if (test type (toRegex "(([s|u]?(int|fixed)(32|64))|float|double)$"))}}
+							{{@key}}: _faker.random.number(),
+						{{else if (eq type "bytes")}}
+							{{@key}}: new Uint8Array(),
+						{{else}}
+							{{log type}}
+						{{/if}}
+					{{/each}}
+				}))
+			{{/if}}
+		{{/if}}
+	{{/each}}
+{{/declare}}
+
+export namespace faker {
+	{{call "faker_recursive" this}}
+}

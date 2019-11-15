@@ -6,24 +6,20 @@ export PATH := $(PWD)/node_modules/.bin:$(PATH)
 	deps.storybook.mobile\
 
 deps.storybook.mobile: export PWD := $(PWD)
-deps.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader.js
+deps.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader.gen.js
 	kill $$(lsof -t -i :7007) || true
 	cd $(PWD) && start-storybook &
 	kill $$(lsof -t -i :8081) || true
 	cd $(PWD) && PWD=$(PWD) react-native start --reset-cache &
 deps.storybook: deps.storybook.mobile
 
-$(PWD)/storybook/storyLoader.js: $(PWD)/node_modules
+$(PWD)/storybook/storyLoader.gen.js: $(PWD)/node_modules
 	env | grep PATH
 	PATH=$(PATH) rnstl \
 		--pattern '$(PWD)/../*-storybook/storybook.tsx' \
-		--outputFile $(PWD)/storybook/storyLoader.js
-	sed -i.bak 's/\(.*\)\.\.\/node_modules\/\(.*\)\/storybook/\1\2\/storybook.tsx/g' $(PWD)/storybook/storyLoader.js
-	# sed \
-		-i.bak \
-		's/\(.*\)\.\.\/\.\.\//\1@berty-tech\//g' \
-		$(PWD)/storybook/storyLoader.js
-	rm -f $(PWD)/storybook/storyLoader.js.bak
+		--outputFile $(PWD)/storybook/storyLoader.gen.js
+	sed -i.bak 's/\(.*\)\.\.\/node_modules\/\(.*\)\/storybook/\1\2\/storybook.tsx/g' $(PWD)/storybook/storyLoader.gen.js
+	rm -f $(PWD)/storybook/storyLoader.gen.js.bak
 
 .PHONY: run.storybook.ios
 run.storybook.ios: export PWD := $(PWD)

@@ -1,6 +1,6 @@
 5e5dbdddc93bd502eb4dac602a248d6f99cf440c  ../api/bertychat.proto
 45ada994301963ab5abe59540db39f70aa3a01af  ../api/bertyprotocol.proto
-ef5f22de52279fb3e24625f9ecad6eeaa7b84644  ../api/chatmodel.proto
+dca713b79d06f72d26177098a2af23b5d30d911e  ../api/chatmodel.proto
 6382cb3045cd2e12ffa65a326138570df867cbc3  ../api/errcode.proto
 d915a30248e7105cb1290f5798382ccf0bdb935a  ../api/go-internal/handshake.proto
 d065506424cab800ecca466ceca2f07dd71893ce  ../api/go-internal/log_entry_member.proto

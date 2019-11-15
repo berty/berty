@@ -11,20 +11,58 @@ option (gogoproto.goproto_unkeyed_all) = false;
 option (gogoproto.goproto_sizecache_all) = false;
 option (gogoproto.goproto_unrecognized_all) = false;
 
-message Account {
+message Contact {
   uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
+  string protocol_id = 2 [(gogoproto.moretags) = "gorm:\"unique\"", (gogoproto.customname) = "ProtocolID"];
   google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
   google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp seen_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  true];
 
-  uint64 contact_id = 100 [(gogoproto.customname) = "ContactID", (gogoproto.moretags) = "gorm:\"not null;index\""];
-  chatmodel.Contact myself = 101;
+  // fields
+  string name = 100;
+  string avatar_uri = 101;
+  bytes status_emoji = 102;
+  string status_text = 103;
 
-  // settings
-  bool contact_requests_enabled = 102;
-  string contact_requests_link = 103;
+  Kind kind = 104;
+  enum Kind {
+    Unknown = 0;
+    PendingInc = 1;
+    PendingOut = 2;
+    Friend = 3;
+    Trusted = 4;
+    Myself = 42;
+  }
 
-  bool hidden = 104;
-  bool locked = 105;
+  bool blocked = 105;
+
+  // associations
+  repeated Device devices = 200 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+}
+
+message Device {
+  uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
+  string protocol_id = 2 [(gogoproto.moretags) = "gorm:\"unique\"", (gogoproto.customname) = "ProtocolID"];
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
+  google.protobuf.Timestamp last_seen_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  true];
+
+  // fields
+  Kind kind = 100;
+  enum Kind {
+    Unknown = 0;
+    Phone = 1;
+    Desktop = 2;
+    Laptop = 3;
+    // ...
+  }
+
+  bool can_relay = 101;
+  bool can_ble = 102;
+
+  // associations
+  uint64 contact_id = 200 [(gogoproto.customname) = "ContactID", (gogoproto.moretags) = "gorm:\"not null;index\""];
+  Contact contact = 201 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
 }
 
 message Conversation {
@@ -179,56 +217,19 @@ message Reaction {
   Member member = 203 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
 }
 
-message Contact {
+message Account {
   uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
-  string protocol_id = 2 [(gogoproto.moretags) = "gorm:\"unique\"", (gogoproto.customname) = "ProtocolID"];
   google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
   google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
-  google.protobuf.Timestamp seen_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
 
-  // fields
-  string name = 100;
-  string avatar_uri = 101;
-  bytes status_emoji = 102;
-  string status_text = 103;
+  uint64 contact_id = 100 [(gogoproto.customname) = "ContactID", (gogoproto.moretags) = "gorm:\"not null;index\""];
+  chatmodel.Contact myself = 101;
 
-  Kind kind = 104;
-  enum Kind {
-    Unknown = 0;
-    PendingInc = 1;
-    PendingOut = 2;
-    Friend = 3;
-    Trusted = 4;
-    Myself = 42;
-  }
+  // settings
+  bool contact_requests_enabled = 102;
+  string contact_requests_link = 103;
 
-  bool blocked = 105;
-
-  // associations
-  repeated Device devices = 200 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
+  bool hidden = 104;
+  bool locked = 105;
 }
 
-message Device {
-  uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
-  string protocol_id = 2 [(gogoproto.moretags) = "gorm:\"unique\"", (gogoproto.customname) = "ProtocolID"];
-  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
-  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
-  google.protobuf.Timestamp last_seen_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) =  false];
-
-  // fields
-  Kind kind = 100;
-  enum Kind {
-    Unknown = 0;
-    Phone = 1;
-    Desktop = 2;
-    Laptop = 3;
-    // ...
-  }
-
-  bool can_relay = 101;
-  bool can_ble = 102;
-
-  // associations
-  uint64 contact_id = 200 [(gogoproto.customname) = "ContactID", (gogoproto.moretags) = "gorm:\"not null;index\""];
-  Contact contact = 201 [(gogoproto.moretags) = "gorm:\"PRELOAD:false\""];
-}

@@ -4,6 +4,7 @@ import { Layout, Text, Button } from 'react-native-ui-kitten'
 import { Card } from '@berty-tech/shared-storybook'
 import styles from './styles'
 import { berty } from '@berty-tech/berty-api'
+import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 
 type Navigation = () => void
 type Form<T> = (arg0: T) => Promise<void>
@@ -99,14 +100,18 @@ const ConversationsItem: React.FC<ConversationsItemProps> = ({
 	</View>
 )
 
-const Conversations: React.FC<ConversationsProps> = ({ items }) => (
+const Conversations: React.FC<ConversationsProps> = () => (
 	<SafeAreaView>
 		<Layout style={styles.padding}>
 			<Text category='h4'>Messages</Text>
 			<ScrollView>
-				{items.map((props) => (
-					<ConversationsItem {...props} />
-				))}
+				<Store.ConversationList request={{}}>
+					{(list) =>
+						list.map(
+							({ conversation: props }): React.ReactElement => <ConversationsItem {...props} />,
+						)
+					}
+				</Store.ConversationList>
 			</ScrollView>
 		</Layout>
 	</SafeAreaView>
@@ -131,10 +136,10 @@ const Footer: React.FC<FooterProps> = ({ search, plus, account }) => (
 	</View>
 )
 
-export const List: React.FC<ListProps> = ({ requests, conversations, footer }) => (
+export const List: React.FC<ListProps> = ({ requests, footer }) => (
 	<Layout style={StyleSheet.absoluteFill}>
 		<Requests {...requests} />
-		<Conversations {...conversations} />
+		<Conversations />
 		<Footer {...footer} />
 	</Layout>
 )

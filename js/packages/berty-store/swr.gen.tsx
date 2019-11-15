@@ -1021,4 +1021,4 @@ export namespace google {
 }
 export namespace gogoproto {}
 
-export const BertyChatChatservice = berty.chat.ChatService
+export const BertyChatChatService = berty.chat.ChatService

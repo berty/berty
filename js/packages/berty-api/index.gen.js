@@ -101,14 +101,14 @@ export const berty = {
 		),
 	},
 	chatmodel: {
-		Account: jsonPb.lookup('.berty.chatmodel.Account'),
+		Contact: jsonPb.lookup('.berty.chatmodel.Contact'),
+		Device: jsonPb.lookup('.berty.chatmodel.Device'),
 		Conversation: jsonPb.lookup('.berty.chatmodel.Conversation'),
 		Member: jsonPb.lookup('.berty.chatmodel.Member'),
 		Message: jsonPb.lookup('.berty.chatmodel.Message'),
 		Attachment: jsonPb.lookup('.berty.chatmodel.Attachment'),
 		Reaction: jsonPb.lookup('.berty.chatmodel.Reaction'),
-		Contact: jsonPb.lookup('.berty.chatmodel.Contact'),
-		Device: jsonPb.lookup('.berty.chatmodel.Device'),
+		Account: jsonPb.lookup('.berty.chatmodel.Account'),
 	},
 }
 export const google = {

@@ -816,7 +816,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           "(gogoproto.goproto_unrecognized_all)": false
         },
         nested: {
-          Account: {
+          Contact: {
             fields: {
               id: {
                 type: "uint64",
@@ -824,6 +824,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 options: {
                   "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
                   "(gogoproto.customname)": "ID"
+                }
+              },
+              protocolId: {
+                type: "string",
+                id: 2,
+                options: {
+                  "(gogoproto.moretags)": "gorm:unique",
+                  "(gogoproto.customname)": "ProtocolID"
                 }
               },
               createdAt: {
@@ -842,33 +850,138 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   "(gogoproto.nullable)": false
                 }
               },
+              seenAt: {
+                type: "google.protobuf.Timestamp",
+                id: 5,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": true
+                }
+              },
+              name: {
+                type: "string",
+                id: 100
+              },
+              avatarUri: {
+                type: "string",
+                id: 101
+              },
+              statusEmoji: {
+                type: "bytes",
+                id: 102
+              },
+              statusText: {
+                type: "string",
+                id: 103
+              },
+              kind: {
+                type: "Kind",
+                id: 104
+              },
+              blocked: {
+                type: "bool",
+                id: 105
+              },
+              devices: {
+                rule: "repeated",
+                type: "Device",
+                id: 200,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              }
+            },
+            nested: {
+              Kind: {
+                values: {
+                  Unknown: 0,
+                  PendingInc: 1,
+                  PendingOut: 2,
+                  Friend: 3,
+                  Trusted: 4,
+                  Myself: 42
+                }
+              }
+            }
+          },
+          Device: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              protocolId: {
+                type: "string",
+                id: 2,
+                options: {
+                  "(gogoproto.moretags)": "gorm:unique",
+                  "(gogoproto.customname)": "ProtocolID"
+                }
+              },
+              createdAt: {
+                type: "google.protobuf.Timestamp",
+                id: 3,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              updatedAt: {
+                type: "google.protobuf.Timestamp",
+                id: 4,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              lastSeenAt: {
+                type: "google.protobuf.Timestamp",
+                id: 5,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": true
+                }
+              },
+              kind: {
+                type: "Kind",
+                id: 100
+              },
+              canRelay: {
+                type: "bool",
+                id: 101
+              },
+              canBle: {
+                type: "bool",
+                id: 102
+              },
               contactId: {
                 type: "uint64",
-                id: 100,
+                id: 200,
                 options: {
                   "(gogoproto.customname)": "ContactID",
                   "(gogoproto.moretags)": "gorm:not null;index"
                 }
               },
-              myself: {
-                type: "chatmodel.Contact",
-                id: 101
-              },
-              contactRequestsEnabled: {
-                type: "bool",
-                id: 102
-              },
-              contactRequestsLink: {
-                type: "string",
-                id: 103
-              },
-              hidden: {
-                type: "bool",
-                id: 104
-              },
-              locked: {
-                type: "bool",
-                id: 105
+              contact: {
+                type: "Contact",
+                id: 201,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              }
+            },
+            nested: {
+              Kind: {
+                values: {
+                  Unknown: 0,
+                  Phone: 1,
+                  Desktop: 2,
+                  Laptop: 3
+                }
               }
             }
           },
@@ -1342,7 +1455,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               }
             }
           },
-          Contact: {
+          Account: {
             fields: {
               id: {
                 type: "uint64",
@@ -1350,14 +1463,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 options: {
                   "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
                   "(gogoproto.customname)": "ID"
-                }
-              },
-              protocolId: {
-                type: "string",
-                id: 2,
-                options: {
-                  "(gogoproto.moretags)": "gorm:unique",
-                  "(gogoproto.customname)": "ProtocolID"
                 }
               },
               createdAt: {
@@ -1375,139 +1480,34 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   "(gogoproto.stdtime)": true,
                   "(gogoproto.nullable)": false
                 }
-              },
-              seenAt: {
-                type: "google.protobuf.Timestamp",
-                id: 5,
-                options: {
-                  "(gogoproto.stdtime)": true,
-                  "(gogoproto.nullable)": false
-                }
-              },
-              name: {
-                type: "string",
-                id: 100
-              },
-              avatarUri: {
-                type: "string",
-                id: 101
-              },
-              statusEmoji: {
-                type: "bytes",
-                id: 102
-              },
-              statusText: {
-                type: "string",
-                id: 103
-              },
-              kind: {
-                type: "Kind",
-                id: 104
-              },
-              blocked: {
-                type: "bool",
-                id: 105
-              },
-              devices: {
-                rule: "repeated",
-                type: "Device",
-                id: 200,
-                options: {
-                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
-                }
-              }
-            },
-            nested: {
-              Kind: {
-                values: {
-                  Unknown: 0,
-                  PendingInc: 1,
-                  PendingOut: 2,
-                  Friend: 3,
-                  Trusted: 4,
-                  Myself: 42
-                }
-              }
-            }
-          },
-          Device: {
-            fields: {
-              id: {
-                type: "uint64",
-                id: 1,
-                options: {
-                  "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
-                  "(gogoproto.customname)": "ID"
-                }
-              },
-              protocolId: {
-                type: "string",
-                id: 2,
-                options: {
-                  "(gogoproto.moretags)": "gorm:unique",
-                  "(gogoproto.customname)": "ProtocolID"
-                }
-              },
-              createdAt: {
-                type: "google.protobuf.Timestamp",
-                id: 3,
-                options: {
-                  "(gogoproto.stdtime)": true,
-                  "(gogoproto.nullable)": false
-                }
-              },
-              updatedAt: {
-                type: "google.protobuf.Timestamp",
-                id: 4,
-                options: {
-                  "(gogoproto.stdtime)": true,
-                  "(gogoproto.nullable)": false
-                }
-              },
-              lastSeenAt: {
-                type: "google.protobuf.Timestamp",
-                id: 5,
-                options: {
-                  "(gogoproto.stdtime)": true,
-                  "(gogoproto.nullable)": false
-                }
-              },
-              kind: {
-                type: "Kind",
-                id: 100
-              },
-              canRelay: {
-                type: "bool",
-                id: 101
-              },
-              canBle: {
-                type: "bool",
-                id: 102
               },
               contactId: {
                 type: "uint64",
-                id: 200,
+                id: 100,
                 options: {
                   "(gogoproto.customname)": "ContactID",
                   "(gogoproto.moretags)": "gorm:not null;index"
                 }
               },
-              contact: {
-                type: "Contact",
-                id: 201,
-                options: {
-                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
-                }
-              }
-            },
-            nested: {
-              Kind: {
-                values: {
-                  Unknown: 0,
-                  Phone: 1,
-                  Desktop: 2,
-                  Laptop: 3
-                }
+              myself: {
+                type: "chatmodel.Contact",
+                id: 101
+              },
+              contactRequestsEnabled: {
+                type: "bool",
+                id: 102
+              },
+              contactRequestsLink: {
+                type: "string",
+                id: 103
+              },
+              hidden: {
+                type: "bool",
+                id: 104
+              },
+              locked: {
+                type: "bool",
+                id: 105
               }
             }
           }
