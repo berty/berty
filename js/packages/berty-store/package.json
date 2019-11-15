@@ -27,6 +27,6 @@
     "mobx-react-lite": "^1.5.0",
     "protobufjs": "^6.8.8",
     "random-emoji": "^1.0.2",
-    "swr": "^0.1.6"
+    "swr": "^0.1.12"
   }
 }

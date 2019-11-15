@@ -50,6 +50,10 @@ ios/main.jsbundle
 build/
 .idea
 .gradle
+.settings/
+.project
+*.classpath
+
 # local.properties
 *.iml
 android-sourcemap.*

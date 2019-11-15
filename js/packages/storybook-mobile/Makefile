@@ -23,8 +23,8 @@ $(PWD)/storybook/storyLoader.gen.js: $(PWD)/node_modules
 .PHONY: run.storybook.ios
 run.storybook.ios: export PWD := $(PWD)
 run.storybook.ios: $(PWD)/node_modules $(PWD)/ios/Pods deps.storybook.mobile
-	## cd $(PWD) && react-native run-ios --simulator='iPhone 11' --no-packager
-	cd $(PWD) && react-native run-ios --no-packager
+	cd $(PWD) && react-native run-ios --simulator='iPhone 11' --no-packager
+	#cd $(PWD) && react-native run-ios --no-packager
 
 $(PWD)/ios/Pods: $(PWD)/ios/Podfile $(PWD)/node_modules
 	cd $(PWD)/ios && pod install
@@ -65,6 +65,8 @@ clean.storybook.ios: clean.storybook.mobile
 clean.storybook.android: clean.storybook.mobile
 clean.storybook.mobile:
 	watchman watch-del-all
+	kill $$(lsof -t -i :7007)
+	kill $$(lsof -t -i :8081)
 clean.storybook: clean.storybook.mobile
 clean: clean.storybook
 

@@ -71,6 +71,8 @@ module.exports = {
 				],
 				'@typescript-eslint/interface-name-prefix': [0],
 				'no-dupe-class-members': [0],
+				'@typescript-eslint/indent': 0,
+				'@typescript-eslint/explicit-function-return-type': 0,
 			},
 		},
 		{
@@ -130,6 +132,7 @@ module.exports = {
 		'no-debugger': 1, // disallow use of debugger
 		'no-dupe-class-members': 2, // Disallow duplicate name in class members
 		'no-dupe-keys': 2, // disallow duplicate keys when creating object literals
+		'no-duplicate-imports': 2, // disallow duplicate import
 		'no-empty': 0, // disallow empty statements
 		'no-ex-assign': 1, // disallow assigning to the exception in a catch block
 		'no-extra-boolean-cast': 1, // disallow double-negation boolean casts in a boolean context

@@ -2,7 +2,7 @@ import * as _api from '@berty-tech/berty-api'
 import React, { createContext, useContext } from 'react'
 import * as pb from 'protobufjs'
 import bridge from '@berty-tech/grpc-bridge'
-import useSWR from 'swr'
+import useSWR from 'swr/esm'
 import { listHandler, streamHandler, getHandler } from './helpers'
 
 {{#declare 'store_swr'}}

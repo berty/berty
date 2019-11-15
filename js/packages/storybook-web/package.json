@@ -24,7 +24,7 @@
     "@berty-tech/berty-storybook": "^0.0.0",
     "@berty-tech/shared-storybook": "^0.0.0",
     "glob": "^7.1.4",
-    "react": "^16.9.0",
+    "react": "^16.12.0",
     "react-native-web": "^0.11.7"
   },
   "devDependencies": {
