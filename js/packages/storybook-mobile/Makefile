@@ -14,7 +14,6 @@ deps.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader.gen.js
 deps.storybook: deps.storybook.mobile
 
 $(PWD)/storybook/storyLoader.gen.js: $(PWD)/node_modules
-	env | grep PATH
 	PATH=$(PATH) rnstl \
 		--pattern '$(PWD)/../*-storybook/storybook.tsx' \
 		--outputFile $(PWD)/storybook/storyLoader.gen.js

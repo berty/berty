@@ -19,6 +19,7 @@ type SettingButtonProps = {
 	icon?: string
 	iconSize?: number
 	iconColor?: string
+	iconDependToggle?: boolean
 	name: string
 	children?: React.ReactNode
 	state?: {
@@ -36,6 +37,8 @@ type SettingButtonProps = {
 	actionIcon?: string
 	actionIconSize?: number
 	actionIconColor?: string
+	actionToggle?: React.Dispatch<React.SetStateAction<any>>
+	varToggle?: boolean
 	// action
 	previewValue?: string
 }
@@ -55,19 +58,22 @@ const _stylesSettingButton = StyleSheet.create({
 export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	name,
 	icon = null,
-	iconSize = 0,
-	iconColor = null,
+	iconSize = 30,
+	iconColor = colors.blue,
+	iconDependToggle = false,
 	children = null,
 	state = {},
-	actionIcon = null,
 	actionIconColor = colors.black,
 	actionIconSize = 25,
+	actionToggle = null,
+	varToggle = null,
 	previewValue = null,
 	alone = true,
 	toggled = false,
+	actionIcon = !toggled && 'arrow-ios-forward',
 }) => {
 	const [layout, setLayout] = useState()
-	const [isToggle, setIsToggle] = useState(false)
+	const [isToggle, setIsToggle] = useState()
 
 	const handleLayout = (e: LayoutChangeEvent) => {
 		setLayout(e.nativeEvent.layout.width)
@@ -84,7 +90,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 				_stylesSettingButton.settingButton,
 				styles.bgWhite,
 				alone ? styles.borderRadius : null,
-				alone ? styles.buttonShadow : null,
+				alone ? styles.shadow : null,
 				alone ? { marginTop: 20 } : null,
 			]}
 		>
@@ -101,7 +107,18 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 				<View style={[styles.row, styles.alignVertical]}>
 					{icon && iconSize && iconColor && (
 						<View>
-							<Icon name={icon} width={iconSize} height={iconSize} fill={iconColor} />
+							<Icon
+								style={[
+									iconDependToggle &&
+										((actionToggle && !varToggle) || (!actionToggle && !isToggle)) && {
+											opacity: 0.3,
+										},
+								]}
+								name={icon}
+								width={iconSize}
+								height={iconSize}
+								fill={iconColor}
+							/>
 						</View>
 					)}
 					<View>
@@ -181,8 +198,10 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 						<Toggle
 							style={{ paddingRight: 5 }}
 							status='primary'
-							checked={isToggle}
-							onChange={handleChangeToggle}
+							checked={varToggle || isToggle}
+							onChange={
+								actionToggle ? () => actionToggle(!varToggle) : () => setIsToggle(!isToggle)
+							}
 						/>
 					)}
 				</View>
@@ -219,7 +238,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 	<View
 		style={[
 			styles.bgWhite,
-			styles.buttonShadow,
+			styles.shadow,
 			styles.borderRadius,
 			styles.littlePaddingLeft,
 			styles.littlePaddingRight,

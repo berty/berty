@@ -19,6 +19,7 @@ import {
 	FactionButtonSetting,
 	HeaderSettings,
 } from './SharedComponentSettings'
+import { Footer } from '../shared-components/shared-components.tsx'
 
 //
 // Home Vue
@@ -54,7 +55,7 @@ const _stylesHome = StyleSheet.create({
 
 const HomeHeaderButton: React.FC<HeaderButtonProps> = ({ name, icon, color }) => (
 	<TouchableOpacity
-		style={[_stylesHome.homeButtonBox, styles.bgWhite, styles.borderRadius, styles.buttonShadow]}
+		style={[_stylesHome.homeButtonBox, styles.bgWhite, styles.borderRadius, styles.shadow]}
 	>
 		<View style={[styles.center, styles.littlePaddingTop]}>
 			<Icon name={icon} width={35} height={35} fill={color} />
@@ -94,7 +95,7 @@ const HomeHeaderAvatar: React.FC<UserProps> = ({ avatarUri, name }) => (
 						_stylesHome.homeCircleAvatar,
 						styles.bgWhite,
 						styles.center,
-						styles.buttonShadow,
+						styles.shadow,
 						styles.justifyContent,
 						styles.alignItems,
 					]}
@@ -195,77 +196,6 @@ const HomeBodySettings: React.FC<{}> = () => (
 	</View>
 )
 
-const HomeFooter: React.FC<{}> = () => (
-	<View
-		style={[
-			styles.absolute,
-			styles.bottom,
-			styles.left,
-			styles.right,
-			styles.marginBottom,
-			styles.padding,
-			styles.row,
-			styles.spaceAround,
-			styles.alignItems,
-		]}
-	>
-		<TouchableOpacity>
-			<View
-				style={[
-					_stylesHome.homeFooterButton,
-					styles.bgWhite,
-					styles.buttonShadow,
-					styles.justifyContent,
-				]}
-			>
-				<Icon
-					style={[styles.center]}
-					name='search-outline'
-					width={30}
-					height={30}
-					fill={colors.blue}
-				/>
-			</View>
-		</TouchableOpacity>
-		<TouchableOpacity>
-			<View
-				style={[
-					_stylesHome.homeFooterButton,
-					styles.bgWhite,
-					styles.buttonShadow,
-					styles.justifyContent,
-				]}
-			>
-				<Icon
-					style={[styles.center]}
-					name='message-circle-outline'
-					width={30}
-					height={30}
-					fill={colors.blue}
-				/>
-			</View>
-		</TouchableOpacity>
-		<TouchableOpacity>
-			<View
-				style={[
-					_stylesHome.homeFooterButton,
-					styles.bgWhite,
-					styles.buttonShadow,
-					styles.justifyContent,
-				]}
-			>
-				<Icon
-					style={[styles.center]}
-					name='person-outline'
-					width={30}
-					height={30}
-					fill={colors.blue}
-				/>
-			</View>
-		</TouchableOpacity>
-	</View>
-)
-
 export const Home: React.FC<HomeProps> = ({ user }) => (
 	<Layout style={[styles.flex, styles.bgWhite]}>
 		<ScrollView contentContainerStyle={[styles.bgWhite]}>
@@ -273,7 +203,11 @@ export const Home: React.FC<HomeProps> = ({ user }) => (
 			<HomeHeaderGroupButton />
 			<HomeBodySettings />
 		</ScrollView>
-		<HomeFooter />
+		<Footer
+			left={{ icon: 'search-outline' }}
+			center={{ icon: 'message-circle-outline' }}
+			right={{ avatarUri: user.avatarUri, backgroundColor: colors.blue, size: 60, elemSize: 50 }}
+		/>
 	</Layout>
 )
 
@@ -324,12 +258,7 @@ const BertyIdHeader: React.FC<{}> = () => (
 const BertyIdAvatar: React.FC<{}> = () => (
 	<View style={[_stylesBertyId.bertyIdAvatar]}>
 		<View
-			style={[
-				_stylesBertyId.bertyIdCircleAvatar,
-				styles.bgWhite,
-				styles.center,
-				styles.buttonShadow,
-			]}
+			style={[_stylesBertyId.bertyIdCircleAvatar, styles.bgWhite, styles.center, styles.shadow]}
 		/>
 		<View style={[styles.center]}>
 			<Text style={styles.paddingTop} category='s1'>
@@ -351,10 +280,6 @@ const BertyIdTab: React.FC<BertyIdTabProps> = ({ name, icon, enable = false }) =
 
 const BertyIdContent: React.FC<{}> = () => {
 	const [enable, setEnable] = useState('QRCode')
-
-	useEffect(() => {
-		console.log(enable)
-	})
 
 	const handleEnable = (enable: string) => {
 		setEnable(enable)
@@ -421,7 +346,7 @@ export const MyBertyId: React.FC<{}> = () => (
 						_stylesBertyId.bertyIdPaddingButton,
 						styles.end,
 						styles.bgLightBlue,
-						styles.buttonShadow,
+						styles.shadow,
 					]}
 				>
 					<View style={[styles.flex, styles.justifyContent]}>
@@ -463,6 +388,8 @@ type ToggleProps = {
 
 	setToggle1: React.Dispatch<React.SetStateAction<any>>
 	setToggle2: React.Dispatch<React.SetStateAction<any>>
+
+	style?: StyleProp<any>
 
 	expandedProps?: boolean
 }
@@ -531,14 +458,12 @@ const EditMyProfile: React.FC<{}> = () => (
 		style={[
 			styles.bigPaddingLeft,
 			styles.bigPaddingRight,
-			styles.bigMarginTop,
 			styles.bigMarginBottom,
+			styles.bigMarginTop,
 		]}
 	>
 		<View style={[styles.row, styles.marginBottom]}>
-			<View
-				style={[_stylesEditProfile.profileCircleAvatar, styles.bgLightBlue, styles.buttonShadow]}
-			/>
+			<View style={[_stylesEditProfile.profileCircleAvatar, styles.bgLightBlue, styles.shadow]} />
 			<View style={[styles.flex, styles.bigMarginLeft, styles.alignItems]}>
 				<Input label='Name' placeholder='Name...' />
 			</View>
@@ -597,7 +522,7 @@ const ResetMyQrCode: React.FC<{}> = () => (
 				styles.paddingRight,
 				_stylesEditProfile.profileInfo,
 				styles.bgWhite,
-				styles.buttonShadow,
+				styles.shadow,
 				styles.littleBorderRadius,
 				styles.marginBottom,
 			]}
@@ -661,34 +586,44 @@ const Toggle: React.FC<ToggleProps> = ({
 	setToggle1,
 	setToggle2,
 
+	style = null,
 	expandedProps = false,
 }) => {
 	return (
 		<Animated.View
 			style={[
 				styles.flex,
-				{ height: toggle1.animation },
+				{ height: toggle1.animation, borderTopLeftRadius: 25, borderTopRightRadius: 25 },
 				styles.bgWhite,
-				styles.buttonShadow,
 				styles.borderTopLeftRadius,
 				styles.borderTopRightRadius,
+				style,
 			]}
 		>
 			<TouchableWithoutFeedback
 				onPress={() => handleToggle(toggle1, toggle2, setToggle1, setToggle2)}
 				onLayout={(e) => handleSetMinHeight(e, toggle1, setToggle1)}
 			>
-				<View style={[styles.row, styles.padding, styles.spaceBetween, styles.alignItems]}>
-					<Text style={[styles.fontFamily]} category='h4'>
-						{label}
-					</Text>
-					<Icon
-						style={[styles.flex, styles.right]}
-						name={icon}
-						width={50}
-						height={50}
-						fill={colorIcon}
+				<View>
+					<View
+						style={[
+							styles.littleMarginTop,
+							styles.center,
+							{ borderWidth: 2.5, borderColor: colors.lightGrey, width: '14%', borderRadius: 4 },
+						]}
 					/>
+					<View style={[styles.row, styles.padding, styles.spaceBetween, styles.alignItems]}>
+						<Text style={[styles.fontFamily]} category='h4'>
+							{label}
+						</Text>
+						<Icon
+							style={[styles.flex, styles.right]}
+							name={icon}
+							width={50}
+							height={50}
+							fill={colorIcon}
+						/>
+					</View>
 				</View>
 			</TouchableWithoutFeedback>
 			<View onLayout={(e) => handleSetMaxHeight(e, toggle1, setToggle1)}>{children}</View>
@@ -730,6 +665,7 @@ const ToggleMenu: React.FC<{}> = () => {
 				toggle2={toggle1}
 				setToggle1={setToggle2}
 				setToggle2={setToggle1}
+				style={styles.shadow}
 			>
 				<ResetMyQrCode />
 			</Toggle>
@@ -755,7 +691,14 @@ export const EditProfile: React.FC<{}> = () => {
 						<View style={styles.flex}>
 							<ScrollView
 								bounces={false}
-								style={[styles.absolute, styles.bottom, styles.left, styles.right]}
+								style={[
+									styles.bgWhite,
+									styles.absolute,
+									styles.bottom,
+									styles.left,
+									styles.right,
+									{ borderRadius: 25 },
+								]}
 							>
 								<ToggleMenu />
 							</ScrollView>
@@ -997,7 +940,7 @@ export const AppUpdates: React.FC<{}> = () => {
 					title='App updates'
 					action={setUpdate}
 					actionValue={update}
-					desc={!update ? 'Your app is up to date' : undefined}
+					desc={!update ? 'Your app is up to date' : null}
 				>
 					<HeaderAppUpdates update={update} />
 				</HeaderSettings>
@@ -1082,17 +1025,14 @@ const BodyHelp: React.FC<{}> = () => (
 					styles.flex,
 					styles.padding,
 					styles.alignItems,
-					styles.buttonShadow,
+					styles.shadow,
 					styles.bgWhite,
 					styles.borderRadius,
 					{ marginRight: 10 },
 				]}
 			>
 				<Icon name='question-mark-circle-outline' width={30} height={30} fill={colors.red} />
-				<Text
-					style={[styles.fontFamily, styles.textBlack, { paddingTop: 6, fontWeight: 'bold' }]}
-					category='s4'
-				>
+				<Text style={[styles.fontFamily, styles.textBlack, { paddingTop: 6 }]} category='s4'>
 					Ask a question
 				</Text>
 			</TouchableOpacity>
@@ -1101,17 +1041,14 @@ const BodyHelp: React.FC<{}> = () => (
 					styles.flex,
 					styles.padding,
 					styles.alignItems,
-					styles.buttonShadow,
+					styles.shadow,
 					styles.bgWhite,
 					styles.borderRadius,
 					{ marginLeft: 10 },
 				]}
 			>
 				<Icon name='bulb-outline' width={30} height={30} fill={colors.red} />
-				<Text
-					style={[styles.fontFamily, styles.textBlack, { paddingTop: 6, fontWeight: 'bold' }]}
-					category='s4'
-				>
+				<Text style={[styles.fontFamily, styles.textBlack, { paddingTop: 6 }]} category='s4'>
 					Report a bug
 				</Text>
 			</TouchableOpacity>
@@ -1759,7 +1696,7 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => (
 							styles.padding,
 							styles.alignItems,
 							styles.justifyContent,
-							styles.buttonShadow,
+							styles.shadow,
 							styles.bgWhite,
 							styles.borderRadius,
 							{ marginRight: 10, height: 90 },
@@ -1784,7 +1721,7 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => (
 							styles.padding,
 							styles.alignItems,
 							styles.justifyContent,
-							styles.buttonShadow,
+							styles.shadow,
 							styles.bgWhite,
 							styles.borderRadius,
 							{ marginLeft: 10, height: 90 },
@@ -1819,7 +1756,7 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => (
 							styles.padding,
 							styles.alignItems,
 							styles.justifyContent,
-							styles.buttonShadow,
+							styles.shadow,
 							styles.bgWhite,
 							styles.borderRadius,
 							{ marginRight: 10, height: 90 },
@@ -1844,7 +1781,7 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => (
 							styles.padding,
 							styles.alignItems,
 							styles.justifyContent,
-							styles.buttonShadow,
+							styles.shadow,
 							styles.bgWhite,
 							styles.borderRadius,
 							{ marginLeft: 10, height: 90 },
@@ -1900,17 +1837,14 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => (
 					styles.flex,
 					styles.padding,
 					styles.alignItems,
-					styles.buttonShadow,
+					styles.shadow,
 					styles.bgWhite,
 					styles.borderRadius,
 					{ marginRight: 10 },
 				]}
 			>
 				<Icon name='email-outline' width={30} height={30} fill={colors.blue} />
-				<Text
-					style={[styles.fontFamily, styles.textBlack, { paddingTop: 6, fontWeight: 'bold' }]}
-					category='s4'
-				>
+				<Text style={[styles.fontFamily, styles.textBlack, { paddingTop: 6 }]} category='s4'>
 					Contact us
 				</Text>
 			</TouchableOpacity>
@@ -1919,17 +1853,14 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => (
 					styles.flex,
 					styles.padding,
 					styles.alignItems,
-					styles.buttonShadow,
+					styles.shadow,
 					styles.bgWhite,
 					styles.borderRadius,
 					{ marginLeft: 10 },
 				]}
 			>
 				<Icon name='globe-outline' width={30} height={30} fill={colors.blue} />
-				<Text
-					style={[styles.fontFamily, styles.textBlack, { paddingTop: 6, fontWeight: 'bold' }]}
-					category='s4'
-				>
+				<Text style={[styles.fontFamily, styles.textBlack, { paddingTop: 6 }]} category='s4'>
 					Website
 				</Text>
 			</TouchableOpacity>
@@ -2033,7 +1964,7 @@ const HeaderDevTools: React.FC<{}> = () => (
 				styles.padding,
 				styles.alignItems,
 				styles.justifyContent,
-				styles.buttonShadow,
+				styles.shadow,
 				styles.bgWhite,
 				styles.borderRadius,
 				{ marginRight: 20, height: 90 },
@@ -2058,7 +1989,7 @@ const HeaderDevTools: React.FC<{}> = () => (
 				styles.padding,
 				styles.alignItems,
 				styles.justifyContent,
-				styles.buttonShadow,
+				styles.shadow,
 				styles.bgWhite,
 				styles.borderRadius,
 				{ marginRight: 20, height: 90 },
@@ -2083,7 +2014,7 @@ const HeaderDevTools: React.FC<{}> = () => (
 				styles.padding,
 				styles.alignItems,
 				styles.justifyContent,
-				styles.buttonShadow,
+				styles.shadow,
 				styles.bgWhite,
 				styles.borderRadius,
 				{ height: 90 },
@@ -2153,7 +2084,7 @@ const BodyDevTools: React.FC<{}> = () => (
 					styles.padding,
 					styles.alignItems,
 					styles.justifyContent,
-					styles.buttonShadow,
+					styles.shadow,
 					styles.bgWhite,
 					styles.borderRadius,
 					{ marginRight: 20, height: 90 },
@@ -2178,7 +2109,7 @@ const BodyDevTools: React.FC<{}> = () => (
 					styles.padding,
 					styles.alignItems,
 					styles.justifyContent,
-					styles.buttonShadow,
+					styles.shadow,
 					styles.bgWhite,
 					styles.borderRadius,
 					{ marginRight: 20, height: 90 },
@@ -2204,7 +2135,7 @@ const BodyDevTools: React.FC<{}> = () => (
 					styles.padding,
 					styles.alignItems,
 					styles.justifyContent,
-					styles.buttonShadow,
+					styles.shadow,
 					styles.bgWhite,
 					styles.borderRadius,
 					{ height: 90 },
