@@ -55,11 +55,3 @@ gen.berty.templates.watch: $(berty_templates_deps) $(berty_templates_targets)
 
 .PHONY: gen
 gen: gen.berty.templates
-
-.PHONY: gen.clean.berty.templates
-gen.clean.berty.templates: export PWD := $(PWD)
-gen.clean.berty.templates:
-	rm -rf $(berty_templates_targets)
-
-.PHONY: gen.clean
-gen.clean: gen.clean.berty.templates

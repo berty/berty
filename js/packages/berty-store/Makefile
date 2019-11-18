@@ -55,11 +55,3 @@ gen.berty.store.watch: $(berty_store_deps) $(berty_store_targets)
 
 .PHONY: gen
 gen: gen.berty.store
-
-.PHONY: gen.clean.berty.store
-gen.clean.berty.store: export PWD := $(PWD)
-gen.clean.berty.store:
-	rm -rf $(berty_store_targets)
-
-.PHONY: gen.clean
-gen.clean: gen.clean.berty.store
