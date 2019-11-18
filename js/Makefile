@@ -1,35 +1,32 @@
 export PWD = $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
-UNAME_S ?= $(shell uname -s)
+YARN_INSTALL_OPTS ?=
 
 author = Berty Technologies <oss@berty.tech>
 contributor = $(shell git config --get user.name) <$(shell git config --get user.email)>
 license = (Apache-2.0 or MIT)
 
-yarn := $(shell which yarn || echo '/usr/local/bin/yarn')
-yarn_flags :=
-
 go := $(abspath $(PWD)/../go)
 go_vendor := $(go)/vendor
-
-mod := $(PWD)/node_modules
-bin := $(mod)/.bin
+bin := $(PWD)/node_modules/.bin
+pkg := $(sort $(dir $(wildcard $(PWD)/packages/*/)))
+node_modules_dirs := $(PWD)/node_modules $(patsubst %, %/node_modules, $(pkg))
+package_json_files := $(PWD)/package.json $(patsubst %, %/package.json, $(pkg))
 
 lerna := $(bin)/lerna
 lerna_flags := --reject-cycles --concurrency=8
 lerna_upgrade := $(bin)/upd
 lerna_exec := $(lerna) $(lerna_flags) exec --stream --parallel --scope=$1 --
-
+yarn := $(shell which yarn || echo '/usr/local/bin/yarn')
 json := $(bin)/json
 caser := $(bin)/caser
 eslint := $(bin)/eslint
 
-pkg := $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 1 -type d))
-pkg_mod := $(patsubst %, %/node_modules, $(pkg))
-pkg_desc := $(patsubst %, %/package.json, $(pkg))
-
 .DEFAULT_GOAL := deps
+
+.PHONY: deps
+deps: $(go_vendor) $(yarn) $(lerna) $(node_modules_dirs) $(package_json_files)
 
 print-%  : ; @echo $* = $($*)
 
@@ -40,33 +37,23 @@ env:
 $(yarn):
 	$(error "yarn is not installed")
 
-.PHONY: deps
-deps: $(yarn) $(mod) $(pkg_mod)
-deps: $(go_vendor) $(yarn) $(lerna) $(mod) $(pkg_mod)
-
 $(go_vendor):
-	cd $(berty_go_path) && GO111MODULE=on go mod vendor
+	cd $(berty_go_path) && make vendor
 
-$(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
-	$(yarn) $(if $(CIRCLE_JOB), '--frozen-lockfile')
+$(node_modules_dirs): $(yarn) $(package_json_files)
+	$(yarn) $(YARN_INSTALL_OPTS)
 	$(lerna) $(lerna_flags) bootstrap
-	mkdir -p $(mod) $(pkg_mod)
-	touch $(mod) $(pkg_mod)
+	mkdir -p $(all_node_modules)
+	touch $(all_node_modules)
 
 .PHONY: upgrade
 upgrade: deps
 	$(lerna_upgrade)
 
-.IGNORE \
 .PHONY: clean
-clean:
-
-.IGNORE \
-.PHONY: fclean
-fclean: clean
-	rm -rf $(pkg_mod)
-	rm -rf $(mod)
-	yarn cache clean -f
+clean: $(yarn)
+	rm -rf $(node_modules_dir)
+	$(yarn) cache clean -f
 
 .PHONY: pkg
 pkg: name ?= example

@@ -13,13 +13,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/n0izn0iz/berty.git"
+    "url": "git+https://github.com/berty/berty.git"
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
-    "url": "https://github.com/n0izn0iz/berty/issues"
+    "url": "https://github.com/berty/berty/issues"
   },
   "peerDependencies": {
     "@storybook/react": "^5.2.1",

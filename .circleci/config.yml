@@ -75,6 +75,8 @@ jobs:
     working_directory: /go/src/berty.tech
     docker:
       - image: bertytech/protoc:21
+    environment:
+      - YARN_INSTALL_OPTS=--frozen-lockfile
     steps:
       - checkout
       - js_restore_cache
@@ -89,6 +91,8 @@ jobs:
     working_directory: /go/src/berty.tech
     docker:
       - image: bertytech/protoc:21
+    environment:
+      - YARN_INSTALL_OPTS=--frozen-lockfile
     steps:
       - checkout
       - js_restore_cache

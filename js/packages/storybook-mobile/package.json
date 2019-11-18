@@ -6,10 +6,10 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/n0izn0iz/berty.git"
+    "url": "git+https://github.com/berty/berty.git"
   },
   "bugs": {
-    "url": "https://github.com/n0izn0iz/berty/issues"
+    "url": "https://github.com/berty/berty/issues"
   },
   "homepage": "https://github.com/berty/berty/tree/master/packages/storybook-mobile#readme",
   "author": "Berty Technologies <oss@berty.tech>",
