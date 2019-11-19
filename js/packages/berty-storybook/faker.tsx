@@ -121,11 +121,6 @@ export const fakeAttachments = randomArray(50).map(
 	}),
 )
 
-fakeAttachments.forEach((_) => {
-	// _.memberId = _.message.memberId
-	// _.member = _.message.member
-})
-
 export const fakeReaction = randomArray(50).map(
 	(_, index): berty.chatmodel.IReaction => ({
 		id: index,
@@ -135,8 +130,3 @@ export const fakeReaction = randomArray(50).map(
 		memberId: 0,
 	}),
 )
-
-fakeReaction.forEach((_) => {
-	_.memberId = _.message.memberId
-	_.member = _.message.member
-})
