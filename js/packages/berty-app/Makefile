@@ -35,7 +35,7 @@ deps: $(PWD)/node_modules config
 
 deps.ios: export PWD := $(PWD)
 deps.ios: deps $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
-$(PWD)/ios/Pods/Manifest.lock: $(PWD)/ios/Podfile
+$(PWD)/ios/Pods/Manifest.lock: $(PWD)/ios/Podfile $(PWD)/package.json
 	([ ! -z "$(shell which pod)" ] \
 		&& [[ "$$(pod --version)" > "1.7." ]]) \
 		|| sudo gem install cocoapods
@@ -46,11 +46,11 @@ $(PWD)/ios/Podfile: $(PWD)/node_modules
 	cat $< > $@
 
 deps.android: export PWD := $(PWD)
-deps.android: deps $(PWD)/node_modules/react-native/react.gradle
+deps.android: deps $(PWD)/node_modules/react-native/react.gradle.orig
 
-$(PWD)/node_modules/react-native/react.gradle: $(PWD)/patch/react.gradle.patch
-	@echo "patching file $<"
-	@patch -f $@ $< 1>/dev/null || true
+$(PWD)/node_modules/react-native/react.gradle.orig: $(PWD)/patch/react.gradle.patch
+	@echo "patching file $(patsubst %.orig, %, $@)"
+	@patch -f $(patsubst %.orig, %, $@) $< 1>/dev/null || true
 
 deps.web: deps
 
@@ -77,7 +77,7 @@ run: deps $(if $(filter $(target), debug), start)
 		$(if $(filter $(platform), android), --deviceId='$(device)') \
 		$(if $(filter $(platform), android), \
 			$(if $(filter-out $(target), store), --appIdSuffix=$(target))) \
-		$(if $(filter $(platform), ios), --configuration=$(config)) \
+		$(if $(filter $(platform), ios), --configuration=$(if $(filter $(config), development),Debug,Release)) \
 		$(if $(filter $(platform), ios), --scheme=$(target)) \
 		$(if $(filter $(platform), ios), --simulator='$(device)') \
 
