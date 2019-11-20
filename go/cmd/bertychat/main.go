@@ -25,7 +25,7 @@ import (
 	"github.com/peterbourgon/ff/ffcli"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc"
 )
 
 func main() {
