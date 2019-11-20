@@ -8,7 +8,7 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import { IconRegistry } from 'react-native-ui-kitten'
 import { promiseResolved, fakeContacts, fakeConversations, fakeUsers, fakeOneUser } from './faker'
 import * as Onboarding from './Onboarding'
-import * as Main from './Main'
+import * as Main from './main/Main'
 import * as Settings from './settings/Settings'
 
 import addons from '@storybook/addons'
@@ -80,17 +80,18 @@ stories
 		/>
 	))
 	.add('Main.List', () => <Main.List {...mainListProps} />)
-	.add('Main.Request', () => <Main.Request user={fakeOneUser} />)
-	.add('Main.RequestGroup', () => <Main.GroupRequest user={fakeOneUser} />)
+	.add('Main.Request', () => <Main.ContactRequest user={fakeOneUser} />)
+	.add('Main.GroupRequest', () => <Main.GroupRequest user={fakeOneUser} />)
 	.add('Main.ChatGroup', () => <Main.ChatGroup user={fakeOneUser} />)
 	.add('Main.Chat', () => <Main.Chat user={fakeOneUser} />)
 	.add('Main.ScanRequest', () => <Main.ScanRequest user={fakeOneUser} />)
 	.add('Main.Scan', () => <Main.Scan />)
 	.add('Main.InvalidScan', () => <Main.InvalidScan />)
 	.add('Main.ChatSettings', () => <Main.ChatSettings user={fakeOneUser} />)
-	.add('Main.ChatSettingsContact', () => <Main.ChatSettingsContact user={fakeOneUser} />)
+	.add('Main.ChatSettingsContact', () => <Main.ContactChatSettings user={fakeOneUser} />)
+	.add('Main.GroupChatSettings', () => <Main.GroupChatSettings user={fakeOneUser} />)
 	.add('Settings.Home', () => <Settings.Home user={fakeOneUser} />)
-	.add('Settings.MyBertyId', () => <Settings.MyBertyId />)
+	.add('Settings.MyBertyId', () => <Settings.MyBertyId user={fakeOneUser} />)
 	.add('Settings.EditProfile', () => <Settings.EditProfile />)
 	.add('Settings.AppUpdates', () => <Settings.AppUpdates />)
 	.add('Settings.Help', () => <Settings.Help />)

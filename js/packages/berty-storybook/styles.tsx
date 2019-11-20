@@ -158,11 +158,12 @@ export const styles = StyleSheet.create({
 	absolute: { position: 'absolute' },
 	relative: { position: 'relative' },
 
-	borderTopLeftRadius: { borderTopLeftRadius: 20 },
-	borderTopRightRadius: { borderTopRightRadius: 20 },
+	borderTopLeftRadius: { borderTopLeftRadius: 30 },
+	borderTopRightRadius: { borderTopRightRadius: 30 },
 	borderBottomLeftRadius: { borderBottomLeftRadius: 30 },
 	borderBottomRightRadius: { borderBottomRightRadius: 30 },
 
+	modalBorderRadius: { borderRadius: 30 },
 	borderRadius: { borderRadius: 16 },
 	littleBorderRadius: { borderRadius: 10 },
 	overflow: { overflow: 'visible' },
@@ -198,6 +199,17 @@ export const styles = StyleSheet.create({
 	textSmall: {
 		fontSize: 12,
 	},
+})
+
+// Styles of RequestScreens (Request and GroupRequest)
+export const requestStyles = StyleSheet.create({
+	bodyRequest: { width: '90%', marginTop: 70 },
+	bodyRequestContent: { bottom: 90, justifyContent: 'center' },
+	bodyGroupRequestContent: { bottom: 100 },
+	//circleAvatar: { width: 130, height: 130, borderRadius: 65 },
+	//imageAvatar: { width: 120, height: 120, borderRadius: 60 },
+	//groupCircleAvatar: { width: 100, height: 100, borderRadius: 50 },
+	//groupImageAvatar: { width: 90, height: 90, borderRadius: 45 },
 })
 
 export default styles
