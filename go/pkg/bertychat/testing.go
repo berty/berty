@@ -7,7 +7,7 @@ import (
 	"berty.tech/go/internal/chatdb"
 	"berty.tech/go/pkg/bertyprotocol"
 	"go.uber.org/zap"
-	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc"
 )
 
 // TestingClient returns a configured Client struct with in-memory contexts.

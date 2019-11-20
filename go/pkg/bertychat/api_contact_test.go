@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"berty.tech/go/internal/testutil"
-	chatmodel "berty.tech/go/pkg/chatmodel"
+	"berty.tech/go/pkg/chatmodel"
 )
 
 func TestClient_ContactGet(t *testing.T) {

@@ -6,15 +6,13 @@ import (
 	"net/http"
 	"sync"
 
-	// grpcw "github.com/grpc-ecosystem/grpc-gateway/runtime"
-	grpcweb "github.com/improbable-eng/grpc-web/go/grpcweb"
-	grpc "google.golang.org/grpc"
-
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr-net"
+	"google.golang.org/grpc"
 )
 
-// berty multiformat custom prefix
+// BertyCustomPrefix is a multiformat custom prefix
 const BertyCustomPrefix = 0xbe00
 
 const P_GRPC = BertyCustomPrefix + 0x0002           //nolint:golint

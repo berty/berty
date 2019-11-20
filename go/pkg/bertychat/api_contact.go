@@ -2,10 +2,10 @@ package bertychat
 
 import (
 	"context"
-	fmt "fmt"
+	"fmt"
 
 	"berty.tech/go/pkg/bertyprotocol"
-	chatmodel "berty.tech/go/pkg/chatmodel"
+	"berty.tech/go/pkg/chatmodel"
 	"berty.tech/go/pkg/errcode"
 )
 
