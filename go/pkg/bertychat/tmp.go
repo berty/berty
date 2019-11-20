@@ -24,3 +24,25 @@ func fakeConversation(logger *zap.Logger) *chatmodel.Conversation {
 		Title:     fmt.Sprintf("%s %s", gofakeit.HackerIngverb(), gofakeit.HackerAdjective()),
 	}
 }
+
+func fakeContact(logger *zap.Logger) *chatmodel.Contact {
+	logger.Warn("randomContact is temporary")
+
+	created := gofakeit.Date()
+	updated := gofakeit.Date()
+	seen := gofakeit.Date()
+	return &chatmodel.Contact{
+		ID:        uint64(rand.Uint32())<<32 + uint64(rand.Uint32()),
+		CreatedAt: created,
+		UpdatedAt: updated,
+		SeenAt:    &seen,
+		Name:      fmt.Sprintf("%s %s", gofakeit.HackerIngverb(), gofakeit.HackerAdjective()),
+		// ProtocolID
+		// AvatarUri
+		// StatusEmoji
+		// StatusText
+		// Kind
+		// Blocked
+		// Devices
+	}
+}
