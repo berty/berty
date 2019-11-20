@@ -49,11 +49,3 @@ gen.berty.api: $(berty_api_deps) $(berty_api_targets)
 
 .PHONY: gen
 gen: gen.berty.api
-
-.PHONY: gen.clean.berty.api
-gen.clean.berty.api: export PWD := $(PWD)
-gen.clean.berty.api:
-	rm -rf $(berty_api_targets)
-
-.PHONY: gen.clean
-gen.clean: gen.clean.berty.api

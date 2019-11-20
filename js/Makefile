@@ -131,6 +131,15 @@ lint.watch: lint
 .PHONY: gen
 gen: deps
 
+.PHONY: gen.clean
+gen.clean:
+	rm -f $(wildcard \
+	  packages/*/*.gen.tsx \
+	  packages/*/*.gen.js \
+	  packages/*/*.pb.js \
+	  packages/*/*.pb.d.ts \
+	)
+
 include packages/berty-store/Makefile
 include packages/berty-templates/Makefile
 include packages/berty-api/Makefile
