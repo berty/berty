@@ -94,12 +94,14 @@ const handleSetMinHeight = (
 	toggle: ChildToggleProps,
 	setToggle: React.Dispatch<React.SetStateAction<any>>,
 ) => {
-	const animation = new Animated.Value(event.nativeEvent.layout.height)
-	setToggle({
-		...toggle,
-		animation,
-		minHeight: event.nativeEvent.layout.height,
-	})
+	if (toggle.minHeight === 0) {
+		const animation = new Animated.Value(event.nativeEvent.layout.height)
+		setToggle({
+			...toggle,
+			animation,
+			minHeight: event.nativeEvent.layout.height,
+		})
+	}
 }
 
 const EditMyProfile: React.FC<{}> = () => (
@@ -242,7 +244,7 @@ const Toggle: React.FC<ToggleProps> = ({
 		<Animated.View
 			style={[
 				styles.flex,
-				{ height: toggle1.animation, borderTopLeftRadius: 25, borderTopRightRadius: 25 },
+				toggle1.animation && { height: toggle1.animation },
 				styles.bgWhite,
 				styles.borderTopLeftRadius,
 				styles.borderTopRightRadius,
@@ -258,6 +260,7 @@ const Toggle: React.FC<ToggleProps> = ({
 						style={[
 							styles.littleMarginTop,
 							styles.center,
+							styles.bgLightGrey,
 							{ borderWidth: 2.5, borderColor: colors.lightGrey, width: '14%', borderRadius: 4 },
 						]}
 					/>
@@ -275,7 +278,9 @@ const Toggle: React.FC<ToggleProps> = ({
 					</View>
 				</View>
 			</TouchableWithoutFeedback>
-			<View onLayout={(e) => handleSetMaxHeight(e, toggle1, setToggle1)}>{children}</View>
+			{toggle1.animation && (
+				<View onLayout={(e) => handleSetMaxHeight(e, toggle1, setToggle1)}>{children}</View>
+			)}
 		</Animated.View>
 	)
 }
@@ -332,7 +337,7 @@ export const EditProfile: React.FC<{}> = () => {
 	return (
 		<Layout style={[styles.bgBlue, styles.flex]}>
 			<SafeAreaView>
-				<Modal animationType='slide' visible={visible} transparent={true}>
+				<Modal visible={visible} transparent={true}>
 					<SafeAreaView style={[styles.flex]}>
 						<TouchableOpacity style={[styles.center]} onPress={() => handleVisible(false)}>
 							<Text>Dismiss Modal</Text>
@@ -341,12 +346,13 @@ export const EditProfile: React.FC<{}> = () => {
 							<ScrollView
 								bounces={false}
 								style={[
-									styles.bgWhite,
 									styles.absolute,
 									styles.bottom,
 									styles.left,
 									styles.right,
-									{ borderRadius: 25 },
+									styles.bgWhite,
+									styles.borderTopLeftRadius,
+									styles.borderTopRightRadius,
 								]}
 							>
 								<ToggleMenu />

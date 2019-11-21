@@ -1,20 +1,11 @@
-import React, { useState } from 'react'
-import {
-	TouchableOpacity,
-	View,
-	Image,
-	SafeAreaView,
-	ScrollView,
-	LayoutChangeEvent,
-	StyleSheet,
-} from 'react-native'
+import React from 'react'
+import { View, Image, ScrollView, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors, requestStyles } from '../styles'
+import { styles, colors } from '../styles'
 import { UserProps, RequestProps } from '../shared-props/User'
-import { RequestButtons, RequestAvatar } from './shared-components/Request'
+import { RequestButtons, RequestAvatar } from '../shared-components/Request'
 import { TabBar } from '../shared-components/TabBar'
 import { Modal } from '../shared-components/Modal'
-import { GroupCircleAvatar } from '../shared-components/CircleAvatar'
 
 // Types
 type BodyGroupRequestContentItemProps = {
@@ -74,7 +65,7 @@ const BodyGroupRequestContentItem: React.FC<BodyGroupRequestContentItemProps> = 
 	previewValue = null,
 }) => (
 	<View>
-		<View style={[styles.flex, styles.row, styles.paddingLeft, styles.paddingRight]}>
+		<View style={[styles.row, styles.paddingLeft, styles.paddingRight]}>
 			<View style={[styles.row, styles.alignVertical]}>
 				<Image
 					style={[styles.marginRight, _groupRequestStyles.avatar]}
@@ -125,7 +116,7 @@ const BodyGroupRequestContentItem: React.FC<BodyGroupRequestContentItemProps> = 
 )
 
 const BodyGroupRequestContent: React.FC<UserProps> = ({ avatarUri, name }) => (
-	<ScrollView style={[styles.bigMarginTop, { height: 300 }]}>
+	<ScrollView style={{ maxHeight: 300 }} contentContainerStyle={[styles.paddingTop]}>
 		<BodyGroupRequestContentItem
 			avatarUri={avatarUri}
 			name={name}
@@ -150,23 +141,20 @@ const BodyGroupRequestContent: React.FC<UserProps> = ({ avatarUri, name }) => (
 )
 
 const BodyGroupRequest: React.FC<RequestProps> = ({ user }) => (
-	<View style={[styles.bigPadding]}>
-		<View style={[requestStyles.bodyGroupRequestContent]}>
-			<RequestAvatar {...user} secondAvatarUri={user.avatarUri} isGroup />
-			{/* <BodyGroupRequestAvatar {...user} /> */}
+	<View style={[styles.paddingHorizontal, styles.paddingBottom]}>
+		<RequestAvatar style={[styles.alignItems]} {...user} size={90} />
+		<View style={[styles.paddingRight, styles.paddingLeft]}>
 			<TabBar tabType='group' />
 			<BodyGroupRequestContent {...user} />
-			<RequestButtons />
 		</View>
+		<RequestButtons />
 	</View>
 )
 
 export const GroupRequest: React.FC<RequestProps> = ({ user }) => (
 	<Layout style={[styles.flex, styles.bgBlue]}>
-		<SafeAreaView style={[styles.flex]}>
-			<Modal>
-				<BodyGroupRequest user={user} />
-			</Modal>
-		</SafeAreaView>
+		<Modal>
+			<BodyGroupRequest user={user} />
+		</Modal>
 	</Layout>
 )

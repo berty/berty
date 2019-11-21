@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, View, Image, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
+import { TouchableOpacity, View, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { styles, colors } from '../styles'
 import { UserProps, RequestProps } from '../shared-props/User'

@@ -31,9 +31,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = ({ isFocus, setIsFocus }) =
 		style={[
 			styles.row,
 			styles.centerItems,
-			styles.paddingTop,
-			styles.paddingLeft,
-			styles.paddingRight,
+			styles.padding,
 			isFocus && styles.paddingBottom,
 			styles.bgWhite,
 		]}

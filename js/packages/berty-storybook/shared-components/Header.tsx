@@ -1,7 +1,7 @@
 import React from 'react'
-import { View, TouchableOpacity, SafeAreaView, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '../../styles'
+import { styles, colors } from '../styles'
 
 //
 // Header Settings
@@ -9,16 +9,14 @@ import { styles, colors } from '../../styles'
 
 // Type
 type HeaderSettingsProps = {
-	title: string
+	title?: string
 	children?: React.ReactNode
-	// titleSize?: number
-	// titleColor?: string
 	bgColor?: string
 	undo?: boolean
 	undoIcon?: string
 	undoIconSize?: number
 	undoIconColor?: string
-	desc?: string
+	desc?: string | null
 	descFontSize?: number
 	descColor?: string
 	action?: React.Dispatch<any>
@@ -29,12 +27,12 @@ type HeaderSettingsProps = {
 }
 
 export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
-	title,
+	title = null,
 	children = null,
 	bgColor = colors.blue,
 	undo = true,
 	undoIcon = 'arrow-back-outline',
-	undoIconSize = 30,
+	undoIconSize = 25,
 	undoIconColor = colors.white,
 	desc = null,
 	descFontSize = 10,
@@ -42,32 +40,42 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	action = null,
 	actionValue = null,
 	actionIcon = 'swap',
-	actionIconSize = 30,
+	actionIconSize = 25,
 	actionIconColor = colors.white,
 }) => (
-	<SafeAreaView
+	<View
 		style={[
 			styles.flex,
 			styles.borderBottomLeftRadius,
 			styles.borderBottomRightRadius,
+			styles.paddingTop,
 			{ backgroundColor: bgColor },
 		]}
 	>
 		<View style={[styles.padding]}>
-			<View style={[styles.row, styles.justifyContent]}>
+			<View style={[styles.row, styles.justifyContent, styles.flex]}>
 				{undo && (
 					<TouchableOpacity style={[styles.flex, styles.start, styles.center]}>
 						<Icon name={undoIcon} width={undoIconSize} height={undoIconSize} fill={undoIconColor} />
 					</TouchableOpacity>
 				)}
-				<View style={[styles.center]}>
-					<Text category='h3' style={[styles.fontFamily, styles.textWhite, styles.center]}>
-						{title}
-					</Text>
-				</View>
-				<View style={[styles.flex, styles.end, styles.center]}>
-					{action && (
-						<TouchableOpacity style={[styles.end]} onPress={() => action(!actionValue)}>
+				{title && (
+					<View style={[styles.spaceCenter]}>
+						<Text
+							style={[
+								styles.textBold,
+								styles.fontFamily,
+								styles.textWhite,
+								{ fontSize: 25, lineHeight: 25 * 0.75, paddingTop: 35 - 35 * 0.75 },
+							]}
+						>
+							{title}
+						</Text>
+					</View>
+				)}
+				{(action || actionIcon) && (
+					<View style={[styles.flex, styles.end, styles.center]}>
+						<TouchableOpacity style={[styles.end]} onPress={() => action && action(!actionValue)}>
 							<Icon
 								name={actionIcon}
 								width={actionIconSize}
@@ -75,8 +83,8 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 								fill={actionIconColor}
 							/>
 						</TouchableOpacity>
-					)}
-				</View>
+					</View>
+				)}
 			</View>
 			{desc && (
 				<Text
@@ -93,7 +101,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 			)}
 			{children}
 		</View>
-	</SafeAreaView>
+	</View>
 )
 
 //

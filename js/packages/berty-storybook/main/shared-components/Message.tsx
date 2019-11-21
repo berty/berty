@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { View, Image, StyleProp, StyleSheet } from 'react-native'
+import React from 'react'
+import { View, StyleProp, StyleSheet } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '../../styles'
+import { styles } from '../../styles'
 import { CircleAvatar } from '../../shared-components/CircleAvatar'
 
 //

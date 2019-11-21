@@ -94,7 +94,7 @@ export const GroupCircleAvatar: React.FC<GroupCircleAvatarProps> = ({
 	size = 100,
 	diffSize = 10,
 }) => (
-	<View style={[styles.flex]}>
+	<View>
 		<View style={[styles.row, styles.center, { marginBottom: size / 2, marginRight: size / 2 }]}>
 			<View style={[styles.absolute, { marginTop: size / 2, marginLeft: size / 2 }]}>
 				<CircleAvatar avatarUri={firstAvatarUri} size={size} diffSize={diffSize} />

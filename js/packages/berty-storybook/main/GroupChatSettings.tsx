@@ -1,14 +1,15 @@
 import React from 'react'
-import { TouchableOpacity, View, Image, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { View, StyleSheet, ScrollView } from 'react-native'
+import { Layout, Text } from 'react-native-ui-kitten'
 import { styles, colors } from '../styles'
 import {
 	ButtonSetting,
 	FactionButtonSetting,
-	HeaderButtonsSetting,
+	ButtonSettingRow,
 } from '../shared-components/SettingsButtons'
 import { UserProps, RequestProps } from '../shared-props/User'
 import { GroupCircleAvatar } from '../shared-components/CircleAvatar'
+import HeaderSettings from '../shared-components/Header'
 
 //
 // GroupChatSettings
@@ -16,9 +17,6 @@ import { GroupCircleAvatar } from '../shared-components/CircleAvatar'
 
 // Styles
 const _groupChatSettingsStyle = StyleSheet.create({
-	headerAvatar: {
-		flex: 5,
-	},
 	firstHeaderButton: {
 		marginRight: 20,
 		height: 90,
@@ -34,7 +32,7 @@ const _groupChatSettingsStyle = StyleSheet.create({
 
 const GroupChatSettingsHeaderButtons: React.FC<{}> = () => (
 	<View style={[styles.paddingTop, styles.marginTop]}>
-		<HeaderButtonsSetting
+		<ButtonSettingRow
 			state={[
 				{
 					name: 'Search',
@@ -60,31 +58,11 @@ const GroupChatSettingsHeaderButtons: React.FC<{}> = () => (
 )
 
 const GroupChatSettingsHeader: React.FC<UserProps> = ({ avatarUri, name }) => (
-	<View
-		style={[
-			styles.bgBlue,
-			styles.padding,
-			styles.borderBottomLeftRadius,
-			styles.borderBottomRightRadius,
-		]}
-	>
-		<View style={[styles.row, styles.spaceCenter]}>
-			<View style={[styles.flex]}>
-				<Icon name='arrow-back' width={25} height={25} fill={colors.white} />
-			</View>
-			<View style={[_groupChatSettingsStyle.headerAvatar]}>
-				<GroupCircleAvatar firstAvatarUri={avatarUri} secondAvatarUri={avatarUri} size={80} />
-				<Text
-					style={[styles.textCenter, styles.textWhite, styles.littleMarginTop, styles.textBold]}
-				>
-					{name}
-				</Text>
-			</View>
-			<View style={[styles.flex, styles.rowRev]}>
-				<Icon name='edit-outline' width={25} height={25} fill={colors.white} />
-			</View>
-		</View>
-		<GroupChatSettingsHeaderButtons />
+	<View>
+		<GroupCircleAvatar firstAvatarUri={avatarUri} secondAvatarUri={avatarUri} size={80} />
+		<Text style={[styles.textCenter, styles.textWhite, styles.littleMarginTop, styles.textBold]}>
+			{name}
+		</Text>
 	</View>
 )
 
@@ -142,11 +120,12 @@ const GroupChatSettingsBody: React.FC<UserProps> = ({ avatarUri, name }) => (
 export const GroupChatSettings: React.FC<RequestProps> = ({ user }) => (
 	<Layout style={[styles.flex]}>
 		<ScrollView contentContainerStyle={[styles.paddingBottom]}>
-			<SafeAreaView
-				style={[styles.bgBlue, styles.borderBottomLeftRadius, styles.borderBottomRightRadius]}
-			>
-				<GroupChatSettingsHeader {...user} />
-			</SafeAreaView>
+			<HeaderSettings actionIcon='edit-outline'>
+				<View>
+					<GroupChatSettingsHeader {...user} />
+					<GroupChatSettingsHeaderButtons />
+				</View>
+			</HeaderSettings>
 			<GroupChatSettingsBody {...user} />
 		</ScrollView>
 	</Layout>

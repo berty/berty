@@ -1,11 +1,12 @@
 import React from 'react'
-import { SafeAreaView, View, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { View, ScrollView, StyleSheet } from 'react-native'
+import { Layout, Text } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { RequestProps, UserProps } from '../shared-props/User'
 import { Footer } from '../shared-components/Footer'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
+import HeaderSettings from '../shared-components/Header'
 
 //
 // Home Vue
@@ -30,6 +31,9 @@ const _homeStyles = StyleSheet.create({
 	},
 	headerNameText: {
 		fontSize: 13,
+	},
+	scrollViewPadding: {
+		paddingBottom: 116,
 	},
 })
 
@@ -76,24 +80,9 @@ const HomeHeaderAvatar: React.FC<UserProps> = ({ avatarUri, name }) => (
 )
 
 const HomeHeader: React.FC<RequestProps> = ({ user }) => (
-	<SafeAreaView
-		style={[
-			styles.bgBlue,
-			styles.paddingLeft,
-			styles.paddingRight,
-			styles.borderBottomLeftRadius,
-			styles.borderBottomRightRadius,
-			styles.flex,
-		]}
-	>
-		<TouchableOpacity style={[styles.end, styles.paddingRight]}>
-			<Icon name='edit-outline' width={40} height={40} fill={colors.white} />
-		</TouchableOpacity>
-		<View style={[styles.alignVertical, styles.bigMarginBottom]}>
-			<HomeHeaderAvatar {...user} />
-		</View>
-		<HomeHeaderGroupButton />
-	</SafeAreaView>
+	<View style={[styles.alignVertical, styles.marginBottom]}>
+		<HomeHeaderAvatar {...user} />
+	</View>
 )
 
 const HomeBodySettings: React.FC<{}> = () => (
@@ -114,8 +103,13 @@ const HomeBodySettings: React.FC<{}> = () => (
 
 export const Home: React.FC<RequestProps> = ({ user }) => (
 	<Layout style={[styles.flex, styles.bgWhite]}>
-		<ScrollView contentContainerStyle={[styles.bgWhite]}>
-			<HomeHeader user={user} />
+		<ScrollView contentContainerStyle={[_homeStyles.scrollViewPadding]}>
+			<HeaderSettings undo={false} actionIcon='edit-outline'>
+				<View>
+					<HomeHeader user={user} />
+					<HomeHeaderGroupButton />
+				</View>
+			</HeaderSettings>
 			<HomeBodySettings />
 		</ScrollView>
 		<Footer
