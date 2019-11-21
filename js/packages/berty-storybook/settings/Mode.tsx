@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
-import { HeaderSettings } from './shared-components/Header'
+import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
 
 //

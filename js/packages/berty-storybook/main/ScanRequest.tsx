@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
 import { styles } from '../styles'
 import { RequestProps } from '../shared-props/User'
-import { Request } from './shared-components/Request'
+import { Request } from '../shared-components/Request'
 
 //
 // Scan Request

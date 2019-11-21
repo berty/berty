@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
-import { TouchableOpacity, View, Image, SafeAreaView, ScrollView, StyleSheet } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import React from 'react'
+import { View, ScrollView, StyleSheet } from 'react-native'
+import { Layout, Text } from 'react-native-ui-kitten'
 import { styles, colors } from '../styles'
-import { ButtonSetting, HeaderButtonsSetting } from '../shared-components/SettingsButtons'
+import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { UserProps, RequestProps } from '../shared-props/User'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
+import HeaderSettings from '../shared-components/Header'
 
 //
 // ChatSettings
@@ -29,28 +30,20 @@ const _chatSettingsStyle = StyleSheet.create({
 })
 
 const ChatSettingsHeader: React.FC<UserProps> = ({ avatarUri, name }) => (
-	<View style={[styles.padding, styles.bgBlue, styles.row]}>
-		<TouchableOpacity style={[styles.flex]}>
-			<Icon name='arrow-back' width={30} height={30} fill={colors.white} />
-		</TouchableOpacity>
-		<View style={[_chatSettingsStyle.headerAvatar]}>
-			<CircleAvatar style={styles.alignItems} avatarUri={avatarUri} size={100} />
-			<Text
-				numberOfLines={1}
-				style={[styles.textWhite, styles.center, styles.littlePaddingTop, styles.textBold]}
-			>
-				{name}
-			</Text>
-		</View>
-		<TouchableOpacity style={[styles.flex, styles.rowRev]}>
-			<Icon name='more-horizontal' width={30} height={30} fill={colors.white} />
-		</TouchableOpacity>
+	<View style={[_chatSettingsStyle.headerAvatar]}>
+		<CircleAvatar style={styles.alignItems} avatarUri={avatarUri} size={100} />
+		<Text
+			numberOfLines={1}
+			style={[styles.textWhite, styles.center, styles.littlePaddingTop, styles.textBold]}
+		>
+			{name}
+		</Text>
 	</View>
 )
 
 const ChatSettingsHeaderButtons: React.FC<{}> = () => (
 	<View style={[styles.paddingLeft, styles.paddingRight, styles.paddingTop]}>
-		<HeaderButtonsSetting
+		<ButtonSettingRow
 			state={[
 				{
 					name: 'Search',
@@ -91,12 +84,12 @@ const ChatSettingsBody: React.FC<{}> = () => (
 export const ChatSettings: React.FC<RequestProps> = ({ user }) => (
 	<Layout style={[styles.flex]}>
 		<ScrollView>
-			<SafeAreaView
-				style={[styles.bgBlue, styles.borderBottomLeftRadius, styles.borderBottomRightRadius]}
-			>
-				<ChatSettingsHeader {...user} />
-			</SafeAreaView>
-			<ChatSettingsHeaderButtons />
+			<HeaderSettings actionIcon='more-horizontal-outline'>
+				<View>
+					<ChatSettingsHeader {...user} />
+					<ChatSettingsHeaderButtons />
+				</View>
+			</HeaderSettings>
 			<ChatSettingsBody />
 		</ScrollView>
 	</Layout>

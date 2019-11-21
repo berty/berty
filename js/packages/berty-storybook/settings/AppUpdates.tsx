@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
-import { HeaderInfoSettings, HeaderSettings } from './shared-components/Header'
+import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
 
 //
@@ -99,7 +99,7 @@ const HeaderAppUpdates: React.FC<HeaderAppUpdatesProps> = ({ update }) => (
 )
 
 const BodyUpdates: React.FC<{ update: boolean }> = ({ update }) => (
-	<View style={[styles.flex, styles.padding, styles.bigMarginBottom]}>
+	<View style={[styles.flex, styles.padding]}>
 		{update && (
 			<ButtonSetting
 				name='Version 2.42.1.3'

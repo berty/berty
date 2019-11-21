@@ -41,6 +41,7 @@ const ScanHeader: React.FC<{}> = () => (
 			style={[
 				styles.littleMarginTop,
 				styles.center,
+				styles.bgLightGrey,
 				_scanStyles.headerToggleBar,
 				{ borderColor: colors.lightGrey },
 			]}

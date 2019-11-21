@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
-import { View, SafeAreaView, StyleSheet, StyleProp, TouchableOpacity } from 'react-native'
-import { Layout, Text, Icon, Toggle } from 'react-native-ui-kitten'
-import { styles, colors, requestStyles } from '../../styles'
-import { UserProps, RequestProps } from '../../shared-props/User'
-import { TabBar } from '../../shared-components/TabBar'
-import { FingerprintContent } from '../../shared-components/FingerprintContent'
-import { Modal } from '../../shared-components/Modal'
-import { CircleAvatar, GroupCircleAvatar } from '../../shared-components/CircleAvatar'
+import { View, StyleSheet, StyleProp, TouchableOpacity } from 'react-native'
+import { Text, Icon, Toggle } from 'react-native-ui-kitten'
+import { styles, colors } from '../styles'
+import { RequestProps } from '../shared-props/User'
+import { TabBar } from './TabBar'
+import { FingerprintContent } from './FingerprintContent'
+import { Modal } from './Modal'
+import { CircleAvatar, GroupCircleAvatar } from './CircleAvatar'
+
 //
 // RequestButtons
 //
@@ -59,7 +60,7 @@ const RequestButtonItem: React.FC<RequestButtonItemProps> = ({
 )
 
 export const RequestButtons: React.FC<{}> = () => (
-	<View style={[styles.row, styles.bigMarginTop]}>
+	<View style={[styles.row, styles.padding]}>
 		<RequestButtonItem
 			style={_requestButtonsStyles.requestButtonRefuse}
 			icon='close-outline'
@@ -87,6 +88,7 @@ type RequestAvatarProps = {
 	secondAvatarUri?: string
 	isGroup?: boolean
 	style?: StyleProp<any>
+	isVerified?: boolean
 }
 
 export const RequestAvatar: React.FC<RequestAvatarProps> = ({
@@ -96,19 +98,41 @@ export const RequestAvatar: React.FC<RequestAvatarProps> = ({
 	secondAvatarUri = null,
 	isGroup = false,
 	style = null,
+	isVerified = false,
 }) => (
-	<View style={[style]}>
+	<View
+		style={[
+			{ height: size },
+			styles.row,
+			styles.flex,
+			styles.spaceCenter,
+			styles.alignItems,
+			style,
+		]}
+	>
+		<View style={[styles.flex, styles.end, styles.row, styles.alignItems, styles.spaceCenter]}>
+			<Text category='h6' style={[styles.textCenter, styles.fontFamily, styles.textBlack]}>
+				{name}
+			</Text>
+			{isVerified && (
+				<Icon
+					style={[styles.littleMarginLeft]}
+					name='checkmark-circle-2'
+					width={20}
+					height={20}
+					fill={colors.blue}
+				/>
+			)}
+		</View>
 		{!isGroup || !secondAvatarUri ? (
-			<CircleAvatar avatarUri={avatarUri} size={size} />
+			<CircleAvatar
+				avatarUri={avatarUri}
+				size={size}
+				style={[styles.absolute, { top: -size / 2 }]}
+			/>
 		) : (
 			<GroupCircleAvatar firstAvatarUri={avatarUri} secondAvatarUri={secondAvatarUri} />
 		)}
-		<Text
-			category='h6'
-			style={[styles.center, styles.fontFamily, styles.textBlack, styles.paddingTop]}
-		>
-			{name}
-		</Text>
 	</View>
 )
 
@@ -178,18 +202,18 @@ const BodyRequestContent: React.FC<{}> = () => (
 )
 
 const BodyRequest: React.FC<RequestProps> = ({ user }) => (
-	<View style={[styles.bigPadding]}>
-		<View style={[requestStyles.bodyRequestContent]}>
-			<RequestAvatar style={styles.center} {...user} />
+	<View style={[styles.paddingHorizontal, styles.paddingBottom]}>
+		<RequestAvatar style={styles.alignItems} {...user} size={100} />
+		<View style={[styles.paddingRight, styles.paddingLeft]}>
 			<TabBar tabType='contact' />
 			<BodyRequestContent />
-			<RequestButtons />
 		</View>
+		<RequestButtons />
 	</View>
 )
 
 export const Request: React.FC<RequestProps> = ({ user }) => (
-	<Modal diffHeight={60}>
+	<Modal>
 		<BodyRequest user={user} />
 	</Modal>
 )

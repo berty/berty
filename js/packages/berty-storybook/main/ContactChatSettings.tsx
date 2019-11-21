@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, View, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors, requestStyles } from '../styles'
+import { View, ScrollView } from 'react-native'
+import { Layout } from 'react-native-ui-kitten'
+import { styles, colors } from '../styles'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { UserProps, RequestProps } from '../shared-props/User'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
-import { CircleAvatar } from '../shared-components/CircleAvatar'
 import { TabBar } from '../shared-components/TabBar'
+import { RequestAvatar } from '../shared-components/Request'
+import HeaderSettings from '../shared-components/Header'
 
 //
 // ChatSettingsContact
@@ -30,15 +31,6 @@ type ContactChatSettingsBodyProps = {
 }
 
 // Styles
-const _contactChatSettingsStyles = StyleSheet.create({
-	headerAvatarVerifiedPadding: {
-		paddingLeft: 6,
-	},
-	header: {
-		marginTop: 90,
-		width: '92%',
-	},
-})
 
 const ContactChatSettingsHeaderContent: React.FC<{}> = () => (
 	<View style={[styles.bigMarginTop]}>
@@ -46,48 +38,24 @@ const ContactChatSettingsHeaderContent: React.FC<{}> = () => (
 	</View>
 )
 
-const ContactChatSettingsHeaderAvatar: React.FC<ContactChatSettingsHeaderAvatarProps> = ({
-	avatarUri,
-	name,
-	isToggle,
-}) => (
-	<View>
-		<CircleAvatar style={styles.alignItems} avatarUri={avatarUri} size={130} />
-		<View style={[styles.row, styles.center, styles.alignItems, styles.marginTop]}>
-			<Text category='h6' style={[styles.fontFamily, styles.textBlack, styles.textBold]}>
-				{name}
-			</Text>
-			{isToggle && (
-				<View style={[_contactChatSettingsStyles.headerAvatarVerifiedPadding]}>
-					<Icon name='checkmark-circle-2' width={20} height={20} fill={colors.blue} />
-				</View>
-			)}
-		</View>
-	</View>
-)
-
 const ContactChatSettingsHeader: React.FC<ContactChatSettingsHeaderProps> = ({
 	user,
 	isToggle,
 }) => (
-	<View style={[styles.bigPadding]}>
-		<View style={[requestStyles.bodyRequestContent]}>
-			<ContactChatSettingsHeaderAvatar {...user} isToggle={isToggle} />
-			<TabBar tabType='contact' />
-			<ContactChatSettingsHeaderContent />
-		</View>
-	</View>
-)
-
-const ContactChatSettingsHeaderNav: React.FC<{}> = () => (
 	<View style={[styles.padding]}>
-		<View style={[styles.row, styles.spaceBetween, styles.flex, styles.alignItems]}>
-			<TouchableOpacity>
-				<Icon name='arrow-back' width={25} height={25} fill={colors.white} />
-			</TouchableOpacity>
-			<TouchableOpacity>
-				<Icon name='share-outline' width={25} height={25} fill={colors.white} />
-			</TouchableOpacity>
+		<View
+			style={[
+				styles.modalBorderRadius,
+				styles.bgWhite,
+				styles.paddingHorizontal,
+				styles.paddingBottom,
+			]}
+		>
+			<RequestAvatar style={[styles.alignItems]} {...user} isVerified={isToggle} size={90} />
+			<View style={[styles.paddingHorizontal, styles.paddingBottom]}>
+				<TabBar tabType='contact' />
+				<ContactChatSettingsHeaderContent />
+			</View>
 		</View>
 	</View>
 )
@@ -111,35 +79,15 @@ const ContactChatSettingsBody: React.FC<ContactChatSettingsBodyProps> = ({
 )
 
 export const ContactChatSettings: React.FC<RequestProps> = ({ user }) => {
-	const [layout, setLayout] = useState()
 	const [isToggle, setIsToggle] = useState(true)
 
 	return (
 		<Layout style={[styles.flex]}>
 			<ScrollView>
-				<SafeAreaView style={[styles.bgBlue]}>
-					<View style={[styles.absolute, styles.left, styles.right, styles.bigMarginTop]}>
-						<View
-							style={[styles.bgBlue, styles.borderBottomLeftRadius, styles.borderBottomRightRadius]}
-						>
-							<View
-								onLayout={(e) => !layout && setLayout(e.nativeEvent.layout.height)}
-								style={[
-									styles.bgWhite,
-									styles.center,
-									styles.shadow,
-									styles.borderRadius,
-									_contactChatSettingsStyles.header,
-									layout && { height: layout - 90 },
-								]}
-							>
-								<ContactChatSettingsHeader user={user} isToggle={isToggle} />
-							</View>
-						</View>
-						<ContactChatSettingsBody isToggle={isToggle} setIsToggle={setIsToggle} />
-					</View>
-					<ContactChatSettingsHeaderNav />
-				</SafeAreaView>
+				<HeaderSettings actionIcon='share-outline'>
+					<ContactChatSettingsHeader user={user} isToggle={isToggle} />
+				</HeaderSettings>
+				<ContactChatSettingsBody isToggle={isToggle} setIsToggle={setIsToggle} />
 			</ScrollView>
 		</Layout>
 	)

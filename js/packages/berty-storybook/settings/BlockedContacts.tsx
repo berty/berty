@@ -2,7 +2,7 @@ import React from 'react'
 import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
-import { HeaderSettings } from './shared-components/Header'
+import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 
@@ -77,9 +77,8 @@ const BlockedContactItem: React.FC<BlockedContactsItempProps> = ({ avatarUri, na
 const BodyBlockedContacts: React.FC<BlockedContactsListProps> = ({ items }) => (
 	<View style={[styles.flex, styles.padding, styles.marginBottom]}>
 		<FactionButtonSetting style={[styles.littlePaddingTop, styles.littlePaddingBottom]}>
-			{items.map((data) => (
-				<BlockedContactItem avatarUri={data.avatarUri} name={data.name} />
-			))}
+			{items &&
+				items.map((data) => <BlockedContactItem avatarUri={data.avatarUri} name={data.name} />)}
 		</FactionButtonSetting>
 	</View>
 )

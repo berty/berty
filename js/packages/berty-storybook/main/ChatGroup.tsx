@@ -2,12 +2,11 @@ import React, { useState } from 'react'
 import {
 	TouchableOpacity,
 	View,
-	Image,
 	SafeAreaView,
 	StyleSheet,
 	ScrollView,
-	LayoutChangeEvent,
 	StyleProp,
+	StatusBar,
 } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { styles, colors } from '../styles'
@@ -283,8 +282,9 @@ export const ChatGroup: React.FC<RequestProps> = ({ user }) => {
 	return (
 		<Layout style={[styles.flex]}>
 			<SafeAreaView style={[StyleSheet.absoluteFill]}>
+				<StatusBar backgroundColor='#00BCD4' barStyle='dark-content' />
 				<HeaderChatGroup {...user} />
-				<ScrollView contentContainerStyle={[isFocus && styles.littlePaddingBottom]}>
+				<ScrollView>
 					<InfosChatGroup user={user} />
 					<ChatGroupMessageList user={user} />
 				</ScrollView>
