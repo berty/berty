@@ -9,7 +9,6 @@ import * as Onboarding from './Onboarding'
 import * as Main from './main'
 import * as Chat from './chat'
 import * as Settings from './settings'
-
 import addons from '@storybook/addons'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '@berty-tech/berty-i18n'
@@ -86,6 +85,13 @@ stories
 	.add(Routes.Chat.GroupSettings, () => (
 		<Chat.GroupChatSettings route={{ params: faker.berty.chatmodel.Conversation[0] }} />
 	))
+	.add('Main.RequestSent', () => <Main.RequestSent user={fakeOneUser} />)
+	.add('Main.ListModal', () => <Main.ListModal />)
+	.add('Main.CreateGroup', () => <Main.CreateGroup />)
+	.add('Main.CreateGroup2', () => <Main.CreateGroup2 />)
+	.add('Main.CreateGroup3', () => <Main.CreateGroup3 />)
+	.add('Main.Search', () => <Main.Search />)
+	.add('Main.SearchResults', () => <Main.SearchResults user={fakeOneUser} />)
 	.add(Routes.Settings.Home, () => <Settings.Home />)
 	.add(Routes.Settings.MyBertyId, () => <Settings.MyBertyId user={fakeOneUser} />)
 	.add(Routes.Settings.EditProfile, () => <Settings.EditProfile />)

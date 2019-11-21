@@ -1,7 +1,8 @@
 import React from 'react'
-import { View, SafeAreaView, StyleSheet } from 'react-native'
+import { View, SafeAreaView, StyleSheet, Dimensions } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { styles, colors } from '../styles'
+import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -14,16 +15,6 @@ type ScanInfosTextProps = {
 
 // Styles
 const _scanStyles = StyleSheet.create({
-	scan: {
-		borderTopLeftRadius: 25,
-		borderTopRightRadius: 25,
-		height: '100%',
-	},
-	headerToggleBar: {
-		borderWidth: 2.5,
-		width: '12%',
-		borderRadius: 4,
-	},
 	body: {
 		borderWidth: 10,
 		height: 300,
@@ -34,32 +25,6 @@ const _scanStyles = StyleSheet.create({
 		borderRadius: 5,
 	},
 })
-
-const ScanHeader: React.FC<{}> = () => (
-	<View>
-		<View
-			style={[
-				styles.littleMarginTop,
-				styles.center,
-				styles.bgLightGrey,
-				_scanStyles.headerToggleBar,
-				{ borderColor: colors.lightGrey },
-			]}
-		/>
-		<View style={[styles.row, styles.padding, styles.spaceBetween, styles.alignItems]}>
-			<Text style={[styles.fontFamily, styles.textWhite]} category='h4'>
-				Scan QR code
-			</Text>
-			<Icon
-				style={[styles.flex, styles.right]}
-				name='code-outline'
-				width={40}
-				height={40}
-				fill={colors.white}
-			/>
-		</View>
-	</View>
-)
 
 const ScanBody: React.FC<{}> = () => (
 	<View style={[styles.padding]}>
@@ -83,14 +48,40 @@ const ScanInfos: React.FC<{}> = () => (
 	</View>
 )
 
-export const Scan: React.FC<{}> = () => (
-	<Layout style={[styles.flex]}>
-		<SafeAreaView>
-			<View style={[styles.bgRed, _scanStyles.scan]}>
-				<ScanHeader />
-				<ScanBody />
-				<ScanInfos />
-			</View>
-		</SafeAreaView>
-	</Layout>
+const Screen = Dimensions.get('window')
+
+const ScanComponent: React.FC<{}> = () => (
+	<View style={{ height: Screen.height }}>
+		<ScanBody />
+		<ScanInfos />
+	</View>
 )
+
+export const Scan: React.FC<{}> = () => {
+	const firstNotToggledPoint = Screen.height - 100
+	const firstToggledPoint = 50
+
+	return (
+		<Layout style={[styles.flex]}>
+			<SafeAreaView style={[styles.flex]}>
+				<SDTSModalComponent
+					rows={[
+						{
+							toggledPoint: firstToggledPoint,
+							notToggledPoint: firstNotToggledPoint,
+							initialPoint: firstToggledPoint,
+							title: 'Scan QR code',
+							titleColor: colors.white,
+							icon: 'code-outline',
+							iconColor: colors.white,
+							bgColor: colors.red,
+							maxHeight: Screen.height - 90,
+						},
+					]}
+				>
+					<ScanComponent />
+				</SDTSModalComponent>
+			</SafeAreaView>
+		</Layout>
+	)
+}

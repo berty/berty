@@ -140,9 +140,9 @@ export const styles = StyleSheet.create({
 	paddingRight: { paddingRight: 16 },
 	paddingBottom: { paddingBottom: 16 },
 
-	littlePadding: { padding: 12 },
 	littlePaddingHorizontal: { paddingHorizontal: 12 },
 	littlePaddingVertical: { paddingVertical: 12 },
+	littlePadding: { padding: 12 },
 	littlePaddingTop: { paddingTop: 12 },
 	littlePaddingBottom: { paddingBottom: 12 },
 	littlePaddingRight: { paddingRight: 12 },
