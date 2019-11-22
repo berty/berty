@@ -59,6 +59,7 @@ deps.web: deps
 deps.darwin: deps
 
 .PHONY: start
+start: export PWD := $(PWD)
 start: port ?= 8081
 start: host ?= 127.0.0.1
 start: deps
