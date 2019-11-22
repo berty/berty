@@ -64,6 +64,10 @@ start: port ?= 8081
 start: host ?= 127.0.0.1
 start: deps
 	$(call check-program, lsof)
+	kill $$(lsof -t -i :$(port)) 1>/dev/null 2>/dev/null || true
+	@echo "Waiting for metro to die.. ($(shell date))"
+	@while ps -p $$(lsof -t -i :$(port)) 1>/dev/null 2>/dev/null; do sleep 1;done;
+	@echo "Metro dead ($(shell date))"
 	cd $(PWD) && $(react-native) start \
 		--port=$(port) \
 		--host=$(host) \
