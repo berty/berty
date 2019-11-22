@@ -46,7 +46,7 @@ $(PWD)/ios/Podfile: $(PWD)/node_modules
 	cat $< > $@
 
 deps.android: export PWD := $(PWD)
-deps.android: deps $(PWD)/node_modules/react-native/react.gradle.orig
+deps.android: deps $(PWD)/node_modules/react-native/react.gradle.orig $(if $(filter $(config), development), $(HOME)/.android/debug.keystore)
 
 $(PWD)/node_modules/react-native/react.gradle.orig: $(PWD)/patch/react.gradle.patch
 	@echo "patching file $(patsubst %.orig, %, $@)"
