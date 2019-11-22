@@ -72,12 +72,11 @@ start: deps
 	@echo "Metro dead ($(shell date))"
 	cd $(PWD) && $(react-native) start \
 		--port=$(port) \
-		--host=$(host) \
-		& \
+		--host=$(host)
 
 .PHONY: run
 run: export PWD := $(PWD)
-run: deps $(if $(filter $(target), debug), start)
+run: deps
 	$(if $(filter $(platform), android), @$(berty_root)/build/shell/check-java.sh 18)
 	$(if $(filter $(platform), android), \
 		$(if $(filter $(config), development), ANDROID_SDK_ROOT=$$HOME/.android clisim -af))
@@ -90,6 +89,17 @@ run: deps $(if $(filter $(target), debug), start)
 		$(if $(filter $(platform), ios), --configuration=$(if $(filter $(config), development),Debug,Release)) \
 		$(if $(filter $(platform), ios), --scheme=$(target)) \
 		$(if $(filter $(platform), ios), --simulator='$(device)') \
+
+# Use ctrl-b then pageup/pagedown to enter scroll, use escape to exit scroll mode
+# Use cltr-b then & to close
+# tmux: https://duckduckgo.com/?q=tmux+cheat+sheet&t=ffab&atb=v194-5__&ia=cheatsheet&iax=1
+.PHONY: run.%.tmux
+run.%.tmux: export PWD := $(PWD)
+run.%.tmux: deps
+	cd $(berty_root)/js && tmux \
+		new-session '$(MAKE) start' \; \
+		split-window 'PLATFORM=$* $(berty_root)/build/shell/shortcut_build.sh' \; \
+		set-option remain-on-exit on
 
 .PHONY: bundle
 bundle: deps.$(platform)
