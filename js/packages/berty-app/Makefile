@@ -80,7 +80,7 @@ run: export PWD := $(PWD)
 run: deps
 	$(if $(filter $(platform), android), @$(berty_root)/build/shell/check-java.sh 18)
 	$(if $(filter $(platform), android), \
-		$(if $(filter $(config), development), ANDROID_SDK_ROOT=$$HOME/.android $(clisim) -af))
+		$(if $(filter $(config), development), $(clisim) -af))
 	cd $(PWD) && $(react-native) run-$(platform) \
 		--no-packager \
 		$(if $(filter $(platform), android), --variant=$(target)) \
