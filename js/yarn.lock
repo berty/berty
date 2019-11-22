@@ -5564,6 +5564,7 @@ clipboard@^2.0.0:
 clisim@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/clisim/-/clisim-2.4.0.tgz#967c3d8a03fe0e5e71dc5425f00c0734fcbe4ac6"
+  integrity sha512-xltlKL0Cwa0dn7Ys/6ypmtgcH5sgJVRLFytA72ARemOEl6oweRqGdBpRxqu82CDlOpUbVlLGU+C9OIYWCRw51g==
   dependencies:
     adbkit "^2.9.0"
     chalk "^2.4.2"

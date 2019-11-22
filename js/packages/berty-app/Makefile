@@ -4,6 +4,7 @@ export PATH := $(PWD)/node_modules/.bin:$(PATH)
 berty_root ?= $(abspath $(PWD)/../../..)
 
 react-native := $(PWD)/node_modules/.bin/react-native
+clisim := $(PWD)/node_modules/.bin/clisim
 pod := pod
 bundle := bundle
 
@@ -79,7 +80,7 @@ run: export PWD := $(PWD)
 run: deps
 	$(if $(filter $(platform), android), @$(berty_root)/build/shell/check-java.sh 18)
 	$(if $(filter $(platform), android), \
-		$(if $(filter $(config), development), ANDROID_SDK_ROOT=$$HOME/.android clisim -af))
+		$(if $(filter $(config), development), ANDROID_SDK_ROOT=$$HOME/.android $(clisim) -af))
 	cd $(PWD) && $(react-native) run-$(platform) \
 		--no-packager \
 		$(if $(filter $(platform), android), --variant=$(target)) \
