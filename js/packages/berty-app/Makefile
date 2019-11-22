@@ -14,6 +14,8 @@ entry-file ?= index.js
 build-dir ?= $(PWD)/build
 dest ?= $(build-dir)/$(platform)-$(target)/$(config)
 
+check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "No $(exec) in PATH")))
+
 .DEFAULT_GOAL := run
 
 export ENVFILE ?= $(shell \
@@ -60,7 +62,7 @@ deps.darwin: deps
 start: port ?= 8081
 start: host ?= 127.0.0.1
 start: deps
-	kill $$(lsof -t -i :$(port)) || true
+	$(call check-program, lsof)
 	cd $(PWD) && $(react-native) start \
 		--port=$(port) \
 		--host=$(host) \
