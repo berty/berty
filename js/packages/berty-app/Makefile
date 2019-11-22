@@ -1,6 +1,8 @@
 export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
+berty_root ?= $(abspath $(PWD)/../../..)
+
 react-native := $(PWD)/node_modules/.bin/react-native
 pod := pod
 bundle := bundle
@@ -76,6 +78,7 @@ start: deps
 .PHONY: run
 run: export PWD := $(PWD)
 run: deps $(if $(filter $(target), debug), start)
+	$(if $(filter $(platform), android), @$(berty_root)/build/shell/check-java.sh 18)
 	$(if $(filter $(platform), android), \
 		$(if $(filter $(config), development), ANDROID_SDK_ROOT=$$HOME/.android clisim -af))
 	cd $(PWD) && $(react-native) run-$(platform) \
