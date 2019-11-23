@@ -79,6 +79,7 @@ start: deps
 run: export PWD := $(PWD)
 run: deps
 	$(if $(filter $(platform), android), @$(berty_root)/build/shell/check-java.sh 18)
+	$(if $(filter $(platform), android), $(call check-program, emulator))
 	$(if $(filter $(platform), android), \
 		$(if $(filter $(config), development), $(clisim) -af))
 	cd $(PWD) && $(react-native) run-$(platform) \
