@@ -61,27 +61,33 @@ deps.web: deps
 
 deps.darwin: deps
 
-.PHONY: start
-start: export PWD := $(PWD)
-start: port ?= 8081
-start: host ?= 127.0.0.1
-start: deps
+.PHONY: start.metro
+start.metro: export PWD := $(PWD)
+start.metro: port ?= 8081
+start.metro: host ?= 127.0.0.1
+start.metro: deps
 	$(call check-program, lsof)
 	kill $$(lsof -t -i :$(port)) 1>/dev/null 2>/dev/null || true
 	@echo "Waiting for metro to die.. ($(shell date))"
-	@while ps -p $$(lsof -t -i :$(port)) 1>/dev/null 2>/dev/null; do sleep 1;done;
+	while ps -p $$(lsof -t -i :$(port)) 1>/dev/null 2>/dev/null; do sleep 1;done;
 	@echo "Metro dead ($(shell date))"
 	cd $(PWD) && $(react-native) start \
 		--port=$(port) \
 		--host=$(host)
 
+.PHONY: start.emulator
+start.emulator: export PWD := $(PWD)
+start.emulator: deps
+	$(if $(filter $(platform), android), \
+		$(call check-program, emulator) \
+		$(if $(ANDROID_SDK_ROOT),, $(error "ANDROID_SDK_ROOT variable not defined")) \
+		ANDROID_HOME=$(ANDROID_SDK_ROOT) $(clisim) -af & \
+	)
+
 .PHONY: run
 run: export PWD := $(PWD)
-run: deps
-	$(if $(filter $(platform), android), @$(berty_root)/build/shell/check-java.sh 18)
-	$(if $(filter $(platform), android), $(call check-program, emulator))
-	$(if $(filter $(platform), android), \
-		$(if $(filter $(config), development), $(clisim) -af))
+run: deps $(if $(filter $(config), development), start.emulator)
+	$(if $(filter $(platform), android), $(berty_root)/build/shell/check-java.sh 18)
 	cd $(PWD) && $(react-native) run-$(platform) \
 		--no-packager \
 		$(if $(filter $(platform), android), --variant=$(target)) \
@@ -90,7 +96,7 @@ run: deps
 			$(if $(filter-out $(target), store), --appIdSuffix=$(target))) \
 		$(if $(filter $(platform), ios), --configuration=$(if $(filter $(config), development),Debug,Release)) \
 		$(if $(filter $(platform), ios), --scheme=$(target)) \
-		$(if $(filter $(platform), ios), --simulator='$(device)') \
+		$(if $(filter $(platform), ios), --simulator='$(device)')
 
 # Use ctrl-b then pageup/pagedown to enter scroll, use escape to exit scroll mode
 # Use cltr-b then & to close
@@ -99,7 +105,7 @@ run: deps
 run.%.tmux: export PWD := $(PWD)
 run.%.tmux: deps
 	cd $(berty_root)/js && tmux \
-		new-session '$(MAKE) start' \; \
+		new-session '$(MAKE) start.metro' \; \
 		split-window 'PLATFORM=$* $(berty_root)/build/shell/shortcut_build.sh' \; \
 		set-option remain-on-exit on
 
@@ -213,19 +219,19 @@ config.development: config := development
 config.production: config := production
 
 .PHONY: \
-	start.android \
-	start.ios \
-	start.web \
-	start.darwin \
+	start.metro.android \
+	start.metro.ios \
+	start.metro.web \
+	start.metro.darwin \
 
-start.ios: platform := ios
-start.ios: start
-start.android: platform := android
-start.android: start
-start.web: platform := web
-start.web: start
-start.darwin: platform := darwin
-start.darwin: start
+start.metro.ios: platform := ios
+start.metro.ios: start.metro
+start.metro.android: platform := android
+start.metro.android: start.metro
+start.metro.web: platform := web
+start.metro.web: start.metro
+start.metro.darwin: platform := darwin
+start.metro.darwin: start.metro
 
 .PHONY: \
 	log.android \
