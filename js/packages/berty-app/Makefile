@@ -75,14 +75,14 @@ start.metro: deps
 		--port=$(port) \
 		--host=$(host)
 
+
 .PHONY: start.emulator
 start.emulator: export PWD := $(PWD)
 start.emulator: deps
 	$(if $(filter $(platform), android), \
 		$(call check-program, adb) \
 		$(call check-program, emulator) \
-		$(if $(ANDROID_SDK_ROOT),, $(error "ANDROID_SDK_ROOT variable not defined")) \
-		ANDROID_HOME=$(ANDROID_SDK_ROOT) $(clisim) -af & \
+		$(clisim) -af & \
 	)
 	$(if $(filter $(platform), android), adb wait-for-device)
 
