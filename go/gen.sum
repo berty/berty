@@ -1,12 +1,9 @@
 ccafc91aeba8f90890022b94dbac0ab2190c8620  ../api/bertychat.proto
 a68e876ac502b90847f468066f3b68b02a8bbed0  ../api/bertyprotocol.proto
 dca713b79d06f72d26177098a2af23b5d30d911e  ../api/chatmodel.proto
-6382cb3045cd2e12ffa65a326138570df867cbc3  ../api/errcode.proto
+bcbc1bb4bccee78792846d0f83156abee0befc3f  ../api/errcode.proto
 d915a30248e7105cb1290f5798382ccf0bdb935a  ../api/go-internal/handshake.proto
-d065506424cab800ecca466ceca2f07dd71893ce  ../api/go-internal/log_entry_member.proto
-47cca8cbef29c059d3b9a7295c86e51ab20d2994  ../api/go-internal/log_entry_message.proto
-734c4c245c493f3f09df2f6c32d29e642fcbde83  ../api/go-internal/log_entry_secret.proto
-c4d8ae1bb2b1e3119bed152e705f4e84129f48c6  ../api/go-internal/log_entry_setting.proto
-6d2d3712bf8fdb7772f9b7e536b8ad8a75868637  ../api/go-internal/protocolmodel.proto
+aaeea37d30e9d0eb583ddc3e436790f66d466a22  ../api/go-internal/protocolmodel.proto
 e90229dbdbf76864981801538947a192cb62b448  ../api/go-internal/sigchain.proto
+b37618290dbb86e13549c95c2e0fafd144560ccc  ../api/go-internal/store_entry.proto
 0891d73bd6f2b145bc95603a6c851b70b86606ee  Makefile

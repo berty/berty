@@ -29,13 +29,13 @@ func TestUsage(t *testing.T) {
 		GroupMemberPubKey:          []byte("groupMemberA"),
 		ContactAccountBindingProof: []byte("groupMemberABindingProof"),
 		Devices: []*GroupMemberDevice{
-			&GroupMemberDevice{
+			{
 				GroupMemberDevicePubKey: []byte("groupMemberDeviceA1"),
 				DerivationState:         []byte("groupMemberDeviceA1Derivation"),
 				DerivationCounter:       110,
 				DerivationNextHotp:      []byte("groupMemberDeviceA1NextHOTP"),
 			},
-			&GroupMemberDevice{
+			{
 				GroupMemberDevicePubKey: []byte("groupMemberDeviceA2"),
 				DerivationState:         []byte("groupMemberDeviceA2Derivation"),
 				DerivationCounter:       120,
@@ -50,13 +50,13 @@ func TestUsage(t *testing.T) {
 		ContactAccountBindingProof: []byte("groupMemberBBindingProof"),
 		Metadata:                   nil,
 		Devices: []*GroupMemberDevice{
-			&GroupMemberDevice{
+			{
 				GroupMemberDevicePubKey: []byte("groupMemberDeviceB1"),
 				DerivationState:         []byte("groupMemberDeviceB1Derivation"),
 				DerivationCounter:       210,
 				DerivationNextHotp:      []byte("groupMemberDeviceB1NextHOTP"),
 			},
-			&GroupMemberDevice{
+			{
 				GroupMemberDevicePubKey: []byte("groupMemberDeviceB2"),
 				DerivationState:         []byte("groupMemberDeviceB2Derivation"),
 				DerivationCounter:       220,
@@ -68,7 +68,7 @@ func TestUsage(t *testing.T) {
 	}
 	groupAB := &GroupInfo{
 		GroupPubKey:              []byte("groupAB"),
-		SharedSecret:             []byte("groupABSharedSecret"),
+		GroupSigningKey:          []byte("groupABSigningKey"),
 		Metadata:                 []byte("groupABMetadata"),
 		Audience:                 GroupInfo_OneToOne,
 		Version:                  42,
@@ -98,11 +98,11 @@ func TestUsage(t *testing.T) {
 		PublicRendezvousPointEnabled: true,
 		SigChain:                     []byte("accountASigChain"),
 		Devices: []*MyselfDevice{
-			&MyselfDevice{
+			{
 				DevicePubKey:  []byte("accountADevice1PubKey"),
 				DevicePrivKey: []byte("accountADevice1PrivateKey"),
 			},
-			&MyselfDevice{
+			{
 				DevicePubKey: []byte("accountADevice2PubKey"),
 			},
 		},

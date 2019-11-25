@@ -12,11 +12,11 @@ type EnumValueInt32 int32
 type GroupInfo struct {
 	// Fields
 	// - Group details/meta
-	GroupPubKey  []byte         `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty" gorm:"primary_key"`
-	SharedSecret []byte         `protobuf:"bytes,2,opt,name=shared_secret,json=sharedSecret,proto3" json:"shared_secret,omitempty"`
-	Metadata     []byte         `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Audience     EnumValueInt32 `protobuf:"varint,4,opt,name=audience,proto3,enum=berty.protocolmodel.GroupInfo_GroupAudience" json:"audience,omitempty" gorm:"index"`
-	Version      uint32         `protobuf:"varint,5,opt,name=version,proto3" json:"version,omitempty"`
+	GroupPubKey     []byte         `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty" gorm:"primary_key"`
+	GroupSigningKey []byte         `protobuf:"bytes,2,opt,name=group_signing_key,json=groupSigningKey,proto3" json:"group_signing_key,omitempty"`
+	Metadata        []byte         `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Audience        EnumValueInt32 `protobuf:"varint,4,opt,name=audience,proto3,enum=berty.protocolmodel.GroupInfo_GroupAudience" json:"audience,omitempty" gorm:"index"`
+	Version         uint32         `protobuf:"varint,5,opt,name=version,proto3" json:"version,omitempty"`
 	// - Own secrets
 	SelfPrivKeyAccount   []byte `protobuf:"bytes,6,opt,name=self_priv_key_account,json=selfPrivKeyAccount,proto3" json:"self_priv_key_account,omitempty"`
 	SelfPrivKeyDevice    []byte `protobuf:"bytes,7,opt,name=self_priv_key_device,json=selfPrivKeyDevice,proto3" json:"self_priv_key_device,omitempty"`
@@ -41,7 +41,7 @@ type GroupIncomingRequest struct {
 	InviterMemberPubKey  []byte `protobuf:"bytes,2,opt,name=inviter_member_pub_key,json=inviterMemberPubKey,proto3" json:"inviter_member_pub_key,omitempty"`
 	InvitationSig        []byte `protobuf:"bytes,3,opt,name=invitation_sig,json=invitationSig,proto3" json:"invitation_sig,omitempty"`
 	InvitationPrivKey    []byte `protobuf:"bytes,4,opt,name=invitation_priv_key,json=invitationPrivKey,proto3" json:"invitation_priv_key,omitempty"`
-	GroupSharedSecret    []byte `protobuf:"bytes,5,opt,name=group_shared_secret,json=groupSharedSecret,proto3" json:"group_shared_secret,omitempty"`
+	GroupSigningKey      []byte `protobuf:"bytes,5,opt,name=group_signing_key,json=groupSigningKey,proto3" json:"group_signing_key,omitempty"`
 	GroupVersion         []byte `protobuf:"bytes,6,opt,name=group_version,json=groupVersion,proto3" json:"group_version,omitempty"`
 	EssentialMetadata    []byte `protobuf:"bytes,7,opt,name=essential_metadata,json=essentialMetadata,proto3" json:"essential_metadata,omitempty"`
 	InviterContactPubKey []byte `protobuf:"bytes,9,opt,name=inviter_contact_pub_key,json=inviterContactPubKey,proto3" json:"inviter_contact_pub_key,omitempty"`
