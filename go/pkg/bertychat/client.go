@@ -4,6 +4,7 @@ import (
 	"berty.tech/go/internal/chatdb"
 	"berty.tech/go/pkg/bertyprotocol"
 	"berty.tech/go/pkg/errcode"
+	"github.com/bwmarrin/snowflake"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 )
@@ -20,30 +21,41 @@ type Client interface {
 
 type client struct {
 	// variables
-	db       *gorm.DB
-	protocol bertyprotocol.Client
-	logger   *zap.Logger
+	db            *gorm.DB
+	protocol      bertyprotocol.Client
+	logger        *zap.Logger
+	snowflakeNode *snowflake.Node
 }
 
 // Opts contains optional configuration flags for building a new Client
 type Opts struct {
-	Logger *zap.Logger
+	Logger        *zap.Logger
+	SnowflakeNode *snowflake.Node
 }
 
 // New initializes a new Client
 func New(db *gorm.DB, protocol bertyprotocol.Client, opts Opts) (Client, error) {
 	client := client{
-		db:       db,
-		protocol: protocol,
-		logger:   opts.Logger,
+		db:            db,
+		protocol:      protocol,
+		logger:        opts.Logger,
+		snowflakeNode: opts.SnowflakeNode,
 	}
 
 	if opts.Logger == nil {
 		client.logger = zap.NewNop()
 	}
 
+	if opts.SnowflakeNode == nil {
+		var err error
+		client.snowflakeNode, err = snowflake.NewNode(1)
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
 	var err error
-	client.db, err = chatdb.InitMigrate(client.db, client.logger.Named("datastore"))
+	client.db, err = chatdb.InitMigrate(client.db, client.snowflakeNode, client.logger.Named("datastore"))
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

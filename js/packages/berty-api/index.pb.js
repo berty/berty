@@ -257,24 +257,17 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             nested: {
               Request: {
                 fields: {
-                  id: {
-                    type: "uint64",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "ID"
-                    }
-                  },
                   title: {
                     type: "string",
-                    id: 2
+                    id: 1
                   },
                   topic: {
                     type: "string",
-                    id: 3
+                    id: 2
                   },
                   avatarUri: {
                     type: "string",
-                    id: 4,
+                    id: 3,
                     options: {
                       "(gogoproto.customname)": "AvatarURI"
                     }
@@ -282,7 +275,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 }
               },
               Reply: {
-                fields: {}
+                fields: {
+                  conversation: {
+                    type: "chatmodel.Conversation",
+                    id: 1
+                  }
+                }
               }
             }
           },
@@ -1032,7 +1030,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               avatarUri: {
                 type: "string",
-                id: 101
+                id: 101,
+                options: {
+                  "(gogoproto.customname)": "AvatarURI"
+                }
               },
               statusEmoji: {
                 type: "bytes",
@@ -1197,7 +1198,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               avatarUri: {
                 type: "string",
-                id: 102
+                id: 102,
+                options: {
+                  "(gogoproto.customname)": "AvatarURI"
+                }
               },
               kind: {
                 type: "Kind",
@@ -1294,7 +1298,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               avatarUri: {
                 type: "string",
-                id: 101
+                id: 101,
+                options: {
+                  "(gogoproto.customname)": "AvatarURI"
+                }
               },
               role: {
                 type: "Role",

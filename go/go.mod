@@ -6,6 +6,7 @@ require (
 	berty.tech/go-ipfs-log v0.0.0-20191118100004-2fb04713cace
 	berty.tech/go-orbit-db v0.0.2-0.20191118172355-7d7e876ee5d4
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.3.2
 	github.com/improbable-eng/grpc-web v0.11.0

@@ -2,8 +2,10 @@ package bertychat
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 
+	"berty.tech/go/pkg/chatmodel"
 	"berty.tech/go/pkg/errcode"
 )
 
@@ -28,8 +30,26 @@ func (c *client) ConversationGet(ctx context.Context, req *ConversationGet_Reque
 	}, nil
 }
 
-func (c *client) ConversationCreate(context.Context, *ConversationCreate_Request) (*ConversationCreate_Reply, error) {
-	return nil, errcode.ErrNotImplemented
+func (c *client) ConversationCreate(ctx context.Context, req *ConversationCreate_Request) (*ConversationCreate_Reply, error) {
+	if req == nil || req.Title == "" {
+		return nil, errcode.TODO.Wrap(fmt.Errorf("invalid input"))
+	}
+
+	conversation := chatmodel.Conversation{
+		Title:     req.Title,
+		Topic:     req.Topic,
+		AvatarURI: req.AvatarURI,
+	}
+
+	err := c.db.Create(&conversation).Error
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	reply := ConversationCreate_Reply{
+		Conversation: &conversation,
+	}
+	return &reply, nil
 }
 
 func (c *client) ConversationUpdate(context.Context, *ConversationUpdate_Request) (*ConversationUpdate_Reply, error) {

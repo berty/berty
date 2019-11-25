@@ -445,7 +445,6 @@ export namespace berty {
         namespace ConversationCreate {
 
             interface IRequest {
-                id: (number|Long);
                 title: (string);
                 topic: (string);
                 avatarUri: (string);
@@ -453,7 +452,6 @@ export namespace berty {
 
             class Request implements IRequest {
 
-                public id: (number|Long);
                 public title: string;
                 public topic: string;
                 public avatarUri: string;
@@ -469,10 +467,12 @@ export namespace berty {
             }
 
             interface IReply {
+                conversation?: (berty.chatmodel.IConversation|null);
             }
 
             class Reply implements IReply {
 
+                public conversation?: (berty.chatmodel.IConversation|null);
                 public static create(properties?: berty.chat.ConversationCreate.IReply): berty.chat.ConversationCreate.Reply;
                 public static encode(message: berty.chat.ConversationCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.chat.ConversationCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;

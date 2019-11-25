@@ -435,13 +435,16 @@ streamed
 
 ### ConversationCreate.Reply
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| conversation | [berty.chatmodel.Conversation](#berty.chatmodel.Conversation) |  |  |
+
 <a name="berty.chat.ConversationCreate.Request"></a>
 
 ### ConversationCreate.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| id | [uint64](#uint64) |  |  |
 | title | [string](#string) |  |  |
 | topic | [string](#string) |  |  |
 | avatar_uri | [string](#string) |  |  |

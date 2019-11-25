@@ -1,6 +1,6 @@
-ccafc91aeba8f90890022b94dbac0ab2190c8620  ../api/bertychat.proto
+e77fa497828c56c30e3c2aff25c6f5f49b608b08  ../api/bertychat.proto
 a68e876ac502b90847f468066f3b68b02a8bbed0  ../api/bertyprotocol.proto
-dca713b79d06f72d26177098a2af23b5d30d911e  ../api/chatmodel.proto
+ae5007a9bd827eb824dc7bcf33c168cc459a32ac  ../api/chatmodel.proto
 bcbc1bb4bccee78792846d0f83156abee0befc3f  ../api/errcode.proto
 d915a30248e7105cb1290f5798382ccf0bdb935a  ../api/go-internal/handshake.proto
 aaeea37d30e9d0eb583ddc3e436790f66d466a22  ../api/go-internal/protocolmodel.proto

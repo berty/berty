@@ -136,12 +136,13 @@ message ConversationGet {
 
 message ConversationCreate {
   message Request {
-    uint64 id = 1 [(gogoproto.customname) = "ID"];
-    string title = 2;
-    string topic = 3;
-    string avatar_uri = 4 [(gogoproto.customname) = "AvatarURI"];
+    string title = 1;
+    string topic = 2;
+    string avatar_uri = 3 [(gogoproto.customname) = "AvatarURI"];
   }
-  message Reply {}
+  message Reply {
+    chatmodel.Conversation conversation = 1;
+  }
 }
 
 message ConversationUpdate {

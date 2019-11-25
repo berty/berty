@@ -20,7 +20,7 @@ message Contact {
 
   // fields
   string name = 100;
-  string avatar_uri = 101;
+  string avatar_uri = 101 [(gogoproto.customname) = "AvatarURI"];
   bytes status_emoji = 102;
   string status_text = 103;
 
@@ -76,7 +76,7 @@ message Conversation {
   // fields
   string title = 100;
   string topic = 101;
-  string avatar_uri = 102;
+  string avatar_uri = 102 [(gogoproto.customname) = "AvatarURI"];
 
   Kind kind = 103;
   enum Kind {
@@ -107,7 +107,7 @@ message Member {
 
   // fields
   string name = 100;
-  string avatar_uri = 101;
+  string avatar_uri = 101 [(gogoproto.customname) = "AvatarURI"];
 
   Role role = 102;
   enum Role {
@@ -232,4 +232,3 @@ message Account {
   bool hidden = 104;
   bool locked = 105;
 }
-

@@ -3,6 +3,7 @@ package chatdb
 import (
 	"testing"
 
+	"github.com/bwmarrin/snowflake"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 )
@@ -13,17 +14,22 @@ func TestingSqliteDB(t *testing.T, logger *zap.Logger) *gorm.DB {
 
 	db, err := gorm.Open("sqlite3", ":memory:")
 	if err != nil {
-		t.Fatalf("failed to initialize in-memory sqlite srever: %v", err)
+		t.Fatalf("gorm open: %v", err)
 	}
 
-	db, err = Init(db, logger)
+	snowflakeNode, err := snowflake.NewNode(42)
 	if err != nil {
-		t.Fatalf("failed to configure database: %v", err)
+		t.Fatalf("init snowflake: %v", err)
+	}
+
+	db, err = Init(db, snowflakeNode, logger)
+	if err != nil {
+		t.Fatalf("init db: %v", err)
 	}
 
 	err = Migrate(db, false)
 	if err != nil {
-		t.Fatalf("failed to run migrations: %v", err)
+		t.Fatalf("run migrations: %v", err)
 	}
 
 	return db
