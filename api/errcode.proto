@@ -45,6 +45,11 @@ enum ErrCode {
   ErrHandshakeSessionInvalid = 2013;
   ErrHandshakeKeyNotInSigChain = 2014;
   ErrHandshakeDecrypt = 2015;
+  ErrGroupMemberLogEventOpen = 2020;
+  ErrGroupMemberLogEventSignature = 2021;
+  ErrGroupMemberLogWrongInviter = 2022;
+  ErrGroupMemberUnknownGroupID = 2023;
+  ErrGroupMemberMissingSecrets = 2024;
 
   //
   // Chat Bridge (starting at 3001)

@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package berty.group;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option go_package = "berty.tech/go/internal/group";
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+
+message StoreEncryptedEntry {
+  bytes encrypted_payload = 1;
+  bytes signature = 2;
+}
+
+message MemberEntryPayload {
+  bytes member_pub_key = 1;
+  bytes member_pub_key_signature = 2; // Signed by invitation_priv_key
+  bytes member_device_pub_key = 3;
+  bytes member_device_pub_key_signature = 4; // Signed by member_priv_key
+
+  bytes inviter_device_pub_key = 5;
+  bytes invitation_pub_key = 6;
+  bytes invitation_pub_key_signature = 7; // Signed by inviter_member_priv_key
+}
+
+message MessageEntryEnvelope {
+  uint64 counter = 1;
+  bytes encrypted_payload = 2;
+  bytes signature = 3; // Signed with member_device_pub_key of author
+}
+
+message MessageEntryPayload {
+  enum PayloadType {
+    PayloadTypeUnknown = 0;
+    PayloadTypeMessage = 1;
+    PayloadTypeInvitation = 2;
+  }
+
+  PayloadType type = 1;
+  bytes message_body = 2;
+  Invitation invitation = 3;
+}
+
+message Invitation {
+  bytes inviter_device_pub_key = 1;
+  bytes invitation_priv_key = 2; // This will contains only the private part of the invitation key, as the other part can be calculated (we dont expect much invitations being received)
+  bytes invitation_pub_key_signature = 3; // Signed by inviter_member_priv_key
+
+  uint32 group_version = 4;
+  bytes group_pub_key = 5;
+  bytes group_signing_key = 6; // This will contains only the private part of the signing key, same logic as invitation_priv_key above
+}
+
+message SecretEntryPayload {
+  bytes dest_member_pub_key = 1;
+  bytes sender_device_pub_key = 2;
+  bytes encrypted_device_secret = 3;
+}
+
+message DeviceSecret {
+  bytes derivation_state = 1;
+  uint64 counter = 2;
+}
+
+message SettingsEntryPayload {
+  enum PayloadType {
+    PayloadTypeUnknown = 0;
+    PayloadTypeGroupSetting = 1;
+    PayloadTypeMemberSetting = 2;
+  }
+
+  PayloadType type = 1;
+  bytes member_pub_key = 2;
+  bytes key = 3;
+  bytes value = 4;
+}

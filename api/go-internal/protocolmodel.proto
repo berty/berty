@@ -24,7 +24,7 @@ message GroupInfo { // group clashes with reserved SQL keyword
   // - Group details/meta
 
   bytes group_pub_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
-  bytes shared_secret = 2;
+  bytes group_signing_key = 2;
   bytes metadata = 3;
   GroupAudience audience = 4 [(gogoproto.moretags) = "gorm:\"index\""];
   uint32 version = 5;
@@ -61,7 +61,7 @@ message GroupIncomingRequest {
   bytes inviter_member_pub_key = 2;
   bytes invitation_sig = 3;
   bytes invitation_priv_key = 4;
-  bytes group_shared_secret = 5;
+  bytes group_signing_key = 5;
   bytes group_version = 6;
   bytes essential_metadata = 7;
   bytes inviter_contact_pub_key = 9;

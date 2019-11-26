@@ -19,14 +19,12 @@ type CoreAPIMock interface {
 	MockNode() *ipfs_core.IpfsNode
 }
 
-// TestingCoreAPI returns a fully initialized mocked Core API
-func TestingCoreAPI(ctx context.Context, t *testing.T) CoreAPIMock {
+func TestingCoreAPIUsingMockNet(ctx context.Context, t *testing.T, m libp2p_mocknet.Mocknet) CoreAPIMock {
 	t.Helper()
 
-	mocknet := libp2p_mocknet.New(ctx)
 	node, err := ipfs_core.NewNode(ctx, &ipfs_core.BuildCfg{
 		Online: true,
-		Host:   ipfs_mock.MockHostOption(mocknet),
+		Host:   ipfs_mock.MockHostOption(m),
 		ExtraOpts: map[string]bool{
 			"pubsub": true,
 		},
@@ -40,7 +38,16 @@ func TestingCoreAPI(ctx context.Context, t *testing.T) CoreAPIMock {
 		t.Fatalf("failed to initialize IPFS Core API mock: %v", err)
 	}
 
-	return &coreAPIMock{coreapi, mocknet, node}
+	return &coreAPIMock{coreapi, m, node}
+}
+
+// TestingCoreAPI returns a fully initialized mocked Core API
+func TestingCoreAPI(ctx context.Context, t *testing.T) CoreAPIMock {
+	t.Helper()
+
+	m := libp2p_mocknet.New(ctx)
+
+	return TestingCoreAPIUsingMockNet(ctx, t, m)
 }
 
 type coreAPIMock struct {

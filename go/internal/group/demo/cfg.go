@@ -1,9 +1,10 @@
-package ipfsutil
+package main
 
 import (
-	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"fmt"
+	"math/big"
 
 	"berty.tech/go/pkg/errcode"
 	ipfs_datastore "github.com/ipfs/go-datastore"
@@ -12,20 +13,9 @@ import (
 	ipfs_node "github.com/ipfs/go-ipfs/core/node"
 	ipfs_libp2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	libp2p_ci "github.com/libp2p/go-libp2p-crypto" // nolint:staticcheck
 	libp2p_peer "github.com/libp2p/go-libp2p-peer" // nolint:staticcheck
 )
-
-// NewInMemoryCoreAPI returns an IPFS CoreAPI based on an opininated ipfs_node.BuildCfg
-func NewInMemoryCoreAPI(ctx context.Context) (ipfs_interface.CoreAPI, error) {
-	cfg, err := createBuildConfig()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	return NewConfigurableCoreAPI(ctx, cfg)
-}
 
 func createBuildConfig() (*ipfs_node.BuildCfg, error) {
 	ds := ipfs_datastore.NewMapDatastore()
@@ -67,13 +57,24 @@ func createRepo(dstore ipfs_repo.Datastore) (ipfs_repo.Repo, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	portOffsetBI, err := rand.Int(rand.Reader, big.NewInt(100))
+	if err != nil {
+		panic(err)
+	}
+
+	portOffset := portOffsetBI.Int64() % 100
+
+	println("Listening on port", 4001+portOffset)
+
 	c.Bootstrap = ipfs_cfg.DefaultBootstrapAddresses
 	c.Addresses.Swarm = []string{
-		"/ip4/0.0.0.0/tcp/4001",
-		"/ip6/0.0.0.0/tcp/4001",
+		fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", 4001+portOffset),
+		fmt.Sprintf("/ip6/0.0.0.0/tcp/%d", 4001+portOffset),
 	}
 	c.Identity.PeerID = pid.Pretty()
 	c.Identity.PrivKey = base64.StdEncoding.EncodeToString(privkeyb)
+	c.Discovery.MDNS.Enabled = true
+	c.Discovery.MDNS.Interval = 1
 
 	return &ipfs_repo.Mock{
 		D: dstore,
