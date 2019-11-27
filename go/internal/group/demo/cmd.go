@@ -9,17 +9,14 @@ import (
 	"path"
 	"sync"
 
-	"berty.tech/go-orbit-db/stores"
-
-	"berty.tech/go-orbit-db/events"
-	"berty.tech/go/internal/orbitutil"
-	"github.com/libp2p/go-libp2p-core/crypto"
-
 	orbitdb "berty.tech/go-orbit-db"
-
-	"berty.tech/go/internal/ipfsutil"
-
+	"berty.tech/go-orbit-db/events"
+	"berty.tech/go-orbit-db/stores"
 	"berty.tech/go/internal/group"
+	"berty.tech/go/internal/ipfsutil"
+	"berty.tech/go/internal/orbitutil"
+	"berty.tech/go/internal/orbitutil/orbitutilapi"
+	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
 func issueNewInvitation(device crypto.PrivKey, g *group.Group) {
@@ -37,7 +34,7 @@ func issueNewInvitation(device crypto.PrivKey, g *group.Group) {
 
 }
 
-func listMembers(s orbitutil.MemberStore) {
+func listMembers(s orbitutilapi.MemberStore) {
 	members, err := s.ListMembers()
 	if err != nil {
 		panic(err)
@@ -92,19 +89,14 @@ func mainLoop(invitation *group.Invitation, create bool) {
 		panic(err)
 	}
 
-	secretHolder, err := orbitutil.NewGroupHolder()
-	if err != nil {
-		panic(err)
-	}
-
 	p := path.Join(os.TempDir(), base64.StdEncoding.EncodeToString(invitation.InvitationPrivKey))
 
-	odb, err := orbitdb.NewOrbitDB(ctx, api, &orbitdb.NewOrbitDBOptions{Directory: &p})
+	odb, err := orbitutil.NewBertyOrbitDB(ctx, api, &orbitdb.NewOrbitDBOptions{Directory: &p})
 	if err != nil {
 		panic(err)
 	}
 
-	s, err := secretHolder.NewMemberStore(ctx, odb, g, &orbitdb.CreateDBOptions{
+	groupStores, err := odb.InitStoresForGroup(ctx, g, &orbitdb.CreateDBOptions{
 		Directory: &p,
 	})
 	if err != nil {
@@ -137,6 +129,8 @@ func mainLoop(invitation *group.Invitation, create bool) {
 	}
 
 	println("Own member key:", base64.StdEncoding.EncodeToString(memberKeyBytes), "device key: ", base64.StdEncoding.EncodeToString(deviceKeyBytes))
+
+	s := groupStores.GetMemberStore()
 
 	if !create {
 		println("Waiting store replication")

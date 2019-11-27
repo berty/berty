@@ -1,31 +1,25 @@
-package orbitutil
+package storemember
 
 import (
 	"context"
 
+	"berty.tech/go-ipfs-log/identityprovider"
+	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/iface"
-	"berty.tech/go-orbit-db/stores/basestore"
 	"berty.tech/go-orbit-db/stores/operation"
 	"berty.tech/go/internal/group"
+	"berty.tech/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/go/internal/orbitutil/storegroup"
 	"berty.tech/go/pkg/errcode"
+	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
 )
 
-type MemberStore interface {
-	iface.Store
-
-	// ListMembers gets the list of the devices of the group
-	ListMembers() ([]*group.MemberDevice, error)
-
-	// RedeemInvitation add a device to the list of the members of the group
-	RedeemInvitation(ctx context.Context, memberPrivateKey crypto.PrivKey, devicePrivateKey crypto.PrivKey, invitation *group.Invitation) (operation.Operation, error)
-}
+const StoreType = "member_store"
 
 type memberStore struct {
-	basestore.BaseStore
-
-	group *group.Group
+	storegroup.BaseGroupStore
 }
 
 func (m *memberStore) ListMembers() ([]*group.MemberDevice, error) {
@@ -43,7 +37,7 @@ func (m *memberStore) RedeemInvitation(ctx context.Context, memberPrivateKey, de
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	env, err := group.SealStorePayload(payload, m.group, devicePrivateKey)
+	env, err := group.SealStorePayload(payload, m.GetGroupContext().GetGroup(), devicePrivateKey)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -63,4 +57,15 @@ func (m *memberStore) RedeemInvitation(ctx context.Context, memberPrivateKey, de
 	return op, nil
 }
 
-var _ MemberStore = (*memberStore)(nil)
+func ConstructorFactory(s orbitutilapi.BertyOrbitDB) iface.StoreConstructor {
+	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
+		store := &memberStore{}
+		if err := s.InitGroupStore(ctx, NewMemberStoreIndex, store, ipfs, identity, addr, options); err != nil {
+			return nil, errors.Wrap(err, "unable to initialize base store")
+		}
+
+		return store, nil
+	}
+}
+
+var _ orbitutilapi.MemberStore = (*memberStore)(nil)
