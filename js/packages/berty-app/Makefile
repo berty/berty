@@ -65,16 +65,16 @@ deps.darwin: deps
 start.metro: export PWD := $(PWD)
 start.metro: port ?= 8081
 start.metro: host ?= 127.0.0.1
+start.metro: pid ?= $$(set -o pipefail && ps -p $$(lsof -ti :8081) 2>/dev/null | grep 'react-native\ start' | awk '{print $$1}')
 start.metro: deps
 	$(call check-program, lsof)
-	kill $$(lsof -t -i :$(port)) 1>/dev/null 2>/dev/null || true
+	kill $(pid) 1>/dev/null 2>/dev/null || true
 	@echo "Waiting for metro to die.. ($(shell date))"
-	while ps -p $$(lsof -t -i :$(port)) 1>/dev/null 2>/dev/null; do sleep 1;done;
+	while $(pid); do sleep 1;done;
 	@echo "Metro dead ($(shell date))"
 	cd $(PWD) && $(react-native) start \
 		--port=$(port) \
 		--host=$(host)
-
 
 .PHONY: start.emulator
 start.emulator: export PWD := $(PWD)
