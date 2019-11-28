@@ -39,8 +39,13 @@ run.storybook.android: deps.storybook.mobile $(PWD)/android/app/debug.keystore
 $(PWD)/android/app/debug.keystore: $(HOME)/.android/debug.keystore
 	cp $< $@
 
+# https://coderwall.com/p/r09hoq/android-generate-release-debug-keystores
 $(HOME)/.android/debug.keystore:
-	keytool -list -alias androiddebugkey -keystore ~/.android/debug.keystore -storepass android -keypass android
+	keytool -genkey -v -keystore $@ -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000
+	# The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format
+	keytool -importkeystore -srckeystore $@ -srcstorepass android -destkeystore $@ -deststoretype pkcs12
+	# Check keystore
+	keytool -list -v -alias androiddebugkey -storepass android -keystore $@
 
 .PHONY: run.storybook.mobile
 run.storybook.mobile: run.storybook.ios run.storybook.android

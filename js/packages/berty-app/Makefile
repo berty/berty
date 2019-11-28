@@ -1,7 +1,10 @@
 export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
+berty_root ?= $(abspath $(PWD)/../../..)
+
 react-native := $(PWD)/node_modules/.bin/react-native
+clisim := $(PWD)/node_modules/.bin/clisim
 pod := pod
 bundle := bundle
 
@@ -13,6 +16,8 @@ config ?= development
 entry-file ?= index.js
 build-dir ?= $(PWD)/build
 dest ?= $(build-dir)/$(platform)-$(target)/$(config)
+
+check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "No $(exec) in PATH")))
 
 .DEFAULT_GOAL := run
 
@@ -46,7 +51,7 @@ $(PWD)/ios/Podfile: $(PWD)/node_modules
 	cat $< > $@
 
 deps.android: export PWD := $(PWD)
-deps.android: deps $(PWD)/node_modules/react-native/react.gradle.orig
+deps.android: deps $(PWD)/node_modules/react-native/react.gradle.orig $(if $(filter $(config), development), $(HOME)/.android/debug.keystore)
 
 $(PWD)/node_modules/react-native/react.gradle.orig: $(PWD)/patch/react.gradle.patch
 	@echo "patching file $(patsubst %.orig, %, $@)"
@@ -56,21 +61,35 @@ deps.web: deps
 
 deps.darwin: deps
 
-.PHONY: start
-start: port ?= 8081
-start: host ?= 127.0.0.1
-start: deps
-	kill $$(lsof -t -i :$(port)) || true
+.PHONY: start.metro
+start.metro: export PWD := $(PWD)
+start.metro: port ?= 8081
+start.metro: host ?= 127.0.0.1
+start.metro: deps
+	$(call check-program, lsof)
+	kill $$(lsof -t -i :$(port)) 1>/dev/null 2>/dev/null || true
+	@echo "Waiting for metro to die.. ($(shell date))"
+	while ps -p $$(lsof -t -i :$(port)) 1>/dev/null 2>/dev/null; do sleep 1;done;
+	@echo "Metro dead ($(shell date))"
 	cd $(PWD) && $(react-native) start \
 		--port=$(port) \
-		--host=$(host) \
-		& \
+		--host=$(host)
+
+
+.PHONY: start.emulator
+start.emulator: export PWD := $(PWD)
+start.emulator: deps
+	$(if $(filter $(platform), android), \
+		$(call check-program, adb) \
+		$(call check-program, emulator) \
+		$(clisim) -af & \
+	)
+	$(if $(filter $(platform), android), adb wait-for-device)
 
 .PHONY: run
 run: export PWD := $(PWD)
-run: deps $(if $(filter $(target), debug), start)
-	$(if $(filter $(platform), android), \
-		$(if $(filter $(config), development), ANDROID_SDK_ROOT=$$HOME/.android clisim -af))
+run: deps $(if $(filter $(config), development), start.emulator)
+	$(if $(filter $(platform), android), $(berty_root)/build/shell/check-java.sh 18)
 	cd $(PWD) && $(react-native) run-$(platform) \
 		--no-packager \
 		$(if $(filter $(platform), android), --variant=$(target)) \
@@ -79,7 +98,18 @@ run: deps $(if $(filter $(target), debug), start)
 			$(if $(filter-out $(target), store), --appIdSuffix=$(target))) \
 		$(if $(filter $(platform), ios), --configuration=$(if $(filter $(config), development),Debug,Release)) \
 		$(if $(filter $(platform), ios), --scheme=$(target)) \
-		$(if $(filter $(platform), ios), --simulator='$(device)') \
+		$(if $(filter $(platform), ios), --simulator='$(device)')
+
+# Use ctrl-b then pageup/pagedown to enter scroll, use escape to exit scroll mode
+# Use cltr-b then & to close
+# tmux: https://duckduckgo.com/?q=tmux+cheat+sheet&t=ffab&atb=v194-5__&ia=cheatsheet&iax=1
+.PHONY: run.%.tmux
+run.%.tmux: export PWD := $(PWD)
+run.%.tmux: deps
+	cd $(berty_root)/js && tmux \
+		new-session '$(MAKE) start.metro' \; \
+		split-window 'PLATFORM=$* $(berty_root)/build/shell/shortcut_build.sh' \; \
+		set-option remain-on-exit on
 
 .PHONY: bundle
 bundle: deps.$(platform)
@@ -191,19 +221,19 @@ config.development: config := development
 config.production: config := production
 
 .PHONY: \
-	start.android \
-	start.ios \
-	start.web \
-	start.darwin \
+	start.metro.android \
+	start.metro.ios \
+	start.metro.web \
+	start.metro.darwin \
 
-start.ios: platform := ios
-start.ios: start
-start.android: platform := android
-start.android: start
-start.web: platform := web
-start.web: start
-start.darwin: platform := darwin
-start.darwin: start
+start.metro.ios: platform := ios
+start.metro.ios: start.metro
+start.metro.android: platform := android
+start.metro.android: start.metro
+start.metro.web: platform := web
+start.metro.web: start.metro
+start.metro.darwin: platform := darwin
+start.metro.darwin: start.metro
 
 .PHONY: \
 	log.android \

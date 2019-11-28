@@ -12,7 +12,7 @@
     "@berty-tech/berty-storybook": "^0.0.0",
     "@berty-tech/react-native-chat-sdk": "^1.0.0",
     "@berty-tech/react-native-example": "^1.0.0",
-    "clisim": "^2.4.0",
+    "clisim": "^2.5.0",
     "hermes-engine": "^0.2.1",
     "react": "16.9.0",
     "react-native": "0.61.4",
