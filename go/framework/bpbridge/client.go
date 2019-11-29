@@ -1,4 +1,4 @@
-package chatbridge
+package bpbridge
 
 import (
 	"context"

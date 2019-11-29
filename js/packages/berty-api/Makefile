@@ -14,7 +14,7 @@ berty_api_protobuf_path := $(abspath $(PWD)/../../node_modules/@protocolbuffers/
 berty_api_googleapis_path := $(abspath $(PWD)/../../node_modules/@googleapis/googleapis)
 berty_api_go_path := $(abspath $(berty_go_path)/vendor)
 
-berty_api_protos := $(berty_api_berty_path)/bertychat.proto $(berty_api_berty_path)/chatmodel.proto
+berty_api_protos := $(berty_api_berty_path)/js-internal/bertychat.proto $(berty_api_berty_path)/js-internal/chatmodel.proto
 berty_api_targets := \
 	$(PWD)/index.pb.js \
 	$(PWD)/index.pb.d.ts \

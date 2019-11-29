@@ -16,8 +16,8 @@ berty_templates_googleapis_path := $(abspath $(PWD)/../../node_modules/@googleap
 berty_templates_go_path := $(abspath $(berty_go_path)/vendor)
 
 berty_templates_berty_protos := \
-	$(berty_templates_berty_path)/bertychat.proto \
-	$(berty_templates_berty_path)/chatmodel.proto \
+	$(berty_templates_berty_path)/js-internal/bertychat.proto \
+	$(berty_templates_berty_path)/js-internal/chatmodel.proto \
 
 berty_templates_berty_sources := $(shell \
 	find $(abspath $(PWD)/..) -type f -name '*.hbs' -path '*/berty-*/*' -not -path '*/node_modules/*')

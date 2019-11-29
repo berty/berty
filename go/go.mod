@@ -5,7 +5,6 @@ go 1.12
 require (
 	berty.tech/go-ipfs-log v0.0.0-20191118100004-2fb04713cace
 	berty.tech/go-orbit-db v0.0.2-0.20191118172355-7d7e876ee5d4
-	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.3.2
 	github.com/improbable-eng/grpc-web v0.11.0
@@ -30,7 +29,7 @@ require (
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	golang.org/x/net v0.0.0-20191002035440-2ec189313ef0
 	golang.org/x/sys v0.0.0-20190922100055-0a153f010e69 // indirect
-	google.golang.org/genproto v0.0.0-20190927181202-20e1ac93f88c
+	google.golang.org/genproto v0.0.0-20190927181202-20e1ac93f88c // indirect
 	google.golang.org/grpc v1.24.0
 	gopkg.in/gormigrate.v1 v1.6.0
 )

@@ -15,8 +15,8 @@ berty_store_googleapis_path := $(abspath $(PWD)/../../node_modules/@googleapis/g
 berty_store_go_path := $(abspath $(berty_go_path)/vendor)
 
 berty_store_berty_files := \
-	$(berty_store_berty_path)/bertychat.proto \
-	$(berty_store_berty_path)/chatmodel.proto \
+	$(berty_store_berty_path)/js-internal/bertychat.proto \
+	$(berty_store_berty_path)/js-internal/chatmodel.proto \
 
 berty_store_berty_targets := \
 	$(PWD)/swr.gen.tsx \

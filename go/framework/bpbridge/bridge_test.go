@@ -1,4 +1,4 @@
-package chatbridge
+package bpbridge
 
 import (
 	"bufio"
@@ -15,12 +15,11 @@ import (
 
 	"berty.tech/go/internal/ipfsutil"
 	"berty.tech/go/internal/testutil"
-	"berty.tech/go/pkg/bertychat"
+	"berty.tech/go/pkg/bertyprotocol"
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
-
 	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
 
 func TestBridge(t *testing.T) {
@@ -39,9 +38,7 @@ func TestBridge(t *testing.T) {
 		GRPCListener:    "127.0.0.1:0",
 		GRPCWebListener: "127.0.0.1:0",
 	})
-	if err != nil {
-		t.Fatalf("create bridge: %v", err)
-	}
+	checkErr(t, err)
 	defer func() {
 		if err = bridge.Close(); err != nil {
 			t.Fatalf("stop bridge: %v", err)
@@ -62,52 +59,39 @@ func TestBridge(t *testing.T) {
 	}
 
 	grpcClient, err = grpc.Dial(bridge.GRPCListenerAddr(), grpc.WithInsecure())
-	if err != nil {
-		t.Fatalf("failed to initialized grpc webclient: %v", err)
-	}
+	checkErr(t, err)
 
 	// setup unary test
-	msg := &bertychat.ConversationGet_Request{}
+	msg := &bertyprotocol.ContactGet_Request{}
 
 	req, err = proto.Marshal(msg)
-	if err != nil {
-		t.Fatalf("failed to marshal proto message")
-	}
+	checkErr(t, err)
 
 	// bridgeClient test
-	res, err = bridgeClient.UnaryRequest("/berty.chat.ChatService/ConversationGet", req)
-	if err != nil {
-		t.Fatalf("failed to send unary request: %v", err)
-	}
+	res, err = bridgeClient.UnaryRequest("/berty.protocol.ProtocolService/ContactGet", req)
+	checkErr(t, err)
 
-	out := &bertychat.ConversationGet_Reply{}
-	if err = proto.Unmarshal(res, out); err != nil {
-		t.Fatalf("failed to unmarshal proto: %v", err)
-	}
+	out := &bertyprotocol.ContactGet_Reply{}
+	err = proto.Unmarshal(res, out)
+	checkErr(t, err)
 
 	// webclient test
-	cc := bertychat.NewChatServiceClient(grpcClient)
-	_, err = cc.ConversationGet(context.Background(), msg)
-	if err != nil {
-		t.Fatalf("failed to send unary request: %v", err)
-	}
+	cc := bertyprotocol.NewProtocolServiceClient(grpcClient)
+	_, err = cc.ContactGet(context.Background(), msg)
+	checkErr(t, err)
 
 	results, err = makeGrpcRequest(
 		bridge.GRPCWebListenerAddr(),
-		"/berty.chat.ChatService/ConversationGet",
+		"/berty.protocol.ProtocolService/ContactGet",
 		[][]byte{req},
 		false,
 	)
-
-	if err != nil {
-		t.Fatalf("failed to make grpc web request: %v", err)
-	}
+	checkErr(t, err)
 
 	for _, res = range results {
-		out := &bertychat.ConversationGet_Reply{}
-		if err = proto.Unmarshal(res, out); err != nil {
-			t.Fatalf("failed to unmarshal proto: %v", err)
-		}
+		out := &bertyprotocol.ContactGet_Reply{}
+		err = proto.Unmarshal(res, out)
+		checkErr(t, err)
 	}
 }
 

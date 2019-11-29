@@ -114,12 +114,12 @@ bazel.build: bazel.generate
 .PHONY: bazel.daemon
 bazel.daemon: bazel.generate
 	$(call check-program, $(BAZEL))
-	$(call bazel, run, //cmd/bertychat -- daemon)
+	$(call bazel, run, //cmd/berty -- daemon)
 
 .PHONY: bazel.banner
 bazel.banner: bazel.generate
 	$(call check-program, $(BAZEL))
-	$(call bazel, run, //cmd/bertychat -- banner)
+	$(call bazel, run, //cmd/berty -- banner)
 
 .PHONY: bazel.unittest
 bazel.unittest: bazel.generate

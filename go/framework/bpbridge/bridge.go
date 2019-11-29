@@ -1,4 +1,4 @@
-package chatbridge
+package bpbridge
 
 import (
 	"context"
@@ -13,7 +13,6 @@ import (
 	"github.com/pkg/errors"
 
 	"berty.tech/go/internal/grpcutil"
-	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
 	"berty.tech/go/pkg/errcode"
 
@@ -34,9 +33,7 @@ type Bridge struct {
 	workers             run.Group
 	grpcServer          *grpc.Server
 	logger              *zap.Logger
-	chatDB              *gorm.DB
 	protocolDB          *gorm.DB
-	chatClient          bertychat.Client
 	protocolClient      bertyprotocol.Client
 	grpcListenerAddr    string
 	grpcWebListenerAddr string
@@ -115,28 +112,8 @@ func newBridge(logger *zap.Logger, opts Opts) (*Bridge, error) {
 		}
 	}
 
-	// setup chat
-	{
-		var err error
-		// initialize sqlite3 gorm database
-		b.chatDB, err = gorm.Open("sqlite3", ":memory:")
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-
-		// initialize bertychat client
-		chatOpts := bertychat.Opts{
-			Logger: b.logger.Named("bertychat"),
-		}
-
-		b.chatClient, err = bertychat.New(b.chatDB, b.protocolClient, chatOpts)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-
 	// register service
-	bertychat.RegisterChatServiceServer(b.grpcServer, b.chatClient)
+	bertyprotocol.RegisterProtocolServiceServer(b.grpcServer, b.protocolClient)
 
 	// optional gRPC listener
 	if opts.GRPCListener != "" {
@@ -209,8 +186,6 @@ func (b *Bridge) Close() (err error) {
 	}
 
 	// close clients and dbs after listeners
-	b.chatClient.Close()
-	b.chatDB.Close()
 	b.protocolClient.Close()
 	b.protocolDB.Close()
 
