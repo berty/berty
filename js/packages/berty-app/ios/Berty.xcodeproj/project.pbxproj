@@ -7,124 +7,102 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* BertyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* BertyTests.m */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		50CC35E3583D030938EE729E /* libPods-BertyTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A2CBB8C091C10654628B2CE /* libPods-BertyTests.a */; };
-		6C63F8ADD3C4C4A1006103B5 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D0DE88311DF965EC38F62B95 /* libPods-Berty.a */; };
-		F836872C2355EC8D00CCC6D9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		F836872D2355EC8D00CCC6D9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		F83687312355EC8D00CCC6D9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		F83687322355EC8D00CCC6D9 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
-		F836873D2355EC9900CCC6D9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		F836873E2355EC9900CCC6D9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		F83687422355EC9900CCC6D9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		F83687432355EC9900CCC6D9 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
+		16CD99D5BF947FEC3DDED66B /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D0DE88311DF965EC38F62B95 /* libPods-Berty.a */; };
+		86CF78864E6A0AC876FD42A7 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F82356C223841C7E00950AF2 /* libPods-Berty.a */; };
+		A2508D2B43AEFDF090067301 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F82356C223841C7E00950AF2 /* libPods-Berty.a */; };
+		D30AC8E9DE9B4E064697942D /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F82356C223841C7E00950AF2 /* libPods-Berty.a */; };
+		F82356B62383FBE300950AF2 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D0DE88311DF965EC38F62B95 /* libPods-Berty.a */; };
+		F82356C523841CA400950AF2 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F82356C223841C7E00950AF2 /* libPods-Berty.a */; };
 		F836874E2355EC9E00CCC6D9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		F836874F2355EC9E00CCC6D9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		F83687512355EC9E00CCC6D9 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D0DE88311DF965EC38F62B95 /* libPods-Berty.a */; };
 		F83687532355EC9E00CCC6D9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		F83687542355EC9E00CCC6D9 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
-		F836875C235606E100CCC6D9 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F836875B235606E100CCC6D9 /* Config.xcconfig */; };
-		F836875D235606E100CCC6D9 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F836875B235606E100CCC6D9 /* Config.xcconfig */; };
-		F836875E235606E100CCC6D9 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F836875B235606E100CCC6D9 /* Config.xcconfig */; };
-		F836875F235606E100CCC6D9 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F836875B235606E100CCC6D9 /* Config.xcconfig */; };
 		F87D59EA2356180F00DF2398 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F87D59E92356180F00DF2398 /* libPods-Berty.a */; };
-		F87D59F3235DFF0300DF2398 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F87D59F2235DFF0300DF2398 /* libPods-Berty.a */; };
-		F87D59F5235DFF0B00DF2398 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F87D59F4235DFF0B00DF2398 /* libPods-Berty.a */; };
-		F87D59F7235DFF1100DF2398 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F87D59F6235DFF1100DF2398 /* libPods-Berty.a */; };
+		F8BF464F238441AC0077A846 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
+		F8BF4650238441AC0077A846 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		F8BF4659238441AC0077A846 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		F8BF465A238441AC0077A846 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
+		F8BF4666238444330077A846 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
+		F8BF4667238444330077A846 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		F8BF4670238444330077A846 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		F8BF4671238444330077A846 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
+		F8BF467C2384443D0077A846 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
+		F8BF467D2384443D0077A846 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		F8BF46862384443D0077A846 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		F8BF46872384443D0077A846 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		00E356F41AD99517003FC87E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = Berty;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
+		0029E969C4DE2054480ABAAD /* Pods-Berty.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.debug.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.debug.xcconfig"; sourceTree = "<group>"; };
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* BertyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BertyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* BertyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BertyTests.m; sourceTree = "<group>"; };
 		0404A42B8981CA0988364916 /* Pods-BertyTests.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.production.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.production.xcconfig"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* Berty Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Berty Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1297A2F244B4E09B8EAF0A7A /* Pods-Berty.development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.development.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.development.xcconfig"; sourceTree = "<group>"; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Berty/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Berty/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Berty/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Berty/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Berty/main.m; sourceTree = "<group>"; };
+		1B705FD35CD8EAA4AFA69C81 /* Pods-Berty.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.release.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.release.xcconfig"; sourceTree = "<group>"; };
 		23C4764A0A9B82044E04C08E /* Pods-BertyTests.development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.development.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.development.xcconfig"; sourceTree = "<group>"; };
 		2846E9C20CF0E56567DDE888 /* Pods-Berty-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		45EBCF50D7E5A6FDC3620E25 /* Pods-Berty-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		620F6E064E8F60D46C97C9D8 /* Pods-Berty.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.production.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.production.xcconfig"; sourceTree = "<group>"; };
+		48236AEDA8308BEBEDB499AA /* Pods-Berty.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.production.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.production.xcconfig"; sourceTree = "<group>"; };
 		6683B60E6DF969A2D232DBB0 /* libPods-Berty-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A2CBB8C091C10654628B2CE /* libPods-BertyTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BertyTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F84C76F030A6EDBA22AB150 /* Pods-BertyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.debug.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8BF04205A0A80BA5C404077E /* Pods-BertyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.release.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.release.xcconfig"; sourceTree = "<group>"; };
-		8F6DF617830004B3C447120E /* Pods-Berty.development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.development.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.development.xcconfig"; sourceTree = "<group>"; };
 		9B45842222231D697635D46D /* Pods-Berty-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		B1A63EEF32A77DD54A306A4F /* Pods-Berty-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C0895F24BC5F87ADA2652137 /* libPods-Berty-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0DE88311DF965EC38F62B95 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		F83687372355EC8D00CCC6D9 /* Berty Staff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Berty Staff.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		F83687482355EC9900CCC6D9 /* Berty Yolo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Berty Yolo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F81E8EE62382FE27007CDBA3 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		F82356C223841C7E00950AF2 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F83687592355EC9E00CCC6D9 /* Berty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Berty.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F836875B235606E100CCC6D9 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		F87D59E92356180F00DF2398 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		F87D59F2235DFF0300DF2398 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		F87D59F4235DFF0B00DF2398 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		F87D59F6235DFF1100DF2398 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8BF465F238441AC0077A846 /* Berty Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Berty Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8BF4661238444080077A846 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		F8BF4676238444330077A846 /* Berty Staff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Berty Staff.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8BF468C2384443D0077A846 /* Berty Yolo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Berty Yolo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		00E356EB1AD99517003FC87E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				50CC35E3583D030938EE729E /* libPods-BertyTests.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F87D59F3235DFF0300DF2398 /* libPods-Berty.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F836872E2355EC8D00CCC6D9 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F87D59F5235DFF0B00DF2398 /* libPods-Berty.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F836873F2355EC9900CCC6D9 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F87D59F7235DFF1100DF2398 /* libPods-Berty.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		F83687502355EC9E00CCC6D9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F83687512355EC9E00CCC6D9 /* libPods-Berty.a in Frameworks */,
+				F82356B62383FBE300950AF2 /* libPods-Berty.a in Frameworks */,
 				F87D59EA2356180F00DF2398 /* libPods-Berty.a in Frameworks */,
-				6C63F8ADD3C4C4A1006103B5 /* libPods-Berty.a in Frameworks */,
+				F82356C523841CA400950AF2 /* libPods-Berty.a in Frameworks */,
+				16CD99D5BF947FEC3DDED66B /* libPods-Berty.a in Frameworks */,
+				86CF78864E6A0AC876FD42A7 /* libPods-Berty.a in Frameworks */,
+				D30AC8E9DE9B4E064697942D /* libPods-Berty.a in Frameworks */,
+				A2508D2B43AEFDF090067301 /* libPods-Berty.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8BF4651238441AC0077A846 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8BF4668238444330077A846 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8BF467E2384443D0077A846 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,9 +143,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F87D59F6235DFF1100DF2398 /* libPods-Berty.a */,
-				F87D59F4235DFF0B00DF2398 /* libPods-Berty.a */,
-				F87D59F2235DFF0300DF2398 /* libPods-Berty.a */,
+				F82356C223841C7E00950AF2 /* libPods-Berty.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				D0DE88311DF965EC38F62B95 /* libPods-Berty.a */,
@@ -188,7 +164,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				F836875B235606E100CCC6D9 /* Config.xcconfig */,
+				F8BF4661238444080077A846 /* Release.xcconfig */,
+				F81E8EE62382FE27007CDBA3 /* Debug.xcconfig */,
 				13B07FAE1A68108700A75B9A /* Berty */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* BertyTests */,
@@ -205,11 +182,10 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* Berty Debug.app */,
-				00E356EE1AD99517003FC87E /* BertyTests.xctest */,
-				F83687372355EC8D00CCC6D9 /* Berty Staff.app */,
-				F83687482355EC9900CCC6D9 /* Berty Yolo.app */,
 				F83687592355EC9E00CCC6D9 /* Berty.app */,
+				F8BF465F238441AC0077A846 /* Berty Debug.app */,
+				F8BF4676238444330077A846 /* Berty Staff.app */,
+				F8BF468C2384443D0077A846 /* Berty Yolo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -225,8 +201,10 @@
 				8BF04205A0A80BA5C404077E /* Pods-BertyTests.release.xcconfig */,
 				23C4764A0A9B82044E04C08E /* Pods-BertyTests.development.xcconfig */,
 				0404A42B8981CA0988364916 /* Pods-BertyTests.production.xcconfig */,
-				620F6E064E8F60D46C97C9D8 /* Pods-Berty.production.xcconfig */,
-				8F6DF617830004B3C447120E /* Pods-Berty.development.xcconfig */,
+				1297A2F244B4E09B8EAF0A7A /* Pods-Berty.development.xcconfig */,
+				48236AEDA8308BEBEDB499AA /* Pods-Berty.production.xcconfig */,
+				0029E969C4DE2054480ABAAD /* Pods-Berty.debug.xcconfig */,
+				1B705FD35CD8EAA4AFA69C81 /* Pods-Berty.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -242,82 +220,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* BertyTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BertyTests" */;
-			buildPhases = (
-				F052248315562F51B0AEDE45 /* [CP] Check Pods Manifest.lock */,
-				00E356EA1AD99517003FC87E /* Sources */,
-				00E356EB1AD99517003FC87E /* Frameworks */,
-				00E356EC1AD99517003FC87E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				00E356F51AD99517003FC87E /* PBXTargetDependency */,
-			);
-			name = BertyTests;
-			productName = BertyTests;
-			productReference = 00E356EE1AD99517003FC87E /* BertyTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		13B07F861A680F5B00A75B9A /* Berty Debug */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Berty Debug" */;
-			buildPhases = (
-				FD10A7F022414F080027D42C /* Start Packager */,
-				13B07F871A680F5B00A75B9A /* Sources */,
-				13B07F8C1A680F5B00A75B9A /* Frameworks */,
-				13B07F8E1A680F5B00A75B9A /* Resources */,
-				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Berty Debug";
-			productName = Berty;
-			productReference = 13B07F961A680F5B00A75B9A /* Berty Debug.app */;
-			productType = "com.apple.product-type.application";
-		};
-		F83687282355EC8D00CCC6D9 /* Berty Staff */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F83687342355EC8D00CCC6D9 /* Build configuration list for PBXNativeTarget "Berty Staff" */;
-			buildPhases = (
-				F836872A2355EC8D00CCC6D9 /* Start Packager */,
-				F836872B2355EC8D00CCC6D9 /* Sources */,
-				F836872E2355EC8D00CCC6D9 /* Frameworks */,
-				F83687302355EC8D00CCC6D9 /* Resources */,
-				F83687332355EC8D00CCC6D9 /* Bundle React Native code and images */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Berty Staff";
-			productName = Berty;
-			productReference = F83687372355EC8D00CCC6D9 /* Berty Staff.app */;
-			productType = "com.apple.product-type.application";
-		};
-		F83687392355EC9900CCC6D9 /* Berty Yolo */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F83687452355EC9900CCC6D9 /* Build configuration list for PBXNativeTarget "Berty Yolo" */;
-			buildPhases = (
-				F836873B2355EC9900CCC6D9 /* Start Packager */,
-				F836873C2355EC9900CCC6D9 /* Sources */,
-				F836873F2355EC9900CCC6D9 /* Frameworks */,
-				F83687412355EC9900CCC6D9 /* Resources */,
-				F83687442355EC9900CCC6D9 /* Bundle React Native code and images */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Berty Yolo";
-			productName = Berty;
-			productReference = F83687482355EC9900CCC6D9 /* Berty Yolo.app */;
-			productType = "com.apple.product-type.application";
-		};
 		F836874A2355EC9E00CCC6D9 /* Berty */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F83687562355EC9E00CCC6D9 /* Build configuration list for PBXNativeTarget "Berty" */;
@@ -338,6 +240,63 @@
 			productReference = F83687592355EC9E00CCC6D9 /* Berty.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F8BF464B238441AC0077A846 /* Berty Debug */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8BF465C238441AC0077A846 /* Build configuration list for PBXNativeTarget "Berty Debug" */;
+			buildPhases = (
+				F8BF464D238441AC0077A846 /* Start Packager */,
+				F8BF464E238441AC0077A846 /* Sources */,
+				F8BF4651238441AC0077A846 /* Frameworks */,
+				F8BF4658238441AC0077A846 /* Resources */,
+				F8BF465B238441AC0077A846 /* Bundle React Native code and images */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Berty Debug";
+			productName = Berty;
+			productReference = F8BF465F238441AC0077A846 /* Berty Debug.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F8BF4662238444330077A846 /* Berty Staff */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8BF4673238444330077A846 /* Build configuration list for PBXNativeTarget "Berty Staff" */;
+			buildPhases = (
+				F8BF4664238444330077A846 /* Start Packager */,
+				F8BF4665238444330077A846 /* Sources */,
+				F8BF4668238444330077A846 /* Frameworks */,
+				F8BF466F238444330077A846 /* Resources */,
+				F8BF4672238444330077A846 /* Bundle React Native code and images */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Berty Staff";
+			productName = Berty;
+			productReference = F8BF4676238444330077A846 /* Berty Staff.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F8BF46782384443D0077A846 /* Berty Yolo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8BF46892384443D0077A846 /* Build configuration list for PBXNativeTarget "Berty Yolo" */;
+			buildPhases = (
+				F8BF467A2384443D0077A846 /* Start Packager */,
+				F8BF467B2384443D0077A846 /* Sources */,
+				F8BF467E2384443D0077A846 /* Frameworks */,
+				F8BF46852384443D0077A846 /* Resources */,
+				F8BF46882384443D0077A846 /* Bundle React Native code and images */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Berty Yolo";
+			productName = Berty;
+			productReference = F8BF468C2384443D0077A846 /* Berty Yolo.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -347,24 +306,20 @@
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Berty Technologies";
 				TargetAttributes = {
-					00E356ED1AD99517003FC87E = {
-						CreatedOnToolsVersion = 6.2;
-						TestTargetID = 13B07F861A680F5B00A75B9A;
-					};
-					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = WMBQ84HN4T;
-						ProvisioningStyle = Manual;
-					};
-					F83687282355EC8D00CCC6D9 = {
-						DevelopmentTeam = WMBQ84HN4T;
-						ProvisioningStyle = Manual;
-					};
-					F83687392355EC9900CCC6D9 = {
-						DevelopmentTeam = GR5463T564;
-						ProvisioningStyle = Manual;
-					};
 					F836874A2355EC9E00CCC6D9 = {
 						DevelopmentTeam = WMBQ84HN4T;
+						ProvisioningStyle = Manual;
+					};
+					F8BF464B238441AC0077A846 = {
+						DevelopmentTeam = WMBQ84HN4T;
+						ProvisioningStyle = Manual;
+					};
+					F8BF4662238444330077A846 = {
+						DevelopmentTeam = WMBQ84HN4T;
+						ProvisioningStyle = Manual;
+					};
+					F8BF46782384443D0077A846 = {
+						DevelopmentTeam = GR5463T564;
 						ProvisioningStyle = Manual;
 					};
 				};
@@ -383,168 +338,54 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* Berty Debug */,
-				F83687282355EC8D00CCC6D9 /* Berty Staff */,
-				F83687392355EC9900CCC6D9 /* Berty Yolo */,
+				F8BF464B238441AC0077A846 /* Berty Debug */,
+				F8BF4662238444330077A846 /* Berty Staff */,
+				F8BF46782384443D0077A846 /* Berty Yolo */,
 				F836874A2355EC9E00CCC6D9 /* Berty */,
-				00E356ED1AD99517003FC87E /* BertyTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		00E356EC1AD99517003FC87E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		13B07F8E1A680F5B00A75B9A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				F836875C235606E100CCC6D9 /* Config.xcconfig in Resources */,
-				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F83687302355EC8D00CCC6D9 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F83687312355EC8D00CCC6D9 /* Images.xcassets in Resources */,
-				F836875D235606E100CCC6D9 /* Config.xcconfig in Resources */,
-				F83687322355EC8D00CCC6D9 /* LaunchScreen.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F83687412355EC9900CCC6D9 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F83687422355EC9900CCC6D9 /* Images.xcassets in Resources */,
-				F836875E235606E100CCC6D9 /* Config.xcconfig in Resources */,
-				F83687432355EC9900CCC6D9 /* LaunchScreen.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		F83687522355EC9E00CCC6D9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				F83687532355EC9E00CCC6D9 /* Images.xcassets in Resources */,
-				F836875F235606E100CCC6D9 /* Config.xcconfig in Resources */,
 				F83687542355EC9E00CCC6D9 /* LaunchScreen.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8BF4658238441AC0077A846 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8BF4659238441AC0077A846 /* Images.xcassets in Resources */,
+				F8BF465A238441AC0077A846 /* LaunchScreen.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8BF466F238444330077A846 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8BF4670238444330077A846 /* Images.xcassets in Resources */,
+				F8BF4671238444330077A846 /* LaunchScreen.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8BF46852384443D0077A846 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8BF46862384443D0077A846 /* Images.xcassets in Resources */,
+				F8BF46872384443D0077A846 /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Bundle React Native code and images";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
-		};
-		F052248315562F51B0AEDE45 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BertyTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F836872A2355EC8D00CCC6D9 /* Start Packager */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Start Packager";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		F83687332355EC8D00CCC6D9 /* Bundle React Native code and images */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Bundle React Native code and images";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
-		};
-		F836873B2355EC9900CCC6D9 /* Start Packager */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Start Packager";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		F83687442355EC9900CCC6D9 /* Bundle React Native code and images */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Bundle React Native code and images";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
-		};
 		F836874B2355EC9E00CCC6D9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -598,9 +439,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		FD10A7F022414F080027D42C /* Start Packager */ = {
+		F8BF464D238441AC0077A846 /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -619,44 +460,89 @@
 			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		F8BF465B238441AC0077A846 /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		F8BF4664238444330077A846 /* Start Packager */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Start Packager";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		F8BF4672238444330077A846 /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		F8BF467A2384443D0077A846 /* Start Packager */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Start Packager";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		F8BF46882384443D0077A846 /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		00E356EA1AD99517003FC87E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00E356F31AD99517003FC87E /* BertyTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		13B07F871A680F5B00A75B9A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				13B07FC11A68108700A75B9A /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F836872B2355EC8D00CCC6D9 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F836872C2355EC8D00CCC6D9 /* AppDelegate.m in Sources */,
-				F836872D2355EC8D00CCC6D9 /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F836873C2355EC9900CCC6D9 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F836873D2355EC9900CCC6D9 /* AppDelegate.m in Sources */,
-				F836873E2355EC9900CCC6D9 /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		F836874D2355EC9E00CCC6D9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -666,15 +552,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-/* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* Berty Debug */;
-			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		F8BF464E238441AC0077A846 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8BF464F238441AC0077A846 /* AppDelegate.m in Sources */,
+				F8BF4650238441AC0077A846 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
-/* End PBXTargetDependency section */
+		F8BF4665238444330077A846 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8BF4666238444330077A846 /* AppDelegate.m in Sources */,
+				F8BF4667238444330077A846 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8BF467B2384443D0077A846 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8BF467C2384443D0077A846 /* AppDelegate.m in Sources */,
+				F8BF467D2384443D0077A846 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
 		13B07FB11A68108700A75B9A /* LaunchScreen.xib */ = {
@@ -689,99 +594,11 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		00E356F61AD99517003FC87E /* development */ = {
+		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 23C4764A0A9B82044E04C08E /* Pods-BertyTests.development.xcconfig */;
+			baseConfigurationReference = F81E8EE62382FE27007CDBA3 /* Debug.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = BertyTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-					"$(inherited)",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Berty.app/Berty";
-			};
-			name = development;
-		};
-		00E356F71AD99517003FC87E /* production */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0404A42B8981CA0988364916 /* Pods-BertyTests.production.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = BertyTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-					"$(inherited)",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Berty.app/Berty";
-			};
-			name = production;
-		};
-		13B07F941A680F5B00A75B9A /* development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = WMBQ84HN4T;
-				INFOPLIST_FILE = Berty/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.debug;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development chat.berty.ios.debug";
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = development;
-		};
-		13B07F951A680F5B00A75B9A /* production */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = WMBQ84HN4T;
-				INFOPLIST_FILE = Berty/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.debug;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development chat.berty.ios.debug";
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = production;
-		};
-		83CBBA201A601CBA00E9B192 /* development */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F836875B235606E100CCC6D9 /* Config.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = "$(inherited)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -814,8 +631,8 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
+					"DEBUG=1",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -824,19 +641,28 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MTL_ENABLE_DEBUG_INFO = YES;
+				OBJROOT = "$(SYMROOT)";
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "chat.berty.ios.$(TARGET_NAME)";
+				PODS_BUILD_DIR = "$(BUILD_DIR)";
+				PODS_CONFIGURATION_BUILD_DIR = "$(inherited)";
+				PODS_PODFILE_DIR_PATH = "$(inherited)";
+				PODS_ROOT = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
 				SDKROOT = iphoneos;
+				SYMROOT = build;
+				USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = "$(inherited)";
 			};
-			name = development;
+			name = Debug;
 		};
-		83CBBA211A601CBA00E9B192 /* production */ = {
+		83CBBA211A601CBA00E9B192 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F836875B235606E100CCC6D9 /* Config.xcconfig */;
+			baseConfigurationReference = F8BF4661238444080077A846 /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = "$(inherited)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -866,21 +692,123 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "chat.berty.ios.$(TARGET_NAME)";
+				OBJROOT = "$(SYMROOT)";
+				PODS_BUILD_DIR = "$(BUILD_DIR)";
+				PODS_CONFIGURATION_BUILD_DIR = "$(inherited)";
+				PODS_PODFILE_DIR_PATH = "$(inherited)";
+				PODS_ROOT = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
 				SDKROOT = iphoneos;
+				SYMROOT = build;
+				USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = "$(inherited)";
 				VALIDATE_PRODUCT = YES;
 			};
-			name = production;
+			name = Release;
 		};
-		F83687352355EC8D00CCC6D9 /* development */ = {
+		F83687572355EC9E00CCC6D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0029E969C4DE2054480ABAAD /* Pods-Berty.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = WMBQ84HN4T;
+				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		F83687582355EC9E00CCC6D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1B705FD35CD8EAA4AFA69C81 /* Pods-Berty.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WMBQ84HN4T;
+				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		F8BF465D238441AC0077A846 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = WMBQ84HN4T;
+				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.debug;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development chat.berty.ios.debug";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		F8BF465E238441AC0077A846 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WMBQ84HN4T;
+				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.debug;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development chat.berty.ios.debug";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		F8BF4674238444330077A846 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -901,9 +829,9 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios.staff";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
-			name = development;
+			name = Debug;
 		};
-		F83687362355EC8D00CCC6D9 /* production */ = {
+		F8BF4675238444330077A846 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -923,9 +851,9 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios.staff";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
-			name = production;
+			name = Release;
 		};
-		F83687462355EC9900CCC6D9 /* development */ = {
+		F8BF468A2384443D0077A846 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -941,14 +869,14 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.yolo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse chat.berty.ios.yolo";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
-			name = development;
+			name = Debug;
 		};
-		F83687472355EC9900CCC6D9 /* production */ = {
+		F8BF468B2384443D0077A846 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -963,116 +891,60 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.yolo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse chat.berty.ios.yolo";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
-			name = production;
-		};
-		F83687572355EC9E00CCC6D9 /* development */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F6DF617830004B3C447120E /* Pods-Berty.development.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = WMBQ84HN4T;
-				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = development;
-		};
-		F83687582355EC9E00CCC6D9 /* production */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 620F6E064E8F60D46C97C9D8 /* Pods-Berty.production.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = WMBQ84HN4T;
-				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = production;
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BertyTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				00E356F61AD99517003FC87E /* development */,
-				00E356F71AD99517003FC87E /* production */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = production;
-		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Berty Debug" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				13B07F941A680F5B00A75B9A /* development */,
-				13B07F951A680F5B00A75B9A /* production */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = production;
-		};
 		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Berty" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				83CBBA201A601CBA00E9B192 /* development */,
-				83CBBA211A601CBA00E9B192 /* production */,
+				83CBBA201A601CBA00E9B192 /* Debug */,
+				83CBBA211A601CBA00E9B192 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = production;
-		};
-		F83687342355EC8D00CCC6D9 /* Build configuration list for PBXNativeTarget "Berty Staff" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F83687352355EC8D00CCC6D9 /* development */,
-				F83687362355EC8D00CCC6D9 /* production */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = production;
-		};
-		F83687452355EC9900CCC6D9 /* Build configuration list for PBXNativeTarget "Berty Yolo" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F83687462355EC9900CCC6D9 /* development */,
-				F83687472355EC9900CCC6D9 /* production */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = production;
+			defaultConfigurationName = Release;
 		};
 		F83687562355EC9E00CCC6D9 /* Build configuration list for PBXNativeTarget "Berty" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F83687572355EC9E00CCC6D9 /* development */,
-				F83687582355EC9E00CCC6D9 /* production */,
+				F83687572355EC9E00CCC6D9 /* Debug */,
+				F83687582355EC9E00CCC6D9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = production;
+			defaultConfigurationName = Release;
+		};
+		F8BF465C238441AC0077A846 /* Build configuration list for PBXNativeTarget "Berty Debug" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8BF465D238441AC0077A846 /* Debug */,
+				F8BF465E238441AC0077A846 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8BF4673238444330077A846 /* Build configuration list for PBXNativeTarget "Berty Staff" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8BF4674238444330077A846 /* Debug */,
+				F8BF4675238444330077A846 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8BF46892384443D0077A846 /* Build configuration list for PBXNativeTarget "Berty Yolo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8BF468A2384443D0077A846 /* Debug */,
+				F8BF468B2384443D0077A846 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

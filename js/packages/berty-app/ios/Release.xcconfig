@@ -1,0 +1,12 @@
+//
+//  Release.xcconfig
+//  Berty
+//
+//  Created by Godefroy Ponsinet on 19/11/2019.
+//  Copyright © 2019 Berty Technologies. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+#include? "tmp.xcconfig"
+#include? "./Pods/Target Support Files/Pods-Berty/Pods-Berty.release.xcconfig"
