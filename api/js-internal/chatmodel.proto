@@ -5,12 +5,6 @@ package berty.chatmodel;
 import "github.com/golang/protobuf/ptypes/timestamp/timestamp.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-option go_package = "berty.tech/go/pkg/chatmodel";
-
-option (gogoproto.goproto_unkeyed_all) = false;
-option (gogoproto.goproto_sizecache_all) = false;
-option (gogoproto.goproto_unrecognized_all) = false;
-
 message Contact {
   uint64 id = 1 [(gogoproto.moretags) = "gorm:\"primary_key;auto_increment\"", (gogoproto.customname) = "ID"];
   string protocol_id = 2 [(gogoproto.moretags) = "gorm:\"unique\"", (gogoproto.customname) = "ProtocolID"];

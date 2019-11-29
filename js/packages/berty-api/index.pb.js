@@ -6,9 +6,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
   berty: {
     nested: {
       chat: {
-        options: {
-          go_package: "berty.tech/go/pkg/bertychat"
-        },
         nested: {
           ChatService: {
             methods: {
@@ -975,12 +972,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         }
       },
       chatmodel: {
-        options: {
-          go_package: "berty.tech/go/pkg/chatmodel",
-          "(gogoproto.goproto_unkeyed_all)": false,
-          "(gogoproto.goproto_sizecache_all)": false,
-          "(gogoproto.goproto_unrecognized_all)": false
-        },
         nested: {
           Contact: {
             fields: {

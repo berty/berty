@@ -14,7 +14,6 @@ import (
 	"berty.tech/go/internal/banner"
 	_ "berty.tech/go/internal/buildconstraints" // fail if bad go version
 	"berty.tech/go/internal/grpcutil"
-	"berty.tech/go/pkg/bertychat"
 	"berty.tech/go/pkg/bertyprotocol"
 	"berty.tech/go/pkg/errcode"
 	"github.com/jinzhu/gorm"
@@ -33,13 +32,12 @@ func main() {
 
 	var (
 		logger            *zap.Logger
-		globalFlags       = flag.NewFlagSet("bertychat", flag.ExitOnError)
+		globalFlags       = flag.NewFlagSet("berty", flag.ExitOnError)
 		globalDebug       = globalFlags.Bool("debug", false, "debug mode")
 		bannerFlags       = flag.NewFlagSet("banner", flag.ExitOnError)
 		bannerLight       = bannerFlags.Bool("light", false, "light mode")
 		clientFlags       = flag.NewFlagSet("client", flag.ExitOnError)
 		clientProtocolURN = clientFlags.String("protocol-urn", ":memory:", "protocol sqlite URN")
-		clientChatURN     = clientFlags.String("chat-urn", ":memory:", "chat sqlite URN")
 		clientListeners   = clientFlags.String("l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
 	)
 
@@ -129,34 +127,12 @@ func main() {
 				defer protocol.Close()
 			}
 
-			// chat
-			var chat bertychat.Client
-			{
-				// initialize sqlite3 gorm database
-				db, err := gorm.Open("sqlite3", *clientChatURN)
-				if err != nil {
-					return errcode.TODO.Wrap(err)
-				}
-				defer db.Close()
-
-				// initialize bertychat client
-				chatOpts := bertychat.Opts{
-					Logger: logger.Named("bertychat"),
-				}
-				chat, err = bertychat.New(db, protocol, chatOpts)
-				if err != nil {
-					return errcode.TODO.Wrap(err)
-				}
-
-				defer chat.Close()
-			}
-
-			// listeners for bertychat
+			// listeners for berty
 			var workers run.Group
 			{
 				// setup grpc server
 				grpcServer := grpc.NewServer()
-				bertychat.RegisterChatServiceServer(grpcServer, chat)
+				bertyprotocol.RegisterProtocolServiceServer(grpcServer, protocol)
 
 				// setup listeners
 				addrs := strings.Split(*clientListeners, ",")
@@ -191,7 +167,7 @@ func main() {
 	}
 
 	root := &ffcli.Command{
-		Usage:       "bertychat [global flags] <subcommand> [flags] [args...]",
+		Usage:       "berty [global flags] <subcommand> [flags] [args...]",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
 		Subcommands: []*ffcli.Command{daemon, banner, version},

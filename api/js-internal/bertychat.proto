@@ -4,9 +4,7 @@ package berty.chat;
 
 import "google/api/annotations.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "chatmodel.proto";
-
-option go_package = "berty.tech/go/pkg/bertychat";
+import "js-internal/chatmodel.proto";
 
 service ChatService {
   //

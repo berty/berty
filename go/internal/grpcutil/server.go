@@ -123,7 +123,7 @@ func NewWrappedServer(maddr ma.Multiaddr, grpcServer *grpc.Server) (WrappedServe
 
 		// 	dialOpts := []grpc.DialOption{grpc.WithInsecure()}
 		// 	target := "127.0.0.1:" + c.Value()
-		// 	err = bertychat.RegisterAccountHandlerFromEndpoint(ctx, gwmux, target, dialOpts)
+		// 	err = bertyprotocol.RegisterAccountHandlerFromEndpoint(ctx, gwmux, target, dialOpts)
 
 		// 	s.serve = gatewayServer.Serve
 
