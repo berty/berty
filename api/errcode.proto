@@ -23,38 +23,34 @@ enum ErrCode {
   ErrMissingInput = 102;
 
   //
-  // Berty Chat (starting at 1001)
+  // Berty Protocol (starting at 1001)
   //
 
-  //
-  // Berty Protocol (starting at 2001)
-  //
-
-  ErrSigChainNoEntries = 2001;
-  ErrSigChainInvalidEntryType = 2002;
-  ErrSigChainAlreadyInitialized = 2003;
-  ErrSigChainPermission = 2004;
-  ErrSigChainOperationAlreadyDone = 2005;
-  ErrHandshakeNoPayload = 2006;
-  ErrHandshakeInvalidFlow = 2007;
-  ErrHandshakeInvalidFlowStepNotFound = 2008;
-  ErrHandshakeParams = 2009;
-  ErrHandshakeNoAuthReturned = 2010;
-  ErrHandshakeInvalidKeyType = 2011;
-  ErrHandshakeInvalidSignature = 2012;
-  ErrHandshakeSessionInvalid = 2013;
-  ErrHandshakeKeyNotInSigChain = 2014;
-  ErrHandshakeDecrypt = 2015;
-  ErrGroupMemberLogEventOpen = 2020;
-  ErrGroupMemberLogEventSignature = 2021;
-  ErrGroupMemberLogWrongInviter = 2022;
-  ErrGroupMemberUnknownGroupID = 2023;
-  ErrGroupMemberMissingSecrets = 2024;
+  ErrSigChainNoEntries = 1001;
+  ErrSigChainInvalidEntryType = 1002;
+  ErrSigChainAlreadyInitialized = 1003;
+  ErrSigChainPermission = 1004;
+  ErrSigChainOperationAlreadyDone = 1005;
+  ErrHandshakeNoPayload = 1006;
+  ErrHandshakeInvalidFlow = 1007;
+  ErrHandshakeInvalidFlowStepNotFound = 1008;
+  ErrHandshakeParams = 1009;
+  ErrHandshakeNoAuthReturned = 1010;
+  ErrHandshakeInvalidKeyType = 1011;
+  ErrHandshakeInvalidSignature = 1012;
+  ErrHandshakeSessionInvalid = 1013;
+  ErrHandshakeKeyNotInSigChain = 1014;
+  ErrHandshakeDecrypt = 1015;
+  ErrGroupMemberLogEventOpen = 1020;
+  ErrGroupMemberLogEventSignature = 1021;
+  ErrGroupMemberLogWrongInviter = 1022;
+  ErrGroupMemberUnknownGroupID = 1023;
+  ErrGroupMemberMissingSecrets = 1024;
 
   //
-  // Chat Bridge (starting at 3001)
+  // Bridge (starting at 2001)
   //
 
-  ErrBridgeInterrupted = 3001;
-  ErrBridgeNotRunning = 3002;
+  ErrBridgeInterrupted = 2001;
+  ErrBridgeNotRunning = 2002;
 }
