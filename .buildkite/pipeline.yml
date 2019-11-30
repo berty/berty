@@ -1,0 +1,122 @@
+steps:
+  - label: go-docker
+    agents:
+      queue: "bigcores"
+    commands:
+        - cd go
+        - docker build .
+
+  - label: go-generate
+    plugins:
+      - n0izn0iz/docker#v3.5.4:
+          image: bertytech/protoc:21
+          propagate-uid-gid: true
+          workdir: /go/src/berty.tech
+          environment: [ "GO111MODULE=on", "GOPATH=/go"]
+          volumes: [
+              "~/go/pkg/mod:/go/pkg/mod"
+            ]
+    commands:
+        - go version
+        - find . -name gen.sum -delete
+        - cd go
+        - time go mod vendor
+        - make generate_local
+        - make tidy
+        - cd ../docs
+        - make generate_local
+        - cd ..
+        - git status | cat
+        - git diff -w | cat
+        - git diff-index -w --quiet HEAD --
+
+  - label: githooks
+    plugins:
+      - n0izn0iz/docker#v3.5.4:
+          image: bertytech/githooks:v1
+          propagate-uid-gid: true
+          workdir: /go/src/berty.tech
+          environment: [ "GO111MODULE=on", "GOPATH=/go" ]
+    commands:
+      - ./githooks/pre-commit
+      - git status | cat
+      - git diff -w | cat
+      - git diff-index -w --quiet HEAD --
+
+  - label: js-generate
+    plugins:
+      - n0izn0iz/docker#v3.5.4:
+          image: bertytech/protoc:21
+          propagate-uid-gid: true
+          workdir: /go/src/berty.tech
+          environment: [ "GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent" ]
+          volumes: [
+              "~:/home/buildkite-agent",
+              "~/go/pkg/mod:/go/pkg/mod",
+            ]
+    agents:
+      queue: "bigcores"
+    commands:
+      - cd js
+      - make gen.clean
+      - make gen
+      - cd ..
+      - git status | cat
+      - git diff -w | cat
+      - git diff-index -w --quiet HEAD --
+
+  - label: js-lint
+    plugins:
+      - n0izn0iz/docker#v3.5.4:
+          image: bertytech/protoc:21
+          propagate-uid-gid: true
+          workdir: /go/src/berty.tech
+          environment: [ "GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent" ]
+          volumes: [
+              "~:/home/buildkite-agent",
+              "~/go/pkg/mod:/go/pkg/mod",
+            ]
+    agents:
+      queue: "bigcores"
+    commands:
+      - cd js
+      - make lint
+
+  - label: go-build-112
+    key: go-build-112
+    env:
+      GO111MODULE: "on"
+    agents:
+      queue: "golint"
+      # this is needed because golangci-lint is not multiuser
+      # https://github.com/golangci/golangci-lint/blob/fa69ddfc14ff9da080e14607d07d73e34750b426/pkg/commands/executor.go#L209
+      # + this job is not run in a container + go's os.TempDir seems to ignore TMPDIR in this case
+      # another solution is to put this job in a container or other kind of sandbox
+    commands:
+      - go version
+      - cd go
+
+      # TODO: cache $GOPATH/pkg/mod
+      - go mod download
+
+      # https://circleci.com/orbs/registry/orb/gotest/tools#commands-mod-tidy-check
+      - go mod tidy -v
+      - git --no-pager diff go.mod go.sum
+      - git --no-pager diff --quiet go.mod go.sum
+
+      - make go.install
+      - make go.unittest GO_TEST_OPTS="-v -test.timeout=120s"
+      - make tidy
+      # we can do this rm because we're in special queue
+      - rm -f /tmp/golangci-lint.lock
+      - make lint
+      - cd ..
+      - codecov -f ./go/coverage.txt
+
+  - label: bazel-go
+    commands:
+    - bazel --version
+    - go version
+    - cd go
+    - make bazel.unittest
+    - make bazel.build

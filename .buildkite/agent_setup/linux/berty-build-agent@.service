@@ -1,0 +1,21 @@
+[Unit]
+Description=Buildkite Agent (%i)
+Documentation=https://buildkite.com/agent
+After=syslog.target
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+Environment=HOME=/home/%i
+ExecStart=/home/%i/entrypoint.sh
+RestartSec=5
+Restart=on-failure
+RestartForceExitStatus=SIGPIPE
+TimeoutStartSec=10
+TimeoutStopSec=0
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+DefaultInstance=1

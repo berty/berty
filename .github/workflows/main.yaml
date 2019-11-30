@@ -84,11 +84,6 @@ jobs:
         run: curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s v1.21.0
       - run: PATH=$PATH:$(pwd)/bin  make lint
         working-directory: ./go
-      - if: matrix.os == 'ubuntu-latest'
-        uses: codecov/codecov-action@v1.0.3
-        with:
-          token: ${{secrets.CODECOV_TOKEN}}
-          file: ./go/coverage.txt
 
   bazel-go:
     name: "Go: Bazel"
