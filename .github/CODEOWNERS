@@ -40,7 +40,6 @@ Makefile @berty/build-owners
 ## by specific domain
 ##
 
-# bertychat && bertyprotocol
+# public APIs
 /go/pkg/bertyprotocol/ @berty/go-owners @moul
-/api/bertychat.proto @berty/go-owners @berty/js-owners
 /api/bertyprotocol.proto @berty/go-owners @berty/js-owners @moul
