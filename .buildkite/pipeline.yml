@@ -123,3 +123,10 @@ steps:
     - cd go
     - make bazel.unittest
     - make bazel.build
+
+  - label: berty-app-release-ios-debug
+    agents:
+      queue: "macbooks"
+    commands:
+    - cd js
+    - make release.ios.debug
