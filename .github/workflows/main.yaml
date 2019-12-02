@@ -121,5 +121,5 @@ jobs:
     - name: Run make bazel.${{ matrix.bazel-target }}
       working-directory: ./go
       env:
-        BAZEL_CMD_ARGS: --sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5
+        BAZEL_CMD_ARGS: --sandbox_debug --jobs=2 --local_ram_resources=HOST_RAM*.5 --spawn_strategy local
       run: PATH=${PATH}:${HOME}/bin make bazel.${{ matrix.bazel-target }}
