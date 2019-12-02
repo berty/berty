@@ -7,14 +7,12 @@ import (
 	"testing"
 	"time"
 
+	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/stores"
-
 	"berty.tech/go/internal/group"
 	"berty.tech/go/internal/ipfsutil"
-
-	orbitdb "berty.tech/go-orbit-db"
-
+	"berty.tech/go/internal/testutil"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	peerstore "github.com/libp2p/go-libp2p-peerstore"
 )
@@ -145,6 +143,8 @@ func TestMemberStore(t *testing.T) {
 }
 
 func TestMemberReplicateStore(t *testing.T) {
+	testutil.SkipSlow(t)
+
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
