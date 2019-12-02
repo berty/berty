@@ -381,7 +381,7 @@ run.android.store: config := production
 run.android.store: target := store
 run.android.store: run.android
 run.android: platform := android
-run.android: device := $(shell which adb >/dev/null && (adb adb devices | tail +2 | head -1 | cut -f 1) || echo "missing-adb-binary")
+run.android: device := $(shell which adb >/dev/null && (adb devices | tail +2 | head -1 | cut -f 1) || echo "missing-adb-binary")
 run.android: deps.android run
 
 run.web.debug: config := development
