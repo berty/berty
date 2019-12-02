@@ -129,4 +129,4 @@ steps:
       queue: "macbooks"
     commands:
     - cd js
-    - make release.ios.debug
+    - make run.ios.debug
