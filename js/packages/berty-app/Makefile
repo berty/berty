@@ -164,6 +164,7 @@ release.ios.store: method := app-store
 release.ios.store: profile := AppStore
 release.ios.store: team-id := WMBQ84HN4T
 release.ios.store: release.ios
+release.ios: export PWD := $(PWD)
 release.ios: platform := ios
 release.ios: bundle-id = chat.berty.ios.$(target)
 release.ios: version = $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
