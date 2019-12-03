@@ -10,7 +10,7 @@ bundle := bundle
 
 name ?= berty
 platform ?= ios
-device ?= iPhone 11
+device ?= iPhone X
 target ?= debug
 config ?= development
 entry-file ?= index.js
@@ -143,6 +143,11 @@ bundle: deps.$(platform)
 	release.darwin.staff \
 	release.darwin.yolo \
 	release.darwin.store \
+
+.PHONY: build.ios.debug
+build.ios.debug: export PWD := $(PWD)
+build.ios.debug:
+	cd $(PWD)/ios && node $(berty_root)/js/packages/appium-utils
 
 release.ios.debug: target := debug
 release.ios.debug: method := development
@@ -357,7 +362,7 @@ bundle.darwin: bundle
 	run.darwin.store \
 
 run.ios.debug: config := development
-run.ios.debug: target := debug
+run.ios.debug: target := Berty
 run.ios.debug: run.ios
 run.ios.staff: config := production
 run.ios.staff: target := staff

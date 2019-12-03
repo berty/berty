@@ -22,6 +22,7 @@
     "typescript": "^3.6.3"
   },
   "dependencies": {
+    "@berty-tech/appium-utils": "^0.0.0",
     "@berty-tech/berty-navigation": "^0.0.0",
     "@berty-tech/berty-storybook": "^0.0.0",
     "@berty-tech/react-native-chat-sdk": "^1.0.0",

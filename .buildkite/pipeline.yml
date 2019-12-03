@@ -3,8 +3,8 @@ steps:
     agents:
       queue: "bigcores"
     commands:
-        - cd go
-        - docker build .
+      - cd go
+      - docker build .
 
   - label: go-generate
     plugins:
@@ -12,23 +12,21 @@ steps:
           image: bertytech/protoc:21
           propagate-uid-gid: true
           workdir: /go/src/berty.tech
-          environment: [ "GO111MODULE=on", "GOPATH=/go"]
-          volumes: [
-              "~/go/pkg/mod:/go/pkg/mod"
-            ]
+          environment: ["GO111MODULE=on", "GOPATH=/go"]
+          volumes: ["~/go/pkg/mod:/go/pkg/mod"]
     commands:
-        - go version
-        - find . -name gen.sum -delete
-        - cd go
-        - time go mod vendor
-        - make generate_local
-        - make tidy
-        - cd ../docs
-        - make generate_local
-        - cd ..
-        - git status | cat
-        - git diff -w | cat
-        - git diff-index -w --quiet HEAD --
+      - go version
+      - find . -name gen.sum -delete
+      - cd go
+      - time go mod vendor
+      - make generate_local
+      - make tidy
+      - cd ../docs
+      - make generate_local
+      - cd ..
+      - git status | cat
+      - git diff -w | cat
+      - git diff-index -w --quiet HEAD --
 
   - label: githooks
     plugins:
@@ -36,7 +34,7 @@ steps:
           image: bertytech/githooks:v1
           propagate-uid-gid: true
           workdir: /go/src/berty.tech
-          environment: [ "GO111MODULE=on", "GOPATH=/go" ]
+          environment: ["GO111MODULE=on", "GOPATH=/go"]
     commands:
       - ./githooks/pre-commit
       - git status | cat
@@ -49,11 +47,9 @@ steps:
           image: bertytech/protoc:21
           propagate-uid-gid: true
           workdir: /go/src/berty.tech
-          environment: [ "GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent" ]
-          volumes: [
-              "~:/home/buildkite-agent",
-              "~/go/pkg/mod:/go/pkg/mod",
-            ]
+          environment:
+            ["GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent"]
+          volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
     agents:
       queue: "bigcores"
     commands:
@@ -71,11 +67,9 @@ steps:
           image: bertytech/protoc:21
           propagate-uid-gid: true
           workdir: /go/src/berty.tech
-          environment: [ "GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent" ]
-          volumes: [
-              "~:/home/buildkite-agent",
-              "~/go/pkg/mod:/go/pkg/mod",
-            ]
+          environment:
+            ["GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent"]
+          volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
     agents:
       queue: "bigcores"
     commands:
@@ -118,15 +112,19 @@ steps:
     env:
       BAZEL_CMD_ARGS: '--test_output=errors --action_env="GTEST_COLOR=1"'
     commands:
-    - bazel --version
-    - go version
-    - cd go
-    - make bazel.unittest
-    - make bazel.build
+      - bazel --version
+      - go version
+      - cd go
+      - make bazel.unittest
+      - make bazel.build
 
   - label: berty-app-release-ios-debug
     agents:
       queue: "macbooks"
     commands:
-    - cd js
-    - make run.ios.debug
+      - cd js
+      - make deps
+      - ENABLE_TEST_IDS=true make start.metro &
+      - xcrun simctl uninstall 'iPhone X' 'chat.berty.ios' || true
+      - make run.ios.debug
+      - make integtest.ios

@@ -21,6 +21,7 @@
   "dependencies": {
     "@babel/core": "^7.6.2",
     "@babel/preset-typescript": "^7.6.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "metro-react-native-babel-preset": "^0.56.0"
   }
 }

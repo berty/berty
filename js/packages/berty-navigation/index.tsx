@@ -1,11 +1,12 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Onboarding, Main, Settings } from '@berty-tech/berty-storybook'
+import { testId } from '@berty-tech/appium-utils'
 
 const Stack = createNativeStackNavigator()
 
 export const Navigation: React.FC<{}> = () => (
-	<Stack.Navigator>
+	<Stack.Navigator {...testId('Navigation')}>
 		<Stack.Screen name='Onboarding.GetStarted' component={Onboarding.GetStarted} />
 		<Stack.Screen name='Onboarding.SelectMode' component={Onboarding.SelectMode} />
 		<Stack.Screen name='Onboarding.Performance' component={Onboarding.Performance} />

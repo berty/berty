@@ -20,5 +20,8 @@
   },
   "peerDependencies": {
     "eslint-config-prettier": "^6.5.0"
+  },
+  "devDependencies": {
+    "eslint-plugin-mocha": "^6.2.2"
   }
 }

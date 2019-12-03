@@ -1,0 +1,51 @@
+{
+  "name": "@berty-tech/appium-utils",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "author": "Berty Technologies <oss@berty.tech>",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/appium-utils#readme",
+  "license": "(Apache-2.0 or MIT)",
+  "main": "lib/appium-utils.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n0izn0iz/berty.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/n0izn0iz/berty/issues"
+  },
+  "dependencies": {
+    "@react-native-community/cli-tools": "^3.0.0",
+    "@wdio/appium-service": "^5.16.11",
+    "@wdio/cli": "^5.16.11",
+    "appium-xcuitest-driver": "^3.8.0",
+    "chai": "^4.2.0",
+    "chalk": "^3.0.0",
+    "getenv": "^1.0.0",
+    "mocha": "^6.2.2",
+    "webdriverio": "^5.16.11"
+  },
+  "devDependencies": {
+    "@wdio/appium-service": "^5.16.11",
+    "@wdio/local-runner": "^5.16.11",
+    "@wdio/mocha-framework": "^5.16.11",
+    "@wdio/spec-reporter": "^5.16.11",
+    "@wdio/sync": "^5.16.11",
+    "chromedriver": "^78.0.1",
+    "wdio-chromedriver-service": "^5.0.2"
+  }
+}
