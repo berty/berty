@@ -14,10 +14,7 @@
     <img src="https://circleci.com/gh/berty/berty.svg?style=shield&circle-token=6156b261ec8e5a5401c12ac8303cdd441665cddb"
          alt="Build Status">
   </a>
-  <a href="https://www.codefactor.io/repository/github/berty/berty">
-    <img src="https://www.codefactor.io/repository/github/berty/berty/badge"
-         alt="Code Factor">
-  </a>
+  <a href="https://www.codefactor.io/repository/github/berty/berty"><img src="https://www.codefactor.io/repository/github/berty/berty/badge?s=bf5885a3b2782ead81d91cd423915f2e9ddc9196" alt="CodeFactor" /></a>
   <!--<a href="https://goreportcard.com/report/berty/berty">
     <img src="https://goreportcard.com/badge/berty/berty"
          alt="Go Report Card">
