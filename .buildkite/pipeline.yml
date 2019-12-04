@@ -115,6 +115,8 @@ steps:
       - codecov -f ./go/coverage.txt
 
   - label: bazel-go
+    env:
+      BAZEL_CMD_ARGS: '--test_output=errors --action_env="GTEST_COLOR=1"'
     commands:
     - bazel --version
     - go version
