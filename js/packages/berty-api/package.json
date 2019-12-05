@@ -23,7 +23,9 @@
     "url": "https://github.com/berty/berty/issues"
   },
   "workspaces": {
-    "nohoist": ["**/semver"]
+    "nohoist": [
+      "**/semver"
+    ]
   },
   "dependencies": {
     "@googleapis/googleapis": "googleapis/googleapis#common-protos-1_3_1",

@@ -31,7 +31,8 @@
       "**/jsc-*",
       "**/@react-native-community/*",
       "**/hermes-engine",
-      "**/metro-*"
+      "**/metro-*",
+      "**/@ui-kitten/eva-icons"
     ]
   },
   "dependencies": {
@@ -42,6 +43,7 @@
     "json": "^9.0.6",
     "lerna": "^3.18.3",
     "lerna-update-wizard": "^0.16.0",
+    "react": "^16.12.0",
     "react-native-create-library": "^3.1.2",
     "text-transform-cli": "^1.5.0",
     "update-versions": "^2.0.0"

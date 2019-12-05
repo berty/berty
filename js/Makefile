@@ -147,4 +147,3 @@ include packages/react-native-chat-sdk/Makefile
 include packages/berty-app/Makefile
 include packages/storybook-mobile/Makefile
 include packages/storybook-web/Makefile
-include packages/react-native-core/Makefile

@@ -74,6 +74,7 @@ start.metro: deps
 	while ps -p $(pid); do sleep 1; done
 	@echo "Metro dead ($(shell date))"
 	cd $(PWD) && $(react-native) start \
+		--reset-cache \
 		--port=$(port) \
 		--host=$(host)
 
@@ -113,6 +114,7 @@ run.%.tmux: deps
 		set-option remain-on-exit on
 
 .PHONY: bundle
+bundle: export PWD := $(PWD)
 bundle: deps.$(platform)
 	cd $(PWD) && $(react-native) bundle \
 		--entry-file=$(entry) \
@@ -439,6 +441,7 @@ clean.web:
 clean.darwin: platform := darwin
 clean.darwin:
 clean:
+	kill $$(lsof -t -i :8081)
 
 .IGNORE \
 .PHONY: \

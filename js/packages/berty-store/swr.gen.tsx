@@ -2,7 +2,7 @@ import * as _api from '@berty-tech/berty-api'
 import React, { createContext, useContext } from 'react'
 import * as pb from 'protobufjs'
 import bridge from '@berty-tech/grpc-bridge'
-import useSWR from 'swr'
+import useSWR from 'swr/esm'
 import { listHandler, streamHandler, getHandler } from './helpers'
 
 export namespace berty {
@@ -977,9 +977,11 @@ export namespace berty {
 					response: _api.berty.chat.AccountPairingInvitationCreate.IReply,
 				) => React.ReactElement
 			}
-			export const AccountPairingInvitationCreate: React.FC<
-				AccountPairingInvitationCreateProps
-			> = ({ request, fallback: Fallback, children }) => {
+			export const AccountPairingInvitationCreate: React.FC<AccountPairingInvitationCreateProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
 				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(
 					`AccountPairingInvitationCreate:${JSON.stringify(request)}`,
@@ -998,9 +1000,11 @@ export namespace berty {
 					response: _api.berty.chat.AccountRenewIncomingContactRequestLink.IReply,
 				) => React.ReactElement
 			}
-			export const AccountRenewIncomingContactRequestLink: React.FC<
-				AccountRenewIncomingContactRequestLinkProps
-			> = ({ request, fallback: Fallback, children }) => {
+			export const AccountRenewIncomingContactRequestLink: React.FC<AccountRenewIncomingContactRequestLinkProps> = ({
+				request,
+				fallback: Fallback,
+				children,
+			}) => {
 				const ctx = useContext(berty.chat.ChatService.Context)
 				const { data, error } = useSWR(
 					`AccountRenewIncomingContactRequestLink:${JSON.stringify(request)}`,
