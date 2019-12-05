@@ -8,7 +8,7 @@ function testIdsEnabled() {
 
 function testId(val) {
 	// with terser this should be optimized out in prod
-	return testIdsEnabled() ? { accessibilityLabel: val } : {}
+	return testIdsEnabled() ? { accessibilityLabel: val, testID: val } : {}
 }
 
 class TestContext {
