@@ -4,10 +4,10 @@
 
 set -eu
 
-CIRCLE_BRANCH=${CIRCLE_BRANCH:-"unknown"}
+BRANCH=${CIRCLE_BRANCH:-"unknown"}
 
 # always test everything on master
-if [ "$CIRCLE_BRANCH" = "master" ]; then
+if [ "$BRANCH" = "master" ]; then
     exit 0
 fi
 
