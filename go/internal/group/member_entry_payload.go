@@ -69,7 +69,7 @@ func (m *MemberEntryPayload) ToMemberDevice() (*MemberDevice, error) {
 	}, nil
 }
 
-func (m *MemberEntryPayload) GetDevicePubKey() (crypto.PubKey, error) {
+func (m *MemberEntryPayload) GetSignerPubKey() (crypto.PubKey, error) {
 	return crypto.UnmarshalEd25519PublicKey(m.MemberDevicePubKey)
 }
 

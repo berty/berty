@@ -73,6 +73,6 @@ message SettingsEntryPayload {
 
   PayloadType type = 1;
   bytes member_pub_key = 2;
-  bytes key = 3;
+  string key = 3;
   bytes value = 4;
 }

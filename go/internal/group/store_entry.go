@@ -12,7 +12,7 @@ type ClearPayload interface {
 	proto.Unmarshaler
 
 	CheckStructure() error
-	GetDevicePubKey() (crypto.PubKey, error)
+	GetSignerPubKey() (crypto.PubKey, error)
 }
 
 // OpenStorePayload opens a symmetric encrypted group payload, type is defined
@@ -50,7 +50,7 @@ func OpenStorePayload(out ClearPayload, envelopeBytes []byte, g *Group) error {
 		return errcode.TODO.Wrap(err)
 	}
 
-	signerPubKey, err := out.GetDevicePubKey()
+	signerPubKey, err := out.GetSignerPubKey()
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}

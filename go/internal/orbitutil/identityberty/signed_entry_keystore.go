@@ -1,7 +1,8 @@
-package orbitutil
+package identityberty
 
 import (
 	"encoding/hex"
+	"sync"
 
 	"berty.tech/go-ipfs-log/keystore"
 
@@ -11,6 +12,7 @@ import (
 
 type BertySignedKeyStore struct {
 	keys map[string]crypto.PrivKey
+	lock sync.RWMutex
 }
 
 func (s *BertySignedKeyStore) SetKey(pk crypto.PrivKey) error {
@@ -21,13 +23,17 @@ func (s *BertySignedKeyStore) SetKey(pk crypto.PrivKey) error {
 
 	keyID := hex.EncodeToString(pubKeyBytes)
 
+	s.lock.Lock()
 	s.keys[keyID] = pk
+	s.lock.Unlock()
 
 	return nil
 }
 
 func (s *BertySignedKeyStore) HasKey(id string) (bool, error) {
+	s.lock.RLock()
 	_, ok := s.keys[id]
+	s.lock.RUnlock()
 
 	return ok, nil
 }
@@ -37,6 +43,8 @@ func (s *BertySignedKeyStore) CreateKey(id string) (crypto.PrivKey, error) {
 }
 
 func (s *BertySignedKeyStore) GetKey(id string) (crypto.PrivKey, error) {
+	s.lock.RLock()
+	defer s.lock.RUnlock()
 	if privKey, ok := s.keys[id]; ok {
 		return privKey, nil
 	}
@@ -67,6 +75,12 @@ func NewBertySignedKeyStore() *BertySignedKeyStore {
 	}
 
 	return ks
+}
+
+func (s *BertySignedKeyStore) GetIdentityProvider() *BertySignedIdentityProvider {
+	return &BertySignedIdentityProvider{
+		keyStore: s,
+	}
 }
 
 var _ keystore.Interface = (*BertySignedKeyStore)(nil)

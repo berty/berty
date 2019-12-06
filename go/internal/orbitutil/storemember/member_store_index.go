@@ -1,12 +1,13 @@
-package orbitutil
+package storemember
 
 import (
 	"sync"
 
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-orbit-db/iface"
-	"berty.tech/go-orbit-db/stores/operation"
 	"berty.tech/go/internal/group"
+	"berty.tech/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/go/internal/orbitutil/storegroup"
 	"berty.tech/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
@@ -41,11 +42,11 @@ func (i *indexEntry) findParent(index *memberStoreIndex) *indexEntry {
 }
 
 type memberStoreIndex struct {
-	group     *group.Group
-	entries   map[string]*indexEntry
-	muEntries sync.RWMutex
-	members   []*group.MemberDevice
-	muMembers sync.RWMutex
+	entries      map[string]*indexEntry
+	muEntries    sync.RWMutex
+	members      []*group.MemberDevice
+	muMembers    sync.RWMutex
+	groupContext orbitutilapi.GroupContext
 }
 
 func (m *memberStoreIndex) Get(key string) interface{} {
@@ -55,7 +56,7 @@ func (m *memberStoreIndex) Get(key string) interface{} {
 }
 
 func (m *memberStoreIndex) checkMemberLogEntryPayloadFirst(entry *indexEntry) error {
-	if !entry.parentPubKey.Equals(m.group.PubKey) {
+	if !entry.parentPubKey.Equals(m.groupContext.GetGroup().PubKey) {
 		return errcode.ErrGroupMemberLogWrongInviter
 	}
 
@@ -73,20 +74,6 @@ func (m *memberStoreIndex) checkMemberLogEntryPayloadInvited(entry *indexEntry) 
 	}
 
 	return errcode.ErrGroupMemberLogWrongInviter
-}
-
-func unwrapOperation(opEntry ipfslog.Entry) ([]byte, error) {
-	entry, ok := opEntry.(ipfslog.Entry)
-	if !ok {
-		return nil, errcode.ErrInvalidInput
-	}
-
-	op, err := operation.ParseOperation(entry)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	return op.GetValue(), nil
 }
 
 func (m *memberStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) error {
@@ -111,11 +98,11 @@ func (m *memberStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry)
 			m.entries[entryHash] = idxE
 			m.muEntries.Unlock()
 
-			if entryBytes, idxE.err = unwrapOperation(e); idxE.err != nil {
+			if entryBytes, idxE.err = storegroup.UnwrapOperation(e); idxE.err != nil {
 				continue
 			}
 
-			if idxE.err = group.OpenStorePayload(payload, entryBytes, m.group); idxE.err != nil {
+			if idxE.err = group.OpenStorePayload(payload, entryBytes, m.groupContext.GetGroup()); idxE.err != nil {
 				continue
 			}
 
@@ -189,11 +176,11 @@ func hasAllParentsValid(entry *indexEntry, index *memberStoreIndex) bool {
 }
 
 // NewMemberStoreIndex returns a new index to manage the list of the group members
-func NewMemberStoreIndex(g *group.Group) iface.IndexConstructor {
+func NewMemberStoreIndex(g orbitutilapi.GroupContext) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		return &memberStoreIndex{
-			group:   g,
-			entries: map[string]*indexEntry{},
+			groupContext: g,
+			entries:      map[string]*indexEntry{},
 		}
 	}
 }
