@@ -1,3 +1,21 @@
+const getenv = require('getenv')
+
+const iosCaps = {
+	automationName: 'XCUITest',
+	platformName: 'iOS',
+	platformVersion: '12.2',
+	deviceName: 'iPhone X',
+	bundleId: 'chat.berty.ios',
+}
+
+const androidCaps = {
+	automationName: 'UiAutomator2',
+	platformName: 'Android',
+	deviceName: 'Android',
+	appPackage: 'tech.berty.app.debug',
+	appActivity: '.MainActivity',
+}
+
 exports.config = {
 	//
 	// ====================
@@ -44,15 +62,7 @@ exports.config = {
 	// Sauce Labs platform configurator - a great tool to configure your capabilities:
 	// https://docs.saucelabs.com/reference/platforms-configurator
 	//
-	capabilities: [
-		{
-			automationName: 'XCUITest',
-			platformName: 'iOS',
-			platformVersion: '12.2',
-			deviceName: 'iPhone X',
-			bundleId: 'chat.berty.ios',
-		},
-	],
+	capabilities: [getenv('TARGET_PLATFORM').toLowerCase() === 'ios' ? iosCaps : androidCaps],
 	//
 	// ===================
 	// Test Configurations

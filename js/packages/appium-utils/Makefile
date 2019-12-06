@@ -15,5 +15,6 @@ appium=$(PWD)/node_modules/.bin/appium
 start.appium: $(PWD)/node_modules
 	$(appium) --address $(APPIUM_ADDR) --port $(APPIUM_PORT)
 
-integtest.ios: $(PWD)/node_modules
-	cd $(PWD) && $(PWD)/node_modules/.bin/wdio run $(PWD)/wdio.conf.js
+integtest.%: $(PWD)/node_modules
+	@echo "Running integration tests for $*"
+	cd $(PWD) && TARGET_PLATFORM="$*" $(PWD)/node_modules/.bin/wdio run $(PWD)/wdio.conf.js
