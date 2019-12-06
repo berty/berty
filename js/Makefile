@@ -48,7 +48,7 @@ $(go_vendor):
 	cd $(berty_go_path) && GO111MODULE=on go mod vendor
 
 $(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
-	$(yarn) $(if $(CIRCLE_JOB), '--frozen-lockfile')
+	$(yarn) --frozen-lockfile
 	$(lerna) $(lerna_flags) bootstrap
 	mkdir -p $(mod) $(pkg_mod)
 	touch $(mod) $(pkg_mod)

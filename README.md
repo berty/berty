@@ -10,33 +10,20 @@
 <h3 align="center">🤝 Distributed communication for everyone.</h3>
 
 <p align="center">
-  <a href="https://circleci.com/gh/berty/berty">
-    <img src="https://circleci.com/gh/berty/berty.svg?style=shield&circle-token=6156b261ec8e5a5401c12ac8303cdd441665cddb"
-         alt="Build Status">
-  </a>
+  <a href="https://buildkite.com/berty/main"><img src="https://badge.buildkite.com/331d828ccb643f90f6302b13ea77ab716ec78d6631af54c987.svg" alt="Build Status"></a>
   <a href="https://www.codefactor.io/repository/github/berty/berty"><img src="https://www.codefactor.io/repository/github/berty/berty/badge?s=bf5885a3b2782ead81d91cd423915f2e9ddc9196" alt="CodeFactor" /></a>
-  <!--<a href="https://goreportcard.com/report/berty/berty">
-    <img src="https://goreportcard.com/badge/berty/berty"
-         alt="Go Report Card">
-  </a>-->
-  <a href="https://github.com/berty/berty/releases">
-    <img src="https://badge.fury.io/gh/berty%2Fberty.svg"
-         alt="GitHub version">
-  </a>
-  <a href="https://godoc.org/berty.tech/go">
-    <img src="https://godoc.org/berty.tech/go?status.svg"
-         alt="GoDoc">
-  </a>
-  <a href="https://codecov.io/gh/berty/berty">
-    <img src="https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow" />
-  </a>
+  <!--<a href="https://goreportcard.com/report/berty/berty"><img src="https://goreportcard.com/badge/berty/berty" alt="Go Report Card"></a>-->
+  <a href="https://github.com/berty/berty/releases"><img src="https://badge.fury.io/gh/berty%2Fberty.svg" alt="GitHub version"></a>
+  <a href="https://godoc.org/berty.tech/go"><img src="https://godoc.org/berty.tech/go?status.svg" alt="GoDoc"></a>
+  <a href="https://codecov.io/gh/berty/berty"><img src="https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow" /></a>
 </p>
 
 <p align="center"><b>
-    <a href="https://berty.tech">berty.tech</a> •
-    <a href="https://twitter.com/berty">Twitter</a> •
-    <a href="http://crpt.fyi/berty-discord">Dicord</a> •
-    <a href="https://github.com/berty">GitHub</a>
+  <a href="https://berty.tech">berty.tech</a> •
+  <a href="https://twitter.com/berty">Twitter</a> •
+  <a href="http://crpt.fyi/berty-matrix">Matrix</a> •
+  <a href="http://crpt.fyi/berty-discord">Dicord</a> •
+  <a href="https://github.com/berty">GitHub</a>
 </b></p>
 
 ## Licensing
