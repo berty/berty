@@ -1,9 +1,9 @@
 'use strict'
 
-const getenv = require('getenv')
-
 function testIdsEnabled() {
-	return getenv.bool('ENABLE_TEST_IDS', false)
+	const r = !!(process && process.env && process.env.ENABLE_TEST_IDS)
+	//console.log(r)
+	return r
 }
 
 function testId(val) {
