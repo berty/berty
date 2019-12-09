@@ -133,6 +133,13 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        // see @react-native-community/blur
+        renderscriptTargetApi 23
+        renderscriptSupportModeEnabled true
+
+        // see java.lang.NoClassDefFoundError
+        multiDexEnabled true
     }
     splits {
         abi {
@@ -140,6 +147,10 @@ android {
             enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK
             include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+
+            // see @react-native-comunity/blur
+            renderscriptTargetApi 23
+            renderscriptSupportModeEnabled true
         }
     }
     signingConfigs {
@@ -186,6 +197,9 @@ dependencies {
     // react-native-screens dependencies
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
+
+    // see java.lang.NoClassDefFoundError
+    implementation 'com.android.support:multidex:1.0.3'
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

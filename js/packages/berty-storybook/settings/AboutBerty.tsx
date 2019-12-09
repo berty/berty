@@ -8,6 +8,7 @@ import {
 	ButtonSettingItem,
 	ButtonSettingRow,
 } from '../shared-components/SettingsButtons'
+import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 
 //
 // About Berty
@@ -209,13 +210,13 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => (
 	</View>
 )
 
-export const AboutBerty: React.FC<{}> = () => {
+export const AboutBerty: React.FC<ScreenProps.Settings.AboutBerty> = () => {
 	const [version, setVersion] = useState(true)
-
+	const { goBack } = useNavigation()
 	return (
 		<Layout style={[styles.flex, styles.bgWhite]}>
 			<ScrollView>
-				<HeaderSettings title='About Berty' action={setVersion} actionValue={version}>
+				<HeaderSettings title='About Berty' action={setVersion} actionValue={version} undo={goBack}>
 					<HeaderAboutBerty version={version} />
 				</HeaderSettings>
 				<BodyAboutBerty version={version} />

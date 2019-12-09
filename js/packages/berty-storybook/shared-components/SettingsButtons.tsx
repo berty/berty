@@ -38,6 +38,7 @@ type SettingButtonProps = {
 	// action
 	previewValue?: string
 	previewValueColor?: string
+	onPress?: () => void
 }
 
 // Style
@@ -71,6 +72,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	toggled = false,
 	style = null,
 	actionIcon = !toggled && 'arrow-ios-forward',
+	onPress,
 }) => {
 	const [isToggle, setIsToggle] = useState()
 
@@ -85,6 +87,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 				alone ? styles.shadow : null,
 				alone ? { marginTop: 20 } : null,
 			]}
+			onPress={onPress}
 		>
 			<View
 				style={[
@@ -119,10 +122,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 						</View>
 					)}
 					<View>
-						<Text
-							style={[styles.fontFamily, styles.littlePaddingLeft, { color: colors.black }]}
-							category='s4'
-						>
+						<Text style={[styles.fontFamily, styles.littlePaddingLeft, { color: colors.black }]}>
 							{name}
 						</Text>
 					</View>
@@ -175,7 +175,6 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 									styles.textBold,
 									{ color: previewValueColor },
 								]}
-								category='s4'
 							>
 								{previewValue}
 							</Text>
@@ -259,9 +258,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 						</View>
 					)}
 					<View>
-						<Text style={[styles.fontFamily, styles.littlePaddingLeft]} category='s4'>
-							{name}
-						</Text>
+						<Text style={[styles.fontFamily, styles.littlePaddingLeft]}>{name}</Text>
 					</View>
 					{state && state.value && state.color && state.bgColor && (
 						<View style={[styles.rowRev, styles.marginRight, styles.alignItems, styles.flex]}>
@@ -343,6 +340,7 @@ type ButtonSettingRowProps = {
 		icon: string
 		color: string
 		style: StyleProp<any>
+		onPress?: () => void
 	}[]
 	numberOfLines?: number
 	style?: StyleProp<any>
@@ -384,6 +382,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 					styles.borderRadius,
 					obj.style,
 				]}
+				onPress={obj.onPress}
 			>
 				<Icon name={obj.icon} width={30} height={30} fill={obj.color} />
 				<Text
@@ -394,7 +393,6 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 						styleText,
 						_buttonSettingRowStyles.textPadding,
 					]}
-					category='s4'
 					numberOfLines={numberOfLines}
 				>
 					{obj.name}

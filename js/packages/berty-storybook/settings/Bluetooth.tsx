@@ -4,6 +4,7 @@ import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
+import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 
 //
 // Bluetooth
@@ -114,9 +115,9 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => (
 	</View>
 )
 
-export const Bluetooth: React.FC<{}> = () => {
+export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 	const [isBluetooth, setIsBluetooth] = useState(false)
-
+	const { goBack } = useNavigation()
 	return (
 		<Layout style={[styles.flex, styles.bgWhite]}>
 			<ScrollView>
@@ -125,7 +126,8 @@ export const Bluetooth: React.FC<{}> = () => {
 					action={setIsBluetooth}
 					actionValue={isBluetooth}
 					desc="Bluetooth allows you to use the Berty app when you don't have a network connection (wifi or data) by connecting
-				your phone directly with peers nearby"
+					your phone directly with peers nearby"
+					undo={goBack}
 				>
 					<HeaderBluetooth isBluetooth={isBluetooth} />
 				</HeaderSettings>

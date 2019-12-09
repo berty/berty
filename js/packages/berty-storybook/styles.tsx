@@ -1,6 +1,8 @@
 import { StyleSheet, Platform } from 'react-native'
 
 export const colors = {
+	translucent: '#FFFFFFB2',
+	transparent: 'transparent',
 	white: '#FFFFFF',
 	black: '#2B2E4D',
 	blue: '#525BEC',
@@ -53,6 +55,8 @@ export const styles = StyleSheet.create({
 
 	textBold: { fontWeight: 'bold' },
 
+	bgTranslucent: { backgroundColor: colors.translucent },
+	bgTransparent: { backgroundColor: colors.transparent },
 	bgWhite: { backgroundColor: colors.white },
 	bgBlack: { backgroundColor: colors.black },
 	bgBlue: { backgroundColor: colors.blue },
@@ -67,6 +71,8 @@ export const styles = StyleSheet.create({
 	bgLightBlueGrey: { backgroundColor: colors.lightBlueGrey },
 
 	flex: { flex: 1 },
+	smallFlex: { flex: 3 },
+	largeFlex: { flex: 5 },
 	wrap: { flexWrap: 'wrap' },
 	nowrap: { flexWrap: 'nowrap' },
 	row: { flexDirection: 'row' },
@@ -135,11 +141,15 @@ export const styles = StyleSheet.create({
 	paddingBottom: { paddingBottom: 16 },
 
 	littlePadding: { padding: 12 },
+	littlePaddingHorizontal: { paddingHorizontal: 12 },
+	littlePaddingVertical: { paddingVertical: 12 },
 	littlePaddingTop: { paddingTop: 12 },
 	littlePaddingBottom: { paddingBottom: 12 },
 	littlePaddingRight: { paddingRight: 12 },
 	littlePaddingLeft: { paddingLeft: 12 },
 	bigPadding: { padding: 30 },
+	bigPaddingHorizontal: { paddingHorizontal: 30 },
+	bigPaddingVertical: { paddingVertical: 30 },
 	bigPaddingLeft: { paddingLeft: 30 },
 	bigPaddingRight: { paddingRight: 30 },
 	bigPaddingBottom: { paddingBottom: 30, bottom: 30 },

@@ -32,6 +32,7 @@ export const bridge: Bridge = (options, metadata): pb.RPCImpl => (
 	requestData,
 	callback,
 ): void => {
+	console.log('bridge', requestData)
 	// map pbjs method descriptor to grpc method descriptor
 	if (!(method instanceof pb.Method)) {
 		console.error("bridge doesn't support protobuf.rpc.ServiceMethod")

@@ -37,30 +37,51 @@ import { listHandler, streamHandler, getHandler } from './helpers'
 						{{else if (test name (toRegex ".*Get$"))~}}
 					): Promise<_api{{inamespace resolvedResponseType}}> =>
 							getHandler(api.{{case 'camel' name}}.bind(api), request)
-						{{else~}}
+						{{else if responseStream ~}}
 					): Promise<_api{{inamespace resolvedResponseType}}> =>
 							streamHandler(api.{{case 'camel' name}}.bind(api), request)
+						{{else}}
+					): Promise<_api{{inamespace resolvedResponseType}}> =>
+							api.{{case 'camel' name}}.call(api, request)
 						{{/if}}
 
+				{{/each}}
+
+				{{#each methods}}
+					export const use{{name}} = (
+						request: _api{{inamespace resolvedRequestType}},
+						deps?: Array<any>
+					) => {
+						const ctx = useContext({{chop (namespace parent)}}.Context)
+						const { data, error } = useSWR(
+							() => {
+								deps?.forEach(_ => {
+									if (_ === null || _ === undefined) {
+										throw new Error('use{{name}}: deps undefined (swr will not fetch the data)')
+									}
+								})
+								return `{{name}}:${JSON.stringify(request)}`
+							},
+							() => {{chop (namespace parent)}}.{{case 'camel' name}}(ctx, request)
+						)
+						return [data, error]
+					}
 				{{/each}}
 
 				// Containers
 				{{#each methods}}
 					type {{name}}Props = {
 						request: _api{{inamespace resolvedRequestType}}
+						deps?: Array<any>
 						fallback?: React.FC<{error?: Error}>
 						{{#if (test name (toRegex ".*List$"))}}
-						children?: (response: Array<_api{{inamespace resolvedResponseType}}>) => React.ReactElement
+						children?: (response: Array<_api{{inamespace resolvedResponseType}}>) => React.ReactNode
 						{{else}}
-						children?: (response: _api{{inamespace resolvedResponseType}}) => React.ReactElement
+						children?: (response: _api{{inamespace resolvedResponseType}}) => React.ReactNode
 						{{/if}}
 					}
-					export const {{name}}: React.FC<{{name}}Props> = ({ request, fallback: Fallback, children }) => {
-						const ctx = useContext({{chop (namespace parent)}}.Context)
-						const { data, error } = useSWR(
-							`{{name}}:${JSON.stringify(request)}`,
-							() => {{chop (namespace parent)}}.{{case 'camel' name}}(ctx, request)
-						)
+					export const {{name}}: React.FC<{{name}}Props> = ({ request, deps, fallback: Fallback, children }) => {
+						const [data, error] = {{chop (namespace parent)}}.use{{name}}(request, deps)
 						if (error != null || data == null) {
 							return Fallback ? <Fallback error={error} /> : null
 						}

@@ -4,6 +4,7 @@ import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
+import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 
 //
 // App Updates
@@ -178,8 +179,9 @@ const BodyUpdates: React.FC<{ update: boolean }> = ({ update }) => (
 	</View>
 )
 
-export const AppUpdates: React.FC<{}> = () => {
+export const AppUpdates: React.FC<ScreenProps.Settings.AppUpdates> = () => {
 	const [update, setUpdate] = useState(false)
+	const { goBack } = useNavigation()
 
 	return (
 		<Layout style={[styles.flex, styles.bgWhite]}>
@@ -189,6 +191,7 @@ export const AppUpdates: React.FC<{}> = () => {
 					action={setUpdate}
 					actionValue={update}
 					desc={!update ? 'Your app is up to date' : null}
+					undo={goBack}
 				>
 					<HeaderAppUpdates update={update} />
 				</HeaderSettings>

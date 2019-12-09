@@ -37,8 +37,8 @@ $(PWD)/index.pb.js: $(berty_api_deps) $(berty_api_protos)
 
 $(PWD)/index.pb.d.ts: $(berty_api_deps) $(berty_api_protos)
 	$(berty_api_pbjs) $(berty_api_pbjs_flags) -t static-module $(berty_api_protos) | $(berty_api_pbts) $(berty_api_pbts_flags) -o $@ -
-	sed -E -i.bak 's/(.*)\?(.*\(.*)\|null(\).*)/\1\2\3/g' $@
-	sed -E -i.bak 's/(.*)(:.*\(.*\.I[^(Timestamp)].*)(\))/\1?\2\|null\3/g' $@
+	@# sed -E -i.bak 's/(.*)\?(.*\(.*)\|null(\).*)/\1\2\3/g' $@
+	@# sed -E -i.bak 's/(.*)(:.*\(.*\.I[^(Timestamp)].*)(\))/\1?\2\|null\3/g' $@
 	@# remove constructor (json-module does not support it)
 	sed -E -i.bak 's/^.*constructor.*$$//g' $@
 	rm $@.bak

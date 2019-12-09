@@ -4,6 +4,7 @@ import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
+import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 
 //
 // Notifications
@@ -181,9 +182,9 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => (
 	</View>
 )
 
-export const Notifications: React.FC<{}> = () => {
+export const Notifications: React.FC<ScreenProps.Settings.Notifications> = () => {
 	const [isAuthorize, setIsAuthorize] = useState(false)
-
+	const { goBack } = useNavigation()
 	return (
 		<Layout style={[styles.flex, styles.bgWhite]}>
 			<ScrollView>
@@ -192,6 +193,7 @@ export const Notifications: React.FC<{}> = () => {
 					action={setIsAuthorize}
 					actionValue={isAuthorize}
 					desc='You have not yet activated notifications for this app'
+					undo={goBack}
 				>
 					<HeaderNotifications isAuthorize={isAuthorize} />
 				</HeaderSettings>

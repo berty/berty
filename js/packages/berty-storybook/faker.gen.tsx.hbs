@@ -1,17 +1,21 @@
 import * as _api from '@berty-tech/berty-api'
 import _faker from 'faker'
 import * as pb from 'protobufjs'
-import { deepFilterEqual, timestamp, randomArray, randomValue } from './helpers'
+import { deepFilterEqual, deepEqual, timestamp, randomArray, randomValue } from './helpers'
 
 {{#declare "faker_list"}}
 	{{#each fields}}
 		{{#if (eq (typeof resolvedType) "Type")}}
 			{{#if resolvedType.fields.id}}
-				faker{{namespace resolvedType}}.filter(_ => deepFilterEqual(request.filter, _)).forEach((_, index) =>
-					callback(null, _api{{namespace ../this}}.encode({
-						{{name}}: faker{{namespace resolvedType}}[index]
-					}).finish())
-				)
+				faker{{namespace resolvedType}}
+					.filter(_ =>
+						(request.filter == null || deepFilterEqual(request.filter, _))
+						&& (request.not == null || !deepEqual(request.not, _)))
+					.forEach((_, index) =>
+						callback(null, _api{{namespace ../this}}.encode({
+							{{name}}: faker{{namespace resolvedType}}[index]
+						}).finish())
+					)
 			{{/if}}
 		{{/if}}
 	{{/each}}
@@ -49,7 +53,7 @@ import { deepFilterEqual, timestamp, randomArray, randomValue } from './helpers'
 					}
 					const _ = faker{{namespace this}} as { [key: string]: any }
 					_[method.name](
-						method && method.resolvedResponseType && method.resolvedResponseType.decode(requestData),
+						method && method.resolvedRequestType && method.resolvedRequestType.decode(requestData),
 						callback,
 					)
 				}
@@ -72,7 +76,7 @@ import { deepFilterEqual, timestamp, randomArray, randomValue } from './helpers'
 			}
 		{{else if (eq (typeof this) "Type")}}
 			{{#if (and fields.id (and fields.createdAt fields.updatedAt))}}
-			export const {{name}}: Array<_api{{inamespace this}}> = randomArray(50)
+			export const {{name}}: Array<_api{{inamespace this}}> = randomArray(20)
 				.fill({})
 				.map((_, index) => ({
 					{{#each fields}}
@@ -82,6 +86,10 @@ import { deepFilterEqual, timestamp, randomArray, randomValue } from './helpers'
 							{{@key}}: '',
 						{{else if (eq name "lastMessageId")}}
 							{{@key}}: _faker.random.number() % 50,
+						{{else if (eq name "lastMessage")}}
+							{{@key}}: null,
+						{{else if (eq name "body")}}
+							{{@key}}: null,
 						{{else if (test @key (toRegex ".*Id$"))}}
 							{{@key}}: _faker.random.number()
 								% faker{{namespace ../parent}}.{{case 'pascal' (remove @key "Id")}}.length,
@@ -96,7 +104,7 @@ import { deepFilterEqual, timestamp, randomArray, randomValue } from './helpers'
 						{{else if repeated}}
 							{{@key}}: [],
 						{{else if (eq (typeof resolvedType) "Type")}}
-							{{@key}}: null,
+							{{@key}}: faker{{namespace ../parent}}.{{case 'pascal' @key}}[_.{{@key}}Id],
 						{{else if (eq (typeof resolvedType) "Enum")}}
 							{{@key}}: randomValue(_api{{namespace resolvedType}}),
 						{{else if (eq type "string")}}

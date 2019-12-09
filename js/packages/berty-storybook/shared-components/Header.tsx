@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { styles, colors } from '../styles'
 
@@ -12,7 +12,7 @@ type HeaderSettingsProps = {
 	title?: string
 	children?: React.ReactNode
 	bgColor?: string
-	undo?: boolean
+	undo?: () => void
 	undoIcon?: string
 	undoIconSize?: number
 	undoIconColor?: string
@@ -30,7 +30,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	title = null,
 	children = null,
 	bgColor = colors.blue,
-	undo = true,
+	undo,
 	undoIcon = 'arrow-back-outline',
 	undoIconSize = 25,
 	undoIconColor = colors.white,
@@ -43,19 +43,18 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	actionIconSize = 25,
 	actionIconColor = colors.white,
 }) => (
-	<View
+	<SafeAreaView
 		style={[
 			styles.flex,
 			styles.borderBottomLeftRadius,
 			styles.borderBottomRightRadius,
-			styles.paddingTop,
 			{ backgroundColor: bgColor },
 		]}
 	>
 		<View style={[styles.padding]}>
 			<View style={[styles.row, styles.justifyContent, styles.flex]}>
 				{undo && (
-					<TouchableOpacity style={[styles.flex, styles.start, styles.center]}>
+					<TouchableOpacity style={[styles.flex, styles.start, styles.center]} onPress={undo}>
 						<Icon name={undoIcon} width={undoIconSize} height={undoIconSize} fill={undoIconColor} />
 					</TouchableOpacity>
 				)}
@@ -101,7 +100,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 			)}
 			{children}
 		</View>
-	</View>
+	</SafeAreaView>
 )
 
 //

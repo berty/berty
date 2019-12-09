@@ -134,7 +134,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               AccountList: {
                 requestType: "AccountList.Request",
-                responseType: "AccountList.Request",
+                responseType: "AccountList.Reply",
                 responseStream: true
               },
               AccountGet: {
@@ -212,6 +212,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   filter: {
                     type: "chatmodel.Conversation",
                     id: 1
+                  },
+                  not: {
+                    type: "chatmodel.Conversation",
+                    id: 2
                   }
                 }
               },
@@ -448,6 +452,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   filter: {
                     type: "chatmodel.Message",
                     id: 1
+                  },
+                  not: {
+                    type: "chatmodel.Message",
+                    id: 2
                   }
                 }
               },
@@ -609,6 +617,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   filter: {
                     type: "chatmodel.Member",
                     id: 1
+                  },
+                  not: {
+                    type: "chatmodel.Member",
+                    id: 2
                   }
                 }
               },
@@ -654,6 +666,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   filter: {
                     type: "chatmodel.Contact",
                     id: 1
+                  },
+                  not: {
+                    type: "chatmodel.Contact",
+                    id: 2
                   }
                 }
               },
@@ -1337,6 +1353,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               Role: {
                 values: {
                   Unknown: 0,
+                  Invited: 1,
                   Regular: 2,
                   Admin: 3,
                   Owner: 4
@@ -1499,7 +1516,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               State: {
                 values: {
-                  UnSent: 0,
+                  Unsent: 0,
                   Sending: 1,
                   Failed: 2,
                   Retrying: 3,
@@ -1655,7 +1672,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   "(gogoproto.moretags)": "gorm:not null;index"
                 }
               },
-              myself: {
+              contact: {
                 type: "chatmodel.Contact",
                 id: 101
               },

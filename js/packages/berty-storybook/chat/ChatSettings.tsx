@@ -1,11 +1,12 @@
 import React from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
-import { Layout, Text } from 'react-native-ui-kitten'
+import { Text } from 'react-native-ui-kitten'
 import { styles, colors } from '../styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { UserProps, RequestProps } from '../shared-props/User'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import HeaderSettings from '../shared-components/Header'
+import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
+import { berty } from '@berty-tech/berty-api'
 
 //
 // ChatSettings
@@ -29,17 +30,19 @@ const _chatSettingsStyle = StyleSheet.create({
 	},
 })
 
-const ChatSettingsHeader: React.FC<UserProps> = ({ avatarUri, name }) => (
-	<View style={[_chatSettingsStyle.headerAvatar]}>
-		<CircleAvatar style={styles.alignItems} avatarUri={avatarUri} size={100} />
-		<Text
-			numberOfLines={1}
-			style={[styles.textWhite, styles.center, styles.littlePaddingTop, styles.textBold]}
-		>
-			{name}
-		</Text>
-	</View>
-)
+const ChatSettingsHeader: React.FC<berty.chatmodel.IConversation> = ({ avatarUri, title }) => {
+	return (
+		<View style={[_chatSettingsStyle.headerAvatar]}>
+			<CircleAvatar style={styles.alignItems} avatarUri={avatarUri || ''} size={100} />
+			<Text
+				numberOfLines={1}
+				style={[styles.textWhite, styles.center, styles.littlePaddingTop, styles.textBold]}
+			>
+				{title || ''}
+			</Text>
+		</View>
+	)
+}
 
 const ChatSettingsHeaderButtons: React.FC<{}> = () => (
 	<View style={[styles.paddingLeft, styles.paddingRight, styles.paddingTop]}>
@@ -81,16 +84,22 @@ const ChatSettingsBody: React.FC<{}> = () => (
 	</View>
 )
 
-export const ChatSettings: React.FC<RequestProps> = ({ user }) => (
-	<Layout style={[styles.flex]}>
-		<ScrollView>
-			<HeaderSettings actionIcon='more-horizontal-outline'>
+export const ChatSettings: React.FC<ScreenProps.Chat.Settings> = ({ route: { params } }) => {
+	console.log('params', params)
+	const { goBack, navigate } = useNavigation()
+	return (
+		<ScrollView style={[styles.flex, styles.bgWhite]}>
+			<HeaderSettings
+				action={() => navigate.chat.one2OneSettings()}
+				actionIcon='more-horizontal-outline'
+				undo={goBack}
+			>
 				<View>
-					<ChatSettingsHeader {...user} />
+					<ChatSettingsHeader {...params} />
 					<ChatSettingsHeaderButtons />
 				</View>
 			</HeaderSettings>
 			<ChatSettingsBody />
 		</ScrollView>
-	</Layout>
-)
+	)
+}

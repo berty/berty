@@ -32,15 +32,13 @@ type MessageProps = {
 
 // Styles
 const _messageStyles = StyleSheet.create({
-	message: {
-		marginTop: 6,
-	},
 	isMeMessage: {
 		marginLeft: 70,
-		right: 0,
+		alignSelf: 'flex-end',
 	},
 	isOtherMessage: {
 		marginRight: 70,
+		alignSelf: 'flex-start',
 	},
 	circleAvatar: {
 		flex: 1,
@@ -84,55 +82,50 @@ export const Message: React.FC<MessageProps> = ({
 }) => (
 	<View
 		style={[
-			style,
-			_messageStyles.message,
+			styles.row,
+			styles.stretch,
 			isMe ? _messageStyles.isMeMessage : _messageStyles.isOtherMessage,
+			styles.littleMarginTop,
+			styles.padding,
 		]}
 	>
-		<View style={[styles.row]}>
+		{!isMe && isGroup && (
+			<CircleAvatar
+				style={_messageStyles.circleAvatar}
+				avatarUri={avatarUri}
+				withCircle={false}
+				size={35}
+			/>
+		)}
+		<View style={[styles.col, _messageStyles.messageItem]}>
 			{!isMe && isGroup && (
-				<CircleAvatar
-					style={_messageStyles.circleAvatar}
-					avatarUri={avatarUri}
-					withCircle={false}
-					size={35}
-				/>
-			)}
-			<View style={[styles.col, _messageStyles.messageItem]}>
-				{!isMe && isGroup && (
-					<View style={[styles.littleMarginLeft]}>
-						<Text style={[styles.textBold, _messageStyles.personNameInGroup, { color: color }]}>
-							{name}
-						</Text>
-					</View>
-				)}
-				<View
-					style={[
-						styles.littlePadding,
-						styles.borderRadius,
-						styleMsg,
-						{ backgroundColor: bgColor },
-					]}
-				>
-					<Text style={[styles.textBold, _messageStyles.messageText, { color: color }]}>
-						{message}
+				<View style={[styles.littleMarginLeft]}>
+					<Text style={[styles.textBold, _messageStyles.personNameInGroup, { color: color }]}>
+						{name}
 					</Text>
 				</View>
-				<View style={[isMe && styles.end]}>
-					{!state.length ? (
-						<Text style={[styles.textGrey, _messageStyles.dateMessage]}>{date}</Text>
-					) : (
-						state.map((value) => (
-							<View style={[styles.row, styles.centerItems]}>
-								<Text style={[styles.textGrey, _messageStyles.dateMessagewithState]}>{date}</Text>
-								<Icon name={value.icon} width={12} height={12} fill={value.color} />
-								<Text style={[_messageStyles.stateMessageValue, { color: value.color }]}>
-									{value.value}
-								</Text>
-							</View>
-						))
-					)}
-				</View>
+			)}
+			<View
+				style={[styles.littlePadding, styles.borderRadius, styleMsg, { backgroundColor: bgColor }]}
+			>
+				<Text style={[styles.textBold, _messageStyles.messageText, { color: color }]}>
+					{message}
+				</Text>
+			</View>
+			<View style={[isMe && styles.end]}>
+				{!state.length ? (
+					<Text style={[styles.textGrey, _messageStyles.dateMessage]}>{date}</Text>
+				) : (
+					state.map((value) => (
+						<View style={[styles.row, styles.centerItems]}>
+							<Text style={[styles.textGrey, _messageStyles.dateMessagewithState]}>{date}</Text>
+							<Icon name={value.icon} width={12} height={12} fill={value.color} />
+							<Text style={[_messageStyles.stateMessageValue, { color: value.color }]}>
+								{value.value}
+							</Text>
+						</View>
+					))
+				)}
 			</View>
 		</View>
 	</View>

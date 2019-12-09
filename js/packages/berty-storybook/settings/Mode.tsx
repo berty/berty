@@ -4,6 +4,7 @@ import { Layout, Text } from 'react-native-ui-kitten'
 import { colors, styles } from '../styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
+import { useNavigation } from '@berty-tech/berty-navigation'
 
 //
 // Mode
@@ -150,7 +151,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => (
 
 export const Mode: React.FC<{}> = () => {
 	const [isMode, setIsMode] = useState(true)
-
+	const { goBack } = useNavigation()
 	return (
 		<Layout style={[styles.flex, styles.bgWhite]}>
 			<ScrollView>
@@ -159,6 +160,7 @@ export const Mode: React.FC<{}> = () => {
 					action={setIsMode}
 					actionValue={isMode}
 					desc='Customize everything to get the app that fits your needs'
+					undo={goBack}
 				/>
 				<BodyMode isMode={isMode} />
 			</ScrollView>

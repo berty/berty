@@ -29,12 +29,14 @@
   "dependencies": {
     "@berty-tech/berty-api": "^0.0.0",
     "@berty-tech/berty-i18n": "^0.0.0",
+    "@berty-tech/berty-navigation": "^0.0.0",
     "@berty-tech/shared-storybook": "^0.0.0",
     "@eva-design/eva": "^1.0.1",
+    "@react-navigation/core": "^5.0.0-alpha.23",
     "@storybook/addon-notes": "^5.2.4",
-    "i18next": "^17.2.0",
+    "i18next": "19.0.1",
     "random-emoji": "^1.0.2",
-    "react-i18next": "^10.13.1",
+    "react-i18next": "11.2.2",
     "react-native-collapsible": "^1.5.1",
     "react-native-easy-grid": "^0.2.2",
     "react-native-easy-markdown": "^1.5.0",
@@ -42,14 +44,15 @@
     "react-native-hooks": "^0.9.0",
     "react-native-swiper": "^1.6.0-rc.1",
     "react-native-ui-kitten": "^4.1.1",
+    "react-use": "^13.9.0",
     "storybook-addon-i18n": "^5.1.11"
   },
   "optionalDependencies": {
     "@storybook/addon-links": "^5.2.1"
   },
   "peerDependencies": {
-    "@ui-kitten/eva-icons": "^4.2.0",
     "@storybook/react": "^5.2.1",
+    "@ui-kitten/eva-icons": "^4.2.0",
     "react": "^16.12.0",
     "react-native": "^0.61.0",
     "react-native-eva-icons": "^1.2.1",
