@@ -1,5 +1,5 @@
 import React from 'react'
-import { colors } from '../styles'
+import { colors } from '@berty-tech/styles'
 import { Footer as SharedFooter } from '../shared-components/Footer'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { useNavigation } from '@berty-tech/berty-navigation'

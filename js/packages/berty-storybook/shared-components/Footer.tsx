@@ -1,7 +1,7 @@
 import React from 'react'
 import { TouchableOpacity, View, Image, StyleSheet, SafeAreaView } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
-import { colors, styles } from '../styles'
+import { colors, styles } from '@berty-tech/styles'
 import LinearGradient from 'react-native-linear-gradient'
 
 //

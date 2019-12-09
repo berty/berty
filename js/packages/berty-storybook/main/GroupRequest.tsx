@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Image, ScrollView, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '../styles'
+import { styles, colors } from '@berty-tech/styles'
 import { RequestButtons, RequestAvatar, Fallback, TabBar, Modal } from '../shared-components'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { berty } from '@berty-tech/berty-api'

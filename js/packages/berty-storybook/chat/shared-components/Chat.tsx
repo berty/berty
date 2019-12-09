@@ -9,7 +9,7 @@ import {
 	SafeAreaView,
 } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '../../styles'
+import { styles, colors } from '@berty-tech/styles'
 
 //
 // ChatFooter => Textinput for type message

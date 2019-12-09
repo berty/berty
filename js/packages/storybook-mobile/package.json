@@ -25,6 +25,7 @@
     "@babel/runtime": "^7.6.2",
     "@berty-tech/babel-preset": "^0.0.0",
     "@berty-tech/berty-storybook": "^0.0.0",
+    "@berty-tech/styles": "^0.0.0",
     "@berty-tech/shared-storybook": "^0.0.0",
     "@react-native-community/blur": "^3.3.1",
     "@react-native-community/eslint-config": "^0.0.5",

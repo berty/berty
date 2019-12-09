@@ -1,7 +1,7 @@
 import React from 'react'
 import { SafeAreaView } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
-import { styles } from '../styles'
+import { styles } from '@berty-tech/styles'
 import { RequestProps } from '../shared-props/User'
 import { Request } from '../shared-components/Request'
 

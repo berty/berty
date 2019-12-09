@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleProp, StyleSheet } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
-import { styles } from '../../styles'
+import { styles } from '@berty-tech/styles'
 import { CircleAvatar } from '../../shared-components/CircleAvatar'
 
 //

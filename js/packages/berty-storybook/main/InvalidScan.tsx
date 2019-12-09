@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, SafeAreaView, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '../styles'
+import { styles, colors } from '@berty-tech/styles'
 
 //
 // Scan Invalid

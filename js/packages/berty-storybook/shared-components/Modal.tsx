@@ -8,7 +8,7 @@ import {
 	ScrollView,
 } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '../styles'
+import { styles, colors } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/berty-navigation'
 import { BlurView } from '@react-native-community/blur'
 

@@ -10,7 +10,7 @@ import {
 	ActivityIndicator,
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '../styles'
+import { styles, colors } from '@berty-tech/styles'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { GroupCircleAvatar, CircleAvatar } from '../shared-components/CircleAvatar'
 import { Message } from './shared-components/Message'

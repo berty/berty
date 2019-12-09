@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
-import { styles } from '../styles'
+import { styles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 
 //

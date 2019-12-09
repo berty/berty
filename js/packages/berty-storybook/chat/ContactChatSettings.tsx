@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, ScrollView } from 'react-native'
-import { styles, colors } from '../styles'
+import { styles, colors } from '@berty-tech/styles'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'

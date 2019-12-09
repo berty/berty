@@ -30,6 +30,7 @@
     "@berty-tech/berty-api": "^0.0.0",
     "@berty-tech/berty-i18n": "^0.0.0",
     "@berty-tech/berty-navigation": "^0.0.0",
+    "@berty-tech/styles": "^0.0.0",
     "@berty-tech/shared-storybook": "^0.0.0",
     "@eva-design/eva": "^1.0.1",
     "@react-navigation/core": "^5.0.0-alpha.23",
@@ -59,10 +60,13 @@
     "@ui-kitten/eva-icons": "^4.2.0",
     "react": "^16.12.0",
     "react-native": "^0.61.0",
+    "react-native-config": "luggit/react-native-config#master",
     "react-native-eva-icons": "^1.2.1",
     "react-native-gesture-handler": "^1.5.0",
     "react-native-linear-gradient": "^2.5.6",
+    "react-native-permissions": "^2.0.3",
     "react-native-reanimated": "^1.4.0",
+    "react-native-safe-area-context": "^0.6.1",
     "react-native-screens": "^2.0.0-alpha.11",
     "react-native-svg": "9.13.3"
   }
