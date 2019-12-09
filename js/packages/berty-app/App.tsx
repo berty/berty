@@ -28,7 +28,7 @@ export const TestIdsStatus = () =>
 	)
 
 export const App: React.FC = () => (
-	<NavigationNativeContainer>
+	<NavigationNativeContainer {...testId('App')}>
 		<Store.Provider
 			rpcImpl={
 				faker.berty.chat.ChatService

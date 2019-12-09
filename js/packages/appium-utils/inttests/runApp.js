@@ -5,7 +5,7 @@ const { TestContext } = require('..')
 /* global browser */
 
 describe('App', function() {
-	const elemId = 'TestElem'
+	const elemId = 'App'
 	it(`should run and display something with ${elemId} as test id`, async function() {
 		const ctx = new TestContext(browser)
 		const ret = await ctx.findElem(elemId)
