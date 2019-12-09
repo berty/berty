@@ -124,7 +124,15 @@ steps:
     commands:
       - cd js
       - make deps
-      - ENABLE_TEST_IDS=true make start.metro &
+
+      - cd packages/berty-app
+      - ENABLE_TEST_IDS=true ./node_modules/.bin/react-native bundle --platform ios --entry-file index.js --bundle-output ../appium-utils/served/index.bundle
+
+      - cd ../appium-utils
+      - kill -9 $(lsof -t -i :8081 -s TCP:LISTEN) 2>/dev/null || true
+      - node lib/serve.js &
+
+      - cd ../..
       - xcrun simctl uninstall 'iPhone X' 'chat.berty.ios' || true
       - make run.ios.debug
       - make integtest.ios
