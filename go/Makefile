@@ -6,7 +6,7 @@ BAZEL ?= bazel
 BAZEL_ARGS ?=
 BAZEL_CMD_ARGS ?=
 GO ?= go
-GO_TEST_OPTS ?= -test.timeout=20s
+GO_TEST_OPTS ?= -test.timeout=40s
 GOPATH ?= $(HOME)/go
 IBAZEL ?= ibazel --run_output_interactive=false --run_output
 USE_IBAZEL ?= false

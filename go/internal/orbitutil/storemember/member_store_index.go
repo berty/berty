@@ -6,173 +6,195 @@ import (
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
 	"berty.tech/berty/go/internal/orbitutil/storegroup"
-	"berty.tech/berty/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-orbit-db/iface"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-type indexEntry struct {
-	memberDevice *group.MemberDevice
-	err          error
-	root         bool
-	children     []*indexEntry
-	isValid      bool
-	parentPubKey crypto.PubKey
-	parent       *indexEntry
-	payload      *group.MemberEntryPayload
-	fullyValid   bool
-}
-
-func (i *indexEntry) findParent(index *memberStoreIndex) *indexEntry {
-	if i.parent != nil {
-		return i.parent
-	}
-
-	for _, e := range index.entries {
-		if e.memberDevice.Device.Equals(i.parentPubKey) {
-			i.parent = e
-			e.children = append(e.children, i)
-
-			return e
-		}
-	}
-
-	return nil
+type memberTree struct {
+	membersByMember  map[string]*orbitutilapi.MemberEntry
+	membersByDevice  map[string]*orbitutilapi.MemberEntry
+	membersByInviter map[string][]*orbitutilapi.MemberEntry
+	muMemberTree     sync.RWMutex
 }
 
 type memberStoreIndex struct {
-	entries      map[string]*indexEntry
-	muEntries    sync.RWMutex
-	members      []*group.MemberDevice
-	muMembers    sync.RWMutex
 	groupContext orbitutilapi.GroupContext
+
+	members   *memberTree
+	pending   []*orbitutilapi.MemberEntry
+	muPending sync.RWMutex
+
+	processed   map[string]struct{}
+	muProcessed sync.RWMutex
 }
 
 func (m *memberStoreIndex) Get(key string) interface{} {
-	m.muMembers.RLock()
-	defer m.muMembers.RUnlock()
 	return m.members
 }
 
-func (m *memberStoreIndex) checkMemberLogEntryPayloadFirst(entry *indexEntry) error {
-	if !entry.parentPubKey.Equals(m.groupContext.GetGroup().PubKey) {
-		return errcode.ErrGroupMemberLogWrongInviter
-	}
+func (m *memberStoreIndex) processPending() {
+	for {
+		processed := 0
 
-	return nil
-}
+		// Copy the pending list so we can safely remove entries once processed
+		m.muPending.RLock()
+		toProcess := make([]*orbitutilapi.MemberEntry, len(m.pending))
+		copy(toProcess, m.pending)
+		m.muPending.RUnlock()
 
-func (m *memberStoreIndex) checkMemberLogEntryPayloadInvited(entry *indexEntry) error {
-	m.muEntries.RLock()
-	defer m.muEntries.RUnlock()
+		for i, pending := range toProcess {
+			// Check if inviter is already listed as a member
+			inviterPubKeyBytes, _ := pending.Inviters[0].Raw()
+			m.members.muMemberTree.RLock()
+			_, inviterExists := m.members.membersByMember[string(inviterPubKeyBytes)]
+			m.members.muMemberTree.RUnlock()
 
-	for _, e := range m.entries {
-		if e.memberDevice.Device.Equals(entry.parentPubKey) {
-			return nil
+			if inviterExists || pending.Inviters[0].Equals(m.groupContext.GetGroup().PubKey) {
+				// The inviter is already listed or this pending entry corresponds
+				// to a device of the group creator (invited by group key pair)
+				// so the pending member is ready to be processed
+				memberPubKeyBytes, _ := pending.Member.Raw()
+				devicePubKeyBytes, _ := pending.Devices[0].Raw()
+
+				m.members.muMemberTree.Lock()
+				member, memberExists := m.members.membersByMember[string(memberPubKeyBytes)]
+				_, deviceExists := m.members.membersByDevice[string(devicePubKeyBytes)]
+
+				if !memberExists {
+					// Member doesn't exist, add it to the member tree
+					m.members.membersByMember[string(memberPubKeyBytes)] = pending
+					m.members.membersByDevice[string(devicePubKeyBytes)] = pending
+					member = pending
+				} else if !deviceExists {
+					// Member already exists but device doesn't, add device to the tree
+					member.Devices = append(member.Devices, pending.Devices[0])
+
+					// Check if pending device was added by a different inviter
+					found := false
+					for _, inviter := range member.Inviters {
+						if inviter.Equals(pending.Inviters[0]) {
+							found = true
+						}
+					}
+					if !found {
+						// Inviter is not listed in member's inviters so list it
+						member.Inviters = append(member.Inviters, pending.Inviters[0])
+					}
+
+					m.members.membersByDevice[string(devicePubKeyBytes)] = member
+				}
+
+				if !memberExists || !deviceExists {
+					// Check if inviter is already indexed as inviter
+					invitees, inviterExists := m.members.membersByInviter[string(inviterPubKeyBytes)]
+					if !inviterExists {
+						// Inviter doesn't indexed as inviter yet, add it to the member tree
+						m.members.membersByInviter[string(inviterPubKeyBytes)] = []*orbitutilapi.MemberEntry{member}
+					} else {
+						// Inviter already indexed as inviter, check if pending member
+						// is already listed as one of its invitee
+						found := false
+						for _, invitee := range invitees {
+							if invitee.Member.Equals(member.Member) {
+								found = true
+							}
+						}
+
+						if !found {
+							// Pending member is not listed as inviter's invitee so list it
+							m.members.membersByInviter[string(inviterPubKeyBytes)] = append(invitees, member)
+						}
+					}
+
+					// Send event containing new memberDevice
+					memberDevice := &group.MemberDevice{
+						Member: pending.Member,
+						Device: pending.Devices[0],
+					}
+					eventNewMemberDevice := NewEventNewMemberDevice(memberDevice)
+					m.groupContext.GetMemberStore().Emit(eventNewMemberDevice)
+				}
+				m.members.muMemberTree.Unlock()
+
+				// Remove processed entry from pending list
+				m.muPending.Lock()
+				m.pending = append(m.pending[:i-processed], m.pending[i-processed+1:]...)
+				m.muPending.Unlock()
+				processed++
+			}
+		}
+
+		if processed == 0 {
+			// No entry processed during the last full list iteration, we can exit
+			break
 		}
 	}
-
-	return errcode.ErrGroupMemberLogWrongInviter
 }
 
 func (m *memberStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) error {
 	for _, e := range log.Values().Slice() {
-		var (
-			idxE       *indexEntry
-			ok         bool
-			entryBytes []byte
-		)
-
+		var err error
 		entryHash := e.GetHash().String()
 
-		m.muEntries.RLock()
-		idxE, ok = m.entries[entryHash]
-		m.muEntries.RUnlock()
+		m.muProcessed.RLock()
+		_, ok := m.processed[entryHash]
+		m.muProcessed.RUnlock()
 
 		if !ok {
+			m.muProcessed.Lock()
+			m.processed[entryHash] = struct{}{}
+			m.muProcessed.Unlock()
+
+			var entryBytes []byte
 			payload := &group.MemberEntryPayload{}
 
-			idxE = &indexEntry{}
-			m.muEntries.Lock()
-			m.entries[entryHash] = idxE
-			m.muEntries.Unlock()
-
-			if entryBytes, idxE.err = storegroup.UnwrapOperation(e); idxE.err != nil {
+			if entryBytes, err = storegroup.UnwrapOperation(e); err != nil {
 				continue
 			}
 
-			if idxE.err = group.OpenStorePayload(payload, entryBytes, m.groupContext.GetGroup()); idxE.err != nil {
+			if err = group.OpenStorePayload(payload, entryBytes, m.groupContext.GetGroup()); err != nil {
 				continue
 			}
 
-			if idxE.err = payload.CheckStructure(); idxE.err != nil {
+			if err = payload.CheckStructure(); err != nil {
 				continue
 			}
 
-			idxE.payload = payload
-
-			if idxE.memberDevice, idxE.err = payload.ToMemberDevice(); idxE.err != nil {
+			memberDevice, err := payload.ToMemberDevice()
+			if err != nil {
+				continue
+			}
+			if _, err = memberDevice.Member.Raw(); err != nil {
+				continue
+			}
+			if _, err = memberDevice.Device.Raw(); err != nil {
 				continue
 			}
 
-			if idxE.parentPubKey, idxE.err = crypto.UnmarshalEd25519PublicKey(payload.InviterDevicePubKey); idxE.err != nil {
+			inviterPubKey, err := crypto.UnmarshalEd25519PublicKey(payload.InviterMemberPubKey)
+			if err != nil {
 				continue
 			}
-		}
+			if _, err = inviterPubKey.Raw(); err != nil {
+				continue
+			}
 
-		if err := m.checkMemberLogEntryPayloadFirst(idxE); err == nil {
-			m.validateEntry(idxE, true)
-			continue
-		}
+			newPendingMember := &orbitutilapi.MemberEntry{
+				Member:   memberDevice.Member,
+				Devices:  []crypto.PubKey{memberDevice.Device},
+				Inviters: []crypto.PubKey{inviterPubKey},
+			}
 
-		if err := m.checkMemberLogEntryPayloadInvited(idxE); err == nil {
-			m.validateEntry(idxE, false)
-			continue
+			m.muPending.Lock()
+			m.pending = append(m.pending, newPendingMember)
+			m.muPending.Unlock()
 		}
 	}
+
+	m.processPending()
 
 	return nil
-}
-
-func (m *memberStoreIndex) validateEntry(entry *indexEntry, isRoot bool) {
-	if entry.fullyValid {
-		return
-	}
-	entry.isValid = true
-
-	if isRoot {
-		entry.root = true
-	}
-
-	entry.parent = entry.findParent(m)
-
-	if hasAllParentsValid(entry, m) {
-		m.muMembers.Lock()
-		m.members = append(m.members, entry.memberDevice)
-		m.muMembers.Unlock()
-		entry.fullyValid = true
-	}
-
-	for _, child := range entry.children {
-		m.validateEntry(child, false)
-	}
-}
-
-func hasAllParentsValid(entry *indexEntry, index *memberStoreIndex) bool {
-	if entry.root {
-		return true
-	}
-
-	if entry.parent == nil {
-		return false
-	}
-
-	if !entry.parent.isValid {
-		return false
-	}
-
-	return hasAllParentsValid(entry.parent, index)
 }
 
 // NewMemberStoreIndex returns a new index to manage the list of the group members
@@ -180,7 +202,12 @@ func NewMemberStoreIndex(g orbitutilapi.GroupContext) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		return &memberStoreIndex{
 			groupContext: g,
-			entries:      map[string]*indexEntry{},
+			members: &memberTree{
+				membersByMember:  map[string]*orbitutilapi.MemberEntry{},
+				membersByDevice:  map[string]*orbitutilapi.MemberEntry{},
+				membersByInviter: map[string][]*orbitutilapi.MemberEntry{},
+			},
+			processed: map[string]struct{}{},
 		}
 	}
 }

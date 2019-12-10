@@ -3,16 +3,18 @@ package orbitutil
 import (
 	"sync"
 
-	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
-
 	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
+	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
 type GroupContext struct {
-	group         *group.Group
-	memberStore   orbitutilapi.MemberStore
-	settingsStore orbitutilapi.SettingsStore
-	lock          sync.RWMutex
+	group           *group.Group
+	ownMemberDevice *group.OwnMemberDevice
+	memberStore     orbitutilapi.MemberStore
+	settingStore    orbitutilapi.SettingStore
+	secretStore     orbitutilapi.SecretStore
+	lock            *sync.RWMutex
 }
 
 func (g *GroupContext) GetGroup() *group.Group {
@@ -21,22 +23,40 @@ func (g *GroupContext) GetGroup() *group.Group {
 	return g.group
 }
 
+func (g *GroupContext) GetMemberPrivKey() crypto.PrivKey {
+	g.lock.RLock()
+	defer g.lock.RUnlock()
+	return g.ownMemberDevice.Member
+}
+
+func (g *GroupContext) GetDevicePrivKey() crypto.PrivKey {
+	g.lock.RLock()
+	defer g.lock.RUnlock()
+	return g.ownMemberDevice.Device
+}
+
+func (g *GroupContext) GetDeviceSecret() *group.DeviceSecret {
+	g.lock.RLock()
+	defer g.lock.RUnlock()
+	return g.ownMemberDevice.Secret
+}
+
 func (g *GroupContext) GetMemberStore() orbitutilapi.MemberStore {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
 	return g.memberStore
 }
 
-func (g *GroupContext) GetSettingsStore() orbitutilapi.SettingsStore {
+func (g *GroupContext) GetSettingStore() orbitutilapi.SettingStore {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
-	return g.settingsStore
+	return g.settingStore
 }
 
-func (g *GroupContext) SetGroup(group *group.Group) {
-	g.lock.Lock()
-	g.group = group
-	g.lock.Unlock()
+func (g *GroupContext) GetSecretStore() orbitutilapi.SecretStore {
+	g.lock.RLock()
+	defer g.lock.RUnlock()
+	return g.secretStore
 }
 
 func (g *GroupContext) SetMemberStore(s orbitutilapi.MemberStore) {
@@ -45,8 +65,22 @@ func (g *GroupContext) SetMemberStore(s orbitutilapi.MemberStore) {
 	g.lock.Unlock()
 }
 
-func (g *GroupContext) SetSettingsStore(s orbitutilapi.SettingsStore) {
+func (g *GroupContext) SetSettingStore(s orbitutilapi.SettingStore) {
 	g.lock.Lock()
-	g.settingsStore = s
+	g.settingStore = s
 	g.lock.Unlock()
+}
+
+func (g *GroupContext) SetSecretStore(s orbitutilapi.SecretStore) {
+	g.lock.Lock()
+	g.secretStore = s
+	g.lock.Unlock()
+}
+
+func NewGroupContext(g *group.Group, omd *group.OwnMemberDevice) *GroupContext {
+	return &GroupContext{
+		group:           g,
+		ownMemberDevice: omd,
+		lock:            &sync.RWMutex{},
+	}
 }

@@ -1,4 +1,4 @@
-package settingstore
+package storesetting
 
 import (
 	"sync"
@@ -10,19 +10,23 @@ import (
 	"berty.tech/go-orbit-db/iface"
 )
 
-type settingsIndex struct {
+type settingStoreIndex struct {
 	lock         sync.RWMutex
 	settings     map[string]map[string][]byte
 	groupContext orbitutilapi.GroupContext
 }
 
-func (s *settingsIndex) Get(key string) interface{} {
+func (s *settingStoreIndex) Get(key string) interface{} {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 	return s.settings[key]
 }
 
-func (s *settingsIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) error {
+// TODO: implement the same pattern used in secret store (pending setting /
+// pending member, when both are ready, commit setting and send event)
+// TODO2: use the same pattern used in secret and member store with a "processed"
+// map to avoid processing the same entry each time UpdateIndex is called
+func (s *settingStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) error {
 	var (
 		err        error
 		entryBytes []byte
@@ -30,7 +34,7 @@ func (s *settingsIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) er
 
 	for _, e := range log.Values().Slice() {
 		namespace := ""
-		payload := &group.SettingsEntryPayload{}
+		payload := &group.SettingEntryPayload{}
 
 		if entryBytes, err = storegroup.UnwrapOperation(e); err != nil {
 			continue
@@ -41,12 +45,12 @@ func (s *settingsIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) er
 		}
 
 		switch payload.Type {
-		case group.SettingsEntryPayload_PayloadTypeGroupSetting:
+		case group.SettingEntryPayload_PayloadTypeGroupSetting:
 			if err := isAllowedToWriteSetting(s.groupContext.GetMemberStore(), payload); err != nil {
 				continue
 			}
 
-		case group.SettingsEntryPayload_PayloadTypeMemberSetting:
+		case group.SettingEntryPayload_PayloadTypeMemberSetting:
 			member, err := payload.GetSignerPubKey()
 			if err != nil {
 				continue
@@ -62,6 +66,7 @@ func (s *settingsIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) er
 		}
 
 		s.lock.Lock()
+		// TODO: Send an event when a setting has been updated
 		if _, ok := s.settings[namespace]; !ok {
 			s.settings[namespace] = map[string][]byte{}
 		}
@@ -73,13 +78,14 @@ func (s *settingsIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) er
 	return nil
 }
 
-func NewSettingsStoreIndex(g orbitutilapi.GroupContext) iface.IndexConstructor {
+// TODO: pass context for event subscription
+func NewSettingStoreIndex(g orbitutilapi.GroupContext) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
-		return &settingsIndex{
+		return &settingStoreIndex{
 			groupContext: g,
 			settings:     map[string]map[string][]byte{},
 		}
 	}
 }
 
-var _ iface.StoreIndex = &settingsIndex{}
+var _ iface.StoreIndex = &settingStoreIndex{}
