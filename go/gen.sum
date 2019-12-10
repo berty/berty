@@ -1,7 +1,7 @@
-e228a992077eb0661590dd781273e7e5a22b6a7d  ../api/bertyprotocol.proto
+8c6820a4873b32acb74d0f867ae42739296f68d5  ../api/bertyprotocol.proto
 a94e93bd575baf9e7d1d10ef2f97b361aa557e38  ../api/errcode.proto
 d915a30248e7105cb1290f5798382ccf0bdb935a  ../api/go-internal/handshake.proto
-aaeea37d30e9d0eb583ddc3e436790f66d466a22  ../api/go-internal/protocolmodel.proto
+9709a68db024f0b73121062e7b07c925d1d3f5c0  ../api/go-internal/protocolmodel.proto
 e90229dbdbf76864981801538947a192cb62b448  ../api/go-internal/sigchain.proto
 013dcdd574cefc0c541688c493133f0d9be39341  ../api/go-internal/store_entry.proto
 7da9aaa996ea87e4639ee6dd7333a7fc261e9077  Makefile

@@ -509,12 +509,19 @@ message Contact {
     Trusted = 3;
     UltimateTrust = 4;
   }
+  enum RequestStatus {
+    UnknownRequestStatus = 0;
+    IncomingRequest = 1;
+    OutgoingRequest = 2;
+    AcceptedRequest = 3;
+  }
   bytes account_pub_key = 1;
   bytes one_to_one_group_pub_key = 2;
   reserved 3;
   TrustLevel trust_level = 4;
   bytes metadata = 5;
   bool blocked = 6;
+  RequestStatus request_status = 7;
   GroupInfo one_to_one_group = 80;
   reserved 98;
   reserved 99;

@@ -108,6 +108,7 @@
     - [StreamManagerRequestToContact.Reply](#berty.protocol.StreamManagerRequestToContact.Reply)
     - [StreamManagerRequestToContact.Request](#berty.protocol.StreamManagerRequestToContact.Request)
   
+    - [Contact.RequestStatus](#berty.protocol.Contact.RequestStatus)
     - [Contact.TrustLevel](#berty.protocol.Contact.TrustLevel)
     - [EventSubscribe.Type](#berty.protocol.EventSubscribe.Type)
     - [GroupInfo.GroupAudience](#berty.protocol.GroupInfo.GroupAudience)
@@ -231,6 +232,7 @@ Contact is the public version of protocolmodel.Contact and should stay in sync
 | trust_level | [Contact.TrustLevel](#berty.protocol.Contact.TrustLevel) |  |  |
 | metadata | [bytes](#bytes) |  |  |
 | blocked | [bool](#bool) |  |  |
+| request_status | [Contact.RequestStatus](#berty.protocol.Contact.RequestStatus) |  |  |
 | one_to_one_group | [GroupInfo](#berty.protocol.GroupInfo) |  |  |
 
 <a name="berty.protocol.ContactGet"></a>
@@ -369,6 +371,10 @@ streamed
 <a name="berty.protocol.ContactRequestSend.Reply"></a>
 
 ### ContactRequestSend.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| contact | [Contact](#berty.protocol.Contact) |  |  |
 
 <a name="berty.protocol.ContactRequestSend.Request"></a>
 
@@ -784,6 +790,17 @@ streamed
 ### StreamManagerRequestToContact.Request
 
  
+
+<a name="berty.protocol.Contact.RequestStatus"></a>
+
+### Contact.RequestStatus
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| UnknownRequestStatus | 0 |  |
+| IncomingRequest | 1 |  |
+| OutgoingRequest | 2 |  |
+| AcceptedRequest | 3 |  |
 
 <a name="berty.protocol.Contact.TrustLevel"></a>
 

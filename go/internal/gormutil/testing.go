@@ -8,7 +8,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // we'll test migrations using sqlite and this is required
 	"go.uber.org/zap"
-	"gopkg.in/gormigrate.v1"
+	gormigrate "gopkg.in/gormigrate.v1"
 )
 
 type columnInfo struct {
@@ -123,6 +123,8 @@ func TestingSqliteDB(t *testing.T, logger *zap.Logger) *gorm.DB {
 
 // TestingMigrationsVSAutoMigrate is a testing helper
 func TestingMigrationsVSAutoMigrate(t *testing.T, migrations []*gormigrate.Migration, models []interface{}, logger *zap.Logger) {
+	t.Helper()
+
 	db1 := TestingSqliteDB(t, logger)
 	defer db1.Close()
 	db2 := TestingSqliteDB(t, logger)
