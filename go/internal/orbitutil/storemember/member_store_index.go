@@ -152,6 +152,9 @@ func (m *memberStoreIndex) validateEntry(entry *indexEntry, isRoot bool) {
 		m.members = append(m.members, entry.memberDevice)
 		m.muMembers.Unlock()
 		entry.fullyValid = true
+
+		eventNewMemberDevice := NewEventNewMemberDevice(entry.memberDevice)
+		m.groupContext.GetMemberStore().Emit(eventNewMemberDevice)
 	}
 
 	for _, child := range entry.children {

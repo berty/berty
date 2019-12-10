@@ -5,16 +5,16 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func (m *SettingsEntryPayload) CheckStructure() error {
-	if m.Type == SettingsEntryPayload_PayloadTypeUnknown {
+func (m *SettingEntryPayload) CheckStructure() error {
+	if m.Type == SettingEntryPayload_PayloadTypeUnknown {
 		return errcode.ErrInvalidInput
 	}
 
 	return nil
 }
 
-func (m *SettingsEntryPayload) GetSignerPubKey() (crypto.PubKey, error) {
+func (m *SettingEntryPayload) GetSignerPubKey() (crypto.PubKey, error) {
 	return crypto.UnmarshalEd25519PublicKey(m.MemberPubKey)
 }
 
-var _ ClearPayload = (*SettingsEntryPayload)(nil)
+var _ ClearPayload = (*SettingEntryPayload)(nil)

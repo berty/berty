@@ -1,4 +1,4 @@
-package settingstore
+package storesetting
 
 import (
 	"sync"
@@ -10,19 +10,19 @@ import (
 	"berty.tech/go/internal/orbitutil/storegroup"
 )
 
-type settingsIndex struct {
+type settingStoreIndex struct {
 	lock         sync.RWMutex
 	settings     map[string]map[string][]byte
 	groupContext orbitutilapi.GroupContext
 }
 
-func (s *settingsIndex) Get(key string) interface{} {
+func (s *settingStoreIndex) Get(key string) interface{} {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 	return s.settings[key]
 }
 
-func (s *settingsIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) error {
+func (s *settingStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) error {
 	var (
 		err        error
 		entryBytes []byte
@@ -30,7 +30,7 @@ func (s *settingsIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) er
 
 	for _, e := range log.Values().Slice() {
 		namespace := ""
-		payload := &group.SettingsEntryPayload{}
+		payload := &group.SettingEntryPayload{}
 
 		if entryBytes, err = storegroup.UnwrapOperation(e); err != nil {
 			continue
@@ -41,12 +41,12 @@ func (s *settingsIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) er
 		}
 
 		switch payload.Type {
-		case group.SettingsEntryPayload_PayloadTypeGroupSetting:
+		case group.SettingEntryPayload_PayloadTypeGroupSetting:
 			if err := isAllowedToWriteSetting(s.groupContext.GetMemberStore(), payload); err != nil {
 				continue
 			}
 
-		case group.SettingsEntryPayload_PayloadTypeMemberSetting:
+		case group.SettingEntryPayload_PayloadTypeMemberSetting:
 			member, err := payload.GetSignerPubKey()
 			if err != nil {
 				continue
@@ -73,13 +73,13 @@ func (s *settingsIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) er
 	return nil
 }
 
-func NewSettingsStoreIndex(g orbitutilapi.GroupContext) iface.IndexConstructor {
+func NewSettingStoreIndex(g orbitutilapi.GroupContext) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
-		return &settingsIndex{
+		return &settingStoreIndex{
 			groupContext: g,
 			settings:     map[string]map[string][]byte{},
 		}
 	}
 }
 
-var _ iface.StoreIndex = &settingsIndex{}
+var _ iface.StoreIndex = &settingStoreIndex{}

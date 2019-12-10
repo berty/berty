@@ -16,7 +16,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const StoreType = "member_store"
+const StoreType = "berty_member"
 
 type memberStore struct {
 	storegroup.BaseGroupStore
@@ -29,6 +29,21 @@ func (m *memberStore) ListMembers() ([]*group.MemberDevice, error) {
 	}
 
 	return values, nil
+}
+
+func (m *memberStore) MemberForDevice(device crypto.PubKey) (crypto.PubKey, error) {
+	members, err := m.ListMembers()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, member := range members {
+		if member.Device.Equals(device) {
+			return member.Member, nil
+		}
+	}
+
+	return nil, errors.New("device not found in member list")
 }
 
 func (m *memberStore) RedeemInvitation(ctx context.Context, memberPrivateKey, devicePrivateKey crypto.PrivKey, invitation *group.Invitation) (operation.Operation, error) {

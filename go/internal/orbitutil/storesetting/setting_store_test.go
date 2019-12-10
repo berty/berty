@@ -1,4 +1,4 @@
-package settingstore_test
+package storesetting_test
 
 import (
 	"bytes"
@@ -76,7 +76,7 @@ func setUpStores(t *testing.T, ctx context.Context, members int, pathBase string
 	orbittestutil.ConnectPeers(ctx, t, peers)
 
 	for i, peer := range testContexts {
-		if peer.GroupContext, err = peer.GetDB().InitStoresForGroup(ctx, g, nil); err != nil {
+		if peer.GroupContext, err = peer.GetDB().InitStoresForGroup(ctx, g, nil, nil, nil); err != nil {
 			t.Fatal(err)
 		}
 
@@ -97,17 +97,17 @@ func setUpStores(t *testing.T, ctx context.Context, members int, pathBase string
 	return testContexts
 }
 
-func TestSettingsStore(t *testing.T) {
+func TestSettingStore(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	pathBase := "./orbitdb-test/tests/settings-store-test/"
+	pathBase := "./orbitdb-test/tests/setting-store-test/"
 	defer os.RemoveAll("./orbitdb-test/")
 	contexts := setUpStores(t, ctx, 2, pathBase)
 
 	// Get empty store
 
-	settings, err := contexts[0].GetSettingsStore().Get(contexts[0].GetMemberDevices().MemberPrivKey.GetPublic())
+	settings, err := contexts[0].GetSettingStore().Get(contexts[0].GetMemberDevices().MemberPrivKey.GetPublic())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -118,7 +118,7 @@ func TestSettingsStore(t *testing.T) {
 
 	// Get empty store, other member
 
-	settings, err = contexts[0].GetSettingsStore().Get(contexts[1].GetMemberDevices().MemberPrivKey.GetPublic())
+	settings, err = contexts[0].GetSettingStore().Get(contexts[1].GetMemberDevices().MemberPrivKey.GetPublic())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -129,14 +129,14 @@ func TestSettingsStore(t *testing.T) {
 
 	// Write on store
 
-	_, err = contexts[0].GetSettingsStore().Set(ctx, "foo", []byte("bar"), contexts[0].GetMemberDevices().MemberPrivKey)
+	_, err = contexts[0].GetSettingStore().Set(ctx, "foo", []byte("bar"), contexts[0].GetMemberDevices().MemberPrivKey)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Read on store, self value
 
-	settings, err = contexts[0].GetSettingsStore().Get(contexts[0].GetMemberDevices().MemberPrivKey.GetPublic())
+	settings, err = contexts[0].GetSettingStore().Get(contexts[0].GetMemberDevices().MemberPrivKey.GetPublic())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -151,9 +151,9 @@ func TestSettingsStore(t *testing.T) {
 
 	// Read on store, replicated value
 
-	orbitutil.WaitStoreReplication(ctx, 5*time.Second, contexts[1].GetSettingsStore())
+	orbitutil.WaitStoreReplication(ctx, 5*time.Second, contexts[1].GetSettingStore())
 
-	settings, err = contexts[1].GetSettingsStore().Get(contexts[0].GetMemberDevices().MemberPrivKey.GetPublic())
+	settings, err = contexts[1].GetSettingStore().Get(contexts[0].GetMemberDevices().MemberPrivKey.GetPublic())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -168,14 +168,14 @@ func TestSettingsStore(t *testing.T) {
 
 	// Authorized group write
 
-	_, err = contexts[0].GetSettingsStore().SetForGroup(ctx, "group-foo", []byte("group-bar"), contexts[0].GetMemberDevices().MemberPrivKey)
+	_, err = contexts[0].GetSettingStore().SetForGroup(ctx, "group-foo", []byte("group-bar"), contexts[0].GetMemberDevices().MemberPrivKey)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Own group get
 
-	settings, err = contexts[0].GetSettingsStore().GetForGroup()
+	settings, err = contexts[0].GetSettingStore().GetForGroup()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -188,11 +188,11 @@ func TestSettingsStore(t *testing.T) {
 		t.Fatalf("expected group-foo=group-bar settings to be set for group")
 	}
 
-	orbitutil.WaitStoreReplication(ctx, 5*time.Second, contexts[1].GetSettingsStore())
+	orbitutil.WaitStoreReplication(ctx, 5*time.Second, contexts[1].GetSettingStore())
 
 	// Replicated group get
 
-	settings, err = contexts[1].GetSettingsStore().GetForGroup()
+	settings, err = contexts[1].GetSettingStore().GetForGroup()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -207,21 +207,21 @@ func TestSettingsStore(t *testing.T) {
 
 	// Unauthorized group write
 
-	_, err = contexts[1].GetSettingsStore().SetForGroup(ctx, "group-foo2", []byte("group-bar2"), contexts[1].GetMemberDevices().MemberPrivKey)
+	_, err = contexts[1].GetSettingStore().SetForGroup(ctx, "group-foo2", []byte("group-bar2"), contexts[1].GetMemberDevices().MemberPrivKey)
 	if err == nil {
 		t.Fatalf("error should not be nil")
 	}
 
 	// Member setting overwrite
 
-	_, err = contexts[0].GetSettingsStore().Set(ctx, "foo", []byte("bar2"), contexts[0].GetMemberDevices().MemberPrivKey)
+	_, err = contexts[0].GetSettingStore().Set(ctx, "foo", []byte("bar2"), contexts[0].GetMemberDevices().MemberPrivKey)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Read on store, self overwritten value
 
-	settings, err = contexts[0].GetSettingsStore().Get(contexts[0].GetMemberDevices().MemberPrivKey.GetPublic())
+	settings, err = contexts[0].GetSettingStore().Get(contexts[0].GetMemberDevices().MemberPrivKey.GetPublic())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -236,9 +236,9 @@ func TestSettingsStore(t *testing.T) {
 
 	// Read on store, replicated overwritten value
 
-	orbitutil.WaitStoreReplication(ctx, 5*time.Second, contexts[1].GetSettingsStore())
+	orbitutil.WaitStoreReplication(ctx, 5*time.Second, contexts[1].GetSettingStore())
 
-	settings, err = contexts[1].GetSettingsStore().Get(contexts[0].GetMemberDevices().MemberPrivKey.GetPublic())
+	settings, err = contexts[1].GetSettingStore().Get(contexts[0].GetMemberDevices().MemberPrivKey.GetPublic())
 	if err != nil {
 		t.Fatal(err)
 	}

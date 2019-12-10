@@ -5,6 +5,7 @@ go 1.12
 require (
 	berty.tech/go-ipfs-log v0.0.0-20191118100004-2fb04713cace
 	berty.tech/go-orbit-db v0.1.1-0.20191202092733-7a0acb2fd423
+	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.3.2
 	github.com/improbable-eng/grpc-web v0.11.0

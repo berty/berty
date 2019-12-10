@@ -1,4 +1,4 @@
-package settingstore
+package storesetting
 
 import (
 	"context"
@@ -18,7 +18,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const StoreType = "berty_settings"
+const StoreType = "berty_setting"
 
 func keyAsString(key crypto.PubKey) (string, error) {
 	raw, err := key.Raw()
@@ -29,8 +29,8 @@ func keyAsString(key crypto.PubKey) (string, error) {
 	return base64.StdEncoding.EncodeToString(raw), nil
 }
 
-func isAllowedToWriteSetting(memberStore orbitutilapi.MemberStore, payload *group.SettingsEntryPayload) error {
-	if payload.Type != group.SettingsEntryPayload_PayloadTypeGroupSetting {
+func isAllowedToWriteSetting(memberStore orbitutilapi.MemberStore, payload *group.SettingEntryPayload) error {
+	if payload.Type != group.SettingEntryPayload_PayloadTypeGroupSetting {
 		return nil
 	}
 
@@ -55,11 +55,11 @@ func isAllowedToWriteSetting(memberStore orbitutilapi.MemberStore, payload *grou
 	return nil
 }
 
-type settingsStore struct {
+type settingStore struct {
 	storegroup.BaseGroupStore
 }
 
-func (s *settingsStore) set(ctx context.Context, payload *group.SettingsEntryPayload, member crypto.PrivKey) (operation.Operation, error) {
+func (s *settingStore) set(ctx context.Context, payload *group.SettingEntryPayload, member crypto.PrivKey) (operation.Operation, error) {
 	rawMember, err := member.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -91,15 +91,15 @@ func (s *settingsStore) set(ctx context.Context, payload *group.SettingsEntryPay
 	return op, nil
 }
 
-func (s *settingsStore) Set(ctx context.Context, name string, value []byte, member crypto.PrivKey) (operation.Operation, error) {
-	return s.set(ctx, &group.SettingsEntryPayload{
-		Type:  group.SettingsEntryPayload_PayloadTypeMemberSetting,
+func (s *settingStore) Set(ctx context.Context, name string, value []byte, member crypto.PrivKey) (operation.Operation, error) {
+	return s.set(ctx, &group.SettingEntryPayload{
+		Type:  group.SettingEntryPayload_PayloadTypeMemberSetting,
 		Key:   name,
 		Value: value,
 	}, member)
 }
 
-func (s *settingsStore) Get(member crypto.PubKey) (map[string][]byte, error) {
+func (s *settingStore) Get(member crypto.PubKey) (map[string][]byte, error) {
 	namespace, err := keyAsString(member)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -108,7 +108,7 @@ func (s *settingsStore) Get(member crypto.PubKey) (map[string][]byte, error) {
 	return s.get(namespace)
 }
 
-func (s *settingsStore) get(namespace string) (map[string][]byte, error) {
+func (s *settingStore) get(namespace string) (map[string][]byte, error) {
 	raw := s.Index().Get(namespace)
 	values, ok := raw.(map[string][]byte)
 
@@ -119,22 +119,22 @@ func (s *settingsStore) get(namespace string) (map[string][]byte, error) {
 	return values, nil
 }
 
-func (s *settingsStore) SetForGroup(ctx context.Context, name string, value []byte, member crypto.PrivKey) (operation.Operation, error) {
-	return s.set(ctx, &group.SettingsEntryPayload{
-		Type:  group.SettingsEntryPayload_PayloadTypeGroupSetting,
+func (s *settingStore) SetForGroup(ctx context.Context, name string, value []byte, member crypto.PrivKey) (operation.Operation, error) {
+	return s.set(ctx, &group.SettingEntryPayload{
+		Type:  group.SettingEntryPayload_PayloadTypeGroupSetting,
 		Key:   name,
 		Value: value,
 	}, member)
 }
 
-func (s *settingsStore) GetForGroup() (map[string][]byte, error) {
+func (s *settingStore) GetForGroup() (map[string][]byte, error) {
 	return s.get("")
 }
 
 func ConstructorFactory(s orbitutilapi.BertyOrbitDB) iface.StoreConstructor {
 	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
-		store := &settingsStore{}
-		if err := s.InitGroupStore(ctx, NewSettingsStoreIndex, store, ipfs, identity, addr, options); err != nil {
+		store := &settingStore{}
+		if err := s.InitGroupStore(ctx, NewSettingStoreIndex, store, ipfs, identity, addr, options); err != nil {
 			return nil, errors.Wrap(err, "unable to initialize base store")
 		}
 
@@ -142,4 +142,4 @@ func ConstructorFactory(s orbitutilapi.BertyOrbitDB) iface.StoreConstructor {
 	}
 }
 
-var _ orbitutilapi.SettingsStore = (*settingsStore)(nil)
+var _ orbitutilapi.SettingStore = (*settingStore)(nil)

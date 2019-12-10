@@ -64,7 +64,7 @@ message DeviceSecret {
   uint64 counter = 2;
 }
 
-message SettingsEntryPayload {
+message SettingEntryPayload {
   enum PayloadType {
     PayloadTypeUnknown = 0;
     PayloadTypeGroupSetting = 1;

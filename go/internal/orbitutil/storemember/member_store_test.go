@@ -36,7 +36,7 @@ func TestMemberStore(t *testing.T) {
 		t.Fatalf("unable to init group")
 	}
 
-	gc, err := odb.InitStoresForGroup(ctx, g, nil)
+	gc, err := odb.InitStoresForGroup(ctx, g, nil, nil, nil)
 	if err != nil {
 		t.Fatalf("unable to init groupContext, %v", err)
 	}
@@ -143,7 +143,7 @@ func TestMemberReplicateStore(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	gc1, err := orbitdb1.InitStoresForGroup(ctx, g, &orbitdb.CreateDBOptions{
+	gc1, err := orbitdb1.InitStoresForGroup(ctx, g, nil, nil, &orbitdb.CreateDBOptions{
 		Directory: &dbPath1,
 	})
 	if err != nil {
@@ -157,7 +157,7 @@ func TestMemberReplicateStore(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	gc2, err := orbitdb2.InitStoresForGroup(ctx, g, &orbitdb.CreateDBOptions{
+	gc2, err := orbitdb2.InitStoresForGroup(ctx, g, nil, nil, &orbitdb.CreateDBOptions{
 		Directory: &dbPath2,
 	})
 
