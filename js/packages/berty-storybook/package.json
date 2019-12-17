@@ -42,9 +42,13 @@
     "react-native-easy-markdown": "^1.5.0",
     "react-native-elements": "^1.2.3",
     "react-native-hooks": "^0.9.0",
+    "react-native-modal": "^11.5.3",
+    "react-native-raw-bottom-sheet": "^2.0.6",
+    "react-native-redash": "^8.6.0",
     "react-native-swiper": "^1.6.0-rc.1",
     "react-native-ui-kitten": "^4.1.1",
     "react-use": "^13.9.0",
+    "rn-swipeable-panel": "^1.0.15",
     "storybook-addon-i18n": "^5.1.11"
   },
   "optionalDependencies": {
@@ -60,6 +64,6 @@
     "react-native-linear-gradient": "^2.5.6",
     "react-native-reanimated": "^1.4.0",
     "react-native-screens": "^2.0.0-alpha.11",
-    "react-native-svg": "^9.13.3"
+    "react-native-svg": "9.13.3"
   }
 }

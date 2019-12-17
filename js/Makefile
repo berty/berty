@@ -47,8 +47,9 @@ deps: $(go_vendor) $(yarn) $(lerna) $(mod) $(pkg_mod)
 $(go_vendor):
 	cd $(berty_go_path) && GO111MODULE=on go mod vendor
 
+$(mod) $(pkg_mod): ci ?= false
 $(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
-	$(yarn) --frozen-lockfile
+	$(yarn) $(if $(filter $(ci), true), --frozen-lockfile)
 	$(lerna) $(lerna_flags) bootstrap
 	mkdir -p $(mod) $(pkg_mod)
 	touch $(mod) $(pkg_mod)

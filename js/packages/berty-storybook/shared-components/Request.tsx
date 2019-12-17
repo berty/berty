@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, StyleProp, TouchableOpacity, ScrollView } from 'react-native'
+import { View, StyleSheet, StyleProp, TouchableOpacity } from 'react-native'
 import { Text, Icon, Toggle } from 'react-native-ui-kitten'
 import { styles, colors } from '../styles'
+import { UserProps } from '../shared-props/User'
 import { TabBar } from './TabBar'
 import { FingerprintContent } from './FingerprintContent'
 import { Modal } from './Modal'
@@ -18,13 +19,23 @@ type RequestProps = {
 }
 
 type RequestButtonItemProps = {
-	// icon
 	icon: string
 	iconSize?: number
 	iconColor?: string
 	text: string
 	textColor?: string
 	style?: StyleProp<any>
+}
+
+type RequestButtonsProps = {
+	buttons?: {
+		title: string
+		titleColor?: string
+		icon: string
+		iconColor?: string
+		bgColor?: string
+		style?: StyleProp<any>[]
+	}[]
 }
 
 // Styles
@@ -56,27 +67,42 @@ const RequestButtonItem: React.FC<RequestButtonItemProps> = ({
 	style = null,
 }) => (
 	<TouchableOpacity
-		style={[styles.row, styles.flex, styles.spaceCenter, styles.centerItems, style]}
+		style={[styles.row, styles.flex, styles.spaceEvenly, styles.centerItems, style]}
 	>
 		<Icon name={icon} width={iconSize} height={iconSize} fill={iconColor} />
 		<Text style={[styles.fontFamily, styles.textBold, { color: textColor }]}>{text}</Text>
 	</TouchableOpacity>
 )
 
-export const RequestButtons: React.FC<{}> = () => (
-	<View style={[styles.row, styles.padding]}>
-		<RequestButtonItem
-			style={_requestButtonsStyles.requestButtonRefuse}
-			icon='close-outline'
-			iconColor={colors.grey}
-			text='REFUSE'
-			textColor={colors.grey}
-		/>
-		<RequestButtonItem
-			style={_requestButtonsStyles.requestButtonAccept}
-			icon='checkmark-outline'
-			text='ACCEPT'
-		/>
+export const RequestButtons: React.FC<RequestButtonsProps> = ({
+	buttons = [
+		{
+			style: _requestButtonsStyles.requestButtonRefuse,
+			title: 'REFUSE',
+			titleColor: colors.grey,
+			icon: 'close-outline',
+			iconColor: colors.grey,
+		},
+		{
+			style: _requestButtonsStyles.requestButtonAccept,
+			title: 'ACCEPT',
+			titleColor: colors.blue,
+			icon: 'checkmark-outline',
+			iconColor: colors.blue,
+		},
+	],
+}) => (
+	<View style={[styles.row, styles.padding, styles.marginTop]}>
+		{buttons &&
+			buttons.map((obj: any) => (
+				<RequestButtonItem
+					style={obj.style}
+					icon={obj.icon}
+					iconColor={obj.iconColor}
+					text={obj.title}
+					textColor={obj.titleColor}
+				/>
+			))}
 	</View>
 )
 
@@ -198,14 +224,44 @@ export const MarkAsVerified: React.FC<{}> = () => {
 // Request contact => ScanRequest/RequestContact
 //
 
-const BodyRequestContent: React.FC<{}> = () => (
+// Types
+type RequestComponentProps = {
+	user: UserProps
+	markAsVerified?: boolean
+	buttons?: {
+		title: string
+		titleColor?: string
+		icon: string
+		iconColor?: string
+		bgColor?: string
+	}[]
+}
+
+type BodyRequestProps = {
+	user: UserProps
+	markAsVerified: boolean
+	buttons?: {
+		title: string
+		titleColor?: string
+		icon: string
+		iconColor?: string
+		bgColor?: string
+		style?: StyleProp<any>[]
+	}[]
+}
+
+type BodyRequestContentProps = {
+	markAsVerified: boolean
+}
+
+const BodyRequestContent: React.FC<BodyRequestContentProps> = ({ markAsVerified }) => (
 	<View style={[styles.bigMarginTop]}>
 		<FingerprintContent />
-		<MarkAsVerified />
+		{markAsVerified && <MarkAsVerified />}
 	</View>
 )
 
-const BodyRequest: React.FC<RequestProps> = ({ user }) => (
+const BodyRequest: React.FC<BodyRequestProps> = ({ user, markAsVerified, buttons = null }) => (
 	<View style={[styles.paddingHorizontal, styles.paddingBottom]}>
 		<RequestAvatar
 			style={styles.alignItems}
@@ -215,16 +271,18 @@ const BodyRequest: React.FC<RequestProps> = ({ user }) => (
 		/>
 		<View style={[styles.paddingRight, styles.paddingLeft]}>
 			<TabBar tabType='contact' />
-			<BodyRequestContent />
+			<BodyRequestContent markAsVerified={markAsVerified} />
 		</View>
-		<RequestButtons />
+		<RequestButtons buttons={buttons || []} />
 	</View>
 )
 
-export const Request: React.FC<RequestProps> = ({ user }) => {
-	return (
-		<Modal>
-			<BodyRequest user={user} />
-		</Modal>
-	)
-}
+export const Request: React.FC<RequestComponentProps> = ({
+	user,
+	markAsVerified = true,
+	buttons = null,
+}) => (
+	<Modal>
+		<BodyRequest user={user} markAsVerified={markAsVerified} buttons={buttons || []} />
+	</Modal>
+)
