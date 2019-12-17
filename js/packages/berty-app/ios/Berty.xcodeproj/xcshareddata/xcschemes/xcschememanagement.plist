@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>Berty Debug.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>36</integer>
+		</dict>
+		<key>BertyTests.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>36</integer>
+		</dict>
+		<key>debug.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>0</integer>
+		</dict>
+		<key>staff.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>store.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>yolo.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>F83687282355EC8D00CCC6D9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F83687392355EC9900CCC6D9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F836874A2355EC9E00CCC6D9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F8BF464B238441AC0077A846</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F8BF4662238444330077A846</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F8BF46782384443D0077A846</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
+</dict>
+</plist>
