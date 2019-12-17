@@ -4,6 +4,7 @@ import {
 	SafeAreaView,
 	ScrollView,
 	TouchableOpacity,
+	TouchableWithoutFeedback,
 	Dimensions,
 	StyleSheet,
 } from 'react-native'
@@ -12,6 +13,7 @@ import { styles, colors } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
+import { useNavigation } from '@berty-tech/berty-navigation'
 
 const Screen = Dimensions.get('window')
 
@@ -81,6 +83,7 @@ type AddMembersProps = {
 type FooterCreateGroupProps = {
 	title: string
 	icon?: string
+	action?: any
 }
 
 const NewGroup: React.FC<{}> = () => <View style={_stylesCreateGroup.newGroup} />
@@ -156,10 +159,10 @@ const AddMembers: React.FC<AddMembersProps> = ({ height, paddingBottom }) => (
 )
 
 export const CreateGroup: React.FC<{}> = () => {
-	const firstNotToggledPoint = 187 - 50
+	const firstNotToggledPoint = 160 - 50
 	const firstToggledPoint = firstNotToggledPoint
 
-	const secondNotToggledPoint = -Screen.height + 187
+	const secondNotToggledPoint = -Screen.height + 160
 	const secondToggledPoint = secondNotToggledPoint
 
 	return (
@@ -182,7 +185,6 @@ export const CreateGroup: React.FC<{}> = () => {
 							icon: 'people-outline',
 							iconColor: colors.white,
 							bgColor: colors.blue,
-							dragEnabled: false,
 						},
 					]}
 				>
@@ -242,7 +244,7 @@ const NewGroup2: React.FC<{}> = () => (
 	</View>
 )
 
-const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, icon }) => (
+const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, icon, action }) => (
 	<View
 		style={[
 			styles.absolute,
@@ -252,46 +254,49 @@ const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, icon }) =>
 			_stylesCreateGroup.footerCreateGroup,
 		]}
 	>
-		<TouchableOpacity
-			style={[
-				styles.bgLightBlue,
-				styles.row,
-				styles.alignItems,
-				styles.spaceCenter,
-				styles.paddingHorizontal,
-				styles.littlePaddingVertical,
-				_stylesCreateGroup.footerCreateGroupButton,
-			]}
-		>
-			<View style={styles.center}>
-				<Text
-					style={[
-						styles.textBold,
-						styles.textBlue,
-						styles.marginRight,
-						styles.textCenter,
-						styles.center,
-						_stylesCreateGroup.footerCreateGroupText,
-					]}
-				>
-					{title}
-				</Text>
-			</View>
-			{icon && (
+		<TouchableOpacity onPress={action}>
+			<View
+				style={[
+					styles.bgLightBlue,
+					styles.row,
+					styles.alignItems,
+					styles.spaceCenter,
+					styles.paddingHorizontal,
+					styles.littlePaddingVertical,
+					_stylesCreateGroup.footerCreateGroupButton,
+				]}
+			>
 				<View style={styles.center}>
-					<Icon name='arrow-forward-outline' width={30} height={30} fill={colors.blue} />
+					<Text
+						style={[
+							styles.textBold,
+							styles.textBlue,
+							styles.marginRight,
+							styles.textCenter,
+							styles.center,
+							_stylesCreateGroup.footerCreateGroupText,
+						]}
+					>
+						{title}
+					</Text>
 				</View>
-			)}
+				{icon && (
+					<View style={styles.center}>
+						<Icon name='arrow-forward-outline' width={30} height={30} fill={colors.blue} />
+					</View>
+				)}
+			</View>
 		</TouchableOpacity>
 	</View>
 )
 
 export const CreateGroup2: React.FC<{}> = () => {
-	const firstNotToggledPoint = 325
+	const firstNotToggledPoint = 245
 	const firstToggledPoint = firstNotToggledPoint
 
-	const secondNotToggledPoint = -Screen.height + 200 + 90 + 70
+	const secondNotToggledPoint = -Screen.height + 200 + 80
 	const secondToggledPoint = secondNotToggledPoint
+	const navigation = useNavigation()
 
 	return (
 		<Layout style={[styles.flex]}>
@@ -313,15 +318,18 @@ export const CreateGroup2: React.FC<{}> = () => {
 							icon: 'people-outline',
 							iconColor: colors.white,
 							bgColor: colors.blue,
-							dragEnabled: false,
 						},
 					]}
 				>
-					<AddMembers height={Screen.height - 187 - 230} paddingBottom={110} />
+					<AddMembers height={Screen.height - 187 - 230} paddingBottom={120} />
 					<NewGroup2 />
 				</SDTSModalComponent>
 			</SafeAreaView>
-			<FooterCreateGroup title='CONTINUE' icon='arrow-forward-outline' />
+			<FooterCreateGroup
+				title='CONTINUE'
+				icon='arrow-forward-outline'
+				action={navigation.navigate.main.createGroup3}
+			/>
 		</Layout>
 	)
 }
@@ -401,14 +409,15 @@ const GroupInfo: React.FC<{}> = () => (
 )
 
 export const CreateGroup3: React.FC<{}> = () => {
-	const firstToggledPoint = 265
+	const firstToggledPoint = 320
 	const firstNotToggledPoint = firstToggledPoint
 
-	const secondToggledPoint = -215
+	const secondToggledPoint = -170
 	const secondNotToggledPoint = secondToggledPoint
 
-	const thirdToggledPoint = -Screen.height + 200 + 90 + 70
+	const thirdToggledPoint = -Screen.height + 200 + 210
 	const thirdNotToggledPoint = thirdToggledPoint
+	const navigation = useNavigation()
 
 	return (
 		<Layout style={[styles.flex]}>
@@ -427,6 +436,7 @@ export const CreateGroup3: React.FC<{}> = () => {
 							notToggledPoint: secondNotToggledPoint,
 							title: 'Add members',
 							dragEnabled: false,
+							headerAction: navigation.navigate.main.createGroup2,
 						},
 						{
 							toggledPoint: thirdToggledPoint,
@@ -436,7 +446,6 @@ export const CreateGroup3: React.FC<{}> = () => {
 							icon: 'people-outline',
 							iconColor: colors.white,
 							bgColor: colors.blue,
-							dragEnabled: false,
 						},
 					]}
 				>

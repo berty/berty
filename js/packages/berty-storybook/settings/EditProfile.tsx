@@ -8,7 +8,7 @@ import {
 	Dimensions,
 	StyleSheet,
 	StyleProp,
-	KeyboardAvoidingView,
+	Text,
 } from 'react-native'
 import { Text, Icon, Input } from 'react-native-ui-kitten'
 import { colors, styles } from '@berty-tech/styles'
@@ -70,13 +70,13 @@ const EditMyProfile: React.FC<{}> = () => (
 		<View style={[styles.paddingLeft, styles.paddingRight]}>
 			<View style={[styles.littlePaddingTop, styles.row, styles.alignItems]}>
 				<Icon name='checkmark-outline' width={20} height={20} fill='#20D6B5' />
-				<Text category='s2' style={[styles.textLight, styles.marginLeft]}>
+				<Text style={[styles.textLight, styles.marginLeft, { fontSize: 11 }]}>
 					Your Berty ID (QR code) will be updated
 				</Text>
 			</View>
 			<View style={[styles.littlePaddingTop, styles.row, styles.alignItems]}>
 				<Icon name='close-outline' width={20} height={20} fill='#FF1F62' />
-				<Text category='s2' style={[styles.textLight, styles.marginLeft]}>
+				<Text style={[styles.textLight, styles.marginLeft, { fontSize: 11 }]}>
 					Your pending contact requests won’t be updated
 				</Text>
 			</View>
@@ -85,7 +85,6 @@ const EditMyProfile: React.FC<{}> = () => (
 			<View
 				style={[
 					_stylesEditProfile.profileButton,
-					styles.flex,
 					styles.center,
 					styles.littleBorderRadius,
 					styles.bgLightBlue,
@@ -93,7 +92,7 @@ const EditMyProfile: React.FC<{}> = () => (
 					styles.justifyContent,
 				]}
 			>
-				<Text style={[styles.center, styles.textBlue]} category='h6'>
+				<Text style={[styles.center, styles.textBlue, styles.textBold, { fontSize: 16 }]}>
 					SAVE CHANGES
 				</Text>
 			</View>
@@ -127,27 +126,25 @@ const ResetMyQrCode: React.FC<{}> = () => (
 			]}
 		>
 			<Icon name='info-outline' width={30} height={30} />
-			<Text style={[styles.bigPaddingRight]} category='s1'>
-				Why reset my QR Code ?
-			</Text>
+			<Text style={[styles.bigPaddingRight]}>Why reset my QR Code ?</Text>
 			<Icon name='arrow-ios-downward-outline' width={30} height={30} />
 		</TouchableOpacity>
 		<View style={[styles.paddingLeft, styles.paddingTop, styles.paddingRight]}>
 			<View style={[styles.littlePaddingTop, styles.row, styles.alignItems]}>
 				<Icon name='checkmark-outline' width={20} height={20} fill='#20D6B5' />
-				<Text category='s2' style={[styles.textLight, styles.marginLeft]}>
+				<Text style={[styles.textLight, styles.marginLeft, { fontSize: 11 }]}>
 					Your Berty ID (QR code) will be updated
 				</Text>
 			</View>
 			<View style={[styles.littlePaddingTop, styles.row, styles.alignItems]}>
 				<Icon name='close-outline' width={20} height={20} fill='#FF1F62' />
-				<Text category='s2' style={[styles.textLight, styles.marginLeft]}>
+				<Text style={[styles.textLight, styles.marginLeft, { fontSize: 11 }]}>
 					Your pending contact requests won’t be updated
 				</Text>
 			</View>
 			<View style={[styles.littlePaddingTop, styles.row, styles.alignItems]}>
 				<Icon name='close-outline' width={20} height={20} fill='#FF1F62' />
-				<Text category='s2' style={[styles.textLight, styles.marginLeft]}>
+				<Text style={[styles.textLight, styles.marginLeft, { fontSize: 11 }]}>
 					People won’t be able to send you a contact request using your former credentials
 				</Text>
 			</View>
@@ -155,7 +152,6 @@ const ResetMyQrCode: React.FC<{}> = () => (
 		<TouchableOpacity
 			style={[
 				_stylesEditProfile.profileButton,
-				styles.flex,
 				styles.center,
 				styles.littleBorderRadius,
 				styles.bgLightRed,
@@ -163,11 +159,11 @@ const ResetMyQrCode: React.FC<{}> = () => (
 				styles.justifyContent,
 			]}
 		>
-			<Text style={[styles.center, styles.textRed]} category='h6'>
+			<Text style={[styles.center, styles.textRed, styles.textBold, { fontSize: 16 }]}>
 				RESET MY QR CODE
 			</Text>
 		</TouchableOpacity>
-		<Text category='s2' style={[styles.center, styles.textRed, styles.littlePaddingTop]}>
+		<Text style={[styles.center, styles.textRed, styles.littlePaddingTop, { fontSize: 12 }]}>
 			This action can't be undone
 		</Text>
 	</View>
@@ -177,40 +173,36 @@ const Screen = Dimensions.get('window')
 
 export const EditProfile: React.FC<ScreenProps.Settings.EditProfile> = () => {
 	const { goBack } = useNavigation()
-	const firstNotToggledPoint = Screen.height - 20 // 90 = header height component // 20 = padding // 10 = safeAreaview // 497 = height of the third component
-	const firstToggledPoint = firstNotToggledPoint - 440 + 10 // 379.5 = height of first component / 10 = padding
+	const firstNotToggledPoint = Screen.height - 110 // 90 = header height component // 20 = padding // 10 = safeAreaview // 497 = height of the third component
+	const firstToggledPoint = firstNotToggledPoint - 370 // 379.5 = height of first component / 10 = padding
 
 	const secondNotToggledPoint = firstToggledPoint - 190
-	const secondToggledPoint = secondNotToggledPoint - 358 + 20
+	const secondToggledPoint = secondNotToggledPoint - 300
 
 	return (
 		<>
-			<TouchableWithoutFeedback onPress={goBack} style={[StyleSheet.absoluteFill]}>
-				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
-			</TouchableWithoutFeedback>
+			<BlurView style={[StyleSheet.absoluteFill, styles.test]} blurType='light' />
 			<SafeAreaView style={styles.flex}>
-				<KeyboardAvoidingView style={[styles.flex]} behavior='padding'>
-					<SDTSModalComponent
-						rows={[
-							{
-								toggledPoint: firstToggledPoint,
-								notToggledPoint: firstNotToggledPoint,
-								title: 'Reset my QR Code',
-								icon: 'sync-outline',
-								iconColor: colors.red,
-							},
-							{
-								toggledPoint: secondToggledPoint,
-								notToggledPoint: secondNotToggledPoint,
-								title: 'Edit my profile',
-								icon: 'edit-outline',
-							},
-						]}
-					>
-						<ResetMyQrCode />
-						<EditMyProfile />
-					</SDTSModalComponent>
-				</KeyboardAvoidingView>
+				<SDTSModalComponent
+					rows={[
+						{
+							toggledPoint: firstToggledPoint,
+							notToggledPoint: firstNotToggledPoint,
+							title: 'Reset my QR Code',
+							icon: 'sync-outline',
+							iconColor: colors.red,
+						},
+						{
+							toggledPoint: secondToggledPoint,
+							notToggledPoint: secondNotToggledPoint,
+							title: 'Edit my profile',
+							icon: 'edit-outline',
+						},
+					]}
+				>
+					<ResetMyQrCode />
+					<EditMyProfile />
+				</SDTSModalComponent>
 			</SafeAreaView>
 		</>
 	)

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Text, View, StyleSheet, Animated, TouchableWithoutFeedback, StyleProp } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { styles, colors } from '@berty-tech/styles'
+import { useNavigation } from '@berty-tech/berty-navigation'
 import Interactable from 'react-native-interactable'
 
 type SDTSModalProps = {
@@ -27,6 +28,7 @@ type SDTSModalProps = {
 	dragEnabled?: boolean | undefined
 	//
 	header?: boolean
+	headerAction?: any
 }
 
 type SDTSComponentProps = {
@@ -58,11 +60,9 @@ type SDTSModalComponentProps = {
 		dragEnabled?: boolean | undefined
 		//
 		header?: boolean
+		headerAction?: any
 	}[]
 	children: React.ReactNode
-	// FirstChild: React.Component<any, any, any>
-	// SecondChild: React.Component<any, any, any>
-	// ThirdChild: React.Component<any, any, any>
 }
 
 const _styles2 = StyleSheet.create({
@@ -89,6 +89,8 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 	//
 	interactableStyle = null,
 }) => {
+	const { goBack } = useNavigation()
+
 	const handleOnDrag = (e: any) => {
 		setFocusAction(componentValues.onFocus)
 		if (e.nativeEvent.targetSnapPointId === 'toggle') {
@@ -101,6 +103,8 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 				...componentValues,
 				isToggled: false,
 			})
+		} else if (e.nativeEvent.targetSnapPointId === 'close') {
+			goBack()
 		}
 	}
 
@@ -109,7 +113,6 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 			style={interactableStyle}
 			verticalOnly={true}
 			snapPoints={componentValues.snapPoints}
-			boundaries={{ top: componentValues.toggledPoint, bottom: componentValues.notToggledPoint }}
 			ref={ref}
 			dragEnabled={dragEnabled}
 			onDrag={(e: any) => handleOnDrag(e)}
@@ -118,7 +121,7 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 			initialPosition={componentValues.initialPoint}
 		>
 			<View style={[styles.shadow]}>
-				<TouchableWithoutFeedback>
+				<TouchableWithoutFeedback onPress={componentValues.headerAction}>
 					<View style={[_styles2.placeholder2, { backgroundColor: componentValues.bgColor }]}>
 						<View
 							style={[
@@ -194,10 +197,17 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 	const [first, setFirst] = useState({
 		toggledPoint: rows[0].toggledPoint,
 		notToggledPoint: rows[0].notToggledPoint,
-		snapPoints: [
-			{ y: rows[0].toggledPoint, id: 'toggle' },
-			{ y: rows[0].notToggledPoint, id: 'not-toggle' },
-		],
+		snapPoints:
+			rows.length !== 1
+				? [
+						{ y: rows[0].toggledPoint, id: 'toggle' },
+						{ y: rows[0].notToggledPoint, id: 'not-toggle' },
+				  ]
+				: [
+						{ y: rows[0].toggledPoint, id: 'toggle' },
+						{ y: rows[0].notToggledPoint, id: 'not-toggle' },
+						{ y: rows[0].notToggledPoint + 100, id: 'close' },
+				  ],
 		diffPoint: rows[0].notToggledPoint - rows[0].toggledPoint,
 		initialPoint: { y: rows[0].initialPoint || rows[0].notToggledPoint },
 		//
@@ -217,6 +227,7 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 		dragEnabled: rows[0].dragEnabled !== undefined ? rows[0].dragEnabled : true,
 		//
 		header: rows[0].header !== undefined ? rows[0].header : true,
+		headerAction: rows[0].headerAction !== undefined ? rows[0].headerAction : null,
 	})
 	const [second, setSecond] = useState()
 	const [third, setThird] = useState()
@@ -226,10 +237,17 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 			setSecond({
 				toggledPoint: rows[1].toggledPoint,
 				notToggledPoint: rows[1].notToggledPoint,
-				snapPoints: [
-					{ y: rows[1].toggledPoint, id: 'toggle' },
-					{ y: rows[1].notToggledPoint, id: 'not-toggle' },
-				],
+				snapPoints:
+					rows.length !== 2
+						? [
+								{ y: rows[1].toggledPoint, id: 'toggle' },
+								{ y: rows[1].notToggledPoint, id: 'not-toggle' },
+						  ]
+						: [
+								{ y: rows[1].toggledPoint, id: 'toggle' },
+								{ y: rows[1].notToggledPoint, id: 'not-toggle' },
+								{ y: rows[1].notToggledPoint + 200, id: 'close' },
+						  ],
 				diffPoint: rows[1].notToggledPoint - rows[1].toggledPoint,
 				initialPoint: { y: rows[1].initialPoint || rows[1].notToggledPoint },
 				//
@@ -249,6 +267,7 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 				dragEnabled: rows[1].dragEnabled !== undefined ? rows[1].dragEnabled : true,
 				//
 				header: rows[1].header !== undefined ? rows[1].header : true,
+				headerAction: rows[1].headerAction !== undefined ? rows[1].headerAction : null,
 			})
 			if (rows.length > 2 && !third) {
 				setThird({
@@ -257,6 +276,7 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 					snapPoints: [
 						{ y: rows[2].toggledPoint, id: 'toggle' },
 						{ y: rows[2].notToggledPoint, id: 'not-toggle' },
+						{ y: rows[2].notToggledPoint + 300, id: 'close' },
 					],
 					diffPoint: rows[2].notToggledPoint - rows[2].toggledPoint,
 					initialPoint: { y: rows[2].initialPoint || rows[2].notToggledPoint },
@@ -277,179 +297,197 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 					dragEnabled: rows[2].dragEnabled !== undefined ? rows[2].dragEnabled : true,
 					//
 					header: rows[2].header !== undefined ? rows[2].header : true,
+					headerAction: rows[2].headerAction !== undefined ? rows[2].headerAction : null,
 				})
 			}
 		}
 	}, [first, rows, second, third])
 
+	const firstInteractableStyle = [{ zIndex: 3 }]
+	const secondInteractableStyle = second && [
+		{ zIndex: 2 },
+		focus === 0 &&
+			!second.isToggled && {
+				transform: [
+					{
+						translateY: first.deltaY.interpolate({
+							inputRange: [
+								first.toggledPoint,
+								first.toggledPoint,
+								first.notToggledPoint,
+								first.notToggledPoint,
+							],
+							outputRange: [-first.diffPoint, -first.diffPoint, 0, 0], // height of second component
+						}),
+					},
+				],
+			},
+		focus === 0 &&
+			second.isToggled && {
+				transform: [
+					{
+						translateY: first.deltaY.interpolate({
+							inputRange: [
+								first.toggledPoint,
+								first.toggledPoint,
+								first.notToggledPoint,
+								first.notToggledPoint,
+							],
+							outputRange: [
+								second.diffPoint - first.diffPoint,
+								second.diffPoint - first.diffPoint,
+								0,
+								0,
+							],
+						}),
+					},
+				],
+			},
+		focus === 2 && {
+			tranform: [
+				{
+					translateY: third.deltaY.interpolate({
+						inputRange: [
+							third.notToggledPoint,
+							third.notToggledPoint,
+							third.notToggledPoint + 300,
+							third.notToggledPoint + 300,
+						],
+						outputRange: [0, 0, 300, 300],
+					}),
+				},
+			],
+		},
+	]
+	const thirdInteractableStyle = third && [
+		{ zIndex: 1 },
+		focus === 0 &&
+			!third.isToggled && {
+				transform: [
+					{
+						translateY: first.deltaY.interpolate({
+							inputRange: [
+								first.toggledPoint,
+								first.toggledPoint,
+								first.notToggledPoint,
+								first.notToggledPoint,
+							],
+							outputRange: [
+								-first.diffPoint,
+								-first.diffPoint,
+								second.isToggled ? -second.diffPoint : 0,
+								second.isToggled ? -second.diffPoint : 0,
+							],
+						}),
+					},
+				],
+			},
+		focus === 0 &&
+			third.isToggled && {
+				transform: [
+					{
+						translateY: first.deltaY.interpolate({
+							inputRange: [
+								first.toggledPoint,
+								first.toggledPoint,
+								first.notToggledPoint,
+								first.notToggledPoint,
+							],
+							outputRange: [
+								third.diffPoint - first.diffPoint,
+								third.diffPoint - first.diffPoint,
+								second.isToggled ? 90 : 0,
+								second.isToggled ? 90 : 0,
+							], // TODO : what is 90 ?
+						}),
+					},
+				],
+			},
+		focus === 1 &&
+			third.isToggled && {
+				transform: [
+					{
+						translateY: second.deltaY.interpolate({
+							inputRange: [
+								second.toggledPoint,
+								second.toggledPoint,
+								second.notToggledPoint,
+								second.notToggledPoint,
+							],
+							outputRange: [
+								third.diffPoint - second.diffPoint,
+								third.diffPoint - second.diffPoint,
+								0,
+								0,
+							],
+						}),
+					},
+				],
+			},
+		focus === 1 &&
+			!third.isToggled && {
+				transform: [
+					{
+						translateY: second.deltaY.interpolate({
+							inputRange: [
+								second.toggledPoint,
+								second.toggledPoint,
+								second.notToggledPoint,
+								second.notToggledPoint,
+							],
+							outputRange: [-second.diffPoint, -second.diffPoint, 0, 0],
+						}),
+					},
+				],
+			},
+	]
+
 	return (
-		<View style={[styles.absolute, styles.left, styles.right, styles.bottom]}>
-			<View>
-				{first && (
-					<SDTSComponent
-						setComponentValues={setFirst}
-						setFocusAction={setFocus}
-						componentValues={first}
-						ref={firstRef}
-						dragEnabled={first.dragEnabled}
-						interactableStyle={[{ zIndex: 3 }]}
-					>
-						{rows.length > 1 ? children[0] : children}
-					</SDTSComponent>
-				)}
-				{second && (
-					<SDTSComponent
-						setComponentValues={setSecond}
-						setFocusAction={setFocus}
-						componentValues={second}
-						ref={secondRef}
-						dragEnabled={
-							second.dragEnabled === false ? second.dragEnabled : first.isToggled ? false : true
-						}
-						interactableStyle={[
-							{ zIndex: 2 },
-							focus === 0 &&
-								!second.isToggled && {
-									transform: [
-										{
-											translateY: first.deltaY.interpolate({
-												inputRange: [
-													first.toggledPoint,
-													first.toggledPoint,
-													first.notToggledPoint,
-													first.notToggledPoint,
-												],
-												outputRange: [-first.diffPoint, -first.diffPoint, 0, 0], // height of second component
-											}),
-										},
-									],
-								},
-							focus === 0 &&
-								second.isToggled && {
-									transform: [
-										{
-											translateY: first.deltaY.interpolate({
-												inputRange: [
-													first.toggledPoint,
-													first.toggledPoint,
-													first.notToggledPoint,
-													first.notToggledPoint,
-												],
-												outputRange: [
-													second.diffPoint - first.diffPoint,
-													second.diffPoint - first.diffPoint,
-													0,
-													0,
-												],
-											}),
-										},
-									],
-								},
-						]}
-					>
-						{children && children[1]}
-					</SDTSComponent>
-				)}
-				{third && (
-					<SDTSComponent
-						setComponentValues={setThird}
-						setFocusAction={setFocus}
-						componentValues={third}
-						ref={thirdRef}
-						dragEnabled={
-							third.dragEnabled === false
-								? third.dragEnabled
-								: first.isToggled || second.isToggled
-								? false
-								: true
-						}
-						interactableStyle={[
-							{ zIndex: 1 },
-							focus === 0 &&
-								!third.isToggled && {
-									transform: [
-										{
-											translateY: first.deltaY.interpolate({
-												inputRange: [
-													first.toggledPoint,
-													first.toggledPoint,
-													first.notToggledPoint,
-													first.notToggledPoint,
-												],
-												outputRange: [
-													-first.diffPoint,
-													-first.diffPoint,
-													second.isToggled ? -second.diffPoint : 0,
-													second.isToggled ? -second.diffPoint : 0,
-												],
-											}),
-										},
-									],
-								},
-							focus === 0 &&
-								third.isToggled && {
-									transform: [
-										{
-											translateY: first.deltaY.interpolate({
-												inputRange: [
-													first.toggledPoint,
-													first.toggledPoint,
-													first.notToggledPoint,
-													first.notToggledPoint,
-												],
-												outputRange: [
-													third.diffPoint - first.diffPoint,
-													third.diffPoint - first.diffPoint,
-													second.isToggled ? 90 : 0,
-													second.isToggled ? 90 : 0,
-												], // TODO : what is 90 ?
-											}),
-										},
-									],
-								},
-							focus === 1 &&
-								third.isToggled && {
-									transform: [
-										{
-											translateY: second.deltaY.interpolate({
-												inputRange: [
-													second.toggledPoint,
-													second.toggledPoint,
-													second.notToggledPoint,
-													second.notToggledPoint,
-												],
-												outputRange: [
-													third.diffPoint - second.diffPoint,
-													third.diffPoint - second.diffPoint,
-													0,
-													0,
-												],
-											}),
-										},
-									],
-								},
-							focus === 1 &&
-								!third.isToggled && {
-									transform: [
-										{
-											translateY: second.deltaY.interpolate({
-												inputRange: [
-													second.toggledPoint,
-													second.toggledPoint,
-													second.notToggledPoint,
-													second.notToggledPoint,
-												],
-												outputRange: [-second.diffPoint, -second.diffPoint, 0, 0],
-											}),
-										},
-									],
-								},
-						]}
-					>
-						{children && children[2]}
-					</SDTSComponent>
-				)}
-			</View>
+		<View>
+			{first && (
+				<SDTSComponent
+					setComponentValues={setFirst}
+					setFocusAction={setFocus}
+					componentValues={first}
+					ref={firstRef}
+					dragEnabled={first.dragEnabled}
+					interactableStyle={firstInteractableStyle}
+				>
+					{rows.length > 1 ? children[0] : children}
+				</SDTSComponent>
+			)}
+			{second && (
+				<SDTSComponent
+					setComponentValues={setSecond}
+					setFocusAction={setFocus}
+					componentValues={second}
+					ref={secondRef}
+					dragEnabled={
+						second.dragEnabled === false ? second.dragEnabled : first.isToggled ? false : true
+					}
+					interactableStyle={secondInteractableStyle}
+				>
+					{children && children[1]}
+				</SDTSComponent>
+			)}
+			{third && (
+				<SDTSComponent
+					setComponentValues={setThird}
+					setFocusAction={setFocus}
+					componentValues={third}
+					ref={thirdRef}
+					dragEnabled={
+						third.dragEnabled === false
+							? third.dragEnabled
+							: first.isToggled || second.isToggled
+							? false
+							: true
+					}
+					interactableStyle={thirdInteractableStyle}
+				>
+					{children && children[2]}
+				</SDTSComponent>
+			)}
 		</View>
 	)
 }
