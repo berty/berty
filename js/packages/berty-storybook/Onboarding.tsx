@@ -65,9 +65,7 @@ export const GetStarted: React.FC = () => {
 	return (
 		<Translation>
 			{(t) => (
-				<SafeAreaView
-					style={[absolute.fill, background.white, column.container.justify, padding.medium]}
-				>
+				<SafeAreaView style={[absolute.fill, background.white, column.justify, padding.medium]}>
 					<View style={[flex.big]} />
 					<View style={[flex.medium]}>
 						<Text style={[padding.horizontal.medium, text.align.center, text.align.bottom]}>
@@ -75,7 +73,7 @@ export const GetStarted: React.FC = () => {
 						</Text>
 					</View>
 					<View style={[flex.medium]}>
-						<Button style={column.center} onPress={navigate.onboarding.selectMode}>
+						<Button style={column.item.center} onPress={navigate.onboarding.selectMode}>
 							GET STARTED
 						</Button>
 					</View>
@@ -110,7 +108,7 @@ export const SelectMode: React.FC = () => {
 							margin.top.huge,
 							margin.horizontal.huge,
 							flex.medium,
-							column.container.justify,
+							column.justify,
 						]}
 						onPress={navigate.onboarding.performance}
 					>
@@ -134,13 +132,7 @@ export const SelectMode: React.FC = () => {
 						</Text>
 					</TouchableCard>
 					<TouchableCard
-						style={[
-							background.red,
-							column.fill,
-							margin.huge,
-							flex.medium,
-							column.container.justify,
-						]}
+						style={[background.red, column.fill, margin.huge, flex.medium, column.justify]}
 						onPress={navigate.onboarding.privacy}
 					>
 						<Text style={[text.bold, text.size.big, text.color.white]}>
@@ -216,7 +208,12 @@ const SwiperCard: React.FC<{
 				]}
 			>
 				<View
-					style={[padding.tiny, column.right, background.light[labelColor], border.radius.tiny]}
+					style={[
+						padding.tiny,
+						column.item.right,
+						background.light[labelColor],
+						border.radius.tiny,
+					]}
 				>
 					{label ? (
 						<Text style={[text.size.small, text.color[labelColor], text.align.right]}>{label}</Text>

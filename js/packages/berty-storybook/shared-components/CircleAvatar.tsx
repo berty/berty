@@ -1,7 +1,7 @@
 import React from 'react'
-import { View, Image, StyleSheet, StyleProp } from 'react-native'
+import { View, Image, StyleProp } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '@berty-tech/styles'
+import { useStyles, ColorsTypes } from '@berty-tech/styles'
 import { berty } from '@berty-tech/berty-api'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 
@@ -15,62 +15,52 @@ type CircleAvatarProps = {
 	withCircle?: boolean
 	size?: number
 	diffSize?: number
-	color?: string // the color of the circle
+	color?: ColorsTypes // the color of the circle
 	state?: {
 		icon: string
-		iconColor?: string
-		stateColor?: string
+		iconColor?: ColorsTypes
+		stateColor?: ColorsTypes
 	} // when group is created, members have a state for know if the memeber accept, is pending or refuse
 	style?: StyleProp<any>
 }
 
 // Styles
-const _circleAvatarStyles = StyleSheet.create({
-	state: {
-		right: -10,
-		top: -10,
-	},
-})
-
 export const CircleAvatar: React.FC<CircleAvatarProps> = ({
 	avatarUri,
 	withCircle = true,
 	size = 100,
-	diffSize = withCircle ? 10 : 0,
+	diffSize = 10,
 	color = 'white',
 	state = {},
 	style = null,
 }) => {
-	const { _circleStyle } = StyleSheet.create({
-		_circleStyle: {
-			borderWidth: diffSize,
-			borderColor: colors[color],
-			width: size,
-			height: size,
-			borderRadius: size / 2,
-		},
-	})
+	const [{ row, width, height, background, border, absolute, color: colorDecl }] = useStyles()
+	const _circleStyle = [
+		row.center,
+		width(size),
+		height(size),
+		background.white,
+		border.radius.compute(size / 2),
+	]
+	const _imgStyle = [
+		row.item.justify,
+		width(size - diffSize),
+		height(size - diffSize),
+		border.radius.compute((size - diffSize) / 2),
+	]
+	const _circleAvatarStyles = [absolute.compute({ top: -10, right: -10 })]
 	return (
 		<View style={style}>
-			<View style={[styles.alignItems, styles.spaceCenter, _circleStyle]}>
-				<Image
-					style={[
-						{
-							width: size - diffSize,
-							height: size - diffSize,
-							borderRadius: (size - diffSize) / 2,
-						},
-					]}
-					source={avatarUri ? { uri: avatarUri || '' } : undefined}
-				/>
+			<View style={[_circleStyle]}>
+				<Image style={_imgStyle} source={avatarUri ? { uri: avatarUri || '' } : {}} />
 			</View>
 			{state && state.icon ? (
-				<View style={[styles.absolute, _circleAvatarStyles.state]}>
+				<View style={[_circleAvatarStyles]}>
 					<Icon
 						name={state.icon}
 						width={30}
 						height={30}
-						fill={state.iconColor ? state.iconColor : colors[color]}
+						fill={state.iconColor ? state.iconColor : colorDecl[color]}
 					/>
 				</View>
 			) : null}
@@ -97,41 +87,53 @@ export const GroupCircleAvatar: React.FC<GroupCircleAvatarProps> = ({
 	size = 100,
 	diffSize = 10,
 	style,
-}) => (
-	<View style={style}>
-		<View style={[styles.row, styles.center, { marginBottom: size / 2, marginRight: size / 2 }]}>
-			<View style={[styles.absolute, { marginTop: size / 2, marginLeft: size / 2 }]}>
-				<CircleAvatar avatarUri={firstAvatarUri} size={size} diffSize={diffSize} />
+}) => {
+	const [{ absolute, width, height }] = useStyles()
+	return (
+		<View style={style}>
+			<View style={[width(size), height(size)]}>
+				<CircleAvatar
+					avatarUri={secondAvatarUri}
+					size={size * 0.7}
+					diffSize={diffSize * 0.3}
+					style={[absolute.right, absolute.bottom]}
+				/>
+				<CircleAvatar
+					avatarUri={firstAvatarUri}
+					size={size * 0.7}
+					diffSize={diffSize * 0.3}
+					style={[absolute.left, absolute.top]}
+				/>
 			</View>
-			<CircleAvatar avatarUri={secondAvatarUri} size={size} diffSize={diffSize} />
 		</View>
-	</View>
-)
-
+	)
+}
 export const Avatar: React.FC<{
 	uris: Array<string>
 	size?: number
 	diffSize?: number
 	style?: StyleProp<any>
-}> = ({ uris, size, diffSize, style }) =>
-	uris.length >= 2 ? (
+}> = ({ uris, size, diffSize, style }) => {
+	const [{ padding }] = useStyles()
+	return uris.length >= 2 ? (
 		<GroupCircleAvatar
 			firstAvatarUri={uris[0] || ''}
 			secondAvatarUri={uris[1] || ''}
 			size={size}
 			diffSize={diffSize}
 			style={style}
+			withCircle={false}
 		/>
 	) : (
 		<CircleAvatar
-			style={[styles.littlePadding, style]}
+			style={style}
 			avatarUri={uris[0] || ''}
 			size={size}
 			diffSize={diffSize}
 			withCircle={false}
 		/>
 	)
-
+}
 const useMembers = (filter: berty.chatmodel.IMember): Array<berty.chatmodel.IMember> | null => {
 	const [data, error] = Store.useMemberList({ filter })
 	if (error) {
@@ -140,11 +142,19 @@ const useMembers = (filter: berty.chatmodel.IMember): Array<berty.chatmodel.IMem
 	return data?.filter((_) => _?.member != null).map((_) => _.member) ?? null
 }
 
-export const ConversationAvatar: React.FC<berty.chatmodel.IConversation & {
+type ConversationAvatarProp = berty.chatmodel.IConversation & {
 	size?: number
 	diffSize?: number
 	style?: StyleProp<any>
-}> = ({ id, avatarUri, kind, size, diffSize, style }: berty.chatmodel.IConversation) => {
+}
+export const ConversationAvatar: React.FC<ConversationAvatarProp> = ({
+	id,
+	avatarUri,
+	kind,
+	size,
+	diffSize,
+	style,
+}: berty.chatmodel.IConversation) => {
 	const members = useMembers({ conversationId: id })?.filter((_) => _?.avatarUri != null)
 	return (
 		<Avatar

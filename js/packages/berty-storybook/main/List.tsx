@@ -1,5 +1,6 @@
-import React, { useMemo, useContext } from 'react'
+import React, { useMemo } from 'react'
 import {
+	Text,
 	Dimensions,
 	TouchableOpacity,
 	ScrollViewProps,
@@ -11,13 +12,13 @@ import {
 	TouchableHighlight,
 	ActivityIndicator,
 } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { Icon } from 'react-native-ui-kitten'
 import { Translation } from 'react-i18next'
 import { berty, google } from '@berty-tech/berty-api'
 import * as dateFns from '@berty-tech/berty-i18n/dateFns'
 import { useLayout } from '../hooks'
 import { Footer } from './Footer'
-import { styles, colors } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 import { ConversationAvatar, CircleAvatar } from '../shared-components/CircleAvatar'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { useNavigation } from '@berty-tech/berty-navigation'
@@ -68,69 +69,6 @@ const date = (timestamp?: google.protobuf.ITimestamp | null): Date => {
 }
 
 // Style
-
-const _stylesList = StyleSheet.create({
-	tinyAvatarImage: {
-		width: 51,
-		borderRadius: 51,
-		height: 51,
-	},
-	tinyAvatar: {
-		position: 'absolute',
-		top: -32.5,
-	},
-	tinyCard: {
-		margin: 16,
-		marginTop: 16 + 26,
-		padding: 16,
-		paddingTop: 16 + 26,
-		width: 121,
-		height: 177,
-		borderRadius: 20,
-		backgroundColor: colors.white,
-		alignItems: 'center',
-	},
-	tinyAcceptButton: {
-		paddingHorizontal: 8,
-		paddingVertical: 4,
-		borderRadius: 4,
-		marginHorizontal: 4,
-	},
-	tinyDiscardButton: {
-		paddingHorizontal: 4,
-		paddingVertical: 4,
-		borderRadius: 4,
-		marginHorizontal: 4,
-	},
-	draggableView: {
-		borderRadius: 30,
-		paddingBottom: 80,
-	},
-	// ConversationItem
-	conversationItemAvatar: {
-		width: 39,
-		height: 39,
-		borderRadius: 39,
-	},
-	conversationItemName: {
-		maxWidth: 120,
-	},
-	conversationItemBadge: {
-		width: 15,
-		height: 15,
-		borderRadius: 15,
-	},
-	conversationItemBadgeText: {
-		fontSize: 9,
-	},
-	conversationItemEndInfos: {
-		paddingLeft: 5,
-	},
-	conversationItemMessage: {
-		maxWidth: 240,
-	},
-})
-
 const useAccount = (): [berty.chatmodel.IAccount | null | undefined, Error?] => {
 	// fetch requests
 	const [accountGet, error] = Store.useAccountGet({ id: 0 })
@@ -234,49 +172,76 @@ const RequestsItem: React.FC<{
 	decline: Form<{ id: number }>
 }> = (props) => {
 	const { id, name, timestamp, avatarUris, display, decline, accept } = props
+	const [
+		{ border, padding, margin, width, height, column, row, background, absolute, text },
+	] = useStyles()
 	return (
 		<Translation>
 			{(t): React.ReactNode => (
 				<TouchableOpacity
-					style={[_stylesList.tinyCard, styles.shadow, styles.col]}
+					style={[
+						column.fill,
+						width(121),
+						height(177),
+						background.white,
+						margin.medium,
+						margin.top.huge,
+						padding.medium,
+						padding.top.huge,
+						border.radius.medium,
+						border.shadow.medium,
+					]}
 					onPress={() => display({ id })}
 				>
 					<CircleAvatar
-						style={_stylesList.tinyAvatar}
+						style={[absolute.center, absolute.compute({ top: -32.5 })]}
 						avatarUri={avatarUris[0]}
 						size={65}
 						diffSize={8}
 					/>
-					<Text style={[styles.center, styles.textCenter, styles.flex]}>{name}</Text>
-					<Text
-						category='c1'
-						style={[styles.paddingVertical, styles.textCenter, styles.textTiny, styles.textGrey]}
-					>
+					<Text style={[text.align.center, text.color.black, text.size.medium]} numberOfLines={2}>
+						{name}
+					</Text>
+					<Text style={[text.size.tiny, text.color.grey, text.align.center]}>
 						{dateFns.distanceInWordsToNow(date(timestamp))}
 					</Text>
-					<View style={[styles.row]}>
+					<View style={[row.center]}>
 						<TouchableOpacity
-							style={[_stylesList.tinyDiscardButton, styles.border, styles.justifyContent]}
+							style={[
+								border.medium,
+								border.color.light.grey,
+								row.item.justify,
+								border.medium,
+								border.radius.tiny,
+								border.shadow.tiny,
+								background.white,
+								padding.horizontal.tiny,
+								margin.right.tiny,
+							]}
 							onPress={(): void => {
 								decline({ id })
 							}}
 						>
-							<Icon name='close-outline' width={15} height={15} fill={colors.grey} />
+							<Text style={[text.size.tiny, text.color.grey, row.item.justify, padding.small]}>
+								x
+							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={[
-								_stylesList.tinyAcceptButton,
-								styles.bgLightBlue,
-								styles.row,
-								styles.alignItems,
-								styles.justifyContent,
+								background.light.blue,
+								row.item.justify,
+								border.radius.tiny,
+								border.shadow.tiny,
+								padding.horizontal.tiny,
+								margin.left.tiny,
 							]}
 							onPress={(): void => {
 								accept({ id })
 							}}
 						>
-							<Icon name='checkmark-outline' width={15} height={15} fill={colors.blue} />
-							<Text style={[styles.textTiny, styles.textBlue]}>{t('main.requests.accept')}</Text>
+							<Text style={[text.size.tiny, text.color.blue, row.item.justify, padding.small]}>
+								{t('main.requests.accept')}
+							</Text>
 						</TouchableOpacity>
 					</View>
 				</TouchableOpacity>
@@ -326,15 +291,14 @@ const ConversationRequestsItem: React.FC<berty.chatmodel.IConversation> = ({
 }
 
 const Requests: React.FC<RequestsProps> = ({ items, style, onLayout }) => {
+	const [{ padding, text }] = useStyles()
 	return items?.length ? (
 		<SafeAreaView onLayout={onLayout} style={style}>
-			<View style={[styles.paddingTop]}>
-				<Text category='h4' style={[styles.textWhite, styles.paddingHorizontal]}>
-					Requests
-				</Text>
+			<View style={[padding.top.medium]}>
+				<Text style={[text.color.white, text.size.huge, text.bold, padding.medium]}>Requests</Text>
 				<ScrollView
 					horizontal
-					style={[styles.paddingVertical]}
+					style={[padding.bottom.medium]}
 					showsHorizontalScrollIndicator={false}
 				>
 					{items.map((_) => {
@@ -352,68 +316,66 @@ const Requests: React.FC<RequestsProps> = ({ items, style, onLayout }) => {
 
 const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	const { createdAt, title, navigate } = props
+	const [
+		{ color, row, border, width, height, flex, column, padding, margin, text, background },
+	] = useStyles()
 	return (
 		<TouchableHighlight
-			underlayColor={colors.lightGrey}
-			style={[styles.paddingHorizontal]}
+			underlayColor={color.light.grey}
+			style={[padding.horizontal.medium]}
 			onPress={() => navigate(props)}
 		>
-			<View style={[styles.row, styles.borderBottom, styles.centerItems]}>
-				<ConversationAvatar {...props} size={39} />
-				<View style={[styles.flex, styles.col, styles.padding]}>
-					<View style={[styles.row, styles.alignItems, styles.spaceBetween]}>
-						<View style={[styles.row, styles.alignItems]}>
-							<Text numberOfLines={1} style={_stylesList.conversationItemName}>
+			<View style={[row.center, border.bottom.medium, border.color.light.grey]}>
+				<ConversationAvatar {...props} size={50} style={[padding.tiny, row.item.justify]} />
+				<View style={[flex.big, column.fill, padding.small]}>
+					<View style={[row.fill]}>
+						<View style={[row.left]}>
+							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
 								{title || ''}
 							</Text>
 							<Icon
-								style={[styles.littleMarginLeft]}
+								style={margin.left.small}
 								name='checkmark-circle-2'
 								width={15}
 								height={15}
-								fill={colors.blue}
+								fill={color.blue}
 							/>
 						</View>
-						<View style={[styles.row, styles.end, styles.alignItems]}>
+						<View style={[row.right]}>
 							<View
 								style={[
-									styles.bgRed,
-									styles.alignItems,
-									styles.spaceCenter,
-									_stylesList.conversationItemBadge,
+									background.red,
+									row.center,
+									width(15),
+									height(15),
+									border.radius.compute(15 / 2),
 								]}
 							>
 								<Text
 									style={[
-										styles.textWhite,
-										styles.textBold,
-										styles.absolute,
-										styles.textCenter,
-										_stylesList.conversationItemBadgeText,
+										row.item.justify,
+										text.color.white,
+										text.bold,
+										text.align.center,
+										text.align.justify,
+										text.size.tiny,
 									]}
 								>
 									2
 								</Text>
 							</View>
-							<View style={_stylesList.conversationItemEndInfos}>
-								<Text style={[styles.textSmall, styles.textGrey]}>
-									{dateFns.fuzzy(date(createdAt))}
-								</Text>
-							</View>
-							<View style={_stylesList.conversationItemEndInfos}>
-								<Icon name='paper-plane' width={12} height={12} fill={colors.blue} />
+							<Text style={[padding.left.small, text.size.small, text.color.grey]}>
+								{dateFns.fuzzy(date(createdAt))}
+							</Text>
+							<View style={[padding.left.small]}>
+								<Icon name='paper-plane' width={12} height={12} fill={color.blue} />
 							</View>
 						</View>
 					</View>
-					<View style={[styles.bigMarginRight]}>
-						<Text
-							numberOfLines={1}
-							style={[styles.textSmall, styles.textGrey, _stylesList.conversationItemMessage]}
-						>
-							Salut je voulais savoir comment tu allais mais finalement j'ai pas envie de savoir ta
-							reponse
-						</Text>
-					</View>
+					<Text numberOfLines={1} style={[text.size.small, text.color.grey]}>
+						Salut je voulais savoir comment tu allais mais finalement j'ai pas envie de savoir ta
+						reponse
+					</Text>
 				</View>
 			</View>
 		</TouchableHighlight>
@@ -428,16 +390,25 @@ const Conversations: React.FC<ConversationsProps> = ({ items, contentContainerSt
 		[berty.chatmodel.Conversation.Kind.OneToOne]: navigate.chat.one2One,
 		[berty.chatmodel.Conversation.Kind.PrivateGroup]: navigate.chat.group,
 	}
+	const [{ overflow, border, padding, margin, text, background }] = useStyles()
 	return (
 		<Translation>
 			{(t): React.ReactNode => (
 				<ScrollView
-					style={[styles.overflow, styles.shadow]}
-					contentContainerStyle={[styles.bgWhite, _stylesList.draggableView, contentContainerStyle]}
+					style={[overflow, border.shadow.medium]}
+					contentContainerStyle={[background.white, border.radius.big]}
 				>
 					<SafeAreaView>
-						<Layout style={[_stylesList.draggableView]}>
-							<Text category='h4' style={[styles.padding, styles.marginHorizontal]}>
+						<View style={[padding.bottom.compute(80)]}>
+							<Text
+								style={[
+									text.color.black,
+									text.size.huge,
+									text.bold,
+									padding.medium,
+									margin.horizontal.medium,
+								]}
+							>
 								{t('main.messages.title')}
 							</Text>
 							{items
@@ -458,7 +429,7 @@ const Conversations: React.FC<ConversationsProps> = ({ items, contentContainerSt
 										/>
 									) : null,
 								)}
-						</Layout>
+						</View>
 					</SafeAreaView>
 				</ScrollView>
 			)}
@@ -483,17 +454,18 @@ export const List: React.FC = () => {
 	const [requests] = useRequests()
 	const [conversations] = useConversations()
 
+	const [{ absolute, background, flex }] = useStyles()
+
 	return (
-		<View style={[styles.flex, styles.bgBlue]}>
+		<View style={[absolute.fill, background.blue]}>
 			<Requests items={requests} onLayout={onLayoutRequests} />
 			{conversations ? (
 				<Conversations
-					style={[styles.flex]}
 					items={conversations}
 					contentContainerStyle={conversationContentContainerStyle}
 				/>
 			) : (
-				<ActivityIndicator style={styles.flex} size='large' color='white' />
+				<ActivityIndicator style={flex.medium} size='large' color='white' />
 			)}
 			<Footer {...navigation} />
 		</View>

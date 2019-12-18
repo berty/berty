@@ -2,6 +2,7 @@ import { PixelRatio, StyleSheet, Platform } from 'react-native'
 import _ from 'lodash'
 import Case from 'case'
 import React, { createContext, useContext, useState } from 'react'
+import mem from 'mem'
 
 export type ColorsTypes = 'white' | 'black' | 'blue' | 'red' | 'yellow' | 'green' | 'grey'
 export type Colors<T> = {
@@ -38,14 +39,17 @@ export type Sides<T> = {
 	horizontal: T
 }
 
-export type SizesTypes = 'tiny' | 'small' | 'medium' | 'large' | 'big' | 'huge'
-export type Sizes<T> = {
+export type SizesTypes = 'tiny' | 'small' | 'medium' | 'large' | 'big' | 'huge' | 'compute'
+export type SizesDeclaration<T> = {
 	tiny: T
 	small: T
 	medium: T
 	large: T
 	big: T
 	huge: T
+}
+export type Sizes<T> = SizesDeclaration<T> & {
+	compute: (size: number) => T
 }
 
 export type AlignHorizontalTypes = 'left' | 'right' | 'center' | 'fill'
@@ -86,17 +90,19 @@ export type BorderRadius<T> = Sizes<T> &
 
 export type BorderShadow<T> = Sizes<T>
 
-export type Border<T> = {
-	radius: BorderRadius<T>
-	shadow: BorderShadow<T>
-}
+export type Border<T> = Sizes<T> &
+	Sides<Sizes<T>> & {
+		radius: BorderRadius<T>
+		shadow: BorderShadow<T>
+		color: Colors<T> & ColorsBrightness<T>
+	}
 
 export type Declaration = {
 	colors: ColorsDeclaration
-	sides: Sizes<number>
+	sides: SizesDeclaration<number>
 	text: {
 		family: string
-		sizes: Sizes<number>
+		sizes: SizesDeclaration<number>
 	}
 }
 
@@ -107,17 +113,25 @@ export type Styles = {
 	margin: Sizes<{}> & Sides<Sizes<{}>>
 	border: Border<{}>
 	text: Text
-	absolute: Align<{}>
-	column: AlignHorizontal<{}> & {
-		container: AlignVertical<{}>
+	absolute: Align<{}> & {
+		compute: (values: { top?: number; left?: number; right?: number; bottom?: number }) => {}
 	}
-	row: AlignVertical<{}> & {
-		container: AlignHorizontal<{}>
+	column: AlignVertical<{}> & {
+		item: AlignHorizontal<{}>
+	}
+	row: AlignHorizontal<{}> & {
+		item: AlignVertical<{}>
 	}
 	flex: Sizes<{}>
-	height: (height: number) => {}
 	width: (width: number) => {}
+	height: (height: number) => {}
+	maxWidth: (maxWidth: number) => {}
+	maxHeight: (maxHeight: number) => {}
+	overflow: {}
 }
+
+const fontScale = PixelRatio.getFontScale()
+const pixelRatio = PixelRatio.get() / 2
 
 // Mapping for style instanciation
 //
@@ -149,16 +163,18 @@ const mapColorsDeclaration = <T extends {}>(
 const mapSideSize = (type: string, side: string, value: number) => ({
 	[Case.camel(`${type}_${side}`)]: value,
 })
-const mapSideSizes = (decl: Sizes<number>, type: string, side: string) =>
-	StyleSheet.create({
+const mapSideSizes = (decl: SizesDeclaration<number>, type: string, side: string) => ({
+	...StyleSheet.create({
 		tiny: mapSideSize(type, side, decl.tiny),
 		small: mapSideSize(type, side, decl.small),
 		medium: mapSideSize(type, side, decl.medium),
 		large: mapSideSize(type, side, decl.large),
 		big: mapSideSize(type, side, decl.big),
 		huge: mapSideSize(type, side, decl.huge),
-	})
-const mapSides = (decl: Sizes<number>, type: string) => ({
+	}),
+	compute: mem((size: number) => mapSideSize(type, side, size)),
+})
+const mapSides = (decl: SizesDeclaration<number>, type: string) => ({
 	top: mapSideSizes(decl, type, 'top'),
 	bottom: mapSideSizes(decl, type, 'bottom'),
 	left: mapSideSizes(decl, type, 'left'),
@@ -166,68 +182,111 @@ const mapSides = (decl: Sizes<number>, type: string) => ({
 	vertical: mapSideSizes(decl, type, 'vertical'),
 	horizontal: mapSideSizes(decl, type, 'horizontal'),
 })
-const mapBorderRadiusSizes = (decl: Declaration, map: (value: number) => {}) => ({
+const mapSizes = (decl: SizesDeclaration<number>, map: (value: number) => {}) => ({
 	...StyleSheet.create({
-		tiny: map(decl.sides.tiny),
-		small: map(decl.sides.small),
-		medium: map(decl.sides.medium),
-		large: map(decl.sides.large),
-		big: map(decl.sides.big),
-		huge: map(decl.sides.huge),
+		tiny: map(decl.tiny),
+		small: map(decl.small),
+		medium: map(decl.medium),
+		large: map(decl.large),
+		big: map(decl.big),
+		huge: map(decl.huge),
 	}),
-	compute: (radius: number) => StyleSheet.create({ compute: map(radius) }).compute,
+	compute: mem((radius: number) => StyleSheet.create({ compute: map(radius) }).compute),
+})
+const mapBorderSidesSizes = (
+	decl: SizesDeclaration<number> = {
+		tiny: 0.1,
+		small: 0.2,
+		medium: 0.5,
+		large: 1,
+		big: 2,
+		huge: 5,
+	},
+) => ({
+	...mapSizes(decl, (borderWidth) => ({ borderWidth })),
+	top: mapSizes(decl, (borderTopWidth) => ({ borderTopWidth })),
+	left: mapSizes(decl, (borderLeftWidth) => ({ borderLeftWidth })),
+	right: mapSizes(decl, (borderRightWidth) => ({ borderRightWidth })),
+	bottom: mapSizes(decl, (borderBottomWidth) => ({ borderBottomWidth })),
+	horizontal: mapSizes(decl, (borderWidth) => ({
+		borderLeftWidth: borderWidth,
+		borderRightWidth: borderWidth,
+	})),
+	vertical: mapSizes(decl, (borderWidth) => ({
+		borderTopWidth: borderWidth,
+		borderBottomWidth: borderWidth,
+	})),
 })
 const mapBorderRadiusSides = (decl: Declaration) => ({
-	top: mapBorderRadiusSizes(decl, (radius) => ({
+	top: mapSizes(decl.sides, (radius) => ({
 		borderTopLeftRadius: radius,
 		borderTopRightRadius: radius,
 	})),
-	left: mapBorderRadiusSizes(decl, (radius) => ({
+	left: mapSizes(decl.sides, (radius) => ({
 		borderTopLeftRadius: radius,
 		borderBottomLeftRadius: radius,
 	})),
-	right: mapBorderRadiusSizes(decl, (radius) => ({
+	right: mapSizes(decl.sides, (radius) => ({
 		borderTopRightRadius: radius,
 		borderBottomRightRadius: radius,
 	})),
-	bottom: mapBorderRadiusSizes(decl, (radius) => ({
+	bottom: mapSizes(decl.sides, (radius) => ({
 		borderBottomLeftRadius: radius,
 		borderBottomRightRadius: radius,
 	})),
-	vertical: mapBorderRadiusSizes(decl, (radius) => ({ borderRadius: radius })),
-	horizontal: mapBorderRadiusSizes(decl, (radius) => ({ borderRadius: radius })),
+	vertical: mapSizes(decl.sides, (radius) => ({ borderRadius: radius })),
+	horizontal: mapSizes(decl.sides, (radius) => ({ borderRadius: radius })),
 })
 const mapBorderShadowIOS = (
+	decl: Declaration,
 	_defaultValues = {
-		shadowOffset: { width: 0, height: 0 },
 		shadowOpacity: 0.2,
 	},
-): Sizes<{}> =>
-	StyleSheet.create({
-		tiny: { ..._defaultValues, shadowRadius: 1 },
-		small: { ..._defaultValues, shadowRadius: 2 },
-		medium: { ..._defaultValues, shadowRadius: 3 },
-		large: { ..._defaultValues, shadowRadius: 5 },
-		big: { ..._defaultValues, shadowRadius: 8 },
-		huge: { ..._defaultValues, shadowRadius: 13 },
-	})
-const mapBorderShadowAndroid = (): Sizes<{}> =>
-	StyleSheet.create({
+): Sizes<{}> => ({
+	...StyleSheet.create({
+		tiny: { ..._defaultValues, shadowRadius: 0.5, shadowOffset: { width: 0, height: 0.25 } },
+		small: { ..._defaultValues, shadowRadius: 1, shadowOffset: { width: 0, height: 0.5 } },
+		medium: { ..._defaultValues, shadowRadius: 2, shadowOffset: { width: 0, height: 1 } },
+		large: { ..._defaultValues, shadowRadius: 5, shadowOffset: { width: 0, height: 2.5 } },
+		big: { ..._defaultValues, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } },
+		huge: { ..._defaultValues, shadowRadius: 13, shadowOffset: { width: 0, height: 6.5 } },
+	}),
+	compute: mem(
+		(size: number) =>
+			StyleSheet.create({
+				compute: {
+					..._defaultValues,
+					shadowRadius: size,
+					shadowOffset: { width: 0, height: size / 2 },
+				},
+			}).compute,
+	),
+})
+const mapBorderShadowAndroid = (): Sizes<{}> => ({
+	...StyleSheet.create({
 		tiny: { elevation: 1 },
 		medium: { elevation: 2 },
 		small: { elevation: 3 },
 		large: { elevation: 4 },
 		big: { elevation: 5 },
 		huge: { elevation: 6 },
-	})
+	}),
+	compute: mem((size: number) => StyleSheet.create({ compute: { elevation: size } }).compute),
+})
 const mapBorder = (decl: Declaration) => ({
+	...mapBorderSidesSizes(),
+	compute: mem(
+		(size: number) => StyleSheet.create({ compute: { borderWidth: size * pixelRatio } }).compute,
+	),
 	radius: {
-		...mapBorderRadiusSizes(decl, (radius) => ({
+		...mapSizes(decl.sides, (radius) => ({
 			borderRadius: radius,
 		})),
 		...mapBorderRadiusSides(decl),
 	},
-	shadow: Platform.select({ ios: mapBorderShadowIOS(), android: mapBorderShadowAndroid() }),
+	shadow: Platform.select({ ios: mapBorderShadowIOS(decl), android: mapBorderShadowAndroid() }),
+	size: StyleSheet.create({}),
+	color: mapColorsDeclaration(decl.colors, (v) => ({ borderColor: v })),
 })
 const mapDeclaration = (decl: Declaration): Styles => ({
 	color: {
@@ -242,6 +301,7 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 		large: { padding: decl.sides.large },
 		big: { padding: decl.sides.big },
 		huge: { padding: decl.sides.huge },
+		compute: mem((size) => StyleSheet.create({ compute: { padding: size * pixelRatio } }).compute),
 		...mapSides(decl.sides, 'padding'),
 	},
 	margin: {
@@ -251,6 +311,7 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 		large: { margin: decl.sides.large },
 		big: { margin: decl.sides.big },
 		huge: { margin: decl.sides.huge },
+		compute: mem((size) => StyleSheet.create({ compute: { margin: size * pixelRatio } }).compute),
 		...mapSides(decl.sides, 'margin'),
 	},
 	border: mapBorder(decl),
@@ -261,14 +322,19 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 			bold: { fontWeight: 'bold' },
 			italic: { fontStyle: 'italic' },
 		}),
-		size: StyleSheet.create({
-			tiny: { fontSize: decl.text.sizes.tiny },
-			small: { fontSize: decl.text.sizes.small },
-			medium: { fontSize: decl.text.sizes.medium },
-			large: { fontSize: decl.text.sizes.large },
-			big: { fontSize: decl.text.sizes.big },
-			huge: { fontSize: decl.text.sizes.huge },
-		}),
+		size: {
+			...StyleSheet.create({
+				tiny: { fontSize: decl.text.sizes.tiny },
+				small: { fontSize: decl.text.sizes.small },
+				medium: { fontSize: decl.text.sizes.medium },
+				large: { fontSize: decl.text.sizes.large },
+				big: { fontSize: decl.text.sizes.big },
+				huge: { fontSize: decl.text.sizes.huge },
+			}),
+			compute: mem(
+				(size: number) => StyleSheet.create({ compute: { fontSize: size * fontScale } }).compute,
+			),
+		},
 		align: StyleSheet.create({
 			top: { textAlignVertical: 'top' },
 			left: { textAlign: 'left' },
@@ -280,13 +346,13 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 		}),
 	},
 	row: {
-		...StyleSheet.create({
+		item: StyleSheet.create({
 			top: { alignSelf: 'flex-start' },
 			bottom: { alignSelf: 'flex-end' },
 			justify: { alignSelf: 'center' },
 			fill: { alignSelf: 'stretch' },
 		}),
-		container: StyleSheet.create({
+		...StyleSheet.create({
 			left: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'flex-start' },
 			right: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'flex-end' },
 			center: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'space-evenly' },
@@ -294,13 +360,13 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 		}),
 	},
 	column: {
-		...StyleSheet.create({
+		item: StyleSheet.create({
 			left: { alignSelf: 'flex-start' },
 			right: { alignSelf: 'flex-end' },
 			center: { alignSelf: 'center' },
 			fill: { alignSelf: 'stretch' },
 		}),
-		container: StyleSheet.create({
+		...StyleSheet.create({
 			top: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-start' },
 			bottom: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-end' },
 			justify: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'space-evenly' },
@@ -308,34 +374,58 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 		}),
 	},
 	flex: {
-		tiny: { flex: 1 },
-		small: { flex: 2 },
-		medium: { flex: 3 },
-		large: { flex: 5 },
-		big: { flex: 8 },
-		huge: { flex: 13 },
+		...StyleSheet.create({
+			tiny: { flex: 1 },
+			small: { flex: 2 },
+			medium: { flex: 3 },
+			large: { flex: 5 },
+			big: { flex: 8 },
+			huge: { flex: 13 },
+		}),
+		compute: mem((size: number) => StyleSheet.create({ compute: { flex: size } }).compute),
 	},
-	absolute: StyleSheet.create({
-		top: { position: 'absolute', top: 0 },
-		left: { position: 'absolute', left: 0 },
-		right: { position: 'absolute', right: 0 },
-		bottom: { position: 'absolute', bottom: 0 },
-		center: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
-		justify: { position: 'absolute', top: 0, bottom: 0, alignItems: 'center' },
-		fill: {
-			position: 'absolute',
-			top: 0,
-			left: 0,
-			right: 0,
-			bottom: 0,
-		},
-	}),
-	height: (height: number) => StyleSheet.create({ height: { height } }).height,
-	width: (width: number) => StyleSheet.create({ width: { width } }).width,
+	absolute: {
+		...StyleSheet.create({
+			top: { position: 'absolute', top: 0 },
+			left: { position: 'absolute', left: 0 },
+			right: { position: 'absolute', right: 0 },
+			bottom: { position: 'absolute', bottom: 0 },
+			center: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
+			justify: { position: 'absolute', top: 0, bottom: 0, alignItems: 'center' },
+			fill: {
+				position: 'absolute',
+				top: 0,
+				left: 0,
+				right: 0,
+				bottom: 0,
+			},
+		}),
+		compute: mem(
+			(values) =>
+				StyleSheet.create({
+					compute: {
+						position: 'absolute',
+						..._.mapValues(values, (v) => v || 0 * pixelRatio),
+					},
+				}).compute,
+			{ cacheKey: JSON.stringify },
+		),
+	},
+	width: mem((width: number) => StyleSheet.create({ width: { width: width * pixelRatio } }).width),
+	height: mem(
+		(height: number) => StyleSheet.create({ height: { height: height * pixelRatio } }).height,
+	),
+	maxWidth: mem(
+		(maxWidth: number) =>
+			StyleSheet.create({ maxWidth: { maxWidth: maxWidth * pixelRatio } }).maxWidth,
+	),
+	maxHeight: mem(
+		(maxHeight: number) =>
+			StyleSheet.create({ maxHeight: { maxHeight: maxHeight * pixelRatio } }).maxHeight,
+	),
+	overflow: StyleSheet.create({ overflow: { overflow: 'visible' } }).overflow,
 })
 
-const fontScale = PixelRatio.getFontScale()
-const pixelRatio = PixelRatio.get() / 2
 const mapScaledDeclaration = (decl: Declaration): Styles =>
 	mapDeclaration({
 		...decl,
@@ -378,7 +468,7 @@ const defaultStylesDeclaration: Declaration = {
 	},
 	sides: {
 		tiny: 4,
-		small: 8,
+		small: 9,
 		medium: 16,
 		large: 24,
 		big: 32,
