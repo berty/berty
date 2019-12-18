@@ -1,0 +1,172 @@
+syntax = "proto3";
+
+package berty.protocol.core;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "github.com/golang/protobuf/ptypes/timestamp/timestamp.proto";
+
+option go_package = "berty.tech/go/pkg/bertyprotocol";
+
+service Api {
+  rpc EventReplay(Event.Replay.Request) returns (stream Event.Replay.Reply);
+  rpc EventSubscribe(Event.Subcribe.Request) returns (stream Event.Subscribe.Reply);
+  rpc EventPubish(Event.Publish.Request) returns (Event.Publish.Reply);
+}
+
+message Event {
+
+  uint64 id = 1;
+
+  message Pinning {
+    message Add {
+      bytes service = 1;
+    }
+    message Remove {
+      bytes service = 1;
+    }
+  }
+
+  message Request {
+    message Activate {
+      string link = 1;
+    }
+    message Deactivate {}
+    message Reset {
+      string link = 1;
+    }
+  }
+
+  message Settings {
+    message Set {
+      string key = 1;
+      bytes value = 2;
+    }
+    message Unset {
+      string key = 1;
+    }
+  }
+
+  message Device {
+    message Link {
+      uint64 id = 1;
+    }
+  }
+
+  message Contact {
+    message Request {
+      uint64 id = 1;
+    }
+    message Accept {
+      uint64 id = 1;
+    }
+    message Discard {
+      uint64 id = 1;
+    }
+    message Remove {
+      uint64 id = 1;
+    }
+    // Is that possible ?
+    message Send {
+      uint64 id = 1;
+      bytes message = 1;
+    }
+  }
+
+  message Group {
+    message Invite {
+      uint64 id = 1;
+      uint64 contact_id = 1;
+    }
+    message Join {
+      uint64 id = 1;
+      uint64 contact_id = 1;
+    }
+    message Leave {
+      uint64 id = 1;
+      uint64 contact_id = 1;
+    }
+    message Send {
+      uint64 id = 1;
+      uint64 contact_id = 2;
+      bytes message = 1;
+    }
+  }
+
+  enum Kind {
+    PinningAdd = 100;
+    PinningRemove = 101;
+
+    RequestActivate = 200;
+    RequestDeactivate = 201;
+    RequestReset = 202;
+
+    SettingsSet = 300;
+    SettingsUnset = 301;
+
+    DeviceLink = 401;
+
+    ContactRequest = 500;
+    ContactAccept = 501;
+    ContactDiscard = 502;
+    ContactRemove = 503;
+
+    GroupInvite = 600;
+    GroupJoin = 601;
+    GroupLeave = 602;
+    GroupSend = 603;
+  }
+
+  oneof Payload {
+    Pinning.Add = 100;
+    Pinning.Remove = 101;
+
+    Request.Activate = 200;
+    Request.Deactivate = 201;
+    Request.Reset = 202;
+
+    Settings.Set = 300;
+    Settings.Unset = 301;
+
+    Device.Link = 400;
+
+    Contact.Request = 500;
+    Contact.Accept = 501;
+    Contact.Discard = 502;
+    Contact.Remove = 503;
+
+    Group.Invite = 600;
+    Group.Join = 601;
+    Group.Leave = 602;
+    Group.Send = 603;
+  }
+
+  // rpc
+  message Replay {
+    message Request {
+      uint64 from = 1;
+
+      // useful to replay separate aggregates
+      repeated Kind kind = 2;
+    }
+    message Reply {
+      Event event = 1;
+    }
+  }
+
+  message Subscribe {
+    message Request {
+      // useful to separate aggregates
+      repeated Kind kind = 1;
+    }
+    message Reply {
+      Event event = 1;
+    }
+  }
+
+  message Publish {
+    message Request {
+      Event event = 1;
+    }
+    message Reply {}
+  }
+}
