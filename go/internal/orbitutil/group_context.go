@@ -10,13 +10,12 @@ import (
 )
 
 type GroupContext struct {
-	group         *group.Group
-	memberPrivKey crypto.PrivKey
-	devicePrivKey crypto.PrivKey
-	memberStore   orbitutilapi.MemberStore
-	settingStore  orbitutilapi.SettingStore
-	secretStore   orbitutilapi.SecretStore
-	lock          sync.RWMutex
+	group           *group.Group
+	ownMemberDevice *group.OwnMemberDevice
+	memberStore     orbitutilapi.MemberStore
+	settingStore    orbitutilapi.SettingStore
+	secretStore     orbitutilapi.SecretStore
+	lock            sync.RWMutex
 }
 
 func (g *GroupContext) GetGroup() *group.Group {
@@ -28,13 +27,19 @@ func (g *GroupContext) GetGroup() *group.Group {
 func (g *GroupContext) GetMemberPrivKey() crypto.PrivKey {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
-	return g.memberPrivKey
+	return g.ownMemberDevice.Member
 }
 
 func (g *GroupContext) GetDevicePrivKey() crypto.PrivKey {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
-	return g.devicePrivKey
+	return g.ownMemberDevice.Device
+}
+
+func (g *GroupContext) GetDeviceSecret() *group.DeviceSecret {
+	g.lock.RLock()
+	defer g.lock.RUnlock()
+	return g.ownMemberDevice.Secret
 }
 
 func (g *GroupContext) GetMemberStore() orbitutilapi.MemberStore {
@@ -55,12 +60,6 @@ func (g *GroupContext) GetSecretStore() orbitutilapi.SecretStore {
 	return g.secretStore
 }
 
-func (g *GroupContext) SetGroup(group *group.Group) {
-	g.lock.Lock()
-	g.group = group
-	g.lock.Unlock()
-}
-
 func (g *GroupContext) SetMemberStore(s orbitutilapi.MemberStore) {
 	g.lock.Lock()
 	g.memberStore = s
@@ -77,4 +76,11 @@ func (g *GroupContext) SetSecretStore(s orbitutilapi.SecretStore) {
 	g.lock.Lock()
 	g.secretStore = s
 	g.lock.Unlock()
+}
+
+func NewGroupContext(g *group.Group, omd *group.OwnMemberDevice) *GroupContext {
+	return &GroupContext{
+		group:           g,
+		ownMemberDevice: omd,
+	}
 }

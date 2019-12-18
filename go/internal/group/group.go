@@ -16,12 +16,6 @@ type Group struct {
 	SigningKey crypto.PrivKey
 }
 
-// MemberDevice is a device part of a group
-type MemberDevice struct {
-	Member crypto.PubKey
-	Device crypto.PubKey
-}
-
 // GroupIDAsString returns the group pub key as a string
 func (g *Group) GroupIDAsString() (string, error) {
 	pkBytes, err := g.PubKey.Raw()

@@ -48,7 +48,7 @@ type SecretStore interface {
 	GroupStore
 
 	// GetDeviceSecret gets secret device
-	GetDeviceSecret(destMemberPubKey crypto.PubKey, senderDevicePubKey crypto.PubKey) (*group.DeviceSecret, error)
+	GetDeviceSecret(senderDevicePubKey crypto.PubKey) (*group.DeviceSecret, error)
 
 	// SendSecret sends secret of this device to another group member
 	SendSecret(ctx context.Context, localDevicePrivKey crypto.PrivKey, remoteMemberPubKey crypto.PubKey, secret *group.DeviceSecret) (operation.Operation, error)
@@ -58,11 +58,11 @@ type GroupContext interface {
 	GetGroup() *group.Group
 	GetMemberPrivKey() crypto.PrivKey
 	GetDevicePrivKey() crypto.PrivKey
+	GetDeviceSecret() *group.DeviceSecret
 	GetMemberStore() MemberStore
 	GetSettingStore() SettingStore
 	GetSecretStore() SecretStore
 
-	SetGroup(group *group.Group)
 	SetMemberStore(s MemberStore)
 	SetSettingStore(s SettingStore)
 	SetSecretStore(s SecretStore)
@@ -74,7 +74,7 @@ type BertyOrbitDB interface {
 	RegisterGroupContext(GroupContext) error
 	GetGroupContext(groupID string) (GroupContext, error)
 	SetGroupSigPubKey(groupID string, pubKey crypto.PubKey) error
-	InitStoresForGroup(context.Context, *group.Group, crypto.PrivKey, crypto.PrivKey, *orbitdb.CreateDBOptions) (GroupContext, error)
+	InitStoresForGroup(context.Context, GroupContext, *orbitdb.CreateDBOptions) error
 
 	InitGroupStore(ctx context.Context, indexConstructor func(g GroupContext) iface.IndexConstructor, store GroupStore, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) error
 	GroupMemberStore(ctx context.Context, g GroupContext, options *orbitdb.CreateDBOptions) (MemberStore, error)

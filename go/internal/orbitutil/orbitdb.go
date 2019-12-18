@@ -14,7 +14,6 @@ import (
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
-	"berty.tech/go/internal/group"
 	"berty.tech/go/internal/orbitutil/identityberty"
 	"berty.tech/go/internal/orbitutil/orbitutilapi"
 	"berty.tech/go/internal/orbitutil/storegroup"
@@ -62,30 +61,24 @@ func (s *BertyOrbitDB) RegisterGroupContext(gc orbitutilapi.GroupContext) error 
 	return nil
 }
 
-func (s *BertyOrbitDB) InitStoresForGroup(ctx context.Context, g *group.Group, mk crypto.PrivKey, dk crypto.PrivKey, options *orbitdb.CreateDBOptions) (orbitutilapi.GroupContext, error) {
-	gc := &GroupContext{
-		group:         g,
-		memberPrivKey: mk,
-		devicePrivKey: dk,
-	}
-
+func (s *BertyOrbitDB) InitStoresForGroup(ctx context.Context, gc orbitutilapi.GroupContext, options *orbitdb.CreateDBOptions) error {
 	if err := s.RegisterGroupContext(gc); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return errcode.TODO.Wrap(err)
 	}
 
 	if _, err := s.GroupMemberStore(ctx, gc, options); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return errcode.TODO.Wrap(err)
 	}
 
 	if _, err := s.GroupSettingStore(ctx, gc, options); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return errcode.TODO.Wrap(err)
 	}
 
 	if _, err := s.GroupSecretStore(ctx, gc, options); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return errcode.TODO.Wrap(err)
 	}
 
-	return gc, nil
+	return nil
 }
 
 func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *baseorbitdb.NewOrbitDBOptions) (*BertyOrbitDB, error) {
