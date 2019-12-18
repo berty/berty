@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from 'react-native'
+import { PixelRatio, StyleSheet, Platform } from 'react-native'
 import _ from 'lodash'
 import Case from 'case'
 import React, { createContext, useContext, useState } from 'react'
@@ -115,6 +115,8 @@ export type Styles = {
 		container: AlignHorizontal<{}>
 	}
 	flex: Sizes<{}>
+	height: (height: number) => {}
+	width: (width: number) => {}
 }
 
 // Mapping for style instanciation
@@ -328,7 +330,22 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 			bottom: 0,
 		},
 	}),
+	height: (height: number) => StyleSheet.create({ height: { height } }).height,
+	width: (width: number) => StyleSheet.create({ width: { width } }).width,
 })
+
+const fontScale = PixelRatio.getFontScale()
+const pixelRatio = PixelRatio.get() / 2
+const mapScaledDeclaration = (decl: Declaration): Styles =>
+	mapDeclaration({
+		...decl,
+		sides: _.mapValues(decl.sides, (n: number) => n * pixelRatio),
+		text: {
+			...decl.text,
+			sizes: _.mapValues(decl.text.sizes, (n: number) => n * fontScale),
+		},
+	})
+
 const defaultStylesDeclaration: Declaration = {
 	colors: {
 		default: {
@@ -380,7 +397,7 @@ const defaultStylesDeclaration: Declaration = {
 	},
 }
 
-const defaultStyles = mapDeclaration(defaultStylesDeclaration)
+const defaultStyles = mapScaledDeclaration(defaultStylesDeclaration)
 
 export type SetStylesDeclaration = (
 	decl: Declaration,
