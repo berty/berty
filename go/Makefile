@@ -124,7 +124,7 @@ bazel.banner: bazel.generate
 .PHONY: bazel.unittest
 bazel.unittest: bazel.generate
 	$(call check-program, $(BAZEL))
-	$(call bazel, test, //...)
+	$(call bazel, test, --test_output=streamed //...)
 
 .PHONY: bazel.generate
 bazel.generate: pb.generate $(SAMPLE_GAZELLE_GENERATED_FILE)

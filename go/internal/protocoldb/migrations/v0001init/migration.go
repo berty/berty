@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
-	"gopkg.in/gormigrate.v1"
+	gormigrate "gopkg.in/gormigrate.v1"
 )
 
 type EnumValueInt32 int32
@@ -92,6 +92,7 @@ type Contact struct {
 	TrustLevel          EnumValueInt32 `protobuf:"varint,4,opt,name=trust_level,json=trustLevel,proto3,enum=berty.protocolmodel.Contact_TrustLevel" json:"trust_level,omitempty" gorm:"index"`
 	Metadata            []byte         `protobuf:"bytes,5,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Blocked             bool           `protobuf:"varint,6,opt,name=blocked,proto3" json:"blocked,omitempty"`
+	RequestStatus       EnumValueInt32 `protobuf:"varint,7,opt,name=request_status,json=requestStatus,proto3,enum=berty.protocolmodel.Contact_RequestStatus" json:"request_status,omitempty"`
 	// Relations
 	OneToOneGroup *GroupInfo `protobuf:"bytes,80,opt,name=one_to_one_group,json=oneToOneGroup,proto3" json:"one_to_one_group,omitempty" gorm:"foreignkey:group_pub_key"`
 	// GORM meta

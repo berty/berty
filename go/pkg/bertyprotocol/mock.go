@@ -1,12 +1,17 @@
 package bertyprotocol
 
 import (
+	"bytes"
 	"context"
+	"crypto/rand"
 	"fmt"
 	"net"
 
+	"berty.tech/go/internal/crypto"
+	"berty.tech/go/internal/protocoldb"
 	"berty.tech/go/pkg/errcode"
 	"github.com/jinzhu/gorm"
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/oklog/run"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -14,22 +19,37 @@ import (
 
 func NewMock(db *gorm.DB, opts Opts) (*Mock, error) {
 	mock := Mock{
-		DB:         db,
-		Logger:     opts.Logger,
-		Peers:      []*Mock{},
-		GRPCServer: grpc.NewServer(),
+		DB:                  db,
+		Logger:              opts.Logger,
+		Peers:               []*Mock{},
+		GRPCServer:          grpc.NewServer(),
+		Context:             context.Background(),
+		RendezvousPointSeed: make([]byte, 16),
+		Events:              make(chan interface{}, 1000),
 	}
-
 	if opts.Logger == nil {
 		mock.Logger = zap.NewNop()
 	}
+
+	manager, privkey, err := crypto.InitNewIdentity(context.TODO(), &crypto.Opts{Logger: mock.Logger})
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	mock.CryptoManager = manager
+	mock.PrivKey = privkey
+
+	_, err = rand.Read(mock.RendezvousPointSeed)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
 	RegisterProtocolServiceServer(mock.GRPCServer, &mock)
 
 	{ // gRPC server & client
 		var err error
 		mock.GRPCServerListener, err = net.Listen("tcp", "127.0.0.1:0")
 		if err != nil {
-			return nil, err
+			return nil, errcode.TODO.Wrap(err)
 		}
 
 		mock.Workers.Add(func() error {
@@ -41,7 +61,7 @@ func NewMock(db *gorm.DB, opts Opts) (*Mock, error) {
 		serverAddr := mock.GRPCServerListener.Addr().String()
 		mock.GRPCClientConn, err = grpc.Dial(serverAddr, grpc.WithInsecure())
 		if err != nil {
-			return nil, err
+			return nil, errcode.TODO.Wrap(err)
 		}
 
 		mock.GRPCClient = NewProtocolServiceClient(mock.GRPCClientConn)
@@ -57,32 +77,62 @@ func NewMock(db *gorm.DB, opts Opts) (*Mock, error) {
 }
 
 type Mock struct {
-	DB                 *gorm.DB
-	Logger             *zap.Logger
-	Peers              []*Mock
-	GRPCServer         *grpc.Server
-	GRPCServerListener net.Listener
-	GRPCClient         ProtocolServiceClient
-	GRPCClientConn     *grpc.ClientConn
-	Workers            run.Group
+	DB                  *gorm.DB
+	Logger              *zap.Logger
+	Peers               []*Mock
+	GRPCServer          *grpc.Server
+	GRPCServerListener  net.Listener
+	GRPCClient          ProtocolServiceClient
+	GRPCClientConn      *grpc.ClientConn
+	Workers             run.Group
+	Context             context.Context
+	CryptoManager       crypto.Manager
+	RendezvousPointSeed []byte
+	PrivKey             p2pcrypto.PrivKey
+	Events              chan interface{}
+}
+
+func (m Mock) GetContactRequestLink() *ContactRequestLink {
+	b, err := m.PrivKey.GetPublic().Bytes()
+	if err != nil {
+		panic(err)
+	}
+
+	return &ContactRequestLink{
+		RendezvousPointSeed:  m.RendezvousPointSeed,
+		ContactAccountPubKey: b,
+		Metadata:             []byte{},
+	}
 }
 
 var _ Client = (*Mock)(nil)
 
 // NewPeerMock creates a standalone in-memory mock on the same mocked network
-func (m *Mock) NewPeerMock() (*Mock, error) {
-	name := fmt.Sprintf("peer%d", len(m.Peers))
-
-	db, err := gorm.Open("sqlite3", ":memory:")
-	if err != nil {
-		return nil, err
+func (m *Mock) NewPeerMock(db *gorm.DB, opts Opts) (*Mock, error) {
+	if opts.Logger == nil {
+		name := fmt.Sprintf("peer%d", len(m.Peers))
+		opts.Logger = m.Logger.Named(name)
 	}
 
-	opts := Opts{Logger: m.Logger.Named(name)}
-	return NewMock(db, opts)
+	peer, err := NewMock(db, opts)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	m.Peers = append(m.Peers, peer)
+	return peer, nil
 }
 
 // FIXME: func (m *Mock) GenerateFakeData() error { return nil }
+
+func (m Mock) GetPeerByAccountPubKey(pubkey []byte) *Mock {
+	for _, peer := range m.Peers {
+		if bytes.Equal(peer.GetContactRequestLink().ContactAccountPubKey, pubkey) {
+			return peer
+		}
+	}
+	return nil
+}
 
 func (m *Mock) Close() error {
 	// FIXME: cleanup
@@ -123,42 +173,57 @@ func (m *Mock) InstanceGetConfiguration(context.Context, *InstanceGetConfigurati
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) ContactGet(context.Context, *ContactGet_Request) (*ContactGet_Reply, error) {
-	return nil, errcode.ErrNotImplemented
+func (m *Mock) ContactGet(ctx context.Context, req *ContactGet_Request) (*ContactGet_Reply, error) {
+	if req == nil || req.ContactAccountPubKey == nil {
+		return nil, errcode.ErrMissingInput
+	}
+
+	var contact protocoldb.Contact
+	err := m.DB.First(&contact, req.ContactAccountPubKey).Error
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	ret := &ContactGet_Reply{
+		Contact: fromDBContact(&contact),
+	}
+	return ret, nil
 }
 
 func (m *Mock) ContactList(req *ContactList_Request, stream ProtocolService_ContactListServer) error {
-	contacts := []*Contact{ // FIXME: get from DB
-		{
-			AccountPubKey:       []byte("lorem1"),
-			Metadata:            []byte("ipsum1"),
-			OneToOneGroupPubKey: []byte("dolor1"),
-			TrustLevel:          Contact_Trusted,
-			Blocked:             false,
-		},
-		{
-			AccountPubKey:       []byte("lorem2"),
-			Metadata:            []byte("ipsum2"),
-			OneToOneGroupPubKey: []byte("dolor2"),
-			TrustLevel:          Contact_Trusted,
-			Blocked:             false,
-		},
+	var dbContacts []*protocoldb.Contact
+
+	err := m.DB.Where(protocoldb.Contact{RequestStatus: protocoldb.Contact_AcceptedRequest}).Find(&dbContacts).Error
+	if err != nil {
+		return errcode.TODO.Wrap(err)
 	}
 
-	for _, contact := range contacts {
+	for _, dbContact := range dbContacts {
 		err := stream.Send(&ContactList_Reply{
-			Contact: contact,
+			Contact: fromDBContact(dbContact),
 		})
 
 		if err != nil {
-			return err
+			return errcode.TODO.Wrap(err)
 		}
 	}
+
 	return nil
 }
 
-func (m *Mock) ContactRemove(context.Context, *ContactRemove_Request) (*ContactRemove_Reply, error) {
-	return nil, errcode.ErrNotImplemented
+func (m *Mock) ContactRemove(ctx context.Context, req *ContactRemove_Request) (*ContactRemove_Reply, error) {
+	if req == nil || req.ContactAccountPubKey == nil {
+		return nil, errcode.ErrMissingInput
+	}
+
+	contact := protocoldb.Contact{AccountPubKey: req.ContactAccountPubKey}
+	err := m.DB.Delete(&contact).Error
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	ret := ContactRemove_Reply{}
+	return &ret, nil
 }
 
 func (m *Mock) ContactRequestAccept(context.Context, *ContactRequestAccept_Request) (*ContactRequestAccept_Reply, error) {
@@ -169,20 +234,125 @@ func (m *Mock) ContactRequestDiscard(context.Context, *ContactRequestDiscard_Req
 	return nil, errcode.ErrNotImplemented
 }
 
-func (m *Mock) ContactRequestListIncoming(*ContactRequestListIncoming_Request, ProtocolService_ContactRequestListIncomingServer) error {
-	return errcode.ErrNotImplemented
+func (m *Mock) ContactRequestListIncoming(req *ContactRequestListIncoming_Request, stream ProtocolService_ContactRequestListIncomingServer) error {
+	var dbContacts []*protocoldb.Contact
+
+	err := m.DB.Where(protocoldb.Contact{RequestStatus: protocoldb.Contact_IncomingRequest}).Find(&dbContacts).Error
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	for _, dbContact := range dbContacts {
+		err := stream.Send(&ContactRequestListIncoming_Reply{
+			Contact: fromDBContact(dbContact),
+		})
+
+		if err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+	}
+
+	return nil
 }
 
-func (m *Mock) ContactRequestListOutgoing(*ContactRequestListOutgoing_Request, ProtocolService_ContactRequestListOutgoingServer) error {
-	return errcode.ErrNotImplemented
+func (m *Mock) ContactRequestListOutgoing(req *ContactRequestListOutgoing_Request, stream ProtocolService_ContactRequestListOutgoingServer) error {
+	var dbContacts []*protocoldb.Contact
+
+	err := m.DB.Where(protocoldb.Contact{RequestStatus: protocoldb.Contact_OutgoingRequest}).Find(&dbContacts).Error
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	for _, dbContact := range dbContacts {
+		err := stream.Send(&ContactRequestListOutgoing_Reply{
+			Contact: fromDBContact(dbContact),
+		})
+
+		if err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+	}
+
+	return nil
 }
 
-func (m *Mock) ContactRequestSend(context.Context, *ContactRequestSend_Request) (*ContactRequestSend_Reply, error) {
-	return nil, errcode.ErrNotImplemented
+func (m *Mock) ContactRequestSend(ctx context.Context, req *ContactRequestSend_Request) (*ContactRequestSend_Reply, error) {
+	if req == nil ||
+		req.ContactRequestLink == nil ||
+		req.ContactRequestLink.ContactAccountPubKey == nil ||
+		req.ContactRequestLink.RendezvousPointSeed == nil {
+		return nil, errcode.ErrMissingInput
+	}
+
+	// FIXME: do something with req.ContactRequestLink.RendezvousPointSeed
+	contact := protocoldb.Contact{
+		AccountPubKey: req.ContactRequestLink.ContactAccountPubKey,
+		// FIXME: OneToOneGroupPubKey: something,
+		// FIXME: BinderPubKey: something,
+		TrustLevel:    protocoldb.Contact_Untrusted,
+		Metadata:      req.ContactRequestLink.Metadata,
+		Blocked:       false,
+		RequestStatus: protocoldb.Contact_OutgoingRequest,
+	}
+
+	err := m.DB.Create(&contact).Error
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	ret := ContactRequestSend_Reply{Contact: fromDBContact(&contact)}
+
+	peer := m.GetPeerByAccountPubKey(req.ContactRequestLink.ContactAccountPubKey)
+	if peer != nil {
+		if err := peer.handleContactRequest(m.GetContactRequestLink().ContactAccountPubKey, nil); err != nil {
+			m.Logger.Warn("peer failed to handle the request", zap.Error(err))
+		}
+	}
+	return &ret, nil
 }
 
-func (m *Mock) EventSubscribe(*EventSubscribe_Request, ProtocolService_EventSubscribeServer) error {
-	return errcode.ErrNotImplemented
+func (m *Mock) handleContactRequest(pubkey []byte, metadata []byte) error {
+	// add new contact request in db
+	contact := protocoldb.Contact{
+		AccountPubKey: pubkey,
+		Metadata:      metadata,
+		TrustLevel:    protocoldb.Contact_Untrusted,
+		Blocked:       false,
+		RequestStatus: protocoldb.Contact_IncomingRequest,
+	}
+	err := m.DB.Create(&contact).Error
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	// append event
+	m.Events <- &EventSubscribe_ContactRequestEvent{
+		ContactAccountPubKey: pubkey,
+		Metadata:             []byte{},
+	}
+
+	return nil
+}
+
+func (m *Mock) EventSubscribe(req *EventSubscribe_Request, stream ProtocolService_EventSubscribeServer) error {
+	for event := range m.Events {
+		rep := &EventSubscribe_Reply{
+			// FIXME: EventID
+		}
+		switch typed := event.(type) {
+		case *EventSubscribe_ContactRequestEvent:
+			rep.Type = EventSubscribe_EventContactRequest
+			rep.ContactRequestEvent = typed
+		default:
+			return errcode.ErrNotImplemented.Wrap(fmt.Errorf("unsupported event type: %v", event))
+		}
+
+		err := stream.Send(rep)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (m *Mock) GroupCreate(context.Context, *GroupCreate_Request) (*GroupCreate_Reply, error) {

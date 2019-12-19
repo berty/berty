@@ -128,6 +128,12 @@ message Contact {
     Trusted = 3;
     UltimateTrust = 4;
   }
+  enum RequestStatus {
+    UnknownRequestStatus = 0;
+    IncomingRequest = 1;
+    OutgoingRequest = 2;
+    AcceptedRequest = 3;
+  }
 
   // Fields
 
@@ -137,6 +143,7 @@ message Contact {
   TrustLevel trust_level = 4 [(gogoproto.moretags) = "gorm:\"index\""];
   bytes metadata = 5;
   bool blocked = 6;
+  RequestStatus request_status = 7;
 
   // Relations
 
