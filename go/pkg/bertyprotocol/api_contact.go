@@ -6,15 +6,17 @@ import (
 	"berty.tech/go/pkg/errcode"
 )
 
-func (c *client) ContactGet(ctx context.Context, in *ContactGet_Request) (*ContactGet_Reply, error) {
-	ret := &ContactGet_Reply{}
-	return ret, nil
-}
-
-func (c *client) ContactList(*ContactList_Request, ProtocolService_ContactListServer) error {
-	return errcode.ErrNotImplemented
-}
-
+// ContactRemove removes a contact
 func (c *client) ContactRemove(context.Context, *ContactRemove_Request) (*ContactRemove_Reply, error) {
+	return nil, errcode.ErrNotImplemented
+}
+
+// ContactBlock blocks a contact, stops advertising on its rendezvous point
+func (c *client) ContactBlock(context.Context, *ContactBlock_Request) (*ContactBlock_Reply, error) {
+	return nil, errcode.ErrNotImplemented
+}
+
+// ContactUnblock unblocks a contact, resumes advertising on its rendezvous point
+func (c *client) ContactUnblock(context.Context, *ContactUnblock_Request) (*ContactUnblock_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }

@@ -4,114 +4,87 @@
 ## Table of Contents
 
 - [bertyprotocol.proto](#bertyprotocol.proto)
-    - [AccountDisableIncomingContactRequest](#berty.protocol.AccountDisableIncomingContactRequest)
-    - [AccountDisableIncomingContactRequest.Reply](#berty.protocol.AccountDisableIncomingContactRequest.Reply)
-    - [AccountDisableIncomingContactRequest.Request](#berty.protocol.AccountDisableIncomingContactRequest.Request)
-    - [AccountEnableIncomingContactRequest](#berty.protocol.AccountEnableIncomingContactRequest)
-    - [AccountEnableIncomingContactRequest.Reply](#berty.protocol.AccountEnableIncomingContactRequest.Reply)
-    - [AccountEnableIncomingContactRequest.Request](#berty.protocol.AccountEnableIncomingContactRequest.Request)
-    - [AccountGetConfiguration](#berty.protocol.AccountGetConfiguration)
-    - [AccountGetConfiguration.Reply](#berty.protocol.AccountGetConfiguration.Reply)
-    - [AccountGetConfiguration.Request](#berty.protocol.AccountGetConfiguration.Request)
-    - [AccountGetInformation](#berty.protocol.AccountGetInformation)
-    - [AccountGetInformation.Reply](#berty.protocol.AccountGetInformation.Reply)
-    - [AccountGetInformation.Request](#berty.protocol.AccountGetInformation.Request)
-    - [AccountLinkNewDevice](#berty.protocol.AccountLinkNewDevice)
-    - [AccountLinkNewDevice.Reply](#berty.protocol.AccountLinkNewDevice.Reply)
-    - [AccountLinkNewDevice.Request](#berty.protocol.AccountLinkNewDevice.Request)
-    - [AccountResetIncomingContactRequestLink](#berty.protocol.AccountResetIncomingContactRequestLink)
-    - [AccountResetIncomingContactRequestLink.Reply](#berty.protocol.AccountResetIncomingContactRequestLink.Reply)
-    - [AccountResetIncomingContactRequestLink.Request](#berty.protocol.AccountResetIncomingContactRequestLink.Request)
-    - [Contact](#berty.protocol.Contact)
-    - [ContactGet](#berty.protocol.ContactGet)
-    - [ContactGet.Reply](#berty.protocol.ContactGet.Reply)
-    - [ContactGet.Request](#berty.protocol.ContactGet.Request)
-    - [ContactList](#berty.protocol.ContactList)
-    - [ContactList.Reply](#berty.protocol.ContactList.Reply)
-    - [ContactList.Request](#berty.protocol.ContactList.Request)
+    - [AccountAppendAppSpecificEvent](#berty.protocol.AccountAppendAppSpecificEvent)
+    - [AccountAppendAppSpecificEvent.Reply](#berty.protocol.AccountAppendAppSpecificEvent.Reply)
+    - [AccountAppendAppSpecificEvent.Request](#berty.protocol.AccountAppendAppSpecificEvent.Request)
+    - [AccountStoreEvent](#berty.protocol.AccountStoreEvent)
+    - [AccountSubscribe](#berty.protocol.AccountSubscribe)
+    - [AccountSubscribe.Reply](#berty.protocol.AccountSubscribe.Reply)
+    - [AccountSubscribe.Request](#berty.protocol.AccountSubscribe.Request)
+    - [ContactBlock](#berty.protocol.ContactBlock)
+    - [ContactBlock.Reply](#berty.protocol.ContactBlock.Reply)
+    - [ContactBlock.Request](#berty.protocol.ContactBlock.Request)
     - [ContactRemove](#berty.protocol.ContactRemove)
     - [ContactRemove.Reply](#berty.protocol.ContactRemove.Reply)
     - [ContactRemove.Request](#berty.protocol.ContactRemove.Request)
     - [ContactRequestAccept](#berty.protocol.ContactRequestAccept)
     - [ContactRequestAccept.Reply](#berty.protocol.ContactRequestAccept.Reply)
     - [ContactRequestAccept.Request](#berty.protocol.ContactRequestAccept.Request)
-    - [ContactRequestDiscard](#berty.protocol.ContactRequestDiscard)
-    - [ContactRequestDiscard.Reply](#berty.protocol.ContactRequestDiscard.Reply)
-    - [ContactRequestDiscard.Request](#berty.protocol.ContactRequestDiscard.Request)
-    - [ContactRequestLink](#berty.protocol.ContactRequestLink)
-    - [ContactRequestListIncoming](#berty.protocol.ContactRequestListIncoming)
-    - [ContactRequestListIncoming.Reply](#berty.protocol.ContactRequestListIncoming.Reply)
-    - [ContactRequestListIncoming.Request](#berty.protocol.ContactRequestListIncoming.Request)
-    - [ContactRequestListOutgoing](#berty.protocol.ContactRequestListOutgoing)
-    - [ContactRequestListOutgoing.Reply](#berty.protocol.ContactRequestListOutgoing.Reply)
-    - [ContactRequestListOutgoing.Request](#berty.protocol.ContactRequestListOutgoing.Request)
-    - [ContactRequestSend](#berty.protocol.ContactRequestSend)
-    - [ContactRequestSend.Reply](#berty.protocol.ContactRequestSend.Reply)
-    - [ContactRequestSend.Request](#berty.protocol.ContactRequestSend.Request)
-    - [Device](#berty.protocol.Device)
-    - [EventSubscribe](#berty.protocol.EventSubscribe)
-    - [EventSubscribe.BroadcastEvent](#berty.protocol.EventSubscribe.BroadcastEvent)
-    - [EventSubscribe.ContactRequestEvent](#berty.protocol.EventSubscribe.ContactRequestEvent)
-    - [EventSubscribe.GroupInvitationEvent](#berty.protocol.EventSubscribe.GroupInvitationEvent)
-    - [EventSubscribe.MessageEvent](#berty.protocol.EventSubscribe.MessageEvent)
-    - [EventSubscribe.Reply](#berty.protocol.EventSubscribe.Reply)
-    - [EventSubscribe.Request](#berty.protocol.EventSubscribe.Request)
+    - [ContactRequestDisable](#berty.protocol.ContactRequestDisable)
+    - [ContactRequestDisable.Reply](#berty.protocol.ContactRequestDisable.Reply)
+    - [ContactRequestDisable.Request](#berty.protocol.ContactRequestDisable.Request)
+    - [ContactRequestEnable](#berty.protocol.ContactRequestEnable)
+    - [ContactRequestEnable.Reply](#berty.protocol.ContactRequestEnable.Reply)
+    - [ContactRequestEnable.Request](#berty.protocol.ContactRequestEnable.Request)
+    - [ContactRequestEnqueue](#berty.protocol.ContactRequestEnqueue)
+    - [ContactRequestEnqueue.Reply](#berty.protocol.ContactRequestEnqueue.Reply)
+    - [ContactRequestEnqueue.Request](#berty.protocol.ContactRequestEnqueue.Request)
+    - [ContactRequestReference](#berty.protocol.ContactRequestReference)
+    - [ContactRequestReference.Reply](#berty.protocol.ContactRequestReference.Reply)
+    - [ContactRequestReference.Request](#berty.protocol.ContactRequestReference.Request)
+    - [ContactRequestResetLink](#berty.protocol.ContactRequestResetLink)
+    - [ContactRequestResetLink.Reply](#berty.protocol.ContactRequestResetLink.Reply)
+    - [ContactRequestResetLink.Request](#berty.protocol.ContactRequestResetLink.Request)
+    - [ContactUnblock](#berty.protocol.ContactUnblock)
+    - [ContactUnblock.Reply](#berty.protocol.ContactUnblock.Reply)
+    - [ContactUnblock.Request](#berty.protocol.ContactUnblock.Request)
+    - [DevicePair](#berty.protocol.DevicePair)
+    - [DevicePair.Reply](#berty.protocol.DevicePair.Reply)
+    - [DevicePair.Request](#berty.protocol.DevicePair.Request)
+    - [EventBase](#berty.protocol.EventBase)
     - [GroupCreate](#berty.protocol.GroupCreate)
     - [GroupCreate.Reply](#berty.protocol.GroupCreate.Reply)
     - [GroupCreate.Request](#berty.protocol.GroupCreate.Request)
-    - [GroupGenerateInviteLink](#berty.protocol.GroupGenerateInviteLink)
-    - [GroupGenerateInviteLink.Reply](#berty.protocol.GroupGenerateInviteLink.Reply)
-    - [GroupGenerateInviteLink.Request](#berty.protocol.GroupGenerateInviteLink.Request)
-    - [GroupInfo](#berty.protocol.GroupInfo)
-    - [GroupInvitationAccept](#berty.protocol.GroupInvitationAccept)
-    - [GroupInvitationAccept.Reply](#berty.protocol.GroupInvitationAccept.Reply)
-    - [GroupInvitationAccept.Request](#berty.protocol.GroupInvitationAccept.Request)
-    - [GroupInvitationCreate](#berty.protocol.GroupInvitationCreate)
-    - [GroupInvitationCreate.Reply](#berty.protocol.GroupInvitationCreate.Reply)
-    - [GroupInvitationCreate.Request](#berty.protocol.GroupInvitationCreate.Request)
-    - [GroupInvitationDiscard](#berty.protocol.GroupInvitationDiscard)
-    - [GroupInvitationDiscard.Reply](#berty.protocol.GroupInvitationDiscard.Reply)
-    - [GroupInvitationDiscard.Request](#berty.protocol.GroupInvitationDiscard.Request)
-    - [GroupInvitationList](#berty.protocol.GroupInvitationList)
-    - [GroupInvitationList.Reply](#berty.protocol.GroupInvitationList.Reply)
-    - [GroupInvitationList.Request](#berty.protocol.GroupInvitationList.Request)
+    - [GroupInvite](#berty.protocol.GroupInvite)
+    - [GroupInvite.Reply](#berty.protocol.GroupInvite.Reply)
+    - [GroupInvite.Request](#berty.protocol.GroupInvite.Request)
+    - [GroupJoin](#berty.protocol.GroupJoin)
+    - [GroupJoin.Reply](#berty.protocol.GroupJoin.Reply)
+    - [GroupJoin.Request](#berty.protocol.GroupJoin.Request)
     - [GroupLeave](#berty.protocol.GroupLeave)
     - [GroupLeave.Reply](#berty.protocol.GroupLeave.Reply)
     - [GroupLeave.Request](#berty.protocol.GroupLeave.Request)
-    - [GroupList](#berty.protocol.GroupList)
-    - [GroupList.Reply](#berty.protocol.GroupList.Reply)
-    - [GroupList.Request](#berty.protocol.GroupList.Request)
-    - [GroupMember](#berty.protocol.GroupMember)
-    - [GroupMessageCreate](#berty.protocol.GroupMessageCreate)
-    - [GroupMessageCreate.Reply](#berty.protocol.GroupMessageCreate.Reply)
-    - [GroupMessageCreate.Request](#berty.protocol.GroupMessageCreate.Request)
-    - [GroupMessageList](#berty.protocol.GroupMessageList)
-    - [GroupMessageList.Reply](#berty.protocol.GroupMessageList.Reply)
-    - [GroupMessageList.Request](#berty.protocol.GroupMessageList.Request)
-    - [GroupTopicPublish](#berty.protocol.GroupTopicPublish)
-    - [GroupTopicPublish.Reply](#berty.protocol.GroupTopicPublish.Reply)
-    - [GroupTopicPublish.Request](#berty.protocol.GroupTopicPublish.Request)
-    - [GroupTopicSubscribe](#berty.protocol.GroupTopicSubscribe)
-    - [GroupTopicSubscribe.Reply](#berty.protocol.GroupTopicSubscribe.Reply)
-    - [GroupTopicSubscribe.Request](#berty.protocol.GroupTopicSubscribe.Request)
+    - [GroupMemberStoreEvent](#berty.protocol.GroupMemberStoreEvent)
+    - [GroupMemberSubscribe](#berty.protocol.GroupMemberSubscribe)
+    - [GroupMemberSubscribe.Reply](#berty.protocol.GroupMemberSubscribe.Reply)
+    - [GroupMemberSubscribe.Request](#berty.protocol.GroupMemberSubscribe.Request)
+    - [GroupMessageSend](#berty.protocol.GroupMessageSend)
+    - [GroupMessageSend.Reply](#berty.protocol.GroupMessageSend.Reply)
+    - [GroupMessageSend.Request](#berty.protocol.GroupMessageSend.Request)
+    - [GroupMessageStoreEvent](#berty.protocol.GroupMessageStoreEvent)
+    - [GroupMessageSubscribe](#berty.protocol.GroupMessageSubscribe)
+    - [GroupMessageSubscribe.Reply](#berty.protocol.GroupMessageSubscribe.Reply)
+    - [GroupMessageSubscribe.Request](#berty.protocol.GroupMessageSubscribe.Request)
+    - [GroupSettingSetGroup](#berty.protocol.GroupSettingSetGroup)
+    - [GroupSettingSetGroup.Reply](#berty.protocol.GroupSettingSetGroup.Reply)
+    - [GroupSettingSetGroup.Request](#berty.protocol.GroupSettingSetGroup.Request)
+    - [GroupSettingSetMember](#berty.protocol.GroupSettingSetMember)
+    - [GroupSettingSetMember.Reply](#berty.protocol.GroupSettingSetMember.Reply)
+    - [GroupSettingSetMember.Request](#berty.protocol.GroupSettingSetMember.Request)
+    - [GroupSettingStoreEvent](#berty.protocol.GroupSettingStoreEvent)
+    - [GroupSettingStoreSubscribe](#berty.protocol.GroupSettingStoreSubscribe)
+    - [GroupSettingStoreSubscribe.Reply](#berty.protocol.GroupSettingStoreSubscribe.Reply)
+    - [GroupSettingStoreSubscribe.Request](#berty.protocol.GroupSettingStoreSubscribe.Request)
+    - [GroupStoreEvent](#berty.protocol.GroupStoreEvent)
     - [InstanceExportData](#berty.protocol.InstanceExportData)
     - [InstanceExportData.Reply](#berty.protocol.InstanceExportData.Reply)
     - [InstanceExportData.Request](#berty.protocol.InstanceExportData.Request)
     - [InstanceGetConfiguration](#berty.protocol.InstanceGetConfiguration)
     - [InstanceGetConfiguration.Reply](#berty.protocol.InstanceGetConfiguration.Reply)
     - [InstanceGetConfiguration.Request](#berty.protocol.InstanceGetConfiguration.Request)
-    - [Invitation](#berty.protocol.Invitation)
-    - [StreamManagerAccept](#berty.protocol.StreamManagerAccept)
-    - [StreamManagerAccept.Reply](#berty.protocol.StreamManagerAccept.Reply)
-    - [StreamManagerAccept.Request](#berty.protocol.StreamManagerAccept.Request)
-    - [StreamManagerRequestToContact](#berty.protocol.StreamManagerRequestToContact)
-    - [StreamManagerRequestToContact.Reply](#berty.protocol.StreamManagerRequestToContact.Reply)
-    - [StreamManagerRequestToContact.Request](#berty.protocol.StreamManagerRequestToContact.Request)
   
-    - [Contact.RequestStatus](#berty.protocol.Contact.RequestStatus)
-    - [Contact.TrustLevel](#berty.protocol.Contact.TrustLevel)
-    - [EventSubscribe.Type](#berty.protocol.EventSubscribe.Type)
-    - [GroupInfo.GroupAudience](#berty.protocol.GroupInfo.GroupAudience)
+    - [AccountEventType](#berty.protocol.AccountEventType)
+    - [GroupSettingStoreSettingType](#berty.protocol.GroupSettingStoreSettingType)
     - [InstanceGetConfiguration.SettingState](#berty.protocol.InstanceGetConfiguration.SettingState)
   
   
@@ -125,152 +98,68 @@
 
 ## bertyprotocol.proto
 
-<a name="berty.protocol.AccountDisableIncomingContactRequest"></a>
+<a name="berty.protocol.AccountAppendAppSpecificEvent"></a>
 
-### AccountDisableIncomingContactRequest
+### AccountAppendAppSpecificEvent
 
-<a name="berty.protocol.AccountDisableIncomingContactRequest.Reply"></a>
+<a name="berty.protocol.AccountAppendAppSpecificEvent.Reply"></a>
 
-### AccountDisableIncomingContactRequest.Reply
+### AccountAppendAppSpecificEvent.Reply
 
-<a name="berty.protocol.AccountDisableIncomingContactRequest.Request"></a>
+<a name="berty.protocol.AccountAppendAppSpecificEvent.Request"></a>
 
-### AccountDisableIncomingContactRequest.Request
-
-<a name="berty.protocol.AccountEnableIncomingContactRequest"></a>
-
-### AccountEnableIncomingContactRequest
-
-<a name="berty.protocol.AccountEnableIncomingContactRequest.Reply"></a>
-
-### AccountEnableIncomingContactRequest.Reply
+### AccountAppendAppSpecificEvent.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| contact_request_link | [ContactRequestLink](#berty.protocol.ContactRequestLink) |  |  |
+| payload | [bytes](#bytes) |  |  |
 
-<a name="berty.protocol.AccountEnableIncomingContactRequest.Request"></a>
+<a name="berty.protocol.AccountStoreEvent"></a>
 
-### AccountEnableIncomingContactRequest.Request
-
-<a name="berty.protocol.AccountGetConfiguration"></a>
-
-### AccountGetConfiguration
-
-<a name="berty.protocol.AccountGetConfiguration.Reply"></a>
-
-### AccountGetConfiguration.Reply
+### AccountStoreEvent
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| contact_requestable | [bool](#bool) |  |  |
-| default_pinning_service | [bytes](#bytes) |  |  |
-| metadata | [bytes](#bytes) |  |  |
+| subject_public_key_bytes | [bytes](#bytes) |  |  |
+| data | [bytes](#bytes) |  |  |
 
-<a name="berty.protocol.AccountGetConfiguration.Request"></a>
+<a name="berty.protocol.AccountSubscribe"></a>
 
-### AccountGetConfiguration.Request
+### AccountSubscribe
 
-<a name="berty.protocol.AccountGetInformation"></a>
+<a name="berty.protocol.AccountSubscribe.Reply"></a>
 
-### AccountGetInformation
-
-<a name="berty.protocol.AccountGetInformation.Reply"></a>
-
-### AccountGetInformation.Reply
+### AccountSubscribe.Reply
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| account_pub_key | [bytes](#bytes) |  |  |
-| devices | [Device](#berty.protocol.Device) | repeated |  |
+| event | [AccountStoreEvent](#berty.protocol.AccountStoreEvent) |  |  |
 
-<a name="berty.protocol.AccountGetInformation.Request"></a>
+<a name="berty.protocol.AccountSubscribe.Request"></a>
 
-### AccountGetInformation.Request
-
-<a name="berty.protocol.AccountLinkNewDevice"></a>
-
-### AccountLinkNewDevice
-
-<a name="berty.protocol.AccountLinkNewDevice.Reply"></a>
-
-### AccountLinkNewDevice.Reply
+### AccountSubscribe.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| invitation | [Invitation](#berty.protocol.Invitation) |  |  |
+| since | [bytes](#bytes) |  |  |
+| until | [bytes](#bytes) |  |  |
+| go_backwards | [bool](#bool) |  |  |
 
-<a name="berty.protocol.AccountLinkNewDevice.Request"></a>
+<a name="berty.protocol.ContactBlock"></a>
 
-### AccountLinkNewDevice.Request
+### ContactBlock
 
-<a name="berty.protocol.AccountResetIncomingContactRequestLink"></a>
+<a name="berty.protocol.ContactBlock.Reply"></a>
 
-### AccountResetIncomingContactRequestLink
+### ContactBlock.Reply
 
-<a name="berty.protocol.AccountResetIncomingContactRequestLink.Reply"></a>
+<a name="berty.protocol.ContactBlock.Request"></a>
 
-### AccountResetIncomingContactRequestLink.Reply
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| contact_request_link | [ContactRequestLink](#berty.protocol.ContactRequestLink) |  | Reset rdv_point_seed and rotation_time_point |
-
-<a name="berty.protocol.AccountResetIncomingContactRequestLink.Request"></a>
-
-### AccountResetIncomingContactRequestLink.Request
-
-<a name="berty.protocol.Contact"></a>
-
-### Contact
-Contact is the public version of protocolmodel.Contact and should stay in sync
+### ContactBlock.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| account_pub_key | [bytes](#bytes) |  |  |
-| one_to_one_group_pub_key | [bytes](#bytes) |  |  |
-| trust_level | [Contact.TrustLevel](#berty.protocol.Contact.TrustLevel) |  |  |
-| metadata | [bytes](#bytes) |  |  |
-| blocked | [bool](#bool) |  |  |
-| request_status | [Contact.RequestStatus](#berty.protocol.Contact.RequestStatus) |  |  |
-| one_to_one_group | [GroupInfo](#berty.protocol.GroupInfo) |  |  |
-
-<a name="berty.protocol.ContactGet"></a>
-
-### ContactGet
-
-<a name="berty.protocol.ContactGet.Reply"></a>
-
-### ContactGet.Reply
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| contact | [Contact](#berty.protocol.Contact) |  |  |
-
-<a name="berty.protocol.ContactGet.Request"></a>
-
-### ContactGet.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| contact_account_pub_key | [bytes](#bytes) |  |  |
-
-<a name="berty.protocol.ContactList"></a>
-
-### ContactList
-
-<a name="berty.protocol.ContactList.Reply"></a>
-
-### ContactList.Reply
-streamed
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| contact | [Contact](#berty.protocol.Contact) |  |  |
-
-<a name="berty.protocol.ContactList.Request"></a>
-
-### ContactList.Request
+| contact_pub_key | [bytes](#bytes) |  |  |
 
 <a name="berty.protocol.ContactRemove"></a>
 
@@ -286,7 +175,7 @@ streamed
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| contact_account_pub_key | [bytes](#bytes) |  |  |
+| contact_pub_key | [bytes](#bytes) |  |  |
 
 <a name="berty.protocol.ContactRequestAccept"></a>
 
@@ -302,160 +191,117 @@ streamed
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| contact_account_pub_key | [bytes](#bytes) |  |  |
+| contact_pub_key | [bytes](#bytes) |  |  |
 
-<a name="berty.protocol.ContactRequestDiscard"></a>
+<a name="berty.protocol.ContactRequestDisable"></a>
 
-### ContactRequestDiscard
+### ContactRequestDisable
 
-<a name="berty.protocol.ContactRequestDiscard.Reply"></a>
+<a name="berty.protocol.ContactRequestDisable.Reply"></a>
 
-### ContactRequestDiscard.Reply
+### ContactRequestDisable.Reply
 
-<a name="berty.protocol.ContactRequestDiscard.Request"></a>
+<a name="berty.protocol.ContactRequestDisable.Request"></a>
 
-### ContactRequestDiscard.Request
+### ContactRequestDisable.Request
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| contact_account_pub_key | [bytes](#bytes) |  |  |
+<a name="berty.protocol.ContactRequestEnable"></a>
 
-<a name="berty.protocol.ContactRequestLink"></a>
+### ContactRequestEnable
 
-### ContactRequestLink
+<a name="berty.protocol.ContactRequestEnable.Reply"></a>
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| rendezvous_point_seed | [bytes](#bytes) |  |  |
-| contact_account_pub_key | [bytes](#bytes) |  |  |
-| metadata | [bytes](#bytes) |  |  |
+### ContactRequestEnable.Reply
 
-<a name="berty.protocol.ContactRequestListIncoming"></a>
+<a name="berty.protocol.ContactRequestEnable.Request"></a>
 
-### ContactRequestListIncoming
+### ContactRequestEnable.Request
 
-<a name="berty.protocol.ContactRequestListIncoming.Reply"></a>
+<a name="berty.protocol.ContactRequestEnqueue"></a>
 
-### ContactRequestListIncoming.Reply
-streamed
+### ContactRequestEnqueue
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| contact | [Contact](#berty.protocol.Contact) |  |  |
+<a name="berty.protocol.ContactRequestEnqueue.Reply"></a>
 
-<a name="berty.protocol.ContactRequestListIncoming.Request"></a>
+### ContactRequestEnqueue.Reply
 
-### ContactRequestListIncoming.Request
+<a name="berty.protocol.ContactRequestEnqueue.Request"></a>
 
-<a name="berty.protocol.ContactRequestListOutgoing"></a>
-
-### ContactRequestListOutgoing
-
-<a name="berty.protocol.ContactRequestListOutgoing.Reply"></a>
-
-### ContactRequestListOutgoing.Reply
-streamed
+### ContactRequestEnqueue.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| contact | [Contact](#berty.protocol.Contact) |  |  |
+| reference | [bytes](#bytes) |  |  |
+| meta | [bytes](#bytes) |  |  |
 
-<a name="berty.protocol.ContactRequestListOutgoing.Request"></a>
+<a name="berty.protocol.ContactRequestReference"></a>
 
-### ContactRequestListOutgoing.Request
+### ContactRequestReference
 
-<a name="berty.protocol.ContactRequestSend"></a>
+<a name="berty.protocol.ContactRequestReference.Reply"></a>
 
-### ContactRequestSend
-
-<a name="berty.protocol.ContactRequestSend.Reply"></a>
-
-### ContactRequestSend.Reply
+### ContactRequestReference.Reply
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| contact | [Contact](#berty.protocol.Contact) |  |  |
+| reference | [bytes](#bytes) |  |  |
 
-<a name="berty.protocol.ContactRequestSend.Request"></a>
+<a name="berty.protocol.ContactRequestReference.Request"></a>
 
-### ContactRequestSend.Request
+### ContactRequestReference.Request
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| contact_request_link | [ContactRequestLink](#berty.protocol.ContactRequestLink) |  |  |
+<a name="berty.protocol.ContactRequestResetLink"></a>
 
-<a name="berty.protocol.Device"></a>
+### ContactRequestResetLink
 
-### Device
+<a name="berty.protocol.ContactRequestResetLink.Reply"></a>
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| device_pub_key | [bytes](#bytes) |  |  |
-| parent_device_pub_key | [bytes](#bytes) |  | Equal to account_pub_key for the first device |
-| linked_at | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
-| ble_capable | [bool](#bool) |  |  |
-| wifi_p2p_capable | [bool](#bool) |  |  |
-| relay_capable | [bool](#bool) |  |  |
-
-<a name="berty.protocol.EventSubscribe"></a>
-
-### EventSubscribe
-
-<a name="berty.protocol.EventSubscribe.BroadcastEvent"></a>
-
-### EventSubscribe.BroadcastEvent
+### ContactRequestResetLink.Reply
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_id | [bytes](#bytes) |  |  |
-| member_id | [bytes](#bytes) |  |  |
-| topic_id | [bytes](#bytes) |  |  |
+| reference | [bytes](#bytes) |  |  |
 
-<a name="berty.protocol.EventSubscribe.ContactRequestEvent"></a>
+<a name="berty.protocol.ContactRequestResetLink.Request"></a>
 
-### EventSubscribe.ContactRequestEvent
+### ContactRequestResetLink.Request
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| contact_account_pub_key | [bytes](#bytes) |  |  |
-| metadata | [bytes](#bytes) |  |  |
+<a name="berty.protocol.ContactUnblock"></a>
 
-<a name="berty.protocol.EventSubscribe.GroupInvitationEvent"></a>
+### ContactUnblock
 
-### EventSubscribe.GroupInvitationEvent
+<a name="berty.protocol.ContactUnblock.Reply"></a>
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_id | [bytes](#bytes) |  |  |
-| inviter_pub_key | [bytes](#bytes) |  |  |
-| metadata | [bytes](#bytes) |  |  |
+### ContactUnblock.Reply
 
-<a name="berty.protocol.EventSubscribe.MessageEvent"></a>
+<a name="berty.protocol.ContactUnblock.Request"></a>
 
-### EventSubscribe.MessageEvent
+### ContactUnblock.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_id | [bytes](#bytes) |  |  |
-| member_id | [bytes](#bytes) |  |  |
-| payload | [bytes](#bytes) |  |  |
+| contact_pub_key | [bytes](#bytes) |  |  |
 
-<a name="berty.protocol.EventSubscribe.Reply"></a>
+<a name="berty.protocol.DevicePair"></a>
 
-### EventSubscribe.Reply
+### DevicePair
+
+<a name="berty.protocol.DevicePair.Reply"></a>
+
+### DevicePair.Reply
+
+<a name="berty.protocol.DevicePair.Request"></a>
+
+### DevicePair.Request
+
+<a name="berty.protocol.EventBase"></a>
+
+### EventBase
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| type | [EventSubscribe.Type](#berty.protocol.EventSubscribe.Type) |  |  |
-| event_id | [bytes](#bytes) |  |  |
-| message_event | [EventSubscribe.MessageEvent](#berty.protocol.EventSubscribe.MessageEvent) |  |  |
-| contact_request_event | [EventSubscribe.ContactRequestEvent](#berty.protocol.EventSubscribe.ContactRequestEvent) |  |  |
-| group_invitation_event | [EventSubscribe.GroupInvitationEvent](#berty.protocol.EventSubscribe.GroupInvitationEvent) |  |  |
-| broadcast_event | [EventSubscribe.BroadcastEvent](#berty.protocol.EventSubscribe.BroadcastEvent) |  |  |
-
-<a name="berty.protocol.EventSubscribe.Request"></a>
-
-### EventSubscribe.Request
+| id | [bytes](#bytes) |  |  |
+| parent_ids | [bytes](#bytes) | repeated |  |
 
 <a name="berty.protocol.GroupCreate"></a>
 
@@ -465,123 +311,46 @@ streamed
 
 ### GroupCreate.Reply
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_info | [GroupInfo](#berty.protocol.GroupInfo) |  |  |
-
 <a name="berty.protocol.GroupCreate.Request"></a>
 
 ### GroupCreate.Request
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| contact_account_pub_key | [bytes](#bytes) | repeated | Invitees |
-| pinning_service | [bytes](#bytes) |  |  |
-| metadata | [bytes](#bytes) |  |  |
+<a name="berty.protocol.GroupInvite"></a>
 
-<a name="berty.protocol.GroupGenerateInviteLink"></a>
+### GroupInvite
 
-### GroupGenerateInviteLink
+<a name="berty.protocol.GroupInvite.Reply"></a>
 
-<a name="berty.protocol.GroupGenerateInviteLink.Reply"></a>
-
-### GroupGenerateInviteLink.Reply
+### GroupInvite.Reply
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| invitation | [Invitation](#berty.protocol.Invitation) |  |  |
+| reference | [bytes](#bytes) |  |  |
 
-<a name="berty.protocol.GroupGenerateInviteLink.Request"></a>
+<a name="berty.protocol.GroupInvite.Request"></a>
 
-### GroupGenerateInviteLink.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_id | [bytes](#bytes) |  |  |
-
-<a name="berty.protocol.GroupInfo"></a>
-
-### GroupInfo
-GroupInfo is the public version of protocolmodel.GroupInfo and should stay in sync
-
-group clashes with reserved SQL keyword
+### GroupInvite.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | group_pub_key | [bytes](#bytes) |  |  |
-| metadata | [bytes](#bytes) |  |  |
-| audience | [GroupInfo.GroupAudience](#berty.protocol.GroupInfo.GroupAudience) |  |  |
-| version | [uint32](#uint32) |  |  |
-| inviter_contact_pub_key | [bytes](#bytes) |  |  |
-| members | [GroupMember](#berty.protocol.GroupMember) | repeated |  |
-| inviter | [Contact](#berty.protocol.Contact) |  |  |
 
-<a name="berty.protocol.GroupInvitationAccept"></a>
+<a name="berty.protocol.GroupJoin"></a>
 
-### GroupInvitationAccept
+### GroupJoin
 
-<a name="berty.protocol.GroupInvitationAccept.Reply"></a>
+<a name="berty.protocol.GroupJoin.Reply"></a>
 
-### GroupInvitationAccept.Reply
+### GroupJoin.Reply
 
-<a name="berty.protocol.GroupInvitationAccept.Request"></a>
+<a name="berty.protocol.GroupJoin.Request"></a>
 
-### GroupInvitationAccept.Request
+### GroupJoin.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_id | [bytes](#bytes) |  |  |
-
-<a name="berty.protocol.GroupInvitationCreate"></a>
-
-### GroupInvitationCreate
-
-<a name="berty.protocol.GroupInvitationCreate.Reply"></a>
-
-### GroupInvitationCreate.Reply
-
-<a name="berty.protocol.GroupInvitationCreate.Request"></a>
-
-### GroupInvitationCreate.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_id | [bytes](#bytes) |  |  |
-| contact_account_pub_key | [bytes](#bytes) | repeated |  |
-
-<a name="berty.protocol.GroupInvitationDiscard"></a>
-
-### GroupInvitationDiscard
-
-<a name="berty.protocol.GroupInvitationDiscard.Reply"></a>
-
-### GroupInvitationDiscard.Reply
-
-<a name="berty.protocol.GroupInvitationDiscard.Request"></a>
-
-### GroupInvitationDiscard.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_id | [bytes](#bytes) |  |  |
-
-<a name="berty.protocol.GroupInvitationList"></a>
-
-### GroupInvitationList
-
-<a name="berty.protocol.GroupInvitationList.Reply"></a>
-
-### GroupInvitationList.Reply
-streamed
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| inviter_account_pub_key | [bytes](#bytes) |  |  |
-| group_info | [GroupInfo](#berty.protocol.GroupInfo) |  |  |
-
-<a name="berty.protocol.GroupInvitationList.Request"></a>
-
-### GroupInvitationList.Request
+| reference | [bytes](#bytes) |  |  |
+| meta | [bytes](#bytes) |  |  |
 
 <a name="berty.protocol.GroupLeave"></a>
 
@@ -597,123 +366,169 @@ streamed
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_id | [bytes](#bytes) |  |  |
-
-<a name="berty.protocol.GroupList"></a>
-
-### GroupList
-
-<a name="berty.protocol.GroupList.Reply"></a>
-
-### GroupList.Reply
-streamed
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_info | [GroupInfo](#berty.protocol.GroupInfo) |  |  |
-
-<a name="berty.protocol.GroupList.Request"></a>
-
-### GroupList.Request
-
-<a name="berty.protocol.GroupMember"></a>
-
-### GroupMember
-GroupMember is the public version of protocolmodel.GroupMember and should stay in sync
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_member_pub_key | [bytes](#bytes) |  |  |
 | group_pub_key | [bytes](#bytes) |  |  |
-| inviter_pub_key | [bytes](#bytes) |  | Will be null for first member of the group |
-| contact_account_pub_key | [bytes](#bytes) |  |  |
-| metadata | [bytes](#bytes) |  |  |
-| group_info | [GroupInfo](#berty.protocol.GroupInfo) |  |  |
-| inviter | [GroupMember](#berty.protocol.GroupMember) |  |  |
-| contact | [Contact](#berty.protocol.Contact) |  |  |
 
-<a name="berty.protocol.GroupMessageCreate"></a>
+<a name="berty.protocol.GroupMemberStoreEvent"></a>
 
-### GroupMessageCreate
-
-<a name="berty.protocol.GroupMessageCreate.Reply"></a>
-
-### GroupMessageCreate.Reply
-
-<a name="berty.protocol.GroupMessageCreate.Request"></a>
-
-### GroupMessageCreate.Request
+### GroupMemberStoreEvent
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_id | [bytes](#bytes) |  |  |
+| group_store_event | [GroupStoreEvent](#berty.protocol.GroupStoreEvent) |  |  |
+
+<a name="berty.protocol.GroupMemberSubscribe"></a>
+
+### GroupMemberSubscribe
+
+<a name="berty.protocol.GroupMemberSubscribe.Reply"></a>
+
+### GroupMemberSubscribe.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| event | [GroupMemberStoreEvent](#berty.protocol.GroupMemberStoreEvent) |  |  |
+
+<a name="berty.protocol.GroupMemberSubscribe.Request"></a>
+
+### GroupMemberSubscribe.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pub_key | [bytes](#bytes) |  |  |
+| since | [bytes](#bytes) |  |  |
+| until | [bytes](#bytes) |  |  |
+| go_backwards | [bool](#bool) |  |  |
+
+<a name="berty.protocol.GroupMessageSend"></a>
+
+### GroupMessageSend
+
+<a name="berty.protocol.GroupMessageSend.Reply"></a>
+
+### GroupMessageSend.Reply
+
+<a name="berty.protocol.GroupMessageSend.Request"></a>
+
+### GroupMessageSend.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pub_key | [bytes](#bytes) |  |  |
 | payload | [bytes](#bytes) |  |  |
 
-<a name="berty.protocol.GroupMessageList"></a>
+<a name="berty.protocol.GroupMessageStoreEvent"></a>
 
-### GroupMessageList
-
-<a name="berty.protocol.GroupMessageList.Reply"></a>
-
-### GroupMessageList.Reply
-streamed
+### GroupMessageStoreEvent
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| message_id | [bytes](#bytes) |  |  |
-| member_id | [bytes](#bytes) |  |  |
+| group_store_event | [GroupStoreEvent](#berty.protocol.GroupStoreEvent) |  |  |
 | payload | [bytes](#bytes) |  |  |
 
-<a name="berty.protocol.GroupMessageList.Request"></a>
+<a name="berty.protocol.GroupMessageSubscribe"></a>
 
-### GroupMessageList.Request
+### GroupMessageSubscribe
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_id | [bytes](#bytes) |  |  |
-| from_index | [uint64](#uint64) |  |  |
-| to_index | [uint64](#uint64) |  |  |
+<a name="berty.protocol.GroupMessageSubscribe.Reply"></a>
 
-<a name="berty.protocol.GroupTopicPublish"></a>
-
-### GroupTopicPublish
-
-<a name="berty.protocol.GroupTopicPublish.Reply"></a>
-
-### GroupTopicPublish.Reply
-
-<a name="berty.protocol.GroupTopicPublish.Request"></a>
-
-### GroupTopicPublish.Request
-streamed
+### GroupMessageSubscribe.Reply
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_id | [bytes](#bytes) |  |  |
-| topic_id | [bytes](#bytes) |  |  |
-| volatile_data | [bytes](#bytes) |  |  |
+| event | [GroupMessageStoreEvent](#berty.protocol.GroupMessageStoreEvent) |  |  |
 
-<a name="berty.protocol.GroupTopicSubscribe"></a>
+<a name="berty.protocol.GroupMessageSubscribe.Request"></a>
 
-### GroupTopicSubscribe
-
-<a name="berty.protocol.GroupTopicSubscribe.Reply"></a>
-
-### GroupTopicSubscribe.Reply
-streamed
+### GroupMessageSubscribe.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| volatile_data | [bytes](#bytes) |  |  |
+| group_pub_key | [bytes](#bytes) |  |  |
+| since | [bytes](#bytes) |  |  |
+| until | [bytes](#bytes) |  |  |
+| go_backwards | [bool](#bool) |  |  |
 
-<a name="berty.protocol.GroupTopicSubscribe.Request"></a>
+<a name="berty.protocol.GroupSettingSetGroup"></a>
 
-### GroupTopicSubscribe.Request
+### GroupSettingSetGroup
+
+<a name="berty.protocol.GroupSettingSetGroup.Reply"></a>
+
+### GroupSettingSetGroup.Reply
+
+<a name="berty.protocol.GroupSettingSetGroup.Request"></a>
+
+### GroupSettingSetGroup.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_id | [bytes](#bytes) |  |  |
-| topic_id | [bytes](#bytes) |  |  |
+| group_pub_key | [bytes](#bytes) |  |  |
+| key | [string](#string) |  |  |
+| value | [bytes](#bytes) |  |  |
+
+<a name="berty.protocol.GroupSettingSetMember"></a>
+
+### GroupSettingSetMember
+
+<a name="berty.protocol.GroupSettingSetMember.Reply"></a>
+
+### GroupSettingSetMember.Reply
+
+<a name="berty.protocol.GroupSettingSetMember.Request"></a>
+
+### GroupSettingSetMember.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pub_key | [bytes](#bytes) |  |  |
+| key | [string](#string) |  |  |
+| value | [bytes](#bytes) |  |  |
+
+<a name="berty.protocol.GroupSettingStoreEvent"></a>
+
+### GroupSettingStoreEvent
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_store_event | [GroupStoreEvent](#berty.protocol.GroupStoreEvent) |  |  |
+| setting_type | [GroupSettingStoreSettingType](#berty.protocol.GroupSettingStoreSettingType) |  |  |
+| key | [string](#string) |  |  |
+| value | [bytes](#bytes) |  |  |
+
+<a name="berty.protocol.GroupSettingStoreSubscribe"></a>
+
+### GroupSettingStoreSubscribe
+
+<a name="berty.protocol.GroupSettingStoreSubscribe.Reply"></a>
+
+### GroupSettingStoreSubscribe.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| event | [GroupSettingStoreEvent](#berty.protocol.GroupSettingStoreEvent) |  |  |
+
+<a name="berty.protocol.GroupSettingStoreSubscribe.Request"></a>
+
+### GroupSettingStoreSubscribe.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pub_key | [bytes](#bytes) |  |  |
+| since | [bytes](#bytes) |  |  |
+| until | [bytes](#bytes) |  |  |
+| go_backwards | [bool](#bool) |  |  |
+
+<a name="berty.protocol.GroupStoreEvent"></a>
+
+### GroupStoreEvent
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| event_base | [EventBase](#berty.protocol.EventBase) |  |  |
+| group_pub_key | [bytes](#bytes) |  |  |
+| group_member_pub_key | [bytes](#bytes) |  |  |
+| group_device_pub_key | [bytes](#bytes) |  |  |
+| account_pub_key | [bytes](#bytes) |  |  |
 
 <a name="berty.protocol.InstanceExportData"></a>
 
@@ -752,90 +567,38 @@ streamed
 
 ### InstanceGetConfiguration.Request
 
-<a name="berty.protocol.Invitation"></a>
-
-### Invitation
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| inviter_member_pub_key | [bytes](#bytes) |  |  |
-| invitation_priv_key | [bytes](#bytes) |  |  |
-| invitation_pub_key_signature | [bytes](#bytes) |  | Signed by inviter_member_priv_key |
-| group_version | [uint32](#uint32) |  |  |
-| group_id_pub_key | [bytes](#bytes) |  |  |
-| shared_secret | [bytes](#bytes) |  |  |
-
-<a name="berty.protocol.StreamManagerAccept"></a>
-
-### StreamManagerAccept
-
-<a name="berty.protocol.StreamManagerAccept.Reply"></a>
-
-### StreamManagerAccept.Reply
-
-<a name="berty.protocol.StreamManagerAccept.Request"></a>
-
-### StreamManagerAccept.Request
-
-<a name="berty.protocol.StreamManagerRequestToContact"></a>
-
-### StreamManagerRequestToContact
-
-<a name="berty.protocol.StreamManagerRequestToContact.Reply"></a>
-
-### StreamManagerRequestToContact.Reply
-
-<a name="berty.protocol.StreamManagerRequestToContact.Request"></a>
-
-### StreamManagerRequestToContact.Request
-
  
 
-<a name="berty.protocol.Contact.RequestStatus"></a>
+<a name="berty.protocol.AccountEventType"></a>
 
-### Contact.RequestStatus
+### AccountEventType
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| UnknownRequestStatus | 0 |  |
-| IncomingRequest | 1 |  |
-| OutgoingRequest | 2 |  |
-| AcceptedRequest | 3 |  |
+| AccountEventType_Undefined | 0 |  |
+| AccountEventType_GroupJoined | 1 |  |
+| AccountEventType_GroupLeft | 2 |  |
+| AccountEventType_DevicePaired | 3 |  |
+| AccountEventType_ContactRequestDisabled | 4 |  |
+| AccountEventType_ContactRequestEnabled | 5 |  |
+| AccountEventType_ContactRequestReferenceReset | 6 |  |
+| AccountEventType_ContactRequestEnqueued | 7 | TODO: ⚠️ figure how to overcome issues with having requests sent and received by multiple devices simultaneously, secret definition should not conflict |
+| AccountEventType_ContactRequested | 8 |  |
+| AccountEventType_ContactAccepted | 9 |  |
+| AccountEventType_ContactRemoved | 10 |  |
+| AccountEventType_ContactBlocked | 11 | TODO: privacy-wise we will still announce our presence on our public rendezvous point but ignore contact requests from the blocked contact (performing the handshake but ignoring the request received), so they will still know that we are online, we should be clear in the UI of the implications of blocking someone |
+| AccountEventType_ContactUnblocked | 12 |  |
+| AccountEventType_AppSpecified | 13 |  |
 
-<a name="berty.protocol.Contact.TrustLevel"></a>
+<a name="berty.protocol.GroupSettingStoreSettingType"></a>
 
-### Contact.TrustLevel
+### GroupSettingStoreSettingType
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | Unknown | 0 |  |
-| Untrusted | 1 |  |
-| Accepted | 2 |  |
-| Trusted | 3 |  |
-| UltimateTrust | 4 |  |
-
-<a name="berty.protocol.EventSubscribe.Type"></a>
-
-### EventSubscribe.Type
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| EventUnknown | 0 |  |
-| EventMessage | 1 |  |
-| EventContactRequest | 2 |  |
-| EventGroupInvitation | 3 |  |
-| EventBroadcastAvailable | 4 |  |
-
-<a name="berty.protocol.GroupInfo.GroupAudience"></a>
-
-### GroupInfo.GroupAudience
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| Undefined | 0 |  |
-| OneToOne | 1 |  |
-| Group | 2 |  |
-| Self | 3 |  |
+| Group | 1 |  |
+| Member | 2 |  |
 
 <a name="berty.protocol.InstanceGetConfiguration.SettingState"></a>
 
@@ -862,35 +625,28 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | ----------- | ------------ | ------------- | ------------|
 | InstanceExportData | [InstanceExportData.Request](#berty.protocol.InstanceExportData.Request) | [InstanceExportData.Reply](#berty.protocol.InstanceExportData.Reply) | InstanceExportData exports instance data |
 | InstanceGetConfiguration | [InstanceGetConfiguration.Request](#berty.protocol.InstanceGetConfiguration.Request) | [InstanceGetConfiguration.Reply](#berty.protocol.InstanceGetConfiguration.Reply) | InstanceGetConfiguration gets current configuration of this protocol instance |
-| AccountGetConfiguration | [AccountGetConfiguration.Request](#berty.protocol.AccountGetConfiguration.Request) | [AccountGetConfiguration.Reply](#berty.protocol.AccountGetConfiguration.Reply) | AccountGetConfiguration get current account global configuration (shared between all devices linked to current account) |
-| AccountGetInformation | [AccountGetInformation.Request](#berty.protocol.AccountGetInformation.Request) | [AccountGetInformation.Reply](#berty.protocol.AccountGetInformation.Reply) | AccountGetInformation get current account global information (shared between all devices linked to current account) |
-| AccountLinkNewDevice | [AccountLinkNewDevice.Request](#berty.protocol.AccountLinkNewDevice.Request) | [AccountLinkNewDevice.Reply](#berty.protocol.AccountLinkNewDevice.Reply) | AccountLinkNewDevice link a new device to this account |
-| AccountDisableIncomingContactRequest | [AccountDisableIncomingContactRequest.Request](#berty.protocol.AccountDisableIncomingContactRequest.Request) | [AccountDisableIncomingContactRequest.Reply](#berty.protocol.AccountDisableIncomingContactRequest.Reply) | AccountDisableIncomingContactRequest disable incoming contact request, under the hood, this will make you undiscoverable for new contact |
-| AccountEnableIncomingContactRequest | [AccountEnableIncomingContactRequest.Request](#berty.protocol.AccountEnableIncomingContactRequest.Request) | [AccountEnableIncomingContactRequest.Reply](#berty.protocol.AccountEnableIncomingContactRequest.Reply) | AccountEnableIncomingContactRequest enable incoming contact request |
-| AccountResetIncomingContactRequestLink | [AccountResetIncomingContactRequestLink.Request](#berty.protocol.AccountResetIncomingContactRequestLink.Request) | [AccountResetIncomingContactRequestLink.Reply](#berty.protocol.AccountResetIncomingContactRequestLink.Reply) | AccountResetIncomingContactRequestLink invalidate the request link |
-| EventSubscribe | [EventSubscribe.Request](#berty.protocol.EventSubscribe.Request) | [EventSubscribe.Reply](#berty.protocol.EventSubscribe.Reply) stream | EventSubscribe listen for real time protocol events |
-| ContactRequestAccept | [ContactRequestAccept.Request](#berty.protocol.ContactRequestAccept.Request) | [ContactRequestAccept.Reply](#berty.protocol.ContactRequestAccept.Reply) | ContactRequestAccept accepts the given contact request, the requester signature is included so any of their device can accept the contact request |
-| ContactRequestDiscard | [ContactRequestDiscard.Request](#berty.protocol.ContactRequestDiscard.Request) | [ContactRequestDiscard.Reply](#berty.protocol.ContactRequestDiscard.Reply) | ContactRequestDiscard discards the given contact request |
-| ContactRequestListIncoming | [ContactRequestListIncoming.Request](#berty.protocol.ContactRequestListIncoming.Request) | [ContactRequestListIncoming.Reply](#berty.protocol.ContactRequestListIncoming.Reply) stream | ContactRequestListIncoming lists incoming contact request sent to your account |
-| ContactRequestListOutgoing | [ContactRequestListOutgoing.Request](#berty.protocol.ContactRequestListOutgoing.Request) | [ContactRequestListOutgoing.Reply](#berty.protocol.ContactRequestListOutgoing.Reply) stream | ContactRequestListIncoming lists pending contact request sent by your account |
-| ContactRequestSend | [ContactRequestSend.Request](#berty.protocol.ContactRequestSend.Request) | [ContactRequestSend.Reply](#berty.protocol.ContactRequestSend.Reply) | ContactRequestSend sends a contact request to the given contact |
-| ContactGet | [ContactGet.Request](#berty.protocol.ContactGet.Request) | [ContactGet.Reply](#berty.protocol.ContactGet.Reply) | ContactGet gets contact&#39;s information |
-| ContactList | [ContactList.Request](#berty.protocol.ContactList.Request) | [ContactList.Reply](#berty.protocol.ContactList.Reply) stream | ContactList lists contacts of this account |
-| ContactRemove | [ContactRemove.Request](#berty.protocol.ContactRemove.Request) | [ContactRemove.Reply](#berty.protocol.ContactRemove.Reply) | ContactList removes the given contact |
-| StreamManagerRequestToContact | [StreamManagerRequestToContact.Request](#berty.protocol.StreamManagerRequestToContact.Request) | [StreamManagerRequestToContact.Reply](#berty.protocol.StreamManagerRequestToContact.Reply) | StreamManagerRequestToContact requests a stream to a specific contact |
-| StreamManagerAccept | [StreamManagerAccept.Request](#berty.protocol.StreamManagerAccept.Request) stream | [StreamManagerAccept.Reply](#berty.protocol.StreamManagerAccept.Reply) stream | StreamManagerAccept accepts a stream request, and create a stream with the contact that sent you this request |
-| GroupCreate | [GroupCreate.Request](#berty.protocol.GroupCreate.Request) | [GroupCreate.Reply](#berty.protocol.GroupCreate.Reply) | GroupCreate initiate a group locally |
-| GroupGenerateInviteLink | [GroupGenerateInviteLink.Request](#berty.protocol.GroupGenerateInviteLink.Request) | [GroupGenerateInviteLink.Reply](#berty.protocol.GroupGenerateInviteLink.Reply) | GroupGenerateInviteLink generates an invitation link used to send the invitation to the other group members |
+| GroupCreate | [GroupCreate.Request](#berty.protocol.GroupCreate.Request) | [GroupCreate.Reply](#berty.protocol.GroupCreate.Reply) | GroupCreate initiates a new group and joins it |
+| GroupJoin | [GroupJoin.Request](#berty.protocol.GroupJoin.Request) | [GroupJoin.Reply](#berty.protocol.GroupJoin.Reply) | GroupJoin joins an existing group |
 | GroupLeave | [GroupLeave.Request](#berty.protocol.GroupLeave.Request) | [GroupLeave.Reply](#berty.protocol.GroupLeave.Reply) | GroupLeave leaves a group |
-| GroupList | [GroupList.Request](#berty.protocol.GroupList.Request) | [GroupList.Reply](#berty.protocol.GroupList.Reply) stream | GroupList lists all group for this account |
-| GroupMessageCreate | [GroupMessageCreate.Request](#berty.protocol.GroupMessageCreate.Request) | [GroupMessageCreate.Reply](#berty.protocol.GroupMessageCreate.Reply) | GroupMessageCreate creates a new message for the group, and send the invitation to the other group members. |
-| GroupMessageList | [GroupMessageList.Request](#berty.protocol.GroupMessageList.Request) | [GroupMessageList.Reply](#berty.protocol.GroupMessageList.Reply) stream | GroupMessageList lists messages from this group |
-| GroupTopicPublish | [GroupTopicPublish.Request](#berty.protocol.GroupTopicPublish.Request) stream | [GroupTopicPublish.Reply](#berty.protocol.GroupTopicPublish.Reply) | GroupTopicPublish return a stream used to publish volatile updates to other group members on a specific topic |
-| GroupTopicSubscribe | [GroupTopicSubscribe.Request](#berty.protocol.GroupTopicSubscribe.Request) | [GroupTopicSubscribe.Reply](#berty.protocol.GroupTopicSubscribe.Reply) stream | GroupTopicSubscribe subscribes to a topic to receive volatile message from it |
-| GroupInvitationAccept | [GroupInvitationAccept.Request](#berty.protocol.GroupInvitationAccept.Request) | [GroupInvitationAccept.Reply](#berty.protocol.GroupInvitationAccept.Reply) | GroupInvitationAccept accepts an invation to join a group |
-| GroupInvitationCreate | [GroupInvitationCreate.Request](#berty.protocol.GroupInvitationCreate.Request) | [GroupInvitationCreate.Reply](#berty.protocol.GroupInvitationCreate.Reply) | GroupInvitationCreate creates an invitation, that can be sent to join this group |
-| GroupInvitationDiscard | [GroupInvitationDiscard.Request](#berty.protocol.GroupInvitationDiscard.Request) | [GroupInvitationDiscard.Reply](#berty.protocol.GroupInvitationDiscard.Reply) | GroupInvitationDiscard discards an invtation sent to you to join a group |
-| GroupInvitationList | [GroupInvitationList.Request](#berty.protocol.GroupInvitationList.Request) | [GroupInvitationList.Reply](#berty.protocol.GroupInvitationList.Reply) stream | GroupInvitationList lists pending invitation to this group |
+| GroupInvite | [GroupInvite.Request](#berty.protocol.GroupInvite.Request) | [GroupInvite.Reply](#berty.protocol.GroupInvite.Reply) | GroupInvite generates an invitation to a group |
+| DevicePair | [DevicePair.Request](#berty.protocol.DevicePair.Request) | [DevicePair.Reply](#berty.protocol.DevicePair.Reply) | DevicePair pairs a new device to the current account |
+| ContactRequestReference | [ContactRequestReference.Request](#berty.protocol.ContactRequestReference.Request) | [ContactRequestReference.Reply](#berty.protocol.ContactRequestReference.Reply) | ContactRequestReference retrieves the necessary information to create a contact link |
+| ContactRequestDisable | [ContactRequestDisable.Request](#berty.protocol.ContactRequestDisable.Request) | [ContactRequestDisable.Reply](#berty.protocol.ContactRequestDisable.Reply) | ContactRequestDisable disables incoming contact requests |
+| ContactRequestEnable | [ContactRequestEnable.Request](#berty.protocol.ContactRequestEnable.Request) | [ContactRequestEnable.Reply](#berty.protocol.ContactRequestEnable.Reply) | ContactRequestEnable enables incoming contact requests |
+| ContactRequestResetReference | [ContactRequestResetLink.Request](#berty.protocol.ContactRequestResetLink.Request) | [ContactRequestResetLink.Reply](#berty.protocol.ContactRequestResetLink.Reply) | ContactRequestResetReference generates a new contact request reference |
+| ContactRequestEnqueue | [ContactRequestEnqueue.Request](#berty.protocol.ContactRequestEnqueue.Request) | [ContactRequestEnqueue.Reply](#berty.protocol.ContactRequestEnqueue.Reply) | ContactRequestEnqueue enqueues a new contact request to be sent |
+| ContactRequestAccept | [ContactRequestAccept.Request](#berty.protocol.ContactRequestAccept.Request) | [ContactRequestAccept.Reply](#berty.protocol.ContactRequestAccept.Reply) | ContactRequestAccept accepts a contact request |
+| ContactRemove | [ContactRemove.Request](#berty.protocol.ContactRemove.Request) | [ContactRemove.Reply](#berty.protocol.ContactRemove.Reply) | ContactRemove removes a contact |
+| ContactBlock | [ContactBlock.Request](#berty.protocol.ContactBlock.Request) | [ContactBlock.Reply](#berty.protocol.ContactBlock.Reply) | ContactBlock blocks a contact, stops advertising on its rendezvous point |
+| ContactUnblock | [ContactUnblock.Request](#berty.protocol.ContactUnblock.Request) | [ContactUnblock.Reply](#berty.protocol.ContactUnblock.Reply) | ContactUnblock unblocks a contact, resumes advertising on its rendezvous point |
+| GroupSettingSetGroup | [GroupSettingSetGroup.Request](#berty.protocol.GroupSettingSetGroup.Request) | [GroupSettingSetGroup.Reply](#berty.protocol.GroupSettingSetGroup.Reply) | GroupSettingSetGroup sets a setting for a group |
+| GroupSettingSetMember | [GroupSettingSetMember.Request](#berty.protocol.GroupSettingSetMember.Request) | [GroupSettingSetMember.Reply](#berty.protocol.GroupSettingSetMember.Reply) | GroupSettingSetGroup sets a setting for own group member |
+| GroupMessageSend | [GroupMessageSend.Request](#berty.protocol.GroupMessageSend.Request) | [GroupMessageSend.Reply](#berty.protocol.GroupMessageSend.Reply) | GroupMessageSend sends a message to the group |
+| AccountAppendAppSpecificEvent | [AccountAppendAppSpecificEvent.Request](#berty.protocol.AccountAppendAppSpecificEvent.Request) | [AccountAppendAppSpecificEvent.Reply](#berty.protocol.AccountAppendAppSpecificEvent.Reply) | AppendAccountSpecificEvent adds an event to account event store |
+| AccountSubscribe | [AccountSubscribe.Request](#berty.protocol.AccountSubscribe.Request) | [AccountSubscribe.Reply](#berty.protocol.AccountSubscribe.Reply) stream | AccountSubscribe subscribes to the account events |
+| GroupSettingSubscribe | [GroupSettingStoreSubscribe.Request](#berty.protocol.GroupSettingStoreSubscribe.Request) | [GroupSettingStoreSubscribe.Reply](#berty.protocol.GroupSettingStoreSubscribe.Reply) stream | GroupSettingSubscribe subscribes to the setting events for a group |
+| GroupMessageSubscribe | [GroupMessageSubscribe.Request](#berty.protocol.GroupMessageSubscribe.Request) | [GroupMessageSubscribe.Reply](#berty.protocol.GroupMessageSubscribe.Reply) stream | GroupMessageSubscribe subscribes to the message events for a group |
+| GroupMemberSubscribe | [GroupMemberSubscribe.Request](#berty.protocol.GroupMemberSubscribe.Request) | [GroupMemberSubscribe.Reply](#berty.protocol.GroupMemberSubscribe.Reply) stream | GroupMemberSubscribe subscribes to the member events for a group |
 
  
 
