@@ -4,4 +4,4 @@ d915a30248e7105cb1290f5798382ccf0bdb935a  ../api/go-internal/handshake.proto
 aaeea37d30e9d0eb583ddc3e436790f66d466a22  ../api/go-internal/protocolmodel.proto
 e90229dbdbf76864981801538947a192cb62b448  ../api/go-internal/sigchain.proto
 013dcdd574cefc0c541688c493133f0d9be39341  ../api/go-internal/store_entry.proto
-3bd9f284d7821bcf4a0f8254d9a52957188de6ed  Makefile
+b59654f40bacf9420d3a9737064f42aecdb167a1  Makefile
