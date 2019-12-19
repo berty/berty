@@ -13,8 +13,8 @@ import (
 	ipfs_node "github.com/ipfs/go-ipfs/core/node"
 	ipfs_libp2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	libp2p_ci "github.com/libp2p/go-libp2p-crypto" // nolint:staticcheck
-	libp2p_peer "github.com/libp2p/go-libp2p-peer" // nolint:staticcheck
+	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto" // nolint:staticcheck
+	libp2p_peer "github.com/libp2p/go-libp2p-core/peer" // nolint:staticcheck
 )
 
 func createBuildConfig() (*ipfs_node.BuildCfg, error) {

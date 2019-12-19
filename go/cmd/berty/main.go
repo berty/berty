@@ -11,8 +11,9 @@ import (
 	"strings"
 	"time"
 
+	// _ "berty.tech/go/internal/buildconstraints" // fail if bad go version
+
 	"berty.tech/go/internal/banner"
-	_ "berty.tech/go/internal/buildconstraints" // fail if bad go version
 	"berty.tech/go/internal/grpcutil"
 	"berty.tech/go/pkg/bertyprotocol"
 	"berty.tech/go/pkg/errcode"
