@@ -1,7 +1,7 @@
 FROM    moul/protoc-gen-gotemplate:latest as pgg
 
 # build image
-FROM    golang:1.12-alpine as builder
+FROM    golang:1.13-alpine as builder
 # install deps
 RUN     apk --no-cache add make git go rsync libc-dev openssh docker npm
 # install compilers
@@ -25,7 +25,7 @@ RUN     go get -d github.com/envoyproxy/protoc-gen-validate \
  &&     make -C $GOPATH/src/github.com/envoyproxy/protoc-gen-validate build
 
 # runtime
-FROM    golang:1.12-alpine
+FROM    golang:1.13-alpine
 RUN     apk --no-cache add git openssh make protobuf gcc libc-dev nodejs-npm yarn sudo perl-utils \
  &&     mkdir -p /.cache/go-build \
  &&     chmod -R 777 /.cache \
