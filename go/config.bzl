@@ -7,7 +7,7 @@ def berty_go_config():
 
     go_rules_dependencies()
 
-    go_register_toolchains(go_version = "1.12.10")
+    go_register_toolchains(go_version = "1.13.4")
 
     # gazelle config
 

@@ -81,7 +81,7 @@ re: clean build
 .PHONY: go.lint
 go.lint: pb.generate
 	$(call check-program, golangci-lint)
-	golangci-lint run --verbose ./...
+	golangci-lint run --timeout=120s --verbose ./...
 
 .PHONY: nobazel.unittest
 go.unittest: pb.generate
@@ -98,7 +98,6 @@ go.install: pb.generate
 ##
 
 SAMPLE_GAZELLE_GENERATED_FILE ?= pkg/bertyprotocol/BUILD.bazel # should be the path of a git-ignored bazel-generated file
-VENDOR_BAZEL_OVERRIDEN_FILES = vendor/github.com/spacemonkeygo/openssl/BUILD.bazel
 
 
 .PHONY: bazel.lint
@@ -163,10 +162,7 @@ ibazel.unittest: bazel.generate
 ## Deps
 ##
 
-vendor/github.com/spacemonkeygo/openssl/BUILD.bazel: $(abspath ../build/bazel/com_github_spacemonkeygo_openssl.BUILD.bazel) vendor
-	cp $< $@
-
-$(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE vendor $(VENDOR_BAZEL_OVERRIDEN_FILES)
+$(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE vendor
 	$(call check-program, $(BAZEL))
 	$(BAZEL) $(BAZEL_ARGS) run $(BAZEL_CMD_ARGS) //:gazelle
 
