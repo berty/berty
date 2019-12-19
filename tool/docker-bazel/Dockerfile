@@ -21,11 +21,13 @@ RUN apt-get update \
 # git is needed by circleci
 # the rest is bazel dependencies
 
-ADD https://github.com/bazelbuild/bazel/releases/download/1.1.0/bazel-1.1.0-installer-linux-x86_64.sh \
-    /tmp/bazel-1.1.0-installer-linux-x86_64.sh
+ADD https://github.com/bazelbuild/bazel/releases/download/0.29.1/bazel-0.29.1-installer-linux-x86_64.sh \
+    /tmp/bazel-0.29.1-installer-linux-x86_64.sh
 
-RUN chmod +x /tmp/bazel-1.1.0-installer-linux-x86_64.sh
+RUN chmod +x /tmp/bazel-0.29.1-installer-linux-x86_64.sh
 
-RUN /tmp/bazel-1.1.0-installer-linux-x86_64.sh --user
+RUN /tmp/bazel-0.29.1-installer-linux-x86_64.sh --user
+
+RUN chmod o+x /root
 
 ENV PATH="${PATH}:/root/bin"
