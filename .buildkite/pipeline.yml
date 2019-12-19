@@ -9,7 +9,7 @@ steps:
   - label: go-generate
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/protoc:21
+          image: bertytech/protoc:22
           propagate-uid-gid: true
           workdir: /go/src/berty.tech
           environment: [ "GO111MODULE=on", "GOPATH=/go"]
@@ -46,7 +46,7 @@ steps:
   - label: js-generate
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/protoc:21
+          image: bertytech/protoc:22
           propagate-uid-gid: true
           workdir: /go/src/berty.tech
           environment: [ "GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent" ]
@@ -68,7 +68,7 @@ steps:
   - label: js-lint
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/protoc:21
+          image: bertytech/protoc:22
           propagate-uid-gid: true
           workdir: /go/src/berty.tech
           environment: [ "GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent" ]
@@ -82,8 +82,8 @@ steps:
       - cd js
       - make lint
 
-  - label: go-build-112
-    key: go-build-112
+  - label: go-build-113
+    key: go-build-113
     env:
       GO111MODULE: "on"
     agents:
