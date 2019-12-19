@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/big"
 
+	"berty.tech/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
@@ -25,23 +26,23 @@ type OwnMemberDevice struct {
 func NewOwnMemberDevice() (*OwnMemberDevice, error) {
 	member, _, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, err
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	device, _, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, err
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	counter, err := rand.Int(rand.Reader, big.NewInt(0).SetUint64(math.MaxUint64))
 	if err != nil {
-		panic(err)
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	derivationState := make([]byte, 32)
 	_, err = rand.Read(derivationState)
 	if err != nil {
-		return nil, err
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	secret := &DeviceSecret{

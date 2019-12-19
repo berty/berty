@@ -2,8 +2,6 @@ package storesecret
 
 import (
 	"context"
-	"encoding/base64"
-	"fmt"
 	"sync"
 
 	ipfslog "berty.tech/go-ipfs-log"
@@ -12,8 +10,7 @@ import (
 	"berty.tech/go/internal/group"
 	"berty.tech/go/internal/orbitutil/orbitutilapi"
 	"berty.tech/go/internal/orbitutil/storegroup"
-	memberstore "berty.tech/go/internal/orbitutil/storemember"
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/go/internal/orbitutil/storemember"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
@@ -35,29 +32,11 @@ type secretsMapEntry struct {
 	exists bool
 }
 
-func formatSecretMapKey(destMemberPubKey crypto.PubKey, senderDevicePubKey crypto.PubKey) (string, error) {
-	destBytes, err := destMemberPubKey.Bytes()
-	if err != nil {
-		return "", errcode.TODO.Wrap(err)
-	}
-
-	senderBytes, err := senderDevicePubKey.Raw()
-	if err != nil {
-		return "", errcode.TODO.Wrap(err)
-	}
-
-	// Converted to base64 to be printable when debugging
-	destB64 := base64.StdEncoding.EncodeToString(destBytes)
-	senderB64 := base64.StdEncoding.EncodeToString(senderBytes)
-
-	return fmt.Sprintf("%s-%s", destB64, senderB64), nil
-}
-
-func (s *secretStoreIndex) Get(key string) interface{} {
+func (s *secretStoreIndex) Get(senderDevicePubKey string) interface{} {
 	ret := &secretsMapEntry{}
 
 	s.muSecrets.RLock()
-	ret.secret, ret.exists = s.secrets[key]
+	ret.secret, ret.exists = s.secrets[senderDevicePubKey]
 	s.muSecrets.RUnlock()
 
 	return ret
@@ -150,11 +129,6 @@ func (s *secretStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry)
 			}
 
 			deviceSecret, err := payload.ToDeviceSecret(ownMemberKey, currenGroup)
-			if err != nil && err != errcode.ErrGroupSecretOtherDestMember {
-				continue
-			}
-
-			destMemberPubKey, err := crypto.UnmarshalEd25519PublicKey(payload.DestMemberPubKey)
 			if err != nil {
 				continue
 			}
@@ -164,19 +138,16 @@ func (s *secretStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry)
 				continue
 			}
 
-			secretMapKey, err := formatSecretMapKey(destMemberPubKey, senderDevicePubKey)
+			senderBytes, err := senderDevicePubKey.Raw()
 			if err != nil {
 				continue
 			}
 
 			s.muSecrets.Lock()
-			s.secrets[secretMapKey] = deviceSecret
+			s.secrets[string(senderBytes)] = deviceSecret
 			s.muSecrets.Unlock()
 
-			// Secret is destined to own member
-			if destMemberPubKey.Equals(ownMemberKey.GetPublic()) {
-				s.syncSecretWithPendingMember(senderDevicePubKey)
-			}
+			s.syncSecretWithPendingMember(senderDevicePubKey)
 		}
 	}
 
@@ -195,8 +166,8 @@ func NewSecretStoreIndex(g orbitutilapi.GroupContext) iface.IndexConstructor {
 
 	go g.GetMemberStore().Subscribe(context.TODO(), func(e events.Event) {
 		switch e.(type) {
-		case *memberstore.EventNewMemberDevice:
-			casted, _ := e.(*memberstore.EventNewMemberDevice)
+		case *storemember.EventNewMemberDevice:
+			casted, _ := e.(*storemember.EventNewMemberDevice)
 			newSecretStoreIndex.syncMemberWithPendingSecret(casted.MemberDevice.Device)
 		}
 	})

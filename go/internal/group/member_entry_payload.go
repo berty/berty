@@ -75,33 +75,33 @@ func (m *MemberEntryPayload) GetSignerPubKey() (crypto.PubKey, error) {
 
 // NewMemberEntryPayload creates a new MemberEntryPayload entry using
 // an invitation
-func NewMemberEntryPayload(memberPrivateKey, memberDevicePrivateKey crypto.PrivKey, invitation *Invitation) (*MemberEntryPayload, error) {
-	memberPubKeyBytes, err := memberPrivateKey.GetPublic().Raw()
+func NewMemberEntryPayload(memberPrivKey, devicePrivKey crypto.PrivKey, invitation *Invitation) (*MemberEntryPayload, error) {
+	memberPubKeyBytes, err := memberPrivKey.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	memberDevicePubKeyBytes, err := memberDevicePrivateKey.GetPublic().Raw()
+	devicePubKeyBytes, err := devicePrivKey.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	invitationPrivateKey, err := invitation.GetInvitationPrivateKey()
+	invitationPrivKey, err := invitation.GetInvitationPrivateKey()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	invitationPubKeyBytes, err := invitationPrivateKey.GetPublic().Raw()
+	invitationPubKeyBytes, err := invitationPrivKey.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	memberPubKeySignature, err := invitationPrivateKey.Sign(memberPubKeyBytes)
+	memberPubKeySignature, err := invitationPrivKey.Sign(memberPubKeyBytes)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	memberDevicePubKeySig, err := memberPrivateKey.Sign(memberDevicePubKeyBytes)
+	devicePubKeySig, err := memberPrivKey.Sign(devicePubKeyBytes)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -109,8 +109,8 @@ func NewMemberEntryPayload(memberPrivateKey, memberDevicePrivateKey crypto.PrivK
 	return &MemberEntryPayload{
 		MemberPubKey:                memberPubKeyBytes,
 		MemberPubKeySignature:       memberPubKeySignature,
-		MemberDevicePubKey:          memberDevicePubKeyBytes,
-		MemberDevicePubKeySignature: memberDevicePubKeySig,
+		MemberDevicePubKey:          devicePubKeyBytes,
+		MemberDevicePubKeySignature: devicePubKeySig,
 		InviterDevicePubKey:         invitation.InviterDevicePubKey,
 		InvitationPubKey:            invitationPubKeyBytes,
 		InvitationPubKeySignature:   invitation.InvitationPubKeySignature,

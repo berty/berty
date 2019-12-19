@@ -23,13 +23,13 @@ type secretStore struct {
 }
 
 // GetDeviceSecret gets secret device
-func (s *secretStore) GetDeviceSecret(destMemberPubKey crypto.PubKey, senderDevicePubKey crypto.PubKey) (*group.DeviceSecret, error) {
-	key, err := formatSecretMapKey(destMemberPubKey, senderDevicePubKey)
+func (s *secretStore) GetDeviceSecret(senderDevicePubKey crypto.PubKey) (*group.DeviceSecret, error) {
+	senderBytes, err := senderDevicePubKey.Raw()
 	if err != nil {
 		return nil, errcode.TODO
 	}
 
-	value := s.Index().Get(key)
+	value := s.Index().Get(string(senderBytes))
 	if value == nil {
 		return nil, errors.New("unable to get secret for this device")
 	}
@@ -47,8 +47,10 @@ func (s *secretStore) GetDeviceSecret(destMemberPubKey crypto.PubKey, senderDevi
 }
 
 // SendSecret sends secret of this device to another group member
-func (s *secretStore) SendSecret(ctx context.Context, localDevicePrivKey crypto.PrivKey, remoteMemberPubKey crypto.PubKey, secret *group.DeviceSecret) (operation.Operation, error) {
-	payload, err := group.NewSecretEntryPayload(localDevicePrivKey, remoteMemberPubKey, secret, s.GetGroupContext().GetGroup())
+func (s *secretStore) SendSecret(ctx context.Context, remoteMemberPubKey crypto.PubKey) (operation.Operation, error) {
+	localDevicePrivKey := s.GetGroupContext().GetDevicePrivKey()
+	deviceSecret := s.GetGroupContext().GetDeviceSecret()
+	payload, err := group.NewSecretEntryPayload(localDevicePrivKey, remoteMemberPubKey, deviceSecret, s.GetGroupContext().GetGroup())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

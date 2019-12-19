@@ -59,15 +59,15 @@ type settingStore struct {
 	storegroup.BaseGroupStore
 }
 
-func (s *settingStore) set(ctx context.Context, payload *group.SettingEntryPayload, member crypto.PrivKey) (operation.Operation, error) {
-	rawMember, err := member.GetPublic().Raw()
+func (s *settingStore) set(ctx context.Context, payload *group.SettingEntryPayload) (operation.Operation, error) {
+	rawMember, err := s.GetGroupContext().GetMemberPrivKey().Raw()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	payload.MemberPubKey = rawMember
 
-	env, err := group.SealStorePayload(payload, s.GetGroupContext().GetGroup(), member)
+	env, err := group.SealStorePayload(payload, s.GetGroupContext().GetGroup(), s.GetGroupContext().GetMemberPrivKey())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -91,12 +91,12 @@ func (s *settingStore) set(ctx context.Context, payload *group.SettingEntryPaylo
 	return op, nil
 }
 
-func (s *settingStore) Set(ctx context.Context, name string, value []byte, member crypto.PrivKey) (operation.Operation, error) {
+func (s *settingStore) Set(ctx context.Context, name string, value []byte) (operation.Operation, error) {
 	return s.set(ctx, &group.SettingEntryPayload{
 		Type:  group.SettingEntryPayload_PayloadTypeMemberSetting,
 		Key:   name,
 		Value: value,
-	}, member)
+	})
 }
 
 func (s *settingStore) Get(member crypto.PubKey) (map[string][]byte, error) {
@@ -119,12 +119,12 @@ func (s *settingStore) get(namespace string) (map[string][]byte, error) {
 	return values, nil
 }
 
-func (s *settingStore) SetForGroup(ctx context.Context, name string, value []byte, member crypto.PrivKey) (operation.Operation, error) {
+func (s *settingStore) SetForGroup(ctx context.Context, name string, value []byte) (operation.Operation, error) {
 	return s.set(ctx, &group.SettingEntryPayload{
 		Type:  group.SettingEntryPayload_PayloadTypeGroupSetting,
 		Key:   name,
 		Value: value,
-	}, member)
+	})
 }
 
 func (s *settingStore) GetForGroup() (map[string][]byte, error) {

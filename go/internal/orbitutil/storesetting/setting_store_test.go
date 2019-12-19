@@ -67,13 +67,12 @@ func setUpStores(t *testing.T, ctx context.Context, members int, pathBase string
 	}
 
 	orbittestutil.CreateMonoDeviceMembers(ctx, t, peers, pathBase)
+	orbittestutil.ConnectPeers(ctx, t, peers)
 
 	g, invitation, err := group.New()
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	orbittestutil.ConnectPeers(ctx, t, peers)
 
 	for i, peer := range testContexts {
 		if peer.GroupContext, err = peer.GetDB().InitStoresForGroup(ctx, g, nil, nil, nil); err != nil {
@@ -85,6 +84,31 @@ func setUpStores(t *testing.T, ctx context.Context, members int, pathBase string
 		}
 
 		if _, err = peer.GetMemberStore().RedeemInvitation(ctx, peer.GetMemberDevices().MemberPrivKey, peer.GetMemberDevices().DevicesPrivKey[0], invitation); err != nil {
+			t.Fatal(err)
+		}
+
+		invitation, err = group.NewInvitation(peer.GetMemberDevices().DevicesPrivKey[0], g)
+		if err != nil {
+			t.Fatal(err)
+		}
+	for i, peer := range testContexts {
+		ownMemberDevice := &group.OwnMemberDevice{
+			Member: peer.GetMemberDevices().MemberPrivKey,
+			Device: peer.GetMemberDevices().DevicesPrivKey[0],
+			Secret: peer.GetMemberDevices().DevicesSecret[0],
+		}
+
+		peer.GroupContext = orbitutil.NewGroupContext(g, ownMemberDevice)
+
+		if err = peer.GetDB().InitStoresForGroup(ctx, peer.GroupContext, nil); err != nil {
+			t.Fatal(err)
+		}
+
+		if i > 0 {
+			orbitutil.WaitStoreReplication(ctx, time.Second*2, peer.GetMemberStore())
+		}
+
+		if _, err = peer.GetMemberStore().RedeemInvitation(ctx, invitation); err != nil {
 			t.Fatal(err)
 		}
 
@@ -129,7 +153,7 @@ func TestSettingStore(t *testing.T) {
 
 	// Write on store
 
-	_, err = contexts[0].GetSettingStore().Set(ctx, "foo", []byte("bar"), contexts[0].GetMemberDevices().MemberPrivKey)
+	_, err = contexts[0].GetSettingStore().Set(ctx, "foo", []byte("bar"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -168,7 +192,7 @@ func TestSettingStore(t *testing.T) {
 
 	// Authorized group write
 
-	_, err = contexts[0].GetSettingStore().SetForGroup(ctx, "group-foo", []byte("group-bar"), contexts[0].GetMemberDevices().MemberPrivKey)
+	_, err = contexts[0].GetSettingStore().SetForGroup(ctx, "group-foo", []byte("group-bar"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -207,14 +231,14 @@ func TestSettingStore(t *testing.T) {
 
 	// Unauthorized group write
 
-	_, err = contexts[1].GetSettingStore().SetForGroup(ctx, "group-foo2", []byte("group-bar2"), contexts[1].GetMemberDevices().MemberPrivKey)
+	_, err = contexts[1].GetSettingStore().SetForGroup(ctx, "group-foo2", []byte("group-bar2"))
 	if err == nil {
 		t.Fatalf("error should not be nil")
 	}
 
 	// Member setting overwrite
 
-	_, err = contexts[0].GetSettingStore().Set(ctx, "foo", []byte("bar2"), contexts[0].GetMemberDevices().MemberPrivKey)
+	_, err = contexts[0].GetSettingStore().Set(ctx, "foo", []byte("bar2"))
 	if err != nil {
 		t.Fatal(err)
 	}

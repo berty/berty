@@ -80,23 +80,22 @@ func (m *memberStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry)
 	for _, e := range log.Values().Slice() {
 		var (
 			idxE       *indexEntry
-			ok         bool
+			exist      bool
+			valid      bool
 			entryBytes []byte
 		)
 
 		entryHash := e.GetHash().String()
 
 		m.muEntries.RLock()
-		idxE, ok = m.entries[entryHash]
+		idxE, exist = m.entries[entryHash]
 		m.muEntries.RUnlock()
 
-		if !ok {
+		if exist {
+			valid = true
+		} else {
 			payload := &group.MemberEntryPayload{}
-
 			idxE = &indexEntry{}
-			m.muEntries.Lock()
-			m.entries[entryHash] = idxE
-			m.muEntries.Unlock()
 
 			if entryBytes, idxE.err = storegroup.UnwrapOperation(e); idxE.err != nil {
 				continue
@@ -119,16 +118,24 @@ func (m *memberStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry)
 			if idxE.parentPubKey, idxE.err = crypto.UnmarshalEd25519PublicKey(payload.InviterDevicePubKey); idxE.err != nil {
 				continue
 			}
+
+			m.muEntries.Lock()
+			m.entries[entryHash] = idxE
+			m.muEntries.Unlock()
+
+			valid = true
 		}
 
-		if err := m.checkMemberLogEntryPayloadFirst(idxE); err == nil {
-			m.validateEntry(idxE, true)
-			continue
-		}
+		if valid {
+			if err := m.checkMemberLogEntryPayloadFirst(idxE); err == nil {
+				m.validateEntry(idxE, true)
+				continue
+			}
 
-		if err := m.checkMemberLogEntryPayloadInvited(idxE); err == nil {
-			m.validateEntry(idxE, false)
-			continue
+			if err := m.checkMemberLogEntryPayloadInvited(idxE); err == nil {
+				m.validateEntry(idxE, false)
+				continue
+			}
 		}
 	}
 

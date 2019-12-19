@@ -2,246 +2,123 @@ package storemember_test
 
 import (
 	"context"
-	"os"
+	"encoding/base64"
+	"fmt"
+	"math/rand"
+	"sync"
 	"testing"
 	"time"
 
-	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/events"
-	"berty.tech/go-orbit-db/stores"
 	"berty.tech/go/internal/group"
-	"berty.tech/go/internal/ipfsutil"
-	"berty.tech/go/internal/orbitutil"
 	"berty.tech/go/internal/orbitutil/orbittestutil"
-	"berty.tech/go/internal/testutil"
-
-	peerstore "github.com/libp2p/go-libp2p-peerstore"
+	"berty.tech/go/internal/orbitutil/storemember"
 )
 
 func TestMemberStore(t *testing.T) {
+	testMemberStore(t, 1, 5) // 1 member with 5 devices
+	testMemberStore(t, 5, 1) // 5 members with 1 device each
+	testMemberStore(t, 5, 5) // 5 members with 5 devices each
+}
+
+func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	memberA := orbittestutil.CreateMemberAndDevices(t, 2)
+	// Creates N members with M devices each within the same group
+	peers, firstInvitation := orbittestutil.CreatePeersWithGroup(ctx, t, "/tmp/member_test", memberCount, deviceCount, true)
+	defer orbittestutil.DropPeers(peers)
 
-	ipfsMock := ipfsutil.TestingCoreAPI(ctx, t)
+	// Listen for events and count them on every peer's member log
+	wg := &sync.WaitGroup{}
+	wg.Add(len(peers))
 
-	odb, err := orbitutil.NewBertyOrbitDB(ctx, ipfsMock, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+	for i, peer := range peers {
+		go func(peer orbittestutil.MockedPeer, wg *sync.WaitGroup, peerIndex int) {
+			ctxEvent, ctxEventCancel := context.WithTimeout(ctx, time.Duration(10*time.Second))
+			eventReceived := 0
 
-	g, invitation, err := group.New()
-	if err != nil {
-		t.Fatalf("unable to init group")
-	}
-
-	gc, err := odb.InitStoresForGroup(ctx, g, nil, nil, nil)
-	if err != nil {
-		t.Fatalf("unable to init groupContext, %v", err)
-	}
-	store := gc.GetMemberStore()
-	defer store.Drop()
-
-	_, err = store.RedeemInvitation(ctx, memberA.MemberPrivKey, memberA.DevicesPrivKey[0], invitation)
-	if err != nil {
-		t.Fatalf("unable to initialize group, err: %v", err)
-	}
-
-	members, err := store.ListMembers()
-	if err != nil {
-		t.Fatalf("unable to initialize group, err: %v", err)
-	}
-
-	if len(members) != 1 {
-		t.Fatalf("1 device should be listed")
-	}
-
-	if !members[0].Member.Equals(memberA.MemberPrivKey.GetPublic()) {
-		t.Fatalf("member A should be listed")
-	}
-
-	if !members[0].Device.Equals(memberA.DevicesPrivKey[0].GetPublic()) {
-		t.Fatalf("device A1 should be listed")
-	}
-
-	invitation = orbittestutil.CreateInvitation(t, memberA.DevicesPrivKey[0])
-
-	_, err = store.RedeemInvitation(ctx, memberA.MemberPrivKey, memberA.DevicesPrivKey[1], invitation)
-	if err != nil {
-		t.Fatalf("unable to redeem invitation, err: %v", err)
-	}
-
-	members, err = store.ListMembers()
-	if err != nil {
-		t.Fatalf("unable to list members, err: %v", err)
-	}
-
-	if len(members) != 2 {
-		t.Fatalf("2 devices should be listed")
-	}
-
-	if !members[0].Member.Equals(memberA.MemberPrivKey.GetPublic()) {
-		t.Fatalf("member A should be listed")
-	}
-
-	if !members[1].Member.Equals(memberA.MemberPrivKey.GetPublic()) {
-		t.Fatalf("member A should be listed")
-	}
-
-	if !members[0].Device.Equals(memberA.DevicesPrivKey[0].GetPublic()) {
-		t.Fatalf("device A1 should be listed")
-	}
-
-	if !members[1].Device.Equals(memberA.DevicesPrivKey[1].GetPublic()) {
-		t.Fatalf("device A2 should be listed")
-	}
-}
-
-func TestMemberReplicateStore(t *testing.T) {
-	testutil.SkipSlow(t)
-
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	dbPath1 := "./orbitdb/tests/replicate-automatically/1"
-	dbPath2 := "./orbitdb/tests/replicate-automatically/2"
-
-	defer os.RemoveAll("./orbitdb/")
-
-	ipfsMock1 := ipfsutil.TestingCoreAPI(ctx, t)
-	ipfsMock2 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsMock1.MockNetwork())
-
-	if _, err := ipfsMock1.MockNetwork().LinkPeers(ipfsMock1.MockNode().Identity, ipfsMock2.MockNode().Identity); err != nil {
-		t.Fatal(err)
-	}
-
-	peerInfo2 := peerstore.PeerInfo{ID: ipfsMock2.MockNode().Identity, Addrs: ipfsMock2.MockNode().PeerHost.Addrs()}
-	if err := ipfsMock1.Swarm().Connect(ctx, peerInfo2); err != nil {
-		t.Fatal(err)
-	}
-
-	g, invitation, err := group.New()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	memberA := orbittestutil.CreateMemberAndDevices(t, 2)
-
-	peerInfo1 := peerstore.PeerInfo{ID: ipfsMock1.MockNode().Identity, Addrs: ipfsMock1.MockNode().PeerHost.Addrs()}
-	if err := ipfsMock2.Swarm().Connect(ctx, peerInfo1); err != nil {
-		t.Fatal(err)
-	}
-
-	orbitdb1, err := orbitutil.NewBertyOrbitDB(ctx, ipfsMock1, &orbitdb.NewOrbitDBOptions{Directory: &dbPath1})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	orbitdb2, err := orbitutil.NewBertyOrbitDB(ctx, ipfsMock2, &orbitdb.NewOrbitDBOptions{Directory: &dbPath2})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	gc1, err := orbitdb1.InitStoresForGroup(ctx, g, nil, nil, &orbitdb.CreateDBOptions{
-		Directory: &dbPath1,
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-	db1 := gc1.GetMemberStore()
-	defer db1.Drop()
-
-	_, err = db1.RedeemInvitation(ctx, memberA.MemberPrivKey, memberA.DevicesPrivKey[0], invitation)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	gc2, err := orbitdb2.InitStoresForGroup(ctx, g, nil, nil, &orbitdb.CreateDBOptions{
-		Directory: &dbPath2,
-	})
-
-	if err != nil {
-		t.Fatal(err)
-	}
-	db2 := gc2.GetMemberStore()
-	defer db2.Drop()
-
-	{
-		ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-		defer cancel()
-
-		hasAllResults := false
-		go db2.Subscribe(ctx, func(evt events.Event) {
-			switch evt.(type) {
-			case *stores.EventReplicated:
-				result1, err := db1.ListMembers()
-				if err != nil {
-					t.Fatal(err)
+			peer.GetGroupContext().GetMemberStore().Subscribe(ctxEvent, func(e events.Event) {
+				switch e.(type) {
+				case *storemember.EventNewMemberDevice:
+					eventReceived++
+					if eventReceived == len(peers) {
+						ctxEventCancel()
+					}
 				}
+			})
 
-				result2, err := db2.ListMembers()
-				if err != nil {
-					t.Fatal(err)
-				}
+			// TODO: remove this after debug
+			fmt.Println("Peer", peerIndex, "received", eventReceived, "MemberDeviceEvent")
+			//////////////////////////////
+			wg.Done()
+		}(peer, wg, i)
+	}
 
-				if len(result1) != 1 || len(result2) != 1 {
-					return
-				}
+	// Make all peers join the group using invitation
+	for i, peer := range peers {
+		var invitation *group.Invitation
 
-				hasAllResults = true
-				cancel()
-			}
-		})
-
-		<-ctx.Done()
-		if !hasAllResults {
-			t.Fatalf("all results should be listed")
+		if i == 0 {
+			invitation = firstInvitation
+		} else if i == 1 {
+			invitation = orbittestutil.CreateInvitation(t, peers[0].GetGroupContext().GetDevicePrivKey())
+		} else {
+			// Choose a random peer which has already joined the group as inviter
+			inviter := peers[rand.Intn(i-1)]
+			invitation = orbittestutil.CreateInvitation(t, inviter.GetGroupContext().GetDevicePrivKey())
 		}
+
+		peer.GetGroupContext().GetMemberStore().RedeemInvitation(ctx, invitation)
 	}
 
-	{
-		memberB := orbittestutil.CreateMemberAndDevices(t, 2)
+	// Wait for all events to be received in all peers's member log (or timeout)
+	wg.Wait()
 
-		invitation, err := group.NewInvitation(memberA.DevicesPrivKey[0], g)
+	// Test if everything was replicated and indexed correctly
+	// TODO: remove this after debug
+	fmt.Println("")
+	fmt.Println("Peers list:")
+	for i, peer := range peers {
+		rawm, err := peer.GetGroupContext().GetMemberPrivKey().GetPublic().Raw()
 		if err != nil {
-			t.Fatal(err)
+			panic(err)
 		}
-
-		_, err = db2.RedeemInvitation(ctx, memberB.MemberPrivKey, memberB.DevicesPrivKey[0], invitation)
+		rawd, err := peer.GetGroupContext().GetDevicePrivKey().GetPublic().Raw()
 		if err != nil {
-			t.Fatal(err)
+			panic(err)
+		}
+		fmt.Printf("%d: m(%s) d(%s)\n", i, base64.StdEncoding.EncodeToString(rawm), base64.StdEncoding.EncodeToString(rawd))
+	}
+	fmt.Println("")
+	//////////////////////////////////
+
+	for i, peer := range peers {
+		members, err := peer.GetGroupContext().GetMemberStore().ListMembers()
+		if err != nil {
+			t.Fatalf("unable to initialize group of peer %d, err: %v", i, err)
 		}
 
-		ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-		defer cancel()
-
-		hasAllResults := false
-		go db1.Subscribe(ctx, func(evt events.Event) {
-			switch evt.(type) {
-			case *stores.EventReplicated:
-				result1, err := db1.ListMembers()
-				if err != nil {
-					t.Fatal(err)
-				}
-
-				result2, err := db2.ListMembers()
-				if err != nil {
-					t.Fatal(err)
-				}
-
-				if len(result1) != 2 || len(result2) != 2 {
-					return
-				}
-
-				hasAllResults = true
-				cancel()
+		// TODO: remove this after debug
+		fmt.Println("Peer", i, "member list:")
+		for y, member := range members {
+			rawm, err := member.Member.Raw()
+			if err != nil {
+				panic(err)
 			}
-		})
-
-		<-ctx.Done()
-		if !hasAllResults {
-			t.Fatalf("all results should be listed")
+			rawd, err := member.Device.Raw()
+			if err != nil {
+				panic(err)
+			}
+			fmt.Printf("%d: m(%s) d(%s)\n", y, base64.StdEncoding.EncodeToString(rawm), base64.StdEncoding.EncodeToString(rawd))
 		}
+		fmt.Println("")
+		//////////////////////////////////
+
+		if len(members) != len(peers) {
+			t.Fatalf("%d device(s) missing from peer %d list (%d/%d)", len(peers)-len(members), i, len(members), len(peers))
+		}
+
+		// TODO: check if all peers are in all peers's member list only once
 	}
 }

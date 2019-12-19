@@ -17,9 +17,9 @@ import (
 	"berty.tech/go/internal/orbitutil/identityberty"
 	"berty.tech/go/internal/orbitutil/orbitutilapi"
 	"berty.tech/go/internal/orbitutil/storegroup"
-	memberstore "berty.tech/go/internal/orbitutil/storemember"
-	secretstore "berty.tech/go/internal/orbitutil/storesecret"
-	settingstore "berty.tech/go/internal/orbitutil/storesetting"
+	"berty.tech/go/internal/orbitutil/storemember"
+	"berty.tech/go/internal/orbitutil/storesecret"
+	"berty.tech/go/internal/orbitutil/storesetting"
 	"berty.tech/go/pkg/errcode"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -107,9 +107,9 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *baseorb
 	if err := bertyDB.RegisterAccessControllerType(simple.NewSimpleAccessController); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	bertyDB.RegisterStoreType(memberstore.StoreType, memberstore.ConstructorFactory(bertyDB))
-	bertyDB.RegisterStoreType(settingstore.StoreType, settingstore.ConstructorFactory(bertyDB))
-	bertyDB.RegisterStoreType(secretstore.StoreType, secretstore.ConstructorFactory(bertyDB))
+	bertyDB.RegisterStoreType(storemember.StoreType, storemember.ConstructorFactory(bertyDB))
+	bertyDB.RegisterStoreType(storesetting.StoreType, storesetting.ConstructorFactory(bertyDB))
+	bertyDB.RegisterStoreType(storesecret.StoreType, storesecret.ConstructorFactory(bertyDB))
 
 	return bertyDB, nil
 }
@@ -197,7 +197,7 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 }
 
 func (s *BertyOrbitDB) GroupMemberStore(ctx context.Context, g orbitutilapi.GroupContext, options *orbitdb.CreateDBOptions) (orbitutilapi.MemberStore, error) {
-	store, err := s.storeForGroup(ctx, s, g, options, memberstore.StoreType)
+	store, err := s.storeForGroup(ctx, s, g, options, storemember.StoreType)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to open database")
 	}
@@ -213,7 +213,7 @@ func (s *BertyOrbitDB) GroupMemberStore(ctx context.Context, g orbitutilapi.Grou
 }
 
 func (s *BertyOrbitDB) GroupSettingStore(ctx context.Context, g orbitutilapi.GroupContext, options *orbitdb.CreateDBOptions) (orbitutilapi.SettingStore, error) {
-	store, err := s.storeForGroup(ctx, s, g, options, settingstore.StoreType)
+	store, err := s.storeForGroup(ctx, s, g, options, storesetting.StoreType)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to open database")
 	}
@@ -229,7 +229,7 @@ func (s *BertyOrbitDB) GroupSettingStore(ctx context.Context, g orbitutilapi.Gro
 }
 
 func (s *BertyOrbitDB) GroupSecretStore(ctx context.Context, g orbitutilapi.GroupContext, options *orbitdb.CreateDBOptions) (orbitutilapi.SecretStore, error) {
-	store, err := s.storeForGroup(ctx, s, g, options, secretstore.StoreType)
+	store, err := s.storeForGroup(ctx, s, g, options, storesecret.StoreType)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to open database")
 	}

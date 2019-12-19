@@ -32,15 +32,15 @@ type MemberStore interface {
 	MemberForDevice(crypto.PubKey) (crypto.PubKey, error)
 
 	// RedeemInvitation add a device to the list of the members of the group
-	RedeemInvitation(ctx context.Context, memberPrivateKey crypto.PrivKey, devicePrivateKey crypto.PrivKey, invitation *group.Invitation) (operation.Operation, error)
+	RedeemInvitation(ctx context.Context, invitation *group.Invitation) (operation.Operation, error)
 }
 
 type SettingStore interface {
 	GroupStore
 
-	Set(ctx context.Context, name string, value []byte, member crypto.PrivKey) (operation.Operation, error)
+	Set(ctx context.Context, name string, value []byte) (operation.Operation, error)
 	Get(member crypto.PubKey) (map[string][]byte, error)
-	SetForGroup(ctx context.Context, name string, value []byte, member crypto.PrivKey) (operation.Operation, error)
+	SetForGroup(ctx context.Context, name string, value []byte) (operation.Operation, error)
 	GetForGroup() (map[string][]byte, error)
 }
 
@@ -51,7 +51,7 @@ type SecretStore interface {
 	GetDeviceSecret(senderDevicePubKey crypto.PubKey) (*group.DeviceSecret, error)
 
 	// SendSecret sends secret of this device to another group member
-	SendSecret(ctx context.Context, localDevicePrivKey crypto.PrivKey, remoteMemberPubKey crypto.PubKey, secret *group.DeviceSecret) (operation.Operation, error)
+	SendSecret(ctx context.Context, remoteMemberPubKey crypto.PubKey) (operation.Operation, error)
 }
 
 type GroupContext interface {

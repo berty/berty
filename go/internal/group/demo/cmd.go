@@ -2,11 +2,8 @@ package main
 
 import (
 	"context"
-	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"math"
-	"math/big"
 	"os"
 	"path"
 	"sync"
@@ -18,8 +15,7 @@ import (
 	"berty.tech/go/internal/ipfsutil"
 	"berty.tech/go/internal/orbitutil"
 	"berty.tech/go/internal/orbitutil/orbitutilapi"
-	secretstore "berty.tech/go/internal/orbitutil/storesecret"
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/go/internal/orbitutil/storesecret"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
@@ -34,8 +30,8 @@ func issueNewInvitation(device crypto.PrivKey, g *group.Group) {
 		panic(err)
 	}
 
-	println("\nNew invitation: ", base64.StdEncoding.EncodeToString(newIB64))
-
+	fmt.Println("")
+	fmt.Println("New invitation: ", base64.StdEncoding.EncodeToString(newIB64))
 }
 
 func listMembers(s orbitutilapi.MemberStore) {
@@ -44,7 +40,8 @@ func listMembers(s orbitutilapi.MemberStore) {
 		panic(err)
 	}
 
-	println(fmt.Sprintf("\nPrinting list of %d members", len(members)))
+	fmt.Println("")
+	fmt.Println(fmt.Sprintf("Printing list of %d members", len(members)))
 
 	for _, m := range members {
 		memberKeyBytes, err := m.Member.Raw()
@@ -57,7 +54,7 @@ func listMembers(s orbitutilapi.MemberStore) {
 			panic(err)
 		}
 
-		println("  >>  ", base64.StdEncoding.EncodeToString(memberKeyBytes), " >> ", base64.StdEncoding.EncodeToString(deviceKeyBytes))
+		fmt.Println("  >>  ", base64.StdEncoding.EncodeToString(memberKeyBytes), " >> ", base64.StdEncoding.EncodeToString(deviceKeyBytes))
 	}
 }
 
@@ -86,7 +83,7 @@ func mainLoop(invitation *group.Invitation, create bool) {
 		panic(err)
 	}
 
-	println("My own peer ID is", self.ID().String())
+	fmt.Println("My own peer ID is", self.ID().String())
 
 	g, err := invitation.GetGroup()
 	if err != nil {
@@ -100,45 +97,25 @@ func mainLoop(invitation *group.Invitation, create bool) {
 		panic(err)
 	}
 
-	member, _, err := crypto.GenerateEd25519Key(rand.Reader)
+	ownMemberDevice, err := group.NewOwnMemberDevice()
 	if err != nil {
 		panic(err)
 	}
 
-	device, _, err := crypto.GenerateEd25519Key(rand.Reader)
-	if err != nil {
-		panic(err)
-	}
+	groupContext := orbitutil.NewGroupContext(g, ownMemberDevice)
 
-	groupStores, err := odb.InitStoresForGroup(ctx, g, member, device, &orbitdb.CreateDBOptions{
+	if err := odb.InitStoresForGroup(ctx, groupContext, &orbitdb.CreateDBOptions{
 		Directory: &p,
-	})
+	}); err != nil {
+		panic(err)
+	}
+
+	memberKeyBytes, err := groupContext.GetMemberPrivKey().GetPublic().Raw()
 	if err != nil {
 		panic(err)
 	}
 
-	counter, err := rand.Int(rand.Reader, big.NewInt(0).SetUint64(math.MaxUint64))
-	if err != nil {
-		panic(err)
-	}
-
-	derivationState := make([]byte, 32)
-	_, err = rand.Read(derivationState)
-	if err != nil {
-		panic(err)
-	}
-
-	deviceSecret := &group.DeviceSecret{
-		DerivationState: derivationState,
-		Counter:         counter.Uint64(),
-	}
-
-	memberKeyBytes, err := member.GetPublic().Raw()
-	if err != nil {
-		panic(err)
-	}
-
-	deviceKeyBytes, err := device.GetPublic().Raw()
+	deviceKeyBytes, err := groupContext.GetDevicePrivKey().GetPublic().Raw()
 	if err != nil {
 		panic(err)
 	}
@@ -148,14 +125,16 @@ func mainLoop(invitation *group.Invitation, create bool) {
 		panic(err)
 	}
 
-	println("\nOwn member key:", base64.StdEncoding.EncodeToString(memberKeyBytes), "device key: ", base64.StdEncoding.EncodeToString(deviceKeyBytes))
-	println("Own derivation state:", base64.StdEncoding.EncodeToString(derivationState), "counter:", counter.Uint64())
+	fmt.Println("")
+	fmt.Println("Own member key:", base64.StdEncoding.EncodeToString(memberKeyBytes), "device key: ", base64.StdEncoding.EncodeToString(deviceKeyBytes))
+	fmt.Println("Own derivation state:", base64.StdEncoding.EncodeToString(groupContext.GetDeviceSecret().DerivationState), "counter:", groupContext.GetDeviceSecret().Counter)
 
-	ms := groupStores.GetMemberStore()
-	scs := groupStores.GetSecretStore()
+	ms := groupContext.GetMemberStore()
+	scs := groupContext.GetSecretStore()
 
 	if !create {
-		println("\nWaiting store replication")
+		fmt.Println("")
+		fmt.Println("Waiting store replication")
 
 		once := sync.Once{}
 		wg := sync.WaitGroup{}
@@ -164,7 +143,8 @@ func mainLoop(invitation *group.Invitation, create bool) {
 		go ms.Subscribe(ctx, func(evt events.Event) {
 			switch evt.(type) {
 			case *stores.EventReplicated, *stores.EventLoad, *stores.EventWrite, *stores.EventReady:
-				println("\nReplicated or ready")
+				fmt.Println("")
+				fmt.Println("Replicated or ready")
 
 				once.Do(func() {
 					members, err := ms.ListMembers()
@@ -176,7 +156,8 @@ func mainLoop(invitation *group.Invitation, create bool) {
 
 					for _, m := range members {
 						if m.Device.Equals(inviterDevicePubKey) {
-							println("\ninviter found in store", base64.StdEncoding.EncodeToString(invitation.InviterDevicePubKey))
+							fmt.Println("")
+							fmt.Println("inviter found in store", base64.StdEncoding.EncodeToString(invitation.InviterDevicePubKey))
 							wg.Done()
 						}
 					}
@@ -186,16 +167,16 @@ func mainLoop(invitation *group.Invitation, create bool) {
 
 		wg.Wait()
 
-		println("redeeming invitation issued by", base64.StdEncoding.EncodeToString(invitation.InviterDevicePubKey))
+		fmt.Println("redeeming invitation issued by", base64.StdEncoding.EncodeToString(invitation.InviterDevicePubKey))
 	}
 
-	_, err = ms.RedeemInvitation(ctx, member, device, invitation)
+	_, err = ms.RedeemInvitation(ctx, invitation)
 	if err != nil {
 		panic(err)
 	}
 
 	listMembers(ms)
-	issueNewInvitation(device, g)
+	issueNewInvitation(groupContext.GetDevicePrivKey(), groupContext.GetGroup())
 
 	members, err := ms.ListMembers()
 	if err != nil {
@@ -204,8 +185,8 @@ func mainLoop(invitation *group.Invitation, create bool) {
 
 	// Send secret to member already in the group
 	for _, m := range members {
-		if !m.Member.Equals(member.GetPublic()) {
-			_, err = scs.SendSecret(ctx, device, m.Member, deviceSecret)
+		if !m.Member.Equals(groupContext.GetMemberPrivKey().GetPublic()) {
+			_, err = scs.SendSecret(ctx, m.Member)
 			if err != nil {
 				panic(err)
 			}
@@ -213,18 +194,19 @@ func mainLoop(invitation *group.Invitation, create bool) {
 			if err != nil {
 				panic(err)
 			}
-			fmt.Println("\nSecret sent to member", base64.StdEncoding.EncodeToString(destMemberPubKeyBytes), ":",
-				"\nderivation_state(", base64.StdEncoding.EncodeToString(deviceSecret.DerivationState), ") ",
-				"\ncounter(", deviceSecret.Counter, ")")
+			fmt.Println("")
+			fmt.Println("Secret sent to member", base64.StdEncoding.EncodeToString(destMemberPubKeyBytes), ":\n",
+				"derivation_state(", base64.StdEncoding.EncodeToString(groupContext.GetDeviceSecret().DerivationState), ")\n",
+				"counter(", groupContext.GetDeviceSecret().Counter, ")")
 		}
 	}
 
 	go scs.Subscribe(ctx, func(e events.Event) {
 		switch e.(type) {
-		case *secretstore.EventNewSecret:
-			event, _ := e.(*secretstore.EventNewSecret)
+		case *storesecret.EventNewSecret:
+			event, _ := e.(*storesecret.EventNewSecret)
 
-			secret, err := scs.GetDeviceSecret(member.GetPublic(), event.SenderDevicePubKey)
+			secret, err := scs.GetDeviceSecret(event.SenderDevicePubKey)
 			if err != nil {
 				panic(err)
 			}
@@ -242,32 +224,36 @@ func mainLoop(invitation *group.Invitation, create bool) {
 			if err != nil {
 				panic(err)
 			}
-			fmt.Println("\nSecret received from member", base64.StdEncoding.EncodeToString(senderMemberPubKeyBytes),
-				"\nfrom device", base64.StdEncoding.EncodeToString(senderDevicePubKeyBytes), ":",
-				"\nderivation_state(", base64.StdEncoding.EncodeToString(secret.DerivationState), ") ",
-				"\ncounter(", secret.Counter, ")")
+			fmt.Println("")
+			fmt.Println("Secret received from member", base64.StdEncoding.EncodeToString(senderMemberPubKeyBytes),
+				"from device", base64.StdEncoding.EncodeToString(senderDevicePubKeyBytes), ":\n",
+				"derivation_state(", base64.StdEncoding.EncodeToString(secret.DerivationState), ")\n",
+				"counter(", secret.Counter, ")")
 
-			_, err = scs.GetDeviceSecret(senderMemberPubKey, device.GetPublic())
-			if err == errcode.ErrGroupSecretEntryDoesNotExist {
-				_, err = scs.SendSecret(ctx, device, senderMemberPubKey, deviceSecret)
-				if err != nil {
-					panic(err)
-				}
-				fmt.Println("\nSecret sent back to member", base64.StdEncoding.EncodeToString(senderMemberPubKeyBytes), ":",
-					"\nderivation_state(", base64.StdEncoding.EncodeToString(deviceSecret.DerivationState), ") ",
-					"\ncounter(", deviceSecret.Counter, ")")
-			} else if err != nil {
-				panic(err)
-			}
+			// TODO: Fix logic of send back mechanism
+			// _, err = scs.GetDeviceSecret(senderMemberPubKey, device.GetPublic())
+			// if err == errcode.ErrGroupSecretEntryDoesNotExist {
+			// 	_, err = scs.SendSecret(ctx, device, senderMemberPubKey, deviceSecret)
+			// 	if err != nil {
+			// 		panic(err)
+			// 	}
+			// 	fmt.Println("")
+			// 	fmt.Println("Secret sent back to member", base64.StdEncoding.EncodeToString(senderMemberPubKeyBytes), ":\n",
+			// 		"derivation_state(", base64.StdEncoding.EncodeToString(deviceSecret.DerivationState), ")\n",
+			// 		"counter(", deviceSecret.Counter, ")")
+			// } else if err != nil {
+			// 	panic(err)
+			// }
 		}
 	})
 
 	ms.Subscribe(ctx, func(e events.Event) {
 		switch e.(type) {
 		case *stores.EventReplicated:
-			println("\nNew member detected")
+			fmt.Println("")
+			fmt.Println("New member detected")
 			listMembers(ms)
-			issueNewInvitation(device, g)
+			issueNewInvitation(groupContext.GetDevicePrivKey(), groupContext.GetGroup())
 			break
 		}
 	})
@@ -284,13 +270,13 @@ func main() {
 	create := len(os.Args) == 1
 
 	if create {
-		println("Creating a new group")
+		fmt.Println("Creating a new group")
 		_, i, err = group.New()
 		if err != nil {
 			panic(err)
 		}
 	} else {
-		println("Joining an existing group")
+		fmt.Println("Joining an existing group")
 		// Read invitation (as base64 on stdin)
 		iB64, err := base64.StdEncoding.DecodeString(os.Args[1])
 		if err != nil {

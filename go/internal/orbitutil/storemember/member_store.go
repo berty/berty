@@ -46,13 +46,13 @@ func (m *memberStore) MemberForDevice(device crypto.PubKey) (crypto.PubKey, erro
 	return nil, errors.New("device not found in member list")
 }
 
-func (m *memberStore) RedeemInvitation(ctx context.Context, memberPrivateKey, devicePrivateKey crypto.PrivKey, invitation *group.Invitation) (operation.Operation, error) {
-	payload, err := group.NewMemberEntryPayload(memberPrivateKey, devicePrivateKey, invitation)
+func (m *memberStore) RedeemInvitation(ctx context.Context, invitation *group.Invitation) (operation.Operation, error) {
+	payload, err := group.NewMemberEntryPayload(m.GetGroupContext().GetMemberPrivKey(), m.GetGroupContext().GetDevicePrivKey(), invitation)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	env, err := group.SealStorePayload(payload, m.GetGroupContext().GetGroup(), devicePrivateKey)
+	env, err := group.SealStorePayload(payload, m.GetGroupContext().GetGroup(), m.GetGroupContext().GetDevicePrivKey())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
