@@ -98,6 +98,7 @@ go.install: pb.generate
 ##
 
 SAMPLE_GAZELLE_GENERATED_FILE ?= pkg/bertyprotocol/BUILD.bazel # should be the path of a git-ignored bazel-generated file
+VENDOR_BAZEL_OVERRIDEN_FILES = vendor/github.com/libp2p/go-openssl/BUILD.bazel
 
 
 .PHONY: bazel.lint
@@ -162,7 +163,10 @@ ibazel.unittest: bazel.generate
 ## Deps
 ##
 
-$(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE vendor
+vendor/github.com/libp2p/go-openssl/BUILD.bazel: $(abspath ../build/bazel/com_github_libp2p_go_openssl.BUILD.bzl) vendor
+	cp $< $@
+
+$(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE vendor $(VENDOR_BAZEL_OVERRIDEN_FILES)
 	$(call check-program, $(BAZEL))
 	$(BAZEL) $(BAZEL_ARGS) run $(BAZEL_CMD_ARGS) //:gazelle
 
