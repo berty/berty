@@ -87,6 +87,7 @@ steps:
           image: bertytech/build-go:v2
           propagate-uid-gid: true
           workdir: /go/src/berty.tech
+          propagate-environment: true
           environment:
             [
               "GO111MODULE=on",
