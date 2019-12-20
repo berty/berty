@@ -85,7 +85,7 @@ steps:
     key: go-build
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/bazel:2.0.0-buster-r0
+          image: bertytech/build-go:v2
           propagate-uid-gid: true
           workdir: /go/src/berty.tech
           environment:
@@ -94,6 +94,7 @@ steps:
               "GOPATH=/home/buildkite-agent/go",
               "HOME=/home/buildkite-agent",
               "GOSUMDB=off",
+              "CODECOV_TOKEN",
             ]
           volumes: ["~:/home/buildkite-agent"]
     commands:
@@ -119,7 +120,7 @@ steps:
       - rm -f /tmp/golangci-lint.lock
       - make lint
       - cd ..
-      - codecov -f ./go/coverage.txt
+      - codecov -t "$CODECOV_TOKEN" -f ./go/coverage.txt
 
   - label: bazel-go
     plugins:
