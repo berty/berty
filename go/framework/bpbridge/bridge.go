@@ -8,8 +8,7 @@ import (
 	"sync"
 	"time"
 
-	_ "berty.tech/go/internal/buildconstraints" // fail if bad go version
-	_ "github.com/jinzhu/gorm/dialects/sqlite"  // required by gorm
+	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
 	"github.com/pkg/errors"
 
 	"berty.tech/go/internal/grpcutil"

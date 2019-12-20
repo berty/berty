@@ -81,7 +81,7 @@ re: clean build
 .PHONY: go.lint
 go.lint: pb.generate
 	$(call check-program, golangci-lint)
-	golangci-lint run --verbose ./...
+	golangci-lint run --timeout=120s --verbose ./...
 
 .PHONY: nobazel.unittest
 go.unittest: pb.generate
@@ -98,7 +98,7 @@ go.install: pb.generate
 ##
 
 SAMPLE_GAZELLE_GENERATED_FILE ?= pkg/bertyprotocol/BUILD.bazel # should be the path of a git-ignored bazel-generated file
-VENDOR_BAZEL_OVERRIDEN_FILES = vendor/github.com/spacemonkeygo/openssl/BUILD.bazel
+VENDOR_BAZEL_OVERRIDEN_FILES = vendor/github.com/libp2p/go-openssl/BUILD.bazel
 
 
 .PHONY: bazel.lint
@@ -163,7 +163,7 @@ ibazel.unittest: bazel.generate
 ## Deps
 ##
 
-vendor/github.com/spacemonkeygo/openssl/BUILD.bazel: $(abspath ../build/bazel/com_github_spacemonkeygo_openssl.BUILD.bazel) vendor
+vendor/github.com/libp2p/go-openssl/BUILD.bazel: $(abspath ../build/bazel/com_github_libp2p_go_openssl.BUILD.bzl) vendor
 	cp $< $@
 
 $(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE vendor $(VENDOR_BAZEL_OVERRIDEN_FILES)
@@ -202,7 +202,7 @@ $(GEN_SUM): $(GEN_SRC)
 	    --workdir="/go/src/berty.tech/go" \
 	    --entrypoint="sh" \
 	    --rm \
-	    bertytech/protoc:21 \
+	    bertytech/protoc:22 \
 	    -xec 'make generate_local'; \
 	    $(MAKE) tidy \
 	)

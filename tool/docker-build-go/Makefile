@@ -1,5 +1,5 @@
-IMAGE ?=	bertytech/bazel
-VERSION ?=  2.0.0-buster-r0
+IMAGE ?=	bertytech/build-go
+VERSION ?=  v2
 
 build:
 	docker build -t $(IMAGE):$(VERSION) .
