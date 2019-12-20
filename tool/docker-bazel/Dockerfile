@@ -31,3 +31,5 @@ RUN /tmp/bazel-0.29.1-installer-linux-x86_64.sh --user
 RUN chmod o+x /root
 
 ENV PATH="${PATH}:/root/bin"
+
+ENV USER=root
