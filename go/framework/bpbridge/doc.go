@@ -1,1 +1,1 @@
-package bpbridge // import "berty.tech/go/framework/bpbridge"
+package bpbridge // import "berty.tech/berty/go/framework/bpbridge"

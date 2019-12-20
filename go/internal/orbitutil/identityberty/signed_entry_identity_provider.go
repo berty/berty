@@ -1,8 +1,8 @@
 package identityberty
 
 import (
+	"berty.tech/berty/go/pkg/errcode"
 	"berty.tech/go-ipfs-log/identityprovider"
-	"berty.tech/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 

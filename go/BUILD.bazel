@@ -1,6 +1,6 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 
-# gazelle:prefix berty.tech/go
+# gazelle:prefix berty.tech/berty/go
 # gazelle:proto disable_global
 gazelle(
     name = "gazelle",
@@ -17,5 +17,5 @@ golangcilint(
         "pkg/...",
         "internal/...",
     ],
-    prefix = "berty.tech/go",
+    prefix = "berty.tech/berty/go",
 )

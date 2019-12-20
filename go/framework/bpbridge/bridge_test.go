@@ -13,9 +13,9 @@ import (
 	"net/textproto"
 	"testing"
 
-	"berty.tech/go/internal/ipfsutil"
-	"berty.tech/go/internal/testutil"
-	"berty.tech/go/pkg/bertyprotocol"
+	"berty.tech/berty/go/internal/ipfsutil"
+	"berty.tech/berty/go/internal/testutil"
+	"berty.tech/berty/go/pkg/bertyprotocol"
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
 	"golang.org/x/net/context"

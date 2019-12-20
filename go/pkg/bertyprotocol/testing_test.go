@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"berty.tech/go/internal/testutil"
+	"berty.tech/berty/go/internal/testutil"
 	"github.com/jinzhu/gorm"
 )
 

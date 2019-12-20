@@ -1,1 +1,1 @@
-package bertyprotocol // import "berty.tech/go/pkg/bertyprotocol"
+package bertyprotocol // import "berty.tech/berty/go/pkg/bertyprotocol"

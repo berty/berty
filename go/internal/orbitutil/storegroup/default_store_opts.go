@@ -3,12 +3,12 @@ package storegroup
 import (
 	"encoding/hex"
 
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/orbitutil/identityberty"
+	"berty.tech/berty/go/pkg/errcode"
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/accesscontroller"
-	"berty.tech/go/internal/group"
-	"berty.tech/go/internal/orbitutil/identityberty"
-	"berty.tech/go/pkg/errcode"
 )
 
 func DefaultOptions(g *group.Group, options *orbitdb.CreateDBOptions, keystore *identityberty.BertySignedKeyStore) (*orbitdb.CreateDBOptions, error) {

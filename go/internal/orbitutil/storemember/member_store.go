@@ -3,14 +3,14 @@ package storemember
 import (
 	"context"
 
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/berty/go/internal/orbitutil/storegroup"
+	"berty.tech/berty/go/pkg/errcode"
 	"berty.tech/go-ipfs-log/identityprovider"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores/operation"
-	"berty.tech/go/internal/group"
-	"berty.tech/go/internal/orbitutil/orbitutilapi"
-	"berty.tech/go/internal/orbitutil/storegroup"
-	"berty.tech/go/pkg/errcode"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"

@@ -5,7 +5,7 @@
   - name: build berty
     local_action:
       module: shell
-      _raw_params: "cd $GOPATH/src/berty.tech && docker build -f Dockerfile.scw -t berty/berty . && docker run --rm --entrypoint /bin/sh berty/berty:latest -c \"cat /go/bin/berty\" > berty"
+      _raw_params: "cd $GOPATH/src/berty.tech/berty && docker build -f Dockerfile.scw -t berty/berty . && docker run --rm --entrypoint /bin/sh berty/berty:latest -c \"cat /go/bin/berty\" > berty"
     run_once: true
     register: command_output
   - debug: msg="{{ command_output.stdout }}"

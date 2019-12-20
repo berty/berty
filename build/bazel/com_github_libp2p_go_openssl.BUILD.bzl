@@ -56,7 +56,7 @@ go_library(
         ],
         "//conditions:default": [],
     }),
-    importmap = "berty.tech/go/vendor/github.com/libp2p/go-openssl",
+    importmap = "berty.tech/berty/go/vendor/github.com/libp2p/go-openssl",
     importpath = "github.com/libp2p/go-openssl",
     visibility = ["//visibility:public"],
     deps = [

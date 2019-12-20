@@ -3,11 +3,11 @@ package storegroup
 import (
 	"sync"
 
+	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/berty/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-orbit-db/stores/basestore"
 	"berty.tech/go-orbit-db/stores/operation"
-	"berty.tech/go/internal/orbitutil/orbitutilapi"
-	"berty.tech/go/pkg/errcode"
 )
 
 type BaseGroupStore struct {

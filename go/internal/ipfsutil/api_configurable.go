@@ -3,7 +3,7 @@ package ipfsutil
 import (
 	"context"
 
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/berty/go/pkg/errcode"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_coreapi "github.com/ipfs/go-ipfs/core/coreapi"
 	ipfs_node "github.com/ipfs/go-ipfs/core/node"

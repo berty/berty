@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/berty/go/pkg/errcode"
 	ipfs_datastore "github.com/ipfs/go-datastore"
 	ipfs_datastoresync "github.com/ipfs/go-datastore/sync"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"

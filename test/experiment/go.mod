@@ -1,4 +1,4 @@
-module berty.tech/experiment
+module berty.tech/berty/experiment
 
 go 1.12
 

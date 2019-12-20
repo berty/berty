@@ -6,7 +6,7 @@ import (
 
 	"berty.tech/go-ipfs-log/keystore"
 
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/berty/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 

@@ -55,7 +55,7 @@ go_library(
         ],
         "//conditions:default": [],
     }),
-    importmap = "berty.tech/go/vendor/github.com/spacemonkeygo/openssl",
+    importmap = "berty.tech/berty/go/vendor/github.com/spacemonkeygo/openssl",
     importpath = "github.com/spacemonkeygo/openssl",
     visibility = ["//visibility:public"],
     deps = [

@@ -11,10 +11,10 @@ import (
 	"strings"
 	"time"
 
-	"berty.tech/go/internal/banner"
-	"berty.tech/go/internal/grpcutil"
-	"berty.tech/go/pkg/bertyprotocol"
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/berty/go/internal/banner"
+	"berty.tech/berty/go/internal/grpcutil"
+	"berty.tech/berty/go/pkg/bertyprotocol"
+	"berty.tech/berty/go/pkg/errcode"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
 	ma "github.com/multiformats/go-multiaddr"

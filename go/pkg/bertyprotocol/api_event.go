@@ -1,6 +1,6 @@
 package bertyprotocol
 
-import "berty.tech/go/pkg/errcode"
+import "berty.tech/berty/go/pkg/errcode"
 
 // AccountSubscribe subscribes to the account events
 func (c *client) AccountSubscribe(*AccountSubscribe_Request, ProtocolService_AccountSubscribeServer) error {

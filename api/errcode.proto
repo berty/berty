@@ -4,7 +4,7 @@ package berty.errcode;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-option go_package = "berty.tech/go/pkg/errcode";
+option go_package = "berty.tech/berty/go/pkg/errcode";
 
 option (gogoproto.goproto_enum_prefix_all) = false;
 

@@ -4,7 +4,7 @@ package berty.group;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-option go_package = "berty.tech/go/internal/group";
+option go_package = "berty.tech/berty/go/internal/group";
 option (gogoproto.marshaler_all) = true;
 option (gogoproto.unmarshaler_all) = true;
 option (gogoproto.sizer_all) = true;

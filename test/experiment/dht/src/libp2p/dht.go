@@ -3,7 +3,7 @@ package libp2p
 import (
 	"errors"
 
-	"berty.tech/experiment/dht"
+	"berty.tech/berty/experiment/dht"
 )
 
 var _ dht.DHT = (*DHT)(nil)

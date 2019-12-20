@@ -2,7 +2,7 @@
 FROM            golang:1.13.5-alpine as builder
 RUN             apk add --no-cache git gcc musl-dev make
 ENV             GO111MODULE=on
-WORKDIR         /go/src/berty.tech/go
+WORKDIR         /go/src/berty.tech/berty/go
 COPY            go.* ./
 RUN             go mod download
 COPY            . ./

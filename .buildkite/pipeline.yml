@@ -12,7 +12,7 @@ steps:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/protoc:22
           propagate-uid-gid: true
-          workdir: /go/src/berty.tech
+          workdir: /go/src/berty.tech/berty
           environment: ["GO111MODULE=on", "GOPATH=/go"]
           volumes: ["~/go/pkg/mod:/go/pkg/mod"]
     commands:
@@ -35,7 +35,7 @@ steps:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/githooks:v1
           propagate-uid-gid: true
-          workdir: /go/src/berty.tech
+          workdir: /go/src/berty.tech/berty
           environment: ["GO111MODULE=on", "GOPATH=/go"]
     commands:
       - set -x
@@ -49,7 +49,7 @@ steps:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/protoc:22
           propagate-uid-gid: true
-          workdir: /go/src/berty.tech
+          workdir: /go/src/berty.tech/berty
           environment:
             ["GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent"]
           volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
@@ -70,7 +70,7 @@ steps:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/protoc:22
           propagate-uid-gid: true
-          workdir: /go/src/berty.tech
+          workdir: /go/src/berty.tech/berty
           environment:
             ["GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent"]
           volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
@@ -86,7 +86,7 @@ steps:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/build-go:v2
           propagate-uid-gid: true
-          workdir: /go/src/berty.tech
+          workdir: /go/src/berty.tech/berty
           propagate-environment: true
           environment:
             [
@@ -125,7 +125,7 @@ steps:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/bazel:2.0.0-buster-r0
           propagate-uid-gid: true
-          workdir: /go/src/berty.tech
+          workdir: /go/src/berty.tech/berty
           environment:
             [
               "GO111MODULE=on",

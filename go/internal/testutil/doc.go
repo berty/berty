@@ -1,1 +1,1 @@
-package testutil // import "berty.tech/go/internal/testutil"
+package testutil // import "berty.tech/berty/go/internal/testutil"
