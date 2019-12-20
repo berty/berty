@@ -87,6 +87,8 @@ steps:
             ["GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent"]
           volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
     commands:
+      - set -x
+
       - go version
       - cd go
 
