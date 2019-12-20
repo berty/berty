@@ -82,6 +82,7 @@ steps:
       - make lint
 
   - label: go-build
+    # The key is used by agents to provide the codecov token
     key: go-build
     plugins:
       - n0izn0iz/docker#v3.5.4:
@@ -103,8 +104,6 @@ steps:
       - go version
       - cd go
 
-      # TODO: cache $GOPATH/pkg/mod
-      - ls $$GOPATH/pkg
       - go mod download
 
       # https://circleci.com/orbs/registry/orb/gotest/tools#commands-mod-tidy-check
@@ -116,11 +115,9 @@ steps:
       - SKIP_SLOW_TESTS=1 make go.unittest GO_TEST_OPTS="-v -test.timeout=120s -count 10"
       - SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=120s -count 2"
       - make tidy
-      # we can do this rm because we're in special queue
-      - rm -f /tmp/golangci-lint.lock
       - make lint
       - cd ..
-      - codecov -t "$CODECOV_TOKEN" -f ./go/coverage.txt
+      - codecov -f ./go/coverage.txt
 
   - label: bazel-go
     plugins:
