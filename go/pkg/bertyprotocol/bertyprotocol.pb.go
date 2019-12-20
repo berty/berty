@@ -10,7 +10,6 @@ import (
 
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -26,6 +25,97 @@ var _ = math.Inf
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
+
+type AccountEventType int32
+
+const (
+	AccountEventType_AccountEventType_Undefined                    AccountEventType = 0
+	AccountEventType_AccountEventType_GroupJoined                  AccountEventType = 1
+	AccountEventType_AccountEventType_GroupLeft                    AccountEventType = 2
+	AccountEventType_AccountEventType_DevicePaired                 AccountEventType = 3
+	AccountEventType_AccountEventType_ContactRequestDisabled       AccountEventType = 4
+	AccountEventType_AccountEventType_ContactRequestEnabled        AccountEventType = 5
+	AccountEventType_AccountEventType_ContactRequestReferenceReset AccountEventType = 6
+	// TODO: ⚠️ figure how to overcome issues with having requests sent and received by multiple devices simultaneously, secret definition should not conflict
+	AccountEventType_AccountEventType_ContactRequestEnqueued AccountEventType = 7
+	AccountEventType_AccountEventType_ContactRequested       AccountEventType = 8
+	AccountEventType_AccountEventType_ContactAccepted        AccountEventType = 9
+	AccountEventType_AccountEventType_ContactRemoved         AccountEventType = 10
+	// TODO: privacy-wise we will still announce our presence on our public rendezvous point but ignore contact requests from the blocked contact (performing the handshake but ignoring the request received), so they will still know that we are online, we should be clear in the UI of the implications of blocking someone
+	AccountEventType_AccountEventType_ContactBlocked   AccountEventType = 11
+	AccountEventType_AccountEventType_ContactUnblocked AccountEventType = 12
+	AccountEventType_AccountEventType_AppSpecified     AccountEventType = 13
+)
+
+var AccountEventType_name = map[int32]string{
+	0:  "AccountEventType_Undefined",
+	1:  "AccountEventType_GroupJoined",
+	2:  "AccountEventType_GroupLeft",
+	3:  "AccountEventType_DevicePaired",
+	4:  "AccountEventType_ContactRequestDisabled",
+	5:  "AccountEventType_ContactRequestEnabled",
+	6:  "AccountEventType_ContactRequestReferenceReset",
+	7:  "AccountEventType_ContactRequestEnqueued",
+	8:  "AccountEventType_ContactRequested",
+	9:  "AccountEventType_ContactAccepted",
+	10: "AccountEventType_ContactRemoved",
+	11: "AccountEventType_ContactBlocked",
+	12: "AccountEventType_ContactUnblocked",
+	13: "AccountEventType_AppSpecified",
+}
+
+var AccountEventType_value = map[string]int32{
+	"AccountEventType_Undefined":                    0,
+	"AccountEventType_GroupJoined":                  1,
+	"AccountEventType_GroupLeft":                    2,
+	"AccountEventType_DevicePaired":                 3,
+	"AccountEventType_ContactRequestDisabled":       4,
+	"AccountEventType_ContactRequestEnabled":        5,
+	"AccountEventType_ContactRequestReferenceReset": 6,
+	"AccountEventType_ContactRequestEnqueued":       7,
+	"AccountEventType_ContactRequested":             8,
+	"AccountEventType_ContactAccepted":              9,
+	"AccountEventType_ContactRemoved":               10,
+	"AccountEventType_ContactBlocked":               11,
+	"AccountEventType_ContactUnblocked":             12,
+	"AccountEventType_AppSpecified":                 13,
+}
+
+func (x AccountEventType) String() string {
+	return proto.EnumName(AccountEventType_name, int32(x))
+}
+
+func (AccountEventType) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{0}
+}
+
+type GroupSettingStoreSettingType int32
+
+const (
+	GroupSettingStoreSettingType_Unknown GroupSettingStoreSettingType = 0
+	GroupSettingStoreSettingType_Group   GroupSettingStoreSettingType = 1
+	GroupSettingStoreSettingType_Member  GroupSettingStoreSettingType = 2
+)
+
+var GroupSettingStoreSettingType_name = map[int32]string{
+	0: "Unknown",
+	1: "Group",
+	2: "Member",
+}
+
+var GroupSettingStoreSettingType_value = map[string]int32{
+	"Unknown": 0,
+	"Group":   1,
+	"Member":  2,
+}
+
+func (x GroupSettingStoreSettingType) String() string {
+	return proto.EnumName(GroupSettingStoreSettingType_name, int32(x))
+}
+
+func (GroupSettingStoreSettingType) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{1}
+}
 
 type InstanceGetConfiguration_SettingState int32
 
@@ -56,136 +146,6 @@ func (x InstanceGetConfiguration_SettingState) String() string {
 
 func (InstanceGetConfiguration_SettingState) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{1, 0}
-}
-
-type EventSubscribe_Type int32
-
-const (
-	EventSubscribe_EventUnknown            EventSubscribe_Type = 0
-	EventSubscribe_EventMessage            EventSubscribe_Type = 1
-	EventSubscribe_EventContactRequest     EventSubscribe_Type = 2
-	EventSubscribe_EventGroupInvitation    EventSubscribe_Type = 3
-	EventSubscribe_EventBroadcastAvailable EventSubscribe_Type = 4
-)
-
-var EventSubscribe_Type_name = map[int32]string{
-	0: "EventUnknown",
-	1: "EventMessage",
-	2: "EventContactRequest",
-	3: "EventGroupInvitation",
-	4: "EventBroadcastAvailable",
-}
-
-var EventSubscribe_Type_value = map[string]int32{
-	"EventUnknown":            0,
-	"EventMessage":            1,
-	"EventContactRequest":     2,
-	"EventGroupInvitation":    3,
-	"EventBroadcastAvailable": 4,
-}
-
-func (x EventSubscribe_Type) String() string {
-	return proto.EnumName(EventSubscribe_Type_name, int32(x))
-}
-
-func (EventSubscribe_Type) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{8, 0}
-}
-
-type Contact_TrustLevel int32
-
-const (
-	Contact_Unknown       Contact_TrustLevel = 0
-	Contact_Untrusted     Contact_TrustLevel = 1
-	Contact_Accepted      Contact_TrustLevel = 2
-	Contact_Trusted       Contact_TrustLevel = 3
-	Contact_UltimateTrust Contact_TrustLevel = 4
-)
-
-var Contact_TrustLevel_name = map[int32]string{
-	0: "Unknown",
-	1: "Untrusted",
-	2: "Accepted",
-	3: "Trusted",
-	4: "UltimateTrust",
-}
-
-var Contact_TrustLevel_value = map[string]int32{
-	"Unknown":       0,
-	"Untrusted":     1,
-	"Accepted":      2,
-	"Trusted":       3,
-	"UltimateTrust": 4,
-}
-
-func (x Contact_TrustLevel) String() string {
-	return proto.EnumName(Contact_TrustLevel_name, int32(x))
-}
-
-func (Contact_TrustLevel) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{33, 0}
-}
-
-type Contact_RequestStatus int32
-
-const (
-	Contact_UnknownRequestStatus Contact_RequestStatus = 0
-	Contact_IncomingRequest      Contact_RequestStatus = 1
-	Contact_OutgoingRequest      Contact_RequestStatus = 2
-	Contact_AcceptedRequest      Contact_RequestStatus = 3
-)
-
-var Contact_RequestStatus_name = map[int32]string{
-	0: "UnknownRequestStatus",
-	1: "IncomingRequest",
-	2: "OutgoingRequest",
-	3: "AcceptedRequest",
-}
-
-var Contact_RequestStatus_value = map[string]int32{
-	"UnknownRequestStatus": 0,
-	"IncomingRequest":      1,
-	"OutgoingRequest":      2,
-	"AcceptedRequest":      3,
-}
-
-func (x Contact_RequestStatus) String() string {
-	return proto.EnumName(Contact_RequestStatus_name, int32(x))
-}
-
-func (Contact_RequestStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{33, 1}
-}
-
-type GroupInfo_GroupAudience int32
-
-const (
-	GroupInfo_Undefined GroupInfo_GroupAudience = 0
-	GroupInfo_OneToOne  GroupInfo_GroupAudience = 1
-	GroupInfo_Group     GroupInfo_GroupAudience = 2
-	GroupInfo_Self      GroupInfo_GroupAudience = 3
-)
-
-var GroupInfo_GroupAudience_name = map[int32]string{
-	0: "Undefined",
-	1: "OneToOne",
-	2: "Group",
-	3: "Self",
-}
-
-var GroupInfo_GroupAudience_value = map[string]int32{
-	"Undefined": 0,
-	"OneToOne":  1,
-	"Group":     2,
-	"Self":      3,
-}
-
-func (x GroupInfo_GroupAudience) String() string {
-	return proto.EnumName(GroupInfo_GroupAudience_name, int32(x))
-}
-
-func (GroupInfo_GroupAudience) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{34, 0}
 }
 
 type InstanceExportData struct {
@@ -424,1959 +384,1089 @@ func (m *InstanceGetConfiguration_Reply) GetRelayEnabled() InstanceGetConfigurat
 	return InstanceGetConfiguration_Unknown
 }
 
-type AccountGetConfiguration struct {
+type GroupSettingSetMember struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AccountGetConfiguration) Reset()         { *m = AccountGetConfiguration{} }
-func (m *AccountGetConfiguration) String() string { return proto.CompactTextString(m) }
-func (*AccountGetConfiguration) ProtoMessage()    {}
-func (*AccountGetConfiguration) Descriptor() ([]byte, []int) {
+func (m *GroupSettingSetMember) Reset()         { *m = GroupSettingSetMember{} }
+func (m *GroupSettingSetMember) String() string { return proto.CompactTextString(m) }
+func (*GroupSettingSetMember) ProtoMessage()    {}
+func (*GroupSettingSetMember) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{2}
 }
-func (m *AccountGetConfiguration) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountGetConfiguration.Unmarshal(m, b)
+func (m *GroupSettingSetMember) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupSettingSetMember.Unmarshal(m, b)
 }
-func (m *AccountGetConfiguration) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountGetConfiguration.Marshal(b, m, deterministic)
+func (m *GroupSettingSetMember) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupSettingSetMember.Marshal(b, m, deterministic)
 }
-func (m *AccountGetConfiguration) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountGetConfiguration.Merge(m, src)
+func (m *GroupSettingSetMember) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupSettingSetMember.Merge(m, src)
 }
-func (m *AccountGetConfiguration) XXX_Size() int {
-	return xxx_messageInfo_AccountGetConfiguration.Size(m)
+func (m *GroupSettingSetMember) XXX_Size() int {
+	return xxx_messageInfo_GroupSettingSetMember.Size(m)
 }
-func (m *AccountGetConfiguration) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountGetConfiguration.DiscardUnknown(m)
+func (m *GroupSettingSetMember) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupSettingSetMember.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AccountGetConfiguration proto.InternalMessageInfo
+var xxx_messageInfo_GroupSettingSetMember proto.InternalMessageInfo
 
-type AccountGetConfiguration_Request struct {
+type GroupSettingSetMember_Request struct {
+	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
+	Key                  string   `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+	Value                []byte   `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AccountGetConfiguration_Request) Reset()         { *m = AccountGetConfiguration_Request{} }
-func (m *AccountGetConfiguration_Request) String() string { return proto.CompactTextString(m) }
-func (*AccountGetConfiguration_Request) ProtoMessage()    {}
-func (*AccountGetConfiguration_Request) Descriptor() ([]byte, []int) {
+func (m *GroupSettingSetMember_Request) Reset()         { *m = GroupSettingSetMember_Request{} }
+func (m *GroupSettingSetMember_Request) String() string { return proto.CompactTextString(m) }
+func (*GroupSettingSetMember_Request) ProtoMessage()    {}
+func (*GroupSettingSetMember_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{2, 0}
 }
-func (m *AccountGetConfiguration_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountGetConfiguration_Request.Unmarshal(m, b)
+func (m *GroupSettingSetMember_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupSettingSetMember_Request.Unmarshal(m, b)
 }
-func (m *AccountGetConfiguration_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountGetConfiguration_Request.Marshal(b, m, deterministic)
+func (m *GroupSettingSetMember_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupSettingSetMember_Request.Marshal(b, m, deterministic)
 }
-func (m *AccountGetConfiguration_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountGetConfiguration_Request.Merge(m, src)
+func (m *GroupSettingSetMember_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupSettingSetMember_Request.Merge(m, src)
 }
-func (m *AccountGetConfiguration_Request) XXX_Size() int {
-	return xxx_messageInfo_AccountGetConfiguration_Request.Size(m)
+func (m *GroupSettingSetMember_Request) XXX_Size() int {
+	return xxx_messageInfo_GroupSettingSetMember_Request.Size(m)
 }
-func (m *AccountGetConfiguration_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountGetConfiguration_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountGetConfiguration_Request proto.InternalMessageInfo
-
-type AccountGetConfiguration_Reply struct {
-	ContactRequestable    bool     `protobuf:"varint,1,opt,name=contact_requestable,json=contactRequestable,proto3" json:"contact_requestable,omitempty"`
-	DefaultPinningService []byte   `protobuf:"bytes,2,opt,name=default_pinning_service,json=defaultPinningService,proto3" json:"default_pinning_service,omitempty"`
-	Metadata              []byte   `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	XXX_NoUnkeyedLiteral  struct{} `json:"-"`
-	XXX_unrecognized      []byte   `json:"-"`
-	XXX_sizecache         int32    `json:"-"`
+func (m *GroupSettingSetMember_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupSettingSetMember_Request.DiscardUnknown(m)
 }
 
-func (m *AccountGetConfiguration_Reply) Reset()         { *m = AccountGetConfiguration_Reply{} }
-func (m *AccountGetConfiguration_Reply) String() string { return proto.CompactTextString(m) }
-func (*AccountGetConfiguration_Reply) ProtoMessage()    {}
-func (*AccountGetConfiguration_Reply) Descriptor() ([]byte, []int) {
+var xxx_messageInfo_GroupSettingSetMember_Request proto.InternalMessageInfo
+
+func (m *GroupSettingSetMember_Request) GetGroupPubKey() []byte {
+	if m != nil {
+		return m.GroupPubKey
+	}
+	return nil
+}
+
+func (m *GroupSettingSetMember_Request) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
+func (m *GroupSettingSetMember_Request) GetValue() []byte {
+	if m != nil {
+		return m.Value
+	}
+	return nil
+}
+
+type GroupSettingSetMember_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupSettingSetMember_Reply) Reset()         { *m = GroupSettingSetMember_Reply{} }
+func (m *GroupSettingSetMember_Reply) String() string { return proto.CompactTextString(m) }
+func (*GroupSettingSetMember_Reply) ProtoMessage()    {}
+func (*GroupSettingSetMember_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{2, 1}
 }
-func (m *AccountGetConfiguration_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountGetConfiguration_Reply.Unmarshal(m, b)
+func (m *GroupSettingSetMember_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupSettingSetMember_Reply.Unmarshal(m, b)
 }
-func (m *AccountGetConfiguration_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountGetConfiguration_Reply.Marshal(b, m, deterministic)
+func (m *GroupSettingSetMember_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupSettingSetMember_Reply.Marshal(b, m, deterministic)
 }
-func (m *AccountGetConfiguration_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountGetConfiguration_Reply.Merge(m, src)
+func (m *GroupSettingSetMember_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupSettingSetMember_Reply.Merge(m, src)
 }
-func (m *AccountGetConfiguration_Reply) XXX_Size() int {
-	return xxx_messageInfo_AccountGetConfiguration_Reply.Size(m)
+func (m *GroupSettingSetMember_Reply) XXX_Size() int {
+	return xxx_messageInfo_GroupSettingSetMember_Reply.Size(m)
 }
-func (m *AccountGetConfiguration_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountGetConfiguration_Reply.DiscardUnknown(m)
+func (m *GroupSettingSetMember_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupSettingSetMember_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AccountGetConfiguration_Reply proto.InternalMessageInfo
+var xxx_messageInfo_GroupSettingSetMember_Reply proto.InternalMessageInfo
 
-func (m *AccountGetConfiguration_Reply) GetContactRequestable() bool {
+type GroupSettingSetGroup struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupSettingSetGroup) Reset()         { *m = GroupSettingSetGroup{} }
+func (m *GroupSettingSetGroup) String() string { return proto.CompactTextString(m) }
+func (*GroupSettingSetGroup) ProtoMessage()    {}
+func (*GroupSettingSetGroup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{3}
+}
+func (m *GroupSettingSetGroup) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupSettingSetGroup.Unmarshal(m, b)
+}
+func (m *GroupSettingSetGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupSettingSetGroup.Marshal(b, m, deterministic)
+}
+func (m *GroupSettingSetGroup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupSettingSetGroup.Merge(m, src)
+}
+func (m *GroupSettingSetGroup) XXX_Size() int {
+	return xxx_messageInfo_GroupSettingSetGroup.Size(m)
+}
+func (m *GroupSettingSetGroup) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupSettingSetGroup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupSettingSetGroup proto.InternalMessageInfo
+
+type GroupSettingSetGroup_Request struct {
+	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
+	Key                  string   `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+	Value                []byte   `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupSettingSetGroup_Request) Reset()         { *m = GroupSettingSetGroup_Request{} }
+func (m *GroupSettingSetGroup_Request) String() string { return proto.CompactTextString(m) }
+func (*GroupSettingSetGroup_Request) ProtoMessage()    {}
+func (*GroupSettingSetGroup_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{3, 0}
+}
+func (m *GroupSettingSetGroup_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupSettingSetGroup_Request.Unmarshal(m, b)
+}
+func (m *GroupSettingSetGroup_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupSettingSetGroup_Request.Marshal(b, m, deterministic)
+}
+func (m *GroupSettingSetGroup_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupSettingSetGroup_Request.Merge(m, src)
+}
+func (m *GroupSettingSetGroup_Request) XXX_Size() int {
+	return xxx_messageInfo_GroupSettingSetGroup_Request.Size(m)
+}
+func (m *GroupSettingSetGroup_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupSettingSetGroup_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupSettingSetGroup_Request proto.InternalMessageInfo
+
+func (m *GroupSettingSetGroup_Request) GetGroupPubKey() []byte {
 	if m != nil {
-		return m.ContactRequestable
+		return m.GroupPubKey
+	}
+	return nil
+}
+
+func (m *GroupSettingSetGroup_Request) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
+func (m *GroupSettingSetGroup_Request) GetValue() []byte {
+	if m != nil {
+		return m.Value
+	}
+	return nil
+}
+
+type GroupSettingSetGroup_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupSettingSetGroup_Reply) Reset()         { *m = GroupSettingSetGroup_Reply{} }
+func (m *GroupSettingSetGroup_Reply) String() string { return proto.CompactTextString(m) }
+func (*GroupSettingSetGroup_Reply) ProtoMessage()    {}
+func (*GroupSettingSetGroup_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{3, 1}
+}
+func (m *GroupSettingSetGroup_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupSettingSetGroup_Reply.Unmarshal(m, b)
+}
+func (m *GroupSettingSetGroup_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupSettingSetGroup_Reply.Marshal(b, m, deterministic)
+}
+func (m *GroupSettingSetGroup_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupSettingSetGroup_Reply.Merge(m, src)
+}
+func (m *GroupSettingSetGroup_Reply) XXX_Size() int {
+	return xxx_messageInfo_GroupSettingSetGroup_Reply.Size(m)
+}
+func (m *GroupSettingSetGroup_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupSettingSetGroup_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupSettingSetGroup_Reply proto.InternalMessageInfo
+
+type GroupSettingStoreSubscribe struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupSettingStoreSubscribe) Reset()         { *m = GroupSettingStoreSubscribe{} }
+func (m *GroupSettingStoreSubscribe) String() string { return proto.CompactTextString(m) }
+func (*GroupSettingStoreSubscribe) ProtoMessage()    {}
+func (*GroupSettingStoreSubscribe) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{4}
+}
+func (m *GroupSettingStoreSubscribe) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupSettingStoreSubscribe.Unmarshal(m, b)
+}
+func (m *GroupSettingStoreSubscribe) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupSettingStoreSubscribe.Marshal(b, m, deterministic)
+}
+func (m *GroupSettingStoreSubscribe) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupSettingStoreSubscribe.Merge(m, src)
+}
+func (m *GroupSettingStoreSubscribe) XXX_Size() int {
+	return xxx_messageInfo_GroupSettingStoreSubscribe.Size(m)
+}
+func (m *GroupSettingStoreSubscribe) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupSettingStoreSubscribe.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupSettingStoreSubscribe proto.InternalMessageInfo
+
+type GroupSettingStoreSubscribe_Request struct {
+	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
+	Since                []byte   `protobuf:"bytes,2,opt,name=since,proto3" json:"since,omitempty"`
+	Until                []byte   `protobuf:"bytes,3,opt,name=until,proto3" json:"until,omitempty"`
+	GoBackwards          bool     `protobuf:"varint,4,opt,name=go_backwards,json=goBackwards,proto3" json:"go_backwards,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupSettingStoreSubscribe_Request) Reset()         { *m = GroupSettingStoreSubscribe_Request{} }
+func (m *GroupSettingStoreSubscribe_Request) String() string { return proto.CompactTextString(m) }
+func (*GroupSettingStoreSubscribe_Request) ProtoMessage()    {}
+func (*GroupSettingStoreSubscribe_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{4, 0}
+}
+func (m *GroupSettingStoreSubscribe_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupSettingStoreSubscribe_Request.Unmarshal(m, b)
+}
+func (m *GroupSettingStoreSubscribe_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupSettingStoreSubscribe_Request.Marshal(b, m, deterministic)
+}
+func (m *GroupSettingStoreSubscribe_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupSettingStoreSubscribe_Request.Merge(m, src)
+}
+func (m *GroupSettingStoreSubscribe_Request) XXX_Size() int {
+	return xxx_messageInfo_GroupSettingStoreSubscribe_Request.Size(m)
+}
+func (m *GroupSettingStoreSubscribe_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupSettingStoreSubscribe_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupSettingStoreSubscribe_Request proto.InternalMessageInfo
+
+func (m *GroupSettingStoreSubscribe_Request) GetGroupPubKey() []byte {
+	if m != nil {
+		return m.GroupPubKey
+	}
+	return nil
+}
+
+func (m *GroupSettingStoreSubscribe_Request) GetSince() []byte {
+	if m != nil {
+		return m.Since
+	}
+	return nil
+}
+
+func (m *GroupSettingStoreSubscribe_Request) GetUntil() []byte {
+	if m != nil {
+		return m.Until
+	}
+	return nil
+}
+
+func (m *GroupSettingStoreSubscribe_Request) GetGoBackwards() bool {
+	if m != nil {
+		return m.GoBackwards
 	}
 	return false
 }
 
-func (m *AccountGetConfiguration_Reply) GetDefaultPinningService() []byte {
+type GroupSettingStoreSubscribe_Reply struct {
+	Event                *GroupSettingStoreEvent `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
+}
+
+func (m *GroupSettingStoreSubscribe_Reply) Reset()         { *m = GroupSettingStoreSubscribe_Reply{} }
+func (m *GroupSettingStoreSubscribe_Reply) String() string { return proto.CompactTextString(m) }
+func (*GroupSettingStoreSubscribe_Reply) ProtoMessage()    {}
+func (*GroupSettingStoreSubscribe_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{4, 1}
+}
+func (m *GroupSettingStoreSubscribe_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupSettingStoreSubscribe_Reply.Unmarshal(m, b)
+}
+func (m *GroupSettingStoreSubscribe_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupSettingStoreSubscribe_Reply.Marshal(b, m, deterministic)
+}
+func (m *GroupSettingStoreSubscribe_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupSettingStoreSubscribe_Reply.Merge(m, src)
+}
+func (m *GroupSettingStoreSubscribe_Reply) XXX_Size() int {
+	return xxx_messageInfo_GroupSettingStoreSubscribe_Reply.Size(m)
+}
+func (m *GroupSettingStoreSubscribe_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupSettingStoreSubscribe_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupSettingStoreSubscribe_Reply proto.InternalMessageInfo
+
+func (m *GroupSettingStoreSubscribe_Reply) GetEvent() *GroupSettingStoreEvent {
 	if m != nil {
-		return m.DefaultPinningService
+		return m.Event
 	}
 	return nil
 }
 
-func (m *AccountGetConfiguration_Reply) GetMetadata() []byte {
-	if m != nil {
-		return m.Metadata
-	}
-	return nil
-}
-
-type AccountGetInformation struct {
+type EventBase struct {
+	ID                   []byte   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ParentIDs            [][]byte `protobuf:"bytes,2,rep,name=parent_ids,json=parentIds,proto3" json:"parent_ids,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AccountGetInformation) Reset()         { *m = AccountGetInformation{} }
-func (m *AccountGetInformation) String() string { return proto.CompactTextString(m) }
-func (*AccountGetInformation) ProtoMessage()    {}
-func (*AccountGetInformation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{3}
+func (m *EventBase) Reset()         { *m = EventBase{} }
+func (m *EventBase) String() string { return proto.CompactTextString(m) }
+func (*EventBase) ProtoMessage()    {}
+func (*EventBase) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{5}
 }
-func (m *AccountGetInformation) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountGetInformation.Unmarshal(m, b)
+func (m *EventBase) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EventBase.Unmarshal(m, b)
 }
-func (m *AccountGetInformation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountGetInformation.Marshal(b, m, deterministic)
+func (m *EventBase) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EventBase.Marshal(b, m, deterministic)
 }
-func (m *AccountGetInformation) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountGetInformation.Merge(m, src)
+func (m *EventBase) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventBase.Merge(m, src)
 }
-func (m *AccountGetInformation) XXX_Size() int {
-	return xxx_messageInfo_AccountGetInformation.Size(m)
+func (m *EventBase) XXX_Size() int {
+	return xxx_messageInfo_EventBase.Size(m)
 }
-func (m *AccountGetInformation) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountGetInformation.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountGetInformation proto.InternalMessageInfo
-
-type AccountGetInformation_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *EventBase) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventBase.DiscardUnknown(m)
 }
 
-func (m *AccountGetInformation_Request) Reset()         { *m = AccountGetInformation_Request{} }
-func (m *AccountGetInformation_Request) String() string { return proto.CompactTextString(m) }
-func (*AccountGetInformation_Request) ProtoMessage()    {}
-func (*AccountGetInformation_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{3, 0}
-}
-func (m *AccountGetInformation_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountGetInformation_Request.Unmarshal(m, b)
-}
-func (m *AccountGetInformation_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountGetInformation_Request.Marshal(b, m, deterministic)
-}
-func (m *AccountGetInformation_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountGetInformation_Request.Merge(m, src)
-}
-func (m *AccountGetInformation_Request) XXX_Size() int {
-	return xxx_messageInfo_AccountGetInformation_Request.Size(m)
-}
-func (m *AccountGetInformation_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountGetInformation_Request.DiscardUnknown(m)
+var xxx_messageInfo_EventBase proto.InternalMessageInfo
+
+func (m *EventBase) GetID() []byte {
+	if m != nil {
+		return m.ID
+	}
+	return nil
 }
 
-var xxx_messageInfo_AccountGetInformation_Request proto.InternalMessageInfo
-
-type AccountGetInformation_Reply struct {
-	AccountPubKey        []byte    `protobuf:"bytes,1,opt,name=account_pub_key,json=accountPubKey,proto3" json:"account_pub_key,omitempty"`
-	Devices              []*Device `protobuf:"bytes,2,rep,name=devices,proto3" json:"devices,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `json:"-"`
-	XXX_sizecache        int32     `json:"-"`
+func (m *EventBase) GetParentIDs() [][]byte {
+	if m != nil {
+		return m.ParentIDs
+	}
+	return nil
 }
 
-func (m *AccountGetInformation_Reply) Reset()         { *m = AccountGetInformation_Reply{} }
-func (m *AccountGetInformation_Reply) String() string { return proto.CompactTextString(m) }
-func (*AccountGetInformation_Reply) ProtoMessage()    {}
-func (*AccountGetInformation_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{3, 1}
-}
-func (m *AccountGetInformation_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountGetInformation_Reply.Unmarshal(m, b)
-}
-func (m *AccountGetInformation_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountGetInformation_Reply.Marshal(b, m, deterministic)
-}
-func (m *AccountGetInformation_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountGetInformation_Reply.Merge(m, src)
-}
-func (m *AccountGetInformation_Reply) XXX_Size() int {
-	return xxx_messageInfo_AccountGetInformation_Reply.Size(m)
-}
-func (m *AccountGetInformation_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountGetInformation_Reply.DiscardUnknown(m)
+type GroupStoreEvent struct {
+	EventBase            *EventBase `protobuf:"bytes,1,opt,name=event_base,json=eventBase,proto3" json:"event_base,omitempty"`
+	GroupPubKey          []byte     `protobuf:"bytes,2,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
+	GroupMemberPubKey    []byte     `protobuf:"bytes,3,opt,name=group_member_pub_key,json=groupMemberPubKey,proto3" json:"group_member_pub_key,omitempty"`
+	GroupDevicePubKey    []byte     `protobuf:"bytes,4,opt,name=group_device_pub_key,json=groupDevicePubKey,proto3" json:"group_device_pub_key,omitempty"`
+	AccountPubKey        []byte     `protobuf:"bytes,5,opt,name=account_pub_key,json=accountPubKey,proto3" json:"account_pub_key,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
 }
 
-var xxx_messageInfo_AccountGetInformation_Reply proto.InternalMessageInfo
+func (m *GroupStoreEvent) Reset()         { *m = GroupStoreEvent{} }
+func (m *GroupStoreEvent) String() string { return proto.CompactTextString(m) }
+func (*GroupStoreEvent) ProtoMessage()    {}
+func (*GroupStoreEvent) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{6}
+}
+func (m *GroupStoreEvent) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupStoreEvent.Unmarshal(m, b)
+}
+func (m *GroupStoreEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupStoreEvent.Marshal(b, m, deterministic)
+}
+func (m *GroupStoreEvent) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupStoreEvent.Merge(m, src)
+}
+func (m *GroupStoreEvent) XXX_Size() int {
+	return xxx_messageInfo_GroupStoreEvent.Size(m)
+}
+func (m *GroupStoreEvent) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupStoreEvent.DiscardUnknown(m)
+}
 
-func (m *AccountGetInformation_Reply) GetAccountPubKey() []byte {
+var xxx_messageInfo_GroupStoreEvent proto.InternalMessageInfo
+
+func (m *GroupStoreEvent) GetEventBase() *EventBase {
+	if m != nil {
+		return m.EventBase
+	}
+	return nil
+}
+
+func (m *GroupStoreEvent) GetGroupPubKey() []byte {
+	if m != nil {
+		return m.GroupPubKey
+	}
+	return nil
+}
+
+func (m *GroupStoreEvent) GetGroupMemberPubKey() []byte {
+	if m != nil {
+		return m.GroupMemberPubKey
+	}
+	return nil
+}
+
+func (m *GroupStoreEvent) GetGroupDevicePubKey() []byte {
+	if m != nil {
+		return m.GroupDevicePubKey
+	}
+	return nil
+}
+
+func (m *GroupStoreEvent) GetAccountPubKey() []byte {
 	if m != nil {
 		return m.AccountPubKey
 	}
 	return nil
 }
 
-func (m *AccountGetInformation_Reply) GetDevices() []*Device {
-	if m != nil {
-		return m.Devices
-	}
-	return nil
+type GroupSettingStoreEvent struct {
+	GroupStoreEvent      *GroupStoreEvent             `protobuf:"bytes,1,opt,name=group_store_event,json=groupStoreEvent,proto3" json:"group_store_event,omitempty"`
+	SettingType          GroupSettingStoreSettingType `protobuf:"varint,2,opt,name=setting_type,json=settingType,proto3,enum=berty.protocol.GroupSettingStoreSettingType" json:"setting_type,omitempty"`
+	Key                  string                       `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`
+	Value                []byte                       `protobuf:"bytes,4,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                     `json:"-"`
+	XXX_unrecognized     []byte                       `json:"-"`
+	XXX_sizecache        int32                        `json:"-"`
 }
 
-type AccountLinkNewDevice struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountLinkNewDevice) Reset()         { *m = AccountLinkNewDevice{} }
-func (m *AccountLinkNewDevice) String() string { return proto.CompactTextString(m) }
-func (*AccountLinkNewDevice) ProtoMessage()    {}
-func (*AccountLinkNewDevice) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{4}
-}
-func (m *AccountLinkNewDevice) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountLinkNewDevice.Unmarshal(m, b)
-}
-func (m *AccountLinkNewDevice) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountLinkNewDevice.Marshal(b, m, deterministic)
-}
-func (m *AccountLinkNewDevice) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountLinkNewDevice.Merge(m, src)
-}
-func (m *AccountLinkNewDevice) XXX_Size() int {
-	return xxx_messageInfo_AccountLinkNewDevice.Size(m)
-}
-func (m *AccountLinkNewDevice) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountLinkNewDevice.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountLinkNewDevice proto.InternalMessageInfo
-
-type AccountLinkNewDevice_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountLinkNewDevice_Request) Reset()         { *m = AccountLinkNewDevice_Request{} }
-func (m *AccountLinkNewDevice_Request) String() string { return proto.CompactTextString(m) }
-func (*AccountLinkNewDevice_Request) ProtoMessage()    {}
-func (*AccountLinkNewDevice_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{4, 0}
-}
-func (m *AccountLinkNewDevice_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountLinkNewDevice_Request.Unmarshal(m, b)
-}
-func (m *AccountLinkNewDevice_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountLinkNewDevice_Request.Marshal(b, m, deterministic)
-}
-func (m *AccountLinkNewDevice_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountLinkNewDevice_Request.Merge(m, src)
-}
-func (m *AccountLinkNewDevice_Request) XXX_Size() int {
-	return xxx_messageInfo_AccountLinkNewDevice_Request.Size(m)
-}
-func (m *AccountLinkNewDevice_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountLinkNewDevice_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountLinkNewDevice_Request proto.InternalMessageInfo
-
-type AccountLinkNewDevice_Reply struct {
-	Invitation           *Invitation `protobuf:"bytes,1,opt,name=invitation,proto3" json:"invitation,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
-	XXX_unrecognized     []byte      `json:"-"`
-	XXX_sizecache        int32       `json:"-"`
-}
-
-func (m *AccountLinkNewDevice_Reply) Reset()         { *m = AccountLinkNewDevice_Reply{} }
-func (m *AccountLinkNewDevice_Reply) String() string { return proto.CompactTextString(m) }
-func (*AccountLinkNewDevice_Reply) ProtoMessage()    {}
-func (*AccountLinkNewDevice_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{4, 1}
-}
-func (m *AccountLinkNewDevice_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountLinkNewDevice_Reply.Unmarshal(m, b)
-}
-func (m *AccountLinkNewDevice_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountLinkNewDevice_Reply.Marshal(b, m, deterministic)
-}
-func (m *AccountLinkNewDevice_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountLinkNewDevice_Reply.Merge(m, src)
-}
-func (m *AccountLinkNewDevice_Reply) XXX_Size() int {
-	return xxx_messageInfo_AccountLinkNewDevice_Reply.Size(m)
-}
-func (m *AccountLinkNewDevice_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountLinkNewDevice_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountLinkNewDevice_Reply proto.InternalMessageInfo
-
-func (m *AccountLinkNewDevice_Reply) GetInvitation() *Invitation {
-	if m != nil {
-		return m.Invitation
-	}
-	return nil
-}
-
-type AccountDisableIncomingContactRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountDisableIncomingContactRequest) Reset()         { *m = AccountDisableIncomingContactRequest{} }
-func (m *AccountDisableIncomingContactRequest) String() string { return proto.CompactTextString(m) }
-func (*AccountDisableIncomingContactRequest) ProtoMessage()    {}
-func (*AccountDisableIncomingContactRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{5}
-}
-func (m *AccountDisableIncomingContactRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountDisableIncomingContactRequest.Unmarshal(m, b)
-}
-func (m *AccountDisableIncomingContactRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountDisableIncomingContactRequest.Marshal(b, m, deterministic)
-}
-func (m *AccountDisableIncomingContactRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountDisableIncomingContactRequest.Merge(m, src)
-}
-func (m *AccountDisableIncomingContactRequest) XXX_Size() int {
-	return xxx_messageInfo_AccountDisableIncomingContactRequest.Size(m)
-}
-func (m *AccountDisableIncomingContactRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountDisableIncomingContactRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountDisableIncomingContactRequest proto.InternalMessageInfo
-
-type AccountDisableIncomingContactRequest_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountDisableIncomingContactRequest_Request) Reset() {
-	*m = AccountDisableIncomingContactRequest_Request{}
-}
-func (m *AccountDisableIncomingContactRequest_Request) String() string {
-	return proto.CompactTextString(m)
-}
-func (*AccountDisableIncomingContactRequest_Request) ProtoMessage() {}
-func (*AccountDisableIncomingContactRequest_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{5, 0}
-}
-func (m *AccountDisableIncomingContactRequest_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountDisableIncomingContactRequest_Request.Unmarshal(m, b)
-}
-func (m *AccountDisableIncomingContactRequest_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountDisableIncomingContactRequest_Request.Marshal(b, m, deterministic)
-}
-func (m *AccountDisableIncomingContactRequest_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountDisableIncomingContactRequest_Request.Merge(m, src)
-}
-func (m *AccountDisableIncomingContactRequest_Request) XXX_Size() int {
-	return xxx_messageInfo_AccountDisableIncomingContactRequest_Request.Size(m)
-}
-func (m *AccountDisableIncomingContactRequest_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountDisableIncomingContactRequest_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountDisableIncomingContactRequest_Request proto.InternalMessageInfo
-
-type AccountDisableIncomingContactRequest_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountDisableIncomingContactRequest_Reply) Reset() {
-	*m = AccountDisableIncomingContactRequest_Reply{}
-}
-func (m *AccountDisableIncomingContactRequest_Reply) String() string {
-	return proto.CompactTextString(m)
-}
-func (*AccountDisableIncomingContactRequest_Reply) ProtoMessage() {}
-func (*AccountDisableIncomingContactRequest_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{5, 1}
-}
-func (m *AccountDisableIncomingContactRequest_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountDisableIncomingContactRequest_Reply.Unmarshal(m, b)
-}
-func (m *AccountDisableIncomingContactRequest_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountDisableIncomingContactRequest_Reply.Marshal(b, m, deterministic)
-}
-func (m *AccountDisableIncomingContactRequest_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountDisableIncomingContactRequest_Reply.Merge(m, src)
-}
-func (m *AccountDisableIncomingContactRequest_Reply) XXX_Size() int {
-	return xxx_messageInfo_AccountDisableIncomingContactRequest_Reply.Size(m)
-}
-func (m *AccountDisableIncomingContactRequest_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountDisableIncomingContactRequest_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountDisableIncomingContactRequest_Reply proto.InternalMessageInfo
-
-type AccountEnableIncomingContactRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountEnableIncomingContactRequest) Reset()         { *m = AccountEnableIncomingContactRequest{} }
-func (m *AccountEnableIncomingContactRequest) String() string { return proto.CompactTextString(m) }
-func (*AccountEnableIncomingContactRequest) ProtoMessage()    {}
-func (*AccountEnableIncomingContactRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{6}
-}
-func (m *AccountEnableIncomingContactRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountEnableIncomingContactRequest.Unmarshal(m, b)
-}
-func (m *AccountEnableIncomingContactRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountEnableIncomingContactRequest.Marshal(b, m, deterministic)
-}
-func (m *AccountEnableIncomingContactRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountEnableIncomingContactRequest.Merge(m, src)
-}
-func (m *AccountEnableIncomingContactRequest) XXX_Size() int {
-	return xxx_messageInfo_AccountEnableIncomingContactRequest.Size(m)
-}
-func (m *AccountEnableIncomingContactRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountEnableIncomingContactRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountEnableIncomingContactRequest proto.InternalMessageInfo
-
-type AccountEnableIncomingContactRequest_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountEnableIncomingContactRequest_Request) Reset() {
-	*m = AccountEnableIncomingContactRequest_Request{}
-}
-func (m *AccountEnableIncomingContactRequest_Request) String() string {
-	return proto.CompactTextString(m)
-}
-func (*AccountEnableIncomingContactRequest_Request) ProtoMessage() {}
-func (*AccountEnableIncomingContactRequest_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{6, 0}
-}
-func (m *AccountEnableIncomingContactRequest_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountEnableIncomingContactRequest_Request.Unmarshal(m, b)
-}
-func (m *AccountEnableIncomingContactRequest_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountEnableIncomingContactRequest_Request.Marshal(b, m, deterministic)
-}
-func (m *AccountEnableIncomingContactRequest_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountEnableIncomingContactRequest_Request.Merge(m, src)
-}
-func (m *AccountEnableIncomingContactRequest_Request) XXX_Size() int {
-	return xxx_messageInfo_AccountEnableIncomingContactRequest_Request.Size(m)
-}
-func (m *AccountEnableIncomingContactRequest_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountEnableIncomingContactRequest_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountEnableIncomingContactRequest_Request proto.InternalMessageInfo
-
-type AccountEnableIncomingContactRequest_Reply struct {
-	ContactRequestLink   *ContactRequestLink `protobuf:"bytes,1,opt,name=contact_request_link,json=contactRequestLink,proto3" json:"contact_request_link,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
-	XXX_unrecognized     []byte              `json:"-"`
-	XXX_sizecache        int32               `json:"-"`
-}
-
-func (m *AccountEnableIncomingContactRequest_Reply) Reset() {
-	*m = AccountEnableIncomingContactRequest_Reply{}
-}
-func (m *AccountEnableIncomingContactRequest_Reply) String() string { return proto.CompactTextString(m) }
-func (*AccountEnableIncomingContactRequest_Reply) ProtoMessage()    {}
-func (*AccountEnableIncomingContactRequest_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{6, 1}
-}
-func (m *AccountEnableIncomingContactRequest_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountEnableIncomingContactRequest_Reply.Unmarshal(m, b)
-}
-func (m *AccountEnableIncomingContactRequest_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountEnableIncomingContactRequest_Reply.Marshal(b, m, deterministic)
-}
-func (m *AccountEnableIncomingContactRequest_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountEnableIncomingContactRequest_Reply.Merge(m, src)
-}
-func (m *AccountEnableIncomingContactRequest_Reply) XXX_Size() int {
-	return xxx_messageInfo_AccountEnableIncomingContactRequest_Reply.Size(m)
-}
-func (m *AccountEnableIncomingContactRequest_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountEnableIncomingContactRequest_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountEnableIncomingContactRequest_Reply proto.InternalMessageInfo
-
-func (m *AccountEnableIncomingContactRequest_Reply) GetContactRequestLink() *ContactRequestLink {
-	if m != nil {
-		return m.ContactRequestLink
-	}
-	return nil
-}
-
-type AccountResetIncomingContactRequestLink struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountResetIncomingContactRequestLink) Reset() {
-	*m = AccountResetIncomingContactRequestLink{}
-}
-func (m *AccountResetIncomingContactRequestLink) String() string { return proto.CompactTextString(m) }
-func (*AccountResetIncomingContactRequestLink) ProtoMessage()    {}
-func (*AccountResetIncomingContactRequestLink) Descriptor() ([]byte, []int) {
+func (m *GroupSettingStoreEvent) Reset()         { *m = GroupSettingStoreEvent{} }
+func (m *GroupSettingStoreEvent) String() string { return proto.CompactTextString(m) }
+func (*GroupSettingStoreEvent) ProtoMessage()    {}
+func (*GroupSettingStoreEvent) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{7}
 }
-func (m *AccountResetIncomingContactRequestLink) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountResetIncomingContactRequestLink.Unmarshal(m, b)
+func (m *GroupSettingStoreEvent) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupSettingStoreEvent.Unmarshal(m, b)
 }
-func (m *AccountResetIncomingContactRequestLink) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountResetIncomingContactRequestLink.Marshal(b, m, deterministic)
+func (m *GroupSettingStoreEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupSettingStoreEvent.Marshal(b, m, deterministic)
 }
-func (m *AccountResetIncomingContactRequestLink) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountResetIncomingContactRequestLink.Merge(m, src)
+func (m *GroupSettingStoreEvent) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupSettingStoreEvent.Merge(m, src)
 }
-func (m *AccountResetIncomingContactRequestLink) XXX_Size() int {
-	return xxx_messageInfo_AccountResetIncomingContactRequestLink.Size(m)
+func (m *GroupSettingStoreEvent) XXX_Size() int {
+	return xxx_messageInfo_GroupSettingStoreEvent.Size(m)
 }
-func (m *AccountResetIncomingContactRequestLink) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountResetIncomingContactRequestLink.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountResetIncomingContactRequestLink proto.InternalMessageInfo
-
-type AccountResetIncomingContactRequestLink_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *GroupSettingStoreEvent) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupSettingStoreEvent.DiscardUnknown(m)
 }
 
-func (m *AccountResetIncomingContactRequestLink_Request) Reset() {
-	*m = AccountResetIncomingContactRequestLink_Request{}
-}
-func (m *AccountResetIncomingContactRequestLink_Request) String() string {
-	return proto.CompactTextString(m)
-}
-func (*AccountResetIncomingContactRequestLink_Request) ProtoMessage() {}
-func (*AccountResetIncomingContactRequestLink_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{7, 0}
-}
-func (m *AccountResetIncomingContactRequestLink_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountResetIncomingContactRequestLink_Request.Unmarshal(m, b)
-}
-func (m *AccountResetIncomingContactRequestLink_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountResetIncomingContactRequestLink_Request.Marshal(b, m, deterministic)
-}
-func (m *AccountResetIncomingContactRequestLink_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountResetIncomingContactRequestLink_Request.Merge(m, src)
-}
-func (m *AccountResetIncomingContactRequestLink_Request) XXX_Size() int {
-	return xxx_messageInfo_AccountResetIncomingContactRequestLink_Request.Size(m)
-}
-func (m *AccountResetIncomingContactRequestLink_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountResetIncomingContactRequestLink_Request.DiscardUnknown(m)
-}
+var xxx_messageInfo_GroupSettingStoreEvent proto.InternalMessageInfo
 
-var xxx_messageInfo_AccountResetIncomingContactRequestLink_Request proto.InternalMessageInfo
-
-type AccountResetIncomingContactRequestLink_Reply struct {
-	ContactRequestLink   *ContactRequestLink `protobuf:"bytes,1,opt,name=contact_request_link,json=contactRequestLink,proto3" json:"contact_request_link,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
-	XXX_unrecognized     []byte              `json:"-"`
-	XXX_sizecache        int32               `json:"-"`
-}
-
-func (m *AccountResetIncomingContactRequestLink_Reply) Reset() {
-	*m = AccountResetIncomingContactRequestLink_Reply{}
-}
-func (m *AccountResetIncomingContactRequestLink_Reply) String() string {
-	return proto.CompactTextString(m)
-}
-func (*AccountResetIncomingContactRequestLink_Reply) ProtoMessage() {}
-func (*AccountResetIncomingContactRequestLink_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{7, 1}
-}
-func (m *AccountResetIncomingContactRequestLink_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountResetIncomingContactRequestLink_Reply.Unmarshal(m, b)
-}
-func (m *AccountResetIncomingContactRequestLink_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountResetIncomingContactRequestLink_Reply.Marshal(b, m, deterministic)
-}
-func (m *AccountResetIncomingContactRequestLink_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountResetIncomingContactRequestLink_Reply.Merge(m, src)
-}
-func (m *AccountResetIncomingContactRequestLink_Reply) XXX_Size() int {
-	return xxx_messageInfo_AccountResetIncomingContactRequestLink_Reply.Size(m)
-}
-func (m *AccountResetIncomingContactRequestLink_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountResetIncomingContactRequestLink_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountResetIncomingContactRequestLink_Reply proto.InternalMessageInfo
-
-func (m *AccountResetIncomingContactRequestLink_Reply) GetContactRequestLink() *ContactRequestLink {
+func (m *GroupSettingStoreEvent) GetGroupStoreEvent() *GroupStoreEvent {
 	if m != nil {
-		return m.ContactRequestLink
+		return m.GroupStoreEvent
 	}
 	return nil
 }
 
-type EventSubscribe struct {
+func (m *GroupSettingStoreEvent) GetSettingType() GroupSettingStoreSettingType {
+	if m != nil {
+		return m.SettingType
+	}
+	return GroupSettingStoreSettingType_Unknown
+}
+
+func (m *GroupSettingStoreEvent) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
+func (m *GroupSettingStoreEvent) GetValue() []byte {
+	if m != nil {
+		return m.Value
+	}
+	return nil
+}
+
+type GroupMessageSend struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *EventSubscribe) Reset()         { *m = EventSubscribe{} }
-func (m *EventSubscribe) String() string { return proto.CompactTextString(m) }
-func (*EventSubscribe) ProtoMessage()    {}
-func (*EventSubscribe) Descriptor() ([]byte, []int) {
+func (m *GroupMessageSend) Reset()         { *m = GroupMessageSend{} }
+func (m *GroupMessageSend) String() string { return proto.CompactTextString(m) }
+func (*GroupMessageSend) ProtoMessage()    {}
+func (*GroupMessageSend) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{8}
 }
-func (m *EventSubscribe) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EventSubscribe.Unmarshal(m, b)
+func (m *GroupMessageSend) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupMessageSend.Unmarshal(m, b)
 }
-func (m *EventSubscribe) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EventSubscribe.Marshal(b, m, deterministic)
+func (m *GroupMessageSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupMessageSend.Marshal(b, m, deterministic)
 }
-func (m *EventSubscribe) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventSubscribe.Merge(m, src)
+func (m *GroupMessageSend) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMessageSend.Merge(m, src)
 }
-func (m *EventSubscribe) XXX_Size() int {
-	return xxx_messageInfo_EventSubscribe.Size(m)
+func (m *GroupMessageSend) XXX_Size() int {
+	return xxx_messageInfo_GroupMessageSend.Size(m)
 }
-func (m *EventSubscribe) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventSubscribe.DiscardUnknown(m)
+func (m *GroupMessageSend) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMessageSend.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventSubscribe proto.InternalMessageInfo
+var xxx_messageInfo_GroupMessageSend proto.InternalMessageInfo
 
-type EventSubscribe_Request struct {
+type GroupMessageSend_Request struct {
+	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
+	Payload              []byte   `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *EventSubscribe_Request) Reset()         { *m = EventSubscribe_Request{} }
-func (m *EventSubscribe_Request) String() string { return proto.CompactTextString(m) }
-func (*EventSubscribe_Request) ProtoMessage()    {}
-func (*EventSubscribe_Request) Descriptor() ([]byte, []int) {
+func (m *GroupMessageSend_Request) Reset()         { *m = GroupMessageSend_Request{} }
+func (m *GroupMessageSend_Request) String() string { return proto.CompactTextString(m) }
+func (*GroupMessageSend_Request) ProtoMessage()    {}
+func (*GroupMessageSend_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{8, 0}
 }
-func (m *EventSubscribe_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EventSubscribe_Request.Unmarshal(m, b)
+func (m *GroupMessageSend_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupMessageSend_Request.Unmarshal(m, b)
 }
-func (m *EventSubscribe_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EventSubscribe_Request.Marshal(b, m, deterministic)
+func (m *GroupMessageSend_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupMessageSend_Request.Marshal(b, m, deterministic)
 }
-func (m *EventSubscribe_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventSubscribe_Request.Merge(m, src)
+func (m *GroupMessageSend_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMessageSend_Request.Merge(m, src)
 }
-func (m *EventSubscribe_Request) XXX_Size() int {
-	return xxx_messageInfo_EventSubscribe_Request.Size(m)
+func (m *GroupMessageSend_Request) XXX_Size() int {
+	return xxx_messageInfo_GroupMessageSend_Request.Size(m)
 }
-func (m *EventSubscribe_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventSubscribe_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EventSubscribe_Request proto.InternalMessageInfo
-
-type EventSubscribe_Reply struct {
-	Type                 EventSubscribe_Type                  `protobuf:"varint,1,opt,name=type,proto3,enum=berty.protocol.EventSubscribe_Type" json:"type,omitempty"`
-	EventID              []byte                               `protobuf:"bytes,2,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
-	MessageEvent         *EventSubscribe_MessageEvent         `protobuf:"bytes,3,opt,name=message_event,json=messageEvent,proto3" json:"message_event,omitempty"`
-	ContactRequestEvent  *EventSubscribe_ContactRequestEvent  `protobuf:"bytes,4,opt,name=contact_request_event,json=contactRequestEvent,proto3" json:"contact_request_event,omitempty"`
-	GroupInvitationEvent *EventSubscribe_GroupInvitationEvent `protobuf:"bytes,5,opt,name=group_invitation_event,json=groupInvitationEvent,proto3" json:"group_invitation_event,omitempty"`
-	BroadcastEvent       *EventSubscribe_BroadcastEvent       `protobuf:"bytes,6,opt,name=broadcast_event,json=broadcastEvent,proto3" json:"broadcast_event,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                             `json:"-"`
-	XXX_unrecognized     []byte                               `json:"-"`
-	XXX_sizecache        int32                                `json:"-"`
+func (m *GroupMessageSend_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMessageSend_Request.DiscardUnknown(m)
 }
 
-func (m *EventSubscribe_Reply) Reset()         { *m = EventSubscribe_Reply{} }
-func (m *EventSubscribe_Reply) String() string { return proto.CompactTextString(m) }
-func (*EventSubscribe_Reply) ProtoMessage()    {}
-func (*EventSubscribe_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{8, 1}
-}
-func (m *EventSubscribe_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EventSubscribe_Reply.Unmarshal(m, b)
-}
-func (m *EventSubscribe_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EventSubscribe_Reply.Marshal(b, m, deterministic)
-}
-func (m *EventSubscribe_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventSubscribe_Reply.Merge(m, src)
-}
-func (m *EventSubscribe_Reply) XXX_Size() int {
-	return xxx_messageInfo_EventSubscribe_Reply.Size(m)
-}
-func (m *EventSubscribe_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventSubscribe_Reply.DiscardUnknown(m)
-}
+var xxx_messageInfo_GroupMessageSend_Request proto.InternalMessageInfo
 
-var xxx_messageInfo_EventSubscribe_Reply proto.InternalMessageInfo
-
-func (m *EventSubscribe_Reply) GetType() EventSubscribe_Type {
+func (m *GroupMessageSend_Request) GetGroupPubKey() []byte {
 	if m != nil {
-		return m.Type
-	}
-	return EventSubscribe_EventUnknown
-}
-
-func (m *EventSubscribe_Reply) GetEventID() []byte {
-	if m != nil {
-		return m.EventID
+		return m.GroupPubKey
 	}
 	return nil
 }
 
-func (m *EventSubscribe_Reply) GetMessageEvent() *EventSubscribe_MessageEvent {
-	if m != nil {
-		return m.MessageEvent
-	}
-	return nil
-}
-
-func (m *EventSubscribe_Reply) GetContactRequestEvent() *EventSubscribe_ContactRequestEvent {
-	if m != nil {
-		return m.ContactRequestEvent
-	}
-	return nil
-}
-
-func (m *EventSubscribe_Reply) GetGroupInvitationEvent() *EventSubscribe_GroupInvitationEvent {
-	if m != nil {
-		return m.GroupInvitationEvent
-	}
-	return nil
-}
-
-func (m *EventSubscribe_Reply) GetBroadcastEvent() *EventSubscribe_BroadcastEvent {
-	if m != nil {
-		return m.BroadcastEvent
-	}
-	return nil
-}
-
-type EventSubscribe_MessageEvent struct {
-	GroupID              []byte   `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
-	MemberID             []byte   `protobuf:"bytes,2,opt,name=member_id,json=memberId,proto3" json:"member_id,omitempty"`
-	Payload              []byte   `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *EventSubscribe_MessageEvent) Reset()         { *m = EventSubscribe_MessageEvent{} }
-func (m *EventSubscribe_MessageEvent) String() string { return proto.CompactTextString(m) }
-func (*EventSubscribe_MessageEvent) ProtoMessage()    {}
-func (*EventSubscribe_MessageEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{8, 2}
-}
-func (m *EventSubscribe_MessageEvent) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EventSubscribe_MessageEvent.Unmarshal(m, b)
-}
-func (m *EventSubscribe_MessageEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EventSubscribe_MessageEvent.Marshal(b, m, deterministic)
-}
-func (m *EventSubscribe_MessageEvent) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventSubscribe_MessageEvent.Merge(m, src)
-}
-func (m *EventSubscribe_MessageEvent) XXX_Size() int {
-	return xxx_messageInfo_EventSubscribe_MessageEvent.Size(m)
-}
-func (m *EventSubscribe_MessageEvent) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventSubscribe_MessageEvent.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EventSubscribe_MessageEvent proto.InternalMessageInfo
-
-func (m *EventSubscribe_MessageEvent) GetGroupID() []byte {
-	if m != nil {
-		return m.GroupID
-	}
-	return nil
-}
-
-func (m *EventSubscribe_MessageEvent) GetMemberID() []byte {
-	if m != nil {
-		return m.MemberID
-	}
-	return nil
-}
-
-func (m *EventSubscribe_MessageEvent) GetPayload() []byte {
+func (m *GroupMessageSend_Request) GetPayload() []byte {
 	if m != nil {
 		return m.Payload
 	}
 	return nil
 }
 
-type EventSubscribe_ContactRequestEvent struct {
-	ContactAccountPubKey []byte   `protobuf:"bytes,1,opt,name=contact_account_pub_key,json=contactAccountPubKey,proto3" json:"contact_account_pub_key,omitempty"`
-	Metadata             []byte   `protobuf:"bytes,2,opt,name=metadata,proto3" json:"metadata,omitempty"`
+type GroupMessageSend_Reply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *EventSubscribe_ContactRequestEvent) Reset()         { *m = EventSubscribe_ContactRequestEvent{} }
-func (m *EventSubscribe_ContactRequestEvent) String() string { return proto.CompactTextString(m) }
-func (*EventSubscribe_ContactRequestEvent) ProtoMessage()    {}
-func (*EventSubscribe_ContactRequestEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{8, 3}
+func (m *GroupMessageSend_Reply) Reset()         { *m = GroupMessageSend_Reply{} }
+func (m *GroupMessageSend_Reply) String() string { return proto.CompactTextString(m) }
+func (*GroupMessageSend_Reply) ProtoMessage()    {}
+func (*GroupMessageSend_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{8, 1}
 }
-func (m *EventSubscribe_ContactRequestEvent) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EventSubscribe_ContactRequestEvent.Unmarshal(m, b)
+func (m *GroupMessageSend_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupMessageSend_Reply.Unmarshal(m, b)
 }
-func (m *EventSubscribe_ContactRequestEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EventSubscribe_ContactRequestEvent.Marshal(b, m, deterministic)
+func (m *GroupMessageSend_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupMessageSend_Reply.Marshal(b, m, deterministic)
 }
-func (m *EventSubscribe_ContactRequestEvent) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventSubscribe_ContactRequestEvent.Merge(m, src)
+func (m *GroupMessageSend_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMessageSend_Reply.Merge(m, src)
 }
-func (m *EventSubscribe_ContactRequestEvent) XXX_Size() int {
-	return xxx_messageInfo_EventSubscribe_ContactRequestEvent.Size(m)
+func (m *GroupMessageSend_Reply) XXX_Size() int {
+	return xxx_messageInfo_GroupMessageSend_Reply.Size(m)
 }
-func (m *EventSubscribe_ContactRequestEvent) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventSubscribe_ContactRequestEvent.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EventSubscribe_ContactRequestEvent proto.InternalMessageInfo
-
-func (m *EventSubscribe_ContactRequestEvent) GetContactAccountPubKey() []byte {
-	if m != nil {
-		return m.ContactAccountPubKey
-	}
-	return nil
+func (m *GroupMessageSend_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMessageSend_Reply.DiscardUnknown(m)
 }
 
-func (m *EventSubscribe_ContactRequestEvent) GetMetadata() []byte {
-	if m != nil {
-		return m.Metadata
-	}
-	return nil
-}
+var xxx_messageInfo_GroupMessageSend_Reply proto.InternalMessageInfo
 
-type EventSubscribe_GroupInvitationEvent struct {
-	GroupID              []byte   `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
-	InviterPubKey        []byte   `protobuf:"bytes,2,opt,name=inviter_pub_key,json=inviterPubKey,proto3" json:"inviter_pub_key,omitempty"`
-	Metadata             []byte   `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+type AccountAppendAppSpecificEvent struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *EventSubscribe_GroupInvitationEvent) Reset()         { *m = EventSubscribe_GroupInvitationEvent{} }
-func (m *EventSubscribe_GroupInvitationEvent) String() string { return proto.CompactTextString(m) }
-func (*EventSubscribe_GroupInvitationEvent) ProtoMessage()    {}
-func (*EventSubscribe_GroupInvitationEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{8, 4}
-}
-func (m *EventSubscribe_GroupInvitationEvent) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EventSubscribe_GroupInvitationEvent.Unmarshal(m, b)
-}
-func (m *EventSubscribe_GroupInvitationEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EventSubscribe_GroupInvitationEvent.Marshal(b, m, deterministic)
-}
-func (m *EventSubscribe_GroupInvitationEvent) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventSubscribe_GroupInvitationEvent.Merge(m, src)
-}
-func (m *EventSubscribe_GroupInvitationEvent) XXX_Size() int {
-	return xxx_messageInfo_EventSubscribe_GroupInvitationEvent.Size(m)
-}
-func (m *EventSubscribe_GroupInvitationEvent) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventSubscribe_GroupInvitationEvent.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EventSubscribe_GroupInvitationEvent proto.InternalMessageInfo
-
-func (m *EventSubscribe_GroupInvitationEvent) GetGroupID() []byte {
-	if m != nil {
-		return m.GroupID
-	}
-	return nil
-}
-
-func (m *EventSubscribe_GroupInvitationEvent) GetInviterPubKey() []byte {
-	if m != nil {
-		return m.InviterPubKey
-	}
-	return nil
-}
-
-func (m *EventSubscribe_GroupInvitationEvent) GetMetadata() []byte {
-	if m != nil {
-		return m.Metadata
-	}
-	return nil
-}
-
-type EventSubscribe_BroadcastEvent struct {
-	GroupID              []byte   `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
-	MemberID             []byte   `protobuf:"bytes,2,opt,name=member_id,json=memberId,proto3" json:"member_id,omitempty"`
-	TopicID              []byte   `protobuf:"bytes,3,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *EventSubscribe_BroadcastEvent) Reset()         { *m = EventSubscribe_BroadcastEvent{} }
-func (m *EventSubscribe_BroadcastEvent) String() string { return proto.CompactTextString(m) }
-func (*EventSubscribe_BroadcastEvent) ProtoMessage()    {}
-func (*EventSubscribe_BroadcastEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{8, 5}
-}
-func (m *EventSubscribe_BroadcastEvent) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EventSubscribe_BroadcastEvent.Unmarshal(m, b)
-}
-func (m *EventSubscribe_BroadcastEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EventSubscribe_BroadcastEvent.Marshal(b, m, deterministic)
-}
-func (m *EventSubscribe_BroadcastEvent) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventSubscribe_BroadcastEvent.Merge(m, src)
-}
-func (m *EventSubscribe_BroadcastEvent) XXX_Size() int {
-	return xxx_messageInfo_EventSubscribe_BroadcastEvent.Size(m)
-}
-func (m *EventSubscribe_BroadcastEvent) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventSubscribe_BroadcastEvent.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EventSubscribe_BroadcastEvent proto.InternalMessageInfo
-
-func (m *EventSubscribe_BroadcastEvent) GetGroupID() []byte {
-	if m != nil {
-		return m.GroupID
-	}
-	return nil
-}
-
-func (m *EventSubscribe_BroadcastEvent) GetMemberID() []byte {
-	if m != nil {
-		return m.MemberID
-	}
-	return nil
-}
-
-func (m *EventSubscribe_BroadcastEvent) GetTopicID() []byte {
-	if m != nil {
-		return m.TopicID
-	}
-	return nil
-}
-
-type ContactRequestAccept struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestAccept) Reset()         { *m = ContactRequestAccept{} }
-func (m *ContactRequestAccept) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestAccept) ProtoMessage()    {}
-func (*ContactRequestAccept) Descriptor() ([]byte, []int) {
+func (m *AccountAppendAppSpecificEvent) Reset()         { *m = AccountAppendAppSpecificEvent{} }
+func (m *AccountAppendAppSpecificEvent) String() string { return proto.CompactTextString(m) }
+func (*AccountAppendAppSpecificEvent) ProtoMessage()    {}
+func (*AccountAppendAppSpecificEvent) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{9}
 }
-func (m *ContactRequestAccept) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestAccept.Unmarshal(m, b)
+func (m *AccountAppendAppSpecificEvent) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountAppendAppSpecificEvent.Unmarshal(m, b)
 }
-func (m *ContactRequestAccept) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestAccept.Marshal(b, m, deterministic)
+func (m *AccountAppendAppSpecificEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountAppendAppSpecificEvent.Marshal(b, m, deterministic)
 }
-func (m *ContactRequestAccept) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestAccept.Merge(m, src)
+func (m *AccountAppendAppSpecificEvent) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountAppendAppSpecificEvent.Merge(m, src)
 }
-func (m *ContactRequestAccept) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestAccept.Size(m)
+func (m *AccountAppendAppSpecificEvent) XXX_Size() int {
+	return xxx_messageInfo_AccountAppendAppSpecificEvent.Size(m)
 }
-func (m *ContactRequestAccept) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestAccept.DiscardUnknown(m)
+func (m *AccountAppendAppSpecificEvent) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountAppendAppSpecificEvent.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ContactRequestAccept proto.InternalMessageInfo
+var xxx_messageInfo_AccountAppendAppSpecificEvent proto.InternalMessageInfo
 
-type ContactRequestAccept_Request struct {
-	ContactAccountPubKey []byte   `protobuf:"bytes,1,opt,name=contact_account_pub_key,json=contactAccountPubKey,proto3" json:"contact_account_pub_key,omitempty"`
+type AccountAppendAppSpecificEvent_Request struct {
+	Payload              []byte   `protobuf:"bytes,1,opt,name=payload,proto3" json:"payload,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ContactRequestAccept_Request) Reset()         { *m = ContactRequestAccept_Request{} }
-func (m *ContactRequestAccept_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestAccept_Request) ProtoMessage()    {}
-func (*ContactRequestAccept_Request) Descriptor() ([]byte, []int) {
+func (m *AccountAppendAppSpecificEvent_Request) Reset()         { *m = AccountAppendAppSpecificEvent_Request{} }
+func (m *AccountAppendAppSpecificEvent_Request) String() string { return proto.CompactTextString(m) }
+func (*AccountAppendAppSpecificEvent_Request) ProtoMessage()    {}
+func (*AccountAppendAppSpecificEvent_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{9, 0}
 }
-func (m *ContactRequestAccept_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestAccept_Request.Unmarshal(m, b)
+func (m *AccountAppendAppSpecificEvent_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountAppendAppSpecificEvent_Request.Unmarshal(m, b)
 }
-func (m *ContactRequestAccept_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestAccept_Request.Marshal(b, m, deterministic)
+func (m *AccountAppendAppSpecificEvent_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountAppendAppSpecificEvent_Request.Marshal(b, m, deterministic)
 }
-func (m *ContactRequestAccept_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestAccept_Request.Merge(m, src)
+func (m *AccountAppendAppSpecificEvent_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountAppendAppSpecificEvent_Request.Merge(m, src)
 }
-func (m *ContactRequestAccept_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestAccept_Request.Size(m)
+func (m *AccountAppendAppSpecificEvent_Request) XXX_Size() int {
+	return xxx_messageInfo_AccountAppendAppSpecificEvent_Request.Size(m)
 }
-func (m *ContactRequestAccept_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestAccept_Request.DiscardUnknown(m)
+func (m *AccountAppendAppSpecificEvent_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountAppendAppSpecificEvent_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ContactRequestAccept_Request proto.InternalMessageInfo
+var xxx_messageInfo_AccountAppendAppSpecificEvent_Request proto.InternalMessageInfo
 
-func (m *ContactRequestAccept_Request) GetContactAccountPubKey() []byte {
+func (m *AccountAppendAppSpecificEvent_Request) GetPayload() []byte {
 	if m != nil {
-		return m.ContactAccountPubKey
+		return m.Payload
 	}
 	return nil
 }
 
-type ContactRequestAccept_Reply struct {
+type AccountAppendAppSpecificEvent_Reply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ContactRequestAccept_Reply) Reset()         { *m = ContactRequestAccept_Reply{} }
-func (m *ContactRequestAccept_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestAccept_Reply) ProtoMessage()    {}
-func (*ContactRequestAccept_Reply) Descriptor() ([]byte, []int) {
+func (m *AccountAppendAppSpecificEvent_Reply) Reset()         { *m = AccountAppendAppSpecificEvent_Reply{} }
+func (m *AccountAppendAppSpecificEvent_Reply) String() string { return proto.CompactTextString(m) }
+func (*AccountAppendAppSpecificEvent_Reply) ProtoMessage()    {}
+func (*AccountAppendAppSpecificEvent_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{9, 1}
 }
-func (m *ContactRequestAccept_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestAccept_Reply.Unmarshal(m, b)
+func (m *AccountAppendAppSpecificEvent_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountAppendAppSpecificEvent_Reply.Unmarshal(m, b)
 }
-func (m *ContactRequestAccept_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestAccept_Reply.Marshal(b, m, deterministic)
+func (m *AccountAppendAppSpecificEvent_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountAppendAppSpecificEvent_Reply.Marshal(b, m, deterministic)
 }
-func (m *ContactRequestAccept_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestAccept_Reply.Merge(m, src)
+func (m *AccountAppendAppSpecificEvent_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountAppendAppSpecificEvent_Reply.Merge(m, src)
 }
-func (m *ContactRequestAccept_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestAccept_Reply.Size(m)
+func (m *AccountAppendAppSpecificEvent_Reply) XXX_Size() int {
+	return xxx_messageInfo_AccountAppendAppSpecificEvent_Reply.Size(m)
 }
-func (m *ContactRequestAccept_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestAccept_Reply.DiscardUnknown(m)
+func (m *AccountAppendAppSpecificEvent_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountAppendAppSpecificEvent_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ContactRequestAccept_Reply proto.InternalMessageInfo
+var xxx_messageInfo_AccountAppendAppSpecificEvent_Reply proto.InternalMessageInfo
 
-type ContactRequestDiscard struct {
+type GroupMessageSubscribe struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ContactRequestDiscard) Reset()         { *m = ContactRequestDiscard{} }
-func (m *ContactRequestDiscard) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestDiscard) ProtoMessage()    {}
-func (*ContactRequestDiscard) Descriptor() ([]byte, []int) {
+func (m *GroupMessageSubscribe) Reset()         { *m = GroupMessageSubscribe{} }
+func (m *GroupMessageSubscribe) String() string { return proto.CompactTextString(m) }
+func (*GroupMessageSubscribe) ProtoMessage()    {}
+func (*GroupMessageSubscribe) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{10}
 }
-func (m *ContactRequestDiscard) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestDiscard.Unmarshal(m, b)
+func (m *GroupMessageSubscribe) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupMessageSubscribe.Unmarshal(m, b)
 }
-func (m *ContactRequestDiscard) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestDiscard.Marshal(b, m, deterministic)
+func (m *GroupMessageSubscribe) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupMessageSubscribe.Marshal(b, m, deterministic)
 }
-func (m *ContactRequestDiscard) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestDiscard.Merge(m, src)
+func (m *GroupMessageSubscribe) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMessageSubscribe.Merge(m, src)
 }
-func (m *ContactRequestDiscard) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestDiscard.Size(m)
+func (m *GroupMessageSubscribe) XXX_Size() int {
+	return xxx_messageInfo_GroupMessageSubscribe.Size(m)
 }
-func (m *ContactRequestDiscard) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestDiscard.DiscardUnknown(m)
+func (m *GroupMessageSubscribe) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMessageSubscribe.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ContactRequestDiscard proto.InternalMessageInfo
+var xxx_messageInfo_GroupMessageSubscribe proto.InternalMessageInfo
 
-type ContactRequestDiscard_Request struct {
-	ContactAccountPubKey []byte   `protobuf:"bytes,1,opt,name=contact_account_pub_key,json=contactAccountPubKey,proto3" json:"contact_account_pub_key,omitempty"`
+type GroupMessageSubscribe_Request struct {
+	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
+	Since                []byte   `protobuf:"bytes,2,opt,name=since,proto3" json:"since,omitempty"`
+	Until                []byte   `protobuf:"bytes,3,opt,name=until,proto3" json:"until,omitempty"`
+	GoBackwards          bool     `protobuf:"varint,4,opt,name=go_backwards,json=goBackwards,proto3" json:"go_backwards,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ContactRequestDiscard_Request) Reset()         { *m = ContactRequestDiscard_Request{} }
-func (m *ContactRequestDiscard_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestDiscard_Request) ProtoMessage()    {}
-func (*ContactRequestDiscard_Request) Descriptor() ([]byte, []int) {
+func (m *GroupMessageSubscribe_Request) Reset()         { *m = GroupMessageSubscribe_Request{} }
+func (m *GroupMessageSubscribe_Request) String() string { return proto.CompactTextString(m) }
+func (*GroupMessageSubscribe_Request) ProtoMessage()    {}
+func (*GroupMessageSubscribe_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{10, 0}
 }
-func (m *ContactRequestDiscard_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestDiscard_Request.Unmarshal(m, b)
+func (m *GroupMessageSubscribe_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupMessageSubscribe_Request.Unmarshal(m, b)
 }
-func (m *ContactRequestDiscard_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestDiscard_Request.Marshal(b, m, deterministic)
+func (m *GroupMessageSubscribe_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupMessageSubscribe_Request.Marshal(b, m, deterministic)
 }
-func (m *ContactRequestDiscard_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestDiscard_Request.Merge(m, src)
+func (m *GroupMessageSubscribe_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMessageSubscribe_Request.Merge(m, src)
 }
-func (m *ContactRequestDiscard_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestDiscard_Request.Size(m)
+func (m *GroupMessageSubscribe_Request) XXX_Size() int {
+	return xxx_messageInfo_GroupMessageSubscribe_Request.Size(m)
 }
-func (m *ContactRequestDiscard_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestDiscard_Request.DiscardUnknown(m)
+func (m *GroupMessageSubscribe_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMessageSubscribe_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ContactRequestDiscard_Request proto.InternalMessageInfo
+var xxx_messageInfo_GroupMessageSubscribe_Request proto.InternalMessageInfo
 
-func (m *ContactRequestDiscard_Request) GetContactAccountPubKey() []byte {
+func (m *GroupMessageSubscribe_Request) GetGroupPubKey() []byte {
 	if m != nil {
-		return m.ContactAccountPubKey
+		return m.GroupPubKey
 	}
 	return nil
 }
 
-type ContactRequestDiscard_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *GroupMessageSubscribe_Request) GetSince() []byte {
+	if m != nil {
+		return m.Since
+	}
+	return nil
 }
 
-func (m *ContactRequestDiscard_Reply) Reset()         { *m = ContactRequestDiscard_Reply{} }
-func (m *ContactRequestDiscard_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestDiscard_Reply) ProtoMessage()    {}
-func (*ContactRequestDiscard_Reply) Descriptor() ([]byte, []int) {
+func (m *GroupMessageSubscribe_Request) GetUntil() []byte {
+	if m != nil {
+		return m.Until
+	}
+	return nil
+}
+
+func (m *GroupMessageSubscribe_Request) GetGoBackwards() bool {
+	if m != nil {
+		return m.GoBackwards
+	}
+	return false
+}
+
+type GroupMessageSubscribe_Reply struct {
+	Event                *GroupMessageStoreEvent `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
+}
+
+func (m *GroupMessageSubscribe_Reply) Reset()         { *m = GroupMessageSubscribe_Reply{} }
+func (m *GroupMessageSubscribe_Reply) String() string { return proto.CompactTextString(m) }
+func (*GroupMessageSubscribe_Reply) ProtoMessage()    {}
+func (*GroupMessageSubscribe_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{10, 1}
 }
-func (m *ContactRequestDiscard_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestDiscard_Reply.Unmarshal(m, b)
+func (m *GroupMessageSubscribe_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupMessageSubscribe_Reply.Unmarshal(m, b)
 }
-func (m *ContactRequestDiscard_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestDiscard_Reply.Marshal(b, m, deterministic)
+func (m *GroupMessageSubscribe_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupMessageSubscribe_Reply.Marshal(b, m, deterministic)
 }
-func (m *ContactRequestDiscard_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestDiscard_Reply.Merge(m, src)
+func (m *GroupMessageSubscribe_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMessageSubscribe_Reply.Merge(m, src)
 }
-func (m *ContactRequestDiscard_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestDiscard_Reply.Size(m)
+func (m *GroupMessageSubscribe_Reply) XXX_Size() int {
+	return xxx_messageInfo_GroupMessageSubscribe_Reply.Size(m)
 }
-func (m *ContactRequestDiscard_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestDiscard_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestDiscard_Reply proto.InternalMessageInfo
-
-type ContactRequestListIncoming struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *GroupMessageSubscribe_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMessageSubscribe_Reply.DiscardUnknown(m)
 }
 
-func (m *ContactRequestListIncoming) Reset()         { *m = ContactRequestListIncoming{} }
-func (m *ContactRequestListIncoming) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestListIncoming) ProtoMessage()    {}
-func (*ContactRequestListIncoming) Descriptor() ([]byte, []int) {
+var xxx_messageInfo_GroupMessageSubscribe_Reply proto.InternalMessageInfo
+
+func (m *GroupMessageSubscribe_Reply) GetEvent() *GroupMessageStoreEvent {
+	if m != nil {
+		return m.Event
+	}
+	return nil
+}
+
+type GroupMessageStoreEvent struct {
+	GroupStoreEvent      *GroupStoreEvent `protobuf:"bytes,1,opt,name=group_store_event,json=groupStoreEvent,proto3" json:"group_store_event,omitempty"`
+	Payload              []byte           `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
+}
+
+func (m *GroupMessageStoreEvent) Reset()         { *m = GroupMessageStoreEvent{} }
+func (m *GroupMessageStoreEvent) String() string { return proto.CompactTextString(m) }
+func (*GroupMessageStoreEvent) ProtoMessage()    {}
+func (*GroupMessageStoreEvent) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{11}
 }
-func (m *ContactRequestListIncoming) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestListIncoming.Unmarshal(m, b)
+func (m *GroupMessageStoreEvent) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupMessageStoreEvent.Unmarshal(m, b)
 }
-func (m *ContactRequestListIncoming) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestListIncoming.Marshal(b, m, deterministic)
+func (m *GroupMessageStoreEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupMessageStoreEvent.Marshal(b, m, deterministic)
 }
-func (m *ContactRequestListIncoming) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestListIncoming.Merge(m, src)
+func (m *GroupMessageStoreEvent) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMessageStoreEvent.Merge(m, src)
 }
-func (m *ContactRequestListIncoming) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestListIncoming.Size(m)
+func (m *GroupMessageStoreEvent) XXX_Size() int {
+	return xxx_messageInfo_GroupMessageStoreEvent.Size(m)
 }
-func (m *ContactRequestListIncoming) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestListIncoming.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestListIncoming proto.InternalMessageInfo
-
-type ContactRequestListIncoming_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *GroupMessageStoreEvent) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMessageStoreEvent.DiscardUnknown(m)
 }
 
-func (m *ContactRequestListIncoming_Request) Reset()         { *m = ContactRequestListIncoming_Request{} }
-func (m *ContactRequestListIncoming_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestListIncoming_Request) ProtoMessage()    {}
-func (*ContactRequestListIncoming_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{11, 0}
-}
-func (m *ContactRequestListIncoming_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestListIncoming_Request.Unmarshal(m, b)
-}
-func (m *ContactRequestListIncoming_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestListIncoming_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestListIncoming_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestListIncoming_Request.Merge(m, src)
-}
-func (m *ContactRequestListIncoming_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestListIncoming_Request.Size(m)
-}
-func (m *ContactRequestListIncoming_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestListIncoming_Request.DiscardUnknown(m)
-}
+var xxx_messageInfo_GroupMessageStoreEvent proto.InternalMessageInfo
 
-var xxx_messageInfo_ContactRequestListIncoming_Request proto.InternalMessageInfo
-
-type ContactRequestListIncoming_Reply struct {
-	Contact              *Contact `protobuf:"bytes,1,opt,name=contact,proto3" json:"contact,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestListIncoming_Reply) Reset()         { *m = ContactRequestListIncoming_Reply{} }
-func (m *ContactRequestListIncoming_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestListIncoming_Reply) ProtoMessage()    {}
-func (*ContactRequestListIncoming_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{11, 1}
-}
-func (m *ContactRequestListIncoming_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestListIncoming_Reply.Unmarshal(m, b)
-}
-func (m *ContactRequestListIncoming_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestListIncoming_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestListIncoming_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestListIncoming_Reply.Merge(m, src)
-}
-func (m *ContactRequestListIncoming_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestListIncoming_Reply.Size(m)
-}
-func (m *ContactRequestListIncoming_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestListIncoming_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestListIncoming_Reply proto.InternalMessageInfo
-
-func (m *ContactRequestListIncoming_Reply) GetContact() *Contact {
+func (m *GroupMessageStoreEvent) GetGroupStoreEvent() *GroupStoreEvent {
 	if m != nil {
-		return m.Contact
+		return m.GroupStoreEvent
 	}
 	return nil
 }
 
-type ContactRequestListOutgoing struct {
+func (m *GroupMessageStoreEvent) GetPayload() []byte {
+	if m != nil {
+		return m.Payload
+	}
+	return nil
+}
+
+type GroupMemberSubscribe struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ContactRequestListOutgoing) Reset()         { *m = ContactRequestListOutgoing{} }
-func (m *ContactRequestListOutgoing) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestListOutgoing) ProtoMessage()    {}
-func (*ContactRequestListOutgoing) Descriptor() ([]byte, []int) {
+func (m *GroupMemberSubscribe) Reset()         { *m = GroupMemberSubscribe{} }
+func (m *GroupMemberSubscribe) String() string { return proto.CompactTextString(m) }
+func (*GroupMemberSubscribe) ProtoMessage()    {}
+func (*GroupMemberSubscribe) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{12}
 }
-func (m *ContactRequestListOutgoing) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestListOutgoing.Unmarshal(m, b)
+func (m *GroupMemberSubscribe) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupMemberSubscribe.Unmarshal(m, b)
 }
-func (m *ContactRequestListOutgoing) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestListOutgoing.Marshal(b, m, deterministic)
+func (m *GroupMemberSubscribe) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupMemberSubscribe.Marshal(b, m, deterministic)
 }
-func (m *ContactRequestListOutgoing) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestListOutgoing.Merge(m, src)
+func (m *GroupMemberSubscribe) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMemberSubscribe.Merge(m, src)
 }
-func (m *ContactRequestListOutgoing) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestListOutgoing.Size(m)
+func (m *GroupMemberSubscribe) XXX_Size() int {
+	return xxx_messageInfo_GroupMemberSubscribe.Size(m)
 }
-func (m *ContactRequestListOutgoing) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestListOutgoing.DiscardUnknown(m)
+func (m *GroupMemberSubscribe) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMemberSubscribe.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ContactRequestListOutgoing proto.InternalMessageInfo
+var xxx_messageInfo_GroupMemberSubscribe proto.InternalMessageInfo
 
-type ContactRequestListOutgoing_Request struct {
+type GroupMemberSubscribe_Request struct {
+	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
+	Since                []byte   `protobuf:"bytes,2,opt,name=since,proto3" json:"since,omitempty"`
+	Until                []byte   `protobuf:"bytes,3,opt,name=until,proto3" json:"until,omitempty"`
+	GoBackwards          bool     `protobuf:"varint,4,opt,name=go_backwards,json=goBackwards,proto3" json:"go_backwards,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ContactRequestListOutgoing_Request) Reset()         { *m = ContactRequestListOutgoing_Request{} }
-func (m *ContactRequestListOutgoing_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestListOutgoing_Request) ProtoMessage()    {}
-func (*ContactRequestListOutgoing_Request) Descriptor() ([]byte, []int) {
+func (m *GroupMemberSubscribe_Request) Reset()         { *m = GroupMemberSubscribe_Request{} }
+func (m *GroupMemberSubscribe_Request) String() string { return proto.CompactTextString(m) }
+func (*GroupMemberSubscribe_Request) ProtoMessage()    {}
+func (*GroupMemberSubscribe_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{12, 0}
 }
-func (m *ContactRequestListOutgoing_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestListOutgoing_Request.Unmarshal(m, b)
+func (m *GroupMemberSubscribe_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupMemberSubscribe_Request.Unmarshal(m, b)
 }
-func (m *ContactRequestListOutgoing_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestListOutgoing_Request.Marshal(b, m, deterministic)
+func (m *GroupMemberSubscribe_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupMemberSubscribe_Request.Marshal(b, m, deterministic)
 }
-func (m *ContactRequestListOutgoing_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestListOutgoing_Request.Merge(m, src)
+func (m *GroupMemberSubscribe_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMemberSubscribe_Request.Merge(m, src)
 }
-func (m *ContactRequestListOutgoing_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestListOutgoing_Request.Size(m)
+func (m *GroupMemberSubscribe_Request) XXX_Size() int {
+	return xxx_messageInfo_GroupMemberSubscribe_Request.Size(m)
 }
-func (m *ContactRequestListOutgoing_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestListOutgoing_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestListOutgoing_Request proto.InternalMessageInfo
-
-type ContactRequestListOutgoing_Reply struct {
-	Contact              *Contact `protobuf:"bytes,1,opt,name=contact,proto3" json:"contact,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *GroupMemberSubscribe_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMemberSubscribe_Request.DiscardUnknown(m)
 }
 
-func (m *ContactRequestListOutgoing_Reply) Reset()         { *m = ContactRequestListOutgoing_Reply{} }
-func (m *ContactRequestListOutgoing_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestListOutgoing_Reply) ProtoMessage()    {}
-func (*ContactRequestListOutgoing_Reply) Descriptor() ([]byte, []int) {
+var xxx_messageInfo_GroupMemberSubscribe_Request proto.InternalMessageInfo
+
+func (m *GroupMemberSubscribe_Request) GetGroupPubKey() []byte {
+	if m != nil {
+		return m.GroupPubKey
+	}
+	return nil
+}
+
+func (m *GroupMemberSubscribe_Request) GetSince() []byte {
+	if m != nil {
+		return m.Since
+	}
+	return nil
+}
+
+func (m *GroupMemberSubscribe_Request) GetUntil() []byte {
+	if m != nil {
+		return m.Until
+	}
+	return nil
+}
+
+func (m *GroupMemberSubscribe_Request) GetGoBackwards() bool {
+	if m != nil {
+		return m.GoBackwards
+	}
+	return false
+}
+
+type GroupMemberSubscribe_Reply struct {
+	Event                *GroupMemberStoreEvent `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
+	XXX_unrecognized     []byte                 `json:"-"`
+	XXX_sizecache        int32                  `json:"-"`
+}
+
+func (m *GroupMemberSubscribe_Reply) Reset()         { *m = GroupMemberSubscribe_Reply{} }
+func (m *GroupMemberSubscribe_Reply) String() string { return proto.CompactTextString(m) }
+func (*GroupMemberSubscribe_Reply) ProtoMessage()    {}
+func (*GroupMemberSubscribe_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{12, 1}
 }
-func (m *ContactRequestListOutgoing_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestListOutgoing_Reply.Unmarshal(m, b)
+func (m *GroupMemberSubscribe_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupMemberSubscribe_Reply.Unmarshal(m, b)
 }
-func (m *ContactRequestListOutgoing_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestListOutgoing_Reply.Marshal(b, m, deterministic)
+func (m *GroupMemberSubscribe_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupMemberSubscribe_Reply.Marshal(b, m, deterministic)
 }
-func (m *ContactRequestListOutgoing_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestListOutgoing_Reply.Merge(m, src)
+func (m *GroupMemberSubscribe_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMemberSubscribe_Reply.Merge(m, src)
 }
-func (m *ContactRequestListOutgoing_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestListOutgoing_Reply.Size(m)
+func (m *GroupMemberSubscribe_Reply) XXX_Size() int {
+	return xxx_messageInfo_GroupMemberSubscribe_Reply.Size(m)
 }
-func (m *ContactRequestListOutgoing_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestListOutgoing_Reply.DiscardUnknown(m)
+func (m *GroupMemberSubscribe_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMemberSubscribe_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ContactRequestListOutgoing_Reply proto.InternalMessageInfo
+var xxx_messageInfo_GroupMemberSubscribe_Reply proto.InternalMessageInfo
 
-func (m *ContactRequestListOutgoing_Reply) GetContact() *Contact {
+func (m *GroupMemberSubscribe_Reply) GetEvent() *GroupMemberStoreEvent {
 	if m != nil {
-		return m.Contact
+		return m.Event
 	}
 	return nil
 }
 
-type ContactRequestSend struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+type GroupMemberStoreEvent struct {
+	GroupStoreEvent      *GroupStoreEvent `protobuf:"bytes,1,opt,name=group_store_event,json=groupStoreEvent,proto3" json:"group_store_event,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
 }
 
-func (m *ContactRequestSend) Reset()         { *m = ContactRequestSend{} }
-func (m *ContactRequestSend) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestSend) ProtoMessage()    {}
-func (*ContactRequestSend) Descriptor() ([]byte, []int) {
+func (m *GroupMemberStoreEvent) Reset()         { *m = GroupMemberStoreEvent{} }
+func (m *GroupMemberStoreEvent) String() string { return proto.CompactTextString(m) }
+func (*GroupMemberStoreEvent) ProtoMessage()    {}
+func (*GroupMemberStoreEvent) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{13}
 }
-func (m *ContactRequestSend) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestSend.Unmarshal(m, b)
+func (m *GroupMemberStoreEvent) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupMemberStoreEvent.Unmarshal(m, b)
 }
-func (m *ContactRequestSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestSend.Marshal(b, m, deterministic)
+func (m *GroupMemberStoreEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupMemberStoreEvent.Marshal(b, m, deterministic)
 }
-func (m *ContactRequestSend) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestSend.Merge(m, src)
+func (m *GroupMemberStoreEvent) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMemberStoreEvent.Merge(m, src)
 }
-func (m *ContactRequestSend) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestSend.Size(m)
+func (m *GroupMemberStoreEvent) XXX_Size() int {
+	return xxx_messageInfo_GroupMemberStoreEvent.Size(m)
 }
-func (m *ContactRequestSend) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestSend.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestSend proto.InternalMessageInfo
-
-type ContactRequestSend_Request struct {
-	ContactRequestLink   *ContactRequestLink `protobuf:"bytes,1,opt,name=contact_request_link,json=contactRequestLink,proto3" json:"contact_request_link,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
-	XXX_unrecognized     []byte              `json:"-"`
-	XXX_sizecache        int32               `json:"-"`
+func (m *GroupMemberStoreEvent) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMemberStoreEvent.DiscardUnknown(m)
 }
 
-func (m *ContactRequestSend_Request) Reset()         { *m = ContactRequestSend_Request{} }
-func (m *ContactRequestSend_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestSend_Request) ProtoMessage()    {}
-func (*ContactRequestSend_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{13, 0}
-}
-func (m *ContactRequestSend_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestSend_Request.Unmarshal(m, b)
-}
-func (m *ContactRequestSend_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestSend_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestSend_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestSend_Request.Merge(m, src)
-}
-func (m *ContactRequestSend_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestSend_Request.Size(m)
-}
-func (m *ContactRequestSend_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestSend_Request.DiscardUnknown(m)
-}
+var xxx_messageInfo_GroupMemberStoreEvent proto.InternalMessageInfo
 
-var xxx_messageInfo_ContactRequestSend_Request proto.InternalMessageInfo
-
-func (m *ContactRequestSend_Request) GetContactRequestLink() *ContactRequestLink {
+func (m *GroupMemberStoreEvent) GetGroupStoreEvent() *GroupStoreEvent {
 	if m != nil {
-		return m.ContactRequestLink
+		return m.GroupStoreEvent
 	}
 	return nil
 }
-
-type ContactRequestSend_Reply struct {
-	Contact              *Contact `protobuf:"bytes,1,opt,name=contact,proto3" json:"contact,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestSend_Reply) Reset()         { *m = ContactRequestSend_Reply{} }
-func (m *ContactRequestSend_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestSend_Reply) ProtoMessage()    {}
-func (*ContactRequestSend_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{13, 1}
-}
-func (m *ContactRequestSend_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestSend_Reply.Unmarshal(m, b)
-}
-func (m *ContactRequestSend_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestSend_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestSend_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestSend_Reply.Merge(m, src)
-}
-func (m *ContactRequestSend_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestSend_Reply.Size(m)
-}
-func (m *ContactRequestSend_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestSend_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestSend_Reply proto.InternalMessageInfo
-
-func (m *ContactRequestSend_Reply) GetContact() *Contact {
-	if m != nil {
-		return m.Contact
-	}
-	return nil
-}
-
-type ContactGet struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactGet) Reset()         { *m = ContactGet{} }
-func (m *ContactGet) String() string { return proto.CompactTextString(m) }
-func (*ContactGet) ProtoMessage()    {}
-func (*ContactGet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{14}
-}
-func (m *ContactGet) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactGet.Unmarshal(m, b)
-}
-func (m *ContactGet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactGet.Marshal(b, m, deterministic)
-}
-func (m *ContactGet) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactGet.Merge(m, src)
-}
-func (m *ContactGet) XXX_Size() int {
-	return xxx_messageInfo_ContactGet.Size(m)
-}
-func (m *ContactGet) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactGet.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactGet proto.InternalMessageInfo
-
-type ContactGet_Request struct {
-	ContactAccountPubKey []byte   `protobuf:"bytes,1,opt,name=contact_account_pub_key,json=contactAccountPubKey,proto3" json:"contact_account_pub_key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactGet_Request) Reset()         { *m = ContactGet_Request{} }
-func (m *ContactGet_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactGet_Request) ProtoMessage()    {}
-func (*ContactGet_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{14, 0}
-}
-func (m *ContactGet_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactGet_Request.Unmarshal(m, b)
-}
-func (m *ContactGet_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactGet_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactGet_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactGet_Request.Merge(m, src)
-}
-func (m *ContactGet_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactGet_Request.Size(m)
-}
-func (m *ContactGet_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactGet_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactGet_Request proto.InternalMessageInfo
-
-func (m *ContactGet_Request) GetContactAccountPubKey() []byte {
-	if m != nil {
-		return m.ContactAccountPubKey
-	}
-	return nil
-}
-
-type ContactGet_Reply struct {
-	Contact              *Contact `protobuf:"bytes,1,opt,name=contact,proto3" json:"contact,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactGet_Reply) Reset()         { *m = ContactGet_Reply{} }
-func (m *ContactGet_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactGet_Reply) ProtoMessage()    {}
-func (*ContactGet_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{14, 1}
-}
-func (m *ContactGet_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactGet_Reply.Unmarshal(m, b)
-}
-func (m *ContactGet_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactGet_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactGet_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactGet_Reply.Merge(m, src)
-}
-func (m *ContactGet_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactGet_Reply.Size(m)
-}
-func (m *ContactGet_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactGet_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactGet_Reply proto.InternalMessageInfo
-
-func (m *ContactGet_Reply) GetContact() *Contact {
-	if m != nil {
-		return m.Contact
-	}
-	return nil
-}
-
-type ContactRemove struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRemove) Reset()         { *m = ContactRemove{} }
-func (m *ContactRemove) String() string { return proto.CompactTextString(m) }
-func (*ContactRemove) ProtoMessage()    {}
-func (*ContactRemove) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{15}
-}
-func (m *ContactRemove) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRemove.Unmarshal(m, b)
-}
-func (m *ContactRemove) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRemove.Marshal(b, m, deterministic)
-}
-func (m *ContactRemove) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRemove.Merge(m, src)
-}
-func (m *ContactRemove) XXX_Size() int {
-	return xxx_messageInfo_ContactRemove.Size(m)
-}
-func (m *ContactRemove) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRemove.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRemove proto.InternalMessageInfo
-
-type ContactRemove_Request struct {
-	ContactAccountPubKey []byte   `protobuf:"bytes,1,opt,name=contact_account_pub_key,json=contactAccountPubKey,proto3" json:"contact_account_pub_key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRemove_Request) Reset()         { *m = ContactRemove_Request{} }
-func (m *ContactRemove_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRemove_Request) ProtoMessage()    {}
-func (*ContactRemove_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{15, 0}
-}
-func (m *ContactRemove_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRemove_Request.Unmarshal(m, b)
-}
-func (m *ContactRemove_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRemove_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactRemove_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRemove_Request.Merge(m, src)
-}
-func (m *ContactRemove_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRemove_Request.Size(m)
-}
-func (m *ContactRemove_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRemove_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRemove_Request proto.InternalMessageInfo
-
-func (m *ContactRemove_Request) GetContactAccountPubKey() []byte {
-	if m != nil {
-		return m.ContactAccountPubKey
-	}
-	return nil
-}
-
-type ContactRemove_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRemove_Reply) Reset()         { *m = ContactRemove_Reply{} }
-func (m *ContactRemove_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRemove_Reply) ProtoMessage()    {}
-func (*ContactRemove_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{15, 1}
-}
-func (m *ContactRemove_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRemove_Reply.Unmarshal(m, b)
-}
-func (m *ContactRemove_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRemove_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactRemove_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRemove_Reply.Merge(m, src)
-}
-func (m *ContactRemove_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRemove_Reply.Size(m)
-}
-func (m *ContactRemove_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRemove_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRemove_Reply proto.InternalMessageInfo
-
-type ContactList struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactList) Reset()         { *m = ContactList{} }
-func (m *ContactList) String() string { return proto.CompactTextString(m) }
-func (*ContactList) ProtoMessage()    {}
-func (*ContactList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{16}
-}
-func (m *ContactList) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactList.Unmarshal(m, b)
-}
-func (m *ContactList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactList.Marshal(b, m, deterministic)
-}
-func (m *ContactList) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactList.Merge(m, src)
-}
-func (m *ContactList) XXX_Size() int {
-	return xxx_messageInfo_ContactList.Size(m)
-}
-func (m *ContactList) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactList.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactList proto.InternalMessageInfo
-
-type ContactList_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactList_Request) Reset()         { *m = ContactList_Request{} }
-func (m *ContactList_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactList_Request) ProtoMessage()    {}
-func (*ContactList_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{16, 0}
-}
-func (m *ContactList_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactList_Request.Unmarshal(m, b)
-}
-func (m *ContactList_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactList_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactList_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactList_Request.Merge(m, src)
-}
-func (m *ContactList_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactList_Request.Size(m)
-}
-func (m *ContactList_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactList_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactList_Request proto.InternalMessageInfo
-
-type ContactList_Reply struct {
-	Contact              *Contact `protobuf:"bytes,1,opt,name=contact,proto3" json:"contact,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactList_Reply) Reset()         { *m = ContactList_Reply{} }
-func (m *ContactList_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactList_Reply) ProtoMessage()    {}
-func (*ContactList_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{16, 1}
-}
-func (m *ContactList_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactList_Reply.Unmarshal(m, b)
-}
-func (m *ContactList_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactList_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactList_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactList_Reply.Merge(m, src)
-}
-func (m *ContactList_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactList_Reply.Size(m)
-}
-func (m *ContactList_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactList_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactList_Reply proto.InternalMessageInfo
-
-func (m *ContactList_Reply) GetContact() *Contact {
-	if m != nil {
-		return m.Contact
-	}
-	return nil
-}
-
-type StreamManagerRequestToContact struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *StreamManagerRequestToContact) Reset()         { *m = StreamManagerRequestToContact{} }
-func (m *StreamManagerRequestToContact) String() string { return proto.CompactTextString(m) }
-func (*StreamManagerRequestToContact) ProtoMessage()    {}
-func (*StreamManagerRequestToContact) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{17}
-}
-func (m *StreamManagerRequestToContact) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_StreamManagerRequestToContact.Unmarshal(m, b)
-}
-func (m *StreamManagerRequestToContact) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_StreamManagerRequestToContact.Marshal(b, m, deterministic)
-}
-func (m *StreamManagerRequestToContact) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StreamManagerRequestToContact.Merge(m, src)
-}
-func (m *StreamManagerRequestToContact) XXX_Size() int {
-	return xxx_messageInfo_StreamManagerRequestToContact.Size(m)
-}
-func (m *StreamManagerRequestToContact) XXX_DiscardUnknown() {
-	xxx_messageInfo_StreamManagerRequestToContact.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_StreamManagerRequestToContact proto.InternalMessageInfo
-
-type StreamManagerRequestToContact_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *StreamManagerRequestToContact_Request) Reset()         { *m = StreamManagerRequestToContact_Request{} }
-func (m *StreamManagerRequestToContact_Request) String() string { return proto.CompactTextString(m) }
-func (*StreamManagerRequestToContact_Request) ProtoMessage()    {}
-func (*StreamManagerRequestToContact_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{17, 0}
-}
-func (m *StreamManagerRequestToContact_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_StreamManagerRequestToContact_Request.Unmarshal(m, b)
-}
-func (m *StreamManagerRequestToContact_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_StreamManagerRequestToContact_Request.Marshal(b, m, deterministic)
-}
-func (m *StreamManagerRequestToContact_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StreamManagerRequestToContact_Request.Merge(m, src)
-}
-func (m *StreamManagerRequestToContact_Request) XXX_Size() int {
-	return xxx_messageInfo_StreamManagerRequestToContact_Request.Size(m)
-}
-func (m *StreamManagerRequestToContact_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_StreamManagerRequestToContact_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_StreamManagerRequestToContact_Request proto.InternalMessageInfo
-
-type StreamManagerRequestToContact_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *StreamManagerRequestToContact_Reply) Reset()         { *m = StreamManagerRequestToContact_Reply{} }
-func (m *StreamManagerRequestToContact_Reply) String() string { return proto.CompactTextString(m) }
-func (*StreamManagerRequestToContact_Reply) ProtoMessage()    {}
-func (*StreamManagerRequestToContact_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{17, 1}
-}
-func (m *StreamManagerRequestToContact_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_StreamManagerRequestToContact_Reply.Unmarshal(m, b)
-}
-func (m *StreamManagerRequestToContact_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_StreamManagerRequestToContact_Reply.Marshal(b, m, deterministic)
-}
-func (m *StreamManagerRequestToContact_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StreamManagerRequestToContact_Reply.Merge(m, src)
-}
-func (m *StreamManagerRequestToContact_Reply) XXX_Size() int {
-	return xxx_messageInfo_StreamManagerRequestToContact_Reply.Size(m)
-}
-func (m *StreamManagerRequestToContact_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_StreamManagerRequestToContact_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_StreamManagerRequestToContact_Reply proto.InternalMessageInfo
-
-type StreamManagerAccept struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *StreamManagerAccept) Reset()         { *m = StreamManagerAccept{} }
-func (m *StreamManagerAccept) String() string { return proto.CompactTextString(m) }
-func (*StreamManagerAccept) ProtoMessage()    {}
-func (*StreamManagerAccept) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{18}
-}
-func (m *StreamManagerAccept) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_StreamManagerAccept.Unmarshal(m, b)
-}
-func (m *StreamManagerAccept) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_StreamManagerAccept.Marshal(b, m, deterministic)
-}
-func (m *StreamManagerAccept) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StreamManagerAccept.Merge(m, src)
-}
-func (m *StreamManagerAccept) XXX_Size() int {
-	return xxx_messageInfo_StreamManagerAccept.Size(m)
-}
-func (m *StreamManagerAccept) XXX_DiscardUnknown() {
-	xxx_messageInfo_StreamManagerAccept.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_StreamManagerAccept proto.InternalMessageInfo
-
-type StreamManagerAccept_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *StreamManagerAccept_Request) Reset()         { *m = StreamManagerAccept_Request{} }
-func (m *StreamManagerAccept_Request) String() string { return proto.CompactTextString(m) }
-func (*StreamManagerAccept_Request) ProtoMessage()    {}
-func (*StreamManagerAccept_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{18, 0}
-}
-func (m *StreamManagerAccept_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_StreamManagerAccept_Request.Unmarshal(m, b)
-}
-func (m *StreamManagerAccept_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_StreamManagerAccept_Request.Marshal(b, m, deterministic)
-}
-func (m *StreamManagerAccept_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StreamManagerAccept_Request.Merge(m, src)
-}
-func (m *StreamManagerAccept_Request) XXX_Size() int {
-	return xxx_messageInfo_StreamManagerAccept_Request.Size(m)
-}
-func (m *StreamManagerAccept_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_StreamManagerAccept_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_StreamManagerAccept_Request proto.InternalMessageInfo
-
-type StreamManagerAccept_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *StreamManagerAccept_Reply) Reset()         { *m = StreamManagerAccept_Reply{} }
-func (m *StreamManagerAccept_Reply) String() string { return proto.CompactTextString(m) }
-func (*StreamManagerAccept_Reply) ProtoMessage()    {}
-func (*StreamManagerAccept_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{18, 1}
-}
-func (m *StreamManagerAccept_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_StreamManagerAccept_Reply.Unmarshal(m, b)
-}
-func (m *StreamManagerAccept_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_StreamManagerAccept_Reply.Marshal(b, m, deterministic)
-}
-func (m *StreamManagerAccept_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StreamManagerAccept_Reply.Merge(m, src)
-}
-func (m *StreamManagerAccept_Reply) XXX_Size() int {
-	return xxx_messageInfo_StreamManagerAccept_Reply.Size(m)
-}
-func (m *StreamManagerAccept_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_StreamManagerAccept_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_StreamManagerAccept_Reply proto.InternalMessageInfo
 
 type GroupCreate struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -2388,7 +1478,7 @@ func (m *GroupCreate) Reset()         { *m = GroupCreate{} }
 func (m *GroupCreate) String() string { return proto.CompactTextString(m) }
 func (*GroupCreate) ProtoMessage()    {}
 func (*GroupCreate) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{19}
+	return fileDescriptor_047e04c733cf8554, []int{14}
 }
 func (m *GroupCreate) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupCreate.Unmarshal(m, b)
@@ -2409,9 +1499,6 @@ func (m *GroupCreate) XXX_DiscardUnknown() {
 var xxx_messageInfo_GroupCreate proto.InternalMessageInfo
 
 type GroupCreate_Request struct {
-	ContactAccountPubKey [][]byte `protobuf:"bytes,1,rep,name=contact_account_pub_key,json=contactAccountPubKey,proto3" json:"contact_account_pub_key,omitempty"`
-	PinningService       []byte   `protobuf:"bytes,2,opt,name=pinning_service,json=pinningService,proto3" json:"pinning_service,omitempty"`
-	Metadata             []byte   `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2421,7 +1508,7 @@ func (m *GroupCreate_Request) Reset()         { *m = GroupCreate_Request{} }
 func (m *GroupCreate_Request) String() string { return proto.CompactTextString(m) }
 func (*GroupCreate_Request) ProtoMessage()    {}
 func (*GroupCreate_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{19, 0}
+	return fileDescriptor_047e04c733cf8554, []int{14, 0}
 }
 func (m *GroupCreate_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupCreate_Request.Unmarshal(m, b)
@@ -2441,39 +1528,17 @@ func (m *GroupCreate_Request) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GroupCreate_Request proto.InternalMessageInfo
 
-func (m *GroupCreate_Request) GetContactAccountPubKey() [][]byte {
-	if m != nil {
-		return m.ContactAccountPubKey
-	}
-	return nil
-}
-
-func (m *GroupCreate_Request) GetPinningService() []byte {
-	if m != nil {
-		return m.PinningService
-	}
-	return nil
-}
-
-func (m *GroupCreate_Request) GetMetadata() []byte {
-	if m != nil {
-		return m.Metadata
-	}
-	return nil
-}
-
 type GroupCreate_Reply struct {
-	GroupInfo            *GroupInfo `protobuf:"bytes,1,opt,name=group_info,json=groupInfo,proto3" json:"group_info,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
-	XXX_unrecognized     []byte     `json:"-"`
-	XXX_sizecache        int32      `json:"-"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *GroupCreate_Reply) Reset()         { *m = GroupCreate_Reply{} }
 func (m *GroupCreate_Reply) String() string { return proto.CompactTextString(m) }
 func (*GroupCreate_Reply) ProtoMessage()    {}
 func (*GroupCreate_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{19, 1}
+	return fileDescriptor_047e04c733cf8554, []int{14, 1}
 }
 func (m *GroupCreate_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupCreate_Reply.Unmarshal(m, b)
@@ -2493,118 +1558,111 @@ func (m *GroupCreate_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GroupCreate_Reply proto.InternalMessageInfo
 
-func (m *GroupCreate_Reply) GetGroupInfo() *GroupInfo {
-	if m != nil {
-		return m.GroupInfo
-	}
-	return nil
-}
-
-type GroupGenerateInviteLink struct {
+type GroupJoin struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupGenerateInviteLink) Reset()         { *m = GroupGenerateInviteLink{} }
-func (m *GroupGenerateInviteLink) String() string { return proto.CompactTextString(m) }
-func (*GroupGenerateInviteLink) ProtoMessage()    {}
-func (*GroupGenerateInviteLink) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{20}
+func (m *GroupJoin) Reset()         { *m = GroupJoin{} }
+func (m *GroupJoin) String() string { return proto.CompactTextString(m) }
+func (*GroupJoin) ProtoMessage()    {}
+func (*GroupJoin) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{15}
 }
-func (m *GroupGenerateInviteLink) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupGenerateInviteLink.Unmarshal(m, b)
+func (m *GroupJoin) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupJoin.Unmarshal(m, b)
 }
-func (m *GroupGenerateInviteLink) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupGenerateInviteLink.Marshal(b, m, deterministic)
+func (m *GroupJoin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupJoin.Marshal(b, m, deterministic)
 }
-func (m *GroupGenerateInviteLink) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupGenerateInviteLink.Merge(m, src)
+func (m *GroupJoin) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupJoin.Merge(m, src)
 }
-func (m *GroupGenerateInviteLink) XXX_Size() int {
-	return xxx_messageInfo_GroupGenerateInviteLink.Size(m)
+func (m *GroupJoin) XXX_Size() int {
+	return xxx_messageInfo_GroupJoin.Size(m)
 }
-func (m *GroupGenerateInviteLink) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupGenerateInviteLink.DiscardUnknown(m)
+func (m *GroupJoin) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupJoin.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupGenerateInviteLink proto.InternalMessageInfo
+var xxx_messageInfo_GroupJoin proto.InternalMessageInfo
 
-type GroupGenerateInviteLink_Request struct {
-	GroupID              []byte   `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
+type GroupJoin_Request struct {
+	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
+	Meta                 []byte   `protobuf:"bytes,2,opt,name=meta,proto3" json:"meta,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupGenerateInviteLink_Request) Reset()         { *m = GroupGenerateInviteLink_Request{} }
-func (m *GroupGenerateInviteLink_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupGenerateInviteLink_Request) ProtoMessage()    {}
-func (*GroupGenerateInviteLink_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{20, 0}
+func (m *GroupJoin_Request) Reset()         { *m = GroupJoin_Request{} }
+func (m *GroupJoin_Request) String() string { return proto.CompactTextString(m) }
+func (*GroupJoin_Request) ProtoMessage()    {}
+func (*GroupJoin_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{15, 0}
 }
-func (m *GroupGenerateInviteLink_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupGenerateInviteLink_Request.Unmarshal(m, b)
+func (m *GroupJoin_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupJoin_Request.Unmarshal(m, b)
 }
-func (m *GroupGenerateInviteLink_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupGenerateInviteLink_Request.Marshal(b, m, deterministic)
+func (m *GroupJoin_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupJoin_Request.Marshal(b, m, deterministic)
 }
-func (m *GroupGenerateInviteLink_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupGenerateInviteLink_Request.Merge(m, src)
+func (m *GroupJoin_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupJoin_Request.Merge(m, src)
 }
-func (m *GroupGenerateInviteLink_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupGenerateInviteLink_Request.Size(m)
+func (m *GroupJoin_Request) XXX_Size() int {
+	return xxx_messageInfo_GroupJoin_Request.Size(m)
 }
-func (m *GroupGenerateInviteLink_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupGenerateInviteLink_Request.DiscardUnknown(m)
+func (m *GroupJoin_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupJoin_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupGenerateInviteLink_Request proto.InternalMessageInfo
+var xxx_messageInfo_GroupJoin_Request proto.InternalMessageInfo
 
-func (m *GroupGenerateInviteLink_Request) GetGroupID() []byte {
+func (m *GroupJoin_Request) GetReference() []byte {
 	if m != nil {
-		return m.GroupID
+		return m.Reference
 	}
 	return nil
 }
 
-type GroupGenerateInviteLink_Reply struct {
-	Invitation           *Invitation `protobuf:"bytes,1,opt,name=invitation,proto3" json:"invitation,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
-	XXX_unrecognized     []byte      `json:"-"`
-	XXX_sizecache        int32       `json:"-"`
-}
-
-func (m *GroupGenerateInviteLink_Reply) Reset()         { *m = GroupGenerateInviteLink_Reply{} }
-func (m *GroupGenerateInviteLink_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupGenerateInviteLink_Reply) ProtoMessage()    {}
-func (*GroupGenerateInviteLink_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{20, 1}
-}
-func (m *GroupGenerateInviteLink_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupGenerateInviteLink_Reply.Unmarshal(m, b)
-}
-func (m *GroupGenerateInviteLink_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupGenerateInviteLink_Reply.Marshal(b, m, deterministic)
-}
-func (m *GroupGenerateInviteLink_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupGenerateInviteLink_Reply.Merge(m, src)
-}
-func (m *GroupGenerateInviteLink_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupGenerateInviteLink_Reply.Size(m)
-}
-func (m *GroupGenerateInviteLink_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupGenerateInviteLink_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupGenerateInviteLink_Reply proto.InternalMessageInfo
-
-func (m *GroupGenerateInviteLink_Reply) GetInvitation() *Invitation {
+func (m *GroupJoin_Request) GetMeta() []byte {
 	if m != nil {
-		return m.Invitation
+		return m.Meta
 	}
 	return nil
 }
+
+type GroupJoin_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupJoin_Reply) Reset()         { *m = GroupJoin_Reply{} }
+func (m *GroupJoin_Reply) String() string { return proto.CompactTextString(m) }
+func (*GroupJoin_Reply) ProtoMessage()    {}
+func (*GroupJoin_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{15, 1}
+}
+func (m *GroupJoin_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupJoin_Reply.Unmarshal(m, b)
+}
+func (m *GroupJoin_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupJoin_Reply.Marshal(b, m, deterministic)
+}
+func (m *GroupJoin_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupJoin_Reply.Merge(m, src)
+}
+func (m *GroupJoin_Reply) XXX_Size() int {
+	return xxx_messageInfo_GroupJoin_Reply.Size(m)
+}
+func (m *GroupJoin_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupJoin_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupJoin_Reply proto.InternalMessageInfo
 
 type GroupLeave struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -2616,7 +1674,7 @@ func (m *GroupLeave) Reset()         { *m = GroupLeave{} }
 func (m *GroupLeave) String() string { return proto.CompactTextString(m) }
 func (*GroupLeave) ProtoMessage()    {}
 func (*GroupLeave) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{21}
+	return fileDescriptor_047e04c733cf8554, []int{16}
 }
 func (m *GroupLeave) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupLeave.Unmarshal(m, b)
@@ -2637,7 +1695,7 @@ func (m *GroupLeave) XXX_DiscardUnknown() {
 var xxx_messageInfo_GroupLeave proto.InternalMessageInfo
 
 type GroupLeave_Request struct {
-	GroupID              []byte   `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
+	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2647,7 +1705,7 @@ func (m *GroupLeave_Request) Reset()         { *m = GroupLeave_Request{} }
 func (m *GroupLeave_Request) String() string { return proto.CompactTextString(m) }
 func (*GroupLeave_Request) ProtoMessage()    {}
 func (*GroupLeave_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{21, 0}
+	return fileDescriptor_047e04c733cf8554, []int{16, 0}
 }
 func (m *GroupLeave_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupLeave_Request.Unmarshal(m, b)
@@ -2667,9 +1725,9 @@ func (m *GroupLeave_Request) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GroupLeave_Request proto.InternalMessageInfo
 
-func (m *GroupLeave_Request) GetGroupID() []byte {
+func (m *GroupLeave_Request) GetGroupPubKey() []byte {
 	if m != nil {
-		return m.GroupID
+		return m.GroupPubKey
 	}
 	return nil
 }
@@ -2684,7 +1742,7 @@ func (m *GroupLeave_Reply) Reset()         { *m = GroupLeave_Reply{} }
 func (m *GroupLeave_Reply) String() string { return proto.CompactTextString(m) }
 func (*GroupLeave_Reply) ProtoMessage()    {}
 func (*GroupLeave_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{21, 1}
+	return fileDescriptor_047e04c733cf8554, []int{16, 1}
 }
 func (m *GroupLeave_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupLeave_Reply.Unmarshal(m, b)
@@ -2704,1753 +1762,1441 @@ func (m *GroupLeave_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GroupLeave_Reply proto.InternalMessageInfo
 
-type GroupList struct {
+type GroupInvite struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupList) Reset()         { *m = GroupList{} }
-func (m *GroupList) String() string { return proto.CompactTextString(m) }
-func (*GroupList) ProtoMessage()    {}
-func (*GroupList) Descriptor() ([]byte, []int) {
+func (m *GroupInvite) Reset()         { *m = GroupInvite{} }
+func (m *GroupInvite) String() string { return proto.CompactTextString(m) }
+func (*GroupInvite) ProtoMessage()    {}
+func (*GroupInvite) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{17}
+}
+func (m *GroupInvite) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupInvite.Unmarshal(m, b)
+}
+func (m *GroupInvite) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupInvite.Marshal(b, m, deterministic)
+}
+func (m *GroupInvite) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupInvite.Merge(m, src)
+}
+func (m *GroupInvite) XXX_Size() int {
+	return xxx_messageInfo_GroupInvite.Size(m)
+}
+func (m *GroupInvite) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupInvite.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupInvite proto.InternalMessageInfo
+
+type GroupInvite_Request struct {
+	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupInvite_Request) Reset()         { *m = GroupInvite_Request{} }
+func (m *GroupInvite_Request) String() string { return proto.CompactTextString(m) }
+func (*GroupInvite_Request) ProtoMessage()    {}
+func (*GroupInvite_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{17, 0}
+}
+func (m *GroupInvite_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupInvite_Request.Unmarshal(m, b)
+}
+func (m *GroupInvite_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupInvite_Request.Marshal(b, m, deterministic)
+}
+func (m *GroupInvite_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupInvite_Request.Merge(m, src)
+}
+func (m *GroupInvite_Request) XXX_Size() int {
+	return xxx_messageInfo_GroupInvite_Request.Size(m)
+}
+func (m *GroupInvite_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupInvite_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupInvite_Request proto.InternalMessageInfo
+
+func (m *GroupInvite_Request) GetGroupPubKey() []byte {
+	if m != nil {
+		return m.GroupPubKey
+	}
+	return nil
+}
+
+type GroupInvite_Reply struct {
+	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupInvite_Reply) Reset()         { *m = GroupInvite_Reply{} }
+func (m *GroupInvite_Reply) String() string { return proto.CompactTextString(m) }
+func (*GroupInvite_Reply) ProtoMessage()    {}
+func (*GroupInvite_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{17, 1}
+}
+func (m *GroupInvite_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GroupInvite_Reply.Unmarshal(m, b)
+}
+func (m *GroupInvite_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GroupInvite_Reply.Marshal(b, m, deterministic)
+}
+func (m *GroupInvite_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupInvite_Reply.Merge(m, src)
+}
+func (m *GroupInvite_Reply) XXX_Size() int {
+	return xxx_messageInfo_GroupInvite_Reply.Size(m)
+}
+func (m *GroupInvite_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupInvite_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupInvite_Reply proto.InternalMessageInfo
+
+func (m *GroupInvite_Reply) GetReference() []byte {
+	if m != nil {
+		return m.Reference
+	}
+	return nil
+}
+
+type DevicePair struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DevicePair) Reset()         { *m = DevicePair{} }
+func (m *DevicePair) String() string { return proto.CompactTextString(m) }
+func (*DevicePair) ProtoMessage()    {}
+func (*DevicePair) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{18}
+}
+func (m *DevicePair) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DevicePair.Unmarshal(m, b)
+}
+func (m *DevicePair) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DevicePair.Marshal(b, m, deterministic)
+}
+func (m *DevicePair) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DevicePair.Merge(m, src)
+}
+func (m *DevicePair) XXX_Size() int {
+	return xxx_messageInfo_DevicePair.Size(m)
+}
+func (m *DevicePair) XXX_DiscardUnknown() {
+	xxx_messageInfo_DevicePair.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DevicePair proto.InternalMessageInfo
+
+type DevicePair_Request struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DevicePair_Request) Reset()         { *m = DevicePair_Request{} }
+func (m *DevicePair_Request) String() string { return proto.CompactTextString(m) }
+func (*DevicePair_Request) ProtoMessage()    {}
+func (*DevicePair_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{18, 0}
+}
+func (m *DevicePair_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DevicePair_Request.Unmarshal(m, b)
+}
+func (m *DevicePair_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DevicePair_Request.Marshal(b, m, deterministic)
+}
+func (m *DevicePair_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DevicePair_Request.Merge(m, src)
+}
+func (m *DevicePair_Request) XXX_Size() int {
+	return xxx_messageInfo_DevicePair_Request.Size(m)
+}
+func (m *DevicePair_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_DevicePair_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DevicePair_Request proto.InternalMessageInfo
+
+type DevicePair_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DevicePair_Reply) Reset()         { *m = DevicePair_Reply{} }
+func (m *DevicePair_Reply) String() string { return proto.CompactTextString(m) }
+func (*DevicePair_Reply) ProtoMessage()    {}
+func (*DevicePair_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{18, 1}
+}
+func (m *DevicePair_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DevicePair_Reply.Unmarshal(m, b)
+}
+func (m *DevicePair_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DevicePair_Reply.Marshal(b, m, deterministic)
+}
+func (m *DevicePair_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DevicePair_Reply.Merge(m, src)
+}
+func (m *DevicePair_Reply) XXX_Size() int {
+	return xxx_messageInfo_DevicePair_Reply.Size(m)
+}
+func (m *DevicePair_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_DevicePair_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DevicePair_Reply proto.InternalMessageInfo
+
+type ContactRequestReference struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestReference) Reset()         { *m = ContactRequestReference{} }
+func (m *ContactRequestReference) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestReference) ProtoMessage()    {}
+func (*ContactRequestReference) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{19}
+}
+func (m *ContactRequestReference) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestReference.Unmarshal(m, b)
+}
+func (m *ContactRequestReference) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestReference.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestReference) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestReference.Merge(m, src)
+}
+func (m *ContactRequestReference) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestReference.Size(m)
+}
+func (m *ContactRequestReference) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestReference.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestReference proto.InternalMessageInfo
+
+type ContactRequestReference_Request struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestReference_Request) Reset()         { *m = ContactRequestReference_Request{} }
+func (m *ContactRequestReference_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestReference_Request) ProtoMessage()    {}
+func (*ContactRequestReference_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{19, 0}
+}
+func (m *ContactRequestReference_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestReference_Request.Unmarshal(m, b)
+}
+func (m *ContactRequestReference_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestReference_Request.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestReference_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestReference_Request.Merge(m, src)
+}
+func (m *ContactRequestReference_Request) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestReference_Request.Size(m)
+}
+func (m *ContactRequestReference_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestReference_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestReference_Request proto.InternalMessageInfo
+
+type ContactRequestReference_Reply struct {
+	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestReference_Reply) Reset()         { *m = ContactRequestReference_Reply{} }
+func (m *ContactRequestReference_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestReference_Reply) ProtoMessage()    {}
+func (*ContactRequestReference_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{19, 1}
+}
+func (m *ContactRequestReference_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestReference_Reply.Unmarshal(m, b)
+}
+func (m *ContactRequestReference_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestReference_Reply.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestReference_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestReference_Reply.Merge(m, src)
+}
+func (m *ContactRequestReference_Reply) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestReference_Reply.Size(m)
+}
+func (m *ContactRequestReference_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestReference_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestReference_Reply proto.InternalMessageInfo
+
+func (m *ContactRequestReference_Reply) GetReference() []byte {
+	if m != nil {
+		return m.Reference
+	}
+	return nil
+}
+
+type ContactRequestDisable struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestDisable) Reset()         { *m = ContactRequestDisable{} }
+func (m *ContactRequestDisable) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDisable) ProtoMessage()    {}
+func (*ContactRequestDisable) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{20}
+}
+func (m *ContactRequestDisable) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestDisable.Unmarshal(m, b)
+}
+func (m *ContactRequestDisable) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestDisable.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestDisable) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestDisable.Merge(m, src)
+}
+func (m *ContactRequestDisable) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestDisable.Size(m)
+}
+func (m *ContactRequestDisable) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestDisable.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestDisable proto.InternalMessageInfo
+
+type ContactRequestDisable_Request struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestDisable_Request) Reset()         { *m = ContactRequestDisable_Request{} }
+func (m *ContactRequestDisable_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDisable_Request) ProtoMessage()    {}
+func (*ContactRequestDisable_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{20, 0}
+}
+func (m *ContactRequestDisable_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestDisable_Request.Unmarshal(m, b)
+}
+func (m *ContactRequestDisable_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestDisable_Request.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestDisable_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestDisable_Request.Merge(m, src)
+}
+func (m *ContactRequestDisable_Request) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestDisable_Request.Size(m)
+}
+func (m *ContactRequestDisable_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestDisable_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestDisable_Request proto.InternalMessageInfo
+
+type ContactRequestDisable_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestDisable_Reply) Reset()         { *m = ContactRequestDisable_Reply{} }
+func (m *ContactRequestDisable_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDisable_Reply) ProtoMessage()    {}
+func (*ContactRequestDisable_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{20, 1}
+}
+func (m *ContactRequestDisable_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestDisable_Reply.Unmarshal(m, b)
+}
+func (m *ContactRequestDisable_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestDisable_Reply.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestDisable_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestDisable_Reply.Merge(m, src)
+}
+func (m *ContactRequestDisable_Reply) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestDisable_Reply.Size(m)
+}
+func (m *ContactRequestDisable_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestDisable_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestDisable_Reply proto.InternalMessageInfo
+
+type ContactRequestEnable struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestEnable) Reset()         { *m = ContactRequestEnable{} }
+func (m *ContactRequestEnable) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestEnable) ProtoMessage()    {}
+func (*ContactRequestEnable) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{21}
+}
+func (m *ContactRequestEnable) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestEnable.Unmarshal(m, b)
+}
+func (m *ContactRequestEnable) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestEnable.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestEnable) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestEnable.Merge(m, src)
+}
+func (m *ContactRequestEnable) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestEnable.Size(m)
+}
+func (m *ContactRequestEnable) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestEnable.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestEnable proto.InternalMessageInfo
+
+type ContactRequestEnable_Request struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestEnable_Request) Reset()         { *m = ContactRequestEnable_Request{} }
+func (m *ContactRequestEnable_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestEnable_Request) ProtoMessage()    {}
+func (*ContactRequestEnable_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{21, 0}
+}
+func (m *ContactRequestEnable_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestEnable_Request.Unmarshal(m, b)
+}
+func (m *ContactRequestEnable_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestEnable_Request.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestEnable_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestEnable_Request.Merge(m, src)
+}
+func (m *ContactRequestEnable_Request) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestEnable_Request.Size(m)
+}
+func (m *ContactRequestEnable_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestEnable_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestEnable_Request proto.InternalMessageInfo
+
+type ContactRequestEnable_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestEnable_Reply) Reset()         { *m = ContactRequestEnable_Reply{} }
+func (m *ContactRequestEnable_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestEnable_Reply) ProtoMessage()    {}
+func (*ContactRequestEnable_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{21, 1}
+}
+func (m *ContactRequestEnable_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestEnable_Reply.Unmarshal(m, b)
+}
+func (m *ContactRequestEnable_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestEnable_Reply.Marshal(b, m, deterministic)
+}
+func (m *ContactRequestEnable_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestEnable_Reply.Merge(m, src)
+}
+func (m *ContactRequestEnable_Reply) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestEnable_Reply.Size(m)
+}
+func (m *ContactRequestEnable_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestEnable_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestEnable_Reply proto.InternalMessageInfo
+
+type ContactRequestResetLink struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestResetLink) Reset()         { *m = ContactRequestResetLink{} }
+func (m *ContactRequestResetLink) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestResetLink) ProtoMessage()    {}
+func (*ContactRequestResetLink) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{22}
 }
-func (m *GroupList) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupList.Unmarshal(m, b)
+func (m *ContactRequestResetLink) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestResetLink.Unmarshal(m, b)
 }
-func (m *GroupList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupList.Marshal(b, m, deterministic)
+func (m *ContactRequestResetLink) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestResetLink.Marshal(b, m, deterministic)
 }
-func (m *GroupList) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupList.Merge(m, src)
+func (m *ContactRequestResetLink) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestResetLink.Merge(m, src)
 }
-func (m *GroupList) XXX_Size() int {
-	return xxx_messageInfo_GroupList.Size(m)
+func (m *ContactRequestResetLink) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestResetLink.Size(m)
 }
-func (m *GroupList) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupList.DiscardUnknown(m)
+func (m *ContactRequestResetLink) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestResetLink.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupList proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestResetLink proto.InternalMessageInfo
 
-type GroupList_Request struct {
+type ContactRequestResetLink_Request struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupList_Request) Reset()         { *m = GroupList_Request{} }
-func (m *GroupList_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupList_Request) ProtoMessage()    {}
-func (*GroupList_Request) Descriptor() ([]byte, []int) {
+func (m *ContactRequestResetLink_Request) Reset()         { *m = ContactRequestResetLink_Request{} }
+func (m *ContactRequestResetLink_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestResetLink_Request) ProtoMessage()    {}
+func (*ContactRequestResetLink_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{22, 0}
 }
-func (m *GroupList_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupList_Request.Unmarshal(m, b)
+func (m *ContactRequestResetLink_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestResetLink_Request.Unmarshal(m, b)
 }
-func (m *GroupList_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupList_Request.Marshal(b, m, deterministic)
+func (m *ContactRequestResetLink_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestResetLink_Request.Marshal(b, m, deterministic)
 }
-func (m *GroupList_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupList_Request.Merge(m, src)
+func (m *ContactRequestResetLink_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestResetLink_Request.Merge(m, src)
 }
-func (m *GroupList_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupList_Request.Size(m)
+func (m *ContactRequestResetLink_Request) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestResetLink_Request.Size(m)
 }
-func (m *GroupList_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupList_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupList_Request proto.InternalMessageInfo
-
-type GroupList_Reply struct {
-	GroupInfo            *GroupInfo `protobuf:"bytes,1,opt,name=group_info,json=groupInfo,proto3" json:"group_info,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
-	XXX_unrecognized     []byte     `json:"-"`
-	XXX_sizecache        int32      `json:"-"`
+func (m *ContactRequestResetLink_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestResetLink_Request.DiscardUnknown(m)
 }
 
-func (m *GroupList_Reply) Reset()         { *m = GroupList_Reply{} }
-func (m *GroupList_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupList_Reply) ProtoMessage()    {}
-func (*GroupList_Reply) Descriptor() ([]byte, []int) {
+var xxx_messageInfo_ContactRequestResetLink_Request proto.InternalMessageInfo
+
+type ContactRequestResetLink_Reply struct {
+	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestResetLink_Reply) Reset()         { *m = ContactRequestResetLink_Reply{} }
+func (m *ContactRequestResetLink_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestResetLink_Reply) ProtoMessage()    {}
+func (*ContactRequestResetLink_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{22, 1}
 }
-func (m *GroupList_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupList_Reply.Unmarshal(m, b)
+func (m *ContactRequestResetLink_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestResetLink_Reply.Unmarshal(m, b)
 }
-func (m *GroupList_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupList_Reply.Marshal(b, m, deterministic)
+func (m *ContactRequestResetLink_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestResetLink_Reply.Marshal(b, m, deterministic)
 }
-func (m *GroupList_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupList_Reply.Merge(m, src)
+func (m *ContactRequestResetLink_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestResetLink_Reply.Merge(m, src)
 }
-func (m *GroupList_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupList_Reply.Size(m)
+func (m *ContactRequestResetLink_Reply) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestResetLink_Reply.Size(m)
 }
-func (m *GroupList_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupList_Reply.DiscardUnknown(m)
+func (m *ContactRequestResetLink_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestResetLink_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupList_Reply proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestResetLink_Reply proto.InternalMessageInfo
 
-func (m *GroupList_Reply) GetGroupInfo() *GroupInfo {
+func (m *ContactRequestResetLink_Reply) GetReference() []byte {
 	if m != nil {
-		return m.GroupInfo
+		return m.Reference
 	}
 	return nil
 }
 
-type GroupMessageCreate struct {
+type ContactRequestEnqueue struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupMessageCreate) Reset()         { *m = GroupMessageCreate{} }
-func (m *GroupMessageCreate) String() string { return proto.CompactTextString(m) }
-func (*GroupMessageCreate) ProtoMessage()    {}
-func (*GroupMessageCreate) Descriptor() ([]byte, []int) {
+func (m *ContactRequestEnqueue) Reset()         { *m = ContactRequestEnqueue{} }
+func (m *ContactRequestEnqueue) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestEnqueue) ProtoMessage()    {}
+func (*ContactRequestEnqueue) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{23}
 }
-func (m *GroupMessageCreate) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageCreate.Unmarshal(m, b)
+func (m *ContactRequestEnqueue) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestEnqueue.Unmarshal(m, b)
 }
-func (m *GroupMessageCreate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageCreate.Marshal(b, m, deterministic)
+func (m *ContactRequestEnqueue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestEnqueue.Marshal(b, m, deterministic)
 }
-func (m *GroupMessageCreate) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMessageCreate.Merge(m, src)
+func (m *ContactRequestEnqueue) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestEnqueue.Merge(m, src)
 }
-func (m *GroupMessageCreate) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageCreate.Size(m)
+func (m *ContactRequestEnqueue) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestEnqueue.Size(m)
 }
-func (m *GroupMessageCreate) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMessageCreate.DiscardUnknown(m)
+func (m *ContactRequestEnqueue) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestEnqueue.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupMessageCreate proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestEnqueue proto.InternalMessageInfo
 
-type GroupMessageCreate_Request struct {
-	GroupID              []byte   `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
-	Payload              []byte   `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
+type ContactRequestEnqueue_Request struct {
+	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
+	Meta                 []byte   `protobuf:"bytes,3,opt,name=meta,proto3" json:"meta,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupMessageCreate_Request) Reset()         { *m = GroupMessageCreate_Request{} }
-func (m *GroupMessageCreate_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupMessageCreate_Request) ProtoMessage()    {}
-func (*GroupMessageCreate_Request) Descriptor() ([]byte, []int) {
+func (m *ContactRequestEnqueue_Request) Reset()         { *m = ContactRequestEnqueue_Request{} }
+func (m *ContactRequestEnqueue_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestEnqueue_Request) ProtoMessage()    {}
+func (*ContactRequestEnqueue_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{23, 0}
 }
-func (m *GroupMessageCreate_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageCreate_Request.Unmarshal(m, b)
+func (m *ContactRequestEnqueue_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestEnqueue_Request.Unmarshal(m, b)
 }
-func (m *GroupMessageCreate_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageCreate_Request.Marshal(b, m, deterministic)
+func (m *ContactRequestEnqueue_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestEnqueue_Request.Marshal(b, m, deterministic)
 }
-func (m *GroupMessageCreate_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMessageCreate_Request.Merge(m, src)
+func (m *ContactRequestEnqueue_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestEnqueue_Request.Merge(m, src)
 }
-func (m *GroupMessageCreate_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageCreate_Request.Size(m)
+func (m *ContactRequestEnqueue_Request) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestEnqueue_Request.Size(m)
 }
-func (m *GroupMessageCreate_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMessageCreate_Request.DiscardUnknown(m)
+func (m *ContactRequestEnqueue_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestEnqueue_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupMessageCreate_Request proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestEnqueue_Request proto.InternalMessageInfo
 
-func (m *GroupMessageCreate_Request) GetGroupID() []byte {
+func (m *ContactRequestEnqueue_Request) GetReference() []byte {
 	if m != nil {
-		return m.GroupID
+		return m.Reference
 	}
 	return nil
 }
 
-func (m *GroupMessageCreate_Request) GetPayload() []byte {
+func (m *ContactRequestEnqueue_Request) GetMeta() []byte {
 	if m != nil {
-		return m.Payload
+		return m.Meta
 	}
 	return nil
 }
 
-type GroupMessageCreate_Reply struct {
+type ContactRequestEnqueue_Reply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupMessageCreate_Reply) Reset()         { *m = GroupMessageCreate_Reply{} }
-func (m *GroupMessageCreate_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupMessageCreate_Reply) ProtoMessage()    {}
-func (*GroupMessageCreate_Reply) Descriptor() ([]byte, []int) {
+func (m *ContactRequestEnqueue_Reply) Reset()         { *m = ContactRequestEnqueue_Reply{} }
+func (m *ContactRequestEnqueue_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestEnqueue_Reply) ProtoMessage()    {}
+func (*ContactRequestEnqueue_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{23, 1}
 }
-func (m *GroupMessageCreate_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageCreate_Reply.Unmarshal(m, b)
+func (m *ContactRequestEnqueue_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestEnqueue_Reply.Unmarshal(m, b)
 }
-func (m *GroupMessageCreate_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageCreate_Reply.Marshal(b, m, deterministic)
+func (m *ContactRequestEnqueue_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestEnqueue_Reply.Marshal(b, m, deterministic)
 }
-func (m *GroupMessageCreate_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMessageCreate_Reply.Merge(m, src)
+func (m *ContactRequestEnqueue_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestEnqueue_Reply.Merge(m, src)
 }
-func (m *GroupMessageCreate_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageCreate_Reply.Size(m)
+func (m *ContactRequestEnqueue_Reply) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestEnqueue_Reply.Size(m)
 }
-func (m *GroupMessageCreate_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMessageCreate_Reply.DiscardUnknown(m)
+func (m *ContactRequestEnqueue_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestEnqueue_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupMessageCreate_Reply proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestEnqueue_Reply proto.InternalMessageInfo
 
-type GroupMessageList struct {
+type ContactRequestAccept struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupMessageList) Reset()         { *m = GroupMessageList{} }
-func (m *GroupMessageList) String() string { return proto.CompactTextString(m) }
-func (*GroupMessageList) ProtoMessage()    {}
-func (*GroupMessageList) Descriptor() ([]byte, []int) {
+func (m *ContactRequestAccept) Reset()         { *m = ContactRequestAccept{} }
+func (m *ContactRequestAccept) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestAccept) ProtoMessage()    {}
+func (*ContactRequestAccept) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{24}
 }
-func (m *GroupMessageList) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageList.Unmarshal(m, b)
+func (m *ContactRequestAccept) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestAccept.Unmarshal(m, b)
 }
-func (m *GroupMessageList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageList.Marshal(b, m, deterministic)
+func (m *ContactRequestAccept) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestAccept.Marshal(b, m, deterministic)
 }
-func (m *GroupMessageList) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMessageList.Merge(m, src)
+func (m *ContactRequestAccept) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestAccept.Merge(m, src)
 }
-func (m *GroupMessageList) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageList.Size(m)
+func (m *ContactRequestAccept) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestAccept.Size(m)
 }
-func (m *GroupMessageList) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMessageList.DiscardUnknown(m)
+func (m *ContactRequestAccept) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestAccept.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupMessageList proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestAccept proto.InternalMessageInfo
 
-type GroupMessageList_Request struct {
-	GroupID              []byte   `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
-	FromIndex            uint64   `protobuf:"varint,2,opt,name=from_index,json=fromIndex,proto3" json:"from_index,omitempty"`
-	ToIndex              uint64   `protobuf:"varint,3,opt,name=to_index,json=toIndex,proto3" json:"to_index,omitempty"`
+type ContactRequestAccept_Request struct {
+	ContactPubKey        []byte   `protobuf:"bytes,1,opt,name=contact_pub_key,json=contactPubKey,proto3" json:"contact_pub_key,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupMessageList_Request) Reset()         { *m = GroupMessageList_Request{} }
-func (m *GroupMessageList_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupMessageList_Request) ProtoMessage()    {}
-func (*GroupMessageList_Request) Descriptor() ([]byte, []int) {
+func (m *ContactRequestAccept_Request) Reset()         { *m = ContactRequestAccept_Request{} }
+func (m *ContactRequestAccept_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestAccept_Request) ProtoMessage()    {}
+func (*ContactRequestAccept_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{24, 0}
 }
-func (m *GroupMessageList_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageList_Request.Unmarshal(m, b)
+func (m *ContactRequestAccept_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestAccept_Request.Unmarshal(m, b)
 }
-func (m *GroupMessageList_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageList_Request.Marshal(b, m, deterministic)
+func (m *ContactRequestAccept_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestAccept_Request.Marshal(b, m, deterministic)
 }
-func (m *GroupMessageList_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMessageList_Request.Merge(m, src)
+func (m *ContactRequestAccept_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestAccept_Request.Merge(m, src)
 }
-func (m *GroupMessageList_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageList_Request.Size(m)
+func (m *ContactRequestAccept_Request) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestAccept_Request.Size(m)
 }
-func (m *GroupMessageList_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMessageList_Request.DiscardUnknown(m)
+func (m *ContactRequestAccept_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestAccept_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupMessageList_Request proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestAccept_Request proto.InternalMessageInfo
 
-func (m *GroupMessageList_Request) GetGroupID() []byte {
+func (m *ContactRequestAccept_Request) GetContactPubKey() []byte {
 	if m != nil {
-		return m.GroupID
+		return m.ContactPubKey
 	}
 	return nil
 }
 
-func (m *GroupMessageList_Request) GetFromIndex() uint64 {
-	if m != nil {
-		return m.FromIndex
-	}
-	return 0
-}
-
-func (m *GroupMessageList_Request) GetToIndex() uint64 {
-	if m != nil {
-		return m.ToIndex
-	}
-	return 0
-}
-
-type GroupMessageList_Reply struct {
-	MessageID            []byte   `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
-	MemberID             []byte   `protobuf:"bytes,2,opt,name=member_id,json=memberId,proto3" json:"member_id,omitempty"`
-	Payload              []byte   `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
+type ContactRequestAccept_Reply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupMessageList_Reply) Reset()         { *m = GroupMessageList_Reply{} }
-func (m *GroupMessageList_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupMessageList_Reply) ProtoMessage()    {}
-func (*GroupMessageList_Reply) Descriptor() ([]byte, []int) {
+func (m *ContactRequestAccept_Reply) Reset()         { *m = ContactRequestAccept_Reply{} }
+func (m *ContactRequestAccept_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestAccept_Reply) ProtoMessage()    {}
+func (*ContactRequestAccept_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{24, 1}
 }
-func (m *GroupMessageList_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageList_Reply.Unmarshal(m, b)
+func (m *ContactRequestAccept_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRequestAccept_Reply.Unmarshal(m, b)
 }
-func (m *GroupMessageList_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageList_Reply.Marshal(b, m, deterministic)
+func (m *ContactRequestAccept_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRequestAccept_Reply.Marshal(b, m, deterministic)
 }
-func (m *GroupMessageList_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMessageList_Reply.Merge(m, src)
+func (m *ContactRequestAccept_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestAccept_Reply.Merge(m, src)
 }
-func (m *GroupMessageList_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageList_Reply.Size(m)
+func (m *ContactRequestAccept_Reply) XXX_Size() int {
+	return xxx_messageInfo_ContactRequestAccept_Reply.Size(m)
 }
-func (m *GroupMessageList_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMessageList_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupMessageList_Reply proto.InternalMessageInfo
-
-func (m *GroupMessageList_Reply) GetMessageID() []byte {
-	if m != nil {
-		return m.MessageID
-	}
-	return nil
+func (m *ContactRequestAccept_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestAccept_Reply.DiscardUnknown(m)
 }
 
-func (m *GroupMessageList_Reply) GetMemberID() []byte {
-	if m != nil {
-		return m.MemberID
-	}
-	return nil
-}
+var xxx_messageInfo_ContactRequestAccept_Reply proto.InternalMessageInfo
 
-func (m *GroupMessageList_Reply) GetPayload() []byte {
-	if m != nil {
-		return m.Payload
-	}
-	return nil
-}
-
-type GroupTopicPublish struct {
+type ContactRemove struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupTopicPublish) Reset()         { *m = GroupTopicPublish{} }
-func (m *GroupTopicPublish) String() string { return proto.CompactTextString(m) }
-func (*GroupTopicPublish) ProtoMessage()    {}
-func (*GroupTopicPublish) Descriptor() ([]byte, []int) {
+func (m *ContactRemove) Reset()         { *m = ContactRemove{} }
+func (m *ContactRemove) String() string { return proto.CompactTextString(m) }
+func (*ContactRemove) ProtoMessage()    {}
+func (*ContactRemove) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{25}
 }
-func (m *GroupTopicPublish) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupTopicPublish.Unmarshal(m, b)
+func (m *ContactRemove) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRemove.Unmarshal(m, b)
 }
-func (m *GroupTopicPublish) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupTopicPublish.Marshal(b, m, deterministic)
+func (m *ContactRemove) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRemove.Marshal(b, m, deterministic)
 }
-func (m *GroupTopicPublish) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupTopicPublish.Merge(m, src)
+func (m *ContactRemove) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRemove.Merge(m, src)
 }
-func (m *GroupTopicPublish) XXX_Size() int {
-	return xxx_messageInfo_GroupTopicPublish.Size(m)
+func (m *ContactRemove) XXX_Size() int {
+	return xxx_messageInfo_ContactRemove.Size(m)
 }
-func (m *GroupTopicPublish) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupTopicPublish.DiscardUnknown(m)
+func (m *ContactRemove) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRemove.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupTopicPublish proto.InternalMessageInfo
+var xxx_messageInfo_ContactRemove proto.InternalMessageInfo
 
-type GroupTopicPublish_Request struct {
-	GroupID              []byte   `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
-	TopicID              []byte   `protobuf:"bytes,2,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
-	VolatileData         []byte   `protobuf:"bytes,3,opt,name=volatile_data,json=volatileData,proto3" json:"volatile_data,omitempty"`
+type ContactRemove_Request struct {
+	ContactPubKey        []byte   `protobuf:"bytes,1,opt,name=contact_pub_key,json=contactPubKey,proto3" json:"contact_pub_key,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupTopicPublish_Request) Reset()         { *m = GroupTopicPublish_Request{} }
-func (m *GroupTopicPublish_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupTopicPublish_Request) ProtoMessage()    {}
-func (*GroupTopicPublish_Request) Descriptor() ([]byte, []int) {
+func (m *ContactRemove_Request) Reset()         { *m = ContactRemove_Request{} }
+func (m *ContactRemove_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRemove_Request) ProtoMessage()    {}
+func (*ContactRemove_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{25, 0}
 }
-func (m *GroupTopicPublish_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupTopicPublish_Request.Unmarshal(m, b)
+func (m *ContactRemove_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRemove_Request.Unmarshal(m, b)
 }
-func (m *GroupTopicPublish_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupTopicPublish_Request.Marshal(b, m, deterministic)
+func (m *ContactRemove_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRemove_Request.Marshal(b, m, deterministic)
 }
-func (m *GroupTopicPublish_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupTopicPublish_Request.Merge(m, src)
+func (m *ContactRemove_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRemove_Request.Merge(m, src)
 }
-func (m *GroupTopicPublish_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupTopicPublish_Request.Size(m)
+func (m *ContactRemove_Request) XXX_Size() int {
+	return xxx_messageInfo_ContactRemove_Request.Size(m)
 }
-func (m *GroupTopicPublish_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupTopicPublish_Request.DiscardUnknown(m)
+func (m *ContactRemove_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRemove_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupTopicPublish_Request proto.InternalMessageInfo
+var xxx_messageInfo_ContactRemove_Request proto.InternalMessageInfo
 
-func (m *GroupTopicPublish_Request) GetGroupID() []byte {
+func (m *ContactRemove_Request) GetContactPubKey() []byte {
 	if m != nil {
-		return m.GroupID
+		return m.ContactPubKey
 	}
 	return nil
 }
 
-func (m *GroupTopicPublish_Request) GetTopicID() []byte {
-	if m != nil {
-		return m.TopicID
-	}
-	return nil
-}
-
-func (m *GroupTopicPublish_Request) GetVolatileData() []byte {
-	if m != nil {
-		return m.VolatileData
-	}
-	return nil
-}
-
-type GroupTopicPublish_Reply struct {
+type ContactRemove_Reply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupTopicPublish_Reply) Reset()         { *m = GroupTopicPublish_Reply{} }
-func (m *GroupTopicPublish_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupTopicPublish_Reply) ProtoMessage()    {}
-func (*GroupTopicPublish_Reply) Descriptor() ([]byte, []int) {
+func (m *ContactRemove_Reply) Reset()         { *m = ContactRemove_Reply{} }
+func (m *ContactRemove_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRemove_Reply) ProtoMessage()    {}
+func (*ContactRemove_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{25, 1}
 }
-func (m *GroupTopicPublish_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupTopicPublish_Reply.Unmarshal(m, b)
+func (m *ContactRemove_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactRemove_Reply.Unmarshal(m, b)
 }
-func (m *GroupTopicPublish_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupTopicPublish_Reply.Marshal(b, m, deterministic)
+func (m *ContactRemove_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactRemove_Reply.Marshal(b, m, deterministic)
 }
-func (m *GroupTopicPublish_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupTopicPublish_Reply.Merge(m, src)
+func (m *ContactRemove_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRemove_Reply.Merge(m, src)
 }
-func (m *GroupTopicPublish_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupTopicPublish_Reply.Size(m)
+func (m *ContactRemove_Reply) XXX_Size() int {
+	return xxx_messageInfo_ContactRemove_Reply.Size(m)
 }
-func (m *GroupTopicPublish_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupTopicPublish_Reply.DiscardUnknown(m)
+func (m *ContactRemove_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRemove_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupTopicPublish_Reply proto.InternalMessageInfo
+var xxx_messageInfo_ContactRemove_Reply proto.InternalMessageInfo
 
-type GroupTopicSubscribe struct {
+type ContactBlock struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupTopicSubscribe) Reset()         { *m = GroupTopicSubscribe{} }
-func (m *GroupTopicSubscribe) String() string { return proto.CompactTextString(m) }
-func (*GroupTopicSubscribe) ProtoMessage()    {}
-func (*GroupTopicSubscribe) Descriptor() ([]byte, []int) {
+func (m *ContactBlock) Reset()         { *m = ContactBlock{} }
+func (m *ContactBlock) String() string { return proto.CompactTextString(m) }
+func (*ContactBlock) ProtoMessage()    {}
+func (*ContactBlock) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{26}
 }
-func (m *GroupTopicSubscribe) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupTopicSubscribe.Unmarshal(m, b)
+func (m *ContactBlock) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactBlock.Unmarshal(m, b)
 }
-func (m *GroupTopicSubscribe) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupTopicSubscribe.Marshal(b, m, deterministic)
+func (m *ContactBlock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactBlock.Marshal(b, m, deterministic)
 }
-func (m *GroupTopicSubscribe) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupTopicSubscribe.Merge(m, src)
+func (m *ContactBlock) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactBlock.Merge(m, src)
 }
-func (m *GroupTopicSubscribe) XXX_Size() int {
-	return xxx_messageInfo_GroupTopicSubscribe.Size(m)
+func (m *ContactBlock) XXX_Size() int {
+	return xxx_messageInfo_ContactBlock.Size(m)
 }
-func (m *GroupTopicSubscribe) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupTopicSubscribe.DiscardUnknown(m)
+func (m *ContactBlock) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactBlock.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupTopicSubscribe proto.InternalMessageInfo
+var xxx_messageInfo_ContactBlock proto.InternalMessageInfo
 
-type GroupTopicSubscribe_Request struct {
-	GroupID              []byte   `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
-	TopicID              []byte   `protobuf:"bytes,2,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
+type ContactBlock_Request struct {
+	ContactPubKey        []byte   `protobuf:"bytes,1,opt,name=contact_pub_key,json=contactPubKey,proto3" json:"contact_pub_key,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupTopicSubscribe_Request) Reset()         { *m = GroupTopicSubscribe_Request{} }
-func (m *GroupTopicSubscribe_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupTopicSubscribe_Request) ProtoMessage()    {}
-func (*GroupTopicSubscribe_Request) Descriptor() ([]byte, []int) {
+func (m *ContactBlock_Request) Reset()         { *m = ContactBlock_Request{} }
+func (m *ContactBlock_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactBlock_Request) ProtoMessage()    {}
+func (*ContactBlock_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{26, 0}
 }
-func (m *GroupTopicSubscribe_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupTopicSubscribe_Request.Unmarshal(m, b)
+func (m *ContactBlock_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactBlock_Request.Unmarshal(m, b)
 }
-func (m *GroupTopicSubscribe_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupTopicSubscribe_Request.Marshal(b, m, deterministic)
+func (m *ContactBlock_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactBlock_Request.Marshal(b, m, deterministic)
 }
-func (m *GroupTopicSubscribe_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupTopicSubscribe_Request.Merge(m, src)
+func (m *ContactBlock_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactBlock_Request.Merge(m, src)
 }
-func (m *GroupTopicSubscribe_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupTopicSubscribe_Request.Size(m)
+func (m *ContactBlock_Request) XXX_Size() int {
+	return xxx_messageInfo_ContactBlock_Request.Size(m)
 }
-func (m *GroupTopicSubscribe_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupTopicSubscribe_Request.DiscardUnknown(m)
+func (m *ContactBlock_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactBlock_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupTopicSubscribe_Request proto.InternalMessageInfo
+var xxx_messageInfo_ContactBlock_Request proto.InternalMessageInfo
 
-func (m *GroupTopicSubscribe_Request) GetGroupID() []byte {
+func (m *ContactBlock_Request) GetContactPubKey() []byte {
 	if m != nil {
-		return m.GroupID
+		return m.ContactPubKey
 	}
 	return nil
 }
 
-func (m *GroupTopicSubscribe_Request) GetTopicID() []byte {
-	if m != nil {
-		return m.TopicID
-	}
-	return nil
-}
-
-type GroupTopicSubscribe_Reply struct {
-	VolatileData         []byte   `protobuf:"bytes,1,opt,name=volatile_data,json=volatileData,proto3" json:"volatile_data,omitempty"`
+type ContactBlock_Reply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupTopicSubscribe_Reply) Reset()         { *m = GroupTopicSubscribe_Reply{} }
-func (m *GroupTopicSubscribe_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupTopicSubscribe_Reply) ProtoMessage()    {}
-func (*GroupTopicSubscribe_Reply) Descriptor() ([]byte, []int) {
+func (m *ContactBlock_Reply) Reset()         { *m = ContactBlock_Reply{} }
+func (m *ContactBlock_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactBlock_Reply) ProtoMessage()    {}
+func (*ContactBlock_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{26, 1}
 }
-func (m *GroupTopicSubscribe_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupTopicSubscribe_Reply.Unmarshal(m, b)
+func (m *ContactBlock_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactBlock_Reply.Unmarshal(m, b)
 }
-func (m *GroupTopicSubscribe_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupTopicSubscribe_Reply.Marshal(b, m, deterministic)
+func (m *ContactBlock_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactBlock_Reply.Marshal(b, m, deterministic)
 }
-func (m *GroupTopicSubscribe_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupTopicSubscribe_Reply.Merge(m, src)
+func (m *ContactBlock_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactBlock_Reply.Merge(m, src)
 }
-func (m *GroupTopicSubscribe_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupTopicSubscribe_Reply.Size(m)
+func (m *ContactBlock_Reply) XXX_Size() int {
+	return xxx_messageInfo_ContactBlock_Reply.Size(m)
 }
-func (m *GroupTopicSubscribe_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupTopicSubscribe_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupTopicSubscribe_Reply proto.InternalMessageInfo
-
-func (m *GroupTopicSubscribe_Reply) GetVolatileData() []byte {
-	if m != nil {
-		return m.VolatileData
-	}
-	return nil
+func (m *ContactBlock_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactBlock_Reply.DiscardUnknown(m)
 }
 
-type GroupInvitationAccept struct {
+var xxx_messageInfo_ContactBlock_Reply proto.InternalMessageInfo
+
+type ContactUnblock struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupInvitationAccept) Reset()         { *m = GroupInvitationAccept{} }
-func (m *GroupInvitationAccept) String() string { return proto.CompactTextString(m) }
-func (*GroupInvitationAccept) ProtoMessage()    {}
-func (*GroupInvitationAccept) Descriptor() ([]byte, []int) {
+func (m *ContactUnblock) Reset()         { *m = ContactUnblock{} }
+func (m *ContactUnblock) String() string { return proto.CompactTextString(m) }
+func (*ContactUnblock) ProtoMessage()    {}
+func (*ContactUnblock) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{27}
 }
-func (m *GroupInvitationAccept) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvitationAccept.Unmarshal(m, b)
+func (m *ContactUnblock) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactUnblock.Unmarshal(m, b)
 }
-func (m *GroupInvitationAccept) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvitationAccept.Marshal(b, m, deterministic)
+func (m *ContactUnblock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactUnblock.Marshal(b, m, deterministic)
 }
-func (m *GroupInvitationAccept) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvitationAccept.Merge(m, src)
+func (m *ContactUnblock) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactUnblock.Merge(m, src)
 }
-func (m *GroupInvitationAccept) XXX_Size() int {
-	return xxx_messageInfo_GroupInvitationAccept.Size(m)
+func (m *ContactUnblock) XXX_Size() int {
+	return xxx_messageInfo_ContactUnblock.Size(m)
 }
-func (m *GroupInvitationAccept) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvitationAccept.DiscardUnknown(m)
+func (m *ContactUnblock) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactUnblock.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupInvitationAccept proto.InternalMessageInfo
+var xxx_messageInfo_ContactUnblock proto.InternalMessageInfo
 
-type GroupInvitationAccept_Request struct {
-	GroupID              []byte   `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
+type ContactUnblock_Request struct {
+	ContactPubKey        []byte   `protobuf:"bytes,1,opt,name=contact_pub_key,json=contactPubKey,proto3" json:"contact_pub_key,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupInvitationAccept_Request) Reset()         { *m = GroupInvitationAccept_Request{} }
-func (m *GroupInvitationAccept_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupInvitationAccept_Request) ProtoMessage()    {}
-func (*GroupInvitationAccept_Request) Descriptor() ([]byte, []int) {
+func (m *ContactUnblock_Request) Reset()         { *m = ContactUnblock_Request{} }
+func (m *ContactUnblock_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactUnblock_Request) ProtoMessage()    {}
+func (*ContactUnblock_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{27, 0}
 }
-func (m *GroupInvitationAccept_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvitationAccept_Request.Unmarshal(m, b)
+func (m *ContactUnblock_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactUnblock_Request.Unmarshal(m, b)
 }
-func (m *GroupInvitationAccept_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvitationAccept_Request.Marshal(b, m, deterministic)
+func (m *ContactUnblock_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactUnblock_Request.Marshal(b, m, deterministic)
 }
-func (m *GroupInvitationAccept_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvitationAccept_Request.Merge(m, src)
+func (m *ContactUnblock_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactUnblock_Request.Merge(m, src)
 }
-func (m *GroupInvitationAccept_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupInvitationAccept_Request.Size(m)
+func (m *ContactUnblock_Request) XXX_Size() int {
+	return xxx_messageInfo_ContactUnblock_Request.Size(m)
 }
-func (m *GroupInvitationAccept_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvitationAccept_Request.DiscardUnknown(m)
+func (m *ContactUnblock_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactUnblock_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupInvitationAccept_Request proto.InternalMessageInfo
+var xxx_messageInfo_ContactUnblock_Request proto.InternalMessageInfo
 
-func (m *GroupInvitationAccept_Request) GetGroupID() []byte {
+func (m *ContactUnblock_Request) GetContactPubKey() []byte {
 	if m != nil {
-		return m.GroupID
+		return m.ContactPubKey
 	}
 	return nil
 }
 
-type GroupInvitationAccept_Reply struct {
+type ContactUnblock_Reply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupInvitationAccept_Reply) Reset()         { *m = GroupInvitationAccept_Reply{} }
-func (m *GroupInvitationAccept_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupInvitationAccept_Reply) ProtoMessage()    {}
-func (*GroupInvitationAccept_Reply) Descriptor() ([]byte, []int) {
+func (m *ContactUnblock_Reply) Reset()         { *m = ContactUnblock_Reply{} }
+func (m *ContactUnblock_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactUnblock_Reply) ProtoMessage()    {}
+func (*ContactUnblock_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{27, 1}
 }
-func (m *GroupInvitationAccept_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvitationAccept_Reply.Unmarshal(m, b)
+func (m *ContactUnblock_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContactUnblock_Reply.Unmarshal(m, b)
 }
-func (m *GroupInvitationAccept_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvitationAccept_Reply.Marshal(b, m, deterministic)
+func (m *ContactUnblock_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContactUnblock_Reply.Marshal(b, m, deterministic)
 }
-func (m *GroupInvitationAccept_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvitationAccept_Reply.Merge(m, src)
+func (m *ContactUnblock_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactUnblock_Reply.Merge(m, src)
 }
-func (m *GroupInvitationAccept_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupInvitationAccept_Reply.Size(m)
+func (m *ContactUnblock_Reply) XXX_Size() int {
+	return xxx_messageInfo_ContactUnblock_Reply.Size(m)
 }
-func (m *GroupInvitationAccept_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvitationAccept_Reply.DiscardUnknown(m)
+func (m *ContactUnblock_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactUnblock_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupInvitationAccept_Reply proto.InternalMessageInfo
+var xxx_messageInfo_ContactUnblock_Reply proto.InternalMessageInfo
 
-type GroupInvitationCreate struct {
+type AccountSubscribe struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupInvitationCreate) Reset()         { *m = GroupInvitationCreate{} }
-func (m *GroupInvitationCreate) String() string { return proto.CompactTextString(m) }
-func (*GroupInvitationCreate) ProtoMessage()    {}
-func (*GroupInvitationCreate) Descriptor() ([]byte, []int) {
+func (m *AccountSubscribe) Reset()         { *m = AccountSubscribe{} }
+func (m *AccountSubscribe) String() string { return proto.CompactTextString(m) }
+func (*AccountSubscribe) ProtoMessage()    {}
+func (*AccountSubscribe) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{28}
 }
-func (m *GroupInvitationCreate) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvitationCreate.Unmarshal(m, b)
+func (m *AccountSubscribe) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountSubscribe.Unmarshal(m, b)
 }
-func (m *GroupInvitationCreate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvitationCreate.Marshal(b, m, deterministic)
+func (m *AccountSubscribe) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountSubscribe.Marshal(b, m, deterministic)
 }
-func (m *GroupInvitationCreate) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvitationCreate.Merge(m, src)
+func (m *AccountSubscribe) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountSubscribe.Merge(m, src)
 }
-func (m *GroupInvitationCreate) XXX_Size() int {
-	return xxx_messageInfo_GroupInvitationCreate.Size(m)
+func (m *AccountSubscribe) XXX_Size() int {
+	return xxx_messageInfo_AccountSubscribe.Size(m)
 }
-func (m *GroupInvitationCreate) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvitationCreate.DiscardUnknown(m)
+func (m *AccountSubscribe) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountSubscribe.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupInvitationCreate proto.InternalMessageInfo
+var xxx_messageInfo_AccountSubscribe proto.InternalMessageInfo
 
-type GroupInvitationCreate_Request struct {
-	GroupID              []byte   `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
-	ContactAccountPubKey [][]byte `protobuf:"bytes,2,rep,name=contact_account_pub_key,json=contactAccountPubKey,proto3" json:"contact_account_pub_key,omitempty"`
+type AccountSubscribe_Request struct {
+	Since                []byte   `protobuf:"bytes,1,opt,name=since,proto3" json:"since,omitempty"`
+	Until                []byte   `protobuf:"bytes,2,opt,name=until,proto3" json:"until,omitempty"`
+	GoBackwards          bool     `protobuf:"varint,3,opt,name=go_backwards,json=goBackwards,proto3" json:"go_backwards,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupInvitationCreate_Request) Reset()         { *m = GroupInvitationCreate_Request{} }
-func (m *GroupInvitationCreate_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupInvitationCreate_Request) ProtoMessage()    {}
-func (*GroupInvitationCreate_Request) Descriptor() ([]byte, []int) {
+func (m *AccountSubscribe_Request) Reset()         { *m = AccountSubscribe_Request{} }
+func (m *AccountSubscribe_Request) String() string { return proto.CompactTextString(m) }
+func (*AccountSubscribe_Request) ProtoMessage()    {}
+func (*AccountSubscribe_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{28, 0}
 }
-func (m *GroupInvitationCreate_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvitationCreate_Request.Unmarshal(m, b)
+func (m *AccountSubscribe_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountSubscribe_Request.Unmarshal(m, b)
 }
-func (m *GroupInvitationCreate_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvitationCreate_Request.Marshal(b, m, deterministic)
+func (m *AccountSubscribe_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountSubscribe_Request.Marshal(b, m, deterministic)
 }
-func (m *GroupInvitationCreate_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvitationCreate_Request.Merge(m, src)
+func (m *AccountSubscribe_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountSubscribe_Request.Merge(m, src)
 }
-func (m *GroupInvitationCreate_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupInvitationCreate_Request.Size(m)
+func (m *AccountSubscribe_Request) XXX_Size() int {
+	return xxx_messageInfo_AccountSubscribe_Request.Size(m)
 }
-func (m *GroupInvitationCreate_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvitationCreate_Request.DiscardUnknown(m)
+func (m *AccountSubscribe_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountSubscribe_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupInvitationCreate_Request proto.InternalMessageInfo
+var xxx_messageInfo_AccountSubscribe_Request proto.InternalMessageInfo
 
-func (m *GroupInvitationCreate_Request) GetGroupID() []byte {
+func (m *AccountSubscribe_Request) GetSince() []byte {
 	if m != nil {
-		return m.GroupID
+		return m.Since
 	}
 	return nil
 }
 
-func (m *GroupInvitationCreate_Request) GetContactAccountPubKey() [][]byte {
+func (m *AccountSubscribe_Request) GetUntil() []byte {
 	if m != nil {
-		return m.ContactAccountPubKey
+		return m.Until
 	}
 	return nil
 }
 
-type GroupInvitationCreate_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *AccountSubscribe_Request) GetGoBackwards() bool {
+	if m != nil {
+		return m.GoBackwards
+	}
+	return false
 }
 
-func (m *GroupInvitationCreate_Reply) Reset()         { *m = GroupInvitationCreate_Reply{} }
-func (m *GroupInvitationCreate_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupInvitationCreate_Reply) ProtoMessage()    {}
-func (*GroupInvitationCreate_Reply) Descriptor() ([]byte, []int) {
+type AccountSubscribe_Reply struct {
+	Event                *AccountStoreEvent `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *AccountSubscribe_Reply) Reset()         { *m = AccountSubscribe_Reply{} }
+func (m *AccountSubscribe_Reply) String() string { return proto.CompactTextString(m) }
+func (*AccountSubscribe_Reply) ProtoMessage()    {}
+func (*AccountSubscribe_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{28, 1}
 }
-func (m *GroupInvitationCreate_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvitationCreate_Reply.Unmarshal(m, b)
+func (m *AccountSubscribe_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountSubscribe_Reply.Unmarshal(m, b)
 }
-func (m *GroupInvitationCreate_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvitationCreate_Reply.Marshal(b, m, deterministic)
+func (m *AccountSubscribe_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountSubscribe_Reply.Marshal(b, m, deterministic)
 }
-func (m *GroupInvitationCreate_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvitationCreate_Reply.Merge(m, src)
+func (m *AccountSubscribe_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountSubscribe_Reply.Merge(m, src)
 }
-func (m *GroupInvitationCreate_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupInvitationCreate_Reply.Size(m)
+func (m *AccountSubscribe_Reply) XXX_Size() int {
+	return xxx_messageInfo_AccountSubscribe_Reply.Size(m)
 }
-func (m *GroupInvitationCreate_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvitationCreate_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupInvitationCreate_Reply proto.InternalMessageInfo
-
-type GroupInvitationDiscard struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *AccountSubscribe_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountSubscribe_Reply.DiscardUnknown(m)
 }
 
-func (m *GroupInvitationDiscard) Reset()         { *m = GroupInvitationDiscard{} }
-func (m *GroupInvitationDiscard) String() string { return proto.CompactTextString(m) }
-func (*GroupInvitationDiscard) ProtoMessage()    {}
-func (*GroupInvitationDiscard) Descriptor() ([]byte, []int) {
+var xxx_messageInfo_AccountSubscribe_Reply proto.InternalMessageInfo
+
+func (m *AccountSubscribe_Reply) GetEvent() *AccountStoreEvent {
+	if m != nil {
+		return m.Event
+	}
+	return nil
+}
+
+type AccountStoreEvent struct {
+	SubjectPublicKeyBytes []byte   `protobuf:"bytes,1,opt,name=subject_public_key_bytes,json=subjectPublicKeyBytes,proto3" json:"subject_public_key_bytes,omitempty"`
+	Data                  []byte   `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
+	XXX_NoUnkeyedLiteral  struct{} `json:"-"`
+	XXX_unrecognized      []byte   `json:"-"`
+	XXX_sizecache         int32    `json:"-"`
+}
+
+func (m *AccountStoreEvent) Reset()         { *m = AccountStoreEvent{} }
+func (m *AccountStoreEvent) String() string { return proto.CompactTextString(m) }
+func (*AccountStoreEvent) ProtoMessage()    {}
+func (*AccountStoreEvent) Descriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{29}
 }
-func (m *GroupInvitationDiscard) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvitationDiscard.Unmarshal(m, b)
+func (m *AccountStoreEvent) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountStoreEvent.Unmarshal(m, b)
 }
-func (m *GroupInvitationDiscard) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvitationDiscard.Marshal(b, m, deterministic)
+func (m *AccountStoreEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountStoreEvent.Marshal(b, m, deterministic)
 }
-func (m *GroupInvitationDiscard) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvitationDiscard.Merge(m, src)
+func (m *AccountStoreEvent) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountStoreEvent.Merge(m, src)
 }
-func (m *GroupInvitationDiscard) XXX_Size() int {
-	return xxx_messageInfo_GroupInvitationDiscard.Size(m)
+func (m *AccountStoreEvent) XXX_Size() int {
+	return xxx_messageInfo_AccountStoreEvent.Size(m)
 }
-func (m *GroupInvitationDiscard) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvitationDiscard.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupInvitationDiscard proto.InternalMessageInfo
-
-type GroupInvitationDiscard_Request struct {
-	GroupID              []byte   `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *AccountStoreEvent) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountStoreEvent.DiscardUnknown(m)
 }
 
-func (m *GroupInvitationDiscard_Request) Reset()         { *m = GroupInvitationDiscard_Request{} }
-func (m *GroupInvitationDiscard_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupInvitationDiscard_Request) ProtoMessage()    {}
-func (*GroupInvitationDiscard_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{29, 0}
-}
-func (m *GroupInvitationDiscard_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvitationDiscard_Request.Unmarshal(m, b)
-}
-func (m *GroupInvitationDiscard_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvitationDiscard_Request.Marshal(b, m, deterministic)
-}
-func (m *GroupInvitationDiscard_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvitationDiscard_Request.Merge(m, src)
-}
-func (m *GroupInvitationDiscard_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupInvitationDiscard_Request.Size(m)
-}
-func (m *GroupInvitationDiscard_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvitationDiscard_Request.DiscardUnknown(m)
-}
+var xxx_messageInfo_AccountStoreEvent proto.InternalMessageInfo
 
-var xxx_messageInfo_GroupInvitationDiscard_Request proto.InternalMessageInfo
-
-func (m *GroupInvitationDiscard_Request) GetGroupID() []byte {
+func (m *AccountStoreEvent) GetSubjectPublicKeyBytes() []byte {
 	if m != nil {
-		return m.GroupID
+		return m.SubjectPublicKeyBytes
 	}
 	return nil
 }
 
-type GroupInvitationDiscard_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupInvitationDiscard_Reply) Reset()         { *m = GroupInvitationDiscard_Reply{} }
-func (m *GroupInvitationDiscard_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupInvitationDiscard_Reply) ProtoMessage()    {}
-func (*GroupInvitationDiscard_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{29, 1}
-}
-func (m *GroupInvitationDiscard_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvitationDiscard_Reply.Unmarshal(m, b)
-}
-func (m *GroupInvitationDiscard_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvitationDiscard_Reply.Marshal(b, m, deterministic)
-}
-func (m *GroupInvitationDiscard_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvitationDiscard_Reply.Merge(m, src)
-}
-func (m *GroupInvitationDiscard_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupInvitationDiscard_Reply.Size(m)
-}
-func (m *GroupInvitationDiscard_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvitationDiscard_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupInvitationDiscard_Reply proto.InternalMessageInfo
-
-type GroupInvitationList struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupInvitationList) Reset()         { *m = GroupInvitationList{} }
-func (m *GroupInvitationList) String() string { return proto.CompactTextString(m) }
-func (*GroupInvitationList) ProtoMessage()    {}
-func (*GroupInvitationList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{30}
-}
-func (m *GroupInvitationList) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvitationList.Unmarshal(m, b)
-}
-func (m *GroupInvitationList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvitationList.Marshal(b, m, deterministic)
-}
-func (m *GroupInvitationList) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvitationList.Merge(m, src)
-}
-func (m *GroupInvitationList) XXX_Size() int {
-	return xxx_messageInfo_GroupInvitationList.Size(m)
-}
-func (m *GroupInvitationList) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvitationList.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupInvitationList proto.InternalMessageInfo
-
-type GroupInvitationList_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupInvitationList_Request) Reset()         { *m = GroupInvitationList_Request{} }
-func (m *GroupInvitationList_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupInvitationList_Request) ProtoMessage()    {}
-func (*GroupInvitationList_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{30, 0}
-}
-func (m *GroupInvitationList_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvitationList_Request.Unmarshal(m, b)
-}
-func (m *GroupInvitationList_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvitationList_Request.Marshal(b, m, deterministic)
-}
-func (m *GroupInvitationList_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvitationList_Request.Merge(m, src)
-}
-func (m *GroupInvitationList_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupInvitationList_Request.Size(m)
-}
-func (m *GroupInvitationList_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvitationList_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupInvitationList_Request proto.InternalMessageInfo
-
-type GroupInvitationList_Reply struct {
-	InviterAccountPubKey []byte     `protobuf:"bytes,1,opt,name=inviter_account_pub_key,json=inviterAccountPubKey,proto3" json:"inviter_account_pub_key,omitempty"`
-	GroupInfo            *GroupInfo `protobuf:"bytes,2,opt,name=group_info,json=groupInfo,proto3" json:"group_info,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
-	XXX_unrecognized     []byte     `json:"-"`
-	XXX_sizecache        int32      `json:"-"`
-}
-
-func (m *GroupInvitationList_Reply) Reset()         { *m = GroupInvitationList_Reply{} }
-func (m *GroupInvitationList_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupInvitationList_Reply) ProtoMessage()    {}
-func (*GroupInvitationList_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{30, 1}
-}
-func (m *GroupInvitationList_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvitationList_Reply.Unmarshal(m, b)
-}
-func (m *GroupInvitationList_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvitationList_Reply.Marshal(b, m, deterministic)
-}
-func (m *GroupInvitationList_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvitationList_Reply.Merge(m, src)
-}
-func (m *GroupInvitationList_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupInvitationList_Reply.Size(m)
-}
-func (m *GroupInvitationList_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvitationList_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupInvitationList_Reply proto.InternalMessageInfo
-
-func (m *GroupInvitationList_Reply) GetInviterAccountPubKey() []byte {
+func (m *AccountStoreEvent) GetData() []byte {
 	if m != nil {
-		return m.InviterAccountPubKey
-	}
-	return nil
-}
-
-func (m *GroupInvitationList_Reply) GetGroupInfo() *GroupInfo {
-	if m != nil {
-		return m.GroupInfo
-	}
-	return nil
-}
-
-type Device struct {
-	DevicePubKey         []byte               `protobuf:"bytes,1,opt,name=device_pub_key,json=devicePubKey,proto3" json:"device_pub_key,omitempty"`
-	ParentDevicePubKey   []byte               `protobuf:"bytes,2,opt,name=parent_device_pub_key,json=parentDevicePubKey,proto3" json:"parent_device_pub_key,omitempty"`
-	LinkedAt             *timestamp.Timestamp `protobuf:"bytes,3,opt,name=linked_at,json=linkedAt,proto3" json:"linked_at,omitempty"`
-	BleCapable           bool                 `protobuf:"varint,4,opt,name=ble_capable,json=bleCapable,proto3" json:"ble_capable,omitempty"`
-	WifiP2PCapable       bool                 `protobuf:"varint,5,opt,name=wifi_p2p_capable,json=wifiP2pCapable,proto3" json:"wifi_p2p_capable,omitempty"`
-	RelayCapable         bool                 `protobuf:"varint,6,opt,name=relay_capable,json=relayCapable,proto3" json:"relay_capable,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
-	XXX_unrecognized     []byte               `json:"-"`
-	XXX_sizecache        int32                `json:"-"`
-}
-
-func (m *Device) Reset()         { *m = Device{} }
-func (m *Device) String() string { return proto.CompactTextString(m) }
-func (*Device) ProtoMessage()    {}
-func (*Device) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{31}
-}
-func (m *Device) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Device.Unmarshal(m, b)
-}
-func (m *Device) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Device.Marshal(b, m, deterministic)
-}
-func (m *Device) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Device.Merge(m, src)
-}
-func (m *Device) XXX_Size() int {
-	return xxx_messageInfo_Device.Size(m)
-}
-func (m *Device) XXX_DiscardUnknown() {
-	xxx_messageInfo_Device.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Device proto.InternalMessageInfo
-
-func (m *Device) GetDevicePubKey() []byte {
-	if m != nil {
-		return m.DevicePubKey
-	}
-	return nil
-}
-
-func (m *Device) GetParentDevicePubKey() []byte {
-	if m != nil {
-		return m.ParentDevicePubKey
-	}
-	return nil
-}
-
-func (m *Device) GetLinkedAt() *timestamp.Timestamp {
-	if m != nil {
-		return m.LinkedAt
-	}
-	return nil
-}
-
-func (m *Device) GetBleCapable() bool {
-	if m != nil {
-		return m.BleCapable
-	}
-	return false
-}
-
-func (m *Device) GetWifiP2PCapable() bool {
-	if m != nil {
-		return m.WifiP2PCapable
-	}
-	return false
-}
-
-func (m *Device) GetRelayCapable() bool {
-	if m != nil {
-		return m.RelayCapable
-	}
-	return false
-}
-
-type Invitation struct {
-	InviterMemberPubKey       []byte   `protobuf:"bytes,1,opt,name=inviter_member_pub_key,json=inviterMemberPubKey,proto3" json:"inviter_member_pub_key,omitempty"`
-	InvitationPrivKey         []byte   `protobuf:"bytes,2,opt,name=invitation_priv_key,json=invitationPrivKey,proto3" json:"invitation_priv_key,omitempty"`
-	InvitationPubKeySignature []byte   `protobuf:"bytes,3,opt,name=invitation_pub_key_signature,json=invitationPubKeySignature,proto3" json:"invitation_pub_key_signature,omitempty"`
-	GroupVersion              uint32   `protobuf:"varint,4,opt,name=group_version,json=groupVersion,proto3" json:"group_version,omitempty"`
-	GroupIdPubKey             []byte   `protobuf:"bytes,5,opt,name=group_id_pub_key,json=groupIdPubKey,proto3" json:"group_id_pub_key,omitempty"`
-	SharedSecret              []byte   `protobuf:"bytes,6,opt,name=shared_secret,json=sharedSecret,proto3" json:"shared_secret,omitempty"`
-	XXX_NoUnkeyedLiteral      struct{} `json:"-"`
-	XXX_unrecognized          []byte   `json:"-"`
-	XXX_sizecache             int32    `json:"-"`
-}
-
-func (m *Invitation) Reset()         { *m = Invitation{} }
-func (m *Invitation) String() string { return proto.CompactTextString(m) }
-func (*Invitation) ProtoMessage()    {}
-func (*Invitation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{32}
-}
-func (m *Invitation) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Invitation.Unmarshal(m, b)
-}
-func (m *Invitation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Invitation.Marshal(b, m, deterministic)
-}
-func (m *Invitation) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Invitation.Merge(m, src)
-}
-func (m *Invitation) XXX_Size() int {
-	return xxx_messageInfo_Invitation.Size(m)
-}
-func (m *Invitation) XXX_DiscardUnknown() {
-	xxx_messageInfo_Invitation.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Invitation proto.InternalMessageInfo
-
-func (m *Invitation) GetInviterMemberPubKey() []byte {
-	if m != nil {
-		return m.InviterMemberPubKey
-	}
-	return nil
-}
-
-func (m *Invitation) GetInvitationPrivKey() []byte {
-	if m != nil {
-		return m.InvitationPrivKey
-	}
-	return nil
-}
-
-func (m *Invitation) GetInvitationPubKeySignature() []byte {
-	if m != nil {
-		return m.InvitationPubKeySignature
-	}
-	return nil
-}
-
-func (m *Invitation) GetGroupVersion() uint32 {
-	if m != nil {
-		return m.GroupVersion
-	}
-	return 0
-}
-
-func (m *Invitation) GetGroupIdPubKey() []byte {
-	if m != nil {
-		return m.GroupIdPubKey
-	}
-	return nil
-}
-
-func (m *Invitation) GetSharedSecret() []byte {
-	if m != nil {
-		return m.SharedSecret
-	}
-	return nil
-}
-
-// Contact is the public version of protocolmodel.Contact and should stay in sync
-type Contact struct {
-	AccountPubKey        []byte                `protobuf:"bytes,1,opt,name=account_pub_key,json=accountPubKey,proto3" json:"account_pub_key,omitempty"`
-	OneToOneGroupPubKey  []byte                `protobuf:"bytes,2,opt,name=one_to_one_group_pub_key,json=oneToOneGroupPubKey,proto3" json:"one_to_one_group_pub_key,omitempty"`
-	TrustLevel           Contact_TrustLevel    `protobuf:"varint,4,opt,name=trust_level,json=trustLevel,proto3,enum=berty.protocol.Contact_TrustLevel" json:"trust_level,omitempty"`
-	Metadata             []byte                `protobuf:"bytes,5,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Blocked              bool                  `protobuf:"varint,6,opt,name=blocked,proto3" json:"blocked,omitempty"`
-	RequestStatus        Contact_RequestStatus `protobuf:"varint,7,opt,name=request_status,json=requestStatus,proto3,enum=berty.protocol.Contact_RequestStatus" json:"request_status,omitempty"`
-	OneToOneGroup        *GroupInfo            `protobuf:"bytes,80,opt,name=one_to_one_group,json=oneToOneGroup,proto3" json:"one_to_one_group,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
-	XXX_unrecognized     []byte                `json:"-"`
-	XXX_sizecache        int32                 `json:"-"`
-}
-
-func (m *Contact) Reset()         { *m = Contact{} }
-func (m *Contact) String() string { return proto.CompactTextString(m) }
-func (*Contact) ProtoMessage()    {}
-func (*Contact) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{33}
-}
-func (m *Contact) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Contact.Unmarshal(m, b)
-}
-func (m *Contact) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Contact.Marshal(b, m, deterministic)
-}
-func (m *Contact) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Contact.Merge(m, src)
-}
-func (m *Contact) XXX_Size() int {
-	return xxx_messageInfo_Contact.Size(m)
-}
-func (m *Contact) XXX_DiscardUnknown() {
-	xxx_messageInfo_Contact.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Contact proto.InternalMessageInfo
-
-func (m *Contact) GetAccountPubKey() []byte {
-	if m != nil {
-		return m.AccountPubKey
-	}
-	return nil
-}
-
-func (m *Contact) GetOneToOneGroupPubKey() []byte {
-	if m != nil {
-		return m.OneToOneGroupPubKey
-	}
-	return nil
-}
-
-func (m *Contact) GetTrustLevel() Contact_TrustLevel {
-	if m != nil {
-		return m.TrustLevel
-	}
-	return Contact_Unknown
-}
-
-func (m *Contact) GetMetadata() []byte {
-	if m != nil {
-		return m.Metadata
-	}
-	return nil
-}
-
-func (m *Contact) GetBlocked() bool {
-	if m != nil {
-		return m.Blocked
-	}
-	return false
-}
-
-func (m *Contact) GetRequestStatus() Contact_RequestStatus {
-	if m != nil {
-		return m.RequestStatus
-	}
-	return Contact_UnknownRequestStatus
-}
-
-func (m *Contact) GetOneToOneGroup() *GroupInfo {
-	if m != nil {
-		return m.OneToOneGroup
-	}
-	return nil
-}
-
-// GroupInfo is the public version of protocolmodel.GroupInfo and should stay in sync
-type GroupInfo struct {
-	GroupPubKey          []byte                  `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
-	Metadata             []byte                  `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Audience             GroupInfo_GroupAudience `protobuf:"varint,4,opt,name=audience,proto3,enum=berty.protocol.GroupInfo_GroupAudience" json:"audience,omitempty"`
-	Version              uint32                  `protobuf:"varint,5,opt,name=version,proto3" json:"version,omitempty"`
-	InviterContactPubKey []byte                  `protobuf:"bytes,9,opt,name=inviter_contact_pub_key,json=inviterContactPubKey,proto3" json:"inviter_contact_pub_key,omitempty"`
-	Members              []*GroupMember          `protobuf:"bytes,80,rep,name=members,proto3" json:"members,omitempty"`
-	Inviter              *Contact                `protobuf:"bytes,81,opt,name=inviter,proto3" json:"inviter,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
-	XXX_unrecognized     []byte                  `json:"-"`
-	XXX_sizecache        int32                   `json:"-"`
-}
-
-func (m *GroupInfo) Reset()         { *m = GroupInfo{} }
-func (m *GroupInfo) String() string { return proto.CompactTextString(m) }
-func (*GroupInfo) ProtoMessage()    {}
-func (*GroupInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{34}
-}
-func (m *GroupInfo) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInfo.Unmarshal(m, b)
-}
-func (m *GroupInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInfo.Marshal(b, m, deterministic)
-}
-func (m *GroupInfo) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInfo.Merge(m, src)
-}
-func (m *GroupInfo) XXX_Size() int {
-	return xxx_messageInfo_GroupInfo.Size(m)
-}
-func (m *GroupInfo) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInfo.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupInfo proto.InternalMessageInfo
-
-func (m *GroupInfo) GetGroupPubKey() []byte {
-	if m != nil {
-		return m.GroupPubKey
-	}
-	return nil
-}
-
-func (m *GroupInfo) GetMetadata() []byte {
-	if m != nil {
-		return m.Metadata
-	}
-	return nil
-}
-
-func (m *GroupInfo) GetAudience() GroupInfo_GroupAudience {
-	if m != nil {
-		return m.Audience
-	}
-	return GroupInfo_Undefined
-}
-
-func (m *GroupInfo) GetVersion() uint32 {
-	if m != nil {
-		return m.Version
-	}
-	return 0
-}
-
-func (m *GroupInfo) GetInviterContactPubKey() []byte {
-	if m != nil {
-		return m.InviterContactPubKey
-	}
-	return nil
-}
-
-func (m *GroupInfo) GetMembers() []*GroupMember {
-	if m != nil {
-		return m.Members
-	}
-	return nil
-}
-
-func (m *GroupInfo) GetInviter() *Contact {
-	if m != nil {
-		return m.Inviter
-	}
-	return nil
-}
-
-// GroupMember is the public version of protocolmodel.GroupMember and should stay in sync
-type GroupMember struct {
-	GroupMemberPubKey    []byte       `protobuf:"bytes,1,opt,name=group_member_pub_key,json=groupMemberPubKey,proto3" json:"group_member_pub_key,omitempty"`
-	GroupPubKey          []byte       `protobuf:"bytes,2,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
-	InviterPubKey        []byte       `protobuf:"bytes,3,opt,name=inviter_pub_key,json=inviterPubKey,proto3" json:"inviter_pub_key,omitempty"`
-	ContactAccountPubKey []byte       `protobuf:"bytes,4,opt,name=contact_account_pub_key,json=contactAccountPubKey,proto3" json:"contact_account_pub_key,omitempty"`
-	Metadata             []byte       `protobuf:"bytes,6,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	GroupInfo            *GroupInfo   `protobuf:"bytes,81,opt,name=group_info,json=groupInfo,proto3" json:"group_info,omitempty"`
-	Inviter              *GroupMember `protobuf:"bytes,82,opt,name=inviter,proto3" json:"inviter,omitempty"`
-	Contact              *Contact     `protobuf:"bytes,83,opt,name=contact,proto3" json:"contact,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
-	XXX_unrecognized     []byte       `json:"-"`
-	XXX_sizecache        int32        `json:"-"`
-}
-
-func (m *GroupMember) Reset()         { *m = GroupMember{} }
-func (m *GroupMember) String() string { return proto.CompactTextString(m) }
-func (*GroupMember) ProtoMessage()    {}
-func (*GroupMember) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{35}
-}
-func (m *GroupMember) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMember.Unmarshal(m, b)
-}
-func (m *GroupMember) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMember.Marshal(b, m, deterministic)
-}
-func (m *GroupMember) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMember.Merge(m, src)
-}
-func (m *GroupMember) XXX_Size() int {
-	return xxx_messageInfo_GroupMember.Size(m)
-}
-func (m *GroupMember) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMember.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupMember proto.InternalMessageInfo
-
-func (m *GroupMember) GetGroupMemberPubKey() []byte {
-	if m != nil {
-		return m.GroupMemberPubKey
-	}
-	return nil
-}
-
-func (m *GroupMember) GetGroupPubKey() []byte {
-	if m != nil {
-		return m.GroupPubKey
-	}
-	return nil
-}
-
-func (m *GroupMember) GetInviterPubKey() []byte {
-	if m != nil {
-		return m.InviterPubKey
-	}
-	return nil
-}
-
-func (m *GroupMember) GetContactAccountPubKey() []byte {
-	if m != nil {
-		return m.ContactAccountPubKey
-	}
-	return nil
-}
-
-func (m *GroupMember) GetMetadata() []byte {
-	if m != nil {
-		return m.Metadata
-	}
-	return nil
-}
-
-func (m *GroupMember) GetGroupInfo() *GroupInfo {
-	if m != nil {
-		return m.GroupInfo
-	}
-	return nil
-}
-
-func (m *GroupMember) GetInviter() *GroupMember {
-	if m != nil {
-		return m.Inviter
-	}
-	return nil
-}
-
-func (m *GroupMember) GetContact() *Contact {
-	if m != nil {
-		return m.Contact
-	}
-	return nil
-}
-
-type ContactRequestLink struct {
-	RendezvousPointSeed  []byte   `protobuf:"bytes,1,opt,name=rendezvous_point_seed,json=rendezvousPointSeed,proto3" json:"rendezvous_point_seed,omitempty"`
-	ContactAccountPubKey []byte   `protobuf:"bytes,2,opt,name=contact_account_pub_key,json=contactAccountPubKey,proto3" json:"contact_account_pub_key,omitempty"`
-	Metadata             []byte   `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestLink) Reset()         { *m = ContactRequestLink{} }
-func (m *ContactRequestLink) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestLink) ProtoMessage()    {}
-func (*ContactRequestLink) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{36}
-}
-func (m *ContactRequestLink) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestLink.Unmarshal(m, b)
-}
-func (m *ContactRequestLink) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestLink.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestLink) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestLink.Merge(m, src)
-}
-func (m *ContactRequestLink) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestLink.Size(m)
-}
-func (m *ContactRequestLink) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestLink.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestLink proto.InternalMessageInfo
-
-func (m *ContactRequestLink) GetRendezvousPointSeed() []byte {
-	if m != nil {
-		return m.RendezvousPointSeed
-	}
-	return nil
-}
-
-func (m *ContactRequestLink) GetContactAccountPubKey() []byte {
-	if m != nil {
-		return m.ContactAccountPubKey
-	}
-	return nil
-}
-
-func (m *ContactRequestLink) GetMetadata() []byte {
-	if m != nil {
-		return m.Metadata
+		return m.Data
 	}
 	return nil
 }
 
 func init() {
+	proto.RegisterEnum("berty.protocol.AccountEventType", AccountEventType_name, AccountEventType_value)
+	proto.RegisterEnum("berty.protocol.GroupSettingStoreSettingType", GroupSettingStoreSettingType_name, GroupSettingStoreSettingType_value)
 	proto.RegisterEnum("berty.protocol.InstanceGetConfiguration_SettingState", InstanceGetConfiguration_SettingState_name, InstanceGetConfiguration_SettingState_value)
-	proto.RegisterEnum("berty.protocol.EventSubscribe_Type", EventSubscribe_Type_name, EventSubscribe_Type_value)
-	proto.RegisterEnum("berty.protocol.Contact_TrustLevel", Contact_TrustLevel_name, Contact_TrustLevel_value)
-	proto.RegisterEnum("berty.protocol.Contact_RequestStatus", Contact_RequestStatus_name, Contact_RequestStatus_value)
-	proto.RegisterEnum("berty.protocol.GroupInfo_GroupAudience", GroupInfo_GroupAudience_name, GroupInfo_GroupAudience_value)
 	proto.RegisterType((*InstanceExportData)(nil), "berty.protocol.InstanceExportData")
 	proto.RegisterType((*InstanceExportData_Request)(nil), "berty.protocol.InstanceExportData.Request")
 	proto.RegisterType((*InstanceExportData_Reply)(nil), "berty.protocol.InstanceExportData.Reply")
 	proto.RegisterType((*InstanceGetConfiguration)(nil), "berty.protocol.InstanceGetConfiguration")
 	proto.RegisterType((*InstanceGetConfiguration_Request)(nil), "berty.protocol.InstanceGetConfiguration.Request")
 	proto.RegisterType((*InstanceGetConfiguration_Reply)(nil), "berty.protocol.InstanceGetConfiguration.Reply")
-	proto.RegisterType((*AccountGetConfiguration)(nil), "berty.protocol.AccountGetConfiguration")
-	proto.RegisterType((*AccountGetConfiguration_Request)(nil), "berty.protocol.AccountGetConfiguration.Request")
-	proto.RegisterType((*AccountGetConfiguration_Reply)(nil), "berty.protocol.AccountGetConfiguration.Reply")
-	proto.RegisterType((*AccountGetInformation)(nil), "berty.protocol.AccountGetInformation")
-	proto.RegisterType((*AccountGetInformation_Request)(nil), "berty.protocol.AccountGetInformation.Request")
-	proto.RegisterType((*AccountGetInformation_Reply)(nil), "berty.protocol.AccountGetInformation.Reply")
-	proto.RegisterType((*AccountLinkNewDevice)(nil), "berty.protocol.AccountLinkNewDevice")
-	proto.RegisterType((*AccountLinkNewDevice_Request)(nil), "berty.protocol.AccountLinkNewDevice.Request")
-	proto.RegisterType((*AccountLinkNewDevice_Reply)(nil), "berty.protocol.AccountLinkNewDevice.Reply")
-	proto.RegisterType((*AccountDisableIncomingContactRequest)(nil), "berty.protocol.AccountDisableIncomingContactRequest")
-	proto.RegisterType((*AccountDisableIncomingContactRequest_Request)(nil), "berty.protocol.AccountDisableIncomingContactRequest.Request")
-	proto.RegisterType((*AccountDisableIncomingContactRequest_Reply)(nil), "berty.protocol.AccountDisableIncomingContactRequest.Reply")
-	proto.RegisterType((*AccountEnableIncomingContactRequest)(nil), "berty.protocol.AccountEnableIncomingContactRequest")
-	proto.RegisterType((*AccountEnableIncomingContactRequest_Request)(nil), "berty.protocol.AccountEnableIncomingContactRequest.Request")
-	proto.RegisterType((*AccountEnableIncomingContactRequest_Reply)(nil), "berty.protocol.AccountEnableIncomingContactRequest.Reply")
-	proto.RegisterType((*AccountResetIncomingContactRequestLink)(nil), "berty.protocol.AccountResetIncomingContactRequestLink")
-	proto.RegisterType((*AccountResetIncomingContactRequestLink_Request)(nil), "berty.protocol.AccountResetIncomingContactRequestLink.Request")
-	proto.RegisterType((*AccountResetIncomingContactRequestLink_Reply)(nil), "berty.protocol.AccountResetIncomingContactRequestLink.Reply")
-	proto.RegisterType((*EventSubscribe)(nil), "berty.protocol.EventSubscribe")
-	proto.RegisterType((*EventSubscribe_Request)(nil), "berty.protocol.EventSubscribe.Request")
-	proto.RegisterType((*EventSubscribe_Reply)(nil), "berty.protocol.EventSubscribe.Reply")
-	proto.RegisterType((*EventSubscribe_MessageEvent)(nil), "berty.protocol.EventSubscribe.MessageEvent")
-	proto.RegisterType((*EventSubscribe_ContactRequestEvent)(nil), "berty.protocol.EventSubscribe.ContactRequestEvent")
-	proto.RegisterType((*EventSubscribe_GroupInvitationEvent)(nil), "berty.protocol.EventSubscribe.GroupInvitationEvent")
-	proto.RegisterType((*EventSubscribe_BroadcastEvent)(nil), "berty.protocol.EventSubscribe.BroadcastEvent")
-	proto.RegisterType((*ContactRequestAccept)(nil), "berty.protocol.ContactRequestAccept")
-	proto.RegisterType((*ContactRequestAccept_Request)(nil), "berty.protocol.ContactRequestAccept.Request")
-	proto.RegisterType((*ContactRequestAccept_Reply)(nil), "berty.protocol.ContactRequestAccept.Reply")
-	proto.RegisterType((*ContactRequestDiscard)(nil), "berty.protocol.ContactRequestDiscard")
-	proto.RegisterType((*ContactRequestDiscard_Request)(nil), "berty.protocol.ContactRequestDiscard.Request")
-	proto.RegisterType((*ContactRequestDiscard_Reply)(nil), "berty.protocol.ContactRequestDiscard.Reply")
-	proto.RegisterType((*ContactRequestListIncoming)(nil), "berty.protocol.ContactRequestListIncoming")
-	proto.RegisterType((*ContactRequestListIncoming_Request)(nil), "berty.protocol.ContactRequestListIncoming.Request")
-	proto.RegisterType((*ContactRequestListIncoming_Reply)(nil), "berty.protocol.ContactRequestListIncoming.Reply")
-	proto.RegisterType((*ContactRequestListOutgoing)(nil), "berty.protocol.ContactRequestListOutgoing")
-	proto.RegisterType((*ContactRequestListOutgoing_Request)(nil), "berty.protocol.ContactRequestListOutgoing.Request")
-	proto.RegisterType((*ContactRequestListOutgoing_Reply)(nil), "berty.protocol.ContactRequestListOutgoing.Reply")
-	proto.RegisterType((*ContactRequestSend)(nil), "berty.protocol.ContactRequestSend")
-	proto.RegisterType((*ContactRequestSend_Request)(nil), "berty.protocol.ContactRequestSend.Request")
-	proto.RegisterType((*ContactRequestSend_Reply)(nil), "berty.protocol.ContactRequestSend.Reply")
-	proto.RegisterType((*ContactGet)(nil), "berty.protocol.ContactGet")
-	proto.RegisterType((*ContactGet_Request)(nil), "berty.protocol.ContactGet.Request")
-	proto.RegisterType((*ContactGet_Reply)(nil), "berty.protocol.ContactGet.Reply")
-	proto.RegisterType((*ContactRemove)(nil), "berty.protocol.ContactRemove")
-	proto.RegisterType((*ContactRemove_Request)(nil), "berty.protocol.ContactRemove.Request")
-	proto.RegisterType((*ContactRemove_Reply)(nil), "berty.protocol.ContactRemove.Reply")
-	proto.RegisterType((*ContactList)(nil), "berty.protocol.ContactList")
-	proto.RegisterType((*ContactList_Request)(nil), "berty.protocol.ContactList.Request")
-	proto.RegisterType((*ContactList_Reply)(nil), "berty.protocol.ContactList.Reply")
-	proto.RegisterType((*StreamManagerRequestToContact)(nil), "berty.protocol.StreamManagerRequestToContact")
-	proto.RegisterType((*StreamManagerRequestToContact_Request)(nil), "berty.protocol.StreamManagerRequestToContact.Request")
-	proto.RegisterType((*StreamManagerRequestToContact_Reply)(nil), "berty.protocol.StreamManagerRequestToContact.Reply")
-	proto.RegisterType((*StreamManagerAccept)(nil), "berty.protocol.StreamManagerAccept")
-	proto.RegisterType((*StreamManagerAccept_Request)(nil), "berty.protocol.StreamManagerAccept.Request")
-	proto.RegisterType((*StreamManagerAccept_Reply)(nil), "berty.protocol.StreamManagerAccept.Reply")
+	proto.RegisterType((*GroupSettingSetMember)(nil), "berty.protocol.GroupSettingSetMember")
+	proto.RegisterType((*GroupSettingSetMember_Request)(nil), "berty.protocol.GroupSettingSetMember.Request")
+	proto.RegisterType((*GroupSettingSetMember_Reply)(nil), "berty.protocol.GroupSettingSetMember.Reply")
+	proto.RegisterType((*GroupSettingSetGroup)(nil), "berty.protocol.GroupSettingSetGroup")
+	proto.RegisterType((*GroupSettingSetGroup_Request)(nil), "berty.protocol.GroupSettingSetGroup.Request")
+	proto.RegisterType((*GroupSettingSetGroup_Reply)(nil), "berty.protocol.GroupSettingSetGroup.Reply")
+	proto.RegisterType((*GroupSettingStoreSubscribe)(nil), "berty.protocol.GroupSettingStoreSubscribe")
+	proto.RegisterType((*GroupSettingStoreSubscribe_Request)(nil), "berty.protocol.GroupSettingStoreSubscribe.Request")
+	proto.RegisterType((*GroupSettingStoreSubscribe_Reply)(nil), "berty.protocol.GroupSettingStoreSubscribe.Reply")
+	proto.RegisterType((*EventBase)(nil), "berty.protocol.EventBase")
+	proto.RegisterType((*GroupStoreEvent)(nil), "berty.protocol.GroupStoreEvent")
+	proto.RegisterType((*GroupSettingStoreEvent)(nil), "berty.protocol.GroupSettingStoreEvent")
+	proto.RegisterType((*GroupMessageSend)(nil), "berty.protocol.GroupMessageSend")
+	proto.RegisterType((*GroupMessageSend_Request)(nil), "berty.protocol.GroupMessageSend.Request")
+	proto.RegisterType((*GroupMessageSend_Reply)(nil), "berty.protocol.GroupMessageSend.Reply")
+	proto.RegisterType((*AccountAppendAppSpecificEvent)(nil), "berty.protocol.AccountAppendAppSpecificEvent")
+	proto.RegisterType((*AccountAppendAppSpecificEvent_Request)(nil), "berty.protocol.AccountAppendAppSpecificEvent.Request")
+	proto.RegisterType((*AccountAppendAppSpecificEvent_Reply)(nil), "berty.protocol.AccountAppendAppSpecificEvent.Reply")
+	proto.RegisterType((*GroupMessageSubscribe)(nil), "berty.protocol.GroupMessageSubscribe")
+	proto.RegisterType((*GroupMessageSubscribe_Request)(nil), "berty.protocol.GroupMessageSubscribe.Request")
+	proto.RegisterType((*GroupMessageSubscribe_Reply)(nil), "berty.protocol.GroupMessageSubscribe.Reply")
+	proto.RegisterType((*GroupMessageStoreEvent)(nil), "berty.protocol.GroupMessageStoreEvent")
+	proto.RegisterType((*GroupMemberSubscribe)(nil), "berty.protocol.GroupMemberSubscribe")
+	proto.RegisterType((*GroupMemberSubscribe_Request)(nil), "berty.protocol.GroupMemberSubscribe.Request")
+	proto.RegisterType((*GroupMemberSubscribe_Reply)(nil), "berty.protocol.GroupMemberSubscribe.Reply")
+	proto.RegisterType((*GroupMemberStoreEvent)(nil), "berty.protocol.GroupMemberStoreEvent")
 	proto.RegisterType((*GroupCreate)(nil), "berty.protocol.GroupCreate")
 	proto.RegisterType((*GroupCreate_Request)(nil), "berty.protocol.GroupCreate.Request")
 	proto.RegisterType((*GroupCreate_Reply)(nil), "berty.protocol.GroupCreate.Reply")
-	proto.RegisterType((*GroupGenerateInviteLink)(nil), "berty.protocol.GroupGenerateInviteLink")
-	proto.RegisterType((*GroupGenerateInviteLink_Request)(nil), "berty.protocol.GroupGenerateInviteLink.Request")
-	proto.RegisterType((*GroupGenerateInviteLink_Reply)(nil), "berty.protocol.GroupGenerateInviteLink.Reply")
+	proto.RegisterType((*GroupJoin)(nil), "berty.protocol.GroupJoin")
+	proto.RegisterType((*GroupJoin_Request)(nil), "berty.protocol.GroupJoin.Request")
+	proto.RegisterType((*GroupJoin_Reply)(nil), "berty.protocol.GroupJoin.Reply")
 	proto.RegisterType((*GroupLeave)(nil), "berty.protocol.GroupLeave")
 	proto.RegisterType((*GroupLeave_Request)(nil), "berty.protocol.GroupLeave.Request")
 	proto.RegisterType((*GroupLeave_Reply)(nil), "berty.protocol.GroupLeave.Reply")
-	proto.RegisterType((*GroupList)(nil), "berty.protocol.GroupList")
-	proto.RegisterType((*GroupList_Request)(nil), "berty.protocol.GroupList.Request")
-	proto.RegisterType((*GroupList_Reply)(nil), "berty.protocol.GroupList.Reply")
-	proto.RegisterType((*GroupMessageCreate)(nil), "berty.protocol.GroupMessageCreate")
-	proto.RegisterType((*GroupMessageCreate_Request)(nil), "berty.protocol.GroupMessageCreate.Request")
-	proto.RegisterType((*GroupMessageCreate_Reply)(nil), "berty.protocol.GroupMessageCreate.Reply")
-	proto.RegisterType((*GroupMessageList)(nil), "berty.protocol.GroupMessageList")
-	proto.RegisterType((*GroupMessageList_Request)(nil), "berty.protocol.GroupMessageList.Request")
-	proto.RegisterType((*GroupMessageList_Reply)(nil), "berty.protocol.GroupMessageList.Reply")
-	proto.RegisterType((*GroupTopicPublish)(nil), "berty.protocol.GroupTopicPublish")
-	proto.RegisterType((*GroupTopicPublish_Request)(nil), "berty.protocol.GroupTopicPublish.Request")
-	proto.RegisterType((*GroupTopicPublish_Reply)(nil), "berty.protocol.GroupTopicPublish.Reply")
-	proto.RegisterType((*GroupTopicSubscribe)(nil), "berty.protocol.GroupTopicSubscribe")
-	proto.RegisterType((*GroupTopicSubscribe_Request)(nil), "berty.protocol.GroupTopicSubscribe.Request")
-	proto.RegisterType((*GroupTopicSubscribe_Reply)(nil), "berty.protocol.GroupTopicSubscribe.Reply")
-	proto.RegisterType((*GroupInvitationAccept)(nil), "berty.protocol.GroupInvitationAccept")
-	proto.RegisterType((*GroupInvitationAccept_Request)(nil), "berty.protocol.GroupInvitationAccept.Request")
-	proto.RegisterType((*GroupInvitationAccept_Reply)(nil), "berty.protocol.GroupInvitationAccept.Reply")
-	proto.RegisterType((*GroupInvitationCreate)(nil), "berty.protocol.GroupInvitationCreate")
-	proto.RegisterType((*GroupInvitationCreate_Request)(nil), "berty.protocol.GroupInvitationCreate.Request")
-	proto.RegisterType((*GroupInvitationCreate_Reply)(nil), "berty.protocol.GroupInvitationCreate.Reply")
-	proto.RegisterType((*GroupInvitationDiscard)(nil), "berty.protocol.GroupInvitationDiscard")
-	proto.RegisterType((*GroupInvitationDiscard_Request)(nil), "berty.protocol.GroupInvitationDiscard.Request")
-	proto.RegisterType((*GroupInvitationDiscard_Reply)(nil), "berty.protocol.GroupInvitationDiscard.Reply")
-	proto.RegisterType((*GroupInvitationList)(nil), "berty.protocol.GroupInvitationList")
-	proto.RegisterType((*GroupInvitationList_Request)(nil), "berty.protocol.GroupInvitationList.Request")
-	proto.RegisterType((*GroupInvitationList_Reply)(nil), "berty.protocol.GroupInvitationList.Reply")
-	proto.RegisterType((*Device)(nil), "berty.protocol.Device")
-	proto.RegisterType((*Invitation)(nil), "berty.protocol.Invitation")
-	proto.RegisterType((*Contact)(nil), "berty.protocol.Contact")
-	proto.RegisterType((*GroupInfo)(nil), "berty.protocol.GroupInfo")
-	proto.RegisterType((*GroupMember)(nil), "berty.protocol.GroupMember")
-	proto.RegisterType((*ContactRequestLink)(nil), "berty.protocol.ContactRequestLink")
+	proto.RegisterType((*GroupInvite)(nil), "berty.protocol.GroupInvite")
+	proto.RegisterType((*GroupInvite_Request)(nil), "berty.protocol.GroupInvite.Request")
+	proto.RegisterType((*GroupInvite_Reply)(nil), "berty.protocol.GroupInvite.Reply")
+	proto.RegisterType((*DevicePair)(nil), "berty.protocol.DevicePair")
+	proto.RegisterType((*DevicePair_Request)(nil), "berty.protocol.DevicePair.Request")
+	proto.RegisterType((*DevicePair_Reply)(nil), "berty.protocol.DevicePair.Reply")
+	proto.RegisterType((*ContactRequestReference)(nil), "berty.protocol.ContactRequestReference")
+	proto.RegisterType((*ContactRequestReference_Request)(nil), "berty.protocol.ContactRequestReference.Request")
+	proto.RegisterType((*ContactRequestReference_Reply)(nil), "berty.protocol.ContactRequestReference.Reply")
+	proto.RegisterType((*ContactRequestDisable)(nil), "berty.protocol.ContactRequestDisable")
+	proto.RegisterType((*ContactRequestDisable_Request)(nil), "berty.protocol.ContactRequestDisable.Request")
+	proto.RegisterType((*ContactRequestDisable_Reply)(nil), "berty.protocol.ContactRequestDisable.Reply")
+	proto.RegisterType((*ContactRequestEnable)(nil), "berty.protocol.ContactRequestEnable")
+	proto.RegisterType((*ContactRequestEnable_Request)(nil), "berty.protocol.ContactRequestEnable.Request")
+	proto.RegisterType((*ContactRequestEnable_Reply)(nil), "berty.protocol.ContactRequestEnable.Reply")
+	proto.RegisterType((*ContactRequestResetLink)(nil), "berty.protocol.ContactRequestResetLink")
+	proto.RegisterType((*ContactRequestResetLink_Request)(nil), "berty.protocol.ContactRequestResetLink.Request")
+	proto.RegisterType((*ContactRequestResetLink_Reply)(nil), "berty.protocol.ContactRequestResetLink.Reply")
+	proto.RegisterType((*ContactRequestEnqueue)(nil), "berty.protocol.ContactRequestEnqueue")
+	proto.RegisterType((*ContactRequestEnqueue_Request)(nil), "berty.protocol.ContactRequestEnqueue.Request")
+	proto.RegisterType((*ContactRequestEnqueue_Reply)(nil), "berty.protocol.ContactRequestEnqueue.Reply")
+	proto.RegisterType((*ContactRequestAccept)(nil), "berty.protocol.ContactRequestAccept")
+	proto.RegisterType((*ContactRequestAccept_Request)(nil), "berty.protocol.ContactRequestAccept.Request")
+	proto.RegisterType((*ContactRequestAccept_Reply)(nil), "berty.protocol.ContactRequestAccept.Reply")
+	proto.RegisterType((*ContactRemove)(nil), "berty.protocol.ContactRemove")
+	proto.RegisterType((*ContactRemove_Request)(nil), "berty.protocol.ContactRemove.Request")
+	proto.RegisterType((*ContactRemove_Reply)(nil), "berty.protocol.ContactRemove.Reply")
+	proto.RegisterType((*ContactBlock)(nil), "berty.protocol.ContactBlock")
+	proto.RegisterType((*ContactBlock_Request)(nil), "berty.protocol.ContactBlock.Request")
+	proto.RegisterType((*ContactBlock_Reply)(nil), "berty.protocol.ContactBlock.Reply")
+	proto.RegisterType((*ContactUnblock)(nil), "berty.protocol.ContactUnblock")
+	proto.RegisterType((*ContactUnblock_Request)(nil), "berty.protocol.ContactUnblock.Request")
+	proto.RegisterType((*ContactUnblock_Reply)(nil), "berty.protocol.ContactUnblock.Reply")
+	proto.RegisterType((*AccountSubscribe)(nil), "berty.protocol.AccountSubscribe")
+	proto.RegisterType((*AccountSubscribe_Request)(nil), "berty.protocol.AccountSubscribe.Request")
+	proto.RegisterType((*AccountSubscribe_Reply)(nil), "berty.protocol.AccountSubscribe.Reply")
+	proto.RegisterType((*AccountStoreEvent)(nil), "berty.protocol.AccountStoreEvent")
 }
 
 func init() { proto.RegisterFile("bertyprotocol.proto", fileDescriptor_047e04c733cf8554) }
 
 var fileDescriptor_047e04c733cf8554 = []byte{
-	// 2794 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x5a, 0xcd, 0x73, 0xdb, 0xc6,
-	0x15, 0x0f, 0x48, 0x4a, 0x04, 0x1f, 0x49, 0x09, 0x5e, 0x59, 0x96, 0xc2, 0x24, 0x23, 0x87, 0x4a,
-	0x64, 0x3b, 0xb6, 0x29, 0x47, 0x1e, 0x37, 0xad, 0x93, 0x69, 0x2b, 0x4b, 0x19, 0x55, 0x8a, 0xdd,
-	0xc8, 0x90, 0xec, 0x36, 0xe9, 0x74, 0x58, 0x10, 0x58, 0x52, 0x88, 0x48, 0x00, 0x01, 0x40, 0x26,
-	0x4a, 0x3b, 0x3d, 0x74, 0x9a, 0x4b, 0xd2, 0x99, 0x4e, 0xdb, 0x53, 0x3f, 0xa7, 0x97, 0xf6, 0xd0,
-	0x5b, 0xa7, 0xa7, 0xfe, 0x09, 0xed, 0x5f, 0xd0, 0x93, 0x0f, 0x9e, 0xe9, 0x1f, 0xd1, 0xe9, 0xa5,
-	0xb3, 0x5f, 0xf8, 0x22, 0x40, 0x42, 0x96, 0xdc, 0x8b, 0x4d, 0xbc, 0xfd, 0xbd, 0x8f, 0xdd, 0xf7,
-	0xf6, 0xed, 0xdb, 0xb7, 0x82, 0x85, 0x0e, 0x76, 0xfd, 0x13, 0xc7, 0xb5, 0x7d, 0x5b, 0xb7, 0xfb,
-	0x2d, 0xfa, 0x03, 0xcd, 0x51, 0x62, 0x4b, 0x50, 0x1b, 0x37, 0x7b, 0xa6, 0x7f, 0x34, 0xec, 0xb4,
-	0x74, 0x7b, 0xb0, 0xde, 0xb3, 0x7b, 0xf6, 0x3a, 0x1d, 0xe9, 0x0c, 0xbb, 0xf4, 0x8b, 0x7e, 0xd0,
-	0x5f, 0x8c, 0xa3, 0xf1, 0x76, 0x0c, 0xde, 0xd7, 0xac, 0x5e, 0xc8, 0xe0, 0xf8, 0x27, 0x0e, 0xf6,
-	0xd6, 0x7d, 0x73, 0x80, 0x3d, 0x5f, 0x1b, 0x38, 0xe1, 0x2f, 0xc6, 0xdc, 0x7c, 0x00, 0x68, 0xd7,
-	0xf2, 0x7c, 0xcd, 0xd2, 0xf1, 0xbb, 0x9f, 0x3a, 0xb6, 0xeb, 0x6f, 0x6b, 0xbe, 0xd6, 0xa8, 0x40,
-	0x59, 0xc5, 0x1f, 0x0f, 0xb1, 0xe7, 0x37, 0x6e, 0xc0, 0x8c, 0x8a, 0x9d, 0xfe, 0x09, 0x5a, 0x85,
-	0x3a, 0xa6, 0x08, 0x6c, 0xb4, 0x0d, 0xcd, 0xd7, 0x96, 0xa5, 0xcb, 0xd2, 0xd5, 0x9a, 0x5a, 0x13,
-	0x44, 0xc2, 0xd8, 0xfc, 0x4b, 0x09, 0x96, 0x85, 0xbc, 0x1d, 0xec, 0x6f, 0xd9, 0x56, 0xd7, 0xec,
-	0x0d, 0x5d, 0xcd, 0x37, 0x6d, 0x2b, 0x2a, 0xf5, 0xef, 0xc5, 0x50, 0x6c, 0xd9, 0xc1, 0xd8, 0x6d,
-	0x9b, 0x06, 0x15, 0x58, 0xb9, 0x07, 0x4f, 0x9f, 0xac, 0xcc, 0xee, 0x63, 0xec, 0xee, 0x6e, 0xab,
-	0xb3, 0x64, 0x68, 0xd7, 0x40, 0x2f, 0x43, 0xa5, 0x6f, 0x7a, 0x3e, 0xb6, 0xb0, 0xeb, 0x2d, 0x17,
-	0x2e, 0x17, 0xaf, 0x56, 0xd4, 0x90, 0x80, 0x1e, 0x43, 0xb5, 0xd3, 0xc7, 0x6d, 0x6c, 0x69, 0x9d,
-	0x3e, 0x36, 0x96, 0x8b, 0x97, 0xa5, 0xab, 0x73, 0x1b, 0x77, 0x5a, 0xf1, 0x55, 0x6d, 0x65, 0x99,
-	0xd5, 0x3a, 0xc0, 0xbe, 0x6f, 0x5a, 0xbd, 0x03, 0x5f, 0xf3, 0xb1, 0x0a, 0x9d, 0x3e, 0x7e, 0x97,
-	0x09, 0x42, 0x6d, 0x50, 0x3e, 0x31, 0xbb, 0x66, 0xdb, 0xd9, 0x70, 0x02, 0xe1, 0xa5, 0xb3, 0x08,
-	0x9f, 0x23, 0xe2, 0xf6, 0x37, 0x1c, 0xa1, 0xe0, 0xbb, 0x50, 0x1b, 0x18, 0x96, 0x17, 0x08, 0x9f,
-	0x39, 0x8b, 0xf0, 0x2a, 0x11, 0x25, 0x24, 0x7f, 0x08, 0x75, 0x17, 0xf7, 0xb5, 0x93, 0x40, 0xf4,
-	0xec, 0x59, 0x44, 0xd7, 0xa8, 0x2c, 0x2e, 0xbb, 0xb9, 0x03, 0xb5, 0xe8, 0x28, 0xaa, 0x42, 0xf9,
-	0x91, 0x75, 0x6c, 0xd9, 0x9f, 0x58, 0xca, 0x0b, 0xe4, 0x83, 0xe3, 0x14, 0x09, 0xd5, 0x40, 0xde,
-	0x36, 0x3d, 0xf6, 0x55, 0x40, 0xf3, 0x50, 0x7d, 0x64, 0x69, 0x23, 0xcd, 0xec, 0x13, 0x8a, 0x52,
-	0x6c, 0xfe, 0x4d, 0x82, 0xa5, 0x4d, 0x5d, 0xb7, 0x87, 0x96, 0x3f, 0x29, 0x56, 0x7e, 0x26, 0x89,
-	0x58, 0x59, 0x87, 0x05, 0xdd, 0xb6, 0x7c, 0x4d, 0xf7, 0xdb, 0x2e, 0x1b, 0x24, 0x92, 0x68, 0xdc,
-	0xc8, 0x2a, 0xe2, 0x43, 0x6a, 0x38, 0x82, 0xbe, 0x02, 0x4b, 0x06, 0xee, 0x6a, 0xc3, 0xbe, 0xdf,
-	0x76, 0x4c, 0xcb, 0x32, 0xad, 0x5e, 0xdb, 0xc3, 0xee, 0xc8, 0xd4, 0xf1, 0x72, 0x81, 0x46, 0xef,
-	0x22, 0x1f, 0xde, 0x67, 0xa3, 0x07, 0x6c, 0x10, 0x35, 0x40, 0x1e, 0x60, 0x5f, 0xa3, 0x61, 0x5e,
-	0xa4, 0xc0, 0xe0, 0xbb, 0xf9, 0xb9, 0x04, 0x8b, 0xa1, 0xd5, 0xbb, 0x56, 0xd7, 0x76, 0x07, 0x63,
-	0x36, 0x6b, 0xc2, 0xe4, 0x35, 0x98, 0xd7, 0x18, 0xb8, 0xed, 0x0c, 0x3b, 0xed, 0x63, 0x7c, 0xc2,
-	0xf7, 0x4d, 0x9d, 0x93, 0xf7, 0x87, 0x9d, 0xf7, 0xf0, 0x09, 0xba, 0x05, 0x65, 0x03, 0x13, 0xdd,
-	0x2c, 0xbe, 0xab, 0x1b, 0x97, 0x92, 0xae, 0xda, 0xa6, 0xc3, 0xaa, 0x80, 0x35, 0xbb, 0x70, 0x91,
-	0x9b, 0x71, 0xdf, 0xb4, 0x8e, 0xbf, 0x8d, 0x3f, 0x61, 0x80, 0xa8, 0x15, 0x5b, 0xc2, 0x8a, 0xbb,
-	0x00, 0xa6, 0x35, 0x32, 0x7d, 0x6a, 0x27, 0x35, 0xa0, 0xba, 0xd1, 0x18, 0x8f, 0x05, 0x81, 0x50,
-	0x23, 0xe8, 0xe6, 0x5d, 0x78, 0x8d, 0xeb, 0xe1, 0xbe, 0xdc, 0xb5, 0x74, 0x7b, 0x60, 0x5a, 0xbd,
-	0xad, 0xd8, 0x7a, 0x47, 0xf5, 0x96, 0xb9, 0xde, 0xe6, 0xcf, 0x25, 0x58, 0xe5, 0xcc, 0x2c, 0x2a,
-	0xa6, 0xf3, 0x7e, 0x5f, 0xd8, 0x7c, 0x08, 0x17, 0x13, 0xce, 0x6e, 0xf7, 0x4d, 0xeb, 0x98, 0x5b,
-	0xdf, 0x4c, 0x5a, 0x1f, 0x97, 0x48, 0x96, 0x24, 0x19, 0x11, 0x84, 0xd6, 0xfc, 0xa5, 0x04, 0x6b,
-	0xdc, 0x22, 0x15, 0x7b, 0xc4, 0x7f, 0x69, 0x06, 0x11, 0xe8, 0xff, 0xd1, 0xa8, 0xff, 0xc8, 0x30,
-	0xf7, 0xee, 0x08, 0x5b, 0xfe, 0xc1, 0xb0, 0xe3, 0xe9, 0xae, 0xd9, 0x89, 0x79, 0xf1, 0xdf, 0x41,
-	0xae, 0x7c, 0x0b, 0x4a, 0x24, 0x9f, 0x53, 0x6d, 0x73, 0x1b, 0xab, 0x49, 0x6d, 0x71, 0x11, 0xad,
-	0xc3, 0x13, 0x07, 0xab, 0x94, 0x01, 0xad, 0x81, 0x8c, 0xc9, 0x20, 0xc9, 0xb2, 0x34, 0xf0, 0xef,
-	0x55, 0x9f, 0x3e, 0x59, 0x29, 0x53, 0x86, 0xdd, 0x6d, 0xb5, 0x4c, 0x07, 0x77, 0x0d, 0xb4, 0x0f,
-	0xf5, 0x01, 0xf6, 0x3c, 0xad, 0x87, 0xdb, 0x94, 0x44, 0x83, 0xbf, 0xba, 0x71, 0x7d, 0x8a, 0xa6,
-	0x07, 0x8c, 0x87, 0x52, 0xd5, 0xda, 0x20, 0xf2, 0x85, 0xba, 0xb0, 0x98, 0x5c, 0x30, 0x26, 0xb9,
-	0x44, 0x25, 0x6f, 0x4c, 0x91, 0x1c, 0x5f, 0x40, 0xa6, 0x60, 0x41, 0x1f, 0x27, 0x22, 0x13, 0x2e,
-	0xf5, 0x5c, 0x7b, 0xe8, 0xb4, 0xc3, 0xc8, 0xe5, 0x8a, 0x66, 0xa8, 0xa2, 0xdb, 0x53, 0x14, 0xed,
-	0x10, 0xe6, 0x70, 0x07, 0x30, 0x4d, 0x17, 0x7b, 0x29, 0x54, 0xf4, 0x18, 0xe6, 0x3b, 0xae, 0xad,
-	0x19, 0xba, 0x16, 0x4c, 0x66, 0x96, 0xea, 0xb8, 0x39, 0x45, 0xc7, 0x3d, 0xc1, 0xc5, 0xa4, 0xcf,
-	0x75, 0x62, 0xdf, 0x8d, 0x1f, 0x42, 0x2d, 0xba, 0x90, 0xc4, 0x69, 0x7c, 0x4a, 0xec, 0x68, 0xe4,
-	0x4e, 0x63, 0x96, 0x6e, 0xab, 0x65, 0x66, 0x9c, 0x81, 0xae, 0x41, 0x65, 0x80, 0x07, 0x1d, 0x76,
-	0x86, 0x32, 0xef, 0xd6, 0x9e, 0x3e, 0x59, 0x91, 0x1f, 0x50, 0xe2, 0xee, 0x36, 0xc9, 0x5d, 0xf4,
-	0x97, 0x81, 0x96, 0xa1, 0xec, 0x68, 0x27, 0x7d, 0x5b, 0x33, 0x78, 0x5a, 0x13, 0x9f, 0x8d, 0x23,
-	0x58, 0x48, 0x59, 0x6b, 0x74, 0x07, 0x96, 0x84, 0xfb, 0xd2, 0xd3, 0x98, 0xd8, 0x0e, 0x9b, 0xb1,
-	0x6c, 0x16, 0xcd, 0x9f, 0x85, 0x78, 0xfe, 0x6c, 0xfc, 0x44, 0x82, 0x8b, 0x69, 0xab, 0x9d, 0x7b,
-	0xbe, 0x6b, 0x30, 0x4f, 0x9d, 0x8c, 0xdd, 0xc0, 0x16, 0xa6, 0xa3, 0xce, 0xc9, 0x29, 0x46, 0x24,
-	0x92, 0x78, 0xe3, 0x4b, 0x09, 0xe6, 0xe2, 0xee, 0x78, 0x1e, 0xcb, 0xbd, 0x06, 0xb2, 0x6f, 0x3b,
-	0xa6, 0x4e, 0x90, 0xc5, 0x50, 0xe4, 0x21, 0xa1, 0x11, 0x91, 0x74, 0x70, 0xd7, 0x68, 0x7e, 0x06,
-	0x25, 0xb2, 0x59, 0x91, 0x02, 0x35, 0x6a, 0x4b, 0x78, 0x9c, 0x0a, 0x0a, 0x0f, 0x0c, 0x45, 0x42,
-	0x4b, 0xb0, 0x40, 0x29, 0x71, 0x6f, 0x29, 0x05, 0xb4, 0x0c, 0x17, 0xe9, 0x40, 0x62, 0x6d, 0x95,
-	0x22, 0x7a, 0x09, 0x96, 0xe8, 0x48, 0x30, 0xe1, 0xcd, 0xe0, 0x10, 0x2e, 0x35, 0x35, 0xb8, 0x18,
-	0x17, 0xb5, 0xa9, 0xeb, 0xd8, 0xf1, 0x1b, 0xdf, 0x0c, 0x12, 0xd0, 0x33, 0x06, 0x41, 0x78, 0x0a,
-	0x74, 0x60, 0x31, 0xae, 0x62, 0xdb, 0xf4, 0x74, 0xcd, 0x35, 0xce, 0x53, 0x87, 0x0e, 0x8d, 0x64,
-	0xb2, 0xf5, 0x82, 0xe4, 0x1e, 0xcd, 0xa6, 0x77, 0x45, 0x32, 0x7d, 0x13, 0xca, 0x5c, 0x24, 0xcf,
-	0xde, 0x4b, 0x59, 0xd9, 0x5b, 0xe0, 0xd2, 0x95, 0xbc, 0x3f, 0xf4, 0x7b, 0xf6, 0x39, 0x2a, 0xf9,
-	0xab, 0x04, 0x28, 0xae, 0xe5, 0x00, 0x5b, 0x46, 0xa3, 0x1d, 0xae, 0xd5, 0x73, 0x39, 0x84, 0xce,
-	0x64, 0xf3, 0x17, 0x12, 0x00, 0x27, 0xee, 0xe0, 0xf3, 0x88, 0x9d, 0xb3, 0x18, 0xf3, 0x21, 0xd4,
-	0x83, 0x29, 0x0f, 0xec, 0x11, 0x3e, 0xcf, 0x30, 0x3b, 0x84, 0x2a, 0x97, 0x4d, 0x5c, 0x7f, 0x5e,
-	0x2e, 0xbf, 0x0d, 0xaf, 0x1c, 0xf8, 0x2e, 0xd6, 0x06, 0x0f, 0x34, 0x4b, 0xeb, 0x61, 0x97, 0xcb,
-	0x3c, 0xb4, 0x39, 0x32, 0xb5, 0xb6, 0xba, 0x06, 0x0b, 0x31, 0x26, 0xbe, 0x6f, 0xd3, 0xa0, 0xff,
-	0x92, 0xa0, 0x4a, 0xd3, 0xc2, 0x96, 0x8b, 0x35, 0x1f, 0x37, 0x3e, 0x97, 0x72, 0xae, 0x48, 0x31,
-	0x33, 0xc3, 0x5f, 0x81, 0xf9, 0xf4, 0x8a, 0x7a, 0xce, 0xc9, 0x5d, 0x4a, 0x37, 0x36, 0xc5, 0x9a,
-	0x7d, 0x15, 0x40, 0x9c, 0xde, 0x5d, 0x9b, 0x2f, 0xdb, 0x8b, 0xc9, 0x65, 0xe3, 0x89, 0xad, 0x6b,
-	0xab, 0x95, 0x9e, 0xf8, 0xd9, 0xfc, 0x85, 0x04, 0x4b, 0x74, 0x60, 0x87, 0xdc, 0x05, 0x35, 0x1f,
-	0xd3, 0xcc, 0x87, 0x69, 0x44, 0xbf, 0x19, 0xce, 0x32, 0x67, 0x72, 0x3f, 0x9f, 0x8a, 0xf9, 0x5b,
-	0x00, 0x54, 0xf0, 0x7d, 0xac, 0x8d, 0xf0, 0xb3, 0x58, 0x11, 0x38, 0xee, 0x03, 0xa8, 0x30, 0x49,
-	0x89, 0x60, 0x3b, 0x87, 0x85, 0xfb, 0x08, 0x10, 0xa5, 0xf3, 0x93, 0x85, 0x47, 0xc6, 0x7b, 0xa7,
-	0x36, 0x36, 0x5a, 0x53, 0x14, 0xe2, 0x35, 0x45, 0x30, 0x8d, 0xff, 0x4a, 0xa0, 0x44, 0x95, 0xd1,
-	0xe9, 0x1c, 0x9f, 0x5e, 0xd5, 0x2b, 0x00, 0x5d, 0xd7, 0x1e, 0xb4, 0x4d, 0xcb, 0xc0, 0x9f, 0x52,
-	0x6d, 0x25, 0xb5, 0x42, 0x28, 0xbb, 0x84, 0x80, 0x5e, 0x24, 0xc7, 0x2d, 0x1f, 0x2c, 0xd2, 0xc1,
-	0xb2, 0x6f, 0xd3, 0xa1, 0xc6, 0x67, 0x62, 0xc1, 0x6e, 0x00, 0x88, 0x0a, 0x37, 0x50, 0x56, 0x7f,
-	0xfa, 0x64, 0xa5, 0xc2, 0x4d, 0xdb, 0xdd, 0x56, 0x2b, 0x1c, 0x70, 0x4e, 0xa5, 0x55, 0xf3, 0x77,
-	0x12, 0x5c, 0xa0, 0x53, 0xa1, 0xe7, 0xfe, 0xfe, 0xb0, 0xd3, 0x37, 0xbd, 0xa3, 0xc6, 0x8f, 0x4f,
-	0x3f, 0xfd, 0x68, 0x39, 0x51, 0xc8, 0x2e, 0x27, 0xd0, 0x2a, 0xd4, 0x47, 0x76, 0x5f, 0xf3, 0xcd,
-	0x3e, 0x6e, 0x47, 0xf6, 0x5d, 0x4d, 0x10, 0x69, 0x8b, 0x27, 0x70, 0xce, 0x1f, 0x24, 0x58, 0x08,
-	0xcd, 0x0b, 0x6f, 0x20, 0x1f, 0x3c, 0x37, 0x03, 0x63, 0x3d, 0xa5, 0xb8, 0xa5, 0xd2, 0xb8, 0xa5,
-	0xcd, 0x03, 0x58, 0x4c, 0xd4, 0x34, 0x3c, 0xd5, 0x9d, 0x65, 0x67, 0x7d, 0x21, 0x8d, 0x49, 0xe5,
-	0x5b, 0xe0, 0xe8, 0xf4, 0xf3, 0x9e, 0x90, 0x43, 0x0b, 0xd9, 0x39, 0x34, 0x7a, 0xaa, 0x5c, 0x4a,
-	0xd8, 0x22, 0x2a, 0xa4, 0xb3, 0x4c, 0xf1, 0x37, 0xc2, 0xb1, 0xa1, 0xd8, 0x64, 0x1e, 0xf9, 0x54,
-	0x38, 0xe2, 0x0e, 0x2c, 0x89, 0x9a, 0x3a, 0xe3, 0x5c, 0xe4, 0xc3, 0xf1, 0x53, 0x20, 0x9e, 0x7e,
-	0x0a, 0xa7, 0x48, 0x3f, 0x5f, 0x14, 0x60, 0x96, 0x35, 0x2c, 0xd0, 0x6b, 0x30, 0xc7, 0x7a, 0x1a,
-	0x09, 0x95, 0x35, 0x46, 0xe5, 0xaa, 0xde, 0x84, 0x45, 0x47, 0x73, 0xc9, 0x1d, 0x36, 0x01, 0x66,
-	0x49, 0x07, 0xb1, 0xc1, 0xed, 0x28, 0xcb, 0x5b, 0x50, 0x21, 0x75, 0x11, 0x36, 0xda, 0x9a, 0xb8,
-	0xc9, 0x36, 0x5a, 0x3d, 0xdb, 0xee, 0xf5, 0x71, 0x4b, 0x74, 0x48, 0x5b, 0x87, 0xa2, 0x21, 0xaa,
-	0xca, 0x0c, 0xbc, 0xe9, 0xa3, 0x15, 0xd6, 0x50, 0xd4, 0x35, 0x87, 0xf6, 0x97, 0x4a, 0xb4, 0xbf,
-	0x04, 0x9d, 0x3e, 0xde, 0x62, 0x14, 0x74, 0x35, 0xd2, 0x19, 0x14, 0xa8, 0x19, 0x8a, 0x12, 0x2d,
-	0x3e, 0x81, 0x5c, 0x15, 0x8d, 0x38, 0x01, 0x9b, 0xa5, 0x30, 0xd6, 0x51, 0xe3, 0xa0, 0xe6, 0x9f,
-	0x0a, 0x00, 0xa1, 0x93, 0xd0, 0x6d, 0xb8, 0x24, 0x9c, 0xc1, 0xb3, 0x4f, 0x7c, 0x61, 0x16, 0xf8,
-	0x28, 0xcb, 0x42, 0x7c, 0xb2, 0x2d, 0x58, 0x88, 0x5c, 0x7d, 0x1d, 0xd7, 0x1c, 0x45, 0x56, 0xe7,
-	0x42, 0x38, 0xb4, 0xef, 0x9a, 0x23, 0x82, 0xff, 0x06, 0xbc, 0x1c, 0xc5, 0x33, 0x05, 0x6d, 0xcf,
-	0xec, 0x59, 0x9a, 0x3f, 0x74, 0x31, 0xcf, 0x19, 0x2f, 0x46, 0x18, 0xa9, 0x9e, 0x03, 0x01, 0x20,
-	0x33, 0x63, 0xbe, 0x1f, 0x61, 0xd7, 0x23, 0x87, 0x24, 0x59, 0xa6, 0xba, 0x5a, 0xa3, 0xc4, 0xc7,
-	0x8c, 0x86, 0xae, 0x80, 0x22, 0x82, 0x36, 0x98, 0xc4, 0x0c, 0xbb, 0xac, 0xf1, 0x78, 0xe5, 0xe6,
-	0xaf, 0x42, 0xdd, 0x3b, 0xd2, 0x5c, 0x6c, 0xb4, 0x3d, 0xac, 0xbb, 0x98, 0x5d, 0xa9, 0x6b, 0x6a,
-	0x8d, 0x11, 0x0f, 0x28, 0xad, 0xf9, 0x8f, 0x12, 0x94, 0x79, 0x49, 0x94, 0xbb, 0xb1, 0x76, 0x07,
-	0x96, 0x6d, 0x0b, 0xb7, 0x7d, 0xbb, 0x4d, 0xfe, 0x63, 0xc6, 0xc4, 0x43, 0x67, 0xc1, 0xb6, 0xf0,
-	0xa1, 0xfd, 0xbe, 0x85, 0x69, 0xa0, 0x72, 0xb6, 0x2d, 0xa8, 0xfa, 0xee, 0x90, 0x54, 0xd6, 0x78,
-	0x84, 0xfb, 0xbc, 0xed, 0x9b, 0x55, 0x5a, 0xb7, 0x0e, 0x09, 0xf4, 0x3e, 0x41, 0xaa, 0xe0, 0x07,
-	0xbf, 0x63, 0xb5, 0xcf, 0x4c, 0xbc, 0xf6, 0x21, 0xe7, 0x45, 0xa7, 0x6f, 0xeb, 0xc7, 0xbc, 0x37,
-	0x2b, 0xab, 0xe2, 0x13, 0xdd, 0x87, 0x39, 0x51, 0xd6, 0x7b, 0xbe, 0xe6, 0x0f, 0xbd, 0xe5, 0x32,
-	0xd5, 0xfe, 0x7a, 0x96, 0x76, 0x71, 0x4d, 0xa0, 0x60, 0xb5, 0xee, 0x46, 0x3f, 0xd1, 0x3d, 0x50,
-	0x92, 0xf3, 0x5f, 0xde, 0x9f, 0xb6, 0x51, 0xeb, 0xb1, 0x25, 0x69, 0x3e, 0x06, 0x08, 0x67, 0x18,
-	0xef, 0xf7, 0xd6, 0xa1, 0xf2, 0xc8, 0xa2, 0x53, 0x16, 0x1d, 0x5f, 0x96, 0x9c, 0x69, 0xc7, 0xb7,
-	0x0a, 0xe5, 0x43, 0x3e, 0x54, 0x44, 0x17, 0xa0, 0xfe, 0xa8, 0xef, 0x9b, 0x03, 0xcd, 0xc7, 0x94,
-	0xa8, 0x94, 0x9a, 0x47, 0x50, 0x8f, 0xd9, 0x4e, 0xee, 0xb0, 0x5c, 0x74, 0x8c, 0xae, 0xbc, 0x80,
-	0x16, 0x60, 0x5e, 0xdc, 0xe6, 0xc4, 0x95, 0x57, 0x22, 0x44, 0x71, 0xfb, 0x0a, 0xef, 0xc1, 0x0b,
-	0x30, 0x2f, 0x4c, 0x10, 0xc4, 0xe2, 0x5e, 0x49, 0x2e, 0x2a, 0xa5, 0xbd, 0x92, 0xdc, 0x51, 0xf4,
-	0xbd, 0x92, 0xac, 0x2b, 0x46, 0xf3, 0x9f, 0x45, 0x5e, 0x5b, 0x91, 0x09, 0xa3, 0xa6, 0x08, 0xe6,
-	0x78, 0x2c, 0x55, 0x7b, 0x91, 0x90, 0x98, 0x50, 0xc9, 0xa2, 0x2d, 0x90, 0xb5, 0xa1, 0x61, 0x62,
-	0x4b, 0xc7, 0x3c, 0x56, 0xae, 0x64, 0xae, 0x2e, 0xfb, 0xb5, 0xc9, 0xe1, 0x6a, 0xc0, 0x48, 0x42,
-	0x42, 0xec, 0xa5, 0x19, 0xba, 0x97, 0xc4, 0x67, 0x34, 0x3d, 0x8b, 0x83, 0x46, 0x18, 0x5a, 0x89,
-	0xa5, 0x67, 0x1e, 0x12, 0x41, 0xec, 0x97, 0x59, 0x02, 0xf1, 0x96, 0xf7, 0x69, 0x53, 0xf9, 0xa5,
-	0x54, 0xa3, 0x58, 0x1e, 0x51, 0x05, 0x96, 0xdc, 0x60, 0xb8, 0xb8, 0xe5, 0x87, 0x53, 0x6e, 0x30,
-	0x1c, 0xd7, 0xdc, 0x84, 0x7a, 0x6c, 0x56, 0x2c, 0x2e, 0x0c, 0xdc, 0x35, 0x2d, 0x6c, 0x28, 0x2f,
-	0x90, 0xb8, 0x78, 0x9f, 0x87, 0x94, 0x22, 0xa1, 0x0a, 0xcc, 0x50, 0xb4, 0x52, 0x40, 0x32, 0x94,
-	0x0e, 0x70, 0xbf, 0x4b, 0x5d, 0x54, 0xa0, 0xff, 0xce, 0x2a, 0xe5, 0xbd, 0x92, 0x5c, 0x56, 0xe4,
-	0xbd, 0x92, 0x2c, 0x2b, 0x95, 0xbd, 0x92, 0x0c, 0x4a, 0x75, 0xaf, 0x24, 0x57, 0x95, 0xda, 0x5e,
-	0x49, 0xae, 0x29, 0xf5, 0xbd, 0x92, 0x5c, 0x57, 0xe6, 0x62, 0xce, 0xfc, 0x75, 0x91, 0x5f, 0x70,
-	0xd8, 0x54, 0xd0, 0x3a, 0xb0, 0xd6, 0x5d, 0x7a, 0xfe, 0xbc, 0xd0, 0x0b, 0xa1, 0x7c, 0xa5, 0xc6,
-	0xfc, 0x5f, 0x18, 0xf7, 0x7f, 0x4a, 0xdf, 0xa9, 0x98, 0xd6, 0x77, 0x9a, 0x50, 0x0d, 0x94, 0x72,
-	0xf6, 0xcc, 0x66, 0x13, 0xe1, 0x15, 0x3f, 0x67, 0x1f, 0xe6, 0x3f, 0x67, 0x49, 0x08, 0x08, 0x5f,
-	0xaa, 0x94, 0x6d, 0x72, 0x08, 0x70, 0x6c, 0xf4, 0x12, 0x7b, 0x90, 0xef, 0x12, 0xbb, 0x57, 0x92,
-	0x67, 0x94, 0xd9, 0xbd, 0x92, 0xbc, 0xaf, 0x3c, 0x8c, 0xf9, 0xe6, 0xb7, 0x63, 0xfd, 0x0c, 0x72,
-	0x39, 0x43, 0x1b, 0xb0, 0xe8, 0x62, 0xcb, 0xc0, 0x9f, 0x8d, 0xec, 0xa1, 0xd7, 0x76, 0x6c, 0xd3,
-	0xf2, 0xdb, 0x1e, 0xc6, 0x86, 0x38, 0xe3, 0xc2, 0xc1, 0x7d, 0x32, 0x76, 0x80, 0xf1, 0x94, 0x3a,
-	0x2b, 0xdf, 0xca, 0x26, 0x36, 0xee, 0xc6, 0xaf, 0x5e, 0x86, 0xf9, 0x7d, 0x3e, 0x27, 0x71, 0x65,
-	0xfd, 0x28, 0xed, 0x4d, 0x14, 0xbd, 0x91, 0xf5, 0x76, 0x16, 0x62, 0x44, 0x26, 0x6e, 0x5c, 0xcd,
-	0x85, 0x25, 0x85, 0xd7, 0x8f, 0xb2, 0xdf, 0x4b, 0xd1, 0xad, 0xdc, 0xaf, 0x75, 0x42, 0x6f, 0xeb,
-	0x14, 0x1c, 0x44, 0xfb, 0x49, 0xe6, 0x03, 0x1c, 0x5a, 0x4f, 0x8a, 0xca, 0x00, 0x06, 0xba, 0x6f,
-	0xe6, 0x67, 0x20, 0xaa, 0xbd, 0x8c, 0x57, 0x34, 0x34, 0x41, 0x4e, 0x04, 0x16, 0xa8, 0xbd, 0x9e,
-	0x17, 0x4e, 0x94, 0x3a, 0xe9, 0x6f, 0x66, 0xe8, 0x46, 0x86, 0x90, 0x18, 0x2a, 0x50, 0xf9, 0x46,
-	0x4e, 0x34, 0xd1, 0xf8, 0x47, 0x29, 0xdf, 0xf3, 0x19, 0x7a, 0x27, 0x43, 0xe8, 0x44, 0xae, 0xc0,
-	0xa4, 0xbb, 0xcf, 0xc8, 0x4d, 0x4c, 0xfc, 0x7d, 0xbe, 0x47, 0x3a, 0xf4, 0x76, 0x86, 0x8e, 0x49,
-	0x4c, 0x81, 0x81, 0x5f, 0x7b, 0x36, 0x66, 0x62, 0xdf, 0x9f, 0x73, 0x3f, 0xd9, 0xa1, 0xaf, 0x67,
-	0x68, 0x99, 0xc2, 0x17, 0x58, 0xf9, 0xce, 0x33, 0xf3, 0x13, 0x43, 0x7f, 0x90, 0x7c, 0xc5, 0x43,
-	0x6b, 0x53, 0x5e, 0x84, 0x84, 0xde, 0xd7, 0xa6, 0xe2, 0x9c, 0xfe, 0xc9, 0x2d, 0x89, 0xc4, 0x6f,
-	0x5a, 0xb3, 0x7e, 0x3c, 0x7e, 0xd3, 0x50, 0xd9, 0xf1, 0x9b, 0x81, 0xe6, 0xdb, 0x34, 0xb5, 0x77,
-	0x3f, 0xbe, 0x4d, 0x53, 0x61, 0xd9, 0xdb, 0x34, 0x0b, 0x4e, 0x94, 0xfe, 0x54, 0x9a, 0xd4, 0xcd,
-	0x47, 0x1b, 0xd3, 0x3a, 0xdc, 0x21, 0x36, 0xd0, 0x7f, 0xeb, 0x54, 0x3c, 0x6c, 0xb5, 0xd3, 0xcd,
-	0x10, 0x15, 0x67, 0x1e, 0x33, 0x04, 0xf6, 0x34, 0x66, 0x44, 0x78, 0x98, 0x19, 0x1f, 0xa5, 0xbd,
-	0x07, 0xa0, 0x29, 0x4e, 0x24, 0x98, 0xec, 0xe3, 0x28, 0x15, 0x4b, 0x56, 0x5e, 0x8d, 0xf6, 0xf1,
-	0x51, 0xd6, 0x7d, 0x67, 0x07, 0x87, 0xc1, 0x74, 0x79, 0x22, 0x86, 0xc8, 0xfc, 0x4e, 0xac, 0x67,
-	0x8e, 0x56, 0x33, 0x18, 0xc8, 0x60, 0x20, 0xf5, 0xd5, 0xc9, 0x20, 0xb6, 0x30, 0xdf, 0x4b, 0x34,
-	0xfa, 0xd1, 0xeb, 0x99, 0xf3, 0x24, 0xc3, 0x81, 0xf0, 0xd5, 0x69, 0x30, 0x62, 0xf5, 0x97, 0xd2,
-	0x94, 0xa6, 0x3c, 0x1a, 0xfb, 0x63, 0x9a, 0x89, 0xf0, 0x40, 0xfb, 0xed, 0xd3, 0xb2, 0x11, 0x6b,
-	0x3e, 0x4e, 0x6d, 0xf6, 0xa3, 0xeb, 0x13, 0x65, 0x25, 0xb6, 0xfd, 0xb5, 0x7c, 0x60, 0xa7, 0x7f,
-	0x72, 0x55, 0xba, 0x25, 0xa1, 0x47, 0xb1, 0x37, 0x83, 0x71, 0xb7, 0x45, 0x06, 0xb3, 0xdd, 0x16,
-	0x07, 0xf1, 0x92, 0x23, 0xa3, 0x5f, 0x3f, 0x5e, 0x72, 0x64, 0x00, 0xb3, 0x4b, 0x8e, 0x6c, 0x06,
-	0x1e, 0xdc, 0x61, 0x5f, 0x7e, 0x3c, 0xb8, 0xc3, 0xb1, 0xec, 0xe0, 0x8e, 0x61, 0x88, 0xcc, 0x87,
-	0x91, 0x0e, 0x3d, 0x4a, 0x9f, 0x7e, 0x2c, 0xb0, 0x57, 0x26, 0x41, 0x82, 0xfd, 0x3e, 0xde, 0x99,
-	0x1f, 0xdf, 0xef, 0xe3, 0x98, 0xec, 0xfd, 0x9e, 0x8a, 0x25, 0xe6, 0x77, 0xc7, 0x1b, 0xf3, 0x68,
-	0x22, 0x77, 0x6c, 0x32, 0x6b, 0x39, 0x90, 0x6c, 0x4e, 0x66, 0x4a, 0x0b, 0x1c, 0x5d, 0x4b, 0x65,
-	0x8f, 0x42, 0x02, 0x4d, 0x57, 0xf2, 0x40, 0x69, 0xe4, 0x22, 0x3b, 0xb5, 0x9d, 0x3d, 0xbe, 0x55,
-	0x52, 0x40, 0xd9, 0x5b, 0x25, 0x1d, 0xcc, 0xe6, 0xe6, 0x65, 0xf4, 0xa7, 0xd1, 0xcd, 0x8c, 0x1b,
-	0x5a, 0x1c, 0x96, 0x7d, 0x44, 0x66, 0xc1, 0xf9, 0xb9, 0x9c, 0xda, 0xbe, 0x9e, 0xaa, 0x34, 0x11,
-	0x2a, 0xd7, 0xf3, 0xc2, 0x89, 0xd2, 0x51, 0x56, 0x9f, 0x1a, 0xb5, 0xa6, 0x88, 0x49, 0x96, 0x03,
-	0x37, 0x72, 0xe3, 0x89, 0x5e, 0x3b, 0xb5, 0x91, 0x8d, 0xa6, 0xd9, 0x1e, 0x8b, 0xd5, 0x6b, 0xf9,
-	0xc0, 0xd4, 0xa5, 0xf7, 0x5e, 0xfd, 0x70, 0x85, 0xa1, 0x7d, 0xac, 0x1f, 0xad, 0xf7, 0xec, 0x75,
-	0xe7, 0xb8, 0xb7, 0x1e, 0xfb, 0xd3, 0xdd, 0xce, 0x2c, 0xfd, 0x75, 0xfb, 0x7f, 0x01, 0x00, 0x00,
-	0xff, 0xff, 0x6e, 0x4f, 0x58, 0x07, 0xd2, 0x2b, 0x00, 0x00,
+	// 1740 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x59, 0x6d, 0x6f, 0x1b, 0xc7,
+	0x11, 0x0e, 0x49, 0x51, 0x32, 0x87, 0xa4, 0x74, 0xd9, 0xca, 0xa9, 0x4a, 0xa8, 0x95, 0x44, 0xd9,
+	0xaa, 0x20, 0xdb, 0x94, 0xa3, 0x20, 0x48, 0x81, 0xf4, 0x43, 0x4d, 0x53, 0x10, 0x14, 0xd9, 0x88,
+	0x72, 0xaa, 0x0a, 0x23, 0x45, 0xcb, 0xde, 0xcb, 0x90, 0xb9, 0x88, 0xba, 0xbb, 0xdc, 0x2d, 0xe9,
+	0x12, 0x08, 0x9a, 0x1f, 0xd0, 0x7f, 0xd2, 0x0f, 0x05, 0xf2, 0xb1, 0x7f, 0xa5, 0x28, 0x04, 0xd4,
+	0xff, 0xa2, 0xdf, 0x8a, 0x7d, 0xb9, 0x3d, 0xf2, 0x5e, 0xf8, 0x52, 0xa5, 0x40, 0xfb, 0xed, 0x76,
+	0xe7, 0x99, 0x67, 0x66, 0x67, 0x67, 0x46, 0xc3, 0x15, 0xfc, 0xc8, 0xc4, 0x80, 0x8e, 0xfd, 0xc0,
+	0xa3, 0x9e, 0xe5, 0x0d, 0x5a, 0xfc, 0x83, 0xac, 0xf3, 0xcd, 0x56, 0xb4, 0xdb, 0x78, 0xd6, 0x77,
+	0xe8, 0x57, 0x43, 0xb3, 0x65, 0x79, 0xb7, 0xc7, 0x7d, 0xaf, 0xef, 0x1d, 0x73, 0x89, 0x39, 0xec,
+	0xf1, 0x15, 0x5f, 0xf0, 0x2f, 0xa1, 0xd1, 0x7c, 0x0d, 0xe4, 0xdc, 0x0d, 0xa9, 0xe1, 0x5a, 0x78,
+	0xfa, 0x47, 0xdf, 0x0b, 0x68, 0xc7, 0xa0, 0x46, 0xa3, 0x02, 0x6b, 0x3a, 0x7e, 0x33, 0xc4, 0x90,
+	0x36, 0x9e, 0x42, 0x59, 0x47, 0x7f, 0x30, 0x26, 0xfb, 0x50, 0x47, 0x8e, 0x40, 0xbb, 0x6b, 0x1b,
+	0xd4, 0xd8, 0x2a, 0xec, 0x16, 0x0e, 0x6b, 0x7a, 0x2d, 0xda, 0x64, 0x8a, 0xcd, 0xbf, 0xac, 0xc0,
+	0x56, 0xc4, 0x77, 0x86, 0xf4, 0xa5, 0xe7, 0xf6, 0x9c, 0xfe, 0x30, 0x30, 0xa8, 0xe3, 0xb9, 0x93,
+	0xac, 0x7f, 0x2b, 0xc5, 0xb4, 0x6b, 0x3e, 0x62, 0xd0, 0x75, 0x6c, 0x4e, 0x58, 0x69, 0xc3, 0xbb,
+	0xbb, 0x9d, 0xd5, 0x4b, 0xc4, 0xe0, 0xbc, 0xa3, 0xaf, 0x32, 0xd1, 0xb9, 0x4d, 0xb6, 0xa1, 0x32,
+	0x70, 0x42, 0x8a, 0x2e, 0x06, 0xe1, 0x56, 0x71, 0xb7, 0x74, 0x58, 0xd1, 0xe3, 0x0d, 0xf2, 0x1b,
+	0xa8, 0x9a, 0x03, 0xec, 0xa2, 0x6b, 0x98, 0x03, 0xb4, 0xb7, 0x4a, 0xbb, 0x85, 0xc3, 0xf5, 0x93,
+	0x8f, 0x5b, 0xd3, 0x81, 0x69, 0xe5, 0xb9, 0xd5, 0xba, 0x42, 0x4a, 0x1d, 0xb7, 0x7f, 0x45, 0x0d,
+	0x8a, 0x3a, 0x98, 0x03, 0x3c, 0x15, 0x44, 0xa4, 0x0b, 0xda, 0x5b, 0xa7, 0xe7, 0x74, 0xfd, 0x13,
+	0x5f, 0x91, 0xaf, 0xdc, 0x87, 0x7c, 0x9d, 0xd1, 0x5d, 0x9e, 0xf8, 0x91, 0x81, 0x37, 0x50, 0xbb,
+	0xb5, 0xdd, 0x50, 0x91, 0x97, 0xef, 0x43, 0x5e, 0x65, 0x54, 0x11, 0xf3, 0x97, 0x50, 0x0f, 0x70,
+	0x60, 0x8c, 0x15, 0xf5, 0xea, 0x7d, 0xa8, 0x6b, 0x9c, 0x4b, 0x72, 0x37, 0xcf, 0xa0, 0x36, 0x29,
+	0x25, 0x55, 0x58, 0xbb, 0x76, 0x6f, 0x5c, 0xef, 0xad, 0xab, 0xbd, 0xc7, 0x16, 0x12, 0xa7, 0x15,
+	0x48, 0x0d, 0x1e, 0x74, 0x9c, 0x50, 0xac, 0x8a, 0x64, 0x03, 0xaa, 0xd7, 0xae, 0x31, 0x32, 0x9c,
+	0x01, 0xdb, 0xd1, 0x4a, 0xcd, 0xb7, 0xf0, 0xf0, 0x2c, 0xf0, 0x86, 0x7e, 0xc4, 0x86, 0xf4, 0x35,
+	0xde, 0x9a, 0x18, 0x34, 0xae, 0x55, 0xa2, 0x90, 0x26, 0xd4, 0xfb, 0x0c, 0xd3, 0xf5, 0x87, 0x66,
+	0xf7, 0x06, 0xc7, 0x32, 0xeb, 0xaa, 0x7c, 0xf3, 0x72, 0x68, 0x5e, 0xe0, 0x98, 0x68, 0x50, 0x62,
+	0x92, 0x22, 0x4b, 0x1f, 0x9d, 0x7d, 0x92, 0x4d, 0x28, 0x8f, 0x8c, 0xc1, 0x10, 0x79, 0x2e, 0xd4,
+	0x74, 0xb1, 0x68, 0xac, 0xc9, 0x9c, 0x6b, 0x8e, 0x60, 0x33, 0x61, 0x98, 0x2f, 0xff, 0xeb, 0x76,
+	0xff, 0x59, 0x80, 0xc6, 0x94, 0x61, 0xea, 0x05, 0x78, 0x35, 0x34, 0x43, 0x2b, 0x70, 0x4c, 0x6c,
+	0x7c, 0xbb, 0x9c, 0xf9, 0x4d, 0x28, 0x87, 0x8e, 0x6b, 0x21, 0x77, 0xa0, 0xa6, 0x8b, 0x05, 0xdb,
+	0x1d, 0xba, 0xd4, 0x19, 0x44, 0x2e, 0xf0, 0x05, 0xd9, 0x83, 0x5a, 0xdf, 0xeb, 0x9a, 0x86, 0x75,
+	0xf3, 0xd6, 0x08, 0xec, 0x90, 0xa7, 0xf1, 0x03, 0xbd, 0xda, 0xf7, 0xda, 0xd1, 0x56, 0xe3, 0x34,
+	0xaa, 0xc8, 0x5f, 0x42, 0x19, 0x47, 0xe8, 0x52, 0x6e, 0xb3, 0x7a, 0x72, 0x90, 0xcc, 0x99, 0xd4,
+	0x09, 0x4e, 0x19, 0x5a, 0x17, 0x4a, 0xcd, 0x2f, 0xa0, 0xc2, 0xd7, 0x6d, 0x23, 0x44, 0xf2, 0x01,
+	0x14, 0x65, 0x5d, 0xd7, 0xda, 0xab, 0xef, 0xee, 0x76, 0x8a, 0xe7, 0x1d, 0xbd, 0xe8, 0xd8, 0xe4,
+	0x29, 0x80, 0x6f, 0x04, 0xe8, 0xd2, 0xae, 0x63, 0x8b, 0x82, 0xae, 0xb5, 0xeb, 0xef, 0xee, 0x76,
+	0x2a, 0x97, 0x7c, 0xf7, 0xbc, 0x13, 0xea, 0x15, 0x01, 0x38, 0xb7, 0xc3, 0xe6, 0xbf, 0x0a, 0xb0,
+	0x21, 0x8c, 0x2a, 0x6b, 0xe4, 0x17, 0x00, 0xdc, 0x5e, 0xd7, 0x34, 0x42, 0x94, 0x9e, 0xfe, 0x24,
+	0xe9, 0xa9, 0x72, 0x44, 0xaf, 0xa0, 0xf2, 0x29, 0x15, 0xda, 0x62, 0x3a, 0xb4, 0xc7, 0xb0, 0x29,
+	0x30, 0xb7, 0x3c, 0x21, 0x15, 0x54, 0xc4, 0xf4, 0x7d, 0x2e, 0x13, 0xb9, 0x9a, 0x54, 0xb0, 0x71,
+	0xe4, 0x58, 0xa8, 0x14, 0x56, 0x26, 0x14, 0x3a, 0x5c, 0x24, 0x15, 0x0e, 0x60, 0xc3, 0xb0, 0x2c,
+	0x6f, 0xe8, 0x52, 0x85, 0x2d, 0x73, 0x6c, 0x5d, 0x6e, 0x0b, 0x5c, 0xf3, 0xae, 0x00, 0x1f, 0x64,
+	0x07, 0x9c, 0x5c, 0x80, 0xe0, 0xed, 0x86, 0x6c, 0xaf, 0x3b, 0x79, 0x67, 0x3b, 0xd9, 0x77, 0x16,
+	0x5f, 0xd6, 0x46, 0x3f, 0x11, 0xcf, 0xcf, 0xa1, 0x16, 0x0a, 0x0b, 0x5d, 0x3a, 0xf6, 0x45, 0x4e,
+	0xad, 0x9f, 0x3c, 0x9d, 0x7b, 0xf7, 0xf2, 0xfb, 0xd7, 0x63, 0x1f, 0xf5, 0x6a, 0x18, 0x2f, 0xa2,
+	0xe2, 0x28, 0x65, 0x14, 0xc7, 0xca, 0x44, 0x71, 0x34, 0x6d, 0xd0, 0xce, 0x44, 0x38, 0xc3, 0xd0,
+	0xe8, 0xe3, 0x15, 0xba, 0x76, 0xe3, 0x6c, 0xb9, 0x42, 0xd8, 0x82, 0x35, 0xdf, 0x18, 0x0f, 0x3c,
+	0xc3, 0x96, 0x77, 0x19, 0x2d, 0xe3, 0xca, 0x7b, 0x0d, 0x3f, 0x7d, 0x21, 0xe2, 0xfa, 0xc2, 0xf7,
+	0xd1, 0xb5, 0x5f, 0xf8, 0xfe, 0x95, 0x8f, 0x96, 0xd3, 0x73, 0x2c, 0x7e, 0xfe, 0xc6, 0x7e, 0x6c,
+	0x72, 0x82, 0xae, 0x90, 0x43, 0xf7, 0x8f, 0x82, 0x6c, 0x5d, 0x91, 0xd7, 0xff, 0x97, 0x35, 0x1c,
+	0x39, 0x9f, 0xaa, 0xe1, 0xef, 0x64, 0xce, 0xa5, 0x00, 0x3f, 0x6c, 0xce, 0xe5, 0xde, 0x5b, 0xf3,
+	0xef, 0x05, 0xd9, 0xa1, 0x45, 0x91, 0xfd, 0xaf, 0x84, 0xb7, 0x13, 0x85, 0xf7, 0xd3, 0xe9, 0xf0,
+	0x3e, 0xce, 0x09, 0x2f, 0xf7, 0x3d, 0x15, 0x5d, 0x5b, 0xe5, 0xce, 0xb4, 0xfc, 0x07, 0x0d, 0x6e,
+	0x73, 0x0f, 0xaa, 0x1c, 0xf3, 0x32, 0x40, 0x83, 0xe2, 0xe4, 0xec, 0xa5, 0xb2, 0xf8, 0x0b, 0xa8,
+	0x70, 0xc8, 0x67, 0x9e, 0xe3, 0x36, 0x3e, 0x8d, 0x23, 0xbb, 0x0d, 0x95, 0x00, 0x7b, 0x18, 0x20,
+	0x8b, 0x9c, 0x88, 0x6a, 0xbc, 0x41, 0x08, 0xac, 0xdc, 0x22, 0x35, 0x64, 0x48, 0xf9, 0x77, 0x4c,
+	0xd9, 0x01, 0xe0, 0x94, 0xaf, 0xd0, 0x18, 0x61, 0xe3, 0xd9, 0x52, 0xb7, 0x15, 0xb3, 0x58, 0xd2,
+	0xf7, 0x73, 0x77, 0xe4, 0xd0, 0xa5, 0x69, 0x1e, 0x47, 0xb7, 0x34, 0xf3, 0x1c, 0xcd, 0x5d, 0x00,
+	0xd9, 0x91, 0x0d, 0x27, 0xc8, 0x8c, 0xcf, 0x05, 0xfc, 0xf8, 0xa5, 0xe7, 0x52, 0xc3, 0xa2, 0x52,
+	0xa4, 0x47, 0xca, 0x93, 0xf0, 0x05, 0xcd, 0x3d, 0x81, 0x87, 0xd3, 0x64, 0x72, 0x32, 0xca, 0xb4,
+	0x7c, 0x04, 0x9b, 0xd3, 0x60, 0x31, 0x53, 0x2d, 0xea, 0x65, 0x88, 0xf4, 0x95, 0xe3, 0xde, 0xfc,
+	0x07, 0x5e, 0xfe, 0x2e, 0xe9, 0xe5, 0xa9, 0xfb, 0xcd, 0x10, 0x87, 0xb8, 0x7c, 0x7a, 0x94, 0xb2,
+	0xd2, 0x43, 0x4f, 0x9e, 0xeb, 0x85, 0x65, 0xa1, 0x4f, 0x1b, 0x1f, 0xc6, 0xec, 0x07, 0xb0, 0x61,
+	0x09, 0x48, 0xe2, 0x8e, 0xeb, 0x72, 0x3b, 0x99, 0x2c, 0x17, 0x50, 0x57, 0x9c, 0xb7, 0xde, 0x08,
+	0xef, 0x45, 0xf6, 0x19, 0xd4, 0x24, 0x59, 0x7b, 0xe0, 0x59, 0x37, 0xf7, 0xe2, 0x7a, 0x05, 0xeb,
+	0x92, 0xeb, 0xda, 0x35, 0xef, 0xcd, 0xf6, 0xd7, 0x02, 0x68, 0xf2, 0x4f, 0x58, 0xdc, 0x0e, 0xdf,
+	0xc4, 0x84, 0xaa, 0xd5, 0x15, 0x32, 0x5b, 0x5d, 0x71, 0x56, 0xab, 0x2b, 0xa5, 0x5b, 0xdd, 0xaf,
+	0xa2, 0x7c, 0xf9, 0x64, 0xba, 0xd5, 0xed, 0x25, 0x1b, 0x51, 0xe4, 0x53, 0xaa, 0xcd, 0xfd, 0x01,
+	0xde, 0x4f, 0xc9, 0xc8, 0x27, 0xb0, 0x15, 0x0e, 0xcd, 0xaf, 0x51, 0x1c, 0x7b, 0xe0, 0x58, 0xec,
+	0xe4, 0x5d, 0x73, 0x4c, 0x31, 0x94, 0x8e, 0x3f, 0x94, 0xf2, 0x4b, 0x2e, 0xbe, 0xc0, 0x71, 0x9b,
+	0x09, 0x59, 0x5a, 0xf1, 0x1f, 0x9d, 0xb2, 0xeb, 0xb0, 0xef, 0xa3, 0xef, 0x57, 0x54, 0x48, 0x38,
+	0x3b, 0x9f, 0x3b, 0x7e, 0x06, 0x8d, 0xe4, 0x5e, 0xf7, 0xda, 0xb5, 0xb1, 0xe7, 0xb8, 0x68, 0x6b,
+	0xef, 0x91, 0x5d, 0xd8, 0x4e, 0xc9, 0x55, 0x17, 0xe4, 0xbf, 0x5a, 0xb2, 0x18, 0x64, 0x53, 0xeb,
+	0x51, 0xad, 0x48, 0xf6, 0xd4, 0x2c, 0x11, 0xcb, 0xe3, 0x4e, 0x82, 0xb6, 0x56, 0x22, 0x4f, 0xe0,
+	0xe7, 0x29, 0x48, 0x66, 0xf5, 0xdb, 0xda, 0x0a, 0x39, 0x82, 0x83, 0x39, 0xe0, 0xe8, 0x17, 0x55,
+	0x99, 0x7c, 0x08, 0xcf, 0xe6, 0x60, 0x55, 0x8f, 0xe2, 0x6d, 0x40, 0x5b, 0x5d, 0xc0, 0x17, 0x59,
+	0xe3, 0xb6, 0xb6, 0x46, 0x1e, 0xc3, 0xde, 0x1c, 0x30, 0xda, 0xda, 0x03, 0xf2, 0x08, 0x76, 0xf3,
+	0x60, 0xa2, 0xa2, 0xd1, 0xd6, 0x2a, 0x64, 0x1f, 0x76, 0xf2, 0xc9, 0x58, 0xa9, 0xda, 0x1a, 0xcc,
+	0x02, 0xf1, 0x12, 0x44, 0x5b, 0xab, 0xce, 0x72, 0x4b, 0xd6, 0x16, 0xda, 0x5a, 0x2d, 0xf3, 0x66,
+	0xe2, 0x49, 0x0f, 0x6d, 0xad, 0x7e, 0xd4, 0x86, 0xed, 0x59, 0x33, 0xec, 0xf4, 0x8f, 0xd9, 0x0a,
+	0x94, 0x39, 0x58, 0x2b, 0x10, 0x80, 0x55, 0xf1, 0xf7, 0x5a, 0x2b, 0x9e, 0x7c, 0xbf, 0x09, 0x1b,
+	0x97, 0x32, 0xff, 0xaf, 0x30, 0x60, 0x37, 0x4f, 0xbe, 0xce, 0x7a, 0x47, 0x21, 0x47, 0x79, 0xbf,
+	0xb7, 0x63, 0x4c, 0x2b, 0xea, 0xd0, 0x87, 0x0b, 0x61, 0x59, 0x49, 0x7e, 0x9b, 0xff, 0xc6, 0x42,
+	0x9e, 0x2f, 0xfc, 0x0b, 0x3f, 0xb2, 0xdb, 0x5a, 0x42, 0x83, 0x59, 0xbf, 0x9e, 0x1a, 0x2c, 0xc8,
+	0x7e, 0xe6, 0x64, 0x22, 0x84, 0xca, 0xc6, 0xde, 0x6c, 0x10, 0xa3, 0xfd, 0x7c, 0x62, 0x18, 0x21,
+	0xd9, 0x78, 0x26, 0x52, 0x94, 0x3b, 0xb3, 0x20, 0x8c, 0x50, 0x9f, 0x1c, 0x45, 0x48, 0x33, 0x13,
+	0xce, 0x65, 0x8a, 0x72, 0x77, 0x26, 0x66, 0xf2, 0xec, 0x62, 0x30, 0xc9, 0x39, 0xbb, 0x10, 0xce,
+	0x39, 0xbb, 0x02, 0x49, 0x57, 0xe3, 0x06, 0x92, 0x76, 0x35, 0x96, 0xe5, 0xbb, 0x3a, 0x85, 0x61,
+	0x9c, 0xe3, 0xdc, 0xe1, 0x85, 0x1c, 0x27, 0x95, 0x73, 0x80, 0xca, 0xda, 0xb3, 0xc5, 0x15, 0x98,
+	0xe9, 0x30, 0x67, 0xd4, 0x21, 0x73, 0x78, 0x24, 0x4c, 0x99, 0x7d, 0xb2, 0x28, 0x9c, 0x19, 0xf5,
+	0xb3, 0x47, 0x26, 0xf2, 0x74, 0x36, 0x89, 0x40, 0x29, 0x93, 0x47, 0x0b, 0xa2, 0x99, 0xc5, 0x3f,
+	0xc1, 0x76, 0xc6, 0xe0, 0xb5, 0x44, 0x98, 0xe5, 0x98, 0xb6, 0x78, 0x98, 0x63, 0x85, 0xcc, 0x30,
+	0xcb, 0x3e, 0x3e, 0x2f, 0xcc, 0x12, 0xb6, 0x68, 0x98, 0x63, 0x78, 0x66, 0x98, 0x45, 0xbf, 0x9f,
+	0x17, 0x66, 0x81, 0x5a, 0x34, 0xcc, 0x0a, 0xcd, 0x2c, 0xfe, 0x36, 0x31, 0xdf, 0x91, 0xc7, 0xb9,
+	0xca, 0x4c, 0xac, 0x6c, 0xec, 0xcf, 0x83, 0x31, 0xf2, 0x37, 0xd3, 0xf3, 0x1e, 0x79, 0x94, 0xa3,
+	0xc4, 0xa5, 0x8a, 0xba, 0x39, 0x07, 0xc5, 0x98, 0x7f, 0x9f, 0x9c, 0xfe, 0xc8, 0x41, 0x8e, 0x96,
+	0x94, 0x2b, 0xf6, 0x47, 0x73, 0x71, 0xf2, 0x22, 0xb2, 0xde, 0x30, 0xc9, 0xec, 0x27, 0x1b, 0x89,
+	0xca, 0xbf, 0x88, 0x1c, 0xb4, 0xcc, 0xb7, 0xcc, 0xe7, 0xda, 0x74, 0xbe, 0x65, 0xc2, 0xf2, 0xf3,
+	0x2d, 0x0f, 0xce, 0x8c, 0x66, 0x3c, 0x0f, 0x91, 0xc3, 0x99, 0xaf, 0x19, 0xe8, 0xda, 0xca, 0xd4,
+	0xc1, 0x02, 0x48, 0x66, 0xe5, 0xcf, 0x85, 0x39, 0xef, 0x43, 0xe4, 0xe3, 0x9c, 0xb9, 0x37, 0x1b,
+	0xae, 0x1c, 0xf8, 0x68, 0x59, 0x35, 0xe6, 0x4d, 0x2f, 0x3d, 0xe9, 0xa7, 0xcf, 0x9c, 0x44, 0xe4,
+	0x9f, 0x39, 0x03, 0xe9, 0x0f, 0xc6, 0xcf, 0x0b, 0xe4, 0xbb, 0xc4, 0x85, 0x2a, 0x63, 0x27, 0xf3,
+	0x9f, 0xfd, 0x52, 0x66, 0x9f, 0x2f, 0xa5, 0x23, 0x1c, 0x18, 0xe6, 0xbc, 0xa2, 0xe5, 0x64, 0x54,
+	0x12, 0x36, 0x27, 0xa3, 0x32, 0xe0, 0xc2, 0x6c, 0x90, 0xfd, 0xb8, 0x94, 0x53, 0x3a, 0x09, 0xd4,
+	0x9c, 0xd2, 0x49, 0xa3, 0xb9, 0xcd, 0xf6, 0xde, 0x97, 0x3b, 0x02, 0x4e, 0xd1, 0xfa, 0xea, 0xb8,
+	0xef, 0x1d, 0xfb, 0x37, 0xfd, 0xe3, 0xa9, 0xff, 0xe7, 0x99, 0xab, 0xfc, 0xeb, 0xa3, 0x7f, 0x07,
+	0x00, 0x00, 0xff, 0xff, 0x9a, 0xf4, 0x65, 0x40, 0xe7, 0x1b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -4469,69 +3215,50 @@ type ProtocolServiceClient interface {
 	InstanceExportData(ctx context.Context, in *InstanceExportData_Request, opts ...grpc.CallOption) (*InstanceExportData_Reply, error)
 	// InstanceGetConfiguration gets current configuration of this protocol instance
 	InstanceGetConfiguration(ctx context.Context, in *InstanceGetConfiguration_Request, opts ...grpc.CallOption) (*InstanceGetConfiguration_Reply, error)
-	// AccountGetConfiguration get current account global configuration (shared between all devices linked to current account)
-	AccountGetConfiguration(ctx context.Context, in *AccountGetConfiguration_Request, opts ...grpc.CallOption) (*AccountGetConfiguration_Reply, error)
-	// AccountGetInformation get current account global information (shared between all devices linked to current account)
-	AccountGetInformation(ctx context.Context, in *AccountGetInformation_Request, opts ...grpc.CallOption) (*AccountGetInformation_Reply, error)
-	// AccountLinkNewDevice link a new device to this account
-	AccountLinkNewDevice(ctx context.Context, in *AccountLinkNewDevice_Request, opts ...grpc.CallOption) (*AccountLinkNewDevice_Reply, error)
-	// AccountDisableIncomingContactRequest disable incoming contact request, under the hood, this will make you undiscoverable for new contact
-	AccountDisableIncomingContactRequest(ctx context.Context, in *AccountDisableIncomingContactRequest_Request, opts ...grpc.CallOption) (*AccountDisableIncomingContactRequest_Reply, error)
-	// AccountEnableIncomingContactRequest enable incoming contact request
-	AccountEnableIncomingContactRequest(ctx context.Context, in *AccountEnableIncomingContactRequest_Request, opts ...grpc.CallOption) (*AccountEnableIncomingContactRequest_Reply, error)
-	// AccountResetIncomingContactRequestLink invalidate the request link
-	AccountResetIncomingContactRequestLink(ctx context.Context, in *AccountResetIncomingContactRequestLink_Request, opts ...grpc.CallOption) (*AccountResetIncomingContactRequestLink_Reply, error)
-	// EventSubscribe listen for real time protocol events
-	EventSubscribe(ctx context.Context, in *EventSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_EventSubscribeClient, error)
-	// ContactRequestAccept accepts the given contact request, the requester signature is included so any of their device
-	// can accept the contact request
-	ContactRequestAccept(ctx context.Context, in *ContactRequestAccept_Request, opts ...grpc.CallOption) (*ContactRequestAccept_Reply, error)
-	// ContactRequestDiscard discards the given contact request
-	ContactRequestDiscard(ctx context.Context, in *ContactRequestDiscard_Request, opts ...grpc.CallOption) (*ContactRequestDiscard_Reply, error)
-	// ContactRequestListIncoming lists incoming contact request sent to your account
-	ContactRequestListIncoming(ctx context.Context, in *ContactRequestListIncoming_Request, opts ...grpc.CallOption) (ProtocolService_ContactRequestListIncomingClient, error)
-	// ContactRequestListIncoming lists pending contact request sent by your account
-	ContactRequestListOutgoing(ctx context.Context, in *ContactRequestListOutgoing_Request, opts ...grpc.CallOption) (ProtocolService_ContactRequestListOutgoingClient, error)
-	// ContactRequestSend sends a contact request to the given contact
-	ContactRequestSend(ctx context.Context, in *ContactRequestSend_Request, opts ...grpc.CallOption) (*ContactRequestSend_Reply, error)
-	// ContactGet gets contact's information
-	ContactGet(ctx context.Context, in *ContactGet_Request, opts ...grpc.CallOption) (*ContactGet_Reply, error)
-	// ContactList lists contacts of this account
-	ContactList(ctx context.Context, in *ContactList_Request, opts ...grpc.CallOption) (ProtocolService_ContactListClient, error)
-	// ContactList removes the given contact
-	ContactRemove(ctx context.Context, in *ContactRemove_Request, opts ...grpc.CallOption) (*ContactRemove_Reply, error)
-	// StreamManagerRequestToContact requests a stream to a specific contact
-	StreamManagerRequestToContact(ctx context.Context, in *StreamManagerRequestToContact_Request, opts ...grpc.CallOption) (*StreamManagerRequestToContact_Reply, error)
-	// StreamManagerAccept accepts a stream request, and create a stream with the
-	// contact that sent you this request
-	StreamManagerAccept(ctx context.Context, opts ...grpc.CallOption) (ProtocolService_StreamManagerAcceptClient, error)
-	// GroupCreate initiate a group locally
+	// GroupCreate initiates a new group and joins it
 	GroupCreate(ctx context.Context, in *GroupCreate_Request, opts ...grpc.CallOption) (*GroupCreate_Reply, error)
-	// GroupGenerateInviteLink generates an invitation link used to send the invitation to
-	// the other group members
-	GroupGenerateInviteLink(ctx context.Context, in *GroupGenerateInviteLink_Request, opts ...grpc.CallOption) (*GroupGenerateInviteLink_Reply, error)
+	// GroupJoin joins an existing group
+	GroupJoin(ctx context.Context, in *GroupJoin_Request, opts ...grpc.CallOption) (*GroupJoin_Reply, error)
 	// GroupLeave leaves a group
 	GroupLeave(ctx context.Context, in *GroupLeave_Request, opts ...grpc.CallOption) (*GroupLeave_Reply, error)
-	// GroupList lists all group for this account
-	GroupList(ctx context.Context, in *GroupList_Request, opts ...grpc.CallOption) (ProtocolService_GroupListClient, error)
-	// GroupMessageCreate creates a new message for the group, and send the invitation to
-	// the other group members.
-	GroupMessageCreate(ctx context.Context, in *GroupMessageCreate_Request, opts ...grpc.CallOption) (*GroupMessageCreate_Reply, error)
-	// GroupMessageList lists messages from this group
-	GroupMessageList(ctx context.Context, in *GroupMessageList_Request, opts ...grpc.CallOption) (ProtocolService_GroupMessageListClient, error)
-	// GroupTopicPublish return a stream used to publish volatile updates to other group members
-	// on a specific topic
-	GroupTopicPublish(ctx context.Context, opts ...grpc.CallOption) (ProtocolService_GroupTopicPublishClient, error)
-	// GroupTopicSubscribe subscribes to a topic to receive volatile message from it
-	GroupTopicSubscribe(ctx context.Context, in *GroupTopicSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupTopicSubscribeClient, error)
-	// GroupInvitationAccept accepts an invation to join a group
-	GroupInvitationAccept(ctx context.Context, in *GroupInvitationAccept_Request, opts ...grpc.CallOption) (*GroupInvitationAccept_Reply, error)
-	// GroupInvitationCreate creates an invitation, that can be sent to join this group
-	GroupInvitationCreate(ctx context.Context, in *GroupInvitationCreate_Request, opts ...grpc.CallOption) (*GroupInvitationCreate_Reply, error)
-	// GroupInvitationDiscard discards an invtation sent to you to join a group
-	GroupInvitationDiscard(ctx context.Context, in *GroupInvitationDiscard_Request, opts ...grpc.CallOption) (*GroupInvitationDiscard_Reply, error)
-	// GroupInvitationList lists pending invitation to this group
-	GroupInvitationList(ctx context.Context, in *GroupInvitationList_Request, opts ...grpc.CallOption) (ProtocolService_GroupInvitationListClient, error)
+	// GroupInvite generates an invitation to a group
+	GroupInvite(ctx context.Context, in *GroupInvite_Request, opts ...grpc.CallOption) (*GroupInvite_Reply, error)
+	// DevicePair pairs a new device to the current account
+	DevicePair(ctx context.Context, in *DevicePair_Request, opts ...grpc.CallOption) (*DevicePair_Reply, error)
+	// ContactRequestReference retrieves the necessary information to create a contact link
+	ContactRequestReference(ctx context.Context, in *ContactRequestReference_Request, opts ...grpc.CallOption) (*ContactRequestReference_Reply, error)
+	// ContactRequestDisable disables incoming contact requests
+	ContactRequestDisable(ctx context.Context, in *ContactRequestDisable_Request, opts ...grpc.CallOption) (*ContactRequestDisable_Reply, error)
+	// ContactRequestEnable enables incoming contact requests
+	ContactRequestEnable(ctx context.Context, in *ContactRequestEnable_Request, opts ...grpc.CallOption) (*ContactRequestEnable_Reply, error)
+	// ContactRequestResetReference generates a new contact request reference
+	ContactRequestResetReference(ctx context.Context, in *ContactRequestResetLink_Request, opts ...grpc.CallOption) (*ContactRequestResetLink_Reply, error)
+	// ContactRequestEnqueue enqueues a new contact request to be sent
+	ContactRequestEnqueue(ctx context.Context, in *ContactRequestEnqueue_Request, opts ...grpc.CallOption) (*ContactRequestEnqueue_Reply, error)
+	// ContactRequestAccept accepts a contact request
+	ContactRequestAccept(ctx context.Context, in *ContactRequestAccept_Request, opts ...grpc.CallOption) (*ContactRequestAccept_Reply, error)
+	// ContactRemove removes a contact
+	ContactRemove(ctx context.Context, in *ContactRemove_Request, opts ...grpc.CallOption) (*ContactRemove_Reply, error)
+	// ContactBlock blocks a contact, stops advertising on its rendezvous point
+	ContactBlock(ctx context.Context, in *ContactBlock_Request, opts ...grpc.CallOption) (*ContactBlock_Reply, error)
+	// ContactUnblock unblocks a contact, resumes advertising on its rendezvous point
+	ContactUnblock(ctx context.Context, in *ContactUnblock_Request, opts ...grpc.CallOption) (*ContactUnblock_Reply, error)
+	// GroupSettingSetGroup sets a setting for a group
+	GroupSettingSetGroup(ctx context.Context, in *GroupSettingSetGroup_Request, opts ...grpc.CallOption) (*GroupSettingSetGroup_Reply, error)
+	// GroupSettingSetGroup sets a setting for own group member
+	GroupSettingSetMember(ctx context.Context, in *GroupSettingSetMember_Request, opts ...grpc.CallOption) (*GroupSettingSetMember_Reply, error)
+	// GroupMessageSend sends a message to the group
+	GroupMessageSend(ctx context.Context, in *GroupMessageSend_Request, opts ...grpc.CallOption) (*GroupMessageSend_Reply, error)
+	// AppendAccountSpecificEvent adds an event to account event store
+	AccountAppendAppSpecificEvent(ctx context.Context, in *AccountAppendAppSpecificEvent_Request, opts ...grpc.CallOption) (*AccountAppendAppSpecificEvent_Reply, error)
+	// AccountSubscribe subscribes to the account events
+	AccountSubscribe(ctx context.Context, in *AccountSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_AccountSubscribeClient, error)
+	// GroupSettingSubscribe subscribes to the setting events for a group
+	GroupSettingSubscribe(ctx context.Context, in *GroupSettingStoreSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupSettingSubscribeClient, error)
+	// GroupMessageSubscribe subscribes to the message events for a group
+	GroupMessageSubscribe(ctx context.Context, in *GroupMessageSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMessageSubscribeClient, error)
+	// GroupMemberSubscribe subscribes to the member events for a group
+	GroupMemberSubscribe(ctx context.Context, in *GroupMemberSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMemberSubscribeClient, error)
 }
 
 type protocolServiceClient struct {
@@ -4560,273 +3287,6 @@ func (c *protocolServiceClient) InstanceGetConfiguration(ctx context.Context, in
 	return out, nil
 }
 
-func (c *protocolServiceClient) AccountGetConfiguration(ctx context.Context, in *AccountGetConfiguration_Request, opts ...grpc.CallOption) (*AccountGetConfiguration_Reply, error) {
-	out := new(AccountGetConfiguration_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/AccountGetConfiguration", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) AccountGetInformation(ctx context.Context, in *AccountGetInformation_Request, opts ...grpc.CallOption) (*AccountGetInformation_Reply, error) {
-	out := new(AccountGetInformation_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/AccountGetInformation", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) AccountLinkNewDevice(ctx context.Context, in *AccountLinkNewDevice_Request, opts ...grpc.CallOption) (*AccountLinkNewDevice_Reply, error) {
-	out := new(AccountLinkNewDevice_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/AccountLinkNewDevice", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) AccountDisableIncomingContactRequest(ctx context.Context, in *AccountDisableIncomingContactRequest_Request, opts ...grpc.CallOption) (*AccountDisableIncomingContactRequest_Reply, error) {
-	out := new(AccountDisableIncomingContactRequest_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/AccountDisableIncomingContactRequest", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) AccountEnableIncomingContactRequest(ctx context.Context, in *AccountEnableIncomingContactRequest_Request, opts ...grpc.CallOption) (*AccountEnableIncomingContactRequest_Reply, error) {
-	out := new(AccountEnableIncomingContactRequest_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/AccountEnableIncomingContactRequest", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) AccountResetIncomingContactRequestLink(ctx context.Context, in *AccountResetIncomingContactRequestLink_Request, opts ...grpc.CallOption) (*AccountResetIncomingContactRequestLink_Reply, error) {
-	out := new(AccountResetIncomingContactRequestLink_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/AccountResetIncomingContactRequestLink", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) EventSubscribe(ctx context.Context, in *EventSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_EventSubscribeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[0], "/berty.protocol.ProtocolService/EventSubscribe", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &protocolServiceEventSubscribeClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type ProtocolService_EventSubscribeClient interface {
-	Recv() (*EventSubscribe_Reply, error)
-	grpc.ClientStream
-}
-
-type protocolServiceEventSubscribeClient struct {
-	grpc.ClientStream
-}
-
-func (x *protocolServiceEventSubscribeClient) Recv() (*EventSubscribe_Reply, error) {
-	m := new(EventSubscribe_Reply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *protocolServiceClient) ContactRequestAccept(ctx context.Context, in *ContactRequestAccept_Request, opts ...grpc.CallOption) (*ContactRequestAccept_Reply, error) {
-	out := new(ContactRequestAccept_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestAccept", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) ContactRequestDiscard(ctx context.Context, in *ContactRequestDiscard_Request, opts ...grpc.CallOption) (*ContactRequestDiscard_Reply, error) {
-	out := new(ContactRequestDiscard_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestDiscard", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) ContactRequestListIncoming(ctx context.Context, in *ContactRequestListIncoming_Request, opts ...grpc.CallOption) (ProtocolService_ContactRequestListIncomingClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[1], "/berty.protocol.ProtocolService/ContactRequestListIncoming", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &protocolServiceContactRequestListIncomingClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type ProtocolService_ContactRequestListIncomingClient interface {
-	Recv() (*ContactRequestListIncoming_Reply, error)
-	grpc.ClientStream
-}
-
-type protocolServiceContactRequestListIncomingClient struct {
-	grpc.ClientStream
-}
-
-func (x *protocolServiceContactRequestListIncomingClient) Recv() (*ContactRequestListIncoming_Reply, error) {
-	m := new(ContactRequestListIncoming_Reply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *protocolServiceClient) ContactRequestListOutgoing(ctx context.Context, in *ContactRequestListOutgoing_Request, opts ...grpc.CallOption) (ProtocolService_ContactRequestListOutgoingClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[2], "/berty.protocol.ProtocolService/ContactRequestListOutgoing", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &protocolServiceContactRequestListOutgoingClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type ProtocolService_ContactRequestListOutgoingClient interface {
-	Recv() (*ContactRequestListOutgoing_Reply, error)
-	grpc.ClientStream
-}
-
-type protocolServiceContactRequestListOutgoingClient struct {
-	grpc.ClientStream
-}
-
-func (x *protocolServiceContactRequestListOutgoingClient) Recv() (*ContactRequestListOutgoing_Reply, error) {
-	m := new(ContactRequestListOutgoing_Reply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *protocolServiceClient) ContactRequestSend(ctx context.Context, in *ContactRequestSend_Request, opts ...grpc.CallOption) (*ContactRequestSend_Reply, error) {
-	out := new(ContactRequestSend_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestSend", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) ContactGet(ctx context.Context, in *ContactGet_Request, opts ...grpc.CallOption) (*ContactGet_Reply, error) {
-	out := new(ContactGet_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactGet", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) ContactList(ctx context.Context, in *ContactList_Request, opts ...grpc.CallOption) (ProtocolService_ContactListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[3], "/berty.protocol.ProtocolService/ContactList", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &protocolServiceContactListClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type ProtocolService_ContactListClient interface {
-	Recv() (*ContactList_Reply, error)
-	grpc.ClientStream
-}
-
-type protocolServiceContactListClient struct {
-	grpc.ClientStream
-}
-
-func (x *protocolServiceContactListClient) Recv() (*ContactList_Reply, error) {
-	m := new(ContactList_Reply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *protocolServiceClient) ContactRemove(ctx context.Context, in *ContactRemove_Request, opts ...grpc.CallOption) (*ContactRemove_Reply, error) {
-	out := new(ContactRemove_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRemove", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) StreamManagerRequestToContact(ctx context.Context, in *StreamManagerRequestToContact_Request, opts ...grpc.CallOption) (*StreamManagerRequestToContact_Reply, error) {
-	out := new(StreamManagerRequestToContact_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/StreamManagerRequestToContact", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) StreamManagerAccept(ctx context.Context, opts ...grpc.CallOption) (ProtocolService_StreamManagerAcceptClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[4], "/berty.protocol.ProtocolService/StreamManagerAccept", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &protocolServiceStreamManagerAcceptClient{stream}
-	return x, nil
-}
-
-type ProtocolService_StreamManagerAcceptClient interface {
-	Send(*StreamManagerAccept_Request) error
-	Recv() (*StreamManagerAccept_Reply, error)
-	grpc.ClientStream
-}
-
-type protocolServiceStreamManagerAcceptClient struct {
-	grpc.ClientStream
-}
-
-func (x *protocolServiceStreamManagerAcceptClient) Send(m *StreamManagerAccept_Request) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *protocolServiceStreamManagerAcceptClient) Recv() (*StreamManagerAccept_Reply, error) {
-	m := new(StreamManagerAccept_Reply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 func (c *protocolServiceClient) GroupCreate(ctx context.Context, in *GroupCreate_Request, opts ...grpc.CallOption) (*GroupCreate_Reply, error) {
 	out := new(GroupCreate_Reply)
 	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupCreate", in, out, opts...)
@@ -4836,9 +3296,9 @@ func (c *protocolServiceClient) GroupCreate(ctx context.Context, in *GroupCreate
 	return out, nil
 }
 
-func (c *protocolServiceClient) GroupGenerateInviteLink(ctx context.Context, in *GroupGenerateInviteLink_Request, opts ...grpc.CallOption) (*GroupGenerateInviteLink_Reply, error) {
-	out := new(GroupGenerateInviteLink_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupGenerateInviteLink", in, out, opts...)
+func (c *protocolServiceClient) GroupJoin(ctx context.Context, in *GroupJoin_Request, opts ...grpc.CallOption) (*GroupJoin_Reply, error) {
+	out := new(GroupJoin_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupJoin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4854,12 +3314,147 @@ func (c *protocolServiceClient) GroupLeave(ctx context.Context, in *GroupLeave_R
 	return out, nil
 }
 
-func (c *protocolServiceClient) GroupList(ctx context.Context, in *GroupList_Request, opts ...grpc.CallOption) (ProtocolService_GroupListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[5], "/berty.protocol.ProtocolService/GroupList", opts...)
+func (c *protocolServiceClient) GroupInvite(ctx context.Context, in *GroupInvite_Request, opts ...grpc.CallOption) (*GroupInvite_Reply, error) {
+	out := new(GroupInvite_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupInvite", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolServiceGroupListClient{stream}
+	return out, nil
+}
+
+func (c *protocolServiceClient) DevicePair(ctx context.Context, in *DevicePair_Request, opts ...grpc.CallOption) (*DevicePair_Reply, error) {
+	out := new(DevicePair_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/DevicePair", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) ContactRequestReference(ctx context.Context, in *ContactRequestReference_Request, opts ...grpc.CallOption) (*ContactRequestReference_Reply, error) {
+	out := new(ContactRequestReference_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestReference", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) ContactRequestDisable(ctx context.Context, in *ContactRequestDisable_Request, opts ...grpc.CallOption) (*ContactRequestDisable_Reply, error) {
+	out := new(ContactRequestDisable_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestDisable", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) ContactRequestEnable(ctx context.Context, in *ContactRequestEnable_Request, opts ...grpc.CallOption) (*ContactRequestEnable_Reply, error) {
+	out := new(ContactRequestEnable_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestEnable", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) ContactRequestResetReference(ctx context.Context, in *ContactRequestResetLink_Request, opts ...grpc.CallOption) (*ContactRequestResetLink_Reply, error) {
+	out := new(ContactRequestResetLink_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestResetReference", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) ContactRequestEnqueue(ctx context.Context, in *ContactRequestEnqueue_Request, opts ...grpc.CallOption) (*ContactRequestEnqueue_Reply, error) {
+	out := new(ContactRequestEnqueue_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestEnqueue", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) ContactRequestAccept(ctx context.Context, in *ContactRequestAccept_Request, opts ...grpc.CallOption) (*ContactRequestAccept_Reply, error) {
+	out := new(ContactRequestAccept_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestAccept", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) ContactRemove(ctx context.Context, in *ContactRemove_Request, opts ...grpc.CallOption) (*ContactRemove_Reply, error) {
+	out := new(ContactRemove_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRemove", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) ContactBlock(ctx context.Context, in *ContactBlock_Request, opts ...grpc.CallOption) (*ContactBlock_Reply, error) {
+	out := new(ContactBlock_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactBlock", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) ContactUnblock(ctx context.Context, in *ContactUnblock_Request, opts ...grpc.CallOption) (*ContactUnblock_Reply, error) {
+	out := new(ContactUnblock_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactUnblock", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) GroupSettingSetGroup(ctx context.Context, in *GroupSettingSetGroup_Request, opts ...grpc.CallOption) (*GroupSettingSetGroup_Reply, error) {
+	out := new(GroupSettingSetGroup_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupSettingSetGroup", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) GroupSettingSetMember(ctx context.Context, in *GroupSettingSetMember_Request, opts ...grpc.CallOption) (*GroupSettingSetMember_Reply, error) {
+	out := new(GroupSettingSetMember_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupSettingSetMember", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) GroupMessageSend(ctx context.Context, in *GroupMessageSend_Request, opts ...grpc.CallOption) (*GroupMessageSend_Reply, error) {
+	out := new(GroupMessageSend_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupMessageSend", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) AccountAppendAppSpecificEvent(ctx context.Context, in *AccountAppendAppSpecificEvent_Request, opts ...grpc.CallOption) (*AccountAppendAppSpecificEvent_Reply, error) {
+	out := new(AccountAppendAppSpecificEvent_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/AccountAppendAppSpecificEvent", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) AccountSubscribe(ctx context.Context, in *AccountSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_AccountSubscribeClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[0], "/berty.protocol.ProtocolService/AccountSubscribe", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &protocolServiceAccountSubscribeClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -4869,38 +3464,29 @@ func (c *protocolServiceClient) GroupList(ctx context.Context, in *GroupList_Req
 	return x, nil
 }
 
-type ProtocolService_GroupListClient interface {
-	Recv() (*GroupList_Reply, error)
+type ProtocolService_AccountSubscribeClient interface {
+	Recv() (*AccountSubscribe_Reply, error)
 	grpc.ClientStream
 }
 
-type protocolServiceGroupListClient struct {
+type protocolServiceAccountSubscribeClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolServiceGroupListClient) Recv() (*GroupList_Reply, error) {
-	m := new(GroupList_Reply)
+func (x *protocolServiceAccountSubscribeClient) Recv() (*AccountSubscribe_Reply, error) {
+	m := new(AccountSubscribe_Reply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func (c *protocolServiceClient) GroupMessageCreate(ctx context.Context, in *GroupMessageCreate_Request, opts ...grpc.CallOption) (*GroupMessageCreate_Reply, error) {
-	out := new(GroupMessageCreate_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupMessageCreate", in, out, opts...)
+func (c *protocolServiceClient) GroupSettingSubscribe(ctx context.Context, in *GroupSettingStoreSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupSettingSubscribeClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[1], "/berty.protocol.ProtocolService/GroupSettingSubscribe", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) GroupMessageList(ctx context.Context, in *GroupMessageList_Request, opts ...grpc.CallOption) (ProtocolService_GroupMessageListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[6], "/berty.protocol.ProtocolService/GroupMessageList", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &protocolServiceGroupMessageListClient{stream}
+	x := &protocolServiceGroupSettingSubscribeClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -4910,63 +3496,29 @@ func (c *protocolServiceClient) GroupMessageList(ctx context.Context, in *GroupM
 	return x, nil
 }
 
-type ProtocolService_GroupMessageListClient interface {
-	Recv() (*GroupMessageList_Reply, error)
+type ProtocolService_GroupSettingSubscribeClient interface {
+	Recv() (*GroupSettingStoreSubscribe_Reply, error)
 	grpc.ClientStream
 }
 
-type protocolServiceGroupMessageListClient struct {
+type protocolServiceGroupSettingSubscribeClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolServiceGroupMessageListClient) Recv() (*GroupMessageList_Reply, error) {
-	m := new(GroupMessageList_Reply)
+func (x *protocolServiceGroupSettingSubscribeClient) Recv() (*GroupSettingStoreSubscribe_Reply, error) {
+	m := new(GroupSettingStoreSubscribe_Reply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func (c *protocolServiceClient) GroupTopicPublish(ctx context.Context, opts ...grpc.CallOption) (ProtocolService_GroupTopicPublishClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[7], "/berty.protocol.ProtocolService/GroupTopicPublish", opts...)
+func (c *protocolServiceClient) GroupMessageSubscribe(ctx context.Context, in *GroupMessageSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMessageSubscribeClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[2], "/berty.protocol.ProtocolService/GroupMessageSubscribe", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolServiceGroupTopicPublishClient{stream}
-	return x, nil
-}
-
-type ProtocolService_GroupTopicPublishClient interface {
-	Send(*GroupTopicPublish_Request) error
-	CloseAndRecv() (*GroupTopicPublish_Reply, error)
-	grpc.ClientStream
-}
-
-type protocolServiceGroupTopicPublishClient struct {
-	grpc.ClientStream
-}
-
-func (x *protocolServiceGroupTopicPublishClient) Send(m *GroupTopicPublish_Request) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *protocolServiceGroupTopicPublishClient) CloseAndRecv() (*GroupTopicPublish_Reply, error) {
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	m := new(GroupTopicPublish_Reply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *protocolServiceClient) GroupTopicSubscribe(ctx context.Context, in *GroupTopicSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupTopicSubscribeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[8], "/berty.protocol.ProtocolService/GroupTopicSubscribe", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &protocolServiceGroupTopicSubscribeClient{stream}
+	x := &protocolServiceGroupMessageSubscribeClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -4976,56 +3528,29 @@ func (c *protocolServiceClient) GroupTopicSubscribe(ctx context.Context, in *Gro
 	return x, nil
 }
 
-type ProtocolService_GroupTopicSubscribeClient interface {
-	Recv() (*GroupTopicSubscribe_Reply, error)
+type ProtocolService_GroupMessageSubscribeClient interface {
+	Recv() (*GroupMessageSubscribe_Reply, error)
 	grpc.ClientStream
 }
 
-type protocolServiceGroupTopicSubscribeClient struct {
+type protocolServiceGroupMessageSubscribeClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolServiceGroupTopicSubscribeClient) Recv() (*GroupTopicSubscribe_Reply, error) {
-	m := new(GroupTopicSubscribe_Reply)
+func (x *protocolServiceGroupMessageSubscribeClient) Recv() (*GroupMessageSubscribe_Reply, error) {
+	m := new(GroupMessageSubscribe_Reply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func (c *protocolServiceClient) GroupInvitationAccept(ctx context.Context, in *GroupInvitationAccept_Request, opts ...grpc.CallOption) (*GroupInvitationAccept_Reply, error) {
-	out := new(GroupInvitationAccept_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupInvitationAccept", in, out, opts...)
+func (c *protocolServiceClient) GroupMemberSubscribe(ctx context.Context, in *GroupMemberSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMemberSubscribeClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[3], "/berty.protocol.ProtocolService/GroupMemberSubscribe", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) GroupInvitationCreate(ctx context.Context, in *GroupInvitationCreate_Request, opts ...grpc.CallOption) (*GroupInvitationCreate_Reply, error) {
-	out := new(GroupInvitationCreate_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupInvitationCreate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) GroupInvitationDiscard(ctx context.Context, in *GroupInvitationDiscard_Request, opts ...grpc.CallOption) (*GroupInvitationDiscard_Reply, error) {
-	out := new(GroupInvitationDiscard_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupInvitationDiscard", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) GroupInvitationList(ctx context.Context, in *GroupInvitationList_Request, opts ...grpc.CallOption) (ProtocolService_GroupInvitationListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[9], "/berty.protocol.ProtocolService/GroupInvitationList", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &protocolServiceGroupInvitationListClient{stream}
+	x := &protocolServiceGroupMemberSubscribeClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -5035,17 +3560,17 @@ func (c *protocolServiceClient) GroupInvitationList(ctx context.Context, in *Gro
 	return x, nil
 }
 
-type ProtocolService_GroupInvitationListClient interface {
-	Recv() (*GroupInvitationList_Reply, error)
+type ProtocolService_GroupMemberSubscribeClient interface {
+	Recv() (*GroupMemberSubscribe_Reply, error)
 	grpc.ClientStream
 }
 
-type protocolServiceGroupInvitationListClient struct {
+type protocolServiceGroupMemberSubscribeClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolServiceGroupInvitationListClient) Recv() (*GroupInvitationList_Reply, error) {
-	m := new(GroupInvitationList_Reply)
+func (x *protocolServiceGroupMemberSubscribeClient) Recv() (*GroupMemberSubscribe_Reply, error) {
+	m := new(GroupMemberSubscribe_Reply)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -5058,69 +3583,50 @@ type ProtocolServiceServer interface {
 	InstanceExportData(context.Context, *InstanceExportData_Request) (*InstanceExportData_Reply, error)
 	// InstanceGetConfiguration gets current configuration of this protocol instance
 	InstanceGetConfiguration(context.Context, *InstanceGetConfiguration_Request) (*InstanceGetConfiguration_Reply, error)
-	// AccountGetConfiguration get current account global configuration (shared between all devices linked to current account)
-	AccountGetConfiguration(context.Context, *AccountGetConfiguration_Request) (*AccountGetConfiguration_Reply, error)
-	// AccountGetInformation get current account global information (shared between all devices linked to current account)
-	AccountGetInformation(context.Context, *AccountGetInformation_Request) (*AccountGetInformation_Reply, error)
-	// AccountLinkNewDevice link a new device to this account
-	AccountLinkNewDevice(context.Context, *AccountLinkNewDevice_Request) (*AccountLinkNewDevice_Reply, error)
-	// AccountDisableIncomingContactRequest disable incoming contact request, under the hood, this will make you undiscoverable for new contact
-	AccountDisableIncomingContactRequest(context.Context, *AccountDisableIncomingContactRequest_Request) (*AccountDisableIncomingContactRequest_Reply, error)
-	// AccountEnableIncomingContactRequest enable incoming contact request
-	AccountEnableIncomingContactRequest(context.Context, *AccountEnableIncomingContactRequest_Request) (*AccountEnableIncomingContactRequest_Reply, error)
-	// AccountResetIncomingContactRequestLink invalidate the request link
-	AccountResetIncomingContactRequestLink(context.Context, *AccountResetIncomingContactRequestLink_Request) (*AccountResetIncomingContactRequestLink_Reply, error)
-	// EventSubscribe listen for real time protocol events
-	EventSubscribe(*EventSubscribe_Request, ProtocolService_EventSubscribeServer) error
-	// ContactRequestAccept accepts the given contact request, the requester signature is included so any of their device
-	// can accept the contact request
-	ContactRequestAccept(context.Context, *ContactRequestAccept_Request) (*ContactRequestAccept_Reply, error)
-	// ContactRequestDiscard discards the given contact request
-	ContactRequestDiscard(context.Context, *ContactRequestDiscard_Request) (*ContactRequestDiscard_Reply, error)
-	// ContactRequestListIncoming lists incoming contact request sent to your account
-	ContactRequestListIncoming(*ContactRequestListIncoming_Request, ProtocolService_ContactRequestListIncomingServer) error
-	// ContactRequestListIncoming lists pending contact request sent by your account
-	ContactRequestListOutgoing(*ContactRequestListOutgoing_Request, ProtocolService_ContactRequestListOutgoingServer) error
-	// ContactRequestSend sends a contact request to the given contact
-	ContactRequestSend(context.Context, *ContactRequestSend_Request) (*ContactRequestSend_Reply, error)
-	// ContactGet gets contact's information
-	ContactGet(context.Context, *ContactGet_Request) (*ContactGet_Reply, error)
-	// ContactList lists contacts of this account
-	ContactList(*ContactList_Request, ProtocolService_ContactListServer) error
-	// ContactList removes the given contact
-	ContactRemove(context.Context, *ContactRemove_Request) (*ContactRemove_Reply, error)
-	// StreamManagerRequestToContact requests a stream to a specific contact
-	StreamManagerRequestToContact(context.Context, *StreamManagerRequestToContact_Request) (*StreamManagerRequestToContact_Reply, error)
-	// StreamManagerAccept accepts a stream request, and create a stream with the
-	// contact that sent you this request
-	StreamManagerAccept(ProtocolService_StreamManagerAcceptServer) error
-	// GroupCreate initiate a group locally
+	// GroupCreate initiates a new group and joins it
 	GroupCreate(context.Context, *GroupCreate_Request) (*GroupCreate_Reply, error)
-	// GroupGenerateInviteLink generates an invitation link used to send the invitation to
-	// the other group members
-	GroupGenerateInviteLink(context.Context, *GroupGenerateInviteLink_Request) (*GroupGenerateInviteLink_Reply, error)
+	// GroupJoin joins an existing group
+	GroupJoin(context.Context, *GroupJoin_Request) (*GroupJoin_Reply, error)
 	// GroupLeave leaves a group
 	GroupLeave(context.Context, *GroupLeave_Request) (*GroupLeave_Reply, error)
-	// GroupList lists all group for this account
-	GroupList(*GroupList_Request, ProtocolService_GroupListServer) error
-	// GroupMessageCreate creates a new message for the group, and send the invitation to
-	// the other group members.
-	GroupMessageCreate(context.Context, *GroupMessageCreate_Request) (*GroupMessageCreate_Reply, error)
-	// GroupMessageList lists messages from this group
-	GroupMessageList(*GroupMessageList_Request, ProtocolService_GroupMessageListServer) error
-	// GroupTopicPublish return a stream used to publish volatile updates to other group members
-	// on a specific topic
-	GroupTopicPublish(ProtocolService_GroupTopicPublishServer) error
-	// GroupTopicSubscribe subscribes to a topic to receive volatile message from it
-	GroupTopicSubscribe(*GroupTopicSubscribe_Request, ProtocolService_GroupTopicSubscribeServer) error
-	// GroupInvitationAccept accepts an invation to join a group
-	GroupInvitationAccept(context.Context, *GroupInvitationAccept_Request) (*GroupInvitationAccept_Reply, error)
-	// GroupInvitationCreate creates an invitation, that can be sent to join this group
-	GroupInvitationCreate(context.Context, *GroupInvitationCreate_Request) (*GroupInvitationCreate_Reply, error)
-	// GroupInvitationDiscard discards an invtation sent to you to join a group
-	GroupInvitationDiscard(context.Context, *GroupInvitationDiscard_Request) (*GroupInvitationDiscard_Reply, error)
-	// GroupInvitationList lists pending invitation to this group
-	GroupInvitationList(*GroupInvitationList_Request, ProtocolService_GroupInvitationListServer) error
+	// GroupInvite generates an invitation to a group
+	GroupInvite(context.Context, *GroupInvite_Request) (*GroupInvite_Reply, error)
+	// DevicePair pairs a new device to the current account
+	DevicePair(context.Context, *DevicePair_Request) (*DevicePair_Reply, error)
+	// ContactRequestReference retrieves the necessary information to create a contact link
+	ContactRequestReference(context.Context, *ContactRequestReference_Request) (*ContactRequestReference_Reply, error)
+	// ContactRequestDisable disables incoming contact requests
+	ContactRequestDisable(context.Context, *ContactRequestDisable_Request) (*ContactRequestDisable_Reply, error)
+	// ContactRequestEnable enables incoming contact requests
+	ContactRequestEnable(context.Context, *ContactRequestEnable_Request) (*ContactRequestEnable_Reply, error)
+	// ContactRequestResetReference generates a new contact request reference
+	ContactRequestResetReference(context.Context, *ContactRequestResetLink_Request) (*ContactRequestResetLink_Reply, error)
+	// ContactRequestEnqueue enqueues a new contact request to be sent
+	ContactRequestEnqueue(context.Context, *ContactRequestEnqueue_Request) (*ContactRequestEnqueue_Reply, error)
+	// ContactRequestAccept accepts a contact request
+	ContactRequestAccept(context.Context, *ContactRequestAccept_Request) (*ContactRequestAccept_Reply, error)
+	// ContactRemove removes a contact
+	ContactRemove(context.Context, *ContactRemove_Request) (*ContactRemove_Reply, error)
+	// ContactBlock blocks a contact, stops advertising on its rendezvous point
+	ContactBlock(context.Context, *ContactBlock_Request) (*ContactBlock_Reply, error)
+	// ContactUnblock unblocks a contact, resumes advertising on its rendezvous point
+	ContactUnblock(context.Context, *ContactUnblock_Request) (*ContactUnblock_Reply, error)
+	// GroupSettingSetGroup sets a setting for a group
+	GroupSettingSetGroup(context.Context, *GroupSettingSetGroup_Request) (*GroupSettingSetGroup_Reply, error)
+	// GroupSettingSetGroup sets a setting for own group member
+	GroupSettingSetMember(context.Context, *GroupSettingSetMember_Request) (*GroupSettingSetMember_Reply, error)
+	// GroupMessageSend sends a message to the group
+	GroupMessageSend(context.Context, *GroupMessageSend_Request) (*GroupMessageSend_Reply, error)
+	// AppendAccountSpecificEvent adds an event to account event store
+	AccountAppendAppSpecificEvent(context.Context, *AccountAppendAppSpecificEvent_Request) (*AccountAppendAppSpecificEvent_Reply, error)
+	// AccountSubscribe subscribes to the account events
+	AccountSubscribe(*AccountSubscribe_Request, ProtocolService_AccountSubscribeServer) error
+	// GroupSettingSubscribe subscribes to the setting events for a group
+	GroupSettingSubscribe(*GroupSettingStoreSubscribe_Request, ProtocolService_GroupSettingSubscribeServer) error
+	// GroupMessageSubscribe subscribes to the message events for a group
+	GroupMessageSubscribe(*GroupMessageSubscribe_Request, ProtocolService_GroupMessageSubscribeServer) error
+	// GroupMemberSubscribe subscribes to the member events for a group
+	GroupMemberSubscribe(*GroupMemberSubscribe_Request, ProtocolService_GroupMemberSubscribeServer) error
 }
 
 // UnimplementedProtocolServiceServer can be embedded to have forward compatible implementations.
@@ -5133,92 +3639,71 @@ func (*UnimplementedProtocolServiceServer) InstanceExportData(ctx context.Contex
 func (*UnimplementedProtocolServiceServer) InstanceGetConfiguration(ctx context.Context, req *InstanceGetConfiguration_Request) (*InstanceGetConfiguration_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InstanceGetConfiguration not implemented")
 }
-func (*UnimplementedProtocolServiceServer) AccountGetConfiguration(ctx context.Context, req *AccountGetConfiguration_Request) (*AccountGetConfiguration_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccountGetConfiguration not implemented")
-}
-func (*UnimplementedProtocolServiceServer) AccountGetInformation(ctx context.Context, req *AccountGetInformation_Request) (*AccountGetInformation_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccountGetInformation not implemented")
-}
-func (*UnimplementedProtocolServiceServer) AccountLinkNewDevice(ctx context.Context, req *AccountLinkNewDevice_Request) (*AccountLinkNewDevice_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccountLinkNewDevice not implemented")
-}
-func (*UnimplementedProtocolServiceServer) AccountDisableIncomingContactRequest(ctx context.Context, req *AccountDisableIncomingContactRequest_Request) (*AccountDisableIncomingContactRequest_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccountDisableIncomingContactRequest not implemented")
-}
-func (*UnimplementedProtocolServiceServer) AccountEnableIncomingContactRequest(ctx context.Context, req *AccountEnableIncomingContactRequest_Request) (*AccountEnableIncomingContactRequest_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccountEnableIncomingContactRequest not implemented")
-}
-func (*UnimplementedProtocolServiceServer) AccountResetIncomingContactRequestLink(ctx context.Context, req *AccountResetIncomingContactRequestLink_Request) (*AccountResetIncomingContactRequestLink_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccountResetIncomingContactRequestLink not implemented")
-}
-func (*UnimplementedProtocolServiceServer) EventSubscribe(req *EventSubscribe_Request, srv ProtocolService_EventSubscribeServer) error {
-	return status.Errorf(codes.Unimplemented, "method EventSubscribe not implemented")
-}
-func (*UnimplementedProtocolServiceServer) ContactRequestAccept(ctx context.Context, req *ContactRequestAccept_Request) (*ContactRequestAccept_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestAccept not implemented")
-}
-func (*UnimplementedProtocolServiceServer) ContactRequestDiscard(ctx context.Context, req *ContactRequestDiscard_Request) (*ContactRequestDiscard_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestDiscard not implemented")
-}
-func (*UnimplementedProtocolServiceServer) ContactRequestListIncoming(req *ContactRequestListIncoming_Request, srv ProtocolService_ContactRequestListIncomingServer) error {
-	return status.Errorf(codes.Unimplemented, "method ContactRequestListIncoming not implemented")
-}
-func (*UnimplementedProtocolServiceServer) ContactRequestListOutgoing(req *ContactRequestListOutgoing_Request, srv ProtocolService_ContactRequestListOutgoingServer) error {
-	return status.Errorf(codes.Unimplemented, "method ContactRequestListOutgoing not implemented")
-}
-func (*UnimplementedProtocolServiceServer) ContactRequestSend(ctx context.Context, req *ContactRequestSend_Request) (*ContactRequestSend_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestSend not implemented")
-}
-func (*UnimplementedProtocolServiceServer) ContactGet(ctx context.Context, req *ContactGet_Request) (*ContactGet_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactGet not implemented")
-}
-func (*UnimplementedProtocolServiceServer) ContactList(req *ContactList_Request, srv ProtocolService_ContactListServer) error {
-	return status.Errorf(codes.Unimplemented, "method ContactList not implemented")
-}
-func (*UnimplementedProtocolServiceServer) ContactRemove(ctx context.Context, req *ContactRemove_Request) (*ContactRemove_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactRemove not implemented")
-}
-func (*UnimplementedProtocolServiceServer) StreamManagerRequestToContact(ctx context.Context, req *StreamManagerRequestToContact_Request) (*StreamManagerRequestToContact_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StreamManagerRequestToContact not implemented")
-}
-func (*UnimplementedProtocolServiceServer) StreamManagerAccept(srv ProtocolService_StreamManagerAcceptServer) error {
-	return status.Errorf(codes.Unimplemented, "method StreamManagerAccept not implemented")
-}
 func (*UnimplementedProtocolServiceServer) GroupCreate(ctx context.Context, req *GroupCreate_Request) (*GroupCreate_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupCreate not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupGenerateInviteLink(ctx context.Context, req *GroupGenerateInviteLink_Request) (*GroupGenerateInviteLink_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupGenerateInviteLink not implemented")
+func (*UnimplementedProtocolServiceServer) GroupJoin(ctx context.Context, req *GroupJoin_Request) (*GroupJoin_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupJoin not implemented")
 }
 func (*UnimplementedProtocolServiceServer) GroupLeave(ctx context.Context, req *GroupLeave_Request) (*GroupLeave_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupLeave not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupList(req *GroupList_Request, srv ProtocolService_GroupListServer) error {
-	return status.Errorf(codes.Unimplemented, "method GroupList not implemented")
+func (*UnimplementedProtocolServiceServer) GroupInvite(ctx context.Context, req *GroupInvite_Request) (*GroupInvite_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInvite not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupMessageCreate(ctx context.Context, req *GroupMessageCreate_Request) (*GroupMessageCreate_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupMessageCreate not implemented")
+func (*UnimplementedProtocolServiceServer) DevicePair(ctx context.Context, req *DevicePair_Request) (*DevicePair_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DevicePair not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupMessageList(req *GroupMessageList_Request, srv ProtocolService_GroupMessageListServer) error {
-	return status.Errorf(codes.Unimplemented, "method GroupMessageList not implemented")
+func (*UnimplementedProtocolServiceServer) ContactRequestReference(ctx context.Context, req *ContactRequestReference_Request) (*ContactRequestReference_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestReference not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupTopicPublish(srv ProtocolService_GroupTopicPublishServer) error {
-	return status.Errorf(codes.Unimplemented, "method GroupTopicPublish not implemented")
+func (*UnimplementedProtocolServiceServer) ContactRequestDisable(ctx context.Context, req *ContactRequestDisable_Request) (*ContactRequestDisable_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestDisable not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupTopicSubscribe(req *GroupTopicSubscribe_Request, srv ProtocolService_GroupTopicSubscribeServer) error {
-	return status.Errorf(codes.Unimplemented, "method GroupTopicSubscribe not implemented")
+func (*UnimplementedProtocolServiceServer) ContactRequestEnable(ctx context.Context, req *ContactRequestEnable_Request) (*ContactRequestEnable_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestEnable not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupInvitationAccept(ctx context.Context, req *GroupInvitationAccept_Request) (*GroupInvitationAccept_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupInvitationAccept not implemented")
+func (*UnimplementedProtocolServiceServer) ContactRequestResetReference(ctx context.Context, req *ContactRequestResetLink_Request) (*ContactRequestResetLink_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestResetReference not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupInvitationCreate(ctx context.Context, req *GroupInvitationCreate_Request) (*GroupInvitationCreate_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupInvitationCreate not implemented")
+func (*UnimplementedProtocolServiceServer) ContactRequestEnqueue(ctx context.Context, req *ContactRequestEnqueue_Request) (*ContactRequestEnqueue_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestEnqueue not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupInvitationDiscard(ctx context.Context, req *GroupInvitationDiscard_Request) (*GroupInvitationDiscard_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupInvitationDiscard not implemented")
+func (*UnimplementedProtocolServiceServer) ContactRequestAccept(ctx context.Context, req *ContactRequestAccept_Request) (*ContactRequestAccept_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestAccept not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupInvitationList(req *GroupInvitationList_Request, srv ProtocolService_GroupInvitationListServer) error {
-	return status.Errorf(codes.Unimplemented, "method GroupInvitationList not implemented")
+func (*UnimplementedProtocolServiceServer) ContactRemove(ctx context.Context, req *ContactRemove_Request) (*ContactRemove_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRemove not implemented")
+}
+func (*UnimplementedProtocolServiceServer) ContactBlock(ctx context.Context, req *ContactBlock_Request) (*ContactBlock_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactBlock not implemented")
+}
+func (*UnimplementedProtocolServiceServer) ContactUnblock(ctx context.Context, req *ContactUnblock_Request) (*ContactUnblock_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactUnblock not implemented")
+}
+func (*UnimplementedProtocolServiceServer) GroupSettingSetGroup(ctx context.Context, req *GroupSettingSetGroup_Request) (*GroupSettingSetGroup_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupSettingSetGroup not implemented")
+}
+func (*UnimplementedProtocolServiceServer) GroupSettingSetMember(ctx context.Context, req *GroupSettingSetMember_Request) (*GroupSettingSetMember_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupSettingSetMember not implemented")
+}
+func (*UnimplementedProtocolServiceServer) GroupMessageSend(ctx context.Context, req *GroupMessageSend_Request) (*GroupMessageSend_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupMessageSend not implemented")
+}
+func (*UnimplementedProtocolServiceServer) AccountAppendAppSpecificEvent(ctx context.Context, req *AccountAppendAppSpecificEvent_Request) (*AccountAppendAppSpecificEvent_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountAppendAppSpecificEvent not implemented")
+}
+func (*UnimplementedProtocolServiceServer) AccountSubscribe(req *AccountSubscribe_Request, srv ProtocolService_AccountSubscribeServer) error {
+	return status.Errorf(codes.Unimplemented, "method AccountSubscribe not implemented")
+}
+func (*UnimplementedProtocolServiceServer) GroupSettingSubscribe(req *GroupSettingStoreSubscribe_Request, srv ProtocolService_GroupSettingSubscribeServer) error {
+	return status.Errorf(codes.Unimplemented, "method GroupSettingSubscribe not implemented")
+}
+func (*UnimplementedProtocolServiceServer) GroupMessageSubscribe(req *GroupMessageSubscribe_Request, srv ProtocolService_GroupMessageSubscribeServer) error {
+	return status.Errorf(codes.Unimplemented, "method GroupMessageSubscribe not implemented")
+}
+func (*UnimplementedProtocolServiceServer) GroupMemberSubscribe(req *GroupMemberSubscribe_Request, srv ProtocolService_GroupMemberSubscribeServer) error {
+	return status.Errorf(codes.Unimplemented, "method GroupMemberSubscribe not implemented")
 }
 
 func RegisterProtocolServiceServer(s *grpc.Server, srv ProtocolServiceServer) {
@@ -5261,332 +3746,6 @@ func _ProtocolService_InstanceGetConfiguration_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_AccountGetConfiguration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountGetConfiguration_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).AccountGetConfiguration(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/AccountGetConfiguration",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).AccountGetConfiguration(ctx, req.(*AccountGetConfiguration_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_AccountGetInformation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountGetInformation_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).AccountGetInformation(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/AccountGetInformation",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).AccountGetInformation(ctx, req.(*AccountGetInformation_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_AccountLinkNewDevice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountLinkNewDevice_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).AccountLinkNewDevice(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/AccountLinkNewDevice",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).AccountLinkNewDevice(ctx, req.(*AccountLinkNewDevice_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_AccountDisableIncomingContactRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountDisableIncomingContactRequest_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).AccountDisableIncomingContactRequest(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/AccountDisableIncomingContactRequest",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).AccountDisableIncomingContactRequest(ctx, req.(*AccountDisableIncomingContactRequest_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_AccountEnableIncomingContactRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountEnableIncomingContactRequest_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).AccountEnableIncomingContactRequest(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/AccountEnableIncomingContactRequest",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).AccountEnableIncomingContactRequest(ctx, req.(*AccountEnableIncomingContactRequest_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_AccountResetIncomingContactRequestLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountResetIncomingContactRequestLink_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).AccountResetIncomingContactRequestLink(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/AccountResetIncomingContactRequestLink",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).AccountResetIncomingContactRequestLink(ctx, req.(*AccountResetIncomingContactRequestLink_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_EventSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(EventSubscribe_Request)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ProtocolServiceServer).EventSubscribe(m, &protocolServiceEventSubscribeServer{stream})
-}
-
-type ProtocolService_EventSubscribeServer interface {
-	Send(*EventSubscribe_Reply) error
-	grpc.ServerStream
-}
-
-type protocolServiceEventSubscribeServer struct {
-	grpc.ServerStream
-}
-
-func (x *protocolServiceEventSubscribeServer) Send(m *EventSubscribe_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _ProtocolService_ContactRequestAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContactRequestAccept_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).ContactRequestAccept(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRequestAccept",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).ContactRequestAccept(ctx, req.(*ContactRequestAccept_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_ContactRequestDiscard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContactRequestDiscard_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).ContactRequestDiscard(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRequestDiscard",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).ContactRequestDiscard(ctx, req.(*ContactRequestDiscard_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_ContactRequestListIncoming_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ContactRequestListIncoming_Request)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ProtocolServiceServer).ContactRequestListIncoming(m, &protocolServiceContactRequestListIncomingServer{stream})
-}
-
-type ProtocolService_ContactRequestListIncomingServer interface {
-	Send(*ContactRequestListIncoming_Reply) error
-	grpc.ServerStream
-}
-
-type protocolServiceContactRequestListIncomingServer struct {
-	grpc.ServerStream
-}
-
-func (x *protocolServiceContactRequestListIncomingServer) Send(m *ContactRequestListIncoming_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _ProtocolService_ContactRequestListOutgoing_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ContactRequestListOutgoing_Request)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ProtocolServiceServer).ContactRequestListOutgoing(m, &protocolServiceContactRequestListOutgoingServer{stream})
-}
-
-type ProtocolService_ContactRequestListOutgoingServer interface {
-	Send(*ContactRequestListOutgoing_Reply) error
-	grpc.ServerStream
-}
-
-type protocolServiceContactRequestListOutgoingServer struct {
-	grpc.ServerStream
-}
-
-func (x *protocolServiceContactRequestListOutgoingServer) Send(m *ContactRequestListOutgoing_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _ProtocolService_ContactRequestSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContactRequestSend_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).ContactRequestSend(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRequestSend",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).ContactRequestSend(ctx, req.(*ContactRequestSend_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_ContactGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContactGet_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).ContactGet(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactGet",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).ContactGet(ctx, req.(*ContactGet_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_ContactList_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ContactList_Request)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ProtocolServiceServer).ContactList(m, &protocolServiceContactListServer{stream})
-}
-
-type ProtocolService_ContactListServer interface {
-	Send(*ContactList_Reply) error
-	grpc.ServerStream
-}
-
-type protocolServiceContactListServer struct {
-	grpc.ServerStream
-}
-
-func (x *protocolServiceContactListServer) Send(m *ContactList_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _ProtocolService_ContactRemove_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContactRemove_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).ContactRemove(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRemove",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).ContactRemove(ctx, req.(*ContactRemove_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_StreamManagerRequestToContact_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StreamManagerRequestToContact_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).StreamManagerRequestToContact(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/StreamManagerRequestToContact",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).StreamManagerRequestToContact(ctx, req.(*StreamManagerRequestToContact_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_StreamManagerAccept_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ProtocolServiceServer).StreamManagerAccept(&protocolServiceStreamManagerAcceptServer{stream})
-}
-
-type ProtocolService_StreamManagerAcceptServer interface {
-	Send(*StreamManagerAccept_Reply) error
-	Recv() (*StreamManagerAccept_Request, error)
-	grpc.ServerStream
-}
-
-type protocolServiceStreamManagerAcceptServer struct {
-	grpc.ServerStream
-}
-
-func (x *protocolServiceStreamManagerAcceptServer) Send(m *StreamManagerAccept_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *protocolServiceStreamManagerAcceptServer) Recv() (*StreamManagerAccept_Request, error) {
-	m := new(StreamManagerAccept_Request)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 func _ProtocolService_GroupCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GroupCreate_Request)
 	if err := dec(in); err != nil {
@@ -5605,20 +3764,20 @@ func _ProtocolService_GroupCreate_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_GroupGenerateInviteLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupGenerateInviteLink_Request)
+func _ProtocolService_GroupJoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupJoin_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServiceServer).GroupGenerateInviteLink(ctx, in)
+		return srv.(ProtocolServiceServer).GroupJoin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupGenerateInviteLink",
+		FullMethod: "/berty.protocol.ProtocolService/GroupJoin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).GroupGenerateInviteLink(ctx, req.(*GroupGenerateInviteLink_Request))
+		return srv.(ProtocolServiceServer).GroupJoin(ctx, req.(*GroupJoin_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -5641,185 +3800,357 @@ func _ProtocolService_GroupLeave_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_GroupList_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(GroupList_Request)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ProtocolServiceServer).GroupList(m, &protocolServiceGroupListServer{stream})
-}
-
-type ProtocolService_GroupListServer interface {
-	Send(*GroupList_Reply) error
-	grpc.ServerStream
-}
-
-type protocolServiceGroupListServer struct {
-	grpc.ServerStream
-}
-
-func (x *protocolServiceGroupListServer) Send(m *GroupList_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _ProtocolService_GroupMessageCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupMessageCreate_Request)
+func _ProtocolService_GroupInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInvite_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServiceServer).GroupMessageCreate(ctx, in)
+		return srv.(ProtocolServiceServer).GroupInvite(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupMessageCreate",
+		FullMethod: "/berty.protocol.ProtocolService/GroupInvite",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).GroupMessageCreate(ctx, req.(*GroupMessageCreate_Request))
+		return srv.(ProtocolServiceServer).GroupInvite(ctx, req.(*GroupInvite_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_GroupMessageList_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(GroupMessageList_Request)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ProtocolServiceServer).GroupMessageList(m, &protocolServiceGroupMessageListServer{stream})
-}
-
-type ProtocolService_GroupMessageListServer interface {
-	Send(*GroupMessageList_Reply) error
-	grpc.ServerStream
-}
-
-type protocolServiceGroupMessageListServer struct {
-	grpc.ServerStream
-}
-
-func (x *protocolServiceGroupMessageListServer) Send(m *GroupMessageList_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _ProtocolService_GroupTopicPublish_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ProtocolServiceServer).GroupTopicPublish(&protocolServiceGroupTopicPublishServer{stream})
-}
-
-type ProtocolService_GroupTopicPublishServer interface {
-	SendAndClose(*GroupTopicPublish_Reply) error
-	Recv() (*GroupTopicPublish_Request, error)
-	grpc.ServerStream
-}
-
-type protocolServiceGroupTopicPublishServer struct {
-	grpc.ServerStream
-}
-
-func (x *protocolServiceGroupTopicPublishServer) SendAndClose(m *GroupTopicPublish_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *protocolServiceGroupTopicPublishServer) Recv() (*GroupTopicPublish_Request, error) {
-	m := new(GroupTopicPublish_Request)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func _ProtocolService_GroupTopicSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(GroupTopicSubscribe_Request)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ProtocolServiceServer).GroupTopicSubscribe(m, &protocolServiceGroupTopicSubscribeServer{stream})
-}
-
-type ProtocolService_GroupTopicSubscribeServer interface {
-	Send(*GroupTopicSubscribe_Reply) error
-	grpc.ServerStream
-}
-
-type protocolServiceGroupTopicSubscribeServer struct {
-	grpc.ServerStream
-}
-
-func (x *protocolServiceGroupTopicSubscribeServer) Send(m *GroupTopicSubscribe_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _ProtocolService_GroupInvitationAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupInvitationAccept_Request)
+func _ProtocolService_DevicePair_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DevicePair_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServiceServer).GroupInvitationAccept(ctx, in)
+		return srv.(ProtocolServiceServer).DevicePair(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupInvitationAccept",
+		FullMethod: "/berty.protocol.ProtocolService/DevicePair",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).GroupInvitationAccept(ctx, req.(*GroupInvitationAccept_Request))
+		return srv.(ProtocolServiceServer).DevicePair(ctx, req.(*DevicePair_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_GroupInvitationCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupInvitationCreate_Request)
+func _ProtocolService_ContactRequestReference_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactRequestReference_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServiceServer).GroupInvitationCreate(ctx, in)
+		return srv.(ProtocolServiceServer).ContactRequestReference(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupInvitationCreate",
+		FullMethod: "/berty.protocol.ProtocolService/ContactRequestReference",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).GroupInvitationCreate(ctx, req.(*GroupInvitationCreate_Request))
+		return srv.(ProtocolServiceServer).ContactRequestReference(ctx, req.(*ContactRequestReference_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_GroupInvitationDiscard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupInvitationDiscard_Request)
+func _ProtocolService_ContactRequestDisable_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactRequestDisable_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServiceServer).GroupInvitationDiscard(ctx, in)
+		return srv.(ProtocolServiceServer).ContactRequestDisable(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupInvitationDiscard",
+		FullMethod: "/berty.protocol.ProtocolService/ContactRequestDisable",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).GroupInvitationDiscard(ctx, req.(*GroupInvitationDiscard_Request))
+		return srv.(ProtocolServiceServer).ContactRequestDisable(ctx, req.(*ContactRequestDisable_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_GroupInvitationList_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(GroupInvitationList_Request)
+func _ProtocolService_ContactRequestEnable_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactRequestEnable_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).ContactRequestEnable(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/ContactRequestEnable",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).ContactRequestEnable(ctx, req.(*ContactRequestEnable_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_ContactRequestResetReference_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactRequestResetLink_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).ContactRequestResetReference(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/ContactRequestResetReference",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).ContactRequestResetReference(ctx, req.(*ContactRequestResetLink_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_ContactRequestEnqueue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactRequestEnqueue_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).ContactRequestEnqueue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/ContactRequestEnqueue",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).ContactRequestEnqueue(ctx, req.(*ContactRequestEnqueue_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_ContactRequestAccept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactRequestAccept_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).ContactRequestAccept(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/ContactRequestAccept",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).ContactRequestAccept(ctx, req.(*ContactRequestAccept_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_ContactRemove_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactRemove_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).ContactRemove(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/ContactRemove",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).ContactRemove(ctx, req.(*ContactRemove_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_ContactBlock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactBlock_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).ContactBlock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/ContactBlock",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).ContactBlock(ctx, req.(*ContactBlock_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_ContactUnblock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactUnblock_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).ContactUnblock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/ContactUnblock",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).ContactUnblock(ctx, req.(*ContactUnblock_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_GroupSettingSetGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupSettingSetGroup_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).GroupSettingSetGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/GroupSettingSetGroup",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).GroupSettingSetGroup(ctx, req.(*GroupSettingSetGroup_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_GroupSettingSetMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupSettingSetMember_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).GroupSettingSetMember(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/GroupSettingSetMember",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).GroupSettingSetMember(ctx, req.(*GroupSettingSetMember_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_GroupMessageSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupMessageSend_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).GroupMessageSend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/GroupMessageSend",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).GroupMessageSend(ctx, req.(*GroupMessageSend_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_AccountAppendAppSpecificEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountAppendAppSpecificEvent_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).AccountAppendAppSpecificEvent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/AccountAppendAppSpecificEvent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).AccountAppendAppSpecificEvent(ctx, req.(*AccountAppendAppSpecificEvent_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_AccountSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(AccountSubscribe_Request)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ProtocolServiceServer).GroupInvitationList(m, &protocolServiceGroupInvitationListServer{stream})
+	return srv.(ProtocolServiceServer).AccountSubscribe(m, &protocolServiceAccountSubscribeServer{stream})
 }
 
-type ProtocolService_GroupInvitationListServer interface {
-	Send(*GroupInvitationList_Reply) error
+type ProtocolService_AccountSubscribeServer interface {
+	Send(*AccountSubscribe_Reply) error
 	grpc.ServerStream
 }
 
-type protocolServiceGroupInvitationListServer struct {
+type protocolServiceAccountSubscribeServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolServiceGroupInvitationListServer) Send(m *GroupInvitationList_Reply) error {
+func (x *protocolServiceAccountSubscribeServer) Send(m *AccountSubscribe_Reply) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _ProtocolService_GroupSettingSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GroupSettingStoreSubscribe_Request)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ProtocolServiceServer).GroupSettingSubscribe(m, &protocolServiceGroupSettingSubscribeServer{stream})
+}
+
+type ProtocolService_GroupSettingSubscribeServer interface {
+	Send(*GroupSettingStoreSubscribe_Reply) error
+	grpc.ServerStream
+}
+
+type protocolServiceGroupSettingSubscribeServer struct {
+	grpc.ServerStream
+}
+
+func (x *protocolServiceGroupSettingSubscribeServer) Send(m *GroupSettingStoreSubscribe_Reply) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _ProtocolService_GroupMessageSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GroupMessageSubscribe_Request)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ProtocolServiceServer).GroupMessageSubscribe(m, &protocolServiceGroupMessageSubscribeServer{stream})
+}
+
+type ProtocolService_GroupMessageSubscribeServer interface {
+	Send(*GroupMessageSubscribe_Reply) error
+	grpc.ServerStream
+}
+
+type protocolServiceGroupMessageSubscribeServer struct {
+	grpc.ServerStream
+}
+
+func (x *protocolServiceGroupMessageSubscribeServer) Send(m *GroupMessageSubscribe_Reply) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _ProtocolService_GroupMemberSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GroupMemberSubscribe_Request)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ProtocolServiceServer).GroupMemberSubscribe(m, &protocolServiceGroupMemberSubscribeServer{stream})
+}
+
+type ProtocolService_GroupMemberSubscribeServer interface {
+	Send(*GroupMemberSubscribe_Reply) error
+	grpc.ServerStream
+}
+
+type protocolServiceGroupMemberSubscribeServer struct {
+	grpc.ServerStream
+}
+
+func (x *protocolServiceGroupMemberSubscribeServer) Send(m *GroupMemberSubscribe_Reply) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -5836,132 +4167,97 @@ var _ProtocolService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ProtocolService_InstanceGetConfiguration_Handler,
 		},
 		{
-			MethodName: "AccountGetConfiguration",
-			Handler:    _ProtocolService_AccountGetConfiguration_Handler,
-		},
-		{
-			MethodName: "AccountGetInformation",
-			Handler:    _ProtocolService_AccountGetInformation_Handler,
-		},
-		{
-			MethodName: "AccountLinkNewDevice",
-			Handler:    _ProtocolService_AccountLinkNewDevice_Handler,
-		},
-		{
-			MethodName: "AccountDisableIncomingContactRequest",
-			Handler:    _ProtocolService_AccountDisableIncomingContactRequest_Handler,
-		},
-		{
-			MethodName: "AccountEnableIncomingContactRequest",
-			Handler:    _ProtocolService_AccountEnableIncomingContactRequest_Handler,
-		},
-		{
-			MethodName: "AccountResetIncomingContactRequestLink",
-			Handler:    _ProtocolService_AccountResetIncomingContactRequestLink_Handler,
-		},
-		{
-			MethodName: "ContactRequestAccept",
-			Handler:    _ProtocolService_ContactRequestAccept_Handler,
-		},
-		{
-			MethodName: "ContactRequestDiscard",
-			Handler:    _ProtocolService_ContactRequestDiscard_Handler,
-		},
-		{
-			MethodName: "ContactRequestSend",
-			Handler:    _ProtocolService_ContactRequestSend_Handler,
-		},
-		{
-			MethodName: "ContactGet",
-			Handler:    _ProtocolService_ContactGet_Handler,
-		},
-		{
-			MethodName: "ContactRemove",
-			Handler:    _ProtocolService_ContactRemove_Handler,
-		},
-		{
-			MethodName: "StreamManagerRequestToContact",
-			Handler:    _ProtocolService_StreamManagerRequestToContact_Handler,
-		},
-		{
 			MethodName: "GroupCreate",
 			Handler:    _ProtocolService_GroupCreate_Handler,
 		},
 		{
-			MethodName: "GroupGenerateInviteLink",
-			Handler:    _ProtocolService_GroupGenerateInviteLink_Handler,
+			MethodName: "GroupJoin",
+			Handler:    _ProtocolService_GroupJoin_Handler,
 		},
 		{
 			MethodName: "GroupLeave",
 			Handler:    _ProtocolService_GroupLeave_Handler,
 		},
 		{
-			MethodName: "GroupMessageCreate",
-			Handler:    _ProtocolService_GroupMessageCreate_Handler,
+			MethodName: "GroupInvite",
+			Handler:    _ProtocolService_GroupInvite_Handler,
 		},
 		{
-			MethodName: "GroupInvitationAccept",
-			Handler:    _ProtocolService_GroupInvitationAccept_Handler,
+			MethodName: "DevicePair",
+			Handler:    _ProtocolService_DevicePair_Handler,
 		},
 		{
-			MethodName: "GroupInvitationCreate",
-			Handler:    _ProtocolService_GroupInvitationCreate_Handler,
+			MethodName: "ContactRequestReference",
+			Handler:    _ProtocolService_ContactRequestReference_Handler,
 		},
 		{
-			MethodName: "GroupInvitationDiscard",
-			Handler:    _ProtocolService_GroupInvitationDiscard_Handler,
+			MethodName: "ContactRequestDisable",
+			Handler:    _ProtocolService_ContactRequestDisable_Handler,
+		},
+		{
+			MethodName: "ContactRequestEnable",
+			Handler:    _ProtocolService_ContactRequestEnable_Handler,
+		},
+		{
+			MethodName: "ContactRequestResetReference",
+			Handler:    _ProtocolService_ContactRequestResetReference_Handler,
+		},
+		{
+			MethodName: "ContactRequestEnqueue",
+			Handler:    _ProtocolService_ContactRequestEnqueue_Handler,
+		},
+		{
+			MethodName: "ContactRequestAccept",
+			Handler:    _ProtocolService_ContactRequestAccept_Handler,
+		},
+		{
+			MethodName: "ContactRemove",
+			Handler:    _ProtocolService_ContactRemove_Handler,
+		},
+		{
+			MethodName: "ContactBlock",
+			Handler:    _ProtocolService_ContactBlock_Handler,
+		},
+		{
+			MethodName: "ContactUnblock",
+			Handler:    _ProtocolService_ContactUnblock_Handler,
+		},
+		{
+			MethodName: "GroupSettingSetGroup",
+			Handler:    _ProtocolService_GroupSettingSetGroup_Handler,
+		},
+		{
+			MethodName: "GroupSettingSetMember",
+			Handler:    _ProtocolService_GroupSettingSetMember_Handler,
+		},
+		{
+			MethodName: "GroupMessageSend",
+			Handler:    _ProtocolService_GroupMessageSend_Handler,
+		},
+		{
+			MethodName: "AccountAppendAppSpecificEvent",
+			Handler:    _ProtocolService_AccountAppendAppSpecificEvent_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "EventSubscribe",
-			Handler:       _ProtocolService_EventSubscribe_Handler,
+			StreamName:    "AccountSubscribe",
+			Handler:       _ProtocolService_AccountSubscribe_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "ContactRequestListIncoming",
-			Handler:       _ProtocolService_ContactRequestListIncoming_Handler,
+			StreamName:    "GroupSettingSubscribe",
+			Handler:       _ProtocolService_GroupSettingSubscribe_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "ContactRequestListOutgoing",
-			Handler:       _ProtocolService_ContactRequestListOutgoing_Handler,
+			StreamName:    "GroupMessageSubscribe",
+			Handler:       _ProtocolService_GroupMessageSubscribe_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "ContactList",
-			Handler:       _ProtocolService_ContactList_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "StreamManagerAccept",
-			Handler:       _ProtocolService_StreamManagerAccept_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
-		},
-		{
-			StreamName:    "GroupList",
-			Handler:       _ProtocolService_GroupList_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "GroupMessageList",
-			Handler:       _ProtocolService_GroupMessageList_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "GroupTopicPublish",
-			Handler:       _ProtocolService_GroupTopicPublish_Handler,
-			ClientStreams: true,
-		},
-		{
-			StreamName:    "GroupTopicSubscribe",
-			Handler:       _ProtocolService_GroupTopicSubscribe_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "GroupInvitationList",
-			Handler:       _ProtocolService_GroupInvitationList_Handler,
+			StreamName:    "GroupMemberSubscribe",
+			Handler:       _ProtocolService_GroupMemberSubscribe_Handler,
 			ServerStreams: true,
 		},
 	},
