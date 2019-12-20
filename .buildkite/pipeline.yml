@@ -124,7 +124,7 @@ steps:
   - label: bazel-go
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/bazel:0.29.1-buster-r3
+          image: bertytech/bazel:2.0.0-buster-r0
           propagate-uid-gid: true
           workdir: /go/src/berty.tech
           environment:
@@ -137,6 +137,7 @@ steps:
           volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
     commands:
       - set -x
+      - export USER=$(id -u)
       - bazel --version
       - go version
       - cd go

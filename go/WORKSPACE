@@ -10,7 +10,7 @@ berty_go_repositories()
 
 load("@build_bazel_rules_nodejs//:index.bzl", "check_bazel_version")
 
-check_bazel_version("0.29.1")
+check_bazel_version("2.0.0")
 
 # config go berty
 
