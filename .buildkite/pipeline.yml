@@ -85,17 +85,17 @@ steps:
     key: go-build
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/protoc:22
+          image: bertytech/bazel:2.0.0-buster-r0
           propagate-uid-gid: true
           workdir: /go/src/berty.tech
           environment:
             [
               "GO111MODULE=on",
-              "GOPATH=/go",
+              "GOPATH=/home/buildkite-agent/go",
               "HOME=/home/buildkite-agent",
               "GOSUMDB=off",
             ]
-          volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
+          volumes: ["~:/home/buildkite-agent"]
     commands:
       - set -x
 
@@ -130,11 +130,11 @@ steps:
           environment:
             [
               "GO111MODULE=on",
-              "GOPATH=/go",
+              "GOPATH=/home/buildkite-agent/go",
               "HOME=/home/buildkite-agent",
               'BAZEL_CMD_ARGS=--test_output=errors --action_env="GTEST_COLOR=1"',
             ]
-          volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
+          volumes: ["~:/home/buildkite-agent"]
     commands:
       - set -x
       - export USER=$(id -u)
