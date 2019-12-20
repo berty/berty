@@ -29,18 +29,10 @@ func keyAsString(key crypto.PubKey) (string, error) {
 	return base64.StdEncoding.EncodeToString(raw), nil
 }
 
+// TODO: shouldn't this function be named isAllowedToWriteGroupSetting instead?
 func isAllowedToWriteSetting(memberStore orbitutilapi.MemberStore, payload *group.SettingEntryPayload) error {
 	if payload.Type != group.SettingEntryPayload_PayloadTypeGroupSetting {
 		return nil
-	}
-
-	members, err := memberStore.ListMembers()
-	if err != nil {
-		return errcode.TODO.Wrap(err)
-	}
-
-	if len(members) == 0 {
-		return errcode.TODO.Wrap(fmt.Errorf("no members listed"))
 	}
 
 	author, err := payload.GetSignerPubKey()
@@ -48,7 +40,12 @@ func isAllowedToWriteSetting(memberStore orbitutilapi.MemberStore, payload *grou
 		return errcode.TODO.Wrap(err)
 	}
 
-	if !members[0].Member.Equals(author) {
+	creator, err := memberStore.GetGroupCreator()
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	if author.Equals(creator.Member) {
 		return errcode.TODO.Wrap(fmt.Errorf("only group creator is allowed to edit group settings"))
 	}
 

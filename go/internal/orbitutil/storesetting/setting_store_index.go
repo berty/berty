@@ -22,6 +22,10 @@ func (s *settingStoreIndex) Get(key string) interface{} {
 	return s.settings[key]
 }
 
+// TODO: implement the same pattern used in secret store (pending setting /
+// pending member, when both are ready, commit setting and send event)
+// TODO2: use the same pattern used in secret and member store with a "processed"
+// map to avoid processing the same entry each time UpdateIndex is called
 func (s *settingStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) error {
 	var (
 		err        error
@@ -73,6 +77,7 @@ func (s *settingStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry
 	return nil
 }
 
+// TODO: pass context for event subscription
 func NewSettingStoreIndex(g orbitutilapi.GroupContext) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		return &settingStoreIndex{

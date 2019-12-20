@@ -31,12 +31,12 @@ func (s *secretStore) GetDeviceSecret(senderDevicePubKey crypto.PubKey) (*group.
 
 	value := s.Index().Get(string(senderBytes))
 	if value == nil {
-		return nil, errors.New("unable to get secret for this device")
+		return nil, errcode.TODO.Wrap(errors.New("unable to get secret for this device"))
 	}
 
 	casted, ok := value.(*secretsMapEntry)
 	if !ok {
-		return nil, errors.New("unable to cast interface to map entry")
+		return nil, errcode.TODO.Wrap(errors.New("unable to cast interface to map entry"))
 	}
 
 	if !casted.exists {
@@ -46,7 +46,7 @@ func (s *secretStore) GetDeviceSecret(senderDevicePubKey crypto.PubKey) (*group.
 	return casted.secret, nil
 }
 
-// SendSecret sends secret of this device to another group member
+// SendSecret sends secret of this device to a group member
 func (s *secretStore) SendSecret(ctx context.Context, remoteMemberPubKey crypto.PubKey) (operation.Operation, error) {
 	localDevicePrivKey := s.GetGroupContext().GetDevicePrivKey()
 	deviceSecret := s.GetGroupContext().GetDeviceSecret()
@@ -79,7 +79,7 @@ func ConstructorFactory(s orbitutilapi.BertyOrbitDB) iface.StoreConstructor {
 	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		store := &secretStore{}
 		if err := s.InitGroupStore(ctx, NewSecretStoreIndex, store, ipfs, identity, addr, options); err != nil {
-			return nil, errors.Wrap(err, "unable to initialize base store")
+			return nil, errcode.TODO.Wrap(errors.Wrap(err, "unable to initialize base store"))
 		}
 
 		return store, nil

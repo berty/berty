@@ -15,7 +15,7 @@ type GroupContext struct {
 	memberStore     orbitutilapi.MemberStore
 	settingStore    orbitutilapi.SettingStore
 	secretStore     orbitutilapi.SecretStore
-	lock            sync.RWMutex
+	lock            *sync.RWMutex
 }
 
 func (g *GroupContext) GetGroup() *group.Group {
@@ -82,5 +82,6 @@ func NewGroupContext(g *group.Group, omd *group.OwnMemberDevice) *GroupContext {
 	return &GroupContext{
 		group:           g,
 		ownMemberDevice: omd,
+		lock:            &sync.RWMutex{},
 	}
 }

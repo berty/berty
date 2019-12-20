@@ -13,6 +13,12 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
+type MemberEntry struct {
+	Member   crypto.PubKey
+	Devices  []crypto.PubKey
+	Inviters []crypto.PubKey
+}
+
 type GroupStore interface {
 	iface.Store
 
@@ -25,11 +31,29 @@ type GroupStore interface {
 type MemberStore interface {
 	GroupStore
 
-	// ListMembers gets the list of the devices of the group
-	ListMembers() ([]*group.MemberDevice, error)
+	// InviterCount returns the number of inviters in the member tree
+	InviterCount() (int, error)
+	// GetEntriesByInviter returns the entries associated to an inviterPubKey
+	GetEntriesByInviter(inviterPubKey crypto.PubKey) ([]MemberEntry, error)
+	// ListInviters returns a list of inviters's pubkey indexed in the member tree
+	ListInviters() ([]crypto.PubKey, error)
 
-	// MemberForDevice gets member associated to the device passed as argument
-	MemberForDevice(crypto.PubKey) (crypto.PubKey, error)
+	// MemberCount returns the number of members in the member tree
+	MemberCount() (int, error)
+	// GetEntriesByMember returns the entry associated to a memberPubKey
+	GetEntryByMember(memberPubKey crypto.PubKey) (MemberEntry, error)
+	// ListMembers returns a list of members's pubkey indexed in the member tree
+	ListMembers() ([]crypto.PubKey, error)
+
+	// DeviceCount returns the number of devices in the member tree
+	DeviceCount() (int, error)
+	// GetEntriesByDevice returns the entry associated to an devicePubKey
+	GetEntryByDevice(devicePubKey crypto.PubKey) (MemberEntry, error)
+	// ListDevices returns a list of devices's pubkey indexed in the member tree
+	ListDevices() ([]crypto.PubKey, error)
+
+	// GetGroupCreator returns the entry of the group creator
+	GetGroupCreator() (MemberEntry, error)
 
 	// RedeemInvitation add a device to the list of the members of the group
 	RedeemInvitation(ctx context.Context, invitation *group.Invitation) (operation.Operation, error)
@@ -50,7 +74,7 @@ type SecretStore interface {
 	// GetDeviceSecret gets secret device
 	GetDeviceSecret(senderDevicePubKey crypto.PubKey) (*group.DeviceSecret, error)
 
-	// SendSecret sends secret of this device to another group member
+	// SendSecret sends secret of this device to group member
 	SendSecret(ctx context.Context, remoteMemberPubKey crypto.PubKey) (operation.Operation, error)
 }
 

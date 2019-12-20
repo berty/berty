@@ -7,7 +7,7 @@ import (
 
 // CheckStructure checks signatures of the MemberEntryPayload
 func (m *MemberEntryPayload) CheckStructure() error {
-	inviterPubKey, err := crypto.UnmarshalEd25519PublicKey(m.InviterDevicePubKey)
+	inviterPubKey, err := crypto.UnmarshalEd25519PublicKey(m.InviterMemberPubKey)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
@@ -111,7 +111,7 @@ func NewMemberEntryPayload(memberPrivKey, devicePrivKey crypto.PrivKey, invitati
 		MemberPubKeySignature:       memberPubKeySignature,
 		MemberDevicePubKey:          devicePubKeyBytes,
 		MemberDevicePubKeySignature: devicePubKeySig,
-		InviterDevicePubKey:         invitation.InviterDevicePubKey,
+		InviterMemberPubKey:         invitation.InviterMemberPubKey,
 		InvitationPubKey:            invitationPubKeyBytes,
 		InvitationPubKeySignature:   invitation.InvitationPubKeySignature,
 	}, nil

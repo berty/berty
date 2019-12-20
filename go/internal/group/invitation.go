@@ -33,12 +33,12 @@ func (m *Invitation) GetGroup() (*Group, error) {
 	}, nil
 }
 
-func (m *Invitation) GetInviterDevicePublicKey() (crypto.PubKey, error) {
-	if m.InviterDevicePubKey == nil {
+func (m *Invitation) GetInviterMemberPublicKey() (crypto.PubKey, error) {
+	if m.InviterMemberPubKey == nil {
 		return nil, errcode.ErrInvalidInput
 	}
 
-	return crypto.UnmarshalEd25519PublicKey(m.InviterDevicePubKey)
+	return crypto.UnmarshalEd25519PublicKey(m.InviterMemberPubKey)
 }
 
 func (m *Invitation) GetInvitationPrivateKey() (crypto.PrivKey, error) {
@@ -65,9 +65,9 @@ func (m *Invitation) GetGroupPublicKey() (crypto.PubKey, error) {
 }
 
 // NewInvitation generates a new Invitation to a group, the signer must be
-// a current member device of the group
-func NewInvitation(inviterDevice crypto.PrivKey, group *Group) (*Invitation, error) {
-	if group == nil || inviterDevice == nil || group.SigningKey == nil || group.PubKey == nil {
+// a current member of the group
+func NewInvitation(inviterMember crypto.PrivKey, group *Group) (*Invitation, error) {
+	if group == nil || inviterMember == nil || group.SigningKey == nil || group.PubKey == nil {
 		return nil, errcode.ErrInvalidInput
 	}
 
@@ -86,7 +86,7 @@ func NewInvitation(inviterDevice crypto.PrivKey, group *Group) (*Invitation, err
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	sig, err := inviterDevice.Sign(pubBytes)
+	sig, err := inviterMember.Sign(pubBytes)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -96,7 +96,7 @@ func NewInvitation(inviterDevice crypto.PrivKey, group *Group) (*Invitation, err
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	inviterDevicePubKeyBytes, err := inviterDevice.GetPublic().Raw()
+	inviterMemberPubKeyBytes, err := inviterMember.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -107,7 +107,7 @@ func NewInvitation(inviterDevice crypto.PrivKey, group *Group) (*Invitation, err
 	}
 
 	return &Invitation{
-		InviterDevicePubKey:       inviterDevicePubKeyBytes,
+		InviterMemberPubKey:       inviterMemberPubKeyBytes,
 		InvitationPrivKey:         privBytes,
 		InvitationPubKeySignature: sig,
 

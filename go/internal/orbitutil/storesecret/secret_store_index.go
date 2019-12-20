@@ -81,11 +81,11 @@ func (s *secretStoreIndex) syncSecretWithPendingMember(senderDevicePubKey crypto
 	if memberPending {
 		s.emitEventNewSecret(senderDevicePubKey)
 	} else {
-		member, _ := s.groupContext.GetMemberStore().MemberForDevice(senderDevicePubKey)
-		if member != nil {
-			s.memberPending[senderDevicePubKeyStr] = struct{}{}
-			s.emitEventNewSecret(senderDevicePubKey)
-		}
+		// member, _ := s.groupContext.GetMemberStore().MemberForDevice(senderDevicePubKey)
+		// if member != nil {
+		// s.memberPending[senderDevicePubKeyStr] = struct{}{}
+		// s.emitEventNewSecret(senderDevicePubKey)
+		// }
 	}
 
 	s.muPending.Unlock()
@@ -160,8 +160,8 @@ func NewSecretStoreIndex(g orbitutilapi.GroupContext) iface.IndexConstructor {
 		groupContext:  g,
 		secretPending: map[string]struct{}{},
 		memberPending: map[string]struct{}{},
-		processed:     map[string]struct{}{},
 		secrets:       map[string]*group.DeviceSecret{},
+		processed:     map[string]struct{}{},
 	}
 
 	go g.GetMemberStore().Subscribe(context.TODO(), func(e events.Event) {

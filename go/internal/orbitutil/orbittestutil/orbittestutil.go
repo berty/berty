@@ -221,6 +221,7 @@ func CreatePeersWithGroup(ctx context.Context, t *testing.T, pathBase string, me
 		t.Fatal(err)
 	}
 
+	index := 0
 	for i := 0; i < memberCount; i++ {
 		memberPrivKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
 		if err != nil {
@@ -229,11 +230,12 @@ func CreatePeersWithGroup(ctx context.Context, t *testing.T, pathBase string, me
 
 		for j := 0; j < deviceCount; j++ {
 			groupContext := createGroupContext(g, memberPrivKey, t)
-			mockedPeers[i+j].SetGroupContext(groupContext)
+			mockedPeers[index].SetGroupContext(groupContext)
 
 			if withLogs {
-				mockedPeers[i+j].GetDB().InitStoresForGroup(ctx, groupContext, nil)
+				mockedPeers[index].GetDB().InitStoresForGroup(ctx, groupContext, nil)
 			}
+			index++
 		}
 	}
 

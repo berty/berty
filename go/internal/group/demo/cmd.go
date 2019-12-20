@@ -19,8 +19,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func issueNewInvitation(device crypto.PrivKey, g *group.Group) {
-	newI, err := group.NewInvitation(device, g)
+func issueNewInvitation(member crypto.PrivKey, g *group.Group) {
+	newI, err := group.NewInvitation(member, g)
 	if err != nil {
 		panic(err)
 	}
@@ -176,7 +176,7 @@ func mainLoop(invitation *group.Invitation, create bool) {
 	}
 
 	listMembers(ms)
-	issueNewInvitation(groupContext.GetDevicePrivKey(), groupContext.GetGroup())
+	issueNewInvitation(groupContext.GetMemberPrivKey(), groupContext.GetGroup())
 
 	members, err := ms.ListMembers()
 	if err != nil {
@@ -253,7 +253,7 @@ func mainLoop(invitation *group.Invitation, create bool) {
 			fmt.Println("")
 			fmt.Println("New member detected")
 			listMembers(ms)
-			issueNewInvitation(groupContext.GetDevicePrivKey(), groupContext.GetGroup())
+			issueNewInvitation(groupContext.GetMemberPrivKey(), groupContext.GetGroup())
 			break
 		}
 	})
