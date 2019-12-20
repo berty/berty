@@ -9,14 +9,14 @@ import (
 
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
-	peerstore "github.com/libp2p/go-libp2p-peerstore"
+	peer "github.com/libp2p/go-libp2p-core/peer"
 )
 
 type DiscoveryNotifee struct {
 	api ipfs_interface.CoreAPI
 }
 
-func (n *DiscoveryNotifee) HandlePeerFound(pi peerstore.PeerInfo) {
+func (n *DiscoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	if err := n.api.Swarm().Connect(context.Background(), pi); err != nil {
 		println("HandlePeerFound: Unable to connect to peer", err.Error())
 	}

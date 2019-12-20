@@ -12,26 +12,26 @@ import (
 	"berty.tech/go/internal/orbitutil"
 	"berty.tech/go/internal/orbitutil/orbittestutil"
 	"berty.tech/go/internal/orbitutil/orbitutilapi"
-	peerstore "github.com/libp2p/go-libp2p-peerstore"
+	peer "github.com/libp2p/go-libp2p-core/peer"
 )
 
 type TestContext struct {
 	orbitutilapi.GroupContext
 	coreapi       ipfsutil.CoreAPIMock
-	pi            *peerstore.PeerInfo
+	pi            *peer.AddrInfo
 	db            *orbitutil.BertyOrbitDB
 	memberDevices *orbittestutil.MemberDevices
 }
 
-func (m *TestContext) GetPeerInfo() peerstore.PeerInfo {
-	return peerstore.PeerInfo{ID: m.coreapi.MockNode().Identity, Addrs: m.coreapi.MockNode().PeerHost.Addrs()}
+func (m *TestContext) GetPeerInfo() peer.AddrInfo {
+	return peer.AddrInfo{ID: m.coreapi.MockNode().Identity, Addrs: m.coreapi.MockNode().PeerHost.Addrs()}
 }
 
 func (m *TestContext) GetCoreAPI() ipfsutil.CoreAPIMock {
 	return m.coreapi
 }
 
-func (m *TestContext) SetPeerInfo(pi *peerstore.PeerInfo) {
+func (m *TestContext) SetPeerInfo(pi *peer.AddrInfo) {
 	m.pi = pi
 }
 

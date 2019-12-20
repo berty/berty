@@ -15,7 +15,7 @@ import (
 	"berty.tech/go/internal/orbitutil/orbittestutil"
 	"berty.tech/go/internal/testutil"
 
-	peerstore "github.com/libp2p/go-libp2p-peerstore"
+	peer "github.com/libp2p/go-libp2p-core/peer"
 )
 
 func TestMemberStore(t *testing.T) {
@@ -116,7 +116,7 @@ func TestMemberReplicateStore(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	peerInfo2 := peerstore.PeerInfo{ID: ipfsMock2.MockNode().Identity, Addrs: ipfsMock2.MockNode().PeerHost.Addrs()}
+	peerInfo2 := peer.AddrInfo{ID: ipfsMock2.MockNode().Identity, Addrs: ipfsMock2.MockNode().PeerHost.Addrs()}
 	if err := ipfsMock1.Swarm().Connect(ctx, peerInfo2); err != nil {
 		t.Fatal(err)
 	}
@@ -128,7 +128,7 @@ func TestMemberReplicateStore(t *testing.T) {
 
 	memberA := orbittestutil.CreateMemberAndDevices(t, 2)
 
-	peerInfo1 := peerstore.PeerInfo{ID: ipfsMock1.MockNode().Identity, Addrs: ipfsMock1.MockNode().PeerHost.Addrs()}
+	peerInfo1 := peer.AddrInfo{ID: ipfsMock1.MockNode().Identity, Addrs: ipfsMock1.MockNode().PeerHost.Addrs()}
 	if err := ipfsMock2.Swarm().Connect(ctx, peerInfo1); err != nil {
 		t.Fatal(err)
 	}

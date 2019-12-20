@@ -12,7 +12,7 @@ import (
 	"berty.tech/go/internal/ipfsutil"
 	"berty.tech/go/internal/orbitutil"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	peerstore "github.com/libp2p/go-libp2p-peerstore"
+	peer "github.com/libp2p/go-libp2p-core/peer"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 )
 
@@ -23,7 +23,7 @@ type MockedPeer interface {
 	GetDB() *orbitutil.BertyOrbitDB
 	SetDB(db *orbitutil.BertyOrbitDB)
 
-	GetPeerInfo() peerstore.PeerInfo
+	GetPeerInfo() peer.AddrInfo
 
 	SetMemberDevices(memberDevices *MemberDevices)
 	GetMemberDevices() *MemberDevices
