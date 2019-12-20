@@ -3,6 +3,7 @@ steps:
     agents:
       queue: "bigcores"
     commands:
+      - set -x
       - cd go
       - docker build .
 
@@ -15,6 +16,7 @@ steps:
           environment: ["GO111MODULE=on", "GOPATH=/go"]
           volumes: ["~/go/pkg/mod:/go/pkg/mod"]
     commands:
+      - set -x
       - go version
       - find . -name gen.sum -delete
       - cd go
@@ -36,6 +38,7 @@ steps:
           workdir: /go/src/berty.tech
           environment: ["GO111MODULE=on", "GOPATH=/go"]
     commands:
+      - set -x
       - ./githooks/pre-commit
       - git status | cat
       - git diff -w | cat
@@ -53,6 +56,7 @@ steps:
     agents:
       queue: "bigcores"
     commands:
+      - set -x
       - cd js
       - make gen.clean
       - make gen
@@ -73,6 +77,7 @@ steps:
     agents:
       queue: "bigcores"
     commands:
+      - set -x
       - cd js
       - make lint
 
@@ -131,6 +136,7 @@ steps:
             ]
           volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
     commands:
+      - set -x
       - bazel --version
       - go version
       - cd go
