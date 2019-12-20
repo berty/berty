@@ -98,6 +98,8 @@ steps:
               "CODECOV_TOKEN",
             ]
           volumes: ["~:/home/buildkite-agent"]
+    agents:
+      queue: "bigcores"
     commands:
       - set -x
 
