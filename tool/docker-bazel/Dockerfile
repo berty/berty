@@ -1,7 +1,7 @@
 # https://docs.bazel.build/versions/master/install-ubuntu.html
 
 # We need go because we use vendored dependencies
-FROM golang:1.13.4-buster
+FROM golang:1.13.5-buster
 
 RUN apt-get update \
   && apt-get install -y \
