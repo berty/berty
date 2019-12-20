@@ -93,6 +93,7 @@ steps:
       - cd go
 
       # TODO: cache $GOPATH/pkg/mod
+      - ls $$GOPATH/pkg
       - go mod download
 
       # https://circleci.com/orbs/registry/orb/gotest/tools#commands-mod-tidy-check
