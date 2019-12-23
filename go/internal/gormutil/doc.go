@@ -1,1 +1,1 @@
-package gormutil // import "berty.tech/go/internal/gormutil"
+package gormutil // import "berty.tech/berty/go/internal/gormutil"

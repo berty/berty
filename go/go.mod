@@ -1,4 +1,4 @@
-module berty.tech/go
+module berty.tech/berty/go
 
 go 1.13
 

@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 go_library(
     name = "go_default_library",
     srcs = ["dht.go"],
-    importpath = "berty.tech/experiment/dht/src/chord",
+    importpath = "berty.tech/berty/experiment/dht/src/chord",
     visibility = ["//visibility:public"],
     deps = ["//dht:go_default_library"],
 )

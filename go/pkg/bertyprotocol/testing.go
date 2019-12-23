@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"berty.tech/go/internal/ipfsutil"
-	"berty.tech/go/internal/protocoldb"
+	"berty.tech/berty/go/internal/ipfsutil"
+	"berty.tech/berty/go/internal/protocoldb"
 	"go.uber.org/zap"
 )
 

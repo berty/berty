@@ -3,12 +3,12 @@ package test
 import (
 	"testing"
 
-	"berty.tech/experiment/dht"
-	"berty.tech/experiment/dht/src/bittorrent"
-	"berty.tech/experiment/dht/src/chord"
-	"berty.tech/experiment/dht/src/gnunet"
-	"berty.tech/experiment/dht/src/libp2p"
-	"berty.tech/experiment/dht/src/matrix"
+	"berty.tech/berty/experiment/dht"
+	"berty.tech/berty/experiment/dht/src/bittorrent"
+	"berty.tech/berty/experiment/dht/src/chord"
+	"berty.tech/berty/experiment/dht/src/gnunet"
+	"berty.tech/berty/experiment/dht/src/libp2p"
+	"berty.tech/berty/experiment/dht/src/matrix"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

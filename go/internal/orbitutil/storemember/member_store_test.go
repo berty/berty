@@ -6,14 +6,14 @@ import (
 	"testing"
 	"time"
 
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/ipfsutil"
+	"berty.tech/berty/go/internal/orbitutil"
+	"berty.tech/berty/go/internal/orbitutil/orbittestutil"
+	"berty.tech/berty/go/internal/testutil"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/stores"
-	"berty.tech/go/internal/group"
-	"berty.tech/go/internal/ipfsutil"
-	"berty.tech/go/internal/orbitutil"
-	"berty.tech/go/internal/orbitutil/orbittestutil"
-	"berty.tech/go/internal/testutil"
 
 	peer "github.com/libp2p/go-libp2p-core/peer"
 )

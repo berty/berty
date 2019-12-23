@@ -5,7 +5,7 @@ package berty.protocolmodel;
 import "github.com/golang/protobuf/ptypes/timestamp/timestamp.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-option go_package = "berty.tech/go/internal/protocoldb";
+option go_package = "berty.tech/berty/go/internal/protocoldb";
 
 option (gogoproto.goproto_unkeyed_all) = false;
 option (gogoproto.goproto_sizecache_all) = false;

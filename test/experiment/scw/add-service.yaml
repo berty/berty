@@ -4,7 +4,7 @@
   tasks:
   - name: copy service
     copy:
-      src: "{{ local_home }}/src/berty.tech/experiment/scw/berty.service"
+      src: "{{ local_home }}/src/berty.tech/berty/experiment/scw/berty.service"
       dest: "/etc/systemd/system/multi-user.target.wants/berty.service"
   - name: reaload systemd
     shell: systemctl daemon-reload

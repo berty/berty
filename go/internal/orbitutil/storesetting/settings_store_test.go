@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/go/internal/group"
-	"berty.tech/go/internal/ipfsutil"
-	"berty.tech/go/internal/orbitutil"
-	"berty.tech/go/internal/orbitutil/orbittestutil"
-	"berty.tech/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/ipfsutil"
+	"berty.tech/berty/go/internal/orbitutil"
+	"berty.tech/berty/go/internal/orbitutil/orbittestutil"
+	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 )
 
@@ -58,7 +58,9 @@ func (m *TestContext) GetMemberDevices() *orbittestutil.MemberDevices {
 var _ orbittestutil.MockedPeer = (*TestContext)(nil)
 var _ orbitutilapi.GroupContext = (*TestContext)(nil)
 
-func setUpStores(t *testing.T, ctx context.Context, members int, pathBase string) []*TestContext {
+func setUpStores(ctx context.Context, t *testing.T, members int, pathBase string) []*TestContext {
+	t.Helper()
+
 	testContexts := make([]*TestContext, members)
 	peers := make([]orbittestutil.MockedPeer, members)
 	for i := 0; i < members; i++ {
@@ -103,7 +105,7 @@ func TestSettingsStore(t *testing.T) {
 
 	pathBase := "./orbitdb-test/tests/settings-store-test/"
 	defer os.RemoveAll("./orbitdb-test/")
-	contexts := setUpStores(t, ctx, 2, pathBase)
+	contexts := setUpStores(ctx, t, 2, pathBase)
 
 	// Get empty store
 

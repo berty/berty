@@ -3,9 +3,9 @@ package orbitutil
 import (
 	"sync"
 
-	"berty.tech/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
 
-	"berty.tech/go/internal/group"
+	"berty.tech/berty/go/internal/group"
 )
 
 type GroupContext struct {

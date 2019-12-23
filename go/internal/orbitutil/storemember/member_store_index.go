@@ -3,12 +3,12 @@ package storemember
 import (
 	"sync"
 
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/berty/go/internal/orbitutil/storegroup"
+	"berty.tech/berty/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-orbit-db/iface"
-	"berty.tech/go/internal/group"
-	"berty.tech/go/internal/orbitutil/orbitutilapi"
-	"berty.tech/go/internal/orbitutil/storegroup"
-	"berty.tech/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 

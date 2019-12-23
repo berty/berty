@@ -5,8 +5,8 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"berty.tech/go/internal/crypto"
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/berty/go/internal/crypto"
+	"berty.tech/berty/go/pkg/errcode"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 

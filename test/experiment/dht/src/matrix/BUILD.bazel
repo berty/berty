@@ -6,7 +6,7 @@ go_library(
         "client.go",
         "dht.go",
     ],
-    importpath = "berty.tech/experiment/dht/src/matrix",
+    importpath = "berty.tech/berty/experiment/dht/src/matrix",
     visibility = ["//visibility:public"],
     deps = [
         "//dht:go_default_library",

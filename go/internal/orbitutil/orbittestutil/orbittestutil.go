@@ -7,10 +7,10 @@ import (
 	"path"
 	"testing"
 
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/ipfsutil"
+	"berty.tech/berty/go/internal/orbitutil"
 	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/go/internal/group"
-	"berty.tech/go/internal/ipfsutil"
-	"berty.tech/go/internal/orbitutil"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"

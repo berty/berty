@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "berty.tech/go/internal/crypto";
+option go_package = "berty.tech/berty/go/internal/crypto";
 
 import "google/protobuf/timestamp.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";

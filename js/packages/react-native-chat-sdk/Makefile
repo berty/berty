@@ -12,10 +12,10 @@ AAR := $(PWD)/android/libs/Bridgechat.aar
 build.sdk: build.sdk.ios build.sdk.android
 
 build.sdk.ios:
-	gomobile bind -o $(FRAMEWORK) -v -target ios berty.tech/go/framework/bpbridge
+	gomobile bind -o $(FRAMEWORK) -v -target ios berty.tech/berty/go/framework/bpbridge
 
 build.sdk.android:
-	gomobile bind -o $(AAR) -v -target android berty.tech/go/framework/bpbridge
+	gomobile bind -o $(AAR) -v -target android berty.tech/berty/go/framework/bpbridge
 
 bazel.build.sdk: bazel.build.sdk.ios bazel.build.sdk.android
 

@@ -3,7 +3,7 @@ package bertyprotocol
 import (
 	"context"
 
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/berty/go/pkg/errcode"
 )
 
 // DevicePair pairs a new device to the current account

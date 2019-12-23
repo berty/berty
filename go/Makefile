@@ -198,8 +198,8 @@ $(GEN_SUM): $(GEN_SRC)
 	  $(GO) mod vendor; \
 	  docker run \
 	    --user="$$uid" \
-	    --volume="$(PWD)/..:/go/src/berty.tech" \
-	    --workdir="/go/src/berty.tech/go" \
+	    --volume="$(PWD)/..:/go/src/berty.tech/berty" \
+	    --workdir="/go/src/berty.tech/berty/go" \
 	    --entrypoint="sh" \
 	    --rm \
 	    bertytech/protoc:22 \

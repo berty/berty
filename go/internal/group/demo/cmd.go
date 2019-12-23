@@ -9,13 +9,13 @@ import (
 	"path"
 	"sync"
 
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/ipfsutil"
+	"berty.tech/berty/go/internal/orbitutil"
+	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/stores"
-	"berty.tech/go/internal/group"
-	"berty.tech/go/internal/ipfsutil"
-	"berty.tech/go/internal/orbitutil"
-	"berty.tech/go/internal/orbitutil/orbitutilapi"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 

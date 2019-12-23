@@ -6,7 +6,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"berty.tech/experiment/dht"
+	"berty.tech/berty/experiment/dht"
 	"github.com/matrix-org/gomatrix"
 )
 

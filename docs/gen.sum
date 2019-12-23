@@ -1,3 +1,3 @@
-4812405654c86b1067a4be0ba43c397e2d1c7895  ../api/bertyprotocol.proto
-a94e93bd575baf9e7d1d10ef2f97b361aa557e38  ../api/errcode.proto
-ed902b86019bde9358d5742fb9fccbc9c0e4fa6d  Makefile
+28c496e3e801a1f576324a2116268e56479e16aa  ../api/bertyprotocol.proto
+cebe16fc76c594cb18c075942bf4a5bc0c736810  ../api/errcode.proto
+1c7b51893d167ee9946ed5d2a539a9d73887ed21  Makefile

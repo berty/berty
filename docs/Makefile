@@ -21,8 +21,8 @@ $(GEN_SUM): $(GEN_SRC)
 	  (set -e; cd ../go && GO111MODULE=on go mod vendor); \
 	  docker run \
 	    --user=`id -u` \
-	    --volume="$(PWD)/..:/go/src/berty.tech" \
-	    --workdir="/go/src/berty.tech/docs" \
+	    --volume="$(PWD)/..:/go/src/berty.tech/berty" \
+	    --workdir="/go/src/berty.tech/berty/docs" \
 	    --entrypoint="sh" \
 	    --rm \
 	    bertytech/protoc:22 \

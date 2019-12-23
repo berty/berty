@@ -3,7 +3,7 @@ package gormutil
 import (
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
-	"gopkg.in/gormigrate.v1"
+	gormigrate "gopkg.in/gormigrate.v1"
 )
 
 // Init configures an active gorm connection

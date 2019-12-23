@@ -14,7 +14,7 @@
   <a href="https://www.codefactor.io/repository/github/berty/berty"><img src="https://www.codefactor.io/repository/github/berty/berty/badge?s=bf5885a3b2782ead81d91cd423915f2e9ddc9196" alt="CodeFactor" /></a>
   <!--<a href="https://goreportcard.com/report/berty/berty"><img src="https://goreportcard.com/badge/berty/berty" alt="Go Report Card"></a>-->
   <a href="https://github.com/berty/berty/releases"><img src="https://badge.fury.io/gh/berty%2Fberty.svg" alt="GitHub version"></a>
-  <a href="https://godoc.org/berty.tech/go"><img src="https://godoc.org/berty.tech/go?status.svg" alt="GoDoc"></a>
+  <a href="https://godoc.org/berty.tech/berty/go"><img src="https://godoc.org/berty.tech/berty/go?status.svg" alt="GoDoc"></a>
   <a href="https://codecov.io/gh/berty/berty"><img src="https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow" /></a>
 </p>
 

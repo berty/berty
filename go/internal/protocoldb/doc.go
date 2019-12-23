@@ -1,1 +1,1 @@
-package protocoldb // import "berty.tech/go/internal/protocoldb"
+package protocoldb // import "berty.tech/berty/go/internal/protocoldb"

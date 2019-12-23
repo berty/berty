@@ -1,14 +1,4 @@
 gen.sum.tmp
-# berty package
-/crew/
-/depviz/
-/go-ipfs-log/
-/go-libp2p-ble-transport/
-/go-orbit-db/
-/gomobile-ipfs/
-/gomobile-react-bridge/
-/protocol/
-/zero-push/
 
 # junk
 profile.out

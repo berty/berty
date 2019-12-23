@@ -3,12 +3,12 @@ package orbitutilapi
 import (
 	"context"
 
+	"berty.tech/berty/go/internal/group"
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores/operation"
-	"berty.tech/go/internal/group"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )

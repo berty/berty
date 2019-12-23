@@ -3,9 +3,9 @@ package bertyprotocol
 import (
 	"context"
 
-	"berty.tech/go/internal/ipfsutil"
-	"berty.tech/go/internal/protocoldb"
-	"berty.tech/go/pkg/errcode"
+	"berty.tech/berty/go/internal/ipfsutil"
+	"berty.tech/berty/go/internal/protocoldb"
+	"berty.tech/berty/go/pkg/errcode"
 	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
