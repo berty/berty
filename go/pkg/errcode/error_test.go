@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestError(t *testing.T) {
@@ -29,115 +30,25 @@ func TestError(t *testing.T) {
 		expectedFirstCode int32
 		expectedLastCode  int32
 	}{
-		{
-			"ErrNotImplemented",
-			ErrNotImplemented,
-			"ErrNotImplemented(#777)",
-			ErrNotImplemented,
-			777,
-			777,
-			777,
-		}, {
-			"ErrInternal",
-			ErrInternal,
-			"ErrInternal(#999)",
-			ErrInternal,
-			999,
-			999,
-			999,
-		}, {
-			"ErrNotImplemented.Wrap(errStdHello)",
-			ErrNotImplemented.Wrap(errStdHello),
-			"ErrNotImplemented(#777): hello",
-			errStdHello,
-			777,
-			777,
-			777,
-		}, {
-			"ErrNotImplemented.Wrap(ErrInternal)",
-			ErrNotImplemented.Wrap(ErrInternal),
-			"ErrNotImplemented(#777): ErrInternal(#999)",
-			ErrInternal,
-			777,
-			777,
-			999,
-		}, {
-			"ErrNotImplemented.Wrap(ErrInternal.Wrap(errStdHello))",
-			ErrNotImplemented.Wrap(ErrInternal.Wrap(errStdHello)),
-			"ErrNotImplemented(#777): ErrInternal(#999): hello",
-			errStdHello,
-			777,
-			777,
-			999,
-		}, {
-			`errors.Wrap(ErrNotImplemented,blah)`,
-			errors.Wrap(ErrNotImplemented, "blah"),
-			"blah: ErrNotImplemented(#777)",
-			ErrNotImplemented,
-			-1,
-			777,
-			777,
-		}, {
-			`errors.Wrap(ErrNotImplemented.Wrap(ErrInternal),blah)`,
-			errors.Wrap(ErrNotImplemented.Wrap(ErrInternal), "blah"),
-			"blah: ErrNotImplemented(#777): ErrInternal(#999)",
-			ErrInternal,
-			-1,
-			777,
-			999,
-		}, {
-			"nil",
-			nil,
-			"<nil>",
-			nil,
-			-1,
-			-1,
-			-1,
-		}, {
-			"errStdHello",
-			errStdHello,
-			"hello",
-			errStdHello,
-			-1,
-			-1,
-			-1,
-		}, {
-			"errCodeUndef",
-			errCodeUndef,
-			"UNKNOWN_ERRCODE(#65530)",
-			errCodeUndef,
-			65530,
-			65530,
-			65530,
-		},
+		{"ErrNotImplemented", ErrNotImplemented, "ErrNotImplemented(#777)", ErrNotImplemented, 777, 777, 777},
+		{"ErrInternal", ErrInternal, "ErrInternal(#999)", ErrInternal, 999, 999, 999},
+		{"ErrNotImplemented.Wrap(errStdHello)", ErrNotImplemented.Wrap(errStdHello), "ErrNotImplemented(#777): hello", errStdHello, 777, 777, 777},
+		{"ErrNotImplemented.Wrap(ErrInternal)", ErrNotImplemented.Wrap(ErrInternal), "ErrNotImplemented(#777): ErrInternal(#999)", ErrInternal, 777, 777, 999},
+		{"ErrNotImplemented.Wrap(ErrInternal.Wrap(errStdHello))", ErrNotImplemented.Wrap(ErrInternal.Wrap(errStdHello)), "ErrNotImplemented(#777): ErrInternal(#999): hello", errStdHello, 777, 777, 999},
+		{`errors.Wrap(ErrNotImplemented,blah)`, errors.Wrap(ErrNotImplemented, "blah"), "blah: ErrNotImplemented(#777)", ErrNotImplemented, -1, 777, 777},
+		{`errors.Wrap(ErrNotImplemented.Wrap(ErrInternal),blah)`, errors.Wrap(ErrNotImplemented.Wrap(ErrInternal), "blah"), "blah: ErrNotImplemented(#777): ErrInternal(#999)", ErrInternal, -1, 777, 999},
+		{"nil", nil, "<nil>", nil, -1, -1, -1},
+		{"errStdHello", errStdHello, "hello", errStdHello, -1, -1, -1},
+		{"errCodeUndef", errCodeUndef, "UNKNOWN_ERRCODE(#65530)", errCodeUndef, 65530, 65530, 65530},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actualString := fmt.Sprint(test.input)
-			if test.expectedString != actualString {
-				t.Errorf("Expected string to be %q, got %q.", test.expectedString, actualString)
-			}
-
-			actualCode := Code(test.input)
-			if test.expectedCode != actualCode {
-				t.Errorf("Expected code to be %d, got %d.", test.expectedCode, actualCode)
-			}
-
-			actualCode = FirstCode(test.input)
-			if test.expectedFirstCode != actualCode {
-				t.Errorf("Expected first-code to be %d, got %d.", test.expectedCode, actualCode)
-			}
-
-			actualCode = LastCode(test.input)
-			if test.expectedLastCode != actualCode {
-				t.Errorf("Expected last-code to be %d, got %d.", test.expectedCode, actualCode)
-			}
-
-			actualCause := errors.Cause(test.input)
-			if test.expectedCause != actualCause {
-				t.Errorf("Expected cause to be %v, got %v.", test.expectedCause, actualCause)
-			}
+			assert.Equal(t, test.expectedString, fmt.Sprint(test.input))
+			assert.Equal(t, test.expectedCode, Code(test.input))
+			assert.Equal(t, test.expectedFirstCode, FirstCode(test.input))
+			assert.Equal(t, test.expectedLastCode, LastCode(test.input))
+			assert.Equal(t, test.expectedCause, errors.Cause(test.input))
 		})
 	}
 }

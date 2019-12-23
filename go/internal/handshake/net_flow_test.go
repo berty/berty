@@ -15,6 +15,7 @@ import (
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/gogo/protobuf/proto"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/stretchr/testify/assert"
 )
 
 var ErrDummy = errors.New("handshake: dummy")
@@ -197,9 +198,7 @@ func Test_flow_performFlow(t *testing.T) {
 		}
 
 		_, _, err := f.performFlow(ctx)
-		if err != c.expected {
-			t.Fatalf("invalid flow for case %s (got error %v, expected %v)", c.name, err, c.expected)
-		}
+		assert.Equal(t, c.expected, err, c.name)
 	}
 }
 
@@ -208,16 +207,10 @@ func Test_Request_Response(t *testing.T) {
 	defer cancel()
 
 	reqCrypto, reqPrivateKey, err := crypto.InitNewIdentity(ctx, nil)
-	if err != nil {
-		t.Fatalf("unable to create an identity")
-		return
-	}
+	checkErr(t, err, "unable to create an identity")
 
 	resCrypto, resPrivateKey, err := crypto.InitNewIdentity(ctx, nil)
-	if err != nil {
-		t.Fatalf("unable to create an identity")
-		return
-	}
+	checkErr(t, err, "unable to create an identity")
 
 	wg := sync.WaitGroup{}
 	wg.Add(2)
@@ -228,45 +221,26 @@ func Test_Request_Response(t *testing.T) {
 		defer wg.Done()
 
 		initialEntry, err := resCrypto.GetSigChain().GetInitialEntry()
-		if err != nil {
-			t.Fatalf("unable to get initial sigchain entry of requestee on requester side: %v", err)
-			return
-		}
+		checkErr(t, err, "unable to get initial sigchain entry of requestee on requester side: %v", err)
 
 		accountPk, err := initialEntry.GetSubject()
-		if err != nil {
-			t.Fatalf("unable to get initial sigchain entry of requestee on requester side: %v", err)
-			return
-		}
+		checkErr(t, err, "unable to get initial sigchain entry of requestee on requester side: %v", err)
 
 		reqProvedSigChain, reqProvedKey, err := Request(ctx, reqConn, reqPrivateKey, reqCrypto.GetSigChain(), accountPk, nil)
-		if err != nil {
-			t.Fatalf("unable to perform handshake on requester side: %v", err)
-			return
-		}
+		checkErr(t, err, "unable to perform handshake on requester side: %v", err)
 
-		if !reqProvedKey.Equals(resPrivateKey.GetPublic()) {
-			t.Fatalf("sig chain found on requester side is invalid")
-			return
-		}
+		assert.True(t, reqProvedKey.Equals(resPrivateKey.GetPublic()), "sig chain found on requester side is invalid")
 
 		_ = reqProvedSigChain
-
 	}()
 
 	go func() {
 		defer wg.Done()
 
 		resProvedSigChain, resProvedKey, err := Response(ctx, resConn, resPrivateKey, resCrypto.GetSigChain(), nil)
-		if err != nil {
-			t.Fatalf("unable to perform handshake on requestee side: %v", err)
-			return
-		}
+		checkErr(t, err, "unable to perform handshake on requestee side: %v", err)
 
-		if !resProvedKey.Equals(reqPrivateKey.GetPublic()) {
-			t.Fatalf("sig chain found on requestee side is invalid")
-			return
-		}
+		assert.True(t, resProvedKey.Equals(reqPrivateKey.GetPublic()), "sig chain found on requestee side is invalid")
 
 		_ = resProvedSigChain
 	}()

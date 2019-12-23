@@ -17,6 +17,7 @@ import (
 	"berty.tech/berty/go/internal/testutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"github.com/gogo/protobuf/proto"
+	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -40,9 +41,8 @@ func TestBridge(t *testing.T) {
 	})
 	checkErr(t, err)
 	defer func() {
-		if err = bridge.Close(); err != nil {
-			t.Fatalf("stop bridge: %v", err)
-		}
+		err = bridge.Close()
+		assert.NoErrorf(t, err, "bridge.Close")
 	}()
 
 	logger.Info(
@@ -54,9 +54,7 @@ func TestBridge(t *testing.T) {
 	// clients
 
 	bridgeClient = bridge.GRPCClient()
-	if bridgeClient == nil {
-		t.Fatalf("expected bridgeClient to be initialized, got nil.")
-	}
+	assert.NotNil(t, bridgeClient)
 
 	grpcClient, err = grpc.Dial(bridge.GRPCListenerAddr(), grpc.WithInsecure())
 	checkErr(t, err)

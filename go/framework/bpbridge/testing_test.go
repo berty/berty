@@ -1,11 +1,15 @@
 package bpbridge
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func checkErr(t *testing.T, err error) {
 	t.Helper()
 
-	if err != nil {
-		t.Fatalf("error: %+v", err)
+	if !assert.NoError(t, err) {
+		t.Fatal("fatal")
 	}
 }
