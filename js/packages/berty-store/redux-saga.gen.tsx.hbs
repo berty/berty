@@ -1,0 +1,7 @@
+{{#declare "redux_saga_recursive"}}
+	{{#each nested}}
+		{{#if (eq (typeof this) "Namespace")}}
+			{{call "redux_saga_recursive"}}
+		{{/if}}
+	{{/each}}
+{{/declare}}

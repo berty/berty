@@ -1,0 +1,250 @@
+syntax = "proto3";
+
+package berty.chat;
+
+import "./account.proto";
+import "./contact.proto";
+import "./group.proto";
+import "./chat.proto";
+
+
+message Command {
+  message Account {
+    message Create {}
+    message Delete {}
+    message Open {}
+    message Close {}
+    message Switch {}
+    message Mute {}
+    message Unmute {}
+  }
+
+  message Bluetooth {
+    message Enable {}
+    message Disable {}
+  }
+
+  message Push {
+    message Enable {}
+    message Disable {}
+  }
+
+  message Device {
+    message Pair {}
+    message Unpair {}
+  }
+
+  message Contact {
+    message Add {}
+    message Accept {}
+    message Remove {}
+    message Block {}
+    message Unblock {}
+  }
+
+  message Conversation {
+    message Create {}
+    message Join {}
+    message Leave {}
+    message Mute {}
+    message Unmute {}
+  }
+
+  message Member {
+    message Invite {}
+    message Mute {}
+    message Unmute {}
+    message Block {}
+    message Unblock {}
+  }
+
+  message Message {
+    message Send {}
+    message Edit {}
+    message React {}
+    message Remove {}
+  }
+
+  oneof Payload {
+    Account.Create = 101;
+    Account.Delete = 102;
+    Account.Open = 103;
+    Account.Close = 104;
+    Account.Switch = 105;
+    Account.Mute = 106;
+    Account.Unmute = 107;
+
+    Bluetooth.Enable = 201;
+    Bluetooth.Disable = 202;
+
+    Push.Enable = 301;
+    Push.Disable = 302;
+
+    Device.Pair = 401;
+    Device.Unpair = 402;
+
+    Contact.Add = 501;
+    Contact.Accept = 502;
+    Contact.Remove = 503;
+    Contact.Block = 504;
+    Contact.Unblock = 505;
+
+    Conversation.Create = 601;
+    Conversation.Join = 602;
+    Conversation.Leave = 603;
+    Conversation.Mute = 604;
+    Conversation.Unmute = 605;
+
+    Member.Invite = 701;
+    Member.Mute = 702;
+    Member.Unmute = 703;
+    Member.Block = 704;
+    Member.Unblock = 705;
+
+    Message.Send = 801;
+    Message.Edit = 801;
+    Message.React = 802;
+    Message.Remove = 803;
+  }
+}
+
+message Event {
+  message Account {
+    message Created {}
+    message Deleted {}
+    message Opened {}
+    message Closed {}
+    message Switched {}
+    message Muted {}
+    message Unmuted {}
+  }
+
+  message Bluetooth {
+    message Enabled {}
+    message Disabled {}
+  }
+
+  message Push {
+    message Enabled {}
+    message Disabled {}
+  }
+
+  message Device {
+    message Paired {}
+    message Unpaired {}
+  }
+
+  message Contact {
+    message Added {}
+    message Accepted {}
+    message Removed {}
+    message Blocked {}
+    message Unblocked {}
+  }
+
+  message Conversation {
+    message Invited {}
+    message Joined {}
+    message Sent {}
+    message Leaved {}
+    message Muted {}
+    message Unmuted {}
+  }
+
+  message Member {
+    message Muted {}
+    message Unmuted {}
+    message Blocked {}
+    message Unblocked {}
+  }
+
+  message Message {
+    message Edited {}
+    message Reacted {}
+    message Removed {}
+  }
+
+  oneof Payload {
+    Account.Created = 101;
+    Account.Deleted = 102;
+    Account.Opened = 103;
+    Account.Closed = 104;
+    Account.Switched = 105;
+    Account.Muted = 106;
+    Account.Unmuted = 107;
+
+    Bluetooth.Enabled = 201;
+    Bluetooth.Disabled = 202;
+
+    Push.Enabled = 301;
+    Push.Disabled = 302;
+
+    Device.Paired = 401;
+    Device.Unpaired = 402;
+
+    Contact.Added = 501;
+    Contact.Accepted = 502;
+    Contact.Removed = 503;
+    Contact.Blocked = 504;
+    Contact.Unblocked = 505;
+
+    Conversation.Muted = 601;
+    Conversation.Unmuted = 602;
+
+    Member.Invited = 701;
+    Member.Joined = 702;
+    Member.Sent = 703;
+    Member.Leaved = 704;
+
+    Member.Muted = 801;
+    Member.Unmuted = 802;
+    Member.Blocked = 803;
+    Member.Unblocked = 804;
+
+    Message.Edited = 901;
+    Message.Reacted = 902;
+    Message.Removed = 903;
+  }
+}
+
+service Service {
+  rpc AccountCreate(Command.Account.Create) returns (Event.Account.Created);
+  rpc AccountDelete(Command.Account.Delete) returns (Event.Account.Deleted);
+  rpc AccountOpen(Command.Account.Open) returns (Event.Account.Opened);
+  rpc AccountClose(Command.Account.Closed) returns (Event.Account.Closed);
+  rpc AccountSwitch(Command.Account.Switch) returns (Event.Account.Switched);
+  rpc AccountMute(Command.Account.Mute) returns (Event.Account.Muted);
+  rpc AccountUnmute(Command.Account.Unmute) returns (Event.Account.Unmuted);
+
+  rpc BluetoothEnable(Command.Bluetooth.Enable) returns (Event.Bluetooth.Enabled);
+  rpc BluetoothDisable(Command.Bluetooth.Disable) returns (Event.Bluetooth.Disabled);
+
+  rpc PushEnable(Command.Push.Enable) returns (Event.Push.Enabled);
+  rpc PushDisable(Command.Push.Disable) returns (Event.Push.Disabled);
+
+  rpc DevicePair(Command.Device.Pair) returns (Event.Device.Paired);
+  rpc DeviceUnpair(Command.Device.Unpair) returns (Event.Device.Unpaired);
+
+  rpc ContactAdd(Command.Contact.Add) returns (Event.Contact.Added);
+  rpc ContactAccept(Command.Contact.Accept) returns (Event.Contact.Accepted);
+  rpc ContactRemove(Command.Contact.Remove) returns (Event.Contact.Removed);
+  rpc ContactBlock(Command.Contact.Block) returns (Event.Contact.Blocked);
+  rpc ContactUnblock(Command.Contact.Unblock) returns (Event.Contact.Unblock);
+
+  rpc ConversationCreate(Command.Conversation.Create) returns (Event.Conversation.Created);
+  rpc ConversationJoin(Command.Conversation.Join) returns (Event.Conversation.Joined);
+  rpc ConversationLeave(Command.Conversation.Leave) returns (Event.Conversation.Leaved);
+  rpc ConversationMute(Command.Conversation.Mute) returns (Event.Conversation.Muted);
+  rpc ConversationUnmute(Command.Conversation.Unmute) returns (Event.Conversation.Unmuted);
+
+  rpc MemberInvite(Command.Member.Invite) returns (Event.Member.Invited);
+  rpc MemberMute(Command.Member.Mute) returns (Event.Member.Muted);
+  rpc MemberUnmute(Command.Member.Unmute) returns (Event.Member.Unmuted);
+  rpc MemberBlock(Command.Member.Block) returns (Event.Member.Blocked);
+  rpc MemberUnblock(Command.Member.Unblock) returns (Event.Member.Unblocked);
+
+  rpc MessageSend(Command.Message.Send) returns (Event.Message.Sent);
+  rpc MessageEdit(Command.Message.Edite) returns (Event.Message.Edited);
+  rpc MessageReact(Command.Message.React) returns (Event.Message.Reacted);
+  rpc MessageRemove(Command.Message.Remove) returns (Event.Message.Removed);
+}
