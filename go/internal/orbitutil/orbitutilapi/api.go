@@ -13,12 +13,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-type MemberEntry struct {
-	Member   crypto.PubKey
-	Devices  []crypto.PubKey
-	Inviters []crypto.PubKey
-}
-
 type GroupStore interface {
 	iface.Store
 
@@ -26,6 +20,12 @@ type GroupStore interface {
 
 	SetGroupContext(GroupContext)
 	GetGroupContext() GroupContext
+}
+
+type MemberEntry struct {
+	Member   crypto.PubKey
+	Devices  []crypto.PubKey
+	Inviters []crypto.PubKey
 }
 
 type MemberStore interface {
@@ -71,7 +71,8 @@ type SettingStore interface {
 type SecretStore interface {
 	GroupStore
 
-	// GetDeviceSecret gets secret device
+	// GetDeviceSecret gets received device secret using senderDevicePubKey or
+	// "sent receipt" using remoteMemberPubKey
 	GetDeviceSecret(senderDevicePubKey crypto.PubKey) (*group.DeviceSecret, error)
 
 	// SendSecret sends secret of this device to group member

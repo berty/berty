@@ -22,14 +22,15 @@ type secretStore struct {
 	storegroup.BaseGroupStore
 }
 
-// GetDeviceSecret gets secret device
-func (s *secretStore) GetDeviceSecret(senderDevicePubKey crypto.PubKey) (*group.DeviceSecret, error) {
-	senderBytes, err := senderDevicePubKey.Raw()
+// GetDeviceSecret gets received device secret using senderDevicePubKey or
+// "sent receipt" using remoteMemberPubKey
+func (s *secretStore) GetDeviceSecret(pubKey crypto.PubKey) (*group.DeviceSecret, error) {
+	pubKeyBytes, err := pubKey.Raw()
 	if err != nil {
 		return nil, errcode.TODO
 	}
 
-	value := s.Index().Get(string(senderBytes))
+	value := s.Index().Get(string(pubKeyBytes))
 	if value == nil {
 		return nil, errcode.TODO.Wrap(errors.New("unable to get secret for this device"))
 	}
@@ -48,14 +49,20 @@ func (s *secretStore) GetDeviceSecret(senderDevicePubKey crypto.PubKey) (*group.
 
 // SendSecret sends secret of this device to a group member
 func (s *secretStore) SendSecret(ctx context.Context, remoteMemberPubKey crypto.PubKey) (operation.Operation, error) {
-	localDevicePrivKey := s.GetGroupContext().GetDevicePrivKey()
-	deviceSecret := s.GetGroupContext().GetDeviceSecret()
-	payload, err := group.NewSecretEntryPayload(localDevicePrivKey, remoteMemberPubKey, deviceSecret, s.GetGroupContext().GetGroup())
+	// Check if secret was already sent to this member
+	_, err := s.GetDeviceSecret(remoteMemberPubKey)
+	if err != nil && err != errcode.ErrGroupSecretEntryDoesNotExist {
+		return nil, errcode.TODO.Wrap(errors.Wrap(err, "unable to check if secret was already sent"))
+	} else if err == nil {
+		return nil, errcode.ErrGroupSecretAlreadySentToMember
+	}
+
+	payload, err := group.NewSecretEntryPayload(s.GetGroupContext().GetDevicePrivKey(), remoteMemberPubKey, s.GetGroupContext().GetDeviceSecret(), s.GetGroupContext().GetGroup())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	env, err := group.SealStorePayload(payload, s.GetGroupContext().GetGroup(), localDevicePrivKey)
+	env, err := group.SealStorePayload(payload, s.GetGroupContext().GetGroup(), s.GetGroupContext().GetDevicePrivKey())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

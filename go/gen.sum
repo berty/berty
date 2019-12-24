@@ -1,5 +1,5 @@
 a68e876ac502b90847f468066f3b68b02a8bbed0  ../api/bertyprotocol.proto
-8b04f2997504af921b15d3b3b16ce53050028534  ../api/errcode.proto
+7c2fabf7e7e69d842fe50216a51cce568d163e30  ../api/errcode.proto
 d915a30248e7105cb1290f5798382ccf0bdb935a  ../api/go-internal/handshake.proto
 aaeea37d30e9d0eb583ddc3e436790f66d466a22  ../api/go-internal/protocolmodel.proto
 e90229dbdbf76864981801538947a192cb62b448  ../api/go-internal/sigchain.proto

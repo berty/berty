@@ -65,7 +65,7 @@ func (s *secretStoreIndex) syncMemberWithPendingSecret(senderDevicePubKey crypto
 	s.muPending.Unlock()
 }
 
-func (s *secretStoreIndex) syncSecretWithPendingMember(senderDevicePubKey crypto.PubKey) {
+func (s *secretStoreIndex) syncSecretWithPendingMemberDevice(senderDevicePubKey crypto.PubKey) {
 	senderDevicePubKeyBytes, err := senderDevicePubKey.Bytes()
 	if err != nil {
 		return
@@ -81,11 +81,11 @@ func (s *secretStoreIndex) syncSecretWithPendingMember(senderDevicePubKey crypto
 	if memberPending {
 		s.emitEventNewSecret(senderDevicePubKey)
 	} else {
-		// member, _ := s.groupContext.GetMemberStore().MemberForDevice(senderDevicePubKey)
-		// if member != nil {
-		// s.memberPending[senderDevicePubKeyStr] = struct{}{}
-		// s.emitEventNewSecret(senderDevicePubKey)
-		// }
+		_, err := s.groupContext.GetMemberStore().GetEntryByDevice(senderDevicePubKey)
+		if err == nil {
+			s.memberPending[senderDevicePubKeyStr] = struct{}{}
+			s.emitEventNewSecret(senderDevicePubKey)
+		}
 	}
 
 	s.muPending.Unlock()
@@ -98,7 +98,7 @@ func (s *secretStoreIndex) emitEventNewSecret(senderDevicePubKey crypto.PubKey) 
 
 func (s *secretStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) error {
 	ownMemberKey := s.groupContext.GetMemberPrivKey()
-	currenGroup := s.groupContext.GetGroup()
+	currentGroup := s.groupContext.GetGroup()
 
 	for _, e := range log.Values().Slice() {
 		var err error
@@ -120,16 +120,11 @@ func (s *secretStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry)
 				continue
 			}
 
-			if err = group.OpenStorePayload(payload, entryBytes, currenGroup); err != nil {
+			if err = group.OpenStorePayload(payload, entryBytes, currentGroup); err != nil {
 				continue
 			}
 
 			if err = payload.CheckStructure(); err != nil {
-				continue
-			}
-
-			deviceSecret, err := payload.ToDeviceSecret(ownMemberKey, currenGroup)
-			if err != nil {
 				continue
 			}
 
@@ -138,16 +133,41 @@ func (s *secretStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry)
 				continue
 			}
 
-			senderBytes, err := senderDevicePubKey.Raw()
-			if err != nil {
-				continue
+			if senderDevicePubKey.Equals(s.groupContext.GetDevicePrivKey().GetPublic()) {
+				// Secret was sent from current device to a member, stores it in map
+				// so it will be used as a "sent receipt"
+				destMemberPubKey, err := crypto.UnmarshalEd25519PublicKey(payload.DestMemberPubKey)
+				if err != nil {
+					continue
+				}
+
+				destMemberBytes, err := destMemberPubKey.Raw()
+				if err != nil {
+					continue
+				}
+
+				s.muSecrets.Lock()
+				s.secrets[string(destMemberBytes)] = nil
+				s.muSecrets.Unlock()
+			} else {
+				// Decrypts and stores the secret if destined to current member or
+				// discards it otherwise
+				deviceSecret, err := payload.ToDeviceSecret(ownMemberKey, currentGroup)
+				if err != nil {
+					continue
+				}
+
+				senderDeviceBytes, err := senderDevicePubKey.Raw()
+				if err != nil {
+					continue
+				}
+
+				s.muSecrets.Lock()
+				s.secrets[string(senderDeviceBytes)] = deviceSecret
+				s.muSecrets.Unlock()
+
+				s.syncSecretWithPendingMemberDevice(senderDevicePubKey)
 			}
-
-			s.muSecrets.Lock()
-			s.secrets[string(senderBytes)] = deviceSecret
-			s.muSecrets.Unlock()
-
-			s.syncSecretWithPendingMember(senderDevicePubKey)
 		}
 	}
 
