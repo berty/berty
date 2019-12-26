@@ -5,12 +5,16 @@ import (
 	"crypto/rand"
 	"fmt"
 	"path"
+	"sync"
 	"testing"
 
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/internal/orbitutil"
+	"berty.tech/berty/go/internal/orbitutil/storemember"
+
 	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/events"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
@@ -244,4 +248,48 @@ func CreatePeersWithGroup(ctx context.Context, t *testing.T, pathBase string, me
 	ConnectPeers(ctx, t, mockedPeers)
 
 	return mockedPeers, invitation
+}
+
+func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPeer, invitation *group.Invitation) {
+	t.Helper()
+
+	wg := sync.WaitGroup{}
+	wg.Add(len(peers))
+
+	for i, p := range peers {
+		go func(p *MockedPeer, peerIndex int) {
+			ctxRepl, cancel := context.WithCancel(ctx)
+			eventReceived := 0
+
+			p.GetGroupContext().GetMemberStore().Subscribe(ctxRepl, func(e events.Event) {
+				switch e.(type) {
+				case *storemember.EventNewMemberDevice:
+					eventReceived++
+					if eventReceived == len(peers) {
+						cancel()
+					}
+				}
+			})
+
+			wg.Done()
+
+			if eventReceived != len(peers) {
+				t.Logf("%d event(s) missing from peer %d list (%d/%d)", len(peers)-eventReceived, peerIndex, eventReceived, len(peers))
+			}
+		}(p, i)
+	}
+
+	for i, p := range peers {
+		if i > 0 {
+			invitation = CreateInvitation(t, peers[0].GetGroupContext().GetMemberPrivKey())
+		}
+
+		_, err := p.GetGroupContext().GetMemberStore().RedeemInvitation(ctx, invitation)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	// Wait for all events to be received in all peers's member log (or timeout)
+	wg.Wait()
 }

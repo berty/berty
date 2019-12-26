@@ -45,7 +45,7 @@ func isAllowedToWriteSetting(memberStore orbitutilapi.MemberStore, payload *grou
 		return errcode.TODO.Wrap(err)
 	}
 
-	if author.Equals(creator.Member) {
+	if !author.Equals(creator.Member) {
 		return errcode.TODO.Wrap(fmt.Errorf("only group creator is allowed to edit group settings"))
 	}
 
@@ -57,7 +57,7 @@ type settingStore struct {
 }
 
 func (s *settingStore) set(ctx context.Context, payload *group.SettingEntryPayload) (operation.Operation, error) {
-	rawMember, err := s.GetGroupContext().GetMemberPrivKey().Raw()
+	rawMember, err := s.GetGroupContext().GetMemberPrivKey().GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
