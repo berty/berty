@@ -33,25 +33,25 @@ func (m *memberStore) MemberCount() (int, error) {
 	return len(tree.membersByMember), nil
 }
 
-func (m *memberStore) GetEntryByMember(memberPubKey crypto.PubKey) (orbitutilapi.MemberEntry, error) {
+func (m *memberStore) GetEntryByMember(memberPubKey crypto.PubKey) (*orbitutilapi.MemberEntry, error) {
 	tree, ok := m.Index().Get("").(*memberTree)
 	if !ok {
-		return orbitutilapi.MemberEntry{}, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
+		return nil, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
 	}
 
 	memberPubKeyBytes, err := memberPubKey.Raw()
 	if err != nil {
-		return orbitutilapi.MemberEntry{}, errcode.TODO.Wrap(errors.New("unable to get member pubkey raw data"))
+		return nil, errcode.TODO.Wrap(errors.New("unable to get member pubkey raw data"))
 	}
 
 	tree.muMemberTree.RLock()
 	defer tree.muMemberTree.RUnlock()
 	entry, ok := tree.membersByMember[string(memberPubKeyBytes)]
 	if !ok {
-		return orbitutilapi.MemberEntry{}, errcode.TODO.Wrap(errors.New("member doesn't exists"))
+		return nil, errcode.TODO.Wrap(errors.New("member doesn't exists"))
 	}
 
-	return *entry, nil
+	return entry, nil
 }
 
 func (m *memberStore) ListMembers() ([]crypto.PubKey, error) {
@@ -85,25 +85,25 @@ func (m *memberStore) DeviceCount() (int, error) {
 	return len(tree.membersByDevice), nil
 }
 
-func (m *memberStore) GetEntryByDevice(devicePubKey crypto.PubKey) (orbitutilapi.MemberEntry, error) {
+func (m *memberStore) GetEntryByDevice(devicePubKey crypto.PubKey) (*orbitutilapi.MemberEntry, error) {
 	tree, ok := m.Index().Get("").(*memberTree)
 	if !ok {
-		return orbitutilapi.MemberEntry{}, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
+		return nil, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
 	}
 
 	devicePubKeyBytes, err := devicePubKey.Raw()
 	if err != nil {
-		return orbitutilapi.MemberEntry{}, errcode.TODO.Wrap(errors.New("unable to get device pubkey raw data"))
+		return nil, errcode.TODO.Wrap(errors.New("unable to get device pubkey raw data"))
 	}
 
 	tree.muMemberTree.RLock()
 	defer tree.muMemberTree.RUnlock()
 	entry, ok := tree.membersByDevice[string(devicePubKeyBytes)]
 	if !ok {
-		return orbitutilapi.MemberEntry{}, errcode.TODO.Wrap(errors.New("device doesn't exists"))
+		return nil, errcode.TODO.Wrap(errors.New("device doesn't exists"))
 	}
 
-	return *entry, nil
+	return entry, nil
 }
 
 func (m *memberStore) ListDevices() ([]crypto.PubKey, error) {
@@ -137,7 +137,7 @@ func (m *memberStore) InviterCount() (int, error) {
 	return len(tree.membersByInviter), nil
 }
 
-func (m *memberStore) GetEntriesByInviter(inviterPubKey crypto.PubKey) ([]orbitutilapi.MemberEntry, error) {
+func (m *memberStore) GetEntriesByInviter(inviterPubKey crypto.PubKey) ([]*orbitutilapi.MemberEntry, error) {
 	tree, ok := m.Index().Get("").(*memberTree)
 	if !ok {
 		return nil, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
@@ -155,12 +155,7 @@ func (m *memberStore) GetEntriesByInviter(inviterPubKey crypto.PubKey) ([]orbitu
 		return nil, errcode.TODO.Wrap(errors.New("inviter doesn't exists"))
 	}
 
-	entriesCopy := make([]orbitutilapi.MemberEntry, len(entries))
-	for i, entry := range entries {
-		entriesCopy[i] = *entry
-	}
-
-	return entriesCopy, nil
+	return append([]*orbitutilapi.MemberEntry(nil), entries...), nil
 }
 
 func (m *memberStore) ListInviters() ([]crypto.PubKey, error) {
@@ -171,23 +166,26 @@ func (m *memberStore) ListInviters() ([]crypto.PubKey, error) {
 
 	tree.muMemberTree.RLock()
 	defer tree.muMemberTree.RUnlock()
-	var inviterList []crypto.PubKey
+
+	i := 0
+	inviterList := make([]crypto.PubKey, len(tree.membersByInviter))
 	for inviter := range tree.membersByInviter {
 		inviterPubKey, err := crypto.UnmarshalEd25519PublicKey([]byte(inviter))
 		if err != nil {
 			return nil, errcode.TODO.Wrap(errors.Wrap(err, "unable to unmarshal inviter pubkey"))
 		}
-		inviterList = append(inviterList, inviterPubKey)
+		inviterList[i] = inviterPubKey
+		i++
 	}
 
 	return inviterList, nil
 }
 
-func (m *memberStore) GetGroupCreator() (orbitutilapi.MemberEntry, error) {
+func (m *memberStore) GetGroupCreator() (*orbitutilapi.MemberEntry, error) {
 	// Inviter key of group creator == groupID key
 	invitees, err := m.GetEntriesByInviter(m.GetGroupContext().GetGroup().PubKey)
 	if err != nil {
-		return orbitutilapi.MemberEntry{}, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	// Only one member must use the invitation issued during group creation

@@ -22,38 +22,32 @@ type GroupStore interface {
 	GetGroupContext() GroupContext
 }
 
-type MemberEntry struct {
-	Member   crypto.PubKey
-	Devices  []crypto.PubKey
-	Inviters []crypto.PubKey
-}
-
 type MemberStore interface {
 	GroupStore
 
 	// InviterCount returns the number of inviters in the member tree
 	InviterCount() (int, error)
 	// GetEntriesByInviter returns the entries associated to an inviterPubKey
-	GetEntriesByInviter(inviterPubKey crypto.PubKey) ([]MemberEntry, error)
+	GetEntriesByInviter(inviterPubKey crypto.PubKey) ([]*MemberEntry, error)
 	// ListInviters returns a list of inviters's pubkey indexed in the member tree
 	ListInviters() ([]crypto.PubKey, error)
 
 	// MemberCount returns the number of members in the member tree
 	MemberCount() (int, error)
 	// GetEntriesByMember returns the entry associated to a memberPubKey
-	GetEntryByMember(memberPubKey crypto.PubKey) (MemberEntry, error)
+	GetEntryByMember(memberPubKey crypto.PubKey) (*MemberEntry, error)
 	// ListMembers returns a list of members's pubkey indexed in the member tree
 	ListMembers() ([]crypto.PubKey, error)
 
 	// DeviceCount returns the number of devices in the member tree
 	DeviceCount() (int, error)
 	// GetEntriesByDevice returns the entry associated to an devicePubKey
-	GetEntryByDevice(devicePubKey crypto.PubKey) (MemberEntry, error)
+	GetEntryByDevice(devicePubKey crypto.PubKey) (*MemberEntry, error)
 	// ListDevices returns a list of devices's pubkey indexed in the member tree
 	ListDevices() ([]crypto.PubKey, error)
 
 	// GetGroupCreator returns the entry of the group creator
-	GetGroupCreator() (MemberEntry, error)
+	GetGroupCreator() (*MemberEntry, error)
 
 	// RedeemInvitation add a device to the list of the members of the group
 	RedeemInvitation(ctx context.Context, invitation *group.Invitation) (operation.Operation, error)

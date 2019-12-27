@@ -48,7 +48,7 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 	wg := sync.WaitGroup{}
 	wg.Add(len(peers))
 
-	ctxRepl, _ := context.WithTimeout(ctx, time.Duration(20*time.Second))
+	ctxRepl, _ := context.WithCancel(ctx)
 
 	for i, peer := range peers {
 		go func(peer *orbittestutil.MockedPeer, peerIndex int) {

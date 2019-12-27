@@ -45,7 +45,7 @@ func isAllowedToWriteSetting(memberStore orbitutilapi.MemberStore, payload *grou
 		return errcode.TODO.Wrap(err)
 	}
 
-	if !author.Equals(creator.Member) {
+	if !author.Equals(creator.Member()) {
 		return errcode.TODO.Wrap(fmt.Errorf("only group creator is allowed to edit group settings"))
 	}
 

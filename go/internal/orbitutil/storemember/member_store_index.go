@@ -45,17 +45,17 @@ func (m *memberStoreIndex) processPending() {
 
 		for i, pending := range toProcess {
 			// Check if inviter is already listed as a member
-			inviterPubKeyBytes, _ := pending.Inviters[0].Raw()
+			inviterPubKeyBytes, _ := pending.FirstInviter().Raw()
 			m.members.muMemberTree.RLock()
 			_, inviterExists := m.members.membersByMember[string(inviterPubKeyBytes)]
 			m.members.muMemberTree.RUnlock()
 
-			if inviterExists || pending.Inviters[0].Equals(m.groupContext.GetGroup().PubKey) {
+			if inviterExists || pending.FirstInviter().Equals(m.groupContext.GetGroup().PubKey) {
 				// The inviter is already listed or this pending entry corresponds
 				// to a device of the group creator (invited by group key pair)
 				// so the pending member is ready to be processed
-				memberPubKeyBytes, _ := pending.Member.Raw()
-				devicePubKeyBytes, _ := pending.Devices[0].Raw()
+				memberPubKeyBytes, _ := pending.Member().Raw()
+				devicePubKeyBytes, _ := pending.FirstDevice().Raw()
 
 				m.members.muMemberTree.Lock()
 				member, memberExists := m.members.membersByMember[string(memberPubKeyBytes)]
@@ -68,18 +68,18 @@ func (m *memberStoreIndex) processPending() {
 					member = pending
 				} else if !deviceExists {
 					// Member already exists but device doesn't, add device to the tree
-					member.Devices = append(member.Devices, pending.Devices[0])
+					member = member.AddDeviceKey(pending.FirstDevice())
 
 					// Check if pending device was added by a different inviter
 					found := false
-					for _, inviter := range member.Inviters {
-						if inviter.Equals(pending.Inviters[0]) {
+					for _, inviter := range member.Inviters() {
+						if inviter.Equals(pending.FirstInviter()) {
 							found = true
 						}
 					}
 					if !found {
 						// Inviter is not listed in member's inviters so list it
-						member.Inviters = append(member.Inviters, pending.Inviters[0])
+						member = member.AddInviterKey(pending.FirstInviter())
 					}
 
 					m.members.membersByDevice[string(devicePubKeyBytes)] = member
@@ -96,7 +96,7 @@ func (m *memberStoreIndex) processPending() {
 						// is already listed as one of its invitee
 						found := false
 						for _, invitee := range invitees {
-							if invitee.Member.Equals(member.Member) {
+							if invitee.Member().Equals(member.Member()) {
 								found = true
 							}
 						}
@@ -109,8 +109,8 @@ func (m *memberStoreIndex) processPending() {
 
 					// Send event containing new memberDevice
 					memberDevice := &group.MemberDevice{
-						Member: pending.Member,
-						Device: pending.Devices[0],
+						Member: pending.Member(),
+						Device: pending.FirstDevice(),
 					}
 					eventNewMemberDevice := NewEventNewMemberDevice(memberDevice)
 					m.groupContext.GetMemberStore().Emit(eventNewMemberDevice)
@@ -180,11 +180,7 @@ func (m *memberStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry)
 				continue
 			}
 
-			newPendingMember := &orbitutilapi.MemberEntry{
-				Member:   memberDevice.Member,
-				Devices:  []crypto.PubKey{memberDevice.Device},
-				Inviters: []crypto.PubKey{inviterPubKey},
-			}
+			newPendingMember := orbitutilapi.NewMemberEntry(memberDevice.Member, []crypto.PubKey{memberDevice.Device}, []crypto.PubKey{inviterPubKey})
 
 			m.muPending.Lock()
 			m.pending = append(m.pending, newPendingMember)

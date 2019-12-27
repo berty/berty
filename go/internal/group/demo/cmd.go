@@ -87,14 +87,14 @@ func listMembers(groupContext *orbitutil.GroupContext) {
 			panic(err)
 		}
 
-		memberKeyBytes, err := memberEntry.Member.Raw()
+		memberKeyBytes, err := memberEntry.Member().Raw()
 		if err != nil {
 			panic(err)
 		}
 		memberKeyStr := base64.StdEncoding.EncodeToString(memberKeyBytes)
 
 		inviters := ""
-		for j, inviter := range memberEntry.Inviters {
+		for j, inviter := range memberEntry.Inviters() {
 			inviterKeyBytes, err := inviter.Raw()
 			if err != nil {
 				panic(err)
@@ -105,13 +105,13 @@ func listMembers(groupContext *orbitutil.GroupContext) {
 				inviters += " " + own
 			}
 
-			if j != len(memberEntry.Inviters)-1 {
+			if j != memberEntry.CountInviters()-1 {
 				inviters += ", "
 			}
 		}
 
 		devices := ""
-		for j, device := range memberEntry.Devices {
+		for j, device := range memberEntry.Devices() {
 			deviceKeyBytes, err := device.Raw()
 			if err != nil {
 				panic(err)
@@ -122,7 +122,7 @@ func listMembers(groupContext *orbitutil.GroupContext) {
 				devices += " " + own
 			}
 
-			if j != len(memberEntry.Devices)-1 {
+			if j != memberEntry.CountDevices()-1 {
 				inviters += ", "
 			}
 		}
@@ -226,19 +226,19 @@ func mainLoop(invitation *group.Invitation, create bool) {
 			if err != nil {
 				panic(err)
 			}
-			senderMemberPubKeyBytes, err := memberEntry.Member.Raw()
+			senderMemberPubKeyBytes, err := memberEntry.Member().Raw()
 			if err != nil {
 				panic(err)
 			}
 			fmt.Println("")
 			fmt.Println("Secret received from: {")
-			fmt.Println("\tMember:", base64.StdEncoding.EncodeToString(senderMemberPubKeyBytes), isMemberMineOrGroup(memberEntry.Member, groupContext))
+			fmt.Println("\tMember:", base64.StdEncoding.EncodeToString(senderMemberPubKeyBytes), isMemberMineOrGroup(memberEntry.Member(), groupContext))
 			fmt.Println("\tDevice:", base64.StdEncoding.EncodeToString(senderDevicePubKeyBytes), isDeviceMine(event.SenderDevicePubKey, groupContext))
 			fmt.Println("\tDerivation state:", base64.StdEncoding.EncodeToString(secret.DerivationState))
 			fmt.Println("\tCounter:", secret.Counter)
 			fmt.Println("}")
 
-			sendSecretToMember(ctx, memberEntry.Member, groupContext, true)
+			sendSecretToMember(ctx, memberEntry.Member(), groupContext, true)
 
 			// Debounces listing members / issuing new invitation
 			go func() {
