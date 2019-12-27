@@ -14,6 +14,7 @@ import (
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/orbitutil/orbittestutil"
 	"berty.tech/berty/go/internal/orbitutil/storemember"
+	"berty.tech/berty/go/internal/testutil"
 )
 
 func TestMemberStore(t *testing.T) {
@@ -24,13 +25,18 @@ func TestMemberStore(t *testing.T) {
 	for _, tc := range []struct {
 		memberCount int
 		deviceCount int
+		slow        bool
 	}{
-		{memberCount: 1, deviceCount: 1},
-		{memberCount: 1, deviceCount: 3},
-		{memberCount: 3, deviceCount: 1},
-		{memberCount: 3, deviceCount: 3},
+		{memberCount: 1, deviceCount: 1, slow: false},
+		{memberCount: 1, deviceCount: 3, slow: false},
+		{memberCount: 3, deviceCount: 1, slow: false},
+		{memberCount: 3, deviceCount: 3, slow: true},
 	} {
 		t.Run(fmt.Sprintf("testMemberStore seed: %d, memberCount: %d, deviceCount: %d", seed, tc.memberCount, tc.deviceCount), func(t *testing.T) {
+			if tc.slow {
+				testutil.SkipSlow(t)
+			}
+
 			testMemberStore(t, tc.memberCount, tc.deviceCount)
 		})
 	}
