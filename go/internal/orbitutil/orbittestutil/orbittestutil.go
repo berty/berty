@@ -16,7 +16,7 @@ import (
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/events"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	peer "github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/peer"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 )
 
@@ -45,61 +45,6 @@ func (m *MockedPeer) GetGroupContext() *orbitutil.GroupContext {
 func (m *MockedPeer) SetGroupContext(gc *orbitutil.GroupContext) {
 	m.gc = gc
 }
-
-// func CreateMemberAndDevices(t *testing.T, deviceCount int) *MemberDevices {
-// 	t.Helper()
-//
-// 	ret := &MemberDevices{}
-// 	ret.DevicesPrivKey = make([]crypto.PrivKey, deviceCount)
-// 	ret.DevicesSecret = make([]*group.DeviceSecret, deviceCount)
-//
-// 	for i := 0; i < deviceCount; i++ {
-// 		memberDervice, err := group.NewOwnMemberDevice()
-// 		if err != nil {
-// 			t.Fatalf("unable to generate a key %v", err)
-// 		}
-// 		if i == 0 {
-// 			ret.MemberPrivKey = memberDervice.Member
-// 		}
-// 		ret.DevicesPrivKey[i] = memberDervice.Device
-// 		ret.DevicesSecret[i] = memberDervice.Secret
-// 	}
-//
-// 	return ret
-// }
-//
-// func SetUpPeer(ctx context.Context, t *testing.T, peer MockedPeer, deviceCount int, mn mocknet.Mocknet) {
-// 	t.Helper()
-//
-// 	if mn != nil {
-// 		peer.SetCoreAPI(ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, mn))
-// 	} else {
-// 		peer.SetCoreAPI(ipfsutil.TestingCoreAPI(ctx, t))
-// 	}
-//
-// 	peer.SetMemberDevices(CreateMemberAndDevices(t, deviceCount))
-// }
-//
-// func CreateMonoDeviceMembers(ctx context.Context, t *testing.T, peers []MockedPeer, pathBase string) {
-// 	t.Helper()
-// 	var mn mocknet.Mocknet
-//
-// 	for i, peer := range peers {
-// 		SetUpPeer(ctx, t, peer, 1, mn)
-//
-// 		orbitDBPath := path.Join(pathBase, fmt.Sprintf("%d", i))
-//
-// 		db, err := orbitutil.NewBertyOrbitDB(ctx, peer.GetCoreAPI(), &orbitdb.NewOrbitDBOptions{Directory: &orbitDBPath})
-// 		if err != nil {
-// 			t.Fatal(err)
-// 		}
-//
-// 		peer.SetDB(db)
-//
-// 		mn = peer.GetCoreAPI().MockNetwork()
-// 		peers[i] = peer
-// 	}
-// }
 
 func MakeDummySigningKey(t *testing.T) crypto.PrivKey {
 	t.Helper()

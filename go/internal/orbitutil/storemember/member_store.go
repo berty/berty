@@ -57,7 +57,7 @@ func (m *memberStore) GetEntryByMember(memberPubKey crypto.PubKey) (orbitutilapi
 func (m *memberStore) ListMembers() ([]crypto.PubKey, error) {
 	tree, ok := m.Index().Get("").(*memberTree)
 	if !ok {
-		return []crypto.PubKey{}, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
+		return nil, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
 	}
 
 	tree.muMemberTree.RLock()
@@ -66,7 +66,7 @@ func (m *memberStore) ListMembers() ([]crypto.PubKey, error) {
 	for member := range tree.membersByMember {
 		memberPubKey, err := crypto.UnmarshalEd25519PublicKey([]byte(member))
 		if err != nil {
-			return []crypto.PubKey{}, errcode.TODO.Wrap(errors.Wrap(err, "unable to unmarshal member pubkey"))
+			return nil, errcode.TODO.Wrap(errors.Wrap(err, "unable to unmarshal member pubkey"))
 		}
 		memberList = append(memberList, memberPubKey)
 	}
@@ -109,7 +109,7 @@ func (m *memberStore) GetEntryByDevice(devicePubKey crypto.PubKey) (orbitutilapi
 func (m *memberStore) ListDevices() ([]crypto.PubKey, error) {
 	tree, ok := m.Index().Get("").(*memberTree)
 	if !ok {
-		return []crypto.PubKey{}, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
+		return nil, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
 	}
 
 	tree.muMemberTree.RLock()
@@ -118,7 +118,7 @@ func (m *memberStore) ListDevices() ([]crypto.PubKey, error) {
 	for device := range tree.membersByDevice {
 		devicePubKey, err := crypto.UnmarshalEd25519PublicKey([]byte(device))
 		if err != nil {
-			return []crypto.PubKey{}, errcode.TODO.Wrap(errors.Wrap(err, "unable to unmarshal device pubkey"))
+			return nil, errcode.TODO.Wrap(errors.Wrap(err, "unable to unmarshal device pubkey"))
 		}
 		deviceList = append(deviceList, devicePubKey)
 	}
@@ -140,19 +140,19 @@ func (m *memberStore) InviterCount() (int, error) {
 func (m *memberStore) GetEntriesByInviter(inviterPubKey crypto.PubKey) ([]orbitutilapi.MemberEntry, error) {
 	tree, ok := m.Index().Get("").(*memberTree)
 	if !ok {
-		return []orbitutilapi.MemberEntry{}, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
+		return nil, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
 	}
 
 	inviterPubKeyBytes, err := inviterPubKey.Raw()
 	if err != nil {
-		return []orbitutilapi.MemberEntry{}, errcode.TODO.Wrap(errors.New("unable to get inviter pubkey raw data"))
+		return nil, errcode.TODO.Wrap(errors.New("unable to get inviter pubkey raw data"))
 	}
 
 	tree.muMemberTree.RLock()
 	defer tree.muMemberTree.RUnlock()
 	entries, ok := tree.membersByInviter[string(inviterPubKeyBytes)]
 	if !ok {
-		return []orbitutilapi.MemberEntry{}, errcode.TODO.Wrap(errors.New("inviter doesn't exists"))
+		return nil, errcode.TODO.Wrap(errors.New("inviter doesn't exists"))
 	}
 
 	entriesCopy := make([]orbitutilapi.MemberEntry, len(entries))
@@ -166,7 +166,7 @@ func (m *memberStore) GetEntriesByInviter(inviterPubKey crypto.PubKey) ([]orbitu
 func (m *memberStore) ListInviters() ([]crypto.PubKey, error) {
 	tree, ok := m.Index().Get("").(*memberTree)
 	if !ok {
-		return []crypto.PubKey{}, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
+		return nil, errcode.TODO.Wrap(errors.New("unable to cast member tree"))
 	}
 
 	tree.muMemberTree.RLock()
@@ -175,7 +175,7 @@ func (m *memberStore) ListInviters() ([]crypto.PubKey, error) {
 	for inviter := range tree.membersByInviter {
 		inviterPubKey, err := crypto.UnmarshalEd25519PublicKey([]byte(inviter))
 		if err != nil {
-			return []crypto.PubKey{}, errcode.TODO.Wrap(errors.Wrap(err, "unable to unmarshal inviter pubkey"))
+			return nil, errcode.TODO.Wrap(errors.Wrap(err, "unable to unmarshal inviter pubkey"))
 		}
 		inviterList = append(inviterList, inviterPubKey)
 	}
