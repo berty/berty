@@ -5,17 +5,17 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"berty.tech/berty/go/internal/group"
-	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
-	"berty.tech/berty/go/internal/orbitutil/storegroup"
-	"berty.tech/berty/go/pkg/errcode"
 	"berty.tech/go-ipfs-log/identityprovider"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores/operation"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/pkg/errors"
+
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/berty/go/internal/orbitutil/storegroup"
+	"berty.tech/berty/go/pkg/errcode"
 )
 
 const StoreType = "berty_setting"
@@ -23,7 +23,7 @@ const StoreType = "berty_setting"
 func keyAsString(key crypto.PubKey) (string, error) {
 	raw, err := key.Raw()
 	if err != nil {
-		return "", errcode.TODO.Wrap(err)
+		return "", errcode.ErrSerialization.Wrap(err)
 	}
 
 	return base64.StdEncoding.EncodeToString(raw), nil
@@ -46,7 +46,7 @@ func isAllowedToWriteSetting(memberStore orbitutilapi.MemberStore, payload *grou
 	}
 
 	if !author.Equals(creator.Member()) {
-		return errcode.TODO.Wrap(fmt.Errorf("only group creator is allowed to edit group settings"))
+		return errcode.ErrNotAuthorized.Wrap(fmt.Errorf("only group creator is allowed to edit group settings"))
 	}
 
 	return nil
@@ -59,30 +59,30 @@ type settingStore struct {
 func (s *settingStore) set(ctx context.Context, payload *group.SettingEntryPayload) (operation.Operation, error) {
 	rawMember, err := s.GetGroupContext().GetMemberPrivKey().GetPublic().Raw()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	payload.MemberPubKey = rawMember
 
 	env, err := group.SealStorePayload(payload, s.GetGroupContext().GetGroup(), s.GetGroupContext().GetMemberPrivKey())
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}
 
 	if err := isAllowedToWriteSetting(s.GetGroupContext().GetMemberStore(), payload); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrNotAuthorized.Wrap(err)
 	}
 
 	op := operation.NewOperation(nil, "SET", env)
 
 	e, err := s.AddOperation(ctx, op, nil)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
 	op, err = operation.ParseOperation(e)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrOrbitDBDeserialization.Wrap(err)
 	}
 
 	return op, nil
@@ -99,7 +99,7 @@ func (s *settingStore) Set(ctx context.Context, name string, value []byte) (oper
 func (s *settingStore) Get(member crypto.PubKey) (map[string][]byte, error) {
 	namespace, err := keyAsString(member)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	return s.get(namespace)
@@ -110,7 +110,7 @@ func (s *settingStore) get(namespace string) (map[string][]byte, error) {
 	values, ok := raw.(map[string][]byte)
 
 	if !ok {
-		return map[string][]byte{}, errcode.TODO.Wrap(fmt.Errorf("unable to cast value from index"))
+		return map[string][]byte{}, errcode.ErrOrbitDBIndexCast.Wrap(fmt.Errorf("unable to cast value from index"))
 	}
 
 	return values, nil
@@ -132,7 +132,7 @@ func ConstructorFactory(s orbitutilapi.BertyOrbitDB) iface.StoreConstructor {
 	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		store := &settingStore{}
 		if err := s.InitGroupStore(ctx, NewSettingStoreIndex, store, ipfs, identity, addr, options); err != nil {
-			return nil, errors.Wrap(err, "unable to initialize base store")
+			return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 		}
 
 		return store, nil

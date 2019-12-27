@@ -24,7 +24,7 @@ func (m *Invitation) GetGroup() (*Group, error) {
 
 	signingKey, err := ed25519KeyFromSeed(m.GroupSigningKey)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
 	}
 
 	return &Group{
@@ -50,7 +50,7 @@ func (m *Invitation) GetInvitationPrivateKey() (crypto.PrivKey, error) {
 
 	invitationPrivKey, err := crypto.UnmarshalEd25519PrivateKey(privWithPub)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	return invitationPrivKey, nil
@@ -73,37 +73,37 @@ func NewInvitation(inviterMember crypto.PrivKey, group *Group) (*Invitation, err
 
 	priv, _, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
 	}
 
 	privBytes, err := seedFromEd25519PrivateKey(priv)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	pubBytes, err := priv.GetPublic().Raw()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	sig, err := inviterMember.Sign(pubBytes)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSignatureFailed.Wrap(err)
 	}
 
 	groupPubKeyBytes, err := group.PubKey.Raw()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	inviterMemberPubKeyBytes, err := inviterMember.GetPublic().Raw()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	signingKeyBytes, err := seedFromEd25519PrivateKey(group.SigningKey)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	return &Invitation{
@@ -125,7 +125,7 @@ func seedFromEd25519PrivateKey(key crypto.PrivKey) ([]byte, error) {
 
 	r, err := key.Raw()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	if len(r) != ed25519.PrivateKeySize {

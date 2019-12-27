@@ -39,7 +39,7 @@ func (s *BertyOrbitDB) RegisterGroupContext(gc orbitutilapi.GroupContext) error 
 
 	groupID, err := g.GroupIDAsString()
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrSerialization.Wrap(err)
 	}
 
 	s.lock.Lock()
@@ -164,7 +164,7 @@ func (s *BertyOrbitDB) InitGroupStore(ctx context.Context, indexConstructor func
 	store.SetGroupContext(g)
 
 	if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrOrbitDBInit.Wrap(err)
 	}
 
 	return nil
@@ -180,17 +180,17 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 
 	groupID, err := gc.GetGroup().GroupIDAsString()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	store, err := o.Open(ctx, fmt.Sprintf("%s_%s", groupID, storeType), options)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
 	sStore, ok := store.(orbitutilapi.GroupStore)
 	if !ok {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to cast store to group store"))
+		return nil, errcode.ErrOrbitDBStoreCast.Wrap(fmt.Errorf("unable to cast store to group store"))
 	}
 
 	return sStore, nil
@@ -231,12 +231,12 @@ func (s *BertyOrbitDB) GroupSettingStore(ctx context.Context, g orbitutilapi.Gro
 func (s *BertyOrbitDB) GroupSecretStore(ctx context.Context, g orbitutilapi.GroupContext, options *orbitdb.CreateDBOptions) (orbitutilapi.SecretStore, error) {
 	store, err := s.storeForGroup(ctx, s, g, options, storesecret.StoreType)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to open database")
+		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
 	sStore, ok := store.(orbitutilapi.SecretStore)
 	if !ok {
-		return nil, errors.New("unable to cast store to secret store")
+		return nil, errcode.ErrOrbitDBStoreCast
 	}
 
 	g.SetSecretStore(sStore)

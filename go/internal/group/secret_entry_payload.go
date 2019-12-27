@@ -18,16 +18,16 @@ func (s *SecretEntryPayload) CheckStructure() error {
 
 	_, err := crypto.UnmarshalEd25519PublicKey(s.DestMemberPubKey)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrDeserialization.Wrap(err)
 	}
 
 	_, err = crypto.UnmarshalEd25519PublicKey(s.SenderDevicePubKey)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrDeserialization.Wrap(err)
 	}
 
 	if len(s.EncryptedDeviceSecret) < deviceSecretMinSize {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrInvalidInput.Wrap(err)
 	}
 
 	return nil
@@ -36,35 +36,35 @@ func (s *SecretEntryPayload) CheckStructure() error {
 func (s *SecretEntryPayload) ToDeviceSecret(localMemberPrivateKey crypto.PrivKey, group *Group) (*DeviceSecret, error) {
 	nonce, err := groupIDToNonce(group)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	destMemberPubKey, err := crypto.UnmarshalEd25519PublicKey(s.DestMemberPubKey)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrDeserialization.Wrap(err)
 	} else if !destMemberPubKey.Equals(localMemberPrivateKey.GetPublic()) {
 		return nil, errcode.ErrGroupSecretOtherDestMember
 	}
 
 	senderDevicePubKey, err := crypto.UnmarshalEd25519PublicKey(s.SenderDevicePubKey)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	mongPriv, mongPub, err := edwardsToMontgomery(localMemberPrivateKey, senderDevicePubKey)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCryptoKeyConversion.Wrap(err)
 	}
 
 	decryptedSecret := &DeviceSecret{}
 	decryptedMessage, ok := box.Open(nil, s.EncryptedDeviceSecret, nonce, mongPub, mongPriv)
 	if !ok {
-		return nil, errcode.TODO
+		return nil, errcode.ErrCryptoDecrypt
 	}
 
 	err = decryptedSecret.Unmarshal(decryptedMessage)
 	if err != nil {
-		return nil, errcode.TODO
+		return nil, errcode.ErrDeserialization
 	}
 
 	return decryptedSecret, nil
@@ -77,27 +77,27 @@ func (s *SecretEntryPayload) GetSignerPubKey() (crypto.PubKey, error) {
 func NewSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey crypto.PubKey, secret *DeviceSecret, group *Group) (*SecretEntryPayload, error) {
 	message, err := secret.Marshal()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	nonce, err := groupIDToNonce(group)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	remoteMemberPubKeyBytes, err := remoteMemberPubKey.Raw()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	localDevicePubKeyBytes, err := localDevicePrivKey.GetPublic().Raw()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	mongPriv, mongPub, err := edwardsToMontgomery(localDevicePrivKey, remoteMemberPubKey)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCryptoKeyConversion.Wrap(err)
 	}
 
 	encryptedSecret := box.Seal(nil, message, nonce, mongPub, mongPriv)
@@ -122,7 +122,7 @@ func groupIDToNonce(group *Group) (*[24]byte, error) {
 
 	gid, err := group.PubKey.Bytes()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	copy(nonce[:], gid)
@@ -135,21 +135,21 @@ func edwardsToMontgomery(privKey crypto.PrivKey, pubKey crypto.PubKey) (*[32]byt
 	var edPub, mongPriv, mongPub [32]byte
 
 	if privKey.Type() != crypto_pb.KeyType_Ed25519 || pubKey.Type() != crypto_pb.KeyType_Ed25519 {
-		return nil, nil, errcode.TODO
+		return nil, nil, errcode.ErrInvalidInput
 	}
 
 	privKeyBytes, err := privKey.Raw()
 	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	} else if len(privKeyBytes) != 64 {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrInvalidInput
 	}
 
 	pubKeyBytes, err := pubKey.Raw()
 	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	} else if len(pubKeyBytes) != 32 {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrInvalidInput
 	}
 
 	copy(edPriv[:], privKeyBytes)
@@ -157,7 +157,7 @@ func edwardsToMontgomery(privKey crypto.PrivKey, pubKey crypto.PubKey) (*[32]byt
 
 	cconv.PrivateKeyToCurve25519(&mongPriv, &edPriv)
 	if !cconv.PublicKeyToCurve25519(&mongPub, &edPub) {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrCryptoKeyConversion.Wrap(err)
 	}
 
 	return &mongPriv, &mongPub, nil

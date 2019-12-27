@@ -21,6 +21,25 @@ enum ErrCode {
 
   ErrInvalidInput = 101;
   ErrMissingInput = 102;
+  ErrSerialization = 103;
+  ErrDeserialization = 104;
+  ErrSignatureFailed = 105;
+  ErrSignatureVerificationFailed = 106;
+  ErrRandomGenerationFailed = 107;
+  ErrCryptoDecrypt = 108;
+  ErrCryptoEncrypt = 109;
+  ErrCryptoKeyConversion = 110;
+  ErrMissingMapKey = 111;
+  ErrNotAuthorized = 112;
+
+  ErrOrbitDBInit = 200;
+  ErrOrbitDBOpen = 201;
+  ErrOrbitDBAppend = 202;
+  ErrOrbitDBSerialization = 203;
+  ErrOrbitDBDeserialization = 204;
+  ErrOrbitDBStoreCast = 205;
+  ErrOrbitDBIndexCast = 206;
+
 
   //
   // Berty Protocol (starting at 1001)
@@ -49,6 +68,10 @@ enum ErrCode {
   ErrGroupSecretOtherDestMember = 1030;
   ErrGroupSecretEntryDoesNotExist = 1031;
   ErrGroupSecretAlreadySentToMember = 1032;
+
+  ErrGroupInvitationCantGenerate = 1033;
+
+  ErrSecretKeyGenerationFailed = 1050;
 
   //
   // Bridge (starting at 2001)

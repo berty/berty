@@ -2,6 +2,7 @@ package storesecret
 
 import (
 	"context"
+	"fmt"
 
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
@@ -27,7 +28,7 @@ type secretStore struct {
 func (s *secretStore) GetDeviceSecret(pubKey crypto.PubKey) (*group.DeviceSecret, error) {
 	pubKeyBytes, err := pubKey.Raw()
 	if err != nil {
-		return nil, errcode.TODO
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	value := s.Index().Get(string(pubKeyBytes))
@@ -37,7 +38,7 @@ func (s *secretStore) GetDeviceSecret(pubKey crypto.PubKey) (*group.DeviceSecret
 
 	casted, ok := value.(*secretsMapEntry)
 	if !ok {
-		return nil, errcode.TODO.Wrap(errors.New("unable to cast interface to map entry"))
+		return nil, errcode.ErrOrbitDBIndexCast.Wrap(fmt.Errorf("unable to cast interface to map entry"))
 	}
 
 	if !casted.exists {
@@ -71,12 +72,12 @@ func (s *secretStore) SendSecret(ctx context.Context, remoteMemberPubKey crypto.
 
 	e, err := s.AddOperation(ctx, op, nil)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
 	op, err = operation.ParseOperation(e)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrOrbitDBDeserialization.Wrap(err)
 	}
 
 	return op, nil
@@ -86,7 +87,7 @@ func ConstructorFactory(s orbitutilapi.BertyOrbitDB) iface.StoreConstructor {
 	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		store := &secretStore{}
 		if err := s.InitGroupStore(ctx, NewSecretStoreIndex(ctx), store, ipfs, identity, addr, options); err != nil {
-			return nil, errcode.TODO.Wrap(errors.Wrap(err, "unable to initialize base store"))
+			return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 		}
 
 		return store, nil

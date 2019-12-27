@@ -3,11 +3,12 @@ package storesetting
 import (
 	"sync"
 
+	ipfslog "berty.tech/go-ipfs-log"
+	"berty.tech/go-orbit-db/iface"
+
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
 	"berty.tech/berty/go/internal/orbitutil/storegroup"
-	ipfslog "berty.tech/go-ipfs-log"
-	"berty.tech/go-orbit-db/iface"
 )
 
 type settingStoreIndex struct {

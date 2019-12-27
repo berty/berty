@@ -20,7 +20,7 @@ type Group struct {
 func (g *Group) GroupIDAsString() (string, error) {
 	pkBytes, err := g.PubKey.Raw()
 	if err != nil {
-		return "", errcode.TODO.Wrap(err)
+		return "", errcode.ErrSerialization.Wrap(err)
 	}
 
 	return hex.EncodeToString(pkBytes), nil
@@ -31,12 +31,12 @@ func (g *Group) GroupIDAsString() (string, error) {
 func New() (*Group, *Invitation, error) {
 	priv, pub, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
 	}
 
 	signing, _, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
 	}
 
 	group := &Group{
@@ -46,7 +46,7 @@ func New() (*Group, *Invitation, error) {
 
 	invitation, err := NewInvitation(priv, group)
 	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrGroupInvitationCantGenerate.Wrap(err)
 	}
 
 	return group, invitation, nil

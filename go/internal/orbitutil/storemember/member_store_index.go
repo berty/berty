@@ -3,12 +3,13 @@ package storemember
 import (
 	"sync"
 
-	"berty.tech/berty/go/internal/group"
-	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
-	"berty.tech/berty/go/internal/orbitutil/storegroup"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-orbit-db/iface"
 	"github.com/libp2p/go-libp2p-core/crypto"
+
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/berty/go/internal/orbitutil/storegroup"
 )
 
 type memberTree struct {

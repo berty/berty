@@ -4,14 +4,15 @@ import (
 	"context"
 	"sync"
 
-	"berty.tech/berty/go/internal/group"
-	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
-	"berty.tech/berty/go/internal/orbitutil/storegroup"
-	"berty.tech/berty/go/internal/orbitutil/storemember"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
 	"github.com/libp2p/go-libp2p-core/crypto"
+
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/berty/go/internal/orbitutil/storegroup"
+	"berty.tech/berty/go/internal/orbitutil/storemember"
 )
 
 type secretStoreIndex struct {
