@@ -1,4 +1,4 @@
-package bpbridge
+package bertybridge
 
 import (
 	"context"

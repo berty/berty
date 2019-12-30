@@ -1,4 +1,4 @@
-package bpbridge
+package bertybridge
 
 import (
 	"bufio"
@@ -23,10 +23,10 @@ import (
 	"google.golang.org/grpc"
 )
 
-func TestBridge(t *testing.T) {
+func TestBridgeProtocol(t *testing.T) {
 	var (
 		err          error
-		bridge       *Bridge
+		protocol     ProtocolBridge
 		bridgeClient *Client
 		grpcClient   *grpc.ClientConn
 		req, res     []byte
@@ -34,29 +34,32 @@ func TestBridge(t *testing.T) {
 	)
 
 	logger := testutil.Logger(t)
-	bridge, err = newBridge(logger, Opts{
-		coreAPI:         ipfsutil.TestingCoreAPI(context.Background(), t),
-		GRPCListener:    "127.0.0.1:0",
-		GRPCWebListener: "127.0.0.1:0",
+	protocol, err = newBridgeProtocol(logger, &ProtocolOpts{
+		coreAPI: ipfsutil.TestingCoreAPI(context.Background(), t),
+		BridgeOpts: &BridgeOpts{
+			GRPCListener:    true,
+			GRPCWebListener: true,
+		},
 	})
 	checkErr(t, err)
+
 	defer func() {
-		err = bridge.Close()
-		assert.NoErrorf(t, err, "bridge.Close")
+		err = protocol.Close()
+		assert.NoErrorf(t, err, "protocol.Close")
 	}()
 
 	logger.Info(
 		"listeners",
-		zap.String("gRPC", bridge.GRPCListenerAddr()),
-		zap.String("gRPC web", bridge.GRPCWebListenerAddr()),
+		zap.String("gRPC", protocol.GRPCListenerAddr()),
+		zap.String("gRPC web", protocol.GRPCWebListenerAddr()),
 	)
 
 	// clients
 
-	bridgeClient = bridge.GRPCClient()
+	bridgeClient = protocol.GRPCClient()
 	assert.NotNil(t, bridgeClient)
 
-	grpcClient, err = grpc.Dial(bridge.GRPCListenerAddr(), grpc.WithInsecure())
+	grpcClient, err = grpc.Dial(protocol.GRPCListenerAddr(), grpc.WithBlock(), grpc.WithInsecure())
 	checkErr(t, err)
 
 	// setup unary test
@@ -79,7 +82,7 @@ func TestBridge(t *testing.T) {
 	checkErr(t, err)
 
 	//results, err = makeGrpcRequest(
-	//	bridge.GRPCWebListenerAddr(),
+	//	protocol.GRPCWebListenerAddr(),
 	//	"/berty.protocol.ProtocolService/ContactGet",
 	//	[][]byte{req},
 	//	false,

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"sync"
 
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	ma "github.com/multiformats/go-multiaddr"
@@ -41,66 +40,79 @@ var protos = []ma.Protocol{
 	},
 
 	// ma.Protocol{
-	// 	Name:       "gw",
-	// 	Code:       P_GRPC_GATEWAY,
-	// 	VCode:      ma.CodeToVarint(P_GRPC_GATEWAY),
-	// 	Size:       16,
-	// 	Path:       false,
-	// 	Transcoder: ma.TranscoderPort,
+	//      Name:       "gw",
+	//      Code:       P_GRPC_GATEWAY,
+	//      VCode:      ma.CodeToVarint(P_GRPC_GATEWAY),
+	//      Size:       16,
+	//      Path:       false,
+	//      Transcoder: ma.TranscoderPort,
 	// },
 }
 
-type WrappedServer interface {
-	ListenAndServe() error
-	Close() error
+type Listener interface {
+	manet.Listener
+
+	GRPCMultiaddr() ma.Multiaddr
 }
 
-type server struct {
-	mulistener sync.Mutex
-	listener   manet.Listener
-	maddr      ma.Multiaddr
-	serve      func(net.Listener) error
+type listener struct {
+	manet.Listener
+
+	grpcProtocol ma.Multiaddr
 }
 
-func (s *server) Close() (err error) {
-	s.mulistener.Lock()
-	defer s.mulistener.Unlock()
+func Listen(maddr ma.Multiaddr) (l Listener, err error) {
+	var maListener manet.Listener
+	var component *ma.Component
 
-	if s.listener != nil {
-		err = s.listener.Close()
-	}
-
-	return
-}
-
-func (s *server) ListenAndServe() (err error) {
-	s.mulistener.Lock()
-	if s.listener, err = manet.Listen(s.maddr); err != nil {
-		s.mulistener.Unlock()
-		return
-	}
-
-	s.mulistener.Unlock()
-	err = s.serve(manet.NetListener(s.listener))
-	return
-}
-
-func NewWrappedServer(maddr ma.Multiaddr, grpcServer *grpc.Server) (WrappedServer, error) {
-	s := &server{
-		maddr: maddr,
-		serve: grpcServer.Serve,
-	}
-
-	var err error
+	component, _ = ma.NewComponent("grpc", "") // default to grpc
 	ma.ForEach(maddr, func(c ma.Component) bool {
 		switch c.Protocol().Code {
 		case ma.P_IP4, ma.P_IP6, ma.P_TCP, ma.P_UNIX: // skip (supported protocol)
+		case P_GRPC, P_GRPC_WEB, P_GRPC_WEBSOCKET:
+			component = &c
+		default:
+			err = fmt.Errorf("protocol not supported: %s", c.Protocol().Name)
+			return false // end
+		}
 
+		return true // continue
+	})
+
+	if err != nil {
+		return
+	}
+
+	var grpcProtocol ma.Multiaddr
+	if grpcProtocol, err = ma.NewMultiaddrBytes(component.Bytes()); err != nil {
+		return
+	}
+
+	maddr = maddr.Decapsulate(grpcProtocol)
+	if maListener, err = manet.Listen(maddr); err != nil {
+		return
+	}
+
+	l = &listener{maListener, grpcProtocol}
+	return
+}
+
+func (l *listener) GRPCMultiaddr() ma.Multiaddr {
+	return l.Listener.Multiaddr().Encapsulate(l.grpcProtocol)
+}
+
+type Server struct {
+	*grpc.Server
+}
+
+func (s *Server) Serve(l Listener) (err error) {
+	var serve func(net.Listener) error
+	ma.ForEach(l.GRPCMultiaddr(), func(c ma.Component) bool {
+		switch c.Protocol().Code {
 		case P_GRPC:
-			s.serve = grpcServer.Serve
-
+			serve = s.Server.Serve
 		case P_GRPC_WEB, P_GRPC_WEBSOCKET:
-			wgrpc := grpcweb.WrapServer(grpcServer,
+			wgrpc := grpcweb.WrapServer(s.Server,
 				grpcweb.WithOriginFunc(func(string) bool { return true }), // @FIXME: this is very insecure
 				grpcweb.WithWebsockets(P_GRPC_WEBSOCKET == c.Protocol().Code),
 			)
@@ -109,12 +121,12 @@ func NewWrappedServer(maddr ma.Multiaddr, grpcServer *grpc.Server) (WrappedServe
 				Handler: http.HandlerFunc(wgrpc.ServeHTTP),
 			}
 
-			s.serve = serverWeb.Serve
+			serve = serverWeb.Serve
 
 		// case P_GRPC_GATEWAY:
-		// 	if listener == nil {
-		// 		return false // end
-		// 	}
+		//      if listener == nil {
+		//              return false // end
+		//      }
 
 		// 	gwmux := grpcw.NewServeMux()
 		// 	gatewayServer := http.Server{
@@ -126,16 +138,14 @@ func NewWrappedServer(maddr ma.Multiaddr, grpcServer *grpc.Server) (WrappedServe
 		// 	err = bertyprotocol.RegisterAccountHandlerFromEndpoint(ctx, gwmux, target, dialOpts)
 
 		// 	s.serve = gatewayServer.Serve
-
 		default:
-			err = fmt.Errorf("protocol not supported: %s", c.Protocol().Name)
-			return false // end
+			return true // continue
 		}
 
-		return true // continue
+		return false // end
 	})
 
-	return s, err
+	return serve(manet.NetListener(l))
 }
 
 //nolint:gochecknoinits

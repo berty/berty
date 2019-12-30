@@ -141,16 +141,18 @@ func main() {
 						return errcode.TODO.Wrap(err)
 					}
 
-					wgrpc, err := grpcutil.NewWrappedServer(maddr, grpcServer)
+					l, err := grpcutil.Listen(maddr)
 					if err != nil {
 						return errcode.TODO.Wrap(err)
 					}
 
+					server := grpcutil.Server{grpcServer}
+
 					workers.Add(func() error {
-						logger.Info("serving", zap.String("addr", maddr.String()))
-						return wgrpc.ListenAndServe()
+						logger.Info("serving", zap.String("maddr", maddr.String()))
+						return server.Serve(l)
 					}, func(error) {
-						wgrpc.Close()
+						l.Close()
 					})
 				}
 			}
