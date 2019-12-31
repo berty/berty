@@ -33,7 +33,7 @@ type ProtocolOpts struct {
 	coreAPI ipfs_interface.CoreAPI
 }
 
-func NewBridgeProtocol(opts *ProtocolOpts) (ProtocolBridge, error) {
+func NewProtocolBridge(opts *ProtocolOpts) (ProtocolBridge, error) {
 	// setup logger
 	var logger *zap.Logger
 	{
@@ -45,11 +45,11 @@ func NewBridgeProtocol(opts *ProtocolOpts) (ProtocolBridge, error) {
 		}
 	}
 
-	return newBridgeProtocol(logger, opts)
+	return newProtocolBridge(logger, opts)
 
 }
 
-func newBridgeProtocol(logger *zap.Logger, opts *ProtocolOpts) (ProtocolBridge, error) {
+func newProtocolBridge(logger *zap.Logger, opts *ProtocolOpts) (ProtocolBridge, error) {
 	b := &protocol{
 		grpcServer: grpc.NewServer(),
 		logger:     logger,

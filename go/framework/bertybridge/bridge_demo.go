@@ -1,6 +1,8 @@
 package bertybridge
 
 import (
+	"berty.tech/berty/go/pkg/bertydemo"
+
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -13,6 +15,7 @@ type DemoBridge interface {
 type demo struct {
 	Bridge
 
+	demoClient *bertydemo.BertyDemo
 	grpcServer *grpc.Server
 	logger     *zap.Logger
 }
@@ -40,38 +43,42 @@ func NewDemoBridge(opts *DemoOpts) (DemoBridge, error) {
 		}
 	}
 
-	b := &demo{
+	d := &demo{
 		grpcServer: grpc.NewServer(),
 		logger:     logger,
 	}
 
 	// setup demo
 	{
-		// var err error
-
-	}
-
-	// register service
-	// bertyprotocol.RegisterProtocolServiceServer(b.grpcServer, b.protocolClient)
-
-	// setup bridge
-	{
 		var err error
 
-		b.Bridge, err = newBridge(b.grpcServer, logger, bridgeOpts)
+		d.demoClient, err = bertydemo.New()
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return b, nil
+	// register service
+	bertydemo.RegisterDemoServiceServer(d.grpcServer, d.demoClient)
+
+	// setup bridge
+	{
+		var err error
+
+		d.Bridge, err = newBridge(d.grpcServer, logger, bridgeOpts)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return d, nil
 }
 
-func (b *demo) Close() (err error) {
+func (d *demo) Close() (err error) {
 	// Close bridge
-	err = b.Bridge.Close()
+	err = d.Bridge.Close()
 
 	// close others
-
+	d.demoClient.Close()
 	return
 }

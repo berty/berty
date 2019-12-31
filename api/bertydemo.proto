@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package berty.protocol;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option go_package = "berty.tech/berty/go/pkg/bertydemo";
+
+service DemoService {
+    rpc TestUnary (TestUnary.Request) returns (TestUnary.Reply);
+}
+
+message TestUnary {
+  message Request {}
+  message Reply {}
+}

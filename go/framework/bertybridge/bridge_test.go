@@ -23,7 +23,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func TestBridgeProtocol(t *testing.T) {
+func TestProtocolBridge(t *testing.T) {
 	var (
 		err          error
 		protocol     ProtocolBridge
@@ -34,7 +34,7 @@ func TestBridgeProtocol(t *testing.T) {
 	)
 
 	logger := testutil.Logger(t)
-	protocol, err = newBridgeProtocol(logger, &ProtocolOpts{
+	protocol, err = newProtocolBridge(logger, &ProtocolOpts{
 		coreAPI: ipfsutil.TestingCoreAPI(context.Background(), t),
 		BridgeOpts: &BridgeOpts{
 			GRPCListener:    true,
