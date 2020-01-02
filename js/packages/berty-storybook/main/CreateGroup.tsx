@@ -328,7 +328,7 @@ export const CreateGroup2: React.FC<{}> = () => {
 			<FooterCreateGroup
 				title='CONTINUE'
 				icon='arrow-forward-outline'
-				action={navigation.navigate.main.createGroup3}
+				action={navigation.navigate.main.createGroup.createGroup3}
 			/>
 		</Layout>
 	)

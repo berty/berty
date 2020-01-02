@@ -1,7 +1,7 @@
 // TODO: create /api/js-internal/bertychatnavigation.proto and generate this file
 
 import React, { useMemo } from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createNativeStackNavigator, createStackNavigator } from '@react-navigation/native-stack'
 import * as Stories from '@berty-tech/berty-storybook'
 import {
 	useNavigation as useReactNavigation,
@@ -44,9 +44,11 @@ export namespace ScreenProps {
 		export type ListModal = {}
 		export type Search = {}
 		export type RequestSent = {}
-		export type CreateGroup = {}
-		export type CreateGroup2 = {}
-		export type CreateGroup3 = {}
+		export namespace CreateGroup {
+			export type CreateGroup = {}
+			export type CreateGroup2 = {}
+			export type CreateGroup3 = {}
+		}
 	}
 	export namespace Chat {
 		export type List = {}
@@ -101,7 +103,9 @@ export namespace Routes {
 		ListModal = 'Main.ListModal',
 		Search = 'Main.Search',
 		RequestSent = 'Main.RequestSent',
-		CreateGroup = 'Main.CreateGroup',
+	}
+	export enum CreateGroup {
+		CreateGroup1 = 'Main.CreateGroup1',
 		CreateGroup2 = 'Main.CreateGroup2',
 		CreateGroup3 = 'Main.CreateGroup3',
 	}
@@ -161,7 +165,6 @@ const createNavigation = ({
 				navigate,
 				Routes.Main.GroupRequest,
 			),
-
 			scanRequest: createNavigateFunc(navigate, Routes.Main.ScanRequest),
 			scan: createNavigateFunc(navigate, Routes.Main.Scan),
 			invalidScan: createNavigateFunc(navigate, Routes.Main.InvalidScan),
@@ -169,9 +172,11 @@ const createNavigation = ({
 			listModal: createNavigateFunc(navigate, Routes.Main.ListModal),
 			search: createNavigateFunc(navigate, Routes.Main.Search),
 			requestSent: createNavigateFunc(navigate, Routes.Main.RequestSent),
-			createGroup: createNavigateFunc(navigate, Routes.Main.CreateGroup),
-			createGroup2: createNavigateFunc(navigate, Routes.Main.CreateGroup2),
-			createGroup3: createNavigateFunc(navigate, Routes.Main.CreateGroup3),
+			createGroup: {
+				createGroup1: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup1),
+				createGroup2: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup2),
+				createGroup3: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup3),
+			},
 		},
 		chat: {
 			one2One: createNavigateFunc<berty.chatmodel.IConversation>(navigate, Routes.Chat.One2One),
@@ -243,6 +248,27 @@ export const OnboardingNavigation: React.FC = () => (
 	</OnboardingStack.Navigator>
 )
 
+const CreateGroupStack = createNativeStackNavigator()
+export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => (
+	<CreateGroupStack.Navigator screenOptions={{ headerShown: false }}>
+		<CreateGroupStack.Screen
+			name={Routes.CreateGroup.CreateGroup2}
+			component={Stories.Main.CreateGroup2}
+			options={{ presentation: 'transparentModal' }}
+		/>
+		<CreateGroupStack.Screen
+			name={Routes.CreateGroup.CreateGroup3}
+			component={Stories.Main.CreateGroup3}
+			options={{ presentation: 'transparentModal' }}
+		/>
+		<CreateGroupStack.Screen
+			name={Routes.CreateGroup.CreateGroup1}
+			component={Stories.Main.CreateGroup}
+			options={{ presentation: 'transparentModal' }}
+		/>
+	</CreateGroupStack.Navigator>
+)
+
 const MainStack = createNativeStackNavigator()
 export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 	<MainStack.Navigator screenOptions={{ headerShown: false }}>
@@ -289,6 +315,11 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 				contentStyle: { backgroundColor: 'transparent' },
 			}}
 		/>
+		<MainStack.Screen
+			name={Routes.Main.MyBertyId}
+			component={Stories.Settings.MyBertyId}
+			options={{ presentation: 'transparentModal' }}
+		/>
 		<MainStack.Screen name={Routes.Main.Search} component={Stories.Main.Search} />
 		<MainStack.Screen
 			name={Routes.Main.RequestSent}
@@ -296,33 +327,17 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 			options={{ presentation: 'transparentModal' }}
 		/>
 		<MainStack.Screen
-			name={Routes.Main.CreateGroup}
-			component={Stories.Main.CreateGroup}
+			name={Routes.CreateGroup.CreateGroup2}
+			component={CreateGroupNavigation}
 			options={{ presentation: 'transparentModal' }}
 		/>
+		<MainStack.Screen name={Routes.Settings.Home} component={Stories.Settings.Home} />
 		<MainStack.Screen
-			name={Routes.Main.CreateGroup2}
-			component={Stories.Main.CreateGroup2}
-			options={{ presentation: 'transparentModal' }}
-		/>
-		<MainStack.Screen
-			name={Routes.Main.CreateGroup3}
-			component={Stories.Main.CreateGroup3}
-			options={{ presentation: 'transparentModal' }}
-		/>
-	</MainStack.Navigator>
-)
-
-const SettingsStack = createNativeStackNavigator()
-export const SettingsNavigation: React.FC = () => (
-	<SettingsStack.Navigator screenOptions={{ headerShown: false }}>
-		<SettingsStack.Screen name={Routes.Settings.Home} component={Stories.Settings.Home} />
-		<SettingsStack.Screen
 			name={Routes.Settings.MyBertyId}
 			component={Stories.Settings.MyBertyId}
 			options={{ presentation: 'transparentModal' }}
 		/>
-		<SettingsStack.Screen
+		<MainStack.Screen
 			name={Routes.Settings.EditProfile}
 			component={Stories.Settings.EditProfile}
 			options={{
@@ -330,34 +345,25 @@ export const SettingsNavigation: React.FC = () => (
 				contentStyle: { backgroundColor: 'transparent' },
 			}}
 		/>
-		<SettingsStack.Screen
-			name={Routes.Settings.AppUpdates}
-			component={Stories.Settings.AppUpdates}
-		/>
-		<SettingsStack.Screen name={Routes.Settings.Help} component={Stories.Settings.Help} />
-		<SettingsStack.Screen name={Routes.Settings.Mode} component={Stories.Settings.Mode} />
-		<SettingsStack.Screen
+		<MainStack.Screen name={Routes.Settings.AppUpdates} component={Stories.Settings.AppUpdates} />
+		<MainStack.Screen name={Routes.Settings.Help} component={Stories.Settings.Help} />
+		<MainStack.Screen name={Routes.Settings.Mode} component={Stories.Settings.Mode} />
+		<MainStack.Screen
 			name={Routes.Settings.BlockedContacts}
 			component={Stories.Settings.BlockedContacts}
 		/>
-		<SettingsStack.Screen
+		<MainStack.Screen
 			name={Routes.Settings.Notifications}
 			component={Stories.Settings.Notifications}
 		/>
-		<SettingsStack.Screen name={Routes.Settings.Bluetooth} component={Stories.Settings.Bluetooth} />
-		<SettingsStack.Screen
-			name={Routes.Settings.AboutBerty}
-			component={Stories.Settings.AboutBerty}
-		/>
-		<SettingsStack.Screen
-			name={Routes.Settings.TermsOfUse}
-			component={Stories.Settings.TermsOfUse}
-		/>
-		<SettingsStack.Screen name={Routes.Settings.DevTools} component={Stories.Settings.DevTools} />
-	</SettingsStack.Navigator>
+		<MainStack.Screen name={Routes.Settings.Bluetooth} component={Stories.Settings.Bluetooth} />
+		<MainStack.Screen name={Routes.Settings.AboutBerty} component={Stories.Settings.AboutBerty} />
+		<MainStack.Screen name={Routes.Settings.TermsOfUse} component={Stories.Settings.TermsOfUse} />
+		<MainStack.Screen name={Routes.Settings.DevTools} component={Stories.Settings.DevTools} />
+	</MainStack.Navigator>
 )
 
-const Footer: React.FC<BottomTabBarProp> = ({ navigation, state: { index, routeNames } }) => {
+const Footer: React.FC<BottomTabBarProps> = ({ navigation, state: { index, routeNames } }) => {
 	const _navigation = useMemo(() => createNavigation(navigation), [navigation])
 	switch (routeNames[index]) {
 		case Routes.Tab.Settings:
@@ -371,7 +377,7 @@ const TabStack = createBottomTabNavigator()
 export const Navigation: React.FC = () => (
 	<TabStack.Navigator tabBar={(props) => <Footer {...props} />}>
 		<TabStack.Screen name={Routes.Tab.Main} component={MainNavigation} />
-		<TabStack.Screen name={Routes.Tab.Settings} component={SettingsNavigation} />
+		<TabStack.Screen name={Routes.Tab.Settings} component={MainNavigation} />
 		<TabStack.Screen name={Routes.Tab.Onboarding} component={OnboardingNavigation} />
 	</TabStack.Navigator>
 )

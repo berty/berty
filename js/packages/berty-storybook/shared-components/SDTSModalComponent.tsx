@@ -398,7 +398,7 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 								third.diffPoint - first.diffPoint,
 								second.isToggled ? 90 : 0,
 								second.isToggled ? 90 : 0,
-							], // TODO : what is 90 ?
+							],
 						}),
 					},
 				],

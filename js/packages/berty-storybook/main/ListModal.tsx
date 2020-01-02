@@ -206,7 +206,7 @@ export const ListModal: React.FC<{}> = () => {
 							icon: 'people-outline',
 							iconColor: colors.black,
 							dragEnabled: false,
-							headerAction: navigation.navigate.main.createGroup2,
+							headerAction: navigation.navigate.main.createGroup.createGroup2,
 						},
 						{
 							toggledPoint: secondToggledPoint,
