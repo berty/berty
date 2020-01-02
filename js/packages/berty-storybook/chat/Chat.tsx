@@ -36,7 +36,8 @@ const ChatHeader: React.FC<berty.chatmodel.IConversation> = (props) => {
 	const { avatarUri, title } = props
 	const { navigate, goBack } = useNavigation()
 	return (
-		<BlurView blurType='light' style={[styles.padding, { zIndex: 1 }]}>
+		<>
+			<BlurView blurType='light' style={[StyleSheet.absoluteFill, styles.padding, { zIndex: 1 }]} />
 			<SafeAreaView>
 				<View style={[styles.row, styles.centerItems, styles.spaceCenter]}>
 					<TouchableOpacity style={[styles.flex]} onPress={goBack}>
@@ -68,7 +69,7 @@ const ChatHeader: React.FC<berty.chatmodel.IConversation> = (props) => {
 					</TouchableOpacity>
 				</View>
 			</SafeAreaView>
-		</BlurView>
+		</>
 	)
 }
 

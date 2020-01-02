@@ -325,7 +325,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			style={[padding.horizontal.medium]}
 			onPress={() => navigate(props)}
 		>
-			<View style={[row.center, border.bottom.medium, border.color.light.grey]}>
+			<View
+				style={[row.center, border.bottom.medium, border.color.light.grey, padding.vertical.small]}
+			>
 				<ConversationAvatar {...props} size={50} style={[padding.tiny, row.item.justify]} />
 				<View style={[flex.big, column.fill, padding.small]}>
 					<View style={[row.fill]}>

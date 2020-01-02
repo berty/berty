@@ -151,7 +151,7 @@ export const SelectMode: React.FC = () => {
 							{t('onboarding.select-mode.high-level.disable-contact-request')}
 						</Text>
 					</TouchableCard>
-					<Text style={[text.size.tiny, flex.tiny, column.center]}>
+					<Text style={[text.size.tiny, flex.tiny, column.fill, text.align.center]}>
 						All this presets can be modified at any time in the settings
 					</Text>
 				</SafeAreaView>

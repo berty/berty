@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import {
 	TouchableOpacity,
 	TouchableWithoutFeedback,
@@ -10,7 +10,7 @@ import {
 import { Icon } from 'react-native-ui-kitten'
 import { styles, colors } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/berty-navigation'
-import { BlurView } from '@react-native-community/blur'
+import { BlurView, findNodeHandle } from '@react-native-community/blur'
 
 //
 // Modal => Modals on screens requests
@@ -35,11 +35,16 @@ const _modalStyles = StyleSheet.create({
 
 export const Modal: React.FC<ModalProps> = ({ children }) => {
 	const { goBack } = useNavigation()
+	const viewRef = useRef(null)
 	return (
-		<>
-			<TouchableWithoutFeedback onPress={goBack} style={[StyleSheet.absoluteFill]}>
-				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' blurAmount={50} />
-			</TouchableWithoutFeedback>
+		<View style={[StyleSheet.absoluteFill]}>
+			<BlurView
+				viewRef={viewRef}
+				style={[StyleSheet.absoluteFill]}
+				blurType='light'
+				blurAmount={32}
+			/>
+			<TouchableWithoutFeedback ref={viewRef} onPress={goBack} style={[StyleSheet.absoluteFill]} />
 			<SafeAreaView
 				style={[styles.absolute, styles.left, styles.right, styles.bottom, styles.margin]}
 			>
@@ -68,6 +73,6 @@ export const Modal: React.FC<ModalProps> = ({ children }) => {
 					/>
 				</TouchableOpacity>
 			</SafeAreaView>
-		</>
+		</View>
 	)
 }

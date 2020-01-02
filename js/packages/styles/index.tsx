@@ -1,4 +1,4 @@
-import { PixelRatio, StyleSheet, Platform } from 'react-native'
+import { PixelRatio, StyleSheet, Platform, Dimensions } from 'react-native'
 import _ from 'lodash'
 import Case from 'case'
 import React, { createContext, useContext, useState } from 'react'
@@ -130,8 +130,10 @@ export type Styles = {
 	overflow: {}
 }
 
-const fontScale = PixelRatio.getFontScale()
-const pixelRatio = PixelRatio.get() / 2
+const iphone11 = { width: 414, height: 896 }
+const scaleSize = Dimensions.get('window').width / iphone11.width
+const scaleHeight = Dimensions.get('window').height / iphone11.height
+const fontScale = PixelRatio.getFontScale() * scaleSize
 
 // Mapping for style instanciation
 //
@@ -191,16 +193,16 @@ const mapSizes = (decl: SizesDeclaration<number>, map: (value: number) => {}) =>
 		big: map(decl.big),
 		huge: map(decl.huge),
 	}),
-	compute: mem((radius: number) => StyleSheet.create({ compute: map(radius) }).compute),
+	compute: mem((radius: number) => StyleSheet.create({ compute: map(radius * scaleSize) }).compute),
 })
 const mapBorderSidesSizes = (
 	decl: SizesDeclaration<number> = {
-		tiny: 0.1,
-		small: 0.2,
-		medium: 0.5,
-		large: 1,
-		big: 2,
-		huge: 5,
+		tiny: 0.1 * scaleSize,
+		small: 0.2 * scaleSize,
+		medium: 0.5 * scaleSize,
+		large: 1 * scaleSize,
+		big: 2 * scaleSize,
+		huge: 5 * scaleSize,
 	},
 ) => ({
 	...mapSizes(decl, (borderWidth) => ({ borderWidth })),
@@ -276,7 +278,7 @@ const mapBorderShadowAndroid = (): Sizes<{}> => ({
 const mapBorder = (decl: Declaration) => ({
 	...mapBorderSidesSizes(),
 	compute: mem(
-		(size: number) => StyleSheet.create({ compute: { borderWidth: size * pixelRatio } }).compute,
+		(size: number) => StyleSheet.create({ compute: { borderWidth: size * scaleSize } }).compute,
 	),
 	radius: {
 		...mapSizes(decl.sides, (radius) => ({
@@ -289,147 +291,147 @@ const mapBorder = (decl: Declaration) => ({
 	color: mapColorsDeclaration(decl.colors, (v) => ({ borderColor: v })),
 })
 const mapDeclaration = (decl: Declaration): Styles => ({
-	color: {
-		...decl.colors.default,
-		...decl.colors,
-	},
-	background: mapColorsDeclaration(decl.colors, (v) => ({ backgroundColor: v })),
-	padding: {
-		tiny: { padding: decl.sides.tiny },
-		small: { padding: decl.sides.small },
-		medium: { padding: decl.sides.medium },
-		large: { padding: decl.sides.large },
-		big: { padding: decl.sides.big },
-		huge: { padding: decl.sides.huge },
-		compute: mem((size) => StyleSheet.create({ compute: { padding: size * pixelRatio } }).compute),
-		...mapSides(decl.sides, 'padding'),
-	},
-	margin: {
-		tiny: { margin: decl.sides.tiny },
-		small: { margin: decl.sides.small },
-		medium: { margin: decl.sides.medium },
-		large: { margin: decl.sides.large },
-		big: { margin: decl.sides.big },
-		huge: { margin: decl.sides.huge },
-		compute: mem((size) => StyleSheet.create({ compute: { margin: size * pixelRatio } }).compute),
-		...mapSides(decl.sides, 'margin'),
-	},
-	border: mapBorder(decl),
-	text: {
-		color: mapColorsDeclaration(decl.colors, (v) => ({ color: v })),
-		...StyleSheet.create({
-			family: { fontFamily: decl.text.family },
-			bold: { fontWeight: 'bold' },
-			italic: { fontStyle: 'italic' },
-		}),
-		size: {
+		color: {
+			...decl.colors.default,
+			...decl.colors,
+		},
+		background: mapColorsDeclaration(decl.colors, (v) => ({ backgroundColor: v })),
+		padding: {
+			tiny: { padding: decl.sides.tiny },
+			small: { padding: decl.sides.small },
+			medium: { padding: decl.sides.medium },
+			large: { padding: decl.sides.large },
+			big: { padding: decl.sides.big },
+			huge: { padding: decl.sides.huge },
+			compute: mem((size) => StyleSheet.create({ compute: { padding: size * scaleSize } }).compute),
+			...mapSides(decl.sides, 'padding'),
+		},
+		margin: {
+			tiny: { margin: decl.sides.tiny },
+			small: { margin: decl.sides.small },
+			medium: { margin: decl.sides.medium },
+			large: { margin: decl.sides.large },
+			big: { margin: decl.sides.big },
+			huge: { margin: decl.sides.huge },
+			compute: mem((size) => StyleSheet.create({ compute: { margin: size * scaleSize } }).compute),
+			...mapSides(decl.sides, 'margin'),
+		},
+		border: mapBorder(decl),
+		text: {
+			color: mapColorsDeclaration(decl.colors, (v) => ({ color: v })),
 			...StyleSheet.create({
-				tiny: { fontSize: decl.text.sizes.tiny },
-				small: { fontSize: decl.text.sizes.small },
-				medium: { fontSize: decl.text.sizes.medium },
-				large: { fontSize: decl.text.sizes.large },
-				big: { fontSize: decl.text.sizes.big },
-				huge: { fontSize: decl.text.sizes.huge },
+				family: { fontFamily: decl.text.family },
+				bold: { fontWeight: 'bold' },
+				italic: { fontStyle: 'italic' },
+			}),
+			size: {
+				...StyleSheet.create({
+					tiny: { fontSize: decl.text.sizes.tiny },
+					small: { fontSize: decl.text.sizes.small },
+					medium: { fontSize: decl.text.sizes.medium },
+					large: { fontSize: decl.text.sizes.large },
+					big: { fontSize: decl.text.sizes.big },
+					huge: { fontSize: decl.text.sizes.huge },
+				}),
+				compute: mem(
+					(size: number) => StyleSheet.create({ compute: { fontSize: size * fontScale } }).compute,
+				),
+			},
+			align: StyleSheet.create({
+				top: { textAlignVertical: 'top' },
+				left: { textAlign: 'left' },
+				right: { textAlign: 'right' },
+				bottom: { textAlignVertical: 'bottom' },
+				center: { textAlign: 'center' },
+				justify: { textAlignVertical: 'center' },
+				fill: { textAlign: 'center', textAlignVertical: 'center' },
+			}),
+		},
+		row: {
+			item: StyleSheet.create({
+				top: { alignSelf: 'flex-start' },
+				bottom: { alignSelf: 'flex-end' },
+				justify: { alignSelf: 'center' },
+				fill: { alignSelf: 'stretch' },
+			}),
+			...StyleSheet.create({
+				left: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'flex-start' },
+				right: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'flex-end' },
+				center: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'space-evenly' },
+				fill: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'space-between' },
+			}),
+		},
+		column: {
+			item: StyleSheet.create({
+				left: { alignSelf: 'flex-start' },
+				right: { alignSelf: 'flex-end' },
+				center: { alignSelf: 'center' },
+				fill: { alignSelf: 'stretch' },
+			}),
+			...StyleSheet.create({
+				top: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-start' },
+				bottom: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-end' },
+				justify: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'space-evenly' },
+				fill: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'space-between' },
+			}),
+		},
+		flex: {
+			...StyleSheet.create({
+				tiny: { flex: 1 },
+				small: { flex: 2 },
+				medium: { flex: 3 },
+				large: { flex: 5 },
+				big: { flex: 8 },
+				huge: { flex: 13 },
+			}),
+			compute: mem((size: number) => StyleSheet.create({ compute: { flex: size } }).compute),
+		},
+		absolute: {
+			...StyleSheet.create({
+				top: { position: 'absolute', top: 0 },
+				left: { position: 'absolute', left: 0 },
+				right: { position: 'absolute', right: 0 },
+				bottom: { position: 'absolute', bottom: 0 },
+				center: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
+				justify: { position: 'absolute', top: 0, bottom: 0, alignItems: 'center' },
+				fill: {
+					position: 'absolute',
+					top: 0,
+					left: 0,
+					right: 0,
+					bottom: 0,
+				},
 			}),
 			compute: mem(
-				(size: number) => StyleSheet.create({ compute: { fontSize: size * fontScale } }).compute,
+				(values) =>
+					StyleSheet.create({
+						compute: {
+							position: 'absolute',
+							..._.mapValues(values, (v) => (v || 0) * scaleSize),
+						},
+					}).compute,
+				{ cacheKey: JSON.stringify },
 			),
 		},
-		align: StyleSheet.create({
-			top: { textAlignVertical: 'top' },
-			left: { textAlign: 'left' },
-			right: { textAlign: 'right' },
-			bottom: { textAlignVertical: 'bottom' },
-			center: { textAlign: 'center' },
-			justify: { textAlignVertical: 'center' },
-			fill: { textAlign: 'center', textAlignVertical: 'center' },
-		}),
-	},
-	row: {
-		item: StyleSheet.create({
-			top: { alignSelf: 'flex-start' },
-			bottom: { alignSelf: 'flex-end' },
-			justify: { alignSelf: 'center' },
-			fill: { alignSelf: 'stretch' },
-		}),
-		...StyleSheet.create({
-			left: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'flex-start' },
-			right: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'flex-end' },
-			center: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'space-evenly' },
-			fill: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'space-between' },
-		}),
-	},
-	column: {
-		item: StyleSheet.create({
-			left: { alignSelf: 'flex-start' },
-			right: { alignSelf: 'flex-end' },
-			center: { alignSelf: 'center' },
-			fill: { alignSelf: 'stretch' },
-		}),
-		...StyleSheet.create({
-			top: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-start' },
-			bottom: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-end' },
-			justify: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'space-evenly' },
-			fill: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'space-between' },
-		}),
-	},
-	flex: {
-		...StyleSheet.create({
-			tiny: { flex: 1 },
-			small: { flex: 2 },
-			medium: { flex: 3 },
-			large: { flex: 5 },
-			big: { flex: 8 },
-			huge: { flex: 13 },
-		}),
-		compute: mem((size: number) => StyleSheet.create({ compute: { flex: size } }).compute),
-	},
-	absolute: {
-		...StyleSheet.create({
-			top: { position: 'absolute', top: 0 },
-			left: { position: 'absolute', left: 0 },
-			right: { position: 'absolute', right: 0 },
-			bottom: { position: 'absolute', bottom: 0 },
-			center: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
-			justify: { position: 'absolute', top: 0, bottom: 0, alignItems: 'center' },
-			fill: {
-				position: 'absolute',
-				top: 0,
-				left: 0,
-				right: 0,
-				bottom: 0,
-			},
-		}),
-		compute: mem(
-			(values) =>
-				StyleSheet.create({
-					compute: {
-						position: 'absolute',
-						..._.mapValues(values, (v) => v || 0 * pixelRatio),
-					},
-				}).compute,
-			{ cacheKey: JSON.stringify },
+		width: mem((width: number) => StyleSheet.create({ width: { width: width * scaleSize } }).width),
+		height: mem(
+			(height: number) => StyleSheet.create({ height: { height: height * scaleSize } }).height,
 		),
-	},
-	width: mem((width: number) => StyleSheet.create({ width: { width: width * pixelRatio } }).width),
-	height: mem(
-		(height: number) => StyleSheet.create({ height: { height: height * pixelRatio } }).height,
-	),
-	maxWidth: mem(
-		(maxWidth: number) =>
-			StyleSheet.create({ maxWidth: { maxWidth: maxWidth * pixelRatio } }).maxWidth,
-	),
-	maxHeight: mem(
-		(maxHeight: number) =>
-			StyleSheet.create({ maxHeight: { maxHeight: maxHeight * pixelRatio } }).maxHeight,
-	),
-	overflow: StyleSheet.create({ overflow: { overflow: 'visible' } }).overflow,
-})
+		maxWidth: mem(
+			(maxWidth: number) =>
+				StyleSheet.create({ maxWidth: { maxWidth: maxWidth * scaleSize } }).maxWidth,
+		),
+		maxHeight: mem(
+			(maxHeight: number) =>
+				StyleSheet.create({ maxHeight: { maxHeight: maxHeight * scaleSize } }).maxHeight,
+		),
+		overflow: StyleSheet.create({ overflow: { overflow: 'visible' } }).overflow,
+	})
 
 const mapScaledDeclaration = (decl: Declaration): Styles =>
 	mapDeclaration({
 		...decl,
-		sides: _.mapValues(decl.sides, (n: number) => n * pixelRatio),
+		sides: _.mapValues(decl.sides, (n: number) => n * scaleSize),
 		text: {
 			...decl.text,
 			sizes: _.mapValues(decl.text.sizes, (n: number) => n * fontScale),
@@ -494,7 +496,7 @@ export type SetStylesDeclaration = (
 	setStyles: React.Dispatch<React.SetStateAction<Styles>>,
 ) => void
 const setStylesDeclaration: SetStylesDeclaration = (decl, setStyles) =>
-	setStyles(mapDeclaration(decl))
+	setStyles(mapScaledDeclaration(decl))
 
 export type Context = React.Context<[Styles, (decl: Declaration) => void]>
 const ctx: Context = createContext([
