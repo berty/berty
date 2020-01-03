@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Text } from 'react-native-ui-kitten'
-import { styles } from '../styles'
+import { styles } from '@berty-tech/styles'
 
 //
 // FingerprintContent => Generally on TabBar there is a TabItem Fingerpint that show this component

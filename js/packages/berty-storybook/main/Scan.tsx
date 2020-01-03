@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, SafeAreaView, StyleSheet, Dimensions } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '../styles'
+import { styles, colors } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 
 //

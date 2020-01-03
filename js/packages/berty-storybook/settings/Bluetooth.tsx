@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { colors, styles } from '../styles'
+import { colors, styles } from '@berty-tech/styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'

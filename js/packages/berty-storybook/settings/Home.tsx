@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, ScrollView, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
-import { colors, styles } from '../styles'
+import { colors, styles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import HeaderSettings from '../shared-components/Header'

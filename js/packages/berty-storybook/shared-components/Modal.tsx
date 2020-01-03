@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import {
 	TouchableOpacity,
 	TouchableWithoutFeedback,
@@ -8,9 +8,9 @@ import {
 	ScrollView,
 } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '../styles'
+import { styles, colors } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/berty-navigation'
-import { BlurView } from '@react-native-community/blur'
+import { BlurView, findNodeHandle } from '@react-native-community/blur'
 
 //
 // Modal => Modals on screens requests
@@ -36,38 +36,38 @@ const _modalStyles = StyleSheet.create({
 export const Modal: React.FC<ModalProps> = ({ children }) => {
 	const { goBack } = useNavigation()
 	return (
-		<>
+		<View style={[StyleSheet.absoluteFill]}>
+			<BlurView style={[StyleSheet.absoluteFill]} blurType='light' blurAmount={32} />
 			<TouchableWithoutFeedback onPress={goBack} style={[StyleSheet.absoluteFill]}>
-				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' blurAmount={50} />
-			</TouchableWithoutFeedback>
-			<SafeAreaView
-				style={[styles.absolute, styles.left, styles.right, styles.bottom, styles.margin]}
-			>
-				<View style={[styles.bgWhite, styles.shadow, styles.margin, styles.modalBorderRadius]}>
-					{children}
-				</View>
-				<TouchableOpacity
-					style={[
-						styles.flex,
-						styles.bgWhite,
-						styles.center,
-						styles.spaceCenter,
-						styles.centerItems,
-						styles.shadow,
-						styles.paddingVertical,
-						_modalStyles.closeRequest,
-					]}
-					onPress={goBack}
+				<SafeAreaView
+					style={[styles.absolute, styles.left, styles.right, styles.bottom, styles.margin]}
 				>
-					<Icon
-						style={[_modalStyles.closeRequestIcon]}
-						name='close-outline'
-						width={25}
-						height={25}
-						fill={colors.grey}
-					/>
-				</TouchableOpacity>
-			</SafeAreaView>
-		</>
+					<View style={[styles.bgWhite, styles.shadow, styles.margin, styles.modalBorderRadius]}>
+						{children}
+					</View>
+					<TouchableOpacity
+						style={[
+							styles.flex,
+							styles.bgWhite,
+							styles.center,
+							styles.spaceCenter,
+							styles.centerItems,
+							styles.shadow,
+							styles.paddingVertical,
+							_modalStyles.closeRequest,
+						]}
+						onPress={goBack}
+					>
+						<Icon
+							style={[_modalStyles.closeRequestIcon]}
+							name='close-outline'
+							width={25}
+							height={25}
+							fill={colors.grey}
+						/>
+					</TouchableOpacity>
+				</SafeAreaView>
+			</TouchableWithoutFeedback>
+		</View>
 	)
 }

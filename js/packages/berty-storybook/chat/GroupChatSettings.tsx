@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
-import { styles, colors } from '../styles'
+import { styles, colors } from '@berty-tech/styles'
 import {
 	ButtonSetting,
 	FactionButtonSetting,

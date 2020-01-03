@@ -11,7 +11,7 @@ import {
 	KeyboardAvoidingView,
 } from 'react-native'
 import { Text, Icon, Input } from 'react-native-ui-kitten'
-import { colors, styles } from '../styles'
+import { colors, styles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { BlurView } from '@react-native-community/blur'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'

@@ -8,7 +8,7 @@ import {
 	Dimensions,
 } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { colors, styles } from '../styles'
+import { colors, styles } from '@berty-tech/styles'
 import { RequestProps } from '../shared-props/User'
 import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'

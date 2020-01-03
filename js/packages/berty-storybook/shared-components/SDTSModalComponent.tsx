@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Text, View, StyleSheet, Animated, TouchableWithoutFeedback, StyleProp } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '../styles'
+import { styles, colors } from '@berty-tech/styles'
 import Interactable from 'react-native-interactable'
 
 type SDTSModalProps = {

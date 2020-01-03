@@ -1,0 +1,33 @@
+{
+  "name": "@berty-tech/styles",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "author": "Berty Technologies <oss@berty.tech>",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/styles#readme",
+  "license": "(Apache-2.0 or MIT)",
+  "main": "index.tsx",
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berty/berty.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/berty/berty/issues"
+  },
+  "peerDependencies": {
+    "react": "^16.12.0",
+    "react-native": "^0.61.5"
+  },
+  "dependencies": {
+    "case": "^1.6.2",
+    "lodash": "^4.17.15",
+    "mem": "^6.0.1"
+  }
+}
