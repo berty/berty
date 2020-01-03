@@ -50,6 +50,5 @@ android_binary(
     deps = [
         ":chat_sdk",
         ":com_facebook_react_react_native",
-        ":org_webkit_android_jsc",
     ],
 )

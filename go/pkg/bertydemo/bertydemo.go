@@ -1,28 +1,44 @@
 package bertydemo
 
-import context "context"
+import (
+	context "context"
+
+	"berty.tech/berty/go/internal/ipfsutil"
+	orbitdb "berty.tech/go-orbit-db"
+	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
+)
 
 type BertyDemo struct {
+	api ipfs_interface.CoreAPI
+	odb orbitdb.OrbitDB
 }
 
-func New() (*BertyDemo, error) {
-
-	// cfg, err := createBuildConfig()
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// // var err error
-	// api, err := ipfsutil.NewConfigurableCoreAPI(ctx, cfg, ipfsutil.OptionMDNSDiscovery)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	return &BertyDemo{}, nil
+type Opts struct {
+	OrbitDBDirectory string
 }
 
-func (d *BertyDemo) TestUnary(context.Context, *TestUnary_Request) (*TestUnary_Reply, error) {
-	return &TestUnary_Reply{}, nil
+func New(opts *Opts) (*BertyDemo, error) {
+	ctx := context.Background()
+
+	api, err := ipfsutil.NewInMemoryCoreAPI(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if opts.OrbitDBDirectory == "" {
+		opts.OrbitDBDirectory = ":memory:"
+	}
+
+	odb, err := orbitdb.NewOrbitDB(ctx, api, &orbitdb.NewOrbitDBOptions{Directory: &opts.OrbitDBDirectory})
+	if err != nil {
+		return nil, err
+	}
+
+	return &BertyDemo{api, odb}, nil
+}
+
+func (d *BertyDemo) OrbitDBLog(context.Context, *OrbitDBLog_Request) (*OrbitDBLog_Reply, error) {
+	return &OrbitDBLog_Reply{}, nil
 }
 
 func (d *BertyDemo) Close() error {

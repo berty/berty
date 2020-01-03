@@ -26,12 +26,6 @@ type DemoOpts struct {
 }
 
 func NewDemoBridge(opts *DemoOpts) (DemoBridge, error) {
-	if opts.BridgeOpts == nil {
-		opts.BridgeOpts = &BridgeOpts{}
-	}
-
-	bridgeOpts := opts.BridgeOpts
-
 	// setup logger
 	var logger *zap.Logger
 	{
@@ -43,6 +37,11 @@ func NewDemoBridge(opts *DemoOpts) (DemoBridge, error) {
 		}
 	}
 
+	return newDemoBridge(logger, opts)
+}
+
+func newDemoBridge(logger *zap.Logger, opts *DemoOpts) (DemoBridge, error) {
+
 	d := &demo{
 		grpcServer: grpc.NewServer(),
 		logger:     logger,
@@ -52,7 +51,9 @@ func NewDemoBridge(opts *DemoOpts) (DemoBridge, error) {
 	{
 		var err error
 
-		d.demoClient, err = bertydemo.New()
+		d.demoClient, err = bertydemo.New(&bertydemo.Opts{
+			OrbitDBDirectory: ":memory:",
+		})
 		if err != nil {
 			return nil, err
 		}
@@ -65,7 +66,7 @@ func NewDemoBridge(opts *DemoOpts) (DemoBridge, error) {
 	{
 		var err error
 
-		d.Bridge, err = newBridge(d.grpcServer, logger, bridgeOpts)
+		d.Bridge, err = newBridge(d.grpcServer, logger, opts.BridgeOpts)
 		if err != nil {
 			return nil, err
 		}

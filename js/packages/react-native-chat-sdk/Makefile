@@ -2,7 +2,8 @@ export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
 BAZEL_FRAMEWORK := $(PWD)/bazel-bin/ios/bridge_framework.tar.gz
-FRAMEWORK := $(PWD)/ios/Frameworks/Bridgechat.framework
+FRAMEWORK_DIR := $(PWD)/ios/Frameworks
+FRAMEWORK := $(FRAMEWORK_DIR)/Bridgechat.framework
 
 BAZEL_AAR := $(PWD)/bazel-bin/android/bridge_library.aar
 AAR_DIR := $(PWD)/android/libs
@@ -12,10 +13,12 @@ AAR := $(PWD)/android/libs/Bridgechat.aar
 build.sdk: build.sdk.ios build.sdk.android
 
 build.sdk.ios:
-	gomobile bind -o $(FRAMEWORK) -v -target ios berty.tech/berty/go/framework/bpbridge
+	mkdir -p $(FRAMEWORK_DIR)
+	gomobile bind -o $(FRAMEWORK) -v -target ios berty.tech/berty/go/framework/bertybridge
 
 build.sdk.android:
-	gomobile bind -o $(AAR) -v -target android berty.tech/berty/go/framework/bpbridge
+	mkdir -p $(AAR_DIR)
+	gomobile bind -o $(AAR) -v -target android berty.tech/berty/go/framework/bertybridge
 
 bazel.build.sdk: bazel.build.sdk.ios bazel.build.sdk.android
 

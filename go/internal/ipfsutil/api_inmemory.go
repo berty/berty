@@ -75,6 +75,10 @@ func createRepo(dstore ipfs_repo.Datastore) (ipfs_repo.Repo, error) {
 	c.Identity.PeerID = pid.Pretty()
 	c.Identity.PrivKey = base64.StdEncoding.EncodeToString(privkeyb)
 
+	// enable MDNS
+	c.Discovery.MDNS.Enabled = true
+	c.Discovery.MDNS.Interval = 10
+
 	return &ipfs_repo.Mock{
 		D: dstore,
 		C: c,

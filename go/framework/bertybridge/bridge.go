@@ -69,6 +69,10 @@ func newLogger(loglevel string) (logger *zap.Logger, err error) {
 
 // NewBridge is the main entrypoint for gomobile and should only take simple configuration as argument
 func newBridge(s *grpc.Server, logger *zap.Logger, opts *BridgeOpts) (Bridge, error) {
+	if opts == nil {
+		opts = &BridgeOpts{}
+	}
+
 	b := &bridge{
 		cerr:       make(chan error),
 		cclose:     make(chan struct{}),

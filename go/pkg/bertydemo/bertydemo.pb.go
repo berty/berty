@@ -26,117 +26,118 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type TestUnary struct {
+type OrbitDBLog struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *TestUnary) Reset()         { *m = TestUnary{} }
-func (m *TestUnary) String() string { return proto.CompactTextString(m) }
-func (*TestUnary) ProtoMessage()    {}
-func (*TestUnary) Descriptor() ([]byte, []int) {
+func (m *OrbitDBLog) Reset()         { *m = OrbitDBLog{} }
+func (m *OrbitDBLog) String() string { return proto.CompactTextString(m) }
+func (*OrbitDBLog) ProtoMessage()    {}
+func (*OrbitDBLog) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bfb219fb5d306d6d, []int{0}
 }
-func (m *TestUnary) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TestUnary.Unmarshal(m, b)
+func (m *OrbitDBLog) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_OrbitDBLog.Unmarshal(m, b)
 }
-func (m *TestUnary) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TestUnary.Marshal(b, m, deterministic)
+func (m *OrbitDBLog) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_OrbitDBLog.Marshal(b, m, deterministic)
 }
-func (m *TestUnary) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestUnary.Merge(m, src)
+func (m *OrbitDBLog) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OrbitDBLog.Merge(m, src)
 }
-func (m *TestUnary) XXX_Size() int {
-	return xxx_messageInfo_TestUnary.Size(m)
+func (m *OrbitDBLog) XXX_Size() int {
+	return xxx_messageInfo_OrbitDBLog.Size(m)
 }
-func (m *TestUnary) XXX_DiscardUnknown() {
-	xxx_messageInfo_TestUnary.DiscardUnknown(m)
+func (m *OrbitDBLog) XXX_DiscardUnknown() {
+	xxx_messageInfo_OrbitDBLog.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_TestUnary proto.InternalMessageInfo
+var xxx_messageInfo_OrbitDBLog proto.InternalMessageInfo
 
-type TestUnary_Request struct {
+type OrbitDBLog_Request struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *TestUnary_Request) Reset()         { *m = TestUnary_Request{} }
-func (m *TestUnary_Request) String() string { return proto.CompactTextString(m) }
-func (*TestUnary_Request) ProtoMessage()    {}
-func (*TestUnary_Request) Descriptor() ([]byte, []int) {
+func (m *OrbitDBLog_Request) Reset()         { *m = OrbitDBLog_Request{} }
+func (m *OrbitDBLog_Request) String() string { return proto.CompactTextString(m) }
+func (*OrbitDBLog_Request) ProtoMessage()    {}
+func (*OrbitDBLog_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bfb219fb5d306d6d, []int{0, 0}
 }
-func (m *TestUnary_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TestUnary_Request.Unmarshal(m, b)
+func (m *OrbitDBLog_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_OrbitDBLog_Request.Unmarshal(m, b)
 }
-func (m *TestUnary_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TestUnary_Request.Marshal(b, m, deterministic)
+func (m *OrbitDBLog_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_OrbitDBLog_Request.Marshal(b, m, deterministic)
 }
-func (m *TestUnary_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestUnary_Request.Merge(m, src)
+func (m *OrbitDBLog_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OrbitDBLog_Request.Merge(m, src)
 }
-func (m *TestUnary_Request) XXX_Size() int {
-	return xxx_messageInfo_TestUnary_Request.Size(m)
+func (m *OrbitDBLog_Request) XXX_Size() int {
+	return xxx_messageInfo_OrbitDBLog_Request.Size(m)
 }
-func (m *TestUnary_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_TestUnary_Request.DiscardUnknown(m)
+func (m *OrbitDBLog_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_OrbitDBLog_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_TestUnary_Request proto.InternalMessageInfo
+var xxx_messageInfo_OrbitDBLog_Request proto.InternalMessageInfo
 
-type TestUnary_Reply struct {
+type OrbitDBLog_Reply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *TestUnary_Reply) Reset()         { *m = TestUnary_Reply{} }
-func (m *TestUnary_Reply) String() string { return proto.CompactTextString(m) }
-func (*TestUnary_Reply) ProtoMessage()    {}
-func (*TestUnary_Reply) Descriptor() ([]byte, []int) {
+func (m *OrbitDBLog_Reply) Reset()         { *m = OrbitDBLog_Reply{} }
+func (m *OrbitDBLog_Reply) String() string { return proto.CompactTextString(m) }
+func (*OrbitDBLog_Reply) ProtoMessage()    {}
+func (*OrbitDBLog_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bfb219fb5d306d6d, []int{0, 1}
 }
-func (m *TestUnary_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TestUnary_Reply.Unmarshal(m, b)
+func (m *OrbitDBLog_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_OrbitDBLog_Reply.Unmarshal(m, b)
 }
-func (m *TestUnary_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TestUnary_Reply.Marshal(b, m, deterministic)
+func (m *OrbitDBLog_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_OrbitDBLog_Reply.Marshal(b, m, deterministic)
 }
-func (m *TestUnary_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestUnary_Reply.Merge(m, src)
+func (m *OrbitDBLog_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OrbitDBLog_Reply.Merge(m, src)
 }
-func (m *TestUnary_Reply) XXX_Size() int {
-	return xxx_messageInfo_TestUnary_Reply.Size(m)
+func (m *OrbitDBLog_Reply) XXX_Size() int {
+	return xxx_messageInfo_OrbitDBLog_Reply.Size(m)
 }
-func (m *TestUnary_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_TestUnary_Reply.DiscardUnknown(m)
+func (m *OrbitDBLog_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_OrbitDBLog_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_TestUnary_Reply proto.InternalMessageInfo
+var xxx_messageInfo_OrbitDBLog_Reply proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*TestUnary)(nil), "berty.protocol.TestUnary")
-	proto.RegisterType((*TestUnary_Request)(nil), "berty.protocol.TestUnary.Request")
-	proto.RegisterType((*TestUnary_Reply)(nil), "berty.protocol.TestUnary.Reply")
+	proto.RegisterType((*OrbitDBLog)(nil), "berty.protocol.OrbitDBLog")
+	proto.RegisterType((*OrbitDBLog_Request)(nil), "berty.protocol.OrbitDBLog.Request")
+	proto.RegisterType((*OrbitDBLog_Reply)(nil), "berty.protocol.OrbitDBLog.Reply")
 }
 
 func init() { proto.RegisterFile("bertydemo.proto", fileDescriptor_bfb219fb5d306d6d) }
 
 var fileDescriptor_bfb219fb5d306d6d = []byte{
-	// 176 bytes of a gzipped FileDescriptorProto
+	// 177 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4f, 0x4a, 0x2d, 0x2a,
 	0xa9, 0x4c, 0x49, 0xcd, 0xcd, 0xd7, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x03, 0x0b, 0x40,
 	0x38, 0xc9, 0xf9, 0x39, 0x52, 0xba, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9,
 	0xfa, 0xe9, 0xf9, 0xe9, 0xf9, 0xfa, 0x60, 0x99, 0xa4, 0xd2, 0x34, 0x30, 0x0f, 0xcc, 0x01, 0xb3,
-	0x20, 0x3a, 0x94, 0xe4, 0xb9, 0x38, 0x43, 0x52, 0x8b, 0x4b, 0x42, 0xf3, 0x12, 0x8b, 0x2a, 0xa5,
-	0x38, 0xb9, 0xd8, 0x83, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0xa4, 0xd8, 0xb9, 0x58, 0x83, 0x52,
-	0x0b, 0x72, 0x2a, 0x8d, 0xe2, 0xb8, 0xb8, 0x5d, 0x52, 0x73, 0xf3, 0x83, 0x53, 0x8b, 0xca, 0x32,
-	0x93, 0x53, 0x85, 0xfc, 0x91, 0xd4, 0x0b, 0x29, 0xea, 0xa1, 0x5a, 0xae, 0x07, 0x97, 0xd2, 0x83,
-	0x99, 0x23, 0x8f, 0x4f, 0x49, 0x41, 0x4e, 0xa5, 0x93, 0x72, 0x94, 0x22, 0x44, 0x45, 0x49, 0x6a,
-	0x72, 0x86, 0x3e, 0x98, 0xa9, 0x0f, 0x72, 0x75, 0x76, 0xba, 0x3e, 0xdc, 0xab, 0x49, 0x6c, 0x60,
-	0xed, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0xc3, 0x07, 0x41, 0xeb, 0xfe, 0x00, 0x00, 0x00,
+	0x20, 0x3a, 0x94, 0x14, 0xb8, 0xb8, 0xfc, 0x8b, 0x92, 0x32, 0x4b, 0x5c, 0x9c, 0x7c, 0xf2, 0xd3,
+	0xa5, 0x38, 0xb9, 0xd8, 0x83, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0xa4, 0xd8, 0xb9, 0x58, 0x83,
+	0x52, 0x0b, 0x72, 0x2a, 0x8d, 0x12, 0xb9, 0xb8, 0x5d, 0x52, 0x73, 0xf3, 0x83, 0x53, 0x8b, 0xca,
+	0x32, 0x93, 0x53, 0x85, 0x82, 0x90, 0x35, 0x08, 0x29, 0xe9, 0xa1, 0x5a, 0xaf, 0x87, 0x90, 0xd3,
+	0x83, 0x99, 0xa4, 0x80, 0x57, 0x4d, 0x41, 0x4e, 0xa5, 0x93, 0x72, 0x94, 0x22, 0x44, 0x49, 0x49,
+	0x6a, 0x72, 0x86, 0x3e, 0x98, 0xa9, 0x0f, 0x72, 0x79, 0x76, 0xba, 0x3e, 0xdc, 0xbb, 0x49, 0x6c,
+	0x60, 0xfd, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x07, 0xce, 0x11, 0xbc, 0x02, 0x01, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -151,7 +152,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type DemoServiceClient interface {
-	TestUnary(ctx context.Context, in *TestUnary_Request, opts ...grpc.CallOption) (*TestUnary_Reply, error)
+	OrbitDBLog(ctx context.Context, in *OrbitDBLog_Request, opts ...grpc.CallOption) (*OrbitDBLog_Reply, error)
 }
 
 type demoServiceClient struct {
@@ -162,9 +163,9 @@ func NewDemoServiceClient(cc *grpc.ClientConn) DemoServiceClient {
 	return &demoServiceClient{cc}
 }
 
-func (c *demoServiceClient) TestUnary(ctx context.Context, in *TestUnary_Request, opts ...grpc.CallOption) (*TestUnary_Reply, error) {
-	out := new(TestUnary_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.DemoService/TestUnary", in, out, opts...)
+func (c *demoServiceClient) OrbitDBLog(ctx context.Context, in *OrbitDBLog_Request, opts ...grpc.CallOption) (*OrbitDBLog_Reply, error) {
+	out := new(OrbitDBLog_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.DemoService/OrbitDBLog", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -173,35 +174,35 @@ func (c *demoServiceClient) TestUnary(ctx context.Context, in *TestUnary_Request
 
 // DemoServiceServer is the server API for DemoService service.
 type DemoServiceServer interface {
-	TestUnary(context.Context, *TestUnary_Request) (*TestUnary_Reply, error)
+	OrbitDBLog(context.Context, *OrbitDBLog_Request) (*OrbitDBLog_Reply, error)
 }
 
 // UnimplementedDemoServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedDemoServiceServer struct {
 }
 
-func (*UnimplementedDemoServiceServer) TestUnary(ctx context.Context, req *TestUnary_Request) (*TestUnary_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TestUnary not implemented")
+func (*UnimplementedDemoServiceServer) OrbitDBLog(ctx context.Context, req *OrbitDBLog_Request) (*OrbitDBLog_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrbitDBLog not implemented")
 }
 
 func RegisterDemoServiceServer(s *grpc.Server, srv DemoServiceServer) {
 	s.RegisterService(&_DemoService_serviceDesc, srv)
 }
 
-func _DemoService_TestUnary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TestUnary_Request)
+func _DemoService_OrbitDBLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OrbitDBLog_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DemoServiceServer).TestUnary(ctx, in)
+		return srv.(DemoServiceServer).OrbitDBLog(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.DemoService/TestUnary",
+		FullMethod: "/berty.protocol.DemoService/OrbitDBLog",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DemoServiceServer).TestUnary(ctx, req.(*TestUnary_Request))
+		return srv.(DemoServiceServer).OrbitDBLog(ctx, req.(*OrbitDBLog_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -211,8 +212,8 @@ var _DemoService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*DemoServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "TestUnary",
-			Handler:    _DemoService_TestUnary_Handler,
+			MethodName: "OrbitDBLog",
+			Handler:    _DemoService_OrbitDBLog_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

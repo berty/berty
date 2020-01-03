@@ -3,5 +3,5 @@ load("@chat_sdk//ios:framework.bzl", "gen_framework")
 
 gen_framework(
     name = "bridge_framework",
-    bundle_name = "Chatbridge",
+    bundle_name = "Bertybridge",
 )

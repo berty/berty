@@ -32,7 +32,7 @@ gobind_java(
     java_package = "tech.berty.chatsdk",
     tags = [],
     deps = [
-        "@berty_go//framework/chatbridge:go_default_library",
+        "@berty_go//framework/bertybridge:go_default_library",
     ],
     gc_linkopts = [
         "-compressdwarf=false",
@@ -47,6 +47,5 @@ android_library(
     exports = [":bridge.java.cc"],
     deps = [
         ":com_facebook_react_react_native",
-        ":org_webkit_android_jsc",
     ],
 )
