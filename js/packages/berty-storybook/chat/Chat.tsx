@@ -36,40 +36,37 @@ const ChatHeader: React.FC<berty.chatmodel.IConversation> = (props) => {
 	const { avatarUri, title } = props
 	const { navigate, goBack } = useNavigation()
 	return (
-		<>
-			<BlurView blurType='light' style={[StyleSheet.absoluteFill, styles.padding, { zIndex: 1 }]} />
-			<SafeAreaView>
-				<View style={[styles.row, styles.centerItems, styles.spaceCenter]}>
-					<TouchableOpacity style={[styles.flex]} onPress={goBack}>
-						<Icon name='arrow-back-outline' width={30} height={30} />
-					</TouchableOpacity>
-					<View
-						style={[styles.col, styles.centerItems, styles.littleMarginTop, _chatStyles.headerName]}
+		<SafeAreaView>
+			<View style={[styles.row, styles.centerItems, styles.spaceCenter, styles.padding]}>
+				<TouchableOpacity style={[styles.flex]} onPress={goBack}>
+					<Icon name='arrow-back-outline' width={30} height={30} />
+				</TouchableOpacity>
+				<View
+					style={[styles.col, styles.centerItems, styles.littleMarginTop, _chatStyles.headerName]}
+				>
+					<Text
+						numberOfLines={1}
+						style={[styles.textCenter, styles.textBold, _chatStyles.headerNameText]}
 					>
-						<Text
-							numberOfLines={1}
-							style={[styles.textCenter, styles.textBold, _chatStyles.headerNameText]}
-						>
-							{title || ''}
-						</Text>
-						<Text numberOfLines={1} style={[styles.textGrey]}>
-							Last seen just now
-						</Text>
-					</View>
-					<TouchableOpacity
-						style={[styles.flex]}
-						onPress={() => navigate.chat.one2OneSettings(props)}
-					>
-						<CircleAvatar
-							style={styles.centerItems}
-							avatarUri={avatarUri || ''}
-							size={40}
-							diffSize={5}
-						/>
-					</TouchableOpacity>
+						{title || ''}
+					</Text>
+					<Text numberOfLines={1} style={[styles.textGrey]}>
+						Last seen just now
+					</Text>
 				</View>
-			</SafeAreaView>
-		</>
+				<TouchableOpacity
+					style={[styles.flex]}
+					onPress={() => navigate.chat.one2OneSettings(props)}
+				>
+					<CircleAvatar
+						style={styles.centerItems}
+						avatarUri={avatarUri || ''}
+						size={40}
+						diffSize={5}
+					/>
+				</TouchableOpacity>
+			</View>
+		</SafeAreaView>
 	)
 }
 

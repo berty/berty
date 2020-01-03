@@ -30,33 +30,30 @@ const HeaderChatGroup: React.FC<berty.chatmodel.IConversation> = (props) => {
 	const { avatarUri, title } = props
 	const { navigate, goBack } = useNavigation()
 	return (
-		<>
-			<BlurView blurType='light' style={[StyleSheet.absoluteFill, styles.padding, { zIndex: 1 }]} />
-			<SafeAreaView>
-				<View style={[styles.row, styles.centerItems, styles.spaceCenter]}>
-					<TouchableOpacity style={[styles.flex, styles.col]} onPress={goBack}>
-						<Icon style={[styles.start]} name='arrow-back-outline' width={30} height={30} />
-					</TouchableOpacity>
-					<View style={[styles.smallFlex, styles.center]}>
-						<Text numberOfLines={1} category='h5' style={[styles.textCenter, styles.textBold]}>
-							{title || ''}
-						</Text>
-					</View>
-					<TouchableOpacity
-						style={[styles.flex, styles.col]}
-						onPress={() => navigate.chat.groupSettings(props)}
-					>
-						<GroupCircleAvatar
-							style={[styles.end]}
-							firstAvatarUri={avatarUri || undefined}
-							secondAvatarUri={avatarUri || undefined}
-							size={40}
-							diffSize={5}
-						/>
-					</TouchableOpacity>
+		<SafeAreaView>
+			<View style={[styles.row, styles.centerItems, styles.spaceCenter, styles.padding]}>
+				<TouchableOpacity style={[styles.flex, styles.col]} onPress={goBack}>
+					<Icon style={[styles.start]} name='arrow-back-outline' width={30} height={30} />
+				</TouchableOpacity>
+				<View style={[styles.smallFlex, styles.center]}>
+					<Text numberOfLines={1} category='h5' style={[styles.textCenter, styles.textBold]}>
+						{title || ''}
+					</Text>
 				</View>
-			</SafeAreaView>
-		</>
+				<TouchableOpacity
+					style={[styles.flex, styles.col]}
+					onPress={() => navigate.chat.groupSettings(props)}
+				>
+					<GroupCircleAvatar
+						style={[styles.end]}
+						firstAvatarUri={avatarUri || undefined}
+						secondAvatarUri={avatarUri || undefined}
+						size={40}
+						diffSize={5}
+					/>
+				</TouchableOpacity>
+			</View>
+		</SafeAreaView>
 	)
 }
 

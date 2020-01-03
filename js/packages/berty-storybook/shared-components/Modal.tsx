@@ -35,44 +35,39 @@ const _modalStyles = StyleSheet.create({
 
 export const Modal: React.FC<ModalProps> = ({ children }) => {
 	const { goBack } = useNavigation()
-	const viewRef = useRef(null)
 	return (
 		<View style={[StyleSheet.absoluteFill]}>
-			<BlurView
-				viewRef={viewRef}
-				style={[StyleSheet.absoluteFill]}
-				blurType='light'
-				blurAmount={32}
-			/>
-			<TouchableWithoutFeedback ref={viewRef} onPress={goBack} style={[StyleSheet.absoluteFill]} />
-			<SafeAreaView
-				style={[styles.absolute, styles.left, styles.right, styles.bottom, styles.margin]}
-			>
-				<View style={[styles.bgWhite, styles.shadow, styles.margin, styles.modalBorderRadius]}>
-					{children}
-				</View>
-				<TouchableOpacity
-					style={[
-						styles.flex,
-						styles.bgWhite,
-						styles.center,
-						styles.spaceCenter,
-						styles.centerItems,
-						styles.shadow,
-						styles.paddingVertical,
-						_modalStyles.closeRequest,
-					]}
-					onPress={goBack}
+			<BlurView style={[StyleSheet.absoluteFill]} blurType='light' blurAmount={32} />
+			<TouchableWithoutFeedback onPress={goBack} style={[StyleSheet.absoluteFill]}>
+				<SafeAreaView
+					style={[styles.absolute, styles.left, styles.right, styles.bottom, styles.margin]}
 				>
-					<Icon
-						style={[_modalStyles.closeRequestIcon]}
-						name='close-outline'
-						width={25}
-						height={25}
-						fill={colors.grey}
-					/>
-				</TouchableOpacity>
-			</SafeAreaView>
+					<View style={[styles.bgWhite, styles.shadow, styles.margin, styles.modalBorderRadius]}>
+						{children}
+					</View>
+					<TouchableOpacity
+						style={[
+							styles.flex,
+							styles.bgWhite,
+							styles.center,
+							styles.spaceCenter,
+							styles.centerItems,
+							styles.shadow,
+							styles.paddingVertical,
+							_modalStyles.closeRequest,
+						]}
+						onPress={goBack}
+					>
+						<Icon
+							style={[_modalStyles.closeRequestIcon]}
+							name='close-outline'
+							width={25}
+							height={25}
+							fill={colors.grey}
+						/>
+					</TouchableOpacity>
+				</SafeAreaView>
+			</TouchableWithoutFeedback>
 		</View>
 	)
 }
