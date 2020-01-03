@@ -194,7 +194,7 @@ const RequestsItem: React.FC<{
 					onPress={() => display({ id })}
 				>
 					<CircleAvatar
-						style={[absolute.center, absolute.compute({ top: -32.5 })]}
+						style={[absolute.center, absolute.scale({ top: -32.5 })]}
 						avatarUri={avatarUris[0]}
 						size={65}
 						diffSize={8}
@@ -350,7 +350,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 									row.center,
 									width(15),
 									height(15),
-									border.radius.compute(15 / 2),
+									border.radius.scale(15 / 2),
 								]}
 							>
 								<Text
@@ -401,7 +401,7 @@ const Conversations: React.FC<ConversationsProps> = ({ items, contentContainerSt
 					contentContainerStyle={[background.white, border.radius.big]}
 				>
 					<SafeAreaView>
-						<View style={[padding.bottom.compute(80)]}>
+						<View style={[padding.bottom.scale(80)]}>
 							<Text
 								style={[
 									text.color.black,

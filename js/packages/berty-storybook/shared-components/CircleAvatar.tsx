@@ -40,15 +40,15 @@ export const CircleAvatar: React.FC<CircleAvatarProps> = ({
 		width(size),
 		height(size),
 		background.white,
-		border.radius.compute(size / 2),
+		border.radius.scale(size / 2),
 	]
 	const _imgStyle = [
 		row.item.justify,
 		width(size - diffSize),
 		height(size - diffSize),
-		border.radius.compute((size - diffSize) / 2),
+		border.radius.scale((size - diffSize) / 2),
 	]
-	const _circleAvatarStyles = [absolute.compute({ top: -10, right: -10 })]
+	const _circleAvatarStyles = [absolute.scale({ top: -10, right: -10 })]
 	return (
 		<View style={style}>
 			<View style={[_circleStyle]}>

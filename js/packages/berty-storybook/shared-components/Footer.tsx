@@ -66,7 +66,7 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 						column.item.center,
 						width(elemSize),
 						height(elemSize),
-						border.radius.compute(size / 2),
+						border.radius.scale(size / 2),
 					]}
 					source={{ uri: avatarUri }}
 				/>
