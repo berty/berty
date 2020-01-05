@@ -3,7 +3,8 @@
 buildscript {
     ext {
         buildToolsVersion = "28.0.3"
-        minSdkVersion = 16
+        // minSdkVersion = 21 is required for optimal caching, see https://developer.android.com/studio/build/build-cache.html
+        minSdkVersion = 21
         compileSdkVersion = 28
         targetSdkVersion = 28
     }
