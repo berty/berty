@@ -1,6 +1,8 @@
 export PWD = $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
+BERTY_ROOT = $(abspath $(shell pwd)/..)
+
 UNAME_S ?= $(shell uname -s)
 
 author = Berty Technologies <oss@berty.tech>
@@ -140,6 +142,10 @@ gen.clean:
 	  packages/*/*.pb.js \
 	  packages/*/*.pb.d.ts \
 	)
+
+$(HOME)/.android/debug.keystore: $(pkg_mod)
+	mkdir -p $(dir $@)
+	cp $(BERTY_ROOT)/js/packages/berty-app/node_modules/react-native/template/android/app/debug.keystore $@
 
 include packages/berty-store/Makefile
 include packages/berty-templates/Makefile

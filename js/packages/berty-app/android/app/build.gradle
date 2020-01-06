@@ -96,6 +96,7 @@ def enableSeparateBuildPerCPUArchitecture = false
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
+ * Turning this on will disable caching of pre-dexed remote dependencie
  */
 def enableProguardInReleaseBuilds = false
 

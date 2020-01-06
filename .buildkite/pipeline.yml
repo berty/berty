@@ -44,43 +44,6 @@ steps:
       - git diff -w | cat
       - git diff-index -w --quiet HEAD --
 
-  - label: js-generate
-    plugins:
-      - n0izn0iz/docker#v3.5.4:
-          image: bertytech/protoc:22
-          propagate-uid-gid: true
-          workdir: /go/src/berty.tech/berty
-          environment:
-            ["GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent"]
-          volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
-    agents:
-      queue: "bigcores"
-    commands:
-      - set -x
-      - cd js
-      - make gen.clean
-      - make gen
-      - cd ..
-      - git status | cat
-      - git diff -w | cat
-      - git diff-index -w --quiet HEAD --
-
-  - label: js-lint
-    plugins:
-      - n0izn0iz/docker#v3.5.4:
-          image: bertytech/protoc:22
-          propagate-uid-gid: true
-          workdir: /go/src/berty.tech/berty
-          environment:
-            ["GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent"]
-          volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
-    agents:
-      queue: "bigcores"
-    commands:
-      - set -x
-      - cd js
-      - make lint
-
   - label: go-build
     plugins:
       - n0izn0iz/docker#v3.5.4:
@@ -119,6 +82,78 @@ steps:
       - make lint
       - cd ..
       - codecov -f ./go/coverage.txt
+
+  - label: android-build
+    plugins:
+      - n0izn0iz/docker#v3.5.4:
+          image: bitriseio/android-ndk:v2019_12_28-08_15-b1793
+          propagate-uid-gid: true
+          workdir: /home/buildkite-agent/go/src/berty.tech/berty
+          environment:
+            [
+              "GO111MODULE=on",
+              "GOPATH=/home/buildkite-agent/go",
+              "HOME=/home/buildkite-agent",
+              "GRADLE_USER_HOME=/home/buildkite-agent/.gradle"
+            ]
+          volumes: ["~:/home/buildkite-agent"]
+    agents:
+      queue: "bigcores"
+    commands:
+      - set -x
+      - cd js
+      - make deps.android
+      - cd packages/berty-app
+      - npx jetify
+      - cd android
+      - "echo 'android.buildCacheDir=/home/buildkite-agent/.cache/android-build-cache' >> gradle.properties"
+      - ./gradlew bundleRelease
+      - find . -name '*.aab'
+      - "[ -f ~/bundletool-all-0.12.0.jar ] || wget -O ~/bundletool-all-0.12.0.jar https://github.com/google/bundletool/releases/download/0.12.0/bundletool-all-0.12.0.jar"
+      - "java -jar ~/bundletool-all-0.12.0.jar build-apks --bundle=./app/build/outputs/bundle/release/app.aab --output=./app.apks --mode=universal"
+      - unzip ./app.apks
+      - find . -name '*.apk'
+    artifact_paths:
+      - "js/packages/berty-app/android/universal.apk"
+      - "js/packages/berty-app/android/toc.pb"
+      - "js/packages/berty-app/android/app/build/outputs/bundle/release/app.aab"
+
+  - label: js-generate
+    plugins:
+      - n0izn0iz/docker#v3.5.4:
+          image: bertytech/protoc:22
+          propagate-uid-gid: true
+          workdir: /go/src/berty.tech/berty
+          environment:
+            ["GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent"]
+          volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
+    agents:
+      queue: "bigcores"
+    commands:
+      - set -x
+      - cd js
+      - make gen.clean
+      - make gen
+      - cd ..
+      - git status | cat
+      - git diff -w | cat
+      - git diff-index -w --quiet HEAD --
+
+  - label: js-lint
+    plugins:
+      - n0izn0iz/docker#v3.5.4:
+          image: bertytech/protoc:22
+          propagate-uid-gid: true
+          workdir: /go/src/berty.tech/berty
+          environment:
+            ["GO111MODULE=on", "GOPATH=/go", "HOME=/home/buildkite-agent"]
+          volumes: ["~:/home/buildkite-agent", "~/go/pkg/mod:/go/pkg/mod"]
+    agents:
+      queue: "bigcores"
+    commands:
+      - set -x
+      - cd js
+      - make lint
 
   - label: bazel-go
     plugins:
