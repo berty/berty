@@ -5901,6 +5901,11 @@ chardet@^0.7.0:
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
+check-deps-sync@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/check-deps-sync/-/check-deps-sync-1.0.2.tgz#9782fc00e1111a0f67ffb45baa96d7e73b51d8d0"
+  integrity sha512-3j/OTLpZtVzA7w4V8EQeg2crf9dWchHcPUmEoN5FsJllgxelBNKpml/wB3g6CLt2pNq4TImiUVMz7NRRYthY3Q==
+
 chokidar@^2.0.0, chokidar@^2.0.2, chokidar@^2.0.4:
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-2.1.8.tgz#804b3a7b6a99358c3c5c61e71d8728f041cff917"
