@@ -1,8 +1,8 @@
-#import "BertyChatSdk.h"
+#import "BertyBridge.h"
 
 #import <AFNetworking/AFNetworking.h>
 
-@implementation BertyChatSdk
+@implementation BertyBridge
 
 RCT_EXPORT_MODULE()
 

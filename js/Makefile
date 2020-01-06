@@ -150,7 +150,7 @@ $(HOME)/.android/debug.keystore: $(pkg_mod)
 include packages/berty-store/Makefile
 include packages/berty-templates/Makefile
 include packages/berty-api/Makefile
-include packages/react-native-chat-sdk/Makefile
+include packages/react-native-berty-bridge/Makefile
 include packages/berty-app/Makefile
 include packages/storybook-mobile/Makefile
 include packages/storybook-web/Makefile

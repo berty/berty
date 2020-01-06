@@ -1,4 +1,4 @@
-workspace(name = "chat_sdk")
+workspace(name = "berty_bridge")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -8,9 +8,9 @@ local_repository(
     path = "../../../go",
 )
 
-load("@chat_sdk//:repositories.bzl", "chat_sdk_repositories")
+load("@berty_bridge//:repositories.bzl", "berty_bridge_repositories")
 
-chat_sdk_repositories()
+berty_bridge_repositories()
 
 # check bazel version
 
@@ -20,9 +20,9 @@ check_bazel_version("0.29.1")
 
 # berty go config
 
-load("@chat_sdk//:config.bzl", "chat_sdk_config")
+load("@berty_bridge//:config.bzl", "berty_bridge_config")
 
-chat_sdk_config()
+berty_bridge_config()
 
 http_archive(
     name = "rules_jvm_external",

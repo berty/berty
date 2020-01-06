@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:BertyChatSdk.xcodeproj">
+      location = "group:BertyBridge.xcodeproj">
    </FileRef>
 </Workspace>

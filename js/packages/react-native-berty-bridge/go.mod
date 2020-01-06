@@ -1,6 +1,6 @@
 go 1.13
 
-module berty.tech/js/packages/react-native-chat-sdk
+module berty.tech/js/packages/react-native-berty-bridge
 
 replace berty.tech/berty/go => ../../../go
 

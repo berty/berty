@@ -14,8 +14,8 @@
 // import tech.berty.app.BuildConfig;
 // // import tech.berty.app.R;
 //
-// // tech.berty.chatsdk
-// import tech.berty.chatsdk.BertyChatSdkPackage;
+// // tech.berty.chatbridge
+// import tech.berty.bridge.BertyBridgePackage;
 //
 // public class PackageList {
 //   private Application application;
@@ -49,7 +49,7 @@
 //   public ArrayList<ReactPackage> getPackages() {
 //     return new ArrayList<>(Arrays.<ReactPackage>asList(
 //       new MainReactPackage(),
-//       new BertyChatSdkPackage()
+//       new BertyChatBridgePackage()
 //     ));
 //   }
 // }

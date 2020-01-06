@@ -1,5 +1,5 @@
 load("@co_znly_rules_gomobile//:java.bzl", "gobind_java")
-load("@chat_sdk//ios:framework.bzl", "gen_framework")
+load("@berty_bridge//ios:framework.bzl", "gen_framework")
 
 gen_framework(
     name = "bridge_framework",

@@ -3,11 +3,11 @@ export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
 BAZEL_FRAMEWORK := $(PWD)/bazel-bin/ios/bridge_framework.tar.gz
 FRAMEWORK_DIR := $(PWD)/ios/Frameworks
-FRAMEWORK := $(FRAMEWORK_DIR)/Bridgechat.framework
+FRAMEWORK := $(FRAMEWORK_DIR)/BertyBridge.framework
 
 BAZEL_AAR := $(PWD)/bazel-bin/android/bridge_library.aar
 AAR_DIR := $(PWD)/android/libs
-AAR := $(PWD)/android/libs/Bridgechat.aar
+AAR := $(PWD)/android/libs/BertyBridge.aar
 
 
 build.sdk: build.sdk.ios build.sdk.android

@@ -203,7 +203,7 @@ PODS:
   - React-jsinspector (0.61.4)
   - react-native-blur (0.8.0):
     - React
-  - react-native-chat-sdk (1.0.0):
+  - react-native-berty-bridge (1.0.0):
     - AFNetworking (~> 3.0)
     - React
   - react-native-config (0.11.7):
@@ -282,7 +282,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
-  - react-native-chat-sdk (from `../../react-native-chat-sdk`)
+  - react-native-berty-bridge (from `../../react-native-berty-bridge`)
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-example (from `../../react-native-example`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -345,8 +345,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
-  react-native-chat-sdk:
-    :path: "../../react-native-chat-sdk"
+  react-native-berty-bridge:
+    :path: "../../react-native-berty-bridge"
   react-native-config:
     :path: "../node_modules/react-native-config"
   react-native-example:
@@ -408,7 +408,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 8dfb73b987afa9324e4009bdce62a18ce23d983c
   React-jsinspector: d15478d0a8ada19864aa4d1cc1c697b41b3fa92f
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
-  react-native-chat-sdk: ae56396b4713c7a1c599000c84fe38106c175d55
+  react-native-berty-bridge: ae56396b4713c7a1c599000c84fe38106c175d55
   react-native-config: 8f6b2b9e017f6a5e92a97353c768e19e67294bb1
   react-native-example: a62e0ddd2e417f3683b0367d9f0a3539d62f8b10
   react-native-safe-area-context: 1f8a52fb0ab1321eef9a7099bd2c360d4e38264b

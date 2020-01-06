@@ -3,7 +3,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@berty_go//:repositories.bzl", "berty_go_repositories")
 
-def chat_sdk_repositories():
+def berty_bridge_repositories():
     # utils
     maybe(
         git_repository,

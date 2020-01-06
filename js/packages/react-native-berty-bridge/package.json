@@ -1,16 +1,16 @@
 {
-  "name": "@berty-tech/react-native-chat-sdk",
-  "title": "React Native Chat Sdk",
+  "name": "@berty-tech/react-native-berty-bridge",
+  "title": "React Native Berty Bridge",
   "version": "1.0.0",
-  "description": "Berty's react-native chat-sdk library",
+  "description": "Berty's react-native berty-bridge library",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/berty/react-native-chat-sdk.git",
-    "baseUrl": "https://github.com/berty/react-native-chat-sdk"
+    "url": "git+https://github.com/berty/react-native-berty-bridge.git",
+    "baseUrl": "https://github.com/berty/react-native-berty-bridge"
   },
   "keywords": [
     "react-native"

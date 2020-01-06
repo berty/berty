@@ -2,12 +2,12 @@ load("@co_znly_rules_gomobile//:java.bzl", "gobind_java")
 
 aar_import(
     name = "org_webkit_android_jsc",
-    aar = "@chat_sdk//:jsc_aar_file",
+    aar = "@berty_bridge//:jsc_aar_file",
 )
 
 aar_import(
     name = "com_facebook_react_react_native",
-    aar = "@chat_sdk//:react_native_aar_file",
+    aar = "@berty_bridge//:react_native_aar_file",
     # srcjar = "@berty_app//:react_native_aar_file",
     exports = [
         "@maven//:com_facebook_soloader_soloader",
@@ -29,7 +29,7 @@ aar_import(
 
 gobind_java(
     name = "bridge",
-    java_package = "tech.berty.chatsdk",
+    java_package = "tech.berty.bertybridge",
     tags = [],
     deps = [
         "@berty_go//framework/bertybridge:go_default_library",

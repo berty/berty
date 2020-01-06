@@ -1,22 +1,22 @@
-package tech.berty.chatsdk;
+package tech.berty.bertybridge;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 
-public class BertyChatSdkModule extends ReactContextBaseJavaModule {
+public class BertyChatBridgeModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
 
-    public BertyChatSdkModule(ReactApplicationContext reactContext) {
+    public BertyChatBridgeModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }
 
     @Override
     public String getName() {
-        return "BertyChatSdk";
+        return "BertyBridge";
     }
 
     @ReactMethod

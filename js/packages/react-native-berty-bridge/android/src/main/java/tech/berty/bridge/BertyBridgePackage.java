@@ -1,4 +1,4 @@
-package tech.berty.chatsdk;
+package tech.berty.bertybridge;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,10 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.bridge.JavaScriptModule;
 
-public class BertyChatSdkPackage implements ReactPackage {
+public class BertyBridgePackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new BertyChatSdkModule(reactContext));
+        return Arrays.<NativeModule>asList(new BertyBridgeModule(reactContext));
     }
 
     @Override
