@@ -34,7 +34,7 @@
     "@types/long": "^4.0.0",
     "@types/node": "^12.7.12",
     "case": "^1.6.2",
-    "eslint": "^6.5.1",
+    "eslint": "^6.6.0",
     "espree": "^3.5.4",
     "jsdoc": "^3.5.5",
     "minimist": "^1.2.0",
