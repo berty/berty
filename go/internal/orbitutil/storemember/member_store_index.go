@@ -69,7 +69,7 @@ func (m *memberStoreIndex) processPending() {
 					member = pending
 				} else if !deviceExists {
 					// Member already exists but device doesn't, add device to the tree
-					member = member.AddDeviceKey(pending.FirstDevice())
+					member.AddDeviceKey(pending.FirstDevice())
 
 					// Check if pending device was added by a different inviter
 					found := false
@@ -80,7 +80,7 @@ func (m *memberStoreIndex) processPending() {
 					}
 					if !found {
 						// Inviter is not listed in member's inviters so list it
-						member = member.AddInviterKey(pending.FirstInviter())
+						member.AddInviterKey(pending.FirstInviter())
 					}
 
 					m.members.membersByDevice[string(devicePubKeyBytes)] = member
@@ -120,7 +120,11 @@ func (m *memberStoreIndex) processPending() {
 
 				// Remove processed entry from pending list
 				m.muPending.Lock()
-				m.pending = append(m.pending[:i-processed], m.pending[i-processed+1:]...)
+				if len(m.pending) > 1 {
+					m.pending = append(m.pending[:i-processed], m.pending[i-processed+1:]...)
+				} else {
+					m.pending = nil
+				}
 				m.muPending.Unlock()
 				processed++
 			}
