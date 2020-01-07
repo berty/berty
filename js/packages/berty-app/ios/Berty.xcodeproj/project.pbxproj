@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		16CD99D5BF947FEC3DDED66B /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D0DE88311DF965EC38F62B95 /* libPods-Berty.a */; };
+		4886B57F23C61C0000DFECD4 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4886B57E23C61C0000DFECD4 /* File.swift */; };
 		86CF78864E6A0AC876FD42A7 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F82356C223841C7E00950AF2 /* libPods-Berty.a */; };
 		A2508D2B43AEFDF090067301 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F82356C223841C7E00950AF2 /* libPods-Berty.a */; };
 		D30AC8E9DE9B4E064697942D /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F82356C223841C7E00950AF2 /* libPods-Berty.a */; };
@@ -50,6 +51,8 @@
 		2846E9C20CF0E56567DDE888 /* Pods-Berty-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		45EBCF50D7E5A6FDC3620E25 /* Pods-Berty-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		48236AEDA8308BEBEDB499AA /* Pods-Berty.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.production.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.production.xcconfig"; sourceTree = "<group>"; };
+		4886B57B23C61B5800DFECD4 /* Berty Debug-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Berty Debug-Bridging-Header.h"; sourceTree = "<group>"; };
+		4886B57E23C61C0000DFECD4 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		6683B60E6DF969A2D232DBB0 /* libPods-Berty-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A2CBB8C091C10654628B2CE /* libPods-BertyTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BertyTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F84C76F030A6EDBA22AB150 /* Pods-BertyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.debug.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -136,6 +139,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				4886B57B23C61B5800DFECD4 /* Berty Debug-Bridging-Header.h */,
+				4886B57E23C61C0000DFECD4 /* File.swift */,
 			);
 			name = Berty;
 			sourceTree = "<group>";
@@ -312,6 +317,7 @@
 					};
 					F8BF464B238441AC0077A846 = {
 						DevelopmentTeam = WMBQ84HN4T;
+						LastSwiftMigration = 1110;
 						ProvisioningStyle = Manual;
 					};
 					F8BF4662238444330077A846 = {
@@ -557,6 +563,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8BF464F238441AC0077A846 /* AppDelegate.m in Sources */,
+				4886B57F23C61C0000DFECD4 /* File.swift in Sources */,
 				F8BF4650238441AC0077A846 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -767,6 +774,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -782,6 +790,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development chat.berty.ios.debug";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -790,6 +801,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -804,6 +816,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development chat.berty.ios.debug";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

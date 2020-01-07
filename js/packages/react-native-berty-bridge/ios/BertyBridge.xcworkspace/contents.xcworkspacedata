@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:BertyBridge.xcodeproj">
+      location = "group:/Users/guilhemfanton/go/src/berty.tech/berty/js/packages/react-native-berty-bridge/ios/ReactNativeBertyBridge.xcodeproj">
    </FileRef>
 </Workspace>

@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		489F867C23606976004E8660 /* BertyBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489F867B23606976004E8660 /* Bertybridge.framework */; };
-		B3E7B58A1CC2AC0600A0062D /* BertyBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* BertyBridge.m */; };
+		489F867C23606976004E8660 /* Bertybridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489F867B23606976004E8660 /* Bertybridge.framework */; };
+		48C42EB823C3D47B006A2D1C /* ReactNativeBertyBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C42EB723C3D47B006A2D1C /* ReactNativeBertyBridge.swift */; };
+		B3E7B58A1CC2AC0600A0062D /* ReactNativeBertyBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* ReactNativeBertyBridge.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,10 +25,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		134814201AA4EA6300B7C361 /* libBertyBridge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBertyBridge.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		489F867B23606976004E8660 /* BertyBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BertyBridge.framework; sourceTree = "<group>"; };
-		B3E7B5881CC2AC0600A0062D /* BertyBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BertyBridge.h; sourceTree = "<group>"; };
-		B3E7B5891CC2AC0600A0062D /* BertyBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BertyBridge.m; sourceTree = "<group>"; };
+		134814201AA4EA6300B7C361 /* libReactNativeBertyBridge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libReactNativeBertyBridge.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		489F867B23606976004E8660 /* Bertybridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bertybridge.framework; sourceTree = "<group>"; };
+		48C42EB623C3D47B006A2D1C /* ReactNativeBertyBridge-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ReactNativeBertyBridge-Bridging-Header.h"; sourceTree = "<group>"; };
+		48C42EB723C3D47B006A2D1C /* ReactNativeBertyBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactNativeBertyBridge.swift; sourceTree = "<group>"; };
+		B3E7B5881CC2AC0600A0062D /* ReactNativeBertyBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReactNativeBertyBridge.h; sourceTree = "<group>"; };
+		B3E7B5891CC2AC0600A0062D /* ReactNativeBertyBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReactNativeBertyBridge.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,7 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				489F867C23606976004E8660 /* BertyBridge.framework in Frameworks */,
+				489F867C23606976004E8660 /* Bertybridge.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,7 +48,7 @@
 		134814211AA4EA7D00B7C361 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				134814201AA4EA6300B7C361 /* libBertyBridge.a */,
+				134814201AA4EA6300B7C361 /* libReactNativeBertyBridge.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -53,7 +56,7 @@
 		489F867A23606976004E8660 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				489F867B23606976004E8660 /* BertyBridge.framework */,
+				489F867B23606976004E8660 /* Bertybridge.framework */,
 			);
 			path = Frameworks;
 			sourceTree = "<group>";
@@ -61,9 +64,11 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				48C42EB723C3D47B006A2D1C /* ReactNativeBertyBridge.swift */,
+				B3E7B5881CC2AC0600A0062D /* ReactNativeBertyBridge.h */,
+				B3E7B5891CC2AC0600A0062D /* ReactNativeBertyBridge.m */,
+				48C42EB623C3D47B006A2D1C /* ReactNativeBertyBridge-Bridging-Header.h */,
 				489F867A23606976004E8660 /* Frameworks */,
-				B3E7B5881CC2AC0600A0062D /* BertyBridge.h */,
-				B3E7B5891CC2AC0600A0062D /* BertyBridge.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,9 +76,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		58B511DA1A9E6C8500147676 /* BertyBridge */ = {
+		58B511DA1A9E6C8500147676 /* ReactNativeBertyBridge */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "BertyBridge" */;
+			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "ReactNativeBertyBridge" */;
 			buildPhases = (
 				58B511D71A9E6C8500147676 /* Sources */,
 				58B511D81A9E6C8500147676 /* Frameworks */,
@@ -83,9 +88,9 @@
 			);
 			dependencies = (
 			);
-			name = BertyBridge;
+			name = ReactNativeBertyBridge;
 			productName = RCTDataManager;
-			productReference = 134814201AA4EA6300B7C361 /* libBertyBridge.a */;
+			productReference = 134814201AA4EA6300B7C361 /* libReactNativeBertyBridge.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -99,10 +104,11 @@
 				TargetAttributes = {
 					58B511DA1A9E6C8500147676 = {
 						CreatedOnToolsVersion = 6.1.1;
+						LastSwiftMigration = 1110;
 					};
 				};
 			};
-			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "BertyBridge" */;
+			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "ReactNativeBertyBridge" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -115,7 +121,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				58B511DA1A9E6C8500147676 /* BertyBridge */,
+				58B511DA1A9E6C8500147676 /* ReactNativeBertyBridge */,
 			);
 		};
 /* End PBXProject section */
@@ -125,7 +131,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3E7B58A1CC2AC0600A0062D /* BertyBridge.m in Sources */,
+				B3E7B58A1CC2AC0600A0062D /* ReactNativeBertyBridge.m in Sources */,
+				48C42EB823C3D47B006A2D1C /* ReactNativeBertyBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +235,7 @@
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
@@ -238,16 +246,21 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = BertyBridge;
+				PRODUCT_NAME = ReactNativeBertyBridge;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "BertyBridge-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
@@ -258,17 +271,20 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = BertyBridge;
+				PRODUCT_NAME = ReactNativeBertyBridge;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "BertyBridge-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "BertyBridge" */ = {
+		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "ReactNativeBertyBridge" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511ED1A9E6C8500147676 /* Debug */,
@@ -277,7 +293,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "BertyBridge" */ = {
+		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "ReactNativeBertyBridge" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511F01A9E6C8500147676 /* Debug */,

@@ -18,8 +18,9 @@ Pod::Spec.new do |s|
 
   s.source_files = "ios/**/*.{h,m,swift}"
   s.requires_arc = true
+  s.swift_version = '5.0'
 
+  s.ios.vendored_frameworks = 'ios/Frameworks/Bertybridge.framework'
   s.dependency "React"
-	s.dependency 'AFNetworking', '~> 3.0'
   # s.dependency "..."
 end
