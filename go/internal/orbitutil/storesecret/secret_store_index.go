@@ -93,7 +93,7 @@ func (s *secretStoreIndex) syncSecretWithPendingMemberDevice(senderDevicePubKey 
 }
 
 func (s *secretStoreIndex) emitEventNewSecret(senderDevicePubKey crypto.PubKey) {
-	eventNewSecret := NewEventNewSecret(senderDevicePubKey)
+	eventNewSecret := orbitutilapi.NewEventSecretNewDevice(senderDevicePubKey)
 	s.groupContext.GetSecretStore().Emit(eventNewSecret)
 }
 

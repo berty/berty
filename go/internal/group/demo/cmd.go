@@ -8,16 +8,17 @@ import (
 	"path"
 	"time"
 
-	"berty.tech/berty/go/internal/group"
-	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/internal/orbitutil"
-	"berty.tech/berty/go/internal/orbitutil/storesecret"
-	"berty.tech/berty/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/stores"
 	"github.com/LK4D4/trylock"
 	"github.com/libp2p/go-libp2p-core/crypto"
+
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/ipfsutil"
+	"berty.tech/berty/go/internal/orbitutil"
+	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/berty/go/pkg/errcode"
 )
 
 func issueNewInvitation(member crypto.PrivKey, g *group.Group) {
@@ -209,8 +210,8 @@ func mainLoop(invitation *group.Invitation, create bool) {
 
 	go scs.Subscribe(ctx, func(e events.Event) {
 		switch e.(type) {
-		case *storesecret.EventNewSecret:
-			event, _ := e.(*storesecret.EventNewSecret)
+		case *orbitutilapi.EventSecretNewDevice:
+			event, _ := e.(*orbitutilapi.EventSecretNewDevice)
 
 			secret, err := scs.GetDeviceSecret(event.SenderDevicePubKey)
 			if err != nil {
