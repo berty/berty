@@ -217,6 +217,7 @@ func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPee
 			})
 
 			wg.Done()
+			cancel()
 
 			if eventReceived != len(peers) {
 				t.Logf("%d event(s) missing from peer %d list (%d/%d)", len(peers)-eventReceived, peerIndex, eventReceived, len(peers))

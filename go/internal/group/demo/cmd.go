@@ -259,6 +259,7 @@ func mainLoop(invitation *group.Invitation, create bool) {
 
 		replicated := false
 		waitCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+		defer cancel()
 
 		go ms.Subscribe(ctx, func(e events.Event) {
 			switch e.(type) {

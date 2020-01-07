@@ -15,6 +15,7 @@ import (
 )
 
 func TestSecretStore_Basic(t *testing.T) {
+	// TODO: handle more cases
 	memberCount := 2
 	deviceCount := 1
 

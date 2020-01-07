@@ -58,7 +58,7 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 
 	for i, peer := range peers {
 		go func(peer *orbittestutil.MockedPeer, peerIndex int) {
-			ctxRepl, cancel := context.WithCancel(ctxRepl)
+			ctxRepl, cancel := context.WithTimeout(ctxRepl, time.Second*10)
 			eventReceived := 0
 
 			peer.GetGroupContext().GetMemberStore().Subscribe(ctxRepl, func(e events.Event) {
@@ -72,6 +72,7 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 			})
 
 			wg.Done()
+			cancel()
 
 			if eventReceived != len(peers) {
 				t.Logf("%d event(s) missing from peer %d list (%d/%d)", len(peers)-eventReceived, peerIndex, eventReceived, len(peers))

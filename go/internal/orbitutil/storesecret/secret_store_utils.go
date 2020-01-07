@@ -41,6 +41,10 @@ func SendSecretsToCurrentMembers(ctx context.Context, gctx orbitutilapi.GroupCon
 
 	for _, m := range members {
 		if _, err := gctx.GetSecretStore().SendSecret(ctx, m); err != nil {
+			if err == errcode.ErrGroupSecretAlreadySentToMember {
+				continue
+			}
+
 			return errcode.TODO.Wrap(err)
 		}
 	}
