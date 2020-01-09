@@ -1,4 +1,4 @@
-package tech.berty.bertybridge;
+package tech.berty.bridge;
 
 import java.util.Arrays;
 import java.util.Collections;

@@ -16,12 +16,12 @@
  @implementation objc_name (RCTExternModule)                          \
  RCT_EXPORT_MODULE_NO_LOAD(js_name, objc_name)
 
-@interface RCT_EXTERN_REMAP_MODULE_2(BertyDemo, GoBertyDemo, NSObject)
+@interface RCT_EXTERN_REMAP_MODULE_2(BertyBridge, ReactNativeBertyBridge, NSObject)
 
-RCT_EXTERN_METHOD(start:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(startDemo:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(getGRPCAddr:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(getDemoAddr:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
 @end

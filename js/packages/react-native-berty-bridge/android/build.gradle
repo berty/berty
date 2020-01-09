@@ -45,6 +45,9 @@ android {
 }
 
 repositories {
+    flatDir {
+        dirs 'libs'
+    }
     mavenLocal()
     maven {
         // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
@@ -63,6 +66,7 @@ dependencies {
     // https://github.com/facebook/react-native/blob/0.61-stable/template/android/app/build.gradle#L192
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
+    compile(name:'bertybridge', ext:'aar')// go lib
 }
 
 def configureReactNativePom(def pom) {

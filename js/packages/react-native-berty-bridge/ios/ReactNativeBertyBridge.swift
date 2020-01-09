@@ -9,41 +9,41 @@
 import Foundation
 import Bertybridge
 
-@objc(GoBertyDemo)
-class GoBertyDemo: NSObject {
-    var bridge: BertybridgeDemoBridgeProtocol?
+@objc(ReactNativeBertyBridge)
+class ReactNativeBertyBridge: NSObject {
+    var bridgeDemo: BertybridgeDemoBridgeProtocol?
 
     override init() {
         super.init()
     }
 
-    @objc func start(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc func startDemo(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            if self.bridge != nil {
+            if self.bridgeDemo != nil {
                 throw NSError(domain: "already started", code: 1)
             }
 
             var err: NSError?
             let opts = BertybridgeDemoOpts()
             opts.logLevel = "debug"
-            let bridge = BertybridgeNewDemoBridge(opts, &err)
+            let bridgeDemo = BertybridgeNewDemoBridge(opts, &err)
             if err != nil {
                 throw err!
             }
 
-            self.bridge = bridge
+            self.bridgeDemo = bridgeDemo
         } catch let error as NSError {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
     }
 
-    @objc func getGRPCAddr(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc func getDemoAddr(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            guard let bridge = self.bridge else {
-                throw NSError(domain: "bridge isn't started", code: 1)
+            guard let bridgeDemo = self.bridgeDemo else {
+                throw NSError(domain: "bridgeDemo isn't started", code: 1)
             }
 
-            let addr = bridge.grpcWebSocketListenerAddr()
+            let addr = bridgeDemo.grpcWebSocketListenerAddr()
             resolve(addr)
         } catch let error as NSError {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
