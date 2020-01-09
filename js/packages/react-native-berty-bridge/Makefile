@@ -7,7 +7,7 @@ FRAMEWORK := $(FRAMEWORK_DIR)/Bertybridge.framework
 
 BAZEL_AAR := $(PWD)/bazel-bin/android/bridge_library.aar
 AAR_DIR := $(PWD)/android/libs
-AAR := $(PWD)/android/libs/Bertybridge.aar
+AAR := $(PWD)/android/libs/bertybridge.aar
 
 
 build.sdk: build.sdk.ios build.sdk.android

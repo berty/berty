@@ -1,4 +1,4 @@
-package tech.berty.bridge;
+package tech.berty.bertybridge;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -7,9 +7,9 @@ import com.facebook.react.bridge.Promise;
 
 // go packages
 import bertybridge.Bertybridge;
+import bertybridge.BridgeOpts;
 import bertybridge.DemoBridge;
 import bertybridge.DemoOpts;
-
 
 public class BertyBridgeModule extends ReactContextBaseJavaModule {
 
@@ -34,8 +34,13 @@ public class BertyBridgeModule extends ReactContextBaseJavaModule {
                 throw new Exception("demo bridge already started");
             }
 
+            BridgeOpts bridgeOpts = new BridgeOpts();
+            bridgeOpts.setGRPCWebSocketListener(true);
+
             DemoOpts opts = new DemoOpts();
             opts.setLogLevel("debug");
+            opts.setBridgeOpts(bridgeOpts);
+            
             this.demoBridge = Bertybridge.newDemoBridge(opts);
             promise.resolve(true);
         } catch (Exception err) {
