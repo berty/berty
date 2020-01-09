@@ -11,7 +11,7 @@ import (
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/internal/orbitutil"
-	"berty.tech/berty/go/internal/orbitutil/storemember"
+	"berty.tech/berty/go/pkg/bertyprotocol"
 
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/events"
@@ -208,7 +208,7 @@ func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPee
 
 			p.GetGroupContext().GetMemberStore().Subscribe(ctxRepl, func(e events.Event) {
 				switch e.(type) {
-				case *storemember.EventNewMemberDevice:
+				case *bertyprotocol.GroupMemberStoreEvent:
 					eventReceived++
 					if eventReceived == len(peers) {
 						cancel()

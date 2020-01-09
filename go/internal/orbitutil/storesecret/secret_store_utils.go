@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"berty.tech/go-orbit-db/events"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
@@ -19,7 +20,13 @@ func SendSecretsToNewMembers(ctx context.Context, logger *zap.Logger, gctx orbit
 		case *orbitutilapi.EventSecretNewDevice:
 			event, _ := e.(*orbitutilapi.EventSecretNewDevice)
 
-			memberEntry, err := ms.GetEntryByDevice(event.SenderDevicePubKey)
+			devicePK, err := crypto.UnmarshalEd25519PublicKey(event.GroupStoreEvent.GroupDevicePubKey)
+			if err != nil {
+				logger.Error("unable unmarshal public key", zap.Error(err))
+				return
+			}
+
+			memberEntry, err := ms.GetEntryByDevice(devicePK)
 			if err != nil {
 				logger.Error("unable to get member entry", zap.Error(err))
 				return

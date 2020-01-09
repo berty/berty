@@ -28,13 +28,17 @@ type memberStoreIndex struct {
 
 	processed   map[string]struct{}
 	muProcessed sync.RWMutex
+
+	pendingEntries           map[string]ipfslog.Entry
+	pendingPayloads          map[string]*group.MemberEntryPayload
+	muPendingEntriesPayloads sync.Mutex
 }
 
 func (m *memberStoreIndex) Get(key string) interface{} {
 	return m.members
 }
 
-func (m *memberStoreIndex) processPending() {
+func (m *memberStoreIndex) processPending(log ipfslog.Log) {
 	for {
 		processed := 0
 
@@ -108,13 +112,24 @@ func (m *memberStoreIndex) processPending() {
 						}
 					}
 
-					// Send event containing new memberDevice
-					memberDevice := &group.MemberDevice{
-						Member: pending.Member(),
-						Device: pending.FirstDevice(),
+					deviceRaw, err := pending.FirstDevice().Raw()
+					if err != nil {
+						// TODO: add logging here
+						_ = err
 					}
-					eventNewMemberDevice := NewEventNewMemberDevice(memberDevice)
-					m.groupContext.GetMemberStore().Emit(eventNewMemberDevice)
+
+					m.muPendingEntriesPayloads.Lock()
+					eventNewMemberDevice, err := orbitutilapi.NewEventMember(log, m.pendingEntries[string(deviceRaw)], m.pendingPayloads[string(deviceRaw)], m.groupContext)
+					if err != nil {
+						// TODO:
+						_ = err
+					} else {
+						delete(m.pendingEntries, string(deviceRaw))
+						delete(m.pendingPayloads, string(deviceRaw))
+						m.groupContext.GetMemberStore().Emit(eventNewMemberDevice)
+					}
+
+					m.muPendingEntriesPayloads.Unlock()
 				}
 				m.members.muMemberTree.Unlock()
 
@@ -173,7 +188,9 @@ func (m *memberStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry)
 			if _, err = memberDevice.Member.Raw(); err != nil {
 				continue
 			}
-			if _, err = memberDevice.Device.Raw(); err != nil {
+
+			deviceRaw, err := memberDevice.Device.Raw()
+			if err != nil {
 				continue
 			}
 
@@ -190,10 +207,15 @@ func (m *memberStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry)
 			m.muPending.Lock()
 			m.pending = append(m.pending, newPendingMember)
 			m.muPending.Unlock()
+
+			m.muPendingEntriesPayloads.Lock()
+			m.pendingEntries[string(deviceRaw)] = e
+			m.pendingPayloads[string(deviceRaw)] = payload
+			m.muPendingEntriesPayloads.Unlock()
 		}
 	}
 
-	m.processPending()
+	m.processPending(log)
 
 	return nil
 }
@@ -208,7 +230,9 @@ func NewMemberStoreIndex(g orbitutilapi.GroupContext) iface.IndexConstructor {
 				membersByDevice:  map[string]*orbitutilapi.MemberEntry{},
 				membersByInviter: map[string][]*orbitutilapi.MemberEntry{},
 			},
-			processed: map[string]struct{}{},
+			processed:       map[string]struct{}{},
+			pendingEntries:  map[string]ipfslog.Entry{},
+			pendingPayloads: map[string]*group.MemberEntryPayload{},
 		}
 	}
 }

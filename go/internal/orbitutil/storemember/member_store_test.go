@@ -13,8 +13,8 @@ import (
 
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/orbitutil/orbittestutil"
-	"berty.tech/berty/go/internal/orbitutil/storemember"
 	"berty.tech/berty/go/internal/testutil"
+	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 func TestMemberStore(t *testing.T) {
@@ -54,16 +54,16 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 	wg := sync.WaitGroup{}
 	wg.Add(len(peers))
 
-	ctxRepl, _ := context.WithCancel(ctx)
+	ctxRepl, cancelRepl := context.WithCancel(ctx)
 
 	for i, peer := range peers {
 		go func(peer *orbittestutil.MockedPeer, peerIndex int) {
-			ctxRepl, cancel := context.WithTimeout(ctxRepl, time.Second*10)
+			ctxRepl, cancel := context.WithTimeout(ctxRepl, time.Second*20)
 			eventReceived := 0
 
 			peer.GetGroupContext().GetMemberStore().Subscribe(ctxRepl, func(e events.Event) {
 				switch e.(type) {
-				case *storemember.EventNewMemberDevice:
+				case *bertyprotocol.GroupMemberStoreEvent:
 					eventReceived++
 					if eventReceived == len(peers) {
 						cancel()
@@ -75,7 +75,7 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 			cancel()
 
 			if eventReceived != len(peers) {
-				t.Logf("%d event(s) missing from peer %d list (%d/%d)", len(peers)-eventReceived, peerIndex, eventReceived, len(peers))
+				t.Logf("%d event(s) missing from peer list #%d (%d/%d)", len(peers)-eventReceived, peerIndex, eventReceived, len(peers))
 			}
 		}(peer, i)
 	}
@@ -107,6 +107,7 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 
 	// Wait for all events to be received in all peers's member log (or timeout)
 	wg.Wait()
+	cancelRepl()
 
 	// Test if everything was replicated and indexed correctly
 	for i, peer := range peers {

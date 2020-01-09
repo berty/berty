@@ -213,20 +213,22 @@ func mainLoop(invitation *group.Invitation, create bool) {
 		case *orbitutilapi.EventSecretNewDevice:
 			event, _ := e.(*orbitutilapi.EventSecretNewDevice)
 
-			secret, err := scs.GetDeviceSecret(event.SenderDevicePubKey)
+			senderDevicePubKey, err := crypto.UnmarshalEd25519PublicKey(event.GroupStoreEvent.GroupDevicePubKey)
 			if err != nil {
 				panic(err)
 			}
 
-			memberEntry, err := ms.GetEntryByDevice(event.SenderDevicePubKey)
+			secret, err := scs.GetDeviceSecret(senderDevicePubKey)
 			if err != nil {
 				panic(err)
 			}
 
-			senderDevicePubKeyBytes, err := event.SenderDevicePubKey.Raw()
+			memberEntry, err := ms.GetEntryByDevice(senderDevicePubKey)
 			if err != nil {
 				panic(err)
 			}
+
+			senderDevicePubKeyBytes := event.GroupStoreEvent.GroupDevicePubKey
 			senderMemberPubKeyBytes, err := memberEntry.Member().Raw()
 			if err != nil {
 				panic(err)
@@ -234,7 +236,7 @@ func mainLoop(invitation *group.Invitation, create bool) {
 			fmt.Println("")
 			fmt.Println("Secret received from: {")
 			fmt.Println("\tMember:", base64.StdEncoding.EncodeToString(senderMemberPubKeyBytes), isMemberMineOrGroup(memberEntry.Member(), groupContext))
-			fmt.Println("\tDevice:", base64.StdEncoding.EncodeToString(senderDevicePubKeyBytes), isDeviceMine(event.SenderDevicePubKey, groupContext))
+			fmt.Println("\tDevice:", base64.StdEncoding.EncodeToString(senderDevicePubKeyBytes), isDeviceMine(senderDevicePubKey, groupContext))
 			fmt.Println("\tDerivation state:", base64.StdEncoding.EncodeToString(secret.DerivationState))
 			fmt.Println("\tCounter:", secret.Counter)
 			fmt.Println("}")

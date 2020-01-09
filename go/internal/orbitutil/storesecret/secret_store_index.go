@@ -12,13 +12,18 @@ import (
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
 	"berty.tech/berty/go/internal/orbitutil/storegroup"
-	"berty.tech/berty/go/internal/orbitutil/storemember"
+	"berty.tech/berty/go/pkg/bertyprotocol"
 )
+
+type entryPayload struct {
+	entry   ipfslog.Entry
+	payload *group.SecretEntryPayload
+}
 
 type secretStoreIndex struct {
 	groupContext orbitutilapi.GroupContext
 
-	secretPending map[string]struct{}
+	secretPending map[string]*entryPayload
 	memberPending map[string]struct{}
 	muPending     sync.RWMutex
 
@@ -43,57 +48,62 @@ func (s *secretStoreIndex) Get(senderDevicePubKey string) interface{} {
 	return ret
 }
 
-func (s *secretStoreIndex) syncMemberWithPendingSecret(senderDevicePubKey crypto.PubKey) {
-	senderDevicePubKeyBytes, err := senderDevicePubKey.Bytes()
-	if err != nil {
-		return
-	}
+func (s *secretStoreIndex) syncMemberWithPendingSecret(log ipfslog.Log, senderDevicePubKeyBytes []byte) {
 	senderDevicePubKeyStr := string(senderDevicePubKeyBytes)
 
 	s.muPending.Lock()
 
-	_, secretPending := s.secretPending[senderDevicePubKeyStr]
+	secretPending, secretPendingOK := s.secretPending[senderDevicePubKeyStr]
 	_, memberPending := s.memberPending[senderDevicePubKeyStr]
 
 	if !memberPending {
 		s.memberPending[senderDevicePubKeyStr] = struct{}{}
 	}
 
-	if !memberPending && secretPending {
-		s.emitEventNewSecret(senderDevicePubKey)
+	if !memberPending && secretPendingOK {
+		s.emitEventNewSecret(log, secretPending.entry, secretPending.payload)
 	}
 
 	s.muPending.Unlock()
 }
 
-func (s *secretStoreIndex) syncSecretWithPendingMemberDevice(senderDevicePubKey crypto.PubKey) {
-	senderDevicePubKeyBytes, err := senderDevicePubKey.Bytes()
+func (s *secretStoreIndex) syncSecretWithPendingMemberDevice(log ipfslog.Log, entry ipfslog.Entry, payload *group.SecretEntryPayload) {
+	senderDevicePubKey, err := crypto.UnmarshalEd25519PublicKey(payload.SenderDevicePubKey)
 	if err != nil {
+		// TODO:
 		return
 	}
-	senderDevicePubKeyStr := string(senderDevicePubKeyBytes)
+
+	senderDevicePubKeyStr := string(payload.SenderDevicePubKey)
 
 	s.muPending.Lock()
 
-	s.secretPending[senderDevicePubKeyStr] = struct{}{}
+	s.secretPending[senderDevicePubKeyStr] = &entryPayload{
+		entry:   entry,
+		payload: payload,
+	}
 
 	_, memberPending := s.memberPending[senderDevicePubKeyStr]
 
 	if memberPending {
-		s.emitEventNewSecret(senderDevicePubKey)
+		s.emitEventNewSecret(log, entry, payload)
 	} else {
 		_, err := s.groupContext.GetMemberStore().GetEntryByDevice(senderDevicePubKey)
 		if err == nil {
 			s.memberPending[senderDevicePubKeyStr] = struct{}{}
-			s.emitEventNewSecret(senderDevicePubKey)
+			s.emitEventNewSecret(log, entry, payload)
 		}
 	}
 
 	s.muPending.Unlock()
 }
 
-func (s *secretStoreIndex) emitEventNewSecret(senderDevicePubKey crypto.PubKey) {
-	eventNewSecret := orbitutilapi.NewEventSecretNewDevice(senderDevicePubKey)
+func (s *secretStoreIndex) emitEventNewSecret(log ipfslog.Log, entry ipfslog.Entry, payload *group.SecretEntryPayload) {
+	eventNewSecret, err := orbitutilapi.NewEventSecret(log, entry, payload, s.groupContext)
+	if err != nil {
+		return
+	}
+
 	s.groupContext.GetSecretStore().Emit(eventNewSecret)
 }
 
@@ -167,7 +177,7 @@ func (s *secretStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry)
 				s.secrets[string(senderDeviceBytes)] = deviceSecret
 				s.muSecrets.Unlock()
 
-				s.syncSecretWithPendingMemberDevice(senderDevicePubKey)
+				s.syncSecretWithPendingMemberDevice(log, e, payload)
 			}
 		}
 	}
@@ -180,7 +190,7 @@ func NewSecretStoreIndex(ctx context.Context) func(g orbitutilapi.GroupContext) 
 	return func(g orbitutilapi.GroupContext) iface.IndexConstructor {
 		newSecretStoreIndex := &secretStoreIndex{
 			groupContext:  g,
-			secretPending: map[string]struct{}{},
+			secretPending: map[string]*entryPayload{},
 			memberPending: map[string]struct{}{},
 			secrets:       map[string]*group.DeviceSecret{},
 			processed:     map[string]struct{}{},
@@ -188,9 +198,14 @@ func NewSecretStoreIndex(ctx context.Context) func(g orbitutilapi.GroupContext) 
 
 		go g.GetMemberStore().Subscribe(ctx, func(e events.Event) {
 			switch e.(type) {
-			case *storemember.EventNewMemberDevice:
-				casted, _ := e.(*storemember.EventNewMemberDevice)
-				newSecretStoreIndex.syncMemberWithPendingSecret(casted.MemberDevice.Device)
+			case *bertyprotocol.GroupMemberStoreEvent:
+				casted, _ := e.(*bertyprotocol.GroupMemberStoreEvent)
+				sStore, ok := g.GetSecretStore().(*secretStore)
+				if !ok {
+					return
+				}
+
+				newSecretStoreIndex.syncMemberWithPendingSecret(sStore.OpLog(), casted.GroupStoreEvent.GroupDevicePubKey)
 			}
 		})
 

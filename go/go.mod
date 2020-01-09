@@ -10,6 +10,7 @@ require (
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.3.2
 	github.com/improbable-eng/grpc-web v0.11.0
+	github.com/ipfs/go-cid v0.0.4
 	github.com/ipfs/go-datastore v0.3.1
 	github.com/ipfs/go-ipfs v0.4.22-0.20191217161056-7cc392ba9dac
 	github.com/ipfs/go-ipfs-config v0.1.0
