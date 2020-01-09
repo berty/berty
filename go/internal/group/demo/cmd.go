@@ -210,8 +210,8 @@ func mainLoop(invitation *group.Invitation, create bool) {
 
 	go scs.Subscribe(ctx, func(e events.Event) {
 		switch e.(type) {
-		case *orbitutilapi.EventSecretNewDevice:
-			event, _ := e.(*orbitutilapi.EventSecretNewDevice)
+		case *orbitutilapi.GroupSecretStoreEvent:
+			event, _ := e.(*orbitutilapi.GroupSecretStoreEvent)
 
 			senderDevicePubKey, err := crypto.UnmarshalEd25519PublicKey(event.GroupStoreEvent.GroupDevicePubKey)
 			if err != nil {

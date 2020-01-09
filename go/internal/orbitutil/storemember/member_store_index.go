@@ -119,7 +119,7 @@ func (m *memberStoreIndex) processPending(log ipfslog.Log) {
 					}
 
 					m.muPendingEntriesPayloads.Lock()
-					eventNewMemberDevice, err := orbitutilapi.NewEventMember(log, m.pendingEntries[string(deviceRaw)], m.pendingPayloads[string(deviceRaw)], m.groupContext)
+					eventNewMemberDevice, err := orbitutilapi.NewGroupMemberStoreEvent(log, m.pendingEntries[string(deviceRaw)], m.pendingPayloads[string(deviceRaw)], m.groupContext)
 					if err != nil {
 						// TODO:
 						_ = err

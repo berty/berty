@@ -99,7 +99,7 @@ func (s *secretStoreIndex) syncSecretWithPendingMemberDevice(log ipfslog.Log, en
 }
 
 func (s *secretStoreIndex) emitEventNewSecret(log ipfslog.Log, entry ipfslog.Entry, payload *group.SecretEntryPayload) {
-	eventNewSecret, err := orbitutilapi.NewEventSecret(log, entry, payload, s.groupContext)
+	eventNewSecret, err := orbitutilapi.NewGroupSecretStoreEvent(log, entry, payload, s.groupContext)
 	if err != nil {
 		return
 	}

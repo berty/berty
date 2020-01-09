@@ -17,8 +17,8 @@ func SendSecretsToNewMembers(ctx context.Context, logger *zap.Logger, gctx orbit
 
 	go scs.Subscribe(ctx, func(e events.Event) {
 		switch e.(type) {
-		case *orbitutilapi.EventSecretNewDevice:
-			event, _ := e.(*orbitutilapi.EventSecretNewDevice)
+		case *orbitutilapi.GroupSecretStoreEvent:
+			event, _ := e.(*orbitutilapi.GroupSecretStoreEvent)
 
 			devicePK, err := crypto.UnmarshalEd25519PublicKey(event.GroupStoreEvent.GroupDevicePubKey)
 			if err != nil {
@@ -33,7 +33,10 @@ func SendSecretsToNewMembers(ctx context.Context, logger *zap.Logger, gctx orbit
 			}
 
 			if _, err := gctx.GetSecretStore().SendSecret(ctx, memberEntry.Member()); err != nil {
-				logger.Error("unable to send secret to member", zap.Error(err))
+				if err != errcode.ErrGroupSecretAlreadySentToMember {
+					logger.Error("unable to send secret to member", zap.Error(err))
+				}
+
 				return
 			}
 		}

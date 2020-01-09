@@ -9,7 +9,7 @@ import (
 	"berty.tech/berty/go/pkg/errcode"
 )
 
-type EventSecretNewDevice struct {
+type GroupSecretStoreEvent struct {
 	GroupStoreEvent *bertyprotocol.GroupStoreEvent
 }
 
@@ -69,7 +69,7 @@ func groupStoreEventFromEntry(log ipfslog.Log, e ipfslog.Entry, groupContext Gro
 	return &ret, nil
 }
 
-func NewEventSecret(log ipfslog.Log, op ipfslog.Entry, payload *group.SecretEntryPayload, groupContext GroupContext) (*EventSecretNewDevice, error) {
+func NewGroupSecretStoreEvent(log ipfslog.Log, op ipfslog.Entry, payload *group.SecretEntryPayload, groupContext GroupContext) (*GroupSecretStoreEvent, error) {
 	groupStoreEvent, err := groupStoreEventFromEntry(log, op, groupContext)
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -77,12 +77,12 @@ func NewEventSecret(log ipfslog.Log, op ipfslog.Entry, payload *group.SecretEntr
 
 	groupStoreEvent.GroupDevicePubKey = payload.SenderDevicePubKey
 
-	return &EventSecretNewDevice{
+	return &GroupSecretStoreEvent{
 		GroupStoreEvent: groupStoreEvent,
 	}, nil
 }
 
-func NewEventMember(log ipfslog.Log, op ipfslog.Entry, payload *group.MemberEntryPayload, groupContext GroupContext) (*bertyprotocol.GroupMemberStoreEvent, error) {
+func NewGroupMemberStoreEvent(log ipfslog.Log, op ipfslog.Entry, payload *group.MemberEntryPayload, groupContext GroupContext) (*bertyprotocol.GroupMemberStoreEvent, error) {
 	groupStoreEvent, err := groupStoreEventFromEntry(log, op, groupContext)
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -96,7 +96,7 @@ func NewEventMember(log ipfslog.Log, op ipfslog.Entry, payload *group.MemberEntr
 	}, nil
 }
 
-func NewEventSetting(log ipfslog.Log, op ipfslog.Entry, payload *group.SettingEntryPayload, groupContext GroupContext) (*bertyprotocol.GroupSettingStoreEvent, error) {
+func NewGroupSettingStoreEvent(log ipfslog.Log, op ipfslog.Entry, payload *group.SettingEntryPayload, groupContext GroupContext) (*bertyprotocol.GroupSettingStoreEvent, error) {
 	groupStoreEvent, err := groupStoreEventFromEntry(log, op, groupContext)
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
