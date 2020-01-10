@@ -1,0 +1,18 @@
+import jsonPb from './index.pb.js'
+{{#declare "api_recursive"}}
+	{{#each nested}}
+		{{#if (eq (typeof this) "Namespace")}}
+			{{name}}: {
+				{{call "api_recursive" this}}
+			},
+		{{else}}
+			{{name}}: jsonPb.lookup('{{namespace this}}'),
+		{{/if}}
+	{{/each}}
+{{/declare}}
+
+{{#each nested}}
+export const {{name}} = {
+	{{call "api_recursive" this}}
+}
+{{/each}}

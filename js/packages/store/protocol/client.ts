@@ -1,23 +1,25 @@
+import { ProtocolServiceClient, ProtocolServiceHandler, mockBridge } from '@berty-tech/grpc-bridge'
+
 import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, takeEvery } from 'redux-saga/effects'
+import { all, takeEvery, takeLeading, put } from 'redux-saga/effects'
 
 export type Entity = {
 	id: number
 }
 
-export type Event = {}
-
-export type Log = Array<Event>
-
 export type State = {
-	logs: { [key: string]: Log }
-	aggregates: { [key: string]: Entity }
+	aggregates: { [key: number]: Entity }
 }
 
 export type Commands = {
 	start: (state: State) => State
-	stop: (state: State) => State
+	stop: (
+		state: State,
+		action: {
+			payload: { id: number }
+		},
+	) => State
 	instanceExportData: (state: State) => State
 	instanceGetConfiguration: (state: State) => State
 	groupCreate: (state: State) => State
@@ -45,8 +47,8 @@ export type Commands = {
 }
 
 export type Events = {
-	started: (state: State) => State
-	stopped: (state: State) => State
+	started: (state: State, action: { payload: { id: number } }) => State
+	stopped: (state: State, action: { payload: { id: number } }) => State
 	accountUndefined: (state: State) => State
 	accountGroupJoined: (state: State) => State
 	accountGroupLeft: (state: State) => State
@@ -64,12 +66,11 @@ export type Events = {
 }
 
 const initialState: State = {
-	logs: {},
 	aggregates: {},
 }
 
 const commandHandler = createSlice<State, Commands>({
-	name: 'protocol/instance/command',
+	name: 'protocol/client/command',
 	initialState,
 	reducers: {
 		start: (state) => state,
@@ -102,11 +103,17 @@ const commandHandler = createSlice<State, Commands>({
 })
 
 const eventHandler = createSlice<State, Events>({
-	name: 'protocol/instance/event',
+	name: 'protocol/client/event',
 	initialState,
 	reducers: {
-		started: (state) => state,
-		stopped: (state) => state,
+		started: (state, { payload }) => {
+			state.aggregates[payload.id] = { id: payload.id }
+			return state
+		},
+		stopped: (state, { payload }) => {
+			delete state.aggregates[payload.id]
+			return state
+		},
 		accountUndefined: (state) => state,
 		accountGroupJoined: (state) => state,
 		accountGroupLeft: (state) => state,
@@ -129,14 +136,17 @@ export const events = eventHandler.actions
 export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
 
 export function* orchestrator() {
+	const clients: { [key: number]: ProtocolServiceClient } = {}
+
 	yield all([
-		takeEvery(commands.start, function*() {
-			// TODO: do protocol things
-			// yield put(events.started)
+		takeLeading(commands.start, function*() {
+			const id = Object.keys(clients).length
+			clients[id] = new ProtocolServiceClient(mockBridge(ProtocolServiceHandler))
+			yield put(events.started({ id }))
 		}),
-		takeEvery(commands.stop, function*() {
-			// TODO: do protocol things
-			// yield put(events.started)
+		takeLeading(commands.stop, function*(action) {
+			delete clients[action.payload.id]
+			yield put(events.stopped({ id: action.payload.id }))
 		}),
 		takeEvery(commands.instanceExportData, function*() {
 			// TODO: do protocol things

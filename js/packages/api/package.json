@@ -1,16 +1,17 @@
 {
-  "name": "@berty-tech/grpc-bridge",
+  "name": "@berty-tech/api",
   "version": "0.0.0",
   "private": true,
   "description": "",
   "keywords": [],
   "author": "Berty Technologies <oss@berty.tech>",
-  "homepage": "https://github.com/berty/berty/tree/master/packages/berty-store#readme",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/api#readme",
   "license": "(Apache-2.0 or MIT)",
-  "main": "index.ts",
-  "directories": {
-    "protocol": "./protocol"
-  },
+  "types": "index.pb.d.ts",
+  "main": "index.gen.js",
+  "files": [
+    "lib"
+  ],
   "publishConfig": {
     "access": "restricted"
   },
@@ -22,14 +23,11 @@
     "url": "https://github.com/berty/berty/issues"
   },
   "dependencies": {
-    "@berty-tech/api": "^0.0.0",
     "@googleapis/googleapis": "googleapis/googleapis#common-protos-1_3_1",
     "@improbable-eng/grpc-web": "^0.11.0",
-    "@improbable-eng/grpc-web-node-http-transport": "^0.11.0",
     "@protocolbuffers/protobuf": "protocolbuffers/protobuf#3.10.0",
     "@types/long": "^4.0.0",
     "@types/node": "^12.7.12",
-    "@types/websocket": "^1.0.0",
     "case": "^1.6.2",
     "eslint": "^6.6.0",
     "espree": "^3.5.4",

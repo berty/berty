@@ -1,116 +1,153 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, takeLeading } from 'redux-saga/effects'
+import { put, all, take, takeEvery, takeLeading, fork, select } from 'redux-saga/effects'
+import * as protocol from '../protocol'
 
 export type Entity = {
 	id: number
+	protocolClient: number
 	name: string
 	requests: Array<number>
 	conversations: Array<number>
 	contacts: Array<number>
 }
 
-export type Event = {}
-
-export type Log = Array<Event>
-
 export type State = {
-	logs: { [key: string]: Log }
 	aggregates: { [key: string]: Entity }
 }
 
-export type Commands = {
-	create: (state: State) => State
-	delete: (state: State) => State
-	open: (state: State) => State
-	close: (state: State) => State
+export type GlobalState = {
+	chat: {
+		account: State
+	}
 }
 
-export type Events = {
-	createPending: (state: State) => State
-	createSucceed: (state: State) => State
-	createFailed: (state: State) => State
-
-	deletePending: (state: State) => State
-	deleteSucceed: (state: State) => State
-	deleteFailed: (state: State) => State
-
-	openPending: (state: State) => State
-	openSucceed: (state: State) => State
-	openFailed: (state: State) => State
-
-	closePending: (state: State) => State
-	closeSucceed: (state: State) => State
-	closeFailed: (state: State) => State
+declare namespace Command {
+	export type Create = { name: string }
+	export type Delete = { id: number }
+	export type Open = { id: number }
+	export type Close = { id: number }
 }
 
-const initialState: State = {
-	logs: {},
+declare namespace Event {
+	export type Created = { id: number; name: string; protocolClient: number }
+	export type Deleted = { id: number }
+	export type Opened = { id: number }
+	export type Closed = { id: number }
+}
+
+export type CommandsReducer = {
+	create: (state: State, action: { payload: Command.Create }) => State
+	delete: (state: State, action: { payload: Command.Delete }) => State
+	open: (state: State, action: { payload: Command.Open }) => State
+	close: (state: State, action: { payload: Command.Close }) => State
+}
+
+export type EventsReducer = {
+	created: (state: State, action: { payload: Event.Created }) => State
+	deleted: (state: State, action: { payload: Event.Deleted }) => State
+	opened: (state: State, action: { payload: Event.Opened }) => State
+	closed: (state: State, action: { payload: Event.Closed }) => State
+}
+
+const initialState = {
 	aggregates: {},
 }
 
-const commandHandler = createSlice<State, Commands>({
+const commandHandler = createSlice<State, CommandsReducer>({
 	name: 'chat/account/command',
 	initialState,
 	reducers: {
-		create: (state: State) => state,
-		delete: (state: State) => state,
-		open: (state: State) => state,
-		close: (state: State) => state,
+		create: (state) => state,
+		delete: (state) => state,
+		open: (state) => state,
+		close: (state) => state,
 	},
 })
 
-const eventHandler = createSlice<State, Events>({
+const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/account/event',
 	initialState,
 	reducers: {
-		createPending: (state: State) => state,
-		createSucceed: (state: State) => state,
-		createFailed: (state: State) => state,
-
-		deletePending: (state: State) => state,
-		deleteSucceed: (state: State) => state,
-		deleteFailed: (state: State) => state,
-
-		openPending: (state: State) => state,
-		openSucceed: (state: State) => state,
-		openFailed: (state: State) => state,
-
-		closePending: (state: State) => state,
-		closeSucceed: (state: State) => state,
-		closeFailed: (state: State) => state,
+		created: (state, { payload }) => {
+			state.aggregates[payload.id] = { ...payload, requests: [], conversations: [], contacts: [] }
+			return state
+		},
+		deleted: (state, { payload }) => {
+			delete state.aggregates[payload.id]
+			return state
+		},
+		opened: (state) => state,
+		closed: (state) => state,
 	},
 })
 
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
 export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
+export const selectors = {
+	getLength: (state: State) => state.aggregates.length,
+	byProtocolClientId: (state: State, protocolClientId: number): Entity | null => {
+		const index = Object.keys(state.aggregates).findIndex(
+			(k) => state.aggregates[k].protocolClient === protocolClientId,
+		)
+		if (index === -1) {
+			return null
+		}
+		return state.aggregates[index]
+	},
+}
 
 export function* orchestrator() {
 	yield all([
-		takeLeading(commands.create, function*() {
-			yield put(events.createPending())
-			// TODO: create account
-			// yield put(events.createSucceed())
-			// yield put(events.createFailed())
+		takeLeading(commands.create, function*({ payload: { name } }) {
+			// handle protocol client started
+			yield fork(function*() {
+				const {
+					payload: { id },
+				} = yield take(protocol.events.client.started)
+				// create account
+				yield put(
+					events.created({
+						id: yield select((state: GlobalState) => selectors.getLength(state.chat.account)),
+						name,
+						protocolClient: id,
+					}),
+				)
+			})
+			// start protocol client
+			yield put(protocol.commands.client.start())
 		}),
 		takeLeading(commands.delete, function*() {
-			yield put(events.deletePending())
 			// TODO: delete account
 			// yield put(events.deleteSucceed())
-			// yield put(events.deleteFailed())
 		}),
 		takeLeading(commands.open, function*() {
-			yield put(events.openPending())
 			// TODO: open account
 			// yield put(events.openSucceed())
-			// yield put(events.openFailed())
 		}),
 		takeLeading(commands.close, function*() {
-			yield put(events.closePending())
 			// TODO: close account
 			// yield put(events.closeSucceed())
-			// yield put(events.closeFailed())
+		}),
+
+		// eventHandler
+		takeEvery(protocol.events.client.started, function*() {
+			const account = yield select((state: GlobalState) => selectors.getLength(state.chat.account))
+			if (account == null) {
+				// warn
+				return
+			}
+			yield put(events.opened({ id: account.id }))
+		}),
+		takeEvery(protocol.events.client.stopped, function*(action) {
+			yield put(
+				events.closed({
+					id: yield select((state: GlobalState) =>
+						selectors.byProtocolClientId(state.chat.account, action.payload.id),
+					),
+				}),
+			)
 		}),
 	])
 }

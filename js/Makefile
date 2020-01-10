@@ -144,8 +144,9 @@ $(HOME)/.android/debug.keystore: $(pkg_mod)
 	mkdir -p $(dir $@)
 	cp $(BERTY_ROOT)/js/packages/berty-app/node_modules/react-native/template/android/app/debug.keystore $@
 
+include packages/api/Makefile
 include packages/berty-store/Makefile
-include packages/berty-templates/Makefile
+include packages/codegen/Makefile
 include packages/berty-api/Makefile
 include packages/go-bridge/Makefile
 include packages/berty-app/Makefile
