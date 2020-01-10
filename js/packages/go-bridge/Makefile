@@ -1,42 +1,56 @@
 export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
-BAZEL_FRAMEWORK := $(PWD)/bazel-bin/ios/bridge_framework.tar.gz
+BAZEL_FRAMEWORK := $(PWD)/bazel-bin/ios/gobridge_framework.tar.gz
 FRAMEWORK_DIR := $(PWD)/ios/Frameworks
-FRAMEWORK := $(FRAMEWORK_DIR)/Bertybridge.framework
+FRAMEWORK := $(FRAMEWORK_DIR)/bertybridge.framework
 
-BAZEL_AAR := $(PWD)/bazel-bin/android/bridge_library.aar
+BAZEL_AAR := $(PWD)/bazel-bin/android/gobridge_library.aar
 AAR_DIR := $(PWD)/android/libs
 AAR := $(PWD)/android/libs/gobridge.aar
 
 
-build.sdk: build.sdk.ios build.sdk.android
+build.gobridge: build.gobridge.ios build.gobridge.android
 
-build.sdk.ios:
+build.gobridge.ios: $(FRAMEWORK_DIR)
+	touch $<
+
+$(FRAMEWORK_DIR): # TODO: add go prerequisits
 	mkdir -p $(FRAMEWORK_DIR)
 	gomobile bind -o $(FRAMEWORK) -v -target ios berty.tech/berty/go/framework/bertybridge
 
-build.sdk.android:
+build.gobridge.android: $(AAR)
+	touch $<
+
+$(AAR): # TODO: add go prerequisits
 	mkdir -p $(AAR_DIR)
 	gomobile bind -o $(AAR) -v -target android berty.tech/berty/go/framework/bertybridge
 
-bazel.build.sdk: bazel.build.sdk.ios bazel.build.sdk.android
+bazel.build.gobridge: bazel.build.gobridge.ios bazel.build.gobridge.android
 
-bazel.build.sdk.ios:
-	bazel build //ios:bridge_framework
+bazel.build.gobridge.ios: $(BAZEL_FRAMEWORK)
+	touch $<
+
+.PHONY: $(BAZEL_FRAMEWORK)
+$(BAZEL_FRAMEWORK):
+	bazel build //ios:gobridge_framework
 	mkdir -p $(FRAMEWORK) && tar -xvf $(BAZEL_FRAMEWORK) -C $(FRAMEWORK)
 
-bazel.build.sdk.android:
-	bazel build //android:bridge_library.aar --sandbox_debug
+bazel.build.gobridge.android: $(BAZEL_AAR)
+	touch $<
+
+.PHONY: $(BAZEL_AAR)
+$(BAZEL_AAR):
+	bazel build //android:gobridge_library.aar --sandbox_debug
 	mkdir -p $(AAR_DIR) && cp -v $(BAZEL_AAR) $(AAR) && chmod =rw,+X $(AAR)
 
-bazel.watch.sdk.android:
-	ibazel build //android:bridge_library.aar
+bazel.watch.gobridge.android:
+	ibazel build //android:gobridge_library.aar
 
-clean.sdk: clean.sdk.ios clean.sdk.android
+clean.gobridge: clean.gobridge.ios clean.gobridge.android
 
-clean.sdk.ios:
+clean.gobridge.ios:
 	rm -rf $(FRAMEWORK)
 
-clean.sdk.android:
+clean.gobridge.android:
 	rm -f $(AAR)

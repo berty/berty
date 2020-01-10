@@ -39,7 +39,7 @@ $(ENVFILE):
 deps: $(PWD)/node_modules config
 
 deps.ios: export PWD := $(PWD)
-deps.ios: deps $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
+deps.ios: deps build.gobridge.ios $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
 $(PWD)/ios/Pods/Manifest.lock: $(PWD)/ios/Podfile $(PWD)/package.json
 	([ ! -z "$(shell which pod)" ] \
 		&& [[ "$$(pod --version)" > "1.7." ]]) \
@@ -51,7 +51,7 @@ $(PWD)/ios/Podfile: $(PWD)/node_modules
 	cat $< > $@
 
 deps.android: export PWD := $(PWD)
-deps.android: deps $(PWD)/node_modules/react-native/react.gradle.orig $(if $(filter $(config), development), $(HOME)/.android/debug.keystore)
+deps.android: deps build.gobridge.android $(PWD)/node_modules/react-native/react.gradle.orig $(if $(filter $(config), development), $(HOME)/.android/debug.keystore)
 
 $(PWD)/node_modules/react-native/react.gradle.orig: $(PWD)/patch/react.gradle.patch
 	@echo "patching file $(patsubst %.orig, %, $@)"
@@ -477,6 +477,6 @@ fclean: fclean.ios fclean.android fclean.darwin fclean.web
 # - if we don't: we should call lerna bootstrap or some other form of npm install
 #   in this make rule or as a dependency of it
 bazel.android.install:
-	$(MAKE) -C $(abspath $(PWD)/../go-bridge) bazel.build.bridge.android
+	$(MAKE) -C $(abspath $(PWD)/../go-bridge) bazel.build.gobridge.android
 	bazel mobile-install --sandbox_debug --fat_apk_cpu=x86_64,x86,armeabi-v7a //android/app/src/main:app
 
