@@ -1,6 +1,6 @@
 go 1.13
 
-module berty.tech/js/packages/react-native-berty-bridge
+module berty.tech/js/packages/go-bridge
 
 replace berty.tech/berty/go => ../../../go
 

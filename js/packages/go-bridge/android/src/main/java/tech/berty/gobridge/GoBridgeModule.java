@@ -1,4 +1,4 @@
-package tech.berty.bertybridge;
+package tech.berty.gobridge;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -11,20 +11,20 @@ import bertybridge.BridgeOpts;
 import bertybridge.DemoBridge;
 import bertybridge.DemoOpts;
 
-public class BertyBridgeModule extends ReactContextBaseJavaModule {
+public class GoBridgeModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private DemoBridge demoBridge = null;
 
 
-    public BertyBridgeModule(ReactApplicationContext reactContext) {
+    public GoBridgeModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }
 
     @Override
     public String getName() {
-        return "BertyBridge";
+        return "GoBridge";
     }
 
     @ReactMethod
@@ -40,7 +40,7 @@ public class BertyBridgeModule extends ReactContextBaseJavaModule {
             DemoOpts opts = new DemoOpts();
             opts.setLogLevel("debug");
             opts.setBridgeOpts(bridgeOpts);
-            
+
             this.demoBridge = Bertybridge.newDemoBridge(opts);
             promise.resolve(true);
         } catch (Exception err) {

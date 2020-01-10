@@ -3,4 +3,3 @@
 //
 
 #import "React/RCTBridge.h"
-#import "Bertybridge/Bertybridge.h"

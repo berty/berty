@@ -477,5 +477,6 @@ fclean: fclean.ios fclean.android fclean.darwin fclean.web
 # - if we don't: we should call lerna bootstrap or some other form of npm install
 #   in this make rule or as a dependency of it
 bazel.android.install:
-	$(MAKE) -C $(abspath $(PWD)/../react-native-berty-bridge) bazel.build.bridge.android
+	$(MAKE) -C $(abspath $(PWD)/../go-bridge) bazel.build.bridge.android
 	bazel mobile-install --sandbox_debug --fat_apk_cpu=x86_64,x86,armeabi-v7a //android/app/src/main:app
+

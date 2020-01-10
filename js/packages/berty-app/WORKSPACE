@@ -9,7 +9,7 @@ local_repository(
 # berty chat bridge
 local_repository(
     name = "berty_bridge",
-    path = "../react-native-berty-bridge",
+    path = "../go-bridge",
 )
 
 # configure android sdk/ndk

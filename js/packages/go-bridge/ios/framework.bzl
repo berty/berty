@@ -100,7 +100,7 @@ def gen_framework(name, bundle_name):
         objc_prefix = "",
         tags = [],
         deps = [
-            "@berty_go//framework/bertybridge:go_default_library",
+            "@berty_go//framework/gobridge:go_default_library",
         ],
         gc_linkopts = [
             "-compressdwarf=false",

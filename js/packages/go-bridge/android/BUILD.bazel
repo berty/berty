@@ -29,10 +29,10 @@ aar_import(
 
 gobind_java(
     name = "bridge",
-    java_package = "tech.berty.bertybridge",
+    java_package = "tech.berty.gobridge",
     tags = [],
     deps = [
-        "@berty_go//framework/bertybridge:go_default_library",
+        "@berty_go//framework/gobridge:go_default_library",
     ],
     gc_linkopts = [
         "-compressdwarf=false",

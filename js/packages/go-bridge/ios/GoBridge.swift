@@ -1,6 +1,6 @@
 //
-//  BertyBridge.swift
-//  BertyBridge
+//  GoBridge.swift
+//  GoBridge
 //
 //  Created by Guilhem Fanton on 06/01/2020.
 //  Copyright © 2020 Berty Technologies. All rights reserved.
@@ -9,8 +9,8 @@
 import Foundation
 import Bertybridge
 
-@objc(ReactNativeBertyBridge)
-class ReactNativeBertyBridge: NSObject {
+@objc(GoBridge)
+class GoBridge: NSObject {
     var bridgeDemo: BertybridgeDemoBridgeProtocol?
 
     override init() {

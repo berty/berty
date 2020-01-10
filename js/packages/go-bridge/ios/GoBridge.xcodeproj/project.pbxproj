@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		489F867C23606976004E8660 /* Bertybridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489F867B23606976004E8660 /* Bertybridge.framework */; };
-		48C42EB823C3D47B006A2D1C /* ReactNativeBertyBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C42EB723C3D47B006A2D1C /* ReactNativeBertyBridge.swift */; };
-		B3E7B58A1CC2AC0600A0062D /* ReactNativeBertyBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* ReactNativeBertyBridge.m */; };
+		489F867C23606976004E8660 /* Gobridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489F867B23606976004E8660 /* Gobridge.framework */; };
+		48C42EB823C3D47B006A2D1C /* GoBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C42EB723C3D47B006A2D1C /* GoBridge.swift */; };
+		B3E7B58A1CC2AC0600A0062D /* GoBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* GoBridge.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,12 +25,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		134814201AA4EA6300B7C361 /* libReactNativeBertyBridge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libReactNativeBertyBridge.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		489F867B23606976004E8660 /* Bertybridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bertybridge.framework; sourceTree = "<group>"; };
-		48C42EB623C3D47B006A2D1C /* ReactNativeBertyBridge-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ReactNativeBertyBridge-Bridging-Header.h"; sourceTree = "<group>"; };
-		48C42EB723C3D47B006A2D1C /* ReactNativeBertyBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactNativeBertyBridge.swift; sourceTree = "<group>"; };
-		B3E7B5881CC2AC0600A0062D /* ReactNativeBertyBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReactNativeBertyBridge.h; sourceTree = "<group>"; };
-		B3E7B5891CC2AC0600A0062D /* ReactNativeBertyBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReactNativeBertyBridge.m; sourceTree = "<group>"; };
+		134814201AA4EA6300B7C361 /* libGoBridge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libGoBridge.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		489F867B23606976004E8660 /* Gobridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gobridge.framework; sourceTree = "<group>"; };
+		48C42EB623C3D47B006A2D1C /* GoBridge-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GoBridge-Bridging-Header.h"; sourceTree = "<group>"; };
+		48C42EB723C3D47B006A2D1C /* GoBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoBridge.swift; sourceTree = "<group>"; };
+		B3E7B5881CC2AC0600A0062D /* GoBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoBridge.h; sourceTree = "<group>"; };
+		B3E7B5891CC2AC0600A0062D /* GoBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoBridge.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,7 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				489F867C23606976004E8660 /* Bertybridge.framework in Frameworks */,
+				489F867C23606976004E8660 /* Gobridge.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,7 +48,7 @@
 		134814211AA4EA7D00B7C361 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				134814201AA4EA6300B7C361 /* libReactNativeBertyBridge.a */,
+				134814201AA4EA6300B7C361 /* libGoBridge.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -56,7 +56,7 @@
 		489F867A23606976004E8660 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				489F867B23606976004E8660 /* Bertybridge.framework */,
+				489F867B23606976004E8660 /* Gobridge.framework */,
 			);
 			path = Frameworks;
 			sourceTree = "<group>";
@@ -64,10 +64,10 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				48C42EB723C3D47B006A2D1C /* ReactNativeBertyBridge.swift */,
-				B3E7B5881CC2AC0600A0062D /* ReactNativeBertyBridge.h */,
-				B3E7B5891CC2AC0600A0062D /* ReactNativeBertyBridge.m */,
-				48C42EB623C3D47B006A2D1C /* ReactNativeBertyBridge-Bridging-Header.h */,
+				48C42EB723C3D47B006A2D1C /* GoBridge.swift */,
+				B3E7B5881CC2AC0600A0062D /* GoBridge.h */,
+				B3E7B5891CC2AC0600A0062D /* GoBridge.m */,
+				48C42EB623C3D47B006A2D1C /* GoBridge-Bridging-Header.h */,
 				489F867A23606976004E8660 /* Frameworks */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
@@ -76,9 +76,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		58B511DA1A9E6C8500147676 /* ReactNativeBertyBridge */ = {
+		58B511DA1A9E6C8500147676 /* GoBridge */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "ReactNativeBertyBridge" */;
+			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "GoBridge" */;
 			buildPhases = (
 				58B511D71A9E6C8500147676 /* Sources */,
 				58B511D81A9E6C8500147676 /* Frameworks */,
@@ -88,9 +88,9 @@
 			);
 			dependencies = (
 			);
-			name = ReactNativeBertyBridge;
+			name = GoBridge;
 			productName = RCTDataManager;
-			productReference = 134814201AA4EA6300B7C361 /* libReactNativeBertyBridge.a */;
+			productReference = 134814201AA4EA6300B7C361 /* libGoBridge.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -108,7 +108,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "ReactNativeBertyBridge" */;
+			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "GoBridge" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -121,7 +121,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				58B511DA1A9E6C8500147676 /* ReactNativeBertyBridge */,
+				58B511DA1A9E6C8500147676 /* GoBridge */,
 			);
 		};
 /* End PBXProject section */
@@ -131,8 +131,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3E7B58A1CC2AC0600A0062D /* ReactNativeBertyBridge.m in Sources */,
-				48C42EB823C3D47B006A2D1C /* ReactNativeBertyBridge.swift in Sources */,
+				B3E7B58A1CC2AC0600A0062D /* GoBridge.m in Sources */,
+				48C42EB823C3D47B006A2D1C /* GoBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,9 +249,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = ReactNativeBertyBridge;
+				PRODUCT_NAME = GoBridge;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "BertyBridge-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "GoBridge-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -274,9 +274,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = ReactNativeBertyBridge;
+				PRODUCT_NAME = GoBridge;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "BertyBridge-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "GoBridge-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -284,7 +284,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "ReactNativeBertyBridge" */ = {
+		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "GoBridge" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511ED1A9E6C8500147676 /* Debug */,
@@ -293,7 +293,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "ReactNativeBertyBridge" */ = {
+		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "GoBridge" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511F01A9E6C8500147676 /* Debug */,

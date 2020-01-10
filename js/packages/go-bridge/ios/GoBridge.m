@@ -16,7 +16,7 @@
  @implementation objc_name (RCTExternModule)                          \
  RCT_EXPORT_MODULE_NO_LOAD(js_name, objc_name)
 
-@interface RCT_EXTERN_REMAP_MODULE_2(BertyBridge, ReactNativeBertyBridge, NSObject)
+@interface RCT_EXTERN_REMAP_MODULE_2(GoBridge, GoBridge, NSObject)
 
 RCT_EXTERN_METHOD(startDemo:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);

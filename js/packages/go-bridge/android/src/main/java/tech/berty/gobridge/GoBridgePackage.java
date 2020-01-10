@@ -1,4 +1,4 @@
-package tech.berty.bertybridge;
+package tech.berty.gobridge;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,10 +9,10 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
-public class BertyBridgePackage implements ReactPackage {
+public class GoBridgePackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new BertyBridgeModule(reactContext));
+        return Arrays.<NativeModule>asList(new GoBridgeModule(reactContext));
     }
 
     @Override

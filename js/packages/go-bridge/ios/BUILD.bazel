@@ -3,5 +3,6 @@ load("@berty_bridge//ios:framework.bzl", "gen_framework")
 
 gen_framework(
     name = "bridge_framework",
-    bundle_name = "Bertybridge",
+    bundle_name = "Gobridge",
 )
+

@@ -1,16 +1,16 @@
 {
-  "name": "@berty-tech/react-native-berty-bridge",
-  "title": "React Native Berty Bridge",
+  "name": "@berty-tech/go-bridge",
+  "title": "Go Bridge",
   "version": "1.0.0",
-  "description": "Berty's react-native berty-bridge library",
+  "description": "Berty's react-native go-bridge library",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/berty/react-native-berty-bridge.git",
-    "baseUrl": "https://github.com/berty/react-native-berty-bridge"
+    "url": "git+https://github.com/berty/go-bridge.git",
+    "baseUrl": "https://github.com/berty/go-bridge"
   },
   "keywords": [
     "react-native"
