@@ -103,16 +103,16 @@ func newBridge(s *grpc.Server, logger *zap.Logger, opts *BridgeOpts) (Bridge, er
 		var err error
 		b.grpcWebListenerAddr, err = b.addGRPCListenner("/ip4/127.0.0.1/tcp/0/grpcweb")
 		if err != nil {
-			return nil, errors.Wrap(err, "init gRPC listener")
+			return nil, errors.Wrap(err, "init gRPC Web listener")
 		}
 	}
 
 	// optional gRPC web listener
 	if opts.GRPCWebSocketListener {
 		var err error
-		b.grpcWebSocketListenerAddr, err = b.addGRPCListenner("/ip4/127.0.0.1/tcp/0/grpcw")
+		b.grpcWebSocketListenerAddr, err = b.addGRPCListenner("/ip4/127.0.0.1/tcp/0/grpcws")
 		if err != nil {
-			return nil, errors.Wrap(err, "init gRPC listener")
+			return nil, errors.Wrap(err, "init gRPC WebSocket listener")
 		}
 	}
 
@@ -120,7 +120,7 @@ func newBridge(s *grpc.Server, logger *zap.Logger, opts *BridgeOpts) (Bridge, er
 		var err error
 		b.grpcClient, err = b.newGRPCClient()
 		if err != nil {
-			return nil, errors.Wrap(err, "init gRPC client")
+			return nil, errors.Wrap(err, "init gRPC client client")
 		}
 	}
 
