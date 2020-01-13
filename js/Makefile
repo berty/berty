@@ -44,10 +44,7 @@ $(yarn):
 
 .PHONY: deps
 deps: $(yarn) $(mod) $(pkg_mod)
-deps: $(go_vendor) $(yarn) $(lerna) $(mod) $(pkg_mod)
-
-$(go_vendor):
-	cd $(berty_go_path) && GO111MODULE=on go mod vendor
+deps: $(yarn) $(lerna) $(mod) $(pkg_mod)
 
 $(mod) $(pkg_mod): ci ?= false
 $(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)

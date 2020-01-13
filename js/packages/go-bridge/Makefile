@@ -9,10 +9,14 @@ BAZEL_AAR := $(PWD)/bazel-bin/android/gobridge_library.aar
 AAR_DIR := $(PWD)/android/libs
 AAR := $(PWD)/android/libs/gobridge.aar
 
+GO_VENDOR := $(GOPATH)/src/berty.tech/berty/go/vendor
 GOMOBILE := $(GOTPATH)/bin/gomobile
 GOBIND := $(GOPATH)/bin/gobind
 
-deps: $(GOMOBILE)
+deps.gobridge: $(GOMOBILE) $(GO_VENDOR)
+
+$(GO_VENDOR):
+	cd $(GOPATH)/src/berty.tech/berty/go && GO111MODULE=on go mod vendor
 
 $(GOMOBILE): $(PWD) := $(PWD)
 $(GOMOBILE): $(GOBIND)
@@ -27,14 +31,14 @@ build.gobridge: build.gobridge.ios build.gobridge.android
 build.gobridge.ios: $(FRAMEWORK_DIR)
 	touch $<
 
-$(FRAMEWORK_DIR): deps # TODO: add go prerequisits
+$(FRAMEWORK_DIR): deps.gobridge # TODO: add go prerequisits
 	mkdir -p $(FRAMEWORK_DIR)
 	gomobile bind -o $(FRAMEWORK) -v -target ios berty.tech/berty/go/framework/bertybridge
 
 build.gobridge.android: $(AAR)
 	touch $<
 
-$(AAR): deps # TODO: add go prerequisits
+$(AAR): deps.gobridge # TODO: add go prerequisits
 	mkdir -p $(AAR_DIR)
 	gomobile bind -o $(AAR) -v -target android berty.tech/berty/go/framework/bertybridge
 
