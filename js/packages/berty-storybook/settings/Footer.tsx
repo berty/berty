@@ -12,7 +12,7 @@ export const Footer = ({ navigate }) => {
 					{(response) => (
 						<SharedFooter
 							left={{ icon: 'search-outline' }}
-							center={{ icon: 'message-circle-outline', onPress: navigate.tab.main }}
+							center={{ icon: 'message-circle-outline', onPress: navigate.main.list }}
 							right={{
 								avatarUri: response?.contact?.avatarUri,
 								backgroundColor: colors.blue,

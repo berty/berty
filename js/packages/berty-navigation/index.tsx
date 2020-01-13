@@ -13,15 +13,6 @@ import { berty } from '@berty-tech/berty-api'
 import { NavigationNativeContainer } from '@react-navigation/native'
 
 export namespace ScreenProps {
-	export namespace Tab {
-		export type Onboarding = {}
-		export type Main = {
-			navigate: { tab: { settings: () => void }; main: { listModal: () => void } }
-		}
-		export type Settings = {
-			navigate: { tab: { main: () => void }; settings: { home: () => void } }
-		}
-	}
 	export namespace Onboarding {
 		export type GetStarted = {}
 		export type SelectMode = {}
@@ -81,12 +72,6 @@ export namespace ScreenProps {
 }
 
 export namespace Routes {
-	export enum Tab {
-		Onboarding = 'Onboarding',
-		Main = 'Main',
-		Chat = 'Chat',
-		Settings = 'Settings',
-	}
 	export enum Onboarding {
 		GetStarted = 'Onboarding.GetStarted',
 		SelectMode = 'Onboarding.SelectMode',
@@ -149,11 +134,6 @@ const createNavigation = ({
 			selectMode: createNavigateFunc(navigate, Routes.Onboarding.SelectMode),
 			performance: createNavigateFunc(navigate, Routes.Onboarding.Performance),
 			privacy: createNavigateFunc(navigate, Routes.Onboarding.Privacy),
-		},
-		tab: {
-			main: createNavigateFunc(jumpTo, Routes.Tab.Main),
-			chat: createNavigateFunc(jumpTo, Routes.Tab.Chat),
-			settings: createNavigateFunc(jumpTo, Routes.Tab.Settings),
 		},
 		main: {
 			list: createNavigateFunc(navigate, Routes.Main.List),
@@ -331,13 +311,19 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 			component={CreateGroupNavigation}
 			options={{ presentation: 'transparentModal' }}
 		/>
-		<MainStack.Screen name={Routes.Settings.Home} component={Stories.Settings.Home} />
-		<MainStack.Screen
+	</MainStack.Navigator>
+)
+
+const SettingsStack = createNativeStackNavigator()
+export const SettingsNavigation: React.FC<BottomTabBarProps> = () => (
+	<SettingsStack.Navigator screenOptions={{ headerShown: false }}>
+		<SettingsStack.Screen name={Routes.Settings.Home} component={Stories.Settings.Home} />
+		<SettingsStack.Screen
 			name={Routes.Settings.MyBertyId}
 			component={Stories.Settings.MyBertyId}
 			options={{ presentation: 'transparentModal' }}
 		/>
-		<MainStack.Screen
+		<SettingsStack.Screen
 			name={Routes.Settings.EditProfile}
 			component={Stories.Settings.EditProfile}
 			options={{
@@ -345,40 +331,48 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 				contentStyle: { backgroundColor: 'transparent' },
 			}}
 		/>
-		<MainStack.Screen name={Routes.Settings.AppUpdates} component={Stories.Settings.AppUpdates} />
-		<MainStack.Screen name={Routes.Settings.Help} component={Stories.Settings.Help} />
-		<MainStack.Screen name={Routes.Settings.Mode} component={Stories.Settings.Mode} />
-		<MainStack.Screen
+		<SettingsStack.Screen
+			name={Routes.Settings.AppUpdates}
+			component={Stories.Settings.AppUpdates}
+		/>
+		<SettingsStack.Screen name={Routes.Settings.Help} component={Stories.Settings.Help} />
+		<SettingsStack.Screen name={Routes.Settings.Mode} component={Stories.Settings.Mode} />
+		<SettingsStack.Screen
 			name={Routes.Settings.BlockedContacts}
 			component={Stories.Settings.BlockedContacts}
 		/>
-		<MainStack.Screen
+		<SettingsStack.Screen
 			name={Routes.Settings.Notifications}
 			component={Stories.Settings.Notifications}
 		/>
-		<MainStack.Screen name={Routes.Settings.Bluetooth} component={Stories.Settings.Bluetooth} />
-		<MainStack.Screen name={Routes.Settings.AboutBerty} component={Stories.Settings.AboutBerty} />
-		<MainStack.Screen name={Routes.Settings.TermsOfUse} component={Stories.Settings.TermsOfUse} />
-		<MainStack.Screen name={Routes.Settings.DevTools} component={Stories.Settings.DevTools} />
-	</MainStack.Navigator>
+		<SettingsStack.Screen name={Routes.Settings.Bluetooth} component={Stories.Settings.Bluetooth} />
+		<SettingsStack.Screen
+			name={Routes.Settings.AboutBerty}
+			component={Stories.Settings.AboutBerty}
+		/>
+		<SettingsStack.Screen
+			name={Routes.Settings.TermsOfUse}
+			component={Stories.Settings.TermsOfUse}
+		/>
+		<SettingsStack.Screen name={Routes.Settings.DevTools} component={Stories.Settings.DevTools} />
+	</SettingsStack.Navigator>
 )
 
 const Footer: React.FC<BottomTabBarProps> = ({ navigation, state: { index, routeNames } }) => {
 	const _navigation = useMemo(() => createNavigation(navigation), [navigation])
-	switch (routeNames[index]) {
-		case Routes.Tab.Settings:
-			return <Stories.Settings.Footer {..._navigation} />
-		default:
-			return null
+	console.log(routeNames[index])
+	if (routeNames[index].match(/^Settings\..*$/)) {
+		return <Stories.Settings.Footer {..._navigation} />
 	}
+	return null
 }
 
 const TabStack = createBottomTabNavigator()
 export const Navigation: React.FC = () => (
 	<TabStack.Navigator tabBar={(props) => <Footer {...props} />}>
-		<TabStack.Screen name={Routes.Tab.Main} component={MainNavigation} />
-		<TabStack.Screen name={Routes.Tab.Settings} component={MainNavigation} />
-		<TabStack.Screen name={Routes.Tab.Onboarding} component={OnboardingNavigation} />
+		<TabStack.Screen name={Routes.Main.List} component={MainNavigation} />
+		<TabStack.Screen name={Routes.Settings.Home} component={SettingsNavigation} />
+		<TabStack.Screen name={Routes.Onboarding.GetStarted} component={OnboardingNavigation} />
 	</TabStack.Navigator>
 )
 

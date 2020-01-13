@@ -24,7 +24,7 @@ export const Footer: React.FC<ScreenProps.Tab.Main> = (props) => {
 							right={{
 								avatarUri: response?.contact?.avatarUri,
 								elemSize: 40,
-								onPress: navigate.tab.settings,
+								onPress: navigate.settings.home,
 							}}
 						/>
 					)}
