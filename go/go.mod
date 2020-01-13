@@ -3,8 +3,8 @@ module berty.tech/berty/go
 go 1.13
 
 require (
-	berty.tech/go-ipfs-log v0.0.0-20191218104035-c2dbcdce66fd
-	berty.tech/go-orbit-db v1.0.0
+	berty.tech/go-ipfs-log v1.0.0
+	berty.tech/go-orbit-db v1.2.0
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.3.2
 	github.com/improbable-eng/grpc-web v0.11.0
@@ -21,6 +21,7 @@ require (
 	github.com/oklog/run v1.0.0
 	github.com/peterbourgon/ff v1.6.0
 	github.com/pkg/errors v0.8.1
+	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/stretchr/testify v1.4.0
 	go.uber.org/multierr v1.2.0 // indirect
 	go.uber.org/zap v1.10.0

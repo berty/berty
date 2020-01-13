@@ -1,9 +1,9 @@
 bazil.org/fuse v0.0.0-20180421153158-65cc252bf669 h1:FNCRpXiquG1aoyqcIWVFmpTSKVcx2bQD38uZZeGtdlw=
 bazil.org/fuse v0.0.0-20180421153158-65cc252bf669/go.mod h1:Xbm+BRKSBEpa4q4hTSxohYNQpsxXPbPry4JJWOB3LB8=
-berty.tech/go-ipfs-log v0.0.0-20191218104035-c2dbcdce66fd h1:37S7k4ueV4NpA9bSXQXcXqcHuEbhVtwtBP95WgB+EhM=
-berty.tech/go-ipfs-log v0.0.0-20191218104035-c2dbcdce66fd/go.mod h1:yuf4K9pUlnl21XjYq/FJlwpC3DjbdGM0nm8g1po3xgw=
-berty.tech/go-orbit-db v1.0.0 h1:5g9V0YC9nCd/LE/lbD6YqO0oc2ZqDDSFyiobJXoQgkc=
-berty.tech/go-orbit-db v1.0.0/go.mod h1:Lr36I7YKjekbtZUS304xizfwxhcDalhyGQuo90hZgCU=
+berty.tech/go-ipfs-log v1.0.0 h1:fZZzlPwRd0euU+FMmi7d94szupKydUVCr0zEfOWf7jc=
+berty.tech/go-ipfs-log v1.0.0/go.mod h1:yuf4K9pUlnl21XjYq/FJlwpC3DjbdGM0nm8g1po3xgw=
+berty.tech/go-orbit-db v1.2.0 h1:TNyaPiRl/7HsCrc6vrxWGSPSM+5FVuk9/ZlkX8EdKK4=
+berty.tech/go-orbit-db v1.2.0/go.mod h1:wUXGB2/74YSvS4hBEtxo70qQFpX0/IQtrxQi4HNJAds=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.33.1/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
@@ -699,6 +699,8 @@ github.com/smartystreets/assertions v1.0.0/go.mod h1:kHHU4qYBaI3q23Pp3VPrmWhuIUr
 github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa/go.mod h1:2RVY1rIf+2J2o/IM9+vPq9RzmHDSseB7FoXiSNIUsoU=
 github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a h1:pa8hGb/2YqsZKovtsgrwcDH1RZhVbTKCjLp47XpqCDs=
 github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a/go.mod h1:syvi0/a8iFYH4r/RixwvyeAJjdLS9QV7WQ/tjFTllLA=
+github.com/smartystreets/goconvey v1.6.4 h1:fv0U8FUIMPNf1L9lnHLvLhgicrIVChEkdzIKYqbNC9s=
+github.com/smartystreets/goconvey v1.6.4/go.mod h1:syvi0/a8iFYH4r/RixwvyeAJjdLS9QV7WQ/tjFTllLA=
 github.com/smola/gocompat v0.2.0 h1:6b1oIMlUXIpz//VKEDzPVBK8KG7beVwmHIUEBIs/Pns=
 github.com/smola/gocompat v0.2.0/go.mod h1:1B0MlxbmoZNo3h8guHp8HztB3BSYR5itql9qtVc0ypY=
 github.com/spacemonkeygo/openssl v0.0.0-20181017203307-c2dcc5cca94a/go.mod h1:7AyxJNCJ7SBZ1MfVQCWD6Uqo2oubI2Eq2y2eqf+A5r0=

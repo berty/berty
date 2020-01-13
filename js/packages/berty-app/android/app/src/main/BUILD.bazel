@@ -26,8 +26,8 @@ aar_import(
 )
 
 aar_import(
-    name = "chat_sdk",
-    aar = "@chat_sdk//:prebuilt_aar",
+    name = "berty_bridge",
+    aar = "@berty_bridge//:prebuilt_aar",
     deps = [
         ":com_facebook_react_react_native",
     ],
@@ -48,8 +48,7 @@ android_binary(
     resource_files = glob(["res/**"]),
     visibility = ["//visibility:public"],
     deps = [
-        ":chat_sdk",
+        ":berty_bridge",
         ":com_facebook_react_react_native",
-        ":org_webkit_android_jsc",
     ],
 )

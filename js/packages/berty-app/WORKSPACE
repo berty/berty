@@ -6,10 +6,10 @@ local_repository(
     path = "../../../go",
 )
 
-# berty chat sdk
+# berty chat bridge
 local_repository(
-    name = "chat_sdk",
-    path = "../react-native-chat-sdk",
+    name = "berty_bridge",
+    path = "../go-bridge",
 )
 
 # configure android sdk/ndk
@@ -27,8 +27,8 @@ android_ndk_repository(
 load("@berty_app//:repositories.bzl", "berty_app_repositories")
 berty_app_repositories()
 
-load("@chat_sdk//:repositories.bzl", "chat_sdk_repositories")
-chat_sdk_repositories()
+load("@berty_bridge//:repositories.bzl", "berty_bridge_repositories")
+berty_bridge_repositories()
 
 # check bazel version
 load("@build_bazel_rules_nodejs//:index.bzl", "check_bazel_version")
@@ -38,8 +38,8 @@ check_bazel_version("0.29.1")
 load("@berty_app//:config.bzl", "berty_app_config")
 berty_app_config()
 
-# chat sdk config
-load("@chat_sdk//:config.bzl", "chat_sdk_config")
-chat_sdk_config()
+# chat bridge config
+load("@berty_bridge//:config.bzl", "berty_bridge_config")
+berty_bridge_config()
 
 register_toolchains("@androidndk//:all")

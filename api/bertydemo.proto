@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package berty.protocol;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option go_package = "berty.tech/berty/go/pkg/bertydemo";
+
+service DemoService {
+  // OrbitDBGetIdentity Returns the identity used by the current DB
+  // rpc OrbitDBGetIdentity(OrbitDBGetIdentity.Request) returns (OrbitDBGetIdentity.Reply);
+
+  // OrbitDBOpenDatastore Opens an existing data store
+  // rpc OrbitDBOpenDatastore(OrbitDBOpenDatastore.Request) returns (OrbitDBOpenDatastore.Reply);
+
+  // OrbitDBCreateDatastore Creates a new stores
+  // rpc OrbitDBCreateDatastore(OrbitDBCreateDatastore.Request) returns (OrbitDBCreateDatastore.Reply);
+
+  rpc OrbitDBLog(OrbitDBLog.Request) returns (OrbitDBLog.Reply);
+
+  // CloseDatastore Closes the current DB and all the related stores
+  // rpc CloseDatastore(CloseDatastore.Request) returns (CloseDatastore.Reply);
+
+  // DetermineAddress Returns the store address for the given parameters
+  // rpc DetermineAddress(DetermineAddress.Request) returns (DetermineAddress.Reply);
+
+  // RegisterStoreType Registers a new store type
+  // rpc RegisterStoreType(RegisterStoreType.Request) returns (RegisterStoreType.Reply);
+
+  // RegisterStoreType Removes a store type
+  // rpc UnregisterStoreType(UnregisterStoreType.Request) returns (UnregisterStoreType.Reply);
+
+  // RegisterAccessControllerType Registers a new access controller type
+  // rpc RegisterAccessControllerType(RegisterAccessControllerType.Request) returns (RegisterAccessControllerType.Reply);
+
+  // UnregisterAccessControllerType Unregisters an access controller type
+  // rpc UnregisterAccessControllerType(UnregisterAccessControllerType.Request) returns (UnregisterAccessControllerType.Reply);
+
+  // GetAccessControllerType Retrieves an access controller type constructor if it exists
+  // rpc GetAccessControllerType(GetAccessControllerType.Request) returns (GetAccessControllerType.Reply);
+}
+
+message OrbitDBLog {
+  message Request {}
+  message Reply {}
+}
+
+// message TestUnary {
+//   message Request {}
+//   message Reply {}
+// }
+
+// message OrbitDBGetIdentity {
+//   message Request {}
+//   message Reply {}
+// }
+
+// message OrbitDBOpenDatastore {
+//   message Request {}
+//   message Reply {}
+// }
+
+// message OrbitDBCreateDatastore {
+//   message Request {}
+//   message Reply {}
+// }
+
+// message CloseDatastore {
+//   message Request {}
+//   message Reply {}
+// }
+
+// message DetermineAddress {
+//   message Request {}
+//   message Reply {}
+// }
+
+// message RegisterStoreType {
+//   message Request {}
+//   message Reply {}
+// }
+
+// message UnregisterStoreType {
+//   message Request {}
+//   message Reply {}
+// }
+
+// message RegisterAccessControllerType {
+//   message Request {}
+//   message Reply {}
+// }
+
+// message UnregisterAccessControllerType {
+//   message Request {}
+//   message Reply {}
+// }
+
+// message GetAccessControllerType {
+//   message Request {}
+//   message Reply {}
+// }
+
+
+// models
+
+// message Identity {
+//   string id = 0;
+//   bytes public_key = 1;
+//   string type = 2;
+// }

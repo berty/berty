@@ -61,7 +61,7 @@
 			containerPortal = F8A60E342382C28B0039B699 /* Pods.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = EC7B6D6163259AD837BB1C23195947A2;
-			remoteInfo = "react-native-chat-sdk";
+			remoteInfo = "go-bridge";
 		};
 		F81E8EB22382EBE4007CDBA3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -458,7 +458,7 @@
 				F8A60E6F2382C28B0039B699 /* libReact-jsi.a */,
 				F8A60E712382C28B0039B699 /* libReact-jsiexecutor.a */,
 				F8A60E732382C28B0039B699 /* libReact-jsinspector.a */,
-				F81E8EB12382EBE4007CDBA3 /* libreact-native-chat-sdk.a */,
+				F81E8EB12382EBE4007CDBA3 /* libgo-bridge.a */,
 				F81E8ED72382F72D007CDBA3 /* libreact-native-config.a */,
 				F81E8EB32382EBE4007CDBA3 /* libreact-native-example.a */,
 				F8A60E7B2382C28B0039B699 /* libReact-RCTActionSheet.a */,
@@ -644,10 +644,10 @@
 			remoteRef = F81E8EAE2382EBE4007CDBA3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		F81E8EB12382EBE4007CDBA3 /* libreact-native-chat-sdk.a */ = {
+		F81E8EB12382EBE4007CDBA3 /* libgo-bridge.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libreact-native-chat-sdk.a";
+			path = "libgo-bridge.a";
 			remoteRef = F81E8EB02382EBE4007CDBA3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

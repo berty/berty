@@ -1,0 +1,8 @@
+load("@co_znly_rules_gomobile//:java.bzl", "gobind_java")
+load("@berty_bridge//ios:framework.bzl", "gen_framework")
+
+gen_framework(
+    name = "bridge_framework",
+    bundle_name = "Gobridge",
+)
+

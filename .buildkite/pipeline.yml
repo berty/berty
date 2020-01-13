@@ -91,7 +91,7 @@ steps:
           workdir: /home/buildkite-agent/go/src/berty.tech/berty
           environment:
             [
-              "GO111MODULE=on",
+              "GO111MODULE=off",
               "GOPATH=/home/buildkite-agent/go",
               "HOME=/home/buildkite-agent",
               "GRADLE_USER_HOME=/home/buildkite-agent/.gradle"
@@ -101,6 +101,9 @@ steps:
       queue: "bigcores"
     commands:
       - set -x
+      - export PATH=$$PATH:/home/buildkite-agent/go/bin
+      - go get golang.org/x/mobile/cmd/gomobile
+      - gomobile init
       - cd js
       - make deps.android
       - cd packages/berty-app
@@ -110,13 +113,13 @@ steps:
       - ./gradlew bundleRelease
       - find . -name '*.aab'
       - "[ -f ~/bundletool-all-0.12.0.jar ] || wget -O ~/bundletool-all-0.12.0.jar https://github.com/google/bundletool/releases/download/0.12.0/bundletool-all-0.12.0.jar"
-      - "java -jar ~/bundletool-all-0.12.0.jar build-apks --bundle=./app/build/outputs/bundle/release/app.aab --output=./app.apks --mode=universal"
+      - "java -jar ~/bundletool-all-0.12.0.jar build-apks --bundle=./app/build/outputs/bundle/release/app-release.aab --output=./app.apks --mode=universal"
       - unzip ./app.apks
       - find . -name '*.apk'
     artifact_paths:
       - "js/packages/berty-app/android/universal.apk"
       - "js/packages/berty-app/android/toc.pb"
-      - "js/packages/berty-app/android/app/build/outputs/bundle/release/app.aab"
+      - "js/packages/berty-app/android/app/build/outputs/bundle/release/app-release.aab"
 
   - label: js-generate
     plugins:
