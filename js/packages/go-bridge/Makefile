@@ -9,20 +9,32 @@ BAZEL_AAR := $(PWD)/bazel-bin/android/gobridge_library.aar
 AAR_DIR := $(PWD)/android/libs
 AAR := $(PWD)/android/libs/gobridge.aar
 
+GOMOBILE := $(GOTPATH)/bin/gomobile
+GOBIND := $(GOPATH)/bin/gobind
+
+deps: $(GOMOBILE)
+
+$(GOMOBILE): $(PWD) := $(PWD)
+$(GOMOBILE): $(GOBIND)
+	go get golang.org/x/mobile/cmd/gomobile
+	cd $(PWD) && gomobile init
+
+$(GOBIND):
+	go get golang.org/x/mobile/cmd/gobind
 
 build.gobridge: build.gobridge.ios build.gobridge.android
 
 build.gobridge.ios: $(FRAMEWORK_DIR)
 	touch $<
 
-$(FRAMEWORK_DIR): # TODO: add go prerequisits
+$(FRAMEWORK_DIR): deps # TODO: add go prerequisits
 	mkdir -p $(FRAMEWORK_DIR)
 	gomobile bind -o $(FRAMEWORK) -v -target ios berty.tech/berty/go/framework/bertybridge
 
 build.gobridge.android: $(AAR)
 	touch $<
 
-$(AAR): # TODO: add go prerequisits
+$(AAR): deps # TODO: add go prerequisits
 	mkdir -p $(AAR_DIR)
 	gomobile bind -o $(AAR) -v -target android berty.tech/berty/go/framework/bertybridge
 
