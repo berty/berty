@@ -11,7 +11,7 @@ export const Footer = ({ navigate }) => {
 				<Store.ContactGet request={{ id: response?.account?.contactId || 0 }}>
 					{(response) => (
 						<SharedFooter
-							left={{ icon: 'search-outline' }}
+							left={{ icon: 'search-outline', onPress: navigate.main.search }}
 							center={{ icon: 'message-circle-outline', onPress: navigate.main.list }}
 							right={{
 								avatarUri: response?.contact?.avatarUri,

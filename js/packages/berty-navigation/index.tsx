@@ -249,6 +249,13 @@ export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => (
 	</CreateGroupStack.Navigator>
 )
 
+const SearchStack = createNativeStackNavigator()
+export const SearchNavigation: React.FC<BottomTabBarProps> = () => (
+	<SearchStack.Navigator screenOptions={{ headerShown: false }}>
+		<SearchStack.Screen name={Routes.Main.Search} component={Stories.Main.Search} />
+	</SearchStack.Navigator>
+)
+
 const MainStack = createNativeStackNavigator()
 export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 	<MainStack.Navigator screenOptions={{ headerShown: false }}>
@@ -300,7 +307,6 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 			component={Stories.Settings.MyBertyId}
 			options={{ presentation: 'transparentModal' }}
 		/>
-		<MainStack.Screen name={Routes.Main.Search} component={Stories.Main.Search} />
 		<MainStack.Screen
 			name={Routes.Main.RequestSent}
 			component={Stories.Main.RequestSent}
@@ -369,8 +375,12 @@ const Footer: React.FC<BottomTabBarProps> = ({ navigation, state: { index, route
 
 const TabStack = createBottomTabNavigator()
 export const Navigation: React.FC = () => (
-	<TabStack.Navigator tabBar={(props) => <Footer {...props} />}>
+	<TabStack.Navigator
+		tabBar={(props) => <Footer {...props} />}
+		options={{ backBehavior: 'initialRoute' }}
+	>
 		<TabStack.Screen name={Routes.Main.List} component={MainNavigation} />
+		<TabStack.Screen name={Routes.Main.Search} component={SearchNavigation} />
 		<TabStack.Screen name={Routes.Settings.Home} component={SettingsNavigation} />
 		<TabStack.Screen name={Routes.Onboarding.GetStarted} component={OnboardingNavigation} />
 	</TabStack.Navigator>
