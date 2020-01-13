@@ -54,13 +54,13 @@ func (s *secretStoreIndex) syncMemberWithPendingSecret(log ipfslog.Log, senderDe
 	s.muPending.Lock()
 
 	secretPending, secretPendingOK := s.secretPending[senderDevicePubKeyStr]
-	_, memberPending := s.memberPending[senderDevicePubKeyStr]
+	_, memberPendingOK := s.memberPending[senderDevicePubKeyStr]
 
-	if !memberPending {
+	if !memberPendingOK {
 		s.memberPending[senderDevicePubKeyStr] = struct{}{}
 	}
 
-	if !memberPending && secretPendingOK {
+	if !memberPendingOK && secretPendingOK {
 		s.emitEventNewSecret(log, secretPending.entry, secretPending.payload)
 	}
 
@@ -83,9 +83,9 @@ func (s *secretStoreIndex) syncSecretWithPendingMemberDevice(log ipfslog.Log, en
 		payload: payload,
 	}
 
-	_, memberPending := s.memberPending[senderDevicePubKeyStr]
+	_, memberPendingOK := s.memberPending[senderDevicePubKeyStr]
 
-	if memberPending {
+	if memberPendingOK {
 		s.emitEventNewSecret(log, entry, payload)
 	} else {
 		_, err := s.groupContext.GetMemberStore().GetEntryByDevice(senderDevicePubKey)
