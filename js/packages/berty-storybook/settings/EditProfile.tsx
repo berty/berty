@@ -10,7 +10,7 @@ import {
 	StyleProp,
 	Text,
 } from 'react-native'
-import { Text, Icon, Input } from 'react-native-ui-kitten'
+import { Icon, Input } from 'react-native-ui-kitten'
 import { colors, styles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { BlurView } from '@react-native-community/blur'
