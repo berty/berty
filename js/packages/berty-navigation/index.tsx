@@ -1,7 +1,7 @@
 // TODO: create /api/js-internal/bertychatnavigation.proto and generate this file
 
 import React, { useMemo } from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createNativeStackNavigator, createStackNavigator } from '@react-navigation/native-stack'
 import * as Stories from '@berty-tech/berty-storybook'
 import {
 	useNavigation as useReactNavigation,
@@ -13,13 +13,6 @@ import { berty } from '@berty-tech/berty-api'
 import { NavigationNativeContainer } from '@react-navigation/native'
 
 export namespace ScreenProps {
-	export namespace Tab {
-		export type Onboarding = {}
-		export type Main = { navigate: { tab: { settings: () => void } } }
-		export type Settings = {
-			navigate: { tab: { main: () => void }; settings: { home: () => void } }
-		}
-	}
 	export namespace Onboarding {
 		export type GetStarted = {}
 		export type SelectMode = {}
@@ -38,6 +31,15 @@ export namespace ScreenProps {
 		export type ScanRequest = {}
 		export type Scan = { route: { params: berty.chatmodel.IContact } }
 		export type InvalidScan = {}
+
+		export type ListModal = {}
+		export type Search = {}
+		export type RequestSent = {}
+		export namespace CreateGroup {
+			export type CreateGroup = {}
+			export type CreateGroup2 = {}
+			export type CreateGroup3 = {}
+		}
 	}
 	export namespace Chat {
 		export type List = {}
@@ -70,12 +72,6 @@ export namespace ScreenProps {
 }
 
 export namespace Routes {
-	export enum Tab {
-		Onboarding = 'Onboarding',
-		Main = 'Main',
-		Chat = 'Chat',
-		Settings = 'Settings',
-	}
 	export enum Onboarding {
 		GetStarted = 'Onboarding.GetStarted',
 		SelectMode = 'Onboarding.SelectMode',
@@ -89,6 +85,14 @@ export namespace Routes {
 		ScanRequest = 'Main.ScanRequest',
 		Scan = 'Main.Scan',
 		InvalidScan = 'Main.InvalidScan',
+		ListModal = 'Main.ListModal',
+		Search = 'Main.Search',
+		RequestSent = 'Main.RequestSent',
+	}
+	export enum CreateGroup {
+		CreateGroup1 = 'Main.CreateGroup1',
+		CreateGroup2 = 'Main.CreateGroup2',
+		CreateGroup3 = 'Main.CreateGroup3',
 	}
 	export enum Chat {
 		One2One = 'Chat.One2One',
@@ -131,11 +135,6 @@ const createNavigation = ({
 			performance: createNavigateFunc(navigate, Routes.Onboarding.Performance),
 			privacy: createNavigateFunc(navigate, Routes.Onboarding.Privacy),
 		},
-		tab: {
-			main: createNavigateFunc(jumpTo, Routes.Tab.Main),
-			chat: createNavigateFunc(jumpTo, Routes.Tab.Chat),
-			settings: createNavigateFunc(jumpTo, Routes.Tab.Settings),
-		},
 		main: {
 			list: createNavigateFunc(navigate, Routes.Main.List),
 			contactRequest: createNavigateFunc<berty.chatmodel.IContact>(
@@ -146,10 +145,18 @@ const createNavigation = ({
 				navigate,
 				Routes.Main.GroupRequest,
 			),
-
 			scanRequest: createNavigateFunc(navigate, Routes.Main.ScanRequest),
 			scan: createNavigateFunc(navigate, Routes.Main.Scan),
 			invalidScan: createNavigateFunc(navigate, Routes.Main.InvalidScan),
+
+			listModal: createNavigateFunc(navigate, Routes.Main.ListModal),
+			search: createNavigateFunc(navigate, Routes.Main.Search),
+			requestSent: createNavigateFunc(navigate, Routes.Main.RequestSent),
+			createGroup: {
+				createGroup1: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup1),
+				createGroup2: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup2),
+				createGroup3: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup3),
+			},
 		},
 		chat: {
 			one2One: createNavigateFunc<berty.chatmodel.IConversation>(navigate, Routes.Chat.One2One),
@@ -221,6 +228,34 @@ export const OnboardingNavigation: React.FC = () => (
 	</OnboardingStack.Navigator>
 )
 
+const CreateGroupStack = createNativeStackNavigator()
+export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => (
+	<CreateGroupStack.Navigator screenOptions={{ headerShown: false }}>
+		<CreateGroupStack.Screen
+			name={Routes.CreateGroup.CreateGroup2}
+			component={Stories.Main.CreateGroup2}
+			options={{ presentation: 'transparentModal' }}
+		/>
+		<CreateGroupStack.Screen
+			name={Routes.CreateGroup.CreateGroup3}
+			component={Stories.Main.CreateGroup3}
+			options={{ presentation: 'transparentModal' }}
+		/>
+		<CreateGroupStack.Screen
+			name={Routes.CreateGroup.CreateGroup1}
+			component={Stories.Main.CreateGroup}
+			options={{ presentation: 'transparentModal' }}
+		/>
+	</CreateGroupStack.Navigator>
+)
+
+const SearchStack = createNativeStackNavigator()
+export const SearchNavigation: React.FC<BottomTabBarProps> = () => (
+	<SearchStack.Navigator screenOptions={{ headerShown: false }}>
+		<SearchStack.Screen name={Routes.Main.Search} component={Stories.Main.Search} />
+	</SearchStack.Navigator>
+)
+
 const MainStack = createNativeStackNavigator()
 export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 	<MainStack.Navigator screenOptions={{ headerShown: false }}>
@@ -244,7 +279,11 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 			}}
 		/>
 		<MainStack.Screen name={Routes.Main.ScanRequest} component={Stories.Main.ScanRequest} />
-		<MainStack.Screen name={Routes.Main.Scan} component={Stories.Main.Scan} />
+		<MainStack.Screen
+			name={Routes.Main.Scan}
+			component={Stories.Main.Scan}
+			options={{ presentation: 'transparentModal' }}
+		/>
 		<MainStack.Screen name={Routes.Main.InvalidScan} component={Stories.Main.InvalidScan} />
 		<MainStack.Screen name={Routes.Chat.One2One} component={Stories.Chat.Chat} />
 		<MainStack.Screen name={Routes.Chat.Group} component={Stories.Chat.ChatGroup} />
@@ -254,14 +293,42 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 			component={Stories.Chat.ContactChatSettings}
 		/>
 		<MainStack.Screen name={Routes.Chat.GroupSettings} component={Stories.Chat.GroupChatSettings} />
+
+		<MainStack.Screen
+			name={Routes.Main.ListModal}
+			component={Stories.Main.ListModal}
+			options={{
+				presentation: 'transparentModal',
+				contentStyle: { backgroundColor: 'transparent' },
+			}}
+		/>
+		<MainStack.Screen
+			name={Routes.Main.MyBertyId}
+			component={Stories.Settings.MyBertyId}
+			options={{ presentation: 'transparentModal' }}
+		/>
+		<MainStack.Screen
+			name={Routes.Main.RequestSent}
+			component={Stories.Main.RequestSent}
+			options={{ presentation: 'transparentModal' }}
+		/>
+		<MainStack.Screen
+			name={Routes.CreateGroup.CreateGroup2}
+			component={CreateGroupNavigation}
+			options={{ presentation: 'transparentModal' }}
+		/>
 	</MainStack.Navigator>
 )
 
 const SettingsStack = createNativeStackNavigator()
-export const SettingsNavigation: React.FC = () => (
+export const SettingsNavigation: React.FC<BottomTabBarProps> = () => (
 	<SettingsStack.Navigator screenOptions={{ headerShown: false }}>
 		<SettingsStack.Screen name={Routes.Settings.Home} component={Stories.Settings.Home} />
-		<SettingsStack.Screen name={Routes.Settings.MyBertyId} component={Stories.Settings.MyBertyId} />
+		<SettingsStack.Screen
+			name={Routes.Settings.MyBertyId}
+			component={Stories.Settings.MyBertyId}
+			options={{ presentation: 'transparentModal' }}
+		/>
 		<SettingsStack.Screen
 			name={Routes.Settings.EditProfile}
 			component={Stories.Settings.EditProfile}
@@ -297,22 +364,25 @@ export const SettingsNavigation: React.FC = () => (
 	</SettingsStack.Navigator>
 )
 
-const Footer: React.FC<BottomTabBarProp> = ({ navigation, state: { index, routeNames } }) => {
+const Footer: React.FC<BottomTabBarProps> = ({ navigation, state: { index, routeNames } }) => {
 	const _navigation = useMemo(() => createNavigation(navigation), [navigation])
-	switch (routeNames[index]) {
-		case Routes.Tab.Settings:
-			return <Stories.Settings.Footer {..._navigation} />
-		default:
-			return null
+	console.log(routeNames[index])
+	if (routeNames[index].match(/^Settings\..*$/)) {
+		return <Stories.Settings.Footer {..._navigation} />
 	}
+	return null
 }
 
 const TabStack = createBottomTabNavigator()
 export const Navigation: React.FC = () => (
-	<TabStack.Navigator tabBar={(props) => <Footer {...props} />}>
-		<TabStack.Screen name={Routes.Tab.Onboarding} component={OnboardingNavigation} />
-		<TabStack.Screen name={Routes.Tab.Main} component={MainNavigation} />
-		<TabStack.Screen name={Routes.Tab.Settings} component={SettingsNavigation} />
+	<TabStack.Navigator
+		tabBar={(props) => <Footer {...props} />}
+		options={{ backBehavior: 'initialRoute' }}
+	>
+		<TabStack.Screen name={Routes.Main.List} component={MainNavigation} />
+		<TabStack.Screen name={Routes.Main.Search} component={SearchNavigation} />
+		<TabStack.Screen name={Routes.Settings.Home} component={SettingsNavigation} />
+		<TabStack.Screen name={Routes.Onboarding.GetStarted} component={OnboardingNavigation} />
 	</TabStack.Navigator>
 )
 

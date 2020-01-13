@@ -19,6 +19,7 @@ import { BlurView, findNodeHandle } from '@react-native-community/blur'
 // Types
 type ModalProps = {
 	children: React.ReactNode
+	icon?: boolean
 }
 
 // Styles
@@ -33,18 +34,20 @@ const _modalStyles = StyleSheet.create({
 	},
 })
 
-export const Modal: React.FC<ModalProps> = ({ children }) => {
+export const Modal: React.FC<ModalProps> = ({ children, icon = true }) => {
 	const { goBack } = useNavigation()
 	return (
 		<View style={[StyleSheet.absoluteFill]}>
-			<BlurView style={[StyleSheet.absoluteFill]} blurType='light' blurAmount={32} />
 			<TouchableWithoutFeedback onPress={goBack} style={[StyleSheet.absoluteFill]}>
-				<SafeAreaView
-					style={[styles.absolute, styles.left, styles.right, styles.bottom, styles.margin]}
-				>
-					<View style={[styles.bgWhite, styles.shadow, styles.margin, styles.modalBorderRadius]}>
-						{children}
-					</View>
+				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' blurAmount={50} />
+			</TouchableWithoutFeedback>
+			<SafeAreaView
+				style={[styles.absolute, styles.left, styles.right, styles.bottom, styles.margin]}
+			>
+				<View style={[styles.bgWhite, styles.shadow, styles.margin, styles.modalBorderRadius]}>
+					{children}
+				</View>
+				{icon && (
 					<TouchableOpacity
 						style={[
 							styles.flex,
@@ -66,8 +69,8 @@ export const Modal: React.FC<ModalProps> = ({ children }) => {
 							fill={colors.grey}
 						/>
 					</TouchableOpacity>
-				</SafeAreaView>
-			</TouchableWithoutFeedback>
+				)}
+			</SafeAreaView>
 		</View>
 	)
 }

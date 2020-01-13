@@ -89,8 +89,8 @@ const SearchComponent: React.FC<{}> = () => (
 )
 
 export const Search: React.FC<{}> = () => {
-	const firstToggledPoint = 50
-	const firstNotToggledPoint = firstToggledPoint
+	const firstNotToggledPoint = Screen.height - 120
+	const firstToggledPoint = 20
 
 	return (
 		<Layout style={[styles.flex]}>
@@ -100,6 +100,7 @@ export const Search: React.FC<{}> = () => {
 						{
 							toggledPoint: firstToggledPoint,
 							notToggledPoint: firstNotToggledPoint,
+							initialPoint: firstToggledPoint,
 							header: false,
 							maxHeight: Screen.height - 90,
 							bgColor: colors.yellow,

@@ -12,18 +12,19 @@ export const Footer: React.FC<ScreenProps.Tab.Main> = (props) => {
 				<Store.ContactGet request={{ id: response?.account?.contactId || 0 }}>
 					{(response) => (
 						<SharedFooter
-							left={{ icon: 'search-outline' }}
+							left={{ icon: 'search-outline', onPress: navigate.main.search }}
 							center={{
 								icon: 'plus-outline',
 								backgroundColor: colors.blue,
 								size: 50,
 								elemSize: 30,
 								elemColor: colors.white,
+								onPress: navigate.main.listModal,
 							}}
 							right={{
 								avatarUri: response?.contact?.avatarUri,
 								elemSize: 40,
-								onPress: navigate.tab.settings,
+								onPress: navigate.settings.home,
 							}}
 						/>
 					)}

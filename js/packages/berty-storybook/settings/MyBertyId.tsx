@@ -93,8 +93,8 @@ const MyBertyIdComponent: React.FC<RequestProps> = ({ user }) => (
 )
 
 export const MyBertyId: React.FC<RequestProps> = ({ user }) => {
-	const firstNotToggledPoint = Screen.height - 100
-	const firstToggledPoint = 50
+	const firstNotToggledPoint = Screen.height - 120
+	const firstToggledPoint = 20
 
 	return (
 		<Layout style={[styles.flex]}>
