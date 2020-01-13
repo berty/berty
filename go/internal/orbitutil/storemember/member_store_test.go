@@ -34,6 +34,8 @@ func TestMemberStore(t *testing.T) {
 	} {
 		t.Run(fmt.Sprintf("testMemberStore seed: %d, memberCount: %d, deviceCount: %d", seed, tc.memberCount, tc.deviceCount), func(t *testing.T) {
 			if tc.slow {
+				// TODO: re-enable this test
+				t.Skip()
 				testutil.SkipSlow(t)
 			}
 
