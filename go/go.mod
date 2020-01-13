@@ -5,9 +5,12 @@ go 1.13
 require (
 	berty.tech/go-ipfs-log v1.0.0
 	berty.tech/go-orbit-db v1.2.0
+	github.com/LK4D4/trylock v0.0.0-20191027065348-ff7e133a5c54
+	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.3.2
 	github.com/improbable-eng/grpc-web v0.11.0
+	github.com/ipfs/go-cid v0.0.4
 	github.com/ipfs/go-datastore v0.3.1
 	github.com/ipfs/go-ipfs v0.4.22-0.20191217161056-7cc392ba9dac
 	github.com/ipfs/go-ipfs-config v0.1.0

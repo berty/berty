@@ -64,7 +64,7 @@ func createRepo(dstore ipfs_repo.Datastore) (ipfs_repo.Repo, error) {
 
 	portOffset := portOffsetBI.Int64() % 100
 
-	println("Listening on port", 4001+portOffset)
+	fmt.Println("Initializing network on port", 4001+portOffset)
 
 	c.Bootstrap = ipfs_cfg.DefaultBootstrapAddresses
 	c.Addresses.Swarm = []string{

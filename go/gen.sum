@@ -1,8 +1,8 @@
 84820a822d2e1cc7fabb16dee5f248105fcc429a  ../api/bertydemo.proto
 28c496e3e801a1f576324a2116268e56479e16aa  ../api/bertyprotocol.proto
-cebe16fc76c594cb18c075942bf4a5bc0c736810  ../api/errcode.proto
+98410a19337dcf897f1c4860ee75d38c24209825  ../api/errcode.proto
 dcbee8a9b345330615f4e517e711bb5c38b22248  ../api/go-internal/handshake.proto
 365bc276a7d8ccc215a0779a08aaa5cfb3fbe43e  ../api/go-internal/protocolmodel.proto
 2bd227219a1d918ec6fe121c2d85fa6d1ffa116c  ../api/go-internal/sigchain.proto
-3a3befa3103deb046a2377f480cfc24229da97a4  ../api/go-internal/store_entry.proto
-f4c2bc91af60c8b2560e3e78de0b78bcc770726a  Makefile
+e211c22f8ab7d8bc248813275275462649127e94  ../api/go-internal/store_entry.proto
+27adc305f71410125d6899bab46aff4ae0c2e693  Makefile

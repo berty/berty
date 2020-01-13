@@ -20,7 +20,7 @@ message MemberEntryPayload {
   bytes member_device_pub_key = 3;
   bytes member_device_pub_key_signature = 4; // Signed by member_priv_key
 
-  bytes inviter_device_pub_key = 5;
+  bytes inviter_member_pub_key = 5;
   bytes invitation_pub_key = 6;
   bytes invitation_pub_key_signature = 7; // Signed by inviter_member_priv_key
 }
@@ -44,7 +44,7 @@ message MessageEntryPayload {
 }
 
 message Invitation {
-  bytes inviter_device_pub_key = 1;
+  bytes inviter_member_pub_key = 1;
   bytes invitation_priv_key = 2; // This will contains only the private part of the invitation key, as the other part can be calculated (we dont expect much invitations being received)
   bytes invitation_pub_key_signature = 3; // Signed by inviter_member_priv_key
 
@@ -64,7 +64,7 @@ message DeviceSecret {
   uint64 counter = 2;
 }
 
-message SettingsEntryPayload {
+message SettingEntryPayload {
   enum PayloadType {
     PayloadTypeUnknown = 0;
     PayloadTypeGroupSetting = 1;
