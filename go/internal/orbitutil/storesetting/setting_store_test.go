@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"context"
 	"testing"
-	"time"
 
 	"berty.tech/berty/go/internal/orbitutil"
 	"berty.tech/berty/go/internal/orbitutil/orbittestutil"
 )
 
 func TestSettingStore(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	peers, invitation := orbittestutil.CreatePeersWithGroup(ctx, t, "/tmp/settings_test", 2, 1, true)
@@ -64,7 +63,7 @@ func TestSettingStore(t *testing.T) {
 
 	// Read on store, replicated value
 
-	orbitutil.WaitStoreReplication(ctx, 5*time.Second, peers[1].GetGroupContext().GetSettingStore())
+	orbitutil.WaitStoreReplication(ctx, peers[1].GetGroupContext().GetSettingStore())
 
 	settings, err = peers[1].GetGroupContext().GetSettingStore().Get(peers[0].GetGroupContext().GetMemberPrivKey().GetPublic())
 	if err != nil {
@@ -101,7 +100,7 @@ func TestSettingStore(t *testing.T) {
 		t.Fatalf("expected group-foo=group-bar settings to be set for group")
 	}
 
-	orbitutil.WaitStoreReplication(ctx, 5*time.Second, peers[1].GetGroupContext().GetSettingStore())
+	orbitutil.WaitStoreReplication(ctx, peers[1].GetGroupContext().GetSettingStore())
 
 	// Replicated group get
 
@@ -149,7 +148,7 @@ func TestSettingStore(t *testing.T) {
 
 	// Read on store, replicated overwritten value
 
-	orbitutil.WaitStoreReplication(ctx, 5*time.Second, peers[1].GetGroupContext().GetSettingStore())
+	orbitutil.WaitStoreReplication(ctx, peers[1].GetGroupContext().GetSettingStore())
 
 	settings, err = peers[1].GetGroupContext().GetSettingStore().Get(peers[0].GetGroupContext().GetMemberPrivKey().GetPublic())
 	if err != nil {

@@ -4,15 +4,7 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"time"
 
-	"berty.tech/berty/go/internal/orbitutil/identityberty"
-	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
-	"berty.tech/berty/go/internal/orbitutil/storegroup"
-	"berty.tech/berty/go/internal/orbitutil/storemember"
-	"berty.tech/berty/go/internal/orbitutil/storesecret"
-	"berty.tech/berty/go/internal/orbitutil/storesetting"
-	"berty.tech/berty/go/pkg/errcode"
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/accesscontroller/simple"
@@ -24,6 +16,14 @@ import (
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
+
+	"berty.tech/berty/go/internal/orbitutil/identityberty"
+	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/berty/go/internal/orbitutil/storegroup"
+	"berty.tech/berty/go/internal/orbitutil/storemember"
+	"berty.tech/berty/go/internal/orbitutil/storesecret"
+	"berty.tech/berty/go/internal/orbitutil/storesetting"
+	"berty.tech/berty/go/pkg/errcode"
 )
 
 type BertyOrbitDB struct {
@@ -246,8 +246,8 @@ func (s *BertyOrbitDB) GroupSecretStore(ctx context.Context, g orbitutilapi.Grou
 
 var _ orbitutilapi.BertyOrbitDB = (*BertyOrbitDB)(nil)
 
-func WaitStoreReplication(ctx context.Context, timeout time.Duration, s orbitdb.Store) {
-	ctx, cancel := context.WithTimeout(ctx, timeout)
+func WaitStoreReplication(ctx context.Context, s orbitdb.Store) {
+	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	go s.Subscribe(ctx, func(evt events.Event) {

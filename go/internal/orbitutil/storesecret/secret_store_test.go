@@ -4,7 +4,6 @@ import (
 	"context"
 	"sync"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
@@ -32,12 +31,12 @@ func TestSecretStore_Basic(t *testing.T) {
 	wg.Add(2)
 
 	go func() {
-		orbitutil.WaitStoreReplication(ctx, 5*time.Second, peers[0].GetGroupContext().GetSecretStore())
+		orbitutil.WaitStoreReplication(ctx, peers[0].GetGroupContext().GetSecretStore())
 		wg.Done()
 	}()
 
 	go func() {
-		orbitutil.WaitStoreReplication(ctx, 5*time.Second, peers[1].GetGroupContext().GetSecretStore())
+		orbitutil.WaitStoreReplication(ctx, peers[1].GetGroupContext().GetSecretStore())
 		wg.Done()
 	}()
 
