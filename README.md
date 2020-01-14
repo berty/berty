@@ -10,7 +10,7 @@
 <h3 align="center">🤝 Distributed communication for everyone.</h3>
 
 <p align="center">
-  <a href="https://buildkite.com/berty/main"><img src="https://badge.buildkite.com/331d828ccb643f90f6302b13ea77ab716ec78d6631af54c987.svg" alt="Build Status"></a>
+  <a href="https://buildkite.com/berty/main"><img src="https://badge.buildkite.com/331d828ccb643f90f6302b13ea77ab716ec78d6631af54c987.svg?branch=master" alt="Build Status"></a>
   <a href="https://www.codefactor.io/repository/github/berty/berty"><img src="https://www.codefactor.io/repository/github/berty/berty/badge?s=bf5885a3b2782ead81d91cd423915f2e9ddc9196" alt="CodeFactor" /></a>
   <!--<a href="https://goreportcard.com/report/berty/berty"><img src="https://goreportcard.com/badge/berty/berty" alt="Go Report Card"></a>-->
   <a href="https://github.com/berty/berty/releases"><img src="https://badge.fury.io/gh/berty%2Fberty.svg" alt="GitHub version"></a>
