@@ -8,140 +8,150 @@ import {
 	Dimensions,
 	TouchableWithoutFeedback,
 } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '@berty-tech/styles'
+import { Text, Icon } from 'react-native-ui-kitten'
+import { useStyles } from '@berty-tech/styles'
 import { BlurView } from '@react-native-community/blur'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import { useNavigation } from '@berty-tech/berty-navigation'
 
-const _stylesList = StyleSheet.create({
-	tinyAvatar: {
-		position: 'absolute',
-		top: -32.5,
-	},
-	tinyCard: {
-		margin: 16,
-		marginTop: 16 + 26,
-		padding: 16,
-		paddingTop: 16 + 26,
-		width: 121,
-		height: 177,
-		borderRadius: 20,
-		backgroundColor: colors.white,
-		alignItems: 'center',
-	},
-	tinyAcceptButton: {
-		paddingHorizontal: 8,
-		paddingVertical: 4,
-		borderRadius: 4,
-		marginHorizontal: 4,
-	},
-	tinyDiscardButton: {
-		paddingHorizontal: 4,
-		paddingVertical: 4,
-		borderRadius: 4,
-		marginHorizontal: 4,
-	},
-	addContactItem: {
-		height: 115,
-		width: 150,
-	},
-	addContactItemText: {
-		width: 75,
-	},
-})
+const useStylesList = () => {
+	const [
+		{ absolute, margin, padding, width, height, border, background, row, column },
+	] = useStyles()
+	return {
+		tinyAvatar: [absolute.scale({ top: -32.5 }), row.item.justify],
+		tinyCard: [
+			margin.medium,
+			margin.top.scale(42),
+			padding.medium,
+			padding.top.scale(42),
+			width(121),
+			height(177),
+			border.radius.large,
+			background.white,
+			column.justify,
+		],
+		tinyAcceptButton: [
+			padding.horizontal.tiny,
+			padding.vertical.scale(4),
+			border.radius.scale(4),
+			margin.horizontal.scale(4),
+		],
+		tinyDiscardButton: [
+			padding.scale(4),
+			border.radius.scale(4),
+			border.color.light.grey,
+			margin.horizontal.scale(4),
+		],
+		addContactItem: [height(115), width(150)],
+		addContactItemText: width(75),
+	}
+}
 
 const RequestsItem: React.FC<{}> = () => {
 	const navigation = useNavigation()
+	const _styles = useStylesList()
+	const [{ border, column, flex, row, padding, text, background, color }] = useStyles()
+
 	return (
 		<TouchableOpacity
-			style={[_stylesList.tinyCard, styles.shadow, styles.col]}
+			style={[_styles.tinyCard, border.shadow.medium, column.justify]}
 			onPress={navigation.navigate.main.requestSent}
 		>
 			<CircleAvatar
-				style={_stylesList.tinyAvatar}
+				style={_styles.tinyAvatar}
 				avatarUri='https://s3.amazonaws.com/uifaces/faces/twitter/msveet/128.jpg'
 				size={65}
 				diffSize={8}
 			/>
-			<Text numberOfLines={1} style={[styles.center, styles.textCenter, styles.flex]}>
-				Gjdgfhnd
+			<Text numberOfLines={1} style={[flex.tiny, text.align.center]}>
+				Coucou
 			</Text>
 			<Text
 				category='c1'
-				style={[styles.paddingVertical, styles.textCenter, styles.textTiny, styles.textGrey]}
+				style={[padding.vertical.medium, text.align.center, text.size.tiny, text.color.grey]}
 			>
 				Sent 3 days ago
 			</Text>
-			<View style={[styles.row]}>
-				<TouchableOpacity
-					style={[_stylesList.tinyDiscardButton, styles.border, styles.justifyContent]}
-				>
-					<Icon name='close-outline' width={15} height={15} fill={colors.grey} />
-				</TouchableOpacity>
+			<View style={[row.center]}>
 				<TouchableOpacity
 					style={[
-						_stylesList.tinyAcceptButton,
-						styles.bgLightGreen,
-						styles.row,
-						styles.alignItems,
-						styles.justifyContent,
+						_styles.tinyDiscardButton,
+						border.radius.scale(7),
+						border.scale(1),
+						row.item.justify,
 					]}
 				>
-					<Icon name='checkmark-outline' width={15} height={15} fill={colors.green} />
-					<Text style={[styles.textTiny, styles.textGreen]}>Resend</Text>
+					<Icon name='close-outline' width={15} height={15} fill={color.grey} />
+				</TouchableOpacity>
+				<TouchableOpacity style={[_styles.tinyAcceptButton, background.light.green, row.center]}>
+					<Icon
+						name='checkmark-outline'
+						width={15}
+						height={15}
+						fill={color.green}
+						style={column.justify}
+					/>
+					<Text style={[text.size.tiny, text.color.green]}>Resend</Text>
 				</TouchableOpacity>
 			</View>
 		</TouchableOpacity>
 	)
 }
 
-const Requests: React.FC<{}> = () => (
-	<SafeAreaView>
-		<View style={[styles.paddingVertical]}>
-			<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-				<RequestsItem />
-			</ScrollView>
-		</View>
-	</SafeAreaView>
-)
+const Requests: React.FC<{}> = () => {
+	const [{ padding }] = useStyles()
+
+	return (
+		<SafeAreaView>
+			<View style={[padding.vertical.medium]}>
+				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+					<RequestsItem />
+				</ScrollView>
+			</View>
+		</SafeAreaView>
+	)
+}
 
 const AddContact: React.FC<{}> = () => {
 	const navigation = useNavigation()
+	const _styles = useStylesList()
+	const [{ padding, row, column, border, background, color, text }] = useStyles()
+
 	return (
-		<View style={[styles.paddingVertical]}>
-			<View style={[styles.row, styles.spaceAround]}>
+		<View style={[padding.vertical.medium]}>
+			<View style={[row.center]}>
 				<TouchableOpacity
 					style={[
-						styles.col,
-						styles.padding,
-						styles.borderRadius,
-						styles.bgRed,
-						_stylesList.addContactItem,
+						background.red,
+						padding.medium,
+						border.radius.medium,
+						column.justify,
+						_styles.addContactItem,
 					]}
 					onPress={navigation.navigate.main.scan}
 				>
-					<View style={[styles.row, styles.spaceBetween]}>
+					<View style={[row.fill]}>
 						<View />
-						<Icon name='image-outline' height={50} width={50} fill={colors.white} />
+						<Icon name='image-outline' height={50} width={50} fill={color.white} />
 					</View>
-					<View style={[styles.row, styles.spaceBetween]}>
-						<Text numberOfLines={2} style={[styles.textWhite, _stylesList.addContactItemText]}>
+					<View style={[row.fill]}>
+						<Text numberOfLines={2} style={[text.color.white, _styles.addContactItemText]}>
 							Scan QR code
 						</Text>
 						<View />
@@ -149,20 +159,20 @@ const AddContact: React.FC<{}> = () => {
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={[
-						styles.col,
-						styles.padding,
-						styles.borderRadius,
-						styles.bgBlue,
-						_stylesList.addContactItem,
+						background.blue,
+						padding.medium,
+						border.radius.medium,
+						column.justify,
+						_styles.addContactItem,
 					]}
 					onPress={navigation.navigate.settings.myBertyId}
 				>
-					<View style={[styles.row, styles.spaceBetween]}>
+					<View style={[row.fill]}>
 						<View />
-						<Icon name='person-outline' height={50} width={50} fill={colors.white} />
+						<Icon name='person-outline' height={50} width={50} fill={color.white} />
 					</View>
-					<View style={[styles.row, styles.spaceBetween]}>
-						<Text numberOfLines={2} style={[styles.textWhite, _stylesList.addContactItemText]}>
+					<View style={[row.fill]}>
+						<Text numberOfLines={2} style={[text.color.white, _styles.addContactItemText]}>
 							Share my Berty ID
 						</Text>
 						<View />
@@ -178,7 +188,7 @@ const NewGroup: React.FC<{}> = () => <View />
 const Screen = Dimensions.get('window')
 
 export const ListModal: React.FC<{}> = () => {
-	const firstNotToggledPoint = Screen.height - 283 + 16 + 35
+	const firstNotToggledPoint = Screen.height - 193 + 16 + 35
 	const firstToggledPoint = firstNotToggledPoint
 
 	const secondNotToggledPoint = firstToggledPoint - 200
@@ -187,16 +197,14 @@ export const ListModal: React.FC<{}> = () => {
 	const thirdNotToggledPoint = secondToggledPoint - 200
 	const thirdToggledPoint = thirdNotToggledPoint - 283 + 20
 	const navigation = useNavigation()
+	const [{ absolute, color }] = useStyles()
 
 	return (
 		<>
-			<TouchableWithoutFeedback
-				onPress={navigation.goBack}
-				style={[styles.test, StyleSheet.absoluteFill]}
-			>
+			<TouchableWithoutFeedback onPress={navigation.goBack} style={[StyleSheet.absoluteFill]}>
 				<BlurView style={StyleSheet.absoluteFill} blurType='light' />
 			</TouchableWithoutFeedback>
-			<SafeAreaView style={[styles.absolute, styles.bottom, styles.right, styles.left]}>
+			<SafeAreaView style={[absolute.fill]}>
 				<SDTSModalComponent
 					rows={[
 						{
@@ -204,7 +212,7 @@ export const ListModal: React.FC<{}> = () => {
 							notToggledPoint: firstNotToggledPoint,
 							title: 'New group',
 							icon: 'people-outline',
-							iconColor: colors.black,
+							iconColor: color.black,
 							dragEnabled: false,
 							headerAction: navigation.navigate.main.createGroup.createGroup2,
 						},
@@ -213,14 +221,14 @@ export const ListModal: React.FC<{}> = () => {
 							notToggledPoint: secondNotToggledPoint,
 							title: 'Add contact',
 							icon: 'person-add-outline',
-							iconColor: colors.black,
+							iconColor: color.black,
 						},
 						{
 							toggledPoint: thirdToggledPoint,
 							notToggledPoint: thirdNotToggledPoint,
 							title: 'Requests sent',
 							icon: 'paper-plane-outline',
-							iconColor: colors.black,
+							iconColor: color.black,
 						},
 					]}
 				>
