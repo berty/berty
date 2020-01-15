@@ -13,6 +13,7 @@ import (
 
 	"berty.tech/berty/go/internal/banner"
 	"berty.tech/berty/go/internal/grpcutil"
+	"berty.tech/berty/go/pkg/bertydemo"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 	"github.com/jinzhu/gorm"
@@ -30,14 +31,20 @@ func main() {
 	log.SetFlags(0)
 
 	var (
-		logger            *zap.Logger
-		globalFlags       = flag.NewFlagSet("berty", flag.ExitOnError)
-		globalDebug       = globalFlags.Bool("debug", false, "debug mode")
-		bannerFlags       = flag.NewFlagSet("banner", flag.ExitOnError)
-		bannerLight       = bannerFlags.Bool("light", false, "light mode")
-		clientFlags       = flag.NewFlagSet("client", flag.ExitOnError)
-		clientProtocolURN = clientFlags.String("protocol-urn", ":memory:", "protocol sqlite URN")
-		clientListeners   = clientFlags.String("l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
+		logger      *zap.Logger
+		globalFlags = flag.NewFlagSet("berty", flag.ExitOnError)
+		globalDebug = globalFlags.Bool("debug", false, "debug mode")
+
+		bannerFlags = flag.NewFlagSet("banner", flag.ExitOnError)
+		bannerLight = bannerFlags.Bool("light", false, "light mode")
+
+		clientProtocolFlags     = flag.NewFlagSet("protocol client", flag.ExitOnError)
+		clientProtocolURN       = clientProtocolFlags.String("protocol-urn", ":memory:", "protocol sqlite URN")
+		clientProtocolListeners = clientProtocolFlags.String("l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
+
+		clientDemoFlags     = flag.NewFlagSet("demo client", flag.ExitOnError)
+		clientDemoDirectory = clientDemoFlags.String("d", ":memory:", "orbit db directory")
+		clientDemoListeners = clientDemoFlags.String("l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
 	)
 
 	globalPreRun := func() error {
@@ -95,8 +102,8 @@ func main() {
 
 	daemon := &ffcli.Command{
 		Name:    "daemon",
-		Usage:   "daemon",
-		FlagSet: clientFlags,
+		Usage:   "berty daemon",
+		FlagSet: clientProtocolFlags,
 		Exec: func(args []string) error {
 			if err := globalPreRun(); err != nil {
 				return err
@@ -134,7 +141,7 @@ func main() {
 				bertyprotocol.RegisterProtocolServiceServer(grpcServer, protocol)
 
 				// setup listeners
-				addrs := strings.Split(*clientListeners, ",")
+				addrs := strings.Split(*clientProtocolListeners, ",")
 				for _, addr := range addrs {
 					maddr, err := parseAddr(addr)
 					if err != nil {
@@ -167,11 +174,71 @@ func main() {
 		},
 	}
 
+	demo := &ffcli.Command{
+		Name:    "demo",
+		Usage:   "berty demo",
+		FlagSet: clientDemoFlags,
+		Exec: func(args []string) error {
+			if err := globalPreRun(); err != nil {
+				return err
+			}
+
+			// demo
+			var demo *bertydemo.Client
+			{
+
+				var err error
+
+				demo, err = bertydemo.New(&bertydemo.Opts{
+					OrbitDBDirectory: *clientDemoDirectory,
+				})
+				if err != nil {
+					return err
+				}
+
+				defer demo.Close()
+			}
+
+			// listeners for berty
+			var workers run.Group
+			{
+				// setup grpc server
+				grpcServer := grpc.NewServer()
+				bertydemo.RegisterDemoServiceServer(grpcServer, demo)
+
+				// setup listeners
+				addrs := strings.Split(*clientDemoListeners, ",")
+				for _, addr := range addrs {
+					maddr, err := parseAddr(addr)
+					if err != nil {
+						return errcode.TODO.Wrap(err)
+					}
+
+					l, err := grpcutil.Listen(maddr)
+					if err != nil {
+						return errcode.TODO.Wrap(err)
+					}
+
+					server := grpcutil.Server{grpcServer}
+
+					workers.Add(func() error {
+						logger.Info("serving", zap.String("maddr", maddr.String()))
+						return server.Serve(l)
+					}, func(error) {
+						l.Close()
+					})
+				}
+			}
+
+			return workers.Run()
+		},
+	}
+
 	root := &ffcli.Command{
 		Usage:       "berty [global flags] <subcommand> [flags] [args...]",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
-		Subcommands: []*ffcli.Command{daemon, banner, version},
+		Subcommands: []*ffcli.Command{daemon, demo, banner, version},
 		Exec: func([]string) error {
 			globalFlags.Usage()
 			return flag.ErrHelp

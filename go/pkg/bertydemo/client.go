@@ -17,7 +17,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-type BertyDemo struct {
+type Client struct {
 	api  ipfs_interface.CoreAPI
 	odb  orbitdb.OrbitDB
 	logs map[string]orbitdb.EventLogStore
@@ -28,7 +28,7 @@ type Opts struct {
 	OrbitDBDirectory string
 }
 
-func New(opts *Opts) (*BertyDemo, error) {
+func New(opts *Opts) (*Client, error) {
 	ctx := context.Background()
 
 	api, err := ipfsutil.NewInMemoryCoreAPI(ctx)
@@ -49,7 +49,7 @@ func New(opts *Opts) (*BertyDemo, error) {
 
 	logs := make(map[string]orbitdb.EventLogStore)
 
-	return &BertyDemo{api, odb, logs, ks}, nil
+	return &Client{api, odb, logs, ks}, nil
 }
 
 func boolPtr(b bool) *bool {
@@ -93,7 +93,7 @@ func eventLogOptions(ks *identityberty.BertySignedKeyStore, req *Log_Request) (*
 	return options, nil
 }
 
-func (d *BertyDemo) Log(ctx context.Context, req *Log_Request) (*Log_Reply, error) {
+func (d *Client) Log(ctx context.Context, req *Log_Request) (*Log_Reply, error) {
 	opts, err := eventLogOptions(d.ks, req)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -110,7 +110,7 @@ func (d *BertyDemo) Log(ctx context.Context, req *Log_Request) (*Log_Reply, erro
 	return &reply, nil
 }
 
-func (d *BertyDemo) AddKey(ctx context.Context, req *AddKey_Request) (*AddKey_Reply, error) {
+func (d *Client) AddKey(ctx context.Context, req *AddKey_Request) (*AddKey_Reply, error) {
 	key, err := crypto.UnmarshalEd25519PrivateKey(req.PrivKey)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -122,14 +122,14 @@ func (d *BertyDemo) AddKey(ctx context.Context, req *AddKey_Request) (*AddKey_Re
 	return &AddKey_Reply{}, nil
 }
 
-func (d *BertyDemo) getLogByHandle(handle string) (orbitdb.EventLogStore, error) {
+func (d *Client) getLogByHandle(handle string) (orbitdb.EventLogStore, error) {
 	if log, exists := d.logs[handle]; exists {
 		return log, nil
 	}
 	return nil, errcode.TODO.Wrap(errors.New("no such log"))
 }
 
-func (d *BertyDemo) LogAdd(ctx context.Context, req *LogAdd_Request) (*LogAdd_Reply, error) {
+func (d *Client) LogAdd(ctx context.Context, req *LogAdd_Request) (*LogAdd_Reply, error) {
 	log, err := d.getLogByHandle(req.LogHandle)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -146,7 +146,7 @@ func opToProtoOp(op operation.Operation) Log_Operation {
 	return Log_Operation{Name: op.GetOperation(), Value: op.GetValue()}
 }
 
-func (d *BertyDemo) LogGet(ctx context.Context, req *LogGet_Request) (*LogGet_Reply, error) {
+func (d *Client) LogGet(ctx context.Context, req *LogGet_Request) (*LogGet_Reply, error) {
 	log, err := d.getLogByHandle(req.LogHandle)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -187,7 +187,7 @@ func decodeStreamOptions(opts *Log_StreamOptions) *orbitdb.StreamOptions {
 	}
 }
 
-func (d *BertyDemo) LogList(ctx context.Context, req *LogList_Request) (*LogList_Reply, error) {
+func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Reply, error) {
 	log, err := d.getLogByHandle(req.LogHandle)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -209,7 +209,7 @@ func (d *BertyDemo) LogList(ctx context.Context, req *LogList_Request) (*LogList
 	return &LogList_Reply{Ops: &protoOps}, nil
 }
 
-func (d *BertyDemo) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
+func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
 	log, err := d.getLogByHandle(req.LogHandle)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
@@ -233,6 +233,6 @@ func (d *BertyDemo) LogStream(req *LogStream_Request, srv DemoService_LogStreamS
 	return nil
 }
 
-func (d *BertyDemo) Close() error {
+func (d *Client) Close() error {
 	return nil
 }
