@@ -4,13 +4,13 @@ import React, { useMemo } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import * as Stories from '@berty-tech/berty-storybook'
 import {
+	NavigationContainer,
 	useNavigation as useReactNavigation,
 	NavigationProp,
-	BottomTabBarProps,
 } from '@react-navigation/core'
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 import { berty } from '@berty-tech/api'
-import { NavigationNativeContainer } from '@react-navigation/native'
+import { Chat as ChatHooks } from '@berty-tech/hooks'
 
 export namespace ScreenProps {
 	export namespace Onboarding {
@@ -125,7 +125,6 @@ const createNavigateFunc = <TParams extends {} | undefined = {}>(
 const createNavigation = ({
 	navigate,
 	goBack,
-	jumpTo,
 }: NavigationProp<any> | BottomTabNavigationProp<any>) => ({
 	goBack: () => goBack(),
 	navigate: {
@@ -192,10 +191,6 @@ export const useNavigation = () => {
 	const reactNav = useReactNavigation()
 	return useMemo(() => createNavigation(reactNav), [reactNav])
 }
-
-export const Provider = ({ children }) => (
-	<NavigationNativeContainer>{children}</NavigationNativeContainer>
-)
 
 const FakeStack = createNativeStackNavigator()
 export const FakeNavigation: React.FC = ({ children }) => {
@@ -374,16 +369,20 @@ const Footer: React.FC<BottomTabBarProps> = ({ navigation, state: { index, route
 }
 
 const TabStack = createBottomTabNavigator()
-export const Navigation: React.FC = () => (
-	<TabStack.Navigator
-		tabBar={(props) => <Footer {...props} />}
-		options={{ backBehavior: 'initialRoute' }}
-	>
-		<TabStack.Screen name={Routes.Main.List} component={MainNavigation} />
-		<TabStack.Screen name={Routes.Main.Search} component={SearchNavigation} />
-		<TabStack.Screen name={Routes.Settings.Home} component={SettingsNavigation} />
-		<TabStack.Screen name={Routes.Onboarding.GetStarted} component={OnboardingNavigation} />
-	</TabStack.Navigator>
-)
+export const Navigation: React.FC = () => {
+	const length = ChatHooks.useAccountLength()
+	return (
+		<TabStack.Navigator
+			tabBar={(props) => <Footer {...props} />}
+			options={{ backBehavior: 'initialRoute' }}
+			initialRouteName={length > 1 ? Routes.Main.List : Routes.Onboarding.GetStarted}
+		>
+			<TabStack.Screen name={Routes.Main.List} component={MainNavigation} />
+			<TabStack.Screen name={Routes.Main.Search} component={SearchNavigation} />
+			<TabStack.Screen name={Routes.Settings.Home} component={SettingsNavigation} />
+			<TabStack.Screen name={Routes.Onboarding.GetStarted} component={OnboardingNavigation} />
+		</TabStack.Navigator>
+	)
+}
 
 export default Navigation
