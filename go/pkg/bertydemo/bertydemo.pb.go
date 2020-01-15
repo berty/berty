@@ -26,118 +26,923 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type OrbitDBLog struct {
+type AddKey struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *OrbitDBLog) Reset()         { *m = OrbitDBLog{} }
-func (m *OrbitDBLog) String() string { return proto.CompactTextString(m) }
-func (*OrbitDBLog) ProtoMessage()    {}
-func (*OrbitDBLog) Descriptor() ([]byte, []int) {
+func (m *AddKey) Reset()         { *m = AddKey{} }
+func (m *AddKey) String() string { return proto.CompactTextString(m) }
+func (*AddKey) ProtoMessage()    {}
+func (*AddKey) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bfb219fb5d306d6d, []int{0}
 }
-func (m *OrbitDBLog) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_OrbitDBLog.Unmarshal(m, b)
+func (m *AddKey) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddKey.Unmarshal(m, b)
 }
-func (m *OrbitDBLog) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_OrbitDBLog.Marshal(b, m, deterministic)
+func (m *AddKey) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddKey.Marshal(b, m, deterministic)
 }
-func (m *OrbitDBLog) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_OrbitDBLog.Merge(m, src)
+func (m *AddKey) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddKey.Merge(m, src)
 }
-func (m *OrbitDBLog) XXX_Size() int {
-	return xxx_messageInfo_OrbitDBLog.Size(m)
+func (m *AddKey) XXX_Size() int {
+	return xxx_messageInfo_AddKey.Size(m)
 }
-func (m *OrbitDBLog) XXX_DiscardUnknown() {
-	xxx_messageInfo_OrbitDBLog.DiscardUnknown(m)
+func (m *AddKey) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddKey.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_OrbitDBLog proto.InternalMessageInfo
+var xxx_messageInfo_AddKey proto.InternalMessageInfo
 
-type OrbitDBLog_Request struct {
+type AddKey_Request struct {
+	PrivKey              []byte   `protobuf:"bytes,1,opt,name=priv_key,json=privKey,proto3" json:"priv_key,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *OrbitDBLog_Request) Reset()         { *m = OrbitDBLog_Request{} }
-func (m *OrbitDBLog_Request) String() string { return proto.CompactTextString(m) }
-func (*OrbitDBLog_Request) ProtoMessage()    {}
-func (*OrbitDBLog_Request) Descriptor() ([]byte, []int) {
+func (m *AddKey_Request) Reset()         { *m = AddKey_Request{} }
+func (m *AddKey_Request) String() string { return proto.CompactTextString(m) }
+func (*AddKey_Request) ProtoMessage()    {}
+func (*AddKey_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bfb219fb5d306d6d, []int{0, 0}
 }
-func (m *OrbitDBLog_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_OrbitDBLog_Request.Unmarshal(m, b)
+func (m *AddKey_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddKey_Request.Unmarshal(m, b)
 }
-func (m *OrbitDBLog_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_OrbitDBLog_Request.Marshal(b, m, deterministic)
+func (m *AddKey_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddKey_Request.Marshal(b, m, deterministic)
 }
-func (m *OrbitDBLog_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_OrbitDBLog_Request.Merge(m, src)
+func (m *AddKey_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddKey_Request.Merge(m, src)
 }
-func (m *OrbitDBLog_Request) XXX_Size() int {
-	return xxx_messageInfo_OrbitDBLog_Request.Size(m)
+func (m *AddKey_Request) XXX_Size() int {
+	return xxx_messageInfo_AddKey_Request.Size(m)
 }
-func (m *OrbitDBLog_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_OrbitDBLog_Request.DiscardUnknown(m)
+func (m *AddKey_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddKey_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_OrbitDBLog_Request proto.InternalMessageInfo
+var xxx_messageInfo_AddKey_Request proto.InternalMessageInfo
 
-type OrbitDBLog_Reply struct {
+func (m *AddKey_Request) GetPrivKey() []byte {
+	if m != nil {
+		return m.PrivKey
+	}
+	return nil
+}
+
+type AddKey_Reply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *OrbitDBLog_Reply) Reset()         { *m = OrbitDBLog_Reply{} }
-func (m *OrbitDBLog_Reply) String() string { return proto.CompactTextString(m) }
-func (*OrbitDBLog_Reply) ProtoMessage()    {}
-func (*OrbitDBLog_Reply) Descriptor() ([]byte, []int) {
+func (m *AddKey_Reply) Reset()         { *m = AddKey_Reply{} }
+func (m *AddKey_Reply) String() string { return proto.CompactTextString(m) }
+func (*AddKey_Reply) ProtoMessage()    {}
+func (*AddKey_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bfb219fb5d306d6d, []int{0, 1}
 }
-func (m *OrbitDBLog_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_OrbitDBLog_Reply.Unmarshal(m, b)
+func (m *AddKey_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddKey_Reply.Unmarshal(m, b)
 }
-func (m *OrbitDBLog_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_OrbitDBLog_Reply.Marshal(b, m, deterministic)
+func (m *AddKey_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddKey_Reply.Marshal(b, m, deterministic)
 }
-func (m *OrbitDBLog_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_OrbitDBLog_Reply.Merge(m, src)
+func (m *AddKey_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddKey_Reply.Merge(m, src)
 }
-func (m *OrbitDBLog_Reply) XXX_Size() int {
-	return xxx_messageInfo_OrbitDBLog_Reply.Size(m)
+func (m *AddKey_Reply) XXX_Size() int {
+	return xxx_messageInfo_AddKey_Reply.Size(m)
 }
-func (m *OrbitDBLog_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_OrbitDBLog_Reply.DiscardUnknown(m)
+func (m *AddKey_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddKey_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_OrbitDBLog_Reply proto.InternalMessageInfo
+var xxx_messageInfo_AddKey_Reply proto.InternalMessageInfo
+
+type Log struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Log) Reset()         { *m = Log{} }
+func (m *Log) String() string { return proto.CompactTextString(m) }
+func (*Log) ProtoMessage()    {}
+func (*Log) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{1}
+}
+func (m *Log) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Log.Unmarshal(m, b)
+}
+func (m *Log) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Log.Marshal(b, m, deterministic)
+}
+func (m *Log) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Log.Merge(m, src)
+}
+func (m *Log) XXX_Size() int {
+	return xxx_messageInfo_Log.Size(m)
+}
+func (m *Log) XXX_DiscardUnknown() {
+	xxx_messageInfo_Log.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Log proto.InternalMessageInfo
+
+type Log_Operation struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Value                []byte   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Log_Operation) Reset()         { *m = Log_Operation{} }
+func (m *Log_Operation) String() string { return proto.CompactTextString(m) }
+func (*Log_Operation) ProtoMessage()    {}
+func (*Log_Operation) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{1, 0}
+}
+func (m *Log_Operation) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Log_Operation.Unmarshal(m, b)
+}
+func (m *Log_Operation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Log_Operation.Marshal(b, m, deterministic)
+}
+func (m *Log_Operation) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Log_Operation.Merge(m, src)
+}
+func (m *Log_Operation) XXX_Size() int {
+	return xxx_messageInfo_Log_Operation.Size(m)
+}
+func (m *Log_Operation) XXX_DiscardUnknown() {
+	xxx_messageInfo_Log_Operation.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Log_Operation proto.InternalMessageInfo
+
+func (m *Log_Operation) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Log_Operation) GetValue() []byte {
+	if m != nil {
+		return m.Value
+	}
+	return nil
+}
+
+type Log_StreamOptions struct {
+	GT                   string   `protobuf:"bytes,1,opt,name=GT,proto3" json:"GT,omitempty"`
+	GTE                  string   `protobuf:"bytes,2,opt,name=GTE,proto3" json:"GTE,omitempty"`
+	LT                   string   `protobuf:"bytes,3,opt,name=LT,proto3" json:"LT,omitempty"`
+	LTE                  string   `protobuf:"bytes,4,opt,name=LTE,proto3" json:"LTE,omitempty"`
+	Amount               uint32   `protobuf:"varint,5,opt,name=amount,proto3" json:"amount,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Log_StreamOptions) Reset()         { *m = Log_StreamOptions{} }
+func (m *Log_StreamOptions) String() string { return proto.CompactTextString(m) }
+func (*Log_StreamOptions) ProtoMessage()    {}
+func (*Log_StreamOptions) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{1, 1}
+}
+func (m *Log_StreamOptions) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Log_StreamOptions.Unmarshal(m, b)
+}
+func (m *Log_StreamOptions) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Log_StreamOptions.Marshal(b, m, deterministic)
+}
+func (m *Log_StreamOptions) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Log_StreamOptions.Merge(m, src)
+}
+func (m *Log_StreamOptions) XXX_Size() int {
+	return xxx_messageInfo_Log_StreamOptions.Size(m)
+}
+func (m *Log_StreamOptions) XXX_DiscardUnknown() {
+	xxx_messageInfo_Log_StreamOptions.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Log_StreamOptions proto.InternalMessageInfo
+
+func (m *Log_StreamOptions) GetGT() string {
+	if m != nil {
+		return m.GT
+	}
+	return ""
+}
+
+func (m *Log_StreamOptions) GetGTE() string {
+	if m != nil {
+		return m.GTE
+	}
+	return ""
+}
+
+func (m *Log_StreamOptions) GetLT() string {
+	if m != nil {
+		return m.LT
+	}
+	return ""
+}
+
+func (m *Log_StreamOptions) GetLTE() string {
+	if m != nil {
+		return m.LTE
+	}
+	return ""
+}
+
+func (m *Log_StreamOptions) GetAmount() uint32 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+type Log_ManifestEntry struct {
+	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Values               []string `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Log_ManifestEntry) Reset()         { *m = Log_ManifestEntry{} }
+func (m *Log_ManifestEntry) String() string { return proto.CompactTextString(m) }
+func (*Log_ManifestEntry) ProtoMessage()    {}
+func (*Log_ManifestEntry) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{1, 2}
+}
+func (m *Log_ManifestEntry) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Log_ManifestEntry.Unmarshal(m, b)
+}
+func (m *Log_ManifestEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Log_ManifestEntry.Marshal(b, m, deterministic)
+}
+func (m *Log_ManifestEntry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Log_ManifestEntry.Merge(m, src)
+}
+func (m *Log_ManifestEntry) XXX_Size() int {
+	return xxx_messageInfo_Log_ManifestEntry.Size(m)
+}
+func (m *Log_ManifestEntry) XXX_DiscardUnknown() {
+	xxx_messageInfo_Log_ManifestEntry.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Log_ManifestEntry proto.InternalMessageInfo
+
+func (m *Log_ManifestEntry) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
+func (m *Log_ManifestEntry) GetValues() []string {
+	if m != nil {
+		return m.Values
+	}
+	return nil
+}
+
+type Log_Request struct {
+	Address              string               `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	ManifestType         string               `protobuf:"bytes,2,opt,name=manifest_type,json=manifestType,proto3" json:"manifest_type,omitempty"`
+	ManifestAccess       []*Log_ManifestEntry `protobuf:"bytes,3,rep,name=manifest_access,json=manifestAccess,proto3" json:"manifest_access,omitempty"`
+	IdentityType         string               `protobuf:"bytes,4,opt,name=identity_type,json=identityType,proto3" json:"identity_type,omitempty"`
+	IdentityId           string               `protobuf:"bytes,5,opt,name=identity_id,json=identityId,proto3" json:"identity_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
+	XXX_unrecognized     []byte               `json:"-"`
+	XXX_sizecache        int32                `json:"-"`
+}
+
+func (m *Log_Request) Reset()         { *m = Log_Request{} }
+func (m *Log_Request) String() string { return proto.CompactTextString(m) }
+func (*Log_Request) ProtoMessage()    {}
+func (*Log_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{1, 3}
+}
+func (m *Log_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Log_Request.Unmarshal(m, b)
+}
+func (m *Log_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Log_Request.Marshal(b, m, deterministic)
+}
+func (m *Log_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Log_Request.Merge(m, src)
+}
+func (m *Log_Request) XXX_Size() int {
+	return xxx_messageInfo_Log_Request.Size(m)
+}
+func (m *Log_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_Log_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Log_Request proto.InternalMessageInfo
+
+func (m *Log_Request) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *Log_Request) GetManifestType() string {
+	if m != nil {
+		return m.ManifestType
+	}
+	return ""
+}
+
+func (m *Log_Request) GetManifestAccess() []*Log_ManifestEntry {
+	if m != nil {
+		return m.ManifestAccess
+	}
+	return nil
+}
+
+func (m *Log_Request) GetIdentityType() string {
+	if m != nil {
+		return m.IdentityType
+	}
+	return ""
+}
+
+func (m *Log_Request) GetIdentityId() string {
+	if m != nil {
+		return m.IdentityId
+	}
+	return ""
+}
+
+type Log_Reply struct {
+	LogHandle            string   `protobuf:"bytes,1,opt,name=log_handle,json=logHandle,proto3" json:"log_handle,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Log_Reply) Reset()         { *m = Log_Reply{} }
+func (m *Log_Reply) String() string { return proto.CompactTextString(m) }
+func (*Log_Reply) ProtoMessage()    {}
+func (*Log_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{1, 4}
+}
+func (m *Log_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Log_Reply.Unmarshal(m, b)
+}
+func (m *Log_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Log_Reply.Marshal(b, m, deterministic)
+}
+func (m *Log_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Log_Reply.Merge(m, src)
+}
+func (m *Log_Reply) XXX_Size() int {
+	return xxx_messageInfo_Log_Reply.Size(m)
+}
+func (m *Log_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_Log_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Log_Reply proto.InternalMessageInfo
+
+func (m *Log_Reply) GetLogHandle() string {
+	if m != nil {
+		return m.LogHandle
+	}
+	return ""
+}
+
+type LogAdd struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LogAdd) Reset()         { *m = LogAdd{} }
+func (m *LogAdd) String() string { return proto.CompactTextString(m) }
+func (*LogAdd) ProtoMessage()    {}
+func (*LogAdd) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{2}
+}
+func (m *LogAdd) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogAdd.Unmarshal(m, b)
+}
+func (m *LogAdd) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogAdd.Marshal(b, m, deterministic)
+}
+func (m *LogAdd) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogAdd.Merge(m, src)
+}
+func (m *LogAdd) XXX_Size() int {
+	return xxx_messageInfo_LogAdd.Size(m)
+}
+func (m *LogAdd) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogAdd.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogAdd proto.InternalMessageInfo
+
+type LogAdd_Request struct {
+	LogHandle            string   `protobuf:"bytes,1,opt,name=log_handle,json=logHandle,proto3" json:"log_handle,omitempty"`
+	Data                 []byte   `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LogAdd_Request) Reset()         { *m = LogAdd_Request{} }
+func (m *LogAdd_Request) String() string { return proto.CompactTextString(m) }
+func (*LogAdd_Request) ProtoMessage()    {}
+func (*LogAdd_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{2, 0}
+}
+func (m *LogAdd_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogAdd_Request.Unmarshal(m, b)
+}
+func (m *LogAdd_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogAdd_Request.Marshal(b, m, deterministic)
+}
+func (m *LogAdd_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogAdd_Request.Merge(m, src)
+}
+func (m *LogAdd_Request) XXX_Size() int {
+	return xxx_messageInfo_LogAdd_Request.Size(m)
+}
+func (m *LogAdd_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogAdd_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogAdd_Request proto.InternalMessageInfo
+
+func (m *LogAdd_Request) GetLogHandle() string {
+	if m != nil {
+		return m.LogHandle
+	}
+	return ""
+}
+
+func (m *LogAdd_Request) GetData() []byte {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+type LogAdd_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LogAdd_Reply) Reset()         { *m = LogAdd_Reply{} }
+func (m *LogAdd_Reply) String() string { return proto.CompactTextString(m) }
+func (*LogAdd_Reply) ProtoMessage()    {}
+func (*LogAdd_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{2, 1}
+}
+func (m *LogAdd_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogAdd_Reply.Unmarshal(m, b)
+}
+func (m *LogAdd_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogAdd_Reply.Marshal(b, m, deterministic)
+}
+func (m *LogAdd_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogAdd_Reply.Merge(m, src)
+}
+func (m *LogAdd_Reply) XXX_Size() int {
+	return xxx_messageInfo_LogAdd_Reply.Size(m)
+}
+func (m *LogAdd_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogAdd_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogAdd_Reply proto.InternalMessageInfo
+
+type LogGet struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LogGet) Reset()         { *m = LogGet{} }
+func (m *LogGet) String() string { return proto.CompactTextString(m) }
+func (*LogGet) ProtoMessage()    {}
+func (*LogGet) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{3}
+}
+func (m *LogGet) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogGet.Unmarshal(m, b)
+}
+func (m *LogGet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogGet.Marshal(b, m, deterministic)
+}
+func (m *LogGet) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogGet.Merge(m, src)
+}
+func (m *LogGet) XXX_Size() int {
+	return xxx_messageInfo_LogGet.Size(m)
+}
+func (m *LogGet) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogGet.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogGet proto.InternalMessageInfo
+
+type LogGet_Request struct {
+	LogHandle            string   `protobuf:"bytes,1,opt,name=log_handle,json=logHandle,proto3" json:"log_handle,omitempty"`
+	Cid                  string   `protobuf:"bytes,2,opt,name=cid,proto3" json:"cid,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LogGet_Request) Reset()         { *m = LogGet_Request{} }
+func (m *LogGet_Request) String() string { return proto.CompactTextString(m) }
+func (*LogGet_Request) ProtoMessage()    {}
+func (*LogGet_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{3, 0}
+}
+func (m *LogGet_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogGet_Request.Unmarshal(m, b)
+}
+func (m *LogGet_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogGet_Request.Marshal(b, m, deterministic)
+}
+func (m *LogGet_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogGet_Request.Merge(m, src)
+}
+func (m *LogGet_Request) XXX_Size() int {
+	return xxx_messageInfo_LogGet_Request.Size(m)
+}
+func (m *LogGet_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogGet_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogGet_Request proto.InternalMessageInfo
+
+func (m *LogGet_Request) GetLogHandle() string {
+	if m != nil {
+		return m.LogHandle
+	}
+	return ""
+}
+
+func (m *LogGet_Request) GetCid() string {
+	if m != nil {
+		return m.Cid
+	}
+	return ""
+}
+
+type LogGet_Reply struct {
+	Op                   *Log_Operation `protobuf:"bytes,1,opt,name=op,proto3" json:"op,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
+}
+
+func (m *LogGet_Reply) Reset()         { *m = LogGet_Reply{} }
+func (m *LogGet_Reply) String() string { return proto.CompactTextString(m) }
+func (*LogGet_Reply) ProtoMessage()    {}
+func (*LogGet_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{3, 1}
+}
+func (m *LogGet_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogGet_Reply.Unmarshal(m, b)
+}
+func (m *LogGet_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogGet_Reply.Marshal(b, m, deterministic)
+}
+func (m *LogGet_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogGet_Reply.Merge(m, src)
+}
+func (m *LogGet_Reply) XXX_Size() int {
+	return xxx_messageInfo_LogGet_Reply.Size(m)
+}
+func (m *LogGet_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogGet_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogGet_Reply proto.InternalMessageInfo
+
+func (m *LogGet_Reply) GetOp() *Log_Operation {
+	if m != nil {
+		return m.Op
+	}
+	return nil
+}
+
+type LogStream struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LogStream) Reset()         { *m = LogStream{} }
+func (m *LogStream) String() string { return proto.CompactTextString(m) }
+func (*LogStream) ProtoMessage()    {}
+func (*LogStream) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{4}
+}
+func (m *LogStream) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogStream.Unmarshal(m, b)
+}
+func (m *LogStream) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogStream.Marshal(b, m, deterministic)
+}
+func (m *LogStream) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogStream.Merge(m, src)
+}
+func (m *LogStream) XXX_Size() int {
+	return xxx_messageInfo_LogStream.Size(m)
+}
+func (m *LogStream) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogStream.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogStream proto.InternalMessageInfo
+
+type LogStream_Request struct {
+	LogHandle            string             `protobuf:"bytes,1,opt,name=log_handle,json=logHandle,proto3" json:"log_handle,omitempty"`
+	Options              *Log_StreamOptions `protobuf:"bytes,2,opt,name=options,proto3" json:"options,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *LogStream_Request) Reset()         { *m = LogStream_Request{} }
+func (m *LogStream_Request) String() string { return proto.CompactTextString(m) }
+func (*LogStream_Request) ProtoMessage()    {}
+func (*LogStream_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{4, 0}
+}
+func (m *LogStream_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogStream_Request.Unmarshal(m, b)
+}
+func (m *LogStream_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogStream_Request.Marshal(b, m, deterministic)
+}
+func (m *LogStream_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogStream_Request.Merge(m, src)
+}
+func (m *LogStream_Request) XXX_Size() int {
+	return xxx_messageInfo_LogStream_Request.Size(m)
+}
+func (m *LogStream_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogStream_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogStream_Request proto.InternalMessageInfo
+
+func (m *LogStream_Request) GetLogHandle() string {
+	if m != nil {
+		return m.LogHandle
+	}
+	return ""
+}
+
+func (m *LogStream_Request) GetOptions() *Log_StreamOptions {
+	if m != nil {
+		return m.Options
+	}
+	return nil
+}
+
+type LogList struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LogList) Reset()         { *m = LogList{} }
+func (m *LogList) String() string { return proto.CompactTextString(m) }
+func (*LogList) ProtoMessage()    {}
+func (*LogList) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{5}
+}
+func (m *LogList) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogList.Unmarshal(m, b)
+}
+func (m *LogList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogList.Marshal(b, m, deterministic)
+}
+func (m *LogList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogList.Merge(m, src)
+}
+func (m *LogList) XXX_Size() int {
+	return xxx_messageInfo_LogList.Size(m)
+}
+func (m *LogList) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogList.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogList proto.InternalMessageInfo
+
+type LogList_Operations struct {
+	Ops                  []*Log_Operation `protobuf:"bytes,1,rep,name=ops,proto3" json:"ops,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
+}
+
+func (m *LogList_Operations) Reset()         { *m = LogList_Operations{} }
+func (m *LogList_Operations) String() string { return proto.CompactTextString(m) }
+func (*LogList_Operations) ProtoMessage()    {}
+func (*LogList_Operations) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{5, 0}
+}
+func (m *LogList_Operations) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogList_Operations.Unmarshal(m, b)
+}
+func (m *LogList_Operations) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogList_Operations.Marshal(b, m, deterministic)
+}
+func (m *LogList_Operations) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogList_Operations.Merge(m, src)
+}
+func (m *LogList_Operations) XXX_Size() int {
+	return xxx_messageInfo_LogList_Operations.Size(m)
+}
+func (m *LogList_Operations) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogList_Operations.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogList_Operations proto.InternalMessageInfo
+
+func (m *LogList_Operations) GetOps() []*Log_Operation {
+	if m != nil {
+		return m.Ops
+	}
+	return nil
+}
+
+type LogList_Request struct {
+	LogHandle            string             `protobuf:"bytes,1,opt,name=log_handle,json=logHandle,proto3" json:"log_handle,omitempty"`
+	Options              *Log_StreamOptions `protobuf:"bytes,2,opt,name=options,proto3" json:"options,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *LogList_Request) Reset()         { *m = LogList_Request{} }
+func (m *LogList_Request) String() string { return proto.CompactTextString(m) }
+func (*LogList_Request) ProtoMessage()    {}
+func (*LogList_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{5, 1}
+}
+func (m *LogList_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogList_Request.Unmarshal(m, b)
+}
+func (m *LogList_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogList_Request.Marshal(b, m, deterministic)
+}
+func (m *LogList_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogList_Request.Merge(m, src)
+}
+func (m *LogList_Request) XXX_Size() int {
+	return xxx_messageInfo_LogList_Request.Size(m)
+}
+func (m *LogList_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogList_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogList_Request proto.InternalMessageInfo
+
+func (m *LogList_Request) GetLogHandle() string {
+	if m != nil {
+		return m.LogHandle
+	}
+	return ""
+}
+
+func (m *LogList_Request) GetOptions() *Log_StreamOptions {
+	if m != nil {
+		return m.Options
+	}
+	return nil
+}
+
+type LogList_Reply struct {
+	Ops                  *LogList_Operations `protobuf:"bytes,1,opt,name=ops,proto3" json:"ops,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
+	XXX_unrecognized     []byte              `json:"-"`
+	XXX_sizecache        int32               `json:"-"`
+}
+
+func (m *LogList_Reply) Reset()         { *m = LogList_Reply{} }
+func (m *LogList_Reply) String() string { return proto.CompactTextString(m) }
+func (*LogList_Reply) ProtoMessage()    {}
+func (*LogList_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{5, 2}
+}
+func (m *LogList_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogList_Reply.Unmarshal(m, b)
+}
+func (m *LogList_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogList_Reply.Marshal(b, m, deterministic)
+}
+func (m *LogList_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogList_Reply.Merge(m, src)
+}
+func (m *LogList_Reply) XXX_Size() int {
+	return xxx_messageInfo_LogList_Reply.Size(m)
+}
+func (m *LogList_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogList_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogList_Reply proto.InternalMessageInfo
+
+func (m *LogList_Reply) GetOps() *LogList_Operations {
+	if m != nil {
+		return m.Ops
+	}
+	return nil
+}
 
 func init() {
-	proto.RegisterType((*OrbitDBLog)(nil), "berty.protocol.OrbitDBLog")
-	proto.RegisterType((*OrbitDBLog_Request)(nil), "berty.protocol.OrbitDBLog.Request")
-	proto.RegisterType((*OrbitDBLog_Reply)(nil), "berty.protocol.OrbitDBLog.Reply")
+	proto.RegisterType((*AddKey)(nil), "berty.protocol.AddKey")
+	proto.RegisterType((*AddKey_Request)(nil), "berty.protocol.AddKey.Request")
+	proto.RegisterType((*AddKey_Reply)(nil), "berty.protocol.AddKey.Reply")
+	proto.RegisterType((*Log)(nil), "berty.protocol.Log")
+	proto.RegisterType((*Log_Operation)(nil), "berty.protocol.Log.Operation")
+	proto.RegisterType((*Log_StreamOptions)(nil), "berty.protocol.Log.StreamOptions")
+	proto.RegisterType((*Log_ManifestEntry)(nil), "berty.protocol.Log.ManifestEntry")
+	proto.RegisterType((*Log_Request)(nil), "berty.protocol.Log.Request")
+	proto.RegisterType((*Log_Reply)(nil), "berty.protocol.Log.Reply")
+	proto.RegisterType((*LogAdd)(nil), "berty.protocol.LogAdd")
+	proto.RegisterType((*LogAdd_Request)(nil), "berty.protocol.LogAdd.Request")
+	proto.RegisterType((*LogAdd_Reply)(nil), "berty.protocol.LogAdd.Reply")
+	proto.RegisterType((*LogGet)(nil), "berty.protocol.LogGet")
+	proto.RegisterType((*LogGet_Request)(nil), "berty.protocol.LogGet.Request")
+	proto.RegisterType((*LogGet_Reply)(nil), "berty.protocol.LogGet.Reply")
+	proto.RegisterType((*LogStream)(nil), "berty.protocol.LogStream")
+	proto.RegisterType((*LogStream_Request)(nil), "berty.protocol.LogStream.Request")
+	proto.RegisterType((*LogList)(nil), "berty.protocol.LogList")
+	proto.RegisterType((*LogList_Operations)(nil), "berty.protocol.LogList.Operations")
+	proto.RegisterType((*LogList_Request)(nil), "berty.protocol.LogList.Request")
+	proto.RegisterType((*LogList_Reply)(nil), "berty.protocol.LogList.Reply")
 }
 
 func init() { proto.RegisterFile("bertydemo.proto", fileDescriptor_bfb219fb5d306d6d) }
 
 var fileDescriptor_bfb219fb5d306d6d = []byte{
-	// 177 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4f, 0x4a, 0x2d, 0x2a,
-	0xa9, 0x4c, 0x49, 0xcd, 0xcd, 0xd7, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x03, 0x0b, 0x40,
-	0x38, 0xc9, 0xf9, 0x39, 0x52, 0xba, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9,
-	0xfa, 0xe9, 0xf9, 0xe9, 0xf9, 0xfa, 0x60, 0x99, 0xa4, 0xd2, 0x34, 0x30, 0x0f, 0xcc, 0x01, 0xb3,
-	0x20, 0x3a, 0x94, 0x14, 0xb8, 0xb8, 0xfc, 0x8b, 0x92, 0x32, 0x4b, 0x5c, 0x9c, 0x7c, 0xf2, 0xd3,
-	0xa5, 0x38, 0xb9, 0xd8, 0x83, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0xa4, 0xd8, 0xb9, 0x58, 0x83,
-	0x52, 0x0b, 0x72, 0x2a, 0x8d, 0x12, 0xb9, 0xb8, 0x5d, 0x52, 0x73, 0xf3, 0x83, 0x53, 0x8b, 0xca,
-	0x32, 0x93, 0x53, 0x85, 0x82, 0x90, 0x35, 0x08, 0x29, 0xe9, 0xa1, 0x5a, 0xaf, 0x87, 0x90, 0xd3,
-	0x83, 0x99, 0xa4, 0x80, 0x57, 0x4d, 0x41, 0x4e, 0xa5, 0x93, 0x72, 0x94, 0x22, 0x44, 0x49, 0x49,
-	0x6a, 0x72, 0x86, 0x3e, 0x98, 0xa9, 0x0f, 0x72, 0x79, 0x76, 0xba, 0x3e, 0xdc, 0xbb, 0x49, 0x6c,
-	0x60, 0xfd, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x07, 0xce, 0x11, 0xbc, 0x02, 0x01, 0x00,
-	0x00,
+	// 679 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x55, 0xcd, 0x6e, 0xd3, 0x4c,
+	0x14, 0x55, 0xe2, 0x36, 0xf9, 0x7c, 0xd3, 0xb4, 0xd5, 0xe8, 0x13, 0x72, 0x07, 0x4a, 0xd3, 0x14,
+	0xa1, 0x6c, 0x9a, 0xa0, 0xf2, 0x27, 0x7e, 0xba, 0x28, 0x22, 0x0d, 0x05, 0xa3, 0x48, 0xae, 0x57,
+	0x6c, 0x2a, 0xc7, 0x33, 0x75, 0xad, 0xda, 0x1e, 0x63, 0x4f, 0x2a, 0x59, 0xe2, 0xe1, 0x78, 0x0e,
+	0xde, 0x80, 0x0d, 0xcf, 0x80, 0x66, 0xc6, 0xe3, 0x10, 0x48, 0x42, 0x57, 0xec, 0xe6, 0xfe, 0x9c,
+	0x33, 0x67, 0xee, 0x3d, 0xb2, 0x61, 0x6b, 0x42, 0x33, 0x5e, 0x10, 0x1a, 0xb3, 0x7e, 0x9a, 0x31,
+	0xce, 0xd0, 0xa6, 0x4c, 0xa8, 0xc0, 0x67, 0x11, 0x3e, 0x0c, 0x42, 0x7e, 0x35, 0x9d, 0xf4, 0x7d,
+	0x16, 0x0f, 0x02, 0x16, 0xb0, 0x81, 0xac, 0x4c, 0xa6, 0x97, 0x32, 0x92, 0x81, 0x3c, 0x29, 0x44,
+	0xf7, 0x39, 0x34, 0x4e, 0x08, 0xf9, 0x40, 0x0b, 0xfc, 0x00, 0x9a, 0x0e, 0xfd, 0x3c, 0xa5, 0x39,
+	0x47, 0x3b, 0xf0, 0x5f, 0x9a, 0x85, 0x37, 0x17, 0xd7, 0xb4, 0xb0, 0x6a, 0x9d, 0x5a, 0x6f, 0xc3,
+	0x69, 0x8a, 0x58, 0x74, 0x35, 0x61, 0xdd, 0xa1, 0x69, 0x54, 0x74, 0xbf, 0x1b, 0x60, 0xd8, 0x2c,
+	0xc0, 0x4f, 0xc1, 0x1c, 0xa7, 0x34, 0xf3, 0x78, 0xc8, 0x12, 0x84, 0x60, 0x2d, 0xf1, 0x62, 0x2a,
+	0x41, 0xa6, 0x23, 0xcf, 0xe8, 0x7f, 0x58, 0xbf, 0xf1, 0xa2, 0x29, 0xb5, 0xea, 0x92, 0x49, 0x05,
+	0xf8, 0x1a, 0xda, 0xe7, 0x3c, 0xa3, 0x5e, 0x3c, 0x4e, 0x05, 0x32, 0x47, 0x9b, 0x50, 0x1f, 0xb9,
+	0x25, 0xb0, 0x3e, 0x72, 0xd1, 0x36, 0x18, 0x23, 0x77, 0x28, 0x41, 0xa6, 0x23, 0x8e, 0xa2, 0xc3,
+	0x76, 0x2d, 0x43, 0x75, 0xd8, 0xb2, 0xc3, 0x76, 0x87, 0xd6, 0x9a, 0xea, 0xb0, 0xdd, 0x21, 0xba,
+	0x03, 0x0d, 0x2f, 0x66, 0xd3, 0x84, 0x5b, 0xeb, 0x9d, 0x5a, 0xaf, 0xed, 0x94, 0x11, 0x7e, 0x01,
+	0xed, 0x8f, 0x5e, 0x12, 0x5e, 0xd2, 0x9c, 0x0f, 0x13, 0x9e, 0x15, 0x02, 0xaa, 0xdf, 0x66, 0x3a,
+	0xe2, 0x28, 0xa0, 0x52, 0x58, 0x6e, 0xd5, 0x3b, 0x46, 0xcf, 0x74, 0xca, 0x08, 0x7f, 0xab, 0xcd,
+	0xc6, 0x62, 0x41, 0xd3, 0x23, 0x24, 0xa3, 0x79, 0x5e, 0x22, 0x75, 0x88, 0x0e, 0xa0, 0x1d, 0x97,
+	0x17, 0x5c, 0xf0, 0x22, 0xa5, 0xa5, 0xec, 0x0d, 0x9d, 0x74, 0x8b, 0x94, 0xa2, 0xf7, 0xb0, 0x55,
+	0x35, 0x79, 0xbe, 0x2f, 0x68, 0x8c, 0x8e, 0xd1, 0x6b, 0x1d, 0xed, 0xf7, 0xe7, 0x77, 0xd8, 0xb7,
+	0x59, 0xd0, 0x9f, 0x13, 0xec, 0x6c, 0x6a, 0xe4, 0x89, 0x04, 0x8a, 0x0b, 0x43, 0x42, 0x13, 0x1e,
+	0xf2, 0x42, 0x5d, 0xa8, 0xa6, 0xb0, 0xa1, 0x93, 0xf2, 0xc2, 0x3d, 0x68, 0x55, 0x4d, 0x21, 0x91,
+	0x33, 0x31, 0x1d, 0xd0, 0xa9, 0x33, 0x82, 0x1f, 0x96, 0xcb, 0x44, 0xbb, 0x00, 0x11, 0x0b, 0x2e,
+	0xae, 0xbc, 0x84, 0x44, 0x7a, 0x7b, 0x66, 0xc4, 0x82, 0x77, 0x32, 0xd1, 0x1d, 0x43, 0xc3, 0x66,
+	0xc1, 0x09, 0x21, 0xf8, 0xf5, 0x6c, 0x1a, 0xab, 0x31, 0xc2, 0x0a, 0xc4, 0xe3, 0x5e, 0xb9, 0x75,
+	0x79, 0x9e, 0x99, 0xe7, 0x8b, 0x24, 0x1c, 0x51, 0x8e, 0x5f, 0xde, 0x9a, 0x70, 0x1b, 0x0c, 0x3f,
+	0x24, 0xda, 0x10, 0x7e, 0x48, 0xf0, 0x33, 0x2d, 0xff, 0x10, 0xea, 0x2c, 0x95, 0x88, 0xd6, 0xd1,
+	0xee, 0xa2, 0x61, 0x56, 0x0e, 0x75, 0xea, 0x2c, 0xed, 0x66, 0x60, 0xda, 0x2c, 0x50, 0xf6, 0xc3,
+	0xf4, 0xd6, 0x02, 0x5e, 0x41, 0x93, 0x29, 0xb3, 0x4a, 0x11, 0x4b, 0xf6, 0x36, 0xe7, 0x6a, 0x47,
+	0x23, 0xba, 0x3f, 0x6a, 0xd0, 0xb4, 0x59, 0x60, 0x87, 0x39, 0xc7, 0xc7, 0x00, 0x95, 0xa0, 0x1c,
+	0x0d, 0xc0, 0x60, 0xa9, 0x70, 0x94, 0xf1, 0x77, 0xf5, 0xa2, 0xf3, 0x1f, 0x29, 0xc6, 0xc7, 0x7a,
+	0xba, 0x4f, 0xb4, 0x40, 0xc1, 0xd0, 0x5d, 0xc0, 0x20, 0x1e, 0x35, 0x13, 0x99, 0x4b, 0x95, 0x47,
+	0x5f, 0x0d, 0x68, 0xbd, 0xa5, 0x31, 0x3b, 0xa7, 0xd9, 0x4d, 0xe8, 0x53, 0x74, 0xaa, 0x3f, 0x34,
+	0xe8, 0xfe, 0xef, 0x14, 0x2a, 0xdf, 0x2f, 0x1f, 0x85, 0xef, 0x2d, 0xad, 0x0b, 0x35, 0xc7, 0xf2,
+	0xb3, 0x83, 0xee, 0x2e, 0x7a, 0x89, 0x66, 0xd8, 0x59, 0x5c, 0x14, 0xf0, 0x53, 0x6d, 0xe5, 0x3f,
+	0x65, 0xa8, 0xfc, 0x72, 0x19, 0x55, 0x7d, 0xc6, 0x33, 0xa2, 0x7c, 0x21, 0xcf, 0x88, 0xf2, 0x95,
+	0x3c, 0xaa, 0x2e, 0x78, 0xc6, 0xbf, 0x78, 0x11, 0x2d, 0x5a, 0x8f, 0x2a, 0x55, 0x6c, 0xab, 0x0d,
+	0xf2, 0xa8, 0x86, 0xce, 0x2a, 0x9f, 0xa1, 0xbd, 0x65, 0xbb, 0x5a, 0x45, 0x56, 0x36, 0xa4, 0x51,
+	0xf1, 0xe6, 0xe0, 0xd3, 0xbe, 0xaa, 0x73, 0xea, 0x5f, 0x0d, 0xe4, 0x71, 0x20, 0x7e, 0x28, 0xd7,
+	0xc1, 0xa0, 0xfa, 0x0b, 0x4d, 0x1a, 0x12, 0xfc, 0xf8, 0x67, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe4,
+	0x10, 0x8b, 0x09, 0x99, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -152,7 +957,18 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type DemoServiceClient interface {
-	OrbitDBLog(ctx context.Context, in *OrbitDBLog_Request, opts ...grpc.CallOption) (*OrbitDBLog_Reply, error)
+	// AddKey Adds an ed25519 keypair in the keystore passed on Log initialization, noop if already added
+	AddKey(ctx context.Context, in *AddKey_Request, opts ...grpc.CallOption) (*AddKey_Reply, error)
+	// Log Creates or opens an EventLogStore
+	Log(ctx context.Context, in *Log_Request, opts ...grpc.CallOption) (*Log_Reply, error)
+	// LogAdd Appends data to a log previously opened with Log
+	LogAdd(ctx context.Context, in *LogAdd_Request, opts ...grpc.CallOption) (*LogAdd_Reply, error)
+	// LogGet Gets a log entry by cid in a Log opened previously
+	LogGet(ctx context.Context, in *LogGet_Request, opts ...grpc.CallOption) (*LogGet_Reply, error)
+	// LogStream Populates a chan of operations from a Log
+	LogStream(ctx context.Context, in *LogStream_Request, opts ...grpc.CallOption) (DemoService_LogStreamClient, error)
+	// LogList Fetches a list of operation that occurred on a Log
+	LogList(ctx context.Context, in *LogList_Request, opts ...grpc.CallOption) (*LogList_Reply, error)
 }
 
 type demoServiceClient struct {
@@ -163,9 +979,77 @@ func NewDemoServiceClient(cc *grpc.ClientConn) DemoServiceClient {
 	return &demoServiceClient{cc}
 }
 
-func (c *demoServiceClient) OrbitDBLog(ctx context.Context, in *OrbitDBLog_Request, opts ...grpc.CallOption) (*OrbitDBLog_Reply, error) {
-	out := new(OrbitDBLog_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.DemoService/OrbitDBLog", in, out, opts...)
+func (c *demoServiceClient) AddKey(ctx context.Context, in *AddKey_Request, opts ...grpc.CallOption) (*AddKey_Reply, error) {
+	out := new(AddKey_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.DemoService/AddKey", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *demoServiceClient) Log(ctx context.Context, in *Log_Request, opts ...grpc.CallOption) (*Log_Reply, error) {
+	out := new(Log_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.DemoService/Log", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *demoServiceClient) LogAdd(ctx context.Context, in *LogAdd_Request, opts ...grpc.CallOption) (*LogAdd_Reply, error) {
+	out := new(LogAdd_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.DemoService/LogAdd", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *demoServiceClient) LogGet(ctx context.Context, in *LogGet_Request, opts ...grpc.CallOption) (*LogGet_Reply, error) {
+	out := new(LogGet_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.DemoService/LogGet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *demoServiceClient) LogStream(ctx context.Context, in *LogStream_Request, opts ...grpc.CallOption) (DemoService_LogStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_DemoService_serviceDesc.Streams[0], "/berty.protocol.DemoService/LogStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &demoServiceLogStreamClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type DemoService_LogStreamClient interface {
+	Recv() (*Log_Operation, error)
+	grpc.ClientStream
+}
+
+type demoServiceLogStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *demoServiceLogStreamClient) Recv() (*Log_Operation, error) {
+	m := new(Log_Operation)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *demoServiceClient) LogList(ctx context.Context, in *LogList_Request, opts ...grpc.CallOption) (*LogList_Reply, error) {
+	out := new(LogList_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.DemoService/LogList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -174,35 +1058,154 @@ func (c *demoServiceClient) OrbitDBLog(ctx context.Context, in *OrbitDBLog_Reque
 
 // DemoServiceServer is the server API for DemoService service.
 type DemoServiceServer interface {
-	OrbitDBLog(context.Context, *OrbitDBLog_Request) (*OrbitDBLog_Reply, error)
+	// AddKey Adds an ed25519 keypair in the keystore passed on Log initialization, noop if already added
+	AddKey(context.Context, *AddKey_Request) (*AddKey_Reply, error)
+	// Log Creates or opens an EventLogStore
+	Log(context.Context, *Log_Request) (*Log_Reply, error)
+	// LogAdd Appends data to a log previously opened with Log
+	LogAdd(context.Context, *LogAdd_Request) (*LogAdd_Reply, error)
+	// LogGet Gets a log entry by cid in a Log opened previously
+	LogGet(context.Context, *LogGet_Request) (*LogGet_Reply, error)
+	// LogStream Populates a chan of operations from a Log
+	LogStream(*LogStream_Request, DemoService_LogStreamServer) error
+	// LogList Fetches a list of operation that occurred on a Log
+	LogList(context.Context, *LogList_Request) (*LogList_Reply, error)
 }
 
 // UnimplementedDemoServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedDemoServiceServer struct {
 }
 
-func (*UnimplementedDemoServiceServer) OrbitDBLog(ctx context.Context, req *OrbitDBLog_Request) (*OrbitDBLog_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OrbitDBLog not implemented")
+func (*UnimplementedDemoServiceServer) AddKey(ctx context.Context, req *AddKey_Request) (*AddKey_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddKey not implemented")
+}
+func (*UnimplementedDemoServiceServer) Log(ctx context.Context, req *Log_Request) (*Log_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Log not implemented")
+}
+func (*UnimplementedDemoServiceServer) LogAdd(ctx context.Context, req *LogAdd_Request) (*LogAdd_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LogAdd not implemented")
+}
+func (*UnimplementedDemoServiceServer) LogGet(ctx context.Context, req *LogGet_Request) (*LogGet_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LogGet not implemented")
+}
+func (*UnimplementedDemoServiceServer) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method LogStream not implemented")
+}
+func (*UnimplementedDemoServiceServer) LogList(ctx context.Context, req *LogList_Request) (*LogList_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LogList not implemented")
 }
 
 func RegisterDemoServiceServer(s *grpc.Server, srv DemoServiceServer) {
 	s.RegisterService(&_DemoService_serviceDesc, srv)
 }
 
-func _DemoService_OrbitDBLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OrbitDBLog_Request)
+func _DemoService_AddKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddKey_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DemoServiceServer).OrbitDBLog(ctx, in)
+		return srv.(DemoServiceServer).AddKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.DemoService/OrbitDBLog",
+		FullMethod: "/berty.protocol.DemoService/AddKey",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DemoServiceServer).OrbitDBLog(ctx, req.(*OrbitDBLog_Request))
+		return srv.(DemoServiceServer).AddKey(ctx, req.(*AddKey_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DemoService_Log_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Log_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DemoServiceServer).Log(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.DemoService/Log",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DemoServiceServer).Log(ctx, req.(*Log_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DemoService_LogAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogAdd_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DemoServiceServer).LogAdd(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.DemoService/LogAdd",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DemoServiceServer).LogAdd(ctx, req.(*LogAdd_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DemoService_LogGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogGet_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DemoServiceServer).LogGet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.DemoService/LogGet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DemoServiceServer).LogGet(ctx, req.(*LogGet_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DemoService_LogStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(LogStream_Request)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(DemoServiceServer).LogStream(m, &demoServiceLogStreamServer{stream})
+}
+
+type DemoService_LogStreamServer interface {
+	Send(*Log_Operation) error
+	grpc.ServerStream
+}
+
+type demoServiceLogStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *demoServiceLogStreamServer) Send(m *Log_Operation) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _DemoService_LogList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogList_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DemoServiceServer).LogList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.DemoService/LogList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DemoServiceServer).LogList(ctx, req.(*LogList_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -212,10 +1215,32 @@ var _DemoService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*DemoServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "OrbitDBLog",
-			Handler:    _DemoService_OrbitDBLog_Handler,
+			MethodName: "AddKey",
+			Handler:    _DemoService_AddKey_Handler,
+		},
+		{
+			MethodName: "Log",
+			Handler:    _DemoService_Log_Handler,
+		},
+		{
+			MethodName: "LogAdd",
+			Handler:    _DemoService_LogAdd_Handler,
+		},
+		{
+			MethodName: "LogGet",
+			Handler:    _DemoService_LogGet_Handler,
+		},
+		{
+			MethodName: "LogList",
+			Handler:    _DemoService_LogList_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "LogStream",
+			Handler:       _DemoService_LogStream_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "bertydemo.proto",
 }
