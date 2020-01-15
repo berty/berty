@@ -15,7 +15,7 @@ type DemoBridge interface {
 type demo struct {
 	Bridge
 
-	demoClient *bertydemo.BertyDemo
+	demoClient *bertydemo.Client
 	grpcServer *grpc.Server
 	logger     *zap.Logger
 }
