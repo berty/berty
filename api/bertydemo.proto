@@ -7,104 +7,98 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 option go_package = "berty.tech/berty/go/pkg/bertydemo";
 
 service DemoService {
-  // OrbitDBGetIdentity Returns the identity used by the current DB
-  // rpc OrbitDBGetIdentity(OrbitDBGetIdentity.Request) returns (OrbitDBGetIdentity.Reply);
+  // AddKey Adds an ed25519 keypair in the keystore passed on Log initialization, noop if already added
+  rpc AddKey(AddKey.Request) returns (AddKey.Reply);
 
-  // OrbitDBOpenDatastore Opens an existing data store
-  // rpc OrbitDBOpenDatastore(OrbitDBOpenDatastore.Request) returns (OrbitDBOpenDatastore.Reply);
+  // Log Creates or opens an EventLogStore
+  rpc Log(Log.Request) returns (Log.Reply);
 
-  // OrbitDBCreateDatastore Creates a new stores
-  // rpc OrbitDBCreateDatastore(OrbitDBCreateDatastore.Request) returns (OrbitDBCreateDatastore.Reply);
+  // LogAdd Appends data to a log previously opened with Log
+  rpc LogAdd(LogAdd.Request) returns (LogAdd.Reply);
 
-  rpc OrbitDBLog(OrbitDBLog.Request) returns (OrbitDBLog.Reply);
+  // LogGet Gets a log entry by cid in a Log opened previously
+  rpc LogGet(LogGet.Request) returns (LogGet.Reply);
 
-  // CloseDatastore Closes the current DB and all the related stores
-  // rpc CloseDatastore(CloseDatastore.Request) returns (CloseDatastore.Reply);
+  // LogStream Populates a chan of operations from a Log
+  rpc LogStream(LogStream.Request) returns (stream Log.Operation);
 
-  // DetermineAddress Returns the store address for the given parameters
-  // rpc DetermineAddress(DetermineAddress.Request) returns (DetermineAddress.Reply);
-
-  // RegisterStoreType Registers a new store type
-  // rpc RegisterStoreType(RegisterStoreType.Request) returns (RegisterStoreType.Reply);
-
-  // RegisterStoreType Removes a store type
-  // rpc UnregisterStoreType(UnregisterStoreType.Request) returns (UnregisterStoreType.Reply);
-
-  // RegisterAccessControllerType Registers a new access controller type
-  // rpc RegisterAccessControllerType(RegisterAccessControllerType.Request) returns (RegisterAccessControllerType.Reply);
-
-  // UnregisterAccessControllerType Unregisters an access controller type
-  // rpc UnregisterAccessControllerType(UnregisterAccessControllerType.Request) returns (UnregisterAccessControllerType.Reply);
-
-  // GetAccessControllerType Retrieves an access controller type constructor if it exists
-  // rpc GetAccessControllerType(GetAccessControllerType.Request) returns (GetAccessControllerType.Reply);
+  // LogList Fetches a list of operation that occurred on a Log
+  rpc LogList(LogList.Request) returns (LogList.Reply);
 }
 
-message OrbitDBLog {
-  message Request {}
-  message Reply {}
+message AddKey {
+  message Request {
+    bytes priv_key = 1;
+  }
+  message Reply {
+
+  }
 }
 
-// message TestUnary {
-//   message Request {}
-//   message Reply {}
-// }
+message Log {
+  message Operation {
+    string name = 1;
+    bytes value = 2;
+  }
+  message StreamOptions {
+    string GT = 1; // cid
+    string GTE = 2; // cid
+    string LT = 3; // cid
+    string LTE = 4; // cid
+    uint32 amount = 5;
+  }
+  message ManifestEntry {
+    string key = 1;
+    repeated string values = 2;
+  }
+  message Request {
+    string address = 1;
+    string manifest_type = 2;
+    repeated ManifestEntry manifest_access = 3;
+    string identity_type = 4;
+    string identity_id = 5;
+  }
+  message Reply {
+    string log_handle = 1;
+  }
+}
 
-// message OrbitDBGetIdentity {
-//   message Request {}
-//   message Reply {}
-// }
+message LogAdd {
+  message Request {
+    string log_handle = 1;
+    bytes data = 2;
+  }
+  message Reply {
 
-// message OrbitDBOpenDatastore {
-//   message Request {}
-//   message Reply {}
-// }
+  }
+}
 
-// message OrbitDBCreateDatastore {
-//   message Request {}
-//   message Reply {}
-// }
+message LogGet {
+  message Request {
+    string log_handle = 1;
+    string cid = 2;
+  }
+  message Reply {
+    Log.Operation op = 1;
+  }
+}
 
-// message CloseDatastore {
-//   message Request {}
-//   message Reply {}
-// }
+message LogStream {
+  message Request {
+    string log_handle = 1;
+    Log.StreamOptions options = 2;
+  }
+}
 
-// message DetermineAddress {
-//   message Request {}
-//   message Reply {}
-// }
-
-// message RegisterStoreType {
-//   message Request {}
-//   message Reply {}
-// }
-
-// message UnregisterStoreType {
-//   message Request {}
-//   message Reply {}
-// }
-
-// message RegisterAccessControllerType {
-//   message Request {}
-//   message Reply {}
-// }
-
-// message UnregisterAccessControllerType {
-//   message Request {}
-//   message Reply {}
-// }
-
-// message GetAccessControllerType {
-//   message Request {}
-//   message Reply {}
-// }
-
-
-// models
-
-// message Identity {
-//   string id = 0;
-//   bytes public_key = 1;
-//   string type = 2;
-// }
+message LogList {
+  message Operations {
+    repeated Log.Operation ops = 1;
+  }
+  message Request {
+    string log_handle = 1;
+    Log.StreamOptions options = 2;
+  }
+  message Reply {
+    Operations ops = 1;
+  }
+}
