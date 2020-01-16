@@ -13,6 +13,9 @@ service DemoService {
   // Log Creates or opens an EventLogStore
   rpc Log(Log.Request) returns (Log.Reply);
 
+  // GroupToLog Create or opens an EventLogStore from a group pubkey and signing key
+  rpc GroupToLog(GroupToLog.Request) returns (GroupToLog.Reply);
+
   // LogAdd Appends data to a log previously opened with Log
   rpc LogAdd(LogAdd.Request) returns (LogAdd.Reply);
 
@@ -57,6 +60,18 @@ message Log {
     repeated ManifestEntry manifest_access = 3;
     string identity_type = 4;
     string identity_id = 5;
+  }
+  message Reply {
+    string log_handle = 1;
+  }
+}
+
+message GroupToLog
+{
+  message Request {
+    string address = 1;
+    bytes group_pub_key = 2;
+    bytes group_signing_key = 3;
   }
   message Reply {
     string log_handle = 1;

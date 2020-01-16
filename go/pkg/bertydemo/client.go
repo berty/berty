@@ -4,8 +4,10 @@ import (
 	context "context"
 	"errors"
 
+	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/internal/orbitutil/identityberty"
+	"berty.tech/berty/go/internal/orbitutil/storegroup"
 	"berty.tech/berty/go/pkg/errcode"
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
@@ -94,21 +96,53 @@ func eventLogOptions(ks *identityberty.BertySignedKeyStore, req *Log_Request) (*
 	return options, nil
 }
 
+func (d *Client) registeredLogFromOpts(ctx context.Context, adr string, opts *orbitdb.CreateDBOptions) (*string, error) {
+	log, err := d.odb.Log(ctx, adr, opts)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	// maybe replace by rand string or smth better
+	handle := uuid.New().String()
+	d.logs[handle] = log
+
+	return &handle, nil
+}
+
 func (d *Client) Log(ctx context.Context, req *Log_Request) (*Log_Reply, error) {
 	opts, err := eventLogOptions(d.ks, req)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	log, err := d.odb.Log(ctx, req.Address, opts)
+	handle, err := d.registeredLogFromOpts(ctx, req.Address, opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	// maybe replace by rand string or smth better
-	uuid := uuid.New().String()
-	d.logs[uuid] = log
-	reply := Log_Reply{}
-	reply.LogHandle = uuid
-	return &reply, nil
+	return &Log_Reply{LogHandle: *handle}, nil
+}
+
+func (d *Client) GroupToLog(ctx context.Context, req *GroupToLog_Request) (*GroupToLog_Reply, error) {
+	gpk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPubKey)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	gsigk, err := crypto.UnmarshalEd25519PrivateKey(req.GroupSigningKey)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	err = d.ks.SetKey(gsigk)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	g := &group.Group{PubKey: gpk, SigningKey: gsigk}
+	opts, err := storegroup.DefaultOptions(g, &orbitdb.CreateDBOptions{}, d.ks)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	handle, err := d.registeredLogFromOpts(ctx, req.Address, opts)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	return &GroupToLog_Reply{LogHandle: *handle}, nil
 }
 
 func (d *Client) AddKey(ctx context.Context, req *AddKey_Request) (*AddKey_Reply, error) {
