@@ -17,7 +17,7 @@ import { GroupCircleAvatar, CircleAvatar } from '../shared-components/CircleAvat
 import { Message } from './shared-components/Message'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
-import { berty } from '@berty-tech/berty-api'
+import { berty } from '@berty-tech/api'
 import { BlurView } from '@react-native-community/blur'
 
 //

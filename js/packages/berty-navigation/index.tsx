@@ -9,7 +9,7 @@ import {
 	BottomTabBarProps,
 } from '@react-navigation/core'
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
-import { berty } from '@berty-tech/berty-api'
+import { berty } from '@berty-tech/api'
 import { NavigationNativeContainer } from '@react-navigation/native'
 
 export namespace ScreenProps {

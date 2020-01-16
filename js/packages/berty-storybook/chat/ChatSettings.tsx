@@ -6,7 +6,7 @@ import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsBu
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
-import { berty } from '@berty-tech/berty-api'
+import { berty } from '@berty-tech/api'
 
 //
 // ChatSettings

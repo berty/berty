@@ -14,7 +14,7 @@ import { I18nextProvider } from 'react-i18next'
 import i18n from '@berty-tech/berty-i18n'
 import { faker } from './faker.gen'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
-import { berty } from '@berty-tech/berty-api'
+import { berty } from '@berty-tech/api'
 import {
 	Routes,
 	FakeNavigation,

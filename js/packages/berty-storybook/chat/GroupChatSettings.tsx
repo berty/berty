@@ -10,7 +10,7 @@ import {
 import { GroupCircleAvatar } from '../shared-components/CircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/berty-navigation'
-import { berty } from '@berty-tech/berty-api'
+import { berty } from '@berty-tech/api'
 
 //
 // GroupChatSettings

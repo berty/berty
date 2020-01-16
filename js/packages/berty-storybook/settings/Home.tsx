@@ -7,7 +7,7 @@ import { CircleAvatar } from '../shared-components/CircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
-import { berty } from '@berty-tech/berty-api'
+import { berty } from '@berty-tech/api'
 //
 // Home Vue
 //

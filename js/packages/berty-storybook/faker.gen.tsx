@@ -1,4 +1,4 @@
-import * as _api from '@berty-tech/berty-api'
+import * as _api from '@berty-tech/api'
 import _faker from 'faker'
 import * as pb from 'protobufjs'
 import { deepFilterEqual, deepEqual, timestamp, randomArray, randomValue } from './helpers'
