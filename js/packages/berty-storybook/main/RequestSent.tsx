@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
-import { styles, colors } from '@berty-tech/styles'
+import { colors, useStyles } from '@berty-tech/styles'
 import { RequestProps } from '../shared-props/User'
 import { Request } from '../shared-components/Request'
 
@@ -9,46 +9,51 @@ import { Request } from '../shared-components/Request'
 // ContactRequest => Accept/Refuse
 //
 
-const _requestButtonsStyles = StyleSheet.create({
-	firstRequestButton: {
-		borderColor: colors.grey,
-		borderWidth: 2,
-		opacity: 0.5,
-		borderRadius: 6,
-		paddingTop: 7,
-		paddingBottom: 7,
-		marginRight: 10,
-	},
-	secondRequestButton: {
-		borderRadius: 6,
-		paddingTop: 7,
-		paddingBottom: 7,
-		marginLeft: 10,
-		backgroundColor: colors.lightGreen,
-	},
-})
+const useStylesRequestSent = () => {
+	const [{ border, padding, margin, background }] = useStyles()
+	return {
+		firstRequestButton: [
+			border.color.light.grey,
+			border.big,
+			border.radius.scale(6),
+			padding.top.tiny,
+			margin.right.small,
+		],
+		secondRequestButton: [
+			border.radius.scale(6),
+			padding.vertical.small,
+			margin.left.small,
+			background.light.green,
+		],
+	}
+}
 
-export const RequestSent: React.FC<RequestProps> = ({ user }) => (
-	<Layout style={[styles.flex, styles.bgLightGreen]}>
-		<Request
-			user={user}
-			markAsVerified={false}
-			buttons={[
-				{
-					style: _requestButtonsStyles.firstRequestButton,
-					title: 'REFUSE',
-					titleColor: colors.grey,
-					icon: 'close-outline',
-					iconColor: colors.grey,
-				},
-				{
-					style: _requestButtonsStyles.secondRequestButton,
-					title: 'RESEND',
-					titleColor: colors.green,
-					icon: 'paper-plane-outline',
-					iconColor: colors.green,
-				},
-			]}
-		/>
-	</Layout>
-)
+export const RequestSent: React.FC<RequestProps> = ({ user }) => {
+	const _styles = useStylesRequestSent()
+	const [{ flex, background, color }] = useStyles()
+
+	return (
+		<Layout style={[flex.tiny, background.light.green]}>
+			<Request
+				user={user}
+				markAsVerified={false}
+				buttons={[
+					{
+						style: _styles.firstRequestButton,
+						title: 'REFUSE',
+						titleColor: color.grey,
+						icon: 'close-outline',
+						iconColor: color.grey,
+					},
+					{
+						style: _styles.secondRequestButton,
+						title: 'RESEND',
+						titleColor: color.green,
+						icon: 'paper-plane-outline',
+						iconColor: color.green,
+					},
+				]}
+			/>
+		</Layout>
+	)
+}

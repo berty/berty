@@ -91,7 +91,7 @@ stories
 	.add('Main.CreateGroup2', () => <Main.CreateGroup2 />)
 	.add('Main.CreateGroup3', () => <Main.CreateGroup3 />)
 	.add('Main.Search', () => <Main.Search />)
-	.add('Main.SearchResults', () => <Main.SearchResults user={fakeOneUser} />)
+	// .add('Main.SearchResults', () => <Main.SearchResults user={fakeOneUser} />)
 	.add(Routes.Settings.Home, () => <Settings.Home />)
 	.add(Routes.Settings.MyBertyId, () => <Settings.MyBertyId user={fakeOneUser} />)
 	.add(Routes.Settings.EditProfile, () => <Settings.EditProfile />)
