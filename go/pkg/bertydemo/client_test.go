@@ -34,7 +34,7 @@ func TestLog(t *testing.T) {
 	pubkb, err := sk.GetPublic().Raw()
 	checkErr(t, err)
 	req := Log_Request{
-		Address:      "42",
+		Name:         "42",
 		ManifestType: "simple",
 		ManifestAccess: []*Log_ManifestEntry{
 			&Log_ManifestEntry{Key: "write", Values: []string{"lucyintehskywithdiamonds"}},
@@ -50,7 +50,7 @@ func TestLog(t *testing.T) {
 func TestGroupToLog(t *testing.T) {
 	demo := initDemo(t)
 	req := GroupToLog_Request{
-		Address:         "jambon",
+		Name:            "jambon",
 		GroupPubKey:     []byte("squidibosquidibosquidibosquidibo"),
 		GroupSigningKey: []byte("squidisqsquidisqsquidisqsquidisqsquidisqsquidisqsquidisqsquidisq"),
 	}

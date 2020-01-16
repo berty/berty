@@ -96,8 +96,8 @@ func eventLogOptions(ks *identityberty.BertySignedKeyStore, req *Log_Request) (*
 	return options, nil
 }
 
-func (d *Client) registeredLogFromOpts(ctx context.Context, adr string, opts *orbitdb.CreateDBOptions) (*string, error) {
-	log, err := d.odb.Log(ctx, adr, opts)
+func (d *Client) registeredLogFromOpts(ctx context.Context, name string, opts *orbitdb.CreateDBOptions) (*string, error) {
+	log, err := d.odb.Log(ctx, name, opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -113,7 +113,7 @@ func (d *Client) Log(ctx context.Context, req *Log_Request) (*Log_Reply, error) 
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	handle, err := d.registeredLogFromOpts(ctx, req.Address, opts)
+	handle, err := d.registeredLogFromOpts(ctx, req.Name, opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -138,7 +138,7 @@ func (d *Client) GroupToLog(ctx context.Context, req *GroupToLog_Request) (*Grou
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	handle, err := d.registeredLogFromOpts(ctx, req.Address, opts)
+	handle, err := d.registeredLogFromOpts(ctx, req.Name, opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
