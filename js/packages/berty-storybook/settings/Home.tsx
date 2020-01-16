@@ -1,13 +1,14 @@
 import React from 'react'
 import { View, ScrollView, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native'
-import { Layout, Text } from 'react-native-ui-kitten'
-import { colors, styles } from '@berty-tech/styles'
+import { Text } from 'react-native-ui-kitten'
+import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { berty } from '@berty-tech/api'
+
 //
 // Home Vue
 //
@@ -15,53 +16,48 @@ import { berty } from '@berty-tech/api'
 // Type
 
 // Style
+const useStylesHome = () => {
+	const [{ width, height, margin, padding, text }] = useStyles()
+	return {
+		homeAvatarBox: [width(160), height(180)],
+		firstHeaderButton: [margin.right.scale(20), height(90)],
+		secondHeaderButton: [margin.right.scale(20), height(90)],
+		thirdHeaderButton: height(90),
+		headerNameText: text.size.scale(13),
+		scrollViewPadding: padding.bottom.scale(116),
+	}
+}
 const _homeStyles = StyleSheet.create({
-	homeAvatarBox: { width: 160, height: 180 },
 	homeAvatar: { bottom: 37.5 },
-	firstHeaderButton: {
-		marginRight: 20,
-		height: 90,
-	},
-	secondHeaderButton: {
-		marginRight: 20,
-		height: 90,
-	},
-	thirdHeaderButton: {
-		height: 90,
-	},
-	headerNameText: {
-		fontSize: 13,
-	},
-	scrollViewPadding: {
-		paddingBottom: 116,
-	},
 })
 
 const HomeHeaderGroupButton: React.FC<berty.chatmodel.Account> = () => {
+	const _styles = useStylesHome()
+	const [{ padding, color }] = useStyles()
 	const { navigate } = useNavigation()
 	return (
-		<View style={[styles.paddingRight, styles.paddingLeft]}>
+		<View style={[padding.horizontal.medium]}>
 			<ButtonSettingRow
 				state={[
 					{
 						name: 'Updates',
 						icon: 'arrow-upward-outline',
-						color: colors.blue,
-						style: _homeStyles.firstHeaderButton,
+						color: color.blue,
+						style: _styles.firstHeaderButton,
 						onPress: navigate.settings.appUpdates,
 					},
 					{
 						name: 'Help',
 						icon: 'question-mark-circle-outline',
-						color: colors.red,
-						style: _homeStyles.secondHeaderButton,
+						color: color.red,
+						style: _styles.secondHeaderButton,
 						onPress: navigate.settings.help,
 					},
 					{
 						name: 'Settings',
 						icon: 'settings-2-outline',
-						color: colors.blue,
-						style: _homeStyles.thirdHeaderButton,
+						color: color.blue,
+						style: _styles.thirdHeaderButton,
 						onPress: navigate.settings.mode,
 					},
 				]}
@@ -69,35 +65,43 @@ const HomeHeaderGroupButton: React.FC<berty.chatmodel.Account> = () => {
 		</View>
 	)
 }
-const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => (
-	<View style={[styles.center, styles.marginTop]}>
-		<View style={[_homeStyles.homeAvatarBox, styles.bgWhite, styles.borderRadius]}>
-			<View style={[_homeStyles.homeAvatar]}>
-				<CircleAvatar style={styles.centerItems} avatarUri={contact?.avatarUri || ''} size={75} />
-				<View style={[styles.center]}>
-					<Text style={[styles.fontFamily, styles.littlePaddingTop, _homeStyles.headerNameText]}>
-						{contact?.name || ''}
-					</Text>
+const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => {
+	const _styles = useStylesHome()
+	const [{ row, margin, background, border, text, padding }] = useStyles()
+	return (
+		<View style={[row.center, margin.top.medium]}>
+			<View style={[_styles.homeAvatarBox, background.white, border.radius.medium]}>
+				<View style={[_homeStyles.homeAvatar]}>
+					<CircleAvatar style={row.center} avatarUri={contact?.avatarUri || ''} size={75} />
+					<View style={[row.center]}>
+						<Text style={[text.family, padding.top.small, _styles.headerNameText]}>
+							{contact?.name || ''}
+						</Text>
+					</View>
 				</View>
 			</View>
 		</View>
-	</View>
-)
+	)
+}
 
-const HomeHeader: React.FC = () => (
-	<SafeAreaView style={[styles.alignVertical, styles.marginBottom]}>
-		<HomeHeaderAvatar />
-	</SafeAreaView>
-)
+const HomeHeader: React.FC = () => {
+	const [{ margin }] = useStyles()
+	return (
+		<SafeAreaView style={margin.bottom.medium}>
+			<HomeHeaderAvatar />
+		</SafeAreaView>
+	)
+}
 
 const HomeBodySettings: React.FC<{}> = () => {
+	const [{ flex, color, padding, margin }] = useStyles()
 	const { navigate } = useNavigation()
 	return (
-		<View style={[styles.flex, styles.paddingLeft, styles.paddingRight, styles.marginTop]}>
+		<View style={[flex.tiny, padding.horizontal.medium, margin.top.medium]}>
 			<ButtonSetting
 				name='Notifications'
 				icon='bell-outline'
-				state={{ value: 'Current', color: colors.white, bgColor: colors.blue }}
+				state={{ value: 'Current', color: color.white, bgColor: color.blue }}
 				onPress={navigate.settings.notifications}
 			/>
 			<ButtonSetting
@@ -144,12 +148,14 @@ export const useAccount = () => {
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	const { navigate } = useNavigation()
 	const account = useAccount()
+	const _styles = useStylesHome()
+	const [{ flex, background, row }] = useStyles()
 	return (
-		<View style={[styles.flex, styles.justifyContent, styles.bgWhite]}>
+		<View style={[flex.tiny, background.white]}>
 			{account == null ? (
-				<ActivityIndicator size='large' style={[styles.center]} />
+				<ActivityIndicator size='large' style={[row.center]} />
 			) : (
-				<ScrollView contentContainerStyle={[_homeStyles.scrollViewPadding]}>
+				<ScrollView contentContainerStyle={[_styles.scrollViewPadding]}>
 					<HeaderSettings actionIcon='edit-outline' action={navigate.settings.editProfile}>
 						<View>
 							<HomeHeader {...account} />

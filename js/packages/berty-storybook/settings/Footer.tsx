@@ -1,10 +1,10 @@
 import React from 'react'
-import { colors } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 import { Footer as SharedFooter } from '../shared-components/Footer'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
-import { useNavigation } from '@berty-tech/berty-navigation'
 
 export const Footer = ({ navigate }) => {
+	const [{ color }] = useStyles()
 	return (
 		<Store.AccountGet request={{ id: 0 }}>
 			{(response) => (
@@ -15,7 +15,7 @@ export const Footer = ({ navigate }) => {
 							center={{ icon: 'message-circle-outline', onPress: navigate.main.list }}
 							right={{
 								avatarUri: response?.contact?.avatarUri,
-								backgroundColor: colors.blue,
+								backgroundColor: color.blue,
 								size: 50,
 								elemSize: 45,
 								onPress: navigate.settings.home,
