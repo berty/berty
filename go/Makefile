@@ -83,10 +83,21 @@ go.lint: pb.generate
 	$(call check-program, golangci-lint)
 	golangci-lint run --timeout=120s --verbose ./...
 
-.PHONY: nobazel.unittest
+.PHONY: go.unittest
+go.unittest: GO_TEST_PATH ?= ./...
 go.unittest: pb.generate
 	$(call check-program, $(GO))
-	GO111MODULE=on $(GO) test $(GO_TEST_OPTS) -cover -coverprofile=coverage.txt -covermode=atomic -race ./...
+	GO111MODULE=on $(GO) test $(GO_TEST_OPTS) -cover -coverprofile=coverage.txt -covermode=atomic -race $(GO_TEST_PATH)
+
+.PHONY: go.unittest.watch
+go.unittest: GO_TEST_PATH ?= ./...
+go.unittest.watch:
+	@if ! command -v watchman &>/dev/null; then brew install watchman; fi
+	while true; \
+		do clear; \
+		GO_TEST_PATH=$(GO_TEST_PATH) make go.unittest; \
+		watchman-wait . -p "**/*.go"; \
+	done
 
 .PHONY: go.install
 go.install: pb.generate

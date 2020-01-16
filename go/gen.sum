@@ -5,4 +5,4 @@ dcbee8a9b345330615f4e517e711bb5c38b22248  ../api/go-internal/handshake.proto
 365bc276a7d8ccc215a0779a08aaa5cfb3fbe43e  ../api/go-internal/protocolmodel.proto
 2bd227219a1d918ec6fe121c2d85fa6d1ffa116c  ../api/go-internal/sigchain.proto
 e211c22f8ab7d8bc248813275275462649127e94  ../api/go-internal/store_entry.proto
-27adc305f71410125d6899bab46aff4ae0c2e693  Makefile
+f3ddcc81feb923a3ed604ecdbcf1f0bb2bdc5677  Makefile
