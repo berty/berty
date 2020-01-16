@@ -70,6 +70,7 @@ func eventLogOptions(ks *identityberty.BertySignedKeyStore, req *Log_Request) (*
 
 	access := make(map[string][]string)
 	for _, me := range req.ManifestAccess {
+		access[me.Key] = make([]string, len(me.Values))
 		for i, v := range me.Values {
 			access[me.Key][i] = v
 		}
