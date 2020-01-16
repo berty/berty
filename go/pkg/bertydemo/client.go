@@ -99,7 +99,7 @@ func (d *Client) Log(ctx context.Context, req *Log_Request) (*Log_Reply, error) 
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	log, err := d.odb.Log(ctx, req.Address, opts)
+	log, err := d.odb.Log(ctx, req.Name, opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

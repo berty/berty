@@ -52,7 +52,7 @@ message Log {
     repeated string values = 2;
   }
   message Request {
-    string address = 1;
+    string name = 1;
     string manifest_type = 2;
     repeated ManifestEntry manifest_access = 3;
     string identity_type = 4;
