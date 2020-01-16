@@ -3,20 +3,24 @@ import { all, call } from 'redux-saga/effects'
 import createSagaMiddleware from 'redux-saga'
 import { configureStore } from '@reduxjs/toolkit'
 
-import * as instance from './instance'
+import * as client from './client'
 
-export type Instance = instance.Entity
+export type Client = client.Entity
 
 export const commands = {
-	instance: instance.commands,
+	client: client.commands,
+}
+
+export const events = {
+	client: client.events,
 }
 
 export const reducers = {
-	protocol: combineReducers({ instance: instance.reducer }),
+	protocol: combineReducers({ client: client.reducer }),
 }
 
 export function* rootSaga() {
-	yield all([call(instance.orchestrator)])
+	yield all([call(client.orchestrator)])
 }
 
 export const init = () => {

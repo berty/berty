@@ -1,0 +1,28 @@
+import * as api from '@berty-tech/api'
+import * as pb from 'protobufjs'
+
+{{#with (lookup "berty.protocol")}}
+	{{#each nested}}
+		{{#if (eq (typeof this) "Service")}}
+			export class {{name}}Client {
+				_pbService: api{{namespace this}}
+
+				constructor(rpcImpl: pb.RPCImpl) {
+					this._pbService = api{{namespace this}}.create(rpcImpl)
+				}
+
+				{{#each methods}}
+					{{case 'camel' name}}(
+						request: api{{inamespace resolvedRequestType}},
+						callback: (
+							error: Error | null,
+							response?: api{{inamespace resolvedResponseType}}
+						) => void
+					) {
+						return this._pbService.{{case 'camel' name}}.bind(this._pbService)(request, callback)
+					}
+			  	{{/each}}
+			}
+		{{/if}}
+	{{/each}}
+{{/with}}
