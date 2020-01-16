@@ -5,6 +5,1697 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
 .addJSON({
   berty: {
     nested: {
+      chat: {
+        nested: {
+          ChatService: {
+            methods: {
+              Search: {
+                requestType: "Search.Request",
+                responseType: "Search.Reply",
+                responseStream: true
+              },
+              EventSubscribe: {
+                requestType: "EventSubscribe.Request",
+                responseType: "EventSubscribe.Reply",
+                responseStream: true
+              },
+              DevEventSubscribe: {
+                requestType: "DevEventSubscribe.Request",
+                responseType: "DevEventSubscribe.Reply",
+                responseStream: true
+              },
+              ConversationList: {
+                requestType: "ConversationList.Request",
+                responseType: "ConversationList.Reply",
+                responseStream: true
+              },
+              ConversationGet: {
+                requestType: "ConversationGet.Request",
+                responseType: "ConversationGet.Reply"
+              },
+              ConversationCreate: {
+                requestType: "ConversationCreate.Request",
+                responseType: "ConversationCreate.Reply"
+              },
+              ConversationUpdate: {
+                requestType: "ConversationUpdate.Request",
+                responseType: "ConversationUpdate.Reply"
+              },
+              ConversationMute: {
+                requestType: "ConversationMute.Request",
+                responseType: "ConversationMute.Reply"
+              },
+              ConversationLeave: {
+                requestType: "ConversationLeave.Request",
+                responseType: "ConversationLeave.Reply"
+              },
+              ConversationErase: {
+                requestType: "ConversationErase.Request",
+                responseType: "ConversationErase.Reply"
+              },
+              ConversationInvitationSend: {
+                requestType: "ConversationInvitationSend.Request",
+                responseType: "ConversationInvitationSend.Reply"
+              },
+              ConversationInvitationAccept: {
+                requestType: "ConversationInvitationAccept.Request",
+                responseType: "ConversationInvitationAccept.Reply"
+              },
+              ConversationInvitationDecline: {
+                requestType: "ConversationInvitationDecline.Request",
+                responseType: "ConversationInvitationDecline.Reply"
+              },
+              MessageList: {
+                requestType: "MessageList.Request",
+                responseType: "MessageList.Reply",
+                responseStream: true
+              },
+              MessageGet: {
+                requestType: "MessageGet.Request",
+                responseType: "MessageGet.Reply"
+              },
+              MessageSend: {
+                requestType: "MessageSend.Request",
+                responseType: "MessageSend.Reply"
+              },
+              MessageEdit: {
+                requestType: "MessageEdit.Request",
+                responseType: "MessageEdit.Reply"
+              },
+              MessageHide: {
+                requestType: "MessageHide.Request",
+                responseType: "MessageHide.Reply"
+              },
+              MessageReact: {
+                requestType: "MessageReact.Request",
+                responseType: "MessageReact.Reply"
+              },
+              MessageRead: {
+                requestType: "MessageRead.Request",
+                responseType: "MessageRead.Reply"
+              },
+              MemberList: {
+                requestType: "MemberList.Request",
+                responseType: "MemberList.Reply",
+                responseStream: true
+              },
+              MemberGet: {
+                requestType: "MemberGet.Request",
+                responseType: "MemberGet.Reply"
+              },
+              ContactList: {
+                requestType: "ContactList.Request",
+                responseType: "ContactList.Reply",
+                responseStream: true
+              },
+              ContactGet: {
+                requestType: "ContactGet.Request",
+                responseType: "ContactGet.Reply"
+              },
+              ContactBlock: {
+                requestType: "ContactBlock.Request",
+                responseType: "ContactBlock.Reply"
+              },
+              ContactRemove: {
+                requestType: "ContactRemove.Request",
+                responseType: "ContactRemove.Reply"
+              },
+              ContactRequestSend: {
+                requestType: "ContactRequestSend.Request",
+                responseType: "ContactRequestSend.Reply"
+              },
+              ContactRequestAccept: {
+                requestType: "ContactRequestAccept.Request",
+                responseType: "ContactRequestAccept.Reply"
+              },
+              ContactRequestDecline: {
+                requestType: "ContactRequestDecline.Request",
+                responseType: "ContactRequestDecline.Reply"
+              },
+              AccountList: {
+                requestType: "AccountList.Request",
+                responseType: "AccountList.Reply",
+                responseStream: true
+              },
+              AccountGet: {
+                requestType: "AccountGet.Request",
+                responseType: "AccountGet.Reply"
+              },
+              AccountCreate: {
+                requestType: "AccountCreate.Request",
+                responseType: "AccountCreate.Reply"
+              },
+              AccountUpdate: {
+                requestType: "AccountUpdate.Request",
+                responseType: "AccountUpdate.Reply"
+              },
+              AccountOpen: {
+                requestType: "AccountOpen.Request",
+                responseType: "AccountOpen.Reply"
+              },
+              AccountClose: {
+                requestType: "AccountClose.Request",
+                responseType: "AccountClose.Reply"
+              },
+              AccountRemove: {
+                requestType: "AccountRemove.Request",
+                responseType: "AccountRemove.Reply"
+              },
+              AccountPairingInvitationCreate: {
+                requestType: "AccountPairingInvitationCreate.Request",
+                responseType: "AccountPairingInvitationCreate.Reply"
+              },
+              AccountRenewIncomingContactRequestLink: {
+                requestType: "AccountRenewIncomingContactRequestLink.Request",
+                responseType: "AccountRenewIncomingContactRequestLink.Reply"
+              }
+            }
+          },
+          Search: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {}
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          EventSubscribe: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {}
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          DevEventSubscribe: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {}
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          ConversationList: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  filter: {
+                    type: "chatmodel.Conversation",
+                    id: 1
+                  },
+                  not: {
+                    type: "chatmodel.Conversation",
+                    id: 2
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  conversation: {
+                    type: "chatmodel.Conversation",
+                    id: 1
+                  }
+                }
+              }
+            }
+          },
+          ConversationGet: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  conversation: {
+                    type: "chatmodel.Conversation",
+                    id: 1
+                  }
+                }
+              }
+            }
+          },
+          ConversationCreate: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  title: {
+                    type: "string",
+                    id: 1
+                  },
+                  topic: {
+                    type: "string",
+                    id: 2
+                  },
+                  avatarUri: {
+                    type: "string",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "AvatarURI"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  conversation: {
+                    type: "chatmodel.Conversation",
+                    id: 1
+                  }
+                }
+              }
+            }
+          },
+          ConversationUpdate: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  },
+                  title: {
+                    type: "string",
+                    id: 2
+                  },
+                  topic: {
+                    type: "string",
+                    id: 3
+                  },
+                  avatarUri: {
+                    type: "string",
+                    id: 4,
+                    options: {
+                      "(gogoproto.customname)": "AvatarURI"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          ConversationMute: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  policy: {
+                    type: "chatmodel.Member.MutePolicy",
+                    id: 1
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          ConversationLeave: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          ConversationErase: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          ConversationInvitationSend: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  },
+                  contactId: {
+                    type: "uint64",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "ContactID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          ConversationInvitationAccept: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  },
+                  contactId: {
+                    type: "uint64",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "ContactID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          ConversationInvitationDecline: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  conversationId: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ConversationID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          MessageList: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  filter: {
+                    type: "chatmodel.Message",
+                    id: 1
+                  },
+                  not: {
+                    type: "chatmodel.Message",
+                    id: 2
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  message: {
+                    type: "chatmodel.Message",
+                    id: 1
+                  }
+                }
+              }
+            }
+          },
+          MessageGet: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  message: {
+                    type: "chatmodel.Message",
+                    id: 1
+                  }
+                }
+              }
+            }
+          },
+          MessageSend: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  conversationId: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ConversationID"
+                    }
+                  },
+                  kind: {
+                    type: "chatmodel.Message.Kind",
+                    id: 2
+                  },
+                  body: {
+                    type: "chatmodel.Message.Body",
+                    id: 3
+                  },
+                  attachments: {
+                    rule: "repeated",
+                    type: "chatmodel.Attachment",
+                    id: 4
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          MessageEdit: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  },
+                  body: {
+                    type: "chatmodel.Message.Body",
+                    id: 2
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          MessageHide: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          MessageReact: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  },
+                  emoji: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          MessageRead: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          MemberList: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  filter: {
+                    type: "chatmodel.Member",
+                    id: 1
+                  },
+                  not: {
+                    type: "chatmodel.Member",
+                    id: 2
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  member: {
+                    type: "chatmodel.Member",
+                    id: 1
+                  }
+                }
+              }
+            }
+          },
+          MemberGet: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  member: {
+                    type: "chatmodel.Member",
+                    id: 1
+                  }
+                }
+              }
+            }
+          },
+          ContactList: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  filter: {
+                    type: "chatmodel.Contact",
+                    id: 1
+                  },
+                  not: {
+                    type: "chatmodel.Contact",
+                    id: 2
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  contact: {
+                    type: "chatmodel.Contact",
+                    id: 1
+                  }
+                }
+              }
+            }
+          },
+          ContactGet: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  contact: {
+                    type: "chatmodel.Contact",
+                    id: 1
+                  }
+                }
+              }
+            }
+          },
+          ContactBlock: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {}
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          ContactRemove: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          ContactRequestSend: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          ContactRequestAccept: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          ContactRequestDecline: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          AccountList: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {}
+              },
+              Reply: {
+                fields: {
+                  account: {
+                    type: "chatmodel.Account",
+                    id: 1
+                  }
+                }
+              }
+            }
+          },
+          AccountGet: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  account: {
+                    type: "chatmodel.Account",
+                    id: 1
+                  }
+                }
+              }
+            }
+          },
+          AccountCreate: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  name: {
+                    type: "string",
+                    id: 1
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          AccountUpdate: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  },
+                  name: {
+                    type: "string",
+                    id: 2
+                  },
+                  statusEmoji: {
+                    type: "string",
+                    id: 3
+                  },
+                  statusText: {
+                    type: "string",
+                    id: 4
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          AccountOpen: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  },
+                  pin: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  token: {
+                    type: "bytes",
+                    id: 1
+                  }
+                }
+              }
+            }
+          },
+          AccountClose: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          AccountRemove: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          AccountPairingInvitationCreate: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          AccountRenewIncomingContactRequestLink: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  id: {
+                    type: "uint64",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          }
+        }
+      },
+      chatmodel: {
+        nested: {
+          Contact: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              protocolId: {
+                type: "string",
+                id: 2,
+                options: {
+                  "(gogoproto.moretags)": "gorm:unique",
+                  "(gogoproto.customname)": "ProtocolID"
+                }
+              },
+              createdAt: {
+                type: "google.protobuf.Timestamp",
+                id: 3,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              updatedAt: {
+                type: "google.protobuf.Timestamp",
+                id: 4,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              seenAt: {
+                type: "google.protobuf.Timestamp",
+                id: 5,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": true
+                }
+              },
+              name: {
+                type: "string",
+                id: 100
+              },
+              avatarUri: {
+                type: "string",
+                id: 101,
+                options: {
+                  "(gogoproto.customname)": "AvatarURI"
+                }
+              },
+              statusEmoji: {
+                type: "bytes",
+                id: 102
+              },
+              statusText: {
+                type: "string",
+                id: 103
+              },
+              kind: {
+                type: "Kind",
+                id: 104
+              },
+              blocked: {
+                type: "bool",
+                id: 105
+              },
+              devices: {
+                rule: "repeated",
+                type: "Device",
+                id: 200,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              }
+            },
+            nested: {
+              Kind: {
+                values: {
+                  Unknown: 0,
+                  PendingInc: 1,
+                  PendingOut: 2,
+                  Friend: 3,
+                  Trusted: 4,
+                  Myself: 42
+                }
+              }
+            }
+          },
+          Device: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              protocolId: {
+                type: "string",
+                id: 2,
+                options: {
+                  "(gogoproto.moretags)": "gorm:unique",
+                  "(gogoproto.customname)": "ProtocolID"
+                }
+              },
+              createdAt: {
+                type: "google.protobuf.Timestamp",
+                id: 3,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              updatedAt: {
+                type: "google.protobuf.Timestamp",
+                id: 4,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              lastSeenAt: {
+                type: "google.protobuf.Timestamp",
+                id: 5,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": true
+                }
+              },
+              kind: {
+                type: "Kind",
+                id: 100
+              },
+              canRelay: {
+                type: "bool",
+                id: 101
+              },
+              canBle: {
+                type: "bool",
+                id: 102
+              },
+              contactId: {
+                type: "uint64",
+                id: 200,
+                options: {
+                  "(gogoproto.customname)": "ContactID",
+                  "(gogoproto.moretags)": "gorm:not null;index"
+                }
+              },
+              contact: {
+                type: "Contact",
+                id: 201,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              }
+            },
+            nested: {
+              Kind: {
+                values: {
+                  Unknown: 0,
+                  Phone: 1,
+                  Desktop: 2,
+                  Laptop: 3
+                }
+              }
+            }
+          },
+          Conversation: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              protocolId: {
+                type: "string",
+                id: 2,
+                options: {
+                  "(gogoproto.moretags)": "gorm:unique",
+                  "(gogoproto.customname)": "ProtocolID"
+                }
+              },
+              createdAt: {
+                type: "google.protobuf.Timestamp",
+                id: 3,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              updatedAt: {
+                type: "google.protobuf.Timestamp",
+                id: 4,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              title: {
+                type: "string",
+                id: 100
+              },
+              topic: {
+                type: "string",
+                id: 101
+              },
+              avatarUri: {
+                type: "string",
+                id: 102,
+                options: {
+                  "(gogoproto.customname)": "AvatarURI"
+                }
+              },
+              kind: {
+                type: "Kind",
+                id: 103
+              },
+              badge: {
+                type: "uint32",
+                id: 105
+              },
+              messages: {
+                rule: "repeated",
+                type: "Message",
+                id: 200,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              },
+              members: {
+                rule: "repeated",
+                type: "Member",
+                id: 201,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              },
+              lastMessageId: {
+                type: "uint64",
+                id: 202
+              },
+              lastMessage: {
+                type: "Message",
+                id: 203,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              }
+            },
+            nested: {
+              Kind: {
+                values: {
+                  Unknown: 0,
+                  Self: 1,
+                  OneToOne: 2,
+                  PrivateGroup: 3
+                }
+              }
+            }
+          },
+          Member: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              protocolId: {
+                type: "string",
+                id: 2,
+                options: {
+                  "(gogoproto.moretags)": "gorm:unique",
+                  "(gogoproto.customname)": "ProtocolID"
+                }
+              },
+              createdAt: {
+                type: "google.protobuf.Timestamp",
+                id: 3,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              updatedAt: {
+                type: "google.protobuf.Timestamp",
+                id: 4,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              readAt: {
+                type: "google.protobuf.Timestamp",
+                id: 5,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              name: {
+                type: "string",
+                id: 100
+              },
+              avatarUri: {
+                type: "string",
+                id: 101,
+                options: {
+                  "(gogoproto.customname)": "AvatarURI"
+                }
+              },
+              role: {
+                type: "Role",
+                id: 102
+              },
+              mutePolicy: {
+                type: "MutePolicy",
+                id: 103
+              },
+              conversationId: {
+                type: "uint64",
+                id: 200,
+                options: {
+                  "(gogoproto.customname)": "ConversationID",
+                  "(gogoproto.moretags)": "gorm:not null;index"
+                }
+              },
+              conversation: {
+                type: "Conversation",
+                id: 201,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              },
+              contactId: {
+                type: "uint64",
+                id: 202,
+                options: {
+                  "(gogoproto.customname)": "ContactID",
+                  "(gogoproto.moretags)": "gorm:not null;index"
+                }
+              },
+              contact: {
+                type: "Contact",
+                id: 203,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              }
+            },
+            nested: {
+              Role: {
+                values: {
+                  Unknown: 0,
+                  Invited: 1,
+                  Regular: 2,
+                  Admin: 3,
+                  Owner: 4
+                }
+              },
+              MutePolicy: {
+                values: {
+                  Nothing: 0,
+                  All: 1,
+                  Notifications: 2
+                }
+              }
+            }
+          },
+          Message: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              protocolId: {
+                type: "string",
+                id: 2,
+                options: {
+                  "(gogoproto.moretags)": "gorm:unique",
+                  "(gogoproto.customname)": "ProtocolID"
+                }
+              },
+              createdAt: {
+                type: "google.protobuf.Timestamp",
+                id: 3,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              updatedAt: {
+                type: "google.protobuf.Timestamp",
+                id: 4,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              sentAt: {
+                type: "google.protobuf.Timestamp",
+                id: 6,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              editedAt: {
+                type: "google.protobuf.Timestamp",
+                id: 7,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              kind: {
+                type: "Kind",
+                id: 100
+              },
+              body: {
+                type: "Body",
+                id: 101,
+                options: {
+                  "(gogoproto.moretags)": "gorm:embedded;embedded_prefix:body_"
+                }
+              },
+              hidden: {
+                type: "bool",
+                id: 103
+              },
+              state: {
+                type: "State",
+                id: 104
+              },
+              conversationId: {
+                type: "uint64",
+                id: 200,
+                options: {
+                  "(gogoproto.customname)": "ConversationID",
+                  "(gogoproto.moretags)": "gorm:not null;index"
+                }
+              },
+              conversation: {
+                type: "Conversation",
+                id: 201,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              },
+              memberId: {
+                type: "uint64",
+                id: 202,
+                options: {
+                  "(gogoproto.customname)": "MemberID",
+                  "(gogoproto.moretags)": "gorm:not null;index"
+                }
+              },
+              member: {
+                type: "Member",
+                id: 203,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              },
+              attachments: {
+                rule: "repeated",
+                type: "Attachment",
+                id: 204,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              },
+              reactions: {
+                rule: "repeated",
+                type: "Reaction",
+                id: 205,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              }
+            },
+            nested: {
+              Kind: {
+                values: {
+                  Unknown: 0,
+                  Text: 1,
+                  MemberJoined: 2,
+                  MemberLeave: 3,
+                  MemberSetTitleTo: 4
+                }
+              },
+              Body: {
+                fields: {
+                  text: {
+                    type: "string",
+                    id: 1
+                  },
+                  memberJoined: {
+                    type: "uint64",
+                    id: 2
+                  },
+                  memberLeft: {
+                    type: "uint64",
+                    id: 3
+                  },
+                  memberSetTitleTo: {
+                    type: "string",
+                    id: 4
+                  }
+                }
+              },
+              State: {
+                values: {
+                  Unsent: 0,
+                  Sending: 1,
+                  Failed: 2,
+                  Retrying: 3,
+                  Sent: 4
+                }
+              }
+            }
+          },
+          Attachment: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              createdAt: {
+                type: "google.protobuf.Timestamp",
+                id: 3,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              updatedAt: {
+                type: "google.protobuf.Timestamp",
+                id: 4,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              uri: {
+                type: "string",
+                id: 100
+              },
+              contentType: {
+                type: "string",
+                id: 101
+              },
+              messageId: {
+                type: "uint64",
+                id: 200,
+                options: {
+                  "(gogoproto.customname)": "MessageID",
+                  "(gogoproto.moretags)": "gorm:not null;index"
+                }
+              },
+              message: {
+                type: "Message",
+                id: 201,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              }
+            }
+          },
+          Reaction: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              createdAt: {
+                type: "google.protobuf.Timestamp",
+                id: 3,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              updatedAt: {
+                type: "google.protobuf.Timestamp",
+                id: 4,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              emoji: {
+                type: "bytes",
+                id: 100
+              },
+              messageId: {
+                type: "uint64",
+                id: 200,
+                options: {
+                  "(gogoproto.customname)": "MessageID",
+                  "(gogoproto.moretags)": "gorm:not null;index"
+                }
+              },
+              message: {
+                type: "Message",
+                id: 201,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              },
+              memberId: {
+                type: "uint64",
+                id: 202,
+                options: {
+                  "(gogoproto.customname)": "MemberID",
+                  "(gogoproto.moretags)": "gorm:not null;index"
+                }
+              },
+              member: {
+                type: "Member",
+                id: 203,
+                options: {
+                  "(gogoproto.moretags)": "gorm:PRELOAD:false"
+                }
+              }
+            }
+          },
+          Account: {
+            fields: {
+              id: {
+                type: "uint64",
+                id: 1,
+                options: {
+                  "(gogoproto.moretags)": "gorm:primary_key;auto_increment",
+                  "(gogoproto.customname)": "ID"
+                }
+              },
+              createdAt: {
+                type: "google.protobuf.Timestamp",
+                id: 3,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              updatedAt: {
+                type: "google.protobuf.Timestamp",
+                id: 4,
+                options: {
+                  "(gogoproto.stdtime)": true,
+                  "(gogoproto.nullable)": false
+                }
+              },
+              contactId: {
+                type: "uint64",
+                id: 100,
+                options: {
+                  "(gogoproto.customname)": "ContactID",
+                  "(gogoproto.moretags)": "gorm:not null;index"
+                }
+              },
+              contact: {
+                type: "chatmodel.Contact",
+                id: 101
+              },
+              contactRequestsEnabled: {
+                type: "bool",
+                id: 102
+              },
+              contactRequestsLink: {
+                type: "string",
+                id: 103
+              },
+              hidden: {
+                type: "bool",
+                id: 104
+              },
+              locked: {
+                type: "bool",
+                id: 105
+              }
+            }
+          }
+        }
+      },
       protocol: {
         options: {
           go_package: "berty.tech/berty/go/pkg/bertyprotocol"
@@ -959,406 +2650,108 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
       }
     }
   },
-  gogoproto: {
-    options: {
-      java_package: "com.google.protobuf",
-      java_outer_classname: "GoGoProtos",
-      go_package: "github.com/gogo/protobuf/gogoproto"
-    },
-    nested: {
-      goprotoEnumPrefix: {
-        type: "bool",
-        id: 62001,
-        extend: "google.protobuf.EnumOptions"
-      },
-      goprotoEnumStringer: {
-        type: "bool",
-        id: 62021,
-        extend: "google.protobuf.EnumOptions"
-      },
-      enumStringer: {
-        type: "bool",
-        id: 62022,
-        extend: "google.protobuf.EnumOptions"
-      },
-      enumCustomname: {
-        type: "string",
-        id: 62023,
-        extend: "google.protobuf.EnumOptions"
-      },
-      enumdecl: {
-        type: "bool",
-        id: 62024,
-        extend: "google.protobuf.EnumOptions"
-      },
-      enumvalueCustomname: {
-        type: "string",
-        id: 66001,
-        extend: "google.protobuf.EnumValueOptions"
-      },
-      goprotoGettersAll: {
-        type: "bool",
-        id: 63001,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoEnumPrefixAll: {
-        type: "bool",
-        id: 63002,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoStringerAll: {
-        type: "bool",
-        id: 63003,
-        extend: "google.protobuf.FileOptions"
-      },
-      verboseEqualAll: {
-        type: "bool",
-        id: 63004,
-        extend: "google.protobuf.FileOptions"
-      },
-      faceAll: {
-        type: "bool",
-        id: 63005,
-        extend: "google.protobuf.FileOptions"
-      },
-      gostringAll: {
-        type: "bool",
-        id: 63006,
-        extend: "google.protobuf.FileOptions"
-      },
-      populateAll: {
-        type: "bool",
-        id: 63007,
-        extend: "google.protobuf.FileOptions"
-      },
-      stringerAll: {
-        type: "bool",
-        id: 63008,
-        extend: "google.protobuf.FileOptions"
-      },
-      onlyoneAll: {
-        type: "bool",
-        id: 63009,
-        extend: "google.protobuf.FileOptions"
-      },
-      equalAll: {
-        type: "bool",
-        id: 63013,
-        extend: "google.protobuf.FileOptions"
-      },
-      descriptionAll: {
-        type: "bool",
-        id: 63014,
-        extend: "google.protobuf.FileOptions"
-      },
-      testgenAll: {
-        type: "bool",
-        id: 63015,
-        extend: "google.protobuf.FileOptions"
-      },
-      benchgenAll: {
-        type: "bool",
-        id: 63016,
-        extend: "google.protobuf.FileOptions"
-      },
-      marshalerAll: {
-        type: "bool",
-        id: 63017,
-        extend: "google.protobuf.FileOptions"
-      },
-      unmarshalerAll: {
-        type: "bool",
-        id: 63018,
-        extend: "google.protobuf.FileOptions"
-      },
-      stableMarshalerAll: {
-        type: "bool",
-        id: 63019,
-        extend: "google.protobuf.FileOptions"
-      },
-      sizerAll: {
-        type: "bool",
-        id: 63020,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoEnumStringerAll: {
-        type: "bool",
-        id: 63021,
-        extend: "google.protobuf.FileOptions"
-      },
-      enumStringerAll: {
-        type: "bool",
-        id: 63022,
-        extend: "google.protobuf.FileOptions"
-      },
-      unsafeMarshalerAll: {
-        type: "bool",
-        id: 63023,
-        extend: "google.protobuf.FileOptions"
-      },
-      unsafeUnmarshalerAll: {
-        type: "bool",
-        id: 63024,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoExtensionsMapAll: {
-        type: "bool",
-        id: 63025,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoUnrecognizedAll: {
-        type: "bool",
-        id: 63026,
-        extend: "google.protobuf.FileOptions"
-      },
-      gogoprotoImport: {
-        type: "bool",
-        id: 63027,
-        extend: "google.protobuf.FileOptions"
-      },
-      protosizerAll: {
-        type: "bool",
-        id: 63028,
-        extend: "google.protobuf.FileOptions"
-      },
-      compareAll: {
-        type: "bool",
-        id: 63029,
-        extend: "google.protobuf.FileOptions"
-      },
-      typedeclAll: {
-        type: "bool",
-        id: 63030,
-        extend: "google.protobuf.FileOptions"
-      },
-      enumdeclAll: {
-        type: "bool",
-        id: 63031,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoRegistration: {
-        type: "bool",
-        id: 63032,
-        extend: "google.protobuf.FileOptions"
-      },
-      messagenameAll: {
-        type: "bool",
-        id: 63033,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoSizecacheAll: {
-        type: "bool",
-        id: 63034,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoUnkeyedAll: {
-        type: "bool",
-        id: 63035,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoGetters: {
-        type: "bool",
-        id: 64001,
-        extend: "google.protobuf.MessageOptions"
-      },
-      goprotoStringer: {
-        type: "bool",
-        id: 64003,
-        extend: "google.protobuf.MessageOptions"
-      },
-      verboseEqual: {
-        type: "bool",
-        id: 64004,
-        extend: "google.protobuf.MessageOptions"
-      },
-      face: {
-        type: "bool",
-        id: 64005,
-        extend: "google.protobuf.MessageOptions"
-      },
-      gostring: {
-        type: "bool",
-        id: 64006,
-        extend: "google.protobuf.MessageOptions"
-      },
-      populate: {
-        type: "bool",
-        id: 64007,
-        extend: "google.protobuf.MessageOptions"
-      },
-      stringer: {
-        type: "bool",
-        id: 67008,
-        extend: "google.protobuf.MessageOptions"
-      },
-      onlyone: {
-        type: "bool",
-        id: 64009,
-        extend: "google.protobuf.MessageOptions"
-      },
-      equal: {
-        type: "bool",
-        id: 64013,
-        extend: "google.protobuf.MessageOptions"
-      },
-      description: {
-        type: "bool",
-        id: 64014,
-        extend: "google.protobuf.MessageOptions"
-      },
-      testgen: {
-        type: "bool",
-        id: 64015,
-        extend: "google.protobuf.MessageOptions"
-      },
-      benchgen: {
-        type: "bool",
-        id: 64016,
-        extend: "google.protobuf.MessageOptions"
-      },
-      marshaler: {
-        type: "bool",
-        id: 64017,
-        extend: "google.protobuf.MessageOptions"
-      },
-      unmarshaler: {
-        type: "bool",
-        id: 64018,
-        extend: "google.protobuf.MessageOptions"
-      },
-      stableMarshaler: {
-        type: "bool",
-        id: 64019,
-        extend: "google.protobuf.MessageOptions"
-      },
-      sizer: {
-        type: "bool",
-        id: 64020,
-        extend: "google.protobuf.MessageOptions"
-      },
-      unsafeMarshaler: {
-        type: "bool",
-        id: 64023,
-        extend: "google.protobuf.MessageOptions"
-      },
-      unsafeUnmarshaler: {
-        type: "bool",
-        id: 64024,
-        extend: "google.protobuf.MessageOptions"
-      },
-      goprotoExtensionsMap: {
-        type: "bool",
-        id: 64025,
-        extend: "google.protobuf.MessageOptions"
-      },
-      goprotoUnrecognized: {
-        type: "bool",
-        id: 64026,
-        extend: "google.protobuf.MessageOptions"
-      },
-      protosizer: {
-        type: "bool",
-        id: 64028,
-        extend: "google.protobuf.MessageOptions"
-      },
-      compare: {
-        type: "bool",
-        id: 64029,
-        extend: "google.protobuf.MessageOptions"
-      },
-      typedecl: {
-        type: "bool",
-        id: 64030,
-        extend: "google.protobuf.MessageOptions"
-      },
-      messagename: {
-        type: "bool",
-        id: 64033,
-        extend: "google.protobuf.MessageOptions"
-      },
-      goprotoSizecache: {
-        type: "bool",
-        id: 64034,
-        extend: "google.protobuf.MessageOptions"
-      },
-      goprotoUnkeyed: {
-        type: "bool",
-        id: 64035,
-        extend: "google.protobuf.MessageOptions"
-      },
-      nullable: {
-        type: "bool",
-        id: 65001,
-        extend: "google.protobuf.FieldOptions"
-      },
-      embed: {
-        type: "bool",
-        id: 65002,
-        extend: "google.protobuf.FieldOptions"
-      },
-      customtype: {
-        type: "string",
-        id: 65003,
-        extend: "google.protobuf.FieldOptions"
-      },
-      customname: {
-        type: "string",
-        id: 65004,
-        extend: "google.protobuf.FieldOptions"
-      },
-      jsontag: {
-        type: "string",
-        id: 65005,
-        extend: "google.protobuf.FieldOptions"
-      },
-      moretags: {
-        type: "string",
-        id: 65006,
-        extend: "google.protobuf.FieldOptions"
-      },
-      casttype: {
-        type: "string",
-        id: 65007,
-        extend: "google.protobuf.FieldOptions"
-      },
-      castkey: {
-        type: "string",
-        id: 65008,
-        extend: "google.protobuf.FieldOptions"
-      },
-      castvalue: {
-        type: "string",
-        id: 65009,
-        extend: "google.protobuf.FieldOptions"
-      },
-      stdtime: {
-        type: "bool",
-        id: 65010,
-        extend: "google.protobuf.FieldOptions"
-      },
-      stdduration: {
-        type: "bool",
-        id: 65011,
-        extend: "google.protobuf.FieldOptions"
-      },
-      wktpointer: {
-        type: "bool",
-        id: 65012,
-        extend: "google.protobuf.FieldOptions"
-      }
-    }
-  },
   google: {
     nested: {
+      api: {
+        options: {
+          java_multiple_files: true,
+          java_outer_classname: "HttpProto",
+          java_package: "com.google.api",
+          objc_class_prefix: "GAPI",
+          cc_enable_arenas: true
+        },
+        nested: {
+          http: {
+            type: "HttpRule",
+            id: 72295728,
+            extend: "google.protobuf.MethodOptions"
+          },
+          Http: {
+            fields: {
+              rules: {
+                rule: "repeated",
+                type: "HttpRule",
+                id: 1
+              }
+            }
+          },
+          HttpRule: {
+            oneofs: {
+              pattern: {
+                oneof: [
+                  "get",
+                  "put",
+                  "post",
+                  "delete",
+                  "patch",
+                  "custom"
+                ]
+              }
+            },
+            fields: {
+              selector: {
+                type: "string",
+                id: 1
+              },
+              get: {
+                type: "string",
+                id: 2
+              },
+              put: {
+                type: "string",
+                id: 3
+              },
+              post: {
+                type: "string",
+                id: 4
+              },
+              "delete": {
+                type: "string",
+                id: 5
+              },
+              patch: {
+                type: "string",
+                id: 6
+              },
+              custom: {
+                type: "CustomHttpPattern",
+                id: 8
+              },
+              body: {
+                type: "string",
+                id: 7
+              },
+              additionalBindings: {
+                rule: "repeated",
+                type: "HttpRule",
+                id: 11
+              }
+            }
+          },
+          CustomHttpPattern: {
+            fields: {
+              kind: {
+                type: "string",
+                id: 1
+              },
+              path: {
+                type: "string",
+                id: 2
+              }
+            }
+          }
+        }
+      },
       protobuf: {
         options: {
-          go_package: "github.com/golang/protobuf/protoc-gen-go/descriptor;descriptor",
+          go_package: "github.com/golang/protobuf/ptypes/timestamp",
           java_package: "com.google.protobuf",
-          java_outer_classname: "DescriptorProtos",
-          csharp_namespace: "Google.Protobuf.Reflection",
+          java_outer_classname: "TimestampProto",
+          csharp_namespace: "Google.Protobuf.WellKnownTypes",
           objc_class_prefix: "GPB",
           cc_enable_arenas: true,
-          optimize_for: "SPEED"
+          optimize_for: "SPEED",
+          java_multiple_files: true
         },
         nested: {
           FileDescriptorSet: {
@@ -2240,8 +3633,409 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 }
               }
             }
+          },
+          Timestamp: {
+            fields: {
+              seconds: {
+                type: "int64",
+                id: 1
+              },
+              nanos: {
+                type: "int32",
+                id: 2
+              }
+            }
           }
         }
+      }
+    }
+  },
+  gogoproto: {
+    options: {
+      java_package: "com.google.protobuf",
+      java_outer_classname: "GoGoProtos",
+      go_package: "github.com/gogo/protobuf/gogoproto"
+    },
+    nested: {
+      goprotoEnumPrefix: {
+        type: "bool",
+        id: 62001,
+        extend: "google.protobuf.EnumOptions"
+      },
+      goprotoEnumStringer: {
+        type: "bool",
+        id: 62021,
+        extend: "google.protobuf.EnumOptions"
+      },
+      enumStringer: {
+        type: "bool",
+        id: 62022,
+        extend: "google.protobuf.EnumOptions"
+      },
+      enumCustomname: {
+        type: "string",
+        id: 62023,
+        extend: "google.protobuf.EnumOptions"
+      },
+      enumdecl: {
+        type: "bool",
+        id: 62024,
+        extend: "google.protobuf.EnumOptions"
+      },
+      enumvalueCustomname: {
+        type: "string",
+        id: 66001,
+        extend: "google.protobuf.EnumValueOptions"
+      },
+      goprotoGettersAll: {
+        type: "bool",
+        id: 63001,
+        extend: "google.protobuf.FileOptions"
+      },
+      goprotoEnumPrefixAll: {
+        type: "bool",
+        id: 63002,
+        extend: "google.protobuf.FileOptions"
+      },
+      goprotoStringerAll: {
+        type: "bool",
+        id: 63003,
+        extend: "google.protobuf.FileOptions"
+      },
+      verboseEqualAll: {
+        type: "bool",
+        id: 63004,
+        extend: "google.protobuf.FileOptions"
+      },
+      faceAll: {
+        type: "bool",
+        id: 63005,
+        extend: "google.protobuf.FileOptions"
+      },
+      gostringAll: {
+        type: "bool",
+        id: 63006,
+        extend: "google.protobuf.FileOptions"
+      },
+      populateAll: {
+        type: "bool",
+        id: 63007,
+        extend: "google.protobuf.FileOptions"
+      },
+      stringerAll: {
+        type: "bool",
+        id: 63008,
+        extend: "google.protobuf.FileOptions"
+      },
+      onlyoneAll: {
+        type: "bool",
+        id: 63009,
+        extend: "google.protobuf.FileOptions"
+      },
+      equalAll: {
+        type: "bool",
+        id: 63013,
+        extend: "google.protobuf.FileOptions"
+      },
+      descriptionAll: {
+        type: "bool",
+        id: 63014,
+        extend: "google.protobuf.FileOptions"
+      },
+      testgenAll: {
+        type: "bool",
+        id: 63015,
+        extend: "google.protobuf.FileOptions"
+      },
+      benchgenAll: {
+        type: "bool",
+        id: 63016,
+        extend: "google.protobuf.FileOptions"
+      },
+      marshalerAll: {
+        type: "bool",
+        id: 63017,
+        extend: "google.protobuf.FileOptions"
+      },
+      unmarshalerAll: {
+        type: "bool",
+        id: 63018,
+        extend: "google.protobuf.FileOptions"
+      },
+      stableMarshalerAll: {
+        type: "bool",
+        id: 63019,
+        extend: "google.protobuf.FileOptions"
+      },
+      sizerAll: {
+        type: "bool",
+        id: 63020,
+        extend: "google.protobuf.FileOptions"
+      },
+      goprotoEnumStringerAll: {
+        type: "bool",
+        id: 63021,
+        extend: "google.protobuf.FileOptions"
+      },
+      enumStringerAll: {
+        type: "bool",
+        id: 63022,
+        extend: "google.protobuf.FileOptions"
+      },
+      unsafeMarshalerAll: {
+        type: "bool",
+        id: 63023,
+        extend: "google.protobuf.FileOptions"
+      },
+      unsafeUnmarshalerAll: {
+        type: "bool",
+        id: 63024,
+        extend: "google.protobuf.FileOptions"
+      },
+      goprotoExtensionsMapAll: {
+        type: "bool",
+        id: 63025,
+        extend: "google.protobuf.FileOptions"
+      },
+      goprotoUnrecognizedAll: {
+        type: "bool",
+        id: 63026,
+        extend: "google.protobuf.FileOptions"
+      },
+      gogoprotoImport: {
+        type: "bool",
+        id: 63027,
+        extend: "google.protobuf.FileOptions"
+      },
+      protosizerAll: {
+        type: "bool",
+        id: 63028,
+        extend: "google.protobuf.FileOptions"
+      },
+      compareAll: {
+        type: "bool",
+        id: 63029,
+        extend: "google.protobuf.FileOptions"
+      },
+      typedeclAll: {
+        type: "bool",
+        id: 63030,
+        extend: "google.protobuf.FileOptions"
+      },
+      enumdeclAll: {
+        type: "bool",
+        id: 63031,
+        extend: "google.protobuf.FileOptions"
+      },
+      goprotoRegistration: {
+        type: "bool",
+        id: 63032,
+        extend: "google.protobuf.FileOptions"
+      },
+      messagenameAll: {
+        type: "bool",
+        id: 63033,
+        extend: "google.protobuf.FileOptions"
+      },
+      goprotoSizecacheAll: {
+        type: "bool",
+        id: 63034,
+        extend: "google.protobuf.FileOptions"
+      },
+      goprotoUnkeyedAll: {
+        type: "bool",
+        id: 63035,
+        extend: "google.protobuf.FileOptions"
+      },
+      goprotoGetters: {
+        type: "bool",
+        id: 64001,
+        extend: "google.protobuf.MessageOptions"
+      },
+      goprotoStringer: {
+        type: "bool",
+        id: 64003,
+        extend: "google.protobuf.MessageOptions"
+      },
+      verboseEqual: {
+        type: "bool",
+        id: 64004,
+        extend: "google.protobuf.MessageOptions"
+      },
+      face: {
+        type: "bool",
+        id: 64005,
+        extend: "google.protobuf.MessageOptions"
+      },
+      gostring: {
+        type: "bool",
+        id: 64006,
+        extend: "google.protobuf.MessageOptions"
+      },
+      populate: {
+        type: "bool",
+        id: 64007,
+        extend: "google.protobuf.MessageOptions"
+      },
+      stringer: {
+        type: "bool",
+        id: 67008,
+        extend: "google.protobuf.MessageOptions"
+      },
+      onlyone: {
+        type: "bool",
+        id: 64009,
+        extend: "google.protobuf.MessageOptions"
+      },
+      equal: {
+        type: "bool",
+        id: 64013,
+        extend: "google.protobuf.MessageOptions"
+      },
+      description: {
+        type: "bool",
+        id: 64014,
+        extend: "google.protobuf.MessageOptions"
+      },
+      testgen: {
+        type: "bool",
+        id: 64015,
+        extend: "google.protobuf.MessageOptions"
+      },
+      benchgen: {
+        type: "bool",
+        id: 64016,
+        extend: "google.protobuf.MessageOptions"
+      },
+      marshaler: {
+        type: "bool",
+        id: 64017,
+        extend: "google.protobuf.MessageOptions"
+      },
+      unmarshaler: {
+        type: "bool",
+        id: 64018,
+        extend: "google.protobuf.MessageOptions"
+      },
+      stableMarshaler: {
+        type: "bool",
+        id: 64019,
+        extend: "google.protobuf.MessageOptions"
+      },
+      sizer: {
+        type: "bool",
+        id: 64020,
+        extend: "google.protobuf.MessageOptions"
+      },
+      unsafeMarshaler: {
+        type: "bool",
+        id: 64023,
+        extend: "google.protobuf.MessageOptions"
+      },
+      unsafeUnmarshaler: {
+        type: "bool",
+        id: 64024,
+        extend: "google.protobuf.MessageOptions"
+      },
+      goprotoExtensionsMap: {
+        type: "bool",
+        id: 64025,
+        extend: "google.protobuf.MessageOptions"
+      },
+      goprotoUnrecognized: {
+        type: "bool",
+        id: 64026,
+        extend: "google.protobuf.MessageOptions"
+      },
+      protosizer: {
+        type: "bool",
+        id: 64028,
+        extend: "google.protobuf.MessageOptions"
+      },
+      compare: {
+        type: "bool",
+        id: 64029,
+        extend: "google.protobuf.MessageOptions"
+      },
+      typedecl: {
+        type: "bool",
+        id: 64030,
+        extend: "google.protobuf.MessageOptions"
+      },
+      messagename: {
+        type: "bool",
+        id: 64033,
+        extend: "google.protobuf.MessageOptions"
+      },
+      goprotoSizecache: {
+        type: "bool",
+        id: 64034,
+        extend: "google.protobuf.MessageOptions"
+      },
+      goprotoUnkeyed: {
+        type: "bool",
+        id: 64035,
+        extend: "google.protobuf.MessageOptions"
+      },
+      nullable: {
+        type: "bool",
+        id: 65001,
+        extend: "google.protobuf.FieldOptions"
+      },
+      embed: {
+        type: "bool",
+        id: 65002,
+        extend: "google.protobuf.FieldOptions"
+      },
+      customtype: {
+        type: "string",
+        id: 65003,
+        extend: "google.protobuf.FieldOptions"
+      },
+      customname: {
+        type: "string",
+        id: 65004,
+        extend: "google.protobuf.FieldOptions"
+      },
+      jsontag: {
+        type: "string",
+        id: 65005,
+        extend: "google.protobuf.FieldOptions"
+      },
+      moretags: {
+        type: "string",
+        id: 65006,
+        extend: "google.protobuf.FieldOptions"
+      },
+      casttype: {
+        type: "string",
+        id: 65007,
+        extend: "google.protobuf.FieldOptions"
+      },
+      castkey: {
+        type: "string",
+        id: 65008,
+        extend: "google.protobuf.FieldOptions"
+      },
+      castvalue: {
+        type: "string",
+        id: 65009,
+        extend: "google.protobuf.FieldOptions"
+      },
+      stdtime: {
+        type: "bool",
+        id: 65010,
+        extend: "google.protobuf.FieldOptions"
+      },
+      stdduration: {
+        type: "bool",
+        id: 65011,
+        extend: "google.protobuf.FieldOptions"
+      },
+      wktpointer: {
+        type: "bool",
+        id: 65012,
+        extend: "google.protobuf.FieldOptions"
       }
     }
   }

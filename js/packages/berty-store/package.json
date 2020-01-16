@@ -19,7 +19,7 @@
     "url": "https://github.com/berty/berty/issues"
   },
   "dependencies": {
-    "@berty-tech/berty-api": "^0.0.0",
+    "@berty-tech/api": "^0.0.0",
     "@improbable-eng/grpc-web": "^0.11.0",
     "faker": "^4.1.0",
     "mobx": "^5.14.2",

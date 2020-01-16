@@ -14,7 +14,7 @@ import {
 } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { Translation } from 'react-i18next'
-import { berty, google } from '@berty-tech/berty-api'
+import { berty, google } from '@berty-tech/api'
 import * as dateFns from '@berty-tech/berty-i18n/dateFns'
 import { useLayout } from '../hooks'
 import { Footer } from './Footer'

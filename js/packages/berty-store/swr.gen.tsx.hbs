@@ -1,4 +1,4 @@
-import * as _api from '@berty-tech/berty-api'
+import * as _api from '@berty-tech/api'
 import React, { createContext, useContext } from 'react'
 import * as pb from 'protobufjs'
 import bridge from '@berty-tech/grpc-bridge'

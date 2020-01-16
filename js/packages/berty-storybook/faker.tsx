@@ -1,7 +1,7 @@
 import faker from 'faker'
 import randomEmoji from 'random-emoji'
 import { inspect } from 'util'
-import { berty, google } from '@berty-tech/berty-api'
+import { berty, google } from '@berty-tech/api'
 
 export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
 // export const promiseRejected = (): Promise<void> =>

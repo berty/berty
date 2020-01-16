@@ -7,7 +7,7 @@ import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'
 import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/berty-navigation'
-import { berty } from '@berty-tech/berty-api'
+import { berty } from '@berty-tech/api'
 
 //
 // ChatSettingsContact

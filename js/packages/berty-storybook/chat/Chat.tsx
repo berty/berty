@@ -14,7 +14,7 @@ import { Message } from './shared-components/Message'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
-import { berty } from '@berty-tech/berty-api'
+import { berty } from '@berty-tech/api'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { BlurView } from '@react-native-community/blur'
 

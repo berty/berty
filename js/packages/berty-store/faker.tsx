@@ -1,4 +1,4 @@
-import * as _api from '@berty-tech/berty-api'
+import * as _api from '@berty-tech/api'
 import _faker from 'faker'
 import randomEmoji from 'random-emoji'
 import * as pb from 'protobufjs'

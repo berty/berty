@@ -1,4 +1,4 @@
-import { google } from '@berty-tech/berty-api'
+import { google } from '@berty-tech/api'
 
 export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
 // export const promiseRejected = (): Promise<void> =>

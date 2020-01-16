@@ -147,7 +147,6 @@ $(HOME)/.android/debug.keystore: $(pkg_mod)
 include packages/api/Makefile
 include packages/berty-store/Makefile
 include packages/codegen/Makefile
-include packages/berty-api/Makefile
 include packages/go-bridge/Makefile
 include packages/berty-app/Makefile
 include packages/storybook-mobile/Makefile

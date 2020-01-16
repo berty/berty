@@ -4,7 +4,7 @@ import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { RequestButtons, RequestAvatar, Fallback, TabBar, Modal } from '../shared-components'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
-import { berty } from '@berty-tech/berty-api'
+import { berty } from '@berty-tech/api'
 import { ScreenProps } from '@berty-tech/berty-navigation'
 
 // Styles

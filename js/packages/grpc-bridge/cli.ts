@@ -1,5 +1,5 @@
 import bridge from './bridge'
-import { berty } from '@berty-tech/berty-api'
+import { berty } from '@berty-tech/api'
 import { NodeHttpTransport } from '@improbable-eng/grpc-web-node-http-transport'
 
 const account = berty.chat.Account.create(
