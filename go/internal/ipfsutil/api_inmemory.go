@@ -9,6 +9,7 @@ import (
 	ipfs_datastore "github.com/ipfs/go-datastore"
 	ipfs_datastoresync "github.com/ipfs/go-datastore/sync"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
+	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_node "github.com/ipfs/go-ipfs/core/node"
 	ipfs_libp2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
@@ -18,12 +19,11 @@ import (
 )
 
 // NewInMemoryCoreAPI returns an IPFS CoreAPI based on an opininated ipfs_node.BuildCfg
-func NewInMemoryCoreAPI(ctx context.Context) (ipfs_interface.CoreAPI, error) {
+func NewInMemoryCoreAPI(ctx context.Context) (ipfs_interface.CoreAPI, *ipfs_core.IpfsNode, error) {
 	cfg, err := createBuildConfig()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.TODO.Wrap(err)
 	}
-
 	return NewConfigurableCoreAPI(ctx, cfg)
 }
 

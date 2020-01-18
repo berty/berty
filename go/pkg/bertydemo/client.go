@@ -13,12 +13,14 @@ import (
 	"berty.tech/go-orbit-db/stores/operation"
 	"github.com/google/uuid"
 	cid "github.com/ipfs/go-cid"
+	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
 type Client struct {
 	api  ipfs_interface.CoreAPI
+	node *ipfs_core.IpfsNode
 	odb  orbitdb.OrbitDB
 	logs map[string]orbitdb.EventLogStore
 	ks   *identityberty.BertySignedKeyStore
@@ -31,7 +33,7 @@ type Opts struct {
 func New(opts *Opts) (*Client, error) {
 	ctx := context.Background()
 
-	api, err := ipfsutil.NewInMemoryCoreAPI(ctx)
+	api, node, err := ipfsutil.NewInMemoryCoreAPI(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +51,7 @@ func New(opts *Opts) (*Client, error) {
 
 	logs := make(map[string]orbitdb.EventLogStore)
 
-	return &Client{api, odb, logs, ks}, nil
+	return &Client{api, node, odb, logs, ks}, nil
 }
 
 func boolPtr(b bool) *bool {
@@ -235,5 +237,9 @@ func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Re
 }*/
 
 func (d *Client) Close() error {
-	return nil
+	err := d.odb.Close()
+	if err != nil {
+		return err
+	}
+	return d.node.Close()
 }
