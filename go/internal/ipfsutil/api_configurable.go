@@ -13,23 +13,25 @@ import (
 type NewAPIOption func(context.Context, *ipfs_core.IpfsNode, ipfs_interface.CoreAPI) error
 
 // NewConfigurableCoreAPI returns an IPFS CoreAPI from a provided ipfs_node.BuildCfg
-func NewConfigurableCoreAPI(ctx context.Context, cfg *ipfs_node.BuildCfg, options ...NewAPIOption) (ipfs_interface.CoreAPI, error) {
+func NewConfigurableCoreAPI(ctx context.Context, cfg *ipfs_node.BuildCfg, options ...NewAPIOption) (ipfs_interface.CoreAPI, *ipfs_core.IpfsNode, error) {
 	node, err := ipfs_core.NewNode(ctx, cfg)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
 	api, err := ipfs_coreapi.NewCoreAPI(node)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		node.Close()
+		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
 	for _, o := range options {
 		err := o(ctx, node, api)
 		if err != nil {
-			return nil, err
+			node.Close()
+			return nil, nil, err
 		}
 	}
 
-	return api, nil
+	return api, node, nil
 }

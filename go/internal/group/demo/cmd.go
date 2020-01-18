@@ -150,7 +150,7 @@ func mainLoop(invitation *group.Invitation, create bool) {
 		panic(err)
 	}
 
-	api, err := ipfsutil.NewConfigurableCoreAPI(ctx, cfg, ipfsutil.OptionMDNSDiscovery)
+	api, _, err := ipfsutil.NewConfigurableCoreAPI(ctx, cfg, ipfsutil.OptionMDNSDiscovery)
 	if err != nil {
 		panic(err)
 	}

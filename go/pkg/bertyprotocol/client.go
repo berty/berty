@@ -59,7 +59,7 @@ func New(db *gorm.DB, opts Opts) (Client, error) {
 	}
 	if opts.IpfsCoreAPI == nil {
 		var err error
-		client.ipfsCoreAPI, err = ipfsutil.NewInMemoryCoreAPI(ctx)
+		client.ipfsCoreAPI, _, err = ipfsutil.NewInMemoryCoreAPI(ctx)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
