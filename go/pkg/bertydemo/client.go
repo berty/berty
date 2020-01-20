@@ -13,7 +13,6 @@ import (
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/accesscontroller"
 	"berty.tech/go-orbit-db/stores/operation"
-	"github.com/google/uuid"
 	cid "github.com/ipfs/go-cid"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
@@ -103,10 +102,8 @@ func (d *Client) registeredLogFromOpts(ctx context.Context, name string, opts *o
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	// maybe replace by rand string or smth better
-	handle := uuid.New().String()
+	handle := log.Address().String()
 	d.logs[handle] = log
-
 	return &handle, nil
 }
 
