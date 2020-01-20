@@ -254,7 +254,7 @@ func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Re
 	return &LogList_Reply{Ops: protoOps}, nil
 }
 
-func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
+/*func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
 	log, err := d.getLogByHandle(req.LogHandle)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
@@ -272,7 +272,7 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 	}
 
 	return nil
-}
+}*/
 
 func (d *Client) Close() error {
 	err := d.odb.Close()

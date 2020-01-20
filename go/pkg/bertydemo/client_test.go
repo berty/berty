@@ -164,7 +164,7 @@ func (_m *mockDemoService_LogStreamServer) Context() context.Context {
 	return context.Background()
 }
 
-func TestLogStream(t *testing.T) {
+/*func TestLogStream(t *testing.T) {
 	demo := initDemo(t)
 	log_handle := testLog(t, demo)
 
@@ -191,4 +191,4 @@ func TestLogStream(t *testing.T) {
 	}
 
 	closeDemo(t, demo)
-}
+}*/
