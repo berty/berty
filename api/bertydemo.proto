@@ -20,7 +20,7 @@ service DemoService {
   rpc LogGet(LogGet.Request) returns (LogGet.Reply);
 
   // LogStream Populates a chan of operations from a Log
-  rpc LogStream(LogStream.Request) returns (stream Log.Operation);
+  //rpc LogStream(LogStream.Request) returns (stream Log.Operation);
 
   // LogList Fetches a list of operation that occurred on a Log
   rpc LogList(LogList.Request) returns (LogList.Reply);
@@ -83,12 +83,12 @@ message LogGet {
   }
 }
 
-message LogStream {
+/*message LogStream {
   message Request {
     string log_handle = 1;
     Log.StreamOptions options = 2;
   }
-}
+}*/
 
 message LogList {
   message Operations {
