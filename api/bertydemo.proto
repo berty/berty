@@ -42,6 +42,7 @@ message Log {
   message Operation {
     string name = 1;
     bytes value = 2;
+    string cid = 3;
   }
   message StreamOptions {
     string GT = 1; // cid
@@ -84,7 +85,7 @@ message LogAdd {
     bytes data = 2;
   }
   message Reply {
-
+    string cid = 1;
   }
 }
 
@@ -106,14 +107,11 @@ message LogStream {
 }
 
 message LogList {
-  message Operations {
-    repeated Log.Operation ops = 1;
-  }
   message Request {
     string log_handle = 1;
     Log.StreamOptions options = 2;
   }
   message Reply {
-    Operations ops = 1;
+    repeated Log.Operation ops = 1;
   }
 }

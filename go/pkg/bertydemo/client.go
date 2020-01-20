@@ -166,21 +166,29 @@ func (d *Client) getLogByHandle(handle string) (orbitdb.EventLogStore, error) {
 	return nil, errcode.TODO.Wrap(errors.New("no such log"))
 }
 
+func opCidStr(op operation.Operation) string {
+	return op.GetEntry().GetHash().String()
+}
+
 func (d *Client) LogAdd(ctx context.Context, req *LogAdd_Request) (*LogAdd_Reply, error) {
 	log, err := d.getLogByHandle(req.LogHandle)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	_, err = log.Add(ctx, req.Data)
+	op, err := log.Add(ctx, req.Data)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	return &LogAdd_Reply{}, nil
+	return &LogAdd_Reply{Cid: opCidStr(op)}, nil
 }
 
 func opToProtoOp(op operation.Operation) Log_Operation {
-	return Log_Operation{Name: op.GetOperation(), Value: op.GetValue()}
+	return Log_Operation{
+		Name:  op.GetOperation(),
+		Value: op.GetValue(),
+		Cid:   opCidStr(op),
+	}
 }
 
 func (d *Client) LogGet(ctx context.Context, req *LogGet_Request) (*LogGet_Reply, error) {
@@ -237,13 +245,13 @@ func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Re
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	var protoOps LogList_Operations
+	protoOps := make([]*Log_Operation, len(ops))
 	for i, op := range ops {
 		pop := opToProtoOp(op)
-		protoOps.Ops[i] = &pop
+		protoOps[i] = &pop
 	}
 
-	return &LogList_Reply{Ops: &protoOps}, nil
+	return &LogList_Reply{Ops: protoOps}, nil
 }
 
 func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
@@ -254,12 +262,8 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 
 	opts := decodeStreamOptions(req.Options)
 
-	var ch chan operation.Operation
-	err = log.Stream(srv.Context(), ch, opts)
-	if err != nil {
-		return errcode.TODO.Wrap(err)
-	}
-
+	ch := make(chan operation.Operation)
+	go log.Stream(srv.Context(), ch, opts)
 	for op := range ch {
 		pop := opToProtoOp(op)
 		if err = srv.Send(&pop); err != nil {
