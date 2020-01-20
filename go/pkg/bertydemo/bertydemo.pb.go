@@ -26,181 +26,61 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type AddKey struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AddKey) Reset()         { *m = AddKey{} }
-func (m *AddKey) String() string { return proto.CompactTextString(m) }
-func (*AddKey) ProtoMessage()    {}
-func (*AddKey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{0}
-}
-func (m *AddKey) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AddKey.Unmarshal(m, b)
-}
-func (m *AddKey) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AddKey.Marshal(b, m, deterministic)
-}
-func (m *AddKey) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddKey.Merge(m, src)
-}
-func (m *AddKey) XXX_Size() int {
-	return xxx_messageInfo_AddKey.Size(m)
-}
-func (m *AddKey) XXX_DiscardUnknown() {
-	xxx_messageInfo_AddKey.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AddKey proto.InternalMessageInfo
-
-type AddKey_Request struct {
-	PrivKey              []byte   `protobuf:"bytes,1,opt,name=priv_key,json=privKey,proto3" json:"priv_key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AddKey_Request) Reset()         { *m = AddKey_Request{} }
-func (m *AddKey_Request) String() string { return proto.CompactTextString(m) }
-func (*AddKey_Request) ProtoMessage()    {}
-func (*AddKey_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{0, 0}
-}
-func (m *AddKey_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AddKey_Request.Unmarshal(m, b)
-}
-func (m *AddKey_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AddKey_Request.Marshal(b, m, deterministic)
-}
-func (m *AddKey_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddKey_Request.Merge(m, src)
-}
-func (m *AddKey_Request) XXX_Size() int {
-	return xxx_messageInfo_AddKey_Request.Size(m)
-}
-func (m *AddKey_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_AddKey_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AddKey_Request proto.InternalMessageInfo
-
-func (m *AddKey_Request) GetPrivKey() []byte {
-	if m != nil {
-		return m.PrivKey
-	}
-	return nil
-}
-
-type AddKey_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AddKey_Reply) Reset()         { *m = AddKey_Reply{} }
-func (m *AddKey_Reply) String() string { return proto.CompactTextString(m) }
-func (*AddKey_Reply) ProtoMessage()    {}
-func (*AddKey_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{0, 1}
-}
-func (m *AddKey_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AddKey_Reply.Unmarshal(m, b)
-}
-func (m *AddKey_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AddKey_Reply.Marshal(b, m, deterministic)
-}
-func (m *AddKey_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddKey_Reply.Merge(m, src)
-}
-func (m *AddKey_Reply) XXX_Size() int {
-	return xxx_messageInfo_AddKey_Reply.Size(m)
-}
-func (m *AddKey_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AddKey_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AddKey_Reply proto.InternalMessageInfo
-
-type Log struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Log) Reset()         { *m = Log{} }
-func (m *Log) String() string { return proto.CompactTextString(m) }
-func (*Log) ProtoMessage()    {}
-func (*Log) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{1}
-}
-func (m *Log) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Log.Unmarshal(m, b)
-}
-func (m *Log) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Log.Marshal(b, m, deterministic)
-}
-func (m *Log) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Log.Merge(m, src)
-}
-func (m *Log) XXX_Size() int {
-	return xxx_messageInfo_Log.Size(m)
-}
-func (m *Log) XXX_DiscardUnknown() {
-	xxx_messageInfo_Log.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Log proto.InternalMessageInfo
-
-type Log_Operation struct {
+type LogOperation struct {
 	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Value                []byte   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	Cid                  string   `protobuf:"bytes,3,opt,name=cid,proto3" json:"cid,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Log_Operation) Reset()         { *m = Log_Operation{} }
-func (m *Log_Operation) String() string { return proto.CompactTextString(m) }
-func (*Log_Operation) ProtoMessage()    {}
-func (*Log_Operation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{1, 0}
+func (m *LogOperation) Reset()         { *m = LogOperation{} }
+func (m *LogOperation) String() string { return proto.CompactTextString(m) }
+func (*LogOperation) ProtoMessage()    {}
+func (*LogOperation) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{0}
 }
-func (m *Log_Operation) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Log_Operation.Unmarshal(m, b)
+func (m *LogOperation) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogOperation.Unmarshal(m, b)
 }
-func (m *Log_Operation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Log_Operation.Marshal(b, m, deterministic)
+func (m *LogOperation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogOperation.Marshal(b, m, deterministic)
 }
-func (m *Log_Operation) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Log_Operation.Merge(m, src)
+func (m *LogOperation) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogOperation.Merge(m, src)
 }
-func (m *Log_Operation) XXX_Size() int {
-	return xxx_messageInfo_Log_Operation.Size(m)
+func (m *LogOperation) XXX_Size() int {
+	return xxx_messageInfo_LogOperation.Size(m)
 }
-func (m *Log_Operation) XXX_DiscardUnknown() {
-	xxx_messageInfo_Log_Operation.DiscardUnknown(m)
+func (m *LogOperation) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogOperation.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Log_Operation proto.InternalMessageInfo
+var xxx_messageInfo_LogOperation proto.InternalMessageInfo
 
-func (m *Log_Operation) GetName() string {
+func (m *LogOperation) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *Log_Operation) GetValue() []byte {
+func (m *LogOperation) GetValue() []byte {
 	if m != nil {
 		return m.Value
 	}
 	return nil
 }
 
-type Log_StreamOptions struct {
+func (m *LogOperation) GetCid() string {
+	if m != nil {
+		return m.Cid
+	}
+	return ""
+}
+
+type LogStreamOptions struct {
 	GT                   string   `protobuf:"bytes,1,opt,name=GT,proto3" json:"GT,omitempty"`
 	GTE                  string   `protobuf:"bytes,2,opt,name=GTE,proto3" json:"GTE,omitempty"`
 	LT                   string   `protobuf:"bytes,3,opt,name=LT,proto3" json:"LT,omitempty"`
@@ -211,215 +91,159 @@ type Log_StreamOptions struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Log_StreamOptions) Reset()         { *m = Log_StreamOptions{} }
-func (m *Log_StreamOptions) String() string { return proto.CompactTextString(m) }
-func (*Log_StreamOptions) ProtoMessage()    {}
-func (*Log_StreamOptions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{1, 1}
+func (m *LogStreamOptions) Reset()         { *m = LogStreamOptions{} }
+func (m *LogStreamOptions) String() string { return proto.CompactTextString(m) }
+func (*LogStreamOptions) ProtoMessage()    {}
+func (*LogStreamOptions) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{1}
 }
-func (m *Log_StreamOptions) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Log_StreamOptions.Unmarshal(m, b)
+func (m *LogStreamOptions) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogStreamOptions.Unmarshal(m, b)
 }
-func (m *Log_StreamOptions) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Log_StreamOptions.Marshal(b, m, deterministic)
+func (m *LogStreamOptions) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogStreamOptions.Marshal(b, m, deterministic)
 }
-func (m *Log_StreamOptions) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Log_StreamOptions.Merge(m, src)
+func (m *LogStreamOptions) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogStreamOptions.Merge(m, src)
 }
-func (m *Log_StreamOptions) XXX_Size() int {
-	return xxx_messageInfo_Log_StreamOptions.Size(m)
+func (m *LogStreamOptions) XXX_Size() int {
+	return xxx_messageInfo_LogStreamOptions.Size(m)
 }
-func (m *Log_StreamOptions) XXX_DiscardUnknown() {
-	xxx_messageInfo_Log_StreamOptions.DiscardUnknown(m)
+func (m *LogStreamOptions) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogStreamOptions.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Log_StreamOptions proto.InternalMessageInfo
+var xxx_messageInfo_LogStreamOptions proto.InternalMessageInfo
 
-func (m *Log_StreamOptions) GetGT() string {
+func (m *LogStreamOptions) GetGT() string {
 	if m != nil {
 		return m.GT
 	}
 	return ""
 }
 
-func (m *Log_StreamOptions) GetGTE() string {
+func (m *LogStreamOptions) GetGTE() string {
 	if m != nil {
 		return m.GTE
 	}
 	return ""
 }
 
-func (m *Log_StreamOptions) GetLT() string {
+func (m *LogStreamOptions) GetLT() string {
 	if m != nil {
 		return m.LT
 	}
 	return ""
 }
 
-func (m *Log_StreamOptions) GetLTE() string {
+func (m *LogStreamOptions) GetLTE() string {
 	if m != nil {
 		return m.LTE
 	}
 	return ""
 }
 
-func (m *Log_StreamOptions) GetAmount() uint32 {
+func (m *LogStreamOptions) GetAmount() uint32 {
 	if m != nil {
 		return m.Amount
 	}
 	return 0
 }
 
-type Log_ManifestEntry struct {
-	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	Values               []string `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
+type LogToken struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Log_ManifestEntry) Reset()         { *m = Log_ManifestEntry{} }
-func (m *Log_ManifestEntry) String() string { return proto.CompactTextString(m) }
-func (*Log_ManifestEntry) ProtoMessage()    {}
-func (*Log_ManifestEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{1, 2}
+func (m *LogToken) Reset()         { *m = LogToken{} }
+func (m *LogToken) String() string { return proto.CompactTextString(m) }
+func (*LogToken) ProtoMessage()    {}
+func (*LogToken) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{2}
 }
-func (m *Log_ManifestEntry) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Log_ManifestEntry.Unmarshal(m, b)
+func (m *LogToken) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogToken.Unmarshal(m, b)
 }
-func (m *Log_ManifestEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Log_ManifestEntry.Marshal(b, m, deterministic)
+func (m *LogToken) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogToken.Marshal(b, m, deterministic)
 }
-func (m *Log_ManifestEntry) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Log_ManifestEntry.Merge(m, src)
+func (m *LogToken) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogToken.Merge(m, src)
 }
-func (m *Log_ManifestEntry) XXX_Size() int {
-	return xxx_messageInfo_Log_ManifestEntry.Size(m)
+func (m *LogToken) XXX_Size() int {
+	return xxx_messageInfo_LogToken.Size(m)
 }
-func (m *Log_ManifestEntry) XXX_DiscardUnknown() {
-	xxx_messageInfo_Log_ManifestEntry.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Log_ManifestEntry proto.InternalMessageInfo
-
-func (m *Log_ManifestEntry) GetKey() string {
-	if m != nil {
-		return m.Key
-	}
-	return ""
+func (m *LogToken) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogToken.DiscardUnknown(m)
 }
 
-func (m *Log_ManifestEntry) GetValues() []string {
-	if m != nil {
-		return m.Values
-	}
-	return nil
-}
+var xxx_messageInfo_LogToken proto.InternalMessageInfo
 
-type Log_Request struct {
-	Name                 string               `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	ManifestType         string               `protobuf:"bytes,2,opt,name=manifest_type,json=manifestType,proto3" json:"manifest_type,omitempty"`
-	ManifestAccess       []*Log_ManifestEntry `protobuf:"bytes,3,rep,name=manifest_access,json=manifestAccess,proto3" json:"manifest_access,omitempty"`
-	IdentityType         string               `protobuf:"bytes,4,opt,name=identity_type,json=identityType,proto3" json:"identity_type,omitempty"`
-	IdentityId           string               `protobuf:"bytes,5,opt,name=identity_id,json=identityId,proto3" json:"identity_id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
-	XXX_unrecognized     []byte               `json:"-"`
-	XXX_sizecache        int32                `json:"-"`
-}
-
-func (m *Log_Request) Reset()         { *m = Log_Request{} }
-func (m *Log_Request) String() string { return proto.CompactTextString(m) }
-func (*Log_Request) ProtoMessage()    {}
-func (*Log_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{1, 3}
-}
-func (m *Log_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Log_Request.Unmarshal(m, b)
-}
-func (m *Log_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Log_Request.Marshal(b, m, deterministic)
-}
-func (m *Log_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Log_Request.Merge(m, src)
-}
-func (m *Log_Request) XXX_Size() int {
-	return xxx_messageInfo_Log_Request.Size(m)
-}
-func (m *Log_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_Log_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Log_Request proto.InternalMessageInfo
-
-func (m *Log_Request) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *Log_Request) GetManifestType() string {
-	if m != nil {
-		return m.ManifestType
-	}
-	return ""
-}
-
-func (m *Log_Request) GetManifestAccess() []*Log_ManifestEntry {
-	if m != nil {
-		return m.ManifestAccess
-	}
-	return nil
-}
-
-func (m *Log_Request) GetIdentityType() string {
-	if m != nil {
-		return m.IdentityType
-	}
-	return ""
-}
-
-func (m *Log_Request) GetIdentityId() string {
-	if m != nil {
-		return m.IdentityId
-	}
-	return ""
-}
-
-type Log_Reply struct {
-	LogHandle            string   `protobuf:"bytes,1,opt,name=log_handle,json=logHandle,proto3" json:"log_handle,omitempty"`
+type LogToken_Request struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Log_Reply) Reset()         { *m = Log_Reply{} }
-func (m *Log_Reply) String() string { return proto.CompactTextString(m) }
-func (*Log_Reply) ProtoMessage()    {}
-func (*Log_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{1, 4}
+func (m *LogToken_Request) Reset()         { *m = LogToken_Request{} }
+func (m *LogToken_Request) String() string { return proto.CompactTextString(m) }
+func (*LogToken_Request) ProtoMessage()    {}
+func (*LogToken_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{2, 0}
 }
-func (m *Log_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Log_Reply.Unmarshal(m, b)
+func (m *LogToken_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogToken_Request.Unmarshal(m, b)
 }
-func (m *Log_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Log_Reply.Marshal(b, m, deterministic)
+func (m *LogToken_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogToken_Request.Marshal(b, m, deterministic)
 }
-func (m *Log_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Log_Reply.Merge(m, src)
+func (m *LogToken_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogToken_Request.Merge(m, src)
 }
-func (m *Log_Reply) XXX_Size() int {
-	return xxx_messageInfo_Log_Reply.Size(m)
+func (m *LogToken_Request) XXX_Size() int {
+	return xxx_messageInfo_LogToken_Request.Size(m)
 }
-func (m *Log_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_Log_Reply.DiscardUnknown(m)
+func (m *LogToken_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogToken_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Log_Reply proto.InternalMessageInfo
+var xxx_messageInfo_LogToken_Request proto.InternalMessageInfo
 
-func (m *Log_Reply) GetLogHandle() string {
+type LogToken_Reply struct {
+	LogToken             string   `protobuf:"bytes,1,opt,name=log_token,json=logToken,proto3" json:"log_token,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LogToken_Reply) Reset()         { *m = LogToken_Reply{} }
+func (m *LogToken_Reply) String() string { return proto.CompactTextString(m) }
+func (*LogToken_Reply) ProtoMessage()    {}
+func (*LogToken_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfb219fb5d306d6d, []int{2, 1}
+}
+func (m *LogToken_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LogToken_Reply.Unmarshal(m, b)
+}
+func (m *LogToken_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LogToken_Reply.Marshal(b, m, deterministic)
+}
+func (m *LogToken_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LogToken_Reply.Merge(m, src)
+}
+func (m *LogToken_Reply) XXX_Size() int {
+	return xxx_messageInfo_LogToken_Reply.Size(m)
+}
+func (m *LogToken_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_LogToken_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LogToken_Reply proto.InternalMessageInfo
+
+func (m *LogToken_Reply) GetLogToken() string {
 	if m != nil {
-		return m.LogHandle
+		return m.LogToken
 	}
 	return ""
 }
@@ -434,7 +258,7 @@ func (m *LogAdd) Reset()         { *m = LogAdd{} }
 func (m *LogAdd) String() string { return proto.CompactTextString(m) }
 func (*LogAdd) ProtoMessage()    {}
 func (*LogAdd) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{2}
+	return fileDescriptor_bfb219fb5d306d6d, []int{3}
 }
 func (m *LogAdd) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LogAdd.Unmarshal(m, b)
@@ -455,7 +279,7 @@ func (m *LogAdd) XXX_DiscardUnknown() {
 var xxx_messageInfo_LogAdd proto.InternalMessageInfo
 
 type LogAdd_Request struct {
-	LogHandle            string   `protobuf:"bytes,1,opt,name=log_handle,json=logHandle,proto3" json:"log_handle,omitempty"`
+	LogToken             string   `protobuf:"bytes,1,opt,name=log_token,json=logToken,proto3" json:"log_token,omitempty"`
 	Data                 []byte   `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -466,7 +290,7 @@ func (m *LogAdd_Request) Reset()         { *m = LogAdd_Request{} }
 func (m *LogAdd_Request) String() string { return proto.CompactTextString(m) }
 func (*LogAdd_Request) ProtoMessage()    {}
 func (*LogAdd_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{2, 0}
+	return fileDescriptor_bfb219fb5d306d6d, []int{3, 0}
 }
 func (m *LogAdd_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LogAdd_Request.Unmarshal(m, b)
@@ -486,9 +310,9 @@ func (m *LogAdd_Request) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_LogAdd_Request proto.InternalMessageInfo
 
-func (m *LogAdd_Request) GetLogHandle() string {
+func (m *LogAdd_Request) GetLogToken() string {
 	if m != nil {
-		return m.LogHandle
+		return m.LogToken
 	}
 	return ""
 }
@@ -501,6 +325,7 @@ func (m *LogAdd_Request) GetData() []byte {
 }
 
 type LogAdd_Reply struct {
+	Cid                  string   `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -510,7 +335,7 @@ func (m *LogAdd_Reply) Reset()         { *m = LogAdd_Reply{} }
 func (m *LogAdd_Reply) String() string { return proto.CompactTextString(m) }
 func (*LogAdd_Reply) ProtoMessage()    {}
 func (*LogAdd_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{2, 1}
+	return fileDescriptor_bfb219fb5d306d6d, []int{3, 1}
 }
 func (m *LogAdd_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LogAdd_Reply.Unmarshal(m, b)
@@ -530,6 +355,13 @@ func (m *LogAdd_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_LogAdd_Reply proto.InternalMessageInfo
 
+func (m *LogAdd_Reply) GetCid() string {
+	if m != nil {
+		return m.Cid
+	}
+	return ""
+}
+
 type LogGet struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -540,7 +372,7 @@ func (m *LogGet) Reset()         { *m = LogGet{} }
 func (m *LogGet) String() string { return proto.CompactTextString(m) }
 func (*LogGet) ProtoMessage()    {}
 func (*LogGet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{3}
+	return fileDescriptor_bfb219fb5d306d6d, []int{4}
 }
 func (m *LogGet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LogGet.Unmarshal(m, b)
@@ -561,7 +393,7 @@ func (m *LogGet) XXX_DiscardUnknown() {
 var xxx_messageInfo_LogGet proto.InternalMessageInfo
 
 type LogGet_Request struct {
-	LogHandle            string   `protobuf:"bytes,1,opt,name=log_handle,json=logHandle,proto3" json:"log_handle,omitempty"`
+	LogToken             string   `protobuf:"bytes,1,opt,name=log_token,json=logToken,proto3" json:"log_token,omitempty"`
 	Cid                  string   `protobuf:"bytes,2,opt,name=cid,proto3" json:"cid,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -572,7 +404,7 @@ func (m *LogGet_Request) Reset()         { *m = LogGet_Request{} }
 func (m *LogGet_Request) String() string { return proto.CompactTextString(m) }
 func (*LogGet_Request) ProtoMessage()    {}
 func (*LogGet_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{3, 0}
+	return fileDescriptor_bfb219fb5d306d6d, []int{4, 0}
 }
 func (m *LogGet_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LogGet_Request.Unmarshal(m, b)
@@ -592,9 +424,9 @@ func (m *LogGet_Request) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_LogGet_Request proto.InternalMessageInfo
 
-func (m *LogGet_Request) GetLogHandle() string {
+func (m *LogGet_Request) GetLogToken() string {
 	if m != nil {
-		return m.LogHandle
+		return m.LogToken
 	}
 	return ""
 }
@@ -607,17 +439,17 @@ func (m *LogGet_Request) GetCid() string {
 }
 
 type LogGet_Reply struct {
-	Op                   *Log_Operation `protobuf:"bytes,1,opt,name=op,proto3" json:"op,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
-	XXX_unrecognized     []byte         `json:"-"`
-	XXX_sizecache        int32          `json:"-"`
+	Op                   *LogOperation `protobuf:"bytes,1,opt,name=op,proto3" json:"op,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
 }
 
 func (m *LogGet_Reply) Reset()         { *m = LogGet_Reply{} }
 func (m *LogGet_Reply) String() string { return proto.CompactTextString(m) }
 func (*LogGet_Reply) ProtoMessage()    {}
 func (*LogGet_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{3, 1}
+	return fileDescriptor_bfb219fb5d306d6d, []int{4, 1}
 }
 func (m *LogGet_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LogGet_Reply.Unmarshal(m, b)
@@ -637,7 +469,7 @@ func (m *LogGet_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_LogGet_Reply proto.InternalMessageInfo
 
-func (m *LogGet_Reply) GetOp() *Log_Operation {
+func (m *LogGet_Reply) GetOp() *LogOperation {
 	if m != nil {
 		return m.Op
 	}
@@ -654,7 +486,7 @@ func (m *LogList) Reset()         { *m = LogList{} }
 func (m *LogList) String() string { return proto.CompactTextString(m) }
 func (*LogList) ProtoMessage()    {}
 func (*LogList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{4}
+	return fileDescriptor_bfb219fb5d306d6d, []int{5}
 }
 func (m *LogList) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LogList.Unmarshal(m, b)
@@ -674,57 +506,19 @@ func (m *LogList) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_LogList proto.InternalMessageInfo
 
-type LogList_Operations struct {
-	Ops                  []*Log_Operation `protobuf:"bytes,1,rep,name=ops,proto3" json:"ops,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
-	XXX_unrecognized     []byte           `json:"-"`
-	XXX_sizecache        int32            `json:"-"`
-}
-
-func (m *LogList_Operations) Reset()         { *m = LogList_Operations{} }
-func (m *LogList_Operations) String() string { return proto.CompactTextString(m) }
-func (*LogList_Operations) ProtoMessage()    {}
-func (*LogList_Operations) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{4, 0}
-}
-func (m *LogList_Operations) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_LogList_Operations.Unmarshal(m, b)
-}
-func (m *LogList_Operations) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_LogList_Operations.Marshal(b, m, deterministic)
-}
-func (m *LogList_Operations) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LogList_Operations.Merge(m, src)
-}
-func (m *LogList_Operations) XXX_Size() int {
-	return xxx_messageInfo_LogList_Operations.Size(m)
-}
-func (m *LogList_Operations) XXX_DiscardUnknown() {
-	xxx_messageInfo_LogList_Operations.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_LogList_Operations proto.InternalMessageInfo
-
-func (m *LogList_Operations) GetOps() []*Log_Operation {
-	if m != nil {
-		return m.Ops
-	}
-	return nil
-}
-
 type LogList_Request struct {
-	LogHandle            string             `protobuf:"bytes,1,opt,name=log_handle,json=logHandle,proto3" json:"log_handle,omitempty"`
-	Options              *Log_StreamOptions `protobuf:"bytes,2,opt,name=options,proto3" json:"options,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
-	XXX_unrecognized     []byte             `json:"-"`
-	XXX_sizecache        int32              `json:"-"`
+	LogToken             string            `protobuf:"bytes,1,opt,name=log_token,json=logToken,proto3" json:"log_token,omitempty"`
+	Options              *LogStreamOptions `protobuf:"bytes,2,opt,name=options,proto3" json:"options,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
 }
 
 func (m *LogList_Request) Reset()         { *m = LogList_Request{} }
 func (m *LogList_Request) String() string { return proto.CompactTextString(m) }
 func (*LogList_Request) ProtoMessage()    {}
 func (*LogList_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{4, 1}
+	return fileDescriptor_bfb219fb5d306d6d, []int{5, 0}
 }
 func (m *LogList_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LogList_Request.Unmarshal(m, b)
@@ -744,14 +538,14 @@ func (m *LogList_Request) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_LogList_Request proto.InternalMessageInfo
 
-func (m *LogList_Request) GetLogHandle() string {
+func (m *LogList_Request) GetLogToken() string {
 	if m != nil {
-		return m.LogHandle
+		return m.LogToken
 	}
 	return ""
 }
 
-func (m *LogList_Request) GetOptions() *Log_StreamOptions {
+func (m *LogList_Request) GetOptions() *LogStreamOptions {
 	if m != nil {
 		return m.Options
 	}
@@ -759,17 +553,17 @@ func (m *LogList_Request) GetOptions() *Log_StreamOptions {
 }
 
 type LogList_Reply struct {
-	Ops                  *LogList_Operations `protobuf:"bytes,1,opt,name=ops,proto3" json:"ops,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
-	XXX_unrecognized     []byte              `json:"-"`
-	XXX_sizecache        int32               `json:"-"`
+	Ops                  []*LogOperation `protobuf:"bytes,1,rep,name=ops,proto3" json:"ops,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
+	XXX_unrecognized     []byte          `json:"-"`
+	XXX_sizecache        int32           `json:"-"`
 }
 
 func (m *LogList_Reply) Reset()         { *m = LogList_Reply{} }
 func (m *LogList_Reply) String() string { return proto.CompactTextString(m) }
 func (*LogList_Reply) ProtoMessage()    {}
 func (*LogList_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bfb219fb5d306d6d, []int{4, 2}
+	return fileDescriptor_bfb219fb5d306d6d, []int{5, 1}
 }
 func (m *LogList_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LogList_Reply.Unmarshal(m, b)
@@ -789,7 +583,7 @@ func (m *LogList_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_LogList_Reply proto.InternalMessageInfo
 
-func (m *LogList_Reply) GetOps() *LogList_Operations {
+func (m *LogList_Reply) GetOps() []*LogOperation {
 	if m != nil {
 		return m.Ops
 	}
@@ -797,15 +591,11 @@ func (m *LogList_Reply) GetOps() *LogList_Operations {
 }
 
 func init() {
-	proto.RegisterType((*AddKey)(nil), "berty.protocol.AddKey")
-	proto.RegisterType((*AddKey_Request)(nil), "berty.protocol.AddKey.Request")
-	proto.RegisterType((*AddKey_Reply)(nil), "berty.protocol.AddKey.Reply")
-	proto.RegisterType((*Log)(nil), "berty.protocol.Log")
-	proto.RegisterType((*Log_Operation)(nil), "berty.protocol.Log.Operation")
-	proto.RegisterType((*Log_StreamOptions)(nil), "berty.protocol.Log.StreamOptions")
-	proto.RegisterType((*Log_ManifestEntry)(nil), "berty.protocol.Log.ManifestEntry")
-	proto.RegisterType((*Log_Request)(nil), "berty.protocol.Log.Request")
-	proto.RegisterType((*Log_Reply)(nil), "berty.protocol.Log.Reply")
+	proto.RegisterType((*LogOperation)(nil), "berty.protocol.LogOperation")
+	proto.RegisterType((*LogStreamOptions)(nil), "berty.protocol.LogStreamOptions")
+	proto.RegisterType((*LogToken)(nil), "berty.protocol.LogToken")
+	proto.RegisterType((*LogToken_Request)(nil), "berty.protocol.LogToken.Request")
+	proto.RegisterType((*LogToken_Reply)(nil), "berty.protocol.LogToken.Reply")
 	proto.RegisterType((*LogAdd)(nil), "berty.protocol.LogAdd")
 	proto.RegisterType((*LogAdd_Request)(nil), "berty.protocol.LogAdd.Request")
 	proto.RegisterType((*LogAdd_Reply)(nil), "berty.protocol.LogAdd.Reply")
@@ -813,7 +603,6 @@ func init() {
 	proto.RegisterType((*LogGet_Request)(nil), "berty.protocol.LogGet.Request")
 	proto.RegisterType((*LogGet_Reply)(nil), "berty.protocol.LogGet.Reply")
 	proto.RegisterType((*LogList)(nil), "berty.protocol.LogList")
-	proto.RegisterType((*LogList_Operations)(nil), "berty.protocol.LogList.Operations")
 	proto.RegisterType((*LogList_Request)(nil), "berty.protocol.LogList.Request")
 	proto.RegisterType((*LogList_Reply)(nil), "berty.protocol.LogList.Reply")
 }
@@ -821,48 +610,37 @@ func init() {
 func init() { proto.RegisterFile("bertydemo.proto", fileDescriptor_bfb219fb5d306d6d) }
 
 var fileDescriptor_bfb219fb5d306d6d = []byte{
-	// 642 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x54, 0xcb, 0x6e, 0xd3, 0x40,
-	0x14, 0x55, 0xec, 0x36, 0xc1, 0x37, 0x4d, 0x5b, 0x8d, 0x10, 0x72, 0x07, 0x4a, 0xd3, 0x14, 0xa1,
-	0x6c, 0x9a, 0x48, 0xe5, 0x25, 0x1e, 0x5d, 0x14, 0x91, 0x86, 0x82, 0x51, 0x25, 0xd7, 0x2b, 0x36,
-	0x95, 0x63, 0x4f, 0x5d, 0xab, 0xb6, 0xc7, 0xd8, 0x93, 0x4a, 0x96, 0xf8, 0x4c, 0xfe, 0x80, 0x3d,
-	0xfc, 0x02, 0x9a, 0x6b, 0x8f, 0xa3, 0x82, 0x53, 0xba, 0xbb, 0xaf, 0x73, 0x7c, 0xee, 0x63, 0x0c,
-	0x1b, 0x33, 0x96, 0x89, 0xc2, 0x67, 0x31, 0x1f, 0xa5, 0x19, 0x17, 0x9c, 0xac, 0x63, 0xa0, 0x74,
-	0x3c, 0x1e, 0xd1, 0xfd, 0x20, 0x14, 0x97, 0xf3, 0xd9, 0xc8, 0xe3, 0xf1, 0x38, 0xe0, 0x01, 0x1f,
-	0x63, 0x66, 0x36, 0xbf, 0x40, 0x0f, 0x1d, 0xb4, 0x4a, 0xc4, 0xe0, 0x15, 0xb4, 0x8f, 0x7c, 0xff,
-	0x33, 0x2b, 0xe8, 0x13, 0xe8, 0xd8, 0xec, 0xdb, 0x9c, 0xe5, 0x82, 0x6c, 0xc1, 0xbd, 0x34, 0x0b,
-	0xaf, 0xcf, 0xaf, 0x58, 0x61, 0xb6, 0xfa, 0xad, 0xe1, 0x9a, 0xdd, 0x91, 0xbe, 0xac, 0xea, 0xc0,
-	0xaa, 0xcd, 0xd2, 0xa8, 0x18, 0xfc, 0xd4, 0x41, 0xb7, 0x78, 0x40, 0x5f, 0x80, 0x71, 0x9a, 0xb2,
-	0xcc, 0x15, 0x21, 0x4f, 0x08, 0x81, 0x95, 0xc4, 0x8d, 0x19, 0x82, 0x0c, 0x1b, 0x6d, 0x72, 0x1f,
-	0x56, 0xaf, 0xdd, 0x68, 0xce, 0x4c, 0x0d, 0x99, 0x4a, 0x87, 0x5e, 0x41, 0xef, 0x4c, 0x64, 0xcc,
-	0x8d, 0x4f, 0x53, 0x89, 0xcc, 0xc9, 0x3a, 0x68, 0x53, 0xa7, 0x02, 0x6a, 0x53, 0x87, 0x6c, 0x82,
-	0x3e, 0x75, 0x26, 0x08, 0x32, 0x6c, 0x69, 0xca, 0x0a, 0xcb, 0x31, 0xf5, 0xb2, 0xc2, 0xc2, 0x0a,
-	0xcb, 0x99, 0x98, 0x2b, 0x65, 0x85, 0xe5, 0x4c, 0xc8, 0x03, 0x68, 0xbb, 0x31, 0x9f, 0x27, 0xc2,
-	0x5c, 0xed, 0xb7, 0x86, 0x3d, 0xbb, 0xf2, 0xe8, 0x6b, 0xe8, 0x7d, 0x71, 0x93, 0xf0, 0x82, 0xe5,
-	0x62, 0x92, 0x88, 0xac, 0x90, 0x50, 0xd5, 0x9b, 0x61, 0x4b, 0x53, 0x42, 0x51, 0x58, 0x6e, 0x6a,
-	0x7d, 0x7d, 0x68, 0xd8, 0x95, 0x47, 0x7f, 0xb4, 0x16, 0x63, 0x69, 0xea, 0x6e, 0x0f, 0x7a, 0x71,
-	0x45, 0x7d, 0x2e, 0x8a, 0x94, 0x55, 0x82, 0xd7, 0x54, 0xd0, 0x29, 0x52, 0x46, 0x3e, 0xc1, 0x46,
-	0x5d, 0xe4, 0x7a, 0x1e, 0xcb, 0x73, 0x53, 0xef, 0xeb, 0xc3, 0xee, 0xc1, 0xee, 0xe8, 0xe6, 0xf6,
-	0x46, 0x16, 0x0f, 0x46, 0x37, 0xa4, 0xda, 0xeb, 0x0a, 0x79, 0x84, 0x40, 0xf9, 0xc1, 0xd0, 0x67,
-	0x89, 0x08, 0x45, 0x51, 0x7e, 0xb0, 0xec, 0x7f, 0x4d, 0x05, 0xf1, 0x83, 0x3b, 0xd0, 0xad, 0x8b,
-	0x42, 0x1f, 0xa7, 0x61, 0xd8, 0xa0, 0x42, 0x27, 0x3e, 0x7d, 0x5a, 0xad, 0x91, 0x6c, 0x03, 0x44,
-	0x3c, 0x38, 0xbf, 0x74, 0x13, 0x3f, 0x52, 0x9d, 0x19, 0x11, 0x0f, 0x3e, 0x62, 0x60, 0x70, 0x0a,
-	0x6d, 0x8b, 0x07, 0x47, 0xbe, 0x4f, 0xdf, 0x2d, 0xe6, 0x70, 0x3b, 0x46, 0x8e, 0xc9, 0x77, 0x85,
-	0x5b, 0xed, 0x1b, 0xed, 0xc5, 0xd9, 0x7c, 0x47, 0xc2, 0x29, 0x13, 0xf4, 0xcd, 0x9d, 0x09, 0x37,
-	0x41, 0xf7, 0x42, 0x5f, 0x9d, 0x82, 0x17, 0xfa, 0xf4, 0xa5, 0x92, 0xbf, 0x0f, 0x1a, 0x4f, 0x11,
-	0xd1, 0x3d, 0xd8, 0x6e, 0x1a, 0x66, 0x7d, 0x9b, 0xb6, 0xc6, 0xd3, 0xc1, 0xaf, 0x16, 0x74, 0x2c,
-	0x1e, 0x58, 0x61, 0x2e, 0xe8, 0x21, 0x40, 0x9d, 0xcc, 0xc9, 0x18, 0x74, 0x9e, 0xe6, 0x66, 0x0b,
-	0xd7, 0xf2, 0x1f, 0x26, 0x59, 0x49, 0xd9, 0x9d, 0xe5, 0xbf, 0x85, 0x0e, 0x2f, 0x8f, 0x1c, 0x5b,
-	0x58, 0xb2, 0xf5, 0x1b, 0xaf, 0xc1, 0x56, 0x08, 0x7a, 0xa8, 0x3a, 0x7d, 0xae, 0x04, 0x4a, 0x86,
-	0x41, 0x03, 0x83, 0x6c, 0x6a, 0x21, 0x32, 0x47, 0x95, 0x07, 0xbf, 0x35, 0xe8, 0x7e, 0x60, 0x31,
-	0x3f, 0x63, 0xd9, 0x75, 0xe8, 0x31, 0x72, 0xac, 0x9e, 0x3b, 0x79, 0xfc, 0x37, 0x45, 0x19, 0x1f,
-	0x55, 0x4d, 0xd1, 0x47, 0x4b, 0xf3, 0x52, 0xcd, 0x21, 0x3e, 0x7e, 0xf2, 0xb0, 0xa9, 0x13, 0xc5,
-	0xb0, 0xd5, 0x9c, 0x94, 0xf0, 0x63, 0x75, 0x56, 0xff, 0xca, 0x28, 0xe3, 0xcb, 0x65, 0xd4, 0xf9,
-	0x05, 0xcf, 0x94, 0x89, 0x46, 0x9e, 0x29, 0x13, 0xb7, 0xf2, 0x94, 0x79, 0xc9, 0x73, 0x52, 0x9f,
-	0x05, 0xd9, 0x59, 0x36, 0x5a, 0xc5, 0xb4, 0xbd, 0xbc, 0x20, 0x8d, 0x8a, 0xf7, 0x7b, 0x5f, 0x77,
-	0xcb, 0xbc, 0x60, 0xde, 0xe5, 0x18, 0xcd, 0xb1, 0xfc, 0x0b, 0x5f, 0x05, 0xe3, 0xfa, 0xd7, 0x3d,
-	0x6b, 0x23, 0xf8, 0xd9, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x84, 0xea, 0x69, 0xdc, 0xce, 0x05,
-	0x00, 0x00,
+	// 480 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x94, 0xcf, 0x6e, 0xd3, 0x40,
+	0x10, 0xc6, 0x65, 0xa7, 0x49, 0x9a, 0x49, 0x29, 0xd5, 0x0a, 0x21, 0x63, 0x0a, 0x18, 0xc3, 0x21,
+	0x07, 0xb0, 0xa5, 0x20, 0x04, 0x2a, 0xa7, 0x22, 0x82, 0x05, 0x5a, 0xa9, 0x92, 0xeb, 0x13, 0x97,
+	0xca, 0x7f, 0x96, 0xad, 0x55, 0xdb, 0x63, 0x9c, 0x75, 0xa5, 0xbc, 0x10, 0x8f, 0xc0, 0xf3, 0xa1,
+	0x5d, 0xff, 0x09, 0x95, 0xdc, 0x90, 0xdb, 0x4c, 0xe6, 0xfb, 0x7e, 0x33, 0xda, 0x4f, 0x31, 0x3c,
+	0x8c, 0x58, 0x25, 0x36, 0x09, 0xcb, 0xd1, 0x29, 0x2b, 0x14, 0x48, 0x8e, 0xd5, 0x0f, 0x4d, 0x13,
+	0x63, 0x66, 0xbe, 0xe5, 0xa9, 0xb8, 0xae, 0x23, 0x27, 0xc6, 0xdc, 0xe5, 0xc8, 0xd1, 0x55, 0x93,
+	0xa8, 0xfe, 0xa9, 0x3a, 0xd5, 0xa8, 0xaa, 0x71, 0xd8, 0xdf, 0xe1, 0x88, 0x22, 0xbf, 0x28, 0x59,
+	0x15, 0x8a, 0x14, 0x0b, 0x42, 0xe0, 0xa0, 0x08, 0x73, 0x66, 0x68, 0x96, 0xb6, 0x98, 0xf9, 0xaa,
+	0x26, 0x8f, 0x60, 0x7c, 0x1b, 0x66, 0x35, 0x33, 0x74, 0x4b, 0x5b, 0x1c, 0xf9, 0x4d, 0x43, 0x4e,
+	0x60, 0x14, 0xa7, 0x89, 0x31, 0x52, 0x42, 0x59, 0xda, 0x05, 0x9c, 0x50, 0xe4, 0x97, 0xa2, 0x62,
+	0x61, 0x7e, 0x51, 0x4a, 0xdc, 0x9a, 0x1c, 0x83, 0xee, 0x05, 0x2d, 0x4d, 0xf7, 0x02, 0xe9, 0xf2,
+	0x82, 0x95, 0x22, 0xcd, 0x7c, 0x59, 0x4a, 0x05, 0x0d, 0x5a, 0x8c, 0x4e, 0x95, 0x82, 0x06, 0x2b,
+	0xe3, 0xa0, 0x51, 0xd0, 0x60, 0x45, 0x1e, 0xc3, 0x24, 0xcc, 0xb1, 0x2e, 0x84, 0x31, 0xb6, 0xb4,
+	0xc5, 0x03, 0xbf, 0xed, 0xec, 0x4f, 0x70, 0x48, 0x91, 0x07, 0x78, 0xc3, 0x0a, 0x73, 0x06, 0x53,
+	0x9f, 0xfd, 0xaa, 0xd9, 0x5a, 0x98, 0xaf, 0x61, 0xec, 0xb3, 0x32, 0xdb, 0x90, 0xa7, 0x30, 0xcb,
+	0x90, 0x5f, 0x09, 0x29, 0x68, 0x4f, 0x38, 0xcc, 0x5a, 0x83, 0x7d, 0x05, 0x13, 0x8a, 0xfc, 0x3c,
+	0x49, 0xcc, 0xb3, 0xde, 0xba, 0xd3, 0x21, 0x9f, 0x26, 0x09, 0x45, 0xd8, 0xbe, 0x82, 0xaa, 0xcd,
+	0x27, 0xdd, 0xae, 0xf6, 0x35, 0xb4, 0xed, 0x6b, 0x6c, 0xd4, 0x02, 0x8f, 0x09, 0xf3, 0xe3, 0x9e,
+	0x0b, 0x5a, 0x86, 0xde, 0x33, 0xcc, 0xf7, 0x1d, 0xfe, 0x0d, 0xe8, 0x58, 0x2a, 0xc3, 0x7c, 0x79,
+	0xea, 0xdc, 0x8d, 0xdc, 0xf9, 0x37, 0x40, 0x5f, 0xc7, 0xd2, 0xfe, 0xad, 0xc1, 0x94, 0x22, 0xa7,
+	0xe9, 0x5a, 0x98, 0xd1, 0x9e, 0xcb, 0xcf, 0x60, 0x8a, 0x4d, 0x66, 0xea, 0x80, 0xf9, 0xd2, 0x1a,
+	0x58, 0x73, 0x27, 0x5b, 0xbf, 0x33, 0x98, 0x1f, 0xba, 0x33, 0x1d, 0x18, 0x61, 0xb9, 0x36, 0x34,
+	0x6b, 0xf4, 0xdf, 0x3b, 0xa5, 0x70, 0xf9, 0x47, 0x87, 0xf9, 0x17, 0x96, 0xe3, 0x25, 0xab, 0x6e,
+	0xd3, 0x98, 0x11, 0xba, 0x4d, 0x94, 0x0c, 0xed, 0x57, 0x13, 0xa7, 0x0b, 0xfa, 0xf9, 0x0e, 0x85,
+	0xbc, 0xe6, 0x6b, 0x17, 0x31, 0x19, 0x52, 0x9e, 0x27, 0x49, 0x4f, 0x3a, 0xbd, 0x77, 0xbe, 0xe5,
+	0x78, 0x4c, 0x0c, 0x72, 0x3c, 0x26, 0x76, 0x72, 0x9a, 0xb9, 0xe4, 0x7c, 0xeb, 0x53, 0x21, 0x2f,
+	0x06, 0x84, 0x72, 0xd0, 0x93, 0x9e, 0xdd, 0x2f, 0x28, 0xb3, 0xcd, 0xe7, 0x57, 0x3f, 0x5e, 0x36,
+	0x73, 0xc1, 0xe2, 0x6b, 0x57, 0x95, 0xae, 0xfc, 0xaf, 0xdf, 0x70, 0xb7, 0xff, 0x40, 0x44, 0x13,
+	0x65, 0x7e, 0xf7, 0x37, 0x00, 0x00, 0xff, 0xff, 0x6a, 0x58, 0xb5, 0x00, 0x34, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -877,15 +655,13 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type DemoServiceClient interface {
-	// AddKey Adds an ed25519 keypair in the keystore passed on Log initialization, noop if already added
-	AddKey(ctx context.Context, in *AddKey_Request, opts ...grpc.CallOption) (*AddKey_Reply, error)
-	// Log Creates or opens an EventLogStore
-	Log(ctx context.Context, in *Log_Request, opts ...grpc.CallOption) (*Log_Reply, error)
-	// LogAdd Appends data to a log previously opened with Log
+	// LogToken Generates a token to feed to other methods. Does not open or create a log
+	LogToken(ctx context.Context, in *LogToken_Request, opts ...grpc.CallOption) (*LogToken_Reply, error)
+	// LogAdd Appends data to a log. Will create or open the log identified by the token
 	LogAdd(ctx context.Context, in *LogAdd_Request, opts ...grpc.CallOption) (*LogAdd_Reply, error)
-	// LogGet Gets a log entry by cid in a Log opened previously
+	// LogGet Gets a log entry by cid. Will create or open the log identified by the token
 	LogGet(ctx context.Context, in *LogGet_Request, opts ...grpc.CallOption) (*LogGet_Reply, error)
-	// LogList Fetches a list of operation that occurred on a Log
+	// LogList Fetches a list of operation that occurred on a log. Will create or open the log identified by the token
 	LogList(ctx context.Context, in *LogList_Request, opts ...grpc.CallOption) (*LogList_Reply, error)
 }
 
@@ -897,18 +673,9 @@ func NewDemoServiceClient(cc *grpc.ClientConn) DemoServiceClient {
 	return &demoServiceClient{cc}
 }
 
-func (c *demoServiceClient) AddKey(ctx context.Context, in *AddKey_Request, opts ...grpc.CallOption) (*AddKey_Reply, error) {
-	out := new(AddKey_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.DemoService/AddKey", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *demoServiceClient) Log(ctx context.Context, in *Log_Request, opts ...grpc.CallOption) (*Log_Reply, error) {
-	out := new(Log_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.DemoService/Log", in, out, opts...)
+func (c *demoServiceClient) LogToken(ctx context.Context, in *LogToken_Request, opts ...grpc.CallOption) (*LogToken_Reply, error) {
+	out := new(LogToken_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.DemoService/LogToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -944,15 +711,13 @@ func (c *demoServiceClient) LogList(ctx context.Context, in *LogList_Request, op
 
 // DemoServiceServer is the server API for DemoService service.
 type DemoServiceServer interface {
-	// AddKey Adds an ed25519 keypair in the keystore passed on Log initialization, noop if already added
-	AddKey(context.Context, *AddKey_Request) (*AddKey_Reply, error)
-	// Log Creates or opens an EventLogStore
-	Log(context.Context, *Log_Request) (*Log_Reply, error)
-	// LogAdd Appends data to a log previously opened with Log
+	// LogToken Generates a token to feed to other methods. Does not open or create a log
+	LogToken(context.Context, *LogToken_Request) (*LogToken_Reply, error)
+	// LogAdd Appends data to a log. Will create or open the log identified by the token
 	LogAdd(context.Context, *LogAdd_Request) (*LogAdd_Reply, error)
-	// LogGet Gets a log entry by cid in a Log opened previously
+	// LogGet Gets a log entry by cid. Will create or open the log identified by the token
 	LogGet(context.Context, *LogGet_Request) (*LogGet_Reply, error)
-	// LogList Fetches a list of operation that occurred on a Log
+	// LogList Fetches a list of operation that occurred on a log. Will create or open the log identified by the token
 	LogList(context.Context, *LogList_Request) (*LogList_Reply, error)
 }
 
@@ -960,11 +725,8 @@ type DemoServiceServer interface {
 type UnimplementedDemoServiceServer struct {
 }
 
-func (*UnimplementedDemoServiceServer) AddKey(ctx context.Context, req *AddKey_Request) (*AddKey_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddKey not implemented")
-}
-func (*UnimplementedDemoServiceServer) Log(ctx context.Context, req *Log_Request) (*Log_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Log not implemented")
+func (*UnimplementedDemoServiceServer) LogToken(ctx context.Context, req *LogToken_Request) (*LogToken_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LogToken not implemented")
 }
 func (*UnimplementedDemoServiceServer) LogAdd(ctx context.Context, req *LogAdd_Request) (*LogAdd_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LogAdd not implemented")
@@ -980,38 +742,20 @@ func RegisterDemoServiceServer(s *grpc.Server, srv DemoServiceServer) {
 	s.RegisterService(&_DemoService_serviceDesc, srv)
 }
 
-func _DemoService_AddKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddKey_Request)
+func _DemoService_LogToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogToken_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DemoServiceServer).AddKey(ctx, in)
+		return srv.(DemoServiceServer).LogToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.DemoService/AddKey",
+		FullMethod: "/berty.protocol.DemoService/LogToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DemoServiceServer).AddKey(ctx, req.(*AddKey_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DemoService_Log_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Log_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DemoServiceServer).Log(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.DemoService/Log",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DemoServiceServer).Log(ctx, req.(*Log_Request))
+		return srv.(DemoServiceServer).LogToken(ctx, req.(*LogToken_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1075,12 +819,8 @@ var _DemoService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*DemoServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddKey",
-			Handler:    _DemoService_AddKey_Handler,
-		},
-		{
-			MethodName: "Log",
-			Handler:    _DemoService_Log_Handler,
+			MethodName: "LogToken",
+			Handler:    _DemoService_LogToken_Handler,
 		},
 		{
 			MethodName: "LogAdd",

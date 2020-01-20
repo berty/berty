@@ -7,98 +7,68 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 option go_package = "berty.tech/berty/go/pkg/bertydemo";
 
 service DemoService {
-  // AddKey Adds an ed25519 keypair in the keystore passed on Log initialization, noop if already added
-  rpc AddKey(AddKey.Request) returns (AddKey.Reply);
+  // LogToken Generates a token to feed to other methods. Does not open or create a log
+  rpc LogToken(LogToken.Request) returns (LogToken.Reply);
 
-  // Log Creates or opens an EventLogStore
-  rpc Log(Log.Request) returns (Log.Reply);
-
-  // LogAdd Appends data to a log previously opened with Log
+  // LogAdd Appends data to a log. Will create or open the log identified by the token
   rpc LogAdd(LogAdd.Request) returns (LogAdd.Reply);
 
-  // LogGet Gets a log entry by cid in a Log opened previously
+  // LogGet Gets a log entry by cid. Will create or open the log identified by the token
   rpc LogGet(LogGet.Request) returns (LogGet.Reply);
 
-  // LogStream Populates a chan of operations from a Log
-  //rpc LogStream(LogStream.Request) returns (stream Log.Operation);
-
-  // LogList Fetches a list of operation that occurred on a Log
+  // LogList Fetches a list of operation that occurred on a log. Will create or open the log identified by the token
   rpc LogList(LogList.Request) returns (LogList.Reply);
 }
 
-message AddKey {
-  message Request {
-    bytes priv_key = 1;
-  }
-  message Reply {
-
-  }
+message LogOperation {
+  string name = 1;
+  bytes value = 2;
+  string cid = 3;
 }
 
-message Log {
-  message Operation {
-    string name = 1;
-    bytes value = 2;
-  }
-  message StreamOptions {
-    string GT = 1; // cid
-    string GTE = 2; // cid
-    string LT = 3; // cid
-    string LTE = 4; // cid
-    uint32 amount = 5;
-  }
-  message ManifestEntry {
-    string key = 1;
-    repeated string values = 2;
-  }
+message LogStreamOptions {
+  string GT = 1; // cid
+  string GTE = 2; // cid
+  string LT = 3; // cid
+  string LTE = 4; // cid
+  uint32 amount = 5;
+}
+
+message LogToken {
   message Request {
-    string name = 1;
-    string manifest_type = 2;
-    repeated ManifestEntry manifest_access = 3;
-    string identity_type = 4;
-    string identity_id = 5;
+
   }
   message Reply {
-    string log_handle = 1;
+    string log_token = 1;
   }
 }
 
 message LogAdd {
   message Request {
-    string log_handle = 1;
+    string log_token = 1;
     bytes data = 2;
   }
   message Reply {
-
+    string cid = 1;
   }
 }
 
 message LogGet {
   message Request {
-    string log_handle = 1;
+    string log_token = 1;
     string cid = 2;
   }
   message Reply {
-    Log.Operation op = 1;
+    LogOperation op = 1;
   }
 }
 
-/*message LogStream {
-  message Request {
-    string log_handle = 1;
-    Log.StreamOptions options = 2;
-  }
-}*/
-
 message LogList {
-  message Operations {
-    repeated Log.Operation ops = 1;
-  }
   message Request {
-    string log_handle = 1;
-    Log.StreamOptions options = 2;
+    string log_token = 1;
+    LogStreamOptions options = 2;
   }
   message Reply {
-    Operations ops = 1;
+    repeated LogOperation ops = 1;
   }
 }

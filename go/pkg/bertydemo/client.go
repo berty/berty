@@ -1,17 +1,17 @@
 package bertydemo
 
 import (
-	context "context"
-	"errors"
+	"context"
+	"crypto/rand"
+	"encoding/hex"
 
+	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/internal/orbitutil/identityberty"
+	"berty.tech/berty/go/internal/orbitutil/storegroup"
 	"berty.tech/berty/go/pkg/errcode"
-	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/go-orbit-db/accesscontroller"
 	"berty.tech/go-orbit-db/stores/operation"
-	"github.com/google/uuid"
 	cid "github.com/ipfs/go-cid"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
@@ -23,7 +23,6 @@ type Client struct {
 	node *ipfs_core.IpfsNode
 	odb  orbitdb.OrbitDB
 	logs map[string]orbitdb.EventLogStore
-	ks   *identityberty.BertySignedKeyStore
 }
 
 type Opts struct {
@@ -47,110 +46,88 @@ func New(opts *Opts) (*Client, error) {
 		return nil, err
 	}
 
-	ks := identityberty.NewBertySignedKeyStore()
-
 	logs := make(map[string]orbitdb.EventLogStore)
 
-	return &Client{api, node, odb, logs, ks}, nil
-}
-
-func boolPtr(b bool) *bool {
-	return &b
+	return &Client{api, node, odb, logs}, nil
 }
 
 func intPtr(i int) *int {
 	return &i
 }
 
-func eventLogOptions(ks *identityberty.BertySignedKeyStore, req *Log_Request) (*orbitdb.CreateDBOptions, error) {
-	var err error
-	var options *orbitdb.CreateDBOptions
-
-	options = &orbitdb.CreateDBOptions{}
-
-	options.Create = boolPtr(true)
-
-	access := make(map[string][]string)
-	for _, me := range req.ManifestAccess {
-		access[me.Key] = make([]string, len(me.Values))
-		for i, v := range me.Values {
-			access[me.Key][i] = v
-		}
-	}
-
-	options.AccessController = accesscontroller.NewSimpleManifestParams(
-		req.ManifestType,
-		access)
-
-	options.Keystore = ks
-
-	options.Identity, err = ks.GetIdentityProvider().CreateIdentity(&identityprovider.CreateIdentityOptions{
-		Type:     req.IdentityType,
-		Keystore: ks,
-		ID:       req.IdentityId,
-	})
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	return options, nil
-}
-
-func (d *Client) Log(ctx context.Context, req *Log_Request) (*Log_Reply, error) {
-	opts, err := eventLogOptions(d.ks, req)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-	log, err := d.odb.Log(ctx, req.Name, opts)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-	// maybe replace by rand string or smth better
-	uuid := uuid.New().String()
-	d.logs[uuid] = log
-	reply := Log_Reply{}
-	reply.LogHandle = uuid
-	return &reply, nil
-}
-
-func (d *Client) AddKey(ctx context.Context, req *AddKey_Request) (*AddKey_Reply, error) {
-	key, err := crypto.UnmarshalEd25519PrivateKey(req.PrivKey)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-	err = d.ks.SetKey(key)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-	return &AddKey_Reply{}, nil
-}
-
-func (d *Client) getLogByHandle(handle string) (orbitdb.EventLogStore, error) {
-	if log, exists := d.logs[handle]; exists {
+func (d *Client) logFromToken(ctx context.Context, token string) (orbitdb.EventLogStore, error) {
+	if log, ok := d.logs[token]; ok {
+		// I tried to avoid this map but orbitdb recreates log instances and looses operations even when fed with the same args
 		return log, nil
 	}
-	return nil, errcode.TODO.Wrap(errors.New("no such log"))
+	sigkb, err := hex.DecodeString(token)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	sigk, err := crypto.UnmarshalEd25519PrivateKey(sigkb)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	ks := identityberty.NewBertySignedKeyStore()
+	err = ks.SetKey(sigk)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	g := &group.Group{PubKey: sigk.GetPublic(), SigningKey: sigk}
+	opts, err := storegroup.DefaultOptions(g, &orbitdb.CreateDBOptions{}, ks)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	log, err := d.odb.Log(ctx, "DemoLog", opts)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	d.logs[token] = log
+	return log, nil
+}
+
+func (d *Client) LogToken(ctx context.Context, _ *LogToken_Request) (*LogToken_Reply, error) {
+	sigk, _, err := crypto.GenerateEd25519Key(rand.Reader)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	sigkb, err := sigk.Raw()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	return &LogToken_Reply{LogToken: hex.EncodeToString(sigkb)}, nil
+}
+
+func opCidStr(op operation.Operation) string {
+	return op.GetEntry().GetHash().String()
 }
 
 func (d *Client) LogAdd(ctx context.Context, req *LogAdd_Request) (*LogAdd_Reply, error) {
-	log, err := d.getLogByHandle(req.LogHandle)
+	log, err := d.logFromToken(ctx, req.LogToken)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	_, err = log.Add(ctx, req.Data)
+	op, err := log.Add(ctx, req.Data)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	return &LogAdd_Reply{}, nil
+	return &LogAdd_Reply{Cid: opCidStr(op)}, nil
 }
 
-func opToProtoOp(op operation.Operation) Log_Operation {
-	return Log_Operation{Name: op.GetOperation(), Value: op.GetValue()}
+func opToProtoOp(op operation.Operation) *LogOperation {
+	if op == nil {
+		return nil
+	}
+	return &LogOperation{
+		Name:  op.GetOperation(),
+		Value: op.GetValue(),
+		Cid:   opCidStr(op),
+	}
 }
 
 func (d *Client) LogGet(ctx context.Context, req *LogGet_Request) (*LogGet_Reply, error) {
-	log, err := d.getLogByHandle(req.LogHandle)
+	log, err := d.logFromToken(ctx, req.LogToken)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -166,7 +143,7 @@ func (d *Client) LogGet(ctx context.Context, req *LogGet_Request) (*LogGet_Reply
 	}
 
 	pop := opToProtoOp(op)
-	return &LogGet_Reply{Op: &pop}, nil
+	return &LogGet_Reply{Op: pop}, nil
 }
 
 func maybeDecodeCid(str string) *cid.Cid {
@@ -177,7 +154,7 @@ func maybeDecodeCid(str string) *cid.Cid {
 	return &c
 }
 
-func decodeStreamOptions(opts *Log_StreamOptions) *orbitdb.StreamOptions {
+func decodeStreamOptions(opts *LogStreamOptions) *orbitdb.StreamOptions {
 	if opts == nil {
 		return nil
 	}
@@ -191,7 +168,7 @@ func decodeStreamOptions(opts *Log_StreamOptions) *orbitdb.StreamOptions {
 }
 
 func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Reply, error) {
-	log, err := d.getLogByHandle(req.LogHandle)
+	log, err := d.logFromToken(ctx, req.LogToken)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -203,13 +180,13 @@ func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Re
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	var protoOps LogList_Operations
+	protoOps := make([]*LogOperation, len(ops))
 	for i, op := range ops {
 		pop := opToProtoOp(op)
-		protoOps.Ops[i] = &pop
+		protoOps[i] = pop
 	}
 
-	return &LogList_Reply{Ops: &protoOps}, nil
+	return &LogList_Reply{Ops: protoOps}, nil
 }
 
 /*func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
