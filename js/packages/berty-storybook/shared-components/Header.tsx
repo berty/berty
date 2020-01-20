@@ -1,7 +1,7 @@
 import React from 'react'
-import { View, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native'
+import { View, TouchableOpacity, SafeAreaView } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '@berty-tech/styles'
+import { colors, useStyles, ColorsTypes } from '@berty-tech/styles'
 
 //
 // Header Settings
@@ -11,19 +11,19 @@ import { styles, colors } from '@berty-tech/styles'
 type HeaderSettingsProps = {
 	title?: string
 	children?: React.ReactNode
-	bgColor?: string
+	bgColor?: ColorsTypes
 	undo?: () => void
 	undoIcon?: string
 	undoIconSize?: number
-	undoIconColor?: string
+	undoIconColor?: ColorsTypes
 	desc?: string | null
 	descFontSize?: number
-	descColor?: string
+	descColor?: ColorsTypes
 	action?: React.Dispatch<any>
 	actionValue?: boolean
 	actionIcon?: string
 	actionIconSize?: number
-	actionIconColor?: string
+	actionIconColor?: ColorsTypes
 }
 
 export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
@@ -33,75 +33,81 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	undo,
 	undoIcon = 'arrow-back-outline',
 	undoIconSize = 25,
-	undoIconColor = colors.white,
+	undoIconColor = 'white',
 	desc = null,
 	descFontSize = 10,
-	descColor = colors.white,
+	descColor = 'white',
 	action = null,
 	actionValue = null,
 	actionIcon = 'swap',
 	actionIconSize = 25,
-	actionIconColor = colors.white,
-}) => (
-	<SafeAreaView
-		style={[
-			styles.flex,
-			styles.borderBottomLeftRadius,
-			styles.borderBottomRightRadius,
-			{ backgroundColor: bgColor },
-		]}
-	>
-		<View style={[styles.padding]}>
-			<View style={[styles.row, styles.justifyContent, styles.flex]}>
-				{undo && (
-					<TouchableOpacity style={[styles.flex, styles.start, styles.center]} onPress={undo}>
-						<Icon name={undoIcon} width={undoIconSize} height={undoIconSize} fill={undoIconColor} />
-					</TouchableOpacity>
-				)}
-				{title && (
-					<View style={[styles.spaceCenter]}>
-						<Text
-							style={[
-								styles.textBold,
-								styles.fontFamily,
-								styles.textWhite,
-								{ fontSize: 25, lineHeight: 25 * 0.75, paddingTop: 35 - 35 * 0.75 },
-							]}
-						>
-							{title}
-						</Text>
-					</View>
-				)}
-				{(action || actionIcon) && (
-					<View style={[styles.flex, styles.end, styles.center]}>
-						<TouchableOpacity style={[styles.end]} onPress={() => action && action(!actionValue)}>
+	actionIconColor = 'white',
+}) => {
+	const [{ border, flex, padding, row, text, column }] = useStyles()
+	return (
+		<SafeAreaView style={[flex.tiny, border.radius.bottom.scale(20), { backgroundColor: bgColor }]}>
+			<View style={[padding.horizontal.medium, padding.top.tiny, padding.bottom.medium]}>
+				<View style={[row.fill, flex.tiny, { justifyContent: 'center' }]}>
+					{undo ? (
+						<TouchableOpacity style={[flex.tiny, row.item.justify]} onPress={undo}>
 							<Icon
-								name={actionIcon}
-								width={actionIconSize}
-								height={actionIconSize}
-								fill={actionIconColor}
+								name={undoIcon}
+								width={undoIconSize}
+								height={undoIconSize}
+								fill={undoIconColor}
 							/>
 						</TouchableOpacity>
-					</View>
+					) : (
+						<View style={[flex.tiny, row.item.justify]} />
+					)}
+					{title && (
+						<View style={[flex.big, row.item.justify]}>
+							<Text
+								style={[
+									text.align.center,
+									text.color.white,
+									text.bold,
+									text.family,
+									padding.top.medium,
+									text.size.scale(25),
+								]}
+							>
+								{title}
+							</Text>
+						</View>
+					)}
+					{(action || actionIcon) && (
+						<View style={[flex.tiny, row.item.justify]}>
+							<TouchableOpacity
+								style={row.item.bottom}
+								onPress={() => action && action(!actionValue)}
+							>
+								<Icon
+									name={actionIcon}
+									width={actionIconSize}
+									height={actionIconSize}
+									fill={actionIconColor}
+								/>
+							</TouchableOpacity>
+						</View>
+					)}
+				</View>
+				{desc && (
+					<Text
+						style={[
+							text.align.center,
+							padding.horizontal.big,
+							{ fontSize: descFontSize, color: descColor },
+						]}
+					>
+						{desc}
+					</Text>
 				)}
+				{children}
 			</View>
-			{desc && (
-				<Text
-					style={[
-						styles.center,
-						{ fontSize: descFontSize, color: descColor },
-						styles.textCenter,
-						styles.bigPaddingLeft,
-						styles.bigPaddingRight,
-					]}
-				>
-					{desc}
-				</Text>
-			)}
-			{children}
-		</View>
-	</SafeAreaView>
-)
+		</SafeAreaView>
+	)
+}
 
 //
 // Header Info Settings
@@ -110,27 +116,23 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 // Type
 type HeaderInfoSettingsProps = {
 	children: React.ReactNode
-	bgColor?: string
 }
 
-// Style
-const _headerInfoSettingsStyles = StyleSheet.create({
-	headerInfoSettings: { backgroundColor: 'rgba(206,210,255,0.3)' },
-})
-
-export const HeaderInfoSettings: React.FC<HeaderInfoSettingsProps> = ({ children, bgColor }) => (
-	<View
-		style={[
-			styles.marginLeft,
-			styles.marginRight,
-			styles.borderRadius,
-			styles.padding,
-			styles.marginTop,
-			_headerInfoSettingsStyles.headerInfoSettings,
-		]}
-	>
-		<View style={[styles.justifyContent]}>{children}</View>
-	</View>
-)
+export const HeaderInfoSettings: React.FC<HeaderInfoSettingsProps> = ({ children }) => {
+	const [{ margin, border, padding }] = useStyles()
+	return (
+		<View
+			style={[
+				margin.horizontal.medium,
+				border.radius.medium,
+				padding.medium,
+				margin.top.medium,
+				{ backgroundColor: 'rgba(206,210,255,0.3)' },
+			]}
+		>
+			<View style={{ justifyContent: 'center' }}>{children}</View>
+		</View>
+	)
+}
 
 export default HeaderSettings
