@@ -1,4 +1,4 @@
-package identityberty
+package orbitutil
 
 import (
 	"berty.tech/berty/go/pkg/errcode"
@@ -6,7 +6,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-const GroupIDKey = "group_id"
+const IdentityGroupIDKey = "group_id"
 const IdentityType = "betry_group_entry"
 
 type BertySignedIdentityProvider struct {

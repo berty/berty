@@ -4,7 +4,6 @@ package handshake;
 
 option go_package = "berty.tech/berty/go/internal/handshake";
 
-import "go-internal/sigchain.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 option (gogoproto.marshaler_all) = true;
@@ -36,6 +35,5 @@ message HandshakeFrame {
 
 message HandshakePayload {
   bytes signature = 1;
-  SigChain sigChain = 2;
-  bytes deviceKey = 3;
+  bytes accountKey = 2;
 }

@@ -22,16 +22,21 @@ func (c *client) ContactRequestEnable(context.Context, *ContactRequestEnable_Req
 }
 
 // ContactRequestResetReference generates a new contact request reference
-func (c *client) ContactRequestResetReference(context.Context, *ContactRequestResetLink_Request) (*ContactRequestResetLink_Reply, error) {
+func (c *client) ContactRequestResetReference(context.Context, *ContactRequestResetReference_Request) (*ContactRequestResetReference_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-// ContactRequestEnqueue enqueues a new contact request to be sent
-func (c *client) ContactRequestEnqueue(context.Context, *ContactRequestEnqueue_Request) (*ContactRequestEnqueue_Reply, error) {
+// ContactRequestSend enqueues a new contact request to be sent
+func (c *client) ContactRequestSend(context.Context, *ContactRequestSend_Request) (*ContactRequestSend_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
 // ContactRequestAccept accepts a contact request
 func (c *client) ContactRequestAccept(context.Context, *ContactRequestAccept_Request) (*ContactRequestAccept_Reply, error) {
+	return nil, errcode.ErrNotImplemented
+}
+
+// ContactRequestDiscard ignores a contact request without informing the request sender
+func (c *client) ContactRequestDiscard(context.Context, *ContactRequestDiscard_Request) (*ContactRequestDiscard_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }

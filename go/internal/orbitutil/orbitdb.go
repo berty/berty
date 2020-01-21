@@ -17,24 +17,18 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
 
-	"berty.tech/berty/go/internal/orbitutil/identityberty"
-	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
-	"berty.tech/berty/go/internal/orbitutil/storegroup"
-	"berty.tech/berty/go/internal/orbitutil/storemember"
-	"berty.tech/berty/go/internal/orbitutil/storesecret"
-	"berty.tech/berty/go/internal/orbitutil/storesetting"
 	"berty.tech/berty/go/pkg/errcode"
 )
 
-type BertyOrbitDB struct {
+type bertyOrbitDB struct {
 	baseorbitdb.BaseOrbitDB
-	groups          map[string]orbitutilapi.GroupContext
+	groups          map[string]GroupContext
 	groupsSigPubKey map[string]crypto.PubKey
-	keyStore        *identityberty.BertySignedKeyStore
+	keyStore        *BertySignedKeyStore
 	lock            sync.RWMutex
 }
 
-func (s *BertyOrbitDB) RegisterGroupContext(gc orbitutilapi.GroupContext) error {
+func (s *bertyOrbitDB) RegisterGroupContext(gc GroupContext) error {
 	g := gc.GetGroup()
 
 	groupID, err := g.GroupIDAsString()
@@ -61,34 +55,26 @@ func (s *BertyOrbitDB) RegisterGroupContext(gc orbitutilapi.GroupContext) error 
 	return nil
 }
 
-func (s *BertyOrbitDB) InitStoresForGroup(ctx context.Context, gc orbitutilapi.GroupContext, options *orbitdb.CreateDBOptions) error {
+func (s *bertyOrbitDB) InitStoresForGroup(ctx context.Context, gc GroupContext, options *orbitdb.CreateDBOptions) error {
 	if err := s.RegisterGroupContext(gc); err != nil {
 		return errcode.TODO.Wrap(err)
 	}
 
-	if _, err := s.GroupMemberStore(ctx, gc, options); err != nil {
-		return errcode.TODO.Wrap(err)
-	}
-
-	if _, err := s.GroupSettingStore(ctx, gc, options); err != nil {
-		return errcode.TODO.Wrap(err)
-	}
-
-	if _, err := s.GroupSecretStore(ctx, gc, options); err != nil {
+	if _, err := s.GroupMetadataStore(ctx, gc, options); err != nil {
 		return errcode.TODO.Wrap(err)
 	}
 
 	return nil
 }
 
-func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *baseorbitdb.NewOrbitDBOptions) (*BertyOrbitDB, error) {
+func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *baseorbitdb.NewOrbitDBOptions) (BertyOrbitDB, error) {
 	var err error
 
 	if options == nil {
 		options = &baseorbitdb.NewOrbitDBOptions{}
 	}
 
-	ks := identityberty.NewBertySignedKeyStore()
+	ks := NewBertySignedKeyStore()
 	options.Keystore = ks
 	options.Identity = &identityprovider.Identity{}
 
@@ -97,9 +83,9 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *baseorb
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	bertyDB := &BertyOrbitDB{
+	bertyDB := &bertyOrbitDB{
 		BaseOrbitDB:     orbitDB,
-		groups:          map[string]orbitutilapi.GroupContext{},
+		groups:          map[string]GroupContext{},
 		groupsSigPubKey: map[string]crypto.PubKey{},
 		keyStore:        ks,
 	}
@@ -107,14 +93,12 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *baseorb
 	if err := bertyDB.RegisterAccessControllerType(simple.NewSimpleAccessController); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	bertyDB.RegisterStoreType(storemember.StoreType, storemember.ConstructorFactory(bertyDB))
-	bertyDB.RegisterStoreType(storesetting.StoreType, storesetting.ConstructorFactory(bertyDB))
-	bertyDB.RegisterStoreType(storesecret.StoreType, storesecret.ConstructorFactory(bertyDB))
+	bertyDB.RegisterStoreType(GroupMetadataStoreType, ConstructorFactoryGroupMetadata(bertyDB))
 
 	return bertyDB, nil
 }
 
-func (s *BertyOrbitDB) GetGroupContext(groupID string) (orbitutilapi.GroupContext, error) {
+func (s *bertyOrbitDB) GetGroupContext(groupID string) (GroupContext, error) {
 	s.lock.RLock()
 	g, ok := s.groups[groupID]
 	s.lock.RUnlock()
@@ -126,8 +110,8 @@ func (s *BertyOrbitDB) GetGroupContext(groupID string) (orbitutilapi.GroupContex
 	return g, nil
 }
 
-func (s *BertyOrbitDB) GetGroupFromOptions(options *iface.NewStoreOptions) (orbitutilapi.GroupContext, error) {
-	groupIDs, err := options.AccessController.GetAuthorizedByRole(identityberty.GroupIDKey)
+func (s *bertyOrbitDB) GetGroupFromOptions(options *iface.NewStoreOptions) (GroupContext, error) {
+	groupIDs, err := options.AccessController.GetAuthorizedByRole(IdentityGroupIDKey)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -141,7 +125,7 @@ func (s *BertyOrbitDB) GetGroupFromOptions(options *iface.NewStoreOptions) (orbi
 
 // SetGroupSigPubKey registers a new group signature pubkey, mainly used to
 // replicate a store data without needing to access to its content
-func (s *BertyOrbitDB) SetGroupSigPubKey(groupID string, pubKey crypto.PubKey) error {
+func (s *bertyOrbitDB) SetGroupSigPubKey(groupID string, pubKey crypto.PubKey) error {
 	if pubKey == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -153,7 +137,7 @@ func (s *BertyOrbitDB) SetGroupSigPubKey(groupID string, pubKey crypto.PubKey) e
 	return nil
 }
 
-func (s *BertyOrbitDB) InitGroupStore(ctx context.Context, indexConstructor func(g orbitutilapi.GroupContext) iface.IndexConstructor, store orbitutilapi.GroupStore, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) error {
+func (s *bertyOrbitDB) InitGroupStore(ctx context.Context, indexConstructor func(g GroupContext) iface.IndexConstructor, store GroupStore, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) error {
 	g, err := s.GetGroupFromOptions(options)
 
 	if err != nil {
@@ -170,8 +154,8 @@ func (s *BertyOrbitDB) InitGroupStore(ctx context.Context, indexConstructor func
 	return nil
 }
 
-func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, gc orbitutilapi.GroupContext, options *orbitdb.CreateDBOptions, storeType string) (orbitutilapi.GroupStore, error) {
-	options, err := storegroup.DefaultOptions(gc.GetGroup(), options, s.keyStore)
+func (s *bertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, gc GroupContext, options *orbitdb.CreateDBOptions, storeType string) (GroupStore, error) {
+	options, err := DefaultOptions(gc.GetGroup(), options, s.keyStore)
 	if err != nil {
 		return nil, err
 	}
@@ -188,63 +172,33 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
-	sStore, ok := store.(orbitutilapi.GroupStore)
+	sStore, ok := store.(GroupStore)
 	if !ok {
 		return nil, errcode.ErrOrbitDBStoreCast.Wrap(fmt.Errorf("unable to cast store to group store"))
 	}
 
+	sStore.SetGroupContext(gc)
+
 	return sStore, nil
 }
 
-func (s *BertyOrbitDB) GroupMemberStore(ctx context.Context, g orbitutilapi.GroupContext, options *orbitdb.CreateDBOptions) (orbitutilapi.MemberStore, error) {
-	store, err := s.storeForGroup(ctx, s, g, options, storemember.StoreType)
+func (s *bertyOrbitDB) GroupMetadataStore(ctx context.Context, g GroupContext, options *orbitdb.CreateDBOptions) (MetadataStore, error) {
+	store, err := s.storeForGroup(ctx, s, g, options, GroupMetadataStoreType)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to open database")
 	}
 
-	sStore, ok := store.(orbitutilapi.MemberStore)
+	sStore, ok := store.(MetadataStore)
 	if !ok {
 		return nil, errors.New("unable to cast store to member store")
 	}
 
-	g.SetMemberStore(sStore)
+	g.SetMetadataStore(sStore)
 
 	return sStore, nil
 }
 
-func (s *BertyOrbitDB) GroupSettingStore(ctx context.Context, g orbitutilapi.GroupContext, options *orbitdb.CreateDBOptions) (orbitutilapi.SettingStore, error) {
-	store, err := s.storeForGroup(ctx, s, g, options, storesetting.StoreType)
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to open database")
-	}
-
-	sStore, ok := store.(orbitutilapi.SettingStore)
-	if !ok {
-		return nil, errors.New("unable to cast store to setting store")
-	}
-
-	g.SetSettingStore(sStore)
-
-	return sStore, nil
-}
-
-func (s *BertyOrbitDB) GroupSecretStore(ctx context.Context, g orbitutilapi.GroupContext, options *orbitdb.CreateDBOptions) (orbitutilapi.SecretStore, error) {
-	store, err := s.storeForGroup(ctx, s, g, options, storesecret.StoreType)
-	if err != nil {
-		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
-	}
-
-	sStore, ok := store.(orbitutilapi.SecretStore)
-	if !ok {
-		return nil, errcode.ErrOrbitDBStoreCast
-	}
-
-	g.SetSecretStore(sStore)
-
-	return sStore, nil
-}
-
-var _ orbitutilapi.BertyOrbitDB = (*BertyOrbitDB)(nil)
+var _ BertyOrbitDB = (*bertyOrbitDB)(nil)
 
 func WaitStoreReplication(ctx context.Context, s orbitdb.Store) {
 	ctx, cancel := context.WithCancel(ctx)

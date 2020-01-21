@@ -3,82 +3,64 @@ package orbitutil
 import (
 	"sync"
 
-	"berty.tech/berty/go/internal/group"
-	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
+	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
+
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
-type GroupContext struct {
+type ClearPayload interface {
+	proto.Marshaler
+	proto.Unmarshaler
+}
+
+type groupContext struct {
 	group           *group.Group
 	ownMemberDevice *group.OwnMemberDevice
-	memberStore     orbitutilapi.MemberStore
-	settingStore    orbitutilapi.SettingStore
-	secretStore     orbitutilapi.SecretStore
+	metadataStore   MetadataStore
 	lock            *sync.RWMutex
 }
 
-func (g *GroupContext) GetGroup() *group.Group {
+func (g *groupContext) GetGroup() *group.Group {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
 	return g.group
 }
 
-func (g *GroupContext) GetMemberPrivKey() crypto.PrivKey {
+func (g *groupContext) GetMemberPrivKey() crypto.PrivKey {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
 	return g.ownMemberDevice.Member
 }
 
-func (g *GroupContext) GetDevicePrivKey() crypto.PrivKey {
+func (g *groupContext) GetDevicePrivKey() crypto.PrivKey {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
 	return g.ownMemberDevice.Device
 }
 
-func (g *GroupContext) GetDeviceSecret() *group.DeviceSecret {
+func (g *groupContext) GetDeviceSecret() *bertyprotocol.DeviceSecret {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
 	return g.ownMemberDevice.Secret
 }
 
-func (g *GroupContext) GetMemberStore() orbitutilapi.MemberStore {
+func (g *groupContext) GetMetadataStore() MetadataStore {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
-	return g.memberStore
+	return g.metadataStore
 }
 
-func (g *GroupContext) GetSettingStore() orbitutilapi.SettingStore {
-	g.lock.RLock()
-	defer g.lock.RUnlock()
-	return g.settingStore
-}
-
-func (g *GroupContext) GetSecretStore() orbitutilapi.SecretStore {
-	g.lock.RLock()
-	defer g.lock.RUnlock()
-	return g.secretStore
-}
-
-func (g *GroupContext) SetMemberStore(s orbitutilapi.MemberStore) {
+func (g *groupContext) SetMetadataStore(s MetadataStore) {
 	g.lock.Lock()
-	g.memberStore = s
-	g.lock.Unlock()
+	defer g.lock.Unlock()
+
+	g.metadataStore = s
 }
 
-func (g *GroupContext) SetSettingStore(s orbitutilapi.SettingStore) {
-	g.lock.Lock()
-	g.settingStore = s
-	g.lock.Unlock()
-}
-
-func (g *GroupContext) SetSecretStore(s orbitutilapi.SecretStore) {
-	g.lock.Lock()
-	g.secretStore = s
-	g.lock.Unlock()
-}
-
-func NewGroupContext(g *group.Group, omd *group.OwnMemberDevice) *GroupContext {
-	return &GroupContext{
+func NewGroupContext(g *group.Group, omd *group.OwnMemberDevice) GroupContext {
+	return &groupContext{
 		group:           g,
 		ownMemberDevice: omd,
 		lock:            &sync.RWMutex{},

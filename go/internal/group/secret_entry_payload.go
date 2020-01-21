@@ -1,52 +1,22 @@
 package group
 
 import (
-	"berty.tech/berty/go/pkg/errcode"
 	cconv "github.com/agl/ed25519/extra25519"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	crypto_pb "github.com/libp2p/go-libp2p-core/crypto/pb"
 	"golang.org/x/crypto/nacl/box"
+
+	"berty.tech/berty/go/pkg/bertyprotocol"
+	"berty.tech/berty/go/pkg/errcode"
 )
 
-// CheckStructure checks validity of SecretEntryPayload
-func (s *SecretEntryPayload) CheckStructure() error {
-	const (
-		derivationStateSize = 32 // Fixed: see Berty Protocol paper
-		counterSize         = 8  // Uint64
-		deviceSecretMinSize = derivationStateSize + counterSize
-	)
-
-	_, err := crypto.UnmarshalEd25519PublicKey(s.DestMemberPubKey)
-	if err != nil {
-		return errcode.ErrDeserialization.Wrap(err)
-	}
-
-	_, err = crypto.UnmarshalEd25519PublicKey(s.SenderDevicePubKey)
-	if err != nil {
-		return errcode.ErrDeserialization.Wrap(err)
-	}
-
-	if len(s.EncryptedDeviceSecret) < deviceSecretMinSize {
-		return errcode.ErrInvalidInput.Wrap(err)
-	}
-
-	return nil
-}
-
-func (s *SecretEntryPayload) ToDeviceSecret(localMemberPrivateKey crypto.PrivKey, group *Group) (*DeviceSecret, error) {
+func OpenDeviceSecret(s *bertyprotocol.GroupAddDeviceSecret, localMemberPrivateKey crypto.PrivKey, group *Group) (*bertyprotocol.DeviceSecret, error) {
 	nonce, err := groupIDToNonce(group)
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	destMemberPubKey, err := crypto.UnmarshalEd25519PublicKey(s.DestMemberPubKey)
-	if err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
-	} else if !destMemberPubKey.Equals(localMemberPrivateKey.GetPublic()) {
-		return nil, errcode.ErrGroupSecretOtherDestMember
-	}
-
-	senderDevicePubKey, err := crypto.UnmarshalEd25519PublicKey(s.SenderDevicePubKey)
+	senderDevicePubKey, err := crypto.UnmarshalEd25519PublicKey(s.DevicePK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
@@ -56,8 +26,8 @@ func (s *SecretEntryPayload) ToDeviceSecret(localMemberPrivateKey crypto.PrivKey
 		return nil, errcode.ErrCryptoKeyConversion.Wrap(err)
 	}
 
-	decryptedSecret := &DeviceSecret{}
-	decryptedMessage, ok := box.Open(nil, s.EncryptedDeviceSecret, nonce, mongPub, mongPriv)
+	decryptedSecret := &bertyprotocol.DeviceSecret{}
+	decryptedMessage, ok := box.Open(nil, s.Payload, nonce, mongPub, mongPriv)
 	if !ok {
 		return nil, errcode.ErrCryptoDecrypt
 	}
@@ -70,27 +40,13 @@ func (s *SecretEntryPayload) ToDeviceSecret(localMemberPrivateKey crypto.PrivKey
 	return decryptedSecret, nil
 }
 
-func (s *SecretEntryPayload) GetSignerPubKey() (crypto.PubKey, error) {
-	return crypto.UnmarshalEd25519PublicKey(s.SenderDevicePubKey)
-}
-
-func NewSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey crypto.PubKey, secret *DeviceSecret, group *Group) (*SecretEntryPayload, error) {
+func NewSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey crypto.PubKey, secret *bertyprotocol.DeviceSecret, group *Group) ([]byte, error) {
 	message, err := secret.Marshal()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	nonce, err := groupIDToNonce(group)
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	remoteMemberPubKeyBytes, err := remoteMemberPubKey.Raw()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	localDevicePubKeyBytes, err := localDevicePrivKey.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
@@ -102,11 +58,7 @@ func NewSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey
 
 	encryptedSecret := box.Seal(nil, message, nonce, mongPub, mongPriv)
 
-	return &SecretEntryPayload{
-		DestMemberPubKey:      remoteMemberPubKeyBytes,
-		SenderDevicePubKey:    localDevicePubKeyBytes,
-		EncryptedDeviceSecret: encryptedSecret,
-	}, nil
+	return encryptedSecret, nil
 }
 
 func groupIDToNonce(group *Group) (*[24]byte, error) {

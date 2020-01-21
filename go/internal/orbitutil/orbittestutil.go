@@ -1,4 +1,4 @@
-package orbittestutil
+package orbitutil
 
 import (
 	"context"
@@ -10,7 +10,6 @@ import (
 
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/internal/orbitutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 
 	orbitdb "berty.tech/go-orbit-db"
@@ -22,8 +21,8 @@ import (
 
 type MockedPeer struct {
 	coreapi ipfsutil.CoreAPIMock
-	db      *orbitutil.BertyOrbitDB
-	gc      *orbitutil.GroupContext
+	db      BertyOrbitDB
+	gc      GroupContext
 }
 
 func (m *MockedPeer) GetPeerInfo() peer.AddrInfo {
@@ -34,38 +33,16 @@ func (m *MockedPeer) GetCoreAPI() ipfsutil.CoreAPIMock {
 	return m.coreapi
 }
 
-func (m *MockedPeer) GetDB() *orbitutil.BertyOrbitDB {
+func (m *MockedPeer) GetDB() BertyOrbitDB {
 	return m.db
 }
 
-func (m *MockedPeer) GetGroupContext() *orbitutil.GroupContext {
+func (m *MockedPeer) GetGroupContext() GroupContext {
 	return m.gc
 }
 
-func (m *MockedPeer) SetGroupContext(gc *orbitutil.GroupContext) {
+func (m *MockedPeer) SetGroupContext(gc GroupContext) {
 	m.gc = gc
-}
-
-func MakeDummySigningKey(t *testing.T) crypto.PrivKey {
-	t.Helper()
-
-	priv, _, err := crypto.GenerateEd25519Key(rand.Reader)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	return priv
-}
-
-func CreateInvitation(t *testing.T, inviter crypto.PrivKey) *group.Invitation {
-	t.Helper()
-
-	invitation, err := group.NewInvitation(inviter, &group.Group{PubKey: inviter.GetPublic(), SigningKey: MakeDummySigningKey(t)})
-	if err != nil {
-		t.Fatalf("err: %v", err)
-	}
-
-	return invitation
 }
 
 func ConnectPeers(ctx context.Context, t *testing.T, peers []*MockedPeer) {
@@ -84,17 +61,15 @@ func ConnectPeers(ctx context.Context, t *testing.T, peers []*MockedPeer) {
 	}
 }
 
-func createGroupContext(g *group.Group, member crypto.PrivKey, t *testing.T) *orbitutil.GroupContext {
+func createGroupContext(g *group.Group, member crypto.PrivKey, t *testing.T) GroupContext {
 	memberDevice, err := group.NewOwnMemberDevice()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if member != nil {
-		memberDevice.Member = member
-	}
+	memberDevice.Member = member
 
-	return orbitutil.NewGroupContext(g, memberDevice)
+	return NewGroupContext(g, memberDevice)
 }
 
 func createPeers(ctx context.Context, t *testing.T, pathBase string, count int, mn mocknet.Mocknet) []*MockedPeer {
@@ -112,7 +87,7 @@ func createPeers(ctx context.Context, t *testing.T, pathBase string, count int, 
 
 		orbitDBPath := path.Join(pathBase, fmt.Sprintf("%d", i))
 
-		db, err := orbitutil.NewBertyOrbitDB(ctx, ca, &orbitdb.NewOrbitDBOptions{Directory: &orbitDBPath})
+		db, err := NewBertyOrbitDB(ctx, ca, &orbitdb.NewOrbitDBOptions{Directory: &orbitDBPath})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -129,18 +104,8 @@ func createPeers(ctx context.Context, t *testing.T, pathBase string, count int, 
 func DropPeers(t *testing.T, mockedPeers []*MockedPeer) {
 	for _, mockedPeer := range mockedPeers {
 		if gc := mockedPeer.GetGroupContext(); gc != nil {
-			if ms := gc.GetMemberStore(); ms != nil {
+			if ms := gc.GetMetadataStore(); ms != nil {
 				if err := ms.Drop(); err != nil {
-					t.Fatal(err)
-				}
-			}
-			if sgs := gc.GetSettingStore(); sgs != nil {
-				if err := sgs.Drop(); err != nil {
-					t.Fatal(err)
-				}
-			}
-			if scs := gc.GetSecretStore(); scs != nil {
-				if err := scs.Drop(); err != nil {
 					t.Fatal(err)
 				}
 			}
@@ -160,12 +125,12 @@ func DropPeers(t *testing.T, mockedPeers []*MockedPeer) {
 	}
 }
 
-func CreatePeersWithGroup(ctx context.Context, t *testing.T, pathBase string, memberCount int, deviceCount int, initDBStores bool) ([]*MockedPeer, *group.Invitation) {
+func CreatePeersWithGroup(ctx context.Context, t *testing.T, pathBase string, memberCount int, deviceCount int, initDBStores bool) ([]*MockedPeer, crypto.PrivKey) {
 	t.Helper()
 
 	mockedPeers := createPeers(ctx, t, pathBase, memberCount*deviceCount, nil)
 
-	g, invitation, err := group.New()
+	g, groupSK, err := group.New()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -192,10 +157,10 @@ func CreatePeersWithGroup(ctx context.Context, t *testing.T, pathBase string, me
 
 	ConnectPeers(ctx, t, mockedPeers)
 
-	return mockedPeers, invitation
+	return mockedPeers, groupSK
 }
 
-func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPeer, invitation *group.Invitation) {
+func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPeer, groupSK crypto.PrivKey) {
 	t.Helper()
 
 	wg := sync.WaitGroup{}
@@ -206,9 +171,20 @@ func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPee
 			ctxRepl, cancel := context.WithCancel(ctx)
 			eventReceived := 0
 
-			p.GetGroupContext().GetMemberStore().Subscribe(ctxRepl, func(e events.Event) {
+			p.GetGroupContext().GetMetadataStore().Subscribe(ctxRepl, func(e events.Event) {
 				switch e.(type) {
-				case *bertyprotocol.GroupMemberStoreEvent:
+				case *bertyprotocol.GroupMetadataEvent:
+					casted, _ := e.(*bertyprotocol.GroupMetadataEvent)
+					if casted.Metadata.EventType != bertyprotocol.EventTypeGroupMemberDeviceAdded {
+						return
+					}
+
+					memdev := &bertyprotocol.GroupAddMemberDevice{}
+					err := memdev.Unmarshal(casted.Event)
+					if err != nil {
+						t.Fatal(err)
+					}
+
 					eventReceived++
 					if eventReceived == len(peers) {
 						cancel()
@@ -218,24 +194,58 @@ func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPee
 
 			wg.Done()
 			cancel()
-
-			if eventReceived != len(peers) {
-				t.Logf("%d event(s) missing from peer %d list (%d/%d)", len(peers)-eventReceived, peerIndex, eventReceived, len(peers))
-			}
 		}(p, i)
 	}
 
 	for i, p := range peers {
-		if i > 0 {
-			invitation = CreateInvitation(t, peers[0].GetGroupContext().GetMemberPrivKey())
+		if _, err := p.GetGroupContext().GetMetadataStore().JoinGroup(ctx); err != nil {
+			t.Fatal(err)
 		}
 
-		_, err := p.GetGroupContext().GetMemberStore().RedeemInvitation(ctx, invitation)
-		if err != nil {
-			t.Fatal(err)
+		if i == 0 {
+			if _, err := p.GetGroupContext().GetMetadataStore().ClaimGroupOwnership(ctx, groupSK); err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 
 	// Wait for all events to be received in all peers's member log (or timeout)
 	wg.Wait()
+}
+
+func WaitForBertyEventType(ctx context.Context, t *testing.T, peer *MockedPeer, eventType bertyprotocol.EventType, eventCount int, done chan struct{}) {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	ms := peer.GetGroupContext().GetMetadataStore()
+	handledEvents := map[string]struct{}{}
+
+	ms.Subscribe(ctx, func(evt events.Event) {
+		switch evt.(type) {
+		case *bertyprotocol.GroupMetadataEvent:
+			if evt.(*bertyprotocol.GroupMetadataEvent).Metadata.EventType != eventType {
+				return
+			}
+
+			eID := string(evt.(*bertyprotocol.GroupMetadataEvent).EventContext.ID)
+
+			if _, ok := handledEvents[eID]; ok {
+				return
+			}
+
+			handledEvents[eID] = struct{}{}
+
+			e := &bertyprotocol.GroupAddDeviceSecret{}
+			err := e.Unmarshal(evt.(*bertyprotocol.GroupMetadataEvent).Event)
+			if err != nil {
+				t.Fatalf(" err: %+v\n", err.Error())
+				return
+			}
+
+			eventCount--
+			if eventCount == 0 {
+				done <- struct{}{}
+			}
+		}
+	})
 }

@@ -17,26 +17,11 @@ import (
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/internal/orbitutil"
-	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
+	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 )
 
-func issueNewInvitation(member crypto.PrivKey, g *group.Group) {
-	newI, err := group.NewInvitation(member, g)
-	if err != nil {
-		panic(err)
-	}
-
-	newIB64, err := newI.Marshal()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("")
-	fmt.Println("New invitation:", base64.StdEncoding.EncodeToString(newIB64))
-}
-
-func isMemberMineOrGroup(member crypto.PubKey, groupContext *orbitutil.GroupContext) string {
+func isMemberMineOrGroup(member crypto.PubKey, groupContext orbitutil.GroupContext) string {
 	if member.Equals(groupContext.GetMemberPrivKey().GetPublic()) {
 		return "(Own member)"
 	} else if member.Equals(groupContext.GetGroup().PubKey) {
@@ -45,15 +30,15 @@ func isMemberMineOrGroup(member crypto.PubKey, groupContext *orbitutil.GroupCont
 	return ""
 }
 
-func isDeviceMine(device crypto.PubKey, groupContext *orbitutil.GroupContext) string {
+func isDeviceMine(device crypto.PubKey, groupContext orbitutil.GroupContext) string {
 	if device.Equals(groupContext.GetDevicePrivKey().GetPublic()) {
 		return "(Own device)"
 	}
 	return ""
 }
 
-func sendSecretToMember(ctx context.Context, member crypto.PubKey, groupContext *orbitutil.GroupContext, back bool) {
-	_, err := groupContext.GetSecretStore().SendSecret(ctx, member)
+func sendSecretToMember(ctx context.Context, member crypto.PubKey, groupContext orbitutil.GroupContext, back bool) {
+	_, err := groupContext.GetMetadataStore().SendSecret(ctx, member)
 	if err == errcode.ErrGroupSecretAlreadySentToMember {
 		return
 	} else if err != nil {
@@ -72,47 +57,26 @@ func sendSecretToMember(ctx context.Context, member crypto.PubKey, groupContext 
 	}
 }
 
-func listMembers(groupContext *orbitutil.GroupContext) {
-	members, err := groupContext.GetMemberStore().ListMembers()
-	if err != nil {
-		panic(err)
-	}
+func listMembers(groupContext orbitutil.GroupContext) {
+	members := groupContext.GetMetadataStore().ListMembers()
 
 	fmt.Println("")
 	fmt.Println("Printing list of", len(members), "members:")
 
 	for i, member := range members {
-
-		memberEntry, err := groupContext.GetMemberStore().GetEntryByMember(member)
+		memberDevices, err := groupContext.GetMetadataStore().GetDevicesForMember(member)
 		if err != nil {
 			panic(err)
 		}
 
-		memberKeyBytes, err := memberEntry.Member().Raw()
+		memberKeyBytes, err := memberDevices[0].Raw()
 		if err != nil {
 			panic(err)
 		}
 		memberKeyStr := base64.StdEncoding.EncodeToString(memberKeyBytes)
 
-		inviters := ""
-		for j, inviter := range memberEntry.Inviters() {
-			inviterKeyBytes, err := inviter.Raw()
-			if err != nil {
-				panic(err)
-			}
-			inviters += base64.StdEncoding.EncodeToString(inviterKeyBytes)
-
-			if own := isMemberMineOrGroup(inviter, groupContext); own != "" {
-				inviters += " " + own
-			}
-
-			if j != memberEntry.CountInviters()-1 {
-				inviters += ", "
-			}
-		}
-
 		devices := ""
-		for j, device := range memberEntry.Devices() {
+		for _, device := range memberDevices {
 			deviceKeyBytes, err := device.Raw()
 			if err != nil {
 				panic(err)
@@ -122,16 +86,11 @@ func listMembers(groupContext *orbitutil.GroupContext) {
 			if own := isDeviceMine(device, groupContext); own != "" {
 				devices += " " + own
 			}
-
-			if j != memberEntry.CountDevices()-1 {
-				inviters += ", "
-			}
 		}
 
 		fmt.Println("Member", i, "\b: {")
 		fmt.Println("\tMember:", memberKeyStr, isMemberMineOrGroup(member, groupContext))
 		fmt.Println("\tDevice(s):", "["+devices+"]")
-		fmt.Println("\tInviter(s):", "["+inviters+"]")
 
 		if i != len(members)-1 {
 			fmt.Println("},")
@@ -141,7 +100,7 @@ func listMembers(groupContext *orbitutil.GroupContext) {
 	}
 }
 
-func mainLoop(invitation *group.Invitation, create bool) {
+func mainLoop(g *group.Group, groupSK crypto.PrivKey) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -160,12 +119,7 @@ func mainLoop(invitation *group.Invitation, create bool) {
 		panic(err)
 	}
 
-	g, err := invitation.GetGroup()
-	if err != nil {
-		panic(err)
-	}
-
-	p := path.Join(os.TempDir(), base64.StdEncoding.EncodeToString(invitation.InvitationPrivKey))
+	p := path.Join(os.TempDir(), string(os.Getpid()))
 
 	odb, err := orbitutil.NewBertyOrbitDB(ctx, api, &orbitdb.NewOrbitDBOptions{Directory: &p})
 	if err != nil {
@@ -195,60 +149,72 @@ func mainLoop(invitation *group.Invitation, create bool) {
 		panic(err)
 	}
 
+	groupBytes, err := g.PubKey.Raw()
+	if err != nil {
+		panic(err)
+	}
+
 	fmt.Println("")
 	fmt.Println("PeerID:", self.ID().String())
-	fmt.Println("GroupID:", base64.StdEncoding.EncodeToString(invitation.GroupPubKey))
+	fmt.Println("GroupID:", base64.StdEncoding.EncodeToString(groupBytes))
 	fmt.Println("Member key:", base64.StdEncoding.EncodeToString(memberKeyBytes))
 	fmt.Println("Device key:", base64.StdEncoding.EncodeToString(deviceKeyBytes))
-	fmt.Println("Derivation state:", base64.StdEncoding.EncodeToString(groupContext.GetDeviceSecret().DerivationState))
+	fmt.Println("Chain key:", base64.StdEncoding.EncodeToString(groupContext.GetDeviceSecret().ChainKey))
 	fmt.Println("Counter:", groupContext.GetDeviceSecret().Counter)
 
-	ms := groupContext.GetMemberStore()
-	scs := groupContext.GetSecretStore()
+	ms := groupContext.GetMetadataStore()
 
 	debounce := &trylock.Mutex{}
 
-	go scs.Subscribe(ctx, func(e events.Event) {
+	go ms.Subscribe(ctx, func(e events.Event) {
 		switch e.(type) {
-		case *orbitutilapi.GroupSecretStoreEvent:
-			event, _ := e.(*orbitutilapi.GroupSecretStoreEvent)
+		case *bertyprotocol.GroupMetadataEvent:
+			casted, _ := e.(*bertyprotocol.GroupMetadataEvent)
+			if casted.Metadata.EventType != bertyprotocol.EventTypeGroupDeviceSecretAdded {
+				return
+			}
 
-			senderDevicePubKey, err := crypto.UnmarshalEd25519PublicKey(event.GroupStoreEvent.GroupDevicePubKey)
+			event := &bertyprotocol.GroupAddDeviceSecret{}
+			if err := event.Unmarshal(casted.Metadata.Payload); err != nil {
+				// TODO: log
+				return
+			}
+
+			senderDevicePubKey, err := crypto.UnmarshalEd25519PublicKey(event.DevicePK)
 			if err != nil {
 				panic(err)
 			}
 
-			secret, err := scs.GetDeviceSecret(senderDevicePubKey)
+			secret, err := ms.GetDeviceSecret(senderDevicePubKey)
 			if err != nil {
 				panic(err)
 			}
 
-			memberEntry, err := ms.GetEntryByDevice(senderDevicePubKey)
+			memberEntry, err := ms.GetMemberByDevice(senderDevicePubKey)
 			if err != nil {
 				panic(err)
 			}
 
-			senderDevicePubKeyBytes := event.GroupStoreEvent.GroupDevicePubKey
-			senderMemberPubKeyBytes, err := memberEntry.Member().Raw()
+			senderDevicePubKeyBytes := event.DevicePK
+			senderMemberPubKeyBytes, err := memberEntry.Raw()
 			if err != nil {
 				panic(err)
 			}
 			fmt.Println("")
 			fmt.Println("Secret received from: {")
-			fmt.Println("\tMember:", base64.StdEncoding.EncodeToString(senderMemberPubKeyBytes), isMemberMineOrGroup(memberEntry.Member(), groupContext))
+			fmt.Println("\tMember:", base64.StdEncoding.EncodeToString(senderMemberPubKeyBytes), isMemberMineOrGroup(memberEntry, groupContext))
 			fmt.Println("\tDevice:", base64.StdEncoding.EncodeToString(senderDevicePubKeyBytes), isDeviceMine(senderDevicePubKey, groupContext))
-			fmt.Println("\tDerivation state:", base64.StdEncoding.EncodeToString(secret.DerivationState))
+			fmt.Println("\tDerivation state:", base64.StdEncoding.EncodeToString(secret.ChainKey))
 			fmt.Println("\tCounter:", secret.Counter)
 			fmt.Println("}")
 
-			sendSecretToMember(ctx, memberEntry.Member(), groupContext, true)
+			sendSecretToMember(ctx, memberEntry, groupContext, true)
 
 			// Debounces listing members / issuing new invitation
 			go func() {
 				if debounce.TryLock() {
 					time.Sleep(500 * time.Millisecond)
 					listMembers(groupContext)
-					issueNewInvitation(groupContext.GetMemberPrivKey(), groupContext.GetGroup())
 					debounce.Unlock()
 				}
 			}()
@@ -256,7 +222,7 @@ func mainLoop(invitation *group.Invitation, create bool) {
 	})
 
 	fmt.Println("")
-	if !create {
+	if groupSK == nil {
 		fmt.Println("Waiting for store replication")
 
 		replicated := false
@@ -278,31 +244,25 @@ func mainLoop(invitation *group.Invitation, create bool) {
 		}
 	}
 
-	inviterPubKey, err := crypto.UnmarshalEd25519PublicKey(invitation.InviterMemberPubKey)
-	if err != nil {
-		panic(err)
-	}
+	fmt.Println("Joining group")
 
-	fmt.Println("Redeeming invitation issued by:", base64.StdEncoding.EncodeToString(invitation.InviterMemberPubKey), isMemberMineOrGroup(inviterPubKey, groupContext))
-
-	_, err = ms.RedeemInvitation(ctx, invitation)
+	_, err = ms.JoinGroup(ctx)
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("Sending secret to members already in the group")
 
-	members, err := ms.ListMembers()
-	if err != nil {
-		panic(err)
-	}
+	members := ms.ListMembers()
 
 	for _, member := range members {
 		sendSecretToMember(ctx, member, groupContext, false)
 	}
 
-	if create {
-		issueNewInvitation(groupContext.GetMemberPrivKey(), groupContext.GetGroup())
+	if groupSK != nil {
+		if _, err := ms.ClaimGroupOwnership(ctx, groupSK); err != nil {
+			panic(err)
+		}
 	}
 
 	<-ctx.Done()
@@ -310,7 +270,8 @@ func mainLoop(invitation *group.Invitation, create bool) {
 
 func main() {
 	var (
-		i   *group.Invitation
+		g   *group.Group
+		sk  crypto.PrivKey
 		err error
 	)
 
@@ -318,10 +279,37 @@ func main() {
 
 	if create {
 		fmt.Println("Creating a new group")
-		_, i, err = group.New()
+		g, sk, err = group.New()
 		if err != nil {
 			panic(err)
 		}
+
+		pkB, err := g.PubKey.Raw()
+		if err != nil {
+			panic(err)
+		}
+		skB, err := g.SigningKey.Raw()
+		if err != nil {
+			panic(err)
+		}
+		skSig, err := sk.Sign(skB)
+		if err != nil {
+			panic(err)
+		}
+
+		gInv := bertyprotocol.Group{
+			PublicKey: pkB,
+			Secret:    skB,
+			SecretSig: skSig,
+			GroupType: bertyprotocol.GroupTypeMultiMember,
+		}
+
+		gInvB, err := gInv.Marshal()
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Printf("Group token: %s\n", base64.StdEncoding.EncodeToString(gInvB))
 	} else {
 		fmt.Println("Joining an existing group")
 		// Read invitation (as base64 on stdin)
@@ -330,12 +318,12 @@ func main() {
 			panic(err)
 		}
 
-		i = &group.Invitation{}
-		err = i.Unmarshal(iB64)
+		grp := &bertyprotocol.Group{}
+		err = grp.Unmarshal(iB64)
 		if err != nil {
 			panic(err)
 		}
 	}
 
-	mainLoop(i, create)
+	mainLoop(g, sk)
 }
