@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { colors, styles } from '@berty-tech/styles'
+import { Layout, Text } from 'react-native-ui-kitten'
+import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { useNavigation, ScreenProps } from '@berty-tech/berty-navigation'
@@ -10,6 +10,14 @@ import { useNavigation, ScreenProps } from '@berty-tech/berty-navigation'
 //
 
 // Styles
+const useStylesHelp = () => {
+	const [{ padding, margin }] = useStyles()
+	return {
+		rowButtons: padding.top.tiny,
+		firstRowButton: margin.right.small,
+		secondRowButton: margin.left.small,
+	}
+}
 const _helpStyles = StyleSheet.create({
 	headerButtonText: {
 		paddingLeft: 33,
@@ -17,97 +25,96 @@ const _helpStyles = StyleSheet.create({
 		fontSize: 10,
 		marginLeft: 6,
 	},
-	rowButtons: {
-		paddingTop: 4,
-	},
-	firstRowButton: {
-		marginRight: 10,
-	},
-	secondRowButton: {
-		marginLeft: 10,
-	},
 })
 
-const HeaderHelp: React.FC<{}> = () => (
-	<View>
-		<ButtonSetting
-			name='Security & Privacy'
-			icon='shield-outline'
-			iconSize={30}
-			iconColor={colors.red}
-			actionIcon='arrow-ios-forward'
-		>
-			<Text style={[styles.textBold, _helpStyles.headerButtonText]}>
-				Keep your data safe & your life private
-			</Text>
-		</ButtonSetting>
-	</View>
-)
-
-const BodyHelp: React.FC<{}> = () => (
-	<View style={[styles.padding]}>
-		<ButtonSetting
-			name='Account & Berty ID'
-			icon='person-outline'
-			iconSize={30}
-			iconColor={colors.red}
-			actionIcon='arrow-ios-forward'
-		/>
-		<ButtonSetting
-			name='Contacts & Requests'
-			icon='person-add-outline'
-			iconSize={30}
-			iconColor={colors.red}
-			actionIcon='arrow-ios-forward'
-		/>
-		<ButtonSetting
-			name='Messages'
-			icon='paper-plane-outline'
-			iconSize={30}
-			iconColor={colors.red}
-			actionIcon='arrow-ios-forward'
-		/>
-		<ButtonSetting
-			name='Groups'
-			icon='people-outline'
-			iconSize={30}
-			iconColor={colors.red}
-			actionIcon='arrow-ios-forward'
-		/>
-		<ButtonSetting
-			name='Settings'
-			icon='settings-2-outline'
-			iconSize={30}
-			iconColor={colors.red}
-			actionIcon='arrow-ios-forward'
-		/>
-		<View style={[_helpStyles.rowButtons]}>
-			<ButtonSettingRow
-				state={[
-					{
-						name: 'Ask a question',
-						icon: 'question-mark-circle-outline',
-						color: colors.red,
-						style: _helpStyles.firstRowButton,
-					},
-					{
-						name: 'Report a bug',
-						icon: 'bulb-outline',
-						color: colors.red,
-						style: _helpStyles.secondRowButton,
-					},
-				]}
-			/>
+const HeaderHelp: React.FC<{}> = () => {
+	const [{ color, text }] = useStyles()
+	return (
+		<View>
+			<ButtonSetting
+				name='Security & Privacy'
+				icon='shield-outline'
+				iconSize={30}
+				iconColor={color.red}
+				actionIcon='arrow-ios-forward'
+			>
+				<Text style={[text.bold, _helpStyles.headerButtonText]}>
+					Keep your data safe & your life private
+				</Text>
+			</ButtonSetting>
 		</View>
-	</View>
-)
+	)
+}
+
+const BodyHelp: React.FC<{}> = () => {
+	const _styles = useStylesHelp()
+	const [{ padding, color }] = useStyles()
+	return (
+		<View style={padding.medium}>
+			<ButtonSetting
+				name='Account & Berty ID'
+				icon='person-outline'
+				iconSize={30}
+				iconColor={color.red}
+				actionIcon='arrow-ios-forward'
+			/>
+			<ButtonSetting
+				name='Contacts & Requests'
+				icon='person-add-outline'
+				iconSize={30}
+				iconColor={color.red}
+				actionIcon='arrow-ios-forward'
+			/>
+			<ButtonSetting
+				name='Messages'
+				icon='paper-plane-outline'
+				iconSize={30}
+				iconColor={color.red}
+				actionIcon='arrow-ios-forward'
+			/>
+			<ButtonSetting
+				name='Groups'
+				icon='people-outline'
+				iconSize={30}
+				iconColor={color.red}
+				actionIcon='arrow-ios-forward'
+			/>
+			<ButtonSetting
+				name='Settings'
+				icon='settings-2-outline'
+				iconSize={30}
+				iconColor={color.red}
+				actionIcon='arrow-ios-forward'
+			/>
+			<View style={[_styles.rowButtons]}>
+				<ButtonSettingRow
+					state={[
+						{
+							name: 'Ask a question',
+							icon: 'question-mark-circle-outline',
+							color: color.red,
+							style: _styles.firstRowButton,
+						},
+						{
+							name: 'Report a bug',
+							icon: 'bulb-outline',
+							color: color.red,
+							style: _styles.secondRowButton,
+						},
+					]}
+				/>
+			</View>
+		</View>
+	)
+}
 
 export const Help: React.FC<ScreenProps.Settings.Help> = () => {
 	const { goBack } = useNavigation()
+	const [{ background, flex, color }] = useStyles()
 	return (
-		<Layout style={[styles.bgWhite, styles.flex]}>
+		<Layout style={[background.white, flex.tiny]}>
 			<ScrollView>
-				<HeaderSettings title='Help' bgColor={colors.red} undo={goBack}>
+				<HeaderSettings title='Help' bgColor={color.red} undo={goBack}>
 					<HeaderHelp />
 				</HeaderSettings>
 				<BodyHelp />
