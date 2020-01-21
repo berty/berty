@@ -108,8 +108,8 @@ export type Declaration = {
 }
 
 export type Styles = {
-	color: Colors<string> & ColorsBrightness<string>
-	background: Colors<{}> & ColorsBrightness<{}>
+	color: ColorsStyles<string>
+	background: ColorsStyles<{}>
 	padding: Sizes<{}> & Sides<Sizes<{}>>
 	margin: Sizes<{}> & Sides<Sizes<{}>>
 	border: Border<{}>
