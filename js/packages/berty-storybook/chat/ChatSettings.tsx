@@ -1,7 +1,7 @@
 import React from 'react'
-import { View, ScrollView, StyleSheet } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { Text } from 'react-native-ui-kitten'
-import { styles, colors } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import HeaderSettings from '../shared-components/Header'
@@ -13,30 +13,25 @@ import { berty } from '@berty-tech/api'
 //
 
 // Styles
-const _chatSettingsStyle = StyleSheet.create({
-	headerAvatar: {
-		flex: 5,
-	},
-	firstHeaderButton: {
-		marginRight: 20,
-		height: 90,
-	},
-	secondHeaderButton: {
-		marginRight: 20,
-		height: 90,
-	},
-	thirdHeaderButton: {
-		height: 90,
-	},
-})
+const useStylesChatSettings = () => {
+	const [{ flex, height, margin }] = useStyles()
+	return {
+		headerAvatar: flex.large,
+		firstHeaderButton: [margin.right.scale(20), height(90)],
+		secondHeaderButton: [margin.right.scale(20), height(90)],
+		thirdHeaderButton: height(90),
+	}
+}
 
 const ChatSettingsHeader: React.FC<berty.chatmodel.IConversation> = ({ avatarUri, title }) => {
+	const _styles = useStylesChatSettings()
+	const [{ text, padding, row }] = useStyles()
 	return (
-		<View style={[_chatSettingsStyle.headerAvatar]}>
-			<CircleAvatar style={styles.alignItems} avatarUri={avatarUri || ''} size={100} />
+		<View style={[_styles.headerAvatar]}>
+			<CircleAvatar style={row.item.justify} avatarUri={avatarUri || ''} size={100} />
 			<Text
 				numberOfLines={1}
-				style={[styles.textWhite, styles.center, styles.littlePaddingTop, styles.textBold]}
+				style={[text.color.white, text.align.center, padding.top.small, text.bold]}
 			>
 				{title || ''}
 			</Text>
@@ -44,51 +39,63 @@ const ChatSettingsHeader: React.FC<berty.chatmodel.IConversation> = ({ avatarUri
 	)
 }
 
-const ChatSettingsHeaderButtons: React.FC<{}> = () => (
-	<View style={[styles.paddingLeft, styles.paddingRight, styles.paddingTop]}>
-		<ButtonSettingRow
-			state={[
-				{
-					name: 'Search',
-					icon: 'search-outline',
-					color: colors.blue,
-					style: _chatSettingsStyle.firstHeaderButton,
-				},
-				{
-					name: 'Call',
-					icon: 'phone-outline',
-					color: colors.green,
-					style: _chatSettingsStyle.secondHeaderButton,
-				},
-				{
-					name: 'Share',
-					icon: 'share-outline',
-					color: colors.blue,
-					style: _chatSettingsStyle.thirdHeaderButton,
-				},
-			]}
-		/>
-	</View>
-)
+const ChatSettingsHeaderButtons: React.FC<{}> = () => {
+	const _styles = useStylesChatSettings()
+	const [{ padding, color }] = useStyles()
+	return (
+		<View style={[padding.horizontal.medium, padding.top.medium]}>
+			<ButtonSettingRow
+				state={[
+					{
+						name: 'Search',
+						icon: 'search-outline',
+						color: color.blue,
+						style: _styles.firstHeaderButton,
+					},
+					{
+						name: 'Call',
+						icon: 'phone-outline',
+						color: color.green,
+						style: _styles.secondHeaderButton,
+					},
+					{
+						name: 'Share',
+						icon: 'share-outline',
+						color: color.blue,
+						style: _styles.thirdHeaderButton,
+					},
+				]}
+			/>
+		</View>
+	)
+}
 
-const ChatSettingsBody: React.FC<{}> = () => (
-	<View style={[styles.paddingLeft, styles.paddingRight]}>
-		<ButtonSetting name='Medias, links & docs' icon='image-outline' />
-		<ButtonSetting name='Receive notifications' icon='bell-outline' toggled />
-		<ButtonSetting
-			name='Mutual groups'
-			icon='people-outline'
-			state={{ value: '3 mutuals', color: colors.blue, bgColor: colors.lightBlue }}
-		/>
-		<ButtonSetting name='Erase conversation' icon='message-circle-outline' iconColor={colors.red} />
-	</View>
-)
+const ChatSettingsBody: React.FC<{}> = () => {
+	const [{ padding, color }] = useStyles()
+	return (
+		<View style={[padding.horizontal.medium]}>
+			<ButtonSetting name='Medias, links & docs' icon='image-outline' />
+			<ButtonSetting name='Receive notifications' icon='bell-outline' toggled />
+			<ButtonSetting
+				name='Mutual groups'
+				icon='people-outline'
+				state={{ value: '3 mutuals', color: color.blue, bgColor: color.light.blue }}
+			/>
+			<ButtonSetting
+				name='Erase conversation'
+				icon='message-circle-outline'
+				iconColor={color.red}
+			/>
+		</View>
+	)
+}
 
 export const ChatSettings: React.FC<ScreenProps.Chat.Settings> = ({ route: { params } }) => {
 	console.log('params', params)
 	const { goBack, navigate } = useNavigation()
+	const [{ flex, background }] = useStyles()
 	return (
-		<ScrollView style={[styles.flex, styles.bgWhite]}>
+		<ScrollView style={[flex.tiny, background.white]}>
 			<HeaderSettings
 				action={() => navigate.chat.one2OneSettings()}
 				actionIcon='more-horizontal-outline'

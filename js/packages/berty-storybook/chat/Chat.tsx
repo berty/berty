@@ -8,82 +8,73 @@ import {
 	ActivityIndicator,
 	KeyboardAvoidingView,
 } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '@berty-tech/styles'
+import { Text, Icon } from 'react-native-ui-kitten'
+import { useStyles } from '@berty-tech/styles'
 import { Message } from './shared-components/Message'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { berty } from '@berty-tech/api'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
-import { BlurView } from '@react-native-community/blur'
 
 //
 // Chat
 //
 
 // Styles
-const _chatStyles = StyleSheet.create({
-	headerName: {
-		flex: 5,
-	},
-	headerNameText: {
-		fontSize: 20,
-	},
-})
+const useStylesChat = () => {
+	const [{ flex, text }] = useStyles()
+	return {
+		headerName: flex.large,
+		headerNameText: text.size.scale(20),
+	}
+}
 
 const ChatHeader: React.FC<berty.chatmodel.IConversation> = (props) => {
 	const { avatarUri, title } = props
 	const { navigate, goBack } = useNavigation()
+	const _styles = useStylesChat()
+	const [{ row, padding, column, margin, text, flex }] = useStyles()
 	return (
 		<SafeAreaView>
-			<View style={[styles.row, styles.centerItems, styles.spaceCenter, styles.padding]}>
-				<TouchableOpacity style={[styles.flex]} onPress={goBack}>
+			<View style={[row.center, padding.medium]}>
+				<TouchableOpacity style={[flex.tiny]} onPress={goBack}>
 					<Icon name='arrow-back-outline' width={30} height={30} />
 				</TouchableOpacity>
-				<View
-					style={[styles.col, styles.centerItems, styles.littleMarginTop, _chatStyles.headerName]}
-				>
-					<Text
-						numberOfLines={1}
-						style={[styles.textCenter, styles.textBold, _chatStyles.headerNameText]}
-					>
+				<View style={[column.justify, margin.top.small, _styles.headerName]}>
+					<Text numberOfLines={1} style={[text.align.center, text.bold, _styles.headerNameText]}>
 						{title || ''}
 					</Text>
-					<Text numberOfLines={1} style={[styles.textGrey]}>
+					<Text numberOfLines={1} style={[text.color.grey, text.align.center]}>
 						Last seen just now
 					</Text>
 				</View>
-				<TouchableOpacity
-					style={[styles.flex]}
-					onPress={() => navigate.chat.one2OneSettings(props)}
-				>
-					<CircleAvatar
-						style={styles.centerItems}
-						avatarUri={avatarUri || ''}
-						size={40}
-						diffSize={5}
-					/>
+				<TouchableOpacity style={[flex.tiny]} onPress={() => navigate.chat.one2OneSettings(props)}>
+					<CircleAvatar avatarUri={avatarUri || ''} size={40} diffSize={5} />
 				</TouchableOpacity>
 			</View>
 		</SafeAreaView>
 	)
 }
 
-const InfosChat: React.FC<{}> = () => (
-	<View style={[styles.padding]}>
-		<ChatDate date='Today' />
-	</View>
-)
+const InfosChat: React.FC<{}> = () => {
+	const [{ padding }] = useStyles()
+	return (
+		<View style={[padding.medium]}>
+			<ChatDate date='Today' />
+		</View>
+	)
+}
 
 const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
 const MessageList: React.FC<berty.chatmodel.IConversation> = (props) => {
 	const [cursors, setCursor] = useState([0])
+	const [{ row, overflow, flex, color }] = useStyles()
 
 	return (
 		<FlatList
-			style={[styles.overflow, styles.stretch, styles.flex]}
+			style={[overflow, row.item.fill, flex.tiny]}
 			data={cursors}
 			inverted
 			ListFooterComponent={<InfosChat />}
@@ -98,8 +89,8 @@ const MessageList: React.FC<berty.chatmodel.IConversation> = (props) => {
 								{..._.message}
 								date='9:42'
 								message='Bonkur fjhfjhefefbe hjfgvddd g hjheg jgjhgjehgjhg jhge jhghdjkwlfuy wtyrygv gg hrhg rjygr'
-								color={colors.blue}
-								bgColor={colors.lightMsgBlue}
+								color={color.blue}
+								bgColor='#CED2FF99'
 							/>
 						))
 					}
@@ -111,9 +102,10 @@ const MessageList: React.FC<berty.chatmodel.IConversation> = (props) => {
 
 export const Chat: React.FC<ScreenProps.Chat.One2One> = ({ route: { params } }) => {
 	const [inputIsFocused, setInputFocus] = useState(true)
+	const [{ flex, background }] = useStyles()
 	return (
-		<View style={[StyleSheet.absoluteFill, styles.bgWhite]}>
-			<KeyboardAvoidingView style={[styles.flex]} behavior='padding'>
+		<View style={[StyleSheet.absoluteFill, background.white]}>
+			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
 				<ChatHeader {...params} />
 				<MessageList {...params} />
 				<ChatFooter isFocused={inputIsFocused} setFocus={setInputFocus} />

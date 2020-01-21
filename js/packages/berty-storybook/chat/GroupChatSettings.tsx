@@ -1,7 +1,7 @@
 import React from 'react'
-import { View, StyleSheet, ScrollView } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
-import { styles, colors } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 import {
 	ButtonSetting,
 	FactionButtonSetting,
@@ -17,48 +17,48 @@ import { berty } from '@berty-tech/api'
 //
 
 // Styles
-const _groupChatSettingsStyle = StyleSheet.create({
-	firstHeaderButton: {
-		marginRight: 20,
-		height: 90,
-	},
-	secondHeaderButton: {
-		marginRight: 20,
-		height: 90,
-	},
-	thirdHeaderButton: {
-		height: 90,
-	},
-})
+const useStylesChatSettings = () => {
+	const [{ margin, height }] = useStyles()
+	return {
+		firstHeaderButton: [margin.right.scale(20), height(90)],
+		secondHeaderButton: [margin.right.scale(20), height(90)],
+		thirdHeaderButton: height(90),
+	}
+}
 
-const GroupChatSettingsHeaderButtons: React.FC<{}> = () => (
-	<View style={[styles.paddingTop, styles.marginTop]}>
-		<ButtonSettingRow
-			state={[
-				{
-					name: 'Search',
-					icon: 'search-outline',
-					color: colors.blue,
-					style: _groupChatSettingsStyle.firstHeaderButton,
-				},
-				{
-					name: 'Call',
-					icon: 'phone-outline',
-					color: colors.green,
-					style: _groupChatSettingsStyle.secondHeaderButton,
-				},
-				{
-					name: 'Share',
-					icon: 'share-outline',
-					color: colors.blue,
-					style: _groupChatSettingsStyle.thirdHeaderButton,
-				},
-			]}
-		/>
-	</View>
-)
+const GroupChatSettingsHeaderButtons: React.FC<{}> = () => {
+	const _styles = useStylesChatSettings()
+	const [{ padding, margin, color }] = useStyles()
+	return (
+		<View style={[padding.top.medium, margin.top.medium]}>
+			<ButtonSettingRow
+				state={[
+					{
+						name: 'Search',
+						icon: 'search-outline',
+						color: color.blue,
+						style: _styles.firstHeaderButton,
+					},
+					{
+						name: 'Call',
+						icon: 'phone-outline',
+						color: color.green,
+						style: _styles.secondHeaderButton,
+					},
+					{
+						name: 'Share',
+						icon: 'share-outline',
+						color: color.blue,
+						style: _styles.thirdHeaderButton,
+					},
+				]}
+			/>
+		</View>
+	)
+}
 
 const GroupChatSettingsHeader: React.FC<berty.chatmodel.IConversation> = ({ avatarUri, title }) => {
+	const [{ text, margin }] = useStyles()
 	return (
 		<View>
 			<GroupCircleAvatar
@@ -69,7 +69,7 @@ const GroupChatSettingsHeader: React.FC<berty.chatmodel.IConversation> = ({ avat
 			<Text
 				numberOfLines={1}
 				ellipsizeMode='tail'
-				style={[styles.textCenter, styles.textWhite, styles.littleMarginTop, styles.textBold]}
+				style={[text.align.center, text.color.white, margin.top.small, text.bold]}
 			>
 				{title || ''}
 			</Text>
@@ -77,64 +77,72 @@ const GroupChatSettingsHeader: React.FC<berty.chatmodel.IConversation> = ({ avat
 	)
 }
 
-const GroupChatSettingsBody: React.FC<berty.chatmodel.IConversation> = ({ avatarUri, name }) => (
-	<View style={[styles.padding]}>
-		<ButtonSetting name='Medias, links & docs' icon='image-outline' />
-		<ButtonSetting name='Receive notifications' icon='bell-outline' toggled />
-		<FactionButtonSetting
-			name='Members'
-			icon='people-outline'
-			state={{ value: '4 members', color: colors.blue, bgColor: colors.lightBlue }}
-			style={[styles.marginTop]}
-		>
+const GroupChatSettingsBody: React.FC<berty.chatmodel.IConversation> = ({ avatarUri, name }) => {
+	const [{ padding, margin, color }] = useStyles()
+	return (
+		<View style={[padding.medium]}>
+			<ButtonSetting name='Medias, links & docs' icon='image-outline' />
+			<ButtonSetting name='Receive notifications' icon='bell-outline' toggled />
+			<FactionButtonSetting
+				name='Members'
+				icon='people-outline'
+				state={{ value: '4 members', color: color.blue, bgColor: color.light.blue }}
+				style={[margin.top.medium]}
+			>
+				<ButtonSetting
+					style={[padding.horizontal.small]}
+					name={name}
+					image={avatarUri}
+					previewValue='Me'
+					previewValueColor={color.blue}
+					alone={false}
+				/>
+				<ButtonSetting
+					name={name}
+					image={avatarUri}
+					alone={false}
+					style={[padding.horizontal.small]}
+				/>
+				<ButtonSetting
+					name={name}
+					image={avatarUri}
+					alone={false}
+					style={[padding.horizontal.small]}
+				/>
+				<ButtonSetting
+					name={name}
+					image={avatarUri}
+					alone={false}
+					style={[padding.horizontal.small]}
+				/>
+				<ButtonSetting
+					name={name}
+					image={avatarUri}
+					style={[padding.horizontal.small]}
+					alone={false}
+					state={{ value: 'Not a contact', color: color.grey, bgColor: color.light.grey }}
+				/>
+			</FactionButtonSetting>
+			<ButtonSetting name='Add member' icon='person-add-outline' />
+			<ButtonSetting name='Invite by link' icon='attach-outline' />
 			<ButtonSetting
-				style={[styles.littlePaddingLeft, styles.littlePaddingRight]}
-				name={name}
-				image={avatarUri}
-				previewValue='Me'
-				previewValueColor={colors.blue}
-				alone={false}
+				name='Erase conversation'
+				icon='message-circle-outline'
+				iconColor={color.red}
 			/>
-			<ButtonSetting
-				name={name}
-				image={avatarUri}
-				alone={false}
-				style={[styles.littlePaddingLeft, styles.littlePaddingRight]}
-			/>
-			<ButtonSetting
-				name={name}
-				image={avatarUri}
-				alone={false}
-				style={[styles.littlePaddingLeft, styles.littlePaddingRight]}
-			/>
-			<ButtonSetting
-				name={name}
-				image={avatarUri}
-				alone={false}
-				style={[styles.littlePaddingLeft, styles.littlePaddingRight]}
-			/>
-			<ButtonSetting
-				name={name}
-				image={avatarUri}
-				style={[styles.littlePaddingLeft, styles.littlePaddingRight]}
-				alone={false}
-				state={{ value: 'Not a contact', color: colors.grey, bgColor: colors.lightGrey }}
-			/>
-		</FactionButtonSetting>
-		<ButtonSetting name='Add member' icon='person-add-outline' />
-		<ButtonSetting name='Invite by link' icon='attach-outline' />
-		<ButtonSetting name='Erase conversation' icon='message-circle-outline' iconColor={colors.red} />
-		<ButtonSetting name='Leave group' icon='log-out-outline' iconColor={colors.red} />
-	</View>
-)
+			<ButtonSetting name='Leave group' icon='log-out-outline' iconColor={color.red} />
+		</View>
+	)
+}
 
 export const GroupChatSettings: React.FC<ScreenProps.Main.GroupChatSettings> = ({
 	route: { params },
 }) => {
 	const { goBack } = useNavigation()
+	const [{ flex, padding }] = useStyles()
 	return (
-		<Layout style={[styles.flex]}>
-			<ScrollView contentContainerStyle={[styles.paddingBottom]}>
+		<Layout style={[flex.tiny]}>
+			<ScrollView contentContainerStyle={[padding.bottom.medium]}>
 				<HeaderSettings actionIcon='edit-outline' undo={goBack}>
 					<View>
 						<GroupChatSettingsHeader {...params} />
