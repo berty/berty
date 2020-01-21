@@ -19,7 +19,8 @@
   ],
   "main": "index.js",
   "scripts": {
-    "cli": "babel-node --extensions '.es6,.js,.es,.jsx,.mjs,.ts,.tsx'"
+    "cli": "babel-node --extensions '.es6,.js,.es,.jsx,.mjs,.ts,.tsx'",
+    "test": "jest"
   },
   "workspaces": {
     "packages": [
@@ -32,10 +33,12 @@
       "**/@react-native-community/*",
       "**/hermes-engine",
       "**/metro-*",
-      "**/@ui-kitten/eva-icons"
+      "**/@ui-kitten/eva-icons",
+      "**/@react-navigation/native"
     ]
   },
   "dependencies": {
+    "babel-jest": "^24.9.0",
     "caser": "^0.1.1",
     "create-react-native-module": "^0.11.1",
     "eslint-plugin-jest": "^22.17.0",

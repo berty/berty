@@ -2,20 +2,20 @@ import { grpc } from '@improbable-eng/grpc-web'
 import * as pb from 'protobufjs'
 
 export abstract class MockServiceHandler {
-	metadata?: grpc.Metadata
+	metadata?: { [key: string]: string | Array<string> }
 
-	constructor(metadata?: grpc.Metadata) {
+	constructor(metadata?: { [key: string]: string | Array<string> }) {
 		this.metadata = metadata
 	}
 }
 
 export interface MockServiceHandlerCtor {
-	new (metadata?: grpc.Metadata): MockServiceHandler
+	new (metadata?: { [key: string]: string | Array<string> }): MockServiceHandler
 }
 
 export type MockBridge = (
 	ServiceCtor: MockServiceHandlerCtor,
-	metadata?: grpc.Metadata,
+	metadata?: { [key: string]: string | Array<string> },
 ) => pb.RPCImpl
 
 export const mockBridge: MockBridge = (ServiceCtor, metadata) => {

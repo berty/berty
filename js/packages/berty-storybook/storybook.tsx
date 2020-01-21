@@ -13,7 +13,7 @@ import addons from '@storybook/addons'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '@berty-tech/berty-i18n'
 import { faker } from './faker.gen'
-import { BertyChatChatService as Store } from '@berty-tech/berty-store'
+import { BertyChatChatService as LegacyStore } from '@berty-tech/berty-store'
 import { berty } from '@berty-tech/api'
 import {
 	Routes,
@@ -21,6 +21,7 @@ import {
 	Provider as NavigationProvider,
 } from '@berty-tech/berty-navigation'
 import { enableScreens } from 'react-native-screens'
+import { Chat as ChatHooks } from '@berty-tech/hooks'
 
 enableScreens()
 
@@ -30,16 +31,30 @@ const stories = storiesOf('Berty', module)
 
 stories.addDecorator((storyFn) => (
 	<NavigationProvider>
-		<Store.Provider rpcImpl={faker.berty.chat.ChatService.rpcImpl}>
+		<LegacyStore.Provider rpcImpl={faker.berty.chat.ChatService.rpcImpl}>
 			<I18nextProvider i18n={i18n}>
 				<IconRegistry icons={EvaIconsPack} />
 				<ApplicationProvider mapping={mapping} theme={light}>
 					<FakeNavigation>{storyFn()}</FakeNavigation>
 				</ApplicationProvider>
 			</I18nextProvider>
-		</Store.Provider>
+		</LegacyStore.Provider>
 	</NavigationProvider>
 ))
+
+stories.addDecorator((storyFn) => {
+	return (
+		<ChatHooks.Provider>
+			{React.createElement(() => {
+				const generateAccount = ChatHooks.useAccountGenerate()
+				React.useEffect(() => {
+					generateAccount()
+				})
+				return storyFn()
+			})}
+		</ChatHooks.Provider>
+	)
+})
 
 // Stories
 stories

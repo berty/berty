@@ -1,7 +1,9 @@
-import { combineReducers } from 'redux'
+import { combineReducers, Middleware } from 'redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { all, call } from 'redux-saga/effects'
 import createSagaMiddleware from 'redux-saga'
+import createRecorder from 'redux-test-recorder'
+import mem from 'mem'
 
 import * as protocol from '../protocol'
 import * as account from './account'
@@ -11,22 +13,9 @@ import * as conversation from './conversation'
 import * as member from './member'
 import * as message from './message'
 
-export type Account = account.Entity
-export type Request = request.Entity
-export type Contact = contact.Entity
-export type Conversation = conversation.Entity
-export type Member = member.Entity
-export type Message = message.Entity
+export { account, request, contact, conversation, member, message }
 
-export const commands = {
-	protocol: protocol.commands,
-	account: account.commands,
-	request: request.commands,
-	contact: contact.commands,
-	conversation: conversation.commands,
-	member: conversation.commands,
-	message: conversation.commands,
-}
+export type State = account.GlobalState
 
 export const reducers = {
 	...protocol.reducers,
@@ -52,14 +41,44 @@ export function* rootSaga() {
 	])
 }
 
-export const init = () => {
-	const sagaMiddleware = createSagaMiddleware()
+const reducer = combineReducers(reducers)
 
-	const store = configureStore({
-		reducer: combineReducers(reducers),
-		middleware: [sagaMiddleware],
-	})
+const _recorder = createRecorder({
+	reducer,
+	testLib: 'jest',
+	equality: (result: State, nextState: State) =>
+		JSON.stringify(result) === JSON.stringify(nextState),
+})
 
-	sagaMiddleware.run(rootSaga)
-	return store
+export const recorder: {
+	start: () => void
+	stop: () => void
+	listen: (clbk: (testState: any) => void) => () => void
+	createTest: () => string
+} = {
+	start: _recorder.props.startRecord,
+	stop: _recorder.props.stopRecord,
+	listen: _recorder.props.listen,
+	createTest: _recorder.props.createNewTest,
 }
+
+export const init = mem(
+	(...middlewares: Array<Middleware>) => {
+		const sagaMiddleware = createSagaMiddleware()
+
+		const store = {
+			reducer,
+			...configureStore({
+				reducer,
+				middleware: [sagaMiddleware, _recorder.middleware, ...middlewares],
+			}),
+		}
+
+		sagaMiddleware.run(rootSaga)
+
+		return store
+	},
+	{
+		cacheKey: () => 'chat',
+	},
+)
