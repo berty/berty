@@ -1,27 +1,20 @@
 import React from 'react'
-import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, ScrollView, TouchableOpacity } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
+import { ScreenProps } from '@berty-tech/berty-navigation'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
+import { berty } from '@berty-tech/api'
 
 //
 // Blocked Contacts
 //
 
 // Types
-type BlockedContactsItempProps = {
-	avatarUri: string
-	name: string
-}
-
 type BlockedContactsListProps = {
-	items: Array<BlockedContactsItempProps>
-}
-
-type BlockedContactsProps = {
-	blocked: BlockedContactsListProps
+	items: Array<berty.chatmodel.IContact>
 }
 
 // Styles
@@ -48,19 +41,21 @@ const HeaderBlockedContacts: React.FC<{}> = () => {
 	)
 }
 
-const BlockedContactItem: React.FC<BlockedContactsItempProps> = ({ avatarUri, name }) => {
+const BlockedContactItem: React.FC<{ user: berty.chatmodel.IContact }> = ({ user }) => {
 	const _styles = useStylesBlockedContacts()
-	const [{ flex, background, padding, row, text, color, column }] = useStyles()
+	const [{ flex, background, padding, row, text, color }] = useStyles()
 
 	return (
 		<TouchableOpacity style={[flex.tiny, background.white, padding.small, _styles.item]}>
 			<View style={[flex.tiny, row.fill]}>
 				<View style={[row.center, row.item.justify]}>
-					<CircleAvatar avatarUri={avatarUri} size={40} withCircle={false} />
+					<CircleAvatar avatarUri={user?.avatarUri} size={40} />
 					<View style={[padding.left.small]}>
-						<Text style={[text.family, text.bold]} category='s4'>
-							{name}
-						</Text>
+						{user.name && (
+							<Text style={[text.family, text.bold]} category='s4'>
+								{user?.name}
+							</Text>
+						)}
 						<View style={[row.fill]}>
 							<Icon
 								name='slash-outline'
@@ -89,14 +84,15 @@ const BodyBlockedContacts: React.FC<BlockedContactsListProps> = ({ items }) => {
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 			<FactionButtonSetting style={[padding.vertical.small]}>
-				{items &&
-					items.map((data) => <BlockedContactItem avatarUri={data.avatarUri} name={data.name} />)}
+				{items && items.map((data) => <BlockedContactItem user={data} />)}
 			</FactionButtonSetting>
 		</View>
 	)
 }
 
-export const BlockedContacts: React.FC<BlockedContactsProps> = ({ blocked }) => {
+export const BlockedContacts: React.FC<ScreenProps.Settings.BlockedContacts> = ({
+	route: { params },
+}) => {
 	const [{ flex, background }] = useStyles()
 
 	return (
@@ -108,7 +104,7 @@ export const BlockedContacts: React.FC<BlockedContactsProps> = ({ blocked }) => 
 				>
 					<HeaderBlockedContacts />
 				</HeaderSettings>
-				<BodyBlockedContacts {...blocked} />
+				<BodyBlockedContacts items={params} />
 			</ScrollView>
 		</Layout>
 	)

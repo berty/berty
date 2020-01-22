@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react-native'
 import { View, Button } from 'react-native'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import { ApplicationProvider, IconRegistry } from 'react-native-ui-kitten'
-import { promiseResolved, fakeUsers, fakeOneUser } from './faker'
+import { promiseResolved } from './faker'
 import * as Onboarding from './Onboarding'
 import * as Main from './main'
 import * as Chat from './chat'
@@ -59,8 +59,12 @@ stories
 	.add(Routes.Onboarding.SelectMode, () => <Onboarding.SelectMode />)
 	.add(Routes.Onboarding.Performance, () => (
 		<Onboarding.Performance
-			authorizeNotifications={promiseResolved}
-			authorizeBluetooth={promiseResolved}
+			route={{
+				params: {
+					authorizeNotifications: promiseResolved,
+					authorizeBluetooth: promiseResolved,
+				},
+			}}
 		/>
 	))
 	.add(Routes.Onboarding.Privacy, () => <Onboarding.Privacy />)
@@ -79,25 +83,37 @@ stories
 			}}
 		/>
 	))
-	.add(Routes.Main.ScanRequest, () => <Main.ScanRequest user={fakeOneUser} />)
+	.add(Routes.Main.ScanRequest, () => (
+		<Main.ScanRequest route={{ params: faker.berty.chatmodel.Contact[0] }} />
+	))
 	.add(Routes.Main.Scan, () => <Main.Scan />)
 	.add(Routes.Main.InvalidScan, () => <Main.InvalidScan />)
 	.add(Routes.Chat.One2One, () => (
 		<Chat.Chat route={{ params: faker.berty.chatmodel.Conversation[0] }} />
 	))
 	.add(Routes.Chat.Group, () => (
-		<Chat.ChatGroup route={{ params: faker.berty.chatmodel.Conversation[0] }} />
+		<Chat.ChatGroup
+			route={{
+				params: faker.berty.chatmodel.Conversation.filter(
+					(_) => _.kind === berty.chatmodel.Conversation.Kind.PrivateGroup,
+				)[0] as berty.chatmodel.IConversation & {
+					kind: berty.chatmodel.Conversation.Kind.PrivateGroup
+				},
+			}}
+		/>
 	))
 	.add(Routes.Chat.Settings, () => (
 		<Chat.ChatSettings route={{ params: faker.berty.chatmodel.Conversation[0] }} />
 	))
 	.add(Routes.Chat.One2OneSettings, () => (
-		<Chat.ContactChatSettings route={{ params: faker.berty.chatmodel.Conversation[0] }} />
+		<Chat.ContactChatSettings route={{ params: faker.berty.chatmodel.Contact[0] }} />
 	))
 	.add(Routes.Chat.GroupSettings, () => (
 		<Chat.GroupChatSettings route={{ params: faker.berty.chatmodel.Conversation[0] }} />
 	))
-	.add('Main.RequestSent', () => <Main.RequestSent user={fakeOneUser} />)
+	.add('Main.RequestSent', () => (
+		<Main.RequestSent route={{ params: faker.berty.chatmodel.Contact[0] }} />
+	))
 	.add('Main.ListModal', () => <Main.ListModal />)
 	.add('Main.CreateGroup', () => <Main.CreateGroup />)
 	.add('Main.CreateGroup2', () => <Main.CreateGroup2 />)
@@ -105,12 +121,16 @@ stories
 	.add('Main.Search', () => <Main.Search />)
 	// .add('Main.SearchResults', () => <Main.SearchResults user={fakeOneUser} />)
 	.add(Routes.Settings.Home, () => <Settings.Home />)
-	.add(Routes.Settings.MyBertyId, () => <Settings.MyBertyId user={fakeOneUser} />)
+	.add(Routes.Settings.MyBertyId, () => (
+		<Settings.MyBertyId route={{ params: faker.berty.chatmodel.Contact[0] }} />
+	))
 	.add(Routes.Settings.EditProfile, () => <Settings.EditProfile />)
 	.add(Routes.Settings.AppUpdates, () => <Settings.AppUpdates />)
 	.add(Routes.Settings.Help, () => <Settings.Help />)
 	.add(Routes.Settings.Mode, () => <Settings.Mode />)
-	.add(Routes.Settings.BlockedContacts, () => <Settings.BlockedContacts blocked={fakeUsers} />)
+	.add(Routes.Settings.BlockedContacts, () => (
+		<Settings.BlockedContacts route={{ params: faker.berty.chatmodel.Contact }} />
+	))
 	.add(Routes.Settings.Notifications, () => <Settings.Notifications />)
 	.add(Routes.Settings.Bluetooth, () => <Settings.Bluetooth />)
 	.add(Routes.Settings.AboutBerty, () => <Settings.AboutBerty />)
@@ -119,7 +139,7 @@ stories
 
 // Addons
 addons.register('i18n', () => {
-	const channel = addons.getChannel()
+	// const channel = addons.getChannel()
 	addons.addPanel('i18n', {
 		title: 'language',
 		// eslint-disable-next-line react/prop-types

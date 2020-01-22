@@ -7,7 +7,6 @@ import {
 	View,
 	ViewProps,
 	SafeAreaView,
-	StyleSheet,
 	ScrollView,
 	TouchableHighlight,
 	ActivityIndicator,
@@ -24,7 +23,7 @@ import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { useNavigation } from '@berty-tech/berty-navigation'
 
 type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
-type Form<T extends {} | undefined = undefined> = (arg0: T) => Promise<any>
+type Form<T extends {} | undefined = undefined> = (arg0: T) => void
 
 //
 // Main List
@@ -48,7 +47,7 @@ type RequestsItemProps =
 			decline: Form<berty.chat.ConversationInvitationDecline.IRequest>
 	  })
 type RequestsProps = ViewProps & {
-	items: Array<RequestsItemProps>
+	items: Array<RequestsItemProps | null | undefined> | undefined
 }
 
 type ConversationsItemProps = berty.chatmodel.IConversation & {
@@ -56,7 +55,7 @@ type ConversationsItemProps = berty.chatmodel.IConversation & {
 }
 
 type ConversationsProps = ScrollViewProps & {
-	items: Array<berty.chatmodel.IConversation>
+	items: Array<berty.chatmodel.IConversation | null | undefined>
 }
 
 // Functions
@@ -101,10 +100,7 @@ const useGroupRequestInvitations = (): [Array<GroupRequestInvitation>?, Error?] 
 	return [invitations?.map((_) => _.member).filter((_) => _ != null), error]
 }
 
-const useRequests = (): [
-	Array<berty.chatmodel.IContact | berty.chatmodel.IConversation | null | undefined>?,
-	Error?,
-] => {
+const useRequests = (): [Array<RequestsItemProps | null | undefined>?, Error?] => {
 	const [account, error] = useAccount()
 	if (error) {
 		return [undefined, error]
@@ -165,7 +161,7 @@ const useConversations = (): [Array<berty.chatmodel.IConversation | null | undef
 const RequestsItem: React.FC<{
 	id: number
 	name: string
-	timestamp: google.protobuf.Timestamp
+	timestamp: google.protobuf.Timestamp | undefined
 	avatarUris: Array<string>
 	display: Navigation<{ id: number }>
 	accept: Form<{ id: number }>
@@ -277,11 +273,14 @@ const ConversationRequestsItem: React.FC<berty.chatmodel.IConversation> = ({
 }) => {
 	const { navigate } = useNavigation()
 	const [invitation, error] = useGroupRequestInvitations()
+
 	return error ? null : (
 		<RequestsItem
 			id={id as number}
 			name={title as string}
-			timestamp={invitation?.createdAt as google.protobuf.Timestamp}
+			timestamp={
+				invitation && invitation[0] && (invitation[0]?.createdAt as google.protobuf.Timestamp)
+			}
 			avatarUris={[avatarUri || '']}
 			display={navigate.main.groupRequest}
 			accept={() => {}}
@@ -302,7 +301,7 @@ const Requests: React.FC<RequestsProps> = ({ items, style, onLayout }) => {
 					showsHorizontalScrollIndicator={false}
 				>
 					{items.map((_) => {
-						if (_.requestKind === RequestKind.Conversation) {
+						if (_ && _.requestKind === RequestKind.Conversation) {
 							return <ConversationRequestsItem {..._} />
 						} else {
 							return <ContactRequestsItem {..._} />
@@ -440,11 +439,10 @@ const Conversations: React.FC<ConversationsProps> = ({ items, contentContainerSt
 }
 
 export const List: React.FC = () => {
-	const navigation = useNavigation()
 	// TODO: do something to animate the requests
 	const windowHeight = Dimensions.get('window').height
 	const [{ height: requestsHeight }, onLayoutRequests] = useLayout()
-	const [{ height: footerHeight }, onLayoutFooter] = useLayout()
+	const [{ height: footerHeight }] = useLayout()
 	const conversationContentContainerStyle = useMemo(
 		() => ({
 			minHeight: windowHeight - requestsHeight,
@@ -469,7 +467,7 @@ export const List: React.FC = () => {
 			) : (
 				<ActivityIndicator style={flex.medium} size='large' color='white' />
 			)}
-			<Footer {...navigation} />
+			<Footer />
 		</View>
 	)
 }

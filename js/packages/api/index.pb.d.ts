@@ -2477,7 +2477,7 @@ export namespace berty {
             public conversationId: (number|Long);
             public conversation?: (berty.chatmodel.IConversation|null);
             public memberId: (number|Long);
-            public member?: (berty.chatmodel.IMember|null);
+            public member?: (berty.chatmodel.IMember);
             public attachments: berty.chatmodel.IAttachment[];
             public reactions: berty.chatmodel.IReaction[];
             public static create(properties?: berty.chatmodel.IMessage): berty.chatmodel.Message;

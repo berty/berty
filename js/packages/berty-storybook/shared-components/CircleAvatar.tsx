@@ -12,7 +12,6 @@ import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 // Types
 type CircleAvatarProps = {
 	avatarUri?: string
-	withCircle?: boolean
 	size?: number
 	diffSize?: number
 	color?: ColorsTypes // the color of the circle
@@ -27,7 +26,6 @@ type CircleAvatarProps = {
 // Styles
 export const CircleAvatar: React.FC<CircleAvatarProps> = ({
 	avatarUri,
-	withCircle = true,
 	size = 100,
 	diffSize = 10,
 	color = 'white',
@@ -114,7 +112,6 @@ export const Avatar: React.FC<{
 	diffSize?: number
 	style?: StyleProp<any>
 }> = ({ uris, size, diffSize, style }) => {
-	const [{ padding }] = useStyles()
 	return uris.length >= 2 ? (
 		<GroupCircleAvatar
 			firstAvatarUri={uris[0] || ''}
@@ -122,16 +119,9 @@ export const Avatar: React.FC<{
 			size={size}
 			diffSize={diffSize}
 			style={style}
-			withCircle={false}
 		/>
 	) : (
-		<CircleAvatar
-			style={style}
-			avatarUri={uris[0] || ''}
-			size={size}
-			diffSize={diffSize}
-			withCircle={false}
-		/>
+		<CircleAvatar style={style} avatarUri={uris[0] || ''} size={size} diffSize={diffSize} />
 	)
 }
 const useMembers = (filter: berty.chatmodel.IMember): Array<berty.chatmodel.IMember> | null => {
@@ -154,7 +144,7 @@ export const ConversationAvatar: React.FC<ConversationAvatarProp> = ({
 	size,
 	diffSize,
 	style,
-}: berty.chatmodel.IConversation) => {
+}) => {
 	const members = useMembers({ conversationId: id })?.filter((_) => _?.avatarUri != null)
 	return (
 		<Avatar

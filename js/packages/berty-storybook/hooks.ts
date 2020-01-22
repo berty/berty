@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 
-export const useScroll = (): [React.NativeScrollEvent, ScrollViewProps.onScroll] => {
+export const useScroll = (): [NativeScrollEvent, ScrollViewProps.onScroll] => {
 	const [scroll, setScroll] = useState({
 		contentInset: { bottom: 0, left: 0, right: 0, top: 0 },
 		contentOffset: { x: 0, y: 0 },
@@ -11,7 +11,7 @@ export const useScroll = (): [React.NativeScrollEvent, ScrollViewProps.onScroll]
 	return [scroll, onScroll]
 }
 
-export const useLayout = (): [React.NativeLayoutEvent, LayoutViewProps.onLayout] => {
+export const useLayout = (): [NativeLayoutEvent, LayoutViewProps.onLayout] => {
 	const [layout, setLayout] = useState({
 		x: 0,
 		y: 0,

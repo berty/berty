@@ -1,8 +1,7 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
-import { colors, useStyles } from '@berty-tech/styles'
-import { RequestProps } from '../shared-props/User'
+import { useStyles } from '@berty-tech/styles'
+import { ScreenProps } from '@berty-tech/berty-navigation'
 import { Request } from '../shared-components/Request'
 
 //
@@ -28,15 +27,17 @@ const useStylesRequestSent = () => {
 	}
 }
 
-export const RequestSent: React.FC<RequestProps> = ({ user }) => {
+export const RequestSent: React.FC<ScreenProps.Main.RequestSent> = ({ route: { params } }) => {
 	const _styles = useStylesRequestSent()
 	const [{ flex, background, color }] = useStyles()
 
 	return (
 		<Layout style={[flex.tiny, background.light.green]}>
 			<Request
-				user={user}
+				user={params}
 				markAsVerified={false}
+				accept={(_) => {}}
+				decline={(_) => {}}
 				buttons={[
 					{
 						style: _styles.firstRequestButton,

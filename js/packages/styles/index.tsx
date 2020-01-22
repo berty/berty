@@ -102,7 +102,7 @@ export type Declaration = {
 	colors: ColorsDeclaration
 	sides: SizesDeclaration<number>
 	text: {
-		family: {}
+		family: string
 		sizes: SizesDeclaration<number>
 	}
 }
@@ -140,7 +140,7 @@ const iphone11 = {
 	height: dimensions.height < 896 ? 896 : dimensions.height,
 }
 const scaleSize = dimensions.width / iphone11.width
-const scaleHeight = dimensions.height / iphone11.height
+// const scaleHeight = dimensions.height / iphone11.height
 const fontScale = PixelRatio.getFontScale() * scaleSize
 
 // Mapping for style instanciation
@@ -299,6 +299,10 @@ const mapBorder = (decl: Declaration) => ({
 	color: mapColorsDeclaration(decl.colors, (v) => ({ borderColor: v })),
 })
 const mapDeclaration = (decl: Declaration): Styles => ({
+	// color: {
+	// 	...decl.colors.default,
+	// 	...decl.colors,
+	// },
 	color: {
 		...decl.colors.default,
 		...decl.colors,
@@ -327,12 +331,12 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 	border: mapBorder(decl),
 	text: {
 		color: mapColorsDeclaration(decl.colors, (v) => ({ color: v })),
-		family: StyleSheet.create({
+		family: {
 			use: mem(
 				(fontFamily: string = decl.text.family) =>
 					StyleSheet.create({ family: { fontFamily } }).family,
 			),
-		}),
+		},
 		...StyleSheet.create({
 			bold: { fontWeight: 'bold' },
 			italic: { fontStyle: 'italic' },
@@ -529,7 +533,7 @@ const ctx: Context = createContext([
 export const Provider: React.FC = ({ children }) => {
 	const [stylesState, setStylesState] = useState(defaultStyles)
 	return (
-		<ctx.Provider value={[stylesState, (decl) => setStylesDeclaration(decl, setStylesState)]}>
+		<ctx.Provider value={[stylesState, (decl: any) => setStylesDeclaration(decl, setStylesState)]}>
 			{children}
 		</ctx.Provider>
 	)

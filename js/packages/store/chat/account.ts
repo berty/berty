@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, take, takeEvery, takeLeading, fork, select } from 'redux-saga/effects'
+import { put, all, take, takeLeading, fork, select } from 'redux-saga/effects'
 import faker from 'faker'
 
 import * as protocol from '../protocol'

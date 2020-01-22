@@ -69,7 +69,7 @@ const InfosChat: React.FC<{}> = () => {
 const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
 const MessageList: React.FC<berty.chatmodel.IConversation> = (props) => {
-	const [cursors, setCursor] = useState([0])
+	const [cursors] = useState([0])
 	const [{ row, overflow, flex, color }] = useStyles()
 
 	return (
@@ -83,17 +83,7 @@ const MessageList: React.FC<berty.chatmodel.IConversation> = (props) => {
 					request={{ filter: { conversationId: props.id } }}
 					fallback={MessageListSpinner}
 				>
-					{(_) =>
-						_.map((_) => (
-							<Message
-								{..._.message}
-								date='9:42'
-								message='Bonkur fjhfjhefefbe hjfgvddd g hjheg jgjhgjehgjhg jhge jhghdjkwlfuy wtyrygv gg hrhg rjygr'
-								color={color.blue}
-								bgColor='#CED2FF99'
-							/>
-						))
-					}
+					{(_) => _.map((_) => <Message {..._.message} color={color.blue} bgColor='#CED2FF99' />)}
 				</Store.MessageList>
 			)}
 		/>

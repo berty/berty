@@ -287,22 +287,29 @@ export namespace faker {
 					callback(null, _api.berty.chat.ContactRequestDecline.Reply.encode({}).finish())
 				}
 
+				// export const AccountList: (
+				// 	request: _api.berty.chat.AccountList.IRequest,
+				// 	callback: pb.RPCImplCallback,
+				// ) => void = (request, callback) => {
+				// 	faker.berty.chatmodel.Account.filter(
+				// 		(_) =>
+				// 			(request.filter == null || deepFilterEqual(request.filter, _)) &&
+				// 			(request.not == null || !deepEqual(request.not, _)),
+				// 	).forEach((_, index) =>
+				// 		callback(
+				// 			null,
+				// 			_api.berty.chat.AccountList.Reply.encode({
+				// 				account: faker.berty.chatmodel.Account[index],
+				// 			}).finish(),
+				// 		),
+				// 	)
+				// }
+
 				export const AccountList: (
 					request: _api.berty.chat.AccountList.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					faker.berty.chatmodel.Account.filter(
-						(_) =>
-							(request.filter == null || deepFilterEqual(request.filter, _)) &&
-							(request.not == null || !deepEqual(request.not, _)),
-					).forEach((_, index) =>
-						callback(
-							null,
-							_api.berty.chat.AccountList.Reply.encode({
-								account: faker.berty.chatmodel.Account[index],
-							}).finish(),
-						),
-					)
+					callback(null, _api.berty.chat.AccountList.Reply.encode({}).finish())
 				}
 
 				export const AccountGet: (
@@ -413,8 +420,8 @@ export namespace faker {
 					avatarUri: _faker.internet.avatar(),
 					kind: randomValue(_api.berty.chatmodel.Conversation.Kind),
 					badge: _faker.random.number() % 20,
-					messages: [],
-					members: [],
+					messages: Message,
+					members: Member,
 					lastMessageId: _faker.random.number() % 50,
 					lastMessage: null,
 				}))
@@ -445,7 +452,7 @@ export namespace faker {
 					sentAt: timestamp(_faker.date.recent()),
 					editedAt: timestamp(_faker.date.recent()),
 					kind: randomValue(_api.berty.chatmodel.Message.Kind),
-					body: null,
+					body: { text: 'Bonjour cest koi et he etiefu deuhd'},
 					hidden: _faker.random.boolean(),
 					state: randomValue(_api.berty.chatmodel.Message.State),
 					conversationId: _faker.random.number() % faker.berty.chatmodel.Conversation.length,

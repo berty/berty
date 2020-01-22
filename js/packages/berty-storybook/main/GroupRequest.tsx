@@ -24,6 +24,11 @@ const useStylesGroupRequest = () => {
 const BodyGroupRequestContentItem: React.FC<berty.chatmodel.IMember & {
 	separateBar: boolean
 	isConnected?: boolean
+	state?: {
+		value: string
+		bgColor: string
+		color: string
+	}
 }> = ({ avatarUri, name, role, state = {}, separateBar = true, isConnected = false }) => {
 	const _styles = useStylesGroupRequest()
 	const [{ row, padding, margin, border, color, text }] = useStyles()
@@ -36,9 +41,11 @@ const BodyGroupRequestContentItem: React.FC<berty.chatmodel.IMember & {
 						style={[margin.right.medium, row.item.justify, _styles.avatar]}
 						source={{ uri: avatarUri || '' }}
 					/>
-					<Text numberOfLines={1} ellipsizeMode='tail' style={row.item.justify}>
-						{name}
-					</Text>
+					{name && (
+						<Text numberOfLines={1} ellipsizeMode='tail' style={row.item.justify}>
+							{name}
+						</Text>
+					)}
 					{isConnected && (
 						<Icon
 							style={[margin.left.small]}
@@ -92,12 +99,11 @@ const BodyGroupRequestContent: React.FC<berty.chatmodel.IConversation> = ({ id }
 }
 
 const BodyGroupRequest: React.FC<berty.chatmodel.IConversation> = (conversation) => {
-	const [{ padding, absolute, row }] = useStyles()
-
+	const [{ padding }] = useStyles()
 	return (
 		<View style={[padding.horizontal.medium, padding.bottom.medium]}>
-			<RequestAvatar {...conversation} size={90} />
-			<View style={[padding.horizontal.medium, { top: -30 }]}>
+			<RequestAvatar {...conversation} name={conversation.title} size={90} />
+			<View style={[padding.horizontal.medium]}>
 				<TabBar tabType='group' />
 				<BodyGroupRequestContent {...conversation} />
 			</View>
@@ -110,7 +116,7 @@ export const GroupRequest: React.FC<ScreenProps.Main.GroupRequest> = ({ route: {
 	return (
 		<Modal>
 			<Store.ConversationGet request={{ id: params.id }} fallback={Fallback}>
-				{(_) => console.log(_) || <BodyGroupRequest {...(_?.conversation || {})} />}
+				{(_) => <BodyGroupRequest {...(_?.conversation || {})} />}
 			</Store.ConversationGet>
 		</Modal>
 	)

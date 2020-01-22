@@ -1,18 +1,8 @@
 import React, { useState } from 'react'
-import {
-	View,
-	SafeAreaView,
-	ScrollView,
-	TouchableHighlight,
-	StyleSheet,
-	Dimensions,
-	TextInput,
-} from 'react-native'
+import { View, SafeAreaView, StyleSheet, Dimensions, TextInput } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors, useStyles } from '@berty-tech/styles'
+import { colors, useStyles } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
-import { CircleAvatar } from '../shared-components/CircleAvatar'
-import { RequestProps, UserProps } from '../shared-props/User'
 
 const Screen = Dimensions.get('window')
 
@@ -44,21 +34,21 @@ const _stylesSearch = StyleSheet.create({
 })
 
 const SearchBar: React.FC<{}> = () => {
-	const [value, setValue] = useState(undefined)
-	const [{ row, color, margin }] = useStyles()
+	const [value, setValue] = useState()
+	const [{ row, color, padding }] = useStyles()
 
 	return (
 		<View>
 			<View style={[row.fill]}>
-				<View style={[row.center]}>
+				<View style={[row.left]}>
 					<Icon name='search' width={25} height={25} fill={color.yellow} />
 					<TextInput
 						value={value && value.length > 0 ? value : undefined}
-						onChangeText={(text) => (text.length > 0 ? setValue(text) : setValue(undefined))}
+						onChangeText={(text: any) => (text.length > 0 ? setValue(text) : setValue(undefined))}
 						placeholder='Search'
 						placeholderTextColor={color.yellow}
 						style={[
-							margin.left.medium,
+							padding.left.medium,
 							{ color: color.yellow, backgroundColor: color.light.yellow },
 						]}
 					/>

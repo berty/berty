@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, StyleSheet } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
@@ -19,18 +19,6 @@ const useStylesDevTools = () => {
 		buttonRowMarginTop: margin.top.scale(20),
 	}
 }
-const _devToolsStyles = StyleSheet.create({
-	buttonRow: {
-		marginRight: 20,
-		height: 90,
-	},
-	lastButtonRow: {
-		height: 90,
-	},
-	buttonRowMarginTop: {
-		marginTop: 20,
-	},
-})
 
 const HeaderDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()

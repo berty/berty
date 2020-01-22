@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, SafeAreaView, StyleSheet, Dimensions } from 'react-native'
+import { View, SafeAreaView, Dimensions } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'

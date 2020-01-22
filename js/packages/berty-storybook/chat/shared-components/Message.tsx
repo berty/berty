@@ -3,24 +3,22 @@ import { View, StyleProp } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { CircleAvatar } from '../../shared-components/CircleAvatar'
+import { berty } from '@berty-tech/api'
+import _faker from 'faker'
 
 //
 // Message => All messages (group/contact)
 //
 
 // Types
-type MessageProps = {
-	avatarUri: string
-	name: string
-	date: string
-	message: string
+type MessageProps = berty.chatmodel.IMessage & {
 	color: string
 	bgColor: string
 	// Conditions of messages
 	isMe?: boolean
 	isGroup?: boolean
 	// State of messages (sending.../retry sending.../sent/failed)
-	state?: {
+	uiState?: {
 		value: string
 		icon: string
 		color: string
@@ -32,7 +30,7 @@ type MessageProps = {
 
 // Styles
 const useStylesMessage = () => {
-	const [{ margin, row, column, flex, text, padding }] = useStyles()
+	const [{ margin, row, flex, text, padding }] = useStyles()
 	return {
 		isMeMessage: [margin.left.scale(70), row.item.bottom],
 		isOtherMessage: [margin.right.scale(70), row.item.top],
@@ -47,17 +45,15 @@ const useStylesMessage = () => {
 }
 
 export const Message: React.FC<MessageProps> = ({
-	avatarUri,
-	name,
-	date,
-	message,
 	color,
 	bgColor,
 	isMe = false,
 	isGroup = false,
-	state = [],
-	style = null,
+	uiState = null,
 	styleMsg = null,
+	body,
+	member,
+	// sentAt,
 }) => {
 	const _styles = useStylesMessage()
 	const [{ row, margin, padding, column, text, border }] = useStyles()
@@ -73,34 +69,37 @@ export const Message: React.FC<MessageProps> = ({
 			{!isMe && isGroup && (
 				<CircleAvatar
 					style={_styles.circleAvatar}
-					avatarUri={avatarUri}
-					withCircle={false}
+					avatarUri={member?.avatarUri?.toString()}
 					size={35}
 				/>
 			)}
 			<View style={[column.top, _styles.messageItem]}>
 				{!isMe && isGroup && (
 					<View style={[margin.left.small]}>
-						<Text style={[text.bold, _styles.personNameInGroup, { color }]}>{name}</Text>
+						<Text style={[text.bold, _styles.personNameInGroup, { color }]}>
+							{member?.name?.toString()}
+						</Text>
 					</View>
 				)}
 				<View style={[padding.small, border.radius.medium, styleMsg, { backgroundColor: bgColor }]}>
-					<Text style={[text.bold, _styles.messageText, { color }]}>{message}</Text>
+					<Text style={[text.bold, _styles.messageText, { color }]}>{body?.text?.toString()}</Text>
 				</View>
-				<View style={[isMe && row.item.bottom]}>
-					{!state.length ? (
-						<Text style={[text.color.grey, _styles.dateMessage]}>{date}</Text>
-					) : (
-						state.map((value) => (
+				<View style={[uiState && isMe && row.item.bottom]}>
+					{uiState && !uiState.length && (
+						<Text style={[text.color.grey, _styles.dateMessage]}>
+							{_faker.date.recent().toUTCString()}
+						</Text>
+					)}
+					{uiState &&
+						uiState.map((value) => (
 							<View style={[row.left, { alignItems: 'center' }]}>
-								<Text style={[text.color.grey, _styles.dateMessageWithState]}>{date}</Text>
+								<Text style={[text.color.grey, _styles.dateMessageWithState]}>{}</Text>
 								<Icon name={value.icon} width={12} height={12} fill={value.color} />
 								<Text style={[_styles.stateMessageValue, { color: value.color }]}>
 									{value.value}
 								</Text>
 							</View>
-						))
-					)}
+						))}
 				</View>
 			</View>
 		</View>

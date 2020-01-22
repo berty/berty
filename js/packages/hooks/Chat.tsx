@@ -5,8 +5,6 @@ import DevMenu from 'react-native-dev-menu'
 import { Clipboard } from 'react-native'
 
 export const Recorder: React.FC = ({ children }) => {
-	const [state, setState] = React.useState({})
-
 	React.useEffect(() => {
 		DevMenu.addItem('(Chat) Start/Reset Test Recorder', () => {
 			chat.recorder.stop()

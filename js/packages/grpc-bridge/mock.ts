@@ -1,4 +1,3 @@
-import { grpc } from '@improbable-eng/grpc-web'
 import * as pb from 'protobufjs'
 
 export abstract class MockServiceHandler {

@@ -78,7 +78,7 @@ const GroupChatSettingsHeader: React.FC<berty.chatmodel.IConversation> = ({ avat
 	)
 }
 
-const GroupChatSettingsBody: React.FC<berty.chatmodel.IConversation> = ({ avatarUri, name }) => {
+const GroupChatSettingsBody: React.FC<berty.chatmodel.IConversation> = ({ avatarUri }) => {
 	const [{ padding, margin, color }] = useStyles()
 	return (
 		<View style={[padding.medium]}>
@@ -92,32 +92,32 @@ const GroupChatSettingsBody: React.FC<berty.chatmodel.IConversation> = ({ avatar
 			>
 				<ButtonSetting
 					style={[padding.horizontal.small]}
-					name={name}
+					name='Jean'
 					image={avatarUri}
 					previewValue='Me'
 					previewValueColor={color.blue}
 					alone={false}
 				/>
 				<ButtonSetting
-					name={name}
+					name='Jean'
 					image={avatarUri}
 					alone={false}
 					style={[padding.horizontal.small]}
 				/>
 				<ButtonSetting
-					name={name}
+					name='Jean'
 					image={avatarUri}
 					alone={false}
 					style={[padding.horizontal.small]}
 				/>
 				<ButtonSetting
-					name={name}
+					name='Jean'
 					image={avatarUri}
 					alone={false}
 					style={[padding.horizontal.small]}
 				/>
 				<ButtonSetting
-					name={name}
+					name='Jean'
 					image={avatarUri}
 					style={[padding.horizontal.small]}
 					alone={false}
@@ -136,7 +136,7 @@ const GroupChatSettingsBody: React.FC<berty.chatmodel.IConversation> = ({ avatar
 	)
 }
 
-export const GroupChatSettings: React.FC<ScreenProps.Main.GroupChatSettings> = ({
+export const GroupChatSettings: React.FC<ScreenProps.Chat.GroupSettings> = ({
 	route: { params },
 }) => {
 	const { goBack } = useNavigation()

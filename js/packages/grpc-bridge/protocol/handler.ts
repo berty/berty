@@ -3,7 +3,6 @@ import { MockServiceHandler } from '../mock'
 import { DemoServiceClient } from '../orbitdb'
 import { bridge } from '../bridge'
 import { WebsocketTransport } from '../grpc-web-websocket-transport'
-import { grpc } from '@improbable-eng/grpc-web'
 
 export class ProtocolServiceHandler extends MockServiceHandler {
 	orbitdbClient = new DemoServiceClient(
@@ -218,13 +217,14 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 			response?: api.berty.protocol.AccountSubscribe.IReply | null,
 		) => void,
 	) => void = (request, callback) => {
-		this.orbitdbClient.logStream({}, (error, response) => {
-			if (error == null) {
-				console.warn('GRPC Protocol Error: AccountSubscribe: orbitdb logStream error')
-			}
-			// TODO: deserialize and send event
-			callback(null, { event: {} })
-		})
+		callback(null, { event: {} })
+		// this.orbitdbClient.logStream({}, (error, response) => {
+		// 	if (error == null) {
+		// 		console.warn('GRPC Protocol Error: AccountSubscribe: orbitdb logStream error')
+		// 	}
+		// 	// TODO: deserialize and send event
+		// 	callback(null, { event: {} })
+		// })
 	}
 
 	GroupSettingSubscribe: (

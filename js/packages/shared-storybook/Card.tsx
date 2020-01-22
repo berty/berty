@@ -1,12 +1,11 @@
 import React, { Fragment } from 'react'
 import {
-	View,
-	ViewProps,
 	TouchableHighlight,
 	TouchableHighlightProps,
+	TouchableWithoutFeedback,
+	TouchableWithoutFeedbackProps,
 	StyleSheet,
 } from 'react-native'
-// import { Text } from 'react-native-ui-kitten'
 
 const style = StyleSheet.create({
 	default: {
@@ -28,14 +27,14 @@ export const TouchableCard: React.FunctionComponent<TouchableHighlightProps> = (
 	</TouchableHighlight>
 )
 
-export const Card: React.FunctionComponent<ViewProps> = (props) => (
-	<View
+export const Card: React.FunctionComponent<TouchableWithoutFeedbackProps> = (props) => (
+	<TouchableWithoutFeedback
 		{...props}
 		style={[style.default, props.style]}
 		onPress={props.onPress ? props.onPress : (): null => null}
 	>
 		<Fragment>{props.children}</Fragment>
-	</View>
+	</TouchableWithoutFeedback>
 )
 
 export default Card

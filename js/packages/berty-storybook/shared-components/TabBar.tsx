@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { TouchableOpacity, View, StyleSheet } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors, useStyles } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 
 // Types
 type TabItemProps = {

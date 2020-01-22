@@ -72,7 +72,9 @@ const ContactChatSettingsBody: React.FC<{
 	)
 }
 
-export const ContactChatSettings: React.FC<ScreenProps.Chat.One2OneSettings> = ({ params }) => {
+export const ContactChatSettings: React.FC<ScreenProps.Chat.One2OneSettings> = ({
+	route: { params },
+}) => {
 	const { goBack } = useNavigation()
 	const [isToggle, setIsToggle] = useState(true)
 	const [{ background, flex }] = useStyles()

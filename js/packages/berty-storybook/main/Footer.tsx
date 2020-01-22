@@ -2,10 +2,10 @@ import React from 'react'
 import { Footer as SharedFooter } from '../shared-components/Footer'
 import { useStyles } from '@berty-tech/styles'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
-import { ScreenProps } from '@berty-tech/berty-navigation'
+import { useNavigation } from '@berty-tech/berty-navigation'
 
-export const Footer: React.FC<ScreenProps.Tab.Main> = (props) => {
-	const { navigate } = props
+export const Footer: React.FC<{}> = () => {
+	const { navigate } = useNavigation()
 	const [{ color }] = useStyles()
 
 	return (

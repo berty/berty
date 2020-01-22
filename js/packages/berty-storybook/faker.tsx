@@ -1,6 +1,6 @@
 import faker from 'faker'
 import randomEmoji from 'random-emoji'
-import { inspect } from 'util'
+// import { inspect } from 'util'
 import { berty, google } from '@berty-tech/api'
 
 export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
@@ -60,7 +60,7 @@ export const fakeConversations = randomArray(30).map(
 		badge: Math.random() % 100,
 		kind: randomValue(berty.chatmodel.Conversation.Kind),
 		topic: '',
-		mutePolicy: randomValue(berty.chatmodel.Conversation.Kind),
+		// mutePolicy: randomValue(berty.chatmodel.Conversation.Kind),
 		lastMessageId: 0,
 		members: [],
 	}),
@@ -82,7 +82,7 @@ export const fakeMembers = randomArray(100).map(
 )
 
 export const generateUsers = () => ({
-	items: randomArray().map(() => ({
+	items: randomArray(20).map(() => ({
 		avatarUri: faker.internet.avatar(),
 		name: faker.name.findName(),
 	})),

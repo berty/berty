@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react'
+import React, { useState, useRef } from 'react'
 import {
 	SafeAreaView,
 	View,
@@ -15,8 +15,7 @@ import { Translation } from 'react-i18next'
 import Swiper from 'react-native-swiper'
 import { Card, TouchableCard } from '@berty-tech/shared-storybook'
 import { ColorsTypes, useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/berty-navigation'
-import { BertyChatChatService as Store } from '@berty-tech/berty-store'
+import { useNavigation, ScreenProps } from '@berty-tech/berty-navigation'
 import { Chat } from '@berty-tech/hooks'
 
 type Navigation = () => void
@@ -25,7 +24,7 @@ type Form<T> = (arg0: T) => Promise<void>
 const Button: React.FC<{
 	children: string
 	onPress: () => Promise<void> | void
-	style: ViewStyle
+	style?: ViewStyle
 }> = ({ children, onPress, style }) => {
 	const [{ margin, padding, background, color, text, border }] = useStyles()
 	const [loading, setLoading] = React.useState(false)
@@ -169,7 +168,7 @@ const SwiperCard: React.FC<{
 	button?: { text: string; onPress: () => Promise<void> | void }
 	skip?: { text: string; onPress: () => void }
 }> = ({ children, header, label, title, description, button, skip }) => {
-	const [{ absolute, text, padding, margin, background, border, color, column }] = useStyles()
+	const [{ absolute, text, padding, margin, background, border, column }] = useStyles()
 	let labelColor: ColorsTypes
 	switch (label) {
 		default:
@@ -251,7 +250,6 @@ const SwiperCard: React.FC<{
 const CreateYourAccount: React.FC<{
 	next: Navigation
 }> = ({ next }) => {
-	const store = useContext(Store.Context)
 	const [name, setName] = useState('')
 	const [{ text, padding, margin, background, border }] = useStyles()
 	const createAccount = Chat.useAccountCreate()
@@ -381,10 +379,9 @@ const SetupFinished: React.FC = () => {
 	)
 }
 
-export const Performance: React.FC<{
-	authorizeNotifications: Form<{}>
-	authorizeBluetooth: Form<{}>
-}> = ({ authorizeNotifications, authorizeBluetooth }) => {
+export const Performance: React.FC<ScreenProps.Onboarding.Performance> = ({
+	route: { params },
+}) => {
 	const { onLayout, height } = useLayout()
 	const swiperRef = useRef<Swiper>(null)
 	const next: (index: number) => () => void = (index) => (): void => {
@@ -410,9 +407,9 @@ export const Performance: React.FC<{
 						/>
 						<GeneratingYourKey />
 						<SafeAreaView style={absolute.fill}>
-							<Notifications submit={authorizeNotifications} next={next(4)} />
+							<Notifications submit={params.authorizeNotifications} next={next(4)} />
 						</SafeAreaView>
-						<Bluetooth submit={authorizeBluetooth} next={next(5)} />
+						<Bluetooth submit={params.authorizeBluetooth} next={next(5)} />
 						<SetupFinished />
 					</Swiper>
 				</KeyboardAvoidingView>

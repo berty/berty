@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, TouchableOpacity, SafeAreaView } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
-import { colors, useStyles, ColorsTypes } from '@berty-tech/styles'
+import { colors, useStyles } from '@berty-tech/styles'
 
 //
 // Header Settings
@@ -11,19 +11,19 @@ import { colors, useStyles, ColorsTypes } from '@berty-tech/styles'
 type HeaderSettingsProps = {
 	title?: string
 	children?: React.ReactNode
-	bgColor?: ColorsTypes
+	bgColor?: string
 	undo?: () => void
 	undoIcon?: string
 	undoIconSize?: number
-	undoIconColor?: ColorsTypes
+	undoIconColor?: string
 	desc?: string | null
 	descFontSize?: number
-	descColor?: ColorsTypes
+	descColor?: string
 	action?: React.Dispatch<any>
 	actionValue?: boolean
 	actionIcon?: string
 	actionIconSize?: number
-	actionIconColor?: ColorsTypes
+	actionIconColor?: string
 }
 
 export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
@@ -43,7 +43,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	actionIconSize = 25,
 	actionIconColor = 'white',
 }) => {
-	const [{ border, flex, padding, row, text, column }] = useStyles()
+	const [{ border, flex, padding, row, text }] = useStyles()
 	return (
 		<SafeAreaView style={[flex.tiny, border.radius.bottom.scale(20), { backgroundColor: bgColor }]}>
 			<View style={[padding.horizontal.medium, padding.top.tiny, padding.bottom.medium]}>
@@ -116,9 +116,13 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 // Type
 type HeaderInfoSettingsProps = {
 	children: React.ReactNode
+	bgColor?: string
 }
 
-export const HeaderInfoSettings: React.FC<HeaderInfoSettingsProps> = ({ children }) => {
+export const HeaderInfoSettings: React.FC<HeaderInfoSettingsProps> = ({
+	children,
+	bgColor = 'rgba(206,210,255,0.3)',
+}) => {
 	const [{ margin, border, padding }] = useStyles()
 	return (
 		<View
@@ -127,7 +131,7 @@ export const HeaderInfoSettings: React.FC<HeaderInfoSettingsProps> = ({ children
 				border.radius.medium,
 				padding.medium,
 				margin.top.medium,
-				{ backgroundColor: 'rgba(206,210,255,0.3)' },
+				{ backgroundColor: bgColor },
 			]}
 		>
 			<View style={{ justifyContent: 'center' }}>{children}</View>

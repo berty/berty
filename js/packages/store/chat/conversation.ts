@@ -2,8 +2,6 @@ import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { put, all, takeLeading } from 'redux-saga/effects'
 
-import * as member from './member'
-
 export type Entity = {
 	name: string
 	account: number

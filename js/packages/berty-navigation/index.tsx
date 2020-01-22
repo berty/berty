@@ -4,11 +4,15 @@ import React, { useMemo } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import * as Stories from '@berty-tech/berty-storybook'
 import {
-	NavigationContainer,
+	// NavigationContainer,
 	useNavigation as useReactNavigation,
 	NavigationProp,
 } from '@react-navigation/core'
-import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
+import {
+	createBottomTabNavigator,
+	BottomTabNavigationProp,
+	BottomTabBarProps,
+} from '@react-navigation/bottom-tabs'
 import { berty } from '@berty-tech/api'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
 
@@ -16,7 +20,14 @@ export namespace ScreenProps {
 	export namespace Onboarding {
 		export type GetStarted = {}
 		export type SelectMode = {}
-		export type Performance = {}
+		export type Performance = {
+			route: {
+				params: {
+					authorizeNotifications: () => Promise<void>
+					authorizeBluetooth: () => Promise<void>
+				}
+			}
+		}
 		export type Privacy = {}
 	}
 	export namespace Main {
@@ -28,13 +39,13 @@ export namespace ScreenProps {
 				}
 			}
 		}
-		export type ScanRequest = {}
+		export type ScanRequest = { route: { params: berty.chatmodel.IContact } }
 		export type Scan = { route: { params: berty.chatmodel.IContact } }
 		export type InvalidScan = {}
 
 		export type ListModal = {}
 		export type Search = {}
-		export type RequestSent = {}
+		export type RequestSent = { route: { params: berty.chatmodel.IContact } }
 		export namespace CreateGroup {
 			export type CreateGroup = {}
 			export type CreateGroup2 = {}
@@ -57,12 +68,12 @@ export namespace ScreenProps {
 	}
 	export namespace Settings {
 		export type Home = {}
-		export type MyBertyId = {}
+		export type MyBertyId = { route: { params: berty.chatmodel.IContact } }
 		export type EditProfile = {}
 		export type AppUpdates = {}
 		export type Help = {}
 		export type Mode = {}
-		export type BlockedContacts = {}
+		export type BlockedContacts = { route: { params: berty.chatmodel.IContact[] } }
 		export type Notifications = {}
 		export type Bluetooth = {}
 		export type AboutBerty = {}
@@ -190,15 +201,6 @@ const createNavigation = ({
 export const useNavigation = () => {
 	const reactNav = useReactNavigation()
 	return useMemo(() => createNavigation(reactNav), [reactNav])
-}
-
-const FakeStack = createNativeStackNavigator()
-export const FakeNavigation: React.FC = ({ children }) => {
-	return (
-		<FakeStack.Navigator screenOptions={{ headerShown: false }}>
-			<FakeStack.Screen name='Fake' component={() => children} />
-		</FakeStack.Navigator>
-	)
 }
 
 const OnboardingStack = createNativeStackNavigator()
@@ -373,7 +375,7 @@ export const Navigation: React.FC = () => {
 	const length = ChatHooks.useAccountLength()
 	return (
 		<TabStack.Navigator
-			tabBar={(props) => <Footer {...props} />}
+			tabBar={(props: any) => <Footer {...props} />}
 			options={{ backBehavior: 'initialRoute' }}
 			initialRouteName={length > 1 ? Routes.Main.List : Routes.Onboarding.GetStarted}
 		>

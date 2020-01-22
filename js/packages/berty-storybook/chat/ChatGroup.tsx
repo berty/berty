@@ -66,26 +66,21 @@ const ChatGroupMemberItem: React.FC<berty.chatmodel.IMember> = ({
 }) => {
 	const [layout, setLayout] = useState()
 	const [contactGetReply] = Store.useContactGet({ id: contactId })
-	const [state, icon, itemColor, bgColor, lightBgColor] = {
-		[berty.chatmodel.Member.Role.Owner]: ['Owner', 'checkmark-circle-2', 'white', 'blue', false],
-		[berty.chatmodel.Member.Role.Admin]: ['Admin', 'checkmark-circle-2', 'red', 'red', true],
-		[berty.chatmodel.Member.Role.Regular]: [
-			'Regular',
-			'checkmark-circle-2',
-			'green',
-			'green',
-			true,
-		],
-		[berty.chatmodel.Member.Role.Invited]: ['Invited', 'clock', 'yellow', 'yellow', true],
-		[berty.chatmodel.Member.Role.Unknown]: [
-			'Unknown',
-			'question-mark-circle',
-			'grey',
-			'grey',
-			true,
-		],
+	const [state, icon, itemColor, bgColor] = {
+		[berty.chatmodel.Member.Role.Owner]: ['Owner', 'checkmark-circle-2', 'white', 'blue'],
+		[berty.chatmodel.Member.Role.Admin]: ['Admin', 'checkmark-circle-2', 'red', 'red'],
+		[berty.chatmodel.Member.Role.Regular]: ['Regular', 'checkmark-circle-2', 'green', 'green'],
+		[berty.chatmodel.Member.Role.Invited]: ['Invited', 'clock', 'yellow', 'yellow'],
+		[berty.chatmodel.Member.Role.Unknown]: ['Unknown', 'question-mark-circle', 'grey', 'grey'],
 	}[role ?? berty.chatmodel.Member.Role.Unknown]
-	const [{ color, background, border, margin, padding, width, row, column, text }] = useStyles()
+	const [lightBgColor] = {
+		[berty.chatmodel.Member.Role.Owner]: [false],
+		[berty.chatmodel.Member.Role.Admin]: [true],
+		[berty.chatmodel.Member.Role.Regular]: [true],
+		[berty.chatmodel.Member.Role.Invited]: [true],
+		[berty.chatmodel.Member.Role.Unknown]: [true],
+	}[role ?? berty.chatmodel.Member.Role.Unknown]
+	const [{ color, background, border, margin, padding, width, row, text }] = useStyles()
 
 	return (
 		<View
@@ -181,15 +176,7 @@ const MessageList: React.FC<berty.chatmodel.IConversation> = (props) => {
 					fallback={MessageListSpinner}
 				>
 					{(_) =>
-						_.map(({ message }) => (
-							<Message
-								{...message}
-								date='9:42'
-								message='Bonkur fjhfjhefefbe hjfgvddd g hjheg jgjhgjehgjhg jhge jhghdjkwlfuy wtyrygv gg hrhg rjygr'
-								color={color.blue}
-								bgColor='#CED2FF99'
-							/>
-						))
+						_.map(({ message }) => <Message {...message} color={color.blue} bgColor='#CED2FF99' />)
 					}
 				</Store.MessageList>
 			)}

@@ -84,11 +84,11 @@ const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => {
 	)
 }
 
-const HomeHeader: React.FC = () => {
+const HomeHeader: React.FC<{ account: any }> = ({ account }) => {
 	const [{ margin }] = useStyles()
 	return (
 		<SafeAreaView style={margin.bottom.medium}>
-			<HomeHeaderAvatar />
+			<HomeHeaderAvatar {...account} />
 		</SafeAreaView>
 	)
 }
@@ -150,6 +150,11 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	const account = useAccount()
 	const _styles = useStylesHome()
 	const [{ flex, background, row }] = useStyles()
+	React.useEffect(() => {
+		if (account) {
+			console.log(account)
+		}
+	})
 	return (
 		<View style={[flex.tiny, background.white]}>
 			{account == null ? (
@@ -158,7 +163,7 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 				<ScrollView contentContainerStyle={[_styles.scrollViewPadding]}>
 					<HeaderSettings actionIcon='edit-outline' action={navigate.settings.editProfile}>
 						<View>
-							<HomeHeader {...account} />
+							<HomeHeader account={account} />
 							<HomeHeaderGroupButton {...account} />
 						</View>
 					</HeaderSettings>

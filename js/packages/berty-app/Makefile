@@ -42,7 +42,7 @@ deps.ios: export PWD := $(PWD)
 deps.ios: deps build.gobridge.ios $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
 $(PWD)/ios/Pods/Manifest.lock: $(PWD)/ios/Podfile $(PWD)/package.json
 	([ ! -z "$(shell which pod)" ] \
-		&& [[ "$$(pod --version)" > "1.7." ]]) \
+		&& [[ "$$(pod --version)" > "1.8.3" ]]) \
 		|| sudo gem install cocoapods
 	cd $(PWD)/ios && $(pod) install
 $(PWD)/ios/Podfile: $(PWD)/node_modules

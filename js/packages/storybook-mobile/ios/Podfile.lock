@@ -244,13 +244,13 @@ PODS:
   - Yoga (1.14.0)
 
 DEPENDENCIES:
-  - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
+  - BVLinearGradient (from `../../../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - Interactable (from `../node_modules/react-native-interactable`)
+  - Interactable (from `../../../node_modules/react-native-interactable`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -263,7 +263,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
-  - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -276,12 +276,12 @@ DEPENDENCIES:
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
-  - RNDevMenu (from `../node_modules/react-native-dev-menu`)
-  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
-  - RNPermissions (from `../node_modules/react-native-permissions`)
-  - RNReanimated (from `../node_modules/react-native-reanimated`)
-  - RNScreens (from `../node_modules/react-native-screens`)
-  - RNSVG (from `../node_modules/react-native-svg`)
+  - RNDevMenu (from `../../../node_modules/react-native-dev-menu`)
+  - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
+  - RNPermissions (from `../../../node_modules/react-native-permissions`)
+  - RNReanimated (from `../../../node_modules/react-native-reanimated`)
+  - RNScreens (from `../../../node_modules/react-native-screens`)
+  - RNSVG (from `../../../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -290,7 +290,7 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   BVLinearGradient:
-    :path: "../node_modules/react-native-linear-gradient"
+    :path: "../../../node_modules/react-native-linear-gradient"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   FBLazyVector:
@@ -302,7 +302,7 @@ EXTERNAL SOURCES:
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   Interactable:
-    :path: "../node_modules/react-native-interactable"
+    :path: "../../../node_modules/react-native-interactable"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -324,7 +324,7 @@ EXTERNAL SOURCES:
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
   react-native-safe-area-context:
-    :path: "../node_modules/react-native-safe-area-context"
+    :path: "../../../node_modules/react-native-safe-area-context"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -348,17 +348,17 @@ EXTERNAL SOURCES:
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
   RNDevMenu:
-    :path: "../node_modules/react-native-dev-menu"
+    :path: "../../../node_modules/react-native-dev-menu"
   RNGestureHandler:
-    :path: "../node_modules/react-native-gesture-handler"
+    :path: "../../../node_modules/react-native-gesture-handler"
   RNPermissions:
-    :path: "../node_modules/react-native-permissions"
+    :path: "../../../node_modules/react-native-permissions"
   RNReanimated:
-    :path: "../node_modules/react-native-reanimated"
+    :path: "../../../node_modules/react-native-reanimated"
   RNScreens:
-    :path: "../node_modules/react-native-screens"
+    :path: "../../../node_modules/react-native-screens"
   RNSVG:
-    :path: "../node_modules/react-native-svg"
+    :path: "../../../node_modules/react-native-svg"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -401,6 +401,6 @@ SPEC CHECKSUMS:
   RNSVG: f6177f8d7c095fada7cfee2e4bb7388ba426064c
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 3c340306c0784af3d3279a0c31fafa2c7131e0a2
+PODFILE CHECKSUM: 48150a351a43a9cac7eaaaae65f41a6e75254308
 
 COCOAPODS: 1.8.4

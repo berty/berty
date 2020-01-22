@@ -1,39 +1,41 @@
 import React, { useState, useEffect } from 'react'
 import { View, StyleProp, TouchableOpacity } from 'react-native'
 import { Text, Icon, Toggle } from 'react-native-ui-kitten'
-import { UserProps } from '../shared-props/User'
-import { useStyles, ColorsTypes } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 import { TabBar } from './TabBar'
 import { FingerprintContent } from './FingerprintContent'
 import { Modal } from './Modal'
+import { berty } from '@berty-tech/api'
 import { CircleAvatar, GroupCircleAvatar } from './CircleAvatar'
+
+type Form<T extends {} | undefined = undefined> = (arg0: T) => void
 
 //
 // RequestButtons
 //
 
 // Types
-type RequestProps = {
-	accept: (arg0: { id: number }) => Promise<{}>
-	decline: (arg0: { id: number }) => Promise<{}>
-}
+// type RequestProps = {
+// 	accept: (arg0: { id: number }) => Promise<{}>
+// 	decline: (arg0: { id: number }) => Promise<{}>
+// }
 
 type RequestButtonItemProps = {
 	icon: string
 	iconSize?: number
-	iconColor?: ColorsTypes
+	iconColor?: string
 	textProps: string
-	textColor?: ColorsTypes
+	textColor?: string
 	style?: StyleProp<any>
 }
 
 type RequestButtonsProps = {
 	buttons?: {
 		title: string
-		titleColor?: ColorsTypes
+		titleColor?: string
 		icon: string
-		iconColor?: ColorsTypes
-		bgColor?: ColorsTypes
+		iconColor?: string
+		bgColor?: string
 		style?: StyleProp<any>[]
 	}[]
 }
@@ -69,14 +71,8 @@ const RequestButtonItem: React.FC<RequestButtonItemProps> = ({
 }) => {
 	const [{ row, flex, text, column }] = useStyles()
 	return (
-		<TouchableOpacity style={[flex.tiny, row.center, style]}>
-			<Icon
-				name={icon}
-				width={iconSize}
-				height={iconSize}
-				fill={iconColor}
-				style={column.item.center}
-			/>
+		<TouchableOpacity style={[flex.tiny, row.center, style, { alignItems: 'center' }]}>
+			<Icon name={icon} width={iconSize} height={iconSize} fill={iconColor} />
 			<Text
 				style={[
 					text.bold,
@@ -132,7 +128,7 @@ export const RequestButtons: React.FC<RequestButtonsProps> = ({ buttons = null }
 			{arr &&
 				arr.map((obj: any) => (
 					<RequestButtonItem
-						style={obj.style}
+						style={[obj.style]}
 						icon={obj.icon}
 						iconColor={obj.iconColor}
 						textProps={obj.title}
@@ -149,8 +145,8 @@ export const RequestButtons: React.FC<RequestButtonsProps> = ({ buttons = null }
 
 // Types
 type RequestAvatarProps = {
-	avatarUri: string
-	name: string
+	avatarUri?: string | null | undefined
+	name?: string | null | undefined
 	size?: number
 	secondAvatarUri?: string
 	isGroup?: boolean
@@ -170,10 +166,14 @@ export const RequestAvatar: React.FC<RequestAvatarProps> = ({
 	const [{ height, row, flex, text, margin, color, absolute }] = useStyles()
 	return (
 		<View style={[height(size), row.left, flex.tiny, { justifyContent: 'center' }, style]}>
-			<View style={[flex.tiny, row.item.bottom, row.center]}>
-				<Text category='h6' style={[text.align.center, text.family, text.color.black]}>
-					{name}
-				</Text>
+			<View
+				style={[flex.tiny, row.item.bottom, { flexDirection: 'row', justifyContent: 'center' }]}
+			>
+				{name && (
+					<Text category='h6' style={[text.family, text.color.black]}>
+						{name}
+					</Text>
+				)}
 				{isVerified && (
 					<Icon
 						style={[margin.left.small]}
@@ -184,13 +184,14 @@ export const RequestAvatar: React.FC<RequestAvatarProps> = ({
 					/>
 				)}
 			</View>
-			{!isGroup || !secondAvatarUri ? (
+			{(!isGroup || !secondAvatarUri) && avatarUri && (
 				<CircleAvatar
 					avatarUri={avatarUri}
 					size={size}
 					style={[absolute.scale({ top: -size / 2 })]}
 				/>
-			) : (
+			)}
+			{isGroup && secondAvatarUri && avatarUri && (
 				<GroupCircleAvatar firstAvatarUri={avatarUri} secondAvatarUri={secondAvatarUri} />
 			)}
 		</View>
@@ -257,29 +258,21 @@ export const MarkAsVerified: React.FC<{}> = () => {
 //
 
 // Types
-type RequestComponentProps = {
-	user: UserProps
-	markAsVerified?: boolean
-	buttons?: {
-		title: string
-		titleColor?: string
-		icon: string
-		iconColor?: string
-		bgColor?: string
-	}[]
+type ButtonsProps = {
+	title: string
+	titleColor?: string
+	icon: string
+	iconColor?: string
+	bgColor?: string
+	style?: StyleProp<any>[] | StyleProp<any>
 }
 
-type BodyRequestProps = {
-	user: UserProps
-	markAsVerified: boolean
-	buttons?: {
-		title: string
-		titleColor?: string
-		icon: string
-		iconColor?: string
-		bgColor?: string
-		style?: StyleProp<any>[]
-	}[]
+type RequestComponentProps = {
+	user: berty.chatmodel.IContact
+	accept: Form<{ id: number }>
+	decline: Form<{ id: number }>
+	markAsVerified?: boolean
+	buttons?: Array<ButtonsProps>
 }
 
 type BodyRequestContentProps = {
@@ -296,8 +289,12 @@ const BodyRequestContent: React.FC<BodyRequestContentProps> = ({ markAsVerified 
 	)
 }
 
-const BodyRequest: React.FC<BodyRequestProps> = ({ user, markAsVerified, buttons = null }) => {
-	const [{ padding, row, column }] = useStyles()
+const BodyRequest: React.FC<RequestComponentProps> = ({
+	user,
+	markAsVerified = false,
+	buttons = null,
+}) => {
+	const [{ padding }] = useStyles()
 	return (
 		<View style={[padding.horizontal.medium, padding.bottom.medium]}>
 			<RequestAvatar size={100} avatarUri={user?.avatarUri} name={user?.name} />
@@ -310,12 +307,8 @@ const BodyRequest: React.FC<BodyRequestProps> = ({ user, markAsVerified, buttons
 	)
 }
 
-export const Request: React.FC<RequestComponentProps> = ({
-	user,
-	markAsVerified = true,
-	buttons = null,
-}) => (
+export const Request: React.FC<RequestComponentProps> = (props) => (
 	<Modal>
-		<BodyRequest user={user} markAsVerified={markAsVerified} buttons={buttons || []} />
+		<BodyRequest {...props} />
 	</Modal>
 )

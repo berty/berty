@@ -53,6 +53,14 @@ $(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
 	$(lerna) $(lerna_flags) bootstrap
 	mkdir -p $(mod) $(pkg_mod)
 	touch $(mod) $(pkg_mod)
+	# remove all react-native duplicate pkg
+	find node_modules \
+		-maxdepth 3 \
+		-type d \
+		-name 'react-native' \
+		-path '*/node_modules/*' \
+		-not -path '*/@berty-tech/*' \
+		-not -path '*/@types/*' | xargs rm -rf
 
 .PHONY: test
 test: deps

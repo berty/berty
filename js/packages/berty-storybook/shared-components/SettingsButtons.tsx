@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, StyleSheet, StyleProp } from 'react-native'
+import { View, TouchableOpacity, StyleProp } from 'react-native'
 import { Text, Icon, Toggle } from 'react-native-ui-kitten'
-import { styles, colors, useStyles, ColorsTypes } from '@berty-tech/styles'
+import { colors, useStyles } from '@berty-tech/styles'
 import { CircleAvatar } from './CircleAvatar'
 
 //
@@ -11,33 +11,33 @@ import { CircleAvatar } from './CircleAvatar'
 // Type
 type SettingButtonProps = {
 	name: string
-	image?: string
+	image?: string | null | undefined
 	icon?: string
 	iconSize?: number
-	iconColor?: ColorsTypes
+	iconColor?: string
 	iconDependToggle?: boolean
 	children?: React.ReactNode
 	state?: {
 		value: string
-		color: ColorsTypes
+		color: string
 		bgColor: string
 		icon?: string
 		iconSize?: number
-		iconColor?: ColorsTypes
+		iconColor?: string
 		stateIcon?: string
-		stateIconColor?: ColorsTypes
+		stateIconColor?: string
 	}
 	alone?: boolean
 	toggled?: boolean
 	actionIcon?: string
 	actionIconSize?: number
-	actionIconColor?: ColorsTypes
+	actionIconColor?: string
 	actionToggle?: React.Dispatch<React.SetStateAction<any>>
 	varToggle?: boolean
 	style?: StyleProp<any>[]
 	// action
 	previewValue?: string
-	previewValueColor?: ColorsTypes
+	previewValueColor?: string
 	onPress?: () => void
 }
 
@@ -117,7 +117,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					)}
 					{image && (
 						<View>
-							<CircleAvatar avatarUri={image} withCircle={false} size={35} />
+							<CircleAvatar avatarUri={image} size={35} />
 						</View>
 					)}
 					<View>
@@ -205,16 +205,16 @@ type FactionButtonSettingProps = {
 	name?: string
 	icon?: string
 	iconSize?: number
-	iconColor?: ColorsTypes
+	iconColor?: string
 	state?: {
 		value: string
-		color: ColorsTypes
-		bgColor: ColorsTypes
+		color: string
+		bgColor: string
 		icon?: string
 		iconSize?: number
-		iconColor?: ColorsTypes
+		iconColor?: string
 		stateIcon?: string
-		stateIconColor?: ColorsTypes
+		stateIconColor?: string
 	}
 	style?: StyleProp<any>
 }
@@ -329,7 +329,7 @@ type ButtonSettingRowProps = {
 	state: {
 		name: string
 		icon: string
-		color: ColorsTypes
+		color: string
 		style: StyleProp<any>
 		onPress?: () => void
 	}[]
@@ -353,7 +353,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 	styleText = null,
 }) => {
 	const _styles = useStylesButtonSettingRow()
-	const [{ flex, row, margin, column, padding, border, background, text }] = useStyles()
+	const [{ flex, row, margin, padding, border, background, text }] = useStyles()
 	return (
 		<View style={[flex.tiny, row.fill, margin.top.medium, style, { alignItems: 'center' }]}>
 			{state.map((obj) => (
@@ -395,10 +395,10 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 // Types
 type ButtonSettingItem = {
 	value: string
-	color?: ColorsTypes
+	color?: string
 	icon?: string
 	iconSize?: number
-	iconColor?: ColorsTypes
+	iconColor?: string
 }
 
 // Styles

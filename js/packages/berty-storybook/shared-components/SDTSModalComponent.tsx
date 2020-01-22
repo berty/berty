@@ -1,46 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Text, View, Animated, TouchableWithoutFeedback, StyleProp } from 'react-native'
+import { Text, View, Animated, TouchableWithoutFeedback } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
-import { useStyles, ColorsTypes } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/berty-navigation'
 import Interactable from 'react-native-interactable'
-
-type SDTSModalProps = {
-	toggledPoint: number
-	notToggledPoint: number
-	snapPoints: { y: number; id: string }[]
-	diffPoint: number
-	initialPoint: { y: number }
-	//
-	deltaY: Animated.Value
-	isToggled: boolean
-	layout: number
-	onFocus: any
-	//
-	title?: string
-	titleColor?: ColorsTypes
-	icon?: string | null
-	iconColor?: ColorsTypes
-	bgColor?: ColorsTypes
-	//
-	maxHeight?: number
-	//
-	dragEnabled?: boolean | undefined
-	//
-	header?: boolean
-	headerAction?: any
-}
 
 type SDTSComponentProps = {
 	setComponentValues: React.Dispatch<React.SetStateAction<any>>
 	setFocusAction: React.Dispatch<React.SetStateAction<any>>
-	componentValues: SDTSModalProps
+	componentValues: any
 	ref: any
 	dragEnabled?: boolean
 	//
 	children: React.ReactNode
 	//
-	interactableStyle?: StyleProp<any>[]
+	interactableStyle?: any | undefined
 }
 
 type SDTSModalComponentProps = {
@@ -50,10 +24,10 @@ type SDTSModalComponentProps = {
 		initialPoint?: number
 		//
 		title?: string
-		titleColor?: ColorsTypes
+		titleColor?: string
 		icon?: string | undefined
-		iconColor?: ColorsTypes
-		bgColor?: ColorsTypes
+		iconColor?: string
+		bgColor?: string
 		//
 		maxHeight?: number
 		//
@@ -81,11 +55,11 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 	//
 	children,
 	//
-	interactableStyle = null,
+	interactableStyle = undefined,
 }) => {
 	const { goBack } = useNavigation()
 	const _styles = useStylesSTDTS()
-	const [{ border, text, row, column, padding, margin, flex, absolute, color }] = useStyles()
+	const [{ border, text, row, column, padding, margin, flex }] = useStyles()
 
 	const handleOnDrag = (e: any) => {
 		setFocusAction(componentValues.onFocus)
@@ -113,7 +87,6 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 			dragEnabled={dragEnabled}
 			onDrag={(e: any) => handleOnDrag(e)}
 			animatedValueY={componentValues.deltaY}
-			showsVerticalScrollIndicator={false}
 			initialPosition={componentValues.initialPoint}
 		>
 			<View style={[border.shadow.medium]}>
@@ -450,7 +423,7 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 					dragEnabled={first.dragEnabled}
 					interactableStyle={firstInteractableStyle}
 				>
-					{rows.length > 1 ? children[0] : children}
+					{rows.length > 1 && children ? children[0] : children}
 				</SDTSComponent>
 			)}
 			{second && (

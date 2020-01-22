@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, SafeAreaView, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors, useStyles } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 
 //
 // Scan Invalid
@@ -38,7 +38,7 @@ const _invalidScanStyles = StyleSheet.create({
 
 const InvalidScanHeader: React.FC<{}> = () => {
 	const _styles = useStylesInvalidScan()
-	const [{ background, margin, text, border, row, column }] = useStyles()
+	const [{ background, margin, text, border, row, column, color }] = useStyles()
 
 	return (
 		<View>
@@ -56,7 +56,7 @@ const InvalidScanHeader: React.FC<{}> = () => {
 					name='alert-circle-outline'
 					width={100}
 					height={100}
-					fill={colors.red}
+					fill={color.red}
 					style={[row.item.justify]}
 				/>
 			</View>
@@ -81,7 +81,7 @@ const InvalidScanError: React.FC<{}> = () => {
 
 const InvalidScanDismissButton: React.FC<{}> = () => {
 	const _styles = useStylesInvalidScan()
-	const [{ row, margin, color, column, padding, text }] = useStyles()
+	const [{ row, margin, color, padding, text }] = useStyles()
 
 	return (
 		<View style={row.center}>

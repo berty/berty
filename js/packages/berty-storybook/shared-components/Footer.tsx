@@ -1,7 +1,7 @@
 import React from 'react'
-import { TouchableOpacity, View, Image, StyleSheet, SafeAreaView } from 'react-native'
+import { TouchableOpacity, Image, SafeAreaView } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
-import { useStyles, ColorsTypes } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 import LinearGradient from 'react-native-linear-gradient'
 
 //
@@ -12,11 +12,11 @@ import LinearGradient from 'react-native-linear-gradient'
 
 type ButtonFooterProps = {
 	size?: number
-	backgroundColor?: ColorsTypes
-	avatarUri?: string
+	backgroundColor?: string
+	avatarUri?: string | null
 	icon?: string
 	elemSize?: number
-	elemColor?: ColorsTypes
+	elemColor?: string
 	onPress: (arg0: any) => void
 }
 
@@ -24,7 +24,7 @@ type FooterProps = {
 	left: ButtonFooterProps
 	center: ButtonFooterProps
 	right: ButtonFooterProps
-	onLayout: (event: any) => void
+	// onLayout: (event: any) => void
 }
 
 const ButtonFooter: React.FC<ButtonFooterProps> = ({
@@ -74,11 +74,11 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 		</TouchableOpacity>
 	)
 }
-export const Footer: React.FC<FooterProps> = ({ left, center, right, onLayout }) => {
+export const Footer: React.FC<FooterProps> = ({ left, center, right }) => {
 	const [{ row, absolute }] = useStyles()
 	return (
 		<LinearGradient
-			onLayout={onLayout}
+			// onLayout={onLayout}
 			style={[absolute.bottom, absolute.left, absolute.right]}
 			colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
 		>

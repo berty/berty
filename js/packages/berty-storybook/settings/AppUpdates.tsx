@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, ScrollView, TouchableOpacity } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'

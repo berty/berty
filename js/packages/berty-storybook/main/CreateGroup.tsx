@@ -4,7 +4,6 @@ import {
 	SafeAreaView,
 	ScrollView,
 	TouchableOpacity,
-	TouchableWithoutFeedback,
 	Dimensions,
 	StyleSheet,
 } from 'react-native'
@@ -78,7 +77,6 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({ separateBar = true }) =
 				<View style={[row.left, row.item.justify]}>
 					<CircleAvatar
 						avatarUri='https://s3.amazonaws.com/uifaces/faces/twitter/msveet/128.jpg'
-						withCircle={false}
 						size={50}
 						style={[row.item.justify]}
 					/>

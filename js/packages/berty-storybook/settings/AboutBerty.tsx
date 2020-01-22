@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, ScrollView, TouchableOpacity } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
@@ -32,32 +32,6 @@ const useStylesAboutBerty = () => {
 		buttonRowMarginTop: margin.top.scale(20),
 	}
 }
-
-const _aboutBertyStyles = StyleSheet.create({
-	headerInfosTitleText: {
-		paddingLeft: 10,
-	},
-	headerInfosButtonText: {
-		fontSize: 15,
-	},
-	firstHeaderButtonRow: {
-		marginRight: 10,
-		minHeight: 108,
-	},
-	secondHeaderButtonRow: {
-		marginLeft: 10,
-		minHeight: 108,
-	},
-	firstButtonRow: {
-		marginRight: 10,
-	},
-	secondButtonRow: {
-		marginLeft: 10,
-	},
-	buttonRowMarginTop: {
-		marginTop: 20,
-	},
-})
 
 const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => {
 	const _styles = useStylesAboutBerty()
