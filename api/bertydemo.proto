@@ -18,6 +18,9 @@ service DemoService {
 
   // LogList Fetches a list of operation that occurred on a log. Will create or open the log identified by the token
   rpc LogList(LogList.Request) returns (LogList.Reply);
+
+  // LogStream Stream every operation occured on a log in real time
+  rpc LogStream(LogStream.Request) returns (stream LogStream.Reply);
 }
 
 message LogOperation {
@@ -59,7 +62,7 @@ message LogGet {
     string cid = 2;
   }
   message Reply {
-    LogOperation op = 1;
+    LogOperation operation = 1;
   }
 }
 
@@ -69,6 +72,16 @@ message LogList {
     LogStreamOptions options = 2;
   }
   message Reply {
-    repeated LogOperation ops = 1;
+    repeated LogOperation operations = 1;
+  }
+}
+
+message LogStream {
+  message Request {
+    string log_token = 1;
+    LogStreamOptions options = 2;
+  }
+  message Reply {
+    LogOperation operation = 1;
   }
 }

@@ -25,7 +25,7 @@ export ENVFILE ?= $(shell \
 	[ -f "$$PWD/.env.$(config)" ] && echo $$PWD/.env.$(config) || echo $$PWD/.env)
 .PHONY: config
 config: $(ENVFILE)
-	@echo $(ENVFILE)
+
 $(ENVFILE):
 	$(error "config file $@.$(config) does not exist")
 

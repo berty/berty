@@ -78,19 +78,22 @@ $(codegen_berty_shared_sources): $(codegen_deps) $(codegen_berty_chat_protos)
 
 $(codegen_berty_chat_targets): %: %.hbs
 	$(codegen_pbhbs) $(codegen_pbhbs_flags) -t $(dir $@) -o $(dir $@) $(codegen_berty_chat_protos)
+	$(codegen_lint) $(codegen_lint_options) $(codegen_berty_chat_targets)
 
 $(codegen_berty_protocol_targets): %: %.hbs
 	$(codegen_pbhbs) $(codegen_pbhbs_flags) -t $(dir $@) -o $(dir $@) $(codegen_berty_protocol_protos)
+	$(codegen_lint) $(codegen_lint_options) $(codegen_berty_protocol_targets)
 
 $(codegen_berty_orbitdb_targets): %: %.hbs
 	$(codegen_pbhbs) $(codegen_pbhbs_flags) -t $(dir $@) -o $(dir $@) $(codegen_berty_orbitdb_protos)
+	$(codegen_lint) $(codegen_lint_options) $(codegen_berty_orbitdb_targets)
 
 $(codegen_berty_shared_targets): %: %.hbs
 	$(codegen_pbhbs) $(codegen_pbhbs_flags) -t $(dir $@) -o $(dir $@) $(codegen_berty_shared_protos)
+	$(codegen_lint) $(codegen_lint_options) $(codegen_berty_shared_targets)
 
 .PHONY: gen.codegen
 gen.codegen: $(codegen_deps) $(codegen_targets)
-	$(codegen_lint) $(codegen_lint_options) $(codegen_targets)
 
 .PHONY: gen.codegen.watch
 gen.codegen.watch: export PWD := $(PWD)

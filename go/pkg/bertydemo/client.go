@@ -115,7 +115,7 @@ func (d *Client) LogAdd(ctx context.Context, req *LogAdd_Request) (*LogAdd_Reply
 	return &LogAdd_Reply{Cid: opCidStr(op)}, nil
 }
 
-func opToProtoOp(op operation.Operation) *LogOperation {
+func convertLogOperationToProtobufLogOperation(op operation.Operation) *LogOperation {
 	if op == nil {
 		return nil
 	}
@@ -142,8 +142,8 @@ func (d *Client) LogGet(ctx context.Context, req *LogGet_Request) (*LogGet_Reply
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	pop := opToProtoOp(op)
-	return &LogGet_Reply{Op: pop}, nil
+	pop := convertLogOperationToProtobufLogOperation(op)
+	return &LogGet_Reply{Operation: pop}, nil
 }
 
 func maybeDecodeCid(str string) *cid.Cid {
@@ -182,15 +182,16 @@ func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Re
 
 	protoOps := make([]*LogOperation, len(ops))
 	for i, op := range ops {
-		pop := opToProtoOp(op)
-		protoOps[i] = pop
+		protoOps[i] = convertLogOperationToProtobufLogOperation(op)
 	}
 
-	return &LogList_Reply{Ops: protoOps}, nil
+	return &LogList_Reply{Operations: protoOps}, nil
 }
 
-/*func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
-	log, err := d.getLogByHandle(req.LogHandle)
+func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
+	ctx := srv.Context()
+
+	log, err := d.logFromToken(ctx, req.LogToken)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
@@ -204,14 +205,15 @@ func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Re
 	}
 
 	for op := range ch {
-		pop := opToProtoOp(op)
-		if err = srv.Send(&pop); err != nil {
+		if err = srv.Send(&LogStream_Reply{
+			Operation: convertLogOperationToProtobufLogOperation(op),
+		}); err != nil {
 			return errcode.TODO.Wrap(err)
 		}
 	}
 
 	return nil
-}*/
+}
 
 func (d *Client) Close() error {
 	err := d.odb.Close()

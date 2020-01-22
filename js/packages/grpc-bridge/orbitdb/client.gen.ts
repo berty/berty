@@ -32,4 +32,10 @@ export class DemoServiceClient {
 	) {
 		return this._pbService.logList.bind(this._pbService)(request, callback)
 	}
+	logStream(
+		request: api.berty.protocol.LogStream.IRequest,
+		callback: (error: Error | null, response?: api.berty.protocol.LogStream.IReply) => void,
+	) {
+		return this._pbService.logStream.bind(this._pbService)(request, callback)
+	}
 }
