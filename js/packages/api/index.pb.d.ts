@@ -2858,12 +2858,12 @@ export namespace berty {
             }
 
             interface IReply {
-                op?: (berty.protocol.ILogOperation|null);
+                operation?: (berty.protocol.ILogOperation|null);
             }
 
             class Reply implements IReply {
 
-                public op?: (berty.protocol.ILogOperation|null);
+                public operation?: (berty.protocol.ILogOperation|null);
                 public static create(properties?: berty.protocol.LogGet.IReply): berty.protocol.LogGet.Reply;
                 public static encode(message: berty.protocol.LogGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.LogGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2915,12 +2915,12 @@ export namespace berty {
             }
 
             interface IReply {
-                ops?: (berty.protocol.ILogOperation[]|null);
+                operations?: (berty.protocol.ILogOperation[]|null);
             }
 
             class Reply implements IReply {
 
-                public ops: berty.protocol.ILogOperation[];
+                public operations: berty.protocol.ILogOperation[];
                 public static create(properties?: berty.protocol.LogList.IReply): berty.protocol.LogList.Reply;
                 public static encode(message: berty.protocol.LogList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.LogList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;

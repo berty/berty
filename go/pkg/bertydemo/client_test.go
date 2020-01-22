@@ -17,28 +17,6 @@ func init() {
 	//zap.ReplaceGlobals(logger)
 }
 
-func TestLogFromToken(t *testing.T) {
-	client, clean := testingClient(t, &Opts{":memory:"})
-	defer clean()
-
-	demo, clean := testingClientService(t, client)
-	defer clean()
-
-	res, err := demo.LogToken(context.Background(), &LogToken_Request{})
-	checkErr(t, err)
-	token := res.LogToken
-
-	first_log, err := client.logFromToken(context.Background(), token)
-	checkErr(t, err)
-
-	second_log, err := client.logFromToken(context.Background(), token)
-	checkErr(t, err)
-
-	if first_log != second_log {
-		t.Fatalf("second_log = %p; want %p", second_log, first_log)
-	}
-}
-
 // The leaktest calls are commented out since there is leaks remaining
 // TODO: clean all leaks
 
@@ -54,10 +32,10 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func testLog(t *testing.T, d DemoServiceClient) string {
+func testingLogToken(t *testing.T, d DemoServiceClient) string {
 	res, err := d.LogToken(context.Background(), &LogToken_Request{})
 	checkErr(t, err)
-	return res.LogToken
+	return res.GetLogToken()
 }
 
 func TestLogToken(t *testing.T) {
@@ -67,10 +45,31 @@ func TestLogToken(t *testing.T) {
 	demo, clean := testingClientService(t, client)
 	defer clean()
 
-	_ = testLog(t, demo)
+	_ = testingLogToken(t, demo)
 }
 
-func testAdd(t *testing.T, d DemoServiceClient, lt string, data []byte) string {
+func TestLogFromToken(t *testing.T) {
+	client, clean := testingClient(t, &Opts{":memory:"})
+	defer clean()
+
+	demo, clean := testingClientService(t, client)
+	defer clean()
+
+	ctx := context.Background()
+	token := testingLogToken(t, demo)
+
+	first_log, err := client.logFromToken(ctx, token)
+	checkErr(t, err)
+
+	second_log, err := client.logFromToken(ctx, token)
+	checkErr(t, err)
+
+	if first_log != second_log {
+		t.Fatalf("second_log = %p; want %p", second_log, first_log)
+	}
+}
+
+func testingAdd(t *testing.T, d DemoServiceClient, lt string, data []byte) string {
 	req := LogAdd_Request{
 		LogToken: lt,
 		Data:     data,
@@ -79,7 +78,7 @@ func testAdd(t *testing.T, d DemoServiceClient, lt string, data []byte) string {
 	res, err := d.LogAdd(context.Background(), &req)
 	checkErr(t, err)
 
-	return res.Cid
+	return res.GetCid()
 }
 
 func TestLogAdd(t *testing.T) {
@@ -89,8 +88,8 @@ func TestLogAdd(t *testing.T) {
 	demo, clean := testingClientService(t, client)
 	defer clean()
 
-	log_token := testLog(t, demo)
-	_ = testAdd(t, demo, log_token, []byte("Hello log!"))
+	logToken := testingLogToken(t, demo)
+	_ = testingAdd(t, demo, logToken, []byte("Hello log!"))
 }
 
 func TestLogGet(t *testing.T) {
@@ -100,31 +99,31 @@ func TestLogGet(t *testing.T) {
 	demo, clean := testingClientService(t, client)
 	defer clean()
 
-	log_token := testLog(t, demo)
+	logToken := testingLogToken(t, demo)
 	data := []byte("Hello log!")
-	op_cid := testAdd(t, demo, log_token, data)
+	op_cid := testingAdd(t, demo, logToken, data)
 	req := LogGet_Request{
-		LogToken: log_token,
+		LogToken: logToken,
 		Cid:      op_cid,
 	}
 
 	res, err := demo.LogGet(context.Background(), &req)
 	checkErr(t, err)
 
-	if res.Op == nil {
+	if res.GetOperation() == nil {
 		t.Fatalf("LogGet().Op = nil; want an Op")
 	}
 
-	got := res.Op.Name
-	should_get := "ADD"
-	if got != should_get {
-		t.Fatalf("LogGet().Op.Name = %s; want %s", got, should_get)
+	got := res.GetOperation().GetName()
+	shouldGet := "ADD"
+	if got != shouldGet {
+		t.Fatalf("LogGet().Op.Name = %s; want %s", got, shouldGet)
 	}
 
-	got = string(res.Op.Value)
-	should_get = string(data)
-	if got != should_get {
-		t.Fatalf("LogGet().Op.Value = %s; want %s", got, should_get)
+	got = string(res.GetOperation().GetValue())
+	shouldGet = string(data)
+	if got != shouldGet {
+		t.Fatalf("LogGet().Op.Value = %s; want %s", got, shouldGet)
 	}
 }
 
@@ -135,22 +134,22 @@ func TestLogList(t *testing.T) {
 	demo, clean := testingClientService(t, client)
 	defer clean()
 
-	log_token := testLog(t, demo)
+	logToken := testingLogToken(t, demo)
 	data := []byte("Hello log!")
-	_ = testAdd(t, demo, log_token, data)
+	_ = testingAdd(t, demo, logToken, data)
 
 	req := LogList_Request{
-		LogToken: log_token,
+		LogToken: logToken,
 		Options:  nil,
 	}
 
 	res, err := demo.LogList(context.Background(), &req)
 	checkErr(t, err)
 
-	should_get := string(data)
+	shouldGet := string(data)
 	found := false
-	for _, op := range res.Ops {
-		if op.Name == "ADD" && string(op.Value) == should_get {
+	for _, op := range res.GetOperations() {
+		if op.GetName() == "ADD" && string(op.GetValue()) == shouldGet {
 			found = true
 		}
 	}
@@ -166,9 +165,9 @@ func TestLogStream(t *testing.T) {
 	demo, clean := testingClientService(t, client)
 	defer clean()
 
-	log_token := testLog(t, demo)
+	logToken := testingLogToken(t, demo)
 	req := &LogStream_Request{
-		LogToken: log_token,
+		LogToken: logToken,
 		Options:  nil,
 	}
 
@@ -178,20 +177,20 @@ func TestLogStream(t *testing.T) {
 	defer logClient.CloseSend()
 
 	data := []byte("Hello log!")
-	_ = testAdd(t, demo, log_token, data)
+	_ = testingAdd(t, demo, logToken, data)
 
 	op, err := logClient.Recv()
 	checkErr(t, err)
 
 	got := op.GetName()
-	should_get := "ADD"
-	if got != should_get {
-		t.Fatalf("LogGet().Op.Name = %s; want %s", got, should_get)
+	shouldGet := "ADD"
+	if got != shouldGet {
+		t.Fatalf("LogStream()->Op.Name = %s; want %s", got, shouldGet)
 	}
 
 	got = string(op.GetValue())
-	should_get = string(data)
-	if got != should_get {
-		t.Fatalf("LogGet().Op.Value = %s; want %s", got, should_get)
+	shouldGet = string(data)
+	if got != shouldGet {
+		t.Fatalf("LogStream()->Op.Value = %s; want %s", got, shouldGet)
 	}
 }

@@ -106,41 +106,41 @@ func (d *Client) LogToken(ctx context.Context, _ *LogToken_Request) (*LogToken_R
 	return &LogToken_Reply{LogToken: hex.EncodeToString(sigkb)}, nil
 }
 
-func opCidStr(op operation.Operation) string {
+func operationCidString(op operation.Operation) string {
 	return op.GetEntry().GetHash().String()
 }
 
 func (d *Client) LogAdd(ctx context.Context, req *LogAdd_Request) (*LogAdd_Reply, error) {
-	log, err := d.logFromToken(ctx, req.LogToken)
+	log, err := d.logFromToken(ctx, req.GetLogToken())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	op, err := log.Add(ctx, req.Data)
+	op, err := log.Add(ctx, req.GetData())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	return &LogAdd_Reply{Cid: opCidStr(op)}, nil
+	return &LogAdd_Reply{Cid: operationCidString(op)}, nil
 }
 
-func opToProtoOp(op operation.Operation) *LogOperation {
+func convertLogOperationToProtobufLogOperation(op operation.Operation) *LogOperation {
 	if op == nil {
 		return nil
 	}
 	return &LogOperation{
 		Name:  op.GetOperation(),
 		Value: op.GetValue(),
-		Cid:   opCidStr(op),
+		Cid:   operationCidString(op),
 	}
 }
 
 func (d *Client) LogGet(ctx context.Context, req *LogGet_Request) (*LogGet_Reply, error) {
-	log, err := d.logFromToken(ctx, req.LogToken)
+	log, err := d.logFromToken(ctx, req.GetLogToken())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	c, err := cid.Decode(req.Cid)
+	c, err := cid.Decode(req.GetCid())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -150,8 +150,8 @@ func (d *Client) LogGet(ctx context.Context, req *LogGet_Request) (*LogGet_Reply
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	pop := opToProtoOp(op)
-	return &LogGet_Reply{Op: pop}, nil
+	pop := convertLogOperationToProtobufLogOperation(op)
+	return &LogGet_Reply{Operation: pop}, nil
 }
 
 func maybeDecodeCid(str string) *cid.Cid {
@@ -167,21 +167,21 @@ func decodeStreamOptions(opts *LogStreamOptions) *orbitdb.StreamOptions {
 		return nil
 	}
 	return &orbitdb.StreamOptions{
-		GT:     maybeDecodeCid(opts.GT),
-		GTE:    maybeDecodeCid(opts.GTE),
-		LT:     maybeDecodeCid(opts.LT),
-		LTE:    maybeDecodeCid(opts.LTE),
-		Amount: intPtr(int(opts.Amount)),
+		GT:     maybeDecodeCid(opts.GetGT()),
+		GTE:    maybeDecodeCid(opts.GetGTE()),
+		LT:     maybeDecodeCid(opts.GetLT()),
+		LTE:    maybeDecodeCid(opts.GetLTE()),
+		Amount: intPtr(int(opts.GetAmount())),
 	}
 }
 
 func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Reply, error) {
-	log, err := d.logFromToken(ctx, req.LogToken)
+	log, err := d.logFromToken(ctx, req.GetLogToken())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	opts := decodeStreamOptions(req.Options)
+	opts := decodeStreamOptions(req.GetOptions())
 
 	ops, err := log.List(ctx, opts)
 	if err != nil {
@@ -190,22 +190,21 @@ func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Re
 
 	protoOps := make([]*LogOperation, len(ops))
 	for i, op := range ops {
-		pop := opToProtoOp(op)
-		protoOps[i] = pop
+		protoOps[i] = convertLogOperationToProtobufLogOperation(op)
 	}
 
-	return &LogList_Reply{Ops: protoOps}, nil
+	return &LogList_Reply{Operations: protoOps}, nil
 }
 
 func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
 	// Hack using List until go-orbit-db Stream is fixed
 	ctx := srv.Context()
-	log, err := d.logFromToken(ctx, req.LogToken)
+	log, err := d.logFromToken(ctx, req.GetLogToken())
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
 
-	opts := decodeStreamOptions(req.Options)
+	opts := decodeStreamOptions(req.GetOptions())
 	if opts == nil {
 		opts = &orbitdb.StreamOptions{}
 	}
@@ -229,7 +228,8 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 			continue
 		}
 		for _, op := range ops {
-			if err = srv.Send(opToProtoOp(op)); err != nil {
+			pop := convertLogOperationToProtobufLogOperation(op)
+			if err = srv.Send(pop); err != nil {
 				return err
 			}
 		}

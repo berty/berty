@@ -1824,7 +1824,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               Reply: {
                 fields: {
-                  op: {
+                  operation: {
                     type: "LogOperation",
                     id: 1
                   }
@@ -1849,7 +1849,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               Reply: {
                 fields: {
-                  ops: {
+                  operations: {
                     rule: "repeated",
                     type: "LogOperation",
                     id: 1

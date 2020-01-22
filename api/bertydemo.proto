@@ -62,7 +62,7 @@ message LogGet {
     string cid = 2;
   }
   message Reply {
-    LogOperation op = 1;
+    LogOperation operation = 1;
   }
 }
 
@@ -72,7 +72,7 @@ message LogList {
     LogStreamOptions options = 2;
   }
   message Reply {
-    repeated LogOperation ops = 1;
+    repeated LogOperation operations = 1;
   }
 }
 
