@@ -17,6 +17,7 @@ import { Card, TouchableCard } from '@berty-tech/shared-storybook'
 import { ColorsTypes, useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/berty-navigation'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
+import { Chat } from '@berty-tech/hooks'
 
 type Navigation = () => void
 type Form<T> = (arg0: T) => Promise<void>
@@ -253,6 +254,7 @@ const CreateYourAccount: React.FC<{
 	const store = useContext(Store.Context)
 	const [name, setName] = useState('')
 	const [{ text, padding, margin, background, border }] = useStyles()
+	const createAccount = Chat.useAccountCreate()
 	return (
 		<Translation>
 			{(t) => (
@@ -263,7 +265,8 @@ const CreateYourAccount: React.FC<{
 					button={{
 						text: t('onboarding.create-account.button'),
 						onPress: async (): Promise<void> => {
-							await store.accountCreate({ name })
+							createAccount({ name: name || 'Anonymous 1337' })
+							// @TODO: Error handling
 							next()
 						},
 					}}
@@ -370,7 +373,7 @@ const SetupFinished: React.FC = () => {
 					description={t('onboarding.setup-finished.desc')}
 					button={{
 						text: t('onboarding.setup-finished.button'),
-						onPress: navigate.tab.main,
+						onPress: navigate.main.list,
 					}}
 				/>
 			)}

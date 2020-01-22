@@ -129,6 +129,8 @@ export type Styles = {
 	maxWidth: (maxWidth: number) => {}
 	maxHeight: (maxHeight: number) => {}
 	opacity: (opacity: number) => {}
+	minWidth: (minWidth: number) => {}
+	minHeight: (minHeight: number) => {}
 	overflow: {}
 }
 
@@ -436,8 +438,16 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 		(maxHeight: number) =>
 			StyleSheet.create({ maxHeight: { maxHeight: maxHeight * scaleSize } }).maxHeight,
 	),
-	opacity: mem((opacity: number) => StyleSheet.create({ opacity: { opacity } }).opacity),
+	minWidth: mem(
+		(minWidth: number) =>
+			StyleSheet.create({ minWidth: { minWidth: minWidth * scaleSize } }).minWidth,
+	),
+	minHeight: mem(
+		(minHeight: number) =>
+			StyleSheet.create({ minHeight: { minHeight: minHeight * scaleSize } }).minHeight,
+	),
 	overflow: StyleSheet.create({ overflow: { overflow: 'visible' } }).overflow,
+	opacity: mem((opacity: number) => StyleSheet.create({ opacity: { opacity } }).opacity),
 })
 
 const mapScaledDeclaration = (decl: Declaration): Styles =>

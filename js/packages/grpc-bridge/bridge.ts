@@ -26,7 +26,10 @@ const createMessage = (mtype: pb.Type): grpc.ProtobufMessageClass<grpc.ProtobufM
 	return Message
 }
 
-export type Bridge = (options: grpc.ClientRpcOptions, metadata?: grpc.Metadata) => pb.RPCImpl
+export type Bridge = (
+	options: grpc.ClientRpcOptions,
+	metadata?: { [key: string]: string | Array<string> },
+) => pb.RPCImpl
 export const bridge: Bridge = (options, metadata): pb.RPCImpl => (
 	method,
 	requestData,
@@ -57,7 +60,7 @@ export const bridge: Bridge = (options, metadata): pb.RPCImpl => (
 
 	// initialize client
 	const client = grpc.client(_method, options)
-	client.start(metadata)
+	client.start(new grpc.Metadata(metadata))
 	client.onHeaders((headers: grpc.Metadata) => {
 		console.log('onHeaders: ', headers)
 	})

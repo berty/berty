@@ -2,16 +2,16 @@ export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
 .PHONY: \
-	deps.storybook \
-	deps.storybook.mobile\
+	start.storybook \
+	start.storybook.mobile\
 
-deps.storybook.mobile: export PWD := $(PWD)
-deps.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader.gen.js
+start.storybook.mobile: export PWD := $(PWD)
+start.storybook.mobile: $(PWD)/node_modules $(PWD)/storybook/storyLoader.gen.js
 	kill $$(lsof -t -i :7007) || true
 	cd $(PWD) && start-storybook &
 	kill $$(lsof -t -i :8081) || true
 	cd $(PWD) && PWD=$(PWD) react-native start --reset-cache &
-deps.storybook: deps.storybook.mobile
+start.storybook: start.storybook.mobile
 
 $(PWD)/storybook/storyLoader.gen.js: $(PWD)/node_modules
 	PATH=$(PATH) rnstl \
@@ -22,7 +22,7 @@ $(PWD)/storybook/storyLoader.gen.js: $(PWD)/node_modules
 
 .PHONY: run.storybook.ios
 run.storybook.ios: export PWD := $(PWD)
-run.storybook.ios: $(PWD)/node_modules $(PWD)/ios/Pods deps.storybook.mobile
+run.storybook.ios: $(PWD)/node_modules $(PWD)/ios/Pods start.storybook.mobile
 	cd $(PWD) && react-native run-ios --simulator='iPhone 11' --no-packager
 	## cd $(PWD) && react-native run-ios --no-packager
 
@@ -31,7 +31,7 @@ $(PWD)/ios/Pods: $(PWD)/ios/Podfile $(PWD)/node_modules
 
 .PHONY: run.storybook.android
 run.storybook.android: export PWD := $(PWD)
-run.storybook.android: deps.storybook.mobile $(PWD)/android/app/debug.keystore
+run.storybook.android: start.storybook.mobile $(PWD)/android/app/debug.keystore
 	cd $(PWD) \
 		&& clisim -af \
 		&& react-native run-android --no-packager

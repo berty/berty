@@ -1,16 +1,15 @@
 {
-  "name": "@berty-tech/example",
+  "name": "@berty-tech/hooks",
   "version": "0.0.0",
   "private": true,
   "description": "",
   "keywords": [],
   "author": "Berty Technologies <oss@berty.tech>",
-  "homepage": "https://github.com/berty/berty/tree/master/packages/example#readme",
-  "license": "(Apache-2.0 OR MIT)",
-  "main": "lib/example.js",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/hooks#readme",
+  "license": "(Apache-2.0 or MIT)",
+  "main": "index.ts",
   "directories": {
-    "lib": "lib",
-    "test": "__tests__"
+    "Chat": "Chat"
   },
   "files": [
     "lib"
@@ -27,5 +26,11 @@
   },
   "bugs": {
     "url": "https://github.com/berty/berty/issues"
+  },
+  "dependencies": {
+    "@berty-tech/store": "^0.0.0",
+    "@types/react-redux": "^7.1.6",
+    "react": "^16.12.0",
+    "react-redux": "^7.1.3"
   }
 }

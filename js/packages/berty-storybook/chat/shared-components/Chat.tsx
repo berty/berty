@@ -1,32 +1,21 @@
 import React, { useRef } from 'react'
-import {
-	TouchableOpacity,
-	View,
-	TextInput,
-	StyleSheet,
-	Text,
-	KeyboardAvoidingView,
-	SafeAreaView,
-} from 'react-native'
+import { TouchableOpacity, View, TextInput, Text, SafeAreaView } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 
 //
 // ChatFooter => Textinput for type message
 //
 
 // Styles
-const _chatFooterStyles = StyleSheet.create({
-	textInput: {
-		flex: 10,
-	},
-	focusTextInput: {
-		maxHeight: 80,
-	},
-	sendButton: {
-		paddingLeft: 4,
-	},
-})
+const useStylesChatFooter = () => {
+	const [{ flex, maxHeight, padding }] = useStyles()
+	return {
+		textInput: flex.scale(10),
+		focusTextInput: maxHeight(80),
+		sendButton: padding.left.scale(4),
+	}
+}
 
 export const ChatFooter: React.FC<{
 	isFocused: boolean
@@ -34,27 +23,26 @@ export const ChatFooter: React.FC<{
 }> = ({ isFocused, setFocus }) => {
 	const inputRef = useRef(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
+	const _styles = useStylesChatFooter()
+	const [{ background, row, padding, flex, border, column, color }] = useStyles()
 	return (
-		<SafeAreaView style={[styles.bgWhite]}>
+		<SafeAreaView style={background.white}>
 			<View
 				style={[
-					styles.row,
-					styles.centerItems,
-					styles.padding,
-					_isFocused && styles.paddingBottom,
-					styles.bgWhite,
-					styles.end,
+					row.right,
+					padding.medium,
+					background.white,
+					_isFocused && padding.bottom.medium,
+					{ alignItems: 'center' },
 				]}
 			>
 				<View
 					style={[
-						styles.flex,
-						styles.borderRadius,
-						styles.row,
-						styles.littlePadding,
-						styles.spaceBetween,
-						styles.centerItems,
-						{ backgroundColor: _isFocused ? colors.lightMsgBlueGrey : colors.lightGrey },
+						flex.tiny,
+						border.radius.medium,
+						padding.small,
+						row.fill,
+						{ alignItems: 'center', backgroundColor: _isFocused ? '#E8E9FC99' : '#EDEFF3' },
 					]}
 				>
 					<TextInput
@@ -63,18 +51,18 @@ export const ChatFooter: React.FC<{
 						onFocus={() => setFocus(true)}
 						onBlur={() => setFocus(false)}
 						style={[
-							_chatFooterStyles.textInput,
-							_isFocused && { color: colors.blue } && _chatFooterStyles.focusTextInput,
+							_styles.textInput,
+							_isFocused && { color: color.blue } && _styles.focusTextInput,
 						]}
 						placeholder='Write a secure message...'
-						placeholderTextColor={_isFocused ? colors.blue : colors.grey}
+						placeholderTextColor={_isFocused ? color.blue : color.grey}
 					/>
-					<TouchableOpacity style={[styles.flex, _chatFooterStyles.sendButton]}>
+					<TouchableOpacity style={[flex.tiny, _styles.sendButton]}>
 						<Icon
 							name='paper-plane-outline'
 							width={30}
 							height={30}
-							fill={_isFocused ? colors.blue : colors.grey}
+							fill={_isFocused ? color.blue : color.grey}
 						/>
 					</TouchableOpacity>
 				</View>
@@ -93,21 +81,20 @@ type ChatDateProps = {
 }
 
 // Styles
-const _chatDateStyles = StyleSheet.create({
-	date: {
-		paddingTop: 2,
-		paddingBottom: 2,
-		paddingRight: 8,
-		paddingLeft: 8,
-		opacity: 0.5,
-	},
-	dateText: {
-		fontSize: 12,
-	},
-})
+const useStylesChatDate = () => {
+	const [{ padding, text }] = useStyles()
+	return {
+		date: [padding.horizontal.scale(8), padding.vertical.scale(2)],
+		dateText: [text.size.small, text.color.grey, text.align.center],
+	}
+}
 
-export const ChatDate: React.FC<ChatDateProps> = ({ date }) => (
-	<View style={[styles.borderRadius, styles.center, styles.bgLightGrey, _chatDateStyles.date]}>
-		<Text style={[styles.center, styles.textBlack, _chatDateStyles.dateText]}>Today</Text>
-	</View>
-)
+export const ChatDate: React.FC<ChatDateProps> = ({ date }) => {
+	const _styles = useStylesChatDate()
+	const [{ border, row, background }] = useStyles()
+	return (
+		<View style={[row.item.justify, border.radius.medium, background.light.grey, _styles.date]}>
+			<Text style={_styles.dateText}>Today</Text>
+		</View>
+	)
+}

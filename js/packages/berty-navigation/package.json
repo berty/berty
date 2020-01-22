@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@berty-tech/berty-storybook": "^0.0.0",
+    "@berty-tech/hooks": "^0.0.0",
     "@react-navigation/bottom-tabs": "^5.0.0-alpha.22",
     "@react-navigation/core": "^5.0.0-alpha.23",
     "@react-navigation/native-stack": "^5.0.0-alpha.1",

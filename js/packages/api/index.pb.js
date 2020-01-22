@@ -1703,13 +1703,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           DemoService: {
             methods: {
-              AddKey: {
-                requestType: "AddKey.Request",
-                responseType: "AddKey.Reply"
-              },
-              Log: {
-                requestType: "Log.Request",
-                responseType: "Log.Reply"
+              LogToken: {
+                requestType: "LogToken.Request",
+                responseType: "LogToken.Reply"
               },
               LogAdd: {
                 requestType: "LogAdd.Request",
@@ -1719,113 +1715,61 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 requestType: "LogGet.Request",
                 responseType: "LogGet.Reply"
               },
-              LogStream: {
-                requestType: "LogStream.Request",
-                responseType: "Log.Operation",
-                responseStream: true
-              },
               LogList: {
                 requestType: "LogList.Request",
                 responseType: "LogList.Reply"
               }
             }
           },
-          AddKey: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  privKey: {
-                    type: "bytes",
-                    id: 1
-                  }
-                }
+          LogOperation: {
+            fields: {
+              name: {
+                type: "string",
+                id: 1
               },
-              Reply: {
-                fields: {}
+              value: {
+                type: "bytes",
+                id: 2
+              },
+              cid: {
+                type: "string",
+                id: 3
               }
             }
           },
-          Log: {
+          LogStreamOptions: {
+            fields: {
+              GT: {
+                type: "string",
+                id: 1
+              },
+              GTE: {
+                type: "string",
+                id: 2
+              },
+              LT: {
+                type: "string",
+                id: 3
+              },
+              LTE: {
+                type: "string",
+                id: 4
+              },
+              amount: {
+                type: "uint32",
+                id: 5
+              }
+            }
+          },
+          LogToken: {
             fields: {},
             nested: {
-              Operation: {
-                fields: {
-                  name: {
-                    type: "string",
-                    id: 1
-                  },
-                  value: {
-                    type: "bytes",
-                    id: 2
-                  }
-                }
-              },
-              StreamOptions: {
-                fields: {
-                  GT: {
-                    type: "string",
-                    id: 1
-                  },
-                  GTE: {
-                    type: "string",
-                    id: 2
-                  },
-                  LT: {
-                    type: "string",
-                    id: 3
-                  },
-                  LTE: {
-                    type: "string",
-                    id: 4
-                  },
-                  amount: {
-                    type: "uint32",
-                    id: 5
-                  }
-                }
-              },
-              ManifestEntry: {
-                fields: {
-                  key: {
-                    type: "string",
-                    id: 1
-                  },
-                  values: {
-                    rule: "repeated",
-                    type: "string",
-                    id: 2
-                  }
-                }
-              },
               Request: {
-                fields: {
-                  address: {
-                    type: "string",
-                    id: 1
-                  },
-                  manifestType: {
-                    type: "string",
-                    id: 2
-                  },
-                  manifestAccess: {
-                    rule: "repeated",
-                    type: "ManifestEntry",
-                    id: 3
-                  },
-                  identityType: {
-                    type: "string",
-                    id: 4
-                  },
-                  identityId: {
-                    type: "string",
-                    id: 5
-                  }
-                }
+                fields: {}
               },
               Reply: {
                 fields: {
-                  logHandle: {
+                  logToken: {
                     type: "string",
                     id: 1
                   }
@@ -1838,7 +1782,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             nested: {
               Request: {
                 fields: {
-                  logHandle: {
+                  logToken: {
                     type: "string",
                     id: 1
                   },
@@ -1849,7 +1793,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 }
               },
               Reply: {
-                fields: {}
+                fields: {
+                  cid: {
+                    type: "string",
+                    id: 1
+                  }
+                }
               }
             }
           },
@@ -1858,7 +1807,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             nested: {
               Request: {
                 fields: {
-                  logHandle: {
+                  logToken: {
                     type: "string",
                     id: 1
                   },
@@ -1871,25 +1820,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               Reply: {
                 fields: {
                   op: {
-                    type: "Log.Operation",
+                    type: "LogOperation",
                     id: 1
-                  }
-                }
-              }
-            }
-          },
-          LogStream: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  logHandle: {
-                    type: "string",
-                    id: 1
-                  },
-                  options: {
-                    type: "Log.StreamOptions",
-                    id: 2
                   }
                 }
               }
@@ -1898,23 +1830,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           LogList: {
             fields: {},
             nested: {
-              Operations: {
-                fields: {
-                  ops: {
-                    rule: "repeated",
-                    type: "Log.Operation",
-                    id: 1
-                  }
-                }
-              },
               Request: {
                 fields: {
-                  logHandle: {
+                  logToken: {
                     type: "string",
                     id: 1
                   },
                   options: {
-                    type: "Log.StreamOptions",
+                    type: "LogStreamOptions",
                     id: 2
                   }
                 }
@@ -1922,7 +1845,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               Reply: {
                 fields: {
                   ops: {
-                    type: "Operations",
+                    rule: "repeated",
+                    type: "LogOperation",
                     id: 1
                   }
                 }
