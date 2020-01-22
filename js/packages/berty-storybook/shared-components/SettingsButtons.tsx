@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, StyleSheet, StyleProp } from 'react-native'
 import { Text, Icon, Toggle } from 'react-native-ui-kitten'
-import { styles, colors } from '@berty-tech/styles'
+import { styles, colors, useStyles, ColorsTypes } from '@berty-tech/styles'
 import { CircleAvatar } from './CircleAvatar'
 
 //
@@ -14,60 +14,58 @@ type SettingButtonProps = {
 	image?: string
 	icon?: string
 	iconSize?: number
-	iconColor?: string
+	iconColor?: ColorsTypes
 	iconDependToggle?: boolean
 	children?: React.ReactNode
 	state?: {
 		value: string
-		color: string
+		color: ColorsTypes
 		bgColor: string
 		icon?: string
 		iconSize?: number
-		iconColor?: string
+		iconColor?: ColorsTypes
 		stateIcon?: string
-		stateIconColor?: string
+		stateIconColor?: ColorsTypes
 	}
 	alone?: boolean
 	toggled?: boolean
 	actionIcon?: string
 	actionIconSize?: number
-	actionIconColor?: string
+	actionIconColor?: ColorsTypes
 	actionToggle?: React.Dispatch<React.SetStateAction<any>>
 	varToggle?: boolean
 	style?: StyleProp<any>[]
 	// action
 	previewValue?: string
-	previewValueColor?: string
+	previewValueColor?: ColorsTypes
 	onPress?: () => void
 }
 
 // Style
-const _stylesSettingButton = StyleSheet.create({
-	settingButton: { flex: 1, minHeight: 60 },
-	statePaddingBox: {
-		paddingTop: 2,
-		paddingBottom: 2,
-		paddingLeft: 8,
-		paddingRight: 8,
-	},
-	descBox: { marginLeft: 20, marginBottom: 16 },
-})
+const useStylesSettingButton = () => {
+	const [{ flex, padding, margin }] = useStyles()
+	return {
+		settingButton: flex.tiny,
+		statePaddingBox: [padding.vertical.scale(2), padding.horizontal.scale(8)],
+		descBox: [margin.left.scale(20), margin.bottom.medium],
+	}
+}
 
 export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	name,
 	image = null,
 	icon = null,
 	iconSize = 30,
-	iconColor = colors.blue,
+	iconColor = 'blue',
 	iconDependToggle = false,
 	children = null,
 	state = {},
-	actionIconColor = colors.black,
+	actionIconColor = 'black',
 	actionIconSize = 25,
 	actionToggle = null,
 	varToggle = null,
 	previewValue = null,
-	previewValueColor = colors.black,
+	previewValueColor = 'black',
 	alone = true,
 	toggled = false,
 	style = null,
@@ -75,39 +73,40 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	onPress,
 }) => {
 	const [isToggle, setIsToggle] = useState()
+	const _styles = useStylesSettingButton()
+	const [{ background, margin, row, flex, padding, opacity, text, border }] = useStyles()
 
 	return (
 		<TouchableOpacity
 			activeOpacity={toggled ? 1 : 0.2}
 			style={[
-				_stylesSettingButton.settingButton,
-				styles.bgWhite,
+				_styles.settingButton,
+				background.white,
 				style,
-				alone ? styles.borderRadius : null,
-				alone ? styles.shadow : null,
-				alone ? { marginTop: 20 } : null,
+				{ minHeight: 60 },
+				alone ? border.radius.medium : null,
+				alone ? border.shadow.medium : null,
+				alone ? margin.top.scale(20) : null,
 			]}
 			onPress={onPress}
 		>
 			<View
 				style={[
-					styles.flex,
-					styles.row,
-					alone && styles.paddingRight,
-					alone && styles.paddingLeft,
-					styles.alignItems,
-					children && alone && styles.paddingTop,
+					flex.tiny,
+					row.fill,
+					alone && padding.horizontal.medium,
+					children && alone && padding.top.medium,
+					{ alignItems: 'center' },
 				]}
 			>
-				<View style={[styles.row, styles.alignVertical]}>
+				<View style={[row.left, { alignItems: 'center' }]}>
 					{icon && iconSize && iconColor && (
 						<View>
 							<Icon
 								style={[
 									iconDependToggle &&
-										((actionToggle && !varToggle) || (!actionToggle && !isToggle)) && {
-											opacity: 0.3,
-										},
+										((actionToggle && !varToggle) || (!actionToggle && !isToggle)) &&
+										opacity(0.3),
 								]}
 								name={icon}
 								width={iconSize}
@@ -122,17 +121,15 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 						</View>
 					)}
 					<View>
-						<Text style={[styles.fontFamily, styles.littlePaddingLeft, { color: colors.black }]}>
-							{name}
-						</Text>
+						<Text style={[text.family, padding.left.small, text.color.black]}>{name}</Text>
 					</View>
 				</View>
-				<View style={[styles.row, styles.center, styles.alignItems]}>
+				<View style={[row.center, { alignItems: 'center' }]}>
 					{state && state.value && state.color && state.bgColor && (
-						<View style={[styles.row, styles.marginRight, styles.alignItems]}>
+						<View style={[row.left, margin.right.medium, { alignItems: 'center' }]}>
 							{state && state.icon && (
 								<Icon
-									style={[styles.littleMarginRight]}
+									style={[margin.right.small]}
 									name={state.icon}
 									width={state.iconSize}
 									height={state.iconSize}
@@ -141,17 +138,15 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 							)}
 							<View
 								style={[
-									styles.row,
-									styles.spaceEvenly,
-									styles.alignItems,
-									styles.borderRadius,
-									{ backgroundColor: state.bgColor },
-									_stylesSettingButton.statePaddingBox,
+									row.fill,
+									border.radius.medium,
+									{ backgroundColor: state.bgColor, alignItems: 'center' },
+									_styles.statePaddingBox,
 								]}
 							>
 								{state.stateIcon && (
 									<Icon
-										style={[styles.center, { marginRight: 5 }]}
+										style={[row.item.justify, margin.right.scale(5)]}
 										name={state.stateIcon}
 										width={13}
 										height={13}
@@ -159,7 +154,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 									/>
 								)}
 								<Text
-									style={[styles.center, { color: state.color, fontSize: 8, fontWeight: 'bold' }]}
+									style={[text.align.center, text.size.scale(8), text.bold, { color: state.color }]}
 								>
 									{state.value}
 								</Text>
@@ -169,12 +164,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					{previewValue && (
 						<View>
 							<Text
-								style={[
-									styles.fontFamily,
-									styles.littlePaddingRight,
-									styles.textBold,
-									{ color: previewValueColor },
-								]}
+								style={[text.family, padding.right.small, text.bold, { color: previewValueColor }]}
 							>
 								{previewValue}
 							</Text>
@@ -190,7 +180,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					)}
 					{toggled && (
 						<Toggle
-							style={{ paddingRight: 5 }}
+							style={padding.right.scale(5)}
 							status='primary'
 							checked={varToggle || isToggle}
 							onChange={
@@ -200,7 +190,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					)}
 				</View>
 			</View>
-			{children && <View style={[_stylesSettingButton.descBox]}>{children}</View>}
+			{children && <View style={[_styles.descBox]}>{children}</View>}
 		</TouchableOpacity>
 	)
 }
@@ -215,16 +205,16 @@ type FactionButtonSettingProps = {
 	name?: string
 	icon?: string
 	iconSize?: number
-	iconColor?: string
+	iconColor?: ColorsTypes
 	state?: {
 		value: string
-		color: string
-		bgColor: string
+		color: ColorsTypes
+		bgColor: ColorsTypes
 		icon?: string
 		iconSize?: number
-		iconColor?: string
+		iconColor?: ColorsTypes
 		stateIcon?: string
-		stateIconColor?: string
+		stateIconColor?: ColorsTypes
 	}
 	style?: StyleProp<any>
 }
@@ -235,100 +225,101 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 	name = null,
 	icon = null,
 	iconSize = 30,
-	iconColor = colors.blue,
+	iconColor = 'blue',
 	state = {},
 	style = null,
-}) => (
-	<View
-		style={[
-			styles.bgWhite,
-			styles.shadow,
-			styles.borderRadius,
-			styles.paddingLeft,
-			styles.paddingRight,
-			style,
-		]}
-	>
-		{name && icon && iconSize && iconColor && (
-			<View style={[{ flex: 1, height: 60 }]}>
-				<View style={[styles.row, styles.alignVertical]}>
-					{icon && iconSize && iconColor && (
+}) => {
+	const _styles = useStylesSettingButton()
+	const [{ background, border, padding, flex, height, row, opacity, margin, text }] = useStyles()
+	return (
+		<View
+			style={[
+				background.white,
+				border.shadow.medium,
+				border.radius.medium,
+				padding.horizontal.medium,
+				style,
+			]}
+		>
+			{name && icon && iconSize && iconColor && (
+				<View style={[height(60), flex.tiny]}>
+					<View style={[row.left, flex.tiny, { alignItems: 'center' }]}>
+						{icon && iconSize && iconColor && (
+							<View>
+								<Icon name={icon} width={iconSize} height={iconSize} fill={iconColor} />
+							</View>
+						)}
 						<View>
-							<Icon name={icon} width={iconSize} height={iconSize} fill={iconColor} />
+							<Text style={[text.family, padding.left.small]}>{name}</Text>
 						</View>
-					)}
-					<View>
-						<Text style={[styles.fontFamily, styles.littlePaddingLeft]}>{name}</Text>
-					</View>
-					{state && state.value && state.color && state.bgColor && (
-						<View style={[styles.rowRev, styles.marginRight, styles.alignItems, styles.flex]}>
-							{state && state.icon && (
-								<Icon
-									style={[styles.littleMarginRight]}
-									name={state.icon}
-									width={state.iconSize}
-									height={state.iconSize}
-									fill={state.iconColor}
-								/>
-							)}
+						{state && state.value && state.color && state.bgColor && (
 							<View
 								style={[
-									styles.row,
-									styles.spaceEvenly,
-									styles.alignItems,
-									styles.borderRadius,
-									{ backgroundColor: state.bgColor },
-									_stylesSettingButton.statePaddingBox,
+									margin.right.medium,
+									flex.tiny,
+									{ flexDirection: 'row-reverse', alignItems: 'center' },
 								]}
 							>
-								{state.stateIcon && (
+								{state && state.icon && (
 									<Icon
-										style={[styles.center, { marginRight: 5 }]}
-										name={state.stateIcon}
-										width={13}
-										height={13}
-										fill={state.stateIconColor}
+										style={[margin.right.small]}
+										name={state.icon}
+										width={state.iconSize}
+										height={state.iconSize}
+										fill={state.iconColor}
 									/>
 								)}
-								<Text
-									style={[styles.center, { color: state.color, fontSize: 8, fontWeight: 'bold' }]}
+								<View
+									style={[
+										row.center,
+										border.radius.medium,
+										{ backgroundColor: state.bgColor, alignItems: 'center' },
+										_styles.statePaddingBox,
+									]}
 								>
-									{state.value}
-								</Text>
+									{state.stateIcon && (
+										<Icon
+											style={[row.item.justify, margin.right.scale(5)]}
+											name={state.stateIcon}
+											width={13}
+											height={13}
+											fill={state.stateIconColor}
+										/>
+									)}
+									<Text
+										style={[
+											row.item.justify,
+											text.size.scale(8),
+											text.bold,
+											{ color: state.color },
+										]}
+									>
+										{state.value}
+									</Text>
+								</View>
 							</View>
-						</View>
-					)}
+						)}
+					</View>
+					<View style={[border.color.grey, border.medium, opacity(0.2), margin.horizontal.small]} />
 				</View>
-				<View
-					style={[
-						{ borderColor: 'gray', opacity: 0.2, borderWidth: 0.5 },
-						styles.littleMarginRight,
-						styles.littleMarginLeft,
-					]}
-				/>
-			</View>
-		)}
-		{children && Array.isArray(children) ? (
-			children.map((child, key) => (
-				<View>
-					{child}
-					{key + 1 < children.length && (
-						<View
-							style={[
-								{ borderColor: 'gray', opacity: 0.2, borderWidth: 0.5 },
-								styles.littleMarginRight,
-								styles.littleMarginLeft,
-							]}
-						/>
-					)}
-				</View>
-			))
-		) : (
-			<View>{children}</View>
-		)}
-	</View>
-)
-
+			)}
+			{children && Array.isArray(children) ? (
+				children.map((child, key) => (
+					<View>
+						{child}
+						{key + 1 < children.length && (
+							<View
+								style={[border.color.grey, border.medium, opacity(0.2), margin.horizontal.small]}
+							/>
+						)}
+					</View>
+				))
+			) : (
+				<View>{children}</View>
+			)}
+		</View>
+	)
+}
 //
 // ButtonSettingRow => The tree buttons in many settings screens (chat and settings)
 //
@@ -338,7 +329,7 @@ type ButtonSettingRowProps = {
 	state: {
 		name: string
 		icon: string
-		color: string
+		color: ColorsTypes
 		style: StyleProp<any>
 		onPress?: () => void
 	}[]
@@ -348,59 +339,54 @@ type ButtonSettingRowProps = {
 }
 
 // Styles
-const _buttonSettingRowStyles = StyleSheet.create({
-	textPadding: {
-		paddingTop: 6,
-	},
-})
+const useStylesButtonSettingRow = () => {
+	const [{ padding }] = useStyles()
+	return {
+		textPadding: padding.top.scale(6),
+	}
+}
 
 export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 	state,
 	numberOfLines = 1,
 	style = null,
 	styleText = null,
-}) => (
-	<View
-		style={[
-			styles.flex,
-			styles.row,
-			styles.spaceBetween,
-			styles.alignItems,
-			styles.marginTop,
-			style,
-		]}
-	>
-		{state.map((obj) => (
-			<TouchableOpacity
-				style={[
-					styles.flex,
-					styles.padding,
-					styles.alignItems,
-					styles.spaceCenter,
-					styles.shadow,
-					styles.bgWhite,
-					styles.borderRadius,
-					obj.style,
-				]}
-				onPress={obj.onPress}
-			>
-				<Icon name={obj.icon} width={30} height={30} fill={obj.color} />
-				<Text
+}) => {
+	const _styles = useStylesButtonSettingRow()
+	const [{ flex, row, margin, column, padding, border, background, text }] = useStyles()
+	return (
+		<View style={[flex.tiny, row.fill, margin.top.medium, style, { alignItems: 'center' }]}>
+			{state.map((obj) => (
+				<TouchableOpacity
 					style={[
-						styles.textCenter,
-						styles.fontFamily,
-						styles.textBlack,
-						styleText,
-						_buttonSettingRowStyles.textPadding,
+						flex.tiny,
+						padding.medium,
+						border.radius.medium,
+						border.shadow.medium,
+						background.white,
+						obj.style,
+						{ alignItems: 'center', justifyContent: 'center' },
 					]}
-					numberOfLines={numberOfLines}
+					onPress={obj.onPress}
 				>
-					{obj.name}
-				</Text>
-			</TouchableOpacity>
-		))}
-	</View>
-)
+					<Icon name={obj.icon} width={30} height={30} fill={obj.color} />
+					<Text
+						style={[
+							text.align.center,
+							text.family,
+							text.color.black,
+							styleText,
+							_styles.textPadding,
+						]}
+						numberOfLines={numberOfLines}
+					>
+						{obj.name}
+					</Text>
+				</TouchableOpacity>
+			))}
+		</View>
+	)
+}
 
 //
 // ButtonSettingItem
@@ -409,31 +395,33 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 // Types
 type ButtonSettingItem = {
 	value: string
-	color?: string
+	color?: ColorsTypes
 	icon?: string
 	iconSize?: number
-	iconColor?: string
+	iconColor?: ColorsTypes
 }
 
 // Styles
-const _buttonSettingItemStyles = StyleSheet.create({
-	updateFeatureText: {
-		fontSize: 11,
-		paddingLeft: 8,
-	},
-})
+const useStylesButtonSettingItem = () => {
+	const [{ text, padding }] = useStyles()
+	return {
+		updateFeatureText: [text.size.scale(11), padding.left.scale(8)],
+	}
+}
 
 export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 	value,
-	color = colors.white,
+	color = 'white',
 	icon = 'checkmark-circle-2',
 	iconSize = 12,
 	iconColor = colors.lightBlue,
-}) => (
-	<View style={[styles.row, styles.littlePaddingLeft, styles.alignItems]}>
-		<Icon name={icon} width={iconSize} height={iconSize} fill={iconColor} />
-		<Text style={[styles.textBold, _buttonSettingItemStyles.updateFeatureText, { color }]}>
-			{value}
-		</Text>
-	</View>
-)
+}) => {
+	const _styles = useStylesButtonSettingItem()
+	const [{ row, padding, text }] = useStyles()
+	return (
+		<View style={[row.center, padding.left.small, { alignItems: 'center' }]}>
+			<Icon name={icon} width={iconSize} height={iconSize} fill={iconColor} />
+			<Text style={[text.bold, _styles.updateFeatureText, { color }]}>{value}</Text>
+		</View>
+	)
+}

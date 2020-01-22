@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Text, View, StyleSheet, Animated, TouchableWithoutFeedback, StyleProp } from 'react-native'
+import { Text, View, Animated, TouchableWithoutFeedback, StyleProp } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
-import { styles, colors } from '@berty-tech/styles'
+import { useStyles, ColorsTypes } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/berty-navigation'
 import Interactable from 'react-native-interactable'
 
@@ -18,10 +18,10 @@ type SDTSModalProps = {
 	onFocus: any
 	//
 	title?: string
-	titleColor?: string
+	titleColor?: ColorsTypes
 	icon?: string | null
-	iconColor?: string
-	bgColor?: string
+	iconColor?: ColorsTypes
+	bgColor?: ColorsTypes
 	//
 	maxHeight?: number
 	//
@@ -50,10 +50,10 @@ type SDTSModalComponentProps = {
 		initialPoint?: number
 		//
 		title?: string
-		titleColor?: string
+		titleColor?: ColorsTypes
 		icon?: string | undefined
-		iconColor?: string
-		bgColor?: string
+		iconColor?: ColorsTypes
+		bgColor?: ColorsTypes
 		//
 		maxHeight?: number
 		//
@@ -65,18 +65,12 @@ type SDTSModalComponentProps = {
 	children: React.ReactNode
 }
 
-const _styles2 = StyleSheet.create({
-	placeholder: {
-		backgroundColor: '#FFFFFF',
-		height: 120,
-		marginTop: 16,
-	},
-	placeholder2: {
-		height: 90,
-		borderTopLeftRadius: 30,
-		borderTopRightRadius: 30,
-	},
-})
+const useStylesSTDTS = () => {
+	const [{ height, border }] = useStyles()
+	return {
+		placeholder2: [height(90), border.radius.top.scale(30)],
+	}
+}
 
 const SDTSComponent: React.FC<SDTSComponentProps> = ({
 	setComponentValues,
@@ -90,6 +84,8 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 	interactableStyle = null,
 }) => {
 	const { goBack } = useNavigation()
+	const _styles = useStylesSTDTS()
+	const [{ border, text, row, column, padding, margin, flex, absolute, color }] = useStyles()
 
 	const handleOnDrag = (e: any) => {
 		setFocusAction(componentValues.onFocus)
@@ -120,19 +116,19 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 			showsVerticalScrollIndicator={false}
 			initialPosition={componentValues.initialPoint}
 		>
-			<View style={[styles.shadow]}>
+			<View style={[border.shadow.medium]}>
 				<TouchableWithoutFeedback onPress={componentValues.headerAction}>
-					<View style={[_styles2.placeholder2, { backgroundColor: componentValues.bgColor }]}>
+					<View style={[_styles.placeholder2, { backgroundColor: componentValues.bgColor }]}>
 						<View
 							style={[
-								styles.littleMarginTop,
-								styles.center,
-								styles.bgLightGrey,
+								margin.top.small,
+								row.item.justify,
+								border.scale(2.5),
+								border.color.light.grey,
+								border.radius.scale(4),
 								{
-									borderWidth: 2.5,
-									borderColor: colors.lightGrey,
+									backgroundColor: '#E8E9FC',
 									width: '14%',
-									borderRadius: 4,
 								},
 							]}
 						/>
@@ -140,26 +136,26 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 							<View>
 								<View
 									style={[
-										styles.row,
-										styles.paddingHorizontal,
-										styles.paddingBottom,
-										styles.littlePaddingTop,
-										styles.spaceBetween,
-										styles.alignItems,
+										row.fill,
+										padding.horizontal.medium,
+										padding.bottom.medium,
+										padding.top.small,
 									]}
 								>
 									<Text
 										style={[
-											styles.fontFamily,
-											styles.textBold,
-											{ fontSize: 20, color: componentValues.titleColor },
+											text.family,
+											text.bold,
+											text.size.scale(20),
+											column.item.center,
+											{ color: componentValues.titleColor },
 										]}
 									>
 										{componentValues.title}
 									</Text>
 									{componentValues.icon && (
 										<Icon
-											style={[styles.flex, styles.right]}
+											style={[flex.tiny, column.item.center]}
 											name={componentValues.icon}
 											width={40}
 											height={40}
@@ -178,8 +174,8 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 					setComponentValues({ ...componentValues, layout: e.nativeEvent.layout.height })
 				}
 				style={[
-					styles.paddingBottom,
-					styles.paddingHorizontal,
+					padding.bottom.medium,
+					padding.horizontal.medium,
 					{ maxHeight: componentValues.maxHeight, backgroundColor: componentValues.bgColor },
 				]}
 			>
@@ -190,6 +186,7 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 }
 
 export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, children }) => {
+	const [{ color }] = useStyles()
 	const [focus, setFocus] = useState()
 	const firstRef = useRef(null)
 	const secondRef = useRef(null)
@@ -219,10 +216,10 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 		maxHeight: rows[0].maxHeight || 500,
 		//
 		title: rows[0].title !== undefined ? rows[0].title : undefined,
-		titleColor: rows[0].titleColor || colors.black,
+		titleColor: rows[0].titleColor || color.black,
 		icon: rows[0].icon !== undefined ? rows[0].icon : null,
-		iconColor: rows[0].iconColor || colors.blue,
-		bgColor: rows[0].bgColor || colors.white,
+		iconColor: rows[0].iconColor || color.blue,
+		bgColor: rows[0].bgColor || color.white,
 		//
 		dragEnabled: rows[0].dragEnabled !== undefined ? rows[0].dragEnabled : true,
 		//
@@ -259,10 +256,10 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 				maxHeight: rows[1].maxHeight || 500,
 				//
 				title: rows[1].title !== undefined ? rows[1].title : undefined,
-				titleColor: rows[1].titleColor || colors.black,
+				titleColor: rows[1].titleColor || color.black,
 				icon: rows[1].icon !== undefined ? rows[1].icon : null,
-				iconColor: rows[1].iconColor || colors.blue,
-				bgColor: rows[1].bgColor || colors.white,
+				iconColor: rows[1].iconColor || color.blue,
+				bgColor: rows[1].bgColor || color.white,
 				//
 				dragEnabled: rows[1].dragEnabled !== undefined ? rows[1].dragEnabled : true,
 				//
@@ -289,10 +286,10 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 					maxHeight: rows[2].maxHeight || 500,
 					//
 					title: rows[2].title !== undefined ? rows[2].title : undefined,
-					titleColor: rows[2].titleColor || colors.black,
+					titleColor: rows[2].titleColor || color.black,
 					icon: rows[2].icon !== undefined ? rows[2].icon : null,
-					iconColor: rows[2].iconColor || colors.blue,
-					bgColor: rows[2].bgColor || colors.white,
+					iconColor: rows[2].iconColor || color.blue,
+					bgColor: rows[2].bgColor || color.white,
 					//
 					dragEnabled: rows[2].dragEnabled !== undefined ? rows[2].dragEnabled : true,
 					//
@@ -301,7 +298,7 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 				})
 			}
 		}
-	}, [first, rows, second, third])
+	}, [color.black, color.blue, color.white, first, rows, second, third])
 
 	const firstInteractableStyle = [{ zIndex: 3 }]
 	const secondInteractableStyle = second && [

@@ -65,6 +65,7 @@ const GroupChatSettingsHeader: React.FC<berty.chatmodel.IConversation> = ({ avat
 				firstAvatarUri={avatarUri || ''}
 				secondAvatarUri={avatarUri || ''}
 				size={80}
+				style={{ alignItems: 'center' }}
 			/>
 			<Text
 				numberOfLines={1}

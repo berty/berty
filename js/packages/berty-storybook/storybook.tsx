@@ -15,11 +15,8 @@ import i18n from '@berty-tech/berty-i18n'
 import { faker } from './faker.gen'
 import { BertyChatChatService as LegacyStore } from '@berty-tech/berty-store'
 import { berty } from '@berty-tech/api'
-import {
-	Routes,
-	FakeNavigation,
-	Provider as NavigationProvider,
-} from '@berty-tech/berty-navigation'
+import { Routes, FakeNavigation } from '@berty-tech/berty-navigation'
+import { NavigationNativeContainer } from '@react-navigation/native'
 import { enableScreens } from 'react-native-screens'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
 
@@ -30,7 +27,7 @@ console.disableYellowBox = true
 const stories = storiesOf('Berty', module)
 
 stories.addDecorator((storyFn) => (
-	<NavigationProvider>
+	<NavigationNativeContainer>
 		<LegacyStore.Provider rpcImpl={faker.berty.chat.ChatService.rpcImpl}>
 			<I18nextProvider i18n={i18n}>
 				<IconRegistry icons={EvaIconsPack} />
@@ -39,7 +36,7 @@ stories.addDecorator((storyFn) => (
 				</ApplicationProvider>
 			</I18nextProvider>
 		</LegacyStore.Provider>
-	</NavigationProvider>
+	</NavigationNativeContainer>
 ))
 
 stories.addDecorator((storyFn) => {

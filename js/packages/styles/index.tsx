@@ -70,11 +70,12 @@ export type AlignVertical<T> = {
 
 export type AlignTypes = [AlignHorizontalTypes, AlignVerticalTypes]
 export type Align<T> = AlignHorizontal<T> & AlignVertical<T>
-
 export type Text = {
 	color: Colors<{}> & ColorsBrightness<{}>
 	size: Sizes<{}>
-	family: {}
+	family: {
+		use: (fontFamily: string) => {}
+	}
 	bold: {}
 	italic: {}
 	align: Align<{}>
@@ -101,14 +102,14 @@ export type Declaration = {
 	colors: ColorsDeclaration
 	sides: SizesDeclaration<number>
 	text: {
-		family: string
+		family: {}
 		sizes: SizesDeclaration<number>
 	}
 }
 
 export type Styles = {
-	color: Colors<string> & ColorsBrightness<string>
-	background: Colors<{}> & ColorsBrightness<{}>
+	color: ColorsStyles<string>
+	background: ColorsStyles<{}>
 	padding: Sizes<{}> & Sides<Sizes<{}>>
 	margin: Sizes<{}> & Sides<Sizes<{}>>
 	border: Border<{}>
@@ -127,6 +128,7 @@ export type Styles = {
 	height: (height: number) => {}
 	maxWidth: (maxWidth: number) => {}
 	maxHeight: (maxHeight: number) => {}
+	opacity: (opacity: number) => {}
 	minWidth: (minWidth: number) => {}
 	minHeight: (minHeight: number) => {}
 	overflow: {}
@@ -325,8 +327,13 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 	border: mapBorder(decl),
 	text: {
 		color: mapColorsDeclaration(decl.colors, (v) => ({ color: v })),
+		family: StyleSheet.create({
+			use: mem(
+				(fontFamily: string = decl.text.family) =>
+					StyleSheet.create({ family: { fontFamily } }).family,
+			),
+		}),
 		...StyleSheet.create({
-			family: { fontFamily: decl.text.family },
 			bold: { fontWeight: 'bold' },
 			italic: { fontStyle: 'italic' },
 		}),
@@ -440,6 +447,7 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 			StyleSheet.create({ minHeight: { minHeight: minHeight * scaleSize } }).minHeight,
 	),
 	overflow: StyleSheet.create({ overflow: { overflow: 'visible' } }).overflow,
+	opacity: mem((opacity: number) => StyleSheet.create({ opacity: { opacity } }).opacity),
 })
 
 const mapScaledDeclaration = (decl: Declaration): Styles =>

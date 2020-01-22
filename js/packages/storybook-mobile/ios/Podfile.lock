@@ -227,6 +227,10 @@ PODS:
     - ReactCommon/jscallinvoker (= 0.61.5)
   - RNCMaskedView (0.1.5):
     - React
+  - RNDevMenu (4.0.0):
+    - React-Core
+    - React-Core/DevSupport
+    - React-RCTNetwork
   - RNGestureHandler (1.5.1):
     - React
   - RNPermissions (2.0.3):
@@ -272,6 +276,7 @@ DEPENDENCIES:
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
+  - RNDevMenu (from `../node_modules/react-native-dev-menu`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -342,6 +347,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
+  RNDevMenu:
+    :path: "../node_modules/react-native-dev-menu"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNPermissions:
@@ -386,6 +393,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   RNCMaskedView: dd13f9f7b146a9ad82f9b7eb6c9b5548fcf6e990
+  RNDevMenu: 641b38a8aa65d98fb9df0f8652f05767609920f2
   RNGestureHandler: 7add966bb5d90ee8cf38d4341f87814474357972
   RNPermissions: 9e437a90de84a5402ff689d4da233730b81556c2
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
@@ -395,4 +403,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 3c340306c0784af3d3279a0c31fafa2c7131e0a2
 
-COCOAPODS: 1.8.3
+COCOAPODS: 1.8.4
