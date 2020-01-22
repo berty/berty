@@ -2644,6 +2644,8 @@ export namespace berty {
             public logGet(request: berty.protocol.LogGet.IRequest): Promise<berty.protocol.LogGet.Reply>;
             public logList(request: berty.protocol.LogList.IRequest, callback: berty.protocol.DemoService.LogListCallback): void;
             public logList(request: berty.protocol.LogList.IRequest): Promise<berty.protocol.LogList.Reply>;
+            public logStream(request: berty.protocol.LogStream.IRequest, callback: berty.protocol.DemoService.LogStreamCallback): void;
+            public logStream(request: berty.protocol.LogStream.IRequest): Promise<berty.protocol.LogOperation>;
         }
 
         namespace DemoService {
@@ -2655,6 +2657,8 @@ export namespace berty {
             type LogGetCallback = (error: (Error|null), response?: berty.protocol.LogGet.Reply) => void;
 
             type LogListCallback = (error: (Error|null), response?: berty.protocol.LogList.Reply) => void;
+
+            type LogStreamCallback = (error: (Error|null), response?: berty.protocol.LogOperation) => void;
         }
 
         interface ILogOperation {
@@ -2925,6 +2929,45 @@ export namespace berty {
                 public static verify(message: { [k: string]: any }): (string|null);
                 public static fromObject(object: { [k: string]: any }): berty.protocol.LogList.Reply;
                 public static toObject(message: berty.protocol.LogList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+        }
+
+        interface ILogStream {
+        }
+
+        class LogStream implements ILogStream {
+
+            public static create(properties?: berty.protocol.ILogStream): berty.protocol.LogStream;
+            public static encode(message: berty.protocol.ILogStream, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.protocol.ILogStream, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.LogStream;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.LogStream;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.protocol.LogStream;
+            public static toObject(message: berty.protocol.LogStream, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        namespace LogStream {
+
+            interface IRequest {
+                logToken?: (string|null);
+                options?: (berty.protocol.ILogStreamOptions|null);
+            }
+
+            class Request implements IRequest {
+
+                public logToken: string;
+                public options?: (berty.protocol.ILogStreamOptions|null);
+                public static create(properties?: berty.protocol.LogStream.IRequest): berty.protocol.LogStream.Request;
+                public static encode(message: berty.protocol.LogStream.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.LogStream.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.LogStream.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.LogStream.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.protocol.LogStream.Request;
+                public static toObject(message: berty.protocol.LogStream.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
         }

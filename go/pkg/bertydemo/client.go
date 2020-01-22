@@ -4,6 +4,8 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"sync"
+	"time"
 
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/ipfsutil"
@@ -19,10 +21,11 @@ import (
 )
 
 type Client struct {
-	api  ipfs_interface.CoreAPI
-	node *ipfs_core.IpfsNode
-	odb  orbitdb.OrbitDB
-	logs map[string]orbitdb.EventLogStore
+	api       ipfs_interface.CoreAPI
+	node      *ipfs_core.IpfsNode
+	odb       orbitdb.OrbitDB
+	logs      map[string]orbitdb.EventLogStore
+	logsMutex *sync.Mutex
 }
 
 type Opts struct {
@@ -48,7 +51,9 @@ func New(opts *Opts) (*Client, error) {
 
 	logs := make(map[string]orbitdb.EventLogStore)
 
-	return &Client{api, node, odb, logs}, nil
+	logsMutex := &sync.Mutex{}
+
+	return &Client{api, node, odb, logs, logsMutex}, nil
 }
 
 func intPtr(i int) *int {
@@ -56,6 +61,9 @@ func intPtr(i int) *int {
 }
 
 func (d *Client) logFromToken(ctx context.Context, token string) (orbitdb.EventLogStore, error) {
+	d.logsMutex.Lock()
+	defer d.logsMutex.Unlock()
+
 	if log, ok := d.logs[token]; ok {
 		// I tried to avoid this map but orbitdb recreates log instances and looses operations even when fed with the same args
 		return log, nil
@@ -189,29 +197,47 @@ func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Re
 	return &LogList_Reply{Ops: protoOps}, nil
 }
 
-/*func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
-	log, err := d.getLogByHandle(req.LogHandle)
+func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
+	// Hack using List until go-orbit-db Stream is fixed
+	ctx := srv.Context()
+	log, err := d.logFromToken(ctx, req.LogToken)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
 
 	opts := decodeStreamOptions(req.Options)
-
-	var ch chan operation.Operation
-	err = log.Stream(srv.Context(), ch, opts)
-	if err != nil {
-		return errcode.TODO.Wrap(err)
+	if opts == nil {
+		opts = &orbitdb.StreamOptions{}
 	}
 
-	for op := range ch {
-		pop := opToProtoOp(op)
-		if err = srv.Send(&pop); err != nil {
-			return errcode.TODO.Wrap(err)
+	dc := ctx.Done()
+	for {
+		if dc != nil {
+			select {
+			case _, done := <-dc:
+				if done {
+					return nil
+				}
+			default:
+			}
+		} // else we are in an infinite loop
+		ops, err := log.List(ctx, opts)
+		if err != nil {
+			return err
 		}
+		if len(ops) == 0 {
+			continue
+		}
+		for _, op := range ops {
+			if err = srv.Send(opToProtoOp(op)); err != nil {
+				return err
+			}
+		}
+		lastOpCid := ops[len(ops)-1].GetEntry().GetHash()
+		opts.GT = &lastOpCid
+		time.Sleep(1 * time.Second)
 	}
-
-	return nil
-}*/
+}
 
 func (d *Client) Close() error {
 	err := d.odb.Close()

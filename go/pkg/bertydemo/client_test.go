@@ -3,7 +3,8 @@ package bertydemo
 import (
 	"context"
 	"testing"
-	//"google.golang.org/grpc"
+
+	"google.golang.org/grpc"
 	//"github.com/fortytw2/leaktest"
 	//"go.uber.org/zap"
 	//"go.uber.org/zap/zapcore"
@@ -145,5 +146,61 @@ func TestLogList(t *testing.T) {
 		t.Fatalf("Added operation not found in LogList()")
 	}
 
+	closeDemo(t, demo)
+}
+
+// https://stackoverflow.com/a/44619697
+type mockDemoService_LogStreamServer struct {
+	grpc.ServerStream
+	Chan    chan *LogOperation
+	cancels []context.CancelFunc
+}
+
+func (_m *mockDemoService_LogStreamServer) Send(m *LogOperation) error {
+	_m.Chan <- m
+	return nil
+}
+
+func (_m *mockDemoService_LogStreamServer) Context() context.Context {
+	ctx, cancel := context.WithCancel(context.Background())
+	_m.cancels = append(_m.cancels, cancel)
+	return ctx
+}
+
+func (_m *mockDemoService_LogStreamServer) Close() {
+	for _, cancel := range _m.cancels {
+		cancel()
+	}
+}
+
+func TestLogStream(t *testing.T) {
+	demo := initDemo(t)
+	log_token := testLog(t, demo)
+
+	srv_mock := &mockDemoService_LogStreamServer{Chan: make(chan *LogOperation)}
+	req := LogStream_Request{
+		LogToken: log_token,
+		Options:  nil,
+	}
+	go demo.LogStream(&req, srv_mock)
+
+	data := []byte("Hello log!")
+	_ = testAdd(t, demo, log_token, data)
+
+	op := <-srv_mock.Chan
+
+	got := op.Name
+	should_get := "ADD"
+	if got != should_get {
+		t.Fatalf("LogGet().Op.Name = %s; want %s", got, should_get)
+	}
+
+	got = string(op.Value)
+	should_get = string(data)
+	if got != should_get {
+		t.Fatalf("LogGet().Op.Value = %s; want %s", got, should_get)
+	}
+
+	srv_mock.Close()
 	closeDemo(t, demo)
 }

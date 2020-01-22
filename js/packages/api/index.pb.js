@@ -1718,6 +1718,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               LogList: {
                 requestType: "LogList.Request",
                 responseType: "LogList.Reply"
+              },
+              LogStream: {
+                requestType: "LogStream.Request",
+                responseType: "LogOperation",
+                responseStream: true
               }
             }
           },
@@ -1848,6 +1853,23 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     rule: "repeated",
                     type: "LogOperation",
                     id: 1
+                  }
+                }
+              }
+            }
+          },
+          LogStream: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  logToken: {
+                    type: "string",
+                    id: 1
+                  },
+                  options: {
+                    type: "LogStreamOptions",
+                    id: 2
                   }
                 }
               }

@@ -95,6 +95,7 @@ export const berty = {
 		LogAdd: jsonPb.lookup('.berty.protocol.LogAdd'),
 		LogGet: jsonPb.lookup('.berty.protocol.LogGet'),
 		LogList: jsonPb.lookup('.berty.protocol.LogList'),
+		LogStream: jsonPb.lookup('.berty.protocol.LogStream'),
 	},
 }
 export const google = {
