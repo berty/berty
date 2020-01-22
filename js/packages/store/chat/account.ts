@@ -6,7 +6,7 @@ import faker from 'faker'
 import * as protocol from '../protocol'
 
 export type Entity = {
-	id: number
+	id: string
 	name: string
 	requests: Array<number>
 	conversations: Array<number>
@@ -14,9 +14,9 @@ export type Entity = {
 }
 
 export type Event = {
-	id: number
+	id: string
 	version: number
-	aggregateId: number
+	aggregateId: string
 }
 
 export type State = {
@@ -33,22 +33,22 @@ export type GlobalState = {
 export namespace Command {
 	export type Generate = void
 	export type Create = { name: string }
-	export type Delete = { id: number }
-	export type Open = { id: number }
-	export type Close = { id: number }
+	export type Delete = { id: string }
+	export type Open = { id: string }
+	export type Close = { id: string }
 }
 
 export namespace Query {
 	export type List = {}
-	export type Get = { id: number }
+	export type Get = { id: string }
 	export type GetLength = undefined
 }
 
 export namespace Event {
-	export type Created = { aggregateId: number; name: string }
-	export type Deleted = { aggregateId: number }
-	export type Opened = { aggregateId: number }
-	export type Closed = { aggregateId: number }
+	export type Created = { aggregateId: string; name: string }
+	export type Deleted = { aggregateId: string }
+	export type Opened = { aggregateId: string }
+	export type Closed = { aggregateId: string }
 }
 
 export type CommandsReducer = {

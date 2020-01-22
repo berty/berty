@@ -8,36 +8,61 @@ export type Entity = {
 	attachments: Array<{ uri: string }>
 }
 
-export type Event = {}
-
-export type Log = Array<Event>
+export type Event = {
+	id: string
+	version: number
+	aggregateId: string
+}
 
 export type State = {
-	logs: { [key: string]: Log }
+	events: Array<Event>
 	aggregates: { [key: string]: Entity }
 }
 
-export type Commands = {
+export type GlobalState = {
+	chat: {
+		message: State
+	}
+}
+
+export namespace Command {
+	export type Send = void
+	export type Hide = void
+}
+
+export namespace Query {
+	export type List = {}
+	export type Get = { id: string }
+	export type GetLength = void
+}
+
+export namespace Event {
+	export type Sent = { aggregateId: string; name: string }
+	export type Hidden = { aggregateId: string }
+}
+
+export type CommandsReducer = {
 	send: (state: State) => State
 	hide: (state: State) => State
 }
 
-export type Events = {
-	sendPending: (state: State) => State
-	sendSucceed: (state: State) => State
-	sendFailed: (state: State) => State
+export type QueryReducer = {
+	list: (state: GlobalState, query: Query.List) => Array<Entity>
+	get: (state: GlobalState, query: Query.Get) => Entity
+	getLength: (state: GlobalState) => number
+}
 
-	hidePending: (state: State) => State
-	hideSucceed: (state: State) => State
-	hideFailed: (state: State) => State
+export type EventsReducer = {
+	sent: (state: State) => State
+	hidden: (state: State) => State
 }
 
 const initialState: State = {
-	logs: {},
+	events: [],
 	aggregates: {},
 }
 
-const commandHandler = createSlice<State, Commands>({
+const commandHandler = createSlice<State, CommandsReducer>({
 	name: 'chat/message/command',
 	initialState,
 	reducers: {
@@ -46,37 +71,33 @@ const commandHandler = createSlice<State, Commands>({
 	},
 })
 
-const eventHandler = createSlice<State, Events>({
+const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/message/event',
 	initialState,
 	reducers: {
-		sendPending: (state: State) => state,
-		sendSucceed: (state: State) => state,
-		sendFailed: (state: State) => state,
-
-		hidePending: (state: State) => state,
-		hideSucceed: (state: State) => state,
-		hideFailed: (state: State) => state,
+		sent: (state: State) => state,
+		hidden: (state: State) => state,
 	},
 })
 
+export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
-export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
+export const queries: QueryReducer = {
+	list: (state) => Object.values(state.chat.message.aggregates),
+	get: (state, { id }) => state.chat.message.aggregates[id],
+	getLength: (state) => Object.keys(state.chat.message.aggregates).length,
+}
 
 export function* orchestrator() {
 	yield all([
 		takeLeading(commands.send, function*() {
-			yield put(events.sendPending())
 			// TODO: send message
-			// yield put(events.sendSucceed())
-			// yield put(events.sendFailed())
+			// yield put(events.sent())
 		}),
 		takeLeading(commands.hide, function*() {
-			yield put(events.hidePending())
 			// TODO: hide message
-			// yield put(events.hideSucceed())
-			// yield put(events.hideFailed())
+			// yield put(events.hidden())
 		}),
 	])
 }
