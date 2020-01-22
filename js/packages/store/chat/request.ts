@@ -9,91 +9,106 @@ export type Entity = {
 	kind: conversation.Entity | contact.Entity
 }
 
-export type Event = {}
-
-export type Log = Array<Event>
+export type Event = {
+	id: string
+	version: number
+	aggregateId: string
+}
 
 export type State = {
-	logs: { [key: string]: Log }
+	events: Array<Event>
 	aggregates: { [key: string]: Entity }
 }
 
-export type Commands = {
-	send: (state: State) => State
-	accept: (state: State) => State
-	remove: (state: State) => State
+export type GlobalState = {
+	chat: {
+		request: State
+	}
 }
 
-export type Events = {
-	sendPending: (state: State) => State
-	sendSucceed: (state: State) => State
-	sendFailed: (state: State) => State
+export namespace Command {
+	export type Send = void
+	export type Accept = void
+	export type refuse = void
+}
 
-	acceptPending: (state: State) => State
-	acceptSucceed: (state: State) => State
-	acceptFailed: (state: State) => State
+export namespace Query {
+	export type List = {}
+	export type Get = { id: string }
+	export type GetLength = void
+}
 
-	removePending: (state: State) => State
-	removeSucceed: (state: State) => State
-	removeFailed: (state: State) => State
+export namespace Event {
+	export type Sent = { aggregateId: string; name: string }
+	export type Accepted = { aggregateId: string }
+	export type refuse = { aggregateId: string }
+}
+
+export type CommandsReducer = {
+	send: (state: State) => State
+	accept: (state: State) => State
+	refuse: (state: State) => State
+}
+
+export type QueryReducer = {
+	list: (state: GlobalState, query: Query.List) => Array<Entity>
+	get: (state: GlobalState, query: Query.Get) => Entity
+	getLength: (state: GlobalState) => number
+}
+
+export type EventsReducer = {
+	sent: (state: State) => State
+	accepted: (state: State) => State
+	refused: (state: State) => State
 }
 
 const initialState: State = {
-	logs: {},
+	events: [],
 	aggregates: {},
 }
 
-const commandHandler = createSlice<State, Commands>({
+const commandHandler = createSlice<State, CommandsReducer>({
 	name: 'chat/request/command',
 	initialState,
 	reducers: {
 		send: (state: State) => state,
 		accept: (state: State) => state,
-		remove: (state: State) => state,
+		refuse: (state: State) => state,
 	},
 })
 
-const eventHandler = createSlice<State, Events>({
+const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/request/event',
 	initialState,
 	reducers: {
-		sendPending: (state: State) => state,
-		sendSucceed: (state: State) => state,
-		sendFailed: (state: State) => state,
-
-		acceptPending: (state: State) => state,
-		acceptSucceed: (state: State) => state,
-		acceptFailed: (state: State) => state,
-
-		removePending: (state: State) => state,
-		removeSucceed: (state: State) => state,
-		removeFailed: (state: State) => state,
+		sent: (state: State) => state,
+		accepted: (state: State) => state,
+		refused: (state: State) => state,
 	},
 })
 
+export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
-export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
+export const queries: QueryReducer = {
+	list: (state) => Object.values(state.chat.request.aggregates),
+	get: (state, { id }) => state.chat.request.aggregates[id],
+	getLength: (state) => Object.keys(state.chat.request.aggregates).length,
+}
 
 export function* orchestrator() {
 	yield all([
 		takeLeading(commands.send, function*() {
-			yield put(events.sendPending())
 			// TODO: send request
-			// yield put(events.sendSucceed())
-			// yield put(events.sendFailed())
+			// yield put(events.sent())
 		}),
 		takeLeading(commands.accept, function*() {
-			yield put(events.acceptPending())
 			// TODO: accept request
-			// yield put(events.acceptSucceed())
-			// yield put(events.acceptFailed())
+			// yield put(events.accepted())
 		}),
-		takeLeading(commands.remove, function*() {
-			yield put(events.removePending())
-			// TODO: remove request
-			// yield put(events.removeSucceed())
-			// yield put(events.removeFailed())
+		takeLeading(commands.refuse, function*() {
+			// TODO: refuse request
+			// yield put(events.refuseed())
 		}),
 	])
 }

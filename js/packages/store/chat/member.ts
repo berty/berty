@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, takeLeading } from 'redux-saga/effects'
+import { all, takeLeading } from 'redux-saga/effects'
 
 export type Entity = {
 	name: string
@@ -8,36 +8,61 @@ export type Entity = {
 	messages: Array<number>
 }
 
-export type Event = {}
-
-export type Log = Array<Event>
+export type Event = {
+	id: string
+	version: number
+	aggregateId: string
+}
 
 export type State = {
-	logs: { [key: string]: Log }
+	events: Array<Event>
 	aggregates: { [key: string]: Entity }
 }
 
-export type Commands = {
+export type GlobalState = {
+	chat: {
+		member: State
+	}
+}
+
+export namespace Command {
+	export type Invite = void
+	export type Remove = void
+}
+
+export namespace Query {
+	export type List = {}
+	export type Get = { id: string }
+	export type GetLength = void
+}
+
+export namespace Event {
+	export type Invited = { aggregateId: string; name: string }
+	export type Removed = { aggregateId: string }
+}
+
+export type CommandsReducer = {
 	invite: (state: State) => State
 	remove: (state: State) => State
 }
 
-export type Events = {
-	invitePending: (state: State) => State
-	inviteSucceed: (state: State) => State
-	inviteFailed: (state: State) => State
+export type QueryReducer = {
+	list: (state: GlobalState, query: Query.List) => Array<Entity>
+	get: (state: GlobalState, query: Query.Get) => Entity
+	getLength: (state: GlobalState) => number
+}
 
-	removePending: (state: State) => State
-	removeSucceed: (state: State) => State
-	removeFailed: (state: State) => State
+export type EventsReducer = {
+	invited: (state: State) => State
+	removed: (state: State) => State
 }
 
 const initialState: State = {
-	logs: {},
+	events: [],
 	aggregates: {},
 }
 
-const commandHandler = createSlice<State, Commands>({
+const commandHandler = createSlice<State, CommandsReducer>({
 	name: 'chat/member/command',
 	initialState,
 	reducers: {
@@ -46,37 +71,33 @@ const commandHandler = createSlice<State, Commands>({
 	},
 })
 
-const eventHandler = createSlice<State, Events>({
+const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/member/event',
 	initialState,
 	reducers: {
-		invitePending: (state: State) => state,
-		inviteSucceed: (state: State) => state,
-		inviteFailed: (state: State) => state,
-
-		removePending: (state: State) => state,
-		removeSucceed: (state: State) => state,
-		removeFailed: (state: State) => state,
+		invited: (state: State) => state,
+		removed: (state: State) => state,
 	},
 })
 
+export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
-export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
+export const queries: QueryReducer = {
+	list: (state) => Object.values(state.chat.member.aggregates),
+	get: (state, { id }) => state.chat.member.aggregates[id],
+	getLength: (state) => Object.keys(state.chat.member.aggregates).length,
+}
 
 export function* orchestrator() {
 	yield all([
 		takeLeading(commands.invite, function*() {
-			yield put(events.invitePending())
 			// TODO: invite member
-			// yield put(events.inviteSucceed())
-			// yield put(events.inviteFailed())
+			// yield put(events.invited())
 		}),
 		takeLeading(commands.remove, function*() {
-			yield put(events.removePending())
 			// TODO: remove member
-			// yield put(events.removeSucceed())
-			// yield put(events.removeFailed())
+			// yield put(events.removed())
 		}),
 	])
 }

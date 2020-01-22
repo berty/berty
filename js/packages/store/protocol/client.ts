@@ -5,84 +5,94 @@ import { composeReducers } from 'redux-compose'
 import { all, takeEvery, takeLeading, put } from 'redux-saga/effects'
 
 export type Entity = {
-	id: number
+	id: string
 }
 
+export type Event = {}
+
 export type State = {
-	aggregates: { [key: number]: Entity }
+	events: Array<Event>
+	aggregates: { [key: string]: Entity }
+}
+
+export type GlobalState = {
+	protocol: {
+		client: State
+	}
 }
 
 export type Commands = {
 	start: (
 		state: State,
 		action: {
-			payload: { id: number }
+			payload: { id: string }
 		},
 	) => State
 	stop: (
 		state: State,
 		action: {
-			payload: { id: number }
+			payload: { id: string }
 		},
 	) => State
-	instanceExportData: (state: State, action: { payload: { id: number } }) => State
-	instanceGetConfiguration: (state: State, action: { payload: { id: number } }) => State
-	groupCreate: (state: State, action: { payload: { id: number } }) => State
-	groupJoin: (state: State, action: { payload: { id: number } }) => State
-	groupLeave: (state: State, action: { payload: { id: number } }) => State
-	groupInvite: (state: State, action: { payload: { id: number } }) => State
-	devicePair: (state: State, action: { payload: { id: number } }) => State
-	contactRequestReference: (state: State, action: { payload: { id: number } }) => State
-	contactRequestDisable: (state: State, action: { payload: { id: number } }) => State
-	contactRequestEnable: (state: State, action: { payload: { id: number } }) => State
-	contactRequestResetReference: (state: State, action: { payload: { id: number } }) => State
-	contactRequestEnqueue: (state: State, action: { payload: { id: number } }) => State
-	contactRequestAccept: (state: State, action: { payload: { id: number } }) => State
-	contactRemove: (state: State, action: { payload: { id: number } }) => State
-	contactBlock: (state: State, action: { payload: { id: number } }) => State
-	contactUnblock: (state: State, action: { payload: { id: number } }) => State
-	groupSettingSetgroup: (state: State, action: { payload: { id: number } }) => State
-	groupSettingSetMember: (state: State, action: { payload: { id: number } }) => State
-	groupMessageSend: (state: State, action: { payload: { id: number } }) => State
-	accountAppendAppSpecificEvent: (state: State, action: { payload: { id: number } }) => State
-	accountSubscribe: (state: State, action: { payload: { id: number } }) => State
-	groupSettingSubscribe: (state: State, action: { payload: { id: number } }) => State
-	groupMessageSubscribe: (state: State, action: { payload: { id: number } }) => State
-	groupMemberSubscribe: (state: State, action: { payload: { id: number } }) => State
+	instanceExportData: (state: State, action: { payload: { id: string } }) => State
+	instanceGetConfiguration: (state: State, action: { payload: { id: string } }) => State
+	groupCreate: (state: State, action: { payload: { id: string } }) => State
+	groupJoin: (state: State, action: { payload: { id: string } }) => State
+	groupLeave: (state: State, action: { payload: { id: string } }) => State
+	groupInvite: (state: State, action: { payload: { id: string } }) => State
+	devicePair: (state: State, action: { payload: { id: string } }) => State
+	contactRequestReference: (state: State, action: { payload: { id: string } }) => State
+	contactRequestDisable: (state: State, action: { payload: { id: string } }) => State
+	contactRequestEnable: (state: State, action: { payload: { id: string } }) => State
+	contactRequestResetReference: (state: State, action: { payload: { id: string } }) => State
+	contactRequestEnqueue: (state: State, action: { payload: { id: string } }) => State
+	contactRequestAccept: (state: State, action: { payload: { id: string } }) => State
+	contactRemove: (state: State, action: { payload: { id: string } }) => State
+	contactBlock: (state: State, action: { payload: { id: string } }) => State
+	contactUnblock: (state: State, action: { payload: { id: string } }) => State
+	groupSettingSetgroup: (state: State, action: { payload: { id: string } }) => State
+	groupSettingSetMember: (state: State, action: { payload: { id: string } }) => State
+	groupMessageSend: (state: State, action: { payload: { id: string } }) => State
+	accountAppendAppSpecificEvent: (state: State, action: { payload: { id: string } }) => State
+	accountSubscribe: (state: State, action: { payload: { id: string } }) => State
+	groupSettingSubscribe: (state: State, action: { payload: { id: string } }) => State
+	groupMessageSubscribe: (state: State, action: { payload: { id: string } }) => State
+	groupMemberSubscribe: (state: State, action: { payload: { id: string } }) => State
 }
 
 export type Events = {
-	started: (state: State, action: { payload: { aggregateId: number } }) => State
-	stopped: (state: State, action: { payload: { aggregateId: number } }) => State
-	accountUndefined: (state: State, action: { payload: { aggregateId: number } }) => State
-	accountGroupJoined: (state: State, action: { payload: { aggregateId: number } }) => State
-	accountGroupLeft: (state: State, action: { payload: { aggregateId: number } }) => State
-	accountDevicePaired: (state: State, action: { payload: { aggregateId: number } }) => State
+	started: (state: State, action: { payload: { aggregateId: string } }) => State
+	stopped: (state: State, action: { payload: { aggregateId: string } }) => State
+	accountUndefined: (state: State, action: { payload: { aggregateId: string } }) => State
+	accountGroupJoined: (state: State, action: { payload: { aggregateId: string } }) => State
+	accountGroupLeft: (state: State, action: { payload: { aggregateId: string } }) => State
+	accountDevicePaired: (state: State, action: { payload: { aggregateId: string } }) => State
 	accountContactRequestDisabled: (
 		state: State,
-		action: { payload: { aggregateId: number } },
+		action: { payload: { aggregateId: string } },
 	) => State
 	accountContactRequestEnabled: (
 		state: State,
-		action: { payload: { aggregateId: number } },
+		action: { payload: { aggregateId: string } },
 	) => State
 	accountContactRequestReferenceReset: (
 		state: State,
-		action: { payload: { aggregateId: number } },
+		action: { payload: { aggregateId: string } },
 	) => State
 	accountContactRequestEnqueued: (
 		state: State,
-		action: { payload: { aggregateId: number } },
+		action: { payload: { aggregateId: string } },
 	) => State
-	accountContactRequested: (state: State, action: { payload: { aggregateId: number } }) => State
-	accountContactAccepted: (state: State, action: { payload: { aggregateId: number } }) => State
-	accountContactRemoved: (state: State, action: { payload: { aggregateId: number } }) => State
-	accountContactBlocked: (state: State, action: { payload: { aggregateId: number } }) => State
-	accountContactUnblocked: (state: State, action: { payload: { aggregateId: number } }) => State
-	accountAppSpecified: (state: State, action: { payload: { aggregateId: number } }) => State
+	accountContactRequested: (state: State, action: { payload: { aggregateId: string } }) => State
+	accountContactAccepted: (state: State, action: { payload: { aggregateId: string } }) => State
+	accountContactRemoved: (state: State, action: { payload: { aggregateId: string } }) => State
+	accountContactBlocked: (state: State, action: { payload: { aggregateId: string } }) => State
+	accountContactUnblocked: (state: State, action: { payload: { aggregateId: string } }) => State
+	accountAppSpecified: (state: State, action: { payload: { aggregateId: string } }) => State
 }
 
 const initialState: State = {
+	events: [],
 	aggregates: {},
 }
 
@@ -153,7 +163,7 @@ export const events = eventHandler.actions
 export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
 
 export function* orchestrator() {
-	const clients: { [key: number]: ProtocolServiceClient } = {}
+	const clients: { [key: string]: ProtocolServiceClient } = {}
 
 	yield all([
 		takeLeading(commands.start, function*(action) {
