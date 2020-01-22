@@ -11,6 +11,7 @@ import {
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 import { berty } from '@berty-tech/api'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
+import { chat } from '@berty-tech/store'
 
 export namespace ScreenProps {
 	export namespace Onboarding {

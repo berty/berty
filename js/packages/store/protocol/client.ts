@@ -2,7 +2,7 @@ import { ProtocolServiceClient, ProtocolServiceHandler, mockBridge } from '@bert
 
 import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, takeEvery, takeLeading, put } from 'redux-saga/effects'
+import { all, takeLeading, put } from 'redux-saga/effects'
 
 export type Entity = {
 	id: string
@@ -62,6 +62,12 @@ export type Commands = {
 
 export type Events = {
 	started: (state: State, action: { payload: { aggregateId: string } }) => State
+	alreadyStarted: (
+		state: State,
+		action: {
+			payload: { aggregateId: string }
+		},
+	) => State
 	stopped: (state: State, action: { payload: { aggregateId: string } }) => State
 	accountUndefined: (state: State, action: { payload: { aggregateId: string } }) => State
 	accountGroupJoined: (state: State, action: { payload: { aggregateId: string } }) => State
@@ -137,6 +143,10 @@ const eventHandler = createSlice<State, Events>({
 			state.aggregates[payload.aggregateId] = { id: payload.aggregateId }
 			return state
 		},
+		alreadyStarted: (state, { payload }) => {
+			state.aggregates[payload.aggregateId] = { id: payload.aggregateId }
+			return state
+		},
 		stopped: (state, { payload }) => {
 			delete state.aggregates[payload.aggregateId]
 			return state
@@ -168,6 +178,10 @@ export function* orchestrator() {
 	yield all([
 		takeLeading(commands.start, function*(action) {
 			const id = action.payload.id
+			if (clients[id] != null) {
+				yield put(events.alreadyStarted({ aggregateId: id }))
+				return
+			}
 			clients[id] = new ProtocolServiceClient(
 				mockBridge(ProtocolServiceHandler, { id: id.toString() }),
 			)
@@ -177,99 +191,99 @@ export function* orchestrator() {
 			delete clients[action.payload.id]
 			yield put(events.stopped({ aggregateId: action.payload.id }))
 		}),
-		takeEvery(commands.instanceExportData, function*() {
+		takeLeading(commands.instanceExportData, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.instanceGetConfiguration, function*() {
+		takeLeading(commands.instanceGetConfiguration, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.groupCreate, function*() {
+		takeLeading(commands.groupCreate, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.groupJoin, function*() {
+		takeLeading(commands.groupJoin, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.groupLeave, function*() {
+		takeLeading(commands.groupLeave, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.groupInvite, function*() {
+		takeLeading(commands.groupInvite, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.devicePair, function*() {
+		takeLeading(commands.devicePair, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRequestReference, function*() {
+		takeLeading(commands.contactRequestReference, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRequestDisable, function*() {
+		takeLeading(commands.contactRequestDisable, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRequestEnable, function*() {
+		takeLeading(commands.contactRequestEnable, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRequestResetReference, function*() {
+		takeLeading(commands.contactRequestResetReference, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRequestEnqueue, function*() {
+		takeLeading(commands.contactRequestEnqueue, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRequestAccept, function*() {
+		takeLeading(commands.contactRequestAccept, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRemove, function*() {
+		takeLeading(commands.contactRemove, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.contactBlock, function*() {
+		takeLeading(commands.contactBlock, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.contactUnblock, function*() {
+		takeLeading(commands.contactUnblock, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.groupSettingSetgroup, function*() {
+		takeLeading(commands.groupSettingSetgroup, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.groupSettingSetMember, function*() {
+		takeLeading(commands.groupSettingSetMember, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.groupMessageSend, function*() {
+		takeLeading(commands.groupMessageSend, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.accountAppendAppSpecificEvent, function*() {
+		takeLeading(commands.accountAppendAppSpecificEvent, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.accountSubscribe, function*() {
+		takeLeading(commands.accountSubscribe, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.groupSettingSubscribe, function*() {
+		takeLeading(commands.groupSettingSubscribe, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.groupMessageSubscribe, function*() {
+		takeLeading(commands.groupMessageSubscribe, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),
-		takeEvery(commands.groupMemberSubscribe, function*() {
+		takeLeading(commands.groupMemberSubscribe, function*() {
 			// TODO: do protocol things
 			// yield put(events.started)
 		}),

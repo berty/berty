@@ -219,8 +219,9 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 		) => void,
 	) => void = (request, callback) => {
 		this.orbitdbClient.logStream({}, (error, response) => {
-			if (error == null) {
-				console.warn('GRPC Protocol Error: AccountSubscribe: orbitdb logStream error')
+			if (error != null) {
+				console.warn('')
+				return callback(new Error('GRPC Protocol Error: AccountSubscribe: orbitdb logStream error :' + error.message), null)
 			}
 			// TODO: deserialize and send event
 			callback(null, { event: {} })

@@ -8,9 +8,9 @@ import * as protocol from '../protocol'
 export type Entity = {
 	id: string
 	name: string
-	requests: Array<number>
-	conversations: Array<number>
-	contacts: Array<number>
+	requests: Array<string>
+	conversations: Array<string>
+	contacts: Array<string>
 }
 
 export type Event = {
@@ -163,6 +163,11 @@ export function* orchestrator() {
 		takeLeading(commands.close, function*() {
 			// TODO: close account
 			// yield put(events.closeSucceed())
+		}),
+
+		// protocol event handler
+		takeEvery(protocol.events.client.started, function*(action) {
+			yield put(protocol.commands.client.accountSubscribe({ id: action.payload.aggregateId }))
 		}),
 	])
 }

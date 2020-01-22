@@ -110,7 +110,7 @@ export const GroupRequest: React.FC<ScreenProps.Main.GroupRequest> = ({ route: {
 	return (
 		<Modal>
 			<Store.ConversationGet request={{ id: params.id }} fallback={Fallback}>
-				{(_) => console.log(_) || <BodyGroupRequest {...(_?.conversation || {})} />}
+				{(_) => <BodyGroupRequest {...(_?.conversation || {})} />}
 			</Store.ConversationGet>
 		</Modal>
 	)
