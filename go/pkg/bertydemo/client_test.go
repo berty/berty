@@ -3,8 +3,6 @@ package bertydemo
 import (
 	"context"
 	"testing"
-
-	"google.golang.org/grpc"
 	//"github.com/fortytw2/leaktest"
 	//"go.uber.org/zap"
 	//"go.uber.org/zap/zapcore"
@@ -19,29 +17,21 @@ func init() {
 	//zap.ReplaceGlobals(logger)
 }
 
-func initDemo(t *testing.T) *Client {
-	opts := &Opts{":memory:"}
-	demo, err := New(opts)
-	checkErr(t, err)
-	return demo
-}
-
-func closeDemo(t *testing.T, d *Client) {
-	checkErr(t, d.Close())
-}
-
 func TestLogFromToken(t *testing.T) {
-	demo := initDemo(t)
-	defer closeDemo(t, demo)
+	client, clean := testingClient(t, &Opts{":memory:"})
+	defer clean()
+
+	demo, clean := testingClientService(t, client)
+	defer clean()
 
 	res, err := demo.LogToken(context.Background(), &LogToken_Request{})
 	checkErr(t, err)
 	token := res.LogToken
 
-	first_log, err := demo.logFromToken(context.Background(), token)
+	first_log, err := client.logFromToken(context.Background(), token)
 	checkErr(t, err)
 
-	second_log, err := demo.logFromToken(context.Background(), token)
+	second_log, err := client.logFromToken(context.Background(), token)
 	checkErr(t, err)
 
 	if first_log != second_log {
@@ -54,51 +44,70 @@ func TestLogFromToken(t *testing.T) {
 
 func TestNew(t *testing.T) {
 	// defer leaktest.CheckTimeout(t, 30*time.Second)()
-	demo := initDemo(t)
-	closeDemo(t, demo)
+	demo, err := New(&Opts{":memory:"})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err := demo.Close(); err != nil {
+		t.Fatal(err)
+	}
 }
 
-func testLog(t *testing.T, d *Client) string {
+func testLog(t *testing.T, d DemoServiceClient) string {
 	res, err := d.LogToken(context.Background(), &LogToken_Request{})
 	checkErr(t, err)
 	return res.LogToken
 }
 
 func TestLogToken(t *testing.T) {
-	// defer leaktest.CheckTimeout(t, 30*time.Second)()
-	demo := initDemo(t)
+	client, clean := testingClient(t, &Opts{":memory:"})
+	defer clean()
+
+	demo, clean := testingClientService(t, client)
+	defer clean()
+
 	_ = testLog(t, demo)
-	closeDemo(t, demo)
 }
 
-func testAdd(t *testing.T, d *Client, lt string, data []byte) string {
+func testAdd(t *testing.T, d DemoServiceClient, lt string, data []byte) string {
 	req := LogAdd_Request{
 		LogToken: lt,
 		Data:     data,
 	}
+
 	res, err := d.LogAdd(context.Background(), &req)
 	checkErr(t, err)
+
 	return res.Cid
 }
 
 func TestLogAdd(t *testing.T) {
-	demo := initDemo(t)
+	client, clean := testingClient(t, &Opts{":memory:"})
+	defer clean()
+
+	demo, clean := testingClientService(t, client)
+	defer clean()
+
 	log_token := testLog(t, demo)
 	_ = testAdd(t, demo, log_token, []byte("Hello log!"))
-	closeDemo(t, demo)
 }
 
 func TestLogGet(t *testing.T) {
-	demo := initDemo(t)
-	log_token := testLog(t, demo)
+	client, clean := testingClient(t, &Opts{":memory:"})
+	defer clean()
 
+	demo, clean := testingClientService(t, client)
+	defer clean()
+
+	log_token := testLog(t, demo)
 	data := []byte("Hello log!")
 	op_cid := testAdd(t, demo, log_token, data)
-
 	req := LogGet_Request{
 		LogToken: log_token,
 		Cid:      op_cid,
 	}
+
 	res, err := demo.LogGet(context.Background(), &req)
 	checkErr(t, err)
 
@@ -117,14 +126,16 @@ func TestLogGet(t *testing.T) {
 	if got != should_get {
 		t.Fatalf("LogGet().Op.Value = %s; want %s", got, should_get)
 	}
-
-	closeDemo(t, demo)
 }
 
 func TestLogList(t *testing.T) {
-	demo := initDemo(t)
-	log_token := testLog(t, demo)
+	client, clean := testingClient(t, &Opts{":memory:"})
+	defer clean()
 
+	demo, clean := testingClientService(t, client)
+	defer clean()
+
+	log_token := testLog(t, demo)
 	data := []byte("Hello log!")
 	_ = testAdd(t, demo, log_token, data)
 
@@ -132,6 +143,7 @@ func TestLogList(t *testing.T) {
 		LogToken: log_token,
 		Options:  nil,
 	}
+
 	res, err := demo.LogList(context.Background(), &req)
 	checkErr(t, err)
 
@@ -145,62 +157,41 @@ func TestLogList(t *testing.T) {
 	if !found {
 		t.Fatalf("Added operation not found in LogList()")
 	}
-
-	closeDemo(t, demo)
-}
-
-// https://stackoverflow.com/a/44619697
-type mockDemoService_LogStreamServer struct {
-	grpc.ServerStream
-	Chan    chan *LogOperation
-	cancels []context.CancelFunc
-}
-
-func (_m *mockDemoService_LogStreamServer) Send(m *LogOperation) error {
-	_m.Chan <- m
-	return nil
-}
-
-func (_m *mockDemoService_LogStreamServer) Context() context.Context {
-	ctx, cancel := context.WithCancel(context.Background())
-	_m.cancels = append(_m.cancels, cancel)
-	return ctx
-}
-
-func (_m *mockDemoService_LogStreamServer) Close() {
-	for _, cancel := range _m.cancels {
-		cancel()
-	}
 }
 
 func TestLogStream(t *testing.T) {
-	demo := initDemo(t)
-	log_token := testLog(t, demo)
+	client, clean := testingClient(t, &Opts{":memory:"})
+	defer clean()
 
-	srv_mock := &mockDemoService_LogStreamServer{Chan: make(chan *LogOperation)}
-	req := LogStream_Request{
+	demo, clean := testingClientService(t, client)
+	defer clean()
+
+	log_token := testLog(t, demo)
+	req := &LogStream_Request{
 		LogToken: log_token,
 		Options:  nil,
 	}
-	go demo.LogStream(&req, srv_mock)
+
+	logClient, err := demo.LogStream(context.Background(), req)
+	checkErr(t, err)
+
+	defer logClient.CloseSend()
 
 	data := []byte("Hello log!")
 	_ = testAdd(t, demo, log_token, data)
 
-	op := <-srv_mock.Chan
+	op, err := logClient.Recv()
+	checkErr(t, err)
 
-	got := op.Name
+	got := op.GetName()
 	should_get := "ADD"
 	if got != should_get {
 		t.Fatalf("LogGet().Op.Name = %s; want %s", got, should_get)
 	}
 
-	got = string(op.Value)
+	got = string(op.GetValue())
 	should_get = string(data)
 	if got != should_get {
 		t.Fatalf("LogGet().Op.Value = %s; want %s", got, should_get)
 	}
-
-	srv_mock.Close()
-	closeDemo(t, demo)
 }
