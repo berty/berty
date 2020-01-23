@@ -165,6 +165,7 @@ release.ios.store: method := app-store
 release.ios.store: profile := AppStore
 release.ios.store: team-id := WMBQ84HN4T
 release.ios.store: release.ios
+release.ios: export PWD := $(PWD)
 release.ios: platform := ios
 release.ios: bundle-id = chat.berty.ios.$(target)
 release.ios: version = $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
@@ -176,9 +177,9 @@ release.ios: export GYM_CLEAN = false
 release.ios: export GYM_OPTION_METHOD = $(method)
 release.ios: export GYM_OPTION_APP_ID = $(bundle-id)
 release.ios: export GYM_OPTION_PROVISIONING_PROFILE = "match $(profile) $(bundle-id)"
-release.ios: export GYM_OUTPUT_NAME = $(shell echo $(name) | caser --pascal)
+release.ios: export GYM_OUTPUT_NAME = $(shell echo $(name) | $(PWD)/node_modules/.bin/caser --pascal)
 release.ios: export GYM_OUTPUT_DIRECTORY = $(dest)
-release.ios: export GYM_WORKSPACE = $(PWD)/ios/$(shell echo $(name) | caser --pascal).xcworkspace
+release.ios: export GYM_WORKSPACE = $(PWD)/ios/$(shell echo $(name) | $(PWD)/node_modules/.bin/caser --pascal).xcworkspace
 release.ios: export GYM_SCHEME = $(target)
 release.ios: export GYM_SKIP_PROFILE_DETECTION = true
 release.ios: export GYM_INCLUDE_SYMBOLS = false
@@ -187,13 +188,13 @@ release.ios: deps.ios
 	$(if $(method),, $(error "method variable not defined"))
 	# fetch app store profile
 	cd $(PWD) \
-		&& $(bundle) exec fastlane run match \
+		&& fastlane run match \
 			type:$(shell echo $(method) | sed 's/-//g') \
 			app_identifier:$(bundle-id) \
 			readonly:true \
 			team_id:$(team-id) \
 			$(if $(git-url), git_url:$(git-url)) \
-		&& time $(bundle) exec fastlane $(platform) build --verbose
+		&& time fastlane $(platform) build --verbose
 
 release.android.debug:
 release.android.staff:
