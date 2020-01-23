@@ -3,9 +3,11 @@ import * as pb from 'protobufjs'
 
 export class ProtocolServiceClient {
 	_pbService: api.berty.protocol.ProtocolService
+	end: () => void
 
 	constructor(rpcImpl: pb.RPCImpl) {
 		this._pbService = api.berty.protocol.ProtocolService.create(rpcImpl)
+		this.end = this._pbService.end.bind(this._pbService)
 	}
 
 	instanceExportData: (

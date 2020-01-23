@@ -44,6 +44,7 @@
     "eslint": "^6.6.0",
     "glob": "^7.1.4",
     "jest": "^24.9.0",
+    "node-libs-react-native": "^1.0.3",
     "react-native": "^0.61.5",
     "react-native-dev-menu": "^4.0.0",
     "react-native-eva-icons": "^1.2.1",

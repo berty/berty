@@ -459,13 +459,6 @@ export const List: React.FC<ScreenProps.Chat.List> = () => {
 
 	const [{ absolute, background, flex }] = useStyles()
 
-	// open account
-	const account = Object.values(Chat.useAccountList())[0]
-	const openAccount = Chat.useAccountOpen()
-	React.useEffect(() => {
-		openAccount({ id: account.id })
-	}, [account, openAccount])
-
 	return (
 		<View style={[absolute.fill, background.blue]}>
 			<Requests items={requests} onLayout={onLayoutRequests} />

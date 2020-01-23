@@ -28,7 +28,6 @@
     "@improbable-eng/grpc-web-node-http-transport": "^0.11.0",
     "@protocolbuffers/protobuf": "protocolbuffers/protobuf#3.10.0",
     "@types/long": "^4.0.0",
-    "@types/node": "^12.7.12",
     "@types/websocket": "^1.0.0",
     "case": "^1.6.2",
     "eslint": "^6.6.0",

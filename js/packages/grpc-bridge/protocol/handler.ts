@@ -2,21 +2,46 @@ import * as api from '@berty-tech/api'
 import { MockServiceHandler } from '../mock'
 import { DemoServiceClient } from '../orbitdb'
 import { bridge } from '../bridge'
+import { ReactNativeTransport } from '../grpc-web-react-native-transport'
 import { WebsocketTransport } from '../grpc-web-websocket-transport'
+import { Buffer } from 'buffer'
+import { NativeModules } from 'react-native'
+
+if (!__DEV__) {
+	NativeModules.GoBridge.startDemo()
+}
 
 export class ProtocolServiceHandler extends MockServiceHandler {
-	client: DemoServiceClient
-	accountId: string
+	client?: DemoServiceClient
+	accountGroupPk: string
+	accountDevicePk: string
 
-	constructor (metadata: { [key: string]: string | string[] }) {
+	constructor(metadata?: { [key: string]: string | string[] }) {
 		super(metadata)
-		this.client = new DemoServiceClient(
-		bridge({
-			host: 'localhost:1337',
-				transport: WebsocketTransport(),
-			}),
-		)
-		this.accountId = this.metadata?.id as string
+		if (__DEV__) {
+			this.client = new DemoServiceClient(
+				bridge({
+					host: 'http://127.0.0.1:1337',
+					transport: ReactNativeTransport({}),
+				}),
+			)
+		} else {
+			NativeModules.GoBridge.getDemoAddr()
+				.then((addr: string) => {
+					this.client = new DemoServiceClient(
+						bridge({
+							host: addr,
+							transport: WebsocketTransport(),
+						}),
+					)
+				})
+				.catch((err: Error) => {
+					console.error(err)
+					// log bad error
+				})
+		}
+		this.accountGroupPk = (this.metadata?.accountGroupPk as string) || ''
+		this.accountDevicePk = (this.metadata?.accountDevicePk as string) || ''
 	}
 
 	InstanceExportData: (
@@ -26,13 +51,20 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 			response?: api.berty.protocol.InstanceExportData.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
+
 	InstanceGetConfiguration: (
 		request: api.berty.protocol.InstanceGetConfiguration.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.InstanceGetConfiguration.IReply | null,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = (request, callback) => {
+		callback(null, {
+			accountGroupPk: Buffer.from(this.accountGroupPk, 'base64'),
+			accountDevicePk: Buffer.from(this.accountDevicePk, 'base64'),
+		})
+	}
+
 	InstanceLinkToExistingAccount: (
 		request: api.berty.protocol.InstanceLinkToExistingAccount.IRequest,
 		callback: (
@@ -40,13 +72,33 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 			response?: api.berty.protocol.InstanceLinkToExistingAccount.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
+
 	InstanceInitiateNewAccount: (
 		request: api.berty.protocol.InstanceInitiateNewAccount.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.InstanceInitiateNewAccount.IReply | null,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = async (request, callback) => {
+		try {
+			const { logToken: accountGroupPk } = await new Promise((resolve, reject) =>
+				this.client?.logToken(request, (error, response) =>
+					error ? reject(error) : resolve(response as { logToken: string }),
+				),
+			)
+			const { logToken: accountDevicePk } = await new Promise((resolve, reject) =>
+				this.client?.logToken(request, (error, response) =>
+					error != null ? reject(error) : resolve(response as { logToken: string }),
+				),
+			)
+			this.accountGroupPk = accountGroupPk
+			this.accountDevicePk = accountDevicePk
+			callback(null, {})
+		} catch (err) {
+			callback(err, null)
+		}
+	}
+
 	ContactRequestReference: (
 		request: api.berty.protocol.ContactRequestReference.IRequest,
 		callback: (
@@ -186,20 +238,12 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 			error: Error | null,
 			response?: api.berty.protocol.IGroupMetadataEvent | null,
 		) => void,
-	) => void = (request, callback) => {
-	}
+	) => void = (request, callback) => {}
 	GroupSecureMessageSubscribe: (
 		request: api.berty.protocol.GroupSecureMessageSubscribe.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.IGroupSecureMessageEvent | null,
 		) => void,
-	) => void = (request, callback) => {
-		this.client.logStream({ logToken }
-		if (error) {
-			callback(error, null)
-			return
-		}
-
-	}
+	) => void = (request, callback) => {}
 }

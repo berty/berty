@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, take, takeEvery, takeLeading, fork, select } from 'redux-saga/effects'
+import { put, all, takeLeading, select, take } from 'redux-saga/effects'
 import faker from 'faker'
 
 import * as protocol from '../protocol'
@@ -34,8 +34,6 @@ export namespace Command {
 	export type Generate = void
 	export type Create = { name: string }
 	export type Delete = { id: string }
-	export type Open = { id: string }
-	export type Close = { id: string }
 }
 
 export namespace Query {
@@ -47,16 +45,12 @@ export namespace Query {
 export namespace Event {
 	export type Created = { aggregateId: string; name: string }
 	export type Deleted = { aggregateId: string }
-	export type Opened = { aggregateId: string }
-	export type Closed = { aggregateId: string }
 }
 
 export type CommandsReducer = {
 	generate: (state: State, command: { payload: Command.Generate }) => State
 	create: (state: State, command: { payload: Command.Create }) => State
 	delete: (state: State, command: { payload: Command.Delete }) => State
-	open: (state: State, command: { payload: Command.Open }) => State
-	close: (state: State, command: { payload: Command.Close }) => State
 }
 
 export type QueryReducer = {
@@ -68,8 +62,6 @@ export type QueryReducer = {
 export type EventsReducer = {
 	created: (state: State, event: { payload: Event.Created }) => State
 	deleted: (state: State, event: { payload: Event.Deleted }) => State
-	opened: (state: State, event: { payload: Event.Opened }) => State
-	closed: (state: State, event: { payload: Event.Closed }) => State
 }
 
 const initialState = {
@@ -84,8 +76,6 @@ const commandHandler = createSlice<State, CommandsReducer>({
 		generate: (state) => state,
 		create: (state) => state,
 		delete: (state) => state,
-		open: (state) => state,
-		close: (state) => state,
 	},
 })
 
@@ -107,8 +97,6 @@ const eventHandler = createSlice<State, EventsReducer>({
 			delete state.aggregates[payload.aggregateId]
 			return state
 		},
-		opened: (state) => state,
-		closed: (state) => state,
 	},
 })
 
@@ -131,6 +119,15 @@ export function* orchestrator() {
 			// create an id for the account
 			const id = yield select(queries.getLength)
 
+			yield put(protocol.commands.client.instanceInitiateNewAccount({ id }))
+
+			while (1) {
+				const action = yield take(protocol.events.client.instanceInitiatedNewAccount)
+				if (action.payload.aggregateId === id) {
+					break
+				}
+			}
+
 			// send event
 			yield put(
 				events.created({
@@ -142,32 +139,7 @@ export function* orchestrator() {
 
 		takeLeading(commands.delete, function*() {
 			// TODO: delete account
-			// yield put(events.deleteSucceed())
-		}),
-
-		takeLeading(commands.open, function*(action) {
-			yield fork(function*() {
-				// wait for protocol
-				while (true) {
-					const { payload } = yield take(protocol.events.client.started)
-					if (payload.aggregateId === action.payload.id) {
-						yield put(events.opened({ aggregateId: action.payload.id }))
-						break
-					}
-				}
-			})
-			// start protocol client
-			yield put(protocol.commands.client.start({ id: action.payload.id }))
-		}),
-
-		takeLeading(commands.close, function*() {
-			// TODO: close account
-			// yield put(events.closeSucceed())
-		}),
-
-		// protocol event handler
-		takeEvery(protocol.events.client.started, function*(action) {
-			yield put(protocol.commands.client.accountSubscribe({ id: action.payload.aggregateId }))
+			// yield put(events.deleted())
 		}),
 	])
 }

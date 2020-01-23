@@ -9,7 +9,83 @@ var equality = function equality(result, nextState) {
 var actions = [
   {
     "action": {
-      "type": "chat/account/command/open",
+      "type": "chat/account/command/create",
+      "payload": {
+        "name": "Anonymous 1337"
+      }
+    },
+    "prevState": {
+      "protocol": {
+        "client": {
+          "events": [],
+          "aggregates": {}
+        }
+      },
+      "chat": {
+        "account": {
+          "events": [],
+          "aggregates": {}
+        },
+        "request": {
+          "events": [],
+          "aggregates": {}
+        },
+        "contact": {
+          "events": [],
+          "aggregates": {}
+        },
+        "conversation": {
+          "events": [],
+          "aggregates": {}
+        },
+        "member": {
+          "events": [],
+          "aggregates": {}
+        },
+        "message": {
+          "events": [],
+          "aggregates": {}
+        }
+      }
+    },
+    "nextState": {
+      "protocol": {
+        "client": {
+          "events": [],
+          "aggregates": {}
+        }
+      },
+      "chat": {
+        "account": {
+          "events": [],
+          "aggregates": {}
+        },
+        "request": {
+          "events": [],
+          "aggregates": {}
+        },
+        "contact": {
+          "events": [],
+          "aggregates": {}
+        },
+        "conversation": {
+          "events": [],
+          "aggregates": {}
+        },
+        "member": {
+          "events": [],
+          "aggregates": {}
+        },
+        "message": {
+          "events": [],
+          "aggregates": {}
+        }
+      }
+    }
+  },
+  {
+    "action": {
+      "type": "protocol/client/command/instanceInitiateNewAccount",
       "payload": {
         "id": 0
       }
@@ -17,40 +93,33 @@ var actions = [
     "prevState": {
       "protocol": {
         "client": {
+          "events": [],
           "aggregates": {}
         }
       },
       "chat": {
         "account": {
           "events": [],
-          "aggregates": {
-            "0": {
-              "id": 0,
-              "name": "Anonymous 1337",
-              "requests": [],
-              "conversations": [],
-              "contacts": []
-            }
-          }
+          "aggregates": {}
         },
         "request": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "contact": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "conversation": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "member": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "message": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         }
       }
@@ -58,40 +127,33 @@ var actions = [
     "nextState": {
       "protocol": {
         "client": {
+          "events": [],
           "aggregates": {}
         }
       },
       "chat": {
         "account": {
           "events": [],
-          "aggregates": {
-            "0": {
-              "id": 0,
-              "name": "Anonymous 1337",
-              "requests": [],
-              "conversations": [],
-              "contacts": []
-            }
-          }
+          "aggregates": {}
         },
         "request": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "contact": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "conversation": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "member": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "message": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         }
       }
@@ -99,48 +161,43 @@ var actions = [
   },
   {
     "action": {
-      "type": "protocol/client/command/start",
+      "type": "protocol/client/event/instanceInitiatedNewAccount",
       "payload": {
-        "id": 0
+        "aggregateId": 0,
+        "accountGroupPk": "12f5641ba3838fd25df0f719064fbdef5097d808b5c316c65bc6ee19a25db12f3936fcfd76c42b1bc65ec6a939ee6370fd8fc081bf674faeb73ddd5c9cd519f4",
+        "accountDevicePk": "0a1695a4aea94a9b5980f60f77015cd52093a16cc2ceda223a10490a41f9ca56b595333cf0566745cee4d8378d057b56ac57d320271a3e9779df7b48e4fe25a8"
       }
     },
     "prevState": {
       "protocol": {
         "client": {
+          "events": [],
           "aggregates": {}
         }
       },
       "chat": {
         "account": {
           "events": [],
-          "aggregates": {
-            "0": {
-              "id": 0,
-              "name": "Anonymous 1337",
-              "requests": [],
-              "conversations": [],
-              "contacts": []
-            }
-          }
+          "aggregates": {}
         },
         "request": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "contact": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "conversation": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "member": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "message": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         }
       }
@@ -148,40 +205,39 @@ var actions = [
     "nextState": {
       "protocol": {
         "client": {
-          "aggregates": {}
+          "events": [],
+          "aggregates": {
+            "0": {
+              "id": 0,
+              "accountGroupPk": "12f5641ba3838fd25df0f719064fbdef5097d808b5c316c65bc6ee19a25db12f3936fcfd76c42b1bc65ec6a939ee6370fd8fc081bf674faeb73ddd5c9cd519f4",
+              "accountDevicePk": "0a1695a4aea94a9b5980f60f77015cd52093a16cc2ceda223a10490a41f9ca56b595333cf0566745cee4d8378d057b56ac57d320271a3e9779df7b48e4fe25a8"
+            }
+          }
         }
       },
       "chat": {
         "account": {
           "events": [],
-          "aggregates": {
-            "0": {
-              "id": 0,
-              "name": "Anonymous 1337",
-              "requests": [],
-              "conversations": [],
-              "contacts": []
-            }
-          }
+          "aggregates": {}
         },
         "request": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "contact": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "conversation": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "member": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "message": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         }
       }
@@ -189,48 +245,48 @@ var actions = [
   },
   {
     "action": {
-      "type": "protocol/client/event/started",
+      "type": "chat/account/event/created",
       "payload": {
-        "aggregateId": 0
+        "aggregateId": 0,
+        "name": "Anonymous 1337"
       }
     },
     "prevState": {
       "protocol": {
         "client": {
-          "aggregates": {}
+          "events": [],
+          "aggregates": {
+            "0": {
+              "id": 0,
+              "accountGroupPk": "12f5641ba3838fd25df0f719064fbdef5097d808b5c316c65bc6ee19a25db12f3936fcfd76c42b1bc65ec6a939ee6370fd8fc081bf674faeb73ddd5c9cd519f4",
+              "accountDevicePk": "0a1695a4aea94a9b5980f60f77015cd52093a16cc2ceda223a10490a41f9ca56b595333cf0566745cee4d8378d057b56ac57d320271a3e9779df7b48e4fe25a8"
+            }
+          }
         }
       },
       "chat": {
         "account": {
           "events": [],
-          "aggregates": {
-            "0": {
-              "id": 0,
-              "name": "Anonymous 1337",
-              "requests": [],
-              "conversations": [],
-              "contacts": []
-            }
-          }
+          "aggregates": {}
         },
         "request": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "contact": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "conversation": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "member": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         },
         "message": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         }
       }
@@ -238,9 +294,12 @@ var actions = [
     "nextState": {
       "protocol": {
         "client": {
+          "events": [],
           "aggregates": {
             "0": {
-              "id": 0
+              "id": 0,
+              "accountGroupPk": "12f5641ba3838fd25df0f719064fbdef5097d808b5c316c65bc6ee19a25db12f3936fcfd76c42b1bc65ec6a939ee6370fd8fc081bf674faeb73ddd5c9cd519f4",
+              "accountDevicePk": "0a1695a4aea94a9b5980f60f77015cd52093a16cc2ceda223a10490a41f9ca56b595333cf0566745cee4d8378d057b56ac57d320271a3e9779df7b48e4fe25a8"
             }
           }
         }
@@ -259,219 +318,23 @@ var actions = [
           }
         },
         "request": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "contact": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "conversation": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "member": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "message": {
-          "logs": {},
-          "aggregates": {}
-        }
-      }
-    }
-  },
-  {
-    "action": {
-      "type": "protocol/client/command/accountSubscribe",
-      "payload": {
-        "id": 0
-      }
-    },
-    "prevState": {
-      "protocol": {
-        "client": {
-          "aggregates": {
-            "0": {
-              "id": 0
-            }
-          }
-        }
-      },
-      "chat": {
-        "account": {
           "events": [],
-          "aggregates": {
-            "0": {
-              "id": 0,
-              "name": "Anonymous 1337",
-              "requests": [],
-              "conversations": [],
-              "contacts": []
-            }
-          }
-        },
-        "request": {
-          "logs": {},
           "aggregates": {}
         },
         "contact": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "conversation": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "member": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "message": {
-          "logs": {},
-          "aggregates": {}
-        }
-      }
-    },
-    "nextState": {
-      "protocol": {
-        "client": {
-          "aggregates": {
-            "0": {
-              "id": 0
-            }
-          }
-        }
-      },
-      "chat": {
-        "account": {
           "events": [],
-          "aggregates": {
-            "0": {
-              "id": 0,
-              "name": "Anonymous 1337",
-              "requests": [],
-              "conversations": [],
-              "contacts": []
-            }
-          }
-        },
-        "request": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "contact": {
-          "logs": {},
           "aggregates": {}
         },
         "conversation": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "member": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "message": {
-          "logs": {},
-          "aggregates": {}
-        }
-      }
-    }
-  },
-  {
-    "action": {
-      "type": "chat/account/event/opened",
-      "payload": {
-        "aggregateId": 0
-      }
-    },
-    "prevState": {
-      "protocol": {
-        "client": {
-          "aggregates": {
-            "0": {
-              "id": 0
-            }
-          }
-        }
-      },
-      "chat": {
-        "account": {
           "events": [],
-          "aggregates": {
-            "0": {
-              "id": 0,
-              "name": "Anonymous 1337",
-              "requests": [],
-              "conversations": [],
-              "contacts": []
-            }
-          }
-        },
-        "request": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "contact": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "conversation": {
-          "logs": {},
           "aggregates": {}
         },
         "member": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "message": {
-          "logs": {},
-          "aggregates": {}
-        }
-      }
-    },
-    "nextState": {
-      "protocol": {
-        "client": {
-          "aggregates": {
-            "0": {
-              "id": 0
-            }
-          }
-        }
-      },
-      "chat": {
-        "account": {
           "events": [],
-          "aggregates": {
-            "0": {
-              "id": 0,
-              "name": "Anonymous 1337",
-              "requests": [],
-              "conversations": [],
-              "contacts": []
-            }
-          }
-        },
-        "request": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "contact": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "conversation": {
-          "logs": {},
-          "aggregates": {}
-        },
-        "member": {
-          "logs": {},
           "aggregates": {}
         },
         "message": {
-          "logs": {},
+          "events": [],
           "aggregates": {}
         }
       }
@@ -479,34 +342,27 @@ var actions = [
   }
 ];
 
-test('chat/account/command/open (action index 0) should correctly update state', function() {
+test('chat/account/command/create (action index 0) should correctly update state', function() {
     var action = actions[0];
     var result = reducer(action.prevState, action.action);
     expect(equality(result, action.nextState)).toBe(true);
 });
 
-test('protocol/client/command/start (action index 1) should correctly update state', function() {
+test('protocol/client/command/instanceInitiateNewAccount (action index 1) should correctly update state', function() {
     var action = actions[1];
     var result = reducer(action.prevState, action.action);
     expect(equality(result, action.nextState)).toBe(true);
 });
 
-test('protocol/client/event/started (action index 2) should correctly update state', function() {
+test('protocol/client/event/instanceInitiatedNewAccount (action index 2) should correctly update state', function() {
     var action = actions[2];
     var result = reducer(action.prevState, action.action);
     expect(equality(result, action.nextState)).toBe(true);
 });
 
-test('protocol/client/command/accountSubscribe (action index 3) should correctly update state', function() {
+test('chat/account/event/created (action index 3) should correctly update state', function() {
     var action = actions[3];
     var result = reducer(action.prevState, action.action);
     expect(equality(result, action.nextState)).toBe(true);
 });
-
-test('chat/account/event/opened (action index 4) should correctly update state', function() {
-    var action = actions[4];
-    var result = reducer(action.prevState, action.action);
-    expect(equality(result, action.nextState)).toBe(true);
-});
-
 

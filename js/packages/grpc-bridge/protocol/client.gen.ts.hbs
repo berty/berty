@@ -6,9 +6,11 @@ import * as pb from 'protobufjs'
 		{{#if (eq (typeof this) "Service")}}
 			export class {{name}}Client {
 				_pbService: api{{namespace this}}
+				end: () => void
 
 				constructor(rpcImpl: pb.RPCImpl) {
 					this._pbService = api{{namespace this}}.create(rpcImpl)
+					this.end = this._pbService.end.bind(this._pbService)
 				}
 
 				{{#each methods}}

@@ -27,19 +27,16 @@ module.exports = {
 		}),
 	},
 	resolver: {
-		extraNodeModules: new Proxy(
-			{},
-			{
-				get: (target, name) => {
-					const current = path.join(__dirname, `./node_modules/${name}`)
-					const root = path.join(__dirname, `../../node_modules/${name}`)
-					if (fs.existsSync(root)) {
-						return root
-					}
-					return current
-				},
+		extraNodeModules: new Proxy(require('node-libs-react-native'), {
+			get: (target, name) => {
+				const current = path.join(__dirname, `./node_modules/${name}`)
+				const root = path.join(__dirname, `../../node_modules/${name}`)
+				if (fs.existsSync(root)) {
+					return root
+				}
+				return current
 			},
-		),
+		}),
 	},
 	watchFolders,
 	server: {

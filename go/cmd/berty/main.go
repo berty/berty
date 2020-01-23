@@ -205,7 +205,6 @@ func main() {
 				// setup grpc server
 				grpcServer := grpc.NewServer()
 				bertydemo.RegisterDemoServiceServer(grpcServer, demo)
-
 				// setup listeners
 				addrs := strings.Split(*clientDemoListeners, ",")
 				for _, addr := range addrs {

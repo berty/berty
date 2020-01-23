@@ -111,6 +111,7 @@ run.%.tmux: deps
 	cd $(berty_root)/js && tmux \
 		new-session '$(MAKE) start.metro' \; \
 		split-window 'PLATFORM=$* $(berty_root)/build/shell/shortcut_build.sh' \; \
+		split-window 'PLATFORM=$* $(MAKE) start.grpc-bridge.orbitdb' \; \
 		set-option remain-on-exit on
 
 .PHONY: bundle

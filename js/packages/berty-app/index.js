@@ -1,6 +1,9 @@
 /**
  * @format
  */
+
+import 'node-libs-react-native/globals'
+
 import { Alert, AppRegistry } from 'react-native'
 if (!__DEV__) {
 	/* eslint-disable no-undef */

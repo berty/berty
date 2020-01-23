@@ -19,22 +19,24 @@ export type MockBridge = (
 ) => pb.RPCImpl
 
 export const mockBridge: MockBridge = (ServiceCtor, metadata) => {
-	const service = new ServiceCtor(metadata)
+	const service = new ServiceCtor(metadata) as {
+		[key: string]: (request: {}, callback: (error: Error, response: {}) => void) => void
+	}
 	return (method, requestData, callback) => {
 		if (!(method instanceof pb.Method)) {
 			console.error("GRPC MockBridge: bridge doesn't support protobuf.rpc.ServiceMethod")
 			return
 		}
 
-		if (typeof (service as { [key: string]: any })[method.name] !== 'function') {
+		if (typeof service[method.name] !== 'function') {
 			console.error(`
 				GRPC MockBridge: ${service.constructor.name}: method ${method.name} does not exists
 			`)
 		}
-
-		ServiceCtor.prototype[method.name].call(
+		console.log(method.name, ServiceCtor.prototype)
+		service[method.name].call(
 			service,
-			method?.resolvedRequestType?.decode(requestData),
+			method?.resolvedRequestType?.decode(requestData) || {},
 			(error?: Error | null, responseData?: {} | null) => {
 				if (error != null) {
 					console.warn(

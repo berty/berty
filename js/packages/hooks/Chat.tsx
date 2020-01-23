@@ -5,14 +5,11 @@ import DevMenu from 'react-native-dev-menu'
 import { Clipboard } from 'react-native'
 
 export const Recorder: React.FC = ({ children }) => {
-	const [state, setState] = React.useState({})
-
 	React.useEffect(() => {
-		DevMenu.addItem('(Chat) Start/Reset Test Recorder', () => {
-			chat.recorder.stop()
+		DevMenu.addItem('(Chat) Start Test Recorder', () => {
 			chat.recorder.start()
 		})
-		DevMenu.addItem('(Chat) Copy Current Test', () => {
+		DevMenu.addItem('(Chat) Copy Test And Stop Recoder', () => {
 			Clipboard.setString(
 				chat.recorder
 					.createTest()
@@ -21,6 +18,7 @@ export const Recorder: React.FC = ({ children }) => {
 						"import * as chat from '..'\nconst { reducer } = chat.init()",
 					),
 			)
+			chat.recorder.stop()
 		})
 	})
 
@@ -41,14 +39,6 @@ export const useAccountCreate = () => {
 	const dispatch = useDispatch()
 	return useMemo(
 		() => (payload: chat.account.Command.Create) => dispatch(chat.account.commands.create(payload)),
-		[dispatch],
-	)
-}
-
-export const useAccountOpen = () => {
-	const dispatch = useDispatch()
-	return useMemo(
-		() => (payload: chat.account.Command.Open) => dispatch(chat.account.commands.open(payload)),
 		[dispatch],
 	)
 }
