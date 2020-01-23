@@ -3,258 +3,203 @@ import { MockServiceHandler } from '../mock'
 import { DemoServiceClient } from '../orbitdb'
 import { bridge } from '../bridge'
 import { WebsocketTransport } from '../grpc-web-websocket-transport'
-import { grpc } from '@improbable-eng/grpc-web'
 
 export class ProtocolServiceHandler extends MockServiceHandler {
-	orbitdbClient = new DemoServiceClient(
+	client: DemoServiceClient
+	accountId: string
+
+	constructor (metadata: { [key: string]: string | string[] }) {
+		super(metadata)
+		this.client = new DemoServiceClient(
 		bridge({
 			host: 'localhost:1337',
-			transport: WebsocketTransport(),
-		}),
-	)
-	accountId = this.metadata?.id as string
+				transport: WebsocketTransport(),
+			}),
+		)
+		this.accountId = this.metadata?.id as string
+	}
 
 	InstanceExportData: (
 		request: api.berty.protocol.InstanceExportData.IRequest,
 		callback: (
-			error?: Error | null,
+			error: Error | null,
 			response?: api.berty.protocol.InstanceExportData.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
+	) => void = (request, callback) => {}
 	InstanceGetConfiguration: (
 		request: api.berty.protocol.InstanceGetConfiguration.IRequest,
 		callback: (
-			error?: Error | null,
+			error: Error | null,
 			response?: api.berty.protocol.InstanceGetConfiguration.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
-	GroupCreate: (
-		request: api.berty.protocol.GroupCreate.IRequest,
+	) => void = (request, callback) => {}
+	InstanceLinkToExistingAccount: (
+		request: api.berty.protocol.InstanceLinkToExistingAccount.IRequest,
 		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.GroupCreate.IReply | null,
+			error: Error | null,
+			response?: api.berty.protocol.InstanceLinkToExistingAccount.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
-	GroupJoin: (
-		request: api.berty.protocol.GroupJoin.IRequest,
-		callback: (error?: Error | null, response?: api.berty.protocol.GroupJoin.IReply | null) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
-	GroupLeave: (
-		request: api.berty.protocol.GroupLeave.IRequest,
+	) => void = (request, callback) => {}
+	InstanceInitiateNewAccount: (
+		request: api.berty.protocol.InstanceInitiateNewAccount.IRequest,
 		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.GroupLeave.IReply | null,
+			error: Error | null,
+			response?: api.berty.protocol.InstanceInitiateNewAccount.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
-	GroupInvite: (
-		request: api.berty.protocol.GroupInvite.IRequest,
-		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.GroupInvite.IReply | null,
-		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
-	DevicePair: (
-		request: api.berty.protocol.DevicePair.IRequest,
-		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.DevicePair.IReply | null,
-		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
+	) => void = (request, callback) => {}
 	ContactRequestReference: (
 		request: api.berty.protocol.ContactRequestReference.IRequest,
 		callback: (
-			error?: Error | null,
+			error: Error | null,
 			response?: api.berty.protocol.ContactRequestReference.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
+	) => void = (request, callback) => {}
 	ContactRequestDisable: (
 		request: api.berty.protocol.ContactRequestDisable.IRequest,
 		callback: (
-			error?: Error | null,
+			error: Error | null,
 			response?: api.berty.protocol.ContactRequestDisable.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
+	) => void = (request, callback) => {}
 	ContactRequestEnable: (
 		request: api.berty.protocol.ContactRequestEnable.IRequest,
 		callback: (
-			error?: Error | null,
+			error: Error | null,
 			response?: api.berty.protocol.ContactRequestEnable.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
+	) => void = (request, callback) => {}
 	ContactRequestResetReference: (
-		request: api.berty.protocol.ContactRequestResetLink.IRequest,
+		request: api.berty.protocol.ContactRequestResetReference.IRequest,
 		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.ContactRequestResetLink.IReply | null,
+			error: Error | null,
+			response?: api.berty.protocol.ContactRequestResetReference.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
-	ContactRequestEnqueue: (
-		request: api.berty.protocol.ContactRequestEnqueue.IRequest,
+	) => void = (request, callback) => {}
+	ContactRequestSend: (
+		request: api.berty.protocol.ContactRequestSend.IRequest,
 		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.ContactRequestEnqueue.IReply | null,
+			error: Error | null,
+			response?: api.berty.protocol.ContactRequestSend.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
+	) => void = (request, callback) => {}
 	ContactRequestAccept: (
 		request: api.berty.protocol.ContactRequestAccept.IRequest,
 		callback: (
-			error?: Error | null,
+			error: Error | null,
 			response?: api.berty.protocol.ContactRequestAccept.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
-	ContactRemove: (
-		request: api.berty.protocol.ContactRemove.IRequest,
+	) => void = (request, callback) => {}
+	ContactRequestIgnore: (
+		request: api.berty.protocol.ContactRequestIgnore.IRequest,
 		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.ContactRemove.IReply | null,
+			error: Error | null,
+			response?: api.berty.protocol.ContactRequestIgnore.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
+	) => void = (request, callback) => {}
+	ContactRequestRefuse: (
+		request: api.berty.protocol.ContactRequestRefuse.IRequest,
+		callback: (
+			error: Error | null,
+			response?: api.berty.protocol.ContactRequestRefuse.IReply | null,
+		) => void,
+	) => void = (request, callback) => {}
 	ContactBlock: (
 		request: api.berty.protocol.ContactBlock.IRequest,
 		callback: (
-			error?: Error | null,
+			error: Error | null,
 			response?: api.berty.protocol.ContactBlock.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
+	) => void = (request, callback) => {}
 	ContactUnblock: (
 		request: api.berty.protocol.ContactUnblock.IRequest,
 		callback: (
-			error?: Error | null,
+			error: Error | null,
 			response?: api.berty.protocol.ContactUnblock.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
-	GroupSettingSetGroup: (
-		request: api.berty.protocol.GroupSettingSetGroup.IRequest,
+	) => void = (request, callback) => {}
+	ContactAliasKeySend: (
+		request: api.berty.protocol.ContactAliasKeySend.IRequest,
 		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.GroupSettingSetGroup.IReply | null,
+			error: Error | null,
+			response?: api.berty.protocol.ContactAliasKeySend.IReply | null,
+		) => void,
+	) => void = (request, callback) => {}
+	MultiMemberCreate: (
+		request: api.berty.protocol.MultiMemberCreate.IRequest,
+		callback: (
+			error: Error | null,
+			response?: api.berty.protocol.MultiMemberCreate.IReply | null,
+		) => void,
+	) => void = (request, callback) => {}
+	MultiMemberJoin: (
+		request: api.berty.protocol.MultiMemberJoin.IRequest,
+		callback: (
+			error: Error | null,
+			response?: api.berty.protocol.MultiMemberJoin.IReply | null,
+		) => void,
+	) => void = (request, callback) => {}
+	MultiMemberLeave: (
+		request: api.berty.protocol.MultiMemberLeave.IRequest,
+		callback: (
+			error: Error | null,
+			response?: api.berty.protocol.MultiMemberLeave.IReply | null,
+		) => void,
+	) => void = (request, callback) => {}
+	MultiMemberAliasProofDisclose: (
+		request: api.berty.protocol.MultiMemberAliasProofDisclose.IRequest,
+		callback: (
+			error: Error | null,
+			response?: api.berty.protocol.MultiMemberAliasProofDisclose.IReply | null,
+		) => void,
+	) => void = (request, callback) => {}
+	MultiMemberAdminRoleGrant: (
+		request: api.berty.protocol.MultiMemberAdminRoleGrant.IRequest,
+		callback: (
+			error: Error | null,
+			response?: api.berty.protocol.MultiMemberAdminRoleGrant.IReply | null,
+		) => void,
+	) => void = (request, callback) => {}
+	MultiMemberCreateInvitation: (
+		request: api.berty.protocol.MultiMemberCreateInvitation.IRequest,
+		callback: (
+			error: Error | null,
+			response?: api.berty.protocol.MultiMemberCreateInvitation.IReply | null,
+		) => void,
+	) => void = (request, callback) => {}
+	AppSendPermanentMessage: (
+		request: api.berty.protocol.AppSendPermanentMessage.IRequest,
+		callback: (
+			error: Error | null,
+			response?: api.berty.protocol.AppSendPermanentMessage.IReply | null,
+		) => void,
+	) => void = (request, callback) => {}
+	AppSecureMessage: (
+		request: api.berty.protocol.AppSecureMessage.IRequest,
+		callback: (
+			error: Error | null,
+			response?: api.berty.protocol.AppSecureMessage.IReply | null,
+		) => void,
+	) => void = (request, callback) => {}
+	GroupMetadataSubscribe: (
+		request: api.berty.protocol.GroupMetadataSubscribe.IRequest,
+		callback: (
+			error: Error | null,
+			response?: api.berty.protocol.IGroupMetadataEvent | null,
 		) => void,
 	) => void = (request, callback) => {
-		callback(null, {})
 	}
-
-	GroupSettingSetMember: (
-		request: api.berty.protocol.GroupSettingSetMember.IRequest,
+	GroupSecureMessageSubscribe: (
+		request: api.berty.protocol.GroupSecureMessageSubscribe.IRequest,
 		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.GroupSettingSetMember.IReply | null,
+			error: Error | null,
+			response?: api.berty.protocol.IGroupSecureMessageEvent | null,
 		) => void,
 	) => void = (request, callback) => {
-		callback(null, {})
-	}
+		this.client.logStream({ logToken }
+		if (error) {
+			callback(error, null)
+			return
+		}
 
-	GroupMessageSend: (
-		request: api.berty.protocol.GroupMessageSend.IRequest,
-		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.GroupMessageSend.IReply | null,
-		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
-	AccountAppendAppSpecificEvent: (
-		request: api.berty.protocol.AccountAppendAppSpecificEvent.IRequest,
-		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.AccountAppendAppSpecificEvent.IReply | null,
-		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
-	AccountSubscribe: (
-		request: api.berty.protocol.AccountSubscribe.IRequest,
-		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.AccountSubscribe.IReply | null,
-		) => void,
-	) => void = (request, callback) => {
-		this.orbitdbClient.logStream({}, (error, response) => {
-			if (error != null) {
-				console.warn('')
-				return callback(new Error('GRPC Protocol Error: AccountSubscribe: orbitdb logStream error :' + error.message), null)
-			}
-			// TODO: deserialize and send event
-			callback(null, { event: {} })
-		})
-	}
-
-	GroupSettingSubscribe: (
-		request: api.berty.protocol.GroupSettingStoreSubscribe.IRequest,
-		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.GroupSettingStoreSubscribe.IReply | null,
-		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
-	GroupMessageSubscribe: (
-		request: api.berty.protocol.GroupMessageSubscribe.IRequest,
-		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.GroupMessageSubscribe.IReply | null,
-		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
-	}
-
-	GroupMemberSubscribe: (
-		request: api.berty.protocol.GroupMemberSubscribe.IRequest,
-		callback: (
-			error?: Error | null,
-			response?: api.berty.protocol.GroupMemberSubscribe.IReply | null,
-		) => void,
-	) => void = (request, callback) => {
-		callback(null, {})
 	}
 }

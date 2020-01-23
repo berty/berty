@@ -8,22 +8,22 @@ export class ProtocolServiceClient {
 		this._pbService = api.berty.protocol.ProtocolService.create(rpcImpl)
 	}
 
-	instanceExportData(
+	instanceExportData: (
 		request: api.berty.protocol.InstanceExportData.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.InstanceExportData.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.instanceExportData.bind(this._pbService)(request, callback)
 	}
-	instanceGetConfiguration(
+	instanceGetConfiguration: (
 		request: api.berty.protocol.InstanceGetConfiguration.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.InstanceGetConfiguration.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.instanceGetConfiguration.bind(this._pbService)(request, callback)
 	}
 	contactRequestReference(
@@ -32,52 +32,52 @@ export class ProtocolServiceClient {
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestReference.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.contactRequestReference.bind(this._pbService)(request, callback)
 	}
-	contactRequestDisable(
+	contactRequestDisable: (
 		request: api.berty.protocol.ContactRequestDisable.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestDisable.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.contactRequestDisable.bind(this._pbService)(request, callback)
 	}
-	contactRequestEnable(
+	contactRequestEnable: (
 		request: api.berty.protocol.ContactRequestEnable.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestEnable.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.contactRequestEnable.bind(this._pbService)(request, callback)
 	}
-	contactRequestResetReference(
+	contactRequestResetReference: (
 		request: api.berty.protocol.ContactRequestResetReference.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestResetReference.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.contactRequestResetReference.bind(this._pbService)(request, callback)
 	}
-	contactRequestSend(
+	contactRequestSend: (
 		request: api.berty.protocol.ContactRequestSend.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestSend.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.contactRequestSend.bind(this._pbService)(request, callback)
 	}
-	contactRequestAccept(
+	contactRequestAccept: (
 		request: api.berty.protocol.ContactRequestAccept.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestAccept.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.contactRequestAccept.bind(this._pbService)(request, callback)
 	}
 	contactRequestDiscard(
@@ -89,25 +89,25 @@ export class ProtocolServiceClient {
 	) {
 		return this._pbService.contactRequestDiscard.bind(this._pbService)(request, callback)
 	}
-	contactBlock(
+	contactBlock: (
 		request: api.berty.protocol.ContactBlock.IRequest,
 		callback: (error: Error | null, response?: api.berty.protocol.ContactBlock.IReply) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.contactBlock.bind(this._pbService)(request, callback)
 	}
-	contactUnblock(
+	contactUnblock: (
 		request: api.berty.protocol.ContactUnblock.IRequest,
 		callback: (error: Error | null, response?: api.berty.protocol.ContactUnblock.IReply) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.contactUnblock.bind(this._pbService)(request, callback)
 	}
-	contactAliasKeySend(
+	contactAliasKeySend: (
 		request: api.berty.protocol.ContactAliasKeySend.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactAliasKeySend.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.contactAliasKeySend.bind(this._pbService)(request, callback)
 	}
 	multiMemberGroupCreate(
@@ -179,10 +179,10 @@ export class ProtocolServiceClient {
 	) {
 		return this._pbService.appMessageSend.bind(this._pbService)(request, callback)
 	}
-	groupMetadataSubscribe(
+	groupMetadataSubscribe: (
 		request: api.berty.protocol.GroupMetadataSubscribe.IRequest,
 		callback: (error: Error | null, response?: api.berty.protocol.IGroupMetadataEvent) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.groupMetadataSubscribe.bind(this._pbService)(request, callback)
 	}
 	groupMessageSubscribe(

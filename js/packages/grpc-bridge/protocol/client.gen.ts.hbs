@@ -12,13 +12,13 @@ import * as pb from 'protobufjs'
 				}
 
 				{{#each methods}}
-					{{case 'camel' name}}(
+					{{case 'camel' name}}: (
 						request: api{{inamespace resolvedRequestType}},
 						callback: (
 							error: Error | null,
 							response?: api{{inamespace resolvedResponseType}}
 						) => void
-					) {
+					) => void = (request, callback) => {
 						return this._pbService.{{case 'camel' name}}.bind(this._pbService)(request, callback)
 					}
 			  	{{/each}}

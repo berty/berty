@@ -1,0 +1,33 @@
+import * as api from '@berty-tech/api'
+import { MockServiceHandler } from '../mock'
+import { DemoServiceClient } from '../orbitdb'
+import { bridge } from '../bridge'
+import { WebsocketTransport } from '../grpc-web-websocket-transport'
+import { grpc } from '@improbable-eng/grpc-web'
+
+{{#with (lookup "berty.protocol")}}
+	{{#each nested}}
+		{{#if (eq (typeof this) "Service")}}
+			export class {{name}}Handler extends MockServiceHandler {
+				client = new DemoServiceClient(
+					bridge({
+						host: 'localhost:1337',
+						transport: WebsocketTransport(),
+					}),
+				)
+				accountId = this.metadata?.id as string
+
+				{{#each methods}}
+					{{name}}: (
+						request: api{{inamespace resolvedRequestType}},
+						callback: (
+							error: Error | null,
+							response?: api{{inamespace resolvedResponseType}} | null
+						) => void
+					) => void = (request, callback) => {
+					}
+			  	{{/each}}
+			}
+		{{/if}}
+	{{/each}}
+{{/with}}
