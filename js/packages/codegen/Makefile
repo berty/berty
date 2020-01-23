@@ -38,7 +38,7 @@ codegen_berty_protocol_sources := $(shell \
 codegen_berty_orbitdb_sources := $(shell \
 	find $(abspath $(PWD)/..) -type f -name '*.hbs' -path '*/*/orbitdb/*' -not -path '*/node_modules/*')
 codegen_berty_shared_sources := $(shell \
-	find $(abspath $(PWD)/..) -type f -name '*.hbs' -not -path '*/berty-*/*' -maxdepth 2)
+	find $(abspath $(PWD)/..) -maxdepth 2 -type f -name '*.hbs' -not -path '*/berty-*/*')
 
 codegen_berty_chat_targets := $(patsubst %.hbs, %, $(codegen_berty_chat_sources))
 codegen_berty_protocol_targets := $(patsubst %.hbs, %, $(codegen_berty_protocol_sources))

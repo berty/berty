@@ -27,7 +27,7 @@ json := $(bin)/json
 caser := $(bin)/caser
 eslint := $(bin)/eslint
 
-pkg := $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 1 -type d))
+pkg := $(patsubst %/package.json, %, $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 2 -type f -name 'package.json')))
 pkg_mod := $(patsubst %, %/node_modules, $(pkg))
 pkg_desc := $(patsubst %, %/package.json, $(pkg))
 
@@ -45,7 +45,6 @@ $(yarn):
 .PHONY: deps
 deps: $(yarn) $(mod) $(pkg_mod)
 deps: $(yarn) $(lerna) $(mod) $(pkg_mod)
-
 
 $(mod) $(pkg_mod): ci ?= false
 $(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
