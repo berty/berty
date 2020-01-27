@@ -44,6 +44,26 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 		this.accountDevicePk = (this.metadata?.accountDevicePk as string) || ''
 	}
 
+	_createPkHack = async (): Promise<string> =>
+		(
+			await Promise.all([
+				new Promise((resolve: (token: string) => void, reject: (err: Error) => void) =>
+					this.client?.logToken({}, (error, response) =>
+						error || response == null || response?.logToken == null
+							? reject(error || new Error('GRPC ProtocolServiceHandler: response is undefined'))
+							: resolve(response.logToken as string),
+					),
+				),
+				new Promise((resolve: (token: string) => void, reject: (err: Error) => void) =>
+					this.client?.logToken({}, (error, response) =>
+						error || response == null || response?.logToken == null
+							? reject(error || new Error('GRPC ProtocolServiceHandler: response is undefined'))
+							: resolve(response.logToken as string),
+					),
+				),
+			])
+		).join(':')
+
 	InstanceExportData: (
 		request: api.berty.protocol.InstanceExportData.IRequest,
 		callback: (
@@ -79,20 +99,11 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 			error: Error | null,
 			response?: api.berty.protocol.InstanceInitiateNewAccount.IReply | null,
 		) => void,
-	) => void = async (request, callback) => {
+	) => void = async (_, callback) => {
 		try {
-			const { logToken: accountGroupPk } = await new Promise((resolve, reject) =>
-				this.client?.logToken(request, (error, response) =>
-					error ? reject(error) : resolve(response as { logToken: string }),
-				),
-			)
-			const { logToken: accountDevicePk } = await new Promise((resolve, reject) =>
-				this.client?.logToken(request, (error, response) =>
-					error != null ? reject(error) : resolve(response as { logToken: string }),
-				),
-			)
-			this.accountGroupPk = accountGroupPk
-			this.accountDevicePk = accountDevicePk
+			this.accountGroupPk = await this._createPkHack()
+			this.accountDevicePk = await this._createPkHack()
+			console.log(this.accountGroupPk)
 			callback(null, {})
 		} catch (err) {
 			callback(err, null)
@@ -232,18 +243,66 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 			response?: api.berty.protocol.AppSecureMessage.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
+
 	GroupMetadataSubscribe: (
 		request: api.berty.protocol.GroupMetadataSubscribe.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.IGroupMetadataEvent | null,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = (request, callback) => {
+		if (request.groupPk == null) {
+			callback(new Error('GRPC ProtocolServiceHandler: groupPk not defined'))
+			return
+		}
+		const tokens = new Buffer(request.groupPk).toString('base64').split(':')
+		if (tokens.length < 2) {
+			callback(new Error('GRPC ProtocolServiceHandler: groupPk corrupted'))
+			return
+		}
+		this.client?.logStream({ logToken: tokens[0] }, (error, response) => {
+			if (error || response == null || response.cid == null || response.value == null) {
+				callback(error)
+				return
+			}
+			const message = api.berty.protocol.GroupMetadataEvent.decode(response.value)
+			if (message == null || message.eventContext == null) {
+				callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
+				return
+			}
+			message.eventContext.id = Buffer.from(response.cid, 'base64')
+			callback(null, message)
+		})
+	}
+
 	GroupSecureMessageSubscribe: (
 		request: api.berty.protocol.GroupSecureMessageSubscribe.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.IGroupSecureMessageEvent | null,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = (request, callback) => {
+		if (request.groupPk == null) {
+			callback(new Error('GRPC ProtocolServiceHandler: groupPk not defined'))
+			return
+		}
+		const tokens = new Buffer(request.groupPk).toString('base64').split(':')
+		if (tokens.length < 2) {
+			callback(new Error('GRPC ProtocolServiceHandler: groupPk corrupted'))
+			return
+		}
+		this.client?.logStream({ logToken: tokens[1] }, (error, response) => {
+			if (error || response == null || response.cid == null || response.value == null) {
+				callback(error)
+				return
+			}
+			const message = api.berty.protocol.GroupSecureMessageEvent.decode(response.value)
+			if (message == null || message.eventContext == null) {
+				callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
+				return
+			}
+			message.eventContext.id = Buffer.from(response.cid, 'base64')
+			callback(null, message)
+		})
+	}
 }

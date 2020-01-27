@@ -1,12 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, takeLeading, select, take } from 'redux-saga/effects'
+import { put, all, takeLeading, select, take, takeEvery } from 'redux-saga/effects'
 import faker from 'faker'
+import { Buffer } from 'buffer'
 
 import * as protocol from '../protocol'
 
 export type Entity = {
 	id: string
+	pubkey: string
 	name: string
 	requests: Array<string>
 	conversations: Array<string>
@@ -43,8 +45,9 @@ export namespace Query {
 }
 
 export namespace Event {
-	export type Created = { aggregateId: string; name: string }
+	export type Created = { aggregateId: string; name: string; pubkey?: string }
 	export type Deleted = { aggregateId: string }
+	export type PubKeyUpdated = { aggregateId: string; pubkey: string }
 }
 
 export type CommandsReducer = {
@@ -62,6 +65,7 @@ export type QueryReducer = {
 export type EventsReducer = {
 	created: (state: State, event: { payload: Event.Created }) => State
 	deleted: (state: State, event: { payload: Event.Deleted }) => State
+	pubkeyUpdated: (state: State, event: { payload: Event.PubKeyUpdated }) => State
 }
 
 const initialState = {
@@ -86,6 +90,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 		created: (state, { payload }) => {
 			state.aggregates[payload.aggregateId] = {
 				id: payload.aggregateId,
+				pubkey: payload.pubkey || '',
 				name: payload.name,
 				requests: [],
 				conversations: [],
@@ -95,6 +100,12 @@ const eventHandler = createSlice<State, EventsReducer>({
 		},
 		deleted: (state, { payload }) => {
 			delete state.aggregates[payload.aggregateId]
+			return state
+		},
+		pubkeyUpdated: (state, { payload }) => {
+			if (state.aggregates[payload.aggregateId]) {
+				state.aggregates[payload.aggregateId].pubkey = payload.pubkey
+			}
 			return state
 		},
 	},
@@ -121,13 +132,6 @@ export function* orchestrator() {
 
 			yield put(protocol.commands.client.instanceInitiateNewAccount({ id }))
 
-			while (1) {
-				const action = yield take(protocol.events.client.instanceInitiatedNewAccount)
-				if (action.payload.aggregateId === id) {
-					break
-				}
-			}
-
 			// send event
 			yield put(
 				events.created({
@@ -140,6 +144,29 @@ export function* orchestrator() {
 		takeLeading(commands.delete, function*() {
 			// TODO: delete account
 			// yield put(events.deleted())
+		}),
+
+		// send every chat account related events to protocol account log
+		takeEvery(Object.values(events), function*(action: { type: string; payload: Event }) {
+			const account = yield select((state) =>
+				queries.get(state, { id: action.payload.aggregateId }),
+			)
+			yield put(
+				protocol.commands.client.appSendPermanentMessage({
+					id: account.id,
+					groupPk: account.pubkey,
+					payload: action,
+				}),
+			)
+		}),
+
+		takeEvery(protocol.events.client.instanceInitiatedNewAccount, function*(action) {
+			yield put(
+				events.pubkeyUpdated({
+					aggregateId: action.payload.aggregateId,
+					pubkey: action.payload.accountGroupPk,
+				}),
+			)
 		}),
 	])
 }

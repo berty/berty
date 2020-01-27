@@ -13,4 +13,3 @@ export const ContactRequest: React.FC<ScreenProps.Main.ContactRequest> = ({
 	const store = useContext(Store.Context)
 	return <Request user={params} accept={(_) => {}} decline={(_) => {}} />
 }
-

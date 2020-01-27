@@ -1,9 +1,10 @@
 import { ProtocolServiceClient, ProtocolServiceHandler, mockBridge } from '@berty-tech/grpc-bridge'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, Action } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, takeLeading, put, cps, select, fork } from 'redux-saga/effects'
+import { all, takeLeading, put, cps, select, fork, takeEvery } from 'redux-saga/effects'
 import * as api from '@berty-tech/api'
 import { Buffer } from 'buffer'
+import Case from 'case'
 
 export type Entity = {
 	id: string
@@ -52,9 +53,25 @@ export type Commands = {
 	multiMemberAdminRoleGrant: (state: State, action: { payload: { id: string } }) => State
 
 	multiMemberCreateInvitation: (state: State, action: { payload: { id: string } }) => State
-	appSendPermanentMessage: (state: State, action: { payload: { id: string } }) => State
-	groupMetadataSubscribe: (state: State, action: { payload: { id: string } }) => State
-	groupSecureMessageSubscribe: (state: State, action: { payload: { id: string } }) => State
+	appSendPermanentMessage: (
+		state: State,
+		action: {
+			payload: {
+				id: string
+				groupPk: string
+				payload: {}
+			}
+		},
+	) => State
+	appSendSecureMessage: (state: State) => State
+	groupMetadataSubscribe: (
+		state: State,
+		action: { payload: { id: string; groupPk: string } },
+	) => State
+	groupSecureMessageSubscribe: (
+		state: State,
+		action: { payload: { id: string; groupPk: string } },
+	) => State
 }
 
 export type Queries = {
@@ -128,6 +145,7 @@ const commandHandler = createSlice<State, Commands>({
 
 		multiMemberCreateInvitation: (state) => state,
 		appSendPermanentMessage: (state) => state,
+		appSendSecureMessage: (state) => state,
 		groupMetadataSubscribe: (state) => state,
 		groupSecureMessageSubscribe: (state) => state,
 	},
@@ -183,33 +201,37 @@ export const queries: Queries = {
 export function* orchestrator() {
 	const services: { [key: string]: ProtocolServiceClient } = {}
 
-	// start services
-	const clients = (yield select(queries.getAll)) as Entity[]
-	for (const client of clients) {
-		services[client.id] = new ProtocolServiceClient(
-			mockBridge(ProtocolServiceHandler, {
-				accountGroupPk: client.accountGroupPk,
-				accountDevicePk: client.accountDevicePk,
-			}),
-		)
-	}
-
 	yield all([
+		function*() {
+			// start services
+			const clients = (yield select(queries.getAll)) as Entity[]
+			for (const client of clients) {
+				services[client.id] = new ProtocolServiceClient(
+					// TODO: use bridge instead of mockBridge when bertyprotocol will be done
+					mockBridge(ProtocolServiceHandler, {
+						accountGroupPk: client.accountGroupPk,
+						accountDevicePk: client.accountDevicePk,
+					}),
+				)
+				// subcribe to account log
+				yield put(
+					commands.groupSecureMessageSubscribe({ id: client.id, groupPk: client.accountGroupPk }),
+				)
+			}
+		},
 		takeLeading(commands.instanceExportData, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.instanceGetConfiguration, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.instanceLinkToExistingAccount, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.instanceInitiateNewAccount, function*(action) {
 			services[action.payload.id] = new ProtocolServiceClient(mockBridge(ProtocolServiceHandler))
 			yield cps(services[action.payload.id]?.instanceInitiateNewAccount, {})
+			// needed for fake protocol handler to work
 			const {
 				accountGroupPk,
 				accountDevicePk,
@@ -227,86 +249,132 @@ export function* orchestrator() {
 		}),
 		takeLeading(commands.contactRequestReference, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.contactRequestDisable, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.contactRequestEnable, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.contactRequestResetReference, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.contactRequestSend, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.contactRequestAccept, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.contactRequestIgnore, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.contactRequestRefuse, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 
 		takeLeading(commands.contactBlock, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.contactUnblock, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.contactAliasKeySend, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 
 		takeLeading(commands.multiMemberCreate, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.multiMemberJoin, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.multiMemberLeave, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.multiMemberAliasProofDisclose, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 		takeLeading(commands.multiMemberAdminRoleGrant, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 
 		takeLeading(commands.multiMemberCreateInvitation, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeLeading(commands.appSendPermanentMessage, function*() {
-			// TODO: do protocol things
-			// yield put(events.started)
+		takeLeading(commands.appSendPermanentMessage, function*(action) {
+			yield cps(services[action.payload.id]?.appSecureMessage, {
+				groupPk: new Buffer(action.payload.groupPk, 'base64'),
+				payload: new Buffer(JSON.stringify(action.payload.payload), 'base64'),
+			})
 		}),
-		takeLeading(commands.groupMetadataSubscribe, function*() {
+		takeLeading(commands.appSendSecureMessage, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
+		}),
+		takeLeading(commands.groupMetadataSubscribe, function*(action) {
+			services[action.payload.id]?.groupMetadataSubscribe(
+				{
+					groupPk: new Buffer(action.payload.groupPk, 'base64'),
+				},
+				(error, response) => {
+					if (error) {
+						// TODO: log error
+						return
+					}
+					if (!response?.event) {
+						return
+					}
+					if (!response?.metadata?.eventType) {
+						return
+					}
+					// if the event is defined by chat
+					if (
+						response?.metadata?.eventType ===
+						api.berty.protocol.EventType.EventTypeAppNotSecureEvent
+					) {
+						put(JSON.parse(Buffer.from(response?.event).toString('base64')))
+						return
+					}
+					const eventType = response?.metadata?.eventType
+						.toString()
+						.split('EventType')
+						.pop()
+					if (eventType == null) {
+						return
+					}
+					put({
+						type: `${eventHandler.name}/${Case.camel(eventType)}`,
+						payload: {
+							aggregateId: action.payload.id,
+							eventContext: response.eventContext,
+							headers: response.metadata,
+							event: (api.berty.protocol as { [key: string]: any })[eventType].decode(
+								response.event,
+							),
+						},
+					})
+				},
+			)
 		}),
 		takeLeading(commands.groupSecureMessageSubscribe, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
+		}),
+
+		// hack inexistant events from protocol api
+		takeEvery(events.instanceInitiatedNewAccount, function*(action) {
+			yield put(
+				commands.appSendPermanentMessage({
+					id: action.payload.aggregateId,
+					groupPk: action.payload.accountGroupPk,
+					payload: action,
+				}),
+			)
+			// subscribe to account log
+			yield put(
+				commands.groupSecureMessageSubscribe({
+					id: action.payload.aggregateId,
+					groupPk: action.payload.accountGroupPk,
+				}),
+			)
 		}),
 	])
 }
