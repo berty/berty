@@ -273,6 +273,8 @@ dependencies {
     // see java.lang.NoClassDefFoundError
     implementation 'com.android.support:multidex:1.0.3'
 
+    implementation project(path: ':react-native-interactable')
+
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")

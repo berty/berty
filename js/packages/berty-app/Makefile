@@ -88,10 +88,12 @@ start.emulator: deps
 	)
 	$(if $(filter $(platform), android), adb wait-for-device)
 
+# the adb reverse is for the demo grpc bridge
 .PHONY: run
 run: export PWD := $(PWD)
 run: deps $(if $(filter $(config), development), start.emulator)
 	$(if $(filter $(platform), android), $(berty_root)/build/shell/check-java.sh 18)
+	$(if $(filter $(platform), android), adb reverse tcp:1337 tcp:1337)
 	cd $(PWD) && $(react-native) run-$(platform) \
 		--no-packager \
 		$(if $(filter $(platform), android), --variant=$(target)) \
@@ -480,4 +482,3 @@ fclean: fclean.ios fclean.android fclean.darwin fclean.web
 bazel.android.install:
 	$(MAKE) -C $(abspath $(PWD)/../go-bridge) bazel.build.gobridge.android
 	bazel mobile-install --sandbox_debug --fat_apk_cpu=x86_64,x86,armeabi-v7a //android/app/src/main:app
-
