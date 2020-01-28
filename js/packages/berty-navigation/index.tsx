@@ -362,7 +362,6 @@ export const SettingsNavigation: React.FC<BottomTabBarProps> = () => (
 
 const Footer: React.FC<BottomTabBarProps> = ({ navigation, state: { index, routeNames } }) => {
 	const _navigation = useMemo(() => createNavigation(navigation), [navigation])
-	console.log(routeNames[index])
 	if (routeNames[index].match(/^Settings\..*$/)) {
 		return <Stories.Settings.Footer {..._navigation} />
 	}

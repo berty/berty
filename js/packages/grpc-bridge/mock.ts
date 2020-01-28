@@ -33,7 +33,6 @@ export const mockBridge: MockBridge = (ServiceCtor, metadata) => {
 				GRPC MockBridge: ${service.constructor.name}: method ${method.name} does not exists
 			`)
 		}
-		console.log(method.name, ServiceCtor.prototype)
 		service[method.name].call(
 			service,
 			method?.resolvedRequestType?.decode(requestData) || {},
