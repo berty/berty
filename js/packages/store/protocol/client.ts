@@ -215,7 +215,7 @@ export function* orchestrator() {
 				)
 				// subcribe to account log
 				yield put(
-					commands.groupSecureMessageSubscribe({ id: client.id, groupPk: client.accountGroupPk }),
+					commands.groupMetadataSubscribe({ id: client.id, groupPk: client.accountGroupPk }),
 				)
 			}
 		},
@@ -370,7 +370,7 @@ export function* orchestrator() {
 			)
 			// subscribe to account log
 			yield put(
-				commands.groupSecureMessageSubscribe({
+				commands.groupMetadataSubscribe({
 					id: action.payload.aggregateId,
 					groupPk: action.payload.accountGroupPk,
 				}),

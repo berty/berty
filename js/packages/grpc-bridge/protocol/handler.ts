@@ -80,8 +80,8 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 		) => void,
 	) => void = (request, callback) => {
 		callback(null, {
-			accountGroupPk: Buffer.from(this.accountGroupPk, 'base64'),
-			accountDevicePk: Buffer.from(this.accountDevicePk, 'base64'),
+			accountGroupPk: new Buffer(this.accountGroupPk, 'utf8'),
+			accountDevicePk: new Buffer(this.accountDevicePk, 'utf8'),
 		})
 	}
 
@@ -103,7 +103,6 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 		try {
 			this.accountGroupPk = await this._createPkHack()
 			this.accountDevicePk = await this._createPkHack()
-			console.log(this.accountGroupPk)
 			callback(null, {})
 		} catch (err) {
 			callback(err, null)
@@ -255,7 +254,7 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 			callback(new Error('GRPC ProtocolServiceHandler: groupPk not defined'))
 			return
 		}
-		const tokens = new Buffer(request.groupPk).toString('base64').split(':')
+		const tokens = new Buffer(request.groupPk).toString('utf8').split(':')
 		if (tokens.length < 2) {
 			callback(new Error('GRPC ProtocolServiceHandler: groupPk corrupted'))
 			return
@@ -270,7 +269,7 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 				callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
 				return
 			}
-			message.eventContext.id = Buffer.from(response.cid, 'base64')
+			message.eventContext.id = Buffer.from(response.cid, 'utf8')
 			callback(null, message)
 		})
 	}
@@ -286,7 +285,7 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 			callback(new Error('GRPC ProtocolServiceHandler: groupPk not defined'))
 			return
 		}
-		const tokens = new Buffer(request.groupPk).toString('base64').split(':')
+		const tokens = new Buffer(request.groupPk).toString('utf8').split(':')
 		if (tokens.length < 2) {
 			callback(new Error('GRPC ProtocolServiceHandler: groupPk corrupted'))
 			return
@@ -301,7 +300,7 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 				callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
 				return
 			}
-			message.eventContext.id = Buffer.from(response.cid, 'base64')
+			message.eventContext.id = Buffer.from(response.cid, 'utf8')
 			callback(null, message)
 		})
 	}
