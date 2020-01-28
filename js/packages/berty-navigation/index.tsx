@@ -299,7 +299,7 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 			}}
 		/>
 		<MainStack.Screen
-			name={Routes.Main.MyBertyId}
+			name={Routes.Settings.MyBertyId}
 			component={Stories.Settings.MyBertyId}
 			options={{ presentation: 'transparentModal' }}
 		/>
