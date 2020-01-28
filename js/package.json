@@ -22,6 +22,11 @@
     "cli": "babel-node --extensions '.es6,.js,.es,.jsx,.mjs,.ts,.tsx'",
     "test": "jest"
   },
+  "jest": {
+    "globals": {
+      "__DEV__": true
+    }
+  },
   "workspaces": {
     "packages": [
       "packages/*"

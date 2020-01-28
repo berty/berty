@@ -5,10 +5,10 @@ import { bridge } from '../bridge'
 import { ReactNativeTransport } from '../grpc-web-react-native-transport'
 import { WebsocketTransport } from '../grpc-web-websocket-transport'
 import { Buffer } from 'buffer'
-import { NativeModules } from 'react-native'
+import { GoBridge } from '../orbitdb/native'
 
 if (!__DEV__) {
-	NativeModules.GoBridge.startDemo()
+	GoBridge.startDemo()
 }
 
 export class ProtocolServiceHandler extends MockServiceHandler {
@@ -26,7 +26,7 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 				}),
 			)
 		} else {
-			NativeModules.GoBridge.getDemoAddr()
+			GoBridge.getDemoAddr()
 				.then((addr: string) => {
 					this.client = new DemoServiceClient(
 						bridge({
