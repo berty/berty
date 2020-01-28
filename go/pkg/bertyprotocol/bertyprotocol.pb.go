@@ -6,7 +6,9 @@ package bertyprotocol
 import (
 	context "context"
 	fmt "fmt"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
@@ -26,104 +28,147 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type AccountEventType int32
+type GroupType int32
 
 const (
-	AccountEventType_AccountEventType_Undefined                    AccountEventType = 0
-	AccountEventType_AccountEventType_GroupJoined                  AccountEventType = 1
-	AccountEventType_AccountEventType_GroupLeft                    AccountEventType = 2
-	AccountEventType_AccountEventType_DevicePaired                 AccountEventType = 3
-	AccountEventType_AccountEventType_ContactRequestDisabled       AccountEventType = 4
-	AccountEventType_AccountEventType_ContactRequestEnabled        AccountEventType = 5
-	AccountEventType_AccountEventType_ContactRequestReferenceReset AccountEventType = 6
-	// TODO: ⚠️ figure how to overcome issues with having requests sent and received by multiple devices simultaneously, secret definition should not conflict
-	AccountEventType_AccountEventType_ContactRequestEnqueued AccountEventType = 7
-	AccountEventType_AccountEventType_ContactRequested       AccountEventType = 8
-	AccountEventType_AccountEventType_ContactAccepted        AccountEventType = 9
-	AccountEventType_AccountEventType_ContactRemoved         AccountEventType = 10
-	// TODO: privacy-wise we will still announce our presence on our public rendezvous point but ignore contact requests from the blocked contact (performing the handshake but ignoring the request received), so they will still know that we are online, we should be clear in the UI of the implications of blocking someone
-	AccountEventType_AccountEventType_ContactBlocked   AccountEventType = 11
-	AccountEventType_AccountEventType_ContactUnblocked AccountEventType = 12
-	AccountEventType_AccountEventType_AppSpecified     AccountEventType = 13
+	// GroupTypeUndefined indicates that the value has not been set. Should not happen.
+	GroupTypeUndefined GroupType = 0
+	// GroupTypeAccount is the group managing an account, available to all its devices.
+	GroupTypeAccount GroupType = 1
+	// GroupTypeContact is the group created between two accounts, available to all their devices.
+	GroupTypeContact GroupType = 2
+	// GroupTypeMultiMember is a group containing an undefined number of members.
+	GroupTypeMultiMember GroupType = 3
 )
 
-var AccountEventType_name = map[int32]string{
-	0:  "AccountEventType_Undefined",
-	1:  "AccountEventType_GroupJoined",
-	2:  "AccountEventType_GroupLeft",
-	3:  "AccountEventType_DevicePaired",
-	4:  "AccountEventType_ContactRequestDisabled",
-	5:  "AccountEventType_ContactRequestEnabled",
-	6:  "AccountEventType_ContactRequestReferenceReset",
-	7:  "AccountEventType_ContactRequestEnqueued",
-	8:  "AccountEventType_ContactRequested",
-	9:  "AccountEventType_ContactAccepted",
-	10: "AccountEventType_ContactRemoved",
-	11: "AccountEventType_ContactBlocked",
-	12: "AccountEventType_ContactUnblocked",
-	13: "AccountEventType_AppSpecified",
+var GroupType_name = map[int32]string{
+	0: "GroupTypeUndefined",
+	1: "GroupTypeAccount",
+	2: "GroupTypeContact",
+	3: "GroupTypeMultiMember",
 }
 
-var AccountEventType_value = map[string]int32{
-	"AccountEventType_Undefined":                    0,
-	"AccountEventType_GroupJoined":                  1,
-	"AccountEventType_GroupLeft":                    2,
-	"AccountEventType_DevicePaired":                 3,
-	"AccountEventType_ContactRequestDisabled":       4,
-	"AccountEventType_ContactRequestEnabled":        5,
-	"AccountEventType_ContactRequestReferenceReset": 6,
-	"AccountEventType_ContactRequestEnqueued":       7,
-	"AccountEventType_ContactRequested":             8,
-	"AccountEventType_ContactAccepted":              9,
-	"AccountEventType_ContactRemoved":               10,
-	"AccountEventType_ContactBlocked":               11,
-	"AccountEventType_ContactUnblocked":             12,
-	"AccountEventType_AppSpecified":                 13,
+var GroupType_value = map[string]int32{
+	"GroupTypeUndefined":   0,
+	"GroupTypeAccount":     1,
+	"GroupTypeContact":     2,
+	"GroupTypeMultiMember": 3,
 }
 
-func (x AccountEventType) String() string {
-	return proto.EnumName(AccountEventType_name, int32(x))
+func (x GroupType) String() string {
+	return proto.EnumName(GroupType_name, int32(x))
 }
 
-func (AccountEventType) EnumDescriptor() ([]byte, []int) {
+func (GroupType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{0}
 }
 
-type GroupSettingStoreSettingType int32
+type EventType int32
 
 const (
-	GroupSettingStoreSettingType_Unknown GroupSettingStoreSettingType = 0
-	GroupSettingStoreSettingType_Group   GroupSettingStoreSettingType = 1
-	GroupSettingStoreSettingType_Member  GroupSettingStoreSettingType = 2
+	// EventTypeUndefined indicates that the value has not been set. Should not happen.
+	EventTypeUndefined EventType = 0
+	// EventTypeGroupMemberDeviceAdded indicates the payload includes that a member has added their device to the group
+	EventTypeGroupMemberDeviceAdded EventType = 1
+	// EventTypeGroupDeviceSecretAdded indicates the payload includes that a member has sent their device secret to another member
+	EventTypeGroupDeviceSecretAdded EventType = 2
+	// EventTypeAccountGroupJoined indicates the payload includes that the account has joined a group
+	EventTypeAccountGroupJoined EventType = 101
+	// EventTypeAccountGroupLeft indicates the payload includes that the account has left a group
+	EventTypeAccountGroupLeft EventType = 102
+	// EventTypeAccountContactRequestDisabled indicates the payload includes that the account has disabled incoming contact requests
+	EventTypeAccountContactRequestDisabled EventType = 103
+	// EventTypeAccountContactRequestEnabled indicates the payload includes that the account has enabled incoming contact requests
+	EventTypeAccountContactRequestEnabled EventType = 104
+	// EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request reference
+	EventTypeAccountContactRequestReferenceReset EventType = 105
+	// EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request
+	EventTypeAccountContactRequestOutgoingEnqueued EventType = 106
+	// EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request
+	EventTypeAccountContactRequestOutgoingSent EventType = 107
+	// EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request
+	EventTypeAccountContactRequestIncomingReceived EventType = 108
+	// EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request
+	EventTypeAccountContactRequestIncomingDiscarded EventType = 109
+	// EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request
+	EventTypeAccountContactRequestIncomingAccepted EventType = 110
+	// EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact
+	EventTypeAccountContactBlocked EventType = 111
+	// EventTypeAccountContactUnblocked indicates the payload includes that the account has unblocked a contact
+	EventTypeAccountContactUnblocked EventType = 112
+	// EventTypeContactAliasKeyAdded indicates the payload includes that the contact group has received an alias key
+	EventTypeContactAliasKeyAdded EventType = 201
+	// EventTypeMultiMemberGroupAliasResolverAdded indicates the payload includes that a member of the group sent their alias proof
+	EventTypeMultiMemberGroupAliasResolverAdded EventType = 301
+	// EventTypeMultiMemberGroupInitialMemberAnnounced indicates the payload includes that a member has authenticated themselves as the group owner
+	EventTypeMultiMemberGroupInitialMemberAnnounced EventType = 302
+	// EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin
+	EventTypeMultiMemberGroupAdminRoleGranted EventType = 303
+	// EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key
+	EventTypeGroupMetadataPayloadSent EventType = 1001
 )
 
-var GroupSettingStoreSettingType_name = map[int32]string{
-	0: "Unknown",
-	1: "Group",
-	2: "Member",
+var EventType_name = map[int32]string{
+	0:    "EventTypeUndefined",
+	1:    "EventTypeGroupMemberDeviceAdded",
+	2:    "EventTypeGroupDeviceSecretAdded",
+	101:  "EventTypeAccountGroupJoined",
+	102:  "EventTypeAccountGroupLeft",
+	103:  "EventTypeAccountContactRequestDisabled",
+	104:  "EventTypeAccountContactRequestEnabled",
+	105:  "EventTypeAccountContactRequestReferenceReset",
+	106:  "EventTypeAccountContactRequestOutgoingEnqueued",
+	107:  "EventTypeAccountContactRequestOutgoingSent",
+	108:  "EventTypeAccountContactRequestIncomingReceived",
+	109:  "EventTypeAccountContactRequestIncomingDiscarded",
+	110:  "EventTypeAccountContactRequestIncomingAccepted",
+	111:  "EventTypeAccountContactBlocked",
+	112:  "EventTypeAccountContactUnblocked",
+	201:  "EventTypeContactAliasKeyAdded",
+	301:  "EventTypeMultiMemberGroupAliasResolverAdded",
+	302:  "EventTypeMultiMemberGroupInitialMemberAnnounced",
+	303:  "EventTypeMultiMemberGroupAdminRoleGranted",
+	1001: "EventTypeGroupMetadataPayloadSent",
 }
 
-var GroupSettingStoreSettingType_value = map[string]int32{
-	"Unknown": 0,
-	"Group":   1,
-	"Member":  2,
+var EventType_value = map[string]int32{
+	"EventTypeUndefined":                              0,
+	"EventTypeGroupMemberDeviceAdded":                 1,
+	"EventTypeGroupDeviceSecretAdded":                 2,
+	"EventTypeAccountGroupJoined":                     101,
+	"EventTypeAccountGroupLeft":                       102,
+	"EventTypeAccountContactRequestDisabled":          103,
+	"EventTypeAccountContactRequestEnabled":           104,
+	"EventTypeAccountContactRequestReferenceReset":    105,
+	"EventTypeAccountContactRequestOutgoingEnqueued":  106,
+	"EventTypeAccountContactRequestOutgoingSent":      107,
+	"EventTypeAccountContactRequestIncomingReceived":  108,
+	"EventTypeAccountContactRequestIncomingDiscarded": 109,
+	"EventTypeAccountContactRequestIncomingAccepted":  110,
+	"EventTypeAccountContactBlocked":                  111,
+	"EventTypeAccountContactUnblocked":                112,
+	"EventTypeContactAliasKeyAdded":                   201,
+	"EventTypeMultiMemberGroupAliasResolverAdded":     301,
+	"EventTypeMultiMemberGroupInitialMemberAnnounced": 302,
+	"EventTypeMultiMemberGroupAdminRoleGranted":       303,
+	"EventTypeGroupMetadataPayloadSent":               1001,
 }
 
-func (x GroupSettingStoreSettingType) String() string {
-	return proto.EnumName(GroupSettingStoreSettingType_name, int32(x))
+func (x EventType) String() string {
+	return proto.EnumName(EventType_name, int32(x))
 }
 
-func (GroupSettingStoreSettingType) EnumDescriptor() ([]byte, []int) {
+func (EventType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_047e04c733cf8554, []int{1}
 }
 
 type InstanceGetConfiguration_SettingState int32
 
 const (
-	InstanceGetConfiguration_Unknown     InstanceGetConfiguration_SettingState = 0
-	InstanceGetConfiguration_Enabled     InstanceGetConfiguration_SettingState = 1
-	InstanceGetConfiguration_Disabled    InstanceGetConfiguration_SettingState = 2
-	InstanceGetConfiguration_Unavailable InstanceGetConfiguration_SettingState = 3
+	Unknown     InstanceGetConfiguration_SettingState = 0
+	Enabled     InstanceGetConfiguration_SettingState = 1
+	Disabled    InstanceGetConfiguration_SettingState = 2
+	Unavailable InstanceGetConfiguration_SettingState = 3
 )
 
 var InstanceGetConfiguration_SettingState_name = map[int32]string{
@@ -145,7 +190,1799 @@ func (x InstanceGetConfiguration_SettingState) String() string {
 }
 
 func (InstanceGetConfiguration_SettingState) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{1, 0}
+	return fileDescriptor_047e04c733cf8554, []int{30, 0}
+}
+
+// Account describes all the secrets that identifies an Account
+type Account struct {
+	// group specifies which group is used to manage the account
+	Group *Group `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
+	// account_private_key, private part is used to signs handshake, signs device, create contacts group keys via ECDH -- public part is used to have a shareable identity
+	AccountPrivateKey []byte `protobuf:"bytes,2,opt,name=account_private_key,json=accountPrivateKey,proto3" json:"account_private_key,omitempty"`
+	// alias_private_key, private part is use to derive group members private keys, signs alias proofs, public part can be shared to contacts to prove identity
+	AliasPrivateKey []byte `protobuf:"bytes,3,opt,name=alias_private_key,json=aliasPrivateKey,proto3" json:"alias_private_key,omitempty"`
+	// public_rendezvous_seed, rendezvous seed used for direct communication
+	PublicRendezvousSeed []byte   `protobuf:"bytes,4,opt,name=public_rendezvous_seed,json=publicRendezvousSeed,proto3" json:"public_rendezvous_seed,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Account) Reset()         { *m = Account{} }
+func (m *Account) String() string { return proto.CompactTextString(m) }
+func (*Account) ProtoMessage()    {}
+func (*Account) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{0}
+}
+func (m *Account) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Account) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Account.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Account) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Account.Merge(m, src)
+}
+func (m *Account) XXX_Size() int {
+	return m.Size()
+}
+func (m *Account) XXX_DiscardUnknown() {
+	xxx_messageInfo_Account.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Account proto.InternalMessageInfo
+
+func (m *Account) GetGroup() *Group {
+	if m != nil {
+		return m.Group
+	}
+	return nil
+}
+
+func (m *Account) GetAccountPrivateKey() []byte {
+	if m != nil {
+		return m.AccountPrivateKey
+	}
+	return nil
+}
+
+func (m *Account) GetAliasPrivateKey() []byte {
+	if m != nil {
+		return m.AliasPrivateKey
+	}
+	return nil
+}
+
+func (m *Account) GetPublicRendezvousSeed() []byte {
+	if m != nil {
+		return m.PublicRendezvousSeed
+	}
+	return nil
+}
+
+// Group define a group and is enough to invite someone to it
+type Group struct {
+	// public_key is the identifier of the group, it signs the group secret and the initial member of a multi-member group
+	PublicKey []byte `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	// secret is the symmetric secret of the group, which is used to encrypt the metadata
+	Secret []byte `protobuf:"bytes,2,opt,name=secret,proto3" json:"secret,omitempty"`
+	// secret_sig is the signature of the secret used to ensure the validity of the group
+	SecretSig []byte `protobuf:"bytes,3,opt,name=secret_sig,json=secretSig,proto3" json:"secret_sig,omitempty"`
+	// group_type specifies the type of the group
+	GroupType            GroupType `protobuf:"varint,4,opt,name=group_type,json=groupType,proto3,enum=berty.protocol.GroupType" json:"group_type,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *Group) Reset()         { *m = Group{} }
+func (m *Group) String() string { return proto.CompactTextString(m) }
+func (*Group) ProtoMessage()    {}
+func (*Group) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{1}
+}
+func (m *Group) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Group) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Group.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Group) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Group.Merge(m, src)
+}
+func (m *Group) XXX_Size() int {
+	return m.Size()
+}
+func (m *Group) XXX_DiscardUnknown() {
+	xxx_messageInfo_Group.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Group proto.InternalMessageInfo
+
+func (m *Group) GetPublicKey() []byte {
+	if m != nil {
+		return m.PublicKey
+	}
+	return nil
+}
+
+func (m *Group) GetSecret() []byte {
+	if m != nil {
+		return m.Secret
+	}
+	return nil
+}
+
+func (m *Group) GetSecretSig() []byte {
+	if m != nil {
+		return m.SecretSig
+	}
+	return nil
+}
+
+func (m *Group) GetGroupType() GroupType {
+	if m != nil {
+		return m.GroupType
+	}
+	return GroupTypeUndefined
+}
+
+// GroupMetadata is used in GroupEnvelope and only readable by invited group members
+type GroupMetadata struct {
+	// event_type defines which event type is used
+	EventType EventType `protobuf:"varint,1,opt,name=event_type,json=eventType,proto3,enum=berty.protocol.EventType" json:"event_type,omitempty"`
+	// the serialization depends on event_type, event is symmetrically encrypted
+	Payload []byte `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
+	// sig is the signature of the payload, it depends on the event_type for the used key
+	Sig                  []byte   `protobuf:"bytes,3,opt,name=sig,proto3" json:"sig,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupMetadata) Reset()         { *m = GroupMetadata{} }
+func (m *GroupMetadata) String() string { return proto.CompactTextString(m) }
+func (*GroupMetadata) ProtoMessage()    {}
+func (*GroupMetadata) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{2}
+}
+func (m *GroupMetadata) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupMetadata.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupMetadata) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMetadata.Merge(m, src)
+}
+func (m *GroupMetadata) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupMetadata) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMetadata.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupMetadata proto.InternalMessageInfo
+
+func (m *GroupMetadata) GetEventType() EventType {
+	if m != nil {
+		return m.EventType
+	}
+	return EventTypeUndefined
+}
+
+func (m *GroupMetadata) GetPayload() []byte {
+	if m != nil {
+		return m.Payload
+	}
+	return nil
+}
+
+func (m *GroupMetadata) GetSig() []byte {
+	if m != nil {
+		return m.Sig
+	}
+	return nil
+}
+
+// GroupEnvelope is a publicly exposed structure containing a group metadata event
+type GroupEnvelope struct {
+	// nonce is used to encrypt the message
+	Nonce []byte `protobuf:"bytes,1,opt,name=nonce,proto3" json:"nonce,omitempty"`
+	// event is encrypted using a symmetric key shared among group members
+	Event                []byte   `protobuf:"bytes,2,opt,name=event,proto3" json:"event,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupEnvelope) Reset()         { *m = GroupEnvelope{} }
+func (m *GroupEnvelope) String() string { return proto.CompactTextString(m) }
+func (*GroupEnvelope) ProtoMessage()    {}
+func (*GroupEnvelope) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{3}
+}
+func (m *GroupEnvelope) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupEnvelope) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupEnvelope.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupEnvelope) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupEnvelope.Merge(m, src)
+}
+func (m *GroupEnvelope) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupEnvelope) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupEnvelope.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupEnvelope proto.InternalMessageInfo
+
+func (m *GroupEnvelope) GetNonce() []byte {
+	if m != nil {
+		return m.Nonce
+	}
+	return nil
+}
+
+func (m *GroupEnvelope) GetEvent() []byte {
+	if m != nil {
+		return m.Event
+	}
+	return nil
+}
+
+// MessageHeaders is used in MessageEnvelope and only readable by invited group members
+type MessageHeaders struct {
+	// counter is the current counter value for the specified device
+	Counter uint64 `protobuf:"varint,1,opt,name=counter,proto3" json:"counter,omitempty"`
+	// device_pk is the public key of the device sending the message
+	DevicePK []byte `protobuf:"bytes,2,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// sig is the signature of the encrypted message using the device's private key
+	Sig                  []byte   `protobuf:"bytes,3,opt,name=sig,proto3" json:"sig,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MessageHeaders) Reset()         { *m = MessageHeaders{} }
+func (m *MessageHeaders) String() string { return proto.CompactTextString(m) }
+func (*MessageHeaders) ProtoMessage()    {}
+func (*MessageHeaders) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{4}
+}
+func (m *MessageHeaders) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MessageHeaders) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MessageHeaders.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MessageHeaders) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageHeaders.Merge(m, src)
+}
+func (m *MessageHeaders) XXX_Size() int {
+	return m.Size()
+}
+func (m *MessageHeaders) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageHeaders.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageHeaders proto.InternalMessageInfo
+
+func (m *MessageHeaders) GetCounter() uint64 {
+	if m != nil {
+		return m.Counter
+	}
+	return 0
+}
+
+func (m *MessageHeaders) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *MessageHeaders) GetSig() []byte {
+	if m != nil {
+		return m.Sig
+	}
+	return nil
+}
+
+// MessageEnvelope is a publicly exposed structure containing a group secure message
+type MessageEnvelope struct {
+	// message_headers is an encrypted serialization using a symmetric key of a MessageHeaders message
+	MessageHeaders []byte `protobuf:"bytes,1,opt,name=message_headers,json=messageHeaders,proto3" json:"message_headers,omitempty"`
+	// message is an encrypted message, only readable by group members who previously received the appropriate chain key
+	Message              []byte   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MessageEnvelope) Reset()         { *m = MessageEnvelope{} }
+func (m *MessageEnvelope) String() string { return proto.CompactTextString(m) }
+func (*MessageEnvelope) ProtoMessage()    {}
+func (*MessageEnvelope) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{5}
+}
+func (m *MessageEnvelope) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MessageEnvelope) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MessageEnvelope.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MessageEnvelope) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MessageEnvelope.Merge(m, src)
+}
+func (m *MessageEnvelope) XXX_Size() int {
+	return m.Size()
+}
+func (m *MessageEnvelope) XXX_DiscardUnknown() {
+	xxx_messageInfo_MessageEnvelope.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MessageEnvelope proto.InternalMessageInfo
+
+func (m *MessageEnvelope) GetMessageHeaders() []byte {
+	if m != nil {
+		return m.MessageHeaders
+	}
+	return nil
+}
+
+func (m *MessageEnvelope) GetMessage() []byte {
+	if m != nil {
+		return m.Message
+	}
+	return nil
+}
+
+// EventContext adds context (its id and its parents) to an event
+type EventContext struct {
+	// id is the CID of the underlying OrbitDB event
+	ID []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// id are the the CIDs of the underlying parents of the OrbitDB event
+	ParentIDs [][]byte `protobuf:"bytes,2,rep,name=parent_ids,json=parentIds,proto3" json:"parent_ids,omitempty"`
+	// group_pk receiving the event
+	GroupPK              []byte   `protobuf:"bytes,3,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *EventContext) Reset()         { *m = EventContext{} }
+func (m *EventContext) String() string { return proto.CompactTextString(m) }
+func (*EventContext) ProtoMessage()    {}
+func (*EventContext) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{6}
+}
+func (m *EventContext) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventContext) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventContext.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventContext) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventContext.Merge(m, src)
+}
+func (m *EventContext) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventContext) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventContext.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventContext proto.InternalMessageInfo
+
+func (m *EventContext) GetID() []byte {
+	if m != nil {
+		return m.ID
+	}
+	return nil
+}
+
+func (m *EventContext) GetParentIDs() [][]byte {
+	if m != nil {
+		return m.ParentIDs
+	}
+	return nil
+}
+
+func (m *EventContext) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+// AppMetadata is an app defined message, accessible to future group members
+type AppMetadata struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// message is the payload
+	Message              []byte   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AppMetadata) Reset()         { *m = AppMetadata{} }
+func (m *AppMetadata) String() string { return proto.CompactTextString(m) }
+func (*AppMetadata) ProtoMessage()    {}
+func (*AppMetadata) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{7}
+}
+func (m *AppMetadata) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AppMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AppMetadata.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AppMetadata) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AppMetadata.Merge(m, src)
+}
+func (m *AppMetadata) XXX_Size() int {
+	return m.Size()
+}
+func (m *AppMetadata) XXX_DiscardUnknown() {
+	xxx_messageInfo_AppMetadata.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AppMetadata proto.InternalMessageInfo
+
+func (m *AppMetadata) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *AppMetadata) GetMessage() []byte {
+	if m != nil {
+		return m.Message
+	}
+	return nil
+}
+
+// ContactAddAliasKey is an event type where ones shares their alias public key
+type ContactAddAliasKey struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// alias_pk is the alias key which will be used to verify a contact identity
+	AliasPK              []byte   `protobuf:"bytes,2,opt,name=alias_pk,json=aliasPk,proto3" json:"alias_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactAddAliasKey) Reset()         { *m = ContactAddAliasKey{} }
+func (m *ContactAddAliasKey) String() string { return proto.CompactTextString(m) }
+func (*ContactAddAliasKey) ProtoMessage()    {}
+func (*ContactAddAliasKey) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{8}
+}
+func (m *ContactAddAliasKey) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactAddAliasKey) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactAddAliasKey.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactAddAliasKey) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactAddAliasKey.Merge(m, src)
+}
+func (m *ContactAddAliasKey) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactAddAliasKey) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactAddAliasKey.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactAddAliasKey proto.InternalMessageInfo
+
+func (m *ContactAddAliasKey) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *ContactAddAliasKey) GetAliasPK() []byte {
+	if m != nil {
+		return m.AliasPK
+	}
+	return nil
+}
+
+// GroupAddMemberDevice is an event which indicates to a group a new device (and eventually a new member) is joining it
+// When added on AccountGroup, this event should be followed by appropriate GroupAddMemberDevice and GroupAddDeviceSecret events
+type GroupAddMemberDevice struct {
+	// member_pk is the member sending the event
+	MemberPK []byte `protobuf:"bytes,1,opt,name=member_pk,json=memberPk,proto3" json:"member_pk,omitempty"`
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,2,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// member_sig is used to prove the ownership of the member pk
+	MemberSig            []byte   `protobuf:"bytes,3,opt,name=member_sig,json=memberSig,proto3" json:"member_sig,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupAddMemberDevice) Reset()         { *m = GroupAddMemberDevice{} }
+func (m *GroupAddMemberDevice) String() string { return proto.CompactTextString(m) }
+func (*GroupAddMemberDevice) ProtoMessage()    {}
+func (*GroupAddMemberDevice) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{9}
+}
+func (m *GroupAddMemberDevice) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupAddMemberDevice) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupAddMemberDevice.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupAddMemberDevice) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupAddMemberDevice.Merge(m, src)
+}
+func (m *GroupAddMemberDevice) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupAddMemberDevice) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupAddMemberDevice.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupAddMemberDevice proto.InternalMessageInfo
+
+func (m *GroupAddMemberDevice) GetMemberPK() []byte {
+	if m != nil {
+		return m.MemberPK
+	}
+	return nil
+}
+
+func (m *GroupAddMemberDevice) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *GroupAddMemberDevice) GetMemberSig() []byte {
+	if m != nil {
+		return m.MemberSig
+	}
+	return nil
+}
+
+// DeviceSecret is encrypted for a specific member of the group
+type DeviceSecret struct {
+	// chain_key is the current value of the chain key of the group device
+	ChainKey []byte `protobuf:"bytes,1,opt,name=chain_key,json=chainKey,proto3" json:"chain_key,omitempty"`
+	// counter is the current value of the counter of the group device
+	Counter              uint64   `protobuf:"varint,2,opt,name=counter,proto3" json:"counter,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeviceSecret) Reset()         { *m = DeviceSecret{} }
+func (m *DeviceSecret) String() string { return proto.CompactTextString(m) }
+func (*DeviceSecret) ProtoMessage()    {}
+func (*DeviceSecret) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{10}
+}
+func (m *DeviceSecret) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DeviceSecret) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DeviceSecret.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DeviceSecret) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeviceSecret.Merge(m, src)
+}
+func (m *DeviceSecret) XXX_Size() int {
+	return m.Size()
+}
+func (m *DeviceSecret) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeviceSecret.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeviceSecret proto.InternalMessageInfo
+
+func (m *DeviceSecret) GetChainKey() []byte {
+	if m != nil {
+		return m.ChainKey
+	}
+	return nil
+}
+
+func (m *DeviceSecret) GetCounter() uint64 {
+	if m != nil {
+		return m.Counter
+	}
+	return 0
+}
+
+// GroupAddDeviceSecret is an event which indicates to a group member a device secret
+type GroupAddDeviceSecret struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// dest_member_pk is the member who should receive the secret
+	DestMemberPK []byte `protobuf:"bytes,2,opt,name=dest_member_pk,json=destMemberPk,proto3" json:"dest_member_pk,omitempty"`
+	// payload is the serialization of Payload encrypted for the specified member
+	Payload              []byte   `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupAddDeviceSecret) Reset()         { *m = GroupAddDeviceSecret{} }
+func (m *GroupAddDeviceSecret) String() string { return proto.CompactTextString(m) }
+func (*GroupAddDeviceSecret) ProtoMessage()    {}
+func (*GroupAddDeviceSecret) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{11}
+}
+func (m *GroupAddDeviceSecret) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupAddDeviceSecret) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupAddDeviceSecret.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupAddDeviceSecret) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupAddDeviceSecret.Merge(m, src)
+}
+func (m *GroupAddDeviceSecret) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupAddDeviceSecret) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupAddDeviceSecret.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupAddDeviceSecret proto.InternalMessageInfo
+
+func (m *GroupAddDeviceSecret) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *GroupAddDeviceSecret) GetDestMemberPK() []byte {
+	if m != nil {
+		return m.DestMemberPK
+	}
+	return nil
+}
+
+func (m *GroupAddDeviceSecret) GetPayload() []byte {
+	if m != nil {
+		return m.Payload
+	}
+	return nil
+}
+
+// MultiMemberGroupAddAliasResolver indicates that a group member want to disclose their presence in the group to their contacts
+type MultiMemberGroupAddAliasResolver struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// alias_resolver allows contact of an account to resolve the real identity behind an alias (Multi-Member Group Member)
+	// Generated by both contacts and account independently using: hmac(aliasPK, GroupID)
+	AliasResolver []byte `protobuf:"bytes,2,opt,name=alias_resolver,json=aliasResolver,proto3" json:"alias_resolver,omitempty"`
+	// alias_proof ensures that the associated alias_resolver has been issued by the right account
+	// Generated using aliasSKSig(GroupID)
+	AliasProof           []byte   `protobuf:"bytes,3,opt,name=alias_proof,json=aliasProof,proto3" json:"alias_proof,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupAddAliasResolver) Reset()         { *m = MultiMemberGroupAddAliasResolver{} }
+func (m *MultiMemberGroupAddAliasResolver) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupAddAliasResolver) ProtoMessage()    {}
+func (*MultiMemberGroupAddAliasResolver) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{12}
+}
+func (m *MultiMemberGroupAddAliasResolver) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupAddAliasResolver) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupAddAliasResolver.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupAddAliasResolver) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupAddAliasResolver.Merge(m, src)
+}
+func (m *MultiMemberGroupAddAliasResolver) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupAddAliasResolver) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupAddAliasResolver.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupAddAliasResolver proto.InternalMessageInfo
+
+func (m *MultiMemberGroupAddAliasResolver) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *MultiMemberGroupAddAliasResolver) GetAliasResolver() []byte {
+	if m != nil {
+		return m.AliasResolver
+	}
+	return nil
+}
+
+func (m *MultiMemberGroupAddAliasResolver) GetAliasProof() []byte {
+	if m != nil {
+		return m.AliasProof
+	}
+	return nil
+}
+
+// MultiMemberGrantAdminRole indicates that a group admin allows another group member to act as an admin
+type MultiMemberGrantAdminRole struct {
+	// device_pk is the device sending the event, signs the message, must be the device of an admin of the group
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// grantee_member_pk is the member public key of the member granted of the admin role
+	GranteeMemberPK      []byte   `protobuf:"bytes,2,opt,name=grantee_member_pk,json=granteeMemberPk,proto3" json:"grantee_member_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGrantAdminRole) Reset()         { *m = MultiMemberGrantAdminRole{} }
+func (m *MultiMemberGrantAdminRole) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGrantAdminRole) ProtoMessage()    {}
+func (*MultiMemberGrantAdminRole) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{13}
+}
+func (m *MultiMemberGrantAdminRole) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGrantAdminRole) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGrantAdminRole.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGrantAdminRole) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGrantAdminRole.Merge(m, src)
+}
+func (m *MultiMemberGrantAdminRole) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGrantAdminRole) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGrantAdminRole.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGrantAdminRole proto.InternalMessageInfo
+
+func (m *MultiMemberGrantAdminRole) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *MultiMemberGrantAdminRole) GetGranteeMemberPK() []byte {
+	if m != nil {
+		return m.GranteeMemberPK
+	}
+	return nil
+}
+
+// MultiMemberInitialMember indicates that a member is the group creator, this event is signed using the group ID private key
+type MultiMemberInitialMember struct {
+	// member_pk is the public key of the member who is the group creator
+	MemberPK             []byte   `protobuf:"bytes,1,opt,name=member_pk,json=memberPk,proto3" json:"member_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberInitialMember) Reset()         { *m = MultiMemberInitialMember{} }
+func (m *MultiMemberInitialMember) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberInitialMember) ProtoMessage()    {}
+func (*MultiMemberInitialMember) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{14}
+}
+func (m *MultiMemberInitialMember) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberInitialMember) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberInitialMember.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberInitialMember) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberInitialMember.Merge(m, src)
+}
+func (m *MultiMemberInitialMember) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberInitialMember) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberInitialMember.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberInitialMember proto.InternalMessageInfo
+
+func (m *MultiMemberInitialMember) GetMemberPK() []byte {
+	if m != nil {
+		return m.MemberPK
+	}
+	return nil
+}
+
+// GroupAddAdditionalRendezvousSeed indicates that an additional rendezvous point should be used for data synchronization
+type GroupAddAdditionalRendezvousSeed struct {
+	// device_pk is the device sending the event, signs the message, must be the device of an admin of the group
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// seed is the additional rendezvous point seed which should be used
+	Seed                 []byte   `protobuf:"bytes,2,opt,name=seed,proto3" json:"seed,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupAddAdditionalRendezvousSeed) Reset()         { *m = GroupAddAdditionalRendezvousSeed{} }
+func (m *GroupAddAdditionalRendezvousSeed) String() string { return proto.CompactTextString(m) }
+func (*GroupAddAdditionalRendezvousSeed) ProtoMessage()    {}
+func (*GroupAddAdditionalRendezvousSeed) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{15}
+}
+func (m *GroupAddAdditionalRendezvousSeed) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupAddAdditionalRendezvousSeed) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupAddAdditionalRendezvousSeed.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupAddAdditionalRendezvousSeed) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupAddAdditionalRendezvousSeed.Merge(m, src)
+}
+func (m *GroupAddAdditionalRendezvousSeed) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupAddAdditionalRendezvousSeed) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupAddAdditionalRendezvousSeed.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupAddAdditionalRendezvousSeed proto.InternalMessageInfo
+
+func (m *GroupAddAdditionalRendezvousSeed) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *GroupAddAdditionalRendezvousSeed) GetSeed() []byte {
+	if m != nil {
+		return m.Seed
+	}
+	return nil
+}
+
+// GroupRemoveAdditionalRendezvousSeed indicates that a previously added rendezvous point should be removed
+type GroupRemoveAdditionalRendezvousSeed struct {
+	// device_pk is the device sending the event, signs the message, must be the device of an admin of the group
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// seed is the additional rendezvous point seed which should be removed
+	Seed                 []byte   `protobuf:"bytes,2,opt,name=seed,proto3" json:"seed,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupRemoveAdditionalRendezvousSeed) Reset()         { *m = GroupRemoveAdditionalRendezvousSeed{} }
+func (m *GroupRemoveAdditionalRendezvousSeed) String() string { return proto.CompactTextString(m) }
+func (*GroupRemoveAdditionalRendezvousSeed) ProtoMessage()    {}
+func (*GroupRemoveAdditionalRendezvousSeed) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{16}
+}
+func (m *GroupRemoveAdditionalRendezvousSeed) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupRemoveAdditionalRendezvousSeed) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupRemoveAdditionalRendezvousSeed.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupRemoveAdditionalRendezvousSeed) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupRemoveAdditionalRendezvousSeed.Merge(m, src)
+}
+func (m *GroupRemoveAdditionalRendezvousSeed) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupRemoveAdditionalRendezvousSeed) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupRemoveAdditionalRendezvousSeed.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupRemoveAdditionalRendezvousSeed proto.InternalMessageInfo
+
+func (m *GroupRemoveAdditionalRendezvousSeed) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *GroupRemoveAdditionalRendezvousSeed) GetSeed() []byte {
+	if m != nil {
+		return m.Seed
+	}
+	return nil
+}
+
+// AccountGroupJoined indicates that the account is now part of a new group
+type AccountGroupJoined struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// group describe the joined group
+	Group                *Group   `protobuf:"bytes,2,opt,name=group,proto3" json:"group,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountGroupJoined) Reset()         { *m = AccountGroupJoined{} }
+func (m *AccountGroupJoined) String() string { return proto.CompactTextString(m) }
+func (*AccountGroupJoined) ProtoMessage()    {}
+func (*AccountGroupJoined) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{17}
+}
+func (m *AccountGroupJoined) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountGroupJoined) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountGroupJoined.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountGroupJoined) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountGroupJoined.Merge(m, src)
+}
+func (m *AccountGroupJoined) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountGroupJoined) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountGroupJoined.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountGroupJoined proto.InternalMessageInfo
+
+func (m *AccountGroupJoined) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *AccountGroupJoined) GetGroup() *Group {
+	if m != nil {
+		return m.Group
+	}
+	return nil
+}
+
+// AccountGroupJoined indicates that the account has left a group
+type AccountGroupLeft struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// group_pk references the group left
+	GroupPK              []byte   `protobuf:"bytes,2,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountGroupLeft) Reset()         { *m = AccountGroupLeft{} }
+func (m *AccountGroupLeft) String() string { return proto.CompactTextString(m) }
+func (*AccountGroupLeft) ProtoMessage()    {}
+func (*AccountGroupLeft) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{18}
+}
+func (m *AccountGroupLeft) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountGroupLeft) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountGroupLeft.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountGroupLeft) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountGroupLeft.Merge(m, src)
+}
+func (m *AccountGroupLeft) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountGroupLeft) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountGroupLeft.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountGroupLeft proto.InternalMessageInfo
+
+func (m *AccountGroupLeft) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *AccountGroupLeft) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+// AccountContactRequestDisabled indicates that the account should not be advertised on a public rendezvous point
+type AccountContactRequestDisabled struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK             []byte   `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountContactRequestDisabled) Reset()         { *m = AccountContactRequestDisabled{} }
+func (m *AccountContactRequestDisabled) String() string { return proto.CompactTextString(m) }
+func (*AccountContactRequestDisabled) ProtoMessage()    {}
+func (*AccountContactRequestDisabled) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{19}
+}
+func (m *AccountContactRequestDisabled) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountContactRequestDisabled) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountContactRequestDisabled.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountContactRequestDisabled) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountContactRequestDisabled.Merge(m, src)
+}
+func (m *AccountContactRequestDisabled) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountContactRequestDisabled) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountContactRequestDisabled.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountContactRequestDisabled proto.InternalMessageInfo
+
+func (m *AccountContactRequestDisabled) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+// AccountContactRequestDisabled indicates that the account should be advertised on a public rendezvous point
+type AccountContactRequestEnabled struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK             []byte   `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountContactRequestEnabled) Reset()         { *m = AccountContactRequestEnabled{} }
+func (m *AccountContactRequestEnabled) String() string { return proto.CompactTextString(m) }
+func (*AccountContactRequestEnabled) ProtoMessage()    {}
+func (*AccountContactRequestEnabled) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{20}
+}
+func (m *AccountContactRequestEnabled) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountContactRequestEnabled) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountContactRequestEnabled.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountContactRequestEnabled) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountContactRequestEnabled.Merge(m, src)
+}
+func (m *AccountContactRequestEnabled) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountContactRequestEnabled) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountContactRequestEnabled.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountContactRequestEnabled proto.InternalMessageInfo
+
+func (m *AccountContactRequestEnabled) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+// AccountContactRequestDisabled indicates that the account should be advertised on different public rendezvous points
+type AccountContactRequestReferenceReset struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// rendezvous_seed is the new rendezvous point seed
+	RendezvousSeed       []byte   `protobuf:"bytes,2,opt,name=rendezvous_seed,json=rendezvousSeed,proto3" json:"rendezvous_seed,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountContactRequestReferenceReset) Reset()         { *m = AccountContactRequestReferenceReset{} }
+func (m *AccountContactRequestReferenceReset) String() string { return proto.CompactTextString(m) }
+func (*AccountContactRequestReferenceReset) ProtoMessage()    {}
+func (*AccountContactRequestReferenceReset) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{21}
+}
+func (m *AccountContactRequestReferenceReset) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountContactRequestReferenceReset) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountContactRequestReferenceReset.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountContactRequestReferenceReset) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountContactRequestReferenceReset.Merge(m, src)
+}
+func (m *AccountContactRequestReferenceReset) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountContactRequestReferenceReset) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountContactRequestReferenceReset.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountContactRequestReferenceReset proto.InternalMessageInfo
+
+func (m *AccountContactRequestReferenceReset) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *AccountContactRequestReferenceReset) GetRendezvousSeed() []byte {
+	if m != nil {
+		return m.RendezvousSeed
+	}
+	return nil
+}
+
+// This event should be followed by an AccountGroupJoined event
+// This event should be followed by a GroupAddMemberDevice event within the AccountGroup
+// This event should be followed by a GroupAddDeviceSecret event within the AccountGroup
+// AccountContactRequestEnqueued indicates that the account will attempt to send a contact request when a matching peer is discovered
+type AccountContactRequestEnqueued struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// contact_pk is the account to send a contact request to
+	ContactPK []byte `protobuf:"bytes,2,opt,name=contact_pk,json=contactPk,proto3" json:"contact_pk,omitempty"`
+	// contact_rendezvous_seed is the rendezvous seed used by the other account
+	ContactRendezvousSeed []byte `protobuf:"bytes,3,opt,name=contact_rendezvous_seed,json=contactRendezvousSeed,proto3" json:"contact_rendezvous_seed,omitempty"`
+	// TODO: is this necessary?
+	// contact_metadata is the metadata specific to the app to identify the contact for the request
+	ContactMetadata      []byte   `protobuf:"bytes,4,opt,name=contact_metadata,json=contactMetadata,proto3" json:"contact_metadata,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountContactRequestEnqueued) Reset()         { *m = AccountContactRequestEnqueued{} }
+func (m *AccountContactRequestEnqueued) String() string { return proto.CompactTextString(m) }
+func (*AccountContactRequestEnqueued) ProtoMessage()    {}
+func (*AccountContactRequestEnqueued) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{22}
+}
+func (m *AccountContactRequestEnqueued) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountContactRequestEnqueued) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountContactRequestEnqueued.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountContactRequestEnqueued) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountContactRequestEnqueued.Merge(m, src)
+}
+func (m *AccountContactRequestEnqueued) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountContactRequestEnqueued) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountContactRequestEnqueued.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountContactRequestEnqueued proto.InternalMessageInfo
+
+func (m *AccountContactRequestEnqueued) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *AccountContactRequestEnqueued) GetContactPK() []byte {
+	if m != nil {
+		return m.ContactPK
+	}
+	return nil
+}
+
+func (m *AccountContactRequestEnqueued) GetContactRendezvousSeed() []byte {
+	if m != nil {
+		return m.ContactRendezvousSeed
+	}
+	return nil
+}
+
+func (m *AccountContactRequestEnqueued) GetContactMetadata() []byte {
+	if m != nil {
+		return m.ContactMetadata
+	}
+	return nil
+}
+
+// AccountContactRequestSent indicates that the account has sent a contact request
+type AccountContactRequestSent struct {
+	// device_pk is the device sending the account event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// contact_pk is the contacted account
+	ContactPK            []byte   `protobuf:"bytes,2,opt,name=contact_pk,json=contactPk,proto3" json:"contact_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountContactRequestSent) Reset()         { *m = AccountContactRequestSent{} }
+func (m *AccountContactRequestSent) String() string { return proto.CompactTextString(m) }
+func (*AccountContactRequestSent) ProtoMessage()    {}
+func (*AccountContactRequestSent) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{23}
+}
+func (m *AccountContactRequestSent) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountContactRequestSent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountContactRequestSent.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountContactRequestSent) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountContactRequestSent.Merge(m, src)
+}
+func (m *AccountContactRequestSent) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountContactRequestSent) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountContactRequestSent.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountContactRequestSent proto.InternalMessageInfo
+
+func (m *AccountContactRequestSent) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *AccountContactRequestSent) GetContactPK() []byte {
+	if m != nil {
+		return m.ContactPK
+	}
+	return nil
+}
+
+// AccountContactRequestReceived indicates that the account has received a new contact request
+type AccountContactRequestReceived struct {
+	// device_pk is the device sending the account event (which received the contact request), signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// contact_pk is the account sending the request
+	ContactPK []byte `protobuf:"bytes,2,opt,name=contact_pk,json=contactPk,proto3" json:"contact_pk,omitempty"`
+	// TODO: is this necessary?
+	// contact_rendezvous_seed is the rendezvous seed of the contact sending the request
+	ContactRendezvousSeed []byte `protobuf:"bytes,3,opt,name=contact_rendezvous_seed,json=contactRendezvousSeed,proto3" json:"contact_rendezvous_seed,omitempty"`
+	// TODO: is this necessary?
+	// contact_metadata is the metadata specific to the app to identify the contact for the request
+	ContactMetadata      []byte   `protobuf:"bytes,4,opt,name=contact_metadata,json=contactMetadata,proto3" json:"contact_metadata,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountContactRequestReceived) Reset()         { *m = AccountContactRequestReceived{} }
+func (m *AccountContactRequestReceived) String() string { return proto.CompactTextString(m) }
+func (*AccountContactRequestReceived) ProtoMessage()    {}
+func (*AccountContactRequestReceived) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{24}
+}
+func (m *AccountContactRequestReceived) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountContactRequestReceived) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountContactRequestReceived.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountContactRequestReceived) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountContactRequestReceived.Merge(m, src)
+}
+func (m *AccountContactRequestReceived) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountContactRequestReceived) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountContactRequestReceived.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountContactRequestReceived proto.InternalMessageInfo
+
+func (m *AccountContactRequestReceived) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *AccountContactRequestReceived) GetContactPK() []byte {
+	if m != nil {
+		return m.ContactPK
+	}
+	return nil
+}
+
+func (m *AccountContactRequestReceived) GetContactRendezvousSeed() []byte {
+	if m != nil {
+		return m.ContactRendezvousSeed
+	}
+	return nil
+}
+
+func (m *AccountContactRequestReceived) GetContactMetadata() []byte {
+	if m != nil {
+		return m.ContactMetadata
+	}
+	return nil
+}
+
+// AccountContactRequestDiscarded indicates that a contact request has been refused
+type AccountContactRequestDiscarded struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// contact_pk is the contact whom request is refused
+	ContactPK            []byte   `protobuf:"bytes,2,opt,name=contact_pk,json=contactPk,proto3" json:"contact_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountContactRequestDiscarded) Reset()         { *m = AccountContactRequestDiscarded{} }
+func (m *AccountContactRequestDiscarded) String() string { return proto.CompactTextString(m) }
+func (*AccountContactRequestDiscarded) ProtoMessage()    {}
+func (*AccountContactRequestDiscarded) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{25}
+}
+func (m *AccountContactRequestDiscarded) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountContactRequestDiscarded) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountContactRequestDiscarded.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountContactRequestDiscarded) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountContactRequestDiscarded.Merge(m, src)
+}
+func (m *AccountContactRequestDiscarded) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountContactRequestDiscarded) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountContactRequestDiscarded.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountContactRequestDiscarded proto.InternalMessageInfo
+
+func (m *AccountContactRequestDiscarded) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *AccountContactRequestDiscarded) GetContactPK() []byte {
+	if m != nil {
+		return m.ContactPK
+	}
+	return nil
+}
+
+// This event should be followed by an AccountGroupJoined event
+// This event should be followed by GroupAddMemberDevice and GroupAddDeviceSecret events within the AccountGroup
+// AccountContactRequestAccepted indicates that a contact request has been accepted
+type AccountContactRequestAccepted struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// contact_pk is the contact whom request is accepted
+	ContactPK            []byte   `protobuf:"bytes,2,opt,name=contact_pk,json=contactPk,proto3" json:"contact_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountContactRequestAccepted) Reset()         { *m = AccountContactRequestAccepted{} }
+func (m *AccountContactRequestAccepted) String() string { return proto.CompactTextString(m) }
+func (*AccountContactRequestAccepted) ProtoMessage()    {}
+func (*AccountContactRequestAccepted) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{26}
+}
+func (m *AccountContactRequestAccepted) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountContactRequestAccepted) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountContactRequestAccepted.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountContactRequestAccepted) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountContactRequestAccepted.Merge(m, src)
+}
+func (m *AccountContactRequestAccepted) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountContactRequestAccepted) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountContactRequestAccepted.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountContactRequestAccepted proto.InternalMessageInfo
+
+func (m *AccountContactRequestAccepted) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *AccountContactRequestAccepted) GetContactPK() []byte {
+	if m != nil {
+		return m.ContactPK
+	}
+	return nil
+}
+
+// AccountContactBlocked indicates that a contact is blocked
+type AccountContactBlocked struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// contact_pk is the contact blocked
+	ContactPK            []byte   `protobuf:"bytes,2,opt,name=contact_pk,json=contactPk,proto3" json:"contact_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountContactBlocked) Reset()         { *m = AccountContactBlocked{} }
+func (m *AccountContactBlocked) String() string { return proto.CompactTextString(m) }
+func (*AccountContactBlocked) ProtoMessage()    {}
+func (*AccountContactBlocked) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{27}
+}
+func (m *AccountContactBlocked) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountContactBlocked) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountContactBlocked.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountContactBlocked) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountContactBlocked.Merge(m, src)
+}
+func (m *AccountContactBlocked) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountContactBlocked) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountContactBlocked.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountContactBlocked proto.InternalMessageInfo
+
+func (m *AccountContactBlocked) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *AccountContactBlocked) GetContactPK() []byte {
+	if m != nil {
+		return m.ContactPK
+	}
+	return nil
+}
+
+// AccountContactUnblocked indicates that a contact is unblocked
+type AccountContactUnblocked struct {
+	// device_pk is the device sending the event, signs the message
+	DevicePK []byte `protobuf:"bytes,1,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// contact_pk is the contact unblocked
+	ContactPK            []byte   `protobuf:"bytes,2,opt,name=contact_pk,json=contactPk,proto3" json:"contact_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AccountContactUnblocked) Reset()         { *m = AccountContactUnblocked{} }
+func (m *AccountContactUnblocked) String() string { return proto.CompactTextString(m) }
+func (*AccountContactUnblocked) ProtoMessage()    {}
+func (*AccountContactUnblocked) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{28}
+}
+func (m *AccountContactUnblocked) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountContactUnblocked) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountContactUnblocked.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountContactUnblocked) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountContactUnblocked.Merge(m, src)
+}
+func (m *AccountContactUnblocked) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountContactUnblocked) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountContactUnblocked.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountContactUnblocked proto.InternalMessageInfo
+
+func (m *AccountContactUnblocked) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *AccountContactUnblocked) GetContactPK() []byte {
+	if m != nil {
+		return m.ContactPK
+	}
+	return nil
 }
 
 type InstanceExportData struct {
@@ -158,19 +1995,28 @@ func (m *InstanceExportData) Reset()         { *m = InstanceExportData{} }
 func (m *InstanceExportData) String() string { return proto.CompactTextString(m) }
 func (*InstanceExportData) ProtoMessage()    {}
 func (*InstanceExportData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{0}
+	return fileDescriptor_047e04c733cf8554, []int{29}
 }
 func (m *InstanceExportData) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_InstanceExportData.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 func (m *InstanceExportData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_InstanceExportData.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_InstanceExportData.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 func (m *InstanceExportData) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_InstanceExportData.Merge(m, src)
 }
 func (m *InstanceExportData) XXX_Size() int {
-	return xxx_messageInfo_InstanceExportData.Size(m)
+	return m.Size()
 }
 func (m *InstanceExportData) XXX_DiscardUnknown() {
 	xxx_messageInfo_InstanceExportData.DiscardUnknown(m)
@@ -188,19 +2034,28 @@ func (m *InstanceExportData_Request) Reset()         { *m = InstanceExportData_R
 func (m *InstanceExportData_Request) String() string { return proto.CompactTextString(m) }
 func (*InstanceExportData_Request) ProtoMessage()    {}
 func (*InstanceExportData_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{0, 0}
+	return fileDescriptor_047e04c733cf8554, []int{29, 0}
 }
 func (m *InstanceExportData_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_InstanceExportData_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 func (m *InstanceExportData_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_InstanceExportData_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_InstanceExportData_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 func (m *InstanceExportData_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_InstanceExportData_Request.Merge(m, src)
 }
 func (m *InstanceExportData_Request) XXX_Size() int {
-	return xxx_messageInfo_InstanceExportData_Request.Size(m)
+	return m.Size()
 }
 func (m *InstanceExportData_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_InstanceExportData_Request.DiscardUnknown(m)
@@ -219,19 +2074,28 @@ func (m *InstanceExportData_Reply) Reset()         { *m = InstanceExportData_Rep
 func (m *InstanceExportData_Reply) String() string { return proto.CompactTextString(m) }
 func (*InstanceExportData_Reply) ProtoMessage()    {}
 func (*InstanceExportData_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{0, 1}
+	return fileDescriptor_047e04c733cf8554, []int{29, 1}
 }
 func (m *InstanceExportData_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_InstanceExportData_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 func (m *InstanceExportData_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_InstanceExportData_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_InstanceExportData_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 func (m *InstanceExportData_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_InstanceExportData_Reply.Merge(m, src)
 }
 func (m *InstanceExportData_Reply) XXX_Size() int {
-	return xxx_messageInfo_InstanceExportData_Reply.Size(m)
+	return m.Size()
 }
 func (m *InstanceExportData_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_InstanceExportData_Reply.DiscardUnknown(m)
@@ -256,19 +2120,28 @@ func (m *InstanceGetConfiguration) Reset()         { *m = InstanceGetConfigurati
 func (m *InstanceGetConfiguration) String() string { return proto.CompactTextString(m) }
 func (*InstanceGetConfiguration) ProtoMessage()    {}
 func (*InstanceGetConfiguration) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{1}
+	return fileDescriptor_047e04c733cf8554, []int{30}
 }
 func (m *InstanceGetConfiguration) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_InstanceGetConfiguration.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 func (m *InstanceGetConfiguration) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_InstanceGetConfiguration.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_InstanceGetConfiguration.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 func (m *InstanceGetConfiguration) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_InstanceGetConfiguration.Merge(m, src)
 }
 func (m *InstanceGetConfiguration) XXX_Size() int {
-	return xxx_messageInfo_InstanceGetConfiguration.Size(m)
+	return m.Size()
 }
 func (m *InstanceGetConfiguration) XXX_DiscardUnknown() {
 	xxx_messageInfo_InstanceGetConfiguration.DiscardUnknown(m)
@@ -286,19 +2159,28 @@ func (m *InstanceGetConfiguration_Request) Reset()         { *m = InstanceGetCon
 func (m *InstanceGetConfiguration_Request) String() string { return proto.CompactTextString(m) }
 func (*InstanceGetConfiguration_Request) ProtoMessage()    {}
 func (*InstanceGetConfiguration_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{1, 0}
+	return fileDescriptor_047e04c733cf8554, []int{30, 0}
 }
 func (m *InstanceGetConfiguration_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_InstanceGetConfiguration_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 func (m *InstanceGetConfiguration_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_InstanceGetConfiguration_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_InstanceGetConfiguration_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 func (m *InstanceGetConfiguration_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_InstanceGetConfiguration_Request.Merge(m, src)
 }
 func (m *InstanceGetConfiguration_Request) XXX_Size() int {
-	return xxx_messageInfo_InstanceGetConfiguration_Request.Size(m)
+	return m.Size()
 }
 func (m *InstanceGetConfiguration_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_InstanceGetConfiguration_Request.DiscardUnknown(m)
@@ -307,12 +2189,18 @@ func (m *InstanceGetConfiguration_Request) XXX_DiscardUnknown() {
 var xxx_messageInfo_InstanceGetConfiguration_Request proto.InternalMessageInfo
 
 type InstanceGetConfiguration_Reply struct {
-	PeerID               string                                `protobuf:"bytes,1,opt,name=peer_id,json=peerId,proto3" json:"peer_id,omitempty"`
-	Listeners            []string                              `protobuf:"bytes,2,rep,name=listeners,proto3" json:"listeners,omitempty"`
-	BleEnabled           InstanceGetConfiguration_SettingState `protobuf:"varint,3,opt,name=ble_enabled,json=bleEnabled,proto3,enum=berty.protocol.InstanceGetConfiguration_SettingState" json:"ble_enabled,omitempty"`
-	WifiP2PEnabled       InstanceGetConfiguration_SettingState `protobuf:"varint,4,opt,name=wifi_p2p_enabled,json=wifiP2pEnabled,proto3,enum=berty.protocol.InstanceGetConfiguration_SettingState" json:"wifi_p2p_enabled,omitempty"`
-	MdnsEnabled          InstanceGetConfiguration_SettingState `protobuf:"varint,5,opt,name=mdns_enabled,json=mdnsEnabled,proto3,enum=berty.protocol.InstanceGetConfiguration_SettingState" json:"mdns_enabled,omitempty"`
-	RelayEnabled         InstanceGetConfiguration_SettingState `protobuf:"varint,6,opt,name=relay_enabled,json=relayEnabled,proto3,enum=berty.protocol.InstanceGetConfiguration_SettingState" json:"relay_enabled,omitempty"`
+	// account_pk is the public key of the current account
+	AccountPK []byte `protobuf:"bytes,1,opt,name=account_pk,json=accountPk,proto3" json:"account_pk,omitempty"`
+	// device_pk is the public key of the current device
+	DevicePK []byte `protobuf:"bytes,2,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	// account_group_pk is the public key of the account group
+	AccountGroupPK       []byte                                `protobuf:"bytes,3,opt,name=account_group_pk,json=accountGroupPk,proto3" json:"account_group_pk,omitempty"`
+	PeerID               string                                `protobuf:"bytes,4,opt,name=peer_id,json=peerId,proto3" json:"peer_id,omitempty"`
+	Listeners            []string                              `protobuf:"bytes,5,rep,name=listeners,proto3" json:"listeners,omitempty"`
+	BleEnabled           InstanceGetConfiguration_SettingState `protobuf:"varint,6,opt,name=ble_enabled,json=bleEnabled,proto3,enum=berty.protocol.InstanceGetConfiguration_SettingState" json:"ble_enabled,omitempty"`
+	WifiP2PEnabled       InstanceGetConfiguration_SettingState `protobuf:"varint,7,opt,name=wifi_p2p_enabled,json=wifiP2pEnabled,proto3,enum=berty.protocol.InstanceGetConfiguration_SettingState" json:"wifi_p2p_enabled,omitempty"`
+	MdnsEnabled          InstanceGetConfiguration_SettingState `protobuf:"varint,8,opt,name=mdns_enabled,json=mdnsEnabled,proto3,enum=berty.protocol.InstanceGetConfiguration_SettingState" json:"mdns_enabled,omitempty"`
+	RelayEnabled         InstanceGetConfiguration_SettingState `protobuf:"varint,9,opt,name=relay_enabled,json=relayEnabled,proto3,enum=berty.protocol.InstanceGetConfiguration_SettingState" json:"relay_enabled,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                              `json:"-"`
 	XXX_unrecognized     []byte                                `json:"-"`
 	XXX_sizecache        int32                                 `json:"-"`
@@ -322,25 +2210,55 @@ func (m *InstanceGetConfiguration_Reply) Reset()         { *m = InstanceGetConfi
 func (m *InstanceGetConfiguration_Reply) String() string { return proto.CompactTextString(m) }
 func (*InstanceGetConfiguration_Reply) ProtoMessage()    {}
 func (*InstanceGetConfiguration_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{1, 1}
+	return fileDescriptor_047e04c733cf8554, []int{30, 1}
 }
 func (m *InstanceGetConfiguration_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_InstanceGetConfiguration_Reply.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 func (m *InstanceGetConfiguration_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_InstanceGetConfiguration_Reply.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_InstanceGetConfiguration_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 func (m *InstanceGetConfiguration_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_InstanceGetConfiguration_Reply.Merge(m, src)
 }
 func (m *InstanceGetConfiguration_Reply) XXX_Size() int {
-	return xxx_messageInfo_InstanceGetConfiguration_Reply.Size(m)
+	return m.Size()
 }
 func (m *InstanceGetConfiguration_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_InstanceGetConfiguration_Reply.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_InstanceGetConfiguration_Reply proto.InternalMessageInfo
+
+func (m *InstanceGetConfiguration_Reply) GetAccountPK() []byte {
+	if m != nil {
+		return m.AccountPK
+	}
+	return nil
+}
+
+func (m *InstanceGetConfiguration_Reply) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+func (m *InstanceGetConfiguration_Reply) GetAccountGroupPK() []byte {
+	if m != nil {
+		return m.AccountGroupPK
+	}
+	return nil
+}
 
 func (m *InstanceGetConfiguration_Reply) GetPeerID() string {
 	if m != nil {
@@ -360,769 +2278,2591 @@ func (m *InstanceGetConfiguration_Reply) GetBleEnabled() InstanceGetConfiguratio
 	if m != nil {
 		return m.BleEnabled
 	}
-	return InstanceGetConfiguration_Unknown
+	return Unknown
 }
 
 func (m *InstanceGetConfiguration_Reply) GetWifiP2PEnabled() InstanceGetConfiguration_SettingState {
 	if m != nil {
 		return m.WifiP2PEnabled
 	}
-	return InstanceGetConfiguration_Unknown
+	return Unknown
 }
 
 func (m *InstanceGetConfiguration_Reply) GetMdnsEnabled() InstanceGetConfiguration_SettingState {
 	if m != nil {
 		return m.MdnsEnabled
 	}
-	return InstanceGetConfiguration_Unknown
+	return Unknown
 }
 
 func (m *InstanceGetConfiguration_Reply) GetRelayEnabled() InstanceGetConfiguration_SettingState {
 	if m != nil {
 		return m.RelayEnabled
 	}
-	return InstanceGetConfiguration_Unknown
+	return Unknown
 }
 
-type GroupSettingSetMember struct {
+type ContactRequestReference struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupSettingSetMember) Reset()         { *m = GroupSettingSetMember{} }
-func (m *GroupSettingSetMember) String() string { return proto.CompactTextString(m) }
-func (*GroupSettingSetMember) ProtoMessage()    {}
-func (*GroupSettingSetMember) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{2}
+func (m *ContactRequestReference) Reset()         { *m = ContactRequestReference{} }
+func (m *ContactRequestReference) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestReference) ProtoMessage()    {}
+func (*ContactRequestReference) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{31}
 }
-func (m *GroupSettingSetMember) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupSettingSetMember.Unmarshal(m, b)
+func (m *ContactRequestReference) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
 }
-func (m *GroupSettingSetMember) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupSettingSetMember.Marshal(b, m, deterministic)
+func (m *ContactRequestReference) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestReference.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
-func (m *GroupSettingSetMember) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupSettingSetMember.Merge(m, src)
+func (m *ContactRequestReference) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestReference.Merge(m, src)
 }
-func (m *GroupSettingSetMember) XXX_Size() int {
-	return xxx_messageInfo_GroupSettingSetMember.Size(m)
+func (m *ContactRequestReference) XXX_Size() int {
+	return m.Size()
 }
-func (m *GroupSettingSetMember) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupSettingSetMember.DiscardUnknown(m)
+func (m *ContactRequestReference) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestReference.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupSettingSetMember proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestReference proto.InternalMessageInfo
 
-type GroupSettingSetMember_Request struct {
-	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
-	Key                  string   `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
-	Value                []byte   `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
+type ContactRequestReference_Request struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupSettingSetMember_Request) Reset()         { *m = GroupSettingSetMember_Request{} }
-func (m *GroupSettingSetMember_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupSettingSetMember_Request) ProtoMessage()    {}
-func (*GroupSettingSetMember_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{2, 0}
+func (m *ContactRequestReference_Request) Reset()         { *m = ContactRequestReference_Request{} }
+func (m *ContactRequestReference_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestReference_Request) ProtoMessage()    {}
+func (*ContactRequestReference_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{31, 0}
 }
-func (m *GroupSettingSetMember_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupSettingSetMember_Request.Unmarshal(m, b)
+func (m *ContactRequestReference_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
 }
-func (m *GroupSettingSetMember_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupSettingSetMember_Request.Marshal(b, m, deterministic)
-}
-func (m *GroupSettingSetMember_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupSettingSetMember_Request.Merge(m, src)
-}
-func (m *GroupSettingSetMember_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupSettingSetMember_Request.Size(m)
-}
-func (m *GroupSettingSetMember_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupSettingSetMember_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupSettingSetMember_Request proto.InternalMessageInfo
-
-func (m *GroupSettingSetMember_Request) GetGroupPubKey() []byte {
-	if m != nil {
-		return m.GroupPubKey
+func (m *ContactRequestReference_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestReference_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
 	}
-	return nil
+}
+func (m *ContactRequestReference_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestReference_Request.Merge(m, src)
+}
+func (m *ContactRequestReference_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestReference_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestReference_Request.DiscardUnknown(m)
 }
 
-func (m *GroupSettingSetMember_Request) GetKey() string {
-	if m != nil {
-		return m.Key
-	}
-	return ""
-}
+var xxx_messageInfo_ContactRequestReference_Request proto.InternalMessageInfo
 
-func (m *GroupSettingSetMember_Request) GetValue() []byte {
-	if m != nil {
-		return m.Value
-	}
-	return nil
-}
-
-type GroupSettingSetMember_Reply struct {
+type ContactRequestReference_Reply struct {
+	// reference is an opaque message describing how to connect to the current account
+	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupSettingSetMember_Reply) Reset()         { *m = GroupSettingSetMember_Reply{} }
-func (m *GroupSettingSetMember_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupSettingSetMember_Reply) ProtoMessage()    {}
-func (*GroupSettingSetMember_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{2, 1}
+func (m *ContactRequestReference_Reply) Reset()         { *m = ContactRequestReference_Reply{} }
+func (m *ContactRequestReference_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestReference_Reply) ProtoMessage()    {}
+func (*ContactRequestReference_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{31, 1}
 }
-func (m *GroupSettingSetMember_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupSettingSetMember_Reply.Unmarshal(m, b)
+func (m *ContactRequestReference_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
 }
-func (m *GroupSettingSetMember_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupSettingSetMember_Reply.Marshal(b, m, deterministic)
+func (m *ContactRequestReference_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestReference_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
-func (m *GroupSettingSetMember_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupSettingSetMember_Reply.Merge(m, src)
+func (m *ContactRequestReference_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestReference_Reply.Merge(m, src)
 }
-func (m *GroupSettingSetMember_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupSettingSetMember_Reply.Size(m)
+func (m *ContactRequestReference_Reply) XXX_Size() int {
+	return m.Size()
 }
-func (m *GroupSettingSetMember_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupSettingSetMember_Reply.DiscardUnknown(m)
+func (m *ContactRequestReference_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestReference_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupSettingSetMember_Reply proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestReference_Reply proto.InternalMessageInfo
 
-type GroupSettingSetGroup struct {
+func (m *ContactRequestReference_Reply) GetReference() []byte {
+	if m != nil {
+		return m.Reference
+	}
+	return nil
+}
+
+type ContactRequestDisable struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupSettingSetGroup) Reset()         { *m = GroupSettingSetGroup{} }
-func (m *GroupSettingSetGroup) String() string { return proto.CompactTextString(m) }
-func (*GroupSettingSetGroup) ProtoMessage()    {}
-func (*GroupSettingSetGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{3}
+func (m *ContactRequestDisable) Reset()         { *m = ContactRequestDisable{} }
+func (m *ContactRequestDisable) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDisable) ProtoMessage()    {}
+func (*ContactRequestDisable) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{32}
 }
-func (m *GroupSettingSetGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupSettingSetGroup.Unmarshal(m, b)
+func (m *ContactRequestDisable) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
 }
-func (m *GroupSettingSetGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupSettingSetGroup.Marshal(b, m, deterministic)
+func (m *ContactRequestDisable) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestDisable.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
-func (m *GroupSettingSetGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupSettingSetGroup.Merge(m, src)
+func (m *ContactRequestDisable) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestDisable.Merge(m, src)
 }
-func (m *GroupSettingSetGroup) XXX_Size() int {
-	return xxx_messageInfo_GroupSettingSetGroup.Size(m)
+func (m *ContactRequestDisable) XXX_Size() int {
+	return m.Size()
 }
-func (m *GroupSettingSetGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupSettingSetGroup.DiscardUnknown(m)
+func (m *ContactRequestDisable) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestDisable.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupSettingSetGroup proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestDisable proto.InternalMessageInfo
 
-type GroupSettingSetGroup_Request struct {
-	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
-	Key                  string   `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
-	Value                []byte   `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
+type ContactRequestDisable_Request struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupSettingSetGroup_Request) Reset()         { *m = GroupSettingSetGroup_Request{} }
-func (m *GroupSettingSetGroup_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupSettingSetGroup_Request) ProtoMessage()    {}
-func (*GroupSettingSetGroup_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{3, 0}
+func (m *ContactRequestDisable_Request) Reset()         { *m = ContactRequestDisable_Request{} }
+func (m *ContactRequestDisable_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDisable_Request) ProtoMessage()    {}
+func (*ContactRequestDisable_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{32, 0}
 }
-func (m *GroupSettingSetGroup_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupSettingSetGroup_Request.Unmarshal(m, b)
+func (m *ContactRequestDisable_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
 }
-func (m *GroupSettingSetGroup_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupSettingSetGroup_Request.Marshal(b, m, deterministic)
-}
-func (m *GroupSettingSetGroup_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupSettingSetGroup_Request.Merge(m, src)
-}
-func (m *GroupSettingSetGroup_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupSettingSetGroup_Request.Size(m)
-}
-func (m *GroupSettingSetGroup_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupSettingSetGroup_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupSettingSetGroup_Request proto.InternalMessageInfo
-
-func (m *GroupSettingSetGroup_Request) GetGroupPubKey() []byte {
-	if m != nil {
-		return m.GroupPubKey
+func (m *ContactRequestDisable_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestDisable_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
 	}
-	return nil
+}
+func (m *ContactRequestDisable_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestDisable_Request.Merge(m, src)
+}
+func (m *ContactRequestDisable_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestDisable_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestDisable_Request.DiscardUnknown(m)
 }
 
-func (m *GroupSettingSetGroup_Request) GetKey() string {
-	if m != nil {
-		return m.Key
-	}
-	return ""
-}
+var xxx_messageInfo_ContactRequestDisable_Request proto.InternalMessageInfo
 
-func (m *GroupSettingSetGroup_Request) GetValue() []byte {
-	if m != nil {
-		return m.Value
-	}
-	return nil
-}
-
-type GroupSettingSetGroup_Reply struct {
+type ContactRequestDisable_Reply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupSettingSetGroup_Reply) Reset()         { *m = GroupSettingSetGroup_Reply{} }
-func (m *GroupSettingSetGroup_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupSettingSetGroup_Reply) ProtoMessage()    {}
-func (*GroupSettingSetGroup_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{3, 1}
+func (m *ContactRequestDisable_Reply) Reset()         { *m = ContactRequestDisable_Reply{} }
+func (m *ContactRequestDisable_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDisable_Reply) ProtoMessage()    {}
+func (*ContactRequestDisable_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{32, 1}
 }
-func (m *GroupSettingSetGroup_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupSettingSetGroup_Reply.Unmarshal(m, b)
+func (m *ContactRequestDisable_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
 }
-func (m *GroupSettingSetGroup_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupSettingSetGroup_Reply.Marshal(b, m, deterministic)
+func (m *ContactRequestDisable_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestDisable_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
-func (m *GroupSettingSetGroup_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupSettingSetGroup_Reply.Merge(m, src)
+func (m *ContactRequestDisable_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestDisable_Reply.Merge(m, src)
 }
-func (m *GroupSettingSetGroup_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupSettingSetGroup_Reply.Size(m)
+func (m *ContactRequestDisable_Reply) XXX_Size() int {
+	return m.Size()
 }
-func (m *GroupSettingSetGroup_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupSettingSetGroup_Reply.DiscardUnknown(m)
+func (m *ContactRequestDisable_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestDisable_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupSettingSetGroup_Reply proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestDisable_Reply proto.InternalMessageInfo
 
-type GroupSettingStoreSubscribe struct {
+type ContactRequestEnable struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupSettingStoreSubscribe) Reset()         { *m = GroupSettingStoreSubscribe{} }
-func (m *GroupSettingStoreSubscribe) String() string { return proto.CompactTextString(m) }
-func (*GroupSettingStoreSubscribe) ProtoMessage()    {}
-func (*GroupSettingStoreSubscribe) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{4}
+func (m *ContactRequestEnable) Reset()         { *m = ContactRequestEnable{} }
+func (m *ContactRequestEnable) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestEnable) ProtoMessage()    {}
+func (*ContactRequestEnable) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{33}
 }
-func (m *GroupSettingStoreSubscribe) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupSettingStoreSubscribe.Unmarshal(m, b)
+func (m *ContactRequestEnable) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
 }
-func (m *GroupSettingStoreSubscribe) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupSettingStoreSubscribe.Marshal(b, m, deterministic)
+func (m *ContactRequestEnable) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestEnable.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
-func (m *GroupSettingStoreSubscribe) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupSettingStoreSubscribe.Merge(m, src)
+func (m *ContactRequestEnable) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestEnable.Merge(m, src)
 }
-func (m *GroupSettingStoreSubscribe) XXX_Size() int {
-	return xxx_messageInfo_GroupSettingStoreSubscribe.Size(m)
+func (m *ContactRequestEnable) XXX_Size() int {
+	return m.Size()
 }
-func (m *GroupSettingStoreSubscribe) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupSettingStoreSubscribe.DiscardUnknown(m)
+func (m *ContactRequestEnable) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestEnable.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupSettingStoreSubscribe proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestEnable proto.InternalMessageInfo
 
-type GroupSettingStoreSubscribe_Request struct {
-	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
-	Since                []byte   `protobuf:"bytes,2,opt,name=since,proto3" json:"since,omitempty"`
-	Until                []byte   `protobuf:"bytes,3,opt,name=until,proto3" json:"until,omitempty"`
-	GoBackwards          bool     `protobuf:"varint,4,opt,name=go_backwards,json=goBackwards,proto3" json:"go_backwards,omitempty"`
+type ContactRequestEnable_Request struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupSettingStoreSubscribe_Request) Reset()         { *m = GroupSettingStoreSubscribe_Request{} }
-func (m *GroupSettingStoreSubscribe_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupSettingStoreSubscribe_Request) ProtoMessage()    {}
-func (*GroupSettingStoreSubscribe_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{4, 0}
+func (m *ContactRequestEnable_Request) Reset()         { *m = ContactRequestEnable_Request{} }
+func (m *ContactRequestEnable_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestEnable_Request) ProtoMessage()    {}
+func (*ContactRequestEnable_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{33, 0}
 }
-func (m *GroupSettingStoreSubscribe_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupSettingStoreSubscribe_Request.Unmarshal(m, b)
+func (m *ContactRequestEnable_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
 }
-func (m *GroupSettingStoreSubscribe_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupSettingStoreSubscribe_Request.Marshal(b, m, deterministic)
-}
-func (m *GroupSettingStoreSubscribe_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupSettingStoreSubscribe_Request.Merge(m, src)
-}
-func (m *GroupSettingStoreSubscribe_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupSettingStoreSubscribe_Request.Size(m)
-}
-func (m *GroupSettingStoreSubscribe_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupSettingStoreSubscribe_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupSettingStoreSubscribe_Request proto.InternalMessageInfo
-
-func (m *GroupSettingStoreSubscribe_Request) GetGroupPubKey() []byte {
-	if m != nil {
-		return m.GroupPubKey
+func (m *ContactRequestEnable_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestEnable_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
 	}
-	return nil
+}
+func (m *ContactRequestEnable_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestEnable_Request.Merge(m, src)
+}
+func (m *ContactRequestEnable_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestEnable_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestEnable_Request.DiscardUnknown(m)
 }
 
-func (m *GroupSettingStoreSubscribe_Request) GetSince() []byte {
-	if m != nil {
-		return m.Since
-	}
-	return nil
-}
+var xxx_messageInfo_ContactRequestEnable_Request proto.InternalMessageInfo
 
-func (m *GroupSettingStoreSubscribe_Request) GetUntil() []byte {
-	if m != nil {
-		return m.Until
-	}
-	return nil
-}
-
-func (m *GroupSettingStoreSubscribe_Request) GetGoBackwards() bool {
-	if m != nil {
-		return m.GoBackwards
-	}
-	return false
-}
-
-type GroupSettingStoreSubscribe_Reply struct {
-	Event                *GroupSettingStoreEvent `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
-	XXX_unrecognized     []byte                  `json:"-"`
-	XXX_sizecache        int32                   `json:"-"`
-}
-
-func (m *GroupSettingStoreSubscribe_Reply) Reset()         { *m = GroupSettingStoreSubscribe_Reply{} }
-func (m *GroupSettingStoreSubscribe_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupSettingStoreSubscribe_Reply) ProtoMessage()    {}
-func (*GroupSettingStoreSubscribe_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{4, 1}
-}
-func (m *GroupSettingStoreSubscribe_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupSettingStoreSubscribe_Reply.Unmarshal(m, b)
-}
-func (m *GroupSettingStoreSubscribe_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupSettingStoreSubscribe_Reply.Marshal(b, m, deterministic)
-}
-func (m *GroupSettingStoreSubscribe_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupSettingStoreSubscribe_Reply.Merge(m, src)
-}
-func (m *GroupSettingStoreSubscribe_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupSettingStoreSubscribe_Reply.Size(m)
-}
-func (m *GroupSettingStoreSubscribe_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupSettingStoreSubscribe_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupSettingStoreSubscribe_Reply proto.InternalMessageInfo
-
-func (m *GroupSettingStoreSubscribe_Reply) GetEvent() *GroupSettingStoreEvent {
-	if m != nil {
-		return m.Event
-	}
-	return nil
-}
-
-type EventBase struct {
-	ID                   []byte   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ParentIDs            [][]byte `protobuf:"bytes,2,rep,name=parent_ids,json=parentIds,proto3" json:"parent_ids,omitempty"`
+type ContactRequestEnable_Reply struct {
+	// reference is an opaque message describing how to connect to the current account
+	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *EventBase) Reset()         { *m = EventBase{} }
-func (m *EventBase) String() string { return proto.CompactTextString(m) }
-func (*EventBase) ProtoMessage()    {}
-func (*EventBase) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{5}
+func (m *ContactRequestEnable_Reply) Reset()         { *m = ContactRequestEnable_Reply{} }
+func (m *ContactRequestEnable_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestEnable_Reply) ProtoMessage()    {}
+func (*ContactRequestEnable_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{33, 1}
 }
-func (m *EventBase) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EventBase.Unmarshal(m, b)
+func (m *ContactRequestEnable_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
 }
-func (m *EventBase) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EventBase.Marshal(b, m, deterministic)
+func (m *ContactRequestEnable_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestEnable_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
-func (m *EventBase) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventBase.Merge(m, src)
+func (m *ContactRequestEnable_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestEnable_Reply.Merge(m, src)
 }
-func (m *EventBase) XXX_Size() int {
-	return xxx_messageInfo_EventBase.Size(m)
+func (m *ContactRequestEnable_Reply) XXX_Size() int {
+	return m.Size()
 }
-func (m *EventBase) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventBase.DiscardUnknown(m)
+func (m *ContactRequestEnable_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestEnable_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventBase proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestEnable_Reply proto.InternalMessageInfo
 
-func (m *EventBase) GetID() []byte {
+func (m *ContactRequestEnable_Reply) GetReference() []byte {
 	if m != nil {
-		return m.ID
+		return m.Reference
 	}
 	return nil
 }
 
-func (m *EventBase) GetParentIDs() [][]byte {
-	if m != nil {
-		return m.ParentIDs
-	}
-	return nil
-}
-
-type GroupStoreEvent struct {
-	EventBase            *EventBase `protobuf:"bytes,1,opt,name=event_base,json=eventBase,proto3" json:"event_base,omitempty"`
-	GroupPubKey          []byte     `protobuf:"bytes,2,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
-	GroupMemberPubKey    []byte     `protobuf:"bytes,3,opt,name=group_member_pub_key,json=groupMemberPubKey,proto3" json:"group_member_pub_key,omitempty"`
-	GroupDevicePubKey    []byte     `protobuf:"bytes,4,opt,name=group_device_pub_key,json=groupDevicePubKey,proto3" json:"group_device_pub_key,omitempty"`
-	AccountPubKey        []byte     `protobuf:"bytes,5,opt,name=account_pub_key,json=accountPubKey,proto3" json:"account_pub_key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
-	XXX_unrecognized     []byte     `json:"-"`
-	XXX_sizecache        int32      `json:"-"`
-}
-
-func (m *GroupStoreEvent) Reset()         { *m = GroupStoreEvent{} }
-func (m *GroupStoreEvent) String() string { return proto.CompactTextString(m) }
-func (*GroupStoreEvent) ProtoMessage()    {}
-func (*GroupStoreEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{6}
-}
-func (m *GroupStoreEvent) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupStoreEvent.Unmarshal(m, b)
-}
-func (m *GroupStoreEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupStoreEvent.Marshal(b, m, deterministic)
-}
-func (m *GroupStoreEvent) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupStoreEvent.Merge(m, src)
-}
-func (m *GroupStoreEvent) XXX_Size() int {
-	return xxx_messageInfo_GroupStoreEvent.Size(m)
-}
-func (m *GroupStoreEvent) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupStoreEvent.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupStoreEvent proto.InternalMessageInfo
-
-func (m *GroupStoreEvent) GetEventBase() *EventBase {
-	if m != nil {
-		return m.EventBase
-	}
-	return nil
-}
-
-func (m *GroupStoreEvent) GetGroupPubKey() []byte {
-	if m != nil {
-		return m.GroupPubKey
-	}
-	return nil
-}
-
-func (m *GroupStoreEvent) GetGroupMemberPubKey() []byte {
-	if m != nil {
-		return m.GroupMemberPubKey
-	}
-	return nil
-}
-
-func (m *GroupStoreEvent) GetGroupDevicePubKey() []byte {
-	if m != nil {
-		return m.GroupDevicePubKey
-	}
-	return nil
-}
-
-func (m *GroupStoreEvent) GetAccountPubKey() []byte {
-	if m != nil {
-		return m.AccountPubKey
-	}
-	return nil
-}
-
-type GroupSettingStoreEvent struct {
-	GroupStoreEvent      *GroupStoreEvent             `protobuf:"bytes,1,opt,name=group_store_event,json=groupStoreEvent,proto3" json:"group_store_event,omitempty"`
-	SettingType          GroupSettingStoreSettingType `protobuf:"varint,2,opt,name=setting_type,json=settingType,proto3,enum=berty.protocol.GroupSettingStoreSettingType" json:"setting_type,omitempty"`
-	Key                  string                       `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`
-	Value                []byte                       `protobuf:"bytes,4,opt,name=value,proto3" json:"value,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                     `json:"-"`
-	XXX_unrecognized     []byte                       `json:"-"`
-	XXX_sizecache        int32                        `json:"-"`
-}
-
-func (m *GroupSettingStoreEvent) Reset()         { *m = GroupSettingStoreEvent{} }
-func (m *GroupSettingStoreEvent) String() string { return proto.CompactTextString(m) }
-func (*GroupSettingStoreEvent) ProtoMessage()    {}
-func (*GroupSettingStoreEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{7}
-}
-func (m *GroupSettingStoreEvent) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupSettingStoreEvent.Unmarshal(m, b)
-}
-func (m *GroupSettingStoreEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupSettingStoreEvent.Marshal(b, m, deterministic)
-}
-func (m *GroupSettingStoreEvent) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupSettingStoreEvent.Merge(m, src)
-}
-func (m *GroupSettingStoreEvent) XXX_Size() int {
-	return xxx_messageInfo_GroupSettingStoreEvent.Size(m)
-}
-func (m *GroupSettingStoreEvent) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupSettingStoreEvent.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupSettingStoreEvent proto.InternalMessageInfo
-
-func (m *GroupSettingStoreEvent) GetGroupStoreEvent() *GroupStoreEvent {
-	if m != nil {
-		return m.GroupStoreEvent
-	}
-	return nil
-}
-
-func (m *GroupSettingStoreEvent) GetSettingType() GroupSettingStoreSettingType {
-	if m != nil {
-		return m.SettingType
-	}
-	return GroupSettingStoreSettingType_Unknown
-}
-
-func (m *GroupSettingStoreEvent) GetKey() string {
-	if m != nil {
-		return m.Key
-	}
-	return ""
-}
-
-func (m *GroupSettingStoreEvent) GetValue() []byte {
-	if m != nil {
-		return m.Value
-	}
-	return nil
-}
-
-type GroupMessageSend struct {
+type ContactRequestResetReference struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupMessageSend) Reset()         { *m = GroupMessageSend{} }
-func (m *GroupMessageSend) String() string { return proto.CompactTextString(m) }
-func (*GroupMessageSend) ProtoMessage()    {}
-func (*GroupMessageSend) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{8}
+func (m *ContactRequestResetReference) Reset()         { *m = ContactRequestResetReference{} }
+func (m *ContactRequestResetReference) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestResetReference) ProtoMessage()    {}
+func (*ContactRequestResetReference) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{34}
 }
-func (m *GroupMessageSend) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageSend.Unmarshal(m, b)
+func (m *ContactRequestResetReference) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
 }
-func (m *GroupMessageSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageSend.Marshal(b, m, deterministic)
+func (m *ContactRequestResetReference) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestResetReference.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
-func (m *GroupMessageSend) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMessageSend.Merge(m, src)
+func (m *ContactRequestResetReference) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestResetReference.Merge(m, src)
 }
-func (m *GroupMessageSend) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageSend.Size(m)
+func (m *ContactRequestResetReference) XXX_Size() int {
+	return m.Size()
 }
-func (m *GroupMessageSend) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMessageSend.DiscardUnknown(m)
+func (m *ContactRequestResetReference) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestResetReference.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupMessageSend proto.InternalMessageInfo
+var xxx_messageInfo_ContactRequestResetReference proto.InternalMessageInfo
 
-type GroupMessageSend_Request struct {
-	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
+type ContactRequestResetReference_Request struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestResetReference_Request) Reset()         { *m = ContactRequestResetReference_Request{} }
+func (m *ContactRequestResetReference_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestResetReference_Request) ProtoMessage()    {}
+func (*ContactRequestResetReference_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{34, 0}
+}
+func (m *ContactRequestResetReference_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactRequestResetReference_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestResetReference_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactRequestResetReference_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestResetReference_Request.Merge(m, src)
+}
+func (m *ContactRequestResetReference_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestResetReference_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestResetReference_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestResetReference_Request proto.InternalMessageInfo
+
+type ContactRequestResetReference_Reply struct {
+	// reference is an opaque message describing how to connect to the current account
+	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestResetReference_Reply) Reset()         { *m = ContactRequestResetReference_Reply{} }
+func (m *ContactRequestResetReference_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestResetReference_Reply) ProtoMessage()    {}
+func (*ContactRequestResetReference_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{34, 1}
+}
+func (m *ContactRequestResetReference_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactRequestResetReference_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestResetReference_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactRequestResetReference_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestResetReference_Reply.Merge(m, src)
+}
+func (m *ContactRequestResetReference_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestResetReference_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestResetReference_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestResetReference_Reply proto.InternalMessageInfo
+
+func (m *ContactRequestResetReference_Reply) GetReference() []byte {
+	if m != nil {
+		return m.Reference
+	}
+	return nil
+}
+
+type ContactRequestSend struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestSend) Reset()         { *m = ContactRequestSend{} }
+func (m *ContactRequestSend) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestSend) ProtoMessage()    {}
+func (*ContactRequestSend) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{35}
+}
+func (m *ContactRequestSend) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactRequestSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestSend.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactRequestSend) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestSend.Merge(m, src)
+}
+func (m *ContactRequestSend) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestSend) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestSend.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestSend proto.InternalMessageInfo
+
+type ContactRequestSend_Request struct {
+	// reference is an opaque message describing how to connect to the other account
+	Reference []byte `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
+	// contact_metadata is the metadata specific to the app to identify the contact for the request
+	ContactMetadata      []byte   `protobuf:"bytes,2,opt,name=contact_metadata,json=contactMetadata,proto3" json:"contact_metadata,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestSend_Request) Reset()         { *m = ContactRequestSend_Request{} }
+func (m *ContactRequestSend_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestSend_Request) ProtoMessage()    {}
+func (*ContactRequestSend_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{35, 0}
+}
+func (m *ContactRequestSend_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactRequestSend_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestSend_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactRequestSend_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestSend_Request.Merge(m, src)
+}
+func (m *ContactRequestSend_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestSend_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestSend_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestSend_Request proto.InternalMessageInfo
+
+func (m *ContactRequestSend_Request) GetReference() []byte {
+	if m != nil {
+		return m.Reference
+	}
+	return nil
+}
+
+func (m *ContactRequestSend_Request) GetContactMetadata() []byte {
+	if m != nil {
+		return m.ContactMetadata
+	}
+	return nil
+}
+
+type ContactRequestSend_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestSend_Reply) Reset()         { *m = ContactRequestSend_Reply{} }
+func (m *ContactRequestSend_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestSend_Reply) ProtoMessage()    {}
+func (*ContactRequestSend_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{35, 1}
+}
+func (m *ContactRequestSend_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactRequestSend_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestSend_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactRequestSend_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestSend_Reply.Merge(m, src)
+}
+func (m *ContactRequestSend_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestSend_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestSend_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestSend_Reply proto.InternalMessageInfo
+
+type ContactRequestAccept struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestAccept) Reset()         { *m = ContactRequestAccept{} }
+func (m *ContactRequestAccept) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestAccept) ProtoMessage()    {}
+func (*ContactRequestAccept) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{36}
+}
+func (m *ContactRequestAccept) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactRequestAccept) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestAccept.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactRequestAccept) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestAccept.Merge(m, src)
+}
+func (m *ContactRequestAccept) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestAccept) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestAccept.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestAccept proto.InternalMessageInfo
+
+type ContactRequestAccept_Request struct {
+	// contact_pk is the identifier of the contact to accept the request from
+	ContactPK            []byte   `protobuf:"bytes,1,opt,name=contact_pk,json=contactPk,proto3" json:"contact_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestAccept_Request) Reset()         { *m = ContactRequestAccept_Request{} }
+func (m *ContactRequestAccept_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestAccept_Request) ProtoMessage()    {}
+func (*ContactRequestAccept_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{36, 0}
+}
+func (m *ContactRequestAccept_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactRequestAccept_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestAccept_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactRequestAccept_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestAccept_Request.Merge(m, src)
+}
+func (m *ContactRequestAccept_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestAccept_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestAccept_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestAccept_Request proto.InternalMessageInfo
+
+func (m *ContactRequestAccept_Request) GetContactPK() []byte {
+	if m != nil {
+		return m.ContactPK
+	}
+	return nil
+}
+
+type ContactRequestAccept_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestAccept_Reply) Reset()         { *m = ContactRequestAccept_Reply{} }
+func (m *ContactRequestAccept_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestAccept_Reply) ProtoMessage()    {}
+func (*ContactRequestAccept_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{36, 1}
+}
+func (m *ContactRequestAccept_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactRequestAccept_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestAccept_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactRequestAccept_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestAccept_Reply.Merge(m, src)
+}
+func (m *ContactRequestAccept_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestAccept_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestAccept_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestAccept_Reply proto.InternalMessageInfo
+
+type ContactRequestDiscard struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestDiscard) Reset()         { *m = ContactRequestDiscard{} }
+func (m *ContactRequestDiscard) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDiscard) ProtoMessage()    {}
+func (*ContactRequestDiscard) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{37}
+}
+func (m *ContactRequestDiscard) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactRequestDiscard) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestDiscard.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactRequestDiscard) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestDiscard.Merge(m, src)
+}
+func (m *ContactRequestDiscard) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestDiscard) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestDiscard.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestDiscard proto.InternalMessageInfo
+
+type ContactRequestDiscard_Request struct {
+	// contact_pk is the identifier of the contact to ignore the request from
+	ContactPK            []byte   `protobuf:"bytes,1,opt,name=contact_pk,json=contactPk,proto3" json:"contact_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestDiscard_Request) Reset()         { *m = ContactRequestDiscard_Request{} }
+func (m *ContactRequestDiscard_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDiscard_Request) ProtoMessage()    {}
+func (*ContactRequestDiscard_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{37, 0}
+}
+func (m *ContactRequestDiscard_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactRequestDiscard_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestDiscard_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactRequestDiscard_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestDiscard_Request.Merge(m, src)
+}
+func (m *ContactRequestDiscard_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestDiscard_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestDiscard_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestDiscard_Request proto.InternalMessageInfo
+
+func (m *ContactRequestDiscard_Request) GetContactPK() []byte {
+	if m != nil {
+		return m.ContactPK
+	}
+	return nil
+}
+
+type ContactRequestDiscard_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactRequestDiscard_Reply) Reset()         { *m = ContactRequestDiscard_Reply{} }
+func (m *ContactRequestDiscard_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactRequestDiscard_Reply) ProtoMessage()    {}
+func (*ContactRequestDiscard_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{37, 1}
+}
+func (m *ContactRequestDiscard_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactRequestDiscard_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactRequestDiscard_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactRequestDiscard_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactRequestDiscard_Reply.Merge(m, src)
+}
+func (m *ContactRequestDiscard_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactRequestDiscard_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactRequestDiscard_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactRequestDiscard_Reply proto.InternalMessageInfo
+
+type ContactBlock struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactBlock) Reset()         { *m = ContactBlock{} }
+func (m *ContactBlock) String() string { return proto.CompactTextString(m) }
+func (*ContactBlock) ProtoMessage()    {}
+func (*ContactBlock) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{38}
+}
+func (m *ContactBlock) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactBlock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactBlock.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactBlock) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactBlock.Merge(m, src)
+}
+func (m *ContactBlock) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactBlock) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactBlock.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactBlock proto.InternalMessageInfo
+
+type ContactBlock_Request struct {
+	// contact_pk is the identifier of the contact to block
+	ContactPK            []byte   `protobuf:"bytes,1,opt,name=contact_pk,json=contactPk,proto3" json:"contact_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactBlock_Request) Reset()         { *m = ContactBlock_Request{} }
+func (m *ContactBlock_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactBlock_Request) ProtoMessage()    {}
+func (*ContactBlock_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{38, 0}
+}
+func (m *ContactBlock_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactBlock_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactBlock_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactBlock_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactBlock_Request.Merge(m, src)
+}
+func (m *ContactBlock_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactBlock_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactBlock_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactBlock_Request proto.InternalMessageInfo
+
+func (m *ContactBlock_Request) GetContactPK() []byte {
+	if m != nil {
+		return m.ContactPK
+	}
+	return nil
+}
+
+type ContactBlock_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactBlock_Reply) Reset()         { *m = ContactBlock_Reply{} }
+func (m *ContactBlock_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactBlock_Reply) ProtoMessage()    {}
+func (*ContactBlock_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{38, 1}
+}
+func (m *ContactBlock_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactBlock_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactBlock_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactBlock_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactBlock_Reply.Merge(m, src)
+}
+func (m *ContactBlock_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactBlock_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactBlock_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactBlock_Reply proto.InternalMessageInfo
+
+type ContactUnblock struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactUnblock) Reset()         { *m = ContactUnblock{} }
+func (m *ContactUnblock) String() string { return proto.CompactTextString(m) }
+func (*ContactUnblock) ProtoMessage()    {}
+func (*ContactUnblock) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{39}
+}
+func (m *ContactUnblock) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactUnblock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactUnblock.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactUnblock) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactUnblock.Merge(m, src)
+}
+func (m *ContactUnblock) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactUnblock) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactUnblock.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactUnblock proto.InternalMessageInfo
+
+type ContactUnblock_Request struct {
+	// contact_pk is the identifier of the contact to unblock
+	ContactPK            []byte   `protobuf:"bytes,1,opt,name=contact_pk,json=contactPk,proto3" json:"contact_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactUnblock_Request) Reset()         { *m = ContactUnblock_Request{} }
+func (m *ContactUnblock_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactUnblock_Request) ProtoMessage()    {}
+func (*ContactUnblock_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{39, 0}
+}
+func (m *ContactUnblock_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactUnblock_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactUnblock_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactUnblock_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactUnblock_Request.Merge(m, src)
+}
+func (m *ContactUnblock_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactUnblock_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactUnblock_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactUnblock_Request proto.InternalMessageInfo
+
+func (m *ContactUnblock_Request) GetContactPK() []byte {
+	if m != nil {
+		return m.ContactPK
+	}
+	return nil
+}
+
+type ContactUnblock_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactUnblock_Reply) Reset()         { *m = ContactUnblock_Reply{} }
+func (m *ContactUnblock_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactUnblock_Reply) ProtoMessage()    {}
+func (*ContactUnblock_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{39, 1}
+}
+func (m *ContactUnblock_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactUnblock_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactUnblock_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactUnblock_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactUnblock_Reply.Merge(m, src)
+}
+func (m *ContactUnblock_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactUnblock_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactUnblock_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactUnblock_Reply proto.InternalMessageInfo
+
+type ContactAliasKeySend struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactAliasKeySend) Reset()         { *m = ContactAliasKeySend{} }
+func (m *ContactAliasKeySend) String() string { return proto.CompactTextString(m) }
+func (*ContactAliasKeySend) ProtoMessage()    {}
+func (*ContactAliasKeySend) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{40}
+}
+func (m *ContactAliasKeySend) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactAliasKeySend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactAliasKeySend.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactAliasKeySend) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactAliasKeySend.Merge(m, src)
+}
+func (m *ContactAliasKeySend) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactAliasKeySend) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactAliasKeySend.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactAliasKeySend proto.InternalMessageInfo
+
+type ContactAliasKeySend_Request struct {
+	// contact_pk is the identifier of the contact to send the alias public key to
+	GroupPK              []byte   `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactAliasKeySend_Request) Reset()         { *m = ContactAliasKeySend_Request{} }
+func (m *ContactAliasKeySend_Request) String() string { return proto.CompactTextString(m) }
+func (*ContactAliasKeySend_Request) ProtoMessage()    {}
+func (*ContactAliasKeySend_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{40, 0}
+}
+func (m *ContactAliasKeySend_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactAliasKeySend_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactAliasKeySend_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactAliasKeySend_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactAliasKeySend_Request.Merge(m, src)
+}
+func (m *ContactAliasKeySend_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactAliasKeySend_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactAliasKeySend_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactAliasKeySend_Request proto.InternalMessageInfo
+
+func (m *ContactAliasKeySend_Request) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+type ContactAliasKeySend_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContactAliasKeySend_Reply) Reset()         { *m = ContactAliasKeySend_Reply{} }
+func (m *ContactAliasKeySend_Reply) String() string { return proto.CompactTextString(m) }
+func (*ContactAliasKeySend_Reply) ProtoMessage()    {}
+func (*ContactAliasKeySend_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{40, 1}
+}
+func (m *ContactAliasKeySend_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactAliasKeySend_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactAliasKeySend_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContactAliasKeySend_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactAliasKeySend_Reply.Merge(m, src)
+}
+func (m *ContactAliasKeySend_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactAliasKeySend_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactAliasKeySend_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactAliasKeySend_Reply proto.InternalMessageInfo
+
+type MultiMemberGroupCreate struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupCreate) Reset()         { *m = MultiMemberGroupCreate{} }
+func (m *MultiMemberGroupCreate) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupCreate) ProtoMessage()    {}
+func (*MultiMemberGroupCreate) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{41}
+}
+func (m *MultiMemberGroupCreate) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupCreate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupCreate.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupCreate) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupCreate.Merge(m, src)
+}
+func (m *MultiMemberGroupCreate) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupCreate) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupCreate.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupCreate proto.InternalMessageInfo
+
+type MultiMemberGroupCreate_Request struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupCreate_Request) Reset()         { *m = MultiMemberGroupCreate_Request{} }
+func (m *MultiMemberGroupCreate_Request) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupCreate_Request) ProtoMessage()    {}
+func (*MultiMemberGroupCreate_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{41, 0}
+}
+func (m *MultiMemberGroupCreate_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupCreate_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupCreate_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupCreate_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupCreate_Request.Merge(m, src)
+}
+func (m *MultiMemberGroupCreate_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupCreate_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupCreate_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupCreate_Request proto.InternalMessageInfo
+
+type MultiMemberGroupCreate_Reply struct {
+	// group_pk is the identifier of the newly created group
+	GroupPK              []byte   `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupCreate_Reply) Reset()         { *m = MultiMemberGroupCreate_Reply{} }
+func (m *MultiMemberGroupCreate_Reply) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupCreate_Reply) ProtoMessage()    {}
+func (*MultiMemberGroupCreate_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{41, 1}
+}
+func (m *MultiMemberGroupCreate_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupCreate_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupCreate_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupCreate_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupCreate_Reply.Merge(m, src)
+}
+func (m *MultiMemberGroupCreate_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupCreate_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupCreate_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupCreate_Reply proto.InternalMessageInfo
+
+func (m *MultiMemberGroupCreate_Reply) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+type MultiMemberGroupJoin struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupJoin) Reset()         { *m = MultiMemberGroupJoin{} }
+func (m *MultiMemberGroupJoin) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupJoin) ProtoMessage()    {}
+func (*MultiMemberGroupJoin) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{42}
+}
+func (m *MultiMemberGroupJoin) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupJoin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupJoin.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupJoin) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupJoin.Merge(m, src)
+}
+func (m *MultiMemberGroupJoin) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupJoin) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupJoin.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupJoin proto.InternalMessageInfo
+
+type MultiMemberGroupJoin_Request struct {
+	// group is the information of the group to join
+	Group                *Group   `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupJoin_Request) Reset()         { *m = MultiMemberGroupJoin_Request{} }
+func (m *MultiMemberGroupJoin_Request) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupJoin_Request) ProtoMessage()    {}
+func (*MultiMemberGroupJoin_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{42, 0}
+}
+func (m *MultiMemberGroupJoin_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupJoin_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupJoin_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupJoin_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupJoin_Request.Merge(m, src)
+}
+func (m *MultiMemberGroupJoin_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupJoin_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupJoin_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupJoin_Request proto.InternalMessageInfo
+
+func (m *MultiMemberGroupJoin_Request) GetGroup() *Group {
+	if m != nil {
+		return m.Group
+	}
+	return nil
+}
+
+type MultiMemberGroupJoin_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupJoin_Reply) Reset()         { *m = MultiMemberGroupJoin_Reply{} }
+func (m *MultiMemberGroupJoin_Reply) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupJoin_Reply) ProtoMessage()    {}
+func (*MultiMemberGroupJoin_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{42, 1}
+}
+func (m *MultiMemberGroupJoin_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupJoin_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupJoin_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupJoin_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupJoin_Reply.Merge(m, src)
+}
+func (m *MultiMemberGroupJoin_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupJoin_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupJoin_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupJoin_Reply proto.InternalMessageInfo
+
+type MultiMemberGroupLeave struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupLeave) Reset()         { *m = MultiMemberGroupLeave{} }
+func (m *MultiMemberGroupLeave) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupLeave) ProtoMessage()    {}
+func (*MultiMemberGroupLeave) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{43}
+}
+func (m *MultiMemberGroupLeave) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupLeave) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupLeave.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupLeave) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupLeave.Merge(m, src)
+}
+func (m *MultiMemberGroupLeave) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupLeave) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupLeave.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupLeave proto.InternalMessageInfo
+
+type MultiMemberGroupLeave_Request struct {
+	GroupPK              []byte   `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupLeave_Request) Reset()         { *m = MultiMemberGroupLeave_Request{} }
+func (m *MultiMemberGroupLeave_Request) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupLeave_Request) ProtoMessage()    {}
+func (*MultiMemberGroupLeave_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{43, 0}
+}
+func (m *MultiMemberGroupLeave_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupLeave_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupLeave_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupLeave_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupLeave_Request.Merge(m, src)
+}
+func (m *MultiMemberGroupLeave_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupLeave_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupLeave_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupLeave_Request proto.InternalMessageInfo
+
+func (m *MultiMemberGroupLeave_Request) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+type MultiMemberGroupLeave_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupLeave_Reply) Reset()         { *m = MultiMemberGroupLeave_Reply{} }
+func (m *MultiMemberGroupLeave_Reply) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupLeave_Reply) ProtoMessage()    {}
+func (*MultiMemberGroupLeave_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{43, 1}
+}
+func (m *MultiMemberGroupLeave_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupLeave_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupLeave_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupLeave_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupLeave_Reply.Merge(m, src)
+}
+func (m *MultiMemberGroupLeave_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupLeave_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupLeave_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupLeave_Reply proto.InternalMessageInfo
+
+type MultiMemberGroupAliasResolverDisclose struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose) Reset()         { *m = MultiMemberGroupAliasResolverDisclose{} }
+func (m *MultiMemberGroupAliasResolverDisclose) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupAliasResolverDisclose) ProtoMessage()    {}
+func (*MultiMemberGroupAliasResolverDisclose) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{44}
+}
+func (m *MultiMemberGroupAliasResolverDisclose) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupAliasResolverDisclose) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupAliasResolverDisclose.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupAliasResolverDisclose) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupAliasResolverDisclose.Merge(m, src)
+}
+func (m *MultiMemberGroupAliasResolverDisclose) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupAliasResolverDisclose) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupAliasResolverDisclose.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupAliasResolverDisclose proto.InternalMessageInfo
+
+type MultiMemberGroupAliasResolverDisclose_Request struct {
+	GroupPK              []byte   `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose_Request) Reset() {
+	*m = MultiMemberGroupAliasResolverDisclose_Request{}
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Request) String() string {
+	return proto.CompactTextString(m)
+}
+func (*MultiMemberGroupAliasResolverDisclose_Request) ProtoMessage() {}
+func (*MultiMemberGroupAliasResolverDisclose_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{44, 0}
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupAliasResolverDisclose_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupAliasResolverDisclose_Request.Merge(m, src)
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupAliasResolverDisclose_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupAliasResolverDisclose_Request proto.InternalMessageInfo
+
+func (m *MultiMemberGroupAliasResolverDisclose_Request) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+type MultiMemberGroupAliasResolverDisclose_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose_Reply) Reset() {
+	*m = MultiMemberGroupAliasResolverDisclose_Reply{}
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Reply) String() string {
+	return proto.CompactTextString(m)
+}
+func (*MultiMemberGroupAliasResolverDisclose_Reply) ProtoMessage() {}
+func (*MultiMemberGroupAliasResolverDisclose_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{44, 1}
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupAliasResolverDisclose_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupAliasResolverDisclose_Reply.Merge(m, src)
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupAliasResolverDisclose_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupAliasResolverDisclose_Reply proto.InternalMessageInfo
+
+type MultiMemberGroupAdminRoleGrant struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupAdminRoleGrant) Reset()         { *m = MultiMemberGroupAdminRoleGrant{} }
+func (m *MultiMemberGroupAdminRoleGrant) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupAdminRoleGrant) ProtoMessage()    {}
+func (*MultiMemberGroupAdminRoleGrant) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{45}
+}
+func (m *MultiMemberGroupAdminRoleGrant) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupAdminRoleGrant) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupAdminRoleGrant.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupAdminRoleGrant) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupAdminRoleGrant.Merge(m, src)
+}
+func (m *MultiMemberGroupAdminRoleGrant) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupAdminRoleGrant) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupAdminRoleGrant.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupAdminRoleGrant proto.InternalMessageInfo
+
+type MultiMemberGroupAdminRoleGrant_Request struct {
+	// group_pk is the identifier of the group
+	GroupPK []byte `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	// member_pk is the identifier of the member which will be granted the admin role
+	MemberPK             []byte   `protobuf:"bytes,2,opt,name=member_pk,json=memberPk,proto3" json:"member_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupAdminRoleGrant_Request) Reset() {
+	*m = MultiMemberGroupAdminRoleGrant_Request{}
+}
+func (m *MultiMemberGroupAdminRoleGrant_Request) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupAdminRoleGrant_Request) ProtoMessage()    {}
+func (*MultiMemberGroupAdminRoleGrant_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{45, 0}
+}
+func (m *MultiMemberGroupAdminRoleGrant_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupAdminRoleGrant_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupAdminRoleGrant_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupAdminRoleGrant_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupAdminRoleGrant_Request.Merge(m, src)
+}
+func (m *MultiMemberGroupAdminRoleGrant_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupAdminRoleGrant_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupAdminRoleGrant_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupAdminRoleGrant_Request proto.InternalMessageInfo
+
+func (m *MultiMemberGroupAdminRoleGrant_Request) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+func (m *MultiMemberGroupAdminRoleGrant_Request) GetMemberPK() []byte {
+	if m != nil {
+		return m.MemberPK
+	}
+	return nil
+}
+
+type MultiMemberGroupAdminRoleGrant_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupAdminRoleGrant_Reply) Reset()         { *m = MultiMemberGroupAdminRoleGrant_Reply{} }
+func (m *MultiMemberGroupAdminRoleGrant_Reply) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupAdminRoleGrant_Reply) ProtoMessage()    {}
+func (*MultiMemberGroupAdminRoleGrant_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{45, 1}
+}
+func (m *MultiMemberGroupAdminRoleGrant_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupAdminRoleGrant_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupAdminRoleGrant_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupAdminRoleGrant_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupAdminRoleGrant_Reply.Merge(m, src)
+}
+func (m *MultiMemberGroupAdminRoleGrant_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupAdminRoleGrant_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupAdminRoleGrant_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupAdminRoleGrant_Reply proto.InternalMessageInfo
+
+type MultiMemberGroupInvitationCreate struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupInvitationCreate) Reset()         { *m = MultiMemberGroupInvitationCreate{} }
+func (m *MultiMemberGroupInvitationCreate) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupInvitationCreate) ProtoMessage()    {}
+func (*MultiMemberGroupInvitationCreate) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{46}
+}
+func (m *MultiMemberGroupInvitationCreate) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupInvitationCreate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupInvitationCreate.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupInvitationCreate) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupInvitationCreate.Merge(m, src)
+}
+func (m *MultiMemberGroupInvitationCreate) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupInvitationCreate) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupInvitationCreate.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupInvitationCreate proto.InternalMessageInfo
+
+type MultiMemberGroupInvitationCreate_Request struct {
+	// group_pk is the identifier of the group
+	GroupPK              []byte   `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupInvitationCreate_Request) Reset() {
+	*m = MultiMemberGroupInvitationCreate_Request{}
+}
+func (m *MultiMemberGroupInvitationCreate_Request) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupInvitationCreate_Request) ProtoMessage()    {}
+func (*MultiMemberGroupInvitationCreate_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{46, 0}
+}
+func (m *MultiMemberGroupInvitationCreate_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupInvitationCreate_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupInvitationCreate_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupInvitationCreate_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupInvitationCreate_Request.Merge(m, src)
+}
+func (m *MultiMemberGroupInvitationCreate_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupInvitationCreate_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupInvitationCreate_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupInvitationCreate_Request proto.InternalMessageInfo
+
+func (m *MultiMemberGroupInvitationCreate_Request) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+type MultiMemberGroupInvitationCreate_Reply struct {
+	// group is the invitation to the group
+	Group                *Group   `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MultiMemberGroupInvitationCreate_Reply) Reset() {
+	*m = MultiMemberGroupInvitationCreate_Reply{}
+}
+func (m *MultiMemberGroupInvitationCreate_Reply) String() string { return proto.CompactTextString(m) }
+func (*MultiMemberGroupInvitationCreate_Reply) ProtoMessage()    {}
+func (*MultiMemberGroupInvitationCreate_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{46, 1}
+}
+func (m *MultiMemberGroupInvitationCreate_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MultiMemberGroupInvitationCreate_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MultiMemberGroupInvitationCreate_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MultiMemberGroupInvitationCreate_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MultiMemberGroupInvitationCreate_Reply.Merge(m, src)
+}
+func (m *MultiMemberGroupInvitationCreate_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *MultiMemberGroupInvitationCreate_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_MultiMemberGroupInvitationCreate_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MultiMemberGroupInvitationCreate_Reply proto.InternalMessageInfo
+
+func (m *MultiMemberGroupInvitationCreate_Reply) GetGroup() *Group {
+	if m != nil {
+		return m.Group
+	}
+	return nil
+}
+
+type AppMetadataSend struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AppMetadataSend) Reset()         { *m = AppMetadataSend{} }
+func (m *AppMetadataSend) String() string { return proto.CompactTextString(m) }
+func (*AppMetadataSend) ProtoMessage()    {}
+func (*AppMetadataSend) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{47}
+}
+func (m *AppMetadataSend) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AppMetadataSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AppMetadataSend.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AppMetadataSend) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AppMetadataSend.Merge(m, src)
+}
+func (m *AppMetadataSend) XXX_Size() int {
+	return m.Size()
+}
+func (m *AppMetadataSend) XXX_DiscardUnknown() {
+	xxx_messageInfo_AppMetadataSend.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AppMetadataSend proto.InternalMessageInfo
+
+type AppMetadataSend_Request struct {
+	// group_pk is the identifier of the group
+	GroupPK []byte `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	// payload is the payload to send
 	Payload              []byte   `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GroupMessageSend_Request) Reset()         { *m = GroupMessageSend_Request{} }
-func (m *GroupMessageSend_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupMessageSend_Request) ProtoMessage()    {}
-func (*GroupMessageSend_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{8, 0}
+func (m *AppMetadataSend_Request) Reset()         { *m = AppMetadataSend_Request{} }
+func (m *AppMetadataSend_Request) String() string { return proto.CompactTextString(m) }
+func (*AppMetadataSend_Request) ProtoMessage()    {}
+func (*AppMetadataSend_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{47, 0}
 }
-func (m *GroupMessageSend_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageSend_Request.Unmarshal(m, b)
+func (m *AppMetadataSend_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
 }
-func (m *GroupMessageSend_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageSend_Request.Marshal(b, m, deterministic)
+func (m *AppMetadataSend_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AppMetadataSend_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
-func (m *GroupMessageSend_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMessageSend_Request.Merge(m, src)
+func (m *AppMetadataSend_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AppMetadataSend_Request.Merge(m, src)
 }
-func (m *GroupMessageSend_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageSend_Request.Size(m)
+func (m *AppMetadataSend_Request) XXX_Size() int {
+	return m.Size()
 }
-func (m *GroupMessageSend_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMessageSend_Request.DiscardUnknown(m)
+func (m *AppMetadataSend_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_AppMetadataSend_Request.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GroupMessageSend_Request proto.InternalMessageInfo
+var xxx_messageInfo_AppMetadataSend_Request proto.InternalMessageInfo
 
-func (m *GroupMessageSend_Request) GetGroupPubKey() []byte {
+func (m *AppMetadataSend_Request) GetGroupPK() []byte {
 	if m != nil {
-		return m.GroupPubKey
+		return m.GroupPK
 	}
 	return nil
 }
 
-func (m *GroupMessageSend_Request) GetPayload() []byte {
-	if m != nil {
-		return m.Payload
-	}
-	return nil
-}
-
-type GroupMessageSend_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupMessageSend_Reply) Reset()         { *m = GroupMessageSend_Reply{} }
-func (m *GroupMessageSend_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupMessageSend_Reply) ProtoMessage()    {}
-func (*GroupMessageSend_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{8, 1}
-}
-func (m *GroupMessageSend_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageSend_Reply.Unmarshal(m, b)
-}
-func (m *GroupMessageSend_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageSend_Reply.Marshal(b, m, deterministic)
-}
-func (m *GroupMessageSend_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMessageSend_Reply.Merge(m, src)
-}
-func (m *GroupMessageSend_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageSend_Reply.Size(m)
-}
-func (m *GroupMessageSend_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMessageSend_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupMessageSend_Reply proto.InternalMessageInfo
-
-type AccountAppendAppSpecificEvent struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountAppendAppSpecificEvent) Reset()         { *m = AccountAppendAppSpecificEvent{} }
-func (m *AccountAppendAppSpecificEvent) String() string { return proto.CompactTextString(m) }
-func (*AccountAppendAppSpecificEvent) ProtoMessage()    {}
-func (*AccountAppendAppSpecificEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{9}
-}
-func (m *AccountAppendAppSpecificEvent) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountAppendAppSpecificEvent.Unmarshal(m, b)
-}
-func (m *AccountAppendAppSpecificEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountAppendAppSpecificEvent.Marshal(b, m, deterministic)
-}
-func (m *AccountAppendAppSpecificEvent) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountAppendAppSpecificEvent.Merge(m, src)
-}
-func (m *AccountAppendAppSpecificEvent) XXX_Size() int {
-	return xxx_messageInfo_AccountAppendAppSpecificEvent.Size(m)
-}
-func (m *AccountAppendAppSpecificEvent) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountAppendAppSpecificEvent.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountAppendAppSpecificEvent proto.InternalMessageInfo
-
-type AccountAppendAppSpecificEvent_Request struct {
-	Payload              []byte   `protobuf:"bytes,1,opt,name=payload,proto3" json:"payload,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountAppendAppSpecificEvent_Request) Reset()         { *m = AccountAppendAppSpecificEvent_Request{} }
-func (m *AccountAppendAppSpecificEvent_Request) String() string { return proto.CompactTextString(m) }
-func (*AccountAppendAppSpecificEvent_Request) ProtoMessage()    {}
-func (*AccountAppendAppSpecificEvent_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{9, 0}
-}
-func (m *AccountAppendAppSpecificEvent_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountAppendAppSpecificEvent_Request.Unmarshal(m, b)
-}
-func (m *AccountAppendAppSpecificEvent_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountAppendAppSpecificEvent_Request.Marshal(b, m, deterministic)
-}
-func (m *AccountAppendAppSpecificEvent_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountAppendAppSpecificEvent_Request.Merge(m, src)
-}
-func (m *AccountAppendAppSpecificEvent_Request) XXX_Size() int {
-	return xxx_messageInfo_AccountAppendAppSpecificEvent_Request.Size(m)
-}
-func (m *AccountAppendAppSpecificEvent_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountAppendAppSpecificEvent_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountAppendAppSpecificEvent_Request proto.InternalMessageInfo
-
-func (m *AccountAppendAppSpecificEvent_Request) GetPayload() []byte {
+func (m *AppMetadataSend_Request) GetPayload() []byte {
 	if m != nil {
 		return m.Payload
 	}
 	return nil
 }
 
-type AccountAppendAppSpecificEvent_Reply struct {
+type AppMetadataSend_Reply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AccountAppendAppSpecificEvent_Reply) Reset()         { *m = AccountAppendAppSpecificEvent_Reply{} }
-func (m *AccountAppendAppSpecificEvent_Reply) String() string { return proto.CompactTextString(m) }
-func (*AccountAppendAppSpecificEvent_Reply) ProtoMessage()    {}
-func (*AccountAppendAppSpecificEvent_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{9, 1}
+func (m *AppMetadataSend_Reply) Reset()         { *m = AppMetadataSend_Reply{} }
+func (m *AppMetadataSend_Reply) String() string { return proto.CompactTextString(m) }
+func (*AppMetadataSend_Reply) ProtoMessage()    {}
+func (*AppMetadataSend_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{47, 1}
 }
-func (m *AccountAppendAppSpecificEvent_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountAppendAppSpecificEvent_Reply.Unmarshal(m, b)
+func (m *AppMetadataSend_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
 }
-func (m *AccountAppendAppSpecificEvent_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountAppendAppSpecificEvent_Reply.Marshal(b, m, deterministic)
+func (m *AppMetadataSend_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AppMetadataSend_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
-func (m *AccountAppendAppSpecificEvent_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountAppendAppSpecificEvent_Reply.Merge(m, src)
+func (m *AppMetadataSend_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AppMetadataSend_Reply.Merge(m, src)
 }
-func (m *AccountAppendAppSpecificEvent_Reply) XXX_Size() int {
-	return xxx_messageInfo_AccountAppendAppSpecificEvent_Reply.Size(m)
+func (m *AppMetadataSend_Reply) XXX_Size() int {
+	return m.Size()
 }
-func (m *AccountAppendAppSpecificEvent_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountAppendAppSpecificEvent_Reply.DiscardUnknown(m)
+func (m *AppMetadataSend_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AppMetadataSend_Reply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AccountAppendAppSpecificEvent_Reply proto.InternalMessageInfo
+var xxx_messageInfo_AppMetadataSend_Reply proto.InternalMessageInfo
+
+type AppMessageSend struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AppMessageSend) Reset()         { *m = AppMessageSend{} }
+func (m *AppMessageSend) String() string { return proto.CompactTextString(m) }
+func (*AppMessageSend) ProtoMessage()    {}
+func (*AppMessageSend) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{48}
+}
+func (m *AppMessageSend) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AppMessageSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AppMessageSend.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AppMessageSend) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AppMessageSend.Merge(m, src)
+}
+func (m *AppMessageSend) XXX_Size() int {
+	return m.Size()
+}
+func (m *AppMessageSend) XXX_DiscardUnknown() {
+	xxx_messageInfo_AppMessageSend.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AppMessageSend proto.InternalMessageInfo
+
+type AppMessageSend_Request struct {
+	// group_pk is the identifier of the group
+	GroupPK []byte `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	// payload is the payload to send
+	Payload              []byte   `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AppMessageSend_Request) Reset()         { *m = AppMessageSend_Request{} }
+func (m *AppMessageSend_Request) String() string { return proto.CompactTextString(m) }
+func (*AppMessageSend_Request) ProtoMessage()    {}
+func (*AppMessageSend_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{48, 0}
+}
+func (m *AppMessageSend_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AppMessageSend_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AppMessageSend_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AppMessageSend_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AppMessageSend_Request.Merge(m, src)
+}
+func (m *AppMessageSend_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *AppMessageSend_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_AppMessageSend_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AppMessageSend_Request proto.InternalMessageInfo
+
+func (m *AppMessageSend_Request) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+func (m *AppMessageSend_Request) GetPayload() []byte {
+	if m != nil {
+		return m.Payload
+	}
+	return nil
+}
+
+type AppMessageSend_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AppMessageSend_Reply) Reset()         { *m = AppMessageSend_Reply{} }
+func (m *AppMessageSend_Reply) String() string { return proto.CompactTextString(m) }
+func (*AppMessageSend_Reply) ProtoMessage()    {}
+func (*AppMessageSend_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{48, 1}
+}
+func (m *AppMessageSend_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AppMessageSend_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AppMessageSend_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AppMessageSend_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AppMessageSend_Reply.Merge(m, src)
+}
+func (m *AppMessageSend_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *AppMessageSend_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AppMessageSend_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AppMessageSend_Reply proto.InternalMessageInfo
+
+type GroupMetadataEvent struct {
+	// event_context contains context information about the event
+	EventContext *EventContext `protobuf:"bytes,1,opt,name=event_context,json=eventContext,proto3" json:"event_context,omitempty"`
+	// metadata contains the newly available metadata
+	Metadata *GroupMetadata `protobuf:"bytes,2,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// event_clear clear bytes for the event
+	Event                []byte   `protobuf:"bytes,3,opt,name=event,proto3" json:"event,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupMetadataEvent) Reset()         { *m = GroupMetadataEvent{} }
+func (m *GroupMetadataEvent) String() string { return proto.CompactTextString(m) }
+func (*GroupMetadataEvent) ProtoMessage()    {}
+func (*GroupMetadataEvent) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{49}
+}
+func (m *GroupMetadataEvent) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupMetadataEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupMetadataEvent.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupMetadataEvent) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMetadataEvent.Merge(m, src)
+}
+func (m *GroupMetadataEvent) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupMetadataEvent) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMetadataEvent.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupMetadataEvent proto.InternalMessageInfo
+
+func (m *GroupMetadataEvent) GetEventContext() *EventContext {
+	if m != nil {
+		return m.EventContext
+	}
+	return nil
+}
+
+func (m *GroupMetadataEvent) GetMetadata() *GroupMetadata {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+func (m *GroupMetadataEvent) GetEvent() []byte {
+	if m != nil {
+		return m.Event
+	}
+	return nil
+}
+
+type GroupMessageEvent struct {
+	// event_context contains context information about the event
+	EventContext *EventContext `protobuf:"bytes,1,opt,name=event_context,json=eventContext,proto3" json:"event_context,omitempty"`
+	// headers contains headers of the secure message
+	Headers *MessageHeaders `protobuf:"bytes,2,opt,name=headers,proto3" json:"headers,omitempty"`
+	// message contains the secure message payload
+	Message              []byte   `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupMessageEvent) Reset()         { *m = GroupMessageEvent{} }
+func (m *GroupMessageEvent) String() string { return proto.CompactTextString(m) }
+func (*GroupMessageEvent) ProtoMessage()    {}
+func (*GroupMessageEvent) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{50}
+}
+func (m *GroupMessageEvent) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupMessageEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupMessageEvent.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupMessageEvent) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMessageEvent.Merge(m, src)
+}
+func (m *GroupMessageEvent) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupMessageEvent) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMessageEvent.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupMessageEvent proto.InternalMessageInfo
+
+func (m *GroupMessageEvent) GetEventContext() *EventContext {
+	if m != nil {
+		return m.EventContext
+	}
+	return nil
+}
+
+func (m *GroupMessageEvent) GetHeaders() *MessageHeaders {
+	if m != nil {
+		return m.Headers
+	}
+	return nil
+}
+
+func (m *GroupMessageEvent) GetMessage() []byte {
+	if m != nil {
+		return m.Message
+	}
+	return nil
+}
+
+type GroupMetadataSubscribe struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupMetadataSubscribe) Reset()         { *m = GroupMetadataSubscribe{} }
+func (m *GroupMetadataSubscribe) String() string { return proto.CompactTextString(m) }
+func (*GroupMetadataSubscribe) ProtoMessage()    {}
+func (*GroupMetadataSubscribe) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{51}
+}
+func (m *GroupMetadataSubscribe) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupMetadataSubscribe) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupMetadataSubscribe.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupMetadataSubscribe) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMetadataSubscribe.Merge(m, src)
+}
+func (m *GroupMetadataSubscribe) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupMetadataSubscribe) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMetadataSubscribe.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupMetadataSubscribe proto.InternalMessageInfo
+
+type GroupMetadataSubscribe_Request struct {
+	// group_pk is the identifier of the group
+	GroupPK []byte `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	// since is the lower ID bound used to filter events
+	Since []byte `protobuf:"bytes,2,opt,name=since,proto3" json:"since,omitempty"`
+	// until is the upper ID bound used to filter events
+	Until []byte `protobuf:"bytes,3,opt,name=until,proto3" json:"until,omitempty"`
+	// go_backwards indicates whether the events should be returned in reverse order
+	GoBackwards          bool     `protobuf:"varint,4,opt,name=go_backwards,json=goBackwards,proto3" json:"go_backwards,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupMetadataSubscribe_Request) Reset()         { *m = GroupMetadataSubscribe_Request{} }
+func (m *GroupMetadataSubscribe_Request) String() string { return proto.CompactTextString(m) }
+func (*GroupMetadataSubscribe_Request) ProtoMessage()    {}
+func (*GroupMetadataSubscribe_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{51, 0}
+}
+func (m *GroupMetadataSubscribe_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupMetadataSubscribe_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupMetadataSubscribe_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupMetadataSubscribe_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMetadataSubscribe_Request.Merge(m, src)
+}
+func (m *GroupMetadataSubscribe_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupMetadataSubscribe_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMetadataSubscribe_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupMetadataSubscribe_Request proto.InternalMessageInfo
+
+func (m *GroupMetadataSubscribe_Request) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+func (m *GroupMetadataSubscribe_Request) GetSince() []byte {
+	if m != nil {
+		return m.Since
+	}
+	return nil
+}
+
+func (m *GroupMetadataSubscribe_Request) GetUntil() []byte {
+	if m != nil {
+		return m.Until
+	}
+	return nil
+}
+
+func (m *GroupMetadataSubscribe_Request) GetGoBackwards() bool {
+	if m != nil {
+		return m.GoBackwards
+	}
+	return false
+}
 
 type GroupMessageSubscribe struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -1134,19 +4874,28 @@ func (m *GroupMessageSubscribe) Reset()         { *m = GroupMessageSubscribe{} }
 func (m *GroupMessageSubscribe) String() string { return proto.CompactTextString(m) }
 func (*GroupMessageSubscribe) ProtoMessage()    {}
 func (*GroupMessageSubscribe) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{10}
+	return fileDescriptor_047e04c733cf8554, []int{52}
 }
 func (m *GroupMessageSubscribe) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageSubscribe.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 func (m *GroupMessageSubscribe) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageSubscribe.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_GroupMessageSubscribe.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 func (m *GroupMessageSubscribe) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GroupMessageSubscribe.Merge(m, src)
 }
 func (m *GroupMessageSubscribe) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageSubscribe.Size(m)
+	return m.Size()
 }
 func (m *GroupMessageSubscribe) XXX_DiscardUnknown() {
 	xxx_messageInfo_GroupMessageSubscribe.DiscardUnknown(m)
@@ -1155,9 +4904,13 @@ func (m *GroupMessageSubscribe) XXX_DiscardUnknown() {
 var xxx_messageInfo_GroupMessageSubscribe proto.InternalMessageInfo
 
 type GroupMessageSubscribe_Request struct {
-	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
-	Since                []byte   `protobuf:"bytes,2,opt,name=since,proto3" json:"since,omitempty"`
-	Until                []byte   `protobuf:"bytes,3,opt,name=until,proto3" json:"until,omitempty"`
+	// group_pk is the identifier of the group
+	GroupPK []byte `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	// since is the lower ID bound used to filter events
+	Since []byte `protobuf:"bytes,2,opt,name=since,proto3" json:"since,omitempty"`
+	// until is the upper ID bound used to filter events
+	Until []byte `protobuf:"bytes,3,opt,name=until,proto3" json:"until,omitempty"`
+	// go_backwards indicates whether the events should be returned in reverse order
 	GoBackwards          bool     `protobuf:"varint,4,opt,name=go_backwards,json=goBackwards,proto3" json:"go_backwards,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -1168,19 +4921,28 @@ func (m *GroupMessageSubscribe_Request) Reset()         { *m = GroupMessageSubsc
 func (m *GroupMessageSubscribe_Request) String() string { return proto.CompactTextString(m) }
 func (*GroupMessageSubscribe_Request) ProtoMessage()    {}
 func (*GroupMessageSubscribe_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{10, 0}
+	return fileDescriptor_047e04c733cf8554, []int{52, 0}
 }
 func (m *GroupMessageSubscribe_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageSubscribe_Request.Unmarshal(m, b)
+	return m.Unmarshal(b)
 }
 func (m *GroupMessageSubscribe_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageSubscribe_Request.Marshal(b, m, deterministic)
+	if deterministic {
+		return xxx_messageInfo_GroupMessageSubscribe_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
 }
 func (m *GroupMessageSubscribe_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GroupMessageSubscribe_Request.Merge(m, src)
 }
 func (m *GroupMessageSubscribe_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageSubscribe_Request.Size(m)
+	return m.Size()
 }
 func (m *GroupMessageSubscribe_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_GroupMessageSubscribe_Request.DiscardUnknown(m)
@@ -1188,9 +4950,9 @@ func (m *GroupMessageSubscribe_Request) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GroupMessageSubscribe_Request proto.InternalMessageInfo
 
-func (m *GroupMessageSubscribe_Request) GetGroupPubKey() []byte {
+func (m *GroupMessageSubscribe_Request) GetGroupPK() []byte {
 	if m != nil {
-		return m.GroupPubKey
+		return m.GroupPK
 	}
 	return nil
 }
@@ -1216,1841 +4978,45 @@ func (m *GroupMessageSubscribe_Request) GetGoBackwards() bool {
 	return false
 }
 
-type GroupMessageSubscribe_Reply struct {
-	Event                *GroupMessageStoreEvent `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
-	XXX_unrecognized     []byte                  `json:"-"`
-	XXX_sizecache        int32                   `json:"-"`
-}
-
-func (m *GroupMessageSubscribe_Reply) Reset()         { *m = GroupMessageSubscribe_Reply{} }
-func (m *GroupMessageSubscribe_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupMessageSubscribe_Reply) ProtoMessage()    {}
-func (*GroupMessageSubscribe_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{10, 1}
-}
-func (m *GroupMessageSubscribe_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageSubscribe_Reply.Unmarshal(m, b)
-}
-func (m *GroupMessageSubscribe_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageSubscribe_Reply.Marshal(b, m, deterministic)
-}
-func (m *GroupMessageSubscribe_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMessageSubscribe_Reply.Merge(m, src)
-}
-func (m *GroupMessageSubscribe_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageSubscribe_Reply.Size(m)
-}
-func (m *GroupMessageSubscribe_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMessageSubscribe_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupMessageSubscribe_Reply proto.InternalMessageInfo
-
-func (m *GroupMessageSubscribe_Reply) GetEvent() *GroupMessageStoreEvent {
-	if m != nil {
-		return m.Event
-	}
-	return nil
-}
-
-type GroupMessageStoreEvent struct {
-	GroupStoreEvent      *GroupStoreEvent `protobuf:"bytes,1,opt,name=group_store_event,json=groupStoreEvent,proto3" json:"group_store_event,omitempty"`
-	Payload              []byte           `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
-	XXX_unrecognized     []byte           `json:"-"`
-	XXX_sizecache        int32            `json:"-"`
-}
-
-func (m *GroupMessageStoreEvent) Reset()         { *m = GroupMessageStoreEvent{} }
-func (m *GroupMessageStoreEvent) String() string { return proto.CompactTextString(m) }
-func (*GroupMessageStoreEvent) ProtoMessage()    {}
-func (*GroupMessageStoreEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{11}
-}
-func (m *GroupMessageStoreEvent) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMessageStoreEvent.Unmarshal(m, b)
-}
-func (m *GroupMessageStoreEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMessageStoreEvent.Marshal(b, m, deterministic)
-}
-func (m *GroupMessageStoreEvent) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMessageStoreEvent.Merge(m, src)
-}
-func (m *GroupMessageStoreEvent) XXX_Size() int {
-	return xxx_messageInfo_GroupMessageStoreEvent.Size(m)
-}
-func (m *GroupMessageStoreEvent) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMessageStoreEvent.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupMessageStoreEvent proto.InternalMessageInfo
-
-func (m *GroupMessageStoreEvent) GetGroupStoreEvent() *GroupStoreEvent {
-	if m != nil {
-		return m.GroupStoreEvent
-	}
-	return nil
-}
-
-func (m *GroupMessageStoreEvent) GetPayload() []byte {
-	if m != nil {
-		return m.Payload
-	}
-	return nil
-}
-
-type GroupMemberSubscribe struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupMemberSubscribe) Reset()         { *m = GroupMemberSubscribe{} }
-func (m *GroupMemberSubscribe) String() string { return proto.CompactTextString(m) }
-func (*GroupMemberSubscribe) ProtoMessage()    {}
-func (*GroupMemberSubscribe) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{12}
-}
-func (m *GroupMemberSubscribe) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMemberSubscribe.Unmarshal(m, b)
-}
-func (m *GroupMemberSubscribe) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMemberSubscribe.Marshal(b, m, deterministic)
-}
-func (m *GroupMemberSubscribe) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMemberSubscribe.Merge(m, src)
-}
-func (m *GroupMemberSubscribe) XXX_Size() int {
-	return xxx_messageInfo_GroupMemberSubscribe.Size(m)
-}
-func (m *GroupMemberSubscribe) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMemberSubscribe.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupMemberSubscribe proto.InternalMessageInfo
-
-type GroupMemberSubscribe_Request struct {
-	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
-	Since                []byte   `protobuf:"bytes,2,opt,name=since,proto3" json:"since,omitempty"`
-	Until                []byte   `protobuf:"bytes,3,opt,name=until,proto3" json:"until,omitempty"`
-	GoBackwards          bool     `protobuf:"varint,4,opt,name=go_backwards,json=goBackwards,proto3" json:"go_backwards,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupMemberSubscribe_Request) Reset()         { *m = GroupMemberSubscribe_Request{} }
-func (m *GroupMemberSubscribe_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupMemberSubscribe_Request) ProtoMessage()    {}
-func (*GroupMemberSubscribe_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{12, 0}
-}
-func (m *GroupMemberSubscribe_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMemberSubscribe_Request.Unmarshal(m, b)
-}
-func (m *GroupMemberSubscribe_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMemberSubscribe_Request.Marshal(b, m, deterministic)
-}
-func (m *GroupMemberSubscribe_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMemberSubscribe_Request.Merge(m, src)
-}
-func (m *GroupMemberSubscribe_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupMemberSubscribe_Request.Size(m)
-}
-func (m *GroupMemberSubscribe_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMemberSubscribe_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupMemberSubscribe_Request proto.InternalMessageInfo
-
-func (m *GroupMemberSubscribe_Request) GetGroupPubKey() []byte {
-	if m != nil {
-		return m.GroupPubKey
-	}
-	return nil
-}
-
-func (m *GroupMemberSubscribe_Request) GetSince() []byte {
-	if m != nil {
-		return m.Since
-	}
-	return nil
-}
-
-func (m *GroupMemberSubscribe_Request) GetUntil() []byte {
-	if m != nil {
-		return m.Until
-	}
-	return nil
-}
-
-func (m *GroupMemberSubscribe_Request) GetGoBackwards() bool {
-	if m != nil {
-		return m.GoBackwards
-	}
-	return false
-}
-
-type GroupMemberSubscribe_Reply struct {
-	Event                *GroupMemberStoreEvent `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
-	XXX_unrecognized     []byte                 `json:"-"`
-	XXX_sizecache        int32                  `json:"-"`
-}
-
-func (m *GroupMemberSubscribe_Reply) Reset()         { *m = GroupMemberSubscribe_Reply{} }
-func (m *GroupMemberSubscribe_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupMemberSubscribe_Reply) ProtoMessage()    {}
-func (*GroupMemberSubscribe_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{12, 1}
-}
-func (m *GroupMemberSubscribe_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMemberSubscribe_Reply.Unmarshal(m, b)
-}
-func (m *GroupMemberSubscribe_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMemberSubscribe_Reply.Marshal(b, m, deterministic)
-}
-func (m *GroupMemberSubscribe_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMemberSubscribe_Reply.Merge(m, src)
-}
-func (m *GroupMemberSubscribe_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupMemberSubscribe_Reply.Size(m)
-}
-func (m *GroupMemberSubscribe_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMemberSubscribe_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupMemberSubscribe_Reply proto.InternalMessageInfo
-
-func (m *GroupMemberSubscribe_Reply) GetEvent() *GroupMemberStoreEvent {
-	if m != nil {
-		return m.Event
-	}
-	return nil
-}
-
-type GroupMemberStoreEvent struct {
-	GroupStoreEvent      *GroupStoreEvent `protobuf:"bytes,1,opt,name=group_store_event,json=groupStoreEvent,proto3" json:"group_store_event,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
-	XXX_unrecognized     []byte           `json:"-"`
-	XXX_sizecache        int32            `json:"-"`
-}
-
-func (m *GroupMemberStoreEvent) Reset()         { *m = GroupMemberStoreEvent{} }
-func (m *GroupMemberStoreEvent) String() string { return proto.CompactTextString(m) }
-func (*GroupMemberStoreEvent) ProtoMessage()    {}
-func (*GroupMemberStoreEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{13}
-}
-func (m *GroupMemberStoreEvent) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupMemberStoreEvent.Unmarshal(m, b)
-}
-func (m *GroupMemberStoreEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupMemberStoreEvent.Marshal(b, m, deterministic)
-}
-func (m *GroupMemberStoreEvent) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupMemberStoreEvent.Merge(m, src)
-}
-func (m *GroupMemberStoreEvent) XXX_Size() int {
-	return xxx_messageInfo_GroupMemberStoreEvent.Size(m)
-}
-func (m *GroupMemberStoreEvent) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupMemberStoreEvent.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupMemberStoreEvent proto.InternalMessageInfo
-
-func (m *GroupMemberStoreEvent) GetGroupStoreEvent() *GroupStoreEvent {
-	if m != nil {
-		return m.GroupStoreEvent
-	}
-	return nil
-}
-
-type GroupCreate struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupCreate) Reset()         { *m = GroupCreate{} }
-func (m *GroupCreate) String() string { return proto.CompactTextString(m) }
-func (*GroupCreate) ProtoMessage()    {}
-func (*GroupCreate) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{14}
-}
-func (m *GroupCreate) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupCreate.Unmarshal(m, b)
-}
-func (m *GroupCreate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupCreate.Marshal(b, m, deterministic)
-}
-func (m *GroupCreate) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupCreate.Merge(m, src)
-}
-func (m *GroupCreate) XXX_Size() int {
-	return xxx_messageInfo_GroupCreate.Size(m)
-}
-func (m *GroupCreate) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupCreate.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupCreate proto.InternalMessageInfo
-
-type GroupCreate_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupCreate_Request) Reset()         { *m = GroupCreate_Request{} }
-func (m *GroupCreate_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupCreate_Request) ProtoMessage()    {}
-func (*GroupCreate_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{14, 0}
-}
-func (m *GroupCreate_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupCreate_Request.Unmarshal(m, b)
-}
-func (m *GroupCreate_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupCreate_Request.Marshal(b, m, deterministic)
-}
-func (m *GroupCreate_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupCreate_Request.Merge(m, src)
-}
-func (m *GroupCreate_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupCreate_Request.Size(m)
-}
-func (m *GroupCreate_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupCreate_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupCreate_Request proto.InternalMessageInfo
-
-type GroupCreate_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupCreate_Reply) Reset()         { *m = GroupCreate_Reply{} }
-func (m *GroupCreate_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupCreate_Reply) ProtoMessage()    {}
-func (*GroupCreate_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{14, 1}
-}
-func (m *GroupCreate_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupCreate_Reply.Unmarshal(m, b)
-}
-func (m *GroupCreate_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupCreate_Reply.Marshal(b, m, deterministic)
-}
-func (m *GroupCreate_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupCreate_Reply.Merge(m, src)
-}
-func (m *GroupCreate_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupCreate_Reply.Size(m)
-}
-func (m *GroupCreate_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupCreate_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupCreate_Reply proto.InternalMessageInfo
-
-type GroupJoin struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupJoin) Reset()         { *m = GroupJoin{} }
-func (m *GroupJoin) String() string { return proto.CompactTextString(m) }
-func (*GroupJoin) ProtoMessage()    {}
-func (*GroupJoin) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{15}
-}
-func (m *GroupJoin) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupJoin.Unmarshal(m, b)
-}
-func (m *GroupJoin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupJoin.Marshal(b, m, deterministic)
-}
-func (m *GroupJoin) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupJoin.Merge(m, src)
-}
-func (m *GroupJoin) XXX_Size() int {
-	return xxx_messageInfo_GroupJoin.Size(m)
-}
-func (m *GroupJoin) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupJoin.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupJoin proto.InternalMessageInfo
-
-type GroupJoin_Request struct {
-	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
-	Meta                 []byte   `protobuf:"bytes,2,opt,name=meta,proto3" json:"meta,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupJoin_Request) Reset()         { *m = GroupJoin_Request{} }
-func (m *GroupJoin_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupJoin_Request) ProtoMessage()    {}
-func (*GroupJoin_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{15, 0}
-}
-func (m *GroupJoin_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupJoin_Request.Unmarshal(m, b)
-}
-func (m *GroupJoin_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupJoin_Request.Marshal(b, m, deterministic)
-}
-func (m *GroupJoin_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupJoin_Request.Merge(m, src)
-}
-func (m *GroupJoin_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupJoin_Request.Size(m)
-}
-func (m *GroupJoin_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupJoin_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupJoin_Request proto.InternalMessageInfo
-
-func (m *GroupJoin_Request) GetReference() []byte {
-	if m != nil {
-		return m.Reference
-	}
-	return nil
-}
-
-func (m *GroupJoin_Request) GetMeta() []byte {
-	if m != nil {
-		return m.Meta
-	}
-	return nil
-}
-
-type GroupJoin_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupJoin_Reply) Reset()         { *m = GroupJoin_Reply{} }
-func (m *GroupJoin_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupJoin_Reply) ProtoMessage()    {}
-func (*GroupJoin_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{15, 1}
-}
-func (m *GroupJoin_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupJoin_Reply.Unmarshal(m, b)
-}
-func (m *GroupJoin_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupJoin_Reply.Marshal(b, m, deterministic)
-}
-func (m *GroupJoin_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupJoin_Reply.Merge(m, src)
-}
-func (m *GroupJoin_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupJoin_Reply.Size(m)
-}
-func (m *GroupJoin_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupJoin_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupJoin_Reply proto.InternalMessageInfo
-
-type GroupLeave struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupLeave) Reset()         { *m = GroupLeave{} }
-func (m *GroupLeave) String() string { return proto.CompactTextString(m) }
-func (*GroupLeave) ProtoMessage()    {}
-func (*GroupLeave) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{16}
-}
-func (m *GroupLeave) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupLeave.Unmarshal(m, b)
-}
-func (m *GroupLeave) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupLeave.Marshal(b, m, deterministic)
-}
-func (m *GroupLeave) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupLeave.Merge(m, src)
-}
-func (m *GroupLeave) XXX_Size() int {
-	return xxx_messageInfo_GroupLeave.Size(m)
-}
-func (m *GroupLeave) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupLeave.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupLeave proto.InternalMessageInfo
-
-type GroupLeave_Request struct {
-	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupLeave_Request) Reset()         { *m = GroupLeave_Request{} }
-func (m *GroupLeave_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupLeave_Request) ProtoMessage()    {}
-func (*GroupLeave_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{16, 0}
-}
-func (m *GroupLeave_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupLeave_Request.Unmarshal(m, b)
-}
-func (m *GroupLeave_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupLeave_Request.Marshal(b, m, deterministic)
-}
-func (m *GroupLeave_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupLeave_Request.Merge(m, src)
-}
-func (m *GroupLeave_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupLeave_Request.Size(m)
-}
-func (m *GroupLeave_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupLeave_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupLeave_Request proto.InternalMessageInfo
-
-func (m *GroupLeave_Request) GetGroupPubKey() []byte {
-	if m != nil {
-		return m.GroupPubKey
-	}
-	return nil
-}
-
-type GroupLeave_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupLeave_Reply) Reset()         { *m = GroupLeave_Reply{} }
-func (m *GroupLeave_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupLeave_Reply) ProtoMessage()    {}
-func (*GroupLeave_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{16, 1}
-}
-func (m *GroupLeave_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupLeave_Reply.Unmarshal(m, b)
-}
-func (m *GroupLeave_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupLeave_Reply.Marshal(b, m, deterministic)
-}
-func (m *GroupLeave_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupLeave_Reply.Merge(m, src)
-}
-func (m *GroupLeave_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupLeave_Reply.Size(m)
-}
-func (m *GroupLeave_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupLeave_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupLeave_Reply proto.InternalMessageInfo
-
-type GroupInvite struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupInvite) Reset()         { *m = GroupInvite{} }
-func (m *GroupInvite) String() string { return proto.CompactTextString(m) }
-func (*GroupInvite) ProtoMessage()    {}
-func (*GroupInvite) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{17}
-}
-func (m *GroupInvite) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvite.Unmarshal(m, b)
-}
-func (m *GroupInvite) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvite.Marshal(b, m, deterministic)
-}
-func (m *GroupInvite) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvite.Merge(m, src)
-}
-func (m *GroupInvite) XXX_Size() int {
-	return xxx_messageInfo_GroupInvite.Size(m)
-}
-func (m *GroupInvite) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvite.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupInvite proto.InternalMessageInfo
-
-type GroupInvite_Request struct {
-	GroupPubKey          []byte   `protobuf:"bytes,1,opt,name=group_pub_key,json=groupPubKey,proto3" json:"group_pub_key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupInvite_Request) Reset()         { *m = GroupInvite_Request{} }
-func (m *GroupInvite_Request) String() string { return proto.CompactTextString(m) }
-func (*GroupInvite_Request) ProtoMessage()    {}
-func (*GroupInvite_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{17, 0}
-}
-func (m *GroupInvite_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvite_Request.Unmarshal(m, b)
-}
-func (m *GroupInvite_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvite_Request.Marshal(b, m, deterministic)
-}
-func (m *GroupInvite_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvite_Request.Merge(m, src)
-}
-func (m *GroupInvite_Request) XXX_Size() int {
-	return xxx_messageInfo_GroupInvite_Request.Size(m)
-}
-func (m *GroupInvite_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvite_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupInvite_Request proto.InternalMessageInfo
-
-func (m *GroupInvite_Request) GetGroupPubKey() []byte {
-	if m != nil {
-		return m.GroupPubKey
-	}
-	return nil
-}
-
-type GroupInvite_Reply struct {
-	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GroupInvite_Reply) Reset()         { *m = GroupInvite_Reply{} }
-func (m *GroupInvite_Reply) String() string { return proto.CompactTextString(m) }
-func (*GroupInvite_Reply) ProtoMessage()    {}
-func (*GroupInvite_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{17, 1}
-}
-func (m *GroupInvite_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GroupInvite_Reply.Unmarshal(m, b)
-}
-func (m *GroupInvite_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GroupInvite_Reply.Marshal(b, m, deterministic)
-}
-func (m *GroupInvite_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GroupInvite_Reply.Merge(m, src)
-}
-func (m *GroupInvite_Reply) XXX_Size() int {
-	return xxx_messageInfo_GroupInvite_Reply.Size(m)
-}
-func (m *GroupInvite_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GroupInvite_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GroupInvite_Reply proto.InternalMessageInfo
-
-func (m *GroupInvite_Reply) GetReference() []byte {
-	if m != nil {
-		return m.Reference
-	}
-	return nil
-}
-
-type DevicePair struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *DevicePair) Reset()         { *m = DevicePair{} }
-func (m *DevicePair) String() string { return proto.CompactTextString(m) }
-func (*DevicePair) ProtoMessage()    {}
-func (*DevicePair) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{18}
-}
-func (m *DevicePair) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DevicePair.Unmarshal(m, b)
-}
-func (m *DevicePair) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DevicePair.Marshal(b, m, deterministic)
-}
-func (m *DevicePair) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DevicePair.Merge(m, src)
-}
-func (m *DevicePair) XXX_Size() int {
-	return xxx_messageInfo_DevicePair.Size(m)
-}
-func (m *DevicePair) XXX_DiscardUnknown() {
-	xxx_messageInfo_DevicePair.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DevicePair proto.InternalMessageInfo
-
-type DevicePair_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *DevicePair_Request) Reset()         { *m = DevicePair_Request{} }
-func (m *DevicePair_Request) String() string { return proto.CompactTextString(m) }
-func (*DevicePair_Request) ProtoMessage()    {}
-func (*DevicePair_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{18, 0}
-}
-func (m *DevicePair_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DevicePair_Request.Unmarshal(m, b)
-}
-func (m *DevicePair_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DevicePair_Request.Marshal(b, m, deterministic)
-}
-func (m *DevicePair_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DevicePair_Request.Merge(m, src)
-}
-func (m *DevicePair_Request) XXX_Size() int {
-	return xxx_messageInfo_DevicePair_Request.Size(m)
-}
-func (m *DevicePair_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_DevicePair_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DevicePair_Request proto.InternalMessageInfo
-
-type DevicePair_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *DevicePair_Reply) Reset()         { *m = DevicePair_Reply{} }
-func (m *DevicePair_Reply) String() string { return proto.CompactTextString(m) }
-func (*DevicePair_Reply) ProtoMessage()    {}
-func (*DevicePair_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{18, 1}
-}
-func (m *DevicePair_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DevicePair_Reply.Unmarshal(m, b)
-}
-func (m *DevicePair_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DevicePair_Reply.Marshal(b, m, deterministic)
-}
-func (m *DevicePair_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DevicePair_Reply.Merge(m, src)
-}
-func (m *DevicePair_Reply) XXX_Size() int {
-	return xxx_messageInfo_DevicePair_Reply.Size(m)
-}
-func (m *DevicePair_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_DevicePair_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DevicePair_Reply proto.InternalMessageInfo
-
-type ContactRequestReference struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestReference) Reset()         { *m = ContactRequestReference{} }
-func (m *ContactRequestReference) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestReference) ProtoMessage()    {}
-func (*ContactRequestReference) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{19}
-}
-func (m *ContactRequestReference) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestReference.Unmarshal(m, b)
-}
-func (m *ContactRequestReference) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestReference.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestReference) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestReference.Merge(m, src)
-}
-func (m *ContactRequestReference) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestReference.Size(m)
-}
-func (m *ContactRequestReference) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestReference.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestReference proto.InternalMessageInfo
-
-type ContactRequestReference_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestReference_Request) Reset()         { *m = ContactRequestReference_Request{} }
-func (m *ContactRequestReference_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestReference_Request) ProtoMessage()    {}
-func (*ContactRequestReference_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{19, 0}
-}
-func (m *ContactRequestReference_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestReference_Request.Unmarshal(m, b)
-}
-func (m *ContactRequestReference_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestReference_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestReference_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestReference_Request.Merge(m, src)
-}
-func (m *ContactRequestReference_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestReference_Request.Size(m)
-}
-func (m *ContactRequestReference_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestReference_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestReference_Request proto.InternalMessageInfo
-
-type ContactRequestReference_Reply struct {
-	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestReference_Reply) Reset()         { *m = ContactRequestReference_Reply{} }
-func (m *ContactRequestReference_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestReference_Reply) ProtoMessage()    {}
-func (*ContactRequestReference_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{19, 1}
-}
-func (m *ContactRequestReference_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestReference_Reply.Unmarshal(m, b)
-}
-func (m *ContactRequestReference_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestReference_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestReference_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestReference_Reply.Merge(m, src)
-}
-func (m *ContactRequestReference_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestReference_Reply.Size(m)
-}
-func (m *ContactRequestReference_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestReference_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestReference_Reply proto.InternalMessageInfo
-
-func (m *ContactRequestReference_Reply) GetReference() []byte {
-	if m != nil {
-		return m.Reference
-	}
-	return nil
-}
-
-type ContactRequestDisable struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestDisable) Reset()         { *m = ContactRequestDisable{} }
-func (m *ContactRequestDisable) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestDisable) ProtoMessage()    {}
-func (*ContactRequestDisable) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{20}
-}
-func (m *ContactRequestDisable) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestDisable.Unmarshal(m, b)
-}
-func (m *ContactRequestDisable) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestDisable.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestDisable) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestDisable.Merge(m, src)
-}
-func (m *ContactRequestDisable) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestDisable.Size(m)
-}
-func (m *ContactRequestDisable) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestDisable.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestDisable proto.InternalMessageInfo
-
-type ContactRequestDisable_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestDisable_Request) Reset()         { *m = ContactRequestDisable_Request{} }
-func (m *ContactRequestDisable_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestDisable_Request) ProtoMessage()    {}
-func (*ContactRequestDisable_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{20, 0}
-}
-func (m *ContactRequestDisable_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestDisable_Request.Unmarshal(m, b)
-}
-func (m *ContactRequestDisable_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestDisable_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestDisable_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestDisable_Request.Merge(m, src)
-}
-func (m *ContactRequestDisable_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestDisable_Request.Size(m)
-}
-func (m *ContactRequestDisable_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestDisable_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestDisable_Request proto.InternalMessageInfo
-
-type ContactRequestDisable_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestDisable_Reply) Reset()         { *m = ContactRequestDisable_Reply{} }
-func (m *ContactRequestDisable_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestDisable_Reply) ProtoMessage()    {}
-func (*ContactRequestDisable_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{20, 1}
-}
-func (m *ContactRequestDisable_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestDisable_Reply.Unmarshal(m, b)
-}
-func (m *ContactRequestDisable_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestDisable_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestDisable_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestDisable_Reply.Merge(m, src)
-}
-func (m *ContactRequestDisable_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestDisable_Reply.Size(m)
-}
-func (m *ContactRequestDisable_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestDisable_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestDisable_Reply proto.InternalMessageInfo
-
-type ContactRequestEnable struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestEnable) Reset()         { *m = ContactRequestEnable{} }
-func (m *ContactRequestEnable) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestEnable) ProtoMessage()    {}
-func (*ContactRequestEnable) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{21}
-}
-func (m *ContactRequestEnable) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestEnable.Unmarshal(m, b)
-}
-func (m *ContactRequestEnable) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestEnable.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestEnable) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestEnable.Merge(m, src)
-}
-func (m *ContactRequestEnable) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestEnable.Size(m)
-}
-func (m *ContactRequestEnable) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestEnable.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestEnable proto.InternalMessageInfo
-
-type ContactRequestEnable_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestEnable_Request) Reset()         { *m = ContactRequestEnable_Request{} }
-func (m *ContactRequestEnable_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestEnable_Request) ProtoMessage()    {}
-func (*ContactRequestEnable_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{21, 0}
-}
-func (m *ContactRequestEnable_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestEnable_Request.Unmarshal(m, b)
-}
-func (m *ContactRequestEnable_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestEnable_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestEnable_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestEnable_Request.Merge(m, src)
-}
-func (m *ContactRequestEnable_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestEnable_Request.Size(m)
-}
-func (m *ContactRequestEnable_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestEnable_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestEnable_Request proto.InternalMessageInfo
-
-type ContactRequestEnable_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestEnable_Reply) Reset()         { *m = ContactRequestEnable_Reply{} }
-func (m *ContactRequestEnable_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestEnable_Reply) ProtoMessage()    {}
-func (*ContactRequestEnable_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{21, 1}
-}
-func (m *ContactRequestEnable_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestEnable_Reply.Unmarshal(m, b)
-}
-func (m *ContactRequestEnable_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestEnable_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestEnable_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestEnable_Reply.Merge(m, src)
-}
-func (m *ContactRequestEnable_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestEnable_Reply.Size(m)
-}
-func (m *ContactRequestEnable_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestEnable_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestEnable_Reply proto.InternalMessageInfo
-
-type ContactRequestResetLink struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestResetLink) Reset()         { *m = ContactRequestResetLink{} }
-func (m *ContactRequestResetLink) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestResetLink) ProtoMessage()    {}
-func (*ContactRequestResetLink) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{22}
-}
-func (m *ContactRequestResetLink) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestResetLink.Unmarshal(m, b)
-}
-func (m *ContactRequestResetLink) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestResetLink.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestResetLink) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestResetLink.Merge(m, src)
-}
-func (m *ContactRequestResetLink) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestResetLink.Size(m)
-}
-func (m *ContactRequestResetLink) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestResetLink.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestResetLink proto.InternalMessageInfo
-
-type ContactRequestResetLink_Request struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestResetLink_Request) Reset()         { *m = ContactRequestResetLink_Request{} }
-func (m *ContactRequestResetLink_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestResetLink_Request) ProtoMessage()    {}
-func (*ContactRequestResetLink_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{22, 0}
-}
-func (m *ContactRequestResetLink_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestResetLink_Request.Unmarshal(m, b)
-}
-func (m *ContactRequestResetLink_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestResetLink_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestResetLink_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestResetLink_Request.Merge(m, src)
-}
-func (m *ContactRequestResetLink_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestResetLink_Request.Size(m)
-}
-func (m *ContactRequestResetLink_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestResetLink_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestResetLink_Request proto.InternalMessageInfo
-
-type ContactRequestResetLink_Reply struct {
-	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestResetLink_Reply) Reset()         { *m = ContactRequestResetLink_Reply{} }
-func (m *ContactRequestResetLink_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestResetLink_Reply) ProtoMessage()    {}
-func (*ContactRequestResetLink_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{22, 1}
-}
-func (m *ContactRequestResetLink_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestResetLink_Reply.Unmarshal(m, b)
-}
-func (m *ContactRequestResetLink_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestResetLink_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestResetLink_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestResetLink_Reply.Merge(m, src)
-}
-func (m *ContactRequestResetLink_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestResetLink_Reply.Size(m)
-}
-func (m *ContactRequestResetLink_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestResetLink_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestResetLink_Reply proto.InternalMessageInfo
-
-func (m *ContactRequestResetLink_Reply) GetReference() []byte {
-	if m != nil {
-		return m.Reference
-	}
-	return nil
-}
-
-type ContactRequestEnqueue struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestEnqueue) Reset()         { *m = ContactRequestEnqueue{} }
-func (m *ContactRequestEnqueue) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestEnqueue) ProtoMessage()    {}
-func (*ContactRequestEnqueue) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{23}
-}
-func (m *ContactRequestEnqueue) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestEnqueue.Unmarshal(m, b)
-}
-func (m *ContactRequestEnqueue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestEnqueue.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestEnqueue) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestEnqueue.Merge(m, src)
-}
-func (m *ContactRequestEnqueue) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestEnqueue.Size(m)
-}
-func (m *ContactRequestEnqueue) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestEnqueue.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestEnqueue proto.InternalMessageInfo
-
-type ContactRequestEnqueue_Request struct {
-	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
-	Meta                 []byte   `protobuf:"bytes,3,opt,name=meta,proto3" json:"meta,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestEnqueue_Request) Reset()         { *m = ContactRequestEnqueue_Request{} }
-func (m *ContactRequestEnqueue_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestEnqueue_Request) ProtoMessage()    {}
-func (*ContactRequestEnqueue_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{23, 0}
-}
-func (m *ContactRequestEnqueue_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestEnqueue_Request.Unmarshal(m, b)
-}
-func (m *ContactRequestEnqueue_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestEnqueue_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestEnqueue_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestEnqueue_Request.Merge(m, src)
-}
-func (m *ContactRequestEnqueue_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestEnqueue_Request.Size(m)
-}
-func (m *ContactRequestEnqueue_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestEnqueue_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestEnqueue_Request proto.InternalMessageInfo
-
-func (m *ContactRequestEnqueue_Request) GetReference() []byte {
-	if m != nil {
-		return m.Reference
-	}
-	return nil
-}
-
-func (m *ContactRequestEnqueue_Request) GetMeta() []byte {
-	if m != nil {
-		return m.Meta
-	}
-	return nil
-}
-
-type ContactRequestEnqueue_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestEnqueue_Reply) Reset()         { *m = ContactRequestEnqueue_Reply{} }
-func (m *ContactRequestEnqueue_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestEnqueue_Reply) ProtoMessage()    {}
-func (*ContactRequestEnqueue_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{23, 1}
-}
-func (m *ContactRequestEnqueue_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestEnqueue_Reply.Unmarshal(m, b)
-}
-func (m *ContactRequestEnqueue_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestEnqueue_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestEnqueue_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestEnqueue_Reply.Merge(m, src)
-}
-func (m *ContactRequestEnqueue_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestEnqueue_Reply.Size(m)
-}
-func (m *ContactRequestEnqueue_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestEnqueue_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestEnqueue_Reply proto.InternalMessageInfo
-
-type ContactRequestAccept struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestAccept) Reset()         { *m = ContactRequestAccept{} }
-func (m *ContactRequestAccept) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestAccept) ProtoMessage()    {}
-func (*ContactRequestAccept) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{24}
-}
-func (m *ContactRequestAccept) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestAccept.Unmarshal(m, b)
-}
-func (m *ContactRequestAccept) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestAccept.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestAccept) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestAccept.Merge(m, src)
-}
-func (m *ContactRequestAccept) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestAccept.Size(m)
-}
-func (m *ContactRequestAccept) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestAccept.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestAccept proto.InternalMessageInfo
-
-type ContactRequestAccept_Request struct {
-	ContactPubKey        []byte   `protobuf:"bytes,1,opt,name=contact_pub_key,json=contactPubKey,proto3" json:"contact_pub_key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestAccept_Request) Reset()         { *m = ContactRequestAccept_Request{} }
-func (m *ContactRequestAccept_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestAccept_Request) ProtoMessage()    {}
-func (*ContactRequestAccept_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{24, 0}
-}
-func (m *ContactRequestAccept_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestAccept_Request.Unmarshal(m, b)
-}
-func (m *ContactRequestAccept_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestAccept_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestAccept_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestAccept_Request.Merge(m, src)
-}
-func (m *ContactRequestAccept_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestAccept_Request.Size(m)
-}
-func (m *ContactRequestAccept_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestAccept_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestAccept_Request proto.InternalMessageInfo
-
-func (m *ContactRequestAccept_Request) GetContactPubKey() []byte {
-	if m != nil {
-		return m.ContactPubKey
-	}
-	return nil
-}
-
-type ContactRequestAccept_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRequestAccept_Reply) Reset()         { *m = ContactRequestAccept_Reply{} }
-func (m *ContactRequestAccept_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRequestAccept_Reply) ProtoMessage()    {}
-func (*ContactRequestAccept_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{24, 1}
-}
-func (m *ContactRequestAccept_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRequestAccept_Reply.Unmarshal(m, b)
-}
-func (m *ContactRequestAccept_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRequestAccept_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactRequestAccept_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRequestAccept_Reply.Merge(m, src)
-}
-func (m *ContactRequestAccept_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRequestAccept_Reply.Size(m)
-}
-func (m *ContactRequestAccept_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRequestAccept_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRequestAccept_Reply proto.InternalMessageInfo
-
-type ContactRemove struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRemove) Reset()         { *m = ContactRemove{} }
-func (m *ContactRemove) String() string { return proto.CompactTextString(m) }
-func (*ContactRemove) ProtoMessage()    {}
-func (*ContactRemove) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{25}
-}
-func (m *ContactRemove) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRemove.Unmarshal(m, b)
-}
-func (m *ContactRemove) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRemove.Marshal(b, m, deterministic)
-}
-func (m *ContactRemove) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRemove.Merge(m, src)
-}
-func (m *ContactRemove) XXX_Size() int {
-	return xxx_messageInfo_ContactRemove.Size(m)
-}
-func (m *ContactRemove) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRemove.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRemove proto.InternalMessageInfo
-
-type ContactRemove_Request struct {
-	ContactPubKey        []byte   `protobuf:"bytes,1,opt,name=contact_pub_key,json=contactPubKey,proto3" json:"contact_pub_key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRemove_Request) Reset()         { *m = ContactRemove_Request{} }
-func (m *ContactRemove_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactRemove_Request) ProtoMessage()    {}
-func (*ContactRemove_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{25, 0}
-}
-func (m *ContactRemove_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRemove_Request.Unmarshal(m, b)
-}
-func (m *ContactRemove_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRemove_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactRemove_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRemove_Request.Merge(m, src)
-}
-func (m *ContactRemove_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactRemove_Request.Size(m)
-}
-func (m *ContactRemove_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRemove_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRemove_Request proto.InternalMessageInfo
-
-func (m *ContactRemove_Request) GetContactPubKey() []byte {
-	if m != nil {
-		return m.ContactPubKey
-	}
-	return nil
-}
-
-type ContactRemove_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactRemove_Reply) Reset()         { *m = ContactRemove_Reply{} }
-func (m *ContactRemove_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactRemove_Reply) ProtoMessage()    {}
-func (*ContactRemove_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{25, 1}
-}
-func (m *ContactRemove_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactRemove_Reply.Unmarshal(m, b)
-}
-func (m *ContactRemove_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactRemove_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactRemove_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactRemove_Reply.Merge(m, src)
-}
-func (m *ContactRemove_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactRemove_Reply.Size(m)
-}
-func (m *ContactRemove_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactRemove_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactRemove_Reply proto.InternalMessageInfo
-
-type ContactBlock struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactBlock) Reset()         { *m = ContactBlock{} }
-func (m *ContactBlock) String() string { return proto.CompactTextString(m) }
-func (*ContactBlock) ProtoMessage()    {}
-func (*ContactBlock) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{26}
-}
-func (m *ContactBlock) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactBlock.Unmarshal(m, b)
-}
-func (m *ContactBlock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactBlock.Marshal(b, m, deterministic)
-}
-func (m *ContactBlock) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactBlock.Merge(m, src)
-}
-func (m *ContactBlock) XXX_Size() int {
-	return xxx_messageInfo_ContactBlock.Size(m)
-}
-func (m *ContactBlock) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactBlock.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactBlock proto.InternalMessageInfo
-
-type ContactBlock_Request struct {
-	ContactPubKey        []byte   `protobuf:"bytes,1,opt,name=contact_pub_key,json=contactPubKey,proto3" json:"contact_pub_key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactBlock_Request) Reset()         { *m = ContactBlock_Request{} }
-func (m *ContactBlock_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactBlock_Request) ProtoMessage()    {}
-func (*ContactBlock_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{26, 0}
-}
-func (m *ContactBlock_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactBlock_Request.Unmarshal(m, b)
-}
-func (m *ContactBlock_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactBlock_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactBlock_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactBlock_Request.Merge(m, src)
-}
-func (m *ContactBlock_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactBlock_Request.Size(m)
-}
-func (m *ContactBlock_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactBlock_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactBlock_Request proto.InternalMessageInfo
-
-func (m *ContactBlock_Request) GetContactPubKey() []byte {
-	if m != nil {
-		return m.ContactPubKey
-	}
-	return nil
-}
-
-type ContactBlock_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactBlock_Reply) Reset()         { *m = ContactBlock_Reply{} }
-func (m *ContactBlock_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactBlock_Reply) ProtoMessage()    {}
-func (*ContactBlock_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{26, 1}
-}
-func (m *ContactBlock_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactBlock_Reply.Unmarshal(m, b)
-}
-func (m *ContactBlock_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactBlock_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactBlock_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactBlock_Reply.Merge(m, src)
-}
-func (m *ContactBlock_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactBlock_Reply.Size(m)
-}
-func (m *ContactBlock_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactBlock_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactBlock_Reply proto.InternalMessageInfo
-
-type ContactUnblock struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactUnblock) Reset()         { *m = ContactUnblock{} }
-func (m *ContactUnblock) String() string { return proto.CompactTextString(m) }
-func (*ContactUnblock) ProtoMessage()    {}
-func (*ContactUnblock) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{27}
-}
-func (m *ContactUnblock) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactUnblock.Unmarshal(m, b)
-}
-func (m *ContactUnblock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactUnblock.Marshal(b, m, deterministic)
-}
-func (m *ContactUnblock) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactUnblock.Merge(m, src)
-}
-func (m *ContactUnblock) XXX_Size() int {
-	return xxx_messageInfo_ContactUnblock.Size(m)
-}
-func (m *ContactUnblock) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactUnblock.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactUnblock proto.InternalMessageInfo
-
-type ContactUnblock_Request struct {
-	ContactPubKey        []byte   `protobuf:"bytes,1,opt,name=contact_pub_key,json=contactPubKey,proto3" json:"contact_pub_key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactUnblock_Request) Reset()         { *m = ContactUnblock_Request{} }
-func (m *ContactUnblock_Request) String() string { return proto.CompactTextString(m) }
-func (*ContactUnblock_Request) ProtoMessage()    {}
-func (*ContactUnblock_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{27, 0}
-}
-func (m *ContactUnblock_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactUnblock_Request.Unmarshal(m, b)
-}
-func (m *ContactUnblock_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactUnblock_Request.Marshal(b, m, deterministic)
-}
-func (m *ContactUnblock_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactUnblock_Request.Merge(m, src)
-}
-func (m *ContactUnblock_Request) XXX_Size() int {
-	return xxx_messageInfo_ContactUnblock_Request.Size(m)
-}
-func (m *ContactUnblock_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactUnblock_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactUnblock_Request proto.InternalMessageInfo
-
-func (m *ContactUnblock_Request) GetContactPubKey() []byte {
-	if m != nil {
-		return m.ContactPubKey
-	}
-	return nil
-}
-
-type ContactUnblock_Reply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ContactUnblock_Reply) Reset()         { *m = ContactUnblock_Reply{} }
-func (m *ContactUnblock_Reply) String() string { return proto.CompactTextString(m) }
-func (*ContactUnblock_Reply) ProtoMessage()    {}
-func (*ContactUnblock_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{27, 1}
-}
-func (m *ContactUnblock_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContactUnblock_Reply.Unmarshal(m, b)
-}
-func (m *ContactUnblock_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContactUnblock_Reply.Marshal(b, m, deterministic)
-}
-func (m *ContactUnblock_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContactUnblock_Reply.Merge(m, src)
-}
-func (m *ContactUnblock_Reply) XXX_Size() int {
-	return xxx_messageInfo_ContactUnblock_Reply.Size(m)
-}
-func (m *ContactUnblock_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContactUnblock_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContactUnblock_Reply proto.InternalMessageInfo
-
-type AccountSubscribe struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountSubscribe) Reset()         { *m = AccountSubscribe{} }
-func (m *AccountSubscribe) String() string { return proto.CompactTextString(m) }
-func (*AccountSubscribe) ProtoMessage()    {}
-func (*AccountSubscribe) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{28}
-}
-func (m *AccountSubscribe) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountSubscribe.Unmarshal(m, b)
-}
-func (m *AccountSubscribe) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountSubscribe.Marshal(b, m, deterministic)
-}
-func (m *AccountSubscribe) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountSubscribe.Merge(m, src)
-}
-func (m *AccountSubscribe) XXX_Size() int {
-	return xxx_messageInfo_AccountSubscribe.Size(m)
-}
-func (m *AccountSubscribe) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountSubscribe.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountSubscribe proto.InternalMessageInfo
-
-type AccountSubscribe_Request struct {
-	Since                []byte   `protobuf:"bytes,1,opt,name=since,proto3" json:"since,omitempty"`
-	Until                []byte   `protobuf:"bytes,2,opt,name=until,proto3" json:"until,omitempty"`
-	GoBackwards          bool     `protobuf:"varint,3,opt,name=go_backwards,json=goBackwards,proto3" json:"go_backwards,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountSubscribe_Request) Reset()         { *m = AccountSubscribe_Request{} }
-func (m *AccountSubscribe_Request) String() string { return proto.CompactTextString(m) }
-func (*AccountSubscribe_Request) ProtoMessage()    {}
-func (*AccountSubscribe_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{28, 0}
-}
-func (m *AccountSubscribe_Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountSubscribe_Request.Unmarshal(m, b)
-}
-func (m *AccountSubscribe_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountSubscribe_Request.Marshal(b, m, deterministic)
-}
-func (m *AccountSubscribe_Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountSubscribe_Request.Merge(m, src)
-}
-func (m *AccountSubscribe_Request) XXX_Size() int {
-	return xxx_messageInfo_AccountSubscribe_Request.Size(m)
-}
-func (m *AccountSubscribe_Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountSubscribe_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountSubscribe_Request proto.InternalMessageInfo
-
-func (m *AccountSubscribe_Request) GetSince() []byte {
-	if m != nil {
-		return m.Since
-	}
-	return nil
-}
-
-func (m *AccountSubscribe_Request) GetUntil() []byte {
-	if m != nil {
-		return m.Until
-	}
-	return nil
-}
-
-func (m *AccountSubscribe_Request) GetGoBackwards() bool {
-	if m != nil {
-		return m.GoBackwards
-	}
-	return false
-}
-
-type AccountSubscribe_Reply struct {
-	Event                *AccountStoreEvent `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
-	XXX_unrecognized     []byte             `json:"-"`
-	XXX_sizecache        int32              `json:"-"`
-}
-
-func (m *AccountSubscribe_Reply) Reset()         { *m = AccountSubscribe_Reply{} }
-func (m *AccountSubscribe_Reply) String() string { return proto.CompactTextString(m) }
-func (*AccountSubscribe_Reply) ProtoMessage()    {}
-func (*AccountSubscribe_Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{28, 1}
-}
-func (m *AccountSubscribe_Reply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountSubscribe_Reply.Unmarshal(m, b)
-}
-func (m *AccountSubscribe_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountSubscribe_Reply.Marshal(b, m, deterministic)
-}
-func (m *AccountSubscribe_Reply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountSubscribe_Reply.Merge(m, src)
-}
-func (m *AccountSubscribe_Reply) XXX_Size() int {
-	return xxx_messageInfo_AccountSubscribe_Reply.Size(m)
-}
-func (m *AccountSubscribe_Reply) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountSubscribe_Reply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountSubscribe_Reply proto.InternalMessageInfo
-
-func (m *AccountSubscribe_Reply) GetEvent() *AccountStoreEvent {
-	if m != nil {
-		return m.Event
-	}
-	return nil
-}
-
-type AccountStoreEvent struct {
-	SubjectPublicKeyBytes []byte   `protobuf:"bytes,1,opt,name=subject_public_key_bytes,json=subjectPublicKeyBytes,proto3" json:"subject_public_key_bytes,omitempty"`
-	Data                  []byte   `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
-	XXX_NoUnkeyedLiteral  struct{} `json:"-"`
-	XXX_unrecognized      []byte   `json:"-"`
-	XXX_sizecache         int32    `json:"-"`
-}
-
-func (m *AccountStoreEvent) Reset()         { *m = AccountStoreEvent{} }
-func (m *AccountStoreEvent) String() string { return proto.CompactTextString(m) }
-func (*AccountStoreEvent) ProtoMessage()    {}
-func (*AccountStoreEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{29}
-}
-func (m *AccountStoreEvent) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountStoreEvent.Unmarshal(m, b)
-}
-func (m *AccountStoreEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountStoreEvent.Marshal(b, m, deterministic)
-}
-func (m *AccountStoreEvent) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountStoreEvent.Merge(m, src)
-}
-func (m *AccountStoreEvent) XXX_Size() int {
-	return xxx_messageInfo_AccountStoreEvent.Size(m)
-}
-func (m *AccountStoreEvent) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountStoreEvent.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountStoreEvent proto.InternalMessageInfo
-
-func (m *AccountStoreEvent) GetSubjectPublicKeyBytes() []byte {
-	if m != nil {
-		return m.SubjectPublicKeyBytes
-	}
-	return nil
-}
-
-func (m *AccountStoreEvent) GetData() []byte {
-	if m != nil {
-		return m.Data
-	}
-	return nil
-}
-
 func init() {
-	proto.RegisterEnum("berty.protocol.AccountEventType", AccountEventType_name, AccountEventType_value)
-	proto.RegisterEnum("berty.protocol.GroupSettingStoreSettingType", GroupSettingStoreSettingType_name, GroupSettingStoreSettingType_value)
+	proto.RegisterEnum("berty.protocol.GroupType", GroupType_name, GroupType_value)
+	proto.RegisterEnum("berty.protocol.EventType", EventType_name, EventType_value)
 	proto.RegisterEnum("berty.protocol.InstanceGetConfiguration_SettingState", InstanceGetConfiguration_SettingState_name, InstanceGetConfiguration_SettingState_value)
+	proto.RegisterType((*Account)(nil), "berty.protocol.Account")
+	proto.RegisterType((*Group)(nil), "berty.protocol.Group")
+	proto.RegisterType((*GroupMetadata)(nil), "berty.protocol.GroupMetadata")
+	proto.RegisterType((*GroupEnvelope)(nil), "berty.protocol.GroupEnvelope")
+	proto.RegisterType((*MessageHeaders)(nil), "berty.protocol.MessageHeaders")
+	proto.RegisterType((*MessageEnvelope)(nil), "berty.protocol.MessageEnvelope")
+	proto.RegisterType((*EventContext)(nil), "berty.protocol.EventContext")
+	proto.RegisterType((*AppMetadata)(nil), "berty.protocol.AppMetadata")
+	proto.RegisterType((*ContactAddAliasKey)(nil), "berty.protocol.ContactAddAliasKey")
+	proto.RegisterType((*GroupAddMemberDevice)(nil), "berty.protocol.GroupAddMemberDevice")
+	proto.RegisterType((*DeviceSecret)(nil), "berty.protocol.DeviceSecret")
+	proto.RegisterType((*GroupAddDeviceSecret)(nil), "berty.protocol.GroupAddDeviceSecret")
+	proto.RegisterType((*MultiMemberGroupAddAliasResolver)(nil), "berty.protocol.MultiMemberGroupAddAliasResolver")
+	proto.RegisterType((*MultiMemberGrantAdminRole)(nil), "berty.protocol.MultiMemberGrantAdminRole")
+	proto.RegisterType((*MultiMemberInitialMember)(nil), "berty.protocol.MultiMemberInitialMember")
+	proto.RegisterType((*GroupAddAdditionalRendezvousSeed)(nil), "berty.protocol.GroupAddAdditionalRendezvousSeed")
+	proto.RegisterType((*GroupRemoveAdditionalRendezvousSeed)(nil), "berty.protocol.GroupRemoveAdditionalRendezvousSeed")
+	proto.RegisterType((*AccountGroupJoined)(nil), "berty.protocol.AccountGroupJoined")
+	proto.RegisterType((*AccountGroupLeft)(nil), "berty.protocol.AccountGroupLeft")
+	proto.RegisterType((*AccountContactRequestDisabled)(nil), "berty.protocol.AccountContactRequestDisabled")
+	proto.RegisterType((*AccountContactRequestEnabled)(nil), "berty.protocol.AccountContactRequestEnabled")
+	proto.RegisterType((*AccountContactRequestReferenceReset)(nil), "berty.protocol.AccountContactRequestReferenceReset")
+	proto.RegisterType((*AccountContactRequestEnqueued)(nil), "berty.protocol.AccountContactRequestEnqueued")
+	proto.RegisterType((*AccountContactRequestSent)(nil), "berty.protocol.AccountContactRequestSent")
+	proto.RegisterType((*AccountContactRequestReceived)(nil), "berty.protocol.AccountContactRequestReceived")
+	proto.RegisterType((*AccountContactRequestDiscarded)(nil), "berty.protocol.AccountContactRequestDiscarded")
+	proto.RegisterType((*AccountContactRequestAccepted)(nil), "berty.protocol.AccountContactRequestAccepted")
+	proto.RegisterType((*AccountContactBlocked)(nil), "berty.protocol.AccountContactBlocked")
+	proto.RegisterType((*AccountContactUnblocked)(nil), "berty.protocol.AccountContactUnblocked")
 	proto.RegisterType((*InstanceExportData)(nil), "berty.protocol.InstanceExportData")
 	proto.RegisterType((*InstanceExportData_Request)(nil), "berty.protocol.InstanceExportData.Request")
 	proto.RegisterType((*InstanceExportData_Reply)(nil), "berty.protocol.InstanceExportData.Reply")
 	proto.RegisterType((*InstanceGetConfiguration)(nil), "berty.protocol.InstanceGetConfiguration")
 	proto.RegisterType((*InstanceGetConfiguration_Request)(nil), "berty.protocol.InstanceGetConfiguration.Request")
 	proto.RegisterType((*InstanceGetConfiguration_Reply)(nil), "berty.protocol.InstanceGetConfiguration.Reply")
-	proto.RegisterType((*GroupSettingSetMember)(nil), "berty.protocol.GroupSettingSetMember")
-	proto.RegisterType((*GroupSettingSetMember_Request)(nil), "berty.protocol.GroupSettingSetMember.Request")
-	proto.RegisterType((*GroupSettingSetMember_Reply)(nil), "berty.protocol.GroupSettingSetMember.Reply")
-	proto.RegisterType((*GroupSettingSetGroup)(nil), "berty.protocol.GroupSettingSetGroup")
-	proto.RegisterType((*GroupSettingSetGroup_Request)(nil), "berty.protocol.GroupSettingSetGroup.Request")
-	proto.RegisterType((*GroupSettingSetGroup_Reply)(nil), "berty.protocol.GroupSettingSetGroup.Reply")
-	proto.RegisterType((*GroupSettingStoreSubscribe)(nil), "berty.protocol.GroupSettingStoreSubscribe")
-	proto.RegisterType((*GroupSettingStoreSubscribe_Request)(nil), "berty.protocol.GroupSettingStoreSubscribe.Request")
-	proto.RegisterType((*GroupSettingStoreSubscribe_Reply)(nil), "berty.protocol.GroupSettingStoreSubscribe.Reply")
-	proto.RegisterType((*EventBase)(nil), "berty.protocol.EventBase")
-	proto.RegisterType((*GroupStoreEvent)(nil), "berty.protocol.GroupStoreEvent")
-	proto.RegisterType((*GroupSettingStoreEvent)(nil), "berty.protocol.GroupSettingStoreEvent")
-	proto.RegisterType((*GroupMessageSend)(nil), "berty.protocol.GroupMessageSend")
-	proto.RegisterType((*GroupMessageSend_Request)(nil), "berty.protocol.GroupMessageSend.Request")
-	proto.RegisterType((*GroupMessageSend_Reply)(nil), "berty.protocol.GroupMessageSend.Reply")
-	proto.RegisterType((*AccountAppendAppSpecificEvent)(nil), "berty.protocol.AccountAppendAppSpecificEvent")
-	proto.RegisterType((*AccountAppendAppSpecificEvent_Request)(nil), "berty.protocol.AccountAppendAppSpecificEvent.Request")
-	proto.RegisterType((*AccountAppendAppSpecificEvent_Reply)(nil), "berty.protocol.AccountAppendAppSpecificEvent.Reply")
-	proto.RegisterType((*GroupMessageSubscribe)(nil), "berty.protocol.GroupMessageSubscribe")
-	proto.RegisterType((*GroupMessageSubscribe_Request)(nil), "berty.protocol.GroupMessageSubscribe.Request")
-	proto.RegisterType((*GroupMessageSubscribe_Reply)(nil), "berty.protocol.GroupMessageSubscribe.Reply")
-	proto.RegisterType((*GroupMessageStoreEvent)(nil), "berty.protocol.GroupMessageStoreEvent")
-	proto.RegisterType((*GroupMemberSubscribe)(nil), "berty.protocol.GroupMemberSubscribe")
-	proto.RegisterType((*GroupMemberSubscribe_Request)(nil), "berty.protocol.GroupMemberSubscribe.Request")
-	proto.RegisterType((*GroupMemberSubscribe_Reply)(nil), "berty.protocol.GroupMemberSubscribe.Reply")
-	proto.RegisterType((*GroupMemberStoreEvent)(nil), "berty.protocol.GroupMemberStoreEvent")
-	proto.RegisterType((*GroupCreate)(nil), "berty.protocol.GroupCreate")
-	proto.RegisterType((*GroupCreate_Request)(nil), "berty.protocol.GroupCreate.Request")
-	proto.RegisterType((*GroupCreate_Reply)(nil), "berty.protocol.GroupCreate.Reply")
-	proto.RegisterType((*GroupJoin)(nil), "berty.protocol.GroupJoin")
-	proto.RegisterType((*GroupJoin_Request)(nil), "berty.protocol.GroupJoin.Request")
-	proto.RegisterType((*GroupJoin_Reply)(nil), "berty.protocol.GroupJoin.Reply")
-	proto.RegisterType((*GroupLeave)(nil), "berty.protocol.GroupLeave")
-	proto.RegisterType((*GroupLeave_Request)(nil), "berty.protocol.GroupLeave.Request")
-	proto.RegisterType((*GroupLeave_Reply)(nil), "berty.protocol.GroupLeave.Reply")
-	proto.RegisterType((*GroupInvite)(nil), "berty.protocol.GroupInvite")
-	proto.RegisterType((*GroupInvite_Request)(nil), "berty.protocol.GroupInvite.Request")
-	proto.RegisterType((*GroupInvite_Reply)(nil), "berty.protocol.GroupInvite.Reply")
-	proto.RegisterType((*DevicePair)(nil), "berty.protocol.DevicePair")
-	proto.RegisterType((*DevicePair_Request)(nil), "berty.protocol.DevicePair.Request")
-	proto.RegisterType((*DevicePair_Reply)(nil), "berty.protocol.DevicePair.Reply")
 	proto.RegisterType((*ContactRequestReference)(nil), "berty.protocol.ContactRequestReference")
 	proto.RegisterType((*ContactRequestReference_Request)(nil), "berty.protocol.ContactRequestReference.Request")
 	proto.RegisterType((*ContactRequestReference_Reply)(nil), "berty.protocol.ContactRequestReference.Reply")
@@ -3060,143 +5026,218 @@ func init() {
 	proto.RegisterType((*ContactRequestEnable)(nil), "berty.protocol.ContactRequestEnable")
 	proto.RegisterType((*ContactRequestEnable_Request)(nil), "berty.protocol.ContactRequestEnable.Request")
 	proto.RegisterType((*ContactRequestEnable_Reply)(nil), "berty.protocol.ContactRequestEnable.Reply")
-	proto.RegisterType((*ContactRequestResetLink)(nil), "berty.protocol.ContactRequestResetLink")
-	proto.RegisterType((*ContactRequestResetLink_Request)(nil), "berty.protocol.ContactRequestResetLink.Request")
-	proto.RegisterType((*ContactRequestResetLink_Reply)(nil), "berty.protocol.ContactRequestResetLink.Reply")
-	proto.RegisterType((*ContactRequestEnqueue)(nil), "berty.protocol.ContactRequestEnqueue")
-	proto.RegisterType((*ContactRequestEnqueue_Request)(nil), "berty.protocol.ContactRequestEnqueue.Request")
-	proto.RegisterType((*ContactRequestEnqueue_Reply)(nil), "berty.protocol.ContactRequestEnqueue.Reply")
+	proto.RegisterType((*ContactRequestResetReference)(nil), "berty.protocol.ContactRequestResetReference")
+	proto.RegisterType((*ContactRequestResetReference_Request)(nil), "berty.protocol.ContactRequestResetReference.Request")
+	proto.RegisterType((*ContactRequestResetReference_Reply)(nil), "berty.protocol.ContactRequestResetReference.Reply")
+	proto.RegisterType((*ContactRequestSend)(nil), "berty.protocol.ContactRequestSend")
+	proto.RegisterType((*ContactRequestSend_Request)(nil), "berty.protocol.ContactRequestSend.Request")
+	proto.RegisterType((*ContactRequestSend_Reply)(nil), "berty.protocol.ContactRequestSend.Reply")
 	proto.RegisterType((*ContactRequestAccept)(nil), "berty.protocol.ContactRequestAccept")
 	proto.RegisterType((*ContactRequestAccept_Request)(nil), "berty.protocol.ContactRequestAccept.Request")
 	proto.RegisterType((*ContactRequestAccept_Reply)(nil), "berty.protocol.ContactRequestAccept.Reply")
-	proto.RegisterType((*ContactRemove)(nil), "berty.protocol.ContactRemove")
-	proto.RegisterType((*ContactRemove_Request)(nil), "berty.protocol.ContactRemove.Request")
-	proto.RegisterType((*ContactRemove_Reply)(nil), "berty.protocol.ContactRemove.Reply")
+	proto.RegisterType((*ContactRequestDiscard)(nil), "berty.protocol.ContactRequestDiscard")
+	proto.RegisterType((*ContactRequestDiscard_Request)(nil), "berty.protocol.ContactRequestDiscard.Request")
+	proto.RegisterType((*ContactRequestDiscard_Reply)(nil), "berty.protocol.ContactRequestDiscard.Reply")
 	proto.RegisterType((*ContactBlock)(nil), "berty.protocol.ContactBlock")
 	proto.RegisterType((*ContactBlock_Request)(nil), "berty.protocol.ContactBlock.Request")
 	proto.RegisterType((*ContactBlock_Reply)(nil), "berty.protocol.ContactBlock.Reply")
 	proto.RegisterType((*ContactUnblock)(nil), "berty.protocol.ContactUnblock")
 	proto.RegisterType((*ContactUnblock_Request)(nil), "berty.protocol.ContactUnblock.Request")
 	proto.RegisterType((*ContactUnblock_Reply)(nil), "berty.protocol.ContactUnblock.Reply")
-	proto.RegisterType((*AccountSubscribe)(nil), "berty.protocol.AccountSubscribe")
-	proto.RegisterType((*AccountSubscribe_Request)(nil), "berty.protocol.AccountSubscribe.Request")
-	proto.RegisterType((*AccountSubscribe_Reply)(nil), "berty.protocol.AccountSubscribe.Reply")
-	proto.RegisterType((*AccountStoreEvent)(nil), "berty.protocol.AccountStoreEvent")
+	proto.RegisterType((*ContactAliasKeySend)(nil), "berty.protocol.ContactAliasKeySend")
+	proto.RegisterType((*ContactAliasKeySend_Request)(nil), "berty.protocol.ContactAliasKeySend.Request")
+	proto.RegisterType((*ContactAliasKeySend_Reply)(nil), "berty.protocol.ContactAliasKeySend.Reply")
+	proto.RegisterType((*MultiMemberGroupCreate)(nil), "berty.protocol.MultiMemberGroupCreate")
+	proto.RegisterType((*MultiMemberGroupCreate_Request)(nil), "berty.protocol.MultiMemberGroupCreate.Request")
+	proto.RegisterType((*MultiMemberGroupCreate_Reply)(nil), "berty.protocol.MultiMemberGroupCreate.Reply")
+	proto.RegisterType((*MultiMemberGroupJoin)(nil), "berty.protocol.MultiMemberGroupJoin")
+	proto.RegisterType((*MultiMemberGroupJoin_Request)(nil), "berty.protocol.MultiMemberGroupJoin.Request")
+	proto.RegisterType((*MultiMemberGroupJoin_Reply)(nil), "berty.protocol.MultiMemberGroupJoin.Reply")
+	proto.RegisterType((*MultiMemberGroupLeave)(nil), "berty.protocol.MultiMemberGroupLeave")
+	proto.RegisterType((*MultiMemberGroupLeave_Request)(nil), "berty.protocol.MultiMemberGroupLeave.Request")
+	proto.RegisterType((*MultiMemberGroupLeave_Reply)(nil), "berty.protocol.MultiMemberGroupLeave.Reply")
+	proto.RegisterType((*MultiMemberGroupAliasResolverDisclose)(nil), "berty.protocol.MultiMemberGroupAliasResolverDisclose")
+	proto.RegisterType((*MultiMemberGroupAliasResolverDisclose_Request)(nil), "berty.protocol.MultiMemberGroupAliasResolverDisclose.Request")
+	proto.RegisterType((*MultiMemberGroupAliasResolverDisclose_Reply)(nil), "berty.protocol.MultiMemberGroupAliasResolverDisclose.Reply")
+	proto.RegisterType((*MultiMemberGroupAdminRoleGrant)(nil), "berty.protocol.MultiMemberGroupAdminRoleGrant")
+	proto.RegisterType((*MultiMemberGroupAdminRoleGrant_Request)(nil), "berty.protocol.MultiMemberGroupAdminRoleGrant.Request")
+	proto.RegisterType((*MultiMemberGroupAdminRoleGrant_Reply)(nil), "berty.protocol.MultiMemberGroupAdminRoleGrant.Reply")
+	proto.RegisterType((*MultiMemberGroupInvitationCreate)(nil), "berty.protocol.MultiMemberGroupInvitationCreate")
+	proto.RegisterType((*MultiMemberGroupInvitationCreate_Request)(nil), "berty.protocol.MultiMemberGroupInvitationCreate.Request")
+	proto.RegisterType((*MultiMemberGroupInvitationCreate_Reply)(nil), "berty.protocol.MultiMemberGroupInvitationCreate.Reply")
+	proto.RegisterType((*AppMetadataSend)(nil), "berty.protocol.AppMetadataSend")
+	proto.RegisterType((*AppMetadataSend_Request)(nil), "berty.protocol.AppMetadataSend.Request")
+	proto.RegisterType((*AppMetadataSend_Reply)(nil), "berty.protocol.AppMetadataSend.Reply")
+	proto.RegisterType((*AppMessageSend)(nil), "berty.protocol.AppMessageSend")
+	proto.RegisterType((*AppMessageSend_Request)(nil), "berty.protocol.AppMessageSend.Request")
+	proto.RegisterType((*AppMessageSend_Reply)(nil), "berty.protocol.AppMessageSend.Reply")
+	proto.RegisterType((*GroupMetadataEvent)(nil), "berty.protocol.GroupMetadataEvent")
+	proto.RegisterType((*GroupMessageEvent)(nil), "berty.protocol.GroupMessageEvent")
+	proto.RegisterType((*GroupMetadataSubscribe)(nil), "berty.protocol.GroupMetadataSubscribe")
+	proto.RegisterType((*GroupMetadataSubscribe_Request)(nil), "berty.protocol.GroupMetadataSubscribe.Request")
+	proto.RegisterType((*GroupMessageSubscribe)(nil), "berty.protocol.GroupMessageSubscribe")
+	proto.RegisterType((*GroupMessageSubscribe_Request)(nil), "berty.protocol.GroupMessageSubscribe.Request")
 }
 
 func init() { proto.RegisterFile("bertyprotocol.proto", fileDescriptor_047e04c733cf8554) }
 
 var fileDescriptor_047e04c733cf8554 = []byte{
-	// 1743 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x59, 0x5b, 0x6f, 0x1b, 0xd7,
-	0x11, 0x0e, 0x49, 0x5d, 0xcc, 0x21, 0x25, 0x6d, 0x4e, 0xe5, 0x54, 0x25, 0xd4, 0x4a, 0xa2, 0x2c,
-	0x45, 0x90, 0x6d, 0xd2, 0x51, 0x10, 0xa4, 0x40, 0xfa, 0x50, 0xd3, 0x14, 0x04, 0x45, 0x36, 0xa2,
-	0xac, 0xaa, 0xc2, 0x48, 0xd1, 0xb2, 0x7b, 0x19, 0x32, 0x1b, 0x51, 0xbb, 0x9b, 0xdd, 0x43, 0xba,
-	0x04, 0x82, 0xe6, 0x07, 0xf4, 0x9f, 0xf4, 0xa1, 0x40, 0x1e, 0xfb, 0x57, 0x8a, 0x42, 0x40, 0xfd,
-	0x2f, 0xfa, 0x56, 0x9c, 0xcb, 0x9e, 0x25, 0xf7, 0xc2, 0x4b, 0xe5, 0x02, 0xcd, 0xdb, 0x9e, 0x33,
-	0xdf, 0x7c, 0x33, 0x67, 0xce, 0xcc, 0x68, 0x78, 0x04, 0x3f, 0x31, 0x31, 0xa0, 0x23, 0x3f, 0xf0,
-	0xa8, 0x67, 0x79, 0xfd, 0x06, 0xff, 0x20, 0xeb, 0x7c, 0xb3, 0x11, 0xed, 0xd6, 0x9e, 0xf6, 0x1c,
-	0xfa, 0xf5, 0xc0, 0x6c, 0x58, 0xde, 0x6d, 0xb3, 0xe7, 0xf5, 0xbc, 0x26, 0x97, 0x98, 0x83, 0x2e,
-	0x5f, 0xf1, 0x05, 0xff, 0x12, 0x1a, 0xf5, 0x57, 0x40, 0xce, 0xdd, 0x90, 0x1a, 0xae, 0x85, 0xa7,
-	0x7f, 0xf2, 0xbd, 0x80, 0xb6, 0x0d, 0x6a, 0xd4, 0xca, 0xb0, 0xaa, 0xe3, 0xb7, 0x03, 0x0c, 0x69,
-	0xed, 0x09, 0x2c, 0xeb, 0xe8, 0xf7, 0x47, 0x64, 0x1f, 0xd6, 0x90, 0x23, 0xd0, 0xee, 0xd8, 0x06,
-	0x35, 0xb6, 0x0a, 0xbb, 0x85, 0xa3, 0xaa, 0x5e, 0x8d, 0x36, 0x99, 0x62, 0xfd, 0xaf, 0x4b, 0xb0,
-	0x15, 0xf1, 0x9d, 0x21, 0x7d, 0xe1, 0xb9, 0x5d, 0xa7, 0x37, 0x08, 0x0c, 0xea, 0x78, 0xee, 0x38,
-	0xeb, 0xdf, 0x4b, 0x31, 0xed, 0xaa, 0x8f, 0x18, 0x74, 0x1c, 0x9b, 0x13, 0x96, 0x5b, 0xf0, 0xf6,
-	0x6e, 0x67, 0xe5, 0x12, 0x31, 0x38, 0x6f, 0xeb, 0x2b, 0x4c, 0x74, 0x6e, 0x93, 0x6d, 0x28, 0xf7,
-	0x9d, 0x90, 0xa2, 0x8b, 0x41, 0xb8, 0x55, 0xdc, 0x2d, 0x1d, 0x95, 0xf5, 0x78, 0x83, 0xfc, 0x16,
-	0x2a, 0x66, 0x1f, 0x3b, 0xe8, 0x1a, 0x66, 0x1f, 0xed, 0xad, 0xd2, 0x6e, 0xe1, 0x68, 0xfd, 0xe4,
-	0x93, 0xc6, 0x64, 0x60, 0x1a, 0x79, 0x6e, 0x35, 0xae, 0x90, 0x52, 0xc7, 0xed, 0x5d, 0x51, 0x83,
-	0xa2, 0x0e, 0x66, 0x1f, 0x4f, 0x05, 0x11, 0xe9, 0x80, 0xf6, 0xc6, 0xe9, 0x3a, 0x1d, 0xff, 0xc4,
-	0x57, 0xe4, 0x4b, 0xf7, 0x21, 0x5f, 0x67, 0x74, 0x97, 0x27, 0x7e, 0x64, 0xe0, 0x35, 0x54, 0x6f,
-	0x6d, 0x37, 0x54, 0xe4, 0xcb, 0xf7, 0x21, 0xaf, 0x30, 0xaa, 0x88, 0xf9, 0x2b, 0x58, 0x0b, 0xb0,
-	0x6f, 0x8c, 0x14, 0xf5, 0xca, 0x7d, 0xa8, 0xab, 0x9c, 0x4b, 0x72, 0xd7, 0xcf, 0xa0, 0x3a, 0x2e,
-	0x25, 0x15, 0x58, 0xbd, 0x76, 0x6f, 0x5c, 0xef, 0x8d, 0xab, 0xbd, 0xc7, 0x16, 0x12, 0xa7, 0x15,
-	0x48, 0x15, 0x1e, 0xb4, 0x9d, 0x50, 0xac, 0x8a, 0x64, 0x03, 0x2a, 0xd7, 0xae, 0x31, 0x34, 0x9c,
-	0x3e, 0xdb, 0xd1, 0x4a, 0xf5, 0x37, 0xf0, 0xf0, 0x2c, 0xf0, 0x06, 0x7e, 0xc4, 0x86, 0xf4, 0x15,
-	0xde, 0x9a, 0x18, 0xd4, 0xae, 0x55, 0xa2, 0x90, 0x3a, 0xac, 0xf5, 0x18, 0xa6, 0xe3, 0x0f, 0xcc,
-	0xce, 0x0d, 0x8e, 0x64, 0xd6, 0x55, 0xf8, 0xe6, 0xe5, 0xc0, 0xbc, 0xc0, 0x11, 0xd1, 0xa0, 0xc4,
-	0x24, 0x45, 0x96, 0x3e, 0x3a, 0xfb, 0x24, 0x9b, 0xb0, 0x3c, 0x34, 0xfa, 0x03, 0xe4, 0xb9, 0x50,
-	0xd5, 0xc5, 0xa2, 0xb6, 0x2a, 0x73, 0xae, 0x3e, 0x84, 0xcd, 0x84, 0x61, 0xbe, 0xfc, 0x9f, 0xdb,
-	0xfd, 0x57, 0x01, 0x6a, 0x13, 0x86, 0xa9, 0x17, 0xe0, 0xd5, 0xc0, 0x0c, 0xad, 0xc0, 0x31, 0xb1,
-	0xf6, 0xdd, 0x62, 0xe6, 0x37, 0x61, 0x39, 0x74, 0x5c, 0x0b, 0xb9, 0x03, 0x55, 0x5d, 0x2c, 0xd8,
-	0xee, 0xc0, 0xa5, 0x4e, 0x3f, 0x72, 0x81, 0x2f, 0xc8, 0x1e, 0x54, 0x7b, 0x5e, 0xc7, 0x34, 0xac,
-	0x9b, 0x37, 0x46, 0x60, 0x87, 0x3c, 0x8d, 0x1f, 0xe8, 0x95, 0x9e, 0xd7, 0x8a, 0xb6, 0x6a, 0xa7,
-	0x51, 0x45, 0xfe, 0x0a, 0x96, 0x71, 0x88, 0x2e, 0xe5, 0x36, 0x2b, 0x27, 0x87, 0xc9, 0x9c, 0x49,
-	0x9d, 0xe0, 0x94, 0xa1, 0x75, 0xa1, 0x54, 0xff, 0x12, 0xca, 0x7c, 0xdd, 0x32, 0x42, 0x24, 0x1f,
-	0x40, 0x51, 0xd6, 0x75, 0xb5, 0xb5, 0xf2, 0xf6, 0x6e, 0xa7, 0x78, 0xde, 0xd6, 0x8b, 0x8e, 0x4d,
-	0x9e, 0x00, 0xf8, 0x46, 0x80, 0x2e, 0xed, 0x38, 0xb6, 0x28, 0xe8, 0x6a, 0x6b, 0xed, 0xed, 0xdd,
-	0x4e, 0xf9, 0x92, 0xef, 0x9e, 0xb7, 0x43, 0xbd, 0x2c, 0x00, 0xe7, 0x76, 0x58, 0xff, 0x77, 0x01,
-	0x36, 0x84, 0x51, 0x65, 0x8d, 0xfc, 0x12, 0x80, 0xdb, 0xeb, 0x98, 0x46, 0x88, 0xd2, 0xd3, 0x9f,
-	0x25, 0x3d, 0x55, 0x8e, 0xe8, 0x65, 0x54, 0x3e, 0xa5, 0x42, 0x5b, 0x4c, 0x87, 0xb6, 0x09, 0x9b,
-	0x02, 0x73, 0xcb, 0x13, 0x52, 0x41, 0x45, 0x4c, 0xdf, 0xe7, 0x32, 0x91, 0xab, 0x49, 0x05, 0x1b,
-	0x87, 0x8e, 0x85, 0x4a, 0x61, 0x69, 0x4c, 0xa1, 0xcd, 0x45, 0x52, 0xe1, 0x10, 0x36, 0x0c, 0xcb,
-	0xf2, 0x06, 0x2e, 0x55, 0xd8, 0x65, 0x8e, 0x5d, 0x93, 0xdb, 0x02, 0x57, 0xbf, 0x2b, 0xc0, 0x07,
-	0xd9, 0x01, 0x27, 0x17, 0x20, 0x78, 0x3b, 0x21, 0xdb, 0xeb, 0x8c, 0xdf, 0xd9, 0x4e, 0xf6, 0x9d,
-	0xc5, 0x97, 0xb5, 0xd1, 0x4b, 0xc4, 0xf3, 0x0b, 0xa8, 0x86, 0xc2, 0x42, 0x87, 0x8e, 0x7c, 0x91,
-	0x53, 0xeb, 0x27, 0x4f, 0x66, 0xde, 0xbd, 0xfc, 0xfe, 0xcd, 0xc8, 0x47, 0xbd, 0x12, 0xc6, 0x8b,
-	0xa8, 0x38, 0x4a, 0x19, 0xc5, 0xb1, 0x34, 0x56, 0x1c, 0x75, 0x1b, 0xb4, 0x33, 0x11, 0xce, 0x30,
-	0x34, 0x7a, 0x78, 0x85, 0xae, 0x5d, 0x3b, 0x5b, 0xac, 0x10, 0xb6, 0x60, 0xd5, 0x37, 0x46, 0x7d,
-	0xcf, 0xb0, 0xe5, 0x5d, 0x46, 0xcb, 0xb8, 0xf2, 0x5e, 0xc1, 0xcf, 0x9f, 0x8b, 0xb8, 0x3e, 0xf7,
-	0x7d, 0x74, 0xed, 0xe7, 0xbe, 0x7f, 0xe5, 0xa3, 0xe5, 0x74, 0x1d, 0x8b, 0x9f, 0xbf, 0xb6, 0x1f,
-	0x9b, 0x1c, 0xa3, 0x2b, 0xe4, 0xd0, 0xfd, 0xb3, 0x20, 0x5b, 0x57, 0xe4, 0xf5, 0x8f, 0xb2, 0x86,
-	0x23, 0xe7, 0x53, 0x35, 0xfc, 0xbd, 0xcc, 0xb9, 0x14, 0xe0, 0xdd, 0xe6, 0x5c, 0xee, 0xbd, 0xd5,
-	0xff, 0x51, 0x90, 0x1d, 0x5a, 0x14, 0xd9, 0xff, 0x4b, 0x78, 0xdb, 0x51, 0x78, 0x3f, 0x9b, 0x0c,
-	0xef, 0x41, 0x4e, 0x78, 0xb9, 0xef, 0xa9, 0xe8, 0xda, 0x2a, 0x77, 0x26, 0xe5, 0xef, 0x34, 0xb8,
-	0xf5, 0x3d, 0xa8, 0x70, 0xcc, 0x8b, 0x00, 0x0d, 0x8a, 0xe3, 0xb3, 0x97, 0xca, 0xe2, 0x2f, 0xa1,
-	0xcc, 0x21, 0x9f, 0x7b, 0x8e, 0x5b, 0xfb, 0x2c, 0x8e, 0xec, 0x36, 0x94, 0x03, 0xec, 0x62, 0x80,
-	0x2c, 0x72, 0x22, 0xaa, 0xf1, 0x06, 0x21, 0xb0, 0x74, 0x8b, 0xd4, 0x90, 0x21, 0xe5, 0xdf, 0x31,
-	0x65, 0x1b, 0x80, 0x53, 0xbe, 0x44, 0x63, 0x88, 0xb5, 0xa7, 0x0b, 0xdd, 0x56, 0xcc, 0x62, 0x49,
-	0xdf, 0xcf, 0xdd, 0xa1, 0x43, 0x17, 0xa6, 0x39, 0x88, 0x6e, 0x69, 0xea, 0x39, 0xea, 0xbb, 0x00,
-	0xb2, 0x23, 0x1b, 0x4e, 0x90, 0x19, 0x9f, 0x0b, 0xf8, 0xe9, 0x0b, 0xcf, 0xa5, 0x86, 0x45, 0xa5,
-	0x48, 0x8f, 0x94, 0xc7, 0xe1, 0x73, 0x9a, 0x7b, 0x0c, 0x0f, 0x27, 0xc9, 0xe4, 0x64, 0x94, 0x69,
-	0xf9, 0x18, 0x36, 0x27, 0xc1, 0x62, 0xa6, 0x9a, 0xd7, 0xcb, 0x10, 0xe9, 0x4b, 0xc7, 0xbd, 0xf9,
-	0x2f, 0xbc, 0xfc, 0x7d, 0xd2, 0xcb, 0x53, 0xf7, 0xdb, 0x01, 0x0e, 0x70, 0xf1, 0xf4, 0x28, 0x65,
-	0xa5, 0x87, 0x9e, 0x3c, 0xd7, 0x73, 0xcb, 0x42, 0x9f, 0xd6, 0x3e, 0x8a, 0xd9, 0x0f, 0x61, 0xc3,
-	0x12, 0x90, 0xc4, 0x1d, 0xaf, 0xc9, 0xed, 0x64, 0xb2, 0x5c, 0xc0, 0x9a, 0xe2, 0xbc, 0xf5, 0x86,
-	0x78, 0x2f, 0xb2, 0xcf, 0xa1, 0x2a, 0xc9, 0x5a, 0x7d, 0xcf, 0xba, 0xb9, 0x17, 0xd7, 0x4b, 0x58,
-	0x97, 0x5c, 0xd7, 0xae, 0x79, 0x6f, 0xb6, 0xbf, 0x15, 0x40, 0x93, 0x7f, 0xc2, 0xe2, 0x76, 0xf8,
-	0x3a, 0x26, 0x54, 0xad, 0xae, 0x90, 0xd9, 0xea, 0x8a, 0xd3, 0x5a, 0x5d, 0x29, 0xdd, 0xea, 0x7e,
-	0x1d, 0xe5, 0xcb, 0xa7, 0x93, 0xad, 0x6e, 0x2f, 0xd9, 0x88, 0x22, 0x9f, 0x52, 0x6d, 0xee, 0x8f,
-	0xf0, 0x7e, 0x4a, 0x46, 0x3e, 0x85, 0xad, 0x70, 0x60, 0x7e, 0x83, 0xe2, 0xd8, 0x7d, 0xc7, 0x62,
-	0x27, 0xef, 0x98, 0x23, 0x8a, 0xa1, 0x74, 0xfc, 0xa1, 0x94, 0x5f, 0x72, 0xf1, 0x05, 0x8e, 0x5a,
-	0x4c, 0xc8, 0xd2, 0x8a, 0xff, 0xe8, 0x94, 0x5d, 0x87, 0x7d, 0x1f, 0xff, 0xb0, 0xa4, 0x42, 0xc2,
-	0xd9, 0xf9, 0xdc, 0xf1, 0x0b, 0xa8, 0x25, 0xf7, 0x3a, 0xd7, 0xae, 0x8d, 0x5d, 0xc7, 0x45, 0x5b,
-	0x7b, 0x8f, 0xec, 0xc2, 0x76, 0x4a, 0xae, 0xba, 0x20, 0xff, 0xd5, 0x92, 0xc5, 0x20, 0x9b, 0x5a,
-	0x97, 0x6a, 0x45, 0xb2, 0xa7, 0x66, 0x89, 0x58, 0x1e, 0x77, 0x12, 0xb4, 0xb5, 0x12, 0x79, 0x0c,
-	0x1f, 0xa6, 0x20, 0x99, 0xd5, 0x6f, 0x6b, 0x4b, 0xe4, 0x18, 0x0e, 0x67, 0x80, 0xa3, 0x5f, 0x54,
-	0xcb, 0xe4, 0x23, 0x78, 0x3a, 0x03, 0xab, 0x7a, 0x14, 0x6f, 0x03, 0xda, 0xca, 0x1c, 0xbe, 0xc8,
-	0x1a, 0xb7, 0xb5, 0x55, 0x72, 0x00, 0x7b, 0x33, 0xc0, 0x68, 0x6b, 0x0f, 0xc8, 0x23, 0xd8, 0xcd,
-	0x83, 0x89, 0x8a, 0x46, 0x5b, 0x2b, 0x93, 0x7d, 0xd8, 0xc9, 0x27, 0x63, 0xa5, 0x6a, 0x6b, 0x30,
-	0x0d, 0xc4, 0x4b, 0x10, 0x6d, 0xad, 0x32, 0xcd, 0x2d, 0x59, 0x5b, 0x68, 0x6b, 0xd5, 0xcc, 0x9b,
-	0x89, 0x27, 0x3d, 0xb4, 0xb5, 0xb5, 0xe3, 0x16, 0x6c, 0x4f, 0x9b, 0x61, 0x27, 0x7f, 0xcc, 0x96,
-	0x61, 0x99, 0x83, 0xb5, 0x02, 0x01, 0x58, 0x11, 0x7f, 0xaf, 0xb5, 0xe2, 0xc9, 0x0f, 0x9b, 0xb0,
-	0x71, 0x29, 0xf3, 0xff, 0x0a, 0x03, 0x76, 0xf3, 0xe4, 0x9b, 0xac, 0x77, 0x14, 0x72, 0x9c, 0xf7,
-	0x7b, 0x3b, 0xc6, 0x34, 0xa2, 0x0e, 0x7d, 0x34, 0x17, 0x96, 0x95, 0xe4, 0x77, 0xf9, 0x6f, 0x2c,
-	0xe4, 0xd9, 0xdc, 0xbf, 0xf0, 0x23, 0xbb, 0x8d, 0x05, 0x34, 0x98, 0xf5, 0xeb, 0x89, 0xc1, 0x82,
-	0xec, 0x67, 0x4e, 0x26, 0x42, 0xa8, 0x6c, 0xec, 0x4d, 0x07, 0x31, 0xda, 0x2f, 0xc6, 0x86, 0x11,
-	0x92, 0x8d, 0x67, 0x22, 0x45, 0xb9, 0x33, 0x0d, 0xc2, 0x08, 0xf5, 0xf1, 0x51, 0x84, 0xd4, 0x33,
-	0xe1, 0x5c, 0xa6, 0x28, 0x77, 0xa7, 0x62, 0xc6, 0xcf, 0x2e, 0x06, 0x93, 0x9c, 0xb3, 0x0b, 0xe1,
-	0x8c, 0xb3, 0x2b, 0x90, 0x74, 0x35, 0x6e, 0x20, 0x69, 0x57, 0x63, 0x59, 0xbe, 0xab, 0x13, 0x18,
-	0xc6, 0x39, 0xca, 0x1d, 0x5e, 0x48, 0x33, 0xa9, 0x9c, 0x03, 0x54, 0xd6, 0x9e, 0xce, 0xaf, 0xc0,
-	0x4c, 0x87, 0x39, 0xa3, 0x0e, 0x99, 0xc1, 0x23, 0x61, 0xca, 0xec, 0xe3, 0x79, 0xe1, 0xcc, 0xa8,
-	0x9f, 0x3d, 0x32, 0x91, 0x27, 0xd3, 0x49, 0x04, 0x4a, 0x99, 0x3c, 0x9e, 0x13, 0xcd, 0x2c, 0xfe,
-	0x19, 0xb6, 0x33, 0x06, 0xaf, 0x05, 0xc2, 0x2c, 0xc7, 0xb4, 0xf9, 0xc3, 0x1c, 0x2b, 0x64, 0x86,
-	0x59, 0xf6, 0xf1, 0x59, 0x61, 0x96, 0xb0, 0x79, 0xc3, 0x1c, 0xc3, 0x33, 0xc3, 0x2c, 0xfa, 0xfd,
-	0xac, 0x30, 0x0b, 0xd4, 0xbc, 0x61, 0x56, 0x68, 0x66, 0xf1, 0x77, 0x89, 0xf9, 0x8e, 0x1c, 0xe4,
-	0x2a, 0x33, 0xb1, 0xb2, 0xb1, 0x3f, 0x0b, 0xc6, 0xc8, 0x5f, 0x4f, 0xce, 0x7b, 0xe4, 0x51, 0x8e,
-	0x12, 0x97, 0x2a, 0xea, 0xfa, 0x0c, 0x14, 0x63, 0xfe, 0x43, 0x72, 0xfa, 0x23, 0x87, 0x39, 0x5a,
-	0x52, 0xae, 0xd8, 0x1f, 0xcd, 0xc4, 0xc9, 0x8b, 0xc8, 0x7a, 0xc3, 0x24, 0xd3, 0x9f, 0x6c, 0x24,
-	0x2a, 0xff, 0x22, 0x72, 0xd0, 0x32, 0xdf, 0x32, 0x9f, 0x6b, 0xd3, 0xf9, 0x96, 0x09, 0xcb, 0xcf,
-	0xb7, 0x3c, 0x38, 0x33, 0x9a, 0xf1, 0x3c, 0x44, 0x8e, 0xa6, 0xbe, 0x66, 0xa0, 0x6b, 0x2b, 0x53,
-	0x87, 0x73, 0x20, 0x99, 0x95, 0xbf, 0x14, 0x66, 0xbc, 0x0f, 0x91, 0x4f, 0x72, 0xe6, 0xde, 0x6c,
-	0xb8, 0x72, 0xe0, 0xe3, 0x45, 0xd5, 0x98, 0x37, 0xdd, 0xf4, 0xa4, 0x9f, 0x3e, 0x73, 0x12, 0x91,
-	0x7f, 0xe6, 0x0c, 0xa4, 0xdf, 0x1f, 0x3d, 0x2b, 0x90, 0xef, 0x13, 0x17, 0xaa, 0x8c, 0x9d, 0xcc,
-	0x7e, 0xf6, 0x4b, 0x99, 0x7d, 0xb6, 0x90, 0x8e, 0x70, 0x60, 0x90, 0xf3, 0x8a, 0x96, 0x93, 0x51,
-	0x49, 0xd8, 0x8c, 0x8c, 0xca, 0x80, 0x0b, 0xb3, 0x41, 0xf6, 0xe3, 0x52, 0x4e, 0xe9, 0x24, 0x50,
-	0x33, 0x4a, 0x27, 0x8d, 0xe6, 0x36, 0x5b, 0x1f, 0x7e, 0x75, 0x20, 0xe0, 0x14, 0xad, 0xaf, 0x9b,
-	0xfc, 0xb3, 0xd9, 0xf3, 0x9a, 0xfe, 0x4d, 0xaf, 0x39, 0xf1, 0x5f, 0x3d, 0x73, 0x85, 0x7f, 0x7d,
-	0xfc, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x5a, 0xd8, 0xf7, 0xe6, 0xed, 0x1b, 0x00, 0x00,
+	// 2474 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x5a, 0xcd, 0x6f, 0xdb, 0xc8,
+	0x15, 0x5f, 0xca, 0xf1, 0x87, 0x9e, 0x65, 0x99, 0x99, 0xd8, 0x5e, 0xc7, 0x1b, 0x5b, 0x5e, 0x26,
+	0xce, 0x87, 0xe3, 0x95, 0x53, 0x6f, 0x9a, 0x4d, 0xb1, 0x2d, 0x0a, 0x7b, 0x6d, 0x64, 0xbd, 0x4e,
+	0x50, 0x95, 0x4a, 0xda, 0x74, 0x51, 0x54, 0xa0, 0xc8, 0x11, 0xc3, 0x88, 0x22, 0x19, 0x92, 0x52,
+	0xa2, 0x62, 0x0f, 0xbd, 0x6d, 0x81, 0x05, 0x7a, 0x69, 0x8b, 0x02, 0xed, 0xb1, 0x97, 0xa2, 0x40,
+	0x5b, 0xf4, 0x4f, 0xe8, 0x6d, 0x7b, 0xcb, 0xbd, 0x80, 0xd1, 0x0a, 0xe8, 0xa1, 0xff, 0x45, 0x31,
+	0x1f, 0xa4, 0x48, 0x89, 0x94, 0xc4, 0x38, 0x06, 0xda, 0x9b, 0x66, 0xe6, 0xf7, 0x7e, 0xef, 0xcd,
+	0x9b, 0xc7, 0x79, 0xf3, 0x9e, 0x0d, 0x97, 0xea, 0xd8, 0xf5, 0xbb, 0x8e, 0x6b, 0xfb, 0xb6, 0x6a,
+	0x9b, 0x65, 0xfa, 0x03, 0x15, 0xe9, 0x64, 0x39, 0x98, 0x5d, 0xfb, 0x40, 0x37, 0xfc, 0x67, 0xed,
+	0x7a, 0x59, 0xb5, 0x5b, 0xbb, 0xba, 0xad, 0xdb, 0xbb, 0x74, 0xa5, 0xde, 0x6e, 0xd0, 0x11, 0x1d,
+	0xd0, 0x5f, 0x4c, 0x42, 0xfa, 0x5a, 0x80, 0xd9, 0x7d, 0x55, 0xb5, 0xdb, 0x96, 0x8f, 0x6e, 0xc3,
+	0xb4, 0xee, 0xda, 0x6d, 0x67, 0x55, 0xd8, 0x14, 0x6e, 0xce, 0xef, 0x2d, 0x97, 0xe3, 0xd4, 0xe5,
+	0x07, 0x64, 0x51, 0x66, 0x18, 0x54, 0x86, 0x4b, 0x0a, 0x93, 0xab, 0x39, 0xae, 0xd1, 0x51, 0x7c,
+	0x5c, 0x6b, 0xe2, 0xee, 0x6a, 0x6e, 0x53, 0xb8, 0x59, 0x90, 0x2f, 0xf2, 0xa5, 0x0a, 0x5b, 0x39,
+	0xc1, 0x5d, 0xb4, 0x0d, 0x17, 0x15, 0xd3, 0x50, 0xbc, 0x18, 0x7a, 0x8a, 0xa2, 0x17, 0xe9, 0x42,
+	0x04, 0x7b, 0x17, 0x56, 0x9c, 0x76, 0xdd, 0x34, 0xd4, 0x9a, 0x8b, 0x2d, 0x0d, 0xff, 0xb4, 0x63,
+	0xb7, 0xbd, 0x9a, 0x87, 0xb1, 0xb6, 0x7a, 0x81, 0x0a, 0x2c, 0xb1, 0x55, 0x39, 0x5c, 0xac, 0x62,
+	0xac, 0x49, 0xbf, 0x11, 0x60, 0x9a, 0x9a, 0x88, 0xd6, 0x01, 0xb8, 0x3c, 0x51, 0x22, 0x50, 0x99,
+	0x3c, 0x9b, 0x21, 0xf4, 0x2b, 0x30, 0xe3, 0x61, 0xd5, 0xc5, 0x3e, 0xb7, 0x96, 0x8f, 0x88, 0x18,
+	0xfb, 0x55, 0xf3, 0x0c, 0x9d, 0xdb, 0x96, 0x67, 0x33, 0x55, 0x43, 0x47, 0xf7, 0x01, 0xe8, 0xd6,
+	0x6b, 0x7e, 0xd7, 0xc1, 0xd4, 0x92, 0xe2, 0xde, 0xe5, 0x44, 0x1f, 0x3d, 0xee, 0x3a, 0x58, 0xce,
+	0xeb, 0xc1, 0x4f, 0xa9, 0x0d, 0x0b, 0x74, 0xfe, 0x11, 0xf6, 0x15, 0x4d, 0xf1, 0x15, 0x42, 0x85,
+	0x3b, 0xd8, 0xf2, 0x19, 0x95, 0x90, 0x4c, 0x75, 0x44, 0x10, 0x8c, 0x0a, 0x07, 0x3f, 0xd1, 0x2a,
+	0xcc, 0x3a, 0x4a, 0xd7, 0xb4, 0x15, 0x8d, 0x1b, 0x1f, 0x0c, 0x91, 0x08, 0x53, 0x7d, 0xb3, 0xc9,
+	0x4f, 0xe9, 0x63, 0xae, 0xf6, 0xc8, 0xea, 0x60, 0xd3, 0x76, 0x30, 0x5a, 0x82, 0x69, 0xcb, 0xb6,
+	0x54, 0xcc, 0x5d, 0xc2, 0x06, 0x64, 0x96, 0xf2, 0x73, 0x42, 0x36, 0x90, 0x74, 0x28, 0x3e, 0xc2,
+	0x9e, 0xa7, 0xe8, 0xf8, 0x53, 0xac, 0x68, 0xd8, 0xf5, 0x88, 0x6a, 0x7a, 0xa8, 0xd8, 0xa5, 0xf2,
+	0x17, 0xe4, 0x60, 0x88, 0x6e, 0x41, 0x5e, 0xc3, 0x1d, 0x43, 0xc5, 0x35, 0xa7, 0xc9, 0x58, 0x0e,
+	0x0a, 0xbd, 0xd3, 0xd2, 0xdc, 0x21, 0x9d, 0xac, 0x9c, 0xc8, 0x73, 0x6c, 0xb9, 0xd2, 0x4c, 0xb0,
+	0xf2, 0x31, 0x2c, 0x72, 0x45, 0xa1, 0x9d, 0x37, 0x60, 0xb1, 0xc5, 0xa6, 0x6a, 0xcf, 0x98, 0x72,
+	0x6e, 0x71, 0xb1, 0x35, 0x64, 0x12, 0x9f, 0x09, 0xbc, 0xc1, 0x87, 0xd2, 0x17, 0x50, 0xa0, 0xfe,
+	0xfb, 0xc4, 0xb6, 0x7c, 0xfc, 0xca, 0x47, 0x2b, 0x90, 0x33, 0x34, 0xc6, 0x72, 0x30, 0xd3, 0x3b,
+	0x2d, 0xe5, 0x8e, 0x0f, 0xe5, 0x9c, 0xa1, 0xa1, 0x1d, 0x00, 0x47, 0x71, 0xc9, 0x51, 0x18, 0x9a,
+	0xb7, 0x9a, 0xdb, 0x9c, 0xba, 0x59, 0x38, 0x58, 0xe8, 0x9d, 0x96, 0xf2, 0x15, 0x3a, 0x7b, 0x7c,
+	0xe8, 0xc9, 0x79, 0x06, 0x38, 0xd6, 0x3c, 0x74, 0x1d, 0xe6, 0x58, 0x08, 0x38, 0x4d, 0xb6, 0x85,
+	0x83, 0xf9, 0xde, 0x69, 0x69, 0x96, 0x7a, 0xb9, 0x72, 0x22, 0xcf, 0xd2, 0xc5, 0x4a, 0x53, 0x92,
+	0x61, 0x7e, 0xdf, 0xe9, 0x1f, 0x77, 0xcc, 0x3f, 0xc2, 0x48, 0xff, 0xa4, 0xef, 0x48, 0x07, 0x44,
+	0x36, 0xa3, 0xa8, 0xfe, 0xbe, 0xa6, 0xed, 0x93, 0x2f, 0x86, 0xc4, 0x72, 0x06, 0xea, 0xeb, 0x30,
+	0xc7, 0xbf, 0xc0, 0xe0, 0x90, 0xa8, 0xf1, 0x94, 0x8a, 0x18, 0xcf, 0xbe, 0xc2, 0xa6, 0xf4, 0x95,
+	0x00, 0x4b, 0x74, 0x47, 0xfb, 0x9a, 0xf6, 0x08, 0xb7, 0xea, 0xd8, 0x65, 0x64, 0x44, 0x57, 0x8b,
+	0x8e, 0x07, 0x74, 0x31, 0x10, 0xd1, 0xc5, 0x96, 0x2b, 0xcd, 0x2c, 0x11, 0xb1, 0x0e, 0xc0, 0x59,
+	0x23, 0x5f, 0x1d, 0x9b, 0xa9, 0x1a, 0xba, 0x74, 0x04, 0x05, 0x26, 0x54, 0x65, 0x1f, 0xe9, 0x7b,
+	0x90, 0x57, 0x9f, 0x29, 0x86, 0x15, 0xf9, 0xb4, 0xe7, 0xe8, 0x04, 0xf1, 0x46, 0x24, 0x44, 0x73,
+	0xb1, 0x10, 0x95, 0x7e, 0x19, 0xd9, 0x54, 0x8c, 0x2f, 0x83, 0x03, 0xef, 0x41, 0x51, 0xc3, 0x9e,
+	0x5f, 0xeb, 0x3b, 0x81, 0xed, 0x4c, 0xec, 0x9d, 0x96, 0x0a, 0x87, 0xd8, 0xf3, 0x43, 0x47, 0x14,
+	0xb4, 0xfe, 0xa8, 0x19, 0xfd, 0x66, 0xa7, 0x62, 0xdf, 0xac, 0xf4, 0x6b, 0x01, 0x36, 0x1f, 0xb5,
+	0x4d, 0xdf, 0x60, 0xd8, 0xc0, 0x40, 0x7a, 0x24, 0x32, 0xf6, 0x6c, 0xb3, 0x33, 0xf8, 0x75, 0x8d,
+	0xb6, 0x70, 0x0b, 0x8a, 0xec, 0x88, 0x5d, 0x2e, 0xcc, 0x83, 0x68, 0x41, 0x89, 0x31, 0x96, 0x60,
+	0x3e, 0xb8, 0x8b, 0x6d, 0xbb, 0xc1, 0x8d, 0x02, 0x7e, 0x0b, 0xdb, 0x76, 0x43, 0xfa, 0x52, 0x80,
+	0xcb, 0x31, 0xbb, 0x14, 0xcb, 0xdf, 0xd7, 0x5a, 0x86, 0x25, 0xdb, 0x26, 0xce, 0x62, 0xd0, 0x77,
+	0xe1, 0xa2, 0x4e, 0x84, 0x31, 0x1e, 0xf2, 0xda, 0xa5, 0xde, 0x69, 0x69, 0xf1, 0x01, 0x5b, 0x0c,
+	0x1d, 0xb7, 0xa8, 0xc7, 0x26, 0x9a, 0xd2, 0x11, 0xac, 0x46, 0x0c, 0x39, 0xb6, 0x0c, 0xdf, 0x50,
+	0x4c, 0x36, 0xc8, 0x10, 0x8f, 0x92, 0x02, 0x9b, 0xa1, 0x73, 0x35, 0xcd, 0xf0, 0x0d, 0xdb, 0x52,
+	0xcc, 0x78, 0xfe, 0xc8, 0xb2, 0x2d, 0x04, 0x17, 0x68, 0x3a, 0x62, 0xde, 0xa5, 0xbf, 0x25, 0x0d,
+	0xae, 0xb2, 0x04, 0x89, 0x5b, 0x76, 0x07, 0x9f, 0x97, 0x16, 0x13, 0x10, 0x4f, 0xd7, 0x54, 0xd9,
+	0x67, 0xb6, 0x61, 0x65, 0x23, 0x0d, 0x93, 0x7c, 0x6e, 0x7c, 0x92, 0x97, 0x30, 0x88, 0x51, 0x6d,
+	0x0f, 0x71, 0xc3, 0xcf, 0x78, 0xe3, 0x84, 0xd7, 0x65, 0x6e, 0xc4, 0x75, 0xf9, 0x19, 0xac, 0x73,
+	0x35, 0xfc, 0x86, 0x93, 0xf1, 0x8b, 0x36, 0xf6, 0xfc, 0x43, 0xc3, 0x53, 0xea, 0x66, 0xa6, 0xfd,
+	0x49, 0xc7, 0x70, 0x25, 0x91, 0xeb, 0xc8, 0xca, 0x4c, 0xd5, 0x85, 0xab, 0x89, 0x54, 0x32, 0x6e,
+	0x60, 0x17, 0x5b, 0x2a, 0x96, 0xb1, 0x97, 0xed, 0x06, 0xb9, 0x01, 0x8b, 0x83, 0x2f, 0x1a, 0x76,
+	0xb8, 0x45, 0x37, 0xfe, 0x96, 0xf9, 0x87, 0x90, 0xe2, 0x92, 0x23, 0xeb, 0x45, 0x1b, 0xb7, 0xb3,
+	0x1d, 0xf9, 0x0e, 0x80, 0xca, 0x48, 0xfa, 0x07, 0x41, 0x73, 0x1c, 0xa7, 0xae, 0x9c, 0xc8, 0x79,
+	0x0e, 0xa0, 0xb7, 0xdc, 0xbb, 0x01, 0x7a, 0xd0, 0x56, 0x76, 0x51, 0x2c, 0xab, 0x81, 0x45, 0x03,
+	0x81, 0x2d, 0x06, 0x72, 0x2d, 0x9e, 0xf8, 0xf8, 0x73, 0x6d, 0x91, 0xcf, 0x07, 0xf9, 0x50, 0xf2,
+	0xe1, 0x72, 0xe2, 0xe6, 0xaa, 0xd8, 0xf2, 0xcf, 0x6d, 0x63, 0xe9, 0x3e, 0x95, 0xb1, 0x8a, 0x8d,
+	0xce, 0xff, 0xb9, 0x4f, 0xbb, 0xb0, 0x91, 0xf6, 0x0d, 0xa9, 0x8a, 0xab, 0x9d, 0xe3, 0xee, 0xa4,
+	0x57, 0x29, 0x7e, 0xdd, 0x57, 0x55, 0xec, 0xf8, 0xe7, 0xa9, 0xd9, 0x81, 0xe5, 0xb8, 0xe6, 0x03,
+	0xd3, 0x56, 0x9b, 0xe7, 0xa9, 0xd1, 0x85, 0x77, 0xe3, 0x1a, 0x9f, 0x58, 0xf5, 0xf3, 0xd6, 0xf9,
+	0x08, 0xd0, 0xb1, 0xe5, 0xf9, 0x8a, 0xa5, 0xe2, 0xa3, 0x57, 0x8e, 0xed, 0xfa, 0x87, 0x8a, 0xaf,
+	0xac, 0xe5, 0x61, 0x96, 0xfb, 0x79, 0x6d, 0x07, 0xa6, 0x65, 0xec, 0x98, 0x5d, 0x74, 0x15, 0x16,
+	0x30, 0x45, 0x60, 0xad, 0x46, 0x83, 0x85, 0x3d, 0x90, 0x0a, 0xc1, 0x24, 0x11, 0x94, 0xfe, 0x36,
+	0x0d, 0xab, 0x01, 0xdf, 0x03, 0x4c, 0xf6, 0xd1, 0x30, 0xf4, 0xb6, 0xab, 0x90, 0x74, 0x15, 0x65,
+	0x7d, 0x7d, 0x21, 0xa0, 0xdd, 0x01, 0x08, 0x6b, 0xbd, 0x60, 0x6b, 0xd4, 0x5c, 0xee, 0x0a, 0x62,
+	0x6e, 0x50, 0xf1, 0x65, 0x7a, 0xfb, 0x7d, 0x1b, 0xc4, 0x80, 0x78, 0xe0, 0x5d, 0x8d, 0x7a, 0xa7,
+	0xa5, 0x62, 0x34, 0xf7, 0x54, 0x4e, 0xe4, 0xa2, 0x12, 0x1d, 0x37, 0xd1, 0x55, 0x98, 0x75, 0x30,
+	0x76, 0x6b, 0x06, 0xab, 0x0b, 0xf3, 0x07, 0xd0, 0x3b, 0x2d, 0xcd, 0x54, 0x30, 0x76, 0x8f, 0x0f,
+	0xe5, 0x19, 0xb2, 0x74, 0xac, 0xa1, 0x2b, 0x90, 0x37, 0x0d, 0xcf, 0xc7, 0x16, 0xa9, 0x22, 0xa6,
+	0x37, 0xa7, 0x6e, 0xe6, 0xe5, 0xfe, 0x04, 0xfa, 0x01, 0xcc, 0xd7, 0x4d, 0x5c, 0xc3, 0x2c, 0x39,
+	0xac, 0xce, 0xd0, 0x4a, 0xec, 0x9b, 0x83, 0x39, 0x31, 0xcd, 0x5b, 0xe5, 0x2a, 0xf6, 0x7d, 0xc3,
+	0xd2, 0xab, 0xbe, 0xe2, 0x63, 0x19, 0xea, 0x26, 0x0e, 0xb2, 0x4c, 0x0d, 0xc4, 0x97, 0x46, 0xc3,
+	0xa8, 0x39, 0x7b, 0x4e, 0x48, 0x3e, 0x7b, 0x16, 0xf2, 0x22, 0xa1, 0xab, 0xec, 0x39, 0x81, 0x82,
+	0xa7, 0x50, 0x68, 0x69, 0x96, 0x17, 0x92, 0xcf, 0x9d, 0x85, 0x7c, 0x9e, 0x50, 0x05, 0xcc, 0x9f,
+	0xc3, 0x82, 0x8b, 0x4d, 0xa5, 0x1b, 0x52, 0xe7, 0xcf, 0x42, 0x5d, 0xa0, 0x5c, 0x9c, 0x5b, 0x7a,
+	0x00, 0x85, 0xe8, 0x2a, 0x9a, 0x87, 0xd9, 0x27, 0x56, 0xd3, 0xb2, 0x5f, 0x5a, 0xe2, 0x3b, 0x64,
+	0xc0, 0x71, 0xa2, 0x80, 0x0a, 0x30, 0x17, 0x64, 0x7f, 0x31, 0x87, 0x16, 0x61, 0xfe, 0x89, 0xa5,
+	0x74, 0x14, 0xc3, 0x24, 0x33, 0xe2, 0x94, 0x74, 0x02, 0xef, 0xa6, 0xe4, 0xe4, 0x68, 0x04, 0x6f,
+	0x05, 0x01, 0x7c, 0x05, 0xf2, 0x6e, 0x00, 0x08, 0xfa, 0x01, 0xe1, 0x84, 0x74, 0x1b, 0x96, 0x13,
+	0xdf, 0x1d, 0x51, 0xaa, 0x59, 0x4e, 0x25, 0x7d, 0x0a, 0x4b, 0x49, 0x0f, 0x8b, 0x37, 0x50, 0x5b,
+	0x81, 0x2b, 0x83, 0x7b, 0xf0, 0xf0, 0x99, 0x36, 0xf2, 0x22, 0x2c, 0x11, 0xfb, 0x09, 0x55, 0x5b,
+	0x93, 0x43, 0x9e, 0xd1, 0xe2, 0x89, 0xd9, 0x26, 0x97, 0x98, 0x6d, 0xfa, 0xee, 0x78, 0x3a, 0xe8,
+	0x0e, 0x76, 0xe9, 0xaf, 0x7d, 0xd4, 0x57, 0x1a, 0xbf, 0xec, 0x84, 0xd1, 0x97, 0x5d, 0x9f, 0xf9,
+	0x47, 0x09, 0xa7, 0x42, 0x32, 0xd9, 0x5b, 0xa0, 0xae, 0x40, 0x21, 0x9a, 0x2f, 0xde, 0x02, 0xa3,
+	0x0c, 0xc5, 0x78, 0x3e, 0x78, 0x0b, 0x9c, 0xdf, 0x87, 0x4b, 0x41, 0xc1, 0xcf, 0xab, 0x7d, 0x7a,
+	0x9c, 0xdf, 0xe8, 0x13, 0x47, 0xdf, 0xd7, 0x42, 0xfa, 0xfb, 0xba, 0x4f, 0xf9, 0x18, 0x56, 0x06,
+	0xcb, 0xcd, 0x4f, 0x5c, 0xac, 0xf8, 0xb1, 0x60, 0xdb, 0x0d, 0x82, 0x6d, 0x42, 0x7a, 0xe9, 0x87,
+	0xb0, 0x34, 0xc8, 0x4a, 0xea, 0x92, 0xb5, 0x7b, 0x7d, 0x4b, 0xb3, 0xb4, 0x16, 0xfb, 0xe6, 0x56,
+	0x61, 0x79, 0x90, 0xf8, 0x21, 0x56, 0x3a, 0xf8, 0x4c, 0x3e, 0x50, 0x61, 0x6b, 0xa8, 0xe4, 0x8e,
+	0x56, 0xc7, 0x24, 0xcc, 0x4c, 0xdb, 0x3b, 0x9b, 0x92, 0x2f, 0x05, 0xd8, 0x18, 0x2e, 0xec, 0x79,
+	0x01, 0x4d, 0x8b, 0xde, 0xb5, 0x1f, 0x67, 0xa6, 0x8f, 0x17, 0xbc, 0xb9, 0x51, 0x05, 0x6f, 0xdf,
+	0x92, 0xaf, 0x12, 0x5a, 0x0c, 0xc7, 0x56, 0xc7, 0xf0, 0xe9, 0x65, 0xcd, 0x4f, 0xff, 0x0d, 0xb6,
+	0x7a, 0x37, 0x88, 0x92, 0x2c, 0x47, 0x2b, 0xe9, 0xb0, 0x18, 0x69, 0x8c, 0xd1, 0x78, 0x3e, 0xc9,
+	0xee, 0x87, 0xd4, 0x26, 0x68, 0x7f, 0xdb, 0x0d, 0x28, 0x52, 0x45, 0xb4, 0x77, 0x76, 0x8e, 0x7a,
+	0xfe, 0x20, 0x00, 0x8a, 0xf5, 0x76, 0x69, 0xd7, 0x11, 0xed, 0xc3, 0x02, 0x6b, 0xf0, 0xaa, 0xac,
+	0xff, 0xc8, 0x9d, 0x73, 0x25, 0xb1, 0xc7, 0xcb, 0x7b, 0x94, 0x72, 0x01, 0x47, 0x3b, 0x96, 0xdf,
+	0x82, 0xb9, 0xd8, 0x2d, 0x3c, 0xbf, 0xb7, 0x9e, 0xe8, 0xda, 0x40, 0xb1, 0x1c, 0xc2, 0xfb, 0x1d,
+	0xdd, 0xa9, 0x68, 0x47, 0xf7, 0x8f, 0x02, 0x5c, 0xe4, 0x12, 0xac, 0xdd, 0xfa, 0xb6, 0x2c, 0xbd,
+	0x0f, 0xb3, 0x41, 0x9b, 0x96, 0x19, 0xba, 0x31, 0x28, 0x1c, 0xef, 0x24, 0xcb, 0x01, 0x3c, 0xda,
+	0xed, 0x9c, 0x8a, 0x77, 0x3b, 0x7f, 0x27, 0xc0, 0x4a, 0x6c, 0x7b, 0xd5, 0x76, 0xdd, 0x53, 0x5d,
+	0xa3, 0x8e, 0xd7, 0x7e, 0x26, 0x64, 0x3f, 0xc9, 0x25, 0x98, 0xf6, 0x0c, 0x92, 0xf4, 0x78, 0x8f,
+	0x9b, 0x0e, 0xc8, 0x6c, 0xdb, 0xf2, 0x0d, 0x33, 0xf0, 0x13, 0x1d, 0xa0, 0xf7, 0xa1, 0xa0, 0xdb,
+	0xb5, 0xba, 0xa2, 0x36, 0x5f, 0x2a, 0xae, 0xe6, 0xd1, 0xb7, 0xe5, 0x9c, 0x3c, 0xaf, 0xdb, 0x07,
+	0xc1, 0x94, 0xf4, 0x5b, 0x01, 0x96, 0xa3, 0xae, 0xfc, 0x5f, 0x32, 0x6e, 0xdb, 0x80, 0x7c, 0xf8,
+	0x57, 0x08, 0xb4, 0xc2, 0xc3, 0x93, 0x0c, 0x9e, 0x58, 0x1a, 0x6e, 0x18, 0x16, 0xd6, 0xc4, 0x77,
+	0xd0, 0x12, 0x88, 0xe1, 0x3c, 0x7f, 0x66, 0x8b, 0x42, 0x6c, 0x96, 0xe7, 0x1e, 0x31, 0x87, 0x56,
+	0x79, 0xeb, 0x94, 0xcc, 0x46, 0xae, 0x12, 0x71, 0x6a, 0xfb, 0xdf, 0x33, 0x90, 0x0f, 0xff, 0x4c,
+	0x41, 0x74, 0x85, 0x83, 0xa8, 0xae, 0xab, 0x50, 0x0a, 0xe7, 0xb9, 0xd7, 0xfa, 0x5d, 0xe5, 0x7d,
+	0x4d, 0xa3, 0x0f, 0xbe, 0x21, 0x50, 0xb4, 0x4b, 0xcb, 0x40, 0x39, 0x54, 0x82, 0xf7, 0x42, 0xd0,
+	0x70, 0x1b, 0x4c, 0xc4, 0x68, 0x1d, 0x2e, 0x27, 0x02, 0x1e, 0xe2, 0x86, 0x2f, 0x36, 0xd0, 0x36,
+	0x5c, 0x1f, 0x5c, 0x4e, 0xee, 0x38, 0x89, 0x3a, 0xba, 0x05, 0x5b, 0xa3, 0xb1, 0xc1, 0x63, 0xf5,
+	0x19, 0xba, 0x03, 0x3b, 0xa3, 0xa1, 0xf1, 0x8e, 0x91, 0x68, 0xa0, 0x3d, 0x28, 0x8f, 0x96, 0xf8,
+	0x5e, 0xdb, 0xd7, 0x6d, 0xc3, 0xd2, 0x83, 0x7e, 0x8f, 0xf8, 0x1c, 0x95, 0x61, 0x7b, 0x32, 0x99,
+	0x2a, 0xb6, 0x7c, 0xb1, 0x39, 0x5e, 0xc7, 0xb1, 0xa5, 0xda, 0x2d, 0xc3, 0xd2, 0x83, 0xfe, 0x87,
+	0x68, 0xa2, 0x0f, 0x61, 0x77, 0x32, 0x99, 0xb0, 0xad, 0x20, 0xb6, 0x26, 0x57, 0x14, 0x34, 0x04,
+	0x44, 0x0b, 0x49, 0xb0, 0x91, 0x22, 0xc3, 0x4b, 0x78, 0xd1, 0x46, 0xd7, 0x60, 0x33, 0x05, 0x13,
+	0x16, 0xdd, 0xa2, 0x83, 0x24, 0x58, 0x0f, 0x51, 0x03, 0xef, 0x25, 0x16, 0x36, 0x7f, 0x17, 0xd0,
+	0x1d, 0xb8, 0x1d, 0x62, 0x46, 0x26, 0x7f, 0x26, 0xf1, 0xa7, 0x1c, 0xba, 0x1b, 0x71, 0xc4, 0x70,
+	0xfa, 0x8c, 0x74, 0xa1, 0xf7, 0x2d, 0xcb, 0x6e, 0x5b, 0x2a, 0xd6, 0xc4, 0x3f, 0xe7, 0x50, 0x19,
+	0x6e, 0xa5, 0xeb, 0x89, 0xa5, 0x7f, 0xac, 0x89, 0x7f, 0xc9, 0xa1, 0xeb, 0xf0, 0xfe, 0xe0, 0x97,
+	0xc1, 0x6e, 0xbb, 0x0a, 0xcb, 0x33, 0xf4, 0x24, 0xff, 0x33, 0xbb, 0xf7, 0xd7, 0x25, 0x58, 0xac,
+	0xf0, 0xcb, 0xb4, 0x8a, 0x5d, 0xfa, 0xd7, 0x98, 0xe7, 0x49, 0x5d, 0x01, 0xb4, 0x9d, 0x56, 0xa6,
+	0xf5, 0x31, 0xe5, 0xe0, 0xa1, 0x77, 0x73, 0x22, 0x2c, 0xc9, 0xf1, 0x5f, 0xa4, 0x77, 0x0c, 0xd0,
+	0x9d, 0x89, 0x0b, 0xc3, 0x40, 0x6f, 0x39, 0x83, 0x04, 0xd1, 0xde, 0x4d, 0x2d, 0xf6, 0xd0, 0xee,
+	0x20, 0x55, 0x0a, 0x30, 0xd4, 0xfd, 0xc1, 0xe4, 0x02, 0x44, 0xb5, 0x97, 0x52, 0x1a, 0xa2, 0x31,
+	0x3c, 0x1c, 0x16, 0xaa, 0xbd, 0x3d, 0x29, 0x9c, 0x28, 0x75, 0x92, 0x4b, 0x4c, 0xb4, 0x33, 0x9a,
+	0x84, 0xa1, 0x42, 0x95, 0xdb, 0x13, 0xa2, 0x89, 0xc6, 0x9f, 0x0b, 0xa3, 0x6b, 0x51, 0x74, 0x77,
+	0x9c, 0xdb, 0xa2, 0xe8, 0xd0, 0x84, 0xbd, 0x8c, 0x52, 0xc4, 0x94, 0xe7, 0x49, 0x35, 0x2c, 0x1a,
+	0xb3, 0x19, 0x82, 0x49, 0x0f, 0xeb, 0x44, 0x6c, 0xa2, 0xa3, 0xd9, 0x05, 0x35, 0xce, 0xd1, 0x0c,
+	0x35, 0xa9, 0xa3, 0x43, 0x74, 0x5a, 0x3c, 0x91, 0x7b, 0x74, 0x82, 0x78, 0x22, 0xb0, 0x0c, 0xf1,
+	0xc4, 0xe1, 0x44, 0xe9, 0xd3, 0x78, 0xb9, 0x8b, 0xae, 0xa5, 0x08, 0xd3, 0xd5, 0x50, 0x85, 0x34,
+	0x06, 0x45, 0x98, 0x7f, 0x32, 0x58, 0xf6, 0xa2, 0xeb, 0x29, 0x52, 0x7c, 0x3d, 0x64, 0xbf, 0x36,
+	0x16, 0x47, 0xf8, 0x5b, 0x89, 0x25, 0x30, 0x4a, 0xdb, 0x7d, 0x14, 0x14, 0x6a, 0xba, 0x35, 0x19,
+	0x98, 0xa8, 0xeb, 0xa4, 0x95, 0xc7, 0x68, 0xe8, 0xca, 0x4a, 0xc6, 0x85, 0x4a, 0x77, 0x26, 0xc6,
+	0xf3, 0x38, 0x4c, 0x2a, 0xa0, 0xd1, 0x58, 0x16, 0x82, 0x4a, 0x8f, 0xc3, 0x14, 0x34, 0x8f, 0xc3,
+	0xc4, 0xca, 0x7a, 0x38, 0x0e, 0x13, 0x61, 0xe9, 0x71, 0x98, 0x06, 0x27, 0x4a, 0x7f, 0x2f, 0x4c,
+	0x58, 0x7a, 0xa3, 0xef, 0x8c, 0xa3, 0x4d, 0x14, 0x0b, 0xad, 0xfa, 0xf8, 0x4d, 0xc5, 0x89, 0x95,
+	0xbf, 0x18, 0x5b, 0xba, 0xa3, 0x7b, 0x63, 0xf9, 0x63, 0xf8, 0xd0, 0xae, 0xbb, 0x99, 0xe5, 0x88,
+	0x41, 0xbf, 0x9a, 0xa0, 0x82, 0x47, 0xf7, 0xc7, 0x51, 0x0f, 0x4a, 0x84, 0x46, 0xdd, 0x7b, 0x03,
+	0x49, 0x62, 0x96, 0x32, 0x54, 0xca, 0xa3, 0x1b, 0x83, 0x54, 0x03, 0x80, 0x50, 0xe7, 0xd6, 0x78,
+	0x20, 0xbf, 0x5e, 0xe2, 0x45, 0xfc, 0xf0, 0xf5, 0x12, 0x5f, 0x4f, 0xbf, 0x5e, 0x86, 0x70, 0x84,
+	0xdf, 0x4a, 0xab, 0x31, 0x87, 0xbf, 0xf7, 0x64, 0x5c, 0xfa, 0x65, 0x39, 0xdc, 0x13, 0xb8, 0x23,
+	0xa0, 0x66, 0x4a, 0xd5, 0x38, 0xfc, 0xd5, 0x25, 0xc2, 0x42, 0x6d, 0xef, 0x8f, 0x82, 0x73, 0x65,
+	0x07, 0x1f, 0xbd, 0xfe, 0xd7, 0xc6, 0x3b, 0x5f, 0xf7, 0x36, 0x84, 0xd7, 0xbd, 0x0d, 0xe1, 0x9f,
+	0xbd, 0x0d, 0xe1, 0xf3, 0x2d, 0x26, 0xe5, 0x63, 0xf5, 0xd9, 0x2e, 0xfd, 0xb9, 0xab, 0xdb, 0xbb,
+	0x4e, 0x53, 0xdf, 0x8d, 0xfd, 0x5f, 0x61, 0x7d, 0x86, 0xfe, 0xfa, 0xf0, 0xbf, 0x01, 0x00, 0x00,
+	0xff, 0xff, 0xaf, 0x23, 0x43, 0x87, 0x6f, 0x28, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -3215,50 +5256,46 @@ type ProtocolServiceClient interface {
 	InstanceExportData(ctx context.Context, in *InstanceExportData_Request, opts ...grpc.CallOption) (*InstanceExportData_Reply, error)
 	// InstanceGetConfiguration gets current configuration of this protocol instance
 	InstanceGetConfiguration(ctx context.Context, in *InstanceGetConfiguration_Request, opts ...grpc.CallOption) (*InstanceGetConfiguration_Reply, error)
-	// GroupCreate initiates a new group and joins it
-	GroupCreate(ctx context.Context, in *GroupCreate_Request, opts ...grpc.CallOption) (*GroupCreate_Reply, error)
-	// GroupJoin joins an existing group
-	GroupJoin(ctx context.Context, in *GroupJoin_Request, opts ...grpc.CallOption) (*GroupJoin_Reply, error)
-	// GroupLeave leaves a group
-	GroupLeave(ctx context.Context, in *GroupLeave_Request, opts ...grpc.CallOption) (*GroupLeave_Reply, error)
-	// GroupInvite generates an invitation to a group
-	GroupInvite(ctx context.Context, in *GroupInvite_Request, opts ...grpc.CallOption) (*GroupInvite_Reply, error)
-	// DevicePair pairs a new device to the current account
-	DevicePair(ctx context.Context, in *DevicePair_Request, opts ...grpc.CallOption) (*DevicePair_Reply, error)
-	// ContactRequestReference retrieves the necessary information to create a contact link
+	// ContactRequestReference retrieves the information required to create a reference (ie. included in a shareable link) to the current account
 	ContactRequestReference(ctx context.Context, in *ContactRequestReference_Request, opts ...grpc.CallOption) (*ContactRequestReference_Reply, error)
 	// ContactRequestDisable disables incoming contact requests
 	ContactRequestDisable(ctx context.Context, in *ContactRequestDisable_Request, opts ...grpc.CallOption) (*ContactRequestDisable_Reply, error)
 	// ContactRequestEnable enables incoming contact requests
 	ContactRequestEnable(ctx context.Context, in *ContactRequestEnable_Request, opts ...grpc.CallOption) (*ContactRequestEnable_Reply, error)
-	// ContactRequestResetReference generates a new contact request reference
-	ContactRequestResetReference(ctx context.Context, in *ContactRequestResetLink_Request, opts ...grpc.CallOption) (*ContactRequestResetLink_Reply, error)
-	// ContactRequestEnqueue enqueues a new contact request to be sent
-	ContactRequestEnqueue(ctx context.Context, in *ContactRequestEnqueue_Request, opts ...grpc.CallOption) (*ContactRequestEnqueue_Reply, error)
+	// ContactRequestResetReference changes the contact request reference
+	ContactRequestResetReference(ctx context.Context, in *ContactRequestResetReference_Request, opts ...grpc.CallOption) (*ContactRequestResetReference_Reply, error)
+	// ContactRequestSend attempt to send a contact request
+	ContactRequestSend(ctx context.Context, in *ContactRequestSend_Request, opts ...grpc.CallOption) (*ContactRequestSend_Reply, error)
 	// ContactRequestAccept accepts a contact request
 	ContactRequestAccept(ctx context.Context, in *ContactRequestAccept_Request, opts ...grpc.CallOption) (*ContactRequestAccept_Reply, error)
-	// ContactRemove removes a contact
-	ContactRemove(ctx context.Context, in *ContactRemove_Request, opts ...grpc.CallOption) (*ContactRemove_Reply, error)
-	// ContactBlock blocks a contact, stops advertising on its rendezvous point
+	// ContactRequestDiscard ignores a contact request, without informing the other user
+	ContactRequestDiscard(ctx context.Context, in *ContactRequestDiscard_Request, opts ...grpc.CallOption) (*ContactRequestDiscard_Reply, error)
+	// ContactBlock blocks a contact from sending requests
 	ContactBlock(ctx context.Context, in *ContactBlock_Request, opts ...grpc.CallOption) (*ContactBlock_Reply, error)
-	// ContactUnblock unblocks a contact, resumes advertising on its rendezvous point
+	// ContactUnblock unblocks a contact from sending requests
 	ContactUnblock(ctx context.Context, in *ContactUnblock_Request, opts ...grpc.CallOption) (*ContactUnblock_Reply, error)
-	// GroupSettingSetGroup sets a setting for a group
-	GroupSettingSetGroup(ctx context.Context, in *GroupSettingSetGroup_Request, opts ...grpc.CallOption) (*GroupSettingSetGroup_Reply, error)
-	// GroupSettingSetGroup sets a setting for own group member
-	GroupSettingSetMember(ctx context.Context, in *GroupSettingSetMember_Request, opts ...grpc.CallOption) (*GroupSettingSetMember_Reply, error)
-	// GroupMessageSend sends a message to the group
-	GroupMessageSend(ctx context.Context, in *GroupMessageSend_Request, opts ...grpc.CallOption) (*GroupMessageSend_Reply, error)
-	// AppendAccountSpecificEvent adds an event to account event store
-	AccountAppendAppSpecificEvent(ctx context.Context, in *AccountAppendAppSpecificEvent_Request, opts ...grpc.CallOption) (*AccountAppendAppSpecificEvent_Reply, error)
-	// AccountSubscribe subscribes to the account events
-	AccountSubscribe(ctx context.Context, in *AccountSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_AccountSubscribeClient, error)
-	// GroupSettingSubscribe subscribes to the setting events for a group
-	GroupSettingSubscribe(ctx context.Context, in *GroupSettingStoreSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupSettingSubscribeClient, error)
-	// GroupMessageSubscribe subscribes to the message events for a group
+	// ContactAliasKeySend send an alias key to a contact, the contact will be able to assert that your account is being present on a multi-member group
+	ContactAliasKeySend(ctx context.Context, in *ContactAliasKeySend_Request, opts ...grpc.CallOption) (*ContactAliasKeySend_Reply, error)
+	// MultiMemberGroupCreate creates a new multi-member group
+	MultiMemberGroupCreate(ctx context.Context, in *MultiMemberGroupCreate_Request, opts ...grpc.CallOption) (*MultiMemberGroupCreate_Reply, error)
+	// MultiMemberGroupJoin joins a multi-member group
+	MultiMemberGroupJoin(ctx context.Context, in *MultiMemberGroupJoin_Request, opts ...grpc.CallOption) (*MultiMemberGroupJoin_Reply, error)
+	// MultiMemberGroupLeave leaves a multi-member group
+	MultiMemberGroupLeave(ctx context.Context, in *MultiMemberGroupLeave_Request, opts ...grpc.CallOption) (*MultiMemberGroupLeave_Reply, error)
+	// MultiMemberGroupAliasResolverDisclose discloses your alias resolver key
+	MultiMemberGroupAliasResolverDisclose(ctx context.Context, in *MultiMemberGroupAliasResolverDisclose_Request, opts ...grpc.CallOption) (*MultiMemberGroupAliasResolverDisclose_Reply, error)
+	// MultiMemberGroupAdminRoleGrant grants an admin role to a group member
+	MultiMemberGroupAdminRoleGrant(ctx context.Context, in *MultiMemberGroupAdminRoleGrant_Request, opts ...grpc.CallOption) (*MultiMemberGroupAdminRoleGrant_Reply, error)
+	// MultiMemberGroupInvitationCreate creates an invitation to a multi-member group
+	MultiMemberGroupInvitationCreate(ctx context.Context, in *MultiMemberGroupInvitationCreate_Request, opts ...grpc.CallOption) (*MultiMemberGroupInvitationCreate_Reply, error)
+	// AppMetadataSend adds an app event to the metadata store, the message is encrypted using a symmetric key and readable by future group members
+	AppMetadataSend(ctx context.Context, in *AppMetadataSend_Request, opts ...grpc.CallOption) (*AppMetadataSend_Reply, error)
+	// AppMessageSend adds an app event to the message store, the message is encrypted using a derived key and readable by current group members
+	AppMessageSend(ctx context.Context, in *AppMessageSend_Request, opts ...grpc.CallOption) (*AppMessageSend_Reply, error)
+	// GroupMetadataSubscribe subscribes to a group metadata updates (or it can also retrieve the history)
+	GroupMetadataSubscribe(ctx context.Context, in *GroupMetadataSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMetadataSubscribeClient, error)
+	// GroupMessageSubscribe subscribes to a group message updates (or it can also retrieve the history)
 	GroupMessageSubscribe(ctx context.Context, in *GroupMessageSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMessageSubscribeClient, error)
-	// GroupMemberSubscribe subscribes to the member events for a group
-	GroupMemberSubscribe(ctx context.Context, in *GroupMemberSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMemberSubscribeClient, error)
 }
 
 type protocolServiceClient struct {
@@ -3281,51 +5318,6 @@ func (c *protocolServiceClient) InstanceExportData(ctx context.Context, in *Inst
 func (c *protocolServiceClient) InstanceGetConfiguration(ctx context.Context, in *InstanceGetConfiguration_Request, opts ...grpc.CallOption) (*InstanceGetConfiguration_Reply, error) {
 	out := new(InstanceGetConfiguration_Reply)
 	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/InstanceGetConfiguration", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) GroupCreate(ctx context.Context, in *GroupCreate_Request, opts ...grpc.CallOption) (*GroupCreate_Reply, error) {
-	out := new(GroupCreate_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupCreate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) GroupJoin(ctx context.Context, in *GroupJoin_Request, opts ...grpc.CallOption) (*GroupJoin_Reply, error) {
-	out := new(GroupJoin_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupJoin", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) GroupLeave(ctx context.Context, in *GroupLeave_Request, opts ...grpc.CallOption) (*GroupLeave_Reply, error) {
-	out := new(GroupLeave_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupLeave", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) GroupInvite(ctx context.Context, in *GroupInvite_Request, opts ...grpc.CallOption) (*GroupInvite_Reply, error) {
-	out := new(GroupInvite_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupInvite", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *protocolServiceClient) DevicePair(ctx context.Context, in *DevicePair_Request, opts ...grpc.CallOption) (*DevicePair_Reply, error) {
-	out := new(DevicePair_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/DevicePair", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3359,8 +5351,8 @@ func (c *protocolServiceClient) ContactRequestEnable(ctx context.Context, in *Co
 	return out, nil
 }
 
-func (c *protocolServiceClient) ContactRequestResetReference(ctx context.Context, in *ContactRequestResetLink_Request, opts ...grpc.CallOption) (*ContactRequestResetLink_Reply, error) {
-	out := new(ContactRequestResetLink_Reply)
+func (c *protocolServiceClient) ContactRequestResetReference(ctx context.Context, in *ContactRequestResetReference_Request, opts ...grpc.CallOption) (*ContactRequestResetReference_Reply, error) {
+	out := new(ContactRequestResetReference_Reply)
 	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestResetReference", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -3368,9 +5360,9 @@ func (c *protocolServiceClient) ContactRequestResetReference(ctx context.Context
 	return out, nil
 }
 
-func (c *protocolServiceClient) ContactRequestEnqueue(ctx context.Context, in *ContactRequestEnqueue_Request, opts ...grpc.CallOption) (*ContactRequestEnqueue_Reply, error) {
-	out := new(ContactRequestEnqueue_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestEnqueue", in, out, opts...)
+func (c *protocolServiceClient) ContactRequestSend(ctx context.Context, in *ContactRequestSend_Request, opts ...grpc.CallOption) (*ContactRequestSend_Reply, error) {
+	out := new(ContactRequestSend_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestSend", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3386,9 +5378,9 @@ func (c *protocolServiceClient) ContactRequestAccept(ctx context.Context, in *Co
 	return out, nil
 }
 
-func (c *protocolServiceClient) ContactRemove(ctx context.Context, in *ContactRemove_Request, opts ...grpc.CallOption) (*ContactRemove_Reply, error) {
-	out := new(ContactRemove_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRemove", in, out, opts...)
+func (c *protocolServiceClient) ContactRequestDiscard(ctx context.Context, in *ContactRequestDiscard_Request, opts ...grpc.CallOption) (*ContactRequestDiscard_Reply, error) {
+	out := new(ContactRequestDiscard_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestDiscard", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3413,48 +5405,93 @@ func (c *protocolServiceClient) ContactUnblock(ctx context.Context, in *ContactU
 	return out, nil
 }
 
-func (c *protocolServiceClient) GroupSettingSetGroup(ctx context.Context, in *GroupSettingSetGroup_Request, opts ...grpc.CallOption) (*GroupSettingSetGroup_Reply, error) {
-	out := new(GroupSettingSetGroup_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupSettingSetGroup", in, out, opts...)
+func (c *protocolServiceClient) ContactAliasKeySend(ctx context.Context, in *ContactAliasKeySend_Request, opts ...grpc.CallOption) (*ContactAliasKeySend_Reply, error) {
+	out := new(ContactAliasKeySend_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactAliasKeySend", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolServiceClient) GroupSettingSetMember(ctx context.Context, in *GroupSettingSetMember_Request, opts ...grpc.CallOption) (*GroupSettingSetMember_Reply, error) {
-	out := new(GroupSettingSetMember_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupSettingSetMember", in, out, opts...)
+func (c *protocolServiceClient) MultiMemberGroupCreate(ctx context.Context, in *MultiMemberGroupCreate_Request, opts ...grpc.CallOption) (*MultiMemberGroupCreate_Reply, error) {
+	out := new(MultiMemberGroupCreate_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/MultiMemberGroupCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolServiceClient) GroupMessageSend(ctx context.Context, in *GroupMessageSend_Request, opts ...grpc.CallOption) (*GroupMessageSend_Reply, error) {
-	out := new(GroupMessageSend_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupMessageSend", in, out, opts...)
+func (c *protocolServiceClient) MultiMemberGroupJoin(ctx context.Context, in *MultiMemberGroupJoin_Request, opts ...grpc.CallOption) (*MultiMemberGroupJoin_Reply, error) {
+	out := new(MultiMemberGroupJoin_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/MultiMemberGroupJoin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolServiceClient) AccountAppendAppSpecificEvent(ctx context.Context, in *AccountAppendAppSpecificEvent_Request, opts ...grpc.CallOption) (*AccountAppendAppSpecificEvent_Reply, error) {
-	out := new(AccountAppendAppSpecificEvent_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/AccountAppendAppSpecificEvent", in, out, opts...)
+func (c *protocolServiceClient) MultiMemberGroupLeave(ctx context.Context, in *MultiMemberGroupLeave_Request, opts ...grpc.CallOption) (*MultiMemberGroupLeave_Reply, error) {
+	out := new(MultiMemberGroupLeave_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/MultiMemberGroupLeave", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *protocolServiceClient) AccountSubscribe(ctx context.Context, in *AccountSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_AccountSubscribeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[0], "/berty.protocol.ProtocolService/AccountSubscribe", opts...)
+func (c *protocolServiceClient) MultiMemberGroupAliasResolverDisclose(ctx context.Context, in *MultiMemberGroupAliasResolverDisclose_Request, opts ...grpc.CallOption) (*MultiMemberGroupAliasResolverDisclose_Reply, error) {
+	out := new(MultiMemberGroupAliasResolverDisclose_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/MultiMemberGroupAliasResolverDisclose", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &protocolServiceAccountSubscribeClient{stream}
+	return out, nil
+}
+
+func (c *protocolServiceClient) MultiMemberGroupAdminRoleGrant(ctx context.Context, in *MultiMemberGroupAdminRoleGrant_Request, opts ...grpc.CallOption) (*MultiMemberGroupAdminRoleGrant_Reply, error) {
+	out := new(MultiMemberGroupAdminRoleGrant_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/MultiMemberGroupAdminRoleGrant", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) MultiMemberGroupInvitationCreate(ctx context.Context, in *MultiMemberGroupInvitationCreate_Request, opts ...grpc.CallOption) (*MultiMemberGroupInvitationCreate_Reply, error) {
+	out := new(MultiMemberGroupInvitationCreate_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/MultiMemberGroupInvitationCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) AppMetadataSend(ctx context.Context, in *AppMetadataSend_Request, opts ...grpc.CallOption) (*AppMetadataSend_Reply, error) {
+	out := new(AppMetadataSend_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/AppMetadataSend", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) AppMessageSend(ctx context.Context, in *AppMessageSend_Request, opts ...grpc.CallOption) (*AppMessageSend_Reply, error) {
+	out := new(AppMessageSend_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/AppMessageSend", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) GroupMetadataSubscribe(ctx context.Context, in *GroupMetadataSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMetadataSubscribeClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[0], "/berty.protocol.ProtocolService/GroupMetadataSubscribe", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &protocolServiceGroupMetadataSubscribeClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -3464,49 +5501,17 @@ func (c *protocolServiceClient) AccountSubscribe(ctx context.Context, in *Accoun
 	return x, nil
 }
 
-type ProtocolService_AccountSubscribeClient interface {
-	Recv() (*AccountSubscribe_Reply, error)
+type ProtocolService_GroupMetadataSubscribeClient interface {
+	Recv() (*GroupMetadataEvent, error)
 	grpc.ClientStream
 }
 
-type protocolServiceAccountSubscribeClient struct {
+type protocolServiceGroupMetadataSubscribeClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolServiceAccountSubscribeClient) Recv() (*AccountSubscribe_Reply, error) {
-	m := new(AccountSubscribe_Reply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *protocolServiceClient) GroupSettingSubscribe(ctx context.Context, in *GroupSettingStoreSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupSettingSubscribeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[1], "/berty.protocol.ProtocolService/GroupSettingSubscribe", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &protocolServiceGroupSettingSubscribeClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type ProtocolService_GroupSettingSubscribeClient interface {
-	Recv() (*GroupSettingStoreSubscribe_Reply, error)
-	grpc.ClientStream
-}
-
-type protocolServiceGroupSettingSubscribeClient struct {
-	grpc.ClientStream
-}
-
-func (x *protocolServiceGroupSettingSubscribeClient) Recv() (*GroupSettingStoreSubscribe_Reply, error) {
-	m := new(GroupSettingStoreSubscribe_Reply)
+func (x *protocolServiceGroupMetadataSubscribeClient) Recv() (*GroupMetadataEvent, error) {
+	m := new(GroupMetadataEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -3514,7 +5519,7 @@ func (x *protocolServiceGroupSettingSubscribeClient) Recv() (*GroupSettingStoreS
 }
 
 func (c *protocolServiceClient) GroupMessageSubscribe(ctx context.Context, in *GroupMessageSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMessageSubscribeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[2], "/berty.protocol.ProtocolService/GroupMessageSubscribe", opts...)
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[1], "/berty.protocol.ProtocolService/GroupMessageSubscribe", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3529,7 +5534,7 @@ func (c *protocolServiceClient) GroupMessageSubscribe(ctx context.Context, in *G
 }
 
 type ProtocolService_GroupMessageSubscribeClient interface {
-	Recv() (*GroupMessageSubscribe_Reply, error)
+	Recv() (*GroupMessageEvent, error)
 	grpc.ClientStream
 }
 
@@ -3537,40 +5542,8 @@ type protocolServiceGroupMessageSubscribeClient struct {
 	grpc.ClientStream
 }
 
-func (x *protocolServiceGroupMessageSubscribeClient) Recv() (*GroupMessageSubscribe_Reply, error) {
-	m := new(GroupMessageSubscribe_Reply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *protocolServiceClient) GroupMemberSubscribe(ctx context.Context, in *GroupMemberSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMemberSubscribeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[3], "/berty.protocol.ProtocolService/GroupMemberSubscribe", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &protocolServiceGroupMemberSubscribeClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type ProtocolService_GroupMemberSubscribeClient interface {
-	Recv() (*GroupMemberSubscribe_Reply, error)
-	grpc.ClientStream
-}
-
-type protocolServiceGroupMemberSubscribeClient struct {
-	grpc.ClientStream
-}
-
-func (x *protocolServiceGroupMemberSubscribeClient) Recv() (*GroupMemberSubscribe_Reply, error) {
-	m := new(GroupMemberSubscribe_Reply)
+func (x *protocolServiceGroupMessageSubscribeClient) Recv() (*GroupMessageEvent, error) {
+	m := new(GroupMessageEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -3583,50 +5556,46 @@ type ProtocolServiceServer interface {
 	InstanceExportData(context.Context, *InstanceExportData_Request) (*InstanceExportData_Reply, error)
 	// InstanceGetConfiguration gets current configuration of this protocol instance
 	InstanceGetConfiguration(context.Context, *InstanceGetConfiguration_Request) (*InstanceGetConfiguration_Reply, error)
-	// GroupCreate initiates a new group and joins it
-	GroupCreate(context.Context, *GroupCreate_Request) (*GroupCreate_Reply, error)
-	// GroupJoin joins an existing group
-	GroupJoin(context.Context, *GroupJoin_Request) (*GroupJoin_Reply, error)
-	// GroupLeave leaves a group
-	GroupLeave(context.Context, *GroupLeave_Request) (*GroupLeave_Reply, error)
-	// GroupInvite generates an invitation to a group
-	GroupInvite(context.Context, *GroupInvite_Request) (*GroupInvite_Reply, error)
-	// DevicePair pairs a new device to the current account
-	DevicePair(context.Context, *DevicePair_Request) (*DevicePair_Reply, error)
-	// ContactRequestReference retrieves the necessary information to create a contact link
+	// ContactRequestReference retrieves the information required to create a reference (ie. included in a shareable link) to the current account
 	ContactRequestReference(context.Context, *ContactRequestReference_Request) (*ContactRequestReference_Reply, error)
 	// ContactRequestDisable disables incoming contact requests
 	ContactRequestDisable(context.Context, *ContactRequestDisable_Request) (*ContactRequestDisable_Reply, error)
 	// ContactRequestEnable enables incoming contact requests
 	ContactRequestEnable(context.Context, *ContactRequestEnable_Request) (*ContactRequestEnable_Reply, error)
-	// ContactRequestResetReference generates a new contact request reference
-	ContactRequestResetReference(context.Context, *ContactRequestResetLink_Request) (*ContactRequestResetLink_Reply, error)
-	// ContactRequestEnqueue enqueues a new contact request to be sent
-	ContactRequestEnqueue(context.Context, *ContactRequestEnqueue_Request) (*ContactRequestEnqueue_Reply, error)
+	// ContactRequestResetReference changes the contact request reference
+	ContactRequestResetReference(context.Context, *ContactRequestResetReference_Request) (*ContactRequestResetReference_Reply, error)
+	// ContactRequestSend attempt to send a contact request
+	ContactRequestSend(context.Context, *ContactRequestSend_Request) (*ContactRequestSend_Reply, error)
 	// ContactRequestAccept accepts a contact request
 	ContactRequestAccept(context.Context, *ContactRequestAccept_Request) (*ContactRequestAccept_Reply, error)
-	// ContactRemove removes a contact
-	ContactRemove(context.Context, *ContactRemove_Request) (*ContactRemove_Reply, error)
-	// ContactBlock blocks a contact, stops advertising on its rendezvous point
+	// ContactRequestDiscard ignores a contact request, without informing the other user
+	ContactRequestDiscard(context.Context, *ContactRequestDiscard_Request) (*ContactRequestDiscard_Reply, error)
+	// ContactBlock blocks a contact from sending requests
 	ContactBlock(context.Context, *ContactBlock_Request) (*ContactBlock_Reply, error)
-	// ContactUnblock unblocks a contact, resumes advertising on its rendezvous point
+	// ContactUnblock unblocks a contact from sending requests
 	ContactUnblock(context.Context, *ContactUnblock_Request) (*ContactUnblock_Reply, error)
-	// GroupSettingSetGroup sets a setting for a group
-	GroupSettingSetGroup(context.Context, *GroupSettingSetGroup_Request) (*GroupSettingSetGroup_Reply, error)
-	// GroupSettingSetGroup sets a setting for own group member
-	GroupSettingSetMember(context.Context, *GroupSettingSetMember_Request) (*GroupSettingSetMember_Reply, error)
-	// GroupMessageSend sends a message to the group
-	GroupMessageSend(context.Context, *GroupMessageSend_Request) (*GroupMessageSend_Reply, error)
-	// AppendAccountSpecificEvent adds an event to account event store
-	AccountAppendAppSpecificEvent(context.Context, *AccountAppendAppSpecificEvent_Request) (*AccountAppendAppSpecificEvent_Reply, error)
-	// AccountSubscribe subscribes to the account events
-	AccountSubscribe(*AccountSubscribe_Request, ProtocolService_AccountSubscribeServer) error
-	// GroupSettingSubscribe subscribes to the setting events for a group
-	GroupSettingSubscribe(*GroupSettingStoreSubscribe_Request, ProtocolService_GroupSettingSubscribeServer) error
-	// GroupMessageSubscribe subscribes to the message events for a group
+	// ContactAliasKeySend send an alias key to a contact, the contact will be able to assert that your account is being present on a multi-member group
+	ContactAliasKeySend(context.Context, *ContactAliasKeySend_Request) (*ContactAliasKeySend_Reply, error)
+	// MultiMemberGroupCreate creates a new multi-member group
+	MultiMemberGroupCreate(context.Context, *MultiMemberGroupCreate_Request) (*MultiMemberGroupCreate_Reply, error)
+	// MultiMemberGroupJoin joins a multi-member group
+	MultiMemberGroupJoin(context.Context, *MultiMemberGroupJoin_Request) (*MultiMemberGroupJoin_Reply, error)
+	// MultiMemberGroupLeave leaves a multi-member group
+	MultiMemberGroupLeave(context.Context, *MultiMemberGroupLeave_Request) (*MultiMemberGroupLeave_Reply, error)
+	// MultiMemberGroupAliasResolverDisclose discloses your alias resolver key
+	MultiMemberGroupAliasResolverDisclose(context.Context, *MultiMemberGroupAliasResolverDisclose_Request) (*MultiMemberGroupAliasResolverDisclose_Reply, error)
+	// MultiMemberGroupAdminRoleGrant grants an admin role to a group member
+	MultiMemberGroupAdminRoleGrant(context.Context, *MultiMemberGroupAdminRoleGrant_Request) (*MultiMemberGroupAdminRoleGrant_Reply, error)
+	// MultiMemberGroupInvitationCreate creates an invitation to a multi-member group
+	MultiMemberGroupInvitationCreate(context.Context, *MultiMemberGroupInvitationCreate_Request) (*MultiMemberGroupInvitationCreate_Reply, error)
+	// AppMetadataSend adds an app event to the metadata store, the message is encrypted using a symmetric key and readable by future group members
+	AppMetadataSend(context.Context, *AppMetadataSend_Request) (*AppMetadataSend_Reply, error)
+	// AppMessageSend adds an app event to the message store, the message is encrypted using a derived key and readable by current group members
+	AppMessageSend(context.Context, *AppMessageSend_Request) (*AppMessageSend_Reply, error)
+	// GroupMetadataSubscribe subscribes to a group metadata updates (or it can also retrieve the history)
+	GroupMetadataSubscribe(*GroupMetadataSubscribe_Request, ProtocolService_GroupMetadataSubscribeServer) error
+	// GroupMessageSubscribe subscribes to a group message updates (or it can also retrieve the history)
 	GroupMessageSubscribe(*GroupMessageSubscribe_Request, ProtocolService_GroupMessageSubscribeServer) error
-	// GroupMemberSubscribe subscribes to the member events for a group
-	GroupMemberSubscribe(*GroupMemberSubscribe_Request, ProtocolService_GroupMemberSubscribeServer) error
 }
 
 // UnimplementedProtocolServiceServer can be embedded to have forward compatible implementations.
@@ -3639,21 +5608,6 @@ func (*UnimplementedProtocolServiceServer) InstanceExportData(ctx context.Contex
 func (*UnimplementedProtocolServiceServer) InstanceGetConfiguration(ctx context.Context, req *InstanceGetConfiguration_Request) (*InstanceGetConfiguration_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InstanceGetConfiguration not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupCreate(ctx context.Context, req *GroupCreate_Request) (*GroupCreate_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupCreate not implemented")
-}
-func (*UnimplementedProtocolServiceServer) GroupJoin(ctx context.Context, req *GroupJoin_Request) (*GroupJoin_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupJoin not implemented")
-}
-func (*UnimplementedProtocolServiceServer) GroupLeave(ctx context.Context, req *GroupLeave_Request) (*GroupLeave_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupLeave not implemented")
-}
-func (*UnimplementedProtocolServiceServer) GroupInvite(ctx context.Context, req *GroupInvite_Request) (*GroupInvite_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupInvite not implemented")
-}
-func (*UnimplementedProtocolServiceServer) DevicePair(ctx context.Context, req *DevicePair_Request) (*DevicePair_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DevicePair not implemented")
-}
 func (*UnimplementedProtocolServiceServer) ContactRequestReference(ctx context.Context, req *ContactRequestReference_Request) (*ContactRequestReference_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestReference not implemented")
 }
@@ -3663,17 +5617,17 @@ func (*UnimplementedProtocolServiceServer) ContactRequestDisable(ctx context.Con
 func (*UnimplementedProtocolServiceServer) ContactRequestEnable(ctx context.Context, req *ContactRequestEnable_Request) (*ContactRequestEnable_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestEnable not implemented")
 }
-func (*UnimplementedProtocolServiceServer) ContactRequestResetReference(ctx context.Context, req *ContactRequestResetLink_Request) (*ContactRequestResetLink_Reply, error) {
+func (*UnimplementedProtocolServiceServer) ContactRequestResetReference(ctx context.Context, req *ContactRequestResetReference_Request) (*ContactRequestResetReference_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestResetReference not implemented")
 }
-func (*UnimplementedProtocolServiceServer) ContactRequestEnqueue(ctx context.Context, req *ContactRequestEnqueue_Request) (*ContactRequestEnqueue_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestEnqueue not implemented")
+func (*UnimplementedProtocolServiceServer) ContactRequestSend(ctx context.Context, req *ContactRequestSend_Request) (*ContactRequestSend_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestSend not implemented")
 }
 func (*UnimplementedProtocolServiceServer) ContactRequestAccept(ctx context.Context, req *ContactRequestAccept_Request) (*ContactRequestAccept_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestAccept not implemented")
 }
-func (*UnimplementedProtocolServiceServer) ContactRemove(ctx context.Context, req *ContactRemove_Request) (*ContactRemove_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ContactRemove not implemented")
+func (*UnimplementedProtocolServiceServer) ContactRequestDiscard(ctx context.Context, req *ContactRequestDiscard_Request) (*ContactRequestDiscard_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestDiscard not implemented")
 }
 func (*UnimplementedProtocolServiceServer) ContactBlock(ctx context.Context, req *ContactBlock_Request) (*ContactBlock_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactBlock not implemented")
@@ -3681,29 +5635,38 @@ func (*UnimplementedProtocolServiceServer) ContactBlock(ctx context.Context, req
 func (*UnimplementedProtocolServiceServer) ContactUnblock(ctx context.Context, req *ContactUnblock_Request) (*ContactUnblock_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactUnblock not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupSettingSetGroup(ctx context.Context, req *GroupSettingSetGroup_Request) (*GroupSettingSetGroup_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupSettingSetGroup not implemented")
+func (*UnimplementedProtocolServiceServer) ContactAliasKeySend(ctx context.Context, req *ContactAliasKeySend_Request) (*ContactAliasKeySend_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ContactAliasKeySend not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupSettingSetMember(ctx context.Context, req *GroupSettingSetMember_Request) (*GroupSettingSetMember_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupSettingSetMember not implemented")
+func (*UnimplementedProtocolServiceServer) MultiMemberGroupCreate(ctx context.Context, req *MultiMemberGroupCreate_Request) (*MultiMemberGroupCreate_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MultiMemberGroupCreate not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupMessageSend(ctx context.Context, req *GroupMessageSend_Request) (*GroupMessageSend_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GroupMessageSend not implemented")
+func (*UnimplementedProtocolServiceServer) MultiMemberGroupJoin(ctx context.Context, req *MultiMemberGroupJoin_Request) (*MultiMemberGroupJoin_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MultiMemberGroupJoin not implemented")
 }
-func (*UnimplementedProtocolServiceServer) AccountAppendAppSpecificEvent(ctx context.Context, req *AccountAppendAppSpecificEvent_Request) (*AccountAppendAppSpecificEvent_Reply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccountAppendAppSpecificEvent not implemented")
+func (*UnimplementedProtocolServiceServer) MultiMemberGroupLeave(ctx context.Context, req *MultiMemberGroupLeave_Request) (*MultiMemberGroupLeave_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MultiMemberGroupLeave not implemented")
 }
-func (*UnimplementedProtocolServiceServer) AccountSubscribe(req *AccountSubscribe_Request, srv ProtocolService_AccountSubscribeServer) error {
-	return status.Errorf(codes.Unimplemented, "method AccountSubscribe not implemented")
+func (*UnimplementedProtocolServiceServer) MultiMemberGroupAliasResolverDisclose(ctx context.Context, req *MultiMemberGroupAliasResolverDisclose_Request) (*MultiMemberGroupAliasResolverDisclose_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MultiMemberGroupAliasResolverDisclose not implemented")
 }
-func (*UnimplementedProtocolServiceServer) GroupSettingSubscribe(req *GroupSettingStoreSubscribe_Request, srv ProtocolService_GroupSettingSubscribeServer) error {
-	return status.Errorf(codes.Unimplemented, "method GroupSettingSubscribe not implemented")
+func (*UnimplementedProtocolServiceServer) MultiMemberGroupAdminRoleGrant(ctx context.Context, req *MultiMemberGroupAdminRoleGrant_Request) (*MultiMemberGroupAdminRoleGrant_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MultiMemberGroupAdminRoleGrant not implemented")
+}
+func (*UnimplementedProtocolServiceServer) MultiMemberGroupInvitationCreate(ctx context.Context, req *MultiMemberGroupInvitationCreate_Request) (*MultiMemberGroupInvitationCreate_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MultiMemberGroupInvitationCreate not implemented")
+}
+func (*UnimplementedProtocolServiceServer) AppMetadataSend(ctx context.Context, req *AppMetadataSend_Request) (*AppMetadataSend_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AppMetadataSend not implemented")
+}
+func (*UnimplementedProtocolServiceServer) AppMessageSend(ctx context.Context, req *AppMessageSend_Request) (*AppMessageSend_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AppMessageSend not implemented")
+}
+func (*UnimplementedProtocolServiceServer) GroupMetadataSubscribe(req *GroupMetadataSubscribe_Request, srv ProtocolService_GroupMetadataSubscribeServer) error {
+	return status.Errorf(codes.Unimplemented, "method GroupMetadataSubscribe not implemented")
 }
 func (*UnimplementedProtocolServiceServer) GroupMessageSubscribe(req *GroupMessageSubscribe_Request, srv ProtocolService_GroupMessageSubscribeServer) error {
 	return status.Errorf(codes.Unimplemented, "method GroupMessageSubscribe not implemented")
-}
-func (*UnimplementedProtocolServiceServer) GroupMemberSubscribe(req *GroupMemberSubscribe_Request, srv ProtocolService_GroupMemberSubscribeServer) error {
-	return status.Errorf(codes.Unimplemented, "method GroupMemberSubscribe not implemented")
 }
 
 func RegisterProtocolServiceServer(s *grpc.Server, srv ProtocolServiceServer) {
@@ -3742,96 +5705,6 @@ func _ProtocolService_InstanceGetConfiguration_Handler(srv interface{}, ctx cont
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).InstanceGetConfiguration(ctx, req.(*InstanceGetConfiguration_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_GroupCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupCreate_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).GroupCreate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupCreate",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).GroupCreate(ctx, req.(*GroupCreate_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_GroupJoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupJoin_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).GroupJoin(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupJoin",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).GroupJoin(ctx, req.(*GroupJoin_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_GroupLeave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupLeave_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).GroupLeave(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupLeave",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).GroupLeave(ctx, req.(*GroupLeave_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_GroupInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupInvite_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).GroupInvite(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupInvite",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).GroupInvite(ctx, req.(*GroupInvite_Request))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProtocolService_DevicePair_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DevicePair_Request)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProtocolServiceServer).DevicePair(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/DevicePair",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).DevicePair(ctx, req.(*DevicePair_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3891,7 +5764,7 @@ func _ProtocolService_ContactRequestEnable_Handler(srv interface{}, ctx context.
 }
 
 func _ProtocolService_ContactRequestResetReference_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContactRequestResetLink_Request)
+	in := new(ContactRequestResetReference_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -3903,25 +5776,25 @@ func _ProtocolService_ContactRequestResetReference_Handler(srv interface{}, ctx 
 		FullMethod: "/berty.protocol.ProtocolService/ContactRequestResetReference",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).ContactRequestResetReference(ctx, req.(*ContactRequestResetLink_Request))
+		return srv.(ProtocolServiceServer).ContactRequestResetReference(ctx, req.(*ContactRequestResetReference_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_ContactRequestEnqueue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContactRequestEnqueue_Request)
+func _ProtocolService_ContactRequestSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactRequestSend_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServiceServer).ContactRequestEnqueue(ctx, in)
+		return srv.(ProtocolServiceServer).ContactRequestSend(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRequestEnqueue",
+		FullMethod: "/berty.protocol.ProtocolService/ContactRequestSend",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).ContactRequestEnqueue(ctx, req.(*ContactRequestEnqueue_Request))
+		return srv.(ProtocolServiceServer).ContactRequestSend(ctx, req.(*ContactRequestSend_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3944,20 +5817,20 @@ func _ProtocolService_ContactRequestAccept_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_ContactRemove_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContactRemove_Request)
+func _ProtocolService_ContactRequestDiscard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactRequestDiscard_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServiceServer).ContactRemove(ctx, in)
+		return srv.(ProtocolServiceServer).ContactRequestDiscard(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRemove",
+		FullMethod: "/berty.protocol.ProtocolService/ContactRequestDiscard",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).ContactRemove(ctx, req.(*ContactRemove_Request))
+		return srv.(ProtocolServiceServer).ContactRequestDiscard(ctx, req.(*ContactRequestDiscard_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3998,117 +5871,186 @@ func _ProtocolService_ContactUnblock_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_GroupSettingSetGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupSettingSetGroup_Request)
+func _ProtocolService_ContactAliasKeySend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactAliasKeySend_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServiceServer).GroupSettingSetGroup(ctx, in)
+		return srv.(ProtocolServiceServer).ContactAliasKeySend(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupSettingSetGroup",
+		FullMethod: "/berty.protocol.ProtocolService/ContactAliasKeySend",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).GroupSettingSetGroup(ctx, req.(*GroupSettingSetGroup_Request))
+		return srv.(ProtocolServiceServer).ContactAliasKeySend(ctx, req.(*ContactAliasKeySend_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_GroupSettingSetMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupSettingSetMember_Request)
+func _ProtocolService_MultiMemberGroupCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiMemberGroupCreate_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServiceServer).GroupSettingSetMember(ctx, in)
+		return srv.(ProtocolServiceServer).MultiMemberGroupCreate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupSettingSetMember",
+		FullMethod: "/berty.protocol.ProtocolService/MultiMemberGroupCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).GroupSettingSetMember(ctx, req.(*GroupSettingSetMember_Request))
+		return srv.(ProtocolServiceServer).MultiMemberGroupCreate(ctx, req.(*MultiMemberGroupCreate_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_GroupMessageSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GroupMessageSend_Request)
+func _ProtocolService_MultiMemberGroupJoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiMemberGroupJoin_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServiceServer).GroupMessageSend(ctx, in)
+		return srv.(ProtocolServiceServer).MultiMemberGroupJoin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupMessageSend",
+		FullMethod: "/berty.protocol.ProtocolService/MultiMemberGroupJoin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).GroupMessageSend(ctx, req.(*GroupMessageSend_Request))
+		return srv.(ProtocolServiceServer).MultiMemberGroupJoin(ctx, req.(*MultiMemberGroupJoin_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_AccountAppendAppSpecificEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountAppendAppSpecificEvent_Request)
+func _ProtocolService_MultiMemberGroupLeave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiMemberGroupLeave_Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProtocolServiceServer).AccountAppendAppSpecificEvent(ctx, in)
+		return srv.(ProtocolServiceServer).MultiMemberGroupLeave(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/AccountAppendAppSpecificEvent",
+		FullMethod: "/berty.protocol.ProtocolService/MultiMemberGroupLeave",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProtocolServiceServer).AccountAppendAppSpecificEvent(ctx, req.(*AccountAppendAppSpecificEvent_Request))
+		return srv.(ProtocolServiceServer).MultiMemberGroupLeave(ctx, req.(*MultiMemberGroupLeave_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProtocolService_AccountSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(AccountSubscribe_Request)
+func _ProtocolService_MultiMemberGroupAliasResolverDisclose_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiMemberGroupAliasResolverDisclose_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).MultiMemberGroupAliasResolverDisclose(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/MultiMemberGroupAliasResolverDisclose",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).MultiMemberGroupAliasResolverDisclose(ctx, req.(*MultiMemberGroupAliasResolverDisclose_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_MultiMemberGroupAdminRoleGrant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiMemberGroupAdminRoleGrant_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).MultiMemberGroupAdminRoleGrant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/MultiMemberGroupAdminRoleGrant",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).MultiMemberGroupAdminRoleGrant(ctx, req.(*MultiMemberGroupAdminRoleGrant_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_MultiMemberGroupInvitationCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiMemberGroupInvitationCreate_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).MultiMemberGroupInvitationCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/MultiMemberGroupInvitationCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).MultiMemberGroupInvitationCreate(ctx, req.(*MultiMemberGroupInvitationCreate_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_AppMetadataSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AppMetadataSend_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).AppMetadataSend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/AppMetadataSend",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).AppMetadataSend(ctx, req.(*AppMetadataSend_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_AppMessageSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AppMessageSend_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).AppMessageSend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/AppMessageSend",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).AppMessageSend(ctx, req.(*AppMessageSend_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_GroupMetadataSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GroupMetadataSubscribe_Request)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ProtocolServiceServer).AccountSubscribe(m, &protocolServiceAccountSubscribeServer{stream})
+	return srv.(ProtocolServiceServer).GroupMetadataSubscribe(m, &protocolServiceGroupMetadataSubscribeServer{stream})
 }
 
-type ProtocolService_AccountSubscribeServer interface {
-	Send(*AccountSubscribe_Reply) error
+type ProtocolService_GroupMetadataSubscribeServer interface {
+	Send(*GroupMetadataEvent) error
 	grpc.ServerStream
 }
 
-type protocolServiceAccountSubscribeServer struct {
+type protocolServiceGroupMetadataSubscribeServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolServiceAccountSubscribeServer) Send(m *AccountSubscribe_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _ProtocolService_GroupSettingSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(GroupSettingStoreSubscribe_Request)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ProtocolServiceServer).GroupSettingSubscribe(m, &protocolServiceGroupSettingSubscribeServer{stream})
-}
-
-type ProtocolService_GroupSettingSubscribeServer interface {
-	Send(*GroupSettingStoreSubscribe_Reply) error
-	grpc.ServerStream
-}
-
-type protocolServiceGroupSettingSubscribeServer struct {
-	grpc.ServerStream
-}
-
-func (x *protocolServiceGroupSettingSubscribeServer) Send(m *GroupSettingStoreSubscribe_Reply) error {
+func (x *protocolServiceGroupMetadataSubscribeServer) Send(m *GroupMetadataEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -4121,7 +6063,7 @@ func _ProtocolService_GroupMessageSubscribe_Handler(srv interface{}, stream grpc
 }
 
 type ProtocolService_GroupMessageSubscribeServer interface {
-	Send(*GroupMessageSubscribe_Reply) error
+	Send(*GroupMessageEvent) error
 	grpc.ServerStream
 }
 
@@ -4129,28 +6071,7 @@ type protocolServiceGroupMessageSubscribeServer struct {
 	grpc.ServerStream
 }
 
-func (x *protocolServiceGroupMessageSubscribeServer) Send(m *GroupMessageSubscribe_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _ProtocolService_GroupMemberSubscribe_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(GroupMemberSubscribe_Request)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ProtocolServiceServer).GroupMemberSubscribe(m, &protocolServiceGroupMemberSubscribeServer{stream})
-}
-
-type ProtocolService_GroupMemberSubscribeServer interface {
-	Send(*GroupMemberSubscribe_Reply) error
-	grpc.ServerStream
-}
-
-type protocolServiceGroupMemberSubscribeServer struct {
-	grpc.ServerStream
-}
-
-func (x *protocolServiceGroupMemberSubscribeServer) Send(m *GroupMemberSubscribe_Reply) error {
+func (x *protocolServiceGroupMessageSubscribeServer) Send(m *GroupMessageEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -4165,26 +6086,6 @@ var _ProtocolService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "InstanceGetConfiguration",
 			Handler:    _ProtocolService_InstanceGetConfiguration_Handler,
-		},
-		{
-			MethodName: "GroupCreate",
-			Handler:    _ProtocolService_GroupCreate_Handler,
-		},
-		{
-			MethodName: "GroupJoin",
-			Handler:    _ProtocolService_GroupJoin_Handler,
-		},
-		{
-			MethodName: "GroupLeave",
-			Handler:    _ProtocolService_GroupLeave_Handler,
-		},
-		{
-			MethodName: "GroupInvite",
-			Handler:    _ProtocolService_GroupInvite_Handler,
-		},
-		{
-			MethodName: "DevicePair",
-			Handler:    _ProtocolService_DevicePair_Handler,
 		},
 		{
 			MethodName: "ContactRequestReference",
@@ -4203,16 +6104,16 @@ var _ProtocolService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ProtocolService_ContactRequestResetReference_Handler,
 		},
 		{
-			MethodName: "ContactRequestEnqueue",
-			Handler:    _ProtocolService_ContactRequestEnqueue_Handler,
+			MethodName: "ContactRequestSend",
+			Handler:    _ProtocolService_ContactRequestSend_Handler,
 		},
 		{
 			MethodName: "ContactRequestAccept",
 			Handler:    _ProtocolService_ContactRequestAccept_Handler,
 		},
 		{
-			MethodName: "ContactRemove",
-			Handler:    _ProtocolService_ContactRemove_Handler,
+			MethodName: "ContactRequestDiscard",
+			Handler:    _ProtocolService_ContactRequestDiscard_Handler,
 		},
 		{
 			MethodName: "ContactBlock",
@@ -4223,31 +6124,46 @@ var _ProtocolService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ProtocolService_ContactUnblock_Handler,
 		},
 		{
-			MethodName: "GroupSettingSetGroup",
-			Handler:    _ProtocolService_GroupSettingSetGroup_Handler,
+			MethodName: "ContactAliasKeySend",
+			Handler:    _ProtocolService_ContactAliasKeySend_Handler,
 		},
 		{
-			MethodName: "GroupSettingSetMember",
-			Handler:    _ProtocolService_GroupSettingSetMember_Handler,
+			MethodName: "MultiMemberGroupCreate",
+			Handler:    _ProtocolService_MultiMemberGroupCreate_Handler,
 		},
 		{
-			MethodName: "GroupMessageSend",
-			Handler:    _ProtocolService_GroupMessageSend_Handler,
+			MethodName: "MultiMemberGroupJoin",
+			Handler:    _ProtocolService_MultiMemberGroupJoin_Handler,
 		},
 		{
-			MethodName: "AccountAppendAppSpecificEvent",
-			Handler:    _ProtocolService_AccountAppendAppSpecificEvent_Handler,
+			MethodName: "MultiMemberGroupLeave",
+			Handler:    _ProtocolService_MultiMemberGroupLeave_Handler,
+		},
+		{
+			MethodName: "MultiMemberGroupAliasResolverDisclose",
+			Handler:    _ProtocolService_MultiMemberGroupAliasResolverDisclose_Handler,
+		},
+		{
+			MethodName: "MultiMemberGroupAdminRoleGrant",
+			Handler:    _ProtocolService_MultiMemberGroupAdminRoleGrant_Handler,
+		},
+		{
+			MethodName: "MultiMemberGroupInvitationCreate",
+			Handler:    _ProtocolService_MultiMemberGroupInvitationCreate_Handler,
+		},
+		{
+			MethodName: "AppMetadataSend",
+			Handler:    _ProtocolService_AppMetadataSend_Handler,
+		},
+		{
+			MethodName: "AppMessageSend",
+			Handler:    _ProtocolService_AppMessageSend_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "AccountSubscribe",
-			Handler:       _ProtocolService_AccountSubscribe_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "GroupSettingSubscribe",
-			Handler:       _ProtocolService_GroupSettingSubscribe_Handler,
+			StreamName:    "GroupMetadataSubscribe",
+			Handler:       _ProtocolService_GroupMetadataSubscribe_Handler,
 			ServerStreams: true,
 		},
 		{
@@ -4255,11 +6171,14008 @@ var _ProtocolService_serviceDesc = grpc.ServiceDesc{
 			Handler:       _ProtocolService_GroupMessageSubscribe_Handler,
 			ServerStreams: true,
 		},
-		{
-			StreamName:    "GroupMemberSubscribe",
-			Handler:       _ProtocolService_GroupMemberSubscribe_Handler,
-			ServerStreams: true,
-		},
 	},
 	Metadata: "bertyprotocol.proto",
 }
+
+func (m *Account) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Account) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Account) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.PublicRendezvousSeed) > 0 {
+		i -= len(m.PublicRendezvousSeed)
+		copy(dAtA[i:], m.PublicRendezvousSeed)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.PublicRendezvousSeed)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.AliasPrivateKey) > 0 {
+		i -= len(m.AliasPrivateKey)
+		copy(dAtA[i:], m.AliasPrivateKey)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.AliasPrivateKey)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.AccountPrivateKey) > 0 {
+		i -= len(m.AccountPrivateKey)
+		copy(dAtA[i:], m.AccountPrivateKey)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.AccountPrivateKey)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Group != nil {
+		{
+			size, err := m.Group.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyprotocol(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Group) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Group) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Group) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.GroupType != 0 {
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(m.GroupType))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.SecretSig) > 0 {
+		i -= len(m.SecretSig)
+		copy(dAtA[i:], m.SecretSig)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.SecretSig)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Secret) > 0 {
+		i -= len(m.Secret)
+		copy(dAtA[i:], m.Secret)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Secret)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.PublicKey) > 0 {
+		i -= len(m.PublicKey)
+		copy(dAtA[i:], m.PublicKey)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.PublicKey)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupMetadata) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupMetadata) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupMetadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Sig) > 0 {
+		i -= len(m.Sig)
+		copy(dAtA[i:], m.Sig)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Sig)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Payload) > 0 {
+		i -= len(m.Payload)
+		copy(dAtA[i:], m.Payload)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Payload)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.EventType != 0 {
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(m.EventType))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupEnvelope) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupEnvelope) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupEnvelope) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Event) > 0 {
+		i -= len(m.Event)
+		copy(dAtA[i:], m.Event)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Event)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Nonce) > 0 {
+		i -= len(m.Nonce)
+		copy(dAtA[i:], m.Nonce)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Nonce)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MessageHeaders) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MessageHeaders) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MessageHeaders) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Sig) > 0 {
+		i -= len(m.Sig)
+		copy(dAtA[i:], m.Sig)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Sig)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Counter != 0 {
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(m.Counter))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MessageEnvelope) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MessageEnvelope) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MessageEnvelope) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.MessageHeaders) > 0 {
+		i -= len(m.MessageHeaders)
+		copy(dAtA[i:], m.MessageHeaders)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.MessageHeaders)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EventContext) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventContext) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventContext) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.ParentIDs) > 0 {
+		for iNdEx := len(m.ParentIDs) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.ParentIDs[iNdEx])
+			copy(dAtA[i:], m.ParentIDs[iNdEx])
+			i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ParentIDs[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AppMetadata) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AppMetadata) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AppMetadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactAddAliasKey) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactAddAliasKey) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactAddAliasKey) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.AliasPK) > 0 {
+		i -= len(m.AliasPK)
+		copy(dAtA[i:], m.AliasPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.AliasPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupAddMemberDevice) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupAddMemberDevice) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupAddMemberDevice) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.MemberSig) > 0 {
+		i -= len(m.MemberSig)
+		copy(dAtA[i:], m.MemberSig)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.MemberSig)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.MemberPK) > 0 {
+		i -= len(m.MemberPK)
+		copy(dAtA[i:], m.MemberPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.MemberPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DeviceSecret) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeviceSecret) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeviceSecret) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Counter != 0 {
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(m.Counter))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.ChainKey) > 0 {
+		i -= len(m.ChainKey)
+		copy(dAtA[i:], m.ChainKey)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ChainKey)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupAddDeviceSecret) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupAddDeviceSecret) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupAddDeviceSecret) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Payload) > 0 {
+		i -= len(m.Payload)
+		copy(dAtA[i:], m.Payload)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Payload)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.DestMemberPK) > 0 {
+		i -= len(m.DestMemberPK)
+		copy(dAtA[i:], m.DestMemberPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DestMemberPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupAddAliasResolver) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupAddAliasResolver) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupAddAliasResolver) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.AliasProof) > 0 {
+		i -= len(m.AliasProof)
+		copy(dAtA[i:], m.AliasProof)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.AliasProof)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.AliasResolver) > 0 {
+		i -= len(m.AliasResolver)
+		copy(dAtA[i:], m.AliasResolver)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.AliasResolver)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGrantAdminRole) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGrantAdminRole) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGrantAdminRole) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.GranteeMemberPK) > 0 {
+		i -= len(m.GranteeMemberPK)
+		copy(dAtA[i:], m.GranteeMemberPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GranteeMemberPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberInitialMember) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberInitialMember) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberInitialMember) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.MemberPK) > 0 {
+		i -= len(m.MemberPK)
+		copy(dAtA[i:], m.MemberPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.MemberPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupAddAdditionalRendezvousSeed) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupAddAdditionalRendezvousSeed) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupAddAdditionalRendezvousSeed) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Seed) > 0 {
+		i -= len(m.Seed)
+		copy(dAtA[i:], m.Seed)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Seed)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupRemoveAdditionalRendezvousSeed) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupRemoveAdditionalRendezvousSeed) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupRemoveAdditionalRendezvousSeed) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Seed) > 0 {
+		i -= len(m.Seed)
+		copy(dAtA[i:], m.Seed)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Seed)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountGroupJoined) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountGroupJoined) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountGroupJoined) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Group != nil {
+		{
+			size, err := m.Group.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyprotocol(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountGroupLeft) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountGroupLeft) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountGroupLeft) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountContactRequestDisabled) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountContactRequestDisabled) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountContactRequestDisabled) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountContactRequestEnabled) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountContactRequestEnabled) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountContactRequestEnabled) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountContactRequestReferenceReset) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountContactRequestReferenceReset) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountContactRequestReferenceReset) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.RendezvousSeed) > 0 {
+		i -= len(m.RendezvousSeed)
+		copy(dAtA[i:], m.RendezvousSeed)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.RendezvousSeed)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountContactRequestEnqueued) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountContactRequestEnqueued) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountContactRequestEnqueued) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactMetadata) > 0 {
+		i -= len(m.ContactMetadata)
+		copy(dAtA[i:], m.ContactMetadata)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactMetadata)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.ContactRendezvousSeed) > 0 {
+		i -= len(m.ContactRendezvousSeed)
+		copy(dAtA[i:], m.ContactRendezvousSeed)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactRendezvousSeed)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.ContactPK) > 0 {
+		i -= len(m.ContactPK)
+		copy(dAtA[i:], m.ContactPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountContactRequestSent) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountContactRequestSent) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountContactRequestSent) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactPK) > 0 {
+		i -= len(m.ContactPK)
+		copy(dAtA[i:], m.ContactPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountContactRequestReceived) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountContactRequestReceived) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountContactRequestReceived) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactMetadata) > 0 {
+		i -= len(m.ContactMetadata)
+		copy(dAtA[i:], m.ContactMetadata)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactMetadata)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.ContactRendezvousSeed) > 0 {
+		i -= len(m.ContactRendezvousSeed)
+		copy(dAtA[i:], m.ContactRendezvousSeed)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactRendezvousSeed)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.ContactPK) > 0 {
+		i -= len(m.ContactPK)
+		copy(dAtA[i:], m.ContactPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountContactRequestDiscarded) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountContactRequestDiscarded) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountContactRequestDiscarded) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactPK) > 0 {
+		i -= len(m.ContactPK)
+		copy(dAtA[i:], m.ContactPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountContactRequestAccepted) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountContactRequestAccepted) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountContactRequestAccepted) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactPK) > 0 {
+		i -= len(m.ContactPK)
+		copy(dAtA[i:], m.ContactPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountContactBlocked) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountContactBlocked) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountContactBlocked) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactPK) > 0 {
+		i -= len(m.ContactPK)
+		copy(dAtA[i:], m.ContactPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AccountContactUnblocked) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountContactUnblocked) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountContactUnblocked) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactPK) > 0 {
+		i -= len(m.ContactPK)
+		copy(dAtA[i:], m.ContactPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *InstanceExportData) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *InstanceExportData) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *InstanceExportData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *InstanceExportData_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *InstanceExportData_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *InstanceExportData_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *InstanceExportData_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *InstanceExportData_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *InstanceExportData_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ExportedData) > 0 {
+		i -= len(m.ExportedData)
+		copy(dAtA[i:], m.ExportedData)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ExportedData)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *InstanceGetConfiguration) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *InstanceGetConfiguration) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *InstanceGetConfiguration) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *InstanceGetConfiguration_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *InstanceGetConfiguration_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *InstanceGetConfiguration_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *InstanceGetConfiguration_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *InstanceGetConfiguration_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *InstanceGetConfiguration_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.RelayEnabled != 0 {
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(m.RelayEnabled))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.MdnsEnabled != 0 {
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(m.MdnsEnabled))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.WifiP2PEnabled != 0 {
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(m.WifiP2PEnabled))
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.BleEnabled != 0 {
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(m.BleEnabled))
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.Listeners) > 0 {
+		for iNdEx := len(m.Listeners) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Listeners[iNdEx])
+			copy(dAtA[i:], m.Listeners[iNdEx])
+			i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Listeners[iNdEx])))
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if len(m.PeerID) > 0 {
+		i -= len(m.PeerID)
+		copy(dAtA[i:], m.PeerID)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.PeerID)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.AccountGroupPK) > 0 {
+		i -= len(m.AccountGroupPK)
+		copy(dAtA[i:], m.AccountGroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.AccountGroupPK)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.AccountPK) > 0 {
+		i -= len(m.AccountPK)
+		copy(dAtA[i:], m.AccountPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.AccountPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestReference) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestReference) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestReference) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestReference_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestReference_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestReference_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestReference_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestReference_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestReference_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Reference) > 0 {
+		i -= len(m.Reference)
+		copy(dAtA[i:], m.Reference)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Reference)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestDisable) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestDisable) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestDisable) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestDisable_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestDisable_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestDisable_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestDisable_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestDisable_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestDisable_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestEnable) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestEnable) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestEnable) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestEnable_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestEnable_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestEnable_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestEnable_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestEnable_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestEnable_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Reference) > 0 {
+		i -= len(m.Reference)
+		copy(dAtA[i:], m.Reference)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Reference)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestResetReference) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestResetReference) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestResetReference) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestResetReference_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestResetReference_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestResetReference_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestResetReference_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestResetReference_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestResetReference_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Reference) > 0 {
+		i -= len(m.Reference)
+		copy(dAtA[i:], m.Reference)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Reference)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestSend) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestSend) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestSend) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestSend_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestSend_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestSend_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactMetadata) > 0 {
+		i -= len(m.ContactMetadata)
+		copy(dAtA[i:], m.ContactMetadata)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactMetadata)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Reference) > 0 {
+		i -= len(m.Reference)
+		copy(dAtA[i:], m.Reference)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Reference)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestSend_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestSend_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestSend_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestAccept) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestAccept) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestAccept) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestAccept_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestAccept_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestAccept_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactPK) > 0 {
+		i -= len(m.ContactPK)
+		copy(dAtA[i:], m.ContactPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestAccept_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestAccept_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestAccept_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestDiscard) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestDiscard) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestDiscard) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestDiscard_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestDiscard_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestDiscard_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactPK) > 0 {
+		i -= len(m.ContactPK)
+		copy(dAtA[i:], m.ContactPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactRequestDiscard_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactRequestDiscard_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactRequestDiscard_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactBlock) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactBlock) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactBlock) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactBlock_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactBlock_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactBlock_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactPK) > 0 {
+		i -= len(m.ContactPK)
+		copy(dAtA[i:], m.ContactPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactBlock_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactBlock_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactBlock_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactUnblock) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactUnblock) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactUnblock) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactUnblock_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactUnblock_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactUnblock_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactPK) > 0 {
+		i -= len(m.ContactPK)
+		copy(dAtA[i:], m.ContactPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactUnblock_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactUnblock_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactUnblock_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactAliasKeySend) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactAliasKeySend) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactAliasKeySend) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactAliasKeySend_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactAliasKeySend_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactAliasKeySend_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ContactAliasKeySend_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactAliasKeySend_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContactAliasKeySend_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupCreate) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupCreate) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupCreate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupCreate_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupCreate_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupCreate_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupCreate_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupCreate_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupCreate_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupJoin) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupJoin) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupJoin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupJoin_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupJoin_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupJoin_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Group != nil {
+		{
+			size, err := m.Group.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyprotocol(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupJoin_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupJoin_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupJoin_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupLeave) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupLeave) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupLeave) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupLeave_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupLeave_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupLeave_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupLeave_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupLeave_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupLeave_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupAdminRoleGrant) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupAdminRoleGrant) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupAdminRoleGrant) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupAdminRoleGrant_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupAdminRoleGrant_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupAdminRoleGrant_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.MemberPK) > 0 {
+		i -= len(m.MemberPK)
+		copy(dAtA[i:], m.MemberPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.MemberPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupAdminRoleGrant_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupAdminRoleGrant_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupAdminRoleGrant_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupInvitationCreate) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupInvitationCreate) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupInvitationCreate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupInvitationCreate_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupInvitationCreate_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupInvitationCreate_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MultiMemberGroupInvitationCreate_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MultiMemberGroupInvitationCreate_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MultiMemberGroupInvitationCreate_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Group != nil {
+		{
+			size, err := m.Group.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyprotocol(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AppMetadataSend) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AppMetadataSend) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AppMetadataSend) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AppMetadataSend_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AppMetadataSend_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AppMetadataSend_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Payload) > 0 {
+		i -= len(m.Payload)
+		copy(dAtA[i:], m.Payload)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Payload)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AppMetadataSend_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AppMetadataSend_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AppMetadataSend_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AppMessageSend) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AppMessageSend) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AppMessageSend) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AppMessageSend_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AppMessageSend_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AppMessageSend_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Payload) > 0 {
+		i -= len(m.Payload)
+		copy(dAtA[i:], m.Payload)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Payload)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AppMessageSend_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AppMessageSend_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AppMessageSend_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupMetadataEvent) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupMetadataEvent) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupMetadataEvent) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Event) > 0 {
+		i -= len(m.Event)
+		copy(dAtA[i:], m.Event)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Event)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Metadata != nil {
+		{
+			size, err := m.Metadata.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyprotocol(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.EventContext != nil {
+		{
+			size, err := m.EventContext.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyprotocol(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupMessageEvent) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupMessageEvent) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupMessageEvent) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Headers != nil {
+		{
+			size, err := m.Headers.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyprotocol(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.EventContext != nil {
+		{
+			size, err := m.EventContext.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyprotocol(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupMetadataSubscribe) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupMetadataSubscribe) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupMetadataSubscribe) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupMetadataSubscribe_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupMetadataSubscribe_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupMetadataSubscribe_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.GoBackwards {
+		i--
+		if m.GoBackwards {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Until) > 0 {
+		i -= len(m.Until)
+		copy(dAtA[i:], m.Until)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Until)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Since) > 0 {
+		i -= len(m.Since)
+		copy(dAtA[i:], m.Since)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Since)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupMessageSubscribe) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupMessageSubscribe) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupMessageSubscribe) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupMessageSubscribe_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupMessageSubscribe_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupMessageSubscribe_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.GoBackwards {
+		i--
+		if m.GoBackwards {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Until) > 0 {
+		i -= len(m.Until)
+		copy(dAtA[i:], m.Until)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Until)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Since) > 0 {
+		i -= len(m.Since)
+		copy(dAtA[i:], m.Since)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.Since)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintBertyprotocol(dAtA []byte, offset int, v uint64) int {
+	offset -= sovBertyprotocol(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+func (m *Account) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Group != nil {
+		l = m.Group.Size()
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.AccountPrivateKey)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.AliasPrivateKey)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.PublicRendezvousSeed)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *Group) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.PublicKey)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Secret)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.SecretSig)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.GroupType != 0 {
+		n += 1 + sovBertyprotocol(uint64(m.GroupType))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupMetadata) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.EventType != 0 {
+		n += 1 + sovBertyprotocol(uint64(m.EventType))
+	}
+	l = len(m.Payload)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Sig)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupEnvelope) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Nonce)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Event)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MessageHeaders) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Counter != 0 {
+		n += 1 + sovBertyprotocol(uint64(m.Counter))
+	}
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Sig)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MessageEnvelope) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.MessageHeaders)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *EventContext) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ID)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if len(m.ParentIDs) > 0 {
+		for _, b := range m.ParentIDs {
+			l = len(b)
+			n += 1 + l + sovBertyprotocol(uint64(l))
+		}
+	}
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AppMetadata) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactAddAliasKey) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.AliasPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupAddMemberDevice) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.MemberPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.MemberSig)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *DeviceSecret) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ChainKey)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.Counter != 0 {
+		n += 1 + sovBertyprotocol(uint64(m.Counter))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupAddDeviceSecret) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.DestMemberPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Payload)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupAddAliasResolver) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.AliasResolver)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.AliasProof)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGrantAdminRole) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.GranteeMemberPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberInitialMember) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.MemberPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupAddAdditionalRendezvousSeed) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Seed)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupRemoveAdditionalRendezvousSeed) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Seed)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountGroupJoined) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.Group != nil {
+		l = m.Group.Size()
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountGroupLeft) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountContactRequestDisabled) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountContactRequestEnabled) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountContactRequestReferenceReset) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.RendezvousSeed)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountContactRequestEnqueued) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactRendezvousSeed)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactMetadata)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountContactRequestSent) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountContactRequestReceived) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactRendezvousSeed)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactMetadata)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountContactRequestDiscarded) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountContactRequestAccepted) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountContactBlocked) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AccountContactUnblocked) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *InstanceExportData) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *InstanceExportData_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *InstanceExportData_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ExportedData)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *InstanceGetConfiguration) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *InstanceGetConfiguration_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *InstanceGetConfiguration_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.AccountPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.AccountGroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.PeerID)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if len(m.Listeners) > 0 {
+		for _, s := range m.Listeners {
+			l = len(s)
+			n += 1 + l + sovBertyprotocol(uint64(l))
+		}
+	}
+	if m.BleEnabled != 0 {
+		n += 1 + sovBertyprotocol(uint64(m.BleEnabled))
+	}
+	if m.WifiP2PEnabled != 0 {
+		n += 1 + sovBertyprotocol(uint64(m.WifiP2PEnabled))
+	}
+	if m.MdnsEnabled != 0 {
+		n += 1 + sovBertyprotocol(uint64(m.MdnsEnabled))
+	}
+	if m.RelayEnabled != 0 {
+		n += 1 + sovBertyprotocol(uint64(m.RelayEnabled))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestReference) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestReference_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestReference_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Reference)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestDisable) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestDisable_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestDisable_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestEnable) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestEnable_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestEnable_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Reference)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestResetReference) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestResetReference_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestResetReference_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Reference)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestSend) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestSend_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Reference)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactMetadata)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestSend_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestAccept) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestAccept_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ContactPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestAccept_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestDiscard) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestDiscard_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ContactPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactRequestDiscard_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactBlock) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactBlock_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ContactPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactBlock_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactUnblock) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactUnblock_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ContactPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactUnblock_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactAliasKeySend) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactAliasKeySend_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactAliasKeySend_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupCreate) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupCreate_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupCreate_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupJoin) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupJoin_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Group != nil {
+		l = m.Group.Size()
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupJoin_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupLeave) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupLeave_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupLeave_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupAliasResolverDisclose_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupAdminRoleGrant) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupAdminRoleGrant_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.MemberPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupAdminRoleGrant_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupInvitationCreate) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupInvitationCreate_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *MultiMemberGroupInvitationCreate_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Group != nil {
+		l = m.Group.Size()
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AppMetadataSend) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AppMetadataSend_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Payload)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AppMetadataSend_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AppMessageSend) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AppMessageSend_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Payload)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AppMessageSend_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupMetadataEvent) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.EventContext != nil {
+		l = m.EventContext.Size()
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.Metadata != nil {
+		l = m.Metadata.Size()
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Event)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupMessageEvent) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.EventContext != nil {
+		l = m.EventContext.Size()
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.Headers != nil {
+		l = m.Headers.Size()
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupMetadataSubscribe) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupMetadataSubscribe_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Since)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Until)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.GoBackwards {
+		n += 2
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupMessageSubscribe) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupMessageSubscribe_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Since)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.Until)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.GoBackwards {
+		n += 2
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func sovBertyprotocol(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+func sozBertyprotocol(x uint64) (n int) {
+	return sovBertyprotocol(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *Account) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Account: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Account: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Group", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Group == nil {
+				m.Group = &Group{}
+			}
+			if err := m.Group.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountPrivateKey", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountPrivateKey = append(m.AccountPrivateKey[:0], dAtA[iNdEx:postIndex]...)
+			if m.AccountPrivateKey == nil {
+				m.AccountPrivateKey = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AliasPrivateKey", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AliasPrivateKey = append(m.AliasPrivateKey[:0], dAtA[iNdEx:postIndex]...)
+			if m.AliasPrivateKey == nil {
+				m.AliasPrivateKey = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PublicRendezvousSeed", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PublicRendezvousSeed = append(m.PublicRendezvousSeed[:0], dAtA[iNdEx:postIndex]...)
+			if m.PublicRendezvousSeed == nil {
+				m.PublicRendezvousSeed = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Group) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Group: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Group: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PublicKey = append(m.PublicKey[:0], dAtA[iNdEx:postIndex]...)
+			if m.PublicKey == nil {
+				m.PublicKey = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Secret", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Secret = append(m.Secret[:0], dAtA[iNdEx:postIndex]...)
+			if m.Secret == nil {
+				m.Secret = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SecretSig", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SecretSig = append(m.SecretSig[:0], dAtA[iNdEx:postIndex]...)
+			if m.SecretSig == nil {
+				m.SecretSig = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupType", wireType)
+			}
+			m.GroupType = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.GroupType |= GroupType(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupMetadata) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupMetadata: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupMetadata: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EventType", wireType)
+			}
+			m.EventType = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.EventType |= EventType(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Payload = append(m.Payload[:0], dAtA[iNdEx:postIndex]...)
+			if m.Payload == nil {
+				m.Payload = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sig", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sig = append(m.Sig[:0], dAtA[iNdEx:postIndex]...)
+			if m.Sig == nil {
+				m.Sig = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupEnvelope) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupEnvelope: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupEnvelope: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Nonce", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Nonce = append(m.Nonce[:0], dAtA[iNdEx:postIndex]...)
+			if m.Nonce == nil {
+				m.Nonce = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Event", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Event = append(m.Event[:0], dAtA[iNdEx:postIndex]...)
+			if m.Event == nil {
+				m.Event = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MessageHeaders) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MessageHeaders: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MessageHeaders: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Counter", wireType)
+			}
+			m.Counter = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Counter |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sig", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sig = append(m.Sig[:0], dAtA[iNdEx:postIndex]...)
+			if m.Sig == nil {
+				m.Sig = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MessageEnvelope) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MessageEnvelope: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MessageEnvelope: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MessageHeaders", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MessageHeaders = append(m.MessageHeaders[:0], dAtA[iNdEx:postIndex]...)
+			if m.MessageHeaders == nil {
+				m.MessageHeaders = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = append(m.Message[:0], dAtA[iNdEx:postIndex]...)
+			if m.Message == nil {
+				m.Message = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventContext) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventContext: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventContext: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ID = append(m.ID[:0], dAtA[iNdEx:postIndex]...)
+			if m.ID == nil {
+				m.ID = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ParentIDs", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ParentIDs = append(m.ParentIDs, make([]byte, postIndex-iNdEx))
+			copy(m.ParentIDs[len(m.ParentIDs)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AppMetadata) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AppMetadata: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AppMetadata: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = append(m.Message[:0], dAtA[iNdEx:postIndex]...)
+			if m.Message == nil {
+				m.Message = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactAddAliasKey) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContactAddAliasKey: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContactAddAliasKey: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AliasPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AliasPK = append(m.AliasPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.AliasPK == nil {
+				m.AliasPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupAddMemberDevice) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupAddMemberDevice: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupAddMemberDevice: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MemberPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MemberPK = append(m.MemberPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.MemberPK == nil {
+				m.MemberPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MemberSig", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MemberSig = append(m.MemberSig[:0], dAtA[iNdEx:postIndex]...)
+			if m.MemberSig == nil {
+				m.MemberSig = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DeviceSecret) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DeviceSecret: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DeviceSecret: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ChainKey", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ChainKey = append(m.ChainKey[:0], dAtA[iNdEx:postIndex]...)
+			if m.ChainKey == nil {
+				m.ChainKey = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Counter", wireType)
+			}
+			m.Counter = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Counter |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupAddDeviceSecret) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupAddDeviceSecret: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupAddDeviceSecret: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DestMemberPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DestMemberPK = append(m.DestMemberPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DestMemberPK == nil {
+				m.DestMemberPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Payload = append(m.Payload[:0], dAtA[iNdEx:postIndex]...)
+			if m.Payload == nil {
+				m.Payload = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupAddAliasResolver) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MultiMemberGroupAddAliasResolver: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MultiMemberGroupAddAliasResolver: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AliasResolver", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AliasResolver = append(m.AliasResolver[:0], dAtA[iNdEx:postIndex]...)
+			if m.AliasResolver == nil {
+				m.AliasResolver = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AliasProof", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AliasProof = append(m.AliasProof[:0], dAtA[iNdEx:postIndex]...)
+			if m.AliasProof == nil {
+				m.AliasProof = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGrantAdminRole) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MultiMemberGrantAdminRole: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MultiMemberGrantAdminRole: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GranteeMemberPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GranteeMemberPK = append(m.GranteeMemberPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GranteeMemberPK == nil {
+				m.GranteeMemberPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberInitialMember) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MultiMemberInitialMember: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MultiMemberInitialMember: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MemberPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MemberPK = append(m.MemberPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.MemberPK == nil {
+				m.MemberPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupAddAdditionalRendezvousSeed) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupAddAdditionalRendezvousSeed: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupAddAdditionalRendezvousSeed: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Seed", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Seed = append(m.Seed[:0], dAtA[iNdEx:postIndex]...)
+			if m.Seed == nil {
+				m.Seed = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupRemoveAdditionalRendezvousSeed) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupRemoveAdditionalRendezvousSeed: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupRemoveAdditionalRendezvousSeed: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Seed", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Seed = append(m.Seed[:0], dAtA[iNdEx:postIndex]...)
+			if m.Seed == nil {
+				m.Seed = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountGroupJoined) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountGroupJoined: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountGroupJoined: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Group", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Group == nil {
+				m.Group = &Group{}
+			}
+			if err := m.Group.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountGroupLeft) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountGroupLeft: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountGroupLeft: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountContactRequestDisabled) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountContactRequestDisabled: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountContactRequestDisabled: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountContactRequestEnabled) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountContactRequestEnabled: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountContactRequestEnabled: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountContactRequestReferenceReset) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountContactRequestReferenceReset: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountContactRequestReferenceReset: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RendezvousSeed", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RendezvousSeed = append(m.RendezvousSeed[:0], dAtA[iNdEx:postIndex]...)
+			if m.RendezvousSeed == nil {
+				m.RendezvousSeed = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountContactRequestEnqueued) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountContactRequestEnqueued: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountContactRequestEnqueued: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactPK = append(m.ContactPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactPK == nil {
+				m.ContactPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactRendezvousSeed", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactRendezvousSeed = append(m.ContactRendezvousSeed[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactRendezvousSeed == nil {
+				m.ContactRendezvousSeed = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactMetadata", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactMetadata = append(m.ContactMetadata[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactMetadata == nil {
+				m.ContactMetadata = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountContactRequestSent) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountContactRequestSent: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountContactRequestSent: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactPK = append(m.ContactPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactPK == nil {
+				m.ContactPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountContactRequestReceived) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountContactRequestReceived: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountContactRequestReceived: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactPK = append(m.ContactPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactPK == nil {
+				m.ContactPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactRendezvousSeed", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactRendezvousSeed = append(m.ContactRendezvousSeed[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactRendezvousSeed == nil {
+				m.ContactRendezvousSeed = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactMetadata", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactMetadata = append(m.ContactMetadata[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactMetadata == nil {
+				m.ContactMetadata = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountContactRequestDiscarded) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountContactRequestDiscarded: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountContactRequestDiscarded: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactPK = append(m.ContactPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactPK == nil {
+				m.ContactPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountContactRequestAccepted) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountContactRequestAccepted: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountContactRequestAccepted: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactPK = append(m.ContactPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactPK == nil {
+				m.ContactPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountContactBlocked) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountContactBlocked: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountContactBlocked: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactPK = append(m.ContactPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactPK == nil {
+				m.ContactPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountContactUnblocked) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountContactUnblocked: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountContactUnblocked: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactPK = append(m.ContactPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactPK == nil {
+				m.ContactPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *InstanceExportData) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: InstanceExportData: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: InstanceExportData: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *InstanceExportData_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *InstanceExportData_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExportedData", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ExportedData = append(m.ExportedData[:0], dAtA[iNdEx:postIndex]...)
+			if m.ExportedData == nil {
+				m.ExportedData = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *InstanceGetConfiguration) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: InstanceGetConfiguration: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: InstanceGetConfiguration: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *InstanceGetConfiguration_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *InstanceGetConfiguration_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountPK = append(m.AccountPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.AccountPK == nil {
+				m.AccountPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountGroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountGroupPK = append(m.AccountGroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.AccountGroupPK == nil {
+				m.AccountGroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PeerID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PeerID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Listeners", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Listeners = append(m.Listeners, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BleEnabled", wireType)
+			}
+			m.BleEnabled = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BleEnabled |= InstanceGetConfiguration_SettingState(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field WifiP2PEnabled", wireType)
+			}
+			m.WifiP2PEnabled = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.WifiP2PEnabled |= InstanceGetConfiguration_SettingState(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MdnsEnabled", wireType)
+			}
+			m.MdnsEnabled = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MdnsEnabled |= InstanceGetConfiguration_SettingState(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RelayEnabled", wireType)
+			}
+			m.RelayEnabled = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RelayEnabled |= InstanceGetConfiguration_SettingState(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestReference) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContactRequestReference: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContactRequestReference: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestReference_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestReference_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reference", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reference = append(m.Reference[:0], dAtA[iNdEx:postIndex]...)
+			if m.Reference == nil {
+				m.Reference = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestDisable) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContactRequestDisable: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContactRequestDisable: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestDisable_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestDisable_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestEnable) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContactRequestEnable: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContactRequestEnable: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestEnable_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestEnable_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reference", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reference = append(m.Reference[:0], dAtA[iNdEx:postIndex]...)
+			if m.Reference == nil {
+				m.Reference = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestResetReference) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContactRequestResetReference: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContactRequestResetReference: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestResetReference_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestResetReference_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reference", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reference = append(m.Reference[:0], dAtA[iNdEx:postIndex]...)
+			if m.Reference == nil {
+				m.Reference = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestSend) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContactRequestSend: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContactRequestSend: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestSend_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reference", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reference = append(m.Reference[:0], dAtA[iNdEx:postIndex]...)
+			if m.Reference == nil {
+				m.Reference = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactMetadata", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactMetadata = append(m.ContactMetadata[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactMetadata == nil {
+				m.ContactMetadata = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestSend_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestAccept) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContactRequestAccept: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContactRequestAccept: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestAccept_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactPK = append(m.ContactPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactPK == nil {
+				m.ContactPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestAccept_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestDiscard) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContactRequestDiscard: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContactRequestDiscard: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestDiscard_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactPK = append(m.ContactPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactPK == nil {
+				m.ContactPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactRequestDiscard_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactBlock) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContactBlock: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContactBlock: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactBlock_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactPK = append(m.ContactPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactPK == nil {
+				m.ContactPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactBlock_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactUnblock) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContactUnblock: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContactUnblock: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactUnblock_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactPK = append(m.ContactPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactPK == nil {
+				m.ContactPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactUnblock_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactAliasKeySend) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContactAliasKeySend: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContactAliasKeySend: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactAliasKeySend_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactAliasKeySend_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupCreate) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MultiMemberGroupCreate: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MultiMemberGroupCreate: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupCreate_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupCreate_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupJoin) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MultiMemberGroupJoin: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MultiMemberGroupJoin: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupJoin_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Group", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Group == nil {
+				m.Group = &Group{}
+			}
+			if err := m.Group.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupJoin_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupLeave) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MultiMemberGroupLeave: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MultiMemberGroupLeave: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupLeave_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupLeave_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupAliasResolverDisclose) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MultiMemberGroupAliasResolverDisclose: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MultiMemberGroupAliasResolverDisclose: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupAliasResolverDisclose_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupAdminRoleGrant) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MultiMemberGroupAdminRoleGrant: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MultiMemberGroupAdminRoleGrant: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupAdminRoleGrant_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MemberPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MemberPK = append(m.MemberPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.MemberPK == nil {
+				m.MemberPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupAdminRoleGrant_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupInvitationCreate) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MultiMemberGroupInvitationCreate: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MultiMemberGroupInvitationCreate: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupInvitationCreate_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MultiMemberGroupInvitationCreate_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Group", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Group == nil {
+				m.Group = &Group{}
+			}
+			if err := m.Group.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AppMetadataSend) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AppMetadataSend: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AppMetadataSend: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AppMetadataSend_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Payload = append(m.Payload[:0], dAtA[iNdEx:postIndex]...)
+			if m.Payload == nil {
+				m.Payload = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AppMetadataSend_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AppMessageSend) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AppMessageSend: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AppMessageSend: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AppMessageSend_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Payload = append(m.Payload[:0], dAtA[iNdEx:postIndex]...)
+			if m.Payload == nil {
+				m.Payload = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AppMessageSend_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupMetadataEvent) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupMetadataEvent: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupMetadataEvent: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EventContext", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.EventContext == nil {
+				m.EventContext = &EventContext{}
+			}
+			if err := m.EventContext.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Metadata == nil {
+				m.Metadata = &GroupMetadata{}
+			}
+			if err := m.Metadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Event", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Event = append(m.Event[:0], dAtA[iNdEx:postIndex]...)
+			if m.Event == nil {
+				m.Event = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupMessageEvent) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupMessageEvent: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupMessageEvent: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EventContext", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.EventContext == nil {
+				m.EventContext = &EventContext{}
+			}
+			if err := m.EventContext.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Headers", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Headers == nil {
+				m.Headers = &MessageHeaders{}
+			}
+			if err := m.Headers.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = append(m.Message[:0], dAtA[iNdEx:postIndex]...)
+			if m.Message == nil {
+				m.Message = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupMetadataSubscribe) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupMetadataSubscribe: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupMetadataSubscribe: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupMetadataSubscribe_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Since", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Since = append(m.Since[:0], dAtA[iNdEx:postIndex]...)
+			if m.Since == nil {
+				m.Since = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Until", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Until = append(m.Until[:0], dAtA[iNdEx:postIndex]...)
+			if m.Until == nil {
+				m.Until = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GoBackwards", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.GoBackwards = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupMessageSubscribe) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupMessageSubscribe: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupMessageSubscribe: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupMessageSubscribe_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Since", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Since = append(m.Since[:0], dAtA[iNdEx:postIndex]...)
+			if m.Since == nil {
+				m.Since = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Until", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Until = append(m.Until[:0], dAtA[iNdEx:postIndex]...)
+			if m.Until == nil {
+				m.Until = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GoBackwards", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.GoBackwards = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipBertyprotocol(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	depth := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+		case 1:
+			iNdEx += 8
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthBertyprotocol
+			}
+			iNdEx += length
+		case 3:
+			depth++
+		case 4:
+			if depth == 0 {
+				return 0, ErrUnexpectedEndOfGroupBertyprotocol
+			}
+			depth--
+		case 5:
+			iNdEx += 4
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+		if iNdEx < 0 {
+			return 0, ErrInvalidLengthBertyprotocol
+		}
+		if depth == 0 {
+			return iNdEx, nil
+		}
+	}
+	return 0, io.ErrUnexpectedEOF
+}
+
+var (
+	ErrInvalidLengthBertyprotocol        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowBertyprotocol          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupBertyprotocol = fmt.Errorf("proto: unexpected end of group")
+)

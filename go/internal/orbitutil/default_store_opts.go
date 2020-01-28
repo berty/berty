@@ -1,17 +1,17 @@
-package storegroup
+package orbitutil
 
 import (
 	"encoding/hex"
 
-	"berty.tech/berty/go/internal/group"
-	"berty.tech/berty/go/internal/orbitutil/identityberty"
-	"berty.tech/berty/go/pkg/errcode"
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/accesscontroller"
+
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/pkg/errcode"
 )
 
-func DefaultOptions(g *group.Group, options *orbitdb.CreateDBOptions, keystore *identityberty.BertySignedKeyStore) (*orbitdb.CreateDBOptions, error) {
+func DefaultOptions(g *group.Group, options *orbitdb.CreateDBOptions, keystore *BertySignedKeyStore) (*orbitdb.CreateDBOptions, error) {
 	var err error
 
 	if options == nil {
@@ -47,21 +47,21 @@ func defaultACForGroup(g *group.Group) (accesscontroller.ManifestParams, error) 
 	}
 
 	param := accesscontroller.NewSimpleManifestParams("simple", map[string][]string{
-		"write":                  {hex.EncodeToString(signingKeyBytes)},
-		identityberty.GroupIDKey: {groupID},
+		"write":            {hex.EncodeToString(signingKeyBytes)},
+		IdentityGroupIDKey: {groupID},
 	})
 
 	return param, nil
 }
 
-func defaultIdentityForGroup(g *group.Group, ks *identityberty.BertySignedKeyStore) (*identityprovider.Identity, error) {
+func defaultIdentityForGroup(g *group.Group, ks *BertySignedKeyStore) (*identityprovider.Identity, error) {
 	signingKeyBytes, err := g.SigningKey.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	identity, err := ks.GetIdentityProvider().CreateIdentity(&identityprovider.CreateIdentityOptions{
-		Type:     identityberty.IdentityType,
+		Type:     IdentityType,
 		Keystore: ks,
 		ID:       hex.EncodeToString(signingKeyBytes),
 	})

@@ -3,7 +3,6 @@ package handshake
 import (
 	"crypto/rand"
 
-	"berty.tech/berty/go/internal/crypto"
 	"berty.tech/berty/go/pkg/errcode"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	"golang.org/x/crypto/nacl/box"
@@ -32,7 +31,7 @@ func b32Slice(arr *[32]byte) []byte {
 	return ret
 }
 
-func initHandshake(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain crypto.SigChainManager, opts *crypto.Opts) (*handshakeSession, error) {
+func initHandshake(sk p2pcrypto.PrivKey) (*handshakeSession, error) {
 	// TODO: make sure to generate the right type of private key
 	boxPub, boxPriv, err := box.GenerateKey(rand.Reader)
 	if err != nil {
@@ -46,31 +45,29 @@ func initHandshake(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain crypto.Sig
 	}
 
 	hs := &handshakeSession{
-		ownDevicePrivateKey:   ownDevicePrivateKey,
-		ownSigChain:           ownSigChain,
-		selfBoxPublicKey:      boxPub,
-		selfBoxPrivateKey:     boxPriv,
-		selfSigningPrivateKey: signPriv,
-		nonce:                 0,
-		opts:                  opts,
+		ownAccountSK:      sk,
+		selfBoxPublicKey:  boxPub,
+		selfBoxPrivateKey: boxPriv,
+		ownSignSK:         signPriv,
+		nonce:             0,
 	}
 
 	return hs, nil
 }
 
-func newCryptoRequest(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain crypto.SigChainManager, accountToReach p2pcrypto.PubKey, opts *crypto.Opts) (*handshakeSession, error) {
-	session, err := initHandshake(ownDevicePrivateKey, ownSigChain, opts)
+func newCryptoRequest(sk p2pcrypto.PrivKey, pk p2pcrypto.PubKey) (*handshakeSession, error) {
+	session, err := initHandshake(sk)
 	if err != nil {
 		return nil, err
 	}
 
-	session.setAccountKeyToProve(accountToReach)
+	session.setAccountKeyToProve(pk)
 
 	return session, nil
 }
 
-func newCryptoResponse(ownDevicePrivateKey p2pcrypto.PrivKey, ownSigChain crypto.SigChainManager, opts *crypto.Opts) (*handshakeSession, error) {
-	session, err := initHandshake(ownDevicePrivateKey, ownSigChain, opts)
+func newCryptoResponse(sk p2pcrypto.PrivKey) (*handshakeSession, error) {
+	session, err := initHandshake(sk)
 	if err != nil {
 		return nil, err
 	}

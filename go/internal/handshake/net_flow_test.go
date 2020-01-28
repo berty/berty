@@ -10,7 +10,6 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/go/internal/crypto"
 	"berty.tech/berty/go/pkg/errcode"
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/gogo/protobuf/proto"
@@ -65,7 +64,6 @@ func (s *dummyStep) action(ctx context.Context, f *flow, step HandshakeFrame_Han
 
 type dummySetCredsStep struct {
 	next         HandshakeFrame_HandshakeStep
-	sigChain     *crypto.SigChain
 	devicePubKey p2pcrypto.PubKey
 }
 
@@ -76,8 +74,7 @@ func (s *dummySetCredsStep) action(ctx context.Context, f *flow, step HandshakeF
 		return nil, err
 	}
 
-	f.provedDevicePubKey = provedDevicePubKey
-	f.provedSigChain = crypto.WrapSigChain(&crypto.SigChain{}, nil)
+	f.ownPK = provedDevicePubKey
 
 	return &s.next, nil
 }
@@ -162,21 +159,6 @@ func Test_flow_performFlow(t *testing.T) {
 			expected: errcode.ErrHandshakeNoAuthReturned,
 		},
 		{
-			name: "multiple valid, authenticated returned",
-			steps: map[HandshakeFrame_HandshakeStep]flowStep{
-				HandshakeFrame_STEP_1_KEY_AGREEMENT: &dummyStep{
-					next: HandshakeFrame_STEP_2_KEY_AGREEMENT,
-				},
-				HandshakeFrame_STEP_2_KEY_AGREEMENT: &dummyStep{
-					next: HandshakeFrame_STEP_3A_KNOWN_IDENTITY_PROOF,
-				},
-				HandshakeFrame_STEP_3A_KNOWN_IDENTITY_PROOF: &dummySetCredsStep{
-					next: HandshakeFrame_STEP_9_DONE,
-				},
-			},
-			expected: nil,
-		},
-		{
 			name: "multiple erroring",
 			steps: map[HandshakeFrame_HandshakeStep]flowStep{
 				HandshakeFrame_STEP_1_KEY_AGREEMENT: &dummyStep{
@@ -197,7 +179,7 @@ func Test_flow_performFlow(t *testing.T) {
 			reader: c.reader,
 		}
 
-		_, _, err := f.performFlow(ctx)
+		_, err := f.performFlow(ctx)
 		assert.Equal(t, c.expected, err, c.name)
 	}
 }
@@ -206,10 +188,10 @@ func Test_Request_Response(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
 	defer cancel()
 
-	reqCrypto, reqPrivateKey, err := crypto.InitNewIdentity(ctx, nil)
+	reqPrivateKey, _, err := p2pcrypto.GenerateEd25519Key(rand.Reader)
 	checkErr(t, err, "unable to create an identity")
 
-	resCrypto, resPrivateKey, err := crypto.InitNewIdentity(ctx, nil)
+	resPrivateKey, _, err := p2pcrypto.GenerateEd25519Key(rand.Reader)
 	checkErr(t, err, "unable to create an identity")
 
 	wg := sync.WaitGroup{}
@@ -220,29 +202,19 @@ func Test_Request_Response(t *testing.T) {
 	go func() {
 		defer wg.Done()
 
-		initialEntry, err := resCrypto.GetSigChain().GetInitialEntry()
-		checkErr(t, err, "unable to get initial sigchain entry of requestee on requester side: %v", err)
-
-		accountPk, err := initialEntry.GetSubject()
-		checkErr(t, err, "unable to get initial sigchain entry of requestee on requester side: %v", err)
-
-		reqProvedSigChain, reqProvedKey, err := Request(ctx, reqConn, reqPrivateKey, reqCrypto.GetSigChain(), accountPk, nil)
+		reqProvedKey, err := Request(ctx, reqConn, reqPrivateKey, resPrivateKey.GetPublic())
 		checkErr(t, err, "unable to perform handshake on requester side: %v", err)
 
 		assert.True(t, reqProvedKey.Equals(resPrivateKey.GetPublic()), "sig chain found on requester side is invalid")
-
-		_ = reqProvedSigChain
 	}()
 
 	go func() {
 		defer wg.Done()
 
-		resProvedSigChain, resProvedKey, err := Response(ctx, resConn, resPrivateKey, resCrypto.GetSigChain(), nil)
+		resProvedKey, err := Response(ctx, resConn, resPrivateKey)
 		checkErr(t, err, "unable to perform handshake on requestee side: %v", err)
 
 		assert.True(t, resProvedKey.Equals(reqPrivateKey.GetPublic()), "sig chain found on requestee side is invalid")
-
-		_ = resProvedSigChain
 	}()
 
 	go func() {

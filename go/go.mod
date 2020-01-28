@@ -14,13 +14,13 @@ require (
 	github.com/ipfs/go-datastore v0.3.1
 	github.com/ipfs/go-ipfs v0.4.22-0.20191217161056-7cc392ba9dac
 	github.com/ipfs/go-ipfs-config v0.1.0
+	github.com/ipfs/go-log v0.0.1
 	github.com/ipfs/interface-go-ipfs-core v0.2.5
 	github.com/jinzhu/gorm v1.9.11
 	github.com/libp2p/go-libp2p v0.5.0
 	github.com/libp2p/go-libp2p-core v0.3.0
 	github.com/multiformats/go-multiaddr v0.2.0
 	github.com/multiformats/go-multiaddr-net v0.1.1
-	github.com/multiformats/go-multihash v0.0.10
 	github.com/oklog/run v1.0.0
 	github.com/peterbourgon/ff v1.6.0
 	github.com/pkg/errors v0.8.1

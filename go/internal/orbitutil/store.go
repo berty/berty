@@ -1,9 +1,8 @@
-package storegroup
+package orbitutil
 
 import (
 	"sync"
 
-	"berty.tech/berty/go/internal/orbitutil/orbitutilapi"
 	"berty.tech/berty/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-orbit-db/stores/basestore"
@@ -13,17 +12,17 @@ import (
 type BaseGroupStore struct {
 	basestore.BaseStore
 
-	groupContext orbitutilapi.GroupContext
+	groupContext GroupContext
 	lock         sync.RWMutex
 }
 
-func (b *BaseGroupStore) SetGroupContext(g orbitutilapi.GroupContext) {
+func (b *BaseGroupStore) SetGroupContext(g GroupContext) {
 	b.lock.Lock()
 	b.groupContext = g
 	b.lock.Unlock()
 }
 
-func (b *BaseGroupStore) GetGroupContext() orbitutilapi.GroupContext {
+func (b *BaseGroupStore) GetGroupContext() GroupContext {
 	b.lock.RLock()
 	defer b.lock.RUnlock()
 
@@ -44,4 +43,4 @@ func UnwrapOperation(opEntry ipfslog.Entry) ([]byte, error) {
 	return op.GetValue(), nil
 }
 
-var _ orbitutilapi.GroupStore = (*BaseGroupStore)(nil)
+var _ GroupStore = (*BaseGroupStore)(nil)

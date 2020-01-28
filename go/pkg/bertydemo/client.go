@@ -7,17 +7,17 @@ import (
 	"sync"
 	"time"
 
-	"berty.tech/berty/go/internal/group"
-	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/internal/orbitutil/identityberty"
-	"berty.tech/berty/go/internal/orbitutil/storegroup"
-	"berty.tech/berty/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/stores/operation"
 	cid "github.com/ipfs/go-cid"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
+
+	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/ipfsutil"
+	"berty.tech/berty/go/internal/orbitutil"
+	"berty.tech/berty/go/pkg/errcode"
 )
 
 type Client struct {
@@ -76,13 +76,13 @@ func (d *Client) logFromToken(ctx context.Context, token string) (orbitdb.EventL
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	ks := identityberty.NewBertySignedKeyStore()
+	ks := orbitutil.NewBertySignedKeyStore()
 	err = ks.SetKey(sigk)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 	g := &group.Group{PubKey: sigk.GetPublic(), SigningKey: sigk}
-	opts, err := storegroup.DefaultOptions(g, &orbitdb.CreateDBOptions{}, ks)
+	opts, err := orbitutil.DefaultOptions(g, &orbitdb.CreateDBOptions{}, ks)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

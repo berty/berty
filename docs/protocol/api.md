@@ -4,87 +4,104 @@
 ## Table of Contents
 
 - [bertyprotocol.proto](#bertyprotocol.proto)
-    - [AccountAppendAppSpecificEvent](#berty.protocol.AccountAppendAppSpecificEvent)
-    - [AccountAppendAppSpecificEvent.Reply](#berty.protocol.AccountAppendAppSpecificEvent.Reply)
-    - [AccountAppendAppSpecificEvent.Request](#berty.protocol.AccountAppendAppSpecificEvent.Request)
-    - [AccountStoreEvent](#berty.protocol.AccountStoreEvent)
-    - [AccountSubscribe](#berty.protocol.AccountSubscribe)
-    - [AccountSubscribe.Reply](#berty.protocol.AccountSubscribe.Reply)
-    - [AccountSubscribe.Request](#berty.protocol.AccountSubscribe.Request)
+    - [Account](#berty.protocol.Account)
+    - [AccountContactBlocked](#berty.protocol.AccountContactBlocked)
+    - [AccountContactRequestAccepted](#berty.protocol.AccountContactRequestAccepted)
+    - [AccountContactRequestDisabled](#berty.protocol.AccountContactRequestDisabled)
+    - [AccountContactRequestDiscarded](#berty.protocol.AccountContactRequestDiscarded)
+    - [AccountContactRequestEnabled](#berty.protocol.AccountContactRequestEnabled)
+    - [AccountContactRequestEnqueued](#berty.protocol.AccountContactRequestEnqueued)
+    - [AccountContactRequestReceived](#berty.protocol.AccountContactRequestReceived)
+    - [AccountContactRequestReferenceReset](#berty.protocol.AccountContactRequestReferenceReset)
+    - [AccountContactRequestSent](#berty.protocol.AccountContactRequestSent)
+    - [AccountContactUnblocked](#berty.protocol.AccountContactUnblocked)
+    - [AccountGroupJoined](#berty.protocol.AccountGroupJoined)
+    - [AccountGroupLeft](#berty.protocol.AccountGroupLeft)
+    - [AppMessageSend](#berty.protocol.AppMessageSend)
+    - [AppMessageSend.Reply](#berty.protocol.AppMessageSend.Reply)
+    - [AppMessageSend.Request](#berty.protocol.AppMessageSend.Request)
+    - [AppMetadata](#berty.protocol.AppMetadata)
+    - [AppMetadataSend](#berty.protocol.AppMetadataSend)
+    - [AppMetadataSend.Reply](#berty.protocol.AppMetadataSend.Reply)
+    - [AppMetadataSend.Request](#berty.protocol.AppMetadataSend.Request)
+    - [ContactAddAliasKey](#berty.protocol.ContactAddAliasKey)
+    - [ContactAliasKeySend](#berty.protocol.ContactAliasKeySend)
+    - [ContactAliasKeySend.Reply](#berty.protocol.ContactAliasKeySend.Reply)
+    - [ContactAliasKeySend.Request](#berty.protocol.ContactAliasKeySend.Request)
     - [ContactBlock](#berty.protocol.ContactBlock)
     - [ContactBlock.Reply](#berty.protocol.ContactBlock.Reply)
     - [ContactBlock.Request](#berty.protocol.ContactBlock.Request)
-    - [ContactRemove](#berty.protocol.ContactRemove)
-    - [ContactRemove.Reply](#berty.protocol.ContactRemove.Reply)
-    - [ContactRemove.Request](#berty.protocol.ContactRemove.Request)
     - [ContactRequestAccept](#berty.protocol.ContactRequestAccept)
     - [ContactRequestAccept.Reply](#berty.protocol.ContactRequestAccept.Reply)
     - [ContactRequestAccept.Request](#berty.protocol.ContactRequestAccept.Request)
     - [ContactRequestDisable](#berty.protocol.ContactRequestDisable)
     - [ContactRequestDisable.Reply](#berty.protocol.ContactRequestDisable.Reply)
     - [ContactRequestDisable.Request](#berty.protocol.ContactRequestDisable.Request)
+    - [ContactRequestDiscard](#berty.protocol.ContactRequestDiscard)
+    - [ContactRequestDiscard.Reply](#berty.protocol.ContactRequestDiscard.Reply)
+    - [ContactRequestDiscard.Request](#berty.protocol.ContactRequestDiscard.Request)
     - [ContactRequestEnable](#berty.protocol.ContactRequestEnable)
     - [ContactRequestEnable.Reply](#berty.protocol.ContactRequestEnable.Reply)
     - [ContactRequestEnable.Request](#berty.protocol.ContactRequestEnable.Request)
-    - [ContactRequestEnqueue](#berty.protocol.ContactRequestEnqueue)
-    - [ContactRequestEnqueue.Reply](#berty.protocol.ContactRequestEnqueue.Reply)
-    - [ContactRequestEnqueue.Request](#berty.protocol.ContactRequestEnqueue.Request)
     - [ContactRequestReference](#berty.protocol.ContactRequestReference)
     - [ContactRequestReference.Reply](#berty.protocol.ContactRequestReference.Reply)
     - [ContactRequestReference.Request](#berty.protocol.ContactRequestReference.Request)
-    - [ContactRequestResetLink](#berty.protocol.ContactRequestResetLink)
-    - [ContactRequestResetLink.Reply](#berty.protocol.ContactRequestResetLink.Reply)
-    - [ContactRequestResetLink.Request](#berty.protocol.ContactRequestResetLink.Request)
+    - [ContactRequestResetReference](#berty.protocol.ContactRequestResetReference)
+    - [ContactRequestResetReference.Reply](#berty.protocol.ContactRequestResetReference.Reply)
+    - [ContactRequestResetReference.Request](#berty.protocol.ContactRequestResetReference.Request)
+    - [ContactRequestSend](#berty.protocol.ContactRequestSend)
+    - [ContactRequestSend.Reply](#berty.protocol.ContactRequestSend.Reply)
+    - [ContactRequestSend.Request](#berty.protocol.ContactRequestSend.Request)
     - [ContactUnblock](#berty.protocol.ContactUnblock)
     - [ContactUnblock.Reply](#berty.protocol.ContactUnblock.Reply)
     - [ContactUnblock.Request](#berty.protocol.ContactUnblock.Request)
-    - [DevicePair](#berty.protocol.DevicePair)
-    - [DevicePair.Reply](#berty.protocol.DevicePair.Reply)
-    - [DevicePair.Request](#berty.protocol.DevicePair.Request)
-    - [EventBase](#berty.protocol.EventBase)
-    - [GroupCreate](#berty.protocol.GroupCreate)
-    - [GroupCreate.Reply](#berty.protocol.GroupCreate.Reply)
-    - [GroupCreate.Request](#berty.protocol.GroupCreate.Request)
-    - [GroupInvite](#berty.protocol.GroupInvite)
-    - [GroupInvite.Reply](#berty.protocol.GroupInvite.Reply)
-    - [GroupInvite.Request](#berty.protocol.GroupInvite.Request)
-    - [GroupJoin](#berty.protocol.GroupJoin)
-    - [GroupJoin.Reply](#berty.protocol.GroupJoin.Reply)
-    - [GroupJoin.Request](#berty.protocol.GroupJoin.Request)
-    - [GroupLeave](#berty.protocol.GroupLeave)
-    - [GroupLeave.Reply](#berty.protocol.GroupLeave.Reply)
-    - [GroupLeave.Request](#berty.protocol.GroupLeave.Request)
-    - [GroupMemberStoreEvent](#berty.protocol.GroupMemberStoreEvent)
-    - [GroupMemberSubscribe](#berty.protocol.GroupMemberSubscribe)
-    - [GroupMemberSubscribe.Reply](#berty.protocol.GroupMemberSubscribe.Reply)
-    - [GroupMemberSubscribe.Request](#berty.protocol.GroupMemberSubscribe.Request)
-    - [GroupMessageSend](#berty.protocol.GroupMessageSend)
-    - [GroupMessageSend.Reply](#berty.protocol.GroupMessageSend.Reply)
-    - [GroupMessageSend.Request](#berty.protocol.GroupMessageSend.Request)
-    - [GroupMessageStoreEvent](#berty.protocol.GroupMessageStoreEvent)
+    - [DeviceSecret](#berty.protocol.DeviceSecret)
+    - [EventContext](#berty.protocol.EventContext)
+    - [Group](#berty.protocol.Group)
+    - [GroupAddAdditionalRendezvousSeed](#berty.protocol.GroupAddAdditionalRendezvousSeed)
+    - [GroupAddDeviceSecret](#berty.protocol.GroupAddDeviceSecret)
+    - [GroupAddMemberDevice](#berty.protocol.GroupAddMemberDevice)
+    - [GroupEnvelope](#berty.protocol.GroupEnvelope)
+    - [GroupMessageEvent](#berty.protocol.GroupMessageEvent)
     - [GroupMessageSubscribe](#berty.protocol.GroupMessageSubscribe)
-    - [GroupMessageSubscribe.Reply](#berty.protocol.GroupMessageSubscribe.Reply)
     - [GroupMessageSubscribe.Request](#berty.protocol.GroupMessageSubscribe.Request)
-    - [GroupSettingSetGroup](#berty.protocol.GroupSettingSetGroup)
-    - [GroupSettingSetGroup.Reply](#berty.protocol.GroupSettingSetGroup.Reply)
-    - [GroupSettingSetGroup.Request](#berty.protocol.GroupSettingSetGroup.Request)
-    - [GroupSettingSetMember](#berty.protocol.GroupSettingSetMember)
-    - [GroupSettingSetMember.Reply](#berty.protocol.GroupSettingSetMember.Reply)
-    - [GroupSettingSetMember.Request](#berty.protocol.GroupSettingSetMember.Request)
-    - [GroupSettingStoreEvent](#berty.protocol.GroupSettingStoreEvent)
-    - [GroupSettingStoreSubscribe](#berty.protocol.GroupSettingStoreSubscribe)
-    - [GroupSettingStoreSubscribe.Reply](#berty.protocol.GroupSettingStoreSubscribe.Reply)
-    - [GroupSettingStoreSubscribe.Request](#berty.protocol.GroupSettingStoreSubscribe.Request)
-    - [GroupStoreEvent](#berty.protocol.GroupStoreEvent)
+    - [GroupMetadata](#berty.protocol.GroupMetadata)
+    - [GroupMetadataEvent](#berty.protocol.GroupMetadataEvent)
+    - [GroupMetadataSubscribe](#berty.protocol.GroupMetadataSubscribe)
+    - [GroupMetadataSubscribe.Request](#berty.protocol.GroupMetadataSubscribe.Request)
+    - [GroupRemoveAdditionalRendezvousSeed](#berty.protocol.GroupRemoveAdditionalRendezvousSeed)
     - [InstanceExportData](#berty.protocol.InstanceExportData)
     - [InstanceExportData.Reply](#berty.protocol.InstanceExportData.Reply)
     - [InstanceExportData.Request](#berty.protocol.InstanceExportData.Request)
     - [InstanceGetConfiguration](#berty.protocol.InstanceGetConfiguration)
     - [InstanceGetConfiguration.Reply](#berty.protocol.InstanceGetConfiguration.Reply)
     - [InstanceGetConfiguration.Request](#berty.protocol.InstanceGetConfiguration.Request)
+    - [MessageEnvelope](#berty.protocol.MessageEnvelope)
+    - [MessageHeaders](#berty.protocol.MessageHeaders)
+    - [MultiMemberGrantAdminRole](#berty.protocol.MultiMemberGrantAdminRole)
+    - [MultiMemberGroupAddAliasResolver](#berty.protocol.MultiMemberGroupAddAliasResolver)
+    - [MultiMemberGroupAdminRoleGrant](#berty.protocol.MultiMemberGroupAdminRoleGrant)
+    - [MultiMemberGroupAdminRoleGrant.Reply](#berty.protocol.MultiMemberGroupAdminRoleGrant.Reply)
+    - [MultiMemberGroupAdminRoleGrant.Request](#berty.protocol.MultiMemberGroupAdminRoleGrant.Request)
+    - [MultiMemberGroupAliasResolverDisclose](#berty.protocol.MultiMemberGroupAliasResolverDisclose)
+    - [MultiMemberGroupAliasResolverDisclose.Reply](#berty.protocol.MultiMemberGroupAliasResolverDisclose.Reply)
+    - [MultiMemberGroupAliasResolverDisclose.Request](#berty.protocol.MultiMemberGroupAliasResolverDisclose.Request)
+    - [MultiMemberGroupCreate](#berty.protocol.MultiMemberGroupCreate)
+    - [MultiMemberGroupCreate.Reply](#berty.protocol.MultiMemberGroupCreate.Reply)
+    - [MultiMemberGroupCreate.Request](#berty.protocol.MultiMemberGroupCreate.Request)
+    - [MultiMemberGroupInvitationCreate](#berty.protocol.MultiMemberGroupInvitationCreate)
+    - [MultiMemberGroupInvitationCreate.Reply](#berty.protocol.MultiMemberGroupInvitationCreate.Reply)
+    - [MultiMemberGroupInvitationCreate.Request](#berty.protocol.MultiMemberGroupInvitationCreate.Request)
+    - [MultiMemberGroupJoin](#berty.protocol.MultiMemberGroupJoin)
+    - [MultiMemberGroupJoin.Reply](#berty.protocol.MultiMemberGroupJoin.Reply)
+    - [MultiMemberGroupJoin.Request](#berty.protocol.MultiMemberGroupJoin.Request)
+    - [MultiMemberGroupLeave](#berty.protocol.MultiMemberGroupLeave)
+    - [MultiMemberGroupLeave.Reply](#berty.protocol.MultiMemberGroupLeave.Reply)
+    - [MultiMemberGroupLeave.Request](#berty.protocol.MultiMemberGroupLeave.Request)
+    - [MultiMemberInitialMember](#berty.protocol.MultiMemberInitialMember)
   
-    - [AccountEventType](#berty.protocol.AccountEventType)
-    - [GroupSettingStoreSettingType](#berty.protocol.GroupSettingStoreSettingType)
+    - [EventType](#berty.protocol.EventType)
+    - [GroupType](#berty.protocol.GroupType)
     - [InstanceGetConfiguration.SettingState](#berty.protocol.InstanceGetConfiguration.SettingState)
   
   
@@ -98,52 +115,214 @@
 
 ## bertyprotocol.proto
 
-<a name="berty.protocol.AccountAppendAppSpecificEvent"></a>
+<a name="berty.protocol.Account"></a>
 
-### AccountAppendAppSpecificEvent
-
-<a name="berty.protocol.AccountAppendAppSpecificEvent.Reply"></a>
-
-### AccountAppendAppSpecificEvent.Reply
-
-<a name="berty.protocol.AccountAppendAppSpecificEvent.Request"></a>
-
-### AccountAppendAppSpecificEvent.Request
+### Account
+Account describes all the secrets that identifies an Account
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| payload | [bytes](#bytes) |  |  |
+| group | [Group](#berty.protocol.Group) |  | group specifies which group is used to manage the account |
+| account_private_key | [bytes](#bytes) |  | account_private_key, private part is used to signs handshake, signs device, create contacts group keys via ECDH -- public part is used to have a shareable identity |
+| alias_private_key | [bytes](#bytes) |  | alias_private_key, private part is use to derive group members private keys, signs alias proofs, public part can be shared to contacts to prove identity |
+| public_rendezvous_seed | [bytes](#bytes) |  | public_rendezvous_seed, rendezvous seed used for direct communication |
 
-<a name="berty.protocol.AccountStoreEvent"></a>
+<a name="berty.protocol.AccountContactBlocked"></a>
 
-### AccountStoreEvent
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| subject_public_key_bytes | [bytes](#bytes) |  |  |
-| data | [bytes](#bytes) |  |  |
-
-<a name="berty.protocol.AccountSubscribe"></a>
-
-### AccountSubscribe
-
-<a name="berty.protocol.AccountSubscribe.Reply"></a>
-
-### AccountSubscribe.Reply
+### AccountContactBlocked
+AccountContactBlocked indicates that a contact is blocked
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| event | [AccountStoreEvent](#berty.protocol.AccountStoreEvent) |  |  |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the contact blocked |
 
-<a name="berty.protocol.AccountSubscribe.Request"></a>
+<a name="berty.protocol.AccountContactRequestAccepted"></a>
 
-### AccountSubscribe.Request
+### AccountContactRequestAccepted
+This event should be followed by an AccountGroupJoined event
+This event should be followed by GroupAddMemberDevice and GroupAddDeviceSecret events within the AccountGroup
+AccountContactRequestAccepted indicates that a contact request has been accepted
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| since | [bytes](#bytes) |  |  |
-| until | [bytes](#bytes) |  |  |
-| go_backwards | [bool](#bool) |  |  |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the contact whom request is accepted |
+
+<a name="berty.protocol.AccountContactRequestDisabled"></a>
+
+### AccountContactRequestDisabled
+AccountContactRequestDisabled indicates that the account should not be advertised on a public rendezvous point
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+
+<a name="berty.protocol.AccountContactRequestDiscarded"></a>
+
+### AccountContactRequestDiscarded
+AccountContactRequestDiscarded indicates that a contact request has been refused
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the contact whom request is refused |
+
+<a name="berty.protocol.AccountContactRequestEnabled"></a>
+
+### AccountContactRequestEnabled
+AccountContactRequestDisabled indicates that the account should be advertised on a public rendezvous point
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+
+<a name="berty.protocol.AccountContactRequestEnqueued"></a>
+
+### AccountContactRequestEnqueued
+This event should be followed by an AccountGroupJoined event
+This event should be followed by a GroupAddMemberDevice event within the AccountGroup
+This event should be followed by a GroupAddDeviceSecret event within the AccountGroup
+AccountContactRequestEnqueued indicates that the account will attempt to send a contact request when a matching peer is discovered
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the account to send a contact request to |
+| contact_rendezvous_seed | [bytes](#bytes) |  | contact_rendezvous_seed is the rendezvous seed used by the other account |
+| contact_metadata | [bytes](#bytes) |  | TODO: is this necessary? contact_metadata is the metadata specific to the app to identify the contact for the request |
+
+<a name="berty.protocol.AccountContactRequestReceived"></a>
+
+### AccountContactRequestReceived
+AccountContactRequestReceived indicates that the account has received a new contact request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the account event (which received the contact request), signs the message |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the account sending the request |
+| contact_rendezvous_seed | [bytes](#bytes) |  | TODO: is this necessary? contact_rendezvous_seed is the rendezvous seed of the contact sending the request |
+| contact_metadata | [bytes](#bytes) |  | TODO: is this necessary? contact_metadata is the metadata specific to the app to identify the contact for the request |
+
+<a name="berty.protocol.AccountContactRequestReferenceReset"></a>
+
+### AccountContactRequestReferenceReset
+AccountContactRequestDisabled indicates that the account should be advertised on different public rendezvous points
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| rendezvous_seed | [bytes](#bytes) |  | rendezvous_seed is the new rendezvous point seed |
+
+<a name="berty.protocol.AccountContactRequestSent"></a>
+
+### AccountContactRequestSent
+AccountContactRequestSent indicates that the account has sent a contact request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the account event, signs the message |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the contacted account |
+
+<a name="berty.protocol.AccountContactUnblocked"></a>
+
+### AccountContactUnblocked
+AccountContactUnblocked indicates that a contact is unblocked
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the contact unblocked |
+
+<a name="berty.protocol.AccountGroupJoined"></a>
+
+### AccountGroupJoined
+AccountGroupJoined indicates that the account is now part of a new group
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| group | [Group](#berty.protocol.Group) |  | group describe the joined group |
+
+<a name="berty.protocol.AccountGroupLeft"></a>
+
+### AccountGroupLeft
+AccountGroupJoined indicates that the account has left a group
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| group_pk | [bytes](#bytes) |  | group_pk references the group left |
+
+<a name="berty.protocol.AppMessageSend"></a>
+
+### AppMessageSend
+
+<a name="berty.protocol.AppMessageSend.Reply"></a>
+
+### AppMessageSend.Reply
+
+<a name="berty.protocol.AppMessageSend.Request"></a>
+
+### AppMessageSend.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+| payload | [bytes](#bytes) |  | payload is the payload to send |
+
+<a name="berty.protocol.AppMetadata"></a>
+
+### AppMetadata
+AppMetadata is an app defined message, accessible to future group members
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| message | [bytes](#bytes) |  | message is the payload |
+
+<a name="berty.protocol.AppMetadataSend"></a>
+
+### AppMetadataSend
+
+<a name="berty.protocol.AppMetadataSend.Reply"></a>
+
+### AppMetadataSend.Reply
+
+<a name="berty.protocol.AppMetadataSend.Request"></a>
+
+### AppMetadataSend.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+| payload | [bytes](#bytes) |  | payload is the payload to send |
+
+<a name="berty.protocol.ContactAddAliasKey"></a>
+
+### ContactAddAliasKey
+ContactAddAliasKey is an event type where ones shares their alias public key
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| alias_pk | [bytes](#bytes) |  | alias_pk is the alias key which will be used to verify a contact identity |
+
+<a name="berty.protocol.ContactAliasKeySend"></a>
+
+### ContactAliasKeySend
+
+<a name="berty.protocol.ContactAliasKeySend.Reply"></a>
+
+### ContactAliasKeySend.Reply
+
+<a name="berty.protocol.ContactAliasKeySend.Request"></a>
+
+### ContactAliasKeySend.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | contact_pk is the identifier of the contact to send the alias public key to |
 
 <a name="berty.protocol.ContactBlock"></a>
 
@@ -159,23 +338,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| contact_pub_key | [bytes](#bytes) |  |  |
-
-<a name="berty.protocol.ContactRemove"></a>
-
-### ContactRemove
-
-<a name="berty.protocol.ContactRemove.Reply"></a>
-
-### ContactRemove.Reply
-
-<a name="berty.protocol.ContactRemove.Request"></a>
-
-### ContactRemove.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| contact_pub_key | [bytes](#bytes) |  |  |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the identifier of the contact to block |
 
 <a name="berty.protocol.ContactRequestAccept"></a>
 
@@ -191,7 +354,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| contact_pub_key | [bytes](#bytes) |  |  |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the identifier of the contact to accept the request from |
 
 <a name="berty.protocol.ContactRequestDisable"></a>
 
@@ -205,6 +368,22 @@
 
 ### ContactRequestDisable.Request
 
+<a name="berty.protocol.ContactRequestDiscard"></a>
+
+### ContactRequestDiscard
+
+<a name="berty.protocol.ContactRequestDiscard.Reply"></a>
+
+### ContactRequestDiscard.Reply
+
+<a name="berty.protocol.ContactRequestDiscard.Request"></a>
+
+### ContactRequestDiscard.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the identifier of the contact to ignore the request from |
+
 <a name="berty.protocol.ContactRequestEnable"></a>
 
 ### ContactRequestEnable
@@ -213,26 +392,13 @@
 
 ### ContactRequestEnable.Reply
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| reference | [bytes](#bytes) |  | reference is an opaque message describing how to connect to the current account |
+
 <a name="berty.protocol.ContactRequestEnable.Request"></a>
 
 ### ContactRequestEnable.Request
-
-<a name="berty.protocol.ContactRequestEnqueue"></a>
-
-### ContactRequestEnqueue
-
-<a name="berty.protocol.ContactRequestEnqueue.Reply"></a>
-
-### ContactRequestEnqueue.Reply
-
-<a name="berty.protocol.ContactRequestEnqueue.Request"></a>
-
-### ContactRequestEnqueue.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| reference | [bytes](#bytes) |  |  |
-| meta | [bytes](#bytes) |  |  |
 
 <a name="berty.protocol.ContactRequestReference"></a>
 
@@ -244,27 +410,44 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| reference | [bytes](#bytes) |  |  |
+| reference | [bytes](#bytes) |  | reference is an opaque message describing how to connect to the current account |
 
 <a name="berty.protocol.ContactRequestReference.Request"></a>
 
 ### ContactRequestReference.Request
 
-<a name="berty.protocol.ContactRequestResetLink"></a>
+<a name="berty.protocol.ContactRequestResetReference"></a>
 
-### ContactRequestResetLink
+### ContactRequestResetReference
 
-<a name="berty.protocol.ContactRequestResetLink.Reply"></a>
+<a name="berty.protocol.ContactRequestResetReference.Reply"></a>
 
-### ContactRequestResetLink.Reply
+### ContactRequestResetReference.Reply
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| reference | [bytes](#bytes) |  |  |
+| reference | [bytes](#bytes) |  | reference is an opaque message describing how to connect to the current account |
 
-<a name="berty.protocol.ContactRequestResetLink.Request"></a>
+<a name="berty.protocol.ContactRequestResetReference.Request"></a>
 
-### ContactRequestResetLink.Request
+### ContactRequestResetReference.Request
+
+<a name="berty.protocol.ContactRequestSend"></a>
+
+### ContactRequestSend
+
+<a name="berty.protocol.ContactRequestSend.Reply"></a>
+
+### ContactRequestSend.Reply
+
+<a name="berty.protocol.ContactRequestSend.Request"></a>
+
+### ContactRequestSend.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| reference | [bytes](#bytes) |  | reference is an opaque message describing how to connect to the other account |
+| contact_metadata | [bytes](#bytes) |  | contact_metadata is the metadata specific to the app to identify the contact for the request |
 
 <a name="berty.protocol.ContactUnblock"></a>
 
@@ -280,162 +463,99 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| contact_pub_key | [bytes](#bytes) |  |  |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the identifier of the contact to unblock |
 
-<a name="berty.protocol.DevicePair"></a>
+<a name="berty.protocol.DeviceSecret"></a>
 
-### DevicePair
-
-<a name="berty.protocol.DevicePair.Reply"></a>
-
-### DevicePair.Reply
-
-<a name="berty.protocol.DevicePair.Request"></a>
-
-### DevicePair.Request
-
-<a name="berty.protocol.EventBase"></a>
-
-### EventBase
+### DeviceSecret
+DeviceSecret is encrypted for a specific member of the group
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| id | [bytes](#bytes) |  |  |
-| parent_ids | [bytes](#bytes) | repeated |  |
+| chain_key | [bytes](#bytes) |  | chain_key is the current value of the chain key of the group device |
+| counter | [uint64](#uint64) |  | counter is the current value of the counter of the group device |
 
-<a name="berty.protocol.GroupCreate"></a>
+<a name="berty.protocol.EventContext"></a>
 
-### GroupCreate
-
-<a name="berty.protocol.GroupCreate.Reply"></a>
-
-### GroupCreate.Reply
-
-<a name="berty.protocol.GroupCreate.Request"></a>
-
-### GroupCreate.Request
-
-<a name="berty.protocol.GroupInvite"></a>
-
-### GroupInvite
-
-<a name="berty.protocol.GroupInvite.Reply"></a>
-
-### GroupInvite.Reply
+### EventContext
+EventContext adds context (its id and its parents) to an event
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| reference | [bytes](#bytes) |  |  |
+| id | [bytes](#bytes) |  | id is the CID of the underlying OrbitDB event |
+| parent_ids | [bytes](#bytes) | repeated | id are the the CIDs of the underlying parents of the OrbitDB event |
+| group_pk | [bytes](#bytes) |  | group_pk receiving the event |
 
-<a name="berty.protocol.GroupInvite.Request"></a>
+<a name="berty.protocol.Group"></a>
 
-### GroupInvite.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_pub_key | [bytes](#bytes) |  |  |
-
-<a name="berty.protocol.GroupJoin"></a>
-
-### GroupJoin
-
-<a name="berty.protocol.GroupJoin.Reply"></a>
-
-### GroupJoin.Reply
-
-<a name="berty.protocol.GroupJoin.Request"></a>
-
-### GroupJoin.Request
+### Group
+Group define a group and is enough to invite someone to it
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| reference | [bytes](#bytes) |  |  |
-| meta | [bytes](#bytes) |  |  |
+| public_key | [bytes](#bytes) |  | public_key is the identifier of the group, it signs the group secret and the initial member of a multi-member group |
+| secret | [bytes](#bytes) |  | secret is the symmetric secret of the group, which is used to encrypt the metadata |
+| secret_sig | [bytes](#bytes) |  | secret_sig is the signature of the secret used to ensure the validity of the group |
+| group_type | [GroupType](#berty.protocol.GroupType) |  | group_type specifies the type of the group |
 
-<a name="berty.protocol.GroupLeave"></a>
+<a name="berty.protocol.GroupAddAdditionalRendezvousSeed"></a>
 
-### GroupLeave
-
-<a name="berty.protocol.GroupLeave.Reply"></a>
-
-### GroupLeave.Reply
-
-<a name="berty.protocol.GroupLeave.Request"></a>
-
-### GroupLeave.Request
+### GroupAddAdditionalRendezvousSeed
+GroupAddAdditionalRendezvousSeed indicates that an additional rendezvous point should be used for data synchronization
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_pub_key | [bytes](#bytes) |  |  |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message, must be the device of an admin of the group |
+| seed | [bytes](#bytes) |  | seed is the additional rendezvous point seed which should be used |
 
-<a name="berty.protocol.GroupMemberStoreEvent"></a>
+<a name="berty.protocol.GroupAddDeviceSecret"></a>
 
-### GroupMemberStoreEvent
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_store_event | [GroupStoreEvent](#berty.protocol.GroupStoreEvent) |  |  |
-
-<a name="berty.protocol.GroupMemberSubscribe"></a>
-
-### GroupMemberSubscribe
-
-<a name="berty.protocol.GroupMemberSubscribe.Reply"></a>
-
-### GroupMemberSubscribe.Reply
+### GroupAddDeviceSecret
+GroupAddDeviceSecret is an event which indicates to a group member a device secret
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| event | [GroupMemberStoreEvent](#berty.protocol.GroupMemberStoreEvent) |  |  |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| dest_member_pk | [bytes](#bytes) |  | dest_member_pk is the member who should receive the secret |
+| payload | [bytes](#bytes) |  | payload is the serialization of Payload encrypted for the specified member |
 
-<a name="berty.protocol.GroupMemberSubscribe.Request"></a>
+<a name="berty.protocol.GroupAddMemberDevice"></a>
 
-### GroupMemberSubscribe.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_pub_key | [bytes](#bytes) |  |  |
-| since | [bytes](#bytes) |  |  |
-| until | [bytes](#bytes) |  |  |
-| go_backwards | [bool](#bool) |  |  |
-
-<a name="berty.protocol.GroupMessageSend"></a>
-
-### GroupMessageSend
-
-<a name="berty.protocol.GroupMessageSend.Reply"></a>
-
-### GroupMessageSend.Reply
-
-<a name="berty.protocol.GroupMessageSend.Request"></a>
-
-### GroupMessageSend.Request
+### GroupAddMemberDevice
+GroupAddMemberDevice is an event which indicates to a group a new device (and eventually a new member) is joining it
+When added on AccountGroup, this event should be followed by appropriate GroupAddMemberDevice and GroupAddDeviceSecret events
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_pub_key | [bytes](#bytes) |  |  |
-| payload | [bytes](#bytes) |  |  |
+| member_pk | [bytes](#bytes) |  | member_pk is the member sending the event |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| member_sig | [bytes](#bytes) |  | member_sig is used to prove the ownership of the member pk
 
-<a name="berty.protocol.GroupMessageStoreEvent"></a>
+TODO: signature of what ??? ensure it can&#39;t be replayed |
 
-### GroupMessageStoreEvent
+<a name="berty.protocol.GroupEnvelope"></a>
+
+### GroupEnvelope
+GroupEnvelope is a publicly exposed structure containing a group metadata event
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_store_event | [GroupStoreEvent](#berty.protocol.GroupStoreEvent) |  |  |
-| payload | [bytes](#bytes) |  |  |
+| nonce | [bytes](#bytes) |  | nonce is used to encrypt the message |
+| event | [bytes](#bytes) |  | event is encrypted using a symmetric key shared among group members |
+
+<a name="berty.protocol.GroupMessageEvent"></a>
+
+### GroupMessageEvent
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| event_context | [EventContext](#berty.protocol.EventContext) |  | event_context contains context information about the event |
+| headers | [MessageHeaders](#berty.protocol.MessageHeaders) |  | headers contains headers of the secure message |
+| message | [bytes](#bytes) |  | message contains the secure message payload |
 
 <a name="berty.protocol.GroupMessageSubscribe"></a>
 
 ### GroupMessageSubscribe
-
-<a name="berty.protocol.GroupMessageSubscribe.Reply"></a>
-
-### GroupMessageSubscribe.Reply
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| event | [GroupMessageStoreEvent](#berty.protocol.GroupMessageStoreEvent) |  |  |
 
 <a name="berty.protocol.GroupMessageSubscribe.Request"></a>
 
@@ -443,92 +563,56 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_pub_key | [bytes](#bytes) |  |  |
-| since | [bytes](#bytes) |  |  |
-| until | [bytes](#bytes) |  |  |
-| go_backwards | [bool](#bool) |  |  |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+| since | [bytes](#bytes) |  | since is the lower ID bound used to filter events |
+| until | [bytes](#bytes) |  | until is the upper ID bound used to filter events |
+| go_backwards | [bool](#bool) |  | go_backwards indicates whether the events should be returned in reverse order |
 
-<a name="berty.protocol.GroupSettingSetGroup"></a>
+<a name="berty.protocol.GroupMetadata"></a>
 
-### GroupSettingSetGroup
-
-<a name="berty.protocol.GroupSettingSetGroup.Reply"></a>
-
-### GroupSettingSetGroup.Reply
-
-<a name="berty.protocol.GroupSettingSetGroup.Request"></a>
-
-### GroupSettingSetGroup.Request
+### GroupMetadata
+GroupMetadata is used in GroupEnvelope and only readable by invited group members
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_pub_key | [bytes](#bytes) |  |  |
-| key | [string](#string) |  |  |
-| value | [bytes](#bytes) |  |  |
+| event_type | [EventType](#berty.protocol.EventType) |  | event_type defines which event type is used |
+| payload | [bytes](#bytes) |  | the serialization depends on event_type, event is symmetrically encrypted |
+| sig | [bytes](#bytes) |  | sig is the signature of the payload, it depends on the event_type for the used key |
 
-<a name="berty.protocol.GroupSettingSetMember"></a>
+<a name="berty.protocol.GroupMetadataEvent"></a>
 
-### GroupSettingSetMember
-
-<a name="berty.protocol.GroupSettingSetMember.Reply"></a>
-
-### GroupSettingSetMember.Reply
-
-<a name="berty.protocol.GroupSettingSetMember.Request"></a>
-
-### GroupSettingSetMember.Request
+### GroupMetadataEvent
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_pub_key | [bytes](#bytes) |  |  |
-| key | [string](#string) |  |  |
-| value | [bytes](#bytes) |  |  |
+| event_context | [EventContext](#berty.protocol.EventContext) |  | event_context contains context information about the event |
+| metadata | [GroupMetadata](#berty.protocol.GroupMetadata) |  | metadata contains the newly available metadata |
+| event | [bytes](#bytes) |  | event_clear clear bytes for the event |
 
-<a name="berty.protocol.GroupSettingStoreEvent"></a>
+<a name="berty.protocol.GroupMetadataSubscribe"></a>
 
-### GroupSettingStoreEvent
+### GroupMetadataSubscribe
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_store_event | [GroupStoreEvent](#berty.protocol.GroupStoreEvent) |  |  |
-| setting_type | [GroupSettingStoreSettingType](#berty.protocol.GroupSettingStoreSettingType) |  |  |
-| key | [string](#string) |  |  |
-| value | [bytes](#bytes) |  |  |
+<a name="berty.protocol.GroupMetadataSubscribe.Request"></a>
 
-<a name="berty.protocol.GroupSettingStoreSubscribe"></a>
-
-### GroupSettingStoreSubscribe
-
-<a name="berty.protocol.GroupSettingStoreSubscribe.Reply"></a>
-
-### GroupSettingStoreSubscribe.Reply
+### GroupMetadataSubscribe.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| event | [GroupSettingStoreEvent](#berty.protocol.GroupSettingStoreEvent) |  |  |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+| since | [bytes](#bytes) |  | since is the lower ID bound used to filter events |
+| until | [bytes](#bytes) |  | until is the upper ID bound used to filter events |
+| go_backwards | [bool](#bool) |  | go_backwards indicates whether the events should be returned in reverse order |
 
-<a name="berty.protocol.GroupSettingStoreSubscribe.Request"></a>
+<a name="berty.protocol.GroupRemoveAdditionalRendezvousSeed"></a>
 
-### GroupSettingStoreSubscribe.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_pub_key | [bytes](#bytes) |  |  |
-| since | [bytes](#bytes) |  |  |
-| until | [bytes](#bytes) |  |  |
-| go_backwards | [bool](#bool) |  |  |
-
-<a name="berty.protocol.GroupStoreEvent"></a>
-
-### GroupStoreEvent
+### GroupRemoveAdditionalRendezvousSeed
+GroupRemoveAdditionalRendezvousSeed indicates that a previously added rendezvous point should be removed
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| event_base | [EventBase](#berty.protocol.EventBase) |  |  |
-| group_pub_key | [bytes](#bytes) |  |  |
-| group_member_pub_key | [bytes](#bytes) |  |  |
-| group_device_pub_key | [bytes](#bytes) |  |  |
-| account_pub_key | [bytes](#bytes) |  |  |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message, must be the device of an admin of the group |
+| seed | [bytes](#bytes) |  | seed is the additional rendezvous point seed which should be removed |
 
 <a name="berty.protocol.InstanceExportData"></a>
 
@@ -556,6 +640,9 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| account_pk | [bytes](#bytes) |  | account_pk is the public key of the current account |
+| device_pk | [bytes](#bytes) |  | device_pk is the public key of the current device |
+| account_group_pk | [bytes](#bytes) |  | account_group_pk is the public key of the account group |
 | peer_id | [string](#string) |  |  |
 | listeners | [string](#string) | repeated |  |
 | ble_enabled | [InstanceGetConfiguration.SettingState](#berty.protocol.InstanceGetConfiguration.SettingState) |  |  |
@@ -567,38 +654,197 @@
 
 ### InstanceGetConfiguration.Request
 
+<a name="berty.protocol.MessageEnvelope"></a>
+
+### MessageEnvelope
+MessageEnvelope is a publicly exposed structure containing a group secure message
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| message_headers | [bytes](#bytes) |  | message_headers is an encrypted serialization using a symmetric key of a MessageHeaders message |
+| message | [bytes](#bytes) |  | message is an encrypted message, only readable by group members who previously received the appropriate chain key |
+
+<a name="berty.protocol.MessageHeaders"></a>
+
+### MessageHeaders
+MessageHeaders is used in MessageEnvelope and only readable by invited group members
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| counter | [uint64](#uint64) |  | counter is the current counter value for the specified device |
+| device_pk | [bytes](#bytes) |  | device_pk is the public key of the device sending the message |
+| sig | [bytes](#bytes) |  | sig is the signature of the encrypted message using the device&#39;s private key |
+
+<a name="berty.protocol.MultiMemberGrantAdminRole"></a>
+
+### MultiMemberGrantAdminRole
+MultiMemberGrantAdminRole indicates that a group admin allows another group member to act as an admin
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message, must be the device of an admin of the group |
+| grantee_member_pk | [bytes](#bytes) |  | grantee_member_pk is the member public key of the member granted of the admin role |
+
+<a name="berty.protocol.MultiMemberGroupAddAliasResolver"></a>
+
+### MultiMemberGroupAddAliasResolver
+MultiMemberGroupAddAliasResolver indicates that a group member want to disclose their presence in the group to their contacts
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| alias_resolver | [bytes](#bytes) |  | alias_resolver allows contact of an account to resolve the real identity behind an alias (Multi-Member Group Member) Generated by both contacts and account independently using: hmac(aliasPK, GroupID) |
+| alias_proof | [bytes](#bytes) |  | alias_proof ensures that the associated alias_resolver has been issued by the right account Generated using aliasSKSig(GroupID) |
+
+<a name="berty.protocol.MultiMemberGroupAdminRoleGrant"></a>
+
+### MultiMemberGroupAdminRoleGrant
+
+<a name="berty.protocol.MultiMemberGroupAdminRoleGrant.Reply"></a>
+
+### MultiMemberGroupAdminRoleGrant.Reply
+
+<a name="berty.protocol.MultiMemberGroupAdminRoleGrant.Request"></a>
+
+### MultiMemberGroupAdminRoleGrant.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+| member_pk | [bytes](#bytes) |  | member_pk is the identifier of the member which will be granted the admin role |
+
+<a name="berty.protocol.MultiMemberGroupAliasResolverDisclose"></a>
+
+### MultiMemberGroupAliasResolverDisclose
+
+<a name="berty.protocol.MultiMemberGroupAliasResolverDisclose.Reply"></a>
+
+### MultiMemberGroupAliasResolverDisclose.Reply
+
+<a name="berty.protocol.MultiMemberGroupAliasResolverDisclose.Request"></a>
+
+### MultiMemberGroupAliasResolverDisclose.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  |  |
+
+<a name="berty.protocol.MultiMemberGroupCreate"></a>
+
+### MultiMemberGroupCreate
+
+<a name="berty.protocol.MultiMemberGroupCreate.Reply"></a>
+
+### MultiMemberGroupCreate.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the newly created group |
+
+<a name="berty.protocol.MultiMemberGroupCreate.Request"></a>
+
+### MultiMemberGroupCreate.Request
+
+<a name="berty.protocol.MultiMemberGroupInvitationCreate"></a>
+
+### MultiMemberGroupInvitationCreate
+
+<a name="berty.protocol.MultiMemberGroupInvitationCreate.Reply"></a>
+
+### MultiMemberGroupInvitationCreate.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group | [Group](#berty.protocol.Group) |  | group is the invitation to the group |
+
+<a name="berty.protocol.MultiMemberGroupInvitationCreate.Request"></a>
+
+### MultiMemberGroupInvitationCreate.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+
+<a name="berty.protocol.MultiMemberGroupJoin"></a>
+
+### MultiMemberGroupJoin
+
+<a name="berty.protocol.MultiMemberGroupJoin.Reply"></a>
+
+### MultiMemberGroupJoin.Reply
+
+<a name="berty.protocol.MultiMemberGroupJoin.Request"></a>
+
+### MultiMemberGroupJoin.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group | [Group](#berty.protocol.Group) |  | group is the information of the group to join |
+
+<a name="berty.protocol.MultiMemberGroupLeave"></a>
+
+### MultiMemberGroupLeave
+
+<a name="berty.protocol.MultiMemberGroupLeave.Reply"></a>
+
+### MultiMemberGroupLeave.Reply
+
+<a name="berty.protocol.MultiMemberGroupLeave.Request"></a>
+
+### MultiMemberGroupLeave.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  |  |
+
+<a name="berty.protocol.MultiMemberInitialMember"></a>
+
+### MultiMemberInitialMember
+MultiMemberInitialMember indicates that a member is the group creator, this event is signed using the group ID private key
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| member_pk | [bytes](#bytes) |  | member_pk is the public key of the member who is the group creator |
+
  
 
-<a name="berty.protocol.AccountEventType"></a>
+<a name="berty.protocol.EventType"></a>
 
-### AccountEventType
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| AccountEventType_Undefined | 0 |  |
-| AccountEventType_GroupJoined | 1 |  |
-| AccountEventType_GroupLeft | 2 |  |
-| AccountEventType_DevicePaired | 3 |  |
-| AccountEventType_ContactRequestDisabled | 4 |  |
-| AccountEventType_ContactRequestEnabled | 5 |  |
-| AccountEventType_ContactRequestReferenceReset | 6 |  |
-| AccountEventType_ContactRequestEnqueued | 7 | TODO: ⚠️ figure how to overcome issues with having requests sent and received by multiple devices simultaneously, secret definition should not conflict |
-| AccountEventType_ContactRequested | 8 |  |
-| AccountEventType_ContactAccepted | 9 |  |
-| AccountEventType_ContactRemoved | 10 |  |
-| AccountEventType_ContactBlocked | 11 | TODO: privacy-wise we will still announce our presence on our public rendezvous point but ignore contact requests from the blocked contact (performing the handshake but ignoring the request received), so they will still know that we are online, we should be clear in the UI of the implications of blocking someone |
-| AccountEventType_ContactUnblocked | 12 |  |
-| AccountEventType_AppSpecified | 13 |  |
-
-<a name="berty.protocol.GroupSettingStoreSettingType"></a>
-
-### GroupSettingStoreSettingType
+### EventType
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| Unknown | 0 |  |
-| Group | 1 |  |
-| Member | 2 |  |
+| EventTypeUndefined | 0 | EventTypeUndefined indicates that the value has not been set. Should not happen. |
+| EventTypeGroupMemberDeviceAdded | 1 | EventTypeGroupMemberDeviceAdded indicates the payload includes that a member has added their device to the group |
+| EventTypeGroupDeviceSecretAdded | 2 | EventTypeGroupDeviceSecretAdded indicates the payload includes that a member has sent their device secret to another member |
+| EventTypeAccountGroupJoined | 101 | EventTypeAccountGroupJoined indicates the payload includes that the account has joined a group |
+| EventTypeAccountGroupLeft | 102 | EventTypeAccountGroupLeft indicates the payload includes that the account has left a group |
+| EventTypeAccountContactRequestDisabled | 103 | EventTypeAccountContactRequestDisabled indicates the payload includes that the account has disabled incoming contact requests |
+| EventTypeAccountContactRequestEnabled | 104 | EventTypeAccountContactRequestEnabled indicates the payload includes that the account has enabled incoming contact requests |
+| EventTypeAccountContactRequestReferenceReset | 105 | EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request reference |
+| EventTypeAccountContactRequestOutgoingEnqueued | 106 | EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request |
+| EventTypeAccountContactRequestOutgoingSent | 107 | EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request |
+| EventTypeAccountContactRequestIncomingReceived | 108 | EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request |
+| EventTypeAccountContactRequestIncomingDiscarded | 109 | EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request |
+| EventTypeAccountContactRequestIncomingAccepted | 110 | EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request |
+| EventTypeAccountContactBlocked | 111 | EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact |
+| EventTypeAccountContactUnblocked | 112 | EventTypeAccountContactUnblocked indicates the payload includes that the account has unblocked a contact |
+| EventTypeContactAliasKeyAdded | 201 | EventTypeContactAliasKeyAdded indicates the payload includes that the contact group has received an alias key |
+| EventTypeMultiMemberGroupAliasResolverAdded | 301 | EventTypeMultiMemberGroupAliasResolverAdded indicates the payload includes that a member of the group sent their alias proof |
+| EventTypeMultiMemberGroupInitialMemberAnnounced | 302 | EventTypeMultiMemberGroupInitialMemberAnnounced indicates the payload includes that a member has authenticated themselves as the group owner |
+| EventTypeMultiMemberGroupAdminRoleGranted | 303 | EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin |
+| EventTypeGroupMetadataPayloadSent | 1001 | EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key |
+
+<a name="berty.protocol.GroupType"></a>
+
+### GroupType
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| GroupTypeUndefined | 0 | GroupTypeUndefined indicates that the value has not been set. Should not happen. |
+| GroupTypeAccount | 1 | GroupTypeAccount is the group managing an account, available to all its devices. |
+| GroupTypeContact | 2 | GroupTypeContact is the group created between two accounts, available to all their devices. |
+| GroupTypeMultiMember | 3 | GroupTypeMultiMember is a group containing an undefined number of members. |
 
 <a name="berty.protocol.InstanceGetConfiguration.SettingState"></a>
 
@@ -625,28 +871,26 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | ----------- | ------------ | ------------- | ------------|
 | InstanceExportData | [InstanceExportData.Request](#berty.protocol.InstanceExportData.Request) | [InstanceExportData.Reply](#berty.protocol.InstanceExportData.Reply) | InstanceExportData exports instance data |
 | InstanceGetConfiguration | [InstanceGetConfiguration.Request](#berty.protocol.InstanceGetConfiguration.Request) | [InstanceGetConfiguration.Reply](#berty.protocol.InstanceGetConfiguration.Reply) | InstanceGetConfiguration gets current configuration of this protocol instance |
-| GroupCreate | [GroupCreate.Request](#berty.protocol.GroupCreate.Request) | [GroupCreate.Reply](#berty.protocol.GroupCreate.Reply) | GroupCreate initiates a new group and joins it |
-| GroupJoin | [GroupJoin.Request](#berty.protocol.GroupJoin.Request) | [GroupJoin.Reply](#berty.protocol.GroupJoin.Reply) | GroupJoin joins an existing group |
-| GroupLeave | [GroupLeave.Request](#berty.protocol.GroupLeave.Request) | [GroupLeave.Reply](#berty.protocol.GroupLeave.Reply) | GroupLeave leaves a group |
-| GroupInvite | [GroupInvite.Request](#berty.protocol.GroupInvite.Request) | [GroupInvite.Reply](#berty.protocol.GroupInvite.Reply) | GroupInvite generates an invitation to a group |
-| DevicePair | [DevicePair.Request](#berty.protocol.DevicePair.Request) | [DevicePair.Reply](#berty.protocol.DevicePair.Reply) | DevicePair pairs a new device to the current account |
-| ContactRequestReference | [ContactRequestReference.Request](#berty.protocol.ContactRequestReference.Request) | [ContactRequestReference.Reply](#berty.protocol.ContactRequestReference.Reply) | ContactRequestReference retrieves the necessary information to create a contact link |
+| ContactRequestReference | [ContactRequestReference.Request](#berty.protocol.ContactRequestReference.Request) | [ContactRequestReference.Reply](#berty.protocol.ContactRequestReference.Reply) | ContactRequestReference retrieves the information required to create a reference (ie. included in a shareable link) to the current account |
 | ContactRequestDisable | [ContactRequestDisable.Request](#berty.protocol.ContactRequestDisable.Request) | [ContactRequestDisable.Reply](#berty.protocol.ContactRequestDisable.Reply) | ContactRequestDisable disables incoming contact requests |
 | ContactRequestEnable | [ContactRequestEnable.Request](#berty.protocol.ContactRequestEnable.Request) | [ContactRequestEnable.Reply](#berty.protocol.ContactRequestEnable.Reply) | ContactRequestEnable enables incoming contact requests |
-| ContactRequestResetReference | [ContactRequestResetLink.Request](#berty.protocol.ContactRequestResetLink.Request) | [ContactRequestResetLink.Reply](#berty.protocol.ContactRequestResetLink.Reply) | ContactRequestResetReference generates a new contact request reference |
-| ContactRequestEnqueue | [ContactRequestEnqueue.Request](#berty.protocol.ContactRequestEnqueue.Request) | [ContactRequestEnqueue.Reply](#berty.protocol.ContactRequestEnqueue.Reply) | ContactRequestEnqueue enqueues a new contact request to be sent |
+| ContactRequestResetReference | [ContactRequestResetReference.Request](#berty.protocol.ContactRequestResetReference.Request) | [ContactRequestResetReference.Reply](#berty.protocol.ContactRequestResetReference.Reply) | ContactRequestResetReference changes the contact request reference |
+| ContactRequestSend | [ContactRequestSend.Request](#berty.protocol.ContactRequestSend.Request) | [ContactRequestSend.Reply](#berty.protocol.ContactRequestSend.Reply) | ContactRequestSend attempt to send a contact request |
 | ContactRequestAccept | [ContactRequestAccept.Request](#berty.protocol.ContactRequestAccept.Request) | [ContactRequestAccept.Reply](#berty.protocol.ContactRequestAccept.Reply) | ContactRequestAccept accepts a contact request |
-| ContactRemove | [ContactRemove.Request](#berty.protocol.ContactRemove.Request) | [ContactRemove.Reply](#berty.protocol.ContactRemove.Reply) | ContactRemove removes a contact |
-| ContactBlock | [ContactBlock.Request](#berty.protocol.ContactBlock.Request) | [ContactBlock.Reply](#berty.protocol.ContactBlock.Reply) | ContactBlock blocks a contact, stops advertising on its rendezvous point |
-| ContactUnblock | [ContactUnblock.Request](#berty.protocol.ContactUnblock.Request) | [ContactUnblock.Reply](#berty.protocol.ContactUnblock.Reply) | ContactUnblock unblocks a contact, resumes advertising on its rendezvous point |
-| GroupSettingSetGroup | [GroupSettingSetGroup.Request](#berty.protocol.GroupSettingSetGroup.Request) | [GroupSettingSetGroup.Reply](#berty.protocol.GroupSettingSetGroup.Reply) | GroupSettingSetGroup sets a setting for a group |
-| GroupSettingSetMember | [GroupSettingSetMember.Request](#berty.protocol.GroupSettingSetMember.Request) | [GroupSettingSetMember.Reply](#berty.protocol.GroupSettingSetMember.Reply) | GroupSettingSetGroup sets a setting for own group member |
-| GroupMessageSend | [GroupMessageSend.Request](#berty.protocol.GroupMessageSend.Request) | [GroupMessageSend.Reply](#berty.protocol.GroupMessageSend.Reply) | GroupMessageSend sends a message to the group |
-| AccountAppendAppSpecificEvent | [AccountAppendAppSpecificEvent.Request](#berty.protocol.AccountAppendAppSpecificEvent.Request) | [AccountAppendAppSpecificEvent.Reply](#berty.protocol.AccountAppendAppSpecificEvent.Reply) | AppendAccountSpecificEvent adds an event to account event store |
-| AccountSubscribe | [AccountSubscribe.Request](#berty.protocol.AccountSubscribe.Request) | [AccountSubscribe.Reply](#berty.protocol.AccountSubscribe.Reply) stream | AccountSubscribe subscribes to the account events |
-| GroupSettingSubscribe | [GroupSettingStoreSubscribe.Request](#berty.protocol.GroupSettingStoreSubscribe.Request) | [GroupSettingStoreSubscribe.Reply](#berty.protocol.GroupSettingStoreSubscribe.Reply) stream | GroupSettingSubscribe subscribes to the setting events for a group |
-| GroupMessageSubscribe | [GroupMessageSubscribe.Request](#berty.protocol.GroupMessageSubscribe.Request) | [GroupMessageSubscribe.Reply](#berty.protocol.GroupMessageSubscribe.Reply) stream | GroupMessageSubscribe subscribes to the message events for a group |
-| GroupMemberSubscribe | [GroupMemberSubscribe.Request](#berty.protocol.GroupMemberSubscribe.Request) | [GroupMemberSubscribe.Reply](#berty.protocol.GroupMemberSubscribe.Reply) stream | GroupMemberSubscribe subscribes to the member events for a group |
+| ContactRequestDiscard | [ContactRequestDiscard.Request](#berty.protocol.ContactRequestDiscard.Request) | [ContactRequestDiscard.Reply](#berty.protocol.ContactRequestDiscard.Reply) | ContactRequestDiscard ignores a contact request, without informing the other user |
+| ContactBlock | [ContactBlock.Request](#berty.protocol.ContactBlock.Request) | [ContactBlock.Reply](#berty.protocol.ContactBlock.Reply) | ContactBlock blocks a contact from sending requests |
+| ContactUnblock | [ContactUnblock.Request](#berty.protocol.ContactUnblock.Request) | [ContactUnblock.Reply](#berty.protocol.ContactUnblock.Reply) | ContactUnblock unblocks a contact from sending requests |
+| ContactAliasKeySend | [ContactAliasKeySend.Request](#berty.protocol.ContactAliasKeySend.Request) | [ContactAliasKeySend.Reply](#berty.protocol.ContactAliasKeySend.Reply) | ContactAliasKeySend send an alias key to a contact, the contact will be able to assert that your account is being present on a multi-member group |
+| MultiMemberGroupCreate | [MultiMemberGroupCreate.Request](#berty.protocol.MultiMemberGroupCreate.Request) | [MultiMemberGroupCreate.Reply](#berty.protocol.MultiMemberGroupCreate.Reply) | MultiMemberGroupCreate creates a new multi-member group |
+| MultiMemberGroupJoin | [MultiMemberGroupJoin.Request](#berty.protocol.MultiMemberGroupJoin.Request) | [MultiMemberGroupJoin.Reply](#berty.protocol.MultiMemberGroupJoin.Reply) | MultiMemberGroupJoin joins a multi-member group |
+| MultiMemberGroupLeave | [MultiMemberGroupLeave.Request](#berty.protocol.MultiMemberGroupLeave.Request) | [MultiMemberGroupLeave.Reply](#berty.protocol.MultiMemberGroupLeave.Reply) | MultiMemberGroupLeave leaves a multi-member group |
+| MultiMemberGroupAliasResolverDisclose | [MultiMemberGroupAliasResolverDisclose.Request](#berty.protocol.MultiMemberGroupAliasResolverDisclose.Request) | [MultiMemberGroupAliasResolverDisclose.Reply](#berty.protocol.MultiMemberGroupAliasResolverDisclose.Reply) | MultiMemberGroupAliasResolverDisclose discloses your alias resolver key |
+| MultiMemberGroupAdminRoleGrant | [MultiMemberGroupAdminRoleGrant.Request](#berty.protocol.MultiMemberGroupAdminRoleGrant.Request) | [MultiMemberGroupAdminRoleGrant.Reply](#berty.protocol.MultiMemberGroupAdminRoleGrant.Reply) | MultiMemberGroupAdminRoleGrant grants an admin role to a group member |
+| MultiMemberGroupInvitationCreate | [MultiMemberGroupInvitationCreate.Request](#berty.protocol.MultiMemberGroupInvitationCreate.Request) | [MultiMemberGroupInvitationCreate.Reply](#berty.protocol.MultiMemberGroupInvitationCreate.Reply) | MultiMemberGroupInvitationCreate creates an invitation to a multi-member group |
+| AppMetadataSend | [AppMetadataSend.Request](#berty.protocol.AppMetadataSend.Request) | [AppMetadataSend.Reply](#berty.protocol.AppMetadataSend.Reply) | AppMetadataSend adds an app event to the metadata store, the message is encrypted using a symmetric key and readable by future group members |
+| AppMessageSend | [AppMessageSend.Request](#berty.protocol.AppMessageSend.Request) | [AppMessageSend.Reply](#berty.protocol.AppMessageSend.Reply) | AppMessageSend adds an app event to the message store, the message is encrypted using a derived key and readable by current group members |
+| GroupMetadataSubscribe | [GroupMetadataSubscribe.Request](#berty.protocol.GroupMetadataSubscribe.Request) | [GroupMetadataEvent](#berty.protocol.GroupMetadataEvent) stream | GroupMetadataSubscribe subscribes to a group metadata updates (or it can also retrieve the history) |
+| GroupMessageSubscribe | [GroupMessageSubscribe.Request](#berty.protocol.GroupMessageSubscribe.Request) | [GroupMessageEvent](#berty.protocol.GroupMessageEvent) stream | GroupMessageSubscribe subscribes to a group message updates (or it can also retrieve the history) |
 
  
 

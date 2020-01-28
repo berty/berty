@@ -6,6 +6,8 @@ import (
 
 	"berty.tech/berty/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	pb "github.com/libp2p/go-libp2p-core/crypto/pb"
+	"golang.org/x/crypto/ed25519"
 )
 
 const CurrentGroupVersion = 1
@@ -28,7 +30,7 @@ func (g *Group) GroupIDAsString() (string, error) {
 
 // New creates a new Group object and an invitation to be used by
 // the first member of the group
-func New() (*Group, *Invitation, error) {
+func New() (*Group, crypto.PrivKey, error) {
 	priv, pub, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
 		return nil, nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
@@ -44,12 +46,7 @@ func New() (*Group, *Invitation, error) {
 		SigningKey: signing,
 	}
 
-	invitation, err := NewInvitation(priv, group)
-	if err != nil {
-		return nil, nil, errcode.ErrGroupInvitationCantGenerate.Wrap(err)
-	}
-
-	return group, invitation, nil
+	return group, priv, nil
 }
 
 func (g *Group) GetSharedSecret() (*[32]byte, error) {
@@ -62,4 +59,22 @@ func (g *Group) GetSharedSecret() (*[32]byte, error) {
 	copy(sharedSecret[:], s[:])
 
 	return &sharedSecret, nil
+}
+
+func seedFromEd25519PrivateKey(key crypto.PrivKey) ([]byte, error) {
+	// Similar to (*ed25519).Seed()
+	if key.Type() != pb.KeyType_Ed25519 {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	r, err := key.Raw()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	if len(r) != ed25519.PrivateKeySize {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	return r[:ed25519.PrivateKeySize-ed25519.PublicKeySize], nil
 }

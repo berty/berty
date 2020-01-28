@@ -1,4 +1,4 @@
-package identityberty
+package orbitutil
 
 import (
 	"encoding/hex"
