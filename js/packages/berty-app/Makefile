@@ -39,7 +39,7 @@ $(ENVFILE):
 deps: $(PWD)/node_modules config
 
 deps.ios: export PWD := $(PWD)
-deps.ios: deps $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
+deps.ios: deps build.gobridge.ios $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
 $(PWD)/ios/Pods/Manifest.lock: $(PWD)/ios/Podfile $(PWD)/package.json
 	([ ! -z "$(shell which pod)" ] \
 		&& [[ "$$(pod --version)" > "1.7." ]]) \
@@ -177,7 +177,12 @@ release.ios: keychain-name ?= berty_keychain
 release.ios: keychain-password ?= berty_pass
 release.ios: git-url ?= git@github.com:berty/berty-ios-certs # @FIXME(gfanton): this should not be public?
 release.ios: export FL_BUILDLOG_PATH=$(dest)
+release.ios: export KEYCHAIN_NAME=$(keychain-name)
+release.ios: export KEYCHAIN_PASSWORD=$(keychain-password)
+release.ios: export MATCH_KEYCHAIN_NAME=$(keychain-name)
+release.ios: export MATCH_KEYCHAIN_PASSWORD=$(keychain-password)
 release.ios: export GYM_CLEAN=false
+release.ios: export GYM_EXPORT_METHOD=$(method)
 release.ios: export GYM_OPTION_METHOD=$(method)
 release.ios: export GYM_OPTION_APP_ID=$(bundle-id)
 release.ios: export GYM_OPTION_PROVISIONING_PROFILE=match $(profile) $(bundle-id)
@@ -191,16 +196,29 @@ release.ios: deps.ios
 	$(if $(profile),, $(error "profile variable not defined"))
 	$(if $(method),, $(error "method variable not defined"))
 
-	# fetch app store profile
+	# gem bundle install
 	cd $(PWD) \
-		&& bundle install \
+		&& $(bundle) install
+
+	# setup ci if needed
+ifdef CI
+	echo "CI detected creating temporary keychain"
+	cd $(PWD) \
+		&& $(bundle) exec fastlane run create_keychain \
+			timeout:3600 \
+			default_keychain:true \
+			unlock:true \
+			add_to_search_list:true
+endif
+
+	cd $(PWD) \
 		&& $(bundle) exec fastlane run match \
 			type:$(shell echo $(method) | sed 's/-//g') \
 			app_identifier:$(bundle-id) \
-			readonly:true \
 			team_id:$(team-id) \
+			readonly:true \
 			$(if $(git-url), git_url:$(git-url)) \
-		&& time $(bundle) exec fastlane $(platform) build --verbose
+		&& time $(bundle) exec fastlane ios build --verbose
 
 release.android.debug:
 release.android.staff:

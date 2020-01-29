@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		4886B57F23C61C0000DFECD4 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4886B57E23C61C0000DFECD4 /* File.swift */; };
+		48F6329923E1C9BE001FA4AB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4886B57E23C61C0000DFECD4 /* File.swift */; };
+		48F6329A23E1C9BF001FA4AB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4886B57E23C61C0000DFECD4 /* File.swift */; };
+		48F6329B23E1C9C0001FA4AB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4886B57E23C61C0000DFECD4 /* File.swift */; };
 		F82356B62383FBE300950AF2 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D0DE88311DF965EC38F62B95 /* libPods-Berty.a */; };
 		F82356C523841CA400950AF2 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F82356C223841C7E00950AF2 /* libPods-Berty.a */; };
 		F836874E2355EC9E00CCC6D9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -545,6 +548,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F836874E2355EC9E00CCC6D9 /* AppDelegate.m in Sources */,
+				48F6329B23E1C9C0001FA4AB /* File.swift in Sources */,
 				F836874F2355EC9E00CCC6D9 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -564,6 +568,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8BF4666238444330077A846 /* AppDelegate.m in Sources */,
+				48F6329923E1C9BE001FA4AB /* File.swift in Sources */,
 				F8BF4667238444330077A846 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -573,6 +578,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8BF467C2384443D0077A846 /* AppDelegate.m in Sources */,
+				48F6329A23E1C9BF001FA4AB /* File.swift in Sources */,
 				F8BF467D2384443D0077A846 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -741,6 +747,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore tech.berty.ios";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -766,6 +774,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore tech.berty.ios";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -836,6 +846,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -844,6 +855,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.staff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc tech.berty.ios.staff";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -859,6 +872,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -867,6 +881,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.staff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc tech.berty.ios.staff";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -891,6 +907,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.yolo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse tech.berty.ios.yolo";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -914,6 +932,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.yolo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse tech.berty.ios.yolo";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

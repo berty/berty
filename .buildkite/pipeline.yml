@@ -129,10 +129,11 @@ steps:
           import: berty.tech/berty
     commands:
       - set -x
+      - export PATH=$$(brew --prefix ruby)/bin:$$PATH # use brew ruby
       - go get golang.org/x/mobile/cmd/gomobile
       - gomobile init
       - cd js
-      - make release.ios.yolo
+      - make release.ios.staff
       - find . -name '.ipa'
       - find . -name '.app'
 
