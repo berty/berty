@@ -28,7 +28,7 @@ export class ProtocolServiceClient {
 	) => void = (request, callback) => {
 		return this._pbService.instanceGetConfiguration.bind(this._pbService)(request, callback)
 	}
-	contactRequestReference(
+	contactRequestReference: (
 		request: api.berty.protocol.ContactRequestReference.IRequest,
 		callback: (
 			error: Error | null,
@@ -82,13 +82,13 @@ export class ProtocolServiceClient {
 	) => void = (request, callback) => {
 		return this._pbService.contactRequestAccept.bind(this._pbService)(request, callback)
 	}
-	contactRequestDiscard(
+	contactRequestDiscard: (
 		request: api.berty.protocol.ContactRequestDiscard.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestDiscard.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.contactRequestDiscard.bind(this._pbService)(request, callback)
 	}
 	contactBlock: (
@@ -112,73 +112,73 @@ export class ProtocolServiceClient {
 	) => void = (request, callback) => {
 		return this._pbService.contactAliasKeySend.bind(this._pbService)(request, callback)
 	}
-	multiMemberGroupCreate(
+	multiMemberGroupCreate: (
 		request: api.berty.protocol.MultiMemberGroupCreate.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.MultiMemberGroupCreate.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.multiMemberGroupCreate.bind(this._pbService)(request, callback)
 	}
-	multiMemberGroupJoin(
+	multiMemberGroupJoin: (
 		request: api.berty.protocol.MultiMemberGroupJoin.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.MultiMemberGroupJoin.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.multiMemberGroupJoin.bind(this._pbService)(request, callback)
 	}
-	multiMemberGroupLeave(
+	multiMemberGroupLeave: (
 		request: api.berty.protocol.MultiMemberGroupLeave.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.MultiMemberGroupLeave.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.multiMemberGroupLeave.bind(this._pbService)(request, callback)
 	}
-	multiMemberGroupAliasResolverDisclose(
+	multiMemberGroupAliasResolverDisclose: (
 		request: api.berty.protocol.MultiMemberGroupAliasResolverDisclose.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.MultiMemberGroupAliasResolverDisclose.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.multiMemberGroupAliasResolverDisclose.bind(this._pbService)(
 			request,
 			callback,
 		)
 	}
-	multiMemberGroupAdminRoleGrant(
+	multiMemberGroupAdminRoleGrant: (
 		request: api.berty.protocol.MultiMemberGroupAdminRoleGrant.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.MultiMemberGroupAdminRoleGrant.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.multiMemberGroupAdminRoleGrant.bind(this._pbService)(request, callback)
 	}
-	multiMemberGroupInvitationCreate(
+	multiMemberGroupInvitationCreate: (
 		request: api.berty.protocol.MultiMemberGroupInvitationCreate.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.MultiMemberGroupInvitationCreate.IReply,
 		) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.multiMemberGroupInvitationCreate.bind(this._pbService)(request, callback)
 	}
-	appMetadataSend(
+	appMetadataSend: (
 		request: api.berty.protocol.AppMetadataSend.IRequest,
 		callback: (error: Error | null, response?: api.berty.protocol.AppMetadataSend.IReply) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.appMetadataSend.bind(this._pbService)(request, callback)
 	}
-	appMessageSend(
+	appMessageSend: (
 		request: api.berty.protocol.AppMessageSend.IRequest,
 		callback: (error: Error | null, response?: api.berty.protocol.AppMessageSend.IReply) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.appMessageSend.bind(this._pbService)(request, callback)
 	}
 	groupMetadataSubscribe: (
@@ -187,10 +187,10 @@ export class ProtocolServiceClient {
 	) => void = (request, callback) => {
 		return this._pbService.groupMetadataSubscribe.bind(this._pbService)(request, callback)
 	}
-	groupMessageSubscribe(
+	groupMessageSubscribe: (
 		request: api.berty.protocol.GroupMessageSubscribe.IRequest,
 		callback: (error: Error | null, response?: api.berty.protocol.IGroupMessageEvent) => void,
-	) {
+	) => void = (request, callback) => {
 		return this._pbService.groupMessageSubscribe.bind(this._pbService)(request, callback)
 	}
 }

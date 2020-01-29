@@ -6,15 +6,16 @@ import { ReactNativeTransport } from '../grpc-web-react-native-transport'
 import { WebsocketTransport } from '../grpc-web-websocket-transport'
 import { Buffer } from 'buffer'
 import { GoBridge } from '../orbitdb/native'
-
+import { IProtocolServiceHandler } from './handler.gen'
 if (!__DEV__) {
 	GoBridge.startDemo()
 }
 
-export class ProtocolServiceHandler extends MockServiceHandler {
+export class ProtocolServiceHandler extends MockServiceHandler implements IProtocolServiceHandler {
 	client?: DemoServiceClient
+	accountPk: string
+	devicePk: string
 	accountGroupPk: string
-	accountDevicePk: string
 
 	constructor(metadata?: { [key: string]: string | string[] }) {
 		super(metadata)
@@ -40,8 +41,9 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 					// log bad error
 				})
 		}
-		this.accountGroupPk = (this.metadata?.accountGroupPk as string) || ''
-		this.accountDevicePk = (this.metadata?.accountDevicePk as string) || ''
+		this.accountPk = (this.metadata?.accountPk as string) || ''
+		this.devicePk = (this.metadata?.devicePk as string) || ''
+		this.accountGroupPk = (this.metadata?.accountDevicePk as string) || ''
 	}
 
 	_createPkHack = async (): Promise<string> =>
@@ -78,35 +80,15 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 			error: Error | null,
 			response?: api.berty.protocol.InstanceGetConfiguration.IReply | null,
 		) => void,
-	) => void = (request, callback) => {
+	) => void = async (request, callback) => {
+		this.accountPk = this.accountPk ? this.accountPk : await this._createPkHack()
+		this.devicePk = this.devicePk ? this.devicePk : await this._createPkHack()
+		this.accountGroupPk = this.accountGroupPk ? this.accountGroupPk : await this._createPkHack()
 		callback(null, {
-			accountGroupPk: new Buffer(this.accountGroupPk, 'utf8'),
-			accountDevicePk: new Buffer(this.accountDevicePk, 'utf8'),
+			accountPk: new Buffer(this.accountPk),
+			devicePk: new Buffer(this.devicePk),
+			accountGroupPk: new Buffer(this.accountGroupPk),
 		})
-	}
-
-	InstanceLinkToExistingAccount: (
-		request: api.berty.protocol.InstanceLinkToExistingAccount.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.InstanceLinkToExistingAccount.IReply | null,
-		) => void,
-	) => void = (request, callback) => {}
-
-	InstanceInitiateNewAccount: (
-		request: api.berty.protocol.InstanceInitiateNewAccount.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.InstanceInitiateNewAccount.IReply | null,
-		) => void,
-	) => void = async (_, callback) => {
-		try {
-			this.accountGroupPk = await this._createPkHack()
-			this.accountDevicePk = await this._createPkHack()
-			callback(null, {})
-		} catch (err) {
-			callback(err, null)
-		}
 	}
 
 	ContactRequestReference: (
@@ -151,18 +133,11 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 			response?: api.berty.protocol.ContactRequestAccept.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
-	ContactRequestIgnore: (
-		request: api.berty.protocol.ContactRequestIgnore.IRequest,
+	ContactRequestDiscard: (
+		request: api.berty.protocol.ContactRequestDiscard.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.ContactRequestIgnore.IReply | null,
-		) => void,
-	) => void = (request, callback) => {}
-	ContactRequestRefuse: (
-		request: api.berty.protocol.ContactRequestRefuse.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.ContactRequestRefuse.IReply | null,
+			response?: api.berty.protocol.ContactRequestDiscard.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
 	ContactBlock: (
@@ -186,60 +161,60 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 			response?: api.berty.protocol.ContactAliasKeySend.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
-	MultiMemberCreate: (
-		request: api.berty.protocol.MultiMemberCreate.IRequest,
+	MultiMemberGroupCreate: (
+		request: api.berty.protocol.MultiMemberGroupCreate.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberCreate.IReply | null,
+			response?: api.berty.protocol.MultiMemberGroupCreate.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
-	MultiMemberJoin: (
-		request: api.berty.protocol.MultiMemberJoin.IRequest,
+	MultiMemberGroupJoin: (
+		request: api.berty.protocol.MultiMemberGroupJoin.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberJoin.IReply | null,
+			response?: api.berty.protocol.MultiMemberGroupJoin.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
-	MultiMemberLeave: (
-		request: api.berty.protocol.MultiMemberLeave.IRequest,
+	MultiMemberGroupLeave: (
+		request: api.berty.protocol.MultiMemberGroupLeave.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberLeave.IReply | null,
+			response?: api.berty.protocol.MultiMemberGroupLeave.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
-	MultiMemberAliasProofDisclose: (
-		request: api.berty.protocol.MultiMemberAliasProofDisclose.IRequest,
+	MultiMemberGroupAliasResolverDisclose: (
+		request: api.berty.protocol.MultiMemberGroupAliasResolverDisclose.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberAliasProofDisclose.IReply | null,
+			response?: api.berty.protocol.MultiMemberGroupAliasResolverDisclose.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
-	MultiMemberAdminRoleGrant: (
-		request: api.berty.protocol.MultiMemberAdminRoleGrant.IRequest,
+	MultiMemberGroupAdminRoleGrant: (
+		request: api.berty.protocol.MultiMemberGroupAdminRoleGrant.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberAdminRoleGrant.IReply | null,
+			response?: api.berty.protocol.MultiMemberGroupAdminRoleGrant.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
-	MultiMemberCreateInvitation: (
-		request: api.berty.protocol.MultiMemberCreateInvitation.IRequest,
+	MultiMemberGroupInvitationCreate: (
+		request: api.berty.protocol.MultiMemberGroupInvitationCreate.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberCreateInvitation.IReply | null,
+			response?: api.berty.protocol.MultiMemberGroupInvitationCreate.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
-	AppSendPermanentMessage: (
-		request: api.berty.protocol.AppSendPermanentMessage.IRequest,
+	AppMetadataSend: (
+		request: api.berty.protocol.AppMetadataSend.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.AppSendPermanentMessage.IReply | null,
+			response?: api.berty.protocol.AppMetadataSend.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
-	AppSecureMessage: (
-		request: api.berty.protocol.AppSecureMessage.IRequest,
+	AppMessageSend: (
+		request: api.berty.protocol.AppMessageSend.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.AppSecureMessage.IReply | null,
+			response?: api.berty.protocol.AppMessageSend.IReply | null,
 		) => void,
 	) => void = (request, callback) => {}
 
@@ -274,11 +249,11 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 		})
 	}
 
-	GroupSecureMessageSubscribe: (
-		request: api.berty.protocol.GroupSecureMessageSubscribe.IRequest,
+	GroupMessageSubscribe: (
+		request: api.berty.protocol.GroupMessageSubscribe.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.IGroupSecureMessageEvent | null,
+			response?: api.berty.protocol.IGroupMessageEvent | null,
 		) => void,
 	) => void = (request, callback) => {
 		if (request.groupPk == null) {
@@ -295,7 +270,7 @@ export class ProtocolServiceHandler extends MockServiceHandler {
 				callback(error)
 				return
 			}
-			const message = api.berty.protocol.GroupSecureMessageEvent.decode(response.value)
+			const message = api.berty.protocol.GroupMessageEvent.decode(response.value)
 			if (message == null || message.eventContext == null) {
 				callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
 				return

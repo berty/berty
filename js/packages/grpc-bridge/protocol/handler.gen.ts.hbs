@@ -1,0 +1,19 @@
+import * as api from '@berty-tech/api'
+
+{{#with (lookup "berty.protocol")}}
+	{{#each nested}}
+		{{#if (eq (typeof this) "Service")}}
+			export interface I{{name}}Handler {
+				{{#each methods}}
+					{{name}}: (
+						request: api{{inamespace resolvedRequestType}},
+						callback: (
+							error: Error | null,
+							response?: api{{inamespace resolvedResponseType}} | null
+						) => void
+					) => void
+			  	{{/each}}
+			}
+		{{/if}}
+	{{/each}}
+{{/with}}

@@ -8,7 +8,11 @@ import * as protocol from '../protocol'
 
 export type Entity = {
 	id: string
-	pubkey: string
+	configuration: {
+		accountPk: string
+		devicePk: string
+		accountGroupPk: string
+	}
 	name: string
 	requests: Array<string>
 	conversations: Array<string>
@@ -45,9 +49,16 @@ export namespace Query {
 }
 
 export namespace Event {
-	export type Created = { aggregateId: string; name: string; pubkey?: string }
+	export type Created = { aggregateId: string; name: string }
 	export type Deleted = { aggregateId: string }
-	export type PubKeyUpdated = { aggregateId: string; pubkey: string }
+	export type ConfigurationUpdated = {
+		aggregateId: string
+		configuration: {
+			accountPk: string
+			devicePk: string
+			accountGroupPk: string
+		}
+	}
 }
 
 export type CommandsReducer = {
@@ -65,7 +76,7 @@ export type QueryReducer = {
 export type EventsReducer = {
 	created: (state: State, event: { payload: Event.Created }) => State
 	deleted: (state: State, event: { payload: Event.Deleted }) => State
-	pubkeyUpdated: (state: State, event: { payload: Event.PubKeyUpdated }) => State
+	configurationUpdated: (state: State, event: { payload: Event.ConfigurationUpdated }) => State
 }
 
 const initialState = {
@@ -90,7 +101,11 @@ const eventHandler = createSlice<State, EventsReducer>({
 		created: (state, { payload }) => {
 			state.aggregates[payload.aggregateId] = {
 				id: payload.aggregateId,
-				pubkey: payload.pubkey || '',
+				configuration: {
+					accountPk: '',
+					devicePk: '',
+					accountGroupPk: '',
+				},
 				name: payload.name,
 				requests: [],
 				conversations: [],
@@ -102,9 +117,9 @@ const eventHandler = createSlice<State, EventsReducer>({
 			delete state.aggregates[payload.aggregateId]
 			return state
 		},
-		pubkeyUpdated: (state, { payload }) => {
+		configurationUpdated: (state, { payload }) => {
 			if (state.aggregates[payload.aggregateId]) {
-				state.aggregates[payload.aggregateId].pubkey = payload.pubkey
+				state.aggregates[payload.aggregateId].configuration = payload.configuration
 			}
 			return state
 		},
@@ -130,7 +145,7 @@ export function* orchestrator() {
 			// create an id for the account
 			const id = yield select(queries.getLength)
 
-			yield put(protocol.commands.client.instanceInitiateNewAccount({ id }))
+			yield put(protocol.commands.client.instanceGetConfiguration({ id }))
 
 			// send event
 			yield put(
@@ -152,19 +167,23 @@ export function* orchestrator() {
 				queries.get(state, { id: action.payload.aggregateId }),
 			)
 			yield put(
-				protocol.commands.client.appSendPermanentMessage({
+				protocol.commands.client.appMetadataSend({
 					id: account.id,
-					groupPk: account.pubkey,
-					payload: action,
+					groupPk: account.configuration.accountGroupPk,
+					payload: new Buffer(JSON.stringify(action)),
 				}),
 			)
 		}),
 
-		takeEvery(protocol.events.client.instanceInitiatedNewAccount, function*(action) {
+		takeEvery(protocol.events.client.instanceGotConfiguration, function*(action) {
 			yield put(
-				events.pubkeyUpdated({
+				events.configurationUpdated({
 					aggregateId: action.payload.aggregateId,
-					pubkey: action.payload.accountGroupPk,
+					configuration: {
+						accountPk: Buffer.from(action.payload.accountPk).toString(),
+						devicePk: Buffer.from(action.payload.devicePk).toString(),
+						accountGroupPk: Buffer.from(action.payload.accountGroupPk).toString(),
+					},
 				}),
 			)
 		}),

@@ -2,6 +2,7 @@ import { ProtocolServiceClient, ProtocolServiceHandler, mockBridge } from '@bert
 import { createSlice, Action } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { all, takeLeading, put, cps, select, fork, takeEvery } from 'redux-saga/effects'
+import * as gen from './client.gen'
 import * as api from '@berty-tech/api'
 import { Buffer } from 'buffer'
 import Case from 'case'
@@ -10,8 +11,9 @@ export type Entity = {
 	id: string
 
 	// needed for mvp
+	accountPk: string
+	devicePk: string
 	accountGroupPk: string
-	accountDevicePk: string
 }
 
 export type Event = {}
@@ -27,87 +29,25 @@ export type GlobalState = {
 	}
 }
 
-export type Commands = {
-	instanceExportData: (state: State, action: { payload: { id: string } }) => State
-	instanceGetConfiguration: (state: State, action: { payload: { id: string } }) => State
-	instanceLinkToExistingAccount: (state: State, action: { payload: { id: string } }) => State
-	instanceInitiateNewAccount: (state: State, action: { payload: { id: string } }) => State
-
-	contactRequestReference: (state: State, action: { payload: { id: string } }) => State
-	contactRequestDisable: (state: State, action: { payload: { id: string } }) => State
-	contactRequestEnable: (state: State, action: { payload: { id: string } }) => State
-	contactRequestResetReference: (state: State, action: { payload: { id: string } }) => State
-	contactRequestSend: (state: State, action: { payload: { id: string } }) => State
-	contactRequestAccept: (state: State, action: { payload: { id: string } }) => State
-	contactRequestIgnore: (state: State, action: { payload: { id: string } }) => State
-	contactRequestRefuse: (state: State, action: { payload: { id: string } }) => State
-
-	contactBlock: (state: State, action: { payload: { id: string } }) => State
-	contactUnblock: (state: State, action: { payload: { id: string } }) => State
-	contactAliasKeySend: (state: State, action: { payload: { id: string } }) => State
-
-	multiMemberCreate: (state: State, action: { payload: { id: string } }) => State
-	multiMemberJoin: (state: State, action: { payload: { id: string } }) => State
-	multiMemberLeave: (state: State, action: { payload: { id: string } }) => State
-	multiMemberAliasProofDisclose: (state: State, action: { payload: { id: string } }) => State
-	multiMemberAdminRoleGrant: (state: State, action: { payload: { id: string } }) => State
-
-	multiMemberCreateInvitation: (state: State, action: { payload: { id: string } }) => State
-	appSendPermanentMessage: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: string
-				payload: {}
-			}
-		},
-	) => State
-	appSendSecureMessage: (state: State) => State
-	groupMetadataSubscribe: (
-		state: State,
-		action: { payload: { id: string; groupPk: string } },
-	) => State
-	groupSecureMessageSubscribe: (
-		state: State,
-		action: { payload: { id: string; groupPk: string } },
-	) => State
-}
+export type Commands = gen.Commands<State> & {}
 
 export type Queries = {
 	get: (state: GlobalState, payload: { id: string }) => Entity
 	getAll: (state: GlobalState) => Entity[]
 }
 
-export type Events = {
-	instanceInitiatedNewAccount: (
+export type Events = gen.Events<State> & {
+	instanceGotConfiguration: (
 		state: State,
-		action: { payload: { aggregateId: string; accountGroupPk: string; accountDevicePk: string } },
+		action: {
+			payload: {
+				aggregateId: string
+				accountPk: Uint8Array
+				devicePk: Uint8Array
+				accountGroupPk: Uint8Array
+			}
+		},
 	) => State
-
-	groupAddMemberDevice: (state: State) => State
-	groupAddDeviceSecret: (state: State) => State
-	groupJoined: (state: State) => State
-	groupLeft: (state: State) => State
-
-	contactRequestDisabled: (state: State) => State
-	contactRequestEnabled: (state: State) => State
-	contactRequestReferenceReset: (state: State) => State
-	contactRequestEnqueued: (state: State) => State
-	contactRequestSent: (state: State) => State
-	contactRequestReceived: (state: State) => State
-	contactRequestRefused: (state: State) => State
-	contactRequestAccepted: (state: State) => State
-	contactBlocked: (state: State) => State
-	contactUnblocked: (state: State) => State
-
-	contactAddAliasKey: (state: State) => State
-
-	multiMemberAddMemberAliasProof: (state: State) => State
-	multiMemberInitialMember: (state: State) => State
-	multiMemberGrantAdminRole: (state: State) => State
-
-	appNotSecureEvent: (state: State) => State
 }
 
 const initialState: State = {
@@ -121,8 +61,6 @@ const commandHandler = createSlice<State, Commands>({
 	reducers: {
 		instanceExportData: (state) => state,
 		instanceGetConfiguration: (state) => state,
-		instanceLinkToExistingAccount: (state) => state,
-		instanceInitiateNewAccount: (state) => state,
 
 		contactRequestReference: (state) => state,
 		contactRequestDisable: (state) => state,
@@ -130,24 +68,24 @@ const commandHandler = createSlice<State, Commands>({
 		contactRequestResetReference: (state) => state,
 		contactRequestSend: (state) => state,
 		contactRequestAccept: (state) => state,
-		contactRequestIgnore: (state) => state,
-		contactRequestRefuse: (state) => state,
+		contactRequestDiscard: (state) => state,
 
 		contactBlock: (state) => state,
 		contactUnblock: (state) => state,
 		contactAliasKeySend: (state) => state,
 
-		multiMemberCreate: (state) => state,
-		multiMemberJoin: (state) => state,
-		multiMemberLeave: (state) => state,
-		multiMemberAliasProofDisclose: (state) => state,
-		multiMemberAdminRoleGrant: (state) => state,
+		multiMemberGroupCreate: (state) => state,
+		multiMemberGroupJoin: (state) => state,
+		multiMemberGroupLeave: (state) => state,
+		multiMemberGroupAliasResolverDisclose: (state) => state,
+		multiMemberGroupAdminRoleGrant: (state) => state,
 
-		multiMemberCreateInvitation: (state) => state,
-		appSendPermanentMessage: (state) => state,
-		appSendSecureMessage: (state) => state,
+		multiMemberGroupInvitationCreate: (state) => state,
+
+		appMetadataSend: (state) => state,
+		appMessageSend: (state) => state,
 		groupMetadataSubscribe: (state) => state,
-		groupSecureMessageSubscribe: (state) => state,
+		groupMessageSubscribe: (state) => state,
 	},
 })
 
@@ -155,38 +93,42 @@ const eventHandler = createSlice<State, Events>({
 	name: 'protocol/client/event',
 	initialState,
 	reducers: {
-		instanceInitiatedNewAccount: (state, action) => {
+		instanceGotConfiguration: (state, action) => {
 			state.aggregates[action.payload.aggregateId] = {
 				id: action.payload.aggregateId,
-				accountGroupPk: action.payload.accountGroupPk,
-				accountDevicePk: action.payload.accountDevicePk,
+				accountPk: Buffer.from(action.payload.accountPk).toString(),
+				devicePk: Buffer.from(action.payload.devicePk).toString(),
+				accountGroupPk: Buffer.from(action.payload.accountGroupPk).toString(),
 			}
 			return state
 		},
 
-		groupAddMemberDevice: (state) => state,
-		groupAddDeviceSecret: (state) => state,
-		groupJoined: (state) => state,
-		groupLeft: (state) => state,
+		undefined: (state) => state,
 
-		contactRequestDisabled: (state) => state,
-		contactRequestEnabled: (state) => state,
-		contactRequestReferenceReset: (state) => state,
-		contactRequestEnqueued: (state) => state,
-		contactRequestSent: (state) => state,
-		contactRequestReceived: (state) => state,
-		contactRequestRefused: (state) => state,
-		contactRequestAccepted: (state) => state,
-		contactBlocked: (state) => state,
-		contactUnblocked: (state) => state,
+		groupMemberDeviceAdded: (state) => state,
+		groupDeviceSecretAdded: (state) => state,
 
-		contactAddAliasKey: (state) => state,
+		accountGroupJoined: (state) => state,
+		accountGroupLeft: (state) => state,
 
-		multiMemberAddMemberAliasProof: (state) => state,
-		multiMemberInitialMember: (state) => state,
-		multiMemberGrantAdminRole: (state) => state,
+		accountContactRequestDisabled: (state) => state,
+		accountContactRequestEnabled: (state) => state,
+		accountContactRequestReferenceReset: (state) => state,
+		accountContactRequestOutgoingEnqueued: (state) => state,
+		accountContactRequestOutgoingSent: (state) => state,
+		accountContactRequestIncomingReceived: (state) => state,
+		accountContactRequestIncomingDiscarded: (state) => state,
+		accountContactRequestIncomingAccepted: (state) => state,
+		accountContactBlocked: (state) => state,
+		accountContactUnblocked: (state) => state,
 
-		appNotSecureEvent: (state) => state,
+		contactAliasKeyAdded: (state) => state,
+
+		multiMemberGroupAliasResolverAdded: (state) => state,
+		multiMemberGroupInitialMemberAnnounced: (state) => state,
+		multiMemberGroupAdminRoleGranted: (state) => state,
+
+		groupMetadataPayloadSent: (state) => state,
 	},
 })
 
@@ -209,41 +151,50 @@ export function* orchestrator() {
 				services[client.id] = new ProtocolServiceClient(
 					// TODO: use bridge instead of mockBridge when bertyprotocol will be done
 					mockBridge(ProtocolServiceHandler, {
+						accountPk: client.accountPk,
+						devicePk: client.devicePk,
 						accountGroupPk: client.accountGroupPk,
-						accountDevicePk: client.accountDevicePk,
 					}),
 				)
 				// subcribe to account log
 				yield put(
-					commands.groupMetadataSubscribe({ id: client.id, groupPk: client.accountGroupPk }),
+					commands.groupMetadataSubscribe({
+						id: client.id,
+						groupPk: new Buffer(client.accountGroupPk),
+						since: new Uint8Array(),
+						until: new Uint8Array(),
+						goBackwards: false,
+					}),
 				)
 			}
 		},
 		takeLeading(commands.instanceExportData, function*() {
 			// TODO: do protocol things
 		}),
-		takeLeading(commands.instanceGetConfiguration, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.instanceLinkToExistingAccount, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.instanceInitiateNewAccount, function*(action) {
-			services[action.payload.id] = new ProtocolServiceClient(mockBridge(ProtocolServiceHandler))
-			yield cps(services[action.payload.id]?.instanceInitiateNewAccount, {})
-			// needed for fake protocol handler to work
-			const {
-				accountGroupPk,
-				accountDevicePk,
-			}: api.berty.protocol.InstanceGetConfiguration.IReply = yield cps(
-				services[action.payload.id]?.instanceGetConfiguration,
-				{},
-			)
+		takeLeading(commands.instanceGetConfiguration, function*(action) {
+			const client = yield select((state) => queries.get(state, { id: action.payload.id }))
+			let [accountPk, devicePk, accountGroupPk] = [
+				new Buffer(client?.accountPk || ''),
+				new Buffer(client?.devicePk || ''),
+				new Buffer(client?.accountGroupPk || ''),
+			]
+			if (client == null) {
+				services[action.payload.id] = new ProtocolServiceClient(mockBridge(ProtocolServiceHandler))
+				const reply: api.berty.protocol.InstanceGetConfiguration.IReply = yield cps(
+					services[action.payload.id]?.instanceGetConfiguration,
+					{},
+				)
+				accountPk = Buffer.from(reply.accountPk as Uint8Array)
+				devicePk = Buffer.from(reply.devicePk as Uint8Array)
+				accountGroupPk = Buffer.from(reply.accountGroupPk as Uint8Array)
+			}
+
 			yield put(
-				events.instanceInitiatedNewAccount({
+				events.instanceGotConfiguration({
 					aggregateId: action.payload.id,
-					accountGroupPk: Buffer.from(accountGroupPk as Uint8Array).toString('base64'),
-					accountDevicePk: Buffer.from(accountDevicePk as Uint8Array).toString('base64'),
+					accountPk,
+					devicePk,
+					accountGroupPk,
 				}),
 			)
 		}),
@@ -265,10 +216,7 @@ export function* orchestrator() {
 		takeLeading(commands.contactRequestAccept, function*() {
 			// TODO: do protocol things
 		}),
-		takeLeading(commands.contactRequestIgnore, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.contactRequestRefuse, function*() {
+		takeLeading(commands.contactRequestDiscard, function*() {
 			// TODO: do protocol things
 		}),
 
@@ -282,38 +230,38 @@ export function* orchestrator() {
 			// TODO: do protocol things
 		}),
 
-		takeLeading(commands.multiMemberCreate, function*() {
+		takeLeading(commands.multiMemberGroupCreate, function*() {
 			// TODO: do protocol things
 		}),
-		takeLeading(commands.multiMemberJoin, function*() {
+		takeLeading(commands.multiMemberGroupJoin, function*() {
 			// TODO: do protocol things
 		}),
-		takeLeading(commands.multiMemberLeave, function*() {
+		takeLeading(commands.multiMemberGroupLeave, function*() {
 			// TODO: do protocol things
 		}),
-		takeLeading(commands.multiMemberAliasProofDisclose, function*() {
+		takeLeading(commands.multiMemberGroupAliasResolverDisclose, function*() {
 			// TODO: do protocol things
 		}),
-		takeLeading(commands.multiMemberAdminRoleGrant, function*() {
+		takeLeading(commands.multiMemberGroupAdminRoleGrant, function*() {
 			// TODO: do protocol things
 		}),
 
-		takeLeading(commands.multiMemberCreateInvitation, function*() {
+		takeLeading(commands.multiMemberGroupInvitationCreate, function*() {
 			// TODO: do protocol things
 		}),
-		takeLeading(commands.appSendPermanentMessage, function*(action) {
-			yield cps(services[action.payload.id]?.appSecureMessage, {
-				groupPk: new Buffer(action.payload.groupPk, 'base64'),
-				payload: new Buffer(JSON.stringify(action.payload.payload), 'base64'),
+		takeLeading(commands.appMetadataSend, function*(action) {
+			yield cps(services[action.payload.id]?.appMetadataSend, {
+				groupPk: action.payload.groupPk,
+				payload: action.payload.payload,
 			})
 		}),
-		takeLeading(commands.appSendSecureMessage, function*() {
+		takeLeading(commands.appMessageSend, function*() {
 			// TODO: do protocol things
 		}),
 		takeLeading(commands.groupMetadataSubscribe, function*(action) {
 			services[action.payload.id]?.groupMetadataSubscribe(
 				{
-					groupPk: new Buffer(action.payload.groupPk, 'base64'),
+					groupPk: action.payload.groupPk,
 				},
 				(error, response) => {
 					if (error) {
@@ -329,9 +277,9 @@ export function* orchestrator() {
 					// if the event is defined by chat
 					if (
 						response?.metadata?.eventType ===
-						api.berty.protocol.EventType.EventTypeAppNotSecureEvent
+						api.berty.protocol.EventType.EventTypeGroupMetadataPayloadSent
 					) {
-						put(JSON.parse(Buffer.from(response?.event).toString('base64')))
+						put(JSON.parse(Buffer.from(response?.event).toString()))
 						return
 					}
 					const eventType = response?.metadata?.eventType
@@ -355,26 +303,8 @@ export function* orchestrator() {
 				},
 			)
 		}),
-		takeLeading(commands.groupSecureMessageSubscribe, function*() {
+		takeLeading(commands.groupMetadataSubscribe, function*() {
 			// TODO: do protocol things
-		}),
-
-		// hack inexistant events from protocol api
-		takeEvery(events.instanceInitiatedNewAccount, function*(action) {
-			yield put(
-				commands.appSendPermanentMessage({
-					id: action.payload.aggregateId,
-					groupPk: action.payload.accountGroupPk,
-					payload: action,
-				}),
-			)
-			// subscribe to account log
-			yield put(
-				commands.groupMetadataSubscribe({
-					id: action.payload.aggregateId,
-					groupPk: action.payload.accountGroupPk,
-				}),
-			)
 		}),
 	])
 }
