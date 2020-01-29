@@ -645,7 +645,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.storybook;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.storybook;
 				PRODUCT_NAME = storybook;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -668,7 +668,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.storybook;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.storybook;
 				PRODUCT_NAME = storybook;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";

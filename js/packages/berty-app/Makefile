@@ -39,7 +39,7 @@ $(ENVFILE):
 deps: $(PWD)/node_modules config
 
 deps.ios: export PWD := $(PWD)
-deps.ios: deps build.gobridge.ios $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
+deps.ios: deps $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
 $(PWD)/ios/Pods/Manifest.lock: $(PWD)/ios/Podfile $(PWD)/package.json
 	([ ! -z "$(shell which pod)" ] \
 		&& [[ "$$(pod --version)" > "1.7." ]]) \
@@ -145,56 +145,62 @@ bundle: deps.$(platform)
 	release.darwin.yolo \
 	release.darwin.store \
 
+
 release.ios.debug: target := debug
+release.ios.debug: bundle-id = tech.berty.ios.debug
 release.ios.debug: method := development
 release.ios.debug: profile := Development
-release.ios.debug: team-id := WMBQ84HN4T
+release.ios.debug: team-id := WMBQ84HN4T # @FIXME(gfanton): this should not be public?
 release.ios.debug: release.ios
 release.ios.staff: target := staff
+release.ios.staff: bundle-id = tech.berty.ios.staff
 release.ios.staff: method := ad-hoc
 release.ios.staff: profile := AdHoc
-release.ios.staff: team-id := WMBQ84HN4T
+release.ios.staff: team-id := WMBQ84HN4T # @FIXME(gfanton): this should not be public?
 release.ios.staff: release.ios
 release.ios.yolo: target := yolo
+release.ios.yolo: bundle-id = tech.berty.ios.yolo
 release.ios.yolo: method := enterprise
 release.ios.yolo: profile := InHouse
-release.ios.yolo: team-id := GR5463T564
+release.ios.yolo: team-id := GR5463T564 # @FIXME(gfanton): this should not be public?
 release.ios.yolo: release.ios
 release.ios.store: target := store
+release.ios.store: bundle-id = tech.berty.ios
 release.ios.store: method := app-store
 release.ios.store: profile := AppStore
-release.ios.store: team-id := WMBQ84HN4T
-release.ios.store: release.ios
+release.ios.store: team-id := WMBQ84HN4T # @FIXME(gfanton): this should not be public?
+
 release.ios: export PWD := $(PWD)
 release.ios: platform := ios
-release.ios: bundle-id = chat.berty.ios.$(target)
 release.ios: version = $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
 release.ios: keychain-name ?= berty_keychain
 release.ios: keychain-password ?= berty_pass
-release.ios: git-url ?= git@github.com:berty/berty-ios-certs
-release.ios: export FL_BUILDLOG_PATH = $(dest)
-release.ios: export GYM_CLEAN = false
-release.ios: export GYM_OPTION_METHOD = $(method)
-release.ios: export GYM_OPTION_APP_ID = $(bundle-id)
-release.ios: export GYM_OPTION_PROVISIONING_PROFILE = "match $(profile) $(bundle-id)"
-release.ios: export GYM_OUTPUT_NAME = $(shell echo $(name) | $(PWD)/node_modules/.bin/caser --pascal)
-release.ios: export GYM_OUTPUT_DIRECTORY = $(dest)
-release.ios: export GYM_WORKSPACE = $(PWD)/ios/$(shell echo $(name) | $(PWD)/node_modules/.bin/caser --pascal).xcworkspace
-release.ios: export GYM_SCHEME = $(target)
-release.ios: export GYM_SKIP_PROFILE_DETECTION = true
-release.ios: export GYM_INCLUDE_SYMBOLS = false
+release.ios: git-url ?= git@github.com:berty/berty-ios-certs # @FIXME(gfanton): this should not be public?
+release.ios: export FL_BUILDLOG_PATH=$(dest)
+release.ios: export GYM_CLEAN=false
+release.ios: export GYM_OPTION_METHOD=$(method)
+release.ios: export GYM_OPTION_APP_ID=$(bundle-id)
+release.ios: export GYM_OPTION_PROVISIONING_PROFILE=match $(profile) $(bundle-id)
+release.ios: export GYM_OUTPUT_NAME=$(shell echo $(name) | $(PWD)/node_modules/.bin/caser --pascal)
+release.ios: export GYM_OUTPUT_DIRECTORY=$(dest)
+release.ios: export GYM_WORKSPACE=$(PWD)/ios/$(shell echo $(name) | $(PWD)/node_modules/.bin/caser --pascal).xcworkspace
+release.ios: export GYM_SCHEME=$(target)
+release.ios: export GYM_SKIP_PROFILE_DETECTION=true
+release.ios: export GYM_INCLUDE_SYMBOLS=false
 release.ios: deps.ios
 	$(if $(profile),, $(error "profile variable not defined"))
 	$(if $(method),, $(error "method variable not defined"))
+
 	# fetch app store profile
 	cd $(PWD) \
-		&& fastlane run match \
+		&& bundle install \
+		&& $(bundle) exec fastlane run match \
 			type:$(shell echo $(method) | sed 's/-//g') \
 			app_identifier:$(bundle-id) \
 			readonly:true \
 			team_id:$(team-id) \
 			$(if $(git-url), git_url:$(git-url)) \
-		&& time fastlane $(platform) build --verbose
+		&& time $(bundle) exec fastlane $(platform) build --verbose
 
 release.android.debug:
 release.android.staff:
@@ -481,4 +487,3 @@ fclean: fclean.ios fclean.android fclean.darwin fclean.web
 bazel.android.install:
 	$(MAKE) -C $(abspath $(PWD)/../go-bridge) bazel.build.gobridge.android
 	bazel mobile-install --sandbox_debug --fat_apk_cpu=x86_64,x86,armeabi-v7a //android/app/src/main:app
-

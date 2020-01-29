@@ -651,7 +651,7 @@
 				PODS_CONFIGURATION_BUILD_DIR = "$(inherited)";
 				PODS_PODFILE_DIR_PATH = "$(inherited)";
 				PODS_ROOT = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios;
 				SDKROOT = iphoneos;
 				SYMROOT = build;
 				USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = "$(inherited)";
@@ -710,7 +710,7 @@
 				PODS_CONFIGURATION_BUILD_DIR = "$(inherited)";
 				PODS_PODFILE_DIR_PATH = "$(inherited)";
 				PODS_ROOT = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SYMROOT = build;
@@ -730,6 +730,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -739,7 +740,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore tech.berty.ios";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -754,6 +755,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -763,7 +765,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore tech.berty.ios";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -778,6 +780,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -785,9 +788,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development chat.berty.ios.debug";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development tech.berty.ios.debug";
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -804,6 +807,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -811,9 +815,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development chat.berty.ios.debug";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development tech.berty.ios.debug";
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -829,6 +833,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -836,9 +841,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.staff;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.staff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios.staff";
+				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc tech.berty.ios.staff";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -851,6 +856,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -858,9 +864,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.staff;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.staff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios.staff";
+				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc tech.berty.ios.staff";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -874,6 +880,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = GR5463T564;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -881,9 +888,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.yolo;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.yolo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match InHouse chat.berty.ios.yolo";
+				PROVISIONING_PROFILE_SPECIFIER = "match InHouse tech.berty.ios.yolo";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -896,6 +903,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GR5463T564;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -903,9 +911,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.yolo;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.yolo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match InHouse chat.berty.ios.yolo";
+				PROVISIONING_PROFILE_SPECIFIER = "match InHouse tech.berty.ios.yolo";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

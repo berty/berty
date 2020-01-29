@@ -1199,9 +1199,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development chat.berty.ios.debug";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development tech.berty.ios.debug";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = development;
@@ -1222,9 +1222,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development chat.berty.ios.debug";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development tech.berty.ios.debug";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = production;
@@ -1334,7 +1334,7 @@
 				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				PODS_PODFILE_DIR_PATH = "${SRCROOT}/.";
 				PODS_ROOT = "${SRCROOT}/Pods";
-				PRODUCT_BUNDLE_IDENTIFIER = "chat.berty.ios.$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "tech.berty.ios.$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 				USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = YES;
@@ -1439,7 +1439,7 @@
 				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				PODS_PODFILE_DIR_PATH = "${SRCROOT}/.";
 				PODS_ROOT = "${SRCROOT}/Pods";
-				PRODUCT_BUNDLE_IDENTIFIER = "chat.berty.ios.$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "tech.berty.ios.$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 				USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = YES;
@@ -1464,9 +1464,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.staff;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.staff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios.staff";
+				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc tech.berty.ios.staff";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = development;
@@ -1486,9 +1486,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.staff;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.staff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios.staff";
+				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc tech.berty.ios.staff";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = production;
@@ -1511,7 +1511,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match InHouse chat.berty.ios.yolo";
+				PROVISIONING_PROFILE_SPECIFIER = "match InHouse tech.berty.ios.yolo";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = development;
@@ -1533,7 +1533,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match InHouse chat.berty.ios.yolo";
+				PROVISIONING_PROFILE_SPECIFIER = "match InHouse tech.berty.ios.yolo";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = production;
@@ -1555,9 +1555,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore tech.berty.ios";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = development;
@@ -1578,9 +1578,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore tech.berty.ios";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = production;
