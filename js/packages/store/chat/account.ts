@@ -1,16 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, take, takeEvery, takeLeading, fork, select } from 'redux-saga/effects'
+import { put, all, takeLeading, select, take, takeEvery } from 'redux-saga/effects'
 import faker from 'faker'
+import { Buffer } from 'buffer'
 
 import * as protocol from '../protocol'
 
 export type Entity = {
 	id: string
+	configuration: {
+		accountPk: string
+		devicePk: string
+		accountGroupPk: string
+	}
 	name: string
-	requests: Array<number>
-	conversations: Array<number>
-	contacts: Array<number>
+	requests: Array<string>
+	conversations: Array<string>
+	contacts: Array<string>
 }
 
 export type Event = {
@@ -34,8 +40,6 @@ export namespace Command {
 	export type Generate = void
 	export type Create = { name: string }
 	export type Delete = { id: string }
-	export type Open = { id: string }
-	export type Close = { id: string }
 }
 
 export namespace Query {
@@ -47,16 +51,20 @@ export namespace Query {
 export namespace Event {
 	export type Created = { aggregateId: string; name: string }
 	export type Deleted = { aggregateId: string }
-	export type Opened = { aggregateId: string }
-	export type Closed = { aggregateId: string }
+	export type ConfigurationUpdated = {
+		aggregateId: string
+		configuration: {
+			accountPk: string
+			devicePk: string
+			accountGroupPk: string
+		}
+	}
 }
 
 export type CommandsReducer = {
 	generate: (state: State, command: { payload: Command.Generate }) => State
 	create: (state: State, command: { payload: Command.Create }) => State
 	delete: (state: State, command: { payload: Command.Delete }) => State
-	open: (state: State, command: { payload: Command.Open }) => State
-	close: (state: State, command: { payload: Command.Close }) => State
 }
 
 export type QueryReducer = {
@@ -68,8 +76,7 @@ export type QueryReducer = {
 export type EventsReducer = {
 	created: (state: State, event: { payload: Event.Created }) => State
 	deleted: (state: State, event: { payload: Event.Deleted }) => State
-	opened: (state: State, event: { payload: Event.Opened }) => State
-	closed: (state: State, event: { payload: Event.Closed }) => State
+	configurationUpdated: (state: State, event: { payload: Event.ConfigurationUpdated }) => State
 }
 
 const initialState = {
@@ -84,8 +91,6 @@ const commandHandler = createSlice<State, CommandsReducer>({
 		generate: (state) => state,
 		create: (state) => state,
 		delete: (state) => state,
-		open: (state) => state,
-		close: (state) => state,
 	},
 })
 
@@ -96,6 +101,11 @@ const eventHandler = createSlice<State, EventsReducer>({
 		created: (state, { payload }) => {
 			state.aggregates[payload.aggregateId] = {
 				id: payload.aggregateId,
+				configuration: {
+					accountPk: '',
+					devicePk: '',
+					accountGroupPk: '',
+				},
 				name: payload.name,
 				requests: [],
 				conversations: [],
@@ -107,8 +117,12 @@ const eventHandler = createSlice<State, EventsReducer>({
 			delete state.aggregates[payload.aggregateId]
 			return state
 		},
-		opened: (state) => state,
-		closed: (state) => state,
+		configurationUpdated: (state, { payload }) => {
+			if (state.aggregates[payload.aggregateId]) {
+				state.aggregates[payload.aggregateId].configuration = payload.configuration
+			}
+			return state
+		},
 	},
 })
 
@@ -131,6 +145,8 @@ export function* orchestrator() {
 			// create an id for the account
 			const id = yield select(queries.getLength)
 
+			yield put(protocol.commands.client.instanceGetConfiguration({ id }))
+
 			// send event
 			yield put(
 				events.created({
@@ -142,27 +158,34 @@ export function* orchestrator() {
 
 		takeLeading(commands.delete, function*() {
 			// TODO: delete account
-			// yield put(events.deleteSucceed())
+			// yield put(events.deleted())
 		}),
 
-		takeLeading(commands.open, function*(action) {
-			yield fork(function*() {
-				// wait for protocol
-				while (true) {
-					const { payload } = yield take(protocol.events.client.started)
-					if (payload.aggregateId === action.payload.id) {
-						yield put(events.opened({ aggregateId: action.payload.id }))
-						break
-					}
-				}
-			})
-			// start protocol client
-			yield put(protocol.commands.client.start({ id: action.payload.id }))
+		// send every chat account related events to protocol account log
+		takeEvery(Object.values(events), function*(action: { type: string; payload: Event }) {
+			const account = yield select((state) =>
+				queries.get(state, { id: action.payload.aggregateId }),
+			)
+			yield put(
+				protocol.commands.client.appMetadataSend({
+					id: account.id,
+					groupPk: account.configuration.accountGroupPk,
+					payload: new Buffer(JSON.stringify(action)),
+				}),
+			)
 		}),
 
-		takeLeading(commands.close, function*() {
-			// TODO: close account
-			// yield put(events.closeSucceed())
+		takeEvery(protocol.events.client.instanceGotConfiguration, function*(action) {
+			yield put(
+				events.configurationUpdated({
+					aggregateId: action.payload.aggregateId,
+					configuration: {
+						accountPk: Buffer.from(action.payload.accountPk).toString(),
+						devicePk: Buffer.from(action.payload.devicePk).toString(),
+						accountGroupPk: Buffer.from(action.payload.accountGroupPk).toString(),
+					},
+				}),
+			)
 		}),
 	])
 }

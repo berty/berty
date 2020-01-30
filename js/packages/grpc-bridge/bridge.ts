@@ -35,7 +35,7 @@ export const bridge: Bridge = (options, metadata): pb.RPCImpl => (
 	requestData,
 	callback,
 ): void => {
-	console.log('bridge', requestData)
+	// console.log('bridge', requestData)
 	// map pbjs method descriptor to grpc method descriptor
 	if (!(method instanceof pb.Method)) {
 		console.error("bridge doesn't support protobuf.rpc.ServiceMethod")
@@ -62,10 +62,10 @@ export const bridge: Bridge = (options, metadata): pb.RPCImpl => (
 	const client = grpc.client(_method, options)
 	client.start(new grpc.Metadata(metadata))
 	client.onHeaders((headers: grpc.Metadata) => {
-		console.log('onHeaders: ', headers)
+		// console.log('onHeaders: ', headers)
 	})
 	client.onMessage((message: grpc.ProtobufMessage): void => {
-		console.log('onMessage: ', message.toObject())
+		// console.log('onMessage: ', message.toObject())
 		callback(null, message.serializeBinary())
 	})
 	client.onEnd((code: grpc.Code, message: string, trailers: grpc.Metadata): void => {

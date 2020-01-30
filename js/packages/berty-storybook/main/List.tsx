@@ -21,7 +21,8 @@ import { Footer } from './Footer'
 import { useStyles } from '@berty-tech/styles'
 import { ConversationAvatar, CircleAvatar } from '../shared-components/CircleAvatar'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
-import { useNavigation } from '@berty-tech/berty-navigation'
+import { Chat } from '@berty-tech/hooks'
+import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 
 type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
 type Form<T extends {} | undefined = undefined> = (arg0: T) => Promise<any>
@@ -439,7 +440,7 @@ const Conversations: React.FC<ConversationsProps> = ({ items, contentContainerSt
 	)
 }
 
-export const List: React.FC = () => {
+export const List: React.FC<ScreenProps.Chat.List> = () => {
 	const navigation = useNavigation()
 	// TODO: do something to animate the requests
 	const windowHeight = Dimensions.get('window').height
@@ -461,14 +462,10 @@ export const List: React.FC = () => {
 	return (
 		<View style={[absolute.fill, background.blue]}>
 			<Requests items={requests} onLayout={onLayoutRequests} />
-			{conversations ? (
-				<Conversations
-					items={conversations}
-					contentContainerStyle={conversationContentContainerStyle}
-				/>
-			) : (
-				<ActivityIndicator style={flex.medium} size='large' color='white' />
-			)}
+			<Conversations
+				items={conversations}
+				contentContainerStyle={conversationContentContainerStyle}
+			/>
 			<Footer {...navigation} />
 		</View>
 	)

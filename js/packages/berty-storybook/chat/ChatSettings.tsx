@@ -91,7 +91,6 @@ const ChatSettingsBody: React.FC<{}> = () => {
 }
 
 export const ChatSettings: React.FC<ScreenProps.Chat.Settings> = ({ route: { params } }) => {
-	console.log('params', params)
 	const { goBack, navigate } = useNavigation()
 	const [{ flex, background }] = useStyles()
 	return (

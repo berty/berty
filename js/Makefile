@@ -155,3 +155,4 @@ include packages/go-bridge/Makefile
 include packages/berty-app/Makefile
 include packages/storybook-mobile/Makefile
 include packages/storybook-web/Makefile
+include packages/grpc-bridge/Makefile

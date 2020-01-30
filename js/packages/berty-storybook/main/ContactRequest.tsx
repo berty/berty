@@ -11,6 +11,5 @@ export const ContactRequest: React.FC<ScreenProps.Main.ContactRequest> = ({
 	route: { params },
 }) => {
 	const store = useContext(Store.Context)
-	console.log('request', store.contactRequestAccept)
 	return <Request user={params} accept={(_) => {}} decline={(_) => {}} />
 }

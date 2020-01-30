@@ -1,11 +1,19 @@
 import { ProtocolServiceClient, ProtocolServiceHandler, mockBridge } from '@berty-tech/grpc-bridge'
-
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, Action } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, takeEvery, takeLeading, put } from 'redux-saga/effects'
+import { all, takeLeading, put, cps, select, fork, takeEvery } from 'redux-saga/effects'
+import * as gen from './client.gen'
+import * as api from '@berty-tech/api'
+import { Buffer } from 'buffer'
+import Case from 'case'
 
 export type Entity = {
 	id: string
+
+	// needed for mvp
+	accountPk: string
+	devicePk: string
+	accountGroupPk: string
 }
 
 export type Event = {}
@@ -21,74 +29,25 @@ export type GlobalState = {
 	}
 }
 
-export type Commands = {
-	start: (
-		state: State,
-		action: {
-			payload: { id: string }
-		},
-	) => State
-	stop: (
-		state: State,
-		action: {
-			payload: { id: string }
-		},
-	) => State
-	instanceExportData: (state: State, action: { payload: { id: string } }) => State
-	instanceGetConfiguration: (state: State, action: { payload: { id: string } }) => State
-	groupCreate: (state: State, action: { payload: { id: string } }) => State
-	groupJoin: (state: State, action: { payload: { id: string } }) => State
-	groupLeave: (state: State, action: { payload: { id: string } }) => State
-	groupInvite: (state: State, action: { payload: { id: string } }) => State
-	devicePair: (state: State, action: { payload: { id: string } }) => State
-	contactRequestReference: (state: State, action: { payload: { id: string } }) => State
-	contactRequestDisable: (state: State, action: { payload: { id: string } }) => State
-	contactRequestEnable: (state: State, action: { payload: { id: string } }) => State
-	contactRequestResetReference: (state: State, action: { payload: { id: string } }) => State
-	contactRequestEnqueue: (state: State, action: { payload: { id: string } }) => State
-	contactRequestAccept: (state: State, action: { payload: { id: string } }) => State
-	contactRemove: (state: State, action: { payload: { id: string } }) => State
-	contactBlock: (state: State, action: { payload: { id: string } }) => State
-	contactUnblock: (state: State, action: { payload: { id: string } }) => State
-	groupSettingSetgroup: (state: State, action: { payload: { id: string } }) => State
-	groupSettingSetMember: (state: State, action: { payload: { id: string } }) => State
-	groupMessageSend: (state: State, action: { payload: { id: string } }) => State
-	accountAppendAppSpecificEvent: (state: State, action: { payload: { id: string } }) => State
-	accountSubscribe: (state: State, action: { payload: { id: string } }) => State
-	groupSettingSubscribe: (state: State, action: { payload: { id: string } }) => State
-	groupMessageSubscribe: (state: State, action: { payload: { id: string } }) => State
-	groupMemberSubscribe: (state: State, action: { payload: { id: string } }) => State
+export type Commands = gen.Commands<State> & {}
+
+export type Queries = {
+	get: (state: GlobalState, payload: { id: string }) => Entity
+	getAll: (state: GlobalState) => Entity[]
 }
 
-export type Events = {
-	started: (state: State, action: { payload: { aggregateId: string } }) => State
-	stopped: (state: State, action: { payload: { aggregateId: string } }) => State
-	accountUndefined: (state: State, action: { payload: { aggregateId: string } }) => State
-	accountGroupJoined: (state: State, action: { payload: { aggregateId: string } }) => State
-	accountGroupLeft: (state: State, action: { payload: { aggregateId: string } }) => State
-	accountDevicePaired: (state: State, action: { payload: { aggregateId: string } }) => State
-	accountContactRequestDisabled: (
+export type Events = gen.Events<State> & {
+	instanceGotConfiguration: (
 		state: State,
-		action: { payload: { aggregateId: string } },
+		action: {
+			payload: {
+				aggregateId: string
+				accountPk: Uint8Array
+				devicePk: Uint8Array
+				accountGroupPk: Uint8Array
+			}
+		},
 	) => State
-	accountContactRequestEnabled: (
-		state: State,
-		action: { payload: { aggregateId: string } },
-	) => State
-	accountContactRequestReferenceReset: (
-		state: State,
-		action: { payload: { aggregateId: string } },
-	) => State
-	accountContactRequestEnqueued: (
-		state: State,
-		action: { payload: { aggregateId: string } },
-	) => State
-	accountContactRequested: (state: State, action: { payload: { aggregateId: string } }) => State
-	accountContactAccepted: (state: State, action: { payload: { aggregateId: string } }) => State
-	accountContactRemoved: (state: State, action: { payload: { aggregateId: string } }) => State
-	accountContactBlocked: (state: State, action: { payload: { aggregateId: string } }) => State
-	accountContactUnblocked: (state: State, action: { payload: { aggregateId: string } }) => State
-	accountAppSpecified: (state: State, action: { payload: { aggregateId: string } }) => State
 }
 
 const initialState: State = {
@@ -100,32 +59,33 @@ const commandHandler = createSlice<State, Commands>({
 	name: 'protocol/client/command',
 	initialState,
 	reducers: {
-		start: (state) => state,
-		stop: (state) => state,
 		instanceExportData: (state) => state,
 		instanceGetConfiguration: (state) => state,
-		groupCreate: (state) => state,
-		groupJoin: (state) => state,
-		groupLeave: (state) => state,
-		groupInvite: (state) => state,
-		devicePair: (state) => state,
+
 		contactRequestReference: (state) => state,
 		contactRequestDisable: (state) => state,
 		contactRequestEnable: (state) => state,
 		contactRequestResetReference: (state) => state,
-		contactRequestEnqueue: (state) => state,
+		contactRequestSend: (state) => state,
 		contactRequestAccept: (state) => state,
-		contactRemove: (state) => state,
+		contactRequestDiscard: (state) => state,
+
 		contactBlock: (state) => state,
 		contactUnblock: (state) => state,
-		groupSettingSetgroup: (state) => state,
-		groupSettingSetMember: (state) => state,
-		groupMessageSend: (state) => state,
-		accountAppendAppSpecificEvent: (state) => state,
-		accountSubscribe: (state) => state,
-		groupSettingSubscribe: (state) => state,
+		contactAliasKeySend: (state) => state,
+
+		multiMemberGroupCreate: (state) => state,
+		multiMemberGroupJoin: (state) => state,
+		multiMemberGroupLeave: (state) => state,
+		multiMemberGroupAliasResolverDisclose: (state) => state,
+		multiMemberGroupAdminRoleGrant: (state) => state,
+
+		multiMemberGroupInvitationCreate: (state) => state,
+
+		appMetadataSend: (state) => state,
+		appMessageSend: (state) => state,
+		groupMetadataSubscribe: (state) => state,
 		groupMessageSubscribe: (state) => state,
-		groupMemberSubscribe: (state) => state,
 	},
 })
 
@@ -133,145 +93,218 @@ const eventHandler = createSlice<State, Events>({
 	name: 'protocol/client/event',
 	initialState,
 	reducers: {
-		started: (state, { payload }) => {
-			state.aggregates[payload.aggregateId] = { id: payload.aggregateId }
+		instanceGotConfiguration: (state, action) => {
+			state.aggregates[action.payload.aggregateId] = {
+				id: action.payload.aggregateId,
+				accountPk: Buffer.from(action.payload.accountPk).toString(),
+				devicePk: Buffer.from(action.payload.devicePk).toString(),
+				accountGroupPk: Buffer.from(action.payload.accountGroupPk).toString(),
+			}
 			return state
 		},
-		stopped: (state, { payload }) => {
-			delete state.aggregates[payload.aggregateId]
-			return state
-		},
-		accountUndefined: (state) => state,
+
+		undefined: (state) => state,
+
+		groupMemberDeviceAdded: (state) => state,
+		groupDeviceSecretAdded: (state) => state,
+
 		accountGroupJoined: (state) => state,
 		accountGroupLeft: (state) => state,
-		accountDevicePaired: (state) => state,
+
 		accountContactRequestDisabled: (state) => state,
 		accountContactRequestEnabled: (state) => state,
 		accountContactRequestReferenceReset: (state) => state,
-		accountContactRequestEnqueued: (state) => state,
-		accountContactRequested: (state) => state,
-		accountContactAccepted: (state) => state,
-		accountContactRemoved: (state) => state,
+		accountContactRequestOutgoingEnqueued: (state) => state,
+		accountContactRequestOutgoingSent: (state) => state,
+		accountContactRequestIncomingReceived: (state) => state,
+		accountContactRequestIncomingDiscarded: (state) => state,
+		accountContactRequestIncomingAccepted: (state) => state,
 		accountContactBlocked: (state) => state,
 		accountContactUnblocked: (state) => state,
-		accountAppSpecified: (state) => state,
+
+		contactAliasKeyAdded: (state) => state,
+
+		multiMemberGroupAliasResolverAdded: (state) => state,
+		multiMemberGroupInitialMemberAnnounced: (state) => state,
+		multiMemberGroupAdminRoleGranted: (state) => state,
+
+		groupMetadataPayloadSent: (state) => state,
 	},
 })
 
+export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
-export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
+export const queries: Queries = {
+	get: (state, { id }) => state.protocol.client.aggregates[id],
+	getAll: (state) => Object.values(state.protocol.client.aggregates),
+}
 
 export function* orchestrator() {
-	const clients: { [key: string]: ProtocolServiceClient } = {}
+	const services: { [key: string]: ProtocolServiceClient } = {}
 
 	yield all([
-		takeLeading(commands.start, function*(action) {
-			const id = action.payload.id
-			clients[id] = new ProtocolServiceClient(
-				mockBridge(ProtocolServiceHandler, { id: id.toString() }),
+		function*() {
+			// start services
+			const clients = (yield select(queries.getAll)) as Entity[]
+			for (const client of clients) {
+				services[client.id] = new ProtocolServiceClient(
+					// TODO: use bridge instead of mockBridge when bertyprotocol will be done
+					mockBridge(ProtocolServiceHandler, {
+						accountPk: client.accountPk,
+						devicePk: client.devicePk,
+						accountGroupPk: client.accountGroupPk,
+					}),
+				)
+				// subcribe to account log
+				yield put(
+					commands.groupMetadataSubscribe({
+						id: client.id,
+						groupPk: new Buffer(client.accountGroupPk),
+						since: new Uint8Array(),
+						until: new Uint8Array(),
+						goBackwards: false,
+					}),
+				)
+			}
+		},
+		takeLeading(commands.instanceExportData, function*() {
+			// TODO: do protocol things
+		}),
+		takeLeading(commands.instanceGetConfiguration, function*(action) {
+			const client = yield select((state) => queries.get(state, { id: action.payload.id }))
+			let [accountPk, devicePk, accountGroupPk] = [
+				new Buffer(client?.accountPk || ''),
+				new Buffer(client?.devicePk || ''),
+				new Buffer(client?.accountGroupPk || ''),
+			]
+			if (client == null) {
+				services[action.payload.id] = new ProtocolServiceClient(mockBridge(ProtocolServiceHandler))
+				const reply: api.berty.protocol.InstanceGetConfiguration.IReply = yield cps(
+					services[action.payload.id]?.instanceGetConfiguration,
+					{},
+				)
+				accountPk = Buffer.from(reply.accountPk as Uint8Array)
+				devicePk = Buffer.from(reply.devicePk as Uint8Array)
+				accountGroupPk = Buffer.from(reply.accountGroupPk as Uint8Array)
+			}
+
+			yield put(
+				events.instanceGotConfiguration({
+					aggregateId: action.payload.id,
+					accountPk,
+					devicePk,
+					accountGroupPk,
+				}),
 			)
-			yield put(events.started({ aggregateId: id }))
 		}),
-		takeLeading(commands.stop, function*(action) {
-			delete clients[action.payload.id]
-			yield put(events.stopped({ aggregateId: action.payload.id }))
-		}),
-		takeEvery(commands.instanceExportData, function*() {
+		takeLeading(commands.contactRequestReference, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.instanceGetConfiguration, function*() {
+		takeLeading(commands.contactRequestDisable, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.groupCreate, function*() {
+		takeLeading(commands.contactRequestEnable, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.groupJoin, function*() {
+		takeLeading(commands.contactRequestResetReference, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.groupLeave, function*() {
+		takeLeading(commands.contactRequestSend, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.groupInvite, function*() {
+		takeLeading(commands.contactRequestAccept, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.devicePair, function*() {
+		takeLeading(commands.contactRequestDiscard, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRequestReference, function*() {
+
+		takeLeading(commands.contactBlock, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRequestDisable, function*() {
+		takeLeading(commands.contactUnblock, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRequestEnable, function*() {
+		takeLeading(commands.contactAliasKeySend, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRequestResetReference, function*() {
+
+		takeLeading(commands.multiMemberGroupCreate, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRequestEnqueue, function*() {
+		takeLeading(commands.multiMemberGroupJoin, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRequestAccept, function*() {
+		takeLeading(commands.multiMemberGroupLeave, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.contactRemove, function*() {
+		takeLeading(commands.multiMemberGroupAliasResolverDisclose, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.contactBlock, function*() {
+		takeLeading(commands.multiMemberGroupAdminRoleGrant, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.contactUnblock, function*() {
+
+		takeLeading(commands.multiMemberGroupInvitationCreate, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.groupSettingSetgroup, function*() {
-			// TODO: do protocol things
-			// yield put(events.started)
+		takeLeading(commands.appMetadataSend, function*(action) {
+			yield cps(services[action.payload.id]?.appMetadataSend, {
+				groupPk: action.payload.groupPk,
+				payload: action.payload.payload,
+			})
 		}),
-		takeEvery(commands.groupSettingSetMember, function*() {
+		takeLeading(commands.appMessageSend, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
 		}),
-		takeEvery(commands.groupMessageSend, function*() {
-			// TODO: do protocol things
-			// yield put(events.started)
+		takeLeading(commands.groupMetadataSubscribe, function*(action) {
+			services[action.payload.id]?.groupMetadataSubscribe(
+				{
+					groupPk: action.payload.groupPk,
+				},
+				(error, response) => {
+					if (error) {
+						// TODO: log error
+						return
+					}
+					if (!response?.event) {
+						return
+					}
+					if (!response?.metadata?.eventType) {
+						return
+					}
+					// if the event is defined by chat
+					if (
+						response?.metadata?.eventType ===
+						api.berty.protocol.EventType.EventTypeGroupMetadataPayloadSent
+					) {
+						put(JSON.parse(Buffer.from(response?.event).toString()))
+						return
+					}
+					const eventType = response?.metadata?.eventType
+						.toString()
+						.split('EventType')
+						.pop()
+					if (eventType == null) {
+						return
+					}
+					put({
+						type: `${eventHandler.name}/${Case.camel(eventType)}`,
+						payload: {
+							aggregateId: action.payload.id,
+							eventContext: response.eventContext,
+							headers: response.metadata,
+							event: (api.berty.protocol as { [key: string]: any })[eventType].decode(
+								response.event,
+							),
+						},
+					})
+				},
+			)
 		}),
-		takeEvery(commands.accountAppendAppSpecificEvent, function*() {
+		takeLeading(commands.groupMetadataSubscribe, function*() {
 			// TODO: do protocol things
-			// yield put(events.started)
-		}),
-		takeEvery(commands.accountSubscribe, function*() {
-			// TODO: do protocol things
-			// yield put(events.started)
-		}),
-		takeEvery(commands.groupSettingSubscribe, function*() {
-			// TODO: do protocol things
-			// yield put(events.started)
-		}),
-		takeEvery(commands.groupMessageSubscribe, function*() {
-			// TODO: do protocol things
-			// yield put(events.started)
-		}),
-		takeEvery(commands.groupMemberSubscribe, function*() {
-			// TODO: do protocol things
-			// yield put(events.started)
 		}),
 	])
 }

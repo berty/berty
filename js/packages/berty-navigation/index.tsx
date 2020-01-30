@@ -11,6 +11,7 @@ import {
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 import { berty } from '@berty-tech/api'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
+import { chat } from '@berty-tech/store'
 
 export namespace ScreenProps {
 	export namespace Onboarding {
@@ -361,7 +362,6 @@ export const SettingsNavigation: React.FC<BottomTabBarProps> = () => (
 
 const Footer: React.FC<BottomTabBarProps> = ({ navigation, state: { index, routeNames } }) => {
 	const _navigation = useMemo(() => createNavigation(navigation), [navigation])
-	console.log(routeNames[index])
 	if (routeNames[index].match(/^Settings\..*$/)) {
 		return <Stories.Settings.Footer {..._navigation} />
 	}

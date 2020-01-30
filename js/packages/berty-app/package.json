@@ -36,6 +36,7 @@
     "@ui-kitten/eva-icons": "^4.2.0",
     "clisim": "^2.5.0",
     "hermes-engine": "^0.2.1",
+    "node-libs-react-native": "^1.0.3",
     "react": "^16.12.0",
     "react-native": "^0.61.5",
     "react-native-config": "luggit/react-native-config#master",

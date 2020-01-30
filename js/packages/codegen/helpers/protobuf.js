@@ -56,4 +56,21 @@ module.exports.register = (handlebars) => {
 		}
 		return importPaths
 	})
+
+	handlebars.registerHelper('convertScalarType', function(scalarType) {
+		switch (scalarType) {
+			case ('int32', 'int64', 'sint32', 'sint64', 'sfixed32', 'sfixed64'):
+			case ('uint32', 'uint64', 'fixed32', 'fixed64'):
+			case ('double', 'float'):
+				return 'number'
+			case 'bytes':
+				return 'Uint8Array'
+			case 'bool':
+				return 'boolean'
+			case 'string':
+				return 'string'
+			default:
+				return undefined
+		}
+	})
 }

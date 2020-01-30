@@ -181,7 +181,7 @@ func (b *bridge) addGRPCListenner(maddr string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
+	b.logger.Info(m.String())
 	l, err := grpcutil.Listen(m)
 	if err != nil {
 		return "", err
