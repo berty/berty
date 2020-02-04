@@ -45,7 +45,9 @@ export const mockBridge: MockBridge = (ServiceCtor, metadata) => {
 				}
 				callback(
 					error || null,
-					responseData ? method?.resolvedResponseType?.encode(responseData).finish() : null,
+					// WARN: reponseData should never be undefined, if so the service will be ended
+					// (see https://github.com/protobufjs/protobuf.js/blob/e8449c4bf1269a2cc423708db6f0b47a383d33f0/src/rpc/service.js#L104)
+					responseData ? method?.resolvedResponseType?.encode(responseData).finish() : undefined,
 				)
 			},
 		)
