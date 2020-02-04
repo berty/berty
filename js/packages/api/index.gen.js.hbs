@@ -5,8 +5,17 @@ import jsonPb from './index.pb.js'
 			{{name}}: {
 				{{call "api_recursive" this}}
 			},
+		{{else if (eq (typeof this) "Enum")}}
+			{{name}}: {
+				{{#each values}}
+					{{@key}}: {{this}},
+					{{this}}: '{{@key}}',
+				{{/each}}
+			},
 		{{else}}
-			{{name}}: jsonPb.lookup('{{namespace this}}'),
+			{{name}}: jsonPb.lookup(
+				'{{namespace this}}'
+			),
 		{{/if}}
 	{{/each}}
 {{/declare}}
