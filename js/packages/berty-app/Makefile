@@ -169,10 +169,14 @@ release.ios.store: bundle-id = tech.berty.ios
 release.ios.store: method := app-store
 release.ios.store: profile := AppStore
 release.ios.store: team-id := WMBQ84HN4T # @FIXME(gfanton): this should not be public?
-
+# setup path
 release.ios: export PWD := $(PWD)
+# setup platform
 release.ios: platform := ios
-release.ios: version = $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
+# setup version
+release.ios: target_version = $(shell git describe --tags --always | tr - . | sed -E 's`v([0-9]+\.[0-9]+\.[0-9]+)\.?([0-9]*)?.*`\1`g')
+release.ios: target_build = $(shell git describe --tags --always | tr - . | sed -E 's`v([0-9]+\.[0-9]+\.[0-9]+)\.?([0-9]*)?.*`\2`g')
+# configure fastlane
 release.ios: keychain-name ?= berty_keychain
 release.ios: keychain-password ?= berty_pass
 release.ios: git-url ?= git@github.com:berty/berty-ios-certs # @FIXME(gfanton): this should not be public?
@@ -202,22 +206,28 @@ release.ios: deps.ios
 
 	# setup ci if needed
 ifdef CI
-	echo "CI detected creating temporary keychain"
 	cd $(PWD) \
+		`# create temporary keychain` \
 		&& $(bundle) exec fastlane run create_keychain \
 			timeout:3600 \
 			default_keychain:true \
 			unlock:true \
-			add_to_search_list:true
+			add_to_search_list:true \
+		`# setup app version` \
+		&& plutil -replace CFBundleShortVersionString -string $(target_version) $(PWD)/ios/Berty/Info.plist \
+		&& plutil -replace CFBundleVersion -string $(target_build) $(PWD)/ios/Berty/Info.plist
+
 endif
 
 	cd $(PWD) \
+		`# get ios certificates` \
 		&& $(bundle) exec fastlane run match \
 			type:$(shell echo $(method) | sed 's/-//g') \
 			app_identifier:$(bundle-id) \
 			team_id:$(team-id) \
 			readonly:true \
 			$(if $(git-url), git_url:$(git-url)) \
+		`# build` \
 		&& time $(bundle) exec fastlane ios build --verbose
 
 release.android.debug:
