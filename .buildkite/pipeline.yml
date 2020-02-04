@@ -127,6 +127,8 @@ steps:
     plugins:
       - gopath-checkout#v1.0.1:
           import: berty.tech/berty
+    artifact_paths:
+      - "js/packages/berty-app/build/**/*"
     commands:
       - set -x
       - export PATH=$$(brew --prefix ruby)/bin:$$PATH # use brew ruby
