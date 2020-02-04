@@ -5,6 +5,7 @@ import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
+import { Chat } from '@berty-tech/hooks'
 
 //
 // DevTools
@@ -70,8 +71,17 @@ const HeaderDevTools: React.FC<{}> = () => {
 const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
+	const account = Chat.useAccount()
+	const replayAccount = Chat.useAccountReplay()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
+			<ButtonSetting
+				name='Replay Events'
+				icon='arrowhead-right-outline'
+				iconSize={30}
+				iconColor={color.yellow}
+				onPress={() => account && replayAccount({ id: account.id })}
+			/>
 			<ButtonSetting
 				name='Bot mode'
 				icon='briefcase-outline'

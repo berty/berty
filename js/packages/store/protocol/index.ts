@@ -7,12 +7,22 @@ import * as client from './client'
 
 export type Client = client.Entity
 
+export { client }
+
 export const commands = {
 	client: client.commands,
 }
 
+export const queries = {
+	client: client.queries,
+}
+
 export const events = {
 	client: client.events,
+}
+
+export const transactions = {
+	client: client.transactions,
 }
 
 export const reducers = {

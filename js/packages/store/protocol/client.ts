@@ -1,7 +1,7 @@
 import { ProtocolServiceClient, ProtocolServiceHandler, mockBridge } from '@berty-tech/grpc-bridge'
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, takeLeading, put, cps, select, takeEvery, take } from 'redux-saga/effects'
+import { all, takeLeading, put, putResolve, cps, select, takeEvery, take } from 'redux-saga/effects'
 import { channel } from 'redux-saga'
 import * as gen from './client.gen'
 import * as api from '@berty-tech/api'
@@ -20,7 +20,6 @@ export type Entity = {
 export type Event = {}
 
 export type State = {
-	events: Array<Event>
 	aggregates: { [key: string]: Entity }
 }
 
@@ -30,7 +29,9 @@ export type GlobalState = {
 	}
 }
 
-export type Commands = gen.Commands<State> & {}
+export type Commands = gen.Commands<State> & {
+	start: (state: State, action: { payload: { id: string } }) => State
+}
 
 export type Queries = {
 	get: (state: GlobalState, payload: { id: string }) => Entity
@@ -38,8 +39,7 @@ export type Queries = {
 }
 
 export type Events = gen.Events<State> & {
-	[key: string]: any
-	instanceGotConfiguration: (
+	started: (
 		state: State,
 		action: {
 			payload: {
@@ -56,8 +56,16 @@ export type Events = gen.Events<State> & {
 	>
 }
 
+export type Transactions = {
+	[K in keyof Commands]: Commands[K] extends (
+		state: State,
+		action: { payload: infer TPayload },
+	) => State
+		? (payload: TPayload) => Generator
+		: never
+}
+
 const initialState: State = {
-	events: [],
 	aggregates: {},
 }
 
@@ -65,6 +73,8 @@ const commandHandler = createSlice<State, Commands>({
 	name: 'protocol/client/command',
 	initialState,
 	reducers: {
+		start: (state) => state,
+
 		instanceExportData: (state) => state,
 		instanceGetConfiguration: (state) => state,
 
@@ -99,7 +109,7 @@ const eventHandler = createSlice<State, Events>({
 	name: 'protocol/client/event',
 	initialState,
 	reducers: {
-		instanceGotConfiguration: (state, action) => {
+		started: (state, action) => {
 			state.aggregates[action.payload.aggregateId] = {
 				id: action.payload.aggregateId,
 				accountPk: Buffer.from(action.payload.accountPk).toString(),
@@ -154,220 +164,280 @@ const eventNameFromValue = (value: number) => {
 	return api.berty.protocol.EventType[value]
 }
 
-export function* orchestrator() {
-	const services: { [key: string]: ProtocolServiceClient } = {}
-	const getService = (id: string) => {
-		const service = services[id]
-		if (!service) {
-			throw new Error(`Service ${id} not found`)
-		}
-		return service
+const services: { [key: string]: ProtocolServiceClient } = {}
+const getService = (id: string) => {
+	const service = services[id]
+	if (!service) {
+		throw new Error(`Service ${id} not found`)
 	}
+	return service
+}
 
-	yield all([
-		function*() {
-			// start services
-			const clients = (yield select(queries.getAll)) as Entity[]
-			for (const client of clients) {
-				services[client.id] = new ProtocolServiceClient(
-					// TODO: use bridge instead of mockBridge when bertyprotocol will be done
-					mockBridge(ProtocolServiceHandler, {
-						accountPk: client.accountPk,
-						devicePk: client.devicePk,
-						accountGroupPk: client.accountGroupPk,
-					}),
-				)
-				// subcribe to account log, this is never called as far as I'm aware
-				yield put(
-					commands.groupMetadataSubscribe({
-						id: client.id,
-						groupPk: new Buffer(client.accountGroupPk),
-						since: new Uint8Array(),
-						until: new Uint8Array(),
-						goBackwards: false,
-					}),
-				)
-			}
-		},
-		takeLeading(commands.instanceExportData, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.instanceGetConfiguration, function*(action) {
-			const client = yield select((state) => queries.get(state, { id: action.payload.id }))
-			let [accountPk, devicePk, accountGroupPk] = [
-				new Buffer(client?.accountPk || ''),
-				new Buffer(client?.devicePk || ''),
-				new Buffer(client?.accountGroupPk || ''),
-			]
-			if (client == null) {
-				services[action.payload.id] = new ProtocolServiceClient(mockBridge(ProtocolServiceHandler))
-				const reply: api.berty.protocol.InstanceGetConfiguration.IReply = yield cps(
-					services[action.payload.id]?.instanceGetConfiguration,
-					{},
-				)
-				accountPk = Buffer.from(reply.accountPk as Uint8Array)
-				devicePk = Buffer.from(reply.devicePk as Uint8Array)
-				accountGroupPk = Buffer.from(reply.accountGroupPk as Uint8Array)
-			}
+export const transactions: Transactions = {
+	start: function*({ id }) {
+		if (services[id] != null) {
+			return
+		}
 
-			yield put(
-				events.instanceGotConfiguration({
-					aggregateId: action.payload.id,
-					accountPk,
-					devicePk,
-					accountGroupPk,
-				}),
-			)
-		}),
-		takeEvery(events.instanceGotConfiguration, function*({ payload }) {
-			yield put(
-				commands.groupMetadataSubscribe({
-					id: payload.aggregateId,
-					groupPk: new Buffer(payload.accountGroupPk),
-					since: new Uint8Array(),
-					until: new Uint8Array(),
-					goBackwards: false,
-				}),
-			)
-		}),
-		takeLeading(commands.contactRequestReference, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.contactRequestDisable, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.contactRequestEnable, function*({ payload }) {
-			const reply = yield cps(getService(payload.id).contactRequestEnable, {})
-			if (!reply.reference) {
-				throw new Error(`Invalid reference ${reply.reference}`)
-			}
-			yield put(
-				events.contactRequestReferenceUpdated({
-					aggregateId: payload.id,
-					reference: reply.reference,
-				}),
-			)
-		}),
-		takeLeading(commands.contactRequestResetReference, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.contactRequestSend, function*({ payload }) {
-			yield cps(getService(payload.id).contactRequestSend, {
-				reference: payload.reference,
-				contactMetadata: payload.contactMetadata,
-			})
-		}),
-		takeLeading(commands.contactRequestAccept, function*({ payload }) {
-			yield cps(getService(payload.id).contactRequestAccept, {
-				contactPk: payload.contactPk,
-			})
-		}),
-		takeLeading(commands.contactRequestDiscard, function*({ payload }) {
-			yield cps(getService(payload.id).contactRequestDiscard, {
-				contactPk: payload.contactPk,
-			})
-		}),
+		const client = (yield select((state) => queries.get(state, { id }))) as Entity | undefined
 
-		takeLeading(commands.contactBlock, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.contactUnblock, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.contactAliasKeySend, function*() {
-			// TODO: do protocol things
-		}),
+		services[id] = new ProtocolServiceClient(
+			mockBridge(
+				ProtocolServiceHandler,
+				client == null
+					? {}
+					: {
+							accountPk: client.accountPk,
+							devicePk: client.devicePk,
+							accountGroupPk: client.accountGroupPk,
+					  },
+			),
+		)
 
-		takeLeading(commands.multiMemberGroupCreate, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.multiMemberGroupJoin, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.multiMemberGroupLeave, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.multiMemberGroupAliasResolverDisclose, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.multiMemberGroupAdminRoleGrant, function*() {
-			// TODO: do protocol things
-		}),
+		const { accountPk, devicePk, accountGroupPk } = (yield cps(
+			services[id]?.instanceGetConfiguration,
+			{},
+		)) as api.berty.protocol.InstanceGetConfiguration.IReply
 
-		takeLeading(commands.multiMemberGroupInvitationCreate, function*() {
-			// TODO: do protocol things
-		}),
-		takeLeading(commands.appMetadataSend, function*({ payload }) {
-			yield cps(getService(payload.id).appMetadataSend, {
+		yield putResolve(
+			events.started({
+				aggregateId: id,
+				accountPk: accountPk as Uint8Array,
+				devicePk: devicePk as Uint8Array,
+				accountGroupPk: accountGroupPk as Uint8Array,
+			}),
+		)
+	},
+	instanceGetConfiguration: function*(payload) {
+		// do protocol things
+	},
+	instanceExportData: function*(payload) {
+		// do protocol things
+	},
+	contactRequestReference: function*(payload) {
+		// do protocol things
+	},
+	contactRequestDisable: function*(payload) {
+		// do protocol things
+	},
+	contactRequestEnable: function*(payload) {
+		const reply = (yield cps(
+			getService(payload.id).contactRequestEnable,
+			{},
+		)) as api.berty.protocol.ContactRequestEnable.IReply
+		if (!reply.reference) {
+			throw new Error(`Invalid reference ${reply.reference}`)
+		}
+		yield put(
+			events.contactRequestReferenceUpdated({
+				aggregateId: payload.id,
+				reference: reply?.reference,
+			}),
+		)
+		return reply
+	},
+	contactRequestResetReference: function*(payload) {
+		// do protocol things
+	},
+	contactRequestSend: function*(payload) {
+		return yield cps(getService(payload.id).contactRequestSend, {
+			reference: payload.reference,
+			contactMetadata: payload.contactMetadata,
+		})
+	},
+	contactRequestAccept: function*(payload) {
+		return yield cps(getService(payload.id).contactRequestAccept, {
+			contactPk: payload.contactPk,
+		})
+	},
+	contactRequestDiscard: function*(payload) {
+		return yield cps(getService(payload.id).contactRequestDiscard, {
+			contactPk: payload.contactPk,
+		})
+	},
+
+	contactBlock: function*(payload) {
+		// do protocol things
+	},
+	contactUnblock: function*(payload) {
+		// do protocol things
+	},
+	contactAliasKeySend: function*(payload) {
+		// do protocol things
+	},
+
+	multiMemberGroupCreate: function*(payload) {
+		// do protocol things
+	},
+	multiMemberGroupJoin: function*(payload) {
+		// do protocol things
+	},
+	multiMemberGroupLeave: function*(payload) {
+		// do protocol things
+	},
+	multiMemberGroupAliasResolverDisclose: function*(payload) {
+		// do protocol things
+	},
+	multiMemberGroupAdminRoleGrant: function*(payload) {
+		// do protocol things
+	},
+
+	multiMemberGroupInvitationCreate: function*(payload) {
+		// do protocol things
+	},
+	appMetadataSend: function*(payload) {
+		return yield cps(getService(payload.id).appMetadataSend, {
+			groupPk: payload.groupPk,
+			payload: payload.payload,
+		})
+	},
+	appMessageSend: function*(payload) {
+		// do protocol things
+	},
+	groupMetadataSubscribe: function*(payload) {
+		const eventsChannel = channel()
+		getService(payload.id).groupMetadataSubscribe(
+			{
 				groupPk: payload.groupPk,
-				payload: payload.payload,
-			})
-		}),
-		takeLeading(commands.appMessageSend, function*() {
-			// TODO: do protocol things
-		}),
-		takeEvery(commands.groupMetadataSubscribe, function*({ payload }) {
-			const eventsChannel = channel()
-			getService(payload.id).groupMetadataSubscribe(
-				{
-					groupPk: payload.groupPk,
-				},
-				(error, response) => {
-					if (error) {
-						// TODO: log error
-						return
-					}
-					if (!response?.event) {
-						return
-					}
-					if (!response?.metadata?.eventType) {
-						return
-					}
-					// if the event is defined by chat
+			},
+			(error, response) => {
+				if (error) {
+					// TODO: log error
+					throw error
+				}
+				if (!response?.event) {
+					console.error('No event')
+					return
+				}
+				if (!response?.metadata?.eventType) {
+					console.error('No eventtype')
+					return
+				}
+				// if the event is defined by chat
 
-					const eventType = response?.metadata?.eventType
-					if (eventType == null) {
-						return
-					}
-
-					if (eventType === api.berty.protocol.EventType.EventTypeGroupMetadataPayloadSent) {
-						eventsChannel.put(JSON.parse(Buffer.from(response.event).toString()))
-						return
-					}
-
-					const eventsMap: { [key: string]: string } = {
-						EventTypeAccountContactRequestIncomingReceived: 'AccountContactRequestReceived',
-						EventTypeAccountContactRequestIncomingAccepted: 'AccountContactRequestAccepted',
-						EventTypeAccountContactRequestIncomingDiscarded: 'AccountContactRequestDiscarded',
-						EventTypeAccountContactRequestOutgoingEnqueued: 'AccountContactRequestEnqueued',
-						EventTypeAccountContactRequestOutgoingSent: 'AccountContactRequestSent',
-					}
-					const eventName = eventNameFromValue(eventType)
-					if (eventName === undefined) {
-						throw new Error(`Invalid event type ${eventType}`)
-					}
-					const protocol: { [key: string]: any } = api.berty.protocol
-					const event = protocol[eventName] || protocol[eventsMap[eventName]]
-					if (!event) {
-						console.warn("Don't know how to decode", eventName)
-						return
-					}
-					eventsChannel.put({
-						type: `${eventHandler.name}/${Case.camel(eventName.replace('EventType', ''))}`,
-						payload: {
+				const eventType = response?.metadata?.eventType
+				if (eventType == null) {
+					return
+				}
+				if (eventType === api.berty.protocol.EventType.EventTypeGroupMetadataPayloadSent) {
+					eventsChannel.put(
+						events.groupMetadataPayloadSent({
 							aggregateId: `${payload.id}`,
-							eventContext: response.eventContext,
-							headers: response.metadata,
-							event: event.decode(response.event),
-						},
-					})
-				},
-			)
-			while (true) {
-				// TODO: need a way to cancel
-				const action = yield take(eventsChannel)
-				yield put(action)
-			}
+							eventContext: response.eventContext || {},
+							metadata: response.metadata,
+							event: JSON.parse(Buffer.from(response.event).toString()),
+						}),
+					)
+					return
+				}
+
+				const eventsMap: { [key: string]: string } = {
+					EventTypeAccountContactRequestIncomingReceived: 'AccountContactRequestReceived',
+					EventTypeAccountContactRequestIncomingAccepted: 'AccountContactRequestAccepted',
+					EventTypeAccountContactRequestIncomingDiscarded: 'AccountContactRequestDiscarded',
+					EventTypeAccountContactRequestOutgoingEnqueued: 'AccountContactRequestEnqueued',
+					EventTypeAccountContactRequestOutgoingSent: 'AccountContactRequestSent',
+				}
+				const eventName = eventNameFromValue(eventType)
+				if (eventName === undefined) {
+					throw new Error(`Invalid event type ${eventType}`)
+				}
+				const protocol: { [key: string]: any } = api.berty.protocol
+				const event = protocol[eventName.replace('EventType', '')] || protocol[eventsMap[eventName]]
+				if (!event) {
+					console.warn("Don't know how to decode", eventName)
+					return
+				}
+				eventsChannel.put({
+					type: `${eventHandler.name}/${Case.camel(eventName.replace('EventType', ''))}`,
+					payload: {
+						aggregateId: `${payload.id}`,
+						eventContext: response.eventContext,
+						headers: response.metadata,
+						event: event.decode(response.event),
+					},
+				})
+			},
+		)
+		return eventsChannel
+	},
+	groupMessageSubscribe: function*(payload) {
+		// do protocol things
+	},
+}
+
+export function* orchestrator() {
+	yield all([
+		takeLeading(commands.start, function*(action) {
+			yield* transactions.start(action.payload)
+		}),
+
+		takeLeading(commands.instanceExportData, function*(action) {
+			yield* transactions.instanceExportData(action.payload)
+		}),
+
+		takeLeading(commands.contactRequestReference, function*(action) {
+			yield* transactions.contactRequestReference(action.payload)
+		}),
+		takeLeading(commands.contactRequestDisable, function*(action) {
+			yield* transactions.contactRequestDisable(action.payload)
+		}),
+		takeLeading(commands.contactRequestEnable, function*(action) {
+			yield* transactions.contactRequestEnable(action.payload)
+		}),
+		takeLeading(commands.contactRequestResetReference, function*(action) {
+			yield* transactions.contactRequestResetReference(action.payload)
+		}),
+		takeLeading(commands.contactRequestSend, function*(action) {
+			yield* transactions.contactRequestSend(action.payload)
+		}),
+		takeLeading(commands.contactRequestAccept, function*(action) {
+			yield* transactions.contactRequestAccept(action.payload)
+		}),
+		takeLeading(commands.contactRequestDiscard, function*(action) {
+			yield* transactions.contactRequestDiscard(action.payload)
+		}),
+
+		takeLeading(commands.contactBlock, function*(action) {
+			yield* transactions.contactBlock(action.payload)
+		}),
+		takeLeading(commands.contactUnblock, function*(action) {
+			yield* transactions.contactUnblock(action.payload)
+		}),
+		takeLeading(commands.contactAliasKeySend, function*(action) {
+			yield* transactions.contactAliasKeySend(action.payload)
+		}),
+
+		takeLeading(commands.multiMemberGroupCreate, function*(action) {
+			yield* transactions.multiMemberGroupCreate(action.payload)
+		}),
+		takeLeading(commands.multiMemberGroupJoin, function*(action) {
+			yield* transactions.multiMemberGroupJoin(action.payload)
+		}),
+		takeLeading(commands.multiMemberGroupLeave, function*(action) {
+			yield* transactions.multiMemberGroupLeave(action.payload)
+		}),
+		takeLeading(commands.multiMemberGroupAliasResolverDisclose, function*(action) {
+			yield* transactions.multiMemberGroupAliasResolverDisclose(action.payload)
+		}),
+		takeLeading(commands.multiMemberGroupAdminRoleGrant, function*(action) {
+			yield* transactions.multiMemberGroupAdminRoleGrant(action.payload)
+		}),
+
+		takeLeading(commands.multiMemberGroupInvitationCreate, function*(action) {
+			yield* transactions.multiMemberGroupInvitationCreate(action.payload)
+		}),
+		takeLeading(commands.appMetadataSend, function*(action) {
+			yield* transactions.appMetadataSend(action.payload)
+		}),
+		takeLeading(commands.appMessageSend, function*(action) {
+			yield* transactions.appMessageSend(action.payload)
+		}),
+		takeLeading(commands.groupMetadataSubscribe, function*(action) {
+			yield* transactions.groupMetadataSubscribe(action.payload)
+		}),
+		takeLeading(commands.groupMessageSubscribe, function*(action) {
+			yield* transactions.groupMessageSubscribe(action.payload)
 		}),
 	])
 }

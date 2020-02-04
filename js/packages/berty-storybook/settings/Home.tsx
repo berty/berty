@@ -8,6 +8,7 @@ import HeaderSettings from '../shared-components/Header'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { berty } from '@berty-tech/api'
+import { Chat } from '@berty-tech/hooks'
 
 //
 // Home Vue
@@ -147,7 +148,7 @@ export const useAccount = () => {
 
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	const { navigate } = useNavigation()
-	const account = useAccount()
+	const account = { ...Chat.useAccount(), ...useAccount() }
 	const _styles = useStylesHome()
 	const [{ flex, background, row }] = useStyles()
 	return (

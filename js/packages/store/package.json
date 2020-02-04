@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@berty-tech/api": "^0.0.0",
+    "@clarketm/saga-monitor": "^2.0.1",
     "@reduxjs/toolkit": "^1.2.1",
     "@types/once": "^1.4.0",
     "@types/redux-logger": "^3.0.7",
@@ -40,6 +41,7 @@
     "redux-logger": "^3.0.6",
     "redux-saga": "^1.1.3",
     "redux-test-recorder": "^1.4.0",
+    "simpleflakes": "^2.1.0",
     "string-to-arraybuffer": "^1.0.2",
     "text-encoding-polyfill": "^0.6.7"
   },

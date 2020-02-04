@@ -1,18 +1,23 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, takeLeading, select, takeEvery } from 'redux-saga/effects'
+import {
+	fork,
+	put,
+	putResolve,
+	all,
+	takeLeading,
+	select,
+	takeEvery,
+	take,
+} from 'redux-saga/effects'
 import faker from 'faker'
 import { Buffer } from 'buffer'
+import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
 
 import * as protocol from '../protocol'
 
 export type Entity = {
 	id: string
-	configuration: {
-		accountPk: string
-		devicePk: string
-		accountGroupPk: string
-	}
 	contactRequestReference?: string
 	name: string
 	requests: Array<string>
@@ -27,7 +32,6 @@ export type Event = {
 }
 
 export type State = {
-	events: Array<Event>
 	aggregates: { [key: string]: Entity }
 }
 
@@ -42,25 +46,23 @@ export namespace Command {
 	export type Create = { name: string }
 	export type Delete = { id: string }
 	export type SendContactRequest = { id: string; otherReference: string }
+	export type Replay = { id: string }
+	export type Open = { id: string }
 }
 
 export namespace Query {
 	export type List = {}
 	export type Get = { id: string }
+	export type GetAll = void
 	export type GetLength = undefined
 }
 
 export namespace Event {
-	export type Created = { aggregateId: string; name: string }
-	export type Deleted = { aggregateId: string }
-	export type ConfigurationUpdated = {
+	export type Created = {
 		aggregateId: string
-		configuration: {
-			accountPk: string
-			devicePk: string
-			accountGroupPk: string
-		}
+		name: string
 	}
+	export type Deleted = { aggregateId: string }
 }
 
 type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
@@ -70,22 +72,29 @@ export type CommandsReducer = {
 	create: SimpleCaseReducer<Command.Create>
 	delete: SimpleCaseReducer<Command.Delete>
 	sendContactRequest: SimpleCaseReducer<Command.SendContactRequest>
+	replay: SimpleCaseReducer<Command.Replay>
+	open: SimpleCaseReducer<Command.Open>
 }
 
 export type QueryReducer = {
 	list: (state: GlobalState, query: Query.List) => Array<Entity>
 	get: (state: GlobalState, query: Query.Get) => Entity
+	getAll: (state: GlobalState, query: Query.GetAll) => Array<Entity>
 	getLength: (state: GlobalState) => number
 }
 
 export type EventsReducer = {
 	created: SimpleCaseReducer<Event.Created>
 	deleted: SimpleCaseReducer<Event.Deleted>
-	configurationUpdated: SimpleCaseReducer<Event.ConfigurationUpdated>
+}
+
+export type Transactions = {
+	[K in keyof CommandsReducer]: CommandsReducer[K] extends SimpleCaseReducer<infer TPayload>
+		? (payload: TPayload) => Generator
+		: never
 }
 
 const initialState = {
-	events: [],
 	aggregates: {},
 }
 
@@ -97,6 +106,8 @@ const commandHandler = createSlice<State, CommandsReducer>({
 		create: (state) => state,
 		delete: (state) => state,
 		sendContactRequest: (state) => state,
+		replay: (state) => state,
+		open: (state) => state,
 	},
 })
 
@@ -120,11 +131,6 @@ const eventHandler = createSlice<State, EventsReducer>({
 		created: (state, { payload }) => {
 			state.aggregates[payload.aggregateId] = {
 				id: payload.aggregateId,
-				configuration: {
-					accountPk: '',
-					devicePk: '',
-					accountGroupPk: '',
-				},
 				name: payload.name,
 				requests: [],
 				conversations: [],
@@ -134,12 +140,6 @@ const eventHandler = createSlice<State, EventsReducer>({
 		},
 		deleted: (state, { payload }) => {
 			delete state.aggregates[payload.aggregateId]
-			return state
-		},
-		configurationUpdated: (state, { payload }) => {
-			if (state.aggregates[payload.aggregateId]) {
-				state.aggregates[payload.aggregateId].configuration = payload.configuration
-			}
 			return state
 		},
 	},
@@ -161,82 +161,163 @@ export const events = eventHandler.actions
 export const queries: QueryReducer = {
 	list: (state) => Object.values(state.chat.account.aggregates),
 	get: (state, { id }) => state.chat.account.aggregates[id],
+	getAll: (state) => Object.values(state.chat.account.aggregates),
 	getLength: (state) => Object.keys(state.chat.account.aggregates).length,
+}
+
+const getProtocolClient = function*(id: string): Generator<unknown, protocol.Client, void> {
+	const client = (yield select((state) => protocol.queries.client.get(state, { id }))) as
+		| protocol.Client
+		| undefined
+	if (client == null) {
+		throw new Error('client is not defined')
+	}
+	return client
+}
+
+export const transactions: Transactions = {
+	open: function*({ id }) {
+		yield* protocol.transactions.client.start({ id })
+
+		// subcribe to account log
+		const client = yield* getProtocolClient(id)
+		yield fork(function*() {
+			const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
+				id: client.id,
+				groupPk: new Buffer(client.accountGroupPk),
+				// TODO: use last cursor
+				since: new Uint8Array(),
+				until: new Uint8Array(),
+				goBackwards: false,
+			})
+			while (1) {
+				const action = yield take(chan)
+				yield put(action)
+				if (action.type === protocol.events.client.groupMetadataPayloadSent.type) {
+					yield put(action.payload.event)
+				}
+			}
+		})
+		yield* protocol.transactions.client.contactRequestEnable({ id })
+	},
+	generate: function*() {
+		yield* transactions.create({ name: faker.name.firstName() })
+	},
+	create: function*({ name }) {
+		// create an id for the account
+		const id = simpleflake().toString()
+
+		// open account
+		yield* transactions.open({ id })
+		// get account PKs
+		const client = yield* getProtocolClient(id)
+		// send created event to protocol
+		const event = events.created({
+			aggregateId: id,
+			name,
+		})
+		yield* protocol.transactions.client.appMetadataSend({
+			id,
+			groupPk: new Buffer(client.accountGroupPk),
+			payload: new Buffer(JSON.stringify(event)),
+		})
+	},
+	delete: function*({ id }) {
+		// get account PKs
+		const client = yield* getProtocolClient(id)
+
+		// send created event to protocol
+		const event = events.deleted({
+			aggregateId: id,
+		})
+		yield* protocol.transactions.client.appMetadataSend({
+			id,
+			groupPk: new Buffer(client.accountGroupPk),
+			payload: new Buffer(JSON.stringify(event)),
+		})
+	},
+	replay: function*({ id }) {
+		console.log('replay')
+		const account = select((state) => queries.get(state, { id }))
+		if (account == null) {
+			console.error('account does not exist')
+			return
+		}
+
+		const client = yield* getProtocolClient(id)
+
+		// delete aggregate
+		yield put(events.deleted({ aggregateId: id }))
+
+		// replay log from first event
+		const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
+			id: client.id,
+			groupPk: new Buffer(client.accountGroupPk),
+			// TODO: use last cursor
+			since: new Uint8Array(),
+			until: new Uint8Array(),
+			goBackwards: false,
+		})
+		yield takeEvery(chan, function*(
+			action: protocol.client.Commands extends {
+				[key: string]: (
+					state: protocol.client.State,
+					action: infer UAction,
+				) => protocol.client.State
+			}
+				? UAction
+				: { type: string; payload: { event: any } },
+		) {
+			yield put(action)
+			if (action.type === protocol.events.client.groupMetadataPayloadSent.type) {
+				yield put(action.payload.event)
+			}
+		})
+	},
+	sendContactRequest: function*(payload) {
+		const account = (yield select((state) => queries.get(state, { id: payload.id }))) as
+			| Entity
+			| undefined
+		if (account == null) {
+			throw new Error("account doesn't exist")
+		}
+
+		const metadata = {
+			name: account.name,
+		}
+		yield* protocol.transactions.client.contactRequestSend({
+			id: payload.id,
+			contactMetadata: Buffer.from(JSON.stringify(metadata), 'utf-8'),
+			reference: Buffer.from(payload.otherReference, 'base64'),
+		})
+	},
 }
 
 export function* orchestrator() {
 	yield all([
-		takeLeading(commands.generate, function*() {
-			yield put(commands.create({ name: faker.name.firstName() }))
-		}),
-
-		takeLeading(commands.create, function*({ payload: { name } }) {
-			// create an id for the account
-			const id = yield select(queries.getLength)
-
-			yield put(protocol.commands.client.instanceGetConfiguration({ id }))
-
-			// send event
-			yield put(
-				events.created({
-					aggregateId: id,
-					name,
-				}),
-			)
-		}),
-
-		takeLeading(commands.delete, function*() {
-			// TODO: delete account
-			// yield put(events.deleted())
-		}),
-
-		// send every chat account related events to protocol account log
-		takeEvery(Object.values(events), function*(action: { type: string; payload: Event }) {
-			// infinite loop ??? accountContactRequestIncomingReceived <-> contactRequestIncomingReceived
-			const account = yield select((state) =>
-				queries.get(state, { id: action.payload.aggregateId }),
-			)
-			yield put(
-				protocol.commands.client.appMetadataSend({
-					id: account.id,
-					groupPk: account.configuration.accountGroupPk,
-					payload: new Buffer(JSON.stringify(action)),
-				}),
-			)
-		}),
-
-		takeEvery(protocol.events.client.instanceGotConfiguration, function*(action) {
-			yield put(
-				events.configurationUpdated({
-					aggregateId: action.payload.aggregateId,
-					configuration: {
-						accountPk: Buffer.from(action.payload.accountPk).toString(),
-						devicePk: Buffer.from(action.payload.devicePk).toString(),
-						accountGroupPk: Buffer.from(action.payload.accountGroupPk).toString(),
-					},
-				}),
-			)
-		}),
-
-		takeEvery(commands.sendContactRequest, function*({ payload }) {
-			const account = yield select((state) => queries.get(state, { id: payload.id }))
-			const metadata = {
-				name: account.name,
+		function*() {
+			// start protocol clients
+			const accounts = (yield select(queries.getAll)) as Entity[]
+			for (const account of accounts) {
+				yield put(commands.open({ id: account.id }))
 			}
-			yield put(
-				protocol.commands.client.contactRequestSend({
-					id: payload.id,
-					contactMetadata: Buffer.from(JSON.stringify(metadata), 'utf-8'),
-					reference: Buffer.from(payload.otherReference, 'base64'),
-				}),
-			)
+		},
+
+		takeLeading(commands.open, function*(action) {
+			yield* transactions.open(action.payload)
 		}),
 
-		takeEvery(events.configurationUpdated, function*(action) {
-			const account = yield select((state) =>
-				queries.get(state, { id: action.payload.aggregateId }),
-			)
-			yield put(protocol.commands.client.contactRequestEnable({ id: account.id }))
+		takeLeading(commands.generate, function*(action) {
+			yield* transactions.generate(action.payload)
+		}),
+		takeLeading(commands.create, function*(action) {
+			yield* transactions.create(action.payload)
+		}),
+		takeLeading(commands.delete, function*(action) {
+			yield* transactions.delete(action.payload)
+		}),
+		takeLeading(commands.replay, function*(action) {
+			yield* transactions.replay(action.payload)
 		}),
 	])
 }

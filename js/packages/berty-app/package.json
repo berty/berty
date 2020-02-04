@@ -20,7 +20,7 @@
     "metro-react-native-babel-preset": "^0.56.0",
     "react-native-typescript-transformer": "^1.2.13",
     "react-test-renderer": "^16.9.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.7.5"
   },
   "dependencies": {
     "@berty-tech/berty-navigation": "^0.0.0",
