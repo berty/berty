@@ -7,13 +7,22 @@ import mem from 'mem'
 
 import * as protocol from '../protocol'
 import * as account from './account'
-import * as request from './request'
+import * as incomingContactRequest from './incomingContactRequest'
+import * as outgoingContactRequest from './outgoingContactRequest'
 import * as contact from './contact'
 import * as conversation from './conversation'
 import * as member from './member'
 import * as message from './message'
 
-export { account, request, contact, conversation, member, message }
+export {
+	account,
+	incomingContactRequest,
+	outgoingContactRequest,
+	contact,
+	conversation,
+	member,
+	message,
+}
 
 export type State = account.GlobalState
 
@@ -21,7 +30,8 @@ export const reducers = {
 	...protocol.reducers,
 	chat: combineReducers({
 		account: account.reducer,
-		request: request.reducer,
+		incomingContactRequest: incomingContactRequest.reducer,
+		outgoingContactRequest: outgoingContactRequest.reducer,
 		contact: contact.reducer,
 		conversation: conversation.reducer,
 		member: member.reducer,
@@ -33,7 +43,7 @@ export function* rootSaga() {
 	yield all([
 		call(protocol.rootSaga),
 		call(account.orchestrator),
-		call(request.orchestrator),
+		call(incomingContactRequest.orchestrator),
 		call(contact.orchestrator),
 		call(conversation.orchestrator),
 		call(member.orchestrator),

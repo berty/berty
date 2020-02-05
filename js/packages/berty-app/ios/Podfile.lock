@@ -40,6 +40,8 @@ PODS:
     - React
   - Interactable (2.0.1):
     - React
+  - Permission-Camera (2.0.3):
+    - RNPermissions
   - RCTRequired (0.61.5)
   - RCTTypeSafety (0.61.5):
     - FBLazyVector (= 0.61.5)
@@ -205,6 +207,14 @@ PODS:
   - React-jsinspector (0.61.5)
   - react-native-blur (0.8.0):
     - React
+  - react-native-camera (3.16.0):
+    - React
+    - react-native-camera/RCT (= 3.16.0)
+    - react-native-camera/RN (= 3.16.0)
+  - react-native-camera/RCT (3.16.0):
+    - React
+  - react-native-camera/RN (3.16.0):
+    - React
   - react-native-config (0.11.7):
     - React
   - react-native-example (1.0.0):
@@ -261,7 +271,7 @@ PODS:
     - React
   - RNScreens (2.0.0-alpha.11):
     - React
-  - RNSVG (9.13.3):
+  - RNSVG (11.0.1):
     - React
   - Yoga (1.14.0)
 
@@ -274,6 +284,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - go-bridge (from `../../go-bridge`)
   - Interactable (from `../node_modules/react-native-interactable`)
+  - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -286,6 +297,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
+  - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-example (from `../../react-native-example`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -331,6 +343,8 @@ EXTERNAL SOURCES:
     :path: "../../go-bridge"
   Interactable:
     :path: "../node_modules/react-native-interactable"
+  Permission-Camera:
+    :path: "../node_modules/react-native-permissions/ios/Camera.podspec"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -351,6 +365,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
+  react-native-camera:
+    :path: "../node_modules/react-native-camera"
   react-native-config:
     :path: "../node_modules/react-native-config"
   react-native-example:
@@ -405,6 +421,7 @@ SPEC CHECKSUMS:
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   go-bridge: c1dc5d0b5ca1cf244ea633a6ff535253eed83ac8
   Interactable: 411887c89fa16ac41f8e7898aca06dcad55e5f22
+  Permission-Camera: 731959b8ffb5757e1ee85893fb49c3aa021ef512
   RCTRequired: b153add4da6e7dbc44aebf93f3cf4fcae392ddf1
   RCTTypeSafety: 9aa1b91d7f9310fc6eadc3cf95126ffe818af320
   React: b6a59ef847b2b40bb6e0180a97d0ca716969ac78
@@ -415,6 +432,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
+  react-native-camera: 705c7e9412436957b4dc894a1af61f43830787e2
   react-native-config: 8f6b2b9e017f6a5e92a97353c768e19e67294bb1
   react-native-example: a62e0ddd2e417f3683b0367d9f0a3539d62f8b10
   react-native-safe-area-context: 1f8a52fb0ab1321eef9a7099bd2c360d4e38264b
@@ -434,9 +452,9 @@ SPEC CHECKSUMS:
   RNPermissions: 9e437a90de84a5402ff689d4da233730b81556c2
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
   RNScreens: ad3661f864ef18d952e9a4799b6791683e33c1fc
-  RNSVG: f6177f8d7c095fada7cfee2e4bb7388ba426064c
+  RNSVG: 67f1f12dae2cef6ed59a42cae74a6b8f5a9e7b46
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 696dd908a9fff756d8b8ea360ecd9cc1b7cb4a9e
+PODFILE CHECKSUM: 6f4415cbb951031b903df2174b80456bdfc3ccdb
 
 COCOAPODS: 1.8.4

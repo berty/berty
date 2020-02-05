@@ -56,7 +56,7 @@
     "react-native-safe-area-context": "^0.6.1",
     "react-native-screens": "^2.0.0-alpha.11",
     "react-native-storybook-loader": "^1.8.1",
-    "react-native-svg": "9.13.3",
+    "react-native-svg": "^11.0.1",
     "react-test-renderer": "^16.9.0",
     "storybook-addon-i18n": "^5.1.11"
   },

@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, takeLeading, select, take, takeEvery } from 'redux-saga/effects'
+import { put, all, takeLeading, select, takeEvery } from 'redux-saga/effects'
 import faker from 'faker'
 import { Buffer } from 'buffer'
 
@@ -13,6 +13,7 @@ export type Entity = {
 		devicePk: string
 		accountGroupPk: string
 	}
+	contactRequestReference?: string
 	name: string
 	requests: Array<string>
 	conversations: Array<string>
@@ -40,6 +41,7 @@ export namespace Command {
 	export type Generate = void
 	export type Create = { name: string }
 	export type Delete = { id: string }
+	export type SendContactRequest = { id: string; otherReference: string }
 }
 
 export namespace Query {
@@ -61,10 +63,13 @@ export namespace Event {
 	}
 }
 
+type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
+
 export type CommandsReducer = {
-	generate: (state: State, command: { payload: Command.Generate }) => State
-	create: (state: State, command: { payload: Command.Create }) => State
-	delete: (state: State, command: { payload: Command.Delete }) => State
+	generate: SimpleCaseReducer<Command.Generate>
+	create: SimpleCaseReducer<Command.Create>
+	delete: SimpleCaseReducer<Command.Delete>
+	sendContactRequest: SimpleCaseReducer<Command.SendContactRequest>
 }
 
 export type QueryReducer = {
@@ -74,9 +79,9 @@ export type QueryReducer = {
 }
 
 export type EventsReducer = {
-	created: (state: State, event: { payload: Event.Created }) => State
-	deleted: (state: State, event: { payload: Event.Deleted }) => State
-	configurationUpdated: (state: State, event: { payload: Event.ConfigurationUpdated }) => State
+	created: SimpleCaseReducer<Event.Created>
+	deleted: SimpleCaseReducer<Event.Deleted>
+	configurationUpdated: SimpleCaseReducer<Event.ConfigurationUpdated>
 }
 
 const initialState = {
@@ -91,8 +96,22 @@ const commandHandler = createSlice<State, CommandsReducer>({
 		generate: (state) => state,
 		create: (state) => state,
 		delete: (state) => state,
+		sendContactRequest: (state) => state,
 	},
 })
+
+const intoBuffer = (
+	thing: Buffer | Uint8Array | { [key: string]: number } | { [key: number]: number },
+): Buffer => {
+	// redux-test-recorder f up the Uint8Arrays so we have to use this monster
+	if (thing instanceof Buffer) {
+		return thing
+	}
+	if (thing instanceof Uint8Array) {
+		return Buffer.from(thing)
+	}
+	return Buffer.from(Object.values(thing))
+}
 
 const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/account/event',
@@ -120,6 +139,16 @@ const eventHandler = createSlice<State, EventsReducer>({
 		configurationUpdated: (state, { payload }) => {
 			if (state.aggregates[payload.aggregateId]) {
 				state.aggregates[payload.aggregateId].configuration = payload.configuration
+			}
+			return state
+		},
+	},
+	extraReducers: {
+		[protocol.events.client.contactRequestReferenceUpdated.type]: (state, { payload }) => {
+			if (state.aggregates[payload.aggregateId]) {
+				state.aggregates[payload.aggregateId].contactRequestReference = intoBuffer(
+					payload.reference,
+				).toString('base64')
 			}
 			return state
 		},
@@ -163,6 +192,7 @@ export function* orchestrator() {
 
 		// send every chat account related events to protocol account log
 		takeEvery(Object.values(events), function*(action: { type: string; payload: Event }) {
+			// infinite loop ??? accountContactRequestIncomingReceived <-> contactRequestIncomingReceived
 			const account = yield select((state) =>
 				queries.get(state, { id: action.payload.aggregateId }),
 			)
@@ -186,6 +216,27 @@ export function* orchestrator() {
 					},
 				}),
 			)
+		}),
+
+		takeEvery(commands.sendContactRequest, function*({ payload }) {
+			const account = yield select((state) => queries.get(state, { id: payload.id }))
+			const metadata = {
+				name: account.name,
+			}
+			yield put(
+				protocol.commands.client.contactRequestSend({
+					id: payload.id,
+					contactMetadata: Buffer.from(JSON.stringify(metadata), 'utf-8'),
+					reference: Buffer.from(payload.otherReference, 'base64'),
+				}),
+			)
+		}),
+
+		takeEvery(events.configurationUpdated, function*(action) {
+			const account = yield select((state) =>
+				queries.get(state, { id: action.payload.aggregateId }),
+			)
+			yield put(protocol.commands.client.contactRequestEnable({ id: account.id }))
 		}),
 	])
 }

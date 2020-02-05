@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, Fragment } from 'react'
 import {
 	SafeAreaView,
 	View,
@@ -13,6 +13,8 @@ import { RequestProps } from '../shared-props/User'
 import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
+import { Chat } from '@berty-tech/hooks'
+import QRCode from 'react-native-qrcode-svg'
 
 //
 // Settings My Berty ID Vue
@@ -38,24 +40,49 @@ const _bertyIdStyles = StyleSheet.create({
 	bertyIdButton: { width: 60, height: 60, borderRadius: 60 / 2, marginRight: 60, bottom: 30 },
 })
 
-const BertyIdContent: React.FC<{}> = () => {
+const BertyIdContent: React.FC<{}> = ({ children }) => {
 	const _styles = useStylesBertyId()
 	const [{ padding, column, text }] = useStyles()
+
 	return (
 		<ScrollView
 			style={[_styles.scrollViewMaxHeight]}
 			contentContainerStyle={[padding.vertical.medium]}
 		>
-			<View style={[column.justify, _styles.contentMinHeight]}>
-				<Text style={text.align.center}>Yo</Text>
-			</View>
+			<View style={[column.justify, { alignItems: 'center' }]}>{children}</View>
 		</ScrollView>
 	)
+}
+
+const ContactRequestQR = () => {
+	const contactRequestEnabled = Chat.useAccountContactRequestEnabled()
+	const contactRequestReference = Chat.useAccountContactRequestReference()
+	if (contactRequestEnabled) {
+		// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
+		return (
+			<>
+				<QRCode size={200} value={contactRequestReference} />
+				{__DEV__ && <Text selectable={true}>{contactRequestReference}</Text>}
+			</>
+		)
+	} else {
+		return <Text>Error: Contact request is disabled</Text>
+	}
+}
+
+const SelectedContent = ({ contentName }: { contentName: string }) => {
+	switch (contentName) {
+		case 'QR':
+			return <ContactRequestQR />
+		default:
+			return <Text>Error: Unknown content name "{contentName}"</Text>
+	}
 }
 
 const BertIdBody: React.FC<RequestProps> = ({ user }) => {
 	const _styles = useStylesBertyId()
 	const [{ background, border, margin, padding }] = useStyles()
+	const [selectedContent, setSelectedContent] = useState()
 	return (
 		<View
 			style={[
@@ -67,8 +94,10 @@ const BertIdBody: React.FC<RequestProps> = ({ user }) => {
 		>
 			<RequestAvatar {...user} size={90} />
 			<View style={[padding.horizontal.big, _styles.bodyContent]}>
-				<TabBar tabType='contact' />
-				<BertyIdContent />
+				<TabBar tabType='contact' onTabChange={setSelectedContent} />
+				<BertyIdContent>
+					<SelectedContent contentName={selectedContent} />
+				</BertyIdContent>
 			</View>
 		</View>
 	)

@@ -14,6 +14,8 @@ import { BlurView } from '@react-native-community/blur'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import { useNavigation } from '@berty-tech/berty-navigation'
+import { Chat } from '@berty-tech/hooks'
+import { chat } from '@berty-tech/store'
 
 const useStylesList = () => {
 	const [
@@ -49,7 +51,7 @@ const useStylesList = () => {
 	}
 }
 
-const RequestsItem: React.FC<{}> = () => {
+const RequestsItem: React.FC<chat.outgoingContactRequest.Entity> = ({ id, contactName, sent }) => {
 	const navigation = useNavigation()
 	const _styles = useStylesList()
 	const [{ border, column, flex, row, padding, text, background, color }] = useStyles()
@@ -66,13 +68,13 @@ const RequestsItem: React.FC<{}> = () => {
 				diffSize={8}
 			/>
 			<Text numberOfLines={1} style={[flex.tiny, text.align.center]}>
-				Coucou
+				{contactName}
 			</Text>
 			<Text
 				category='c1'
 				style={[padding.vertical.medium, text.align.center, text.size.tiny, text.color.grey]}
 			>
-				Sent 3 days ago
+				{sent ? 'Sent 3 days ago' : 'Not sent yet'}
 			</Text>
 			<View style={[row.center]}>
 				<TouchableOpacity
@@ -85,7 +87,10 @@ const RequestsItem: React.FC<{}> = () => {
 				>
 					<Icon name='close-outline' width={15} height={15} fill={color.grey} />
 				</TouchableOpacity>
-				<TouchableOpacity style={[_styles.tinyAcceptButton, background.light.green, row.center]}>
+				<TouchableOpacity
+					disabled={!sent}
+					style={[_styles.tinyAcceptButton, background.light.green, row.center]}
+				>
 					<Icon
 						name='checkmark-outline'
 						width={15}
@@ -103,25 +108,15 @@ const RequestsItem: React.FC<{}> = () => {
 const Requests: React.FC<{}> = () => {
 	const [{ padding }] = useStyles()
 
+	const requests = Chat.useOutgoingContactRequests()
+
 	return (
 		<SafeAreaView>
 			<View style={[padding.vertical.medium]}>
 				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
-					<RequestsItem />
+					{requests.map((req) => (
+						<RequestsItem key={req.id} {...req} />
+					))}
 				</ScrollView>
 			</View>
 		</SafeAreaView>
