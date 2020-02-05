@@ -77,7 +77,7 @@ const eventHandler = createSlice<State, {}>({
 		[protocol.events.client.accountContactRequestIncomingAccepted.type]: (state, { payload }) => {
 			const aggregateId = getAggregateId({
 				accountId: payload.aggregateId,
-				contactPk: payload.contactPk,
+				contactPk: payload.event.contactPk,
 			})
 			state.aggregates[aggregateId].accepted = true
 			return state
@@ -85,7 +85,7 @@ const eventHandler = createSlice<State, {}>({
 		[protocol.events.client.accountContactRequestIncomingDiscarded.type]: (state, { payload }) => {
 			const aggregateId = getAggregateId({
 				accountId: payload.aggregateId,
-				contactPk: payload.contactPk,
+				contactPk: payload.event.contactPk,
 			})
 			state.aggregates[aggregateId].discarded = true
 			return state
