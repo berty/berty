@@ -1,10 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, takeLeading } from 'redux-saga/effects'
+import { all, select, put, takeLeading } from 'redux-saga/effects'
 
 export type Entity = {
+	id: string
 	name: string
-	conversation: number
+	conversation: string
 	messages: Array<number>
 }
 
@@ -26,6 +27,7 @@ export type GlobalState = {
 }
 
 export namespace Command {
+	export type Create = { name: string; members: Array<number> }
 	export type Invite = void
 	export type Remove = void
 }
@@ -37,13 +39,17 @@ export namespace Query {
 }
 
 export namespace Event {
+	export type Created = { aggregateId: string; name: string }
 	export type Invited = { aggregateId: string; name: string }
 	export type Removed = { aggregateId: string }
 }
 
+type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
+
 export type CommandsReducer = {
-	invite: (state: State) => State
-	remove: (state: State) => State
+	create: SimpleCaseReducer<Command.Create>
+	invite: SimpleCaseReducer<Command.Invite>
+	remove: SimpleCaseReducer<Command.Remove>
 }
 
 export type QueryReducer = {
@@ -53,8 +59,9 @@ export type QueryReducer = {
 }
 
 export type EventsReducer = {
-	invited: (state: State) => State
-	removed: (state: State) => State
+	created: SimpleCaseReducer<Event.Created>
+	invited: SimpleCaseReducer<Event.Invited>
+	removed: SimpleCaseReducer<Event.Removed>
 }
 
 const initialState: State = {
@@ -62,10 +69,17 @@ const initialState: State = {
 	aggregates: {},
 }
 
+export type Transactions = {
+	[K in keyof CommandsReducer]: CommandsReducer[K] extends SimpleCaseReducer<infer TPayload>
+		? (payload: TPayload) => Generator
+		: never
+}
+
 const commandHandler = createSlice<State, CommandsReducer>({
 	name: 'chat/member/command',
 	initialState,
 	reducers: {
+		create: (state: State) => state,
 		invite: (state: State) => state,
 		remove: (state: State) => state,
 	},
@@ -75,6 +89,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/member/event',
 	initialState,
 	reducers: {
+		created: (state: State) => state,
 		invited: (state: State) => state,
 		removed: (state: State) => state,
 	},
@@ -89,15 +104,28 @@ export const queries: QueryReducer = {
 	getLength: (state) => Object.keys(state.chat.member.aggregates).length,
 }
 
+export const transactions: Transactions = {
+	create: function*() {
+		// TODO: create multiMemberGroup
+	},
+	invite: function*() {
+		// TODO: create invitation for multiMemberGrouo
+	},
+	remove: function*() {
+		// TODO: remove multiMemberGroup
+	},
+}
+
 export function* orchestrator() {
 	yield all([
-		takeLeading(commands.invite, function*() {
-			// TODO: invite member
-			// yield put(events.invited())
+		takeLeading(commands.create, function*(action) {
+			yield* transactions.create(action.payload)
 		}),
-		takeLeading(commands.remove, function*() {
-			// TODO: remove member
-			// yield put(events.removed())
+		takeLeading(commands.invite, function*(action) {
+			yield* transactions.invite(action.payload)
+		}),
+		takeLeading(commands.remove, function*(action) {
+			yield* transactions.remove(action.payload)
 		}),
 	])
 }

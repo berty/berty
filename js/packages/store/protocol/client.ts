@@ -171,8 +171,10 @@ const eventHandler = createSlice<State, Events>({
 			return state
 		},
 		lastMetadataCidUpdated: (state, action) => {
-			state.aggregates[action.payload.aggregateId].lastMetadataCids[action.payload.groupPk] =
-				action.payload.cid
+			if (state.aggregates[action.payload.aggregateId]) {
+				state.aggregates[action.payload.aggregateId].lastMetadataCids[action.payload.groupPk] =
+					action.payload.cid
+			}
 			return state
 		},
 

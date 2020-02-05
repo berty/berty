@@ -133,12 +133,6 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	) => void = async (request, callback) => {
 		await this.setRdvLogToken(undefined)
 		callback(null, {})
-		/*this.client?.logClose({ logToken: contactLogToken }, (error, response) => {
-			if (error) {
-				console.log('handler.ts: ContactRequestDisable: logClose error:', error)
-				return
-			}
-		})*/
 	}
 
 	get accountMetadataLogToken() {
@@ -181,9 +175,6 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 				dataType?: string
 		  }) => {
 		const { client } = this
-		if (!client) {
-			throw new Error('handler.ts: addEventToMetadataLog: missing client')
-		}
 		return new Promise((resolve, reject) => {
 			try {
 				client.logAdd(
@@ -283,7 +274,6 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		await this.setRdvLogToken(await this._logToken())
 		callback(null, { reference: this.referenceBytes })
 	}
-
 	ContactRequestSend: (
 		request: api.berty.protocol.ContactRequestSend.IRequest,
 		callback: (
@@ -293,9 +283,6 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	) => void = async (request, callback) => {
 		try {
 			const { client } = this
-			if (!client) {
-				throw new Error('handler.ts: ContactRequestSend: missing client')
-			}
 			if (!request.reference) {
 				throw new Error('handler.ts: ContactRequestSend: missing reference in request')
 			}

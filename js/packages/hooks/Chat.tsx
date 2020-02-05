@@ -52,10 +52,35 @@ export const useAccountCreate = () => {
 	)
 }
 
-export const useAccountReplay = () => {
+// conversations commands
+export const useConversationGenerate = () => {
+	const dispatch = useDispatch()
+	return useMemo(() => () => dispatch(chat.conversation.commands.generate()), [dispatch])
+}
+
+export const useConversationCreate = () => {
 	const dispatch = useDispatch()
 	return useMemo(
-		() => (payload: chat.account.Command.Replay) => dispatch(chat.account.commands.replay(payload)),
+		() => (payload: chat.conversation.Command.Create) =>
+			dispatch(chat.conversation.commands.create(payload)),
+		[dispatch],
+	)
+}
+
+export const useConversationDelete = () => {
+	const dispatch = useDispatch()
+	return useMemo(
+		() => (payload: chat.conversation.Command.Delete) =>
+			dispatch(chat.conversation.commands.delete(payload)),
+		[dispatch],
+	)
+}
+
+// multiMemberGroup commands
+export const useMultiMemberGroupCreate = () => {
+	const dispatch = useDispatch()
+	return useMemo(
+		() => (payload: chat.member.Command.Create) => dispatch(chat.member.commands.create(payload)),
 		[dispatch],
 	)
 }
@@ -180,4 +205,22 @@ export const useAccountContactSearchResults = (searchText: string): chat.contact
 	return useSelector((state: chat.contact.GlobalState) =>
 		account ? chat.contact.queries.search(state, { accountId: account.id, searchText }) : [],
 	)
+}
+
+// conversation queries
+export const useConversationList = () => {
+	const list = useSelector((state: chat.conversation.GlobalState) =>
+		chat.conversation.queries.list(state),
+	)
+	return list
+}
+
+export const useConversationLength = () => {
+	return useConversationList().length
+}
+
+export const useConversation = () => {
+	const conversations = useConversationList()
+	const len = useConversationLength()
+	return len > 0 ? conversations[0] : null
 }

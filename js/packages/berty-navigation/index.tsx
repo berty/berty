@@ -2,11 +2,12 @@
 
 import React, { useMemo, useState } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createStackNavigator } from '@react-navigation/stack'
 import * as Stories from '@berty-tech/berty-storybook'
 import {
-	NavigationContainer,
 	useNavigation as useReactNavigation,
 	NavigationProp,
+	CommonActions,
 } from '@react-navigation/core'
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 import { berty } from '@berty-tech/api'
@@ -126,67 +127,80 @@ const createNavigateFunc = <TParams extends {} | undefined = {}>(
 const createNavigation = ({
 	navigate,
 	goBack,
-}: NavigationProp<any> | BottomTabNavigationProp<any>) => ({
-	goBack: () => goBack(),
-	navigate: {
-		onboarding: {
-			getStarted: createNavigateFunc(navigate, Routes.Onboarding.GetStarted),
-			selectMode: createNavigateFunc(navigate, Routes.Onboarding.SelectMode),
-			performance: createNavigateFunc(navigate, Routes.Onboarding.Performance),
-			privacy: createNavigateFunc(navigate, Routes.Onboarding.Privacy),
+	dispatch,
+	reset,
+}: NavigationProp<any> | BottomTabNavigationProp<any>) => {
+	console.log(reset)
+	return {
+		goBack: () => goBack(),
+		reset: () => {
+			dispatch(
+				CommonActions.reset({
+					routes: [{ name: Routes.Onboarding.GetStarted }, { name: Routes.Main.List }],
+				}),
+			)
+			dispatch(CommonActions.navigate(Routes.Main.List))
 		},
-		main: {
-			list: createNavigateFunc(navigate, Routes.Main.List),
-			contactRequest: createNavigateFunc<berty.chatmodel.IContact>(
-				navigate,
-				Routes.Main.ContactRequest,
-			),
-			groupRequest: createNavigateFunc<berty.chatmodel.IConversation>(
-				navigate,
-				Routes.Main.GroupRequest,
-			),
-			scanRequest: createNavigateFunc(navigate, Routes.Main.ScanRequest),
-			scan: createNavigateFunc(navigate, Routes.Main.Scan),
-			invalidScan: createNavigateFunc(navigate, Routes.Main.InvalidScan),
+		navigate: {
+			onboarding: {
+				getStarted: createNavigateFunc(navigate, Routes.Onboarding.GetStarted),
+				selectMode: createNavigateFunc(navigate, Routes.Onboarding.SelectMode),
+				performance: createNavigateFunc(navigate, Routes.Onboarding.Performance),
+				privacy: createNavigateFunc(navigate, Routes.Onboarding.Privacy),
+			},
+			main: {
+				list: createNavigateFunc(navigate, Routes.Main.List),
+				contactRequest: createNavigateFunc<berty.chatmodel.IContact>(
+					navigate,
+					Routes.Main.ContactRequest,
+				),
+				groupRequest: createNavigateFunc<berty.chatmodel.IConversation>(
+					navigate,
+					Routes.Main.GroupRequest,
+				),
+				scanRequest: createNavigateFunc(navigate, Routes.Main.ScanRequest),
+				scan: createNavigateFunc(navigate, Routes.Main.Scan),
+				invalidScan: createNavigateFunc(navigate, Routes.Main.InvalidScan),
 
-			listModal: createNavigateFunc(navigate, Routes.Main.ListModal),
-			search: createNavigateFunc(navigate, Routes.Main.Search),
-			requestSent: createNavigateFunc(navigate, Routes.Main.RequestSent),
-			createGroup: {
-				createGroup1: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup1),
-				createGroup2: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup2),
-				createGroup3: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup3),
+				listModal: createNavigateFunc(navigate, Routes.Main.ListModal),
+				search: createNavigateFunc(navigate, Routes.Main.Search),
+				requestSent: createNavigateFunc(navigate, Routes.Main.RequestSent),
+				createGroup: {
+					createGroup1: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup1),
+					createGroup2: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup2),
+					createGroup3: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup3),
+				},
+			},
+			chat: {
+				one2One: createNavigateFunc<berty.chatmodel.IConversation>(navigate, Routes.Chat.One2One),
+				group: createNavigateFunc<berty.chatmodel.IConversation>(navigate, Routes.Chat.Group),
+				settings: createNavigateFunc<berty.chatmodel.IConversation>(navigate, Routes.Chat.Settings),
+				one2OneSettings: createNavigateFunc<berty.chatmodel.IConversation>(
+					navigate,
+					Routes.Chat.One2OneSettings,
+				),
+				groupSettings: createNavigateFunc<berty.chatmodel.IConversation>(
+					navigate,
+					Routes.Chat.GroupSettings,
+				),
+			},
+			settings: {
+				home: createNavigateFunc(navigate, Routes.Settings.Home),
+				myBertyId: createNavigateFunc(navigate, Routes.Settings.MyBertyId),
+				editProfile: createNavigateFunc(navigate, Routes.Settings.EditProfile),
+				appUpdates: createNavigateFunc(navigate, Routes.Settings.AppUpdates),
+				help: createNavigateFunc(navigate, Routes.Settings.Help),
+				mode: createNavigateFunc(navigate, Routes.Settings.Mode),
+				blockedContacts: createNavigateFunc(navigate, Routes.Settings.BlockedContacts),
+				notifications: createNavigateFunc(navigate, Routes.Settings.Notifications),
+				bluetooth: createNavigateFunc(navigate, Routes.Settings.Bluetooth),
+				aboutBerty: createNavigateFunc(navigate, Routes.Settings.AboutBerty),
+				termsOfUse: createNavigateFunc(navigate, Routes.Settings.TermsOfUse),
+				devTools: createNavigateFunc(navigate, Routes.Settings.DevTools),
 			},
 		},
-		chat: {
-			one2One: createNavigateFunc<berty.chatmodel.IConversation>(navigate, Routes.Chat.One2One),
-			group: createNavigateFunc<berty.chatmodel.IConversation>(navigate, Routes.Chat.Group),
-			settings: createNavigateFunc<berty.chatmodel.IConversation>(navigate, Routes.Chat.Settings),
-			one2OneSettings: createNavigateFunc<berty.chatmodel.IConversation>(
-				navigate,
-				Routes.Chat.One2OneSettings,
-			),
-			groupSettings: createNavigateFunc<berty.chatmodel.IConversation>(
-				navigate,
-				Routes.Chat.GroupSettings,
-			),
-		},
-		settings: {
-			home: createNavigateFunc(navigate, Routes.Settings.Home),
-			myBertyId: createNavigateFunc(navigate, Routes.Settings.MyBertyId),
-			editProfile: createNavigateFunc(navigate, Routes.Settings.EditProfile),
-			appUpdates: createNavigateFunc(navigate, Routes.Settings.AppUpdates),
-			help: createNavigateFunc(navigate, Routes.Settings.Help),
-			mode: createNavigateFunc(navigate, Routes.Settings.Mode),
-			blockedContacts: createNavigateFunc(navigate, Routes.Settings.BlockedContacts),
-			notifications: createNavigateFunc(navigate, Routes.Settings.Notifications),
-			bluetooth: createNavigateFunc(navigate, Routes.Settings.Bluetooth),
-			aboutBerty: createNavigateFunc(navigate, Routes.Settings.AboutBerty),
-			termsOfUse: createNavigateFunc(navigate, Routes.Settings.TermsOfUse),
-			devTools: createNavigateFunc(navigate, Routes.Settings.DevTools),
-		},
-	},
-})
+	}
+}
 
 export const useNavigation = () => {
 	const reactNav = useReactNavigation()
@@ -400,19 +414,30 @@ const Footer: React.FC<BottomTabBarProps> = ({ navigation, state: { index, route
 }
 
 const TabStack = createBottomTabNavigator()
-export const Navigation: React.FC = () => {
-	const length = ChatHooks.useAccountLength()
+export const TabNavigation: React.FC = () => {
 	return (
-		<TabStack.Navigator
-			tabBar={(props) => <Footer {...props} />}
-			options={{ backBehavior: 'initialRoute' }}
-			initialRouteName={length >= 1 ? Routes.Main.List : Routes.Onboarding.GetStarted}
-		>
+		<TabStack.Navigator tabBar={(props) => <Footer {...props} />}>
 			<TabStack.Screen name={Routes.Main.List} component={MainNavigation} />
 			<TabStack.Screen name={Routes.Main.Search} component={SearchNavigation} />
 			<TabStack.Screen name={Routes.Settings.Home} component={SettingsNavigation} />
-			<TabStack.Screen name={Routes.Onboarding.GetStarted} component={OnboardingNavigation} />
 		</TabStack.Navigator>
+	)
+}
+
+const NavigationStack = createStackNavigator()
+export const Navigation: React.FC = () => {
+	const length = ChatHooks.useAccountLength()
+	return (
+		<NavigationStack.Navigator
+			screenOptions={{ headerShown: false }}
+			initialRouteName={length >= 1 ? Routes.Main.List : Routes.Onboarding.GetStarted}
+		>
+			<NavigationStack.Screen
+				name={Routes.Onboarding.GetStarted}
+				component={OnboardingNavigation}
+			/>
+			<NavigationStack.Screen name={Routes.Main.List} component={TabNavigation} />
+		</NavigationStack.Navigator>
 	)
 }
 

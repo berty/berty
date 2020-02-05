@@ -6,6 +6,7 @@ import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 // import { RNCamera } from 'react-native-camera'
 import { Chat } from '@berty-tech/hooks'
+import { useNavigation } from '@berty-tech/berty-navigation'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -67,6 +68,7 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 const DevReferenceInput = () => {
 	const [ref, setRef] = useState('')
 	const sendContactRequest = Chat.useAccountSendContactRequest()
+	const navigation = useNavigation()
 	return (
 		<>
 			<ScanInfosText textProps='Alternatively, enter the reference below' />
@@ -75,6 +77,7 @@ const DevReferenceInput = () => {
 				title='Submit'
 				onPress={() => {
 					sendContactRequest(ref)
+					navigation.goBack()
 				}}
 			/>
 		</>
@@ -88,7 +91,7 @@ const ScanInfos: React.FC<{}> = () => {
 		<View style={[margin.top.medium, padding.medium]}>
 			<ScanInfosText textProps='Scanning a QR code sends a contact request' />
 			<ScanInfosText textProps='You need to wait for the request to be accepted in order to chat with the contact' />
-			{__DEV__ && <DevReferenceInput />}
+			<DevReferenceInput />
 		</View>
 	)
 }
@@ -98,7 +101,7 @@ const Screen = Dimensions.get('window')
 const ScanComponent: React.FC<{}> = () => (
 	<View style={{ height: Screen.height }}>
 		<ScanBody />
-		<ScanInfos />
+		{__DEV__ && <ScanInfos />}
 	</View>
 )
 
