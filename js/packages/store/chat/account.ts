@@ -100,6 +100,19 @@ const commandHandler = createSlice<State, CommandsReducer>({
 	},
 })
 
+const intoBuffer = (
+	thing: Buffer | Uint8Array | { [key: string]: number } | { [key: number]: number },
+): Buffer => {
+	// redux-test-recorder f up the Uint8Arrays so we have to use this monster
+	if (thing instanceof Buffer) {
+		return thing
+	}
+	if (thing instanceof Uint8Array) {
+		return Buffer.from(thing)
+	}
+	return Buffer.from(Object.values(thing))
+}
+
 const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/account/event',
 	initialState,
@@ -133,7 +146,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 	extraReducers: {
 		[protocol.events.client.contactRequestReferenceUpdated.type]: (state, { payload }) => {
 			if (state.aggregates[payload.aggregateId]) {
-				state.aggregates[payload.aggregateId].contactRequestReference = Buffer.from(
+				state.aggregates[payload.aggregateId].contactRequestReference = intoBuffer(
 					payload.reference,
 				).toString('base64')
 			}
