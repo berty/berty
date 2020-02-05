@@ -39,6 +39,7 @@
     "node-libs-react-native": "^1.0.3",
     "react": "^16.12.0",
     "react-native": "^0.61.5",
+    "react-native-camera": "^3.16.0",
     "react-native-config": "luggit/react-native-config#master",
     "react-native-dev-menu": "^4.0.0",
     "react-native-eva-icons": "^1.2.1",
@@ -46,9 +47,10 @@
     "react-native-interactable": "^2.0.1",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-permissions": "^2.0.3",
+    "react-native-qrcode-svg": "^6.0.3",
     "react-native-reanimated": "^1.4.0",
     "react-native-safe-area-context": "^0.6.1",
     "react-native-screens": "^2.0.0-alpha.11",
-    "react-native-svg": "9.13.3"
+    "react-native-svg": "^11.0.1"
   }
 }

@@ -7,6 +7,7 @@ import { WebsocketTransport } from '../grpc-web-websocket-transport'
 import { Buffer } from 'buffer'
 import { GoBridge } from '../orbitdb/native'
 import { IProtocolServiceHandler } from './handler.gen'
+
 if (!__DEV__) {
 	GoBridge.startDemo()
 }
@@ -16,6 +17,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 	accountPk: string
 	devicePk: string
 	accountGroupPk: string
+	rdvLogtoken?: string
 
 	constructor(metadata?: { [key: string]: string | string[] }) {
 		super(metadata)
@@ -23,7 +25,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			this.client = new DemoServiceClient(
 				bridge({
 					host: 'http://127.0.0.1:1337',
-					transport: ReactNativeTransport({}),
+					transport: WebsocketTransport(),
 				}),
 			)
 		} else {
@@ -46,25 +48,17 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 		this.accountGroupPk = (this.metadata?.accountDevicePk as string) || ''
 	}
 
+	_logToken = async (): Promise<string> =>
+		new Promise((resolve: (token: string) => void, reject: (err: Error) => void) =>
+			this.client?.logToken({}, (error, response) =>
+				error || response == null || response?.logToken == null
+					? reject(error || new Error('GRPC ProtocolServiceHandler: response is undefined'))
+					: resolve(response.logToken as string),
+			),
+		)
+
 	_createPkHack = async (): Promise<string> =>
-		(
-			await Promise.all([
-				new Promise((resolve: (token: string) => void, reject: (err: Error) => void) =>
-					this.client?.logToken({}, (error, response) =>
-						error || response == null || response?.logToken == null
-							? reject(error || new Error('GRPC ProtocolServiceHandler: response is undefined'))
-							: resolve(response.logToken as string),
-					),
-				),
-				new Promise((resolve: (token: string) => void, reject: (err: Error) => void) =>
-					this.client?.logToken({}, (error, response) =>
-						error || response == null || response?.logToken == null
-							? reject(error || new Error('GRPC ProtocolServiceHandler: response is undefined'))
-							: resolve(response.logToken as string),
-					),
-				),
-			])
-		).join(':')
+		(await Promise.all([this._logToken(), this._logToken()])).join(':')
 
 	InstanceExportData: (
 		request: api.berty.protocol.InstanceExportData.IRequest,
@@ -97,49 +91,223 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestReference.IReply,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = async (request, callback) => {
+		this.rdvLogtoken = this.rdvLogtoken || (await this._logToken())
+		callback(null, { reference: this.referenceBytes })
+	}
+
 	ContactRequestDisable: (
 		request: api.berty.protocol.ContactRequestDisable.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestDisable.IReply,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = (request, callback) => {
+		this.rdvLogtoken = undefined
+		callback(null, {})
+		/*this.client?.logClose({ logToken: contactLogToken }, (error, response) => {
+			if (error) {
+				console.log('handler.ts: ContactRequestDisable: logClose error:', error)
+				return
+			}
+		})*/
+	}
+
+	get accountMetadataLogToken() {
+		const [value] = this.accountGroupPk?.split(':')
+		return value
+	}
+
+	get devicePkBytes() {
+		return Buffer.from(this.devicePk, 'utf-8')
+	}
+
+	get referenceBytes() {
+		if (!this.rdvLogtoken) {
+			throw new Error('handler.ts: referenceBytes: Undefined rdvLogtoken')
+		}
+		return Buffer.from(this.accountPk + '__' + this.rdvLogtoken, 'utf-8')
+	}
+
+	addEventToAccountMetadataLog = ({
+		type,
+		dataType,
+		data,
+	}: {
+		type: string
+		dataType: string
+		data: { [key: string]: any }
+	}) => {
+		const { client } = this
+		if (!client) {
+			throw new Error('handler.ts: addEventToAccountMetadataLog: missing client')
+		}
+		return new Promise((resolve, reject) => {
+			try {
+				client.logAdd(
+					{
+						logToken: this.accountMetadataLogToken,
+						data: api.berty.protocol.GroupMetadataEvent.encode({
+							eventContext: {},
+							metadata: {
+								// TODO: fix api.berty.protocol.EventType type
+								eventType: ((api.berty.protocol.EventType as unknown) as { [key: string]: number })[
+									'EventType' + type
+								],
+							},
+							event: (api.berty.protocol as { [key: string]: any })[dataType].encode(data).finish(),
+						}).finish(),
+					},
+					(error, response) => {
+						if (error) {
+							reject(error)
+						} else {
+							resolve(response)
+						}
+					},
+				)
+			} catch (e) {
+				console.error(e)
+				reject(e)
+			}
+		})
+	}
+
 	ContactRequestEnable: (
 		request: api.berty.protocol.ContactRequestEnable.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestEnable.IReply,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = async (_, callback) => {
+		if (!this.client) {
+			throw new Error('handler.ts: ContactRequestEnable: missing client')
+		}
+		this.rdvLogtoken = this.rdvLogtoken || (await this._logToken())
+		callback(null, { reference: this.referenceBytes })
+		this.client.logStream({ logToken: this.rdvLogtoken }, (error, response) => {
+			if (error || !response || !response.value) {
+				console.error(
+					'handler.ts: ContactRequestEnable: logStream error:',
+					error,
+					'With response',
+					response,
+				)
+				return
+			}
+			const val = new Buffer(response.value).toString('utf-8')
+			const parts = val.split(' ')
+			const [type, requesterAccountPk, ...metadataParts] = parts
+			if (type === 'CONTACT_REQUEST_FROM') {
+				this.addEventToAccountMetadataLog({
+					type: 'AccountContactRequestIncomingReceived',
+					dataType: 'AccountContactRequestReceived',
+					data: {
+						devicePk: this.devicePkBytes,
+						contactPk: Buffer.from(requesterAccountPk, 'utf-8'),
+						contactMetadata: Buffer.from(metadataParts.join(' '), 'utf-8'),
+					},
+				})
+			}
+		})
+	}
+
 	ContactRequestResetReference: (
 		request: api.berty.protocol.ContactRequestResetReference.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestResetReference.IReply,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = async (_, callback) => {
+		this.rdvLogtoken = await this._logToken()
+		callback(null, { reference: this.referenceBytes })
+	}
+
 	ContactRequestSend: (
 		request: api.berty.protocol.ContactRequestSend.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestSend.IReply,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = async (request, callback) => {
+		try {
+			const { client } = this
+			if (!client) {
+				throw new Error('handler.ts: ContactRequestSend: missing client')
+			}
+			if (!request.reference) {
+				throw new Error('handler.ts: ContactRequestSend: missing reference in request')
+			}
+			const refStr = new Buffer(request.reference).toString('utf-8')
+			const [otherUserPk, otherUserRdvLogToken] = refStr.split('__')
+			const ownMetadata =
+				request.contactMetadata && new Buffer(request.contactMetadata).toString('utf-8')
+			const ownId = this.accountPk
+			const otherUserPkBytes = Buffer.from(otherUserPk, 'utf-8')
+			await this.addEventToAccountMetadataLog({
+				type: 'AccountContactRequestOutgoingEnqueued',
+				dataType: 'AccountContactRequestEnqueued',
+				data: {
+					devicePk: this.devicePkBytes,
+					contactPk: otherUserPkBytes,
+				},
+			})
+			const dataStr = ['CONTACT_REQUEST_FROM', ownId, ownMetadata].join(' ')
+			const logData = Buffer.from(dataStr, 'utf-8')
+			await new Promise((resolve, reject) => {
+				client.logAdd({ logToken: otherUserRdvLogToken, data: logData }, (error, response) => {
+					return error || response == null
+						? reject(error || new Error('GRPC ProtocolServiceHandler: response is undefined'))
+						: resolve()
+				})
+			})
+			await this.addEventToAccountMetadataLog({
+				type: 'AccountContactRequestOutgoingSent',
+				dataType: 'AccountContactRequestSent',
+				data: {
+					devicePk: this.devicePkBytes,
+					contactPk: otherUserPkBytes,
+				},
+			})
+			callback(null, {})
+		} catch (e) {
+			callback(e, {})
+		}
+	}
 	ContactRequestAccept: (
 		request: api.berty.protocol.ContactRequestAccept.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestAccept.IReply,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = async (request, callback) => {
+		await this.addEventToAccountMetadataLog({
+			type: 'AccountContactRequestIncomingAccepted',
+			dataType: 'AccountContactRequestAccepted',
+			data: {
+				devicePk: this.devicePkBytes,
+				contactPk: request.contactPk,
+			},
+		})
+		callback(null, {})
+	}
 	ContactRequestDiscard: (
 		request: api.berty.protocol.ContactRequestDiscard.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestDiscard.IReply,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = async (request, callback) => {
+		await this.addEventToAccountMetadataLog({
+			type: 'AccountContactRequestIncomingDiscarded',
+			dataType: 'AccountContactRequestDiscarded',
+			data: {
+				devicePk: this.devicePkBytes,
+				contactPk: request.contactPk,
+			},
+		})
+		callback(null, {})
+	}
 	ContactBlock: (
 		request: api.berty.protocol.ContactBlock.IRequest,
 		callback: (error: Error | null, response?: api.berty.protocol.ContactBlock.IReply) => void,

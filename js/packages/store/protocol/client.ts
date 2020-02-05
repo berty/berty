@@ -1,7 +1,8 @@
 import { ProtocolServiceClient, ProtocolServiceHandler, mockBridge } from '@berty-tech/grpc-bridge'
-import { createSlice, Action } from '@reduxjs/toolkit'
+import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, takeLeading, put, cps, select, fork, takeEvery } from 'redux-saga/effects'
+import { all, takeLeading, put, cps, select, takeEvery, take } from 'redux-saga/effects'
+import { channel } from 'redux-saga'
 import * as gen from './client.gen'
 import * as api from '@berty-tech/api'
 import { Buffer } from 'buffer'
@@ -37,6 +38,7 @@ export type Queries = {
 }
 
 export type Events = gen.Events<State> & {
+	[key: string]: any
 	instanceGotConfiguration: (
 		state: State,
 		action: {
@@ -48,6 +50,10 @@ export type Events = gen.Events<State> & {
 			}
 		},
 	) => State
+	contactRequestReferenceUpdated: CaseReducer<
+		State,
+		PayloadAction<{ aggregateId: string; reference: Uint8Array }>
+	>
 }
 
 const initialState: State = {
@@ -119,6 +125,7 @@ const eventHandler = createSlice<State, Events>({
 		accountContactRequestIncomingReceived: (state) => state,
 		accountContactRequestIncomingDiscarded: (state) => state,
 		accountContactRequestIncomingAccepted: (state) => state,
+		contactRequestReferenceUpdated: (state) => state,
 		accountContactBlocked: (state) => state,
 		accountContactUnblocked: (state) => state,
 
@@ -140,8 +147,22 @@ export const queries: Queries = {
 	getAll: (state) => Object.values(state.protocol.client.aggregates),
 }
 
+const eventNameFromValue = (value: number) => {
+	if (typeof value !== 'number') {
+		throw new Error(`client.ts: eventNameFromValue: expected number argument, got ${typeof value}`)
+	}
+	return api.berty.protocol.EventType[value]
+}
+
 export function* orchestrator() {
 	const services: { [key: string]: ProtocolServiceClient } = {}
+	const getService = (id: string) => {
+		const service = services[id]
+		if (!service) {
+			throw new Error(`Service ${id} not found`)
+		}
+		return service
+	}
 
 	yield all([
 		function*() {
@@ -156,7 +177,7 @@ export function* orchestrator() {
 						accountGroupPk: client.accountGroupPk,
 					}),
 				)
-				// subcribe to account log
+				// subcribe to account log, this is never called as far as I'm aware
 				yield put(
 					commands.groupMetadataSubscribe({
 						id: client.id,
@@ -198,26 +219,53 @@ export function* orchestrator() {
 				}),
 			)
 		}),
+		takeEvery(events.instanceGotConfiguration, function*({ payload }) {
+			yield put(
+				commands.groupMetadataSubscribe({
+					id: payload.aggregateId,
+					groupPk: new Buffer(payload.accountGroupPk),
+					since: new Uint8Array(),
+					until: new Uint8Array(),
+					goBackwards: false,
+				}),
+			)
+		}),
 		takeLeading(commands.contactRequestReference, function*() {
 			// TODO: do protocol things
 		}),
 		takeLeading(commands.contactRequestDisable, function*() {
 			// TODO: do protocol things
 		}),
-		takeLeading(commands.contactRequestEnable, function*() {
-			// TODO: do protocol things
+		takeLeading(commands.contactRequestEnable, function*({ payload }) {
+			const reply = yield cps(getService(payload.id).contactRequestEnable, {})
+			if (!reply.reference) {
+				throw new Error(`Invalid reference ${reply.reference}`)
+			}
+			yield put(
+				events.contactRequestReferenceUpdated({
+					aggregateId: payload.id,
+					reference: reply.reference,
+				}),
+			)
 		}),
 		takeLeading(commands.contactRequestResetReference, function*() {
 			// TODO: do protocol things
 		}),
-		takeLeading(commands.contactRequestSend, function*() {
-			// TODO: do protocol things
+		takeLeading(commands.contactRequestSend, function*({ payload }) {
+			yield cps(getService(payload.id).contactRequestSend, {
+				reference: payload.reference,
+				contactMetadata: payload.contactMetadata,
+			})
 		}),
-		takeLeading(commands.contactRequestAccept, function*() {
-			// TODO: do protocol things
+		takeLeading(commands.contactRequestAccept, function*({ payload }) {
+			yield cps(getService(payload.id).contactRequestAccept, {
+				contactPk: payload.contactPk,
+			})
 		}),
-		takeLeading(commands.contactRequestDiscard, function*() {
-			// TODO: do protocol things
+		takeLeading(commands.contactRequestDiscard, function*({ payload }) {
+			yield cps(getService(payload.id).contactRequestDiscard, {
+				contactPk: payload.contactPk,
+			})
 		}),
 
 		takeLeading(commands.contactBlock, function*() {
@@ -249,19 +297,20 @@ export function* orchestrator() {
 		takeLeading(commands.multiMemberGroupInvitationCreate, function*() {
 			// TODO: do protocol things
 		}),
-		takeLeading(commands.appMetadataSend, function*(action) {
-			yield cps(services[action.payload.id]?.appMetadataSend, {
-				groupPk: action.payload.groupPk,
-				payload: action.payload.payload,
+		takeLeading(commands.appMetadataSend, function*({ payload }) {
+			yield cps(getService(payload.id).appMetadataSend, {
+				groupPk: payload.groupPk,
+				payload: payload.payload,
 			})
 		}),
 		takeLeading(commands.appMessageSend, function*() {
 			// TODO: do protocol things
 		}),
-		takeLeading(commands.groupMetadataSubscribe, function*(action) {
-			services[action.payload.id]?.groupMetadataSubscribe(
+		takeEvery(commands.groupMetadataSubscribe, function*({ payload }) {
+			const eventsChannel = channel()
+			getService(payload.id).groupMetadataSubscribe(
 				{
-					groupPk: action.payload.groupPk,
+					groupPk: payload.groupPk,
 				},
 				(error, response) => {
 					if (error) {
@@ -275,36 +324,50 @@ export function* orchestrator() {
 						return
 					}
 					// if the event is defined by chat
-					if (
-						response?.metadata?.eventType ===
-						api.berty.protocol.EventType.EventTypeGroupMetadataPayloadSent
-					) {
-						put(JSON.parse(Buffer.from(response?.event).toString()))
-						return
-					}
+
 					const eventType = response?.metadata?.eventType
-						.toString()
-						.split('EventType')
-						.pop()
 					if (eventType == null) {
 						return
 					}
-					put({
-						type: `${eventHandler.name}/${Case.camel(eventType)}`,
+
+					if (eventType === api.berty.protocol.EventType.EventTypeGroupMetadataPayloadSent) {
+						eventsChannel.put(JSON.parse(Buffer.from(response.event).toString()))
+						return
+					}
+
+					const eventsMap: { [key: string]: string } = {
+						EventTypeAccountContactRequestIncomingReceived: 'AccountContactRequestReceived',
+						EventTypeAccountContactRequestIncomingAccepted: 'AccountContactRequestAccepted',
+						EventTypeAccountContactRequestIncomingDiscarded: 'AccountContactRequestDiscarded',
+						EventTypeAccountContactRequestOutgoingEnqueued: 'AccountContactRequestEnqueued',
+						EventTypeAccountContactRequestOutgoingSent: 'AccountContactRequestSent',
+					}
+					const eventName = eventNameFromValue(eventType)
+					if (eventName === undefined) {
+						throw new Error(`Invalid event type ${eventType}`)
+					}
+					const protocol: { [key: string]: any } = api.berty.protocol
+					const event = protocol[eventName] || protocol[eventsMap[eventName]]
+					if (!event) {
+						console.warn("Don't know how to decode", eventName)
+						return
+					}
+					eventsChannel.put({
+						type: `${eventHandler.name}/${Case.camel(eventName.replace('EventType', ''))}`,
 						payload: {
-							aggregateId: action.payload.id,
+							aggregateId: `${payload.id}`,
 							eventContext: response.eventContext,
 							headers: response.metadata,
-							event: (api.berty.protocol as { [key: string]: any })[eventType].decode(
-								response.event,
-							),
+							event: event.decode(response.event),
 						},
 					})
 				},
 			)
-		}),
-		takeLeading(commands.groupMetadataSubscribe, function*() {
-			// TODO: do protocol things
+			while (true) {
+				// TODO: need a way to cancel
+				const action = yield take(eventsChannel)
+				yield put(action)
+			}
 		}),
 	])
 }

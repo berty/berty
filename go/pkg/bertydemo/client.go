@@ -4,6 +4,8 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"encoding/json"
+	"fmt"
 	"sync"
 	"time"
 
@@ -227,8 +229,11 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 		if len(ops) == 0 {
 			continue
 		}
+
 		for _, op := range ops {
 			pop := convertLogOperationToProtobufLogOperation(op)
+			jsoned, _ := json.Marshal(pop)
+			fmt.Println(string(jsoned))
 			if err = srv.Send(pop); err != nil {
 				return err
 			}

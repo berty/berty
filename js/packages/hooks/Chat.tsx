@@ -56,5 +56,85 @@ export const useAccountLength = () => {
 }
 
 export const useAccount = () => {
-	return {}
+	// TODO: replace by selected account
+	const accounts = useAccountList()
+	const len = useAccountLength()
+	return len > 0 ? accounts[0] : null
+}
+
+export const useAccountContactRequestReference = () => {
+	const account = useAccount()
+	return account?.contactRequestReference
+}
+
+export const useAccountContactRequestEnabled = () => {
+	const ref = useAccountContactRequestReference()
+	return !!ref
+}
+
+export const useAccountSendContactRequest = () => {
+	const dispatch = useDispatch()
+	const account = useAccount()
+	if (!account) {
+		return () => {}
+	}
+	return (reference: string) => {
+		dispatch(
+			chat.account.commands.sendContactRequest({
+				id: account.id,
+				otherReference: reference,
+			}),
+		)
+	}
+}
+
+// requests queries
+export const useIncomingContactRequests = () => {
+	return useSelector((state: chat.incomingContactRequest.GlobalState) =>
+		chat.incomingContactRequest.queries.list(state, {}),
+	)
+}
+
+export const useOutgoingContactRequests = () => {
+	return useSelector((state: chat.outgoingContactRequest.GlobalState) =>
+		chat.outgoingContactRequest.queries.list(state, {}),
+	)
+}
+
+export const useAccountIncomingContactRequests = () => {
+	const account = useAccount()
+	const incomingContactRequests = useIncomingContactRequests()
+	if (!account) {
+		return []
+	}
+	return incomingContactRequests.filter((req) => req.accountId === account.id)
+}
+
+export const useAccountOutgoingContactRequests = () => {
+	const account = useAccount()
+	const incomingContactRequests = useOutgoingContactRequests()
+	if (!account) {
+		return []
+	}
+	return incomingContactRequests.filter((req) => req.accountId === account.id)
+}
+
+export const useAccountAcceptContactRequest = () => {
+	const dispatch = useDispatch()
+	return ({ id }: { id: string }) =>
+		dispatch(
+			chat.incomingContactRequest.commands.accept({
+				aggregateId: id,
+			}),
+		)
+}
+
+export const useAccountDiscardContactRequest = () => {
+	const dispatch = useDispatch()
+	return ({ id }: { id: string }) =>
+		dispatch(
+			chat.incomingContactRequest.commands.discard({
+				aggregateId: id,
+			}),
+		)
 }

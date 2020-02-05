@@ -38,12 +38,14 @@
     "i18next": "19.0.1",
     "random-emoji": "^1.0.2",
     "react-i18next": "11.2.2",
+    "react-native-camera": "^3.16.0",
     "react-native-collapsible": "^1.5.1",
     "react-native-easy-grid": "^0.2.2",
     "react-native-easy-markdown": "^1.5.0",
     "react-native-elements": "^1.2.3",
     "react-native-hooks": "^0.9.0",
     "react-native-modal": "^11.5.3",
+    "react-native-qrcode-scanner": "^1.3.1",
     "react-native-raw-bottom-sheet": "^2.0.6",
     "react-native-redash": "^8.6.0",
     "react-native-swiper": "^1.6.0-rc.1",
@@ -68,6 +70,6 @@
     "react-native-reanimated": "^1.4.0",
     "react-native-safe-area-context": "^0.6.1",
     "react-native-screens": "^2.0.0-alpha.11",
-    "react-native-svg": "9.13.3"
+    "react-native-svg": "^11.0.1"
   }
 }

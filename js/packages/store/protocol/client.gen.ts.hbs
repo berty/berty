@@ -32,20 +32,22 @@ import * as api from '@berty-tech/api'
 							action: {
 								payload: {
 									aggregateId: string,
-									{{#with (lookup "berty.protocol")}}
-										{{#each nested}}
-											{{#if (matchInconsistant name eventName)}}
-												// {{eventName}} seems event of type {{name}}
-												{{#each fields}}
-													{{@key}}: {{#with (convertScalarType type)~}}
-														{{this}},
-													{{else}}
-														api{{inamespace resolvedType}},
-													{{/with}}
-												{{/each}}
-											{{/if}}
-										{{/each}}
-									{{/with}}
+									event: {
+										{{#with (lookup "berty.protocol")}}
+											{{#each nested}}
+												{{#if (matchInconsistant name eventName)}}
+													// {{eventName}} seems event of type {{name}}
+													{{#each fields}}
+														{{@key}}: {{#with (convertScalarType type)~}}
+															{{this}},
+														{{else}}
+															api{{inamespace resolvedType}},
+														{{/with}}
+													{{/each}}
+												{{/if}}
+											{{/each}}
+										{{/with}}
+									}
 								}
 							}
 						) => State

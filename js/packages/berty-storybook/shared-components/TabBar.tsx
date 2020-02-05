@@ -14,6 +14,7 @@ type TabItemProps = {
 
 type TabBarProps = {
 	tabType: string
+	onTabChange: any
 }
 
 // Styles
@@ -64,15 +65,16 @@ const TabBarItem: React.FC<TabItemProps> = ({
 }
 
 // TabBarList
-export const TabBar: React.FC<TabBarProps> = ({ tabType }) => {
+export const TabBar: React.FC<TabBarProps> = ({ tabType, onTabChange }) => {
 	const [tabs, setTabs] = useState()
-	const [enable, setEnable] = useState('Fingerprint')
+	const [selectedTab, setEnable] = useState('Fingerprint')
 	const [{ margin, row }] = useStyles()
 
 	useEffect(() => {
 		if (!tabs) {
 			if (tabType === 'contact') {
 				setTabs([
+					{ name: 'QR', icon: 'code-outline' },
 					{ name: 'Fingerprint', icon: 'code-outline' },
 					{ name: 'Infos', icon: 'info-outline' },
 					{ name: 'Devices', icon: 'smartphone-outline' },
@@ -87,6 +89,12 @@ export const TabBar: React.FC<TabBarProps> = ({ tabType }) => {
 		}
 	}, [tabs, tabType])
 
+	useEffect(() => {
+		if (typeof onTabChange === 'function') {
+			onTabChange(selectedTab)
+		}
+	}, [onTabChange, selectedTab])
+
 	return (
 		<View style={[margin.top.medium]}>
 			<View style={[row.fill]}>
@@ -96,7 +104,7 @@ export const TabBar: React.FC<TabBarProps> = ({ tabType }) => {
 							name={obj.name}
 							icon={obj.icon}
 							setEnable={setEnable}
-							enable={enable === obj.name}
+							enable={selectedTab === obj.name}
 						/>
 					))}
 			</View>

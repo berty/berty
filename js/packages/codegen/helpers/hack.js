@@ -2,6 +2,12 @@ const Case = require('case')
 module.exports.register = (handlebars) => {
 	// try to match to string that are inconsistants
 	handlebars.registerHelper('matchInconsistant', function(a, b) {
+		if (b.replace('Outgoing', '') === a) {
+			return true
+		}
+		if (b.replace('Incoming', '') === a) {
+			return true
+		}
 		const _a = Case.snake(a)
 		const _b = Case.snake(b)
 		const _aSplited = _a.split('_')

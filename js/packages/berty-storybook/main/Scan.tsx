@@ -1,8 +1,11 @@
-import React from 'react'
-import { View, SafeAreaView, StyleSheet, Dimensions } from 'react-native'
+import React, { useState } from 'react'
+import { View, SafeAreaView, Dimensions, TextInput, Button } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
+import QRCodeScanner from 'react-native-qrcode-scanner'
+// import { RNCamera } from 'react-native-camera'
+import { Chat } from '@berty-tech/hooks'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -25,11 +28,23 @@ const useStylesScan = () => {
 const ScanBody: React.FC<{}> = () => {
 	const _styles = useStylesScan()
 	const [{ padding, border, background }] = useStyles()
-
+	const sendContactRequest = Chat.useAccountSendContactRequest()
 	return (
 		<View style={[padding.medium]}>
 			<View style={[border.radius.scale(20), background.black, padding.scale(30)]}>
-				<View style={[border.radius.scale(20), _styles.body]} />
+				<View style={[border.radius.scale(20), _styles.body]}>
+					<QRCodeScanner
+						onRead={({ data, type }) => {
+							if ((type as string) === 'QR_CODE') {
+								// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
+								console.log('Scan.tsx: found QR:', data)
+								sendContactRequest(data)
+							}
+						}}
+						cameraProps={{ captureAudio: false }}
+						// flashMode={RNCamera.Constants.FlashMode.torch}
+					/>
+				</View>
 			</View>
 		</View>
 	)
@@ -49,6 +64,23 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 	)
 }
 
+const DevReferenceInput = () => {
+	const [ref, setRef] = useState('')
+	const sendContactRequest = Chat.useAccountSendContactRequest()
+	return (
+		<>
+			<ScanInfosText textProps='Alternatively, enter the reference below' />
+			<TextInput value={ref} onChangeText={setRef} />
+			<Button
+				title='Submit'
+				onPress={() => {
+					sendContactRequest(ref)
+				}}
+			/>
+		</>
+	)
+}
+
 const ScanInfos: React.FC<{}> = () => {
 	const [{ margin, padding }] = useStyles()
 
@@ -56,6 +88,7 @@ const ScanInfos: React.FC<{}> = () => {
 		<View style={[margin.top.medium, padding.medium]}>
 			<ScanInfosText textProps='Scanning a QR code sends a contact request' />
 			<ScanInfosText textProps='You need to wait for the request to be accepted in order to chat with the contact' />
+			{__DEV__ && <DevReferenceInput />}
 		</View>
 	)
 }

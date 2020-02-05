@@ -33,14 +33,14 @@ build.gobridge.ios: $(FRAMEWORK_DIR)
 
 $(FRAMEWORK_DIR): deps.gobridge # TODO: add go prerequisits
 	mkdir -p $(FRAMEWORK_DIR)
-	gomobile bind -o $(FRAMEWORK) -v -target ios berty.tech/berty/go/framework/bertybridge
+	GO111MODULE=off gomobile bind -o $(FRAMEWORK) -v -target ios berty.tech/berty/go/framework/bertybridge
 
 build.gobridge.android: $(AAR)
 	touch $<
 
 $(AAR): deps.gobridge # TODO: add go prerequisits
 	mkdir -p $(AAR_DIR)
-	gomobile bind -o $(AAR) -v -target android berty.tech/berty/go/framework/bertybridge
+	GO111MODULE=off gomobile bind -o $(AAR) -v -target android berty.tech/berty/go/framework/bertybridge
 
 bazel.build.gobridge: bazel.build.gobridge.ios bazel.build.gobridge.android
 
