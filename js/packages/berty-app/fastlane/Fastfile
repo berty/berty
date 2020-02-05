@@ -15,7 +15,7 @@
 
 fastlane_require 'spaceship'
 
-fastlane_version "2.111.0"
+fastlane_version "2.140.0"
 
 default_platform :ios
 
