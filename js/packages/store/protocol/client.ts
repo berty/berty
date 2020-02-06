@@ -52,7 +52,7 @@ export type Events = gen.Events<State> & {
 	) => State
 	contactRequestReferenceUpdated: CaseReducer<
 		State,
-		PayloadAction<{ aggregateId: string; reference: Uint8Array }>
+		PayloadAction<{ aggregateId: string; reference?: Uint8Array }>
 	>
 }
 
@@ -231,10 +231,16 @@ export function* orchestrator() {
 			)
 		}),
 		takeLeading(commands.contactRequestReference, function*() {
-			// TODO: do protocol things
+			throw new Error('Not implemented since there is no way to propagate the reply properly')
 		}),
-		takeLeading(commands.contactRequestDisable, function*() {
-			// TODO: do protocol things
+		takeLeading(commands.contactRequestDisable, function*({ payload }) {
+			yield cps(getService(payload.id).contactRequestDisable, {})
+			yield put(
+				events.contactRequestReferenceUpdated({
+					aggregateId: payload.id,
+					reference: undefined,
+				}),
+			)
 		}),
 		takeLeading(commands.contactRequestEnable, function*({ payload }) {
 			const reply = yield cps(getService(payload.id).contactRequestEnable, {})
@@ -248,8 +254,17 @@ export function* orchestrator() {
 				}),
 			)
 		}),
-		takeLeading(commands.contactRequestResetReference, function*() {
-			// TODO: do protocol things
+		takeLeading(commands.contactRequestResetReference, function*({ payload }) {
+			const reply = yield cps(getService(payload.id).contactRequestResetReference, {})
+			if (!reply.reference) {
+				throw new Error(`Invalid reference ${reply.reference}`)
+			}
+			yield put(
+				events.contactRequestReferenceUpdated({
+					aggregateId: payload.id,
+					reference: reply.reference,
+				}),
+			)
 		}),
 		takeLeading(commands.contactRequestSend, function*({ payload }) {
 			yield cps(getService(payload.id).contactRequestSend, {
