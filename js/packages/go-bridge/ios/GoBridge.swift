@@ -11,21 +11,45 @@ import Bertybridge
 
 @objc(GoBridge)
 class GoBridge: NSObject {
+    let orbitdir: URL
+
     var bridgeDemo: BertybridgeDemoBridgeProtocol?
 
     override init() {
+        // set berty dir for persistance
+        let absUserUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        self.orbitdir = absUserUrl.appendingPathComponent("orbitdb", isDirectory: true)
+
         super.init()
     }
 
-    @objc func startDemo(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc func startDemo(_ opts: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
             if self.bridgeDemo != nil {
                 throw NSError(domain: "already started", code: 1)
             }
 
+            // get opts
+            let optPersistance = opts["persistance"] as? Bool ?? false
+            let optLog = opts["logLevel"] as? String ?? "info"
+
             var err: NSError?
             let opts = BertybridgeDemoOpts()
-            opts.logLevel = "debug"
+
+            // set log level
+            opts.logLevel = optLog
+
+            // set persistance if needed
+            if optPersistance {
+                var isDirectory: ObjCBool = true
+                let exist = FileManager.default.fileExists(atPath: self.orbitdir.path, isDirectory: &isDirectory)
+                if !exist {
+                    try FileManager.default.createDirectory(atPath: self.orbitdir.path, withIntermediateDirectories: true, attributes: nil)
+                }
+
+                opts.orbitDBDirectory = self.orbitdir.path
+            }
+
             let bridgeDemo = BertybridgeNewDemoBridge(opts, &err)
             if err != nil {
                 throw err!

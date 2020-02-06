@@ -4,6 +4,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReadableMap;
 
 // go packages
 import bertybridge.Bertybridge;
@@ -15,11 +16,12 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private DemoBridge demoBridge = null;
-
+    private final String orbitdir;
 
     public GoBridgeModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        this.orbitdir = reactContext.getFilesDir().getAbsolutePath();
     }
 
     @Override
@@ -28,20 +30,27 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void startDemo(Promise promise) {
+    public void startDemo(ReadableMap opts, Promise promise) {
         try {
             if (this.demoBridge != null) {
                 throw new Exception("demo bridge already started");
             }
 
+            String loglevel = "info";
+            String orbitdir = "memory";
+
+            if (opts.hasKey("loglevel")) loglevel = opts.getString("loglevel");
+            if (opts.hasKey("persistance")) orbitdir = this.orbitdir;
+
             BridgeOpts bridgeOpts = new BridgeOpts();
             bridgeOpts.setGRPCWebSocketListener(true);
 
-            DemoOpts opts = new DemoOpts();
-            opts.setLogLevel("debug");
-            opts.setBridgeOpts(bridgeOpts);
+            DemoOpts demoOpts = new DemoOpts();
+            demoOpts.setLogLevel(loglevel);
+            demoOpts.setOrbitDBDirectory(orbitdir);
+            demoOpts.setBridgeOpts(bridgeOpts);
 
-            this.demoBridge = Bertybridge.newDemoBridge(opts);
+            this.demoBridge = Bertybridge.newDemoBridge(demoOpts);
             promise.resolve(true);
         } catch (Exception err) {
             promise.reject(err);

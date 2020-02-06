@@ -28,8 +28,9 @@ type demo struct {
 }
 
 type DemoOpts struct {
-	LogLevel   string
-	BridgeOpts *BridgeOpts
+	LogLevel         string
+	OrbitDBDirectory string
+	BridgeOpts       *BridgeOpts
 }
 
 func NewDemoBridge(opts *DemoOpts) (DemoBridge, error) {
@@ -64,10 +65,16 @@ func newDemoBridge(logger *zap.Logger, opts *DemoOpts) (DemoBridge, error) {
 			return nil, err
 		}
 
+		directory := ":memory:"
+		if opts.OrbitDBDirectory != "" {
+			directory = opts.OrbitDBDirectory
+		}
+
 		d.demoClient, err = bertydemo.New(&bertydemo.Opts{
 			CoreAPI:          api,
-			OrbitDBDirectory: ":memory:",
+			OrbitDBDirectory: directory,
 		})
+
 		if err != nil {
 			return nil, err
 		}
