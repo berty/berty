@@ -121,23 +121,24 @@ steps:
       - "js/packages/berty-app/android/toc.pb"
       - "js/packages/berty-app/android/app/build/outputs/bundle/release/app-release.aab"
 
-  # - label: ios-build
-  #   agents:
-  #     queue: "macos"
-  #   plugins:
-  #     - gopath-checkout#v1.0.1:
-  #         import: berty.tech/berty
-  #   commands:
-  #     - set -x
-  #     - export PATH=$$(brew --prefix ruby)/bin:$$PATH # use brew ruby
-  #     - go get golang.org/x/mobile/cmd/gomobile
-  #     - gomobile init
-  #     - cd js
-  #     - make release.ios.staff
-  #     - find . -name '.ipa'
-  #     - find . -name '.app'
-  #   artifact_paths:
-  #     - "js/packages/berty-app/build/**/*"
+  - label: ios-build
+    if: build.branch == "master" || build.message =~ /\[run ios-build\]/i
+    agents:
+      queue: "macos"
+    plugins:
+      - gopath-checkout#v1.0.1:
+          import: berty.tech/berty
+    commands:
+      - set -x
+      - export PATH=$$(brew --prefix ruby)/bin:$$PATH # use brew ruby
+      - go get golang.org/x/mobile/cmd/gomobile
+      - gomobile init
+      - cd js
+      - make release.ios.staff
+      - find . -name '.ipa'
+      - find . -name '.app'
+    artifact_paths:
+      - "js/packages/berty-app/build/**/*"
 
   - label: js-generate
     plugins:
