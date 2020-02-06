@@ -8,7 +8,9 @@ import { Buffer } from 'buffer'
 import { GoBridge } from '../orbitdb/native'
 import { IProtocolServiceHandler } from './handler.gen'
 
-if (!__DEV__) {
+const useExternalBridge = __DEV__ // set to false to test integrated bridge in dev
+
+if (!useExternalBridge) {
 	GoBridge.startDemo()
 }
 
@@ -21,7 +23,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 
 	constructor(metadata?: { [key: string]: string | string[] }) {
 		super(metadata)
-		if (__DEV__) {
+		if (useExternalBridge) {
 			this.client = new DemoServiceClient(
 				bridge({
 					host: 'http://127.0.0.1:1337',
