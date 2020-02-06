@@ -1,3 +1,3 @@
 import { NativeModules } from 'react-native'
 
-export const GoBridge = NativeModules.Gobridge
+export const GoBridge = NativeModules.GoBridge
