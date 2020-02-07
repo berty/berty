@@ -22,7 +22,7 @@
   <a href="https://berty.tech">berty.tech</a> •
   <a href="https://twitter.com/berty">Twitter</a> •
   <a href="http://crpt.fyi/berty-matrix">Matrix</a> •
-  <a href="http://crpt.fyi/berty-discord">Dicord</a> •
+  <a href="http://crpt.fyi/berty-discord">Discord</a> •
   <a href="https://github.com/berty">GitHub</a>
 </b></p>
 
