@@ -6,6 +6,9 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 
+import java.io.File;
+
+
 // go packages
 import bertybridge.Bertybridge;
 import bertybridge.BridgeOpts;
@@ -13,7 +16,7 @@ import bertybridge.DemoBridge;
 import bertybridge.DemoOpts;
 
 public class GoBridgeModule extends ReactContextBaseJavaModule {
-
+    private final String inMemoryDir = ":memory:";
     private final ReactApplicationContext reactContext;
     private DemoBridge demoBridge = null;
     private final String orbitdir;
@@ -21,7 +24,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     public GoBridgeModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
-        this.orbitdir = reactContext.getFilesDir().getAbsolutePath();
+        this.orbitdir = reactContext.getFilesDir().getAbsolutePath() + "/orbitdb";
     }
 
     @Override
@@ -36,11 +39,18 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
                 throw new Exception("demo bridge already started");
             }
 
-            String loglevel = "info";
-            String orbitdir = "memory";
+            String loglevel = opts.hasKey("loglevel") ? opts.getString("loglevel") : "info";
+            String orbitdir = opts.hasKey("persistance") && opts.getBoolean("persistance") ? this.orbitdir : inMemoryDir;
 
-            if (opts.hasKey("loglevel")) loglevel = opts.getString("loglevel");
-            if (opts.hasKey("persistance")) orbitdir = this.orbitdir;
+            if (orbitdir != inMemoryDir) {
+                final File dir = new File(this.orbitdir);
+                if (!dir.exists()) {
+                    if (!dir.mkdirs()) {
+                        throw new Exception("orbitdb directory creation failed");
+                    }
+                }
+            }
+
 
             BridgeOpts bridgeOpts = new BridgeOpts();
             bridgeOpts.setGRPCWebSocketListener(true);
