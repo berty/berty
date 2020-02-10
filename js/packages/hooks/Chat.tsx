@@ -132,7 +132,7 @@ export const useAccountAcceptContactRequest = () => {
 	return ({ id }: { id: string }) =>
 		dispatch(
 			chat.incomingContactRequest.commands.accept({
-				aggregateId: id,
+				id,
 			}),
 		)
 }
@@ -142,7 +142,7 @@ export const useAccountDiscardContactRequest = () => {
 	return ({ id }: { id: string }) =>
 		dispatch(
 			chat.incomingContactRequest.commands.discard({
-				aggregateId: id,
+				id,
 			}),
 		)
 }

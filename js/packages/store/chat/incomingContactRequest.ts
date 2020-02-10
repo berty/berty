@@ -126,7 +126,7 @@ export const queries: QueryReducer = {
 }
 export const transactions: Transactions = {
 	accept: function*(payload) {
-		const request: Entity = yield select((state) => queries.get(state, { id: payload.aggregateId }))
+		const request: Entity = yield select((state) => queries.get(state, { id: payload.id }))
 		yield put(
 			protocol.commands.client.contactRequestAccept({
 				id: request.accountId,
@@ -135,7 +135,7 @@ export const transactions: Transactions = {
 		)
 	},
 	discard: function*(payload) {
-		const request: Entity = yield select((state) => queries.get(state, { id: payload.aggregateId }))
+		const request: Entity = yield select((state) => queries.get(state, { id: payload.id }))
 		yield put(
 			protocol.commands.client.contactRequestDiscard({
 				id: request.accountId,
