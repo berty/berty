@@ -2,6 +2,7 @@ package bertydemo
 
 import (
 	"context"
+	fmt "fmt"
 	"testing"
 
 	"berty.tech/berty/go/internal/ipfsutil"
@@ -185,21 +186,32 @@ func TestLogStream(t *testing.T) {
 
 	defer logClient.CloseSend()
 
-	data := []byte("Hello log!")
-	_ = testingAdd(t, demo, logToken, data)
+	maxIteration := 10
+	go func() {
+		for i := 0; i < maxIteration; i++ {
+			data := []byte(fmt.Sprintf("Hello log number %d!", i))
+			_ = testingAdd(t, demo, logToken, data)
+		}
+	}()
 
-	op, err := logClient.Recv()
-	checkErr(t, err)
+	for i := 0; i < maxIteration; i++ {
+		op, err := logClient.Recv()
+		if err != nil {
+			t.Fatalf("cannot receive operation")
+		}
 
-	got := op.GetName()
-	shouldGet := "ADD"
-	if got != shouldGet {
-		t.Fatalf("LogStream()->Op.Name = %s; want %s", got, shouldGet)
-	}
+		got := op.GetName()
+		shouldGet := "ADD"
+		if got != shouldGet {
+			t.Fatalf("LogStream()->Op.Name = %s; want %s", got, shouldGet)
+		}
 
-	got = string(op.GetValue())
-	shouldGet = string(data)
-	if got != shouldGet {
-		t.Fatalf("LogStream()->Op.Value = %s; want %s", got, shouldGet)
+		got = string(op.GetValue())
+		shouldGet = fmt.Sprintf("Hello log number %d!", i)
+		if got != shouldGet {
+			t.Fatalf("LogStream()->Op.Value = %s; want %s", got, shouldGet)
+		}
+
+		checkErr(t, err)
 	}
 }

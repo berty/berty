@@ -7,9 +7,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"sync"
-	"time"
 
 	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/events"
+	"berty.tech/go-orbit-db/stores"
 	"berty.tech/go-orbit-db/stores/operation"
 	cid "github.com/ipfs/go-cid"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
@@ -25,7 +26,7 @@ type Client struct {
 	api       ipfs_interface.CoreAPI
 	odb       orbitdb.OrbitDB
 	logs      map[string]orbitdb.EventLogStore
-	logsMutex *sync.Mutex
+	logsMutex sync.Mutex
 }
 
 type Opts struct {
@@ -60,9 +61,7 @@ func New(opts *Opts) (*Client, error) {
 
 	logs := make(map[string]orbitdb.EventLogStore)
 
-	logsMutex := &sync.Mutex{}
-
-	return &Client{api, odb, logs, logsMutex}, nil
+	return &Client{api, odb, logs, sync.Mutex{}}, nil
 }
 
 func intPtr(i int) *int {
@@ -216,34 +215,72 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 	if opts == nil {
 		opts = &orbitdb.StreamOptions{}
 	}
-	dc := ctx.Done()
-	for {
-		if dc != nil {
-			select {
-			case _, done := <-dc:
-				if done {
-					return nil
-				}
-			default:
-			}
-		} // else we are in an infinite loop
-		ops, err := log.List(ctx, opts)
+
+	cops := make(chan operation.Operation, 10)
+
+	// @FIXME(gfanton): first listing should be done on client side,
+	// im just keeping the logic here
+
+	// first list all already existing ops
+	ops, err := log.List(ctx, opts)
+	if err != nil {
+		return err
+	}
+
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	// then subscribe to next event
+	go log.Subscribe(ctx, func(e events.Event) {
+		ew, ok := e.(*stores.EventWrite)
+		if !ok {
+			return
+		}
+
+		op, err := operation.ParseOperation(ew.Entry)
 		if err != nil {
+			fmt.Printf("unable to parse operation")
+			return
+		}
+
+		// send op into channel
+		cops <- op
+	})
+
+	// send previously listed ops
+	for _, op := range ops {
+		pop := convertLogOperationToProtobufLogOperation(op)
+		jsoned, _ := json.Marshal(pop)
+		fmt.Println(string(jsoned))
+		if err := srv.Send(pop); err != nil {
 			return err
 		}
-		if len(ops) > 0 {
-			for _, op := range ops {
-				pop := convertLogOperationToProtobufLogOperation(op)
-				jsoned, _ := json.Marshal(pop)
-				fmt.Println("Log", log.Address(), "->", string(jsoned))
-				if err = srv.Send(pop); err != nil {
-					return err
-				}
-			}
-			lastOpCid := ops[len(ops)-1].GetEntry().GetHash()
-			opts.GT = &lastOpCid
+	}
+
+	if len(ops) > 0 {
+		lastOpCid := ops[len(ops)-1].GetEntry().GetHash()
+		opts.GT = &lastOpCid
+	}
+
+	// loop over ops channel
+	for {
+		var op operation.Operation
+
+		select {
+		case op = <-cops:
+		case <-ctx.Done():
+			return ctx.Err()
 		}
-		time.Sleep(1 * time.Second)
+
+		lastOpCid := op.GetEntry().GetHash()
+		opts.GT = &lastOpCid
+
+		pop := convertLogOperationToProtobufLogOperation(op)
+		jsoned, _ := json.Marshal(pop)
+		fmt.Println(string(jsoned))
+		if err = srv.Send(pop); err != nil {
+			return err
+		}
 	}
 }
 
