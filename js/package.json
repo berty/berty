@@ -33,13 +33,10 @@
     ],
     "nohoist": [
       "**/react-native",
-      "**/react-native-*",
       "**/jsc-*",
-      "**/@react-native-community/*",
       "**/hermes-engine",
       "**/metro-*",
-      "**/@ui-kitten/eva-icons",
-      "**/@react-navigation/native"
+      "**/@react-native-community/cli-*"
     ]
   },
   "dependencies": {

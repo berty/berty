@@ -29,7 +29,7 @@ eslint := $(bin)/eslint
 
 pkg := $(patsubst %/package.json, %, $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 2 -type f -name 'package.json')))
 pkg_mod := $(patsubst %, %/node_modules, $(pkg))
-pkg_desc := $(patsubst %, %/package.json, $(pkg))
+pkg_desc := $(patsubst %, %/package.json,$(pkg))
 
 .DEFAULT_GOAL := deps
 
@@ -39,17 +39,18 @@ print-%  : ; @echo $* = $($*)
 env:
 	@env
 
-$(yarn):
-	$(error "yarn is not installed")
-
 .PHONY: deps
-deps: $(yarn) $(mod) $(pkg_mod)
-deps: $(yarn) $(lerna) $(mod) $(pkg_mod)
+deps: $(mod) $(pkg_mod)
+deps: $(lerna) $(mod) $(pkg_mod)
 
 $(mod) $(pkg_mod): ci ?= false
 $(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
 	$(yarn) $(if $(filter $(ci), true), --frozen-lockfile)
 	$(lerna) $(lerna_flags) bootstrap
+	# remove duplicate instance of react-native
+	rm -rf $$(find $(mod) -type d -name react-native -path '*/node_modules/*'  | grep 'node_modules/react-native$$')
+	# convert android deps to androidx
+	$(bin)/jetifier
 	mkdir -p $(mod) $(pkg_mod)
 	touch $(mod) $(pkg_mod)
 
