@@ -43,6 +43,14 @@ export const useAccountCreate = () => {
 	)
 }
 
+export const useAccountReplay = () => {
+	const dispatch = useDispatch()
+	return useMemo(
+		() => (payload: chat.account.Command.Replay) => dispatch(chat.account.commands.replay(payload)),
+		[dispatch],
+	)
+}
+
 // account queries
 export const useAccountList = () => {
 	const list = useSelector((state: chat.account.GlobalState) =>

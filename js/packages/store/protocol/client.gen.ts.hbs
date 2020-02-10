@@ -32,6 +32,8 @@ import * as api from '@berty-tech/api'
 							action: {
 								payload: {
 									aggregateId: string,
+									eventContext: api.berty.protocol.IEventContext,
+									metadata: api.berty.protocol.IGroupMetadata,
 									event: {
 										{{#with (lookup "berty.protocol")}}
 											{{#each nested}}

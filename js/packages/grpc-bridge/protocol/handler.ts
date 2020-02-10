@@ -131,24 +131,38 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 		return Buffer.from(this.accountPk + '__' + this.rdvLogtoken, 'utf-8')
 	}
 
-	addEventToAccountMetadataLog = ({
+	getMetadataLogToken = (groupPk: string): string => {
+		const [value] = groupPk.split(':')
+		return value
+	}
+
+	addEventToMetadataLog = ({
+		groupPk,
 		type,
 		dataType,
 		data,
-	}: {
-		type: string
-		dataType: string
-		data: { [key: string]: any }
-	}) => {
+	}:
+		| {
+				groupPk: string
+				type: string
+				dataType: string
+				data: { [key: string]: any }
+		  }
+		| {
+				groupPk: string
+				type: string
+				data: Uint8Array
+				dataType?: string
+		  }) => {
 		const { client } = this
 		if (!client) {
-			throw new Error('handler.ts: addEventToAccountMetadataLog: missing client')
+			throw new Error('handler.ts: addEventToMetadataLog: missing client')
 		}
 		return new Promise((resolve, reject) => {
 			try {
 				client.logAdd(
 					{
-						logToken: this.accountMetadataLogToken,
+						logToken: this.getMetadataLogToken(groupPk),
 						data: api.berty.protocol.GroupMetadataEvent.encode({
 							eventContext: {},
 							metadata: {
@@ -157,7 +171,10 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 									'EventType' + type
 								],
 							},
-							event: (api.berty.protocol as { [key: string]: any })[dataType].encode(data).finish(),
+							event:
+								type === 'GroupMetadataPayloadSent'
+									? data
+									: (api.berty.protocol as { [key: string]: any })[dataType].encode(data).finish(),
 						}).finish(),
 					},
 					(error, response) => {
@@ -201,7 +218,8 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			const parts = val.split(' ')
 			const [type, requesterAccountPk, ...metadataParts] = parts
 			if (type === 'CONTACT_REQUEST_FROM') {
-				this.addEventToAccountMetadataLog({
+				this.addEventToMetadataLog({
+					groupPk: this.accountGroupPk,
 					type: 'AccountContactRequestIncomingReceived',
 					dataType: 'AccountContactRequestReceived',
 					data: {
@@ -246,7 +264,8 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 				request.contactMetadata && new Buffer(request.contactMetadata).toString('utf-8')
 			const ownId = this.accountPk
 			const otherUserPkBytes = Buffer.from(otherUserPk, 'utf-8')
-			await this.addEventToAccountMetadataLog({
+			await this.addEventToMetadataLog({
+				groupPk: this.accountGroupPk,
 				type: 'AccountContactRequestOutgoingEnqueued',
 				dataType: 'AccountContactRequestEnqueued',
 				data: {
@@ -263,7 +282,8 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 						: resolve()
 				})
 			})
-			await this.addEventToAccountMetadataLog({
+			await this.addEventToMetadataLog({
+				groupPk: this.accountGroupPk,
 				type: 'AccountContactRequestOutgoingSent',
 				dataType: 'AccountContactRequestSent',
 				data: {
@@ -283,7 +303,8 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			response?: api.berty.protocol.ContactRequestAccept.IReply,
 		) => void,
 	) => void = async (request, callback) => {
-		await this.addEventToAccountMetadataLog({
+		await this.addEventToMetadataLog({
+			groupPk: this.accountGroupPk,
 			type: 'AccountContactRequestIncomingAccepted',
 			dataType: 'AccountContactRequestAccepted',
 			data: {
@@ -300,7 +321,8 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			response?: api.berty.protocol.ContactRequestDiscard.IReply,
 		) => void,
 	) => void = async (request, callback) => {
-		await this.addEventToAccountMetadataLog({
+		await this.addEventToMetadataLog({
+			groupPk: this.accountGroupPk,
 			type: 'AccountContactRequestIncomingDiscarded',
 			dataType: 'AccountContactRequestDiscarded',
 			data: {
@@ -370,7 +392,19 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 	AppMetadataSend: (
 		request: api.berty.protocol.AppMetadataSend.IRequest,
 		callback: (error: Error | null, response?: api.berty.protocol.AppMetadataSend.IReply) => void,
-	) => void = (request, callback) => {}
+	) => void = async (request, callback) => {
+		const { groupPk, payload } = request
+		try {
+			await this.addEventToMetadataLog({
+				groupPk: new Buffer(groupPk as Uint8Array).toString(),
+				type: 'GroupMetadataPayloadSent',
+				data: payload as Uint8Array,
+			})
+			callback(null, {})
+		} catch (error) {
+			callback(error)
+		}
+	}
 	AppMessageSend: (
 		request: api.berty.protocol.AppMessageSend.IRequest,
 		callback: (error: Error | null, response?: api.berty.protocol.AppMessageSend.IReply) => void,

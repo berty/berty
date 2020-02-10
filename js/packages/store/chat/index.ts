@@ -4,6 +4,7 @@ import { all, call } from 'redux-saga/effects'
 import createSagaMiddleware from 'redux-saga'
 import createRecorder from 'redux-test-recorder'
 import mem from 'mem'
+import createSagaMonitor from '@clarketm/saga-monitor'
 
 import * as protocol from '../protocol'
 import * as account from './account'
@@ -40,15 +41,21 @@ export const reducers = {
 }
 
 export function* rootSaga() {
-	yield all([
-		call(protocol.rootSaga),
-		call(account.orchestrator),
-		call(incomingContactRequest.orchestrator),
-		call(contact.orchestrator),
-		call(conversation.orchestrator),
-		call(member.orchestrator),
-		call(message.orchestrator),
-	])
+	while (1) {
+		try {
+			yield all([
+				call(protocol.rootSaga),
+				call(account.orchestrator),
+				call(incomingContactRequest.orchestrator),
+				call(contact.orchestrator),
+				call(conversation.orchestrator),
+				call(member.orchestrator),
+				call(message.orchestrator),
+			])
+		} catch (error) {
+			console.error('Chat orchestrator crashed, retrying', error.toString())
+		}
+	}
 }
 
 const reducer = combineReducers(reducers)
@@ -74,7 +81,19 @@ export const recorder: {
 
 export const init = mem(
 	(...middlewares: Array<Middleware>) => {
-		const sagaMiddleware = createSagaMiddleware()
+		const sagaMiddleware = createSagaMiddleware({
+			sagaMonitor: createSagaMonitor({
+				level: 'log', // logging level
+				verbose: false, // verbose mode
+				color: '#03A9F4', // default color
+				rootSagaStart: false, // show root saga start effect
+				effectTrigger: false, // show triggered effects
+				effectResolve: false, // show resolved effects
+				effectReject: true, // show rejected effects
+				effectCancel: false, // show cancelled effects
+				actionDispatch: false, // show dispatched actions
+			}),
+		})
 
 		const store = {
 			reducer,

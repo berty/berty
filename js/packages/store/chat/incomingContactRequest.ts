@@ -1,4 +1,4 @@
-import { createSlice, CaseReducer } from '@reduxjs/toolkit'
+import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { put, all, takeLeading, select } from 'redux-saga/effects'
 import { Buffer } from 'buffer'
@@ -33,21 +33,27 @@ export type GlobalState = {
 
 export namespace Command {
 	export type Send = void
-	export type Accept = void
-	export type refuse = void
+	export type Accept = { id: string }
+	export type Discard = { id: string }
 }
 
-type SimpleCaseReducer = CaseReducer<State, { type: string; payload: { aggregateId: string } }>
+type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
 
 export type CommandsReducer = {
-	accept: SimpleCaseReducer
-	discard: SimpleCaseReducer
+	accept: SimpleCaseReducer<Command.Accept>
+	discard: SimpleCaseReducer<Command.Discard>
 }
 
 export type QueryReducer = {
 	list: (state: GlobalState, query: {}) => Array<Entity>
 	get: (state: GlobalState, query: { id: string }) => Entity
 	getLength: (state: GlobalState) => number
+}
+
+export type Transactions = {
+	[K in keyof CommandsReducer]: CommandsReducer[K] extends SimpleCaseReducer<infer TPayload>
+		? (payload: TPayload) => Generator
+		: never
 }
 
 const initialState: State = {
@@ -118,30 +124,34 @@ export const queries: QueryReducer = {
 	get: (state, { id }) => state.chat.incomingContactRequest.aggregates[id],
 	getLength: (state) => Object.keys(state.chat.incomingContactRequest.aggregates).length,
 }
+export const transactions: Transactions = {
+	accept: function*(payload) {
+		const request: Entity = yield select((state) => queries.get(state, { id: payload.aggregateId }))
+		yield put(
+			protocol.commands.client.contactRequestAccept({
+				id: request.accountId,
+				contactPk: Buffer.from(request.requesterPk, 'base64'),
+			}),
+		)
+	},
+	discard: function*(payload) {
+		const request: Entity = yield select((state) => queries.get(state, { id: payload.aggregateId }))
+		yield put(
+			protocol.commands.client.contactRequestDiscard({
+				id: request.accountId,
+				contactPk: Buffer.from(request.requesterPk, 'base64'),
+			}),
+		)
+	},
+}
 
 export function* orchestrator() {
 	yield all([
 		takeLeading(commands.accept, function*({ payload }) {
-			const request: Entity = yield select((state) =>
-				queries.get(state, { id: payload.aggregateId }),
-			)
-			yield put(
-				protocol.commands.client.contactRequestAccept({
-					id: request.accountId,
-					contactPk: Buffer.from(request.requesterPk, 'base64'),
-				}),
-			)
+			yield* transactions.accept(payload)
 		}),
 		takeLeading(commands.discard, function*({ payload }) {
-			const request: Entity = yield select((state) =>
-				queries.get(state, { id: payload.aggregateId }),
-			)
-			yield put(
-				protocol.commands.client.contactRequestDiscard({
-					id: request.accountId,
-					contactPk: Buffer.from(request.requesterPk, 'base64'),
-				}),
-			)
+			yield* transactions.discard(payload)
 		}),
 	])
 }

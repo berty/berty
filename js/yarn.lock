@@ -1133,6 +1133,14 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@clarketm/saga-monitor@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@clarketm/saga-monitor/-/saga-monitor-2.0.1.tgz#ccc20ec5c20420bbf8082ca1f54036d7ba990545"
+  integrity sha512-JlU2eRMdt/JLy37V5Q5KWASt+98vyapeLxiPJ+iT3NqCF+cdPVZpncrUxfBsY9o5U29aQe0+tvvS0Ysj+jrZ+A==
+  dependencies:
+    "@redux-saga/core" "^1.0.1"
+    "@redux-saga/is" "^1.0.1"
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.3.tgz#099139eaec7ebf07a27c1786a3ff64f39464d2ef"
@@ -2744,7 +2752,7 @@
     color "^3.1.2"
     react-native-iphone-x-helper "^1.2.1"
 
-"@redux-saga/core@^1.1.3":
+"@redux-saga/core@^1.0.1", "@redux-saga/core@^1.1.3":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@redux-saga/core/-/core-1.1.3.tgz#3085097b57a4ea8db5528d58673f20ce0950f6a4"
   integrity sha512-8tInBftak8TPzE6X13ABmEtRJGjtK17w7VUs7qV17S8hCO5S3+aUTWZ/DBsBJPdE8Z5jOPwYALyvofgq1Ws+kg==
@@ -2770,7 +2778,7 @@
   dependencies:
     "@redux-saga/symbols" "^1.1.2"
 
-"@redux-saga/is@^1.1.2":
+"@redux-saga/is@^1.0.1", "@redux-saga/is@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@redux-saga/is/-/is-1.1.2.tgz#ae6c8421f58fcba80faf7cadb7d65b303b97e58e"
   integrity sha512-OLbunKVsCVNTKEf2cH4TYyNbbPgvmZ52iaxBD4I1fTif4+MTXMa4/Z07L83zW/hTCXwpSZvXogqMqLfex2Tg6w==
@@ -5669,6 +5677,11 @@ bmp-js@^0.1.0:
 bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1, bn.js@^4.4.0:
   version "4.11.8"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.8.tgz#2cde09eb5ee341f484746bb0309b3253b1b1442f"
+
+bn.js@^5.0.0:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.1.1.tgz#48efc4031a9c4041b9c99c6941d903463ab62eb5"
+  integrity sha512-IUTD/REb78Z2eodka1QZyyEk66pciRcP6Sroka0aI3tG/iwIdYLrBD62RsubR7vqdt3WyX8p4jxeatzmRSphtA==
 
 body-parser@1.19.0, body-parser@^1.15.0:
   version "1.19.0"
@@ -17705,6 +17718,13 @@ simplebar@^4.2.3:
     lodash.throttle "^4.1.1"
     resize-observer-polyfill "^1.5.1"
 
+simpleflakes@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/simpleflakes/-/simpleflakes-2.1.0.tgz#9c3749609d02f73900be044ce167d50f8516d0cb"
+  integrity sha512-yJsOH+zDowZGb1l7Th8PIVpmpOzguQrSEoPYxpazTGMI0Uovrm7//rHf07GwP7m1060/BvNhcGlDIzAhDUAwYQ==
+  dependencies:
+    bn.js "^5.0.0"
+
 sisteransi@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.3.tgz#98168d62b79e3a5e758e27ae63c4a053d748f4eb"
@@ -19155,10 +19175,10 @@ typescript-tuple@^2.2.1:
   dependencies:
     typescript-compare "^0.0.2"
 
-typescript@^3.6.3:
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.2.tgz#27e489b95fa5909445e9fef5ee48d81697ad18fb"
-  integrity sha512-ml7V7JfiN2Xwvcer+XAf2csGO1bPBdRbFCkYBczNZggrBZ9c7G3riSUeJmqEU5uOtXNPMhE3n+R4FA/3YOAWOQ==
+typescript@^3.7.5:
+  version "3.7.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.5.tgz#0692e21f65fd4108b9330238aac11dd2e177a1ae"
+  integrity sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==
 
 ua-parser-js@^0.7.18:
   version "0.7.20"

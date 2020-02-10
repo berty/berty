@@ -209,6 +209,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {}
 			}
 		},
@@ -218,6 +220,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// GroupMemberDeviceAdded seems event of type GroupAddMemberDevice
 					memberPk: Uint8Array
@@ -232,6 +236,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// GroupDeviceSecretAdded seems event of type GroupAddDeviceSecret
 					devicePk: Uint8Array
@@ -246,6 +252,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// AccountGroupJoined seems event of type AccountGroupJoined
 					devicePk: Uint8Array
@@ -259,6 +267,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// AccountGroupLeft seems event of type AccountGroupLeft
 					devicePk: Uint8Array
@@ -272,6 +282,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// AccountContactRequestDisabled seems event of type AccountContactRequestDisabled
 					devicePk: Uint8Array
@@ -284,6 +296,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// AccountContactRequestEnabled seems event of type AccountContactRequestEnabled
 					devicePk: Uint8Array
@@ -296,6 +310,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// AccountContactRequestReferenceReset seems event of type AccountContactRequestReferenceReset
 					devicePk: Uint8Array
@@ -309,6 +325,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// AccountContactRequestOutgoingEnqueued seems event of type AccountContactRequestEnqueued
 					devicePk: Uint8Array
@@ -324,6 +342,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// AccountContactRequestOutgoingSent seems event of type AccountContactRequestSent
 					devicePk: Uint8Array
@@ -337,6 +357,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// AccountContactRequestIncomingReceived seems event of type AccountContactRequestReceived
 					devicePk: Uint8Array
@@ -352,6 +374,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// AccountContactRequestIncomingDiscarded seems event of type AccountContactRequestDiscarded
 					devicePk: Uint8Array
@@ -365,6 +389,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// AccountContactRequestIncomingAccepted seems event of type AccountContactRequestAccepted
 					devicePk: Uint8Array
@@ -378,6 +404,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// AccountContactBlocked seems event of type AccountContactBlocked
 					devicePk: Uint8Array
@@ -391,6 +419,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// AccountContactUnblocked seems event of type AccountContactUnblocked
 					devicePk: Uint8Array
@@ -404,6 +434,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// ContactAliasKeyAdded seems event of type ContactAddAliasKey
 					devicePk: Uint8Array
@@ -417,6 +449,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// MultiMemberGroupAliasResolverAdded seems event of type MultiMemberGroupAddAliasResolver
 					devicePk: Uint8Array
@@ -431,6 +465,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {}
 			}
 		},
@@ -440,6 +476,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {
 					// MultiMemberGroupAdminRoleGranted seems event of type MultiMemberGroupAdminRoleGrant
 				}
@@ -451,6 +489,8 @@ export type Events<State> = {
 		action: {
 			payload: {
 				aggregateId: string
+				eventContext: api.berty.protocol.IEventContext
+				metadata: api.berty.protocol.IGroupMetadata
 				event: {}
 			}
 		},
