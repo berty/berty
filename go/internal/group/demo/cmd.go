@@ -154,15 +154,21 @@ func mainLoop(g *group.Group, groupSK crypto.PrivKey) {
 		panic(err)
 	}
 
+	ds, err := groupContext.GetDeviceSecret(ctx)
+	if err != nil {
+		panic(err)
+	}
+
 	fmt.Println("")
 	fmt.Println("PeerID:", self.ID().String())
 	fmt.Println("GroupID:", base64.StdEncoding.EncodeToString(groupBytes))
 	fmt.Println("Member key:", base64.StdEncoding.EncodeToString(memberKeyBytes))
 	fmt.Println("Device key:", base64.StdEncoding.EncodeToString(deviceKeyBytes))
-	fmt.Println("Chain key:", base64.StdEncoding.EncodeToString(groupContext.GetDeviceSecret().ChainKey))
-	fmt.Println("Counter:", groupContext.GetDeviceSecret().Counter)
+	fmt.Println("Chain key:", base64.StdEncoding.EncodeToString(ds.ChainKey))
+	fmt.Println("Counter:", ds.Counter)
 
 	ms := groupContext.GetMetadataStore()
+	kh := groupContext.GetMessageKeysHolder()
 
 	debounce := &trylock.Mutex{}
 
@@ -185,7 +191,7 @@ func mainLoop(g *group.Group, groupSK crypto.PrivKey) {
 				panic(err)
 			}
 
-			secret, err := ms.GetDeviceSecret(senderDevicePubKey)
+			secret, err := kh.GetDeviceChainKey(ctx, senderDevicePubKey)
 			if err != nil {
 				panic(err)
 			}

@@ -1,4 +1,9 @@
 f261ce8b5beb7a3dc25bc3dc562dc4b7122d631b  ../api/bertydemo.proto
+<<<<<<< HEAD
 664cb47ab410ef764fd55e8914b57b9a16d870c4  ../api/bertyprotocol.proto
 98410a19337dcf897f1c4860ee75d38c24209825  ../api/errcode.proto
+=======
+773f9322d635ee7ca3695e987bd3ae47d44b623f  ../api/bertyprotocol.proto
+dd584501a8ccd6af531525954bd628b17525f76f  ../api/errcode.proto
+>>>>>>> feat: initial message store implementation
 1c7b51893d167ee9946ed5d2a539a9d73887ed21  Makefile

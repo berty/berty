@@ -665,6 +665,7 @@ MessageEnvelope is a publicly exposed structure containing a group secure messag
 | ----- | ---- | ----- | ----------- |
 | message_headers | [bytes](#bytes) |  | message_headers is an encrypted serialization using a symmetric key of a MessageHeaders message |
 | message | [bytes](#bytes) |  | message is an encrypted message, only readable by group members who previously received the appropriate chain key |
+| nonce | [bytes](#bytes) |  | nonce is a nonce for message headers |
 
 <a name="berty.protocol.MessageHeaders"></a>
 

@@ -28,6 +28,17 @@ func (g *Group) GroupIDAsString() (string, error) {
 	return hex.EncodeToString(pkBytes), nil
 }
 
+// GroupID returns the group ID as a byte slice
+func (g *Group) GroupID() ([]byte, error) {
+	groupID, err := g.PubKey.Raw()
+
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	return groupID, nil
+}
+
 // New creates a new Group object and an invitation to be used by
 // the first member of the group
 func New() (*Group, crypto.PrivKey, error) {

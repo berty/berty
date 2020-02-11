@@ -5,9 +5,10 @@ import (
 	"math"
 	"math/big"
 
+	"github.com/libp2p/go-libp2p-core/crypto"
+
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
-	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
 // MemberDevice is a remote device part of a group
@@ -21,7 +22,6 @@ type MemberDevice struct {
 type OwnMemberDevice struct {
 	Member crypto.PrivKey
 	Device crypto.PrivKey
-	Secret *bertyprotocol.DeviceSecret
 }
 
 func NewOwnMemberDevice() (*OwnMemberDevice, error) {
@@ -35,6 +35,13 @@ func NewOwnMemberDevice() (*OwnMemberDevice, error) {
 		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
 	}
 
+	return &OwnMemberDevice{
+		Member: member,
+		Device: device,
+	}, nil
+}
+
+func NewDeviceSecret() (*bertyprotocol.DeviceSecret, error) {
 	counter, err := rand.Int(rand.Reader, big.NewInt(0).SetUint64(math.MaxUint64))
 	if err != nil {
 		return nil, errcode.ErrRandomGenerationFailed.Wrap(err)
@@ -46,14 +53,8 @@ func NewOwnMemberDevice() (*OwnMemberDevice, error) {
 		return nil, errcode.ErrRandomGenerationFailed.Wrap(err)
 	}
 
-	secret := &bertyprotocol.DeviceSecret{
+	return &bertyprotocol.DeviceSecret{
 		ChainKey: chainKey,
 		Counter:  counter.Uint64(),
-	}
-
-	return &OwnMemberDevice{
-		Member: member,
-		Device: device,
-		Secret: secret,
 	}, nil
 }

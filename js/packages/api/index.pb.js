@@ -2101,6 +2101,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               message: {
                 type: "bytes",
                 id: 2
+              },
+              nonce: {
+                type: "bytes",
+                id: 3
               }
             }
           },

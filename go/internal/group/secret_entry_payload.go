@@ -10,34 +10,43 @@ import (
 	"berty.tech/berty/go/pkg/errcode"
 )
 
-func OpenDeviceSecret(s *bertyprotocol.GroupAddDeviceSecret, localMemberPrivateKey crypto.PrivKey, group *Group) (*bertyprotocol.DeviceSecret, error) {
+func OpenDeviceSecret(m *bertyprotocol.GroupMetadata, localMemberPrivateKey crypto.PrivKey, group *Group) (crypto.PubKey, *bertyprotocol.DeviceSecret, error) {
+	if m.EventType != bertyprotocol.EventTypeGroupDeviceSecretAdded {
+		return nil, nil, errcode.ErrInvalidInput
+	}
+
+	s := &bertyprotocol.GroupAddDeviceSecret{}
+	if err := s.Unmarshal(m.Payload); err != nil {
+		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
 	nonce, err := groupIDToNonce(group)
 	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
+		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	senderDevicePubKey, err := crypto.UnmarshalEd25519PublicKey(s.DevicePK)
 	if err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	mongPriv, mongPub, err := edwardsToMontgomery(localMemberPrivateKey, senderDevicePubKey)
 	if err != nil {
-		return nil, errcode.ErrCryptoKeyConversion.Wrap(err)
+		return nil, nil, errcode.ErrCryptoKeyConversion.Wrap(err)
 	}
 
 	decryptedSecret := &bertyprotocol.DeviceSecret{}
 	decryptedMessage, ok := box.Open(nil, s.Payload, nonce, mongPub, mongPriv)
 	if !ok {
-		return nil, errcode.ErrCryptoDecrypt
+		return nil, nil, errcode.ErrCryptoDecrypt
 	}
 
 	err = decryptedSecret.Unmarshal(decryptedMessage)
 	if err != nil {
-		return nil, errcode.ErrDeserialization
+		return nil, nil, errcode.ErrDeserialization
 	}
 
-	return decryptedSecret, nil
+	return senderDevicePubKey, decryptedSecret, nil
 }
 
 func NewSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey crypto.PubKey, secret *bertyprotocol.DeviceSecret, group *Group) ([]byte, error) {

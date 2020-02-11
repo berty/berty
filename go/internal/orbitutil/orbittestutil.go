@@ -45,7 +45,7 @@ func (m *MockedPeer) SetGroupContext(gc GroupContext) {
 	m.gc = gc
 }
 
-func ConnectPeers(ctx context.Context, t *testing.T, peers []*MockedPeer) {
+func ConnectPeers(ctx context.Context, t testing.TB, peers []*MockedPeer) {
 	t.Helper()
 
 	for i := 0; i < len(peers); i++ {
@@ -61,7 +61,7 @@ func ConnectPeers(ctx context.Context, t *testing.T, peers []*MockedPeer) {
 	}
 }
 
-func createGroupContext(g *group.Group, member crypto.PrivKey, t *testing.T) GroupContext {
+func createGroupContext(g *group.Group, member crypto.PrivKey, t testing.TB) GroupContext {
 	memberDevice, err := group.NewOwnMemberDevice()
 	if err != nil {
 		t.Fatal(err)
@@ -72,7 +72,7 @@ func createGroupContext(g *group.Group, member crypto.PrivKey, t *testing.T) Gro
 	return NewGroupContext(g, memberDevice)
 }
 
-func createPeers(ctx context.Context, t *testing.T, pathBase string, count int, mn mocknet.Mocknet) []*MockedPeer {
+func createPeers(ctx context.Context, t testing.TB, pathBase string, count int, mn mocknet.Mocknet) []*MockedPeer {
 	mockedPeers := make([]*MockedPeer, count)
 
 	for i := range mockedPeers {
@@ -125,7 +125,7 @@ func DropPeers(t *testing.T, mockedPeers []*MockedPeer) {
 	}
 }
 
-func CreatePeersWithGroup(ctx context.Context, t *testing.T, pathBase string, memberCount int, deviceCount int, initDBStores bool) ([]*MockedPeer, crypto.PrivKey) {
+func CreatePeersWithGroup(ctx context.Context, t testing.TB, pathBase string, memberCount int, deviceCount int, initDBStores bool) ([]*MockedPeer, crypto.PrivKey) {
 	t.Helper()
 
 	mockedPeers := createPeers(ctx, t, pathBase, memberCount*deviceCount, nil)
@@ -145,6 +145,15 @@ func CreatePeersWithGroup(ctx context.Context, t *testing.T, pathBase string, me
 		for j := 0; j < deviceCount; j++ {
 			groupContext := createGroupContext(g, memberPrivKey, t)
 			mockedPeers[deviceIndex].SetGroupContext(groupContext)
+
+			ds, err := group.NewDeviceSecret()
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if _, err = NewInMemoryMessageKeysHolder(ctx, groupContext, ds); err != nil {
+				t.Fatal(err)
+			}
 
 			if initDBStores {
 				if err := mockedPeers[deviceIndex].GetDB().InitStoresForGroup(ctx, groupContext, nil); err != nil {

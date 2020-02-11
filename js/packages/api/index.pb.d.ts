@@ -3213,12 +3213,14 @@ export namespace berty {
         interface IMessageEnvelope {
             messageHeaders?: (Uint8Array|null);
             message?: (Uint8Array|null);
+            nonce?: (Uint8Array|null);
         }
 
         class MessageEnvelope implements IMessageEnvelope {
 
             public messageHeaders: Uint8Array;
             public message: Uint8Array;
+            public nonce: Uint8Array;
             public static create(properties?: berty.protocol.IMessageEnvelope): berty.protocol.MessageEnvelope;
             public static encode(message: berty.protocol.IMessageEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.protocol.IMessageEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;

@@ -1,6 +1,7 @@
 package orbitutil
 
 import (
+	"context"
 	"sync"
 
 	"github.com/golang/protobuf/proto"
@@ -16,10 +17,26 @@ type ClearPayload interface {
 }
 
 type groupContext struct {
-	group           *group.Group
-	ownMemberDevice *group.OwnMemberDevice
-	metadataStore   MetadataStore
-	lock            *sync.RWMutex
+	group             *group.Group
+	ownMemberDevice   *group.OwnMemberDevice
+	metadataStore     MetadataStore
+	messageStore      MessageStore
+	messageKeysHolder MessageKeysHolder
+	lock              *sync.RWMutex
+}
+
+func (g *groupContext) GetMessageStore() MessageStore {
+	g.lock.RLock()
+	defer g.lock.RUnlock()
+
+	return g.messageStore
+}
+
+func (g *groupContext) SetMessageStore(s MessageStore) {
+	g.lock.Lock()
+	defer g.lock.Unlock()
+
+	g.messageStore = s
 }
 
 func (g *groupContext) GetGroup() *group.Group {
@@ -40,10 +57,11 @@ func (g *groupContext) GetDevicePrivKey() crypto.PrivKey {
 	return g.ownMemberDevice.Device
 }
 
-func (g *groupContext) GetDeviceSecret() *bertyprotocol.DeviceSecret {
+func (g *groupContext) GetDeviceSecret(ctx context.Context) (*bertyprotocol.DeviceSecret, error) {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
-	return g.ownMemberDevice.Secret
+
+	return g.messageKeysHolder.GetDeviceChainKey(ctx, g.ownMemberDevice.Device.GetPublic())
 }
 
 func (g *groupContext) GetMetadataStore() MetadataStore {
@@ -57,6 +75,20 @@ func (g *groupContext) SetMetadataStore(s MetadataStore) {
 	defer g.lock.Unlock()
 
 	g.metadataStore = s
+}
+
+func (g *groupContext) GetMessageKeysHolder() MessageKeysHolder {
+	g.lock.Lock()
+	defer g.lock.Unlock()
+
+	return g.messageKeysHolder
+}
+
+func (g *groupContext) SetMessageKeysHolder(m MessageKeysHolder) {
+	g.lock.Lock()
+	defer g.lock.Unlock()
+
+	g.messageKeysHolder = m
 }
 
 func NewGroupContext(g *group.Group, omd *group.OwnMemberDevice) GroupContext {

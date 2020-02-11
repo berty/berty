@@ -245,6 +245,9 @@ message MessageEnvelope {
   // message is an encrypted message, only readable by group members who previously received the appropriate chain key
   bytes message = 2;
 
+  // nonce is a nonce for message headers
+  bytes nonce = 3;
+
   // TODO: Add more readable information here if necessary (eg. CIDs for replication service)
 }
 

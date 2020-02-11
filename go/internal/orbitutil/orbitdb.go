@@ -10,9 +10,7 @@ import (
 	"berty.tech/go-orbit-db/accesscontroller/simple"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/baseorbitdb"
-	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
-	"berty.tech/go-orbit-db/stores"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
@@ -64,6 +62,10 @@ func (s *bertyOrbitDB) InitStoresForGroup(ctx context.Context, gc GroupContext, 
 		return errcode.TODO.Wrap(err)
 	}
 
+	if _, err := s.GroupMessageStore(ctx, gc, options); err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
 	return nil
 }
 
@@ -94,6 +96,7 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *baseorb
 		return nil, errcode.TODO.Wrap(err)
 	}
 	bertyDB.RegisterStoreType(GroupMetadataStoreType, ConstructorFactoryGroupMetadata(bertyDB))
+	bertyDB.RegisterStoreType(GroupMessageStoreType, ConstructorFactoryGroupMessage(bertyDB))
 
 	return bertyDB, nil
 }
@@ -198,18 +201,20 @@ func (s *bertyOrbitDB) GroupMetadataStore(ctx context.Context, g GroupContext, o
 	return sStore, nil
 }
 
-var _ BertyOrbitDB = (*bertyOrbitDB)(nil)
+func (s *bertyOrbitDB) GroupMessageStore(ctx context.Context, g GroupContext, options *orbitdb.CreateDBOptions) (MessageStore, error) {
+	store, err := s.storeForGroup(ctx, s, g, options, GroupMessageStoreType)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to open database")
+	}
 
-func WaitStoreReplication(ctx context.Context, s orbitdb.Store) {
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
+	mStore, ok := store.(MessageStore)
+	if !ok {
+		return nil, errors.New("unable to cast store to member store")
+	}
 
-	go s.Subscribe(ctx, func(evt events.Event) {
-		switch evt.(type) {
-		case *stores.EventReplicated:
-			cancel()
-		}
-	})
+	g.SetMessageStore(mStore)
 
-	<-ctx.Done()
+	return mStore, nil
 }
+
+var _ BertyOrbitDB = (*bertyOrbitDB)(nil)

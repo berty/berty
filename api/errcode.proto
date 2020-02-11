@@ -73,6 +73,9 @@ enum ErrCode {
 
   ErrSecretKeyGenerationFailed = 1050;
 
+  ErrPersistencePut = 1060;
+  ErrPersistenceGet = 1061;
+
   //
   // Bridge (starting at 2001)
   //

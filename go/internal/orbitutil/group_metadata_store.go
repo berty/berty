@@ -27,6 +27,24 @@ type metadataStore struct {
 	BaseGroupStore
 }
 
+func (m *metadataStore) ListEvents(ctx context.Context, ch chan *bertyprotocol.GroupMetadata) {
+	for _, e := range m.OpLog().GetEntries().Slice() {
+		op, err := operation.ParseOperation(e)
+		if err != nil {
+			// TODO: log
+			continue
+		}
+
+		meta := &bertyprotocol.GroupMetadata{}
+		if err := meta.Unmarshal(op.GetValue()); err != nil {
+			// TODO: log
+			continue
+		}
+
+		ch <- meta
+	}
+}
+
 func (m *metadataStore) JoinGroup(ctx context.Context) (operation.Operation, error) {
 	device, err := m.GetGroupContext().GetDevicePrivKey().GetPublic().Raw()
 	if err != nil {
@@ -77,7 +95,12 @@ func (m *metadataStore) SendSecret(ctx context.Context, memberPK crypto.PubKey) 
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	payload, err := group.NewSecretEntryPayload(deviceSK, memberPK, m.GetGroupContext().GetDeviceSecret(), m.GetGroupContext().GetGroup())
+	ds, err := m.GetGroupContext().GetDeviceSecret(ctx)
+	if err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	payload, err := group.NewSecretEntryPayload(deviceSK, memberPK, ds, m.GetGroupContext().GetGroup())
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
@@ -175,10 +198,6 @@ func (m *metadataStore) ListDevices() []crypto.PubKey {
 
 func (m *metadataStore) ListAdmins() []crypto.PubKey {
 	return m.Index().(*metadataStoreIndex).ListAdmins()
-}
-
-func (m *metadataStore) GetDeviceSecret(pk crypto.PubKey) (*bertyprotocol.DeviceSecret, error) {
-	return m.Index().(*metadataStoreIndex).GetDeviceSecret(pk)
 }
 
 func (m *metadataStore) AreSecretsAlreadySent(pk crypto.PubKey) (bool, error) {
