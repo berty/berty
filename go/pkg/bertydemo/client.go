@@ -12,7 +12,6 @@ import (
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/stores/operation"
 	cid "github.com/ipfs/go-cid"
-	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 
@@ -24,22 +23,30 @@ import (
 
 type Client struct {
 	api       ipfs_interface.CoreAPI
-	node      *ipfs_core.IpfsNode
 	odb       orbitdb.OrbitDB
 	logs      map[string]orbitdb.EventLogStore
 	logsMutex *sync.Mutex
 }
 
 type Opts struct {
+	CoreAPI          ipfs_interface.CoreAPI
 	OrbitDBDirectory string
 }
 
 func New(opts *Opts) (*Client, error) {
+	var err error
+
 	ctx := context.Background()
 
-	api, node, err := ipfsutil.NewInMemoryCoreAPI(ctx)
-	if err != nil {
-		return nil, err
+	api := opts.CoreAPI
+	if api == nil {
+		// @NOTE(gfanton): CoreAPI is not mendatory here, but it's strongly recommended
+		// because node lifecycle should not depend on bertydemo
+		// Also (except in test) we should ALWAYS use CoreAPI instead of node directly
+		api, _, err = ipfsutil.NewInMemoryCoreAPI(ctx)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if opts.OrbitDBDirectory == "" {
@@ -55,7 +62,7 @@ func New(opts *Opts) (*Client, error) {
 
 	logsMutex := &sync.Mutex{}
 
-	return &Client{api, node, odb, logs, logsMutex}, nil
+	return &Client{api, odb, logs, logsMutex}, nil
 }
 
 func intPtr(i int) *int {
@@ -245,9 +252,6 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 }
 
 func (d *Client) Close() error {
-	err := d.odb.Close()
-	if err != nil {
-		return err
-	}
-	return d.node.Close()
+	return d.odb.Close()
+
 }

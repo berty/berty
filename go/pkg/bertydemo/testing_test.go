@@ -1,24 +1,33 @@
 package bertydemo
 
 import (
+	context "context"
 	"testing"
 
 	"berty.tech/berty/go/internal/grpcutil"
+	"berty.tech/berty/go/internal/ipfsutil"
 	"github.com/stretchr/testify/assert"
 	grpc "google.golang.org/grpc"
 )
 
 type cleanFunc func()
 
-func testingClient(t *testing.T, opts *Opts) (*Client, cleanFunc) {
+func testingInMemoryClient(t *testing.T) (*Client, ipfsutil.CoreAPIMock, cleanFunc) {
 	t.Helper()
+
+	ctx := context.Background()
+	ipfsmock := ipfsutil.TestingCoreAPI(ctx, t)
+	opts := &Opts{
+		CoreAPI:          ipfsmock,
+		OrbitDBDirectory: ":memory:",
+	}
 
 	demo, err := New(opts)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	return demo, func() {
+	return demo, ipfsmock, func() {
 		demo.Close()
 	}
 }
