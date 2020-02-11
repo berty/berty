@@ -20,7 +20,7 @@
   "main": "index.js",
   "scripts": {
     "cli": "babel-node --extensions '.es6,.js,.es,.jsx,.mjs,.ts,.tsx'",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "jest": {
     "globals": {
