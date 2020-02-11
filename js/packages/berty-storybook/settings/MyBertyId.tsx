@@ -55,10 +55,10 @@ const BertyIdContent: React.FC<{}> = ({ children }) => {
 }
 
 const ContactRequestQR = () => {
-	const contactRequestEnabled = Chat.useAccountContactRequestEnabled()
-	const contactRequestReference = Chat.useAccountContactRequestReference()
+	const contactRequestReference = Chat.useContactRequestReference()
+	const contactRequestEnabled = Chat.useContactRequestEnabled()
+	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 	if (contactRequestEnabled) {
-		// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 		return (
 			<>
 				<QRCode size={200} value={contactRequestReference} />

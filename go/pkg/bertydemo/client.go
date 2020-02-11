@@ -205,12 +205,10 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
-
 	opts := decodeStreamOptions(req.GetOptions())
 	if opts == nil {
 		opts = &orbitdb.StreamOptions{}
 	}
-
 	dc := ctx.Done()
 	for {
 		if dc != nil {
@@ -226,20 +224,18 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 		if err != nil {
 			return err
 		}
-		if len(ops) == 0 {
-			continue
-		}
-
-		for _, op := range ops {
-			pop := convertLogOperationToProtobufLogOperation(op)
-			jsoned, _ := json.Marshal(pop)
-			fmt.Println(string(jsoned))
-			if err = srv.Send(pop); err != nil {
-				return err
+		if len(ops) > 0 {
+			for _, op := range ops {
+				pop := convertLogOperationToProtobufLogOperation(op)
+				jsoned, _ := json.Marshal(pop)
+				fmt.Println(string(jsoned))
+				if err = srv.Send(pop); err != nil {
+					return err
+				}
 			}
+			lastOpCid := ops[len(ops)-1].GetEntry().GetHash()
+			opts.GT = &lastOpCid
 		}
-		lastOpCid := ops[len(ops)-1].GetEntry().GetHash()
-		opts.GT = &lastOpCid
 		time.Sleep(1 * time.Second)
 	}
 }

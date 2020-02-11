@@ -10,8 +10,7 @@ import Case from 'case'
 
 export type Entity = {
 	id: string
-
-	// needed for mvp
+	contactRequestReference?: string
 	accountPk: string
 	devicePk: string
 	accountGroupPk: string
@@ -50,10 +49,15 @@ export type Events = gen.Events<State> & {
 			}
 		},
 	) => State
-	contactRequestReferenceUpdated: CaseReducer<
-		State,
-		PayloadAction<{ aggregateId: string; reference: Uint8Array }>
-	>
+	contactRequestReferenceUpdated: (
+		state: State,
+		action: {
+			payload: {
+				aggregateId: string
+				reference: Uint8Array
+			}
+		},
+	) => State
 }
 
 export type Transactions = {
@@ -105,6 +109,19 @@ const commandHandler = createSlice<State, Commands>({
 	},
 })
 
+const intoBuffer = (
+	thing: Buffer | Uint8Array | { [key: string]: number } | { [key: number]: number },
+): Buffer => {
+	// redux-test-recorder f up the Uint8Arrays so we have to use this monster
+	if (thing instanceof Buffer) {
+		return thing
+	}
+	if (thing instanceof Uint8Array) {
+		return Buffer.from(thing)
+	}
+	return Buffer.from(Object.values(thing))
+}
+
 const eventHandler = createSlice<State, Events>({
 	name: 'protocol/client/event',
 	initialState,
@@ -116,6 +133,12 @@ const eventHandler = createSlice<State, Events>({
 				devicePk: Buffer.from(action.payload.devicePk).toString(),
 				accountGroupPk: Buffer.from(action.payload.accountGroupPk).toString(),
 			}
+			return state
+		},
+		contactRequestReferenceUpdated: (state, { payload }) => {
+			state.aggregates[payload.aggregateId].contactRequestReference = intoBuffer(
+				payload.reference,
+			).toString('base64')
 			return state
 		},
 
@@ -135,7 +158,6 @@ const eventHandler = createSlice<State, Events>({
 		accountContactRequestIncomingReceived: (state) => state,
 		accountContactRequestIncomingDiscarded: (state) => state,
 		accountContactRequestIncomingAccepted: (state) => state,
-		contactRequestReferenceUpdated: (state) => state,
 		accountContactBlocked: (state) => state,
 		accountContactUnblocked: (state) => state,
 
@@ -198,7 +220,6 @@ export const transactions: Transactions = {
 			services[id]?.instanceGetConfiguration,
 			{},
 		)) as api.berty.protocol.InstanceGetConfiguration.IReply
-
 		yield putResolve(
 			events.started({
 				aggregateId: id,
@@ -231,7 +252,7 @@ export const transactions: Transactions = {
 		yield put(
 			events.contactRequestReferenceUpdated({
 				aggregateId: payload.id,
-				reference: reply?.reference,
+				reference: reply.reference,
 			}),
 		)
 		return reply

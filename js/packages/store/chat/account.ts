@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux'
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import {
@@ -18,7 +19,6 @@ import * as protocol from '../protocol'
 
 export type Entity = {
 	id: string
-	contactRequestReference?: string
 	name: string
 	requests: Array<string>
 	conversations: Array<string>
@@ -53,6 +53,7 @@ export namespace Command {
 export namespace Query {
 	export type List = {}
 	export type Get = { id: string }
+	export type GetRequestReference = { id: string }
 	export type GetAll = void
 	export type GetLength = undefined
 }
@@ -79,6 +80,10 @@ export type CommandsReducer = {
 export type QueryReducer = {
 	list: (state: GlobalState, query: Query.List) => Array<Entity>
 	get: (state: GlobalState, query: Query.Get) => Entity
+	getRequestReference: (
+		state: protocol.client.GlobalState,
+		query: Query.GetRequestReference,
+	) => string | undefined
 	getAll: (state: GlobalState, query: Query.GetAll) => Array<Entity>
 	getLength: (state: GlobalState) => number
 }
@@ -111,19 +116,6 @@ const commandHandler = createSlice<State, CommandsReducer>({
 	},
 })
 
-const intoBuffer = (
-	thing: Buffer | Uint8Array | { [key: string]: number } | { [key: number]: number },
-): Buffer => {
-	// redux-test-recorder f up the Uint8Arrays so we have to use this monster
-	if (thing instanceof Buffer) {
-		return thing
-	}
-	if (thing instanceof Uint8Array) {
-		return Buffer.from(thing)
-	}
-	return Buffer.from(Object.values(thing))
-}
-
 const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/account/event',
 	initialState,
@@ -143,16 +135,6 @@ const eventHandler = createSlice<State, EventsReducer>({
 			return state
 		},
 	},
-	extraReducers: {
-		[protocol.events.client.contactRequestReferenceUpdated.type]: (state, { payload }) => {
-			if (state.aggregates[payload.aggregateId]) {
-				state.aggregates[payload.aggregateId].contactRequestReference = intoBuffer(
-					payload.reference,
-				).toString('base64')
-			}
-			return state
-		},
-	},
 })
 
 export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
@@ -161,6 +143,8 @@ export const events = eventHandler.actions
 export const queries: QueryReducer = {
 	list: (state) => Object.values(state.chat.account.aggregates),
 	get: (state, { id }) => state.chat.account.aggregates[id],
+	getRequestReference: (state, { id }) =>
+		protocol.queries.client.get(state, { id })?.contactRequestReference,
 	getAll: (state) => Object.values(state.chat.account.aggregates),
 	getLength: (state) => Object.keys(state.chat.account.aggregates).length,
 }
@@ -207,15 +191,16 @@ export const transactions: Transactions = {
 		// create an id for the account
 		const id = simpleflake().toString()
 
-		// open account
-		yield* transactions.open({ id })
-		// get account PKs
-		const client = yield* getProtocolClient(id)
 		// send created event to protocol
 		const event = events.created({
 			aggregateId: id,
 			name,
 		})
+		// open account
+		yield* transactions.open({ id })
+		// get account PK
+		const client = yield* getProtocolClient(id)
+
 		yield* protocol.transactions.client.appMetadataSend({
 			id,
 			groupPk: new Buffer(client.accountGroupPk),
@@ -318,6 +303,9 @@ export function* orchestrator() {
 		}),
 		takeLeading(commands.replay, function*(action) {
 			yield* transactions.replay(action.payload)
+		}),
+		takeLeading(commands.sendContactRequest, function*(action) {
+			yield* transactions.sendContactRequest(action.payload)
 		}),
 	])
 }

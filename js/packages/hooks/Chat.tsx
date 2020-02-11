@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { chat } from '@berty-tech/store'
+import { chat, protocol } from '@berty-tech/store'
 import { Provider as ReactReduxProvider, useDispatch, useSelector } from 'react-redux'
 import DevMenu from 'react-native-dev-menu'
 import { Clipboard } from 'react-native'
@@ -70,16 +70,6 @@ export const useAccount = () => {
 	return len > 0 ? accounts[0] : null
 }
 
-export const useAccountContactRequestReference = () => {
-	const account = useAccount()
-	return account?.contactRequestReference
-}
-
-export const useAccountContactRequestEnabled = () => {
-	const ref = useAccountContactRequestReference()
-	return !!ref
-}
-
 export const useAccountSendContactRequest = () => {
 	const dispatch = useDispatch()
 	const account = useAccount()
@@ -97,6 +87,19 @@ export const useAccountSendContactRequest = () => {
 }
 
 // requests queries
+export const useContactRequestReference = () => {
+	const account = useAccount()
+
+	return useSelector((state: protocol.client.GlobalState) =>
+		chat.account.queries.getRequestReference(state, { id: account?.id }),
+	)
+}
+
+export const useContactRequestEnabled = () => {
+	const ref = useContactRequestReference()
+	return !!ref
+}
+
 export const useIncomingContactRequests = () => {
 	return useSelector((state: chat.incomingContactRequest.GlobalState) =>
 		chat.incomingContactRequest.queries.list(state, {}),
