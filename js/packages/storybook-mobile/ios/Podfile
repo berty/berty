@@ -34,8 +34,8 @@ target 'storybook' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-
-  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+  # needed for react-native-qrcode-scanner
+  pod 'Permission-Camera', :path => "../../../node_modules/react-native-permissions/ios/Camera.podspec"
 
   target 'storybookTests' do
     inherit! :search_paths
