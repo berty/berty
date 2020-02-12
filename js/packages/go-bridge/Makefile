@@ -3,7 +3,7 @@ export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
 BAZEL_FRAMEWORK := $(PWD)/bazel-bin/ios/gobridge_framework.tar.gz
 FRAMEWORK_DIR := $(PWD)/ios/Frameworks
-FRAMEWORK := $(FRAMEWORK_DIR)/bertybridge.framework
+FRAMEWORK := $(FRAMEWORK_DIR)/Bertybridge.framework
 
 BAZEL_AAR := $(PWD)/bazel-bin/android/gobridge_library.aar
 AAR_DIR := $(PWD)/android/libs
