@@ -46,10 +46,13 @@ func defaultACForGroup(g *group.Group) (accesscontroller.ManifestParams, error) 
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	param := accesscontroller.NewSimpleManifestParams("simple", map[string][]string{
-		"write":            {hex.EncodeToString(signingKeyBytes)},
-		IdentityGroupIDKey: {groupID},
-	})
+	param := &accesscontroller.CreateAccessControllerOptions{
+		Access: map[string][]string{
+			"write":            {hex.EncodeToString(signingKeyBytes)},
+			IdentityGroupIDKey: {groupID},
+		},
+		Type: "ipfs",
+	}
 
 	return param, nil
 }
