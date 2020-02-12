@@ -6,6 +6,7 @@ import (
 
 	"berty.tech/berty/go/internal/grpcutil"
 	"berty.tech/berty/go/internal/ipfsutil"
+
 	"github.com/stretchr/testify/assert"
 	grpc "google.golang.org/grpc"
 )
@@ -29,6 +30,7 @@ func testingInMemoryClient(t *testing.T) (*Client, ipfsutil.CoreAPIMock, cleanFu
 
 	return demo, ipfsmock, func() {
 		demo.Close()
+		ipfsmock.Close()
 	}
 }
 
