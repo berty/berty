@@ -62,6 +62,8 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entr
 			err = m.handleMultiMemberInitialMember(event)
 		case bertyprotocol.EventTypeGroupMemberDeviceAdded:
 			err = m.handleGroupAddMemberDevice(event)
+		case bertyprotocol.EventTypeGroupDeviceSecretAdded:
+			err = m.handleGroupAddDeviceSecret(event)
 		case bertyprotocol.EventTypeMultiMemberGroupAdminRoleGranted:
 			err = m.handleMultiMemberGrantAdminRole(event)
 		default:
@@ -133,6 +135,33 @@ func (m *metadataStoreIndex) handleGroupAddMemberDevice(event proto.Message) err
 		Member: member,
 		Device: device,
 	})
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleGroupAddDeviceSecret(event proto.Message) error {
+	e, ok := event.(*bertyprotocol.GroupAddDeviceSecret)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	destPK, err := crypto.UnmarshalEd25519PublicKey(e.DestMemberPK)
+	if err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if !destPK.Equals(m.groupContext.GetMemberPrivKey().GetPublic()) {
+		return errcode.ErrGroupSecretOtherDestMember
+	}
+
+	senderPK, err := crypto.UnmarshalEd25519PublicKey(e.DevicePK)
+	if err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if m.groupContext.GetDevicePrivKey().GetPublic().Equals(senderPK) {
+		m.sentSecrets[string(e.DestMemberPK)] = struct{}{}
+	}
 
 	return nil
 }

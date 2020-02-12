@@ -9,8 +9,8 @@ import (
 	"io"
 	"io/ioutil"
 	"sync"
-	"time"
 
+	"berty.tech/go-orbit-db/events"
 	"github.com/golang/protobuf/proto"
 	"github.com/ipfs/go-cid"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -121,27 +121,23 @@ func ListPublishedSecrets(ctx context.Context, ms MetadataStore) (map[crypto.Pub
 	lock := sync.Mutex{}
 	publishedSecrets := map[crypto.PubKey]*bertyprotocol.DeviceSecret{}
 
-	ch := make(chan *bertyprotocol.GroupMetadata)
-	go ms.ListEvents(ctx, ch)
+	ch := ms.ListEvents(ctx)
 
 	ownSK := ms.GetGroupContext().GetMemberPrivKey()
 
-	for {
-		select {
-		case meta := <-ch:
-			pk, ds, err := group.OpenDeviceSecret(meta, ownSK, ms.GetGroupContext().GetGroup())
-			if err != nil {
-				// TODO: log
-				continue
-			}
-
-			lock.Lock()
-			publishedSecrets[pk] = ds
-			lock.Unlock()
-		case <-time.After(time.Millisecond * 150):
-			return publishedSecrets, nil
+	for meta := range ch {
+		pk, ds, err := group.OpenDeviceSecret(meta.Metadata, ownSK, ms.GetGroupContext().GetGroup())
+		if err != nil {
+			// TODO: log
+			continue
 		}
+
+		lock.Lock()
+		publishedSecrets[pk] = ds
+		lock.Unlock()
 	}
+
+	return publishedSecrets, nil
 }
 
 func SealPayload(payload []byte, ds *bertyprotocol.DeviceSecret, deviceSK crypto.PrivKey, gPK crypto.PubKey) ([]byte, []byte, error) {
@@ -438,79 +434,49 @@ func preComputeKeys(ctx context.Context, m MessageKeysHolder, device crypto.PubK
 	}, nil
 }
 
-//
-// func messageKeyHolderSubscription(ctx context.Context, gc GroupContext) error {
-// 	if gc == nil {
-// 		return errcode.ErrInvalidInput
-// 	}
-//
-// 	m := gc.GetMessageKeysHolder()
-// 	ms := gc.GetMetadataStore()
-//
-// 	if m == nil || ms == nil {
-// 		return errcode.ErrInvalidInput
-// 	}
-//
-// 	ms.Subscribe(ctx, func(evt events.Event) {
-// 		var (
-// 			ok     bool
-// 			e      *bertyprotocol.GroupMetadataEvent
-// 			err    error
-// 			devPK  crypto.PubKey
-// 			destPK crypto.PubKey
-// 			ds     *bertyprotocol.DeviceSecret
-// 			addSec = &bertyprotocol.GroupAddDeviceSecret{}
-// 		)
-//
-// 		if e, ok = evt.(*bertyprotocol.GroupMetadataEvent); !ok || e.Metadata.EventType != bertyprotocol.EventTypeGroupDeviceSecretAdded {
-// 			// Wrong event type, no need to continue
-// 			return
-// 		}
-//
-// 		if err = addSec.Unmarshal(e.Event); err != nil {
-// 			// TODO: log
-// 			return
-// 		}
-//
-// 		if destPK, err = crypto.UnmarshalEd25519PublicKey(addSec.DestMemberPK); err != nil {
-// 			// TODO: log
-// 			return
-// 		}
-//
-// 		if !destPK.Equals(gc.GetMemberPrivKey().GetPublic()) {
-// 			return
-// 		}
-//
-// 		if devPK, err = crypto.UnmarshalEd25519PublicKey(addSec.DevicePK); err != nil {
-// 			// TODO: log
-// 			return
-// 		}
-//
-// 		if ds, err = ms.GetGroupContext().GetDeviceSecret(ctx); err != nil {
-// 			// TODO: log
-// 			return
-// 		}
-//
-// 		if err = RegisterChainKeyForDevice(ctx, m, devPK, ds); err != nil {
-// 			// TODO: log
-// 			return
-// 		}
-// 	})
-//
-// 	return nil
-// }
-//
-// func messageKeyHolderCatchUp(ctx context.Context, m MessageKeysHolder, ms MetadataStore) error {
-// 	publishedSecrets, err := ListPublishedSecrets(ctx, ms)
-// 	if err != nil {
-// 		return errcode.TODO.Wrap(err)
-// 	}
-//
-// 	for dev, sec := range publishedSecrets {
-// 		if err := RegisterChainKeyForDevice(ctx, m, dev, sec); err != nil {
-// 			return errcode.TODO.Wrap(err)
-// 		}
-// 	}
-//
-// 	return nil
-// }
+func FillMessageKeysHolderUsingNewData(ctx context.Context, gc GroupContext) error {
+	if gc == nil {
+		return errcode.ErrInvalidInput
+	}
+
+	m := gc.GetMessageKeysHolder()
+	ms := gc.GetMetadataStore()
+
+	if m == nil || ms == nil {
+		return errcode.ErrInvalidInput
+	}
+
+	ms.Subscribe(ctx, func(evt events.Event) {
+		e, ok := evt.(*bertyprotocol.GroupMetadataEvent)
+		if !ok {
+			return
+		}
+
+		pk, ds, err := group.OpenDeviceSecret(e.Metadata, gc.GetMemberPrivKey(), ms.GetGroupContext().GetGroup())
+		if err != nil {
+			return
+		}
+
+		if err = RegisterChainKeyForDevice(ctx, m, pk, ds); err != nil {
+			// TODO: log
+			return
+		}
+	})
+
+	return nil
+}
+
+func FillMessageKeysHolderUsingPreviousData(ctx context.Context, m MessageKeysHolder, ms MetadataStore) error {
+	publishedSecrets, err := ListPublishedSecrets(ctx, ms)
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	for dev, sec := range publishedSecrets {
+		if err := RegisterChainKeyForDevice(ctx, m, dev, sec); err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+	}
+
+	return nil
+}

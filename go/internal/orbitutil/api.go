@@ -28,8 +28,8 @@ type GroupStore interface {
 type MetadataStore interface {
 	GroupStore
 
-	// ListEvents returns a list of previously received events
-	ListEvents(ctx context.Context, ch chan *bertyprotocol.GroupMetadata)
+	// ListEvents returns a channel of previously received events
+	ListEvents(ctx context.Context) <-chan *bertyprotocol.GroupMetadataEvent
 
 	// MemberCount returns the number of members in the member tree
 	MemberCount() int

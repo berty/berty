@@ -27,25 +27,45 @@ type metadataStore struct {
 	BaseGroupStore
 }
 
-func (m *metadataStore) ListEvents(ctx context.Context, ch chan *bertyprotocol.GroupMetadata) {
-	for _, e := range m.OpLog().GetEntries().Slice() {
-		op, err := operation.ParseOperation(e)
-		if err != nil {
-			// TODO: log
-			continue
+func (m *metadataStore) ListEvents(ctx context.Context) <-chan *bertyprotocol.GroupMetadataEvent {
+	ch := make(chan *bertyprotocol.GroupMetadataEvent)
+
+	go func() {
+		log := m.OpLog()
+
+		for _, e := range log.GetEntries().Slice() {
+			op, err := operation.ParseOperation(e)
+			if err != nil {
+				// TODO: log
+				continue
+			}
+
+			meta, event, err := OpenGroupEnvelope(m.groupContext.GetGroup(), op.GetValue())
+			if err != nil {
+				// TODO: log
+				continue
+			}
+
+			metaEvent, err := NewGroupMetadataEventFromEntry(log, e, meta, event, m.groupContext.GetGroup())
+			if err != nil {
+				// TODO: log
+				continue
+			}
+
+			ch <- metaEvent
 		}
 
-		meta := &bertyprotocol.GroupMetadata{}
-		if err := meta.Unmarshal(op.GetValue()); err != nil {
-			// TODO: log
-			continue
-		}
+		close(ch)
+	}()
 
-		ch <- meta
-	}
+	return ch
 }
 
 func (m *metadataStore) JoinGroup(ctx context.Context) (operation.Operation, error) {
+	return m.joinGroup(ctx, m.GetGroupContext().GetMemberPrivKey(), m.GetGroupContext().GetDevicePrivKey())
+}
+
+func (m *metadataStore) joinGroup(ctx context.Context, memberSK crypto.PrivKey, deviceSK crypto.PrivKey) (operation.Operation, error) {
 	device, err := m.GetGroupContext().GetDevicePrivKey().GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -81,18 +101,8 @@ func (m *metadataStore) SendSecret(ctx context.Context, memberPK crypto.PubKey) 
 
 	deviceSK := m.GetGroupContext().GetDevicePrivKey()
 
-	devicePKRaw, err := deviceSK.GetPublic().Raw()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
 	if devs, err := m.GetDevicesForMember(memberPK); len(devs) == 0 || err != nil {
 		return nil, errcode.ErrInvalidInput
-	}
-
-	memberPKRaw, err := memberPK.Raw()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	ds, err := m.GetGroupContext().GetDeviceSecret(ctx)
@@ -100,9 +110,23 @@ func (m *metadataStore) SendSecret(ctx context.Context, memberPK crypto.PubKey) 
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
+	return m.sendSecret(ctx, deviceSK, memberPK, ds)
+}
+
+func (m *metadataStore) sendSecret(ctx context.Context, deviceSK crypto.PrivKey, memberPK crypto.PubKey, ds *bertyprotocol.DeviceSecret) (operation.Operation, error) {
 	payload, err := group.NewSecretEntryPayload(deviceSK, memberPK, ds, m.GetGroupContext().GetGroup())
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	devicePKRaw, err := deviceSK.GetPublic().Raw()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	memberPKRaw, err := memberPK.Raw()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	event := &bertyprotocol.GroupAddDeviceSecret{

@@ -11,7 +11,7 @@ import (
 )
 
 func OpenDeviceSecret(m *bertyprotocol.GroupMetadata, localMemberPrivateKey crypto.PrivKey, group *Group) (crypto.PubKey, *bertyprotocol.DeviceSecret, error) {
-	if m.EventType != bertyprotocol.EventTypeGroupDeviceSecretAdded {
+	if m == nil || m.EventType != bertyprotocol.EventTypeGroupDeviceSecretAdded {
 		return nil, nil, errcode.ErrInvalidInput
 	}
 

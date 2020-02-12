@@ -2,17 +2,45 @@ package orbitutil
 
 import (
 	"context"
+	cryptoRand "crypto/rand"
 	"encoding/hex"
 	"fmt"
 	"math/rand"
+	"os"
+	"path"
 	"testing"
+	"time"
 
 	"github.com/ipfs/go-cid"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/assert"
 
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 )
+
+func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms *metadataStore, memberPK crypto.PubKey, join bool) (crypto.PubKey, *bertyprotocol.DeviceSecret) {
+	t.Helper()
+
+	mSK, _, err := crypto.GenerateEd25519Key(cryptoRand.Reader)
+	assert.NoError(t, err)
+
+	dSK, _, err := crypto.GenerateEd25519Key(cryptoRand.Reader)
+	assert.NoError(t, err)
+
+	ds, err := group.NewDeviceSecret()
+	assert.NoError(t, err)
+
+	if join {
+		_, err = ms.joinGroup(ctx, mSK, dSK)
+		assert.NoError(t, err)
+	}
+
+	_, err = ms.sendSecret(ctx, dSK, memberPK, ds)
+	assert.NoError(t, err)
+
+	return dSK.GetPublic(), ds
+}
 
 func mustDeviceSecret(t testing.TB) func(ds *bertyprotocol.DeviceSecret, err error) *bertyprotocol.DeviceSecret {
 	return func(ds *bertyprotocol.DeviceSecret, err error) *bertyprotocol.DeviceSecret {
@@ -311,6 +339,83 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 			assert.Equal(t, payloadRef, payloadClr)
 		} else {
 			break
+		}
+	}
+}
+
+func TestMessageKeyHolderCatchUp(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	expectedNewDevices := 10
+
+	dir := path.Join(os.TempDir(), string(os.Getpid()), "MessageKeyHolderCatchUp")
+	defer os.RemoveAll(dir)
+
+	peers, _ := CreatePeersWithGroup(ctx, t, dir, 1, 1, true)
+	peer := peers[0]
+
+	mkh1 := peer.GetGroupContext().GetMessageKeysHolder()
+	ms1, ok := peer.GetGroupContext().GetMetadataStore().(*metadataStore)
+	if !ok {
+		t.Fatalf("expected metadata store to be *metadataStore")
+	}
+
+	devicesPK := make([]crypto.PubKey, expectedNewDevices)
+	deviceSecrets := make([]*bertyprotocol.DeviceSecret, expectedNewDevices)
+
+	for i := 0; i < expectedNewDevices; i++ {
+		devicesPK[i], deviceSecrets[i] = addDummyMemberInMetadataStore(ctx, t, ms1, peer.GetGroupContext().GetMemberPrivKey().GetPublic(), true)
+	}
+
+	err := FillMessageKeysHolderUsingPreviousData(ctx, mkh1, ms1)
+	assert.NoError(t, err)
+
+	for i, dPK := range devicesPK {
+		ds, err := mkh1.GetDeviceChainKey(ctx, dPK)
+		if assert.NoError(t, err) {
+			assert.Equal(t, deviceSecrets[i].Counter+uint64(mkh1.GetPrecomputedKeyExpectedCount()), ds.Counter)
+			// Not testing chain key value as we need to derive it from the generated value
+		} else {
+			t.Fatalf("failed at iteration %d", i)
+		}
+	}
+}
+
+func TestMessageKeyHolderSubscription(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	expectedNewDevices := 10
+
+	dir := path.Join(os.TempDir(), string(os.Getpid()), "MessageKeyHolderSubscription")
+	defer os.RemoveAll(dir)
+
+	peers, _ := CreatePeersWithGroup(ctx, t, dir, 1, 1, true)
+	peer := peers[0]
+
+	mkh1 := peer.GetGroupContext().GetMessageKeysHolder()
+	ms1, ok := peer.GetGroupContext().GetMetadataStore().(*metadataStore)
+	if !ok {
+		t.Fatalf("expected metadata store to be *metadataStore")
+	}
+
+	devicesPK := make([]crypto.PubKey, expectedNewDevices)
+	deviceSecrets := make([]*bertyprotocol.DeviceSecret, expectedNewDevices)
+
+	go FillMessageKeysHolderUsingNewData(ctx, peer.GetGroupContext())
+
+	for i := 0; i < expectedNewDevices; i++ {
+		devicesPK[i], deviceSecrets[i] = addDummyMemberInMetadataStore(ctx, t, ms1, peer.GetGroupContext().GetMemberPrivKey().GetPublic(), true)
+	}
+
+	<-time.After(time.Millisecond * 100)
+
+	for i, dPK := range devicesPK {
+		ds, err := mkh1.GetDeviceChainKey(ctx, dPK)
+		if assert.NoError(t, err) {
+			assert.Equal(t, deviceSecrets[i].Counter+uint64(mkh1.GetPrecomputedKeyExpectedCount()), ds.Counter)
+			// Not testing chain key value as we need to derive it from the generated value
 		}
 	}
 }
