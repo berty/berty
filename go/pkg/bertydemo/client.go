@@ -228,7 +228,7 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 			for _, op := range ops {
 				pop := convertLogOperationToProtobufLogOperation(op)
 				jsoned, _ := json.Marshal(pop)
-				fmt.Println(string(jsoned))
+				fmt.Println("Log", log.Address(), "->", string(jsoned))
 				if err = srv.Send(pop); err != nil {
 					return err
 				}
