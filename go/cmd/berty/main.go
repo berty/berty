@@ -13,6 +13,7 @@ import (
 
 	"berty.tech/berty/go/internal/banner"
 	"berty.tech/berty/go/internal/grpcutil"
+	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/pkg/bertydemo"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
@@ -121,9 +122,16 @@ func main() {
 				}
 				defer db.Close()
 
+				api, node, err := ipfsutil.NewInMemoryCoreAPI(ctx)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+				defer node.Close()
+
 				// initialize new protocol client
 				opts := bertyprotocol.Opts{
-					Logger: logger.Named("bertyprotocol"),
+					IpfsCoreAPI: api,
+					Logger:      logger.Named("bertyprotocol"),
 				}
 				protocol, err = bertyprotocol.New(db, opts)
 				if err != nil {
@@ -183,13 +191,21 @@ func main() {
 				return err
 			}
 
+			ctx := context.Background()
+
 			// demo
 			var demo *bertydemo.Client
 			{
-
 				var err error
 
+				api, node, err := ipfsutil.NewInMemoryCoreAPI(ctx)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+				defer node.Close()
+
 				demo, err = bertydemo.New(&bertydemo.Opts{
+					CoreAPI:          api,
 					OrbitDBDirectory: *clientDemoDirectory,
 				})
 				if err != nil {

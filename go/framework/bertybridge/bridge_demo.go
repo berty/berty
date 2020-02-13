@@ -1,11 +1,17 @@
 package bertybridge
 
 import (
+	"context"
+
+	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/pkg/bertydemo"
 
+	"github.com/ipfs/go-ipfs/core"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+
+	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
 )
 
 type DemoBridge interface {
@@ -15,6 +21,7 @@ type DemoBridge interface {
 type demo struct {
 	Bridge
 
+	ipfsNode   *core.IpfsNode
 	demoClient *bertydemo.Client
 	grpcServer *grpc.Server
 	logger     *zap.Logger
@@ -41,17 +48,24 @@ func NewDemoBridge(opts *DemoOpts) (DemoBridge, error) {
 }
 
 func newDemoBridge(logger *zap.Logger, opts *DemoOpts) (DemoBridge, error) {
-
 	d := &demo{
 		grpcServer: grpc.NewServer(),
 		logger:     logger,
 	}
+	ctx := context.Background()
 
 	// setup demo
 	{
 		var err error
+		var api ipfs_coreapi.CoreAPI
+
+		api, d.ipfsNode, err = ipfsutil.NewInMemoryCoreAPI(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		d.demoClient, err = bertydemo.New(&bertydemo.Opts{
+			CoreAPI:          api,
 			OrbitDBDirectory: ":memory:",
 		})
 		if err != nil {
@@ -81,5 +95,6 @@ func (d *demo) Close() (err error) {
 
 	// close others
 	d.demoClient.Close()
+	d.ipfsNode.Close()
 	return
 }

@@ -17,8 +17,10 @@ type CoreAPIMock interface {
 
 	MockNetwork() libp2p_mocknet.Mocknet
 	MockNode() *ipfs_core.IpfsNode
+	Close()
 }
 
+// TestingCoreAPIUsingMockNet returns a fully initialized mocked Core API with the given mocknet
 func TestingCoreAPIUsingMockNet(ctx context.Context, t *testing.T, m libp2p_mocknet.Mocknet) CoreAPIMock {
 	t.Helper()
 
@@ -41,7 +43,9 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t *testing.T, m libp2p_mock
 	return &coreAPIMock{coreapi, m, node}
 }
 
-// TestingCoreAPI returns a fully initialized mocked Core API
+// TestingCoreAPI returns a fully initialized mocked Core API.
+// If you want to do some tests involving multiple peers you should use
+// `TestingCoreAPIUsingMockNet` with the same mocknet instead.
 func TestingCoreAPI(ctx context.Context, t *testing.T) CoreAPIMock {
 	t.Helper()
 
@@ -63,4 +67,8 @@ func (m *coreAPIMock) MockNetwork() libp2p_mocknet.Mocknet {
 
 func (m *coreAPIMock) MockNode() *ipfs_core.IpfsNode {
 	return m.node
+}
+
+func (m *coreAPIMock) Close() {
+	m.node.Close()
 }

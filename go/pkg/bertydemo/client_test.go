@@ -3,6 +3,8 @@ package bertydemo
 import (
 	"context"
 	"testing"
+
+	"berty.tech/berty/go/internal/ipfsutil"
 	//"github.com/fortytw2/leaktest"
 	//"go.uber.org/zap"
 	//"go.uber.org/zap/zapcore"
@@ -22,7 +24,14 @@ func init() {
 
 func TestNew(t *testing.T) {
 	// defer leaktest.CheckTimeout(t, 30*time.Second)()
-	demo, err := New(&Opts{":memory:"})
+	ctx := context.Background()
+
+	ipfsmock := ipfsutil.TestingCoreAPI(ctx, t)
+	demo, err := New(&Opts{
+		CoreAPI:          ipfsmock,
+		OrbitDBDirectory: ":memory:",
+	})
+
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -39,7 +48,7 @@ func testingLogToken(t *testing.T, d DemoServiceClient) string {
 }
 
 func TestLogToken(t *testing.T) {
-	client, clean := testingClient(t, &Opts{":memory:"})
+	client, _, clean := testingInMemoryClient(t)
 	defer clean()
 
 	demo, clean := testingClientService(t, client)
@@ -49,7 +58,7 @@ func TestLogToken(t *testing.T) {
 }
 
 func TestLogFromToken(t *testing.T) {
-	client, clean := testingClient(t, &Opts{":memory:"})
+	client, _, clean := testingInMemoryClient(t)
 	defer clean()
 
 	demo, clean := testingClientService(t, client)
@@ -82,7 +91,7 @@ func testingAdd(t *testing.T, d DemoServiceClient, lt string, data []byte) strin
 }
 
 func TestLogAdd(t *testing.T) {
-	client, clean := testingClient(t, &Opts{":memory:"})
+	client, _, clean := testingInMemoryClient(t)
 	defer clean()
 
 	demo, clean := testingClientService(t, client)
@@ -93,7 +102,7 @@ func TestLogAdd(t *testing.T) {
 }
 
 func TestLogGet(t *testing.T) {
-	client, clean := testingClient(t, &Opts{":memory:"})
+	client, _, clean := testingInMemoryClient(t)
 	defer clean()
 
 	demo, clean := testingClientService(t, client)
@@ -128,7 +137,7 @@ func TestLogGet(t *testing.T) {
 }
 
 func TestLogList(t *testing.T) {
-	client, clean := testingClient(t, &Opts{":memory:"})
+	client, _, clean := testingInMemoryClient(t)
 	defer clean()
 
 	demo, clean := testingClientService(t, client)
@@ -159,7 +168,7 @@ func TestLogList(t *testing.T) {
 }
 
 func TestLogStream(t *testing.T) {
-	client, clean := testingClient(t, &Opts{":memory:"})
+	client, _, clean := testingInMemoryClient(t)
 	defer clean()
 
 	demo, clean := testingClientService(t, client)
