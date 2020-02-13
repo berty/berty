@@ -1,68 +1,83 @@
 import * as api from '@berty-tech/api'
-import { MockServiceHandler } from '../mock'
 import { DemoServiceClient } from '../orbitdb'
 import { bridge } from '../bridge'
-import { ReactNativeTransport } from '../grpc-web-react-native-transport'
+// import { ReactNativeTransport } from '../grpc-web-react-native-transport'
 import { WebsocketTransport } from '../grpc-web-websocket-transport'
 import { Buffer } from 'buffer'
 import { GoBridge } from '../orbitdb/native'
 import { IProtocolServiceHandler } from './handler.gen'
+import AsyncStorage from '@react-native-community/async-storage'
 
 const useExternalBridge = __DEV__ // set to false to test integrated bridge in dev
 
-if (!useExternalBridge) {
-	GoBridge.startDemo()
-}
-
-export class ProtocolServiceHandler extends MockServiceHandler implements IProtocolServiceHandler {
-	client?: DemoServiceClient
+type PersistedData = {
 	accountPk: string
 	devicePk: string
 	accountGroupPk: string
 	rdvLogtoken?: string
-	contactGroups: Map<string, string> // map with key=fakeContactPk, value=fakeGroupPk
+	contactGroups: { [key: string]: string } // map with key=fakeContactPk, value=fakeGroupPk
+}
 
-	constructor(metadata?: { [key: string]: string | string[] }) {
-		super(metadata)
-		if (useExternalBridge) {
-			this.client = new DemoServiceClient(
-				bridge({
-					host: 'http://127.0.0.1:1337',
-					transport: WebsocketTransport(),
-				}),
-			)
-		} else {
-			GoBridge.getDemoAddr()
-				.then((addr: string) => {
-					this.client = new DemoServiceClient(
-						bridge({
-							host: addr,
-							transport: WebsocketTransport(),
-						}),
-					)
-				})
-				.catch((err: Error) => {
-					console.error(err)
-					// log bad error
-				})
-		}
-		this.accountPk = (this.metadata?.accountPk as string) || ''
-		this.devicePk = (this.metadata?.devicePk as string) || ''
-		this.accountGroupPk = (this.metadata?.accountDevicePk as string) || ''
-		this.contactGroups = new Map() // TODO: persist?
-	}
+type InitData = PersistedData & {
+	client: DemoServiceClient
+}
 
-	_logToken = async (): Promise<string> =>
-		new Promise((resolve: (token: string) => void, reject: (err: Error) => void) =>
-			this.client?.logToken({}, (error, response) =>
-				error || response == null || response?.logToken == null
-					? reject(error || new Error('GRPC ProtocolServiceHandler: response is undefined'))
-					: resolve(response.logToken as string),
-			),
+const STORAGE_KEY = 'ProtocolServiceHandler'
+
+const logToken = async (client: DemoServiceClient): Promise<string> =>
+	new Promise((resolve: (token: string) => void, reject: (err: Error) => void) =>
+		client.logToken({}, (error, response) =>
+			error || response == null || response?.logToken == null
+				? reject(error || new Error('GRPC ProtocolServiceHandler: response is undefined'))
+				: resolve(response.logToken as string),
+		),
+	)
+
+const createPkHack = async (client: DemoServiceClient): Promise<string> =>
+	(await Promise.all([logToken(client), logToken(client)])).join(':')
+
+export class ProtocolServiceHandler implements IProtocolServiceHandler {
+	client: DemoServiceClient
+	accountPk: string
+	devicePk: string
+	accountGroupPk: string
+	rdvLogtoken?: string
+	contactGroups: { [key: string]: string } // map with key=fakeContactPk, value=fakeGroupPk
+
+	persist = () =>
+		AsyncStorage.setItem(
+			STORAGE_KEY,
+			JSON.stringify({
+				accountPk: this.accountPk,
+				accountGroupPk: this.accountGroupPk,
+				devicePk: this.devicePk,
+				contactGroups: this.contactGroups,
+				rdvLogtoken: this.rdvLogtoken,
+			}),
 		)
 
-	_createPkHack = async (): Promise<string> =>
-		(await Promise.all([this._logToken(), this._logToken()])).join(':')
+	constructor(initData: InitData) {
+		this.client = initData.client
+		this.accountPk = initData.accountPk
+		this.devicePk = initData.devicePk
+		this.accountGroupPk = initData.accountGroupPk
+		this.contactGroups = initData.contactGroups
+		this.rdvLogtoken = initData.rdvLogtoken
+	}
+
+	_logToken = () => logToken(this.client)
+
+	_createPkHack = () => createPkHack(this.client)
+
+	setRdvLogToken = async (newLogToken?: string) => {
+		this.rdvLogtoken = newLogToken
+		await this.persist()
+	}
+
+	setContactGroup = async (key: string, value: string) => {
+		this.contactGroups[key] = value
+		await this.persist()
+	}
 
 	InstanceExportData: (
 		request: api.berty.protocol.InstanceExportData.IRequest,
@@ -79,9 +94,6 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			response?: api.berty.protocol.InstanceGetConfiguration.IReply,
 		) => void,
 	) => void = async (request, callback) => {
-		this.accountPk = this.accountPk ? this.accountPk : await this._createPkHack()
-		this.devicePk = this.devicePk ? this.devicePk : await this._createPkHack()
-		this.accountGroupPk = this.accountGroupPk ? this.accountGroupPk : await this._createPkHack()
 		callback(null, {
 			accountPk: new Buffer(this.accountPk),
 			devicePk: new Buffer(this.devicePk),
@@ -96,8 +108,11 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			response?: api.berty.protocol.ContactRequestReference.IReply,
 		) => void,
 	) => void = async (request, callback) => {
-		this.rdvLogtoken = this.rdvLogtoken || (await this._logToken())
-		callback(null, { reference: this.referenceBytes })
+		if (!this.rdvLogtoken) {
+			callback(null, { reference: null })
+		} else {
+			callback(null, { reference: this.referenceBytes })
+		}
 	}
 
 	ContactRequestDisable: (
@@ -106,8 +121,8 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			error: Error | null,
 			response?: api.berty.protocol.ContactRequestDisable.IReply,
 		) => void,
-	) => void = (request, callback) => {
-		this.rdvLogtoken = undefined
+	) => void = async (request, callback) => {
+		await this.setRdvLogToken(undefined)
 		callback(null, {})
 		/*this.client?.logClose({ logToken: contactLogToken }, (error, response) => {
 			if (error) {
@@ -176,7 +191,9 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 							event:
 								type === 'GroupMetadataPayloadSent'
 									? data
-									: (api.berty.protocol as { [key: string]: any })[dataType].encode(data).finish(),
+									: (api.berty.protocol as { [key: string]: any })[dataType as string]
+											.encode(data)
+											.finish(),
 						}).finish(),
 					},
 					(error, response) => {
@@ -204,9 +221,11 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 		if (!this.client) {
 			throw new Error('handler.ts: ContactRequestEnable: missing client')
 		}
-		this.rdvLogtoken = this.rdvLogtoken || (await this._logToken())
+		if (!this.rdvLogtoken) {
+			await this.setRdvLogToken(await this._logToken())
+		}
 		callback(null, { reference: this.referenceBytes })
-		this.client.logStream({ logToken: this.rdvLogtoken }, (error, response) => {
+		this.client.logStream({ logToken: this.rdvLogtoken }, async (error, response) => {
 			if (error || !response || !response.value) {
 				console.error(
 					'handler.ts: ContactRequestEnable: logStream error:',
@@ -221,7 +240,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			const [type, ...remParts] = parts
 			if (type === 'CONTACT_REQUEST_FROM') {
 				const [requesterAccountPk, fakeGroupPk, ...metadataParts] = remParts
-				this.contactGroups.set(requesterAccountPk, fakeGroupPk)
+				await this.setContactGroup(requesterAccountPk, fakeGroupPk)
 				this.addEventToMetadataLog({
 					groupPk: this.accountGroupPk,
 					type: 'AccountContactRequestIncomingReceived',
@@ -243,7 +262,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			response?: api.berty.protocol.ContactRequestResetReference.IReply,
 		) => void,
 	) => void = async (_, callback) => {
-		this.rdvLogtoken = await this._logToken()
+		await this.setRdvLogToken(await this._logToken())
 		callback(null, { reference: this.referenceBytes })
 	}
 
@@ -264,7 +283,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			}
 			const refStr = new Buffer(request.reference).toString('utf-8')
 			const [otherUserPk, otherUserRdvLogToken] = refStr.split('__')
-			const ownMetadata =
+			const metadataStr =
 				request.contactMetadata && new Buffer(request.contactMetadata).toString('utf-8')
 			const ownId = this.accountPk
 			const otherUserPkBytes = Buffer.from(otherUserPk, 'utf-8')
@@ -277,9 +296,10 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 					devicePk: this.devicePkBytes,
 					contactPk: otherUserPkBytes,
 					groupPk: Buffer.from(fakeGroupPk, 'utf-8'),
+					contactMetadata: request.contactMetadata,
 				},
 			})
-			const dataStr = ['CONTACT_REQUEST_FROM', ownId, fakeGroupPk, ownMetadata].join(' ')
+			const dataStr = ['CONTACT_REQUEST_FROM', ownId, fakeGroupPk, metadataStr].join(' ')
 			const logData = Buffer.from(dataStr, 'utf-8')
 			await new Promise((resolve, reject) => {
 				client.logAdd({ logToken: otherUserRdvLogToken, data: logData }, (error, response) => {
@@ -314,7 +334,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 				throw new Error('Invalid contactPk')
 			}
 			const contactPkStr = new Buffer(request.contactPk).toString('utf-8')
-			const fakeGroupPk = this.contactGroups.get(contactPkStr)
+			const fakeGroupPk = this.contactGroups[contactPkStr]
 			if (!fakeGroupPk) {
 				throw new Error(`Unknown group for contact "${contactPkStr}"`)
 			}
@@ -326,6 +346,15 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 					devicePk: this.devicePkBytes,
 					contactPk: request.contactPk,
 					groupPk: Buffer.from(fakeGroupPk, 'utf-8'),
+				},
+			})
+			await this.addEventToMetadataLog({
+				groupPk: fakeGroupPk,
+				type: 'GroupMemberDeviceAdded',
+				dataType: 'GroupAddMemberDevice',
+				data: {
+					memberPk: Buffer.from(this.accountPk, 'utf-8'),
+					devicePk: this.devicePkBytes,
 				},
 			})
 			callback(null, {})
@@ -453,6 +482,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 				return
 			}
 			message.eventContext.id = Buffer.from(response.cid, 'utf8')
+			message.eventContext.groupPk = request.groupPk
 			callback(null, message)
 		})
 	}
@@ -484,4 +514,42 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			callback(null, message)
 		})
 	}
+}
+
+export const protocolServiceHandlerFactory = async (persist?: boolean) => {
+	let brdg
+	if (useExternalBridge) {
+		brdg = bridge({
+			host: 'http://127.0.0.1:1337',
+			transport: WebsocketTransport(),
+		})
+	} else {
+		await GoBridge.startDemo()
+		const addr = await GoBridge.getDemoAddr()
+		brdg = bridge({
+			host: addr,
+			transport: WebsocketTransport(),
+		})
+	}
+	const client = new DemoServiceClient(brdg)
+
+	if (!persist) {
+		await AsyncStorage.removeItem(STORAGE_KEY)
+	}
+	const persisted = await AsyncStorage.getItem(STORAGE_KEY)
+	if (!persisted) {
+		const instance = new ProtocolServiceHandler({
+			client,
+			accountPk: await createPkHack(client),
+			accountGroupPk: await createPkHack(client),
+			devicePk: await createPkHack(client),
+			contactGroups: {},
+		})
+		await instance.persist()
+		return instance
+	}
+	return new ProtocolServiceHandler({
+		client,
+		...JSON.parse(persisted),
+	})
 }

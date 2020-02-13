@@ -1,6 +1,6 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, takeLeading, select } from 'redux-saga/effects'
+import { put, all, takeLeading, select, fork, take } from 'redux-saga/effects'
 import { Buffer } from 'buffer'
 
 import * as protocol from '../protocol'
@@ -9,6 +9,7 @@ export type Entity = {
 	id: string
 	accountId: string
 	requesterPk: string
+	groupPk?: string
 	requesterName: string
 	accepted: boolean
 	discarded: boolean
@@ -45,8 +46,9 @@ export type CommandsReducer = {
 }
 
 export type QueryReducer = {
-	list: (state: GlobalState, query: {}) => Array<Entity>
+	list: (state: GlobalState) => Array<Entity>
 	get: (state: GlobalState, query: { id: string }) => Entity
+	getDerived: (state: GlobalState, query: { accountId: string; contactPk: Uint8Array }) => Entity
 	getLength: (state: GlobalState) => number
 }
 
@@ -54,7 +56,7 @@ export type Transactions = {
 	[K in keyof CommandsReducer]: CommandsReducer[K] extends SimpleCaseReducer<infer TPayload>
 		? (payload: TPayload) => Generator
 		: never
-}
+} & { open: (payload: { accountId: string }) => Generator }
 
 const initialState: State = {
 	events: [],
@@ -85,6 +87,7 @@ const eventHandler = createSlice<State, {}>({
 				accountId: payload.aggregateId,
 				contactPk: payload.event.contactPk,
 			})
+			state.aggregates[aggregateId].groupPk = Buffer.from(payload.event.groupPk).toString('utf-8')
 			state.aggregates[aggregateId].accepted = true
 			return state
 		},
@@ -122,11 +125,38 @@ export const events = eventHandler.actions
 export const queries: QueryReducer = {
 	list: (state) => Object.values(state.chat.incomingContactRequest.aggregates),
 	get: (state, { id }) => state.chat.incomingContactRequest.aggregates[id],
+	getDerived: (state, { accountId, contactPk }) =>
+		state.chat.incomingContactRequest.aggregates[getAggregateId({ accountId, contactPk })],
 	getLength: (state) => Object.keys(state.chat.incomingContactRequest.aggregates).length,
 }
+
 export const transactions: Transactions = {
+	open: function*({ accountId }: { accountId: string }) {
+		const requests = (yield select((state) => queries.list(state))) as Entity[]
+		for (const req of requests.filter((requ) => requ.accountId === accountId)) {
+			yield fork(function*() {
+				if (req.groupPk) {
+					const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
+						id: accountId,
+						groupPk: Buffer.from(req.groupPk, 'utf-8'),
+						// TODO: use last cursor
+						since: new Uint8Array(),
+						until: new Uint8Array(),
+						goBackwards: false,
+					})
+					while (1) {
+						const action = yield take(chan)
+						yield put(action)
+						if (action.type === protocol.events.client.groupMetadataPayloadSent.type) {
+							yield put(action.payload.event)
+						}
+					}
+				}
+			})
+		}
+	},
 	accept: function*(payload) {
-		const request: Entity = yield select((state) => queries.get(state, { id: payload.id }))
+		const request = (yield select((state) => queries.get(state, { id: payload.id }))) as Entity
 		yield put(
 			protocol.commands.client.contactRequestAccept({
 				id: request.accountId,
@@ -135,7 +165,7 @@ export const transactions: Transactions = {
 		)
 	},
 	discard: function*(payload) {
-		const request: Entity = yield select((state) => queries.get(state, { id: payload.id }))
+		const request = (yield select((state) => queries.get(state, { id: payload.id }))) as Entity
 		yield put(
 			protocol.commands.client.contactRequestDiscard({
 				id: request.accountId,

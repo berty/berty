@@ -4,6 +4,7 @@ import {
 	SafeAreaView,
 	ScrollView,
 	TouchableOpacity,
+	TextInput,
 	TouchableWithoutFeedback,
 	Dimensions,
 	StyleSheet,
@@ -14,6 +15,8 @@ import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { useNavigation } from '@berty-tech/berty-navigation'
+import { Chat } from '@berty-tech/hooks'
+import { chat } from '@berty-tech/store'
 
 const Screen = Dimensions.get('window')
 
@@ -50,11 +53,18 @@ const _stylesCreateGroup = StyleSheet.create({
 // Type
 type AddMembersItemProps = {
 	separateBar?: boolean
+	contact: chat.contact.Entity
+	added: boolean
+	onSetMember: (contact: chat.contact.Entity) => void
+	onRemoveMember: (id: string) => void
 }
 
 type AddMembersProps = {
 	heightProps: number
 	paddingBottom?: number
+	onSetMember: (contact: chat.contact.Entity) => void
+	onRemoveMember: (id: string) => void
+	members: chat.contact.Entity[]
 }
 
 type FooterCreateGroupProps = {
@@ -68,8 +78,13 @@ const NewGroup: React.FC<{}> = () => {
 	return <View style={_styles.newGroup} />
 }
 
-const AddMembersItem: React.FC<AddMembersItemProps> = ({ separateBar = true }) => {
-	const [checked, setChecked] = useState()
+const AddMembersItem: React.FC<AddMembersItemProps> = ({
+	onSetMember,
+	onRemoveMember,
+	contact,
+	added,
+	separateBar = true,
+}) => {
 	const [{ row, margin }] = useStyles()
 	const _styles = useStylesCreateGroup()
 	return (
@@ -82,10 +97,19 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({ separateBar = true }) =
 						size={50}
 						style={[row.item.justify]}
 					/>
-					<Text style={[margin.left.small, row.item.justify]}>Alice</Text>
+					<Text style={[margin.left.small, row.item.justify]}>{contact.name}</Text>
 				</View>
 				<View style={[row.item.justify]}>
-					<CheckBox checked={checked} onChange={(isChecked: any) => setChecked(isChecked)} />
+					<CheckBox
+						checked={added}
+						onChange={(isChecked: any) => {
+							if (isChecked) {
+								onSetMember(contact)
+							} else {
+								onRemoveMember(contact.id)
+							}
+						}}
+					/>
 				</View>
 			</View>
 			{separateBar && <View style={[_styles.separateBar]} />}
@@ -93,8 +117,16 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({ separateBar = true }) =
 	)
 }
 
-const AddMembers: React.FC<AddMembersProps> = ({ heightProps, paddingBottom }) => {
+const AddMembers: React.FC<AddMembersProps> = ({
+	onSetMember,
+	onRemoveMember,
+	heightProps,
+	paddingBottom,
+	members,
+}) => {
 	const [{ padding, background, row, height, color, text, margin }] = useStyles()
+	const [searchText, setSearchText] = useState('')
+	const contacts = Chat.useContactSearchResults(searchText)
 	const _styles = useStylesCreateGroup()
 
 	return (
@@ -107,7 +139,11 @@ const AddMembers: React.FC<AddMembersProps> = ({ heightProps, paddingBottom }) =
 					fill={color.grey}
 					style={row.item.justify}
 				/>
-				<Text style={[text.color.grey, margin.left.small, row.item.justify]}>Search</Text>
+				<TextInput
+					style={[text.color.grey, margin.left.small, row.item.justify]}
+					placeholder={'Search'}
+					onChangeText={setSearchText}
+				/>
 			</View>
 			<View style={[height(heightProps)]}>
 				<ScrollView
@@ -117,27 +153,26 @@ const AddMembers: React.FC<AddMembersProps> = ({ heightProps, paddingBottom }) =
 					]}
 					showsVerticalScrollIndicator={false}
 				>
-					<AddMembersItem />
-					<AddMembersItem />
-					<AddMembersItem />
-					<AddMembersItem />
-					<AddMembersItem />
-					<AddMembersItem />
-					<AddMembersItem />
-					<AddMembersItem />
-					<AddMembersItem />
-					<AddMembersItem />
-					<AddMembersItem />
-					<AddMembersItem />
-					<AddMembersItem />
-					<AddMembersItem separateBar={false} />
+					{contacts.map((contact, index) => (
+						<AddMembersItem
+							onSetMember={onSetMember}
+							onRemoveMember={onRemoveMember}
+							added={!!members.find((member) => member.id === contact.id)}
+							contact={contact}
+							separateBar={index < contacts.length - 1}
+						/>
+					))}
 				</ScrollView>
 			</View>
 		</View>
 	)
 }
 
-export const CreateGroup: React.FC<{}> = () => {
+export const CreateGroup: React.FC<{
+	onSetMember: (contact: chat.contact.Entity) => void
+	onRemoveMember: (id: string) => void
+	members: chat.contact.Entity[]
+}> = ({ onSetMember, onRemoveMember, members }) => {
 	const firstNotToggledPoint = 160 - 50
 	const firstToggledPoint = firstNotToggledPoint
 
@@ -167,7 +202,12 @@ export const CreateGroup: React.FC<{}> = () => {
 						},
 					]}
 				>
-					<AddMembers heightProps={Screen.height - 300} />
+					<AddMembers
+						heightProps={Screen.height - 300}
+						members={members}
+						onSetMember={onSetMember}
+						onRemoveMember={onRemoveMember}
+					/>
 					<NewGroup />
 				</SDTSModalComponent>
 			</SafeAreaView>
@@ -175,7 +215,7 @@ export const CreateGroup: React.FC<{}> = () => {
 	)
 }
 
-const NewGroup2Item: React.FC<{}> = () => {
+const NewGroup2Item: React.FC<{ name: string; onRemove: () => void }> = ({ name, onRemove }) => {
 	const [{ padding, column, text, color, absolute, background, row }] = useStyles()
 	const _styles = useStylesCreateGroup()
 
@@ -187,10 +227,13 @@ const NewGroup2Item: React.FC<{}> = () => {
 					size={65}
 					diffSize={7}
 				/>
-				<Text style={[text.color.white, column.item.center, _styles.newGroup2ItemName]}>Alice</Text>
+				<Text style={[text.color.white, column.item.center, _styles.newGroup2ItemName]}>
+					{name}
+				</Text>
 			</View>
 			<TouchableOpacity
 				style={[background.white, absolute.top, column.justify, _styles.newGroup2ItemDelete]}
+				onPress={onRemove}
 			>
 				<Icon
 					name='close-outline'
@@ -204,28 +247,17 @@ const NewGroup2Item: React.FC<{}> = () => {
 	)
 }
 
-const NewGroup2: React.FC<{}> = () => {
+const NewGroup2: React.FC<{
+	members: chat.contact.Entity[]
+	onRemoveMember: (id: string) => void
+}> = ({ members, onRemoveMember }) => {
 	const _styles = useStylesCreateGroup()
 	return (
 		<View style={[_styles.newGroup2]}>
 			<ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
-				<NewGroup2Item />
+				{members.map((member) => (
+					<NewGroup2Item name={member.name} onRemove={() => onRemoveMember(member.id)} />
+				))}
 			</ScrollView>
 		</View>
 	)
@@ -271,7 +303,11 @@ const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, icon, acti
 	)
 }
 
-export const CreateGroup2: React.FC<{}> = () => {
+export const CreateGroup2: React.FC<{
+	onSetMember: (contact: chat.contact.Entity) => void
+	onRemoveMember: (id: string) => void
+	members: chat.contact.Entity[]
+}> = ({ onSetMember, onRemoveMember, members }) => {
 	const firstNotToggledPoint = 230
 	const firstToggledPoint = firstNotToggledPoint
 
@@ -303,8 +339,14 @@ export const CreateGroup2: React.FC<{}> = () => {
 						},
 					]}
 				>
-					<AddMembers heightProps={Screen.height - 187 - 230} paddingBottom={120} />
-					<NewGroup2 />
+					<AddMembers
+						members={members}
+						onSetMember={onSetMember}
+						onRemoveMember={onRemoveMember}
+						heightProps={Screen.height - 187 - 230}
+						paddingBottom={120}
+					/>
+					<NewGroup2 members={members} onRemoveMember={onRemoveMember} />
 				</SDTSModalComponent>
 			</SafeAreaView>
 			<FooterCreateGroup
@@ -414,7 +456,10 @@ const GroupInfo: React.FC<{}> = () => {
 	)
 }
 
-export const CreateGroup3: React.FC<{}> = () => {
+export const CreateGroup3: React.FC<{
+	members: chat.contact.Entity[]
+	onRemoveMember: (id: string) => void
+}> = ({ members, onRemoveMember }) => {
 	const firstToggledPoint = 300
 	const firstNotToggledPoint = firstToggledPoint
 
@@ -457,7 +502,7 @@ export const CreateGroup3: React.FC<{}> = () => {
 				>
 					<GroupInfo />
 					<View />
-					<NewGroup2 />
+					<NewGroup2 members={members} onRemoveMember={onRemoveMember} />
 				</SDTSModalComponent>
 			</SafeAreaView>
 			<FooterCreateGroup title='CREATE THE GROUP' />

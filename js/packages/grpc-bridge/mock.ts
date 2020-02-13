@@ -1,25 +1,13 @@
-import { grpc } from '@improbable-eng/grpc-web'
 import * as pb from 'protobufjs'
-
-export abstract class MockServiceHandler {
-	metadata?: { [key: string]: string | Array<string> }
-
-	constructor(metadata?: { [key: string]: string | Array<string> }) {
-		this.metadata = metadata
-	}
-}
-
-export interface MockServiceHandlerCtor {
-	new (metadata?: { [key: string]: string | Array<string> }): MockServiceHandler
-}
+import { IProtocolServiceHandler } from './protocol/handler.gen'
 
 export type MockBridge = (
-	ServiceCtor: MockServiceHandlerCtor,
-	metadata?: { [key: string]: string | Array<string> },
-) => pb.RPCImpl
+	protocolServiceHandlerFactory: (persist?: boolean) => Promise<IProtocolServiceHandler>,
+	persist?: boolean,
+) => Promise<pb.RPCImpl>
 
-export const mockBridge: MockBridge = (ServiceCtor, metadata) => {
-	const service = new ServiceCtor(metadata) as {
+export const mockBridge: MockBridge = async (protocolServiceHandlerFactory, persist) => {
+	const service = ((await protocolServiceHandlerFactory(persist)) as unknown) as {
 		[key: string]: (request: {}, callback: (error: Error, response: {}) => void) => void
 	}
 	return (method, requestData, callback) => {

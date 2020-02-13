@@ -13,6 +13,7 @@ import { styles, colors, useStyles } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import { RequestProps, UserProps } from '../shared-props/User'
+import { Chat } from '@berty-tech/hooks'
 
 const Screen = Dimensions.get('window')
 
@@ -43,8 +44,12 @@ const _stylesSearch = StyleSheet.create({
 	},
 })
 
-const SearchBar: React.FC<{}> = () => {
-	const [value, setValue] = useState(undefined)
+const initialSearchText = ''
+
+const SearchBar: React.FC<{ onChange?: (text: string) => void; searchText: string }> = ({
+	onChange,
+	searchText,
+}) => {
 	const [{ row, color, margin }] = useStyles()
 
 	return (
@@ -53,8 +58,7 @@ const SearchBar: React.FC<{}> = () => {
 				<View style={[row.center]}>
 					<Icon name='search' width={25} height={25} fill={color.yellow} />
 					<TextInput
-						value={value && value.length > 0 ? value : undefined}
-						onChangeText={(text) => (text.length > 0 ? setValue(text) : setValue(undefined))}
+						onChangeText={onChange}
 						placeholder='Search'
 						placeholderTextColor={color.yellow}
 						style={[
@@ -63,7 +67,7 @@ const SearchBar: React.FC<{}> = () => {
 						]}
 					/>
 				</View>
-				{value && value.length > 0 && (
+				{searchText.length > 0 && (
 					<Icon name='close-circle-outline' width={25} height={25} fill={color.yellow} />
 				)}
 			</View>
@@ -71,28 +75,62 @@ const SearchBar: React.FC<{}> = () => {
 	)
 }
 
-const SearchComponent: React.FC<{}> = () => {
-	const [{ row, padding, color, text, margin, column }] = useStyles()
+const SearchHint = () => {
+	const [{ row, color, text, margin }] = useStyles()
 	const _styles = useStylesSearch()
+	return (
+		<>
+			<Icon
+				name='search'
+				width={90}
+				height={90}
+				fill={color.light.yellow}
+				style={row.item.justify}
+			/>
+			<Text
+				style={[text.align.center, margin.top.big, row.item.justify, _styles.searchComponentText]}
+			>
+				Search messages, contacts, or groups...
+			</Text>
+		</>
+	)
+}
+
+const SearchComponent: React.FC<{}> = () => {
+	const [searchText, setSearchText] = useState(initialSearchText)
+	const contacts = Chat.useContactSearchResults(searchText)
+	const [{ padding, column }] = useStyles()
 
 	return (
 		<View style={[{ height: Screen.height, justifyContent: 'center' }]}>
 			<View style={[padding.small, _stylesSearch.searchComponent]}>
-				<SearchBar />
+				<SearchBar searchText={searchText} onChange={setSearchText} />
 			</View>
 			<View style={[column.justify, _stylesSearch.searchComponentBody]}>
-				<Icon
-					name='search'
-					width={90}
-					height={90}
-					fill={color.light.yellow}
-					style={row.item.justify}
-				/>
-				<Text
-					style={[text.align.center, margin.top.big, row.item.justify, _styles.searchComponentText]}
-				>
-					Search messages, contacts, or groups...
-				</Text>
+				{contacts.length > 0 ? (
+					<SDTSModalComponent
+						rows={[
+							{
+								toggledPoint: 50,
+								notToggledPoint: 50,
+								title: 'Contacts',
+								maxHeight: Screen.height,
+							},
+						]}
+					>
+						<View>
+							{contacts.map((contact) => (
+								<SearchItem
+									avatarUri={'https://s3.amazonaws.com/uifaces/faces/twitter/msveet/128.jpg'}
+									name={contact.name}
+									message='Coiuc bfei  bb dehbde dbehbe dhbed edeh d'
+								/>
+							))}
+						</View>
+					</SDTSModalComponent>
+				) : (
+					<SearchHint />
+				)}
 			</View>
 		</View>
 	)
@@ -127,211 +165,34 @@ export const Search: React.FC<{}> = () => {
 
 // SEARCH RESULTS
 
-// type ConversationsItemProps = {
-// 	avatarUri: string
-// 	name: string
-// 	message: string
-// }
+type SearchItemProps = {
+	avatarUri: string
+	name: string
+	message: string
+}
 
-// const ConversationsItem: React.FC<ConversationsItemProps> = ({ avatarUri, name, message }) => {
-// 	const _styles = useStylesSearch()
-// 	return (
-// 	<TouchableHighlight underlayColor={colors.lightGrey}>
-// 		<View style={[styles.row, styles.borderBottom, styles.padding]}>
-// 			<CircleAvatar avatarUri={avatarUri} size={39} withCircle={false} />
-// 			<View style={[styles.flex, styles.col, styles.paddingLeft]}>
-// 				<View style={[styles.row, styles.alignItems]}>
-// 					<Text numberOfLines={1} style={_styles.conversationsItemNameText}>
-// 						{name}
-// 					</Text>
-// 				</View>
-// 				<View style={[styles.bigMarginRight]}>
-// 					<Text
-// 						numberOfLines={1}
-// 						style={[styles.textSmall, styles.textGrey, _styles.conversationsItemMsgText]}
-// 					>
-// 						{message}
-// 					</Text>
-// 				</View>
-// 			</View>
-// 		</View>
-// 	</TouchableHighlight>
-// )
-// 	}
-
-// const Messages: React.FC<UserProps> = ({ avatarUri, name }) => (
-// 	<View style={_stylesSearch.messages}>
-// 		<ScrollView
-// 			contentContainerStyle={[styles.littlePaddingVertical]}
-// 			showsVerticalScrollIndicator={false}
-// 		>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Cofuhuhif fjhef feh  fegf eh ede  hdvfgjvegfe'
-// 			/>
-// 		</ScrollView>
-// 	</View>
-// )
-
-// const Contacts: React.FC<UserProps> = ({ avatarUri, name }) => (
-// 	<View>
-// 		<ScrollView
-// 			contentContainerStyle={[styles.littlePaddingBottom]}
-// 			showsVerticalScrollIndicator={false}
-// 		>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Coiuc bfei  bb dehbde dbehbe dhbed edeh d'
-// 			/>
-// 			<ConversationsItem
-// 				avatarUri={avatarUri}
-// 				name={name}
-// 				message='Coiuc bfei  bb dehbde dbehbe dhbed edeh d'
-// 			/>
-// 		</ScrollView>
-// 	</View>
-// )
-
-// const SearchResultsSearchBar: React.FC<{}> = () => (
-// 	<View style={[{ height: Screen.height }]}>
-// 		<View style={[styles.littlePadding, _stylesSearch.searchResultsSearchBar]}>
-// 			<SearchBar />
-// 		</View>
-// 	</View>
-// )
-
-// export const SearchResults: React.FC<RequestProps> = ({ user }) => {
-// 	const firstToggledPoint = 1165
-// 	const firstNotToggledPoint = firstToggledPoint
-
-// 	const secondToggledPoint = 430
-// 	const secondNotToggledPoint = secondToggledPoint
-
-// 	const thirdToggledPoint = 50
-// 	const thirdNotToggledPoint = thirdToggledPoint
-
-// 	return (
-// 		<Layout style={[styles.flex]}>
-// 			<SafeAreaView style={[styles.flex]}>
-// 				<SDTSModalComponent
-// 					rows={[
-// 						{
-// 							toggledPoint: firstToggledPoint,
-// 							notToggledPoint: firstNotToggledPoint,
-// 							title: 'Messages',
-// 							maxHeight: Screen.height,
-// 						},
-// 						{
-// 							toggledPoint: secondToggledPoint,
-// 							notToggledPoint: secondNotToggledPoint,
-// 							title: 'Contacts',
-// 						},
-// 						{
-// 							toggledPoint: thirdToggledPoint,
-// 							notToggledPoint: thirdNotToggledPoint,
-// 							header: false,
-// 							bgColor: colors.yellow,
-// 							maxHeight: Screen.height - 90,
-// 						},
-// 					]}
-// 				>
-// 					<Messages {...user} />
-// 					<Contacts {...user} />
-// 					<SearchResultsSearchBar />
-// 				</SDTSModalComponent>
-// 			</SafeAreaView>
-// 		</Layout>
-// 	)
-// }
+const SearchItem: React.FC<SearchItemProps> = ({ avatarUri, name, message }) => {
+	const _styles = useStylesSearch()
+	return (
+		<TouchableHighlight underlayColor={colors.lightGrey}>
+			<View style={[styles.row, styles.borderBottom, styles.padding]}>
+				<CircleAvatar avatarUri={avatarUri} size={39} withCircle={false} />
+				<View style={[styles.flex, styles.col, styles.paddingLeft]}>
+					<View style={[styles.row, styles.alignItems]}>
+						<Text numberOfLines={1} style={_styles.conversationsItemNameText}>
+							{name}
+						</Text>
+					</View>
+					<View style={[styles.bigMarginRight]}>
+						<Text
+							numberOfLines={1}
+							style={[styles.textSmall, styles.textGrey, _styles.conversationsItemMsgText]}
+						>
+							{message}
+						</Text>
+					</View>
+				</View>
+			</View>
+		</TouchableHighlight>
+	)
+}

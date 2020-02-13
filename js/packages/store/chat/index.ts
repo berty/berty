@@ -54,7 +54,8 @@ export function* rootSaga() {
 				call(message.orchestrator),
 			])
 		} catch (error) {
-			console.error('Chat orchestrator crashed, retrying', error.toString())
+			console.error(error)
+			console.warn('Chat orchestrator crashed, retrying')
 		}
 	}
 }

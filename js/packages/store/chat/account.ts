@@ -1,21 +1,13 @@
-import { useSelector } from 'react-redux'
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import {
-	fork,
-	put,
-	putResolve,
-	all,
-	takeLeading,
-	select,
-	takeEvery,
-	take,
-} from 'redux-saga/effects'
+import { fork, put, all, takeLeading, select, takeEvery, take } from 'redux-saga/effects'
 import faker from 'faker'
 import { Buffer } from 'buffer'
 import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
 
 import * as protocol from '../protocol'
+import * as outgoingContactRequest from './outgoingContactRequest'
+import * as incomingContactRequest from './incomingContactRequest'
 
 export type Entity = {
 	id: string
@@ -45,7 +37,7 @@ export namespace Command {
 	export type Generate = void
 	export type Create = { name: string }
 	export type Delete = { id: string }
-	export type SendContactRequest = { id: string; otherReference: string }
+	export type SendContactRequest = { id: string; otherReference: string; otherName: string }
 	export type Replay = { id: string }
 	export type Open = { id: string }
 }
@@ -149,7 +141,7 @@ export const queries: QueryReducer = {
 	getLength: (state) => Object.keys(state.chat.account.aggregates).length,
 }
 
-const getProtocolClient = function*(id: string): Generator<unknown, protocol.Client, void> {
+export const getProtocolClient = function*(id: string): Generator<unknown, protocol.Client, void> {
 	const client = (yield select((state) => protocol.queries.client.get(state, { id }))) as
 		| protocol.Client
 		| undefined
@@ -211,7 +203,7 @@ export const transactions: Transactions = {
 		// get account PKs
 		const client = yield* getProtocolClient(id)
 
-		// send created event to protocol
+		// send deleted event to protocol
 		const event = events.deleted({
 			aggregateId: id,
 		})
@@ -267,6 +259,7 @@ export const transactions: Transactions = {
 
 		const metadata = {
 			name: account.name,
+			givenName: payload.otherName,
 		}
 		yield* protocol.transactions.client.contactRequestSend({
 			id: payload.id,
@@ -284,6 +277,8 @@ export function* orchestrator() {
 			const accounts = (yield select(queries.getAll)) as Entity[]
 			for (const account of accounts) {
 				yield* transactions.open({ id: account.id })
+				yield* outgoingContactRequest.transactions.open({ accountId: account.id })
+				yield* incomingContactRequest.transactions.open({ accountId: account.id })
 			}
 		}),
 
