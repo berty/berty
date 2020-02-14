@@ -11,36 +11,54 @@ import (
 	"berty.tech/berty/go/pkg/errcode"
 )
 
+func handleNewMember(ctx context.Context, gctx GroupContext, evt events.Event) error {
+	e, ok := evt.(*bertyprotocol.GroupMetadataEvent)
+	if !ok {
+		return nil
+	}
+
+	if e.Metadata.EventType != bertyprotocol.EventTypeGroupMemberDeviceAdded {
+		return nil
+	}
+
+	event := &bertyprotocol.GroupAddMemberDevice{}
+	if err := event.Unmarshal(e.Metadata.Payload); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	memberPK, err := crypto.UnmarshalEd25519PublicKey(event.MemberPK)
+	if err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if _, err := gctx.GetMetadataStore().SendSecret(ctx, memberPK); err != nil {
+		if err != errcode.ErrGroupSecretAlreadySentToMember {
+			return errcode.ErrInternal.Wrap(err)
+		}
+
+		return nil
+	}
+
+	return nil
+}
+
+func SendSecretsToExistingMembers(ctx context.Context, gctx GroupContext) error {
+	ch := gctx.GetMetadataStore().ListEvents(ctx)
+
+	for meta := range ch {
+		if err := handleNewMember(ctx, gctx, meta); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx GroupContext) {
-	gctx.GetMetadataStore().Subscribe(ctx, func(e events.Event) {
-		switch e.(type) {
-		case *bertyprotocol.GroupMetadataEvent:
-			casted, _ := e.(*bertyprotocol.GroupMetadataEvent)
-			if casted.Metadata.EventType != bertyprotocol.EventTypeGroupMemberDeviceAdded {
-				return
-			}
-
-			event := &bertyprotocol.GroupAddMemberDevice{}
-			if err := event.Unmarshal(casted.Metadata.Payload); err != nil {
-				logger.Error("err: unable to unmarshal event", zap.Error(err))
-				return
-			}
-
-			memberPK, err := crypto.UnmarshalEd25519PublicKey(event.MemberPK)
-			if err != nil {
-				logger.Error("err: unable to unmarshal public key", zap.Error(err))
-				return
-			}
-
-			if _, err := gctx.GetMetadataStore().SendSecret(ctx, memberPK); err != nil {
-				if err != errcode.ErrGroupSecretAlreadySentToMember {
-					logger.Error("err: unable to send secret to member", zap.Error(err))
-				} else if err == errcode.ErrGroupSecretAlreadySentToMember {
-					logger.Info("err: unable to send secret to member, already sent")
-				}
-
-				return
-			}
+	go gctx.GetMetadataStore().Subscribe(ctx, func(evt events.Event) {
+		if err := handleNewMember(ctx, gctx, evt); err != nil {
+			// TODO: log
+			logger.Error("unable to send secrets", zap.Error(err))
 		}
 	})
 }

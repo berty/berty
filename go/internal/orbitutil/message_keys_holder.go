@@ -395,19 +395,23 @@ func preComputeKeys(ctx context.Context, m MessageKeysHolder, device crypto.PubK
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
+	knownCK, err := m.GetDeviceChainKey(ctx, device)
+	if err != nil && err != errcode.ErrInvalidInput {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
 	for i := 1; i <= m.GetPrecomputedKeyExpectedCount(); i++ {
 		counter++
 
-		knownCK, err := m.GetPrecomputedKey(ctx, device, counter)
+		knownMK, err := m.GetPrecomputedKey(ctx, device, counter)
 		if err != nil && err != errcode.ErrMissingInput {
 			return nil, errcode.ErrInternal.Wrap(err)
 		}
 
-		if knownCK != nil {
-			for i, c := range knownCK {
-				ck[i] = c
+		if knownMK != nil && knownCK != nil {
+			if knownCK.Counter != counter-1 {
+				continue
 			}
-			continue
 		}
 
 		// TODO: Salt?
@@ -422,10 +426,6 @@ func preComputeKeys(ctx context.Context, m MessageKeysHolder, device crypto.PubK
 		}
 
 		ck = newCK
-
-		if i != 1 {
-			continue
-		}
 	}
 
 	return &bertyprotocol.DeviceSecret{
@@ -440,19 +440,19 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc GroupContext) err
 	}
 
 	m := gc.GetMessageKeysHolder()
-	ms := gc.GetMetadataStore()
+	metadataStore := gc.GetMetadataStore()
 
-	if m == nil || ms == nil {
+	if m == nil || metadataStore == nil {
 		return errcode.ErrInvalidInput
 	}
 
-	ms.Subscribe(ctx, func(evt events.Event) {
+	metadataStore.Subscribe(ctx, func(evt events.Event) {
 		e, ok := evt.(*bertyprotocol.GroupMetadataEvent)
 		if !ok {
 			return
 		}
 
-		pk, ds, err := group.OpenDeviceSecret(e.Metadata, gc.GetMemberPrivKey(), ms.GetGroupContext().GetGroup())
+		pk, ds, err := group.OpenDeviceSecret(e.Metadata, gc.GetMemberPrivKey(), metadataStore.GetGroupContext().GetGroup())
 		if err != nil {
 			return
 		}
@@ -466,14 +466,21 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc GroupContext) err
 	return nil
 }
 
-func FillMessageKeysHolderUsingPreviousData(ctx context.Context, m MessageKeysHolder, ms MetadataStore) error {
+func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc GroupContext) error {
+	ms := gc.GetMetadataStore()
+	mkh := gc.GetMessageKeysHolder()
+
+	if ms == nil || mkh == nil {
+		return errcode.ErrInvalidInput
+	}
+
 	publishedSecrets, err := ListPublishedSecrets(ctx, ms)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
 
 	for dev, sec := range publishedSecrets {
-		if err := RegisterChainKeyForDevice(ctx, m, dev, sec); err != nil {
+		if err := RegisterChainKeyForDevice(ctx, mkh, dev, sec); err != nil {
 			return errcode.TODO.Wrap(err)
 		}
 	}

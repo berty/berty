@@ -7,7 +7,6 @@ import (
 
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/go-orbit-db/accesscontroller/simple"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/iface"
@@ -15,6 +14,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
 
+	"berty.tech/berty/go/internal/orbitutil/bertysimple"
 	"berty.tech/berty/go/pkg/errcode"
 )
 
@@ -92,7 +92,7 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *baseorb
 		keyStore:        ks,
 	}
 
-	if err := bertyDB.RegisterAccessControllerType(simple.NewSimpleAccessController); err != nil {
+	if err := bertyDB.RegisterAccessControllerType(bertysimple.NewSimpleAccessController); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 	bertyDB.RegisterStoreType(GroupMetadataStoreType, ConstructorFactoryGroupMetadata(bertyDB))
@@ -158,7 +158,7 @@ func (s *bertyOrbitDB) InitGroupStore(ctx context.Context, indexConstructor func
 }
 
 func (s *bertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, gc GroupContext, options *orbitdb.CreateDBOptions, storeType string) (GroupStore, error) {
-	options, err := DefaultOptions(gc.GetGroup(), options, s.keyStore)
+	options, err := DefaultOptions(gc.GetGroup(), options, s.keyStore, storeType)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +193,7 @@ func (s *bertyOrbitDB) GroupMetadataStore(ctx context.Context, g GroupContext, o
 
 	sStore, ok := store.(MetadataStore)
 	if !ok {
-		return nil, errors.New("unable to cast store to member store")
+		return nil, errors.New("unable to cast store to metadata store")
 	}
 
 	g.SetMetadataStore(sStore)
@@ -209,7 +209,7 @@ func (s *bertyOrbitDB) GroupMessageStore(ctx context.Context, g GroupContext, op
 
 	mStore, ok := store.(MessageStore)
 	if !ok {
-		return nil, errors.New("unable to cast store to member store")
+		return nil, errors.New("unable to cast store to message store")
 	}
 
 	g.SetMessageStore(mStore)

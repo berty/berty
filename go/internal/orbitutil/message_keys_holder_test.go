@@ -16,6 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/testutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
@@ -343,13 +344,15 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 	}
 }
 
-func TestMessageKeyHolderCatchUp(t *testing.T) {
+func testMessageKeyHolderCatchUp(t *testing.T, expectedNewDevices int, isSlow bool) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	expectedNewDevices := 10
+	if isSlow {
+		testutil.SkipSlow(t)
+	}
 
-	dir := path.Join(os.TempDir(), string(os.Getpid()), "MessageKeyHolderCatchUp")
+	dir := path.Join(os.TempDir(), fmt.Sprintf("%d", os.Getpid()), "MessageKeyHolderCatchUp")
 	defer os.RemoveAll(dir)
 
 	peers, _ := CreatePeersWithGroup(ctx, t, dir, 1, 1, true)
@@ -368,7 +371,7 @@ func TestMessageKeyHolderCatchUp(t *testing.T) {
 		devicesPK[i], deviceSecrets[i] = addDummyMemberInMetadataStore(ctx, t, ms1, peer.GetGroupContext().GetMemberPrivKey().GetPublic(), true)
 	}
 
-	err := FillMessageKeysHolderUsingPreviousData(ctx, mkh1, ms1)
+	err := FillMessageKeysHolderUsingPreviousData(ctx, peer.GetGroupContext())
 	assert.NoError(t, err)
 
 	for i, dPK := range devicesPK {
@@ -380,15 +383,36 @@ func TestMessageKeyHolderCatchUp(t *testing.T) {
 			t.Fatalf("failed at iteration %d", i)
 		}
 	}
+
 }
 
-func TestMessageKeyHolderSubscription(t *testing.T) {
+func TestMessageKeyHolderCatchUp(t *testing.T) {
+	for _, testCase := range []struct {
+		expectedNewDevices int
+		slow               bool
+	}{
+		{
+			expectedNewDevices: 2,
+			slow:               false,
+		},
+		{
+			expectedNewDevices: 10,
+			slow:               true,
+		},
+	} {
+		testMessageKeyHolderCatchUp(t, testCase.expectedNewDevices, testCase.slow)
+	}
+}
+
+func testMessageKeyHolderSubscription(t *testing.T, expectedNewDevices int, isSlow bool) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	expectedNewDevices := 10
+	if isSlow {
+		testutil.SkipSlow(t)
+	}
 
-	dir := path.Join(os.TempDir(), string(os.Getpid()), "MessageKeyHolderSubscription")
+	dir := path.Join(os.TempDir(), fmt.Sprintf("%d", os.Getpid()), "MessageKeyHolderSubscription")
 	defer os.RemoveAll(dir)
 
 	peers, _ := CreatePeersWithGroup(ctx, t, dir, 1, 1, true)
@@ -417,5 +441,23 @@ func TestMessageKeyHolderSubscription(t *testing.T) {
 			assert.Equal(t, deviceSecrets[i].Counter+uint64(mkh1.GetPrecomputedKeyExpectedCount()), ds.Counter)
 			// Not testing chain key value as we need to derive it from the generated value
 		}
+	}
+}
+
+func TestMessageKeyHolderSubscription(t *testing.T) {
+	for _, testCase := range []struct {
+		expectedNewDevices int
+		slow               bool
+	}{
+		{
+			expectedNewDevices: 2,
+			slow:               false,
+		},
+		{
+			expectedNewDevices: 10,
+			slow:               true,
+		},
+	} {
+		testMessageKeyHolderSubscription(t, testCase.expectedNewDevices, testCase.slow)
 	}
 }

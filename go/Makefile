@@ -141,6 +141,11 @@ bazel.demo: bazel.generate
 	$(call check-program, $(BAZEL))
 	$(call bazel, run, //cmd/berty -- demo)
 
+.PHONY: bazel.mini
+bazel.mini: bazel.generate
+	$(call check-program, $(BAZEL))
+	$(call bazel, run, //cmd/berty -- mini)
+
 .PHONY: bazel.banner
 bazel.banner: bazel.generate
 	$(call check-program, $(BAZEL))
@@ -175,6 +180,10 @@ ibazel.daemon: bazel.generate
 .PHONY: ibazel.daemon
 ibazel.demo: bazel.generate
 	USE_IBAZEL=true make bazel.demo
+
+.PHONY: ibazel.mini
+ibazel.mini: bazel.generate
+	USE_IBAZEL=true make bazel.mini
 
 .PHONY: ibazel.build
 ibazel.build: bazel.generate

@@ -151,7 +151,12 @@ func CreatePeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 				t.Fatal(err)
 			}
 
-			if _, err = NewInMemoryMessageKeysHolder(ctx, groupContext, ds); err != nil {
+			mkh, err := NewInMemoryMessageKeysHolder(ctx, groupContext, ds)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if err = RegisterChainKeyForDevice(ctx, mkh, groupContext.GetDevicePrivKey().GetPublic(), ds); err != nil {
 				t.Fatal(err)
 			}
 

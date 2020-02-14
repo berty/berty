@@ -1,4 +1,4 @@
-package main
+package ipfsutil
 
 import (
 	"crypto/rand"
@@ -17,9 +17,9 @@ import (
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer" // nolint:staticcheck
 )
 
-func createBuildConfig() (*ipfs_node.BuildCfg, error) {
+func CreateBuildConfig() (*ipfs_node.BuildCfg, error) {
 	ds := ipfs_datastore.NewMapDatastore()
-	repo, err := createRepo(ipfs_datastoresync.MutexWrap(ds))
+	repo, err := CreateRepo(ipfs_datastoresync.MutexWrap(ds))
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -40,7 +40,7 @@ func createBuildConfig() (*ipfs_node.BuildCfg, error) {
 	}, nil
 }
 
-func createRepo(dstore ipfs_repo.Datastore) (ipfs_repo.Repo, error) {
+func CreateRepo(dstore ipfs_repo.Datastore) (ipfs_repo.Repo, error) {
 	c := ipfs_cfg.Config{}
 	priv, pub, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, rand.Reader) // nolint:staticcheck
 	if err != nil {

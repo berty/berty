@@ -2,10 +2,13 @@ package orbitutil
 
 import (
 	"context"
+	"sync"
 
 	"berty.tech/go-ipfs-log/identityprovider"
 	"berty.tech/go-orbit-db/address"
+	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
+	"berty.tech/go-orbit-db/stores"
 	"berty.tech/go-orbit-db/stores/basestore"
 	"berty.tech/go-orbit-db/stores/operation"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
@@ -20,63 +23,68 @@ const GroupMessageStoreType = "berty_group_messages"
 
 type messageStore struct {
 	BaseGroupStore
+	lock sync.Mutex
 }
 
-func (m *messageStore) ListMessages(ctx context.Context, out chan<- *bertyprotocol.GroupMessageEvent) error {
-	ch := make(chan ipfslog.Entry)
+func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry) (*bertyprotocol.GroupMessageEvent, error) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
 
 	mkh := m.GetGroupContext().GetMessageKeysHolder()
-	if mkh == nil {
-		return errcode.ErrInternal
+
+	if e == nil {
+		return nil, errcode.ErrInvalidInput
 	}
 
+	op, err := operation.ParseOperation(e)
+	if err != nil {
+		// TODO: log
+		return nil, err
+	}
+
+	headers, payload, err := OpenEnvelope(ctx, op.GetValue(), e.GetHash(), mkh)
+	if err != nil {
+		// TODO: log
+		return nil, err
+	}
+
+	eventContext, err := NewEventContext(e.GetHash(), e.GetNext(), m.GetGroupContext().GetGroup().PubKey)
+	if err != nil {
+		// TODO: log
+		return nil, err
+	}
+
+	return &bertyprotocol.GroupMessageEvent{
+		EventContext: eventContext,
+		Headers:      headers,
+		Message:      payload,
+	}, nil
+}
+
+func (m *messageStore) ListMessages(ctx context.Context) (<-chan *bertyprotocol.GroupMessageEvent, error) {
+	out := make(chan *bertyprotocol.GroupMessageEvent)
+	ch := make(chan ipfslog.Entry)
+
 	go func() {
-		for {
-			select {
-			case <-ctx.Done():
-				return
-
-			case e := <-ch:
-				if e == nil {
-					continue
-				}
-
-				op, err := operation.ParseOperation(e)
-				if err != nil {
-					// TODO: log
-					continue
-				}
-				headers, payload, err := OpenEnvelope(ctx, op.GetValue(), e.GetHash(), mkh)
-				if err != nil {
-					// TODO: log
-					continue
-				}
-
-				eventContext, err := NewEventContext(e.GetHash(), e.GetNext(), mkh.GetGroupContext().GetGroup().PubKey)
-				if err != nil {
-					// TODO: log
-					continue
-				}
-
-				out <- &bertyprotocol.GroupMessageEvent{
-					EventContext: eventContext,
-					Headers:      headers,
-					Message:      payload,
-				}
-
-				// TODO: handle closed chan?
+		for e := range ch {
+			evt, err := m.openMessage(ctx, e)
+			if err != nil {
+				// TODO: log
+				continue
 			}
+
+			out <- evt
 		}
+
+		close(out)
 	}()
 
 	go func() {
-		if err := m.OpLog().Iterator(&ipfslog.IteratorOptions{}, ch); err != nil {
-			// TODO: log
-			_ = err
-		}
+		_ = m.OpLog().Iterator(&ipfslog.IteratorOptions{}, ch)
+		// TODO: log
 	}()
 
-	return nil
+	return out, nil
 }
 
 func (m *messageStore) AddMessage(ctx context.Context, payload []byte) (operation.Operation, error) {
@@ -106,6 +114,28 @@ func ConstructorFactoryGroupMessage(s BertyOrbitDB) iface.StoreConstructor {
 		if err := s.InitGroupStore(ctx, NewMessageIndex, store, ipfs, identity, addr, options); err != nil {
 			return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 		}
+
+		go store.Subscribe(ctx, func(e events.Event) {
+			switch evt := e.(type) {
+			case *stores.EventWrite:
+				messageEvent, err := store.openMessage(ctx, evt.Entry)
+				if err != nil {
+					// TODO: log
+					return
+				}
+
+				store.Emit(messageEvent)
+
+			case *stores.EventReplicateProgress:
+				messageEvent, err := store.openMessage(ctx, evt.Entry)
+				if err != nil {
+					// TODO: log
+					return
+				}
+
+				store.Emit(messageEvent)
+			}
+		})
 
 		return store, nil
 	}

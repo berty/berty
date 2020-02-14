@@ -10,18 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func countEntries(t testing.TB, out chan *bertyprotocol.GroupMessageEvent, expected int) {
+func countEntries(t testing.TB, out <-chan *bertyprotocol.GroupMessageEvent, expected int) {
 	found := 0
 
-	for {
-		select {
-		case <-out:
-			found++
-		case <-time.After(time.Second):
-			assert.Equal(t, expected, found)
-			return
-		}
+	for range out {
+		found++
 	}
+
+	assert.Equal(t, expected, found)
 }
 
 func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
@@ -47,19 +43,12 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 	_, err = peers[0].GetGroupContext().GetMessageStore().AddMessage(ctx, testMsg1)
 	assert.NoError(t, err)
 
-	out := make(chan *bertyprotocol.GroupMessageEvent, entriesCount*4)
+	<-time.After(time.Second)
 
-	listCtx, listCancel := context.WithTimeout(context.Background(), time.Second)
-
-	err = peers[0].GetGroupContext().GetMessageStore().ListMessages(listCtx, out)
+	out, err := peers[0].GetGroupContext().GetMessageStore().ListMessages(ctx)
 	assert.NoError(t, err)
 
-	<-time.After(time.Millisecond * 100)
-
-	assert.Equal(t, 1, len(out))
-
-	listCancel()
-	close(out)
+	countEntries(t, out, 1)
 
 	for i := 0; i < entriesCount; i++ {
 		payload := []byte(fmt.Sprintf("test message %d", i))
@@ -69,13 +58,7 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 
 	<-time.After(time.Second * 2)
 
-	listCtx, listCancel = context.WithTimeout(context.Background(), time.Second)
-	defer listCancel()
-
-	out = make(chan *bertyprotocol.GroupMessageEvent, entriesCount*4)
-	defer close(out)
-
-	err = peers[1].GetGroupContext().GetMessageStore().ListMessages(listCtx, out)
+	out, err = peers[1].GetGroupContext().GetMessageStore().ListMessages(ctx)
 	assert.NoError(t, err)
 
 	<-time.After(time.Second)

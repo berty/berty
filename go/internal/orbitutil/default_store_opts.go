@@ -11,16 +11,27 @@ import (
 	"berty.tech/berty/go/pkg/errcode"
 )
 
-func DefaultOptions(g *group.Group, options *orbitdb.CreateDBOptions, keystore *BertySignedKeyStore) (*orbitdb.CreateDBOptions, error) {
+func DefaultOptions(g *group.Group, options *orbitdb.CreateDBOptions, keystore *BertySignedKeyStore, storeType string) (*orbitdb.CreateDBOptions, error) {
 	var err error
 
 	if options == nil {
 		options = &orbitdb.CreateDBOptions{}
 	}
+
+	options = &orbitdb.CreateDBOptions{
+		Directory:               options.Directory,
+		Overwrite:               options.Overwrite,
+		LocalOnly:               options.LocalOnly,
+		StoreType:               options.StoreType,
+		AccessControllerAddress: options.AccessControllerAddress,
+		AccessController:        options.AccessController,
+		Replicate:               options.Replicate,
+		Cache:                   options.Cache,
+	}
 	options.Create = boolPtr(true)
 
 	if options.AccessController == nil {
-		options.AccessController, err = defaultACForGroup(g)
+		options.AccessController, err = defaultACForGroup(g, storeType)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -35,7 +46,7 @@ func DefaultOptions(g *group.Group, options *orbitdb.CreateDBOptions, keystore *
 	return options, nil
 }
 
-func defaultACForGroup(g *group.Group) (accesscontroller.ManifestParams, error) {
+func defaultACForGroup(g *group.Group, storeType string) (accesscontroller.ManifestParams, error) {
 	groupID, err := g.GroupIDAsString()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -50,8 +61,10 @@ func defaultACForGroup(g *group.Group) (accesscontroller.ManifestParams, error) 
 		Access: map[string][]string{
 			"write":            {hex.EncodeToString(signingKeyBytes)},
 			IdentityGroupIDKey: {groupID},
+			StoreTypeKey:       {storeType},
 		},
-		Type: "ipfs",
+		SkipManifest: true,
+		Type:         "bertysimple",
 	}
 
 	return param, nil

@@ -26,13 +26,14 @@ func (m *InMemoryMessageKeysHolder) GetGroupContext() GroupContext {
 
 func (m *InMemoryMessageKeysHolder) GetOwnDeviceChainKey(ctx context.Context) (*bertyprotocol.DeviceSecret, error) {
 	m.lock.RLock()
-	defer m.lock.RUnlock()
 
 	sk := m.GetGroupContext().GetDevicePrivKey()
 
 	if sk == nil {
 		return nil, errcode.ErrInvalidInput
 	}
+
+	m.lock.RUnlock()
 
 	return m.GetDeviceChainKey(ctx, sk.GetPublic())
 }

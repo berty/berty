@@ -18,6 +18,7 @@ import (
 	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/internal/orbitutil"
+	"berty.tech/berty/go/internal/orbitutil/bertysimple"
 	"berty.tech/berty/go/pkg/errcode"
 )
 
@@ -58,6 +59,10 @@ func New(opts *Opts) (*Client, error) {
 		return nil, err
 	}
 
+	if err := odb.RegisterAccessControllerType(bertysimple.NewSimpleAccessController); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
 	logs := make(map[string]orbitdb.EventLogStore)
 
 	logsMutex := &sync.Mutex{}
@@ -91,7 +96,7 @@ func (d *Client) logFromToken(ctx context.Context, token string) (orbitdb.EventL
 		return nil, errcode.TODO.Wrap(err)
 	}
 	g := &group.Group{PubKey: sigk.GetPublic(), SigningKey: sigk}
-	opts, err := orbitutil.DefaultOptions(g, &orbitdb.CreateDBOptions{}, ks)
+	opts, err := orbitutil.DefaultOptions(g, &orbitdb.CreateDBOptions{}, ks, "log")
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

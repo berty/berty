@@ -7,6 +7,7 @@ import (
 )
 
 const IdentityGroupIDKey = "group_id"
+const StoreTypeKey = "store_type"
 const IdentityType = "betry_group_entry"
 
 type BertySignedIdentityProvider struct {

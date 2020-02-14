@@ -66,7 +66,7 @@ type MessageStore interface {
 	GroupStore
 
 	// ListMessages lists messages in the store
-	ListMessages(ctx context.Context, out chan<- *bertyprotocol.GroupMessageEvent) error
+	ListMessages(ctx context.Context) (<-chan *bertyprotocol.GroupMessageEvent, error)
 
 	// AddMessage appends a message to the store
 	AddMessage(ctx context.Context, data []byte) (operation.Operation, error)

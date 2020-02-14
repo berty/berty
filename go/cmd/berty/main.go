@@ -101,6 +101,15 @@ func main() {
 		},
 	}
 
+	mini := &ffcli.Command{
+		Name:  "mini",
+		Usage: "mini",
+		Exec: func(args []string) error {
+			miniMain(args)
+			return nil
+		},
+	}
+
 	daemon := &ffcli.Command{
 		Name:    "daemon",
 		Usage:   "berty daemon",
@@ -253,7 +262,7 @@ func main() {
 		Usage:       "berty [global flags] <subcommand> [flags] [args...]",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
-		Subcommands: []*ffcli.Command{daemon, demo, banner, version},
+		Subcommands: []*ffcli.Command{daemon, demo, banner, version, mini},
 		Exec: func([]string) error {
 			globalFlags.Usage()
 			return flag.ErrHelp
