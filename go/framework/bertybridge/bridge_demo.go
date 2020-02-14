@@ -1,77 +1,78 @@
 package bertybridge
 
 import (
-	"context"
-
-	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/pkg/bertydemo"
-
-	"github.com/ipfs/go-ipfs/core"
-	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 
-	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
+	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
+	"google.golang.org/grpc"
 )
 
-type DemoBridge interface {
-	Bridge
+// type DemoBridge Bridge
+
+// type demo struct {
+// 	Bridge
+
+// 	demoClient *bertydemo.Client
+// 	grpcServer *grpc.Server
+// 	logger     *zap.Logger
+// }
+
+type Demo struct {
+	*Bridge
+
+	client *bertydemo.Client
 }
 
-type demo struct {
-	Bridge
+type DemoConfig struct {
+	*Config
 
-	ipfsNode   *core.IpfsNode
-	demoClient *bertydemo.Client
-	grpcServer *grpc.Server
-	logger     *zap.Logger
+	loglevel         string
+	orbitDBDirectory string
 }
 
-type DemoOpts struct {
-	LogLevel         string
-	OrbitDBDirectory string
-	BridgeOpts       *BridgeOpts
+func NewDemoConfig() *DemoConfig {
+	return &DemoConfig{
+		Config: NewConfig(),
+	}
 }
 
-func NewDemoBridge(opts *DemoOpts) (DemoBridge, error) {
+func (dc *DemoConfig) OrbitDBDirectory(dir string) {
+	dc.orbitDBDirectory = dir
+}
+
+func (dc *DemoConfig) LogLevel(level string) {
+	dc.loglevel = level
+}
+
+func NewDemoBridge(config *DemoConfig) (*Demo, error) {
 	// setup logger
 	var logger *zap.Logger
 	{
 		var err error
 
-		logger, err = newLogger(opts.LogLevel)
+		logger, err = newLogger(config.loglevel)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return newDemoBridge(logger, opts)
+	return newDemoBridge(logger, config)
 }
 
-func newDemoBridge(logger *zap.Logger, opts *DemoOpts) (DemoBridge, error) {
-	d := &demo{
-		grpcServer: grpc.NewServer(),
-		logger:     logger,
-	}
-	ctx := context.Background()
+func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
+	demo := &Demo{}
 
 	// setup demo
 	{
 		var err error
-		var api ipfs_coreapi.CoreAPI
-
-		api, d.ipfsNode, err = ipfsutil.NewInMemoryCoreAPI(ctx)
-		if err != nil {
-			return nil, err
-		}
 
 		directory := ":memory:"
-		if opts.OrbitDBDirectory != "" {
-			directory = opts.OrbitDBDirectory
+		if config.orbitDBDirectory != "" {
+			directory = config.orbitDBDirectory
 		}
 
-		d.demoClient, err = bertydemo.New(&bertydemo.Opts{
-			CoreAPI:          api,
+		demo.client, err = bertydemo.New(&bertydemo.Opts{
 			OrbitDBDirectory: directory,
 		})
 
@@ -81,27 +82,28 @@ func newDemoBridge(logger *zap.Logger, opts *DemoOpts) (DemoBridge, error) {
 	}
 
 	// register service
-	bertydemo.RegisterDemoServiceServer(d.grpcServer, d.demoClient)
+	grpcserver := grpc.NewServer()
+	bertydemo.RegisterDemoServiceServer(grpcserver, demo.client)
 
 	// setup bridge
 	{
 		var err error
 
-		d.Bridge, err = newBridge(d.grpcServer, logger, opts.BridgeOpts)
+		demo.Bridge, err = newBridge(demo.grpcServer, logger, config.Config)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return d, nil
+	// setup bridge
+	return demo, nil
 }
 
-func (d *demo) Close() (err error) {
+func (d *Demo) Close() (err error) {
 	// Close bridge
 	err = d.Bridge.Close()
 
 	// close others
-	d.demoClient.Close()
-	d.ipfsNode.Close()
+	d.client.Close()
 	return
 }

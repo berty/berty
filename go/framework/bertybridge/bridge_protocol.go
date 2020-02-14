@@ -13,92 +13,98 @@ import (
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 )
 
-type ProtocolBridge interface {
-	Bridge
+type Protocol struct {
+	*Bridge
+
+	db     *gorm.DB
+	client bertyprotocol.Client
 }
 
-type protocol struct {
-	Bridge
+type ProtocolConfig struct {
+	*Config
 
-	grpcServer     *grpc.Server
-	protocolDB     *gorm.DB
-	protocolClient bertyprotocol.Client
-	logger         *zap.Logger
+	loglevel string
+	coreAPI  ipfs_interface.CoreAPI
 }
 
-type ProtocolOpts struct {
-	LogLevel   string
-	BridgeOpts *BridgeOpts
-
-	coreAPI ipfs_interface.CoreAPI
+func NewProtocolConfig() *ProtocolConfig {
+	return &ProtocolConfig{
+		Config: NewConfig(),
+	}
 }
 
-func NewProtocolBridge(opts *ProtocolOpts) (ProtocolBridge, error) {
+func (pc *ProtocolConfig) LogLevel(level string) {
+	pc.loglevel = level
+}
+
+func (pc *ProtocolConfig) ipfsCoreAPI(api ipfs_interface.CoreAPI) {
+	pc.coreAPI = api
+}
+
+func NewProtocolBridge(config *ProtocolConfig) (*Protocol, error) {
 	// setup logger
 	var logger *zap.Logger
 	{
 		var err error
 
-		logger, err = newLogger(opts.LogLevel)
+		logger, err = newLogger(config.loglevel)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return newProtocolBridge(logger, opts)
+	return newProtocolBridge(logger, config)
 
 }
 
-func newProtocolBridge(logger *zap.Logger, opts *ProtocolOpts) (ProtocolBridge, error) {
-	b := &protocol{
-		grpcServer: grpc.NewServer(),
-		logger:     logger,
-	}
+func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, error) {
+	protocol := &Protocol{}
 
 	// setup protocol
 	{
 		var err error
 
-		b.protocolDB, err = gorm.Open("sqlite3", ":memory:")
+		protocol.db, err = gorm.Open("sqlite3", ":memory:")
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 
 		// initialize new protocol client
 		protocolOpts := bertyprotocol.Opts{
-			Logger:      b.logger.Named("bertyprotocol"),
-			IpfsCoreAPI: opts.coreAPI,
+			Logger:      logger.Named("bertyprotocol"),
+			IpfsCoreAPI: config.coreAPI,
 		}
 
-		b.protocolClient, err = bertyprotocol.New(b.protocolDB, protocolOpts)
+		protocol.client, err = bertyprotocol.New(protocol.db, protocolOpts)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	}
 
 	// register service
-	bertyprotocol.RegisterProtocolServiceServer(b.grpcServer, b.protocolClient)
+	grpcServer := grpc.NewServer()
+	bertyprotocol.RegisterProtocolServiceServer(grpcServer, protocol.client)
 
 	// setup bridge
 	{
 		var err error
 
-		b.Bridge, err = newBridge(b.grpcServer, logger, opts.BridgeOpts)
+		protocol.Bridge, err = newBridge(grpcServer, logger, config.Config)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return b, nil
+	return protocol, nil
 }
 
-func (b *protocol) Close() (err error) {
+func (p *Protocol) Close() (err error) {
 	// Close bridge
-	err = b.Bridge.Close()
+	err = p.Bridge.Close()
 
 	// close clients and dbs after listeners
-	b.protocolClient.Close()
-	b.protocolDB.Close()
+	p.client.Close()
+	p.db.Close()
 
 	return
 }

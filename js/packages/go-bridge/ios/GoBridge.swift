@@ -13,7 +13,7 @@ import Bertybridge
 class GoBridge: NSObject {
     let orbitdir: URL
 
-    var bridgeDemo: BertybridgeDemoBridgeProtocol?
+    var bridgeDemo: BertybridgeDemo?
 
     override init() {
         // set berty dir for persistance
@@ -34,11 +34,13 @@ class GoBridge: NSObject {
             let optLog = opts["logLevel"] as? String ?? "info"
 
             var err: NSError?
-            let opts = BertybridgeDemoOpts()
+            guard let config = BertybridgeNewDemoConfig() else {
+                throw NSError(domain: "unable to create config", code: 1)
+            }
 
-            // set log level
-            opts.logLevel = optLog
-
+            config.addGRPCListener("/ip4/127.0.0.1/tcp/0/grpcweb")
+            config.logLevel(optLog)
+            
             // set persistance if needed
             if optPersistance {
                 var isDirectory: ObjCBool = true
@@ -47,10 +49,10 @@ class GoBridge: NSObject {
                     try FileManager.default.createDirectory(atPath: self.orbitdir.path, withIntermediateDirectories: true, attributes: nil)
                 }
 
-                opts.orbitDBDirectory = self.orbitdir.path
+                config.orbitDBDirectory(self.orbitdir.path)
             }
 
-            let bridgeDemo = BertybridgeNewDemoBridge(opts, &err)
+            let bridgeDemo = BertybridgeNewDemoBridge(config, &err)
             if err != nil {
                 throw err!
             }
