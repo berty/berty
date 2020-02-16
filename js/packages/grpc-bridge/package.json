@@ -30,12 +30,19 @@
     "@types/long": "^4.0.0",
     "@types/websocket": "^1.0.0",
     "case": "^1.6.2",
+    "elliptic": "^6.5.2",
     "eslint": "^6.6.0",
     "espree": "^3.5.4",
     "jsdoc": "^3.5.5",
     "minimist": "^1.2.0",
     "pbhbs": "^0.2.2",
     "protobufjs": "^6.8.8",
-    "semver": "^5.5.0"
+    "randombytes": "^2.1.0",
+    "semver": "^5.5.0",
+    "sha3": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/elliptic": "^6.4.12",
+    "@types/randombytes": "^2.0.0"
   }
 }

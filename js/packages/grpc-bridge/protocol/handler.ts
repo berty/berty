@@ -7,6 +7,8 @@ import { WebsocketTransport } from '../grpc-web-websocket-transport'
 import { Buffer } from 'buffer'
 import { GoBridge } from '../orbitdb/native'
 import { IProtocolServiceHandler } from './handler.gen'
+import { AsymmetricKeystore, ec } from './keystore'
+import { SHA3 } from 'sha3'
 
 const useExternalBridge = __DEV__ // set to false to test integrated bridge in dev
 
@@ -19,10 +21,11 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 	accountPk: string
 	devicePk: string
 	accountGroupPk: string
-	rdvLogtoken?: string
+	rdvLogtoken: string
+	keystore: AsymmetricKeystore
 
-	constructor(metadata?: { [key: string]: string | string[] }) {
-		super(metadata)
+	constructor() {
+		super()
 		if (useExternalBridge) {
 			this.client = new DemoServiceClient(
 				bridge({
@@ -45,22 +48,28 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 					// log bad error
 				})
 		}
-		this.accountPk = (this.metadata?.accountPk as string) || ''
-		this.devicePk = (this.metadata?.devicePk as string) || ''
-		this.accountGroupPk = (this.metadata?.accountDevicePk as string) || ''
+		this.keystore = new AsymmetricKeystore()
+		;['account', 'device', 'accountGroup', 'rdv'].forEach(this.keystore.createKeyPair)
+		this.accountPk = this.getBase64PublicKey('account')
+		this.devicePk = this.getBase64PublicKey('device')
+		this.accountGroupPk = this.getBase64PublicKey('accountGroup')
+		this.rdvLogtoken = this.getMetadataLogToken('rdv')
+		console.log('rdvLogToken', this.rdvLogtoken)
 	}
 
-	_logToken = async (): Promise<string> =>
-		new Promise((resolve: (token: string) => void, reject: (err: Error) => void) =>
-			this.client?.logToken({}, (error, response) =>
-				error || response == null || response?.logToken == null
-					? reject(error || new Error('GRPC ProtocolServiceHandler: response is undefined'))
-					: resolve(response.logToken as string),
-			),
-		)
+	getBase64PublicKey = (keyName: string) => {
+		return this.keystore
+			.get(keyName)
+			.getPublic()
+			.toString('base64')
+	}
 
-	_createPkHack = async (): Promise<string> =>
-		(await Promise.all([this._logToken(), this._logToken()])).join(':')
+	getHexSecretKey = (keyName: string) => {
+		return this.keystore
+			.get(keyName)
+			.getSecret()
+			.toString('hex')
+	}
 
 	InstanceExportData: (
 		request: api.berty.protocol.InstanceExportData.IRequest,
@@ -77,13 +86,10 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			response?: api.berty.protocol.InstanceGetConfiguration.IReply,
 		) => void,
 	) => void = async (request, callback) => {
-		this.accountPk = this.accountPk ? this.accountPk : await this._createPkHack()
-		this.devicePk = this.devicePk ? this.devicePk : await this._createPkHack()
-		this.accountGroupPk = this.accountGroupPk ? this.accountGroupPk : await this._createPkHack()
 		callback(null, {
-			accountPk: new Buffer(this.accountPk),
-			devicePk: new Buffer(this.devicePk),
-			accountGroupPk: new Buffer(this.accountGroupPk),
+			accountPk: new Buffer(this.accountPk, 'base64'),
+			devicePk: new Buffer(this.devicePk, 'base64'),
+			accountGroupPk: new Buffer(this.accountGroupPk, 'base64'),
 		})
 	}
 
@@ -94,7 +100,6 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			response?: api.berty.protocol.ContactRequestReference.IReply,
 		) => void,
 	) => void = async (request, callback) => {
-		this.rdvLogtoken = this.rdvLogtoken || (await this._logToken())
 		callback(null, { reference: this.referenceBytes })
 	}
 
@@ -105,35 +110,42 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			response?: api.berty.protocol.ContactRequestDisable.IReply,
 		) => void,
 	) => void = (request, callback) => {
-		this.rdvLogtoken = undefined
+		// TODO: close contact request log
 		callback(null, {})
-		/*this.client?.logClose({ logToken: contactLogToken }, (error, response) => {
-			if (error) {
-				console.log('handler.ts: ContactRequestDisable: logClose error:', error)
-				return
-			}
-		})*/
-	}
-
-	get accountMetadataLogToken() {
-		const [value] = this.accountGroupPk?.split(':')
-		return value
 	}
 
 	get devicePkBytes() {
-		return Buffer.from(this.devicePk, 'utf-8')
+		return this.keystore.get('device').getPublic()
 	}
 
 	get referenceBytes() {
-		if (!this.rdvLogtoken) {
-			throw new Error('handler.ts: referenceBytes: Undefined rdvLogtoken')
-		}
 		return Buffer.from(this.accountPk + '__' + this.rdvLogtoken, 'utf-8')
 	}
 
-	getMetadataLogToken = (groupPk: string): string => {
-		const [value] = groupPk.split(':')
-		return value
+	getMetadataLogToken = (keyName: string) => {
+		return this.metadataLogTokenFromPk(this.keystore.get(keyName).getPublic())
+	}
+
+	metadataLogTokenFromPk = (pubKey: Buffer) => {
+		// create a log token by running a round of sha3 on the pubKey
+		const hash = new SHA3(256)
+		hash.update(pubKey)
+		// go expects the concatenation of sk and pk as sk
+		const sk = hash.digest()
+		const pk = new Buffer(ec.keyFromSecret(sk).getPublic())
+		return Buffer.concat([sk, pk]).toString('hex')
+	}
+
+	messageLogTokenFromPk = (pubKey: Buffer) => {
+		// create a log token by running two rounds of sha3 on the pubKey
+		const hash1 = new SHA3(256)
+		hash1.update(pubKey)
+		const hash2 = new SHA3(256)
+		hash2.update(hash1.digest())
+		// go expects the concatenation of sk and pk as sk
+		const sk = hash2.digest()
+		const pk = new Buffer(ec.keyFromSecret(sk).getPublic())
+		return Buffer.concat([sk, pk]).toString('hex')
 	}
 
 	addEventToMetadataLog = ({
@@ -143,13 +155,13 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 		data,
 	}:
 		| {
-				groupPk: string
+				groupPk: Buffer
 				type: string
 				dataType: string
 				data: { [key: string]: any }
 		  }
 		| {
-				groupPk: string
+				groupPk: Buffer
 				type: string
 				data: Uint8Array
 				dataType?: string
@@ -158,11 +170,12 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 		if (!client) {
 			throw new Error('handler.ts: addEventToMetadataLog: missing client')
 		}
+		console.log(`adding ${type} to log with pubkey ${groupPk.toString('base64')}`)
 		return new Promise((resolve, reject) => {
 			try {
 				client.logAdd(
 					{
-						logToken: this.getMetadataLogToken(groupPk),
+						logToken: this.metadataLogTokenFromPk(groupPk),
 						data: api.berty.protocol.GroupMetadataEvent.encode({
 							eventContext: {},
 							metadata: {
@@ -186,7 +199,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 					},
 				)
 			} catch (e) {
-				console.error(e)
+				//console.error(e)
 				reject(e)
 			}
 		})
@@ -202,7 +215,6 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 		if (!this.client) {
 			throw new Error('handler.ts: ContactRequestEnable: missing client')
 		}
-		this.rdvLogtoken = this.rdvLogtoken || (await this._logToken())
 		callback(null, { reference: this.referenceBytes })
 		this.client.logStream({ logToken: this.rdvLogtoken }, (error, response) => {
 			if (error || !response || !response.value) {
@@ -216,16 +228,16 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			}
 			const val = new Buffer(response.value).toString('utf-8')
 			const parts = val.split(' ')
-			const [type, requesterAccountPk, ...metadataParts] = parts
+			const [type, requesterAccountPk, metadata] = parts
 			if (type === 'CONTACT_REQUEST_FROM') {
 				this.addEventToMetadataLog({
-					groupPk: this.accountGroupPk,
+					groupPk: this.keystore.get('accountGroup').getPublic(),
 					type: 'AccountContactRequestIncomingReceived',
 					dataType: 'AccountContactRequestReceived',
 					data: {
 						devicePk: this.devicePkBytes,
-						contactPk: Buffer.from(requesterAccountPk, 'utf-8'),
-						contactMetadata: Buffer.from(metadataParts.join(' '), 'utf-8'),
+						contactPk: Buffer.from(requesterAccountPk, 'base64'),
+						contactMetadata: Buffer.from(metadata, 'base64'),
 					},
 				})
 			}
@@ -239,7 +251,8 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			response?: api.berty.protocol.ContactRequestResetReference.IReply,
 		) => void,
 	) => void = async (_, callback) => {
-		this.rdvLogtoken = await this._logToken()
+		this.keystore.createKeyPair('rdv')
+		this.rdvLogtoken = this.getMetadataLogToken('rdv')
 		callback(null, { reference: this.referenceBytes })
 	}
 
@@ -250,6 +263,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			response?: api.berty.protocol.ContactRequestSend.IReply,
 		) => void,
 	) => void = async (request, callback) => {
+		console.log('ContactRequestSend called')
 		try {
 			const { client } = this
 			if (!client) {
@@ -260,12 +274,14 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			}
 			const refStr = new Buffer(request.reference).toString('utf-8')
 			const [otherUserPk, otherUserRdvLogToken] = refStr.split('__')
+			console.log('otherUserPk', otherUserPk)
+			console.log('otherUserRdvLogToken', otherUserRdvLogToken)
 			const ownMetadata =
-				request.contactMetadata && new Buffer(request.contactMetadata).toString('utf-8')
+				request.contactMetadata && new Buffer(request.contactMetadata).toString('base64')
 			const ownId = this.accountPk
-			const otherUserPkBytes = Buffer.from(otherUserPk, 'utf-8')
+			const otherUserPkBytes = Buffer.from(otherUserPk, 'base64')
 			await this.addEventToMetadataLog({
-				groupPk: this.accountGroupPk,
+				groupPk: this.keystore.get('accountGroup').getPublic(),
 				type: 'AccountContactRequestOutgoingEnqueued',
 				dataType: 'AccountContactRequestEnqueued',
 				data: {
@@ -283,7 +299,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 				})
 			})
 			await this.addEventToMetadataLog({
-				groupPk: this.accountGroupPk,
+				groupPk: this.keystore.get('accountGroup').getPublic(),
 				type: 'AccountContactRequestOutgoingSent',
 				dataType: 'AccountContactRequestSent',
 				data: {
@@ -304,7 +320,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 		) => void,
 	) => void = async (request, callback) => {
 		await this.addEventToMetadataLog({
-			groupPk: this.accountGroupPk,
+			groupPk: this.keystore.get('accountGroup').getPublic(),
 			type: 'AccountContactRequestIncomingAccepted',
 			dataType: 'AccountContactRequestAccepted',
 			data: {
@@ -322,7 +338,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 		) => void,
 	) => void = async (request, callback) => {
 		await this.addEventToMetadataLog({
-			groupPk: this.accountGroupPk,
+			groupPk: this.keystore.get('accountGroup').getPublic(),
 			type: 'AccountContactRequestIncomingDiscarded',
 			dataType: 'AccountContactRequestDiscarded',
 			data: {
@@ -394,9 +410,13 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 		callback: (error: Error | null, response?: api.berty.protocol.AppMetadataSend.IReply) => void,
 	) => void = async (request, callback) => {
 		const { groupPk, payload } = request
+		if (!groupPk) {
+			callback(new Error('Invalid groupPk'))
+			return
+		}
 		try {
 			await this.addEventToMetadataLog({
-				groupPk: new Buffer(groupPk as Uint8Array).toString(),
+				groupPk: new Buffer(groupPk),
 				type: 'GroupMetadataPayloadSent',
 				data: payload as Uint8Array,
 			})
@@ -418,24 +438,22 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			callback(new Error('GRPC ProtocolServiceHandler: groupPk not defined'))
 			return
 		}
-		const tokens = new Buffer(request.groupPk).toString('utf8').split(':')
-		if (tokens.length < 2) {
-			callback(new Error('GRPC ProtocolServiceHandler: groupPk corrupted'))
-			return
-		}
-		this.client?.logStream({ logToken: tokens[0] }, (error, response) => {
-			if (error || response == null || response.cid == null || response.value == null) {
-				callback(error)
-				return
-			}
-			const message = api.berty.protocol.GroupMetadataEvent.decode(response.value)
-			if (message == null || message.eventContext == null) {
-				callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
-				return
-			}
-			message.eventContext.id = Buffer.from(response.cid, 'utf8')
-			callback(null, message)
-		})
+		this.client?.logStream(
+			{ logToken: this.metadataLogTokenFromPk(new Buffer(request.groupPk)) },
+			(error, response) => {
+				if (error || response == null || response.cid == null || response.value == null) {
+					callback(error)
+					return
+				}
+				const message = api.berty.protocol.GroupMetadataEvent.decode(response.value)
+				if (message == null || message.eventContext == null) {
+					callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
+					return
+				}
+				message.eventContext.id = Buffer.from(response.cid, 'utf8')
+				callback(null, message)
+			},
+		)
 	}
 
 	GroupMessageSubscribe: (
@@ -446,23 +464,21 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			callback(new Error('GRPC ProtocolServiceHandler: groupPk not defined'))
 			return
 		}
-		const tokens = new Buffer(request.groupPk).toString('utf8').split(':')
-		if (tokens.length < 2) {
-			callback(new Error('GRPC ProtocolServiceHandler: groupPk corrupted'))
-			return
-		}
-		this.client?.logStream({ logToken: tokens[1] }, (error, response) => {
-			if (error || response == null || response.cid == null || response.value == null) {
-				callback(error)
-				return
-			}
-			const message = api.berty.protocol.GroupMessageEvent.decode(response.value)
-			if (message == null || message.eventContext == null) {
-				callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
-				return
-			}
-			message.eventContext.id = Buffer.from(response.cid, 'utf8')
-			callback(null, message)
-		})
+		this.client?.logStream(
+			{ logToken: this.messageLogTokenFromPk(new Buffer(request.groupPk)) },
+			(error, response) => {
+				if (error || response == null || response.cid == null || response.value == null) {
+					callback(error)
+					return
+				}
+				const message = api.berty.protocol.GroupMessageEvent.decode(response.value)
+				if (message == null || message.eventContext == null) {
+					callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
+					return
+				}
+				message.eventContext.id = Buffer.from(response.cid, 'utf8')
+				callback(null, message)
+			},
+		)
 	}
 }

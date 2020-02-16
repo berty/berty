@@ -168,7 +168,7 @@ export const transactions: Transactions = {
 		yield fork(function*() {
 			const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
 				id: client.id,
-				groupPk: new Buffer(client.accountGroupPk),
+				groupPk: new Buffer(client.accountGroupPk, 'base64'),
 				// TODO: use last cursor
 				since: new Uint8Array(),
 				until: new Uint8Array(),
@@ -203,7 +203,7 @@ export const transactions: Transactions = {
 
 		yield* protocol.transactions.client.appMetadataSend({
 			id,
-			groupPk: new Buffer(client.accountGroupPk),
+			groupPk: new Buffer(client.accountGroupPk, 'base64'),
 			payload: new Buffer(JSON.stringify(event)),
 		})
 	},
@@ -217,7 +217,7 @@ export const transactions: Transactions = {
 		})
 		yield* protocol.transactions.client.appMetadataSend({
 			id,
-			groupPk: new Buffer(client.accountGroupPk),
+			groupPk: new Buffer(client.accountGroupPk, 'base64'),
 			payload: new Buffer(JSON.stringify(event)),
 		})
 	},
@@ -237,7 +237,7 @@ export const transactions: Transactions = {
 		// replay log from first event
 		const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
 			id: client.id,
-			groupPk: new Buffer(client.accountGroupPk),
+			groupPk: new Buffer(client.accountGroupPk, 'base64'),
 			// TODO: use last cursor
 			since: new Uint8Array(),
 			until: new Uint8Array(),

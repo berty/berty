@@ -129,9 +129,9 @@ const eventHandler = createSlice<State, Events>({
 		started: (state, action) => {
 			state.aggregates[action.payload.aggregateId] = {
 				id: action.payload.aggregateId,
-				accountPk: Buffer.from(action.payload.accountPk).toString(),
-				devicePk: Buffer.from(action.payload.devicePk).toString(),
-				accountGroupPk: Buffer.from(action.payload.accountGroupPk).toString(),
+				accountPk: Buffer.from(action.payload.accountPk).toString('base64'),
+				devicePk: Buffer.from(action.payload.devicePk).toString('base64'),
+				accountGroupPk: Buffer.from(action.payload.accountGroupPk).toString('base64'),
 			}
 			return state
 		},
@@ -203,18 +203,7 @@ export const transactions: Transactions = {
 
 		const client = (yield select((state) => queries.get(state, { id }))) as Entity | undefined
 
-		services[id] = new ProtocolServiceClient(
-			mockBridge(
-				ProtocolServiceHandler,
-				client == null
-					? {}
-					: {
-							accountPk: client.accountPk,
-							devicePk: client.devicePk,
-							accountGroupPk: client.accountGroupPk,
-					  },
-			),
-		)
+		services[id] = new ProtocolServiceClient(mockBridge(ProtocolServiceHandler))
 
 		const { accountPk, devicePk, accountGroupPk } = (yield cps(
 			services[id]?.instanceGetConfiguration,
