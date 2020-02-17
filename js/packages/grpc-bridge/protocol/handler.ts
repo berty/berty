@@ -20,6 +20,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 	devicePk: string
 	accountGroupPk: string
 	rdvLogtoken?: string
+	contactGroups: Map<string, string> // map with key=fakeContactPk, value=fakeGroupPk
 
 	constructor(metadata?: { [key: string]: string | string[] }) {
 		super(metadata)
@@ -48,6 +49,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 		this.accountPk = (this.metadata?.accountPk as string) || ''
 		this.devicePk = (this.metadata?.devicePk as string) || ''
 		this.accountGroupPk = (this.metadata?.accountDevicePk as string) || ''
+		this.contactGroups = new Map() // TODO: persist?
 	}
 
 	_logToken = async (): Promise<string> =>
@@ -216,8 +218,10 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			}
 			const val = new Buffer(response.value).toString('utf-8')
 			const parts = val.split(' ')
-			const [type, requesterAccountPk, ...metadataParts] = parts
+			const [type, ...remParts] = parts
 			if (type === 'CONTACT_REQUEST_FROM') {
+				const [requesterAccountPk, fakeGroupPk, ...metadataParts] = remParts
+				this.contactGroups.set(requesterAccountPk, fakeGroupPk)
 				this.addEventToMetadataLog({
 					groupPk: this.accountGroupPk,
 					type: 'AccountContactRequestIncomingReceived',
@@ -264,6 +268,7 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 				request.contactMetadata && new Buffer(request.contactMetadata).toString('utf-8')
 			const ownId = this.accountPk
 			const otherUserPkBytes = Buffer.from(otherUserPk, 'utf-8')
+			const fakeGroupPk = await this._createPkHack()
 			await this.addEventToMetadataLog({
 				groupPk: this.accountGroupPk,
 				type: 'AccountContactRequestOutgoingEnqueued',
@@ -271,9 +276,10 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 				data: {
 					devicePk: this.devicePkBytes,
 					contactPk: otherUserPkBytes,
+					groupPk: Buffer.from(fakeGroupPk, 'utf-8'),
 				},
 			})
-			const dataStr = ['CONTACT_REQUEST_FROM', ownId, ownMetadata].join(' ')
+			const dataStr = ['CONTACT_REQUEST_FROM', ownId, fakeGroupPk, ownMetadata].join(' ')
 			const logData = Buffer.from(dataStr, 'utf-8')
 			await new Promise((resolve, reject) => {
 				client.logAdd({ logToken: otherUserRdvLogToken, data: logData }, (error, response) => {
@@ -303,16 +309,29 @@ export class ProtocolServiceHandler extends MockServiceHandler implements IProto
 			response?: api.berty.protocol.ContactRequestAccept.IReply,
 		) => void,
 	) => void = async (request, callback) => {
-		await this.addEventToMetadataLog({
-			groupPk: this.accountGroupPk,
-			type: 'AccountContactRequestIncomingAccepted',
-			dataType: 'AccountContactRequestAccepted',
-			data: {
-				devicePk: this.devicePkBytes,
-				contactPk: request.contactPk,
-			},
-		})
-		callback(null, {})
+		try {
+			if (!request.contactPk) {
+				throw new Error('Invalid contactPk')
+			}
+			const contactPkStr = new Buffer(request.contactPk).toString('utf-8')
+			const fakeGroupPk = this.contactGroups.get(contactPkStr)
+			if (!fakeGroupPk) {
+				throw new Error(`Unknown group for contact "${contactPkStr}"`)
+			}
+			await this.addEventToMetadataLog({
+				groupPk: this.accountGroupPk,
+				type: 'AccountContactRequestIncomingAccepted',
+				dataType: 'AccountContactRequestAccepted',
+				data: {
+					devicePk: this.devicePkBytes,
+					contactPk: request.contactPk,
+					groupPk: Buffer.from(fakeGroupPk, 'utf-8'),
+				},
+			})
+			callback(null, {})
+		} catch (e) {
+			callback(e, {})
+		}
 	}
 	ContactRequestDiscard: (
 		request: api.berty.protocol.ContactRequestDiscard.IRequest,
