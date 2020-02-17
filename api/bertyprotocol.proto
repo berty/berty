@@ -413,6 +413,9 @@ message AccountContactRequestEnqueued {
   // contact_pk is the account to send a contact request to
   bytes contact_pk = 2 [(gogoproto.customname) = "ContactPK"];
 
+  // group_pk is the 1to1 group with the requested user
+  bytes group_pk = 5 [(gogoproto.customname) = "GroupPK"];
+
   // contact_rendezvous_seed is the rendezvous seed used by the other account
   bytes contact_rendezvous_seed = 3;
 
@@ -465,6 +468,9 @@ message AccountContactRequestAccepted {
 
   // contact_pk is the contact whom request is accepted
   bytes contact_pk = 2 [(gogoproto.customname) = "ContactPK"];
+
+  // group_pk is the 1to1 group with the requester user
+  bytes group_pk = 3 [(gogoproto.customname) = "GroupPK"];
 }
 
 // AccountContactBlocked indicates that a contact is blocked

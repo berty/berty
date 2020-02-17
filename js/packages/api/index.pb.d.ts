@@ -3555,6 +3555,7 @@ export namespace berty {
         interface IAccountContactRequestEnqueued {
             devicePk?: (Uint8Array|null);
             contactPk?: (Uint8Array|null);
+            groupPk?: (Uint8Array|null);
             contactRendezvousSeed?: (Uint8Array|null);
             contactMetadata?: (Uint8Array|null);
         }
@@ -3563,6 +3564,7 @@ export namespace berty {
 
             public devicePk: Uint8Array;
             public contactPk: Uint8Array;
+            public groupPk: Uint8Array;
             public contactRendezvousSeed: Uint8Array;
             public contactMetadata: Uint8Array;
             public static create(properties?: berty.protocol.IAccountContactRequestEnqueued): berty.protocol.AccountContactRequestEnqueued;
@@ -3643,12 +3645,14 @@ export namespace berty {
         interface IAccountContactRequestAccepted {
             devicePk?: (Uint8Array|null);
             contactPk?: (Uint8Array|null);
+            groupPk?: (Uint8Array|null);
         }
 
         class AccountContactRequestAccepted implements IAccountContactRequestAccepted {
 
             public devicePk: Uint8Array;
             public contactPk: Uint8Array;
+            public groupPk: Uint8Array;
             public static create(properties?: berty.protocol.IAccountContactRequestAccepted): berty.protocol.AccountContactRequestAccepted;
             public static encode(message: berty.protocol.IAccountContactRequestAccepted, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.protocol.IAccountContactRequestAccepted, writer?: $protobuf.Writer): $protobuf.Writer;
