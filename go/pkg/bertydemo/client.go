@@ -206,61 +206,98 @@ func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Re
 
 func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
 	// Hack using List until go-orbit-db Stream is fixed
-	ctx := srv.Context()
+	ctx, cancel := context.WithCancel(srv.Context())
+	defer cancel()
+
 	log, err := d.logFromToken(ctx, req.GetLogToken())
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
+
+	// @NOTE(gfanton): first listing should be done on client side,
+	// im just keeping the logic here
+
+	cops := make(chan operation.Operation, 1)
+
+	mu := sync.Mutex{}
+	cond := sync.NewCond(&mu)
+	var listedcid []*cid.Cid = nil
+
+	mu.Lock()
+	// then subscribe to next event
+	go log.Subscribe(ctx, func(e events.Event) {
+		mu.Lock()
+		defer mu.Unlock()
+
+		var op operation.Operation
+		var err error
+
+		switch evt := e.(type) {
+		case *stores.EventWrite:
+			op, err = operation.ParseOperation(evt.Entry)
+		case *stores.EventReplicateProgress:
+			op, err = operation.ParseOperation(evt.Entry)
+		default:
+			return
+		}
+
+		if err != nil {
+			fmt.Printf("unable to parse operation: %s\n", err.Error())
+			return
+		}
+
+		// check if
+		if len(listedcid) > 0 {
+			if listedcid[0] == nil {
+				cond.Wait() // wait for list to be fulfilled
+			}
+
+			// check if we already sent this event
+			for _, lcid := range listedcid {
+				if lcid == nil {
+					break
+				} else if lcid.String() == op.GetEntry().GetHash().String() {
+					return
+				}
+			}
+
+			// if event has not been sent yet we can free listedcid
+			listedcid = nil
+		}
+
+		cops <- op
+	})
+
 	opts := decodeStreamOptions(req.GetOptions())
 	if opts == nil {
 		opts = &orbitdb.StreamOptions{}
 	}
 
-	cops := make(chan operation.Operation, 10)
-
-	// @FIXME(gfanton): first listing should be done on client side,
-	// im just keeping the logic here
-
-	// first list all already existing ops
+	// list existing ops
 	ops, err := log.List(ctx, opts)
 	if err != nil {
+		mu.Unlock()
 		return err
 	}
 
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
+	listedcid = make([]*cid.Cid, len(ops))
+	go func() {
+		mu.Lock()
+		defer mu.Unlock()
+		defer cond.Broadcast()
 
-	// then subscribe to next event
-	go log.Subscribe(ctx, func(e events.Event) {
-		ew, ok := e.(*stores.EventWrite)
-		if !ok {
-			return
+		// send previously listed ops
+		for i, op := range ops {
+			ccid := op.GetEntry().GetHash()
+			listedcid[i] = &ccid
+			select {
+			case cops <- op:
+			case <-ctx.Done():
+			}
 		}
+	}()
 
-		op, err := operation.ParseOperation(ew.Entry)
-		if err != nil {
-			fmt.Printf("unable to parse operation")
-			return
-		}
-
-		// send op into channel
-		cops <- op
-	})
-
-	// send previously listed ops
-	for _, op := range ops {
-		pop := convertLogOperationToProtobufLogOperation(op)
-		jsoned, _ := json.Marshal(pop)
-		fmt.Println(string(jsoned))
-		if err := srv.Send(pop); err != nil {
-			return err
-		}
-	}
-
-	if len(ops) > 0 {
-		lastOpCid := ops[len(ops)-1].GetEntry().GetHash()
-		opts.GT = &lastOpCid
-	}
+	mu.Unlock()
 
 	// loop over ops channel
 	for {
@@ -271,9 +308,6 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 		case <-ctx.Done():
 			return ctx.Err()
 		}
-
-		lastOpCid := op.GetEntry().GetHash()
-		opts.GT = &lastOpCid
 
 		pop := convertLogOperationToProtobufLogOperation(op)
 		jsoned, _ := json.Marshal(pop)

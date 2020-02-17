@@ -4,6 +4,7 @@ import (
 	"context"
 	fmt "fmt"
 	"testing"
+	"time"
 
 	"berty.tech/berty/go/internal/ipfsutil"
 	//"github.com/fortytw2/leaktest"
@@ -86,6 +87,9 @@ func testingAdd(t *testing.T, d DemoServiceClient, lt string, data []byte) strin
 	}
 
 	res, err := d.LogAdd(context.Background(), &req)
+	if err != nil {
+		fmt.Println("error add:", err.Error())
+	}
 	checkErr(t, err)
 
 	return res.GetCid()
@@ -169,49 +173,71 @@ func TestLogList(t *testing.T) {
 }
 
 func TestLogStream(t *testing.T) {
+	cases := []struct {
+		Name      string
+		Iteration int
+		Sleep     time.Duration
+	}{
+		{"None", 0, 0},
+		{"1 iteration", 1, 0},
+		{"1 iteration - 500ms sleep", 1, time.Millisecond * 500},
+		{"10 iterations", 10, 0},
+		{"10 iterations - 500ms sleep", 10, time.Millisecond * 500},
+		{"100 iterations", 10, 0},
+		{"100 iterations - 500ms sleep", 100, time.Millisecond * 500},
+	}
+
 	client, _, clean := testingInMemoryClient(t)
 	defer clean()
 
-	demo, clean := testingClientService(t, client)
-	defer clean()
+	for _, tc := range cases {
+		t.Run(tc.Name, func(t *testing.T) {
+			demo, clean := testingClientService(t, client)
+			defer clean()
 
-	logToken := testingLogToken(t, demo)
-	req := &LogStream_Request{
-		LogToken: logToken,
-		Options:  nil,
-	}
+			logToken := testingLogToken(t, demo)
 
-	logClient, err := demo.LogStream(context.Background(), req)
-	checkErr(t, err)
+			req := &LogStream_Request{
+				LogToken: logToken,
+				Options: &LogStreamOptions{
+					Amount: uint32(tc.Iteration),
+				},
+			}
 
-	defer logClient.CloseSend()
+			go func(maxIteration int) {
+				for i := 0; i < maxIteration; i++ {
+					data := []byte(fmt.Sprintf("Hello log number %d!", i))
+					_ = testingAdd(t, demo, logToken, data)
+				}
+			}(tc.Iteration)
 
-	maxIteration := 10
-	go func() {
-		for i := 0; i < maxIteration; i++ {
-			data := []byte(fmt.Sprintf("Hello log number %d!", i))
-			_ = testingAdd(t, demo, logToken, data)
-		}
-	}()
+			// wait at last 100millisecond
+			time.Sleep(tc.Sleep + (time.Millisecond * 100))
 
-	for i := 0; i < maxIteration; i++ {
-		op, err := logClient.Recv()
-		if err != nil {
-			t.Fatalf("cannot receive operation")
-		}
+			logClient, err := demo.LogStream(context.Background(), req)
+			checkErr(t, err)
+			defer logClient.CloseSend()
 
-		got := op.GetName()
-		shouldGet := "ADD"
-		if got != shouldGet {
-			t.Fatalf("LogStream()->Op.Name = %s; want %s", got, shouldGet)
-		}
+			for i := 0; i < tc.Iteration; i++ {
+				op, err := logClient.Recv()
+				if err != nil {
+					t.Fatalf("cannot receive operation")
+				}
 
-		got = string(op.GetValue())
-		shouldGet = fmt.Sprintf("Hello log number %d!", i)
-		if got != shouldGet {
-			t.Fatalf("LogStream()->Op.Value = %s; want %s", got, shouldGet)
-		}
+				got := op.GetName()
+				shouldGet := "ADD"
+				if got != shouldGet {
+					t.Fatalf("LogStream()->Op.Name = %s; want %s", got, shouldGet)
+				}
 
-		checkErr(t, err)
+				got = string(op.GetValue())
+				shouldGet = fmt.Sprintf("Hello log number %d!", i)
+				if got != shouldGet {
+					t.Fatalf("LogStream()->Op.Value = %s; want %s", got, shouldGet)
+				}
+
+				checkErr(t, err)
+			}
+		})
 	}
 }
