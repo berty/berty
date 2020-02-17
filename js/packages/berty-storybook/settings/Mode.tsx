@@ -5,6 +5,7 @@ import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { useNavigation } from '@berty-tech/berty-navigation'
+import { Chat } from '@berty-tech/hooks'
 
 //
 // Mode
@@ -33,6 +34,9 @@ const _modeStyles = StyleSheet.create({
 const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 	const _styles = useStylesMode()
 	const [{ flex, padding, margin, color, text, row }] = useStyles()
+	const navigation = useNavigation()
+	const account = Chat.useAccount()
+	const deleteAccount = Chat.useAccountDelete()
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 			<ButtonSetting
@@ -150,6 +154,10 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				iconSize={30}
 				iconColor={color.red}
 				actionIcon='arrow-ios-forward'
+				onPress={() => {
+					account != null && deleteAccount({ id: account.id })
+					navigation.navigate.onboarding.getStarted()
+				}}
 			/>
 		</View>
 	)
@@ -158,10 +166,10 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 export const Mode: React.FC<{}> = () => {
 	const [isMode, setIsMode] = useState(true)
 	const { goBack } = useNavigation()
-	const [{ flex, background }] = useStyles()
+	const [{ flex, background, padding }] = useStyles()
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView>
+			<ScrollView contentContainerStyle={[padding.bottom.scale(116)]}>
 				<HeaderSettings
 					title='Settings'
 					action={setIsMode}

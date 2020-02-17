@@ -220,9 +220,10 @@ export const transactions: Transactions = {
 			groupPk: new Buffer(client.accountGroupPk),
 			payload: new Buffer(JSON.stringify(event)),
 		})
+
+		yield* protocol.transactions.client.delete({ id })
 	},
 	replay: function*({ id }) {
-		console.log('replay')
 		const account = select((state) => queries.get(state, { id }))
 		if (account == null) {
 			console.error('account does not exist')
@@ -230,9 +231,6 @@ export const transactions: Transactions = {
 		}
 
 		const client = yield* getProtocolClient(id)
-
-		// delete aggregate
-		yield put(events.deleted({ aggregateId: id }))
 
 		// replay log from first event
 		const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
@@ -280,13 +278,14 @@ export const transactions: Transactions = {
 
 export function* orchestrator() {
 	yield all([
-		function*() {
+		fork(function*() {
+			yield take('persist/REHYDRATE')
 			// start protocol clients
 			const accounts = (yield select(queries.getAll)) as Entity[]
 			for (const account of accounts) {
-				yield put(commands.open({ id: account.id }))
+				yield* transactions.open({ id: account.id })
 			}
-		},
+		}),
 
 		takeLeading(commands.open, function*(action) {
 			yield* transactions.open(action.payload)

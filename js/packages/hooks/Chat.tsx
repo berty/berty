@@ -2,7 +2,8 @@ import React, { useMemo } from 'react'
 import { chat, protocol } from '@berty-tech/store'
 import { Provider as ReactReduxProvider, useDispatch, useSelector } from 'react-redux'
 import DevMenu from 'react-native-dev-menu'
-import { Clipboard } from 'react-native'
+import { ActivityIndicator, Clipboard } from 'react-native'
+import { PersistGate } from 'redux-persist/integration/react'
 
 export const Recorder: React.FC = ({ children }) => {
 	React.useEffect(() => {
@@ -25,8 +26,15 @@ export const Recorder: React.FC = ({ children }) => {
 	return null
 }
 
-export const Provider: React.FC = ({ children }) => {
-	return <ReactReduxProvider store={chat.init()}>{children}</ReactReduxProvider>
+export const Provider: React.FC<{ config: chat.InitConfig }> = ({ config, children }) => {
+	const store = chat.init(config)
+	return (
+		<ReactReduxProvider store={store}>
+			<PersistGate loading={<ActivityIndicator size='large' />} persistor={store.persistor}>
+				{children}
+			</PersistGate>
+		</ReactReduxProvider>
+	)
 }
 
 // account commands
@@ -47,6 +55,14 @@ export const useAccountReplay = () => {
 	const dispatch = useDispatch()
 	return useMemo(
 		() => (payload: chat.account.Command.Replay) => dispatch(chat.account.commands.replay(payload)),
+		[dispatch],
+	)
+}
+
+export const useAccountDelete = () => {
+	const dispatch = useDispatch()
+	return useMemo(
+		() => (payload: chat.account.Command.Delete) => dispatch(chat.account.commands.delete(payload)),
 		[dispatch],
 	)
 }
@@ -89,9 +105,8 @@ export const useAccountSendContactRequest = () => {
 // requests queries
 export const useContactRequestReference = () => {
 	const account = useAccount()
-
 	return useSelector((state: protocol.client.GlobalState) =>
-		chat.account.queries.getRequestReference(state, { id: account?.id }),
+		account != null ? chat.account.queries.getRequestReference(state, { id: account.id }) : null,
 	)
 }
 
