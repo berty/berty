@@ -2383,6 +2383,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   "(gogoproto.customname)": "ContactPK"
                 }
               },
+              groupPk: {
+                type: "bytes",
+                id: 5,
+                options: {
+                  "(gogoproto.customname)": "GroupPK"
+                }
+              },
               contactRendezvousSeed: {
                 type: "bytes",
                 id: 3
@@ -2469,6 +2476,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 id: 2,
                 options: {
                   "(gogoproto.customname)": "ContactPK"
+                }
+              },
+              groupPk: {
+                type: "bytes",
+                id: 3,
+                options: {
+                  "(gogoproto.customname)": "GroupPK"
                 }
               }
             }

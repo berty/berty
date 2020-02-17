@@ -331,6 +331,7 @@ export type Events<State> = {
 					// AccountContactRequestOutgoingEnqueued seems event of type AccountContactRequestEnqueued
 					devicePk: Uint8Array
 					contactPk: Uint8Array
+					groupPk: Uint8Array
 					contactRendezvousSeed: Uint8Array
 					contactMetadata: Uint8Array
 				}
@@ -395,6 +396,7 @@ export type Events<State> = {
 					// AccountContactRequestIncomingAccepted seems event of type AccountContactRequestAccepted
 					devicePk: Uint8Array
 					contactPk: Uint8Array
+					groupPk: Uint8Array
 				}
 			}
 		},

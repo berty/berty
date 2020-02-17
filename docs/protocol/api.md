@@ -148,6 +148,7 @@ AccountContactRequestAccepted indicates that a contact request has been accepted
 | ----- | ---- | ----- | ----------- |
 | device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
 | contact_pk | [bytes](#bytes) |  | contact_pk is the contact whom request is accepted |
+| group_pk | [bytes](#bytes) |  | group_pk is the 1to1 group with the requester user |
 
 <a name="berty.protocol.AccountContactRequestDisabled"></a>
 
@@ -189,6 +190,7 @@ AccountContactRequestEnqueued indicates that the account will attempt to send a 
 | ----- | ---- | ----- | ----------- |
 | device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
 | contact_pk | [bytes](#bytes) |  | contact_pk is the account to send a contact request to |
+| group_pk | [bytes](#bytes) |  | group_pk is the 1to1 group with the requested user |
 | contact_rendezvous_seed | [bytes](#bytes) |  | contact_rendezvous_seed is the rendezvous seed used by the other account |
 | contact_metadata | [bytes](#bytes) |  | TODO: is this necessary? contact_metadata is the metadata specific to the app to identify the contact for the request |
 
