@@ -22,6 +22,6 @@
     "@protocolbuffers/protobuf": "protocolbuffers/protobuf#3.10.0",
     "case": "^1.6.2",
     "eslint": "^6.6.0",
-    "pbhbs": "^0.2.2"
+    "pbhbs": "^0.2.5"
   }
 }

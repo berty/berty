@@ -14627,6 +14627,20 @@ pbhbs@^0.2.2:
     handlebars-helpers "^0.10.0"
     protobufjs "^6.8.8"
 
+pbhbs@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/pbhbs/-/pbhbs-0.2.5.tgz#42e81c486be3530b2a7dfe75aeb5f8a8f08e6800"
+  integrity sha512-YyEpX68kLbv+ts/rc/Lp0wBY5SghJUUQk1J+gfBpQ5gIUru5eV0HgQVNlpZF/1r7beZXcL+VEkLlN0B8dbiMuA==
+  dependencies:
+    "@types/node" "^11.13.13"
+    case "^1.6.2"
+    docopt "^0.6.2"
+    dree "^2.1.6"
+    fs-extra "^7.0.1"
+    handlebars "^4.1.2"
+    handlebars-helpers "^0.10.0"
+    protobufjs "^6.8.8"
+
 pbkdf2@3.0.8:
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/pbkdf2/-/pbkdf2-3.0.8.tgz#2f8abf16ebecc82277945d748aba1d78761f61e2"
