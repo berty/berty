@@ -246,7 +246,6 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 			return
 		}
 
-		// check if
 		if len(listedcid) > 0 {
 			if listedcid[0] == nil {
 				cond.Wait() // wait for list to be fulfilled
@@ -261,7 +260,7 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 				}
 			}
 
-			// if event has not been sent yet we can free listedcid
+			// if event has not been sent yet, we can free up listedcid
 			listedcid = nil
 		}
 

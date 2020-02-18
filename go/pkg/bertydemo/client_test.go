@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"berty.tech/berty/go/internal/ipfsutil"
+	"berty.tech/berty/go/internal/testutil"
 	//"github.com/fortytw2/leaktest"
 	//"go.uber.org/zap"
 	//"go.uber.org/zap/zapcore"
@@ -177,14 +178,17 @@ func TestLogStream(t *testing.T) {
 		Name      string
 		Iteration int
 		Sleep     time.Duration
+		SlowTest  bool
 	}{
-		{"None", 0, 0},
-		{"1 iteration", 1, 0},
-		{"1 iteration - 500ms sleep", 1, time.Millisecond * 500},
-		{"10 iterations", 10, 0},
-		{"10 iterations - 500ms sleep", 10, time.Millisecond * 500},
-		{"100 iterations", 10, 0},
-		{"100 iterations - 500ms sleep", 100, time.Millisecond * 500},
+		{"None", 0, 0, false},
+		{"1 iteration", 1, 0, false},
+		{"1 iteration - 500ms sleep", 1, time.Millisecond * 500, false},
+		{"10 iteration", 10, 0, false},
+		{"10 iteration - 500ms sleep", 10, time.Millisecond * 500, true},
+		{"50 iterations", 50, 0, true},
+		{"50 iterations - 500ms sleep", 50, time.Millisecond * 500, true},
+		{"100 iterations", 100, 0, true},
+		{"100 iterations - 500ms sleep", 100, time.Millisecond * 500, true},
 	}
 
 	client, _, clean := testingInMemoryClient(t)
@@ -192,6 +196,10 @@ func TestLogStream(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
+			if tc.SlowTest {
+				testutil.SkipSlow(t)
+			}
+
 			demo, clean := testingClientService(t, client)
 			defer clean()
 
@@ -211,7 +219,8 @@ func TestLogStream(t *testing.T) {
 				}
 			}(tc.Iteration)
 
-			// wait at last 100millisecond
+			// @FIXME(gfanton): wait at last 100millisecond, if not
+			// set test may fail unable to found the first log
 			time.Sleep(tc.Sleep + (time.Millisecond * 100))
 
 			logClient, err := demo.LogStream(context.Background(), req)
