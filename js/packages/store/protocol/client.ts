@@ -30,6 +30,7 @@ export type GlobalState = {
 
 export type Commands = gen.Commands<State> & {
 	start: (state: State, action: { payload: { id: string } }) => State
+	delete: (state: State, action: { payload: { id: string } }) => State
 }
 
 export type Queries = {
@@ -58,6 +59,7 @@ export type Events = gen.Events<State> & {
 			}
 		},
 	) => State
+	deleted: (state: State, action: PayloadAction<{ aggregateId: string }>) => State
 }
 
 export type Transactions = {
@@ -78,7 +80,7 @@ const commandHandler = createSlice<State, Commands>({
 	initialState,
 	reducers: {
 		start: (state) => state,
-
+		delete: (state) => state,
 		instanceExportData: (state) => state,
 		instanceGetConfiguration: (state) => state,
 
@@ -139,6 +141,10 @@ const eventHandler = createSlice<State, Events>({
 			state.aggregates[payload.aggregateId].contactRequestReference = intoBuffer(
 				payload.reference,
 			).toString('base64')
+			return state
+		},
+		deleted: (state, action) => {
+			delete state.aggregates[action.payload.aggregateId]
 			return state
 		},
 
@@ -228,6 +234,10 @@ export const transactions: Transactions = {
 				accountGroupPk: accountGroupPk as Uint8Array,
 			}),
 		)
+	},
+	delete: function*({ id }) {
+		services[id]?.end()
+		yield put(events.deleted({ aggregateId: id }))
 	},
 	instanceGetConfiguration: function*(payload) {
 		// do protocol things
@@ -392,7 +402,9 @@ export function* orchestrator() {
 		takeLeading(commands.start, function*(action) {
 			yield* transactions.start(action.payload)
 		}),
-
+		takeLeading(commands.delete, function*(action) {
+			yield* transactions.delete(action.payload)
+		}),
 		takeLeading(commands.instanceExportData, function*(action) {
 			yield* transactions.instanceExportData(action.payload)
 		}),

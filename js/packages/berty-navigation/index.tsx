@@ -375,7 +375,7 @@ export const Navigation: React.FC = () => {
 		<TabStack.Navigator
 			tabBar={(props) => <Footer {...props} />}
 			options={{ backBehavior: 'initialRoute' }}
-			initialRouteName={length > 1 ? Routes.Main.List : Routes.Onboarding.GetStarted}
+			initialRouteName={length >= 1 ? Routes.Main.List : Routes.Onboarding.GetStarted}
 		>
 			<TabStack.Screen name={Routes.Main.List} component={MainNavigation} />
 			<TabStack.Screen name={Routes.Main.Search} component={SearchNavigation} />

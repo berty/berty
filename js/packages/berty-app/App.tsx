@@ -17,6 +17,7 @@ import '@berty-tech/berty-i18n'
 import { enableScreens } from 'react-native-screens'
 import { Chat } from '@berty-tech/hooks'
 import { NavigationNativeContainer } from '@react-navigation/native'
+import AsyncStorage from '@react-native-community/async-storage'
 
 enableScreens()
 
@@ -28,7 +29,7 @@ export const App: React.FC = () => (
 					.rpcImpl /*bridge({ host: '', transport: ReactNativeTransport() */
 			}
 		>
-			<Chat.Provider>
+			<Chat.Provider config={{ storage: AsyncStorage }}>
 				<Chat.Recorder />
 				<Theme.Provider>
 					<Navigation />

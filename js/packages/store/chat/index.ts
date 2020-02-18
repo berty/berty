@@ -5,6 +5,7 @@ import createSagaMiddleware from 'redux-saga'
 import createRecorder from 'redux-test-recorder'
 import mem from 'mem'
 import createSagaMonitor from '@clarketm/saga-monitor'
+import { Storage, persistReducer, persistStore } from 'redux-persist'
 
 import * as protocol from '../protocol'
 import * as account from './account'
@@ -79,8 +80,13 @@ export const recorder: {
 	createTest: _recorder.props.createNewTest,
 }
 
+export type InitConfig = {
+	storage: Storage
+	middlewares?: Array<Middleware>
+}
+
 export const init = mem(
-	(...middlewares: Array<Middleware>) => {
+	(config: InitConfig) => {
 		const sagaMiddleware = createSagaMiddleware({
 			sagaMonitor: createSagaMonitor({
 				level: 'log', // logging level
@@ -94,13 +100,26 @@ export const init = mem(
 				actionDispatch: false, // show dispatched actions
 			}),
 		})
+		const middlewares: Array<Middleware> = [
+			sagaMiddleware,
+			_recorder.middleware,
+			...(config.middlewares || []),
+		]
+
+		const persistConfig = {
+			key: 'chat',
+			storage: config.storage,
+		}
+
+		const configuredStore = configureStore({
+			reducer: persistReducer(persistConfig, reducer),
+			middleware: middlewares,
+		})
 
 		const store = {
 			reducer,
-			...configureStore({
-				reducer,
-				middleware: [sagaMiddleware, _recorder.middleware, ...middlewares],
-			}),
+			...configuredStore,
+			persistor: persistStore(configuredStore),
 		}
 
 		sagaMiddleware.run(rootSaga)

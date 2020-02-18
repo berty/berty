@@ -30,6 +30,7 @@
     "@berty-tech/react-native-example": "^1.0.0",
     "@berty-tech/styles": "^0.0.0",
     "@eva-design/eva": "^1.2.0",
+    "@react-native-community/async-storage": "^1.8.0",
     "@react-native-community/blur": "^3.3.1",
     "@react-native-community/masked-view": "^0.1.5",
     "@react-navigation/native": "^5.0.0-alpha.16",
