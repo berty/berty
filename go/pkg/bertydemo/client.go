@@ -264,13 +264,20 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 			listedcid = nil
 		}
 
-		cops <- op
+		select {
+		case <-ctx.Done():
+		case cops <- op:
+		}
 	})
 
 	opts := decodeStreamOptions(req.GetOptions())
 	if opts == nil {
 		opts = &orbitdb.StreamOptions{}
 	}
+
+	// amount should be ignored
+	amount := -1
+	opts.Amount = &amount
 
 	// list existing ops
 	ops, err := log.List(ctx, opts)
@@ -298,14 +305,18 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 
 	mu.Unlock()
 
-	// loop over ops channel
+	// loop over ops channelg
+	var op operation.Operation
 	for {
-		var op operation.Operation
-
 		select {
 		case op = <-cops:
 		case <-ctx.Done():
 			return ctx.Err()
+		}
+
+		// if we have reach our LT opt return
+		if opts.LT != nil && opts.LT.Equals(op.GetEntry().GetHash()) {
+			return nil
 		}
 
 		pop := convertLogOperationToProtobufLogOperation(op)
@@ -313,6 +324,10 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 		fmt.Println(string(jsoned))
 		if err = srv.Send(pop); err != nil {
 			return err
+		}
+
+		if opts.LTE != nil && opts.LTE.Equals(op.GetEntry().GetHash()) {
+			return nil
 		}
 	}
 }

@@ -207,9 +207,6 @@ func TestLogStream(t *testing.T) {
 
 			req := &LogStream_Request{
 				LogToken: logToken,
-				Options: &LogStreamOptions{
-					Amount: uint32(tc.Iteration),
-				},
 			}
 
 			go func(maxIteration int) {
