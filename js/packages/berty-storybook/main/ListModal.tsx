@@ -108,7 +108,7 @@ const RequestsItem: React.FC<chat.outgoingContactRequest.Entity> = ({ id, contac
 const Requests: React.FC<{}> = () => {
 	const [{ padding }] = useStyles()
 
-	const requests = Chat.useOutgoingContactRequests()
+	const requests = Chat.useOutgoingContactRequests().filter((request) => !request.accepted)
 
 	return (
 		<SafeAreaView>

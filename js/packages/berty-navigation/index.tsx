@@ -1,6 +1,6 @@
 // TODO: create /api/js-internal/bertychatnavigation.proto and generate this file
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import * as Stories from '@berty-tech/berty-storybook'
 import {
@@ -225,25 +225,56 @@ export const OnboardingNavigation: React.FC = () => (
 )
 
 const CreateGroupStack = createNativeStackNavigator()
-export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => (
-	<CreateGroupStack.Navigator screenOptions={{ headerShown: false }}>
-		<CreateGroupStack.Screen
-			name={Routes.CreateGroup.CreateGroup2}
-			component={Stories.Main.CreateGroup2}
-			options={{ presentation: 'transparentModal' }}
-		/>
-		<CreateGroupStack.Screen
-			name={Routes.CreateGroup.CreateGroup3}
-			component={Stories.Main.CreateGroup3}
-			options={{ presentation: 'transparentModal' }}
-		/>
-		<CreateGroupStack.Screen
-			name={Routes.CreateGroup.CreateGroup1}
-			component={Stories.Main.CreateGroup}
-			options={{ presentation: 'transparentModal' }}
-		/>
-	</CreateGroupStack.Navigator>
-)
+export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
+	const [members, setMembers] = useState([] as chat.contact.Entity[])
+	const setMember = (contact: chat.contact.Entity) => {
+		if (members.find((member) => member.id === contact.id)) {
+			return
+		}
+		setMembers([...members, contact])
+	}
+	const removeMember = (id: string) => {
+		const filtered = members.filter((member) => member.id !== id)
+		if (filtered.length !== members.length) {
+			setMembers(filtered)
+		}
+	}
+
+	return (
+		<CreateGroupStack.Navigator screenOptions={{ headerShown: false }}>
+			<CreateGroupStack.Screen
+				name={Routes.CreateGroup.CreateGroup2}
+				component={() => (
+					// should use setParams ? maybe, tis weird
+					<Stories.Main.CreateGroup2
+						members={members}
+						onRemoveMember={removeMember}
+						onSetMember={setMember}
+					/>
+				)}
+				options={{ presentation: 'transparentModal' }}
+			/>
+			<CreateGroupStack.Screen
+				name={Routes.CreateGroup.CreateGroup3}
+				component={() => (
+					<Stories.Main.CreateGroup3 members={members} onRemoveMember={removeMember} />
+				)}
+				options={{ presentation: 'transparentModal' }}
+			/>
+			<CreateGroupStack.Screen
+				name={Routes.CreateGroup.CreateGroup1}
+				component={() => (
+					<Stories.Main.CreateGroup
+						members={members}
+						onRemoveMember={removeMember}
+						onSetMember={setMember}
+					/>
+				)}
+				options={{ presentation: 'transparentModal' }}
+			/>
+		</CreateGroupStack.Navigator>
+	)
+}
 
 const SearchStack = createNativeStackNavigator()
 export const SearchNavigation: React.FC<BottomTabBarProps> = () => (

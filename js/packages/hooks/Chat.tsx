@@ -4,6 +4,7 @@ import { Provider as ReactReduxProvider, useDispatch, useSelector } from 'react-
 import DevMenu from 'react-native-dev-menu'
 import { ActivityIndicator, Clipboard } from 'react-native'
 import { PersistGate } from 'redux-persist/integration/react'
+import { Buffer } from 'buffer'
 
 export const Recorder: React.FC = ({ children }) => {
 	React.useEffect(() => {
@@ -92,11 +93,17 @@ export const useAccountSendContactRequest = () => {
 	if (!account) {
 		return () => {}
 	}
-	return (reference: string) => {
+	return (val: string) => {
+		const parts = val.split(' ')
+		if (parts.length !== 2) {
+			throw new Error('Corrupted deep link')
+		}
+		const [name, ref] = parts
 		dispatch(
 			chat.account.commands.sendContactRequest({
 				id: account.id,
-				otherReference: reference,
+				otherName: Buffer.from(name, 'base64').toString('utf-8'),
+				otherReference: ref,
 			}),
 		)
 	}
@@ -105,9 +112,13 @@ export const useAccountSendContactRequest = () => {
 // requests queries
 export const useContactRequestReference = () => {
 	const account = useAccount()
-	return useSelector((state: protocol.client.GlobalState) =>
+	const ref = useSelector((state: protocol.client.GlobalState) =>
 		account != null ? chat.account.queries.getRequestReference(state, { id: account.id }) : null,
 	)
+	if (!account) {
+		return
+	}
+	return `${Buffer.from(account.name, 'utf-8').toString('base64')} ${ref}`
 }
 
 export const useContactRequestEnabled = () => {
@@ -163,4 +174,10 @@ export const useAccountDiscardContactRequest = () => {
 				id,
 			}),
 		)
+}
+
+export const useContactSearchResults = (searchText: string): chat.contact.Entity[] => {
+	return useSelector((state: chat.contact.GlobalState) =>
+		chat.contact.queries.search(state, { searchText }),
+	)
 }

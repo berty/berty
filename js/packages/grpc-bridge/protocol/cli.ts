@@ -1,12 +1,18 @@
 import { mockBridge } from '../mock'
-import { ProtocolServiceHandler } from './handler'
+import { protocolServiceHandlerFactory } from './handler'
 import { ProtocolServiceClient } from './client.gen'
 
-const protocolInstance = new ProtocolServiceClient(mockBridge(ProtocolServiceHandler))
+const main = async () => {
+	const protocolInstance = new ProtocolServiceClient(
+		await mockBridge(protocolServiceHandlerFactory),
+	)
 
-protocolInstance.accountSubscribe({}, (error, response) => {
-	if (error) {
-		console.error('protocol instance error')
-	}
-	console.log('response', response)
-})
+	protocolInstance.instanceGetConfiguration({}, (error, response) => {
+		if (error) {
+			console.error('protocol instance error')
+		}
+		console.log('response', response)
+	})
+}
+
+main()

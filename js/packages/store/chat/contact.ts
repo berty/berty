@@ -1,9 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, takeLeading } from 'redux-saga/effects'
+import { all, takeLeading, takeEvery, select, put } from 'redux-saga/effects'
+import * as protocol from '../protocol'
+import * as incomingContactRequest from './incomingContactRequest'
+import * as outgoingContactRequest from './outgoingContactRequest'
+import { Buffer } from 'buffer'
 
 export type Entity = {
-	id: number
+	id: string
 	name: string
 }
 
@@ -25,7 +29,7 @@ export type GlobalState = {
 }
 
 export namespace Command {
-	export type Create = void
+	export type Create = { id: string; name: string }
 	export type Delete = void
 }
 
@@ -33,6 +37,7 @@ export namespace Query {
 	export type List = {}
 	export type Get = { id: string }
 	export type GetLength = void
+	export type Search = { searchText: string }
 }
 
 export namespace Event {
@@ -40,20 +45,23 @@ export namespace Event {
 	export type Deleted = { aggregateId: string }
 }
 
+type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
+
 export type CommandsReducer = {
-	create: (state: State) => State
-	delete: (state: State) => State
+	create: SimpleCaseReducer<Command.Create>
+	delete: SimpleCaseReducer<Command.Delete>
 }
 
 export type QueryReducer = {
 	list: (state: GlobalState, query: Query.List) => Array<Entity>
 	get: (state: GlobalState, query: Query.Get) => Entity
 	getLength: (state: GlobalState) => number
+	search: (state: GlobalState, query: Query.Search) => Array<Entity>
 }
 
 export type EventsReducer = {
-	created: (state: State) => State
-	deleted: (state: State) => State
+	created: SimpleCaseReducer<Event.Created>
+	deleted: SimpleCaseReducer<Event.Deleted>
 }
 
 const initialState: State = {
@@ -74,7 +82,16 @@ const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/contact/event',
 	initialState,
 	reducers: {
-		created: (state: State) => state,
+		created: (state: State, action) => {
+			const {
+				payload: { aggregateId, name },
+			} = action
+			state.aggregates[aggregateId] = {
+				id: aggregateId,
+				name,
+			}
+			return state
+		},
 		deleted: (state: State) => state,
 	},
 })
@@ -86,13 +103,52 @@ export const queries: QueryReducer = {
 	list: (state) => Object.values(state.chat.contact.aggregates),
 	get: (state, { id }) => state.chat.contact.aggregates[id],
 	getLength: (state) => Object.keys(state.chat.contact.aggregates).length,
+	search: (state, { searchText }) =>
+		searchText
+			? Object.values(state.chat.contact.aggregates).filter((contact) =>
+					contact.name.toLowerCase().includes(searchText.toLowerCase()),
+			  )
+			: [],
 }
 
 export function* orchestrator() {
 	yield all([
-		takeLeading(commands.create, function*() {
-			// TODO: create contact
-			// yield put(events.created())
+		takeEvery(protocol.events.client.accountContactRequestIncomingAccepted, function*({ payload }) {
+			const {
+				event: { contactPk },
+				aggregateId: accountId,
+			} = payload
+			const request = (yield select((state) =>
+				incomingContactRequest.queries.getDerived(state, { contactPk, accountId }),
+			)) as incomingContactRequest.Entity | undefined
+			yield put(
+				events.created({
+					aggregateId: Buffer.from(contactPk).toString('utf-8'),
+					name: request ? request.requesterName : 'Unknown',
+				}),
+			)
+		}),
+		takeEvery(protocol.events.client.groupMemberDeviceAdded, function*({ payload }) {
+			const {
+				event: { memberPk: contactPk },
+				aggregateId: accountId,
+				eventContext,
+			} = payload
+			if (!eventContext.groupPk) {
+				throw new Error('Invalid groupPk in eventContext')
+			}
+			const request = (yield select((state) =>
+				outgoingContactRequest.queries.getDerived(state, { contactPk, accountId }),
+			)) as outgoingContactRequest.Entity | undefined
+			if (!request || new Buffer(eventContext.groupPk).toString('utf-8') !== request.groupPk) {
+				return
+			}
+			yield put(
+				events.created({
+					aggregateId: Buffer.from(contactPk).toString('utf-8'),
+					name: request.contactName,
+				}),
+			)
 		}),
 		takeLeading(commands.delete, function*() {
 			// TODO: delete contact

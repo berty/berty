@@ -1,7 +1,22 @@
-import { ProtocolServiceClient, ProtocolServiceHandler, mockBridge } from '@berty-tech/grpc-bridge'
-import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
+import {
+	ProtocolServiceClient,
+	mockBridge,
+	protocolServiceHandlerFactory,
+} from '@berty-tech/grpc-bridge'
+import { RPCImpl } from 'protobufjs'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, takeLeading, put, putResolve, cps, select, takeEvery, take } from 'redux-saga/effects'
+import {
+	all,
+	takeLeading,
+	put,
+	putResolve,
+	cps,
+	takeEvery,
+	take,
+	call,
+	select,
+} from 'redux-saga/effects'
 import { channel } from 'redux-saga'
 import * as gen from './client.gen'
 import * as api from '@berty-tech/api'
@@ -208,19 +223,8 @@ export const transactions: Transactions = {
 		}
 
 		const client = (yield select((state) => queries.get(state, { id }))) as Entity | undefined
-
-		services[id] = new ProtocolServiceClient(
-			mockBridge(
-				ProtocolServiceHandler,
-				client == null
-					? {}
-					: {
-							accountPk: client.accountPk,
-							devicePk: client.devicePk,
-							accountGroupPk: client.accountGroupPk,
-					  },
-			),
-		)
+		const bridge = (yield call(mockBridge, protocolServiceHandlerFactory, !!client)) as RPCImpl
+		services[id] = new ProtocolServiceClient(bridge)
 
 		const { accountPk, devicePk, accountGroupPk } = (yield cps(
 			services[id]?.instanceGetConfiguration,
@@ -368,6 +372,7 @@ export const transactions: Transactions = {
 					EventTypeAccountContactRequestIncomingDiscarded: 'AccountContactRequestDiscarded',
 					EventTypeAccountContactRequestOutgoingEnqueued: 'AccountContactRequestEnqueued',
 					EventTypeAccountContactRequestOutgoingSent: 'AccountContactRequestSent',
+					EventTypeGroupMemberDeviceAdded: 'GroupAddMemberDevice',
 				}
 				const eventName = eventNameFromValue(eventType)
 				if (eventName === undefined) {
@@ -379,8 +384,9 @@ export const transactions: Transactions = {
 					console.warn("Don't know how to decode", eventName)
 					return
 				}
+				const type = `${eventHandler.name}/${Case.camel(eventName.replace('EventType', ''))}`
 				eventsChannel.put({
-					type: `${eventHandler.name}/${Case.camel(eventName.replace('EventType', ''))}`,
+					type,
 					payload: {
 						aggregateId: `${payload.id}`,
 						eventContext: response.eventContext,
@@ -466,11 +472,27 @@ export function* orchestrator() {
 		takeLeading(commands.appMessageSend, function*(action) {
 			yield* transactions.appMessageSend(action.payload)
 		}),
-		takeLeading(commands.groupMetadataSubscribe, function*(action) {
+		takeEvery(commands.groupMetadataSubscribe, function*(action) {
 			yield* transactions.groupMetadataSubscribe(action.payload)
 		}),
 		takeLeading(commands.groupMessageSubscribe, function*(action) {
 			yield* transactions.groupMessageSubscribe(action.payload)
+		}),
+		takeEvery(events.accountContactRequestOutgoingEnqueued, function*(action) {
+			const chan = yield* transactions.groupMetadataSubscribe({
+				id: action.payload.aggregateId,
+				groupPk: action.payload.event.groupPk,
+				since: new Uint8Array(),
+				until: new Uint8Array(),
+				goBackwards: false,
+			})
+			while (1) {
+				const action = yield take(chan)
+				yield put(action)
+				if (action.type === events.groupMetadataPayloadSent.type) {
+					yield put(action.payload.event)
+				}
+			}
 		}),
 	])
 }
