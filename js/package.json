@@ -52,7 +52,7 @@
     "react": "^16.12.0",
     "react-native-create-library": "^3.1.2",
     "text-transform-cli": "^1.5.0",
-    "update-versions": "^2.0.0"
+    "update-versions": "^2.3.2"
   },
   "devDependencies": {
     "@berty-tech/babel-preset": "^0.0.0",
