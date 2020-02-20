@@ -24,18 +24,18 @@
   "dependencies": {
     "@berty-tech/api": "^0.0.0",
     "@googleapis/googleapis": "googleapis/googleapis#common-protos-1_3_1",
-    "@improbable-eng/grpc-web": "^0.11.0",
-    "@improbable-eng/grpc-web-node-http-transport": "^0.11.0",
+    "@improbable-eng/grpc-web": "^0.12.0",
+    "@improbable-eng/grpc-web-node-http-transport": "^0.12.0",
     "@protocolbuffers/protobuf": "protocolbuffers/protobuf#3.10.0",
-    "@types/long": "^4.0.0",
+    "@types/long": "^4.0.1",
     "@types/websocket": "^1.0.0",
     "case": "^1.6.2",
-    "eslint": "^6.6.0",
-    "espree": "^3.5.4",
+    "eslint": "^6.8.0",
+    "espree": "^6.1.2",
     "jsdoc": "^3.5.5",
     "minimist": "^1.2.0",
-    "pbhbs": "^0.2.2",
+    "pbhbs": "^0.2.5",
     "protobufjs": "^6.8.8",
-    "semver": "^5.5.0"
+    "semver": "^7.1.3"
   }
 }

@@ -29,9 +29,9 @@
   },
   "dependencies": {
     "@berty-tech/store": "^0.0.0",
-    "@types/react-redux": "^7.1.6",
+    "@types/react-redux": "^7.1.7",
     "react": "^16.12.0",
-    "react-redux": "^7.1.3",
+    "react-redux": "^7.2.0",
     "redux-persist": "^6.0.0"
   }
 }

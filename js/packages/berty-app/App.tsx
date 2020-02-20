@@ -16,13 +16,13 @@ import { Theme } from '@berty-tech/berty-storybook'
 import '@berty-tech/berty-i18n'
 import { enableScreens } from 'react-native-screens'
 import { Chat } from '@berty-tech/hooks'
-import { NavigationNativeContainer } from '@react-navigation/native'
+import { NavigationContainer } from '@react-navigation/native'
 import AsyncStorage from '@react-native-community/async-storage'
 
 enableScreens()
 
 export const App: React.FC = () => (
-	<NavigationNativeContainer>
+	<NavigationContainer>
 		<Store.Provider
 			rpcImpl={
 				faker.berty.chat.ChatService
@@ -36,7 +36,7 @@ export const App: React.FC = () => (
 				</Theme.Provider>
 			</Chat.Provider>
 		</Store.Provider>
-	</NavigationNativeContainer>
+	</NavigationContainer>
 )
 
 export default App

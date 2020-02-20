@@ -20,13 +20,13 @@
   },
   "dependencies": {
     "@berty-tech/api": "^0.0.0",
-    "@improbable-eng/grpc-web": "^0.11.0",
+    "@improbable-eng/grpc-web": "^0.12.0",
     "faker": "^4.1.0",
-    "mobx": "^5.14.2",
-    "mobx-react": "^6.1.4",
-    "mobx-react-lite": "^1.5.0",
+    "mobx": "^5.15.4",
+    "mobx-react": "^6.1.8",
+    "mobx-react-lite": "^1.5.2",
     "protobufjs": "^6.8.8",
     "random-emoji": "^1.0.2",
-    "swr": "^0.1.12"
+    "swr": "^0.1.17"
   }
 }

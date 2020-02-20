@@ -7,6 +7,7 @@ import 'node-libs-react-native/globals'
 import { Alert, AppRegistry } from 'react-native'
 if (!__DEV__) {
 	/* eslint-disable no-undef */
+	console.assert = () => Alert.alert('Assert')
 	console.error = () => Alert.alert('Error')
 	console.warn = () => Alert.alert('Warn')
 	/* eslint-enable no-undef */
