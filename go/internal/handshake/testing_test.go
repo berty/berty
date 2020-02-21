@@ -7,14 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func checkErr(t *testing.T, err error, msgs ...interface{}) {
-	t.Helper()
-
-	if !assert.NoError(t, err, msgs...) {
-		t.Fatal("fatal")
-	}
-}
-
 func testSameErrcodes(t *testing.T, expected, got error) {
 	t.Helper()
 

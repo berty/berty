@@ -5,19 +5,10 @@ import (
 	"testing"
 
 	"berty.tech/berty/go/internal/ipfsutil"
-	//"github.com/fortytw2/leaktest"
-	//"go.uber.org/zap"
-	//"go.uber.org/zap/zapcore"
-	//"go.uber.org/zap/zaptest"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	// "github.com/fortytw2/leaktest"
 )
-
-func init() {
-	//zaptest.Level(zapcore.DebugLevel)
-	//config := zap.NewDevelopmentConfig()
-	//config.OutputPaths = []string{"stdout"}
-	//logger, _ := config.Build()
-	//zap.ReplaceGlobals(logger)
-}
 
 // The leaktest calls are commented out since there is leaks remaining
 // TODO: clean all leaks
@@ -31,19 +22,15 @@ func TestNew(t *testing.T) {
 		CoreAPI:          ipfsmock,
 		OrbitDBDirectory: ":memory:",
 	})
+	require.NoError(t, err)
 
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if err := demo.Close(); err != nil {
-		t.Fatal(err)
-	}
+	err = demo.Close()
+	require.NoError(t, err)
 }
 
 func testingLogToken(t *testing.T, d DemoServiceClient) string {
 	res, err := d.LogToken(context.Background(), &LogToken_Request{})
-	checkErr(t, err)
+	require.NoError(t, err)
 	return res.GetLogToken()
 }
 
@@ -67,15 +54,13 @@ func TestLogFromToken(t *testing.T) {
 	ctx := context.Background()
 	token := testingLogToken(t, demo)
 
-	first_log, err := client.logFromToken(ctx, token)
-	checkErr(t, err)
+	firstLog, err := client.logFromToken(ctx, token)
+	require.NoError(t, err)
 
-	second_log, err := client.logFromToken(ctx, token)
-	checkErr(t, err)
+	secondLog, err := client.logFromToken(ctx, token)
+	require.NoError(t, err)
 
-	if first_log != second_log {
-		t.Fatalf("second_log = %p; want %p", second_log, first_log)
-	}
+	assert.Equal(t, firstLog, secondLog)
 }
 
 func testingAdd(t *testing.T, d DemoServiceClient, lt string, data []byte) string {
@@ -85,7 +70,7 @@ func testingAdd(t *testing.T, d DemoServiceClient, lt string, data []byte) strin
 	}
 
 	res, err := d.LogAdd(context.Background(), &req)
-	checkErr(t, err)
+	require.NoError(t, err)
 
 	return res.GetCid()
 }
@@ -110,30 +95,24 @@ func TestLogGet(t *testing.T) {
 
 	logToken := testingLogToken(t, demo)
 	data := []byte("Hello log!")
-	op_cid := testingAdd(t, demo, logToken, data)
+	opCid := testingAdd(t, demo, logToken, data)
 	req := LogGet_Request{
 		LogToken: logToken,
-		Cid:      op_cid,
+		Cid:      opCid,
 	}
 
 	res, err := demo.LogGet(context.Background(), &req)
-	checkErr(t, err)
+	require.NoError(t, err)
 
-	if res.GetOperation() == nil {
-		t.Fatalf("LogGet().Op = nil; want an Op")
-	}
+	require.NotNil(t, res.GetOperation(), "LogGet().Op = nil; want an Op")
 
 	got := res.GetOperation().GetName()
 	shouldGet := "ADD"
-	if got != shouldGet {
-		t.Fatalf("LogGet().Op.Name = %s; want %s", got, shouldGet)
-	}
+	require.Equal(t, shouldGet, got)
 
 	got = string(res.GetOperation().GetValue())
 	shouldGet = string(data)
-	if got != shouldGet {
-		t.Fatalf("LogGet().Op.Value = %s; want %s", got, shouldGet)
-	}
+	assert.Equal(t, shouldGet, got)
 }
 
 func TestLogList(t *testing.T) {
@@ -153,7 +132,7 @@ func TestLogList(t *testing.T) {
 	}
 
 	res, err := demo.LogList(context.Background(), &req)
-	checkErr(t, err)
+	require.NoError(t, err)
 
 	shouldGet := string(data)
 	found := false
@@ -162,9 +141,7 @@ func TestLogList(t *testing.T) {
 			found = true
 		}
 	}
-	if !found {
-		t.Fatalf("Added operation not found in LogList()")
-	}
+	require.True(t, found, "Added operation not found in LogList()")
 }
 
 func TestLogStream(t *testing.T) {
@@ -181,7 +158,7 @@ func TestLogStream(t *testing.T) {
 	}
 
 	logClient, err := demo.LogStream(context.Background(), req)
-	checkErr(t, err)
+	require.NoError(t, err)
 
 	defer logClient.CloseSend()
 
@@ -189,17 +166,13 @@ func TestLogStream(t *testing.T) {
 	_ = testingAdd(t, demo, logToken, data)
 
 	op, err := logClient.Recv()
-	checkErr(t, err)
+	require.NoError(t, err)
 
 	got := op.GetName()
 	shouldGet := "ADD"
-	if got != shouldGet {
-		t.Fatalf("LogStream()->Op.Name = %s; want %s", got, shouldGet)
-	}
+	require.Equal(t, shouldGet, got)
 
 	got = string(op.GetValue())
 	shouldGet = string(data)
-	if got != shouldGet {
-		t.Fatalf("LogStream()->Op.Value = %s; want %s", got, shouldGet)
-	}
+	require.Equal(t, shouldGet, got)
 }

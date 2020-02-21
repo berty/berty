@@ -18,6 +18,7 @@ import (
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -41,7 +42,7 @@ func TestProtocolBridge(t *testing.T) {
 			GRPCWebListener: true,
 		},
 	})
-	checkErr(t, err)
+	require.NoError(t, err)
 
 	defer func() {
 		err = protocol.Close()
@@ -60,26 +61,26 @@ func TestProtocolBridge(t *testing.T) {
 	assert.NotNil(t, bridgeClient)
 
 	grpcClient, err = grpc.Dial(protocol.GRPCListenerAddr(), grpc.WithBlock(), grpc.WithInsecure())
-	checkErr(t, err)
+	require.NoError(t, err)
 
 	// setup unary test
 	msg := &bertyprotocol.InstanceGetConfiguration_Request{}
 
 	req, err = proto.Marshal(msg)
-	checkErr(t, err)
+	require.NoError(t, err)
 
 	// bridgeClient test
 	res, err = bridgeClient.UnaryRequest("/berty.protocol.ProtocolService/InstanceGetConfiguration", req)
-	checkErr(t, err)
+	require.NoError(t, err)
 
 	out := &bertyprotocol.InstanceGetConfiguration_Reply{}
 	err = proto.Unmarshal(res, out)
-	checkErr(t, err)
+	require.NoError(t, err)
 
 	// webclient test
 	cc := bertyprotocol.NewProtocolServiceClient(grpcClient)
 	_, err = cc.InstanceGetConfiguration(context.Background(), msg)
-	checkErr(t, err)
+	require.NoError(t, err)
 
 	//results, err = makeGrpcRequest(
 	//	protocol.GRPCWebListenerAddr(),
@@ -87,12 +88,12 @@ func TestProtocolBridge(t *testing.T) {
 	//	[][]byte{req},
 	//	false,
 	//)
-	//checkErr(t, err)
+	//require.NoError(t, err)
 	//
 	//for _, res = range results {
 	//	out := &bertyprotocol.InstanceGetConfiguration{}
 	//	err = proto.Unmarshal(res, out)
-	//	checkErr(t, err)
+	//	require.NoError(t, err)
 	//}
 }
 

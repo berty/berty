@@ -7,7 +7,6 @@ import (
 	"berty.tech/berty/go/internal/grpcutil"
 	"berty.tech/berty/go/internal/ipfsutil"
 
-	"github.com/stretchr/testify/assert"
 	grpc "google.golang.org/grpc"
 )
 
@@ -51,13 +50,5 @@ func testingClientService(t *testing.T, srv DemoServiceServer) (DemoServiceClien
 
 	return NewDemoServiceClient(conn), func() {
 		listener.Close()
-	}
-}
-
-func checkErr(t *testing.T, err error) {
-	t.Helper()
-
-	if !assert.NoError(t, err) {
-		t.Fatal("fatal")
 	}
 }
