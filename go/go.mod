@@ -33,6 +33,7 @@ require (
 	google.golang.org/genproto v0.0.0-20190927181202-20e1ac93f88c // indirect
 	google.golang.org/grpc v1.24.0
 	gopkg.in/gormigrate.v1 v1.6.0
+	moul.io/srand v1.4.0
 )
 
 replace github.com/golangci/golangci-lint => github.com/golangci/golangci-lint v1.18.0
