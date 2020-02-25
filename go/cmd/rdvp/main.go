@@ -19,6 +19,7 @@ import (
 	libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
 
 	ma "github.com/multiformats/go-multiaddr"
+	run "github.com/oklog/run"
 
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
@@ -30,6 +31,8 @@ func main() {
 	log.SetFlags(0)
 
 	var (
+		process run.Group
+
 		logger      *zap.Logger
 		globalFlags = flag.NewFlagSet("rdvp", flag.ExitOnError)
 		globalDebug = globalFlags.Bool("debug", false, "debug mode")
@@ -37,6 +40,7 @@ func main() {
 		serveFlags          = flag.NewFlagSet("serve", flag.ExitOnError)
 		serveFlagsURN       = serveFlags.String("db", ":memory:", "rdvp sqlite URN")
 		serveFlagsListeners = serveFlags.String("l", ":4040", "lists of listeners of (m)addrs separate by a comma")
+		serveFlagsPK        = serveFlags.String("pk", "", "private key file path(not implemented)")
 	)
 
 	globalPreRun := func() error {
@@ -66,7 +70,12 @@ func main() {
 		return nil
 	}
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// handle close signal
+	execute, interupt := run.SignalHandler(ctx, os.Interrupt)
+	process.Add(execute, interupt)
 
 	serve := &ffcli.Command{
 		Name:    "serve",
@@ -80,8 +89,9 @@ func main() {
 			ctx, cancel := context.WithCancel(ctx)
 			defer cancel()
 
-			_ = logger
-			_ = globalDebug
+			if *serveFlagsPK != "" {
+				logger.Warn("custom pk not supported yet")
+			}
 
 			laddrs := strings.Split(*serveFlagsListeners, ",")
 			listeners, err := parseAddrs(laddrs...)
@@ -108,7 +118,8 @@ func main() {
 			// @TODO(gfanton): override libp2p logger
 			_ = libp2p_rp.NewRendezvousService(host, db)
 
-			select {}
+			<-ctx.Done()
+			return ctx.Err()
 		},
 	}
 
@@ -123,9 +134,19 @@ func main() {
 		},
 	}
 
-	if err := root.Run(os.Args[1:]); err != nil {
-		log.Fatalf("error: %v", err)
+	// add root command to process
+	process.Add(func() error {
+		return root.Run(os.Args[1:])
+	}, func(error) {
+		cancel()
+	})
+
+	// run process
+	if err := process.Run(); err != nil && err != context.Canceled {
+		log.Fatal(err)
 	}
+
+	os.Exit(0)
 }
 
 // helpers

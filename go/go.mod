@@ -22,7 +22,7 @@ require (
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e
 	github.com/multiformats/go-multiaddr v0.2.0
 	github.com/multiformats/go-multiaddr-net v0.1.1
-	github.com/oklog/run v1.0.0
+	github.com/oklog/run v1.1.0
 	github.com/peterbourgon/ff v1.6.0
 	github.com/pkg/errors v0.8.1
 	github.com/smartystreets/goconvey v1.6.4 // indirect
@@ -31,7 +31,7 @@ require (
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
-	golang.org/x/tools v0.0.0-20200225022059-a0ec867d517c // indirect
+	golang.org/x/tools v0.0.0-20200226224502-204d844ad48d // indirect
 	google.golang.org/genproto v0.0.0-20190927181202-20e1ac93f88c // indirect
 	google.golang.org/grpc v1.24.0
 	gopkg.in/gormigrate.v1 v1.6.0
