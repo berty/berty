@@ -15,6 +15,7 @@ type PersistedData = {
 	devicePk: string
 	accountGroupPk: string
 	rdvLogtoken?: string
+	lastRdvLogCid?: string
 	contactGroups: { [key: string]: string } // map with key=fakeContactPk, value=fakeGroupPk
 }
 
@@ -43,6 +44,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	accountGroupPk: string
 	rdvLogtoken?: string
 	contactGroups: { [key: string]: string } // map with key=fakeContactPk, value=fakeGroupPk
+	lastRdvLogCid?: string
 
 	persist = () =>
 		AsyncStorage.setItem(
@@ -53,6 +55,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 				devicePk: this.devicePk,
 				contactGroups: this.contactGroups,
 				rdvLogtoken: this.rdvLogtoken,
+				lastRdvLogCid: this.lastRdvLogCid,
 			}),
 		)
 
@@ -63,6 +66,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		this.accountGroupPk = initData.accountGroupPk
 		this.contactGroups = initData.contactGroups
 		this.rdvLogtoken = initData.rdvLogtoken
+		this.lastRdvLogCid = initData.lastRdvLogCid
 	}
 
 	_logToken = () => logToken(this.client)
@@ -71,6 +75,11 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 
 	setRdvLogToken = async (newLogToken?: string) => {
 		this.rdvLogtoken = newLogToken
+		await this.persist()
+	}
+
+	setLastRdvLogCid = async (newCid: string) => {
+		this.lastRdvLogCid = newCid
 		await this.persist()
 	}
 
@@ -225,34 +234,43 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 			await this.setRdvLogToken(await this._logToken())
 		}
 		callback(null, { reference: this.referenceBytes })
-		this.client.logStream({ logToken: this.rdvLogtoken }, async (error, response) => {
-			if (error || !response || !response.value) {
-				console.error(
-					'handler.ts: ContactRequestEnable: logStream error:',
-					error,
-					'With response',
-					response,
-				)
-				return
-			}
-			const val = new Buffer(response.value).toString('utf-8')
-			const parts = val.split(' ')
-			const [type, ...remParts] = parts
-			if (type === 'CONTACT_REQUEST_FROM') {
-				const [requesterAccountPk, fakeGroupPk, ...metadataParts] = remParts
-				await this.setContactGroup(requesterAccountPk, fakeGroupPk)
-				this.addEventToMetadataLog({
-					groupPk: this.accountGroupPk,
-					type: 'AccountContactRequestIncomingReceived',
-					dataType: 'AccountContactRequestReceived',
-					data: {
-						devicePk: this.devicePkBytes,
-						contactPk: Buffer.from(requesterAccountPk, 'utf-8'),
-						contactMetadata: Buffer.from(metadataParts.join(' '), 'utf-8'),
-					},
-				})
-			}
-		})
+		this.client.logStream(
+			{
+				logToken: this.rdvLogtoken,
+				options: this.lastRdvLogCid ? { GT: this.lastRdvLogCid } : undefined,
+			},
+			async (error, response) => {
+				if (error || !response || !response.value) {
+					console.error(
+						'handler.ts: ContactRequestEnable: logStream error:',
+						error,
+						'With response',
+						response,
+					)
+					return
+				}
+				if (response.cid) {
+					await this.setLastRdvLogCid(response.cid)
+				}
+				const val = new Buffer(response.value).toString('utf-8')
+				const parts = val.split(' ')
+				const [type, ...remParts] = parts
+				if (type === 'CONTACT_REQUEST_FROM') {
+					const [requesterAccountPk, fakeGroupPk, ...metadataParts] = remParts
+					await this.setContactGroup(requesterAccountPk, fakeGroupPk)
+					this.addEventToMetadataLog({
+						groupPk: this.accountGroupPk,
+						type: 'AccountContactRequestIncomingReceived',
+						dataType: 'AccountContactRequestReceived',
+						data: {
+							devicePk: this.devicePkBytes,
+							contactPk: Buffer.from(requesterAccountPk, 'utf-8'),
+							contactMetadata: Buffer.from(metadataParts.join(' '), 'utf-8'),
+						},
+					})
+				}
+			},
+		)
 	}
 
 	ContactRequestResetReference: (
@@ -471,20 +489,26 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 			callback(new Error('GRPC ProtocolServiceHandler: groupPk corrupted'))
 			return
 		}
-		this.client?.logStream({ logToken: tokens[0] }, (error, response) => {
-			if (error || response == null || response.cid == null || response.value == null) {
-				callback(error)
-				return
-			}
-			const message = api.berty.protocol.GroupMetadataEvent.decode(response.value)
-			if (message == null || message.eventContext == null) {
-				callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
-				return
-			}
-			message.eventContext.id = Buffer.from(response.cid, 'utf8')
-			message.eventContext.groupPk = request.groupPk
-			callback(null, message)
-		})
+		this.client.logStream(
+			{
+				logToken: tokens[0],
+				options: request.since && { GT: new Buffer(request.since).toString('utf-8') },
+			},
+			(error, response) => {
+				if (error || response == null || response.cid == null || response.value == null) {
+					callback(error)
+					return
+				}
+				const message = api.berty.protocol.GroupMetadataEvent.decode(response.value)
+				if (message == null || message.eventContext == null) {
+					callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
+					return
+				}
+				message.eventContext.id = Buffer.from(response.cid, 'utf-8')
+				message.eventContext.groupPk = request.groupPk
+				callback(null, message)
+			},
+		)
 	}
 
 	GroupMessageSubscribe: (
