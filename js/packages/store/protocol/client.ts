@@ -478,21 +478,5 @@ export function* orchestrator() {
 		takeLeading(commands.groupMessageSubscribe, function*(action) {
 			yield* transactions.groupMessageSubscribe(action.payload)
 		}),
-		takeEvery(events.accountContactRequestOutgoingEnqueued, function*(action) {
-			const chan = yield* transactions.groupMetadataSubscribe({
-				id: action.payload.aggregateId,
-				groupPk: action.payload.event.groupPk,
-				since: new Uint8Array(),
-				until: new Uint8Array(),
-				goBackwards: false,
-			})
-			while (1) {
-				const action = yield take(chan)
-				yield put(action)
-				if (action.type === events.groupMetadataPayloadSent.type) {
-					yield put(action.payload.event)
-				}
-			}
-		}),
 	])
 }

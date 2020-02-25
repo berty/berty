@@ -126,7 +126,7 @@ const AddMembers: React.FC<AddMembersProps> = ({
 }) => {
 	const [{ padding, background, row, height, color, text, margin }] = useStyles()
 	const [searchText, setSearchText] = useState('')
-	const contacts = Chat.useContactSearchResults(searchText)
+	const contacts = Chat.useAccountContactSearchResults(searchText)
 	const _styles = useStylesCreateGroup()
 
 	return (

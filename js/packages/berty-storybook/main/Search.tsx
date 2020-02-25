@@ -98,7 +98,7 @@ const SearchHint = () => {
 
 const SearchComponent: React.FC<{}> = () => {
 	const [searchText, setSearchText] = useState(initialSearchText)
-	const contacts = Chat.useContactSearchResults(searchText)
+	const contacts = Chat.useAccountContactSearchResults(searchText)
 	const [{ padding, column }] = useStyles()
 
 	return (

@@ -51,11 +51,13 @@ const useStylesList = () => {
 	}
 }
 
-const RequestsItem: React.FC<chat.outgoingContactRequest.Entity> = ({ id, contactName, sent }) => {
+const RequestsItem: React.FC<chat.contact.Entity> = ({ id, name, request }) => {
 	const navigation = useNavigation()
 	const _styles = useStylesList()
 	const [{ border, column, flex, row, padding, text, background, color }] = useStyles()
-
+	if (request.type !== chat.contact.ContactRequestType.Outgoing) {
+		return <Text>Error: This is an outgoing request</Text>
+	}
 	return (
 		<TouchableOpacity
 			style={[_styles.tinyCard, border.shadow.medium, column.justify]}
@@ -68,13 +70,13 @@ const RequestsItem: React.FC<chat.outgoingContactRequest.Entity> = ({ id, contac
 				diffSize={8}
 			/>
 			<Text numberOfLines={1} style={[flex.tiny, text.align.center]}>
-				{contactName}
+				{name}
 			</Text>
 			<Text
 				category='c1'
 				style={[padding.vertical.medium, text.align.center, text.size.tiny, text.color.grey]}
 			>
-				{sent ? 'Sent 3 days ago' : 'Not sent yet'}
+				{request.sent ? 'Sent 3 days ago' : 'Not sent yet'}
 			</Text>
 			<View style={[row.center]}>
 				<TouchableOpacity
@@ -88,7 +90,7 @@ const RequestsItem: React.FC<chat.outgoingContactRequest.Entity> = ({ id, contac
 					<Icon name='close-outline' width={15} height={15} fill={color.grey} />
 				</TouchableOpacity>
 				<TouchableOpacity
-					disabled={!sent}
+					disabled={!request.sent}
 					style={[_styles.tinyAcceptButton, background.light.green, row.center]}
 				>
 					<Icon
@@ -108,7 +110,9 @@ const RequestsItem: React.FC<chat.outgoingContactRequest.Entity> = ({ id, contac
 const Requests: React.FC<{}> = () => {
 	const [{ padding }] = useStyles()
 
-	const requests = Chat.useOutgoingContactRequests().filter((request) => !request.accepted)
+	const requests = Chat.useAccountContactsWithOutgoingRequests().filter(
+		(contact) => !(contact.request.accepted || contact.request.discarded),
+	)
 
 	return (
 		<SafeAreaView>
