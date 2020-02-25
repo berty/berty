@@ -86,14 +86,14 @@ start.emulator: deps
 		$(call check-program, emulator) \
 		$(clisim) -af & \
 	)
-	$(if $(filter $(platform), android), adb wait-for-device)
+	$(if $(filter $(platform), android), adb wait-for-device || true)
 
 # the adb reverse is for the demo grpc bridge
 .PHONY: run
 run: export PWD := $(PWD)
-run: deps $(if $(filter $(config), development), start.emulator)
+run: deps
 	$(if $(filter $(platform), android), $(berty_root)/build/shell/check-java.sh 18)
-	$(if $(filter $(platform), android), adb reverse tcp:1337 tcp:1337)
+	$(if $(filter $(platform), android), adb -s $(device) reverse tcp:1337 tcp:1337)
 	cd $(PWD) && $(react-native) run-$(platform) \
 		--no-packager \
 		$(if $(filter $(platform), android), --variant=$(target)) \
