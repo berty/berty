@@ -29,6 +29,7 @@ export type Entity = {
 	accountPk: string
 	devicePk: string
 	accountGroupPk: string
+	lastMetadataCids: { [key: string]: string }
 }
 
 export type Event = {}
@@ -73,6 +74,10 @@ export type Events = gen.Events<State> & {
 				reference: Uint8Array
 			}
 		},
+	) => State
+	lastMetadataCidUpdated: (
+		state: State,
+		action: { payload: { aggregateId: string; groupPk: string; cid: string } },
 	) => State
 	deleted: (state: State, action: PayloadAction<{ aggregateId: string }>) => State
 }
@@ -144,11 +149,14 @@ const eventHandler = createSlice<State, Events>({
 	initialState,
 	reducers: {
 		started: (state, action) => {
+			const client = state.aggregates[action.payload.aggregateId]
 			state.aggregates[action.payload.aggregateId] = {
 				id: action.payload.aggregateId,
 				accountPk: Buffer.from(action.payload.accountPk).toString(),
 				devicePk: Buffer.from(action.payload.devicePk).toString(),
 				accountGroupPk: Buffer.from(action.payload.accountGroupPk).toString(),
+				lastMetadataCids: client ? client.lastMetadataCids : {},
+				contactRequestReference: client ? client.contactRequestReference : undefined,
 			}
 			return state
 		},
@@ -160,6 +168,11 @@ const eventHandler = createSlice<State, Events>({
 		},
 		deleted: (state, action) => {
 			delete state.aggregates[action.payload.aggregateId]
+			return state
+		},
+		lastMetadataCidUpdated: (state, action) => {
+			state.aggregates[action.payload.aggregateId].lastMetadataCids[action.payload.groupPk] =
+				action.payload.cid
 			return state
 		},
 
@@ -331,9 +344,18 @@ export const transactions: Transactions = {
 	},
 	groupMetadataSubscribe: function*(payload) {
 		const eventsChannel = channel()
+		const client = (yield select((state) => queries.get(state, { id: payload.id }))) as
+			| Entity
+			| undefined
+		if (!client) {
+			throw new Error(`Unknown client ${payload.id}`)
+		}
+		const groupPkStr = Buffer.from(payload.groupPk).toString('utf-8')
+		const sinceStr = client.lastMetadataCids[groupPkStr]
 		getService(payload.id).groupMetadataSubscribe(
 			{
 				groupPk: payload.groupPk,
+				since: sinceStr ? Buffer.from(sinceStr, 'utf-8') : undefined,
 			},
 			(error, response) => {
 				if (error) {
@@ -344,6 +366,20 @@ export const transactions: Transactions = {
 					console.error('No event')
 					return
 				}
+				if (!response?.eventContext?.id) {
+					console.error('No event cid')
+					return
+				}
+
+				const cidStr = Buffer.from(response.eventContext.id).toString('utf-8')
+				eventsChannel.put(
+					events.lastMetadataCidUpdated({
+						aggregateId: payload.id,
+						groupPk: groupPkStr,
+						cid: cidStr,
+					}),
+				)
+
 				if (!response?.metadata?.eventType) {
 					console.error('No eventtype')
 					return
@@ -477,22 +513,6 @@ export function* orchestrator() {
 		}),
 		takeLeading(commands.groupMessageSubscribe, function*(action) {
 			yield* transactions.groupMessageSubscribe(action.payload)
-		}),
-		takeEvery(events.accountContactRequestOutgoingEnqueued, function*(action) {
-			const chan = yield* transactions.groupMetadataSubscribe({
-				id: action.payload.aggregateId,
-				groupPk: action.payload.event.groupPk,
-				since: new Uint8Array(),
-				until: new Uint8Array(),
-				goBackwards: false,
-			})
-			while (1) {
-				const action = yield take(chan)
-				yield put(action)
-				if (action.type === events.groupMetadataPayloadSent.type) {
-					yield put(action.payload.event)
-				}
-			}
 		}),
 	])
 }

@@ -4,3 +4,4 @@ declare interface Window {
 
 declare module 'simpleflakes/lib/simpleflakes-legacy'
 declare module '@clarketm/saga-monitor'
+declare module 'redux-test-recorder'

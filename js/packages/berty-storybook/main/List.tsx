@@ -18,7 +18,7 @@ type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
 //
 
 type RequestsProps = ViewProps & {
-	items: Array<chat.incomingContactRequest.Entity>
+	items: Array<chat.contact.Entity>
 }
 
 // Functions
@@ -117,17 +117,14 @@ const RequestsItem: React.FC<{
 	)
 }
 
-const ContactRequestsItem: React.FC<chat.incomingContactRequest.Entity> = ({
-	id,
-	requesterName,
-}) => {
+const ContactRequestsItem: React.FC<chat.contact.Entity> = ({ id, name }) => {
 	const { navigate } = useNavigation()
-	const accept = Chat.useAccountAcceptContactRequest()
-	const decline = Chat.useAccountDiscardContactRequest()
+	const accept = Chat.useAcceptContactRequest()
+	const decline = Chat.useDiscardContactRequest()
 	return (
 		<RequestsItem
 			id={id}
-			name={requesterName}
+			name={name}
 			avatarUris={[]}
 			display={/*navigate.main.contactRequest*/ ({ id }) => {}}
 			accept={accept}
@@ -161,8 +158,8 @@ export const List: React.FC<ScreenProps.Chat.List> = () => {
 	// TODO: do something to animate the requests
 	const [, onLayoutRequests] = useLayout()
 
-	const requests = Chat.useIncomingContactRequests().filter(
-		(req) => !(req.accepted || req.discarded),
+	const requests = Chat.useAccountContactsWithIncomingRequests().filter(
+		(contact) => !(contact.request.accepted || contact.request.discarded),
 	)
 
 	const [{ absolute, background }] = useStyles()

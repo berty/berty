@@ -5,9 +5,8 @@ import faker from 'faker'
 import { Buffer } from 'buffer'
 import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
 
+import * as contact from './contact'
 import * as protocol from '../protocol'
-import * as outgoingContactRequest from './outgoingContactRequest'
-import * as incomingContactRequest from './incomingContactRequest'
 
 export type Entity = {
 	id: string
@@ -277,8 +276,7 @@ export function* orchestrator() {
 			const accounts = (yield select(queries.getAll)) as Entity[]
 			for (const account of accounts) {
 				yield* transactions.open({ id: account.id })
-				yield* outgoingContactRequest.transactions.open({ accountId: account.id })
-				yield* incomingContactRequest.transactions.open({ accountId: account.id })
+				yield* contact.transactions.open({ accountId: account.id })
 			}
 		}),
 

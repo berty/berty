@@ -9,22 +9,12 @@ import { Storage, persistReducer, persistStore } from 'redux-persist'
 
 import * as protocol from '../protocol'
 import * as account from './account'
-import * as incomingContactRequest from './incomingContactRequest'
-import * as outgoingContactRequest from './outgoingContactRequest'
 import * as contact from './contact'
 import * as conversation from './conversation'
 import * as member from './member'
 import * as message from './message'
 
-export {
-	account,
-	incomingContactRequest,
-	outgoingContactRequest,
-	contact,
-	conversation,
-	member,
-	message,
-}
+export { account, contact, conversation, member, message }
 
 export type State = account.GlobalState
 
@@ -32,8 +22,6 @@ export const reducers = {
 	...protocol.reducers,
 	chat: combineReducers({
 		account: account.reducer,
-		incomingContactRequest: incomingContactRequest.reducer,
-		outgoingContactRequest: outgoingContactRequest.reducer,
 		contact: contact.reducer,
 		conversation: conversation.reducer,
 		member: member.reducer,
@@ -47,7 +35,6 @@ export function* rootSaga() {
 			yield all([
 				call(protocol.rootSaga),
 				call(account.orchestrator),
-				call(incomingContactRequest.orchestrator),
 				call(contact.orchestrator),
 				call(conversation.orchestrator),
 				call(member.orchestrator),

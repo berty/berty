@@ -8,6 +8,7 @@
 
 import React from 'react'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
+import DevMenu from 'react-native-dev-menu'
 import Navigation from '@berty-tech/berty-navigation'
 // import bridge, { ReactNativeTransport } from '@berty-tech/grpc-bridge'
 
@@ -20,6 +21,8 @@ import { NavigationNativeContainer } from '@react-navigation/native'
 import AsyncStorage from '@react-native-community/async-storage'
 
 enableScreens()
+
+DevMenu.addItem('Clear async-storage', () => AsyncStorage.clear())
 
 export const App: React.FC = () => (
 	<NavigationNativeContainer>

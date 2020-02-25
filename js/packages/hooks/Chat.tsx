@@ -126,58 +126,58 @@ export const useContactRequestEnabled = () => {
 	return !!ref
 }
 
-export const useIncomingContactRequests = () => {
-	return useSelector((state: chat.incomingContactRequest.GlobalState) =>
-		chat.incomingContactRequest.queries.list(state, {}),
-	)
-}
-
-export const useOutgoingContactRequests = () => {
-	return useSelector((state: chat.outgoingContactRequest.GlobalState) =>
-		chat.outgoingContactRequest.queries.list(state, {}),
-	)
-}
-
-export const useAccountIncomingContactRequests = () => {
+export const useAccountContacts = () => {
 	const account = useAccount()
-	const incomingContactRequests = useIncomingContactRequests()
-	if (!account) {
-		return []
-	}
-	return incomingContactRequests.filter((req) => req.accountId === account.id)
-}
-
-export const useAccountOutgoingContactRequests = () => {
-	const account = useAccount()
-	const incomingContactRequests = useOutgoingContactRequests()
-	if (!account) {
-		return []
-	}
-	return incomingContactRequests.filter((req) => req.accountId === account.id)
-}
-
-export const useAccountAcceptContactRequest = () => {
-	const dispatch = useDispatch()
-	return ({ id }: { id: string }) =>
-		dispatch(
-			chat.incomingContactRequest.commands.accept({
-				id,
-			}),
-		)
-}
-
-export const useAccountDiscardContactRequest = () => {
-	const dispatch = useDispatch()
-	return ({ id }: { id: string }) =>
-		dispatch(
-			chat.incomingContactRequest.commands.discard({
-				id,
-			}),
-		)
-}
-
-export const useContactSearchResults = (searchText: string): chat.contact.Entity[] => {
 	return useSelector((state: chat.contact.GlobalState) =>
-		chat.contact.queries.search(state, { searchText }),
+		account ? chat.contact.queries.list(state) : [],
+	)
+}
+
+export const useAccountContactsWithIncomingRequests = () => {
+	const account = useAccount()
+	return useSelector((state: chat.contact.GlobalState) =>
+		account
+			? chat.contact.queries
+					.list(state)
+					.filter((contact) => contact.request.type === chat.contact.ContactRequestType.Incoming)
+			: [],
+	)
+}
+
+export const useAccountContactsWithOutgoingRequests = () => {
+	const account = useAccount()
+	return useSelector((state: chat.contact.GlobalState) =>
+		account
+			? chat.contact.queries
+					.list(state)
+					.filter((contact) => contact.request.type === chat.contact.ContactRequestType.Outgoing)
+			: [],
+	)
+}
+
+export const useAcceptContactRequest = () => {
+	const dispatch = useDispatch()
+	return ({ id }: { id: string }) =>
+		dispatch(
+			chat.contact.commands.acceptRequest({
+				id,
+			}),
+		)
+}
+
+export const useDiscardContactRequest = () => {
+	const dispatch = useDispatch()
+	return ({ id }: { id: string }) =>
+		dispatch(
+			chat.contact.commands.discardRequest({
+				id,
+			}),
+		)
+}
+
+export const useAccountContactSearchResults = (searchText: string): chat.contact.Entity[] => {
+	const account = useAccount()
+	return useSelector((state: chat.contact.GlobalState) =>
+		account ? chat.contact.queries.search(state, { accountId: account.id, searchText }) : [],
 	)
 }
