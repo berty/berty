@@ -222,8 +222,6 @@ func TestLogStream(t *testing.T) {
 		{"10 iteration - 500ms sleep", 10, time.Millisecond * 500, true},
 		{"50 iterations", 50, 0, true},
 		{"50 iterations - 500ms sleep", 50, time.Millisecond * 500, true},
-		{"100 iterations", 100, 0, true},
-		{"100 iterations - 500ms sleep", 100, time.Millisecond * 500, true},
 	}
 	client, _, clean := testingInMemoryClient(t)
 	defer clean()
