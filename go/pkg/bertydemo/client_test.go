@@ -2,7 +2,11 @@ package bertydemo
 
 import (
 	"context"
+	"fmt"
 	"testing"
+	"time"
+
+	"berty.tech/berty/go/internal/testutil"
 
 	"berty.tech/berty/go/internal/ipfsutil"
 	//"github.com/fortytw2/leaktest"
@@ -167,7 +171,7 @@ func TestLogList(t *testing.T) {
 	}
 }
 
-func TestLogStream(t *testing.T) {
+func TestLogStreamSimple(t *testing.T) {
 	client, _, clean := testingInMemoryClient(t)
 	defer clean()
 
@@ -201,5 +205,66 @@ func TestLogStream(t *testing.T) {
 	shouldGet = string(data)
 	if got != shouldGet {
 		t.Fatalf("LogStream()->Op.Value = %s; want %s", got, shouldGet)
+	}
+}
+
+func TestLogStream(t *testing.T) {
+	cases := []struct {
+		Name      string
+		Iteration int
+		Sleep     time.Duration
+		SlowTest  bool
+	}{
+		{"None", 0, 0, false},
+		{"1 iteration", 1, 0, false},
+		{"1 iteration - 500ms sleep", 1, time.Millisecond * 500, false},
+		{"10 iteration", 10, 0, false},
+		{"10 iteration - 500ms sleep", 10, time.Millisecond * 500, true},
+		{"50 iterations", 50, 0, true},
+		{"50 iterations - 500ms sleep", 50, time.Millisecond * 500, true},
+		{"100 iterations", 100, 0, true},
+		{"100 iterations - 500ms sleep", 100, time.Millisecond * 500, true},
+	}
+	client, _, clean := testingInMemoryClient(t)
+	defer clean()
+	for _, tc := range cases {
+		t.Run(tc.Name, func(t *testing.T) {
+			if tc.SlowTest {
+				testutil.SkipSlow(t)
+			}
+			demo, clean := testingClientService(t, client)
+			defer clean()
+			logToken := testingLogToken(t, demo)
+			req := &LogStream_Request{
+				LogToken: logToken,
+			}
+			go func(maxIteration int) {
+				for i := 0; i < maxIteration; i++ {
+					data := []byte(fmt.Sprintf("Hello log number %d!", i))
+					_ = testingAdd(t, demo, logToken, data)
+				}
+			}(tc.Iteration) // @FIXME(gfanton): wait at last 100millisecond, if not
+			// set test may fail unable to find the first log
+			time.Sleep(tc.Sleep + (time.Millisecond * 100))
+			logClient, err := demo.LogStream(context.Background(), req)
+			checkErr(t, err)
+			defer logClient.CloseSend()
+			for i := 0; i < tc.Iteration; i++ {
+				op, err := logClient.Recv()
+				checkErr(t, err)
+				fmt.Println("receiving op #", i, "in test", tc.Iteration)
+				got := op.GetName()
+				shouldGet := "ADD"
+				if got != shouldGet {
+					t.Fatalf("LogStream()->Op.Name = %s; want %s", got, shouldGet)
+				}
+				got = string(op.GetValue())
+				shouldGet = fmt.Sprintf("Hello log number %d!", i)
+				if got != shouldGet {
+					t.Fatalf("LogStream()->Op.Value = %s; want %s", got, shouldGet)
+				}
+				checkErr(t, err)
+			}
+		})
 	}
 }
