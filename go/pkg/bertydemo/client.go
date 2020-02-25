@@ -175,12 +175,16 @@ func decodeStreamOptions(opts *LogStreamOptions) *orbitdb.StreamOptions {
 	if opts == nil {
 		return nil
 	}
+	amount := -1
+	if opts.GetAmount() != 0 {
+		amount = int(opts.GetAmount())
+	}
 	return &orbitdb.StreamOptions{
 		GT:     maybeDecodeCid(opts.GetGT()),
 		GTE:    maybeDecodeCid(opts.GetGTE()),
 		LT:     maybeDecodeCid(opts.GetLT()),
 		LTE:    maybeDecodeCid(opts.GetLTE()),
-		Amount: intPtr(int(opts.GetAmount())),
+		Amount: intPtr(amount),
 	}
 }
 
@@ -208,14 +212,20 @@ func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Re
 func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
 	// Hack using List until go-orbit-db Stream is fixed
 	ctx := srv.Context()
-	log, err := d.logFromToken(ctx, req.GetLogToken())
+	token := req.GetLogToken()
+	log, err := d.logFromToken(ctx, token)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
 	opts := decodeStreamOptions(req.GetOptions())
 	if opts == nil {
-		opts = &orbitdb.StreamOptions{}
+		opts = &orbitdb.StreamOptions{
+			Amount: intPtr(-1),
+		}
 	}
+	fmt.Println("listening on", token, "since", opts.GT)
+	defer fmt.Println("stopped to listen on", token)
+
 	dc := ctx.Done()
 	for {
 		if dc != nil {
@@ -231,17 +241,24 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 		if err != nil {
 			return err
 		}
-		if len(ops) > 0 {
-			for _, op := range ops {
-				pop := convertLogOperationToProtobufLogOperation(op)
+		l := len(ops)
+		if l > 0 {
+			for i := 0; i < l; i++ {
+				pop := convertLogOperationToProtobufLogOperation(ops[i])
 				jsoned, _ := json.Marshal(pop)
-				fmt.Println("Log", log.Address(), "->", string(jsoned))
+				fmt.Println("Log", token, "->", string(jsoned))
 				if err = srv.Send(pop); err != nil {
 					return err
 				}
 			}
-			lastOpCid := ops[len(ops)-1].GetEntry().GetHash()
+			if *opts.Amount != -1 && *opts.Amount <= l {
+				return nil
+			}
+			lastOpCid := ops[l-1].GetEntry().GetHash()
 			opts.GT = &lastOpCid
+			if *opts.Amount != -1 {
+				*opts.Amount -= l
+			}
 		}
 		time.Sleep(1 * time.Second)
 	}
