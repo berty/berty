@@ -237,15 +237,6 @@ const eventHandler = createSlice<State, EventsReducer>({
 			}
 			return state
 		},
-		// using hardcoded string to prevent recursive dependency between account and contact
-		['chat/account/event/deleted']: (state, { payload }) => {
-			for (const id of Object.keys(state.aggregates)) {
-				if (state.aggregates[id] && state.aggregates[id].accountId === payload.aggregateId) {
-					delete state.aggregates[id]
-				}
-			}
-			return state
-		},
 		deleted: (state, { payload }) => {
 			delete state.aggregates[payload.aggregateId]
 			return state
