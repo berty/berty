@@ -1,0 +1,46 @@
+digraph chatmvp {
+	aorbitdb [label="Alice orbit-db"]
+	aprotocol [label="Alice fake protocol"]
+	achat [label="Alice chat app"]
+	borbitdb [label="Bob orbit-db"]
+	bprotocol [label="Bob fake protocol"]
+	bchat [label="Bob chat app"]
+	a [label="Alice\n[START HERE]"]
+	b [label="Bob"]
+
+	# Subscribtion and events transmission (protocol <-> orbit) on account group are ignored
+	# 1to1 group is the group between alice and bob
+	# rdv log is an orbitdb log used to fake the rendezvous point
+	# dashed = do not follow while reading the full flow
+	# all things that are not essential to the e2e contact request process are ignored, for example the fact that groupMessageSubscribe is called at the same time as groupMetadataSubscribe
+	# only shows the case where Alice accepts the request
+
+	aorbitdb -> borbitdb
+	borbitdb -> aorbitdb
+
+	a -> b [label="6) Show/Send QR with Alice reference\nand contact metadata"]
+	b -> bchat [label="7) Scan QR with Alice reference\nand contact metadata"]
+	bchat -> bprotocol [label="8c) Call sendContactRequest\ncommand"]
+	bprotocol -> borbitdb [label="9b) Send Bob fake public key,\n1to1 group fake public key and\ncontact metadata on Alice rdv log"]
+	bchat -> bprotocol [style="dashed" label="8a) Subscribe to\n1to1 group"]
+	bprotocol -> bchat [style="dashed" label="9a) Send contactRequestEnqueued\nevent"]
+	bprotocol -> bchat [style="dashed" label="9c) Send contactRequestSent event"]
+	bprotocol -> borbitdb [style="dashed" label="8b) Subscribe to 1to1\ngroup logs"]
+	borbitdb -> bprotocol [label="16) Send groupMemberDeviceAdded\nevent from the 1to1 group log"]
+	bprotocol -> bchat [label="17) Send groupMemberDeviceAdded\nevent from the 1to1 group"]
+	bchat -> b [label="18) Show that the\nrequest is accepted"]
+
+	a -> achat [label="1) Open app"]
+	achat -> aprotocol [label="2) Call contactRequestEnable\ncommand"]
+	aprotocol -> achat [label="4) Send contactRequestEnabled\nevent with reference"]
+	achat -> a [label="5) Display QR code with reference\nand Alice metadata"]
+	aprotocol -> aorbitdb [style="dashed" label="3) Subscribe to \nAlice rdv log"]
+	aorbitdb -> aprotocol [label="10) Send event with\nbob data from rdv log"]
+	aprotocol -> achat [label="11) Send contactRequestReceived\nevent"]
+	achat -> aprotocol [style="dashed" label="12b) Subscribe to 1to1 group"]
+	aprotocol -> aorbitdb [style="dashed" label="12c) Subscribe to 1to1 group logs"]
+	achat -> a [label="12a) Display contact request"]
+	a -> achat [label="13) Touch accept contact request"]
+	achat -> aprotocol [label="14) Call contactRequestAccept\ncommand"]
+	aprotocol -> aorbitdb [label="15) Send groupMemberDeviceAdded\nevent on the 1to1 group log"]
+}
