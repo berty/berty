@@ -25,8 +25,8 @@ type Form<T> = (arg0: T) => Promise<void>
 const Button: React.FC<{
 	children: string
 	onPress: () => Promise<void> | void
-	style: ViewStyle
-}> = ({ children, onPress, style }) => {
+	style?: ViewStyle
+}> = ({ children, onPress, style = null }) => {
 	const [{ margin, padding, background, color, text, border }] = useStyles()
 	const [loading, setLoading] = React.useState(false)
 	return (
@@ -237,7 +237,11 @@ const SwiperCard: React.FC<{
 					{description}
 				</Text>
 				{children}
-				{button ? <Button onPress={button.onPress}>{button.text}</Button> : null}
+				{button ? (
+					<Button onPress={button.onPress} style={[{}]}>
+						{button.text}
+					</Button>
+				) : null}
 				{skip ? (
 					<TouchableOpacity style={[margin.top.medium]} onPress={skip.onPress}>
 						<Text style={[text.size.small, text.color.grey, text.align.center]}>{skip.text}</Text>
@@ -364,7 +368,7 @@ const Bluetooth: React.FC<{
 )
 
 const SetupFinished: React.FC = () => {
-	const { navigate } = useNavigation()
+	const navigation = useNavigation()
 	return (
 		<Translation>
 			{(t) => (
@@ -373,7 +377,9 @@ const SetupFinished: React.FC = () => {
 					description={t('onboarding.setup-finished.desc')}
 					button={{
 						text: t('onboarding.setup-finished.button'),
-						onPress: navigate.main.list,
+						onPress: () => {
+							navigation.reset()
+						},
 					}}
 				/>
 			)}

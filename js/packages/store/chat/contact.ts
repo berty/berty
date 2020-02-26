@@ -3,6 +3,7 @@ import { composeReducers } from 'redux-compose'
 import { all, select, takeLeading, takeEvery, put, fork, take } from 'redux-saga/effects'
 import * as protocol from '../protocol'
 import { Buffer } from 'buffer'
+import { isDate } from 'util'
 
 export enum ContactRequestType {
 	Incoming,
@@ -49,9 +50,11 @@ export type GlobalState = {
 }
 
 export namespace Command {
-	export type Delete = { id: string }
 	export type AcceptRequest = { id: string }
 	export type DiscardRequest = { id: string }
+	export type Create = { id: string; name: string }
+	export type Delete = { id: string }
+	export type DeleteAll = void
 }
 
 export namespace Query {
@@ -59,6 +62,7 @@ export namespace Query {
 	export type Get = { id: string }
 	export type GetLength = void
 	export type Search = { accountId: string; searchText: string }
+	export type GetWithId = { contactPk: Uint8Array | Buffer; accountId: string }
 }
 
 export namespace Event {
@@ -71,6 +75,7 @@ export type CommandsReducer = {
 	acceptRequest: SimpleCaseReducer<Command.AcceptRequest>
 	discardRequest: SimpleCaseReducer<Command.DiscardRequest>
 	delete: SimpleCaseReducer<Command.Delete>
+	deleteAll: SimpleCaseReducer<Command.DeleteAll>
 }
 
 export type QueryReducer = {
@@ -78,6 +83,7 @@ export type QueryReducer = {
 	get: (state: GlobalState, query: Query.Get) => Entity
 	getLength: (state: GlobalState) => number
 	search: (state: GlobalState, query: Query.Search) => Array<Entity>
+	getWithId: (state: GlobalState, query: Query.GetWithId) => Entity
 }
 
 export type EventsReducer = {
@@ -96,6 +102,7 @@ const commandHandler = createSlice<State, CommandsReducer>({
 		acceptRequest: (state: State) => state,
 		discardRequest: (state: State) => state,
 		delete: (state: State) => state,
+		deleteAll: (state: State) => state,
 	},
 })
 
@@ -239,6 +246,10 @@ const eventHandler = createSlice<State, EventsReducer>({
 			}
 			return state
 		},
+		deleted: (state, { payload }) => {
+			delete state.aggregates[payload.aggregateId]
+			return state
+		},
 	},
 })
 
@@ -257,6 +268,8 @@ export const queries: QueryReducer = {
 						contact.name.toLowerCase().includes(searchText.toLowerCase()),
 			  )
 			: [],
+	getWithId: (state, { contactPk, accountId }) =>
+		state.chat.contact.aggregates[getAggregateId({ accountId, contactPk })],
 }
 
 export type Transactions = {
@@ -320,6 +333,13 @@ export const transactions: Transactions = {
 				contactPk: decodePublicKey(contact.publicKey),
 			}),
 		)
+	},
+	deleteAll: function*() {
+		const contacts = (yield select(queries.list)) as Entity[]
+
+		for (const contact of contacts) {
+			yield* transactions.delete({ id: contact.id })
+		}
 	},
 }
 

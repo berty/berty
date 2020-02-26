@@ -1,15 +1,25 @@
 import React from 'react'
-import { Text, TouchableOpacity, View, ViewProps, SafeAreaView, ScrollView } from 'react-native'
+import {
+	Text,
+	TouchableOpacity,
+	View,
+	ViewProps,
+	SafeAreaView,
+	ScrollView,
+	TouchableHighlight,
+} from 'react-native'
 import { Translation } from 'react-i18next'
-import { google } from '@berty-tech/api'
+import { google, berty } from '@berty-tech/api'
 import { useLayout } from '../hooks'
 import { Footer } from './Footer'
 import { useStyles } from '@berty-tech/styles'
-import { CircleAvatar } from '../shared-components/CircleAvatar'
+import { CircleAvatar, ConversationAvatar } from '../shared-components/CircleAvatar'
 import { Chat } from '@berty-tech/hooks'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { chat } from '@berty-tech/store'
 import * as dateFns from '@berty-tech/berty-i18n/dateFns'
+import { Icon } from 'react-native-ui-kitten'
+import { conversation } from '@berty-tech/store/chat'
 
 type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
 
@@ -20,6 +30,12 @@ type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
 type RequestsProps = ViewProps & {
 	items: Array<chat.contact.Entity>
 }
+
+type ConversationsProps = ViewProps & {
+	items: Array<chat.conversation.Entity>
+}
+
+type ConversationsItemProps = chat.conversation.Entity
 
 // Functions
 
@@ -42,6 +58,8 @@ const RequestsItem: React.FC<{
 	const [
 		{ border, padding, margin, width, height, column, row, background, absolute, text },
 	] = useStyles()
+	const conversationCreate = Chat.useConversationCreate()
+	const { navigate } = useNavigation()
 	return (
 		<Translation>
 			{(t): React.ReactNode => (
@@ -102,8 +120,8 @@ const RequestsItem: React.FC<{
 								padding.horizontal.tiny,
 								margin.left.tiny,
 							]}
-							onPress={(): void => {
-								accept({ id })
+							onPress={async () => {
+								await accept({ id })
 							}}
 						>
 							<Text style={[text.size.tiny, text.color.blue, row.item.justify, padding.small]}>
@@ -118,7 +136,6 @@ const RequestsItem: React.FC<{
 }
 
 const ContactRequestsItem: React.FC<chat.contact.Entity> = ({ id, name }) => {
-	const { navigate } = useNavigation()
 	const accept = Chat.useAcceptContactRequest()
 	const decline = Chat.useDiscardContactRequest()
 	return (
@@ -153,6 +170,114 @@ const Requests: React.FC<RequestsProps> = ({ items, style, onLayout }) => {
 	) : null
 }
 
+const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
+	const { navigate } = useNavigation()
+	const { createdAt, title, kind } = props
+	const [
+		{ color, row, border, width, height, flex, column, padding, margin, text, background },
+	] = useStyles()
+	return (
+		<TouchableHighlight
+			underlayColor={color.light.grey}
+			style={[padding.horizontal.medium]}
+			onPress={
+				kind === berty.chatmodel.Conversation.Kind.PrivateGroup
+					? navigate.chat.group
+					: navigate.chat.one2One
+			}
+		>
+			<View
+				style={[row.center, border.bottom.medium, border.color.light.grey, padding.vertical.small]}
+			>
+				<ConversationAvatar {...props} size={50} style={[padding.tiny, row.item.justify]} />
+				<View style={[flex.big, column.fill, padding.small]}>
+					<View style={[row.fill]}>
+						<View style={[row.left]}>
+							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
+								{title || ''}
+							</Text>
+							<Icon
+								style={margin.left.small}
+								name='checkmark-circle-2'
+								width={15}
+								height={15}
+								fill={color.blue}
+							/>
+						</View>
+						<View style={[row.right]}>
+							<View
+								style={[
+									background.red,
+									row.center,
+									width(15),
+									height(15),
+									border.radius.scale(15 / 2),
+								]}
+							>
+								<Text
+									style={[
+										row.item.justify,
+										text.color.white,
+										text.bold,
+										text.align.center,
+										text.align.justify,
+										text.size.tiny,
+									]}
+								>
+									2
+								</Text>
+							</View>
+							<Text style={[padding.left.small, text.size.small, text.color.grey]}>
+								{createdAt}
+							</Text>
+							<View style={[padding.left.small]}>
+								<Icon name='paper-plane' width={12} height={12} fill={color.blue} />
+							</View>
+						</View>
+					</View>
+					<Text numberOfLines={1} style={[text.size.small, text.color.grey]}>
+						Salut je voulais savoir comment tu allais mais finalement j'ai pas envie de savoir ta
+						reponse
+					</Text>
+				</View>
+			</View>
+		</TouchableHighlight>
+	)
+}
+
+const Conversations: React.FC<ConversationsProps> = ({ items }) => {
+	const [{ overflow, border, padding, margin, text, background }] = useStyles()
+	return items.length ? (
+		<Translation>
+			{(t): React.ReactNode => (
+				<ScrollView
+					style={[overflow, border.shadow.medium]}
+					contentContainerStyle={[background.white, border.radius.big]}
+				>
+					<SafeAreaView>
+						<View style={[padding.bottom.scale(80)]}>
+							<Text
+								style={[
+									text.color.black,
+									text.size.huge,
+									text.bold,
+									padding.medium,
+									margin.horizontal.medium,
+								]}
+							>
+								{t('main.messages.title')}
+							</Text>
+							{items.map((_) => {
+								return <ConversationsItem {..._} />
+							})}
+						</View>
+					</SafeAreaView>
+				</ScrollView>
+			)}
+		</Translation>
+	) : null
+}
+
 export const List: React.FC<ScreenProps.Chat.List> = () => {
 	const navigation = useNavigation()
 	// TODO: do something to animate the requests
@@ -161,12 +286,14 @@ export const List: React.FC<ScreenProps.Chat.List> = () => {
 	const requests = Chat.useAccountContactsWithIncomingRequests().filter(
 		(contact) => !(contact.request.accepted || contact.request.discarded),
 	)
+	const conversations = Chat.useConversationList()
 
 	const [{ absolute, background }] = useStyles()
 
 	return (
 		<View style={[absolute.fill, background.blue]}>
 			<Requests items={requests} onLayout={onLayoutRequests} />
+			<Conversations items={conversations} />
 			<Footer {...navigation} />
 		</View>
 	)

@@ -4,8 +4,9 @@ import { fork, put, all, takeLeading, select, takeEvery, take } from 'redux-saga
 import faker from 'faker'
 import { Buffer } from 'buffer'
 import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
+import AsyncStorage from '@react-native-community/async-storage'
 
-import * as contact from './contact'
+import { contact, conversation } from '../chat'
 import * as protocol from '../protocol'
 
 export type Entity = {
@@ -182,7 +183,6 @@ export const transactions: Transactions = {
 		// create an id for the account
 		const id = simpleflake().toString()
 
-		// send created event to protocol
 		const event = events.created({
 			aggregateId: id,
 			name,
@@ -199,20 +199,7 @@ export const transactions: Transactions = {
 		})
 	},
 	delete: function*({ id }) {
-		// get account PKs
-		const client = yield* getProtocolClient(id)
-
-		// send deleted event to protocol
-		const event = events.deleted({
-			aggregateId: id,
-		})
-		yield* protocol.transactions.client.appMetadataSend({
-			id,
-			groupPk: new Buffer(client.accountGroupPk),
-			payload: new Buffer(JSON.stringify(event)),
-		})
-
-		yield* protocol.transactions.client.delete({ id })
+		AsyncStorage.clear()
 	},
 	replay: function*({ id }) {
 		const account = select((state) => queries.get(state, { id }))
