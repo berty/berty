@@ -378,7 +378,7 @@ const SetupFinished: React.FC = () => {
 					button={{
 						text: t('onboarding.setup-finished.button'),
 						onPress: () => {
-							navigation.reset()
+							navigation.reset('Onboarding')
 						},
 					}}
 				/>

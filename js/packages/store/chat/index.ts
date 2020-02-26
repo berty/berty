@@ -47,7 +47,15 @@ export function* rootSaga() {
 	}
 }
 
-const reducer = combineReducers(reducers)
+const combinedReducer = combineReducers(reducers)
+// Check if CLEAR_STORE
+const reducer = (state: any, action: any) => {
+	if (action.type === 'CLEAR_STORE') {
+		return combinedReducer(undefined, action)
+	} else {
+		return combinedReducer(state, action)
+	}
+}
 
 const _recorder = createRecorder({
 	reducer,

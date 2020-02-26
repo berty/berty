@@ -4,9 +4,8 @@ import { fork, put, all, takeLeading, select, takeEvery, take } from 'redux-saga
 import faker from 'faker'
 import { Buffer } from 'buffer'
 import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
-import AsyncStorage from '@react-native-community/async-storage'
 
-import { contact, conversation } from '../chat'
+import { contact } from '../chat'
 import * as protocol from '../protocol'
 
 export type Entity = {
@@ -199,7 +198,7 @@ export const transactions: Transactions = {
 		})
 	},
 	delete: function*({ id }) {
-		AsyncStorage.clear()
+		yield put({ type: 'CLEAR_STORE' })
 	},
 	replay: function*({ id }) {
 		const account = select((state) => queries.get(state, { id }))
@@ -274,7 +273,8 @@ export function* orchestrator() {
 		takeLeading(commands.generate, function*(action) {
 			yield* transactions.generate(action.payload)
 		}),
-		takeLeading(commands.create, function*(action) {
+		// TODO: fix create account with takeLeading
+		takeEvery(commands.create, function*(action) {
 			yield* transactions.create(action.payload)
 		}),
 		takeLeading(commands.delete, function*(action) {

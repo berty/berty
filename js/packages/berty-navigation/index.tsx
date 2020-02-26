@@ -128,18 +128,25 @@ const createNavigation = ({
 	navigate,
 	goBack,
 	dispatch,
-	reset,
 }: NavigationProp<any> | BottomTabNavigationProp<any>) => {
-	console.log(reset)
 	return {
 		goBack: () => goBack(),
-		reset: () => {
-			dispatch(
-				CommonActions.reset({
-					routes: [{ name: Routes.Onboarding.GetStarted }, { name: Routes.Main.List }],
-				}),
-			)
-			dispatch(CommonActions.navigate(Routes.Main.List))
+		reset: (type: string) => {
+			if (type === 'Onboarding') {
+				dispatch(
+					CommonActions.reset({
+						routes: [{ name: Routes.Onboarding.GetStarted }],
+					}),
+				)
+				dispatch(CommonActions.navigate(Routes.Main.List))
+			} else {
+				dispatch(
+					CommonActions.reset({
+						routes: [{ name: Routes.Main.List }],
+					}),
+				)
+				dispatch(CommonActions.navigate(Routes.Onboarding.GetStarted))
+			}
 		},
 		navigate: {
 			onboarding: {
@@ -424,6 +431,7 @@ export const TabNavigation: React.FC = () => {
 	)
 }
 
+// TODO: fix navigation with switchNavigator
 const NavigationStack = createStackNavigator()
 export const Navigation: React.FC = () => {
 	const length = ChatHooks.useAccountLength()
