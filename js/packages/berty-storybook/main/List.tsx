@@ -15,7 +15,8 @@ import { Footer } from './Footer'
 import { useStyles } from '@berty-tech/styles'
 import { CircleAvatar, ConversationAvatar } from '../shared-components/CircleAvatar'
 import { Chat } from '@berty-tech/hooks'
-import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
+import { ScreenProps, useNavigation, Routes } from '@berty-tech/berty-navigation'
+import { CommonActions } from '@react-navigation/core'
 import { chat } from '@berty-tech/store'
 import * as dateFns from '@berty-tech/berty-i18n/dateFns'
 import { Icon } from 'react-native-ui-kitten'
@@ -170,8 +171,8 @@ const Requests: React.FC<RequestsProps> = ({ items, style, onLayout }) => {
 }
 
 const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
-	const { navigate } = useNavigation()
-	const { createdAt, title, kind } = props
+	const { navigate, dispatch } = useNavigation()
+	const { createdAt, title, kind, id } = props
 	const [
 		{ color, row, border, width, height, flex, column, padding, margin, text, background },
 	] = useStyles()
@@ -181,8 +182,24 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			style={[padding.horizontal.medium]}
 			onPress={
 				kind === berty.chatmodel.Conversation.Kind.PrivateGroup
-					? navigate.chat.group
-					: navigate.chat.one2One
+					? () =>
+							dispatch(
+								CommonActions.navigate({
+									name: Routes.Chat.Group,
+									params: {
+										convId: id,
+									},
+								}),
+							)
+					: () =>
+							dispatch(
+								CommonActions.navigate({
+									name: Routes.Chat.One2One,
+									params: {
+										convId: id,
+									},
+								}),
+							)
 			}
 		>
 			<View

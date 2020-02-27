@@ -38,6 +38,28 @@ export const Provider: React.FC<{ config: chat.InitConfig }> = ({ config, childr
 	)
 }
 
+// messages commands
+export const useMessageSend = () => {
+	const dispatch = useDispatch()
+	return useMemo(
+		() => (payload: chat.message.Command.Send) => dispatch(chat.message.commands.send(payload)),
+		[dispatch],
+	)
+}
+
+export const useMessageHide = () => {
+	const dispatch = useDispatch()
+	return useMemo(() => () => dispatch(chat.message.commands.hide()), [dispatch])
+}
+
+export const useMessageDelete = () => {
+	const dispatch = useDispatch()
+	return useMemo(
+		() => (payload: chat.message.Command.Delete) => dispatch(chat.message.commands.delete(payload)),
+		[dispatch],
+	)
+}
+
 // account queries
 export const useAccountList = () => {
 	const list = useSelector((state: chat.account.GlobalState) =>
@@ -220,8 +242,17 @@ export const useConversationLength = () => {
 	return useConversationList().length
 }
 
-export const useConversation = () => {
-	const conversations = useConversationList()
-	const len = useConversationLength()
-	return len > 0 ? conversations[0] : null
+export const useGetConversation = (id: string): chat.conversation.Entity => {
+	const conversation = useSelector((state: chat.conversation.GlobalState) =>
+		chat.conversation.queries.get(state, { id }),
+	)
+	return conversation
+}
+
+// messages queries
+export const useGetMessage = (id: string): chat.message.Entity => {
+	const message = useSelector((state: chat.message.GlobalState) =>
+		chat.message.queries.get(state, { id }),
+	)
+	return message
 }

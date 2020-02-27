@@ -1,12 +1,21 @@
-import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, takeLeading } from 'redux-saga/effects'
+import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { all, takeLeading, put, takeEvery, select } from 'redux-saga/effects'
+import { Buffer } from 'buffer'
+
+import * as protocol from '../protocol'
+import { conversation } from '../chat'
+import {
+	UserMessage,
+	UserReaction,
+	GroupInvitation,
+	AppMessageType,
+	AppMessage,
+} from './AppMessage'
 
 export type Entity = {
-	body: string
-	reactions: Array<{ member: number; emoji: string }>
-	attachments: Array<{ uri: string }>
-}
+	id: string
+} & (UserMessage | UserReaction | GroupInvitation)
 
 export type Event = {
 	id: string
@@ -26,7 +35,8 @@ export type GlobalState = {
 }
 
 export namespace Command {
-	export type Send = void
+	export type Delete = { id: string }
+	export type Send = AppMessage & { id: string }
 	export type Hide = void
 }
 
@@ -37,13 +47,17 @@ export namespace Query {
 }
 
 export namespace Event {
-	export type Sent = { aggregateId: string; name: string }
+	export type Deleted = { aggregateId: string }
+	export type Sent = { aggregateId: string; payload: UserMessage | UserReaction | GroupInvitation }
 	export type Hidden = { aggregateId: string }
 }
 
+type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
+
 export type CommandsReducer = {
-	send: (state: State) => State
-	hide: (state: State) => State
+	delete: SimpleCaseReducer<Command.Delete>
+	send: SimpleCaseReducer<Command.Send>
+	hide: SimpleCaseReducer<Command.Hide>
 }
 
 export type QueryReducer = {
@@ -53,8 +67,15 @@ export type QueryReducer = {
 }
 
 export type EventsReducer = {
-	sent: (state: State) => State
-	hidden: (state: State) => State
+	deleted: SimpleCaseReducer<Event.Deleted>
+	sent: SimpleCaseReducer<Event.Sent>
+	hidden: SimpleCaseReducer<Event.Hidden>
+}
+
+export type Transactions = {
+	[K in keyof CommandsReducer]: CommandsReducer[K] extends SimpleCaseReducer<infer TPayload>
+		? (payload: TPayload) => Generator
+		: never
 }
 
 const initialState: State = {
@@ -66,8 +87,9 @@ const commandHandler = createSlice<State, CommandsReducer>({
 	name: 'chat/message/command',
 	initialState,
 	reducers: {
-		send: (state: State) => state,
-		hide: (state: State) => state,
+		delete: (state) => state,
+		send: (state) => state,
+		hide: (state) => state,
 	},
 })
 
@@ -75,8 +97,35 @@ const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/message/event',
 	initialState,
 	reducers: {
-		sent: (state: State) => state,
-		hidden: (state: State) => state,
+		sent: (state, { payload }) => {
+			if (payload.payload.type === AppMessageType.UserMessage) {
+				console.log('received message', payload)
+				state.aggregates[payload.aggregateId] = {
+					id: payload.aggregateId,
+					type: payload.payload.type,
+					body: payload.payload.body,
+					attachments: [],
+				}
+			} else if (payload.payload.type === AppMessageType.UserReaction) {
+				state.aggregates[payload.aggregateId] = {
+					id: payload.aggregateId,
+					type: payload.payload.type,
+					emoji: payload.payload.emoji,
+				}
+			} else if (payload.payload.type === AppMessageType.GroupInvitation) {
+				state.aggregates[payload.aggregateId] = {
+					id: payload.aggregateId,
+					type: payload.payload.type,
+					groupPk: payload.payload.groupPk,
+				}
+			}
+			return state
+		},
+		hidden: (state) => state,
+		deleted: (state, { payload }) => {
+			delete state.aggregates[payload.aggregateId]
+			return state
+		},
 	},
 })
 
@@ -89,15 +138,83 @@ export const queries: QueryReducer = {
 	getLength: (state) => Object.keys(state.chat.message.aggregates).length,
 }
 
+const getAggregateId: (kwargs: { accountId: string; groupPk: Uint8Array }) => string = ({
+	accountId,
+	groupPk,
+}) => Buffer.concat([Buffer.from(accountId, 'utf-8'), Buffer.from(groupPk)]).toString('base64')
+
+export const transactions: Transactions = {
+	delete: function*({ id }) {
+		yield put(
+			events.deleted({
+				aggregateId: id,
+			}),
+		)
+	},
+	send: function*(payload) {
+		// Recup the conv
+		const conv = (yield select((state) =>
+			conversation.queries.get(state, { id: payload.id }),
+		)) as conversation.Entity
+		if (!conv) {
+			return
+		}
+
+		if (payload.type === AppMessageType.UserMessage) {
+			const message: UserMessage = {
+				type: AppMessageType.UserMessage,
+				body: payload.body,
+				attachments: payload.attachments,
+			}
+
+			yield* protocol.transactions.client.appMessageSend({
+				id: conv.accountId,
+				groupPk: Buffer.from(conv.pk, 'utf-8'),
+				payload: Buffer.from(JSON.stringify(message), 'utf-8'),
+			})
+		}
+	},
+	hide: function*() {
+		// TODO: hide a message
+	},
+}
+
 export function* orchestrator() {
 	yield all([
-		takeLeading(commands.send, function*() {
-			// TODO: send message
-			// yield put(events.sent())
+		takeLeading(commands.delete, function*({ payload }) {
+			yield* transactions.delete(payload)
 		}),
-		takeLeading(commands.hide, function*() {
-			// TODO: hide message
-			// yield put(events.hidden())
+		takeLeading(commands.send, function*({ payload }) {
+			yield* transactions.send(payload)
+		}),
+		takeLeading(commands.hide, function*({ payload }) {
+			yield* transactions.hide(payload)
+		}),
+		takeEvery('protocol/GroupMessageEvent', function*(action) {
+			const message = JSON.parse(new Buffer(action.payload.message).toString('utf-8'))
+			// create an id for the message
+			const aggregateId = Buffer.from(action.payload.eventContext.id).toString('utf-8')
+			// create the message entity
+			const existingMessage = (yield select((state) => queries.get(state, { id: aggregateId }))) as
+				| Entity
+				| undefined
+			if (existingMessage) {
+				return
+			}
+			yield put(
+				events.sent({
+					aggregateId,
+					payload: message,
+				}),
+			)
+			// add message to correspondant conversation
+			yield* conversation.transactions.addMessage({
+				aggregateId: getAggregateId({
+					accountId: action.payload.aggregateId,
+					groupPk: action.payload.eventContext.groupPk,
+				}),
+				messageId: aggregateId,
+			})
 		}),
 	])
 }

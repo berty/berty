@@ -12,11 +12,11 @@ export type Entity = {
 	id: string
 	accountId: string
 	title: string
-	pk: string | null
+	pk: string
 	kind: berty.chatmodel.Conversation.Kind // Unknown, Self, OneToOne, PrivateGroup
 	createdAt: google.protobuf.ITimestamp | string
 	members: Array<number>
-	messages: Array<number>
+	messages: Array<string>
 }
 
 export type Event = {
@@ -45,6 +45,7 @@ export namespace Command {
 	}
 	export type Delete = { id: string }
 	export type DeleteAll = void
+	export type AddMessage = { aggregateId: string; messageId: string }
 }
 
 export namespace Query {
@@ -65,6 +66,7 @@ export namespace Event {
 		aggregateId: string
 		name: string
 	}
+	export type MessageAdded = { aggregateId: string; messageId: string }
 }
 
 type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
@@ -74,6 +76,7 @@ export type CommandsReducer = {
 	create: SimpleCaseReducer<Command.Create>
 	delete: SimpleCaseReducer<Command.Delete>
 	deleteAll: SimpleCaseReducer<Command.DeleteAll>
+	addMessage: SimpleCaseReducer<Command.AddMessage>
 }
 
 export type QueryReducer = {
@@ -86,6 +89,7 @@ export type EventsReducer = {
 	created: SimpleCaseReducer<Event.Created>
 	deleted: SimpleCaseReducer<Event.Deleted>
 	nameUpdated: SimpleCaseReducer<Event.NameUpdated>
+	messageAdded: SimpleCaseReducer<Event.MessageAdded>
 }
 
 export type Transactions = {
@@ -107,6 +111,7 @@ const commandHandler = createSlice<State, CommandsReducer>({
 		create: (state) => state,
 		delete: (state) => state,
 		deleteAll: (state) => state,
+		addMessage: (state) => state,
 	},
 })
 
@@ -133,7 +138,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 					id,
 					accountId,
 					title,
-					pk: new Buffer(pk).toString('base64'),
+					pk: new Buffer(pk).toString(),
 					kind,
 					createdAt: '9:21',
 					members: [],
@@ -147,6 +152,13 @@ const eventHandler = createSlice<State, EventsReducer>({
 			if (state.aggregates[aggregateId]) {
 				state.aggregates[aggregateId].title = name
 			}
+			return state
+		},
+		messageAdded: (state, { payload }) => {
+			if (!state.aggregates[payload.aggregateId].messages) {
+				state.aggregates[payload.aggregateId].messages = []
+			}
+			state.aggregates[payload.aggregateId].messages.push(payload.messageId)
 			return state
 		},
 	},
@@ -176,6 +188,20 @@ export const transactions: Transactions = {
 			if (pk) {
 				yield fork(function*() {
 					const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
+						id: accountId,
+						groupPk: encodePublicKey(pk),
+						// TODO: use last cursor
+						since: new Uint8Array(),
+						until: new Uint8Array(),
+						goBackwards: false,
+					})
+					while (1) {
+						const action = yield take(chan)
+						yield put(action)
+					}
+				})
+				yield fork(function*() {
+					const chan = yield* protocol.transactions.client.groupMessageSubscribe({
 						id: accountId,
 						groupPk: encodePublicKey(pk),
 						// TODO: use last cursor
@@ -253,6 +279,14 @@ export const transactions: Transactions = {
 			yield* transactions.delete({ id: conversation.id })
 		}
 	},
+	addMessage: function*({ aggregateId, messageId }) {
+		yield put(
+			events.messageAdded({
+				aggregateId,
+				messageId,
+			}),
+		)
+	},
 }
 
 export function* orchestrator() {
@@ -269,11 +303,14 @@ export function* orchestrator() {
 		takeLeading(commands.deleteAll, function*() {
 			yield* transactions.deleteAll()
 		}),
+		takeLeading(commands.addMessage, function*(action) {
+			yield* transactions.addMessage(action.payload)
+		}),
 		// Events
 		takeEvery(protocol.events.client.accountContactRequestIncomingAccepted, function*({ payload }) {
 			const {
-				event: { contactPk, groupPk },
 				aggregateId: accountId,
+				event: { contactPk, groupPk },
 			} = payload
 			// Recup the request (for requester name)
 			const request = (yield select((state) =>
@@ -324,18 +361,34 @@ export function* orchestrator() {
 					kind: berty.chatmodel.Conversation.Kind.PrivateGroup,
 				}),
 			)
-			const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
-				id: accountId,
-				groupPk: publicKey,
-				// TODO: use last cursor
-				since: new Uint8Array(),
-				until: new Uint8Array(),
-				goBackwards: false,
+			yield fork(function*() {
+				const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
+					id: accountId,
+					groupPk: publicKey,
+					// TODO: use last cursor
+					since: new Uint8Array(),
+					until: new Uint8Array(),
+					goBackwards: false,
+				})
+				while (1) {
+					const action = yield take(chan)
+					yield put(action)
+				}
 			})
-			while (1) {
-				const action = yield take(chan)
-				yield put(action)
-			}
+			yield fork(function*() {
+				const chan = yield* protocol.transactions.client.groupMessageSubscribe({
+					id: accountId,
+					groupPk: publicKey,
+					// TODO: use last cursor
+					since: new Uint8Array(),
+					until: new Uint8Array(),
+					goBackwards: false,
+				})
+				while (1) {
+					const action = yield take(chan)
+					yield put(action)
+				}
+			})
 		}),
 		takeEvery(protocol.events.client.groupMetadataPayloadSent, function*({ payload }) {
 			const {

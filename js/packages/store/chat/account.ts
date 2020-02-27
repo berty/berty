@@ -5,7 +5,7 @@ import faker from 'faker'
 import { Buffer } from 'buffer'
 import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
 
-import { contact } from '../chat'
+import { contact, conversation } from '../chat'
 import * as protocol from '../protocol'
 
 export type Entity = {
@@ -153,6 +153,7 @@ export const getProtocolClient = function*(id: string): Generator<unknown, proto
 export const transactions: Transactions = {
 	open: function*({ id }) {
 		yield* protocol.transactions.client.start({ id })
+		yield* conversation.transactions.open({ accountId: id })
 
 		// subcribe to account log
 		const client = yield* getProtocolClient(id)
@@ -197,7 +198,7 @@ export const transactions: Transactions = {
 			payload: new Buffer(JSON.stringify(event)),
 		})
 	},
-	delete: function*({ id }) {
+	delete: function*() {
 		yield put({ type: 'CLEAR_STORE' })
 	},
 	replay: function*({ id }) {

@@ -289,6 +289,20 @@ export const transactions: Transactions = {
 						yield put(action)
 					}
 				})
+				yield fork(function*() {
+					const chan = yield* protocol.transactions.client.groupMessageSubscribe({
+						id: accountId,
+						groupPk: decodePublicKey(groupPk),
+						// TODO: use last cursor
+						since: new Uint8Array(),
+						until: new Uint8Array(),
+						goBackwards: false,
+					})
+					while (1) {
+						const action = yield take(chan)
+						yield put(action)
+					}
+				})
 			}
 		}
 	},
@@ -335,35 +349,66 @@ export const transactions: Transactions = {
 export function* orchestrator() {
 	yield all([
 		takeEvery(protocol.events.client.accountContactRequestOutgoingEnqueued, function*(action) {
-			const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
-				id: action.payload.aggregateId,
-				groupPk: action.payload.event.groupPk,
-				since: new Uint8Array(),
-				until: new Uint8Array(),
-				goBackwards: false,
+			yield fork(function*() {
+				const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
+					id: action.payload.aggregateId,
+					groupPk: action.payload.event.groupPk,
+					since: new Uint8Array(),
+					until: new Uint8Array(),
+					goBackwards: false,
+				})
+				while (1) {
+					const action = yield take(chan)
+					yield put(action)
+				}
 			})
-			while (1) {
-				const action = yield take(chan)
-				yield put(action)
-			}
+			yield fork(function*() {
+				const chan = yield* protocol.transactions.client.groupMessageSubscribe({
+					id: action.payload.aggregateId,
+					groupPk: action.payload.event.groupPk,
+					since: new Uint8Array(),
+					until: new Uint8Array(),
+					goBackwards: false,
+				})
+				while (1) {
+					const action = yield take(chan)
+					yield put(action)
+				}
+			})
 		}),
 		takeEvery(protocol.events.client.accountContactRequestIncomingAccepted, function*({ payload }) {
 			const {
 				event: { groupPk },
 				aggregateId: accountId,
 			} = payload
-			const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
-				id: accountId,
-				groupPk: groupPk,
-				// TODO: use last cursor
-				since: new Uint8Array(),
-				until: new Uint8Array(),
-				goBackwards: false,
+			yield fork(function*() {
+				const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
+					id: accountId,
+					groupPk: groupPk,
+					// TODO: use last cursor
+					since: new Uint8Array(),
+					until: new Uint8Array(),
+					goBackwards: false,
+				})
+				while (1) {
+					const action = yield take(chan)
+					yield put(action)
+				}
 			})
-			while (1) {
-				const action = yield take(chan)
-				yield put(action)
-			}
+			yield fork(function*() {
+				const chan = yield* protocol.transactions.client.groupMessageSubscribe({
+					id: accountId,
+					groupPk: groupPk,
+					// TODO: use last cursor
+					since: new Uint8Array(),
+					until: new Uint8Array(),
+					goBackwards: false,
+				})
+				while (1) {
+					const action = yield take(chan)
+					yield put(action)
+				}
+			})
 		}),
 		takeEvery(protocol.events.client.groupMetadataPayloadSent, function*({ payload }) {
 			const { aggregateId: accountId } = payload

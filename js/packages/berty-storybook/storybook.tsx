@@ -82,9 +82,7 @@ stories
 	.add(Routes.Main.ScanRequest, () => <Main.ScanRequest user={fakeOneUser} />)
 	.add(Routes.Main.Scan, () => <Main.Scan />)
 	.add(Routes.Main.InvalidScan, () => <Main.InvalidScan />)
-	.add(Routes.Chat.One2One, () => (
-		<Chat.Chat route={{ params: faker.berty.chatmodel.Conversation[0] }} />
-	))
+	.add(Routes.Chat.One2One, () => <Chat.Chat />)
 	.add(Routes.Chat.Group, () => (
 		<Chat.ChatGroup route={{ params: faker.berty.chatmodel.Conversation[0] }} />
 	))

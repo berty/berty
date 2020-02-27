@@ -13,6 +13,7 @@ import { useStyles } from '@berty-tech/styles'
 import { Message } from './shared-components/Message'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
+import { Chat as ChatHooks } from '@berty-tech/hooks'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { berty } from '@berty-tech/api'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
@@ -68,9 +69,22 @@ const InfosChat: React.FC<{}> = () => {
 
 const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
-const MessageList: React.FC<berty.chatmodel.IConversation> = (props) => {
+const AppMessage: React.FC<{ message: string }> = ({ message }) => {
+	const [{ color }] = useStyles()
+	return (
+		<Message
+			payload={ChatHooks.useGetMessage(message)}
+			date='9:42'
+			color={color.blue}
+			bgColor='#CED2FF99'
+		/>
+	)
+}
+
+const MessageList: React.FC<{ id: string }> = (props) => {
 	const [cursors, setCursor] = useState([0])
 	const [{ row, overflow, flex, color }] = useStyles()
+	const conversation = ChatHooks.useGetConversation(props.id)
 
 	return (
 		<FlatList
@@ -79,36 +93,29 @@ const MessageList: React.FC<berty.chatmodel.IConversation> = (props) => {
 			inverted
 			ListFooterComponent={<InfosChat />}
 			renderItem={() => (
-				<Store.MessageList
-					request={{ filter: { conversationId: props.id } }}
-					fallback={MessageListSpinner}
-				>
-					{(_) =>
-						_.map((_) => (
-							<Message
-								{..._.message}
-								date='9:42'
-								message='Bonkur fjhfjhefefbe hjfgvddd g hjheg jgjhgjehgjhg jhge jhghdjkwlfuy wtyrygv gg hrhg rjygr'
-								color={color.blue}
-								bgColor='#CED2FF99'
-							/>
-						))
-					}
-				</Store.MessageList>
+				<View>
+					{conversation &&
+						conversation.messages &&
+						conversation.messages.map((message) => <AppMessage message={message} />)}
+				</View>
 			)}
 		/>
 	)
 }
 
-export const Chat: React.FC<ScreenProps.Chat.One2One> = ({ route: { params } }) => {
+export const Chat: React.FC<{ route: any }> = ({ route }) => {
 	const [inputIsFocused, setInputFocus] = useState(true)
 	const [{ flex, background }] = useStyles()
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white]}>
 			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
-				<ChatHeader {...params} />
-				<MessageList {...params} />
-				<ChatFooter isFocused={inputIsFocused} setFocus={setInputFocus} />
+				<ChatHeader />
+				<MessageList id={route.params.convId} />
+				<ChatFooter
+					convId={route.params.convId}
+					isFocused={inputIsFocused}
+					setFocus={setInputFocus}
+				/>
 			</KeyboardAvoidingView>
 		</View>
 	)
