@@ -9,7 +9,6 @@ import (
 	"net"
 	"os"
 	"strings"
-	"time"
 
 	"berty.tech/berty/go/internal/banner"
 	"berty.tech/berty/go/internal/grpcutil"
@@ -26,6 +25,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
+	"moul.io/srand"
 )
 
 func main() {
@@ -49,7 +49,7 @@ func main() {
 	)
 
 	globalPreRun := func() error {
-		rand.Seed(time.Now().UnixNano())
+		rand.Seed(srand.Secure())
 		if *globalDebug {
 			config := zap.NewDevelopmentConfig()
 			config.Level.SetLevel(zap.DebugLevel)
