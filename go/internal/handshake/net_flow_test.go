@@ -15,11 +15,14 @@ import (
 	"github.com/gogo/protobuf/proto"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-var ErrDummy = errors.New("handshake: dummy")
-var ErrNoIncomingMessage = errors.New("handshake: missing incoming message")
-var ErrNotExpectedMsg = errors.New("handshake: not expected message")
+var (
+	ErrDummy             = errors.New("handshake: dummy")
+	ErrNoIncomingMessage = errors.New("handshake: missing incoming message")
+	ErrNotExpectedMsg    = errors.New("handshake: not expected message")
+)
 
 type dummyReader struct {
 	msg *HandshakeFrame
@@ -189,10 +192,10 @@ func Test_Request_Response(t *testing.T) {
 	defer cancel()
 
 	reqPrivateKey, _, err := p2pcrypto.GenerateEd25519Key(rand.Reader)
-	checkErr(t, err, "unable to create an identity")
+	require.NoError(t, err)
 
 	resPrivateKey, _, err := p2pcrypto.GenerateEd25519Key(rand.Reader)
-	checkErr(t, err, "unable to create an identity")
+	require.NoError(t, err)
 
 	wg := sync.WaitGroup{}
 	wg.Add(2)
@@ -203,7 +206,7 @@ func Test_Request_Response(t *testing.T) {
 		defer wg.Done()
 
 		reqProvedKey, err := Request(ctx, reqConn, reqPrivateKey, resPrivateKey.GetPublic())
-		checkErr(t, err, "unable to perform handshake on requester side: %v", err)
+		require.NoError(t, err)
 
 		assert.True(t, reqProvedKey.Equals(resPrivateKey.GetPublic()), "sig chain found on requester side is invalid")
 	}()
@@ -212,7 +215,7 @@ func Test_Request_Response(t *testing.T) {
 		defer wg.Done()
 
 		resProvedKey, err := Response(ctx, resConn, resPrivateKey)
-		checkErr(t, err, "unable to perform handshake on requestee side: %v", err)
+		require.NoError(t, err)
 
 		assert.True(t, resProvedKey.Equals(reqPrivateKey.GetPublic()), "sig chain found on requestee side is invalid")
 	}()

@@ -35,14 +35,6 @@ func testingClientDB(t *testing.T, c Client) *gorm.DB {
 	return typed.db
 }
 
-func checkErr(t *testing.T, err error) {
-	t.Helper()
-
-	if !assert.NoError(t, err) {
-		t.Fatal("fatal")
-	}
-}
-
 func testSameErrcodes(t *testing.T, expected, got error) {
 	t.Helper()
 
