@@ -218,11 +218,11 @@ func TestLogStream(t *testing.T) {
 			// set test may fail unable to find the first log
 			time.Sleep(tc.Sleep + (time.Millisecond * 100))
 			logClient, err := demo.LogStream(context.Background(), req)
-			checkErr(t, err)
+			require.NoError(t, err)
 			defer logClient.CloseSend()
 			for i := 0; i < tc.Iteration; i++ {
 				op, err := logClient.Recv()
-				checkErr(t, err)
+				require.NoError(t, err)
 				fmt.Println("receiving op #", i, "in test", tc.Iteration)
 				got := op.GetName()
 				shouldGet := "ADD"
@@ -234,7 +234,7 @@ func TestLogStream(t *testing.T) {
 				if got != shouldGet {
 					t.Fatalf("LogStream()->Op.Value = %s; want %s", got, shouldGet)
 				}
-				checkErr(t, err)
+				require.NoError(t, err)
 			}
 		})
 	}
