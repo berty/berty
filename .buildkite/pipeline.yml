@@ -122,7 +122,7 @@ steps:
       - "js/packages/berty-app/android/app/build/outputs/bundle/release/app-release.aab"
 
   - label: ios-build
-    if: build.branch == "master" || build.message =~ /\[run ios-build\]/i
+    if: build.message =~ /\[run ios-build\]/i
     agents:
       queue: "macos"
     plugins:
