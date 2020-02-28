@@ -31,6 +31,7 @@ enum ErrCode {
   ErrCryptoKeyConversion = 110;
   ErrMissingMapKey = 111;
   ErrNotAuthorized = 112;
+  ErrUnsupportedKeyType = 113;
 
   ErrOrbitDBInit = 200;
   ErrOrbitDBOpen = 201;

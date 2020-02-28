@@ -1,16 +1,15 @@
 package group
 
 import (
-	cconv "github.com/agl/ed25519/extra25519"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	crypto_pb "github.com/libp2p/go-libp2p-core/crypto/pb"
 	"golang.org/x/crypto/nacl/box"
 
+	"berty.tech/berty/go/internal/cryptoutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 )
 
-func OpenDeviceSecret(m *bertyprotocol.GroupMetadata, localMemberPrivateKey crypto.PrivKey, group *Group) (crypto.PubKey, *bertyprotocol.DeviceSecret, error) {
+func OpenDeviceSecret(m *bertyprotocol.GroupMetadata, localMemberPrivateKey crypto.PrivKey, group *bertyprotocol.Group) (crypto.PubKey, *bertyprotocol.DeviceSecret, error) {
 	if m == nil || m.EventType != bertyprotocol.EventTypeGroupDeviceSecretAdded {
 		return nil, nil, errcode.ErrInvalidInput
 	}
@@ -30,7 +29,7 @@ func OpenDeviceSecret(m *bertyprotocol.GroupMetadata, localMemberPrivateKey cryp
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	mongPriv, mongPub, err := edwardsToMontgomery(localMemberPrivateKey, senderDevicePubKey)
+	mongPriv, mongPub, err := cryptoutil.EdwardsToMontgomery(localMemberPrivateKey, senderDevicePubKey)
 	if err != nil {
 		return nil, nil, errcode.ErrCryptoKeyConversion.Wrap(err)
 	}
@@ -49,7 +48,7 @@ func OpenDeviceSecret(m *bertyprotocol.GroupMetadata, localMemberPrivateKey cryp
 	return senderDevicePubKey, decryptedSecret, nil
 }
 
-func NewSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey crypto.PubKey, secret *bertyprotocol.DeviceSecret, group *Group) ([]byte, error) {
+func NewSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey crypto.PubKey, secret *bertyprotocol.DeviceSecret, group *bertyprotocol.Group) ([]byte, error) {
 	message, err := secret.Marshal()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -60,7 +59,7 @@ func NewSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	mongPriv, mongPub, err := edwardsToMontgomery(localDevicePrivKey, remoteMemberPubKey)
+	mongPriv, mongPub, err := cryptoutil.EdwardsToMontgomery(localDevicePrivKey, remoteMemberPubKey)
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyConversion.Wrap(err)
 	}
@@ -70,7 +69,7 @@ func NewSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey
 	return encryptedSecret, nil
 }
 
-func groupIDToNonce(group *Group) (*[24]byte, error) {
+func groupIDToNonce(group *bertyprotocol.Group) (*[24]byte, error) {
 	// Nonce doesn't need to be secret, random nor unpredictable, it just needs
 	// to be used only once for a given {sender, receiver} set and we will send
 	// only one SecretEntryPayload per {localDevicePrivKey, remoteMemberPubKey}
@@ -81,45 +80,9 @@ func groupIDToNonce(group *Group) (*[24]byte, error) {
 	// See Security Model here: https://nacl.cr.yp.to/box.html
 	var nonce [24]byte
 
-	gid, err := group.PubKey.Bytes()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
+	gid := group.GetPublicKey()
 
 	copy(nonce[:], gid)
 
 	return &nonce, nil
-}
-
-func edwardsToMontgomery(privKey crypto.PrivKey, pubKey crypto.PubKey) (*[32]byte, *[32]byte, error) {
-	var edPriv [64]byte
-	var edPub, mongPriv, mongPub [32]byte
-
-	if privKey.Type() != crypto_pb.KeyType_Ed25519 || pubKey.Type() != crypto_pb.KeyType_Ed25519 {
-		return nil, nil, errcode.ErrInvalidInput
-	}
-
-	privKeyBytes, err := privKey.Raw()
-	if err != nil {
-		return nil, nil, errcode.ErrSerialization.Wrap(err)
-	} else if len(privKeyBytes) != 64 {
-		return nil, nil, errcode.ErrInvalidInput
-	}
-
-	pubKeyBytes, err := pubKey.Raw()
-	if err != nil {
-		return nil, nil, errcode.ErrSerialization.Wrap(err)
-	} else if len(pubKeyBytes) != 32 {
-		return nil, nil, errcode.ErrInvalidInput
-	}
-
-	copy(edPriv[:], privKeyBytes)
-	copy(edPub[:], pubKeyBytes)
-
-	cconv.PrivateKeyToCurve25519(&mongPriv, &edPriv)
-	if !cconv.PublicKeyToCurve25519(&mongPub, &edPub) {
-		return nil, nil, errcode.ErrCryptoKeyConversion.Wrap(err)
-	}
-
-	return &mongPriv, &mongPub, nil
 }

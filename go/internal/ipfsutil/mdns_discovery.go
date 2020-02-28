@@ -18,7 +18,9 @@ type DiscoveryNotifee struct {
 
 func (n *DiscoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	if err := n.api.Swarm().Connect(context.Background(), pi); err != nil {
-		println("HandlePeerFound: Unable to connect to peer", err.Error())
+		_ = err
+		// TODO: log
+		// println("HandlePeerFound: Unable to connect to peer", err.Error())
 	}
 }
 

@@ -10,14 +10,20 @@ import (
 	"time"
 
 	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/go-orbit-db/events"
-	"github.com/whyrusleeping/go-logging"
-
-	ipfslog "github.com/ipfs/go-log"
+	"berty.tech/go-orbit-db/cache/cacheleveldown"
+	"github.com/ipfs/go-datastore"
+	ds_sync "github.com/ipfs/go-datastore/sync"
+	badger "github.com/ipfs/go-ds-badger"
+	"github.com/ipfs/go-ipfs/core"
+	ipfslogger "github.com/ipfs/go-log"
+	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/juju/fslock"
 	"github.com/marcusolsson/tui-go"
 	"github.com/pkg/errors"
+	"github.com/whyrusleeping/go-logging"
 
-	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/account"
+	"berty.tech/berty/go/internal/bertycrypto"
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/internal/orbitutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
@@ -31,8 +37,15 @@ const (
 	messageTypeJoined
 	messageTypeNewDevice
 	messageTypeMessage
+	messageTypeMessageReplayed
 	messageTypeError
 )
+
+type miniOpts struct {
+	groupInvitation string
+	port            uint
+	path            string
+}
 
 type historyMessage struct {
 	messageType messageType
@@ -49,17 +62,26 @@ func pkAsShortID(pk []byte) string {
 	return "--------"
 }
 
-func (h *historyMessage) ToView() *tui.Box {
-	return tui.NewHBox(
-		tui.NewLabel(h.receivedAt.Format("15:04:05")),
-		tui.NewPadder(1, 0, tui.NewLabel(fmt.Sprintf("<%s>", pkAsShortID(h.sender)))),
-		tui.NewLabel(string(h.payload)),
-		tui.NewSpacer(),
-	)
+func replayBadge(m messageType) string {
+	if m != messageTypeMessageReplayed {
+		return ""
+	}
+
+	return "<< "
 }
 
-func createGroup() (*group.Group, error) {
-	g, _, err := group.New()
+func (h *historyMessage) ToView() *tui.Label {
+	textLabel := tui.NewLabel("")
+	textLabel.SetWordWrap(true)
+	text := fmt.Sprintf("%s <%s> %s%s", h.receivedAt.Format("15:04:05"), pkAsShortID(h.sender), replayBadge(h.messageType), string(h.payload))
+
+	textLabel.SetText(text)
+
+	return textLabel
+}
+
+func createGroup() (*bertyprotocol.Group, error) {
+	g, _, err := bertyprotocol.NewGroupMultiMember()
 	if err != nil {
 		return nil, errors.Wrap(err, "error while creating group")
 	}
@@ -67,9 +89,9 @@ func createGroup() (*group.Group, error) {
 	return g, nil
 }
 
-func openGroup(argv []string) (*bertyprotocol.Group, error) {
+func openGroup(opts *miniOpts) (*bertyprotocol.Group, error) {
 	// Read invitation (as base64 on stdin)
-	iB64, err := base64.StdEncoding.DecodeString(argv[0])
+	iB64, err := base64.StdEncoding.DecodeString(opts.groupInvitation)
 	if err != nil {
 		return nil, err
 	}
@@ -83,8 +105,8 @@ func openGroup(argv []string) (*bertyprotocol.Group, error) {
 	return grp, nil
 }
 
-func acquireGroup(argv []string) (*group.Group, error) {
-	create := len(argv) == 0
+func acquireGroup(opts *miniOpts) (*bertyprotocol.Group, error) {
+	create := opts.groupInvitation == ""
 
 	if create {
 		g, err := createGroup()
@@ -94,18 +116,19 @@ func acquireGroup(argv []string) (*group.Group, error) {
 
 		return g, nil
 	}
-	g, err := openGroup(argv)
+	g, err := openGroup(opts)
 	if err != nil {
 		return nil, err
 	}
 
-	return group.FromProtocol(g)
+	return g, nil
 }
 
 type historyMessageList struct {
 	lock    sync.RWMutex
 	view    *tui.Box
 	viewBox *tui.Box
+	ui      tui.UI
 }
 
 func newHistoryMessageList() *historyMessageList {
@@ -115,7 +138,6 @@ func newHistoryMessageList() *historyMessageList {
 	historyScroll.SetAutoscrollToBottom(true)
 
 	historyBox := tui.NewVBox(historyScroll)
-	historyBox.SetBorder(false)
 
 	h := &historyMessageList{
 		view:    history,
@@ -146,7 +168,6 @@ func (h *historyMessageList) AppendErr(err error) {
 		messageType: messageTypeError,
 		payload:     []byte(err.Error()),
 	})
-
 }
 
 func (h *historyMessageList) Append(m *historyMessage) error {
@@ -155,44 +176,108 @@ func (h *historyMessageList) Append(m *historyMessage) error {
 
 	m.receivedAt = time.Now()
 
-	h.view.Append(m.ToView())
+	if h.ui == nil {
+		h.view.Append(m.ToView())
+	} else {
+		h.ui.Update(func() {
+			h.view.Append(m.ToView())
+		})
+	}
 
 	return nil
 }
 
-func initOrbitDB(ctx context.Context) (orbitutil.BertyOrbitDB, error) {
-	p := path.Join(os.TempDir(), fmt.Sprintf("%d", os.Getpid()))
+func (h *historyMessageList) SetUI(ui tui.UI) {
+	h.lock.Lock()
+	defer h.lock.Unlock()
 
-	cfg, err := ipfsutil.CreateBuildConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	api, _, err := ipfsutil.NewConfigurableCoreAPI(ctx, cfg, ipfsutil.OptionMDNSDiscovery)
-	if err != nil {
-		return nil, err
-	}
-
-	odb, err := orbitutil.NewBertyOrbitDB(ctx, api, &orbitdb.NewOrbitDBOptions{Directory: &p})
-	if err != nil {
-		return nil, err
-	}
-
-	return odb, nil
+	h.ui = ui
 }
 
-func initGroup(argv []string) (orbitutil.GroupContext, error) {
-	g, err := acquireGroup(argv)
+func unlockFS(l *fslock.Lock) {
+	if l == nil {
+		return
+	}
+
+	err := l.Unlock()
 	if err != nil {
 		panic(err)
 	}
+}
 
-	omd, err := group.NewOwnMemberDevice()
-	if err != nil {
-		return nil, err
+func panicUnlockFS(err error, l *fslock.Lock) {
+	unlockFS(l)
+	panic(err)
+}
+
+func initOrbitDB(ctx context.Context, opts *miniOpts) (orbitutil.BertyOrbitDB, datastore.Batching, *core.IpfsNode, *fslock.Lock) {
+	var (
+		swarmAddresses []string = nil
+		lock           *fslock.Lock
+	)
+
+	if opts.port != 0 {
+		swarmAddresses = []string{
+			fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", opts.port),
+			fmt.Sprintf("/ip6/0.0.0.0/tcp/%d", opts.port),
+		}
 	}
 
-	return orbitutil.NewGroupContext(g, omd), nil
+	var baseDS datastore.Batching = datastore.NewMapDatastore()
+
+	if opts.path != cacheleveldown.InMemoryDirectory {
+		basePath := path.Join(opts.path, "berty")
+		_, err := os.Stat(basePath)
+		if err != nil {
+			if !os.IsNotExist(err) {
+				panic(err)
+			}
+			if err := os.MkdirAll(basePath, 0700); err != nil {
+				panic(err)
+			}
+		}
+
+		lock = fslock.New(path.Join(opts.path, "lock"))
+		err = lock.TryLock()
+		if err != nil {
+			panic(err)
+		}
+
+		baseDS, err = badger.NewDatastore(basePath, nil)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	baseDS = ds_sync.MutexWrap(baseDS)
+
+	accountDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("account"))
+	messagesDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("messages"))
+	ipfsDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("ipfs"))
+	orbitdbDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("orbitdb"))
+
+	accountKS := ipfsutil.NewDatastoreKeystore(accountDS)
+	orbitdbCache := orbitutil.NewOrbitDatastoreCache(orbitdbDS)
+	mk := bertycrypto.NewDatastoreMessageKeys(messagesDS)
+
+	cfg, err := ipfsutil.CreateBuildConfigWithDatastore(&ipfsutil.BuildOpts{
+		SwarmAddresses: swarmAddresses,
+	}, ipfsDS)
+	if err != nil {
+		panicUnlockFS(err, lock)
+	}
+
+	api, node, err := ipfsutil.NewConfigurableCoreAPI(ctx, cfg, ipfsutil.OptionMDNSDiscovery)
+	if err != nil {
+		panicUnlockFS(err, lock)
+	}
+
+	odb, err := orbitutil.NewBertyOrbitDB(ctx, api, account.New(accountKS), mk, &orbitdb.NewOrbitDBOptions{Cache: orbitdbCache})
+	if err != nil {
+		panicUnlockFS(err, lock)
+	}
+
+	return odb, baseDS, node, lock
 }
 
 func metadataEventDisplay(messages *historyMessageList, e *bertyprotocol.GroupMetadataEvent) {
@@ -225,23 +310,25 @@ func metadataEventDisplay(messages *historyMessageList, e *bertyprotocol.GroupMe
 	}
 }
 
-func welcomeEventDisplay(messages *historyMessageList, gc orbitutil.GroupContext) {
-	pkB, err := gc.GetDevicePrivKey().GetPublic().Raw()
+func welcomeEventDisplay(ctx context.Context, messages *historyMessageList, gc *orbitutil.GroupContext, api ipfs_coreapi.CoreAPI) {
+	pkB, err := gc.DevicePubKey().Raw()
 	if err != nil {
 		panic(err)
 	}
 
-	pkMemberB, err := gc.GetMemberPrivKey().GetPublic().Raw()
+	pkMemberB, err := gc.MemberPubKey().Raw()
 	if err != nil {
 		panic(err)
 	}
 
-	protoGroup, err := gc.GetGroup().ToProtocol()
+	protoBytes, err := gc.Group().Marshal()
 	if err != nil {
 		panic(err)
 	}
 
-	protoBytes, err := protoGroup.Marshal()
+	grpInv := base64.StdEncoding.EncodeToString(protoBytes)
+
+	self, err := api.Key().Self(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -249,7 +336,12 @@ func welcomeEventDisplay(messages *historyMessageList, gc orbitutil.GroupContext
 	_ = messages.Append(&historyMessage{
 		messageType: messageTypeJoined,
 		sender:      pkB,
-		payload:     []byte(fmt.Sprintf("grp: %s", base64.StdEncoding.EncodeToString(protoBytes))),
+		payload:     []byte(fmt.Sprintf("peerid: %s", self.ID().String())),
+	})
+	_ = messages.Append(&historyMessage{
+		messageType: messageTypeJoined,
+		sender:      pkB,
+		payload:     []byte(fmt.Sprintf("grp: %s", grpInv)),
 	})
 	_ = messages.Append(&historyMessage{
 		messageType: messageTypeJoined,
@@ -258,8 +350,8 @@ func welcomeEventDisplay(messages *historyMessageList, gc orbitutil.GroupContext
 	})
 }
 
-func miniMain(argv []string) {
-	ipfslog.SetAllLoggers(logging.CRITICAL)
+func miniMain(opts *miniOpts) {
+	ipfslogger.SetAllLoggers(logging.CRITICAL)
 
 	_ = messageTypeUndefined
 
@@ -268,54 +360,74 @@ func miniMain(argv []string) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	gc, err := initGroup(argv)
+	odb, ds, node, lock := initOrbitDB(ctx, opts)
+	defer unlockFS(lock)
+	defer ds.Close()
+	defer node.Close()
+
+	g, err := acquireGroup(opts)
 	if err != nil {
 		panic(err)
 	}
 
-	odb, err := initOrbitDB(ctx)
-	if err != nil {
-		panic(err)
-	}
-
-	err = orbitutil.InitGroupContext(ctx, gc, odb)
+	gc, err := odb.OpenGroup(ctx, g, nil)
 	if err != nil {
 		panic(err)
 	}
 
 	// Announce that we joined the group and show the group invitation token
-	welcomeEventDisplay(messages, gc)
+	welcomeEventDisplay(ctx, messages, gc, odb.IPFS())
 
 	// List existing members of the group
 	go func() {
-		for e := range gc.GetMetadataStore().ListEvents(ctx) {
+		for e := range gc.MetadataStore().ListEvents(ctx) {
 			metadataEventDisplay(messages, e)
 		}
 	}()
 
-	// Watch for incoming new messages
-	go gc.GetMessageStore().Subscribe(ctx, func(e events.Event) {
-		evt, ok := e.(*bertyprotocol.GroupMessageEvent)
-		if !ok {
-			return
+	// Replay history
+	go func() {
+		msgs, err := gc.MessageStore().ListMessages(ctx)
+		if err != nil {
+			panic(err)
 		}
 
-		_ = messages.Append(&historyMessage{
-			messageType: messageTypeMessage,
-			payload:     evt.Message,
-			sender:      evt.Headers.DevicePK,
-		})
-	})
+		for evt := range msgs {
+			_ = messages.Append(&historyMessage{
+				messageType: messageTypeMessageReplayed,
+				payload:     evt.Message,
+				sender:      evt.Headers.DevicePK,
+			})
+		}
+	}()
+
+	// Watch for incoming new messages
+	go func() {
+		for e := range gc.MessageStore().Subscribe(ctx) {
+			evt, ok := e.(*bertyprotocol.GroupMessageEvent)
+			if !ok {
+				continue
+			}
+
+			_ = messages.Append(&historyMessage{
+				messageType: messageTypeMessage,
+				payload:     evt.Message,
+				sender:      evt.Headers.DevicePK,
+			})
+		}
+	}()
 
 	// Watch for new incoming metadata
-	go gc.GetMetadataStore().Subscribe(ctx, func(evt events.Event) {
-		e, ok := evt.(*bertyprotocol.GroupMetadataEvent)
-		if !ok {
-			return
-		}
+	go func() {
+		for evt := range gc.MetadataStore().Subscribe(ctx) {
+			e, ok := evt.(*bertyprotocol.GroupMetadataEvent)
+			if !ok {
+				continue
+			}
 
-		metadataEventDisplay(messages, e)
-	})
+			metadataEventDisplay(messages, e)
+		}
+	}()
 
 	historyBox := messages.View()
 
@@ -323,8 +435,7 @@ func miniMain(argv []string) {
 	input.SetFocused(true)
 	input.SetSizePolicy(tui.Expanding, tui.Maximum)
 
-	inputBox := tui.NewHBox(input)
-	inputBox.SetBorder(true)
+	inputBox := tui.NewHBox(tui.NewLabel(">> "), input)
 	inputBox.SetSizePolicy(tui.Expanding, tui.Maximum)
 
 	chat := tui.NewVBox(historyBox, inputBox)
@@ -338,7 +449,7 @@ func miniMain(argv []string) {
 			return
 		}
 
-		if _, err := gc.GetMessageStore().AddMessage(ctx, []byte(msg)); err != nil {
+		if _, err := gc.MessageStore().AddMessage(ctx, []byte(msg)); err != nil {
 			messages.AppendErr(errors.Wrap(err, "Can't send message"))
 		}
 	})
@@ -352,6 +463,9 @@ func miniMain(argv []string) {
 	if err != nil {
 		panic(err)
 	}
+
+	messages.SetUI(ui)
+
 	ui.SetKeybinding("Esc", func() { ui.Quit() })
 
 	if err := ui.Run(); err != nil {

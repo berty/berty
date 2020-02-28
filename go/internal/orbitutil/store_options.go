@@ -7,11 +7,11 @@ import (
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/accesscontroller"
 
-	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 )
 
-func DefaultOptions(g *group.Group, options *orbitdb.CreateDBOptions, keystore *BertySignedKeyStore, storeType string) (*orbitdb.CreateDBOptions, error) {
+func DefaultOptions(g *bertyprotocol.Group, options *orbitdb.CreateDBOptions, keystore *BertySignedKeyStore, storeType string) (*orbitdb.CreateDBOptions, error) {
 	var err error
 
 	if options == nil {
@@ -28,7 +28,9 @@ func DefaultOptions(g *group.Group, options *orbitdb.CreateDBOptions, keystore *
 		Replicate:               options.Replicate,
 		Cache:                   options.Cache,
 	}
-	options.Create = boolPtr(true)
+
+	t := true
+	options.Create = &t
 
 	if options.AccessController == nil {
 		options.AccessController, err = defaultACForGroup(g, storeType)
@@ -46,13 +48,15 @@ func DefaultOptions(g *group.Group, options *orbitdb.CreateDBOptions, keystore *
 	return options, nil
 }
 
-func defaultACForGroup(g *group.Group, storeType string) (accesscontroller.ManifestParams, error) {
-	groupID, err := g.GroupIDAsString()
+func defaultACForGroup(g *bertyprotocol.Group, storeType string) (accesscontroller.ManifestParams, error) {
+	groupID := g.GroupIDAsString()
+
+	sigPK, err := g.GetSigningPubKey()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	signingKeyBytes, err := g.SigningKey.GetPublic().Raw()
+	signingKeyBytes, err := sigPK.Raw()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -70,8 +74,13 @@ func defaultACForGroup(g *group.Group, storeType string) (accesscontroller.Manif
 	return param, nil
 }
 
-func defaultIdentityForGroup(g *group.Group, ks *BertySignedKeyStore) (*identityprovider.Identity, error) {
-	signingKeyBytes, err := g.SigningKey.GetPublic().Raw()
+func defaultIdentityForGroup(g *bertyprotocol.Group, ks *BertySignedKeyStore) (*identityprovider.Identity, error) {
+	sigPK, err := g.GetSigningPubKey()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	signingKeyBytes, err := sigPK.Raw()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -86,8 +95,4 @@ func defaultIdentityForGroup(g *group.Group, ks *BertySignedKeyStore) (*identity
 	}
 
 	return identity, nil
-}
-
-func boolPtr(b bool) *bool {
-	return &b
 }

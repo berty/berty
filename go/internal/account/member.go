@@ -1,4 +1,4 @@
-package group
+package account
 
 import (
 	"crypto/rand"
@@ -11,34 +11,24 @@ import (
 	"berty.tech/berty/go/pkg/errcode"
 )
 
-// MemberDevice is a remote device part of a group
-type MemberDevice struct {
-	Member crypto.PubKey
-	Device crypto.PubKey
-	Secret *bertyprotocol.DeviceSecret
-}
-
 // OwnMemberDevice is own local device part of a group
 type OwnMemberDevice struct {
 	Member crypto.PrivKey
 	Device crypto.PrivKey
 }
 
-func NewOwnMemberDevice() (*OwnMemberDevice, error) {
-	member, _, err := crypto.GenerateEd25519Key(rand.Reader)
-	if err != nil {
-		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+func (d *OwnMemberDevice) Public() *MemberDevice {
+	return &MemberDevice{
+		Member: d.Member.GetPublic(),
+		Device: d.Device.GetPublic(),
 	}
+}
 
-	device, _, err := crypto.GenerateEd25519Key(rand.Reader)
-	if err != nil {
-		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
-	}
-
-	return &OwnMemberDevice{
-		Member: member,
-		Device: device,
-	}, nil
+// MemberDevice is a remote device part of a group
+type MemberDevice struct {
+	Member crypto.PubKey
+	Device crypto.PubKey
+	Secret *bertyprotocol.DeviceSecret
 }
 
 func NewDeviceSecret() (*bertyprotocol.DeviceSecret, error) {

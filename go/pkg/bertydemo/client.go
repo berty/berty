@@ -15,10 +15,10 @@ import (
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 
-	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/cryptoutil"
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/internal/orbitutil"
-	"berty.tech/berty/go/internal/orbitutil/bertysimple"
+	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 )
 
@@ -59,7 +59,7 @@ func New(opts *Opts) (*Client, error) {
 		return nil, err
 	}
 
-	if err := odb.RegisterAccessControllerType(bertysimple.NewSimpleAccessController); err != nil {
+	if err := odb.RegisterAccessControllerType(orbitutil.NewSimpleAccessController); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -90,12 +90,22 @@ func (d *Client) logFromToken(ctx context.Context, token string) (orbitdb.EventL
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	ks := orbitutil.NewBertySignedKeyStore()
+	ks := &orbitutil.BertySignedKeyStore{}
 	err = ks.SetKey(sigk)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	g := &group.Group{PubKey: sigk.GetPublic(), SigningKey: sigk}
+	pubkb, err := sigk.GetPublic().Raw()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	sigkb, err = cryptoutil.SeedFromEd25519PrivateKey(sigk)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	g := &bertyprotocol.Group{PublicKey: pubkb, Secret: sigkb}
 	opts, err := orbitutil.DefaultOptions(g, &orbitdb.CreateDBOptions{}, ks, "log")
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)

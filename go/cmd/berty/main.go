@@ -16,6 +16,7 @@ import (
 	"berty.tech/berty/go/pkg/bertydemo"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
+	"berty.tech/go-orbit-db/cache/cacheleveldown"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
 	ma "github.com/multiformats/go-multiaddr"
@@ -46,6 +47,11 @@ func main() {
 		clientDemoFlags     = flag.NewFlagSet("demo client", flag.ExitOnError)
 		clientDemoDirectory = clientDemoFlags.String("d", ":memory:", "orbit db directory")
 		clientDemoListeners = clientDemoFlags.String("l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
+
+		miniClientDemoFlags = flag.NewFlagSet("mini demo client", flag.ExitOnError)
+		miniClientDemoGroup = miniClientDemoFlags.String("g", "", "group to join, leave empty to create a new group")
+		miniClientDemoPath  = miniClientDemoFlags.String("d", cacheleveldown.InMemoryDirectory, "orbit db directory")
+		miniClientDemoPort  = miniClientDemoFlags.Uint("p", 0, "default IPFS listen port")
 	)
 
 	globalPreRun := func() error {
@@ -102,10 +108,15 @@ func main() {
 	}
 
 	mini := &ffcli.Command{
-		Name:  "mini",
-		Usage: "mini",
+		Name:    "mini",
+		Usage:   "mini",
+		FlagSet: miniClientDemoFlags,
 		Exec: func(args []string) error {
-			miniMain(args)
+			miniMain(&miniOpts{
+				groupInvitation: *miniClientDemoGroup,
+				port:            *miniClientDemoPort,
+				path:            *miniClientDemoPath,
+			})
 			return nil
 		},
 	}

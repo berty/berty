@@ -5,21 +5,29 @@ import (
 	"encoding/base64"
 	"fmt"
 	"math/big"
+	"strings"
 
-	"berty.tech/berty/go/pkg/errcode"
 	ipfs_datastore "github.com/ipfs/go-datastore"
-	ipfs_datastoresync "github.com/ipfs/go-datastore/sync"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_node "github.com/ipfs/go-ipfs/core/node"
 	ipfs_libp2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto" // nolint:staticcheck
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer" // nolint:staticcheck
+
+	"berty.tech/berty/go/pkg/errcode"
 )
 
-func CreateBuildConfig() (*ipfs_node.BuildCfg, error) {
-	ds := ipfs_datastore.NewMapDatastore()
-	repo, err := CreateRepo(ipfs_datastoresync.MutexWrap(ds))
+type BuildOpts struct {
+	SwarmAddresses []string
+}
+
+func CreateBuildConfigWithDatastore(opts *BuildOpts, ds ipfs_datastore.Batching) (*ipfs_node.BuildCfg, error) {
+	if opts == nil {
+		opts = &BuildOpts{}
+	}
+
+	repo, err := CreateRepo(ds, opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -40,7 +48,7 @@ func CreateBuildConfig() (*ipfs_node.BuildCfg, error) {
 	}, nil
 }
 
-func CreateRepo(dstore ipfs_repo.Datastore) (ipfs_repo.Repo, error) {
+func CreateRepo(dstore ipfs_datastore.Batching, opts *BuildOpts) (ipfs_repo.Repo, error) {
 	c := ipfs_cfg.Config{}
 	priv, pub, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, rand.Reader) // nolint:staticcheck
 	if err != nil {
@@ -57,20 +65,26 @@ func CreateRepo(dstore ipfs_repo.Datastore) (ipfs_repo.Repo, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	portOffsetBI, err := rand.Int(rand.Reader, big.NewInt(100))
-	if err != nil {
-		panic(err)
-	}
-
-	portOffset := portOffsetBI.Int64() % 100
-
-	fmt.Println("Initializing network on port", 4001+portOffset)
-
 	c.Bootstrap = ipfs_cfg.DefaultBootstrapAddresses
-	c.Addresses.Swarm = []string{
-		fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", 4001+portOffset),
-		fmt.Sprintf("/ip6/0.0.0.0/tcp/%d", 4001+portOffset),
+
+	if len(opts.SwarmAddresses) != 0 {
+		c.Addresses.Swarm = opts.SwarmAddresses
+	} else {
+		portOffsetBI, err := rand.Int(rand.Reader, big.NewInt(100))
+		if err != nil {
+			panic(err)
+		}
+
+		portOffset := portOffsetBI.Int64() % 100
+
+		c.Addresses.Swarm = []string{
+			fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", 4001+portOffset),
+			fmt.Sprintf("/ip6/0.0.0.0/tcp/%d", 4001+portOffset),
+		}
 	}
+
+	fmt.Printf("IPFS listening on %s\n", strings.Join(c.Addresses.Swarm, ", "))
+
 	c.Identity.PeerID = pid.Pretty()
 	c.Identity.PrivKey = base64.StdEncoding.EncodeToString(privkeyb)
 	c.Discovery.MDNS.Enabled = true

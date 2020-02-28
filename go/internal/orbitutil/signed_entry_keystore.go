@@ -5,14 +5,13 @@ import (
 	"sync"
 
 	"berty.tech/go-ipfs-log/keystore"
+	"github.com/libp2p/go-libp2p-core/crypto"
 
 	"berty.tech/berty/go/pkg/errcode"
-	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
 type BertySignedKeyStore struct {
-	keys map[string]crypto.PrivKey
-	lock sync.RWMutex
+	sync.Map
 }
 
 func (s *BertySignedKeyStore) SetKey(pk crypto.PrivKey) error {
@@ -23,17 +22,13 @@ func (s *BertySignedKeyStore) SetKey(pk crypto.PrivKey) error {
 
 	keyID := hex.EncodeToString(pubKeyBytes)
 
-	s.lock.Lock()
-	s.keys[keyID] = pk
-	s.lock.Unlock()
+	s.Store(keyID, pk)
 
 	return nil
 }
 
 func (s *BertySignedKeyStore) HasKey(id string) (bool, error) {
-	s.lock.RLock()
-	_, ok := s.keys[id]
-	s.lock.RUnlock()
+	_, ok := s.Load(id)
 
 	return ok, nil
 }
@@ -43,10 +38,10 @@ func (s *BertySignedKeyStore) CreateKey(id string) (crypto.PrivKey, error) {
 }
 
 func (s *BertySignedKeyStore) GetKey(id string) (crypto.PrivKey, error) {
-	s.lock.RLock()
-	defer s.lock.RUnlock()
-	if privKey, ok := s.keys[id]; ok {
-		return privKey, nil
+	if privKey, ok := s.Load(id); ok {
+		if pk, ok := privKey.(crypto.PrivKey); ok {
+			return pk, nil
+		}
 	}
 
 	return nil, errcode.ErrGroupMemberUnknownGroupID
@@ -67,14 +62,6 @@ func (s *BertySignedKeyStore) Verify(signature []byte, publicKey crypto.PubKey, 
 	}
 
 	return nil
-}
-
-func NewBertySignedKeyStore() *BertySignedKeyStore {
-	ks := &BertySignedKeyStore{
-		keys: map[string]crypto.PrivKey{},
-	}
-
-	return ks
 }
 
 func (s *BertySignedKeyStore) GetIdentityProvider() *BertySignedIdentityProvider {

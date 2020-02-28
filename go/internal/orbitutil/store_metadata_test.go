@@ -1,4 +1,4 @@
-package orbitutil
+package orbitutil_test
 
 import (
 	"context"
@@ -9,20 +9,10 @@ import (
 
 	"go.uber.org/zap"
 
+	"berty.tech/berty/go/internal/orbitutil"
 	"berty.tech/berty/go/internal/testutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 )
-
-func init() {
-	//zaptest.Level(zapcore.DebugLevel)
-	//config := zap.NewDevelopmentConfig()
-	//config.OutputPaths = []string{"stdout"}
-	//logger, _ := config.Build()
-	//zap.ReplaceGlobals(logger)
-	//
-	// import ipfs_log "github.com/ipfs/go-log"
-	//ipfs_log.SetDebugLogging()
-}
 
 func TestMetadataStoreSecret_Basic(t *testing.T) {
 	t.Skip("skipping as we don't care about this code now")
@@ -34,41 +24,39 @@ func TestMetadataStoreSecret_Basic(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	peers, groupSK := CreatePeersWithGroup(ctx, t, "/tmp/secrets_test", memberCount, deviceCount, true)
-	defer DropPeers(t, peers)
+	peers, groupSK := orbitutil.CreatePeersWithGroup(ctx, t, "/tmp/secrets_test", memberCount, deviceCount)
+	defer orbitutil.DropPeers(t, peers)
 
 	secretsAdded := make(chan struct{})
 
-	go WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[0].GetGroupContext())
-	go WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[1].GetGroupContext())
-	go WaitForBertyEventType(ctx, t, peers[0], bertyprotocol.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
-	go WaitForBertyEventType(ctx, t, peers[1], bertyprotocol.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
-	InviteAllPeersToGroup(ctx, t, peers, groupSK)
+	msA := peers[0].GC.MetadataStore()
+	msB := peers[1].GC.MetadataStore()
 
-	msA := peers[0].GetGroupContext().GetMetadataStore()
-	msB := peers[1].GetGroupContext().GetMetadataStore()
+	go orbitutil.WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[0].GC)
+	go orbitutil.WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[1].GC)
+	go orbitutil.WaitForBertyEventType(ctx, t, msA, bertyprotocol.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
+	go orbitutil.WaitForBertyEventType(ctx, t, msB, bertyprotocol.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
+	orbitutil.InviteAllPeersToGroup(ctx, t, peers, groupSK)
 
-	devPkA := peers[0].GetGroupContext().GetDevicePrivKey().GetPublic()
-	devPkB := peers[1].GetGroupContext().GetDevicePrivKey().GetPublic()
+	devPkA := peers[0].GC.DevicePubKey()
+	devPkB := peers[1].GC.DevicePubKey()
 
 	<-secretsAdded
 	<-secretsAdded
 
-	_ = msA
-	_ = msB
 	_ = devPkA
 	_ = devPkB
 
-	// secretAForB, err := msB.GetDeviceSecret(devPkA)
+	// secretAForB, err := msB.DeviceSecret(devPkA)
 	// assert.NoError(t, err)
 	//
-	// secretBForA, err := msA.GetDeviceSecret(devPkB)
+	// secretBForA, err := msA.DeviceSecret(devPkB)
 	// assert.NoError(t, err)
 	//
-	// secretAForA, err := peers[0].GetGroupContext().GetDeviceSecret(ctx)
+	// secretAForA, err := peers[0].GetGroupContext().DeviceSecret(ctx)
 	// assert.NoError(t, err)
 	//
-	// secretBForB, err := peers[1].GetGroupContext().GetDeviceSecret(ctx)
+	// secretBForB, err := peers[1].GetGroupContext().DeviceSecret(ctx)
 	// assert.NoError(t, err)
 	//
 	// assert.Equal(t, secretAForA.ChainKey, secretAForB.ChainKey)
@@ -113,22 +101,22 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 	defer cancel()
 
 	// Creates N members with M devices each within the same group
-	peers, groupSK := CreatePeersWithGroup(ctx, t, "/tmp/member_test", memberCount, deviceCount, true)
-	defer DropPeers(t, peers)
+	peers, groupSK := orbitutil.CreatePeersWithGroup(ctx, t, "/tmp/member_test", memberCount, deviceCount)
+	defer orbitutil.DropPeers(t, peers)
 
 	done := make(chan struct{})
 
 	for _, peer := range peers {
-		go WaitForBertyEventType(ctx, t, peer, bertyprotocol.EventTypeGroupMemberDeviceAdded, len(peers), done)
+		go orbitutil.WaitForBertyEventType(ctx, t, peer.GC.MetadataStore(), bertyprotocol.EventTypeGroupMemberDeviceAdded, len(peers), done)
 	}
 
 	for i, peer := range peers {
-		if _, err := peer.GetGroupContext().GetMetadataStore().JoinGroup(ctx); err != nil {
+		if _, err := peer.GC.MetadataStore().JoinGroup(ctx); err != nil {
 			t.Fatal(err)
 		}
 
 		if i == 0 {
-			if _, err := peer.GetGroupContext().GetMetadataStore().ClaimGroupOwnership(ctx, groupSK); err != nil {
+			if _, err := peer.GC.MetadataStore().ClaimGroupOwnership(ctx, groupSK); err != nil {
 				t.Fatal(err)
 			}
 		}
@@ -142,7 +130,7 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 
 	// Test if everything was replicated and indexed correctly
 	for i, peer := range peers {
-		ms := peer.GetGroupContext().GetMetadataStore()
+		ms := peer.GC.MetadataStore()
 
 		// Test count functions
 		storeMemberCount := ms.MemberCount()
@@ -168,10 +156,10 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 
 		// Test entries getter functions
 		for j, peerDev := range peers {
-			if _, err := ms.GetDevicesForMember(peerDev.GetGroupContext().GetMemberPrivKey().GetPublic()); err != nil {
+			if _, err := ms.GetDevicesForMember(peerDev.GC.MemberPubKey()); err != nil {
 				t.Fatalf("member of peer %d is missing from peer %d member map: %v", j, i, err)
 			}
-			if _, err := ms.GetMemberByDevice(peerDev.GetGroupContext().GetDevicePrivKey().GetPublic()); err != nil {
+			if _, err := ms.GetMemberByDevice(peerDev.GC.MemberPubKey()); err != nil {
 				t.Fatalf("device of peer %d is missing from peer %d device map: %v", j, i, err)
 			}
 		}

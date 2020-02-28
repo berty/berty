@@ -1,4 +1,4 @@
-package orbitutil
+package bertyprotocol
 
 import (
 	"crypto/rand"
@@ -6,45 +6,46 @@ import (
 	ipfslog "berty.tech/go-ipfs-log"
 	"github.com/golang/protobuf/proto"
 	"github.com/ipfs/go-cid"
-	"github.com/libp2p/go-libp2p-core/crypto"
 	"golang.org/x/crypto/nacl/secretbox"
 
-	"berty.tech/berty/go/internal/group"
-	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 )
 
-func NewEventContext(eventID cid.Cid, parentIDs []cid.Cid, groupPK crypto.PubKey) (*bertyprotocol.EventContext, error) {
+var eventTypesMapper = map[EventType]struct {
+	Message proto.Message
+}{
+	EventTypeGroupMemberDeviceAdded:                 {Message: &GroupAddMemberDevice{}},
+	EventTypeGroupDeviceSecretAdded:                 {Message: &GroupAddDeviceSecret{}},
+	EventTypeAccountGroupJoined:                     {Message: &AccountGroupJoined{}},
+	EventTypeAccountGroupLeft:                       {Message: &AccountGroupLeft{}},
+	EventTypeAccountContactRequestDisabled:          {Message: &AccountContactRequestDisabled{}},
+	EventTypeAccountContactRequestEnabled:           {Message: &AccountContactRequestEnabled{}},
+	EventTypeAccountContactRequestReferenceReset:    {Message: &AccountContactRequestReferenceReset{}},
+	EventTypeAccountContactRequestOutgoingEnqueued:  {Message: &AccountContactRequestEnqueued{}},
+	EventTypeAccountContactRequestOutgoingSent:      {Message: &AccountContactRequestSent{}},
+	EventTypeAccountContactRequestIncomingReceived:  {Message: &AccountContactRequestReceived{}},
+	EventTypeAccountContactRequestIncomingDiscarded: {Message: &AccountContactRequestDiscarded{}},
+	EventTypeAccountContactRequestIncomingAccepted:  {Message: &AccountContactRequestAccepted{}},
+	EventTypeAccountContactBlocked:                  {Message: &AccountContactBlocked{}},
+	EventTypeAccountContactUnblocked:                {Message: &AccountContactUnblocked{}},
+	EventTypeContactAliasKeyAdded:                   {Message: &ContactAddAliasKey{}},
+	EventTypeMultiMemberGroupAliasResolverAdded:     {Message: &MultiMemberGroupAddAliasResolver{}},
+	EventTypeMultiMemberGroupInitialMemberAnnounced: {Message: &MultiMemberInitialMember{}},
+	EventTypeMultiMemberGroupAdminRoleGranted:       {Message: &MultiMemberGrantAdminRole{}},
+	EventTypeGroupMetadataPayloadSent:               {Message: &AppMetadata{}},
+}
+
+func NewEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *Group) (*EventContext, error) {
 	parentIDsBytes := make([][]byte, len(parentIDs))
 	for i, parentID := range parentIDs {
 		parentIDsBytes[i] = parentID.Bytes()
 	}
 
-	groupPKBytes, err := groupPK.Bytes()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	return &bertyprotocol.EventContext{
+	return &EventContext{
 		ID:        eventID.Bytes(),
 		ParentIDs: parentIDsBytes,
-		GroupPK:   groupPKBytes,
+		GroupPK:   g.PublicKey,
 	}, nil
-}
-
-func NewGroupSecureMessageEvent(eventContext *bertyprotocol.EventContext, headers *bertyprotocol.MessageHeaders, message []byte) *bertyprotocol.GroupMessageEvent {
-	return &bertyprotocol.GroupMessageEvent{
-		EventContext: eventContext,
-		Headers:      headers,
-		Message:      message,
-	}
-}
-
-func NewGroupMetadataEvent(eventContext *bertyprotocol.EventContext, metadata *bertyprotocol.GroupMetadata) *bertyprotocol.GroupMetadataEvent {
-	return &bertyprotocol.GroupMetadataEvent{
-		EventContext: eventContext,
-		Metadata:     metadata,
-	}
 }
 
 func getParentsForCID(log ipfslog.Log, c cid.Cid) []cid.Cid {
@@ -76,9 +77,9 @@ func getParentsForCID(log ipfslog.Log, c cid.Cid) []cid.Cid {
 	return ret
 }
 
-func NewGroupMetadataEventFromEntry(log ipfslog.Log, e ipfslog.Entry, metadata *bertyprotocol.GroupMetadata, event proto.Message, g *group.Group) (*bertyprotocol.GroupMetadataEvent, error) {
+func NewGroupMetadataEventFromEntry(log ipfslog.Log, e ipfslog.Entry, metadata *GroupMetadata, event proto.Message, g *Group) (*GroupMetadataEvent, error) {
 	// TODO: if parent is a merge node we should return the next nodes of it
-	evtCtx, err := NewEventContext(e.GetHash(), getParentsForCID(log, e.GetHash()), g.PubKey)
+	evtCtx, err := NewEventContext(e.GetHash(), getParentsForCID(log, e.GetHash()), g)
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
@@ -88,20 +89,20 @@ func NewGroupMetadataEventFromEntry(log ipfslog.Log, e ipfslog.Entry, metadata *
 		return nil, errcode.ErrSerialization
 	}
 
-	return &bertyprotocol.GroupMetadataEvent{
+	return &GroupMetadataEvent{
 		EventContext: evtCtx,
 		Metadata:     metadata,
 		Event:        eventBytes,
 	}, nil
 }
 
-func OpenGroupEnvelope(g *group.Group, envelopeBytes []byte) (*bertyprotocol.GroupMetadata, proto.Message, error) {
+func OpenGroupEnvelope(g *Group, envelopeBytes []byte) (*GroupMetadata, proto.Message, error) {
 	sharedSecret, err := g.GetSharedSecret()
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
-	env := &bertyprotocol.GroupEnvelope{}
+	env := &GroupEnvelope{}
 	if err := env.Unmarshal(envelopeBytes); err != nil {
 		return nil, nil, errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -118,7 +119,7 @@ func OpenGroupEnvelope(g *group.Group, envelopeBytes []byte) (*bertyprotocol.Gro
 		return nil, nil, errcode.ErrGroupMemberLogEventOpen
 	}
 
-	metadataEvent := &bertyprotocol.GroupMetadata{}
+	metadataEvent := &GroupMetadata{}
 
 	err = metadataEvent.Unmarshal(data)
 	if err != nil {
@@ -135,15 +136,10 @@ func OpenGroupEnvelope(g *group.Group, envelopeBytes []byte) (*bertyprotocol.Gro
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if err := et.Validator(metadataEvent, payload, g); err != nil {
-		// TODO: change errcode
-		return nil, nil, errcode.ErrGroupMemberLogEventSignature.Wrap(err)
-	}
-
 	return metadataEvent, payload, nil
 }
 
-func SealGroupEnvelope(g *group.Group, eventType bertyprotocol.EventType, payload proto.Marshaler, payloadSig []byte) ([]byte, error) {
+func SealGroupEnvelope(g *Group, eventType EventType, payload proto.Marshaler, payloadSig []byte) ([]byte, error) {
 	payloadBytes, err := payload.Marshal()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -164,7 +160,7 @@ func SealGroupEnvelope(g *group.Group, eventType bertyprotocol.EventType, payloa
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	event := &bertyprotocol.GroupMetadata{
+	event := &GroupMetadata{
 		EventType: eventType,
 		Payload:   payloadBytes,
 		Sig:       payloadSig,
@@ -177,7 +173,7 @@ func SealGroupEnvelope(g *group.Group, eventType bertyprotocol.EventType, payloa
 
 	eventBytes := secretbox.Seal(nil, eventClearBytes, &nonce, sharedSecret)
 
-	env := &bertyprotocol.GroupEnvelope{
+	env := &GroupEnvelope{
 		Event: eventBytes,
 		Nonce: nonceArr,
 	}
