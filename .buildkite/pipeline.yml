@@ -1,5 +1,6 @@
 steps:
   - label: go-docker
+    if: build.branch == "master" || build.message !~ /\[skip go-docker\]/
     agents:
       queue: "bigcores"
     commands:
@@ -8,6 +9,7 @@ steps:
       - docker build .
 
   - label: go-generate
+    if: build.branch == "master" || build.message !~ /\[skip go-generate\]/
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/protoc:22
@@ -31,6 +33,7 @@ steps:
       - git diff-index -w --quiet HEAD --
 
   - label: githooks
+    if: build.branch == "master" || build.message !~ /\[skip githooks\]/
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/githooks:v1
@@ -45,6 +48,7 @@ steps:
       - git diff-index -w --quiet HEAD --
 
   - label: go-build
+    if: build.branch == "master" || build.message !~ /\[skip go-build\]/
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/build-go:v2
@@ -84,6 +88,7 @@ steps:
       - codecov -f ./go/coverage.txt
 
   - label: android-build
+    if: build.branch == "master" || build.message !~ /\[skip android-build\]/
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bitriseio/android-ndk:v2019_12_28-08_15-b1793
@@ -122,7 +127,7 @@ steps:
       - "js/packages/berty-app/android/app/build/outputs/bundle/release/app-release.aab"
 
   - label: ios-build
-    if: build.branch == "master" || build.message =~ /\[run ios-build\]/i
+    if: build.branch == "master" || build.message !~ /\[skip ios-build\]/
     agents:
       queue: "macos"
     plugins:
@@ -141,6 +146,7 @@ steps:
       - "js/packages/berty-app/build/**/*"
 
   - label: js-generate
+    if: build.branch == "master" || build.message !~ /\[skip js-generate\]/
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/protoc:22
@@ -162,6 +168,7 @@ steps:
       - git diff-index -w --quiet HEAD --
 
   - label: js-lint
+    if: build.branch == "master" || build.message !~ /\[skip js-lint\]/
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/protoc:22
@@ -179,6 +186,7 @@ steps:
       - ./node_modules/.bin/check-deps-sync .
 
   - label: js-test
+    if: build.branch == "master" || build.message !~ /\[skip js-test\]/
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/protoc:22
@@ -195,6 +203,7 @@ steps:
       - make test
 
   - label: bazel-go
+    if: build.branch == "master" || build.message !~ /\[skip bazel-go\]/
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/bazel:2.0.0-buster-r0
