@@ -7,5 +7,5 @@ import (
 
 func NewDHTDriver(dht *p2p_dht.IpfsDHT) Driver {
 	disc := p2p_discovery.NewRoutingDiscovery(dht)
-	return ComposeDriver(disc, disc, NoopUnregister)
+	return ComposeDriver(disc, disc, NoopUnregisterer)
 }

@@ -3,32 +3,38 @@ module berty.tech/berty/go
 go 1.13
 
 require (
-	berty.tech/go-ipfs-log v1.0.0
-	berty.tech/go-orbit-db v1.2.0
-	github.com/LK4D4/trylock v0.0.0-20191027065348-ff7e133a5c54
+	berty.tech/go-ipfs-log v1.1.0
+	berty.tech/go-orbit-db v1.3.0
+	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.3.2
 	github.com/improbable-eng/grpc-web v0.11.0
 	github.com/ipfs/go-cid v0.0.4
 	github.com/ipfs/go-datastore v0.3.1
+	github.com/ipfs/go-ds-badger v0.2.0
 	github.com/ipfs/go-ipfs v0.4.22-0.20191217161056-7cc392ba9dac
 	github.com/ipfs/go-ipfs-config v0.1.0
+	github.com/ipfs/go-ipfs-keystore v0.0.1
 	github.com/ipfs/go-log v0.0.1
 	github.com/ipfs/interface-go-ipfs-core v0.2.5
 	github.com/jinzhu/gorm v1.9.11
+	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/libp2p/go-libp2p v0.5.0
 	github.com/libp2p/go-libp2p-core v0.3.0
 	github.com/libp2p/go-libp2p-discovery v0.2.0
 	github.com/libp2p/go-libp2p-kad-dht v0.4.1
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e
+	github.com/marcusolsson/tui-go v0.4.0
 	github.com/multiformats/go-multiaddr v0.2.0
 	github.com/multiformats/go-multiaddr-net v0.1.1
+	github.com/multiformats/go-multihash v0.0.10
 	github.com/oklog/run v1.1.0
 	github.com/peterbourgon/ff v1.6.0
 	github.com/pkg/errors v0.8.1
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/stretchr/testify v1.4.0
+	github.com/whyrusleeping/go-logging v0.0.1
 	go.uber.org/multierr v1.2.0 // indirect
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550

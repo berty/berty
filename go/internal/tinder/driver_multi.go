@@ -27,7 +27,7 @@ func NewMultiDriver(drivers ...Driver) Driver {
 	}
 }
 
-// Advertise simply dispatch Advertise request accross all the drivers
+// Advertise simply dispatch Advertise request across all the drivers
 func (md *MultiDriver) Advertise(ctx context.Context, ns string, opts ...p2p_discovery.Option) (time.Duration, error) {
 	// Get options
 	var options p2p_discovery.Options
@@ -61,11 +61,10 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 
 	// @NOTE(gfanton): I prefer the use of select to limit the number of goroutines
 	const selDone = 0
-	selCases := []reflect.SelectCase{
-		reflect.SelectCase{
-			Dir:  reflect.SelectRecv,
-			Chan: reflect.ValueOf(ctx.Done()),
-		},
+	selCases := make([]reflect.SelectCase, 1)
+	selCases[selDone] = reflect.SelectCase{
+		Dir:  reflect.SelectRecv,
+		Chan: reflect.ValueOf(ctx.Done()),
 	}
 
 	for _, driver := range md.drivers {
@@ -97,7 +96,7 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 			if !ok {
 				// The chosen channel has been closed, so zero out the channel to disable the case
 				selCases[idx].Chan = reflect.ValueOf(nil)
-				ndrivers -= 1
+				ndrivers--
 				continue
 			}
 

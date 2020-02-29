@@ -14,11 +14,11 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 
-	libp2p_rp "github.com/libp2p/go-libp2p-rendezvous"
+	p2p_rp "github.com/libp2p/go-libp2p-rendezvous"
 )
 
 type rendezvousDiscovery struct {
-	rp           libp2p_rp.RendezvousPoint
+	rp           p2p_rp.RendezvousPoint
 	peerCache    map[string]*rpCache
 	peerCacheMux sync.RWMutex
 	rng          *rand.Rand
@@ -36,9 +36,13 @@ type rpRecord struct {
 	expire int64
 }
 
-func NewRendezvousDiscovery(host host.Host, rdvPeer peer.ID) Driver {
-	rp := libp2p_rp.NewRendezvousPoint(host, rdvPeer)
-	return &rendezvousDiscovery{rp: rp, peerCache: make(map[string]*rpCache), rng: rand.New(rand.NewSource(rand.Int63()))}
+func NewRendezvousDiscovery(host host.Host, rdvPeer peer.ID, rng *rand.Rand) Driver {
+	rp := p2p_rp.NewRendezvousPoint(host, rdvPeer)
+	return &rendezvousDiscovery{
+		rp:        rp,
+		rng:       rng,
+		peerCache: make(map[string]*rpCache),
+	}
 }
 
 func (c *rendezvousDiscovery) Advertise(ctx context.Context, ns string, opts ...discovery.Option) (time.Duration, error) {
@@ -58,11 +62,12 @@ func (c *rendezvousDiscovery) Advertise(ctx context.Context, ns string, opts ...
 		ttlSeconds = int(math.Round(ttl.Seconds()))
 	}
 
-	if rttl, err := c.rp.Register(ctx, ns, ttlSeconds); err != nil {
+	rttl, err := c.rp.Register(ctx, ns, ttlSeconds)
+	if err != nil {
 		return 0, err
-	} else {
-		return rttl, nil
 	}
+
+	return rttl, nil
 }
 
 func (c *rendezvousDiscovery) FindPeers(ctx context.Context, ns string, opts ...discovery.Option) (<-chan peer.AddrInfo, error) {
@@ -115,7 +120,7 @@ func (c *rendezvousDiscovery) FindPeers(ctx context.Context, ns string, opts ...
 	// Discover new records if we don't have enough
 	if newCacheSize < limit {
 		// TODO: Should we return error even if we have valid cached results?
-		var regs []libp2p_rp.Registration
+		var regs []p2p_rp.Registration
 		var newCookie []byte
 		if regs, newCookie, err = c.rp.Discover(ctx, ns, limit, cookie); err == nil {
 			for _, reg := range regs {

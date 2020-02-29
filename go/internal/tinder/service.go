@@ -1,14 +1,17 @@
-// Tinder service is a multi discoverer service backed by a cache
-
 package tinder
 
 import (
-	libp2p_discovery "github.com/libp2p/go-libp2p-discovery"
+	p2p_discovery "github.com/libp2p/go-libp2p-discovery"
 )
 
-func New(drivers []Driver, stratFactory libp2p_discovery.BackoffFactory, opts ...libp2p_discovery.BackoffDiscoveryOption) (Driver, error) {
+// Tinder service is a simple driver backed by a cache,
+type Service interface {
+	Driver
+}
+
+func NewService(drivers []Driver, stratFactory p2p_discovery.BackoffFactory, opts ...p2p_discovery.BackoffDiscoveryOption) (Service, error) {
 	mdriver := NewMultiDriver(drivers...)
-	disc, err := libp2p_discovery.NewBackoffDiscovery(mdriver, nil)
+	disc, err := p2p_discovery.NewBackoffDiscovery(mdriver, stratFactory, opts...)
 	if err != nil {
 		return nil, err
 	}

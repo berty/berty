@@ -74,8 +74,8 @@ func main() {
 	defer cancel()
 
 	// handle close signal
-	execute, interupt := run.SignalHandler(ctx, os.Interrupt)
-	process.Add(execute, interupt)
+	execute, interrupt := run.SignalHandler(ctx, os.Interrupt)
+	process.Add(execute, interrupt)
 
 	serve := &ffcli.Command{
 		Name:    "serve",
