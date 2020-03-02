@@ -2,6 +2,7 @@ export enum AppMessageType {
 	UserMessage,
 	UserReaction,
 	GroupInvitation,
+	SetGroupName,
 }
 
 export type UserMessage = {
@@ -17,7 +18,12 @@ export type UserReaction = {
 
 export type GroupInvitation = {
 	type: AppMessageType.GroupInvitation
-	foo: string
+	groupPk: string
 }
 
-export type AppMessage = UserMessage | UserReaction | GroupInvitation
+export type SetGroupName = {
+	type: AppMessageType.SetGroupName
+	name: string
+}
+
+export type AppMessage = UserMessage | UserReaction | GroupInvitation | SetGroupName

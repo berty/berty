@@ -2,8 +2,9 @@ import { createSlice, CaseReducer, PayloadAction, CaseReducerActions } from '@re
 import { composeReducers } from 'redux-compose'
 import { all, select, takeLeading, takeEvery, put, fork, take } from 'redux-saga/effects'
 import * as protocol from '../protocol'
+import { berty } from '@berty-tech/api'
 import { Buffer } from 'buffer'
-import { isDate } from 'util'
+import { AppMessage, AppMessageType } from './AppMessage'
 
 export enum ContactRequestType {
 	Incoming,
@@ -286,9 +287,6 @@ export const transactions: Transactions = {
 					while (1) {
 						const action = yield take(chan)
 						yield put(action)
-						if (action.type === protocol.events.client.groupMetadataPayloadSent.type) {
-							yield put(action.payload.event)
-						}
 					}
 				})
 			}
@@ -347,9 +345,6 @@ export function* orchestrator() {
 			while (1) {
 				const action = yield take(chan)
 				yield put(action)
-				if (action.type === protocol.events.client.groupMetadataPayloadSent.type) {
-					yield put(action.payload.event)
-				}
 			}
 		}),
 		takeEvery(protocol.events.client.accountContactRequestIncomingAccepted, function*({ payload }) {
@@ -357,23 +352,29 @@ export function* orchestrator() {
 				event: { groupPk },
 				aggregateId: accountId,
 			} = payload
-			yield fork(function*() {
-				const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
-					id: accountId,
-					groupPk: groupPk,
-					// TODO: use last cursor
-					since: new Uint8Array(),
-					until: new Uint8Array(),
-					goBackwards: false,
-				})
-				while (1) {
-					const action = yield take(chan)
-					yield put(action)
-					if (action.type === protocol.events.client.groupMetadataPayloadSent.type) {
-						yield put(action.payload.event)
-					}
-				}
+			const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
+				id: accountId,
+				groupPk: groupPk,
+				// TODO: use last cursor
+				since: new Uint8Array(),
+				until: new Uint8Array(),
+				goBackwards: false,
 			})
+			while (1) {
+				const action = yield take(chan)
+				yield put(action)
+			}
+		}),
+		takeEvery(protocol.events.client.groupMetadataPayloadSent, function*({ payload }) {
+			const { aggregateId: accountId } = payload
+			const event = payload.event as AppMessage
+			if (event.type === AppMessageType.GroupInvitation) {
+				const group: berty.protocol.IGroup = {
+					groupType: berty.protocol.GroupType.GroupTypeMultiMember,
+					publicKey: Buffer.from(event.groupPk, 'utf-8'),
+				}
+				yield* protocol.client.transactions.multiMemberGroupJoin({ id: accountId, group })
+			}
 		}),
 		...Object.keys(commands).map((commandName) =>
 			takeLeading(commands[commandName as keyof CaseReducerActions<CommandsReducer>], function*(

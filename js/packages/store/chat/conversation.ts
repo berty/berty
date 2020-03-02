@@ -1,14 +1,16 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, select, takeLeading, takeEvery } from 'redux-saga/effects'
+import { put, all, select, takeLeading, takeEvery, fork, take, call } from 'redux-saga/effects'
 import { berty, google } from '@berty-tech/api'
 import { Buffer } from 'buffer'
+import { AppMessage, GroupInvitation, SetGroupName, AppMessageType } from './AppMessage'
 
 import * as protocol from '../protocol'
 import { contact } from '../chat'
 
 export type Entity = {
 	id: string
+	accountId: string
 	title: string
 	pk: string | null
 	kind: berty.chatmodel.Conversation.Kind // Unknown, Self, OneToOne, PrivateGroup
@@ -36,7 +38,11 @@ export type GlobalState = {
 
 export namespace Command {
 	export type Generate = void
-	export type Create = {}
+	export type Create = {
+		accountId: string
+		members: contact.Entity[]
+		name: string
+	}
 	export type Delete = { id: string }
 	export type DeleteAll = void
 }
@@ -50,10 +56,14 @@ export namespace Query {
 export namespace Event {
 	export type Deleted = { aggregateId: string }
 	export type Created = {
-		aggregateId: string
+		accountId: string
 		title: string
 		pk: Uint8Array
 		kind: berty.chatmodel.Conversation.Kind
+	}
+	export type NameUpdated = {
+		aggregateId: string
+		name: string
 	}
 }
 
@@ -75,13 +85,14 @@ export type QueryReducer = {
 export type EventsReducer = {
 	created: SimpleCaseReducer<Event.Created>
 	deleted: SimpleCaseReducer<Event.Deleted>
+	nameUpdated: SimpleCaseReducer<Event.NameUpdated>
 }
 
 export type Transactions = {
 	[K in keyof CommandsReducer]: CommandsReducer[K] extends SimpleCaseReducer<infer TPayload>
 		? (payload: TPayload) => Generator
 		: never
-}
+} & { open: (payload: { accountId: string }) => Generator }
 
 const initialState: State = {
 	events: [],
@@ -114,12 +125,13 @@ const eventHandler = createSlice<State, EventsReducer>({
 			return state
 		},
 		created: (state, { payload }) => {
-			const { aggregateId, pk, title, kind } = payload
+			const { accountId, pk, title, kind } = payload
 			// Create id
-			const id = getAggregateId({ accountId: aggregateId, groupPk: pk })
+			const id = getAggregateId({ accountId, groupPk: pk })
 			if (!state.aggregates[id]) {
 				state.aggregates[id] = {
 					id,
+					accountId,
 					title,
 					pk: new Buffer(pk).toString('base64'),
 					kind,
@@ -127,6 +139,13 @@ const eventHandler = createSlice<State, EventsReducer>({
 					members: [],
 					messages: [],
 				}
+			}
+			return state
+		},
+		nameUpdated: (state, { payload }) => {
+			const { aggregateId, name } = payload
+			if (state.aggregates[aggregateId]) {
+				state.aggregates[aggregateId].title = name
 			}
 			return state
 		},
@@ -142,12 +161,82 @@ export const queries: QueryReducer = {
 	getLength: (state) => Object.keys(state.chat.conversation.aggregates).length,
 }
 
+const decodePublicKey = (val: Buffer | Uint8Array) => Buffer.from(val).toString('utf-8')
+const encodePublicKey = (val: string) => Buffer.from(val, 'utf-8')
+
 export const transactions: Transactions = {
+	open: function*({ accountId }) {
+		const conversations = (yield select((state) => queries.list(state))) as Entity[]
+		const multiMemberConversationsOfAccount = conversations.filter(
+			(conversation) =>
+				conversation.accountId === accountId &&
+				conversation.kind === berty.chatmodel.Conversation.Kind.PrivateGroup,
+		)
+		for (const { pk } of multiMemberConversationsOfAccount) {
+			if (pk) {
+				yield fork(function*() {
+					const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
+						id: accountId,
+						groupPk: encodePublicKey(pk),
+						// TODO: use last cursor
+						since: new Uint8Array(),
+						until: new Uint8Array(),
+						goBackwards: false,
+					})
+					while (1) {
+						const action = yield take(chan)
+						yield put(action)
+					}
+				})
+			}
+		}
+	},
 	generate: function*() {
 		// TODO: conversation generate
 	},
-	create: function*() {
-		// TODO: conversation create
+	create: function*({ accountId, members, name }) {
+		const { groupPk } = (yield* protocol.client.transactions.multiMemberGroupCreate({
+			id: accountId,
+		})) as {
+			groupPk: Uint8Array
+		}
+		const groupPkStr = decodePublicKey(groupPk)
+
+		const setGroupName: SetGroupName = {
+			type: AppMessageType.SetGroupName,
+			name,
+		}
+		yield* protocol.client.transactions.appMetadataSend({
+			id: accountId,
+			groupPk,
+			payload: Buffer.from(JSON.stringify(setGroupName), 'utf-8'),
+		})
+
+		const group: berty.protocol.IGroup = {
+			groupType: berty.protocol.GroupType.GroupTypeMultiMember,
+			publicKey: groupPk,
+		}
+		yield* protocol.client.transactions.multiMemberGroupJoin({ id: accountId, group })
+
+		const invitation: GroupInvitation = {
+			type: AppMessageType.GroupInvitation,
+			groupPk: groupPkStr,
+		}
+		for (const member of members) {
+			const oneToOnePk = member.groupPk
+			if (oneToOnePk) {
+				yield* protocol.client.transactions.appMetadataSend({
+					// TODO: replace with appMessageSend
+					id: accountId,
+					groupPk: encodePublicKey(oneToOnePk),
+					payload: Buffer.from(JSON.stringify(invitation), 'utf-8'),
+				})
+			} else {
+				console.warn(
+					'Tried to send a multimember group invitation to a contact without an established 1to1',
+				)
+			}
+		}
 	},
 	delete: function*({ id }) {
 		yield put(
@@ -193,10 +282,9 @@ export function* orchestrator() {
 			if (!request) {
 				return
 			}
-			const aggregateId = getAggregateId({ accountId, groupPk })
 			yield put(
 				events.created({
-					aggregateId,
+					accountId,
 					title: request.name,
 					pk: groupPk,
 					kind: berty.chatmodel.Conversation.Kind.OneToOne,
@@ -208,18 +296,66 @@ export function* orchestrator() {
 				aggregateId: accountId,
 				event: { groupPk, contactMetadata },
 			} = payload
-			// Create id
-			const aggregateId = getAggregateId({ accountId, groupPk })
 			// Recup metadata
 			const metadata = JSON.parse(new Buffer(contactMetadata).toString('utf-8'))
 			yield put(
 				events.created({
-					aggregateId,
+					accountId,
 					title: metadata.givenName,
 					pk: groupPk,
 					kind: berty.chatmodel.Conversation.Kind.OneToOne,
 				}),
 			)
+		}),
+		takeEvery(protocol.events.client.accountGroupJoined, function*({ payload }) {
+			const {
+				aggregateId: accountId,
+				event: { group },
+			} = payload
+			const { publicKey } = group
+			if (!publicKey) {
+				throw new Error('Invalid public key')
+			}
+			yield put(
+				events.created({
+					accountId,
+					title: 'Unknown',
+					pk: publicKey,
+					kind: berty.chatmodel.Conversation.Kind.PrivateGroup,
+				}),
+			)
+			const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
+				id: accountId,
+				groupPk: publicKey,
+				// TODO: use last cursor
+				since: new Uint8Array(),
+				until: new Uint8Array(),
+				goBackwards: false,
+			})
+			while (1) {
+				const action = yield take(chan)
+				yield put(action)
+			}
+		}),
+		takeEvery(protocol.events.client.groupMetadataPayloadSent, function*({ payload }) {
+			const {
+				aggregateId: accountId,
+				eventContext: { groupPk },
+			} = payload
+			const event = payload.event as AppMessage
+			if (event.type === AppMessageType.SetGroupName) {
+				if (!groupPk) {
+					return
+				}
+				const id = getAggregateId({ accountId, groupPk })
+				const conversation = (yield select((state) => queries.get(state, { id }))) as
+					| Entity
+					| undefined
+				if (!conversation) {
+					return
+				}
+				yield put(events.nameUpdated({ aggregateId: id, name: event.name }))
+			}
 		}),
 	])
 }

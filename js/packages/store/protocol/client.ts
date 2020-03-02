@@ -317,10 +317,10 @@ export const transactions: Transactions = {
 	},
 
 	multiMemberGroupCreate: function*(payload) {
-		// do protocol things
+		return yield cps(getService(payload.id).multiMemberGroupCreate, {})
 	},
 	multiMemberGroupJoin: function*(payload) {
-		// do protocol things
+		return yield cps(getService(payload.id).multiMemberGroupJoin, { group: payload.group })
 	},
 	multiMemberGroupLeave: function*(payload) {
 		// do protocol things
