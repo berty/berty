@@ -93,7 +93,9 @@ start.emulator: deps
 run: export PWD := $(PWD)
 run: deps
 	$(if $(filter $(platform), android), $(berty_root)/build/shell/check-java.sh 18)
+	$(if $(filter $(platform), android), cd $(PWD)/android && ./gradlew clean)
 	$(if $(filter $(platform), android), adb -s $(device) reverse tcp:1337 tcp:1337)
+	$(if $(filter $(platform), android), adb -s $(device) reverse tcp:8081 tcp:8081)
 	cd $(PWD) && $(react-native) run-$(platform) \
 		--no-packager \
 		$(if $(filter $(platform), android), --variant=$(target)) \

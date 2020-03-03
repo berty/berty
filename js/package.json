@@ -1,93 +1,94 @@
 {
-  "name": "@berty-tech/js-monorepo",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Berty's client",
-  "license": "(Apache-2.0 OR MIT)",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/berty/berty.git"
-  },
-  "bugs": {
-    "url": "https://github.com/berty/berty/issues"
-  },
-  "homepage": "https://github.com/berty/berty#readme",
-  "author": "Berty Technologies <oss@berty.tech>",
-  "contributors": [
-    "Clement Girard <clemntgirard@gmail.com>",
-    "Godefroy Ponsinet <godefroy.ponsinet@outlook.com>"
-  ],
-  "main": "index.js",
-  "scripts": {
-    "cli": "babel-node --extensions '.es6,.js,.es,.jsx,.mjs,.ts,.tsx'",
-    "test": "jest --passWithNoTests"
-  },
-  "jest": {
-    "globals": {
-      "__DEV__": true
-    }
-  },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "nohoist": [
-      "**/react-native",
-      "**/jsc-*",
-      "**/hermes-engine",
-      "**/metro-*",
-      "**/@react-native-community/cli-*"
-    ]
-  },
-  "dependencies": {
-    "@types/node": "^13.5.0",
-    "babel-jest": "^24.9.0",
-    "caser": "^0.1.1",
-    "create-react-native-module": "^0.11.1",
-    "eslint-plugin-jest": "^22.17.0",
-    "eslint_d": "^8.0.0",
-    "json": "^9.0.6",
-    "lerna": "^3.18.3",
-    "lerna-update-wizard": "^0.16.0",
-    "react": "^16.12.0",
-    "react-native-create-library": "^3.1.2",
-    "text-transform-cli": "^1.5.0",
-    "update-versions": "^2.0.0"
-  },
-  "devDependencies": {
-    "@berty-tech/babel-preset": "^0.0.0",
-    "@berty-tech/eslint-config": "^0.0.0",
-    "@berty-tech/prettier-config": "^0.0.0",
-    "@react-native-community/eslint-plugin": "^1.0.0",
-    "@types/jest": "^24.0.18",
-    "@types/lodash": "^4.14.139",
-    "@types/react": "^16.9.3",
-    "@types/react-dom": "^16.9.1",
-    "@types/react-native": "^0.60.16",
-    "@types/react-test-renderer": "^16.9.0",
-    "@types/storybook__react": "^4.0.2",
-    "@types/storybook__react-native": "^3.0.5",
-    "@types/webpack-env": "^1.14.0",
-    "@typescript-eslint/eslint-plugin": "^2.7.0",
-    "@typescript-eslint/parser": "^2.3.1",
-    "babel-eslint": "^10.0.3",
-    "check-deps-sync": "^1.0.2",
-    "eslint": "^6.6.0",
-    "eslint-config-prettier": "^6.5.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-babel": "^5.3.0",
-    "eslint-plugin-dependencies": "^2.4.0",
-    "eslint-plugin-eslint-comments": "^3.1.2",
-    "eslint-plugin-flowtype": "^4.3.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^10.0.0",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.14.3",
-    "eslint-plugin-react-hooks": "^2.0.1",
-    "eslint-plugin-react-native": "^3.7.0",
-    "eslint-plugin-standard": "^4.0.1",
-    "prettier": "^1.18.2",
-    "typescript": "^3.7.5"
-  }
+	"name": "@berty-tech/js-monorepo",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Berty's client",
+	"license": "(Apache-2.0 OR MIT)",
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/berty/berty.git"
+	},
+	"bugs": {
+		"url": "https://github.com/berty/berty/issues"
+	},
+	"homepage": "https://github.com/berty/berty#readme",
+	"author": "Berty Technologies <oss@berty.tech>",
+	"contributors": [
+		"Clement Girard <clemntgirard@gmail.com>",
+		"Godefroy Ponsinet <godefroy.ponsinet@outlook.com>"
+	],
+	"main": "index.js",
+	"scripts": {
+		"cli": "babel-node --extensions '.es6,.js,.es,.jsx,.mjs,.ts,.tsx'",
+		"test": "jest --passWithNoTests"
+	},
+	"jest": {
+		"globals": {
+			"__DEV__": true
+		}
+	},
+	"workspaces": {
+		"packages": [
+			"packages/*"
+		],
+		"nohoist": [
+			"**/react-native",
+			"**/jsc-*",
+			"**/hermes-engine",
+			"**/metro-*",
+			"**/@react-native-community/cli-*",
+			"**/react-native-*"
+		]
+	},
+	"dependencies": {
+		"@types/node": "^13.5.0",
+		"babel-jest": "^24.9.0",
+		"caser": "^0.1.1",
+		"create-react-native-module": "^0.11.1",
+		"eslint-plugin-jest": "^22.17.0",
+		"eslint_d": "^8.0.0",
+		"json": "^9.0.6",
+		"lerna": "^3.18.3",
+		"lerna-update-wizard": "^0.16.0",
+		"react": "^16.12.0",
+		"react-native-create-library": "^3.1.2",
+		"text-transform-cli": "^1.5.0",
+		"update-versions": "^2.0.0"
+	},
+	"devDependencies": {
+		"@berty-tech/babel-preset": "^0.0.0",
+		"@berty-tech/eslint-config": "^0.0.0",
+		"@berty-tech/prettier-config": "^0.0.0",
+		"@react-native-community/eslint-plugin": "^1.0.0",
+		"@types/jest": "^24.0.18",
+		"@types/lodash": "^4.14.139",
+		"@types/react": "^16.9.3",
+		"@types/react-dom": "^16.9.1",
+		"@types/react-native": "^0.60.16",
+		"@types/react-test-renderer": "^16.9.0",
+		"@types/storybook__react": "^4.0.2",
+		"@types/storybook__react-native": "^3.0.5",
+		"@types/webpack-env": "^1.14.0",
+		"@typescript-eslint/eslint-plugin": "^2.7.0",
+		"@typescript-eslint/parser": "^2.3.1",
+		"babel-eslint": "^10.0.3",
+		"check-deps-sync": "^1.0.2",
+		"eslint": "^6.6.0",
+		"eslint-config-prettier": "^6.5.0",
+		"eslint-config-standard": "^14.1.0",
+		"eslint-plugin-babel": "^5.3.0",
+		"eslint-plugin-dependencies": "^2.4.0",
+		"eslint-plugin-eslint-comments": "^3.1.2",
+		"eslint-plugin-flowtype": "^4.3.0",
+		"eslint-plugin-import": "^2.18.2",
+		"eslint-plugin-node": "^10.0.0",
+		"eslint-plugin-prettier": "^3.1.1",
+		"eslint-plugin-promise": "^4.2.1",
+		"eslint-plugin-react": "^7.14.3",
+		"eslint-plugin-react-hooks": "^2.0.1",
+		"eslint-plugin-react-native": "^3.7.0",
+		"eslint-plugin-standard": "^4.0.1",
+		"prettier": "^1.18.2",
+		"typescript": "^3.7.5"
+	}
 }
