@@ -5,11 +5,10 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	TextInput,
-	TouchableWithoutFeedback,
 	Dimensions,
 	StyleSheet,
 } from 'react-native'
-import { Layout, Text, Icon, CheckBox, Input } from 'react-native-ui-kitten'
+import { Layout, Text, Icon, CheckBox } from 'react-native-ui-kitten'
 import { styles, colors, useStyles } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
@@ -358,7 +357,9 @@ export const CreateGroup2: React.FC<{
 	)
 }
 
-const GroupInfo: React.FC<{}> = () => {
+type GroupInfoProps = { onGroupNameChange: (name: string) => void }
+
+const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 	const [{ row, background, column, margin, flex, border, padding, color, text }] = useStyles()
 	const _styles = useStylesCreateGroup()
 
@@ -382,7 +383,7 @@ const GroupInfo: React.FC<{}> = () => {
 					/>
 				</View>
 				<View style={[margin.left.medium, flex.tiny, row.item.justify]}>
-					<Input placeholder='Name of the group' />
+					<TextInput placeholder='Name of the group' onChangeText={onGroupNameChange} />
 				</View>
 			</View>
 			<TouchableOpacity
@@ -469,6 +470,8 @@ export const CreateGroup3: React.FC<{
 	const thirdToggledPoint = -Screen.height + 200 + 210
 	const thirdNotToggledPoint = thirdToggledPoint
 	const navigation = useNavigation()
+	const [groupName, setGroupName] = useState('')
+	const createGroup = Chat.useConversationCreate({ name: groupName, members })
 
 	return (
 		<Layout style={[styles.flex]}>
@@ -500,12 +503,12 @@ export const CreateGroup3: React.FC<{
 						},
 					]}
 				>
-					<GroupInfo />
+					<GroupInfo onGroupNameChange={setGroupName} />
 					<View />
 					<NewGroup2 members={members} onRemoveMember={onRemoveMember} />
 				</SDTSModalComponent>
 			</SafeAreaView>
-			<FooterCreateGroup title='CREATE THE GROUP' />
+			<FooterCreateGroup title='CREATE THE GROUP' action={createGroup} />
 		</Layout>
 	)
 }

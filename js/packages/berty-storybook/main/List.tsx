@@ -58,7 +58,6 @@ const RequestsItem: React.FC<{
 	const [
 		{ border, padding, margin, width, height, column, row, background, absolute, text },
 	] = useStyles()
-	const conversationCreate = Chat.useConversationCreate()
 	const { navigate } = useNavigation()
 	return (
 		<Translation>

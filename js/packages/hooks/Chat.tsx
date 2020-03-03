@@ -38,61 +38,6 @@ export const Provider: React.FC<{ config: chat.InitConfig }> = ({ config, childr
 	)
 }
 
-// account commands
-export const useAccountGenerate = () => {
-	const dispatch = useDispatch()
-	return useMemo(() => () => dispatch(chat.account.commands.generate()), [dispatch])
-}
-
-export const useAccountCreate = () => {
-	const dispatch = useDispatch()
-	return useMemo(
-		() => (payload: chat.account.Command.Create) => dispatch(chat.account.commands.create(payload)),
-		[dispatch],
-	)
-}
-
-// conversations commands
-export const useConversationGenerate = () => {
-	const dispatch = useDispatch()
-	return useMemo(() => () => dispatch(chat.conversation.commands.generate()), [dispatch])
-}
-
-export const useConversationCreate = () => {
-	const dispatch = useDispatch()
-	return useMemo(
-		() => (payload: chat.conversation.Command.Create) =>
-			dispatch(chat.conversation.commands.create(payload)),
-		[dispatch],
-	)
-}
-
-export const useConversationDelete = () => {
-	const dispatch = useDispatch()
-	return useMemo(
-		() => (payload: chat.conversation.Command.Delete) =>
-			dispatch(chat.conversation.commands.delete(payload)),
-		[dispatch],
-	)
-}
-
-// multiMemberGroup commands
-export const useMultiMemberGroupCreate = () => {
-	const dispatch = useDispatch()
-	return useMemo(
-		() => (payload: chat.member.Command.Create) => dispatch(chat.member.commands.create(payload)),
-		[dispatch],
-	)
-}
-
-export const useAccountDelete = () => {
-	const dispatch = useDispatch()
-	return useMemo(
-		() => (payload: chat.account.Command.Delete) => dispatch(chat.account.commands.delete(payload)),
-		[dispatch],
-	)
-}
-
 // account queries
 export const useAccountList = () => {
 	const list = useSelector((state: chat.account.GlobalState) =>
@@ -110,6 +55,20 @@ export const useAccount = () => {
 	const accounts = useAccountList()
 	const len = useAccountLength()
 	return len > 0 ? accounts[0] : null
+}
+
+// account commands
+export const useAccountGenerate = () => {
+	const dispatch = useDispatch()
+	return useMemo(() => () => dispatch(chat.account.commands.generate()), [dispatch])
+}
+
+export const useAccountCreate = () => {
+	const dispatch = useDispatch()
+	return useMemo(
+		() => (payload: chat.account.Command.Create) => dispatch(chat.account.commands.create(payload)),
+		[dispatch],
+	)
 }
 
 export const useAccountSendContactRequest = () => {
@@ -132,6 +91,48 @@ export const useAccountSendContactRequest = () => {
 			}),
 		)
 	}
+}
+
+// conversations commands
+export const useConversationGenerate = () => {
+	const dispatch = useDispatch()
+	return useMemo(() => () => dispatch(chat.conversation.commands.generate()), [dispatch])
+}
+
+type UseConversationCreate = (kwargs: {
+	members: chat.contact.Entity[]
+	name: string
+}) => () => void
+
+// multimember group
+export const useConversationCreate: UseConversationCreate = ({ name, members }) => {
+	const account = useAccount()
+	const dispatch = useDispatch()
+	return useMemo(() => {
+		if (!account) {
+			return () => {}
+		}
+		return () => {
+			dispatch(chat.conversation.commands.create({ accountId: account.id, name, members }))
+		}
+	}, [account, dispatch, members, name])
+}
+
+export const useConversationDelete = () => {
+	const dispatch = useDispatch()
+	return useMemo(
+		() => (payload: chat.conversation.Command.Delete) =>
+			dispatch(chat.conversation.commands.delete(payload)),
+		[dispatch],
+	)
+}
+
+export const useAccountDelete = () => {
+	const dispatch = useDispatch()
+	return useMemo(
+		() => (payload: chat.account.Command.Delete) => dispatch(chat.account.commands.delete(payload)),
+		[dispatch],
+	)
 }
 
 // requests queries

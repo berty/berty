@@ -406,14 +406,40 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 			error: Error | null,
 			response?: api.berty.protocol.MultiMemberGroupCreate.IReply,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = async (request, callback) => {
+		try {
+			const fakePk = await this._createPkHack()
+			callback(null, { groupPk: Buffer.from(fakePk, 'utf-8') })
+		} catch (e) {
+			callback(e)
+		}
+	}
 	MultiMemberGroupJoin: (
 		request: api.berty.protocol.MultiMemberGroupJoin.IRequest,
 		callback: (
 			error: Error | null,
 			response?: api.berty.protocol.MultiMemberGroupJoin.IReply,
 		) => void,
-	) => void = (request, callback) => {}
+	) => void = async (request, callback) => {
+		try {
+			const { group } = request
+			if (!group) {
+				throw new Error('Invalid group')
+			}
+			await this.addEventToMetadataLog({
+				groupPk: this.accountGroupPk,
+				type: 'AccountGroupJoined',
+				dataType: 'AccountGroupJoined',
+				data: {
+					devicePk: this.devicePkBytes,
+					group,
+				},
+			})
+			callback(null, {})
+		} catch (e) {
+			callback(e)
+		}
+	}
 	MultiMemberGroupLeave: (
 		request: api.berty.protocol.MultiMemberGroupLeave.IRequest,
 		callback: (
