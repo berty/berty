@@ -12,27 +12,28 @@ import (
 )
 
 var eventTypesMapper = map[EventType]struct {
-	Message proto.Message
+	Message    proto.Message
+	SigChecker SigChecker
 }{
-	EventTypeGroupMemberDeviceAdded:                 {Message: &GroupAddMemberDevice{}},
-	EventTypeGroupDeviceSecretAdded:                 {Message: &GroupAddDeviceSecret{}},
-	EventTypeAccountGroupJoined:                     {Message: &AccountGroupJoined{}},
-	EventTypeAccountGroupLeft:                       {Message: &AccountGroupLeft{}},
-	EventTypeAccountContactRequestDisabled:          {Message: &AccountContactRequestDisabled{}},
-	EventTypeAccountContactRequestEnabled:           {Message: &AccountContactRequestEnabled{}},
-	EventTypeAccountContactRequestReferenceReset:    {Message: &AccountContactRequestReferenceReset{}},
-	EventTypeAccountContactRequestOutgoingEnqueued:  {Message: &AccountContactRequestEnqueued{}},
-	EventTypeAccountContactRequestOutgoingSent:      {Message: &AccountContactRequestSent{}},
-	EventTypeAccountContactRequestIncomingReceived:  {Message: &AccountContactRequestReceived{}},
-	EventTypeAccountContactRequestIncomingDiscarded: {Message: &AccountContactRequestDiscarded{}},
-	EventTypeAccountContactRequestIncomingAccepted:  {Message: &AccountContactRequestAccepted{}},
-	EventTypeAccountContactBlocked:                  {Message: &AccountContactBlocked{}},
-	EventTypeAccountContactUnblocked:                {Message: &AccountContactUnblocked{}},
-	EventTypeContactAliasKeyAdded:                   {Message: &ContactAddAliasKey{}},
-	EventTypeMultiMemberGroupAliasResolverAdded:     {Message: &MultiMemberGroupAddAliasResolver{}},
-	EventTypeMultiMemberGroupInitialMemberAnnounced: {Message: &MultiMemberInitialMember{}},
-	EventTypeMultiMemberGroupAdminRoleGranted:       {Message: &MultiMemberGrantAdminRole{}},
-	EventTypeGroupMetadataPayloadSent:               {Message: &AppMetadata{}},
+	EventTypeGroupMemberDeviceAdded:                 {Message: &GroupAddMemberDevice{}, SigChecker: SigCheckerMemberDeviceAdded},
+	EventTypeGroupDeviceSecretAdded:                 {Message: &GroupAddDeviceSecret{}, SigChecker: SigCheckerDeviceSigned},
+	EventTypeAccountGroupJoined:                     {Message: &AccountGroupJoined{}, SigChecker: SigCheckerMissing},
+	EventTypeAccountGroupLeft:                       {Message: &AccountGroupLeft{}, SigChecker: SigCheckerMissing},
+	EventTypeAccountContactRequestDisabled:          {Message: &AccountContactRequestDisabled{}, SigChecker: SigCheckerMissing},
+	EventTypeAccountContactRequestEnabled:           {Message: &AccountContactRequestEnabled{}, SigChecker: SigCheckerMissing},
+	EventTypeAccountContactRequestReferenceReset:    {Message: &AccountContactRequestReferenceReset{}, SigChecker: SigCheckerMissing},
+	EventTypeAccountContactRequestOutgoingEnqueued:  {Message: &AccountContactRequestEnqueued{}, SigChecker: SigCheckerMissing},
+	EventTypeAccountContactRequestOutgoingSent:      {Message: &AccountContactRequestSent{}, SigChecker: SigCheckerMissing},
+	EventTypeAccountContactRequestIncomingReceived:  {Message: &AccountContactRequestReceived{}, SigChecker: SigCheckerMissing},
+	EventTypeAccountContactRequestIncomingDiscarded: {Message: &AccountContactRequestDiscarded{}, SigChecker: SigCheckerMissing},
+	EventTypeAccountContactRequestIncomingAccepted:  {Message: &AccountContactRequestAccepted{}, SigChecker: SigCheckerMissing},
+	EventTypeAccountContactBlocked:                  {Message: &AccountContactBlocked{}, SigChecker: SigCheckerMissing},
+	EventTypeAccountContactUnblocked:                {Message: &AccountContactUnblocked{}, SigChecker: SigCheckerMissing},
+	EventTypeContactAliasKeyAdded:                   {Message: &ContactAddAliasKey{}, SigChecker: SigCheckerMissing},
+	EventTypeMultiMemberGroupAliasResolverAdded:     {Message: &MultiMemberGroupAddAliasResolver{}, SigChecker: SigCheckerMissing},
+	EventTypeMultiMemberGroupInitialMemberAnnounced: {Message: &MultiMemberInitialMember{}, SigChecker: SigCheckerGroupSigned},
+	EventTypeMultiMemberGroupAdminRoleGranted:       {Message: &MultiMemberGrantAdminRole{}, SigChecker: SigCheckerMissing},
+	EventTypeGroupMetadataPayloadSent:               {Message: &AppMetadata{}, SigChecker: SigCheckerMissing},
 }
 
 func NewEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *Group) (*EventContext, error) {
@@ -134,6 +135,10 @@ func OpenGroupEnvelope(g *Group, envelopeBytes []byte) (*GroupMetadata, proto.Me
 	payload := proto.Clone(et.Message)
 	if err := proto.Unmarshal(metadataEvent.Payload, payload); err != nil {
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if err := et.SigChecker(g, metadataEvent, payload); err != nil {
+		return nil, nil, errcode.ErrSignatureVerificationFailed.Wrap(err)
 	}
 
 	return metadataEvent, payload, nil

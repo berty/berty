@@ -87,14 +87,20 @@ func MetadataStoreJoinGroup(ctx context.Context, m MetadataStore, g *bertyprotoc
 		return nil, nil
 	}
 
-	// TODO: how to sign
-	sig := []byte{}
-	memberSig := []byte{}
+	memberSig, err := md.Member.Sign(device)
+	if err != nil {
+		return nil, errcode.ErrSignatureFailed.Wrap(err)
+	}
 
 	event := &bertyprotocol.GroupAddMemberDevice{
 		MemberPK:  member,
 		DevicePK:  device,
 		MemberSig: memberSig,
+	}
+
+	sig, err := SignProto(event, md.Device)
+	if err != nil {
+		return nil, errcode.ErrSignatureFailed.Wrap(err)
 	}
 
 	return MetadataStoreAddEvent(ctx, m, g, bertyprotocol.EventTypeGroupMemberDeviceAdded, event, sig)
