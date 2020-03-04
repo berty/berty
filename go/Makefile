@@ -64,9 +64,18 @@ docker.build: pb.generate
 	$(call check-program, docker)
 	docker build -t bertytech/berty .
 
+.PHONY: docker.fast
+docker.fast: args ?= -h
+docker.fast: run_opts ?=
+docker.fast: pb.generate
+	$(call check-program, $(GO) docker)
+	@mkdir -p out
+	GOOS=linux GOARCH=amd64 GO111MODULE=on $(GO) build -v -o ./out/berty-linux-static ./cmd/berty
+	docker run -it --rm -v $(PWD)/out/berty-linux-static:/bin/berty $(run_opts) ubuntu berty $(args)
+
 .PHONY: clean
 clean: pb.clean bazel.clean
-	rm -rf vendor/
+	rm -rf vendor/ out/
 
 .PHONY: fclean
 fclean: clean bazel.fclean
