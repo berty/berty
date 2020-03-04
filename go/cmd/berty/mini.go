@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"image"
 	"os"
 	"path"
 	"sync"
@@ -116,24 +117,56 @@ func acquireGroup(opts *miniOpts) (*bertyprotocol.Group, error) {
 	return g, nil
 }
 
+type ScrollArea struct {
+	*tui.ScrollArea
+	topLeft image.Point
+}
+
+// Scroll shifts the views over the content.
+func (s *ScrollArea) Scroll(dx, dy int) {
+	if y := s.Widget.SizeHint().Y - s.Size().Y; y < dy+s.topLeft.Y {
+		s.ScrollToBottom()
+		dy = 0
+	} else if dy+s.topLeft.Y < 0 {
+		s.ScrollToTop()
+		dy = 0
+	}
+
+	s.ScrollArea.Scroll(dx, dy)
+	s.topLeft.X += dx
+	s.topLeft.Y += dy
+}
+
+// ScrollToBottom ensures the bottom-most part of the scroll area is visible.
+func (s *ScrollArea) ScrollToBottom() {
+	s.ScrollArea.ScrollToBottom()
+	s.topLeft.Y = s.Widget.SizeHint().Y - s.Size().Y
+}
+
+// ScrollToTop resets the vertical scroll position.
+func (s *ScrollArea) ScrollToTop() {
+	s.ScrollArea.ScrollToTop()
+	s.topLeft.Y = 0
+}
+
 type historyMessageList struct {
-	lock    sync.RWMutex
-	view    *tui.Box
-	viewBox *tui.Box
-	ui      tui.UI
+	lock          sync.RWMutex
+	view          *tui.Box
+	viewBox       *tui.Box
+	ui            tui.UI
+	historyScroll *ScrollArea
 }
 
 func newHistoryMessageList() *historyMessageList {
 	history := tui.NewVBox()
 
-	historyScroll := tui.NewScrollArea(history)
-	historyScroll.SetAutoscrollToBottom(true)
-
+	historyScroll := &ScrollArea{ScrollArea: tui.NewScrollArea(history)}
 	historyBox := tui.NewVBox(historyScroll)
 
 	h := &historyMessageList{
-		view:    history,
-		viewBox: historyBox,
+		view:          history,
+		viewBox:       historyBox,
+		historyScroll: historyScroll,
 	}
 
 	_ = h.Append(&historyMessage{
@@ -176,6 +209,8 @@ func (h *historyMessageList) Append(m *historyMessage) error {
 		})
 	}
 
+	h.historyScroll.ScrollToBottom()
+
 	return nil
 }
 
@@ -195,6 +230,8 @@ func (h *historyMessageList) Prepend(m *historyMessage, receivedAt time.Time) er
 		})
 	}
 
+	h.historyScroll.ScrollToBottom()
+
 	return nil
 }
 
@@ -203,6 +240,13 @@ func (h *historyMessageList) SetUI(ui tui.UI) {
 	defer h.lock.Unlock()
 
 	h.ui = ui
+}
+
+func (h *historyMessageList) ViewHistory() *ScrollArea {
+	h.lock.Lock()
+	defer h.lock.Unlock()
+
+	return h.historyScroll
 }
 
 func unlockFS(l *fslock.Lock) {
@@ -486,6 +530,11 @@ func miniMain(opts *miniOpts) {
 	messages.SetUI(ui)
 
 	ui.SetKeybinding("Esc", func() { ui.Quit() })
+	ui.SetKeybinding("Ctrl+C", func() { ui.Quit() })
+	ui.SetKeybinding("PgUp", func() { messages.ViewHistory().Scroll(0, -10) })
+	ui.SetKeybinding("PgDn", func() { messages.ViewHistory().Scroll(0, 10) })
+	ui.SetKeybinding("Home", func() { messages.ViewHistory().ScrollToTop() })
+	ui.SetKeybinding("End", func() { messages.ViewHistory().ScrollToBottom() })
 
 	if err := ui.Run(); err != nil {
 		panic(err)

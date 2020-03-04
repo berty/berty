@@ -154,6 +154,7 @@ func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPee
 	for i, p := range peers {
 		go func(p *MockedPeer, peerIndex int) {
 			ctx, cancel := context.WithCancel(ctx)
+			defer cancel()
 			eventReceived := 0
 
 			for e := range p.GC.MetadataStore().Subscribe(ctx) {
@@ -167,7 +168,6 @@ func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPee
 					memdev := &bertyprotocol.GroupAddMemberDevice{}
 					if err := memdev.Unmarshal(casted.Event); err != nil {
 						errChan <- err
-						cancel()
 						wg.Done()
 						return
 					}
@@ -180,7 +180,6 @@ func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPee
 			}
 
 			wg.Done()
-			cancel()
 		}(p, i)
 	}
 
