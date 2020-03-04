@@ -30,6 +30,8 @@ export type Entity = {
 	devicePk: string
 	accountGroupPk: string
 	lastMetadataCids: { [key: string]: string }
+	//
+	lastMessageCids: { [key: string]: string }
 }
 
 export type Event = {}
@@ -76,6 +78,10 @@ export type Events = gen.Events<State> & {
 		},
 	) => State
 	lastMetadataCidUpdated: (
+		state: State,
+		action: { payload: { aggregateId: string; groupPk: string; cid: string } },
+	) => State
+	lastMessageCidUpdated: (
 		state: State,
 		action: { payload: { aggregateId: string; groupPk: string; cid: string } },
 	) => State
@@ -156,6 +162,7 @@ const eventHandler = createSlice<State, Events>({
 				devicePk: Buffer.from(action.payload.devicePk).toString(),
 				accountGroupPk: Buffer.from(action.payload.accountGroupPk).toString(),
 				lastMetadataCids: client ? client.lastMetadataCids : {},
+				lastMessageCids: client ? client.lastMessageCids : {},
 				contactRequestReference: client ? client.contactRequestReference : undefined,
 			}
 			return state
@@ -173,6 +180,13 @@ const eventHandler = createSlice<State, Events>({
 		lastMetadataCidUpdated: (state, action) => {
 			if (state.aggregates[action.payload.aggregateId]) {
 				state.aggregates[action.payload.aggregateId].lastMetadataCids[action.payload.groupPk] =
+					action.payload.cid
+			}
+			return state
+		},
+		lastMessageCidUpdated: (state, action) => {
+			if (state.aggregates[action.payload.aggregateId]) {
+				state.aggregates[action.payload.aggregateId].lastMessageCids[action.payload.groupPk] =
 					action.payload.cid
 			}
 			return state
@@ -342,7 +356,10 @@ export const transactions: Transactions = {
 		})
 	},
 	appMessageSend: function*(payload) {
-		// do protocol things
+		return yield cps(getService(payload.id).appMessageSend, {
+			groupPk: payload.groupPk,
+			payload: payload.payload,
+		})
 	},
 	groupMetadataSubscribe: function*(payload) {
 		const eventsChannel = channel()
@@ -437,7 +454,53 @@ export const transactions: Transactions = {
 		return eventsChannel
 	},
 	groupMessageSubscribe: function*(payload) {
-		// do protocol things
+		const eventsChannel = channel()
+		const client = (yield select((state) => queries.get(state, { id: payload.id }))) as
+			| Entity
+			| undefined
+		if (!client) {
+			throw new Error(`Unknown client ${payload.id}`)
+		}
+		const groupPkStr = Buffer.from(payload.groupPk).toString('utf-8')
+		const sinceStr = client.lastMessageCids[groupPkStr]
+		getService(payload.id).groupMessageSubscribe(
+			{
+				groupPk: payload.groupPk,
+				since: sinceStr ? Buffer.from(sinceStr, 'utf-8') : undefined,
+			},
+			(error, response) => {
+				if (error) {
+					// TODO: log error
+					throw error
+				}
+
+				if (!response?.eventContext?.id) {
+					console.error('No event cid')
+					return
+				}
+
+				const cidStr = Buffer.from(response.eventContext.id).toString('utf-8')
+				eventsChannel.put(
+					events.lastMessageCidUpdated({
+						aggregateId: payload.id,
+						groupPk: groupPkStr,
+						cid: cidStr,
+					}),
+				)
+
+				const type = 'protocol/GroupMessageEvent'
+				eventsChannel.put({
+					type,
+					payload: {
+						aggregateId: `${payload.id}`,
+						eventContext: response.eventContext,
+						headers: response.headers,
+						message: response.message,
+					},
+				})
+			},
+		)
+		return eventsChannel
 	},
 }
 

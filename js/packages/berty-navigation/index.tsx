@@ -45,7 +45,7 @@ export namespace ScreenProps {
 	}
 	export namespace Chat {
 		export type List = {}
-		export type One2One = { route: { params: berty.chatmodel.IConversation } }
+		export type One2One = { route: { params: { convId: string } } }
 		export type Group = {
 			route: {
 				params: berty.chatmodel.IConversation & {
@@ -130,6 +130,7 @@ const createNavigation = ({
 	dispatch,
 }: NavigationProp<any> | BottomTabNavigationProp<any>) => {
 	return {
+		dispatch: (action: any) => dispatch(action),
 		goBack: () => goBack(),
 		reset: (type: string) => {
 			if (type === 'Onboarding') {

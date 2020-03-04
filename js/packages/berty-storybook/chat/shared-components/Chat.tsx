@@ -1,8 +1,9 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { TouchableOpacity, View, TextInput, Text, SafeAreaView } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-
+import { Chat } from '@berty-tech/hooks'
+import { AppMessageType } from '@berty-tech/store/chat/AppMessage'
 //
 // ChatFooter => Textinput for type message
 //
@@ -20,11 +21,15 @@ const useStylesChatFooter = () => {
 export const ChatFooter: React.FC<{
 	isFocused: boolean
 	setFocus: React.Dispatch<React.SetStateAction<any>>
-}> = ({ isFocused, setFocus }) => {
+	convId: any
+}> = ({ isFocused, setFocus, convId }) => {
+	const [message, setMessage] = useState('')
 	const inputRef = useRef(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
 	const _styles = useStylesChatFooter()
 	const [{ background, row, padding, flex, border, column, color }] = useStyles()
+	const sendMessage = Chat.useMessageSend()
+
 	return (
 		<SafeAreaView style={background.white}>
 			<View
@@ -50,6 +55,7 @@ export const ChatFooter: React.FC<{
 						multiline={true}
 						onFocus={() => setFocus(true)}
 						onBlur={() => setFocus(false)}
+						onChangeText={setMessage}
 						style={[
 							_styles.textInput,
 							_isFocused && { color: color.blue } && _styles.focusTextInput,
@@ -57,7 +63,19 @@ export const ChatFooter: React.FC<{
 						placeholder='Write a secure message...'
 						placeholderTextColor={_isFocused ? color.blue : color.grey}
 					/>
-					<TouchableOpacity style={[flex.tiny, _styles.sendButton]}>
+					<TouchableOpacity
+						style={[flex.tiny, _styles.sendButton]}
+						onPress={() => {
+							if (message) {
+								sendMessage({
+									id: convId,
+									type: AppMessageType.UserMessage,
+									body: message,
+									attachments: [],
+								})
+							}
+						}}
+					>
 						<Icon
 							name='paper-plane-outline'
 							width={30}

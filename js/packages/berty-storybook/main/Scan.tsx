@@ -77,7 +77,7 @@ const DevReferenceInput = () => {
 				title='Submit'
 				onPress={() => {
 					sendContactRequest(ref)
-					navigation.navigate.main.list()
+					navigation.goBack()
 				}}
 			/>
 		</>

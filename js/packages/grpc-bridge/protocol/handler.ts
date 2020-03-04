@@ -156,6 +156,39 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		return value
 	}
 
+	getMessageLogToken = (groupPk: string): string => {
+		const [, value] = groupPk.split(':')
+		return value
+	}
+
+	addEventToMessageLog = ({ groupPk, data }: { groupPk: string; data: Uint8Array }) => {
+		const { client } = this
+		return new Promise((resolve, reject) => {
+			try {
+				client.logAdd(
+					{
+						logToken: this.getMessageLogToken(groupPk),
+						data: api.berty.protocol.GroupMessageEvent.encode({
+							eventContext: {},
+							headers: {},
+							message: data,
+						}).finish(),
+					},
+					(error, response) => {
+						if (error) {
+							reject(error)
+						} else {
+							resolve(response)
+						}
+					},
+				)
+			} catch (e) {
+				console.error(e)
+				reject(e)
+			}
+		})
+	}
+
 	addEventToMetadataLog = ({
 		groupPk,
 		type,
@@ -487,7 +520,24 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	AppMessageSend: (
 		request: api.berty.protocol.AppMessageSend.IRequest,
 		callback: (error: Error | null, response?: api.berty.protocol.AppMessageSend.IReply) => void,
-	) => void = (request, callback) => {}
+	) => void = async (request, callback) => {
+		const { groupPk, payload } = request
+		try {
+			if (!groupPk) {
+				throw new Error('Invalid groupPk')
+			}
+			if (!payload) {
+				throw new Error('Invalid payload')
+			}
+			await this.addEventToMessageLog({
+				groupPk: new Buffer(groupPk as Uint8Array).toString(),
+				data: payload as Uint8Array,
+			})
+			callback(null, {})
+		} catch (error) {
+			callback(error)
+		}
+	}
 
 	GroupMetadataSubscribe: (
 		request: api.berty.protocol.GroupMetadataSubscribe.IRequest,
@@ -537,19 +587,26 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 			callback(new Error('GRPC ProtocolServiceHandler: groupPk corrupted'))
 			return
 		}
-		this.client?.logStream({ logToken: tokens[1] }, (error, response) => {
-			if (error || response == null || response.cid == null || response.value == null) {
-				callback(error)
-				return
-			}
-			const message = api.berty.protocol.GroupMessageEvent.decode(response.value)
-			if (message == null || message.eventContext == null) {
-				callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
-				return
-			}
-			message.eventContext.id = Buffer.from(response.cid, 'utf8')
-			callback(null, message)
-		})
+		this.client.logStream(
+			{
+				logToken: tokens[1],
+				options: request.since && { GT: new Buffer(request.since).toString('utf-8') },
+			},
+			(error, response) => {
+				if (error || response == null || response.cid == null || response.value == null) {
+					callback(error)
+					return
+				}
+				const message = api.berty.protocol.GroupMessageEvent.decode(response.value)
+				if (message == null || message.eventContext == null) {
+					callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
+					return
+				}
+				message.eventContext.id = Buffer.from(response.cid, 'utf8')
+				message.eventContext.groupPk = request.groupPk
+				callback(null, message)
+			},
+		)
 	}
 }
 

@@ -17,6 +17,7 @@ import { Message } from './shared-components/Message'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { berty } from '@berty-tech/api'
+import { Chat as ChatHooks } from '@berty-tech/hooks'
 
 //
 // ChatGroup
@@ -165,33 +166,36 @@ const InfosChatGroup: React.FC<berty.chatmodel.IConversation> = (props) => {
 	)
 }
 
+const AppMessage: React.FC<{ message: string }> = ({ message }) => {
+	const [{ color }] = useStyles()
+	return (
+		<Message
+			payload={ChatHooks.useGetMessage(message)}
+			date='9:42'
+			color={color.blue}
+			bgColor='#CED2FF99'
+		/>
+	)
+}
+
 const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
-const MessageList: React.FC<berty.chatmodel.IConversation> = (props) => {
+
+const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	const [cursors] = useState([0])
 	const [{ color, overflow, row, flex }] = useStyles()
+	const conversation = ChatHooks.useGetConversation(id)
 	return (
 		<FlatList
 			style={[overflow, row.item.fill, flex.tiny]}
 			data={cursors}
 			inverted
-			ListFooterComponent={<InfosChatGroup {...props} />}
+			ListFooterComponent={<InfosChatGroup />}
 			renderItem={() => (
-				<Store.MessageList
-					request={{ filter: { conversationId: props.id } }}
-					fallback={MessageListSpinner}
-				>
-					{(_) =>
-						_.map(({ message }) => (
-							<Message
-								{...message}
-								date='9:42'
-								message='Bonkur fjhfjhefefbe hjfgvddd g hjheg jgjhgjehgjhg jhge jhghdjkwlfuy wtyrygv gg hrhg rjygr'
-								color={color.blue}
-								bgColor='#CED2FF99'
-							/>
-						))
-					}
-				</Store.MessageList>
+				<View>
+					{conversation &&
+						conversation.messages &&
+						conversation.messages.map((message) => <AppMessage message={message} />)}
+				</View>
 			)}
 		/>
 	)
@@ -205,8 +209,8 @@ export const ChatGroup: React.FC<ScreenProps.Chat.Group> = ({ route: { params } 
 			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
 				<StatusBar backgroundColor='#00BCD4' barStyle='dark-content' />
 				<HeaderChatGroup {...params} />
-				<MessageList {...params} />
-				<ChatFooter isFocused={inputIsFocused} setFocus={setInputFocus} />
+				<MessageList id={params.convId} />
+				<ChatFooter convId={params.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
 			</KeyboardAvoidingView>
 		</View>
 	)

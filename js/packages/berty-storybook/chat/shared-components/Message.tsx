@@ -10,10 +10,10 @@ import { CircleAvatar } from '../../shared-components/CircleAvatar'
 
 // Types
 type MessageProps = {
+	payload: any
 	avatarUri: string
 	name: string
 	date: string
-	message: string
 	color: string
 	bgColor: string
 	// Conditions of messages
@@ -47,10 +47,10 @@ const useStylesMessage = () => {
 }
 
 export const Message: React.FC<MessageProps> = ({
+	payload,
 	avatarUri,
 	name,
 	date,
-	message,
 	color,
 	bgColor,
 	isMe = false,
@@ -85,7 +85,7 @@ export const Message: React.FC<MessageProps> = ({
 					</View>
 				)}
 				<View style={[padding.small, border.radius.medium, styleMsg, { backgroundColor: bgColor }]}>
-					<Text style={[text.bold, _styles.messageText, { color }]}>{message}</Text>
+					<Text style={[text.bold, _styles.messageText, { color }]}>{payload.body}</Text>
 				</View>
 				<View style={[isMe && row.item.bottom]}>
 					{!state.length ? (
