@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	Text,
 	TouchableOpacity,
@@ -18,9 +18,6 @@ import { Chat } from '@berty-tech/hooks'
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { CommonActions } from '@react-navigation/core'
 import { chat } from '@berty-tech/store'
-import * as dateFns from '@berty-tech/berty-i18n/dateFns'
-import { Icon } from 'react-native-ui-kitten'
-import { conversation } from '@berty-tech/store/chat'
 
 type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
 
@@ -59,7 +56,6 @@ const RequestsItem: React.FC<{
 	const [
 		{ border, padding, margin, width, height, column, row, background, absolute, text },
 	] = useStyles()
-	const { navigate } = useNavigation()
 	return (
 		<Translation>
 			{(t): React.ReactNode => (
@@ -170,12 +166,19 @@ const Requests: React.FC<RequestsProps> = ({ items, style, onLayout }) => {
 	) : null
 }
 
+const formatTimestamp = (date: Date) => {
+	const arr = date.toString().split(' ')
+	const hours = arr[4].split(':')
+	const hour = hours[0] + ':' + hours[1]
+	return hour
+}
+
 const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
-	const { navigate, dispatch } = useNavigation()
-	const { createdAt, title, kind, id } = props
-	const [
-		{ color, row, border, width, height, flex, column, padding, margin, text, background },
-	] = useStyles()
+	const { dispatch } = useNavigation()
+	const { title, kind, id, messages } = props
+	const [{ color, row, border, flex, column, padding, text }] = useStyles()
+	const message = Chat.useGetMessage(messages ? messages[messages.length - 1] : '')
+
 	return (
 		<TouchableHighlight
 			underlayColor={color.light.grey}
@@ -212,48 +215,15 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
 								{title || ''}
 							</Text>
-							<Icon
-								style={margin.left.small}
-								name='checkmark-circle-2'
-								width={15}
-								height={15}
-								fill={color.blue}
-							/>
 						</View>
 						<View style={[row.right]}>
-							<View
-								style={[
-									background.red,
-									row.center,
-									width(15),
-									height(15),
-									border.radius.scale(15 / 2),
-								]}
-							>
-								<Text
-									style={[
-										row.item.justify,
-										text.color.white,
-										text.bold,
-										text.align.center,
-										text.align.justify,
-										text.size.tiny,
-									]}
-								>
-									2
-								</Text>
-							</View>
 							<Text style={[padding.left.small, text.size.small, text.color.grey]}>
-								{createdAt}
+								{message && formatTimestamp(new Date(message.sentDate))}
 							</Text>
-							<View style={[padding.left.small]}>
-								<Icon name='paper-plane' width={12} height={12} fill={color.blue} />
-							</View>
 						</View>
 					</View>
 					<Text numberOfLines={1} style={[text.size.small, text.color.grey]}>
-						Salut je voulais savoir comment tu allais mais finalement j'ai pas envie de savoir ta
-						reponse
+						{message && message.body}
 					</Text>
 				</View>
 			</View>
@@ -263,7 +233,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 
 const Conversations: React.FC<ConversationsProps> = ({ items }) => {
 	const [{ overflow, border, padding, margin, text, background }] = useStyles()
-	return items.length ? (
+	return items?.length ? (
 		<Translation>
 			{(t): React.ReactNode => (
 				<ScrollView

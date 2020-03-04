@@ -14,7 +14,7 @@ export type Entity = {
 	title: string
 	pk: string
 	kind: berty.chatmodel.Conversation.Kind // Unknown, Self, OneToOne, PrivateGroup
-	createdAt: google.protobuf.ITimestamp | string
+	createdAt: number
 	membersDevices: { [key: string]: string[] }
 	members: Array<number>
 	messages: Array<string>
@@ -151,7 +151,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 					title,
 					pk: new Buffer(pk).toString(),
 					kind,
-					createdAt: '9:21',
+					createdAt: Date.now(),
 					members: [],
 					messages: [],
 					membersDevices: {},
@@ -191,8 +191,6 @@ const eventHandler = createSlice<State, EventsReducer>({
 					set.push(devicePkStr)
 				}
 			}
-
-			return state
 		},
 	},
 })

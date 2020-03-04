@@ -51,6 +51,7 @@ export const ChatFooter: React.FC<{
 					]}
 				>
 					<TextInput
+						value={message}
 						ref={inputRef}
 						multiline={true}
 						onFocus={() => setFocus(true)}
@@ -74,6 +75,7 @@ export const ChatFooter: React.FC<{
 									attachments: [],
 								})
 							}
+							setMessage('')
 						}}
 					>
 						<Icon
@@ -95,7 +97,7 @@ export const ChatFooter: React.FC<{
 
 // Types
 type ChatDateProps = {
-	date: string
+	date: number
 }
 
 // Styles
@@ -107,12 +109,17 @@ const useStylesChatDate = () => {
 	}
 }
 
+const formatTimestamp = (date: Date) => {
+	const arr = date.toString().split(' ')
+	return arr[1] + ' ' + arr[2] + ' ' + arr[3]
+}
+
 export const ChatDate: React.FC<ChatDateProps> = ({ date }) => {
 	const _styles = useStylesChatDate()
 	const [{ border, row, background }] = useStyles()
 	return (
 		<View style={[row.item.justify, border.radius.medium, background.light.grey, _styles.date]}>
-			<Text style={_styles.dateText}>Today</Text>
+			<Text style={_styles.dateText}>{formatTimestamp(new Date(date))}</Text>
 		</View>
 	)
 }

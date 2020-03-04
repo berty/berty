@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, StyleProp } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
@@ -14,10 +14,7 @@ type MessageProps = {
 	avatarUri: string
 	name: string
 	date: string
-	color: string
-	bgColor: string
 	// Conditions of messages
-	isMe?: boolean
 	isGroup?: boolean
 	// State of messages (sending.../retry sending.../sent/failed)
 	state?: {
@@ -46,31 +43,33 @@ const useStylesMessage = () => {
 	}
 }
 
+const formatTimestamp = (date: Date) => {
+	const arr = date.toString().split(' ')
+	const hours = arr[4].split(':')
+	const hour = hours[0] + ':' + hours[1]
+	return hour
+}
+
 export const Message: React.FC<MessageProps> = ({
 	payload,
 	avatarUri,
 	name,
-	date,
-	color,
-	bgColor,
-	isMe = false,
 	isGroup = false,
 	state = [],
-	style = null,
 	styleMsg = null,
 }) => {
 	const _styles = useStylesMessage()
-	const [{ row, margin, padding, column, text, border }] = useStyles()
+	const [{ row, margin, padding, column, text, border, color }] = useStyles()
 	return (
 		<View
 			style={[
 				row.left,
-				isMe ? _styles.isMeMessage : _styles.isOtherMessage,
+				payload.isMe ? _styles.isMeMessage : _styles.isOtherMessage,
 				padding.horizontal.medium,
 				padding.vertical.small,
 			]}
 		>
-			{!isMe && isGroup && (
+			{!payload.isMe && isGroup && (
 				<CircleAvatar
 					style={_styles.circleAvatar}
 					avatarUri={avatarUri}
@@ -79,21 +78,48 @@ export const Message: React.FC<MessageProps> = ({
 				/>
 			)}
 			<View style={[column.top, _styles.messageItem]}>
-				{!isMe && isGroup && (
+				{!payload.isMe && isGroup && (
 					<View style={[margin.left.small]}>
-						<Text style={[text.bold, _styles.personNameInGroup, { color }]}>{name}</Text>
+						<Text
+							style={[
+								text.bold,
+								_styles.personNameInGroup,
+								{ color: payload.isMe ? color.white : color.blue },
+							]}
+						>
+							{name}
+						</Text>
 					</View>
 				)}
-				<View style={[padding.small, border.radius.medium, styleMsg, { backgroundColor: bgColor }]}>
-					<Text style={[text.bold, _styles.messageText, { color }]}>{payload.body}</Text>
+				<View
+					style={[
+						padding.small,
+						border.radius.medium,
+						styleMsg,
+						{ backgroundColor: payload.isMe ? color.blue : '#CED2FF99' },
+					]}
+				>
+					<Text
+						style={[
+							text.bold,
+							_styles.messageText,
+							{ color: payload.isMe ? color.white : color.blue },
+						]}
+					>
+						{payload.body}
+					</Text>
 				</View>
-				<View style={[isMe && row.item.bottom]}>
+				<View style={[payload.isMe && row.item.bottom]}>
 					{!state.length ? (
-						<Text style={[text.color.grey, _styles.dateMessage]}>{date}</Text>
+						<Text style={[text.color.grey, _styles.dateMessage]}>
+							{formatTimestamp(new Date(payload.sentDate))}
+						</Text>
 					) : (
 						state.map((value) => (
 							<View style={[row.left, { alignItems: 'center' }]}>
-								<Text style={[text.color.grey, _styles.dateMessageWithState]}>{date}</Text>
+								<Text style={[text.color.grey, _styles.dateMessageWithState]}>
+									{formatTimestamp(new Date(payload.sentDate))}
+								</Text>
 								<Icon name={value.icon} width={12} height={12} fill={value.color} />
 								<Text style={[_styles.stateMessageValue, { color: value.color }]}>
 									{value.value}
