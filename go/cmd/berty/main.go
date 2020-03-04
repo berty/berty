@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"flag"
 	"fmt"
 	"log"
@@ -269,11 +270,31 @@ func main() {
 		},
 	}
 
+	groupinit := &ffcli.Command{
+		Name:    "groupinit",
+		Usage:   "berty groupinit - initialize a new multi member group",
+		FlagSet: clientDemoFlags,
+		Exec: func(args []string) error {
+			g, _, err := bertyprotocol.NewGroupMultiMember()
+			if err != nil {
+				return err
+			}
+
+			gBytes, err := g.Marshal()
+			if err != nil {
+				return err
+			}
+
+			fmt.Printf("%s\n", base64.StdEncoding.EncodeToString(gBytes))
+			return nil
+		},
+	}
+
 	root := &ffcli.Command{
 		Usage:       "berty [global flags] <subcommand> [flags] [args...]",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
-		Subcommands: []*ffcli.Command{daemon, demo, banner, version, mini},
+		Subcommands: []*ffcli.Command{daemon, demo, banner, version, mini, groupinit},
 		Exec: func([]string) error {
 			globalFlags.Usage()
 			return flag.ErrHelp
