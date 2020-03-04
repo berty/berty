@@ -7,6 +7,7 @@ import (
 	"image"
 	"os"
 	"path"
+	"strings"
 	"sync"
 	"time"
 
@@ -24,6 +25,7 @@ import (
 	"github.com/whyrusleeping/go-logging"
 
 	"berty.tech/berty/go/internal/account"
+	"berty.tech/berty/go/internal/banner"
 	"berty.tech/berty/go/internal/bertycrypto"
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/internal/orbitutil"
@@ -172,6 +174,12 @@ func newHistoryMessageList() *historyMessageList {
 	}
 
 	h.membersList.AddItems("Devices:", "----")
+
+	b := banner.Banner()
+	bannerLines := strings.Split(b, "\n")
+	for _, l := range bannerLines {
+		h.view.Append(tui.NewLabel(l))
+	}
 
 	_ = h.Append(&historyMessage{
 		messageType: messageTypeStarted,
