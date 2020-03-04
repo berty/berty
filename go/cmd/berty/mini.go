@@ -62,18 +62,10 @@ func pkAsShortID(pk []byte) string {
 	return "--------"
 }
 
-func replayBadge(m messageType) string {
-	if m != messageTypeMessageReplayed {
-		return ""
-	}
-
-	return "<< "
-}
-
 func (h *historyMessage) ToView() *tui.Label {
 	textLabel := tui.NewLabel("")
 	textLabel.SetWordWrap(true)
-	text := fmt.Sprintf("%s <%s> %s%s", h.receivedAt.Format("15:04:05"), pkAsShortID(h.sender), replayBadge(h.messageType), string(h.payload))
+	text := fmt.Sprintf("%s <%s> %s", h.receivedAt.Format("15:04:05"), pkAsShortID(h.sender), string(h.payload))
 
 	textLabel.SetText(text)
 
@@ -187,6 +179,25 @@ func (h *historyMessageList) Append(m *historyMessage) error {
 	return nil
 }
 
+func (h *historyMessageList) Prepend(m *historyMessage, receivedAt time.Time) error {
+	h.lock.Lock()
+	defer h.lock.Unlock()
+
+	if receivedAt.IsZero() {
+		m.receivedAt = time.Now()
+	}
+
+	if h.ui == nil {
+		h.view.Prepend(m.ToView())
+	} else {
+		h.ui.Update(func() {
+			h.view.Prepend(m.ToView())
+		})
+	}
+
+	return nil
+}
+
 func (h *historyMessageList) SetUI(ui tui.UI) {
 	h.lock.Lock()
 	defer h.lock.Unlock()
@@ -280,7 +291,9 @@ func initOrbitDB(ctx context.Context, opts *miniOpts) (orbitutil.BertyOrbitDB, d
 	return odb, baseDS, node, lock
 }
 
-func metadataEventDisplay(messages *historyMessageList, e *bertyprotocol.GroupMetadataEvent) {
+func metadataEventDisplay(messages *historyMessageList, e *bertyprotocol.GroupMetadataEvent, isHistory bool) {
+	evt := (*historyMessage)(nil)
+
 	switch e.Metadata.EventType {
 	case bertyprotocol.EventTypeGroupMemberDeviceAdded:
 		casted := &bertyprotocol.GroupAddMemberDevice{}
@@ -289,11 +302,11 @@ func metadataEventDisplay(messages *historyMessageList, e *bertyprotocol.GroupMe
 			return
 		}
 
-		_ = messages.Append(&historyMessage{
+		evt = &historyMessage{
 			messageType: messageTypeNewDevice,
 			payload:     []byte("new device joined the group"),
 			sender:      casted.DevicePK,
-		})
+		}
 
 	case bertyprotocol.EventTypeGroupDeviceSecretAdded:
 		casted := &bertyprotocol.GroupAddDeviceSecret{}
@@ -302,11 +315,21 @@ func metadataEventDisplay(messages *historyMessageList, e *bertyprotocol.GroupMe
 			return
 		}
 
-		_ = messages.Append(&historyMessage{
+		evt = &historyMessage{
 			messageType: messageTypeNewDevice,
 			payload:     []byte(fmt.Sprintf("has exchanged a secret")),
 			sender:      casted.DevicePK,
-		})
+		}
+	}
+
+	if evt == nil {
+		return
+	}
+
+	if isHistory {
+		_ = messages.Prepend(evt, time.Time{})
+	} else {
+		_ = messages.Append(evt)
 	}
 }
 
@@ -378,28 +401,24 @@ func miniMain(opts *miniOpts) {
 	// Announce that we joined the group and show the group invitation token
 	welcomeEventDisplay(ctx, messages, gc, odb.IPFS())
 
+	// Replay message history
+	msgs, err := gc.MessageStore().ListMessages(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	for evt := range msgs {
+		_ = messages.Prepend(&historyMessage{
+			messageType: messageTypeMessageReplayed,
+			payload:     evt.Message,
+			sender:      evt.Headers.DevicePK,
+		}, time.Time{})
+	}
+
 	// List existing members of the group
-	go func() {
-		for e := range gc.MetadataStore().ListEvents(ctx) {
-			metadataEventDisplay(messages, e)
-		}
-	}()
-
-	// Replay history
-	go func() {
-		msgs, err := gc.MessageStore().ListMessages(ctx)
-		if err != nil {
-			panic(err)
-		}
-
-		for evt := range msgs {
-			_ = messages.Append(&historyMessage{
-				messageType: messageTypeMessageReplayed,
-				payload:     evt.Message,
-				sender:      evt.Headers.DevicePK,
-			})
-		}
-	}()
+	for e := range gc.MetadataStore().ListEvents(ctx) {
+		metadataEventDisplay(messages, e, true)
+	}
 
 	// Watch for incoming new messages
 	go func() {
@@ -425,7 +444,7 @@ func miniMain(opts *miniOpts) {
 				continue
 			}
 
-			metadataEventDisplay(messages, e)
+			metadataEventDisplay(messages, e, false)
 		}
 	}()
 
