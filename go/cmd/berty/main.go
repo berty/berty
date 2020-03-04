@@ -285,7 +285,7 @@ func main() {
 				return err
 			}
 
-			fmt.Printf("%s\n", base64.StdEncoding.EncodeToString(gBytes))
+			fmt.Print(base64.StdEncoding.EncodeToString(gBytes))
 			return nil
 		},
 	}
