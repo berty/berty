@@ -165,10 +165,6 @@ func (m *metadataStoreIndex) handleGroupAddDeviceSecret(event proto.Message) err
 		return errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if !destPK.Equals(m.ownMemberDevice.Member) {
-		return errcode.ErrGroupSecretOtherDestMember
-	}
-
 	senderPK, err := crypto.UnmarshalEd25519PublicKey(e.DevicePK)
 	if err != nil {
 		return errcode.ErrDeserialization.Wrap(err)
@@ -176,6 +172,10 @@ func (m *metadataStoreIndex) handleGroupAddDeviceSecret(event proto.Message) err
 
 	if m.ownMemberDevice.Device.Equals(senderPK) {
 		m.sentSecrets[string(e.DestMemberPK)] = struct{}{}
+	}
+
+	if !destPK.Equals(m.ownMemberDevice.Member) {
+		return errcode.ErrGroupSecretOtherDestMember
 	}
 
 	return nil
