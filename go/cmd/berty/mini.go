@@ -153,6 +153,7 @@ type historyMessageList struct {
 	lock          sync.RWMutex
 	view          *tui.Box
 	viewBox       *tui.Box
+	membersList   *tui.List
 	ui            tui.UI
 	historyScroll *ScrollArea
 }
@@ -167,7 +168,10 @@ func newHistoryMessageList() *historyMessageList {
 		view:          history,
 		viewBox:       historyBox,
 		historyScroll: historyScroll,
+		membersList:   tui.NewList(),
 	}
+
+	h.membersList.AddItems("Devices:", "----")
 
 	_ = h.Append(&historyMessage{
 		messageType: messageTypeStarted,
@@ -182,6 +186,13 @@ func (h *historyMessageList) View() *tui.Box {
 	defer h.lock.RUnlock()
 
 	return h.viewBox
+}
+
+func (h *historyMessageList) MembersList() tui.Widget {
+	w := tui.NewHBox(h.membersList)
+	w.SetBorder(true)
+
+	return w
 }
 
 func (h *historyMessageList) AppendErr(err error) {
@@ -352,6 +363,8 @@ func metadataEventDisplay(messages *historyMessageList, e *bertyprotocol.GroupMe
 			sender:      casted.DevicePK,
 		}
 
+		messages.membersList.AddItems(pkAsShortID(casted.DevicePK))
+
 	case bertyprotocol.EventTypeGroupDeviceSecretAdded:
 		casted := &bertyprotocol.GroupAddDeviceSecret{}
 		if err := casted.Unmarshal(e.Event); err != nil {
@@ -501,12 +514,18 @@ func miniMain(opts *miniOpts) {
 	inputBox := tui.NewHBox(tui.NewLabel(">> "), input)
 	inputBox.SetSizePolicy(tui.Expanding, tui.Maximum)
 
-	chat := tui.NewVBox(historyBox, inputBox)
+	rightPanel := tui.NewVBox(historyBox, inputBox)
+	rightPanel.SetSizePolicy(tui.Expanding, tui.Expanding)
+	rightPanel.SetBorder(true)
+
+	chat := tui.NewHBox(messages.MembersList(), rightPanel)
 	chat.SetSizePolicy(tui.Expanding, tui.Expanding)
 
 	input.OnSubmit(func(e *tui.Entry) {
 		msg := e.Text()
 		input.SetText("")
+
+		messages.ViewHistory().ScrollToBottom()
 
 		if msg == "" {
 			return
