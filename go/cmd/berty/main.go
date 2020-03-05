@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"flag"
 	"fmt"
 	"log"
@@ -16,6 +17,7 @@ import (
 	"berty.tech/berty/go/pkg/bertydemo"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
+	"berty.tech/go-orbit-db/cache/cacheleveldown"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
 	ma "github.com/multiformats/go-multiaddr"
@@ -46,6 +48,11 @@ func main() {
 		clientDemoFlags     = flag.NewFlagSet("demo client", flag.ExitOnError)
 		clientDemoDirectory = clientDemoFlags.String("d", ":memory:", "orbit db directory")
 		clientDemoListeners = clientDemoFlags.String("l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
+
+		miniClientDemoFlags = flag.NewFlagSet("mini demo client", flag.ExitOnError)
+		miniClientDemoGroup = miniClientDemoFlags.String("g", "", "group to join, leave empty to create a new group")
+		miniClientDemoPath  = miniClientDemoFlags.String("d", cacheleveldown.InMemoryDirectory, "orbit db directory")
+		miniClientDemoPort  = miniClientDemoFlags.Uint("p", 0, "default IPFS listen port")
 	)
 
 	globalPreRun := func() error {
@@ -97,6 +104,20 @@ func main() {
 		Usage: "version",
 		Exec: func(args []string) error {
 			fmt.Println("dev")
+			return nil
+		},
+	}
+
+	mini := &ffcli.Command{
+		Name:    "mini",
+		Usage:   "mini",
+		FlagSet: miniClientDemoFlags,
+		Exec: func(args []string) error {
+			miniMain(&miniOpts{
+				groupInvitation: *miniClientDemoGroup,
+				port:            *miniClientDemoPort,
+				path:            *miniClientDemoPath,
+			})
 			return nil
 		},
 	}
@@ -249,11 +270,31 @@ func main() {
 		},
 	}
 
+	groupinit := &ffcli.Command{
+		Name:    "groupinit",
+		Usage:   "berty groupinit - initialize a new multi member group",
+		FlagSet: clientDemoFlags,
+		Exec: func(args []string) error {
+			g, _, err := bertyprotocol.NewGroupMultiMember()
+			if err != nil {
+				return err
+			}
+
+			gBytes, err := g.Marshal()
+			if err != nil {
+				return err
+			}
+
+			fmt.Print(base64.StdEncoding.EncodeToString(gBytes))
+			return nil
+		},
+	}
+
 	root := &ffcli.Command{
 		Usage:       "berty [global flags] <subcommand> [flags] [args...]",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
-		Subcommands: []*ffcli.Command{daemon, demo, banner, version},
+		Subcommands: []*ffcli.Command{daemon, demo, banner, version, mini, groupinit},
 		Exec: func([]string) error {
 			globalFlags.Usage()
 			return flag.ErrHelp

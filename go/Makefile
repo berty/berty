@@ -6,7 +6,7 @@ BAZEL ?= bazel
 BAZEL_ARGS ?=
 BAZEL_CMD_ARGS ?=
 GO ?= go
-GO_TEST_OPTS ?= -test.timeout=60s
+GO_TEST_OPTS ?= -test.timeout=180s
 GOPATH ?= $(HOME)/go
 IBAZEL ?= ibazel --run_output_interactive=false --run_output
 USE_IBAZEL ?= false
@@ -141,6 +141,11 @@ bazel.demo: bazel.generate
 	$(call check-program, $(BAZEL))
 	$(call bazel, run, //cmd/berty -- demo)
 
+.PHONY: bazel.mini
+bazel.mini: bazel.generate
+	$(call check-program, $(BAZEL))
+	$(call bazel, run, //cmd/berty -- mini)
+
 .PHONY: bazel.banner
 bazel.banner: bazel.generate
 	$(call check-program, $(BAZEL))
@@ -175,6 +180,10 @@ ibazel.daemon: bazel.generate
 .PHONY: ibazel.daemon
 ibazel.demo: bazel.generate
 	USE_IBAZEL=true make bazel.demo
+
+.PHONY: ibazel.mini
+ibazel.mini: bazel.generate
+	USE_IBAZEL=true make bazel.mini
 
 .PHONY: ibazel.build
 ibazel.build: bazel.generate

@@ -1,33 +1,58 @@
 package orbitutil
 
 import (
+	"context"
 	"sync"
 
 	ipfslog "berty.tech/go-ipfs-log"
+	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores/operation"
 	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
 
-	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/account"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 )
 
 type metadataStoreIndex struct {
-	groupContext  GroupContext
-	lock          sync.RWMutex
-	members       map[string][]*MemberDevice
-	devices       map[string]*MemberDevice
-	admins        map[crypto.PubKey]struct{}
-	deviceSecrets map[string]*bertyprotocol.DeviceSecret
-	handledEvents map[string]struct{}
-	sentSecrets   map[string]struct{}
-	//pendingAdmins map[crypto.PubKey][]crypto.PubKey
+	members         map[string][]*account.MemberDevice
+	devices         map[string]*account.MemberDevice
+	admins          map[crypto.PubKey]struct{}
+	handledEvents   map[string]struct{}
+	sentSecrets     map[string]struct{}
+	g               *bertyprotocol.Group
+	ownMemberDevice *account.MemberDevice
+	ctx             context.Context
+	eventEmitter    events.EmitterInterface
+	lock            sync.RWMutex
 }
 
 func (m *metadataStoreIndex) Get(key string) interface{} {
 	return nil
+}
+
+func openMetadataEntry(g *bertyprotocol.Group, log ipfslog.Log, e ipfslog.Entry) (*bertyprotocol.GroupMetadataEvent, *bertyprotocol.GroupMetadata, proto.Message, error) {
+	op, err := operation.ParseOperation(e)
+	if err != nil {
+		// TODO: log
+		return nil, nil, nil, err
+	}
+
+	meta, event, err := bertyprotocol.OpenGroupEnvelope(g, op.GetValue())
+	if err != nil {
+		// TODO: log
+		return nil, nil, nil, err
+	}
+
+	metaEvent, err := bertyprotocol.NewGroupMetadataEventFromEntry(log, e, meta, event, g)
+	if err != nil {
+		// TODO: log
+		return nil, nil, nil, err
+	}
+
+	return metaEvent, meta, event, nil
 }
 
 func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) error {
@@ -35,19 +60,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entr
 	defer m.lock.Unlock()
 
 	for _, e := range log.Values().Slice() {
-		op, err := operation.ParseOperation(e)
-		if err != nil {
-			// TODO: log
-			continue
-		}
-
-		meta, event, err := OpenGroupEnvelope(m.groupContext.GetGroup(), op.GetValue())
-		if err != nil {
-			// TODO: log
-			continue
-		}
-
-		metaEvent, err := NewGroupMetadataEventFromEntry(log, e, meta, event, m.groupContext.GetGroup())
+		metaEvent, meta, event, err := openMetadataEntry(m.g, log, e)
 		if err != nil {
 			// TODO: log
 			continue
@@ -78,7 +91,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entr
 			continue
 		}
 
-		m.groupContext.GetMetadataStore().Emit(metaEvent)
+		m.eventEmitter.Emit(m.ctx, metaEvent)
 	}
 
 	return nil
@@ -128,12 +141,12 @@ func (m *metadataStoreIndex) handleGroupAddMemberDevice(event proto.Message) err
 		return errcode.ErrInternal
 	}
 
-	m.devices[string(e.DevicePK)] = &MemberDevice{
+	m.devices[string(e.DevicePK)] = &account.MemberDevice{
 		Member: member,
 		Device: device,
 	}
 
-	m.members[string(e.MemberPK)] = append(m.members[string(e.MemberPK)], &MemberDevice{
+	m.members[string(e.MemberPK)] = append(m.members[string(e.MemberPK)], &account.MemberDevice{
 		Member: member,
 		Device: device,
 	})
@@ -147,19 +160,9 @@ func (m *metadataStoreIndex) handleGroupAddDeviceSecret(event proto.Message) err
 		return errcode.ErrInvalidInput
 	}
 
-	if _, ok = m.deviceSecrets[string(e.DevicePK)]; ok {
-		return errcode.ErrInvalidInput
-	}
-
-	ownSK := m.groupContext.GetMemberPrivKey()
-
 	destPK, err := crypto.UnmarshalEd25519PublicKey(e.DestMemberPK)
 	if err != nil {
 		return errcode.ErrDeserialization.Wrap(err)
-	}
-
-	if !destPK.Equals(m.groupContext.GetMemberPrivKey().GetPublic()) {
-		return errcode.ErrGroupSecretOtherDestMember
 	}
 
 	senderPK, err := crypto.UnmarshalEd25519PublicKey(e.DevicePK)
@@ -167,16 +170,13 @@ func (m *metadataStoreIndex) handleGroupAddDeviceSecret(event proto.Message) err
 		return errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if m.groupContext.GetDevicePrivKey().GetPublic().Equals(senderPK) {
+	if m.ownMemberDevice.Device.Equals(senderPK) {
 		m.sentSecrets[string(e.DestMemberPK)] = struct{}{}
 	}
 
-	ds, err := group.OpenDeviceSecret(e, ownSK, m.groupContext.GetGroup())
-	if err != nil {
-		return errcode.ErrCryptoDecrypt.Wrap(err)
+	if !destPK.Equals(m.ownMemberDevice.Member) {
+		return errcode.ErrGroupSecretOtherDestMember
 	}
-
-	m.deviceSecrets[string(e.DevicePK)] = ds
 
 	return nil
 }
@@ -285,23 +285,6 @@ func (m *metadataStoreIndex) ListAdmins() []crypto.PubKey {
 	return admins
 }
 
-func (m *metadataStoreIndex) GetDeviceSecret(pk crypto.PubKey) (*bertyprotocol.DeviceSecret, error) {
-	m.lock.RLock()
-	defer m.lock.RUnlock()
-
-	key, err := pk.Raw()
-	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
-	}
-
-	ds, ok := m.deviceSecrets[string(key)]
-	if !ok {
-		return nil, errcode.ErrInvalidInput
-	}
-
-	return ds, nil
-}
-
 func (m *metadataStoreIndex) AreSecretsAlreadySent(pk crypto.PubKey) (bool, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
@@ -316,17 +299,18 @@ func (m *metadataStoreIndex) AreSecretsAlreadySent(pk crypto.PubKey) (bool, erro
 }
 
 // NewMetadataStoreIndex returns a new index to manage the list of the group members
-func NewMetadataIndex(g GroupContext) iface.IndexConstructor {
+func NewMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertyprotocol.Group, memberDevice *account.MemberDevice) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		return &metadataStoreIndex{
-			groupContext:  g,
-			members:       map[string][]*MemberDevice{},
-			devices:       map[string]*MemberDevice{},
-			admins:        map[crypto.PubKey]struct{}{},
-			deviceSecrets: map[string]*bertyprotocol.DeviceSecret{},
-			sentSecrets:   map[string]struct{}{},
-			handledEvents: map[string]struct{}{},
-			//pendingAdmins: map[crypto.PubKey][]crypto.PubKey{},
+			members:         map[string][]*account.MemberDevice{},
+			devices:         map[string]*account.MemberDevice{},
+			admins:          map[crypto.PubKey]struct{}{},
+			sentSecrets:     map[string]struct{}{},
+			handledEvents:   map[string]struct{}{},
+			g:               g,
+			eventEmitter:    eventEmitter,
+			ownMemberDevice: memberDevice,
+			ctx:             ctx,
 		}
 	}
 }

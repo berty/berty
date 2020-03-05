@@ -11,7 +11,6 @@ import (
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 
-	"berty.tech/berty/go/internal/group"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
@@ -19,13 +18,13 @@ type GroupStore interface {
 	iface.Store
 
 	InitBaseStore(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) error
-
-	SetGroupContext(GroupContext)
-	GetGroupContext() GroupContext
 }
 
 type MetadataStore interface {
 	GroupStore
+
+	// ListEvents returns a channel of previously received events
+	ListEvents(ctx context.Context) <-chan *bertyprotocol.GroupMetadataEvent
 
 	// MemberCount returns the number of members in the member tree
 	MemberCount() int
@@ -33,13 +32,13 @@ type MetadataStore interface {
 	// DeviceCount returns the number of devices in the member tree
 	DeviceCount() int
 
-	// ListMembers returns a list of members's pubkey indexed in the member tree
+	// ListMembers returns a list of members pubkeys indexed in the member tree
 	ListMembers() []crypto.PubKey
 
-	// ListDevices returns a list of devices's pubkey indexed in the member tree
+	// ListDevices returns a list of devices pubkeys indexed in the member tree
 	ListDevices() []crypto.PubKey
 
-	// ListAdmins returns a list of devices's pubkey indexed in the member tree
+	// ListAdmins returns a list of admin members pubkeys indexed in the member tree
 	ListAdmins() []crypto.PubKey
 
 	// GetMemberByDevice
@@ -51,9 +50,6 @@ type MetadataStore interface {
 	// JoinGroup
 	JoinGroup(ctx context.Context) (operation.Operation, error)
 
-	// GetDeviceSecret
-	GetDeviceSecret(crypto.PubKey) (*bertyprotocol.DeviceSecret, error)
-
 	// SendSecret sends secret of this device to group member
 	SendSecret(ctx context.Context, memberPK crypto.PubKey) (operation.Operation, error)
 
@@ -61,23 +57,21 @@ type MetadataStore interface {
 	ClaimGroupOwnership(ctx context.Context, groupSK crypto.PrivKey) (operation.Operation, error)
 }
 
-type GroupContext interface {
-	GetGroup() *group.Group
-	GetMemberPrivKey() crypto.PrivKey
-	GetDevicePrivKey() crypto.PrivKey
-	GetDeviceSecret() *bertyprotocol.DeviceSecret
-	GetMetadataStore() MetadataStore
-	SetMetadataStore(s MetadataStore)
+type MessageStore interface {
+	GroupStore
+
+	// ListMessages lists messages in the store
+	ListMessages(ctx context.Context) (<-chan *bertyprotocol.GroupMessageEvent, error)
+
+	// AddMessage appends a message to the store
+	AddMessage(ctx context.Context, data []byte) (operation.Operation, error)
 }
 
 type BertyOrbitDB interface {
 	iface.BaseOrbitDB
 
-	RegisterGroupContext(GroupContext) error
-	GetGroupContext(groupID string) (GroupContext, error)
-	SetGroupSigPubKey(groupID string, pubKey crypto.PubKey) error
-	InitStoresForGroup(context.Context, GroupContext, *orbitdb.CreateDBOptions) error
+	OpenGroup(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (*GroupContext, error)
 
-	InitGroupStore(ctx context.Context, indexConstructor func(g GroupContext) iface.IndexConstructor, store GroupStore, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) error
-	GroupMetadataStore(ctx context.Context, g GroupContext, options *orbitdb.CreateDBOptions) (MetadataStore, error)
+	GroupMetadataStore(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (MetadataStore, error)
+	GroupMessageStore(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (MessageStore, error)
 }

@@ -31,6 +31,7 @@ enum ErrCode {
   ErrCryptoKeyConversion = 110;
   ErrMissingMapKey = 111;
   ErrNotAuthorized = 112;
+  ErrUnsupportedKeyType = 113;
 
   ErrOrbitDBInit = 200;
   ErrOrbitDBOpen = 201;
@@ -72,6 +73,9 @@ enum ErrCode {
   ErrGroupInvitationCantGenerate = 1033;
 
   ErrSecretKeyGenerationFailed = 1050;
+
+  ErrPersistencePut = 1060;
+  ErrPersistenceGet = 1061;
 
   //
   // Bridge (starting at 2001)
