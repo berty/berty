@@ -35,7 +35,7 @@ target 'Berty' do
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
   # needed for react-native-qrcode-scanner
-  pod 'Permission-Camera', :path => "../../../node_modules/react-native-permissions/ios/Camera.podspec"
+  pod 'Permission-Camera', :path => "../node_modules/react-native-permissions/ios/Camera.podspec"
 
   use_native_modules!
 

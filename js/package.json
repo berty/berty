@@ -37,7 +37,8 @@
 			"**/hermes-engine",
 			"**/metro-*",
 			"**/@react-native-community/cli-*",
-			"**/react-native-*"
+			"**/react-native-*",
+			"**/@react-navigation/native"
 		]
 	},
 	"dependencies": {

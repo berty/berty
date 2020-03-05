@@ -1,7 +1,7 @@
 // TODO: create /api/js-internal/bertychatnavigation.proto and generate this file
 
 import React, { useMemo, useState } from 'react'
-import { createStackNavigator } from '@react-navigation/stack'
+import { createNativeStackNavigator } from 'react-native-screens/native-stack'
 import * as Stories from '@berty-tech/berty-storybook'
 import {
 	useNavigation as useReactNavigation,
@@ -214,7 +214,7 @@ export const useNavigation = () => {
 	return useMemo(() => createNavigation(reactNav), [reactNav])
 }
 
-const FakeStack = createStackNavigator()
+const FakeStack = createNativeStackNavigator()
 export const FakeNavigation: React.FC = ({ children }) => {
 	return (
 		<FakeStack.Navigator screenOptions={{ headerShown: false }}>
@@ -223,7 +223,7 @@ export const FakeNavigation: React.FC = ({ children }) => {
 	)
 }
 
-const OnboardingStack = createStackNavigator()
+const OnboardingStack = createNativeStackNavigator()
 export const OnboardingNavigation: React.FC = () => (
 	<OnboardingStack.Navigator screenOptions={{ headerShown: false }}>
 		<OnboardingStack.Screen
@@ -245,7 +245,7 @@ export const OnboardingNavigation: React.FC = () => (
 	</OnboardingStack.Navigator>
 )
 
-const CreateGroupStack = createStackNavigator()
+const CreateGroupStack = createNativeStackNavigator()
 export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 	const [members, setMembers] = useState([] as chat.contact.Entity[])
 	const setMember = (contact: chat.contact.Entity) => {
@@ -297,14 +297,14 @@ export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 	)
 }
 
-const SearchStack = createStackNavigator()
+const SearchStack = createNativeStackNavigator()
 export const SearchNavigation: React.FC<BottomTabBarProps> = () => (
 	<SearchStack.Navigator screenOptions={{ headerShown: false }}>
 		<SearchStack.Screen name={Routes.Main.Search} component={Stories.Main.Search} />
 	</SearchStack.Navigator>
 )
 
-const MainStack = createStackNavigator()
+const MainStack = createNativeStackNavigator()
 export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 	<MainStack.Navigator screenOptions={{ headerShown: false }}>
 		<MainStack.Screen name={Routes.Main.List} component={Stories.Main.List} />
@@ -368,7 +368,7 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 	</MainStack.Navigator>
 )
 
-const SettingsStack = createStackNavigator()
+const SettingsStack = createNativeStackNavigator()
 export const SettingsNavigation: React.FC<BottomTabBarProps> = () => (
 	<SettingsStack.Navigator screenOptions={{ headerShown: false }}>
 		<SettingsStack.Screen name={Routes.Settings.Home} component={Stories.Settings.Home} />
@@ -432,7 +432,7 @@ export const TabNavigation: React.FC = () => {
 }
 
 // TODO: fix navigation with switchNavigator
-const NavigationStack = createStackNavigator()
+const NavigationStack = createNativeStackNavigator()
 export const Navigation: React.FC = () => {
 	const length = ChatHooks.useAccountLength()
 	return (
