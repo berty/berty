@@ -72,7 +72,7 @@ func CreateRepo(dstore ipfs_datastore.Batching, opts *BuildOpts) (ipfs_repo.Repo
 	} else {
 		portOffsetBI, err := rand.Int(rand.Reader, big.NewInt(100))
 		if err != nil {
-			panic(err)
+			return nil, errcode.TODO.Wrap(err)
 		}
 
 		portOffset := portOffsetBI.Int64() % 100

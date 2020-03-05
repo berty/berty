@@ -2,9 +2,10 @@ package ipfsutil
 
 import (
 	"github.com/ipfs/go-datastore"
-	"github.com/ipfs/go-datastore/query"
 	"github.com/ipfs/go-ipfs/keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
+
+	"berty.tech/berty/go/pkg/errcode"
 )
 
 type datastoreKeystore struct {
@@ -40,25 +41,7 @@ func (k *datastoreKeystore) Delete(name string) error {
 }
 
 func (k *datastoreKeystore) List() ([]string, error) {
-	// Not supported
-	res, err := k.ds.Query(query.Query{KeysOnly: true})
-	if err != nil {
-		return nil, err
-	}
-
-	result := []string(nil)
-
-	for {
-		val, next := res.NextSync()
-
-		result = append(result, val.Key)
-
-		if !next {
-			break
-		}
-	}
-
-	return result, nil
+	return nil, errcode.ErrNotImplemented
 }
 
 func NewDatastoreKeystore(ds datastore.Datastore) keystore.Keystore {

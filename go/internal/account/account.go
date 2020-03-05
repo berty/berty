@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"strings"
+	"sync"
 
 	"github.com/aead/ecdh"
 	"github.com/ipfs/go-ipfs/keystore"
@@ -17,6 +18,7 @@ import (
 
 type Account struct {
 	ks keystore.Keystore
+	mu sync.Mutex
 }
 
 const (
@@ -30,16 +32,25 @@ const (
 
 // AccountPrivKey returns the private key associated with the current account
 func (a *Account) AccountPrivKey() (crypto.PrivKey, error) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	return a.getOrGenerateNamedKey(keyAccount)
 }
 
 // AccountProofPrivKey returns the private key associated with the current account
 func (a *Account) AccountProofPrivKey() (crypto.PrivKey, error) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	return a.getOrGenerateNamedKey(keyAccountProof)
 }
 
 // DevicePrivKey returns the current device private key
 func (a *Account) DevicePrivKey() (crypto.PrivKey, error) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	return a.getOrGenerateNamedKey(keyDevice)
 }
 
@@ -122,6 +133,9 @@ func (a *Account) getOrGenerateNamedKey(name string) (crypto.PrivKey, error) {
 }
 
 func (a *Account) getOrGenerateDeviceKeyForGroupDevice(pk crypto.PubKey) (crypto.PrivKey, error) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	groupPKRaw, err := pk.Raw()
 	if err != nil {
 		return nil, err
