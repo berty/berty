@@ -14,7 +14,6 @@ import (
 	"github.com/oklog/run"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
 )
 
@@ -45,27 +44,6 @@ type Bridge struct {
 
 	pipeListener *grpcutil.PipeListener
 	listeners    []grpcutil.Listener
-}
-
-func newLogger(loglevel string) (logger *zap.Logger, err error) {
-	config := zap.NewDevelopmentConfig()
-	config.DisableStacktrace = true
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-
-	switch loglevel {
-	case "", "warn":
-		config.Level.SetLevel(zap.WarnLevel)
-	case "info":
-		config.Level.SetLevel(zap.InfoLevel)
-	case "debug":
-		config.Level.SetLevel(zap.DebugLevel)
-	default:
-		err = fmt.Errorf("unsupported log level: %q", loglevel)
-		return
-	}
-
-	logger, err = config.Build()
-	return
 }
 
 // func NewBridge(config *Config) (*Bridge, error) {

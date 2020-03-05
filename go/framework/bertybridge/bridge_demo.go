@@ -27,7 +27,9 @@ type Demo struct {
 type DemoConfig struct {
 	*Config
 
-	loglevel         string
+	dLogger  NativeLoggerDriver
+	loglevel string
+
 	orbitDBDirectory string
 }
 
@@ -45,13 +47,22 @@ func (dc *DemoConfig) LogLevel(level string) {
 	dc.loglevel = level
 }
 
+func (dc *DemoConfig) LoggerDriver(dLogger NativeLoggerDriver) {
+	dc.dLogger = dLogger
+}
+
 func NewDemoBridge(config *DemoConfig) (*Demo, error) {
 	// setup logger
 	var logger *zap.Logger
 	{
 		var err error
 
-		logger, err = newLogger(config.loglevel)
+		if config.dLogger != nil {
+			logger, err = newNativeLogger(config.loglevel, config.dLogger)
+		} else {
+			logger, err = newLogger(config.loglevel)
+		}
+
 		if err != nil {
 			return nil, err
 		}
@@ -64,6 +75,7 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 	demo := &Demo{}
 
 	// setup demo
+	var client *bertydemo.Client
 	{
 		var err error
 
@@ -72,31 +84,40 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 			directory = config.orbitDBDirectory
 		}
 
-		demo.client, err = bertydemo.New(&bertydemo.Opts{
+		opts := &bertydemo.Opts{
 			OrbitDBDirectory: directory,
-		})
+		}
 
-		if err != nil {
+		if client, err = bertydemo.New(opts); err != nil {
 			return nil, err
 		}
+
 	}
 
 	// register service
-	grpcserver := grpc.NewServer()
-	bertydemo.RegisterDemoServiceServer(grpcserver, demo.client)
+	var grpcServer *grpc.Server
+	{
+		grpcServer = grpc.NewServer()
+		bertydemo.RegisterDemoServiceServer(grpcServer, demo.client)
 
+	}
+
+	var bridge *Bridge
 	// setup bridge
 	{
 		var err error
 
-		demo.Bridge, err = newBridge(demo.grpcServer, logger, config.Config)
+		bridge, err = newBridge(grpcServer, logger, config.Config)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	// setup bridge
-	return demo, nil
+	return &Demo{
+		Bridge: bridge,
+		client: client,
+	}, nil
 }
 
 func (d *Demo) Close() (err error) {

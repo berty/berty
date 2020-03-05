@@ -32,15 +32,21 @@ class GoBridge: NSObject {
             // get opts
             let optPersistance = opts["persistance"] as? Bool ?? false
             let optLog = opts["logLevel"] as? String ?? "info"
+            let optListener = opts["listener"] as? String ?? "/ip4/127.0.0.1/tcp/0/grpcweb"
 
             var err: NSError?
             guard let config = BertybridgeNewDemoConfig() else {
                 throw NSError(domain: "unable to create config", code: 1)
             }
 
-            config.addGRPCListener("/ip4/127.0.0.1/tcp/0/grpcweb")
+            // init logger
+            let logger = LoggerDriver("tech.berty", "demo")
             config.logLevel(optLog)
-            
+            config.loggerDriver(logger)
+
+            // configure listener
+            config.addGRPCListener(optListener)
+
             // set persistance if needed
             if optPersistance {
                 var isDirectory: ObjCBool = true

@@ -23,8 +23,10 @@ type Protocol struct {
 type ProtocolConfig struct {
 	*Config
 
+	dLogger  NativeLoggerDriver
 	loglevel string
-	coreAPI  ipfs_interface.CoreAPI
+
+	coreAPI ipfs_interface.CoreAPI
 }
 
 func NewProtocolConfig() *ProtocolConfig {
@@ -41,13 +43,22 @@ func (pc *ProtocolConfig) ipfsCoreAPI(api ipfs_interface.CoreAPI) {
 	pc.coreAPI = api
 }
 
+func (pc *ProtocolConfig) LoggerDriver(dLogger NativeLoggerDriver) {
+	pc.dLogger = dLogger
+}
+
 func NewProtocolBridge(config *ProtocolConfig) (*Protocol, error) {
 	// setup logger
 	var logger *zap.Logger
 	{
 		var err error
 
-		logger, err = newLogger(config.loglevel)
+		if config.dLogger != nil {
+			logger, err = newNativeLogger(config.loglevel, config.dLogger)
+		} else {
+			logger, err = newLogger(config.loglevel)
+		}
+
 		if err != nil {
 			return nil, err
 		}

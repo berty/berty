@@ -618,7 +618,11 @@ export const protocolServiceHandlerFactory = async (persist?: boolean) => {
 			transport: WebsocketTransport(),
 		})
 	} else {
-		await GoBridge.startDemo()
+		await GoBridge.startDemo({
+			listener: '/ip4/127.0.0.1/tcp/0/grpcws',
+			logLevel: 'debug',
+			persistance: false,
+		})
 		const addr = await GoBridge.getDemoAddr()
 		brdg = bridge({
 			host: addr,
