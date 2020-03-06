@@ -12,7 +12,13 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/textproto"
+
+	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 )
+
+func (pc *ProtocolConfig) ipfsCoreAPI(api ipfs_interface.CoreAPI) {
+	pc.coreAPI = api
+}
 
 func makeRequest(host string, method string, headers http.Header, body io.Reader, isText bool) (*http.Response, error) {
 	contentType := "application/grpc-web"

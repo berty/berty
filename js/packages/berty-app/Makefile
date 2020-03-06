@@ -39,7 +39,7 @@ $(ENVFILE):
 deps: $(PWD)/node_modules config
 
 deps.ios: export PWD := $(PWD)
-deps.ios: deps $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
+deps.ios: deps build.gobridge.ios $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
 $(PWD)/ios/Pods/Manifest.lock: $(PWD)/ios/Podfile $(PWD)/package.json
 	([ ! -z "$(shell which pod)" ] \
 		&& [[ "$$(pod --version)" > "1.7." ]]) \

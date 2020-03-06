@@ -39,10 +39,6 @@ func (pc *ProtocolConfig) LogLevel(level string) {
 	pc.loglevel = level
 }
 
-func (pc *ProtocolConfig) ipfsCoreAPI(api ipfs_interface.CoreAPI) {
-	pc.coreAPI = api
-}
-
 func (pc *ProtocolConfig) LoggerDriver(dLogger NativeLoggerDriver) {
 	pc.dLogger = dLogger
 }

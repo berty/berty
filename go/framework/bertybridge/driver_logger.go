@@ -16,10 +16,10 @@ type NativeLoggerDriver interface {
 	LevelEnabler(level string) bool
 }
 
-type noopNativeLoggerDriver struct{}
+// type noopNativeLoggerDriver struct{}
 
-func (n *noopNativeLoggerDriver) Log(level, namespace, message string) error { return nil }
-func (n *noopNativeLoggerDriver) LevelEnabler(level string) bool             { return false }
+// func (n *noopNativeLoggerDriver) Log(level, namespace, message string) error { return nil }
+// func (n *noopNativeLoggerDriver) LevelEnabler(level string) bool             { return false }
 
 type nativeLogger struct {
 	zapcore.Core
@@ -99,7 +99,10 @@ func newNativeLogger(loglevel string, mlogger NativeLoggerDriver) (*zap.Logger, 
 	logger := zap.New(nativeCore)
 
 	// bind ipfs logger with zap
-	ipfsutil.ConfigureLogger("*", logger, loglevel)
+	if err := ipfsutil.ConfigureLogger("*", logger, loglevel); err != nil {
+		return nil, err
+	}
+
 	return logger, nil
 }
 

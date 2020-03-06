@@ -27,7 +27,7 @@ func NewConfig() *Config {
 	}
 }
 
-// WithGRPCListener create a grpc listener with the given multiaddr
+// AddGRPCListener create a grpc listener with the given multiaddr
 // if a normal addr is given, it will listen by default on grpcweb
 // (ex: ":0" -> "/ip4/127.0.0.1/tcp/0/grpcweb")
 func (c *Config) AddGRPCListener(addr string) {
@@ -45,20 +45,6 @@ type Bridge struct {
 	pipeListener *grpcutil.PipeListener
 	listeners    []grpcutil.Listener
 }
-
-// func NewBridge(config *Config) (*Bridge, error) {
-// 	var logger *zap.Logger
-// 	{
-// 		var err error
-
-// 		logger, err = newLogger(config.loglevel)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 	}
-
-// 	return newBridge(grpc.NewServer(), logger, config)
-// }
 
 // NewBridge is the main entrypoint for gomobile and should only take simple configuration as argument
 func newBridge(s *grpc.Server, logger *zap.Logger, config *Config) (*Bridge, error) {

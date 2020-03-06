@@ -15,14 +15,6 @@ import (
 
 // type DemoBridge Bridge
 
-// type demo struct {
-// 	Bridge
-
-// 	demoClient *bertydemo.Client
-// 	grpcServer *grpc.Server
-// 	logger     *zap.Logger
-// }
-
 type Demo struct {
 	*Bridge
 
@@ -107,6 +99,7 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 		}
 
 		opts := &bertydemo.Opts{
+			Logger:           logger,
 			CoreAPI:          api,
 			OrbitDBDirectory: directory,
 		}

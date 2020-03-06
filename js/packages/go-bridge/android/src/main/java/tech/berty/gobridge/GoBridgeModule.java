@@ -11,15 +11,15 @@ import java.io.File;
 
 // go packages
 import bertybridge.Bertybridge;
-import bertybridge.BridgeOpts;
-import bertybridge.DemoBridge;
-import bertybridge.DemoOpts;
+import bertybridge.Demo;
+import bertybridge.DemoConfig;
 
 public class GoBridgeModule extends ReactContextBaseJavaModule {
     private final String inMemoryDir = ":memory:";
     private final ReactApplicationContext reactContext;
-    private DemoBridge demoBridge = null;
     private final String orbitdir;
+
+    private Demo demoBridge = null;
 
     public GoBridgeModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -39,8 +39,10 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
                 throw new Exception("demo bridge already started");
             }
 
-            String loglevel = opts.hasKey("loglevel") ? opts.getString("loglevel") : "info";
-            String orbitdir = opts.hasKey("persistance") && opts.getBoolean("persistance") ? this.orbitdir : inMemoryDir;
+            final String loglevel = opts.hasKey("loglevel") ? opts.getString("logLevel") : "info";
+            final String orbitdb = opts.hasKey("persistance") && opts.getBoolean("persistance") ? this.orbitdir : inMemoryDir;
+            final String grpcListeners = opts.hasKey("grpcListeners") ? opts.getString("grpcListeners") : "/ip4/127.0.0.1/tcp/0/grpcws";
+            final String swarmListeners = opts.hasKey("swarmListeners") ? opts.getString("grpcListeners") : "/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0";
 
             if (orbitdir != inMemoryDir) {
                 final File dir = new File(this.orbitdir);
@@ -51,16 +53,22 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
                 }
             }
 
+            final DemoConfig config = Bertybridge.newDemoConfig();
 
-            BridgeOpts bridgeOpts = new BridgeOpts();
-            bridgeOpts.setGRPCWebSocketListener(true);
+            // set loglevel
+            config.logLevel(loglevel);
 
-            DemoOpts demoOpts = new DemoOpts();
-            demoOpts.setLogLevel(loglevel);
-            demoOpts.setOrbitDBDirectory(orbitdir);
-            demoOpts.setBridgeOpts(bridgeOpts);
+            // set persistance
+            config.orbitDBDirectory(orbitdir);
 
-            this.demoBridge = Bertybridge.newDemoBridge(demoOpts);
+            // set swarm listeners
+            config.swarmListeners(swarmListeners);
+
+            // set grpc Listeners
+            config.addGRPCListener(grpcListeners);
+
+
+            this.demoBridge = Bertybridge.newDemoBridge(config);
             promise.resolve(true);
         } catch (Exception err) {
             promise.reject(err);
