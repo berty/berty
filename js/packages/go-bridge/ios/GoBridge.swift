@@ -32,7 +32,8 @@ class GoBridge: NSObject {
             // get opts
             let optPersistance = opts["persistance"] as? Bool ?? false
             let optLog = opts["logLevel"] as? String ?? "info"
-            let optListener = opts["listener"] as? String ?? "/ip4/127.0.0.1/tcp/0/grpcweb"
+            let optGrpcListeners = opts["grpcListeners"] as? String ?? "/ip4/127.0.0.1/tcp/0/grpcws"
+            let optSwarmListeners = opts["swarmListeners"] as? String ?? "/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0"
 
             var err: NSError?
             guard let config = BertybridgeNewDemoConfig() else {
@@ -44,8 +45,11 @@ class GoBridge: NSObject {
             config.logLevel(optLog)
             config.loggerDriver(logger)
 
-            // configure listener
-            config.addGRPCListener(optListener)
+            // configure grpc listener
+            config.addGRPCListener(optGrpcListeners)
+
+            // configure swarm listeners
+            config.swarmListeners(optSwarmListeners)
 
             // set persistance if needed
             if optPersistance {
@@ -64,6 +68,8 @@ class GoBridge: NSObject {
             }
 
             self.bridgeDemo = bridgeDemo
+
+            resolve(true)
         } catch let error as NSError {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }

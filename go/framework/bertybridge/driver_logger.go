@@ -1,10 +1,12 @@
 package bertybridge
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	"berty.tech/berty/go/internal/ipfsutil"
+	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -93,9 +95,27 @@ func newNativeLogger(loglevel string, mlogger NativeLoggerDriver) (*zap.Logger, 
 		l:    mlogger,
 	}
 
+	// create logger
 	logger := zap.New(nativeCore)
 
 	// bind ipfs logger with zap
 	ipfsutil.ConfigureLogger("*", logger, loglevel)
 	return logger, nil
+}
+
+func getIPFSZapInfosFields(ctx context.Context, api ipfs_interface.CoreAPI) (fields []zap.Field) {
+	fields = []zap.Field{}
+
+	if self, err := api.Key().Self(ctx); err == nil {
+		fields = append(fields, zap.String("peerID", self.ID().String()))
+	}
+
+	if maddrs, err := api.Swarm().ListenAddrs(ctx); err == nil {
+		for i, maddr := range maddrs {
+			key := fmt.Sprintf("maddr #%d", i)
+			fields = append(fields, zap.String(key, maddr.String()))
+		}
+	}
+
+	return fields
 }

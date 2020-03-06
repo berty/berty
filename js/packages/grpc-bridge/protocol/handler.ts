@@ -8,7 +8,7 @@ import { GoBridge } from '../orbitdb/native'
 import { IProtocolServiceHandler } from './handler.gen'
 import AsyncStorage from '@react-native-community/async-storage'
 
-const useExternalBridge = __DEV__ // set to false to test integrated bridge in dev
+const useExternalBridge = false // set to false to test integrated bridge in dev
 
 type PersistedData = {
 	accountPk: string
@@ -619,13 +619,15 @@ export const protocolServiceHandlerFactory = async (persist?: boolean) => {
 		})
 	} else {
 		await GoBridge.startDemo({
-			listener: '/ip4/127.0.0.1/tcp/0/grpcws',
+			swarmListeners: '/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0',
+			grpcListeners: '/ip4/127.0.0.1/tcp/0/grpcws',
 			logLevel: 'debug',
 			persistance: false,
 		})
 		const addr = await GoBridge.getDemoAddr()
+		console.warn(`http://${addr}`)
 		brdg = bridge({
-			host: addr,
+			host: `http://${addr}`,
 			transport: WebsocketTransport(),
 		})
 	}

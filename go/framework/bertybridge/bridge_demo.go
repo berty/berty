@@ -1,9 +1,14 @@
 package bertybridge
 
 import (
+	"context"
+	"strings"
+
+	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/pkg/bertydemo"
 	"go.uber.org/zap"
 
+	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
 	"google.golang.org/grpc"
 )
@@ -30,6 +35,7 @@ type DemoConfig struct {
 	dLogger  NativeLoggerDriver
 	loglevel string
 
+	swarmListeners   []string
 	orbitDBDirectory string
 }
 
@@ -51,6 +57,11 @@ func (dc *DemoConfig) LoggerDriver(dLogger NativeLoggerDriver) {
 	dc.dLogger = dLogger
 }
 
+// separate with a comma
+func (dc *DemoConfig) SwarmListeners(laddrs string) {
+	dc.swarmListeners = strings.Split(laddrs, ",")
+}
+
 func NewDemoBridge(config *DemoConfig) (*Demo, error) {
 	// setup logger
 	var logger *zap.Logger
@@ -68,16 +79,27 @@ func NewDemoBridge(config *DemoConfig) (*Demo, error) {
 		}
 	}
 
-	return newDemoBridge(logger, config)
+	return newDemoBridge(logger.Named("demo"), config)
 }
 
 func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
-	demo := &Demo{}
+	ctx := context.Background()
 
 	// setup demo
 	var client *bertydemo.Client
 	{
 		var err error
+
+		swarmaddrs := []string{}
+		if len(config.swarmListeners) > 0 {
+			swarmaddrs = config.swarmListeners
+		}
+
+		var api ipfs_interface.CoreAPI
+		api, _, err = ipfsutil.NewInMemoryCoreAPI(ctx, swarmaddrs...)
+		if err != nil {
+			return nil, err
+		}
 
 		directory := ":memory:"
 		if config.orbitDBDirectory != "" {
@@ -85,6 +107,7 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 		}
 
 		opts := &bertydemo.Opts{
+			CoreAPI:          api,
 			OrbitDBDirectory: directory,
 		}
 
@@ -92,14 +115,15 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 			return nil, err
 		}
 
+		ipfsinfos := getIPFSZapInfosFields(ctx, api)
+		logger.Info("ipfs infos", ipfsinfos...)
 	}
 
 	// register service
 	var grpcServer *grpc.Server
 	{
 		grpcServer = grpc.NewServer()
-		bertydemo.RegisterDemoServiceServer(grpcServer, demo.client)
-
+		bertydemo.RegisterDemoServiceServer(grpcServer, client)
 	}
 
 	var bridge *Bridge

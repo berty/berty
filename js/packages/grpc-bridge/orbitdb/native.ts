@@ -1,21 +1,24 @@
 export enum GoLogLevel {
-	debug = 'debug',
-	info = 'info',
-	error = 'error',
-	warn = 'warn',
+  debug = 'debug',
+  info = 'info',
+  error = 'error',
+  warn = 'warn',
 }
 
 export type GoBridgeOpts = {
-	persistance?: boolean
-	logLevel?: string
+	swarmListeners?: string
+	grpcListeners?: string
+  persistance?: boolean
+  logLevel?: string
 }
 
 class NoopGoBirdge {
 	startDemo(_: GoBridgeOpts): Promise<void> {
-		return Promise.reject()
+  	return Promise.reject()
 	}
-	getDemoAddr(): Promise<string> {
-		return Promise.reject()
+
+  getDemoAddr(): Promise<string> {
+  	return Promise.reject()
 	}
 }
 

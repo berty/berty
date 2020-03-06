@@ -139,7 +139,7 @@ func TestDemoBridge(t *testing.T) {
 	require.NoError(t, err)
 
 	// bridgeClient test
-	res, err = bridgeClient.UnaryRequest("/berty.protocol.DemoService/LogToken ", req)
+	res, err = bridgeClient.UnaryRequest("/berty.protocol.DemoService/LogToken", req)
 	require.NoError(t, err)
 
 	out := &bertydemo.LogToken_Reply{}
