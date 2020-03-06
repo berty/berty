@@ -5,7 +5,6 @@ import (
 	"github.com/pkg/errors"
 	logging "github.com/whyrusleeping/go-logging"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 type p2pLogBackendWrapper struct {
@@ -31,20 +30,20 @@ func (l *p2pLogBackendWrapper) Log(level logging.Level, calldepth int, rec *logg
 	return nil
 }
 
-func getP2PLogLevelFromZap(level zapcore.Level) logging.Level {
-	switch level {
-	case zap.DebugLevel:
-		return logging.DEBUG
-	case zap.InfoLevel:
-		return logging.INFO
-	case zap.WarnLevel:
-		return logging.WARNING
-	case zap.ErrorLevel:
-		return logging.ERROR
-	}
+// func getP2PLogLevelFromZap(level zapcore.Level) logging.Level {
+// 	switch level {
+// 	case zap.DebugLevel:
+// 		return logging.DEBUG
+// 	case zap.InfoLevel:
+// 		return logging.INFO
+// 	case zap.WarnLevel:
+// 		return logging.WARNING
+// 	case zap.ErrorLevel:
+// 		return logging.ERROR
+// 	}
 
-	return logging.CRITICAL
-}
+// 	return logging.CRITICAL
+// }
 
 func getP2PLogLevel(level string) logging.Level {
 	switch level {
