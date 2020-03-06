@@ -156,6 +156,12 @@ bazel.unittest: bazel.generate
 	$(call check-program, $(BAZEL))
 	$(call bazel, test, --test_output=streamed //...)
 
+.PHONY: bazel.rdvp
+bazel.rdvp: bazel.generate
+	$(call check-program, $(BAZEL))
+	$(call bazel, run, //cmd/rdvp -- serve)
+
+
 .PHONY: bazel.generate
 bazel.generate: pb.generate $(SAMPLE_GAZELLE_GENERATED_FILE)
 
