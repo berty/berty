@@ -349,7 +349,10 @@ export function* orchestrator() {
 				aggregateId: accountId,
 				event: { group },
 			} = payload
-			const { publicKey } = group
+			const { publicKey, groupType } = group
+			if (groupType !== berty.protocol.GroupType.GroupTypeMultiMember) {
+				return
+			}
 			if (!publicKey) {
 				throw new Error('Invalid public key')
 			}
