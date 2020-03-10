@@ -3042,6 +3042,36 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 }
               }
             }
+          },
+          ContactState: {
+            values: {
+              ContactStateUndefined: 0,
+              ContactStateToRequest: 1,
+              ContactStateReceived: 2,
+              ContactStateAdded: 3,
+              ContactStateRemoved: 4,
+              ContactStateDiscarded: 5,
+              ContactStateBlocked: 6
+            }
+          },
+          ShareableContact: {
+            fields: {
+              pk: {
+                type: "bytes",
+                id: 1,
+                options: {
+                  "(gogoproto.customname)": "PK"
+                }
+              },
+              publicRendezvousSeed: {
+                type: "bytes",
+                id: 2
+              },
+              metadata: {
+                type: "bytes",
+                id: 3
+              }
+            }
           }
         }
       }

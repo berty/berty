@@ -1,7 +1,7 @@
 package bertyprotocol
 
 import (
-	proto "github.com/gogo/protobuf/proto"
+	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
 
 	"berty.tech/berty/go/pkg/errcode"

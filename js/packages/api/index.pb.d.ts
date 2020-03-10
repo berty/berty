@@ -4926,6 +4926,38 @@ export namespace berty {
                 public toJSON(): { [k: string]: any };
             }
         }
+
+        enum ContactState {
+            ContactStateUndefined = 0,
+            ContactStateToRequest = 1,
+            ContactStateReceived = 2,
+            ContactStateAdded = 3,
+            ContactStateRemoved = 4,
+            ContactStateDiscarded = 5,
+            ContactStateBlocked = 6
+        }
+
+        interface IShareableContact {
+            pk?: (Uint8Array|null);
+            publicRendezvousSeed?: (Uint8Array|null);
+            metadata?: (Uint8Array|null);
+        }
+
+        class ShareableContact implements IShareableContact {
+
+            public pk: Uint8Array;
+            public publicRendezvousSeed: Uint8Array;
+            public metadata: Uint8Array;
+            public static create(properties?: berty.protocol.IShareableContact): berty.protocol.ShareableContact;
+            public static encode(message: berty.protocol.IShareableContact, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.protocol.IShareableContact, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.ShareableContact;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.ShareableContact;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.protocol.ShareableContact;
+            public static toObject(message: berty.protocol.ShareableContact, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
     }
 }
 

@@ -32,7 +32,7 @@ func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms orbitut
 	assert.NoError(t, err)
 
 	if join {
-		_, err = orbitutil.MetadataStoreJoinGroup(ctx, ms, g, md)
+		_, err = orbitutil.MetadataStoreAddDeviceToGroup(ctx, ms, g, md)
 		assert.NoError(t, err)
 	}
 
@@ -99,8 +99,8 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	mkh1 := bertycrypto.NewInMemoryMessageKeys()
 	mkh2 := bertycrypto.NewInMemoryMessageKeys()
 
-	gc1 := orbitutil.NewGroupContext(g, nil, nil, mkh1, omd1)
-	gc2 := orbitutil.NewGroupContext(g, nil, nil, mkh2, omd2)
+	gc1 := orbitutil.NewContextGroup(g, nil, nil, mkh1, omd1)
+	gc2 := orbitutil.NewContextGroup(g, nil, nil, mkh2, omd2)
 
 	err = bertycrypto.RegisterChainKey(ctx, mkh1, g, gc1.DevicePubKey(), ds1, true)
 	assert.NoError(t, err)
@@ -264,7 +264,7 @@ func Test_EncryptMessageEnvelope(t *testing.T) {
 	omd1, err := acc1.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
 
-	gc1 := orbitutil.NewGroupContext(g, nil, nil, mkh1, omd1)
+	gc1 := orbitutil.NewContextGroup(g, nil, nil, mkh1, omd1)
 
 	ds1, err := account.NewDeviceSecret()
 	assert.NoError(t, err)
@@ -327,7 +327,7 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 	err = bertycrypto.RegisterChainKey(ctx, mkh1, g, omd1.Device.GetPublic(), ds1, true)
 	assert.NoError(t, err)
 
-	gc1 := orbitutil.NewGroupContext(g, nil, nil, mkh1, omd1)
+	gc1 := orbitutil.NewContextGroup(g, nil, nil, mkh1, omd1)
 
 	ds2, err := account.NewDeviceSecret()
 	assert.NoError(t, err)

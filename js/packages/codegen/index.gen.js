@@ -123,6 +123,8 @@ export const berty = {
 		GroupMessageEvent: jsonPb.lookup('.berty.protocol.GroupMessageEvent'),
 		GroupMetadataSubscribe: jsonPb.lookup('.berty.protocol.GroupMetadataSubscribe'),
 		GroupMessageSubscribe: jsonPb.lookup('.berty.protocol.GroupMessageSubscribe'),
+		ContactState: jsonPb.lookup('.berty.protocol.ContactState'),
+		ShareableContact: jsonPb.lookup('.berty.protocol.ShareableContact'),
 		DemoService: jsonPb.lookup('.berty.protocol.DemoService'),
 		LogOperation: jsonPb.lookup('.berty.protocol.LogOperation'),
 		LogStreamOptions: jsonPb.lookup('.berty.protocol.LogStreamOptions'),
