@@ -75,6 +75,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 
 	setRdvLogToken = async (newLogToken?: string) => {
 		this.rdvLogtoken = newLogToken
+		delete this.lastRdvLogCid
 		await this.persist()
 	}
 
