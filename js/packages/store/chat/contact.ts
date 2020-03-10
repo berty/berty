@@ -107,8 +107,6 @@ const commandHandler = createSlice<State, CommandsReducer>({
 	},
 })
 
-// TODO: handle multi account
-
 const getAggregateId = ({
 	accountId,
 	contactPk,
