@@ -2,7 +2,6 @@ package bertybridge
 
 import (
 	"context"
-	"strings"
 
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/pkg/bertydemo"
@@ -49,9 +48,8 @@ func (dc *DemoConfig) LoggerDriver(dLogger NativeLoggerDriver) {
 	dc.dLogger = dLogger
 }
 
-// separate with a comma
-func (dc *DemoConfig) SwarmListeners(laddrs string) {
-	dc.swarmListeners = strings.Split(laddrs, ",")
+func (dc *DemoConfig) AddSwarmListener(laddr string) {
+	dc.swarmListeners = append(dc.swarmListeners, laddr)
 }
 
 func NewDemoBridge(config *DemoConfig) (*Demo, error) {

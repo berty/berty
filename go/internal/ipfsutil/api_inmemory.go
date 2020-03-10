@@ -22,7 +22,7 @@ import (
 
 // NewInMemoryCoreAPI returns an IPFS CoreAPI based on an opininated ipfs_node.BuildCfg
 func NewInMemoryCoreAPI(ctx context.Context, listeners ...string) (ipfs_interface.CoreAPI, *ipfs_core.IpfsNode, error) {
-	cfg, err := createBuildConfig()
+	cfg, err := createBuildConfig(listeners...)
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
 	}

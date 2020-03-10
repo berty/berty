@@ -32,8 +32,8 @@ class GoBridge: NSObject {
             // get opts
             let optPersistance = opts["persistance"] as? Bool ?? false
             let optLog = opts["logLevel"] as? String ?? "info"
-            let optGrpcListeners = opts["grpcListeners"] as? String ?? "/ip4/127.0.0.1/tcp/0/grpcws"
-            let optSwarmListeners = opts["swarmListeners"] as? String ?? "/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0"
+            let optGrpcListeners = opts["grpcListeners"] as? NSArray ?? ["/ip4/127.0.0.1/tcp/0/grpcws"]
+            let optSwarmListeners = opts["swarmListeners"] as? NSArray ?? ["/ip4/0.0.0.0/tcp/0", "/ip6/0.0.0.0/tcp/0"]
 
             var err: NSError?
             guard let config = BertybridgeNewDemoConfig() else {
@@ -46,10 +46,22 @@ class GoBridge: NSObject {
             config.loggerDriver(logger)
 
             // configure grpc listener
-            config.addGRPCListener(optGrpcListeners)
+            for obj in optGrpcListeners {
+                guard let listener = obj as? String else {
+                    throw NSError(domain: "unable to get listener", code: 1)
+                }
+
+                config.addGRPCListener(listener)
+            }
 
             // configure swarm listeners
-            config.swarmListeners(optSwarmListeners)
+            for obj in optSwarmListeners {
+                guard let listener = obj as? String else {
+                    throw NSError(domain: "unable to get listener", code: 1)
+                }
+
+                config.addSwarmListener(listener)
+            }
 
             // set persistance if needed
             if optPersistance {
