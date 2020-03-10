@@ -426,7 +426,7 @@ export function* orchestrator() {
 				action,
 			) {
 				return yield* transactions[commandName as keyof CaseReducerActions<CommandsReducer>](
-					action.payload,
+					action.payload as any,
 				)
 			}),
 		),
