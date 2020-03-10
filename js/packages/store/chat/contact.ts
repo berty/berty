@@ -67,6 +67,7 @@ export namespace Query {
 }
 
 export namespace Event {
+	export type OutgoingContactRequestAccepted = { accountId: string; contactPk: Uint8Array }
 	export type Deleted = { id: string }
 }
 
@@ -89,6 +90,7 @@ export type QueryReducer = {
 
 export type EventsReducer = {
 	deleted: SimpleCaseReducer<Event.Deleted>
+	outgoingContactRequestAccepted: SimpleCaseReducer<Event.OutgoingContactRequestAccepted>
 }
 
 const initialState: State = {
@@ -128,6 +130,14 @@ const eventHandler = createSlice<State, EventsReducer>({
 			delete state.aggregates[id]
 			return state
 		},
+		outgoingContactRequestAccepted: (state: State, { payload: { accountId, contactPk } }) => {
+			const id = getAggregateId({ accountId, contactPk })
+			const contact = state.aggregates[id] as Entity | undefined
+			if (contact && contact.request.type === ContactRequestType.Outgoing) {
+				contact.request.accepted = true
+			}
+			return state
+		},
 	},
 	extraReducers: {
 		[protocol.events.client.accountContactRequestOutgoingEnqueued.type]: (state, { payload }) => {
@@ -164,25 +174,6 @@ const eventHandler = createSlice<State, EventsReducer>({
 			const contact = state.aggregates[id]
 			if (contact && contact.request.type === ContactRequestType.Outgoing) {
 				contact.request.sent = true
-			}
-			return state
-		},
-		[protocol.events.client.groupMemberDeviceAdded.type]: (state, action) => {
-			const {
-				payload: {
-					aggregateId: accountId,
-					eventContext: { groupPk },
-				},
-			} = action
-			const groupPkStr = encodePublicKey(groupPk)
-			const contact = Object.values(state.aggregates).find(
-				(contact) =>
-					contact.accountId === accountId &&
-					contact.request.type === ContactRequestType.Outgoing &&
-					contact.groupPk === groupPkStr,
-			)
-			if (contact) {
-				contact.request.accepted = true
 			}
 			return state
 		},
@@ -417,6 +408,41 @@ export function* orchestrator() {
 					publicKey: Buffer.from(event.groupPk, 'utf-8'),
 				}
 				yield* protocol.client.transactions.multiMemberGroupJoin({ id: accountId, group })
+			}
+		}),
+		takeEvery(protocol.events.client.groupMemberDeviceAdded, function*({ payload }) {
+			// This is the only way to know if an outgoing contact request has been accepted without receiving a message
+			const {
+				aggregateId: accountId,
+				eventContext: { groupPk },
+				event: { devicePk },
+			} = payload
+			if (!groupPk) {
+				return
+			}
+			const client: protocol.client.Entity = yield select((state) =>
+				protocol.queries.client.get(state, { id: accountId }),
+			)
+			// noop if the event comes from our devices
+			if (encodePublicKey(devicePk) === client.devicePk) {
+				// TODO: multidevice
+				return
+			}
+			const groupPkStr = encodePublicKey(groupPk)
+			const contacts: Entity[] = yield select((state) => queries.list(state))
+			const contact = contacts.find(
+				(contact) =>
+					contact.accountId === accountId &&
+					contact.request.type === ContactRequestType.Outgoing &&
+					contact.groupPk === groupPkStr,
+			)
+			if (contact) {
+				yield put(
+					events.outgoingContactRequestAccepted({
+						accountId,
+						contactPk: Buffer.from(contact.publicKey, 'utf-8'),
+					}),
+				)
 			}
 		}),
 		...Object.keys(commands).map((commandName) =>
