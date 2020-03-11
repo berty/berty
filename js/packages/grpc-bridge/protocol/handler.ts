@@ -16,6 +16,7 @@ type PersistedData = {
 	accountGroupPk: string
 	rdvLogtoken?: string
 	lastRdvLogCid?: string
+	lastAccountGroupCid?: string
 	contactGroups: { [key: string]: string } // map with key=fakeContactPk, value=fakeGroupPk
 }
 
@@ -45,19 +46,20 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	rdvLogtoken?: string
 	contactGroups: { [key: string]: string } // map with key=fakeContactPk, value=fakeGroupPk
 	lastRdvLogCid?: string
+	lastAccountGroupCid?: string
 
-	persist = () =>
-		AsyncStorage.setItem(
-			STORAGE_KEY,
-			JSON.stringify({
-				accountPk: this.accountPk,
-				accountGroupPk: this.accountGroupPk,
-				devicePk: this.devicePk,
-				contactGroups: this.contactGroups,
-				rdvLogtoken: this.rdvLogtoken,
-				lastRdvLogCid: this.lastRdvLogCid,
-			}),
-		)
+	persist = async () => {
+		const data: PersistedData = {
+			accountPk: this.accountPk,
+			accountGroupPk: this.accountGroupPk,
+			devicePk: this.devicePk,
+			contactGroups: this.contactGroups,
+			rdvLogtoken: this.rdvLogtoken,
+			lastRdvLogCid: this.lastRdvLogCid,
+			lastAccountGroupCid: this.lastAccountGroupCid,
+		}
+		await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+	}
 
 	constructor(initData: InitData) {
 		this.client = initData.client
@@ -67,6 +69,56 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		this.contactGroups = initData.contactGroups
 		this.rdvLogtoken = initData.rdvLogtoken
 		this.lastRdvLogCid = initData.lastRdvLogCid
+		this.lastAccountGroupCid = initData.lastAccountGroupCid
+
+		this.client.logStream(
+			{
+				logToken: this.getMetadataLogToken(this.accountGroupPk),
+				options: this.lastAccountGroupCid ? { GT: this.lastAccountGroupCid } : null,
+			},
+			async (error, response) => {
+				if (error) {
+					console.error(error)
+					return
+				}
+				if (!response) {
+					return
+				}
+				if (response.cid) {
+					this.lastAccountGroupCid = response.cid
+				}
+				await this.persist()
+				if (!response.value) {
+					return
+				}
+				const groupMetadataEvent = api.berty.protocol.GroupMetadataEvent.decode(response.value)
+				if (!groupMetadataEvent.metadata) {
+					return
+				}
+				const type = groupMetadataEvent.metadata.eventType
+				switch (type) {
+					case api.berty.protocol.EventType.EventTypeAccountGroupJoined:
+						const { group } = api.berty.protocol.AccountGroupJoined.decode(groupMetadataEvent.event)
+						if (!(group && group.publicKey)) {
+							break
+						}
+						const groupPkStr = Buffer.from(group.publicKey).toString('utf-8')
+						if (!groupPkStr) {
+							break
+						}
+						await this.addEventToMetadataLog({
+							groupPk: groupPkStr,
+							type: 'GroupMemberDeviceAdded',
+							dataType: 'GroupAddMemberDevice',
+							data: {
+								memberPk: Buffer.from(this.accountPk, 'utf-8'),
+								devicePk: this.devicePkBytes,
+							},
+						})
+						break
+				}
+			},
+		)
 	}
 
 	_logToken = () => logToken(this.client)
@@ -75,6 +127,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 
 	setRdvLogToken = async (newLogToken?: string) => {
 		this.rdvLogtoken = newLogToken
+		delete this.lastRdvLogCid
 		await this.persist()
 	}
 
@@ -214,7 +267,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 					{
 						logToken: this.getMetadataLogToken(groupPk),
 						data: api.berty.protocol.GroupMetadataEvent.encode({
-							eventContext: {},
+							eventContext: { groupPk: Buffer.from(groupPk, 'utf-8') },
 							metadata: {
 								// TODO: fix api.berty.protocol.EventType type
 								eventType: ((api.berty.protocol.EventType as unknown) as { [key: string]: number })[
@@ -337,6 +390,19 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 					contactMetadata: request.contactMetadata,
 				},
 			})
+			const group: api.berty.protocol.IGroup = {
+				groupType: api.berty.protocol.GroupType.GroupTypeContact,
+				publicKey: Buffer.from(fakeGroupPk, 'utf-8'),
+			}
+			await this.addEventToMetadataLog({
+				groupPk: this.accountGroupPk,
+				type: 'AccountGroupJoined',
+				dataType: 'AccountGroupJoined',
+				data: {
+					devicePk: this.devicePkBytes,
+					group,
+				},
+			})
 			const dataStr = ['CONTACT_REQUEST_FROM', ownId, fakeGroupPk, metadataStr].join(' ')
 			const logData = Buffer.from(dataStr, 'utf-8')
 			await new Promise((resolve, reject) => {
@@ -386,13 +452,17 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 					groupPk: Buffer.from(fakeGroupPk, 'utf-8'),
 				},
 			})
+			const group: api.berty.protocol.IGroup = {
+				groupType: api.berty.protocol.GroupType.GroupTypeContact,
+				publicKey: Buffer.from(fakeGroupPk, 'utf-8'),
+			}
 			await this.addEventToMetadataLog({
-				groupPk: fakeGroupPk,
-				type: 'GroupMemberDeviceAdded',
-				dataType: 'GroupAddMemberDevice',
+				groupPk: this.accountGroupPk,
+				type: 'AccountGroupJoined',
+				dataType: 'AccountGroupJoined',
 				data: {
-					memberPk: Buffer.from(this.accountPk, 'utf-8'),
 					devicePk: this.devicePkBytes,
+					group,
 				},
 			})
 			callback(null, {})
