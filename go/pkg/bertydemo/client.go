@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"sync"
 	"time"
 
@@ -14,6 +13,7 @@ import (
 	cid "github.com/ipfs/go-cid"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/zap"
 
 	"berty.tech/berty/go/internal/cryptoutil"
 	"berty.tech/berty/go/internal/ipfsutil"
@@ -23,6 +23,7 @@ import (
 )
 
 type Client struct {
+	log       *zap.Logger
 	api       ipfs_interface.CoreAPI
 	odb       orbitdb.OrbitDB
 	logs      map[string]orbitdb.EventLogStore
@@ -30,14 +31,22 @@ type Client struct {
 }
 
 type Opts struct {
+	Logger           *zap.Logger
 	CoreAPI          ipfs_interface.CoreAPI
 	OrbitDBDirectory string
 }
 
 func New(opts *Opts) (*Client, error) {
 	var err error
+	var log *zap.Logger
 
 	ctx := context.Background()
+
+	if log = opts.Logger; log == nil {
+		log = zap.NewNop()
+	}
+
+	log = log.Named("bertydemo")
 
 	api := opts.CoreAPI
 	if api == nil {
@@ -67,7 +76,7 @@ func New(opts *Opts) (*Client, error) {
 
 	logsMutex := &sync.Mutex{}
 
-	return &Client{api, odb, logs, logsMutex}, nil
+	return &Client{log, api, odb, logs, logsMutex}, nil
 }
 
 func intPtr(i int) *int {
@@ -238,8 +247,8 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 			Amount: intPtr(-1),
 		}
 	}
-	fmt.Println("listening on", token, "since", opts.GT)
-	defer fmt.Println("stopped to listen on", token)
+	d.log.Debug("logstream listening", zap.String("token", token), zap.Stringer("since", opts.GT))
+	defer d.log.Debug("logstream stopped to listen", zap.String("token", token))
 
 	dc := ctx.Done()
 	for {
@@ -261,7 +270,7 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 			for i := 0; i < l; i++ {
 				pop := convertLogOperationToProtobufLogOperation(ops[i])
 				jsoned, _ := json.Marshal(pop)
-				fmt.Println("Log", token, "->", string(jsoned))
+				d.log.Debug("LogStream", zap.String("token", token), zap.String("json", string(jsoned)))
 				if err = srv.Send(pop); err != nil {
 					return err
 				}

@@ -18,7 +18,8 @@
 
 @interface RCT_EXTERN_REMAP_MODULE_2(GoBridge, GoBridge, NSObject)
 
-RCT_EXTERN_METHOD(startDemo:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(startDemo:(NSDictionary)opts
+                  resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
 RCT_EXTERN_METHOD(getDemoAddr:(RCTPromiseResolveBlock)resolve

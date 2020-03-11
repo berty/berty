@@ -73,6 +73,7 @@ export const bridge: Bridge = (options, metadata): pb.RPCImpl => (
 			const error = new Error(
 				`GRPC ${grpc.Code[code]} (${code}): ${message}\nTrailers: ${JSON.stringify(trailers)}`,
 			)
+
 			console.error(error.message)
 			// response "null" will shutdown the service
 			callback(error, null)

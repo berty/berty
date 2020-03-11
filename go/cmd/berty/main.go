@@ -226,6 +226,7 @@ func main() {
 				defer node.Close()
 
 				demo, err = bertydemo.New(&bertydemo.Opts{
+					Logger:           logger,
 					CoreAPI:          api,
 					OrbitDBDirectory: *clientDemoDirectory,
 				})

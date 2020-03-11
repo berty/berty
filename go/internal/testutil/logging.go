@@ -2,6 +2,8 @@ package testutil
 
 import (
 	"flag"
+	"os"
+	"strconv"
 	"testing"
 
 	"go.uber.org/zap"
@@ -12,7 +14,9 @@ var debug = flag.Bool("debug", false, "is more verbose logging")
 
 func Logger(t *testing.T) *zap.Logger {
 	t.Helper()
-	if !*debug {
+
+	envDebug, _ := strconv.ParseBool(os.Getenv("BERTY_DEBUG"))
+	if !*debug && !envDebug {
 		return zap.NewNop()
 	}
 

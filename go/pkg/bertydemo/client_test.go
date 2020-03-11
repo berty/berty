@@ -21,11 +21,14 @@ func TestNew(t *testing.T) {
 	// defer leaktest.CheckTimeout(t, 30*time.Second)()
 	ctx := context.Background()
 
+	logger := testutil.Logger(t)
 	ipfsmock := ipfsutil.TestingCoreAPI(ctx, t)
 	demo, err := New(&Opts{
+		Logger:           logger,
 		CoreAPI:          ipfsmock,
 		OrbitDBDirectory: ":memory:",
 	})
+
 	require.NoError(t, err)
 
 	err = demo.Close()
@@ -214,7 +217,9 @@ func TestLogStream(t *testing.T) {
 					data := []byte(fmt.Sprintf("Hello log number %d!", i))
 					_ = testingAdd(t, demo, logToken, data)
 				}
-			}(tc.Iteration) // @FIXME(gfanton): wait at last 100millisecond, if not
+			}(tc.Iteration)
+
+			// @FIXME(gfanton): wait at last 100millisecond, if not
 			// set test may fail unable to find the first log
 			time.Sleep(tc.Sleep + (time.Millisecond * 100))
 			logClient, err := demo.LogStream(context.Background(), req)
@@ -223,7 +228,7 @@ func TestLogStream(t *testing.T) {
 			for i := 0; i < tc.Iteration; i++ {
 				op, err := logClient.Recv()
 				require.NoError(t, err)
-				fmt.Println("receiving op #", i, "in test", tc.Iteration)
+				// fmt.Println("receiving op #", i, "in test", tc.Iteration)
 				got := op.GetName()
 				shouldGet := "ADD"
 				if got != shouldGet {

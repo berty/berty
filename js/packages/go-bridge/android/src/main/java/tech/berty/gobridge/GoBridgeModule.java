@@ -4,22 +4,29 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableType;
+
+import java.io.File;
+
 
 // go packages
 import bertybridge.Bertybridge;
-import bertybridge.BridgeOpts;
-import bertybridge.DemoBridge;
-import bertybridge.DemoOpts;
+import bertybridge.Demo;
+import bertybridge.DemoConfig;
 
 public class GoBridgeModule extends ReactContextBaseJavaModule {
-
+    private final String inMemoryDir = ":memory:";
     private final ReactApplicationContext reactContext;
-    private DemoBridge demoBridge = null;
+    private final String orbitdir;
 
+    private Demo demoBridge = null;
 
     public GoBridgeModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        this.orbitdir = reactContext.getFilesDir().getAbsolutePath() + "/orbitdb";
     }
 
     @Override
@@ -28,22 +35,58 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void startDemo(Promise promise) {
+    public void startDemo(ReadableMap opts, Promise promise) {
         try {
             if (this.demoBridge != null) {
                 throw new Exception("demo bridge already started");
             }
 
-            BridgeOpts bridgeOpts = new BridgeOpts();
-            bridgeOpts.setGRPCWebSocketListener(true);
+            // get opts
+            final String loglevel = opts.hasKey("loglevel") ? opts.getString("logLevel") : "info";
+            final String orbitdb = opts.hasKey("persistance") && opts.getBoolean("persistance") ? this.orbitdir : inMemoryDir;
 
-            DemoOpts opts = new DemoOpts();
-            opts.setLogLevel("debug");
-            opts.setBridgeOpts(bridgeOpts);
+            String[] grpcListeners = {"/ip4/127.0.0.1/tcp/0/grpcws"}; // default
+            if (opts.hasKey("grpcListeners") && opts.getType("grpcListeners") == ReadableType.Array) {
+                    grpcListeners = readableArrayToStringArray(opts.getArray("grpcListeners"));
+            }
 
-            this.demoBridge = Bertybridge.newDemoBridge(opts);
+            String[] swarmListeners =  {"/ip4/0.0.0.0/tcp/0", "/ip6/0.0.0.0/tcp/0"}; // default
+            if (opts.hasKey("swarmListeners") && opts.getType("grpcListeners") == ReadableType.Array) {
+                swarmListeners = readableArrayToStringArray(opts.getArray("swarmListeners"));
+            }
+
+            if (orbitdir != inMemoryDir) {
+                final File dir = new File(this.orbitdir);
+                if (!dir.exists()) {
+                    if (!dir.mkdirs()) {
+                        throw new Exception("orbitdb directory creation failed");
+                    }
+                }
+            }
+
+            final DemoConfig config = Bertybridge.newDemoConfig();
+
+            // set loglevel
+            config.logLevel(loglevel);
+
+            // set persistance
+            config.orbitDBDirectory(orbitdir);
+
+            // set swarm listenersswarmListener
+            for (String listener: swarmListeners) {
+                config.addSwarmListener(listener);
+            }
+            // set grpc listenersgrpcListener
+            for (String listener : grpcListeners) {
+                config.addGRPCListener(listener);
+            }
+
+            this.demoBridge = Bertybridge.newDemoBridge(config);
             promise.resolve(true);
-        } catch (Exception err) {
+        }catch(
+
+    Exception err)
+    {
             promise.reject(err);
         }
     }
@@ -61,4 +104,14 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
             promise.reject(err);
         }
     }
+
+    private static String[] readableArrayToStringArray(ReadableArray readableArray) {
+        String[] arr = new String[readableArray.size()];
+        for (int i = 0; i < readableArray.size(); i++) {
+            arr[i] = readableArray.getString(i);
+        }
+
+        return arr;
+    }
+
 }

@@ -145,6 +145,10 @@ func (s *Server) Serve(l Listener) (err error) {
 		return false // end
 	})
 
+	if serve == nil {
+		return fmt.Errorf("unable to find a way to serve: %s", l.GRPCMultiaddr())
+	}
+
 	return serve(manet.NetListener(l))
 }
 
