@@ -9,6 +9,7 @@ export type UserMessage = {
 	type: AppMessageType.UserMessage
 	body: string
 	attachments: Array<{ uri: string }>
+	sentDate: number
 }
 
 export type UserReaction = {

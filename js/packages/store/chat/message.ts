@@ -2,20 +2,24 @@ import { composeReducers } from 'redux-compose'
 import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { all, takeLeading, put, takeEvery, select } from 'redux-saga/effects'
 import { Buffer } from 'buffer'
+import { berty } from '@berty-tech/api'
 
 import * as protocol from '../protocol'
 import { conversation } from '../chat'
 import {
 	UserMessage,
-	UserReaction,
 	GroupInvitation,
 	AppMessageType,
 	AppMessage,
+	SetGroupName,
 } from './AppMessage'
+
+type StoreMessage = UserMessage | GroupInvitation | SetGroupName
 
 export type Entity = {
 	id: string
-} & (UserMessage | UserReaction | GroupInvitation)
+	receivedDate: number
+} & StoreMessage
 
 export type Event = {
 	id: string
@@ -48,7 +52,11 @@ export namespace Query {
 
 export namespace Event {
 	export type Deleted = { aggregateId: string }
-	export type Sent = { aggregateId: string; payload: UserMessage | UserReaction | GroupInvitation }
+	export type Sent = {
+		aggregateId: string
+		message: AppMessage
+		receivedDate: number
+	}
 	export type Hidden = { aggregateId: string }
 }
 
@@ -97,27 +105,29 @@ const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/message/event',
 	initialState,
 	reducers: {
-		sent: (state, { payload }) => {
-			if (payload.payload.type === AppMessageType.UserMessage) {
-				console.log('received message', payload)
-				state.aggregates[payload.aggregateId] = {
-					id: payload.aggregateId,
-					type: payload.payload.type,
-					body: payload.payload.body,
-					attachments: [],
-				}
-			} else if (payload.payload.type === AppMessageType.UserReaction) {
-				state.aggregates[payload.aggregateId] = {
-					id: payload.aggregateId,
-					type: payload.payload.type,
-					emoji: payload.payload.emoji,
-				}
-			} else if (payload.payload.type === AppMessageType.GroupInvitation) {
-				state.aggregates[payload.aggregateId] = {
-					id: payload.aggregateId,
-					type: payload.payload.type,
-					groupPk: payload.payload.groupPk,
-				}
+		sent: (state, { payload: { aggregateId, message, receivedDate } }) => {
+			switch (message.type) {
+				case AppMessageType.UserMessage:
+					state.aggregates[aggregateId] = {
+						id: aggregateId,
+						type: message.type,
+						body: message.body,
+						attachments: [],
+						sentDate: message.sentDate,
+						receivedDate,
+					}
+					break
+				case AppMessageType.UserReaction:
+					// todo: append reaction to message
+					break
+				case AppMessageType.GroupInvitation:
+					state.aggregates[aggregateId] = {
+						id: aggregateId,
+						type: message.type,
+						groupPk: message.groupPk,
+						receivedDate,
+					}
+					break
 			}
 			return state
 		},
@@ -153,9 +163,9 @@ export const transactions: Transactions = {
 	},
 	send: function*(payload) {
 		// Recup the conv
-		const conv = (yield select((state) =>
-			conversation.queries.get(state, { id: payload.id }),
-		)) as conversation.Entity
+		const conv = (yield select((state) => conversation.queries.get(state, { id: payload.id }))) as
+			| conversation.Entity
+			| undefined
 		if (!conv) {
 			return
 		}
@@ -165,6 +175,7 @@ export const transactions: Transactions = {
 				type: AppMessageType.UserMessage,
 				body: payload.body,
 				attachments: payload.attachments,
+				sentDate: Date.now(),
 			}
 
 			yield* protocol.transactions.client.appMessageSend({
@@ -190,10 +201,20 @@ export function* orchestrator() {
 		takeLeading(commands.hide, function*({ payload }) {
 			yield* transactions.hide(payload)
 		}),
-		takeEvery('protocol/GroupMessageEvent', function*(action) {
-			const message = JSON.parse(new Buffer(action.payload.message).toString('utf-8'))
+		takeEvery('protocol/GroupMessageEvent', function*(
+			action: PayloadAction<berty.protocol.GroupMessageEvent & { aggregateId: string }>,
+		) {
 			// create an id for the message
-			const aggregateId = Buffer.from(action.payload.eventContext.id).toString('utf-8')
+			const cidBuf = action.payload.eventContext?.id
+			if (!cidBuf) {
+				return
+			}
+			const groupPkBuf = action.payload.eventContext?.groupPk
+			if (!groupPkBuf) {
+				return
+			}
+			const message: AppMessage = JSON.parse(new Buffer(action.payload.message).toString('utf-8'))
+			const aggregateId = Buffer.from(cidBuf).toString('utf-8')
 			// create the message entity
 			const existingMessage = (yield select((state) => queries.get(state, { id: aggregateId }))) as
 				| Entity
@@ -204,14 +225,16 @@ export function* orchestrator() {
 			yield put(
 				events.sent({
 					aggregateId,
-					payload: message,
+					message,
+					receivedDate: Date.now(),
 				}),
 			)
+
 			// add message to correspondant conversation
 			yield* conversation.transactions.addMessage({
 				aggregateId: getAggregateId({
 					accountId: action.payload.aggregateId,
-					groupPk: action.payload.eventContext.groupPk,
+					groupPk: groupPkBuf,
 				}),
 				messageId: aggregateId,
 			})
