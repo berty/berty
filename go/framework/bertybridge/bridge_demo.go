@@ -7,9 +7,16 @@ import (
 	"berty.tech/berty/go/pkg/bertydemo"
 	"go.uber.org/zap"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
-	"google.golang.org/grpc"
 )
 
 // type DemoBridge Bridge
@@ -113,7 +120,37 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 	// register service
 	var grpcServer *grpc.Server
 	{
-		grpcServer = grpc.NewServer()
+		grpcLogger := logger.Named("grpc")
+		// Define customfunc to handle panic
+		panicHandler := func(p interface{}) (err error) {
+			return status.Errorf(codes.Unknown, "panic recover: %v", p)
+		}
+
+		// Shared options for the logger, with a custom gRPC code to log level function.
+		recoverOpts := []grpc_recovery.Option{
+			grpc_recovery.WithRecoveryHandler(panicHandler),
+		}
+
+		zapOpts := []grpc_zap.Option{
+			grpc_zap.WithLevels(grpcCodeToLevel),
+		}
+
+		// setup grpc with zap
+		grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
+		grpcServer = grpc.NewServer(
+			grpc_middleware.WithUnaryServerChain(
+				grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+
+				grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
+				grpc_recovery.UnaryServerInterceptor(recoverOpts...),
+			),
+			grpc_middleware.WithStreamServerChain(
+				grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+				grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
+				grpc_recovery.StreamServerInterceptor(recoverOpts...),
+			),
+		)
+
 		bertydemo.RegisterDemoServiceServer(grpcServer, client)
 	}
 

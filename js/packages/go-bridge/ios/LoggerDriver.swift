@@ -61,9 +61,11 @@ class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
 
         var type: OSLogType
         switch level {
-        case Level.debug:
-            type = .debug
-        case Level.info:
+        // @FIXME(gfanton): on some device: debug log dont show up on the Console.
+        // for the moment, merge debug logs into info logs
+        // case Level.debug:
+        //     type = .debug
+        case Level.info, Level.debug:
             type = .info
         case Level.warn, Level.error:
             type = .error
@@ -73,8 +75,8 @@ class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
             type = OSLogType.default
         }
         switch self.scope {
-        case Visibility.hidden: os_log("%{private}@", log: logger, type: type, out)
-        case Visibility.visible: os_log("%{public}@", log: logger, type: type, out)
+        case Visibility.visible: os_log("[%@] %{public}@", log: logger, type: type, ulevel, out)
+        case Visibility.hidden: os_log("[%@] %{private}@", log: logger, type: type, ulevel, out)
         }
     } else {
         NSLog("[%@] [%@]: %@", level.rawValue, self.subsytem + "." + subsytem, out)

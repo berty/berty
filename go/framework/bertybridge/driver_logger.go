@@ -7,8 +7,11 @@ import (
 
 	"berty.tech/berty/go/internal/ipfsutil"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
+
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc/codes"
 )
 
 type NativeLoggerDriver interface {
@@ -103,7 +106,16 @@ func newNativeLogger(loglevel string, mlogger NativeLoggerDriver) (*zap.Logger, 
 		return nil, err
 	}
 
+	logger.Info("logger initialized", zap.String("level", loglevel))
 	return logger, nil
+}
+
+func grpcCodeToLevel(code codes.Code) zapcore.Level {
+	if code == codes.OK {
+		// It is DEBUG
+		return zap.DebugLevel
+	}
+	return grpc_zap.DefaultCodeToLevel(code)
 }
 
 func getIPFSZapInfosFields(ctx context.Context, api ipfs_interface.CoreAPI) (fields []zap.Field) {
