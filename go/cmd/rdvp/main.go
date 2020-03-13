@@ -9,7 +9,6 @@ import (
 	"net"
 	"os"
 	"strings"
-	"time"
 
 	"berty.tech/berty/go/pkg/errcode"
 	libp2p "github.com/libp2p/go-libp2p"
@@ -17,14 +16,13 @@ import (
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	libp2p_rp "github.com/libp2p/go-libp2p-rendezvous"
 	libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
-
 	ma "github.com/multiformats/go-multiaddr"
 	run "github.com/oklog/run"
-
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"moul.io/srand"
 )
 
 func main() {
@@ -44,7 +42,7 @@ func main() {
 	)
 
 	globalPreRun := func() error {
-		rand.Seed(time.Now().UnixNano())
+		rand.Seed(srand.Secure())
 		if *globalDebug {
 			config := zap.NewDevelopmentConfig()
 			config.Level.SetLevel(zap.DebugLevel)
@@ -145,8 +143,6 @@ func main() {
 	if err := process.Run(); err != nil && err != context.Canceled {
 		log.Fatal(err)
 	}
-
-	os.Exit(0)
 }
 
 // helpers
