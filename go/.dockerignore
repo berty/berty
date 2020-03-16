@@ -1,0 +1,5 @@
+Dockerfile
+vendor/
+out/
+coverage.txt
+.dockerignore
