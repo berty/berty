@@ -15,6 +15,7 @@ export type Entity = {
 	pk: string
 	kind: berty.chatmodel.Conversation.Kind // Unknown, Self, OneToOne, PrivateGroup
 	createdAt: google.protobuf.ITimestamp | string
+	membersDevices: { [key: string]: string[] }
 	members: Array<number>
 	messages: Array<string>
 }
@@ -66,6 +67,12 @@ export namespace Event {
 		aggregateId: string
 		name: string
 	}
+	export type DeviceAdded = {
+		accountId: string
+		groupPk: Uint8Array
+		devicePk: Uint8Array
+		memberPk: Uint8Array
+	}
 	export type MessageAdded = { aggregateId: string; messageId: string }
 }
 
@@ -90,6 +97,7 @@ export type EventsReducer = {
 	deleted: SimpleCaseReducer<Event.Deleted>
 	nameUpdated: SimpleCaseReducer<Event.NameUpdated>
 	messageAdded: SimpleCaseReducer<Event.MessageAdded>
+	deviceAdded: SimpleCaseReducer<Event.DeviceAdded>
 }
 
 export type Transactions = {
@@ -120,6 +128,9 @@ const getAggregateId: (kwargs: { accountId: string; groupPk: Uint8Array }) => st
 	groupPk,
 }) => Buffer.concat([Buffer.from(accountId, 'utf-8'), Buffer.from(groupPk)]).toString('base64')
 
+const decodePublicKey = (val: Buffer | Uint8Array) => Buffer.from(val).toString('utf-8')
+const encodePublicKey = (val: string) => Buffer.from(val, 'utf-8')
+
 const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/conversation/event',
 	initialState,
@@ -143,6 +154,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 					createdAt: '9:21',
 					members: [],
 					messages: [],
+					membersDevices: {},
 				}
 			}
 			return state
@@ -161,6 +173,27 @@ const eventHandler = createSlice<State, EventsReducer>({
 			state.aggregates[payload.aggregateId].messages.push(payload.messageId)
 			return state
 		},
+		deviceAdded: (state, { payload }) => {
+			const { accountId, groupPk, devicePk, memberPk } = payload
+
+			const aggregateId = getAggregateId({ accountId, groupPk })
+			const conversation = state.aggregates[aggregateId]
+
+			if (conversation && conversation.kind === berty.chatmodel.Conversation.Kind.PrivateGroup) {
+				const memberPkStr = decodePublicKey(memberPk)
+				if (!conversation.membersDevices[memberPkStr]) {
+					conversation.membersDevices[memberPkStr] = []
+				}
+
+				const devicePkStr = decodePublicKey(devicePk)
+				const set = conversation.membersDevices[memberPkStr]
+				if (!set.includes(devicePkStr)) {
+					set.push(devicePkStr)
+				}
+			}
+
+			return state
+		},
 	},
 })
 
@@ -172,9 +205,6 @@ export const queries: QueryReducer = {
 	get: (state, { id }) => state.chat.conversation.aggregates[id],
 	getLength: (state) => Object.keys(state.chat.conversation.aggregates).length,
 }
-
-const decodePublicKey = (val: Buffer | Uint8Array) => Buffer.from(val).toString('utf-8')
-const encodePublicKey = (val: string) => Buffer.from(val, 'utf-8')
 
 export const transactions: Transactions = {
 	open: function*({ accountId }) {
@@ -343,6 +373,18 @@ export function* orchestrator() {
 					kind: berty.chatmodel.Conversation.Kind.OneToOne,
 				}),
 			)
+		}),
+		takeEvery(protocol.events.client.groupMemberDeviceAdded, function*({ payload }) {
+			// todo: move to extra reducers
+			const {
+				aggregateId: accountId,
+				eventContext: { groupPk },
+				event: { memberPk, devicePk },
+			} = payload
+			if (!groupPk) {
+				return
+			}
+			yield put(events.deviceAdded({ accountId, groupPk, memberPk, devicePk }))
 		}),
 		takeEvery(protocol.events.client.accountGroupJoined, function*({ payload }) {
 			const {
