@@ -2,6 +2,7 @@ package orbitutil
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"testing"
 
@@ -21,7 +22,7 @@ import (
 type MockedPeer struct {
 	CoreAPI ipfsutil.CoreAPIMock
 	DB      BertyOrbitDB
-	GC      *GroupContext
+	GC      ContextGroup
 	MK      bertycrypto.MessageKeys
 	Acc     *account.Account
 }
@@ -121,7 +122,7 @@ func CreatePeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 				t.Fatal(err)
 			}
 
-			gc, err := db.OpenGroup(ctx, g, nil)
+			gc, err := db.OpenMultiMemberGroup(ctx, g, nil)
 			if err != nil {
 				t.Fatalf("err: creating new group context, %v", err)
 			}
@@ -184,7 +185,7 @@ func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPee
 	}
 
 	for i, p := range peers {
-		if _, err := p.GC.MetadataStore().JoinGroup(ctx); err != nil {
+		if _, err := p.GC.MetadataStore().AddDeviceToGroup(ctx); err != nil {
 			t.Fatal(err)
 		}
 
@@ -197,6 +198,7 @@ func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPee
 
 	// Wait for all events to be received in all peers's member log (or timeout)
 	wg.Wait()
+	close(errChan)
 
 	for err := range errChan {
 		t.Fatal(err)
@@ -225,14 +227,17 @@ func WaitForBertyEventType(ctx context.Context, t *testing.T, ms MetadataStore, 
 			handledEvents[eID] = struct{}{}
 
 			e := &bertyprotocol.GroupAddDeviceSecret{}
-			err := e.Unmarshal(evt.(*bertyprotocol.GroupMetadataEvent).Event)
-			if err != nil {
+			if err := e.Unmarshal(evt.(*bertyprotocol.GroupMetadataEvent).Event); err != nil {
 				t.Fatalf(" err: %+v\n", err.Error())
 			}
+
+			fmt.Println(string(e.DevicePK), string(e.DestMemberPK))
 
 			eventCount--
 			if eventCount == 0 {
 				done <- struct{}{}
+			} else {
+				fmt.Println(eventCount, "more to go")
 			}
 		}
 	}

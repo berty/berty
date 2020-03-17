@@ -751,3 +751,25 @@ message GroupMessageSubscribe {
     bool go_backwards = 4;
   }
 }
+
+
+enum ContactState {
+  ContactStateUndefined = 0;
+  ContactStateToRequest = 1;
+  ContactStateReceived = 2;
+  ContactStateAdded = 3;
+  ContactStateRemoved = 4;
+  ContactStateDiscarded = 5;
+  ContactStateBlocked = 6;
+}
+
+message ShareableContact {
+  // contact_pk is the account to send a contact request to
+  bytes pk = 1 [(gogoproto.customname) = "PK"];
+
+  // contact_rendezvous_seed is the rendezvous seed used by the other account
+  bytes public_rendezvous_seed = 2;
+
+  // contact_metadata is the metadata specific to the app to identify the contact for the request
+  bytes metadata = 3;
+}

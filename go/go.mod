@@ -7,6 +7,7 @@ require (
 	berty.tech/go-orbit-db v1.3.0
 	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
+	github.com/gdamore/tcell v1.3.0
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.3.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
@@ -26,13 +27,13 @@ require (
 	github.com/libp2p/go-libp2p-discovery v0.2.0
 	github.com/libp2p/go-libp2p-kad-dht v0.4.1
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e
-	github.com/marcusolsson/tui-go v0.4.0
 	github.com/multiformats/go-multiaddr v0.2.0
 	github.com/multiformats/go-multiaddr-net v0.1.1
 	github.com/multiformats/go-multihash v0.0.10
 	github.com/oklog/run v1.1.0
 	github.com/peterbourgon/ff v1.6.0
 	github.com/pkg/errors v0.8.1
+	github.com/rivo/tview v0.0.0-20200219210816-cd38d7432498
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/whyrusleeping/go-logging v0.0.1

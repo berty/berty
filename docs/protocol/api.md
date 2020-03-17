@@ -99,7 +99,9 @@
     - [MultiMemberGroupLeave.Reply](#berty.protocol.MultiMemberGroupLeave.Reply)
     - [MultiMemberGroupLeave.Request](#berty.protocol.MultiMemberGroupLeave.Request)
     - [MultiMemberInitialMember](#berty.protocol.MultiMemberInitialMember)
+    - [ShareableContact](#berty.protocol.ShareableContact)
   
+    - [ContactState](#berty.protocol.ContactState)
     - [EventType](#berty.protocol.EventType)
     - [GroupType](#berty.protocol.GroupType)
     - [InstanceGetConfiguration.SettingState](#berty.protocol.InstanceGetConfiguration.SettingState)
@@ -809,7 +811,31 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | ----- | ---- | ----- | ----------- |
 | member_pk | [bytes](#bytes) |  | member_pk is the public key of the member who is the group creator |
 
+<a name="berty.protocol.ShareableContact"></a>
+
+### ShareableContact
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| pk | [bytes](#bytes) |  | contact_pk is the account to send a contact request to |
+| public_rendezvous_seed | [bytes](#bytes) |  | contact_rendezvous_seed is the rendezvous seed used by the other account |
+| metadata | [bytes](#bytes) |  | contact_metadata is the metadata specific to the app to identify the contact for the request |
+
  
+
+<a name="berty.protocol.ContactState"></a>
+
+### ContactState
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| ContactStateUndefined | 0 |  |
+| ContactStateToRequest | 1 |  |
+| ContactStateReceived | 2 |  |
+| ContactStateAdded | 3 |  |
+| ContactStateRemoved | 4 |  |
+| ContactStateDiscarded | 5 |  |
+| ContactStateBlocked | 6 |  |
 
 <a name="berty.protocol.EventType"></a>
 

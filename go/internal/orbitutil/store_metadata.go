@@ -2,6 +2,9 @@ package orbitutil
 
 import (
 	"context"
+	"crypto/rand"
+	"io"
+	"io/ioutil"
 
 	"berty.tech/go-ipfs-log/identityprovider"
 	"berty.tech/go-orbit-db/address"
@@ -26,6 +29,28 @@ type MetadataStoreImpl struct {
 	g   *bertyprotocol.Group
 	acc *account.Account
 	mk  bertycrypto.MessageKeys
+}
+
+func isMultiMemberGroup(m *MetadataStoreImpl) bool {
+	return m.g.GroupType == bertyprotocol.GroupTypeMultiMember
+}
+
+func isAccountGroup(m *MetadataStoreImpl) bool {
+	return m.g.GroupType == bertyprotocol.GroupTypeAccount
+}
+
+func isContactGroup(m *MetadataStoreImpl) bool {
+	return m.g.GroupType == bertyprotocol.GroupTypeContact
+}
+
+func (m *MetadataStoreImpl) typeChecker(types ...func(m *MetadataStoreImpl) bool) bool {
+	for _, t := range types {
+		if t(m) == true {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (m *MetadataStoreImpl) ListEvents(ctx context.Context) <-chan *bertyprotocol.GroupMetadataEvent {
@@ -62,16 +87,16 @@ func (m *MetadataStoreImpl) ListEvents(ctx context.Context) <-chan *bertyprotoco
 	return ch
 }
 
-func (m *MetadataStoreImpl) JoinGroup(ctx context.Context) (operation.Operation, error) {
+func (m *MetadataStoreImpl) AddDeviceToGroup(ctx context.Context) (operation.Operation, error) {
 	md, err := m.acc.MemberDeviceForGroup(m.g)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	return MetadataStoreJoinGroup(ctx, m, m.g, md)
+	return MetadataStoreAddDeviceToGroup(ctx, m, m.g, md)
 }
 
-func MetadataStoreJoinGroup(ctx context.Context, m MetadataStore, g *bertyprotocol.Group, md *account.OwnMemberDevice) (operation.Operation, error) {
+func MetadataStoreAddDeviceToGroup(ctx context.Context, m MetadataStore, g *bertyprotocol.Group, md *account.OwnMemberDevice) (operation.Operation, error) {
 	device, err := md.Device.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -112,7 +137,7 @@ func (m *MetadataStoreImpl) SendSecret(ctx context.Context, memberPK crypto.PubK
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	ok, err := m.AreSecretsAlreadySent(memberPK)
+	ok, err := m.Index().(*metadataStoreIndex).areSecretsAlreadySent(memberPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -164,6 +189,10 @@ func MetadataStoreSendSecret(ctx context.Context, m MetadataStore, g *bertyproto
 }
 
 func (m *MetadataStoreImpl) ClaimGroupOwnership(ctx context.Context, groupSK crypto.PrivKey) (operation.Operation, error) {
+	if !m.typeChecker(isMultiMemberGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
 	md, err := m.acc.MemberDeviceForGroup(m.g)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
@@ -229,12 +258,44 @@ func (m *MetadataStoreImpl) GetDevicesForMember(pk crypto.PubKey) ([]crypto.PubK
 	return m.Index().(*metadataStoreIndex).GetDevicesForMember(pk)
 }
 
-func (m *MetadataStoreImpl) MemberCount() int {
-	return m.Index().(*metadataStoreIndex).MemberCount()
+func (m *MetadataStoreImpl) ListAdmins() []crypto.PubKey {
+	if m.typeChecker(isContactGroup, isAccountGroup) {
+		return m.ListMembers()
+	}
+
+	return m.Index().(*metadataStoreIndex).ListAdmins()
 }
 
-func (m *MetadataStoreImpl) DeviceCount() int {
-	return m.Index().(*metadataStoreIndex).DeviceCount()
+func (m *MetadataStoreImpl) GetIncomingContactRequestsStatus() (bool, *bertyprotocol.ShareableContact) {
+	if !m.typeChecker(isAccountGroup) {
+		return false, nil
+	}
+
+	enabled := m.Index().(*metadataStoreIndex).ContactRequestsEnabled()
+	seed := m.Index().(*metadataStoreIndex).ContactRequestsSeed()
+
+	if len(seed) == 0 {
+		return enabled, nil
+	}
+
+	md, err := m.acc.MemberDeviceForGroup(m.g)
+	if err != nil {
+		// TODO: log
+		return enabled, nil
+	}
+
+	pkBytes, err := md.Member.GetPublic().Raw()
+	if err != nil {
+		// TODO: log
+		return enabled, nil
+	}
+
+	contactRef := &bertyprotocol.ShareableContact{
+		PK:                   pkBytes,
+		PublicRendezvousSeed: seed,
+	}
+
+	return enabled, contactRef
 }
 
 func (m *MetadataStoreImpl) ListMembers() []crypto.PubKey {
@@ -245,12 +306,413 @@ func (m *MetadataStoreImpl) ListDevices() []crypto.PubKey {
 	return m.Index().(*metadataStoreIndex).ListDevices()
 }
 
-func (m *MetadataStoreImpl) ListAdmins() []crypto.PubKey {
-	return m.Index().(*metadataStoreIndex).ListAdmins()
+func (m *MetadataStoreImpl) ListMultiMemberGroups() []*bertyprotocol.Group {
+	if !m.typeChecker(isAccountGroup) {
+		return nil
+	}
+
+	idx, ok := m.Index().(*metadataStoreIndex)
+	if !ok {
+		return nil
+	}
+	idx.lock.Lock()
+	defer idx.lock.Unlock()
+
+	groups := []*bertyprotocol.Group(nil)
+
+	for _, c := range idx.groups {
+		if c.state != accountGroupJoinedStateJoined {
+			continue
+		}
+
+		groups = append(groups, c.group)
+	}
+
+	return groups
+
 }
 
-func (m *MetadataStoreImpl) AreSecretsAlreadySent(pk crypto.PubKey) (bool, error) {
-	return m.Index().(*metadataStoreIndex).AreSecretsAlreadySent(pk)
+func (m *MetadataStoreImpl) ListContactsByStatus(state bertyprotocol.ContactState) []*bertyprotocol.ShareableContact {
+	if !m.typeChecker(isAccountGroup) {
+		return nil
+	}
+
+	idx, ok := m.Index().(*metadataStoreIndex)
+	if !ok {
+		return nil
+	}
+	idx.lock.Lock()
+	defer idx.lock.Unlock()
+
+	contacts := []*bertyprotocol.ShareableContact(nil)
+
+	for _, c := range idx.contacts {
+		if c.state != state {
+			continue
+		}
+
+		contacts = append(contacts, c.contact)
+	}
+
+	return contacts
+}
+
+func (m *MetadataStoreImpl) checkIfInGroup(pk []byte) bool {
+	idx, ok := m.Index().(*metadataStoreIndex)
+	if !ok {
+		return false
+	}
+
+	idx.lock.Lock()
+	defer idx.lock.Unlock()
+
+	if existingGroup, ok := idx.groups[string(pk)]; ok && existingGroup.state == accountGroupJoinedStateJoined {
+		return true
+	}
+
+	return false
+}
+
+// EventTypeAccountGroupJoined indicates the payload includes that the account has joined a group
+func (m *MetadataStoreImpl) GroupJoin(ctx context.Context, g *bertyprotocol.Group) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	if err := g.IsValid(); err != nil {
+		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if m.checkIfInGroup(g.PublicKey) {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	return m.attributeSignAndAddEvent(ctx, &bertyprotocol.AccountGroupJoined{
+		Group: g,
+	}, bertyprotocol.EventTypeAccountGroupJoined)
+}
+
+// EventTypeAccountGroupLeft indicates the payload includes that the account has left a group
+func (m *MetadataStoreImpl) GroupLeave(ctx context.Context, pk crypto.PubKey) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	if pk == nil {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	bytes, err := pk.Raw()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	if !m.checkIfInGroup(bytes) {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	return m.groupAction(ctx, pk, &bertyprotocol.AccountGroupLeft{}, bertyprotocol.EventTypeAccountGroupLeft)
+}
+
+// EventTypeAccountContactRequestDisabled indicates the payload includes that the account has disabled incoming contact requests
+func (m *MetadataStoreImpl) ContactRequestDisable(ctx context.Context) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	return m.attributeSignAndAddEvent(ctx, &bertyprotocol.AccountContactRequestDisabled{}, bertyprotocol.EventTypeAccountContactRequestDisabled)
+}
+
+// EventTypeAccountContactRequestEnabled indicates the payload includes that the account has enabled incoming contact requests
+func (m *MetadataStoreImpl) ContactRequestEnable(ctx context.Context) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	return m.attributeSignAndAddEvent(ctx, &bertyprotocol.AccountContactRequestEnabled{}, bertyprotocol.EventTypeAccountContactRequestEnabled)
+}
+
+// EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request reference
+func (m *MetadataStoreImpl) ContactRequestReferenceReset(ctx context.Context) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	seed, err := ioutil.ReadAll(io.LimitReader(rand.Reader, bertyprotocol.RendezvousSeedLength))
+	if err != nil {
+		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+	}
+
+	return m.attributeSignAndAddEvent(ctx, &bertyprotocol.AccountContactRequestReferenceReset{
+		RendezvousSeed: seed,
+	}, bertyprotocol.EventTypeAccountContactRequestReferenceReset)
+}
+
+// EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request
+func (m *MetadataStoreImpl) ContactRequestOutgoingEnqueue(ctx context.Context, contact *bertyprotocol.ShareableContact) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	if err := contact.CheckFormat(); err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	accSK, err := m.acc.AccountPrivKey()
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	if contact.IsSamePK(accSK.GetPublic()) {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	pk, err := contact.GetPubKey()
+	if err != nil {
+		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if m.checkContactStatus(pk, bertyprotocol.ContactStateRemoved, bertyprotocol.ContactStateDiscarded, bertyprotocol.ContactStateReceived) {
+		return m.ContactRequestOutgoingSent(ctx, pk)
+	}
+
+	return m.attributeSignAndAddEvent(ctx, &bertyprotocol.AccountContactRequestEnqueued{
+		ContactPK:             contact.PK,
+		ContactRendezvousSeed: contact.PublicRendezvousSeed,
+		ContactMetadata:       contact.Metadata,
+	}, bertyprotocol.EventTypeAccountContactRequestOutgoingEnqueued)
+}
+
+// EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request
+func (m *MetadataStoreImpl) ContactRequestOutgoingSent(ctx context.Context, pk crypto.PubKey) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	if !m.checkContactStatus(pk, bertyprotocol.ContactStateToRequest, bertyprotocol.ContactStateRemoved, bertyprotocol.ContactStateReceived, bertyprotocol.ContactStateDiscarded) {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	return m.contactAction(ctx, pk, &bertyprotocol.AccountContactRequestSent{}, bertyprotocol.EventTypeAccountContactRequestOutgoingSent)
+}
+
+// EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request
+func (m *MetadataStoreImpl) ContactRequestIncomingReceived(ctx context.Context, contact *bertyprotocol.ShareableContact) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	if err := contact.CheckFormat(); err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	accSK, err := m.acc.AccountPrivKey()
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	if contact.IsSamePK(accSK.GetPublic()) {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	pk, err := contact.GetPubKey()
+	if err != nil {
+		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	// Contact was waiting to be accepted, mark as sent instead
+	if m.checkContactStatus(pk, bertyprotocol.ContactStateToRequest) {
+		return m.ContactRequestOutgoingSent(ctx, pk)
+	}
+
+	if m.checkContactStatus(pk, bertyprotocol.ContactStateReceived, bertyprotocol.ContactStateAdded, bertyprotocol.ContactStateBlocked) {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	return m.attributeSignAndAddEvent(ctx, &bertyprotocol.AccountContactRequestReceived{
+		ContactPK:             contact.PK,
+		ContactRendezvousSeed: contact.PublicRendezvousSeed,
+		ContactMetadata:       contact.Metadata,
+	}, bertyprotocol.EventTypeAccountContactRequestIncomingReceived)
+}
+
+// EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request
+func (m *MetadataStoreImpl) ContactRequestIncomingDiscard(ctx context.Context, pk crypto.PubKey) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	if !m.checkContactStatus(pk, bertyprotocol.ContactStateReceived) {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	return m.contactAction(ctx, pk, &bertyprotocol.AccountContactRequestDiscarded{}, bertyprotocol.EventTypeAccountContactRequestIncomingDiscarded)
+}
+
+// EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request
+func (m *MetadataStoreImpl) ContactRequestIncomingAccept(ctx context.Context, pk crypto.PubKey) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	if !m.checkContactStatus(pk, bertyprotocol.ContactStateReceived) {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	return m.contactAction(ctx, pk, &bertyprotocol.AccountContactRequestAccepted{}, bertyprotocol.EventTypeAccountContactRequestIncomingAccepted)
+}
+
+// EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact
+func (m *MetadataStoreImpl) ContactBlock(ctx context.Context, pk crypto.PubKey) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	accSK, err := m.acc.AccountPrivKey()
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	if accSK.GetPublic().Equals(pk) {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	if m.checkContactStatus(pk, bertyprotocol.ContactStateBlocked) {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	return m.contactAction(ctx, pk, &bertyprotocol.AccountContactBlocked{}, bertyprotocol.EventTypeAccountContactBlocked)
+}
+
+// EventTypeAccountContactUnblocked indicates the payload includes that the account has unblocked a contact
+func (m *MetadataStoreImpl) ContactUnblock(ctx context.Context, pk crypto.PubKey) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	if !m.checkContactStatus(pk, bertyprotocol.ContactStateBlocked) {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	return m.contactAction(ctx, pk, &bertyprotocol.AccountContactUnblocked{}, bertyprotocol.EventTypeAccountContactUnblocked)
+}
+
+func (m *MetadataStoreImpl) ContactSendAliasKey(ctx context.Context) (operation.Operation, error) {
+	if !m.typeChecker(isContactGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	sk, err := m.acc.AccountProofPrivKey()
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	alias, err := sk.GetPublic().Raw()
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return m.attributeSignAndAddEvent(ctx, &bertyprotocol.ContactAddAliasKey{
+		AliasPK: alias,
+	}, bertyprotocol.EventTypeContactAliasKeyAdded)
+
+}
+
+func (m *MetadataStoreImpl) SendAliasProof(ctx context.Context) (operation.Operation, error) {
+	if !m.typeChecker(isMultiMemberGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	resolver := []byte(nil) // TODO: should be a hmac value of something for quicker searches
+	proof := []byte(nil)    // TODO: should be a signed value of something
+
+	return m.attributeSignAndAddEvent(ctx, &bertyprotocol.MultiMemberGroupAddAliasResolver{
+		AliasResolver: resolver,
+		AliasProof:    proof,
+	}, bertyprotocol.EventTypeMultiMemberGroupAliasResolverAdded)
+}
+
+type accountSignableEvent interface {
+	proto.Message
+	proto.Marshaler
+	SetDevicePK([]byte)
+}
+
+type accountContactEvent interface {
+	accountSignableEvent
+	SetContactPK([]byte)
+}
+
+type accountGroupEvent interface {
+	accountSignableEvent
+	SetGroupPK([]byte)
+}
+
+func (m *MetadataStoreImpl) attributeSignAndAddEvent(ctx context.Context, evt accountSignableEvent, eventType bertyprotocol.EventType) (operation.Operation, error) {
+	md, err := m.acc.MemberDeviceForGroup(m.g)
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	device, err := md.Device.GetPublic().Raw()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	evt.SetDevicePK(device)
+
+	sig, err := SignProto(evt, md.Device)
+	if err != nil {
+		return nil, errcode.ErrSignatureFailed.Wrap(err)
+	}
+
+	return MetadataStoreAddEvent(ctx, m, m.g, eventType, evt, sig)
+}
+
+func (m *MetadataStoreImpl) contactAction(ctx context.Context, pk crypto.PubKey, event accountContactEvent, evtType bertyprotocol.EventType) (operation.Operation, error) {
+	if pk == nil || event == nil {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	pkBytes, err := pk.Raw()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	event.SetContactPK(pkBytes)
+
+	return m.attributeSignAndAddEvent(ctx, event, evtType)
+}
+
+func (m *MetadataStoreImpl) groupAction(ctx context.Context, pk crypto.PubKey, event accountGroupEvent, evtType bertyprotocol.EventType) (operation.Operation, error) {
+	pkBytes, err := pk.Raw()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	event.SetGroupPK(pkBytes)
+
+	return m.attributeSignAndAddEvent(ctx, event, evtType)
+}
+
+func (m *MetadataStoreImpl) checkContactStatus(pk crypto.PubKey, states ...bertyprotocol.ContactState) bool {
+	if pk == nil {
+		return false
+	}
+
+	contact, err := m.Index().(*metadataStoreIndex).GetContact(pk)
+	if err != nil {
+		// TODO: log
+		return false
+	}
+
+	for _, s := range states {
+		if contact.state == s {
+			return true
+		}
+	}
+
+	return false
 }
 
 func ConstructorFactoryGroupMetadata(s *bertyOrbitDB) iface.StoreConstructor {

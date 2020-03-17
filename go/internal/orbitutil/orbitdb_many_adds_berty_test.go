@@ -71,7 +71,7 @@ func testAddBerty(t *testing.T, ctx context.Context, api ipfsutil.CoreAPIMock, g
 
 	defer odb.Close()
 
-	gc, err := odb.OpenGroup(ctx, g, nil)
+	gc, err := odb.OpenMultiMemberGroup(ctx, g, nil)
 	require.NoError(t, err)
 
 	defer gc.Close()
@@ -107,7 +107,7 @@ func testAddBerty(t *testing.T, ctx context.Context, api ipfsutil.CoreAPIMock, g
 		}
 	}()
 
-	_, err = gc.MetadataStore().JoinGroup(ctx)
+	_, err = gc.MetadataStore().AddDeviceToGroup(ctx)
 	require.NoError(t, err)
 
 	<-time.After(time.Millisecond * 2000)

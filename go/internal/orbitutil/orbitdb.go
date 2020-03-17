@@ -22,11 +22,29 @@ import (
 type bertyOrbitDB struct {
 	baseorbitdb.BaseOrbitDB
 	groups          sync.Map // map[string]*bertyprotocol.Group
-	groupContexts   sync.Map // map[string]*GroupContext
+	groupContexts   sync.Map // map[string]*contextGroup
 	groupsSigPubKey sync.Map // map[string]crypto.PubKey
 	keyStore        *BertySignedKeyStore
 	mk              bertycrypto.MessageKeys
 	account         *account.Account
+}
+
+func (s *bertyOrbitDB) OpenMultiMemberGroup(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (ContextGroup, error) {
+	return s.openGroup(ctx, g, options)
+}
+
+func (s *bertyOrbitDB) OpenContactGroup(ctx context.Context, pk crypto.PubKey, options *orbitdb.CreateDBOptions) (ContextGroup, error) {
+	sk, err := s.account.ContactGroupPrivKey(pk)
+	if err != nil {
+		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+	}
+
+	g, err := bertyprotocol.GetGroupForContact(sk)
+	if err != nil {
+		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
+	}
+
+	return s.openGroup(ctx, g, options)
 }
 
 func (s *bertyOrbitDB) registerGroupPrivateKey(g *bertyprotocol.Group) error {
@@ -80,7 +98,26 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, acc *account.Acc
 	return bertyDB, nil
 }
 
-func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (*GroupContext, error) {
+func (s *bertyOrbitDB) OpenAccountGroup(ctx context.Context, options *orbitdb.CreateDBOptions) (ContextGroup, error) {
+	sk, err := s.account.AccountPrivKey()
+	if err != nil {
+		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
+	}
+
+	skProof, err := s.account.AccountProofPrivKey()
+	if err != nil {
+		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
+	}
+
+	g, err := bertyprotocol.GetGroupForAccount(sk, skProof)
+	if err != nil {
+		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
+	}
+
+	return s.openGroup(ctx, g, options)
+}
+
+func (s *bertyOrbitDB) openGroup(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (ContextGroup, error) {
 	id := g.GroupIDAsString()
 
 	existingGC, err := s.getGroupContext(id)
@@ -112,24 +149,34 @@ func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertyprotocol.Group, op
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
+	metaImpl, ok := metadataStore.(*MetadataStoreImpl)
+	if !ok {
+		return nil, errcode.ErrOrbitDBStoreCast
+	}
+
 	messageStore, err := s.GroupMessageStore(ctx, g, options)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
-	gc := NewGroupContext(g, metadataStore, messageStore, s.mk, memberDevice)
+	messagesImpl, ok := messageStore.(*MessageStoreImpl)
+	if !ok {
+		return nil, errcode.ErrOrbitDBStoreCast
+	}
+
+	gc := NewContextGroup(g, metaImpl, messagesImpl, s.mk, memberDevice)
 	s.groupContexts.Store(groupID, gc)
 
 	return gc, nil
 }
 
-func (s *bertyOrbitDB) getGroupContext(id string) (*GroupContext, error) {
+func (s *bertyOrbitDB) getGroupContext(id string) (*contextGroup, error) {
 	g, ok := s.groupContexts.Load(id)
 	if !ok {
 		return nil, errcode.ErrMissingMapKey
 	}
 
-	return g.(*GroupContext), nil
+	return g.(*contextGroup), nil
 }
 
 // SetGroupSigPubKey registers a new group signature pubkey, mainly used to

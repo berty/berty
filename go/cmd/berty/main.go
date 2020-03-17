@@ -11,6 +11,7 @@ import (
 	"os"
 	"strings"
 
+	"berty.tech/berty/go/cmd/berty/mini"
 	"berty.tech/berty/go/internal/banner"
 	"berty.tech/berty/go/internal/grpcutil"
 	"berty.tech/berty/go/internal/ipfsutil"
@@ -113,10 +114,10 @@ func main() {
 		Usage:   "mini",
 		FlagSet: miniClientDemoFlags,
 		Exec: func(args []string) error {
-			miniMain(&miniOpts{
-				groupInvitation: *miniClientDemoGroup,
-				port:            *miniClientDemoPort,
-				path:            *miniClientDemoPath,
+			mini.Main(&mini.Opts{
+				GroupInvitation: *miniClientDemoGroup,
+				Port:            *miniClientDemoPort,
+				Path:            *miniClientDemoPath,
 			})
 			return nil
 		},

@@ -2,6 +2,7 @@ package orbitutil
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	ipfslog "berty.tech/go-ipfs-log"
@@ -17,16 +18,25 @@ import (
 )
 
 type metadataStoreIndex struct {
-	members         map[string][]*account.MemberDevice
-	devices         map[string]*account.MemberDevice
-	admins          map[crypto.PubKey]struct{}
-	handledEvents   map[string]struct{}
-	sentSecrets     map[string]struct{}
-	g               *bertyprotocol.Group
-	ownMemberDevice *account.MemberDevice
-	ctx             context.Context
-	eventEmitter    events.EmitterInterface
-	lock            sync.RWMutex
+	members                  map[string][]*account.MemberDevice
+	devices                  map[string]*account.MemberDevice
+	handledEvents            map[string]struct{}
+	sentSecrets              map[string]struct{}
+	admins                   map[crypto.PubKey]struct{}
+	contacts                 map[string]*accountContact
+	groups                   map[string]*accountGroup
+	contactRequestSeed       []byte
+	contactRequestEnabled    *bool
+	eventHandlers            map[bertyprotocol.EventType][]func(event proto.Message) error
+	postIndexActions         []func() error
+	eventsContactAddAliasKey []*bertyprotocol.ContactAddAliasKey
+	ownAliasKeySent          bool
+	otherAliasKey            []byte
+	g                        *bertyprotocol.Group
+	ownMemberDevice          *account.MemberDevice
+	ctx                      context.Context
+	eventEmitter             events.EmitterInterface
+	lock                     sync.RWMutex
 }
 
 func (m *metadataStoreIndex) Get(key string) interface{} {
@@ -55,64 +65,64 @@ func openMetadataEntry(g *bertyprotocol.Group, log ipfslog.Log, e ipfslog.Entry)
 	return metaEvent, meta, event, nil
 }
 
-func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, entries []ipfslog.Entry) error {
+func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
-	for _, e := range log.Values().Slice() {
+	entries := log.Values().Slice()
+
+	// Resetting state
+	m.members = map[string][]*account.MemberDevice{}
+	m.devices = map[string]*account.MemberDevice{}
+	m.admins = map[crypto.PubKey]struct{}{}
+	m.sentSecrets = map[string]struct{}{}
+	m.handledEvents = map[string]struct{}{}
+	m.contacts = map[string]*accountContact{}
+	m.groups = map[string]*accountGroup{}
+
+	for i := len(entries) - 1; i >= 0; i-- {
+		e := entries[i]
+
 		metaEvent, meta, event, err := openMetadataEntry(m.g, log, e)
 		if err != nil {
 			// TODO: log
 			continue
 		}
 
-		if _, ok := m.handledEvents[e.GetHash().String()]; ok {
+		handlers, ok := m.eventHandlers[meta.EventType]
+		if !ok {
+			m.handledEvents[e.GetHash().String()] = struct{}{}
+			// TODO: log
 			continue
+		}
+
+		var lastErr error
+
+		for _, h := range handlers {
+			err = h(event)
+			if err != nil {
+				// TODO: log
+				lastErr = err
+			}
+		}
+
+		if lastErr != nil {
+			m.handledEvents[e.GetHash().String()] = struct{}{}
+			continue
+		}
+
+		if _, ok := m.handledEvents[e.GetHash().String()]; !ok {
+			m.eventEmitter.Emit(m.ctx, metaEvent)
 		}
 
 		m.handledEvents[e.GetHash().String()] = struct{}{}
+	}
 
-		switch meta.EventType {
-		case bertyprotocol.EventTypeMultiMemberGroupInitialMemberAnnounced:
-			err = m.handleMultiMemberInitialMember(event)
-		case bertyprotocol.EventTypeGroupMemberDeviceAdded:
-			err = m.handleGroupAddMemberDevice(event)
-		case bertyprotocol.EventTypeGroupDeviceSecretAdded:
-			err = m.handleGroupAddDeviceSecret(event)
-		case bertyprotocol.EventTypeMultiMemberGroupAdminRoleGranted:
-			err = m.handleMultiMemberGrantAdminRole(event)
-		default:
-			err = errcode.ErrNotImplemented
+	for _, h := range m.postIndexActions {
+		if err := h(); err != nil {
+			return errcode.ErrInternal.Wrap(err)
 		}
-
-		if err != nil {
-			// TODO: log
-			_ = err
-			continue
-		}
-
-		m.eventEmitter.Emit(m.ctx, metaEvent)
 	}
-
-	return nil
-}
-
-func (m *metadataStoreIndex) handleMultiMemberInitialMember(event proto.Message) error {
-	e, ok := event.(*bertyprotocol.MultiMemberInitialMember)
-	if !ok {
-		return errcode.ErrInvalidInput
-	}
-
-	pk, err := crypto.UnmarshalEd25519PublicKey(e.MemberPK)
-	if err != nil {
-		return errcode.ErrDeserialization.Wrap(err)
-	}
-
-	if _, ok := m.admins[pk]; ok {
-		return errcode.ErrInternal
-	}
-
-	m.admins[pk] = struct{}{}
 
 	return nil
 }
@@ -135,10 +145,6 @@ func (m *metadataStoreIndex) handleGroupAddMemberDevice(event proto.Message) err
 
 	if _, ok := m.devices[string(e.DevicePK)]; ok {
 		return nil
-	}
-
-	if _, ok := m.devices[string(e.DevicePK)]; ok {
-		return errcode.ErrInternal
 	}
 
 	m.devices[string(e.DevicePK)] = &account.MemberDevice{
@@ -181,16 +187,14 @@ func (m *metadataStoreIndex) handleGroupAddDeviceSecret(event proto.Message) err
 	return nil
 }
 
-func (m *metadataStoreIndex) handleMultiMemberGrantAdminRole(event proto.Message) error {
-	// TODO:
-
-	return nil
-}
-
 func (m *metadataStoreIndex) GetMemberByDevice(pk crypto.PubKey) (crypto.PubKey, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
+	return m.unsafeGetMemberByDevice(pk)
+}
+
+func (m *metadataStoreIndex) unsafeGetMemberByDevice(pk crypto.PubKey) (crypto.PubKey, error) {
 	id, err := pk.Raw()
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -270,6 +274,317 @@ func (m *metadataStoreIndex) ListDevices() []crypto.PubKey {
 	return devices
 }
 
+func (m *metadataStoreIndex) areSecretsAlreadySent(pk crypto.PubKey) (bool, error) {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	key, err := pk.Raw()
+	if err != nil {
+		return false, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	_, ok := m.sentSecrets[string(key)]
+	return ok, nil
+}
+
+type accountGroupJoinedState uint32
+
+const (
+	accountGroupJoinedStateJoined accountGroupJoinedState = iota + 1
+	accountGroupJoinedStateLeft
+)
+
+type accountGroup struct {
+	state accountGroupJoinedState
+	group *bertyprotocol.Group
+}
+
+type accountContact struct {
+	state   bertyprotocol.ContactState
+	contact *bertyprotocol.ShareableContact
+}
+
+func (m *metadataStoreIndex) handleGroupJoined(event proto.Message) error {
+	evt, ok := event.(*bertyprotocol.AccountGroupJoined)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	_, ok = m.groups[string(evt.Group.PublicKey)]
+	if ok {
+		return nil
+	}
+
+	m.groups[string(evt.Group.PublicKey)] = &accountGroup{
+		group: evt.Group,
+		state: accountGroupJoinedStateJoined,
+	}
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleGroupLeft(event proto.Message) error {
+	evt, ok := event.(*bertyprotocol.AccountGroupLeft)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	_, ok = m.groups[string(evt.GroupPK)]
+	if ok {
+		return nil
+	}
+
+	m.groups[string(evt.GroupPK)] = &accountGroup{
+		state: accountGroupJoinedStateLeft,
+	}
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleContactRequestDisabled(event proto.Message) error {
+	if m.contactRequestEnabled != nil {
+		return nil
+	}
+
+	_, ok := event.(*bertyprotocol.AccountContactRequestDisabled)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	f := false
+	m.contactRequestEnabled = &f
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleContactRequestEnabled(event proto.Message) error {
+	if m.contactRequestEnabled != nil {
+		return nil
+	}
+
+	_, ok := event.(*bertyprotocol.AccountContactRequestEnabled)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	t := true
+	m.contactRequestEnabled = &t
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleContactRequestReferenceReset(event proto.Message) error {
+	evt, ok := event.(*bertyprotocol.AccountContactRequestReferenceReset)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	if m.contactRequestSeed != nil {
+		return nil
+	}
+
+	m.contactRequestSeed = evt.RendezvousSeed
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleContactRequestOutgoingEnqueued(event proto.Message) error {
+	evt, ok := event.(*bertyprotocol.AccountContactRequestEnqueued)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	if _, ok := m.contacts[string(evt.ContactPK)]; ok {
+		if m.contacts[string(evt.ContactPK)].contact.Metadata == nil {
+			m.contacts[string(evt.ContactPK)].contact.Metadata = evt.ContactMetadata
+		}
+
+		if m.contacts[string(evt.ContactPK)].contact.PublicRendezvousSeed == nil {
+			m.contacts[string(evt.ContactPK)].contact.PublicRendezvousSeed = evt.ContactRendezvousSeed
+		}
+
+		return nil
+	}
+
+	m.contacts[string(evt.ContactPK)] = &accountContact{
+		state: bertyprotocol.ContactStateToRequest,
+		contact: &bertyprotocol.ShareableContact{
+			PK:                   evt.ContactPK,
+			Metadata:             evt.ContactMetadata,
+			PublicRendezvousSeed: evt.ContactRendezvousSeed,
+		},
+	}
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleContactRequestOutgoingSent(event proto.Message) error {
+	evt, ok := event.(*bertyprotocol.AccountContactRequestSent)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	if _, ok := m.contacts[string(evt.ContactPK)]; ok {
+		return nil
+	}
+
+	m.contacts[string(evt.ContactPK)] = &accountContact{
+		state: bertyprotocol.ContactStateAdded,
+		contact: &bertyprotocol.ShareableContact{
+			PK: evt.ContactPK,
+		},
+	}
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleContactRequestIncomingReceived(event proto.Message) error {
+	evt, ok := event.(*bertyprotocol.AccountContactRequestReceived)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	if _, ok := m.contacts[string(evt.ContactPK)]; ok {
+		if m.contacts[string(evt.ContactPK)].contact.Metadata == nil {
+			m.contacts[string(evt.ContactPK)].contact.Metadata = evt.ContactMetadata
+		}
+
+		if m.contacts[string(evt.ContactPK)].contact.PublicRendezvousSeed == nil {
+			m.contacts[string(evt.ContactPK)].contact.PublicRendezvousSeed = evt.ContactRendezvousSeed
+		}
+
+		return nil
+	}
+
+	m.contacts[string(evt.ContactPK)] = &accountContact{
+		state: bertyprotocol.ContactStateReceived,
+		contact: &bertyprotocol.ShareableContact{
+			PK:                   evt.ContactPK,
+			Metadata:             evt.ContactMetadata,
+			PublicRendezvousSeed: evt.ContactRendezvousSeed,
+		},
+	}
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleContactRequestIncomingDiscarded(event proto.Message) error {
+	evt, ok := event.(*bertyprotocol.AccountContactRequestDiscarded)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	if _, ok := m.contacts[string(evt.ContactPK)]; ok {
+		return nil
+	}
+
+	m.contacts[string(evt.ContactPK)] = &accountContact{
+		state: bertyprotocol.ContactStateDiscarded,
+		contact: &bertyprotocol.ShareableContact{
+			PK: evt.ContactPK,
+		},
+	}
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleContactRequestIncomingAccepted(event proto.Message) error {
+	evt, ok := event.(*bertyprotocol.AccountContactRequestAccepted)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	if _, ok := m.contacts[string(evt.ContactPK)]; ok {
+		return nil
+	}
+
+	m.contacts[string(evt.ContactPK)] = &accountContact{
+		state: bertyprotocol.ContactStateAdded,
+		contact: &bertyprotocol.ShareableContact{
+			PK: evt.ContactPK,
+		},
+	}
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleContactBlocked(event proto.Message) error {
+	evt, ok := event.(*bertyprotocol.AccountContactBlocked)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	if _, ok := m.contacts[string(evt.ContactPK)]; ok {
+		return nil
+	}
+
+	m.contacts[string(evt.ContactPK)] = &accountContact{
+		state: bertyprotocol.ContactStateBlocked,
+		contact: &bertyprotocol.ShareableContact{
+			PK: evt.ContactPK,
+		},
+	}
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleContactUnblocked(event proto.Message) error {
+	evt, ok := event.(*bertyprotocol.AccountContactUnblocked)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	if _, ok := m.contacts[string(evt.ContactPK)]; ok {
+		return nil
+	}
+
+	m.contacts[string(evt.ContactPK)] = &accountContact{
+		state: bertyprotocol.ContactStateRemoved,
+		contact: &bertyprotocol.ShareableContact{
+			PK: evt.ContactPK,
+		},
+	}
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleContactAliasKeyAdded(event proto.Message) error {
+	evt, ok := event.(*bertyprotocol.ContactAddAliasKey)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	m.eventsContactAddAliasKey = append(m.eventsContactAddAliasKey, evt)
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleMultiMemberInitialMember(event proto.Message) error {
+	e, ok := event.(*bertyprotocol.MultiMemberInitialMember)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	pk, err := crypto.UnmarshalEd25519PublicKey(e.MemberPK)
+	if err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if _, ok := m.admins[pk]; ok {
+		return errcode.ErrInternal
+	}
+
+	m.admins[pk] = struct{}{}
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleMultiMemberGrantAdminRole(event proto.Message) error {
+	// TODO:
+
+	return nil
+}
+
 func (m *metadataStoreIndex) ListAdmins() []crypto.PubKey {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
@@ -285,33 +600,108 @@ func (m *metadataStoreIndex) ListAdmins() []crypto.PubKey {
 	return admins
 }
 
-func (m *metadataStoreIndex) AreSecretsAlreadySent(pk crypto.PubKey) (bool, error) {
+func (m *metadataStoreIndex) ContactRequestsEnabled() bool {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
-	key, err := pk.Raw()
+	return m.contactRequestEnabled != nil && *m.contactRequestEnabled
+}
+
+func (m *metadataStoreIndex) ContactRequestsSeed() []byte {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	return m.contactRequestSeed
+}
+
+func (m *metadataStoreIndex) GetContact(pk crypto.PubKey) (*accountContact, error) {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	bytes, err := pk.Raw()
 	if err != nil {
-		return false, errcode.ErrInvalidInput.Wrap(err)
+		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	_, ok := m.sentSecrets[string(key)]
-	return ok, nil
+	contact, ok := m.contacts[string(bytes)]
+	if !ok {
+		return nil, errcode.ErrMissingMapKey.Wrap(err)
+	}
+
+	return contact, nil
+}
+
+func (m *metadataStoreIndex) postHandlerSentAliases() error {
+	for _, evt := range m.eventsContactAddAliasKey {
+		pk, err := crypto.UnmarshalEd25519PublicKey(evt.DevicePK)
+		if err != nil {
+			return errcode.ErrDeserialization.Wrap(err)
+		}
+
+		memberPK, err := m.unsafeGetMemberByDevice(pk)
+		if err != nil {
+			return fmt.Errorf("couldn't get member for device")
+		}
+
+		if memberPK.Equals(m.ownMemberDevice.Member) {
+			m.ownAliasKeySent = true
+			continue
+		}
+
+		if _, err = crypto.UnmarshalEd25519PublicKey(evt.AliasPK); err != nil {
+			return errcode.ErrDeserialization.Wrap(err)
+		}
+
+		m.otherAliasKey = evt.AliasPK
+	}
+
+	m.eventsContactAddAliasKey = nil
+
+	return nil
 }
 
 // NewMetadataStoreIndex returns a new index to manage the list of the group members
 func NewMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertyprotocol.Group, memberDevice *account.MemberDevice) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
-		return &metadataStoreIndex{
+		m := &metadataStoreIndex{
 			members:         map[string][]*account.MemberDevice{},
 			devices:         map[string]*account.MemberDevice{},
 			admins:          map[crypto.PubKey]struct{}{},
 			sentSecrets:     map[string]struct{}{},
 			handledEvents:   map[string]struct{}{},
+			contacts:        map[string]*accountContact{},
+			groups:          map[string]*accountGroup{},
 			g:               g,
 			eventEmitter:    eventEmitter,
 			ownMemberDevice: memberDevice,
 			ctx:             ctx,
 		}
+
+		m.eventHandlers = map[bertyprotocol.EventType][]func(event proto.Message) error{
+			bertyprotocol.EventTypeAccountContactBlocked:                  {m.handleContactBlocked},
+			bertyprotocol.EventTypeAccountContactRequestDisabled:          {m.handleContactRequestDisabled},
+			bertyprotocol.EventTypeAccountContactRequestEnabled:           {m.handleContactRequestEnabled},
+			bertyprotocol.EventTypeAccountContactRequestIncomingAccepted:  {m.handleContactRequestIncomingAccepted},
+			bertyprotocol.EventTypeAccountContactRequestIncomingDiscarded: {m.handleContactRequestIncomingDiscarded},
+			bertyprotocol.EventTypeAccountContactRequestIncomingReceived:  {m.handleContactRequestIncomingReceived},
+			bertyprotocol.EventTypeAccountContactRequestOutgoingEnqueued:  {m.handleContactRequestOutgoingEnqueued},
+			bertyprotocol.EventTypeAccountContactRequestOutgoingSent:      {m.handleContactRequestOutgoingSent},
+			bertyprotocol.EventTypeAccountContactRequestReferenceReset:    {m.handleContactRequestReferenceReset},
+			bertyprotocol.EventTypeAccountContactUnblocked:                {m.handleContactUnblocked},
+			bertyprotocol.EventTypeAccountGroupJoined:                     {m.handleGroupJoined},
+			bertyprotocol.EventTypeAccountGroupLeft:                       {m.handleGroupLeft},
+			bertyprotocol.EventTypeContactAliasKeyAdded:                   {m.handleContactAliasKeyAdded},
+			bertyprotocol.EventTypeGroupDeviceSecretAdded:                 {m.handleGroupAddDeviceSecret},
+			bertyprotocol.EventTypeGroupMemberDeviceAdded:                 {m.handleGroupAddMemberDevice},
+			bertyprotocol.EventTypeMultiMemberGroupAdminRoleGranted:       {m.handleMultiMemberGrantAdminRole},
+			bertyprotocol.EventTypeMultiMemberGroupInitialMemberAnnounced: {m.handleMultiMemberInitialMember},
+		}
+
+		m.postIndexActions = []func() error{
+			m.postHandlerSentAliases,
+		}
+
+		return m
 	}
 }
 
