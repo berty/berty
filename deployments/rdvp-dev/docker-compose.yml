@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  server:
+    image: bertytech/berty:latest
+    restart: on-failure
+    environment:
+      - RDVP_PK # loaded from .env
+    entrypoint: rdvp
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    command:
+      - --debug
+      - serve
+      - "--db=:memory:"
+      - "--pk=$RDVP_PK"

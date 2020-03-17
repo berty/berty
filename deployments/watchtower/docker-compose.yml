@@ -1,0 +1,13 @@
+version: "2"
+
+services:
+  watchtower:
+    image: containrrr/watchtower
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    restart: on-failure
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    command: --interval 60 --label-enable
