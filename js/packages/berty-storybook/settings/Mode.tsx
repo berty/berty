@@ -34,9 +34,10 @@ const _modeStyles = StyleSheet.create({
 const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 	const _styles = useStylesMode()
 	const [{ flex, padding, margin, color, text, row }] = useStyles()
-	const navigation = useNavigation()
 	const account = Chat.useAccount()
 	const deleteAccount = Chat.useAccountDelete()
+	const setNavigation = Chat.useSetNavigation()
+	const { navigate } = useNavigation()
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 			<ButtonSetting
@@ -156,7 +157,8 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				actionIcon='arrow-ios-forward'
 				onPress={() => {
 					account != null && deleteAccount({ id: account.id })
-					navigation.navigate.onboarding.getStarted()
+					setNavigation({ stack: 'Onboarding' })
+					navigate.main.list()
 				}}
 			/>
 		</View>

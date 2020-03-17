@@ -6,17 +6,7 @@ import {
 import { RPCImpl } from 'protobufjs'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import {
-	all,
-	takeLeading,
-	put,
-	putResolve,
-	cps,
-	takeEvery,
-	take,
-	call,
-	select,
-} from 'redux-saga/effects'
+import { all, takeLeading, put, putResolve, cps, takeEvery, call, select } from 'redux-saga/effects'
 import { channel } from 'redux-saga'
 import * as gen from './client.gen'
 import * as api from '@berty-tech/api'

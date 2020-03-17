@@ -366,7 +366,7 @@ const Bluetooth: React.FC<{
 )
 
 const SetupFinished: React.FC = () => {
-	const navigation = useNavigation()
+	const setNavigation = Chat.useSetNavigation()
 	return (
 		<Translation>
 			{(t) => (
@@ -376,7 +376,7 @@ const SetupFinished: React.FC = () => {
 					button={{
 						text: t('onboarding.setup-finished.button'),
 						onPress: () => {
-							navigation.reset('Onboarding')
+							setNavigation({ stack: 'Main' })
 						},
 					}}
 				/>

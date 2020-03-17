@@ -8,13 +8,14 @@ import createSagaMonitor from '@clarketm/saga-monitor'
 import { Storage, persistReducer, persistStore } from 'redux-persist'
 
 import * as protocol from '../protocol'
+import * as navigation from './navigation'
 import * as account from './account'
 import * as contact from './contact'
 import * as conversation from './conversation'
 import * as member from './member'
 import * as message from './message'
 
-export { account, contact, conversation, member, message }
+export { navigation, account, contact, conversation, member, message }
 
 export type State = account.GlobalState
 
@@ -27,6 +28,7 @@ export const reducers = {
 		member: member.reducer,
 		message: message.reducer,
 	}),
+	navigation: navigation.reducer,
 }
 
 export function* rootSaga() {

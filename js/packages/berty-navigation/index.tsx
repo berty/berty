@@ -127,28 +127,9 @@ const createNavigateFunc = <TParams extends {} | undefined = {}>(
 const createNavigation = ({
 	navigate,
 	goBack,
-	dispatch,
 }: NavigationProp<any> | BottomTabNavigationProp<any>) => {
 	return {
-		dispatch: (action: any) => dispatch(action),
 		goBack: () => goBack(),
-		reset: (type: string) => {
-			if (type === 'Onboarding') {
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: Routes.Onboarding.GetStarted }],
-					}),
-				)
-				dispatch(CommonActions.navigate(Routes.Main.List))
-			} else {
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: Routes.Main.List }],
-					}),
-				)
-				dispatch(CommonActions.navigate(Routes.Onboarding.GetStarted))
-			}
-		},
 		navigate: {
 			onboarding: {
 				getStarted: createNavigateFunc(navigate, Routes.Onboarding.GetStarted),
@@ -423,11 +404,16 @@ const Footer: React.FC<BottomTabBarProps> = ({ navigation, state: { index, route
 
 const TabStack = createBottomTabNavigator()
 export const TabNavigation: React.FC = () => {
+	const nav = ChatHooks.useGetNavigation()
 	return (
 		<TabStack.Navigator tabBar={(props) => <Footer {...props} />}>
-			<TabStack.Screen name={Routes.Main.List} component={MainNavigation} />
-			<TabStack.Screen name={Routes.Main.Search} component={SearchNavigation} />
-			<TabStack.Screen name={Routes.Settings.Home} component={SettingsNavigation} />
+			{nav === 'Search' ? (
+				<TabStack.Screen name={Routes.Main.Search} component={SearchNavigation} />
+			) : nav === 'Settings' ? (
+				<TabStack.Screen name={Routes.Settings.Home} component={SettingsNavigation} />
+			) : (
+				<TabStack.Screen name={Routes.Main.List} component={MainNavigation} />
+			)}
 		</TabStack.Navigator>
 	)
 }
@@ -435,10 +421,10 @@ export const TabNavigation: React.FC = () => {
 // TODO: fix navigation with switchNavigator
 const NavigationStack = createStackNavigator()
 export const Navigation: React.FC = () => {
-	const length = ChatHooks.useAccountLength()
+	const nav = ChatHooks.useGetNavigation()
 	return (
 		<NavigationStack.Navigator screenOptions={{ headerShown: false }}>
-			{length >= 1 ? (
+			{nav !== 'Onboarding' ? (
 				<NavigationStack.Screen name={Routes.Main.List} component={TabNavigation} />
 			) : (
 				<NavigationStack.Screen

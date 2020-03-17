@@ -157,6 +157,15 @@ export const useAccountDelete = () => {
 	)
 }
 
+// navigation Commands
+export const useSetNavigation = () => {
+	const dispatch = useDispatch()
+	return useMemo(
+		() => (payload: chat.navigation.GlobalState) => dispatch(chat.navigation.commands.set(payload)),
+		[dispatch],
+	)
+}
+
 // requests queries
 export const useContactRequestReference = () => {
 	const account = useAccount()
@@ -255,4 +264,12 @@ export const useGetMessage = (id: string): chat.message.Entity => {
 		chat.message.queries.get(state, { id }),
 	)
 	return message
+}
+
+// navigation queries
+export const useGetNavigation = () => {
+	const nav = useSelector((state: chat.navigation.GlobalState) =>
+		chat.navigation.queries.get(state),
+	)
+	return nav.navigation.stack
 }

@@ -4,6 +4,7 @@ import { Icon } from 'react-native-ui-kitten'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/berty-navigation'
 import Interactable from 'react-native-interactable'
+import { Chat } from '@berty-tech/hooks'
 
 type SDTSModalProps = {
 	toggledPoint: number
@@ -29,6 +30,8 @@ type SDTSModalProps = {
 	//
 	header?: boolean
 	headerAction?: any
+	//
+	goBack: any
 }
 
 type SDTSComponentProps = {
@@ -61,6 +64,7 @@ type SDTSModalComponentProps = {
 		//
 		header?: boolean
 		headerAction?: any
+		goBack?: any
 	}[]
 	children: React.ReactNode
 }
@@ -86,6 +90,7 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 	const { goBack } = useNavigation()
 	const _styles = useStylesSTDTS()
 	const [{ border, text, row, column, padding, margin, flex, absolute, color }] = useStyles()
+	const setNavigation = Chat.useSetNavigation()
 
 	const handleOnDrag = (e: any) => {
 		setFocusAction(componentValues.onFocus)
@@ -100,7 +105,11 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 				isToggled: false,
 			})
 		} else if (e.nativeEvent.targetSnapPointId === 'close') {
-			goBack()
+			if (componentValues && componentValues.goBack) {
+				setNavigation({ stack: componentValues.goBack })
+			} else {
+				goBack()
+			}
 		}
 	}
 
@@ -225,6 +234,8 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 		//
 		header: rows[0].header !== undefined ? rows[0].header : true,
 		headerAction: rows[0].headerAction !== undefined ? rows[0].headerAction : null,
+		//
+		goBack: rows[0].goBack !== undefined ? rows[0].goBack : null,
 	})
 	const [second, setSecond] = useState()
 	const [third, setThird] = useState()
@@ -265,6 +276,8 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 				//
 				header: rows[1].header !== undefined ? rows[1].header : true,
 				headerAction: rows[1].headerAction !== undefined ? rows[1].headerAction : null,
+				//
+				goBack: rows[1].goBack !== undefined ? rows[1].goBack : null,
 			})
 			if (rows.length > 2 && !third) {
 				setThird({
@@ -295,6 +308,8 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 					//
 					header: rows[2].header !== undefined ? rows[2].header : true,
 					headerAction: rows[2].headerAction !== undefined ? rows[2].headerAction : null,
+					//
+					goBack: rows[2].goBack !== undefined ? rows[2].goBack : null,
 				})
 			}
 		}

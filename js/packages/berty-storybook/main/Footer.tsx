@@ -3,10 +3,12 @@ import { Footer as SharedFooter } from '../shared-components/Footer'
 import { useStyles } from '@berty-tech/styles'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { ScreenProps } from '@berty-tech/berty-navigation'
+import { Chat } from '@berty-tech/hooks'
 
 export const Footer: React.FC<ScreenProps.Tab.Main> = (props) => {
 	const { navigate } = props
 	const [{ color }] = useStyles()
+	const setNavigation = Chat.useSetNavigation()
 
 	return (
 		<Store.AccountGet request={{ id: 0 }}>
@@ -14,7 +16,10 @@ export const Footer: React.FC<ScreenProps.Tab.Main> = (props) => {
 				<Store.ContactGet request={{ id: response?.account?.contactId || 0 }}>
 					{(response) => (
 						<SharedFooter
-							left={{ icon: 'search-outline', onPress: navigate.main.search }}
+							left={{
+								icon: 'search-outline',
+								onPress: () => setNavigation({ stack: 'Search' }),
+							}}
 							center={{
 								icon: 'plus-outline',
 								backgroundColor: color.blue,
@@ -26,7 +31,10 @@ export const Footer: React.FC<ScreenProps.Tab.Main> = (props) => {
 							right={{
 								avatarUri: response?.contact?.avatarUri,
 								elemSize: 40,
-								onPress: navigate.settings.home,
+								onPress: () => {
+									setNavigation({ stack: 'Settings' })
+									// navigate.settings.home
+								},
 							}}
 						/>
 					)}
