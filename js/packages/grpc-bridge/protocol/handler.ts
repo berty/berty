@@ -223,7 +223,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 						logToken: this.getMessageLogToken(groupPk),
 						data: api.berty.protocol.GroupMessageEvent.encode({
 							eventContext: {},
-							headers: {},
+							headers: { devicePk: this.devicePkBytes },
 							message: data,
 						}).finish(),
 					},
@@ -421,6 +421,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 					contactPk: otherUserPkBytes,
 				},
 			})
+
 			callback(null, {})
 		} catch (e) {
 			callback(e, {})

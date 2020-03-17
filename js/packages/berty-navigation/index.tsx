@@ -437,15 +437,15 @@ const NavigationStack = createStackNavigator()
 export const Navigation: React.FC = () => {
 	const length = ChatHooks.useAccountLength()
 	return (
-		<NavigationStack.Navigator
-			screenOptions={{ headerShown: false }}
-			initialRouteName={length >= 1 ? Routes.Main.List : Routes.Onboarding.GetStarted}
-		>
-			<NavigationStack.Screen
-				name={Routes.Onboarding.GetStarted}
-				component={OnboardingNavigation}
-			/>
-			<NavigationStack.Screen name={Routes.Main.List} component={TabNavigation} />
+		<NavigationStack.Navigator screenOptions={{ headerShown: false }}>
+			{length >= 1 ? (
+				<NavigationStack.Screen name={Routes.Main.List} component={TabNavigation} />
+			) : (
+				<NavigationStack.Screen
+					name={Routes.Onboarding.GetStarted}
+					component={OnboardingNavigation}
+				/>
+			)}
 		</NavigationStack.Navigator>
 	)
 }

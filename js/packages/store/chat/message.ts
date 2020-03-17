@@ -6,6 +6,7 @@ import { berty } from '@berty-tech/api'
 
 import * as protocol from '../protocol'
 import { conversation } from '../chat'
+
 import {
 	UserMessage,
 	GroupInvitation,
@@ -112,6 +113,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 						id: aggregateId,
 						type: message.type,
 						body: message.body,
+						isMe: message.isMe,
 						attachments: [],
 						sentDate: message.sentDate,
 						receivedDate,
@@ -174,6 +176,7 @@ export const transactions: Transactions = {
 			const message: UserMessage = {
 				type: AppMessageType.UserMessage,
 				body: payload.body,
+				isMe: payload.isMe,
 				attachments: payload.attachments,
 				sentDate: Date.now(),
 			}
@@ -188,6 +191,16 @@ export const transactions: Transactions = {
 	hide: function*() {
 		// TODO: hide a message
 	},
+}
+
+export const getProtocolClient = function*(id: string): Generator<unknown, protocol.Client, void> {
+	const client = (yield select((state) => protocol.queries.client.get(state, { id }))) as
+		| protocol.Client
+		| undefined
+	if (client == null) {
+		throw new Error('client is not defined')
+	}
+	return client
 }
 
 export function* orchestrator() {
@@ -222,6 +235,26 @@ export function* orchestrator() {
 			if (existingMessage) {
 				return
 			}
+			// Reconstitute the convId
+			const convId = getAggregateId({
+				accountId: action.payload.aggregateId,
+				groupPk: groupPkBuf,
+			})
+			// Recup the conv
+			const conv = (yield select((state) => conversation.queries.get(state, { id: convId }))) as
+				| conversation.Entity
+				| undefined
+			if (!conv) {
+				return
+			}
+
+			if (message.type === AppMessageType.UserMessage) {
+				const client = yield* getProtocolClient(action.payload.aggregateId)
+				message.isMe =
+					new Buffer(action.payload.headers.devicePk).toString('utf-8') === client.devicePk
+			}
+
+			// Sent the message
 			yield put(
 				events.sent({
 					aggregateId,

@@ -86,7 +86,7 @@ const ChatGroupMemberItem: React.FC<berty.chatmodel.IMember> = ({
 			true,
 		],
 	}[role ?? berty.chatmodel.Member.Role.Unknown]
-	const [{ color, background, border, margin, padding, width, row, column, text }] = useStyles()
+	const [{ color, background, border, margin, padding, width, row, text }] = useStyles()
 
 	return (
 		<View
@@ -153,43 +153,35 @@ const ChatGroupMemberList: React.FC<berty.chatmodel.IConversation> = ({ id }) =>
 	)
 }
 
-const InfosChatGroup: React.FC<berty.chatmodel.IConversation> = (props) => {
+const InfosChatGroup: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 	const [{ margin, text }] = useStyles()
 	return (
-		<>
-			<ChatDate date='Today' />
+		<View>
+			<ChatDate date={createdAt} />
 			<View style={[margin.top.medium]}>
 				<Text style={[text.align.center, text.color.black, text.bold]}>Test created the group</Text>
 			</View>
-			<ChatGroupMemberList {...props} />
-		</>
+			<ChatGroupMemberList />
+		</View>
 	)
 }
 
-const AppMessage: React.FC<{ message: string }> = ({ message }) => {
-	const [{ color }] = useStyles()
-	return (
-		<Message
-			payload={ChatHooks.useGetMessage(message)}
-			date='9:42'
-			color={color.blue}
-			bgColor='#CED2FF99'
-		/>
-	)
-}
+const AppMessage: React.FC<{ message: string }> = ({ message }) => (
+	<Message payload={ChatHooks.useGetMessage(message)} />
+)
 
 const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
 const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	const [cursors] = useState([0])
-	const [{ color, overflow, row, flex }] = useStyles()
+	const [{ overflow, row, flex }] = useStyles()
 	const conversation = ChatHooks.useGetConversation(id)
 	return (
 		<FlatList
 			style={[overflow, row.item.fill, flex.tiny]}
 			data={cursors}
 			inverted
-			ListFooterComponent={<InfosChatGroup />}
+			ListFooterComponent={<InfosChatGroup createdAt={conversation.createdAt} />}
 			renderItem={() => (
 				<View>
 					{conversation &&

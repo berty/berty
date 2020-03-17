@@ -8,6 +8,7 @@ export enum AppMessageType {
 export type UserMessage = {
 	type: AppMessageType.UserMessage
 	body: string
+	isMe?: boolean
 	attachments: Array<{ uri: string }>
 	sentDate: number
 }

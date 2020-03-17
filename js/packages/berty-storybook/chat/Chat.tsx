@@ -14,9 +14,8 @@ import { Message } from './shared-components/Message'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
-import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
+import { useNavigation } from '@berty-tech/berty-navigation'
 import { berty } from '@berty-tech/api'
-import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 
 //
 // Chat
@@ -58,28 +57,20 @@ const ChatHeader: React.FC<berty.chatmodel.IConversation> = (props) => {
 	)
 }
 
-const InfosChat: React.FC<{}> = () => {
+const InfosChat: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 	const [{ padding }] = useStyles()
 	return (
 		<View style={[padding.medium]}>
-			<ChatDate date='Today' />
+			<ChatDate date={createdAt} />
 		</View>
 	)
 }
 
 const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
-const AppMessage: React.FC<{ message: string }> = ({ message }) => {
-	const [{ color }] = useStyles()
-	return (
-		<Message
-			payload={ChatHooks.useGetMessage(message)}
-			date='9:42'
-			color={color.blue}
-			bgColor='#CED2FF99'
-		/>
-	)
-}
+const AppMessage: React.FC<{ message: string }> = ({ message }) => (
+	<Message payload={ChatHooks.useGetMessage(message)} />
+)
 
 const MessageList: React.FC<{ id: string }> = (props) => {
 	const [cursors, setCursor] = useState([0])
@@ -91,7 +82,7 @@ const MessageList: React.FC<{ id: string }> = (props) => {
 			style={[overflow, row.item.fill, flex.tiny]}
 			data={cursors}
 			inverted
-			ListFooterComponent={<InfosChat />}
+			ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
 			renderItem={() => (
 				<View>
 					{conversation &&

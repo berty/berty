@@ -16,7 +16,6 @@ import Swiper from 'react-native-swiper'
 import { Card, TouchableCard } from '@berty-tech/shared-storybook'
 import { ColorsTypes, useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/berty-navigation'
-import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { Chat } from '@berty-tech/hooks'
 
 type Navigation = () => void
@@ -255,7 +254,6 @@ const SwiperCard: React.FC<{
 const CreateYourAccount: React.FC<{
 	next: Navigation
 }> = ({ next }) => {
-	const store = useContext(Store.Context)
 	const [name, setName] = useState('')
 	const [{ text, padding, margin, background, border }] = useStyles()
 	const createAccount = Chat.useAccountCreate()
