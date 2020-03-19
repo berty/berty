@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ ! -f .env ]; then
+    echo "GRP_KEY=`berty groupinit`" > .env
+fi
+
+TMUX=                                                                                       `# force TMUX to run, even if nested` \
+    tmux \
+    new-session ". .env && berty mini -g \$GRP_KEY; read" \;                                 `# run a simple instance` \
+    split-window ". .env && docker run -it --rm bertytech/berty mini -g \$GRP_KEY; read" \;  `# run an instance within docker` \
+    split-window "docker-compose run aaron; read" \;                                         `# run an instance within docker-compose` \
+    split-window "docker-compose run betty; read" \;                                         `# run an instance within docker-compose` \
+    split-window "docker-compose run chris; read" \;                                         `# run an instance within docker-compose` \
+    select-layout even-vertical
