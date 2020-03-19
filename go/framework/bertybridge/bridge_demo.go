@@ -5,6 +5,7 @@ import (
 
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/pkg/bertydemo"
+	"berty.tech/berty/go/pkg/errcode"
 	"go.uber.org/zap"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -76,7 +77,7 @@ func NewDemoBridge(config *DemoConfig) (*Demo, error) {
 		}
 	}
 
-	return newDemoBridge(logger.Named("demo"), config)
+	return newDemoBridge(logger, config)
 }
 
 func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
@@ -95,7 +96,7 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 		var api ipfs_interface.CoreAPI
 		api, _, err = ipfsutil.NewInMemoryCoreAPI(ctx, swarmaddrs...)
 		if err != nil {
-			return nil, err
+			return nil, errcode.TODO.Wrap(err)
 		}
 
 		directory := ":memory:"
@@ -104,13 +105,13 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 		}
 
 		opts := &bertydemo.Opts{
-			Logger:           logger,
+			Logger:           logger.Named("demo"),
 			CoreAPI:          api,
 			OrbitDBDirectory: directory,
 		}
 
 		if client, err = bertydemo.New(opts); err != nil {
-			return nil, err
+			return nil, errcode.TODO.Wrap(err)
 		}
 
 		ipfsinfos := getIPFSZapInfosFields(ctx, api)
@@ -120,7 +121,7 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 	// register service
 	var grpcServer *grpc.Server
 	{
-		grpcLogger := logger.Named("grpc")
+		grpcLogger := logger.Named("grpc.demo")
 		// Define customfunc to handle panic
 		panicHandler := func(p interface{}) (err error) {
 			return status.Errorf(codes.Unknown, "panic recover: %v", p)
@@ -154,8 +155,8 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 		bertydemo.RegisterDemoServiceServer(grpcServer, client)
 	}
 
-	var bridge *Bridge
 	// setup bridge
+	var bridge *Bridge
 	{
 		var err error
 

@@ -183,6 +183,8 @@ github.com/improbable-eng/grpc-web v0.11.0 h1:drkI/L8GnHWtWeAZFB7bEUQz9bZqOf/X8D
 github.com/improbable-eng/grpc-web v0.11.0/go.mod h1:6hRR09jOEG81ADP5wCQju1z71g6OL4eEvELdran/3cs=
 github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
+github.com/ipfs-shipyard/gomobile-ipfs v1.0.0 h1:bl/iYfcatQcLOhQhBJbEjoJGFsbB3pRCjO2O7t/NOh0=
+github.com/ipfs-shipyard/gomobile-ipfs/go v0.0.0-20200318185423-f03925142896 h1:kTKBQj05eFwTYEcpf0AnmxNd4mn+SRcwl1T9yN7CY6U=
 github.com/ipfs/bbloom v0.0.1/go.mod h1:oqo8CVWsJFMOZqTglBG4wydCE4IQA/G2/SEofB0rjUI=
 github.com/ipfs/bbloom v0.0.4 h1:Gi+8EGJ2y5qiD5FbsbpX/TMNcJw8gSqr7eyjHa4Fhvs=
 github.com/ipfs/bbloom v0.0.4/go.mod h1:cS9YprKXpoZ9lT0n/Mw/a6/aFV6DTjTLYHeA+gyqMG0=
