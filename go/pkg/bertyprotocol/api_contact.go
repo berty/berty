@@ -7,7 +7,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func (c *client) ContactAliasKeySend(ctx context.Context, req *ContactAliasKeySend_Request) (*ContactAliasKeySend_Reply, error) {
+func (c *service) ContactAliasKeySend(ctx context.Context, req *ContactAliasKeySend_Request) (*ContactAliasKeySend_Reply, error) {
 	g, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrMissingGroup.Wrap(err)
@@ -20,7 +20,7 @@ func (c *client) ContactAliasKeySend(ctx context.Context, req *ContactAliasKeySe
 	return &ContactAliasKeySend_Reply{}, nil
 }
 
-func (c *client) ContactBlock(ctx context.Context, req *ContactBlock_Request) (*ContactBlock_Reply, error) {
+func (c *service) ContactBlock(ctx context.Context, req *ContactBlock_Request) (*ContactBlock_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
@@ -33,7 +33,7 @@ func (c *client) ContactBlock(ctx context.Context, req *ContactBlock_Request) (*
 	return &ContactBlock_Reply{}, nil
 }
 
-func (c *client) ContactUnblock(ctx context.Context, req *ContactUnblock_Request) (*ContactUnblock_Reply, error) {
+func (c *service) ContactUnblock(ctx context.Context, req *ContactUnblock_Request) (*ContactUnblock_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)

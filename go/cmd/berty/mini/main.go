@@ -62,7 +62,7 @@ func Main(opts *Opts) {
 	mk := bertyprotocol.NewDatastoreMessageKeys(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
 	ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
 
-	client, err := bertyprotocol.New(bertyprotocol.Opts{
+	svc, err := bertyprotocol.New(bertyprotocol.Opts{
 		IpfsCoreAPI:   api,
 		Account:       account.New(ks),
 		RootContext:   ctx,
@@ -72,6 +72,7 @@ func Main(opts *Opts) {
 		DBConstructor: orbitutil.NewBertyOrbitDB,
 	})
 
+	client, err := bertyprotocol.NewClient(svc)
 	if err != nil {
 		panic(err)
 	}

@@ -8,7 +8,7 @@ import (
 )
 
 // ContactRequestReference retrieves the necessary information to create a contact link
-func (c *client) ContactRequestReference(context.Context, *ContactRequestReference_Request) (*ContactRequestReference_Reply, error) {
+func (c *service) ContactRequestReference(context.Context, *ContactRequestReference_Request) (*ContactRequestReference_Reply, error) {
 	enabled, shareableContact := c.accContextGroup.MetadataStore().GetIncomingContactRequestsStatus()
 	ref := []byte(nil)
 
@@ -29,7 +29,7 @@ func (c *client) ContactRequestReference(context.Context, *ContactRequestReferen
 }
 
 // ContactRequestDisable disables incoming contact requests
-func (c *client) ContactRequestDisable(ctx context.Context, _ *ContactRequestDisable_Request) (*ContactRequestDisable_Reply, error) {
+func (c *service) ContactRequestDisable(ctx context.Context, _ *ContactRequestDisable_Request) (*ContactRequestDisable_Reply, error) {
 	if _, err := c.accContextGroup.MetadataStore().ContactRequestDisable(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -38,7 +38,7 @@ func (c *client) ContactRequestDisable(ctx context.Context, _ *ContactRequestDis
 }
 
 // ContactRequestEnable enables incoming contact requests
-func (c *client) ContactRequestEnable(ctx context.Context, _ *ContactRequestEnable_Request) (*ContactRequestEnable_Reply, error) {
+func (c *service) ContactRequestEnable(ctx context.Context, _ *ContactRequestEnable_Request) (*ContactRequestEnable_Reply, error) {
 	if _, err := c.accContextGroup.MetadataStore().ContactRequestEnable(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -62,7 +62,7 @@ func (c *client) ContactRequestEnable(ctx context.Context, _ *ContactRequestEnab
 }
 
 // ContactRequestResetReference generates a new contact request reference
-func (c *client) ContactRequestResetReference(ctx context.Context, _ *ContactRequestResetReference_Request) (*ContactRequestResetReference_Reply, error) {
+func (c *service) ContactRequestResetReference(ctx context.Context, _ *ContactRequestResetReference_Request) (*ContactRequestResetReference_Reply, error) {
 	if _, err := c.accContextGroup.MetadataStore().ContactRequestReferenceReset(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -86,7 +86,7 @@ func (c *client) ContactRequestResetReference(ctx context.Context, _ *ContactReq
 }
 
 // ContactRequestSend enqueues a new contact request to be sent
-func (c *client) ContactRequestSend(ctx context.Context, req *ContactRequestSend_Request) (*ContactRequestSend_Reply, error) {
+func (c *service) ContactRequestSend(ctx context.Context, req *ContactRequestSend_Request) (*ContactRequestSend_Reply, error) {
 	shareableContact := &ShareableContact{}
 	if err := shareableContact.Unmarshal(req.Reference); err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
@@ -112,7 +112,7 @@ func (c *client) ContactRequestSend(ctx context.Context, req *ContactRequestSend
 }
 
 // ContactRequestAccept accepts a contact request
-func (c *client) ContactRequestAccept(ctx context.Context, req *ContactRequestAccept_Request) (*ContactRequestAccept_Reply, error) {
+func (c *service) ContactRequestAccept(ctx context.Context, req *ContactRequestAccept_Request) (*ContactRequestAccept_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
@@ -130,7 +130,7 @@ func (c *client) ContactRequestAccept(ctx context.Context, req *ContactRequestAc
 }
 
 // ContactRequestDiscard ignores a contact request without informing the request sender
-func (c *client) ContactRequestDiscard(ctx context.Context, req *ContactRequestDiscard_Request) (*ContactRequestDiscard_Reply, error) {
+func (c *service) ContactRequestDiscard(ctx context.Context, req *ContactRequestDiscard_Request) (*ContactRequestDiscard_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)

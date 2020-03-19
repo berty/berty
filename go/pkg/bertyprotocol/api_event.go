@@ -5,7 +5,7 @@ import (
 )
 
 // GroupMetadataSubscribe subscribes to the metadata events for a group
-func (c *client) GroupMetadataSubscribe(req *GroupMetadataSubscribe_Request, sub ProtocolService_GroupMetadataSubscribeServer) error {
+func (c *service) GroupMetadataSubscribe(req *GroupMetadataSubscribe_Request, sub ProtocolService_GroupMetadataSubscribeServer) error {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
@@ -28,7 +28,7 @@ func (c *client) GroupMetadataSubscribe(req *GroupMetadataSubscribe_Request, sub
 }
 
 // GroupMessageSubscribe subscribes to the message events for a group
-func (c *client) GroupMessageSubscribe(req *GroupMessageSubscribe_Request, sub ProtocolService_GroupMessageSubscribeServer) error {
+func (c *service) GroupMessageSubscribe(req *GroupMessageSubscribe_Request, sub ProtocolService_GroupMessageSubscribeServer) error {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
@@ -50,7 +50,7 @@ func (c *client) GroupMessageSubscribe(req *GroupMessageSubscribe_Request, sub P
 	return nil
 }
 
-func (c *client) GroupMetadataList(req *GroupMetadataList_Request, sub ProtocolService_GroupMetadataListServer) error {
+func (c *service) GroupMetadataList(req *GroupMetadataList_Request, sub ProtocolService_GroupMetadataListServer) error {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
@@ -67,7 +67,7 @@ func (c *client) GroupMetadataList(req *GroupMetadataList_Request, sub ProtocolS
 	return nil
 }
 
-func (c *client) GroupMessageList(req *GroupMessageList_Request, sub ProtocolService_GroupMessageListServer) error {
+func (c *service) GroupMessageList(req *GroupMessageList_Request, sub ProtocolService_GroupMessageListServer) error {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)

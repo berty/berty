@@ -7,7 +7,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func (c *client) GroupInfo(_ context.Context, req *GroupInfo_Request) (*GroupInfo_Reply, error) {
+func (c *service) GroupInfo(_ context.Context, req *GroupInfo_Request) (*GroupInfo_Reply, error) {
 	var (
 		g   *Group
 		err error
@@ -59,7 +59,7 @@ func (c *client) GroupInfo(_ context.Context, req *GroupInfo_Request) (*GroupInf
 	}, nil
 }
 
-func (c *client) ActivateGroup(ctx context.Context, req *ActivateGroup_Request) (*ActivateGroup_Reply, error) {
+func (c *service) ActivateGroup(ctx context.Context, req *ActivateGroup_Request) (*ActivateGroup_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -72,7 +72,7 @@ func (c *client) ActivateGroup(ctx context.Context, req *ActivateGroup_Request) 
 	return &ActivateGroup_Reply{}, nil
 }
 
-func (c *client) DeactivateGroup(_ context.Context, req *DeactivateGroup_Request) (*DeactivateGroup_Reply, error) {
+func (c *service) DeactivateGroup(_ context.Context, req *DeactivateGroup_Request) (*DeactivateGroup_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)

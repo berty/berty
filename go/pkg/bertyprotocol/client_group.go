@@ -8,7 +8,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func (c *client) indexGroups() error {
+func (c *service) indexGroups() error {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
@@ -48,7 +48,7 @@ func (c *client) indexGroups() error {
 	return nil
 }
 
-func (c *client) getContactGroup(key crypto.PubKey) (*Group, error) {
+func (c *service) getContactGroup(key crypto.PubKey) (*Group, error) {
 	sk, err := c.account.ContactGroupPrivKey(key)
 	if err != nil {
 		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
@@ -62,7 +62,7 @@ func (c *client) getContactGroup(key crypto.PubKey) (*Group, error) {
 	return g, nil
 }
 
-func (c *client) getGroupForPK(pk crypto.PubKey) (*Group, error) {
+func (c *service) getGroupForPK(pk crypto.PubKey) (*Group, error) {
 	id, err := pk.Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -91,7 +91,7 @@ func (c *client) getGroupForPK(pk crypto.PubKey) (*Group, error) {
 	return nil, errcode.ErrMissingInput
 }
 
-func (c *client) deactivateGroup(pk crypto.PubKey) error {
+func (c *service) deactivateGroup(pk crypto.PubKey) error {
 	id, err := pk.Raw()
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
@@ -116,7 +116,7 @@ func (c *client) deactivateGroup(pk crypto.PubKey) error {
 	return nil
 }
 
-func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) (ContextGroup, error) {
+func (c *service) activateGroup(ctx context.Context, pk crypto.PubKey) (ContextGroup, error) {
 	id, err := pk.Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -159,7 +159,7 @@ func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) (ContextGr
 
 }
 
-func (c *client) getContextGroupForID(id []byte) (ContextGroup, error) {
+func (c *service) getContextGroupForID(id []byte) (ContextGroup, error) {
 	if len(id) == 0 {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("no group id provided"))
 	}

@@ -8,8 +8,8 @@ import (
 	"go.uber.org/zap"
 )
 
-// TestingClient returns a configured Client struct with in-memory contexts.
-func TestingClient(t *testing.T, opts Opts) (Client, func()) {
+// TestingService returns a configured Client struct with in-memory contexts.
+func TestingService(t *testing.T, opts Opts) (Service, func()) {
 	t.Helper()
 
 	ctx := opts.RootContext
@@ -40,4 +40,17 @@ func TestingClient(t *testing.T, opts Opts) (Client, func()) {
 	}
 
 	return client, cleanup
+}
+
+func TestingClient(t *testing.T, svc Service) (Client, func()) {
+	t.Helper()
+
+	client, err := NewClient(svc)
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+
+	return client, func() {
+		client.Close()
+	}
 }

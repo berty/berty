@@ -6,11 +6,11 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-func (c *client) InstanceExportData(context.Context, *InstanceExportData_Request) (*InstanceExportData_Reply, error) {
+func (c *service) InstanceExportData(context.Context, *InstanceExportData_Request) (*InstanceExportData_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
-func (c *client) InstanceGetConfiguration(ctx context.Context, req *InstanceGetConfiguration_Request) (*InstanceGetConfiguration_Reply, error) {
+func (c *service) InstanceGetConfiguration(ctx context.Context, req *InstanceGetConfiguration_Request) (*InstanceGetConfiguration_Reply, error) {
 	key, err := c.ipfsCoreAPI.Key().Self(ctx)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)

@@ -10,7 +10,7 @@ import (
 )
 
 // MultiMemberGroupCreate creates a new MultiMember group
-func (c *client) MultiMemberGroupCreate(ctx context.Context, req *MultiMemberGroupCreate_Request) (*MultiMemberGroupCreate_Reply, error) {
+func (c *service) MultiMemberGroupCreate(ctx context.Context, req *MultiMemberGroupCreate_Request) (*MultiMemberGroupCreate_Reply, error) {
 	g, sk, err := NewGroupMultiMember()
 	if err != nil {
 		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
@@ -46,7 +46,7 @@ func (c *client) MultiMemberGroupCreate(ctx context.Context, req *MultiMemberGro
 }
 
 // MultiMemberGroupJoin joins an existing MultiMember group using an invitation
-func (c *client) MultiMemberGroupJoin(ctx context.Context, req *MultiMemberGroupJoin_Request) (*MultiMemberGroupJoin_Reply, error) {
+func (c *service) MultiMemberGroupJoin(ctx context.Context, req *MultiMemberGroupJoin_Request) (*MultiMemberGroupJoin_Reply, error) {
 	_, err := c.accContextGroup.MetadataStore().GroupJoin(ctx, req.Group)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
@@ -56,7 +56,7 @@ func (c *client) MultiMemberGroupJoin(ctx context.Context, req *MultiMemberGroup
 }
 
 // MultiMemberGroupLeave leaves a previously joined MultiMember group
-func (c *client) MultiMemberGroupLeave(ctx context.Context, req *MultiMemberGroupLeave_Request) (*MultiMemberGroupLeave_Reply, error) {
+func (c *service) MultiMemberGroupLeave(ctx context.Context, req *MultiMemberGroupLeave_Request) (*MultiMemberGroupLeave_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
@@ -73,7 +73,7 @@ func (c *client) MultiMemberGroupLeave(ctx context.Context, req *MultiMemberGrou
 }
 
 // MultiMemberGroupAliasResolverDisclose sends an account identity proof to the group members
-func (c *client) MultiMemberGroupAliasResolverDisclose(ctx context.Context, req *MultiMemberGroupAliasResolverDisclose_Request) (*MultiMemberGroupAliasResolverDisclose_Reply, error) {
+func (c *service) MultiMemberGroupAliasResolverDisclose(ctx context.Context, req *MultiMemberGroupAliasResolverDisclose_Request) (*MultiMemberGroupAliasResolverDisclose_Reply, error) {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
@@ -88,12 +88,12 @@ func (c *client) MultiMemberGroupAliasResolverDisclose(ctx context.Context, req 
 }
 
 // MultiMemberGroupAdminRoleGrant grants admin role to another member of the group
-func (c *client) MultiMemberGroupAdminRoleGrant(context.Context, *MultiMemberGroupAdminRoleGrant_Request) (*MultiMemberGroupAdminRoleGrant_Reply, error) {
+func (c *service) MultiMemberGroupAdminRoleGrant(context.Context, *MultiMemberGroupAdminRoleGrant_Request) (*MultiMemberGroupAdminRoleGrant_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
 // MultiMemberGroupInvitationCreate creates a group invitation
-func (c *client) MultiMemberGroupInvitationCreate(ctx context.Context, req *MultiMemberGroupInvitationCreate_Request) (*MultiMemberGroupInvitationCreate_Reply, error) {
+func (c *service) MultiMemberGroupInvitationCreate(ctx context.Context, req *MultiMemberGroupInvitationCreate_Request) (*MultiMemberGroupInvitationCreate_Reply, error) {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrGroupMemberUnknownGroupID.Wrap(err)

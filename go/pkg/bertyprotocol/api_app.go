@@ -6,7 +6,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-func (c *client) AppMetadataSend(ctx context.Context, req *AppMetadataSend_Request) (*AppMetadataSend_Reply, error) {
+func (c *service) AppMetadataSend(ctx context.Context, req *AppMetadataSend_Request) (*AppMetadataSend_Reply, error) {
 	g, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrMissingGroup.Wrap(err)
@@ -19,7 +19,7 @@ func (c *client) AppMetadataSend(ctx context.Context, req *AppMetadataSend_Reque
 	return &AppMetadataSend_Reply{}, nil
 }
 
-func (c *client) AppMessageSend(ctx context.Context, req *AppMessageSend_Request) (*AppMessageSend_Reply, error) {
+func (c *service) AppMessageSend(ctx context.Context, req *AppMessageSend_Request) (*AppMessageSend_Reply, error) {
 	g, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrMissingGroup.Wrap(err)
