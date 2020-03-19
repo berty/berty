@@ -34,6 +34,7 @@ func TestProtocolBridge(t *testing.T) {
 	config.AddGRPCListener("/ip4/127.0.0.1/tcp/0/grpc")
 	config.AddGRPCListener("/ip4/127.0.0.1/tcp/0/grpcweb")
 	config.ipfsCoreAPI(coreAPI)
+	config.OrbitDBDirectory(":memory:")
 
 	protocol, err = newProtocolBridge(logger, config)
 	require.NoError(t, err)

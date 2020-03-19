@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net"
-	"sync"
 
 	"google.golang.org/grpc"
 )
@@ -13,7 +12,6 @@ type PipeListener struct {
 	cancel context.CancelFunc
 	ctx    context.Context
 	cconn  chan net.Conn
-	once   sync.Once
 }
 
 func NewPipeListener() *PipeListener {
@@ -21,25 +19,16 @@ func NewPipeListener() *PipeListener {
 	return &PipeListener{
 		cancel: cancel,
 		ctx:    ctx,
-		cconn:  make(chan net.Conn, 1),
-	}
-}
-
-// Add conn forward the given conn to the listener
-func (pl *PipeListener) AddConn(c net.Conn) {
-	select {
-	case <-pl.ctx.Done():
-	case pl.cconn <- c:
+		cconn:  make(chan net.Conn),
 	}
 }
 
 // NewClientConn return a grpc conn connected with the listener
 func (pl *PipeListener) NewClientConn(opts ...grpc.DialOption) (conn *grpc.ClientConn, err error) {
 	// create pipe dialer
-	dialer := func(context.Context, string) (net.Conn, error) {
+	dialer := func(ctx context.Context, _ string) (net.Conn, error) {
 		cclient, cserver := net.Pipe()
-		pl.AddConn(cserver)
-		return cclient, nil
+		return cclient, pl.addConn(ctx, cserver)
 	}
 
 	baseOpts := []grpc.DialOption{
@@ -50,25 +39,39 @@ func (pl *PipeListener) NewClientConn(opts ...grpc.DialOption) (conn *grpc.Clien
 	return
 }
 
+// Add conn forward the given conn to the listener
+func (pl *PipeListener) addConn(ctx context.Context, c net.Conn) error {
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-pl.ctx.Done():
+		return fmt.Errorf("pipe listener has been closed")
+	case pl.cconn <- c:
+		return nil
+	}
+}
+
 // Listener
 var _ net.Listener = (*PipeListener)(nil)
 
 func (pl *PipeListener) Addr() net.Addr { return pl }
 func (pl *PipeListener) Accept() (net.Conn, error) {
+	var conn net.Conn
+
 	select {
-	case conn := <-pl.cconn:
-		if conn != nil {
-			return conn, nil
-		}
+	case conn = <-pl.cconn:
 	case <-pl.ctx.Done():
 		return nil, pl.ctx.Err()
 	}
 
-	return nil, fmt.Errorf("pipe listener is closing")
+	if conn == nil {
+		return nil, fmt.Errorf("pipe listener is closing")
+	}
+
+	return conn, nil
 }
 func (pl *PipeListener) Close() error {
 	pl.cancel()
-	pl.once.Do(func() { close(pl.cconn) })
 	return nil
 }
 

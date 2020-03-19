@@ -15,7 +15,7 @@ import (
 )
 
 func TestTestingClient_impl(t *testing.T) {
-	client, cleanup := bertyprotocol.TestingClient(t, bertyprotocol.Opts{
+	service, cleanup := bertyprotocol.TestingService(t, bertyprotocol.Opts{
 		Logger:        zap.NewNop(),
 		Account:       account.New(keystore.NewMemKeystore()),
 		MessageKeys:   bertyprotocol.NewInMemoryMessageKeys(),
@@ -23,9 +23,14 @@ func TestTestingClient_impl(t *testing.T) {
 	})
 	defer cleanup()
 
+	client, cleanup := bertyprotocol.TestingClient(t, service)
+	defer cleanup()
+
 	// test service
-	_, _ = client.InstanceGetConfiguration(context.Background(), &bertytypes.InstanceGetConfiguration_Request{})
-	status := client.Status()
+	_, err := client.InstanceGetConfiguration(context.Background(), &bertytypes.InstanceGetConfiguration_Request{})
+	assert.NoError(t, err)
+
+	status := service.Status()
 	expected := bertyprotocol.Status{}
 	assert.Equal(t, expected, status)
 }

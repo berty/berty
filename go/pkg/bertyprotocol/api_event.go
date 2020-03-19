@@ -6,7 +6,7 @@ import (
 )
 
 // GroupMetadataSubscribe subscribes to the metadata events for a group
-func (c *client) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_Request, sub ProtocolService_GroupMetadataSubscribeServer) error {
+func (c *service) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_Request, sub ProtocolService_GroupMetadataSubscribeServer) error {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
@@ -29,7 +29,7 @@ func (c *client) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_R
 }
 
 // GroupMessageSubscribe subscribes to the message events for a group
-func (c *client) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Request, sub ProtocolService_GroupMessageSubscribeServer) error {
+func (c *service) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Request, sub ProtocolService_GroupMessageSubscribeServer) error {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
@@ -51,7 +51,7 @@ func (c *client) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Req
 	return nil
 }
 
-func (c *client) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, sub ProtocolService_GroupMetadataListServer) error {
+func (c *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, sub ProtocolService_GroupMetadataListServer) error {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
@@ -68,7 +68,7 @@ func (c *client) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, su
 	return nil
 }
 
-func (c *client) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub ProtocolService_GroupMessageListServer) error {
+func (c *service) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub ProtocolService_GroupMessageListServer) error {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)

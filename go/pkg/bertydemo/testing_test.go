@@ -1,17 +1,16 @@
 package bertydemo
 
 import (
-	"context"
+	context "context"
 	"testing"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"google.golang.org/grpc"
+	"github.com/stretchr/testify/require"
 )
 
 type cleanFunc func()
 
-func testingInMemoryClient(t *testing.T) (*Client, ipfsutil.CoreAPIMock, cleanFunc) {
+func testingInMemoryService(t *testing.T) (*Service, ipfsutil.CoreAPIMock, cleanFunc) {
 	t.Helper()
 
 	ctx := context.Background()
@@ -32,22 +31,13 @@ func testingInMemoryClient(t *testing.T) (*Client, ipfsutil.CoreAPIMock, cleanFu
 	}
 }
 
-func testingClientService(t *testing.T, srv DemoServiceServer) (DemoServiceClient, cleanFunc) {
+func testingClient(t *testing.T, svc *Service) (Client, cleanFunc) {
 	t.Helper()
 
-	listener := grpcutil.NewPipeListener()
+	client, err := NewClient(svc)
+	require.NoError(t, err)
 
-	server := grpc.NewServer()
-	RegisterDemoServiceServer(server, srv)
-
-	conn, err := listener.NewClientConn(grpc.WithInsecure())
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	go server.Serve(listener)
-
-	return NewDemoServiceClient(conn), func() {
-		listener.Close()
+	return client, func() {
+		client.Close()
 	}
 }

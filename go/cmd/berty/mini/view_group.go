@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"io"
 	"strings"
 	"time"
 
@@ -92,48 +93,6 @@ func (f *fakeServerStream) RecvMsg(m interface{}) error {
 
 var _ grpc.ServerStream = (*fakeServerStream)(nil)
 
-type protocolServiceGroupMessage struct {
-	*fakeServerStream
-	ch chan *bertytypes.GroupMessageEvent
-}
-
-func (x *protocolServiceGroupMessage) Send(m *bertytypes.GroupMessageEvent) error {
-	x.ch <- m
-	return nil
-}
-
-func newProtocolServiceGroupMessage(ctx context.Context) (chan *bertytypes.GroupMessageEvent, *protocolServiceGroupMessage) {
-	ch := make(chan *bertytypes.GroupMessageEvent)
-
-	return ch, &protocolServiceGroupMessage{
-		fakeServerStream: &fakeServerStream{
-			context: ctx,
-		},
-		ch: ch,
-	}
-}
-
-type protocolServiceGroupMetadata struct {
-	*fakeServerStream
-	ch chan *bertytypes.GroupMetadataEvent
-}
-
-func (x *protocolServiceGroupMetadata) Send(m *bertytypes.GroupMetadataEvent) error {
-	x.ch <- m
-	return nil
-}
-
-func newProtocolServiceGroupMetadata(ctx context.Context) (chan *bertytypes.GroupMetadataEvent, *protocolServiceGroupMetadata) {
-	ch := make(chan *bertytypes.GroupMetadataEvent)
-
-	return ch, &protocolServiceGroupMetadata{
-		fakeServerStream: &fakeServerStream{
-			context: ctx,
-		},
-		ch: ch,
-	}
-}
-
 func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK []byte) *groupView {
 	return &groupView{
 		memberPK:     memberPK,
@@ -153,74 +112,94 @@ func (v *groupView) loop(ctx context.Context) {
 		}
 	}()
 
-	// Replay message history
-	msgs, srvListMessages := newProtocolServiceGroupMessage(ctx)
-	go func() {
-		for evt := range msgs {
-			v.messages.Prepend(&historyMessage{
-				messageType: messageTypeMessage,
-				payload:     evt.Message,
-				sender:      evt.Headers.DevicePK,
-			}, time.Time{})
+	// list group message events
+	{
+		var evt *bertytypes.GroupMessageEvent
+
+		req := &bertytypes.GroupMessageList_Request{GroupPK: v.g.PublicKey}
+		cl, err := v.v.client.GroupMessageList(ctx, req)
+		for err == nil {
+			if evt, err = cl.Recv(); err == nil {
+				v.messages.Prepend(&historyMessage{
+					messageType: messageTypeMessage,
+					payload:     evt.Message,
+					sender:      evt.Headers.DevicePK,
+				}, time.Time{})
+			}
 		}
-	}()
 
-	if err := v.v.client.GroupMessageList(&bertytypes.GroupMessageList_Request{GroupPK: v.g.PublicKey}, srvListMessages); err != nil {
-		panic(err)
-	}
-	close(msgs)
-
-	metas, srvListMetadatas := newProtocolServiceGroupMetadata(ctx)
-	go func() {
-		// List existing members of the group
-		for e := range metas {
-			// _ = e
-			metadataEventHandler(ctx, v, e, true)
+		if err != io.EOF {
+			panic(err)
 		}
-	}()
-
-	if err := v.v.client.GroupMetadataList(&bertytypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey}, srvListMetadatas); err != nil {
-		panic(err)
 	}
-	close(metas)
 
-	// Watch for incoming new messages
-	go func() {
-		msgs, srvListMessages := newProtocolServiceGroupMessage(ctx)
+	// list group metadata events
+	{
+		var evt *bertytypes.GroupMetadataEvent
+
+		req := &bertytypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey}
+		cl, err := v.v.client.GroupMetadataList(ctx, req)
+		for err == nil {
+			if evt, err = cl.Recv(); err == nil {
+				metadataEventHandler(ctx, v, evt, true)
+			}
+		}
+
+		if err != io.EOF {
+			panic(err)
+		}
+	}
+
+	// subscribe to group message events
+	{
+		var evt *bertytypes.GroupMessageEvent
+
+		req := &bertytypes.GroupMessageSubscribe_Request{GroupPK: v.g.PublicKey}
+		cl, err := v.v.client.GroupMessageSubscribe(ctx, req)
+		if err != nil {
+			panic(err)
+		}
+
 		go func() {
-			for evt := range msgs {
+			for {
+				evt, err = cl.Recv()
+				if err != nil {
+					// @TODO: Log this
+					return
+				}
+
 				v.messages.Append(&historyMessage{
 					messageType: messageTypeMessage,
 					payload:     evt.Message,
 					sender:      evt.Headers.DevicePK,
 				})
+
 			}
 		}()
+	}
 
-		err := v.v.client.GroupMessageSubscribe(&bertytypes.GroupMessageSubscribe_Request{GroupPK: v.g.PublicKey}, srvListMessages)
+	// subscribe to group metadata events
+	{
+		var evt *bertytypes.GroupMetadataEvent
+
+		req := &bertytypes.GroupMetadataSubscribe_Request{GroupPK: v.g.PublicKey}
+		cl, err := v.v.client.GroupMetadataSubscribe(ctx, req)
 		if err != nil {
 			panic(err)
 		}
 
-		close(msgs)
-	}()
-
-	// Watch for new incoming metadata
-	go func() {
-		metas, srvListMetadatas := newProtocolServiceGroupMetadata(ctx)
 		go func() {
-			for e := range metas {
-				metadataEventHandler(ctx, v, e, false)
+			for {
+				evt, err = cl.Recv()
+				if err != nil {
+					// @TODO: Log this
+					return
+				}
+
+				metadataEventHandler(ctx, v, evt, false)
 			}
 		}()
-
-		err := v.v.client.GroupMetadataSubscribe(&bertytypes.GroupMetadataSubscribe_Request{GroupPK: v.g.PublicKey}, srvListMetadatas)
-		if err != nil {
-			panic(err)
-		}
-
-		close(metas)
-	}()
+	}
 }
 
 func (v *groupView) welcomeEventDisplay(ctx context.Context) {

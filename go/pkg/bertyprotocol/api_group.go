@@ -8,7 +8,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func (c *client) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request) (*bertytypes.GroupInfo_Reply, error) {
+func (c *service) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request) (*bertytypes.GroupInfo_Reply, error) {
 	var (
 		g   *bertytypes.Group
 		err error
@@ -60,7 +60,7 @@ func (c *client) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request)
 	}, nil
 }
 
-func (c *client) ActivateGroup(ctx context.Context, req *bertytypes.ActivateGroup_Request) (*bertytypes.ActivateGroup_Reply, error) {
+func (c *service) ActivateGroup(ctx context.Context, req *bertytypes.ActivateGroup_Request) (*bertytypes.ActivateGroup_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -73,7 +73,7 @@ func (c *client) ActivateGroup(ctx context.Context, req *bertytypes.ActivateGrou
 	return &bertytypes.ActivateGroup_Reply{}, nil
 }
 
-func (c *client) DeactivateGroup(_ context.Context, req *bertytypes.DeactivateGroup_Request) (*bertytypes.DeactivateGroup_Reply, error) {
+func (c *service) DeactivateGroup(_ context.Context, req *bertytypes.DeactivateGroup_Request) (*bertytypes.DeactivateGroup_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
