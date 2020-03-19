@@ -72,6 +72,7 @@ enum ErrCode {
 
   ErrGroupInvitationCantGenerate = 1033;
   ErrGroupInvalidType = 1034;
+  ErrMissingGroup = 1035;
 
   ErrSecretKeyGenerationFailed = 1050;
 

@@ -3,8 +3,6 @@ package orbitutil
 import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 
-	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/bertycrypto"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
@@ -12,27 +10,27 @@ type contextGroup struct {
 	group         *bertyprotocol.Group
 	metadataStore *MetadataStoreImpl
 	messageStore  *MessageStoreImpl
-	messageKeys   bertycrypto.MessageKeys
-	memberDevice  *account.OwnMemberDevice
+	messageKeys   bertyprotocol.MessageKeys
+	memberDevice  *bertyprotocol.OwnMemberDevice
 }
 
-func (c *contextGroup) getMessageKeys() bertycrypto.MessageKeys {
+func (c *contextGroup) GetMessageKeys() bertyprotocol.MessageKeys {
 	return c.messageKeys
 }
 
-func (c *contextGroup) getDevicePrivKey() crypto.PrivKey {
+func (c *contextGroup) GetDevicePrivKey() crypto.PrivKey {
 	return c.memberDevice.Device
 }
 
-func (c *contextGroup) getMemberPrivKey() crypto.PrivKey {
+func (c *contextGroup) GetMemberPrivKey() crypto.PrivKey {
 	return c.memberDevice.Member
 }
 
-func (c *contextGroup) MessageStore() MessageStore {
+func (c *contextGroup) MessageStore() bertyprotocol.MessageStore {
 	return c.messageStore
 }
 
-func (c *contextGroup) MetadataStore() MetadataStore {
+func (c *contextGroup) MetadataStore() bertyprotocol.MetadataStore {
 	return c.metadataStore
 }
 
@@ -55,7 +53,7 @@ func (c *contextGroup) Close() error {
 	return nil
 }
 
-func NewContextGroup(group *bertyprotocol.Group, metadataStore *MetadataStoreImpl, messageStore *MessageStoreImpl, messageKeys bertycrypto.MessageKeys, memberDevice *account.OwnMemberDevice) ContextGroup {
+func NewContextGroup(group *bertyprotocol.Group, metadataStore *MetadataStoreImpl, messageStore *MessageStoreImpl, messageKeys bertyprotocol.MessageKeys, memberDevice *bertyprotocol.OwnMemberDevice) bertyprotocol.ContextGroup {
 	return &contextGroup{
 		group:         group,
 		metadataStore: metadataStore,

@@ -6,10 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/pkg/errors"
-
-	"berty.tech/berty/go/internal/orbitutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
@@ -19,22 +15,14 @@ func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *bertyprotoc
 		return err
 	}
 
-	cg, err := v.v.odb.OpenMultiMemberGroup(ctx, casted.Group, nil)
-	if err != nil {
-		return errors.Wrap(err, "Can't open group")
-	}
-
-	if err := orbitutil.ActivateGroupContext(v.v.ctx, cg); err != nil {
-		return errors.Wrap(err, "Can't activate group")
-	}
-
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte(fmt.Sprintf("joined a group")),
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
-	v.v.AddContextGroup(cg)
+	v.v.AddContextGroup(ctx, casted.Group)
+	v.v.recomputeChannelList(false)
 
 	return nil
 }
@@ -75,27 +63,22 @@ func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView,
 		return err
 	}
 
-	pk, err := crypto.UnmarshalEd25519PublicKey(casted.ContactPK)
-	if err != nil {
-		return errors.Wrap(err, "Can't open contact group")
-	}
-
-	cg, err := v.v.odb.OpenContactGroup(ctx, pk, nil)
-	if err != nil {
-		return errors.Wrap(err, "Can't open contact group")
-	}
-
-	if err := orbitutil.ActivateGroupContext(v.v.ctx, cg); err != nil {
-		return errors.Wrap(err, "Can't activate contact group")
-	}
-
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte("outgoing contact request sent"),
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
-	v.v.AddContextGroup(cg)
+	gInfo, err := v.v.client.GroupInfo(ctx, &bertyprotocol.GroupInfo_Request{
+		ContactPK: casted.ContactPK,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	v.v.AddContextGroup(ctx, gInfo.Group)
+	v.v.recomputeChannelList(true)
 
 	return nil
 }
@@ -223,27 +206,22 @@ func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupV
 		return err
 	}
 
-	pk, err := crypto.UnmarshalEd25519PublicKey(casted.ContactPK)
-	if err != nil {
-		return errors.Wrap(err, "Can't open contact group")
-	}
-
-	cg, err := v.v.odb.OpenContactGroup(ctx, pk, nil)
-	if err != nil {
-		return errors.Wrap(err, "Can't open contact group")
-	}
-
-	if err := orbitutil.ActivateGroupContext(v.v.ctx, cg); err != nil {
-		return errors.Wrap(err, "Can't activate contact group")
-	}
-
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte("incoming contact request accepted"),
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
-	v.v.AddContextGroup(cg)
+	gInfo, err := v.v.client.GroupInfo(ctx, &bertyprotocol.GroupInfo_Request{
+		ContactPK: casted.ContactPK,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	v.v.AddContextGroup(ctx, gInfo.Group)
+	v.v.recomputeChannelList(false)
 
 	return nil
 }
@@ -278,7 +256,7 @@ func metadataEventHandler(ctx context.Context, v *groupView, e *bertyprotocol.Gr
 	}
 
 	if err := action(ctx, v, e, isHistory); err != nil {
-		v.messages.AppendErr(errors.Wrap(err, "error while handling metadata event"))
+		v.messages.AppendErr(fmt.Errorf("error while handling metadata event (type: %s): %w", e.Metadata.EventType.String(), err))
 	}
 }
 

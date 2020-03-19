@@ -12,8 +12,6 @@ import (
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 
-	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/bertycrypto"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 
@@ -25,8 +23,8 @@ const GroupMessageStoreType = "berty_group_messages"
 type MessageStoreImpl struct {
 	basestore.BaseStore
 
-	acc *account.Account
-	mk  bertycrypto.MessageKeys
+	acc bertyprotocol.AccountKeys
+	mk  bertyprotocol.MessageKeys
 	g   *bertyprotocol.Group
 }
 
@@ -41,7 +39,7 @@ func (m *MessageStoreImpl) openMessage(ctx context.Context, e ipfslog.Entry) (*b
 		return nil, err
 	}
 
-	headers, payload, decryptInfo, err := bertycrypto.OpenEnvelope(ctx, m.mk, m.g, op.GetValue(), e.GetHash())
+	headers, payload, decryptInfo, err := bertyprotocol.OpenEnvelope(ctx, m.mk, m.g, op.GetValue(), e.GetHash())
 	if err != nil {
 		// TODO: log
 		return nil, err
@@ -59,7 +57,7 @@ func (m *MessageStoreImpl) openMessage(ctx context.Context, e ipfslog.Entry) (*b
 		ownPK = md.Device.GetPublic()
 	}
 
-	if inErr = bertycrypto.PostDecryptActions(ctx, m.mk, decryptInfo, m.g, ownPK, headers); inErr != nil {
+	if inErr = bertyprotocol.PostDecryptActions(ctx, m.mk, decryptInfo, m.g, ownPK, headers); inErr != nil {
 		err = errcode.ErrSecretKeyGenerationFailed.Wrap(err)
 	}
 
@@ -102,7 +100,7 @@ func (m *MessageStoreImpl) AddMessage(ctx context.Context, payload []byte) (oper
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := bertycrypto.SealEnvelope(ctx, m.mk, m.g, md.Device, payload)
+	env, err := bertyprotocol.SealEnvelope(ctx, m.mk, m.g, md.Device, payload)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}
@@ -171,4 +169,4 @@ func ConstructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
 	}
 }
 
-var _ MessageStore = (*MessageStoreImpl)(nil)
+var _ bertyprotocol.MessageStore = (*MessageStoreImpl)(nil)

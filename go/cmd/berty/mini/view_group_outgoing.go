@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
 
 	"berty.tech/berty/go/pkg/bertyprotocol"
@@ -40,11 +39,11 @@ func commandList() []*command {
 			help:  "Creates joins an existing group, a group invite must be supplied",
 			cmd:   groupJoinCommand,
 		},
-		{
-			title: "contact received",
-			help:  "Fakes an incoming contact request, a shareable contact must be supplied",
-			cmd:   contactReceivedCommand,
-		},
+		// {
+		// 	title: "contact received",
+		// 	help:  "Fakes an incoming contact request, a shareable contact must be supplied",
+		// 	cmd:   contactReceivedCommand,
+		// },
 		{
 			title: "contact accept",
 			help:  "Accepts a contact requests, a contact id must be supplied",
@@ -107,7 +106,9 @@ func commandList() []*command {
 // }
 
 func aliasSendCommand(ctx context.Context, v *groupView, cmd string) error {
-	if _, err := v.cg.MetadataStore().ContactSendAliasKey(ctx); err != nil {
+	if _, err := v.v.client.ContactAliasKeySend(ctx, &bertyprotocol.ContactAliasKeySend_Request{
+		GroupPK: v.g.PublicKey,
+	}); err != nil {
 		return err
 	}
 
@@ -115,11 +116,11 @@ func aliasSendCommand(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func groupInviteCommand(ctx context.Context, v *groupView, _ string) error {
-	if v.cg.Group().GroupType != bertyprotocol.GroupTypeMultiMember {
+	if v.g.GroupType != bertyprotocol.GroupTypeMultiMember {
 		return errors.New("unsupported group type")
 	}
 
-	protoBytes, err := v.cg.Group().Marshal()
+	protoBytes, err := v.g.Marshal()
 	if err != nil {
 		return err
 	}
@@ -164,28 +165,28 @@ func newSlashMessageCommand(ctx context.Context, v *groupView, cmd string) error
 	return newMessageCommand(ctx, v, strings.TrimPrefix(cmd, "/"))
 }
 
-func contactReceivedCommand(ctx context.Context, v *groupView, cmd string) error {
-	contactBytes, err := base64.StdEncoding.DecodeString(cmd)
-	if err != nil {
-		return err
-	}
-
-	contact := &bertyprotocol.ShareableContact{}
-	if err := contact.Unmarshal(contactBytes); err != nil {
-		return err
-	}
-
-	_, err = crypto.UnmarshalEd25519PublicKey(contact.PK)
-	if err != nil {
-		return err
-	}
-
-	if _, err = v.cg.MetadataStore().ContactRequestIncomingReceived(ctx, contact); err != nil {
-		return err
-	}
-
-	return nil
-}
+// func contactReceivedCommand(ctx context.Context, v *groupView, cmd string) error {
+// 	contactBytes, err := base64.StdEncoding.DecodeString(cmd)
+// 	if err != nil {
+// 		return err
+// 	}
+//
+// 	contact := &bertyprotocol.ShareableContact{}
+// 	if err := contact.Unmarshal(contactBytes); err != nil {
+// 		return err
+// 	}
+//
+// 	_, err = crypto.UnmarshalEd25519PublicKey(contact.PK)
+// 	if err != nil {
+// 		return err
+// 	}
+//
+// 	if _, err = v.cg.MetadataStore().ContactRequestIncomingReceived(ctx, contact); err != nil {
+// 		return err
+// 	}
+//
+// 	return nil
+// }
 
 func contactAcceptCommand(ctx context.Context, v *groupView, cmd string) error {
 	pkBytes, err := base64.StdEncoding.DecodeString(cmd)
@@ -193,12 +194,9 @@ func contactAcceptCommand(ctx context.Context, v *groupView, cmd string) error {
 		return err
 	}
 
-	pk, err := crypto.UnmarshalEd25519PublicKey(pkBytes)
-	if err != nil {
-		return err
-	}
-
-	if _, err = v.cg.MetadataStore().ContactRequestIncomingAccept(ctx, pk); err != nil {
+	if _, err = v.v.client.ContactRequestAccept(ctx, &bertyprotocol.ContactRequestAccept_Request{
+		ContactPK: pkBytes,
+	}); err != nil {
 		return err
 	}
 
@@ -211,12 +209,9 @@ func contactDiscardCommand(ctx context.Context, v *groupView, cmd string) error 
 		return err
 	}
 
-	pk, err := crypto.UnmarshalEd25519PublicKey(pkBytes)
-	if err != nil {
-		return err
-	}
-
-	if _, err = v.cg.MetadataStore().ContactRequestIncomingDiscard(ctx, pk); err != nil {
+	if _, err = v.v.client.ContactRequestDiscard(ctx, &bertyprotocol.ContactRequestDiscard_Request{
+		ContactPK: pkBytes,
+	}); err != nil {
 		return err
 	}
 
@@ -229,31 +224,17 @@ func groupJoinCommand(ctx context.Context, v *groupView, cmd string) error {
 		return errors.Wrap(err, "Can't join group")
 	}
 
-	_, err = v.cg.MetadataStore().GroupJoin(ctx, g)
+	_, err = v.v.client.MultiMemberGroupJoin(ctx, &bertyprotocol.MultiMemberGroupJoin_Request{
+		Group: g,
+	})
 
 	return err
 }
 
 func groupNewCommand(ctx context.Context, v *groupView, _ string) error {
-	g, sk, err := bertyprotocol.NewGroupMultiMember()
-	if err != nil {
-		return errors.Wrap(err, "Can't create group")
-	}
+	_, err := v.v.client.MultiMemberGroupCreate(ctx, &bertyprotocol.MultiMemberGroupCreate_Request{})
 
-	if _, err = v.cg.MetadataStore().GroupJoin(ctx, g); err != nil {
-		return errors.Wrap(err, "Can't create group")
-	}
-
-	cg, err := v.v.odb.OpenMultiMemberGroup(ctx, g, nil)
-	if err != nil {
-		return errors.Wrap(err, "Can't open group")
-	}
-
-	if _, err = cg.MetadataStore().ClaimGroupOwnership(ctx, sk); err != nil {
-		return errors.Wrap(err, "Can't claim group ownership")
-	}
-
-	return nil
+	return err
 }
 
 func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error {
@@ -267,21 +248,11 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 		return err
 	}
 
-	pk, err := crypto.UnmarshalEd25519PublicKey(contact.PK)
-	if err != nil {
-		return err
-	}
+	_, err = v.v.client.ContactRequestSend(ctx, &bertyprotocol.ContactRequestSend_Request{
+		Reference: contactBytes,
+	})
 
-	if _, err = v.cg.MetadataStore().ContactRequestOutgoingEnqueue(ctx, contact); err != nil {
-		return err
-	}
-
-	// TODO: remove, and replace with real handshake + request, this used to fake contact requests for now
-	if _, err = v.cg.MetadataStore().ContactRequestOutgoingSent(ctx, pk); err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
@@ -289,15 +260,22 @@ func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 		return nil
 	}
 
-	if _, err := v.cg.MessageStore().AddMessage(ctx, []byte(cmd)); err != nil {
-		return errors.Wrap(err, "Can't send message")
-	}
+	_, err := v.v.client.AppMessageSend(ctx, &bertyprotocol.AppMessageSend_Request{
+		GroupPK: v.g.PublicKey,
+		Payload: []byte(cmd),
+	})
 
-	return nil
+	return err
 }
 
 func contactShareCommand(ctx context.Context, v *groupView, cmd string) error {
-	enabled, shareableContact := v.cg.MetadataStore().GetIncomingContactRequestsStatus()
+	res, err := v.v.client.ContactRequestReference(ctx, &bertyprotocol.ContactRequestReference_Request{})
+	if err != nil {
+		return err
+	}
+
+	enabled, shareableContact := res.Enabled, res.Reference
+
 	if enabled {
 		if shareableContact == nil {
 			v.syncMessages <- &historyMessage{
@@ -306,14 +284,9 @@ func contactShareCommand(ctx context.Context, v *groupView, cmd string) error {
 			}
 
 		} else {
-			contactBytes, err := shareableContact.Marshal()
-			if err != nil {
-				return err
-			}
-
 			v.syncMessages <- &historyMessage{
 				messageType: messageTypeMeta,
-				payload:     []byte(fmt.Sprintf("shareable contact: %s", base64.StdEncoding.EncodeToString(contactBytes))),
+				payload:     []byte(fmt.Sprintf("shareable contact: %s", base64.StdEncoding.EncodeToString(shareableContact))),
 			}
 		}
 	} else {
@@ -327,25 +300,19 @@ func contactShareCommand(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func contactRequestsOnCommand(ctx context.Context, v *groupView, cmd string) error {
-	if _, err := v.cg.MetadataStore().ContactRequestEnable(ctx); err != nil {
-		return err
-	}
+	_, err := v.v.client.ContactRequestEnable(ctx, &bertyprotocol.ContactRequestEnable_Request{})
 
-	return nil
+	return err
 }
 
 func contactRequestsOffCommand(ctx context.Context, v *groupView, cmd string) error {
-	if _, err := v.cg.MetadataStore().ContactRequestDisable(ctx); err != nil {
-		return err
-	}
+	_, err := v.v.client.ContactRequestDisable(ctx, &bertyprotocol.ContactRequestDisable_Request{})
 
-	return nil
+	return err
 }
 
 func contactRequestsReferenceResetCommand(ctx context.Context, v *groupView, cmd string) error {
-	if _, err := v.cg.MetadataStore().ContactRequestReferenceReset(ctx); err != nil {
-		return err
-	}
+	_, err := v.v.client.ContactRequestResetReference(ctx, &bertyprotocol.ContactRequestResetReference_Request{})
 
-	return nil
+	return err
 }

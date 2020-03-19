@@ -36,8 +36,8 @@ func TestMetadataStoreSecret_Basic(t *testing.T) {
 	msA := peers[0].GC.MetadataStore()
 	msB := peers[1].GC.MetadataStore()
 
-	go WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[0].GC)
-	go WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[1].GC)
+	go bertyprotocol.WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[0].GC)
+	go bertyprotocol.WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[1].GC)
 	go WaitForBertyEventType(ctx, t, msA, bertyprotocol.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
 	go WaitForBertyEventType(ctx, t, msB, bertyprotocol.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
 	InviteAllPeersToGroup(ctx, t, peers, groupSK)
@@ -236,8 +236,8 @@ func TestMetadataContactLifecycle(t *testing.T) {
 
 	var (
 		err      error
-		meta     = make([]MetadataStore, peersCount)
-		ownCG    = make([]ContextGroup, peersCount)
+		meta     = make([]bertyprotocol.MetadataStore, peersCount)
+		ownCG    = make([]bertyprotocol.ContextGroup, peersCount)
 		contacts = make([]*bertyprotocol.ShareableContact, peersCount)
 	)
 
@@ -496,7 +496,13 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	_, err := peers[0].GC.MetadataStore().ContactSendAliasKey(ctx)
 	require.Error(t, err)
 
-	cg0, err := peers[0].DB.OpenContactGroup(ctx, peers[1].GC.MemberPubKey(), nil)
+	sk, err := peers[0].Acc.ContactGroupPrivKey(peers[1].GC.MemberPubKey())
+	require.NoError(t, err)
+
+	g, err := bertyprotocol.GetGroupForContact(sk)
+	require.NoError(t, err)
+
+	cg0, err := peers[0].DB.OpenGroup(ctx, g, nil)
 	require.NoError(t, err)
 
 	require.False(t, cg0.MetadataStore().Index().(*metadataStoreIndex).ownAliasKeySent)
@@ -510,7 +516,13 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	require.Empty(t, cg0.MetadataStore().Index().(*metadataStoreIndex).otherAliasKey)
 	require.True(t, cg0.MetadataStore().Index().(*metadataStoreIndex).ownAliasKeySent)
 
-	cg1, err := peers[1].DB.OpenContactGroup(ctx, peers[0].GC.MemberPubKey(), nil)
+	sk, err = peers[1].Acc.ContactGroupPrivKey(peers[0].GC.MemberPubKey())
+	require.NoError(t, err)
+
+	g, err = bertyprotocol.GetGroupForContact(sk)
+	require.NoError(t, err)
+
+	cg1, err := peers[1].DB.OpenGroup(ctx, g, nil)
 	require.NoError(t, err)
 
 	_ = cg1

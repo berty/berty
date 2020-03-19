@@ -1,20 +1,20 @@
 package mini
 
 import (
+	"bytes"
 	"context"
 	"sync"
 
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 
-	"berty.tech/berty/go/internal/orbitutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 type tabbedGroupsView struct {
 	ctx                    context.Context
 	app                    *tview.Application
-	odb                    orbitutil.BertyOrbitDB
+	client                 bertyprotocol.Client
 	topics                 *tview.Table
 	activeViewContainer    *tview.Flex
 	selectedGroupView      *groupView
@@ -49,13 +49,13 @@ func (v *tabbedGroupsView) getChannelViewGroups() []*groupView {
 
 func (v *tabbedGroupsView) getChannelLabels() []string {
 	topics := []string{"Account"}
-	topics = append(topics, pkAsShortID(v.accountGroupView.cg.Group().PublicKey))
+	topics = append(topics, pkAsShortID(v.accountGroupView.g.PublicKey))
 
 	if len(v.contactGroupViews) > 0 {
 		topics = append(topics, "Contacts")
 
 		for _, cg := range v.contactGroupViews {
-			topics = append(topics, pkAsShortID(cg.cg.Group().PublicKey))
+			topics = append(topics, pkAsShortID(cg.g.PublicKey))
 		}
 	}
 
@@ -63,7 +63,7 @@ func (v *tabbedGroupsView) getChannelLabels() []string {
 		topics = append(topics, "Groups")
 
 		for _, cg := range v.multiMembersGroupViews {
-			topics = append(topics, pkAsShortID(cg.cg.Group().PublicKey))
+			topics = append(topics, pkAsShortID(cg.g.PublicKey))
 		}
 	}
 
@@ -94,39 +94,50 @@ func (v *tabbedGroupsView) recomputeChannelList(viewChanged bool) {
 	}
 }
 
-func (v *tabbedGroupsView) AddContextGroup(cg orbitutil.ContextGroup) {
+func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertyprotocol.Group) {
 	v.lock.Lock()
+	defer v.lock.Unlock()
 
-	if cg.Group().GroupType == bertyprotocol.GroupTypeContact {
+	// Check if group already opened
+	if g.GroupType == bertyprotocol.GroupTypeContact {
 		for _, vg := range v.contactGroupViews {
-			if vg.cg.Group() == cg.Group() {
+			if bytes.Compare(vg.g.PublicKey, g.PublicKey) == 0 {
 				return
 			}
 		}
-
-		vg := newViewGroup(v, cg)
-		vg.welcomeGroupEventDisplay()
-		vg.loop(v.ctx)
-
-		v.contactGroupViews = append(v.contactGroupViews, vg)
-
-	} else if cg.Group().GroupType == bertyprotocol.GroupTypeMultiMember {
+	} else if g.GroupType == bertyprotocol.GroupTypeMultiMember {
 		for _, vg := range v.multiMembersGroupViews {
-			if vg.cg.Group() == cg.Group() {
+			if bytes.Compare(vg.g.PublicKey, g.PublicKey) == 0 {
 				return
 			}
 		}
-
-		vg := newViewGroup(v, cg)
-		vg.welcomeGroupEventDisplay()
-		vg.loop(v.ctx)
-
-		v.multiMembersGroupViews = append(v.multiMembersGroupViews, vg)
+	} else {
+		return
 	}
 
-	v.lock.Unlock()
+	info, err := v.client.GroupInfo(ctx, &bertyprotocol.GroupInfo_Request{
+		GroupPK: g.PublicKey,
+	})
 
-	v.recomputeChannelList(false)
+	if err != nil {
+		return
+	}
+
+	if _, err := v.client.ActivateGroup(ctx, &bertyprotocol.ActivateGroup_Request{
+		GroupPK: g.PublicKey,
+	}); err != nil {
+		return
+	}
+
+	vg := newViewGroup(v, g, info.MemberPK, info.DevicePK)
+	vg.welcomeGroupEventDisplay()
+	vg.loop(v.ctx)
+
+	if g.GroupType == bertyprotocol.GroupTypeContact {
+		v.contactGroupViews = append(v.contactGroupViews, vg)
+	} else if g.GroupType == bertyprotocol.GroupTypeMultiMember {
+		v.multiMembersGroupViews = append(v.multiMembersGroupViews, vg)
+	}
 }
 
 func (v *tabbedGroupsView) PrevGroup() {
@@ -194,21 +205,21 @@ func (v *tabbedGroupsView) GetHistory() tview.Primitive {
 	return v.activeViewContainer
 }
 
-func newTabbedGroups(ctx context.Context, cg orbitutil.ContextGroup, odb orbitutil.BertyOrbitDB, app *tview.Application) *tabbedGroupsView {
+func newTabbedGroups(ctx context.Context, g *bertyprotocol.GroupInfo_Reply, client bertyprotocol.Client, app *tview.Application) *tabbedGroupsView {
 	v := &tabbedGroupsView{
 		ctx:    ctx,
 		topics: tview.NewTable(),
-		odb:    odb,
+		client: client,
 		app:    app,
 	}
 
-	v.accountGroupView = newViewGroup(v, cg)
+	v.accountGroupView = newViewGroup(v, g.Group, g.MemberPK, g.DevicePK)
 	v.selectedGroupView = v.accountGroupView
 	v.activeViewContainer = tview.NewFlex().SetDirection(tview.FlexRow).
 		AddItem(v.selectedGroupView.View(), 0, 1, false)
 	v.recomputeChannelList(false)
 
-	v.accountGroupView.welcomeEventDisplay(ctx, odb.IPFS())
+	v.accountGroupView.welcomeEventDisplay(ctx)
 
 	v.accountGroupView.loop(ctx)
 

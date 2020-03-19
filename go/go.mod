@@ -20,7 +20,6 @@ require (
 	github.com/ipfs/go-ipfs-keystore v0.0.1
 	github.com/ipfs/go-log v0.0.1
 	github.com/ipfs/interface-go-ipfs-core v0.2.5
-	github.com/jinzhu/gorm v1.9.11
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/libp2p/go-libp2p v0.5.0
 	github.com/libp2p/go-libp2p-core v0.3.0
@@ -44,7 +43,6 @@ require (
 	golang.org/x/tools v0.0.0-20200226224502-204d844ad48d // indirect
 	google.golang.org/genproto v0.0.0-20190927181202-20e1ac93f88c // indirect
 	google.golang.org/grpc v1.24.0
-	gopkg.in/gormigrate.v1 v1.6.0
 	moul.io/srand v1.4.0
 )
 

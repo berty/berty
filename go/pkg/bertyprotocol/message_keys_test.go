@@ -1,4 +1,4 @@
-package bertycrypto_test
+package bertyprotocol_test
 
 import (
 	"context"
@@ -15,20 +15,19 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/bertycrypto"
 	"berty.tech/berty/go/internal/orbitutil"
 	"berty.tech/berty/go/internal/testutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
-func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms orbitutil.MetadataStore, g *bertyprotocol.Group, memberPK crypto.PubKey, join bool) (crypto.PubKey, *bertyprotocol.DeviceSecret) {
+func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms bertyprotocol.MetadataStore, g *bertyprotocol.Group, memberPK crypto.PubKey, join bool) (crypto.PubKey, *bertyprotocol.DeviceSecret) {
 	t.Helper()
 
 	acc := account.New(keystore.NewMemKeystore())
 	md, err := acc.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
 
-	ds, err := account.NewDeviceSecret()
+	ds, err := bertyprotocol.NewDeviceSecret()
 	assert.NoError(t, err)
 
 	if join {
@@ -83,10 +82,10 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	omd1, err := acc1.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
 
-	ds1, err := account.NewDeviceSecret()
+	ds1, err := bertyprotocol.NewDeviceSecret()
 	assert.NoError(t, err)
 
-	ds2, err := account.NewDeviceSecret()
+	ds2, err := bertyprotocol.NewDeviceSecret()
 	assert.NoError(t, err)
 
 	initialCounter := ds1.Counter
@@ -96,32 +95,32 @@ func Test_EncryptMessagePayload(t *testing.T) {
 
 	omd2, err := acc2.MemberDeviceForGroup(g)
 
-	mkh1 := bertycrypto.NewInMemoryMessageKeys()
-	mkh2 := bertycrypto.NewInMemoryMessageKeys()
+	mkh1 := bertyprotocol.NewInMemoryMessageKeys()
+	mkh2 := bertyprotocol.NewInMemoryMessageKeys()
 
 	gc1 := orbitutil.NewContextGroup(g, nil, nil, mkh1, omd1)
 	gc2 := orbitutil.NewContextGroup(g, nil, nil, mkh2, omd2)
 
-	err = bertycrypto.RegisterChainKey(ctx, mkh1, g, gc1.DevicePubKey(), ds1, true)
+	err = bertyprotocol.RegisterChainKey(ctx, mkh1, g, gc1.DevicePubKey(), ds1, true)
 	assert.NoError(t, err)
 
-	err = bertycrypto.RegisterChainKey(ctx, mkh2, g, gc2.DevicePubKey(), ds2, true)
+	err = bertyprotocol.RegisterChainKey(ctx, mkh2, g, gc2.DevicePubKey(), ds2, true)
 	assert.NoError(t, err)
 
 	payloadRef1 := []byte("ok, this is the first test")
 	payloadRef2 := []byte("so, this is a second test")
 	payloadRef3 := []byte("this will be posted many times")
 
-	err = bertycrypto.RegisterChainKey(ctx, mkh2, g, omd1.Device.GetPublic(), ds1, false)
+	err = bertyprotocol.RegisterChainKey(ctx, mkh2, g, omd1.Device.GetPublic(), ds1, false)
 	assert.NoError(t, err)
 
 	assert.Equal(t, mustDeviceSecret(t)(mkh1.GetDeviceChainKey(ctx, omd1.Device.GetPublic())).ChainKey, firstSK)
 
-	payloadEnc1, _, err := bertycrypto.SealPayload(payloadRef1, mustDeviceSecret(t)(mkh1.GetDeviceChainKey(ctx, omd1.Device.GetPublic())), omd1.Device, g)
+	payloadEnc1, _, err := bertyprotocol.SealPayload(payloadRef1, mustDeviceSecret(t)(mkh1.GetDeviceChainKey(ctx, omd1.Device.GetPublic())), omd1.Device, g)
 	assert.NoError(t, err)
 
 	// Secret is derived by SealEnvelope
-	err = bertycrypto.DeriveDeviceSecret(ctx, mkh1, g, omd1.Device)
+	err = bertyprotocol.DeriveDeviceSecret(ctx, mkh1, g, omd1.Device)
 	assert.NoError(t, err)
 
 	assert.NotEqual(t, hex.EncodeToString(payloadRef1), hex.EncodeToString(payloadEnc1))
@@ -130,17 +129,17 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	// uint64 overflows to 0, which is the expected behaviour
 
 	// Test with a wrong counter value
-	payloadClr1, decryptInfo, err := bertycrypto.OpenPayload(ctx, mkh2, cid.Undef, payloadEnc1, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+2))
+	payloadClr1, decryptInfo, err := bertyprotocol.OpenPayload(ctx, mkh2, cid.Undef, payloadEnc1, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+2))
 	assert.Error(t, err)
 	assert.Nil(t, decryptInfo)
 	assert.Equal(t, "", string(payloadClr1))
 
 	// Test with a valid counter value, but no CID (so no cache)
-	payloadClr1, decryptInfo, err = bertycrypto.OpenPayload(ctx, mkh2, cid.Undef, payloadEnc1, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+1))
+	payloadClr1, decryptInfo, err = bertyprotocol.OpenPayload(ctx, mkh2, cid.Undef, payloadEnc1, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+1))
 	assert.NoError(t, err)
 	assert.Equal(t, string(payloadRef1), string(payloadClr1))
 
-	err = bertycrypto.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+1))
+	err = bertyprotocol.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+1))
 	assert.NoError(t, err)
 
 	ds, err := mkh1.GetDeviceChainKey(ctx, omd1.Device.GetPublic())
@@ -149,26 +148,26 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	assert.Equal(t, ds.Counter, initialCounter+1)
 	assert.NotEqual(t, ds.ChainKey, firstSK)
 
-	payloadEnc2, _, err := bertycrypto.SealPayload(payloadRef1, ds, omd1.Device, g)
+	payloadEnc2, _, err := bertyprotocol.SealPayload(payloadRef1, ds, omd1.Device, g)
 	assert.NoError(t, err)
 
-	err = bertycrypto.DeriveDeviceSecret(ctx, mkh1, g, omd1.Device)
+	err = bertyprotocol.DeriveDeviceSecret(ctx, mkh1, g, omd1.Device)
 	assert.NoError(t, err)
 
 	// Ensure that encrypted message is not the same as the first message
 	assert.NotEqual(t, hex.EncodeToString(payloadRef1), hex.EncodeToString(payloadEnc2))
 	assert.NotEqual(t, hex.EncodeToString(payloadEnc1), hex.EncodeToString(payloadEnc2))
 
-	payloadClr2, decryptInfo, err := bertycrypto.OpenPayload(ctx, mkh2, cid.Undef, payloadEnc2, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+2))
+	payloadClr2, decryptInfo, err := bertyprotocol.OpenPayload(ctx, mkh2, cid.Undef, payloadEnc2, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+2))
 	assert.NoError(t, err)
 
-	err = bertycrypto.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+2))
+	err = bertyprotocol.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+2))
 	assert.NoError(t, err)
 
 	assert.Equal(t, string(payloadRef1), string(payloadClr2))
 
 	// Make sure that a message without a CID can't be decrypted twice
-	payloadClr2, decryptInfo, err = bertycrypto.OpenPayload(ctx, mkh2, cid.Undef, payloadEnc2, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+1))
+	payloadClr2, decryptInfo, err = bertyprotocol.OpenPayload(ctx, mkh2, cid.Undef, payloadEnc2, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+1))
 	assert.Error(t, err)
 	assert.Equal(t, "", string(payloadClr2))
 
@@ -176,10 +175,10 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Make sure that a message a CID can be decrypted twice
-	payloadEnc3, _, err := bertycrypto.SealPayload(payloadRef2, ds, omd1.Device, g)
+	payloadEnc3, _, err := bertyprotocol.SealPayload(payloadRef2, ds, omd1.Device, g)
 	assert.NoError(t, err)
 
-	err = bertycrypto.DeriveDeviceSecret(ctx, mkh1, g, omd1.Device)
+	err = bertyprotocol.DeriveDeviceSecret(ctx, mkh1, g, omd1.Device)
 	assert.NoError(t, err)
 
 	dummyCID1, err := cid.Parse("QmbdQXQh9B2bWZgZJqfbjNPV5jGN2owbQ3vjeYsaDaCDqU")
@@ -189,31 +188,31 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Not decrypted message yet, wrong counter value
-	payloadClr3, decryptInfo, err := bertycrypto.OpenPayload(ctx, mkh2, dummyCID1, payloadEnc3, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+2))
+	payloadClr3, decryptInfo, err := bertyprotocol.OpenPayload(ctx, mkh2, dummyCID1, payloadEnc3, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+2))
 	assert.Error(t, err)
 	assert.Equal(t, "", string(payloadClr3))
 
-	payloadClr3, decryptInfo, err = bertycrypto.OpenPayload(ctx, mkh2, dummyCID1, payloadEnc3, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+3))
+	payloadClr3, decryptInfo, err = bertyprotocol.OpenPayload(ctx, mkh2, dummyCID1, payloadEnc3, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+3))
 	assert.NoError(t, err)
 	assert.Equal(t, string(payloadRef2), string(payloadClr3))
 
-	err = bertycrypto.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+3))
+	err = bertyprotocol.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+3))
 	assert.NoError(t, err)
 
-	payloadClr3, decryptInfo, err = bertycrypto.OpenPayload(ctx, mkh2, dummyCID1, payloadEnc3, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+3))
+	payloadClr3, decryptInfo, err = bertyprotocol.OpenPayload(ctx, mkh2, dummyCID1, payloadEnc3, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+3))
 	assert.NoError(t, err)
 	assert.Equal(t, string(payloadRef2), string(payloadClr3))
 
-	err = bertycrypto.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+3))
+	err = bertyprotocol.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+3))
 	assert.NoError(t, err)
 
 	// Wrong CID
-	payloadClr3, decryptInfo, err = bertycrypto.OpenPayload(ctx, mkh2, dummyCID2, payloadEnc3, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+3))
+	payloadClr3, decryptInfo, err = bertyprotocol.OpenPayload(ctx, mkh2, dummyCID2, payloadEnc3, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+3))
 	assert.Error(t, err)
 	assert.Equal(t, "", string(payloadClr3))
 
 	// Reused CID, wrong counter value
-	payloadClr3, decryptInfo, err = bertycrypto.OpenPayload(ctx, mkh2, dummyCID1, payloadEnc3, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+4))
+	payloadClr3, decryptInfo, err = bertyprotocol.OpenPayload(ctx, mkh2, dummyCID1, payloadEnc3, mustMessageHeaders(t, omd1.Device.GetPublic(), initialCounter+4))
 	assert.Error(t, err)
 	assert.Equal(t, "", string(payloadClr3))
 
@@ -224,10 +223,10 @@ func Test_EncryptMessagePayload(t *testing.T) {
 		ds, err = mkh1.GetDeviceChainKey(ctx, omd1.Device.GetPublic())
 		assert.NoError(t, err)
 
-		payloadEnc, _, err := bertycrypto.SealPayload(payloadRef3, ds, omd1.Device, g)
+		payloadEnc, _, err := bertyprotocol.SealPayload(payloadRef3, ds, omd1.Device, g)
 		assert.NoError(t, err)
 
-		err = bertycrypto.DeriveDeviceSecret(ctx, mkh1, g, omd1.Device)
+		err = bertyprotocol.DeriveDeviceSecret(ctx, mkh1, g, omd1.Device)
 		assert.NoError(t, err)
 
 		ds, err = mkh1.GetDeviceChainKey(ctx, omd1.Device.GetPublic())
@@ -235,12 +234,12 @@ func Test_EncryptMessagePayload(t *testing.T) {
 
 		counter := ds.Counter
 
-		payloadClr, decryptInfo, err := bertycrypto.OpenPayload(ctx, mkh2, cid.Undef, payloadEnc, mustMessageHeaders(t, omd1.Device.GetPublic(), counter))
+		payloadClr, decryptInfo, err := bertyprotocol.OpenPayload(ctx, mkh2, cid.Undef, payloadEnc, mustMessageHeaders(t, omd1.Device.GetPublic(), counter))
 		if !assert.NoError(t, err) {
 			t.Fatalf("failed at i = %d", i)
 		}
 
-		err = bertycrypto.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), mustMessageHeaders(t, omd1.Device.GetPublic(), counter))
+		err = bertyprotocol.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), mustMessageHeaders(t, omd1.Device.GetPublic(), counter))
 		assert.NoError(t, err)
 
 		assert.Equal(t, string(payloadRef3), string(payloadClr))
@@ -260,41 +259,41 @@ func Test_EncryptMessageEnvelope(t *testing.T) {
 	assert.NoError(t, err)
 
 	acc1 := account.New(keystore.NewMemKeystore())
-	mkh1 := bertycrypto.NewInMemoryMessageKeys()
+	mkh1 := bertyprotocol.NewInMemoryMessageKeys()
 	omd1, err := acc1.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
 
 	gc1 := orbitutil.NewContextGroup(g, nil, nil, mkh1, omd1)
 
-	ds1, err := account.NewDeviceSecret()
+	ds1, err := bertyprotocol.NewDeviceSecret()
 	assert.NoError(t, err)
 
-	err = bertycrypto.RegisterChainKey(ctx, mkh1, g, gc1.DevicePubKey(), ds1, true)
+	err = bertyprotocol.RegisterChainKey(ctx, mkh1, g, gc1.DevicePubKey(), ds1, true)
 	assert.NoError(t, err)
 
 	acc2 := account.New(keystore.NewMemKeystore())
-	mkh2 := bertycrypto.NewInMemoryMessageKeys()
+	mkh2 := bertyprotocol.NewInMemoryMessageKeys()
 	omd2, err := acc2.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
 
-	ds2, err := account.NewDeviceSecret()
+	ds2, err := bertyprotocol.NewDeviceSecret()
 	assert.NoError(t, err)
 
 	payloadRef1 := []byte("Test payload 1")
 
-	err = bertycrypto.RegisterChainKey(ctx, mkh2, g, omd2.Device.GetPublic(), ds2, true)
+	err = bertyprotocol.RegisterChainKey(ctx, mkh2, g, omd2.Device.GetPublic(), ds2, true)
 	assert.NoError(t, err)
 
-	err = bertycrypto.RegisterChainKey(ctx, mkh2, g, omd1.Device.GetPublic(), ds1, false)
+	err = bertyprotocol.RegisterChainKey(ctx, mkh2, g, omd1.Device.GetPublic(), ds1, false)
 	assert.NoError(t, err)
 
-	env1, err := bertycrypto.SealEnvelopeInternal(payloadRef1, ds1, omd1.Device, g)
+	env1, err := bertyprotocol.SealEnvelopeInternal(payloadRef1, ds1, omd1.Device, g)
 	assert.NoError(t, err)
 
-	headers, payloadClr1, decryptInfo, err := bertycrypto.OpenEnvelope(ctx, mkh2, g, env1, cid.Undef)
+	headers, payloadClr1, decryptInfo, err := bertyprotocol.OpenEnvelope(ctx, mkh2, g, env1, cid.Undef)
 	assert.NoError(t, err)
 
-	err = bertycrypto.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), headers)
+	err = bertyprotocol.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), headers)
 	assert.NoError(t, err)
 
 	devRaw, err := omd1.Device.GetPublic().Raw()
@@ -318,31 +317,31 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 	omd2, err := acc2.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
 
-	ds1, err := account.NewDeviceSecret()
+	ds1, err := bertyprotocol.NewDeviceSecret()
 	assert.NoError(t, err)
 
-	mkh1 := bertycrypto.NewInMemoryMessageKeys()
-	mkh2 := bertycrypto.NewInMemoryMessageKeys()
+	mkh1 := bertyprotocol.NewInMemoryMessageKeys()
+	mkh2 := bertyprotocol.NewInMemoryMessageKeys()
 
-	err = bertycrypto.RegisterChainKey(ctx, mkh1, g, omd1.Device.GetPublic(), ds1, true)
+	err = bertyprotocol.RegisterChainKey(ctx, mkh1, g, omd1.Device.GetPublic(), ds1, true)
 	assert.NoError(t, err)
 
 	gc1 := orbitutil.NewContextGroup(g, nil, nil, mkh1, omd1)
 
-	ds2, err := account.NewDeviceSecret()
+	ds2, err := bertyprotocol.NewDeviceSecret()
 	assert.NoError(t, err)
 
-	err = bertycrypto.RegisterChainKey(ctx, mkh2, g, omd2.Device.GetPublic(), ds2, true)
+	err = bertyprotocol.RegisterChainKey(ctx, mkh2, g, omd2.Device.GetPublic(), ds2, true)
 	assert.NoError(t, err)
 
-	err = bertycrypto.RegisterChainKey(ctx, mkh2, g, omd1.Device.GetPublic(), ds1, false)
+	err = bertyprotocol.RegisterChainKey(ctx, mkh2, g, omd1.Device.GetPublic(), ds1, false)
 	assert.NoError(t, err)
 
 	initialCounter := ds1.Counter
 
 	for i := 0; i < 1000; i++ {
 		payloadRef := []byte(fmt.Sprintf("Test payload %d", i))
-		envEncrypted, err := bertycrypto.SealEnvelope(ctx, mkh1, g, omd1.Device, payloadRef)
+		envEncrypted, err := bertyprotocol.SealEnvelope(ctx, mkh1, g, omd1.Device, payloadRef)
 		assert.NoError(t, err)
 
 		ds, err := mkh1.GetDeviceChainKey(ctx, gc1.DevicePubKey())
@@ -351,12 +350,12 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 		}
 		assert.Equal(t, ds.Counter, initialCounter+uint64(i+1))
 
-		headers, payloadClr, decryptInfo, err := bertycrypto.OpenEnvelope(ctx, mkh2, g, envEncrypted, cid.Undef)
+		headers, payloadClr, decryptInfo, err := bertyprotocol.OpenEnvelope(ctx, mkh2, g, envEncrypted, cid.Undef)
 		if !assert.NoError(t, err) {
 			t.Fatalf("failed at i = %d", i)
 		}
 
-		err = bertycrypto.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), headers)
+		err = bertyprotocol.PostDecryptActions(ctx, mkh2, decryptInfo, g, omd2.Device.GetPublic(), headers)
 		assert.NoError(t, err)
 
 		if assert.NotNil(t, headers) && assert.NotNil(t, payloadClr) {
@@ -383,6 +382,7 @@ func testMessageKeyHolderCatchUp(t *testing.T, expectedNewDevices int, isSlow bo
 	defer os.RemoveAll(dir)
 
 	peers, _ := orbitutil.CreatePeersWithGroup(ctx, t, dir, 1, 1)
+	defer orbitutil.DropPeers(t, peers)
 	peer := peers[0]
 
 	mkh1 := peer.MK
@@ -395,7 +395,7 @@ func testMessageKeyHolderCatchUp(t *testing.T, expectedNewDevices int, isSlow bo
 		devicesPK[i], deviceSecrets[i] = addDummyMemberInMetadataStore(ctx, t, ms1, peer.GC.Group(), peer.GC.MemberPubKey(), true)
 	}
 
-	err := orbitutil.FillMessageKeysHolderUsingPreviousData(ctx, peer.GC)
+	err := bertyprotocol.FillMessageKeysHolderUsingPreviousData(ctx, peer.GC)
 	assert.NoError(t, err)
 
 	for i, dPK := range devicesPK {
@@ -450,7 +450,7 @@ func testMessageKeyHolderSubscription(t *testing.T, expectedNewDevices int, isSl
 	devicesPK := make([]crypto.PubKey, expectedNewDevices)
 	deviceSecrets := make([]*bertyprotocol.DeviceSecret, expectedNewDevices)
 
-	go orbitutil.FillMessageKeysHolderUsingNewData(ctx, peer.GC)
+	go bertyprotocol.FillMessageKeysHolderUsingNewData(ctx, peer.GC)
 
 	for i := 0; i < expectedNewDevices; i++ {
 		devicesPK[i], deviceSecrets[i] = addDummyMemberInMetadataStore(ctx, t, ms1, peer.GC.Group(), peer.GC.MemberPubKey(), true)

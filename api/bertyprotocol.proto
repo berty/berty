@@ -79,6 +79,21 @@ service ProtocolService {
 
   // GroupMessageSubscribe subscribes to a group message updates (or it can also retrieve the history)
   rpc GroupMessageSubscribe (GroupMessageSubscribe.Request) returns (stream GroupMessageEvent);
+
+  // GroupMetadataList replays metadata events from the group
+  rpc GroupMetadataList (GroupMetadataList.Request) returns (stream GroupMetadataEvent);
+
+  // GroupMessageList replays message  events from the group
+  rpc GroupMessageList (GroupMessageList.Request) returns (stream GroupMessageEvent);
+
+  // GroupInfo retrieves information about a group
+  rpc GroupInfo (GroupInfo.Request) returns (GroupInfo.Reply);
+
+  // ActivateGroup explicitly opens a group, groups are automatically enabled when actions are performed on them
+  rpc ActivateGroup (ActivateGroup.Request) returns (ActivateGroup.Reply);
+
+  // DeactivateGroup closes a group
+  rpc DeactivateGroup (DeactivateGroup.Request) returns (DeactivateGroup.Reply);
 }
 
 enum GroupType {
@@ -537,6 +552,9 @@ message ContactRequestReference {
   message Reply {
     // reference is an opaque message describing how to connect to the current account
     bytes reference = 1;
+
+    // enabled indicates if incoming contact requests are enabled
+    bool enabled = 2;
   }
 }
 
@@ -644,6 +662,7 @@ message MultiMemberGroupLeave {
 
 message MultiMemberGroupAliasResolverDisclose {
   message Request {
+    // group_pk is the identifier of the group
     bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
   }
 
@@ -736,6 +755,13 @@ message GroupMetadataSubscribe {
   }
 }
 
+message GroupMetadataList {
+  message Request {
+    // group_pk is the identifier of the group
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+  }
+}
+
 message GroupMessageSubscribe {
   message Request {
     // group_pk is the identifier of the group
@@ -752,6 +778,54 @@ message GroupMessageSubscribe {
   }
 }
 
+message GroupMessageList {
+  message Request {
+    // group_pk is the identifier of the group
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+  }
+}
+
+
+message GroupInfo {
+  message Request {
+    // group_pk is the identifier of the group
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+
+    // contact_pk is the identifier of the contact
+    bytes contact_pk = 2 [(gogoproto.customname) = "ContactPK"];
+  }
+
+  message Reply {
+    // group is the group invitation, containing the group pk and its type
+    Group group = 1;
+
+    // member_pk is the identifier of the current member in the group
+    bytes member_pk = 2 [(gogoproto.customname) = "MemberPK"];
+
+    // member_pk is the identifier of the current device in the group
+    bytes device_pk = 3 [(gogoproto.customname) = "DevicePK"];
+  }
+}
+
+message ActivateGroup {
+  message Request {
+    // group_pk is the identifier of the group
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+  }
+
+  message Reply {
+  }
+}
+
+message DeactivateGroup {
+  message Request {
+    // group_pk is the identifier of the group
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+  }
+
+  message Reply {
+  }
+}
 
 enum ContactState {
   ContactStateUndefined = 0;

@@ -1,38 +1,32 @@
-package bertyprotocol
+package bertyprotocol_test
 
 import (
 	"context"
 	"testing"
 
-	"berty.tech/berty/go/internal/testutil"
+	"berty.tech/berty/go/internal/account"
+	"berty.tech/berty/go/internal/orbitutil"
+	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
-	"github.com/jinzhu/gorm"
+	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap"
 )
 
 func TestTestingClient_impl(t *testing.T) {
-	client, cleanup := TestingClient(t, Opts{Logger: testutil.Logger(t)})
+	client, cleanup := bertyprotocol.TestingClient(t, bertyprotocol.Opts{
+		Logger:        zap.NewNop(),
+		Account:       account.New(keystore.NewMemKeystore()),
+		MessageKeys:   bertyprotocol.NewInMemoryMessageKeys(),
+		DBConstructor: orbitutil.NewBertyOrbitDB,
+	})
 	defer cleanup()
 
-	// test DB
-	db := testingClientDB(t, client)
-	err := db.DB().Ping()
-	assert.NoError(t, err, func() {
-		assert.True(t, db.HasTable("migrations"))
-	})
-
 	// test service
-	_, _ = client.InstanceGetConfiguration(context.Background(), &InstanceGetConfiguration_Request{})
+	_, _ = client.InstanceGetConfiguration(context.Background(), &bertyprotocol.InstanceGetConfiguration_Request{})
 	status := client.Status()
-	expected := Status{}
+	expected := bertyprotocol.Status{}
 	assert.Equal(t, expected, status)
-}
-
-func testingClientDB(t *testing.T, c Client) *gorm.DB {
-	t.Helper()
-
-	typed := c.(*client)
-	return typed.db
 }
 
 func testSameErrcodes(t *testing.T, expected, got error) {
