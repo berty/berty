@@ -481,6 +481,8 @@ func TestMetadataContactLifecycle(t *testing.T) {
 }
 
 func TestMetadataAliasLifecycle(t *testing.T) {
+	testutil.SkipSlow(t)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
