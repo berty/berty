@@ -175,7 +175,8 @@ class Network extends PureComponent {
                 onValueChange={async enable => {
                   if (enable) {
                     if (
-                      Platform.OS !== 'android' || (await requestBLEAndroidPermission())
+                      Platform.OS !== 'android' ||
+                      (await requestBLEAndroidPermission())
                     ) {
                       const bindP2P = this.addTransport(transports.BLE)
                       this.updateConfig({ bindP2P })
