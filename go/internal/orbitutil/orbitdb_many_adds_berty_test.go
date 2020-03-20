@@ -11,7 +11,7 @@ import (
 	"time"
 
 	orbitdb "berty.tech/go-orbit-db"
-	"github.com/ipfs/go-datastore"
+	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
 	"github.com/juju/fslock"
@@ -21,10 +21,14 @@ import (
 	"berty.tech/berty/go/internal/bertycrypto"
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/internal/orbitutil"
+	"berty.tech/berty/go/internal/testutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
-func testAddBerty(t *testing.T, ctx context.Context, api ipfsutil.CoreAPIMock, g *bertyprotocol.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {
+func testAddBerty(ctx context.Context, t *testing.T, api ipfsutil.CoreAPIMock, g *bertyprotocol.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {
+	t.Helper()
+	testutil.SkipSlow(t)
+
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -153,8 +157,10 @@ func TestAddBerty(t *testing.T) {
 	g, _, err := bertyprotocol.NewGroupMultiMember()
 	require.NoError(t, err)
 
-	testAddBerty(t, ctx, api, g, pathBase, 20, 0)
-	testAddBerty(t, ctx, api, g, pathBase, 0, 20)
-	testAddBerty(t, ctx, api, g, pathBase, 20, 20)
-	testAddBerty(t, ctx, api, g, pathBase, 0, 40)
+	testAddBerty(ctx, t, api, g, pathBase, 20, 0)
+	testAddBerty(ctx, t, api, g, pathBase, 0, 20)
+	testAddBerty(ctx, t, api, g, pathBase, 20, 20)
+	testAddBerty(ctx, t, api, g, pathBase, 0, 40)
+
+	// FIXME: use github.com/stretchr/testify/suite
 }
