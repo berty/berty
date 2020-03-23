@@ -7,15 +7,11 @@ import { berty } from '@berty-tech/api'
 import * as protocol from '../protocol'
 import { conversation } from '../chat'
 
-import {
-	UserMessage,
-	GroupInvitation,
-	AppMessageType,
-	AppMessage,
-	SetGroupName,
-} from './AppMessage'
+import { UserMessage, GroupInvitation, AppMessageType, AppMessage, Acknowledge } from './AppMessage'
 
-type StoreMessage = UserMessage | GroupInvitation | SetGroupName
+type StoreUserMessage = UserMessage & { isMe: boolean; acknowledged: boolean }
+
+type StoreMessage = StoreUserMessage | GroupInvitation
 
 export type Entity = {
 	id: string
@@ -30,7 +26,7 @@ export type Event = {
 
 export type State = {
 	events: Array<Event>
-	aggregates: { [key: string]: Entity }
+	aggregates: { [key: string]: Entity | undefined }
 }
 
 export type GlobalState = {
@@ -57,6 +53,7 @@ export namespace Event {
 		aggregateId: string
 		message: AppMessage
 		receivedDate: number
+		isMe: boolean
 	}
 	export type Hidden = { aggregateId: string }
 }
@@ -70,8 +67,8 @@ export type CommandsReducer = {
 }
 
 export type QueryReducer = {
-	list: (state: GlobalState, query: Query.List) => Array<Entity>
-	get: (state: GlobalState, query: Query.Get) => Entity
+	list: (state: GlobalState, query: Query.List) => Entity[]
+	get: (state: GlobalState, query: Query.Get) => Entity | undefined
 	getLength: (state: GlobalState) => number
 }
 
@@ -106,16 +103,17 @@ const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/message/event',
 	initialState,
 	reducers: {
-		sent: (state, { payload: { aggregateId, message, receivedDate } }) => {
+		sent: (state, { payload: { aggregateId, message, receivedDate, isMe } }) => {
 			switch (message.type) {
 				case AppMessageType.UserMessage:
 					state.aggregates[aggregateId] = {
 						id: aggregateId,
 						type: message.type,
 						body: message.body,
-						isMe: message.isMe,
+						isMe,
 						attachments: [],
 						sentDate: message.sentDate,
+						acknowledged: false,
 						receivedDate,
 					}
 					break
@@ -128,6 +126,14 @@ const eventHandler = createSlice<State, EventsReducer>({
 						type: message.type,
 						groupPk: message.groupPk,
 						receivedDate,
+					}
+					break
+				case AppMessageType.Acknowledge:
+					if (!isMe) {
+						const target = state.aggregates[message.id]
+						if (target && target.type === AppMessageType.UserMessage && target.isMe) {
+							target.acknowledged = true
+						}
 					}
 					break
 			}
@@ -145,7 +151,7 @@ export const reducer = composeReducers(commandHandler.reducer, eventHandler.redu
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
 export const queries: QueryReducer = {
-	list: (state) => Object.values(state.chat.message.aggregates),
+	list: (state) => Object.values(state.chat.message.aggregates) as Entity[],
 	get: (state, { id }) => state.chat.message.aggregates[id],
 	getLength: (state) => Object.keys(state.chat.message.aggregates).length,
 }
@@ -176,7 +182,6 @@ export const transactions: Transactions = {
 			const message: UserMessage = {
 				type: AppMessageType.UserMessage,
 				body: payload.body,
-				isMe: payload.isMe,
 				attachments: payload.attachments,
 				sentDate: Date.now(),
 			}
@@ -218,8 +223,8 @@ export function* orchestrator() {
 			action: PayloadAction<berty.protocol.GroupMessageEvent & { aggregateId: string }>,
 		) {
 			// create an id for the message
-			const cidBuf = action.payload.eventContext?.id
-			if (!cidBuf) {
+			const idBuf = action.payload.eventContext?.id
+			if (!idBuf) {
 				return
 			}
 			const groupPkBuf = action.payload.eventContext?.groupPk
@@ -227,7 +232,7 @@ export function* orchestrator() {
 				return
 			}
 			const message: AppMessage = JSON.parse(new Buffer(action.payload.message).toString('utf-8'))
-			const aggregateId = Buffer.from(cidBuf).toString('utf-8')
+			const aggregateId = Buffer.from(idBuf).toString('utf-8')
 			// create the message entity
 			const existingMessage = (yield select((state) => queries.get(state, { id: aggregateId }))) as
 				| Entity
@@ -248,29 +253,41 @@ export function* orchestrator() {
 				return
 			}
 
-			if (message.type === AppMessageType.UserMessage) {
-				const client = yield* getProtocolClient(action.payload.aggregateId)
-				message.isMe =
-					new Buffer(action.payload.headers.devicePk).toString('utf-8') === client.devicePk
-			}
+			const client = yield* getProtocolClient(action.payload.aggregateId)
+			const devicePk = action.payload.headers?.devicePk
+			const isMe = !!devicePk && new Buffer(devicePk).toString('utf-8') === client.devicePk
 
-			// Sent the message
+			// Add received message in store
 			yield put(
 				events.sent({
 					aggregateId,
 					message,
 					receivedDate: Date.now(),
+					isMe,
 				}),
 			)
 
-			// add message to correspondant conversation
-			yield* conversation.transactions.addMessage({
-				aggregateId: getAggregateId({
-					accountId: action.payload.aggregateId,
+			if (message.type === AppMessageType.UserMessage) {
+				// add message to corresponding conversation
+				yield* conversation.transactions.addMessage({
+					aggregateId: getAggregateId({
+						accountId: action.payload.aggregateId,
+						groupPk: groupPkBuf,
+					}),
+					messageId: aggregateId,
+				})
+
+				// send acknowledgment
+				const acknowledge: Acknowledge = {
+					type: AppMessageType.Acknowledge,
+					id: aggregateId,
+				}
+				yield* protocol.transactions.client.appMessageSend({
+					id: conv.accountId,
 					groupPk: groupPkBuf,
-				}),
-				messageId: aggregateId,
-			})
+					payload: Buffer.from(JSON.stringify(acknowledge), 'utf-8'),
+				})
+			}
 		}),
 	])
 }

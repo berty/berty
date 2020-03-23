@@ -1,14 +1,14 @@
 export enum AppMessageType {
-	UserMessage,
-	UserReaction,
-	GroupInvitation,
-	SetGroupName,
+	UserMessage = 'UserMessage',
+	UserReaction = 'UserReaction',
+	GroupInvitation = 'GroupInvitation',
+	SetGroupName = 'SetGroupName',
+	Acknowledge = 'Acknowledge',
 }
 
 export type UserMessage = {
 	type: AppMessageType.UserMessage
 	body: string
-	isMe?: boolean
 	attachments: Array<{ uri: string }>
 	sentDate: number
 }
@@ -28,4 +28,9 @@ export type SetGroupName = {
 	name: string
 }
 
-export type AppMessage = UserMessage | UserReaction | GroupInvitation | SetGroupName
+export type Acknowledge = {
+	type: AppMessageType.Acknowledge
+	id: string
+}
+
+export type AppMessage = UserMessage | UserReaction | GroupInvitation | SetGroupName | Acknowledge

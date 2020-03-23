@@ -112,7 +112,8 @@ export const Message: React.FC<MessageProps> = ({
 				<View style={[payload.isMe && row.item.bottom]}>
 					{!state.length ? (
 						<Text style={[text.color.grey, _styles.dateMessage]}>
-							{formatTimestamp(new Date(payload.sentDate))}
+							{formatTimestamp(new Date(payload.sentDate))}{' '}
+							{payload.isMe && (payload.acknowledged ? 'Sent' : 'Sending..')}
 						</Text>
 					) : (
 						state.map((value) => (

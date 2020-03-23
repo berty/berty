@@ -250,9 +250,11 @@ export const useGetConversation = (id: string): chat.conversation.Entity => {
 }
 
 // messages queries
-export const useGetMessage = (id: string): chat.message.Entity => {
-	const message = useSelector((state: chat.message.GlobalState) =>
-		chat.message.queries.get(state, { id }),
+export const useGetMessage = (id: string): chat.message.Entity | undefined => {
+	const selector = useMemo(
+		() => (state: chat.message.GlobalState) => chat.message.queries.get(state, { id }),
+		[id],
 	)
+	const message = useSelector(selector)
 	return message
 }
