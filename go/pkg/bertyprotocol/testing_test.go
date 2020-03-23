@@ -11,7 +11,7 @@ import (
 )
 
 func TestTestingClient_impl(t *testing.T) {
-	client, cleanup := TestingClient(t, Opts{Logger: testutil.Logger(t)})
+	client, cleanup := TestingService(t, Opts{Logger: testutil.Logger(t)})
 	defer cleanup()
 
 	// test DB
@@ -28,10 +28,10 @@ func TestTestingClient_impl(t *testing.T) {
 	assert.Equal(t, expected, status)
 }
 
-func testingClientDB(t *testing.T, c Client) *gorm.DB {
+func testingClientDB(t *testing.T, c Service) *gorm.DB {
 	t.Helper()
 
-	typed := c.(*client)
+	typed := c.(*service)
 	return typed.db
 }
 

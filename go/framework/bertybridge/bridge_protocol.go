@@ -26,9 +26,9 @@ import (
 type Protocol struct {
 	*Bridge
 
-	db     *gorm.DB
-	node   *core.IpfsNode
-	client bertyprotocol.Client
+	db      *gorm.DB
+	node    *core.IpfsNode
+	service bertyprotocol.Service
 }
 
 type ProtocolConfig struct {
@@ -121,7 +121,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 	}
 
 	// setup protocol
-	var client bertyprotocol.Client
+	var service bertyprotocol.Service
 	{
 		var err error
 
@@ -131,7 +131,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			IpfsCoreAPI: api,
 		}
 
-		client, err = bertyprotocol.New(db, protocolOpts)
+		service, err = bertyprotocol.New(db, protocolOpts)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -171,7 +171,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			),
 		)
 
-		bertyprotocol.RegisterProtocolServiceServer(grpcServer, client)
+		bertyprotocol.RegisterProtocolServiceServer(grpcServer, service)
 	}
 
 	// setup bridge
@@ -188,9 +188,9 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 	return &Protocol{
 		Bridge: bridge,
 
-		client: client,
-		node:   node,
-		db:     db,
+		service: service,
+		node:    node,
+		db:      db,
 	}, nil
 }
 
@@ -199,7 +199,7 @@ func (p *Protocol) Close() (err error) {
 	err = p.Bridge.Close()
 
 	// close clients and dbs after listeners
-	p.client.Close()
+	p.service.Close()
 	p.db.Close()
 
 	if p.node != nil {

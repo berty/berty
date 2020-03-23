@@ -3,27 +3,21 @@ package bertyprotocol
 import (
 	"testing"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestClient_impl(t *testing.T) {
 	var _ Client = (*client)(nil)
-	var _ ProtocolServiceServer = (*client)(nil)
+	var _ ProtocolServiceClient = (*client)(nil)
 }
 
-func ExampleNew() {
-	// initialize sqlite3 gorm
-	db, err := gorm.Open("sqlite3", ":memory:")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
+func TestExampleNewClient(t *testing.T) {
+	s, clean := TestingService(t, Opts{})
+	defer clean()
 
 	// initialize new client
-	client, err := New(db, Opts{})
-	if err != nil {
-		panic(err)
-	}
-	defer client.Close()
+	client, err := NewClient(s)
+	assert.NoError(t, err)
+
+	client.Close()
 }

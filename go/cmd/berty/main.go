@@ -135,7 +135,7 @@ func main() {
 			ctx := context.Background()
 
 			// protocol
-			var protocol bertyprotocol.Client
+			var protocol bertyprotocol.Service
 			{
 				// initialize sqlite3 gorm database
 				db, err := gorm.Open("sqlite3", *clientProtocolURN)
@@ -216,7 +216,7 @@ func main() {
 			ctx := context.Background()
 
 			// demo
-			var demo *bertydemo.Client
+			var demo *bertydemo.Service
 			{
 				var err error
 

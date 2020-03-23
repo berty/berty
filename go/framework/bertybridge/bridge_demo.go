@@ -25,7 +25,7 @@ import (
 type Demo struct {
 	*Bridge
 
-	client *bertydemo.Client
+	service *bertydemo.Service
 }
 
 type DemoConfig struct {
@@ -84,7 +84,7 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 	ctx := context.Background()
 
 	// setup demo
-	var client *bertydemo.Client
+	var service *bertydemo.Service
 	{
 		var err error
 
@@ -110,7 +110,7 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 			OrbitDBDirectory: directory,
 		}
 
-		if client, err = bertydemo.New(opts); err != nil {
+		if service, err = bertydemo.New(opts); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 
@@ -152,7 +152,7 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 			),
 		)
 
-		bertydemo.RegisterDemoServiceServer(grpcServer, client)
+		bertydemo.RegisterDemoServiceServer(grpcServer, service)
 	}
 
 	// setup bridge
@@ -168,8 +168,8 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 
 	// setup bridge
 	return &Demo{
-		Bridge: bridge,
-		client: client,
+		Bridge:  bridge,
+		service: service,
 	}, nil
 }
 
@@ -178,6 +178,6 @@ func (d *Demo) Close() (err error) {
 	err = d.Bridge.Close()
 
 	// close others
-	d.client.Close()
+	d.service.Close()
 	return
 }
