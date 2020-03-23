@@ -18,7 +18,7 @@ build: clean deps
 	GO111MODULE=on go mod vendor
 	sed s%TMPL_MAKEFILE_PATH%$(PWD)%g bundler.json.tmpl > bundler.json
 	cp -rf $(PWD)/../../../client/web/build $(PWD)/resources/app
-	GO111MODULE=on astilectron-bundler -v -ldflags X:berty.tech/core.GitSha=$(GIT_SHA),berty.tech/core.GitTag=$(GIT_TAG),berty.tech/core.GitBranch=$(GIT_BRANCH),berty.tech/core.BuildMode=$(BUILD_MODE),berty.tech/core.commitDate=$(GIT_COMMIT_DATE)
+	GO111MODULE=on astilectron-bundler -ldflags X:berty.tech/core.GitSha=$(GIT_SHA),berty.tech/core.GitTag=$(GIT_TAG),berty.tech/core.GitBranch=$(GIT_BRANCH),berty.tech/core.BuildMode=$(BUILD_MODE),berty.tech/core.commitDate=$(GIT_COMMIT_DATE)
 
 .PHONY: sign
 sign: /usr/local/bin/dylibbundler
