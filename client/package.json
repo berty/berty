@@ -125,7 +125,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "eslint_d": "^8.0.0",
     "import-js": "^3.2.0",
-    "lerna": "^3.16.4",
+    "lerna": "^3.20.2",
     "link-module-alias": "^1.2.0",
     "metro-react-native-babel-preset": "0.48.0",
     "napa": "^3.0.0",

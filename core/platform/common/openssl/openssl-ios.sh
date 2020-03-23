@@ -15,7 +15,7 @@ tar zxf "openssl-${OPENSSL_VERSION}.tar.gz"
 pushd "openssl-${OPENSSL_VERSION}"
 
     # Apply patches
-    patch -p3 < "$GOPATH/src/berty.tech/client/common/openssl/patches/openssl-omit-frame-pointer.diff" Configure
+    patch -p3 < "$GOPATH/src/berty.tech/core/platform/common/openssl/patches/openssl-omit-frame-pointer.diff" Configure
 
     if [ "${ARCH}" == "i386" ] || [ "${ARCH}" == "x86_64" ]; then
         if [ "${ARCH}" == "x86_64" ]; then
