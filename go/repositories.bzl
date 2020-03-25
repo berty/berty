@@ -28,7 +28,7 @@ def berty_go_repositories():
         ],
         sha256 = "e88471aea3a3a4f19ec1310a55ba94772d087e9ce46e41ae38ecebe17935de7b",
         patches = [
-            "@berty_go//:third_party/io_bazel_rules_go/PR-2181-rebase-0.20.1.patch",
+            "@berty//go:third_party/io_bazel_rules_go/PR-2181-rebase-0.20.1.patch",
         ],
         patch_tool = "git",
         patch_args = ["apply"],

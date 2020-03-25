@@ -32,7 +32,7 @@ gobind_java(
     java_package = "tech.berty.gobridge",
     tags = [],
     deps = [
-        "@berty_go//framework/gobridge:go_default_library",
+        "@berty//go:framework/gobridge:go_default_library",
     ],
     gc_linkopts = [
         "-compressdwarf=false",

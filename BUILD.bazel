@@ -1,0 +1,12 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix berty.tech/berty/v2
+# gazelle:proto disable_global
+# gazelle:exclude api
+# gazelle:exclude js
+# gazelle:exclude doc
+# gazelle:exclude test
+gazelle(
+    name = "gazelle",
+    external = "vendored",
+)

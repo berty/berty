@@ -1,12 +1,3 @@
-load("@bazel_gazelle//:def.bzl", "gazelle")
-
-# gazelle:prefix berty.tech/berty/go
-# gazelle:proto disable_global
-gazelle(
-    name = "gazelle",
-    external = "vendored",
-)
-
 load("@com_github_atlassian_bazel_tools//golangcilint:def.bzl", "golangcilint")
 
 golangcilint(

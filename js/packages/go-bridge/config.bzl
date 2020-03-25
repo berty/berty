@@ -1,4 +1,4 @@
-load("@berty_go//:config.bzl", "berty_go_config")
+load("@berty//go:config.bzl", "berty_go_config")
 load("@co_znly_rules_gomobile//:repositories.bzl", "gomobile_repositories")
 load("@build_bazel_apple_support//lib:repositories.bzl", "apple_support_dependencies")
 load("@build_bazel_rules_swift//swift:repositories.bzl", "swift_rules_dependencies")

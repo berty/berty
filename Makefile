@@ -20,3 +20,5 @@ clean:
 .PHONY: docker.build
 docker.build:
 	cd go; make docker.build
+
+include bazel.make

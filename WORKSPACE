@@ -1,6 +1,6 @@
-workspace(name = "berty_go")
+workspace(name = "berty")
 
-load("@berty_go//:repositories.bzl", "berty_go_repositories")
+load("@berty//go:repositories.bzl", "berty_go_repositories")
 
 # fetch berty repos
 
@@ -14,6 +14,6 @@ check_bazel_version("2.0.0")
 
 # config go berty
 
-load("@berty_go//:config.bzl", "berty_go_config")
+load("@berty//go:config.bzl", "berty_go_config")
 
 berty_go_config()

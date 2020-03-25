@@ -101,7 +101,7 @@ steps:
               "GO111MODULE=off",
               "GOPATH=/home/buildkite-agent/go",
               "HOME=/home/buildkite-agent",
-              "GRADLE_USER_HOME=/home/buildkite-agent/.gradle"
+              "GRADLE_USER_HOME=/home/buildkite-agent/.gradle",
             ]
           volumes: ["~:/home/buildkite-agent"]
     agents:
@@ -226,6 +226,5 @@ steps:
       - export USER=$(id -u)
       - bazel --version
       - go version
-      - cd go
       - make bazel.unittest
       - make bazel.build

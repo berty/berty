@@ -4,8 +4,8 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 # berty go
 local_repository(
-    name = "berty_go",
-    path = "../../../go",
+    name = "berty",
+    path = "../../..",
 )
 
 load("@berty_bridge//:repositories.bzl", "berty_bridge_repositories")

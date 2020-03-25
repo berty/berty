@@ -2,8 +2,8 @@ workspace(name = "berty_app")
 
 # berty go
 local_repository(
-    name = "berty_go",
-    path = "../../../go",
+    name = "berty",
+    path = "../../..",
 )
 
 # berty chat bridge
