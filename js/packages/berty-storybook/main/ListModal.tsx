@@ -12,7 +12,7 @@ import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { BlurView } from '@react-native-community/blur'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
-import { CircleAvatar } from '../shared-components/CircleAvatar'
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { useNavigation } from '@berty-tech/berty-navigation'
 import { Chat } from '@berty-tech/hooks'
 import { chat } from '@berty-tech/store'
@@ -51,7 +51,7 @@ const useStylesList = () => {
 	}
 }
 
-const RequestsItem: React.FC<chat.contact.Entity> = ({ id, name, request }) => {
+const RequestsItem: React.FC<chat.contact.Entity> = ({ id, name, request, publicKey }) => {
 	const navigation = useNavigation()
 	const _styles = useStylesList()
 	const [{ border, column, flex, row, padding, text, background, color }] = useStyles()
@@ -63,11 +63,11 @@ const RequestsItem: React.FC<chat.contact.Entity> = ({ id, name, request }) => {
 			style={[_styles.tinyCard, border.shadow.medium, column.justify]}
 			onPress={navigation.navigate.main.requestSent}
 		>
-			<CircleAvatar
-				style={_styles.tinyAvatar}
-				avatarUri='https://s3.amazonaws.com/uifaces/faces/twitter/msveet/128.jpg'
+			<ProceduralCircleAvatar
+				style={[_styles.tinyAvatar]}
+				seed={publicKey}
 				size={65}
-				diffSize={8}
+				diffSize={15}
 			/>
 			<Text numberOfLines={1} style={[flex.tiny, text.align.center]}>
 				{name}

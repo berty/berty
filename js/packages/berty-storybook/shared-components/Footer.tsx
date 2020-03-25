@@ -3,6 +3,7 @@ import { TouchableOpacity, View, Image, StyleSheet, SafeAreaView } from 'react-n
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
 import LinearGradient from 'react-native-linear-gradient'
+import Jdenticon from 'react-native-jdenticon'
 
 //
 // Footer
@@ -14,6 +15,7 @@ type ButtonFooterProps = {
 	size?: number
 	backgroundColor?: ColorsTypes
 	avatarUri?: string
+	seed?: string
 	icon?: string
 	elemSize?: number
 	elemColor?: ColorsTypes
@@ -34,6 +36,7 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 	size = 45,
 	elemSize = 20,
 	elemColor = 'blue',
+	seed = null,
 	onPress,
 }) => {
 	const [{ border, column, width, height }] = useStyles()
@@ -70,6 +73,18 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 					]}
 					source={{ uri: avatarUri }}
 				/>
+			)}
+			{seed && (
+				<View
+					style={{
+						display: 'flex',
+						flexDirection: 'row',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<Jdenticon value={seed} size={elemSize} style={{}} />
+				</View>
 			)}
 		</TouchableOpacity>
 	)

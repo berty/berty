@@ -3,7 +3,7 @@ import { View, ScrollView, StyleSheet, ActivityIndicator, SafeAreaView } from 'r
 import { Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { CircleAvatar } from '../shared-components/CircleAvatar'
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
@@ -69,14 +69,21 @@ const HomeHeaderGroupButton: React.FC<berty.chatmodel.Account> = () => {
 const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => {
 	const _styles = useStylesHome()
 	const [{ row, margin, background, border, text, padding }] = useStyles()
+	const client = Chat.useClient()
+	const account = Chat.useAccount()
 	return (
 		<View style={[row.center, margin.top.medium]}>
 			<View style={[_styles.homeAvatarBox, background.white, border.radius.medium]}>
 				<View style={[_homeStyles.homeAvatar]}>
-					<CircleAvatar style={row.center} avatarUri={contact?.avatarUri || ''} size={75} />
+					<ProceduralCircleAvatar
+						style={row.center}
+						seed={client?.accountPk}
+						size={75}
+						diffSize={25}
+					/>
 					<View style={[row.center]}>
 						<Text style={[text.family, padding.top.small, _styles.headerNameText]}>
-							{contact?.name || ''}
+							{account?.name || ''}
 						</Text>
 					</View>
 				</View>
