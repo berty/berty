@@ -47,7 +47,7 @@ Usages:
 
 **Note: the project is made by a small team of humans who are not experts and who make mistakes. Please, do not hesitate to point out if you notice a bug or something missing.** _See the [contribute section](#contribute) below._
 
-> We cannot promise to give you the best app, but we can commit to doing our best our best in that direction.
+> We cannot promise to give you the best app, but we can commit to doing our best in that direction.
 
 ## Development Status
 
