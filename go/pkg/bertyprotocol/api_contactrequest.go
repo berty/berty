@@ -3,9 +3,8 @@ package bertyprotocol
 import (
 	"context"
 
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 // ContactRequestReference retrieves the necessary information to create a contact link

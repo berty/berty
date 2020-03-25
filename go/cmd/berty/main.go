@@ -12,15 +12,15 @@ import (
 	"path"
 	"strings"
 
-	"berty.tech/berty/go/cmd/berty/mini"
-	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/banner"
-	"berty.tech/berty/go/internal/grpcutil"
-	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/internal/orbitutil"
-	"berty.tech/berty/go/pkg/bertydemo"
-	"berty.tech/berty/go/pkg/bertyprotocol"
-	"berty.tech/berty/go/pkg/errcode"
+	"berty.tech/berty/v2/go/cmd/berty/mini"
+	"berty.tech/berty/v2/go/internal/account"
+	"berty.tech/berty/v2/go/internal/banner"
+	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/orbitutil"
+	"berty.tech/berty/v2/go/pkg/bertydemo"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
@@ -206,7 +206,7 @@ func main() {
 						return errcode.TODO.Wrap(err)
 					}
 
-					server := grpcutil.Server{grpcServer}
+					server := grpcutil.Server{Server: grpcServer}
 
 					workers.Add(func() error {
 						logger.Info("serving", zap.String("maddr", maddr.String()))
@@ -280,7 +280,7 @@ func main() {
 						return errcode.TODO.Wrap(err)
 					}
 
-					server := grpcutil.Server{grpcServer}
+					server := grpcutil.Server{Server: grpcServer}
 
 					workers.Add(func() error {
 						logger.Info("serving", zap.String("maddr", maddr.String()))

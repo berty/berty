@@ -4,12 +4,11 @@ import (
 	"context"
 	"time"
 
-	"berty.tech/berty/go/pkg/errcode"
-	"github.com/libp2p/go-libp2p/p2p/discovery"
-
+	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	peer "github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p/p2p/discovery"
 )
 
 type DiscoveryNotifee struct {

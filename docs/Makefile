@@ -18,7 +18,7 @@ $(GEN_SUM): $(GEN_SRC)
 	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
 	diff -q $(GEN_SUM).tmp $(GEN_SUM) || ( \
 	  set -e; \
-	  (set -e; cd ../go && GO111MODULE=on go mod vendor); \
+	  (set -e; cd .. && GO111MODULE=on go mod vendor); \
 	  docker run \
 	    --user=`id -u` \
 	    --volume="$(PWD)/..:/go/src/berty.tech/berty" \
@@ -29,7 +29,7 @@ $(GEN_SUM): $(GEN_SRC)
 	    -xec 'make generate_local' \
 	)
 
-PROTOC_OPTS = -I ../go/vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../go/vendor:/protobuf
+PROTOC_OPTS = -I ../vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../vendor:/protobuf
 .PHONY: generate_local
 generate_local:
 	protoc $(PROTOC_OPTS) --doc_out=./protocol --doc_opt=markdown,api.md.tmp ../api/bertyprotocol.proto

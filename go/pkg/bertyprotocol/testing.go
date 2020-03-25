@@ -4,9 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"go.uber.org/zap"
-
-	"berty.tech/berty/go/internal/ipfsutil"
 )
 
 // TestingClient returns a configured Client struct with in-memory contexts.

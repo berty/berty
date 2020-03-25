@@ -9,15 +9,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ipfs/go-cid"
+	"berty.tech/berty/v2/go/internal/account"
+	"berty.tech/berty/v2/go/internal/orbitutil"
+	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	cid "github.com/ipfs/go-cid"
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/assert"
-
-	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/orbitutil"
-	"berty.tech/berty/go/internal/testutil"
-	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms bertyprotocol.MetadataStore, g *bertyprotocol.Group, memberPK crypto.PubKey, join bool) (crypto.PubKey, *bertyprotocol.DeviceSecret) {

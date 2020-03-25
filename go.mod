@@ -1,4 +1,4 @@
-module berty.tech/berty/go
+module berty.tech/berty/v2
 
 go 1.13
 
@@ -26,6 +26,7 @@ require (
 	github.com/libp2p/go-libp2p-discovery v0.2.0
 	github.com/libp2p/go-libp2p-kad-dht v0.4.1
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e
+	github.com/mattn/go-sqlite3 v2.0.1+incompatible // indirect
 	github.com/multiformats/go-multiaddr v0.2.0
 	github.com/multiformats/go-multiaddr-net v0.1.1
 	github.com/multiformats/go-multihash v0.0.10
@@ -38,7 +39,8 @@ require (
 	github.com/whyrusleeping/go-logging v0.0.1
 	go.uber.org/multierr v1.2.0 // indirect
 	go.uber.org/zap v1.10.0
-	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
+	golang.org/x/crypto v0.0.0-20191205180655-e7c4368fe9dd
+	golang.org/x/mod v0.1.1-0.20191209134235-331c550502dd // indirect
 	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
 	golang.org/x/tools v0.0.0-20200226224502-204d844ad48d // indirect
 	google.golang.org/genproto v0.0.0-20190927181202-20e1ac93f88c // indirect
@@ -46,6 +48,7 @@ require (
 	moul.io/srand v1.4.0
 )
 
-replace github.com/golangci/golangci-lint => github.com/golangci/golangci-lint v1.18.0
-
-replace github.com/go-critic/go-critic v0.0.0-20181204210945-ee9bf5809ead => github.com/go-critic/go-critic v0.3.5-0.20190526074819-1df300866540
+replace (
+	github.com/go-critic/go-critic v0.0.0-20181204210945-ee9bf5809ead => github.com/go-critic/go-critic v0.3.5-0.20190526074819-1df300866540
+	github.com/golangci/golangci-lint => github.com/golangci/golangci-lint v1.18.0
+)

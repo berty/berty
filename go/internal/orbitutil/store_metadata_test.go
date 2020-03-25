@@ -9,13 +9,12 @@ import (
 	"testing"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
-
-	"berty.tech/berty/go/internal/testutil"
-	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 func TestMetadataStoreSecret_Basic(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"net"
 
-	"berty.tech/berty/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	ggio "github.com/gogo/protobuf/io"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	inet "github.com/libp2p/go-libp2p-core/network"

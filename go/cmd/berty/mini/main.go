@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"strings"
 
+	"berty.tech/berty/v2/go/internal/account"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/orbitutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"github.com/gdamore/tcell"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
@@ -12,11 +16,6 @@ import (
 	"github.com/juju/fslock"
 	"github.com/rivo/tview"
 	"github.com/whyrusleeping/go-logging"
-
-	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/internal/orbitutil"
-	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 type Opts struct {

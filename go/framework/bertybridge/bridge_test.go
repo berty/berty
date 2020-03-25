@@ -3,10 +3,10 @@ package bertybridge
 import (
 	"testing"
 
-	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/internal/testutil"
-	"berty.tech/berty/go/pkg/bertydemo"
-	"berty.tech/berty/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertydemo"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

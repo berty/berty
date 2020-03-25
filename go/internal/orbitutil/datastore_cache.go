@@ -1,12 +1,11 @@
 package orbitutil
 
 import (
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/cache"
-	"github.com/ipfs/go-datastore"
+	datastore "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/query"
-
-	"berty.tech/berty/go/internal/ipfsutil"
 )
 
 type datastoreCache struct {

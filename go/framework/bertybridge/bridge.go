@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"berty.tech/berty/go/internal/grpcutil"
-	"berty.tech/berty/go/pkg/errcode"
+	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	"github.com/pkg/errors"
@@ -187,7 +187,7 @@ func (b *Bridge) addGRPCListenner(maddr string) error {
 		return err
 	}
 
-	server := &grpcutil.Server{b.grpcServer}
+	server := &grpcutil.Server{Server: b.grpcServer}
 	b.workers.Add(func() (err error) {
 		if err = server.Serve(l); err != nil {
 			b.logger.Error("grpc serve server",

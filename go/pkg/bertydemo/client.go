@@ -8,18 +8,17 @@ import (
 	"sync"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/orbitutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/stores/operation"
 	cid "github.com/ipfs/go-cid"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
-
-	"berty.tech/berty/go/internal/cryptoutil"
-	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/internal/orbitutil"
-	"berty.tech/berty/go/pkg/bertyprotocol"
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 type Client struct {

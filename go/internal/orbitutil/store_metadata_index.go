@@ -5,15 +5,14 @@ import (
 	"fmt"
 	"sync"
 
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores/operation"
 	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/pkg/bertyprotocol"
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 type metadataStoreIndex struct {
@@ -658,7 +657,7 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 	return nil
 }
 
-// NewMetadataStoreIndex returns a new index to manage the list of the group members
+// NewMetadataIndex returns a new index to manage the list of the group members
 func NewMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertyprotocol.Group, memberDevice *bertyprotocol.MemberDevice) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		m := &metadataStoreIndex{

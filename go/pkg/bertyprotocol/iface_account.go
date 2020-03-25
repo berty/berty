@@ -5,9 +5,8 @@ import (
 	"math"
 	"math/big"
 
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 type AccountKeys interface {

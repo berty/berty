@@ -7,13 +7,12 @@ import (
 	"strings"
 	"time"
 
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"github.com/gdamore/tcell"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
-
-	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 type groupView struct {

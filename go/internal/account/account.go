@@ -7,13 +7,12 @@ import (
 	"strings"
 	"sync"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/aead/ecdh"
 	"github.com/ipfs/go-ipfs/keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/internal/cryptoutil"
-	"berty.tech/berty/go/pkg/bertyprotocol"
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 type Account struct {

@@ -1,6 +1,7 @@
 export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
+berty_root := $(abspath $(PWD)/../../..)
 berty_go_path := $(abspath $(PWD)/../../../go)
 berty_api_path := $(abspath $(PWD)/../../../api)
 
@@ -13,7 +14,7 @@ codegen_lint_options := --cache --fix --no-ignore
 codegen_berty_path := $(berty_api_path)
 codegen_protobuf_path := $(abspath $(PWD)/../../node_modules/@protocolbuffers/protobuf/src)
 codegen_googleapis_path := $(abspath $(PWD)/../../node_modules/@googleapis/googleapis)
-codegen_go_path := $(abspath $(berty_go_path)/vendor)
+codegen_go_path := $(abspath $(berty_root)/vendor)
 
 codegen_berty_chat_protos := \
 	$(codegen_berty_path)/js-internal/bertychat.proto \
@@ -61,7 +62,7 @@ codegen_pbhbs_flags := \
 
 codegen_deps := \
 	$(PWD)/Makefile \
-	$(berty_go_path)/vendor \
+	$(codegen_go_path) \
 	$(PWD)/node_modules \
 
 $(codegen_berty_chat_sources): $(codegen_deps) $(codegen_berty_chat_protos)

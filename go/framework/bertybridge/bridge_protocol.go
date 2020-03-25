@@ -1,16 +1,14 @@
 package bertybridge
 
 import (
+	"berty.tech/berty/v2/go/internal/account"
+	"berty.tech/berty/v2/go/internal/orbitutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	keystore "github.com/ipfs/go-ipfs-keystore"
+	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-
-	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/orbitutil"
-	"berty.tech/berty/go/pkg/bertyprotocol"
-	"berty.tech/berty/go/pkg/errcode"
-
-	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 )
 
 type Protocol struct {

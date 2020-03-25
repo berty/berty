@@ -1,2 +1,0 @@
-// account
-package account

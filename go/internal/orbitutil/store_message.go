@@ -3,6 +3,9 @@ package orbitutil
 import (
 	"context"
 
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
+	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-ipfs-log/identityprovider"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/iface"
@@ -11,11 +14,6 @@ import (
 	"berty.tech/go-orbit-db/stores/operation"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/pkg/bertyprotocol"
-	"berty.tech/berty/go/pkg/errcode"
-
-	ipfslog "berty.tech/go-ipfs-log"
 )
 
 const GroupMessageStoreType = "berty_group_messages"

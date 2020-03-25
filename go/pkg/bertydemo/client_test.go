@@ -6,9 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/go/internal/testutil"
-
-	"berty.tech/berty/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	// "github.com/fortytw2/leaktest"
