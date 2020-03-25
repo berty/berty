@@ -33,6 +33,8 @@ func TestNew(t *testing.T) {
 
 	err = demo.Close()
 	require.NoError(t, err)
+
+	ipfsmock.Close()
 }
 
 func testingLogToken(t *testing.T, d DemoServiceClient) string {

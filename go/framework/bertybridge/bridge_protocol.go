@@ -1,14 +1,14 @@
 package bertybridge
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
+	keystore "github.com/ipfs/go-ipfs-keystore"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
+	"berty.tech/berty/go/internal/account"
+	"berty.tech/berty/go/internal/orbitutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
-
-	"github.com/jinzhu/gorm"
 
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 )
@@ -16,7 +16,6 @@ import (
 type Protocol struct {
 	*Bridge
 
-	db     *gorm.DB
 	client bertyprotocol.Client
 }
 
@@ -71,18 +70,16 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 	{
 		var err error
 
-		protocol.db, err = gorm.Open("sqlite3", ":memory:")
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-
 		// initialize new protocol client
 		protocolOpts := bertyprotocol.Opts{
-			Logger:      logger.Named("bertyprotocol"),
-			IpfsCoreAPI: config.coreAPI,
+			Logger:        logger.Named("bertyprotocol"),
+			IpfsCoreAPI:   config.coreAPI,
+			Account:       account.New(keystore.NewMemKeystore()),
+			MessageKeys:   bertyprotocol.NewInMemoryMessageKeys(),
+			DBConstructor: orbitutil.NewBertyOrbitDB,
 		}
 
-		protocol.client, err = bertyprotocol.New(protocol.db, protocolOpts)
+		protocol.client, err = bertyprotocol.New(protocolOpts)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -111,7 +108,6 @@ func (p *Protocol) Close() (err error) {
 
 	// close clients and dbs after listeners
 	p.client.Close()
-	p.db.Close()
 
 	return
 }

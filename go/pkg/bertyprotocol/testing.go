@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/internal/protocoldb"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/go/internal/ipfsutil"
 )
 
 // TestingClient returns a configured Client struct with in-memory contexts.
@@ -22,20 +22,22 @@ func TestingClient(t *testing.T, opts Opts) (Client, func()) {
 		opts.Logger = zap.NewNop()
 	}
 
+	ipfsCoreClose := func() {}
+
 	if opts.IpfsCoreAPI == nil {
-		opts.IpfsCoreAPI = ipfsutil.TestingCoreAPI(ctx, t)
+		ca := ipfsutil.TestingCoreAPI(ctx, t)
+		opts.IpfsCoreAPI = ca
+		ipfsCoreClose = ca.Close
 	}
 
-	db := protocoldb.TestingSqliteDB(t, opts.Logger)
-
-	client, err := New(db, opts)
+	client, err := New(opts)
 	if err != nil {
 		t.Fatalf("failed to initialize client: %v", err)
 	}
 
 	cleanup := func() {
 		client.Close()
-		db.Close()
+		ipfsCoreClose()
 	}
 
 	return client, cleanup

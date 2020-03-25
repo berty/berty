@@ -290,5 +290,4 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 
 func (d *Client) Close() error {
 	return d.odb.Close()
-
 }

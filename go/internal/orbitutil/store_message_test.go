@@ -8,7 +8,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"berty.tech/berty/go/internal/bertycrypto"
 	"berty.tech/berty/go/internal/orbitutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 )
@@ -37,11 +36,11 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 	defer orbitutil.DropPeers(t, peers)
 
 	dPK0 := peers[0].GC.DevicePubKey()
-	ds0, err := bertycrypto.DeviceSecret(ctx, peers[0].GC.Group(), peers[0].MK, peers[0].Acc)
+	ds0, err := bertyprotocol.GetDeviceSecret(ctx, peers[0].GC.Group(), peers[0].MK, peers[0].Acc)
 	assert.NoError(t, err)
 	assert.NotNil(t, ds0)
 
-	err = bertycrypto.RegisterChainKey(ctx, peers[1].MK, peers[0].GC.Group(), dPK0, ds0, false)
+	err = bertyprotocol.RegisterChainKey(ctx, peers[1].MK, peers[0].GC.Group(), dPK0, ds0, false)
 	assert.NoError(t, err)
 
 	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1)

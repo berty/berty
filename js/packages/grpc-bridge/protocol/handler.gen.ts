@@ -137,4 +137,24 @@ export interface IProtocolServiceHandler {
 		request: api.berty.protocol.GroupMessageSubscribe.IRequest,
 		callback: (error: Error | null, response?: api.berty.protocol.IGroupMessageEvent) => void,
 	) => void
+	GroupMetadataList: (
+		request: api.berty.protocol.GroupMetadataList.IRequest,
+		callback: (error: Error | null, response?: api.berty.protocol.IGroupMetadataEvent) => void,
+	) => void
+	GroupMessageList: (
+		request: api.berty.protocol.GroupMessageList.IRequest,
+		callback: (error: Error | null, response?: api.berty.protocol.IGroupMessageEvent) => void,
+	) => void
+	GroupInfo: (
+		request: api.berty.protocol.GroupInfo.IRequest,
+		callback: (error: Error | null, response?: api.berty.protocol.GroupInfo.IReply) => void,
+	) => void
+	ActivateGroup: (
+		request: api.berty.protocol.ActivateGroup.IRequest,
+		callback: (error: Error | null, response?: api.berty.protocol.ActivateGroup.IReply) => void,
+	) => void
+	DeactivateGroup: (
+		request: api.berty.protocol.DeactivateGroup.IRequest,
+		callback: (error: Error | null, response?: api.berty.protocol.DeactivateGroup.IReply) => void,
+	) => void
 }

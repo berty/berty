@@ -2,20 +2,27 @@ package mini
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/gdamore/tcell"
+	"github.com/ipfs/go-datastore"
+	sync_ds "github.com/ipfs/go-datastore/sync"
 	ipfslogger "github.com/ipfs/go-log"
+	"github.com/juju/fslock"
 	"github.com/rivo/tview"
 	"github.com/whyrusleeping/go-logging"
 
+	"berty.tech/berty/go/internal/account"
+	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/internal/orbitutil"
+	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 type Opts struct {
 	GroupInvitation string
 	Port            uint
-	Path            string
+	RootDS          datastore.Batching
 }
 
 func Main(opts *Opts) {
@@ -24,19 +31,69 @@ func Main(opts *Opts) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	odb, ds, node, lock := initOrbitDB(ctx, opts)
-	defer unlockFS(lock)
-	defer ds.Close()
-	defer node.Close()
+	var (
+		swarmAddresses []string = nil
+		lock           *fslock.Lock
+	)
 
-	cg, err := odb.OpenAccountGroup(ctx, nil)
+	if opts.Port != 0 {
+		swarmAddresses = []string{
+			fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", opts.Port),
+			fmt.Sprintf("/ip6/0.0.0.0/tcp/%d", opts.Port),
+		}
+	}
+
+	rootDS := sync_ds.MutexWrap(opts.RootDS)
+
+	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("ipfs"))
+	cfg, err := ipfsutil.CreateBuildConfigWithDatastore(&ipfsutil.BuildOpts{
+		SwarmAddresses: swarmAddresses,
+	}, ipfsDS)
+	if err != nil {
+		panicUnlockFS(err, lock)
+	}
+
+	orbitdbDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))
+
+	api, node, err := ipfsutil.NewConfigurableCoreAPI(ctx, cfg, ipfsutil.OptionMDNSDiscovery)
+	if err != nil {
+		panicUnlockFS(err, lock)
+	}
+
+	mk := bertyprotocol.NewDatastoreMessageKeys(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
+	ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
+
+	client, err := bertyprotocol.New(bertyprotocol.Opts{
+		IpfsCoreAPI:   api,
+		Account:       account.New(ks),
+		RootContext:   ctx,
+		RootDatastore: rootDS,
+		MessageKeys:   mk,
+		OrbitCache:    orbitutil.NewOrbitDatastoreCache(orbitdbDS),
+		DBConstructor: orbitutil.NewBertyOrbitDB,
+	})
+
 	if err != nil {
 		panic(err)
 	}
 
+	config, err := client.InstanceGetConfiguration(ctx, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	defer node.Close()
+
 	app := tview.NewApplication()
 
-	tabbedView := newTabbedGroups(ctx, cg, odb, app)
+	accountGroup, err := client.GroupInfo(ctx, &bertyprotocol.GroupInfo_Request{
+		GroupPK: config.AccountGroupPK,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	tabbedView := newTabbedGroups(ctx, accountGroup, client, app)
 	if len(opts.GroupInvitation) > 0 {
 		for _, invit := range strings.Split(opts.GroupInvitation, ",") {
 			if err := groupJoinCommand(ctx, tabbedView.accountGroupView, invit); err != nil {
@@ -68,11 +125,6 @@ func Main(opts *Opts) {
 			AddItem(tabbedView.GetHistory(), 0, 1, false).
 			AddItem(inputBox, 1, 1, true), 0, 1, true)
 
-	err = orbitutil.ActivateGroupContext(ctx, cg)
-	if err != nil {
-		panic(err)
-	}
-
 	app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		handlers := map[tcell.Key]func() bool{
 			tcell.KeyCtrlC: func() bool { app.Stop(); return true },
@@ -82,7 +134,7 @@ func Main(opts *Opts) {
 			tcell.KeyPgUp:  func() bool { tabbedView.GetActiveViewGroup().ScrollToOffset(-10); return true },
 			tcell.KeyPgDn:  func() bool { tabbedView.GetActiveViewGroup().ScrollToOffset(+10); return true },
 			tcell.KeyUp: func() bool {
-				if event.Modifiers() == tcell.ModAlt {
+				if event.Modifiers() == tcell.ModAlt || event.Modifiers() == tcell.ModCtrl {
 					tabbedView.PrevGroup()
 					return true
 				}
@@ -92,7 +144,7 @@ func Main(opts *Opts) {
 				return true
 			},
 			tcell.KeyDown: func() bool {
-				if event.Modifiers() == tcell.ModAlt {
+				if event.Modifiers() == tcell.ModAlt || event.Modifiers() == tcell.ModCtrl {
 					tabbedView.NextGroup()
 					return true
 				}

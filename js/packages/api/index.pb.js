@@ -1970,6 +1970,28 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 requestType: "GroupMessageSubscribe.Request",
                 responseType: "GroupMessageEvent",
                 responseStream: true
+              },
+              GroupMetadataList: {
+                requestType: "GroupMetadataList.Request",
+                responseType: "GroupMetadataEvent",
+                responseStream: true
+              },
+              GroupMessageList: {
+                requestType: "GroupMessageList.Request",
+                responseType: "GroupMessageEvent",
+                responseStream: true
+              },
+              GroupInfo: {
+                requestType: "GroupInfo.Request",
+                responseType: "GroupInfo.Reply"
+              },
+              ActivateGroup: {
+                requestType: "ActivateGroup.Request",
+                responseType: "ActivateGroup.Reply"
+              },
+              DeactivateGroup: {
+                requestType: "DeactivateGroup.Request",
+                responseType: "DeactivateGroup.Reply"
               }
             }
           },
@@ -2623,6 +2645,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   reference: {
                     type: "bytes",
                     id: 1
+                  },
+                  enabled: {
+                    type: "bool",
+                    id: 2
                   }
                 }
               }
@@ -3015,6 +3041,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               }
             }
           },
+          GroupMetadataList: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  groupPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  }
+                }
+              }
+            }
+          },
           GroupMessageSubscribe: {
             fields: {},
             nested: {
@@ -3040,6 +3082,105 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     id: 4
                   }
                 }
+              }
+            }
+          },
+          GroupMessageList: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  groupPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          GroupInfo: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  groupPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  },
+                  contactPk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "ContactPK"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  group: {
+                    type: "Group",
+                    id: 1
+                  },
+                  memberPk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "MemberPK"
+                    }
+                  },
+                  devicePk: {
+                    type: "bytes",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          ActivateGroup: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  groupPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          DeactivateGroup: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  groupPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
               }
             }
           },

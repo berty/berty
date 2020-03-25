@@ -14,10 +14,9 @@ import (
 	"github.com/golang/protobuf/proto"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"golang.org/x/crypto/nacl/box"
 
-	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/bertycrypto"
-	"berty.tech/berty/go/internal/group"
+	"berty.tech/berty/go/internal/cryptoutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 )
@@ -27,8 +26,8 @@ const GroupMetadataStoreType = "berty_group_metadata"
 type MetadataStoreImpl struct {
 	basestore.BaseStore
 	g   *bertyprotocol.Group
-	acc *account.Account
-	mk  bertycrypto.MessageKeys
+	acc bertyprotocol.AccountKeys
+	mk  bertyprotocol.MessageKeys
 }
 
 func isMultiMemberGroup(m *MetadataStoreImpl) bool {
@@ -96,7 +95,7 @@ func (m *MetadataStoreImpl) AddDeviceToGroup(ctx context.Context) (operation.Ope
 	return MetadataStoreAddDeviceToGroup(ctx, m, m.g, md)
 }
 
-func MetadataStoreAddDeviceToGroup(ctx context.Context, m MetadataStore, g *bertyprotocol.Group, md *account.OwnMemberDevice) (operation.Operation, error) {
+func MetadataStoreAddDeviceToGroup(ctx context.Context, m bertyprotocol.MetadataStore, g *bertyprotocol.Group, md *bertyprotocol.OwnMemberDevice) (operation.Operation, error) {
 	device, err := md.Device.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -150,7 +149,7 @@ func (m *MetadataStoreImpl) SendSecret(ctx context.Context, memberPK crypto.PubK
 		return nil, errcode.ErrInvalidInput
 	}
 
-	ds, err := bertycrypto.DeviceSecret(ctx, m.g, m.mk, m.acc)
+	ds, err := bertyprotocol.GetDeviceSecret(ctx, m.g, m.mk, m.acc)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -158,8 +157,8 @@ func (m *MetadataStoreImpl) SendSecret(ctx context.Context, memberPK crypto.PubK
 	return MetadataStoreSendSecret(ctx, m, m.g, md, memberPK, ds)
 }
 
-func MetadataStoreSendSecret(ctx context.Context, m MetadataStore, g *bertyprotocol.Group, md *account.OwnMemberDevice, memberPK crypto.PubKey, ds *bertyprotocol.DeviceSecret) (operation.Operation, error) {
-	payload, err := group.NewSecretEntryPayload(md.Device, memberPK, ds, g)
+func MetadataStoreSendSecret(ctx context.Context, m bertyprotocol.MetadataStore, g *bertyprotocol.Group, md *bertyprotocol.OwnMemberDevice, memberPK crypto.PubKey, ds *bertyprotocol.DeviceSecret) (operation.Operation, error) {
+	payload, err := NewSecretEntryPayload(md.Device, memberPK, ds, g)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
@@ -229,7 +228,7 @@ func SignProto(message proto.Message, sk crypto.PrivKey) ([]byte, error) {
 	return sig, nil
 }
 
-func MetadataStoreAddEvent(ctx context.Context, m MetadataStore, g *bertyprotocol.Group, eventType bertyprotocol.EventType, event proto.Marshaler, sig []byte) (operation.Operation, error) {
+func MetadataStoreAddEvent(ctx context.Context, m bertyprotocol.MetadataStore, g *bertyprotocol.Group, eventType bertyprotocol.EventType, event proto.Marshaler, sig []byte) (operation.Operation, error) {
 	env, err := bertyprotocol.SealGroupEnvelope(g, eventType, event, sig)
 	if err != nil {
 		return nil, errcode.ErrSignatureFailed.Wrap(err)
@@ -299,7 +298,19 @@ func (m *MetadataStoreImpl) GetIncomingContactRequestsStatus() (bool, *bertyprot
 }
 
 func (m *MetadataStoreImpl) ListMembers() []crypto.PubKey {
-	return m.Index().(*metadataStoreIndex).ListMembers()
+	if m.typeChecker(isAccountGroup) {
+		return nil
+	}
+
+	if m.typeChecker(isContactGroup) {
+		return nil
+	}
+
+	if m.typeChecker(isMultiMemberGroup) {
+		return m.Index().(*metadataStoreIndex).ListMembers()
+	}
+
+	return nil
 }
 
 func (m *MetadataStoreImpl) ListDevices() []crypto.PubKey {
@@ -332,7 +343,7 @@ func (m *MetadataStoreImpl) ListMultiMemberGroups() []*bertyprotocol.Group {
 
 }
 
-func (m *MetadataStoreImpl) ListContactsByStatus(state bertyprotocol.ContactState) []*bertyprotocol.ShareableContact {
+func (m *MetadataStoreImpl) ListContactsByStatus(states ...bertyprotocol.ContactState) []*bertyprotocol.ShareableContact {
 	if !m.typeChecker(isAccountGroup) {
 		return nil
 	}
@@ -347,11 +358,17 @@ func (m *MetadataStoreImpl) ListContactsByStatus(state bertyprotocol.ContactStat
 	contacts := []*bertyprotocol.ShareableContact(nil)
 
 	for _, c := range idx.contacts {
-		if c.state != state {
-			continue
+		hasState := false
+		for _, s := range states {
+			if c.state == s {
+				hasState = true
+				break
+			}
 		}
 
-		contacts = append(contacts, c.contact)
+		if hasState {
+			contacts = append(contacts, c.contact)
+		}
 	}
 
 	return contacts
@@ -632,6 +649,12 @@ func (m *MetadataStoreImpl) SendAliasProof(ctx context.Context) (operation.Opera
 	}, bertyprotocol.EventTypeMultiMemberGroupAliasResolverAdded)
 }
 
+func (m *MetadataStoreImpl) SendAppMetadata(ctx context.Context, message []byte) (operation.Operation, error) {
+	return m.attributeSignAndAddEvent(ctx, &bertyprotocol.AppMetadata{
+		Message: message,
+	}, bertyprotocol.EventTypeGroupMetadataPayloadSent)
+}
+
 type accountSignableEvent interface {
 	proto.Message
 	proto.Marshaler
@@ -743,4 +766,25 @@ func ConstructorFactoryGroupMetadata(s *bertyOrbitDB) iface.StoreConstructor {
 	}
 }
 
-var _ MetadataStore = (*MetadataStoreImpl)(nil)
+func NewSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey crypto.PubKey, secret *bertyprotocol.DeviceSecret, group *bertyprotocol.Group) ([]byte, error) {
+	message, err := secret.Marshal()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	nonce, err := bertyprotocol.GroupIDToNonce(group)
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	mongPriv, mongPub, err := cryptoutil.EdwardsToMontgomery(localDevicePrivKey, remoteMemberPubKey)
+	if err != nil {
+		return nil, errcode.ErrCryptoKeyConversion.Wrap(err)
+	}
+
+	encryptedSecret := box.Seal(nil, message, nonce, mongPub, mongPriv)
+
+	return encryptedSecret, nil
+}
+
+var _ bertyprotocol.MetadataStore = (*MetadataStoreImpl)(nil)

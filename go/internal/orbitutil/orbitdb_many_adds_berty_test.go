@@ -18,7 +18,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/bertycrypto"
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/internal/orbitutil"
 	"berty.tech/berty/go/internal/testutil"
@@ -68,19 +67,19 @@ func testAddBerty(ctx context.Context, t *testing.T, api ipfsutil.CoreAPIMock, g
 
 	accountKS := ipfsutil.NewDatastoreKeystore(accountDS)
 	orbitdbCache := orbitutil.NewOrbitDatastoreCache(orbitdbDS)
-	mk := bertycrypto.NewDatastoreMessageKeys(messagesDS)
+	mk := bertyprotocol.NewDatastoreMessageKeys(messagesDS)
 
 	odb, err := orbitutil.NewBertyOrbitDB(ctx, api, account.New(accountKS), mk, &orbitdb.NewOrbitDBOptions{Cache: orbitdbCache})
 	require.NoError(t, err)
 
 	defer odb.Close()
 
-	gc, err := odb.OpenMultiMemberGroup(ctx, g, nil)
+	gc, err := odb.OpenGroup(ctx, g, nil)
 	require.NoError(t, err)
 
 	defer gc.Close()
 
-	err = orbitutil.ActivateGroupContext(ctx, gc)
+	err = bertyprotocol.ActivateGroupContext(ctx, gc)
 	require.NoError(t, err)
 
 	wg := sync.WaitGroup{}

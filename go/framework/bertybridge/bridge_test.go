@@ -40,6 +40,8 @@ func TestProtocolBridge(t *testing.T) {
 	defer func() {
 		err = protocol.Close()
 		assert.NoErrorf(t, err, "protocol.Close")
+
+		coreAPI.Close()
 	}()
 
 	logger.Info(

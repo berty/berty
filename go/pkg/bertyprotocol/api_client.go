@@ -11,22 +11,36 @@ func (c *client) InstanceExportData(context.Context, *InstanceExportData_Request
 }
 
 func (c *client) InstanceGetConfiguration(ctx context.Context, req *InstanceGetConfiguration_Request) (*InstanceGetConfiguration_Reply, error) {
-	ret := &InstanceGetConfiguration_Reply{}
-
 	key, err := c.ipfsCoreAPI.Key().Self(ctx)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	ret.PeerID = key.ID().Pretty()
 
 	maddrs, err := c.ipfsCoreAPI.Swarm().ListenAddrs(ctx)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	ret.Listeners = make([]string, len(maddrs))
+
+	listeners := make([]string, len(maddrs))
 	for i, addr := range maddrs {
-		ret.Listeners[i] = addr.String()
+		listeners[i] = addr.String()
 	}
 
-	return ret, nil
+	member, err := c.accContextGroup.MemberPubKey().Raw()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	device, err := c.accContextGroup.DevicePubKey().Raw()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	return &InstanceGetConfiguration_Reply{
+		AccountPK:      member,
+		DevicePK:       device,
+		AccountGroupPK: c.accContextGroup.Group().PublicKey,
+		PeerID:         key.ID().Pretty(),
+		Listeners:      listeners,
+	}, nil
 }

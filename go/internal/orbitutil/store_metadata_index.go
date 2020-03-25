@@ -12,14 +12,13 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
 
-	"berty.tech/berty/go/internal/account"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 )
 
 type metadataStoreIndex struct {
-	members                  map[string][]*account.MemberDevice
-	devices                  map[string]*account.MemberDevice
+	members                  map[string][]*bertyprotocol.MemberDevice
+	devices                  map[string]*bertyprotocol.MemberDevice
 	handledEvents            map[string]struct{}
 	sentSecrets              map[string]struct{}
 	admins                   map[crypto.PubKey]struct{}
@@ -33,7 +32,7 @@ type metadataStoreIndex struct {
 	ownAliasKeySent          bool
 	otherAliasKey            []byte
 	g                        *bertyprotocol.Group
-	ownMemberDevice          *account.MemberDevice
+	ownMemberDevice          *bertyprotocol.MemberDevice
 	ctx                      context.Context
 	eventEmitter             events.EmitterInterface
 	lock                     sync.RWMutex
@@ -72,11 +71,10 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	entries := log.Values().Slice()
 
 	// Resetting state
-	m.members = map[string][]*account.MemberDevice{}
-	m.devices = map[string]*account.MemberDevice{}
+	m.members = map[string][]*bertyprotocol.MemberDevice{}
+	m.devices = map[string]*bertyprotocol.MemberDevice{}
 	m.admins = map[crypto.PubKey]struct{}{}
 	m.sentSecrets = map[string]struct{}{}
-	m.handledEvents = map[string]struct{}{}
 	m.contacts = map[string]*accountContact{}
 	m.groups = map[string]*accountGroup{}
 
@@ -147,12 +145,12 @@ func (m *metadataStoreIndex) handleGroupAddMemberDevice(event proto.Message) err
 		return nil
 	}
 
-	m.devices[string(e.DevicePK)] = &account.MemberDevice{
+	m.devices[string(e.DevicePK)] = &bertyprotocol.MemberDevice{
 		Member: member,
 		Device: device,
 	}
 
-	m.members[string(e.MemberPK)] = append(m.members[string(e.MemberPK)], &account.MemberDevice{
+	m.members[string(e.MemberPK)] = append(m.members[string(e.MemberPK)], &bertyprotocol.MemberDevice{
 		Member: member,
 		Device: device,
 	})
@@ -661,11 +659,11 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 }
 
 // NewMetadataStoreIndex returns a new index to manage the list of the group members
-func NewMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertyprotocol.Group, memberDevice *account.MemberDevice) iface.IndexConstructor {
+func NewMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertyprotocol.Group, memberDevice *bertyprotocol.MemberDevice) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		m := &metadataStoreIndex{
-			members:         map[string][]*account.MemberDevice{},
-			devices:         map[string]*account.MemberDevice{},
+			members:         map[string][]*bertyprotocol.MemberDevice{},
+			devices:         map[string]*bertyprotocol.MemberDevice{},
 			admins:          map[crypto.PubKey]struct{}{},
 			sentSecrets:     map[string]struct{}{},
 			handledEvents:   map[string]struct{}{},

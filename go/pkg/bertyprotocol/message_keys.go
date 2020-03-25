@@ -1,4 +1,4 @@
-package bertycrypto
+package bertyprotocol
 
 import (
 	"context"
@@ -17,38 +17,10 @@ import (
 	"golang.org/x/crypto/hkdf"
 	"golang.org/x/crypto/nacl/secretbox"
 
-	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 )
 
-type MessageKeys interface {
-	// GetDeviceChainKey gets a device key chain from the key holder
-	GetDeviceChainKey(ctx context.Context, pk crypto.PubKey) (*bertyprotocol.DeviceSecret, error)
-
-	// PutDeviceChainKey puts a key chain into the key holder
-	PutDeviceChainKey(ctx context.Context, device crypto.PubKey, ds *bertyprotocol.DeviceSecret) error
-
-	// GetPrecomputedKey gets a precomputed key for a device and its message counter value
-	GetPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64) (*[32]byte, error)
-
-	// DelPrecomputedKey removes a precomputed key for a device and its message counter value
-	DelPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64) error
-
-	// PutPrecomputedKey stores a precomputed key for a device and its message counter value
-	PutPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64, mk *[32]byte) error
-
-	// PutKeyForCID stores a message key for a CID
-	PutKeyForCID(ctx context.Context, id cid.Cid, key *[32]byte) error
-
-	// GetKeyForCID gets a message key for a CID
-	GetKeyForCID(ctx context.Context, id cid.Cid) (*[32]byte, error)
-
-	// GetPrecomputedKeyExpectedCount returns how many keys are precomputed
-	GetPrecomputedKeyExpectedCount() int
-}
-
-func OpenPayload(ctx context.Context, m MessageKeys, id cid.Cid, payload []byte, headers *bertyprotocol.MessageHeaders) ([]byte, *DecryptInfo, error) {
+func OpenPayload(ctx context.Context, m MessageKeys, id cid.Cid, payload []byte, headers *MessageHeaders) ([]byte, *DecryptInfo, error) {
 	var (
 		err error
 		di  = &DecryptInfo{
@@ -81,7 +53,7 @@ func OpenPayload(ctx context.Context, m MessageKeys, id cid.Cid, payload []byte,
 	return msg, di, nil
 }
 
-func updateCurrentKey(ctx context.Context, m MessageKeys, pk crypto.PubKey, ds *bertyprotocol.DeviceSecret) error {
+func updateCurrentKey(ctx context.Context, m MessageKeys, pk crypto.PubKey, ds *DeviceSecret) error {
 	currentCK, err := m.GetDeviceChainKey(ctx, pk)
 	if err != nil {
 		return errcode.ErrInternal.Wrap(err)
@@ -98,7 +70,7 @@ func updateCurrentKey(ctx context.Context, m MessageKeys, pk crypto.PubKey, ds *
 	return nil
 }
 
-func SealPayload(payload []byte, ds *bertyprotocol.DeviceSecret, deviceSK crypto.PrivKey, g *bertyprotocol.Group) ([]byte, []byte, error) {
+func SealPayload(payload []byte, ds *DeviceSecret, deviceSK crypto.PrivKey, g *Group) ([]byte, []byte, error) {
 	var (
 		msgKey [32]byte
 		err    error
@@ -109,14 +81,14 @@ func SealPayload(payload []byte, ds *bertyprotocol.DeviceSecret, deviceSK crypto
 		return nil, nil, errcode.ErrSignatureFailed.Wrap(err)
 	}
 
-	if _, msgKey, err = deriveNextKeys(ds.ChainKey, nil, g.PublicKey); err != nil {
+	if _, msgKey, err = deriveNextKeys(ds.ChainKey, nil, g.GetPublicKey()); err != nil {
 		return nil, nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
 	}
 
 	return secretbox.Seal(nil, payload, uint64AsNonce(ds.Counter+1), &msgKey), sig, nil
 }
 
-func SealEnvelopeInternal(payload []byte, ds *bertyprotocol.DeviceSecret, deviceSK crypto.PrivKey, g *bertyprotocol.Group) ([]byte, error) {
+func SealEnvelopeInternal(payload []byte, ds *DeviceSecret, deviceSK crypto.PrivKey, g *Group) ([]byte, error) {
 	encryptedPayload, sig, err := SealPayload(payload, ds, deviceSK, g)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
@@ -127,7 +99,7 @@ func SealEnvelopeInternal(payload []byte, ds *bertyprotocol.DeviceSecret, device
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	headers, err := proto.Marshal(&bertyprotocol.MessageHeaders{
+	headers, err := proto.Marshal(&MessageHeaders{
 		Counter:  ds.Counter + 1,
 		DevicePK: devicePKRaw,
 		Sig:      sig,
@@ -148,7 +120,7 @@ func SealEnvelopeInternal(payload []byte, ds *bertyprotocol.DeviceSecret, device
 
 	encryptedHeaders := secretbox.Seal(nil, headers, nonce, sk)
 
-	env, err := proto.Marshal(&bertyprotocol.MessageEnvelope{
+	env, err := proto.Marshal(&MessageEnvelope{
 		MessageHeaders: encryptedHeaders,
 		Message:        encryptedPayload,
 		Nonce:          nonceSlice,
@@ -160,7 +132,7 @@ func SealEnvelopeInternal(payload []byte, ds *bertyprotocol.DeviceSecret, device
 	return env, nil
 }
 
-func SealEnvelope(ctx context.Context, mkh MessageKeys, g *bertyprotocol.Group, deviceSK crypto.PrivKey, payload []byte) ([]byte, error) {
+func SealEnvelope(ctx context.Context, mkh MessageKeys, g *Group, deviceSK crypto.PrivKey, payload []byte) ([]byte, error) {
 	if deviceSK == nil || g == nil || mkh == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -182,7 +154,7 @@ func SealEnvelope(ctx context.Context, mkh MessageKeys, g *bertyprotocol.Group, 
 	return env, nil
 }
 
-func DeriveDeviceSecret(ctx context.Context, mkh MessageKeys, g *bertyprotocol.Group, deviceSK crypto.PrivKey) error {
+func DeriveDeviceSecret(ctx context.Context, mkh MessageKeys, g *Group, deviceSK crypto.PrivKey) error {
 	if mkh == nil || deviceSK == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -192,12 +164,12 @@ func DeriveDeviceSecret(ctx context.Context, mkh MessageKeys, g *bertyprotocol.G
 		return errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	ck, mk, err := deriveNextKeys(ds.ChainKey, nil, g.PublicKey)
+	ck, mk, err := deriveNextKeys(ds.ChainKey, nil, g.GetPublicKey())
 	if err != nil {
 		return errcode.ErrSecretKeyGenerationFailed.Wrap(err)
 	}
 
-	if err = mkh.PutDeviceChainKey(ctx, deviceSK.GetPublic(), &bertyprotocol.DeviceSecret{
+	if err = mkh.PutDeviceChainKey(ctx, deviceSK.GetPublic(), &DeviceSecret{
 		ChainKey: ck,
 		Counter:  ds.Counter + 1,
 	}); err != nil {
@@ -217,7 +189,7 @@ type DecryptInfo struct {
 	Cid            cid.Cid
 }
 
-func OpenEnvelope(ctx context.Context, m MessageKeys, g *bertyprotocol.Group, data []byte, id cid.Cid) (*bertyprotocol.MessageHeaders, []byte, *DecryptInfo, error) {
+func OpenEnvelope(ctx context.Context, m MessageKeys, g *Group, data []byte, id cid.Cid) (*MessageHeaders, []byte, *DecryptInfo, error) {
 	if m == nil || g == nil {
 		return nil, nil, nil, errcode.ErrInvalidInput
 	}
@@ -235,8 +207,8 @@ func OpenEnvelope(ctx context.Context, m MessageKeys, g *bertyprotocol.Group, da
 	return headers, msg, decryptInfo, nil
 }
 
-func OpenEnvelopeHeaders(data []byte, g *bertyprotocol.Group) (*bertyprotocol.MessageEnvelope, *bertyprotocol.MessageHeaders, error) {
-	env := &bertyprotocol.MessageEnvelope{}
+func OpenEnvelopeHeaders(data []byte, g *Group) (*MessageEnvelope, *MessageHeaders, error) {
+	env := &MessageEnvelope{}
 	err := env.Unmarshal(data)
 	if err != nil {
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
@@ -257,7 +229,7 @@ func OpenEnvelopeHeaders(data []byte, g *bertyprotocol.Group) (*bertyprotocol.Me
 		return nil, nil, errcode.ErrCryptoDecrypt
 	}
 
-	headers := &bertyprotocol.MessageHeaders{}
+	headers := &MessageHeaders{}
 	if err := headers.Unmarshal(headersBytes); err != nil {
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
@@ -279,7 +251,7 @@ func nonceAsArr(nonceSl []byte) (*[24]byte, error) {
 	return &out, nil
 }
 
-func PostDecryptActions(ctx context.Context, m MessageKeys, di *DecryptInfo, g *bertyprotocol.Group, ownPK crypto.PubKey, headers *bertyprotocol.MessageHeaders) error {
+func PostDecryptActions(ctx context.Context, m MessageKeys, di *DecryptInfo, g *Group, ownPK crypto.PubKey, headers *MessageHeaders) error {
 	// Message was newly decrypted, we can save the message key and derive
 	// future keys if necessary.
 	if di == nil || !di.NewlyDecrypted {
@@ -287,7 +259,7 @@ func PostDecryptActions(ctx context.Context, m MessageKeys, di *DecryptInfo, g *
 	}
 
 	var (
-		ds  *bertyprotocol.DeviceSecret
+		ds  *DeviceSecret
 		err error
 	)
 
@@ -374,7 +346,7 @@ func deriveNextKeys(ck []byte, salt []byte, groupID []byte) ([]byte, [32]byte, e
 	return nextCK, nextMsg, nil
 }
 
-func PreComputeKeys(ctx context.Context, m MessageKeys, device crypto.PubKey, g *bertyprotocol.Group, ds *bertyprotocol.DeviceSecret) (*bertyprotocol.DeviceSecret, error) {
+func PreComputeKeys(ctx context.Context, m MessageKeys, device crypto.PubKey, g *Group, ds *DeviceSecret) (*DeviceSecret, error) {
 	ck := ds.ChainKey
 	counter := ds.Counter
 
@@ -398,7 +370,7 @@ func PreComputeKeys(ctx context.Context, m MessageKeys, device crypto.PubKey, g 
 		}
 
 		// TODO: Salt?
-		newCK, mk, err := deriveNextKeys(ck, nil, g.PublicKey)
+		newCK, mk, err := deriveNextKeys(ck, nil, g.GetPublicKey())
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -411,13 +383,13 @@ func PreComputeKeys(ctx context.Context, m MessageKeys, device crypto.PubKey, g 
 		ck = newCK
 	}
 
-	return &bertyprotocol.DeviceSecret{
+	return &DeviceSecret{
 		Counter:  counter,
 		ChainKey: ck,
 	}, nil
 }
 
-func DeviceSecret(ctx context.Context, g *bertyprotocol.Group, mk MessageKeys, acc *account.Account) (*bertyprotocol.DeviceSecret, error) {
+func GetDeviceSecret(ctx context.Context, g *Group, mk MessageKeys, acc AccountKeys) (*DeviceSecret, error) {
 	md, err := acc.MemberDeviceForGroup(g)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
@@ -427,7 +399,7 @@ func DeviceSecret(ctx context.Context, g *bertyprotocol.Group, mk MessageKeys, a
 
 	if err != nil && err == errcode.ErrMissingInput {
 		// If secret does not exist, create it
-		ds, err := account.NewDeviceSecret()
+		ds, err := NewDeviceSecret()
 		if err != nil {
 			return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
 		}
@@ -445,7 +417,7 @@ func DeviceSecret(ctx context.Context, g *bertyprotocol.Group, mk MessageKeys, a
 	return ds, nil
 }
 
-func RegisterChainKey(ctx context.Context, mk MessageKeys, g *bertyprotocol.Group, devicePK crypto.PubKey, ds *bertyprotocol.DeviceSecret, isOwnPK bool) error {
+func RegisterChainKey(ctx context.Context, mk MessageKeys, g *Group, devicePK crypto.PubKey, ds *DeviceSecret, isOwnPK bool) error {
 	var err error
 
 	if _, err := mk.GetDeviceChainKey(ctx, devicePK); err == nil {

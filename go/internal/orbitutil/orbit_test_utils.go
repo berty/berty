@@ -9,7 +9,6 @@ import (
 	"github.com/ipfs/go-ipfs/keystore"
 
 	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/bertycrypto"
 	"berty.tech/berty/go/internal/ipfsutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 
@@ -21,10 +20,10 @@ import (
 
 type MockedPeer struct {
 	CoreAPI ipfsutil.CoreAPIMock
-	DB      BertyOrbitDB
-	GC      ContextGroup
-	MK      bertycrypto.MessageKeys
-	Acc     *account.Account
+	DB      bertyprotocol.BertyOrbitDB
+	GC      bertyprotocol.ContextGroup
+	MK      bertyprotocol.MessageKeys
+	Acc     bertyprotocol.AccountKeys
 }
 
 func (m *MockedPeer) PeerInfo() peer.AddrInfo {
@@ -74,7 +73,7 @@ func CreatePeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 
 	var (
 		mn  mocknet.Mocknet
-		acc *account.Account
+		acc bertyprotocol.AccountKeys
 	)
 
 	mockedPeers := make([]*MockedPeer, memberCount*deviceCount)
@@ -115,14 +114,14 @@ func CreatePeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 				}
 			}
 
-			mk := bertycrypto.NewInMemoryMessageKeys()
+			mk := bertyprotocol.NewInMemoryMessageKeys()
 
 			db, err := NewBertyOrbitDB(ctx, ca, acc, mk, &orbitdb.NewOrbitDBOptions{})
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			gc, err := db.OpenMultiMemberGroup(ctx, g, nil)
+			gc, err := db.OpenGroup(ctx, g, nil)
 			if err != nil {
 				t.Fatalf("err: creating new group context, %v", err)
 			}
@@ -205,7 +204,7 @@ func InviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*MockedPee
 	}
 }
 
-func WaitForBertyEventType(ctx context.Context, t *testing.T, ms MetadataStore, eventType bertyprotocol.EventType, eventCount int, done chan struct{}) {
+func WaitForBertyEventType(ctx context.Context, t *testing.T, ms bertyprotocol.MetadataStore, eventType bertyprotocol.EventType, eventCount int, done chan struct{}) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 

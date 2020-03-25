@@ -193,4 +193,34 @@ export class ProtocolServiceClient {
 	) => void = (request, callback) => {
 		return this._pbService.groupMessageSubscribe.bind(this._pbService)(request, callback)
 	}
+	groupMetadataList: (
+		request: api.berty.protocol.GroupMetadataList.IRequest,
+		callback: (error: Error | null, response?: api.berty.protocol.IGroupMetadataEvent) => void,
+	) => void = (request, callback) => {
+		return this._pbService.groupMetadataList.bind(this._pbService)(request, callback)
+	}
+	groupMessageList: (
+		request: api.berty.protocol.GroupMessageList.IRequest,
+		callback: (error: Error | null, response?: api.berty.protocol.IGroupMessageEvent) => void,
+	) => void = (request, callback) => {
+		return this._pbService.groupMessageList.bind(this._pbService)(request, callback)
+	}
+	groupInfo: (
+		request: api.berty.protocol.GroupInfo.IRequest,
+		callback: (error: Error | null, response?: api.berty.protocol.GroupInfo.IReply) => void,
+	) => void = (request, callback) => {
+		return this._pbService.groupInfo.bind(this._pbService)(request, callback)
+	}
+	activateGroup: (
+		request: api.berty.protocol.ActivateGroup.IRequest,
+		callback: (error: Error | null, response?: api.berty.protocol.ActivateGroup.IReply) => void,
+	) => void = (request, callback) => {
+		return this._pbService.activateGroup.bind(this._pbService)(request, callback)
+	}
+	deactivateGroup: (
+		request: api.berty.protocol.DeactivateGroup.IRequest,
+		callback: (error: Error | null, response?: api.berty.protocol.DeactivateGroup.IReply) => void,
+	) => void = (request, callback) => {
+		return this._pbService.deactivateGroup.bind(this._pbService)(request, callback)
+	}
 }

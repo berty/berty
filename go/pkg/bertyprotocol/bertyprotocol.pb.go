@@ -2449,7 +2449,9 @@ var xxx_messageInfo_ContactRequestReference_Request proto.InternalMessageInfo
 
 type ContactRequestReference_Reply struct {
 	// reference is an opaque message describing how to connect to the current account
-	Reference            []byte   `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
+	Reference []byte `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`
+	// enabled indicates if incoming contact requests are enabled
+	Enabled              bool     `protobuf:"varint,2,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2493,6 +2495,13 @@ func (m *ContactRequestReference_Reply) GetReference() []byte {
 		return m.Reference
 	}
 	return nil
+}
+
+func (m *ContactRequestReference_Reply) GetEnabled() bool {
+	if m != nil {
+		return m.Enabled
+	}
+	return false
 }
 
 type ContactRequestDisable struct {
@@ -4046,6 +4055,7 @@ func (m *MultiMemberGroupAliasResolverDisclose) XXX_DiscardUnknown() {
 var xxx_messageInfo_MultiMemberGroupAliasResolverDisclose proto.InternalMessageInfo
 
 type MultiMemberGroupAliasResolverDisclose_Request struct {
+	// group_pk is the identifier of the group
 	GroupPK              []byte   `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -4931,6 +4941,93 @@ func (m *GroupMetadataSubscribe_Request) GetGoBackwards() bool {
 	return false
 }
 
+type GroupMetadataList struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupMetadataList) Reset()         { *m = GroupMetadataList{} }
+func (m *GroupMetadataList) String() string { return proto.CompactTextString(m) }
+func (*GroupMetadataList) ProtoMessage()    {}
+func (*GroupMetadataList) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{52}
+}
+func (m *GroupMetadataList) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupMetadataList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupMetadataList.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupMetadataList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMetadataList.Merge(m, src)
+}
+func (m *GroupMetadataList) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupMetadataList) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMetadataList.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupMetadataList proto.InternalMessageInfo
+
+type GroupMetadataList_Request struct {
+	// group_pk is the identifier of the group
+	GroupPK              []byte   `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupMetadataList_Request) Reset()         { *m = GroupMetadataList_Request{} }
+func (m *GroupMetadataList_Request) String() string { return proto.CompactTextString(m) }
+func (*GroupMetadataList_Request) ProtoMessage()    {}
+func (*GroupMetadataList_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{52, 0}
+}
+func (m *GroupMetadataList_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupMetadataList_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupMetadataList_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupMetadataList_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMetadataList_Request.Merge(m, src)
+}
+func (m *GroupMetadataList_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupMetadataList_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMetadataList_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupMetadataList_Request proto.InternalMessageInfo
+
+func (m *GroupMetadataList_Request) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
 type GroupMessageSubscribe struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -4941,7 +5038,7 @@ func (m *GroupMessageSubscribe) Reset()         { *m = GroupMessageSubscribe{} }
 func (m *GroupMessageSubscribe) String() string { return proto.CompactTextString(m) }
 func (*GroupMessageSubscribe) ProtoMessage()    {}
 func (*GroupMessageSubscribe) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{52}
+	return fileDescriptor_047e04c733cf8554, []int{53}
 }
 func (m *GroupMessageSubscribe) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -4988,7 +5085,7 @@ func (m *GroupMessageSubscribe_Request) Reset()         { *m = GroupMessageSubsc
 func (m *GroupMessageSubscribe_Request) String() string { return proto.CompactTextString(m) }
 func (*GroupMessageSubscribe_Request) ProtoMessage()    {}
 func (*GroupMessageSubscribe_Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{52, 0}
+	return fileDescriptor_047e04c733cf8554, []int{53, 0}
 }
 func (m *GroupMessageSubscribe_Request) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -5045,6 +5142,507 @@ func (m *GroupMessageSubscribe_Request) GetGoBackwards() bool {
 	return false
 }
 
+type GroupMessageList struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupMessageList) Reset()         { *m = GroupMessageList{} }
+func (m *GroupMessageList) String() string { return proto.CompactTextString(m) }
+func (*GroupMessageList) ProtoMessage()    {}
+func (*GroupMessageList) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{54}
+}
+func (m *GroupMessageList) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupMessageList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupMessageList.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupMessageList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMessageList.Merge(m, src)
+}
+func (m *GroupMessageList) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupMessageList) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMessageList.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupMessageList proto.InternalMessageInfo
+
+type GroupMessageList_Request struct {
+	// group_pk is the identifier of the group
+	GroupPK              []byte   `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupMessageList_Request) Reset()         { *m = GroupMessageList_Request{} }
+func (m *GroupMessageList_Request) String() string { return proto.CompactTextString(m) }
+func (*GroupMessageList_Request) ProtoMessage()    {}
+func (*GroupMessageList_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{54, 0}
+}
+func (m *GroupMessageList_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupMessageList_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupMessageList_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupMessageList_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupMessageList_Request.Merge(m, src)
+}
+func (m *GroupMessageList_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupMessageList_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupMessageList_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupMessageList_Request proto.InternalMessageInfo
+
+func (m *GroupMessageList_Request) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+type GroupInfo struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupInfo) Reset()         { *m = GroupInfo{} }
+func (m *GroupInfo) String() string { return proto.CompactTextString(m) }
+func (*GroupInfo) ProtoMessage()    {}
+func (*GroupInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{55}
+}
+func (m *GroupInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupInfo.Merge(m, src)
+}
+func (m *GroupInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupInfo proto.InternalMessageInfo
+
+type GroupInfo_Request struct {
+	// group_pk is the identifier of the group
+	GroupPK []byte `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	// contact_pk is the identifier of the contact
+	ContactPK            []byte   `protobuf:"bytes,2,opt,name=contact_pk,json=contactPk,proto3" json:"contact_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupInfo_Request) Reset()         { *m = GroupInfo_Request{} }
+func (m *GroupInfo_Request) String() string { return proto.CompactTextString(m) }
+func (*GroupInfo_Request) ProtoMessage()    {}
+func (*GroupInfo_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{55, 0}
+}
+func (m *GroupInfo_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupInfo_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupInfo_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupInfo_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupInfo_Request.Merge(m, src)
+}
+func (m *GroupInfo_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupInfo_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupInfo_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupInfo_Request proto.InternalMessageInfo
+
+func (m *GroupInfo_Request) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+func (m *GroupInfo_Request) GetContactPK() []byte {
+	if m != nil {
+		return m.ContactPK
+	}
+	return nil
+}
+
+type GroupInfo_Reply struct {
+	// group is the group invitation, containing the group pk and its type
+	Group *Group `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
+	// member_pk is the identifier of the current member in the group
+	MemberPK []byte `protobuf:"bytes,2,opt,name=member_pk,json=memberPk,proto3" json:"member_pk,omitempty"`
+	// member_pk is the identifier of the current device in the group
+	DevicePK             []byte   `protobuf:"bytes,3,opt,name=device_pk,json=devicePk,proto3" json:"device_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GroupInfo_Reply) Reset()         { *m = GroupInfo_Reply{} }
+func (m *GroupInfo_Reply) String() string { return proto.CompactTextString(m) }
+func (*GroupInfo_Reply) ProtoMessage()    {}
+func (*GroupInfo_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{55, 1}
+}
+func (m *GroupInfo_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GroupInfo_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GroupInfo_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GroupInfo_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GroupInfo_Reply.Merge(m, src)
+}
+func (m *GroupInfo_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *GroupInfo_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GroupInfo_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GroupInfo_Reply proto.InternalMessageInfo
+
+func (m *GroupInfo_Reply) GetGroup() *Group {
+	if m != nil {
+		return m.Group
+	}
+	return nil
+}
+
+func (m *GroupInfo_Reply) GetMemberPK() []byte {
+	if m != nil {
+		return m.MemberPK
+	}
+	return nil
+}
+
+func (m *GroupInfo_Reply) GetDevicePK() []byte {
+	if m != nil {
+		return m.DevicePK
+	}
+	return nil
+}
+
+type ActivateGroup struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ActivateGroup) Reset()         { *m = ActivateGroup{} }
+func (m *ActivateGroup) String() string { return proto.CompactTextString(m) }
+func (*ActivateGroup) ProtoMessage()    {}
+func (*ActivateGroup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{56}
+}
+func (m *ActivateGroup) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ActivateGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ActivateGroup.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ActivateGroup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ActivateGroup.Merge(m, src)
+}
+func (m *ActivateGroup) XXX_Size() int {
+	return m.Size()
+}
+func (m *ActivateGroup) XXX_DiscardUnknown() {
+	xxx_messageInfo_ActivateGroup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ActivateGroup proto.InternalMessageInfo
+
+type ActivateGroup_Request struct {
+	// group_pk is the identifier of the group
+	GroupPK              []byte   `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ActivateGroup_Request) Reset()         { *m = ActivateGroup_Request{} }
+func (m *ActivateGroup_Request) String() string { return proto.CompactTextString(m) }
+func (*ActivateGroup_Request) ProtoMessage()    {}
+func (*ActivateGroup_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{56, 0}
+}
+func (m *ActivateGroup_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ActivateGroup_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ActivateGroup_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ActivateGroup_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ActivateGroup_Request.Merge(m, src)
+}
+func (m *ActivateGroup_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *ActivateGroup_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ActivateGroup_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ActivateGroup_Request proto.InternalMessageInfo
+
+func (m *ActivateGroup_Request) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+type ActivateGroup_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ActivateGroup_Reply) Reset()         { *m = ActivateGroup_Reply{} }
+func (m *ActivateGroup_Reply) String() string { return proto.CompactTextString(m) }
+func (*ActivateGroup_Reply) ProtoMessage()    {}
+func (*ActivateGroup_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{56, 1}
+}
+func (m *ActivateGroup_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ActivateGroup_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ActivateGroup_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ActivateGroup_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ActivateGroup_Reply.Merge(m, src)
+}
+func (m *ActivateGroup_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *ActivateGroup_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ActivateGroup_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ActivateGroup_Reply proto.InternalMessageInfo
+
+type DeactivateGroup struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeactivateGroup) Reset()         { *m = DeactivateGroup{} }
+func (m *DeactivateGroup) String() string { return proto.CompactTextString(m) }
+func (*DeactivateGroup) ProtoMessage()    {}
+func (*DeactivateGroup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{57}
+}
+func (m *DeactivateGroup) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DeactivateGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DeactivateGroup.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DeactivateGroup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeactivateGroup.Merge(m, src)
+}
+func (m *DeactivateGroup) XXX_Size() int {
+	return m.Size()
+}
+func (m *DeactivateGroup) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeactivateGroup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeactivateGroup proto.InternalMessageInfo
+
+type DeactivateGroup_Request struct {
+	// group_pk is the identifier of the group
+	GroupPK              []byte   `protobuf:"bytes,1,opt,name=group_pk,json=groupPk,proto3" json:"group_pk,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeactivateGroup_Request) Reset()         { *m = DeactivateGroup_Request{} }
+func (m *DeactivateGroup_Request) String() string { return proto.CompactTextString(m) }
+func (*DeactivateGroup_Request) ProtoMessage()    {}
+func (*DeactivateGroup_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{57, 0}
+}
+func (m *DeactivateGroup_Request) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DeactivateGroup_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DeactivateGroup_Request.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DeactivateGroup_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeactivateGroup_Request.Merge(m, src)
+}
+func (m *DeactivateGroup_Request) XXX_Size() int {
+	return m.Size()
+}
+func (m *DeactivateGroup_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeactivateGroup_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeactivateGroup_Request proto.InternalMessageInfo
+
+func (m *DeactivateGroup_Request) GetGroupPK() []byte {
+	if m != nil {
+		return m.GroupPK
+	}
+	return nil
+}
+
+type DeactivateGroup_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeactivateGroup_Reply) Reset()         { *m = DeactivateGroup_Reply{} }
+func (m *DeactivateGroup_Reply) String() string { return proto.CompactTextString(m) }
+func (*DeactivateGroup_Reply) ProtoMessage()    {}
+func (*DeactivateGroup_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_047e04c733cf8554, []int{57, 1}
+}
+func (m *DeactivateGroup_Reply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DeactivateGroup_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DeactivateGroup_Reply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DeactivateGroup_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeactivateGroup_Reply.Merge(m, src)
+}
+func (m *DeactivateGroup_Reply) XXX_Size() int {
+	return m.Size()
+}
+func (m *DeactivateGroup_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeactivateGroup_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeactivateGroup_Reply proto.InternalMessageInfo
+
 type ShareableContact struct {
 	// contact_pk is the account to send a contact request to
 	PK []byte `protobuf:"bytes,1,opt,name=pk,proto3" json:"pk,omitempty"`
@@ -5061,7 +5659,7 @@ func (m *ShareableContact) Reset()         { *m = ShareableContact{} }
 func (m *ShareableContact) String() string { return proto.CompactTextString(m) }
 func (*ShareableContact) ProtoMessage()    {}
 func (*ShareableContact) Descriptor() ([]byte, []int) {
-	return fileDescriptor_047e04c733cf8554, []int{53}
+	return fileDescriptor_047e04c733cf8554, []int{58}
 }
 func (m *ShareableContact) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -5209,178 +5807,201 @@ func init() {
 	proto.RegisterType((*GroupMessageEvent)(nil), "berty.protocol.GroupMessageEvent")
 	proto.RegisterType((*GroupMetadataSubscribe)(nil), "berty.protocol.GroupMetadataSubscribe")
 	proto.RegisterType((*GroupMetadataSubscribe_Request)(nil), "berty.protocol.GroupMetadataSubscribe.Request")
+	proto.RegisterType((*GroupMetadataList)(nil), "berty.protocol.GroupMetadataList")
+	proto.RegisterType((*GroupMetadataList_Request)(nil), "berty.protocol.GroupMetadataList.Request")
 	proto.RegisterType((*GroupMessageSubscribe)(nil), "berty.protocol.GroupMessageSubscribe")
 	proto.RegisterType((*GroupMessageSubscribe_Request)(nil), "berty.protocol.GroupMessageSubscribe.Request")
+	proto.RegisterType((*GroupMessageList)(nil), "berty.protocol.GroupMessageList")
+	proto.RegisterType((*GroupMessageList_Request)(nil), "berty.protocol.GroupMessageList.Request")
+	proto.RegisterType((*GroupInfo)(nil), "berty.protocol.GroupInfo")
+	proto.RegisterType((*GroupInfo_Request)(nil), "berty.protocol.GroupInfo.Request")
+	proto.RegisterType((*GroupInfo_Reply)(nil), "berty.protocol.GroupInfo.Reply")
+	proto.RegisterType((*ActivateGroup)(nil), "berty.protocol.ActivateGroup")
+	proto.RegisterType((*ActivateGroup_Request)(nil), "berty.protocol.ActivateGroup.Request")
+	proto.RegisterType((*ActivateGroup_Reply)(nil), "berty.protocol.ActivateGroup.Reply")
+	proto.RegisterType((*DeactivateGroup)(nil), "berty.protocol.DeactivateGroup")
+	proto.RegisterType((*DeactivateGroup_Request)(nil), "berty.protocol.DeactivateGroup.Request")
+	proto.RegisterType((*DeactivateGroup_Reply)(nil), "berty.protocol.DeactivateGroup.Reply")
 	proto.RegisterType((*ShareableContact)(nil), "berty.protocol.ShareableContact")
 }
 
 func init() { proto.RegisterFile("bertyprotocol.proto", fileDescriptor_047e04c733cf8554) }
 
 var fileDescriptor_047e04c733cf8554 = []byte{
-	// 2598 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x5a, 0xcd, 0x6f, 0x1c, 0x49,
-	0x15, 0xdf, 0x1e, 0xc7, 0x1f, 0xf3, 0x3c, 0x1e, 0x77, 0x2a, 0xb6, 0xe3, 0x78, 0xe3, 0x8f, 0xed,
-	0xac, 0xf3, 0xe1, 0x78, 0xc7, 0xc1, 0x1b, 0xb2, 0x41, 0x0b, 0x42, 0xf6, 0xda, 0xca, 0x7a, 0x9d,
-	0x88, 0xa1, 0x27, 0x81, 0xb0, 0x42, 0x8c, 0x7a, 0xba, 0xcb, 0xed, 0xce, 0xcc, 0x74, 0x77, 0xba,
-	0x7b, 0x26, 0x6b, 0x94, 0x03, 0x12, 0x87, 0x45, 0x5a, 0x89, 0x0b, 0x20, 0x24, 0xb8, 0x20, 0x71,
-	0x41, 0x48, 0x80, 0xf8, 0x13, 0xe0, 0xb4, 0xdc, 0x72, 0x47, 0xb2, 0x60, 0x24, 0x0e, 0xfc, 0x17,
-	0xa8, 0x3e, 0xba, 0xa6, 0xbb, 0xa7, 0x7b, 0x3e, 0xe2, 0x78, 0xc5, 0xad, 0xab, 0xea, 0xf7, 0x7e,
-	0xef, 0xd5, 0xab, 0x57, 0xf5, 0xaa, 0xde, 0x0c, 0x5c, 0xaa, 0x61, 0x2f, 0x38, 0x71, 0x3d, 0x27,
-	0x70, 0x74, 0xa7, 0x51, 0xa2, 0x1f, 0xa8, 0x48, 0x3b, 0x4b, 0x61, 0xef, 0xd2, 0x7b, 0xa6, 0x15,
-	0x1c, 0xb7, 0x6a, 0x25, 0xdd, 0x69, 0x6e, 0x99, 0x8e, 0xe9, 0x6c, 0xd1, 0x91, 0x5a, 0xeb, 0x88,
-	0xb6, 0x68, 0x83, 0x7e, 0x31, 0x09, 0xe5, 0x4b, 0x09, 0x26, 0x77, 0x74, 0xdd, 0x69, 0xd9, 0x01,
-	0xba, 0x0d, 0xe3, 0xa6, 0xe7, 0xb4, 0xdc, 0x45, 0x69, 0x4d, 0xba, 0x39, 0xbd, 0x3d, 0x5f, 0x8a,
-	0x53, 0x97, 0x1e, 0x90, 0x41, 0x95, 0x61, 0x50, 0x09, 0x2e, 0x69, 0x4c, 0xae, 0xea, 0x7a, 0x56,
-	0x5b, 0x0b, 0x70, 0xb5, 0x8e, 0x4f, 0x16, 0x73, 0x6b, 0xd2, 0xcd, 0x82, 0x7a, 0x91, 0x0f, 0x95,
-	0xd9, 0xc8, 0x21, 0x3e, 0x41, 0x1b, 0x70, 0x51, 0x6b, 0x58, 0x9a, 0x1f, 0x43, 0x8f, 0x51, 0xf4,
-	0x2c, 0x1d, 0x88, 0x60, 0xef, 0xc2, 0x82, 0xdb, 0xaa, 0x35, 0x2c, 0xbd, 0xea, 0x61, 0xdb, 0xc0,
-	0x3f, 0x6e, 0x3b, 0x2d, 0xbf, 0xea, 0x63, 0x6c, 0x2c, 0x5e, 0xa0, 0x02, 0x73, 0x6c, 0x54, 0x15,
-	0x83, 0x15, 0x8c, 0x0d, 0xe5, 0xd7, 0x12, 0x8c, 0x53, 0x13, 0xd1, 0x32, 0x00, 0x97, 0x27, 0x4a,
-	0x24, 0x2a, 0x93, 0x67, 0x3d, 0x84, 0x7e, 0x01, 0x26, 0x7c, 0xac, 0x7b, 0x38, 0xe0, 0xd6, 0xf2,
-	0x16, 0x11, 0x63, 0x5f, 0x55, 0xdf, 0x32, 0xb9, 0x6d, 0x79, 0xd6, 0x53, 0xb1, 0x4c, 0x74, 0x1f,
-	0x80, 0x4e, 0xbd, 0x1a, 0x9c, 0xb8, 0x98, 0x5a, 0x52, 0xdc, 0xbe, 0x92, 0xea, 0xa3, 0xc7, 0x27,
-	0x2e, 0x56, 0xf3, 0x66, 0xf8, 0xa9, 0xb4, 0x60, 0x86, 0xf6, 0x3f, 0xc2, 0x81, 0x66, 0x68, 0x81,
-	0x46, 0xa8, 0x70, 0x1b, 0xdb, 0x01, 0xa3, 0x92, 0xd2, 0xa9, 0xf6, 0x09, 0x82, 0x51, 0xe1, 0xf0,
-	0x13, 0x2d, 0xc2, 0xa4, 0xab, 0x9d, 0x34, 0x1c, 0xcd, 0xe0, 0xc6, 0x87, 0x4d, 0x24, 0xc3, 0x58,
-	0xd7, 0x6c, 0xf2, 0xa9, 0x7c, 0xc8, 0xd5, 0xee, 0xdb, 0x6d, 0xdc, 0x70, 0x5c, 0x8c, 0xe6, 0x60,
-	0xdc, 0x76, 0x6c, 0x1d, 0x73, 0x97, 0xb0, 0x06, 0xe9, 0xa5, 0xfc, 0x9c, 0x90, 0x35, 0x14, 0x13,
-	0x8a, 0x8f, 0xb0, 0xef, 0x6b, 0x26, 0xfe, 0x18, 0x6b, 0x06, 0xf6, 0x7c, 0xa2, 0x9a, 0x2e, 0x2a,
-	0xf6, 0xa8, 0xfc, 0x05, 0x35, 0x6c, 0xa2, 0x5b, 0x90, 0x37, 0x70, 0xdb, 0xd2, 0x71, 0xd5, 0xad,
-	0x33, 0x96, 0xdd, 0x42, 0xe7, 0x74, 0x75, 0x6a, 0x8f, 0x76, 0x96, 0x0f, 0xd5, 0x29, 0x36, 0x5c,
-	0xae, 0xa7, 0x58, 0xf9, 0x0c, 0x66, 0xb9, 0x22, 0x61, 0xe7, 0x0d, 0x98, 0x6d, 0xb2, 0xae, 0xea,
-	0x31, 0x53, 0xce, 0x2d, 0x2e, 0x36, 0x7b, 0x4c, 0xe2, 0x3d, 0xa1, 0x37, 0x78, 0xb3, 0x3b, 0xd5,
-	0xb1, 0xc8, 0x54, 0x95, 0x97, 0x50, 0xa0, 0x5e, 0xfd, 0xc8, 0xb1, 0x03, 0xfc, 0x59, 0x80, 0x16,
-	0x20, 0x67, 0x19, 0x8c, 0x7b, 0x77, 0xa2, 0x73, 0xba, 0x9a, 0x3b, 0xd8, 0x53, 0x73, 0x96, 0x81,
-	0x36, 0x01, 0x5c, 0xcd, 0x23, 0x0b, 0x64, 0x19, 0xfe, 0x62, 0x6e, 0x6d, 0xec, 0x66, 0x61, 0x77,
-	0xa6, 0x73, 0xba, 0x9a, 0x2f, 0xd3, 0xde, 0x83, 0x3d, 0x5f, 0xcd, 0x33, 0xc0, 0x81, 0xe1, 0xa3,
-	0xeb, 0x30, 0xc5, 0x02, 0xc3, 0xad, 0x33, 0x75, 0xbb, 0xd3, 0x9d, 0xd3, 0xd5, 0x49, 0xea, 0xfb,
-	0xf2, 0xa1, 0x3a, 0x49, 0x07, 0xcb, 0x75, 0x45, 0x85, 0xe9, 0x1d, 0xb7, 0x1b, 0x04, 0x31, 0xaf,
-	0x49, 0x7d, 0xbd, 0x96, 0x39, 0x4f, 0xc5, 0x04, 0x44, 0x26, 0xa3, 0xe9, 0xc1, 0x8e, 0x61, 0xec,
-	0x90, 0x7d, 0x44, 0x22, 0x7c, 0x04, 0xea, 0xeb, 0x30, 0xc5, 0xf7, 0x65, 0xb8, 0x74, 0xd4, 0x78,
-	0x4a, 0x45, 0x8c, 0x67, 0x7b, 0xb3, 0xae, 0x7c, 0x21, 0xc1, 0x1c, 0x9d, 0xd1, 0x8e, 0x61, 0x3c,
-	0xc2, 0xcd, 0x1a, 0xf6, 0x18, 0x19, 0xd1, 0xd5, 0xa4, 0xed, 0x84, 0x2e, 0x06, 0x22, 0xba, 0xd8,
-	0x70, 0xb9, 0x3e, 0x4a, 0x9c, 0x2c, 0x03, 0x70, 0xd6, 0xc8, 0x5e, 0x64, 0x3d, 0x15, 0xcb, 0x54,
-	0xf6, 0xa1, 0xc0, 0x84, 0x2a, 0x6c, 0xeb, 0xbe, 0x0d, 0x79, 0xfd, 0x58, 0xb3, 0xec, 0xc8, 0x86,
-	0x9f, 0xa2, 0x1d, 0xc4, 0x1b, 0x91, 0xc0, 0xcd, 0xc5, 0x02, 0x57, 0xf9, 0x45, 0x64, 0x52, 0x31,
-	0xbe, 0x11, 0x1c, 0x78, 0x0f, 0x8a, 0x06, 0xf6, 0x83, 0x6a, 0xd7, 0x09, 0x6c, 0x66, 0x72, 0xe7,
-	0x74, 0xb5, 0xb0, 0x87, 0xfd, 0x40, 0x38, 0xa2, 0x60, 0x74, 0x5b, 0xf5, 0xe8, 0x4e, 0x1e, 0x8b,
-	0xed, 0x64, 0xe5, 0x57, 0x12, 0xac, 0x3d, 0x6a, 0x35, 0x02, 0x8b, 0x61, 0x43, 0x03, 0xe9, 0x92,
-	0xa8, 0xd8, 0x77, 0x1a, 0xed, 0xe4, 0x9e, 0xeb, 0x6f, 0xe1, 0x3a, 0x14, 0xd9, 0x12, 0x7b, 0x5c,
-	0x98, 0x07, 0xd1, 0x8c, 0x16, 0x63, 0x5c, 0x85, 0xe9, 0xf0, 0x84, 0x76, 0x9c, 0x23, 0x6e, 0x14,
-	0xf0, 0xb3, 0xd9, 0x71, 0x8e, 0x94, 0xcf, 0x25, 0xb8, 0x12, 0xb3, 0x4b, 0xb3, 0x83, 0x1d, 0xa3,
-	0x69, 0xd9, 0xaa, 0xd3, 0xc0, 0xa3, 0x18, 0xf4, 0x6d, 0xb8, 0x68, 0x12, 0x61, 0x8c, 0x7b, 0xbc,
-	0x76, 0xa9, 0x73, 0xba, 0x3a, 0xfb, 0x80, 0x0d, 0x0a, 0xc7, 0xcd, 0x9a, 0xb1, 0x8e, 0xba, 0xb2,
-	0x0f, 0x8b, 0x11, 0x43, 0x0e, 0x6c, 0x2b, 0xb0, 0xb4, 0x06, 0x6b, 0x8c, 0x10, 0x8f, 0x8a, 0x06,
-	0x6b, 0xc2, 0xb9, 0x86, 0x61, 0x05, 0x96, 0x63, 0x6b, 0x8d, 0x78, 0x56, 0x19, 0x65, 0x5a, 0x08,
-	0x2e, 0xd0, 0x24, 0xc5, 0xbc, 0x4b, 0xbf, 0x15, 0x03, 0xae, 0xb1, 0xb4, 0x89, 0x9b, 0x4e, 0x1b,
-	0x9f, 0x97, 0x96, 0x06, 0x20, 0x9e, 0xc4, 0xa9, 0xb2, 0x4f, 0x1c, 0xcb, 0x1e, 0x8d, 0x54, 0xa4,
-	0xfe, 0xdc, 0xe0, 0xd4, 0xaf, 0x60, 0x90, 0xa3, 0xda, 0x1e, 0xe2, 0xa3, 0x60, 0xc4, 0x13, 0x47,
-	0x1c, 0x97, 0xb9, 0x3e, 0xc7, 0xe5, 0x27, 0xb0, 0xcc, 0xd5, 0xf0, 0x13, 0x4e, 0xc5, 0xcf, 0x5b,
-	0xd8, 0x0f, 0xf6, 0x2c, 0x5f, 0xab, 0x35, 0x46, 0x9a, 0x9f, 0x72, 0x00, 0x57, 0x53, 0xb9, 0xf6,
-	0xed, 0x91, 0xa9, 0x4e, 0xe0, 0x5a, 0x2a, 0x95, 0x8a, 0x8f, 0xb0, 0x87, 0x6d, 0x1d, 0xab, 0xd8,
-	0x1f, 0xed, 0x04, 0xb9, 0x01, 0xb3, 0xc9, 0x7b, 0x0e, 0x5b, 0xdc, 0xa2, 0x17, 0xbf, 0xe1, 0xfc,
-	0x34, 0x97, 0xe1, 0x92, 0x7d, 0xfb, 0x79, 0x0b, 0xb7, 0x46, 0x5b, 0xf2, 0x4d, 0x00, 0x9d, 0x91,
-	0x74, 0x17, 0x82, 0xe6, 0x38, 0x4e, 0x5d, 0x3e, 0x54, 0xf3, 0x1c, 0x90, 0x58, 0xb4, 0xf1, 0xec,
-	0x45, 0x43, 0xf7, 0xe0, 0x72, 0xc8, 0x9a, 0x9c, 0x13, 0x3b, 0x50, 0xe6, 0xf5, 0xd0, 0xf2, 0xc4,
-	0x06, 0x90, 0x43, 0xb9, 0x26, 0x4f, 0x90, 0xfc, 0xb2, 0x37, 0xcb, 0xfb, 0xc3, 0xbc, 0xa9, 0x04,
-	0x70, 0x25, 0xd5, 0x09, 0x15, 0x6c, 0x07, 0xe7, 0xe6, 0x00, 0xe5, 0x9f, 0x52, 0x86, 0xef, 0x55,
-	0xac, 0x63, 0xab, 0x7d, 0x9e, 0xbe, 0xff, 0x0a, 0x7c, 0x7a, 0x02, 0x2b, 0x59, 0x7b, 0x4d, 0xd7,
-	0x3c, 0xe3, 0x1c, 0x67, 0xa7, 0xfc, 0x2e, 0xcb, 0xb1, 0x3b, 0xba, 0x8e, 0xdd, 0xe0, 0xab, 0x0a,
-	0xea, 0x7e, 0x17, 0x37, 0x17, 0xe6, 0xe3, 0x16, 0xee, 0x36, 0x1c, 0xbd, 0x7e, 0x9e, 0x4e, 0xf1,
-	0xe0, 0x72, 0x5c, 0xe3, 0x13, 0xbb, 0x76, 0xde, 0x3a, 0x1f, 0x01, 0x3a, 0xb0, 0xfd, 0x40, 0xb3,
-	0x75, 0xbc, 0xff, 0x99, 0xeb, 0x78, 0xc1, 0x9e, 0x16, 0x68, 0x4b, 0x79, 0x98, 0xe4, 0xeb, 0xb1,
-	0xb4, 0x09, 0xe3, 0x2a, 0x76, 0x1b, 0x27, 0xe8, 0x1a, 0xcc, 0x60, 0x8a, 0xc0, 0x46, 0x95, 0x46,
-	0x15, 0xbb, 0x71, 0x15, 0xc2, 0x4e, 0x22, 0xa8, 0xfc, 0x6d, 0x1c, 0x16, 0x43, 0xbe, 0x07, 0x98,
-	0xcc, 0xe3, 0xc8, 0x32, 0x5b, 0x9e, 0x46, 0xf2, 0x5f, 0x94, 0xf5, 0xd5, 0x85, 0x90, 0x76, 0x13,
-	0x40, 0x3c, 0x29, 0xc3, 0xa9, 0x51, 0x73, 0xb9, 0x2b, 0x88, 0xb9, 0xe1, 0xc3, 0x72, 0xa4, 0xcb,
-	0xe4, 0x37, 0x41, 0x0e, 0x89, 0x13, 0xeb, 0x8d, 0x3a, 0xa7, 0xab, 0xc5, 0x68, 0x32, 0x2b, 0x1f,
-	0xaa, 0x45, 0x2d, 0xda, 0xae, 0xa3, 0x6b, 0x30, 0xe9, 0x62, 0xec, 0x55, 0x2d, 0xf6, 0xfc, 0xcc,
-	0xef, 0x42, 0xe7, 0x74, 0x75, 0xa2, 0x8c, 0xb1, 0x77, 0xb0, 0xa7, 0x4e, 0x90, 0xa1, 0x03, 0x03,
-	0x5d, 0x85, 0x7c, 0xc3, 0xf2, 0x03, 0x6c, 0x93, 0xc7, 0xca, 0xf8, 0xda, 0xd8, 0xcd, 0xbc, 0xda,
-	0xed, 0x40, 0xdf, 0x83, 0xe9, 0x5a, 0x03, 0x57, 0x31, 0xcb, 0x36, 0x8b, 0x13, 0xf4, 0xc1, 0xf7,
-	0xf5, 0x64, 0x92, 0xcd, 0xf2, 0x56, 0xa9, 0x82, 0x83, 0xc0, 0xb2, 0xcd, 0x4a, 0xa0, 0x05, 0x58,
-	0x85, 0x5a, 0x03, 0x87, 0x69, 0xab, 0x0a, 0xf2, 0x0b, 0xeb, 0xc8, 0xaa, 0xba, 0xdb, 0xae, 0x20,
-	0x9f, 0x3c, 0x0b, 0x79, 0x91, 0xd0, 0x95, 0xb7, 0xdd, 0x50, 0xc1, 0x53, 0x28, 0x34, 0x0d, 0xdb,
-	0x17, 0xe4, 0x53, 0x67, 0x21, 0x9f, 0x26, 0x54, 0x21, 0xf3, 0xa7, 0x30, 0xe3, 0xe1, 0x86, 0x76,
-	0x22, 0xa8, 0xf3, 0x67, 0xa1, 0x2e, 0x50, 0x2e, 0xce, 0xad, 0x3c, 0x80, 0x42, 0x74, 0x14, 0x4d,
-	0xc3, 0xe4, 0x13, 0xbb, 0x6e, 0x3b, 0x2f, 0x6c, 0xf9, 0x2d, 0xd2, 0xe0, 0x38, 0x59, 0x42, 0x05,
-	0x98, 0x0a, 0xaf, 0x13, 0x72, 0x0e, 0xcd, 0xc2, 0xf4, 0x13, 0x5b, 0x6b, 0x6b, 0x56, 0x83, 0xf4,
-	0xc8, 0x63, 0xca, 0x21, 0x5c, 0xce, 0x48, 0xf2, 0xd1, 0x08, 0x5e, 0x0f, 0x03, 0xf8, 0x2a, 0xe4,
-	0xbd, 0x10, 0x10, 0x96, 0x1d, 0x44, 0x87, 0x72, 0x1b, 0xe6, 0x53, 0x2f, 0x32, 0x51, 0xaa, 0x49,
-	0x4e, 0xa5, 0x7c, 0x0c, 0x73, 0x69, 0x37, 0x95, 0xd7, 0x50, 0x5b, 0x86, 0xab, 0xc9, 0x39, 0xf8,
-	0xf8, 0x4c, 0x13, 0x79, 0x2e, 0xde, 0x9c, 0xdd, 0xcc, 0x6b, 0x2c, 0xa9, 0x82, 0xa7, 0xbf, 0x78,
-	0x6a, 0x5a, 0xca, 0xa5, 0xa6, 0xa5, 0xae, 0x3b, 0x9e, 0x26, 0xdd, 0xc1, 0x92, 0xc3, 0xd2, 0x07,
-	0x5d, 0xa5, 0xf1, 0xc3, 0x4e, 0xea, 0x7f, 0xd8, 0x75, 0x99, 0x7f, 0x90, 0xb2, 0x2a, 0x24, 0xe5,
-	0xbd, 0x01, 0xea, 0x32, 0x14, 0xa2, 0xf9, 0xe2, 0x0d, 0x30, 0xaa, 0x50, 0x8c, 0xe7, 0x83, 0x37,
-	0xc0, 0xf9, 0x5d, 0xb8, 0x14, 0x56, 0x10, 0x78, 0xf9, 0x80, 0x2e, 0xe7, 0xd7, 0xba, 0xc4, 0xd1,
-	0x34, 0x29, 0x65, 0xa7, 0xc9, 0x2e, 0xe5, 0x63, 0x58, 0x48, 0xbe, 0x5f, 0x3f, 0xf2, 0xb0, 0x16,
-	0xc4, 0x82, 0x6d, 0x2b, 0x0c, 0xb6, 0x21, 0xe9, 0x95, 0xef, 0xc3, 0x5c, 0x92, 0x95, 0x3c, 0x74,
-	0x96, 0xee, 0x75, 0x2d, 0x1d, 0xa5, 0x82, 0xd9, 0x35, 0xb7, 0x02, 0xf3, 0x49, 0xe2, 0x87, 0x58,
-	0x6b, 0xe3, 0x33, 0xf9, 0x40, 0x87, 0xf5, 0x9e, 0x37, 0x7c, 0xf4, 0xb9, 0x4d, 0xc2, 0xac, 0xe1,
-	0xf8, 0x67, 0x53, 0xf2, 0xb9, 0x04, 0x2b, 0xbd, 0x95, 0x02, 0xfe, 0x22, 0xa7, 0xaf, 0xe8, 0xa5,
-	0x1f, 0x8e, 0x4c, 0x1f, 0x7f, 0x41, 0xe7, 0xfa, 0xbd, 0xa0, 0xbb, 0x96, 0x7c, 0x91, 0x52, 0xb3,
-	0x38, 0xb0, 0xdb, 0x56, 0x40, 0x0f, 0x6b, 0xbe, 0xfa, 0xaf, 0x31, 0xd5, 0xbb, 0x61, 0x94, 0x8c,
-	0xb2, 0xb4, 0x8a, 0x09, 0xb3, 0x91, 0x4a, 0x1b, 0x8d, 0xe7, 0xc3, 0xd1, 0xfd, 0x90, 0x59, 0x6b,
-	0xed, 0x4e, 0xfb, 0x08, 0x8a, 0x54, 0x11, 0x2d, 0xc6, 0x9d, 0xa3, 0x9e, 0x3f, 0x48, 0x80, 0x62,
-	0x25, 0x64, 0x5a, 0xc6, 0x44, 0x3b, 0x30, 0xc3, 0xea, 0xc8, 0x3a, 0x2b, 0x68, 0x72, 0xe7, 0x5c,
-	0x4d, 0x2d, 0x25, 0xf3, 0xa2, 0xa7, 0x5a, 0xc0, 0xd1, 0x12, 0xe8, 0x37, 0x60, 0x2a, 0x76, 0x0a,
-	0x4f, 0x6f, 0x2f, 0xa7, 0xba, 0x36, 0x54, 0xac, 0x0a, 0x78, 0xb7, 0x70, 0x3c, 0x16, 0x2d, 0x1c,
-	0xff, 0x51, 0x82, 0x8b, 0x5c, 0x82, 0x55, 0x75, 0xdf, 0x94, 0xa5, 0xf7, 0x61, 0x32, 0xac, 0x06,
-	0x33, 0x43, 0x57, 0x92, 0xc2, 0xf1, 0x82, 0xb5, 0x1a, 0xc2, 0xa3, 0xe5, 0xd3, 0xb1, 0x78, 0xf9,
-	0xf4, 0xb7, 0x12, 0x2c, 0xc4, 0xa6, 0x57, 0x69, 0xd5, 0x7c, 0xdd, 0xb3, 0x6a, 0x78, 0xe9, 0x27,
-	0xd2, 0xe8, 0x2b, 0x39, 0x07, 0xe3, 0xbe, 0x45, 0x92, 0x1e, 0x2f, 0xa5, 0xd3, 0x06, 0xe9, 0x6d,
-	0xd9, 0x81, 0xd5, 0x08, 0xfd, 0x44, 0x1b, 0xe8, 0x1d, 0x28, 0x98, 0x4e, 0xb5, 0xa6, 0xe9, 0xf5,
-	0x17, 0x9a, 0x67, 0xf8, 0xf4, 0x6e, 0x39, 0xa5, 0x4e, 0x9b, 0xce, 0x6e, 0xd8, 0xa5, 0xfc, 0x46,
-	0x82, 0xf9, 0xa8, 0x2b, 0xff, 0xaf, 0x8c, 0x7b, 0x09, 0x72, 0xe5, 0x58, 0xf3, 0x30, 0xb9, 0x96,
-	0xf0, 0x04, 0x82, 0x16, 0x20, 0x27, 0x8c, 0xa0, 0xf5, 0xf4, 0xf2, 0xa1, 0x9a, 0x73, 0xeb, 0x7d,
-	0x7e, 0xd0, 0xc9, 0x65, 0xff, 0xa0, 0x83, 0x96, 0x22, 0xa1, 0xc9, 0xac, 0x13, 0xed, 0x0d, 0x0b,
-	0xf2, 0xe2, 0xa7, 0x16, 0xb4, 0xc0, 0x37, 0x07, 0x69, 0x3c, 0xb1, 0x0d, 0x7c, 0x64, 0xd9, 0xd8,
-	0x90, 0xdf, 0x42, 0x73, 0x20, 0x8b, 0x7e, 0x7e, 0xc9, 0x97, 0xa5, 0x58, 0x2f, 0x37, 0x5c, 0xce,
-	0xa1, 0x45, 0x5e, 0x09, 0x26, 0xbd, 0x91, 0x83, 0x4c, 0x1e, 0xdb, 0xf8, 0xcf, 0x04, 0xe4, 0xc5,
-	0x6f, 0x31, 0x44, 0x97, 0x68, 0x44, 0x75, 0x5d, 0x83, 0x55, 0xd1, 0xcf, 0xd7, 0xac, 0x5b, 0x24,
-	0xdf, 0x31, 0x0c, 0x7a, 0xdd, 0xec, 0x01, 0x45, 0x8b, 0xce, 0x0c, 0x94, 0x43, 0xab, 0xf0, 0xb6,
-	0x00, 0xf5, 0x56, 0xf5, 0x64, 0x8c, 0x96, 0xe1, 0x4a, 0x2a, 0xe0, 0x21, 0x3e, 0x0a, 0xe4, 0x23,
-	0xb4, 0x01, 0xd7, 0x93, 0xc3, 0xe9, 0x05, 0x34, 0xd9, 0x44, 0xb7, 0x60, 0xbd, 0x3f, 0x36, 0xbc,
-	0x2a, 0x1f, 0xa3, 0x3b, 0xb0, 0xd9, 0x1f, 0x1a, 0x2f, 0x80, 0xc9, 0x16, 0xda, 0x86, 0x52, 0x7f,
-	0x89, 0xef, 0xb4, 0x02, 0xd3, 0xb1, 0x6c, 0x33, 0x2c, 0x5f, 0xc9, 0xcf, 0x50, 0x09, 0x36, 0x86,
-	0x93, 0xa9, 0x60, 0x3b, 0x90, 0xeb, 0x83, 0x75, 0x1c, 0xd8, 0xba, 0xd3, 0xb4, 0x6c, 0x33, 0x2c,
-	0xd3, 0xc8, 0x0d, 0xf4, 0x3e, 0x6c, 0x0d, 0x27, 0x23, 0xaa, 0x1f, 0x72, 0x73, 0x78, 0x45, 0x61,
-	0xd9, 0x42, 0xb6, 0x91, 0x02, 0x2b, 0x19, 0x32, 0xbc, 0x80, 0x20, 0x3b, 0xe8, 0x5d, 0x58, 0xcb,
-	0xc0, 0x88, 0x27, 0xbf, 0xec, 0x22, 0x05, 0x96, 0x05, 0x2a, 0x71, 0x5b, 0x63, 0x61, 0xf3, 0x0f,
-	0x09, 0xdd, 0x81, 0xdb, 0x02, 0xd3, 0xf7, 0xea, 0xc1, 0x24, 0xfe, 0x94, 0x43, 0x77, 0x23, 0x8e,
-	0xe8, 0x4d, 0xde, 0x91, 0xa2, 0xfa, 0x8e, 0x6d, 0x3b, 0x2d, 0x5b, 0xc7, 0x86, 0xfc, 0xe7, 0x1c,
-	0x2a, 0xc1, 0xad, 0x6c, 0x3d, 0xb1, 0xcb, 0x07, 0x36, 0xe4, 0xbf, 0xe4, 0xd0, 0x75, 0x78, 0x27,
-	0xb9, 0x33, 0xd8, 0x26, 0x2e, 0xb3, 0x2c, 0x47, 0x57, 0xf2, 0xbf, 0x93, 0x1b, 0x7f, 0x97, 0xc4,
-	0x7d, 0x99, 0x3d, 0xdb, 0xae, 0x88, 0xab, 0x39, 0x6d, 0x47, 0x77, 0x5b, 0x62, 0xe8, 0xb1, 0xc3,
-	0x17, 0x41, 0x96, 0xc8, 0x46, 0x8e, 0x0e, 0x89, 0x75, 0xcf, 0xa1, 0x79, 0xb8, 0x18, 0x1d, 0x61,
-	0x6e, 0x18, 0x43, 0x97, 0xc5, 0x05, 0x98, 0x0b, 0x34, 0x1d, 0x82, 0xbf, 0x90, 0x54, 0xd2, 0x8d,
-	0x86, 0xf1, 0xa4, 0x4c, 0xb8, 0x9c, 0x13, 0xdb, 0x7f, 0x9d, 0x83, 0xd9, 0x32, 0xcf, 0x47, 0x15,
-	0xec, 0xd1, 0x5f, 0xc8, 0x9e, 0xa5, 0x15, 0x56, 0xd0, 0x46, 0xd6, 0x4b, 0xb7, 0x8b, 0x29, 0x85,
-	0x77, 0xe5, 0x9b, 0x43, 0x61, 0xc9, 0x35, 0xe9, 0x65, 0x76, 0xd1, 0x05, 0xdd, 0x19, 0xfa, 0x6d,
-	0x1d, 0xea, 0x2d, 0x8d, 0x20, 0x41, 0xb4, 0x9f, 0x64, 0xbe, 0x97, 0xd1, 0x56, 0x92, 0x2a, 0x03,
-	0x28, 0x74, 0xbf, 0x37, 0xbc, 0x00, 0x51, 0xed, 0x67, 0xbc, 0xae, 0xd1, 0x00, 0x1e, 0x0e, 0x13,
-	0x6a, 0x6f, 0x0f, 0x0b, 0x27, 0x4a, 0xdd, 0xf4, 0x57, 0x3a, 0xda, 0xec, 0x4f, 0xc2, 0x50, 0x42,
-	0xe5, 0xc6, 0x90, 0x68, 0xa2, 0xf1, 0x67, 0x52, 0xff, 0xe7, 0x3c, 0xba, 0x3b, 0xc8, 0x6d, 0x51,
-	0xb4, 0x30, 0x61, 0x7b, 0x44, 0x29, 0x62, 0xca, 0xb3, 0xb4, 0x32, 0x00, 0x1a, 0x30, 0x19, 0x82,
-	0xc9, 0x0e, 0xeb, 0x54, 0x6c, 0xaa, 0xa3, 0xd9, 0x29, 0x3b, 0xc8, 0xd1, 0x0c, 0x35, 0xac, 0xa3,
-	0x05, 0x3a, 0x2b, 0x9e, 0xc8, 0xf6, 0x1f, 0x22, 0x9e, 0x08, 0x6c, 0x84, 0x78, 0xe2, 0x70, 0xa2,
-	0xf4, 0x69, 0xbc, 0x62, 0x80, 0xde, 0xcd, 0x10, 0xa6, 0xa3, 0x42, 0x85, 0x32, 0x00, 0x45, 0x98,
-	0x7f, 0x94, 0xac, 0x1c, 0xa0, 0xeb, 0x19, 0x52, 0x7c, 0x5c, 0xb0, 0xbf, 0x3b, 0x10, 0x47, 0xf8,
-	0x9b, 0xa9, 0x55, 0x04, 0x94, 0x35, 0xfb, 0x28, 0x48, 0x68, 0xba, 0x35, 0x1c, 0x98, 0xa8, 0x6b,
-	0x67, 0x55, 0x18, 0x50, 0xcf, 0x91, 0x95, 0x8e, 0x13, 0x4a, 0x37, 0x87, 0xc6, 0xf3, 0x38, 0x4c,
-	0xab, 0x41, 0xa0, 0x81, 0x2c, 0x04, 0x95, 0x1d, 0x87, 0x19, 0x68, 0x1e, 0x87, 0xa9, 0xc5, 0x89,
-	0xde, 0x38, 0x4c, 0x85, 0x65, 0xc7, 0x61, 0x16, 0x9c, 0x28, 0xfd, 0xbd, 0x34, 0x64, 0xf5, 0x02,
-	0x7d, 0x6b, 0x10, 0x6d, 0xaa, 0x98, 0xb0, 0xea, 0xc3, 0xd7, 0x15, 0x27, 0x56, 0xfe, 0x7c, 0x60,
-	0xf5, 0x03, 0xdd, 0x1b, 0xc8, 0x1f, 0xc3, 0x0b, 0xbb, 0xee, 0x8e, 0x2c, 0x47, 0x0c, 0xfa, 0xe5,
-	0x10, 0x45, 0x10, 0x74, 0x7f, 0x10, 0x75, 0x52, 0x42, 0x18, 0x75, 0xef, 0x35, 0x24, 0x89, 0x59,
-	0x5a, 0x4f, 0x35, 0x04, 0xdd, 0x48, 0x52, 0x25, 0x00, 0x42, 0xe7, 0xfa, 0x60, 0x20, 0x3f, 0x5e,
-	0xe2, 0x75, 0x90, 0xde, 0xe3, 0x25, 0x3e, 0x9e, 0x7d, 0xbc, 0xf4, 0xe0, 0x08, 0xbf, 0x9d, 0xf5,
-	0x4c, 0xef, 0xdd, 0xef, 0xe9, 0xb8, 0xec, 0xc3, 0xb2, 0xb7, 0xac, 0x72, 0x47, 0x42, 0xf5, 0x8c,
-	0x87, 0x77, 0xef, 0xae, 0x4b, 0x85, 0x09, 0x6d, 0xef, 0xf4, 0x83, 0x73, 0x65, 0xbb, 0x1f, 0xbc,
-	0xfa, 0xf7, 0xca, 0x5b, 0x5f, 0x76, 0x56, 0xa4, 0x57, 0x9d, 0x15, 0xe9, 0x5f, 0x9d, 0x15, 0xe9,
-	0xd3, 0x75, 0x26, 0x15, 0x60, 0xfd, 0x78, 0x8b, 0x7e, 0x6e, 0x99, 0xce, 0x96, 0x5b, 0x37, 0xb7,
-	0x62, 0xff, 0x00, 0xad, 0x4d, 0xd0, 0xaf, 0xf7, 0xff, 0x17, 0x00, 0x00, 0xff, 0xff, 0xdc, 0x75,
-	0xb3, 0xf8, 0x19, 0x2a, 0x00, 0x00,
+	// 2761 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x5a, 0xcf, 0x6f, 0xe3, 0xc6,
+	0xf5, 0x0f, 0xa5, 0xf5, 0x0f, 0x3d, 0xcb, 0x32, 0x77, 0xd6, 0xf6, 0x7a, 0x9d, 0x5d, 0xcb, 0xe1,
+	0x66, 0x37, 0x5e, 0xaf, 0x23, 0xef, 0xd7, 0xd9, 0xef, 0x26, 0x45, 0x5a, 0x04, 0x76, 0xec, 0x6e,
+	0x1c, 0xaf, 0x11, 0x95, 0xca, 0xb6, 0x69, 0x5a, 0x54, 0xa0, 0xc8, 0x11, 0xcd, 0x95, 0x44, 0x32,
+	0x24, 0xa5, 0x44, 0x45, 0x0e, 0x05, 0x7a, 0x48, 0xd1, 0x00, 0xbd, 0xb4, 0x45, 0x81, 0xf6, 0x52,
+	0xa0, 0x97, 0xa2, 0x40, 0xdb, 0xbf, 0xa1, 0x3d, 0xa5, 0xb7, 0xdc, 0x0b, 0x18, 0xad, 0x81, 0x1e,
+	0xfa, 0x27, 0xf4, 0x56, 0xcc, 0x0f, 0x52, 0x24, 0x45, 0x4a, 0xa2, 0xbd, 0x0e, 0x7a, 0xd3, 0xcc,
+	0xbc, 0xf7, 0x79, 0x6f, 0xde, 0xbc, 0x99, 0x37, 0xf3, 0xa1, 0xe0, 0x5a, 0x03, 0x3b, 0x5e, 0xdf,
+	0x76, 0x2c, 0xcf, 0x52, 0xad, 0x76, 0x85, 0xfe, 0x40, 0x25, 0xda, 0x59, 0xf1, 0x7b, 0x57, 0x5f,
+	0xd5, 0x0d, 0xef, 0xa4, 0xdb, 0xa8, 0xa8, 0x56, 0x67, 0x5b, 0xb7, 0x74, 0x6b, 0x9b, 0x8e, 0x34,
+	0xba, 0x4d, 0xda, 0xa2, 0x0d, 0xfa, 0x8b, 0x69, 0x48, 0x5f, 0x08, 0x30, 0xb3, 0xab, 0xaa, 0x56,
+	0xd7, 0xf4, 0xd0, 0x7d, 0x98, 0xd2, 0x1d, 0xab, 0x6b, 0xaf, 0x08, 0xeb, 0xc2, 0xc6, 0xdc, 0xce,
+	0x52, 0x25, 0x0a, 0x5d, 0x79, 0x4c, 0x06, 0x65, 0x26, 0x83, 0x2a, 0x70, 0x4d, 0x61, 0x7a, 0x75,
+	0xdb, 0x31, 0x7a, 0x8a, 0x87, 0xeb, 0x2d, 0xdc, 0x5f, 0xc9, 0xad, 0x0b, 0x1b, 0x45, 0xf9, 0x2a,
+	0x1f, 0xaa, 0xb2, 0x91, 0x23, 0xdc, 0x47, 0x9b, 0x70, 0x55, 0x69, 0x1b, 0x8a, 0x1b, 0x91, 0xce,
+	0x53, 0xe9, 0x05, 0x3a, 0x10, 0x92, 0x7d, 0x08, 0xcb, 0x76, 0xb7, 0xd1, 0x36, 0xd4, 0xba, 0x83,
+	0x4d, 0x0d, 0xff, 0xb0, 0x67, 0x75, 0xdd, 0xba, 0x8b, 0xb1, 0xb6, 0x72, 0x85, 0x2a, 0x2c, 0xb2,
+	0x51, 0x39, 0x18, 0xac, 0x61, 0xac, 0x49, 0xbf, 0x12, 0x60, 0x8a, 0xba, 0x88, 0x6e, 0x01, 0x70,
+	0x7d, 0x62, 0x44, 0xa0, 0x3a, 0x05, 0xd6, 0x43, 0xe0, 0x97, 0x61, 0xda, 0xc5, 0xaa, 0x83, 0x3d,
+	0xee, 0x2d, 0x6f, 0x11, 0x35, 0xf6, 0xab, 0xee, 0x1a, 0x3a, 0xf7, 0xad, 0xc0, 0x7a, 0x6a, 0x86,
+	0x8e, 0xde, 0x00, 0xa0, 0x53, 0xaf, 0x7b, 0x7d, 0x1b, 0x53, 0x4f, 0x4a, 0x3b, 0x37, 0x12, 0x63,
+	0xf4, 0x7e, 0xdf, 0xc6, 0x72, 0x41, 0xf7, 0x7f, 0x4a, 0x5d, 0x98, 0xa7, 0xfd, 0xc7, 0xd8, 0x53,
+	0x34, 0xc5, 0x53, 0x08, 0x14, 0xee, 0x61, 0xd3, 0x63, 0x50, 0x42, 0x32, 0xd4, 0x01, 0x91, 0x60,
+	0x50, 0xd8, 0xff, 0x89, 0x56, 0x60, 0xc6, 0x56, 0xfa, 0x6d, 0x4b, 0xd1, 0xb8, 0xf3, 0x7e, 0x13,
+	0x89, 0x90, 0x1f, 0xb8, 0x4d, 0x7e, 0x4a, 0x6f, 0x72, 0xb3, 0x07, 0x66, 0x0f, 0xb7, 0x2d, 0x1b,
+	0xa3, 0x45, 0x98, 0x32, 0x2d, 0x53, 0xc5, 0x3c, 0x24, 0xac, 0x41, 0x7a, 0x29, 0x3e, 0x07, 0x64,
+	0x0d, 0x49, 0x87, 0xd2, 0x31, 0x76, 0x5d, 0x45, 0xc7, 0xef, 0x60, 0x45, 0xc3, 0x8e, 0x4b, 0x4c,
+	0xd3, 0x45, 0xc5, 0x0e, 0xd5, 0xbf, 0x22, 0xfb, 0x4d, 0x74, 0x0f, 0x0a, 0x1a, 0xee, 0x19, 0x2a,
+	0xae, 0xdb, 0x2d, 0x86, 0xb2, 0x57, 0x3c, 0x3b, 0x2d, 0xcf, 0xee, 0xd3, 0xce, 0xea, 0x91, 0x3c,
+	0xcb, 0x86, 0xab, 0xad, 0x04, 0x2f, 0x9f, 0xc1, 0x02, 0x37, 0x14, 0xf8, 0xf9, 0x0a, 0x2c, 0x74,
+	0x58, 0x57, 0xfd, 0x84, 0x19, 0xe7, 0x1e, 0x97, 0x3a, 0x43, 0x2e, 0xf1, 0x1e, 0x3f, 0x1a, 0xbc,
+	0x39, 0x98, 0x6a, 0x3e, 0x34, 0x55, 0xe9, 0x53, 0x28, 0xd2, 0xa8, 0xbe, 0x6d, 0x99, 0x1e, 0xfe,
+	0xc4, 0x43, 0xcb, 0x90, 0x33, 0x34, 0x86, 0xbd, 0x37, 0x7d, 0x76, 0x5a, 0xce, 0x1d, 0xee, 0xcb,
+	0x39, 0x43, 0x43, 0x5b, 0x00, 0xb6, 0xe2, 0x90, 0x05, 0x32, 0x34, 0x77, 0x25, 0xb7, 0x9e, 0xdf,
+	0x28, 0xee, 0xcd, 0x9f, 0x9d, 0x96, 0x0b, 0x55, 0xda, 0x7b, 0xb8, 0xef, 0xca, 0x05, 0x26, 0x70,
+	0xa8, 0xb9, 0xe8, 0x2e, 0xcc, 0xb2, 0xc4, 0xb0, 0x5b, 0xcc, 0xdc, 0xde, 0xdc, 0xd9, 0x69, 0x79,
+	0x86, 0xc6, 0xbe, 0x7a, 0x24, 0xcf, 0xd0, 0xc1, 0x6a, 0x4b, 0x92, 0x61, 0x6e, 0xd7, 0x1e, 0x24,
+	0x41, 0x24, 0x6a, 0xc2, 0xc8, 0xa8, 0xa5, 0xce, 0x53, 0xd2, 0x01, 0x91, 0xc9, 0x28, 0xaa, 0xb7,
+	0xab, 0x69, 0xbb, 0x64, 0x1f, 0x91, 0x0c, 0xcf, 0x00, 0x7d, 0x17, 0x66, 0xf9, 0xbe, 0xf4, 0x97,
+	0x8e, 0x3a, 0x4f, 0xa1, 0x88, 0xf3, 0x6c, 0x6f, 0xb6, 0xa4, 0xcf, 0x05, 0x58, 0xa4, 0x33, 0xda,
+	0xd5, 0xb4, 0x63, 0xdc, 0x69, 0x60, 0x87, 0x81, 0x11, 0x5b, 0x1d, 0xda, 0x8e, 0xd9, 0x62, 0x42,
+	0xc4, 0x16, 0x1b, 0xae, 0xb6, 0xb2, 0xe4, 0xc9, 0x2d, 0x00, 0x8e, 0x1a, 0xda, 0x8b, 0xac, 0xa7,
+	0x66, 0xe8, 0xd2, 0x01, 0x14, 0x99, 0x52, 0x8d, 0x6d, 0xdd, 0x17, 0xa1, 0xa0, 0x9e, 0x28, 0x86,
+	0x19, 0xda, 0xf0, 0xb3, 0xb4, 0x83, 0x44, 0x23, 0x94, 0xb8, 0xb9, 0x48, 0xe2, 0x4a, 0x3f, 0x0f,
+	0x4d, 0x2a, 0x82, 0x97, 0x21, 0x80, 0x8f, 0xa0, 0xa4, 0x61, 0xd7, 0xab, 0x0f, 0x82, 0xc0, 0x66,
+	0x26, 0x9e, 0x9d, 0x96, 0x8b, 0xfb, 0xd8, 0xf5, 0x82, 0x40, 0x14, 0xb5, 0x41, 0xab, 0x15, 0xde,
+	0xc9, 0xf9, 0xc8, 0x4e, 0x96, 0x7e, 0x29, 0xc0, 0xfa, 0x71, 0xb7, 0xed, 0x19, 0x4c, 0xd6, 0x77,
+	0x90, 0x2e, 0x89, 0x8c, 0x5d, 0xab, 0xdd, 0x8b, 0xef, 0xb9, 0xd1, 0x1e, 0xde, 0x81, 0x12, 0x5b,
+	0x62, 0x87, 0x2b, 0xf3, 0x24, 0x9a, 0x57, 0x22, 0x88, 0x65, 0x98, 0xf3, 0x4f, 0x68, 0xcb, 0x6a,
+	0x72, 0xa7, 0x80, 0x9f, 0xcd, 0x96, 0xd5, 0x94, 0x3e, 0x13, 0xe0, 0x46, 0xc4, 0x2f, 0xc5, 0xf4,
+	0x76, 0xb5, 0x8e, 0x61, 0xca, 0x56, 0x1b, 0x67, 0x71, 0xe8, 0x2d, 0xb8, 0xaa, 0x13, 0x65, 0x8c,
+	0x87, 0xa2, 0x76, 0xed, 0xec, 0xb4, 0xbc, 0xf0, 0x98, 0x0d, 0x06, 0x81, 0x5b, 0xd0, 0x23, 0x1d,
+	0x2d, 0xe9, 0x00, 0x56, 0x42, 0x8e, 0x1c, 0x9a, 0x86, 0x67, 0x28, 0x6d, 0xd6, 0xc8, 0x90, 0x8f,
+	0x92, 0x02, 0xeb, 0x41, 0x70, 0x35, 0xcd, 0xf0, 0x0c, 0xcb, 0x54, 0xda, 0xd1, 0xaa, 0x92, 0x65,
+	0x5a, 0x08, 0xae, 0xd0, 0x22, 0xc5, 0xa2, 0x4b, 0x7f, 0x4b, 0x1a, 0xdc, 0x66, 0x65, 0x13, 0x77,
+	0xac, 0x1e, 0xbe, 0x2c, 0x2b, 0x6d, 0x40, 0xbc, 0x88, 0x53, 0x63, 0xef, 0x5a, 0x86, 0x99, 0x0d,
+	0x34, 0x28, 0xfd, 0xb9, 0xf1, 0xa5, 0x5f, 0xc2, 0x20, 0x86, 0xad, 0x3d, 0xc1, 0x4d, 0x2f, 0xe3,
+	0x89, 0x13, 0x1c, 0x97, 0xb9, 0x11, 0xc7, 0xe5, 0xbb, 0x70, 0x8b, 0x9b, 0xe1, 0x27, 0x9c, 0x8c,
+	0x3f, 0xea, 0x62, 0xd7, 0xdb, 0x37, 0x5c, 0xa5, 0xd1, 0xce, 0x34, 0x3f, 0xe9, 0x10, 0x6e, 0x26,
+	0x62, 0x1d, 0x98, 0x99, 0xa1, 0xfa, 0x70, 0x3b, 0x11, 0x4a, 0xc6, 0x4d, 0xec, 0x60, 0x53, 0xc5,
+	0x32, 0x76, 0xb3, 0x9d, 0x20, 0xaf, 0xc0, 0x42, 0xfc, 0x9e, 0xc3, 0x16, 0xb7, 0xe4, 0x44, 0x6f,
+	0x38, 0x3f, 0xce, 0xa5, 0x84, 0xe4, 0xc0, 0xfc, 0xa8, 0x8b, 0xbb, 0xd9, 0x96, 0x7c, 0x0b, 0x40,
+	0x65, 0x20, 0x83, 0x85, 0xa0, 0x35, 0x8e, 0x43, 0x57, 0x8f, 0xe4, 0x02, 0x17, 0x88, 0x2d, 0xda,
+	0x54, 0xfa, 0xa2, 0xa1, 0x47, 0x70, 0xdd, 0x47, 0x8d, 0xcf, 0x89, 0x1d, 0x28, 0x4b, 0xaa, 0xef,
+	0x79, 0x6c, 0x03, 0x88, 0xbe, 0x5e, 0x87, 0x17, 0x48, 0x7e, 0xd9, 0x5b, 0xe0, 0xfd, 0x7e, 0xdd,
+	0x94, 0x3c, 0xb8, 0x91, 0x18, 0x84, 0x1a, 0x36, 0xbd, 0x4b, 0x0b, 0x80, 0xf4, 0x77, 0x21, 0x25,
+	0xf6, 0x32, 0x56, 0xb1, 0xd1, 0xbb, 0xcc, 0xd8, 0x7f, 0x05, 0x31, 0xed, 0xc3, 0x5a, 0xda, 0x5e,
+	0x53, 0x15, 0x47, 0xbb, 0xc4, 0xd9, 0x49, 0xbf, 0x4d, 0x0b, 0xec, 0xae, 0xaa, 0x62, 0xdb, 0xfb,
+	0xaa, 0x92, 0x7a, 0xd4, 0xc5, 0xcd, 0x86, 0xa5, 0xa8, 0x87, 0x7b, 0x6d, 0x4b, 0x6d, 0x5d, 0x66,
+	0x50, 0x1c, 0xb8, 0x1e, 0xb5, 0xf8, 0xd4, 0x6c, 0x5c, 0xb6, 0xcd, 0x63, 0x40, 0x87, 0xa6, 0xeb,
+	0x29, 0xa6, 0x8a, 0x0f, 0x3e, 0xb1, 0x2d, 0xc7, 0xdb, 0x57, 0x3c, 0x65, 0xb5, 0x00, 0x33, 0x7c,
+	0x3d, 0x56, 0xb7, 0x60, 0x4a, 0xc6, 0x76, 0xbb, 0x8f, 0x6e, 0xc3, 0x3c, 0xa6, 0x12, 0x58, 0xab,
+	0xd3, 0xac, 0x62, 0x37, 0xae, 0xa2, 0xdf, 0x49, 0x14, 0xa5, 0xbf, 0x4c, 0xc1, 0x8a, 0x8f, 0xf7,
+	0x18, 0x93, 0x79, 0x34, 0x0d, 0xbd, 0xeb, 0x28, 0xa4, 0xfe, 0x85, 0x51, 0xbf, 0xbc, 0xe2, 0xc3,
+	0x6e, 0x01, 0x04, 0x4f, 0x4a, 0x7f, 0x6a, 0xd4, 0x5d, 0x1e, 0x0a, 0xe2, 0xae, 0xff, 0xb0, 0xcc,
+	0x74, 0x99, 0xfc, 0x3a, 0x88, 0x3e, 0x70, 0x6c, 0xbd, 0xd1, 0xd9, 0x69, 0xb9, 0x14, 0x2e, 0x66,
+	0xd5, 0x23, 0xb9, 0xa4, 0x84, 0xdb, 0x2d, 0x74, 0x1b, 0x66, 0x6c, 0x8c, 0x9d, 0xba, 0xc1, 0x9e,
+	0x9f, 0x85, 0x3d, 0x38, 0x3b, 0x2d, 0x4f, 0x57, 0x31, 0x76, 0x0e, 0xf7, 0xe5, 0x69, 0x32, 0x74,
+	0xa8, 0xa1, 0x9b, 0x50, 0x68, 0x1b, 0xae, 0x87, 0x4d, 0xf2, 0x58, 0x99, 0x5a, 0xcf, 0x6f, 0x14,
+	0xe4, 0x41, 0x07, 0xfa, 0x36, 0xcc, 0x35, 0xda, 0xb8, 0x8e, 0x59, 0xb5, 0x59, 0x99, 0xa6, 0x0f,
+	0xbe, 0xff, 0x8f, 0x17, 0xd9, 0xb4, 0x68, 0x55, 0x6a, 0xd8, 0xf3, 0x0c, 0x53, 0xaf, 0x79, 0x8a,
+	0x87, 0x65, 0x68, 0xb4, 0xb1, 0x5f, 0xb6, 0xea, 0x20, 0x7e, 0x6c, 0x34, 0x8d, 0xba, 0xbd, 0x63,
+	0x07, 0xe0, 0x33, 0x17, 0x01, 0x2f, 0x11, 0xb8, 0xea, 0x8e, 0xed, 0x1b, 0xf8, 0x00, 0x8a, 0x1d,
+	0xcd, 0x74, 0x03, 0xf0, 0xd9, 0x8b, 0x80, 0xcf, 0x11, 0x28, 0x1f, 0xf9, 0x43, 0x98, 0x77, 0x70,
+	0x5b, 0xe9, 0x07, 0xd0, 0x85, 0x8b, 0x40, 0x17, 0x29, 0x16, 0xc7, 0x96, 0x1e, 0x43, 0x31, 0x3c,
+	0x8a, 0xe6, 0x60, 0xe6, 0xa9, 0xd9, 0x32, 0xad, 0x8f, 0x4d, 0xf1, 0x05, 0xd2, 0xe0, 0x72, 0xa2,
+	0x80, 0x8a, 0x30, 0xeb, 0x5f, 0x27, 0xc4, 0x1c, 0x5a, 0x80, 0xb9, 0xa7, 0xa6, 0xd2, 0x53, 0x8c,
+	0x36, 0xe9, 0x11, 0xf3, 0x12, 0x86, 0xeb, 0x29, 0x45, 0x3e, 0x9c, 0xc1, 0x6f, 0xf9, 0x09, 0x7c,
+	0x13, 0x0a, 0x8e, 0x2f, 0xe0, 0xd3, 0x0e, 0x41, 0x07, 0xb9, 0xf0, 0xfb, 0x73, 0x25, 0xe9, 0x3a,
+	0x2b, 0xfb, 0x4d, 0xe9, 0x3e, 0x2c, 0x25, 0x5e, 0x71, 0xc2, 0x46, 0x66, 0xb8, 0x11, 0xe9, 0x1d,
+	0x58, 0x4c, 0xba, 0xc3, 0x84, 0x65, 0xef, 0x4c, 0xe4, 0x90, 0x54, 0x85, 0x9b, 0xf1, 0xd9, 0xb9,
+	0x38, 0x79, 0x8a, 0x13, 0x22, 0x7e, 0x14, 0xbc, 0x46, 0x07, 0x35, 0x59, 0x5b, 0x95, 0x03, 0x9c,
+	0x31, 0x11, 0x4a, 0x2a, 0x58, 0xb9, 0xc4, 0x82, 0x35, 0x08, 0xc7, 0x07, 0xf1, 0x70, 0xb0, 0xb2,
+	0xb1, 0xfa, 0xfa, 0xc0, 0x68, 0xf4, 0x18, 0x14, 0x46, 0x1f, 0x83, 0x03, 0xe4, 0xef, 0x26, 0xac,
+	0x0a, 0x29, 0x86, 0xcf, 0x01, 0xba, 0x0a, 0xc5, 0x70, 0x25, 0x79, 0x0e, 0x88, 0x32, 0x94, 0xa2,
+	0x95, 0xe2, 0x39, 0x60, 0x7e, 0x0b, 0xae, 0xf9, 0xdc, 0x02, 0x27, 0x16, 0xe8, 0x72, 0xfe, 0xdf,
+	0x00, 0x38, 0x5c, 0x40, 0x85, 0xf4, 0x02, 0x3a, 0x80, 0x7c, 0x1f, 0x96, 0xe3, 0x2f, 0xdb, 0xb7,
+	0x1d, 0xac, 0x78, 0x91, 0x64, 0xdb, 0xf6, 0x93, 0x6d, 0x42, 0x78, 0xe9, 0x3b, 0xb0, 0x18, 0x47,
+	0x25, 0x4f, 0xa0, 0xd5, 0x47, 0x03, 0x4f, 0xb3, 0x70, 0x9b, 0x03, 0x77, 0x6b, 0xb0, 0x14, 0x07,
+	0x7e, 0x82, 0x95, 0x1e, 0xbe, 0x50, 0x0c, 0x54, 0xb8, 0x33, 0xf4, 0xba, 0x0f, 0x3f, 0xc4, 0x49,
+	0x9a, 0xb5, 0x2d, 0xf7, 0x62, 0x46, 0x3e, 0x13, 0x60, 0x6d, 0x98, 0x43, 0xe0, 0x6f, 0x75, 0xfa,
+	0xbe, 0x5e, 0xfd, 0x7e, 0x66, 0xf8, 0xe8, 0xdb, 0x3a, 0x37, 0xea, 0x6d, 0x3d, 0xf0, 0xe4, 0xf3,
+	0x04, 0x36, 0xe3, 0xd0, 0xec, 0x19, 0x1e, 0x3d, 0xc6, 0xf9, 0xea, 0x9f, 0x63, 0xaa, 0x0f, 0xfd,
+	0x2c, 0xc9, 0xb2, 0xb4, 0x92, 0x0e, 0x0b, 0x21, 0x0e, 0x8e, 0xe6, 0xf3, 0x51, 0xf6, 0x38, 0xa4,
+	0xb2, 0xb0, 0x83, 0x69, 0x37, 0xa1, 0x44, 0x0d, 0x51, 0x9a, 0xee, 0x12, 0xed, 0xfc, 0x5e, 0x00,
+	0x14, 0x21, 0x97, 0x29, 0xc1, 0x89, 0x76, 0x61, 0x9e, 0x31, 0xcc, 0x2a, 0xa3, 0x3a, 0x79, 0x70,
+	0x6e, 0x26, 0x92, 0xcc, 0x9c, 0x0e, 0x95, 0x8b, 0x38, 0x4c, 0x8e, 0x7e, 0x0d, 0x66, 0x23, 0xa7,
+	0xf0, 0xdc, 0xce, 0xad, 0xc4, 0xd0, 0xfa, 0x86, 0xe5, 0x40, 0x7c, 0x40, 0x29, 0xe7, 0xc3, 0x94,
+	0xf2, 0x1f, 0x04, 0xb8, 0xca, 0x35, 0x18, 0xdf, 0xfb, 0xbc, 0x3c, 0x7d, 0x03, 0x66, 0x7c, 0x9e,
+	0x98, 0x39, 0xba, 0x16, 0x57, 0x8e, 0x52, 0xd9, 0xb2, 0x2f, 0x1e, 0x26, 0x56, 0xf3, 0x51, 0x62,
+	0xf5, 0x37, 0x02, 0x2c, 0x47, 0xa6, 0x57, 0xeb, 0x36, 0x5c, 0xd5, 0x31, 0x1a, 0x78, 0xf5, 0x47,
+	0x42, 0xf6, 0x95, 0x5c, 0x84, 0x29, 0xd7, 0x20, 0x45, 0x8f, 0x93, 0xec, 0xb4, 0x41, 0x7a, 0xbb,
+	0xa6, 0x67, 0xb4, 0xfd, 0x38, 0xd1, 0x06, 0x7a, 0x09, 0x8a, 0xba, 0x55, 0x6f, 0x28, 0x6a, 0xeb,
+	0x63, 0xc5, 0xd1, 0x5c, 0x7a, 0xeb, 0x9c, 0x95, 0xe7, 0x74, 0x6b, 0xcf, 0xef, 0x92, 0xbe, 0x19,
+	0x44, 0x92, 0x39, 0xf7, 0xc4, 0x70, 0xbd, 0x73, 0x6c, 0x22, 0xe9, 0xd7, 0x02, 0x2c, 0x85, 0x97,
+	0xe4, 0x7f, 0x6a, 0x92, 0x07, 0x20, 0x86, 0x7d, 0x3b, 0xef, 0x1c, 0xff, 0x23, 0x40, 0x81, 0x9f,
+	0x3a, 0x4d, 0x6b, 0xb5, 0x9e, 0x7d, 0x5a, 0x99, 0x9e, 0x51, 0xab, 0x3f, 0x15, 0xce, 0x73, 0x30,
+	0x65, 0x38, 0x5a, 0xa3, 0x2f, 0x9f, 0xfc, 0x48, 0xb2, 0xea, 0x08, 0xe6, 0x77, 0x55, 0x8f, 0x7e,
+	0x58, 0xa3, 0xd6, 0x2e, 0x54, 0x53, 0x8e, 0x61, 0x61, 0x1f, 0x2b, 0xcf, 0x0d, 0xee, 0x53, 0x10,
+	0x6b, 0x27, 0x8a, 0x83, 0xc9, 0xed, 0x95, 0x47, 0x12, 0x2d, 0x43, 0x2e, 0x50, 0xa7, 0x1f, 0x64,
+	0xaa, 0x47, 0x72, 0xce, 0x6e, 0x8d, 0xf8, 0x22, 0x98, 0x4b, 0xff, 0x22, 0x88, 0x56, 0x43, 0x27,
+	0x18, 0x4b, 0xbe, 0xa0, 0xbd, 0x69, 0xf0, 0xa4, 0xa0, 0x5f, 0xd5, 0x96, 0xf9, 0x19, 0x4a, 0x1a,
+	0x4f, 0x4d, 0x0d, 0x37, 0x0d, 0x13, 0x6b, 0xe2, 0x0b, 0x68, 0x91, 0x67, 0x20, 0xe9, 0xe7, 0xaf,
+	0x44, 0x51, 0x88, 0xf4, 0x72, 0xc7, 0xc5, 0x1c, 0x5a, 0xe1, 0x9f, 0x12, 0x48, 0x6f, 0xa8, 0xde,
+	0x89, 0xf9, 0xcd, 0x7f, 0x4d, 0x43, 0x21, 0xf8, 0x98, 0x47, 0x6c, 0x05, 0x8d, 0xb0, 0xad, 0xdb,
+	0x50, 0x0e, 0xfa, 0x79, 0xda, 0x0f, 0xbe, 0xb2, 0xec, 0x6a, 0x1a, 0x7d, 0xaf, 0x0c, 0x09, 0x85,
+	0xbf, 0x5a, 0x30, 0xa1, 0x1c, 0x2a, 0xc3, 0x8b, 0x81, 0xd0, 0x30, 0x2d, 0x2c, 0x62, 0x74, 0x0b,
+	0x6e, 0x24, 0x0a, 0x3c, 0xc1, 0x4d, 0x4f, 0x6c, 0xa2, 0x4d, 0xb8, 0x1b, 0x1f, 0x4e, 0x66, 0x60,
+	0x45, 0x1d, 0xdd, 0x83, 0x3b, 0xa3, 0x65, 0xfd, 0xb7, 0xd6, 0x09, 0x7a, 0x00, 0x5b, 0xa3, 0x45,
+	0xa3, 0x0c, 0xaa, 0x68, 0xa0, 0x1d, 0xa8, 0x8c, 0xd6, 0x78, 0xaf, 0xeb, 0xe9, 0x96, 0x61, 0xea,
+	0x3e, 0xff, 0x29, 0x3e, 0x43, 0x15, 0xd8, 0x9c, 0x4c, 0xa7, 0x86, 0x4d, 0x4f, 0x6c, 0x8d, 0xb7,
+	0x71, 0x68, 0xaa, 0x56, 0xc7, 0x30, 0x75, 0x9f, 0xe7, 0x13, 0xdb, 0xe8, 0x35, 0xd8, 0x9e, 0x4c,
+	0x27, 0xa0, 0xcf, 0xc4, 0xce, 0xe4, 0x86, 0x7c, 0xde, 0x4b, 0x34, 0x91, 0x04, 0x6b, 0x29, 0x3a,
+	0x9c, 0x81, 0x12, 0x2d, 0xf4, 0x32, 0xac, 0xa7, 0xc8, 0x04, 0x9c, 0x91, 0x68, 0x23, 0x09, 0x6e,
+	0x05, 0x52, 0xb1, 0x4b, 0x3d, 0x4b, 0x9b, 0xbf, 0x09, 0xe8, 0x01, 0xdc, 0x0f, 0x64, 0x46, 0xde,
+	0x50, 0x99, 0xc6, 0x1f, 0x73, 0xe8, 0x61, 0x28, 0x10, 0xc3, 0x77, 0xbc, 0xd0, 0x57, 0x99, 0x5d,
+	0xd3, 0xb4, 0xba, 0xa6, 0x8a, 0x35, 0xf1, 0x4f, 0x39, 0x54, 0x81, 0x7b, 0xe9, 0x76, 0x22, 0x77,
+	0x54, 0xac, 0x89, 0x7f, 0xce, 0xa1, 0xbb, 0xf0, 0x52, 0x7c, 0x67, 0xb0, 0x4d, 0x5c, 0x65, 0x97,
+	0x21, 0xba, 0x92, 0xff, 0x9e, 0xd9, 0xfc, 0xab, 0x10, 0x3c, 0xab, 0xd8, 0xbb, 0xff, 0x46, 0xf0,
+	0x82, 0xa3, 0xed, 0xf0, 0x6e, 0x8b, 0x0d, 0xbd, 0x6f, 0xf1, 0x45, 0x10, 0x05, 0xb2, 0x91, 0xc3,
+	0x43, 0xc1, 0xba, 0xe7, 0xd0, 0x12, 0x5c, 0x0d, 0x8f, 0xb0, 0x30, 0xe4, 0xd1, 0xf5, 0xe0, 0x9d,
+	0xc4, 0x15, 0x3a, 0x16, 0x91, 0xbf, 0x12, 0x37, 0x32, 0xc8, 0x86, 0xa9, 0xb8, 0x8e, 0xbf, 0x9c,
+	0xd3, 0x3b, 0x9f, 0xaf, 0xc0, 0x42, 0x95, 0x57, 0x88, 0x1a, 0x76, 0xe8, 0x27, 0xd6, 0x67, 0x49,
+	0xcc, 0x1c, 0xda, 0x4c, 0xa3, 0x4a, 0x06, 0x32, 0x15, 0xff, 0x49, 0xb5, 0x31, 0x91, 0x2c, 0x29,
+	0x5a, 0x9f, 0xa6, 0xb3, 0x76, 0xe8, 0xc1, 0xc4, 0xe4, 0x8c, 0x6f, 0xb7, 0x92, 0x41, 0x83, 0x58,
+	0xef, 0xa7, 0x12, 0x2e, 0x68, 0x3b, 0x0e, 0x95, 0x22, 0x18, 0xd8, 0x7e, 0x75, 0x72, 0x05, 0x62,
+	0xda, 0x4d, 0x21, 0x61, 0xd0, 0x18, 0x1c, 0x2e, 0x16, 0x98, 0xbd, 0x3f, 0xa9, 0x38, 0x31, 0x6a,
+	0x27, 0x93, 0x39, 0x68, 0x6b, 0x34, 0x08, 0x93, 0x0a, 0x4c, 0x6e, 0x4e, 0x28, 0x4d, 0x2c, 0xfe,
+	0x44, 0x18, 0xcd, 0xfa, 0xa0, 0x87, 0xe3, 0xc2, 0x16, 0x96, 0x0e, 0x5c, 0xd8, 0xc9, 0xa8, 0x45,
+	0x5c, 0x79, 0x96, 0xc4, 0x16, 0xa1, 0x31, 0x93, 0x21, 0x32, 0xe9, 0x69, 0x9d, 0x28, 0x9b, 0x18,
+	0x68, 0x76, 0xca, 0x8e, 0x0b, 0x34, 0x93, 0x9a, 0x34, 0xd0, 0x81, 0x74, 0x5a, 0x3e, 0x91, 0xed,
+	0x3f, 0x41, 0x3e, 0x11, 0xb1, 0x0c, 0xf9, 0xc4, 0xc5, 0x89, 0xd1, 0x0f, 0xa2, 0xc4, 0x12, 0x7a,
+	0x39, 0x45, 0x99, 0x8e, 0x06, 0x26, 0xa4, 0x31, 0x52, 0x04, 0xf9, 0x07, 0x71, 0x82, 0x09, 0xdd,
+	0x4d, 0xd1, 0xe2, 0xe3, 0x01, 0xfa, 0xcb, 0x63, 0xe5, 0x08, 0x7e, 0x27, 0x91, 0x6c, 0x42, 0x69,
+	0xb3, 0x0f, 0x0b, 0x05, 0x96, 0xee, 0x4d, 0x26, 0x4c, 0xcc, 0xf5, 0xd2, 0x88, 0x28, 0x34, 0x74,
+	0x64, 0x25, 0xcb, 0x05, 0x46, 0xb7, 0x26, 0x96, 0xe7, 0x79, 0x98, 0x44, 0x55, 0xa1, 0xb1, 0x28,
+	0x44, 0x2a, 0x3d, 0x0f, 0x53, 0xa4, 0x79, 0x1e, 0x26, 0x72, 0x58, 0xc3, 0x79, 0x98, 0x28, 0x96,
+	0x9e, 0x87, 0x69, 0xe2, 0xc4, 0xe8, 0xef, 0x84, 0x09, 0x49, 0x2e, 0xf4, 0x8d, 0x71, 0xb0, 0x89,
+	0x6a, 0x81, 0x57, 0x6f, 0x9e, 0x57, 0x9d, 0x78, 0xf9, 0xb3, 0xb1, 0x24, 0x19, 0x7a, 0x34, 0x16,
+	0x3f, 0x22, 0x1f, 0xf8, 0xf5, 0x30, 0xb3, 0x1e, 0x71, 0xe8, 0x17, 0x13, 0x70, 0x65, 0xe8, 0x8d,
+	0x71, 0xd0, 0x71, 0x8d, 0xc0, 0xa9, 0x47, 0xe7, 0xd0, 0x24, 0x6e, 0x29, 0x43, 0xa4, 0x19, 0x7a,
+	0x25, 0x0e, 0x15, 0x13, 0x08, 0x6c, 0xde, 0x19, 0x2f, 0xc8, 0x8f, 0x97, 0x28, 0x5d, 0x36, 0x7c,
+	0xbc, 0x44, 0xc7, 0xd3, 0x8f, 0x97, 0x21, 0x39, 0x82, 0x6f, 0xa6, 0xb1, 0x39, 0xc3, 0xfb, 0x3d,
+	0x59, 0x2e, 0xfd, 0xb0, 0x1c, 0x66, 0xdf, 0x1e, 0x08, 0xa8, 0x95, 0xc2, 0xab, 0x0c, 0xef, 0xba,
+	0x44, 0xb1, 0xc0, 0xda, 0x4b, 0xa3, 0xc4, 0x7d, 0x63, 0x5a, 0x02, 0x1b, 0x84, 0xee, 0x8d, 0xf4,
+	0x93, 0x88, 0x64, 0x9c, 0x92, 0x32, 0x4c, 0xc7, 0xa0, 0x8d, 0x51, 0xee, 0x45, 0x6c, 0x4c, 0x34,
+	0x91, 0xf7, 0x42, 0x4c, 0x0d, 0x4a, 0xd6, 0x20, 0x43, 0x01, 0x68, 0x79, 0x94, 0x08, 0x59, 0xf6,
+	0xef, 0xc5, 0xf8, 0x0f, 0x34, 0x9c, 0x8e, 0xe1, 0xe1, 0x00, 0xf8, 0xf6, 0x38, 0x31, 0xbe, 0x2d,
+	0x62, 0x7c, 0xc8, 0xf0, 0xb6, 0x88, 0x09, 0xa4, 0x6f, 0x8b, 0x61, 0x41, 0xbb, 0xdd, 0xdf, 0x7b,
+	0xfd, 0xcb, 0x7f, 0xae, 0xbd, 0xf0, 0xc5, 0xd9, 0x9a, 0xf0, 0xe5, 0xd9, 0x9a, 0xf0, 0x8f, 0xb3,
+	0x35, 0xe1, 0xc3, 0x3b, 0x4c, 0xcf, 0xc3, 0xea, 0xc9, 0x36, 0xfd, 0xb9, 0xad, 0x5b, 0xdb, 0x76,
+	0x4b, 0xdf, 0x8e, 0xfc, 0x39, 0xbc, 0x31, 0x4d, 0x7f, 0xbd, 0xf6, 0xdf, 0x00, 0x00, 0x00, 0xff,
+	0xff, 0x72, 0xb5, 0x2f, 0xd2, 0x34, 0x2e, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -5439,6 +6060,16 @@ type ProtocolServiceClient interface {
 	GroupMetadataSubscribe(ctx context.Context, in *GroupMetadataSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMetadataSubscribeClient, error)
 	// GroupMessageSubscribe subscribes to a group message updates (or it can also retrieve the history)
 	GroupMessageSubscribe(ctx context.Context, in *GroupMessageSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMessageSubscribeClient, error)
+	// GroupMetadataList replays metadata events from the group
+	GroupMetadataList(ctx context.Context, in *GroupMetadataList_Request, opts ...grpc.CallOption) (ProtocolService_GroupMetadataListClient, error)
+	// GroupMessageList replays message  events from the group
+	GroupMessageList(ctx context.Context, in *GroupMessageList_Request, opts ...grpc.CallOption) (ProtocolService_GroupMessageListClient, error)
+	// GroupInfo retrieves information about a group
+	GroupInfo(ctx context.Context, in *GroupInfo_Request, opts ...grpc.CallOption) (*GroupInfo_Reply, error)
+	// ActivateGroup explicitly opens a group, groups are automatically enabled when actions are performed on them
+	ActivateGroup(ctx context.Context, in *ActivateGroup_Request, opts ...grpc.CallOption) (*ActivateGroup_Reply, error)
+	// DeactivateGroup closes a group
+	DeactivateGroup(ctx context.Context, in *DeactivateGroup_Request, opts ...grpc.CallOption) (*DeactivateGroup_Reply, error)
 }
 
 type protocolServiceClient struct {
@@ -5693,6 +6324,97 @@ func (x *protocolServiceGroupMessageSubscribeClient) Recv() (*GroupMessageEvent,
 	return m, nil
 }
 
+func (c *protocolServiceClient) GroupMetadataList(ctx context.Context, in *GroupMetadataList_Request, opts ...grpc.CallOption) (ProtocolService_GroupMetadataListClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[2], "/berty.protocol.ProtocolService/GroupMetadataList", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &protocolServiceGroupMetadataListClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ProtocolService_GroupMetadataListClient interface {
+	Recv() (*GroupMetadataEvent, error)
+	grpc.ClientStream
+}
+
+type protocolServiceGroupMetadataListClient struct {
+	grpc.ClientStream
+}
+
+func (x *protocolServiceGroupMetadataListClient) Recv() (*GroupMetadataEvent, error) {
+	m := new(GroupMetadataEvent)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *protocolServiceClient) GroupMessageList(ctx context.Context, in *GroupMessageList_Request, opts ...grpc.CallOption) (ProtocolService_GroupMessageListClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[3], "/berty.protocol.ProtocolService/GroupMessageList", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &protocolServiceGroupMessageListClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ProtocolService_GroupMessageListClient interface {
+	Recv() (*GroupMessageEvent, error)
+	grpc.ClientStream
+}
+
+type protocolServiceGroupMessageListClient struct {
+	grpc.ClientStream
+}
+
+func (x *protocolServiceGroupMessageListClient) Recv() (*GroupMessageEvent, error) {
+	m := new(GroupMessageEvent)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *protocolServiceClient) GroupInfo(ctx context.Context, in *GroupInfo_Request, opts ...grpc.CallOption) (*GroupInfo_Reply, error) {
+	out := new(GroupInfo_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) ActivateGroup(ctx context.Context, in *ActivateGroup_Request, opts ...grpc.CallOption) (*ActivateGroup_Reply, error) {
+	out := new(ActivateGroup_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ActivateGroup", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *protocolServiceClient) DeactivateGroup(ctx context.Context, in *DeactivateGroup_Request, opts ...grpc.CallOption) (*DeactivateGroup_Reply, error) {
+	out := new(DeactivateGroup_Reply)
+	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/DeactivateGroup", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProtocolServiceServer is the server API for ProtocolService service.
 type ProtocolServiceServer interface {
 	// InstanceExportData exports instance data
@@ -5739,6 +6461,16 @@ type ProtocolServiceServer interface {
 	GroupMetadataSubscribe(*GroupMetadataSubscribe_Request, ProtocolService_GroupMetadataSubscribeServer) error
 	// GroupMessageSubscribe subscribes to a group message updates (or it can also retrieve the history)
 	GroupMessageSubscribe(*GroupMessageSubscribe_Request, ProtocolService_GroupMessageSubscribeServer) error
+	// GroupMetadataList replays metadata events from the group
+	GroupMetadataList(*GroupMetadataList_Request, ProtocolService_GroupMetadataListServer) error
+	// GroupMessageList replays message  events from the group
+	GroupMessageList(*GroupMessageList_Request, ProtocolService_GroupMessageListServer) error
+	// GroupInfo retrieves information about a group
+	GroupInfo(context.Context, *GroupInfo_Request) (*GroupInfo_Reply, error)
+	// ActivateGroup explicitly opens a group, groups are automatically enabled when actions are performed on them
+	ActivateGroup(context.Context, *ActivateGroup_Request) (*ActivateGroup_Reply, error)
+	// DeactivateGroup closes a group
+	DeactivateGroup(context.Context, *DeactivateGroup_Request) (*DeactivateGroup_Reply, error)
 }
 
 // UnimplementedProtocolServiceServer can be embedded to have forward compatible implementations.
@@ -5810,6 +6542,21 @@ func (*UnimplementedProtocolServiceServer) GroupMetadataSubscribe(req *GroupMeta
 }
 func (*UnimplementedProtocolServiceServer) GroupMessageSubscribe(req *GroupMessageSubscribe_Request, srv ProtocolService_GroupMessageSubscribeServer) error {
 	return status.Errorf(codes.Unimplemented, "method GroupMessageSubscribe not implemented")
+}
+func (*UnimplementedProtocolServiceServer) GroupMetadataList(req *GroupMetadataList_Request, srv ProtocolService_GroupMetadataListServer) error {
+	return status.Errorf(codes.Unimplemented, "method GroupMetadataList not implemented")
+}
+func (*UnimplementedProtocolServiceServer) GroupMessageList(req *GroupMessageList_Request, srv ProtocolService_GroupMessageListServer) error {
+	return status.Errorf(codes.Unimplemented, "method GroupMessageList not implemented")
+}
+func (*UnimplementedProtocolServiceServer) GroupInfo(ctx context.Context, req *GroupInfo_Request) (*GroupInfo_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GroupInfo not implemented")
+}
+func (*UnimplementedProtocolServiceServer) ActivateGroup(ctx context.Context, req *ActivateGroup_Request) (*ActivateGroup_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ActivateGroup not implemented")
+}
+func (*UnimplementedProtocolServiceServer) DeactivateGroup(ctx context.Context, req *DeactivateGroup_Request) (*DeactivateGroup_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeactivateGroup not implemented")
 }
 
 func RegisterProtocolServiceServer(s *grpc.Server, srv ProtocolServiceServer) {
@@ -6218,6 +6965,102 @@ func (x *protocolServiceGroupMessageSubscribeServer) Send(m *GroupMessageEvent) 
 	return x.ServerStream.SendMsg(m)
 }
 
+func _ProtocolService_GroupMetadataList_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GroupMetadataList_Request)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ProtocolServiceServer).GroupMetadataList(m, &protocolServiceGroupMetadataListServer{stream})
+}
+
+type ProtocolService_GroupMetadataListServer interface {
+	Send(*GroupMetadataEvent) error
+	grpc.ServerStream
+}
+
+type protocolServiceGroupMetadataListServer struct {
+	grpc.ServerStream
+}
+
+func (x *protocolServiceGroupMetadataListServer) Send(m *GroupMetadataEvent) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _ProtocolService_GroupMessageList_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GroupMessageList_Request)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ProtocolServiceServer).GroupMessageList(m, &protocolServiceGroupMessageListServer{stream})
+}
+
+type ProtocolService_GroupMessageListServer interface {
+	Send(*GroupMessageEvent) error
+	grpc.ServerStream
+}
+
+type protocolServiceGroupMessageListServer struct {
+	grpc.ServerStream
+}
+
+func (x *protocolServiceGroupMessageListServer) Send(m *GroupMessageEvent) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _ProtocolService_GroupInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GroupInfo_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).GroupInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/GroupInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).GroupInfo(ctx, req.(*GroupInfo_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_ActivateGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ActivateGroup_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).ActivateGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/ActivateGroup",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).ActivateGroup(ctx, req.(*ActivateGroup_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProtocolService_DeactivateGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeactivateGroup_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProtocolServiceServer).DeactivateGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.protocol.ProtocolService/DeactivateGroup",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProtocolServiceServer).DeactivateGroup(ctx, req.(*DeactivateGroup_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _ProtocolService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "berty.protocol.ProtocolService",
 	HandlerType: (*ProtocolServiceServer)(nil),
@@ -6302,6 +7145,18 @@ var _ProtocolService_serviceDesc = grpc.ServiceDesc{
 			MethodName: "AppMessageSend",
 			Handler:    _ProtocolService_AppMessageSend_Handler,
 		},
+		{
+			MethodName: "GroupInfo",
+			Handler:    _ProtocolService_GroupInfo_Handler,
+		},
+		{
+			MethodName: "ActivateGroup",
+			Handler:    _ProtocolService_ActivateGroup_Handler,
+		},
+		{
+			MethodName: "DeactivateGroup",
+			Handler:    _ProtocolService_DeactivateGroup_Handler,
+		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
@@ -6312,6 +7167,16 @@ var _ProtocolService_serviceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "GroupMessageSubscribe",
 			Handler:       _ProtocolService_GroupMessageSubscribe_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "GroupMetadataList",
+			Handler:       _ProtocolService_GroupMetadataList_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "GroupMessageList",
+			Handler:       _ProtocolService_GroupMessageList_Handler,
 			ServerStreams: true,
 		},
 	},
@@ -7912,6 +8777,16 @@ func (m *ContactRequestReference_Reply) MarshalToSizedBuffer(dAtA []byte) (int, 
 	if m.XXX_unrecognized != nil {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Enabled {
+		i--
+		if m.Enabled {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
 	}
 	if len(m.Reference) > 0 {
 		i -= len(m.Reference)
@@ -9658,6 +10533,67 @@ func (m *GroupMetadataSubscribe_Request) MarshalToSizedBuffer(dAtA []byte) (int,
 	return len(dAtA) - i, nil
 }
 
+func (m *GroupMetadataList) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupMetadataList) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupMetadataList) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupMetadataList_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupMetadataList_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupMetadataList_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *GroupMessageSubscribe) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -9739,6 +10675,364 @@ func (m *GroupMessageSubscribe_Request) MarshalToSizedBuffer(dAtA []byte) (int, 
 		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
 		i--
 		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupMessageList) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupMessageList) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupMessageList) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupMessageList_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupMessageList_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupMessageList_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupInfo_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupInfo_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupInfo_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ContactPK) > 0 {
+		i -= len(m.ContactPK)
+		copy(dAtA[i:], m.ContactPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.ContactPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GroupInfo_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GroupInfo_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GroupInfo_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.DevicePK) > 0 {
+		i -= len(m.DevicePK)
+		copy(dAtA[i:], m.DevicePK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.DevicePK)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.MemberPK) > 0 {
+		i -= len(m.MemberPK)
+		copy(dAtA[i:], m.MemberPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.MemberPK)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Group != nil {
+		{
+			size, err := m.Group.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintBertyprotocol(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ActivateGroup) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ActivateGroup) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ActivateGroup) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ActivateGroup_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ActivateGroup_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ActivateGroup_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ActivateGroup_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ActivateGroup_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ActivateGroup_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DeactivateGroup) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeactivateGroup) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeactivateGroup) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DeactivateGroup_Request) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeactivateGroup_Request) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeactivateGroup_Request) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.GroupPK) > 0 {
+		i -= len(m.GroupPK)
+		copy(dAtA[i:], m.GroupPK)
+		i = encodeVarintBertyprotocol(dAtA, i, uint64(len(m.GroupPK)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DeactivateGroup_Reply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeactivateGroup_Reply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeactivateGroup_Reply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
 	}
 	return len(dAtA) - i, nil
 }
@@ -10580,6 +11874,9 @@ func (m *ContactRequestReference_Reply) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovBertyprotocol(uint64(l))
 	}
+	if m.Enabled {
+		n += 2
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -11369,6 +12666,34 @@ func (m *GroupMetadataSubscribe_Request) Size() (n int) {
 	return n
 }
 
+func (m *GroupMetadataList) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupMetadataList_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
 func (m *GroupMessageSubscribe) Size() (n int) {
 	if m == nil {
 		return 0
@@ -11402,6 +12727,170 @@ func (m *GroupMessageSubscribe_Request) Size() (n int) {
 	if m.GoBackwards {
 		n += 2
 	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupMessageList) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupMessageList_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupInfo_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.ContactPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GroupInfo_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Group != nil {
+		l = m.Group.Size()
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.MemberPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	l = len(m.DevicePK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ActivateGroup) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ActivateGroup_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ActivateGroup_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *DeactivateGroup) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *DeactivateGroup_Request) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GroupPK)
+	if l > 0 {
+		n += 1 + l + sovBertyprotocol(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *DeactivateGroup_Reply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -16165,6 +17654,26 @@ func (m *ContactRequestReference_Reply) Unmarshal(dAtA []byte) error {
 				m.Reference = []byte{}
 			}
 			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Enabled", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Enabled = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
@@ -20212,6 +21721,148 @@ func (m *GroupMetadataSubscribe_Request) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *GroupMetadataList) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupMetadataList: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupMetadataList: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupMetadataList_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *GroupMessageSubscribe) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -20417,6 +22068,874 @@ func (m *GroupMessageSubscribe_Request) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.GoBackwards = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupMessageList) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupMessageList: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupMessageList: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupMessageList_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GroupInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GroupInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupInfo_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactPK = append(m.ContactPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.ContactPK == nil {
+				m.ContactPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GroupInfo_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Group", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Group == nil {
+				m.Group = &Group{}
+			}
+			if err := m.Group.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MemberPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MemberPK = append(m.MemberPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.MemberPK == nil {
+				m.MemberPK = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DevicePK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DevicePK = append(m.DevicePK[:0], dAtA[iNdEx:postIndex]...)
+			if m.DevicePK == nil {
+				m.DevicePK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ActivateGroup) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ActivateGroup: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ActivateGroup: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ActivateGroup_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ActivateGroup_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DeactivateGroup) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DeactivateGroup: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DeactivateGroup: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DeactivateGroup_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Request: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Request: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GroupPK", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBertyprotocol
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GroupPK = append(m.GroupPK[:0], dAtA[iNdEx:postIndex]...)
+			if m.GroupPK == nil {
+				m.GroupPK = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBertyprotocol(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthBertyprotocol
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DeactivateGroup_Reply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBertyprotocol
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipBertyprotocol(dAtA[iNdEx:])

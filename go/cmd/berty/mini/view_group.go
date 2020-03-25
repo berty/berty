@@ -8,21 +8,22 @@ import (
 	"time"
 
 	"github.com/gdamore/tcell"
-	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 
-	"berty.tech/berty/go/internal/banner"
-	"berty.tech/berty/go/internal/orbitutil"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 type groupView struct {
-	cg           orbitutil.ContextGroup
+	g            *bertyprotocol.Group
 	messages     *historyMessageList
 	v            *tabbedGroupsView
 	inputHistory *inputHistory
 	syncMessages chan *historyMessage
+	memberPK     []byte
+	devicePK     []byte
 }
 
 func (v *groupView) View() tview.Primitive {
@@ -55,17 +56,91 @@ func (v *groupView) OnSubmit(ctx context.Context, msg string) {
 	if err := v.commandParser(ctx, msg); err != nil {
 		v.syncMessages <- &historyMessage{
 			messageType: messageTypeError,
-			payload:     []byte(err.Error()),
+			payload:     []byte(fmt.Sprintf("out: %s", err.Error())),
 		}
 	}
 
 	v.inputHistory.Append(msg)
 }
 
-func newViewGroup(v *tabbedGroupsView, cg orbitutil.ContextGroup) *groupView {
+type fakeServerStream struct {
+	context context.Context
+}
+
+func (f *fakeServerStream) SetHeader(metadata.MD) error {
+	panic("implement me")
+}
+
+func (f *fakeServerStream) SendHeader(metadata.MD) error {
+	panic("implement me")
+}
+
+func (f *fakeServerStream) SetTrailer(metadata.MD) {
+	panic("implement me")
+}
+
+func (f *fakeServerStream) Context() context.Context {
+	return f.context
+}
+
+func (f *fakeServerStream) SendMsg(m interface{}) error {
+	panic("implement me")
+}
+
+func (f *fakeServerStream) RecvMsg(m interface{}) error {
+	panic("implement me")
+}
+
+var _ grpc.ServerStream = (*fakeServerStream)(nil)
+
+type protocolServiceGroupMessage struct {
+	*fakeServerStream
+	ch chan *bertyprotocol.GroupMessageEvent
+}
+
+func (x *protocolServiceGroupMessage) Send(m *bertyprotocol.GroupMessageEvent) error {
+	x.ch <- m
+	return nil
+}
+
+func newProtocolServiceGroupMessage(ctx context.Context) (chan *bertyprotocol.GroupMessageEvent, *protocolServiceGroupMessage) {
+	ch := make(chan *bertyprotocol.GroupMessageEvent)
+
+	return ch, &protocolServiceGroupMessage{
+		fakeServerStream: &fakeServerStream{
+			context: ctx,
+		},
+		ch: ch,
+	}
+}
+
+type protocolServiceGroupMetadata struct {
+	*fakeServerStream
+	ch chan *bertyprotocol.GroupMetadataEvent
+}
+
+func (x *protocolServiceGroupMetadata) Send(m *bertyprotocol.GroupMetadataEvent) error {
+	x.ch <- m
+	return nil
+}
+
+func newProtocolServiceGroupMetadata(ctx context.Context) (chan *bertyprotocol.GroupMetadataEvent, *protocolServiceGroupMetadata) {
+	ch := make(chan *bertyprotocol.GroupMetadataEvent)
+
+	return ch, &protocolServiceGroupMetadata{
+		fakeServerStream: &fakeServerStream{
+			context: ctx,
+		},
+		ch: ch,
+	}
+}
+
+func newViewGroup(v *tabbedGroupsView, g *bertyprotocol.Group, memberPK, devicePK []byte) *groupView {
 	return &groupView{
+		memberPK:     memberPK,
+		devicePK:     devicePK,
 		v:            v,
-		cg:           cg,
+		g:            g,
 		messages:     newHistoryMessageList(v.app),
 		syncMessages: make(chan *historyMessage),
 		inputHistory: newInputHistory(),
@@ -73,66 +148,101 @@ func newViewGroup(v *tabbedGroupsView, cg orbitutil.ContextGroup) *groupView {
 }
 
 func (v *groupView) loop(ctx context.Context) {
-	// Replay message history
-	msgs, err := v.cg.MessageStore().ListMessages(ctx)
-	if err != nil {
-		panic(err)
-	}
-
-	for evt := range msgs {
-		v.messages.Prepend(&historyMessage{
-			messageType: messageTypeMessage,
-			payload:     evt.Message,
-			sender:      evt.Headers.DevicePK,
-		}, time.Time{})
-	}
-
-	// List existing members of the group
-	for e := range v.cg.MetadataStore().ListEvents(ctx) {
-		metadataEventHandler(ctx, v, e, true)
-	}
-
-	// Watch for incoming new messages
-	go func() {
-		for e := range v.cg.MessageStore().Subscribe(ctx) {
-			evt, ok := e.(*bertyprotocol.GroupMessageEvent)
-			if !ok {
-				continue
-			}
-
-			v.messages.Append(&historyMessage{
-				messageType: messageTypeMessage,
-				payload:     evt.Message,
-				sender:      evt.Headers.DevicePK,
-			})
-		}
-	}()
-
-	// Watch for new incoming metadata
-	go func() {
-		for evt := range v.cg.MetadataStore().Subscribe(ctx) {
-			e, ok := evt.(*bertyprotocol.GroupMetadataEvent)
-			if !ok {
-				continue
-			}
-			metadataEventHandler(ctx, v, e, false)
-		}
-	}()
-
 	go func() {
 		for m := range v.syncMessages {
 			v.messages.Append(m)
 		}
 	}()
+
+	// Replay message history
+	msgs, srvListMessages := newProtocolServiceGroupMessage(ctx)
+	go func() {
+		for evt := range msgs {
+			v.messages.Prepend(&historyMessage{
+				messageType: messageTypeMessage,
+				payload:     evt.Message,
+				sender:      evt.Headers.DevicePK,
+			}, time.Time{})
+		}
+	}()
+
+	if err := v.v.client.GroupMessageList(&bertyprotocol.GroupMessageList_Request{GroupPK: v.g.PublicKey}, srvListMessages); err != nil {
+		panic(err)
+	}
+	close(msgs)
+
+	metas, srvListMetadatas := newProtocolServiceGroupMetadata(ctx)
+	go func() {
+		// List existing members of the group
+		for e := range metas {
+			// _ = e
+			metadataEventHandler(ctx, v, e, true)
+		}
+	}()
+
+	if err := v.v.client.GroupMetadataList(&bertyprotocol.GroupMetadataList_Request{GroupPK: v.g.PublicKey}, srvListMetadatas); err != nil {
+		panic(err)
+	}
+	close(metas)
+
+	// Watch for incoming new messages
+	go func() {
+		msgs, srvListMessages := newProtocolServiceGroupMessage(ctx)
+		go func() {
+			for evt := range msgs {
+				v.messages.Append(&historyMessage{
+					messageType: messageTypeMessage,
+					payload:     evt.Message,
+					sender:      evt.Headers.DevicePK,
+				})
+			}
+		}()
+
+		err := v.v.client.GroupMessageSubscribe(&bertyprotocol.GroupMessageSubscribe_Request{GroupPK: v.g.PublicKey}, srvListMessages)
+		if err != nil {
+			panic(err)
+		}
+
+		close(msgs)
+	}()
+
+	// Watch for new incoming metadata
+	go func() {
+		metas, srvListMetadatas := newProtocolServiceGroupMetadata(ctx)
+		go func() {
+			for e := range metas {
+				metadataEventHandler(ctx, v, e, false)
+			}
+		}()
+
+		err := v.v.client.GroupMetadataSubscribe(&bertyprotocol.GroupMetadataSubscribe_Request{GroupPK: v.g.PublicKey}, srvListMetadatas)
+		if err != nil {
+			panic(err)
+		}
+
+		close(metas)
+	}()
 }
 
-func (v *groupView) welcomeEventDisplay(ctx context.Context, api ipfs_coreapi.CoreAPI) {
-	self, err := api.Key().Self(ctx)
+func (v *groupView) welcomeEventDisplay(ctx context.Context) {
+	config, err := v.v.client.InstanceGetConfiguration(ctx, nil)
 	if err != nil {
 		panic(err)
 	}
 
-	b := banner.Banner()
+	b := `
+          /\
+     /\  / /\  ______
+    / /\/ /  \/  |   \
+   | |  \/   | ()|    |
+    \ \      |   |____|
+     \ \      \____/ __           __
+      \/       /    / /  ___ ____/ /___ __
+      /     __/    / _ \/ -_) __/ __/ // /
+     /_____/      /____/\__/_/  \__/\__ /
+    /__/                           /___/
+`
+
 	bannerLines := strings.Split(b, "\n")
 	v.messages.lock.Lock()
 	for i := range bannerLines {
@@ -148,7 +258,7 @@ func (v *groupView) welcomeEventDisplay(ctx context.Context, api ipfs_coreapi.Co
 
 	v.messages.Append(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("peerid: %s", self.ID().String())),
+		payload:     []byte(fmt.Sprintf("peerid: %s", config.PeerID)),
 	})
 
 	v.welcomeGroupEventDisplay()
@@ -170,19 +280,9 @@ func (v *groupView) ScrollToOffset(i int) {
 }
 
 func (v *groupView) welcomeGroupEventDisplay() {
-	pkMemberB, err := v.cg.MemberPubKey().Raw()
-	if err != nil {
-		panic(err)
-	}
-
-	pkB, err := v.cg.DevicePubKey().Raw()
-	if err != nil {
-		panic(err)
-	}
-
 	v.messages.Append(&historyMessage{
 		messageType: messageTypeMeta,
-		sender:      pkB,
-		payload:     []byte(fmt.Sprintf("own member id: %s (%s)", base64.StdEncoding.EncodeToString(pkMemberB), pkAsShortID(pkMemberB))),
+		sender:      v.devicePK,
+		payload:     []byte(fmt.Sprintf("own member id: %s (%s)", base64.StdEncoding.EncodeToString(v.memberPK), pkAsShortID(v.memberPK))),
 	})
 }

@@ -16,7 +16,6 @@ import (
 	"google.golang.org/grpc/status"
 
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
-	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
 )
 
 // type DemoBridge Bridge

@@ -1,4 +1,4 @@
-package orbitutil
+package bertyprotocol
 
 import (
 	"context"
@@ -7,26 +7,24 @@ import (
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/address"
+	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores/operation"
+	"github.com/ipfs/go-cid"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/internal/bertycrypto"
-	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 type ContextGroup interface {
 	io.Closer
 	MessageStore() MessageStore
 	MetadataStore() MetadataStore
-	Group() *bertyprotocol.Group
+	Group() *Group
 	MemberPubKey() crypto.PubKey
 	DevicePubKey() crypto.PubKey
-
-	getMessageKeys() bertycrypto.MessageKeys
-	getDevicePrivKey() crypto.PrivKey
-	getMemberPrivKey() crypto.PrivKey
+	GetMessageKeys() MessageKeys
+	GetDevicePrivKey() crypto.PrivKey
+	GetMemberPrivKey() crypto.PrivKey
 }
 
 type GroupStore interface {
@@ -39,10 +37,10 @@ type MetadataStore interface {
 	GroupStore
 
 	// GetIncomingContactRequestsStatus Get the status of incoming contact requests (whether they can should be received or not) and the contact request reference
-	GetIncomingContactRequestsStatus() (bool, *bertyprotocol.ShareableContact)
+	GetIncomingContactRequestsStatus() (bool, *ShareableContact)
 
 	// ListEvents returns a channel of previously received events
-	ListEvents(ctx context.Context) <-chan *bertyprotocol.GroupMetadataEvent
+	ListEvents(ctx context.Context) <-chan *GroupMetadataEvent
 
 	// ListMembers returns a list of members pubkeys
 	ListMembers() []crypto.PubKey
@@ -54,10 +52,10 @@ type MetadataStore interface {
 	ListAdmins() []crypto.PubKey
 
 	// ListMultiMemberGroups
-	ListMultiMemberGroups() []*bertyprotocol.Group
+	ListMultiMemberGroups() []*Group
 
 	// ListContactsByStatus
-	ListContactsByStatus(state bertyprotocol.ContactState) []*bertyprotocol.ShareableContact
+	ListContactsByStatus(state ...ContactState) []*ShareableContact
 
 	// GetMemberByDevice
 	GetMemberByDevice(crypto.PubKey) (crypto.PubKey, error)
@@ -75,7 +73,7 @@ type MetadataStore interface {
 	ClaimGroupOwnership(ctx context.Context, groupSK crypto.PrivKey) (operation.Operation, error)
 
 	// GroupJoin
-	GroupJoin(ctx context.Context, g *bertyprotocol.Group) (operation.Operation, error)
+	GroupJoin(ctx context.Context, g *Group) (operation.Operation, error)
 
 	// GroupLeave
 	GroupLeave(ctx context.Context, pk crypto.PubKey) (operation.Operation, error)
@@ -90,13 +88,13 @@ type MetadataStore interface {
 	ContactRequestReferenceReset(ctx context.Context) (operation.Operation, error)
 
 	// ContactRequestOutgoingEnqueue
-	ContactRequestOutgoingEnqueue(ctx context.Context, contact *bertyprotocol.ShareableContact) (operation.Operation, error)
+	ContactRequestOutgoingEnqueue(ctx context.Context, contact *ShareableContact) (operation.Operation, error)
 
 	// ContactRequestOutgoingSent
 	ContactRequestOutgoingSent(ctx context.Context, pk crypto.PubKey) (operation.Operation, error)
 
 	// ContactRequestIncomingReceived
-	ContactRequestIncomingReceived(ctx context.Context, contact *bertyprotocol.ShareableContact) (operation.Operation, error)
+	ContactRequestIncomingReceived(ctx context.Context, contact *ShareableContact) (operation.Operation, error)
 
 	// ContactRequestIncomingDiscard
 	ContactRequestIncomingDiscard(ctx context.Context, pk crypto.PubKey) (operation.Operation, error)
@@ -115,13 +113,16 @@ type MetadataStore interface {
 
 	// SendAliasProof
 	SendAliasProof(ctx context.Context) (operation.Operation, error)
+
+	// SendAppMetadata
+	SendAppMetadata(ctx context.Context, payload []byte) (operation.Operation, error)
 }
 
 type MessageStore interface {
 	GroupStore
 
 	// ListMessages lists messages in the store
-	ListMessages(ctx context.Context) (<-chan *bertyprotocol.GroupMessageEvent, error)
+	ListMessages(ctx context.Context) (<-chan *GroupMessageEvent, error)
 
 	// AddMessage appends a message to the store
 	AddMessage(ctx context.Context, data []byte) (operation.Operation, error)
@@ -130,10 +131,37 @@ type MessageStore interface {
 type BertyOrbitDB interface {
 	iface.BaseOrbitDB
 
-	OpenMultiMemberGroup(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (ContextGroup, error)
+	OpenGroup(ctx context.Context, g *Group, options *orbitdb.CreateDBOptions) (ContextGroup, error)
 	OpenAccountGroup(ctx context.Context, options *orbitdb.CreateDBOptions) (ContextGroup, error)
-	OpenContactGroup(ctx context.Context, pk crypto.PubKey, options *orbitdb.CreateDBOptions) (ContextGroup, error)
 
-	GroupMetadataStore(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (MetadataStore, error)
-	GroupMessageStore(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (MessageStore, error)
+	GroupMetadataStore(ctx context.Context, g *Group, options *orbitdb.CreateDBOptions) (MetadataStore, error)
+	GroupMessageStore(ctx context.Context, g *Group, options *orbitdb.CreateDBOptions) (MessageStore, error)
+}
+
+type BertyOrbitDBConstructor func(ctx context.Context, ipfs coreapi.CoreAPI, acc AccountKeys, mk MessageKeys, options *baseorbitdb.NewOrbitDBOptions) (BertyOrbitDB, error)
+
+type MessageKeys interface {
+	// GetDeviceChainKey gets a device key chain from the key holder
+	GetDeviceChainKey(ctx context.Context, pk crypto.PubKey) (*DeviceSecret, error)
+
+	// PutDeviceChainKey puts a key chain into the key holder
+	PutDeviceChainKey(ctx context.Context, device crypto.PubKey, ds *DeviceSecret) error
+
+	// GetPrecomputedKey gets a precomputed key for a device and its message counter value
+	GetPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64) (*[32]byte, error)
+
+	// DelPrecomputedKey removes a precomputed key for a device and its message counter value
+	DelPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64) error
+
+	// PutPrecomputedKey stores a precomputed key for a device and its message counter value
+	PutPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64, mk *[32]byte) error
+
+	// PutKeyForCID stores a message key for a CID
+	PutKeyForCID(ctx context.Context, id cid.Cid, key *[32]byte) error
+
+	// GetKeyForCID gets a message key for a CID
+	GetKeyForCID(ctx context.Context, id cid.Cid) (*[32]byte, error)
+
+	// GetPrecomputedKeyExpectedCount returns how many keys are precomputed
+	GetPrecomputedKeyExpectedCount() int
 }

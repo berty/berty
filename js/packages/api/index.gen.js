@@ -172,7 +172,12 @@ export const berty = {
 		GroupMetadataEvent: jsonPb.lookup('.berty.protocol.GroupMetadataEvent'),
 		GroupMessageEvent: jsonPb.lookup('.berty.protocol.GroupMessageEvent'),
 		GroupMetadataSubscribe: jsonPb.lookup('.berty.protocol.GroupMetadataSubscribe'),
+		GroupMetadataList: jsonPb.lookup('.berty.protocol.GroupMetadataList'),
 		GroupMessageSubscribe: jsonPb.lookup('.berty.protocol.GroupMessageSubscribe'),
+		GroupMessageList: jsonPb.lookup('.berty.protocol.GroupMessageList'),
+		GroupInfo: jsonPb.lookup('.berty.protocol.GroupInfo'),
+		ActivateGroup: jsonPb.lookup('.berty.protocol.ActivateGroup'),
+		DeactivateGroup: jsonPb.lookup('.berty.protocol.DeactivateGroup'),
 		ContactState: {
 			ContactStateUndefined: 0,
 			0: 'ContactStateUndefined',

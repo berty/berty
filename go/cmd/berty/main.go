@@ -9,18 +9,23 @@ import (
 	"math/rand"
 	"net"
 	"os"
+	"path"
 	"strings"
 
 	"berty.tech/berty/go/cmd/berty/mini"
+	"berty.tech/berty/go/internal/account"
 	"berty.tech/berty/go/internal/banner"
 	"berty.tech/berty/go/internal/grpcutil"
 	"berty.tech/berty/go/internal/ipfsutil"
+	"berty.tech/berty/go/internal/orbitutil"
 	"berty.tech/berty/go/pkg/bertydemo"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite" // required by gorm
+	"github.com/ipfs/go-datastore"
+	sync_ds "github.com/ipfs/go-datastore/sync"
+	badger "github.com/ipfs/go-ds-badger"
+	"github.com/juju/fslock"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	"github.com/peterbourgon/ff"
@@ -43,8 +48,8 @@ func main() {
 		bannerLight = bannerFlags.Bool("light", false, "light mode")
 
 		clientProtocolFlags     = flag.NewFlagSet("protocol client", flag.ExitOnError)
-		clientProtocolURN       = clientProtocolFlags.String("protocol-urn", ":memory:", "protocol sqlite URN")
 		clientProtocolListeners = clientProtocolFlags.String("l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
+		clientProtocolPath      = clientProtocolFlags.String("d", cacheleveldown.InMemoryDirectory, "datastore base directory")
 
 		clientDemoFlags     = flag.NewFlagSet("demo client", flag.ExitOnError)
 		clientDemoDirectory = clientDemoFlags.String("d", ":memory:", "orbit db directory")
@@ -52,7 +57,7 @@ func main() {
 
 		miniClientDemoFlags = flag.NewFlagSet("mini demo client", flag.ExitOnError)
 		miniClientDemoGroup = miniClientDemoFlags.String("g", "", "group to join, leave empty to create a new group")
-		miniClientDemoPath  = miniClientDemoFlags.String("d", cacheleveldown.InMemoryDirectory, "orbit db directory")
+		miniClientDemoPath  = miniClientDemoFlags.String("d", cacheleveldown.InMemoryDirectory, "datastore base directory")
 		miniClientDemoPort  = miniClientDemoFlags.Uint("p", 0, "default IPFS listen port")
 	)
 
@@ -114,10 +119,20 @@ func main() {
 		Usage:   "mini",
 		FlagSet: miniClientDemoFlags,
 		Exec: func(args []string) error {
+			rootDS, dsLock, err := getRootDatastore(miniClientDemoPath)
+			if err != nil {
+				return errcode.TODO.Wrap(err)
+			}
+
+			if dsLock != nil {
+				defer func() { _ = dsLock.Unlock() }()
+			}
+			defer rootDS.Close()
+
 			mini.Main(&mini.Opts{
 				GroupInvitation: *miniClientDemoGroup,
 				Port:            *miniClientDemoPort,
-				Path:            *miniClientDemoPath,
+				RootDS:          rootDS,
 			})
 			return nil
 		},
@@ -137,25 +152,33 @@ func main() {
 			// protocol
 			var protocol bertyprotocol.Client
 			{
-				// initialize sqlite3 gorm database
-				db, err := gorm.Open("sqlite3", *clientProtocolURN)
-				if err != nil {
-					return errcode.TODO.Wrap(err)
-				}
-				defer db.Close()
-
 				api, node, err := ipfsutil.NewInMemoryCoreAPI(ctx)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
 				defer node.Close()
 
+				rootDS, dsLock, err := getRootDatastore(clientProtocolPath)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+
+				if dsLock != nil {
+					defer func() { _ = dsLock.Unlock() }()
+				}
+				defer rootDS.Close()
+
+				accountKS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
+
 				// initialize new protocol client
 				opts := bertyprotocol.Opts{
-					IpfsCoreAPI: api,
-					Logger:      logger.Named("bertyprotocol"),
+					IpfsCoreAPI:   api,
+					Logger:        logger.Named("bertyprotocol"),
+					RootDatastore: rootDS,
+					Account:       account.New(accountKS),
+					OrbitCache:    orbitutil.NewOrbitDatastoreCache(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))),
 				}
-				protocol, err = bertyprotocol.New(db, opts)
+				protocol, err = bertyprotocol.New(opts)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
@@ -306,6 +329,41 @@ func main() {
 	if err := root.Run(os.Args[1:]); err != nil {
 		log.Fatalf("error: %v", err)
 	}
+}
+
+func getRootDatastore(optPath *string) (datastore.Batching, *fslock.Lock, error) {
+	var (
+		baseDS datastore.Batching = datastore.NewMapDatastore()
+		lock   *fslock.Lock
+	)
+
+	if optPath != nil && *optPath != cacheleveldown.InMemoryDirectory {
+		basePath := path.Join(*optPath, "berty")
+		_, err := os.Stat(basePath)
+		if err != nil {
+			if !os.IsNotExist(err) {
+				return nil, nil, errcode.TODO.Wrap(err)
+			}
+			if err := os.MkdirAll(basePath, 0700); err != nil {
+				panic(err)
+			}
+		}
+
+		lock = fslock.New(path.Join(*optPath, "lock"))
+		err = lock.TryLock()
+		if err != nil {
+			return nil, nil, err
+		}
+
+		baseDS, err = badger.NewDatastore(basePath, nil)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		baseDS = sync_ds.MutexWrap(baseDS)
+	}
+
+	return baseDS, lock, nil
 }
 
 func parseAddr(addr string) (maddr ma.Multiaddr, err error) {

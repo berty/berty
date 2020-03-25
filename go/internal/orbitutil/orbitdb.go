@@ -13,8 +13,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
 
-	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/bertycrypto"
 	"berty.tech/berty/go/pkg/bertyprotocol"
 	"berty.tech/berty/go/pkg/errcode"
 )
@@ -25,26 +23,17 @@ type bertyOrbitDB struct {
 	groupContexts   sync.Map // map[string]*contextGroup
 	groupsSigPubKey sync.Map // map[string]crypto.PubKey
 	keyStore        *BertySignedKeyStore
-	mk              bertycrypto.MessageKeys
-	account         *account.Account
+	mk              bertyprotocol.MessageKeys
+	account         bertyprotocol.AccountKeys
 }
 
-func (s *bertyOrbitDB) OpenMultiMemberGroup(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (ContextGroup, error) {
-	return s.openGroup(ctx, g, options)
-}
-
-func (s *bertyOrbitDB) OpenContactGroup(ctx context.Context, pk crypto.PubKey, options *orbitdb.CreateDBOptions) (ContextGroup, error) {
+func (s *bertyOrbitDB) GetContactGroup(pk crypto.PubKey) (*bertyprotocol.Group, error) {
 	sk, err := s.account.ContactGroupPrivKey(pk)
 	if err != nil {
 		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
 	}
 
-	g, err := bertyprotocol.GetGroupForContact(sk)
-	if err != nil {
-		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
-	}
-
-	return s.openGroup(ctx, g, options)
+	return bertyprotocol.GetGroupForContact(sk)
 }
 
 func (s *bertyOrbitDB) registerGroupPrivateKey(g *bertyprotocol.Group) error {
@@ -66,7 +55,7 @@ func (s *bertyOrbitDB) registerGroupPrivateKey(g *bertyprotocol.Group) error {
 	return nil
 }
 
-func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, acc *account.Account, mk bertycrypto.MessageKeys, options *baseorbitdb.NewOrbitDBOptions) (BertyOrbitDB, error) {
+func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, acc bertyprotocol.AccountKeys, mk bertyprotocol.MessageKeys, options *baseorbitdb.NewOrbitDBOptions) (bertyprotocol.BertyOrbitDB, error) {
 	var err error
 
 	if options == nil {
@@ -98,7 +87,7 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, acc *account.Acc
 	return bertyDB, nil
 }
 
-func (s *bertyOrbitDB) OpenAccountGroup(ctx context.Context, options *orbitdb.CreateDBOptions) (ContextGroup, error) {
+func (s *bertyOrbitDB) OpenAccountGroup(ctx context.Context, options *orbitdb.CreateDBOptions) (bertyprotocol.ContextGroup, error) {
 	sk, err := s.account.AccountPrivKey()
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
@@ -114,10 +103,10 @@ func (s *bertyOrbitDB) OpenAccountGroup(ctx context.Context, options *orbitdb.Cr
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
-	return s.openGroup(ctx, g, options)
+	return s.OpenGroup(ctx, g, options)
 }
 
-func (s *bertyOrbitDB) openGroup(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (ContextGroup, error) {
+func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (bertyprotocol.ContextGroup, error) {
 	id := g.GroupIDAsString()
 
 	existingGC, err := s.getGroupContext(id)
@@ -140,7 +129,7 @@ func (s *bertyOrbitDB) openGroup(ctx context.Context, g *bertyprotocol.Group, op
 	}
 
 	// Force secret generation if missing
-	if _, err := bertycrypto.DeviceSecret(ctx, g, s.mk, s.account); err != nil {
+	if _, err := bertyprotocol.GetDeviceSecret(ctx, g, s.mk, s.account); err != nil {
 		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
 	}
 
@@ -209,7 +198,7 @@ func (s *bertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 	return store, nil
 }
 
-func (s *bertyOrbitDB) GroupMetadataStore(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (MetadataStore, error) {
+func (s *bertyOrbitDB) GroupMetadataStore(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (bertyprotocol.MetadataStore, error) {
 	store, err := s.storeForGroup(ctx, s, g, options, GroupMetadataStoreType)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to open database")
@@ -223,7 +212,7 @@ func (s *bertyOrbitDB) GroupMetadataStore(ctx context.Context, g *bertyprotocol.
 	return sStore, nil
 }
 
-func (s *bertyOrbitDB) GroupMessageStore(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (MessageStore, error) {
+func (s *bertyOrbitDB) GroupMessageStore(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (bertyprotocol.MessageStore, error) {
 	store, err := s.storeForGroup(ctx, s, g, options, GroupMessageStoreType)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to open database")
@@ -260,4 +249,4 @@ func (s *bertyOrbitDB) getGroupFromOptions(options *iface.NewStoreOptions) (*ber
 	return typed, nil
 }
 
-var _ BertyOrbitDB = (*bertyOrbitDB)(nil)
+var _ bertyprotocol.BertyOrbitDB = (*bertyOrbitDB)(nil)

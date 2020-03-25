@@ -2,13 +2,17 @@ package bertyprotocol
 
 import (
 	"context"
+	"sync"
+
+	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/cache"
+	"github.com/ipfs/go-datastore"
+	ds_sync "github.com/ipfs/go-datastore/sync"
+	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
+	"go.uber.org/zap"
 
 	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/internal/protocoldb"
 	"berty.tech/berty/go/pkg/errcode"
-	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
-	"github.com/jinzhu/gorm"
-	"go.uber.org/zap"
 )
 
 var _ Client = (*client)(nil)
@@ -23,40 +27,56 @@ type Client interface {
 
 type client struct {
 	// variables
-	db          *gorm.DB
-	logger      *zap.Logger
-	ipfsCoreAPI ipfs_coreapi.CoreAPI
+	ctx             context.Context
+	logger          *zap.Logger
+	ipfsCoreAPI     ipfs_coreapi.CoreAPI
+	odb             BertyOrbitDB
+	accContextGroup ContextGroup
+	account         AccountKeys
+	openedGroups    map[string]ContextGroup
+	groups          map[string]*Group
+	lock            sync.RWMutex
 }
 
 // Opts contains optional configuration flags for building a new Client
 type Opts struct {
-	Logger      *zap.Logger
-	IpfsCoreAPI ipfs_coreapi.CoreAPI
-	RootContext context.Context
+	Logger        *zap.Logger
+	IpfsCoreAPI   ipfs_coreapi.CoreAPI
+	Account       AccountKeys
+	RootContext   context.Context
+	RootDatastore datastore.Batching
+	MessageKeys   MessageKeys
+	OrbitCache    cache.Interface
+	DBConstructor BertyOrbitDBConstructor
 }
 
 // New initializes a new Client
-func New(db *gorm.DB, opts Opts) (Client, error) {
+func New(opts Opts) (Client, error) {
+	if opts.Account == nil || opts.MessageKeys == nil || opts.DBConstructor == nil {
+		return nil, errcode.ErrInvalidInput
+	}
+
 	client := &client{
-		db:          db,
-		ipfsCoreAPI: opts.IpfsCoreAPI,
-		logger:      opts.Logger,
+		ctx:          opts.RootContext,
+		ipfsCoreAPI:  opts.IpfsCoreAPI,
+		logger:       opts.Logger,
+		groups:       map[string]*Group{},
+		openedGroups: map[string]ContextGroup{},
+	}
+
+	if opts.RootDatastore == nil {
+		opts.RootDatastore = ds_sync.MutexWrap(datastore.NewMapDatastore())
 	}
 
 	if opts.Logger == nil {
 		client.logger = zap.NewNop()
 	}
 
-	var err error
-	client.db, err = protocoldb.InitMigrate(db, client.logger.Named("datastore"))
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
 	ctx := opts.RootContext
 	if ctx == nil {
 		ctx = context.TODO()
 	}
+
 	if opts.IpfsCoreAPI == nil {
 		var err error
 		client.ipfsCoreAPI, _, err = ipfsutil.NewInMemoryCoreAPI(ctx)
@@ -65,10 +85,27 @@ func New(db *gorm.DB, opts Opts) (Client, error) {
 		}
 	}
 
+	odb, err := opts.DBConstructor(ctx, opts.IpfsCoreAPI, opts.Account, opts.MessageKeys, &orbitdb.NewOrbitDBOptions{Cache: opts.OrbitCache})
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	client.odb = odb
+	client.account = opts.Account
+
+	client.accContextGroup, err = odb.OpenAccountGroup(ctx, nil)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	client.groups[string(client.accContextGroup.Group().PublicKey)] = client.accContextGroup.Group()
+	client.openedGroups[string(client.accContextGroup.Group().PublicKey)] = client.accContextGroup
+
 	return client, nil
 }
 
 func (c *client) Close() error {
+	c.odb.Close()
+
 	return nil
 }
 
@@ -80,7 +117,6 @@ type Status struct {
 
 func (c *client) Status() Status {
 	return Status{
-		DB:       c.db.DB().Ping(),
 		Protocol: nil,
 	}
 }

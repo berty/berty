@@ -202,6 +202,52 @@ export type Commands<State> = {
 			}
 		},
 	) => State
+	groupMetadataList: (
+		state: State,
+		action: {
+			payload: {
+				id: string
+				groupPk: Uint8Array
+			}
+		},
+	) => State
+	groupMessageList: (
+		state: State,
+		action: {
+			payload: {
+				id: string
+				groupPk: Uint8Array
+			}
+		},
+	) => State
+	groupInfo: (
+		state: State,
+		action: {
+			payload: {
+				id: string
+				groupPk: Uint8Array
+				contactPk: Uint8Array
+			}
+		},
+	) => State
+	activateGroup: (
+		state: State,
+		action: {
+			payload: {
+				id: string
+				groupPk: Uint8Array
+			}
+		},
+	) => State
+	deactivateGroup: (
+		state: State,
+		action: {
+			payload: {
+				id: string
+				groupPk: Uint8Array
+			}
+		},
+	) => State
 }
 export type Events<State> = {
 	undefined: (

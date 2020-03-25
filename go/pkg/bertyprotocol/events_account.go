@@ -83,3 +83,7 @@ func (m *MultiMemberGroupAddAliasResolver) SetDevicePK(pk []byte) {
 func (m *MultiMemberGrantAdminRole) SetDevicePK(pk []byte) {
 	m.DevicePK = pk
 }
+
+func (m *AppMetadata) SetDevicePK(pk []byte) {
+	m.DevicePK = pk
+}

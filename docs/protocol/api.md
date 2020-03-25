@@ -17,6 +17,9 @@
     - [AccountContactUnblocked](#berty.protocol.AccountContactUnblocked)
     - [AccountGroupJoined](#berty.protocol.AccountGroupJoined)
     - [AccountGroupLeft](#berty.protocol.AccountGroupLeft)
+    - [ActivateGroup](#berty.protocol.ActivateGroup)
+    - [ActivateGroup.Reply](#berty.protocol.ActivateGroup.Reply)
+    - [ActivateGroup.Request](#berty.protocol.ActivateGroup.Request)
     - [AppMessageSend](#berty.protocol.AppMessageSend)
     - [AppMessageSend.Reply](#berty.protocol.AppMessageSend.Reply)
     - [AppMessageSend.Request](#berty.protocol.AppMessageSend.Request)
@@ -55,6 +58,9 @@
     - [ContactUnblock](#berty.protocol.ContactUnblock)
     - [ContactUnblock.Reply](#berty.protocol.ContactUnblock.Reply)
     - [ContactUnblock.Request](#berty.protocol.ContactUnblock.Request)
+    - [DeactivateGroup](#berty.protocol.DeactivateGroup)
+    - [DeactivateGroup.Reply](#berty.protocol.DeactivateGroup.Reply)
+    - [DeactivateGroup.Request](#berty.protocol.DeactivateGroup.Request)
     - [DeviceSecret](#berty.protocol.DeviceSecret)
     - [EventContext](#berty.protocol.EventContext)
     - [Group](#berty.protocol.Group)
@@ -62,11 +68,18 @@
     - [GroupAddDeviceSecret](#berty.protocol.GroupAddDeviceSecret)
     - [GroupAddMemberDevice](#berty.protocol.GroupAddMemberDevice)
     - [GroupEnvelope](#berty.protocol.GroupEnvelope)
+    - [GroupInfo](#berty.protocol.GroupInfo)
+    - [GroupInfo.Reply](#berty.protocol.GroupInfo.Reply)
+    - [GroupInfo.Request](#berty.protocol.GroupInfo.Request)
     - [GroupMessageEvent](#berty.protocol.GroupMessageEvent)
+    - [GroupMessageList](#berty.protocol.GroupMessageList)
+    - [GroupMessageList.Request](#berty.protocol.GroupMessageList.Request)
     - [GroupMessageSubscribe](#berty.protocol.GroupMessageSubscribe)
     - [GroupMessageSubscribe.Request](#berty.protocol.GroupMessageSubscribe.Request)
     - [GroupMetadata](#berty.protocol.GroupMetadata)
     - [GroupMetadataEvent](#berty.protocol.GroupMetadataEvent)
+    - [GroupMetadataList](#berty.protocol.GroupMetadataList)
+    - [GroupMetadataList.Request](#berty.protocol.GroupMetadataList.Request)
     - [GroupMetadataSubscribe](#berty.protocol.GroupMetadataSubscribe)
     - [GroupMetadataSubscribe.Request](#berty.protocol.GroupMetadataSubscribe.Request)
     - [GroupRemoveAdditionalRendezvousSeed](#berty.protocol.GroupRemoveAdditionalRendezvousSeed)
@@ -258,6 +271,22 @@ AccountGroupJoined indicates that the account has left a group
 | device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
 | group_pk | [bytes](#bytes) |  | group_pk references the group left |
 
+<a name="berty.protocol.ActivateGroup"></a>
+
+### ActivateGroup
+
+<a name="berty.protocol.ActivateGroup.Reply"></a>
+
+### ActivateGroup.Reply
+
+<a name="berty.protocol.ActivateGroup.Request"></a>
+
+### ActivateGroup.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+
 <a name="berty.protocol.AppMessageSend"></a>
 
 ### AppMessageSend
@@ -415,6 +444,7 @@ ContactAddAliasKey is an event type where ones shares their alias public key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | reference | [bytes](#bytes) |  | reference is an opaque message describing how to connect to the current account |
+| enabled | [bool](#bool) |  | enabled indicates if incoming contact requests are enabled |
 
 <a name="berty.protocol.ContactRequestReference.Request"></a>
 
@@ -468,6 +498,22 @@ ContactAddAliasKey is an event type where ones shares their alias public key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | contact_pk | [bytes](#bytes) |  | contact_pk is the identifier of the contact to unblock |
+
+<a name="berty.protocol.DeactivateGroup"></a>
+
+### DeactivateGroup
+
+<a name="berty.protocol.DeactivateGroup.Reply"></a>
+
+### DeactivateGroup.Reply
+
+<a name="berty.protocol.DeactivateGroup.Request"></a>
+
+### DeactivateGroup.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
 
 <a name="berty.protocol.DeviceSecret"></a>
 
@@ -547,6 +593,29 @@ GroupEnvelope is a publicly exposed structure containing a group metadata event
 | nonce | [bytes](#bytes) |  | nonce is used to encrypt the message |
 | event | [bytes](#bytes) |  | event is encrypted using a symmetric key shared among group members |
 
+<a name="berty.protocol.GroupInfo"></a>
+
+### GroupInfo
+
+<a name="berty.protocol.GroupInfo.Reply"></a>
+
+### GroupInfo.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group | [Group](#berty.protocol.Group) |  | group is the group invitation, containing the group pk and its type |
+| member_pk | [bytes](#bytes) |  | member_pk is the identifier of the current member in the group |
+| device_pk | [bytes](#bytes) |  | member_pk is the identifier of the current device in the group |
+
+<a name="berty.protocol.GroupInfo.Request"></a>
+
+### GroupInfo.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the identifier of the contact |
+
 <a name="berty.protocol.GroupMessageEvent"></a>
 
 ### GroupMessageEvent
@@ -556,6 +625,18 @@ GroupEnvelope is a publicly exposed structure containing a group metadata event
 | event_context | [EventContext](#berty.protocol.EventContext) |  | event_context contains context information about the event |
 | headers | [MessageHeaders](#berty.protocol.MessageHeaders) |  | headers contains headers of the secure message |
 | message | [bytes](#bytes) |  | message contains the secure message payload |
+
+<a name="berty.protocol.GroupMessageList"></a>
+
+### GroupMessageList
+
+<a name="berty.protocol.GroupMessageList.Request"></a>
+
+### GroupMessageList.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
 
 <a name="berty.protocol.GroupMessageSubscribe"></a>
 
@@ -592,6 +673,18 @@ GroupMetadata is used in GroupEnvelope and only readable by invited group member
 | event_context | [EventContext](#berty.protocol.EventContext) |  | event_context contains context information about the event |
 | metadata | [GroupMetadata](#berty.protocol.GroupMetadata) |  | metadata contains the newly available metadata |
 | event | [bytes](#bytes) |  | event_clear clear bytes for the event |
+
+<a name="berty.protocol.GroupMetadataList"></a>
+
+### GroupMetadataList
+
+<a name="berty.protocol.GroupMetadataList.Request"></a>
+
+### GroupMetadataList.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
 
 <a name="berty.protocol.GroupMetadataSubscribe"></a>
 
@@ -732,7 +825,7 @@ MultiMemberGroupAddAliasResolver indicates that a group member want to disclose 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_pk | [bytes](#bytes) |  |  |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
 
 <a name="berty.protocol.MultiMemberGroupCreate"></a>
 
@@ -920,6 +1013,11 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | AppMessageSend | [AppMessageSend.Request](#berty.protocol.AppMessageSend.Request) | [AppMessageSend.Reply](#berty.protocol.AppMessageSend.Reply) | AppMessageSend adds an app event to the message store, the message is encrypted using a derived key and readable by current group members |
 | GroupMetadataSubscribe | [GroupMetadataSubscribe.Request](#berty.protocol.GroupMetadataSubscribe.Request) | [GroupMetadataEvent](#berty.protocol.GroupMetadataEvent) stream | GroupMetadataSubscribe subscribes to a group metadata updates (or it can also retrieve the history) |
 | GroupMessageSubscribe | [GroupMessageSubscribe.Request](#berty.protocol.GroupMessageSubscribe.Request) | [GroupMessageEvent](#berty.protocol.GroupMessageEvent) stream | GroupMessageSubscribe subscribes to a group message updates (or it can also retrieve the history) |
+| GroupMetadataList | [GroupMetadataList.Request](#berty.protocol.GroupMetadataList.Request) | [GroupMetadataEvent](#berty.protocol.GroupMetadataEvent) stream | GroupMetadataList replays metadata events from the group |
+| GroupMessageList | [GroupMessageList.Request](#berty.protocol.GroupMessageList.Request) | [GroupMessageEvent](#berty.protocol.GroupMessageEvent) stream | GroupMessageList replays message events from the group |
+| GroupInfo | [GroupInfo.Request](#berty.protocol.GroupInfo.Request) | [GroupInfo.Reply](#berty.protocol.GroupInfo.Reply) | GroupInfo retrieves information about a group |
+| ActivateGroup | [ActivateGroup.Request](#berty.protocol.ActivateGroup.Request) | [ActivateGroup.Reply](#berty.protocol.ActivateGroup.Reply) | ActivateGroup explicitly opens a group, groups are automatically enabled when actions are performed on them |
+| DeactivateGroup | [DeactivateGroup.Request](#berty.protocol.DeactivateGroup.Request) | [DeactivateGroup.Reply](#berty.protocol.DeactivateGroup.Reply) | DeactivateGroup closes a group |
 
  
 
