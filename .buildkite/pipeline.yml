@@ -10,6 +10,8 @@ steps:
 
   - label: go-generate
     if: build.branch == "master" || build.message !~ /\[skip go-generate\]/
+    agents:
+      queue: "bigcores"
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/protoc:22
@@ -34,6 +36,8 @@ steps:
 
   - label: githooks
     if: build.branch == "master" || build.message !~ /\[skip githooks\]/
+    agents:
+      queue: "bigcores"
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/githooks:v1
@@ -217,6 +221,8 @@ steps:
               'BAZEL_CMD_ARGS=--test_output=errors --action_env="GTEST_COLOR=1"',
             ]
           volumes: ["~:/home/buildkite-agent"]
+    agents:
+      queue: "bigcores"
     commands:
       - set -x
       - export USER=$(id -u)
