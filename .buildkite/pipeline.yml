@@ -10,6 +10,8 @@ steps:
 
   - label: go-generate
     if: build.branch == "master" || build.message !~ /\[skip go-generate\]/
+    agents:
+      queue: "bigcores"
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/protoc:22
@@ -34,6 +36,8 @@ steps:
 
   - label: githooks
     if: build.branch == "master" || build.message !~ /\[skip githooks\]/
+    agents:
+      queue: "bigcores"
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/githooks:v1
@@ -49,6 +53,8 @@ steps:
 
   - label: go-build
     if: build.branch == "master" || build.message !~ /\[skip go-build\]/
+    agents:
+      queue: "bigcores"
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/build-go:v2
@@ -64,8 +70,6 @@ steps:
               "CODECOV_TOKEN",
             ]
           volumes: ["~:/home/buildkite-agent"]
-    agents:
-      queue: "bigcores"
     commands:
       - set -x
 
@@ -204,6 +208,8 @@ steps:
 
   - label: bazel-go
     if: build.branch == "master" || build.message !~ /\[skip bazel-go\]/
+    agents:
+      queue: "bigcores"
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/bazel:2.0.0-buster-r0
