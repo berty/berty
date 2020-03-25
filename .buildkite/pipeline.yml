@@ -1,6 +1,6 @@
 steps:
   - label: go-docker
-    if: build.branch == "master" || build.message !~ /\[skip go-docker\]/
+    if: build.branch == "master" || (build.message !~ /\[skip go-docker\]/ && build.message !~ /\[skip-ci\]/)
     agents:
       queue: "bigcores"
     commands:
@@ -9,7 +9,7 @@ steps:
       - docker build .
 
   - label: go-generate
-    if: build.branch == "master" || build.message !~ /\[skip go-generate\]/
+    if: build.branch == "master" || (build.message !~ /\[skip go-generate\]/ && build.message !~ /\[skip-ci\]/)
     agents:
       queue: "bigcores"
     plugins:
@@ -35,7 +35,7 @@ steps:
       - git diff-index -w --quiet HEAD --
 
   - label: githooks
-    if: build.branch == "master" || build.message !~ /\[skip githooks\]/
+    if: build.branch == "master" || (build.message !~ /\[skip githooks\]/ && build.message !~ /\[skip-ci\]/)
     agents:
       queue: "bigcores"
     plugins:
@@ -52,7 +52,7 @@ steps:
       - git diff-index -w --quiet HEAD --
 
   - label: go-build
-    if: build.branch == "master" || build.message !~ /\[skip go-build\]/
+    if: build.branch == "master" || (build.message !~ /\[skip go-build\]/ && build.message !~ /\[skip-ci\]/)
     agents:
       queue: "bigcores"
     plugins:
@@ -92,7 +92,7 @@ steps:
       - codecov -f ./go/coverage.txt
 
   - label: android-build
-    if: build.branch == "master" || build.message !~ /\[skip android-build\]/
+    if: build.branch == "master" || (build.message !~ /\[skip android-build\]/ && build.message !~ /\[skip-ci\]/)
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bitriseio/android-ndk:v2019_12_28-08_15-b1793
@@ -103,7 +103,7 @@ steps:
               "GO111MODULE=off",
               "GOPATH=/home/buildkite-agent/go",
               "HOME=/home/buildkite-agent",
-              "GRADLE_USER_HOME=/home/buildkite-agent/.gradle"
+              "GRADLE_USER_HOME=/home/buildkite-agent/.gradle",
             ]
           volumes: ["~:/home/buildkite-agent"]
     agents:
@@ -131,7 +131,7 @@ steps:
       - "js/packages/berty-app/android/app/build/outputs/bundle/release/app-release.aab"
 
   - label: ios-build
-    if: build.branch == "master" || build.message !~ /\[skip ios-build\]/
+    if: build.branch == "master" || (build.message !~ /\[skip ios-build\]/ && build.message !~ /\[skip-ci\]/)
     agents:
       queue: "macos"
     plugins:
@@ -150,7 +150,7 @@ steps:
       - "js/packages/berty-app/build/**/*"
 
   - label: js-generate
-    if: build.branch == "master" || build.message !~ /\[skip js-generate\]/
+    if: build.branch == "master" || (build.message !~ /\[skip js-generate\]/ && build.message !~ /\[skip-ci\]/)
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/protoc:22
@@ -172,7 +172,7 @@ steps:
       - git diff-index -w --quiet HEAD --
 
   - label: js-lint
-    if: build.branch == "master" || build.message !~ /\[skip js-lint\]/
+    if: build.branch == "master" || (build.message !~ /\[skip js-lint\]/ && build.message !~ /\[skip-ci\]/)
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/protoc:22
@@ -190,7 +190,7 @@ steps:
       - ./node_modules/.bin/check-deps-sync .
 
   - label: js-test
-    if: build.branch == "master" || build.message !~ /\[skip js-test\]/
+    if: build.branch == "master" || (build.message !~ /\[skip js-test\]/ && build.message !~ /\[skip-ci\]/)
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/protoc:22
@@ -207,7 +207,7 @@ steps:
       - make test
 
   - label: bazel-go
-    if: build.branch == "master" || build.message !~ /\[skip bazel-go\]/
+    if: build.branch == "master" || (build.message !~ /\[skip bazel-go\]/ && build.message !~ /\[skip-ci\]/)
     agents:
       queue: "bigcores"
     plugins:
