@@ -13,7 +13,7 @@ type TabItemProps = {
 }
 
 type TabBarProps = {
-	tabType: string
+	tabs: { name: string; icon: string }[]
 	onTabChange: any
 }
 
@@ -65,12 +65,11 @@ const TabBarItem: React.FC<TabItemProps> = ({
 }
 
 // TabBarList
-export const TabBar: React.FC<TabBarProps> = ({ tabType, onTabChange }) => {
-	const [tabs, setTabs] = useState()
-	const [selectedTab, setEnable] = useState('Fingerprint')
+export const TabBar: React.FC<TabBarProps> = ({ tabs, onTabChange }) => {
+	const [selectedTab, setEnable] = useState(tabs[0].name)
 	const [{ margin, row }] = useStyles()
 
-	useEffect(() => {
+	/*useEffect(() => {
 		if (!tabs) {
 			if (tabType === 'contact') {
 				setTabs([
@@ -87,7 +86,7 @@ export const TabBar: React.FC<TabBarProps> = ({ tabType, onTabChange }) => {
 				])
 			}
 		}
-	}, [tabs, tabType])
+	}, [tabs, tabType])*/
 
 	useEffect(() => {
 		if (typeof onTabChange === 'function') {
@@ -99,7 +98,7 @@ export const TabBar: React.FC<TabBarProps> = ({ tabType, onTabChange }) => {
 		<View style={[margin.top.medium]}>
 			<View style={[row.fill]}>
 				{tabs &&
-					tabs.map((obj: any) => (
+					tabs.map((obj) => (
 						<TabBarItem
 							name={obj.name}
 							icon={obj.icon}

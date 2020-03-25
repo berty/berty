@@ -8,17 +8,26 @@ import { AppMessage, GroupInvitation, SetGroupName, AppMessageType } from './App
 import * as protocol from '../protocol'
 import { contact } from '../chat'
 
-export type Entity = {
+type BaseConversation = {
 	id: string
 	accountId: string
 	title: string
 	pk: string
-	kind: berty.chatmodel.Conversation.Kind // Unknown, Self, OneToOne, PrivateGroup
 	createdAt: number
 	membersDevices: { [key: string]: string[] }
 	members: Array<number>
 	messages: Array<string>
 }
+
+type OneToOneConversation = BaseConversation & {
+	kind: berty.chatmodel.Conversation.Kind.OneToOne
+	contactId: string
+}
+type MultiMemberConversation = BaseConversation & {
+	kind: berty.chatmodel.Conversation.Kind.PrivateGroup
+}
+
+export type Entity = OneToOneConversation | MultiMemberConversation
 
 export type Event = {
 	id: string
@@ -61,8 +70,13 @@ export namespace Event {
 		accountId: string
 		title: string
 		pk: Uint8Array
-		kind: berty.chatmodel.Conversation.Kind
-	}
+	} & (
+		| {
+				kind: berty.chatmodel.Conversation.Kind.OneToOne
+				contactId: string
+		  }
+		| { kind: berty.chatmodel.Conversation.Kind.PrivateGroup }
+	)
 	export type NameUpdated = {
 		aggregateId: string
 		name: string
@@ -141,20 +155,25 @@ const eventHandler = createSlice<State, EventsReducer>({
 			return state
 		},
 		created: (state, { payload }) => {
-			const { accountId, pk, title, kind } = payload
+			const { accountId, pk, title } = payload
 			// Create id
 			const id = getAggregateId({ accountId, groupPk: pk })
 			if (!state.aggregates[id]) {
-				state.aggregates[id] = {
+				const base = {
 					id,
 					accountId,
 					title,
 					pk: new Buffer(pk).toString(),
-					kind,
 					createdAt: Date.now(),
 					members: [],
 					messages: [],
 					membersDevices: {},
+				}
+				if (payload.kind === berty.chatmodel.Conversation.Kind.OneToOne) {
+					const oneToOne = { ...base, contactId: payload.contactId, kind: payload.kind }
+					state.aggregates[id] = oneToOne
+				} else if (payload.kind === berty.chatmodel.Conversation.Kind.PrivateGroup) {
+					state.aggregates[id] = { ...base, kind: payload.kind }
 				}
 			}
 			return state
@@ -353,13 +372,14 @@ export function* orchestrator() {
 					title: request.name,
 					pk: groupPk,
 					kind: berty.chatmodel.Conversation.Kind.OneToOne,
+					contactId: contact.getAggregateId({ accountId, contactPk }),
 				}),
 			)
 		}),
 		takeEvery(protocol.events.client.accountContactRequestOutgoingEnqueued, function*({ payload }) {
 			const {
 				aggregateId: accountId,
-				event: { groupPk, contactMetadata },
+				event: { contactPk, groupPk, contactMetadata },
 			} = payload
 			// Recup metadata
 			const metadata = JSON.parse(new Buffer(contactMetadata).toString('utf-8'))
@@ -369,6 +389,7 @@ export function* orchestrator() {
 					title: metadata.givenName,
 					pk: groupPk,
 					kind: berty.chatmodel.Conversation.Kind.OneToOne,
+					contactId: contact.getAggregateId({ accountId, contactPk }),
 				}),
 			)
 		}),

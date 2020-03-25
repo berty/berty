@@ -109,7 +109,7 @@ const commandHandler = createSlice<State, CommandsReducer>({
 	},
 })
 
-const getAggregateId = ({
+export const getAggregateId = ({
 	accountId,
 	contactPk,
 }: {
