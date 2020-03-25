@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { View, SafeAreaView, Dimensions, TextInput, Button } from 'react-native'
-import { Layout, Text } from 'react-native-ui-kitten'
+import { View, SafeAreaView, Dimensions, TextInput, Button, TouchableOpacity } from 'react-native'
+import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
+// import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 // import { RNCamera } from 'react-native-camera'
 import { Chat } from '@berty-tech/hooks'
@@ -98,38 +98,27 @@ const ScanInfos: React.FC<{}> = () => {
 
 const Screen = Dimensions.get('window')
 
-const ScanComponent: React.FC<{}> = () => (
-	<View style={{ height: Screen.height }}>
-		<ScanBody />
-		{__DEV__ && <ScanInfos />}
-	</View>
-)
+const ScanComponent: React.FC<{}> = () => {
+	const { goBack } = useNavigation()
+	const [{ color, padding }] = useStyles()
+	return (
+		<View style={[{ height: Screen.height }, padding.medium]}>
+			<TouchableOpacity onPress={goBack}>
+				<Icon name='arrow-back-outline' width={30} height={30} fill={color.black} />
+			</TouchableOpacity>
+			<ScanBody />
+			{__DEV__ && <ScanInfos />}
+		</View>
+	)
+}
 
 export const Scan: React.FC<{}> = () => {
-	const firstNotToggledPoint = Screen.height - 120
-	const firstToggledPoint = 20
-	const [{ color, flex }] = useStyles()
+	const [{ flex, background }] = useStyles()
 
 	return (
 		<Layout style={[flex.tiny]}>
-			<SafeAreaView style={[flex.tiny]}>
-				<SDTSModalComponent
-					rows={[
-						{
-							toggledPoint: firstToggledPoint,
-							notToggledPoint: firstNotToggledPoint,
-							initialPoint: firstToggledPoint,
-							title: 'Scan QR code',
-							titleColor: color.white,
-							icon: 'code-outline',
-							iconColor: color.white,
-							bgColor: color.red,
-							maxHeight: Screen.height - 90,
-						},
-					]}
-				>
-					<ScanComponent />
-				</SDTSModalComponent>
+			<SafeAreaView style={[flex.tiny, background.red]}>
+				<ScanComponent />
 			</SafeAreaView>
 		</Layout>
 	)
