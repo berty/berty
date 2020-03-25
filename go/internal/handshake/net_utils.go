@@ -1,7 +1,7 @@
 package handshake
 
 import (
-	"berty.tech/berty/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	ggio "github.com/gogo/protobuf/io"
 )
 

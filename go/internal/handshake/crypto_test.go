@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"berty.tech/berty/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

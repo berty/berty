@@ -5,10 +5,9 @@ import (
 	"context"
 	"sync"
 
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
-
-	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 type tabbedGroupsView struct {

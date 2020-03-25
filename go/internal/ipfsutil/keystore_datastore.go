@@ -1,11 +1,10 @@
 package ipfsutil
 
 import (
-	"github.com/ipfs/go-datastore"
+	"berty.tech/berty/v2/go/pkg/errcode"
+	datastore "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-ipfs/keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 type datastoreKeystore struct {

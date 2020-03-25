@@ -4,18 +4,16 @@ import (
 	"context"
 	"encoding/json"
 
+	"berty.tech/berty/v2/go/pkg/errcode"
 	logac "berty.tech/go-ipfs-log/accesscontroller"
-
 	"berty.tech/go-ipfs-log/identityprovider"
 	"berty.tech/go-orbit-db/accesscontroller"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
-	"github.com/ipfs/go-cid"
+	cid "github.com/ipfs/go-cid"
 	mh "github.com/multiformats/go-multihash"
 	"github.com/pkg/errors"
-
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 type simpleAccessController struct {

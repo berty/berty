@@ -4,9 +4,8 @@ import (
 	"encoding/base64"
 	"strings"
 
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"github.com/juju/fslock"
-
-	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 func openGroupFromString(data string) (*bertyprotocol.Group, error) {

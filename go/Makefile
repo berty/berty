@@ -62,7 +62,7 @@ tidy: pb.generate
 .PHONY: docker.build
 docker.build: pb.generate
 	$(call check-program, docker)
-	docker build -t bertytech/berty .
+	docker build -t bertytech/berty ..
 
 .PHONY: docker.fast
 docker.fast: args ?= -h
@@ -118,7 +118,7 @@ go.install: pb.generate
 ##
 
 SAMPLE_GAZELLE_GENERATED_FILE ?= pkg/bertyprotocol/BUILD.bazel # should be the path of a git-ignored bazel-generated file
-VENDOR_BAZEL_OVERRIDEN_FILES = vendor/github.com/libp2p/go-openssl/BUILD.bazel
+VENDOR_BAZEL_OVERRIDEN_FILES = ../vendor/github.com/libp2p/go-openssl/BUILD.bazel
 
 
 .PHONY: bazel.lint
@@ -207,14 +207,14 @@ ibazel.unittest: bazel.generate
 ## Deps
 ##
 
-vendor/github.com/libp2p/go-openssl/BUILD.bazel: $(abspath ../build/bazel/com_github_libp2p_go_openssl.BUILD.bzl) vendor
+../vendor/github.com/libp2p/go-openssl/BUILD.bazel: $(abspath ../build/bazel/com_github_libp2p_go_openssl.BUILD.bzl) ../vendor
 	cp $< $@
 
-$(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE vendor $(VENDOR_BAZEL_OVERRIDEN_FILES)
+$(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE ../vendor $(VENDOR_BAZEL_OVERRIDEN_FILES)
 	$(call check-program, $(BAZEL))
 	$(BAZEL) $(BAZEL_ARGS) run $(BAZEL_CMD_ARGS) //:gazelle
 
-vendor: go.mod
+../vendor: ../go.mod
 	$(call check-program, $(GO))
 	GO111MODULE=on $(GO) mod vendor
 	touch $@
@@ -251,7 +251,7 @@ $(GEN_SUM): $(GEN_SRC)
 	    $(MAKE) tidy \
 	)
 
-PROTOC_OPTS = -I ../go/vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../go/vendor:/protobuf
+PROTOC_OPTS = -I ../vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../vendor:/protobuf
 .PHONY: generate_local
 generate_local:
 	$(call check-program, goimports shasum protoc)

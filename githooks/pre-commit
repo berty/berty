@@ -65,8 +65,6 @@ for DIR in $STAGED_GO_DIRS; do
     )
 done
 
-rm -f go.mod
-
 if ! $PASS; then
     printf "\033[0;30m\033[41mCOMMIT FAILED\033[0m\n"
     exit 1

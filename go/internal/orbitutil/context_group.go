@@ -1,9 +1,8 @@
 package orbitutil
 
 import (
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 type contextGroup struct {

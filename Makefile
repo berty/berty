@@ -16,3 +16,7 @@ clean:
 	cd go; make clean
 	cd js; make gen.clean
 	cd docs; make clean
+
+.PHONY: docker.build
+docker.build:
+	cd go; make docker.build

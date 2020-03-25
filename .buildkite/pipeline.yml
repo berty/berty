@@ -6,7 +6,7 @@ steps:
     commands:
       - set -x
       - cd go
-      - docker build .
+      - make docker.build
 
   - label: go-generate
     if: build.branch == "master" || build.message !~ /\[skip go-generate\]/
@@ -74,15 +74,13 @@ steps:
       - set -x
 
       - go version
-      - cd go
-
       - go mod download
-
       # https://circleci.com/orbs/registry/orb/gotest/tools#commands-mod-tidy-check
       - go mod tidy -v
       - git --no-pager diff go.mod go.sum
       - git --no-pager diff --quiet go.mod go.sum
 
+      - cd go
       - make go.install
       - SKIP_SLOW_TESTS=1 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 10"
       - SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 2"

@@ -1,11 +1,12 @@
 # build
-FROM            golang:1.13.5-alpine as builder
+FROM            golang:1.14-alpine as builder
 RUN             apk add --no-cache git gcc musl-dev make
 ENV             GO111MODULE=on
-WORKDIR         /go/src/berty.tech/berty/go
+WORKDIR         /go/src/berty.tech/berty
 COPY            go.* ./
 RUN             go mod download
-COPY            . ./
+COPY            ./go ./go
+WORKDIR         /go/src/berty.tech/berty/go
 RUN             make go.install
 
 # minimalist runtime

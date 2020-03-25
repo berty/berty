@@ -12,8 +12,7 @@ license = (Apache-2.0 or MIT)
 yarn := $(shell which yarn || echo '/usr/local/bin/yarn')
 yarn_flags :=
 
-go := $(abspath $(PWD)/../go)
-go_vendor := $(go)/vendor
+go_vendor := $(BERTY_ROOT)/vendor
 
 mod := $(PWD)/node_modules
 bin := $(mod)/.bin

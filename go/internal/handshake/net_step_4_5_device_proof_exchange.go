@@ -3,7 +3,7 @@ package handshake
 import (
 	"context"
 
-	"berty.tech/berty/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 

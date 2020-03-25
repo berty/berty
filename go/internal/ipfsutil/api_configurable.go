@@ -3,12 +3,11 @@ package ipfsutil
 import (
 	"context"
 
+	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_coreapi "github.com/ipfs/go-ipfs/core/coreapi"
 	ipfs_node "github.com/ipfs/go-ipfs/core/node"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
-
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 type NewAPIOption func(context.Context, *ipfs_core.IpfsNode, ipfs_interface.CoreAPI) error

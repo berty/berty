@@ -6,13 +6,11 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/ipfs/go-ipfs/keystore"
-
-	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/pkg/bertyprotocol"
-
+	"berty.tech/berty/v2/go/internal/account"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	orbitdb "berty.tech/go-orbit-db"
+	"github.com/ipfs/go-ipfs/keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"

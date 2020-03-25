@@ -7,13 +7,12 @@ import (
 	"os"
 	"testing"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/orbitutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	orbitdb "berty.tech/go-orbit-db"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/internal/cryptoutil"
-	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/internal/orbitutil"
-	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 func TestAdd(t *testing.T) {

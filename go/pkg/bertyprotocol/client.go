@@ -4,15 +4,14 @@ import (
 	"context"
 	"sync"
 
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/cache"
 	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
-
-	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 var _ Client = (*client)(nil)

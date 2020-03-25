@@ -1,7 +1,7 @@
 export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
-berty_go_path := $(abspath $(PWD)/../../../go)
+berty_root := $(abspath $(PWD)/../../..)
 
 berty_store_mod := $(PWD)/node_modules
 berty_store_bin := $(berty_store_mod)/.bin
@@ -12,7 +12,7 @@ berty_store_lint_options := --cache --fix
 berty_store_berty_path := $(abspath $(PWD)/../../../api)
 berty_store_protobuf_path := $(abspath $(PWD)/../../node_modules/@protocolbuffers/protobuf/src)
 berty_store_googleapis_path := $(abspath $(PWD)/../../node_modules/@googleapis/googleapis)
-berty_store_go_path := $(abspath $(berty_go_path)/vendor)
+berty_store_go_path := $(abspath $(berty_root)/vendor)
 
 berty_store_berty_files := \
 	$(berty_store_berty_path)/js-internal/bertychat.proto \
@@ -37,7 +37,7 @@ berty_store_pbhbs_flags := \
 
 berty_store_deps := \
 	$(PWD)/Makefile \
-	$(berty_go_path)/vendor \
+	$(berty_store_go_path) \
 	$(PWD)/node_modules \
 
 $(PWD)/%: $(berty_story_deps) $(berty_store_berty_files)

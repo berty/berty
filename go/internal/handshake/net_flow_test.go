@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/gogo/protobuf/proto"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"

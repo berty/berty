@@ -4,12 +4,11 @@ import (
 	"context"
 	"sync"
 
-	"github.com/ipfs/go-cid"
-	"github.com/ipfs/go-datastore"
+	"berty.tech/berty/v2/go/pkg/errcode"
+	cid "github.com/ipfs/go-cid"
+	datastore "github.com/ipfs/go-datastore"
 	dssync "github.com/ipfs/go-datastore/sync"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 type DatastoreMessageKeys struct {

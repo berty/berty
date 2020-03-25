@@ -4,10 +4,9 @@ import (
 	"encoding/hex"
 	"sync"
 
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-ipfs-log/keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 type BertySignedKeyStore struct {

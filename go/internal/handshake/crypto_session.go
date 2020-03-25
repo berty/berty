@@ -3,10 +3,9 @@ package handshake
 import (
 	"encoding/binary"
 
+	"berty.tech/berty/v2/go/pkg/errcode"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	"golang.org/x/crypto/nacl/box"
-
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 const SupportedKeyType = p2pcrypto.Ed25519

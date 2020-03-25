@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"berty.tech/berty/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 )
 
 func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {

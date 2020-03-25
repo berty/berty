@@ -10,18 +10,17 @@ import (
 	"testing"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/account"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/orbitutil"
+	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	orbitdb "berty.tech/go-orbit-db"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
 	"github.com/juju/fslock"
 	"github.com/stretchr/testify/require"
-
-	"berty.tech/berty/go/internal/account"
-	"berty.tech/berty/go/internal/ipfsutil"
-	"berty.tech/berty/go/internal/orbitutil"
-	"berty.tech/berty/go/internal/testutil"
-	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 func testAddBerty(ctx context.Context, t *testing.T, api ipfsutil.CoreAPIMock, g *bertyprotocol.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {

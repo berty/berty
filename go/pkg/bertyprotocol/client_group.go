@@ -4,9 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 func (c *client) indexGroups() error {

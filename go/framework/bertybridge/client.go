@@ -3,7 +3,7 @@ package bertybridge
 import (
 	"context"
 
-	"berty.tech/berty/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/grpcutil"
 	"google.golang.org/grpc"
 )
 

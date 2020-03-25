@@ -7,6 +7,7 @@ import (
 	"math/big"
 	"strings"
 
+	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfs_datastore "github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_node "github.com/ipfs/go-ipfs/core/node"
@@ -14,8 +15,6 @@ import (
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto" // nolint:staticcheck
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer" // nolint:staticcheck
-
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 type BuildOpts struct {

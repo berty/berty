@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"berty.tech/berty/go/internal/ipfsutil"
-	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
-
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc/codes"

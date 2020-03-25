@@ -1,12 +1,11 @@
 package cryptoutil
 
 import (
+	"berty.tech/berty/v2/go/pkg/errcode"
 	cconv "github.com/agl/ed25519/extra25519"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	pb "github.com/libp2p/go-libp2p-core/crypto/pb"
 	"golang.org/x/crypto/ed25519"
-
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 func SeedFromEd25519PrivateKey(key crypto.PrivKey) ([]byte, error) {

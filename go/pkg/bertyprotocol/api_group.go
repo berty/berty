@@ -3,9 +3,8 @@ package bertyprotocol
 import (
 	"context"
 
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
-
-	"berty.tech/berty/go/pkg/errcode"
 )
 
 func (c *client) GroupInfo(_ context.Context, req *GroupInfo_Request) (*GroupInfo_Reply, error) {

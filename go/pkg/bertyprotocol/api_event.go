@@ -1,7 +1,7 @@
 package bertyprotocol
 
 import (
-	"berty.tech/berty/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 // GroupMetadataSubscribe subscribes to the metadata events for a group

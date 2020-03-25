@@ -1,13 +1,12 @@
 package bertydemo
 
 import (
-	context "context"
+	"context"
 	"testing"
 
-	"berty.tech/berty/go/internal/grpcutil"
-	"berty.tech/berty/go/internal/ipfsutil"
-
-	grpc "google.golang.org/grpc"
+	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"google.golang.org/grpc"
 )
 
 type cleanFunc func()

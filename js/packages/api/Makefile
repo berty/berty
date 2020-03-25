@@ -1,7 +1,7 @@
 export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
-berty_go_path := $(abspath $(PWD)/../../../go)
+berty_root := $(abspath $(PWD)/../../..)
 
 api_mod := $(PWD)/node_modules
 api_bin := $(api_mod)/.bin
@@ -12,7 +12,7 @@ api_lint_options := --cache --fix
 api_berty_path := $(abspath $(PWD)/../../../api)
 api_protobuf_path := $(abspath $(PWD)/../../node_modules/@protocolbuffers/protobuf/src)
 api_googleapis_path := $(abspath $(PWD)/../../node_modules/@googleapis/googleapis)
-api_go_path := $(abspath $(berty_go_path)/vendor)
+api_go_path := $(abspath $(berty_root)/vendor)
 
 api_protos := \
 	$(api_berty_path)/js-internal/bertychat.proto \
@@ -35,7 +35,7 @@ api_pbts_flags := --no-comments
 
 api_deps := \
 	$(PWD)/Makefile \
-	$(berty_go_path)/vendor \
+	$(api_go_path) \
 	$(PWD)/node_modules \
 	$(api_pbjs) \
 	$(api_pbts) \

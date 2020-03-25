@@ -9,14 +9,14 @@ BAZEL_AAR := $(PWD)/bazel-bin/android/gobridge_library.aar
 AAR_DIR := $(PWD)/android/libs
 AAR := $(PWD)/android/libs/gobridge.aar
 
-GO_VENDOR := $(GOPATH)/src/berty.tech/berty/go/vendor
+GO_VENDOR := $(GOPATH)/src/berty.tech/berty/vendor
 GOMOBILE := $(GOTPATH)/bin/gomobile
 GOBIND := $(GOPATH)/bin/gobind
 
 deps.gobridge: $(GOMOBILE) $(GO_VENDOR)
 
 $(GO_VENDOR):
-	cd $(GOPATH)/src/berty.tech/berty/go && GO111MODULE=on go mod vendor
+	cd $(GOPATH)/src/berty.tech/berty && GO111MODULE=on go mod vendor
 
 $(GOMOBILE): $(PWD) := $(PWD)
 $(GOMOBILE): $(GOBIND)

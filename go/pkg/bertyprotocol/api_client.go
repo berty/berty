@@ -3,7 +3,7 @@ package bertyprotocol
 import (
 	"context"
 
-	"berty.tech/berty/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func (c *client) InstanceExportData(context.Context, *InstanceExportData_Request) (*InstanceExportData_Reply, error) {

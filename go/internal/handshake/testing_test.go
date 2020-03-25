@@ -3,7 +3,7 @@ package handshake
 import (
 	"testing"
 
-	"berty.tech/berty/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -3,10 +3,9 @@ package account
 import (
 	"testing"
 
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/stretchr/testify/assert"
-
-	"berty.tech/berty/go/pkg/bertyprotocol"
 )
 
 func Test_New_AccountPrivKey_AccountProofPrivKey(t *testing.T) {
