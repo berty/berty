@@ -2,159 +2,141 @@ import * as api from '@berty-tech/api'
 
 export interface IProtocolServiceHandler {
 	InstanceExportData: (
-		request: api.berty.protocol.InstanceExportData.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.InstanceExportData.IReply,
-		) => void,
+		request: api.berty.types.InstanceExportData.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.InstanceExportData.IReply) => void,
 	) => void
 	InstanceGetConfiguration: (
-		request: api.berty.protocol.InstanceGetConfiguration.IRequest,
+		request: api.berty.types.InstanceGetConfiguration.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.InstanceGetConfiguration.IReply,
+			response?: api.berty.types.InstanceGetConfiguration.IReply,
 		) => void,
 	) => void
 	ContactRequestReference: (
-		request: api.berty.protocol.ContactRequestReference.IRequest,
+		request: api.berty.types.ContactRequestReference.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.ContactRequestReference.IReply,
+			response?: api.berty.types.ContactRequestReference.IReply,
 		) => void,
 	) => void
 	ContactRequestDisable: (
-		request: api.berty.protocol.ContactRequestDisable.IRequest,
+		request: api.berty.types.ContactRequestDisable.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.ContactRequestDisable.IReply,
+			response?: api.berty.types.ContactRequestDisable.IReply,
 		) => void,
 	) => void
 	ContactRequestEnable: (
-		request: api.berty.protocol.ContactRequestEnable.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.ContactRequestEnable.IReply,
-		) => void,
+		request: api.berty.types.ContactRequestEnable.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ContactRequestEnable.IReply) => void,
 	) => void
 	ContactRequestResetReference: (
-		request: api.berty.protocol.ContactRequestResetReference.IRequest,
+		request: api.berty.types.ContactRequestResetReference.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.ContactRequestResetReference.IReply,
+			response?: api.berty.types.ContactRequestResetReference.IReply,
 		) => void,
 	) => void
 	ContactRequestSend: (
-		request: api.berty.protocol.ContactRequestSend.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.ContactRequestSend.IReply,
-		) => void,
+		request: api.berty.types.ContactRequestSend.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ContactRequestSend.IReply) => void,
 	) => void
 	ContactRequestAccept: (
-		request: api.berty.protocol.ContactRequestAccept.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.ContactRequestAccept.IReply,
-		) => void,
+		request: api.berty.types.ContactRequestAccept.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ContactRequestAccept.IReply) => void,
 	) => void
 	ContactRequestDiscard: (
-		request: api.berty.protocol.ContactRequestDiscard.IRequest,
+		request: api.berty.types.ContactRequestDiscard.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.ContactRequestDiscard.IReply,
+			response?: api.berty.types.ContactRequestDiscard.IReply,
 		) => void,
 	) => void
 	ContactBlock: (
-		request: api.berty.protocol.ContactBlock.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.ContactBlock.IReply) => void,
+		request: api.berty.types.ContactBlock.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ContactBlock.IReply) => void,
 	) => void
 	ContactUnblock: (
-		request: api.berty.protocol.ContactUnblock.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.ContactUnblock.IReply) => void,
+		request: api.berty.types.ContactUnblock.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ContactUnblock.IReply) => void,
 	) => void
 	ContactAliasKeySend: (
-		request: api.berty.protocol.ContactAliasKeySend.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.ContactAliasKeySend.IReply,
-		) => void,
+		request: api.berty.types.ContactAliasKeySend.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ContactAliasKeySend.IReply) => void,
 	) => void
 	MultiMemberGroupCreate: (
-		request: api.berty.protocol.MultiMemberGroupCreate.IRequest,
+		request: api.berty.types.MultiMemberGroupCreate.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberGroupCreate.IReply,
+			response?: api.berty.types.MultiMemberGroupCreate.IReply,
 		) => void,
 	) => void
 	MultiMemberGroupJoin: (
-		request: api.berty.protocol.MultiMemberGroupJoin.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.MultiMemberGroupJoin.IReply,
-		) => void,
+		request: api.berty.types.MultiMemberGroupJoin.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.MultiMemberGroupJoin.IReply) => void,
 	) => void
 	MultiMemberGroupLeave: (
-		request: api.berty.protocol.MultiMemberGroupLeave.IRequest,
+		request: api.berty.types.MultiMemberGroupLeave.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberGroupLeave.IReply,
+			response?: api.berty.types.MultiMemberGroupLeave.IReply,
 		) => void,
 	) => void
 	MultiMemberGroupAliasResolverDisclose: (
-		request: api.berty.protocol.MultiMemberGroupAliasResolverDisclose.IRequest,
+		request: api.berty.types.MultiMemberGroupAliasResolverDisclose.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberGroupAliasResolverDisclose.IReply,
+			response?: api.berty.types.MultiMemberGroupAliasResolverDisclose.IReply,
 		) => void,
 	) => void
 	MultiMemberGroupAdminRoleGrant: (
-		request: api.berty.protocol.MultiMemberGroupAdminRoleGrant.IRequest,
+		request: api.berty.types.MultiMemberGroupAdminRoleGrant.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberGroupAdminRoleGrant.IReply,
+			response?: api.berty.types.MultiMemberGroupAdminRoleGrant.IReply,
 		) => void,
 	) => void
 	MultiMemberGroupInvitationCreate: (
-		request: api.berty.protocol.MultiMemberGroupInvitationCreate.IRequest,
+		request: api.berty.types.MultiMemberGroupInvitationCreate.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberGroupInvitationCreate.IReply,
+			response?: api.berty.types.MultiMemberGroupInvitationCreate.IReply,
 		) => void,
 	) => void
 	AppMetadataSend: (
-		request: api.berty.protocol.AppMetadataSend.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.AppMetadataSend.IReply) => void,
+		request: api.berty.types.AppMetadataSend.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.AppMetadataSend.IReply) => void,
 	) => void
 	AppMessageSend: (
-		request: api.berty.protocol.AppMessageSend.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.AppMessageSend.IReply) => void,
+		request: api.berty.types.AppMessageSend.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.AppMessageSend.IReply) => void,
 	) => void
 	GroupMetadataSubscribe: (
-		request: api.berty.protocol.GroupMetadataSubscribe.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.IGroupMetadataEvent) => void,
+		request: api.berty.types.GroupMetadataSubscribe.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.IGroupMetadataEvent) => void,
 	) => void
 	GroupMessageSubscribe: (
-		request: api.berty.protocol.GroupMessageSubscribe.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.IGroupMessageEvent) => void,
+		request: api.berty.types.GroupMessageSubscribe.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.IGroupMessageEvent) => void,
 	) => void
 	GroupMetadataList: (
-		request: api.berty.protocol.GroupMetadataList.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.IGroupMetadataEvent) => void,
+		request: api.berty.types.GroupMetadataList.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.IGroupMetadataEvent) => void,
 	) => void
 	GroupMessageList: (
-		request: api.berty.protocol.GroupMessageList.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.IGroupMessageEvent) => void,
+		request: api.berty.types.GroupMessageList.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.IGroupMessageEvent) => void,
 	) => void
 	GroupInfo: (
-		request: api.berty.protocol.GroupInfo.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.GroupInfo.IReply) => void,
+		request: api.berty.types.GroupInfo.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.GroupInfo.IReply) => void,
 	) => void
 	ActivateGroup: (
-		request: api.berty.protocol.ActivateGroup.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.ActivateGroup.IReply) => void,
+		request: api.berty.types.ActivateGroup.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ActivateGroup.IReply) => void,
 	) => void
 	DeactivateGroup: (
-		request: api.berty.protocol.DeactivateGroup.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.DeactivateGroup.IReply) => void,
+		request: api.berty.types.DeactivateGroup.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.DeactivateGroup.IReply) => void,
 	) => void
 }

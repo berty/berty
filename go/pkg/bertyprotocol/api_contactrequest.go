@@ -3,12 +3,13 @@ package bertyprotocol
 import (
 	"context"
 
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
 // ContactRequestReference retrieves the necessary information to create a contact link
-func (c *client) ContactRequestReference(context.Context, *ContactRequestReference_Request) (*ContactRequestReference_Reply, error) {
+func (c *client) ContactRequestReference(context.Context, *bertytypes.ContactRequestReference_Request) (*bertytypes.ContactRequestReference_Reply, error) {
 	enabled, shareableContact := c.accContextGroup.MetadataStore().GetIncomingContactRequestsStatus()
 	ref := []byte(nil)
 
@@ -22,23 +23,23 @@ func (c *client) ContactRequestReference(context.Context, *ContactRequestReferen
 		}
 	}
 
-	return &ContactRequestReference_Reply{
+	return &bertytypes.ContactRequestReference_Reply{
 		Reference: ref,
 		Enabled:   enabled,
 	}, nil
 }
 
 // ContactRequestDisable disables incoming contact requests
-func (c *client) ContactRequestDisable(ctx context.Context, _ *ContactRequestDisable_Request) (*ContactRequestDisable_Reply, error) {
+func (c *client) ContactRequestDisable(ctx context.Context, _ *bertytypes.ContactRequestDisable_Request) (*bertytypes.ContactRequestDisable_Reply, error) {
 	if _, err := c.accContextGroup.MetadataStore().ContactRequestDisable(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	return &ContactRequestDisable_Reply{}, nil
+	return &bertytypes.ContactRequestDisable_Reply{}, nil
 }
 
 // ContactRequestEnable enables incoming contact requests
-func (c *client) ContactRequestEnable(ctx context.Context, _ *ContactRequestEnable_Request) (*ContactRequestEnable_Reply, error) {
+func (c *client) ContactRequestEnable(ctx context.Context, _ *bertytypes.ContactRequestEnable_Request) (*bertytypes.ContactRequestEnable_Reply, error) {
 	if _, err := c.accContextGroup.MetadataStore().ContactRequestEnable(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -56,13 +57,13 @@ func (c *client) ContactRequestEnable(ctx context.Context, _ *ContactRequestEnab
 		}
 	}
 
-	return &ContactRequestEnable_Reply{
+	return &bertytypes.ContactRequestEnable_Reply{
 		Reference: ref,
 	}, nil
 }
 
 // ContactRequestResetReference generates a new contact request reference
-func (c *client) ContactRequestResetReference(ctx context.Context, _ *ContactRequestResetReference_Request) (*ContactRequestResetReference_Reply, error) {
+func (c *client) ContactRequestResetReference(ctx context.Context, _ *bertytypes.ContactRequestResetReference_Request) (*bertytypes.ContactRequestResetReference_Reply, error) {
 	if _, err := c.accContextGroup.MetadataStore().ContactRequestReferenceReset(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -80,14 +81,14 @@ func (c *client) ContactRequestResetReference(ctx context.Context, _ *ContactReq
 		}
 	}
 
-	return &ContactRequestResetReference_Reply{
+	return &bertytypes.ContactRequestResetReference_Reply{
 		Reference: ref,
 	}, nil
 }
 
 // ContactRequestSend enqueues a new contact request to be sent
-func (c *client) ContactRequestSend(ctx context.Context, req *ContactRequestSend_Request) (*ContactRequestSend_Reply, error) {
-	shareableContact := &ShareableContact{}
+func (c *client) ContactRequestSend(ctx context.Context, req *bertytypes.ContactRequestSend_Request) (*bertytypes.ContactRequestSend_Reply, error) {
+	shareableContact := &bertytypes.ShareableContact{}
 	if err := shareableContact.Unmarshal(req.Reference); err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
@@ -108,11 +109,11 @@ func (c *client) ContactRequestSend(ctx context.Context, req *ContactRequestSend
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	return &ContactRequestSend_Reply{}, nil
+	return &bertytypes.ContactRequestSend_Reply{}, nil
 }
 
 // ContactRequestAccept accepts a contact request
-func (c *client) ContactRequestAccept(ctx context.Context, req *ContactRequestAccept_Request) (*ContactRequestAccept_Reply, error) {
+func (c *client) ContactRequestAccept(ctx context.Context, req *bertytypes.ContactRequestAccept_Request) (*bertytypes.ContactRequestAccept_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
@@ -126,11 +127,11 @@ func (c *client) ContactRequestAccept(ctx context.Context, req *ContactRequestAc
 		return nil, err
 	}
 
-	return &ContactRequestAccept_Reply{}, nil
+	return &bertytypes.ContactRequestAccept_Reply{}, nil
 }
 
 // ContactRequestDiscard ignores a contact request without informing the request sender
-func (c *client) ContactRequestDiscard(ctx context.Context, req *ContactRequestDiscard_Request) (*ContactRequestDiscard_Reply, error) {
+func (c *client) ContactRequestDiscard(ctx context.Context, req *bertytypes.ContactRequestDiscard_Request) (*bertytypes.ContactRequestDiscard_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
@@ -140,5 +141,5 @@ func (c *client) ContactRequestDiscard(ctx context.Context, req *ContactRequestD
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	return &ContactRequestDiscard_Reply{}, nil
+	return &bertytypes.ContactRequestDiscard_Reply{}, nil
 }

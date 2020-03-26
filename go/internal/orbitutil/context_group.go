@@ -2,11 +2,12 @@ package orbitutil
 
 import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
 type contextGroup struct {
-	group         *bertyprotocol.Group
+	group         *bertytypes.Group
 	metadataStore *MetadataStoreImpl
 	messageStore  *MessageStoreImpl
 	messageKeys   bertyprotocol.MessageKeys
@@ -33,7 +34,7 @@ func (c *contextGroup) MetadataStore() bertyprotocol.MetadataStore {
 	return c.metadataStore
 }
 
-func (c *contextGroup) Group() *bertyprotocol.Group {
+func (c *contextGroup) Group() *bertytypes.Group {
 	return c.group
 }
 
@@ -52,7 +53,7 @@ func (c *contextGroup) Close() error {
 	return nil
 }
 
-func NewContextGroup(group *bertyprotocol.Group, metadataStore *MetadataStoreImpl, messageStore *MessageStoreImpl, messageKeys bertyprotocol.MessageKeys, memberDevice *bertyprotocol.OwnMemberDevice) bertyprotocol.ContextGroup {
+func NewContextGroup(group *bertytypes.Group, metadataStore *MetadataStoreImpl, messageStore *MessageStoreImpl, messageKeys bertyprotocol.MessageKeys, memberDevice *bertyprotocol.OwnMemberDevice) bertyprotocol.ContextGroup {
 	return &contextGroup{
 		group:         group,
 		metadataStore: metadataStore,

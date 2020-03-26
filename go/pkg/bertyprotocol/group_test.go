@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"testing"
 
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/require"
 )
@@ -15,7 +16,7 @@ func TestGetGroupForContact(t *testing.T) {
 	g, err := GetGroupForContact(sk)
 	require.NoError(t, err)
 
-	require.Equal(t, g.GroupType, GroupTypeContact)
+	require.Equal(t, g.GroupType, bertytypes.GroupTypeContact)
 	require.Equal(t, len(g.PublicKey), 32)
 	require.Equal(t, len(g.Secret), 32)
 }

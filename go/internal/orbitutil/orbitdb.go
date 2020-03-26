@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
@@ -18,7 +19,7 @@ import (
 
 type bertyOrbitDB struct {
 	baseorbitdb.BaseOrbitDB
-	groups          sync.Map // map[string]*bertyprotocol.Group
+	groups          sync.Map // map[string]*bertytypes.Group
 	groupContexts   sync.Map // map[string]*contextGroup
 	groupsSigPubKey sync.Map // map[string]crypto.PubKey
 	keyStore        *BertySignedKeyStore
@@ -26,7 +27,7 @@ type bertyOrbitDB struct {
 	account         bertyprotocol.AccountKeys
 }
 
-func (s *bertyOrbitDB) GetContactGroup(pk crypto.PubKey) (*bertyprotocol.Group, error) {
+func (s *bertyOrbitDB) GetContactGroup(pk crypto.PubKey) (*bertytypes.Group, error) {
 	sk, err := s.account.ContactGroupPrivKey(pk)
 	if err != nil {
 		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
@@ -35,7 +36,7 @@ func (s *bertyOrbitDB) GetContactGroup(pk crypto.PubKey) (*bertyprotocol.Group, 
 	return bertyprotocol.GetGroupForContact(sk)
 }
 
-func (s *bertyOrbitDB) registerGroupPrivateKey(g *bertyprotocol.Group) error {
+func (s *bertyOrbitDB) registerGroupPrivateKey(g *bertytypes.Group) error {
 	groupID := g.GroupIDAsString()
 
 	gSigSK, err := g.GetSigningPrivKey()
@@ -105,7 +106,7 @@ func (s *bertyOrbitDB) OpenAccountGroup(ctx context.Context, options *orbitdb.Cr
 	return s.OpenGroup(ctx, g, options)
 }
 
-func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (bertyprotocol.ContextGroup, error) {
+func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertytypes.Group, options *orbitdb.CreateDBOptions) (bertyprotocol.ContextGroup, error) {
 	id := g.GroupIDAsString()
 
 	existingGC, err := s.getGroupContext(id)
@@ -179,7 +180,7 @@ func (s *bertyOrbitDB) SetGroupSigPubKey(groupID string, pubKey crypto.PubKey) e
 	return nil
 }
 
-func (s *bertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions, storeType string) (iface.Store, error) {
+func (s *bertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g *bertytypes.Group, options *orbitdb.CreateDBOptions, storeType string) (iface.Store, error) {
 	options, err := DefaultOptions(g, options, s.keyStore, storeType)
 	if err != nil {
 		return nil, err
@@ -197,7 +198,7 @@ func (s *bertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 	return store, nil
 }
 
-func (s *bertyOrbitDB) GroupMetadataStore(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (bertyprotocol.MetadataStore, error) {
+func (s *bertyOrbitDB) GroupMetadataStore(ctx context.Context, g *bertytypes.Group, options *orbitdb.CreateDBOptions) (bertyprotocol.MetadataStore, error) {
 	store, err := s.storeForGroup(ctx, s, g, options, GroupMetadataStoreType)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to open database")
@@ -211,7 +212,7 @@ func (s *bertyOrbitDB) GroupMetadataStore(ctx context.Context, g *bertyprotocol.
 	return sStore, nil
 }
 
-func (s *bertyOrbitDB) GroupMessageStore(ctx context.Context, g *bertyprotocol.Group, options *orbitdb.CreateDBOptions) (bertyprotocol.MessageStore, error) {
+func (s *bertyOrbitDB) GroupMessageStore(ctx context.Context, g *bertytypes.Group, options *orbitdb.CreateDBOptions) (bertyprotocol.MessageStore, error) {
 	store, err := s.storeForGroup(ctx, s, g, options, GroupMessageStoreType)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to open database")
@@ -225,7 +226,7 @@ func (s *bertyOrbitDB) GroupMessageStore(ctx context.Context, g *bertyprotocol.G
 	return mStore, nil
 }
 
-func (s *bertyOrbitDB) getGroupFromOptions(options *iface.NewStoreOptions) (*bertyprotocol.Group, error) {
+func (s *bertyOrbitDB) getGroupFromOptions(options *iface.NewStoreOptions) (*bertytypes.Group, error) {
 	groupIDs, err := options.AccessController.GetAuthorizedByRole(IdentityGroupIDKey)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -240,7 +241,7 @@ func (s *bertyOrbitDB) getGroupFromOptions(options *iface.NewStoreOptions) (*ber
 		return nil, errcode.ErrInvalidInput
 	}
 
-	typed, ok := g.(*bertyprotocol.Group)
+	typed, ok := g.(*bertytypes.Group)
 	if !ok {
 		return nil, errcode.ErrInvalidInput
 	}

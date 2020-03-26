@@ -1,18 +1,19 @@
 package bertyprotocol
 
 import (
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-type SigChecker func(g *Group, metadata *GroupMetadata, message proto.Message) error
+type SigChecker func(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error
 
 type EventGroupSigned interface {
 	proto.Message
 }
 
-func SigCheckerGroupSigned(g *Group, metadata *GroupMetadata, message proto.Message) error {
+func SigCheckerGroupSigned(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
 	pk, err := g.GetPubKey()
 	if err != nil {
 		return err
@@ -30,7 +31,7 @@ func SigCheckerGroupSigned(g *Group, metadata *GroupMetadata, message proto.Mess
 	return nil
 }
 
-func SigCheckerMissing(g *Group, metadata *GroupMetadata, message proto.Message) error {
+func SigCheckerMissing(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
 	return errcode.ErrNotImplemented
 }
 
@@ -39,7 +40,7 @@ type EventDeviceSigned interface {
 	GetDevicePK() []byte
 }
 
-func SigCheckerDeviceSigned(g *Group, metadata *GroupMetadata, message proto.Message) error {
+func SigCheckerDeviceSigned(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
 	msg, ok := message.(EventDeviceSigned)
 	if !ok {
 		return errcode.ErrDeserialization
@@ -62,8 +63,8 @@ func SigCheckerDeviceSigned(g *Group, metadata *GroupMetadata, message proto.Mes
 	return nil
 }
 
-func SigCheckerMemberDeviceAdded(g *Group, metadata *GroupMetadata, message proto.Message) error {
-	msg, ok := message.(*GroupAddMemberDevice)
+func SigCheckerMemberDeviceAdded(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
+	msg, ok := message.(*bertytypes.GroupAddMemberDevice)
 	if !ok {
 		return errcode.ErrDeserialization
 	}

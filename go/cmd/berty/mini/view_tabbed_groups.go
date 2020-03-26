@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 )
@@ -93,18 +94,18 @@ func (v *tabbedGroupsView) recomputeChannelList(viewChanged bool) {
 	}
 }
 
-func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertyprotocol.Group) {
+func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Group) {
 	v.lock.Lock()
 	defer v.lock.Unlock()
 
 	// Check if group already opened
-	if g.GroupType == bertyprotocol.GroupTypeContact {
+	if g.GroupType == bertytypes.GroupTypeContact {
 		for _, vg := range v.contactGroupViews {
 			if bytes.Compare(vg.g.PublicKey, g.PublicKey) == 0 {
 				return
 			}
 		}
-	} else if g.GroupType == bertyprotocol.GroupTypeMultiMember {
+	} else if g.GroupType == bertytypes.GroupTypeMultiMember {
 		for _, vg := range v.multiMembersGroupViews {
 			if bytes.Compare(vg.g.PublicKey, g.PublicKey) == 0 {
 				return
@@ -114,7 +115,7 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertyprotocol
 		return
 	}
 
-	info, err := v.client.GroupInfo(ctx, &bertyprotocol.GroupInfo_Request{
+	info, err := v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: g.PublicKey,
 	})
 
@@ -122,7 +123,7 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertyprotocol
 		return
 	}
 
-	if _, err := v.client.ActivateGroup(ctx, &bertyprotocol.ActivateGroup_Request{
+	if _, err := v.client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
 		GroupPK: g.PublicKey,
 	}); err != nil {
 		return
@@ -132,9 +133,9 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertyprotocol
 	vg.welcomeGroupEventDisplay()
 	vg.loop(v.ctx)
 
-	if g.GroupType == bertyprotocol.GroupTypeContact {
+	if g.GroupType == bertytypes.GroupTypeContact {
 		v.contactGroupViews = append(v.contactGroupViews, vg)
-	} else if g.GroupType == bertyprotocol.GroupTypeMultiMember {
+	} else if g.GroupType == bertytypes.GroupTypeMultiMember {
 		v.multiMembersGroupViews = append(v.multiMembersGroupViews, vg)
 	}
 }
@@ -204,7 +205,7 @@ func (v *tabbedGroupsView) GetHistory() tview.Primitive {
 	return v.activeViewContainer
 }
 
-func newTabbedGroups(ctx context.Context, g *bertyprotocol.GroupInfo_Reply, client bertyprotocol.Client, app *tview.Application) *tabbedGroupsView {
+func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client bertyprotocol.Client, app *tview.Application) *tabbedGroupsView {
 	v := &tabbedGroupsView{
 		ctx:    ctx,
 		topics: tview.NewTable(),

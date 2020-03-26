@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
@@ -16,7 +16,7 @@ import (
 )
 
 type groupView struct {
-	g            *bertyprotocol.Group
+	g            *bertytypes.Group
 	messages     *historyMessageList
 	v            *tabbedGroupsView
 	inputHistory *inputHistory
@@ -94,16 +94,16 @@ var _ grpc.ServerStream = (*fakeServerStream)(nil)
 
 type protocolServiceGroupMessage struct {
 	*fakeServerStream
-	ch chan *bertyprotocol.GroupMessageEvent
+	ch chan *bertytypes.GroupMessageEvent
 }
 
-func (x *protocolServiceGroupMessage) Send(m *bertyprotocol.GroupMessageEvent) error {
+func (x *protocolServiceGroupMessage) Send(m *bertytypes.GroupMessageEvent) error {
 	x.ch <- m
 	return nil
 }
 
-func newProtocolServiceGroupMessage(ctx context.Context) (chan *bertyprotocol.GroupMessageEvent, *protocolServiceGroupMessage) {
-	ch := make(chan *bertyprotocol.GroupMessageEvent)
+func newProtocolServiceGroupMessage(ctx context.Context) (chan *bertytypes.GroupMessageEvent, *protocolServiceGroupMessage) {
+	ch := make(chan *bertytypes.GroupMessageEvent)
 
 	return ch, &protocolServiceGroupMessage{
 		fakeServerStream: &fakeServerStream{
@@ -115,16 +115,16 @@ func newProtocolServiceGroupMessage(ctx context.Context) (chan *bertyprotocol.Gr
 
 type protocolServiceGroupMetadata struct {
 	*fakeServerStream
-	ch chan *bertyprotocol.GroupMetadataEvent
+	ch chan *bertytypes.GroupMetadataEvent
 }
 
-func (x *protocolServiceGroupMetadata) Send(m *bertyprotocol.GroupMetadataEvent) error {
+func (x *protocolServiceGroupMetadata) Send(m *bertytypes.GroupMetadataEvent) error {
 	x.ch <- m
 	return nil
 }
 
-func newProtocolServiceGroupMetadata(ctx context.Context) (chan *bertyprotocol.GroupMetadataEvent, *protocolServiceGroupMetadata) {
-	ch := make(chan *bertyprotocol.GroupMetadataEvent)
+func newProtocolServiceGroupMetadata(ctx context.Context) (chan *bertytypes.GroupMetadataEvent, *protocolServiceGroupMetadata) {
+	ch := make(chan *bertytypes.GroupMetadataEvent)
 
 	return ch, &protocolServiceGroupMetadata{
 		fakeServerStream: &fakeServerStream{
@@ -134,7 +134,7 @@ func newProtocolServiceGroupMetadata(ctx context.Context) (chan *bertyprotocol.G
 	}
 }
 
-func newViewGroup(v *tabbedGroupsView, g *bertyprotocol.Group, memberPK, devicePK []byte) *groupView {
+func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK []byte) *groupView {
 	return &groupView{
 		memberPK:     memberPK,
 		devicePK:     devicePK,
@@ -165,7 +165,7 @@ func (v *groupView) loop(ctx context.Context) {
 		}
 	}()
 
-	if err := v.v.client.GroupMessageList(&bertyprotocol.GroupMessageList_Request{GroupPK: v.g.PublicKey}, srvListMessages); err != nil {
+	if err := v.v.client.GroupMessageList(&bertytypes.GroupMessageList_Request{GroupPK: v.g.PublicKey}, srvListMessages); err != nil {
 		panic(err)
 	}
 	close(msgs)
@@ -179,7 +179,7 @@ func (v *groupView) loop(ctx context.Context) {
 		}
 	}()
 
-	if err := v.v.client.GroupMetadataList(&bertyprotocol.GroupMetadataList_Request{GroupPK: v.g.PublicKey}, srvListMetadatas); err != nil {
+	if err := v.v.client.GroupMetadataList(&bertytypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey}, srvListMetadatas); err != nil {
 		panic(err)
 	}
 	close(metas)
@@ -197,7 +197,7 @@ func (v *groupView) loop(ctx context.Context) {
 			}
 		}()
 
-		err := v.v.client.GroupMessageSubscribe(&bertyprotocol.GroupMessageSubscribe_Request{GroupPK: v.g.PublicKey}, srvListMessages)
+		err := v.v.client.GroupMessageSubscribe(&bertytypes.GroupMessageSubscribe_Request{GroupPK: v.g.PublicKey}, srvListMessages)
 		if err != nil {
 			panic(err)
 		}
@@ -214,7 +214,7 @@ func (v *groupView) loop(ctx context.Context) {
 			}
 		}()
 
-		err := v.v.client.GroupMetadataSubscribe(&bertyprotocol.GroupMetadataSubscribe_Request{GroupPK: v.g.PublicKey}, srvListMetadatas)
+		err := v.v.client.GroupMetadataSubscribe(&bertytypes.GroupMetadataSubscribe_Request{GroupPK: v.g.PublicKey}, srvListMetadatas)
 		if err != nil {
 			panic(err)
 		}

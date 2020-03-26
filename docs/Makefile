@@ -32,7 +32,7 @@ $(GEN_SUM): $(GEN_SRC)
 PROTOC_OPTS = -I ../vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../vendor:/protobuf
 .PHONY: generate_local
 generate_local:
-	protoc $(PROTOC_OPTS) --doc_out=./protocol --doc_opt=markdown,api.md.tmp ../api/bertyprotocol.proto
+	protoc $(PROTOC_OPTS) --doc_out=./protocol --doc_opt=markdown,api.md.tmp ../api/bertyprotocol.proto ../api/bertytypes.proto
 	@# repace multiple empty lines with one
 	cat protocol/api.md.tmp | sed '/^$$/N;/^\n$$/D' > protocol/api.md
 	rm -f */*.md.tmp

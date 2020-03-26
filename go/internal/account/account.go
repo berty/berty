@@ -9,6 +9,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/aead/ecdh"
 	"github.com/ipfs/go-ipfs/keystore"
@@ -81,14 +82,14 @@ func (a *Account) memberDeviceForMultiMemberGroup(groupPK crypto.PubKey) (*berty
 	}, nil
 }
 
-func (a *Account) MemberDeviceForGroup(g *bertyprotocol.Group) (*bertyprotocol.OwnMemberDevice, error) {
+func (a *Account) MemberDeviceForGroup(g *bertytypes.Group) (*bertyprotocol.OwnMemberDevice, error) {
 	pk, err := g.GetPubKey()
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
 	switch g.GroupType {
-	case bertyprotocol.GroupTypeAccount, bertyprotocol.GroupTypeContact:
+	case bertytypes.GroupTypeAccount, bertytypes.GroupTypeContact:
 		memberSK, err := a.AccountPrivKey()
 		if err != nil {
 			return nil, err
@@ -104,7 +105,7 @@ func (a *Account) MemberDeviceForGroup(g *bertyprotocol.Group) (*bertyprotocol.O
 			Device: deviceSK,
 		}, nil
 
-	case bertyprotocol.GroupTypeMultiMember:
+	case bertytypes.GroupTypeMultiMember:
 		return a.memberDeviceForMultiMemberGroup(pk)
 	}
 

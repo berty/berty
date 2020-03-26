@@ -8,10 +8,11 @@ import (
 
 	"berty.tech/berty/v2/go/internal/orbitutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/stretchr/testify/assert"
 )
 
-func countEntries(out <-chan *bertyprotocol.GroupMessageEvent) int {
+func countEntries(out <-chan *bertytypes.GroupMessageEvent) int {
 	found := 0
 
 	for range out {

@@ -7,6 +7,7 @@ import (
 	"berty.tech/berty/v2/go/internal/account"
 	"berty.tech/berty/v2/go/internal/orbitutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/stretchr/testify/assert"
@@ -23,7 +24,7 @@ func TestTestingClient_impl(t *testing.T) {
 	defer cleanup()
 
 	// test service
-	_, _ = client.InstanceGetConfiguration(context.Background(), &bertyprotocol.InstanceGetConfiguration_Request{})
+	_, _ = client.InstanceGetConfiguration(context.Background(), &bertytypes.InstanceGetConfiguration_Request{})
 	status := client.Status()
 	expected := bertyprotocol.Status{}
 	assert.Equal(t, expected, status)

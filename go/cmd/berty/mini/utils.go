@@ -4,18 +4,18 @@ import (
 	"encoding/base64"
 	"strings"
 
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/juju/fslock"
 )
 
-func openGroupFromString(data string) (*bertyprotocol.Group, error) {
+func openGroupFromString(data string) (*bertytypes.Group, error) {
 	// Read invitation (as base64 on stdin)
 	iB64, err := base64.StdEncoding.DecodeString(strings.TrimSpace(data))
 	if err != nil {
 		return nil, err
 	}
 
-	grp := &bertyprotocol.Group{}
+	grp := &bertytypes.Group{}
 	err = grp.Unmarshal(iB64)
 	if err != nil {
 		return nil, err

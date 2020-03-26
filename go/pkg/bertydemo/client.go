@@ -11,7 +11,7 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/orbitutil"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/stores/operation"
@@ -113,7 +113,7 @@ func (d *Client) logFromToken(ctx context.Context, token string) (orbitdb.EventL
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	g := &bertyprotocol.Group{PublicKey: pubkb, Secret: sigkb}
+	g := &bertytypes.Group{PublicKey: pubkb, Secret: sigkb}
 	opts, err := orbitutil.DefaultOptions(g, &orbitdb.CreateDBOptions{}, ks, "log")
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)

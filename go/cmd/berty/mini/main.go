@@ -9,6 +9,7 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/orbitutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
@@ -85,7 +86,7 @@ func Main(opts *Opts) {
 
 	app := tview.NewApplication()
 
-	accountGroup, err := client.GroupInfo(ctx, &bertyprotocol.GroupInfo_Request{
+	accountGroup, err := client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: config.AccountGroupPK,
 	})
 	if err != nil {

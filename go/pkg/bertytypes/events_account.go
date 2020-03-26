@@ -1,4 +1,4 @@
-package bertyprotocol
+package bertytypes
 
 func (m *AccountGroupJoined) SetDevicePK(pk []byte) {
 	m.DevicePK = pk

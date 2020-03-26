@@ -3,11 +3,12 @@ package bertyprotocol
 import (
 	"context"
 
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func (c *client) ContactAliasKeySend(ctx context.Context, req *ContactAliasKeySend_Request) (*ContactAliasKeySend_Reply, error) {
+func (c *client) ContactAliasKeySend(ctx context.Context, req *bertytypes.ContactAliasKeySend_Request) (*bertytypes.ContactAliasKeySend_Reply, error) {
 	g, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrMissingGroup.Wrap(err)
@@ -17,10 +18,10 @@ func (c *client) ContactAliasKeySend(ctx context.Context, req *ContactAliasKeySe
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	return &ContactAliasKeySend_Reply{}, nil
+	return &bertytypes.ContactAliasKeySend_Reply{}, nil
 }
 
-func (c *client) ContactBlock(ctx context.Context, req *ContactBlock_Request) (*ContactBlock_Reply, error) {
+func (c *client) ContactBlock(ctx context.Context, req *bertytypes.ContactBlock_Request) (*bertytypes.ContactBlock_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
@@ -30,10 +31,10 @@ func (c *client) ContactBlock(ctx context.Context, req *ContactBlock_Request) (*
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	return &ContactBlock_Reply{}, nil
+	return &bertytypes.ContactBlock_Reply{}, nil
 }
 
-func (c *client) ContactUnblock(ctx context.Context, req *ContactUnblock_Request) (*ContactUnblock_Reply, error) {
+func (c *client) ContactUnblock(ctx context.Context, req *bertytypes.ContactUnblock_Request) (*bertytypes.ContactUnblock_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
@@ -43,5 +44,5 @@ func (c *client) ContactUnblock(ctx context.Context, req *ContactUnblock_Request
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	return &ContactUnblock_Reply{}, nil
+	return &bertytypes.ContactUnblock_Reply{}, nil
 }

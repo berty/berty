@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"time"
 
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
-func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
-	casted := &bertyprotocol.AccountGroupJoined{}
+func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.AccountGroupJoined{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -27,8 +27,8 @@ func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *bertyprotoc
 	return nil
 }
 
-func handlerGroupDeviceSecretAdded(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
-	casted := &bertyprotocol.GroupAddDeviceSecret{}
+func handlerGroupDeviceSecretAdded(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.GroupAddDeviceSecret{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -42,8 +42,8 @@ func handlerGroupDeviceSecretAdded(ctx context.Context, v *groupView, e *bertypr
 	return nil
 }
 
-func handlerGroupMemberDeviceAdded(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
-	casted := &bertyprotocol.GroupAddMemberDevice{}
+func handlerGroupMemberDeviceAdded(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.GroupAddMemberDevice{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -57,8 +57,8 @@ func handlerGroupMemberDeviceAdded(ctx context.Context, v *groupView, e *bertypr
 	return nil
 }
 
-func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
-	casted := &bertyprotocol.AccountContactRequestSent{}
+func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.AccountContactRequestSent{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView,
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
-	gInfo, err := v.v.client.GroupInfo(ctx, &bertyprotocol.GroupInfo_Request{
+	gInfo, err := v.v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		ContactPK: casted.ContactPK,
 	})
 
@@ -83,12 +83,12 @@ func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView,
 	return nil
 }
 
-func handlerAccountContactRequestStatusChanged(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
+func handlerAccountContactRequestStatusChanged(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	return contactShareCommand(ctx, v, "")
 }
 
-func handlerAccountGroupLeft(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
-	casted := &bertyprotocol.AccountGroupLeft{}
+func handlerAccountGroupLeft(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.AccountGroupLeft{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -102,8 +102,8 @@ func handlerAccountGroupLeft(ctx context.Context, v *groupView, e *bertyprotocol
 	return nil
 }
 
-func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
-	casted := &bertyprotocol.AccountContactRequestReceived{}
+func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.AccountContactRequestReceived{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -117,8 +117,8 @@ func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupV
 	return nil
 }
 
-func handlerAccountContactRequestIncomingDiscarded(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
-	casted := &bertyprotocol.AccountContactRequestDiscarded{}
+func handlerAccountContactRequestIncomingDiscarded(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.AccountContactRequestDiscarded{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -132,8 +132,8 @@ func handlerAccountContactRequestIncomingDiscarded(ctx context.Context, v *group
 	return nil
 }
 
-func handlerMultiMemberGroupInitialMemberAnnounced(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
-	casted := &bertyprotocol.MultiMemberInitialMember{}
+func handlerMultiMemberGroupInitialMemberAnnounced(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.MultiMemberInitialMember{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -147,8 +147,8 @@ func handlerMultiMemberGroupInitialMemberAnnounced(ctx context.Context, v *group
 	return nil
 }
 
-func handlerAccountContactRequestOutgoingEnqueued(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
-	casted := &bertyprotocol.AccountContactRequestEnqueued{}
+func handlerAccountContactRequestOutgoingEnqueued(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.AccountContactRequestEnqueued{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -168,8 +168,8 @@ func handlerAccountContactRequestOutgoingEnqueued(ctx context.Context, v *groupV
 	return nil
 }
 
-func handlerContactAliasKeyAdded(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
-	casted := &bertyprotocol.ContactAddAliasKey{}
+func handlerContactAliasKeyAdded(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.ContactAddAliasKey{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -184,8 +184,8 @@ func handlerContactAliasKeyAdded(ctx context.Context, v *groupView, e *bertyprot
 
 }
 
-func handlerMultiMemberGroupAliasResolverAdded(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
-	casted := &bertyprotocol.MultiMemberGroupAddAliasResolver{}
+func handlerMultiMemberGroupAliasResolverAdded(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.MultiMemberGroupAddAliasResolver{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -200,8 +200,8 @@ func handlerMultiMemberGroupAliasResolverAdded(ctx context.Context, v *groupView
 
 }
 
-func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) error {
-	casted := &bertyprotocol.AccountContactRequestSent{}
+func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.AccountContactRequestSent{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -212,7 +212,7 @@ func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupV
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
-	gInfo, err := v.v.client.GroupInfo(ctx, &bertyprotocol.GroupInfo_Request{
+	gInfo, err := v.v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		ContactPK: casted.ContactPK,
 	})
 
@@ -226,27 +226,27 @@ func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupV
 	return nil
 }
 
-func metadataEventHandler(ctx context.Context, v *groupView, e *bertyprotocol.GroupMetadataEvent, isHistory bool) {
-	actions := map[bertyprotocol.EventType]func(context.Context, *groupView, *bertyprotocol.GroupMetadataEvent, bool) error{
-		bertyprotocol.EventTypeAccountContactBlocked:                  nil, // do it later
-		bertyprotocol.EventTypeAccountContactRequestDisabled:          handlerAccountContactRequestStatusChanged,
-		bertyprotocol.EventTypeAccountContactRequestEnabled:           handlerAccountContactRequestStatusChanged,
-		bertyprotocol.EventTypeAccountContactRequestIncomingAccepted:  handlerAccountContactRequestIncomingAccepted,
-		bertyprotocol.EventTypeAccountContactRequestIncomingDiscarded: handlerAccountContactRequestIncomingDiscarded,
-		bertyprotocol.EventTypeAccountContactRequestIncomingReceived:  handlerAccountContactRequestIncomingReceived,
-		bertyprotocol.EventTypeAccountContactRequestOutgoingEnqueued:  handlerAccountContactRequestOutgoingEnqueued,
-		bertyprotocol.EventTypeAccountContactRequestOutgoingSent:      handlerAccountContactRequestOutgoingSent,
-		bertyprotocol.EventTypeAccountContactRequestReferenceReset:    handlerAccountContactRequestStatusChanged,
-		bertyprotocol.EventTypeAccountContactUnblocked:                nil, // do it later
-		bertyprotocol.EventTypeAccountGroupJoined:                     handlerAccountGroupJoined,
-		bertyprotocol.EventTypeAccountGroupLeft:                       handlerAccountGroupLeft,
-		bertyprotocol.EventTypeContactAliasKeyAdded:                   handlerContactAliasKeyAdded,
-		bertyprotocol.EventTypeGroupDeviceSecretAdded:                 handlerGroupDeviceSecretAdded,
-		bertyprotocol.EventTypeGroupMemberDeviceAdded:                 handlerGroupMemberDeviceAdded,
-		bertyprotocol.EventTypeGroupMetadataPayloadSent:               nil, // do it later
-		bertyprotocol.EventTypeMultiMemberGroupAdminRoleGranted:       nil, // do it later
-		bertyprotocol.EventTypeMultiMemberGroupAliasResolverAdded:     handlerMultiMemberGroupAliasResolverAdded,
-		bertyprotocol.EventTypeMultiMemberGroupInitialMemberAnnounced: handlerMultiMemberGroupInitialMemberAnnounced,
+func metadataEventHandler(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) {
+	actions := map[bertytypes.EventType]func(context.Context, *groupView, *bertytypes.GroupMetadataEvent, bool) error{
+		bertytypes.EventTypeAccountContactBlocked:                  nil, // do it later
+		bertytypes.EventTypeAccountContactRequestDisabled:          handlerAccountContactRequestStatusChanged,
+		bertytypes.EventTypeAccountContactRequestEnabled:           handlerAccountContactRequestStatusChanged,
+		bertytypes.EventTypeAccountContactRequestIncomingAccepted:  handlerAccountContactRequestIncomingAccepted,
+		bertytypes.EventTypeAccountContactRequestIncomingDiscarded: handlerAccountContactRequestIncomingDiscarded,
+		bertytypes.EventTypeAccountContactRequestIncomingReceived:  handlerAccountContactRequestIncomingReceived,
+		bertytypes.EventTypeAccountContactRequestOutgoingEnqueued:  handlerAccountContactRequestOutgoingEnqueued,
+		bertytypes.EventTypeAccountContactRequestOutgoingSent:      handlerAccountContactRequestOutgoingSent,
+		bertytypes.EventTypeAccountContactRequestReferenceReset:    handlerAccountContactRequestStatusChanged,
+		bertytypes.EventTypeAccountContactUnblocked:                nil, // do it later
+		bertytypes.EventTypeAccountGroupJoined:                     handlerAccountGroupJoined,
+		bertytypes.EventTypeAccountGroupLeft:                       handlerAccountGroupLeft,
+		bertytypes.EventTypeContactAliasKeyAdded:                   handlerContactAliasKeyAdded,
+		bertytypes.EventTypeGroupDeviceSecretAdded:                 handlerGroupDeviceSecretAdded,
+		bertytypes.EventTypeGroupMemberDeviceAdded:                 handlerGroupMemberDeviceAdded,
+		bertytypes.EventTypeGroupMetadataPayloadSent:               nil, // do it later
+		bertytypes.EventTypeMultiMemberGroupAdminRoleGranted:       nil, // do it later
+		bertytypes.EventTypeMultiMemberGroupAliasResolverAdded:     handlerMultiMemberGroupAliasResolverAdded,
+		bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced: handlerMultiMemberGroupInitialMemberAnnounced,
 	}
 
 	action, ok := actions[e.Metadata.EventType]
@@ -260,7 +260,7 @@ func metadataEventHandler(ctx context.Context, v *groupView, e *bertyprotocol.Gr
 	}
 }
 
-func addToBuffer(evt *historyMessage, e *bertyprotocol.GroupMetadataEvent, v *groupView, isHistory bool) {
+func addToBuffer(evt *historyMessage, e *bertytypes.GroupMetadataEvent, v *groupView, isHistory bool) {
 	if isHistory {
 		v.messages.Prepend(evt, time.Time{})
 	} else {

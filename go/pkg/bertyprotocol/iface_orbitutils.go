@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/address"
@@ -19,7 +20,7 @@ type ContextGroup interface {
 	io.Closer
 	MessageStore() MessageStore
 	MetadataStore() MetadataStore
-	Group() *Group
+	Group() *bertytypes.Group
 	MemberPubKey() crypto.PubKey
 	DevicePubKey() crypto.PubKey
 	GetMessageKeys() MessageKeys
@@ -37,10 +38,10 @@ type MetadataStore interface {
 	GroupStore
 
 	// GetIncomingContactRequestsStatus Get the status of incoming contact requests (whether they can should be received or not) and the contact request reference
-	GetIncomingContactRequestsStatus() (bool, *ShareableContact)
+	GetIncomingContactRequestsStatus() (bool, *bertytypes.ShareableContact)
 
 	// ListEvents returns a channel of previously received events
-	ListEvents(ctx context.Context) <-chan *GroupMetadataEvent
+	ListEvents(ctx context.Context) <-chan *bertytypes.GroupMetadataEvent
 
 	// ListMembers returns a list of members pubkeys
 	ListMembers() []crypto.PubKey
@@ -52,10 +53,10 @@ type MetadataStore interface {
 	ListAdmins() []crypto.PubKey
 
 	// ListMultiMemberGroups
-	ListMultiMemberGroups() []*Group
+	ListMultiMemberGroups() []*bertytypes.Group
 
 	// ListContactsByStatus
-	ListContactsByStatus(state ...ContactState) []*ShareableContact
+	ListContactsByStatus(state ...bertytypes.ContactState) []*bertytypes.ShareableContact
 
 	// GetMemberByDevice
 	GetMemberByDevice(crypto.PubKey) (crypto.PubKey, error)
@@ -73,7 +74,7 @@ type MetadataStore interface {
 	ClaimGroupOwnership(ctx context.Context, groupSK crypto.PrivKey) (operation.Operation, error)
 
 	// GroupJoin
-	GroupJoin(ctx context.Context, g *Group) (operation.Operation, error)
+	GroupJoin(ctx context.Context, g *bertytypes.Group) (operation.Operation, error)
 
 	// GroupLeave
 	GroupLeave(ctx context.Context, pk crypto.PubKey) (operation.Operation, error)
@@ -88,13 +89,13 @@ type MetadataStore interface {
 	ContactRequestReferenceReset(ctx context.Context) (operation.Operation, error)
 
 	// ContactRequestOutgoingEnqueue
-	ContactRequestOutgoingEnqueue(ctx context.Context, contact *ShareableContact) (operation.Operation, error)
+	ContactRequestOutgoingEnqueue(ctx context.Context, contact *bertytypes.ShareableContact) (operation.Operation, error)
 
 	// ContactRequestOutgoingSent
 	ContactRequestOutgoingSent(ctx context.Context, pk crypto.PubKey) (operation.Operation, error)
 
 	// ContactRequestIncomingReceived
-	ContactRequestIncomingReceived(ctx context.Context, contact *ShareableContact) (operation.Operation, error)
+	ContactRequestIncomingReceived(ctx context.Context, contact *bertytypes.ShareableContact) (operation.Operation, error)
 
 	// ContactRequestIncomingDiscard
 	ContactRequestIncomingDiscard(ctx context.Context, pk crypto.PubKey) (operation.Operation, error)
@@ -122,7 +123,7 @@ type MessageStore interface {
 	GroupStore
 
 	// ListMessages lists messages in the store
-	ListMessages(ctx context.Context) (<-chan *GroupMessageEvent, error)
+	ListMessages(ctx context.Context) (<-chan *bertytypes.GroupMessageEvent, error)
 
 	// AddMessage appends a message to the store
 	AddMessage(ctx context.Context, data []byte) (operation.Operation, error)
@@ -131,21 +132,21 @@ type MessageStore interface {
 type BertyOrbitDB interface {
 	iface.BaseOrbitDB
 
-	OpenGroup(ctx context.Context, g *Group, options *orbitdb.CreateDBOptions) (ContextGroup, error)
+	OpenGroup(ctx context.Context, g *bertytypes.Group, options *orbitdb.CreateDBOptions) (ContextGroup, error)
 	OpenAccountGroup(ctx context.Context, options *orbitdb.CreateDBOptions) (ContextGroup, error)
 
-	GroupMetadataStore(ctx context.Context, g *Group, options *orbitdb.CreateDBOptions) (MetadataStore, error)
-	GroupMessageStore(ctx context.Context, g *Group, options *orbitdb.CreateDBOptions) (MessageStore, error)
+	GroupMetadataStore(ctx context.Context, g *bertytypes.Group, options *orbitdb.CreateDBOptions) (MetadataStore, error)
+	GroupMessageStore(ctx context.Context, g *bertytypes.Group, options *orbitdb.CreateDBOptions) (MessageStore, error)
 }
 
 type BertyOrbitDBConstructor func(ctx context.Context, ipfs coreapi.CoreAPI, acc AccountKeys, mk MessageKeys, options *baseorbitdb.NewOrbitDBOptions) (BertyOrbitDB, error)
 
 type MessageKeys interface {
 	// GetDeviceChainKey gets a device key chain from the key holder
-	GetDeviceChainKey(ctx context.Context, pk crypto.PubKey) (*DeviceSecret, error)
+	GetDeviceChainKey(ctx context.Context, pk crypto.PubKey) (*bertytypes.DeviceSecret, error)
 
 	// PutDeviceChainKey puts a key chain into the key holder
-	PutDeviceChainKey(ctx context.Context, device crypto.PubKey, ds *DeviceSecret) error
+	PutDeviceChainKey(ctx context.Context, device crypto.PubKey, ds *bertytypes.DeviceSecret) error
 
 	// GetPrecomputedKey gets a precomputed key for a device and its message counter value
 	GetPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64) (*[32]byte, error)

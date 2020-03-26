@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
@@ -21,7 +22,14 @@ func (c *client) indexGroups() error {
 		c.groups[string(g.PublicKey)] = g
 	}
 
-	contacts := c.accContextGroup.MetadataStore().ListContactsByStatus(ContactStateToRequest, ContactStateReceived, ContactStateAdded, ContactStateRemoved, ContactStateDiscarded, ContactStateBlocked)
+	contacts := c.accContextGroup.MetadataStore().ListContactsByStatus(
+		bertytypes.ContactStateToRequest,
+		bertytypes.ContactStateReceived,
+		bertytypes.ContactStateAdded,
+		bertytypes.ContactStateRemoved,
+		bertytypes.ContactStateDiscarded,
+		bertytypes.ContactStateBlocked,
+	)
 	for _, contact := range contacts {
 		if _, ok := c.groups[string(contact.PK)]; ok {
 			continue
@@ -48,7 +56,7 @@ func (c *client) indexGroups() error {
 	return nil
 }
 
-func (c *client) getContactGroup(key crypto.PubKey) (*Group, error) {
+func (c *client) getContactGroup(key crypto.PubKey) (*bertytypes.Group, error) {
 	sk, err := c.account.ContactGroupPrivKey(key)
 	if err != nil {
 		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
@@ -62,7 +70,7 @@ func (c *client) getContactGroup(key crypto.PubKey) (*Group, error) {
 	return g, nil
 }
 
-func (c *client) getGroupForPK(pk crypto.PubKey) (*Group, error) {
+func (c *client) getGroupForPK(pk crypto.PubKey) (*bertytypes.Group, error) {
 	id, err := pk.Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -102,7 +110,7 @@ func (c *client) deactivateGroup(pk crypto.PubKey) error {
 		return nil
 	}
 
-	if cg.Group().GroupType == GroupTypeAccount {
+	if cg.Group().GroupType == bertytypes.GroupTypeAccount {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't deactivate account group"))
 	}
 
@@ -136,7 +144,7 @@ func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) (ContextGr
 	defer c.lock.Unlock()
 
 	switch g.GroupType {
-	case GroupTypeContact, GroupTypeMultiMember:
+	case bertytypes.GroupTypeContact, bertytypes.GroupTypeMultiMember:
 		cg, err := c.odb.OpenGroup(ctx, g, nil)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
@@ -151,7 +159,7 @@ func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) (ContextGr
 
 		return cg, nil
 
-	case GroupTypeAccount:
+	case bertytypes.GroupTypeAccount:
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("account group should already be opened"))
 	}
 
