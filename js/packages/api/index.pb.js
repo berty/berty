@@ -1698,7 +1698,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
       },
       protocol: {
         options: {
-          go_package: "berty.tech/berty/go/pkg/bertyprotocol"
+          go_package: "berty.tech/berty/v2/go/pkg/bertyprotocol"
         },
         nested: {
           DemoService: {
@@ -1995,7 +1995,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
       },
       types: {
         options: {
-          go_package: "berty.tech/berty/go/pkg/bertytypes",
+          go_package: "berty.tech/berty/v2/go/pkg/bertytypes",
           "(gogoproto.goproto_enum_prefix_all)": false,
           "(gogoproto.marshaler_all)": true,
           "(gogoproto.unmarshaler_all)": true,

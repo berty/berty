@@ -125,8 +125,8 @@ $(GEN_SUM): $(GEN_SRC)
 	  $(GO) mod vendor; \
 	  docker run \
 	    --user="$$uid" \
-	    --volume="$(PWD)/..:/go/src/berty.tech/berty" \
-	    --workdir="/go/src/berty.tech/berty/go" \
+	    --volume="$(PWD)/..:/go/src/berty.tech/berty/v2" \
+	    --workdir="/go/src/berty.tech/berty/v2/go" \
 	    --entrypoint="sh" \
 	    --rm \
 	    bertytech/protoc:22 \
@@ -141,9 +141,6 @@ generate_local:
 	@set -e; for proto in $(PROTOS_SRC); do ( set -xe; \
 	  protoc $(PROTOC_OPTS) --gogo_out="plugins=grpc:$(GOPATH)/src" "$$proto" \
 	); done
-	@### custom
-	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.go
-	@### end of custom
 	goimports -w ./pkg ./cmd ./internal
 	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
 	mv $(GEN_SUM).tmp $(GEN_SUM)
