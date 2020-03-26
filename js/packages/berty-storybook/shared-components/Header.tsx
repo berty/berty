@@ -43,7 +43,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	actionIconSize = 25,
 	actionIconColor = 'white',
 }) => {
-	const [{ border, flex, padding, row, text, column }] = useStyles()
+	const [{ border, flex, padding, row, text }] = useStyles()
 	return (
 		<SafeAreaView style={[flex.tiny, border.radius.bottom.scale(20), { backgroundColor: bgColor }]}>
 			<View style={[padding.horizontal.medium, padding.top.tiny, padding.bottom.medium]}>
@@ -76,7 +76,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 							</Text>
 						</View>
 					)}
-					{(action || actionIcon) && (
+					{action && actionIcon ? (
 						<View style={[flex.tiny, row.item.justify]}>
 							<TouchableOpacity
 								style={row.item.bottom}
@@ -90,6 +90,8 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 								/>
 							</TouchableOpacity>
 						</View>
+					) : (
+						<View style={[flex.tiny, row.item.justify]} />
 					)}
 				</View>
 				{desc && (

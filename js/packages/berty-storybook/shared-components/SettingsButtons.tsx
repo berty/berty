@@ -419,7 +419,7 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 	const _styles = useStylesButtonSettingItem()
 	const [{ row, padding, text }] = useStyles()
 	return (
-		<View style={[row.center, padding.left.small, { alignItems: 'center' }]}>
+		<View style={[row.left, padding.left.small, { alignItems: 'center' }]}>
 			<Icon name={icon} width={iconSize} height={iconSize} fill={iconColor} />
 			<Text style={[text.bold, _styles.updateFeatureText, { color }]}>{value}</Text>
 		</View>

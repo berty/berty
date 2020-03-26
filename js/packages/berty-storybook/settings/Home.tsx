@@ -72,7 +72,7 @@ const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => {
 	const client = Chat.useClient()
 	const account = Chat.useAccount()
 	return (
-		<View style={[row.center, margin.top.medium]}>
+		<View style={[row.center, margin.top.scale(50)]}>
 			<View style={[_styles.homeAvatarBox, background.white, border.radius.medium]}>
 				<View style={[_homeStyles.homeAvatar]}>
 					<ProceduralCircleAvatar
@@ -95,7 +95,7 @@ const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => {
 const HomeHeader: React.FC = () => {
 	const [{ margin }] = useStyles()
 	return (
-		<SafeAreaView style={margin.bottom.medium}>
+		<SafeAreaView style={[margin.bottom.medium]}>
 			<HomeHeaderAvatar />
 		</SafeAreaView>
 	)
@@ -164,7 +164,7 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 				<ActivityIndicator size='large' style={[row.center]} />
 			) : (
 				<ScrollView contentContainerStyle={[_styles.scrollViewPadding]}>
-					<HeaderSettings actionIcon='edit-outline' action={navigate.settings.editProfile}>
+					<HeaderSettings>
 						<View>
 							<HomeHeader {...account} />
 							<HomeHeaderGroupButton {...account} />
