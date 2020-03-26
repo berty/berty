@@ -284,28 +284,54 @@ type BodyRequestProps = {
 	}[]
 }
 
-type BodyRequestContentProps = {
-	markAsVerified: boolean
-}
-
-const BodyRequestContent: React.FC<BodyRequestContentProps> = ({ markAsVerified }) => {
+const BodyRequestContent: React.FC<{}> = ({ children }) => {
 	const [{ margin }] = useStyles()
 	return (
 		<View style={[margin.top.big]}>
-			<FingerprintContent />
-			{markAsVerified && <MarkAsVerified />}
+			<View>{children}</View>
 		</View>
 	)
 }
 
+const SelectedContent = ({
+	contentName,
+	markAsVerified,
+}: {
+	contentName: string
+	markAsVerified: boolean
+}) => {
+	switch (contentName) {
+		case 'QR':
+			return (
+				<View>
+					<FingerprintContent />
+					{markAsVerified && <MarkAsVerified />}
+				</View>
+			)
+		default:
+			return <Text>Error: Unknown content name "{contentName}"</Text>
+	}
+}
+
 const BodyRequest: React.FC<BodyRequestProps> = ({ user, markAsVerified, buttons = null }) => {
-	const [{ padding, row, column }] = useStyles()
+	const [{ padding }] = useStyles()
+	const [selectedContent, setSelectedContent] = useState()
 	return (
 		<View style={[padding.horizontal.medium, padding.bottom.medium]}>
 			<RequestAvatar size={100} avatarUri={user?.avatarUri} name={user?.name} />
 			<View style={padding.horizontal.medium}>
-				<TabBar tabType='contact' />
-				<BodyRequestContent markAsVerified={markAsVerified} />
+				<TabBar
+					tabs={[
+						{ name: 'QR', icon: 'code-outline' },
+						{ name: 'Fingerprint', icon: 'code-outline' },
+						{ name: 'Infos', icon: 'info-outline' },
+						{ name: 'Devices', icon: 'smartphone-outline' },
+					]}
+					onTabChange={setSelectedContent}
+				/>
+				<BodyRequestContent>
+					<SelectedContent contentName={selectedContent} markAsVerified={markAsVerified} />
+				</BodyRequestContent>
 			</View>
 			<RequestButtons buttons={buttons || []} />
 		</View>

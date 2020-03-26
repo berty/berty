@@ -137,12 +137,13 @@ const RequestsItem: React.FC<{
 const ContactRequestsItem: React.FC<chat.contact.Entity> = ({ id, name, publicKey }) => {
 	const accept = Chat.useAcceptContactRequest()
 	const decline = Chat.useDiscardContactRequest()
+	const { navigate } = useNavigation()
 	return (
 		<RequestsItem
 			id={id}
 			name={name}
 			seed={publicKey}
-			display={/*navigate.main.contactRequest*/ ({ id }) => {}}
+			display={navigate.main.contactRequest /*({ id }) => {}*/}
 			accept={accept}
 			decline={decline}
 		/>
