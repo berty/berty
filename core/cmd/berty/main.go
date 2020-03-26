@@ -1,5 +1,8 @@
 package main
 
+// #warning This version is outdated please use github.com/berty/berty/v2 instead.
+import "C"
+
 import (
 	"fmt"
 	"math/rand"
