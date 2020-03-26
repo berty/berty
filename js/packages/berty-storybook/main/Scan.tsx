@@ -56,7 +56,7 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 	const [{ row, padding, background, margin, text }] = useStyles()
 
 	return (
-		<View style={[row.center, padding.medium]}>
+		<View style={[row.left, padding.medium]}>
 			<View
 				style={[background.light.grey, margin.right.medium, row.item.justify, _styles.infosPoint]}
 			/>
