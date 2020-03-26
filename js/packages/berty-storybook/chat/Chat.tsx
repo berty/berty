@@ -68,9 +68,10 @@ const InfosChat: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 
 const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
-const AppMessage: React.FC<{ message: string }> = ({ message }) => (
-	<Message payload={ChatHooks.useGetMessage(message)} />
-)
+const AppMessage: React.FC<{ message: string }> = ({ message }) => {
+	const msg = ChatHooks.useGetMessage(message)
+	return !!msg && <Message payload={msg} />
+}
 
 const MessageList: React.FC<{ id: string }> = (props) => {
 	const [cursors, setCursor] = useState([0])
@@ -87,7 +88,7 @@ const MessageList: React.FC<{ id: string }> = (props) => {
 				<View>
 					{conversation &&
 						conversation.messages &&
-						conversation.messages.map((message) => <AppMessage message={message} />)}
+						conversation.messages.map((message) => <AppMessage key={message} message={message} />)}
 				</View>
 			)}
 		/>
