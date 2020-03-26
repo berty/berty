@@ -10,21 +10,21 @@ AAR_DIR := $(PWD)/android/libs
 AAR := $(PWD)/android/libs/gobridge.aar
 
 GO_VENDOR := $(GOPATH)/src/berty.tech/berty/vendor
-GOMOBILE := $(GOTPATH)/bin/gomobile
+GOMOBILE := $(GOPATH)/bin/gomobile
 GOBIND := $(GOPATH)/bin/gobind
 
 deps.gobridge: $(GOMOBILE) $(GO_VENDOR)
+	cd $(PWD) && gomobile init
 
 $(GO_VENDOR):
 	cd $(GOPATH)/src/berty.tech/berty && GO111MODULE=on go mod vendor
 
 $(GOMOBILE): $(PWD) := $(PWD)
 $(GOMOBILE): $(GOBIND)
-	go get golang.org/x/mobile/cmd/gomobile
-	cd $(PWD) && gomobile init
+	GO111MODULE=off go get golang.org/x/mobile/cmd/gomobile
 
 $(GOBIND):
-	go get golang.org/x/mobile/cmd/gobind
+	GO111MODULE=off go get golang.org/x/mobile/cmd/gobind
 
 build.gobridge: build.gobridge.ios build.gobridge.android
 
