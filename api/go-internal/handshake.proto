@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package handshake;
 
-option go_package = "berty.tech/berty/go/internal/handshake";
+option go_package = "berty.tech/berty/v2/go/internal/handshake";
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 

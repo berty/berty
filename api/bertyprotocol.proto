@@ -4,7 +4,7 @@ package berty.protocol;
 
 import "bertytypes.proto";
 
-option go_package = "berty.tech/berty/go/pkg/bertyprotocol";
+option go_package = "berty.tech/berty/v2/go/pkg/bertyprotocol";
 
 // ProtocolService is the top-level API to manage an instance of the Berty Protocol.
 // Each Berty Protocol Instance is considered as a Berty device and is associated with a Berty user.

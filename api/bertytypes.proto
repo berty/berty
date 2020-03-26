@@ -4,7 +4,7 @@ package berty.types;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-option go_package = "berty.tech/berty/go/pkg/bertytypes";
+option go_package = "berty.tech/berty/v2/go/pkg/bertytypes";
 
 option (gogoproto.goproto_enum_prefix_all) = false;
 option (gogoproto.marshaler_all) = true;

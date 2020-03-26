@@ -4,7 +4,7 @@ package berty.protocol;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-option go_package = "berty.tech/berty/go/pkg/bertydemo";
+option go_package = "berty.tech/berty/v2/go/pkg/bertydemo";
 
 service DemoService {
   // LogToken Generates a token to feed to other methods. Does not open or create a log
