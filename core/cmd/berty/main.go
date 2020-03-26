@@ -1,6 +1,6 @@
 package main
 
-// #warning This version is outdated please use github.com/berty/berty/v2 instead.
+// #warning This version is outdated please use berty.tech/berty/v2 instead.
 import "C"
 
 import (
