@@ -15,6 +15,7 @@ import (
 	"berty.tech/berty/v2/go/internal/orbitutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	orbitdb "berty.tech/go-orbit-db"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
@@ -23,7 +24,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func testAddBerty(ctx context.Context, t *testing.T, api ipfsutil.CoreAPIMock, g *bertyprotocol.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {
+func testAddBerty(ctx context.Context, t *testing.T, api ipfsutil.CoreAPIMock, g *bertytypes.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {
 	t.Helper()
 	testutil.SkipSlow(t)
 
@@ -100,7 +101,7 @@ func testAddBerty(ctx context.Context, t *testing.T, api ipfsutil.CoreAPIMock, g
 	// Watch for incoming new messages
 	go func() {
 		for e := range gc.MessageStore().Subscribe(ctx) {
-			_, ok := e.(*bertyprotocol.GroupMessageEvent)
+			_, ok := e.(*bertytypes.GroupMessageEvent)
 			if !ok {
 				continue
 			}

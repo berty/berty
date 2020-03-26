@@ -1698,11 +1698,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
       },
       protocol: {
         options: {
-          go_package: "berty.tech/berty/go/pkg/bertyprotocol",
-          "(gogoproto.goproto_enum_prefix_all)": false,
-          "(gogoproto.marshaler_all)": true,
-          "(gogoproto.unmarshaler_all)": true,
-          "(gogoproto.sizer_all)": true
+          go_package: "berty.tech/berty/go/pkg/bertyprotocol"
         },
         nested: {
           DemoService: {
@@ -1882,119 +1878,130 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           ProtocolService: {
             methods: {
               InstanceExportData: {
-                requestType: "InstanceExportData.Request",
-                responseType: "InstanceExportData.Reply"
+                requestType: "types.InstanceExportData.Request",
+                responseType: "types.InstanceExportData.Reply"
               },
               InstanceGetConfiguration: {
-                requestType: "InstanceGetConfiguration.Request",
-                responseType: "InstanceGetConfiguration.Reply"
+                requestType: "types.InstanceGetConfiguration.Request",
+                responseType: "types.InstanceGetConfiguration.Reply"
               },
               ContactRequestReference: {
-                requestType: "ContactRequestReference.Request",
-                responseType: "ContactRequestReference.Reply"
+                requestType: "types.ContactRequestReference.Request",
+                responseType: "types.ContactRequestReference.Reply"
               },
               ContactRequestDisable: {
-                requestType: "ContactRequestDisable.Request",
-                responseType: "ContactRequestDisable.Reply"
+                requestType: "types.ContactRequestDisable.Request",
+                responseType: "types.ContactRequestDisable.Reply"
               },
               ContactRequestEnable: {
-                requestType: "ContactRequestEnable.Request",
-                responseType: "ContactRequestEnable.Reply"
+                requestType: "types.ContactRequestEnable.Request",
+                responseType: "types.ContactRequestEnable.Reply"
               },
               ContactRequestResetReference: {
-                requestType: "ContactRequestResetReference.Request",
-                responseType: "ContactRequestResetReference.Reply"
+                requestType: "types.ContactRequestResetReference.Request",
+                responseType: "types.ContactRequestResetReference.Reply"
               },
               ContactRequestSend: {
-                requestType: "ContactRequestSend.Request",
-                responseType: "ContactRequestSend.Reply"
+                requestType: "types.ContactRequestSend.Request",
+                responseType: "types.ContactRequestSend.Reply"
               },
               ContactRequestAccept: {
-                requestType: "ContactRequestAccept.Request",
-                responseType: "ContactRequestAccept.Reply"
+                requestType: "types.ContactRequestAccept.Request",
+                responseType: "types.ContactRequestAccept.Reply"
               },
               ContactRequestDiscard: {
-                requestType: "ContactRequestDiscard.Request",
-                responseType: "ContactRequestDiscard.Reply"
+                requestType: "types.ContactRequestDiscard.Request",
+                responseType: "types.ContactRequestDiscard.Reply"
               },
               ContactBlock: {
-                requestType: "ContactBlock.Request",
-                responseType: "ContactBlock.Reply"
+                requestType: "types.ContactBlock.Request",
+                responseType: "types.ContactBlock.Reply"
               },
               ContactUnblock: {
-                requestType: "ContactUnblock.Request",
-                responseType: "ContactUnblock.Reply"
+                requestType: "types.ContactUnblock.Request",
+                responseType: "types.ContactUnblock.Reply"
               },
               ContactAliasKeySend: {
-                requestType: "ContactAliasKeySend.Request",
-                responseType: "ContactAliasKeySend.Reply"
+                requestType: "types.ContactAliasKeySend.Request",
+                responseType: "types.ContactAliasKeySend.Reply"
               },
               MultiMemberGroupCreate: {
-                requestType: "MultiMemberGroupCreate.Request",
-                responseType: "MultiMemberGroupCreate.Reply"
+                requestType: "types.MultiMemberGroupCreate.Request",
+                responseType: "types.MultiMemberGroupCreate.Reply"
               },
               MultiMemberGroupJoin: {
-                requestType: "MultiMemberGroupJoin.Request",
-                responseType: "MultiMemberGroupJoin.Reply"
+                requestType: "types.MultiMemberGroupJoin.Request",
+                responseType: "types.MultiMemberGroupJoin.Reply"
               },
               MultiMemberGroupLeave: {
-                requestType: "MultiMemberGroupLeave.Request",
-                responseType: "MultiMemberGroupLeave.Reply"
+                requestType: "types.MultiMemberGroupLeave.Request",
+                responseType: "types.MultiMemberGroupLeave.Reply"
               },
               MultiMemberGroupAliasResolverDisclose: {
-                requestType: "MultiMemberGroupAliasResolverDisclose.Request",
-                responseType: "MultiMemberGroupAliasResolverDisclose.Reply"
+                requestType: "types.MultiMemberGroupAliasResolverDisclose.Request",
+                responseType: "types.MultiMemberGroupAliasResolverDisclose.Reply"
               },
               MultiMemberGroupAdminRoleGrant: {
-                requestType: "MultiMemberGroupAdminRoleGrant.Request",
-                responseType: "MultiMemberGroupAdminRoleGrant.Reply"
+                requestType: "types.MultiMemberGroupAdminRoleGrant.Request",
+                responseType: "types.MultiMemberGroupAdminRoleGrant.Reply"
               },
               MultiMemberGroupInvitationCreate: {
-                requestType: "MultiMemberGroupInvitationCreate.Request",
-                responseType: "MultiMemberGroupInvitationCreate.Reply"
+                requestType: "types.MultiMemberGroupInvitationCreate.Request",
+                responseType: "types.MultiMemberGroupInvitationCreate.Reply"
               },
               AppMetadataSend: {
-                requestType: "AppMetadataSend.Request",
-                responseType: "AppMetadataSend.Reply"
+                requestType: "types.AppMetadataSend.Request",
+                responseType: "types.AppMetadataSend.Reply"
               },
               AppMessageSend: {
-                requestType: "AppMessageSend.Request",
-                responseType: "AppMessageSend.Reply"
+                requestType: "types.AppMessageSend.Request",
+                responseType: "types.AppMessageSend.Reply"
               },
               GroupMetadataSubscribe: {
-                requestType: "GroupMetadataSubscribe.Request",
-                responseType: "GroupMetadataEvent",
+                requestType: "types.GroupMetadataSubscribe.Request",
+                responseType: "types.GroupMetadataEvent",
                 responseStream: true
               },
               GroupMessageSubscribe: {
-                requestType: "GroupMessageSubscribe.Request",
-                responseType: "GroupMessageEvent",
+                requestType: "types.GroupMessageSubscribe.Request",
+                responseType: "types.GroupMessageEvent",
                 responseStream: true
               },
               GroupMetadataList: {
-                requestType: "GroupMetadataList.Request",
-                responseType: "GroupMetadataEvent",
+                requestType: "types.GroupMetadataList.Request",
+                responseType: "types.GroupMetadataEvent",
                 responseStream: true
               },
               GroupMessageList: {
-                requestType: "GroupMessageList.Request",
-                responseType: "GroupMessageEvent",
+                requestType: "types.GroupMessageList.Request",
+                responseType: "types.GroupMessageEvent",
                 responseStream: true
               },
               GroupInfo: {
-                requestType: "GroupInfo.Request",
-                responseType: "GroupInfo.Reply"
+                requestType: "types.GroupInfo.Request",
+                responseType: "types.GroupInfo.Reply"
               },
               ActivateGroup: {
-                requestType: "ActivateGroup.Request",
-                responseType: "ActivateGroup.Reply"
+                requestType: "types.ActivateGroup.Request",
+                responseType: "types.ActivateGroup.Reply"
               },
               DeactivateGroup: {
-                requestType: "DeactivateGroup.Request",
-                responseType: "DeactivateGroup.Reply"
+                requestType: "types.DeactivateGroup.Request",
+                responseType: "types.DeactivateGroup.Reply"
               }
             }
-          },
+          }
+        }
+      },
+      types: {
+        options: {
+          go_package: "berty.tech/berty/go/pkg/bertytypes",
+          "(gogoproto.goproto_enum_prefix_all)": false,
+          "(gogoproto.marshaler_all)": true,
+          "(gogoproto.unmarshaler_all)": true,
+          "(gogoproto.sizer_all)": true
+        },
+        nested: {
           GroupType: {
             values: {
               GroupTypeUndefined: 0,

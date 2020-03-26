@@ -1,11 +1,12 @@
 package bertyprotocol
 
 import (
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 // GroupMetadataSubscribe subscribes to the metadata events for a group
-func (c *client) GroupMetadataSubscribe(req *GroupMetadataSubscribe_Request, sub ProtocolService_GroupMetadataSubscribeServer) error {
+func (c *client) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_Request, sub ProtocolService_GroupMetadataSubscribeServer) error {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
@@ -14,7 +15,7 @@ func (c *client) GroupMetadataSubscribe(req *GroupMetadataSubscribe_Request, sub
 	// TODO: replay
 	ch := cg.MetadataStore().Subscribe(sub.Context())
 	for evt := range ch {
-		e, ok := evt.(*GroupMetadataEvent)
+		e, ok := evt.(*bertytypes.GroupMetadataEvent)
 		if !ok {
 			continue
 		}
@@ -28,7 +29,7 @@ func (c *client) GroupMetadataSubscribe(req *GroupMetadataSubscribe_Request, sub
 }
 
 // GroupMessageSubscribe subscribes to the message events for a group
-func (c *client) GroupMessageSubscribe(req *GroupMessageSubscribe_Request, sub ProtocolService_GroupMessageSubscribeServer) error {
+func (c *client) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Request, sub ProtocolService_GroupMessageSubscribeServer) error {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
@@ -37,7 +38,7 @@ func (c *client) GroupMessageSubscribe(req *GroupMessageSubscribe_Request, sub P
 	// TODO: replay
 	ch := cg.MessageStore().Subscribe(sub.Context())
 	for evt := range ch {
-		e, ok := evt.(*GroupMessageEvent)
+		e, ok := evt.(*bertytypes.GroupMessageEvent)
 		if !ok {
 			continue
 		}
@@ -50,7 +51,7 @@ func (c *client) GroupMessageSubscribe(req *GroupMessageSubscribe_Request, sub P
 	return nil
 }
 
-func (c *client) GroupMetadataList(req *GroupMetadataList_Request, sub ProtocolService_GroupMetadataListServer) error {
+func (c *client) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, sub ProtocolService_GroupMetadataListServer) error {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
@@ -67,7 +68,7 @@ func (c *client) GroupMetadataList(req *GroupMetadataList_Request, sub ProtocolS
 	return nil
 }
 
-func (c *client) GroupMessageList(req *GroupMessageList_Request, sub ProtocolService_GroupMessageListServer) error {
+func (c *client) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub ProtocolService_GroupMessageListServer) error {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)

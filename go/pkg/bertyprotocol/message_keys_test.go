@@ -13,13 +13,14 @@ import (
 	"berty.tech/berty/v2/go/internal/orbitutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	cid "github.com/ipfs/go-cid"
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/assert"
 )
 
-func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms bertyprotocol.MetadataStore, g *bertyprotocol.Group, memberPK crypto.PubKey, join bool) (crypto.PubKey, *bertyprotocol.DeviceSecret) {
+func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms bertyprotocol.MetadataStore, g *bertytypes.Group, memberPK crypto.PubKey, join bool) (crypto.PubKey, *bertytypes.DeviceSecret) {
 	t.Helper()
 
 	acc := account.New(keystore.NewMemKeystore())
@@ -40,8 +41,8 @@ func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms bertypr
 	return md.Device.GetPublic(), ds
 }
 
-func mustDeviceSecret(t testing.TB) func(ds *bertyprotocol.DeviceSecret, err error) *bertyprotocol.DeviceSecret {
-	return func(ds *bertyprotocol.DeviceSecret, err error) *bertyprotocol.DeviceSecret {
+func mustDeviceSecret(t testing.TB) func(ds *bertytypes.DeviceSecret, err error) *bertytypes.DeviceSecret {
+	return func(ds *bertytypes.DeviceSecret, err error) *bertytypes.DeviceSecret {
 		t.Helper()
 
 		if err != nil {
@@ -52,7 +53,7 @@ func mustDeviceSecret(t testing.TB) func(ds *bertyprotocol.DeviceSecret, err err
 	}
 }
 
-func mustMessageHeaders(t testing.TB, pk crypto.PubKey, counter uint64) *bertyprotocol.MessageHeaders {
+func mustMessageHeaders(t testing.TB, pk crypto.PubKey, counter uint64) *bertytypes.MessageHeaders {
 	t.Helper()
 
 	pkB, err := pk.Raw()
@@ -60,7 +61,7 @@ func mustMessageHeaders(t testing.TB, pk crypto.PubKey, counter uint64) *bertypr
 		t.Fatal(err)
 	}
 
-	return &bertyprotocol.MessageHeaders{
+	return &bertytypes.MessageHeaders{
 		Counter:  counter,
 		DevicePK: pkB,
 		Sig:      nil,
@@ -388,7 +389,7 @@ func testMessageKeyHolderCatchUp(t *testing.T, expectedNewDevices int, isSlow bo
 	ms1 := peer.GC.MetadataStore()
 
 	devicesPK := make([]crypto.PubKey, expectedNewDevices)
-	deviceSecrets := make([]*bertyprotocol.DeviceSecret, expectedNewDevices)
+	deviceSecrets := make([]*bertytypes.DeviceSecret, expectedNewDevices)
 
 	for i := 0; i < expectedNewDevices; i++ {
 		devicesPK[i], deviceSecrets[i] = addDummyMemberInMetadataStore(ctx, t, ms1, peer.GC.Group(), peer.GC.MemberPubKey(), true)
@@ -447,7 +448,7 @@ func testMessageKeyHolderSubscription(t *testing.T, expectedNewDevices int, isSl
 	ms1 := peer.GC.MetadataStore()
 
 	devicesPK := make([]crypto.PubKey, expectedNewDevices)
-	deviceSecrets := make([]*bertyprotocol.DeviceSecret, expectedNewDevices)
+	deviceSecrets := make([]*bertytypes.DeviceSecret, expectedNewDevices)
 
 	go bertyprotocol.FillMessageKeysHolderUsingNewData(ctx, peer.GC)
 

@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-orbit-db/events"
@@ -25,12 +26,12 @@ type metadataStoreIndex struct {
 	groups                   map[string]*accountGroup
 	contactRequestSeed       []byte
 	contactRequestEnabled    *bool
-	eventHandlers            map[bertyprotocol.EventType][]func(event proto.Message) error
+	eventHandlers            map[bertytypes.EventType][]func(event proto.Message) error
 	postIndexActions         []func() error
-	eventsContactAddAliasKey []*bertyprotocol.ContactAddAliasKey
+	eventsContactAddAliasKey []*bertytypes.ContactAddAliasKey
 	ownAliasKeySent          bool
 	otherAliasKey            []byte
-	g                        *bertyprotocol.Group
+	g                        *bertytypes.Group
 	ownMemberDevice          *bertyprotocol.MemberDevice
 	ctx                      context.Context
 	eventEmitter             events.EmitterInterface
@@ -41,7 +42,7 @@ func (m *metadataStoreIndex) Get(key string) interface{} {
 	return nil
 }
 
-func openMetadataEntry(g *bertyprotocol.Group, log ipfslog.Log, e ipfslog.Entry) (*bertyprotocol.GroupMetadataEvent, *bertyprotocol.GroupMetadata, proto.Message, error) {
+func openMetadataEntry(g *bertytypes.Group, log ipfslog.Log, e ipfslog.Entry) (*bertytypes.GroupMetadataEvent, *bertytypes.GroupMetadata, proto.Message, error) {
 	op, err := operation.ParseOperation(e)
 	if err != nil {
 		// TODO: log
@@ -125,7 +126,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 }
 
 func (m *metadataStoreIndex) handleGroupAddMemberDevice(event proto.Message) error {
-	e, ok := event.(*bertyprotocol.GroupAddMemberDevice)
+	e, ok := event.(*bertytypes.GroupAddMemberDevice)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -158,7 +159,7 @@ func (m *metadataStoreIndex) handleGroupAddMemberDevice(event proto.Message) err
 }
 
 func (m *metadataStoreIndex) handleGroupAddDeviceSecret(event proto.Message) error {
-	e, ok := event.(*bertyprotocol.GroupAddDeviceSecret)
+	e, ok := event.(*bertytypes.GroupAddDeviceSecret)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -293,16 +294,16 @@ const (
 
 type accountGroup struct {
 	state accountGroupJoinedState
-	group *bertyprotocol.Group
+	group *bertytypes.Group
 }
 
 type accountContact struct {
-	state   bertyprotocol.ContactState
-	contact *bertyprotocol.ShareableContact
+	state   bertytypes.ContactState
+	contact *bertytypes.ShareableContact
 }
 
 func (m *metadataStoreIndex) handleGroupJoined(event proto.Message) error {
-	evt, ok := event.(*bertyprotocol.AccountGroupJoined)
+	evt, ok := event.(*bertytypes.AccountGroupJoined)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -321,7 +322,7 @@ func (m *metadataStoreIndex) handleGroupJoined(event proto.Message) error {
 }
 
 func (m *metadataStoreIndex) handleGroupLeft(event proto.Message) error {
-	evt, ok := event.(*bertyprotocol.AccountGroupLeft)
+	evt, ok := event.(*bertytypes.AccountGroupLeft)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -343,7 +344,7 @@ func (m *metadataStoreIndex) handleContactRequestDisabled(event proto.Message) e
 		return nil
 	}
 
-	_, ok := event.(*bertyprotocol.AccountContactRequestDisabled)
+	_, ok := event.(*bertytypes.AccountContactRequestDisabled)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -359,7 +360,7 @@ func (m *metadataStoreIndex) handleContactRequestEnabled(event proto.Message) er
 		return nil
 	}
 
-	_, ok := event.(*bertyprotocol.AccountContactRequestEnabled)
+	_, ok := event.(*bertytypes.AccountContactRequestEnabled)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -371,7 +372,7 @@ func (m *metadataStoreIndex) handleContactRequestEnabled(event proto.Message) er
 }
 
 func (m *metadataStoreIndex) handleContactRequestReferenceReset(event proto.Message) error {
-	evt, ok := event.(*bertyprotocol.AccountContactRequestReferenceReset)
+	evt, ok := event.(*bertytypes.AccountContactRequestReferenceReset)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -386,7 +387,7 @@ func (m *metadataStoreIndex) handleContactRequestReferenceReset(event proto.Mess
 }
 
 func (m *metadataStoreIndex) handleContactRequestOutgoingEnqueued(event proto.Message) error {
-	evt, ok := event.(*bertyprotocol.AccountContactRequestEnqueued)
+	evt, ok := event.(*bertytypes.AccountContactRequestEnqueued)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -404,8 +405,8 @@ func (m *metadataStoreIndex) handleContactRequestOutgoingEnqueued(event proto.Me
 	}
 
 	m.contacts[string(evt.ContactPK)] = &accountContact{
-		state: bertyprotocol.ContactStateToRequest,
-		contact: &bertyprotocol.ShareableContact{
+		state: bertytypes.ContactStateToRequest,
+		contact: &bertytypes.ShareableContact{
 			PK:                   evt.ContactPK,
 			Metadata:             evt.ContactMetadata,
 			PublicRendezvousSeed: evt.ContactRendezvousSeed,
@@ -416,7 +417,7 @@ func (m *metadataStoreIndex) handleContactRequestOutgoingEnqueued(event proto.Me
 }
 
 func (m *metadataStoreIndex) handleContactRequestOutgoingSent(event proto.Message) error {
-	evt, ok := event.(*bertyprotocol.AccountContactRequestSent)
+	evt, ok := event.(*bertytypes.AccountContactRequestSent)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -426,8 +427,8 @@ func (m *metadataStoreIndex) handleContactRequestOutgoingSent(event proto.Messag
 	}
 
 	m.contacts[string(evt.ContactPK)] = &accountContact{
-		state: bertyprotocol.ContactStateAdded,
-		contact: &bertyprotocol.ShareableContact{
+		state: bertytypes.ContactStateAdded,
+		contact: &bertytypes.ShareableContact{
 			PK: evt.ContactPK,
 		},
 	}
@@ -436,7 +437,7 @@ func (m *metadataStoreIndex) handleContactRequestOutgoingSent(event proto.Messag
 }
 
 func (m *metadataStoreIndex) handleContactRequestIncomingReceived(event proto.Message) error {
-	evt, ok := event.(*bertyprotocol.AccountContactRequestReceived)
+	evt, ok := event.(*bertytypes.AccountContactRequestReceived)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -454,8 +455,8 @@ func (m *metadataStoreIndex) handleContactRequestIncomingReceived(event proto.Me
 	}
 
 	m.contacts[string(evt.ContactPK)] = &accountContact{
-		state: bertyprotocol.ContactStateReceived,
-		contact: &bertyprotocol.ShareableContact{
+		state: bertytypes.ContactStateReceived,
+		contact: &bertytypes.ShareableContact{
 			PK:                   evt.ContactPK,
 			Metadata:             evt.ContactMetadata,
 			PublicRendezvousSeed: evt.ContactRendezvousSeed,
@@ -466,7 +467,7 @@ func (m *metadataStoreIndex) handleContactRequestIncomingReceived(event proto.Me
 }
 
 func (m *metadataStoreIndex) handleContactRequestIncomingDiscarded(event proto.Message) error {
-	evt, ok := event.(*bertyprotocol.AccountContactRequestDiscarded)
+	evt, ok := event.(*bertytypes.AccountContactRequestDiscarded)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -476,8 +477,8 @@ func (m *metadataStoreIndex) handleContactRequestIncomingDiscarded(event proto.M
 	}
 
 	m.contacts[string(evt.ContactPK)] = &accountContact{
-		state: bertyprotocol.ContactStateDiscarded,
-		contact: &bertyprotocol.ShareableContact{
+		state: bertytypes.ContactStateDiscarded,
+		contact: &bertytypes.ShareableContact{
 			PK: evt.ContactPK,
 		},
 	}
@@ -486,7 +487,7 @@ func (m *metadataStoreIndex) handleContactRequestIncomingDiscarded(event proto.M
 }
 
 func (m *metadataStoreIndex) handleContactRequestIncomingAccepted(event proto.Message) error {
-	evt, ok := event.(*bertyprotocol.AccountContactRequestAccepted)
+	evt, ok := event.(*bertytypes.AccountContactRequestAccepted)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -496,8 +497,8 @@ func (m *metadataStoreIndex) handleContactRequestIncomingAccepted(event proto.Me
 	}
 
 	m.contacts[string(evt.ContactPK)] = &accountContact{
-		state: bertyprotocol.ContactStateAdded,
-		contact: &bertyprotocol.ShareableContact{
+		state: bertytypes.ContactStateAdded,
+		contact: &bertytypes.ShareableContact{
 			PK: evt.ContactPK,
 		},
 	}
@@ -506,7 +507,7 @@ func (m *metadataStoreIndex) handleContactRequestIncomingAccepted(event proto.Me
 }
 
 func (m *metadataStoreIndex) handleContactBlocked(event proto.Message) error {
-	evt, ok := event.(*bertyprotocol.AccountContactBlocked)
+	evt, ok := event.(*bertytypes.AccountContactBlocked)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -516,8 +517,8 @@ func (m *metadataStoreIndex) handleContactBlocked(event proto.Message) error {
 	}
 
 	m.contacts[string(evt.ContactPK)] = &accountContact{
-		state: bertyprotocol.ContactStateBlocked,
-		contact: &bertyprotocol.ShareableContact{
+		state: bertytypes.ContactStateBlocked,
+		contact: &bertytypes.ShareableContact{
 			PK: evt.ContactPK,
 		},
 	}
@@ -526,7 +527,7 @@ func (m *metadataStoreIndex) handleContactBlocked(event proto.Message) error {
 }
 
 func (m *metadataStoreIndex) handleContactUnblocked(event proto.Message) error {
-	evt, ok := event.(*bertyprotocol.AccountContactUnblocked)
+	evt, ok := event.(*bertytypes.AccountContactUnblocked)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -536,8 +537,8 @@ func (m *metadataStoreIndex) handleContactUnblocked(event proto.Message) error {
 	}
 
 	m.contacts[string(evt.ContactPK)] = &accountContact{
-		state: bertyprotocol.ContactStateRemoved,
-		contact: &bertyprotocol.ShareableContact{
+		state: bertytypes.ContactStateRemoved,
+		contact: &bertytypes.ShareableContact{
 			PK: evt.ContactPK,
 		},
 	}
@@ -546,7 +547,7 @@ func (m *metadataStoreIndex) handleContactUnblocked(event proto.Message) error {
 }
 
 func (m *metadataStoreIndex) handleContactAliasKeyAdded(event proto.Message) error {
-	evt, ok := event.(*bertyprotocol.ContactAddAliasKey)
+	evt, ok := event.(*bertytypes.ContactAddAliasKey)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -557,7 +558,7 @@ func (m *metadataStoreIndex) handleContactAliasKeyAdded(event proto.Message) err
 }
 
 func (m *metadataStoreIndex) handleMultiMemberInitialMember(event proto.Message) error {
-	e, ok := event.(*bertyprotocol.MultiMemberInitialMember)
+	e, ok := event.(*bertytypes.MultiMemberInitialMember)
 	if !ok {
 		return errcode.ErrInvalidInput
 	}
@@ -658,7 +659,7 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 }
 
 // NewMetadataIndex returns a new index to manage the list of the group members
-func NewMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertyprotocol.Group, memberDevice *bertyprotocol.MemberDevice) iface.IndexConstructor {
+func NewMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertytypes.Group, memberDevice *bertyprotocol.MemberDevice) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		m := &metadataStoreIndex{
 			members:         map[string][]*bertyprotocol.MemberDevice{},
@@ -674,24 +675,24 @@ func NewMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			ctx:             ctx,
 		}
 
-		m.eventHandlers = map[bertyprotocol.EventType][]func(event proto.Message) error{
-			bertyprotocol.EventTypeAccountContactBlocked:                  {m.handleContactBlocked},
-			bertyprotocol.EventTypeAccountContactRequestDisabled:          {m.handleContactRequestDisabled},
-			bertyprotocol.EventTypeAccountContactRequestEnabled:           {m.handleContactRequestEnabled},
-			bertyprotocol.EventTypeAccountContactRequestIncomingAccepted:  {m.handleContactRequestIncomingAccepted},
-			bertyprotocol.EventTypeAccountContactRequestIncomingDiscarded: {m.handleContactRequestIncomingDiscarded},
-			bertyprotocol.EventTypeAccountContactRequestIncomingReceived:  {m.handleContactRequestIncomingReceived},
-			bertyprotocol.EventTypeAccountContactRequestOutgoingEnqueued:  {m.handleContactRequestOutgoingEnqueued},
-			bertyprotocol.EventTypeAccountContactRequestOutgoingSent:      {m.handleContactRequestOutgoingSent},
-			bertyprotocol.EventTypeAccountContactRequestReferenceReset:    {m.handleContactRequestReferenceReset},
-			bertyprotocol.EventTypeAccountContactUnblocked:                {m.handleContactUnblocked},
-			bertyprotocol.EventTypeAccountGroupJoined:                     {m.handleGroupJoined},
-			bertyprotocol.EventTypeAccountGroupLeft:                       {m.handleGroupLeft},
-			bertyprotocol.EventTypeContactAliasKeyAdded:                   {m.handleContactAliasKeyAdded},
-			bertyprotocol.EventTypeGroupDeviceSecretAdded:                 {m.handleGroupAddDeviceSecret},
-			bertyprotocol.EventTypeGroupMemberDeviceAdded:                 {m.handleGroupAddMemberDevice},
-			bertyprotocol.EventTypeMultiMemberGroupAdminRoleGranted:       {m.handleMultiMemberGrantAdminRole},
-			bertyprotocol.EventTypeMultiMemberGroupInitialMemberAnnounced: {m.handleMultiMemberInitialMember},
+		m.eventHandlers = map[bertytypes.EventType][]func(event proto.Message) error{
+			bertytypes.EventTypeAccountContactBlocked:                  {m.handleContactBlocked},
+			bertytypes.EventTypeAccountContactRequestDisabled:          {m.handleContactRequestDisabled},
+			bertytypes.EventTypeAccountContactRequestEnabled:           {m.handleContactRequestEnabled},
+			bertytypes.EventTypeAccountContactRequestIncomingAccepted:  {m.handleContactRequestIncomingAccepted},
+			bertytypes.EventTypeAccountContactRequestIncomingDiscarded: {m.handleContactRequestIncomingDiscarded},
+			bertytypes.EventTypeAccountContactRequestIncomingReceived:  {m.handleContactRequestIncomingReceived},
+			bertytypes.EventTypeAccountContactRequestOutgoingEnqueued:  {m.handleContactRequestOutgoingEnqueued},
+			bertytypes.EventTypeAccountContactRequestOutgoingSent:      {m.handleContactRequestOutgoingSent},
+			bertytypes.EventTypeAccountContactRequestReferenceReset:    {m.handleContactRequestReferenceReset},
+			bertytypes.EventTypeAccountContactUnblocked:                {m.handleContactUnblocked},
+			bertytypes.EventTypeAccountGroupJoined:                     {m.handleGroupJoined},
+			bertytypes.EventTypeAccountGroupLeft:                       {m.handleGroupLeft},
+			bertytypes.EventTypeContactAliasKeyAdded:                   {m.handleContactAliasKeyAdded},
+			bertytypes.EventTypeGroupDeviceSecretAdded:                 {m.handleGroupAddDeviceSecret},
+			bertytypes.EventTypeGroupMemberDeviceAdded:                 {m.handleGroupAddMemberDevice},
+			bertytypes.EventTypeMultiMemberGroupAdminRoleGranted:       {m.handleMultiMemberGrantAdminRole},
+			bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced: {m.handleMultiMemberInitialMember},
 		}
 
 		m.postIndexActions = []func() error{

@@ -5,11 +5,11 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"crypto/sha256"
-	"encoding/hex"
 	"io"
 	"io/ioutil"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/events"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -20,63 +20,9 @@ import (
 
 const CurrentGroupVersion = 1
 
-func (m *Group) GetSigningPrivKey() (crypto.PrivKey, error) {
-	edSK := ed25519.NewKeyFromSeed(m.Secret)
-
-	sk, _, err := crypto.KeyPairFromStdKey(&edSK)
-	if err != nil {
-		return nil, err
-	}
-
-	return sk, nil
-}
-
-func (m *Group) GetPubKey() (crypto.PubKey, error) {
-	return crypto.UnmarshalEd25519PublicKey(m.PublicKey)
-}
-
-func (m *Group) GetSigningPubKey() (crypto.PubKey, error) {
-	sk, err := m.GetSigningPrivKey()
-	if err != nil {
-		return nil, err
-	}
-
-	return sk.GetPublic(), nil
-}
-
-func (m *Group) IsValid() error {
-	pk, err := m.GetPubKey()
-	if err != nil {
-		return errcode.ErrDeserialization.Wrap(err)
-	}
-
-	ok, err := pk.Verify(m.Secret, m.SecretSig)
-	if err != nil {
-		return errcode.ErrSignatureVerificationFailed.Wrap(err)
-	}
-
-	if !ok {
-		return errcode.ErrSignatureVerificationFailed
-	}
-
-	return nil
-}
-
-// GroupIDAsString returns the group pub key as a string
-func (m *Group) GroupIDAsString() string {
-	return hex.EncodeToString(m.PublicKey)
-}
-
-func (m *Group) GetSharedSecret() (*[32]byte, error) {
-	sharedSecret := [32]byte{}
-	copy(sharedSecret[:], m.Secret[:])
-
-	return &sharedSecret, nil
-}
-
 // NewGroupMultiMember creates a new Group object and an invitation to be used by
 // the first member of the group
-func NewGroupMultiMember() (*Group, crypto.PrivKey, error) {
+func NewGroupMultiMember() (*bertytypes.Group, crypto.PrivKey, error) {
 	priv, pub, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
 		return nil, nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
@@ -102,11 +48,11 @@ func NewGroupMultiMember() (*Group, crypto.PrivKey, error) {
 		return nil, nil, errcode.ErrSignatureFailed.Wrap(err)
 	}
 
-	group := &Group{
+	group := &bertytypes.Group{
 		PublicKey: pubBytes,
 		Secret:    signingBytes,
 		SecretSig: skSig,
-		GroupType: GroupTypeMultiMember,
+		GroupType: bertytypes.GroupTypeMultiMember,
 	}
 
 	return group, priv, nil
@@ -156,7 +102,7 @@ func getKeysForGroupOfContact(contactPairSK crypto.PrivKey) (crypto.PrivKey, cry
 	return groupSK, groupSecretSK, nil
 }
 
-func GetGroupForContact(contactPairSK crypto.PrivKey) (*Group, error) {
+func GetGroupForContact(contactPairSK crypto.PrivKey) (*bertytypes.Group, error) {
 	groupSK, groupSecretSK, err := getKeysForGroupOfContact(contactPairSK)
 	if err != nil {
 		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
@@ -171,15 +117,15 @@ func GetGroupForContact(contactPairSK crypto.PrivKey) (*Group, error) {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	return &Group{
+	return &bertytypes.Group{
 		PublicKey: pubBytes,
 		Secret:    signingBytes,
 		SecretSig: nil,
-		GroupType: GroupTypeContact,
+		GroupType: bertytypes.GroupTypeContact,
 	}, nil
 }
 
-func GetGroupForAccount(priv, signing crypto.PrivKey) (*Group, error) {
+func GetGroupForAccount(priv, signing crypto.PrivKey) (*bertytypes.Group, error) {
 	pubBytes, err := priv.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -190,16 +136,16 @@ func GetGroupForAccount(priv, signing crypto.PrivKey) (*Group, error) {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	return &Group{
+	return &bertytypes.Group{
 		PublicKey: pubBytes,
 		Secret:    signingBytes,
 		SecretSig: nil,
-		GroupType: GroupTypeAccount,
+		GroupType: bertytypes.GroupTypeAccount,
 	}, nil
 }
 
-func MetadataStoreListSecrets(ctx context.Context, gc ContextGroup) (map[crypto.PubKey]*DeviceSecret, error) {
-	publishedSecrets := map[crypto.PubKey]*DeviceSecret{}
+func MetadataStoreListSecrets(ctx context.Context, gc ContextGroup) (map[crypto.PubKey]*bertytypes.DeviceSecret, error) {
+	publishedSecrets := map[crypto.PubKey]*bertytypes.DeviceSecret{}
 
 	m := gc.MetadataStore()
 	ownSK := gc.GetMemberPrivKey()
@@ -224,7 +170,7 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc ContextGroup) err
 	m := gc.MetadataStore()
 
 	for evt := range m.Subscribe(ctx) {
-		e, ok := evt.(*GroupMetadataEvent)
+		e, ok := evt.(*bertytypes.GroupMetadataEvent)
 		if !ok {
 			continue
 		}
@@ -283,16 +229,16 @@ func ActivateGroupContext(ctx context.Context, gc ContextGroup) error {
 }
 
 func handleNewMember(ctx context.Context, gctx ContextGroup, evt events.Event) error {
-	e, ok := evt.(*GroupMetadataEvent)
+	e, ok := evt.(*bertytypes.GroupMetadataEvent)
 	if !ok {
 		return nil
 	}
 
-	if e.Metadata.EventType != EventTypeGroupMemberDeviceAdded {
+	if e.Metadata.EventType != bertytypes.EventTypeGroupMemberDeviceAdded {
 		return nil
 	}
 
-	event := &GroupAddMemberDevice{}
+	event := &bertytypes.GroupAddMemberDevice{}
 	if err := event.Unmarshal(e.Metadata.Payload); err != nil {
 		return errcode.ErrDeserialization.Wrap(err)
 	}
@@ -342,12 +288,12 @@ func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx
 	}()
 }
 
-func OpenDeviceSecret(m *GroupMetadata, localMemberPrivateKey crypto.PrivKey, group *Group) (crypto.PubKey, *DeviceSecret, error) {
-	if m == nil || m.EventType != EventTypeGroupDeviceSecretAdded {
+func OpenDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.PrivKey, group *bertytypes.Group) (crypto.PubKey, *bertytypes.DeviceSecret, error) {
+	if m == nil || m.EventType != bertytypes.EventTypeGroupDeviceSecretAdded {
 		return nil, nil, errcode.ErrInvalidInput
 	}
 
-	s := &GroupAddDeviceSecret{}
+	s := &bertytypes.GroupAddDeviceSecret{}
 	if err := s.Unmarshal(m.Payload); err != nil {
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
@@ -367,7 +313,7 @@ func OpenDeviceSecret(m *GroupMetadata, localMemberPrivateKey crypto.PrivKey, gr
 		return nil, nil, errcode.ErrCryptoKeyConversion.Wrap(err)
 	}
 
-	decryptedSecret := &DeviceSecret{}
+	decryptedSecret := &bertytypes.DeviceSecret{}
 	decryptedMessage, ok := box.Open(nil, s.Payload, nonce, mongPub, mongPriv)
 	if !ok {
 		return nil, nil, errcode.ErrCryptoDecrypt
@@ -381,7 +327,7 @@ func OpenDeviceSecret(m *GroupMetadata, localMemberPrivateKey crypto.PrivKey, gr
 	return senderDevicePubKey, decryptedSecret, nil
 }
 
-func GroupIDToNonce(group *Group) (*[24]byte, error) {
+func GroupIDToNonce(group *bertytypes.Group) (*[24]byte, error) {
 	// Nonce doesn't need to be secret, random nor unpredictable, it just needs
 	// to be used only once for a given {sender, receiver} set and we will send
 	// only one SecretEntryPayload per {localDevicePrivKey, remoteMemberPubKey}

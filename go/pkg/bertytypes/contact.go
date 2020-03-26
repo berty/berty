@@ -1,4 +1,4 @@
-package bertyprotocol
+package bertytypes
 
 import (
 	"berty.tech/berty/v2/go/pkg/errcode"

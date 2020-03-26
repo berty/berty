@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-ipfs-log/identityprovider"
@@ -23,10 +24,10 @@ type MessageStoreImpl struct {
 
 	acc bertyprotocol.AccountKeys
 	mk  bertyprotocol.MessageKeys
-	g   *bertyprotocol.Group
+	g   *bertytypes.Group
 }
 
-func (m *MessageStoreImpl) openMessage(ctx context.Context, e ipfslog.Entry) (*bertyprotocol.GroupMessageEvent, error) {
+func (m *MessageStoreImpl) openMessage(ctx context.Context, e ipfslog.Entry) (*bertytypes.GroupMessageEvent, error) {
 	if e == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -59,15 +60,15 @@ func (m *MessageStoreImpl) openMessage(ctx context.Context, e ipfslog.Entry) (*b
 		err = errcode.ErrSecretKeyGenerationFailed.Wrap(err)
 	}
 
-	return &bertyprotocol.GroupMessageEvent{
+	return &bertytypes.GroupMessageEvent{
 		EventContext: eventContext,
 		Headers:      headers,
 		Message:      payload,
 	}, err
 }
 
-func (m *MessageStoreImpl) ListMessages(ctx context.Context) (<-chan *bertyprotocol.GroupMessageEvent, error) {
-	out := make(chan *bertyprotocol.GroupMessageEvent)
+func (m *MessageStoreImpl) ListMessages(ctx context.Context) (<-chan *bertytypes.GroupMessageEvent, error) {
+	out := make(chan *bertytypes.GroupMessageEvent)
 	ch := make(chan ipfslog.Entry)
 
 	go func() {

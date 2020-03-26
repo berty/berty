@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/cache"
@@ -33,7 +34,7 @@ type client struct {
 	accContextGroup ContextGroup
 	account         AccountKeys
 	openedGroups    map[string]ContextGroup
-	groups          map[string]*Group
+	groups          map[string]*bertytypes.Group
 	lock            sync.RWMutex
 }
 
@@ -59,7 +60,7 @@ func New(opts Opts) (Client, error) {
 		ctx:          opts.RootContext,
 		ipfsCoreAPI:  opts.IpfsCoreAPI,
 		logger:       opts.Logger,
-		groups:       map[string]*Group{},
+		groups:       map[string]*bertytypes.Group{},
 		openedGroups: map[string]ContextGroup{},
 	}
 

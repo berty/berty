@@ -7,6 +7,7 @@ import (
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertydemo"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -60,7 +61,7 @@ func TestProtocolBridge(t *testing.T) {
 	require.NoError(t, err)
 
 	// setup unary test
-	msg := &bertyprotocol.InstanceGetConfiguration_Request{}
+	msg := &bertytypes.InstanceGetConfiguration_Request{}
 
 	req, err = proto.Marshal(msg)
 	require.NoError(t, err)
@@ -69,7 +70,7 @@ func TestProtocolBridge(t *testing.T) {
 	res, err = bridgeClient.UnaryRequest("/berty.protocol.ProtocolService/InstanceGetConfiguration", req)
 	require.NoError(t, err)
 
-	out := &bertyprotocol.InstanceGetConfiguration_Reply{}
+	out := &bertytypes.InstanceGetConfiguration_Reply{}
 	err = proto.Unmarshal(res, out)
 	require.NoError(t, err)
 

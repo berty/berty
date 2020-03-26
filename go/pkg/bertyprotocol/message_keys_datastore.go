@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	cid "github.com/ipfs/go-cid"
 	datastore "github.com/ipfs/go-datastore"
@@ -17,7 +18,7 @@ type DatastoreMessageKeys struct {
 	store                datastore.Datastore
 }
 
-func (m *DatastoreMessageKeys) GetDeviceChainKey(ctx context.Context, pk crypto.PubKey) (*DeviceSecret, error) {
+func (m *DatastoreMessageKeys) GetDeviceChainKey(ctx context.Context, pk crypto.PubKey) (*bertytypes.DeviceSecret, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -35,7 +36,7 @@ func (m *DatastoreMessageKeys) GetDeviceChainKey(ctx context.Context, pk crypto.
 		return nil, errcode.ErrPersistenceGet.Wrap(err)
 	}
 
-	ds := &DeviceSecret{}
+	ds := &bertytypes.DeviceSecret{}
 	if err := ds.Unmarshal(dsBytes); err != nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -143,7 +144,7 @@ func (m *DatastoreMessageKeys) GetPrecomputedKeyExpectedCount() int {
 	return m.preComputedKeysCount
 }
 
-func (m *DatastoreMessageKeys) PutDeviceChainKey(ctx context.Context, device crypto.PubKey, ds *DeviceSecret) error {
+func (m *DatastoreMessageKeys) PutDeviceChainKey(ctx context.Context, device crypto.PubKey, ds *bertytypes.DeviceSecret) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 

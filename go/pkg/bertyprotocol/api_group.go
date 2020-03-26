@@ -3,13 +3,14 @@ package bertyprotocol
 import (
 	"context"
 
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func (c *client) GroupInfo(_ context.Context, req *GroupInfo_Request) (*GroupInfo_Reply, error) {
+func (c *client) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request) (*bertytypes.GroupInfo_Reply, error) {
 	var (
-		g   *Group
+		g   *bertytypes.Group
 		err error
 	)
 
@@ -52,14 +53,14 @@ func (c *client) GroupInfo(_ context.Context, req *GroupInfo_Request) (*GroupInf
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	return &GroupInfo_Reply{
+	return &bertytypes.GroupInfo_Reply{
 		Group:    g,
 		MemberPK: member,
 		DevicePK: device,
 	}, nil
 }
 
-func (c *client) ActivateGroup(ctx context.Context, req *ActivateGroup_Request) (*ActivateGroup_Reply, error) {
+func (c *client) ActivateGroup(ctx context.Context, req *bertytypes.ActivateGroup_Request) (*bertytypes.ActivateGroup_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -69,10 +70,10 @@ func (c *client) ActivateGroup(ctx context.Context, req *ActivateGroup_Request) 
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	return &ActivateGroup_Reply{}, nil
+	return &bertytypes.ActivateGroup_Reply{}, nil
 }
 
-func (c *client) DeactivateGroup(_ context.Context, req *DeactivateGroup_Request) (*DeactivateGroup_Reply, error) {
+func (c *client) DeactivateGroup(_ context.Context, req *bertytypes.DeactivateGroup_Request) (*bertytypes.DeactivateGroup_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -82,5 +83,5 @@ func (c *client) DeactivateGroup(_ context.Context, req *DeactivateGroup_Request
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	return &DeactivateGroup_Reply{}, nil
+	return &bertytypes.DeactivateGroup_Reply{}, nil
 }
