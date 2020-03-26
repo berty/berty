@@ -1,0 +1,35 @@
+sequenceDiagram
+
+participant aorbitdb as Alice orbitdb
+participant aprotocol as Alice fake protocol
+participant achat as Alice chat app
+participant a as Alice
+participant b as Bob
+participant bchat as Bob chat app
+participant bprotocol as Bob fake protocol
+participant borbitdb as Bob orbitdb
+
+a->>achat: Start app
+achat->>aprotocol: Call contactRequestEnable command
+aprotocol-->>aorbitdb: Subscribe to Alice rdv log
+aprotocol->>achat: Send contactRequestEnabled event with reference
+achat->>a: Display QR code with reference and Alice metadata
+a->>b: Show/Send QR with Alice reference and contact metadata
+b->>bchat: Scan QR with Alice reference and contact metadata
+bchat-->> bprotocol: Subscribe to 1to1 group metadata
+bprotocol-->> borbitdb: Subcribe to 1to1 group metadata log
+bchat->>bprotocol: Call sendContactRequest command
+bprotocol-->> bchat: Send contactRequestEnqueued event
+bchat-->> b: Display an outgoing contact request
+bprotocol->>borbitdb: Send Bob fake public key, 1to1 group fake public key and contact metadata on Alice rdv log
+borbitdb->>aorbitdb: Alice rdv log replication
+aorbitdb->>aprotocol: Send contact request with bob data from rdv log
+aprotocol->>achat: Send contactRequestReceived event
+achat->> a: Display contact request
+a->> achat: Touch accept contact request
+achat->> aprotocol: Call contactRequestAccept command
+aprotocol->> aorbitdb: Send groupMemberDeviceAdded event on the 1to1 group metadata log
+aorbitdb->>borbitdb: 1to1 group metadata log replication
+borbitdb->> bprotocol: Send groupMemberDeviceAdded event from the 1to1 group metadata log
+bprotocol->> bchat: Send groupMemberDeviceAdded event from the 1to1 group metadata
+bchat->> b: Show that the request is accepted
