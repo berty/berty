@@ -1,14 +1,40 @@
-#!/bin/sh
+#!/bin/bash
 
+# check deps
+if ! [ -x "$(command -v berty)" ]; then
+    echo "Error: 'berty' not found, you need to compile it before running this script." >&2
+    exit 1
+fi
+if ! [ -x "$(command -v docker)" ]; then
+    echo "Error: 'docker' is not installed." >&2
+    exit 1
+fi
+if ! [ -x "$(command -v docker-compose)" ]; then
+    echo "Error: 'docker-compose' is not installed." >&2
+    exit 1
+fi
+
+# init env
 if [ ! -f .env ]; then
     echo "GRP_KEY=`berty groupinit`" > .env
 fi
 
-TMUX=                                                                                       `# force TMUX to run, even if nested` \
+# cleanup and warm up docker-compose before starting
+docker network rm $(docker network ls | grep berty-mini-cluster | awk '{print $1}') 2>/dev/null
+docker-compose create
+
+# cleanup
+function cleanup {
+    docker-compose down >/dev/null 2>/dev/null
+}
+trap cleanup EXIT
+
+# the tmux
+TMUX=                                                                                             `# force TMUX to run, even if nested` \
     tmux \
-    new-session ". .env && berty mini -g \$GRP_KEY; read" \;                                 `# run a simple instance` \
-    split-window ". .env && docker run -it --rm bertytech/berty mini -g \$GRP_KEY; read" \;  `# run an instance within docker` \
-    split-window "docker-compose run aaron; read" \;                                         `# run an instance within docker-compose` \
-    split-window "docker-compose run betty; read" \;                                         `# run an instance within docker-compose` \
-    split-window "docker-compose run chris; read" \;                                         `# run an instance within docker-compose` \
+    new-session "source .env && berty mini -g \$GRP_KEY; read" \;                                 `# run a simple instance` \
+    split-window "source .env && docker run -it --rm bertytech/berty mini -g \$GRP_KEY; read" \;  `# run an instance within docker` \
+    split-window "docker-compose run aaron; read" \;                                              `# run an instance within docker-compose` \
+    split-window "sleep 1; docker-compose run betty; read" \;                                     `# run an instance within docker-compose` \
+    split-window "sleep 1; docker-compose run chris; read" \;                                     `# run an instance within docker-compose` \
     select-layout even-vertical
