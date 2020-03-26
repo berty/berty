@@ -21,7 +21,7 @@ fi
 
 # cleanup and warm up docker-compose before starting
 docker network rm $(docker network ls | grep berty-mini-cluster | awk '{print $1}') 2>/dev/null
-docker-compose create
+docker-compose up --no-start
 
 # cleanup
 function cleanup {
@@ -30,11 +30,13 @@ function cleanup {
 trap cleanup EXIT
 
 # the tmux
-TMUX=                                                                                             `# force TMUX to run, even if nested` \
+TMUX=                                                                                                                      `# force TMUX to run, even if nested` \
     tmux \
-    new-session "source .env && berty mini -g \$GRP_KEY; read" \;                                 `# run a simple instance` \
-    split-window "source .env && docker run -it --rm bertytech/berty mini -g \$GRP_KEY; read" \;  `# run an instance within docker` \
-    split-window "docker-compose run aaron; read" \;                                              `# run an instance within docker-compose` \
-    split-window "sleep 1; docker-compose run betty; read" \;                                     `# run an instance within docker-compose` \
-    split-window "sleep 1; docker-compose run chris; read" \;                                     `# run an instance within docker-compose` \
-    select-layout even-vertical
+    new-session "source .env && berty mini -g \$GRP_KEY; read" \; select-pane -T no-docker \;                              `# run a simple instance` \
+    split-window "source .env && docker run -it --rm bertytech/berty mini -g \$GRP_KEY; read" \; select-pane -T docker \;  `# run an instance within docker` \
+    split-window "docker-compose run aaron; read" \; select-pane -T compose-aaron \;                                       `# run instances within docker-compose` \
+    split-window "docker-compose run betty; read" \; select-pane -T compose-betty \; \
+    split-window "docker-compose run chris; read" \; select-pane -T compose-chris \; \
+    select-layout even-vertical \;                                                                                         `# tmux styling` \
+    set pane-border-status top \; \
+    set pane-border-format "#{pane_index} #{pane_current_command} #{pane_title}"
