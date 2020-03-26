@@ -5,6 +5,7 @@ import DevMenu from 'react-native-dev-menu'
 import { ActivityIndicator, Clipboard } from 'react-native'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Buffer } from 'buffer'
+import { berty } from '@berty-tech/api'
 
 export const Recorder: React.FC = ({ children }) => {
 	React.useEffect(() => {
@@ -77,6 +78,14 @@ export const useAccount = () => {
 	const accounts = useAccountList()
 	const len = useAccountLength()
 	return len > 0 ? accounts[0] : null
+}
+
+export const useClient = () => {
+	const account = useAccount()
+	return useSelector(
+		(state: protocol.client.GlobalState) =>
+			account && protocol.client.queries.get(state, { id: account.id }),
+	)
 }
 
 // account commands
@@ -247,6 +256,16 @@ export const useGetConversation = (id: string): chat.conversation.Entity => {
 		chat.conversation.queries.get(state, { id }),
 	)
 	return conversation
+}
+
+export const useOneToOneConversationContact = (id: string): chat.contact.Entity | undefined => {
+	const conversation = useGetConversation(id)
+	return useSelector(
+		(state: chat.contact.GlobalState) =>
+			(conversation?.kind === berty.chatmodel.Conversation.Kind.OneToOne &&
+				chat.contact.queries.get(state, { id: conversation.contactId })) ||
+			undefined,
+	)
 }
 
 // messages queries

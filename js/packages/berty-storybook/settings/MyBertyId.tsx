@@ -83,6 +83,7 @@ const BertIdBody: React.FC<RequestProps> = ({ user }) => {
 	const _styles = useStylesBertyId()
 	const [{ background, border, margin, padding }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState()
+	const client = Chat.useClient()
 	return (
 		<View
 			style={[
@@ -92,9 +93,17 @@ const BertIdBody: React.FC<RequestProps> = ({ user }) => {
 				_styles.bodyMarginTop,
 			]}
 		>
-			<RequestAvatar {...user} size={90} />
+			<RequestAvatar {...user} seed={client?.accountPk} size={90} />
 			<View style={[padding.horizontal.big, _styles.bodyContent]}>
-				<TabBar tabType='contact' onTabChange={setSelectedContent} />
+				<TabBar
+					tabs={[
+						{ name: 'QR', icon: 'code-outline' },
+						{ name: 'Fingerprint', icon: 'code-outline' },
+						{ name: 'Infos', icon: 'info-outline' },
+						{ name: 'Devices', icon: 'smartphone-outline' },
+					]}
+					onTabChange={setSelectedContent}
+				/>
 				<BertyIdContent>
 					<SelectedContent contentName={selectedContent} />
 				</BertyIdContent>

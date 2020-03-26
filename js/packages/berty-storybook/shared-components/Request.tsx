@@ -6,7 +6,8 @@ import { useStyles, ColorsTypes } from '@berty-tech/styles'
 import { TabBar } from './TabBar'
 import { FingerprintContent } from './FingerprintContent'
 import { Modal } from './Modal'
-import { CircleAvatar, GroupCircleAvatar } from './CircleAvatar'
+import { GroupCircleAvatar } from './CircleAvatar'
+import { ProceduralCircleAvatar } from './ProceduralCircleAvatar'
 
 //
 // RequestButtons
@@ -149,7 +150,7 @@ export const RequestButtons: React.FC<RequestButtonsProps> = ({ buttons = null }
 
 // Types
 type RequestAvatarProps = {
-	avatarUri: string
+	seed?: string
 	name: string
 	size?: number
 	secondAvatarUri?: string
@@ -159,7 +160,7 @@ type RequestAvatarProps = {
 }
 
 export const RequestAvatar: React.FC<RequestAvatarProps> = ({
-	avatarUri,
+	seed,
 	name,
 	size = 130,
 	secondAvatarUri = null,
@@ -184,15 +185,16 @@ export const RequestAvatar: React.FC<RequestAvatarProps> = ({
 					/>
 				)}
 			</View>
-			{!isGroup || !secondAvatarUri ? (
-				<CircleAvatar
-					avatarUri={avatarUri}
+			{/*!isGroup || !secondAvatarUri ? (
+				<ProceduralCircleAvatar
+					seed={seed}
 					size={size}
+					diffSize={20}
 					style={[absolute.scale({ top: -size / 2 })]}
 				/>
 			) : (
 				<GroupCircleAvatar firstAvatarUri={avatarUri} secondAvatarUri={secondAvatarUri} />
-			)}
+			)*/}
 		</View>
 	)
 }

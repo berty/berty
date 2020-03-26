@@ -13,7 +13,10 @@ import { google, berty } from '@berty-tech/api'
 import { useLayout } from '../hooks'
 import { Footer } from './Footer'
 import { useStyles } from '@berty-tech/styles'
-import { CircleAvatar, ConversationAvatar } from '../shared-components/CircleAvatar'
+import {
+	ProceduralCircleAvatar,
+	ConversationProceduralAvatar,
+} from '../shared-components/ProceduralCircleAvatar'
 import { Chat } from '@berty-tech/hooks'
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { CommonActions } from '@react-navigation/core'
@@ -47,12 +50,12 @@ const date = (timestamp?: google.protobuf.ITimestamp | null): Date => {
 const RequestsItem: React.FC<{
 	id: string
 	name: string
-	avatarUris: Array<string>
+	seed: string
 	display: Navigation<{ id: string }>
 	accept: (kwargs: { id: string }) => void
 	decline: (kwargs: { id: string }) => void
 }> = (props) => {
-	const { id, name, avatarUris, display, decline, accept } = props
+	const { id, name, seed, display, decline, accept } = props
 	const [
 		{ border, padding, margin, width, height, column, row, background, absolute, text },
 	] = useStyles()
@@ -74,11 +77,11 @@ const RequestsItem: React.FC<{
 					]}
 					onPress={() => display({ id })}
 				>
-					<CircleAvatar
+					<ProceduralCircleAvatar
 						style={[absolute.center, absolute.scale({ top: -32.5 })]}
-						avatarUri={avatarUris[0]}
+						seed={seed}
 						size={65}
-						diffSize={8}
+						diffSize={20}
 					/>
 					<Text style={[text.align.center, text.color.black, text.size.medium]} numberOfLines={2}>
 						{name}
@@ -131,14 +134,14 @@ const RequestsItem: React.FC<{
 	)
 }
 
-const ContactRequestsItem: React.FC<chat.contact.Entity> = ({ id, name }) => {
+const ContactRequestsItem: React.FC<chat.contact.Entity> = ({ id, name, publicKey }) => {
 	const accept = Chat.useAcceptContactRequest()
 	const decline = Chat.useDiscardContactRequest()
 	return (
 		<RequestsItem
 			id={id}
 			name={name}
-			avatarUris={[]}
+			seed={publicKey}
 			display={/*navigate.main.contactRequest*/ ({ id }) => {}}
 			accept={accept}
 			decline={decline}
@@ -208,7 +211,11 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			<View
 				style={[row.center, border.bottom.medium, border.color.light.grey, padding.vertical.small]}
 			>
-				<ConversationAvatar {...props} size={50} style={[padding.tiny, row.item.justify]} />
+				<ConversationProceduralAvatar
+					conversationId={props.id}
+					size={50}
+					style={[padding.tiny, row.item.justify]}
+				/>
 				<View style={[flex.big, column.fill, padding.small]}>
 					<View style={[row.fill]}>
 						<View style={[row.left]}>
