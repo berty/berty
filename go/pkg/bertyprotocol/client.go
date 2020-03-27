@@ -11,6 +11,7 @@ import (
 	"berty.tech/go-orbit-db/cache"
 	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
+	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
 )
@@ -27,15 +28,16 @@ type Client interface {
 
 type client struct {
 	// variables
-	ctx            context.Context
-	logger         *zap.Logger
-	ipfsCoreAPI    ipfs_coreapi.CoreAPI
-	odb            *bertyOrbitDB
-	accountGroup   *groupContext
-	deviceKeystore DeviceKeystore
-	openedGroups   map[string]*groupContext
-	groups         map[string]*bertytypes.Group
-	lock           sync.RWMutex
+	ctx             context.Context
+	logger          *zap.Logger
+	ipfsCoreAPI     ipfs_coreapi.CoreAPI
+	odb             *bertyOrbitDB
+	accountGroup    *groupContext
+	deviceKeystore  DeviceKeystore
+	openedGroups    map[string]*groupContext
+	groups          map[string]*bertytypes.Group
+	lock            sync.RWMutex
+	createdIPFSNode *ipfs_core.IpfsNode
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -47,6 +49,7 @@ type Opts struct {
 	RootContext     context.Context
 	RootDatastore   datastore.Batching
 	OrbitCache      cache.Interface
+	createdIPFSNode *ipfs_core.IpfsNode
 }
 
 func defaultClientOptions(opts *Opts) error {
@@ -74,7 +77,7 @@ func defaultClientOptions(opts *Opts) error {
 
 	if opts.IpfsCoreAPI == nil {
 		var err error
-		opts.IpfsCoreAPI, _, err = ipfsutil.NewInMemoryCoreAPI(opts.RootContext)
+		opts.IpfsCoreAPI, opts.createdIPFSNode, err = ipfsutil.NewInMemoryCoreAPI(opts.RootContext)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}
@@ -100,12 +103,13 @@ func New(opts Opts) (Client, error) {
 	}
 
 	return &client{
-		ctx:            opts.RootContext,
-		ipfsCoreAPI:    opts.IpfsCoreAPI,
-		logger:         opts.Logger,
-		odb:            odb,
-		deviceKeystore: opts.DeviceKeystore,
-		accountGroup:   acc,
+		ctx:             opts.RootContext,
+		ipfsCoreAPI:     opts.IpfsCoreAPI,
+		logger:          opts.Logger,
+		odb:             odb,
+		deviceKeystore:  opts.DeviceKeystore,
+		createdIPFSNode: opts.createdIPFSNode,
+		accountGroup:    acc,
 		groups: map[string]*bertytypes.Group{
 			string(acc.Group().PublicKey): acc.Group(),
 		},
@@ -117,6 +121,9 @@ func New(opts Opts) (Client, error) {
 
 func (c *client) Close() error {
 	c.odb.Close()
+	if c.createdIPFSNode != nil {
+		c.createdIPFSNode.Close()
+	}
 
 	return nil
 }
