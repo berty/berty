@@ -33,32 +33,6 @@ const useStylesAboutBerty = () => {
 	}
 }
 
-const _aboutBertyStyles = StyleSheet.create({
-	headerInfosTitleText: {
-		paddingLeft: 10,
-	},
-	headerInfosButtonText: {
-		fontSize: 15,
-	},
-	firstHeaderButtonRow: {
-		marginRight: 10,
-		minHeight: 108,
-	},
-	secondHeaderButtonRow: {
-		marginLeft: 10,
-		minHeight: 108,
-	},
-	firstButtonRow: {
-		marginRight: 10,
-	},
-	secondButtonRow: {
-		marginLeft: 10,
-	},
-	buttonRowMarginTop: {
-		marginTop: 20,
-	},
-})
-
 const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => {
 	const _styles = useStylesAboutBerty()
 	const [{ text, margin, color, border, background, row, padding }] = useStyles()
@@ -126,7 +100,7 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => {
 					</TouchableOpacity>
 				</HeaderInfoSettings>
 			) : (
-				<View>
+				<View style={padding.top.medium}>
 					<ButtonSettingRow
 						state={[
 							{
@@ -134,12 +108,14 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => {
 								icon: 'lock-outline',
 								color: color.yellow,
 								style: _styles.firstHeaderButtonRow,
+								disabled: true,
 							},
 							{
 								name: 'Peer to peer network',
 								icon: 'settings-2-outline',
 								color: color.blue,
 								style: _styles.secondHeaderButtonRow,
+								disabled: true,
 							},
 						]}
 						styleText={text.bold}
@@ -151,12 +127,14 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => {
 								icon: 'question-mark-circle-outline',
 								color: color.red,
 								style: _styles.firstHeaderButtonRow,
+								disabled: true,
 							},
 							{
 								name: 'No network trust required',
 								icon: 'settings-2-outline',
 								color: color.green,
 								style: _styles.secondHeaderButtonRow,
+								disabled: true,
 							},
 						]}
 						style={_styles.buttonRowMarginTop}
@@ -189,6 +167,7 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => {
 				iconSize={30}
 				iconColor={color.blue}
 				actionIcon='arrow-ios-forward'
+				disabled
 			/>
 			<ButtonSetting
 				name='Software license'
@@ -196,6 +175,7 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => {
 				iconSize={30}
 				iconColor={color.blue}
 				actionIcon='arrow-ios-forward'
+				disabled
 			/>
 			<ButtonSettingRow
 				state={[
@@ -204,12 +184,14 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => {
 						icon: 'email-outline',
 						color: color.blue,
 						style: _styles.firstButtonRow,
+						disabled: true,
 					},
 					{
 						name: 'Website',
 						icon: 'globe-outline',
 						color: color.blue,
 						style: _styles.secondButtonRow,
+						disabled: true,
 					},
 				]}
 				style={_styles.buttonRowMarginTop}

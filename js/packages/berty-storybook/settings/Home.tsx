@@ -117,7 +117,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 				icon='bluetooth-outline'
 				onPress={navigate.settings.bluetooth}
 			/>
-			<ButtonSetting name='Dark mode' icon='moon-outline' toggled />
+			<ButtonSetting name='Dark mode' icon='moon-outline' toggled disabled />
 			<ButtonSetting
 				name='About Berty'
 				icon='info-outline'
@@ -164,7 +164,7 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 				<ActivityIndicator size='large' style={[row.center]} />
 			) : (
 				<ScrollView contentContainerStyle={[_styles.scrollViewPadding]}>
-					<HeaderSettings actionIcon='edit-outline' action={navigate.settings.editProfile}>
+					<HeaderSettings>
 						<View>
 							<HomeHeader {...account} />
 							<HomeHeaderGroupButton {...account} />

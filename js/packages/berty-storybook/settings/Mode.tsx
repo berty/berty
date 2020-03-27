@@ -52,6 +52,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 					stateIcon: isMode ? 'flash-outline' : 'lock-outline',
 					stateIconColor: color.white,
 				}}
+				disabled
 			>
 				<Text
 					style={[
@@ -69,18 +70,21 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 						color='rgba(43,46,77,0.8)'
 						icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
 						iconColor={isMode ? color.blue : color.red}
+						disabled
 					/>
 					<ButtonSettingItem
 						value='Receive contact requests'
 						color='rgba(43,46,77,0.8)'
 						icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
 						iconColor={isMode ? color.blue : color.red}
+						disabled
 					/>
 					<ButtonSettingItem
 						value='Local peer discovery (BLE & Multicast DNS)'
 						color='rgba(43,46,77,0.8)'
 						icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
 						iconColor={isMode ? color.blue : color.red}
+						disabled
 					/>
 				</View>
 			</ButtonSetting>
@@ -99,6 +103,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 						: { value: 'Disabled', color: color.red, bgColor: color.light.red }
 				}
 				actionIcon='arrow-ios-forward'
+				disabled
 			/>
 			<ButtonSetting
 				name='Bluetooth'
@@ -119,20 +124,23 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 						  }
 				}
 				actionIcon='arrow-ios-forward'
+				disabled
 			/>
 			<ButtonSetting
 				name='Receive contact requests'
 				icon='person-done-outline'
 				iconColor={color.blue}
 				iconSize={30}
-				toggled={true}
+				toggled
+				disabled
 			/>
 			<ButtonSetting
 				name='Multicast DNS'
 				icon='share-outline'
 				iconColor={color.blue}
 				iconSize={30}
-				toggled={true}
+				toggled
+				disabled
 			>
 				<Text style={[text.bold, _modeStyles.buttonSettingText]}>Local Peer discovery</Text>
 			</ButtonSetting>
@@ -147,6 +155,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 					bgColor: color.light.blue,
 				}}
 				actionIcon='arrow-ios-forward'
+				disabled
 			/>
 			<ButtonSetting
 				name='Delete my account'
