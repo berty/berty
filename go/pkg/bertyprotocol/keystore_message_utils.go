@@ -2,7 +2,6 @@ package bertyprotocol
 
 import (
 	"context"
-	crand "crypto/rand"
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
@@ -10,6 +9,7 @@ import (
 	"io"
 	"io/ioutil"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/golang/protobuf/proto"
@@ -113,7 +113,7 @@ func sealEnvelopeInternal(payload []byte, ds *bertytypes.DeviceSecret, deviceSK 
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	nonce, nonceSlice, err := generateNonce()
+	nonce, err := cryptoutil.GenerateNonce()
 	if err != nil {
 		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
 	}
@@ -123,7 +123,7 @@ func sealEnvelopeInternal(payload []byte, ds *bertytypes.DeviceSecret, deviceSK 
 	env, err := proto.Marshal(&bertytypes.MessageEnvelope{
 		MessageHeaders: encryptedHeaders,
 		Message:        encryptedPayload,
-		Nonce:          nonceSlice,
+		Nonce:          nonce[:],
 	})
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -219,7 +219,7 @@ func openEnvelopeHeaders(data []byte, g *bertytypes.Group) (*bertytypes.MessageE
 		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	nonce, err := nonceAsArr(env.Nonce)
+	nonce, err := cryptoutil.NonceSliceToArray(env.Nonce)
 	if err != nil {
 		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
@@ -235,20 +235,6 @@ func openEnvelopeHeaders(data []byte, g *bertytypes.Group) (*bertytypes.MessageE
 	}
 
 	return env, headers, nil
-}
-
-func nonceAsArr(nonceSl []byte) (*[24]byte, error) {
-	out := [24]byte{}
-
-	if len(nonceSl) != 24 {
-		return &out, errcode.ErrInvalidInput
-	}
-
-	for i, b := range nonceSl {
-		out[i] = b
-	}
-
-	return &out, nil
 }
 
 func postDecryptActions(ctx context.Context, m *MessageKeystore, di *decryptInfo, g *bertytypes.Group, ownPK crypto.PubKey, headers *bertytypes.MessageHeaders) error {
@@ -293,21 +279,6 @@ func postDecryptActions(ctx context.Context, m *MessageKeystore, di *decryptInfo
 	}
 
 	return nil
-}
-
-func generateNonce() (*[24]byte, []byte, error) {
-	var out [24]byte
-
-	outSlice, err := ioutil.ReadAll(io.LimitReader(crand.Reader, 24))
-	if err != nil {
-		return nil, nil, errcode.ErrCryptoRandomGeneration.Wrap(err)
-	}
-
-	for i, b := range outSlice {
-		out[i] = b
-	}
-
-	return &out, outSlice, nil
 }
 
 func deriveNextKeys(ck []byte, salt []byte, groupID []byte) ([]byte, [32]byte, error) {
@@ -459,30 +430,9 @@ func idForCID(id cid.Cid) datastore.Key {
 }
 
 func uint64AsNonce(val uint64) *[24]byte {
-	nonce := make([]byte, 24)
-	nonceArr := [24]byte{}
-	binary.BigEndian.PutUint64(nonce, val)
-	for i := range nonce {
-		nonceArr[i] = nonce[i]
-	}
+	var nonce [24]byte
 
-	return &nonceArr
-}
+	binary.BigEndian.PutUint64(nonce[:], val)
 
-func to32ByteArray(key []byte) *[32]byte {
-	keyArr := [32]byte{}
-	for i, c := range key {
-		keyArr[i] = c
-	}
-
-	return &keyArr
-}
-
-func from32ByteArray(key *[32]byte) []byte {
-	keySl := make([]byte, 32)
-	for i, c := range key {
-		keySl[i] = c
-	}
-
-	return keySl
+	return &nonce
 }

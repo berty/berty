@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	cid "github.com/ipfs/go-cid"
@@ -80,7 +81,12 @@ func (m *MessageKeystore) GetPrecomputedKey(ctx context.Context, device crypto.P
 		return nil, errcode.ErrMessageKeyPersistenceGet.Wrap(err)
 	}
 
-	return to32ByteArray(key), nil
+	keyArray, err := cryptoutil.KeySliceToArray(key)
+	if err != nil {
+		return nil, errcode.ErrSerialization
+	}
+
+	return keyArray, nil
 }
 
 func (m *MessageKeystore) PutPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64, mk *[32]byte) error {
@@ -94,7 +100,7 @@ func (m *MessageKeystore) PutPrecomputedKey(ctx context.Context, device crypto.P
 
 	id := idForCachedKey(deviceRaw, counter)
 
-	if err := m.store.Put(id, from32ByteArray(mk)); err != nil {
+	if err := m.store.Put(id, mk[:]); err != nil {
 		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
 
@@ -109,7 +115,7 @@ func (m *MessageKeystore) PutKeyForCID(ctx context.Context, id cid.Cid, key *[32
 		return nil
 	}
 
-	err := m.store.Put(idForCID(id), from32ByteArray(key))
+	err := m.store.Put(idForCID(id), key[:])
 	if err != nil {
 		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
@@ -130,11 +136,12 @@ func (m *MessageKeystore) GetKeyForCID(ctx context.Context, id cid.Cid) (*[32]by
 		return nil, errcode.ErrInvalidInput
 	}
 
-	if len(key) != 32 {
-		return nil, errcode.ErrInternal
+	keyArray, err := cryptoutil.KeySliceToArray(key)
+	if err != nil {
+		return nil, errcode.ErrSerialization
 	}
 
-	return to32ByteArray(key), nil
+	return keyArray, nil
 }
 
 func (m *MessageKeystore) GetPrecomputedKeyExpectedCount() int {
