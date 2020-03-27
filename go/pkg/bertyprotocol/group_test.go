@@ -13,7 +13,7 @@ func TestGetGroupForContact(t *testing.T) {
 	sk, _, err := crypto.GenerateEd25519Key(rand.Reader)
 	require.NoError(t, err)
 
-	g, err := GetGroupForContact(sk)
+	g, err := getGroupForContact(sk)
 	require.NoError(t, err)
 
 	require.Equal(t, g.GroupType, bertytypes.GroupTypeContact)

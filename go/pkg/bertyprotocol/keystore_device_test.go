@@ -1,16 +1,15 @@
-package account
+package bertyprotocol
 
 import (
 	"testing"
 
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_New_AccountPrivKey_AccountProofPrivKey(t *testing.T) {
 	ks := keystore.NewMemKeystore()
-	acc := New(ks)
+	acc := NewDeviceKeystore(ks)
 	assert.NotNil(t, acc)
 
 	sk1, err := acc.AccountPrivKey()
@@ -41,7 +40,7 @@ func Test_New_AccountPrivKey_AccountProofPrivKey(t *testing.T) {
 
 func Test_NewWithExistingKeys_AccountPrivKey_AccountProofPrivKey(t *testing.T) {
 	ks1 := keystore.NewMemKeystore()
-	acc1 := New(ks1)
+	acc1 := NewDeviceKeystore(ks1)
 
 	sk1, err := acc1.AccountPrivKey()
 	assert.NoError(t, err)
@@ -75,7 +74,7 @@ func Test_NewWithExistingKeys_AccountPrivKey_AccountProofPrivKey(t *testing.T) {
 
 func Test_DevicePrivKey(t *testing.T) {
 	ks1 := keystore.NewMemKeystore()
-	acc1 := New(ks1)
+	acc1 := NewDeviceKeystore(ks1)
 
 	sk1, err := acc1.AccountPrivKey()
 	assert.NoError(t, err)
@@ -103,14 +102,14 @@ func Test_DevicePrivKey(t *testing.T) {
 
 func Test_ContactGroupPrivKey(t *testing.T) {
 	ks1 := keystore.NewMemKeystore()
-	acc1 := New(ks1)
+	acc1 := NewDeviceKeystore(ks1)
 
 	sk1, err := acc1.AccountPrivKey()
 	assert.NoError(t, err)
 	assert.NotNil(t, sk1)
 
 	ks2 := keystore.NewMemKeystore()
-	acc2 := New(ks2)
+	acc2 := NewDeviceKeystore(ks2)
 
 	sk2, err := acc2.AccountPrivKey()
 	assert.NoError(t, err)
@@ -133,7 +132,7 @@ func Test_MemberDeviceForGroup_contact(t *testing.T) {
 
 func Test_MemberDeviceForGroup_multimember(t *testing.T) {
 	ks1 := keystore.NewMemKeystore()
-	acc1 := New(ks1)
+	acc1 := NewDeviceKeystore(ks1)
 
 	sk1, err := acc1.AccountPrivKey()
 	assert.NoError(t, err)
@@ -148,7 +147,7 @@ func Test_MemberDeviceForGroup_multimember(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, acc2)
 
-	g, _, err := bertyprotocol.NewGroupMultiMember()
+	g, _, err := NewGroupMultiMember()
 	assert.NoError(t, err)
 
 	omd1, err := acc1.MemberDeviceForGroup(g)
@@ -157,16 +156,16 @@ func Test_MemberDeviceForGroup_multimember(t *testing.T) {
 	omd2, err := acc2.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
 
-	omd1MB, err := omd1.Member.Raw()
+	omd1MB, err := omd1.member.Raw()
 	assert.NoError(t, err)
 
-	omd2MB, err := omd2.Member.Raw()
+	omd2MB, err := omd2.member.Raw()
 	assert.NoError(t, err)
 
-	omd1DB, err := omd1.Device.Raw()
+	omd1DB, err := omd1.device.Raw()
 	assert.NoError(t, err)
 
-	omd2DB, err := omd2.Device.Raw()
+	omd2DB, err := omd2.device.Raw()
 	assert.NoError(t, err)
 
 	assert.Equal(t, omd1MB, omd2MB)

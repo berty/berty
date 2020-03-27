@@ -1,4 +1,4 @@
-package orbitutil_test
+package bertyprotocol
 
 import (
 	"context"
@@ -9,7 +9,6 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/orbitutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	orbitdb "berty.tech/go-orbit-db"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -33,7 +32,7 @@ func TestAdd(t *testing.T) {
 	}
 	defer orbit.Close()
 
-	if err := orbit.RegisterAccessControllerType(orbitutil.NewSimpleAccessController); err != nil {
+	if err := orbit.RegisterAccessControllerType(NewSimpleAccessController); err != nil {
 		t.Fatal(err)
 	}
 
@@ -42,7 +41,7 @@ func TestAdd(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ks := &orbitutil.BertySignedKeyStore{}
+	ks := &BertySignedKeyStore{}
 	err = ks.SetKey(sigk)
 	if err != nil {
 		t.Fatal(err)
@@ -59,7 +58,7 @@ func TestAdd(t *testing.T) {
 	}
 
 	g := &bertytypes.Group{PublicKey: pubkB, Secret: sigkB}
-	opts, err := orbitutil.DefaultOptions(g, &orbitdb.CreateDBOptions{}, ks, "log")
+	opts, err := DefaultOrbitDBOptions(g, &orbitdb.CreateDBOptions{}, ks, "log")
 	if err != nil {
 		t.Fatal(err)
 	}

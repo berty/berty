@@ -1,4 +1,4 @@
-package orbitutil
+package bertyprotocol
 
 import (
 	"bytes"
@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/assert"
@@ -28,19 +27,19 @@ func TestMetadataStoreSecret_Basic(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	peers, groupSK := CreatePeersWithGroup(ctx, t, "/tmp/secrets_test", memberCount, deviceCount)
-	defer DropPeers(t, peers)
+	peers, groupSK := createPeersWithGroup(ctx, t, "/tmp/secrets_test", memberCount, deviceCount)
+	defer dropPeers(t, peers)
 
 	secretsAdded := make(chan struct{})
 
 	msA := peers[0].GC.MetadataStore()
 	msB := peers[1].GC.MetadataStore()
 
-	go bertyprotocol.WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[0].GC)
-	go bertyprotocol.WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[1].GC)
-	go WaitForBertyEventType(ctx, t, msA, bertytypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
-	go WaitForBertyEventType(ctx, t, msB, bertytypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
-	InviteAllPeersToGroup(ctx, t, peers, groupSK)
+	go WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[0].GC)
+	go WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[1].GC)
+	go waitForBertyEventType(ctx, t, msA, bertytypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
+	go waitForBertyEventType(ctx, t, msB, bertytypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
+	inviteAllPeersToGroup(ctx, t, peers, groupSK)
 
 	devPkA := peers[0].GC.DevicePubKey()
 	devPkB := peers[1].GC.DevicePubKey()
@@ -105,13 +104,13 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 	defer cancel()
 
 	// Creates N members with M devices each within the same group
-	peers, groupSK := CreatePeersWithGroup(ctx, t, "/tmp/member_test", memberCount, deviceCount)
-	defer DropPeers(t, peers)
+	peers, groupSK := createPeersWithGroup(ctx, t, "/tmp/member_test", memberCount, deviceCount)
+	defer dropPeers(t, peers)
 
 	done := make(chan struct{})
 
 	for _, peer := range peers {
-		go WaitForBertyEventType(ctx, t, peer.GC.MetadataStore(), bertytypes.EventTypeGroupMemberDeviceAdded, len(peers), done)
+		go waitForBertyEventType(ctx, t, peer.GC.MetadataStore(), bertytypes.EventTypeGroupMemberDeviceAdded, len(peers), done)
 	}
 
 	for i, peer := range peers {
@@ -164,8 +163,8 @@ func TestMetadataRendezvousPointLifecycle(t *testing.T) {
 	defer cancel()
 
 	// Creates N members with M devices each within the same group
-	peers, _ := CreatePeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
-	defer DropPeers(t, peers)
+	peers, _ := createPeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
+	defer dropPeers(t, peers)
 
 	ownCG, err := peers[0].DB.OpenAccountGroup(ctx, nil)
 	assert.NoError(t, err)
@@ -174,7 +173,7 @@ func TestMetadataRendezvousPointLifecycle(t *testing.T) {
 	index, ok := meta.Index().(*metadataStoreIndex)
 	require.True(t, ok)
 
-	accSK, err := peers[0].Acc.AccountPrivKey()
+	accSK, err := peers[0].DevKS.AccountPrivKey()
 	assert.NoError(t, err)
 	accPK, err := accSK.GetPublic().Raw()
 	assert.NoError(t, err)
@@ -231,13 +230,13 @@ func TestMetadataContactLifecycle(t *testing.T) {
 	peersCount := 4
 
 	// Creates N members with M devices each within the same group
-	peers, _ := CreatePeersWithGroup(ctx, t, "/tmp/member_test", peersCount, 1)
-	defer DropPeers(t, peers)
+	peers, _ := createPeersWithGroup(ctx, t, "/tmp/member_test", peersCount, 1)
+	defer dropPeers(t, peers)
 
 	var (
 		err      error
-		meta     = make([]bertyprotocol.MetadataStore, peersCount)
-		ownCG    = make([]bertyprotocol.ContextGroup, peersCount)
+		meta     = make([]*metadataStore, peersCount)
+		ownCG    = make([]*groupContext, peersCount)
 		contacts = make([]*bertytypes.ShareableContact, peersCount)
 	)
 
@@ -489,17 +488,17 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	peersCount := 4
 
 	// Creates N members with M devices each within the same group
-	peers, _ := CreatePeersWithGroup(ctx, t, "/tmp/member_test", peersCount, 1)
-	defer DropPeers(t, peers)
+	peers, _ := createPeersWithGroup(ctx, t, "/tmp/member_test", peersCount, 1)
+	defer dropPeers(t, peers)
 
 	// disclose
 	_, err := peers[0].GC.MetadataStore().ContactSendAliasKey(ctx)
 	require.Error(t, err)
 
-	sk, err := peers[0].Acc.ContactGroupPrivKey(peers[1].GC.MemberPubKey())
+	sk, err := peers[0].DevKS.ContactGroupPrivKey(peers[1].GC.MemberPubKey())
 	require.NoError(t, err)
 
-	g, err := bertyprotocol.GetGroupForContact(sk)
+	g, err := getGroupForContact(sk)
 	require.NoError(t, err)
 
 	cg0, err := peers[0].DB.OpenGroup(ctx, g, nil)
@@ -516,10 +515,10 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	require.Empty(t, cg0.MetadataStore().Index().(*metadataStoreIndex).otherAliasKey)
 	require.True(t, cg0.MetadataStore().Index().(*metadataStoreIndex).ownAliasKeySent)
 
-	sk, err = peers[1].Acc.ContactGroupPrivKey(peers[0].GC.MemberPubKey())
+	sk, err = peers[1].DevKS.ContactGroupPrivKey(peers[0].GC.MemberPubKey())
 	require.NoError(t, err)
 
-	g, err = bertyprotocol.GetGroupForContact(sk)
+	g, err = getGroupForContact(sk)
 	require.NoError(t, err)
 
 	cg1, err := peers[1].DB.OpenGroup(ctx, g, nil)
@@ -537,19 +536,19 @@ func TestMetadataGroupsLifecycle(t *testing.T) {
 	defer cancel()
 
 	// Creates N members with M devices each within the same group
-	peers, _ := CreatePeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
-	defer DropPeers(t, peers)
+	peers, _ := createPeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
+	defer dropPeers(t, peers)
 
 	ownCG, err := peers[0].DB.OpenAccountGroup(ctx, nil)
 	assert.NoError(t, err)
 
-	g1, _, err := bertyprotocol.NewGroupMultiMember()
+	g1, _, err := NewGroupMultiMember()
 	require.NoError(t, err)
 
-	g2, _, err := bertyprotocol.NewGroupMultiMember()
+	g2, _, err := NewGroupMultiMember()
 	require.NoError(t, err)
 
-	g3, _, err := bertyprotocol.NewGroupMultiMember()
+	g3, _, err := NewGroupMultiMember()
 	require.NoError(t, err)
 
 	g1PK, err := g1.GetPubKey()

@@ -38,17 +38,17 @@ func (c *client) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request)
 		return nil, errcode.ErrInvalidInput
 	}
 
-	md, err := c.account.MemberDeviceForGroup(g)
+	md, err := c.deviceKeystore.MemberDeviceForGroup(g)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	member, err := md.Member.GetPublic().Raw()
+	member, err := md.member.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	device, err := md.Device.GetPublic().Raw()
+	device, err := md.device.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}

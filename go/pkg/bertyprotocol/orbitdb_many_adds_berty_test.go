@@ -1,4 +1,4 @@
-package orbitutil_test
+package bertyprotocol
 
 import (
 	"context"
@@ -10,11 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/account"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/orbitutil"
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	orbitdb "berty.tech/go-orbit-db"
 	datastore "github.com/ipfs/go-datastore"
@@ -61,15 +58,15 @@ func testAddBerty(ctx context.Context, t *testing.T, api ipfsutil.CoreAPIMock, g
 
 	defer baseDS.Close()
 
-	accountDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("account"))
+	accountDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("deviceKeystore"))
 	messagesDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("messages"))
 	orbitdbDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("orbitdb"))
 
 	accountKS := ipfsutil.NewDatastoreKeystore(accountDS)
-	orbitdbCache := orbitutil.NewOrbitDatastoreCache(orbitdbDS)
-	mk := bertyprotocol.NewDatastoreMessageKeys(messagesDS)
+	orbitdbCache := NewOrbitDatastoreCache(orbitdbDS)
+	mk := NewMessageKeystore(messagesDS)
 
-	odb, err := orbitutil.NewBertyOrbitDB(ctx, api, account.New(accountKS), mk, &orbitdb.NewOrbitDBOptions{Cache: orbitdbCache})
+	odb, err := newBertyOrbitDB(ctx, api, NewDeviceKeystore(accountKS), mk, &orbitdb.NewOrbitDBOptions{Cache: orbitdbCache})
 	require.NoError(t, err)
 
 	defer odb.Close()
@@ -79,7 +76,7 @@ func testAddBerty(ctx context.Context, t *testing.T, api ipfsutil.CoreAPIMock, g
 
 	defer gc.Close()
 
-	err = bertyprotocol.ActivateGroupContext(ctx, gc)
+	err = ActivateGroupContext(ctx, gc)
 	require.NoError(t, err)
 
 	wg := sync.WaitGroup{}
@@ -153,7 +150,7 @@ func TestAddBerty(t *testing.T) {
 
 	defer os.RemoveAll(pathBase)
 
-	g, _, err := bertyprotocol.NewGroupMultiMember()
+	g, _, err := NewGroupMultiMember()
 	require.NoError(t, err)
 
 	testAddBerty(ctx, t, api, g, pathBase, 20, 0)

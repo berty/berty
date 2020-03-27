@@ -2,6 +2,8 @@ package bertyprotocol
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestClient_impl(t *testing.T) {
@@ -9,11 +11,11 @@ func TestClient_impl(t *testing.T) {
 	var _ ProtocolServiceServer = (*client)(nil)
 }
 
-func ExampleNew() {
+func TestEmptyArgs(t *testing.T) {
 	// initialize new client
 	client, err := New(Opts{})
 	if err != nil {
-		panic(err)
+		require.NoError(t, err)
 	}
 	defer client.Close()
 }

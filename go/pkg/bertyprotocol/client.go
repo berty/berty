@@ -27,80 +27,92 @@ type Client interface {
 
 type client struct {
 	// variables
-	ctx             context.Context
-	logger          *zap.Logger
-	ipfsCoreAPI     ipfs_coreapi.CoreAPI
-	odb             BertyOrbitDB
-	accContextGroup ContextGroup
-	account         AccountKeys
-	openedGroups    map[string]ContextGroup
-	groups          map[string]*bertytypes.Group
-	lock            sync.RWMutex
+	ctx            context.Context
+	logger         *zap.Logger
+	ipfsCoreAPI    ipfs_coreapi.CoreAPI
+	odb            *bertyOrbitDB
+	accountGroup   *groupContext
+	deviceKeystore DeviceKeystore
+	openedGroups   map[string]*groupContext
+	groups         map[string]*bertytypes.Group
+	lock           sync.RWMutex
 }
 
 // Opts contains optional configuration flags for building a new Client
 type Opts struct {
-	Logger        *zap.Logger
-	IpfsCoreAPI   ipfs_coreapi.CoreAPI
-	Account       AccountKeys
-	RootContext   context.Context
-	RootDatastore datastore.Batching
-	MessageKeys   MessageKeys
-	OrbitCache    cache.Interface
-	DBConstructor BertyOrbitDBConstructor
+	Logger          *zap.Logger
+	IpfsCoreAPI     ipfs_coreapi.CoreAPI
+	DeviceKeystore  DeviceKeystore
+	MessageKeystore *MessageKeystore
+	RootContext     context.Context
+	RootDatastore   datastore.Batching
+	OrbitCache      cache.Interface
 }
 
-// New initializes a new Client
-func New(opts Opts) (Client, error) {
-	if opts.Account == nil || opts.MessageKeys == nil || opts.DBConstructor == nil {
-		return nil, errcode.ErrInvalidInput
+func defaultClientOptions(opts *Opts) error {
+	if opts.Logger == nil {
+		opts.Logger = zap.NewNop()
 	}
 
-	client := &client{
-		ctx:          opts.RootContext,
-		ipfsCoreAPI:  opts.IpfsCoreAPI,
-		logger:       opts.Logger,
-		groups:       map[string]*bertytypes.Group{},
-		openedGroups: map[string]ContextGroup{},
+	if opts.RootContext == nil {
+		opts.RootContext = context.TODO()
 	}
 
 	if opts.RootDatastore == nil {
 		opts.RootDatastore = ds_sync.MutexWrap(datastore.NewMapDatastore())
 	}
 
-	if opts.Logger == nil {
-		client.logger = zap.NewNop()
+	if opts.DeviceKeystore == nil {
+		ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey("accountGroup")))
+		opts.DeviceKeystore = NewDeviceKeystore(ks)
 	}
 
-	ctx := opts.RootContext
-	if ctx == nil {
-		ctx = context.TODO()
+	if opts.MessageKeystore == nil {
+		mk := ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey("messages"))
+		opts.MessageKeystore = NewMessageKeystore(mk)
 	}
 
 	if opts.IpfsCoreAPI == nil {
 		var err error
-		client.ipfsCoreAPI, _, err = ipfsutil.NewInMemoryCoreAPI(ctx)
+		opts.IpfsCoreAPI, _, err = ipfsutil.NewInMemoryCoreAPI(opts.RootContext)
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return errcode.TODO.Wrap(err)
 		}
 	}
 
-	odb, err := opts.DBConstructor(ctx, opts.IpfsCoreAPI, opts.Account, opts.MessageKeys, &orbitdb.NewOrbitDBOptions{Cache: opts.OrbitCache})
+	return nil
+}
+
+// New initializes a new Client
+func New(opts Opts) (Client, error) {
+	if err := defaultClientOptions(&opts); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	odb, err := newBertyOrbitDB(opts.RootContext, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, &orbitdb.NewOrbitDBOptions{Cache: opts.OrbitCache})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	client.odb = odb
-	client.account = opts.Account
-
-	client.accContextGroup, err = odb.OpenAccountGroup(ctx, nil)
+	acc, err := odb.OpenAccountGroup(opts.RootContext, nil)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	client.groups[string(client.accContextGroup.Group().PublicKey)] = client.accContextGroup.Group()
-	client.openedGroups[string(client.accContextGroup.Group().PublicKey)] = client.accContextGroup
 
-	return client, nil
+	return &client{
+		ctx:            opts.RootContext,
+		ipfsCoreAPI:    opts.IpfsCoreAPI,
+		logger:         opts.Logger,
+		odb:            odb,
+		deviceKeystore: opts.DeviceKeystore,
+		accountGroup:   acc,
+		groups: map[string]*bertytypes.Group{
+			string(acc.Group().PublicKey): acc.Group(),
+		},
+		openedGroups: map[string]*groupContext{
+			string(acc.Group().PublicKey): acc,
+		},
+	}, nil
 }
 
 func (c *client) Close() error {

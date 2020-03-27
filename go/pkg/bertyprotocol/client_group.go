@@ -13,7 +13,7 @@ func (c *client) indexGroups() error {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
-	groups := c.accContextGroup.MetadataStore().ListMultiMemberGroups()
+	groups := c.accountGroup.MetadataStore().ListMultiMemberGroups()
 	for _, g := range groups {
 		if _, ok := c.groups[string(g.PublicKey)]; ok {
 			continue
@@ -22,7 +22,7 @@ func (c *client) indexGroups() error {
 		c.groups[string(g.PublicKey)] = g
 	}
 
-	contacts := c.accContextGroup.MetadataStore().ListContactsByStatus(
+	contacts := c.accountGroup.MetadataStore().ListContactsByStatus(
 		bertytypes.ContactStateToRequest,
 		bertytypes.ContactStateReceived,
 		bertytypes.ContactStateAdded,
@@ -40,12 +40,12 @@ func (c *client) indexGroups() error {
 			return errcode.TODO.Wrap(err)
 		}
 
-		sk, err := c.account.ContactGroupPrivKey(cPK)
+		sk, err := c.deviceKeystore.ContactGroupPrivKey(cPK)
 		if err != nil {
 			return errcode.ErrCryptoKeyGeneration.Wrap(err)
 		}
 
-		g, err := GetGroupForContact(sk)
+		g, err := getGroupForContact(sk)
 		if err != nil {
 			return errcode.ErrOrbitDBOpen.Wrap(err)
 		}
@@ -57,12 +57,12 @@ func (c *client) indexGroups() error {
 }
 
 func (c *client) getContactGroup(key crypto.PubKey) (*bertytypes.Group, error) {
-	sk, err := c.account.ContactGroupPrivKey(key)
+	sk, err := c.deviceKeystore.ContactGroupPrivKey(key)
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	g, err := GetGroupForContact(sk)
+	g, err := getGroupForContact(sk)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
@@ -111,7 +111,7 @@ func (c *client) deactivateGroup(pk crypto.PubKey) error {
 	}
 
 	if cg.Group().GroupType == bertytypes.GroupTypeAccount {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't deactivate account group"))
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't deactivate deviceKeystore group"))
 	}
 
 	_ = cg.Close()
@@ -124,7 +124,7 @@ func (c *client) deactivateGroup(pk crypto.PubKey) error {
 	return nil
 }
 
-func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) (ContextGroup, error) {
+func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) (*groupContext, error) {
 	id, err := pk.Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -160,14 +160,14 @@ func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) (ContextGr
 		return cg, nil
 
 	case bertytypes.GroupTypeAccount:
-		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("account group should already be opened"))
+		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("deviceKeystore group should already be opened"))
 	}
 
 	return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unknown group type"))
 
 }
 
-func (c *client) getContextGroupForID(id []byte) (ContextGroup, error) {
+func (c *client) getContextGroupForID(id []byte) (*groupContext, error) {
 	if len(id) == 0 {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("no group id provided"))
 	}

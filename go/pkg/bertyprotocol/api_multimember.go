@@ -16,7 +16,7 @@ func (c *client) MultiMemberGroupCreate(ctx context.Context, req *bertytypes.Mul
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	_, err = c.accContextGroup.MetadataStore().GroupJoin(ctx, g)
+	_, err = c.accountGroup.MetadataStore().GroupJoin(ctx, g)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -47,7 +47,7 @@ func (c *client) MultiMemberGroupCreate(ctx context.Context, req *bertytypes.Mul
 
 // MultiMemberGroupJoin joins an existing MultiMember group using an invitation
 func (c *client) MultiMemberGroupJoin(ctx context.Context, req *bertytypes.MultiMemberGroupJoin_Request) (*bertytypes.MultiMemberGroupJoin_Reply, error) {
-	_, err := c.accContextGroup.MetadataStore().GroupJoin(ctx, req.Group)
+	_, err := c.accountGroup.MetadataStore().GroupJoin(ctx, req.Group)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -62,7 +62,7 @@ func (c *client) MultiMemberGroupLeave(ctx context.Context, req *bertytypes.Mult
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	_, err = c.accContextGroup.MetadataStore().GroupLeave(ctx, pk)
+	_, err = c.accountGroup.MetadataStore().GroupLeave(ctx, pk)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -72,7 +72,7 @@ func (c *client) MultiMemberGroupLeave(ctx context.Context, req *bertytypes.Mult
 	return &bertytypes.MultiMemberGroupLeave_Reply{}, nil
 }
 
-// MultiMemberGroupAliasResolverDisclose sends an account identity proof to the group members
+// MultiMemberGroupAliasResolverDisclose sends an deviceKeystore identity proof to the group members
 func (c *client) MultiMemberGroupAliasResolverDisclose(ctx context.Context, req *bertytypes.MultiMemberGroupAliasResolverDisclose_Request) (*bertytypes.MultiMemberGroupAliasResolverDisclose_Reply, error) {
 	cg, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {

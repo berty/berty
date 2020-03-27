@@ -1,4 +1,4 @@
-package account
+package bertyprotocol
 
 import (
 	"crypto/ed25519"
@@ -7,8 +7,10 @@ import (
 	"strings"
 	"sync"
 
+	"math"
+	"math/big"
+
 	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/aead/ecdh"
@@ -16,7 +18,15 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-type Account struct {
+type DeviceKeystore interface {
+	AccountPrivKey() (crypto.PrivKey, error)
+	AccountProofPrivKey() (crypto.PrivKey, error)
+	DevicePrivKey() (crypto.PrivKey, error)
+	ContactGroupPrivKey(pk crypto.PubKey) (crypto.PrivKey, error)
+	MemberDeviceForGroup(g *bertytypes.Group) (*ownMemberDevice, error)
+}
+
+type deviceKeystore struct {
 	ks keystore.Keystore
 	mu sync.Mutex
 }
@@ -31,7 +41,7 @@ const (
 )
 
 // AccountPrivKey returns the private key associated with the current account
-func (a *Account) AccountPrivKey() (crypto.PrivKey, error) {
+func (a *deviceKeystore) AccountPrivKey() (crypto.PrivKey, error) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
@@ -39,7 +49,7 @@ func (a *Account) AccountPrivKey() (crypto.PrivKey, error) {
 }
 
 // AccountProofPrivKey returns the private key associated with the current account
-func (a *Account) AccountProofPrivKey() (crypto.PrivKey, error) {
+func (a *deviceKeystore) AccountProofPrivKey() (crypto.PrivKey, error) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
@@ -47,15 +57,15 @@ func (a *Account) AccountProofPrivKey() (crypto.PrivKey, error) {
 }
 
 // DevicePrivKey returns the current device private key
-func (a *Account) DevicePrivKey() (crypto.PrivKey, error) {
+func (a *deviceKeystore) DevicePrivKey() (crypto.PrivKey, error) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
 	return a.getOrGenerateNamedKey(keyDevice)
 }
 
-// ContactGroupPrivKey retrieves the account signing key associated with the supplied contact pub key
-func (a *Account) ContactGroupPrivKey(pk crypto.PubKey) (crypto.PrivKey, error) {
+// ContactGroupPrivKey retrieves the deviceKeystore signing key associated with the supplied contact pub key
+func (a *deviceKeystore) ContactGroupPrivKey(pk crypto.PubKey) (crypto.PrivKey, error) {
 	accountSK, err := a.AccountPrivKey()
 	if err != nil {
 		return nil, err
@@ -65,7 +75,7 @@ func (a *Account) ContactGroupPrivKey(pk crypto.PubKey) (crypto.PrivKey, error) 
 }
 
 // memberDeviceForMultiMemberGroup retrieves the device signing key associated with the supplied group pub key
-func (a *Account) memberDeviceForMultiMemberGroup(groupPK crypto.PubKey) (*bertyprotocol.OwnMemberDevice, error) {
+func (a *deviceKeystore) memberDeviceForMultiMemberGroup(groupPK crypto.PubKey) (*ownMemberDevice, error) {
 	memberSK, err := a.getOrComputeDeviceKeyForGroupMember(groupPK)
 	if err != nil {
 		return nil, err
@@ -76,13 +86,13 @@ func (a *Account) memberDeviceForMultiMemberGroup(groupPK crypto.PubKey) (*berty
 		return nil, err
 	}
 
-	return &bertyprotocol.OwnMemberDevice{
-		Member: memberSK,
-		Device: deviceSK,
+	return &ownMemberDevice{
+		member: memberSK,
+		device: deviceSK,
 	}, nil
 }
 
-func (a *Account) MemberDeviceForGroup(g *bertytypes.Group) (*bertyprotocol.OwnMemberDevice, error) {
+func (a *deviceKeystore) MemberDeviceForGroup(g *bertytypes.Group) (*ownMemberDevice, error) {
 	pk, err := g.GetPubKey()
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -100,9 +110,9 @@ func (a *Account) MemberDeviceForGroup(g *bertytypes.Group) (*bertyprotocol.OwnM
 			return nil, err
 		}
 
-		return &bertyprotocol.OwnMemberDevice{
-			Member: memberSK,
-			Device: deviceSK,
+		return &ownMemberDevice{
+			member: memberSK,
+			device: deviceSK,
 		}, nil
 
 	case bertytypes.GroupTypeMultiMember:
@@ -112,7 +122,7 @@ func (a *Account) MemberDeviceForGroup(g *bertytypes.Group) (*bertyprotocol.OwnM
 	return nil, errcode.ErrInvalidInput
 }
 
-func (a *Account) getOrGenerateNamedKey(name string) (crypto.PrivKey, error) {
+func (a *deviceKeystore) getOrGenerateNamedKey(name string) (crypto.PrivKey, error) {
 	sk, err := a.ks.Get(name)
 	if err == nil {
 		return sk, nil
@@ -132,7 +142,7 @@ func (a *Account) getOrGenerateNamedKey(name string) (crypto.PrivKey, error) {
 	return sk, nil
 }
 
-func (a *Account) getOrGenerateDeviceKeyForGroupDevice(pk crypto.PubKey) (crypto.PrivKey, error) {
+func (a *deviceKeystore) getOrGenerateDeviceKeyForGroupDevice(pk crypto.PubKey) (crypto.PrivKey, error) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
@@ -146,7 +156,7 @@ func (a *Account) getOrGenerateDeviceKeyForGroupDevice(pk crypto.PubKey) (crypto
 	return a.getOrGenerateNamedKey(name)
 }
 
-func (a *Account) getOrComputeECDH(nameSpace string, pk crypto.PubKey, ownSK crypto.PrivKey) (crypto.PrivKey, error) {
+func (a *deviceKeystore) getOrComputeECDH(nameSpace string, pk crypto.PubKey, ownSK crypto.PrivKey) (crypto.PrivKey, error) {
 	pkRaw, err := pk.Raw()
 	if err != nil {
 		return nil, err
@@ -181,7 +191,7 @@ func (a *Account) getOrComputeECDH(nameSpace string, pk crypto.PubKey, ownSK cry
 	return sk, nil
 }
 
-func (a *Account) getOrComputeDeviceKeyForGroupMember(pk crypto.PubKey) (crypto.PrivKey, error) {
+func (a *deviceKeystore) getOrComputeDeviceKeyForGroupMember(pk crypto.PubKey) (crypto.PrivKey, error) {
 	accountProofSK, err := a.AccountProofPrivKey()
 	if err != nil {
 		return nil, err
@@ -190,16 +200,53 @@ func (a *Account) getOrComputeDeviceKeyForGroupMember(pk crypto.PubKey) (crypto.
 	return a.getOrComputeECDH(keyMember, pk, accountProofSK)
 }
 
-// New creates a new Account instance, if the keystore does not hold an account key, one will be created when required
-func New(ks keystore.Keystore) bertyprotocol.AccountKeys {
-	return &Account{
+// ownMemberDevice is own local device part of a group
+type ownMemberDevice struct {
+	member crypto.PrivKey
+	device crypto.PrivKey
+}
+
+func (d *ownMemberDevice) Public() *memberDevice {
+	return &memberDevice{
+		member: d.member.GetPublic(),
+		device: d.device.GetPublic(),
+	}
+}
+
+// memberDevice is a remote device part of a group
+type memberDevice struct {
+	member crypto.PubKey
+	device crypto.PubKey
+}
+
+func newDeviceSecret() (*bertytypes.DeviceSecret, error) {
+	counter, err := rand.Int(rand.Reader, big.NewInt(0).SetUint64(math.MaxUint64))
+	if err != nil {
+		return nil, errcode.ErrRandomGenerationFailed.Wrap(err)
+	}
+
+	chainKey := make([]byte, 32)
+	_, err = rand.Read(chainKey)
+	if err != nil {
+		return nil, errcode.ErrRandomGenerationFailed.Wrap(err)
+	}
+
+	return &bertytypes.DeviceSecret{
+		ChainKey: chainKey,
+		Counter:  counter.Uint64(),
+	}, nil
+}
+
+// New creates a new deviceKeystore instance, if the keystore does not hold an deviceKeystore key, one will be created when required
+func NewDeviceKeystore(ks keystore.Keystore) DeviceKeystore {
+	return &deviceKeystore{
 		ks: ks,
 	}
 }
 
-// NewWithExistingKeys creates a new Account instance and registers the supplied secret key, useful when migrating account to another device
-func NewWithExistingKeys(ks keystore.Keystore, sk crypto.PrivKey, proofSK crypto.PrivKey) (*Account, error) {
-	acc := &Account{
+// NewWithExistingKeys creates a new deviceKeystore instance and registers the supplied secret key, useful when migrating deviceKeystore to another device
+func NewWithExistingKeys(ks keystore.Keystore, sk crypto.PrivKey, proofSK crypto.PrivKey) (DeviceKeystore, error) {
+	acc := &deviceKeystore{
 		ks: ks,
 	}
 
@@ -213,5 +260,3 @@ func NewWithExistingKeys(ks keystore.Keystore, sk crypto.PrivKey, proofSK crypto
 
 	return acc, nil
 }
-
-var _ bertyprotocol.AccountKeys = (*Account)(nil)

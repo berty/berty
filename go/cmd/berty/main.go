@@ -13,11 +13,9 @@ import (
 	"strings"
 
 	"berty.tech/berty/v2/go/cmd/berty/mini"
-	"berty.tech/berty/v2/go/internal/account"
 	"berty.tech/berty/v2/go/internal/banner"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/orbitutil"
 	"berty.tech/berty/v2/go/pkg/bertydemo"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -168,15 +166,15 @@ func main() {
 				}
 				defer rootDS.Close()
 
-				accountKS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
+				deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
 
 				// initialize new protocol client
 				opts := bertyprotocol.Opts{
-					IpfsCoreAPI:   api,
-					Logger:        logger.Named("bertyprotocol"),
-					RootDatastore: rootDS,
-					Account:       account.New(accountKS),
-					OrbitCache:    orbitutil.NewOrbitDatastoreCache(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))),
+					IpfsCoreAPI:    api,
+					Logger:         logger.Named("bertyprotocol"),
+					RootDatastore:  rootDS,
+					DeviceKeystore: bertyprotocol.NewDeviceKeystore(deviceDS),
+					OrbitCache:     bertyprotocol.NewOrbitDatastoreCache(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))),
 				}
 				protocol, err = bertyprotocol.New(opts)
 				if err != nil {

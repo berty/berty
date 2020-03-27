@@ -1,4 +1,4 @@
-package orbitutil
+package bertyprotocol
 
 import (
 	"encoding/hex"
@@ -10,7 +10,7 @@ import (
 	"berty.tech/go-orbit-db/accesscontroller"
 )
 
-func DefaultOptions(g *bertytypes.Group, options *orbitdb.CreateDBOptions, keystore *BertySignedKeyStore, storeType string) (*orbitdb.CreateDBOptions, error) {
+func DefaultOrbitDBOptions(g *bertytypes.Group, options *orbitdb.CreateDBOptions, keystore *BertySignedKeyStore, storeType string) (*orbitdb.CreateDBOptions, error) {
 	var err error
 
 	if options == nil {
@@ -63,8 +63,8 @@ func defaultACForGroup(g *bertytypes.Group, storeType string) (accesscontroller.
 	param := &accesscontroller.CreateAccessControllerOptions{
 		Access: map[string][]string{
 			"write":            {hex.EncodeToString(signingKeyBytes)},
-			IdentityGroupIDKey: {groupID},
-			StoreTypeKey:       {storeType},
+			identityGroupIDKey: {groupID},
+			storeTypeKey:       {storeType},
 		},
 		SkipManifest: true,
 		Type:         "bertysimple",
@@ -84,8 +84,8 @@ func defaultIdentityForGroup(g *bertytypes.Group, ks *BertySignedKeyStore) (*ide
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	identity, err := ks.GetIdentityProvider().CreateIdentity(&identityprovider.CreateIdentityOptions{
-		Type:     IdentityType,
+	identity, err := ks.getIdentityProvider().createIdentity(&identityprovider.CreateIdentityOptions{
+		Type:     identityType,
 		Keystore: ks,
 		ID:       hex.EncodeToString(signingKeyBytes),
 	})
