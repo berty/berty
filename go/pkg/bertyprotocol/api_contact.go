@@ -11,7 +11,7 @@ import (
 func (c *client) ContactAliasKeySend(ctx context.Context, req *bertytypes.ContactAliasKeySend_Request) (*bertytypes.ContactAliasKeySend_Reply, error) {
 	g, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
-		return nil, errcode.ErrMissingGroup.Wrap(err)
+		return nil, errcode.ErrGroupMissing.Wrap(err)
 	}
 
 	if _, err := g.MetadataStore().ContactSendAliasKey(ctx); err != nil {

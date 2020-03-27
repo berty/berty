@@ -30,7 +30,7 @@ type bertyOrbitDB struct {
 func (s *bertyOrbitDB) GetContactGroup(pk crypto.PubKey) (*bertytypes.Group, error) {
 	sk, err := s.account.ContactGroupPrivKey(pk)
 	if err != nil {
-		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	return bertyprotocol.GetGroupForContact(sk)
@@ -125,12 +125,12 @@ func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertytypes.Group, optio
 
 	memberDevice, err := s.account.MemberDeviceForGroup(g)
 	if err != nil {
-		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	// Force secret generation if missing
 	if _, err := bertyprotocol.GetDeviceSecret(ctx, g, s.mk, s.account); err != nil {
-		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	metadataStore, err := s.GroupMetadataStore(ctx, g, options)

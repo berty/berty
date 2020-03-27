@@ -33,7 +33,7 @@ func (m *DatastoreMessageKeys) GetDeviceChainKey(ctx context.Context, pk crypto.
 	if err == datastore.ErrNotFound {
 		return nil, errcode.ErrMissingInput
 	} else if err != nil {
-		return nil, errcode.ErrPersistenceGet.Wrap(err)
+		return nil, errcode.ErrMessageKeyPersistenceGet.Wrap(err)
 	}
 
 	ds := &bertytypes.DeviceSecret{}
@@ -55,7 +55,7 @@ func (m *DatastoreMessageKeys) DelPrecomputedKey(ctx context.Context, device cry
 
 	id := idForCachedKey(deviceRaw, counter)
 	if err := m.store.Delete(id); err != nil {
-		return errcode.ErrPersistencePut.Wrap(err)
+		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
 
 	return nil
@@ -77,7 +77,7 @@ func (m *DatastoreMessageKeys) GetPrecomputedKey(ctx context.Context, device cry
 	if err == datastore.ErrNotFound {
 		return nil, errcode.ErrMissingInput
 	} else if err != nil {
-		return nil, errcode.ErrPersistenceGet.Wrap(err)
+		return nil, errcode.ErrMessageKeyPersistenceGet.Wrap(err)
 	}
 
 	return to32ByteArray(key), nil
@@ -95,7 +95,7 @@ func (m *DatastoreMessageKeys) PutPrecomputedKey(ctx context.Context, device cry
 	id := idForCachedKey(deviceRaw, counter)
 
 	if err := m.store.Put(id, from32ByteArray(mk)); err != nil {
-		return errcode.ErrPersistencePut.Wrap(err)
+		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
 
 	return nil
@@ -111,7 +111,7 @@ func (m *DatastoreMessageKeys) PutKeyForCID(ctx context.Context, id cid.Cid, key
 
 	err := m.store.Put(idForCID(id), from32ByteArray(key))
 	if err != nil {
-		return errcode.ErrPersistencePut.Wrap(err)
+		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
 
 	return nil
@@ -162,7 +162,7 @@ func (m *DatastoreMessageKeys) PutDeviceChainKey(ctx context.Context, device cry
 
 	err = m.store.Put(key, data)
 	if err != nil {
-		return errcode.ErrPersistencePut.Wrap(err)
+		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
 
 	return nil

@@ -10,7 +10,7 @@ import (
 func (c *client) AppMetadataSend(ctx context.Context, req *bertytypes.AppMetadataSend_Request) (*bertytypes.AppMetadataSend_Reply, error) {
 	g, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
-		return nil, errcode.ErrMissingGroup.Wrap(err)
+		return nil, errcode.ErrGroupMissing.Wrap(err)
 	}
 
 	if _, err := g.MetadataStore().SendAppMetadata(ctx, req.Payload); err != nil {
@@ -23,7 +23,7 @@ func (c *client) AppMetadataSend(ctx context.Context, req *bertytypes.AppMetadat
 func (c *client) AppMessageSend(ctx context.Context, req *bertytypes.AppMessageSend_Request) (*bertytypes.AppMessageSend_Reply, error) {
 	g, err := c.getContextGroupForID(req.GroupPK)
 	if err != nil {
-		return nil, errcode.ErrMissingGroup.Wrap(err)
+		return nil, errcode.ErrGroupMissing.Wrap(err)
 	}
 
 	if _, err := g.MessageStore().AddMessage(ctx, req.Payload); err != nil {

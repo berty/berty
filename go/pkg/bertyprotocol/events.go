@@ -1,7 +1,7 @@
 package bertyprotocol
 
 import (
-	"crypto/rand"
+	crand "crypto/rand"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -138,7 +138,7 @@ func OpenGroupEnvelope(g *bertytypes.Group, envelopeBytes []byte) (*bertytypes.G
 	}
 
 	if err := et.SigChecker(g, metadataEvent, payload); err != nil {
-		return nil, nil, errcode.ErrSignatureVerificationFailed.Wrap(err)
+		return nil, nil, errcode.ErrCryptoSignatureVerification.Wrap(err)
 	}
 
 	return metadataEvent, payload, nil
@@ -152,8 +152,8 @@ func SealGroupEnvelope(g *bertytypes.Group, eventType bertytypes.EventType, payl
 
 	var nonce [24]byte
 	nonceArr := make([]byte, 24)
-	if n, err := rand.Read(nonceArr); err != nil || n != 24 {
-		return nil, errcode.ErrRandomGenerationFailed.Wrap(err)
+	if n, err := crand.Read(nonceArr); err != nil || n != 24 {
+		return nil, errcode.ErrCryptoRandomGeneration.Wrap(err)
 	}
 
 	for i := range nonceArr {

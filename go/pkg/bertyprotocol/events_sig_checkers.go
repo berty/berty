@@ -21,11 +21,11 @@ func SigCheckerGroupSigned(g *bertytypes.Group, metadata *bertytypes.GroupMetada
 
 	ok, err := pk.Verify(metadata.Payload, metadata.Sig)
 	if err != nil {
-		return errcode.ErrSignatureVerificationFailed.Wrap(err)
+		return errcode.ErrCryptoSignatureVerification.Wrap(err)
 	}
 
 	if !ok {
-		return errcode.ErrSignatureVerificationFailed
+		return errcode.ErrCryptoSignatureVerification
 	}
 
 	return nil
@@ -53,11 +53,11 @@ func SigCheckerDeviceSigned(g *bertytypes.Group, metadata *bertytypes.GroupMetad
 
 	ok, err = devPK.Verify(metadata.Payload, metadata.Sig)
 	if err != nil {
-		return errcode.ErrSignatureVerificationFailed.Wrap(err)
+		return errcode.ErrCryptoSignatureVerification.Wrap(err)
 	}
 
 	if !ok {
-		return errcode.ErrSignatureVerificationFailed
+		return errcode.ErrCryptoSignatureVerification
 	}
 
 	return nil
@@ -76,11 +76,11 @@ func SigCheckerMemberDeviceAdded(g *bertytypes.Group, metadata *bertytypes.Group
 
 	ok, err = memPK.Verify(msg.DevicePK, msg.MemberSig)
 	if err != nil {
-		return errcode.ErrSignatureVerificationFailed.Wrap(err)
+		return errcode.ErrCryptoSignatureVerification.Wrap(err)
 	}
 
 	if !ok {
-		return errcode.ErrSignatureVerificationFailed
+		return errcode.ErrCryptoSignatureVerification
 	}
 
 	return SigCheckerDeviceSigned(g, metadata, message)

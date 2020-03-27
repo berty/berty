@@ -40,11 +40,11 @@ func (m *Group) IsValid() error {
 
 	ok, err := pk.Verify(m.Secret, m.SecretSig)
 	if err != nil {
-		return errcode.ErrSignatureVerificationFailed.Wrap(err)
+		return errcode.ErrCryptoSignatureVerification.Wrap(err)
 	}
 
 	if !ok {
-		return errcode.ErrSignatureVerificationFailed
+		return errcode.ErrCryptoSignatureVerification
 	}
 
 	return nil
