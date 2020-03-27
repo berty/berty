@@ -31,12 +31,12 @@ func TestError(t *testing.T) {
 		expectedLastCode  int32
 	}{
 		{"ErrNotImplemented", ErrNotImplemented, "ErrNotImplemented(#777)", ErrNotImplemented, 777, 777, 777},
-		{"ErrInternal", ErrInternal, "ErrInternal(#999)", ErrInternal, 999, 999, 999},
+		{"ErrInternal", ErrInternal, "ErrInternal(#888)", ErrInternal, 888, 888, 888},
 		{"ErrNotImplemented.Wrap(errStdHello)", ErrNotImplemented.Wrap(errStdHello), "ErrNotImplemented(#777): hello", errStdHello, 777, 777, 777},
-		{"ErrNotImplemented.Wrap(ErrInternal)", ErrNotImplemented.Wrap(ErrInternal), "ErrNotImplemented(#777): ErrInternal(#999)", ErrInternal, 777, 777, 999},
-		{"ErrNotImplemented.Wrap(ErrInternal.Wrap(errStdHello))", ErrNotImplemented.Wrap(ErrInternal.Wrap(errStdHello)), "ErrNotImplemented(#777): ErrInternal(#999): hello", errStdHello, 777, 777, 999},
+		{"ErrNotImplemented.Wrap(ErrInternal)", ErrNotImplemented.Wrap(ErrInternal), "ErrNotImplemented(#777): ErrInternal(#888)", ErrInternal, 777, 777, 888},
+		{"ErrNotImplemented.Wrap(ErrInternal.Wrap(errStdHello))", ErrNotImplemented.Wrap(ErrInternal.Wrap(errStdHello)), "ErrNotImplemented(#777): ErrInternal(#888): hello", errStdHello, 777, 777, 888},
 		{`errors.Wrap(ErrNotImplemented,blah)`, errors.Wrap(ErrNotImplemented, "blah"), "blah: ErrNotImplemented(#777)", ErrNotImplemented, -1, 777, 777},
-		{`errors.Wrap(ErrNotImplemented.Wrap(ErrInternal),blah)`, errors.Wrap(ErrNotImplemented.Wrap(ErrInternal), "blah"), "blah: ErrNotImplemented(#777): ErrInternal(#999)", ErrInternal, -1, 777, 999},
+		{`errors.Wrap(ErrNotImplemented.Wrap(ErrInternal),blah)`, errors.Wrap(ErrNotImplemented.Wrap(ErrInternal), "blah"), "blah: ErrNotImplemented(#777): ErrInternal(#888)", ErrInternal, -1, 777, 888},
 		{"nil", nil, "<nil>", nil, -1, -1, -1},
 		{"errStdHello", errStdHello, "hello", errStdHello, -1, -1, -1},
 		{"errCodeUndef", errCodeUndef, "UNKNOWN_ERRCODE(#65530)", errCodeUndef, 65530, 65530, 65530},

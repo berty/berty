@@ -2,7 +2,7 @@ package bertyprotocol
 
 import (
 	"context"
-	"crypto/rand"
+	crand "crypto/rand"
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
@@ -78,11 +78,11 @@ func SealPayload(payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.Pr
 
 	sig, err := deviceSK.Sign(payload)
 	if err != nil {
-		return nil, nil, errcode.ErrSignatureFailed.Wrap(err)
+		return nil, nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
 	if _, msgKey, err = deriveNextKeys(ds.ChainKey, nil, g.GetPublicKey()); err != nil {
-		return nil, nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	return secretbox.Seal(nil, payload, uint64AsNonce(ds.Counter+1), &msgKey), sig, nil
@@ -115,7 +115,7 @@ func SealEnvelopeInternal(payload []byte, ds *bertytypes.DeviceSecret, deviceSK 
 
 	nonce, nonceSlice, err := generateNonce()
 	if err != nil {
-		return nil, errcode.ErrRandomGenerationFailed.Wrap(err)
+		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
 	}
 
 	encryptedHeaders := secretbox.Seal(nil, headers, nonce, sk)
@@ -148,7 +148,7 @@ func SealEnvelope(ctx context.Context, mkh MessageKeys, g *bertytypes.Group, dev
 	}
 
 	if err := DeriveDeviceSecret(ctx, mkh, g, deviceSK); err != nil {
-		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	return env, nil
@@ -166,18 +166,18 @@ func DeriveDeviceSecret(ctx context.Context, mkh MessageKeys, g *bertytypes.Grou
 
 	ck, mk, err := deriveNextKeys(ds.ChainKey, nil, g.GetPublicKey())
 	if err != nil {
-		return errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	if err = mkh.PutDeviceChainKey(ctx, deviceSK.GetPublic(), &bertytypes.DeviceSecret{
 		ChainKey: ck,
 		Counter:  ds.Counter + 1,
 	}); err != nil {
-		return errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	if err = mkh.PutPrecomputedKey(ctx, deviceSK.GetPublic(), ds.Counter+1, &mk); err != nil {
-		return errcode.ErrPersistencePut.Wrap(err)
+		return errcode.ErrMessageKeyPersistencePut.Wrap(err)
 	}
 
 	return nil
@@ -298,9 +298,9 @@ func PostDecryptActions(ctx context.Context, m MessageKeys, di *DecryptInfo, g *
 func generateNonce() (*[24]byte, []byte, error) {
 	var out [24]byte
 
-	outSlice, err := ioutil.ReadAll(io.LimitReader(rand.Reader, 24))
+	outSlice, err := ioutil.ReadAll(io.LimitReader(crand.Reader, 24))
 	if err != nil {
-		return nil, nil, errcode.ErrRandomGenerationFailed.Wrap(err)
+		return nil, nil, errcode.ErrCryptoRandomGeneration.Wrap(err)
 	}
 
 	for i, b := range outSlice {
@@ -331,12 +331,12 @@ func deriveNextKeys(ck []byte, salt []byte, groupID []byte) ([]byte, [32]byte, e
 	// Generate next KDF and message keys
 	nextCK, err := ioutil.ReadAll(io.LimitReader(kdf, 32))
 	if err != nil {
-		return nil, nextMsg, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, nextMsg, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	nextMsgSlice, err := ioutil.ReadAll(io.LimitReader(kdf, 32))
 	if err != nil {
-		return nil, nextMsg, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, nextMsg, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	for i, b := range nextMsgSlice {
@@ -401,17 +401,17 @@ func GetDeviceSecret(ctx context.Context, g *bertytypes.Group, mk MessageKeys, a
 		// If secret does not exist, create it
 		ds, err := NewDeviceSecret()
 		if err != nil {
-			return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+			return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 		}
 
 		if err = RegisterChainKey(ctx, mk, g, md.Device.GetPublic(), ds, true); err != nil {
-			return nil, errcode.ErrPersistencePut.Wrap(err)
+			return nil, errcode.ErrMessageKeyPersistencePut.Wrap(err)
 		}
 
 		return ds, nil
 
 	} else if err != nil {
-		return nil, errcode.ErrPersistenceGet.Wrap(err)
+		return nil, errcode.ErrMessageKeyPersistenceGet.Wrap(err)
 	}
 
 	return ds, nil
@@ -435,7 +435,7 @@ func RegisterChainKey(ctx context.Context, mk MessageKeys, g *bertytypes.Group, 
 	}
 
 	if ds, err = PreComputeKeys(ctx, mk, devicePK, g, ds); err != nil {
-		return errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	if err := mk.PutDeviceChainKey(ctx, devicePK, ds); err != nil {

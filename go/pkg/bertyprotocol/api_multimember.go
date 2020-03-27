@@ -13,7 +13,7 @@ import (
 func (c *client) MultiMemberGroupCreate(ctx context.Context, req *bertytypes.MultiMemberGroupCreate_Request) (*bertytypes.MultiMemberGroupCreate_Reply, error) {
 	g, sk, err := NewGroupMultiMember()
 	if err != nil {
-		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	_, err = c.accContextGroup.MetadataStore().GroupJoin(ctx, g)

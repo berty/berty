@@ -57,7 +57,7 @@ func (m *MessageStoreImpl) openMessage(ctx context.Context, e ipfslog.Entry) (*b
 	}
 
 	if inErr = bertyprotocol.PostDecryptActions(ctx, m.mk, decryptInfo, m.g, ownPK, headers); inErr != nil {
-		err = errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		err = errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	return &bertytypes.GroupMessageEvent{

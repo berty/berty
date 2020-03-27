@@ -42,7 +42,7 @@ func (c *client) indexGroups() error {
 
 		sk, err := c.account.ContactGroupPrivKey(cPK)
 		if err != nil {
-			return errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+			return errcode.ErrCryptoKeyGeneration.Wrap(err)
 		}
 
 		g, err := GetGroupForContact(sk)
@@ -59,7 +59,7 @@ func (c *client) indexGroups() error {
 func (c *client) getContactGroup(key crypto.PubKey) (*bertytypes.Group, error) {
 	sk, err := c.account.ContactGroupPrivKey(key)
 	if err != nil {
-		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	g, err := GetGroupForContact(sk)

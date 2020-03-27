@@ -1,7 +1,7 @@
 package bertyprotocol
 
 import (
-	"crypto/rand"
+	crand "crypto/rand"
 	"math"
 	"math/big"
 
@@ -39,15 +39,15 @@ type MemberDevice struct {
 }
 
 func NewDeviceSecret() (*bertytypes.DeviceSecret, error) {
-	counter, err := rand.Int(rand.Reader, big.NewInt(0).SetUint64(math.MaxUint64))
+	counter, err := crand.Int(crand.Reader, big.NewInt(0).SetUint64(math.MaxUint64))
 	if err != nil {
-		return nil, errcode.ErrRandomGenerationFailed.Wrap(err)
+		return nil, errcode.ErrCryptoRandomGeneration.Wrap(err)
 	}
 
 	chainKey := make([]byte, 32)
-	_, err = rand.Read(chainKey)
+	_, err = crand.Read(chainKey)
 	if err != nil {
-		return nil, errcode.ErrRandomGenerationFailed.Wrap(err)
+		return nil, errcode.ErrCryptoRandomGeneration.Wrap(err)
 	}
 
 	return &bertytypes.DeviceSecret{

@@ -9,80 +9,81 @@ option go_package = "berty.tech/berty/go/pkg/errcode";
 option (gogoproto.goproto_enum_prefix_all) = false;
 
 enum ErrCode {
+  //----------------
+  // Special errors
+  //----------------
+
   Undefined = 0; // default value, should never be set manually
 
-  TODO = 666; // indicates that you plan to write a custom error handler later
-  ErrNotImplemented = 777;
-  ErrInternal = 999; // can be used to translate an "unknown" error (without Code), i.e., in gRPC
+  TODO = 666; // indicates that you plan to create an error later
+  ErrNotImplemented = 777; // indicates that a method is not implemented yet
+  ErrInternal = 888; // indicates an unknown error (without Code), i.e. in gRPC
 
-  //
-  // Generic helpers (try to use a more specific error when possible)
-  //
+  //----------------
+  // Generic errors
+  //----------------
 
-  ErrInvalidInput = 101;
-  ErrMissingInput = 102;
-  ErrSerialization = 103;
-  ErrDeserialization = 104;
-  ErrSignatureFailed = 105;
-  ErrSignatureVerificationFailed = 106;
-  ErrRandomGenerationFailed = 107;
-  ErrCryptoDecrypt = 108;
-  ErrCryptoEncrypt = 109;
-  ErrCryptoKeyConversion = 110;
-  ErrMissingMapKey = 111;
-  ErrNotAuthorized = 112;
-  ErrUnsupportedKeyType = 113;
+  // Parameters and I/O errors
 
-  ErrOrbitDBInit = 200;
-  ErrOrbitDBOpen = 201;
-  ErrOrbitDBAppend = 202;
-  ErrOrbitDBSerialization = 203;
-  ErrOrbitDBDeserialization = 204;
-  ErrOrbitDBStoreCast = 205;
-  ErrOrbitDBIndexCast = 206;
+  ErrInvalidInput = 100;
+  ErrMissingInput = 101;
+  ErrSerialization = 102;
+  ErrDeserialization = 103;
+  ErrStreamRead = 104;
+  ErrStreamWrite = 105;
+  ErrMissingMapKey = 106;
 
+  // Crypto errors
 
-  //
-  // Berty Protocol (starting at 1001)
-  //
+  ErrCryptoRandomGeneration = 200;
+  ErrCryptoKeyGeneration = 201;
+  ErrCryptoNonceGeneration = 202;
+  ErrCryptoSignature = 203;
+  ErrCryptoSignatureVerification = 204;
+  ErrCryptoDecrypt = 205;
+  ErrCryptoEncrypt = 206;
+  ErrCryptoKeyConversion = 207;
 
-  ErrSigChainNoEntries = 1001;
-  ErrSigChainInvalidEntryType = 1002;
-  ErrSigChainAlreadyInitialized = 1003;
-  ErrSigChainPermission = 1004;
-  ErrSigChainOperationAlreadyDone = 1005;
-  ErrHandshakeNoPayload = 1006;
-  ErrHandshakeInvalidFlow = 1007;
-  ErrHandshakeInvalidFlowStepNotFound = 1008;
-  ErrHandshakeParams = 1009;
-  ErrHandshakeNoAuthReturned = 1010;
-  ErrHandshakeInvalidKeyType = 1011;
-  ErrHandshakeInvalidSignature = 1012;
-  ErrHandshakeSessionInvalid = 1013;
-  ErrHandshakeKeyNotInSigChain = 1014;
-  ErrHandshakeDecrypt = 1015;
-  ErrGroupMemberLogEventOpen = 1020;
-  ErrGroupMemberLogEventSignature = 1021;
-  ErrGroupMemberLogWrongInviter = 1022;
-  ErrGroupMemberUnknownGroupID = 1023;
-  ErrGroupMemberMissingSecrets = 1024;
-  ErrGroupSecretOtherDestMember = 1030;
-  ErrGroupSecretEntryDoesNotExist = 1031;
-  ErrGroupSecretAlreadySentToMember = 1032;
+  //-----------------
+  // Specific errors
+  //-----------------
 
-  ErrGroupInvitationCantGenerate = 1033;
-  ErrGroupInvalidType = 1034;
-  ErrMissingGroup = 1035;
+  // OrbitDB errors
 
-  ErrSecretKeyGenerationFailed = 1050;
+  ErrOrbitDBInit = 1000;
+  ErrOrbitDBOpen = 1001;
+  ErrOrbitDBAppend = 1002;
+  ErrOrbitDBDeserialization = 1003;
+  ErrOrbitDBStoreCast = 1004;
 
-  ErrPersistencePut = 1060;
-  ErrPersistenceGet = 1061;
+  // Handshake errors
 
-  //
-  // Bridge (starting at 2001)
-  //
+  ErrHandshakeOwnEphemeralKeyGenSend = 1100;
+  ErrHandshakePeerEphemeralKeyRecv = 1101;
+  ErrHandshakeRequesterAuthenticateBoxKeyGen = 1102;
+  ErrHandshakeResponderAcceptBoxKeyGen = 1103;
+  ErrHandshakeRequesterHello = 1104;
+  ErrHandshakeResponderHello = 1105;
+  ErrHandshakeRequesterAuthenticate = 1106;
+  ErrHandshakeResponderAccept = 1107;
 
-  ErrBridgeInterrupted = 2001;
-  ErrBridgeNotRunning = 2002;
+  // Group errors
+
+  ErrGroupMemberLogEventOpen = 1200;
+  ErrGroupMemberLogEventSignature = 1201;
+  ErrGroupMemberUnknownGroupID = 1202;
+  ErrGroupSecretOtherDestMember = 1203;
+  ErrGroupSecretAlreadySentToMember = 1204;
+  ErrGroupInvalidType = 1205;
+  ErrGroupMissing = 1206;
+
+  // Message key errors
+
+  ErrMessageKeyPersistencePut = 1300;
+  ErrMessageKeyPersistenceGet = 1301;
+
+  // Bridge errors
+
+  ErrBridgeInterrupted = 1400;
+  ErrBridgeNotRunning = 1401;
 }

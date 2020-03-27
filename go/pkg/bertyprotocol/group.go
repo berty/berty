@@ -25,7 +25,7 @@ const CurrentGroupVersion = 1
 func NewGroupMultiMember() (*bertytypes.Group, crypto.PrivKey, error) {
 	priv, pub, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	pubBytes, err := pub.Raw()
@@ -35,7 +35,7 @@ func NewGroupMultiMember() (*bertytypes.Group, crypto.PrivKey, error) {
 
 	signing, _, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	signingBytes, err := cryptoutil.SeedFromEd25519PrivateKey(signing)
@@ -45,7 +45,7 @@ func NewGroupMultiMember() (*bertytypes.Group, crypto.PrivKey, error) {
 
 	skSig, err := priv.Sign(signingBytes)
 	if err != nil {
-		return nil, nil, errcode.ErrSignatureFailed.Wrap(err)
+		return nil, nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
 	group := &bertytypes.Group{
@@ -79,24 +79,24 @@ func getKeysForGroupOfContact(contactPairSK crypto.PrivKey) (crypto.PrivKey, cry
 	// Generate next KDF and message keys
 	groupSeed, err := ioutil.ReadAll(io.LimitReader(kdf, 32))
 	if err != nil {
-		return nil, nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	groupSecretSeed, err := ioutil.ReadAll(io.LimitReader(kdf, 32))
 	if err != nil {
-		return nil, nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	sk1 := ed25519.NewKeyFromSeed(groupSeed)
 	groupSK, _, err := crypto.KeyPairFromStdKey(&sk1)
 	if err != nil {
-		return nil, nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	sk2 := ed25519.NewKeyFromSeed(groupSecretSeed)
 	groupSecretSK, _, err := crypto.KeyPairFromStdKey(&sk2)
 	if err != nil {
-		return nil, nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	return groupSK, groupSecretSK, nil
@@ -105,7 +105,7 @@ func getKeysForGroupOfContact(contactPairSK crypto.PrivKey) (crypto.PrivKey, cry
 func GetGroupForContact(contactPairSK crypto.PrivKey) (*bertytypes.Group, error) {
 	groupSK, groupSecretSK, err := getKeysForGroupOfContact(contactPairSK)
 	if err != nil {
-		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 	pubBytes, err := groupSK.GetPublic().Raw()
 	if err != nil {

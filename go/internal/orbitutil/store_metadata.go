@@ -113,7 +113,7 @@ func MetadataStoreAddDeviceToGroup(ctx context.Context, m bertyprotocol.Metadata
 
 	memberSig, err := md.Member.Sign(device)
 	if err != nil {
-		return nil, errcode.ErrSignatureFailed.Wrap(err)
+		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
 	event := &bertytypes.GroupAddMemberDevice{
@@ -124,7 +124,7 @@ func MetadataStoreAddDeviceToGroup(ctx context.Context, m bertyprotocol.Metadata
 
 	sig, err := SignProto(event, md.Device)
 	if err != nil {
-		return nil, errcode.ErrSignatureFailed.Wrap(err)
+		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
 	return MetadataStoreAddEvent(ctx, m, g, bertytypes.EventTypeGroupMemberDeviceAdded, event, sig)
@@ -181,7 +181,7 @@ func MetadataStoreSendSecret(ctx context.Context, m bertyprotocol.MetadataStore,
 
 	sig, err := SignProto(event, md.Device)
 	if err != nil {
-		return nil, errcode.ErrSignatureFailed.Wrap(err)
+		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
 	return MetadataStoreAddEvent(ctx, m, g, bertytypes.EventTypeGroupDeviceSecretAdded, event, sig)
@@ -208,7 +208,7 @@ func (m *MetadataStoreImpl) ClaimGroupOwnership(ctx context.Context, groupSK cry
 
 	sig, err := SignProto(event, groupSK)
 	if err != nil {
-		return nil, errcode.ErrSignatureFailed.Wrap(err)
+		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
 	return MetadataStoreAddEvent(ctx, m, m.g, bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced, event, sig)
@@ -222,7 +222,7 @@ func SignProto(message proto.Message, sk crypto.PrivKey) ([]byte, error) {
 
 	sig, err := sk.Sign(data)
 	if err != nil {
-		return nil, errcode.ErrSignatureFailed.Wrap(err)
+		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
 	return sig, nil
@@ -231,7 +231,7 @@ func SignProto(message proto.Message, sk crypto.PrivKey) ([]byte, error) {
 func MetadataStoreAddEvent(ctx context.Context, m bertyprotocol.MetadataStore, g *bertytypes.Group, eventType bertytypes.EventType, event proto.Marshaler, sig []byte) (operation.Operation, error) {
 	env, err := bertyprotocol.SealGroupEnvelope(g, eventType, event, sig)
 	if err != nil {
-		return nil, errcode.ErrSignatureFailed.Wrap(err)
+		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
 	op := operation.NewOperation(nil, "ADD", env)
@@ -457,7 +457,7 @@ func (m *MetadataStoreImpl) ContactRequestReferenceReset(ctx context.Context) (o
 
 	seed, err := ioutil.ReadAll(io.LimitReader(rand.Reader, bertytypes.RendezvousSeedLength))
 	if err != nil {
-		return nil, errcode.ErrSecretKeyGenerationFailed.Wrap(err)
+		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountContactRequestReferenceReset{
@@ -686,7 +686,7 @@ func (m *MetadataStoreImpl) attributeSignAndAddEvent(ctx context.Context, evt ac
 
 	sig, err := SignProto(evt, md.Device)
 	if err != nil {
-		return nil, errcode.ErrSignatureFailed.Wrap(err)
+		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
 	return MetadataStoreAddEvent(ctx, m, m.g, eventType, evt, sig)
