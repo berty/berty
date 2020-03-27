@@ -69,6 +69,7 @@ const HeaderAppUpdates: React.FC<HeaderAppUpdatesProps> = ({ update }) => {
 							bgColor: color.blue,
 						}}
 						actionIcon='arrow-ios-upward'
+						disabled={true}
 					>
 						<View style={[padding.top.small]}>
 							<ButtonSettingItem
@@ -112,6 +113,7 @@ const BodyUpdates: React.FC<{ update: boolean }> = ({ update }) => {
 						iconSize: 30,
 					}}
 					actionIcon='arrow-ios-downward'
+					disabled={true}
 				/>
 			)}
 			<ButtonSetting
@@ -123,6 +125,7 @@ const BodyUpdates: React.FC<{ update: boolean }> = ({ update }) => {
 					bgColor: color.light.green,
 				}}
 				actionIcon='arrow-ios-downward'
+				disabled={true}
 			/>
 			<ButtonSetting
 				name='Version 2.42.1.1'
@@ -133,6 +136,7 @@ const BodyUpdates: React.FC<{ update: boolean }> = ({ update }) => {
 					bgColor: color.light.red,
 				}}
 				actionIcon='arrow-ios-downward'
+				disabled={true}
 			/>
 			<ButtonSetting
 				name='Version 2.41.9'
@@ -143,6 +147,7 @@ const BodyUpdates: React.FC<{ update: boolean }> = ({ update }) => {
 					bgColor: color.light.green,
 				}}
 				actionIcon='arrow-ios-downward'
+				disabled={true}
 			/>
 			<ButtonSetting
 				name='Version 2.41.8'
@@ -153,6 +158,7 @@ const BodyUpdates: React.FC<{ update: boolean }> = ({ update }) => {
 					bgColor: color.light.green,
 				}}
 				actionIcon='arrow-ios-downward'
+				disabled={true}
 			/>
 			<ButtonSetting
 				name='Version 2.41.7'
@@ -163,6 +169,7 @@ const BodyUpdates: React.FC<{ update: boolean }> = ({ update }) => {
 					bgColor: color.light.red,
 				}}
 				actionIcon='arrow-ios-downward'
+				disabled={true}
 			/>
 			<ButtonSetting
 				name='Version 2.41.6'
@@ -173,6 +180,7 @@ const BodyUpdates: React.FC<{ update: boolean }> = ({ update }) => {
 					bgColor: color.light.blue,
 				}}
 				actionIcon='arrow-ios-downward'
+				disabled={true}
 			/>
 		</View>
 	)

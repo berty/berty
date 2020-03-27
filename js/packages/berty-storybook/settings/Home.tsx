@@ -117,7 +117,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 				icon='bluetooth-outline'
 				onPress={navigate.settings.bluetooth}
 			/>
-			<ButtonSetting name='Dark mode' icon='moon-outline' toggled />
+			<ButtonSetting name='Dark mode' icon='moon-outline' toggled disabled />
 			<ButtonSetting
 				name='About Berty'
 				icon='info-outline'

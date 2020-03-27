@@ -112,14 +112,15 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 				icon='bluetooth-outline'
 				iconSize={30}
 				iconColor={color.blue}
-				toggled={true}
+				toggled
+				disabled
 			/>
 		</View>
 	)
 }
 
 export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
-	const [isBluetooth, setIsBluetooth] = useState(false)
+	const [isBluetooth, setIsBluetooth] = useState(true)
 	const { goBack } = useNavigation()
 	const [{ flex, background }] = useStyles()
 	return (
