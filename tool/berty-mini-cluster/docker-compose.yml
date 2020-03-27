@@ -1,0 +1,42 @@
+version: '3.7'
+
+# 5 letter names found on http://www.babynamescience.com/baby-names-by-length/5-letter-boy-baby-names
+
+x-common: &common
+  image: bertytech/berty
+  environment:
+    - GRP_KEY
+  command: 'mini -g $GRP_KEY'
+
+services:
+  aaron:
+    <<: *common
+  betty:
+    <<: *common
+    network_mode: host
+  chris:
+    <<: *common
+    network_mode: bridge
+  #diane
+  #emily
+  #frank
+  #greta
+  #helen
+  #irene
+  #james
+  #karen
+  #linda
+  #maria
+  #nancy
+  #oscar
+  #peter
+  #quinn
+  #riley
+  #susan
+  #tyler
+  #uriel
+  #venus
+  #willy
+  #xenia
+  #yoana
+  #zooey

@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# check deps
+if ! [ -x "$(command -v berty)" ]; then
+    echo "Error: 'berty' not found, you need to compile it before running this script." >&2
+    exit 1
+fi
+if ! [ -x "$(command -v docker)" ]; then
+    echo "Error: 'docker' is not installed." >&2
+    exit 1
+fi
+if ! [ -x "$(command -v docker-compose)" ]; then
+    echo "Error: 'docker-compose' is not installed." >&2
+    exit 1
+fi
+
+# init env
+if [ ! -f .env ]; then
+    echo "GRP_KEY=`berty groupinit`" > .env
+fi
+
+# cleanup and warm up docker-compose before starting
+docker network rm $(docker network ls | grep berty-mini-cluster | awk '{print $1}') 2>/dev/null
+docker-compose up --no-start
+
+# cleanup
+function cleanup {
+    docker-compose down >/dev/null 2>/dev/null
+}
+trap cleanup EXIT
+
+# the tmux
+TMUX=                                                                                                                      `# force TMUX to run, even if nested` \
+    tmux \
+    new-session "source .env && berty mini -g \$GRP_KEY; read" \; select-pane -T no-docker \;                              `# run a simple instance` \
+    split-window "source .env && docker run -it --rm bertytech/berty mini -g \$GRP_KEY; read" \; select-pane -T docker \;  `# run an instance within docker` \
+    split-window "docker-compose run aaron; read" \; select-pane -T compose-aaron \;                                       `# run instances within docker-compose` \
+    split-window "docker-compose run betty; read" \; select-pane -T compose-betty \; \
+    split-window "docker-compose run chris; read" \; select-pane -T compose-chris \; \
+    select-layout even-vertical \;                                                                                         `# tmux styling` \
+    set pane-border-status top \; \
+    set pane-border-format "#{pane_index} #{pane_current_command} #{pane_title}"

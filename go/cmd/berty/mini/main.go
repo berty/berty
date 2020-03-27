@@ -100,6 +100,9 @@ func Main(opts *Opts) {
 				panic(err)
 			}
 		}
+
+		// if at least a group is specified, switch the active view to the first one
+		tabbedView.NextGroup()
 	}
 
 	input := tview.NewInputField().
