@@ -236,6 +236,7 @@ export const transactions: Transactions = {
 		})
 	},
 	sendContactRequest: function*(payload) {
+		console.log('account.ts:239: sendContactRequest called')
 		const account = (yield select((state) => queries.get(state, { id: payload.id }))) as
 			| Entity
 			| undefined

@@ -64,7 +64,7 @@ deps.darwin: deps
 .PHONY: start.metro
 start.metro: export PWD := $(PWD)
 start.metro: port ?= 8081
-start.metro: host ?= 127.0.0.1
+start.metro: host ?= 192.168.1.36
 start.metro: deps
 	$(call check-program, lsof)
 	$(eval pid := $(shell lsof -t -i :8081 -s TCP:LISTEN))

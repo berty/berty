@@ -30,16 +30,19 @@ const ScanBody: React.FC<{}> = () => {
 	const _styles = useStylesScan()
 	const [{ padding, border, background }] = useStyles()
 	const sendContactRequest = Chat.useAccountSendContactRequest()
+	const navigation = useNavigation()
 	return (
 		<View style={[padding.medium]}>
 			<View style={[border.radius.scale(20), background.black, padding.scale(30)]}>
 				<View style={[border.radius.scale(20), _styles.body]}>
 					<QRCodeScanner
-						onRead={({ data, type }) => {
-							if ((type as string) === 'QR_CODE') {
+						onRead={({ data, type }: { data: string; type: string }) => {
+							console.warn('code read', data, type)
+							if (type === 'QR_CODE' || type === 'org.iso.QRCode') {
 								// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
 								console.log('Scan.tsx: found QR:', data)
 								sendContactRequest(data)
+								navigation.goBack()
 							}
 						}}
 						cameraProps={{ captureAudio: false }}
