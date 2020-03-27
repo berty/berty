@@ -111,7 +111,8 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 				icon='bell-outline'
 				iconSize={30}
 				iconColor={color.blue}
-				toggled={true}
+				toggled
+				disabled
 			/>
 			<ButtonSetting
 				name='ContactRequests'
@@ -119,6 +120,7 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 				icon='person-add-outline'
 				iconSize={30}
 				iconColor={color.blue}
+				disabled
 			>
 				<Text style={[_styles.buttonSettingText]}>
 					Receive a notification everytime someones sends you a contact request
@@ -130,20 +132,23 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 				iconSize={30}
 				iconColor={color.blue}
 				style={[margin.top.medium]}
+				disabled
 			>
-				<ButtonSetting name='Display noitifications' toggled={true} alone={false} />
-				<ButtonSetting name='Messages preview' toggled={true} alone={false} />
+				<ButtonSetting name='Display noitifications' toggled disabled alone={false} />
+				<ButtonSetting name='Messages preview' toggled disabled alone={false} />
 				<ButtonSetting
 					name='Sound'
 					actionIcon='arrow-ios-forward'
 					previewValue='Note'
 					alone={false}
+					disabled
 				/>
 				<ButtonSetting
 					name='Exceptions'
 					actionIcon='arrow-ios-forward'
 					previewValue='Add'
 					alone={false}
+					disabled
 				/>
 			</FactionButtonSetting>
 			<FactionButtonSetting
@@ -152,14 +157,16 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 				iconSize={30}
 				iconColor={color.blue}
 				style={[margin.top.medium]}
+				disabled
 			>
-				<ButtonSetting name='Display noitifications' toggled={true} alone={false} />
-				<ButtonSetting name='Messages preview' toggled={true} alone={false} />
+				<ButtonSetting name='Display noitifications' toggled disabled alone={false} />
+				<ButtonSetting name='Messages preview' toggled disabled alone={false} />
 				<ButtonSetting
 					name='Sound'
 					actionIcon='arrow-ios-forward'
 					previewValue='Bambou'
 					alone={false}
+					disabled
 				/>
 				<ButtonSetting
 					name='Exceptions'
@@ -170,6 +177,7 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 						bgColor: color.light.blue,
 					}}
 					alone={false}
+					disabled
 				/>
 			</FactionButtonSetting>
 		</View>
@@ -177,7 +185,7 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 }
 
 export const Notifications: React.FC<ScreenProps.Settings.Notifications> = () => {
-	const [isAuthorize, setIsAuthorize] = useState(false)
+	const [isAuthorize, setIsAuthorize] = useState(true)
 	const { goBack } = useNavigation()
 	const [{ padding, flex, background }] = useStyles()
 	return (

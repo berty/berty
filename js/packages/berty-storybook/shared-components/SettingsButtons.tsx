@@ -39,6 +39,8 @@ type SettingButtonProps = {
 	previewValue?: string
 	previewValueColor?: ColorsTypes
 	onPress?: () => void
+	//
+	disabled?: boolean
 }
 
 // Style
@@ -71,6 +73,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	style = null,
 	actionIcon = !toggled && 'arrow-ios-forward',
 	onPress,
+	disabled = false,
 }) => {
 	const [isToggle, setIsToggle] = useState()
 	const _styles = useStylesSettingButton()
@@ -78,7 +81,15 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 
 	return (
 		<TouchableOpacity
-			activeOpacity={toggled ? 1 : 0.2}
+			activeOpacity={
+				toggled && !disabled
+					? 1
+					: 0.2 || (disabled && !toggled)
+					? 0.5
+					: 0.2 || (toggled && disabled)
+					? 0.5
+					: 0.2
+			}
 			style={[
 				_styles.settingButton,
 				background.white,
@@ -87,6 +98,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 				alone ? border.radius.medium : null,
 				alone ? border.shadow.medium : null,
 				alone ? margin.top.scale(20) : null,
+				disabled ? opacity(0.5) : null,
 			]}
 			onPress={onPress}
 		>
@@ -180,6 +192,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					)}
 					{toggled && (
 						<Toggle
+							disabled={disabled}
 							style={padding.right.scale(5)}
 							status='primary'
 							checked={varToggle || isToggle}
@@ -217,6 +230,7 @@ type FactionButtonSettingProps = {
 		stateIconColor?: ColorsTypes
 	}
 	style?: StyleProp<any>
+	disabled?: boolean
 }
 
 // Styles
@@ -228,6 +242,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 	iconColor = 'blue',
 	state = {},
 	style = null,
+	disabled = false,
 }) => {
 	const _styles = useStylesSettingButton()
 	const [{ background, border, padding, flex, height, row, opacity, margin, text }] = useStyles()
@@ -238,6 +253,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 				border.shadow.medium,
 				border.radius.medium,
 				padding.horizontal.medium,
+				disabled && opacity(0.5),
 				style,
 			]}
 		>
@@ -332,6 +348,7 @@ type ButtonSettingRowProps = {
 		color: ColorsTypes
 		style: StyleProp<any>
 		onPress?: () => void
+		disabled?: boolean
 	}[]
 	numberOfLines?: number
 	style?: StyleProp<any>
@@ -353,11 +370,12 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 	styleText = null,
 }) => {
 	const _styles = useStylesButtonSettingRow()
-	const [{ flex, row, margin, padding, border, background, text }] = useStyles()
+	const [{ flex, row, margin, padding, border, background, text, opacity }] = useStyles()
 	return (
 		<View style={[flex.tiny, row.fill, margin.top.medium, style, { alignItems: 'center' }]}>
 			{state.map((obj) => (
 				<TouchableOpacity
+					activeOpacity={obj.disabled ? 0.5 : 1}
 					style={[
 						flex.tiny,
 						padding.medium,
@@ -365,6 +383,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 						border.shadow.medium,
 						background.white,
 						obj.style,
+						obj.disabled ? opacity(0.5) : null,
 						{ alignItems: 'center', justifyContent: 'center' },
 					]}
 					onPress={obj.onPress}

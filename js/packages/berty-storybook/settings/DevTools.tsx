@@ -20,18 +20,6 @@ const useStylesDevTools = () => {
 		buttonRowMarginTop: margin.top.scale(20),
 	}
 }
-const _devToolsStyles = StyleSheet.create({
-	buttonRow: {
-		marginRight: 20,
-		height: 90,
-	},
-	lastButtonRow: {
-		height: 90,
-	},
-	buttonRowMarginTop: {
-		marginTop: 20,
-	},
-})
 
 const HeaderDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
@@ -46,18 +34,21 @@ const HeaderDevTools: React.FC<{}> = () => {
 						icon: 'smartphone-outline',
 						color: color.dark.grey,
 						style: _styles.buttonRow,
+						disabled: true,
 					},
 					{
 						name: 'List events',
 						icon: 'list-outline',
 						color: color.dark.grey,
 						style: _styles.buttonRow,
+						disabled: true,
 					},
 					{
 						name: 'Restart daemon',
 						icon: 'repeat-outline',
 						color: color.blue,
 						style: _styles.lastButtonRow,
+						disabled: true,
 					},
 				]}
 				style={[_styles.buttonRowMarginTop]}
@@ -70,28 +61,23 @@ const HeaderDevTools: React.FC<{}> = () => {
 const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
-	const account = Chat.useAccount()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
-			<ButtonSetting
-				name='Replay Events'
-				icon='arrowhead-right-outline'
-				iconSize={30}
-				iconColor={color.yellow}
-			/>
 			<ButtonSetting
 				name='Bot mode'
 				icon='briefcase-outline'
 				iconSize={30}
 				iconColor={color.green}
-				toggled={true}
+				toggled
+				disabled
 			/>
 			<ButtonSetting
 				name='local gRPC'
 				icon='hard-drive-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
-				toggled={true}
+				toggled
+				disabled
 			/>
 			<ButtonSetting
 				name='Console logs'
@@ -99,6 +85,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconSize={30}
 				iconColor={color.dark.grey}
 				actionIcon='arrow-ios-forward'
+				disabled
 			/>
 			<ButtonSetting
 				name='Network'
@@ -106,6 +93,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconSize={30}
 				iconColor={color.dark.grey}
 				actionIcon='arrow-ios-forward'
+				disabled
 			/>
 			<ButtonSetting
 				name='Notifications'
@@ -113,6 +101,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconSize={30}
 				iconColor={color.dark.grey}
 				actionIcon='arrow-ios-forward'
+				disabled
 			/>
 			<ButtonSettingRow
 				state={[
@@ -121,18 +110,21 @@ const BodyDevTools: React.FC<{}> = () => {
 						icon: 'smartphone-outline',
 						color: color.dark.grey,
 						style: _styles.buttonRow,
+						disabled: true,
 					},
 					{
 						name: 'Generate fake datas',
 						icon: 'book-outline',
 						color: color.dark.grey,
 						style: _styles.buttonRow,
+						disabled: true,
 					},
 					{
 						name: 'Restart daemon',
 						icon: 'repeat-outline',
 						color: color.red,
 						style: _styles.lastButtonRow,
+						disabled: true,
 					},
 				]}
 				style={[_styles.buttonRowMarginTop]}
