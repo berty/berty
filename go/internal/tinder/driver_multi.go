@@ -110,8 +110,6 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 				return
 			}
 		}
-
-		return
 	}()
 
 	return cpeers, nil

@@ -291,7 +291,7 @@ func deriveNextKeys(ck []byte, salt []byte, groupID []byte) ([]byte, [32]byte, e
 	hash := sha256.New
 
 	// Generate Pseudo Random Key using ck as IKM and salt
-	prk := hkdf.Extract(hash, ck[:], salt[:])
+	prk := hkdf.Extract(hash, ck, salt)
 	if len(prk) == 0 {
 		return nil, nextMsg, errcode.ErrInternal
 	}
@@ -380,7 +380,6 @@ func getDeviceSecret(ctx context.Context, g *bertytypes.Group, mk *MessageKeysto
 		}
 
 		return ds, nil
-
 	} else if err != nil {
 		return nil, errcode.ErrMessageKeyPersistenceGet.Wrap(err)
 	}

@@ -14,7 +14,7 @@ const (
 	totalColumns = stopColumn - startColumn + 1
 )
 
-const banner = `
+const Banner = `
           /\
      /\  / /\  ______
     / /\/ /  \/  |   \
@@ -26,11 +26,6 @@ const banner = `
      /_____/      /____/\__/_/  \__/\__ /
     /__/                           /___/
 `
-
-// Banner returns the ascii-art representation of the Berty bird
-func Banner() string {
-	return banner
-}
 
 // Say returns an ascii-art representation of the Berty bird saying something
 func Say(message string) string {
@@ -47,7 +42,7 @@ func Say(message string) string {
 		ml = append([]string{""}, ml...)
 	}
 
-	bl := strings.Split(banner, "\n")
+	bl := strings.Split(Banner, "\n")
 	output := []string{}
 	j := 0
 	for i := 0; i < len(bl); i++ {
@@ -97,5 +92,4 @@ func wordwrap(text string, lineWidth int) string {
 	}
 
 	return wrapped
-
 }

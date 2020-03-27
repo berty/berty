@@ -35,7 +35,7 @@ var eventTypesMapper = map[bertytypes.EventType]struct {
 	bertytypes.EventTypeGroupMetadataPayloadSent:               {Message: &bertytypes.AppMetadata{}, SigChecker: sigCheckerMissing},
 }
 
-func newEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *bertytypes.Group) (*bertytypes.EventContext, error) {
+func newEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *bertytypes.Group) *bertytypes.EventContext {
 	parentIDsBytes := make([][]byte, len(parentIDs))
 	for i, parentID := range parentIDs {
 		parentIDsBytes[i] = parentID.Bytes()
@@ -45,7 +45,7 @@ func newEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *bertytypes.Group) 
 		ID:        eventID.Bytes(),
 		ParentIDs: parentIDsBytes,
 		GroupPK:   g.PublicKey,
-	}, nil
+	}
 }
 
 func getParentsForCID(log ipfslog.Log, c cid.Cid) []cid.Cid {
@@ -79,16 +79,13 @@ func getParentsForCID(log ipfslog.Log, c cid.Cid) []cid.Cid {
 
 func newGroupMetadataEventFromEntry(log ipfslog.Log, e ipfslog.Entry, metadata *bertytypes.GroupMetadata, event proto.Message, g *bertytypes.Group) (*bertytypes.GroupMetadataEvent, error) {
 	// TODO: if parent is a merge node we should return the next nodes of it
-	evtCtx, err := newEventContext(e.GetHash(), getParentsForCID(log, e.GetHash()), g)
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
 
 	eventBytes, err := proto.Marshal(event)
 	if err != nil {
 		return nil, errcode.ErrSerialization
 	}
 
+	evtCtx := newEventContext(e.GetHash(), getParentsForCID(log, e.GetHash()), g)
 	return &bertytypes.GroupMetadataEvent{
 		EventContext: evtCtx,
 		Metadata:     metadata,

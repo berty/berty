@@ -57,7 +57,7 @@ func (m *Group) GroupIDAsString() string {
 
 func (m *Group) GetSharedSecret() (*[32]byte, error) {
 	sharedSecret := [32]byte{}
-	copy(sharedSecret[:], m.Secret[:])
+	copy(sharedSecret[:], m.Secret)
 
 	return &sharedSecret, nil
 }

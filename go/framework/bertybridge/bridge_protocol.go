@@ -56,7 +56,6 @@ func NewProtocolBridge(config *ProtocolConfig) (*Protocol, error) {
 	}
 
 	return newProtocolBridge(logger, config)
-
 }
 
 func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, error) {

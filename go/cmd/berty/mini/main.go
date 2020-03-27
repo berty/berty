@@ -11,7 +11,7 @@ import (
 	"github.com/gdamore/tcell"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
-	ipfslogger "github.com/ipfs/go-log"
+	p2plog "github.com/ipfs/go-log"
 	"github.com/juju/fslock"
 	"github.com/rivo/tview"
 	"github.com/whyrusleeping/go-logging"
@@ -24,7 +24,7 @@ type Opts struct {
 }
 
 func Main(opts *Opts) {
-	ipfslogger.SetAllLoggers(logging.CRITICAL)
+	p2plog.SetAllLoggers(logging.CRITICAL)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -136,21 +136,17 @@ func Main(opts *Opts) {
 			tcell.KeyUp: func() bool {
 				if event.Modifiers() == tcell.ModAlt || event.Modifiers() == tcell.ModCtrl {
 					tabbedView.PrevGroup()
-					return true
+				} else {
+					input.SetText(tabbedView.GetActiveViewGroup().inputHistory.Prev())
 				}
-
-				input.SetText(tabbedView.GetActiveViewGroup().inputHistory.Prev())
-
 				return true
 			},
 			tcell.KeyDown: func() bool {
 				if event.Modifiers() == tcell.ModAlt || event.Modifiers() == tcell.ModCtrl {
 					tabbedView.NextGroup()
-					return true
+				} else {
+					input.SetText(tabbedView.GetActiveViewGroup().inputHistory.Next())
 				}
-
-				input.SetText(tabbedView.GetActiveViewGroup().inputHistory.Next())
-
 				return true
 			},
 		}

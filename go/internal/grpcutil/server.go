@@ -14,11 +14,12 @@ import (
 // BertyCustomPrefix is a multiformat custom prefix
 const BertyCustomPrefix = 0xbe00
 
-const P_GRPC = BertyCustomPrefix + 0x0002           //nolint:golint
-const P_GRPC_WEB = BertyCustomPrefix + 0x0004       //nolint:golint
-const P_GRPC_WEBSOCKET = BertyCustomPrefix + 0x0008 //nolint:golint
-
-// const P_GRPC_GATEWAY = BertyCustomPrefix + 0x0016
+const (
+	P_GRPC           = BertyCustomPrefix + 0x0002 //nolint:golint
+	P_GRPC_WEB       = BertyCustomPrefix + 0x0004 //nolint:golint
+	P_GRPC_WEBSOCKET = BertyCustomPrefix + 0x0008 //nolint:golint
+	// P_GRPC_GATEWAY = BertyCustomPrefix + 0x0016
+)
 
 var protos = []ma.Protocol{
 	{
@@ -61,9 +62,12 @@ type listener struct {
 	grpcProtocol ma.Multiaddr
 }
 
-func Listen(maddr ma.Multiaddr) (l Listener, err error) {
-	var maListener manet.Listener
-	var component *ma.Component
+func Listen(maddr ma.Multiaddr) (Listener, error) {
+	var (
+		maListener manet.Listener
+		component  *ma.Component
+		err        error
+	)
 
 	component, _ = ma.NewComponent("grpc", "") // default to grpc
 	ma.ForEach(maddr, func(c ma.Component) bool {
@@ -80,21 +84,21 @@ func Listen(maddr ma.Multiaddr) (l Listener, err error) {
 	})
 
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	var grpcProtocol ma.Multiaddr
 	if grpcProtocol, err = ma.NewMultiaddrBytes(component.Bytes()); err != nil {
-		return
+		return nil, err
 	}
 
 	maddr = maddr.Decapsulate(grpcProtocol)
 	if maListener, err = manet.Listen(maddr); err != nil {
-		return
+		return nil, err
 	}
 
-	l = &listener{maListener, grpcProtocol}
-	return
+	l := listener{maListener, grpcProtocol}
+	return &l, nil
 }
 
 func (l *listener) GRPCMultiaddr() ma.Multiaddr {
@@ -159,6 +163,5 @@ func init() {
 		if err := ma.AddProtocol(proto); err != nil {
 			panic(err)
 		}
-
 	}
 }

@@ -19,18 +19,35 @@ linters-settings:
 linters:
   disable-all: true
   enable:
-    - goconst
-    - misspell
+    - bodyclose
     - deadcode
-    - misspell
-    - structcheck
+    - depguard
+    - dogsled
+    #- dupl
     - errcheck
+    - gochecknoinits
+    #- gocognit
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - golint
+    - gosimple
+    - govet
+    - ineffassign
+    #- interfacer
+    - maligned
+    - misspell
+    - nakedret
+    #- prealloc
+    - scopelint
+    - staticcheck
+    - structcheck
+    #- stylecheck
+    - typecheck
+    - unconvert
+    - unparam
     - unused
     - varcheck
-    - staticcheck
-    - gochecknoinits
-    - unconvert
-    - gofmt
-#    - goimports # disabling goimports while we can't configure it to ignore vendors (github.com/whyrusleeping/go-logging seems to be badly formated)
-    - golint
-    - ineffassign
+    - whitespace

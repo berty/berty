@@ -37,5 +37,5 @@ func (m *LazyMessage) FromBytes(buf []byte) *LazyMessage {
 var _ proto.Message = (*LazyMessage)(nil)
 
 func (m *LazyMessage) Reset()         { *m = LazyMessage{} }
-func (m *LazyMessage) String() string { return string(m.buf[:]) }
+func (m *LazyMessage) String() string { return string(m.buf) }
 func (m *LazyMessage) ProtoMessage()  {}

@@ -1,11 +1,11 @@
 package tinder
 
 import (
+	p2p_routing "github.com/libp2p/go-libp2p-core/routing"
 	p2p_discovery "github.com/libp2p/go-libp2p-discovery"
-	p2p_dht "github.com/libp2p/go-libp2p-kad-dht"
 )
 
-func NewDHTDriver(dht *p2p_dht.IpfsDHT) Driver {
-	disc := p2p_discovery.NewRoutingDiscovery(dht)
+func NewDHTDriver(cr p2p_routing.ContentRouting) Driver {
+	disc := p2p_discovery.NewRoutingDiscovery(cr)
 	return ComposeDriver(disc, disc, NoopUnregisterer)
 }

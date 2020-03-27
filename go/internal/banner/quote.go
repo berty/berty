@@ -32,7 +32,7 @@ func RandomQuote() Quote {
 
 func QOTD() Quote {
 	base := time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC) // FIXME: use local timezone if available
-	seed := time.Now().Sub(base).Hours() / 24
+	seed := time.Since(base).Hours() / 24
 	r := mrand.New(mrand.NewSource(int64(seed)))
 	return quotes[r.Intn(len(quotes))]
 }

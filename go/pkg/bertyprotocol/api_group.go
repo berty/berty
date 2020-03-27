@@ -14,7 +14,8 @@ func (c *client) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request)
 		err error
 	)
 
-	if req.GroupPK != nil {
+	switch {
+	case req.GroupPK != nil:
 		pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 		if err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -24,7 +25,7 @@ func (c *client) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
-	} else if req.ContactPK != nil {
+	case req.ContactPK != nil:
 		pk, err := crypto.UnmarshalEd25519PublicKey(req.ContactPK)
 		if err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -34,7 +35,7 @@ func (c *client) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request)
 		if err != nil {
 			return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 		}
-	} else {
+	default:
 		return nil, errcode.ErrInvalidInput
 	}
 
@@ -66,7 +67,8 @@ func (c *client) ActivateGroup(ctx context.Context, req *bertytypes.ActivateGrou
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	if _, err := c.activateGroup(ctx, pk); err != nil {
+	err = c.activateGroup(ctx, pk)
+	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 

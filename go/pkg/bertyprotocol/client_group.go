@@ -124,20 +124,20 @@ func (c *client) deactivateGroup(pk crypto.PubKey) error {
 	return nil
 }
 
-func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) (*groupContext, error) {
+func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) error {
 	id, err := pk.Raw()
 	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
+		return errcode.ErrSerialization.Wrap(err)
 	}
 
 	cg, err := c.getContextGroupForID(id)
 	if err == nil && cg != nil {
-		return cg, nil
+		return nil
 	}
 
 	g, err := c.getGroupForPK(pk)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return errcode.TODO.Wrap(err)
 	}
 
 	c.lock.Lock()
@@ -147,24 +147,22 @@ func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) (*groupCon
 	case bertytypes.GroupTypeContact, bertytypes.GroupTypeMultiMember:
 		cg, err := c.odb.OpenGroup(ctx, g, nil)
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return errcode.TODO.Wrap(err)
 		}
 
 		err = ActivateGroupContext(ctx, cg)
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return errcode.TODO.Wrap(err)
 		}
 
 		c.openedGroups[string(id)] = cg
 
-		return cg, nil
-
+		return nil
 	case bertytypes.GroupTypeAccount:
-		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("deviceKeystore group should already be opened"))
+		return errcode.ErrInternal.Wrap(fmt.Errorf("deviceKeystore group should already be opened"))
 	}
 
-	return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unknown group type"))
-
+	return errcode.ErrInternal.Wrap(fmt.Errorf("unknown group type"))
 }
 
 func (c *client) getContextGroupForID(id []byte) (*groupContext, error) {

@@ -43,12 +43,6 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry) (*berty
 		return nil, err
 	}
 
-	eventContext, err := newEventContext(e.GetHash(), e.GetNext(), m.g)
-	if err != nil {
-		// TODO: log
-		return nil, err
-	}
-
 	ownPK := crypto.PubKey(nil)
 	md, inErr := m.devKS.MemberDeviceForGroup(m.g)
 	if inErr == nil {
@@ -59,6 +53,7 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry) (*berty
 		err = errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
+	eventContext := newEventContext(e.GetHash(), e.GetNext(), m.g)
 	return &bertytypes.GroupMessageEvent{
 		EventContext: eventContext,
 		Headers:      headers,
