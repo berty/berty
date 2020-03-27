@@ -38,6 +38,7 @@ for FILE in $STAGED_GO_FILES; do
     lint_filters=(
         "should have comment or be unexported"
         "should have comment \(or a comment on this block\) or be unexported"
+        "don't use ALL_CAPS in Go names; use CamelCase"
     )
     command="$GOLINT $FILE"
     for filter in "${lint_filters[@]}"; do

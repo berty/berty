@@ -68,7 +68,7 @@ func getKeysForGroupOfContact(contactPairSK crypto.PrivKey) (crypto.PrivKey, cry
 	}
 
 	// Generate Pseudo Random Key using ck as IKM and salt
-	prk := hkdf.Extract(hash, ck[:], nil)
+	prk := hkdf.Extract(hash, ck, nil)
 	if len(prk) == 0 {
 		return nil, nil, errcode.ErrInternal
 	}
@@ -144,7 +144,7 @@ func getGroupForAccount(priv, signing crypto.PrivKey) (*bertytypes.Group, error)
 	}, nil
 }
 
-func metadataStoreListSecrets(ctx context.Context, gc *groupContext) (map[crypto.PubKey]*bertytypes.DeviceSecret, error) {
+func metadataStoreListSecrets(ctx context.Context, gc *groupContext) map[crypto.PubKey]*bertytypes.DeviceSecret {
 	publishedSecrets := map[crypto.PubKey]*bertytypes.DeviceSecret{}
 
 	m := gc.MetadataStore()
@@ -163,7 +163,7 @@ func metadataStoreListSecrets(ctx context.Context, gc *groupContext) (map[crypto
 		publishedSecrets[pk] = ds
 	}
 
-	return publishedSecrets, nil
+	return publishedSecrets
 }
 
 func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) error {
@@ -183,7 +183,6 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) er
 		if err = registerChainKey(ctx, gc.MessageKeystore(), gc.Group(), pk, ds, gc.DevicePubKey().Equals(pk)); err != nil {
 			// TODO: log
 			continue
-
 		}
 	}
 
@@ -191,11 +190,7 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) er
 }
 
 func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc *groupContext) error {
-	publishedSecrets, err := metadataStoreListSecrets(ctx, gc)
-
-	if err != nil {
-		return errcode.TODO.Wrap(err)
-	}
+	publishedSecrets := metadataStoreListSecrets(ctx, gc)
 
 	for pk, sec := range publishedSecrets {
 		if err := registerChainKey(ctx, gc.MessageKeystore(), gc.Group(), pk, sec, gc.DevicePubKey().Equals(pk)); err != nil {
@@ -298,11 +293,6 @@ func openDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	nonce, err := groupIDToNonce(group)
-	if err != nil {
-		return nil, nil, errcode.ErrSerialization.Wrap(err)
-	}
-
 	senderDevicePubKey, err := crypto.UnmarshalEd25519PublicKey(s.DevicePK)
 	if err != nil {
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
@@ -313,6 +303,7 @@ func openDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.
 		return nil, nil, errcode.ErrCryptoKeyConversion.Wrap(err)
 	}
 
+	nonce := groupIDToNonce(group)
 	decryptedSecret := &bertytypes.DeviceSecret{}
 	decryptedMessage, ok := box.Open(nil, s.Payload, nonce, mongPub, mongPriv)
 	if !ok {
@@ -327,7 +318,7 @@ func openDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.
 	return senderDevicePubKey, decryptedSecret, nil
 }
 
-func groupIDToNonce(group *bertytypes.Group) (*[cryptoutil.NonceSize]byte, error) {
+func groupIDToNonce(group *bertytypes.Group) *[cryptoutil.NonceSize]byte {
 	// Nonce doesn't need to be secret, random nor unpredictable, it just needs
 	// to be used only once for a given {sender, receiver} set and we will send
 	// only one SecretEntryPayload per {localDevicePrivKey, remoteMemberPubKey}
@@ -342,5 +333,5 @@ func groupIDToNonce(group *bertytypes.Group) (*[cryptoutil.NonceSize]byte, error
 
 	copy(nonce[:], gid)
 
-	return &nonce, nil
+	return &nonce
 }

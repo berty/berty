@@ -25,7 +25,7 @@ func (c *client) MultiMemberGroupCreate(ctx context.Context, req *bertytypes.Mul
 	c.groups[string(g.PublicKey)] = g
 	c.lock.Unlock()
 
-	_, err = c.activateGroup(ctx, sk.GetPublic())
+	err = c.activateGroup(ctx, sk.GetPublic())
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to activate group: %w", err))
 	}

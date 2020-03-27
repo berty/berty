@@ -46,7 +46,7 @@ type Bridge struct {
 	listeners    []grpcutil.Listener
 }
 
-// NewBridge is the main entrypoint for gomobile and should only take simple configuration as argument
+// newBridge is the main entrypoint for gomobile and should only take simple configuration as argument
 func newBridge(s *grpc.Server, logger *zap.Logger, config *Config) (*Bridge, error) {
 	if config == nil {
 		config = NewConfig()
@@ -58,7 +58,7 @@ func newBridge(s *grpc.Server, logger *zap.Logger, config *Config) (*Bridge, err
 
 		// noop opt
 		grpcServer: s,
-		logger:     zap.NewNop(),
+		logger:     logger,
 	}
 
 	// Create cancel service

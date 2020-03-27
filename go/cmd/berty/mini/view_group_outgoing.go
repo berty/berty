@@ -281,7 +281,6 @@ func contactShareCommand(ctx context.Context, v *groupView, cmd string) error {
 				messageType: messageTypeMeta,
 				payload:     []byte(fmt.Sprintf("contact request ref seed has not been generated")),
 			}
-
 		} else {
 			v.syncMessages <- &historyMessage{
 				messageType: messageTypeMeta,

@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func Example_Say() {
+func ExampleSay() {
 	fmt.Println(Say("hello world!"))
 	// Output:
 	//           /\
@@ -19,7 +19,7 @@ func Example_Say() {
 	//     /__/                           /___/
 }
 
-func Example_Say_Long() {
+func ExampleSay_long() {
 	fmt.Println(Say(`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`))
 	// Output:
 	//           /\
@@ -34,6 +34,6 @@ func Example_Say_Long() {
 	//     /__/                           /___/
 }
 
-func Example_OfTheDay() {
+func ExampleOfTheDay() {
 	fmt.Println(OfTheDay())
 }

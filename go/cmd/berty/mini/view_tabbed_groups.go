@@ -30,18 +30,12 @@ func (v *tabbedGroupsView) getChannelViewGroups() []*groupView {
 
 	if len(v.contactGroupViews) > 0 {
 		items = append(items, nil)
-
-		for _, cg := range v.contactGroupViews {
-			items = append(items, cg)
-		}
+		items = append(items, v.contactGroupViews...)
 	}
 
 	if len(v.multiMembersGroupViews) > 0 {
 		items = append(items, nil)
-
-		for _, cg := range v.multiMembersGroupViews {
-			items = append(items, cg)
-		}
+		items = append(items, v.multiMembersGroupViews...)
 	}
 
 	return items
@@ -99,19 +93,20 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Gr
 	defer v.lock.Unlock()
 
 	// Check if group already opened
-	if g.GroupType == bertytypes.GroupTypeContact {
+	switch g.GroupType {
+	case bertytypes.GroupTypeContact:
 		for _, vg := range v.contactGroupViews {
-			if bytes.Compare(vg.g.PublicKey, g.PublicKey) == 0 {
+			if bytes.Equal(vg.g.PublicKey, g.PublicKey) {
 				return
 			}
 		}
-	} else if g.GroupType == bertytypes.GroupTypeMultiMember {
+	case bertytypes.GroupTypeMultiMember:
 		for _, vg := range v.multiMembersGroupViews {
-			if bytes.Compare(vg.g.PublicKey, g.PublicKey) == 0 {
+			if bytes.Equal(vg.g.PublicKey, g.PublicKey) {
 				return
 			}
 		}
-	} else {
+	default:
 		return
 	}
 

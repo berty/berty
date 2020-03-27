@@ -43,7 +43,7 @@ func isContactGroup(m *metadataStore) bool {
 
 func (m *metadataStore) typeChecker(types ...func(m *metadataStore) bool) bool {
 	for _, t := range types {
-		if t(m) == true {
+		if t(m) {
 			return true
 		}
 	}
@@ -339,7 +339,6 @@ func (m *metadataStore) ListMultiMemberGroups() []*bertytypes.Group {
 	}
 
 	return groups
-
 }
 
 func (m *metadataStore) ListContactsByStatus(states ...bertytypes.ContactState) []*bertytypes.ShareableContact {
@@ -631,7 +630,6 @@ func (m *metadataStore) ContactSendAliasKey(ctx context.Context) (operation.Oper
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.ContactAddAliasKey{
 		AliasPK: alias,
 	}, bertytypes.EventTypeContactAliasKeyAdded)
-
 }
 
 func (m *metadataStore) SendAliasProof(ctx context.Context) (operation.Operation, error) {
@@ -771,16 +769,12 @@ func newSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	nonce, err := groupIDToNonce(group)
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
 	mongPriv, mongPub, err := cryptoutil.EdwardsToMontgomery(localDevicePrivKey, remoteMemberPubKey)
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyConversion.Wrap(err)
 	}
 
+	nonce := groupIDToNonce(group)
 	encryptedSecret := box.Seal(nil, message, nonce, mongPub, mongPriv)
 
 	return encryptedSecret, nil
