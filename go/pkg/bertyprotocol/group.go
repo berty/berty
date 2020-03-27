@@ -102,7 +102,7 @@ func getKeysForGroupOfContact(contactPairSK crypto.PrivKey) (crypto.PrivKey, cry
 	return groupSK, groupSecretSK, nil
 }
 
-func GetGroupForContact(contactPairSK crypto.PrivKey) (*bertytypes.Group, error) {
+func getGroupForContact(contactPairSK crypto.PrivKey) (*bertytypes.Group, error) {
 	groupSK, groupSecretSK, err := getKeysForGroupOfContact(contactPairSK)
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
@@ -125,7 +125,7 @@ func GetGroupForContact(contactPairSK crypto.PrivKey) (*bertytypes.Group, error)
 	}, nil
 }
 
-func GetGroupForAccount(priv, signing crypto.PrivKey) (*bertytypes.Group, error) {
+func getGroupForAccount(priv, signing crypto.PrivKey) (*bertytypes.Group, error) {
 	pubBytes, err := priv.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -144,17 +144,17 @@ func GetGroupForAccount(priv, signing crypto.PrivKey) (*bertytypes.Group, error)
 	}, nil
 }
 
-func MetadataStoreListSecrets(ctx context.Context, gc ContextGroup) (map[crypto.PubKey]*bertytypes.DeviceSecret, error) {
+func metadataStoreListSecrets(ctx context.Context, gc *groupContext) (map[crypto.PubKey]*bertytypes.DeviceSecret, error) {
 	publishedSecrets := map[crypto.PubKey]*bertytypes.DeviceSecret{}
 
 	m := gc.MetadataStore()
-	ownSK := gc.GetMemberPrivKey()
+	ownSK := gc.getMemberPrivKey()
 	g := gc.Group()
 
 	ch := m.ListEvents(ctx)
 
 	for meta := range ch {
-		pk, ds, err := OpenDeviceSecret(meta.Metadata, ownSK, g)
+		pk, ds, err := openDeviceSecret(meta.Metadata, ownSK, g)
 		if err != nil {
 			// TODO: log
 			continue
@@ -166,7 +166,7 @@ func MetadataStoreListSecrets(ctx context.Context, gc ContextGroup) (map[crypto.
 	return publishedSecrets, nil
 }
 
-func FillMessageKeysHolderUsingNewData(ctx context.Context, gc ContextGroup) error {
+func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) error {
 	m := gc.MetadataStore()
 
 	for evt := range m.Subscribe(ctx) {
@@ -175,12 +175,12 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc ContextGroup) err
 			continue
 		}
 
-		pk, ds, err := OpenDeviceSecret(e.Metadata, gc.GetMemberPrivKey(), gc.Group())
+		pk, ds, err := openDeviceSecret(e.Metadata, gc.getMemberPrivKey(), gc.Group())
 		if err != nil {
 			continue
 		}
 
-		if err = RegisterChainKey(ctx, gc.GetMessageKeys(), gc.Group(), pk, ds, gc.DevicePubKey().Equals(pk)); err != nil {
+		if err = registerChainKey(ctx, gc.MessageKeystore(), gc.Group(), pk, ds, gc.DevicePubKey().Equals(pk)); err != nil {
 			// TODO: log
 			continue
 
@@ -190,15 +190,15 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc ContextGroup) err
 	return nil
 }
 
-func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc ContextGroup) error {
-	publishedSecrets, err := MetadataStoreListSecrets(ctx, gc)
+func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc *groupContext) error {
+	publishedSecrets, err := metadataStoreListSecrets(ctx, gc)
 
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
 
 	for pk, sec := range publishedSecrets {
-		if err := RegisterChainKey(ctx, gc.GetMessageKeys(), gc.Group(), pk, sec, gc.DevicePubKey().Equals(pk)); err != nil {
+		if err := registerChainKey(ctx, gc.MessageKeystore(), gc.Group(), pk, sec, gc.DevicePubKey().Equals(pk)); err != nil {
 			return errcode.TODO.Wrap(err)
 		}
 	}
@@ -206,7 +206,7 @@ func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc ContextGroup
 	return nil
 }
 
-func ActivateGroupContext(ctx context.Context, gc ContextGroup) error {
+func ActivateGroupContext(ctx context.Context, gc *groupContext) error {
 	if _, err := gc.MetadataStore().AddDeviceToGroup(ctx); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
@@ -228,7 +228,7 @@ func ActivateGroupContext(ctx context.Context, gc ContextGroup) error {
 	return nil
 }
 
-func handleNewMember(ctx context.Context, gctx ContextGroup, evt events.Event) error {
+func handleNewMember(ctx context.Context, gctx *groupContext, evt events.Event) error {
 	e, ok := evt.(*bertytypes.GroupMetadataEvent)
 	if !ok {
 		return nil
@@ -263,7 +263,7 @@ func handleNewMember(ctx context.Context, gctx ContextGroup, evt events.Event) e
 	return nil
 }
 
-func SendSecretsToExistingMembers(ctx context.Context, gctx ContextGroup) error {
+func SendSecretsToExistingMembers(ctx context.Context, gctx *groupContext) error {
 	members := gctx.MetadataStore().ListMembers()
 
 	for _, pk := range members {
@@ -277,7 +277,7 @@ func SendSecretsToExistingMembers(ctx context.Context, gctx ContextGroup) error 
 	return nil
 }
 
-func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx ContextGroup) {
+func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx *groupContext) {
 	go func() {
 		for evt := range gctx.MetadataStore().Subscribe(ctx) {
 			if err := handleNewMember(ctx, gctx, evt); err != nil {
@@ -288,7 +288,7 @@ func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx
 	}()
 }
 
-func OpenDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.PrivKey, group *bertytypes.Group) (crypto.PubKey, *bertytypes.DeviceSecret, error) {
+func openDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.PrivKey, group *bertytypes.Group) (crypto.PubKey, *bertytypes.DeviceSecret, error) {
 	if m == nil || m.EventType != bertytypes.EventTypeGroupDeviceSecretAdded {
 		return nil, nil, errcode.ErrInvalidInput
 	}
@@ -298,7 +298,7 @@ func OpenDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	nonce, err := GroupIDToNonce(group)
+	nonce, err := groupIDToNonce(group)
 	if err != nil {
 		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
@@ -327,7 +327,7 @@ func OpenDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.
 	return senderDevicePubKey, decryptedSecret, nil
 }
 
-func GroupIDToNonce(group *bertytypes.Group) (*[24]byte, error) {
+func groupIDToNonce(group *bertytypes.Group) (*[24]byte, error) {
 	// Nonce doesn't need to be secret, random nor unpredictable, it just needs
 	// to be used only once for a given {sender, receiver} set and we will send
 	// only one SecretEntryPayload per {localDevicePrivKey, remoteMemberPubKey}

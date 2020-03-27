@@ -1,9 +1,8 @@
-package orbitutil
+package bertyprotocol
 
 import (
 	"context"
 
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
@@ -17,17 +16,17 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-const GroupMessageStoreType = "berty_group_messages"
+const groupMessageStoreType = "berty_group_messages"
 
-type MessageStoreImpl struct {
+type messageStore struct {
 	basestore.BaseStore
 
-	acc bertyprotocol.AccountKeys
-	mk  bertyprotocol.MessageKeys
-	g   *bertytypes.Group
+	devKS DeviceKeystore
+	mks   *MessageKeystore
+	g     *bertytypes.Group
 }
 
-func (m *MessageStoreImpl) openMessage(ctx context.Context, e ipfslog.Entry) (*bertytypes.GroupMessageEvent, error) {
+func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry) (*bertytypes.GroupMessageEvent, error) {
 	if e == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -38,25 +37,25 @@ func (m *MessageStoreImpl) openMessage(ctx context.Context, e ipfslog.Entry) (*b
 		return nil, err
 	}
 
-	headers, payload, decryptInfo, err := bertyprotocol.OpenEnvelope(ctx, m.mk, m.g, op.GetValue(), e.GetHash())
+	headers, payload, decryptInfo, err := openEnvelope(ctx, m.mks, m.g, op.GetValue(), e.GetHash())
 	if err != nil {
 		// TODO: log
 		return nil, err
 	}
 
-	eventContext, err := bertyprotocol.NewEventContext(e.GetHash(), e.GetNext(), m.g)
+	eventContext, err := newEventContext(e.GetHash(), e.GetNext(), m.g)
 	if err != nil {
 		// TODO: log
 		return nil, err
 	}
 
 	ownPK := crypto.PubKey(nil)
-	md, inErr := m.acc.MemberDeviceForGroup(m.g)
+	md, inErr := m.devKS.MemberDeviceForGroup(m.g)
 	if inErr == nil {
-		ownPK = md.Device.GetPublic()
+		ownPK = md.device.GetPublic()
 	}
 
-	if inErr = bertyprotocol.PostDecryptActions(ctx, m.mk, decryptInfo, m.g, ownPK, headers); inErr != nil {
+	if inErr = postDecryptActions(ctx, m.mks, decryptInfo, m.g, ownPK, headers); inErr != nil {
 		err = errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
@@ -67,7 +66,7 @@ func (m *MessageStoreImpl) openMessage(ctx context.Context, e ipfslog.Entry) (*b
 	}, err
 }
 
-func (m *MessageStoreImpl) ListMessages(ctx context.Context) (<-chan *bertytypes.GroupMessageEvent, error) {
+func (m *messageStore) ListMessages(ctx context.Context) (<-chan *bertytypes.GroupMessageEvent, error) {
 	out := make(chan *bertytypes.GroupMessageEvent)
 	ch := make(chan ipfslog.Entry)
 
@@ -93,13 +92,13 @@ func (m *MessageStoreImpl) ListMessages(ctx context.Context) (<-chan *bertytypes
 	return out, nil
 }
 
-func (m *MessageStoreImpl) AddMessage(ctx context.Context, payload []byte) (operation.Operation, error) {
-	md, err := m.acc.MemberDeviceForGroup(m.g)
+func (m *messageStore) AddMessage(ctx context.Context, payload []byte) (operation.Operation, error) {
+	md, err := m.devKS.MemberDeviceForGroup(m.g)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := bertyprotocol.SealEnvelope(ctx, m.mk, m.g, md.Device, payload)
+	env, err := sealEnvelope(ctx, m.mks, m.g, md.device, payload)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}
@@ -119,17 +118,17 @@ func (m *MessageStoreImpl) AddMessage(ctx context.Context, payload []byte) (oper
 	return op, nil
 }
 
-func ConstructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
+func constructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
 	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		g, err := s.getGroupFromOptions(options)
 		if err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
 		}
 
-		store := &MessageStoreImpl{
-			acc: s.account,
-			mk:  s.mk,
-			g:   g,
+		store := &messageStore{
+			devKS: s.deviceKeystore,
+			mks:   s.messageKeystore,
+			g:     g,
 		}
 
 		options.Index = basestore.NewBaseIndex
@@ -167,5 +166,3 @@ func ConstructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
 		return store, nil
 	}
 }
-
-var _ bertyprotocol.MessageStore = (*MessageStoreImpl)(nil)

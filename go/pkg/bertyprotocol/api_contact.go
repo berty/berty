@@ -27,7 +27,7 @@ func (c *client) ContactBlock(ctx context.Context, req *bertytypes.ContactBlock_
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if _, err := c.accContextGroup.MetadataStore().ContactBlock(ctx, pk); err != nil {
+	if _, err := c.accountGroup.MetadataStore().ContactBlock(ctx, pk); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
@@ -40,7 +40,7 @@ func (c *client) ContactUnblock(ctx context.Context, req *bertytypes.ContactUnbl
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if _, err := c.accContextGroup.MetadataStore().ContactUnblock(ctx, pk); err != nil {
+	if _, err := c.accountGroup.MetadataStore().ContactUnblock(ctx, pk); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 

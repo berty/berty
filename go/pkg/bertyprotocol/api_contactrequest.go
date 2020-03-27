@@ -10,7 +10,7 @@ import (
 
 // ContactRequestReference retrieves the necessary information to create a contact link
 func (c *client) ContactRequestReference(context.Context, *bertytypes.ContactRequestReference_Request) (*bertytypes.ContactRequestReference_Reply, error) {
-	enabled, shareableContact := c.accContextGroup.MetadataStore().GetIncomingContactRequestsStatus()
+	enabled, shareableContact := c.accountGroup.MetadataStore().GetIncomingContactRequestsStatus()
 	ref := []byte(nil)
 
 	if shareableContact != nil {
@@ -31,7 +31,7 @@ func (c *client) ContactRequestReference(context.Context, *bertytypes.ContactReq
 
 // ContactRequestDisable disables incoming contact requests
 func (c *client) ContactRequestDisable(ctx context.Context, _ *bertytypes.ContactRequestDisable_Request) (*bertytypes.ContactRequestDisable_Reply, error) {
-	if _, err := c.accContextGroup.MetadataStore().ContactRequestDisable(ctx); err != nil {
+	if _, err := c.accountGroup.MetadataStore().ContactRequestDisable(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
@@ -40,11 +40,11 @@ func (c *client) ContactRequestDisable(ctx context.Context, _ *bertytypes.Contac
 
 // ContactRequestEnable enables incoming contact requests
 func (c *client) ContactRequestEnable(ctx context.Context, _ *bertytypes.ContactRequestEnable_Request) (*bertytypes.ContactRequestEnable_Reply, error) {
-	if _, err := c.accContextGroup.MetadataStore().ContactRequestEnable(ctx); err != nil {
+	if _, err := c.accountGroup.MetadataStore().ContactRequestEnable(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	_, shareableContact := c.accContextGroup.MetadataStore().GetIncomingContactRequestsStatus()
+	_, shareableContact := c.accountGroup.MetadataStore().GetIncomingContactRequestsStatus()
 	ref := []byte(nil)
 
 	if shareableContact != nil {
@@ -64,11 +64,11 @@ func (c *client) ContactRequestEnable(ctx context.Context, _ *bertytypes.Contact
 
 // ContactRequestResetReference generates a new contact request reference
 func (c *client) ContactRequestResetReference(ctx context.Context, _ *bertytypes.ContactRequestResetReference_Request) (*bertytypes.ContactRequestResetReference_Reply, error) {
-	if _, err := c.accContextGroup.MetadataStore().ContactRequestReferenceReset(ctx); err != nil {
+	if _, err := c.accountGroup.MetadataStore().ContactRequestReferenceReset(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	_, shareableContact := c.accContextGroup.MetadataStore().GetIncomingContactRequestsStatus()
+	_, shareableContact := c.accountGroup.MetadataStore().GetIncomingContactRequestsStatus()
 	ref := []byte(nil)
 
 	if shareableContact != nil {
@@ -100,12 +100,12 @@ func (c *client) ContactRequestSend(ctx context.Context, req *bertytypes.Contact
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if _, err := c.accContextGroup.MetadataStore().ContactRequestOutgoingEnqueue(ctx, shareableContact); err != nil {
+	if _, err := c.accountGroup.MetadataStore().ContactRequestOutgoingEnqueue(ctx, shareableContact); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
 	// TODO: remove this, used to fake contact requests atm
-	if _, err := c.accContextGroup.MetadataStore().ContactRequestOutgoingSent(ctx, pk); err != nil {
+	if _, err := c.accountGroup.MetadataStore().ContactRequestOutgoingSent(ctx, pk); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
@@ -119,7 +119,7 @@ func (c *client) ContactRequestAccept(ctx context.Context, req *bertytypes.Conta
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if _, err := c.accContextGroup.MetadataStore().ContactRequestIncomingAccept(ctx, pk); err != nil {
+	if _, err := c.accountGroup.MetadataStore().ContactRequestIncomingAccept(ctx, pk); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
@@ -137,7 +137,7 @@ func (c *client) ContactRequestDiscard(ctx context.Context, req *bertytypes.Cont
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if _, err := c.accContextGroup.MetadataStore().ContactRequestIncomingDiscard(ctx, pk); err != nil {
+	if _, err := c.accountGroup.MetadataStore().ContactRequestIncomingDiscard(ctx, pk); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 

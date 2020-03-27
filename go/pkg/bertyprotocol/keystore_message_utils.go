@@ -20,10 +20,10 @@ import (
 	"golang.org/x/crypto/nacl/secretbox"
 )
 
-func OpenPayload(ctx context.Context, m MessageKeys, id cid.Cid, payload []byte, headers *bertytypes.MessageHeaders) ([]byte, *DecryptInfo, error) {
+func openPayload(ctx context.Context, m *MessageKeystore, id cid.Cid, payload []byte, headers *bertytypes.MessageHeaders) ([]byte, *decryptInfo, error) {
 	var (
 		err error
-		di  = &DecryptInfo{
+		di  = &decryptInfo{
 			Cid:            id,
 			NewlyDecrypted: true,
 		}
@@ -53,7 +53,7 @@ func OpenPayload(ctx context.Context, m MessageKeys, id cid.Cid, payload []byte,
 	return msg, di, nil
 }
 
-func updateCurrentKey(ctx context.Context, m MessageKeys, pk crypto.PubKey, ds *bertytypes.DeviceSecret) error {
+func updateCurrentKey(ctx context.Context, m *MessageKeystore, pk crypto.PubKey, ds *bertytypes.DeviceSecret) error {
 	currentCK, err := m.GetDeviceChainKey(ctx, pk)
 	if err != nil {
 		return errcode.ErrInternal.Wrap(err)
@@ -70,7 +70,7 @@ func updateCurrentKey(ctx context.Context, m MessageKeys, pk crypto.PubKey, ds *
 	return nil
 }
 
-func SealPayload(payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.PrivKey, g *bertytypes.Group) ([]byte, []byte, error) {
+func sealPayload(payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.PrivKey, g *bertytypes.Group) ([]byte, []byte, error) {
 	var (
 		msgKey [32]byte
 		err    error
@@ -88,8 +88,8 @@ func SealPayload(payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.Pr
 	return secretbox.Seal(nil, payload, uint64AsNonce(ds.Counter+1), &msgKey), sig, nil
 }
 
-func SealEnvelopeInternal(payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.PrivKey, g *bertytypes.Group) ([]byte, error) {
-	encryptedPayload, sig, err := SealPayload(payload, ds, deviceSK, g)
+func sealEnvelopeInternal(payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.PrivKey, g *bertytypes.Group) ([]byte, error) {
+	encryptedPayload, sig, err := sealPayload(payload, ds, deviceSK, g)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}
@@ -132,7 +132,7 @@ func SealEnvelopeInternal(payload []byte, ds *bertytypes.DeviceSecret, deviceSK 
 	return env, nil
 }
 
-func SealEnvelope(ctx context.Context, mkh MessageKeys, g *bertytypes.Group, deviceSK crypto.PrivKey, payload []byte) ([]byte, error) {
+func sealEnvelope(ctx context.Context, mkh *MessageKeystore, g *bertytypes.Group, deviceSK crypto.PrivKey, payload []byte) ([]byte, error) {
 	if deviceSK == nil || g == nil || mkh == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -142,19 +142,19 @@ func SealEnvelope(ctx context.Context, mkh MessageKeys, g *bertytypes.Group, dev
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := SealEnvelopeInternal(payload, ds, deviceSK, g)
+	env, err := sealEnvelopeInternal(payload, ds, deviceSK, g)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}
 
-	if err := DeriveDeviceSecret(ctx, mkh, g, deviceSK); err != nil {
+	if err := deriveDeviceSecret(ctx, mkh, g, deviceSK); err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	return env, nil
 }
 
-func DeriveDeviceSecret(ctx context.Context, mkh MessageKeys, g *bertytypes.Group, deviceSK crypto.PrivKey) error {
+func deriveDeviceSecret(ctx context.Context, mkh *MessageKeystore, g *bertytypes.Group, deviceSK crypto.PrivKey) error {
 	if mkh == nil || deviceSK == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -183,23 +183,23 @@ func DeriveDeviceSecret(ctx context.Context, mkh MessageKeys, g *bertytypes.Grou
 	return nil
 }
 
-type DecryptInfo struct {
+type decryptInfo struct {
 	NewlyDecrypted bool
 	MK             *[32]byte
 	Cid            cid.Cid
 }
 
-func OpenEnvelope(ctx context.Context, m MessageKeys, g *bertytypes.Group, data []byte, id cid.Cid) (*bertytypes.MessageHeaders, []byte, *DecryptInfo, error) {
+func openEnvelope(ctx context.Context, m *MessageKeystore, g *bertytypes.Group, data []byte, id cid.Cid) (*bertytypes.MessageHeaders, []byte, *decryptInfo, error) {
 	if m == nil || g == nil {
 		return nil, nil, nil, errcode.ErrInvalidInput
 	}
 
-	env, headers, err := OpenEnvelopeHeaders(data, g)
+	env, headers, err := openEnvelopeHeaders(data, g)
 	if err != nil {
 		return nil, nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
-	msg, decryptInfo, err := OpenPayload(ctx, m, id, env.Message, headers)
+	msg, decryptInfo, err := openPayload(ctx, m, id, env.Message, headers)
 	if err != nil {
 		return nil, nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
@@ -207,7 +207,7 @@ func OpenEnvelope(ctx context.Context, m MessageKeys, g *bertytypes.Group, data 
 	return headers, msg, decryptInfo, nil
 }
 
-func OpenEnvelopeHeaders(data []byte, g *bertytypes.Group) (*bertytypes.MessageEnvelope, *bertytypes.MessageHeaders, error) {
+func openEnvelopeHeaders(data []byte, g *bertytypes.Group) (*bertytypes.MessageEnvelope, *bertytypes.MessageHeaders, error) {
 	env := &bertytypes.MessageEnvelope{}
 	err := env.Unmarshal(data)
 	if err != nil {
@@ -251,7 +251,7 @@ func nonceAsArr(nonceSl []byte) (*[24]byte, error) {
 	return &out, nil
 }
 
-func PostDecryptActions(ctx context.Context, m MessageKeys, di *DecryptInfo, g *bertytypes.Group, ownPK crypto.PubKey, headers *bertytypes.MessageHeaders) error {
+func postDecryptActions(ctx context.Context, m *MessageKeystore, di *decryptInfo, g *bertytypes.Group, ownPK crypto.PubKey, headers *bertytypes.MessageHeaders) error {
 	// Message was newly decrypted, we can save the message key and derive
 	// future keys if necessary.
 	if di == nil || !di.NewlyDecrypted {
@@ -280,7 +280,7 @@ func PostDecryptActions(ctx context.Context, m MessageKeys, di *DecryptInfo, g *
 		return errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	if ds, err = PreComputeKeys(ctx, m, pk, g, ds); err != nil {
+	if ds, err = preComputeKeys(ctx, m, pk, g, ds); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 
@@ -346,7 +346,7 @@ func deriveNextKeys(ck []byte, salt []byte, groupID []byte) ([]byte, [32]byte, e
 	return nextCK, nextMsg, nil
 }
 
-func PreComputeKeys(ctx context.Context, m MessageKeys, device crypto.PubKey, g *bertytypes.Group, ds *bertytypes.DeviceSecret) (*bertytypes.DeviceSecret, error) {
+func preComputeKeys(ctx context.Context, m *MessageKeystore, device crypto.PubKey, g *bertytypes.Group, ds *bertytypes.DeviceSecret) (*bertytypes.DeviceSecret, error) {
 	ck := ds.ChainKey
 	counter := ds.Counter
 
@@ -389,22 +389,22 @@ func PreComputeKeys(ctx context.Context, m MessageKeys, device crypto.PubKey, g 
 	}, nil
 }
 
-func GetDeviceSecret(ctx context.Context, g *bertytypes.Group, mk MessageKeys, acc AccountKeys) (*bertytypes.DeviceSecret, error) {
+func getDeviceSecret(ctx context.Context, g *bertytypes.Group, mk *MessageKeystore, acc DeviceKeystore) (*bertytypes.DeviceSecret, error) {
 	md, err := acc.MemberDeviceForGroup(g)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	ds, err := mk.GetDeviceChainKey(ctx, md.Device.GetPublic())
+	ds, err := mk.GetDeviceChainKey(ctx, md.device.GetPublic())
 
 	if err != nil && err == errcode.ErrMissingInput {
 		// If secret does not exist, create it
-		ds, err := NewDeviceSecret()
+		ds, err := newDeviceSecret()
 		if err != nil {
 			return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 		}
 
-		if err = RegisterChainKey(ctx, mk, g, md.Device.GetPublic(), ds, true); err != nil {
+		if err = registerChainKey(ctx, mk, g, md.device.GetPublic(), ds, true); err != nil {
 			return nil, errcode.ErrMessageKeyPersistencePut.Wrap(err)
 		}
 
@@ -417,11 +417,11 @@ func GetDeviceSecret(ctx context.Context, g *bertytypes.Group, mk MessageKeys, a
 	return ds, nil
 }
 
-func RegisterChainKey(ctx context.Context, mk MessageKeys, g *bertytypes.Group, devicePK crypto.PubKey, ds *bertytypes.DeviceSecret, isOwnPK bool) error {
+func registerChainKey(ctx context.Context, mk *MessageKeystore, g *bertytypes.Group, devicePK crypto.PubKey, ds *bertytypes.DeviceSecret, isOwnPK bool) error {
 	var err error
 
 	if _, err := mk.GetDeviceChainKey(ctx, devicePK); err == nil {
-		// Device is already registered, ignore it
+		// device is already registered, ignore it
 		return nil
 	}
 
@@ -434,7 +434,7 @@ func RegisterChainKey(ctx context.Context, mk MessageKeys, g *bertytypes.Group, 
 		return nil
 	}
 
-	if ds, err = PreComputeKeys(ctx, mk, devicePK, g, ds); err != nil {
+	if ds, err = preComputeKeys(ctx, mk, devicePK, g, ds); err != nil {
 		return errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 

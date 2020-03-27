@@ -1,4 +1,4 @@
-package orbitutil
+package bertyprotocol
 
 import (
 	"encoding/hex"
@@ -63,8 +63,8 @@ func (s *BertySignedKeyStore) Verify(signature []byte, publicKey crypto.PubKey, 
 	return nil
 }
 
-func (s *BertySignedKeyStore) GetIdentityProvider() *BertySignedIdentityProvider {
-	return &BertySignedIdentityProvider{
+func (s *BertySignedKeyStore) getIdentityProvider() *bertySignedIdentityProvider {
+	return &bertySignedIdentityProvider{
 		keyStore: s,
 	}
 }

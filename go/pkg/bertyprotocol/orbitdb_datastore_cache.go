@@ -1,4 +1,4 @@
-package orbitutil
+package bertyprotocol
 
 import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"

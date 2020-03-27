@@ -1,4 +1,4 @@
-package orbitutil
+package bertyprotocol
 
 import (
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -6,35 +6,35 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-const IdentityGroupIDKey = "group_id"
-const StoreTypeKey = "store_type"
-const IdentityType = "betry_group_entry"
+const identityGroupIDKey = "group_id"
+const storeTypeKey = "store_type"
+const identityType = "betry_group_entry"
 
-type BertySignedIdentityProvider struct {
+type bertySignedIdentityProvider struct {
 	keyStore *BertySignedKeyStore
 }
 
-func (b *BertySignedIdentityProvider) UnmarshalPublicKey(data []byte) (crypto.PubKey, error) {
+func (b *bertySignedIdentityProvider) UnmarshalPublicKey(data []byte) (crypto.PubKey, error) {
 	return crypto.UnmarshalEd25519PublicKey(data)
 }
 
-func (b *BertySignedIdentityProvider) GetID(opts *identityprovider.CreateIdentityOptions) (string, error) {
+func (b *bertySignedIdentityProvider) GetID(opts *identityprovider.CreateIdentityOptions) (string, error) {
 	return opts.ID, nil
 }
 
-func (b *BertySignedIdentityProvider) SignIdentity(data []byte, id string) ([]byte, error) {
+func (b *bertySignedIdentityProvider) SignIdentity(data []byte, id string) ([]byte, error) {
 	return nil, nil
 }
 
-func (b *BertySignedIdentityProvider) GetType() string {
-	return IdentityType
+func (b *bertySignedIdentityProvider) GetType() string {
+	return identityType
 }
 
-func (b *BertySignedIdentityProvider) VerifyIdentity(identity *identityprovider.Identity) error {
+func (b *bertySignedIdentityProvider) VerifyIdentity(identity *identityprovider.Identity) error {
 	return nil
 }
 
-func (b *BertySignedIdentityProvider) Sign(identity *identityprovider.Identity, bytes []byte) ([]byte, error) {
+func (b *bertySignedIdentityProvider) Sign(identity *identityprovider.Identity, bytes []byte) ([]byte, error) {
 	key, err := b.keyStore.GetKey(identity.ID)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -48,7 +48,7 @@ func (b *BertySignedIdentityProvider) Sign(identity *identityprovider.Identity, 
 	return sig, nil
 }
 
-func (b *BertySignedIdentityProvider) signID(id string) (crypto.PubKey, []byte, error) {
+func (b *bertySignedIdentityProvider) signID(id string) (crypto.PubKey, []byte, error) {
 	privKey, err := b.keyStore.GetKey(id)
 	if err != nil {
 		return nil, nil, err
@@ -62,7 +62,7 @@ func (b *BertySignedIdentityProvider) signID(id string) (crypto.PubKey, []byte, 
 	return privKey.GetPublic(), idSignature, nil
 }
 
-func (b *BertySignedIdentityProvider) CreateIdentity(options *identityprovider.CreateIdentityOptions) (*identityprovider.Identity, error) {
+func (b *bertySignedIdentityProvider) createIdentity(options *identityprovider.CreateIdentityOptions) (*identityprovider.Identity, error) {
 	id, err := b.GetID(options)
 	if err != nil {
 		return nil, err
@@ -95,4 +95,4 @@ func (b *BertySignedIdentityProvider) CreateIdentity(options *identityprovider.C
 	}, nil
 }
 
-var _ identityprovider.Interface = (*BertySignedIdentityProvider)(nil)
+var _ identityprovider.Interface = (*bertySignedIdentityProvider)(nil)

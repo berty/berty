@@ -1,11 +1,10 @@
-package orbitutil
+package bertyprotocol
 
 import (
 	"context"
 	"fmt"
 	"sync"
 
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
@@ -17,8 +16,8 @@ import (
 )
 
 type metadataStoreIndex struct {
-	members                  map[string][]*bertyprotocol.MemberDevice
-	devices                  map[string]*bertyprotocol.MemberDevice
+	members                  map[string][]*memberDevice
+	devices                  map[string]*memberDevice
 	handledEvents            map[string]struct{}
 	sentSecrets              map[string]struct{}
 	admins                   map[crypto.PubKey]struct{}
@@ -32,7 +31,7 @@ type metadataStoreIndex struct {
 	ownAliasKeySent          bool
 	otherAliasKey            []byte
 	g                        *bertytypes.Group
-	ownMemberDevice          *bertyprotocol.MemberDevice
+	ownMemberDevice          *memberDevice
 	ctx                      context.Context
 	eventEmitter             events.EmitterInterface
 	lock                     sync.RWMutex
@@ -49,13 +48,13 @@ func openMetadataEntry(g *bertytypes.Group, log ipfslog.Log, e ipfslog.Entry) (*
 		return nil, nil, nil, err
 	}
 
-	meta, event, err := bertyprotocol.OpenGroupEnvelope(g, op.GetValue())
+	meta, event, err := openGroupEnvelope(g, op.GetValue())
 	if err != nil {
 		// TODO: log
 		return nil, nil, nil, err
 	}
 
-	metaEvent, err := bertyprotocol.NewGroupMetadataEventFromEntry(log, e, meta, event, g)
+	metaEvent, err := newGroupMetadataEventFromEntry(log, e, meta, event, g)
 	if err != nil {
 		// TODO: log
 		return nil, nil, nil, err
@@ -71,8 +70,8 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	entries := log.Values().Slice()
 
 	// Resetting state
-	m.members = map[string][]*bertyprotocol.MemberDevice{}
-	m.devices = map[string]*bertyprotocol.MemberDevice{}
+	m.members = map[string][]*memberDevice{}
+	m.devices = map[string]*memberDevice{}
 	m.admins = map[crypto.PubKey]struct{}{}
 	m.sentSecrets = map[string]struct{}{}
 	m.contacts = map[string]*accountContact{}
@@ -145,14 +144,14 @@ func (m *metadataStoreIndex) handleGroupAddMemberDevice(event proto.Message) err
 		return nil
 	}
 
-	m.devices[string(e.DevicePK)] = &bertyprotocol.MemberDevice{
-		Member: member,
-		Device: device,
+	m.devices[string(e.DevicePK)] = &memberDevice{
+		member: member,
+		device: device,
 	}
 
-	m.members[string(e.MemberPK)] = append(m.members[string(e.MemberPK)], &bertyprotocol.MemberDevice{
-		Member: member,
-		Device: device,
+	m.members[string(e.MemberPK)] = append(m.members[string(e.MemberPK)], &memberDevice{
+		member: member,
+		device: device,
 	})
 
 	return nil
@@ -174,18 +173,18 @@ func (m *metadataStoreIndex) handleGroupAddDeviceSecret(event proto.Message) err
 		return errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if m.ownMemberDevice.Device.Equals(senderPK) {
+	if m.ownMemberDevice.device.Equals(senderPK) {
 		m.sentSecrets[string(e.DestMemberPK)] = struct{}{}
 	}
 
-	if !destPK.Equals(m.ownMemberDevice.Member) {
+	if !destPK.Equals(m.ownMemberDevice.member) {
 		return errcode.ErrGroupSecretOtherDestMember
 	}
 
 	return nil
 }
 
-func (m *metadataStoreIndex) GetMemberByDevice(pk crypto.PubKey) (crypto.PubKey, error) {
+func (m *metadataStoreIndex) getMemberByDevice(pk crypto.PubKey) (crypto.PubKey, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -203,10 +202,10 @@ func (m *metadataStoreIndex) unsafeGetMemberByDevice(pk crypto.PubKey) (crypto.P
 		return nil, errcode.ErrMissingInput
 	}
 
-	return device.Member, nil
+	return device.member, nil
 }
 
-func (m *metadataStoreIndex) GetDevicesForMember(pk crypto.PubKey) ([]crypto.PubKey, error) {
+func (m *metadataStoreIndex) getDevicesForMember(pk crypto.PubKey) ([]crypto.PubKey, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -222,7 +221,7 @@ func (m *metadataStoreIndex) GetDevicesForMember(pk crypto.PubKey) ([]crypto.Pub
 
 	ret := make([]crypto.PubKey, len(mds))
 	for i, md := range mds {
-		ret[i] = md.Device
+		ret[i] = md.device
 	}
 
 	return ret, nil
@@ -242,7 +241,7 @@ func (m *metadataStoreIndex) DeviceCount() int {
 	return len(m.devices)
 }
 
-func (m *metadataStoreIndex) ListMembers() []crypto.PubKey {
+func (m *metadataStoreIndex) listMembers() []crypto.PubKey {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -250,14 +249,14 @@ func (m *metadataStoreIndex) ListMembers() []crypto.PubKey {
 	i := 0
 
 	for _, md := range m.members {
-		members[i] = md[0].Member
+		members[i] = md[0].member
 		i++
 	}
 
 	return members
 }
 
-func (m *metadataStoreIndex) ListDevices() []crypto.PubKey {
+func (m *metadataStoreIndex) listDevices() []crypto.PubKey {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -265,7 +264,7 @@ func (m *metadataStoreIndex) ListDevices() []crypto.PubKey {
 	i := 0
 
 	for _, md := range m.devices {
-		devices[i] = md.Device
+		devices[i] = md.device
 		i++
 	}
 
@@ -583,7 +582,7 @@ func (m *metadataStoreIndex) handleMultiMemberGrantAdminRole(event proto.Message
 	return nil
 }
 
-func (m *metadataStoreIndex) ListAdmins() []crypto.PubKey {
+func (m *metadataStoreIndex) listAdmins() []crypto.PubKey {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -598,21 +597,21 @@ func (m *metadataStoreIndex) ListAdmins() []crypto.PubKey {
 	return admins
 }
 
-func (m *metadataStoreIndex) ContactRequestsEnabled() bool {
+func (m *metadataStoreIndex) contactRequestsEnabled() bool {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
 	return m.contactRequestEnabled != nil && *m.contactRequestEnabled
 }
 
-func (m *metadataStoreIndex) ContactRequestsSeed() []byte {
+func (m *metadataStoreIndex) contactRequestsSeed() []byte {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
 	return m.contactRequestSeed
 }
 
-func (m *metadataStoreIndex) GetContact(pk crypto.PubKey) (*accountContact, error) {
+func (m *metadataStoreIndex) getContact(pk crypto.PubKey) (*accountContact, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -641,7 +640,7 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 			return fmt.Errorf("couldn't get member for device")
 		}
 
-		if memberPK.Equals(m.ownMemberDevice.Member) {
+		if memberPK.Equals(m.ownMemberDevice.member) {
 			m.ownAliasKeySent = true
 			continue
 		}
@@ -658,12 +657,12 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 	return nil
 }
 
-// NewMetadataIndex returns a new index to manage the list of the group members
-func NewMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertytypes.Group, memberDevice *bertyprotocol.MemberDevice) iface.IndexConstructor {
+// newMetadataIndex returns a new index to manage the list of the group members
+func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertytypes.Group, md *memberDevice) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		m := &metadataStoreIndex{
-			members:         map[string][]*bertyprotocol.MemberDevice{},
-			devices:         map[string]*bertyprotocol.MemberDevice{},
+			members:         map[string][]*memberDevice{},
+			devices:         map[string]*memberDevice{},
 			admins:          map[crypto.PubKey]struct{}{},
 			sentSecrets:     map[string]struct{}{},
 			handledEvents:   map[string]struct{}{},
@@ -671,7 +670,7 @@ func NewMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			groups:          map[string]*accountGroup{},
 			g:               g,
 			eventEmitter:    eventEmitter,
-			ownMemberDevice: memberDevice,
+			ownMemberDevice: md,
 			ctx:             ctx,
 		}
 

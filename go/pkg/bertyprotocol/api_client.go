@@ -27,12 +27,12 @@ func (c *client) InstanceGetConfiguration(ctx context.Context, req *bertytypes.I
 		listeners[i] = addr.String()
 	}
 
-	member, err := c.accContextGroup.MemberPubKey().Raw()
+	member, err := c.accountGroup.MemberPubKey().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	device, err := c.accContextGroup.DevicePubKey().Raw()
+	device, err := c.accountGroup.DevicePubKey().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
@@ -40,7 +40,7 @@ func (c *client) InstanceGetConfiguration(ctx context.Context, req *bertytypes.I
 	return &bertytypes.InstanceGetConfiguration_Reply{
 		AccountPK:      member,
 		DevicePK:       device,
-		AccountGroupPK: c.accContextGroup.Group().PublicKey,
+		AccountGroupPK: c.accountGroup.Group().PublicKey,
 		PeerID:         key.ID().Pretty(),
 		Listeners:      listeners,
 	}, nil

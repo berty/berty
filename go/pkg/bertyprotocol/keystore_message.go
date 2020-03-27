@@ -12,13 +12,13 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-type DatastoreMessageKeys struct {
+type MessageKeystore struct {
 	lock                 sync.RWMutex
 	preComputedKeysCount int
 	store                datastore.Datastore
 }
 
-func (m *DatastoreMessageKeys) GetDeviceChainKey(ctx context.Context, pk crypto.PubKey) (*bertytypes.DeviceSecret, error) {
+func (m *MessageKeystore) GetDeviceChainKey(ctx context.Context, pk crypto.PubKey) (*bertytypes.DeviceSecret, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -44,7 +44,7 @@ func (m *DatastoreMessageKeys) GetDeviceChainKey(ctx context.Context, pk crypto.
 	return ds, nil
 }
 
-func (m *DatastoreMessageKeys) DelPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64) error {
+func (m *MessageKeystore) DelPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64) error {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -61,7 +61,7 @@ func (m *DatastoreMessageKeys) DelPrecomputedKey(ctx context.Context, device cry
 	return nil
 }
 
-func (m *DatastoreMessageKeys) GetPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64) (*[32]byte, error) {
+func (m *MessageKeystore) GetPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64) (*[32]byte, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -83,7 +83,7 @@ func (m *DatastoreMessageKeys) GetPrecomputedKey(ctx context.Context, device cry
 	return to32ByteArray(key), nil
 }
 
-func (m *DatastoreMessageKeys) PutPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64, mk *[32]byte) error {
+func (m *MessageKeystore) PutPrecomputedKey(ctx context.Context, device crypto.PubKey, counter uint64, mk *[32]byte) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
@@ -101,7 +101,7 @@ func (m *DatastoreMessageKeys) PutPrecomputedKey(ctx context.Context, device cry
 	return nil
 }
 
-func (m *DatastoreMessageKeys) PutKeyForCID(ctx context.Context, id cid.Cid, key *[32]byte) error {
+func (m *MessageKeystore) PutKeyForCID(ctx context.Context, id cid.Cid, key *[32]byte) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
@@ -117,7 +117,7 @@ func (m *DatastoreMessageKeys) PutKeyForCID(ctx context.Context, id cid.Cid, key
 	return nil
 }
 
-func (m *DatastoreMessageKeys) GetKeyForCID(ctx context.Context, id cid.Cid) (*[32]byte, error) {
+func (m *MessageKeystore) GetKeyForCID(ctx context.Context, id cid.Cid) (*[32]byte, error) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
@@ -137,14 +137,14 @@ func (m *DatastoreMessageKeys) GetKeyForCID(ctx context.Context, id cid.Cid) (*[
 	return to32ByteArray(key), nil
 }
 
-func (m *DatastoreMessageKeys) GetPrecomputedKeyExpectedCount() int {
+func (m *MessageKeystore) GetPrecomputedKeyExpectedCount() int {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
 	return m.preComputedKeysCount
 }
 
-func (m *DatastoreMessageKeys) PutDeviceChainKey(ctx context.Context, device crypto.PubKey, ds *bertytypes.DeviceSecret) error {
+func (m *MessageKeystore) PutDeviceChainKey(ctx context.Context, device crypto.PubKey, ds *bertytypes.DeviceSecret) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
@@ -168,17 +168,15 @@ func (m *DatastoreMessageKeys) PutDeviceChainKey(ctx context.Context, device cry
 	return nil
 }
 
-// NewDatastoreMessageKeys instantiate a new MessageKeyHolder
-func NewDatastoreMessageKeys(s datastore.Datastore) *DatastoreMessageKeys {
-	return &DatastoreMessageKeys{
+// NewMessageKeystore instantiate a new MessageKeystore
+func NewMessageKeystore(s datastore.Datastore) *MessageKeystore {
+	return &MessageKeystore{
 		preComputedKeysCount: 100,
 		store:                s,
 	}
 }
 
-// NewInMemoryMessageKeys instantiate a new MessageKeyHolder, useful for testing
-func NewInMemoryMessageKeys() *DatastoreMessageKeys {
-	return NewDatastoreMessageKeys(dssync.MutexWrap(datastore.NewMapDatastore()))
+// NewInMemMessageKeystore instantiate a new MessageKeystore, useful for testing
+func NewInMemMessageKeystore() *MessageKeystore {
+	return NewMessageKeystore(dssync.MutexWrap(datastore.NewMapDatastore()))
 }
-
-var _ MessageKeys = (*DatastoreMessageKeys)(nil)

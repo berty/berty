@@ -4,8 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"berty.tech/berty/v2/go/internal/account"
-	"berty.tech/berty/v2/go/internal/orbitutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -16,10 +14,9 @@ import (
 
 func TestTestingClient_impl(t *testing.T) {
 	client, cleanup := bertyprotocol.TestingClient(t, bertyprotocol.Opts{
-		Logger:        zap.NewNop(),
-		Account:       account.New(keystore.NewMemKeystore()),
-		MessageKeys:   bertyprotocol.NewInMemoryMessageKeys(),
-		DBConstructor: orbitutil.NewBertyOrbitDB,
+		Logger:          zap.NewNop(),
+		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(keystore.NewMemKeystore()),
+		MessageKeystore: bertyprotocol.NewInMemMessageKeystore(),
 	})
 	defer cleanup()
 

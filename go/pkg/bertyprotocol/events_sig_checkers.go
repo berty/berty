@@ -7,13 +7,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-type SigChecker func(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error
+type sigChecker func(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error
 
-type EventGroupSigned interface {
-	proto.Message
-}
-
-func SigCheckerGroupSigned(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
+func sigCheckerGroupSigned(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
 	pk, err := g.GetPubKey()
 	if err != nil {
 		return err
@@ -31,17 +27,17 @@ func SigCheckerGroupSigned(g *bertytypes.Group, metadata *bertytypes.GroupMetada
 	return nil
 }
 
-func SigCheckerMissing(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
+func sigCheckerMissing(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
 	return errcode.ErrNotImplemented
 }
 
-type EventDeviceSigned interface {
+type eventDeviceSigned interface {
 	proto.Message
 	GetDevicePK() []byte
 }
 
-func SigCheckerDeviceSigned(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
-	msg, ok := message.(EventDeviceSigned)
+func sigCheckerDeviceSigned(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
+	msg, ok := message.(eventDeviceSigned)
 	if !ok {
 		return errcode.ErrDeserialization
 	}
@@ -63,7 +59,7 @@ func SigCheckerDeviceSigned(g *bertytypes.Group, metadata *bertytypes.GroupMetad
 	return nil
 }
 
-func SigCheckerMemberDeviceAdded(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
+func sigCheckerMemberDeviceAdded(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
 	msg, ok := message.(*bertytypes.GroupAddMemberDevice)
 	if !ok {
 		return errcode.ErrDeserialization
@@ -83,5 +79,5 @@ func SigCheckerMemberDeviceAdded(g *bertytypes.Group, metadata *bertytypes.Group
 		return errcode.ErrCryptoSignatureVerification
 	}
 
-	return SigCheckerDeviceSigned(g, metadata, message)
+	return sigCheckerDeviceSigned(g, metadata, message)
 }

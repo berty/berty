@@ -1,4 +1,4 @@
-package orbitutil_test
+package bertyprotocol
 
 import (
 	"context"
@@ -6,8 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/orbitutil"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/stretchr/testify/assert"
 )
@@ -32,15 +30,15 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 
 	testMsg1 := []byte("first message")
 
-	peers, _ := orbitutil.CreatePeersWithGroup(ctx, t, "/tmp/message_test", memberCount, deviceCount)
-	defer orbitutil.DropPeers(t, peers)
+	peers, _ := createPeersWithGroup(ctx, t, "/tmp/message_test", memberCount, deviceCount)
+	defer dropPeers(t, peers)
 
 	dPK0 := peers[0].GC.DevicePubKey()
-	ds0, err := bertyprotocol.GetDeviceSecret(ctx, peers[0].GC.Group(), peers[0].MK, peers[0].Acc)
+	ds0, err := getDeviceSecret(ctx, peers[0].GC.Group(), peers[0].MKS, peers[0].DevKS)
 	assert.NoError(t, err)
 	assert.NotNil(t, ds0)
 
-	err = bertyprotocol.RegisterChainKey(ctx, peers[1].MK, peers[0].GC.Group(), dPK0, ds0, false)
+	err = registerChainKey(ctx, peers[1].MKS, peers[0].GC.Group(), dPK0, ds0, false)
 	assert.NoError(t, err)
 
 	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1)

@@ -1,8 +1,6 @@
 package bertybridge
 
 import (
-	"berty.tech/berty/v2/go/internal/account"
-	"berty.tech/berty/v2/go/internal/orbitutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	keystore "github.com/ipfs/go-ipfs-keystore"
@@ -70,11 +68,10 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 		// initialize new protocol client
 		protocolOpts := bertyprotocol.Opts{
-			Logger:        logger.Named("bertyprotocol"),
-			IpfsCoreAPI:   config.coreAPI,
-			Account:       account.New(keystore.NewMemKeystore()),
-			MessageKeys:   bertyprotocol.NewInMemoryMessageKeys(),
-			DBConstructor: orbitutil.NewBertyOrbitDB,
+			Logger:          logger.Named("bertyprotocol"),
+			IpfsCoreAPI:     config.coreAPI,
+			DeviceKeystore:  bertyprotocol.NewDeviceKeystore(keystore.NewMemKeystore()),
+			MessageKeystore: bertyprotocol.NewInMemMessageKeystore(),
 		}
 
 		protocol.client, err = bertyprotocol.New(protocolOpts)

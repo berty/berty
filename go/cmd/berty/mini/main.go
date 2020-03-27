@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"berty.tech/berty/v2/go/internal/account"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/orbitutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
@@ -60,17 +58,16 @@ func Main(opts *Opts) {
 		panicUnlockFS(err, lock)
 	}
 
-	mk := bertyprotocol.NewDatastoreMessageKeys(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
+	mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
 	ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
 
 	client, err := bertyprotocol.New(bertyprotocol.Opts{
-		IpfsCoreAPI:   api,
-		Account:       account.New(ks),
-		RootContext:   ctx,
-		RootDatastore: rootDS,
-		MessageKeys:   mk,
-		OrbitCache:    orbitutil.NewOrbitDatastoreCache(orbitdbDS),
-		DBConstructor: orbitutil.NewBertyOrbitDB,
+		IpfsCoreAPI:     api,
+		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(ks),
+		RootContext:     ctx,
+		RootDatastore:   rootDS,
+		MessageKeystore: mk,
+		OrbitCache:      bertyprotocol.NewOrbitDatastoreCache(orbitdbDS),
 	})
 
 	if err != nil {

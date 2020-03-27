@@ -8,9 +8,10 @@ import (
 	"sync"
 	"time"
 
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/orbitutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
@@ -67,7 +68,7 @@ func New(opts *Opts) (*Client, error) {
 		return nil, err
 	}
 
-	if err := odb.RegisterAccessControllerType(orbitutil.NewSimpleAccessController); err != nil {
+	if err := odb.RegisterAccessControllerType(bertyprotocol.NewSimpleAccessController); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -98,7 +99,7 @@ func (d *Client) logFromToken(ctx context.Context, token string) (orbitdb.EventL
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	ks := &orbitutil.BertySignedKeyStore{}
+	ks := &bertyprotocol.BertySignedKeyStore{}
 	err = ks.SetKey(sigk)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -114,7 +115,7 @@ func (d *Client) logFromToken(ctx context.Context, token string) (orbitdb.EventL
 	}
 
 	g := &bertytypes.Group{PublicKey: pubkb, Secret: sigkb}
-	opts, err := orbitutil.DefaultOptions(g, &orbitdb.CreateDBOptions{}, ks, "log")
+	opts, err := bertyprotocol.DefaultOrbitDBOptions(g, &orbitdb.CreateDBOptions{}, ks, "log")
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
