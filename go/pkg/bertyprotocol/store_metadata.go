@@ -2,7 +2,7 @@ package bertyprotocol
 
 import (
 	"context"
-	"crypto/rand"
+	crand "crypto/rand"
 	"io"
 	"io/ioutil"
 
@@ -454,7 +454,7 @@ func (m *metadataStore) ContactRequestReferenceReset(ctx context.Context) (opera
 		return nil, errcode.ErrGroupInvalidType
 	}
 
-	seed, err := ioutil.ReadAll(io.LimitReader(rand.Reader, bertytypes.RendezvousSeedLength))
+	seed, err := ioutil.ReadAll(io.LimitReader(crand.Reader, bertytypes.RendezvousSeedLength))
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}

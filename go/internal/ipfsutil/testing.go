@@ -2,7 +2,7 @@ package ipfsutil
 
 import (
 	"context"
-	"crypto/rand"
+	crand "crypto/rand"
 	"encoding/base64"
 	"testing"
 
@@ -34,7 +34,7 @@ func TestingRepo(t testing.TB) ipfs_repo.Repo {
 	t.Helper()
 
 	c := ipfs_cfg.Config{}
-	priv, pub, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, rand.Reader)
+	priv, pub, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, crand.Reader)
 	if err != nil {
 		t.Fatalf("failed to generate pair key: %v", err)
 	}

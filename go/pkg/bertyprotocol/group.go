@@ -3,7 +3,7 @@ package bertyprotocol
 import (
 	"context"
 	"crypto/ed25519"
-	"crypto/rand"
+	crand "crypto/rand"
 	"crypto/sha256"
 	"io"
 	"io/ioutil"
@@ -23,7 +23,7 @@ const CurrentGroupVersion = 1
 // NewGroupMultiMember creates a new Group object and an invitation to be used by
 // the first member of the group
 func NewGroupMultiMember() (*bertytypes.Group, crypto.PrivKey, error) {
-	priv, pub, err := crypto.GenerateEd25519Key(rand.Reader)
+	priv, pub, err := crypto.GenerateEd25519Key(crand.Reader)
 	if err != nil {
 		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
@@ -33,7 +33,7 @@ func NewGroupMultiMember() (*bertytypes.Group, crypto.PrivKey, error) {
 		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	signing, _, err := crypto.GenerateEd25519Key(rand.Reader)
+	signing, _, err := crypto.GenerateEd25519Key(crand.Reader)
 	if err != nil {
 		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}

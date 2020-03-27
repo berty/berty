@@ -5,7 +5,7 @@ import (
 	"context"
 	crand "crypto/rand"
 	"fmt"
-	"math/rand"
+	mrand "math/rand"
 	"testing"
 	"time"
 
@@ -74,7 +74,7 @@ func TestMetadataStoreMember(t *testing.T) {
 
 	// If seed is not set, it will default to 1, explicitly setting it and displaying it if the test fails
 	seed := time.Now().UTC().UnixNano()
-	rand.Seed(seed)
+	mrand.Seed(seed)
 
 	for _, tc := range []struct {
 		memberCount int

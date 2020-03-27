@@ -2,7 +2,7 @@ package ipfsutil
 
 import (
 	"context"
-	"crypto/rand"
+	crand "crypto/rand"
 	"encoding/base64"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -54,7 +54,7 @@ func createBuildConfig(listeners ...string) (*ipfs_node.BuildCfg, error) {
 
 func createRepo(dstore ipfs_repo.Datastore, listeners ...string) (ipfs_repo.Repo, error) {
 	c := ipfs_cfg.Config{}
-	priv, pub, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, rand.Reader) // nolint:staticcheck
+	priv, pub, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, crand.Reader) // nolint:staticcheck
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

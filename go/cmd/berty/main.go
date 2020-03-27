@@ -6,7 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"math/rand"
+	mrand "math/rand"
 	"net"
 	"os"
 	"path"
@@ -20,7 +20,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
-	"github.com/ipfs/go-datastore"
+	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
 	"github.com/juju/fslock"
@@ -60,7 +60,7 @@ func main() {
 	)
 
 	globalPreRun := func() error {
-		rand.Seed(srand.Secure())
+		mrand.Seed(srand.Secure())
 		if *globalDebug {
 			config := zap.NewDevelopmentConfig()
 			config.Level.SetLevel(zap.DebugLevel)
