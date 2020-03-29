@@ -285,8 +285,8 @@ export const transactions: Transactions = {
 			payload: Buffer.from(JSON.stringify(setGroupName), 'utf-8'),
 		})
 
-		const group: berty.protocol.IGroup = {
-			groupType: berty.protocol.GroupType.GroupTypeMultiMember,
+		const group: berty.types.IGroup = {
+			groupType: berty.types.GroupType.GroupTypeMultiMember,
 			publicKey: groupPk,
 		}
 		yield* protocol.client.transactions.multiMemberGroupJoin({ id: accountId, group })
@@ -411,7 +411,7 @@ export function* orchestrator() {
 				event: { group },
 			} = payload
 			const { publicKey, groupType } = group
-			if (groupType !== berty.protocol.GroupType.GroupTypeMultiMember) {
+			if (groupType !== berty.types.GroupType.GroupTypeMultiMember) {
 				return
 			}
 			if (!publicKey) {

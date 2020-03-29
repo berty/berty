@@ -91,14 +91,14 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 				if (!response.value) {
 					return
 				}
-				const groupMetadataEvent = api.berty.protocol.GroupMetadataEvent.decode(response.value)
+				const groupMetadataEvent = api.berty.types.GroupMetadataEvent.decode(response.value)
 				if (!groupMetadataEvent.metadata) {
 					return
 				}
 				const type = groupMetadataEvent.metadata.eventType
 				switch (type) {
-					case api.berty.protocol.EventType.EventTypeAccountGroupJoined:
-						const { group } = api.berty.protocol.AccountGroupJoined.decode(groupMetadataEvent.event)
+					case api.berty.types.EventType.EventTypeAccountGroupJoined:
+						const { group } = api.berty.types.AccountGroupJoined.decode(groupMetadataEvent.event)
 						if (!(group && group.publicKey)) {
 							break
 						}
@@ -142,18 +142,15 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	}
 
 	InstanceExportData: (
-		request: api.berty.protocol.InstanceExportData.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.InstanceExportData.IReply,
-		) => void,
+		request: api.berty.types.InstanceExportData.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.InstanceExportData.IReply) => void,
 	) => void = (request, callback) => {}
 
 	InstanceGetConfiguration: (
-		request: api.berty.protocol.InstanceGetConfiguration.IRequest,
+		request: api.berty.types.InstanceGetConfiguration.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.InstanceGetConfiguration.IReply,
+			response?: api.berty.types.InstanceGetConfiguration.IReply,
 		) => void,
 	) => void = async (request, callback) => {
 		callback(null, {
@@ -164,10 +161,10 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	}
 
 	ContactRequestReference: (
-		request: api.berty.protocol.ContactRequestReference.IRequest,
+		request: api.berty.types.ContactRequestReference.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.ContactRequestReference.IReply,
+			response?: api.berty.types.ContactRequestReference.IReply,
 		) => void,
 	) => void = async (request, callback) => {
 		if (!this.rdvLogtoken) {
@@ -178,10 +175,10 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	}
 
 	ContactRequestDisable: (
-		request: api.berty.protocol.ContactRequestDisable.IRequest,
+		request: api.berty.types.ContactRequestDisable.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.ContactRequestDisable.IReply,
+			response?: api.berty.types.ContactRequestDisable.IReply,
 		) => void,
 	) => void = async (request, callback) => {
 		await this.setRdvLogToken(undefined)
@@ -221,7 +218,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 				client.logAdd(
 					{
 						logToken: this.getMessageLogToken(groupPk),
-						data: api.berty.protocol.GroupMessageEvent.encode({
+						data: api.berty.types.GroupMessageEvent.encode({
 							eventContext: {},
 							headers: { devicePk: this.devicePkBytes },
 							message: data,
@@ -266,18 +263,18 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 				client.logAdd(
 					{
 						logToken: this.getMetadataLogToken(groupPk),
-						data: api.berty.protocol.GroupMetadataEvent.encode({
+						data: api.berty.types.GroupMetadataEvent.encode({
 							eventContext: { groupPk: Buffer.from(groupPk, 'utf-8') },
 							metadata: {
-								// TODO: fix api.berty.protocol.EventType type
-								eventType: ((api.berty.protocol.EventType as unknown) as { [key: string]: number })[
+								// TODO: fix api.berty.types.EventType type
+								eventType: ((api.berty.types.EventType as unknown) as { [key: string]: number })[
 									'EventType' + type
 								],
 							},
 							event:
 								type === 'GroupMetadataPayloadSent'
 									? data
-									: (api.berty.protocol as { [key: string]: any })[dataType as string]
+									: (api.berty.types as { [key: string]: any })[dataType as string]
 											.encode(data)
 											.finish(),
 						}).finish(),
@@ -298,11 +295,8 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	}
 
 	ContactRequestEnable: (
-		request: api.berty.protocol.ContactRequestEnable.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.ContactRequestEnable.IReply,
-		) => void,
+		request: api.berty.types.ContactRequestEnable.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ContactRequestEnable.IReply) => void,
 	) => void = async (_, callback) => {
 		if (!this.client) {
 			throw new Error('handler.ts: ContactRequestEnable: missing client')
@@ -351,21 +345,18 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	}
 
 	ContactRequestResetReference: (
-		request: api.berty.protocol.ContactRequestResetReference.IRequest,
+		request: api.berty.types.ContactRequestResetReference.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.ContactRequestResetReference.IReply,
+			response?: api.berty.types.ContactRequestResetReference.IReply,
 		) => void,
 	) => void = async (_, callback) => {
 		await this.setRdvLogToken(await this._logToken())
 		callback(null, { reference: this.referenceBytes })
 	}
 	ContactRequestSend: (
-		request: api.berty.protocol.ContactRequestSend.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.ContactRequestSend.IReply,
-		) => void,
+		request: api.berty.types.ContactRequestSend.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ContactRequestSend.IReply) => void,
 	) => void = async (request, callback) => {
 		try {
 			const { client } = this
@@ -390,8 +381,8 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 					contactMetadata: request.contactMetadata,
 				},
 			})
-			const group: api.berty.protocol.IGroup = {
-				groupType: api.berty.protocol.GroupType.GroupTypeContact,
+			const group: api.berty.types.IGroup = {
+				groupType: api.berty.types.GroupType.GroupTypeContact,
 				publicKey: Buffer.from(fakeGroupPk, 'utf-8'),
 			}
 			await this.addEventToMetadataLog({
@@ -428,11 +419,8 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		}
 	}
 	ContactRequestAccept: (
-		request: api.berty.protocol.ContactRequestAccept.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.ContactRequestAccept.IReply,
-		) => void,
+		request: api.berty.types.ContactRequestAccept.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ContactRequestAccept.IReply) => void,
 	) => void = async (request, callback) => {
 		try {
 			if (!request.contactPk) {
@@ -453,8 +441,8 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 					groupPk: Buffer.from(fakeGroupPk, 'utf-8'),
 				},
 			})
-			const group: api.berty.protocol.IGroup = {
-				groupType: api.berty.protocol.GroupType.GroupTypeContact,
+			const group: api.berty.types.IGroup = {
+				groupType: api.berty.types.GroupType.GroupTypeContact,
 				publicKey: Buffer.from(fakeGroupPk, 'utf-8'),
 			}
 			await this.addEventToMetadataLog({
@@ -472,10 +460,10 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		}
 	}
 	ContactRequestDiscard: (
-		request: api.berty.protocol.ContactRequestDiscard.IRequest,
+		request: api.berty.types.ContactRequestDiscard.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.ContactRequestDiscard.IReply,
+			response?: api.berty.types.ContactRequestDiscard.IReply,
 		) => void,
 	) => void = async (request, callback) => {
 		await this.addEventToMetadataLog({
@@ -490,25 +478,22 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		callback(null, {})
 	}
 	ContactBlock: (
-		request: api.berty.protocol.ContactBlock.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.ContactBlock.IReply) => void,
+		request: api.berty.types.ContactBlock.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ContactBlock.IReply) => void,
 	) => void = (request, callback) => {}
 	ContactUnblock: (
-		request: api.berty.protocol.ContactUnblock.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.ContactUnblock.IReply) => void,
+		request: api.berty.types.ContactUnblock.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ContactUnblock.IReply) => void,
 	) => void = (request, callback) => {}
 	ContactAliasKeySend: (
-		request: api.berty.protocol.ContactAliasKeySend.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.ContactAliasKeySend.IReply,
-		) => void,
+		request: api.berty.types.ContactAliasKeySend.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ContactAliasKeySend.IReply) => void,
 	) => void = (request, callback) => {}
 	MultiMemberGroupCreate: (
-		request: api.berty.protocol.MultiMemberGroupCreate.IRequest,
+		request: api.berty.types.MultiMemberGroupCreate.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberGroupCreate.IReply,
+			response?: api.berty.types.MultiMemberGroupCreate.IReply,
 		) => void,
 	) => void = async (request, callback) => {
 		try {
@@ -519,11 +504,8 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		}
 	}
 	MultiMemberGroupJoin: (
-		request: api.berty.protocol.MultiMemberGroupJoin.IRequest,
-		callback: (
-			error: Error | null,
-			response?: api.berty.protocol.MultiMemberGroupJoin.IReply,
-		) => void,
+		request: api.berty.types.MultiMemberGroupJoin.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.MultiMemberGroupJoin.IReply) => void,
 	) => void = async (request, callback) => {
 		try {
 			const { group } = request
@@ -545,36 +527,36 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		}
 	}
 	MultiMemberGroupLeave: (
-		request: api.berty.protocol.MultiMemberGroupLeave.IRequest,
+		request: api.berty.types.MultiMemberGroupLeave.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberGroupLeave.IReply,
+			response?: api.berty.types.MultiMemberGroupLeave.IReply,
 		) => void,
 	) => void = (request, callback) => {}
 	MultiMemberGroupAliasResolverDisclose: (
-		request: api.berty.protocol.MultiMemberGroupAliasResolverDisclose.IRequest,
+		request: api.berty.types.MultiMemberGroupAliasResolverDisclose.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberGroupAliasResolverDisclose.IReply,
+			response?: api.berty.types.MultiMemberGroupAliasResolverDisclose.IReply,
 		) => void,
 	) => void = (request, callback) => {}
 	MultiMemberGroupAdminRoleGrant: (
-		request: api.berty.protocol.MultiMemberGroupAdminRoleGrant.IRequest,
+		request: api.berty.types.MultiMemberGroupAdminRoleGrant.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberGroupAdminRoleGrant.IReply,
+			response?: api.berty.types.MultiMemberGroupAdminRoleGrant.IReply,
 		) => void,
 	) => void = (request, callback) => {}
 	MultiMemberGroupInvitationCreate: (
-		request: api.berty.protocol.MultiMemberGroupInvitationCreate.IRequest,
+		request: api.berty.types.MultiMemberGroupInvitationCreate.IRequest,
 		callback: (
 			error: Error | null,
-			response?: api.berty.protocol.MultiMemberGroupInvitationCreate.IReply,
+			response?: api.berty.types.MultiMemberGroupInvitationCreate.IReply,
 		) => void,
 	) => void = (request, callback) => {}
 	AppMetadataSend: (
-		request: api.berty.protocol.AppMetadataSend.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.AppMetadataSend.IReply) => void,
+		request: api.berty.types.AppMetadataSend.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.AppMetadataSend.IReply) => void,
 	) => void = async (request, callback) => {
 		const { groupPk, payload } = request
 		try {
@@ -589,8 +571,8 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		}
 	}
 	AppMessageSend: (
-		request: api.berty.protocol.AppMessageSend.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.AppMessageSend.IReply) => void,
+		request: api.berty.types.AppMessageSend.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.AppMessageSend.IReply) => void,
 	) => void = async (request, callback) => {
 		const { groupPk, payload } = request
 		try {
@@ -611,8 +593,8 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	}
 
 	GroupMetadataSubscribe: (
-		request: api.berty.protocol.GroupMetadataSubscribe.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.IGroupMetadataEvent) => void,
+		request: api.berty.types.GroupMetadataSubscribe.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.IGroupMetadataEvent) => void,
 	) => void = (request, callback) => {
 		if (request.groupPk == null) {
 			callback(new Error('GRPC ProtocolServiceHandler: groupPk not defined'))
@@ -633,7 +615,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 					callback(error)
 					return
 				}
-				const message = api.berty.protocol.GroupMetadataEvent.decode(response.value)
+				const message = api.berty.types.GroupMetadataEvent.decode(response.value)
 				if (message == null || message.eventContext == null) {
 					callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
 					return
@@ -646,8 +628,8 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	}
 
 	GroupMessageSubscribe: (
-		request: api.berty.protocol.GroupMessageSubscribe.IRequest,
-		callback: (error: Error | null, response?: api.berty.protocol.IGroupMessageEvent) => void,
+		request: api.berty.types.GroupMessageSubscribe.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.IGroupMessageEvent) => void,
 	) => void = (request, callback) => {
 		if (request.groupPk == null) {
 			callback(new Error('GRPC ProtocolServiceHandler: groupPk not defined'))
@@ -668,7 +650,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 					callback(error)
 					return
 				}
-				const message = api.berty.protocol.GroupMessageEvent.decode(response.value)
+				const message = api.berty.types.GroupMessageEvent.decode(response.value)
 				if (message == null || message.eventContext == null) {
 					callback(new Error('GRPC ProtocolServiceHandler: log event corrupted'))
 					return

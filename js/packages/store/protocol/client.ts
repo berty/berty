@@ -233,7 +233,7 @@ const eventNameFromValue = (value: number) => {
 	if (typeof value !== 'number') {
 		throw new Error(`client.ts: eventNameFromValue: expected number argument, got ${typeof value}`)
 	}
-	return api.berty.protocol.EventType[value]
+	return api.berty.types.EventType[value]
 }
 
 const services: { [key: string]: ProtocolServiceClient } = {}
@@ -258,7 +258,7 @@ export const transactions: Transactions = {
 		const { accountPk, devicePk, accountGroupPk } = (yield cps(
 			services[id]?.instanceGetConfiguration,
 			{},
-		)) as api.berty.protocol.InstanceGetConfiguration.IReply
+		)) as api.berty.types.InstanceGetConfiguration.IReply
 		yield putResolve(
 			events.started({
 				aggregateId: id,
@@ -288,7 +288,7 @@ export const transactions: Transactions = {
 		const reply = (yield cps(
 			getService(payload.id).contactRequestEnable,
 			{},
-		)) as api.berty.protocol.ContactRequestEnable.IReply
+		)) as api.berty.types.ContactRequestEnable.IReply
 		if (!reply.reference) {
 			throw new Error(`Invalid reference ${reply.reference}`)
 		}
@@ -409,7 +409,7 @@ export const transactions: Transactions = {
 				if (eventType == null) {
 					return
 				}
-				if (eventType === api.berty.protocol.EventType.EventTypeGroupMetadataPayloadSent) {
+				if (eventType === api.berty.types.EventType.EventTypeGroupMetadataPayloadSent) {
 					eventsChannel.put(
 						events.groupMetadataPayloadSent({
 							aggregateId: `${payload.id}`,
@@ -433,7 +433,7 @@ export const transactions: Transactions = {
 				if (eventName === undefined) {
 					throw new Error(`Invalid event type ${eventType}`)
 				}
-				const protocol: { [key: string]: any } = api.berty.protocol
+				const protocol: { [key: string]: any } = api.berty.types
 				const event = protocol[eventName.replace('EventType', '')] || protocol[eventsMap[eventName]]
 				if (!event) {
 					console.warn("Don't know how to decode", eventName)
