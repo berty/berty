@@ -17,7 +17,7 @@ func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *bertytypes.
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("joined a group")),
+		payload:     []byte("joined a group"),
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
@@ -35,7 +35,7 @@ func handlerGroupDeviceSecretAdded(_ context.Context, v *groupView, e *bertytype
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("has exchanged a secret")),
+		payload:     []byte("has exchanged a secret"),
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
@@ -163,7 +163,7 @@ func handlerAccountContactRequestOutgoingEnqueued(_ context.Context, v *groupVie
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("fake request on the other end by typing `/contact received` with the value of `/contact share`")),
+		payload:     []byte("fake request on the other end by typing `/contact received` with the value of `/contact share`"),
 		sender:      casted.DevicePK,
 	}, nil, v, false)
 
@@ -178,7 +178,7 @@ func handlerContactAliasKeyAdded(_ context.Context, v *groupView, e *bertytypes.
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("contact alias public key received")),
+		payload:     []byte("contact alias public key received"),
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
@@ -193,7 +193,7 @@ func handlerMultiMemberGroupAliasResolverAdded(_ context.Context, v *groupView, 
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("contact alias proof received")),
+		payload:     []byte("contact alias proof received"),
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 

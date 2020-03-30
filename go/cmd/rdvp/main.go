@@ -122,7 +122,6 @@ func main() {
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
-
 			}
 
 			// init p2p host

@@ -45,7 +45,7 @@ func (v *groupView) commandParser(ctx context.Context, input string) error {
 			}
 		}
 
-		return errors.New(fmt.Sprintf("command not found, start with // to send a message beginning with a slash"))
+		return fmt.Errorf("command not found, start with // to send a message beginning with a slash")
 	}
 
 	return newMessageCommand(ctx, v, input)
