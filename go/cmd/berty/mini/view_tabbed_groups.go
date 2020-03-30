@@ -14,7 +14,7 @@ import (
 type tabbedGroupsView struct {
 	ctx                    context.Context
 	app                    *tview.Application
-	client                 bertyprotocol.Client
+	client                 bertyprotocol.ProtocolServiceClient
 	topics                 *tview.Table
 	activeViewContainer    *tview.Flex
 	selectedGroupView      *groupView
@@ -200,7 +200,7 @@ func (v *tabbedGroupsView) GetHistory() tview.Primitive {
 	return v.activeViewContainer
 }
 
-func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client bertyprotocol.Client, app *tview.Application) *tabbedGroupsView {
+func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client bertyprotocol.ProtocolServiceClient, app *tview.Application) *tabbedGroupsView {
 	v := &tabbedGroupsView{
 		ctx:    ctx,
 		topics: tview.NewTable(),

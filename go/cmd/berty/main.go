@@ -30,7 +30,15 @@ import (
 	"github.com/peterbourgon/ff/ffcli"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"moul.io/srand"
 )
 
@@ -54,10 +62,11 @@ func main() {
 		clientDemoDirectory = clientDemoFlags.String("d", ":memory:", "orbit db directory")
 		clientDemoListeners = clientDemoFlags.String("l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
 
-		miniClientDemoFlags = flag.NewFlagSet("mini demo client", flag.ExitOnError)
-		miniClientDemoGroup = miniClientDemoFlags.String("g", "", "group to join, leave empty to create a new group")
-		miniClientDemoPath  = miniClientDemoFlags.String("d", cacheleveldown.InMemoryDirectory, "datastore base directory")
-		miniClientDemoPort  = miniClientDemoFlags.Uint("p", 0, "default IPFS listen port")
+		miniClientDemoFlags      = flag.NewFlagSet("mini demo client", flag.ExitOnError)
+		miniClientDemoGroup      = miniClientDemoFlags.String("g", "", "group to join, leave empty to create a new group")
+		miniClientDemoPath       = miniClientDemoFlags.String("d", cacheleveldown.InMemoryDirectory, "datastore base directory")
+		miniClientDemoPort       = miniClientDemoFlags.Uint("p", 0, "default IPFS listen port")
+		miniClientDemoRemoteAddr = miniClientDemoFlags.String("r", "", "remote berty daemon")
 	)
 
 	globalPreRun := func() error {
@@ -126,7 +135,13 @@ func main() {
 			}
 			defer rootDS.Close()
 
+			remoteAddr := ""
+			if miniClientDemoRemoteAddr != nil && *miniClientDemoRemoteAddr != "" {
+				remoteAddr = *miniClientDemoRemoteAddr
+			}
+
 			mini.Main(&mini.Opts{
+				RemoteAddr:      remoteAddr,
 				GroupInvitation: *miniClientDemoGroup,
 				Port:            *miniClientDemoPort,
 				RootDS:          rootDS,
@@ -187,7 +202,35 @@ func main() {
 			var workers run.Group
 			{
 				// setup grpc server
-				grpcServer := grpc.NewServer()
+				grpcLogger := logger.Named("grpc.protocol")
+				// Define customfunc to handle panic
+				panicHandler := func(p interface{}) (err error) {
+					return status.Errorf(codes.Unknown, "panic recover: %v", p)
+				}
+
+				// Shared options for the logger, with a custom gRPC code to log level function.
+				recoverOpts := []grpc_recovery.Option{
+					grpc_recovery.WithRecoveryHandler(panicHandler),
+				}
+
+				zapOpts := []grpc_zap.Option{}
+
+				// setup grpc with zap
+				grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
+				grpcServer := grpc.NewServer(
+					grpc_middleware.WithUnaryServerChain(
+						grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+
+						grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
+						grpc_recovery.UnaryServerInterceptor(recoverOpts...),
+					),
+					grpc_middleware.WithStreamServerChain(
+						grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+						grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
+						grpc_recovery.StreamServerInterceptor(recoverOpts...),
+					),
+				)
+
 				bertyprotocol.RegisterProtocolServiceServer(grpcServer, protocol)
 
 				// setup listeners
