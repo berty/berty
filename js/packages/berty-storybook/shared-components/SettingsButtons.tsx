@@ -353,7 +353,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 	styleText = null,
 }) => {
 	const _styles = useStylesButtonSettingRow()
-	const [{ flex, row, margin, column, padding, border, background, text }] = useStyles()
+	const [{ flex, row, margin, padding, border, background, text }] = useStyles()
 	return (
 		<View style={[flex.tiny, row.fill, margin.top.medium, style, { alignItems: 'center' }]}>
 			{state.map((obj) => (
@@ -375,6 +375,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 							text.align.center,
 							text.family,
 							text.color.black,
+							text.size.medium,
 							styleText,
 							_styles.textPadding,
 						]}

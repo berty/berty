@@ -127,8 +127,6 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 			<ScrollView>
 				<HeaderSettings
 					title='Bluetooth'
-					action={setIsBluetooth}
-					actionValue={isBluetooth}
 					desc="Bluetooth allows you to use the Berty app when you don't have a network connection (wifi or data) by connecting
 					your phone directly with peers nearby"
 					undo={goBack}

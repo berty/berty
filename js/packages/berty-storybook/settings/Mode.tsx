@@ -156,7 +156,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				actionIcon='arrow-ios-forward'
 				onPress={() => {
 					account != null && deleteAccount({ id: account.id })
-					navigation.navigate.onboarding.getStarted()
+					navigation.navigate.onboarding.getStarted
 				}}
 			/>
 		</View>
@@ -169,11 +169,9 @@ export const Mode: React.FC<{}> = () => {
 	const [{ flex, background, padding }] = useStyles()
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView contentContainerStyle={[padding.bottom.scale(116)]}>
+			<ScrollView contentContainerStyle={[padding.bottom.scale(90)]}>
 				<HeaderSettings
 					title='Settings'
-					action={setIsMode}
-					actionValue={isMode}
 					desc='Customize everything to get the app that fits your needs'
 					undo={goBack}
 				/>

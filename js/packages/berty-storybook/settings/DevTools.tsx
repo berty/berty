@@ -60,7 +60,6 @@ const HeaderDevTools: React.FC<{}> = () => {
 						style: _styles.lastButtonRow,
 					},
 				]}
-				numberOfLines={2}
 				style={[_styles.buttonRowMarginTop]}
 				styleText={[text.bold]}
 			/>
@@ -72,7 +71,6 @@ const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	const account = Chat.useAccount()
-	const replayAccount = Chat.useAccountReplay()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
@@ -80,7 +78,6 @@ const BodyDevTools: React.FC<{}> = () => {
 				icon='arrowhead-right-outline'
 				iconSize={30}
 				iconColor={color.yellow}
-				onPress={() => account && replayAccount({ id: account.id })}
 			/>
 			<ButtonSetting
 				name='Bot mode'
@@ -138,7 +135,6 @@ const BodyDevTools: React.FC<{}> = () => {
 						style: _styles.lastButtonRow,
 					},
 				]}
-				numberOfLines={2}
 				style={[_styles.buttonRowMarginTop]}
 				styleText={[text.bold]}
 			/>
@@ -148,10 +144,10 @@ const BodyDevTools: React.FC<{}> = () => {
 
 export const DevTools: React.FC<ScreenProps.Settings.DevTools> = () => {
 	const { goBack } = useNavigation()
-	const [{ background, flex, color }] = useStyles()
+	const [{ background, flex, color, padding }] = useStyles()
 	return (
 		<Layout style={[background.white, flex.tiny]}>
-			<ScrollView>
+			<ScrollView contentContainerStyle={padding.bottom.scale(90)}>
 				<HeaderSettings title='Dev tools' bgColor={color.dark.grey} undo={goBack}>
 					<HeaderDevTools />
 				</HeaderSettings>

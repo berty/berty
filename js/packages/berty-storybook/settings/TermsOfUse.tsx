@@ -1,8 +1,9 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
+import { View, ScrollView, SafeAreaView } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
+import { useNavigation } from '@berty-tech/berty-navigation'
 
 //
 // TermsOfUse
@@ -81,11 +82,12 @@ const BodyTermsOfUse: React.FC<{}> = () => {
 }
 
 export const TermsOfUse: React.FC<{}> = () => {
-	const [{ flex, background }] = useStyles()
+	const [{ flex, background, padding }] = useStyles()
+	const { goBack } = useNavigation()
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView>
-				<HeaderSettings title='Terms of use' desc='Last updated: August 29th 2019' />
+			<ScrollView contentContainerStyle={padding.bottom.scale(90)}>
+				<HeaderSettings title='Terms of use' desc='Last updated: August 29th 2019' undo={goBack} />
 				<BodyTermsOfUse />
 			</ScrollView>
 		</Layout>

@@ -142,7 +142,6 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => {
 								style: _styles.secondHeaderButtonRow,
 							},
 						]}
-						numberOfLines={2}
 						styleText={text.bold}
 					/>
 					<ButtonSettingRow
@@ -160,7 +159,6 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => {
 								style: _styles.secondHeaderButtonRow,
 							},
 						]}
-						numberOfLines={2}
 						style={_styles.buttonRowMarginTop}
 						styleText={text.bold}
 					/>
@@ -172,6 +170,7 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => {
 
 const BodyAboutBerty: React.FC<AboutbertyProps> = () => {
 	const _styles = useStylesAboutBerty()
+	const navigation = useNavigation()
 	const [{ flex, margin, padding, color }] = useStyles()
 
 	return (
@@ -182,6 +181,7 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => {
 				iconSize={30}
 				iconColor={color.blue}
 				actionIcon='arrow-ios-forward'
+				onPress={navigation.navigate.settings.termsOfUse}
 			/>
 			<ButtonSetting
 				name='Privacy policy'
@@ -213,7 +213,6 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => {
 					},
 				]}
 				style={_styles.buttonRowMarginTop}
-				numberOfLines={1}
 			/>
 		</View>
 	)
@@ -227,7 +226,7 @@ export const AboutBerty: React.FC<ScreenProps.Settings.AboutBerty> = () => {
 	return (
 		<Layout style={[flex.tiny, background.white]}>
 			<ScrollView>
-				<HeaderSettings title='About Berty' action={setVersion} actionValue={version} undo={goBack}>
+				<HeaderSettings title='About Berty' undo={goBack}>
 					<HeaderAboutBerty version={version} />
 				</HeaderSettings>
 				<BodyAboutBerty version={version} />

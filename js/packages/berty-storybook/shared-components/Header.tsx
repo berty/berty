@@ -76,7 +76,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 							</Text>
 						</View>
 					)}
-					{(action || actionIcon) && (
+					{action && actionIcon ? (
 						<View style={[flex.tiny, row.item.justify]}>
 							<TouchableOpacity
 								style={row.item.bottom}
@@ -90,6 +90,8 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 								/>
 							</TouchableOpacity>
 						</View>
+					) : (
+						<View style={[flex.tiny, row.item.justify]} />
 					)}
 				</View>
 				{desc && (

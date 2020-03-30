@@ -179,14 +179,12 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 export const Notifications: React.FC<ScreenProps.Settings.Notifications> = () => {
 	const [isAuthorize, setIsAuthorize] = useState(false)
 	const { goBack } = useNavigation()
-	const [{ flex, background }] = useStyles()
+	const [{ padding, flex, background }] = useStyles()
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView>
+			<ScrollView contentContainerStyle={padding.bottom.scale(90)}>
 				<HeaderSettings
 					title='Notifications'
-					action={setIsAuthorize}
-					actionValue={isAuthorize}
 					desc='You have not yet activated notifications for this app'
 					undo={goBack}
 				>

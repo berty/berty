@@ -181,15 +181,13 @@ const BodyUpdates: React.FC<{ update: boolean }> = ({ update }) => {
 export const AppUpdates: React.FC<ScreenProps.Settings.AppUpdates> = () => {
 	const [update, setUpdate] = useState(false)
 	const { goBack } = useNavigation()
-	const [{ flex, background }] = useStyles()
+	const [{ flex, background, padding }] = useStyles()
 
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView>
+			<ScrollView contentContainerStyle={padding.bottom.scale(90)}>
 				<HeaderSettings
 					title='App updates'
-					action={setUpdate}
-					actionValue={update}
 					desc={!update ? 'Your app is up to date' : null}
 					undo={goBack}
 				>
