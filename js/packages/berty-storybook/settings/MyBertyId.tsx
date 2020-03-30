@@ -12,8 +12,8 @@ import { useStyles } from '@berty-tech/styles'
 import { RequestProps } from '../shared-props/User'
 import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'
-import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { Chat } from '@berty-tech/hooks'
+import { useNavigation } from '@berty-tech/berty-navigation'
 import QRCode from 'react-native-qrcode-svg'
 
 //
@@ -138,39 +138,26 @@ const BertyIdShare: React.FC<{}> = () => {
 
 const Screen = Dimensions.get('window')
 
-const MyBertyIdComponent: React.FC<RequestProps> = ({ user }) => (
-	<View style={{ height: Screen.height }}>
-		<BertIdBody user={user} />
-		<BertyIdShare />
-	</View>
-)
+const MyBertyIdComponent: React.FC<RequestProps> = ({ user }) => {
+	const { goBack } = useNavigation()
+	const [{ padding, color }] = useStyles()
+	return (
+		<View style={[{ height: Screen.height }, padding.medium]}>
+			<TouchableOpacity onPress={goBack}>
+				<Icon name='arrow-back-outline' width={30} height={30} fill={color.white} />
+			</TouchableOpacity>
+			<BertIdBody user={user} />
+			<BertyIdShare />
+		</View>
+	)
+}
 
 export const MyBertyId: React.FC<RequestProps> = ({ user }) => {
-	const firstNotToggledPoint = Screen.height - 120
-	const firstToggledPoint = 20
-
-	const [{ flex, color }] = useStyles()
-
+	const [{ flex, background }] = useStyles()
 	return (
 		<Layout style={[flex.tiny]}>
-			<SafeAreaView style={[flex.tiny]}>
-				<SDTSModalComponent
-					rows={[
-						{
-							toggledPoint: firstToggledPoint,
-							notToggledPoint: firstNotToggledPoint,
-							initialPoint: firstToggledPoint,
-							title: 'My Berty ID',
-							titleColor: color.white,
-							icon: 'person',
-							iconColor: color.white,
-							bgColor: color.blue,
-							maxHeight: Screen.height - 90,
-						},
-					]}
-				>
-					<MyBertyIdComponent user={user} />
-				</SDTSModalComponent>
+			<SafeAreaView style={[flex.tiny, background.blue]}>
+				<MyBertyIdComponent user={user} />
 			</SafeAreaView>
 		</Layout>
 	)
