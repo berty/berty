@@ -237,7 +237,7 @@ func main() {
 			ctx := context.Background()
 
 			// demo
-			var demo *bertydemo.Client
+			var demo *bertydemo.Service
 			{
 				var err error
 
