@@ -220,7 +220,7 @@ func contactDiscardCommand(ctx context.Context, v *groupView, cmd string) error 
 func groupJoinCommand(ctx context.Context, v *groupView, cmd string) error {
 	g, err := openGroupFromString(cmd)
 	if err != nil {
-		return errors.Wrap(err, "Can't join group")
+		return fmt.Errorf("err: can't join group %w", err)
 	}
 
 	_, err = v.v.client.MultiMemberGroupJoin(ctx, &bertytypes.MultiMemberGroupJoin_Request{
@@ -279,7 +279,7 @@ func contactShareCommand(ctx context.Context, v *groupView, cmd string) error {
 		if shareableContact == nil {
 			v.syncMessages <- &historyMessage{
 				messageType: messageTypeMeta,
-				payload:     []byte(fmt.Sprintf("contact request ref seed has not been generated")),
+				payload:     []byte("contact request ref seed has not been generated"),
 			}
 		} else {
 			v.syncMessages <- &historyMessage{
@@ -290,7 +290,7 @@ func contactShareCommand(ctx context.Context, v *groupView, cmd string) error {
 	} else {
 		v.syncMessages <- &historyMessage{
 			messageType: messageTypeError,
-			payload:     []byte(fmt.Sprintf("contact request ref is disabled")),
+			payload:     []byte("contact request ref is disabled"),
 		}
 	}
 

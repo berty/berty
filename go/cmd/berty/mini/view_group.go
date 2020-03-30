@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/banner"
@@ -44,7 +45,7 @@ func (v *groupView) commandParser(ctx context.Context, input string) error {
 			}
 		}
 
-		return errors.New(fmt.Sprintf("command not found, start with // to send a message beginning with a slash"))
+		return fmt.Errorf("command not found, start with // to send a message beginning with a slash")
 	}
 
 	return newMessageCommand(ctx, v, input)
@@ -148,7 +149,12 @@ func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK [
 }
 
 func (v *groupView) loop(ctx context.Context) {
+	wg := sync.WaitGroup{}
+	wg.Add(3)
+
 	go func() {
+		wg.Done()
+
 		for m := range v.syncMessages {
 			v.messages.Append(m)
 		}
@@ -173,7 +179,7 @@ func (v *groupView) loop(ctx context.Context) {
 
 	metas, srvListMetadatas := newProtocolServiceGroupMetadata(ctx)
 	go func() {
-		// List existing members of the group
+		// List existing metadata event for group
 		for e := range metas {
 			// _ = e
 			metadataEventHandler(ctx, v, e, true)
@@ -189,6 +195,7 @@ func (v *groupView) loop(ctx context.Context) {
 	go func() {
 		msgs, srvListMessages := newProtocolServiceGroupMessage(ctx)
 		go func() {
+			wg.Done()
 			for evt := range msgs {
 				v.messages.Append(&historyMessage{
 					messageType: messageTypeMessage,
@@ -210,6 +217,7 @@ func (v *groupView) loop(ctx context.Context) {
 	go func() {
 		metas, srvListMetadatas := newProtocolServiceGroupMetadata(ctx)
 		go func() {
+			wg.Done()
 			for e := range metas {
 				metadataEventHandler(ctx, v, e, false)
 			}
@@ -222,6 +230,8 @@ func (v *groupView) loop(ctx context.Context) {
 
 		close(metas)
 	}()
+
+	wg.Wait()
 }
 
 func (v *groupView) welcomeEventDisplay(ctx context.Context) {
