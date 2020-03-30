@@ -7,6 +7,7 @@ services:
     environment:
       - RDVP_PK # loaded from .env
     entrypoint: rdvp
+    network_mode: host
     labels:
       com.centurylinklabs.watchtower.enable: "true"
     command:
