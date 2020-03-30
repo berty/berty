@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/stretchr/testify/require"
 )
 
@@ -26,7 +27,7 @@ func ExampleNew_basic() {
 	if err != nil {
 		panic(err)
 	}
-	ret, err := client.InstanceGetConfiguration(context.Background(), nil)
+	ret, err := client.InstanceGetConfiguration(context.Background(), &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		panic(err)
 	}

@@ -155,10 +155,10 @@ func (v *groupView) loop(ctx context.Context) {
 
 	go func() {
 		wg.Done()
-
 		for m := range v.syncMessages {
 			v.messages.Append(m)
 		}
+
 	}()
 
 	// list group message events
@@ -210,6 +210,7 @@ func (v *groupView) loop(ctx context.Context) {
 		}
 
 		go func() {
+			wg.Done()
 			for {
 				evt, err = cl.Recv()
 				if err != nil {
@@ -238,6 +239,7 @@ func (v *groupView) loop(ctx context.Context) {
 		}
 
 		go func() {
+			wg.Done()
 			for {
 				evt, err = cl.Recv()
 				if err != nil {
@@ -249,10 +251,12 @@ func (v *groupView) loop(ctx context.Context) {
 			}
 		}()
 	}
+
+	wg.Wait()
 }
 
 func (v *groupView) welcomeEventDisplay(ctx context.Context) {
-	config, err := v.v.client.InstanceGetConfiguration(ctx, nil)
+	config, err := v.v.client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		panic(err)
 	}
