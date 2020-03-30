@@ -3,8 +3,8 @@ package mini
 import (
 	"context"
 	"fmt"
+	"io"
 	"strings"
-	"sync"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -84,7 +84,7 @@ func Main(opts *Opts) {
 
 	defer client.Close()
 
-	config, err := client.InstanceGetConfiguration(ctx, nil)
+	config, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		panic(err)
 	}
@@ -102,37 +102,31 @@ func Main(opts *Opts) {
 
 	tabbedView := newTabbedGroups(ctx, accountGroup, client, app)
 	if len(opts.GroupInvitation) > 0 {
-		wg := sync.WaitGroup{}
-		wg.Add(1)
+		req := &bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}
+		cl, err := tabbedView.client.GroupMetadataSubscribe(ctx, req)
+		if err != nil {
+			panic(err)
+		}
 
-		// Waiting for joined event
 		go func() {
-			subCtx, cancel := context.WithCancel(ctx)
-			defer cancel()
-
-			metas, srvListMetadatas := newProtocolServiceGroupMetadata(subCtx)
-			go func() {
-				wg.Done()
-				for e := range metas {
-					if e.Metadata.EventType != bertytypes.EventTypeAccountGroupJoined {
-						continue
-					}
-
-					tabbedView.NextGroup()
-					cancel()
+			for {
+				evt, err := cl.Recv()
+				switch err {
+				case io.EOF: // gracefully ended @TODO: log this
 					return
+				case nil: // ok
+				default:
+					panic(err)
 				}
-			}()
 
-			err := tabbedView.service.GroupMetadataSubscribe(&bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}, srvListMetadatas)
-			if err != nil {
-				panic(err)
+				err := tabbedView.service.GroupMetadataSubscribe(&bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}, srvListMetadatas)
+				if err != nil {
+					panic(err)
+				}
+
+				tabbedView.NextGroup()
 			}
-
-			close(metas)
 		}()
-
-		wg.Wait()
 
 		for _, invit := range strings.Split(opts.GroupInvitation, ",") {
 			if err := groupJoinCommand(ctx, tabbedView.accountGroupView, invit); err != nil {
