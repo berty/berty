@@ -95,48 +95,6 @@ func (f *fakeServerStream) RecvMsg(m interface{}) error {
 
 var _ grpc.ServerStream = (*fakeServerStream)(nil)
 
-type protocolServiceGroupMessage struct {
-	*fakeServerStream
-	ch chan *bertytypes.GroupMessageEvent
-}
-
-func (x *protocolServiceGroupMessage) Send(m *bertytypes.GroupMessageEvent) error {
-	x.ch <- m
-	return nil
-}
-
-func newProtocolServiceGroupMessage(ctx context.Context) (chan *bertytypes.GroupMessageEvent, *protocolServiceGroupMessage) {
-	ch := make(chan *bertytypes.GroupMessageEvent)
-
-	return ch, &protocolServiceGroupMessage{
-		fakeServerStream: &fakeServerStream{
-			context: ctx,
-		},
-		ch: ch,
-	}
-}
-
-type protocolServiceGroupMetadata struct {
-	*fakeServerStream
-	ch chan *bertytypes.GroupMetadataEvent
-}
-
-func (x *protocolServiceGroupMetadata) Send(m *bertytypes.GroupMetadataEvent) error {
-	x.ch <- m
-	return nil
-}
-
-func newProtocolServiceGroupMetadata(ctx context.Context) (chan *bertytypes.GroupMetadataEvent, *protocolServiceGroupMetadata) {
-	ch := make(chan *bertytypes.GroupMetadataEvent)
-
-	return ch, &protocolServiceGroupMetadata{
-		fakeServerStream: &fakeServerStream{
-			context: ctx,
-		},
-		ch: ch,
-	}
-}
-
 func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK []byte) *groupView {
 	return &groupView{
 		memberPK:     memberPK,
@@ -158,7 +116,6 @@ func (v *groupView) loop(ctx context.Context) {
 		for m := range v.syncMessages {
 			v.messages.Append(m)
 		}
-
 	}()
 
 	// list group message events
@@ -223,7 +180,6 @@ func (v *groupView) loop(ctx context.Context) {
 					payload:     evt.Message,
 					sender:      evt.Headers.DevicePK,
 				})
-
 			}
 		}()
 	}
