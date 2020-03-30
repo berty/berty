@@ -35,7 +35,7 @@ type composeDriver struct {
 	Unregisterer
 }
 
-func ComposeDriver(advertiser p2p_discovery.Advertiser, discover p2p_discovery.Discovery, unregister Unregisterer) Driver {
+func ComposeDriver(advertiser p2p_discovery.Advertiser, discover p2p_discovery.Discoverer, unregister Unregisterer) Driver {
 	return &composeDriver{
 		Advertiser:   advertiser,
 		Discoverer:   discover,

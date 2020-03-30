@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/banner"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
 	"github.com/pkg/errors"
@@ -229,20 +230,7 @@ func (v *groupView) welcomeEventDisplay(ctx context.Context) {
 		panic(err)
 	}
 
-	b := `
-          /\
-     /\  / /\  ______
-    / /\/ /  \/  |   \
-   | |  \/   | ()|    |
-    \ \      |   |____|
-     \ \      \____/ __           __
-      \/       /    / /  ___ ____/ /___ __
-      /     __/    / _ \/ -_) __/ __/ // /
-     /_____/      /____/\__/_/  \__/\__ /
-    /__/                           /___/
-`
-
-	bannerLines := strings.Split(b, "\n")
+	bannerLines := strings.Split(banner.Banner, "\n")
 	v.messages.lock.Lock()
 	for i := range bannerLines {
 		v.messages.historyScroll.InsertRow(0)

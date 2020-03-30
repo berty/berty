@@ -85,9 +85,7 @@ func (s *MockDriverServer) FindPeers(ns string, limit int) (<-chan p2p_peer.Addr
 func (s *MockDriverServer) Unregister(ns string, pid p2p_peer.ID) {
 	s.mx.Lock()
 	if peers, ok := s.db[ns]; ok {
-		if _, ok = peers[pid]; ok {
-			delete(peers, pid)
-		}
+		delete(peers, pid)
 
 		if len(peers) == 0 {
 			delete(s.db, ns)

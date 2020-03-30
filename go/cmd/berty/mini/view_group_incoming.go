@@ -27,7 +27,7 @@ func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *bertytypes.
 	return nil
 }
 
-func handlerGroupDeviceSecretAdded(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+func handlerGroupDeviceSecretAdded(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &bertytypes.GroupAddDeviceSecret{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
@@ -42,7 +42,7 @@ func handlerGroupDeviceSecretAdded(ctx context.Context, v *groupView, e *bertyty
 	return nil
 }
 
-func handlerGroupMemberDeviceAdded(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+func handlerGroupMemberDeviceAdded(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &bertytypes.GroupAddMemberDevice{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
@@ -84,10 +84,12 @@ func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView,
 }
 
 func handlerAccountContactRequestStatusChanged(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	_ = e
+	_ = isHistory
 	return contactShareCommand(ctx, v, "")
 }
 
-func handlerAccountGroupLeft(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+func handlerAccountGroupLeft(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &bertytypes.AccountGroupLeft{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
@@ -102,7 +104,7 @@ func handlerAccountGroupLeft(ctx context.Context, v *groupView, e *bertytypes.Gr
 	return nil
 }
 
-func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+func handlerAccountContactRequestIncomingReceived(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &bertytypes.AccountContactRequestReceived{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
@@ -117,7 +119,7 @@ func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupV
 	return nil
 }
 
-func handlerAccountContactRequestIncomingDiscarded(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+func handlerAccountContactRequestIncomingDiscarded(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &bertytypes.AccountContactRequestDiscarded{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
@@ -132,7 +134,7 @@ func handlerAccountContactRequestIncomingDiscarded(ctx context.Context, v *group
 	return nil
 }
 
-func handlerMultiMemberGroupInitialMemberAnnounced(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+func handlerMultiMemberGroupInitialMemberAnnounced(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &bertytypes.MultiMemberInitialMember{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
@@ -147,7 +149,7 @@ func handlerMultiMemberGroupInitialMemberAnnounced(ctx context.Context, v *group
 	return nil
 }
 
-func handlerAccountContactRequestOutgoingEnqueued(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+func handlerAccountContactRequestOutgoingEnqueued(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &bertytypes.AccountContactRequestEnqueued{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
@@ -168,7 +170,7 @@ func handlerAccountContactRequestOutgoingEnqueued(ctx context.Context, v *groupV
 	return nil
 }
 
-func handlerContactAliasKeyAdded(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+func handlerContactAliasKeyAdded(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &bertytypes.ContactAddAliasKey{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
@@ -181,10 +183,9 @@ func handlerContactAliasKeyAdded(ctx context.Context, v *groupView, e *bertytype
 	}, e, v, isHistory)
 
 	return nil
-
 }
 
-func handlerMultiMemberGroupAliasResolverAdded(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+func handlerMultiMemberGroupAliasResolverAdded(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &bertytypes.MultiMemberGroupAddAliasResolver{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
@@ -197,7 +198,6 @@ func handlerMultiMemberGroupAliasResolverAdded(ctx context.Context, v *groupView
 	}, e, v, isHistory)
 
 	return nil
-
 }
 
 func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
@@ -260,7 +260,7 @@ func metadataEventHandler(ctx context.Context, v *groupView, e *bertytypes.Group
 	}
 }
 
-func addToBuffer(evt *historyMessage, e *bertytypes.GroupMetadataEvent, v *groupView, isHistory bool) {
+func addToBuffer(evt *historyMessage, _ *bertytypes.GroupMetadataEvent, v *groupView, isHistory bool) {
 	if isHistory {
 		v.messages.Prepend(evt, time.Time{})
 	} else {
