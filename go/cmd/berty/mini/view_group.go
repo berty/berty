@@ -166,6 +166,11 @@ func (v *groupView) loop(ctx context.Context) {
 			panic(err)
 		}
 
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte("start group message subscribe"),
+		})
+
 		go func() {
 			wg.Done()
 			for {
@@ -174,6 +179,11 @@ func (v *groupView) loop(ctx context.Context) {
 					// @TODO: Log this
 					return
 				}
+
+				v.messages.Append(&historyMessage{
+					messageType: messageTypeMeta,
+					payload:     []byte("receiving message: " + string(evt.Message)),
+				})
 
 				v.messages.Append(&historyMessage{
 					messageType: messageTypeMessage,

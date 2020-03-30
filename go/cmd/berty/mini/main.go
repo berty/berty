@@ -16,19 +16,17 @@ import (
 	"github.com/juju/fslock"
 	"github.com/rivo/tview"
 	"github.com/whyrusleeping/go-logging"
+	"google.golang.org/grpc"
 )
 
 type Opts struct {
+	RemoteAddr      string
 	GroupInvitation string
 	Port            uint
 	RootDS          datastore.Batching
 }
 
-func Main(opts *Opts) {
-	p2plog.SetAllLoggers(logging.CRITICAL)
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func()) {
 
 	var (
 		swarmAddresses []string = nil
@@ -75,21 +73,43 @@ func Main(opts *Opts) {
 		panic(err)
 	}
 
-	defer service.Close()
-
-	client, err := bertyprotocol.NewClient(service)
-	if err != nil {
-		panic(err)
+	return service, func() {
+		service.Close()
+		node.Close()
 	}
+}
 
-	defer client.Close()
+func Main(opts *Opts) {
+	p2plog.SetAllLoggers(logging.CRITICAL)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var client bertyprotocol.ProtocolServiceClient
+	if opts.RemoteAddr == "" {
+		service, clean := newService(ctx, opts)
+		defer clean()
+
+		protocolClient, err := bertyprotocol.NewClient(service)
+		if err != nil {
+			panic(err)
+		}
+
+		defer protocolClient.Close()
+		client = protocolClient
+	} else {
+		cc, err := grpc.Dial(opts.RemoteAddr, grpc.WithInsecure())
+		if err != nil {
+			panic(err)
+		}
+
+		client = bertyprotocol.NewProtocolServiceClient(cc)
+	}
 
 	config, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		panic(err)
 	}
-
-	defer node.Close()
 
 	app := tview.NewApplication()
 
