@@ -10,7 +10,6 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/network/metric"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
