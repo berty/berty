@@ -14,7 +14,7 @@ import (
 type tabbedGroupsView struct {
 	ctx                    context.Context
 	app                    *tview.Application
-	client                 bertyprotocol.Client
+	service                bertyprotocol.Service
 	topics                 *tview.Table
 	activeViewContainer    *tview.Flex
 	selectedGroupView      *groupView
@@ -110,7 +110,7 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Gr
 		return
 	}
 
-	info, err := v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	info, err := v.service.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: g.PublicKey,
 	})
 
@@ -118,7 +118,7 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Gr
 		return
 	}
 
-	if _, err := v.client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+	if _, err := v.service.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
 		GroupPK: g.PublicKey,
 	}); err != nil {
 		return
@@ -200,12 +200,12 @@ func (v *tabbedGroupsView) GetHistory() tview.Primitive {
 	return v.activeViewContainer
 }
 
-func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client bertyprotocol.Client, app *tview.Application) *tabbedGroupsView {
+func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, service bertyprotocol.Service, app *tview.Application) *tabbedGroupsView {
 	v := &tabbedGroupsView{
-		ctx:    ctx,
-		topics: tview.NewTable(),
-		client: client,
-		app:    app,
+		ctx:     ctx,
+		topics:  tview.NewTable(),
+		service: service,
+		app:     app,
 	}
 
 	v.accountGroupView = newViewGroup(v, g.Group, g.MemberPK, g.DevicePK)

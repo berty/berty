@@ -147,7 +147,7 @@ func main() {
 			ctx := context.Background()
 
 			// protocol
-			var protocol bertyprotocol.Client
+			var protocol bertyprotocol.Service
 			{
 				api, node, err := ipfsutil.NewInMemoryCoreAPI(ctx)
 				if err != nil {

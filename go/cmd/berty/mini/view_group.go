@@ -172,7 +172,7 @@ func (v *groupView) loop(ctx context.Context) {
 		}
 	}()
 
-	if err := v.v.client.GroupMessageList(&bertytypes.GroupMessageList_Request{GroupPK: v.g.PublicKey}, srvListMessages); err != nil {
+	if err := v.v.service.GroupMessageList(&bertytypes.GroupMessageList_Request{GroupPK: v.g.PublicKey}, srvListMessages); err != nil {
 		panic(err)
 	}
 	close(msgs)
@@ -186,7 +186,7 @@ func (v *groupView) loop(ctx context.Context) {
 		}
 	}()
 
-	if err := v.v.client.GroupMetadataList(&bertytypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey}, srvListMetadatas); err != nil {
+	if err := v.v.service.GroupMetadataList(&bertytypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey}, srvListMetadatas); err != nil {
 		panic(err)
 	}
 	close(metas)
@@ -205,7 +205,7 @@ func (v *groupView) loop(ctx context.Context) {
 			}
 		}()
 
-		err := v.v.client.GroupMessageSubscribe(&bertytypes.GroupMessageSubscribe_Request{GroupPK: v.g.PublicKey}, srvListMessages)
+		err := v.v.service.GroupMessageSubscribe(&bertytypes.GroupMessageSubscribe_Request{GroupPK: v.g.PublicKey}, srvListMessages)
 		if err != nil {
 			panic(err)
 		}
@@ -223,7 +223,7 @@ func (v *groupView) loop(ctx context.Context) {
 			}
 		}()
 
-		err := v.v.client.GroupMetadataSubscribe(&bertytypes.GroupMetadataSubscribe_Request{GroupPK: v.g.PublicKey}, srvListMetadatas)
+		err := v.v.service.GroupMetadataSubscribe(&bertytypes.GroupMetadataSubscribe_Request{GroupPK: v.g.PublicKey}, srvListMetadatas)
 		if err != nil {
 			panic(err)
 		}
@@ -235,7 +235,7 @@ func (v *groupView) loop(ctx context.Context) {
 }
 
 func (v *groupView) welcomeEventDisplay(ctx context.Context) {
-	config, err := v.v.client.InstanceGetConfiguration(ctx, nil)
+	config, err := v.v.service.InstanceGetConfiguration(ctx, nil)
 	if err != nil {
 		panic(err)
 	}

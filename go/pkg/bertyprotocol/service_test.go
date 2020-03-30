@@ -9,8 +9,8 @@ import (
 )
 
 func TestClient_impl(t *testing.T) {
-	var _ Client = (*client)(nil)
-	var _ ProtocolServiceServer = (*client)(nil)
+	var _ Service = (*service)(nil)
+	var _ ProtocolServiceServer = (*service)(nil)
 }
 
 func TestEmptyArgs(t *testing.T) {

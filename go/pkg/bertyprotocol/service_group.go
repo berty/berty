@@ -9,20 +9,20 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func (c *client) indexGroups() error {
-	c.lock.Lock()
-	defer c.lock.Unlock()
+func (s *service) indexGroups() error {
+	s.lock.Lock()
+	defer s.lock.Unlock()
 
-	groups := c.accountGroup.MetadataStore().ListMultiMemberGroups()
+	groups := s.accountGroup.MetadataStore().ListMultiMemberGroups()
 	for _, g := range groups {
-		if _, ok := c.groups[string(g.PublicKey)]; ok {
+		if _, ok := s.groups[string(g.PublicKey)]; ok {
 			continue
 		}
 
-		c.groups[string(g.PublicKey)] = g
+		s.groups[string(g.PublicKey)] = g
 	}
 
-	contacts := c.accountGroup.MetadataStore().ListContactsByStatus(
+	contacts := s.accountGroup.MetadataStore().ListContactsByStatus(
 		bertytypes.ContactStateToRequest,
 		bertytypes.ContactStateReceived,
 		bertytypes.ContactStateAdded,
@@ -31,7 +31,7 @@ func (c *client) indexGroups() error {
 		bertytypes.ContactStateBlocked,
 	)
 	for _, contact := range contacts {
-		if _, ok := c.groups[string(contact.PK)]; ok {
+		if _, ok := s.groups[string(contact.PK)]; ok {
 			continue
 		}
 
@@ -40,7 +40,7 @@ func (c *client) indexGroups() error {
 			return errcode.TODO.Wrap(err)
 		}
 
-		sk, err := c.deviceKeystore.ContactGroupPrivKey(cPK)
+		sk, err := s.deviceKeystore.ContactGroupPrivKey(cPK)
 		if err != nil {
 			return errcode.ErrCryptoKeyGeneration.Wrap(err)
 		}
@@ -50,14 +50,14 @@ func (c *client) indexGroups() error {
 			return errcode.ErrOrbitDBOpen.Wrap(err)
 		}
 
-		c.groups[string(g.PublicKey)] = g
+		s.groups[string(g.PublicKey)] = g
 	}
 
 	return nil
 }
 
-func (c *client) getContactGroup(key crypto.PubKey) (*bertytypes.Group, error) {
-	sk, err := c.deviceKeystore.ContactGroupPrivKey(key)
+func (s *service) getContactGroup(key crypto.PubKey) (*bertytypes.Group, error) {
+	sk, err := s.deviceKeystore.ContactGroupPrivKey(key)
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
@@ -70,27 +70,27 @@ func (c *client) getContactGroup(key crypto.PubKey) (*bertytypes.Group, error) {
 	return g, nil
 }
 
-func (c *client) getGroupForPK(pk crypto.PubKey) (*bertytypes.Group, error) {
+func (s *service) getGroupForPK(pk crypto.PubKey) (*bertytypes.Group, error) {
 	id, err := pk.Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	c.lock.Lock()
-	g, ok := c.groups[string(id)]
-	c.lock.Unlock()
+	s.lock.Lock()
+	g, ok := s.groups[string(id)]
+	s.lock.Unlock()
 
 	if ok {
 		return g, nil
 	}
 
-	if err = c.indexGroups(); err != nil {
+	if err = s.indexGroups(); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	c.lock.Lock()
-	g, ok = c.groups[string(id)]
-	c.lock.Unlock()
+	s.lock.Lock()
+	g, ok = s.groups[string(id)]
+	s.lock.Unlock()
 
 	if ok {
 		return g, nil
@@ -99,13 +99,13 @@ func (c *client) getGroupForPK(pk crypto.PubKey) (*bertytypes.Group, error) {
 	return nil, errcode.ErrMissingInput
 }
 
-func (c *client) deactivateGroup(pk crypto.PubKey) error {
+func (s *service) deactivateGroup(pk crypto.PubKey) error {
 	id, err := pk.Raw()
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
-	cg, err := c.getContextGroupForID(id)
+	cg, err := s.getContextGroupForID(id)
 	if err != nil || cg == nil {
 		return nil
 	}
@@ -116,36 +116,36 @@ func (c *client) deactivateGroup(pk crypto.PubKey) error {
 
 	_ = cg.Close()
 
-	c.lock.Lock()
-	defer c.lock.Unlock()
+	s.lock.Lock()
+	defer s.lock.Unlock()
 
-	delete(c.groups, string(id))
+	delete(s.groups, string(id))
 
 	return nil
 }
 
-func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) error {
+func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey) error {
 	id, err := pk.Raw()
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
-	cg, err := c.getContextGroupForID(id)
+	cg, err := s.getContextGroupForID(id)
 	if err == nil && cg != nil {
 		return nil
 	}
 
-	g, err := c.getGroupForPK(pk)
+	g, err := s.getGroupForPK(pk)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
 
-	c.lock.Lock()
-	defer c.lock.Unlock()
+	s.lock.Lock()
+	defer s.lock.Unlock()
 
 	switch g.GroupType {
 	case bertytypes.GroupTypeContact, bertytypes.GroupTypeMultiMember:
-		cg, err := c.odb.OpenGroup(ctx, g, nil)
+		cg, err := s.odb.OpenGroup(ctx, g, nil)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}
@@ -155,7 +155,7 @@ func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) error {
 			return errcode.TODO.Wrap(err)
 		}
 
-		c.openedGroups[string(id)] = cg
+		s.openedGroups[string(id)] = cg
 
 		return nil
 	case bertytypes.GroupTypeAccount:
@@ -165,15 +165,15 @@ func (c *client) activateGroup(ctx context.Context, pk crypto.PubKey) error {
 	return errcode.ErrInternal.Wrap(fmt.Errorf("unknown group type"))
 }
 
-func (c *client) getContextGroupForID(id []byte) (*groupContext, error) {
+func (s *service) getContextGroupForID(id []byte) (*groupContext, error) {
 	if len(id) == 0 {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("no group id provided"))
 	}
 
-	c.lock.Lock()
-	defer c.lock.Unlock()
+	s.lock.Lock()
+	defer s.lock.Unlock()
 
-	cg, ok := c.openedGroups[string(id)]
+	cg, ok := s.openedGroups[string(id)]
 
 	if ok {
 		return cg, nil
