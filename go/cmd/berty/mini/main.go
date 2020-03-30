@@ -62,7 +62,7 @@ func Main(opts *Opts) {
 	mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
 	ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
 
-	client, err := bertyprotocol.New(bertyprotocol.Opts{
+	service, err := bertyprotocol.New(bertyprotocol.Opts{
 		IpfsCoreAPI:     api,
 		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(ks),
 		RootContext:     ctx,
@@ -74,6 +74,15 @@ func Main(opts *Opts) {
 	if err != nil {
 		panic(err)
 	}
+
+	defer service.Close()
+
+	client, err := bertyprotocol.NewClient(service)
+	if err != nil {
+		panic(err)
+	}
+
+	defer client.Close()
 
 	config, err := client.InstanceGetConfiguration(ctx, nil)
 	if err != nil {
