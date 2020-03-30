@@ -22,7 +22,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type Client struct {
+type Service struct {
 	log       *zap.Logger
 	api       ipfs_interface.CoreAPI
 	odb       orbitdb.OrbitDB
@@ -36,7 +36,7 @@ type Opts struct {
 	OrbitDBDirectory string
 }
 
-func New(opts *Opts) (*Client, error) {
+func New(opts *Opts) (*Service, error) {
 	var err error
 	var log *zap.Logger
 
@@ -76,18 +76,18 @@ func New(opts *Opts) (*Client, error) {
 
 	logsMutex := &sync.Mutex{}
 
-	return &Client{log, api, odb, logs, logsMutex}, nil
+	return &Service{log, api, odb, logs, logsMutex}, nil
 }
 
 func intPtr(i int) *int {
 	return &i
 }
 
-func (d *Client) logFromToken(ctx context.Context, token string) (orbitdb.EventLogStore, error) {
-	d.logsMutex.Lock()
-	defer d.logsMutex.Unlock()
+func (s *Service) logFromToken(ctx context.Context, token string) (orbitdb.EventLogStore, error) {
+	s.logsMutex.Lock()
+	defer s.logsMutex.Unlock()
 
-	if log, ok := d.logs[token]; ok {
+	if log, ok := s.logs[token]; ok {
 		// I tried to avoid this map but orbitdb recreates log instances and looses operations even when fed with the same args
 		return log, nil
 	}
@@ -119,15 +119,15 @@ func (d *Client) logFromToken(ctx context.Context, token string) (orbitdb.EventL
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	log, err := d.odb.Log(ctx, "DemoLog", opts)
+	log, err := s.odb.Log(ctx, "DemoLog", opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	d.logs[token] = log
+	s.logs[token] = log
 	return log, nil
 }
 
-func (d *Client) LogToken(ctx context.Context, _ *LogToken_Request) (*LogToken_Reply, error) {
+func (s *Service) LogToken(ctx context.Context, _ *LogToken_Request) (*LogToken_Reply, error) {
 	sigk, _, err := crypto.GenerateEd25519Key(crand.Reader)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -143,8 +143,8 @@ func operationCidString(op operation.Operation) string {
 	return op.GetEntry().GetHash().String()
 }
 
-func (d *Client) LogAdd(ctx context.Context, req *LogAdd_Request) (*LogAdd_Reply, error) {
-	log, err := d.logFromToken(ctx, req.GetLogToken())
+func (s *Service) LogAdd(ctx context.Context, req *LogAdd_Request) (*LogAdd_Reply, error) {
+	log, err := s.logFromToken(ctx, req.GetLogToken())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -167,8 +167,8 @@ func convertLogOperationToProtobufLogOperation(op operation.Operation) *LogOpera
 	}
 }
 
-func (d *Client) LogGet(ctx context.Context, req *LogGet_Request) (*LogGet_Reply, error) {
-	log, err := d.logFromToken(ctx, req.GetLogToken())
+func (s *Service) LogGet(ctx context.Context, req *LogGet_Request) (*LogGet_Reply, error) {
+	log, err := s.logFromToken(ctx, req.GetLogToken())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -212,8 +212,8 @@ func decodeStreamOptions(opts *LogStreamOptions) *orbitdb.StreamOptions {
 	}
 }
 
-func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Reply, error) {
-	log, err := d.logFromToken(ctx, req.GetLogToken())
+func (s *Service) LogList(ctx context.Context, req *LogList_Request) (*LogList_Reply, error) {
+	log, err := s.logFromToken(ctx, req.GetLogToken())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -233,11 +233,11 @@ func (d *Client) LogList(ctx context.Context, req *LogList_Request) (*LogList_Re
 	return &LogList_Reply{Operations: protoOps}, nil
 }
 
-func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
+func (s *Service) LogStream(req *LogStream_Request, srv DemoService_LogStreamServer) error {
 	// Hack using List until go-orbit-db Stream is fixed
 	ctx := srv.Context()
 	token := req.GetLogToken()
-	log, err := d.logFromToken(ctx, token)
+	log, err := s.logFromToken(ctx, token)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
@@ -247,8 +247,8 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 			Amount: intPtr(-1),
 		}
 	}
-	d.log.Debug("logstream listening", zap.String("token", token), zap.Stringer("since", opts.GT))
-	defer d.log.Debug("logstream stopped to listen", zap.String("token", token))
+	s.log.Debug("logstream listening", zap.String("token", token), zap.Stringer("since", opts.GT))
+	defer s.log.Debug("logstream stopped to listen", zap.String("token", token))
 
 	dc := ctx.Done()
 	for {
@@ -270,7 +270,7 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 			for i := 0; i < l; i++ {
 				pop := convertLogOperationToProtobufLogOperation(ops[i])
 				jsoned, _ := json.Marshal(pop)
-				d.log.Debug("LogStream", zap.String("token", token), zap.String("json", string(jsoned)))
+				s.log.Debug("LogStream", zap.String("token", token), zap.String("json", string(jsoned)))
 				if err = srv.Send(pop); err != nil {
 					return err
 				}
@@ -288,6 +288,6 @@ func (d *Client) LogStream(req *LogStream_Request, srv DemoService_LogStreamServ
 	}
 }
 
-func (d *Client) Close() error {
-	return d.odb.Close()
+func (s *Service) Close() error {
+	return s.odb.Close()
 }
