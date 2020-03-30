@@ -2,7 +2,7 @@ package bertydemo
 
 import (
 	"context"
-	"crypto/rand"
+	crand "crypto/rand"
 	"encoding/hex"
 	"encoding/json"
 	"sync"
@@ -128,7 +128,7 @@ func (d *Client) logFromToken(ctx context.Context, token string) (orbitdb.EventL
 }
 
 func (d *Client) LogToken(ctx context.Context, _ *LogToken_Request) (*LogToken_Reply, error) {
-	sigk, _, err := crypto.GenerateEd25519Key(rand.Reader)
+	sigk, _, err := crypto.GenerateEd25519Key(crand.Reader)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

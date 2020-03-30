@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"math/rand"
+	mrand "math/rand"
 	"net"
 	"os"
 	"strings"
@@ -42,7 +42,7 @@ func main() {
 	)
 
 	globalPreRun := func() error {
-		rand.Seed(srand.Secure())
+		mrand.Seed(srand.Secure())
 		if *globalDebug {
 			config := zap.NewDevelopmentConfig()
 			config.Level.SetLevel(zap.DebugLevel)

@@ -2,7 +2,7 @@ package bertyprotocol
 
 import (
 	"context"
-	"crypto/rand"
+	crand "crypto/rand"
 	"fmt"
 	"os"
 	"testing"
@@ -36,7 +36,7 @@ func TestAdd(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sigk, _, err := crypto.GenerateEd25519Key(rand.Reader)
+	sigk, _, err := crypto.GenerateEd25519Key(crand.Reader)
 	if err != nil {
 		t.Fatal(err)
 	}

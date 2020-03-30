@@ -1,8 +1,7 @@
 package bertyprotocol
 
 import (
-	crand "crypto/rand"
-
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
@@ -108,14 +107,12 @@ func openGroupEnvelope(g *bertytypes.Group, envelopeBytes []byte) (*bertytypes.G
 		return nil, nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	if len(env.Nonce) != 24 {
-		return nil, nil, errcode.ErrInvalidInput
+	nonce, err := cryptoutil.NonceSliceToArray(env.Nonce)
+	if err != nil {
+		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	var nonce [24]byte
-	copy(nonce[:], env.Nonce[:24])
-
-	data, ok := secretbox.Open(nil, env.Event, &nonce, sharedSecret)
+	data, ok := secretbox.Open(nil, env.Event, nonce, sharedSecret)
 	if !ok {
 		return nil, nil, errcode.ErrGroupMemberLogEventOpen
 	}
@@ -150,14 +147,9 @@ func sealGroupEnvelope(g *bertytypes.Group, eventType bertytypes.EventType, payl
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	var nonce [24]byte
-	nonceArr := make([]byte, 24)
-	if n, err := crand.Read(nonceArr); err != nil || n != 24 {
-		return nil, errcode.ErrCryptoRandomGeneration.Wrap(err)
-	}
-
-	for i := range nonceArr {
-		nonce[i] = nonceArr[i]
+	nonce, err := cryptoutil.GenerateNonce()
+	if err != nil {
+		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
 	}
 
 	sharedSecret, err := g.GetSharedSecret()
@@ -176,11 +168,11 @@ func sealGroupEnvelope(g *bertytypes.Group, eventType bertytypes.EventType, payl
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	eventBytes := secretbox.Seal(nil, eventClearBytes, &nonce, sharedSecret)
+	eventBytes := secretbox.Seal(nil, eventClearBytes, nonce, sharedSecret)
 
 	env := &bertytypes.GroupEnvelope{
 		Event: eventBytes,
-		Nonce: nonceArr,
+		Nonce: nonce[:],
 	}
 
 	return env.Marshal()

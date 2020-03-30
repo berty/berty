@@ -1,7 +1,7 @@
 package ipfsutil
 
 import (
-	"crypto/rand"
+	crand "crypto/rand"
 	"encoding/base64"
 	"fmt"
 	"math/big"
@@ -49,7 +49,7 @@ func CreateBuildConfigWithDatastore(opts *BuildOpts, ds ipfs_datastore.Batching)
 
 func CreateRepo(dstore ipfs_datastore.Batching, opts *BuildOpts) (ipfs_repo.Repo, error) {
 	c := ipfs_cfg.Config{}
-	priv, pub, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, rand.Reader) // nolint:staticcheck
+	priv, pub, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, crand.Reader) // nolint:staticcheck
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -69,7 +69,7 @@ func CreateRepo(dstore ipfs_datastore.Batching, opts *BuildOpts) (ipfs_repo.Repo
 	if len(opts.SwarmAddresses) != 0 {
 		c.Addresses.Swarm = opts.SwarmAddresses
 	} else {
-		portOffsetBI, err := rand.Int(rand.Reader, big.NewInt(100))
+		portOffsetBI, err := crand.Int(crand.Reader, big.NewInt(100))
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}

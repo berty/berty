@@ -2,7 +2,7 @@ package banner
 
 import (
 	"fmt"
-	"math/rand"
+	mrand "math/rand"
 	"time"
 )
 
@@ -27,13 +27,13 @@ var quotes = []Quote{
 }
 
 func RandomQuote() Quote {
-	return quotes[rand.Intn(len(quotes))]
+	return quotes[mrand.Intn(len(quotes))]
 }
 
 func QOTD() Quote {
 	base := time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC) // FIXME: use local timezone if available
 	seed := time.Now().Sub(base).Hours() / 24
-	r := rand.New(rand.NewSource(int64(seed)))
+	r := mrand.New(mrand.NewSource(int64(seed)))
 	return quotes[r.Intn(len(quotes))]
 }
 

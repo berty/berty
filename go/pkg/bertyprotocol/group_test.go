@@ -1,7 +1,7 @@
 package bertyprotocol
 
 import (
-	"crypto/rand"
+	crand "crypto/rand"
 	"testing"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetGroupForContact(t *testing.T) {
-	sk, _, err := crypto.GenerateEd25519Key(rand.Reader)
+	sk, _, err := crypto.GenerateEd25519Key(crand.Reader)
 	require.NoError(t, err)
 
 	g, err := getGroupForContact(sk)
@@ -22,7 +22,7 @@ func TestGetGroupForContact(t *testing.T) {
 }
 
 func TestGetKeysForGroupOfContact(t *testing.T) {
-	sk, _, err := crypto.GenerateEd25519Key(rand.Reader)
+	sk, _, err := crypto.GenerateEd25519Key(crand.Reader)
 	require.NoError(t, err)
 
 	sk1, sk2, err := getKeysForGroupOfContact(sk)

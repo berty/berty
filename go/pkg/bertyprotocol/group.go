@@ -3,7 +3,7 @@ package bertyprotocol
 import (
 	"context"
 	"crypto/ed25519"
-	"crypto/rand"
+	crand "crypto/rand"
 	"crypto/sha256"
 	"io"
 	"io/ioutil"
@@ -23,7 +23,7 @@ const CurrentGroupVersion = 1
 // NewGroupMultiMember creates a new Group object and an invitation to be used by
 // the first member of the group
 func NewGroupMultiMember() (*bertytypes.Group, crypto.PrivKey, error) {
-	priv, pub, err := crypto.GenerateEd25519Key(rand.Reader)
+	priv, pub, err := crypto.GenerateEd25519Key(crand.Reader)
 	if err != nil {
 		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
@@ -33,7 +33,7 @@ func NewGroupMultiMember() (*bertytypes.Group, crypto.PrivKey, error) {
 		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	signing, _, err := crypto.GenerateEd25519Key(rand.Reader)
+	signing, _, err := crypto.GenerateEd25519Key(crand.Reader)
 	if err != nil {
 		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
@@ -327,7 +327,7 @@ func openDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.
 	return senderDevicePubKey, decryptedSecret, nil
 }
 
-func groupIDToNonce(group *bertytypes.Group) (*[24]byte, error) {
+func groupIDToNonce(group *bertytypes.Group) (*[cryptoutil.NonceSize]byte, error) {
 	// Nonce doesn't need to be secret, random nor unpredictable, it just needs
 	// to be used only once for a given {sender, receiver} set and we will send
 	// only one SecretEntryPayload per {localDevicePrivKey, remoteMemberPubKey}
@@ -336,7 +336,7 @@ func groupIDToNonce(group *bertytypes.Group) (*[24]byte, error) {
 	//
 	// See https://pynacl.readthedocs.io/en/stable/secret/#nonce
 	// See Security Model here: https://nacl.cr.yp.to/box.html
-	var nonce [24]byte
+	var nonce [cryptoutil.NonceSize]byte
 
 	gid := group.GetPublicKey()
 

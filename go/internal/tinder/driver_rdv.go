@@ -6,7 +6,7 @@ package tinder
 import (
 	"context"
 	"math"
-	"math/rand"
+	mrand "math/rand"
 	"sync"
 	"time"
 
@@ -21,7 +21,7 @@ type rendezvousDiscovery struct {
 	rp           p2p_rp.RendezvousPoint
 	peerCache    map[string]*rpCache
 	peerCacheMux sync.RWMutex
-	rng          *rand.Rand
+	rng          *mrand.Rand
 	rngMux       sync.Mutex
 }
 
@@ -36,7 +36,7 @@ type rpRecord struct {
 	expire int64
 }
 
-func NewRendezvousDiscovery(host host.Host, rdvPeer peer.ID, rng *rand.Rand) Driver {
+func NewRendezvousDiscovery(host host.Host, rdvPeer peer.ID, rng *mrand.Rand) Driver {
 	rp := p2p_rp.NewRendezvousPoint(host, rdvPeer)
 	return &rendezvousDiscovery{
 		rp:        rp,
