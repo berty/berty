@@ -9,3 +9,9 @@ logs:
 
 down:
 	docker-compose down
+
+genkey:
+	echo RDVP_PK=`docker-compose run server genkey` > .env
+
+ip:
+	curl ifconfig.co
