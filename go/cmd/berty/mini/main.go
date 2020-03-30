@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"sync"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -92,14 +93,43 @@ func Main(opts *Opts) {
 
 	tabbedView := newTabbedGroups(ctx, accountGroup, client, app)
 	if len(opts.GroupInvitation) > 0 {
+		wg := sync.WaitGroup{}
+		wg.Add(1)
+
+		// Waiting for joined event
+		go func() {
+			subCtx, cancel := context.WithCancel(ctx)
+			defer cancel()
+
+			metas, srvListMetadatas := newProtocolServiceGroupMetadata(subCtx)
+			go func() {
+				wg.Done()
+				for e := range metas {
+					if e.Metadata.EventType != bertytypes.EventTypeAccountGroupJoined {
+						continue
+					}
+
+					tabbedView.NextGroup()
+					cancel()
+					return
+				}
+			}()
+
+			err := tabbedView.client.GroupMetadataSubscribe(&bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}, srvListMetadatas)
+			if err != nil {
+				panic(err)
+			}
+
+			close(metas)
+		}()
+
+		wg.Wait()
+
 		for _, invit := range strings.Split(opts.GroupInvitation, ",") {
 			if err := groupJoinCommand(ctx, tabbedView.accountGroupView, invit); err != nil {
 				panic(err)
 			}
 		}
-
-		// if at least a group is specified, switch the active view to the first one
-		tabbedView.NextGroup()
 	}
 
 	input := tview.NewInputField().
