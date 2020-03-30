@@ -10,27 +10,27 @@ import (
 )
 
 // MultiMemberGroupCreate creates a new MultiMember group
-func (c *client) MultiMemberGroupCreate(ctx context.Context, req *bertytypes.MultiMemberGroupCreate_Request) (*bertytypes.MultiMemberGroupCreate_Reply, error) {
+func (s *service) MultiMemberGroupCreate(ctx context.Context, req *bertytypes.MultiMemberGroupCreate_Request) (*bertytypes.MultiMemberGroupCreate_Reply, error) {
 	g, sk, err := NewGroupMultiMember()
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	_, err = c.accountGroup.MetadataStore().GroupJoin(ctx, g)
+	_, err = s.accountGroup.MetadataStore().GroupJoin(ctx, g)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	c.lock.Lock()
-	c.groups[string(g.PublicKey)] = g
-	c.lock.Unlock()
+	s.lock.Lock()
+	s.groups[string(g.PublicKey)] = g
+	s.lock.Unlock()
 
-	err = c.activateGroup(ctx, sk.GetPublic())
+	err = s.activateGroup(ctx, sk.GetPublic())
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to activate group: %w", err))
 	}
 
-	cg, err := c.getContextGroupForID(g.PublicKey)
+	cg, err := s.getContextGroupForID(g.PublicKey)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -46,8 +46,8 @@ func (c *client) MultiMemberGroupCreate(ctx context.Context, req *bertytypes.Mul
 }
 
 // MultiMemberGroupJoin joins an existing MultiMember group using an invitation
-func (c *client) MultiMemberGroupJoin(ctx context.Context, req *bertytypes.MultiMemberGroupJoin_Request) (*bertytypes.MultiMemberGroupJoin_Reply, error) {
-	_, err := c.accountGroup.MetadataStore().GroupJoin(ctx, req.Group)
+func (s *service) MultiMemberGroupJoin(ctx context.Context, req *bertytypes.MultiMemberGroupJoin_Request) (*bertytypes.MultiMemberGroupJoin_Reply, error) {
+	_, err := s.accountGroup.MetadataStore().GroupJoin(ctx, req.Group)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -56,25 +56,25 @@ func (c *client) MultiMemberGroupJoin(ctx context.Context, req *bertytypes.Multi
 }
 
 // MultiMemberGroupLeave leaves a previously joined MultiMember group
-func (c *client) MultiMemberGroupLeave(ctx context.Context, req *bertytypes.MultiMemberGroupLeave_Request) (*bertytypes.MultiMemberGroupLeave_Reply, error) {
+func (s *service) MultiMemberGroupLeave(ctx context.Context, req *bertytypes.MultiMemberGroupLeave_Request) (*bertytypes.MultiMemberGroupLeave_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	_, err = c.accountGroup.MetadataStore().GroupLeave(ctx, pk)
+	_, err = s.accountGroup.MetadataStore().GroupLeave(ctx, pk)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	_ = c.deactivateGroup(pk)
+	_ = s.deactivateGroup(pk)
 
 	return &bertytypes.MultiMemberGroupLeave_Reply{}, nil
 }
 
 // MultiMemberGroupAliasResolverDisclose sends an deviceKeystore identity proof to the group members
-func (c *client) MultiMemberGroupAliasResolverDisclose(ctx context.Context, req *bertytypes.MultiMemberGroupAliasResolverDisclose_Request) (*bertytypes.MultiMemberGroupAliasResolverDisclose_Reply, error) {
-	cg, err := c.getContextGroupForID(req.GroupPK)
+func (s *service) MultiMemberGroupAliasResolverDisclose(ctx context.Context, req *bertytypes.MultiMemberGroupAliasResolverDisclose_Request) (*bertytypes.MultiMemberGroupAliasResolverDisclose_Reply, error) {
+	cg, err := s.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
 	}
@@ -88,13 +88,13 @@ func (c *client) MultiMemberGroupAliasResolverDisclose(ctx context.Context, req 
 }
 
 // MultiMemberGroupAdminRoleGrant grants admin role to another member of the group
-func (c *client) MultiMemberGroupAdminRoleGrant(context.Context, *bertytypes.MultiMemberGroupAdminRoleGrant_Request) (*bertytypes.MultiMemberGroupAdminRoleGrant_Reply, error) {
+func (s *service) MultiMemberGroupAdminRoleGrant(context.Context, *bertytypes.MultiMemberGroupAdminRoleGrant_Request) (*bertytypes.MultiMemberGroupAdminRoleGrant_Reply, error) {
 	return nil, errcode.ErrNotImplemented
 }
 
 // MultiMemberGroupInvitationCreate creates a group invitation
-func (c *client) MultiMemberGroupInvitationCreate(ctx context.Context, req *bertytypes.MultiMemberGroupInvitationCreate_Request) (*bertytypes.MultiMemberGroupInvitationCreate_Reply, error) {
-	cg, err := c.getContextGroupForID(req.GroupPK)
+func (s *service) MultiMemberGroupInvitationCreate(ctx context.Context, req *bertytypes.MultiMemberGroupInvitationCreate_Request) (*bertytypes.MultiMemberGroupInvitationCreate_Reply, error) {
+	cg, err := s.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
 	}

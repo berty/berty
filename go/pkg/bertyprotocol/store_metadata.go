@@ -330,12 +330,12 @@ func (m *metadataStore) ListMultiMemberGroups() []*bertytypes.Group {
 
 	groups := []*bertytypes.Group(nil)
 
-	for _, c := range idx.groups {
-		if c.state != accountGroupJoinedStateJoined {
+	for _, g := range idx.groups {
+		if g.state != accountGroupJoinedStateJoined {
 			continue
 		}
 
-		groups = append(groups, c.group)
+		groups = append(groups, g.group)
 	}
 
 	return groups
