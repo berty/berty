@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"go.uber.org/zap"
 )
 
 func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
@@ -226,7 +227,7 @@ func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupV
 	return nil
 }
 
-func metadataEventHandler(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) {
+func metadataEventHandler(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool, logger *zap.Logger) {
 	actions := map[bertytypes.EventType]func(context.Context, *groupView, *bertytypes.GroupMetadataEvent, bool) error{
 		bertytypes.EventTypeAccountContactBlocked:                  nil, // do it later
 		bertytypes.EventTypeAccountContactRequestDisabled:          handlerAccountContactRequestStatusChanged,
@@ -248,6 +249,7 @@ func metadataEventHandler(ctx context.Context, v *groupView, e *bertytypes.Group
 		bertytypes.EventTypeMultiMemberGroupAliasResolverAdded:     handlerMultiMemberGroupAliasResolverAdded,
 		bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced: handlerMultiMemberGroupInitialMemberAnnounced,
 	}
+	logger.Debug("metadataEventHandler", zap.Stringer("event-type", e.Metadata.EventType))
 
 	action, ok := actions[e.Metadata.EventType]
 	if !ok || action == nil {

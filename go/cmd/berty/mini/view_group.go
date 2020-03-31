@@ -14,6 +14,7 @@ import (
 	"github.com/gdamore/tcell"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -26,6 +27,7 @@ type groupView struct {
 	syncMessages chan *historyMessage
 	memberPK     []byte
 	devicePK     []byte
+	logger       *zap.Logger
 }
 
 func (v *groupView) View() tview.Primitive {
@@ -53,9 +55,11 @@ func (v *groupView) commandParser(ctx context.Context, input string) error {
 }
 
 func (v *groupView) OnSubmit(ctx context.Context, msg string) {
+	v.logger.Debug("onSubmit", zap.String("msg", msg))
 	v.messages.View().ScrollToEnd()
 
 	if err := v.commandParser(ctx, msg); err != nil {
+		v.logger.Debug("onSubmit error", zap.Error(err))
 		v.syncMessages <- &historyMessage{
 			messageType: messageTypeError,
 			payload:     []byte(fmt.Sprintf("out: %s", err.Error())),
@@ -95,7 +99,7 @@ func (f *fakeServerStream) RecvMsg(m interface{}) error {
 
 var _ grpc.ServerStream = (*fakeServerStream)(nil)
 
-func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK []byte) *groupView {
+func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK []byte, logger *zap.Logger) *groupView {
 	return &groupView{
 		memberPK:     memberPK,
 		devicePK:     devicePK,
@@ -104,6 +108,7 @@ func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK [
 		messages:     newHistoryMessageList(v.app),
 		syncMessages: make(chan *historyMessage),
 		inputHistory: newInputHistory(),
+		logger:       logger.With(zap.String("group", pkAsShortID(g.PublicKey))),
 	}
 }
 
@@ -147,7 +152,7 @@ func (v *groupView) loop(ctx context.Context) {
 		cl, err := v.v.client.GroupMetadataList(ctx, req)
 		for err == nil {
 			if evt, err = cl.Recv(); err == nil {
-				metadataEventHandler(ctx, v, evt, true)
+				metadataEventHandler(ctx, v, evt, true, v.logger)
 			}
 		}
 
@@ -213,7 +218,7 @@ func (v *groupView) loop(ctx context.Context) {
 					return
 				}
 
-				metadataEventHandler(ctx, v, evt, false)
+				metadataEventHandler(ctx, v, evt, false, v.logger)
 			}
 		}()
 	}

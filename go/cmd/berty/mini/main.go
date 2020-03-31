@@ -16,6 +16,7 @@ import (
 	"github.com/juju/fslock"
 	"github.com/rivo/tview"
 	"github.com/whyrusleeping/go-logging"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -24,7 +25,10 @@ type Opts struct {
 	GroupInvitation string
 	Port            uint
 	RootDS          datastore.Batching
+	Logger          *zap.Logger
 }
+
+var globalLogger *zap.Logger
 
 func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func()) {
 	var (
@@ -117,6 +121,11 @@ func Main(opts *Opts) {
 	})
 	if err != nil {
 		panic(err)
+	}
+	if opts.Logger != nil {
+		globalLogger = opts.Logger.Named(pkAsShortID(accountGroup.Group.PublicKey))
+	} else {
+		globalLogger = zap.NewNop()
 	}
 
 	tabbedView := newTabbedGroups(ctx, accountGroup, client, app)
