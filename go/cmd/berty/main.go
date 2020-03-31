@@ -38,9 +38,10 @@ func main() {
 	log.SetFlags(0)
 
 	var (
-		logger      *zap.Logger
-		globalFlags = flag.NewFlagSet("berty", flag.ExitOnError)
-		globalDebug = globalFlags.Bool("debug", false, "debug mode")
+		logger          *zap.Logger
+		globalFlags     = flag.NewFlagSet("berty", flag.ExitOnError)
+		globalDebug     = globalFlags.Bool("debug", false, "debug mode")
+		globalLogToFile = globalFlags.String("logfile", "", "if specified, will log everything in JSON into a file and nothing on stderr")
 
 		bannerFlags = flag.NewFlagSet("banner", flag.ExitOnError)
 		bannerLight = bannerFlags.Bool("light", false, "light mode")
@@ -61,28 +62,26 @@ func main() {
 
 	globalPreRun := func() error {
 		mrand.Seed(srand.Secure())
-		if *globalDebug {
-			config := zap.NewDevelopmentConfig()
-			config.Level.SetLevel(zap.DebugLevel)
-			config.DisableStacktrace = true
-			config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-			var err error
-			logger, err = config.Build()
-			if err != nil {
-				return errcode.TODO.Wrap(err)
-			}
-			logger.Debug("logger initialized in debug mode")
+		var config zap.Config
+		if *globalLogToFile != "" {
+			config = zap.NewProductionConfig()
+			config.OutputPaths = []string{*globalLogToFile}
 		} else {
-			config := zap.NewDevelopmentConfig()
-			config.Level.SetLevel(zap.InfoLevel)
+			config = zap.NewDevelopmentConfig()
 			config.DisableStacktrace = true
 			config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-			var err error
-			logger, err = config.Build()
-			if err != nil {
-				return errcode.TODO.Wrap(err)
-			}
 		}
+		if *globalDebug {
+			config.Level.SetLevel(zap.DebugLevel)
+		} else {
+			config.Level.SetLevel(zap.InfoLevel)
+		}
+		var err error
+		logger, err = config.Build()
+		if err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+		logger.Debug("logger initialized")
 		return nil
 	}
 
