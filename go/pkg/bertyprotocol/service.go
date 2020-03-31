@@ -92,7 +92,9 @@ func New(opts Opts) (Service, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	odb, err := newBertyOrbitDB(opts.RootContext, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, &orbitdb.NewOrbitDBOptions{Cache: opts.OrbitCache})
+	odb, err := newBertyOrbitDB(opts.RootContext, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, opts.Logger, &orbitdb.NewOrbitDBOptions{
+		Cache: opts.OrbitCache,
+	})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

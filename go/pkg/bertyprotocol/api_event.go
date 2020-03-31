@@ -3,6 +3,7 @@ package bertyprotocol
 import (
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"go.uber.org/zap"
 )
 
 // GroupMetadataSubscribe subscribes to the metadata events for a group
@@ -20,9 +21,9 @@ func (s *service) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_
 			continue
 		}
 
-		// TODO: log if error
-		err := sub.Send(e)
-		_ = err
+		if err := sub.Send(e); err != nil {
+			cg.logger.Error("error while sending message", zap.Error(err))
+		}
 	}
 
 	return nil
@@ -43,9 +44,9 @@ func (s *service) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Re
 			continue
 		}
 
-		// TODO: log if error
-		err := sub.Send(e)
-		_ = err
+		if err := sub.Send(e); err != nil {
+			cg.logger.Error("error while sending message", zap.Error(err))
+		}
 	}
 
 	return nil
@@ -58,10 +59,8 @@ func (s *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, s
 	}
 
 	for evt := range cg.MetadataStore().ListEvents(sub.Context()) {
-		err = sub.Send(evt)
-		if err != nil {
-			// TODO: log
-			_ = err
+		if err := sub.Send(evt); err != nil {
+			cg.logger.Error("error while sending message", zap.Error(err))
 		}
 	}
 
@@ -80,10 +79,8 @@ func (s *service) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub
 	}
 
 	for evt := range messages {
-		err = sub.Send(evt)
-		if err != nil {
-			// TODO: log
-			_ = err
+		if err := sub.Send(evt); err != nil {
+			cg.logger.Error("error while sending message", zap.Error(err))
 		}
 	}
 

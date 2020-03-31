@@ -3,8 +3,11 @@ package bertyprotocol
 import (
 	"context"
 	crand "crypto/rand"
+	"fmt"
 	"io"
 	"io/ioutil"
+
+	"encoding/base64"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -17,6 +20,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 )
 
@@ -24,9 +28,10 @@ const groupMetadataStoreType = "berty_group_metadata"
 
 type metadataStore struct {
 	basestore.BaseStore
-	g     *bertytypes.Group
-	devKS DeviceKeystore
-	mks   *MessageKeystore
+	g      *bertytypes.Group
+	devKS  DeviceKeystore
+	mks    *MessageKeystore
+	logger *zap.Logger
 }
 
 func isMultiMemberGroup(m *metadataStore) bool {
@@ -51,6 +56,18 @@ func (m *metadataStore) typeChecker(types ...func(m *metadataStore) bool) bool {
 	return false
 }
 
+func (m *metadataStore) setLogger(l *zap.Logger) {
+	if l == nil {
+		return
+	}
+
+	m.logger = l.With(zap.String("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(m.g.PublicKey))))
+
+	if index, ok := m.Index().(loggable); ok {
+		index.setLogger(m.logger)
+	}
+}
+
 func (m *metadataStore) ListEvents(ctx context.Context) <-chan *bertytypes.GroupMetadataEvent {
 	ch := make(chan *bertytypes.GroupMetadataEvent)
 
@@ -60,19 +77,18 @@ func (m *metadataStore) ListEvents(ctx context.Context) <-chan *bertytypes.Group
 		for _, e := range log.GetEntries().Slice() {
 			op, err := operation.ParseOperation(e)
 			if err != nil {
-				// TODO: log
 				continue
 			}
 
 			meta, event, err := openGroupEnvelope(m.g, op.GetValue())
 			if err != nil {
-				// TODO: log
+				m.logger.Error("unable to open group envelope", zap.Error(err))
 				continue
 			}
 
 			metaEvent, err := newGroupMetadataEventFromEntry(log, e, meta, event, m.g)
 			if err != nil {
-				// TODO: log
+				m.logger.Error("unable to get group metadata event from entry", zap.Error(err))
 				continue
 			}
 
@@ -278,13 +294,13 @@ func (m *metadataStore) GetIncomingContactRequestsStatus() (bool, *bertytypes.Sh
 
 	md, err := m.devKS.MemberDeviceForGroup(m.g)
 	if err != nil {
-		// TODO: log
+		m.logger.Error("unable to get member device for group", zap.Error(err))
 		return enabled, nil
 	}
 
 	pkBytes, err := md.member.GetPublic().Raw()
 	if err != nil {
-		// TODO: log
+		m.logger.Error("unable to serialize member public key", zap.Error(err))
 		return enabled, nil
 	}
 
@@ -722,7 +738,7 @@ func (m *metadataStore) checkContactStatus(pk crypto.PubKey, states ...bertytype
 
 	contact, err := m.Index().(*metadataStoreIndex).getContact(pk)
 	if err != nil {
-		// TODO: log
+		m.logger.Error("unable to get contact for public key", zap.Error(err))
 		return false
 	}
 
@@ -748,9 +764,10 @@ func constructorFactoryGroupMetadata(s *bertyOrbitDB) iface.StoreConstructor {
 		}
 
 		store := &metadataStore{
-			g:     g,
-			mks:   s.messageKeystore,
-			devKS: s.deviceKeystore,
+			g:      g,
+			mks:    s.messageKeystore,
+			devKS:  s.deviceKeystore,
+			logger: zap.NewNop(),
 		}
 
 		options.Index = newMetadataIndex(ctx, store, g, md.Public())

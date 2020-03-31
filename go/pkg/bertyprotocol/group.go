@@ -156,7 +156,7 @@ func metadataStoreListSecrets(ctx context.Context, gc *groupContext) map[crypto.
 	for meta := range ch {
 		pk, ds, err := openDeviceSecret(meta.Metadata, ownSK, g)
 		if err != nil {
-			// TODO: log
+			gc.logger.Error("unable to open device secret", zap.Error(err))
 			continue
 		}
 
@@ -181,7 +181,7 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) er
 		}
 
 		if err = registerChainKey(ctx, gc.MessageKeystore(), gc.Group(), pk, ds, gc.DevicePubKey().Equals(pk)); err != nil {
-			// TODO: log
+			gc.logger.Error("unable to register chain key", zap.Error(err))
 			continue
 		}
 	}
@@ -276,7 +276,6 @@ func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx
 	go func() {
 		for evt := range gctx.MetadataStore().Subscribe(ctx) {
 			if err := handleNewMember(ctx, gctx, evt); err != nil {
-				// TODO: log
 				logger.Error("unable to send secrets", zap.Error(err))
 			}
 		}
