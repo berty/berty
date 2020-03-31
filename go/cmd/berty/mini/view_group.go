@@ -14,6 +14,7 @@ import (
 	"github.com/gdamore/tcell"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"moul.io/godev"
@@ -112,7 +113,8 @@ func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK [
 }
 
 func (v *groupView) loop(ctx context.Context) {
-	globalLogger.Debug(godev.Sdebugf(""))
+	localLogger := globalLogger.With(zap.String("group", pkAsShortID(v.g.PublicKey)))
+	localLogger.Debug(godev.Sdebugf(""))
 	wg := sync.WaitGroup{}
 	wg.Add(3)
 
@@ -179,9 +181,9 @@ func (v *groupView) loop(ctx context.Context) {
 		go func() {
 			wg.Done()
 			for {
-				globalLogger.Debug(godev.Sdebugf(""))
+				localLogger.Debug(godev.Sdebugf(""))
 				evt, err = cl.Recv()
-				globalLogger.Debug(godev.Sdebugf(""))
+				localLogger.Debug(godev.Sdebugf(""))
 				if err != nil {
 					// @TODO: Log this
 					return
@@ -214,9 +216,9 @@ func (v *groupView) loop(ctx context.Context) {
 		go func() {
 			wg.Done()
 			for {
-				globalLogger.Debug(godev.Sdebugf(""))
+				localLogger.Debug(godev.Sdebugf(""))
 				evt, err = cl.Recv()
-				globalLogger.Debug(godev.Sdebugf(""))
+				localLogger.Debug(godev.Sdebugf(""))
 				if err != nil {
 					// @TODO: Log this
 					return
@@ -228,6 +230,7 @@ func (v *groupView) loop(ctx context.Context) {
 	}
 
 	wg.Wait()
+	localLogger.Debug(godev.Sdebugf(""))
 }
 
 func (v *groupView) welcomeEventDisplay(ctx context.Context) {
