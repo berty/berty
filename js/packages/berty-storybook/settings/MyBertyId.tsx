@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState } from 'react'
 import {
 	SafeAreaView,
 	View,
@@ -6,6 +6,7 @@ import {
 	StyleSheet,
 	ScrollView,
 	Dimensions,
+	Share,
 } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
@@ -42,7 +43,7 @@ const _bertyIdStyles = StyleSheet.create({
 
 const BertyIdContent: React.FC<{}> = ({ children }) => {
 	const _styles = useStylesBertyId()
-	const [{ padding, column, text }] = useStyles()
+	const [{ padding, column }] = useStyles()
 
 	return (
 		<ScrollView
@@ -57,13 +58,13 @@ const BertyIdContent: React.FC<{}> = ({ children }) => {
 const ContactRequestQR = () => {
 	const contactRequestReference = Chat.useContactRequestReference()
 	const contactRequestEnabled = Chat.useContactRequestEnabled()
+	const [styles] = useStyles()
 	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 	if (contactRequestEnabled) {
 		return (
-			<>
-				<QRCode size={200} value={contactRequestReference} />
-				{__DEV__ && <Text selectable={true}>{contactRequestReference}</Text>}
-			</>
+			<View style={[styles.padding.top.big]}>
+				<QRCode size={Dimensions.get('window').width * 0.66} value={contactRequestReference} />
+			</View>
 		)
 	} else {
 		return <Text>Error: Contact request is disabled</Text>
@@ -99,7 +100,6 @@ const BertIdBody: React.FC<RequestProps> = ({ user }) => {
 					tabs={[
 						{ name: 'QR', icon: 'code-outline' },
 						{ name: 'Fingerprint', icon: 'code-outline' },
-						{ name: 'Infos', icon: 'info-outline' },
 						{ name: 'Devices', icon: 'smartphone-outline' },
 					]}
 					onTabChange={setSelectedContent}
@@ -114,6 +114,10 @@ const BertIdBody: React.FC<RequestProps> = ({ user }) => {
 
 const BertyIdShare: React.FC<{}> = () => {
 	const [{ row, border, background, flex, color }] = useStyles()
+	const contactRequestReference = Chat.useContactRequestReference()
+	if (!contactRequestReference) {
+		return null
+	}
 	return (
 		<TouchableOpacity
 			style={[
@@ -122,6 +126,13 @@ const BertyIdShare: React.FC<{}> = () => {
 				border.shadow.medium,
 				_bertyIdStyles.bertyIdButton,
 			]}
+			onPress={async () => {
+				try {
+					await Share.share({ url: `berty://${encodeURIComponent(contactRequestReference)}` })
+				} catch (e) {
+					console.error(e)
+				}
+			}}
 		>
 			<View style={[flex.tiny, { justifyContent: 'center' }]}>
 				<Icon

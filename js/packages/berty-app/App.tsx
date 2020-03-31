@@ -19,6 +19,7 @@ import { enableScreens } from 'react-native-screens'
 import { Chat } from '@berty-tech/hooks'
 import { NavigationContainer } from '@react-navigation/native'
 import AsyncStorage from '@react-native-community/async-storage'
+import LinkHandler from './LinkHandler'
 
 enableScreens()
 
@@ -33,6 +34,7 @@ export const App: React.FC = () => (
 			}
 		>
 			<Chat.Provider config={{ storage: AsyncStorage }}>
+				<LinkHandler />
 				<Chat.Recorder />
 				<Theme.Provider>
 					<Navigation />
