@@ -74,8 +74,8 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 	}
 
 	return service, func() {
-		service.Close()
 		node.Close()
+		service.Close()
 	}
 }
 
@@ -139,9 +139,8 @@ func Main(opts *Opts) {
 					panic(err)
 				}
 
-				err := tabbedView.service.GroupMetadataSubscribe(&bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}, srvListMetadatas)
-				if err != nil {
-					panic(err)
+				if evt.Metadata.EventType != bertytypes.EventTypeAccountGroupJoined {
+					continue
 				}
 
 				tabbedView.NextGroup()

@@ -182,13 +182,16 @@ func main() {
 
 				deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
 
+				mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
+
 				// initialize new protocol client
 				opts := bertyprotocol.Opts{
-					IpfsCoreAPI:    api,
-					Logger:         logger.Named("bertyprotocol"),
-					RootDatastore:  rootDS,
-					DeviceKeystore: bertyprotocol.NewDeviceKeystore(deviceDS),
-					OrbitCache:     bertyprotocol.NewOrbitDatastoreCache(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))),
+					IpfsCoreAPI:     api,
+					Logger:          logger.Named("bertyprotocol"),
+					RootDatastore:   rootDS,
+					MessageKeystore: mk,
+					DeviceKeystore:  bertyprotocol.NewDeviceKeystore(deviceDS),
+					OrbitCache:      bertyprotocol.NewOrbitDatastoreCache(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))),
 				}
 				protocol, err = bertyprotocol.New(opts)
 				if err != nil {
