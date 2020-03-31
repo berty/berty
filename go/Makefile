@@ -16,6 +16,22 @@ check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,
 ## General rules
 ##
 
+.PHONY: build
+build:
+	$(MAKE) -C .. bazel.build
+
+.PHONY: run
+run:
+	$(MAKE) -C .. bazel.daemon
+
+.PHONY: dev
+dev:
+	$(MAKE) -C .. ibazel.daemon
+
+.PHONY: autotest
+autotest:
+	$(MAKE) -C .. ibazel.unittest
+
 .PHONY: unittest
 unittest: go.unittest
 
@@ -28,9 +44,11 @@ install: go.install
 .PHONY: clean
 clean: pb.clean
 	rm -rf vendor/ out/
+	$(MAKE) -C .. bazel.clean
 
 .PHONY: fclean
 fclean: clean
+	$(MAKE) -C .. bazel.fclean
 
 .PHONY: re
 re: clean build
