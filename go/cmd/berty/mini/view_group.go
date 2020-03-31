@@ -16,6 +16,7 @@ import (
 	"github.com/rivo/tview"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
+	"moul.io/godev"
 )
 
 type groupView struct {
@@ -53,15 +54,18 @@ func (v *groupView) commandParser(ctx context.Context, input string) error {
 }
 
 func (v *groupView) OnSubmit(ctx context.Context, msg string) {
+	globalLogger.Debug(godev.Sdebugf(""))
 	v.messages.View().ScrollToEnd()
 
 	if err := v.commandParser(ctx, msg); err != nil {
+		globalLogger.Debug(godev.Sdebugf(""))
 		v.syncMessages <- &historyMessage{
 			messageType: messageTypeError,
 			payload:     []byte(fmt.Sprintf("out: %s", err.Error())),
 		}
 	}
 
+	globalLogger.Debug(godev.Sdebugf(""))
 	v.inputHistory.Append(msg)
 }
 
@@ -108,6 +112,7 @@ func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK [
 }
 
 func (v *groupView) loop(ctx context.Context) {
+	globalLogger.Debug(godev.Sdebugf(""))
 	wg := sync.WaitGroup{}
 	wg.Add(3)
 
@@ -174,7 +179,9 @@ func (v *groupView) loop(ctx context.Context) {
 		go func() {
 			wg.Done()
 			for {
+				globalLogger.Debug(godev.Sdebugf(""))
 				evt, err = cl.Recv()
+				globalLogger.Debug(godev.Sdebugf(""))
 				if err != nil {
 					// @TODO: Log this
 					return
@@ -207,7 +214,9 @@ func (v *groupView) loop(ctx context.Context) {
 		go func() {
 			wg.Done()
 			for {
+				globalLogger.Debug(godev.Sdebugf(""))
 				evt, err = cl.Recv()
+				globalLogger.Debug(godev.Sdebugf(""))
 				if err != nil {
 					// @TODO: Log this
 					return

@@ -7,9 +7,12 @@ import (
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"moul.io/godev"
 )
 
 func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	globalLogger.Debug(godev.Sdebugf(""))
+
 	casted := &bertytypes.AccountGroupJoined{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
@@ -24,6 +27,7 @@ func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *bertytypes.
 	v.v.AddContextGroup(ctx, casted.Group)
 	v.v.recomputeChannelList(false)
 
+	globalLogger.Debug(godev.Sdebugf(""))
 	return nil
 }
 
@@ -248,7 +252,7 @@ func metadataEventHandler(ctx context.Context, v *groupView, e *bertytypes.Group
 		bertytypes.EventTypeMultiMemberGroupAliasResolverAdded:     handlerMultiMemberGroupAliasResolverAdded,
 		bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced: handlerMultiMemberGroupInitialMemberAnnounced,
 	}
-
+	globalLogger.Debug(godev.Sdebugf("event type: %v, group: %s", e.Metadata.EventType, pkAsShortID(v.g.PublicKey)))
 	action, ok := actions[e.Metadata.EventType]
 	if !ok || action == nil {
 		v.messages.AppendErr(fmt.Errorf("action handler for %s not found", e.Metadata.EventType.String()))

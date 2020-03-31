@@ -16,14 +16,19 @@ import (
 	"github.com/juju/fslock"
 	"github.com/rivo/tview"
 	"github.com/whyrusleeping/go-logging"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"moul.io/godev"
 )
+
+var globalLogger *zap.Logger
 
 type Opts struct {
 	RemoteAddr      string
 	GroupInvitation string
 	Port            uint
 	RootDS          datastore.Batching
+	Logger          *zap.Logger
 }
 
 func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func()) {
@@ -120,6 +125,10 @@ func Main(opts *Opts) {
 		panic(err)
 	}
 
+	//globalLogger = opts.Logger.With(zap.String("account", pkAsShortID(accountGroup.Group.PublicKey)))
+	globalLogger = opts.Logger.Named(pkAsShortID(accountGroup.Group.PublicKey))
+	globalLogger.Info("starting berty mini")
+
 	tabbedView := newTabbedGroups(ctx, accountGroup, client, app)
 	if len(opts.GroupInvitation) > 0 {
 		req := &bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}
@@ -130,7 +139,9 @@ func Main(opts *Opts) {
 
 		go func() {
 			for {
+				globalLogger.Debug(godev.Sdebug())
 				evt, err := cl.Recv()
+				globalLogger.Debug(godev.Sdebug())
 				switch err {
 				case io.EOF: // gracefully ended @TODO: log this
 					return
