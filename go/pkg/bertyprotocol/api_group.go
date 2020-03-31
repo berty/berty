@@ -8,7 +8,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-func (c *client) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request) (*bertytypes.GroupInfo_Reply, error) {
+func (s *service) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request) (*bertytypes.GroupInfo_Reply, error) {
 	var (
 		g   *bertytypes.Group
 		err error
@@ -21,7 +21,7 @@ func (c *client) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request)
 			return nil, errcode.ErrInvalidInput.Wrap(err)
 		}
 
-		g, err = c.getGroupForPK(pk)
+		g, err = s.getGroupForPK(pk)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -31,7 +31,7 @@ func (c *client) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request)
 			return nil, errcode.ErrInvalidInput.Wrap(err)
 		}
 
-		g, err = c.getContactGroup(pk)
+		g, err = s.getContactGroup(pk)
 		if err != nil {
 			return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 		}
@@ -39,7 +39,7 @@ func (c *client) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request)
 		return nil, errcode.ErrInvalidInput
 	}
 
-	md, err := c.deviceKeystore.MemberDeviceForGroup(g)
+	md, err := s.deviceKeystore.MemberDeviceForGroup(g)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -61,13 +61,13 @@ func (c *client) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request)
 	}, nil
 }
 
-func (c *client) ActivateGroup(ctx context.Context, req *bertytypes.ActivateGroup_Request) (*bertytypes.ActivateGroup_Reply, error) {
+func (s *service) ActivateGroup(ctx context.Context, req *bertytypes.ActivateGroup_Request) (*bertytypes.ActivateGroup_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	err = c.activateGroup(ctx, pk)
+	err = s.activateGroup(ctx, pk)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
@@ -75,13 +75,13 @@ func (c *client) ActivateGroup(ctx context.Context, req *bertytypes.ActivateGrou
 	return &bertytypes.ActivateGroup_Reply{}, nil
 }
 
-func (c *client) DeactivateGroup(_ context.Context, req *bertytypes.DeactivateGroup_Request) (*bertytypes.DeactivateGroup_Reply, error) {
+func (s *service) DeactivateGroup(_ context.Context, req *bertytypes.DeactivateGroup_Request) (*bertytypes.DeactivateGroup_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	if err := c.deactivateGroup(pk); err != nil {
+	if err := s.deactivateGroup(pk); err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 

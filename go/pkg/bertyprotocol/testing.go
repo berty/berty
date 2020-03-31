@@ -9,7 +9,7 @@ import (
 )
 
 // TestingClient returns a configured Client struct with in-memory contexts.
-func TestingClient(t *testing.T, opts Opts) (Client, func()) {
+func TestingClient(t *testing.T, opts Opts) (Service, func()) {
 	t.Helper()
 
 	ctx := opts.RootContext

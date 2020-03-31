@@ -69,7 +69,7 @@ func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView,
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
-	gInfo, err := v.v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	gInfo, err := v.v.service.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		ContactPK: casted.ContactPK,
 	})
 
@@ -212,7 +212,7 @@ func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupV
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
-	gInfo, err := v.v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	gInfo, err := v.v.service.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		ContactPK: casted.ContactPK,
 	})
 

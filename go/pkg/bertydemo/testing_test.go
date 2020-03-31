@@ -11,7 +11,7 @@ import (
 
 type cleanFunc func()
 
-func testingInMemoryClient(t *testing.T) (*Client, ipfsutil.CoreAPIMock, cleanFunc) {
+func testingInMemoryClient(t *testing.T) (*Service, ipfsutil.CoreAPIMock, cleanFunc) {
 	t.Helper()
 
 	ctx := context.Background()

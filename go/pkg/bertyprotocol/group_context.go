@@ -13,37 +13,37 @@ type groupContext struct {
 	memberDevice    *ownMemberDevice
 }
 
-func (c *groupContext) MessageKeystore() *MessageKeystore {
-	return c.messageKeystore
+func (gc *groupContext) MessageKeystore() *MessageKeystore {
+	return gc.messageKeystore
 }
 
-func (c *groupContext) getMemberPrivKey() crypto.PrivKey {
-	return c.memberDevice.member
+func (gc *groupContext) getMemberPrivKey() crypto.PrivKey {
+	return gc.memberDevice.member
 }
 
-func (c *groupContext) MessageStore() *messageStore {
-	return c.messageStore
+func (gc *groupContext) MessageStore() *messageStore {
+	return gc.messageStore
 }
 
-func (c *groupContext) MetadataStore() *metadataStore {
-	return c.metadataStore
+func (gc *groupContext) MetadataStore() *metadataStore {
+	return gc.metadataStore
 }
 
-func (c *groupContext) Group() *bertytypes.Group {
-	return c.group
+func (gc *groupContext) Group() *bertytypes.Group {
+	return gc.group
 }
 
-func (c *groupContext) MemberPubKey() crypto.PubKey {
-	return c.memberDevice.member.GetPublic()
+func (gc *groupContext) MemberPubKey() crypto.PubKey {
+	return gc.memberDevice.member.GetPublic()
 }
 
-func (c *groupContext) DevicePubKey() crypto.PubKey {
-	return c.memberDevice.device.GetPublic()
+func (gc *groupContext) DevicePubKey() crypto.PubKey {
+	return gc.memberDevice.device.GetPublic()
 }
 
-func (c *groupContext) Close() error {
-	c.metadataStore.Close()
-	c.messageStore.Close()
+func (gc *groupContext) Close() error {
+	gc.metadataStore.Close()
+	gc.messageStore.Close()
 
 	return nil
 }

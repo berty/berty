@@ -16,17 +16,17 @@ import (
 	"go.uber.org/zap"
 )
 
-var _ Client = (*client)(nil)
+var _ Service = (*service)(nil)
 
-// Client is the main Berty Protocol interface
-type Client interface {
+// Service is the main Berty Protocol interface
+type Service interface {
 	ProtocolServiceServer
 
 	Close() error
 	Status() Status
 }
 
-type client struct {
+type service struct {
 	// variables
 	ctx             context.Context
 	logger          *zap.Logger
@@ -87,7 +87,7 @@ func defaultClientOptions(opts *Opts) error {
 }
 
 // New initializes a new Client
-func New(opts Opts) (Client, error) {
+func New(opts Opts) (Service, error) {
 	if err := defaultClientOptions(&opts); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -102,7 +102,7 @@ func New(opts Opts) (Client, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	return &client{
+	return &service{
 		ctx:             opts.RootContext,
 		ipfsCoreAPI:     opts.IpfsCoreAPI,
 		logger:          opts.Logger,
@@ -119,10 +119,10 @@ func New(opts Opts) (Client, error) {
 	}, nil
 }
 
-func (c *client) Close() error {
-	c.odb.Close()
-	if c.createdIPFSNode != nil {
-		c.createdIPFSNode.Close()
+func (s *service) Close() error {
+	s.odb.Close()
+	if s.createdIPFSNode != nil {
+		s.createdIPFSNode.Close()
 	}
 
 	return nil
@@ -134,7 +134,7 @@ type Status struct {
 	Protocol error
 }
 
-func (c *client) Status() Status {
+func (s *service) Status() Status {
 	return Status{
 		Protocol: nil,
 	}

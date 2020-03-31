@@ -36,8 +36,8 @@ func TestNew(t *testing.T) {
 	ipfsmock.Close()
 }
 
-func testingLogToken(t *testing.T, d DemoServiceClient) string {
-	res, err := d.LogToken(context.Background(), &LogToken_Request{})
+func testingLogToken(t *testing.T, c DemoServiceClient) string {
+	res, err := c.LogToken(context.Background(), &LogToken_Request{})
 	require.NoError(t, err)
 	return res.GetLogToken()
 }
@@ -71,13 +71,13 @@ func TestLogFromToken(t *testing.T) {
 	assert.Equal(t, firstLog, secondLog)
 }
 
-func testingAdd(t *testing.T, d DemoServiceClient, lt string, data []byte) string {
+func testingAdd(t *testing.T, c DemoServiceClient, lt string, data []byte) string {
 	req := LogAdd_Request{
 		LogToken: lt,
 		Data:     data,
 	}
 
-	res, err := d.LogAdd(context.Background(), &req)
+	res, err := c.LogAdd(context.Background(), &req)
 	require.NoError(t, err)
 
 	return res.GetCid()

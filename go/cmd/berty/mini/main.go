@@ -115,7 +115,7 @@ func Main(opts *Opts) {
 				}
 			}()
 
-			err := tabbedView.client.GroupMetadataSubscribe(&bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}, srvListMetadatas)
+			err := tabbedView.service.GroupMetadataSubscribe(&bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}, srvListMetadatas)
 			if err != nil {
 				panic(err)
 			}
