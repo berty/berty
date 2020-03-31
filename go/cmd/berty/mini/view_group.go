@@ -14,8 +14,10 @@ import (
 	"github.com/gdamore/tcell"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
+	"moul.io/godev"
 )
 
 type groupView struct {
@@ -26,6 +28,7 @@ type groupView struct {
 	syncMessages chan *historyMessage
 	memberPK     []byte
 	devicePK     []byte
+	logger       *zap.Logger
 }
 
 func (v *groupView) View() tview.Primitive {
@@ -53,9 +56,12 @@ func (v *groupView) commandParser(ctx context.Context, input string) error {
 }
 
 func (v *groupView) OnSubmit(ctx context.Context, msg string) {
+	globalMiniLogger.Debug(godev.Sdebugf("groupView.OnSubmit, msg:%q", msg))
+
 	v.messages.View().ScrollToEnd()
 
 	if err := v.commandParser(ctx, msg); err != nil {
+		globalMiniLogger.Debug(godev.Sdebugf("groupView.OnSubmit, msg:%q", msg))
 		v.syncMessages <- &historyMessage{
 			messageType: messageTypeError,
 			payload:     []byte(fmt.Sprintf("out: %s", err.Error())),
@@ -63,6 +69,7 @@ func (v *groupView) OnSubmit(ctx context.Context, msg string) {
 	}
 
 	v.inputHistory.Append(msg)
+	globalMiniLogger.Debug(godev.Sdebugf("groupView.OnSubmit, msg:%q", msg))
 }
 
 type fakeServerStream struct {

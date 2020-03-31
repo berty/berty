@@ -18,7 +18,10 @@ import (
 	"github.com/whyrusleeping/go-logging"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"moul.io/godev"
 )
+
+var globalMiniLogger *zap.Logger
 
 type Opts struct {
 	RemoteAddr      string
@@ -29,7 +32,6 @@ type Opts struct {
 }
 
 func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func()) {
-
 	var (
 		swarmAddresses []string = nil
 		lock           *fslock.Lock
@@ -82,8 +84,9 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 }
 
 func Main(opts *Opts) {
+	globalMiniLogger = opts.Logger
 	p2plog.SetAllLoggers(logging.CRITICAL)
-	opts.Logger.Debug("TEST")
+	globalMiniLogger.Debug("starting Berty mini")
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -162,6 +165,7 @@ func Main(opts *Opts) {
 		SetFieldBackgroundColor(tcell.ColorBlack)
 
 	input.SetDoneFunc(func(key tcell.Key) {
+		globalMiniLogger.Debug(godev.Sdebugf("SetDoneFunc, key:%v", key))
 		if key == tcell.KeyEnter {
 			msg := input.GetText()
 			input.SetText("")
@@ -181,6 +185,7 @@ func Main(opts *Opts) {
 			AddItem(inputBox, 1, 1, true), 0, 1, true)
 
 	app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		//globalMiniLogger.Debug(godev.Sdebugf("SetInputCapture, event:%v", *event))
 		handlers := map[tcell.Key]func() bool{
 			tcell.KeyCtrlC: func() bool { app.Stop(); return true },
 			tcell.KeyEsc:   func() bool { app.Stop(); return true },
