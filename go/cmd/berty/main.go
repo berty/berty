@@ -125,6 +125,10 @@ func main() {
 		Usage:   "mini",
 		FlagSet: miniClientDemoFlags,
 		Exec: func(args []string) error {
+			if err := globalPreRun(); err != nil {
+				return err
+			}
+
 			rootDS, dsLock, err := getRootDatastore(miniClientDemoPath)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
@@ -145,6 +149,7 @@ func main() {
 				GroupInvitation: *miniClientDemoGroup,
 				Port:            *miniClientDemoPort,
 				RootDS:          rootDS,
+				Logger:          logger,
 			})
 			return nil
 		},
