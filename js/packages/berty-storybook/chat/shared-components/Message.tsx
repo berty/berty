@@ -94,16 +94,31 @@ export const Message: React.FC<MessageProps> = ({
 				<View
 					style={[
 						padding.small,
-						border.radius.medium,
+						border.radius.top.medium,
+						payload.isMe ? border.radius.left.medium : border.radius.right.medium,
 						styleMsg,
-						{ backgroundColor: payload.isMe ? color.blue : '#CED2FF99' },
+						!payload.acknowledged && payload.isMe && border.color.blue,
+						!payload.acknowledged && payload.isMe && border.scale(2),
+						{
+							backgroundColor: payload.isMe
+								? payload.acknowledged
+									? color.blue
+									: color.white
+								: '#CED2FF99',
+						},
 					]}
 				>
 					<Text
 						style={[
 							text.bold,
 							_styles.messageText,
-							{ color: payload.isMe ? color.white : color.blue },
+							{
+								color: payload.isMe
+									? payload.acknowledged
+										? color.white
+										: color.blue
+									: color.blue,
+							},
 						]}
 					>
 						{payload.body}
@@ -111,10 +126,22 @@ export const Message: React.FC<MessageProps> = ({
 				</View>
 				<View style={[payload.isMe && row.item.bottom]}>
 					{!state.length ? (
-						<Text style={[text.color.grey, _styles.dateMessage]}>
-							{formatTimestamp(new Date(payload.sentDate))}{' '}
-							{payload.isMe && (payload.acknowledged ? 'Sent' : 'Sending..')}
-						</Text>
+						<View style={[row.left, { alignItems: 'center' }]}>
+							<Text style={[text.color.grey, padding.right.scale(5), _styles.dateMessage]}>
+								{formatTimestamp(new Date(payload.sentDate))}{' '}
+							</Text>
+							{payload.isMe && (
+								<Icon
+									name={payload.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
+									width={12}
+									height={12}
+									fill={color.blue}
+								/>
+							)}
+							<Text style={[text.color.blue, padding.left.scale(3), _styles.dateMessage]}>
+								{payload.isMe && (payload.acknowledged ? 'sent' : 'sending...')}
+							</Text>
+						</View>
 					) : (
 						state.map((value) => (
 							<View style={[row.left, { alignItems: 'center' }]}>
