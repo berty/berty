@@ -13,7 +13,7 @@ import (
 )
 
 func TestTestingClient_impl(t *testing.T) {
-	client, cleanup := bertyprotocol.TestingClient(t, bertyprotocol.Opts{
+	client, cleanup := bertyprotocol.TestingService(t, bertyprotocol.Opts{
 		Logger:          zap.NewNop(),
 		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(keystore.NewMemKeystore()),
 		MessageKeystore: bertyprotocol.NewInMemMessageKeystore(),

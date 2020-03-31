@@ -29,5 +29,7 @@ func Logger(t *testing.T) *zap.Logger {
 		t.Errorf("debug logger: %v", err)
 		return zap.NewNop()
 	}
+
+	zap.ReplaceGlobals(logger)
 	return logger
 }

@@ -21,14 +21,15 @@ func (c *client) Close() error {
 	return c.l.Close()
 }
 
-func NewClient(svc Service) (Client, error) {
-	return NewClientFromServer(grpc.NewServer(), svc)
+func NewClient(svc Service, opts ...grpc.ServerOption) (Client, error) {
+	return NewClientFromServer(grpc.NewServer(opts...), svc)
 }
 
-func NewClientFromServer(s *grpc.Server, svc Service) (Client, error) {
+func NewClientFromServer(s *grpc.Server, svc Service, opts ...grpc.DialOption) (Client, error) {
 	pl := grpcutil.NewPipeListener()
 
-	cc, err := pl.NewClientConn(grpc.WithInsecure())
+	opts = append(opts, grpc.WithInsecure())
+	cc, err := pl.NewClientConn(opts...)
 	if err != nil {
 		return nil, err
 	}
