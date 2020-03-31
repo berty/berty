@@ -19,6 +19,7 @@ import { Routes, FakeNavigation } from '@berty-tech/berty-navigation'
 import { NavigationContainer } from '@react-navigation/native'
 import { enableScreens } from 'react-native-screens'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
+import AsyncStorage from '@react-native-community/async-storage'
 
 enableScreens()
 
@@ -41,7 +42,7 @@ stories.addDecorator((storyFn) => (
 
 stories.addDecorator((storyFn) => {
 	return (
-		<ChatHooks.Provider>
+		<ChatHooks.Provider config={{ storage: AsyncStorage }}>
 			{React.createElement(() => {
 				const generateAccount = ChatHooks.useAccountGenerate()
 				React.useEffect(() => {
