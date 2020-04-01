@@ -61,7 +61,9 @@ const InvalidScanHeader: React.FC<{}> = () => {
 				/>
 			</View>
 			<View>
-				<Text style={[text.color.red, text.bold, text.align.center]}>This QR code is invalid!</Text>
+				<Text style={[text.color.red, text.bold.medium, text.align.center]}>
+					This QR code is invalid!
+				</Text>
 			</View>
 		</View>
 	)
@@ -72,7 +74,9 @@ const InvalidScanError: React.FC<{}> = () => {
 
 	return (
 		<View style={[border.radius.medium, background.light.red, padding.medium, margin.top.huge]}>
-			<Text style={[text.color.red, text.align.center, text.bold, _invalidScanStyles.errorText]}>
+			<Text
+				style={[text.color.red, text.align.center, text.bold.medium, _invalidScanStyles.errorText]}
+			>
 				Invalid format: missing characters
 			</Text>
 		</View>

@@ -80,7 +80,7 @@ const RequestButtonItem: React.FC<RequestButtonItemProps> = ({
 			/>
 			<Text
 				style={[
-					text.bold,
+					text.bold.medium,
 					text.family,
 					text.align.center,
 					column.item.center,
@@ -246,7 +246,9 @@ export const MarkAsVerified: React.FC<{}> = () => {
 					<Toggle status='primary' checked={isToggled} onChange={handleToggled} />
 				</View>
 			</View>
-			<Text style={[text.color.grey, margin.top.medium, text.bold, _styles.markAsVerifiedText]}>
+			<Text
+				style={[text.color.grey, margin.top.medium, text.bold.medium, _styles.markAsVerifiedText]}
+			>
 				Compare the fingerprint displayed above with the one on Caterpillar’s phone. If they are
 				identical, end-to-end encryption is guaranted on you can mark this contact as verified.
 			</Text>

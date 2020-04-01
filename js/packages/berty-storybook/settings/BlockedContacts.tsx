@@ -58,7 +58,7 @@ const BlockedContactItem: React.FC<BlockedContactsItempProps> = ({ avatarUri, na
 				<View style={[row.center, row.item.justify]}>
 					<CircleAvatar avatarUri={avatarUri} size={40} withCircle={false} />
 					<View style={[padding.left.small]}>
-						<Text style={[text.family, text.bold]} category='s4'>
+						<Text style={[text.family, text.bold.medium]} category='s4'>
 							{name}
 						</Text>
 						<View style={[row.fill]}>

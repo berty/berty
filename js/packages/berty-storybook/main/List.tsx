@@ -155,7 +155,9 @@ const Requests: React.FC<RequestsProps> = ({ items, style, onLayout }) => {
 	return items?.length ? (
 		<SafeAreaView onLayout={onLayout} style={style}>
 			<View style={[padding.top.medium]}>
-				<Text style={[text.color.white, text.size.huge, text.bold, padding.medium]}>Requests</Text>
+				<Text style={[text.color.white, text.size.huge, text.bold.medium, padding.medium]}>
+					Requests
+				</Text>
 				<ScrollView
 					horizontal
 					style={[padding.bottom.medium]}
@@ -254,7 +256,7 @@ const Conversations: React.FC<ConversationsProps> = ({ items }) => {
 								style={[
 									text.color.black,
 									text.size.huge,
-									text.bold,
+									text.bold.medium,
 									padding.medium,
 									margin.horizontal.medium,
 								]}

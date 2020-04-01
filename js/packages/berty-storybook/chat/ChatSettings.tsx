@@ -31,7 +31,7 @@ const ChatSettingsHeader: React.FC<berty.chatmodel.IConversation> = ({ avatarUri
 			<CircleAvatar style={row.item.justify} avatarUri={avatarUri || ''} size={100} />
 			<Text
 				numberOfLines={1}
-				style={[text.color.white, text.align.center, padding.top.small, text.bold]}
+				style={[text.color.white, text.align.center, padding.top.small, text.bold.medium]}
 			>
 				{title || ''}
 			</Text>

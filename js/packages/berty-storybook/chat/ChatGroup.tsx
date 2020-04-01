@@ -38,7 +38,7 @@ const HeaderChatGroup: React.FC<berty.chatmodel.IConversation> = (props) => {
 					<Icon style={[column.item.center]} name='arrow-back-outline' width={30} height={30} />
 				</TouchableOpacity>
 				<View style={[flex.small, row.item.justify]}>
-					<Text numberOfLines={1} category='h5' style={[text.align.center, text.bold]}>
+					<Text numberOfLines={1} category='h5' style={[text.align.center, text.bold.medium]}>
 						{title || ''}
 					</Text>
 				</View>
@@ -124,7 +124,7 @@ const ChatGroupMemberItem: React.FC<berty.chatmodel.IMember> = ({
 					<Text
 						numberOfLines={1}
 						style={[
-							text.bold,
+							text.bold.medium,
 							text.size.tiny,
 							padding.horizontal.small,
 							{ color: color[itemColor] },
@@ -159,7 +159,9 @@ const InfosChatGroup: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 		<View>
 			<ChatDate date={createdAt} />
 			<View style={[margin.top.medium]}>
-				<Text style={[text.align.center, text.color.black, text.bold]}>Test created the group</Text>
+				<Text style={[text.align.center, text.color.black, text.bold.medium]}>
+					Test created the group
+				</Text>
 			</View>
 			<ChatGroupMemberList />
 		</View>

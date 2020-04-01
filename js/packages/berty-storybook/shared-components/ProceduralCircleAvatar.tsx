@@ -3,7 +3,6 @@ import { View, Image, StyleProp } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
 import { berty } from '@berty-tech/api'
-import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import Jdenticon from 'react-native-jdenticon'
 import { Chat } from '@berty-tech/hooks'
 

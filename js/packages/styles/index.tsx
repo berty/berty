@@ -70,13 +70,35 @@ export type AlignVertical<T> = {
 
 export type AlignTypes = [AlignHorizontalTypes, AlignVerticalTypes]
 export type Align<T> = AlignHorizontal<T> & AlignVertical<T>
+
+export type BoldDeclarationTypes =
+	| 'normal'
+	| 'bold'
+	| '100'
+	| '200'
+	| '300'
+	| '400'
+	| '500'
+	| '600'
+	| '700'
+	| '800'
+	| '900'
+export type BoldDeclaration<T> = {
+	small: T
+	medium: T
+	huge: T
+}
+export type Bold<T> = BoldDeclaration<T> & {
+	scale: (fontWeight: BoldDeclarationTypes) => T
+}
+
 export type Text = {
 	color: Colors<{}> & ColorsBrightness<{}>
 	size: Sizes<{}>
 	family: {
 		use: (fontFamily: string) => {}
 	}
-	bold: {}
+	bold: Bold<{}>
 	italic: {}
 	align: Align<{}>
 }
@@ -333,8 +355,17 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 					StyleSheet.create({ family: { fontFamily } }).family,
 			),
 		}),
+		bold: {
+			...StyleSheet.create({
+				small: { fontWeight: '500' },
+				medium: { fontWeight: 'bold' },
+				huge: { fontWeight: '900' },
+			}),
+			scale: mem(
+				(fontWeight: BoldDeclarationTypes) => StyleSheet.create({ scale: { fontWeight } }).scale,
+			),
+		},
 		...StyleSheet.create({
-			bold: { fontWeight: 'bold' },
 			italic: { fontStyle: 'italic' },
 		}),
 		size: {

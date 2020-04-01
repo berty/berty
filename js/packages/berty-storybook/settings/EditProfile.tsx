@@ -58,7 +58,7 @@ const EditMyProfile: React.FC<{}> = () => {
 						_stylesEditProfile.profileButton,
 					]}
 				>
-					<Text style={[text.align.center, text.color.blue, text.bold, text.size.scale(16)]}>
+					<Text style={[text.align.center, text.color.blue, text.bold.medium, text.size.scale(16)]}>
 						SAVE CHANGES
 					</Text>
 				</View>
@@ -117,7 +117,7 @@ const ResetMyQrCode: React.FC<{}> = () => {
 					row.item.justify,
 				]}
 			>
-				<Text style={[text.align.center, text.color.red, text.bold, text.size.scale(16)]}>
+				<Text style={[text.align.center, text.color.red, text.bold.medium, text.size.scale(16)]}>
 					RESET MY QR CODE
 				</Text>
 			</TouchableOpacity>

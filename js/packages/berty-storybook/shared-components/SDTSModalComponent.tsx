@@ -145,7 +145,7 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 									<Text
 										style={[
 											text.family,
-											text.bold,
+											text.bold.medium,
 											text.size.scale(20),
 											column.item.center,
 											{ color: componentValues.titleColor },

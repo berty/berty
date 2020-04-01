@@ -166,7 +166,12 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 									/>
 								)}
 								<Text
-									style={[text.align.center, text.size.scale(8), text.bold, { color: state.color }]}
+									style={[
+										text.align.center,
+										text.size.scale(8),
+										text.bold.medium,
+										{ color: state.color },
+									]}
 								>
 									{state.value}
 								</Text>
@@ -176,7 +181,12 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					{previewValue && (
 						<View>
 							<Text
-								style={[text.family, padding.right.small, text.bold, { color: previewValueColor }]}
+								style={[
+									text.family,
+									padding.right.small,
+									text.bold.medium,
+									{ color: previewValueColor },
+								]}
 							>
 								{previewValue}
 							</Text>
@@ -306,7 +316,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 										style={[
 											row.item.justify,
 											text.size.scale(8),
-											text.bold,
+											text.bold.medium,
 											{ color: state.color },
 										]}
 									>
@@ -441,7 +451,7 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 	return (
 		<View style={[row.left, padding.left.small, { alignItems: 'center' }]}>
 			<Icon name={icon} width={iconSize} height={iconSize} fill={iconColor} />
-			<Text style={[text.bold, _styles.updateFeatureText, { color }]}>{value}</Text>
+			<Text style={[text.bold.medium, _styles.updateFeatureText, { color }]}>{value}</Text>
 		</View>
 	)
 }

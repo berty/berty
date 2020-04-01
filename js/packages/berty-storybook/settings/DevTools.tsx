@@ -52,7 +52,7 @@ const HeaderDevTools: React.FC<{}> = () => {
 					},
 				]}
 				style={[_styles.buttonRowMarginTop]}
-				styleText={[text.bold]}
+				styleText={[text.bold.medium]}
 			/>
 		</View>
 	)
@@ -128,7 +128,7 @@ const BodyDevTools: React.FC<{}> = () => {
 					},
 				]}
 				style={[_styles.buttonRowMarginTop]}
-				styleText={[text.bold]}
+				styleText={[text.bold.medium]}
 			/>
 		</View>
 	)

@@ -52,7 +52,7 @@ const BodyGroupRequestContentItem: React.FC<berty.chatmodel.IMember & {
 				{state && state.value && (
 					<View style={[row.center]}>
 						<View style={[border.radius.medium, _styles.state, { backgroundColor: state.bgColor }]}>
-							<Text style={[text.bold, _styles.stateText, { color: state.color }]}>
+							<Text style={[text.bold.medium, _styles.stateText, { color: state.color }]}>
 								{state.value}
 							</Text>
 						</View>

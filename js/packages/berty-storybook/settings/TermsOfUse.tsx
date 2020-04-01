@@ -29,7 +29,7 @@ const BodyTermsOfUseItem: React.FC<BodyTermsOfUseItemProps> = ({ textProps, titl
 	const [{ margin, text }] = useStyles()
 	return (
 		<View style={[margin.top.big]}>
-			{title && <Text style={[text.bold, _styles.itemTitleText]}>{title}</Text>}
+			{title && <Text style={[text.bold.medium, _styles.itemTitleText]}>{title}</Text>}
 			<Text style={[text.family, _styles.itemText]}>{textProps}</Text>
 		</View>
 	)

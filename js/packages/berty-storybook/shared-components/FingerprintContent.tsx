@@ -27,7 +27,7 @@ const FingerprintContentText: React.FC<FingerprintContentProps> = ({ fingerprint
 		<Text
 			style={[
 				text.color.blue,
-				text.bold,
+				text.bold.medium,
 				text.family.use('Courier'),
 				_styles.fingerprintContentText,
 			]}

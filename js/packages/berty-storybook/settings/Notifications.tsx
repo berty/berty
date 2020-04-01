@@ -46,7 +46,7 @@ const HeaderNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 							<Icon name='alert-circle' width={25} height={25} fill={color.red} />
 							<Text
 								category='h6'
-								style={[text.color.white, text.bold, _styles.headerInfosTitleText]}
+								style={[text.color.white, text.bold.medium, _styles.headerInfosTitleText]}
 							>
 								Authorize notifications
 							</Text>
@@ -54,7 +54,7 @@ const HeaderNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 						<View style={[row.item.justify, margin.top.medium, margin.horizontal.medium]}>
 							<Text
 								style={[
-									text.bold,
+									text.bold.medium,
 									text.align.center,
 									text.color.white,
 									row.item.justify,
@@ -77,7 +77,7 @@ const HeaderNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 								<Icon name='bell-outline' width={20} height={20} fill={color.white} />
 								<Text
 									style={[
-										text.bold,
+										text.bold.medium,
 										text.color.white,
 										padding.left.small,
 										_styles.headerInfosButtonText,
