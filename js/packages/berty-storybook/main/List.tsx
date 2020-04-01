@@ -40,13 +40,6 @@ type ConversationsItemProps = chat.conversation.Entity
 
 // Functions
 
-const date = (timestamp?: google.protobuf.ITimestamp | null): Date => {
-	const { seconds, nanos } = timestamp || { seconds: 0, nanos: 0 }
-	const _ = new Date()
-	_.setTime((seconds as number) * 1000 + (nanos as number) / 1000)
-	return _
-}
-
 const RequestsItem: React.FC<{
 	id: string
 	name: string
@@ -223,6 +216,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 					<View style={[row.fill]}>
 						<View style={[row.left]}>
 							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
+								{kind === 'fake' && 'SAMPLE - '}
 								{title || ''}
 							</Text>
 						</View>

@@ -29,6 +29,8 @@ export const ChatFooter: React.FC<{
 	const _styles = useStylesChatFooter()
 	const [{ background, row, padding, flex, border, column, color }] = useStyles()
 	const sendMessage = Chat.useMessageSend()
+	const conversation = Chat.useGetConversation(convId)
+	const isFake = conversation.kind === 'fake'
 
 	return (
 		<SafeAreaView style={background.white}>
@@ -66,7 +68,11 @@ export const ChatFooter: React.FC<{
 					/>
 					<TouchableOpacity
 						style={[flex.tiny, _styles.sendButton]}
+						disabled={isFake}
 						onPress={() => {
+							if (isFake) {
+								return
+							}
 							if (message) {
 								sendMessage({
 									id: convId,
@@ -82,7 +88,7 @@ export const ChatFooter: React.FC<{
 							name='paper-plane-outline'
 							width={30}
 							height={30}
-							fill={_isFocused ? color.blue : color.grey}
+							fill={_isFocused && !isFake ? color.blue : color.grey}
 						/>
 					</TouchableOpacity>
 				</View>

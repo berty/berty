@@ -1,7 +1,7 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, select, takeLeading, takeEvery, fork, take, call } from 'redux-saga/effects'
-import { berty, google } from '@berty-tech/api'
+import { put, all, select, takeLeading, takeEvery, fork, take } from 'redux-saga/effects'
+import { berty } from '@berty-tech/api'
 import { Buffer } from 'buffer'
 import { AppMessage, GroupInvitation, SetGroupName, AppMessageType } from './AppMessage'
 
@@ -19,6 +19,9 @@ type BaseConversation = {
 	messages: Array<string>
 }
 
+type FakeConversation = BaseConversation & {
+	kind: 'fake'
+}
 type OneToOneConversation = BaseConversation & {
 	kind: berty.chatmodel.Conversation.Kind.OneToOne
 	contactId: string
@@ -27,7 +30,7 @@ type MultiMemberConversation = BaseConversation & {
 	kind: berty.chatmodel.Conversation.Kind.PrivateGroup
 }
 
-export type Entity = OneToOneConversation | MultiMemberConversation
+export type Entity = FakeConversation | OneToOneConversation | MultiMemberConversation
 
 export type Event = {
 	id: string
@@ -101,8 +104,8 @@ export type CommandsReducer = {
 }
 
 export type QueryReducer = {
-	list: (state: GlobalState, query: Query.List) => Array<Entity>
-	get: (state: GlobalState, query: Query.Get) => Entity
+	list: (state: GlobalState, query: Query.List) => Array<Entity | FakeConversation>
+	get: (state: GlobalState, query: Query.Get) => Entity | FakeConversation | undefined
 	getLength: (state: GlobalState) => number
 }
 
@@ -214,13 +217,57 @@ const eventHandler = createSlice<State, EventsReducer>({
 	},
 })
 
+type FakeConfig = {
+	title: string
+}
+
+const FAKE_CONVERSATIONS_CONFIG: FakeConfig[] = [
+	{ title: 'Berty Crew' },
+	{ title: 'Snowden' },
+	{ title: 'Trump' },
+	{ title: 'fake' },
+]
+
+const FAKE_CONVERSATIONS: Entity[] = FAKE_CONVERSATIONS_CONFIG.map((fc, index) => {
+	const id = `fake_${index}`
+	return {
+		id: id,
+		accountId: 'fake',
+		title: fc.title,
+		pk: id,
+		kind: 'fake',
+		createdAt: Date.now(),
+		membersDevices: {},
+		members: [],
+		messages: [id],
+	}
+})
+
+export const getAggregatesWithFakes = (state: GlobalState) => {
+	const list = Object.values(state.chat.conversation.aggregates).filter((v) => v)
+	const realCount = list.length
+	const toFakeCount = FAKE_CONVERSATIONS.length - realCount
+	if (toFakeCount > 0) {
+		const result: { [key: string]: Entity | FakeConversation } = {
+			...state.chat.conversation.aggregates,
+		}
+		for (let i = 0; i < toFakeCount; i++) {
+			const conv = FAKE_CONVERSATIONS[i]
+			result[conv.id] = conv
+		}
+		return result
+	} else {
+		return state.chat.conversation.aggregates
+	}
+}
+
 export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
 export const queries: QueryReducer = {
-	list: (state) => Object.values(state.chat.conversation.aggregates),
-	get: (state, { id }) => state.chat.conversation.aggregates[id],
-	getLength: (state) => Object.keys(state.chat.conversation.aggregates).length,
+	list: (state) => Object.values(getAggregatesWithFakes(state)),
+	get: (state, { id }) => getAggregatesWithFakes(state)[id],
+	getLength: (state) => Object.keys(getAggregatesWithFakes(state)).length,
 }
 
 export const transactions: Transactions = {

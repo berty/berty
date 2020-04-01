@@ -66,6 +66,30 @@ export type CommandsReducer = {
 	hide: SimpleCaseReducer<Command.Hide>
 }
 
+type FakeConfig = {
+	body: string
+}
+
+const FAKE_MESSAGES_CONFIG: FakeConfig[] = [
+	{ body: 'Welcome to Berty' },
+	{ body: 'Hey, nice to see you here' },
+	{ body: 'Get out of here! It has all the cryptos!' },
+	{ body: 'fake' },
+]
+
+const FAKE_MESSAGES: Entity[] = FAKE_MESSAGES_CONFIG.map((fc, i) => {
+	return {
+		type: AppMessageType.UserMessage,
+		id: `fake_${i}`,
+		body: fc.body,
+		attachments: [],
+		sentDate: Date.now(),
+		receivedDate: Date.now(),
+		isMe: false,
+		acknowledged: false,
+	}
+})
+
 export type QueryReducer = {
 	list: (state: GlobalState, query: Query.List) => Entity[]
 	get: (state: GlobalState, query: Query.Get) => Entity | undefined
@@ -147,13 +171,22 @@ const eventHandler = createSlice<State, EventsReducer>({
 	},
 })
 
+const getAggregatesWithFakes = (state: GlobalState) => {
+	// TODO: optimize
+	const result: { [key: string]: Entity | undefined } = { ...state.chat.message.aggregates }
+	for (const fake of FAKE_MESSAGES) {
+		result[fake.id] = fake
+	}
+	return result
+}
+
 export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
 export const queries: QueryReducer = {
-	list: (state) => Object.values(state.chat.message.aggregates) as Entity[],
-	get: (state, { id }) => state.chat.message.aggregates[id],
-	getLength: (state) => Object.keys(state.chat.message.aggregates).length,
+	list: (state) => Object.values(getAggregatesWithFakes(state)) as Entity[],
+	get: (state, { id }) => getAggregatesWithFakes(state)[id],
+	getLength: (state) => Object.keys(getAggregatesWithFakes(state)).length,
 }
 
 const getAggregateId: (kwargs: { accountId: string; groupPk: Uint8Array }) => string = ({

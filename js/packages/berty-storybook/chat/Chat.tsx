@@ -38,6 +38,8 @@ const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 	] = useStyles()
 	const conversation = ChatHooks.useGetConversation(id)
 	const contact = ChatHooks.useOneToOneConversationContact(conversation.id)
+	const title =
+		conversation.kind === 'fake' ? `SAMPLE - ${conversation.title}` : contact?.name || ''
 	return (
 		<SafeAreaView style={[background.white, absolute.top, absolute.right, absolute.left]}>
 			<View style={[row.fill, padding.medium]}>
@@ -57,7 +59,7 @@ const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 						numberOfLines={1}
 						style={[text.align.center, text.bold.medium, _styles.headerNameText]}
 					>
-						{contact?.name || ''}
+						{title}
 					</Text>
 					<Text numberOfLines={1} style={[text.size.small, text.color.grey, text.align.center]}>
 						Last seen just now
