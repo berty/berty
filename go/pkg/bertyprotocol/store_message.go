@@ -93,8 +93,9 @@ func (m *messageStore) ListMessages(ctx context.Context) (<-chan *bertytypes.Gro
 	}()
 
 	go func() {
-		err := m.OpLog().Iterator(&ipfslog.IteratorOptions{}, ch)
-		m.logger.Error("unable to iterate on messages", zap.Error(err))
+		if err := m.OpLog().Iterator(&ipfslog.IteratorOptions{}, ch); err != nil {
+			m.logger.Error("unable to iterate on messages", zap.Error(err))
+		}
 	}()
 
 	return out, nil
