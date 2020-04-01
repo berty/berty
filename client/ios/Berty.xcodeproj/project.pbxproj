@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
@@ -13,6 +14,7 @@
 		486CFD2A21C8FE9F00E7113B /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486CFCF921C8FE9F00E7113B /* Notification.swift */; };
 		48E2A93E2177575C005C6F40 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E2A93D2177575C005C6F40 /* Logger.swift */; };
 		77A3F1EE7DEB4D6695B03447 /* libPods-Berty-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BC0DC72C388E02C469C54F9 /* libPods-Berty-tvOS.a */; };
+		8A88A64A2433A45800A6739A /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A88A6492433A45800A6739A /* MultipeerConnectivity.framework */; };
 		8D1BA426216CF8EA00FEF0AE /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D1BA425216CF8EA00FEF0AE /* libcrypto.a */; };
 		8D43788B225796230098C024 /* ConnectivityUpdateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D43788A225796230098C024 /* ConnectivityUpdateHandler.swift */; };
 		990E84192226DCB100751E73 /* RCTLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E84182226DCB100751E73 /* RCTLog.swift */; };
@@ -84,6 +86,7 @@
 		72572BA64462397140A164A5 /* Pods-Berty.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.release.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.release.xcconfig"; sourceTree = "<group>"; };
 		74335787BE12F10DE9BFF075 /* Pods-Berty-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		895B8A83AF0A4AB2AB78E41D /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
+		8A88A6492433A45800A6739A /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		8D1BA425216CF8EA00FEF0AE /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = ../../common/openssl/built/ios/libcrypto.a; sourceTree = "<group>"; };
 		8D1BA427216CF8F700FEF0AE /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = ../../common/openssl/built/ios/libssl.a; sourceTree = "<group>"; };
 		8D43788A225796230098C024 /* ConnectivityUpdateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityUpdateHandler.swift; sourceTree = "<group>"; };
@@ -129,6 +132,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A88A64A2433A45800A6739A /* MultipeerConnectivity.framework in Frameworks */,
 				B4DB1353CBB3816CE8622EF6 /* libPods-Berty.a in Frameworks */,
 				F893F19322F8943400A4EB3A /* core.framework in Frameworks */,
 				F893F14A22F88EAA00A4EB3A /* PushKit.framework in Frameworks */,
@@ -179,6 +183,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8A88A6492433A45800A6739A /* MultipeerConnectivity.framework */,
 				F893F12322F88EAA00A4EB3A /* PushKit.framework */,
 				99B44285224B89C0000A8A98 /* JavaScriptCore.framework */,
 				998B6ADB2179E1B90029B33C /* CoreBluetooth.framework */,

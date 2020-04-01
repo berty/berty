@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8A0F0D9E243227000072533B /* MPConnectivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F0D9D243227000072533B /* MPConnectivity.m */; };
 		8A0F0D9F243227000072533B /* MPConnectivity.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8A0F0D9C243227000072533B /* MPConnectivity.h */; };
+		8A88A6482432AD1B00A6739A /* MPConnectivityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A88A6472432AD1B00A6739A /* MPConnectivityManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,8 @@
 		8A0F0D99243227000072533B /* libMPConnectivity.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMPConnectivity.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A0F0D9C243227000072533B /* MPConnectivity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MPConnectivity.h; sourceTree = "<group>"; };
 		8A0F0D9D243227000072533B /* MPConnectivity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MPConnectivity.m; sourceTree = "<group>"; };
+		8A88A6462432AD1B00A6739A /* MPConnectivityManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MPConnectivityManager.h; sourceTree = "<group>"; };
+		8A88A6472432AD1B00A6739A /* MPConnectivityManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MPConnectivityManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +64,8 @@
 			isa = PBXGroup;
 			children = (
 				8A0F0D9C243227000072533B /* MPConnectivity.h */,
+				8A88A6462432AD1B00A6739A /* MPConnectivityManager.h */,
+				8A88A6472432AD1B00A6739A /* MPConnectivityManager.m */,
 				8A0F0D9D243227000072533B /* MPConnectivity.m */,
 			);
 			path = MPConnectivity;
@@ -124,6 +129,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A0F0D9E243227000072533B /* MPConnectivity.m in Sources */,
+				8A88A6482432AD1B00A6739A /* MPConnectivityManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -4,20 +4,21 @@ package MPConnectivity
 
 /*
 #cgo CFLAGS: -x objective-c
-#cgo darwin LDFLAGS: -framework Foundation
+#cgo darwin LDFLAGS: -framework Foundation -framework MultipeerConnectivity
 #include <stdlib.h>
 #include "MPConnectivity.h"
 */
 import "C"
 import "unsafe"
 
-func StartBleDriver(addr string, peerId string) bool {
-        cAddr := C.CString(addr)
-	defer C.free(unsafe.Pointer(cAddr))
-	cPeerId := C.CString(peerId)
-	defer C.free(unsafe.Pointer(cPeerId))
+const MULTI_ADDRESS_NULL = "/ble/00000000-0000-0000-0000-000000000000"
+const FAKE_PEERID = "QmTBKLtG5FsSogqquvdvDQ6Sn2rANYCbvXAStthdd686BY"
 
-	if C.StartBleDriver(cAddr, cPeerId) == 1 {
+func StartBleDriver(addr string, peerId string) bool {
+	lAddr := C.CString(addr)
+	defer C.free(unsafe.Pointer(lAddr))
+
+	if C.StartBleDriver(lAddr) == 1 {
 		return true
 	}
 	return false
@@ -34,53 +35,56 @@ func StopBleDriver() bool {
    The bridge driver, which is on top level of this driver, set the two pointers GoHandlePeerFound
    and GoReceiveFromDevice to the homologue Go functions.
 */
-var GoHandlePeerFound func(addr string, peerId string) bool = nil
+var GoHandlePeerFound func(peerId string, addr string) bool = nil
 var GoReceiveFromDevice func(addr string, payload []byte) = nil
 
+/*
+   GoHandlePeerFound wait for its first argument a multiaddress string.
+   It's deprecated so we give it the peerID twice.
+*/
 //export HandlePeerFound
-func HandlePeerFound(addr *C.char, peerId *C.char) C.int {
-	goAddr := C.GoString(addr)
-	goPeerId := C.GoString(peerId)
+func HandlePeerFound(addr *C.char) C.int {
+	lAddr := C.GoString(addr)
 
-	if GoHandlePeerFound(goAddr, goPeerId) {
+	if GoHandlePeerFound(FAKE_PEERID, lAddr) {
 		return 1
 	}
 	return 0
 }
 
-//export ReceiveFromDevice
-func ReceiveFromDevice(addr *C.char, payload unsafe.Pointer, length C.int) {
-	goAddr := C.GoString(addr)
-	goPayload := C.GoBytes(payload, length)
+//export ReceiveFromPeer
+func ReceiveFromPeer(addr *C.char, payload unsafe.Pointer, length C.int) {
+	lAddr := C.GoString(addr)
+	lPayload := C.GoBytes(payload, length)
 
-	GoReceiveFromDevice(goAddr, goPayload)
+	GoReceiveFromDevice(lAddr, lPayload)
 }
 
 func SendToDevice(addr string, payload []byte) bool {
-	cAddr := C.CString(addr)
-	defer C.free(unsafe.Pointer(cAddr))
-	cPayload := C.CBytes(payload)
-	defer C.free(cPayload)
+	lAddr := C.CString(addr)
+	defer C.free(unsafe.Pointer(lAddr))
+	lPayload := C.CBytes(payload)
+	defer C.free(lPayload)
 
-	if C.SendToDevice(cAddr, cPayload, C.int(len(payload))) == 1 {
+	if C.SendToPeer(lAddr, lPayload, C.int(len(payload))) == 1 {
 		return true
 	}
 	return false
 }
 
 func DialDevice(addr string) bool {
-	cAddr := C.CString(addr)
-	defer C.free(unsafe.Pointer(cAddr))
+	lAddr := C.CString(addr)
+	defer C.free(unsafe.Pointer(lAddr))
 
-	if C.DialDevice(cAddr) == 1 {
+	if C.DialPeer(lAddr) == 1 {
 		return true
 	}
 	return false
 }
 
 func CloseConnWithDevice(addr string) {
-	cAddr := C.CString(addr)
-	defer C.free(unsafe.Pointer(cAddr))
+	lAddr := C.CString(addr)
+	defer C.free(unsafe.Pointer(lAddr))
 
-	C.CloseConnWithDevice(cAddr)
+	C.CloseConnWithPeer(lAddr)
 }

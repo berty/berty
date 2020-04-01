@@ -7,6 +7,8 @@ package darwin_native
 import MPConnectivity "berty.tech/network/transport/ble/driver/darwin_native/MPConnectivity/MPConnectivity"
 
 func StartBleDriver(addr string, peerID string) bool {
+	MPConnectivity.GoHandlePeerFound = GoHandlePeerFound;
+	MPConnectivity.GoReceiveFromDevice = GoReceiveFromDevice;
 	return MPConnectivity.StartBleDriver(addr, peerID)
 }
 
@@ -14,7 +16,7 @@ func StopBleDriver() bool {
 	return MPConnectivity.StopBleDriver();
 }
 
-var GoHandlePeerFound func(addr string, peerId string) bool = MPConnectivity.GoHandlePeerFound
+var GoHandlePeerFound func(peerId string, addr string) bool = MPConnectivity.GoHandlePeerFound
 
 var GoReceiveFromDevice func(addr string, payload []byte) = MPConnectivity.GoReceiveFromDevice
 

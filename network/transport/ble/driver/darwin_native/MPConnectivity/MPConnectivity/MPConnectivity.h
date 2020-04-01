@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-int StartBleDriver(char *addr, char *peerId);
+int StartBleDriver(char *peerId);
 int StopBleDriver(void);
-int SendToDevice(char *addr, void *data, int length);
-int DialDevice(char *addr);
-void CloseConnWithDevice(char *addr);
+int SendToPeer(char *peerID, void *data, int length);
+int DialPeer(char *peerID);
+void CloseConnWithPeer(char *peerID);
+int BridgeHandlePeerFound(NSString *peerID);
+void BridgeReceiveFromPeer(NSString *peerID, NSData *payload);
