@@ -30,7 +30,7 @@ export type SetGroupName = {
 
 export type Acknowledge = {
 	type: AppMessageType.Acknowledge
-	id: string
+	target: string
 }
 
 export type AppMessage = UserMessage | UserReaction | GroupInvitation | SetGroupName | Acknowledge

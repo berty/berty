@@ -147,11 +147,16 @@ export const ConversationProceduralAvatar: React.FC<ConversationProceduralAvatar
 }) => {
 	const conversation = Chat.useGetConversation(conversationId)
 	const seeds: string[] = []
-	if (conversation.kind === berty.chatmodel.Conversation.Kind.OneToOne) {
-		const contact = Chat.useOneToOneConversationContact(conversation.id)
-		if (contact) {
-			seeds.push(contact.publicKey)
-		}
+	switch (conversation.kind) {
+		case berty.chatmodel.Conversation.Kind.OneToOne:
+			const contact = Chat.useOneToOneConversationContact(conversation.id)
+			if (contact) {
+				seeds.push(contact.publicKey)
+			}
+			break
+		case 'fake':
+			seeds.push(conversation.id)
+			break
 	}
 	return <ProceduralAvatar seeds={seeds} size={size} diffSize={diffSize} style={style} />
 }

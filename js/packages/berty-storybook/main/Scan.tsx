@@ -76,7 +76,9 @@ const DevReferenceInput = () => {
 			<Button
 				title='Submit'
 				onPress={() => {
-					sendContactRequest(ref)
+					const prefix = 'berty://'
+					const data = ref.startsWith(prefix) ? decodeURIComponent(ref.substr(prefix.length)) : ref
+					sendContactRequest(data)
 					navigation.goBack()
 				}}
 			/>
