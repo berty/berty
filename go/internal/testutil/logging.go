@@ -30,6 +30,6 @@ func Logger(t *testing.T) *zap.Logger {
 		return zap.NewNop()
 	}
 
-	zap.ReplaceGlobals(logger)
+	//zap.ReplaceGlobals(logger)
 	return logger
 }

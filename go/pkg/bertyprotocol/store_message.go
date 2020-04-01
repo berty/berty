@@ -2,6 +2,9 @@ package bertyprotocol
 
 import (
 	"context"
+	"fmt"
+
+	"encoding/base64"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -14,6 +17,7 @@ import (
 	"berty.tech/go-orbit-db/stores/operation"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/zap"
 )
 
 const groupMessageStoreType = "berty_group_messages"
@@ -21,9 +25,18 @@ const groupMessageStoreType = "berty_group_messages"
 type messageStore struct {
 	basestore.BaseStore
 
-	devKS DeviceKeystore
-	mks   *MessageKeystore
-	g     *bertytypes.Group
+	devKS  DeviceKeystore
+	mks    *MessageKeystore
+	g      *bertytypes.Group
+	logger *zap.Logger
+}
+
+func (m *messageStore) setLogger(l *zap.Logger) {
+	if l == nil {
+		return
+	}
+
+	m.logger = l.With(zap.String("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(m.g.PublicKey))))
 }
 
 func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry) (*bertytypes.GroupMessageEvent, error) {
@@ -33,13 +46,13 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry) (*berty
 
 	op, err := operation.ParseOperation(e)
 	if err != nil {
-		// TODO: log
+		m.logger.Error("unable to parse operation", zap.Error(err))
 		return nil, err
 	}
 
 	headers, payload, decryptInfo, err := openEnvelope(ctx, m.mks, m.g, op.GetValue(), e.GetHash())
 	if err != nil {
-		// TODO: log
+		m.logger.Error("unable to open envelope", zap.Error(err))
 		return nil, err
 	}
 
@@ -69,7 +82,7 @@ func (m *messageStore) ListMessages(ctx context.Context) (<-chan *bertytypes.Gro
 		for e := range ch {
 			evt, err := m.openMessage(ctx, e)
 			if err != nil {
-				// TODO: log
+				m.logger.Error("unable to open message", zap.Error(err))
 				continue
 			}
 
@@ -80,8 +93,8 @@ func (m *messageStore) ListMessages(ctx context.Context) (<-chan *bertytypes.Gro
 	}()
 
 	go func() {
-		_ = m.OpLog().Iterator(&ipfslog.IteratorOptions{}, ch)
-		// TODO: log
+		err := m.OpLog().Iterator(&ipfslog.IteratorOptions{}, ch)
+		m.logger.Error("unable to iterate on messages", zap.Error(err))
 	}()
 
 	return out, nil
@@ -121,9 +134,10 @@ func constructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
 		}
 
 		store := &messageStore{
-			devKS: s.deviceKeystore,
-			mks:   s.messageKeystore,
-			g:     g,
+			devKS:  s.deviceKeystore,
+			mks:    s.messageKeystore,
+			g:      g,
+			logger: zap.NewNop(),
 		}
 
 		options.Index = basestore.NewBaseIndex
@@ -135,6 +149,8 @@ func constructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
 		go func() {
 			for e := range store.Subscribe(ctx) {
 				entry := ipfslog.Entry(nil)
+
+				store.logger.Debug("received store event", zap.Any("raw event", e))
 
 				switch evt := e.(type) {
 				case *stores.EventWrite:
@@ -150,9 +166,11 @@ func constructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
 
 				messageEvent, err := store.openMessage(ctx, entry)
 				if err != nil {
-					// TODO: log
+					store.logger.Error("unable to open message", zap.Error(err))
 					continue
 				}
+
+				store.logger.Debug("received payload", zap.String("payload", string(messageEvent.Message)))
 
 				store.Emit(ctx, messageEvent)
 			}

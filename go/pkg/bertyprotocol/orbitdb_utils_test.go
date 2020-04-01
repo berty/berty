@@ -8,7 +8,6 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
-	orbitdb "berty.tech/go-orbit-db"
 	"github.com/ipfs/go-ipfs/keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -115,7 +114,7 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 
 			mk := NewInMemMessageKeystore()
 
-			db, err := newBertyOrbitDB(ctx, ca, devKS, mk, &orbitdb.NewOrbitDBOptions{})
+			db, err := newBertyOrbitDB(ctx, ca, devKS, mk, nil, nil)
 			if err != nil {
 				t.Fatal(err)
 			}

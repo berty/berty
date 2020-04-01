@@ -26,8 +26,9 @@ func (s *service) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_
 
 		// TODO: log if error
 		s.logger.Debug("sending back event metadata", zap.String("message", string(e.GetMetadata().GetPayload())))
-		err := sub.Send(e)
-		_ = err
+		if err := sub.Send(e); err != nil {
+			cg.logger.Error("error while sending message", zap.Error(err))
+		}
 	}
 
 	return nil
@@ -53,9 +54,8 @@ func (s *service) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Re
 
 		s.logger.Debug("sending back event", zap.String("message", string(e.GetMessage())))
 		// TODO: log if error
-		err := sub.Send(e)
-		if err != nil {
-			s.logger.Error("error while sending message", zap.Error(err))
+		if err := sub.Send(e); err != nil {
+			cg.logger.Error("error while sending message", zap.Error(err))
 		}
 	}
 
@@ -69,10 +69,8 @@ func (s *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, s
 	}
 
 	for evt := range cg.MetadataStore().ListEvents(sub.Context()) {
-		err = sub.Send(evt)
-		if err != nil {
-			// TODO: log
-			_ = err
+		if err := sub.Send(evt); err != nil {
+			cg.logger.Error("error while sending message", zap.Error(err))
 		}
 	}
 
@@ -91,10 +89,8 @@ func (s *service) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub
 	}
 
 	for evt := range messages {
-		err = sub.Send(evt)
-		if err != nil {
-			// TODO: log
-			_ = err
+		if err := sub.Send(evt); err != nil {
+			cg.logger.Error("error while sending message", zap.Error(err))
 		}
 	}
 

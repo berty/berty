@@ -14,7 +14,12 @@ import (
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
+
+type loggable interface {
+	setLogger(*zap.Logger)
+}
 
 type bertyOrbitDB struct {
 	baseorbitdb.BaseOrbitDB
@@ -24,6 +29,7 @@ type bertyOrbitDB struct {
 	keyStore        *BertySignedKeyStore
 	messageKeystore *MessageKeystore
 	deviceKeystore  DeviceKeystore
+	logger          *zap.Logger
 }
 
 func (s *bertyOrbitDB) GetContactGroup(pk crypto.PubKey) (*bertytypes.Group, error) {
@@ -54,11 +60,15 @@ func (s *bertyOrbitDB) registerGroupPrivateKey(g *bertytypes.Group) error {
 	return nil
 }
 
-func newBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, acc DeviceKeystore, mk *MessageKeystore, options *baseorbitdb.NewOrbitDBOptions) (*bertyOrbitDB, error) {
+func newBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, acc DeviceKeystore, mk *MessageKeystore, logger *zap.Logger, options *orbitdb.NewOrbitDBOptions) (*bertyOrbitDB, error) {
 	var err error
 
 	if options == nil {
-		options = &baseorbitdb.NewOrbitDBOptions{}
+		options = &orbitdb.NewOrbitDBOptions{}
+	}
+
+	if logger == nil {
+		logger = zap.NewNop()
 	}
 
 	ks := &BertySignedKeyStore{}
@@ -75,6 +85,7 @@ func newBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, acc DeviceKeysto
 		keyStore:        ks,
 		deviceKeystore:  acc,
 		messageKeystore: mk,
+		logger:          logger,
 	}
 
 	if err := bertyDB.RegisterAccessControllerType(NewSimpleAccessController); err != nil {
@@ -122,6 +133,8 @@ func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertytypes.Group, optio
 		return nil, err
 	}
 
+	s.logger.Debug(fmt.Sprintf("group details %+v", g))
+
 	memberDevice, err := s.deviceKeystore.MemberDeviceForGroup(g)
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
@@ -142,7 +155,7 @@ func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertytypes.Group, optio
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
-	gc := newContextGroup(g, metaImpl, messagesImpl, s.messageKeystore, memberDevice)
+	gc := newContextGroup(g, metaImpl, messagesImpl, s.messageKeystore, memberDevice, s.logger)
 	s.groupContexts.Store(groupID, gc)
 
 	return gc, nil
@@ -180,6 +193,10 @@ func (s *bertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 	store, err := o.Open(ctx, fmt.Sprintf("%s_%s", g.GroupIDAsString(), storeType), options)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
+	}
+
+	if loggableStore, ok := store.(loggable); ok {
+		loggableStore.setLogger(s.logger)
 	}
 
 	_ = store.Load(ctx, -1)
