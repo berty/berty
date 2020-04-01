@@ -13,9 +13,10 @@ import { useStyles } from '@berty-tech/styles'
 import { BlurView } from '@react-native-community/blur'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { useNavigation } from '@berty-tech/berty-navigation'
+import { useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { Chat } from '@berty-tech/hooks'
 import { chat } from '@berty-tech/store'
+import { CommonActions } from '@react-navigation/core'
 
 const useStylesList = () => {
 	const [
@@ -28,31 +29,25 @@ const useStylesList = () => {
 			margin.top.scale(42),
 			padding.medium,
 			padding.top.scale(42),
-			width(121),
 			height(177),
 			border.radius.large,
 			background.white,
 			column.justify,
 		],
-		tinyAcceptButton: [
-			padding.horizontal.tiny,
-			padding.vertical.scale(4),
-			border.radius.scale(4),
-			margin.horizontal.scale(4),
-		],
+		tinyAcceptButton: [padding.vertical.scale(5), padding.horizontal.small, border.radius.scale(6)],
 		tinyDiscardButton: [
-			padding.scale(4),
-			border.radius.scale(4),
+			padding.scale(5),
+			margin.right.small,
+			border.radius.scale(6),
 			border.color.light.grey,
-			margin.horizontal.scale(4),
 		],
 		addContactItem: [height(115), width(150)],
 		addContactItemText: width(75),
 	}
 }
 
-const RequestsItem: React.FC<chat.contact.Entity> = ({ id, name, request, publicKey }) => {
-	const navigation = useNavigation()
+const RequestsItem: React.FC<chat.contact.Entity> = ({ name, request, publicKey }) => {
+	const { dispatch } = useNavigation()
 	const _styles = useStylesList()
 	const [{ border, column, flex, row, padding, text, background, color }] = useStyles()
 	if (request.type !== chat.contact.ContactRequestType.Outgoing) {
@@ -61,7 +56,19 @@ const RequestsItem: React.FC<chat.contact.Entity> = ({ id, name, request, public
 	return (
 		<TouchableOpacity
 			style={[_styles.tinyCard, border.shadow.medium, column.justify]}
-			onPress={navigation.navigate.main.requestSent}
+			onPress={() =>
+				dispatch(
+					CommonActions.navigate({
+						name: Routes.Main.RequestSent,
+						params: {
+							contact: {
+								name,
+								publicKey,
+							},
+						},
+					}),
+				)
+			}
 		>
 			<ProceduralCircleAvatar
 				style={[_styles.tinyAvatar]}
@@ -69,38 +76,33 @@ const RequestsItem: React.FC<chat.contact.Entity> = ({ id, name, request, public
 				size={65}
 				diffSize={15}
 			/>
-			<Text numberOfLines={1} style={[flex.tiny, text.align.center]}>
-				{name}
-			</Text>
+			<Text style={[flex.tiny, text.align.center]}>{name}</Text>
 			<Text
 				category='c1'
 				style={[padding.vertical.medium, text.align.center, text.size.tiny, text.color.grey]}
 			>
 				{request.sent ? 'Sent 3 days ago' : 'Not sent yet'}
 			</Text>
-			<View style={[row.center]}>
-				<TouchableOpacity
-					style={[
-						_styles.tinyDiscardButton,
-						border.radius.scale(7),
-						border.scale(1),
-						row.item.justify,
-					]}
-				>
-					<Icon name='close-outline' width={15} height={15} fill={color.grey} />
+			<View style={[row.fill]}>
+				<TouchableOpacity style={[_styles.tinyDiscardButton, border.scale(1), row.item.justify]}>
+					<Icon name='close-outline' width={20} height={20} fill={color.grey} />
 				</TouchableOpacity>
 				<TouchableOpacity
 					disabled={!request.sent}
-					style={[_styles.tinyAcceptButton, background.light.green, row.center]}
+					style={[_styles.tinyAcceptButton, background.light.green, row.fill]}
 				>
-					<Icon
-						name='checkmark-outline'
-						width={15}
-						height={15}
-						fill={color.green}
-						style={column.justify}
-					/>
-					<Text style={[text.size.tiny, text.color.green]}>Resend</Text>
+					<View style={[row.item.justify, padding.right.scale(3)]}>
+						<Icon
+							name='paper-plane-outline'
+							width={17}
+							height={17}
+							fill={color.green}
+							style={column.justify}
+						/>
+					</View>
+					<Text style={[text.color.green, text.align.center, text.size.tiny, row.item.justify]}>
+						Resend
+					</Text>
 				</TouchableOpacity>
 			</View>
 		</TouchableOpacity>

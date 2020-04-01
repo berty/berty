@@ -1,9 +1,10 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
-import { colors, useStyles } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 import { RequestProps } from '../shared-props/User'
 import { Request } from '../shared-components/Request'
+import { BlurView } from '@react-native-community/blur'
+import { StyleSheet } from 'react-native'
 
 //
 // ContactRequest => Accept/Refuse
@@ -15,8 +16,8 @@ const useStylesRequestSent = () => {
 		firstRequestButton: [
 			border.color.light.grey,
 			border.big,
+			padding.vertical.small,
 			border.radius.scale(6),
-			padding.top.tiny,
 			margin.right.small,
 		],
 		secondRequestButton: [
@@ -28,32 +29,36 @@ const useStylesRequestSent = () => {
 	}
 }
 
-export const RequestSent: React.FC<RequestProps> = ({ user }) => {
+export const RequestSent: React.FC<{ route: any }> = ({ route }) => {
 	const _styles = useStylesRequestSent()
 	const [{ flex, background, color }] = useStyles()
 
 	return (
-		<Layout style={[flex.tiny, background.light.green]}>
-			<Request
-				user={user}
-				markAsVerified={false}
-				buttons={[
-					{
-						style: _styles.firstRequestButton,
-						title: 'REFUSE',
-						titleColor: color.grey,
-						icon: 'close-outline',
-						iconColor: color.grey,
-					},
-					{
-						style: _styles.secondRequestButton,
-						title: 'RESEND',
-						titleColor: color.green,
-						icon: 'paper-plane-outline',
-						iconColor: color.green,
-					},
-				]}
-			/>
-		</Layout>
+		<Request
+			user={route.params.contact}
+			markAsVerified={false}
+			blurAmount={10}
+			blurColor={'cyan'}
+			buttons={[
+				{
+					// TODO: action
+					style: _styles.firstRequestButton,
+					title: 'REFUSE',
+					titleColor: color.grey,
+					icon: 'close-outline',
+					iconColor: color.grey,
+					disabled: true,
+				},
+				{
+					// TODO: action
+					style: _styles.secondRequestButton,
+					title: 'RESEND',
+					titleColor: color.green,
+					icon: 'paper-plane-outline',
+					iconColor: color.green,
+					disabled: true,
+				},
+			]}
+		/>
 	)
 }
