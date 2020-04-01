@@ -49,7 +49,7 @@ const TabBarItem: React.FC<TabItemProps> = ({
 				<Text
 					style={[
 						text.family,
-						text.bold,
+						text.bold.medium,
 						_styles.tabItemName,
 						enable ? text.color.blue : text.color.black,
 					]}

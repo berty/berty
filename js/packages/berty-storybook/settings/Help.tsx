@@ -39,7 +39,7 @@ const HeaderHelp: React.FC<{}> = () => {
 				actionIcon='arrow-ios-forward'
 				disabled={true}
 			>
-				<Text style={[text.bold, _helpStyles.headerButtonText]}>
+				<Text style={[text.bold.medium, _helpStyles.headerButtonText]}>
 					Keep your data safe & your life private
 				</Text>
 			</ButtonSetting>

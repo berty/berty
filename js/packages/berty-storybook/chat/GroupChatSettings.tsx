@@ -70,7 +70,7 @@ const GroupChatSettingsHeader: React.FC<berty.chatmodel.IConversation> = ({ avat
 			<Text
 				numberOfLines={1}
 				ellipsizeMode='tail'
-				style={[text.align.center, text.color.white, margin.top.small, text.bold]}
+				style={[text.align.center, text.color.white, margin.top.small, text.bold.medium]}
 			>
 				{title || ''}
 			</Text>

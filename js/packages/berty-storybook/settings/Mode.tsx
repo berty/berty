@@ -56,7 +56,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 			>
 				<Text
 					style={[
-						text.bold,
+						text.bold.medium,
 						row.item.bottom,
 						_styles.buttonListUnderStateText,
 						isMode ? text.color.blue : text.color.red,
@@ -142,7 +142,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				toggled
 				disabled
 			>
-				<Text style={[text.bold, _modeStyles.buttonSettingText]}>Local Peer discovery</Text>
+				<Text style={[text.bold.medium, _modeStyles.buttonSettingText]}>Local Peer discovery</Text>
 			</ButtonSetting>
 			<ButtonSetting
 				name='Blocked contacts'

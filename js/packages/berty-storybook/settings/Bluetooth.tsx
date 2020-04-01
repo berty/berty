@@ -44,14 +44,17 @@ const HeaderBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 					</TouchableOpacity>
 					<View style={[row.center, flex.tiny, { alignItems: 'center', justifyContent: 'center' }]}>
 						<Icon name='alert-circle' width={25} height={25} fill={color.red} />
-						<Text category='h6' style={[text.color.white, text.bold, _styles.headerInfosTitleText]}>
+						<Text
+							category='h6'
+							style={[text.color.white, text.bold.medium, _styles.headerInfosTitleText]}
+						>
 							Authorize bluetooth
 						</Text>
 					</View>
 					<View style={[row.center, margin.top.medium, margin.horizontal.medium]}>
 						<Text
 							style={[
-								text.bold,
+								text.bold.medium,
 								text.align.center,
 								text.color.white,
 								row.center,
@@ -80,7 +83,7 @@ const HeaderBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 							<Icon name='bluetooth-outline' width={20} height={20} fill={color.white} />
 							<Text
 								style={[
-									text.bold,
+									text.bold.medium,
 									text.color.white,
 									padding.left.small,
 									_styles.headerInfosButtonText,

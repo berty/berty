@@ -82,7 +82,7 @@ export const Message: React.FC<MessageProps> = ({
 					<View style={[margin.left.small]}>
 						<Text
 							style={[
-								text.bold,
+								text.bold.medium,
 								_styles.personNameInGroup,
 								{ color: payload.isMe ? color.white : color.blue },
 							]}
@@ -110,7 +110,7 @@ export const Message: React.FC<MessageProps> = ({
 				>
 					<Text
 						style={[
-							text.bold,
+							text.bold.medium,
 							_styles.messageText,
 							{
 								color: payload.isMe

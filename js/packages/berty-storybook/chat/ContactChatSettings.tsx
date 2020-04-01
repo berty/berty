@@ -1,31 +1,37 @@
 import React, { useState } from 'react'
-import { View, ScrollView } from 'react-native'
+import { View, ScrollView, Text } from 'react-native'
 import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'
-import { RequestAvatar } from '../shared-components/Request'
 import HeaderSettings from '../shared-components/Header'
-import { useNavigation, ScreenProps } from '@berty-tech/berty-navigation'
-import { berty } from '@berty-tech/api'
+import { useNavigation } from '@berty-tech/berty-navigation'
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 
 //
 // ChatSettingsContact
 //
 
-const ContactChatSettingsHeaderContent: React.FC<{}> = () => {
+const ContactChatSettingsHeaderContent: React.FC<{}> = ({ children }) => {
 	const [{ margin }] = useStyles()
-	return (
-		<View style={[margin.top.big]}>
-			<FingerprintContent />
-		</View>
-	)
+	return <View style={[margin.top.big]}>{children}</View>
 }
 
-const ContactChatSettingsHeader: React.FC<berty.chatmodel.IContact & {
+const SelectedContent = ({ contentName }: { contentName: string }) => {
+	switch (contentName) {
+		case 'Fingerprint':
+			return <FingerprintContent />
+		default:
+			return <Text>Error: Unknown content name "{contentName}"</Text>
+	}
+}
+
+const ContactChatSettingsHeader: React.FC<{
 	isToggle: boolean
-}> = ({ isToggle, ...contact }) => {
-	const [{ border, background, padding }] = useStyles()
+	params: any
+}> = ({ isToggle, params }) => {
+	const [{ border, background, padding, row, absolute, text }] = useStyles()
+	const [selectedContent, setSelectedContent] = useState('Fingerprint')
 	return (
 		<View style={padding.medium}>
 			<View
@@ -36,15 +42,30 @@ const ContactChatSettingsHeader: React.FC<berty.chatmodel.IContact & {
 					padding.bottom.medium,
 				]}
 			>
-				<RequestAvatar
-					style={{ alignItems: 'center' }}
-					{...contact}
-					isVerified={isToggle}
-					size={90}
-				/>
-				<View style={[padding.horizontal.medium, padding.bottom.medium]}>
-					<TabBar tabType='contact' />
-					<ContactChatSettingsHeaderContent />
+				<View style={[row.item.justify, absolute.scale({ top: -50 })]}>
+					<ProceduralCircleAvatar
+						seed={params.contact.publicKey}
+						style={[border.shadow.big]}
+						diffSize={30}
+					/>
+				</View>
+				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(50)]}>
+					<Text
+						style={[text.size.big, text.color.black, text.align.center, text.bold.scale('500')]}
+					>
+						{params.contact.name}
+					</Text>
+					<TabBar
+						tabs={[
+							{ name: 'Fingerprint', icon: 'code-outline' },
+							{ name: 'Infos', icon: 'info-outline' },
+							{ name: 'Devices', icon: 'smartphone-outline' },
+						]}
+						onTabChange={setSelectedContent}
+					/>
+					<ContactChatSettingsHeaderContent>
+						<SelectedContent contentName={selectedContent} />
+					</ContactChatSettingsHeaderContent>
 				</View>
 			</View>
 		</View>
@@ -63,23 +84,22 @@ const ContactChatSettingsBody: React.FC<{
 				name='Mark as verified'
 				iconDependToggle
 				toggled
-				varToggle={isToggle}
-				actionToggle={setIsToggle}
+				disabled
 			/>
-			<ButtonSetting name='Block contact' icon='slash-outline' iconColor={color.red} />
-			<ButtonSetting name='Delete contact' icon='trash-2-outline' iconColor={color.red} />
+			<ButtonSetting name='Block contact' icon='slash-outline' iconColor={color.red} disabled />
+			<ButtonSetting name='Delete contact' icon='trash-2-outline' iconColor={color.red} disabled />
 		</View>
 	)
 }
 
-export const ContactChatSettings: React.FC<ScreenProps.Chat.One2OneSettings> = ({ params }) => {
+export const ContactChatSettings: React.FC<{ route: any }> = ({ route }) => {
 	const { goBack } = useNavigation()
 	const [isToggle, setIsToggle] = useState(true)
 	const [{ background, flex }] = useStyles()
 	return (
 		<ScrollView style={[flex.tiny, background.white]}>
 			<HeaderSettings actionIcon='share-outline' undo={goBack}>
-				<ContactChatSettingsHeader {...params} isToggle={isToggle} />
+				<ContactChatSettingsHeader {...route} isToggle={isToggle} />
 			</HeaderSettings>
 			<ContactChatSettingsBody isToggle={isToggle} setIsToggle={setIsToggle} />
 		</ScrollView>

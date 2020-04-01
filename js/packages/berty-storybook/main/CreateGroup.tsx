@@ -281,7 +281,7 @@ const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, icon, acti
 					<View style={row.item.justify}>
 						<Text
 							style={[
-								text.bold,
+								text.bold.medium,
 								text.color.blue,
 								text.align.center,
 								margin.right.medium,

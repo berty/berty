@@ -51,7 +51,7 @@ const Button: React.FC<{
 			{loading ? (
 				<Spinner style={[text.size.medium]} color={color.white} />
 			) : (
-				<Text style={[text.size.medium, text.color.white, text.align.center, text.bold]}>
+				<Text style={[text.size.medium, text.color.white, text.align.center, text.bold.medium]}>
 					{children}
 				</Text>
 			)}
@@ -96,7 +96,7 @@ export const SelectMode: React.FC = () => {
 							text.align.justify,
 							text.size.huge,
 							padding.top.huge,
-							text.bold,
+							text.bold.medium,
 						]}
 					>
 						Select your app mode
@@ -112,7 +112,7 @@ export const SelectMode: React.FC = () => {
 						]}
 						onPress={navigate.onboarding.performance}
 					>
-						<Text style={[text.bold, text.size.big, text.color.white, text.align.justify]}>
+						<Text style={[text.bold.medium, text.size.big, text.color.white, text.align.justify]}>
 							{t('onboarding.select-mode.performance.title')}
 						</Text>
 						<Text style={[text.size.medium, text.color.white]}>
@@ -135,7 +135,7 @@ export const SelectMode: React.FC = () => {
 						style={[background.red, column.fill, margin.huge, flex.medium, column.justify]}
 						onPress={navigate.onboarding.privacy}
 					>
-						<Text style={[text.bold, text.size.big, text.color.white]}>
+						<Text style={[text.bold.medium, text.size.big, text.color.white]}>
 							{t('onboarding.select-mode.high-level.title')}
 						</Text>
 						<Text style={[text.size.medium, text.color.white]}>
@@ -224,7 +224,7 @@ const SwiperCard: React.FC<{
 						text.size.huge,
 						padding.top.medium,
 						text.align.center,
-						text.bold,
+						text.bold.medium,
 						text.color.blue,
 					]}
 				>

@@ -43,7 +43,12 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => {
 				<HeaderInfoSettings>
 					<Text
 						category='h6'
-						style={[text.color.white, text.bold, margin.bottom.small, _styles.headerInfosTitleText]}
+						style={[
+							text.color.white,
+							text.bold.medium,
+							margin.bottom.small,
+							_styles.headerInfosTitleText,
+						]}
 					>
 						The berty app :
 					</Text>
@@ -87,7 +92,7 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => {
 							<Text
 								style={[
 									text.color.white,
-									text.bold,
+									text.bold.medium,
 									margin.right.medium,
 									padding.left.small,
 									_styles.headerInfosButtonText,
@@ -118,7 +123,7 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => {
 								disabled: true,
 							},
 						]}
-						styleText={text.bold}
+						styleText={text.bold.medium}
 					/>
 					<ButtonSettingRow
 						state={[
@@ -138,7 +143,7 @@ const HeaderAboutBerty: React.FC<AboutbertyProps> = ({ version }) => {
 							},
 						]}
 						style={_styles.buttonRowMarginTop}
-						styleText={text.bold}
+						styleText={text.bold.medium}
 					/>
 				</View>
 			)}
