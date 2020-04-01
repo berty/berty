@@ -130,7 +130,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 					break
 				case AppMessageType.Acknowledge:
 					if (!isMe) {
-						const target = state.aggregates[message.id]
+						const target = state.aggregates[message.target]
 						if (target && target.type === AppMessageType.UserMessage && target.isMe) {
 							target.acknowledged = true
 						}
@@ -280,7 +280,7 @@ export function* orchestrator() {
 				// send acknowledgment
 				const acknowledge: Acknowledge = {
 					type: AppMessageType.Acknowledge,
-					id: aggregateId,
+					target: aggregateId,
 				}
 				yield* protocol.transactions.client.appMessageSend({
 					id: conv.accountId,
