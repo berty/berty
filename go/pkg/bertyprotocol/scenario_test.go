@@ -236,10 +236,11 @@ func TestScenario_JoinGroup_Client(t *testing.T) {
 	t.Log("Get Instance Configuration")
 	{
 		start := time.Now()
-		req := bertytypes.InstanceGetConfiguration_Request{}
 
 		// check if everything is ready
 		for _, pt := range pts {
+			req := bertytypes.InstanceGetConfiguration_Request{}
+
 			_, err := pt.Client.InstanceGetConfiguration(ctx, &req)
 			require.NoError(t, err)
 		}
@@ -249,11 +250,12 @@ func TestScenario_JoinGroup_Client(t *testing.T) {
 	t.Log("Join Group")
 	{
 		start := time.Now()
-		req := bertytypes.MultiMemberGroupJoin_Request{
-			Group: group,
-		}
 
 		for _, pt := range pts {
+			req := bertytypes.MultiMemberGroupJoin_Request{
+				Group: group,
+			}
+
 			// pt join group
 			_, err = pt.Client.MultiMemberGroupJoin(ctx, &req)
 			require.NoError(t, err)
@@ -269,11 +271,12 @@ func TestScenario_JoinGroup_Client(t *testing.T) {
 	t.Log("Get Group Info")
 	{
 		start := time.Now()
-		req := bertytypes.GroupInfo_Request{
-			GroupPK: group.PublicKey,
-		}
 
 		for _, pt := range pts {
+			req := bertytypes.GroupInfo_Request{
+				GroupPK: group.PublicKey,
+			}
+
 			res, err := pt.Client.GroupInfo(ctx, &req)
 			require.NoError(t, err)
 			assert.Equal(t, group.PublicKey, res.Group.PublicKey)
@@ -284,11 +287,12 @@ func TestScenario_JoinGroup_Client(t *testing.T) {
 	t.Log("Activate Group")
 	{
 		start := time.Now()
-		req := bertytypes.ActivateGroup_Request{
-			GroupPK: group.PublicKey,
-		}
 
 		for _, pt := range pts {
+			req := bertytypes.ActivateGroup_Request{
+				GroupPK: group.PublicKey,
+			}
+
 			_, err := pt.Client.ActivateGroup(ctx, &req)
 			assert.NoError(t, err)
 		}
@@ -299,12 +303,13 @@ func TestScenario_JoinGroup_Client(t *testing.T) {
 	t.Log("Subscribe to Group Message")
 	{
 		start := time.Now()
-		req := bertytypes.GroupMessageSubscribe_Request{
-			GroupPK: group.PublicKey,
-		}
 
 		for i, pt := range pts {
 			var err error
+
+			req := bertytypes.GroupMessageSubscribe_Request{
+				GroupPK: group.PublicKey,
+			}
 
 			clsGroupMessage[i], err = pt.Client.GroupMessageSubscribe(ctx, &req)
 			require.NoError(t, err)
@@ -319,12 +324,13 @@ func TestScenario_JoinGroup_Client(t *testing.T) {
 	t.Log("Subscribe to Group Metadata")
 	{
 		start := time.Now()
-		req := bertytypes.GroupMetadataSubscribe_Request{
-			GroupPK: group.PublicKey,
-		}
 
 		for i, pt := range pts {
 			var err error
+
+			req := bertytypes.GroupMetadataSubscribe_Request{
+				GroupPK: group.PublicKey,
+			}
 
 			clsGroupMetadata[i], err = pt.Client.GroupMetadataSubscribe(ctx, &req)
 			require.NoError(t, err)
@@ -354,22 +360,26 @@ func TestScenario_JoinGroup_Client(t *testing.T) {
 		t.Logf("  duration: %s", time.Since(start))
 	}
 
+	time.Sleep(time.Millisecond * 500)
+
 	t.Log("List Message")
 	{
 		start := time.Now()
 		testrx := fmt.Sprintf("^%s", testMessage)
-		req := bertytypes.GroupMessageList_Request{
-			GroupPK: group.PublicKey,
-		}
 
 		for _, pt := range pts {
+			req := bertytypes.GroupMessageList_Request{
+				GroupPK: group.PublicKey,
+			}
+
 			cl, err := pt.Client.GroupMessageList(ctx, &req)
 			if !assert.NoError(t, err) {
 				continue
 			}
 
+			nmsg := 0
 			var res *bertytypes.GroupMessageEvent
-			for range pts {
+			for {
 				res, err = cl.Recv()
 				if err == io.EOF {
 					break
@@ -379,9 +389,12 @@ func TestScenario_JoinGroup_Client(t *testing.T) {
 				}
 
 				assert.Regexp(t, testrx, string(res.GetMessage()))
+
+				nmsg++
 			}
 
-			assert.Equal(t, err, io.EOF)
+			assert.Equal(t, numberOfService, nmsg)
+			assert.Equal(t, io.EOF, err)
 		}
 		t.Logf("  duration: %s", time.Since(start))
 	}
@@ -390,13 +403,17 @@ func TestScenario_JoinGroup_Client(t *testing.T) {
 	{
 		start := time.Now()
 		testrx := fmt.Sprintf("^%s", testMessage)
-
+		nmsg := 0
 		for _, cl := range clsGroupMessage {
 			res, err := cl.Recv()
 			if !assert.NoError(t, err) {
 				assert.Regexp(t, testrx, string(res.GetMessage()))
 			}
+
+			nmsg++
 		}
+
+		assert.Equal(t, numberOfService, nmsg)
 		t.Logf("  duration: %s", time.Since(start))
 	}
 }
