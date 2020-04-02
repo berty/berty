@@ -48,7 +48,6 @@ func (s *service) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Re
 		s.logger.Debug("receiving message event", zap.Any("event", evt))
 		e, ok := evt.(*bertytypes.GroupMessageEvent)
 		if !ok {
-			s.logger.Debug("not ok")
 			continue
 		}
 

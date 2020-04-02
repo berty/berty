@@ -188,6 +188,7 @@ func main() {
 				opts := bertyprotocol.Opts{
 					IpfsCoreAPI:     api,
 					Logger:          logger.Named("bertyprotocol"),
+					RootContext:     ctx,
 					RootDatastore:   rootDS,
 					MessageKeystore: mk,
 					DeviceKeystore:  bertyprotocol.NewDeviceKeystore(deviceDS),

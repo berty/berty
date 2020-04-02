@@ -67,7 +67,7 @@ func (s *service) ActivateGroup(ctx context.Context, req *bertytypes.ActivateGro
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	err = s.activateGroup(s.ctx, pk)
+	err = s.activateGroup(pk)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}

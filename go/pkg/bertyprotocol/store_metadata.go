@@ -161,7 +161,11 @@ func (m *metadataStore) SendSecret(ctx context.Context, memberPK crypto.PubKey) 
 	}
 
 	if devs, err := m.GetDevicesForMember(memberPK); len(devs) == 0 || err != nil {
-		return nil, errcode.ErrInvalidInput
+		if err != nil {
+			return nil, errcode.ErrInvalidInput.Wrap(err)
+		} else {
+			return nil, errcode.ErrInvalidInput
+		}
 	}
 
 	ds, err := getDeviceSecret(ctx, m.g, m.mks, m.devKS)

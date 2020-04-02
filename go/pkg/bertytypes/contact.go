@@ -1,6 +1,8 @@
 package bertytypes
 
 import (
+	"fmt"
+
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
@@ -8,8 +10,8 @@ import (
 const RendezvousSeedLength = 32
 
 func (m *ShareableContact) CheckFormat() error {
-	if len(m.PublicRendezvousSeed) != RendezvousSeedLength {
-		return errcode.ErrInvalidInput
+	if l := len(m.PublicRendezvousSeed); l != RendezvousSeedLength {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("rendezvous seed length should not be %d", l))
 	}
 
 	_, err := crypto.UnmarshalEd25519PublicKey(m.PK)

@@ -133,7 +133,7 @@ func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertytypes.Group, optio
 		return nil, err
 	}
 
-	s.logger.Debug(fmt.Sprintf("group details %+v", g))
+	s.logger.Warn(fmt.Sprintf("group details %+v", g))
 
 	memberDevice, err := s.deviceKeystore.MemberDeviceForGroup(g)
 	if err != nil {

@@ -155,6 +155,10 @@ func metadataStoreListSecrets(ctx context.Context, gc *groupContext) map[crypto.
 
 	for meta := range ch {
 		pk, ds, err := openDeviceSecret(meta.Metadata, ownSK, g)
+		if err == errcode.ErrInvalidInput {
+			continue
+		}
+
 		if err != nil {
 			gc.logger.Error("unable to open device secret", zap.Error(err))
 			continue
@@ -295,6 +299,15 @@ func openDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.
 	senderDevicePubKey, err := crypto.UnmarshalEd25519PublicKey(s.DevicePK)
 	if err != nil {
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	destMemberPubKey, err := crypto.UnmarshalEd25519PublicKey(s.DestMemberPK)
+	if err != nil {
+		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if !localMemberPrivateKey.Equals(destMemberPubKey) {
+		return nil, nil, errcode.ErrInvalidInput
 	}
 
 	mongPriv, mongPub, err := cryptoutil.EdwardsToMontgomery(localMemberPrivateKey, senderDevicePubKey)
