@@ -1,7 +1,6 @@
 package bertyprotocol
 
 import (
-	"context"
 	"fmt"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -124,7 +123,7 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 	return nil
 }
 
-func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey) error {
+func (s *service) activateGroup(pk crypto.PubKey) error {
 	id, err := pk.Raw()
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
@@ -145,12 +144,12 @@ func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey) error {
 
 	switch g.GroupType {
 	case bertytypes.GroupTypeContact, bertytypes.GroupTypeMultiMember:
-		cg, err := s.odb.OpenGroup(ctx, g, nil)
+		cg, err := s.odb.OpenGroup(s.ctx, g, nil)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}
 
-		err = ActivateGroupContext(ctx, cg)
+		err = ActivateGroupContext(s.ctx, cg)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}

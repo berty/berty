@@ -13,6 +13,7 @@ import (
 	"berty.tech/go-orbit-db/stores/operation"
 	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/zap"
 )
 
 type metadataStoreIndex struct {
@@ -35,28 +36,37 @@ type metadataStoreIndex struct {
 	ctx                      context.Context
 	eventEmitter             events.EmitterInterface
 	lock                     sync.RWMutex
+	logger                   *zap.Logger
 }
 
 func (m *metadataStoreIndex) Get(key string) interface{} {
 	return nil
 }
 
-func openMetadataEntry(g *bertytypes.Group, log ipfslog.Log, e ipfslog.Entry) (*bertytypes.GroupMetadataEvent, *bertytypes.GroupMetadata, proto.Message, error) {
+func (m *metadataStoreIndex) setLogger(logger *zap.Logger) {
+	if logger == nil {
+		return
+	}
+
+	m.logger = logger
+}
+
+func (m *metadataStoreIndex) openMetadataEntry(log ipfslog.Log, e ipfslog.Entry) (*bertytypes.GroupMetadataEvent, *bertytypes.GroupMetadata, proto.Message, error) {
 	op, err := operation.ParseOperation(e)
 	if err != nil {
-		// TODO: log
+		m.logger.Error("unable to register chain key", zap.Error(err))
 		return nil, nil, nil, err
 	}
 
-	meta, event, err := openGroupEnvelope(g, op.GetValue())
+	meta, event, err := openGroupEnvelope(m.g, op.GetValue())
 	if err != nil {
-		// TODO: log
+		m.logger.Error("unable to open group envelope", zap.Error(err))
 		return nil, nil, nil, err
 	}
 
-	metaEvent, err := newGroupMetadataEventFromEntry(log, e, meta, event, g)
+	metaEvent, err := newGroupMetadataEventFromEntry(log, e, meta, event, m.g)
 	if err != nil {
-		// TODO: log
+		m.logger.Error("unable to open group envelope", zap.Error(err))
 		return nil, nil, nil, err
 	}
 
@@ -80,16 +90,16 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	for i := len(entries) - 1; i >= 0; i-- {
 		e := entries[i]
 
-		metaEvent, meta, event, err := openMetadataEntry(m.g, log, e)
+		metaEvent, meta, event, err := m.openMetadataEntry(log, e)
 		if err != nil {
-			// TODO: log
+			m.logger.Error("unable to open metadata entry", zap.Error(err))
 			continue
 		}
 
 		handlers, ok := m.eventHandlers[meta.EventType]
 		if !ok {
 			m.handledEvents[e.GetHash().String()] = struct{}{}
-			// TODO: log
+			m.logger.Error("handler for event type not found", zap.String("event-type", meta.EventType.String()))
 			continue
 		}
 
@@ -98,7 +108,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 		for _, h := range handlers {
 			err = h(event)
 			if err != nil {
-				// TODO: log
+				m.logger.Error("unable to handle event", zap.Error(err))
 				lastErr = err
 			}
 		}
@@ -672,6 +682,7 @@ func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			eventEmitter:    eventEmitter,
 			ownMemberDevice: md,
 			ctx:             ctx,
+			logger:          zap.NewNop(),
 		}
 
 		m.eventHandlers = map[bertytypes.EventType][]func(event proto.Message) error{

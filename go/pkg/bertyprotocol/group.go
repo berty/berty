@@ -155,8 +155,12 @@ func metadataStoreListSecrets(ctx context.Context, gc *groupContext) map[crypto.
 
 	for meta := range ch {
 		pk, ds, err := openDeviceSecret(meta.Metadata, ownSK, g)
+		if err == errcode.ErrInvalidInput || err == errcode.ErrGroupSecretOtherDestMember {
+			continue
+		}
+
 		if err != nil {
-			// TODO: log
+			gc.logger.Error("unable to open device secret", zap.Error(err))
 			continue
 		}
 
@@ -176,12 +180,17 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) er
 		}
 
 		pk, ds, err := openDeviceSecret(e.Metadata, gc.getMemberPrivKey(), gc.Group())
+		if err == errcode.ErrInvalidInput || err == errcode.ErrGroupSecretOtherDestMember {
+			continue
+		}
+
 		if err != nil {
+			gc.logger.Error("an error occurred while opening device secrets", zap.Error(err))
 			continue
 		}
 
 		if err = registerChainKey(ctx, gc.MessageKeystore(), gc.Group(), pk, ds, gc.DevicePubKey().Equals(pk)); err != nil {
-			// TODO: log
+			gc.logger.Error("unable to register chain key", zap.Error(err))
 			continue
 		}
 	}
@@ -276,7 +285,6 @@ func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx
 	go func() {
 		for evt := range gctx.MetadataStore().Subscribe(ctx) {
 			if err := handleNewMember(ctx, gctx, evt); err != nil {
-				// TODO: log
 				logger.Error("unable to send secrets", zap.Error(err))
 			}
 		}
@@ -296,6 +304,15 @@ func openDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.
 	senderDevicePubKey, err := crypto.UnmarshalEd25519PublicKey(s.DevicePK)
 	if err != nil {
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	destMemberPubKey, err := crypto.UnmarshalEd25519PublicKey(s.DestMemberPK)
+	if err != nil {
+		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if !localMemberPrivateKey.GetPublic().Equals(destMemberPubKey) {
+		return nil, nil, errcode.ErrGroupSecretOtherDestMember
 	}
 
 	mongPriv, mongPub, err := cryptoutil.EdwardsToMontgomery(localMemberPrivateKey, senderDevicePubKey)

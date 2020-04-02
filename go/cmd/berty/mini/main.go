@@ -3,8 +3,8 @@ package mini
 import (
 	"context"
 	"fmt"
+	"io"
 	"strings"
-	"sync"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -16,20 +16,17 @@ import (
 	"github.com/juju/fslock"
 	"github.com/rivo/tview"
 	"github.com/whyrusleeping/go-logging"
+	"google.golang.org/grpc"
 )
 
 type Opts struct {
+	RemoteAddr      string
 	GroupInvitation string
 	Port            uint
 	RootDS          datastore.Batching
 }
 
-func Main(opts *Opts) {
-	p2plog.SetAllLoggers(logging.CRITICAL)
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
+func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func()) {
 	var (
 		swarmAddresses []string = nil
 		lock           *fslock.Lock
@@ -62,7 +59,7 @@ func Main(opts *Opts) {
 	mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
 	ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
 
-	client, err := bertyprotocol.New(bertyprotocol.Opts{
+	service, err := bertyprotocol.New(bertyprotocol.Opts{
 		IpfsCoreAPI:     api,
 		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(ks),
 		RootContext:     ctx,
@@ -75,12 +72,43 @@ func Main(opts *Opts) {
 		panic(err)
 	}
 
-	config, err := client.InstanceGetConfiguration(ctx, nil)
+	return service, func() {
+		node.Close()
+		service.Close()
+	}
+}
+
+func Main(opts *Opts) {
+	p2plog.SetAllLoggers(logging.CRITICAL)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var client bertyprotocol.ProtocolServiceClient
+	if opts.RemoteAddr == "" {
+		service, clean := newService(ctx, opts)
+		defer clean()
+
+		protocolClient, err := bertyprotocol.NewClient(service)
+		if err != nil {
+			panic(err)
+		}
+
+		defer protocolClient.Close()
+		client = protocolClient
+	} else {
+		cc, err := grpc.Dial(opts.RemoteAddr, grpc.WithInsecure())
+		if err != nil {
+			panic(err)
+		}
+
+		client = bertyprotocol.NewProtocolServiceClient(cc)
+	}
+
+	config, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		panic(err)
 	}
-
-	defer node.Close()
 
 	app := tview.NewApplication()
 
@@ -93,37 +121,30 @@ func Main(opts *Opts) {
 
 	tabbedView := newTabbedGroups(ctx, accountGroup, client, app)
 	if len(opts.GroupInvitation) > 0 {
-		wg := sync.WaitGroup{}
-		wg.Add(1)
+		req := &bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}
+		cl, err := tabbedView.client.GroupMetadataSubscribe(ctx, req)
+		if err != nil {
+			panic(err)
+		}
 
-		// Waiting for joined event
 		go func() {
-			subCtx, cancel := context.WithCancel(ctx)
-			defer cancel()
-
-			metas, srvListMetadatas := newProtocolServiceGroupMetadata(subCtx)
-			go func() {
-				wg.Done()
-				for e := range metas {
-					if e.Metadata.EventType != bertytypes.EventTypeAccountGroupJoined {
-						continue
-					}
-
-					tabbedView.NextGroup()
-					cancel()
+			for {
+				evt, err := cl.Recv()
+				switch err {
+				case io.EOF: // gracefully ended @TODO: log this
 					return
+				case nil: // ok
+				default:
+					panic(err)
 				}
-			}()
 
-			err := tabbedView.service.GroupMetadataSubscribe(&bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}, srvListMetadatas)
-			if err != nil {
-				panic(err)
+				if evt.Metadata.EventType != bertytypes.EventTypeAccountGroupJoined {
+					continue
+				}
+
+				tabbedView.NextGroup()
 			}
-
-			close(metas)
 		}()
-
-		wg.Wait()
 
 		for _, invit := range strings.Split(opts.GroupInvitation, ",") {
 			if err := groupJoinCommand(ctx, tabbedView.accountGroupView, invit); err != nil {
