@@ -496,11 +496,13 @@ message ContactRequestResetReference {
 
 message ContactRequestSend {
   message Request {
-    // reference is an opaque message describing how to connect to the other account
-    bytes reference = 1;
+    bytes contact_pk = 1 [(gogoproto.customname) = "ContactPK"];
+    
+    // request_reference is an opaque message describing how to connect to the other account
+    bytes request_reference = 2;
 
     // contact_metadata is the metadata specific to the app to identify the contact for the request
-    bytes contact_metadata = 2;
+    bytes contact_metadata = 3;
   }
   message Reply {}
 }
