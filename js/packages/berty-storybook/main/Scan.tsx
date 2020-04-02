@@ -18,63 +18,71 @@ type ScanInfosTextProps = {
 	textProps: string
 }
 
+const SIZE = 300
+const BORDER_SIZE = 10
+
 // Styles
 const useStylesScan = () => {
 	const [{ border, height, width }] = useStyles()
 	return {
-		body: [border.scale(10), height(300), border.color.white],
-		infosPoint: [width(10), height(10), border.radius.scale(5)],
+		body: [border.scale(10), height(SIZE), width(SIZE + 2 * BORDER_SIZE), border.color.white],
+		infosPoint: [width(BORDER_SIZE), height(BORDER_SIZE), border.radius.scale(5)],
 	}
 }
 
 const ScanBody: React.FC<{}> = () => {
 	const _styles = useStylesScan()
-	const [{ padding, border, background }] = useStyles()
+	const [{ padding, border, background, margin }] = useStyles()
 	const sendContactRequest = Chat.useAccountSendContactRequest()
 	const navigation = useReactNavigation()
 	return (
-		<View style={[padding.medium]}>
-			<View style={[border.radius.scale(20), background.black, padding.scale(30)]}>
-				<View
-					style={[
-						border.radius.scale(20),
-						_styles.body,
-						{ display: 'flex', alignItems: 'center', justifyContent: 'center' },
-					]}
-				>
-					<QRCodeScanner
-						onRead={({ data, type }) => {
-							if ((type as string) === 'QR_CODE') {
-								// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
-								console.log('Scan.tsx: found QR:', type, data)
-								let success = false
-								try {
-									sendContactRequest(data)
-									success = true
-								} catch (e) {
-									navigation.navigate('Error', { error: `${e}` })
-								}
-								if (success) {
-									navigation.goBack()
-								}
+		<View
+			style={[
+				border.radius.scale(20),
+				background.black,
+				padding.scale(30),
+				{ display: 'flex', alignItems: 'center', justifyContent: 'center' },
+			]}
+		>
+			<View
+				style={[
+					border.radius.scale(20),
+					_styles.body,
+					{ display: 'flex', alignItems: 'center', justifyContent: 'center' },
+				]}
+			>
+				<QRCodeScanner
+					onRead={({ data, type }) => {
+						if ((type as string) === 'QR_CODE') {
+							// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
+							console.log('Scan.tsx: found QR:', type, data)
+							let success = false
+							try {
+								sendContactRequest(data)
+								success = true
+							} catch (e) {
+								navigation.navigate('Error', { error: `${e}` })
 							}
-						}}
-						containerStyle={{
-							height: 300,
-							width: 270,
-							overflow: 'hidden',
-							borderRadius: 10,
-						}}
-						cameraStyle={{
-							height: 300,
-							width: 270,
-						}}
-						cameraProps={{
-							captureAudio: false,
-						}}
-						// flashMode={RNCamera.Constants.FlashMode.torch}
-					/>
-				</View>
+							if (success) {
+								navigation.goBack()
+							}
+						}
+					}}
+					containerStyle={{
+						height: SIZE,
+						width: SIZE,
+						overflow: 'hidden',
+						borderRadius: 10,
+					}}
+					cameraStyle={{
+						height: SIZE,
+						width: SIZE,
+					}}
+					cameraProps={{
+						captureAudio: false,
+					}}
+					// flashMode={RNCamera.Constants.FlashMode.torch}
+				/>
 			</View>
 		</View>
 	)
@@ -137,28 +145,19 @@ const ScanInfos: React.FC<{}> = () => {
 
 const Screen = Dimensions.get('window')
 
-const ScanComponent: React.FC<{}> = () => {
+export const Scan: React.FC<{}> = () => {
 	const { goBack } = useNavigation()
-	const [{ color, padding }] = useStyles()
+	const [{ color, padding, margin, background, border }] = useStyles()
 	return (
-		<View style={[{ height: Screen.height }, padding.medium]}>
-			<TouchableOpacity onPress={goBack}>
-				<Icon name='arrow-back-outline' width={30} height={30} fill={color.black} />
-			</TouchableOpacity>
+		<View style={[{ height: Screen.height }, padding.medium, background.red]}>
+			<View style={[{ flexDirection: 'row', alignItems: 'center' }, margin.bottom.huge]}>
+				<TouchableOpacity onPress={goBack}>
+					<Icon name='arrow-back-outline' width={30} height={30} fill={color.black} />
+				</TouchableOpacity>
+				<Text style={{ marginLeft: 10, color: 'white', fontSize: 20 }}>Scan QR Code</Text>
+			</View>
 			<ScanBody />
 			{__DEV__ && <ScanInfos />}
 		</View>
-	)
-}
-
-export const Scan: React.FC<{}> = () => {
-	const [{ flex, background }] = useStyles()
-
-	return (
-		<Layout style={[flex.tiny]}>
-			<SafeAreaView style={[flex.tiny, background.red]}>
-				<ScanComponent />
-			</SafeAreaView>
-		</Layout>
 	)
 }
