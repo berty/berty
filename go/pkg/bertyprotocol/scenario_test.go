@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"strconv"
 	"testing"
 	"time"
 
@@ -127,6 +128,13 @@ func TestScenario_JoinGroup(t *testing.T) {
 
 			clsGroupMessage[i], err = pt.Client.GroupMessageSubscribe(ctx, &req)
 			require.NoError(t, err)
+
+			// wait for subscribe to be ready
+			header, err := clsGroupMessage[i].Header()
+			require.NoError(t, err)
+
+			rs := header.Get("ready")
+			assert.Contains(t, rs, strconv.FormatBool(true))
 		}
 		t.Logf("  duration: %s", time.Since(start))
 	}
@@ -148,14 +156,19 @@ func TestScenario_JoinGroup(t *testing.T) {
 
 			clsGroupMetadata[i], err = pt.Client.GroupMetadataSubscribe(ctx, &req)
 			require.NoError(t, err)
+
+			// wait for subscribe to be ready
+			header, err := clsGroupMetadata[i].Header()
+			require.NoError(t, err)
+
+			rs := header.Get("ready")
+			assert.Contains(t, rs, strconv.FormatBool(true))
 		}
 		t.Logf("  duration: %s", time.Since(start))
 	}
 
 	// client stream are needed to continue this test
 	require.NotContains(t, clsGroupMetadata, nil)
-
-	time.Sleep(time.Millisecond * 100) // @TODO(gfanton): FIX ME, we should not have to sleep here
 
 	var testMessage = []byte("hello world")
 	t.Log("Send Message")

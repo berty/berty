@@ -1,10 +1,16 @@
 package bertyprotocol
 
 import (
+	"strconv"
+	"time"
+
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"go.uber.org/zap"
+	"google.golang.org/grpc/metadata"
 )
+
+var mdReady = metadata.New(map[string]string{"ready": strconv.FormatBool(true)})
 
 // GroupMetadataSubscribe subscribes to the metadata events for a group
 func (s *service) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_Request, sub ProtocolService_GroupMetadataSubscribeServer) error {
@@ -14,20 +20,20 @@ func (s *service) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_
 	}
 
 	// TODO: replay
-	s.logger.Debug("start subscribe metadata")
 	ch := cg.MetadataStore().Subscribe(sub.Context())
+
+	// @FIXME: Wait for subscription to be ready, we should find a way to avoid this
+	time.AfterFunc(time.Millisecond*100, func() { sub.SendHeader(mdReady.Copy()) })
+
 	for evt := range ch {
-		s.logger.Debug("receiving metadata")
 		e, ok := evt.(*bertytypes.GroupMetadataEvent)
 		if !ok {
-			s.logger.Debug("receiving metadata not ok")
 			continue
 		}
 
-		// TODO: log if error
-		s.logger.Debug("sending back event metadata", zap.String("message", string(e.GetMetadata().GetPayload())))
 		if err := sub.Send(e); err != nil {
 			cg.logger.Error("error while sending message", zap.Error(err))
+			return err
 		}
 	}
 
@@ -41,20 +47,21 @@ func (s *service) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Re
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
 	}
 
-	s.logger.Debug("start subscribe message")
 	// TODO: replay
 	ch := cg.MessageStore().Subscribe(sub.Context())
+
+	// @FIXME: Wait for subscription to be ready, we should find a way to avoid this
+	time.AfterFunc(time.Millisecond*100, func() { sub.SendHeader(mdReady.Copy()) })
+
 	for evt := range ch {
-		s.logger.Debug("receiving message event", zap.Any("event", evt))
 		e, ok := evt.(*bertytypes.GroupMessageEvent)
 		if !ok {
 			continue
 		}
 
-		s.logger.Debug("sending back event", zap.String("message", string(e.GetMessage())))
-		// TODO: log if error
 		if err := sub.Send(e); err != nil {
 			cg.logger.Error("error while sending message", zap.Error(err))
+			return err
 		}
 	}
 
