@@ -155,7 +155,7 @@ func metadataStoreListSecrets(ctx context.Context, gc *groupContext) map[crypto.
 
 	for meta := range ch {
 		pk, ds, err := openDeviceSecret(meta.Metadata, ownSK, g)
-		if err == errcode.ErrInvalidInput {
+		if err == errcode.ErrInvalidInput || err == errcode.ErrGroupSecretOtherDestMember {
 			continue
 		}
 
@@ -180,7 +180,12 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) er
 		}
 
 		pk, ds, err := openDeviceSecret(e.Metadata, gc.getMemberPrivKey(), gc.Group())
+		if err == errcode.ErrInvalidInput || err == errcode.ErrGroupSecretOtherDestMember {
+			continue
+		}
+
 		if err != nil {
+			gc.logger.Error("an error occurred while opening device secrets", zap.Error(err))
 			continue
 		}
 
@@ -306,8 +311,8 @@ func openDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if !localMemberPrivateKey.Equals(destMemberPubKey) {
-		return nil, nil, errcode.ErrInvalidInput
+	if !localMemberPrivateKey.GetPublic().Equals(destMemberPubKey) {
+		return nil, nil, errcode.ErrGroupSecretOtherDestMember
 	}
 
 	mongPriv, mongPub, err := cryptoutil.EdwardsToMontgomery(localMemberPrivateKey, senderDevicePubKey)
