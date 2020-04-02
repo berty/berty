@@ -192,3 +192,35 @@ func TestingClient(t *testing.T, svc Service, opts ...grpc.ServerOption) (client
 
 	return
 }
+
+// Connect Peers Helper
+type ConnnectTestingProtocolFunc func(*testing.T, []*TestingProtocol)
+
+// ConnectAll peers between themselves
+func ConnectAll(t *testing.T, pts []*TestingProtocol) {
+	t.Helper()
+
+	// connect all pts together
+	for _, pt := range pts {
+		err := pt.IPFS.MockNetwork().ConnectAllButSelf()
+		require.NoError(t, err)
+	}
+}
+
+// ConnectInLine, connect peers one by one in order to make a straight line:
+// ┌───┐    ┌───┐    ┌───┐         ┌───┐
+// │ 1 │───▶│ 2 │───▶│ 3 │─ ─ ─ ─ ▶│ x │
+// └───┘    └───┘    └───┘         └───┘
+
+func ConnectInLine(t *testing.T, pts []*TestingProtocol) {
+	t.Helper()
+
+	for i := range pts {
+		if i > 0 {
+			id0 := pts[i-1].IPFS.MockNode().Identity
+			id1 := pts[i].IPFS.MockNode().Identity
+			_, err := pts[i].IPFS.MockNetwork().ConnectPeers(id0, id1)
+			require.NoError(t, err)
+		}
+	}
+}

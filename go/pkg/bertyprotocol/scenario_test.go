@@ -22,9 +22,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestScenario_JoinGroup(t *testing.T) {
-	const numberOfService = 2
-
+func testingScenario_JoinGroup(t *testing.T, nService int, cf ConnnectTestingProtocolFunc) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -33,14 +31,12 @@ func TestScenario_JoinGroup(t *testing.T) {
 	}
 
 	// Setup test
-	pts, cleanup := generateTestingProtocol(ctx, t, &opts, numberOfService)
+
+	pts, cleanup := generateTestingProtocol(ctx, t, &opts, nService)
 	defer cleanup()
 
 	// connect all pts together
-	for _, pt := range pts {
-		err := pt.IPFS.MockNetwork().ConnectAllButSelf()
-		require.NoError(t, err)
-	}
+	cf(t, pts)
 
 	// create group
 	group, _, err := NewGroupMultiMember()
@@ -48,24 +44,17 @@ func TestScenario_JoinGroup(t *testing.T) {
 
 	// Run test
 
-	t.Log("Get Instance Configuration")
+	// Get Instance Configuration
 	{
-		start := time.Now()
-
 		// check if everything is ready
 		for _, pt := range pts {
-			req := bertytypes.InstanceGetConfiguration_Request{}
-
-			_, err := pt.Client.InstanceGetConfiguration(ctx, &req)
+			_, err := pt.Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 			require.NoError(t, err)
 		}
-		t.Logf("  duration: %s", time.Since(start))
 	}
 
-	t.Log("Join Group")
+	// Join Group
 	{
-		start := time.Now()
-
 		for _, pt := range pts {
 			req := bertytypes.MultiMemberGroupJoin_Request{
 				Group: group,
@@ -80,53 +69,44 @@ func TestScenario_JoinGroup(t *testing.T) {
 			assert.Error(t, err)
 
 		}
-		t.Logf("  duration: %s", time.Since(start))
 	}
 
-	t.Log("Get Group Info")
+	// Get Group Info
 	{
-		start := time.Now()
-
 		for _, pt := range pts {
-			req := bertytypes.GroupInfo_Request{
+			res, err := pt.Client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 				GroupPK: group.PublicKey,
-			}
-
-			res, err := pt.Client.GroupInfo(ctx, &req)
+			})
 			require.NoError(t, err)
 			assert.Equal(t, group.PublicKey, res.Group.PublicKey)
 		}
-		t.Logf("  duration: %s", time.Since(start))
 	}
 
-	t.Log("Activate Group")
+	// Activate Group
 	{
-		start := time.Now()
-
 		for _, pt := range pts {
-			req := bertytypes.ActivateGroup_Request{
+			_, err := pt.Client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
 				GroupPK: group.PublicKey,
-			}
-
-			_, err := pt.Client.ActivateGroup(ctx, &req)
+			})
 			assert.NoError(t, err)
 		}
-		t.Logf("  duration: %s", time.Since(start))
 	}
 
-	clsGroupMessage := make([]ProtocolService_GroupMessageSubscribeClient, numberOfService)
-	t.Log("Subscribe to Group Message")
+	fmt.Println("TEST -- group message subscribe")
+	// Subscribe to GroupMessage
+	clsGroupMessage := make([]ProtocolService_GroupMessageSubscribeClient, nService)
 	{
+		// @FIXME: remove this log if `time.AfterFunc` in `GroupMessageSubscribe` is removed
+		t.Log("Subscribe to GroupMessage")
+
 		start := time.Now()
 
 		for i, pt := range pts {
 			var err error
 
-			req := bertytypes.GroupMessageSubscribe_Request{
+			clsGroupMessage[i], err = pt.Client.GroupMessageSubscribe(ctx, &bertytypes.GroupMessageSubscribe_Request{
 				GroupPK: group.PublicKey,
-			}
-
-			clsGroupMessage[i], err = pt.Client.GroupMessageSubscribe(ctx, &req)
+			})
 			require.NoError(t, err)
 
 			// wait for subscribe to be ready
@@ -142,79 +122,48 @@ func TestScenario_JoinGroup(t *testing.T) {
 	// client stream are needed to continue this test
 	require.NotContains(t, clsGroupMessage, nil)
 
-	clsGroupMetadata := make([]ProtocolService_GroupMetadataSubscribeClient, numberOfService)
-	t.Log("Subscribe to Group Metadata")
-	{
-		start := time.Now()
+	time.Sleep(time.Second * 10)
 
-		for i, pt := range pts {
-			var err error
-
-			req := bertytypes.GroupMetadataSubscribe_Request{
-				GroupPK: group.PublicKey,
-			}
-
-			clsGroupMetadata[i], err = pt.Client.GroupMetadataSubscribe(ctx, &req)
-			require.NoError(t, err)
-
-			// wait for subscribe to be ready
-			header, err := clsGroupMetadata[i].Header()
-			require.NoError(t, err)
-
-			rs := header.Get("ready")
-			assert.Contains(t, rs, strconv.FormatBool(true))
-		}
-		t.Logf("  duration: %s", time.Since(start))
-	}
-
-	// client stream are needed to continue this test
-	require.NotContains(t, clsGroupMetadata, nil)
-
+	fmt.Println("TEST -- send message")
+	// Send Message on the group
 	var testMessage = []byte("hello world")
-	t.Log("Send Message")
 	{
-		start := time.Now()
-
 		for i, pt := range pts {
 			payload := []byte(fmt.Sprintf("%s:%d", testMessage, i))
-
-			req := bertytypes.AppMessageSend_Request{
+			_, err := pt.Client.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
 				GroupPK: group.PublicKey,
 				Payload: payload,
-			}
+			})
 
-			_, err := pt.Client.AppMessageSend(ctx, &req)
 			assert.NoError(t, err)
 		}
-		t.Logf("  duration: %s", time.Since(start))
 	}
 
-	t.Log("Stream Messages")
+	fmt.Println("TEST -- subscribed message")
+	// Receive message on subscribed group
 	{
-		start := time.Now()
 		testrx := fmt.Sprintf("^%s", testMessage)
 		for i, cl := range clsGroupMessage {
 
 			nmsg := 0
-			for nmsg < numberOfService {
+			for nmsg < nService {
 				res, err := cl.Recv()
-				if assert.NoError(t, err) {
-					assert.Regexp(t, testrx, string(res.GetMessage()))
-					fmt.Printf("[%d] receive msg [%s]\n", i, string(res.GetMessage()))
+				if !assert.NoError(t, err) {
+					break
 				}
 
+				fmt.Printf("[%d] group message: [%s]\n", i, res.GetMessage())
+				assert.Regexp(t, testrx, string(res.GetMessage()))
 				nmsg++
 			}
 
-			assert.Equal(t, numberOfService, nmsg)
+			assert.Equal(t, nService, nmsg)
 		}
-
-		t.Logf("  duration: %s", time.Since(start))
 	}
 
-	t.Log("List Message")
+	fmt.Println("TEST -- list message")
+	// List all messages
 	{
-		start := time.Now()
 		testrx := fmt.Sprintf("^%s", testMessage)
 
 		for _, pt := range pts {
@@ -243,15 +192,38 @@ func TestScenario_JoinGroup(t *testing.T) {
 				nmsg++
 			}
 
-			assert.Equal(t, numberOfService, nmsg)
+			assert.Equal(t, nService, nmsg)
 			assert.Equal(t, io.EOF, err)
 		}
-		t.Logf("  duration: %s", time.Since(start))
+	}
+}
+
+func TestScenario_JoinGroup(t *testing.T) {
+	cases := []struct {
+		Name           string
+		NumberOfClient int
+		ConnectFunc    ConnnectTestingProtocolFunc
+		IsSlowTest     bool
+	}{
+		{"2 clients/connectAll", 2, ConnectAll, false},
+		{"3 clients/connectAll", 3, ConnectAll, false},
+		{"10 clients/connectAll", 10, ConnectAll, true},
+		{"10 clients/connectInLine", 10, ConnectInLine, true},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.Name, func(t *testing.T) {
+			if tc.IsSlowTest {
+				testutil.SkipSlow(t)
+			}
+
+			testingScenario_JoinGroup(t, tc.NumberOfClient, tc.ConnectFunc)
+		})
 	}
 }
 
 func TestScenario_ContactMessage(t *testing.T) {
-	const numberOfService = 1
+	const nService = 1
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -261,7 +233,7 @@ func TestScenario_ContactMessage(t *testing.T) {
 	}
 
 	// Setup test
-	pts, cleanup := generateTestingProtocol(ctx, t, &opts, numberOfService)
+	pts, cleanup := generateTestingProtocol(ctx, t, &opts, nService)
 	defer cleanup()
 
 	pt := pts[0]
@@ -317,41 +289,46 @@ func TestScenario_ContactMessage(t *testing.T) {
 		sub, err := pt.Client.GroupMessageSubscribe(subCtx, &bertytypes.GroupMessageSubscribe_Request{
 			GroupPK: gInfo.Group.PublicKey,
 		})
-		require.NoError(t, err)
+		if !assert.NoError(t, err) {
+			return
+		}
+
+		defer subCancel()
 
 		for {
 			if subCtx.Err() != nil {
-				break
+				return
 			}
 
 			res, err := sub.Recv()
 			if err == io.EOF {
-				break
+				return
 			}
 			if !assert.NoError(t, err) {
 				continue
 			}
 
 			expectedMessagesLock.Lock()
-			if value, ok := expectedMessages[string(res.Message)]; !ok {
+			value, ok := expectedMessages[string(res.Message)]
+			if !assert.True(t, ok, "unexpected message %s", res.Message) {
 				expectedMessagesLock.Unlock()
-				t.Fatalf("unexpected message %s", string(res.Message))
-			} else if value {
-				expectedMessagesLock.Unlock()
+				return
+			}
+			expectedMessagesLock.Unlock()
+
+			if value {
 				continue
 			}
 
+			expectedMessagesLock.Lock()
 			expectedMessages[string(res.Message)] = true
 			expectedMessagesCount--
 			expectedMessagesLock.Unlock()
 
 			if expectedMessagesCount == 0 {
-				subCancel()
-				break
+				return
 			}
 		}
-
-		subCancel()
 	}()
 
 	for _, msg := range expectedMessagesContent {
