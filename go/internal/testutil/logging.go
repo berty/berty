@@ -16,7 +16,8 @@ func Logger(t *testing.T) *zap.Logger {
 	t.Helper()
 
 	envDebug, _ := strconv.ParseBool(os.Getenv("BERTY_DEBUG"))
-	if !*debug && !envDebug {
+	envDebugAll, _ := strconv.ParseBool(os.Getenv("BERTY_DEBUG_ALL"))
+	if !*debug && !envDebug && !envDebugAll {
 		return zap.NewNop()
 	}
 
@@ -30,6 +31,8 @@ func Logger(t *testing.T) *zap.Logger {
 		return zap.NewNop()
 	}
 
-	//zap.ReplaceGlobals(logger)
+	if envDebugAll {
+		zap.ReplaceGlobals(logger)
+	}
 	return logger
 }

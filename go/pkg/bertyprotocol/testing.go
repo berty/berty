@@ -35,7 +35,7 @@ type TestingOpts struct {
 	Mocknet libp2p_mocknet.Mocknet
 }
 
-func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (tp *TestingProtocol, cleanup func()) {
+func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*TestingProtocol, func()) {
 	t.Helper()
 
 	var node ipfsutil.CoreAPIMock
@@ -86,27 +86,27 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (t
 	service, cleanupService := TestingService(t, serviceOpts)
 	client, cleanupClient := TestingClient(t, service, serverOpts...)
 
-	cleanup = func() {
+	cleanup := func() {
 		cleanupClient()
 		cleanupService()
 		node.Close()
 	}
 
-	tp = &TestingProtocol{
+	tp := &TestingProtocol{
 		Opts:    &serviceOpts,
 		Client:  client,
 		Service: service,
 		IPFS:    node,
 	}
 
-	return
+	return tp, cleanup
 }
 
-func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, n int) (tps []*TestingProtocol, cleanup func()) {
+func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, n int) ([]*TestingProtocol, func()) {
 	t.Helper()
 
 	cls := make([]func(), n)
-	cleanup = func() {
+	cleanup := func() {
 		for i := range cls {
 			if cls[i] != nil {
 				cls[i]()
@@ -124,7 +124,7 @@ func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpt
 
 	logger := opts.Logger
 
-	tps = make([]*TestingProtocol, n)
+	tps := make([]*TestingProtocol, n)
 	for i := range tps {
 		opts.Logger = logger.Named(fmt.Sprintf("pt[%d]", i))
 		tps[i], cls[i] = NewTestingProtocol(ctx, t, opts)
@@ -132,7 +132,8 @@ func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpt
 
 	err := opts.Mocknet.LinkAll()
 	require.NoError(t, err)
-	return
+
+	return tps, cleanup
 }
 
 // TestingService returns a configured Client struct with in-memory contexts.

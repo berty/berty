@@ -27,7 +27,6 @@ type Opts struct {
 }
 
 func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func()) {
-
 	var (
 		swarmAddresses []string = nil
 		lock           *fslock.Lock

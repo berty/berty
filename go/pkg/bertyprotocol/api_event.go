@@ -23,7 +23,11 @@ func (s *service) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_
 	ch := cg.MetadataStore().Subscribe(sub.Context())
 
 	// @FIXME: Wait for subscription to be ready, we should find a way to avoid this
-	time.AfterFunc(time.Millisecond*100, func() { sub.SendHeader(mdReady.Copy()) })
+	time.AfterFunc(time.Millisecond*100, func() {
+		if err := sub.SendHeader(mdReady.Copy()); err != nil {
+			s.logger.Warn("Send header header error", zap.Error(err))
+		}
+	})
 
 	for evt := range ch {
 		e, ok := evt.(*bertytypes.GroupMetadataEvent)
@@ -51,7 +55,11 @@ func (s *service) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Re
 	ch := cg.MessageStore().Subscribe(sub.Context())
 
 	// @FIXME: Wait for subscription to be ready, we should find a way to avoid this
-	time.AfterFunc(time.Millisecond*100, func() { sub.SendHeader(mdReady.Copy()) })
+	time.AfterFunc(time.Millisecond*100, func() {
+		if err := sub.SendHeader(mdReady.Copy()); err != nil {
+			s.logger.Warn("Send header header error", zap.Error(err))
+		}
+	})
 
 	for evt := range ch {
 		e, ok := evt.(*bertytypes.GroupMessageEvent)
