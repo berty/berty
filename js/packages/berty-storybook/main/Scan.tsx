@@ -35,7 +35,13 @@ const ScanBody: React.FC<{}> = () => {
 	return (
 		<View style={[padding.medium]}>
 			<View style={[border.radius.scale(20), background.black, padding.scale(30)]}>
-				<View style={[border.radius.scale(20), _styles.body]}>
+				<View
+					style={[
+						border.radius.scale(20),
+						_styles.body,
+						{ display: 'flex', alignItems: 'center', justifyContent: 'center' },
+					]}
+				>
 					<QRCodeScanner
 						onRead={({ data, type }) => {
 							if ((type as string) === 'QR_CODE') {
@@ -53,7 +59,19 @@ const ScanBody: React.FC<{}> = () => {
 								}
 							}
 						}}
-						cameraProps={{ captureAudio: false }}
+						containerStyle={{
+							height: 300,
+							width: 270,
+							overflow: 'hidden',
+							borderRadius: 10,
+						}}
+						cameraStyle={{
+							height: 300,
+							width: 270,
+						}}
+						cameraProps={{
+							captureAudio: false,
+						}}
 						// flashMode={RNCamera.Constants.FlashMode.torch}
 					/>
 				</View>
