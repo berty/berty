@@ -15,7 +15,7 @@ import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
 import { useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { CommonActions } from '@react-navigation/core'
+import { CommonActions } from '@react-navigation/native'
 
 //
 // Chat

@@ -19,7 +19,7 @@ import {
 } from '../shared-components/ProceduralCircleAvatar'
 import { Chat } from '@berty-tech/hooks'
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/berty-navigation'
-import { CommonActions } from '@react-navigation/core'
+import { CommonActions } from '@react-navigation/native'
 import { chat } from '@berty-tech/store'
 
 type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void

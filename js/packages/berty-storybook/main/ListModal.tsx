@@ -8,6 +8,7 @@ import {
 	Dimensions,
 	TouchableWithoutFeedback,
 } from 'react-native'
+import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { BlurView } from '@react-native-community/blur'
@@ -128,7 +129,7 @@ const Requests: React.FC<{}> = () => {
 }
 
 const AddContact: React.FC<{}> = () => {
-	const navigation = useNavigation()
+	const navigation = useReactNavigation()
 	const _styles = useStylesList()
 	const [{ padding, row, column, border, background, color, text }] = useStyles()
 
@@ -143,7 +144,7 @@ const AddContact: React.FC<{}> = () => {
 						column.justify,
 						_styles.addContactItem,
 					]}
-					onPress={navigation.navigate.main.scan}
+					onPress={() => navigation.navigate('SomeScan')}
 				>
 					<View style={[row.fill]}>
 						<View />
@@ -164,7 +165,7 @@ const AddContact: React.FC<{}> = () => {
 						column.justify,
 						_styles.addContactItem,
 					]}
-					onPress={navigation.navigate.settings.myBertyId}
+					onPress={() => navigation.navigate('MyBertyId')}
 				>
 					<View style={[row.fill]}>
 						<View />

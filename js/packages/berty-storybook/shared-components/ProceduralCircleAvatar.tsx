@@ -146,10 +146,10 @@ export const ConversationProceduralAvatar: React.FC<ConversationProceduralAvatar
 	style,
 }) => {
 	const conversation = Chat.useGetConversation(conversationId)
+	const contact = Chat.useOneToOneConversationContact(conversation.id)
 	const seeds: string[] = []
 	switch (conversation.kind) {
 		case berty.chatmodel.Conversation.Kind.OneToOne:
-			const contact = Chat.useOneToOneConversationContact(conversation.id)
 			if (contact) {
 				seeds.push(contact.publicKey)
 			}

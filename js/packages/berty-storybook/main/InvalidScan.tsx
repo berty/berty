@@ -1,7 +1,15 @@
 import React, { useState } from 'react'
-import { View, SafeAreaView, StyleSheet } from 'react-native'
+import {
+	View,
+	SafeAreaView,
+	StyleSheet,
+	TouchableOpacity,
+	TouchableWithoutFeedback,
+} from 'react-native'
+import { BlurView } from '@react-native-community/blur'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { styles, colors, useStyles } from '@berty-tech/styles'
+import { useNavigation as useReactNavigation } from '@react-navigation/native'
 
 //
 // Scan Invalid
@@ -38,38 +46,44 @@ const _invalidScanStyles = StyleSheet.create({
 
 const InvalidScanHeader: React.FC<{}> = () => {
 	const _styles = useStylesInvalidScan()
-	const [{ background, margin, text, border, row, column }] = useStyles()
-
+	const [{ background, text, border, row, column, margin, padding }] = useStyles()
+	const size = 115
+	const diff = 30
 	return (
-		<View>
+		<View
+			style={{ display: 'flex', alignItems: 'center', padding: 0, margin: 0, paddingTop: size / 2 }}
+		>
 			<View
 				style={[
 					background.white,
 					border.shadow.medium,
-					margin.bottom.medium,
-					row.item.justify,
-					column.justify,
-					_styles.header,
+					{
+						display: 'flex',
+						justifyContent: 'center',
+						borderRadius: size / 2,
+						width: size,
+						height: size,
+						padding: 0,
+						margin: 0,
+						position: 'absolute',
+						top: 0,
+						transform: [{ translateY: -(size / 2) }],
+					},
 				]}
 			>
 				<Icon
 					name='alert-circle-outline'
-					width={100}
-					height={100}
+					width={size - diff}
+					height={size - diff}
 					fill={colors.red}
-					style={[row.item.justify]}
+					style={[row.item.justify, { padding: 0, margin: 0 }]}
 				/>
-			</View>
-			<View>
-				<Text style={[text.color.red, text.bold.medium, text.align.center]}>
-					This QR code is invalid!
-				</Text>
 			</View>
 		</View>
 	)
 }
 
-const InvalidScanError: React.FC<{}> = () => {
+const InvalidScanError: React.FC<{ error: string }> = ({ error }) => {
 	const [{ border, background, padding, margin, text }] = useStyles()
 
 	return (
@@ -77,7 +91,7 @@ const InvalidScanError: React.FC<{}> = () => {
 			<Text
 				style={[text.color.red, text.align.center, text.bold.medium, _invalidScanStyles.errorText]}
 			>
-				Invalid format: missing characters
+				{error}
 			</Text>
 		</View>
 	)
@@ -86,52 +100,61 @@ const InvalidScanError: React.FC<{}> = () => {
 const InvalidScanDismissButton: React.FC<{}> = () => {
 	const _styles = useStylesInvalidScan()
 	const [{ row, margin, color, column, padding, text }] = useStyles()
+	const navigation = useReactNavigation()
 
 	return (
 		<View style={row.center}>
-			<View style={[row.fill, margin.bottom.medium, _styles.dismissButton]}>
+			<TouchableOpacity
+				onPress={() => navigation.goBack()}
+				style={[row.fill, _styles.dismissButton, margin.top.huge]}
+			>
 				<Icon name='close' width={30} height={30} fill={color.grey} style={row.item.justify} />
 				<Text style={[text.color.grey, padding.left.small, row.item.justify, _styles.dismissText]}>
 					DISMISS
 				</Text>
-			</View>
+			</TouchableOpacity>
 		</View>
 	)
 }
 
-const InvalidScanBody: React.FC<{}> = () => {
-	const [layout, setLayout] = useState()
-	const [{ background, padding, border }] = useStyles()
+const InvalidScanBody: React.FC<{ error: string }> = ({ error }) => {
+	const [{ background, padding, border, text, margin }] = useStyles()
 
 	return (
-		<View style={[padding.medium]}>
+		<View style={[background.white, padding.huge, { paddingTop: 0 }, border.radius.large]}>
+			<InvalidScanHeader />
+			<View>
+				<Text style={[text.color.red, text.bold.medium, text.align.center, margin.top.large]}>
+					This QR code is invalid!
+				</Text>
+			</View>
+			<InvalidScanError error={error} />
+			<InvalidScanDismissButton />
+		</View>
+	)
+}
+
+export const InvalidScan: React.FC<{ route: { params: { error: string } } }> = ({
+	route: {
+		params: { error },
+	},
+}) => {
+	return (
+		<>
+			<BlurView style={StyleSheet.absoluteFill} blurType='light' />
 			<View
-				onLayout={(e) => !layout && setLayout(e.nativeEvent.layout.height)}
-				style={[
-					background.white,
-					padding.medium,
-					border.radius.medium,
-					layout && { height: layout - 78 },
-				]}
+				style={{
+					position: 'absolute',
+					top: 0,
+					left: 0,
+					right: 0,
+					bottom: 0,
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
 			>
-				<View style={[_invalidScanStyles.body]}>
-					<InvalidScanHeader />
-					<InvalidScanError />
-					<InvalidScanDismissButton />
-				</View>
+				<InvalidScanBody error={error} />
 			</View>
-		</View>
-	)
-}
-
-export const InvalidScan: React.FC<{}> = () => {
-	const [{ flex, row, background, column }] = useStyles()
-
-	return (
-		<Layout style={[flex.tiny, row.fill, column.justify, background.red]}>
-			<SafeAreaView>
-				<InvalidScanBody />
-			</SafeAreaView>
-		</Layout>
+		</>
 	)
 }

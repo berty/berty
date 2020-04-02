@@ -111,7 +111,7 @@ export const useAccountSendContactRequest = () => {
 	return (val: string) => {
 		const parts = val.split(' ')
 		if (parts.length !== 2) {
-			throw new Error('Corrupted deep link')
+			throw new Error('Corrupted content')
 		}
 		const [name, ref] = parts
 		dispatch(

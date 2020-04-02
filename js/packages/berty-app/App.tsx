@@ -6,6 +6,7 @@
  * @flow
  */
 
+import 'react-native-gesture-handler'
 import React from 'react'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import DevMenu from 'react-native-dev-menu'
@@ -34,8 +35,6 @@ export const App: React.FC = () => (
 			}
 		>
 			<Chat.Provider config={{ storage: AsyncStorage }}>
-				<LinkHandler />
-				<Chat.Recorder />
 				<Theme.Provider>
 					<Navigation />
 				</Theme.Provider>

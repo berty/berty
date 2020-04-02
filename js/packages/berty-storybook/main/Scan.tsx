@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, SafeAreaView, Dimensions, TextInput, Button, TouchableOpacity } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
+import { useNavigation as useReactNavigation } from '@react-navigation/native'
 // import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 // import { RNCamera } from 'react-native-camera'
@@ -30,6 +31,7 @@ const ScanBody: React.FC<{}> = () => {
 	const _styles = useStylesScan()
 	const [{ padding, border, background }] = useStyles()
 	const sendContactRequest = Chat.useAccountSendContactRequest()
+	const navigation = useReactNavigation()
 	return (
 		<View style={[padding.medium]}>
 			<View style={[border.radius.scale(20), background.black, padding.scale(30)]}>
@@ -38,8 +40,17 @@ const ScanBody: React.FC<{}> = () => {
 						onRead={({ data, type }) => {
 							if ((type as string) === 'QR_CODE') {
 								// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
-								console.log('Scan.tsx: found QR:', data)
-								sendContactRequest(data)
+								console.log('Scan.tsx: found QR:', type, data)
+								let success = false
+								try {
+									sendContactRequest(data)
+									success = true
+								} catch (e) {
+									navigation.navigate('Error', { error: `${e}` })
+								}
+								if (success) {
+									navigation.goBack()
+								}
 							}
 						}}
 						cameraProps={{ captureAudio: false }}
@@ -68,7 +79,7 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 const DevReferenceInput = () => {
 	const [ref, setRef] = useState('')
 	const sendContactRequest = Chat.useAccountSendContactRequest()
-	const navigation = useNavigation()
+	const navigation = useReactNavigation()
 	return (
 		<>
 			<ScanInfosText textProps='Alternatively, enter the reference below' />
@@ -78,8 +89,16 @@ const DevReferenceInput = () => {
 				onPress={() => {
 					const prefix = 'berty://'
 					const data = ref.startsWith(prefix) ? decodeURIComponent(ref.substr(prefix.length)) : ref
-					sendContactRequest(data)
-					navigation.goBack()
+					let success = false
+					try {
+						sendContactRequest(data)
+						success = true
+					} catch (e) {
+						navigation.navigate('Error', { error: `${e}` })
+					}
+					if (success) {
+						navigation.goBack()
+					}
 				}}
 			/>
 		</>
