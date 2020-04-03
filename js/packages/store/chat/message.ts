@@ -74,7 +74,7 @@ const FAKE_MESSAGES_CONFIG: FakeConfig[] = [
 	{ body: 'Welcome to Berty' },
 	{ body: 'Hey, nice to see you here' },
 	{ body: 'Get out of here! It has all the cryptos!' },
-	{ body: 'fake' },
+	{ body: 'Just arrived in New York, how are you?' },
 ]
 
 const FAKE_MESSAGES: Entity[] = FAKE_MESSAGES_CONFIG.map((fc, i) => {
