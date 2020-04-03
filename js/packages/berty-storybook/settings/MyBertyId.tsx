@@ -1,33 +1,20 @@
 import React, { useState } from 'react'
-import {
-	SafeAreaView,
-	View,
-	TouchableOpacity,
-	StyleSheet,
-	ScrollView,
-	Dimensions,
-	Share,
-} from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { View, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Share } from 'react-native'
+import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { RequestProps } from '../shared-props/User'
 import { TabBar } from '../shared-components/TabBar'
-import { RequestAvatar } from '../shared-components/Request'
 import { Chat } from '@berty-tech/hooks'
-import { useNavigation } from '@berty-tech/berty-navigation'
 import QRCode from 'react-native-qrcode-svg'
-import { SimpleModal } from '../main/SimpleModal'
+import { SimpleModal } from '../shared-components/SimpleModal'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 
 //
 // Settings My Berty ID Vue
 //
 
-const AVATAR_SIZE = 100
-
 // Style
 const useStylesBertyId = () => {
-	const [{ margin, padding, maxHeight, minHeight }] = useStyles()
+	const [{ margin, maxHeight, minHeight }] = useStyles()
 	return {
 		bodyMarginTop: margin.top.scale(60),
 		bodyContent: [margin.bottom.scale(40)],
@@ -45,7 +32,7 @@ const _bertyIdStyles = StyleSheet.create({
 	bertyIdButton: { width: 60, height: 60, borderRadius: 60 / 2, marginRight: 60, bottom: 30 },
 })
 
-const BertyIdContent: React.FC<{}> = ({ children }) => {
+const BertyIdContent: React.FC = ({ children }) => {
 	const _styles = useStylesBertyId()
 	const [{ padding, column }] = useStyles()
 
@@ -61,7 +48,7 @@ const BertyIdContent: React.FC<{}> = ({ children }) => {
 
 const min = (a: number, b: number) => (a < b ? a : b)
 
-const ContactRequestQR = () => {
+const ContactRequestQR: React.FC = () => {
 	const contactRequestReference = Chat.useContactRequestReference()
 	const contactRequestEnabled = Chat.useContactRequestEnabled()
 	const [styles] = useStyles()
@@ -80,7 +67,7 @@ const ContactRequestQR = () => {
 	}
 }
 
-const SelectedContent = ({ contentName }: { contentName: string }) => {
+const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => {
 	switch (contentName) {
 		case 'QR':
 			return <ContactRequestQR />
@@ -90,7 +77,7 @@ const SelectedContent = ({ contentName }: { contentName: string }) => {
 }
 
 const Avatar: React.FC<{ seed?: string }> = ({ seed }) => {
-	const [{ background, border, row }] = useStyles()
+	const [{ background, border }] = useStyles()
 	const size = 90
 	const diff = 20
 	return (
@@ -120,7 +107,7 @@ const Avatar: React.FC<{ seed?: string }> = ({ seed }) => {
 	)
 }
 
-const BertIdBody: React.FC<RequestProps> = ({ user }) => {
+const BertIdBody: React.FC = () => {
 	const _styles = useStylesBertyId()
 	const [{ background, border, margin, padding }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState()
@@ -135,7 +122,7 @@ const BertIdBody: React.FC<RequestProps> = ({ user }) => {
 				{ marginTop: 45 },
 			]}
 		>
-			<Avatar {...user} seed={client?.accountPk} />
+			<Avatar seed={client?.accountPk} />
 			<Text
 				style={{
 					alignSelf: 'center',
@@ -164,7 +151,7 @@ const BertIdBody: React.FC<RequestProps> = ({ user }) => {
 	)
 }
 
-const BertyIdShare: React.FC<{}> = () => {
+const BertyIdShare: React.FC = () => {
 	const [{ row, border, background, flex, color }] = useStyles()
 	const contactRequestReference = Chat.useContactRequestReference()
 	if (!contactRequestReference) {
@@ -199,13 +186,11 @@ const BertyIdShare: React.FC<{}> = () => {
 	)
 }
 
-const Screen = Dimensions.get('window')
-
-export const MyBertyId: React.FC<RequestProps> = ({ user }) => {
+export const MyBertyId: React.FC = () => {
 	const [{ color }] = useStyles()
 	return (
 		<SimpleModal title='My Berty ID' color={color.blue} iconName='person-outline'>
-			<BertIdBody user={user} />
+			<BertIdBody />
 			<BertyIdShare />
 		</SimpleModal>
 	)

@@ -1,14 +1,8 @@
-import React, { useState } from 'react'
-import {
-	View,
-	SafeAreaView,
-	StyleSheet,
-	TouchableOpacity,
-	TouchableWithoutFeedback,
-} from 'react-native'
+import React from 'react'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors, useStyles } from '@berty-tech/styles'
+import { Text, Icon } from 'react-native-ui-kitten'
+import { colors, useStyles } from '@berty-tech/styles'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 
 //
@@ -44,9 +38,8 @@ const _invalidScanStyles = StyleSheet.create({
 	},
 })
 
-const InvalidScanHeader: React.FC<{}> = () => {
-	const _styles = useStylesInvalidScan()
-	const [{ background, text, border, row, column, margin, padding }] = useStyles()
+const InvalidScanHeader: React.FC = () => {
+	const [{ background, border, row }] = useStyles()
 	const size = 115
 	const diff = 30
 	return (
@@ -96,9 +89,9 @@ const InvalidScanError: React.FC<{ error: string }> = ({ error }) => {
 	)
 }
 
-const InvalidScanDismissButton: React.FC<{}> = () => {
+const InvalidScanDismissButton: React.FC = () => {
 	const _styles = useStylesInvalidScan()
-	const [{ row, margin, color, column, padding, text }] = useStyles()
+	const [{ row, margin, color, padding, text }] = useStyles()
 	const navigation = useReactNavigation()
 
 	return (

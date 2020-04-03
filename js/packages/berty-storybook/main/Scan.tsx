@@ -1,41 +1,18 @@
-import React, { useState } from 'react'
-import {
-	ScrollView,
-	View,
-	SafeAreaView,
-	KeyboardAvoidingView,
-	Dimensions,
-	TextInput,
-	Button,
-	TouchableOpacity,
-	StyleProp,
-	ViewStyle,
-} from 'react-native'
-import {
-	useResponsiveHeight,
-	useResponsiveWidth,
-	useResponsiveFontSize,
-} from 'react-native-responsive-dimensions'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import React from 'react'
+import { View, StyleProp, ViewStyle } from 'react-native'
+import { useResponsiveHeight, useResponsiveWidth } from 'react-native-responsive-dimensions'
+import { Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
-// import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import QRCodeScanner from 'react-native-qrcode-scanner'
-// import { RNCamera } from 'react-native-camera'
 import { Chat } from '@berty-tech/hooks'
-import { useNavigation } from '@berty-tech/berty-navigation'
-import { SimpleModal } from './SimpleModal'
+import { SimpleModal } from '../shared-components/SimpleModal'
 
 //
 // Scan => Scan QrCode of an other contact
 //
 
-// Types
-type ScanInfosTextProps = {
-	textProps: string
-}
-
-const ScanBody: React.FC<{}> = () => {
+const ScanBody: React.FC = () => {
 	const [{ background }] = useStyles()
 	const sendContactRequest = Chat.useAccountSendContactRequest()
 	const navigation = useReactNavigation()
@@ -103,28 +80,29 @@ const ScanBody: React.FC<{}> = () => {
 	)
 }
 
-const Dot = (props: { size: number; color: string; style?: StyleProp<ViewStyle> }) => {
-	const { size, color, style } = props
-	return (
-		<View
-			style={[
-				{
-					backgroundColor: color,
-					width: size,
-					aspectRatio: 1,
-					borderRadius: size / 2,
-				},
-				style,
-			]}
-		/>
-	)
-}
+const Dot: React.FC<{ size: number; color: string; style?: StyleProp<ViewStyle> }> = ({
+	size,
+	color,
+	style,
+}) => (
+	<View
+		style={[
+			{
+				backgroundColor: color,
+				width: size,
+				aspectRatio: 1,
+				borderRadius: size / 2,
+			},
+			style,
+		]}
+	/>
+)
 
-const ScanInfosText: React.FC<ScanInfosTextProps & { style: StyleProp<ViewStyle> }> = ({
+const ScanInfosText: React.FC<{ textProps: string; style: StyleProp<ViewStyle> }> = ({
 	textProps,
 	style,
 }) => {
-	const [{ row, text, color }] = useStyles()
+	const [{ row, color }] = useStyles()
 	return (
 		<View style={[row.left, style]}>
 			<Dot
@@ -139,7 +117,7 @@ const ScanInfosText: React.FC<ScanInfosTextProps & { style: StyleProp<ViewStyle>
 	)
 }
 
-const ScanInfos: React.FC<{}> = () => {
+const ScanInfos: React.FC = () => {
 	const [{ padding }] = useStyles()
 
 	const itemsSpacing = useResponsiveHeight(3)
@@ -172,7 +150,7 @@ const ScanInfos: React.FC<{}> = () => {
 	)
 }
 
-export const Scan: React.FC<{}> = () => {
+export const Scan: React.FC = () => {
 	const [{ color }] = useStyles()
 	const bottomSpace = useResponsiveHeight(5)
 	return (
