@@ -45,7 +45,7 @@ export const ProceduralCircleAvatar: React.FC<ProceduralCircleAvatarProps> = ({
 	]
 	const _circleAvatarStyles = [absolute.scale({ top: -10, right: -10 })]
 	return (
-		<View style={style}>
+		<View style={[{ alignItems: 'center', justifyContent: 'center' }, style]}>
 			<View
 				style={[_circleStyle, { display: 'flex', alignItems: 'center', justifyContent: 'center' }]}
 			>

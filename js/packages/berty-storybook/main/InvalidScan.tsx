@@ -66,8 +66,7 @@ const InvalidScanHeader: React.FC<{}> = () => {
 						padding: 0,
 						margin: 0,
 						position: 'absolute',
-						top: 0,
-						transform: [{ translateY: -(size / 2) }],
+						top: -(size / 2),
 					},
 				]}
 			>

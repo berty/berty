@@ -16,17 +16,21 @@ import { RequestAvatar } from '../shared-components/Request'
 import { Chat } from '@berty-tech/hooks'
 import { useNavigation } from '@berty-tech/berty-navigation'
 import QRCode from 'react-native-qrcode-svg'
+import { SimpleModal } from '../main/SimpleModal'
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 
 //
 // Settings My Berty ID Vue
 //
+
+const AVATAR_SIZE = 100
 
 // Style
 const useStylesBertyId = () => {
 	const [{ margin, padding, maxHeight, minHeight }] = useStyles()
 	return {
 		bodyMarginTop: margin.top.scale(60),
-		bodyContent: [margin.bottom.scale(40), padding.top.scale(50)],
+		bodyContent: [margin.bottom.scale(40)],
 		scrollViewMaxHeight: maxHeight(400),
 		contentMinHeight: minHeight(400),
 	}
@@ -55,6 +59,8 @@ const BertyIdContent: React.FC<{}> = ({ children }) => {
 	)
 }
 
+const min = (a: number, b: number) => (a < b ? a : b)
+
 const ContactRequestQR = () => {
 	const contactRequestReference = Chat.useContactRequestReference()
 	const contactRequestEnabled = Chat.useContactRequestEnabled()
@@ -63,7 +69,10 @@ const ContactRequestQR = () => {
 	if (contactRequestEnabled) {
 		return (
 			<View style={[styles.padding.top.big]}>
-				<QRCode size={Dimensions.get('window').width * 0.66} value={contactRequestReference} />
+				<QRCode
+					size={min(Dimensions.get('window').height * 0.33, Dimensions.get('window').width * 0.66)}
+					value={contactRequestReference}
+				/>
 			</View>
 		)
 	} else {
@@ -80,21 +89,64 @@ const SelectedContent = ({ contentName }: { contentName: string }) => {
 	}
 }
 
+const Avatar: React.FC<{ seed?: string }> = ({ seed }) => {
+	const [{ background, border, row }] = useStyles()
+	const size = 90
+	const diff = 20
+	return (
+		<View
+			style={{ display: 'flex', alignItems: 'center', padding: 0, margin: 0, paddingTop: size / 2 }}
+		>
+			<View
+				style={[
+					background.white,
+					border.shadow.medium,
+					{
+						display: 'flex',
+						justifyContent: 'center',
+						borderRadius: size / 2,
+						width: size,
+						height: size,
+						padding: 0,
+						margin: 0,
+						position: 'absolute',
+						top: -(size / 2),
+					},
+				]}
+			>
+				<ProceduralCircleAvatar seed={seed} size={size} diffSize={diff} />
+			</View>
+		</View>
+	)
+}
+
 const BertIdBody: React.FC<RequestProps> = ({ user }) => {
 	const _styles = useStylesBertyId()
 	const [{ background, border, margin, padding }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState()
 	const client = Chat.useClient()
+	const account = Chat.useAccount()
 	return (
 		<View
 			style={[
 				background.white,
 				border.radius.scale(30),
 				margin.horizontal.medium,
-				_styles.bodyMarginTop,
+				{ marginTop: 45 },
 			]}
 		>
-			<RequestAvatar {...user} seed={client?.accountPk} size={90} />
+			<Avatar {...user} seed={client?.accountPk} />
+			<Text
+				style={{
+					alignSelf: 'center',
+					fontSize: 18,
+					color: '#383B62',
+					fontWeight: '600',
+					marginTop: 10,
+				}}
+			>
+				{account?.name}
+			</Text>
 			<View style={[padding.horizontal.big, _styles.bodyContent]}>
 				<TabBar
 					tabs={[
@@ -149,27 +201,12 @@ const BertyIdShare: React.FC<{}> = () => {
 
 const Screen = Dimensions.get('window')
 
-const MyBertyIdComponent: React.FC<RequestProps> = ({ user }) => {
-	const { goBack } = useNavigation()
-	const [{ padding, color }] = useStyles()
+export const MyBertyId: React.FC<RequestProps> = ({ user }) => {
+	const [{ color }] = useStyles()
 	return (
-		<View style={[{ height: Screen.height }, padding.medium]}>
-			<TouchableOpacity onPress={goBack}>
-				<Icon name='arrow-back-outline' width={30} height={30} fill={color.white} />
-			</TouchableOpacity>
+		<SimpleModal title='My Berty ID' color={color.blue} iconName='person-outline'>
 			<BertIdBody user={user} />
 			<BertyIdShare />
-		</View>
-	)
-}
-
-export const MyBertyId: React.FC<RequestProps> = ({ user }) => {
-	const [{ flex, background }] = useStyles()
-	return (
-		<Layout style={[flex.tiny]}>
-			<SafeAreaView style={[flex.tiny, background.blue]}>
-				<MyBertyIdComponent user={user} />
-			</SafeAreaView>
-		</Layout>
+		</SimpleModal>
 	)
 }
