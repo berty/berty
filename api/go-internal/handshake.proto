@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package handshake;
+
+option go_package = "berty.tech/berty/go/internal/handshake";
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+
+message BoxEnvelope {
+  bytes box = 1;
+}
+
+message HelloPayload {
+  bytes ephemeral_pub_key = 1;
+}
+
+message RequesterAuthenticatePayload {
+  bytes requester_account_id = 1;
+  bytes requester_account_sig = 2;
+}
+
+message ResponderAcceptPayload {
+  bytes responder_account_sig = 1;
+}
+
+message RequesterAcknowledgePayload {
+  bool success = 1;
+}

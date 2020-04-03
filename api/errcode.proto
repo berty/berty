@@ -66,6 +66,7 @@ enum ErrCode {
   ErrHandshakeResponderHello = 1105;
   ErrHandshakeRequesterAuthenticate = 1106;
   ErrHandshakeResponderAccept = 1107;
+  ErrHandshakeRequesterAcknowledge = 1108;
 
   // Group errors
 
