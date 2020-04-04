@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, StyleProp, ViewStyle } from 'react-native'
 import { useResponsiveHeight, useResponsiveWidth } from 'react-native-responsive-dimensions'
 import { Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import QRCodeScanner from 'react-native-qrcode-scanner'
-import { Chat } from '@berty-tech/hooks'
 import { SimpleModal } from '../shared-components/SimpleModal'
+import { InvalidScan } from '../modals/InvalidScan'
+import { AddThisContact } from '../modals/AddThisContact'
+import { ModalsContext } from '../ModalsProvider'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -14,10 +16,10 @@ import { SimpleModal } from '../shared-components/SimpleModal'
 
 const ScanBody: React.FC = () => {
 	const [{ background }] = useStyles()
-	const sendContactRequest = Chat.useAccountSendContactRequest()
 	const navigation = useReactNavigation()
 	const size = useResponsiveWidth(75)
 	const borderSize = useResponsiveWidth(5)
+	const modals = useContext(ModalsContext)
 	return (
 		<View
 			style={[
@@ -48,15 +50,23 @@ const ScanBody: React.FC = () => {
 						if ((type as string) === 'QR_CODE') {
 							// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
 							console.log('Scan.tsx: found QR:', type, data)
-							let success = false
 							try {
-								sendContactRequest(data)
-								success = true
+								const parts = data.split(' ')
+								if (parts.length !== 2) {
+									throw new Error('Corrupted content')
+								}
+								const [b64Name, ref] = parts
+								const name = Buffer.from(b64Name, 'base64').toString('utf-8')
+								modals.setCurrent(
+									<AddThisContact
+										name={name}
+										publicKey={'unknown'}
+										reference={ref}
+										onConfirm={() => navigation.goBack()}
+									/>,
+								)
 							} catch (e) {
-								navigation.navigate('Error', { error: `${e}` })
-							}
-							if (success) {
-								navigation.goBack()
+								modals.setCurrent(<InvalidScan title='This link is invalid!' error={`${e}`} />)
 							}
 						}
 					}}

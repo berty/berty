@@ -1,31 +1,46 @@
 import React from 'react'
-import { useStyles } from '@berty-tech/styles'
 import { Footer as SharedFooter } from '../shared-components/Footer'
-import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { Chat } from '@berty-tech/hooks'
+import { useNavigation } from '@react-navigation/native'
 
-export const Footer = ({ navigate }) => {
-	const [{ color }] = useStyles()
+export const Footer: React.FC<{ currentRouteName: string }> = ({ currentRouteName }) => {
 	const client = Chat.useClient()
+	const navigation = useNavigation()
+	console.log('currentRouteName', currentRouteName)
+	let center, right
+	if (currentRouteName === 'Settings') {
+		center = {
+			icon: 'message-circle-outline',
+			onPress: () => navigation.navigate('Main'),
+		}
+		right = {
+			seed: client?.accountPk,
+			backgroundColor: 'blue',
+			size: 50,
+			elemSize: 30,
+			onPress: () => navigation.navigate('Settings'),
+		}
+	} else {
+		center = {
+			icon: 'plus-outline',
+			onPress: () => navigation.navigate('Main', { screen: 'Main.ListModal' }),
+			backgroundColor: 'blue',
+			size: 50,
+			elemSize: 30,
+			elemColor: 'white',
+		}
+		right = {
+			seed: client?.accountPk,
+			backgroundColor: 'white',
+			onPress: () => navigation.navigate('Settings'),
+		}
+	}
 	return (
-		<Store.AccountGet request={{ id: 0 }}>
-			{(response) => (
-				<Store.ContactGet request={{ id: response?.account?.contactId || 0 }}>
-					{(response) => (
-						<SharedFooter
-							left={{ icon: 'search-outline', onPress: navigate.main.search }}
-							center={{ icon: 'message-circle-outline', onPress: navigate.main.list }}
-							right={{
-								seed: client?.accountPk,
-								backgroundColor: color.blue,
-								size: 50,
-								elemSize: 35,
-								onPress: navigate.settings.home,
-							}}
-						/>
-					)}
-				</Store.ContactGet>
-			)}
-		</Store.AccountGet>
+		<SharedFooter
+			left={{ icon: 'search-outline', onPress: () => navigation.navigate('Search') }}
+			center={center}
+			right={right}
+			onLayout={() => {}}
+		/>
 	)
 }

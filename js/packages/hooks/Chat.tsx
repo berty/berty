@@ -108,16 +108,11 @@ export const useAccountSendContactRequest = () => {
 	if (!account) {
 		return () => {}
 	}
-	return (val: string) => {
-		const parts = val.split(' ')
-		if (parts.length !== 2) {
-			throw new Error('Corrupted content')
-		}
-		const [name, ref] = parts
+	return (name: string, ref: string) => {
 		dispatch(
 			chat.account.commands.sendContactRequest({
 				id: account.id,
-				otherName: Buffer.from(name, 'base64').toString('utf-8'),
+				otherName: name,
 				otherReference: ref,
 			}),
 		)

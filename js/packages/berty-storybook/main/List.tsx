@@ -284,7 +284,6 @@ export const List: React.FC<ScreenProps.Chat.List> = () => {
 		<View style={[absolute.fill, background.blue]}>
 			<Requests items={requests} onLayout={onLayoutRequests} />
 			<Conversations items={conversations} />
-			<Footer {...navigation} />
 		</View>
 	)
 }

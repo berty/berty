@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableOpacity, View, Image, StyleSheet, SafeAreaView } from 'react-native'
+import { TouchableOpacity, View, Image, SafeAreaView } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
 import LinearGradient from 'react-native-linear-gradient'
@@ -29,7 +29,7 @@ type FooterProps = {
 	onLayout: (event: any) => void
 }
 
-const ButtonFooter: React.FC<ButtonFooterProps> = ({
+const FooterButton: React.FC<ButtonFooterProps> = ({
 	backgroundColor = 'white',
 	avatarUri = null,
 	icon = null,
@@ -97,10 +97,10 @@ export const Footer: React.FC<FooterProps> = ({ left, center, right, onLayout })
 			style={[absolute.bottom, absolute.left, absolute.right]}
 			colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
 		>
-			<SafeAreaView style={[row.center]}>
-				<ButtonFooter {...left} />
-				<ButtonFooter {...center} />
-				<ButtonFooter {...right} />
+			<SafeAreaView style={[row.center, { alignItems: 'center' }]}>
+				<FooterButton {...left} />
+				<FooterButton {...center} />
+				<FooterButton {...right} />
 			</SafeAreaView>
 		</LinearGradient>
 	)
