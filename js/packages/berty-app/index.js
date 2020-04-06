@@ -2,6 +2,7 @@
  * @format
  */
 
+import 'react-native-gesture-handler'
 import 'node-libs-react-native/globals'
 
 import { Alert, AppRegistry } from 'react-native'
