@@ -124,7 +124,7 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Gr
 		return
 	}
 
-	vg := newViewGroup(v, g, info.MemberPK, info.DevicePK)
+	vg := newViewGroup(v, g, info.MemberPK, info.DevicePK, globalLogger)
 	vg.welcomeGroupEventDisplay()
 	vg.loop(v.ctx)
 
@@ -208,7 +208,7 @@ func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client 
 		app:    app,
 	}
 
-	v.accountGroupView = newViewGroup(v, g.Group, g.MemberPK, g.DevicePK)
+	v.accountGroupView = newViewGroup(v, g.Group, g.MemberPK, g.DevicePK, globalLogger)
 	v.selectedGroupView = v.accountGroupView
 	v.activeViewContainer = tview.NewFlex().SetDirection(tview.FlexRow).
 		AddItem(v.selectedGroupView.View(), 0, 1, false)
