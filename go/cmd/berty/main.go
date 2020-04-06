@@ -13,9 +13,9 @@ import (
 	"strings"
 
 	"berty.tech/berty/v2/go/cmd/berty/mini"
-	"berty.tech/berty/v2/go/internal/banner"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/bertydemo"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"

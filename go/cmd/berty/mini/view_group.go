@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/banner"
+	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
 	"github.com/pkg/errors"
