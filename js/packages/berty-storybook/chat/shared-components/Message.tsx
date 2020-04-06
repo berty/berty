@@ -29,7 +29,7 @@ type MessageProps = {
 
 // Styles
 const useStylesMessage = () => {
-	const [{ margin, row, column, flex, text, padding }] = useStyles()
+	const [{ margin, row, flex, text, padding }] = useStyles()
 	return {
 		isMeMessage: [margin.left.scale(70), row.item.bottom],
 		isOtherMessage: [margin.right.scale(70), row.item.top],
@@ -123,38 +123,50 @@ export const Message: React.FC<MessageProps> = ({
 					>
 						{payload.body}
 					</Text>
-				</View>
-				<View style={[payload.isMe && row.item.bottom]}>
-					{!state.length ? (
-						<View style={[row.left, { alignItems: 'center' }]}>
-							<Text style={[text.color.grey, padding.right.scale(5), _styles.dateMessage]}>
-								{formatTimestamp(new Date(payload.sentDate))}{' '}
-							</Text>
-							{payload.isMe && (
-								<Icon
-									name={payload.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
-									width={12}
-									height={12}
-									fill={color.blue}
-								/>
-							)}
-							<Text style={[text.color.blue, padding.left.scale(3), _styles.dateMessage]}>
-								{payload.isMe && (payload.acknowledged ? 'sent' : 'sending...')}
-							</Text>
-						</View>
-					) : (
-						state.map((value) => (
+					<View style={[payload.isMe && row.item.bottom]}>
+						{!state.length ? (
 							<View style={[row.left, { alignItems: 'center' }]}>
-								<Text style={[text.color.grey, _styles.dateMessageWithState]}>
-									{formatTimestamp(new Date(payload.sentDate))}
+								<Text
+									style={[
+										payload.acknowledged ? text.color.white : text.color.grey,
+										padding.right.scale(5),
+										_styles.dateMessage,
+									]}
+								>
+									{formatTimestamp(new Date(payload.sentDate))}{' '}
 								</Text>
-								<Icon name={value.icon} width={12} height={12} fill={value.color} />
-								<Text style={[_styles.stateMessageValue, { color: value.color }]}>
-									{value.value}
+								{payload.isMe && (
+									<Icon
+										name={payload.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
+										width={12}
+										height={12}
+										fill={payload.acknowledged ? color.white : color.blue}
+									/>
+								)}
+								<Text
+									style={[
+										payload.acknowledged ? text.color.white : text.color.blue,
+										padding.left.scale(3),
+										_styles.dateMessage,
+									]}
+								>
+									{payload.isMe && (payload.acknowledged ? 'sent' : 'sending...')}
 								</Text>
 							</View>
-						))
-					)}
+						) : (
+							state.map((value) => (
+								<View style={[row.left, { alignItems: 'center' }]}>
+									<Text style={[text.color.grey, _styles.dateMessageWithState]}>
+										{formatTimestamp(new Date(payload.sentDate))}
+									</Text>
+									<Icon name={value.icon} width={12} height={12} fill={value.color} />
+									<Text style={[_styles.stateMessageValue, { color: value.color }]}>
+										{value.value}
+									</Text>
+								</View>
+							))
+						)}
+					</View>
 				</View>
 			</View>
 		</View>
