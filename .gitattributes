@@ -22,6 +22,8 @@ gen.sum linguist-generated
 go.mod linguist-generated
 go.sum linguist-generated
 yarn.lock linguist-generated
+package.json linguist-generated
+Podfile.lock linguist-generated
 
 # Reduce conflicts on markdown files
 *.md merge=union
