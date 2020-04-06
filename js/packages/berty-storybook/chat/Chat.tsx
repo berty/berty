@@ -16,6 +16,7 @@ import { Chat as ChatHooks } from '@berty-tech/hooks'
 import { useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { CommonActions } from '@react-navigation/native'
+import { useNavigation as useReactNavigation } from '@react-navigation/native'
 
 //
 // Chat
@@ -32,6 +33,7 @@ const useStylesChat = () => {
 
 const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 	const { dispatch, goBack } = useNavigation()
+	const navigation = useReactNavigation()
 	const _styles = useStylesChat()
 	const [
 		{ absolute, row, padding, column, margin, text, flex, background, border, color },
@@ -67,16 +69,7 @@ const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 				</View>
 				<TouchableOpacity
 					style={[flex.tiny, row.item.justify]}
-					onPress={() =>
-						dispatch(
-							CommonActions.navigate({
-								name: Routes.Chat.One2OneSettings,
-								params: {
-									contact,
-								},
-							}),
-						)
-					}
+					onPress={() => navigation.navigate('ChatSettings', { contact })}
 				>
 					<ConversationProceduralAvatar size={45} conversationId={id} />
 				</TouchableOpacity>
@@ -102,23 +95,17 @@ const AppMessage: React.FC<{ message: string }> = ({ message }) => {
 }
 
 const MessageList: React.FC<{ id: string }> = (props) => {
-	const [cursors, setCursor] = useState([0])
 	const [{ row, overflow, flex, margin }] = useStyles()
 	const conversation = ChatHooks.useGetConversation(props.id)
 
 	return (
 		<FlatList
 			style={[overflow, row.item.fill, flex.tiny, margin.top.scale(140)]}
-			data={cursors}
+			data={conversation?.messages}
 			inverted
 			ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
-			renderItem={() => (
-				<View>
-					{conversation &&
-						conversation.messages &&
-						conversation.messages.map((message) => <AppMessage key={message} message={message} />)}
-				</View>
-			)}
+			renderItem={(info) => <AppMessage message={info.item} />}
+			keyExtractor={(msg) => msg}
 		/>
 	)
 }

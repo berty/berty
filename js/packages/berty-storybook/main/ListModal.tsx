@@ -144,7 +144,7 @@ const AddContact: React.FC<{}> = () => {
 						column.justify,
 						_styles.addContactItem,
 					]}
-					onPress={() => navigation.navigate('SomeScan')}
+					onPress={() => navigation.navigate('FullModals', { screen: 'Scan' })}
 				>
 					<View style={[row.fill]}>
 						<View />
@@ -165,7 +165,7 @@ const AddContact: React.FC<{}> = () => {
 						column.justify,
 						_styles.addContactItem,
 					]}
-					onPress={() => navigation.navigate('MyBertyId')}
+					onPress={() => navigation.navigate('FullModals', { screen: 'MyBertyId' })}
 				>
 					<View style={[row.fill]}>
 						<View />

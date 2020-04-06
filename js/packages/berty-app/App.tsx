@@ -18,7 +18,7 @@ import { Theme } from '@berty-tech/berty-storybook'
 import '@berty-tech/berty-i18n'
 import { enableScreens } from 'react-native-screens'
 import { Chat } from '@berty-tech/hooks'
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, useLinking } from '@react-navigation/native'
 import AsyncStorage from '@react-native-community/async-storage'
 
 import { ModalsProvider } from '@berty-tech/berty-storybook'
@@ -44,8 +44,58 @@ const TestModal: React.FC = () => {
 	return null
 }
 
+const NavContainer: React.FC = ({ children }) => {
+	const ref = React.useRef()
+
+	const { getInitialState } = useLinking(ref, {
+		prefixes: ['berty://'],
+		config: {
+			TransparentModals: {
+				screens: {
+					AddContact: {
+						path: ':value',
+					},
+				},
+			},
+		},
+	})
+
+	const [isReady, setIsReady] = React.useState(false)
+	const [initialState, setInitialState] = React.useState()
+
+	React.useEffect(() => {
+		Promise.race([
+			getInitialState(),
+			new Promise((resolve) =>
+				// Timeout in 150ms if `getInitialState` doesn't resolve
+				// Workaround for https://github.com/facebook/react-native/issues/25675
+				setTimeout(resolve, 150),
+			),
+		])
+			.catch((e) => {
+				console.error(e)
+			})
+			.then((state) => {
+				if (state !== undefined) {
+					setInitialState(state)
+				}
+
+				setIsReady(true)
+			})
+	}, [getInitialState])
+
+	if (!isReady) {
+		return null
+	}
+	return (
+		<NavigationContainer initialState={initialState} ref={ref}>
+			{children}
+		</NavigationContainer>
+	)
+}
+
 export const App: React.FC = () => (
-	<NavigationContainer>
+	<NavContainer>
 		<Store.Provider
 			rpcImpl={
 				faker.berty.chat.ChatService
@@ -55,13 +105,12 @@ export const App: React.FC = () => (
 			<Chat.Provider config={{ storage: AsyncStorage }}>
 				<Theme.Provider>
 					<ModalsProvider>
-						<LinkHandler />
 						<Navigation />
 					</ModalsProvider>
 				</Theme.Provider>
 			</Chat.Provider>
 		</Store.Provider>
-	</NavigationContainer>
+	</NavContainer>
 )
 
 export default App

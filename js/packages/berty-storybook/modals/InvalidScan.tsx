@@ -1,9 +1,9 @@
-import React, { useContext } from 'react'
-import { View, StyleSheet, TouchableOpacity, Modal } from 'react-native'
+import React from 'react'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { colors, useStyles } from '@berty-tech/styles'
-import { ModalsContext } from '../ModalsProvider'
+import { useNavigation } from '@react-navigation/native'
 
 //
 // Scan Invalid
@@ -92,12 +92,12 @@ const InvalidScanError: React.FC<{ error: string }> = ({ error }) => {
 const InvalidScanDismissButton: React.FC = () => {
 	const _styles = useStylesInvalidScan()
 	const [{ row, margin, color, padding, text }] = useStyles()
-	const modals = useContext(ModalsContext)
+	const navigation = useNavigation()
 
 	return (
 		<View style={row.center}>
 			<TouchableOpacity
-				onPress={() => modals.setCurrent()}
+				onPress={() => navigation.goBack()}
 				style={[row.fill, _styles.dismissButton, margin.top.huge]}
 			>
 				<Icon name='close' width={30} height={30} fill={color.grey} style={row.item.justify} />
@@ -109,7 +109,7 @@ const InvalidScanDismissButton: React.FC = () => {
 	)
 }
 
-const InvalidScanBody: React.FC<{ title: string; error: string }> = ({ title, error }) => {
+export const InvalidScan: React.FC<{ title: string; error: string }> = ({ title, error }) => {
 	const [{ background, padding, border, text, margin }] = useStyles()
 	return (
 		<View style={[background.white, padding.huge, { paddingTop: 0 }, border.radius.large]}>
@@ -124,19 +124,3 @@ const InvalidScanBody: React.FC<{ title: string; error: string }> = ({ title, er
 		</View>
 	)
 }
-
-export const InvalidScan: React.FC<{ error: string; title: string }> = ({ title, error }) => (
-	<Modal animationType='slide' transparent visible>
-		<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
-		<View
-			style={{
-				justifyContent: 'center',
-				alignItems: 'center',
-				width: '100%',
-				height: '100%',
-			}}
-		>
-			<InvalidScanBody title={title} error={error} />
-		</View>
-	</Modal>
-)

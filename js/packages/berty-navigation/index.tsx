@@ -2,11 +2,14 @@
 
 import React, { useMemo, useState } from 'react'
 import { createNativeStackNavigator } from 'react-native-screens/native-stack'
+import { createStackNavigator } from '@react-navigation/stack'
 import * as Stories from '@berty-tech/berty-storybook'
 import {
 	useNavigation as useReactNavigation,
 	NavigationProp,
 	CommonActions,
+	useLinking,
+	NavigationState,
 } from '@react-navigation/native'
 import {
 	createBottomTabNavigator,
@@ -18,6 +21,8 @@ import { Chat as ChatHooks } from '@berty-tech/hooks'
 import { chat } from '@berty-tech/store'
 import { Text, SafeAreaView } from 'react-native'
 import LinkHandler from '@berty-tech/berty-storybook/LinkHandler'
+import { AddContact } from '@berty-tech/berty-storybook/modals/AddContact'
+import { AddThisContact } from '@berty-tech/berty-storybook/modals/AddThisContact'
 
 export namespace ScreenProps {
 	export namespace Onboarding {
@@ -142,14 +147,14 @@ const createNavigation = ({
 						routes: [{ name: Routes.Onboarding.GetStarted }],
 					}),
 				)
-				dispatch(CommonActions.navigate('A', { screen: Routes.Main.List }))
+				dispatch(CommonActions.navigate('Tabs', { screen: Routes.Main.List }))
 			} else {
 				dispatch(
 					CommonActions.reset({
 						routes: [{ name: Routes.Main.List }],
 					}),
 				)
-				dispatch(CommonActions.navigate('B', { screen: Routes.Onboarding.GetStarted }))
+				dispatch(CommonActions.navigate('Onboarding', { screen: Routes.Onboarding.GetStarted }))
 			}
 		},
 		navigate: {
@@ -217,7 +222,7 @@ export const useNavigation = () => {
 	return useMemo(() => createNavigation(reactNav), [reactNav])
 }
 
-const FakeStack = createNativeStackNavigator()
+const FakeStack = createStackNavigator()
 export const FakeNavigation: React.FC = ({ children }) => {
 	return (
 		<FakeStack.Navigator screenOptions={{ headerShown: false }}>
@@ -226,7 +231,7 @@ export const FakeNavigation: React.FC = ({ children }) => {
 	)
 }
 
-const OnboardingStack = createNativeStackNavigator()
+const OnboardingStack = createStackNavigator()
 export const OnboardingNavigation: React.FC = () => (
 	<OnboardingStack.Navigator screenOptions={{ headerShown: false }}>
 		<OnboardingStack.Screen
@@ -248,7 +253,7 @@ export const OnboardingNavigation: React.FC = () => (
 	</OnboardingStack.Navigator>
 )
 
-const CreateGroupStack = createNativeStackNavigator()
+const CreateGroupStack = createStackNavigator()
 export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 	const [members, setMembers] = useState([] as chat.contact.Entity[])
 	const setMember = (contact: chat.contact.Entity) => {
@@ -300,9 +305,16 @@ export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 	)
 }
 
-const MainStack = createNativeStackNavigator()
+const MainStack = createStackNavigator()
 export const MainNavigation: React.FC<BottomTabBarProps> = () => (
-	<MainStack.Navigator screenOptions={{ headerShown: false }}>
+	<MainStack.Navigator
+		screenOptions={{
+			cardStyle: { backgroundColor: 'transparent' },
+			cardOverlayEnabled: true,
+		}}
+		mode='modal'
+		headerMode='none'
+	>
 		<MainStack.Screen name={Routes.Main.List} component={Stories.Main.List} />
 		<MainStack.Screen
 			name={Routes.Main.ContactRequest}
@@ -319,35 +331,13 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 			}}
 		/>
 		<MainStack.Screen name={Routes.Main.ScanRequest} component={Stories.Main.ScanRequest} />
-		<MainStack.Screen
-			name={'SomeScan'}
-			options={{ stackPresentation: 'modal' }}
-			component={Stories.Main.Scan}
-		/>
-		<MainStack.Screen name={Routes.Chat.One2One} component={Stories.Chat.Chat} />
+
 		<MainStack.Screen name={Routes.Chat.Group} component={Stories.Chat.ChatGroup} />
-		<MainStack.Screen name={Routes.Chat.Settings} component={Stories.Chat.ChatSettings} />
 		<MainStack.Screen
 			name={Routes.Chat.One2OneSettings}
 			component={Stories.Chat.ContactChatSettings}
 		/>
 		<MainStack.Screen name={Routes.Chat.GroupSettings} component={Stories.Chat.GroupChatSettings} />
-
-		<MainStack.Screen
-			name={Routes.Main.ListModal}
-			component={Stories.Main.ListModal}
-			options={{
-				stackPresentation: 'transparentModal',
-				contentStyle: { backgroundColor: 'transparent' },
-			}}
-		/>
-		<MainStack.Screen
-			name={'MyBertyId'}
-			component={Stories.Settings.MyBertyId}
-			options={{
-				stackPresentation: 'modal',
-			}}
-		/>
 		<MainStack.Screen
 			name={Routes.Main.RequestSent}
 			component={Stories.Main.RequestSent}
@@ -358,50 +348,8 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 			component={CreateGroupNavigation}
 			options={{ stackPresentation: 'transparentModal' }}
 		/>
+		<RootStack.Screen name='TransparentModals' component={TransparentModalsScreen} />
 	</MainStack.Navigator>
-)
-
-const SettingsStack = createNativeStackNavigator()
-export const SettingsNavigation: React.FC = () => (
-	<SettingsStack.Navigator screenOptions={{ headerShown: false }}>
-		<SettingsStack.Screen name={Routes.Settings.Home} component={Stories.Settings.Home} />
-		<SettingsStack.Screen
-			name={Routes.Settings.MyBertyId}
-			component={Stories.Settings.MyBertyId}
-			options={{ stackPresentation: 'transparentModal' }}
-		/>
-		<SettingsStack.Screen
-			name={Routes.Settings.EditProfile}
-			component={Stories.Settings.EditProfile}
-			options={{
-				contentStyle: { backgroundColor: 'transparent' },
-			}}
-		/>
-		<SettingsStack.Screen
-			name={Routes.Settings.AppUpdates}
-			component={Stories.Settings.AppUpdates}
-		/>
-		<SettingsStack.Screen name={Routes.Settings.Help} component={Stories.Settings.Help} />
-		<SettingsStack.Screen name={Routes.Settings.Mode} component={Stories.Settings.Mode} />
-		<SettingsStack.Screen
-			name={Routes.Settings.BlockedContacts}
-			component={Stories.Settings.BlockedContacts}
-		/>
-		<SettingsStack.Screen
-			name={Routes.Settings.Notifications}
-			component={Stories.Settings.Notifications}
-		/>
-		<SettingsStack.Screen name={Routes.Settings.Bluetooth} component={Stories.Settings.Bluetooth} />
-		<SettingsStack.Screen
-			name={Routes.Settings.AboutBerty}
-			component={Stories.Settings.AboutBerty}
-		/>
-		<SettingsStack.Screen
-			name={Routes.Settings.TermsOfUse}
-			component={Stories.Settings.TermsOfUse}
-		/>
-		<SettingsStack.Screen name={Routes.Settings.DevTools} component={Stories.Settings.DevTools} />
-	</SettingsStack.Navigator>
 )
 
 const TabBar: React.FC<BottomTabBarProps> = ({ state: { routes, index } }) => {
@@ -414,36 +362,92 @@ export const TabScreen: React.FC = () => {
 	return (
 		<TabStack.Navigator tabBar={TabBar}>
 			<TabStack.Screen name={'Main'} component={MainNavigation} />
-			<TabStack.Screen name={'Settings'} component={SettingsNavigation} />
+			<TabStack.Screen name={'Settings'} component={Stories.Settings.Home} />
+			<RootStack.Screen name='TransparentModals' component={TransparentModalsScreen} />
 		</TabStack.Navigator>
 	)
 }
 
-const ModalsStack = createNativeStackNavigator()
-const ModalsScreen: React.FC = () => (
-	<ModalsStack.Navigator>
-		<ModalsStack.Screen name={'InvalidScan'} component={InvalidScan} />
-		<ModalsStack.Screen name={'AddThisContact'} component={AddThisContact} />
-	</ModalsStack.Navigator>
+const TransparentModalsStack = createStackNavigator()
+export const TransparentModalsScreen: React.FC = () => (
+	<TransparentModalsStack.Navigator
+		screenOptions={{
+			cardStyle: { backgroundColor: 'transparent' },
+			cardOverlayEnabled: true,
+		}}
+		mode='modal'
+		headerMode='none'
+	>
+		<TransparentModalsStack.Screen
+			name={Routes.Main.ListModal}
+			component={Stories.Main.ListModal}
+		/>
+		<TransparentModalsStack.Screen name={'AddContact'} component={AddContact} />
+	</TransparentModalsStack.Navigator>
+)
+
+const FullModalsStack = createStackNavigator()
+export const FullModalsScreen: React.FC = () => (
+	<FullModalsStack.Navigator
+		screenOptions={{ headerStyle: { backgroundColor: 'transparent' }, headerTitle: '' }}
+	>
+		<FullModalsStack.Screen name={'Search'} component={Stories.Main.Search} />
+		<FullModalsStack.Screen name={'Scan'} component={Stories.Main.Scan} />
+		<FullModalsStack.Screen name={'MyBertyId'} component={Stories.Settings.MyBertyId} />
+	</FullModalsStack.Navigator>
+)
+
+const ChatStack = createStackNavigator()
+export const ChatScreen: React.FC = () => (
+	<ChatStack.Navigator headerMode='none'>
+		<ChatStack.Screen name={'ChatMain'} component={Stories.Chat.Chat} />
+		<ChatStack.Screen name={'ChatSettings'} component={Stories.Chat.ChatSettings} />
+	</ChatStack.Navigator>
 )
 
 // TODO: fix navigation with switchNavigator
-const RootStack = createNativeStackNavigator()
+const RootStack = createStackNavigator()
 export const Navigation: React.FC = () => {
 	const length = ChatHooks.useAccountLength()
+
 	return (
 		<RootStack.Navigator
 			initialRouteName={length >= 1 ? 'Tabs' : 'Onboarding'}
-			screenOptions={{ headerShown: false }}
+			screenOptions={{
+				cardStyle: { backgroundColor: 'transparent' },
+				cardOverlayEnabled: true,
+			}}
+			mode='modal'
+			headerMode='none'
 		>
+			<RootStack.Screen name='FullModals' component={FullModalsScreen} />
+			<RootStack.Screen name='TransparentModals' component={TransparentModalsScreen} />
 			<RootStack.Screen name={'Tabs'} component={TabScreen} />
+			<RootStack.Screen name={'Chat'} component={ChatScreen} />
 			<RootStack.Screen name={'Onboarding'} component={OnboardingNavigation} />
-			<RootStack.Screen name={'Modals'} component={ModalsScreen} />
+
 			<RootStack.Screen
-				name={'Search'}
-				component={Stories.Main.Search}
-				options={{ stackPresentation: 'modal' }}
+				name={Routes.Settings.EditProfile}
+				component={Stories.Settings.EditProfile}
+				options={{
+					contentStyle: { backgroundColor: 'transparent' },
+				}}
 			/>
+			<RootStack.Screen name={Routes.Settings.AppUpdates} component={Stories.Settings.AppUpdates} />
+			<RootStack.Screen name={Routes.Settings.Help} component={Stories.Settings.Help} />
+			<RootStack.Screen name={Routes.Settings.Mode} component={Stories.Settings.Mode} />
+			<RootStack.Screen
+				name={Routes.Settings.BlockedContacts}
+				component={Stories.Settings.BlockedContacts}
+			/>
+			<RootStack.Screen
+				name={Routes.Settings.Notifications}
+				component={Stories.Settings.Notifications}
+			/>
+			<RootStack.Screen name={Routes.Settings.Bluetooth} component={Stories.Settings.Bluetooth} />
+			<RootStack.Screen name={Routes.Settings.AboutBerty} component={Stories.Settings.AboutBerty} />
+			<RootStack.Screen name={Routes.Settings.TermsOfUse} component={Stories.Settings.TermsOfUse} />
+			<RootStack.Screen name={Routes.Settings.DevTools} component={Stories.Settings.DevTools} />
 		</RootStack.Navigator>
 	)
 }

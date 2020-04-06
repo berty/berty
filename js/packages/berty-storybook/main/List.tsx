@@ -19,7 +19,7 @@ import {
 } from '../shared-components/ProceduralCircleAvatar'
 import { Chat } from '@berty-tech/hooks'
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/berty-navigation'
-import { CommonActions } from '@react-navigation/native'
+import { CommonActions, useNavigation as useReactNavigation } from '@react-navigation/native'
 import { chat } from '@berty-tech/store'
 
 type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
@@ -177,6 +177,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	const { title, kind, id, messages } = props
 	const [{ color, row, border, flex, column, padding, text }] = useStyles()
 	const message = Chat.useGetMessage(messages ? messages[messages.length - 1] : '')
+	const navigation = useReactNavigation()
 
 	return (
 		<TouchableHighlight
@@ -194,14 +195,12 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								}),
 							)
 					: () =>
-							dispatch(
-								CommonActions.navigate({
-									name: Routes.Chat.One2One,
-									params: {
-										convId: id,
-									},
-								}),
-							)
+							navigation.navigate('Chat', {
+								screen: 'ChatMain',
+								params: {
+									convId: id,
+								},
+							})
 			}
 		>
 			<View

@@ -17,13 +17,13 @@ export const Footer: React.FC<{ currentRouteName: string }> = ({ currentRouteNam
 			seed: client?.accountPk,
 			backgroundColor: 'blue',
 			size: 50,
-			elemSize: 30,
+			elemSize: 35,
 			onPress: () => navigation.navigate('Settings'),
 		}
 	} else {
 		center = {
 			icon: 'plus-outline',
-			onPress: () => navigation.navigate('Main', { screen: 'Main.ListModal' }),
+			onPress: () => navigation.navigate('TransparentModals', { screen: 'Main.ListModal' }),
 			backgroundColor: 'blue',
 			size: 50,
 			elemSize: 30,
@@ -33,11 +33,15 @@ export const Footer: React.FC<{ currentRouteName: string }> = ({ currentRouteNam
 			seed: client?.accountPk,
 			backgroundColor: 'white',
 			onPress: () => navigation.navigate('Settings'),
+			elemSize: 30,
 		}
 	}
 	return (
 		<SharedFooter
-			left={{ icon: 'search-outline', onPress: () => navigation.navigate('Search') }}
+			left={{
+				icon: 'search-outline',
+				onPress: () => navigation.navigate('FullModals', { screen: 'Search' }),
+			}}
 			center={center}
 			right={right}
 			onLayout={() => {}}

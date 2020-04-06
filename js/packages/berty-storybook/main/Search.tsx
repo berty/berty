@@ -1,19 +1,11 @@
 import React, { useState } from 'react'
-import {
-	View,
-	SafeAreaView,
-	ScrollView,
-	TouchableHighlight,
-	StyleSheet,
-	Dimensions,
-	TextInput,
-} from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { View, TouchableHighlight, StyleSheet, Dimensions, TextInput } from 'react-native'
+import { Text, Icon } from 'react-native-ui-kitten'
 import { styles, colors, useStyles } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
-import { RequestProps, UserProps } from '../shared-props/User'
 import { Chat } from '@berty-tech/hooks'
+import { useResponsiveHeight } from 'react-native-responsive-dimensions'
 
 const Screen = Dimensions.get('window')
 
@@ -32,15 +24,11 @@ const _stylesSearch = StyleSheet.create({
 	searchComponent: {
 		borderRadius: 7,
 		backgroundColor: colors.lightYellow,
-		top: -395,
 	},
-	searchComponentBody: {
-		top: -290,
-	},
+	searchComponentBody: {},
 	searchResultsSearchBar: {
 		borderRadius: 7,
 		backgroundColor: colors.lightYellow,
-		top: -50,
 	},
 })
 
@@ -50,25 +38,47 @@ const SearchBar: React.FC<{ onChange?: (text: string) => void; searchText: strin
 	onChange,
 	searchText,
 }) => {
-	const [{ row, color, margin }] = useStyles()
-
+	const [{ row, color, padding }] = useStyles()
+	const windowWidth = Dimensions.get('window').width
+	const iconSize = 25
+	const paddingHorizontal = 15
+	const inputWidth = windowWidth - 2 * (iconSize + paddingHorizontal + 10 + 30)
 	return (
-		<View>
-			<View style={[row.fill]}>
-				<View style={[row.center]}>
-					<Icon name='search' width={25} height={25} fill={color.yellow} />
-					<TextInput
-						onChangeText={onChange}
-						placeholder='Search'
-						placeholderTextColor={color.yellow}
-						style={[
-							margin.left.medium,
-							{ color: color.yellow, backgroundColor: color.light.yellow },
-						]}
-					/>
-				</View>
+		<View style={{ paddingHorizontal: 30 }}>
+			<View
+				style={[
+					{
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						width: '100%',
+						backgroundColor: colors.lightYellow,
+						borderRadius: 10,
+						padding: 10,
+					},
+				]}
+			>
+				<Icon name='search' width={iconSize} height={iconSize} fill={color.yellow} />
+				<TextInput
+					onChangeText={onChange}
+					placeholder='Search'
+					placeholderTextColor={color.yellow}
+					style={[
+						{
+							color: color.yellow,
+							backgroundColor: color.light.yellow,
+							width: inputWidth,
+							paddingHorizontal,
+							flexGrow: 1,
+						},
+					]}
+				/>
 				{searchText.length > 0 && (
-					<Icon name='close-circle-outline' width={25} height={25} fill={color.yellow} />
+					<Icon
+						name='close-circle-outline'
+						width={iconSize}
+						height={iconSize}
+						fill={color.yellow}
+					/>
 				)}
 			</View>
 		</View>
@@ -96,17 +106,31 @@ const SearchHint = () => {
 	)
 }
 
-const SearchComponent: React.FC<{}> = () => {
+export const Search: React.FC<{}> = () => {
 	const [searchText, setSearchText] = useState(initialSearchText)
 	const contacts = Chat.useAccountContactSearchResults(searchText)
-	const [{ padding, column }] = useStyles()
+	const [{ padding, column, color, margin, row, border }] = useStyles()
+	const topMargin = useResponsiveHeight(2.5)
 
 	return (
-		<View style={[{ height: Screen.height, justifyContent: 'center' }]}>
-			<View style={[padding.small, _stylesSearch.searchComponent]}>
-				<SearchBar searchText={searchText} onChange={setSearchText} />
-			</View>
-			<View style={[column.justify, _stylesSearch.searchComponentBody]}>
+		<View style={[{ height: '100%', width: '100%', backgroundColor: color.yellow }]}>
+			<View
+				style={[
+					margin.top.small,
+					row.item.justify,
+					border.scale(2.5),
+					border.color.light.grey,
+					border.radius.scale(4),
+					{
+						backgroundColor: 'white',
+						width: '14%',
+						opacity: 0.6,
+						marginBottom: topMargin,
+					},
+				]}
+			/>
+			<SearchBar searchText={searchText} onChange={setSearchText} />
+			<View style={[column.justify, _stylesSearch.searchComponentBody, { marginTop: 30 }]}>
 				{contacts.length > 0 ? (
 					<SDTSModalComponent
 						rows={[
@@ -133,33 +157,6 @@ const SearchComponent: React.FC<{}> = () => {
 				)}
 			</View>
 		</View>
-	)
-}
-
-export const Search: React.FC<{}> = () => {
-	const firstNotToggledPoint = Screen.height - 120
-	const firstToggledPoint = 20
-	const [{ flex, color }] = useStyles()
-
-	return (
-		<Layout style={[flex.tiny]}>
-			<SafeAreaView style={[flex.tiny]}>
-				<SDTSModalComponent
-					rows={[
-						{
-							toggledPoint: firstToggledPoint,
-							notToggledPoint: firstNotToggledPoint,
-							initialPoint: firstToggledPoint,
-							header: false,
-							maxHeight: Screen.height - 90,
-							bgColor: color.yellow,
-						},
-					]}
-				>
-					<SearchComponent />
-				</SDTSModalComponent>
-			</SafeAreaView>
-		</Layout>
 	)
 }
 
