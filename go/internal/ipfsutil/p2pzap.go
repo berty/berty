@@ -45,6 +45,9 @@ func getP2PLogLevel(level string) logging.Level {
 }
 
 func ConfigureLogger(filter string, logger *zap.Logger, logLevel string) error {
+	// Add CallerSkip to Show the original caller of the log
+	logger = logger.WithOptions(zap.AddCallerSkip(4))
+
 	logging.SetBackend(&p2pLogBackendWrapper{
 		logger: logger.Named("lp2p"),
 	})
