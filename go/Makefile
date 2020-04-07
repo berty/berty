@@ -16,26 +16,21 @@ check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,
 ## General rules
 ##
 
-.PHONY: install
-install: go.install
-
 .PHONY: build
-build: bazel.build
+build:
+	$(MAKE) -C .. bazel.build
 
 .PHONY: run
-run: bazel.daemon
+run:
+	$(MAKE) -C .. bazel.daemon
 
 .PHONY: dev
-dev: ibazel.daemon
-
-.PHONY: test
-test: unittest lint tidy
-
-.PHONY: lint
-lint: go.lint
+dev:
+	$(MAKE) -C .. ibazel.daemon
 
 .PHONY: autotest
-autotest: ibazel.unittest
+autotest:
+	$(MAKE) -C .. ibazel.unittest
 
 .PHONY: unittest
 unittest: go.unittest
@@ -43,37 +38,24 @@ unittest: go.unittest
 .PHONY: generate
 generate: pb.generate
 
-.PHONY: tidy
-tidy: pb.generate
-	$(call check-program, $(GO))
-	GO111MODULE=on $(GO) mod tidy
-
-.PHONY: docker.build
-docker.build: pb.generate
-	$(call check-program, docker)
-	docker build -t bertytech/berty ..
-
-.PHONY: docker.fast
-docker.fast: args ?= -h
-docker.fast: run_opts ?=
-docker.fast: pb.generate
-	$(call check-program, $(GO) docker)
-	@mkdir -p out
-	GOOS=linux GOARCH=amd64 GO111MODULE=on $(GO) build -v -o ./out/berty-linux-static ./cmd/berty
-	docker run -it --rm -v $(PWD)/out/berty-linux-static:/bin/berty $(run_opts) ubuntu berty $(args)
+.PHONY: install
+install: go.install
 
 .PHONY: clean
-clean: pb.clean bazel.clean
+clean: pb.clean
 	rm -rf vendor/ out/
+	$(MAKE) -C .. bazel.clean
 
 .PHONY: fclean
-fclean: clean bazel.fclean
+fclean: clean
+	$(MAKE) -C .. bazel.fclean
 
 .PHONY: re
 re: clean build
 
+
 ##
-## Go rules (without bazel)
+## Go rules
 ##
 
 .PHONY: go.lint
@@ -101,6 +83,31 @@ go.unittest.watch:
 go.install: pb.generate
 	$(call check-program, $(GO))
 	GO111MODULE=on $(GO) install -v ./cmd/...
+
+.PHONY: test
+test: unittest lint tidy
+
+.PHONY: lint
+lint: go.lint
+
+.PHONY: tidy
+tidy: pb.generate
+	$(call check-program, $(GO))
+	GO111MODULE=on $(GO) mod tidy
+
+.PHONY: docker.build
+docker.build: pb.generate
+	$(call check-program, docker)
+	docker build -t bertytech/berty ..
+
+.PHONY: docker.fast
+docker.fast: args ?= -h
+docker.fast: run_opts ?=
+docker.fast: pb.generate
+	$(call check-program, $(GO) docker)
+	@mkdir -p out
+	GOOS=linux GOARCH=amd64 GO111MODULE=on $(GO) build -v -o ./out/berty-linux-static ./cmd/berty
+	docker run -it --rm -v $(PWD)/out/berty-linux-static:/bin/berty $(run_opts) ubuntu berty $(args)
 
 ##
 ## Code gen

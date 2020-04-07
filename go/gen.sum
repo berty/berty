@@ -3,4 +3,4 @@ f261ce8b5beb7a3dc25bc3dc562dc4b7122d631b  ../api/bertydemo.proto
 4cb5e151cf454bf18652eb46e95c77eac1f49800  ../api/bertytypes.proto
 be73e02731d03057fa2d8a7faacfc54aa574ed68  ../api/errcode.proto
 5589d560e33f2da4a466ad965eb9c8bd3d7612cd  ../api/go-internal/handshake.proto
-c971ac227c814f19b89412b1e6850725d8720c5c  Makefile
+98754afd30c337b4cfadf47033c082140069d951  Makefile
