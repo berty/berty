@@ -19,24 +19,33 @@ import (
 )
 
 // @FIXME: listeners should not be pass as direct argument, instead we should pass a config
+type IpfsOpts struct {
+	Listeners []string // multiaddrs
+	Bootstrap []string // multiaddrs
+	Routing   ipfs_libp2p.RoutingOption
+}
 
 // NewInMemoryCoreAPI returns an IPFS CoreAPI based on an opininated ipfs_node.BuildCfg
-func NewInMemoryCoreAPI(ctx context.Context, listeners ...string) (ipfs_interface.CoreAPI, *ipfs_core.IpfsNode, error) {
-	cfg, err := createBuildConfig(listeners...)
+func NewInMemoryCoreAPI(ctx context.Context, opts *IpfsOpts) (ipfs_interface.CoreAPI, *ipfs_core.IpfsNode, error) {
+	cfg, err := createBuildConfig(opts)
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
 	return NewConfigurableCoreAPI(ctx, cfg)
 }
 
-func createBuildConfig(listeners ...string) (*ipfs_node.BuildCfg, error) {
+func createBuildConfig(opts *IpfsOpts) (*ipfs_node.BuildCfg, error) {
 	ds := ipfs_datastore.NewMapDatastore()
-	repo, err := createRepo(ipfs_datastoresync.MutexWrap(ds), listeners...)
+	repo, err := createRepo(ipfs_datastoresync.MutexWrap(ds), opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	routing := ipfs_libp2p.DHTClientOption
+	if opts.Routing != nil {
+		routing = opts.Routing
+	}
+
 	hostopts := ipfs_libp2p.DefaultHostOption
 	return &ipfs_node.BuildCfg{
 		Online:                      true,
@@ -52,7 +61,7 @@ func createBuildConfig(listeners ...string) (*ipfs_node.BuildCfg, error) {
 	}, nil
 }
 
-func createRepo(dstore ipfs_repo.Datastore, listeners ...string) (ipfs_repo.Repo, error) {
+func createRepo(dstore ipfs_repo.Datastore, opts *IpfsOpts) (ipfs_repo.Repo, error) {
 	c := ipfs_cfg.Config{}
 	priv, pub, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, crand.Reader) // nolint:staticcheck
 	if err != nil {
@@ -69,10 +78,14 @@ func createRepo(dstore ipfs_repo.Datastore, listeners ...string) (ipfs_repo.Repo
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	c.Bootstrap = ipfs_cfg.DefaultBootstrapAddresses
+	if len(opts.Bootstrap) > 0 {
+		c.Bootstrap = opts.Bootstrap
+	} else {
+		c.Bootstrap = ipfs_cfg.DefaultBootstrapAddresses
+	}
 
-	if len(listeners) > 0 {
-		c.Addresses.Swarm = listeners
+	if len(opts.Listeners) > 0 {
+		c.Addresses.Swarm = opts.Listeners
 	} else {
 		c.Addresses.Swarm = []string{
 			"/ip4/0.0.0.0/tcp/4001",

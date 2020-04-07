@@ -137,6 +137,7 @@ func (c *rendezvousDiscovery) FindPeers(ctx context.Context, ns string, opts ...
 		count = limit
 	}
 
+	// fmt.Printf("rdvp findpeers found [%s]: %d peers found\n", ns, count)
 	chPeer := make(chan peer.AddrInfo, count)
 
 	c.rngMux.Lock()

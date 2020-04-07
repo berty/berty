@@ -17,6 +17,7 @@ import (
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -28,6 +29,7 @@ func TestScenario_JoinGroup(t *testing.T) {
 		ConnectFunc    ConnnectTestingProtocolFunc
 		IsSlowTest     bool
 	}{
+
 		{"2 clients/connectAll", 2, ConnectAll, true},
 
 		// @FIXME(gfanton): those tests doesn't works
@@ -52,7 +54,8 @@ func testingScenario_JoinGroup(t *testing.T, nService int, cf ConnnectTestingPro
 	defer cancel()
 
 	opts := TestingOpts{
-		Logger: testutil.Logger(t),
+		Mocknet: libp2p_mocknet.New(ctx),
+		Logger:  testutil.Logger(t),
 	}
 
 	// Setup test
@@ -61,7 +64,7 @@ func testingScenario_JoinGroup(t *testing.T, nService int, cf ConnnectTestingPro
 	defer cleanup()
 
 	// connect all pts together
-	cf(t, pts)
+	cf(t, opts.Mocknet)
 
 	// create group
 	group, _, err := NewGroupMultiMember()

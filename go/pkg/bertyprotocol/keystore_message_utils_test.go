@@ -378,8 +378,9 @@ func testMessageKeyHolderCatchUp(t *testing.T, expectedNewDevices int, isSlow bo
 	dir := path.Join(os.TempDir(), fmt.Sprintf("%d", os.Getpid()), "MessageKeyHolderCatchUp")
 	defer os.RemoveAll(dir)
 
-	peers, _ := createPeersWithGroup(ctx, t, dir, 1, 1)
-	defer dropPeers(t, peers)
+	peers, _, cleanup := createPeersWithGroup(ctx, t, dir, 1, 1)
+	defer cleanup()
+
 	peer := peers[0]
 
 	mkh1 := peer.MKS
@@ -436,8 +437,8 @@ func testMessageKeyHolderSubscription(t *testing.T, expectedNewDevices int, isSl
 	dir := path.Join(os.TempDir(), fmt.Sprintf("%d", os.Getpid()), "MessageKeyHolderSubscription")
 	defer os.RemoveAll(dir)
 
-	peers, _ := createPeersWithGroup(ctx, t, dir, 1, 1)
-	defer dropPeers(t, peers)
+	peers, _, cleanup := createPeersWithGroup(ctx, t, dir, 1, 1)
+	defer cleanup()
 
 	peer := peers[0]
 

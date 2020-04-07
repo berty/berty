@@ -20,8 +20,8 @@ func TestAdd(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	ipfs := ipfsutil.TestingCoreAPI(ctx, t)
-	defer ipfs.Close()
+	ipfs, cleanup := ipfsutil.TestingCoreAPI(ctx, t)
+	defer cleanup()
 
 	dir := "./orbitdb/benchmarks"
 	defer os.RemoveAll(dir)

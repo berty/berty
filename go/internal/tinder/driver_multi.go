@@ -29,6 +29,8 @@ func NewMultiDriver(drivers ...Driver) Driver {
 
 // Advertise simply dispatch Advertise request across all the drivers
 func (md *MultiDriver) Advertise(ctx context.Context, ns string, opts ...p2p_discovery.Option) (time.Duration, error) {
+	// fmt.Printf("[multi] advertise %s\n", ns)
+
 	// Get options
 	var options p2p_discovery.Options
 	err := options.Apply(opts...)
@@ -70,6 +72,7 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 	for _, driver := range md.drivers {
 		ch, err := driver.FindPeers(ctx, ns, opts...)
 		if err != nil { // @TODO(gfanton): log this
+			// fmt.Printf("Error while looking for peers: %v", err)
 			continue
 		}
 
@@ -102,6 +105,7 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 
 			// we can safly get our peer
 			peer := value.Interface().(p2p_peer.AddrInfo)
+			// fmt.Printf("[multi] found a peers: %v for %s\n", peer, ns)
 
 			// forward the peer
 			select {

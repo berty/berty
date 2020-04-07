@@ -7,18 +7,17 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 
 	keystore "github.com/ipfs/go-ipfs-keystore"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
+	peer "github.com/libp2p/go-libp2p-peer"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 )
 
@@ -33,19 +32,22 @@ type TestingProtocol struct {
 type TestingOpts struct {
 	Logger  *zap.Logger
 	Mocknet libp2p_mocknet.Mocknet
+	RDVPeer peer.ID
 }
 
 func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*TestingProtocol, func()) {
 	t.Helper()
 
-	var node ipfsutil.CoreAPIMock
-
-	if opts.Mocknet != nil {
-		node = ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, opts.Mocknet)
-	} else {
-		node = ipfsutil.TestingCoreAPI(ctx, t)
+	if opts.Mocknet == nil {
+		opts.Mocknet = libp2p_mocknet.New(ctx)
 	}
 
+	ipfsopts := &ipfsutil.TestingAPIOpts{
+		Mocknet: opts.Mocknet,
+		RDVPeer: opts.RDVPeer,
+	}
+
+	node, cleanupNode := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsopts)
 	serviceOpts := Opts{
 		Logger:          opts.Logger,
 		DeviceKeystore:  NewDeviceKeystore(keystore.NewMemKeystore()),
@@ -53,43 +55,26 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 		IpfsCoreAPI:     node,
 	}
 
-	// setup grpc
+	service, cleanupService := TestingService(t, serviceOpts)
 
-	// setup grpc server
+	// setup client
 	grpcLogger := opts.Logger.Named("grpc")
-	// Define customfunc to handle panic
-	panicHandler := func(p interface{}) (err error) {
-		return status.Errorf(codes.Unknown, "panic recover: %v", p)
-	}
-
-	// Shared options for the logger, with a custom gRPC code to log level function.
-	recoverOpts := []grpc_recovery.Option{
-		grpc_recovery.WithRecoveryHandler(panicHandler),
-	}
-
 	zapOpts := []grpc_zap.Option{}
-
 	serverOpts := []grpc.ServerOption{
 		grpc_middleware.WithUnaryServerChain(
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-
 			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
-			grpc_recovery.UnaryServerInterceptor(recoverOpts...),
 		),
 		grpc_middleware.WithStreamServerChain(
 			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
-			grpc_recovery.StreamServerInterceptor(recoverOpts...),
 		),
 	}
-
-	service, cleanupService := TestingService(t, serviceOpts)
 	client, cleanupClient := TestingClient(t, service, serverOpts...)
-
 	cleanup := func() {
 		cleanupClient()
 		cleanupService()
-		node.Close()
+		cleanupNode()
 	}
 
 	tp := &TestingProtocol{
@@ -105,15 +90,6 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, n int) ([]*TestingProtocol, func()) {
 	t.Helper()
 
-	cls := make([]func(), n)
-	cleanup := func() {
-		for i := range cls {
-			if cls[i] != nil {
-				cls[i]()
-			}
-		}
-	}
-
 	if opts.Mocknet == nil {
 		opts.Mocknet = libp2p_mocknet.New(ctx)
 	}
@@ -121,19 +97,41 @@ func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpt
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
 	}
-
 	logger := opts.Logger
 
+	rdvpeer, err := opts.Mocknet.GenPeer()
+	_, cleanupRDVP := ipfsutil.TestingRDVP(ctx, t, rdvpeer)
+	rdvpnet := opts.Mocknet.Net(rdvpeer.ID())
+	require.NotNil(t, rdvpnet)
+
+	opts.RDVPeer = rdvpeer.ID()
+
+	cls := make([]func(), n)
 	tps := make([]*TestingProtocol, n)
 	for i := range tps {
 		opts.Logger = logger.Named(fmt.Sprintf("pt[%d]", i))
+
 		tps[i], cls[i] = NewTestingProtocol(ctx, t, opts)
 	}
 
-	err := opts.Mocknet.LinkAll()
+	err = opts.Mocknet.LinkAll()
 	require.NoError(t, err)
 
-	return tps, cleanup
+	for _, net := range opts.Mocknet.Nets() {
+		if net != rdvpnet {
+			_, err = opts.Mocknet.ConnectNets(net, rdvpnet)
+			assert.NoError(t, err)
+		}
+	}
+
+	return tps, func() {
+		for i := range cls {
+			cls[i]()
+		}
+
+		cleanupRDVP()
+	}
+
 }
 
 // TestingService returns a configured Client struct with in-memory contexts.
@@ -149,12 +147,10 @@ func TestingService(t *testing.T, opts Opts) (Service, func()) {
 		opts.Logger = zap.NewNop()
 	}
 
-	ipfsCoreClose := func() {}
+	cleanupNode := func() {}
 
 	if opts.IpfsCoreAPI == nil {
-		ca := ipfsutil.TestingCoreAPI(ctx, t)
-		opts.IpfsCoreAPI = ca
-		ipfsCoreClose = ca.Close
+		opts.IpfsCoreAPI, cleanupNode = ipfsutil.TestingCoreAPI(ctx, t)
 	}
 
 	service, err := New(opts)
@@ -164,7 +160,7 @@ func TestingService(t *testing.T, opts Opts) (Service, func()) {
 
 	cleanup := func() {
 		service.Close()
-		ipfsCoreClose()
+		cleanupNode()
 	}
 
 	return service, cleanup
@@ -195,17 +191,14 @@ func TestingClient(t *testing.T, svc Service, opts ...grpc.ServerOption) (client
 }
 
 // Connect Peers Helper
-type ConnnectTestingProtocolFunc func(*testing.T, []*TestingProtocol)
+type ConnnectTestingProtocolFunc func(*testing.T, libp2p_mocknet.Mocknet)
 
 // ConnectAll peers between themselves
-func ConnectAll(t *testing.T, pts []*TestingProtocol) {
+func ConnectAll(t *testing.T, m libp2p_mocknet.Mocknet) {
 	t.Helper()
 
-	// connect all pts together
-	for _, pt := range pts {
-		err := pt.IPFS.MockNetwork().ConnectAllButSelf()
-		require.NoError(t, err)
-	}
+	err := m.ConnectAllButSelf()
+	require.NoError(t, err)
 }
 
 // ConnectInLine, connect peers one by one in order to make a straight line:
@@ -213,15 +206,8 @@ func ConnectAll(t *testing.T, pts []*TestingProtocol) {
 // │ 1 │───▶│ 2 │───▶│ 3 │─ ─ ─ ─ ▶│ x │
 // └───┘    └───┘    └───┘         └───┘
 
-func ConnectInLine(t *testing.T, pts []*TestingProtocol) {
+func ConnectInLine(t *testing.T, m libp2p_mocknet.Mocknet) {
 	t.Helper()
 
-	for i := range pts {
-		if i > 0 {
-			id0 := pts[i-1].IPFS.MockNode().Identity
-			id1 := pts[i].IPFS.MockNode().Identity
-			_, err := pts[i].IPFS.MockNetwork().ConnectPeers(id0, id1)
-			require.NoError(t, err)
-		}
-	}
+	t.Fatal("not implemented")
 }

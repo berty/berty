@@ -45,42 +45,41 @@ type responderTestFunc func(
 	wg *sync.WaitGroup,
 )
 
-func newMockedPeer(t *testing.T, ctx context.Context, mockNet p2pmocknet.Mocknet) *mockedPeer {
+func newMockedPeer(t *testing.T, ctx context.Context, ipfsOpts *ipfsutil.TestingAPIOpts) (*mockedPeer, func()) {
 	t.Helper()
 
 	accountID, _, err := p2pcrypto.GenerateEd25519Key(crand.Reader)
 	require.NoError(t, err, "can't create new identity")
 
-	coreAPI := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, mockNet)
-
+	coreAPI, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 	peerInfo := coreAPI.MockNode().Peerstore.PeerInfo(coreAPI.MockNode().Identity)
 
 	return &mockedPeer{
 		accountID: accountID,
 		coreAPI:   coreAPI,
 		peerInfo:  peerInfo,
-	}
+	}, cleanup
 }
 
 func newMockedHandshake(t *testing.T, ctx context.Context) *mockedHandshake {
 	t.Helper()
 
-	mockNet := p2pmocknet.New(ctx)
-	requester := newMockedPeer(t, ctx, mockNet)
-	responder := newMockedPeer(t, ctx, mockNet)
-
-	_, err := mockNet.LinkPeers(
-		requester.peerInfo.ID,
-		responder.peerInfo.ID,
-	)
-	if err != nil {
-		require.NoError(t, err, "can't link peers")
+	opts := &ipfsutil.TestingAPIOpts{
+		Mocknet: p2pmocknet.New(ctx),
 	}
+	requester, cleanup := newMockedPeer(t, ctx, opts)
+	defer cleanup()
 
-	err = requester.coreAPI.Swarm().Connect(ctx, responder.peerInfo)
-	if err != nil {
-		require.NoError(t, err, "can't connect peers")
-	}
+	responder, cleanup := newMockedPeer(t, ctx, opts)
+	defer cleanup()
+
+	// link responder & requester
+	err := opts.Mocknet.LinkAll()
+	require.NoError(t, err, "can't link peers")
+
+	// connect responder & requester
+	err = opts.Mocknet.ConnectAllButSelf()
+	require.NoError(t, err, "can't connect peers")
 
 	return &mockedHandshake{
 		requester: requester,

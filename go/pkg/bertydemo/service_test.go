@@ -21,7 +21,9 @@ func TestNew(t *testing.T) {
 	ctx := context.Background()
 
 	logger := testutil.Logger(t)
-	ipfsmock := ipfsutil.TestingCoreAPI(ctx, t)
+	ipfsmock, cleanup := ipfsutil.TestingCoreAPI(ctx, t)
+	defer cleanup()
+
 	demo, err := New(&Opts{
 		Logger:           logger,
 		CoreAPI:          ipfsmock,
@@ -32,8 +34,6 @@ func TestNew(t *testing.T) {
 
 	err = demo.Close()
 	require.NoError(t, err)
-
-	ipfsmock.Close()
 }
 
 func testingLogToken(t *testing.T, c DemoServiceClient) string {

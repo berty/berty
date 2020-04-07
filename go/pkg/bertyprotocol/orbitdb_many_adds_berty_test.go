@@ -140,8 +140,8 @@ func TestAddBerty(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	api := ipfsutil.TestingCoreAPI(ctx, t)
-	defer api.Close()
+	api, cleanup := ipfsutil.TestingCoreAPI(ctx, t)
+	defer cleanup()
 
 	pathBase, err := ioutil.TempDir("", "manyaddstest")
 	if err != nil {

@@ -14,12 +14,17 @@ import (
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	p2plog "github.com/ipfs/go-log"
 	"github.com/juju/fslock"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/multiformats/go-multiaddr"
 	"github.com/rivo/tview"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
 type Opts struct {
+	Bootstrap             []string
+	RendezVousServerMAddr string
+
 	RemoteAddr      string
 	GroupInvitation string
 	Port            uint
@@ -51,6 +56,16 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 		}
 	}
 
+	mardv, err := multiaddr.NewMultiaddr(opts.RendezVousServerMAddr)
+	if err != nil {
+		panicUnlockFS(err, lock)
+	}
+
+	rdvpeer, err := peer.AddrInfoFromP2pAddr(mardv)
+	if err != nil {
+		panicUnlockFS(err, lock)
+	}
+
 	rootDS := sync_ds.MutexWrap(opts.RootDS)
 
 	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("ipfs"))
@@ -61,11 +76,32 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 		panicUnlockFS(err, lock)
 	}
 
+	routingOpt, crouting := ipfsutil.NewTinderRouting(rdvpeer.ID, false)
+	cfg.Routing = routingOpt
+
+	ipfsConfig, err := cfg.Repo.Config()
+	if err != nil {
+		panicUnlockFS(err, lock)
+	}
+
+	// setup bootstrap peers
+	ipfsConfig.Bootstrap = append(opts.Bootstrap, opts.RendezVousServerMAddr)
+	if err = cfg.Repo.SetConfig(ipfsConfig); err != nil {
+		panicUnlockFS(err, lock)
+	}
+
 	orbitdbDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))
 
 	api, node, err := ipfsutil.NewConfigurableCoreAPI(ctx, cfg, ipfsutil.OptionMDNSDiscovery)
 	if err != nil {
 		panicUnlockFS(err, lock)
+	}
+
+	// wait to get routing
+	routing := <-crouting
+
+	if err := node.PeerHost.Connect(ctx, *rdvpeer); err != nil {
+		panicUnlockFS(fmt.Errorf("cannot dial rendez-vous point: %v", err), lock)
 	}
 
 	mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
@@ -87,6 +123,7 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 	return service, func() {
 		node.Close()
 		service.Close()
+		routing.IpfsDHT.Close() // manually close dht since ipfs wont be able to that
 	}
 }
 

@@ -27,7 +27,8 @@ func TestProtocolBridge(t *testing.T) {
 	)
 
 	ctx := context.Background()
-	coreAPI := ipfsutil.TestingCoreAPI(ctx, t)
+	coreAPI, cleanup := ipfsutil.TestingCoreAPI(ctx, t)
+	defer cleanup()
 
 	logger := testutil.Logger(t)
 	config := NewProtocolConfig()
@@ -41,8 +42,6 @@ func TestProtocolBridge(t *testing.T) {
 	defer func() {
 		err = protocol.Close()
 		assert.NoErrorf(t, err, "protocol.Close")
-
-		coreAPI.Close()
 	}()
 
 	logger.Info(

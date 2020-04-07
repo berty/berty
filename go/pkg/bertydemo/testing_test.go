@@ -15,7 +15,7 @@ func testingInMemoryClient(t *testing.T) (*Service, ipfsutil.CoreAPIMock, cleanF
 	t.Helper()
 
 	ctx := context.Background()
-	ipfsmock := ipfsutil.TestingCoreAPI(ctx, t)
+	ipfsmock, cleanupNode := ipfsutil.TestingCoreAPI(ctx, t)
 	opts := &Opts{
 		CoreAPI:          ipfsmock,
 		OrbitDBDirectory: ":memory:",
@@ -28,7 +28,7 @@ func testingInMemoryClient(t *testing.T) (*Service, ipfsutil.CoreAPIMock, cleanF
 
 	return demo, ipfsmock, func() {
 		demo.Close()
-		ipfsmock.Close()
+		cleanupNode()
 	}
 }
 
