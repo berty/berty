@@ -9,9 +9,9 @@ import { conversation } from '../chat'
 
 import { UserMessage, GroupInvitation, AppMessageType, AppMessage, Acknowledge } from './AppMessage'
 
-type StoreUserMessage = UserMessage & { isMe: boolean; acknowledged: boolean }
+export type StoreUserMessage = UserMessage & { isMe: boolean; acknowledged: boolean }
 
-type StoreMessage = StoreUserMessage | GroupInvitation
+export type StoreMessage = StoreUserMessage | GroupInvitation
 
 export type Entity = {
 	id: string
@@ -45,6 +45,7 @@ export namespace Query {
 	export type List = {}
 	export type Get = { id: string }
 	export type GetLength = void
+	export type GetList = { list: any }
 }
 
 export namespace Event {
@@ -94,6 +95,7 @@ export type QueryReducer = {
 	list: (state: GlobalState, query: Query.List) => Entity[]
 	get: (state: GlobalState, query: Query.Get) => Entity | undefined
 	getLength: (state: GlobalState) => number
+	getList: (state: GlobalState, query: Query.GetList) => Entity[]
 }
 
 export type EventsReducer = {
@@ -187,6 +189,13 @@ export const queries: QueryReducer = {
 	list: (state) => Object.values(getAggregatesWithFakes(state)) as Entity[],
 	get: (state, { id }) => getAggregatesWithFakes(state)[id],
 	getLength: (state) => Object.keys(getAggregatesWithFakes(state)).length,
+	getList: (state, { list }) => {
+		const messages = list.map((_) => {
+			const ret = state.chat.message.aggregates[_]
+			return ret
+		})
+		return messages
+	},
 }
 
 const getAggregateId: (kwargs: { accountId: string; groupPk: Uint8Array }) => string = ({
