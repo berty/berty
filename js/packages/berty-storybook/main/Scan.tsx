@@ -7,6 +7,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner'
 // import { RNCamera } from 'react-native-camera'
 import { Chat } from '@berty-tech/hooks'
 import { useNavigation } from '@berty-tech/berty-navigation'
+import ScanTarget from './scan_target.svg'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -27,26 +28,36 @@ const useStylesScan = () => {
 }
 
 const ScanBody: React.FC<{}> = () => {
-	const _styles = useStylesScan()
-	const [{ padding, border, background }] = useStyles()
 	const sendContactRequest = Chat.useAccountSendContactRequest()
+	const [{ background }] = useStyles()
+	const borderRadius = 30
 	return (
-		<View style={[padding.medium]}>
-			<View style={[border.radius.scale(20), background.black, padding.scale(30)]}>
-				<View style={[border.radius.scale(20), _styles.body]}>
-					<QRCodeScanner
-						onRead={({ data, type }) => {
-							if ((type as string) === 'QR_CODE') {
-								// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
-								console.log('Scan.tsx: found QR:', data)
-								sendContactRequest(data)
-							}
-						}}
-						cameraProps={{ captureAudio: false }}
-						// flashMode={RNCamera.Constants.FlashMode.torch}
-					/>
-				</View>
-			</View>
+		<View
+			style={[
+				background.black,
+				{
+					width: '100%',
+					aspectRatio: 1,
+					justifyContent: 'center',
+					alignItems: 'center',
+					borderRadius,
+				},
+			]}
+		>
+			<QRCodeScanner
+				onRead={({ data, type }) => {
+					if ((type as string) === 'QR_CODE') {
+						// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
+						console.log('Scan.tsx: found QR:', data)
+						sendContactRequest(data)
+					}
+				}}
+				cameraProps={{ captureAudio: false }}
+				containerStyle={{ width: '100%', height: '100%', overflow: 'hidden', borderRadius }}
+				cameraStyle={{ width: '100%', height: '100%', aspectRatio: 1 }}
+				// flashMode={RNCamera.Constants.FlashMode.torch}
+			/>
+			<ScanTarget height='75%' width='75%' style={{ position: 'absolute' }} />
 		</View>
 	)
 }
@@ -102,10 +113,10 @@ const Screen = Dimensions.get('window')
 
 const ScanComponent: React.FC<{}> = () => {
 	const { goBack } = useNavigation()
-	const [{ color, padding }] = useStyles()
+	const [{ color, padding, margin }] = useStyles()
 	return (
 		<View style={[{ height: Screen.height }, padding.medium]}>
-			<TouchableOpacity onPress={goBack}>
+			<TouchableOpacity onPress={goBack} style={[margin.bottom.huge]}>
 				<Icon name='arrow-back-outline' width={30} height={30} fill={color.black} />
 			</TouchableOpacity>
 			<ScanBody />

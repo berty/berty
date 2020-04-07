@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="270px" height="270px" viewBox="0 0 270 270" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="modal/scan/pink" transform="translate(-101.000000, -136.000000)" stroke="#FFFFFF" stroke-width="9">
+            <g id="modal-scan">
+                <g id="camera" transform="translate(65.000000, 99.000000)">
+                    <g id="Group" transform="translate(41.000000, 41.905459)">
+                        <path d="M63,260 L20,260 C8.954305,260 1.3527075e-15,251.045695 0,240 L0,197 L0,197" id="Rectangle-Copy"></path>
+                        <path d="M260,260 L217,260 C205.954305,260 197,251.045695 197,240 L197,197 L197,197" id="Rectangle-Copy-2" transform="translate(228.500000, 228.500000) scale(-1, 1) translate(-228.500000, -228.500000) "></path>
+                        <path d="M63,63 L20,63 C8.954305,63 1.3527075e-15,54.045695 0,43 L0,0 L0,0" id="Rectangle-Copy-4" transform="translate(31.500000, 31.500000) scale(1, -1) translate(-31.500000, -31.500000) "></path>
+                        <path d="M260,63 L217,63 C205.954305,63 197,54.045695 197,43 L197,0 L197,0" id="Rectangle-Copy-3" transform="translate(228.500000, 31.500000) scale(-1, -1) translate(-228.500000, -31.500000) "></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
