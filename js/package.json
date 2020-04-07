@@ -36,7 +36,8 @@
       "**/jsc-*",
       "**/hermes-engine",
       "**/metro-*",
-      "**/@react-native-community/cli-*"
+      "**/@react-native-community/cli-*",
+      "**/react-native-svg-transformer"
     ]
   },
   "dependencies": {
