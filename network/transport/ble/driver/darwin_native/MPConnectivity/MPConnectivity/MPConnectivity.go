@@ -11,80 +11,66 @@ package MPConnectivity
 import "C"
 import "unsafe"
 
-const MULTI_ADDRESS_NULL = "/ble/00000000-0000-0000-0000-000000000000"
-const FAKE_PEERID = "QmTBKLtG5FsSogqquvdvDQ6Sn2rANYCbvXAStthdd686BY"
+func StartBleDriver(localPID string) bool {
+	cPID := C.CString(localPID)
+	defer C.free(unsafe.Pointer(cPID))
 
-func StartBleDriver(addr string, peerId string) bool {
-	lAddr := C.CString(addr)
-	defer C.free(unsafe.Pointer(lAddr))
-
-	if C.StartBleDriver(lAddr) == 1 {
+	if C.StartBleDriver(cPID) == 1 {
 		return true
 	}
 	return false
 }
 
-func StopBleDriver() bool {
-	if C.StopBleDriver() == 1 {
-		return true
-	}
-	return false
+func StopBleDriver() {
+	C.StopBleDriver()
 }
 
-/*
-   The bridge driver, which is on top level of this driver, set the two pointers GoHandlePeerFound
-   and GoReceiveFromDevice to the homologue Go functions.
-*/
-var GoHandlePeerFound func(peerId string, addr string) bool = nil
-var GoReceiveFromDevice func(addr string, payload []byte) = nil
+var GoHandleFoundPeer func(remotePID string) bool = nil
+var GoReceiveFromPeer func(remotePID string, payload []byte) = nil
 
-/*
-   GoHandlePeerFound wait for its first argument a multiaddress string.
-   It's deprecated so we give it the peerID twice.
-*/
-//export HandlePeerFound
-func HandlePeerFound(addr *C.char) C.int {
-	lAddr := C.GoString(addr)
+//export HandleFoundPeer
+func HandleFoundPeer(remotePID *C.char) C.int {
+	goPID := C.GoString(remotePID)
 
-	if GoHandlePeerFound(FAKE_PEERID, lAddr) {
+	if GoHandleFoundPeer(goPID) {
 		return 1
 	}
 	return 0
 }
 
 //export ReceiveFromPeer
-func ReceiveFromPeer(addr *C.char, payload unsafe.Pointer, length C.int) {
-	lAddr := C.GoString(addr)
-	lPayload := C.GoBytes(payload, length)
+func ReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) {
+	goPID := C.GoString(remotePID)
+	goPayload := C.GoBytes(payload, length)
 
-	GoReceiveFromDevice(lAddr, lPayload)
+	GoReceiveFromPeer(goPID, goPayload)
 }
 
-func SendToDevice(addr string, payload []byte) bool {
-	lAddr := C.CString(addr)
-	defer C.free(unsafe.Pointer(lAddr))
-	lPayload := C.CBytes(payload)
-	defer C.free(lPayload)
+func SendToPeer(remotePID string, payload []byte) bool {
+	cPID := C.CString(remotePID)
+	defer C.free(unsafe.Pointer(cPID))
+	cPayload := C.CBytes(payload)
+	defer C.free(cPayload)
 
-	if C.SendToPeer(lAddr, lPayload, C.int(len(payload))) == 1 {
+	if C.SendToPeer(cPID, cPayload, C.int(len(payload))) == 1 {
 		return true
 	}
 	return false
 }
 
-func DialDevice(addr string) bool {
-	lAddr := C.CString(addr)
-	defer C.free(unsafe.Pointer(lAddr))
+func DialPeer(remotePID string) bool {
+	cPID := C.CString(remotePID)
+	defer C.free(unsafe.Pointer(cPID))
 
-	if C.DialPeer(lAddr) == 1 {
+	if C.DialPeer(cPID) == 1 {
 		return true
 	}
 	return false
 }
 
-func CloseConnWithDevice(addr string) {
-	lAddr := C.CString(addr)
-	defer C.free(unsafe.Pointer(lAddr))
+func CloseConnWithPeer(remotePID string) {
+	cPID := C.CString(remotePID)
+	defer C.free(unsafe.Pointer(cPID))
 
-	C.CloseConnWithPeer(lAddr)
+	C.CloseConnWithPeer(cPID)
 }

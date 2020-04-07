@@ -36,7 +36,7 @@ const Bluetooth = ({ bridge, navigation, t }) => (
               ) {
                 let config = await bridge.daemon.getNetworkConfig({})
                 config.bindP2P = config.bindP2P.concat(
-                  '/ble/00000000-0000-0000-0000-000000000000'
+                  '/ble/Qmeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
                 )
                 await bridge.daemon.updateNetworkConfig(config)
               }

@@ -98,7 +98,7 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
         break;
     case MCSessionStateConnected:
         NSLog(@"Connected: %@", [peerID displayName]);
-        BridgeHandlePeerFound([peerID displayName]);
+        BridgeHandleFoundPeer([peerID displayName]);
         break;
     case MCSessionStateNotConnected:
         NSLog(@"Not connected: %@", [peerID displayName]);

@@ -1,7 +1,7 @@
 package multiaddr
 
 import (
-	"github.com/gofrs/uuid"
+	peer "github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
@@ -10,22 +10,22 @@ import (
 var TranscoderBLE = ma.NewTranscoderFromFunctions(bleStB, bleBtS, bleVal)
 
 func bleStB(s string) ([]byte, error) {
-	id, err := uuid.FromString(s)
+	_, err := peer.IDB58Decode(s)
 	if err != nil {
 		return nil, err
 	}
-	return id.Bytes(), nil
+	return []byte(s), nil
 }
 
 func bleBtS(b []byte) (string, error) {
-	id, err := uuid.FromBytes(b)
+	_, err := peer.IDB58Decode(string(b))
 	if err != nil {
 		return "", err
 	}
-	return id.String(), nil
+	return string(b), nil
 }
 
 func bleVal(b []byte) error {
-	_, err := uuid.FromBytes(b)
+	_, err := peer.IDB58Decode(string(b))
 	return err
 }

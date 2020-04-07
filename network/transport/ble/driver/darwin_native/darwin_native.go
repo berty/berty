@@ -6,28 +6,28 @@ package darwin_native
 
 import MPConnectivity "berty.tech/network/transport/ble/driver/darwin_native/MPConnectivity/MPConnectivity"
 
-func StartBleDriver(addr string, peerID string) bool {
-	MPConnectivity.GoHandlePeerFound = GoHandlePeerFound;
-	MPConnectivity.GoReceiveFromDevice = GoReceiveFromDevice;
-	return MPConnectivity.StartBleDriver(addr, peerID)
+func StartBleDriver(localPID string) bool {
+	MPConnectivity.GoHandleFoundPeer = GoHandleFoundPeer;
+	MPConnectivity.GoReceiveFromPeer = GoReceiveFromPeer;
+	return MPConnectivity.StartBleDriver(localPID)
 }
 
-func StopBleDriver() bool {
-	return MPConnectivity.StopBleDriver();
+func StopBleDriver() {
+	MPConnectivity.StopBleDriver();
 }
 
-var GoHandlePeerFound func(peerId string, addr string) bool = MPConnectivity.GoHandlePeerFound
+var GoHandleFoundPeer func(remotePID string) bool = nil
 
-var GoReceiveFromDevice func(addr string, payload []byte) = MPConnectivity.GoReceiveFromDevice
+var GoReceiveFromPeer func(remotePID string, payload []byte) = nil
 
-func SendToDevice(addr string, payload []byte) bool {
-	return MPConnectivity.SendToDevice(addr, payload)
+func SendToPeer(remotePID string, payload []byte) bool {
+	return MPConnectivity.SendToPeer(remotePID, payload)
 }
 
-func DialDevice(addr string) bool {
-	return MPConnectivity.DialDevice(addr)
+func DialPeer(remotePeer string) bool {
+	return MPConnectivity.DialPeer(remotePeer)
 }
 
-func CloseConnWithDevice(addr string) {
-	MPConnectivity.CloseConnWithDevice(addr)
+func CloseConnWithPeer(remotePID string) {
+	MPConnectivity.CloseConnWithPeer(remotePID)
 }

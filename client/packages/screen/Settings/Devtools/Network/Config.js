@@ -9,7 +9,7 @@ import { Header, Loader, Menu } from '@berty/component'
 
 const transports = {
   TCP: '/ip4/0.0.0.0/tcp/0',
-  BLE: '/ble/00000000-0000-0000-0000-000000000000',
+  BLE: '/ble/Qmeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   QUIC: '/ip4/0.0.0.0/udp/0/quic',
 }
 

@@ -7,28 +7,28 @@ import (
 )
 
 // Native -> Go functions
-func BindNativeToGoFunctions(hpf func(string, string) bool, rfd func(string, []byte)) {
-	native.GoHandlePeerFound = hpf
-	native.GoReceiveFromDevice = rfd
+func BindNativeToGoFunctions(hfp func(string) bool, rfp func(string, []byte)) {
+	native.GoHandleFoundPeer = hfp
+	native.GoReceiveFromPeer = rfp
 }
 
 // Go -> Native functions
-func StartBleDriver(localMa string, localID string) bool {
-	return native.StartBleDriver(localMa, localID)
+func StartBleDriver(localPID string) bool {
+	return native.StartBleDriver(localPID)
 }
 
-func StopBleDriver() bool {
-	return native.StopBleDriver()
+func StopBleDriver() {
+	native.StopBleDriver()
 }
 
-func DialDevice(remoteMa string) bool {
-	return native.DialDevice(remoteMa)
+func DialPeer(remotePID string) bool {
+	return native.DialPeer(remotePID)
 }
 
-func SendToDevice(remoteMa string, payload []byte) bool {
-	return native.SendToDevice(remoteMa, payload)
+func SendToPeer(remotePID string, payload []byte) bool {
+	return native.SendToPeer(remotePID, payload)
 }
 
-func CloseConnWithDevice(remoteMa string) {
-	native.CloseConnWithDevice(remoteMa)
+func CloseConnWithPeer(remotePID string) {
+	native.CloseConnWithPeer(remotePID)
 }
