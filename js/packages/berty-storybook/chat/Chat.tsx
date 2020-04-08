@@ -34,7 +34,7 @@ const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 	const { dispatch, goBack } = useNavigation()
 	const _styles = useStylesChat()
 	const [
-		{ absolute, row, padding, column, margin, text, flex, background, border, color },
+		{ absolute, row, padding, column, margin, text, flex, background, opacity, color },
 	] = useStyles()
 	const conversation = ChatHooks.useGetConversation(id)
 	const contact = ChatHooks.useOneToOneConversationContact(conversation.id)
@@ -66,11 +66,13 @@ const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 					</Text>
 				</View>
 				<TouchableOpacity
-					style={[flex.tiny, row.item.justify]}
+					activeOpacity={contact ? 0.2 : 0.5}
+					style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
 					onPress={() =>
+						contact &&
 						dispatch(
 							CommonActions.navigate({
-								name: Routes.Chat.One2OneSettings,
+								name: Routes.Chat.Settings,
 								params: {
 									contact,
 								},

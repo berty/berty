@@ -3,10 +3,10 @@ import { View, ScrollView } from 'react-native'
 import { Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { CircleAvatar } from '../shared-components/CircleAvatar'
 import HeaderSettings from '../shared-components/Header'
-import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
-import { berty } from '@berty-tech/api'
+import { useNavigation, Routes } from '@berty-tech/berty-navigation'
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
+import { CommonActions } from '@react-navigation/core'
 
 //
 // ChatSettings
@@ -23,17 +23,27 @@ const useStylesChatSettings = () => {
 	}
 }
 
-const ChatSettingsHeader: React.FC<berty.chatmodel.IConversation> = ({ avatarUri, title }) => {
+const ChatSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const _styles = useStylesChatSettings()
-	const [{ text, padding, row }] = useStyles()
+	const [{ text, padding, border, row }] = useStyles()
 	return (
 		<View style={[_styles.headerAvatar]}>
-			<CircleAvatar style={row.item.justify} avatarUri={avatarUri || ''} size={100} />
+			<ProceduralCircleAvatar
+				seed={contact.publicKey}
+				style={[border.shadow.big, row.center]}
+				diffSize={30}
+			/>
 			<Text
 				numberOfLines={1}
-				style={[text.color.white, text.align.center, padding.top.small, text.bold.medium]}
+				style={[
+					text.size.scale(18),
+					text.color.white,
+					text.align.center,
+					padding.top.small,
+					text.bold.scale('600'),
+				]}
 			>
-				{title || ''}
+				{contact.name}
 			</Text>
 		</View>
 	)
@@ -51,18 +61,21 @@ const ChatSettingsHeaderButtons: React.FC<{}> = () => {
 						icon: 'search-outline',
 						color: color.blue,
 						style: _styles.firstHeaderButton,
+						disabled: true,
 					},
 					{
 						name: 'Call',
 						icon: 'phone-outline',
 						color: color.green,
 						style: _styles.secondHeaderButton,
+						disabled: true,
 					},
 					{
 						name: 'Share',
 						icon: 'share-outline',
 						color: color.blue,
 						style: _styles.thirdHeaderButton,
+						disabled: true,
 					},
 				]}
 			/>
@@ -74,29 +87,38 @@ const ChatSettingsBody: React.FC<{}> = () => {
 	const [{ padding, color }] = useStyles()
 	return (
 		<View style={[padding.horizontal.medium]}>
-			<ButtonSetting name='Medias, links & docs' icon='image-outline' />
-			<ButtonSetting name='Receive notifications' icon='bell-outline' toggled />
+			<ButtonSetting name='Medias, links & docs' icon='image-outline' disabled />
+			<ButtonSetting name='Receive notifications' icon='bell-outline' toggled disabled />
 			<ButtonSetting
 				name='Mutual groups'
 				icon='people-outline'
 				state={{ value: '3 mutuals', color: color.blue, bgColor: color.light.blue }}
+				disabled
 			/>
 			<ButtonSetting
 				name='Erase conversation'
 				icon='message-circle-outline'
 				iconColor={color.red}
+				disabled
 			/>
 		</View>
 	)
 }
 
-export const ChatSettings: React.FC<ScreenProps.Chat.Settings> = ({ route: { params } }) => {
-	const { goBack, navigate } = useNavigation()
+export const ChatSettings: React.FC<{ route: any }> = ({ route: { params } }) => {
+	const { goBack, dispatch } = useNavigation()
 	const [{ flex, background }] = useStyles()
 	return (
 		<ScrollView style={[flex.tiny, background.white]}>
 			<HeaderSettings
-				action={() => navigate.chat.one2OneSettings()}
+				action={() =>
+					dispatch(
+						CommonActions.navigate({
+							name: Routes.Chat.One2OneSettings,
+							params,
+						}),
+					)
+				}
 				actionIcon='more-horizontal-outline'
 				undo={goBack}
 			>

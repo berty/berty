@@ -33,7 +33,7 @@ const ContactChatSettingsHeader: React.FC<{
 	const [{ border, background, padding, row, absolute, text }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState('Fingerprint')
 	return (
-		<View style={padding.medium}>
+		<View style={[padding.medium, padding.top.scale(50)]}>
 			<View
 				style={[
 					border.radius.scale(30),
@@ -49,7 +49,7 @@ const ContactChatSettingsHeader: React.FC<{
 						diffSize={30}
 					/>
 				</View>
-				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(50)]}>
+				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(60)]}>
 					<Text
 						style={[text.size.big, text.color.black, text.align.center, text.bold.scale('500')]}
 					>
