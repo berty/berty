@@ -18,6 +18,7 @@
     "caser": "^0.1.1",
     "jetifier": "^1.6.5",
     "metro-react-native-babel-preset": "^0.56.0",
+    "react-native-svg-transformer": "^0.14.3",
     "react-native-typescript-transformer": "^1.2.13",
     "react-test-renderer": "^16.9.0",
     "typescript": "^3.7.5"

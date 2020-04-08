@@ -33,7 +33,6 @@
     "@berty-tech/shared-storybook": "^0.0.0",
     "@berty-tech/styles": "^0.0.0",
     "@eva-design/eva": "^1.2.0",
-    "@react-navigation/core": "^5.0.0-alpha.23",
     "@storybook/addon-notes": "^5.2.4",
     "i18next": "19.0.1",
     "random-emoji": "^1.0.2",
