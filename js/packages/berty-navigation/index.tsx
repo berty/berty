@@ -8,6 +8,8 @@ import {
 	useNavigation as useReactNavigation,
 	NavigationProp,
 	CommonActions,
+	useLinking,
+	NavigationContainer as ReactNavigationContainer,
 } from '@react-navigation/native'
 import {
 	createBottomTabNavigator,
@@ -36,7 +38,6 @@ export namespace ScreenProps {
 		}
 		export type ScanRequest = {}
 		export type Scan = { route: { params: berty.chatmodel.IContact } }
-		export type InvalidScan = {}
 
 		export type ListModal = {}
 		export type Search = {}
@@ -90,7 +91,6 @@ export namespace Routes {
 		GroupRequest = 'Main.GroupRequest',
 		ScanRequest = 'Main.ScanRequest',
 		Scan = 'Main.Scan',
-		InvalidScan = 'Main.InvalidScan',
 		ListModal = 'Main.ListModal',
 		Search = 'Main.Search',
 		RequestSent = 'Main.RequestSent',
@@ -120,6 +120,9 @@ export namespace Routes {
 		AboutBerty = 'Settings.AboutBerty',
 		TermsOfUse = 'Settings.TermsOfUse',
 		DevTools = 'Settings.DevTools',
+	}
+	export enum Modals {
+		SendContactRequest = 'SendContactRequest',
 	}
 }
 
@@ -172,7 +175,6 @@ const createNavigation = ({
 				),
 				scanRequest: createNavigateFunc(navigate, Routes.Main.ScanRequest),
 				scan: createNavigateFunc(navigate, Routes.Main.Scan),
-				invalidScan: createNavigateFunc(navigate, Routes.Main.InvalidScan),
 
 				listModal: createNavigateFunc(navigate, Routes.Main.ListModal),
 				search: createNavigateFunc(navigate, Routes.Main.Search),
@@ -227,6 +229,20 @@ export const FakeNavigation: React.FC = ({ children }) => {
 		</FakeStack.Navigator>
 	)
 }
+
+const ModalsStack = createNativeStackNavigator()
+export const ModalsNavigation: React.FC = () => (
+	<ModalsStack.Navigator screenOptions={{ headerShown: false }}>
+		<ModalsStack.Screen
+			name={Routes.Modals.SendContactRequest}
+			component={Stories.Modals.SendContactRequest}
+			options={{
+				stackPresentation: 'transparentModal',
+				stackAnimation: 'fade',
+			}}
+		/>
+	</ModalsStack.Navigator>
+)
 
 const OnboardingStack = createNativeStackNavigator()
 export const OnboardingNavigation: React.FC = () => (
@@ -299,6 +315,11 @@ export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 					/>
 				)}
 			</CreateGroupStack.Screen>
+			<CreateGroupStack.Screen
+				name={'Modals'}
+				component={ModalsNavigation}
+				options={{ stackPresentation: 'transparentModal', stackAnimation: 'fade' }}
+			/>
 		</CreateGroupStack.Navigator>
 	)
 }
@@ -307,6 +328,11 @@ const SearchStack = createNativeStackNavigator()
 export const SearchNavigation: React.FC<BottomTabBarProps> = () => (
 	<SearchStack.Navigator screenOptions={{ headerShown: false }}>
 		<SearchStack.Screen name={Routes.Main.Search} component={Stories.Main.Search} />
+		<SearchStack.Screen
+			name={'Modals'}
+			component={ModalsNavigation}
+			options={{ stackPresentation: 'transparentModal', stackAnimation: 'fade' }}
+		/>
 	</SearchStack.Navigator>
 )
 
@@ -338,7 +364,6 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 			component={Stories.Main.Scan}
 			options={{ stackPresentation: 'transparentModal' }}
 		/>
-		<MainStack.Screen name={Routes.Main.InvalidScan} component={Stories.Main.InvalidScan} />
 		<MainStack.Screen name={Routes.Chat.One2One} component={Stories.Chat.Chat} />
 		<MainStack.Screen name={Routes.Chat.Group} component={Stories.Chat.ChatGroup} />
 		<MainStack.Screen name={Routes.Chat.Settings} component={Stories.Chat.ChatSettings} />
@@ -370,6 +395,11 @@ export const MainNavigation: React.FC<BottomTabBarProps> = () => (
 			name={Routes.CreateGroup.CreateGroup2}
 			component={CreateGroupNavigation}
 			options={{ stackPresentation: 'transparentModal' }}
+		/>
+		<MainStack.Screen
+			name={'Modals'}
+			component={ModalsNavigation}
+			options={{ stackPresentation: 'transparentModal', stackAnimation: 'fade' }}
 		/>
 	</MainStack.Navigator>
 )
@@ -415,6 +445,11 @@ export const SettingsNavigation: React.FC<BottomTabBarProps> = () => (
 			component={Stories.Settings.TermsOfUse}
 		/>
 		<SettingsStack.Screen name={Routes.Settings.DevTools} component={Stories.Settings.DevTools} />
+		<SettingsStack.Screen
+			name={'Modals'}
+			component={ModalsNavigation}
+			options={{ stackPresentation: 'transparentModal', stackAnimation: 'fade' }}
+		/>
 	</SettingsStack.Navigator>
 )
 
@@ -452,6 +487,55 @@ export const Navigation: React.FC = () => {
 				component={OnboardingNavigation}
 			/>
 		</NavigationStack.Navigator>
+	)
+}
+
+export const NavigationContainer: React.FC = ({ children }) => {
+	const ref = React.useRef()
+
+	const { getInitialState } = useLinking(ref, {
+		prefixes: ['berty://'],
+		config: {
+			['Modals']: {
+				screens: {
+					[Routes.Modals.SendContactRequest]: ':uriData',
+				},
+			},
+		},
+	})
+
+	const [isReady, setIsReady] = React.useState(false)
+	const [initialState, setInitialState] = React.useState()
+
+	React.useEffect(() => {
+		Promise.race([
+			getInitialState(),
+			new Promise((resolve) =>
+				// Timeout in 150ms if `getInitialState` doesn't resolve
+				// Workaround for https://github.com/facebook/react-native/issues/25675
+				setTimeout(resolve, 150),
+			),
+		])
+			.catch((e) => {
+				console.error(e)
+			})
+			.then((state) => {
+				if (state !== undefined) {
+					setInitialState(state)
+				}
+
+				setIsReady(true)
+			})
+	}, [getInitialState])
+
+	if (!isReady) {
+		return null
+	}
+
+	return (
+		<ReactNavigationContainer initialState={initialState} ref={ref}>
+			{children}
+		</ReactNavigationContainer>
 	)
 }
 

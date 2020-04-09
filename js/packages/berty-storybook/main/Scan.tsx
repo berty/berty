@@ -5,8 +5,7 @@ import { useStyles } from '@berty-tech/styles'
 // import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 // import { RNCamera } from 'react-native-camera'
-import { Chat } from '@berty-tech/hooks'
-import { useNavigation } from '@berty-tech/berty-navigation'
+import { useNavigation } from '@react-navigation/native'
 import ScanTarget from './scan_target.svg'
 
 //
@@ -28,7 +27,7 @@ const useStylesScan = () => {
 }
 
 const ScanBody: React.FC<{}> = () => {
-	const sendContactRequest = Chat.useAccountSendContactRequest()
+	const navigation = useNavigation()
 	const [{ background }] = useStyles()
 	const borderRadius = 30
 	return (
@@ -46,10 +45,12 @@ const ScanBody: React.FC<{}> = () => {
 		>
 			<QRCodeScanner
 				onRead={({ data, type }) => {
-					if ((type as string) === 'QR_CODE') {
+					if ((type as string) === 'QR_CODE' || (type as string) === 'org.iso.QRCode') {
 						// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
-						console.log('Scan.tsx: found QR:', data)
-						sendContactRequest(data)
+						navigation.navigate('Modals', {
+							screen: 'SendContactRequest',
+							params: { qrData: data },
+						})
 					}
 				}}
 				cameraProps={{ captureAudio: false }}
@@ -78,7 +79,6 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 
 const DevReferenceInput = () => {
 	const [ref, setRef] = useState('')
-	const sendContactRequest = Chat.useAccountSendContactRequest()
 	const navigation = useNavigation()
 	return (
 		<>
@@ -88,9 +88,10 @@ const DevReferenceInput = () => {
 				title='Submit'
 				onPress={() => {
 					const prefix = 'berty://'
-					const data = ref.startsWith(prefix) ? decodeURIComponent(ref.substr(prefix.length)) : ref
-					sendContactRequest(data)
-					navigation.goBack()
+					const params = ref.startsWith(prefix)
+						? { uriData: ref.substr(prefix.length) }
+						: { qrData: ref }
+					navigation.navigate('Modals', { screen: 'SendContactRequest', params })
 				}}
 			/>
 		</>
