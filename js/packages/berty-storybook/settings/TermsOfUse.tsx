@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, SafeAreaView } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'

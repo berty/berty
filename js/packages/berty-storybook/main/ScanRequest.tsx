@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { SafeAreaView } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
-import { TouchableOpacity, View, TextInput, Text, SafeAreaView } from 'react-native'
-import { Icon } from 'react-native-ui-kitten'
+import { TouchableOpacity, View, TextInput, SafeAreaView } from 'react-native'
+import { Icon, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Chat } from '@berty-tech/hooks'
 import { AppMessageType } from '@berty-tech/store/chat/AppMessage'

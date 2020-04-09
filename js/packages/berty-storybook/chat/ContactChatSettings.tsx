@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { View, ScrollView, Text } from 'react-native'
+import { View, ScrollView } from 'react-native'
+import { Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
@@ -49,7 +50,7 @@ const ContactChatSettingsHeader: React.FC<{
 						diffSize={30}
 					/>
 				</View>
-				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(60)]}>
+				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(65)]}>
 					<Text
 						style={[text.size.big, text.color.black, text.align.center, text.bold.scale('500')]}
 					>

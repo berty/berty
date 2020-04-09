@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import {
 	View,
 	SafeAreaView,
-	ScrollView,
 	TouchableHighlight,
 	StyleSheet,
 	Dimensions,
@@ -12,7 +11,6 @@ import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { styles, colors, useStyles } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
-import { RequestProps, UserProps } from '../shared-props/User'
 import { Chat } from '@berty-tech/hooks'
 
 const Screen = Dimensions.get('window')

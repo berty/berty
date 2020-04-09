@@ -1,11 +1,10 @@
 import React from 'react'
-import { View, ScrollView, StyleSheet } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
-import { Chat } from '@berty-tech/hooks'
 
 //
 // DevTools

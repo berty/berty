@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, StyleSheet, StyleProp } from 'react-native'
+import { View, TouchableOpacity, StyleProp } from 'react-native'
 import { Text, Icon, Toggle } from 'react-native-ui-kitten'
-import { styles, colors, useStyles, ColorsTypes } from '@berty-tech/styles'
+import { colors, useStyles, ColorsTypes } from '@berty-tech/styles'
 import { CircleAvatar } from './CircleAvatar'
 
 //

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
-	Text,
 	TouchableOpacity,
 	View,
 	ViewProps,
@@ -9,7 +8,7 @@ import {
 	TouchableHighlight,
 } from 'react-native'
 import { Translation } from 'react-i18next'
-import { google, berty } from '@berty-tech/api'
+import { berty } from '@berty-tech/api'
 import { useLayout } from '../hooks'
 import { useStyles } from '@berty-tech/styles'
 import {
@@ -20,7 +19,7 @@ import { Chat } from '@berty-tech/hooks'
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { CommonActions } from '@react-navigation/core'
 import { chat } from '@berty-tech/store'
-import { Icon } from 'react-native-ui-kitten'
+import { Icon, Text } from 'react-native-ui-kitten'
 
 type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
 
@@ -289,6 +288,7 @@ const Conversations: React.FC<ConversationsProps> = ({ items }) => {
 									text.size.huge,
 									text.bold.medium,
 									padding.medium,
+									padding.top.big,
 									margin.horizontal.medium,
 								]}
 							>
