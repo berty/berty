@@ -39,7 +39,17 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 		swarmAddresses = []string{
 			fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", opts.Port),
 			fmt.Sprintf("/ip6/0.0.0.0/tcp/%d", opts.Port),
+			fmt.Sprintf("/ip4/0.0.0.0/udp/%d/quic", opts.Port+1),
+			fmt.Sprintf("/ip6/0.0.0.0/udp/%d/quic", opts.Port+1),
 		}
+	} else {
+		swarmAddresses = []string{
+			"/ip4/0.0.0.0/tcp/0",
+			"/ip6/0.0.0.0/tcp/0",
+			"/ip4/0.0.0.0/udp/0/quic",
+			"/ip6/0.0.0.0/udp/0/quic",
+		}
+
 	}
 
 	rootDS := sync_ds.MutexWrap(opts.RootDS)
@@ -98,6 +108,7 @@ func Main(opts *Opts) {
 		}
 
 		defer protocolClient.Close()
+
 		client = protocolClient
 	} else {
 		cc, err := grpc.Dial(opts.RemoteAddr, grpc.WithInsecure())

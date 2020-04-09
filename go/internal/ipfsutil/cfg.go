@@ -4,7 +4,6 @@ import (
 	crand "crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"math/big"
 	"strings"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -19,6 +18,7 @@ import (
 
 type BuildOpts struct {
 	SwarmAddresses []string
+	ClientMode     bool
 }
 
 func CreateBuildConfigWithDatastore(opts *BuildOpts, ds ipfs_datastore.Batching) (*ipfs_node.BuildCfg, error) {
@@ -31,7 +31,12 @@ func CreateBuildConfigWithDatastore(opts *BuildOpts, ds ipfs_datastore.Batching)
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	routing := ipfs_libp2p.DHTOption
+	var routing ipfs_libp2p.RoutingOption
+	if opts.ClientMode {
+		routing = ipfs_libp2p.DHTClientOption
+	} else {
+		routing = ipfs_libp2p.DHTOption
+	}
 	hostopts := ipfs_libp2p.DefaultHostOption
 	return &ipfs_node.BuildCfg{
 		Online:                      true,
@@ -69,16 +74,9 @@ func CreateRepo(dstore ipfs_datastore.Batching, opts *BuildOpts) (ipfs_repo.Repo
 	if len(opts.SwarmAddresses) != 0 {
 		c.Addresses.Swarm = opts.SwarmAddresses
 	} else {
-		portOffsetBI, err := crand.Int(crand.Reader, big.NewInt(100))
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-
-		portOffset := portOffsetBI.Int64() % 100
-
 		c.Addresses.Swarm = []string{
-			fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", 4001+portOffset),
-			fmt.Sprintf("/ip6/0.0.0.0/tcp/%d", 4001+portOffset),
+			"/ip4/0.0.0.0/tcp/0",
+			"/ip6/0.0.0.0/tcp/0",
 		}
 	}
 
@@ -88,6 +86,13 @@ func CreateRepo(dstore ipfs_datastore.Batching, opts *BuildOpts) (ipfs_repo.Repo
 	c.Identity.PrivKey = base64.StdEncoding.EncodeToString(privkeyb)
 	c.Discovery.MDNS.Enabled = true
 	c.Discovery.MDNS.Interval = 1
+
+	c.Swarm.EnableAutoNATService = true
+	c.Swarm.EnableAutoRelay = true
+
+	if !opts.ClientMode {
+		c.Swarm.EnableRelayHop = true
+	}
 
 	return &ipfs_repo.Mock{
 		D: dstore,
