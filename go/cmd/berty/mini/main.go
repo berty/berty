@@ -15,7 +15,6 @@ import (
 	p2plog "github.com/ipfs/go-log"
 	"github.com/juju/fslock"
 	"github.com/rivo/tview"
-	"github.com/whyrusleeping/go-logging"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -83,7 +82,7 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 }
 
 func Main(opts *Opts) {
-	p2plog.SetAllLoggers(logging.CRITICAL)
+	p2plog.SetAllLoggers(p2plog.LevelFatal)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

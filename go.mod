@@ -12,39 +12,34 @@ require (
 	github.com/golang/protobuf v1.3.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
 	github.com/improbable-eng/grpc-web v0.11.0
-	github.com/ipfs/go-cid v0.0.4
-	github.com/ipfs/go-datastore v0.3.1
-	github.com/ipfs/go-ds-badger v0.2.0
-	github.com/ipfs/go-ipfs v0.4.22-0.20191217161056-7cc392ba9dac
-	github.com/ipfs/go-ipfs-config v0.1.0
+	github.com/ipfs/go-cid v0.0.5
+	github.com/ipfs/go-datastore v0.4.4
+	github.com/ipfs/go-ds-badger v0.2.4
+	github.com/ipfs/go-ipfs v0.5.0-rc1.0.20200409041533-6cb3ca41da70
+	github.com/ipfs/go-ipfs-config v0.4.0
 	github.com/ipfs/go-ipfs-keystore v0.0.1
-	github.com/ipfs/go-log v0.0.1
-	github.com/ipfs/interface-go-ipfs-core v0.2.5
+	github.com/ipfs/go-log v1.0.3
+	github.com/ipfs/interface-go-ipfs-core v0.2.6
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
-	github.com/libp2p/go-libp2p v0.5.0
-	github.com/libp2p/go-libp2p-core v0.3.0
-	github.com/libp2p/go-libp2p-discovery v0.2.0
+	github.com/libp2p/go-libp2p v0.7.4
+	github.com/libp2p/go-libp2p-core v0.5.1
+	github.com/libp2p/go-libp2p-discovery v0.3.0
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e
-	github.com/multiformats/go-multiaddr v0.2.0
-	github.com/multiformats/go-multiaddr-net v0.1.1
-	github.com/multiformats/go-multihash v0.0.10
+	github.com/multiformats/go-multiaddr v0.2.1
+	github.com/multiformats/go-multiaddr-net v0.1.4
+	github.com/multiformats/go-multihash v0.0.13
 	github.com/oklog/run v1.1.0
 	github.com/peterbourgon/ff v1.6.0
-	github.com/pkg/errors v0.8.1
+	github.com/pkg/errors v0.9.1
 	github.com/rivo/tview v0.0.0-20200219210816-cd38d7432498
 	github.com/smartystreets/goconvey v1.6.4 // indirect
-	github.com/stretchr/testify v1.4.0
+	github.com/stretchr/testify v1.5.1
 	github.com/whyrusleeping/go-logging v0.0.1
-	go.uber.org/multierr v1.2.0 // indirect
-	go.uber.org/zap v1.10.0
-	golang.org/x/crypto v0.0.0-20191205180655-e7c4368fe9dd
-	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
+	go.uber.org/zap v1.14.1
+	golang.org/x/crypto v0.0.0-20200406173513-056763e48d71
+	golang.org/x/net v0.0.0-20190923162816-aa69164e4478
 	golang.org/x/tools v0.0.0-20200226224502-204d844ad48d // indirect
 	google.golang.org/genproto v0.0.0-20190927181202-20e1ac93f88c // indirect
 	google.golang.org/grpc v1.24.0
 	moul.io/srand v1.4.0
 )
-
-replace github.com/golangci/golangci-lint => github.com/golangci/golangci-lint v1.18.0
-
-replace github.com/go-critic/go-critic v0.0.0-20181204210945-ee9bf5809ead => github.com/go-critic/go-critic v0.3.5-0.20190526074819-1df300866540
