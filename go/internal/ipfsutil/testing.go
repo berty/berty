@@ -10,6 +10,7 @@ import (
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
@@ -78,7 +79,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	t.Helper()
 
 	r := TestingRepo(t)
-	routingopt, crout := NewTinderRouting(opts.RDVPeer, false)
+	routingopt, crout := NewTinderRouting(zap.NewNop(), opts.RDVPeer, false)
 
 	node, err := ipfs_core.NewNode(ctx, &ipfs_core.BuildCfg{
 		Repo:    r,

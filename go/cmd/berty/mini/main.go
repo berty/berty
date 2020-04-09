@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"time"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -19,6 +20,8 @@ import (
 	"github.com/rivo/tview"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+
+	p2plog "github.com/ipfs/go-log"
 )
 
 type Opts struct {
@@ -34,7 +37,7 @@ type Opts struct {
 
 var globalLogger *zap.Logger
 
-func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func()) {
+func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyprotocol.Service, func()) {
 	var (
 		swarmAddresses []string
 		lock           *fslock.Lock
@@ -76,7 +79,7 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 		panicUnlockFS(err, lock)
 	}
 
-	routingOpt, crouting := ipfsutil.NewTinderRouting(rdvpeer.ID, false)
+	routingOpt, crouting := ipfsutil.NewTinderRouting(logger, rdvpeer.ID, false)
 	cfg.Routing = routingOpt
 
 	ipfsConfig, err := cfg.Repo.Config()
@@ -100,8 +103,13 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 	// wait to get routing
 	routing := <-crouting
 
-	if err := node.PeerHost.Connect(ctx, *rdvpeer); err != nil {
-		panicUnlockFS(fmt.Errorf("cannot dial rendez-vous point: %v", err), lock)
+	for {
+		if err := node.PeerHost.Connect(ctx, *rdvpeer); err != nil {
+			logger.Error("cannot dial rendez-vous point: %v", zap.Error(err))
+		} else {
+			break
+		}
+		time.Sleep(time.Second)
 	}
 
 	mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
@@ -135,7 +143,7 @@ func Main(opts *Opts) {
 
 	var client bertyprotocol.ProtocolServiceClient
 	if opts.RemoteAddr == "" {
-		service, clean := newService(ctx, opts)
+		service, clean := newService(opts.Logger, ctx, opts)
 		defer clean()
 
 		protocolClient, err := bertyprotocol.NewClient(service)
@@ -168,6 +176,7 @@ func Main(opts *Opts) {
 	if err != nil {
 		panic(err)
 	}
+
 	if opts.Logger != nil {
 		globalLogger = opts.Logger.Named(pkAsShortID(accountGroup.Group.PublicKey))
 	} else {

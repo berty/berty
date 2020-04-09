@@ -5,6 +5,7 @@ import (
 
 	p2p_routing "github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
+	"go.uber.org/zap"
 )
 
 type Routing interface {
@@ -27,10 +28,10 @@ func (r *routing) Bootstrap(ctx context.Context) error {
 	return r.bootstrap(ctx)
 }
 
-func NewRouting(r p2p_routing.Routing, drivers ...Driver) Routing {
+func NewRouting(logger *zap.Logger, r p2p_routing.Routing, drivers ...Driver) Routing {
 	rdisc := discovery.NewRoutingDiscovery(r)
-	drivers = append(drivers, ComposeDriver(rdisc, rdisc, nil))
-	md := NewMultiDriver(drivers...)
+	drivers = append(drivers, ComposeDriver("dht", rdisc, rdisc, nil))
+	md := NewMultiDriver(logger, drivers...)
 
 	cr := discovery.NewDiscoveryRouting(md)
 	return &routing{
