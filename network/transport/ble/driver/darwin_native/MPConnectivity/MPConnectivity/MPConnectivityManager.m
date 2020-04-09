@@ -10,15 +10,44 @@
 #import "MPConnectivityManager.h"
 #import "MPConnectivity.h"
 
-static MCPeerID *gPeerID = nil;
 NSString *BERTY_DRIVER_MC = @"berty-mc";
 
 @implementation MPConnectivityManager
 
+- (MCPeerID *)getMCPeerID:(NSString *)appPID {
+    NSLog(@"getMCPeerID called");
+    NSString *kAppPID = @"berty-peerID";
+    NSString *kPIDData = @"berty-PIDData";
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *oldAppPID = [defaults stringForKey:kAppPID];
+    MCPeerID *peerID;
+    NSData *peerIDData;
+    NSError *error;
+     
+    if ([oldAppPID isEqualToString:appPID]) {
+        peerIDData = [defaults dataForKey:kPIDData];
+        if ((peerID = [NSKeyedUnarchiver unarchivedObjectOfClass:[MCPeerID class] fromData:peerIDData error:&error])) {
+            return (peerID);
+        }
+        NSLog(@"getMCPeerID unarchive error: %@", error);
+    }
+    peerID = [[MCPeerID alloc] initWithDisplayName:appPID];
+    if ((peerIDData = [NSKeyedArchiver archivedDataWithRootObject:peerID requiringSecureCoding:true error:&error])) {
+        [defaults setObject:peerIDData forKey:kPIDData];
+        [defaults setObject:appPID forKey:kAppPID];
+        [defaults synchronize];
+    } else {
+        NSLog(@"getMCPeerID archive error: %@", error);
+    }
+    return (peerID);
+}
+
 - (id)init:(NSString *)peerID {
+    NSLog(@"MCConnectivityManager init() called");
     if (self = [super init]) {
-        gPeerID = [[MCPeerID alloc] initWithDisplayName:peerID];
-        if (!(self.mSession = [[MCSession alloc] initWithPeer:gPeerID securityIdentity:nil encryptionPreference:MCEncryptionRequired])) {
+        self.mPeerID = [[MCPeerID alloc] initWithDisplayName:peerID];
+        if (!(self.mSession = [[MCSession alloc] initWithPeer:self.mPeerID securityIdentity:nil encryptionPreference:MCEncryptionRequired])) {
             NSLog(@"MCSession init failed");
             return (self = nil);
         }
@@ -28,8 +57,8 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
 }
 
 - (int)startServiceAdvertiser {
-    NSLog(@"startServiceAdvertiser called, peerID: %@, serviceType: %@", gPeerID, BERTY_DRIVER_MC);
-    if (!(self.mServiceAdvertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:gPeerID discoveryInfo:nil serviceType:BERTY_DRIVER_MC])) {
+    NSLog(@"startServiceAdvertiser called, peerID: %@, serviceType: %@", self.mPeerID, BERTY_DRIVER_MC);
+    if (!(self.mServiceAdvertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:self.mPeerID discoveryInfo:nil serviceType:BERTY_DRIVER_MC])) {
         NSLog(@"MCNearbyServiceAdvertiser init failed");
         return (0);
     }
@@ -40,7 +69,7 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
 
 - (int)startServiceBrowser {
     NSLog(@"startServiceBrowser called");
-    if (!(self.mServiceBrowser = [[MCNearbyServiceBrowser alloc] initWithPeer:gPeerID serviceType:BERTY_DRIVER_MC])) {
+    if (!(self.mServiceBrowser = [[MCNearbyServiceBrowser alloc] initWithPeer:self.mPeerID serviceType:BERTY_DRIVER_MC])) {
         NSLog(@"MCNearbyServiceBrowser init failed");
         return (0);
     }
@@ -68,9 +97,16 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
     MCPeerID *peer;
     if ((peer = [self getPeer:peerID])) {
         NSArray *array = @[peer];
-       [self.mSession sendData:data toPeers:array withMode:MCSessionSendDataReliable error:&error];
+        if ([self.mSession sendData:data toPeers:array withMode:MCSessionSendDataReliable error:&error]) {
+            return (1);
+        }
+        NSString *description = [error localizedDescription];
+        NSString *reason = [error localizedFailureReason] ?
+            [error localizedFailureReason] :
+            NSLocalizedString(@"Try typing the URL again.", nil);
+        NSLog(@"sendToPeer error: %@: %@", description, reason);
     }
-    return (1);
+    return (0);
 }
 
 - (MCPeerID *)getPeer:(NSString *)peerID {

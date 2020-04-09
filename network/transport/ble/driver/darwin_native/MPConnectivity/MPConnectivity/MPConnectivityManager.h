@@ -16,7 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) MCSession *mSession;
 @property (nonatomic, strong, nullable) MCNearbyServiceAdvertiser *mServiceAdvertiser;
 @property (nonatomic, strong, nullable) MCNearbyServiceBrowser *mServiceBrowser;
+@property (nonatomic, strong) MCPeerID *mPeerID;
 
+- (MCPeerID *)getMCPeerID:(NSString *)peerID;
 - (id)init:(NSString *)peerID;
 - (int)startServiceAdvertiser;
 - (int)startServiceBrowser;
