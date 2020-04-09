@@ -108,17 +108,12 @@ export const useAccountSendContactRequest = () => {
 	if (!account) {
 		return () => {}
 	}
-	return (val: string) => {
-		const parts = val.split(' ')
-		if (parts.length !== 2) {
-			throw new Error('Corrupted deep link')
-		}
-		const [name, ref] = parts
+	return (name: string, data: string) => {
 		dispatch(
 			chat.account.commands.sendContactRequest({
 				id: account.id,
-				otherName: Buffer.from(name, 'base64').toString('utf-8'),
-				otherReference: ref,
+				otherName: name,
+				otherReference: data,
 			}),
 		)
 	}
