@@ -11,17 +11,17 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
+
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	p2plog "github.com/ipfs/go-log"
+
 	"github.com/juju/fslock"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/rivo/tview"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-
-	p2plog "github.com/ipfs/go-log"
 )
 
 type Opts struct {
