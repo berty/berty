@@ -390,35 +390,35 @@ func (m *metadataStoreIndex) handleContactRequestReferenceReset(event proto.Mess
 		return nil
 	}
 
-	m.contactRequestSeed = evt.RendezvousSeed
+	m.contactRequestSeed = evt.PublicRendezvousSeed
 
 	return nil
 }
 
 func (m *metadataStoreIndex) handleContactRequestOutgoingEnqueued(event proto.Message) error {
 	evt, ok := event.(*bertytypes.AccountContactRequestEnqueued)
-	if !ok {
+	if ko := !ok || evt.Contact == nil; ko {
 		return errcode.ErrInvalidInput
 	}
 
-	if _, ok := m.contacts[string(evt.ContactPK)]; ok {
-		if m.contacts[string(evt.ContactPK)].contact.Metadata == nil {
-			m.contacts[string(evt.ContactPK)].contact.Metadata = evt.ContactMetadata
+	if _, ok := m.contacts[string(evt.Contact.PK)]; ok {
+		if m.contacts[string(evt.Contact.PK)].contact.Metadata == nil {
+			m.contacts[string(evt.Contact.PK)].contact.Metadata = evt.Contact.Metadata
 		}
 
-		if m.contacts[string(evt.ContactPK)].contact.PublicRendezvousSeed == nil {
-			m.contacts[string(evt.ContactPK)].contact.PublicRendezvousSeed = evt.ContactRendezvousSeed
+		if m.contacts[string(evt.Contact.PK)].contact.PublicRendezvousSeed == nil {
+			m.contacts[string(evt.Contact.PK)].contact.PublicRendezvousSeed = evt.Contact.PublicRendezvousSeed
 		}
 
 		return nil
 	}
 
-	m.contacts[string(evt.ContactPK)] = &accountContact{
+	m.contacts[string(evt.Contact.PK)] = &accountContact{
 		state: bertytypes.ContactStateToRequest,
 		contact: &bertytypes.ShareableContact{
-			PK:                   evt.ContactPK,
-			Metadata:             evt.ContactMetadata,
-			PublicRendezvousSeed: evt.ContactRendezvousSeed,
+			PK:                   evt.Contact.PK,
+			Metadata:             evt.Contact.Metadata,
+			PublicRendezvousSeed: evt.Contact.PublicRendezvousSeed,
 		},
 	}
 

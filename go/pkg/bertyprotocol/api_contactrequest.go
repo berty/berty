@@ -11,21 +11,15 @@ import (
 // ContactRequestReference retrieves the necessary information to create a contact link
 func (s *service) ContactRequestReference(context.Context, *bertytypes.ContactRequestReference_Request) (*bertytypes.ContactRequestReference_Reply, error) {
 	enabled, shareableContact := s.accountGroup.MetadataStore().GetIncomingContactRequestsStatus()
-	ref := []byte(nil)
+	rdvSeed := []byte(nil)
 
 	if shareableContact != nil {
-		var err error
-
-		shareableContact.Metadata = nil
-		ref, err = shareableContact.Marshal()
-		if err != nil {
-			return nil, errcode.ErrSerialization.Wrap(err)
-		}
+		rdvSeed = shareableContact.PublicRendezvousSeed
 	}
 
 	return &bertytypes.ContactRequestReference_Reply{
-		Reference: ref,
-		Enabled:   enabled,
+		PublicRendezvousSeed: rdvSeed,
+		Enabled:              enabled,
 	}, nil
 }
 
@@ -45,20 +39,14 @@ func (s *service) ContactRequestEnable(ctx context.Context, _ *bertytypes.Contac
 	}
 
 	_, shareableContact := s.accountGroup.MetadataStore().GetIncomingContactRequestsStatus()
-	ref := []byte(nil)
+	rdvSeed := []byte(nil)
 
 	if shareableContact != nil {
-		var err error
-
-		shareableContact.Metadata = nil
-		ref, err = shareableContact.Marshal()
-		if err != nil {
-			return nil, errcode.ErrSerialization.Wrap(err)
-		}
+		rdvSeed = shareableContact.PublicRendezvousSeed
 	}
 
 	return &bertytypes.ContactRequestEnable_Reply{
-		Reference: ref,
+		PublicRendezvousSeed: rdvSeed,
 	}, nil
 }
 
@@ -69,31 +57,23 @@ func (s *service) ContactRequestResetReference(ctx context.Context, _ *bertytype
 	}
 
 	_, shareableContact := s.accountGroup.MetadataStore().GetIncomingContactRequestsStatus()
-	ref := []byte(nil)
+	rdvSeed := []byte(nil)
 
 	if shareableContact != nil {
-		var err error
-
-		shareableContact.Metadata = nil
-		ref, err = shareableContact.Marshal()
-		if err != nil {
-			return nil, errcode.ErrSerialization.Wrap(err)
-		}
+		rdvSeed = shareableContact.PublicRendezvousSeed
 	}
 
 	return &bertytypes.ContactRequestResetReference_Reply{
-		Reference: ref,
+		PublicRendezvousSeed: rdvSeed,
 	}, nil
 }
 
 // ContactRequestSend enqueues a new contact request to be sent
 func (s *service) ContactRequestSend(ctx context.Context, req *bertytypes.ContactRequestSend_Request) (*bertytypes.ContactRequestSend_Reply, error) {
-	shareableContact := &bertytypes.ShareableContact{}
-	if err := shareableContact.Unmarshal(req.Reference); err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+	shareableContact := req.Contact
+	if shareableContact == nil {
+		return nil, errcode.ErrInvalidInput
 	}
-
-	shareableContact.Metadata = req.ContactMetadata
 
 	pk, err := crypto.UnmarshalEd25519PublicKey(shareableContact.PK)
 	if err != nil {

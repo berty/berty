@@ -54,8 +54,7 @@ export type Commands<State> = {
 		action: {
 			payload: {
 				id: string
-				reference: Uint8Array
-				contactMetadata: Uint8Array
+				contact: api.berty.types.IShareableContact
 			}
 		},
 	) => State

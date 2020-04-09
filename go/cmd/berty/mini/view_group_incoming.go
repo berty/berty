@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"go.uber.org/zap"
 )
 
@@ -155,10 +156,13 @@ func handlerAccountContactRequestOutgoingEnqueued(_ context.Context, v *groupVie
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
+	if casted.Contact == nil {
+		return errcode.ErrInvalidInput
+	}
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("outgoing contact request enqueued (%s)", base64.StdEncoding.EncodeToString(casted.ContactPK))),
+		payload:     []byte(fmt.Sprintf("outgoing contact request enqueued (%s)", base64.StdEncoding.EncodeToString(casted.Contact.PK))),
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 

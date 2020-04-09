@@ -108,12 +108,13 @@ export const useAccountSendContactRequest = () => {
 	if (!account) {
 		return () => {}
 	}
-	return (name: string, data: string) => {
+	return (name: string, rdvSeed: string, pubKey: string) => {
 		dispatch(
 			chat.account.commands.sendContactRequest({
 				id: account.id,
-				otherName: name,
-				otherReference: data,
+				contactName: name,
+				contactPublicKey: pubKey,
+				contactRdvSeed: rdvSeed,
 			}),
 		)
 	}
@@ -163,14 +164,15 @@ export const useAccountDelete = () => {
 
 // requests queries
 export const useContactRequestReference = () => {
+	const client = useClient()
 	const account = useAccount()
-	const ref = useSelector((state: protocol.client.GlobalState) =>
-		account != null ? chat.account.queries.getRequestReference(state, { id: account.id }) : null,
-	)
-	if (!account) {
+	if (!client || !account) {
 		return
 	}
-	return `${Buffer.from(account.name, 'utf-8').toString('base64')} ${ref}`
+	const rdvSeed = client.contactRequestRdvSeed
+	const pubKey = client.accountPk
+	const b64Name = Buffer.from(account.name, 'utf-8').toString('base64')
+	return `${b64Name} ${rdvSeed} ${pubKey}`
 }
 
 export const useContactRequestEnabled = () => {

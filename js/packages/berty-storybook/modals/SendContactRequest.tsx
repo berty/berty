@@ -19,11 +19,17 @@ export const SendContactRequest: React.FC<{
 			throw new Error('Bad usage of SendContactRequest component')
 		}
 		const parts = decodedData.split(' ')
-		if (parts.length !== 2) {
+		if (parts.length !== 3) {
 			throw new Error('Corrupted deep link')
 		}
-		const [b64Name, ref] = parts
-		content = <AddThisContact name={Buffer.from(b64Name, 'base64').toString()} data={ref} />
+		const [b64Name, rdvSeed, pubKey] = parts
+		content = (
+			<AddThisContact
+				name={Buffer.from(b64Name, 'base64').toString()}
+				rdvSeed={rdvSeed}
+				pubKey={pubKey}
+			/>
+		)
 	} catch (e) {
 		let title
 		if ('uriData' in params) {

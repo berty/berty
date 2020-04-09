@@ -1,0 +1,40 @@
+import * as api from '@berty-tech/api'
+
+{{#with (lookup "berty.types")}}
+	{{#each nested}}
+    {{#if (and (eq (typeof this) "Enum") (eq name "EventType"))}}
+      export type Events<State> = {
+        {{#each values}}
+          {{#with (removeFirst @key "EventType") as | eventName |}}
+            {{case 'camel' eventName}}: (
+              state: State,
+              action: {
+                payload: {
+                  aggregateId: string,
+                  eventContext: api.berty.types.IEventContext,
+                  metadata: api.berty.types.IGroupMetadata,
+                  event: {
+                    {{#with (lookup "berty.types")}}
+                      {{#each nested}}
+                        {{#if (matchInconsistant name eventName)}}
+                          // {{eventName}} seems event of type {{name}}
+                          {{#each fields}}
+                            {{@key}}: {{#with (convertScalarType type)~}}
+                              {{this}},
+                            {{else}}
+                              api{{inamespace resolvedType}},
+                            {{/with}}
+                          {{/each}}
+                        {{/if}}
+                      {{/each}}
+                    {{/with}}
+                  }
+                }
+              }
+            ) => State
+          {{/with}}
+        {{/each}}
+      }
+    {{/if}}
+  {{/each}}
+{{/with}}

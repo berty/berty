@@ -4,6 +4,7 @@ import { fork, put, all, takeLeading, select, takeEvery, take } from 'redux-saga
 import faker from 'faker'
 import { Buffer } from 'buffer'
 import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
+import { berty } from '@berty-tech/api'
 
 import { contact, conversation } from '../chat'
 import * as protocol from '../protocol'
@@ -36,7 +37,12 @@ export namespace Command {
 	export type Generate = void
 	export type Create = { name: string }
 	export type Delete = { id: string }
-	export type SendContactRequest = { id: string; otherReference: string; otherName: string }
+	export type SendContactRequest = {
+		id: string
+		contactName: string
+		contactRdvSeed: string
+		contactPublicKey: string
+	}
 	export type Replay = { id: string }
 	export type Open = { id: string }
 }
@@ -71,7 +77,7 @@ export type CommandsReducer = {
 export type QueryReducer = {
 	list: (state: GlobalState, query: Query.List) => Array<Entity>
 	get: (state: GlobalState, query: Query.Get) => Entity
-	getRequestReference: (
+	getRequestRdvSeed: (
 		state: protocol.client.GlobalState,
 		query: Query.GetRequestReference,
 	) => string | undefined
@@ -134,8 +140,8 @@ export const events = eventHandler.actions
 export const queries: QueryReducer = {
 	list: (state) => Object.values(state.chat.account.aggregates),
 	get: (state, { id }) => state.chat.account.aggregates[id],
-	getRequestReference: (state, { id }) =>
-		protocol.queries.client.get(state, { id })?.contactRequestReference,
+	getRequestRdvSeed: (state, { id }) =>
+		protocol.queries.client.get(state, { id })?.contactRequestRdvSeed,
 	getAll: (state) => Object.values(state.chat.account.aggregates),
 	getLength: (state) => Object.keys(state.chat.account.aggregates).length,
 }
@@ -245,12 +251,18 @@ export const transactions: Transactions = {
 
 		const metadata = {
 			name: account.name,
-			givenName: payload.otherName,
+			givenName: payload.contactName,
 		}
+
+		const contact: berty.types.IShareableContact = {
+			pk: Buffer.from(payload.contactPublicKey, 'utf-8'),
+			publicRendezvousSeed: Buffer.from(payload.contactRdvSeed, 'utf-8'),
+			metadata: Buffer.from(JSON.stringify(metadata), 'utf-8'),
+		}
+
 		yield* protocol.transactions.client.contactRequestSend({
 			id: payload.id,
-			contactMetadata: Buffer.from(JSON.stringify(metadata), 'utf-8'),
-			reference: Buffer.from(payload.otherReference, 'base64'),
+			contact,
 		})
 	},
 }

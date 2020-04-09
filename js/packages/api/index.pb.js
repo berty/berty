@@ -2394,7 +2394,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   "(gogoproto.customname)": "DevicePK"
                 }
               },
-              rendezvousSeed: {
+              publicRendezvousSeed: {
                 type: "bytes",
                 id: 2
               }
@@ -2409,27 +2409,16 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   "(gogoproto.customname)": "DevicePK"
                 }
               },
-              contactPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "ContactPK"
-                }
-              },
               groupPk: {
                 type: "bytes",
-                id: 5,
+                id: 2,
                 options: {
                   "(gogoproto.customname)": "GroupPK"
                 }
               },
-              contactRendezvousSeed: {
-                type: "bytes",
+              contact: {
+                type: "ShareableContact",
                 id: 3
-              },
-              contactMetadata: {
-                type: "bytes",
-                id: 4
               }
             }
           },
@@ -2649,7 +2638,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               Reply: {
                 fields: {
-                  reference: {
+                  publicRendezvousSeed: {
                     type: "bytes",
                     id: 1
                   },
@@ -2680,7 +2669,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               Reply: {
                 fields: {
-                  reference: {
+                  publicRendezvousSeed: {
                     type: "bytes",
                     id: 1
                   }
@@ -2696,7 +2685,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               Reply: {
                 fields: {
-                  reference: {
+                  publicRendezvousSeed: {
                     type: "bytes",
                     id: 1
                   }
@@ -2709,13 +2698,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             nested: {
               Request: {
                 fields: {
-                  reference: {
-                    type: "bytes",
+                  contact: {
+                    type: "ShareableContact",
                     id: 1
-                  },
-                  contactMetadata: {
-                    type: "bytes",
-                    id: 2
                   }
                 }
               },
