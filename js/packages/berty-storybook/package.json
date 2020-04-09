@@ -35,6 +35,7 @@
     "@eva-design/eva": "^1.2.0",
     "@storybook/addon-notes": "^5.2.4",
     "i18next": "19.0.1",
+    "moment": "^2.24.0",
     "random-emoji": "^1.0.2",
     "react-i18next": "11.2.2",
     "react-native-camera": "^3.16.0",

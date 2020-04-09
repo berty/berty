@@ -272,3 +272,26 @@ export const useGetMessage = (id: string): chat.message.Entity | undefined => {
 	const message = useSelector(selector)
 	return message
 }
+
+export const useGetListMessage = (list: any): chat.message.Entity[] => {
+	const selector = useMemo(
+		() => (state: chat.message.GlobalState) => chat.message.queries.getList(state, { list }),
+		[list],
+	)
+	const messages = useSelector(selector)
+	return messages
+}
+
+export const useGetDateLastContactMessage = (id: string) => {
+	const conversation = useGetConversation(id)
+	const messages = useGetListMessage(conversation.messages)
+	let lastDate
+	conversation.kind !== 'fake' &&
+		messages.length &&
+		messages.map((message) => {
+			if (!message?.isMe) {
+				lastDate = message.receivedDate
+			}
+		})
+	return lastDate || null
+}

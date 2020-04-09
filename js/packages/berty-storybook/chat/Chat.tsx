@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
 	TouchableOpacity,
 	View,
@@ -10,12 +10,13 @@ import {
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { Message } from './shared-components/Message'
-import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
 import { useNavigation, Routes } from '@berty-tech/berty-navigation'
-import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { CommonActions } from '@react-navigation/core'
+import moment from 'moment'
+import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
+import { Message } from './shared-components/Message'
+import { ChatFooter, ChatDate } from './shared-components/Chat'
 
 //
 // Chat
@@ -30,7 +31,7 @@ const useStylesChat = () => {
 	}
 }
 
-const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
+export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 	const { dispatch, goBack } = useNavigation()
 	const _styles = useStylesChat()
 	const [
@@ -40,6 +41,15 @@ const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 	const contact = ChatHooks.useOneToOneConversationContact(conversation.id)
 	const title =
 		conversation.kind === 'fake' ? `SAMPLE - ${conversation.title}` : contact?.name || ''
+	const [value, setValue] = useState()
+	const lastDate = ChatHooks.useGetDateLastContactMessage(conversation.id)
+
+	useEffect(() => {
+		setValue(moment(lastDate).fromNow())
+		const intervalID = setInterval(() => setValue(moment(lastDate).fromNow()), 10000)
+		return () => clearInterval(intervalID)
+	}, [conversation.id, lastDate])
+
 	return (
 		<SafeAreaView style={[background.white, absolute.top, absolute.right, absolute.left]}>
 			<View style={[row.fill, padding.medium]}>
@@ -61,9 +71,11 @@ const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 					>
 						{title}
 					</Text>
-					<Text numberOfLines={1} style={[text.size.small, text.color.grey, text.align.center]}>
-						Last seen just now
-					</Text>
+					{lastDate && (
+						<Text numberOfLines={1} style={[text.size.small, text.color.grey, text.align.center]}>
+							Last seen {value}
+						</Text>
+					)}
 				</View>
 				<TouchableOpacity
 					activeOpacity={contact ? 0.2 : 0.5}
