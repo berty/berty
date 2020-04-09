@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { View, StyleProp, TouchableOpacity } from 'react-native'
+import { View, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
 import { Text, Icon, Toggle } from 'react-native-ui-kitten'
-import { UserProps } from '../shared-props/User'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
 import { TabBar } from './TabBar'
 import { FingerprintContent } from './FingerprintContent'
 import { Modal } from './Modal'
-import { GroupCircleAvatar } from './CircleAvatar'
 import { ProceduralCircleAvatar } from './ProceduralCircleAvatar'
 
 //
@@ -14,132 +12,69 @@ import { ProceduralCircleAvatar } from './ProceduralCircleAvatar'
 //
 
 // Types
-type RequestProps = {
-	accept: (arg0: { id: number }) => Promise<{}>
-	decline: (arg0: { id: number }) => Promise<{}>
+
+type Buttons = {
+	title: string
+	icon: string
+	action?: any
+	disabled?: boolean
+	titleColor?: ColorsTypes
+	iconColor?: ColorsTypes
+	iconSize?: number
+	bgColor?: ColorsTypes
+	style?: StyleProp<any>[]
 }
 
-type RequestButtonItemProps = {
-	icon: string
-	iconSize?: number
-	iconColor?: ColorsTypes
-	textProps: string
-	textColor?: ColorsTypes
-	style?: StyleProp<any>
-}
+type RequestButtonItemProps = Buttons
 
 type RequestButtonsProps = {
-	buttons?: {
-		title: string
-		titleColor?: ColorsTypes
-		icon: string
-		iconColor?: ColorsTypes
-		bgColor?: ColorsTypes
-		style?: StyleProp<any>[]
-	}[]
-}
-
-// Styles
-const useStylesRequestButtons = () => {
-	const [{ border, opacity, padding, margin, background }] = useStyles()
-	return {
-		requestButtonRefuse: [
-			border.color.grey,
-			border.big,
-			opacity(0.5),
-			border.radius.scale(6),
-			padding.vertical.scale(7),
-			margin.right.scale(10),
-		],
-		requestButtonAccept: [
-			border.radius.scale(6),
-			padding.vertical.scale(7),
-			margin.left.scale(10),
-			background.light.blue,
-		],
-	}
+	buttons?: Buttons[]
 }
 
 const RequestButtonItem: React.FC<RequestButtonItemProps> = ({
 	icon,
-	iconSize = 30,
+	title,
+	action = null,
+	iconSize = 25,
 	iconColor = 'blue',
-	textProps,
-	textColor = 'blue',
+	titleColor = 'blue',
 	style = null,
+	disabled = false,
 }) => {
-	const [{ row, flex, text, column }] = useStyles()
+	const [{ row, flex, text, opacity }] = useStyles()
 	return (
-		<TouchableOpacity style={[flex.tiny, row.center, style]}>
+		<TouchableOpacity
+			activeOpacity={disabled ? 0.5 : 0.2}
+			style={[flex.tiny, row.center, style, disabled ? opacity(0.5) : null]}
+			onPress={() => action && action()}
+		>
 			<Icon
 				name={icon}
 				width={iconSize}
 				height={iconSize}
 				fill={iconColor}
-				style={column.item.center}
+				style={[row.item.justify]}
 			/>
 			<Text
 				style={[
 					text.bold.medium,
+					text.size.medium,
 					text.family,
-					text.align.center,
-					column.item.center,
-					{ color: textColor },
+					row.item.justify,
+					{ color: titleColor },
 				]}
 			>
-				{textProps}
+				{title}
 			</Text>
 		</TouchableOpacity>
 	)
 }
 
 export const RequestButtons: React.FC<RequestButtonsProps> = ({ buttons = null }) => {
-	const [arr, setArr] = useState()
-	const _styles = useStylesRequestButtons()
-	const [{ row, padding, margin, color }] = useStyles()
-	useEffect(() => {
-		if (!arr) {
-			if (!buttons) {
-				setArr([
-					{
-						style: _styles.requestButtonRefuse,
-						title: 'REFUSE',
-						titleColor: color.grey,
-						icon: 'close-outline',
-						iconColor: color.grey,
-					},
-					{
-						style: _styles.requestButtonAccept,
-						title: 'ACCEPT',
-						titleColor: color.blue,
-						icon: 'checkmark-outline',
-						iconColor: color.blue,
-					},
-				])
-			} else {
-				setArr(buttons)
-			}
-		}
-	}, [
-		arr,
-		buttons,
-		_styles.requestButtonRefuse,
-		_styles.requestButtonAccept,
-		color.grey,
-		color.blue,
-	])
+	const [{ row, padding, margin }] = useStyles()
 	return (
 		<View style={[row.left, padding.medium, margin.top.medium]}>
-			{arr &&
-				arr.map((obj: any) => (
-					<RequestButtonItem
-						style={obj.style}
-						icon={obj.icon}
-						iconColor={obj.iconColor}
-						textProps={obj.title}
-						textColor={obj.titleColor}
-					/>
-				))}
+			{buttons && buttons.map((obj: any) => <RequestButtonItem {...obj} />)}
 		</View>
 	)
 }
@@ -262,28 +197,18 @@ export const MarkAsVerified: React.FC<{}> = () => {
 
 // Types
 type RequestComponentProps = {
-	user: UserProps
+	user: any
 	markAsVerified?: boolean
-	buttons?: {
-		title: string
-		titleColor?: string
-		icon: string
-		iconColor?: string
-		bgColor?: string
-	}[]
+	buttons?: Buttons[]
+	blurAmount?: number
+	blurColor?: ViewStyle['backgroundColor']
+	blurColorOpacity?: number
 }
 
 type BodyRequestProps = {
-	user: UserProps
+	user: any
 	markAsVerified: boolean
-	buttons?: {
-		title: string
-		titleColor?: string
-		icon: string
-		iconColor?: string
-		bgColor?: string
-		style?: StyleProp<any>[]
-	}[]
+	buttons?: Buttons[]
 }
 
 const BodyRequestContent: React.FC<{}> = ({ children }) => {
@@ -303,7 +228,7 @@ const SelectedContent = ({
 	markAsVerified: boolean
 }) => {
 	switch (contentName) {
-		case 'QR':
+		case 'Fingerprint':
 			return (
 				<View>
 					<FingerprintContent />
@@ -316,15 +241,19 @@ const SelectedContent = ({
 }
 
 const BodyRequest: React.FC<BodyRequestProps> = ({ user, markAsVerified, buttons = null }) => {
-	const [{ padding }] = useStyles()
+	const [{ padding, absolute, row, text, border }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState()
 	return (
 		<View style={[padding.horizontal.medium, padding.bottom.medium]}>
-			<RequestAvatar size={100} avatarUri={user?.avatarUri} name={user?.name} />
-			<View style={padding.horizontal.medium}>
+			<View style={[absolute.scale({ top: -70 }), row.item.justify, border.shadow.medium]}>
+				<ProceduralCircleAvatar seed={user.publicKey} size={140} diffSize={40} />
+			</View>
+			<View style={[padding.horizontal.medium, padding.top.scale(75)]}>
+				<Text style={[padding.vertical.tiny, text.align.center, text.size.big, text.bold]}>
+					{user.name}
+				</Text>
 				<TabBar
 					tabs={[
-						{ name: 'QR', icon: 'code-outline' },
 						{ name: 'Fingerprint', icon: 'code-outline' },
 						{ name: 'Infos', icon: 'info-outline' },
 						{ name: 'Devices', icon: 'smartphone-outline' },
@@ -344,8 +273,11 @@ export const Request: React.FC<RequestComponentProps> = ({
 	user,
 	markAsVerified = true,
 	buttons = null,
+	blurColor,
+	blurAmount,
+	blurColorOpacity,
 }) => (
-	<Modal>
+	<Modal blurColor={blurColor} blurAmount={blurAmount} blurColorOpacity={blurColorOpacity}>
 		<BodyRequest user={user} markAsVerified={markAsVerified} buttons={buttons || []} />
 	</Modal>
 )

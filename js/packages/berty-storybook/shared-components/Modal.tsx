@@ -1,10 +1,11 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import {
 	TouchableOpacity,
 	TouchableWithoutFeedback,
 	View,
 	StyleSheet,
 	SafeAreaView,
+	ViewStyle,
 } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
@@ -19,6 +20,9 @@ import { BlurView } from '@react-native-community/blur'
 type ModalProps = {
 	children: React.ReactNode
 	icon?: boolean
+	blurColor?: ViewStyle['backgroundColor']
+	blurColorOpacity?: number
+	blurAmount?: number
 }
 
 // Styles
@@ -30,31 +34,48 @@ const useStylesModal = () => {
 	}
 }
 
-export const Modal: React.FC<ModalProps> = ({ children, icon = true }) => {
+export const Modal: React.FC<ModalProps> = ({
+	children,
+	icon = true,
+	blurAmount = 50,
+	blurColorOpacity = 0.15,
+	blurColor,
+}) => {
 	const { goBack } = useNavigation()
 	const _styles = useStylesModal()
-	const [{ absolute, margin, border, column, flex, background, row, color, padding }] = useStyles()
+	const [{ margin, border, column, background, row, color, padding }] = useStyles()
 	return (
 		<View style={[StyleSheet.absoluteFill]}>
-			<TouchableWithoutFeedback onPress={goBack} style={[StyleSheet.absoluteFill]}>
-				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' blurAmount={50} />
-			</TouchableWithoutFeedback>
-			<SafeAreaView style={[absolute.bottom, absolute.left, absolute.right, margin.medium]}>
+			{blurColor && (
 				<View
-					style={[background.white, border.shadow.medium, margin.medium, border.radius.scale(20)]}
-				>
-					{children}
+					style={[
+						StyleSheet.absoluteFill,
+						{ backgroundColor: blurColor, opacity: blurColorOpacity },
+					]}
+				/>
+			)}
+			<BlurView style={[StyleSheet.absoluteFill]} blurType='light' blurAmount={blurAmount} />
+			<SafeAreaView style={{ height: '100%' }}>
+				<View style={{ flexGrow: 1, justifyContent: 'center' }}>
+					<TouchableWithoutFeedback onPress={goBack}>
+						<View style={[StyleSheet.absoluteFill]} />
+					</TouchableWithoutFeedback>
+					<View
+						style={[background.white, border.shadow.medium, margin.medium, border.radius.scale(20)]}
+					>
+						{children}
+					</View>
 				</View>
 				{icon && (
 					<TouchableOpacity
 						style={[
-							flex.tiny,
 							background.white,
 							padding.vertical.medium,
 							border.shadow.medium,
 							row.item.justify,
 							column.justify,
 							_styles.closeRequest,
+							{ position: 'absolute', bottom: '5%' },
 						]}
 						onPress={goBack}
 					>
