@@ -250,6 +250,14 @@ func (v *groupView) welcomeEventDisplay(ctx context.Context) {
 		payload:     []byte(fmt.Sprintf("peerid: %s", config.PeerID)),
 	})
 
+	for i, listener := range config.Listeners {
+		msg := fmt.Sprintf("listener [#%d]: %s", i, listener)
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte(msg),
+		})
+	}
+
 	v.welcomeGroupEventDisplay()
 }
 
