@@ -27,6 +27,7 @@ type FooterProps = {
 	center: ButtonFooterProps
 	right: ButtonFooterProps
 	onLayout: (event: any) => void
+	hidden: boolean
 }
 
 const ButtonFooter: React.FC<ButtonFooterProps> = ({
@@ -89,12 +90,12 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 		</TouchableOpacity>
 	)
 }
-export const Footer: React.FC<FooterProps> = ({ left, center, right, onLayout }) => {
+export const Footer: React.FC<FooterProps> = ({ left, center, right, onLayout, hidden }) => {
 	const [{ row, absolute }] = useStyles()
 	return (
 		<LinearGradient
 			onLayout={onLayout}
-			style={[absolute.bottom, absolute.left, absolute.right]}
+			style={[absolute.bottom, absolute.left, absolute.right, hidden && { display: 'none' }]}
 			colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
 		>
 			<SafeAreaView style={[row.center]}>

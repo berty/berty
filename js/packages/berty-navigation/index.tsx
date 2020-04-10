@@ -10,6 +10,10 @@ import {
 	CommonActions,
 	useLinking,
 	NavigationContainer as ReactNavigationContainer,
+	NavigationState,
+	PartialState,
+	Route,
+	useNavigationState,
 } from '@react-navigation/native'
 import {
 	createBottomTabNavigator,
@@ -453,12 +457,31 @@ export const SettingsNavigation: React.FC<BottomTabBarProps> = () => (
 	</SettingsStack.Navigator>
 )
 
-const Footer: React.FC<BottomTabBarProps> = ({ navigation, state: { index, routeNames } }) => {
-	const _navigation = useMemo(() => createNavigation(navigation as any), [navigation])
-	if (routeNames[index].match(/^Settings\..*$/)) {
-		return <Stories.Settings.Footer {..._navigation} />
+type StateRoute = Route<string> & { state?: NavigationState | PartialState<NavigationState> }
+
+const findCurrentRoute = (route: StateRoute): StateRoute => {
+	const { state } = route
+	if (state) {
+		const { index } = state
+		if (index) {
+			const r = state.routes[index]
+			return findCurrentRoute(r as StateRoute)
+		}
 	}
-	return null
+	return route
+}
+
+const useCurrentRoute = () => {
+	// This breaks in some cases (transparentModal I think) but it works for our purpose
+	const state = useNavigationState((state) => state)
+	const route = state.routes[state.index]
+	return findCurrentRoute(route)
+}
+
+const Footer: React.FC<BottomTabBarProps> = ({ navigation }) => {
+	const _navigation = useMemo(() => createNavigation(navigation as any), [navigation])
+	const route = useCurrentRoute()
+	return <Stories.Settings.Footer hidden={route.name !== Routes.Settings.Home} {..._navigation} />
 }
 
 const TabStack = createBottomTabNavigator()
