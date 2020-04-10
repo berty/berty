@@ -1,6 +1,12 @@
 .PHONY: all
 all: up logs
 
+genkey:
+	echo RDVP_PK=`docker-compose run server genkey` > .env
+
+ip:
+	curl ifconfig.co
+
 up:
 	docker-compose up -d
 
