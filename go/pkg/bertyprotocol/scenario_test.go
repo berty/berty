@@ -16,7 +16,6 @@ import (
 
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -239,16 +238,14 @@ func TestScenario_ContactMessage(t *testing.T) {
 	otherPKBytes, err := otherPK.Raw()
 	require.NoError(t, err)
 
-	otherSharableContact, err := proto.Marshal(&bertytypes.ShareableContact{
+	otherSharableContact := &bertytypes.ShareableContact{
 		PK:                   otherPKBytes,
 		PublicRendezvousSeed: bytes.Repeat([]byte("."), bertytypes.RendezvousSeedLength),
 		Metadata:             []byte("useless"),
-	})
-	require.NoError(t, err)
+	}
 
 	_, err = pt.Client.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
-		Reference:       otherSharableContact,
-		ContactMetadata: nil,
+		Contact: otherSharableContact,
 	})
 	require.NoError(t, err)
 

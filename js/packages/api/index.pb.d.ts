@@ -3559,13 +3559,13 @@ export namespace berty {
 
         interface IAccountContactRequestReferenceReset {
             devicePk?: (Uint8Array|null);
-            rendezvousSeed?: (Uint8Array|null);
+            publicRendezvousSeed?: (Uint8Array|null);
         }
 
         class AccountContactRequestReferenceReset implements IAccountContactRequestReferenceReset {
 
             public devicePk: Uint8Array;
-            public rendezvousSeed: Uint8Array;
+            public publicRendezvousSeed: Uint8Array;
             public static create(properties?: berty.types.IAccountContactRequestReferenceReset): berty.types.AccountContactRequestReferenceReset;
             public static encode(message: berty.types.IAccountContactRequestReferenceReset, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.types.IAccountContactRequestReferenceReset, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3579,19 +3579,15 @@ export namespace berty {
 
         interface IAccountContactRequestEnqueued {
             devicePk?: (Uint8Array|null);
-            contactPk?: (Uint8Array|null);
             groupPk?: (Uint8Array|null);
-            contactRendezvousSeed?: (Uint8Array|null);
-            contactMetadata?: (Uint8Array|null);
+            contact?: (berty.types.IShareableContact|null);
         }
 
         class AccountContactRequestEnqueued implements IAccountContactRequestEnqueued {
 
             public devicePk: Uint8Array;
-            public contactPk: Uint8Array;
             public groupPk: Uint8Array;
-            public contactRendezvousSeed: Uint8Array;
-            public contactMetadata: Uint8Array;
+            public contact?: (berty.types.IShareableContact|null);
             public static create(properties?: berty.types.IAccountContactRequestEnqueued): berty.types.AccountContactRequestEnqueued;
             public static encode(message: berty.types.IAccountContactRequestEnqueued, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.types.IAccountContactRequestEnqueued, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3893,13 +3889,13 @@ export namespace berty {
             }
 
             interface IReply {
-                reference?: (Uint8Array|null);
+                publicRendezvousSeed?: (Uint8Array|null);
                 enabled?: (boolean|null);
             }
 
             class Reply implements IReply {
 
-                public reference: Uint8Array;
+                public publicRendezvousSeed: Uint8Array;
                 public enabled: boolean;
                 public static create(properties?: berty.types.ContactRequestReference.IReply): berty.types.ContactRequestReference.Reply;
                 public static encode(message: berty.types.ContactRequestReference.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3999,12 +3995,12 @@ export namespace berty {
             }
 
             interface IReply {
-                reference?: (Uint8Array|null);
+                publicRendezvousSeed?: (Uint8Array|null);
             }
 
             class Reply implements IReply {
 
-                public reference: Uint8Array;
+                public publicRendezvousSeed: Uint8Array;
                 public static create(properties?: berty.types.ContactRequestEnable.IReply): berty.types.ContactRequestEnable.Reply;
                 public static encode(message: berty.types.ContactRequestEnable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.types.ContactRequestEnable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4052,12 +4048,12 @@ export namespace berty {
             }
 
             interface IReply {
-                reference?: (Uint8Array|null);
+                publicRendezvousSeed?: (Uint8Array|null);
             }
 
             class Reply implements IReply {
 
-                public reference: Uint8Array;
+                public publicRendezvousSeed: Uint8Array;
                 public static create(properties?: berty.types.ContactRequestResetReference.IReply): berty.types.ContactRequestResetReference.Reply;
                 public static encode(message: berty.types.ContactRequestResetReference.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.types.ContactRequestResetReference.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4089,14 +4085,12 @@ export namespace berty {
         namespace ContactRequestSend {
 
             interface IRequest {
-                reference?: (Uint8Array|null);
-                contactMetadata?: (Uint8Array|null);
+                contact?: (berty.types.IShareableContact|null);
             }
 
             class Request implements IRequest {
 
-                public reference: Uint8Array;
-                public contactMetadata: Uint8Array;
+                public contact?: (berty.types.IShareableContact|null);
                 public static create(properties?: berty.types.ContactRequestSend.IRequest): berty.types.ContactRequestSend.Request;
                 public static encode(message: berty.types.ContactRequestSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.types.ContactRequestSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;

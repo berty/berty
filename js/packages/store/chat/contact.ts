@@ -141,19 +141,20 @@ const eventHandler = createSlice<State, EventsReducer>({
 	},
 	extraReducers: {
 		[protocol.events.client.accountContactRequestOutgoingEnqueued.type]: (state, { payload }) => {
-			const {
-				aggregateId: accountId,
-				event: { contactPk, groupPk, contactMetadata },
-			} = payload
-			const id = getAggregateId({ accountId, contactPk })
+			const { aggregateId: accountId, event } = payload
+			const { groupPk, contact: c } = event as berty.types.IAccountContactRequestEnqueued
+			if (!c || !c.pk || !groupPk) {
+				return state
+			}
+			const id = getAggregateId({ accountId, contactPk: c.pk })
 			const contact = state.aggregates[id]
 			if (!contact) {
-				const metadata = JSON.parse(new Buffer(contactMetadata).toString('utf-8'))
+				const metadata = c.metadata ? JSON.parse(new Buffer(c.metadata).toString('utf-8')) : {}
 				state.aggregates[id] = {
 					id,
 					accountId: payload.aggregateId,
 					name: metadata.givenName,
-					publicKey: encodePublicKey(contactPk),
+					publicKey: encodePublicKey(c.pk),
 					groupPk: encodePublicKey(groupPk),
 					request: {
 						type: ContactRequestType.Outgoing,
@@ -166,10 +167,11 @@ const eventHandler = createSlice<State, EventsReducer>({
 			return state
 		},
 		[protocol.events.client.accountContactRequestOutgoingSent.type]: (state, { payload }) => {
-			const {
-				aggregateId: accountId,
-				event: { contactPk },
-			} = payload
+			const { aggregateId: accountId, event } = payload
+			const { contactPk } = event as berty.types.IAccountContactRequestSent
+			if (!contactPk) {
+				return state
+			}
 			const id = getAggregateId({ accountId, contactPk })
 			const contact = state.aggregates[id]
 			if (contact && contact.request.type === ContactRequestType.Outgoing) {
@@ -403,8 +405,8 @@ export function* orchestrator() {
 			const { aggregateId: accountId } = payload
 			const event = payload.event as AppMessage
 			if (event.type === AppMessageType.GroupInvitation) {
-				const group: berty.protocol.IGroup = {
-					groupType: berty.protocol.GroupType.GroupTypeMultiMember,
+				const group: berty.types.IGroup = {
+					groupType: berty.types.GroupType.GroupTypeMultiMember,
 					publicKey: Buffer.from(event.groupPk, 'utf-8'),
 				}
 				yield* protocol.client.transactions.multiMemberGroupJoin({ id: accountId, group })

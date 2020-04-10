@@ -259,10 +259,8 @@ AccountContactRequestEnqueued indicates that the account will attempt to send a 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
-| contact_pk | [bytes](#bytes) |  | contact_pk is the account to send a contact request to |
 | group_pk | [bytes](#bytes) |  | group_pk is the 1to1 group with the requested user |
-| contact_rendezvous_seed | [bytes](#bytes) |  | contact_rendezvous_seed is the rendezvous seed used by the other account |
-| contact_metadata | [bytes](#bytes) |  | TODO: is this necessary? contact_metadata is the metadata specific to the app to identify the contact for the request |
+| contact | [ShareableContact](#berty.types.ShareableContact) |  | contact is a message describing how to connect to the other account |
 
 <a name="berty.types.AccountContactRequestReceived"></a>
 
@@ -284,7 +282,7 @@ AccountContactRequestDisabled indicates that the account should be advertised on
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
-| rendezvous_seed | [bytes](#bytes) |  | rendezvous_seed is the new rendezvous point seed |
+| public_rendezvous_seed | [bytes](#bytes) |  | public_rendezvous_seed is the new rendezvous point seed |
 
 <a name="berty.types.AccountContactRequestSent"></a>
 
@@ -482,7 +480,7 @@ ContactAddAliasKey is an event type where ones shares their alias public key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| reference | [bytes](#bytes) |  | reference is an opaque message describing how to connect to the current account |
+| public_rendezvous_seed | [bytes](#bytes) |  | public_rendezvous_seed is the rendezvous seed used by the current account |
 
 <a name="berty.types.ContactRequestEnable.Request"></a>
 
@@ -498,7 +496,7 @@ ContactAddAliasKey is an event type where ones shares their alias public key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| reference | [bytes](#bytes) |  | reference is an opaque message describing how to connect to the current account |
+| public_rendezvous_seed | [bytes](#bytes) |  | public_rendezvous_seed is the rendezvous seed used by the current account |
 | enabled | [bool](#bool) |  | enabled indicates if incoming contact requests are enabled |
 
 <a name="berty.types.ContactRequestReference.Request"></a>
@@ -515,7 +513,7 @@ ContactAddAliasKey is an event type where ones shares their alias public key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| reference | [bytes](#bytes) |  | reference is an opaque message describing how to connect to the current account |
+| public_rendezvous_seed | [bytes](#bytes) |  | public_rendezvous_seed is the rendezvous seed used by the current account |
 
 <a name="berty.types.ContactRequestResetReference.Request"></a>
 
@@ -535,8 +533,7 @@ ContactAddAliasKey is an event type where ones shares their alias public key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| reference | [bytes](#bytes) |  | reference is an opaque message describing how to connect to the other account |
-| contact_metadata | [bytes](#bytes) |  | contact_metadata is the metadata specific to the app to identify the contact for the request |
+| contact | [ShareableContact](#berty.types.ShareableContact) |  | contact is a message describing how to connect to the other account |
 
 <a name="berty.types.ContactUnblock"></a>
 
@@ -965,9 +962,9 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| pk | [bytes](#bytes) |  | contact_pk is the account to send a contact request to |
-| public_rendezvous_seed | [bytes](#bytes) |  | contact_rendezvous_seed is the rendezvous seed used by the other account |
-| metadata | [bytes](#bytes) |  | contact_metadata is the metadata specific to the app to identify the contact for the request |
+| pk | [bytes](#bytes) |  | pk is the account to send a contact request to |
+| public_rendezvous_seed | [bytes](#bytes) |  | public_rendezvous_seed is the rendezvous seed used by the account to send a contact request to |
+| metadata | [bytes](#bytes) |  | metadata is the metadata specific to the app to identify the contact for the request |
 
  
 
@@ -998,7 +995,7 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | EventTypeAccountGroupLeft | 102 | EventTypeAccountGroupLeft indicates the payload includes that the account has left a group |
 | EventTypeAccountContactRequestDisabled | 103 | EventTypeAccountContactRequestDisabled indicates the payload includes that the account has disabled incoming contact requests |
 | EventTypeAccountContactRequestEnabled | 104 | EventTypeAccountContactRequestEnabled indicates the payload includes that the account has enabled incoming contact requests |
-| EventTypeAccountContactRequestReferenceReset | 105 | EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request reference |
+| EventTypeAccountContactRequestReferenceReset | 105 | EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request rendezvous seed |
 | EventTypeAccountContactRequestOutgoingEnqueued | 106 | EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request |
 | EventTypeAccountContactRequestOutgoingSent | 107 | EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request |
 | EventTypeAccountContactRequestIncomingReceived | 108 | EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request |

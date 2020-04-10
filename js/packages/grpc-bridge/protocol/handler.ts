@@ -39,6 +39,8 @@ const createPkHack = async (client: DemoServiceClient): Promise<string> =>
 	(await Promise.all([logToken(client), logToken(client)])).join(':')
 
 export class ProtocolServiceHandler implements IProtocolServiceHandler {
+	// Fake protocol implementation to dev until we plug in the real one
+
 	client: DemoServiceClient
 	accountPk: string
 	devicePk: string
@@ -168,9 +170,9 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		) => void,
 	) => void = async (request, callback) => {
 		if (!this.rdvLogtoken) {
-			callback(null, { reference: null })
+			callback(null, { publicRendezvousSeed: null })
 		} else {
-			callback(null, { reference: this.referenceBytes })
+			callback(null, { publicRendezvousSeed: this.publicRendezvousSeedBytes })
 		}
 	}
 
@@ -194,11 +196,11 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		return Buffer.from(this.devicePk, 'utf-8')
 	}
 
-	get referenceBytes() {
+	get publicRendezvousSeedBytes() {
 		if (!this.rdvLogtoken) {
-			throw new Error('handler.ts: referenceBytes: Undefined rdvLogtoken')
+			throw new Error('handler.ts: publicRendezvousSeedBytes: Undefined rdvLogtoken')
 		}
-		return Buffer.from(this.accountPk + '__' + this.rdvLogtoken, 'utf-8')
+		return Buffer.from(this.rdvLogtoken, 'utf-8')
 	}
 
 	getMetadataLogToken = (groupPk: string): string => {
@@ -304,7 +306,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		if (!this.rdvLogtoken) {
 			await this.setRdvLogToken(await this._logToken())
 		}
-		callback(null, { reference: this.referenceBytes })
+		callback(null, { publicRendezvousSeed: this.publicRendezvousSeedBytes })
 		this.client.logStream(
 			{
 				logToken: this.rdvLogtoken,
@@ -352,7 +354,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 		) => void,
 	) => void = async (_, callback) => {
 		await this.setRdvLogToken(await this._logToken())
-		callback(null, { reference: this.referenceBytes })
+		callback(null, { publicRendezvousSeed: this.publicRendezvousSeedBytes })
 	}
 	ContactRequestSend: (
 		request: api.berty.types.ContactRequestSend.IRequest,
@@ -360,15 +362,15 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 	) => void = async (request, callback) => {
 		try {
 			const { client } = this
-			if (!request.reference) {
-				throw new Error('handler.ts: ContactRequestSend: missing reference in request')
+			if (!request.contact || !request.contact.publicRendezvousSeed || !request.contact.pk) {
+				throw new Error('handler.ts: ContactRequestSend: missing or invalid contact in request')
 			}
-			const refStr = new Buffer(request.reference).toString('utf-8')
-			const [otherUserPk, otherUserRdvLogToken] = refStr.split('__')
+			const otherUserRdvLogToken = new Buffer(request.contact.publicRendezvousSeed).toString(
+				'utf-8',
+			)
 			const metadataStr =
-				request.contactMetadata && new Buffer(request.contactMetadata).toString('utf-8')
+				request.contact.metadata && new Buffer(request.contact.metadata).toString('utf-8')
 			const ownId = this.accountPk
-			const otherUserPkBytes = Buffer.from(otherUserPk, 'utf-8')
 			const fakeGroupPk = await this._createPkHack()
 			await this.addEventToMetadataLog({
 				groupPk: this.accountGroupPk,
@@ -376,9 +378,12 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 				dataType: 'AccountContactRequestEnqueued',
 				data: {
 					devicePk: this.devicePkBytes,
-					contactPk: otherUserPkBytes,
 					groupPk: Buffer.from(fakeGroupPk, 'utf-8'),
-					contactMetadata: request.contactMetadata,
+					contact: {
+						pk: request.contact.pk,
+						publicRendezvousSeed: request.contact.publicRendezvousSeed,
+						metadata: request.contact.metadata,
+					},
 				},
 			})
 			const group: api.berty.types.IGroup = {
@@ -409,7 +414,7 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 				dataType: 'AccountContactRequestSent',
 				data: {
 					devicePk: this.devicePkBytes,
-					contactPk: otherUserPkBytes,
+					contactPk: request.contact.pk,
 				},
 			})
 
@@ -661,6 +666,31 @@ export class ProtocolServiceHandler implements IProtocolServiceHandler {
 			},
 		)
 	}
+
+	GroupMetadataList: (
+		request: api.berty.types.GroupMetadataList.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.IGroupMetadataEvent) => void,
+	) => void = (request, callback) => {}
+
+	GroupMessageList: (
+		request: api.berty.types.GroupMessageList.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.IGroupMessageEvent) => void,
+	) => void = (request, callback) => {}
+
+	GroupInfo: (
+		request: api.berty.types.GroupInfo.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.GroupInfo.IReply) => void,
+	) => void = (request, callback) => {}
+
+	ActivateGroup: (
+		request: api.berty.types.ActivateGroup.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.ActivateGroup.IReply) => void,
+	) => void = (request, callback) => {}
+
+	DeactivateGroup: (
+		request: api.berty.types.DeactivateGroup.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.DeactivateGroup.IReply) => void,
+	) => void = (request, callback) => {}
 }
 
 export const protocolServiceHandlerFactory = async (persist?: boolean) => {

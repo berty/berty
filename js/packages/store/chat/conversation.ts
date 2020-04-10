@@ -426,17 +426,20 @@ export function* orchestrator() {
 		takeEvery(protocol.events.client.accountContactRequestOutgoingEnqueued, function*({ payload }) {
 			const {
 				aggregateId: accountId,
-				event: { contactPk, groupPk, contactMetadata },
+				event: { groupPk, contact: c },
 			} = payload
 			// Recup metadata
-			const metadata = JSON.parse(new Buffer(contactMetadata).toString('utf-8'))
+			if (!c || !c.metadata || !c.pk) {
+				throw new Error('Invalid contact')
+			}
+			const metadata = JSON.parse(new Buffer(c.metadata).toString('utf-8'))
 			yield put(
 				events.created({
 					accountId,
 					title: metadata.givenName,
 					pk: groupPk,
 					kind: berty.chatmodel.Conversation.Kind.OneToOne,
-					contactId: contact.getAggregateId({ accountId, contactPk }),
+					contactId: contact.getAggregateId({ accountId, contactPk: c.pk }),
 				}),
 			)
 		}),

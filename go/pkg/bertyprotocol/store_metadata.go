@@ -479,7 +479,7 @@ func (m *metadataStore) ContactRequestReferenceReset(ctx context.Context) (opera
 	}
 
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountContactRequestReferenceReset{
-		RendezvousSeed: seed,
+		PublicRendezvousSeed: seed,
 	}, bertytypes.EventTypeAccountContactRequestReferenceReset)
 }
 
@@ -512,9 +512,11 @@ func (m *metadataStore) ContactRequestOutgoingEnqueue(ctx context.Context, conta
 	}
 
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountContactRequestEnqueued{
-		ContactPK:             contact.PK,
-		ContactRendezvousSeed: contact.PublicRendezvousSeed,
-		ContactMetadata:       contact.Metadata,
+		Contact: &bertytypes.ShareableContact{
+			PK:                   contact.PK,
+			PublicRendezvousSeed: contact.PublicRendezvousSeed,
+			Metadata:             contact.Metadata,
+		},
 	}, bertytypes.EventTypeAccountContactRequestOutgoingEnqueued)
 }
 

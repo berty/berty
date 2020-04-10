@@ -248,7 +248,7 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 	}
 
 	_, err = v.v.client.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
-		Reference: contactBytes,
+		Contact: contact,
 	})
 
 	return err
@@ -273,10 +273,19 @@ func contactShareCommand(ctx context.Context, v *groupView, cmd string) error {
 		return err
 	}
 
-	enabled, shareableContact := res.Enabled, res.Reference
+	enabled, rdvSeed := res.Enabled, res.PublicRendezvousSeed
+
+	shareableContact, err := (&bertytypes.ShareableContact{
+		PK:                   v.v.accountGroupView.memberPK,
+		PublicRendezvousSeed: rdvSeed,
+		Metadata:             []byte(nil),
+	}).Marshal()
+	if err != nil {
+		return err
+	}
 
 	if enabled {
-		if shareableContact == nil {
+		if rdvSeed == nil {
 			v.syncMessages <- &historyMessage{
 				messageType: messageTypeMeta,
 				payload:     []byte("contact request ref seed has not been generated"),

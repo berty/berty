@@ -6,26 +6,17 @@ import {
 import { RPCImpl } from 'protobufjs'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import {
-	all,
-	takeLeading,
-	put,
-	putResolve,
-	cps,
-	takeEvery,
-	take,
-	call,
-	select,
-} from 'redux-saga/effects'
+import { all, takeLeading, put, putResolve, cps, takeEvery, call, select } from 'redux-saga/effects'
 import { channel } from 'redux-saga'
 import * as gen from './client.gen'
 import * as api from '@berty-tech/api'
 import { Buffer } from 'buffer'
 import Case from 'case'
+import { Events as EventsGen } from '../types/events.gen'
 
 export type Entity = {
 	id: string
-	contactRequestReference?: string
+	contactRequestRdvSeed?: string
 	accountPk: string
 	devicePk: string
 	accountGroupPk: string
@@ -56,7 +47,7 @@ export type Queries = {
 	getAll: (state: GlobalState) => Entity[]
 }
 
-export type Events = gen.Events<State> & {
+export type Events = EventsGen<State> & {
 	started: (
 		state: State,
 		action: {
@@ -68,12 +59,12 @@ export type Events = gen.Events<State> & {
 			}
 		},
 	) => State
-	contactRequestReferenceUpdated: (
+	contactRequestRdvSeedUpdated: (
 		state: State,
 		action: {
 			payload: {
 				aggregateId: string
-				reference: Uint8Array
+				publicRendezvousSeed: Uint8Array
 			}
 		},
 	) => State
@@ -134,6 +125,12 @@ const commandHandler = createSlice<State, Commands>({
 		appMessageSend: (state) => state,
 		groupMetadataSubscribe: (state) => state,
 		groupMessageSubscribe: (state) => state,
+
+		groupMetadataList: (state) => state,
+		groupMessageList: (state) => state,
+		groupInfo: (state) => state,
+		activateGroup: (state) => state,
+		deactivateGroup: (state) => state,
 	},
 })
 
@@ -163,14 +160,14 @@ const eventHandler = createSlice<State, Events>({
 				accountGroupPk: Buffer.from(action.payload.accountGroupPk).toString(),
 				lastMetadataCids: client ? client.lastMetadataCids : {},
 				lastMessageCids: client ? client.lastMessageCids : {},
-				contactRequestReference: client ? client.contactRequestReference : undefined,
+				contactRequestRdvSeed: client ? client.contactRequestRdvSeed : undefined,
 			}
 			return state
 		},
-		contactRequestReferenceUpdated: (state, { payload }) => {
-			state.aggregates[payload.aggregateId].contactRequestReference = intoBuffer(
-				payload.reference,
-			).toString('base64')
+		contactRequestRdvSeedUpdated: (state, { payload }) => {
+			state.aggregates[payload.aggregateId].contactRequestRdvSeed = intoBuffer(
+				payload.publicRendezvousSeed,
+			).toString('utf-8')
 			return state
 		},
 		deleted: (state, action) => {
@@ -289,13 +286,13 @@ export const transactions: Transactions = {
 			getService(payload.id).contactRequestEnable,
 			{},
 		)) as api.berty.types.ContactRequestEnable.IReply
-		if (!reply.reference) {
-			throw new Error(`Invalid reference ${reply.reference}`)
+		if (!reply.publicRendezvousSeed) {
+			throw new Error(`Invalid reference ${reply.publicRendezvousSeed}`)
 		}
 		yield put(
-			events.contactRequestReferenceUpdated({
+			events.contactRequestRdvSeedUpdated({
 				aggregateId: payload.id,
-				reference: reply.reference,
+				publicRendezvousSeed: reply.publicRendezvousSeed,
 			}),
 		)
 		return reply
@@ -305,8 +302,7 @@ export const transactions: Transactions = {
 	},
 	contactRequestSend: function*(payload) {
 		return yield cps(getService(payload.id).contactRequestSend, {
-			reference: payload.reference,
-			contactMetadata: payload.contactMetadata,
+			contact: payload.contact,
 		})
 	},
 	contactRequestAccept: function*(payload) {
@@ -501,6 +497,21 @@ export const transactions: Transactions = {
 			},
 		)
 		return eventsChannel
+	},
+	groupMetadataList: function*() {
+		// do protocol things
+	},
+	groupMessageList: function*() {
+		// do protocol things
+	},
+	groupInfo: function*() {
+		// do protocol things
+	},
+	activateGroup: function*() {
+		// do protocol things
+	},
+	deactivateGroup: function*() {
+		// do protocol things
 	},
 }
 
