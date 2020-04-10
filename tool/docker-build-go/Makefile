@@ -1,5 +1,5 @@
 IMAGE ?=	bertytech/build-go
-VERSION ?=  v2
+VERSION ?=  v3
 
 build:
 	docker build -t $(IMAGE):$(VERSION) .

@@ -1,4 +1,4 @@
-FROM golang:1.13.5-buster
+FROM golang:1.14.2-buster
 
 RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.21.0
 

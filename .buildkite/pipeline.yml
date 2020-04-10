@@ -60,7 +60,7 @@ steps:
       queue: "bigcores"
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/build-go:v2
+          image: bertytech/build-go:v3
           propagate-uid-gid: true
           workdir: /go/src/berty.tech/berty
           propagate-environment: true
