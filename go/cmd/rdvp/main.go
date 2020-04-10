@@ -15,6 +15,7 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	libp2p "github.com/libp2p/go-libp2p"
+	libp2p_cicuit "github.com/libp2p/go-libp2p-circuit"
 	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto" // nolint:staticcheck
 	libp2p_host "github.com/libp2p/go-libp2p-core/host"
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
@@ -128,9 +129,19 @@ func main() {
 
 			// init p2p host
 			host, err := libp2p.New(ctx,
+				// default tpt + quic
 				libp2p.DefaultTransports,
 				libp2p.Transport(libp2p_quic.NewTransport),
+
+				// Nat & Relay service
+				libp2p.EnableNATService(),
+				libp2p.DefaultStaticRelays(),
+				libp2p.EnableRelay(libp2p_cicuit.OptHop),
+
+				// swarm listeners
 				libp2p.ListenAddrs(listeners...),
+
+				// identity
 				libp2p.Identity(priv),
 			)
 			if err != nil {

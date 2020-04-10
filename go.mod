@@ -22,6 +22,7 @@ require (
 	github.com/ipfs/interface-go-ipfs-core v0.2.6
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/libp2p/go-libp2p v0.7.4
+	github.com/libp2p/go-libp2p-circuit v0.2.1
 	github.com/libp2p/go-libp2p-core v0.5.1
 	github.com/libp2p/go-libp2p-discovery v0.3.0
 	github.com/libp2p/go-libp2p-kad-dht v0.6.2

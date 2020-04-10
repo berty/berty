@@ -52,7 +52,7 @@ import (
 
 // Default ipfs bootstrap & rendezvous point server
 
-const RendezVousServer = "/ip4/163.172.143.28/tcp/4040/p2p/QmeMTMQoLxmMwGZQ5YyuPQn6cE9DbHucwZQk7TaoKodMcY"
+const RendezVousServer = "/ip4/167.99.223.55/tcp/4040/p2p/QmTo3RS6Uc8aCS5Cxx8EBHkNCe4C7vKRanbMEboxkA92Cn"
 
 var DefaultBootstrap = ipfs_cfg.DefaultBootstrapAddresses
 
@@ -194,14 +194,15 @@ func main() {
 					monitorPeers(ctx, logger, node.PeerHost, rdvpeer.ID)
 				}()
 
-				for {
-					if err := node.PeerHost.Connect(ctx, *rdvpeer); err != nil {
-						logger.Error("cannot dial rendez-vous point: %v", zap.Error(err))
-					} else {
-						break
-					}
-					time.Sleep(time.Second)
-				}
+				// uncomment this to force connection with rdvp
+				// for {
+				// 	if err := node.PeerHost.Connect(ctx, *rdvpeer); err != nil {
+				// 		logger.Error("cannot dial rendez-vous point: %v", zap.Error(err))
+				// 	} else {
+				// 		break
+				// 	}
+				// 	time.Sleep(time.Second)
+				// }
 
 				routing := <-crouting
 				defer routing.IpfsDHT.Close()
