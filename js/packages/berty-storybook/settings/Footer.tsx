@@ -4,7 +4,7 @@ import { Footer as SharedFooter } from '../shared-components/Footer'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { Chat } from '@berty-tech/hooks'
 
-export const Footer = ({ navigate }) => {
+export const Footer: React.FC<{ navigate: any; hidden: boolean }> = ({ navigate, hidden }) => {
 	const [{ color }] = useStyles()
 	const client = Chat.useClient()
 	return (
@@ -22,6 +22,7 @@ export const Footer = ({ navigate }) => {
 								elemSize: 35,
 								onPress: navigate.settings.home,
 							}}
+							hidden={hidden}
 						/>
 					)}
 				</Store.ContactGet>
