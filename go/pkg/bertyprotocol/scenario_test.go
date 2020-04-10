@@ -29,7 +29,7 @@ func TestScenario_JoinGroup(t *testing.T) {
 		ConnectFunc    ConnnectTestingProtocolFunc
 		IsSlowTest     bool
 	}{
-		{"2 clients/connectAll", 2, ConnectAll, false},
+		{"2 clients/connectAll", 2, ConnectAll, true},
 
 		// @FIXME(gfanton): those tests doesn't works
 		// {"3 clients/connectAll", 3, ConnectAll, false},
