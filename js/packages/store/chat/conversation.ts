@@ -201,7 +201,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 			const aggregateId = getAggregateId({ accountId, groupPk })
 			const conversation = state.aggregates[aggregateId]
 
-			if (conversation && conversation.kind === berty.chatmodel.Conversation.Kind.PrivateGroup) {
+			if (conversation) {
 				const memberPkStr = decodePublicKey(memberPk)
 				if (!conversation.membersDevices[memberPkStr]) {
 					conversation.membersDevices[memberPkStr] = []
