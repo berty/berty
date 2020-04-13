@@ -20,85 +20,120 @@ type ButtonFooterProps = {
 	elemSize?: number
 	elemColor?: ColorsTypes
 	onPress: (arg0: any) => void
+	selected: boolean
+	selectedElemSize?: number
 }
 
 type FooterProps = {
 	left: ButtonFooterProps
 	center: ButtonFooterProps
 	right: ButtonFooterProps
-	onLayout: (event: any) => void
-	hidden: boolean
 }
 
 const ButtonFooter: React.FC<ButtonFooterProps> = ({
-	backgroundColor = 'white',
+	backgroundColorProp = 'white',
+	selectedBackgroundColor: selectedBackgroundColorProp,
 	avatarUri = null,
 	icon = null,
-	size = 45,
-	elemSize = 20,
-	elemColor = 'blue',
+	size: sizeProp = 47,
+	selectedSize = 59,
+	elemSize: elemSizeProp = 21,
+	selectedElemSize = 31,
+	elemColor: elemColorProp,
+	selectedElemColor = 'white',
 	seed = null,
 	onPress,
+	selected,
 }) => {
-	const [{ border, column, width, height }] = useStyles()
+	const [{ border, column, width, height, color }] = useStyles()
+	const totalSize = selected ? selectedSize : sizeProp
+	const borderSize = 3
+	const size = seed ? totalSize - borderSize : totalSize
+	const elemSize = selected ? selectedElemSize : elemSizeProp
+	const elemColor = selected ? selectedElemColor : elemColorProp || color.blue
+	const selectedBackgroundColor = selectedBackgroundColorProp || color.blue
+	const backgroundColor = selected ? selectedBackgroundColor : backgroundColorProp
+
 	return (
-		<TouchableOpacity
-			onPress={onPress}
-			style={[
-				border.shadow.medium,
-				column.justify,
-				{
-					backgroundColor,
-					width: size,
-					height: size,
-					borderRadius: size / 2,
-				},
-			]}
+		<View
+			style={{
+				width: selectedSize,
+				height: selectedSize,
+				justifyContent: 'center',
+				alignItems: 'center',
+			}}
 		>
-			{icon && (
-				<Icon
-					style={[column.item.center]}
-					name={icon}
-					width={elemSize}
-					height={elemSize}
-					fill={elemColor}
-				/>
-			)}
-			{avatarUri && (
-				<Image
-					style={[
-						column.item.center,
-						width(elemSize),
-						height(elemSize),
-						border.radius.scale(size / 2),
-					]}
-					source={{ uri: avatarUri }}
-				/>
-			)}
-			{seed && (
-				<View
-					style={{
-						display: 'flex',
-						flexDirection: 'row',
-						justifyContent: 'center',
-						alignItems: 'center',
-					}}
-				>
-					<Jdenticon value={seed} size={elemSize} style={{}} />
-				</View>
-			)}
-		</TouchableOpacity>
+			<TouchableOpacity
+				onPress={onPress}
+				style={[
+					border.shadow.medium,
+					column.justify,
+					{
+						backgroundColor: seed ? 'white' : backgroundColor,
+						width: size - borderSize * 2,
+						height: size - borderSize * 2,
+						borderRadius: size / 2,
+						borderWidth: seed ? borderSize : undefined,
+						borderColor: seed ? backgroundColor : undefined,
+					},
+				]}
+			>
+				{icon && (
+					<Icon
+						style={[column.item.center]}
+						name={icon}
+						width={elemSize}
+						height={elemSize}
+						fill={elemColor}
+					/>
+				)}
+				{avatarUri && (
+					<Image
+						style={[
+							column.item.center,
+							width(elemSize),
+							height(elemSize),
+							border.radius.scale(elemSize / 2),
+						]}
+						source={{ uri: avatarUri }}
+					/>
+				)}
+				{seed && (
+					<View
+						style={{
+							display: 'flex',
+							flexDirection: 'row',
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+					>
+						<Jdenticon value={seed} size={elemSize} style={{}} />
+					</View>
+				)}
+			</TouchableOpacity>
+		</View>
 	)
 }
-export const Footer: React.FC<FooterProps> = ({ left, center, right, onLayout, hidden }) => {
-	const [{ row, absolute }] = useStyles()
+
+export const Footer: React.FC<FooterProps> = ({ left, center, right }) => {
+	const [{ absolute }] = useStyles()
 	return (
 		<LinearGradient
-			onLayout={onLayout}
-			style={[absolute.bottom, absolute.left, absolute.right, hidden && { display: 'none' }]}
+			style={[
+				absolute.bottom,
+				absolute.left,
+				absolute.right,
+				{ alignItems: 'center', justifyContent: 'center' },
+			]}
 			colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
 		>
-			<SafeAreaView style={[row.center]}>
+			<SafeAreaView
+				style={{
+					width: '72.8%',
+					justifyContent: 'space-between',
+					flexDirection: 'row',
+				}}
+			>
 				<ButtonFooter {...left} />
 				<ButtonFooter {...center} />
 				<ButtonFooter {...right} />

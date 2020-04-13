@@ -1,41 +1,38 @@
 import React from 'react'
 import { Footer as SharedFooter } from '../shared-components/Footer'
-import { useStyles } from '@berty-tech/styles'
-import { BertyChatChatService as Store } from '@berty-tech/berty-store'
-import { ScreenProps } from '@berty-tech/berty-navigation'
 import { Chat } from '@berty-tech/hooks'
+import { useNavigation, Routes } from '@berty-tech/berty-navigation'
 
-export const Footer: React.FC<ScreenProps.Tab.Main> = (props) => {
-	const { navigate } = props
+export const Footer: React.FC<{ selected: string }> = ({ selected }) => {
+	const { navigate } = useNavigation()
 	const client = Chat.useClient()
-	const [{ color }] = useStyles()
-
 	return (
-		<Store.AccountGet request={{ id: 0 }}>
-			{(response) => (
-				<Store.ContactGet request={{ id: response?.account?.contactId || 0 }}>
-					{(response) => (
-						<SharedFooter
-							left={{ icon: 'search-outline', onPress: navigate.main.search }}
-							center={{
-								icon: 'plus-outline',
-								backgroundColor: color.blue,
-								size: 50,
-								elemSize: 30,
-								elemColor: color.white,
-								onPress: navigate.main.listModal,
-							}}
-							right={{
-								seed: client?.accountPk,
-								backgroundColor: color.white,
-								size: 50,
-								elemSize: 35,
-								onPress: navigate.settings.home,
-							}}
-						/>
-					)}
-				</Store.ContactGet>
-			)}
-		</Store.AccountGet>
+		<SharedFooter
+			left={{
+				icon: 'search-outline',
+				onPress: navigate.main.search,
+				selected: selected === Routes.Main.Search,
+			}}
+			center={
+				selected === Routes.Main.List
+					? {
+							icon: 'plus-outline',
+							onPress: navigate.main.listModal,
+							selected: true,
+					  }
+					: {
+							icon: 'message-circle-outline',
+							onPress: navigate.main.list,
+							selected: false,
+					  }
+			}
+			right={{
+				seed: client?.accountPk,
+				onPress: navigate.settings.home,
+				selected: selected === Routes.Settings.Home,
+				selectedElemSize: 30,
+				elemSize: 24,
+			}}
+		/>
 	)
 }
