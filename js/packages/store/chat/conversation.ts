@@ -244,21 +244,14 @@ const FAKE_CONVERSATIONS: Entity[] = FAKE_CONVERSATIONS_CONFIG.map((fc, index) =
 })
 
 export const getAggregatesWithFakes = (state: GlobalState) => {
-	const list = Object.values(state.chat.conversation.aggregates).filter((v) => v)
-	const realCount = list.length
-	const toFakeCount = FAKE_CONVERSATIONS.length - realCount
-	if (toFakeCount > 0) {
-		const result: { [key: string]: Entity | FakeConversation } = {
-			...state.chat.conversation.aggregates,
-		}
-		for (let i = 0; i < toFakeCount; i++) {
-			const conv = FAKE_CONVERSATIONS[i]
-			result[conv.id] = conv
-		}
-		return result
-	} else {
-		return state.chat.conversation.aggregates
+	const result: { [key: string]: Entity | FakeConversation } = {
+		...state.chat.conversation.aggregates,
 	}
+	for (let i = 0; i < FAKE_CONVERSATIONS.length; i++) {
+		const conv = FAKE_CONVERSATIONS[i]
+		result[conv.id] = conv
+	}
+	return result
 }
 
 export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
