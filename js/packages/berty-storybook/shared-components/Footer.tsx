@@ -46,9 +46,7 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 	selected,
 }) => {
 	const [{ border, column, width, height, color }] = useStyles()
-	const totalSize = selected ? selectedSize : sizeProp
-	const borderSize = 3
-	const size = seed ? totalSize - borderSize : totalSize
+	const size = selected ? selectedSize : sizeProp
 	const elemSize = selected ? selectedElemSize : elemSizeProp
 	const elemColor = selected ? selectedElemColor : elemColorProp || color.blue
 	const selectedBackgroundColor = selectedBackgroundColorProp || color.blue
@@ -70,10 +68,10 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 					column.justify,
 					{
 						backgroundColor: seed ? 'white' : backgroundColor,
-						width: size - borderSize * 2,
-						height: size - borderSize * 2,
+						width: size,
+						height: size,
 						borderRadius: size / 2,
-						borderWidth: seed ? borderSize : undefined,
+						borderWidth: seed ? 3 : undefined,
 						borderColor: seed ? backgroundColor : undefined,
 					},
 				]}
