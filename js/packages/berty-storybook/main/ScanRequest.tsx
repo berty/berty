@@ -12,10 +12,6 @@ import { Chat } from '@berty-tech/hooks'
 export const ScanRequest: React.FC<{ route: any }> = ({ route }) => {
 	const [{ flex, background, color, border, padding }] = useStyles()
 	const sendContactRequest = Chat.useAccountSendContactRequest()
-
-	useEffect(() => {
-		console.log(route.params.data)
-	})
 	return (
 		<Layout style={[background.red, flex.tiny]}>
 			<SafeAreaView style={[flex.tiny]}>

@@ -67,7 +67,7 @@ const RequestsItem: React.FC<{
 						border.radius.medium,
 						border.shadow.medium,
 					]}
-					onPress={() => display({ id })}
+					onPress={() => display({ id, name, accept, decline })}
 				>
 					<ProceduralCircleAvatar
 						style={[absolute.center, absolute.scale({ top: -32.5 })]}
