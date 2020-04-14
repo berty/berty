@@ -116,23 +116,17 @@ const AppMessage: React.FC<{ message: string }> = ({ message }) => {
 }
 
 const MessageList: React.FC<{ id: string }> = (props) => {
-	const [cursors, setCursor] = useState([0])
 	const [{ row, overflow, flex, margin }] = useStyles()
 	const conversation = ChatHooks.useGetConversation(props.id)
 
 	return (
 		<FlatList
 			style={[overflow, row.item.fill, flex.tiny, margin.top.scale(140)]}
-			data={cursors}
+			data={conversation ? [...conversation.messages].reverse() : []}
 			inverted
+			keyExtractor={(item) => item}
 			ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
-			renderItem={() => (
-				<View>
-					{conversation &&
-						conversation.messages &&
-						conversation.messages.map((message) => <AppMessage key={message} message={message} />)}
-				</View>
-			)}
+			renderItem={({ item }) => <AppMessage message={item} />}
 		/>
 	)
 }
