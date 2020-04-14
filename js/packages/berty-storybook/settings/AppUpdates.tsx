@@ -32,7 +32,7 @@ const HeaderAppUpdates: React.FC<HeaderAppUpdatesProps> = ({ update }) => {
 		<View>
 			{update ? (
 				<HeaderInfoSettings bgColor={color.light.blue}>
-					<Text style={[text.color.white, text.family, row.center]} category='h5'>
+					<Text style={[text.color.white, row.center]} category='h5'>
 						A new version is available
 					</Text>
 					<Text

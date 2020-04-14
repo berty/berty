@@ -82,9 +82,7 @@ const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => {
 						diffSize={25}
 					/>
 					<View style={[row.center]}>
-						<Text style={[text.family, padding.top.small, _styles.headerNameText]}>
-							{account?.name || ''}
-						</Text>
+						<Text style={[padding.top.small, _styles.headerNameText]}>{account?.name || ''}</Text>
 					</View>
 				</View>
 			</View>

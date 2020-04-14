@@ -133,7 +133,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 						</View>
 					)}
 					<View>
-						<Text style={[text.family, padding.left.small, text.color.black]}>{name}</Text>
+						<Text style={[padding.left.small, text.color.black]}>{name}</Text>
 					</View>
 				</View>
 				<View style={[row.center, { alignItems: 'center' }]}>
@@ -180,14 +180,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					)}
 					{previewValue && (
 						<View>
-							<Text
-								style={[
-									text.family,
-									padding.right.small,
-									text.bold.medium,
-									{ color: previewValueColor },
-								]}
-							>
+							<Text style={[padding.right.small, text.bold.medium, { color: previewValueColor }]}>
 								{previewValue}
 							</Text>
 						</View>
@@ -276,7 +269,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 							</View>
 						)}
 						<View>
-							<Text style={[text.family, padding.left.small]}>{name}</Text>
+							<Text style={[padding.left.small]}>{name}</Text>
 						</View>
 						{state && state.value && state.color && state.bgColor && (
 							<View
@@ -402,7 +395,6 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 					<Text
 						style={[
 							text.align.center,
-							text.family,
 							text.color.black,
 							text.size.medium,
 							styleText,

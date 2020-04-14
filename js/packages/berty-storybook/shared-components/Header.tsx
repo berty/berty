@@ -67,7 +67,6 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 									text.align.center,
 									text.color.white,
 									text.bold.medium,
-									text.family,
 									padding.top.medium,
 									text.size.scale(25),
 								]}
