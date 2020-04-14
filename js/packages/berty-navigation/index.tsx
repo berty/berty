@@ -246,28 +246,6 @@ export const ModalsNavigation: React.FC = () => (
 	</ModalsStack.Navigator>
 )
 
-const OnboardingStack = createNativeStackNavigator()
-export const OnboardingNavigation: React.FC = () => (
-	<OnboardingStack.Navigator screenOptions={{ headerShown: false }}>
-		<OnboardingStack.Screen
-			name={Routes.Onboarding.GetStarted}
-			component={Stories.Onboarding.GetStarted}
-		/>
-		<OnboardingStack.Screen
-			name={Routes.Onboarding.SelectMode}
-			component={Stories.Onboarding.SelectMode}
-		/>
-		<OnboardingStack.Screen
-			name={Routes.Onboarding.Performance}
-			component={Stories.Onboarding.Performance}
-		/>
-		<OnboardingStack.Screen
-			name={Routes.Onboarding.Privacy}
-			component={Stories.Onboarding.Privacy}
-		/>
-	</OnboardingStack.Navigator>
-)
-
 const CreateGroupStack = createNativeStackNavigator()
 export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 	const [members, setMembers] = useState([] as chat.contact.Entity[])
@@ -416,10 +394,6 @@ export const Navigation: React.FC = () => {
 			/>
 			<NavigationStack.Screen name={Routes.Root.Tabs} component={TabNavigation} />
 			<NavigationStack.Screen
-				name={Routes.Onboarding.GetStarted}
-				component={OnboardingNavigation}
-			/>
-			<NavigationStack.Screen
 				name={Routes.Settings.MyBertyId}
 				component={Stories.Settings.MyBertyId}
 				options={{ stackPresentation: 'transparentModal' }}
@@ -466,6 +440,22 @@ export const Navigation: React.FC = () => {
 				name={'Modals'}
 				component={ModalsNavigation}
 				options={{ stackPresentation: 'transparentModal', stackAnimation: 'fade' }}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Onboarding.GetStarted}
+				component={Stories.Onboarding.GetStarted}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Onboarding.SelectMode}
+				component={Stories.Onboarding.SelectMode}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Onboarding.Performance}
+				component={Stories.Onboarding.Performance}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Onboarding.Privacy}
+				component={Stories.Onboarding.Privacy}
 			/>
 		</NavigationStack.Navigator>
 	)
