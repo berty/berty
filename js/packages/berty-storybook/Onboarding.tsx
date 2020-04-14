@@ -15,8 +15,9 @@ import { Translation } from 'react-i18next'
 import Swiper from 'react-native-swiper'
 import { Card, TouchableCard } from '@berty-tech/shared-storybook'
 import { ColorsTypes, useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/berty-navigation'
+import { useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { Chat } from '@berty-tech/hooks'
+import { useNavigation as useReactNavigation } from '@react-navigation/native'
 
 type Navigation = () => void
 type Form<T> = (arg0: T) => Promise<void>
@@ -366,7 +367,7 @@ const Bluetooth: React.FC<{
 )
 
 const SetupFinished: React.FC = () => {
-	const navigation = useNavigation()
+	const navigation = useReactNavigation()
 	return (
 		<Translation>
 			{(t) => (
@@ -376,7 +377,7 @@ const SetupFinished: React.FC = () => {
 					button={{
 						text: t('onboarding.setup-finished.button'),
 						onPress: () => {
-							navigation.reset('Onboarding')
+							navigation.navigate(Routes.Root.Tabs, { screen: Routes.Main.List })
 						},
 					}}
 				/>

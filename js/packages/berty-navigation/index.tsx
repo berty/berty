@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState } from 'react'
 import { createNativeStackNavigator } from 'react-native-screens/native-stack'
-import { createStackNavigator } from '@react-navigation/stack'
 import * as Stories from '@berty-tech/berty-storybook'
 import {
 	useNavigation as useReactNavigation,
@@ -10,10 +9,6 @@ import {
 	CommonActions,
 	useLinking,
 	NavigationContainer as ReactNavigationContainer,
-	NavigationState,
-	PartialState,
-	Route,
-	useNavigationState,
 } from '@react-navigation/native'
 import {
 	createBottomTabNavigator,
@@ -83,6 +78,9 @@ export namespace ScreenProps {
 }
 
 export namespace Routes {
+	export enum Root {
+		Tabs = 'Tabs',
+	}
 	export enum Onboarding {
 		GetStarted = 'Onboarding.GetStarted',
 		SelectMode = 'Onboarding.SelectMode',
@@ -340,174 +338,134 @@ export const SearchNavigation: React.FC<BottomTabBarProps> = () => (
 	</SearchStack.Navigator>
 )
 
-const MainStack = createNativeStackNavigator()
-export const MainNavigation: React.FC<BottomTabBarProps> = () => (
-	<MainStack.Navigator screenOptions={{ headerShown: false }}>
-		<MainStack.Screen name={Routes.Main.List} component={Stories.Main.List} />
-		<MainStack.Screen
-			name={Routes.Main.ContactRequest}
-			component={Stories.Main.ContactRequest}
-			options={{
-				stackPresentation: 'transparentModal',
-				stackAnimation: 'fade',
-				contentStyle: { backgroundColor: 'transparent' },
-			}}
-		/>
-		<MainStack.Screen
-			name={Routes.Main.GroupRequest}
-			component={Stories.Main.GroupRequest}
-			options={{
-				stackPresentation: 'transparentModal',
-				stackAnimation: 'fade',
-				contentStyle: { backgroundColor: 'transparent' },
-			}}
-		/>
-		<MainStack.Screen name={Routes.Main.ScanRequest} component={Stories.Main.ScanRequest} />
-		<MainStack.Screen
-			name={Routes.Main.Scan}
-			component={Stories.Main.Scan}
-			options={{ stackPresentation: 'transparentModal' }}
-		/>
-		<MainStack.Screen name={Routes.Chat.One2One} component={Stories.Chat.Chat} />
-		<MainStack.Screen name={Routes.Chat.Group} component={Stories.Chat.ChatGroup} />
-		<MainStack.Screen name={Routes.Chat.Settings} component={Stories.Chat.ChatSettings} />
-		<MainStack.Screen
-			name={Routes.Chat.One2OneSettings}
-			component={Stories.Chat.ContactChatSettings}
-		/>
-		<MainStack.Screen name={Routes.Chat.GroupSettings} component={Stories.Chat.GroupChatSettings} />
-
-		<MainStack.Screen
-			name={Routes.Main.ListModal}
-			component={Stories.Main.ListModal}
-			options={{
-				stackPresentation: 'transparentModal',
-				contentStyle: { backgroundColor: 'transparent' },
-			}}
-		/>
-		<MainStack.Screen
-			name={Routes.Settings.MyBertyId}
-			component={Stories.Settings.MyBertyId}
-			options={{ stackPresentation: 'transparentModal' }}
-		/>
-		<MainStack.Screen
-			name={Routes.Main.RequestSent}
-			component={Stories.Main.RequestSent}
-			options={{ stackPresentation: 'transparentModal' }}
-		/>
-		<MainStack.Screen
-			name={Routes.CreateGroup.CreateGroup2}
-			component={CreateGroupNavigation}
-			options={{ stackPresentation: 'transparentModal' }}
-		/>
-		<MainStack.Screen
-			name={'Modals'}
-			component={ModalsNavigation}
-			options={{ stackPresentation: 'transparentModal', stackAnimation: 'fade' }}
-		/>
-	</MainStack.Navigator>
-)
-
-const SettingsStack = createNativeStackNavigator()
-export const SettingsNavigation: React.FC<BottomTabBarProps> = () => (
-	<SettingsStack.Navigator screenOptions={{ headerShown: false }}>
-		<SettingsStack.Screen name={Routes.Settings.Home} component={Stories.Settings.Home} />
-		<SettingsStack.Screen
-			name={Routes.Settings.MyBertyId}
-			component={Stories.Settings.MyBertyId}
-			options={{ stackPresentation: 'transparentModal' }}
-		/>
-		<SettingsStack.Screen
-			name={Routes.Settings.EditProfile}
-			component={Stories.Settings.EditProfile}
-			options={{
-				stackPresentation: 'transparentModal',
-				contentStyle: { backgroundColor: 'transparent' },
-			}}
-		/>
-		<SettingsStack.Screen
-			name={Routes.Settings.AppUpdates}
-			component={Stories.Settings.AppUpdates}
-		/>
-		<SettingsStack.Screen name={Routes.Settings.Help} component={Stories.Settings.Help} />
-		<SettingsStack.Screen name={Routes.Settings.Mode} component={Stories.Settings.Mode} />
-		<SettingsStack.Screen
-			name={Routes.Settings.BlockedContacts}
-			component={Stories.Settings.BlockedContacts}
-		/>
-		<SettingsStack.Screen
-			name={Routes.Settings.Notifications}
-			component={Stories.Settings.Notifications}
-		/>
-		<SettingsStack.Screen name={Routes.Settings.Bluetooth} component={Stories.Settings.Bluetooth} />
-		<SettingsStack.Screen
-			name={Routes.Settings.AboutBerty}
-			component={Stories.Settings.AboutBerty}
-		/>
-		<SettingsStack.Screen
-			name={Routes.Settings.TermsOfUse}
-			component={Stories.Settings.TermsOfUse}
-		/>
-		<SettingsStack.Screen name={Routes.Settings.DevTools} component={Stories.Settings.DevTools} />
-		<SettingsStack.Screen
-			name={'Modals'}
-			component={ModalsNavigation}
-			options={{ stackPresentation: 'transparentModal', stackAnimation: 'fade' }}
-		/>
-	</SettingsStack.Navigator>
-)
-
-type StateRoute = Route<string> & { state?: NavigationState | PartialState<NavigationState> }
-
-const findCurrentRoute = (route: StateRoute): StateRoute => {
-	const { state } = route
-	if (state) {
-		const { index } = state
-		if (index) {
-			const r = state.routes[index]
-			return findCurrentRoute(r as StateRoute)
-		}
-	}
-	return route
-}
-
-const useCurrentRoute = () => {
-	// This breaks in some cases (transparentModal I think) but it works for our purpose
-	const state = useNavigationState((state) => state)
-	const route = state.routes[state.index]
-	return findCurrentRoute(route)
-}
-
-const Footer: React.FC<BottomTabBarProps> = ({ navigation }) => {
-	const _navigation = useMemo(() => createNavigation(navigation as any), [navigation])
-	const route = useCurrentRoute()
-	return <Stories.Settings.Footer hidden={route.name !== Routes.Settings.Home} {..._navigation} />
-}
-
 const TabStack = createBottomTabNavigator()
 export const TabNavigation: React.FC = () => {
 	return (
-		<TabStack.Navigator tabBar={(props) => <Footer {...props} />}>
-			<TabStack.Screen name={Routes.Main.List} component={MainNavigation} />
+		<TabStack.Navigator
+			tabBar={({ state }) => <Stories.Main.Footer selected={state.routes[state.index].name} />}
+		>
+			<TabStack.Screen name={Routes.Main.List} component={Stories.Main.List} />
 			<TabStack.Screen name={Routes.Main.Search} component={SearchNavigation} />
-			<TabStack.Screen name={Routes.Settings.Home} component={SettingsNavigation} />
+			<TabStack.Screen name={Routes.Settings.Home} component={Stories.Settings.Home} />
 		</TabStack.Navigator>
 	)
 }
 
 // TODO: fix navigation with switchNavigator
-const NavigationStack = createStackNavigator()
+const NavigationStack = createNativeStackNavigator()
 export const Navigation: React.FC = () => {
 	const length = ChatHooks.useAccountLength()
 	return (
 		<NavigationStack.Navigator
-			initialRouteName={length >= 1 ? Routes.Main.List : Routes.Onboarding.GetStarted}
+			initialRouteName={length >= 1 ? Routes.Root.Tabs : Routes.Onboarding.GetStarted}
 			screenOptions={{ headerShown: false }}
 		>
-			<NavigationStack.Screen name={Routes.Main.List} component={TabNavigation} />
+			<NavigationStack.Screen
+				name={Routes.Main.ContactRequest}
+				component={Stories.Main.ContactRequest}
+				options={{
+					stackPresentation: 'transparentModal',
+					stackAnimation: 'fade',
+					contentStyle: { backgroundColor: 'transparent' },
+				}}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Main.GroupRequest}
+				component={Stories.Main.GroupRequest}
+				options={{
+					stackPresentation: 'transparentModal',
+					stackAnimation: 'fade',
+					contentStyle: { backgroundColor: 'transparent' },
+				}}
+			/>
+			<NavigationStack.Screen name={Routes.Main.ScanRequest} component={Stories.Main.ScanRequest} />
+			<NavigationStack.Screen
+				name={Routes.Main.Scan}
+				component={Stories.Main.Scan}
+				options={{ stackPresentation: 'transparentModal' }}
+			/>
+			<NavigationStack.Screen name={Routes.Chat.One2One} component={Stories.Chat.Chat} />
+			<NavigationStack.Screen name={Routes.Chat.Group} component={Stories.Chat.ChatGroup} />
+			<NavigationStack.Screen name={Routes.Chat.Settings} component={Stories.Chat.ChatSettings} />
+			<NavigationStack.Screen
+				name={Routes.Chat.One2OneSettings}
+				component={Stories.Chat.ContactChatSettings}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Chat.GroupSettings}
+				component={Stories.Chat.GroupChatSettings}
+			/>
+
+			<NavigationStack.Screen
+				name={Routes.Main.ListModal}
+				component={Stories.Main.ListModal}
+				options={{
+					stackPresentation: 'transparentModal',
+					contentStyle: { backgroundColor: 'transparent' },
+				}}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Main.RequestSent}
+				component={Stories.Main.RequestSent}
+				options={{ stackPresentation: 'transparentModal' }}
+			/>
+			<NavigationStack.Screen
+				name={Routes.CreateGroup.CreateGroup2}
+				component={CreateGroupNavigation}
+				options={{ stackPresentation: 'transparentModal' }}
+			/>
+			<NavigationStack.Screen name={Routes.Root.Tabs} component={TabNavigation} />
 			<NavigationStack.Screen
 				name={Routes.Onboarding.GetStarted}
 				component={OnboardingNavigation}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.MyBertyId}
+				component={Stories.Settings.MyBertyId}
+				options={{ stackPresentation: 'transparentModal' }}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.EditProfile}
+				component={Stories.Settings.EditProfile}
+				options={{
+					stackPresentation: 'transparentModal',
+					contentStyle: { backgroundColor: 'transparent' },
+				}}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.AppUpdates}
+				component={Stories.Settings.AppUpdates}
+			/>
+			<NavigationStack.Screen name={Routes.Settings.Help} component={Stories.Settings.Help} />
+			<NavigationStack.Screen name={Routes.Settings.Mode} component={Stories.Settings.Mode} />
+			<NavigationStack.Screen
+				name={Routes.Settings.BlockedContacts}
+				component={Stories.Settings.BlockedContacts}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.Notifications}
+				component={Stories.Settings.Notifications}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.Bluetooth}
+				component={Stories.Settings.Bluetooth}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.AboutBerty}
+				component={Stories.Settings.AboutBerty}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.TermsOfUse}
+				component={Stories.Settings.TermsOfUse}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.DevTools}
+				component={Stories.Settings.DevTools}
+			/>
+			<NavigationStack.Screen
+				name={'Modals'}
+				component={ModalsNavigation}
+				options={{ stackPresentation: 'transparentModal', stackAnimation: 'fade' }}
 			/>
 		</NavigationStack.Navigator>
 	)

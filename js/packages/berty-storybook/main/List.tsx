@@ -11,7 +11,6 @@ import {
 import { Translation } from 'react-i18next'
 import { google, berty } from '@berty-tech/api'
 import { useLayout } from '../hooks'
-import { Footer } from './Footer'
 import { useStyles } from '@berty-tech/styles'
 import {
 	ProceduralCircleAvatar,
@@ -269,7 +268,6 @@ const Conversations: React.FC<ConversationsProps> = ({ items }) => {
 }
 
 export const List: React.FC<ScreenProps.Chat.List> = () => {
-	const navigation = useNavigation()
 	// TODO: do something to animate the requests
 	const [, onLayoutRequests] = useLayout()
 
@@ -284,7 +282,6 @@ export const List: React.FC<ScreenProps.Chat.List> = () => {
 		<View style={[absolute.fill, background.blue]}>
 			<Requests items={requests} onLayout={onLayoutRequests} />
 			<Conversations items={conversations} />
-			<Footer {...navigation} />
 		</View>
 	)
 }
