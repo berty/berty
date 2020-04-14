@@ -8,7 +8,7 @@ import (
 
 	bledrv "berty.tech/network/transport/ble/driver"
 	tpt "github.com/libp2p/go-libp2p-core/transport"
-	peer "github.com/libp2p/go-libp2p-core/peer"
+	peer "github.com/libp2p/go-libp2p-peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 )
@@ -18,8 +18,7 @@ import (
 var connMap sync.Map
 
 // newConn returns an inbound or outbound tpt.CapableConn upgraded from a Conn.
-func newConn(ctx context.Context, t *Transport, remoteMa ma.Multiaddr,
-	remotePID peer.ID, inbound bool) (tpt.CapableConn, error) {
+func newConn(ctx context.Context, t *Transport, rMa ma.Multiaddr, rPID peer.ID, inbound bool) (tpt.CapableConn, error) {
 	// Creates a BLE manet.Conn
 	pr, pw := io.Pipe()
 	connCtx, cancel := context.WithCancel(gListener.ctx)
@@ -28,7 +27,7 @@ func newConn(ctx context.Context, t *Transport, remoteMa ma.Multiaddr,
 		readIn:   pw,
 		readOut:  pr,
 		localMa:  gListener.localMa,
-		remoteMa: remoteMa,
+		remoteMa: rMa,
 		ctx:      connCtx,
 		cancel:   cancel,
 	}
@@ -43,17 +42,17 @@ func newConn(ctx context.Context, t *Transport, remoteMa ma.Multiaddr,
 	if inbound {
 		return t.upgrader.UpgradeInbound(ctx, t, maconn)
 	} else {
-		return t.upgrader.UpgradeOutbound(ctx, t, maconn, remotePID)
+		return t.upgrader.UpgradeOutbound(ctx, t, maconn, rPID)
 	}
 }
 
-// ReceiveFromPeer is called by native driver when peer's device sent data.
-func ReceiveFromPeer(remotePID string, payload []byte) {
+// ReceiveFromDevice is called by native driver when peer's device sent data.
+func ReceiveFromDevice(rAddr string, payload []byte) {
 	// TODO: implement a cleaner way to do that
 	// Checks during 100 ms if the conn is available, because remote device can
 	// be ready to write while local device is still creating the new conn.
 	for i := 0; i < 100; i++ {
-		c, ok := connMap.Load(remotePID)
+		c, ok := connMap.Load(rAddr)
 		if ok {
 			c.(*Conn).readIn.Write(payload)
 			return
@@ -63,7 +62,7 @@ func ReceiveFromPeer(remotePID string, payload []byte) {
 
 	logger().Error(
 		"connmgr failed to read from conn: unknown conn",
-		zap.String("remote address", remotePID),
+		zap.String("remote address", rAddr),
 	)
-	bledrv.CloseConnWithPeer(remotePID)
+	bledrv.CloseConnWithDevice(rAddr)
 }

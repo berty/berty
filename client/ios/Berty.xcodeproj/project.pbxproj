@@ -9,18 +9,18 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		1DE266E67D81F3D1F8D7D0E7 /* libPods-BertyTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DEDD478D7FAFBB84D1A8DEF /* libPods-BertyTests.a */; };
+		2E82A69963782DB2257560FF /* libPods-Berty-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3230CB52C0F6D1F9B4FD3C77 /* libPods-Berty-tvOS.a */; };
 		486CFD2A21C8FE9F00E7113B /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486CFCF921C8FE9F00E7113B /* Notification.swift */; };
 		48E2A93E2177575C005C6F40 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E2A93D2177575C005C6F40 /* Logger.swift */; };
-		77A3F1EE7DEB4D6695B03447 /* libPods-Berty-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BC0DC72C388E02C469C54F9 /* libPods-Berty-tvOS.a */; };
+		7B30FBFD3BEA4190C225D309 /* libPods-Berty-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C1D5EF67CED4551200CC5CD1 /* libPods-Berty-tvOSTests.a */; };
 		8A88A64A2433A45800A6739A /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A88A6492433A45800A6739A /* MultipeerConnectivity.framework */; };
+		8C3B4D3F8345476A8B99FF4D /* libPods-BertyTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B51DD72128C16FD7987960F /* libPods-BertyTests.a */; };
 		8D1BA426216CF8EA00FEF0AE /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D1BA425216CF8EA00FEF0AE /* libcrypto.a */; };
 		8D43788B225796230098C024 /* ConnectivityUpdateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D43788A225796230098C024 /* ConnectivityUpdateHandler.swift */; };
 		990E84192226DCB100751E73 /* RCTLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E84182226DCB100751E73 /* RCTLog.swift */; };
 		990E845C2226DCCB00751E73 /* RCTSwiftLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 990E845B2226DCCB00751E73 /* RCTSwiftLog.m */; };
 		998B6ADC2179E1B90029B33C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 998B6ADB2179E1B90029B33C /* CoreBluetooth.framework */; };
-		B4DB1353CBB3816CE8622EF6 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B90BBB97C99313A576609CB5 /* libPods-Berty.a */; };
-		EC6310FD1D945D73FCECEB85 /* libPods-Berty-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1310D1F395AAD06A2FF70EDF /* libPods-Berty-tvOSTests.a */; };
+		E77E81F3CC05A4D2066FFDA6 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DAFF9F1C9E0C66BC9314F756 /* libPods-Berty.a */; };
 		F80F01A522F9B3780012C157 /* fontello.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 991A116D2201B169006F3200 /* fontello.ttf */; };
 		F8343A9E230AEC94005FB5CB /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D1BA427216CF8F700FEF0AE /* libssl.a */; };
 		F844DEC121E8C5FD00A810A1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844DEC021E8C5FC00A810A1 /* AppDelegate.swift */; };
@@ -49,10 +49,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		003058C15593DBF98293A072 /* Pods-BertyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.debug.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* BertyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BertyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0D232839C67EC2E2DE06E41D /* Pods-Berty-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		1310D1F395AAD06A2FF70EDF /* libPods-Berty-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		04AF0FE54CBD6CE4C2D898D5 /* Pods-Berty-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		0DD07CAF710BE35041796527 /* Pods-Berty.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.adhoc.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.adhoc.xcconfig"; sourceTree = "<group>"; };
+		1388C2FA548F23C010667445 /* Pods-Berty-tvOSTests.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.adhoc.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.adhoc.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Berty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Berty.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Berty/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Berty/AppDelegate.m; sourceTree = "<group>"; };
@@ -63,50 +65,48 @@
 		1708A031594F4ADA93F431B3 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		170B35FE4C6842A3952AB5A0 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		22F4DEAACA06425EAA4AEA38 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
-		23BA55428718512F2D196782 /* Pods-Berty.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.adhoc.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.adhoc.xcconfig"; sourceTree = "<group>"; };
-		27729C4281337B640FDBA174 /* Pods-Berty-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		2B5E66035A59E46F030B7DCF /* Pods-Berty.house.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.house.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.house.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Berty-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Berty-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Berty-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Berty-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3DA256C3D19CC20E03B06E65 /* Pods-Berty-tvOSTests.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.adhoc.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.adhoc.xcconfig"; sourceTree = "<group>"; };
+		3230CB52C0F6D1F9B4FD3C77 /* libPods-Berty-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		34645A7B26F4822BD144EACF /* Pods-Berty.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.debug.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.debug.xcconfig"; sourceTree = "<group>"; };
 		3ED3560057DF4AB2B70B81BE /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		3F440C0C10EB428980A58A68 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
-		415A0E75F7870342DE0B77AA /* Pods-BertyTests.house.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.house.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.house.xcconfig"; sourceTree = "<group>"; };
+		445574D240DF2BE075F36FF1 /* Pods-BertyTests.house.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.house.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.house.xcconfig"; sourceTree = "<group>"; };
 		486CFCF921C8FE9F00E7113B /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		48E2A93D2177575C005C6F40 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
-		4BC0DC72C388E02C469C54F9 /* libPods-Berty-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		4DEDD478D7FAFBB84D1A8DEF /* libPods-BertyTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BertyTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F4A5D729E95476D9F40F4D4 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
-		59BC352E47265F0C6C6415E9 /* Pods-Berty-tvOS.house.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.house.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.house.xcconfig"; sourceTree = "<group>"; };
+		52AA81F9A8CF559C753335ED /* Pods-Berty-tvOS.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.adhoc.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.adhoc.xcconfig"; sourceTree = "<group>"; };
+		588A82D26D6A09FF5D50DA02 /* Pods-Berty.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.release.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.release.xcconfig"; sourceTree = "<group>"; };
 		5CB78B3ABA154DDFB226536E /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		6096863DEC89492FB074F05E /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		6147EE2E90CF21F42299795B /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Instabug.framework; path = "../node_modules/instabug-reactnative/ios/Instabug.framework"; sourceTree = "<group>"; };
 		65DB93D301634F2396CC0E9C /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
-		6FB7729FD6C40E25B78EF24B /* Pods-Berty-tvOSTests.house.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.house.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.house.xcconfig"; sourceTree = "<group>"; };
-		72572BA64462397140A164A5 /* Pods-Berty.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.release.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.release.xcconfig"; sourceTree = "<group>"; };
-		74335787BE12F10DE9BFF075 /* Pods-Berty-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		6B51DD72128C16FD7987960F /* libPods-BertyTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BertyTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		79CAFB82ADE1973773452E0C /* Pods-Berty-tvOSTests.house.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.house.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.house.xcconfig"; sourceTree = "<group>"; };
 		895B8A83AF0A4AB2AB78E41D /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		8A88A6492433A45800A6739A /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
+		8BA1E61E9980F75BA73F354F /* Pods-Berty-tvOS.house.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.house.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.house.xcconfig"; sourceTree = "<group>"; };
 		8D1BA425216CF8EA00FEF0AE /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = ../../common/openssl/built/ios/libcrypto.a; sourceTree = "<group>"; };
 		8D1BA427216CF8F700FEF0AE /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = ../../common/openssl/built/ios/libssl.a; sourceTree = "<group>"; };
 		8D43788A225796230098C024 /* ConnectivityUpdateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityUpdateHandler.swift; sourceTree = "<group>"; };
-		96D06D09BD32FF127CA68D35 /* Pods-BertyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.release.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.release.xcconfig"; sourceTree = "<group>"; };
+		9821FB8BD12BCCCC976BB51A /* Pods-Berty-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		990E84182226DCB100751E73 /* RCTLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTLog.swift; sourceTree = "<group>"; };
 		990E845A2226DCCB00751E73 /* RCTSwiftLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTSwiftLog.h; sourceTree = "<group>"; };
 		990E845B2226DCCB00751E73 /* RCTSwiftLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTSwiftLog.m; sourceTree = "<group>"; };
 		991A116D2201B169006F3200 /* fontello.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = fontello.ttf; path = ../packages/common/static/svg/fontello.ttf; sourceTree = "<group>"; };
 		998B6ADB2179E1B90029B33C /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		99B44285224B89C0000A8A98 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		9B4D508AE002590711C402CB /* Pods-BertyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.debug.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A4F8B82BAB8D4353A0459F4D /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		A7DFAA8502604488AEA119AD /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
-		A8663743313518735D61FEA0 /* Pods-BertyTests.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.adhoc.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.adhoc.xcconfig"; sourceTree = "<group>"; };
-		B86149A2E3484E0284C8801E /* Pods-Berty-tvOS.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.adhoc.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.adhoc.xcconfig"; sourceTree = "<group>"; };
-		B90BBB97C99313A576609CB5 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B98EEB46F05A623A1EB16989 /* Pods-Berty.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.debug.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.debug.xcconfig"; sourceTree = "<group>"; };
 		B9BA9E059F4C4D39AAE1BF06 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
-		BDBE4195C0939CA0705A21A8 /* Pods-Berty-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		C1D5EF67CED4551200CC5CD1 /* libPods-Berty-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2F56CCB7F0AD8684C4E9BEC /* Pods-BertyTests.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.adhoc.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.adhoc.xcconfig"; sourceTree = "<group>"; };
+		D700A47C37565AEB78087D18 /* Pods-Berty-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		DA6BF0E7EB844E03B7AA9157 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
-		DD1A20A38723EDCDB7805F1D /* Pods-Berty.house.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.house.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.house.xcconfig"; sourceTree = "<group>"; };
+		DAFF9F1C9E0C66BC9314F756 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E78859D02C4BD4094DFCC5DC /* Pods-BertyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.release.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.release.xcconfig"; sourceTree = "<group>"; };
+		ED8F7589FD4CF7719873AE78 /* Pods-Berty-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		F0BAE21221906E73003601A0 /* Berty.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Berty.entitlements; path = Berty/Berty.entitlements; sourceTree = "<group>"; };
 		F844DEC021E8C5FC00A810A1 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Berty/AppDelegate.swift; sourceTree = "<group>"; };
 		F844DF1B21E8CDAD00A810A1 /* Berty-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Berty-Bridging-Header.h"; path = "Berty/Berty-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -123,7 +123,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1DE266E67D81F3D1F8D7D0E7 /* libPods-BertyTests.a in Frameworks */,
+				8C3B4D3F8345476A8B99FF4D /* libPods-BertyTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,12 +132,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A88A64A2433A45800A6739A /* MultipeerConnectivity.framework in Frameworks */,
-				B4DB1353CBB3816CE8622EF6 /* libPods-Berty.a in Frameworks */,
 				F893F19322F8943400A4EB3A /* core.framework in Frameworks */,
 				F893F14A22F88EAA00A4EB3A /* PushKit.framework in Frameworks */,
 				F8343A9E230AEC94005FB5CB /* libssl.a in Frameworks */,
 				8D1BA426216CF8EA00FEF0AE /* libcrypto.a in Frameworks */,
 				998B6ADC2179E1B90029B33C /* CoreBluetooth.framework in Frameworks */,
+				E77E81F3CC05A4D2066FFDA6 /* libPods-Berty.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,7 +145,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				77A3F1EE7DEB4D6695B03447 /* libPods-Berty-tvOS.a in Frameworks */,
+				2E82A69963782DB2257560FF /* libPods-Berty-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,7 +153,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC6310FD1D945D73FCECEB85 /* libPods-Berty-tvOSTests.a in Frameworks */,
+				7B30FBFD3BEA4190C225D309 /* libPods-Berty-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,11 +189,11 @@
 				8D1BA427216CF8F700FEF0AE /* libssl.a */,
 				8D1BA425216CF8EA00FEF0AE /* libcrypto.a */,
 				F8EF7F472136A10500FDCCB5 /* core.framework */,
-				B90BBB97C99313A576609CB5 /* libPods-Berty.a */,
-				4BC0DC72C388E02C469C54F9 /* libPods-Berty-tvOS.a */,
-				1310D1F395AAD06A2FF70EDF /* libPods-Berty-tvOSTests.a */,
-				4DEDD478D7FAFBB84D1A8DEF /* libPods-BertyTests.a */,
 				6147EE2E90CF21F42299795B /* Instabug.framework */,
+				DAFF9F1C9E0C66BC9314F756 /* libPods-Berty.a */,
+				3230CB52C0F6D1F9B4FD3C77 /* libPods-Berty-tvOS.a */,
+				C1D5EF67CED4551200CC5CD1 /* libPods-Berty-tvOSTests.a */,
+				6B51DD72128C16FD7987960F /* libPods-BertyTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -268,22 +268,22 @@
 		E334FE50CC109EC78110D3E2 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				B98EEB46F05A623A1EB16989 /* Pods-Berty.debug.xcconfig */,
-				72572BA64462397140A164A5 /* Pods-Berty.release.xcconfig */,
-				DD1A20A38723EDCDB7805F1D /* Pods-Berty.house.xcconfig */,
-				23BA55428718512F2D196782 /* Pods-Berty.adhoc.xcconfig */,
-				0D232839C67EC2E2DE06E41D /* Pods-Berty-tvOS.debug.xcconfig */,
-				74335787BE12F10DE9BFF075 /* Pods-Berty-tvOS.release.xcconfig */,
-				59BC352E47265F0C6C6415E9 /* Pods-Berty-tvOS.house.xcconfig */,
-				B86149A2E3484E0284C8801E /* Pods-Berty-tvOS.adhoc.xcconfig */,
-				BDBE4195C0939CA0705A21A8 /* Pods-Berty-tvOSTests.debug.xcconfig */,
-				27729C4281337B640FDBA174 /* Pods-Berty-tvOSTests.release.xcconfig */,
-				6FB7729FD6C40E25B78EF24B /* Pods-Berty-tvOSTests.house.xcconfig */,
-				3DA256C3D19CC20E03B06E65 /* Pods-Berty-tvOSTests.adhoc.xcconfig */,
-				9B4D508AE002590711C402CB /* Pods-BertyTests.debug.xcconfig */,
-				96D06D09BD32FF127CA68D35 /* Pods-BertyTests.release.xcconfig */,
-				415A0E75F7870342DE0B77AA /* Pods-BertyTests.house.xcconfig */,
-				A8663743313518735D61FEA0 /* Pods-BertyTests.adhoc.xcconfig */,
+				34645A7B26F4822BD144EACF /* Pods-Berty.debug.xcconfig */,
+				588A82D26D6A09FF5D50DA02 /* Pods-Berty.release.xcconfig */,
+				2B5E66035A59E46F030B7DCF /* Pods-Berty.house.xcconfig */,
+				0DD07CAF710BE35041796527 /* Pods-Berty.adhoc.xcconfig */,
+				9821FB8BD12BCCCC976BB51A /* Pods-Berty-tvOS.debug.xcconfig */,
+				ED8F7589FD4CF7719873AE78 /* Pods-Berty-tvOS.release.xcconfig */,
+				8BA1E61E9980F75BA73F354F /* Pods-Berty-tvOS.house.xcconfig */,
+				52AA81F9A8CF559C753335ED /* Pods-Berty-tvOS.adhoc.xcconfig */,
+				04AF0FE54CBD6CE4C2D898D5 /* Pods-Berty-tvOSTests.debug.xcconfig */,
+				D700A47C37565AEB78087D18 /* Pods-Berty-tvOSTests.release.xcconfig */,
+				79CAFB82ADE1973773452E0C /* Pods-Berty-tvOSTests.house.xcconfig */,
+				1388C2FA548F23C010667445 /* Pods-Berty-tvOSTests.adhoc.xcconfig */,
+				003058C15593DBF98293A072 /* Pods-BertyTests.debug.xcconfig */,
+				E78859D02C4BD4094DFCC5DC /* Pods-BertyTests.release.xcconfig */,
+				445574D240DF2BE075F36FF1 /* Pods-BertyTests.house.xcconfig */,
+				D2F56CCB7F0AD8684C4E9BEC /* Pods-BertyTests.adhoc.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -315,7 +315,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BertyTests" */;
 			buildPhases = (
-				D08A7BDEA276BC6F011300DB /* [CP] Check Pods Manifest.lock */,
+				1B548F2A5FFEFD1E0CEBD280 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
@@ -334,15 +334,15 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Berty" */;
 			buildPhases = (
-				D776E1136AF7E034F83A5906 /* [CP] Check Pods Manifest.lock */,
+				095AA724583B432F2E968FF6 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				517C1E6BFE9ECAD71119059C /* [CP] Embed Pods Frameworks */,
-				23DF70C2AB18FB5B36E98855 /* [CP] Copy Pods Resources */,
 				9556870F82DE361B84770BF2 /* Upload Sourcemap */,
 				F8A24EBD2313F588003F275D /* Upload dSYM */,
+				88EFFA95DC166AE13739B4EA /* [CP] Embed Pods Frameworks */,
+				B4E3976673B2639E3A242542 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -358,7 +358,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Berty-tvOS" */;
 			buildPhases = (
-				66549CEB4E18FEA4176CFB3B /* [CP] Check Pods Manifest.lock */,
+				739F390FC6A8FEF7FD29843F /* [CP] Check Pods Manifest.lock */,
 				2D02E4771E0B4A5D006451C7 /* Sources */,
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
 				2D02E4791E0B4A5D006451C7 /* Resources */,
@@ -377,7 +377,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Berty-tvOSTests" */;
 			buildPhases = (
-				96BF197B3F1B392ABE36815C /* [CP] Check Pods Manifest.lock */,
+				CCC8F13E3BA185289FA13519 /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
 				2D02E48E1E0B4A5D006451C7 /* Resources */,
@@ -504,7 +504,123 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\nexport EXTRA_PACKAGER_ARGS=\"--entry-file $SRCROOT/../index.js\"\n\necho \"warning: entry file - [$SRCROOT/../index.js]\"\n\U0013\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		23DF70C2AB18FB5B36E98855 /* [CP] Copy Pods Resources */ = {
+		095AA724583B432F2E968FF6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Berty-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		1B548F2A5FFEFD1E0CEBD280 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BertyTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle React Native Code And Images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+		};
+		739F390FC6A8FEF7FD29843F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Berty-tvOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		88EFFA95DC166AE13739B4EA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-frameworks.sh",
+				"${PODS_ROOT}/../../node_modules/instabug-reactnative/ios/Instabug.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Instabug.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9556870F82DE361B84770BF2 /* Upload Sourcemap */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Upload Sourcemap";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"$CONFIGURATION\" != \"Debug\" ]; then\n  export INSTABUG_APP_TOKEN=$INSTABUG_TOKEN\n  bash \"../node_modules/instabug-reactnative/ios/upload_sourcemap.sh\"\nfi\n";
+		};
+		B4E3976673B2639E3A242542 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -550,79 +666,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Bundle React Native Code And Images";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
-		};
-		517C1E6BFE9ECAD71119059C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-frameworks.sh",
-				"${PODS_ROOT}/../../node_modules/instabug-reactnative/ios/Instabug.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Instabug.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		66549CEB4E18FEA4176CFB3B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Berty-tvOS-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9556870F82DE361B84770BF2 /* Upload Sourcemap */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Upload Sourcemap";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"$CONFIGURATION\" != \"Debug\" ]; then\n  export INSTABUG_APP_TOKEN=$INSTABUG_TOKEN\n  bash \"../node_modules/instabug-reactnative/ios/upload_sourcemap.sh\"\nfi\n";
-		};
-		96BF197B3F1B392ABE36815C /* [CP] Check Pods Manifest.lock */ = {
+		CCC8F13E3BA185289FA13519 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -638,50 +682,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-Berty-tvOSTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D08A7BDEA276BC6F011300DB /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BertyTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D776E1136AF7E034F83A5906 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Berty-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -781,7 +781,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9B4D508AE002590711C402CB /* Pods-BertyTests.debug.xcconfig */;
+			baseConfigurationReference = 003058C15593DBF98293A072 /* Pods-BertyTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -809,7 +809,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 96D06D09BD32FF127CA68D35 /* Pods-BertyTests.release.xcconfig */;
+			baseConfigurationReference = E78859D02C4BD4094DFCC5DC /* Pods-BertyTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -834,7 +834,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B98EEB46F05A623A1EB16989 /* Pods-Berty.debug.xcconfig */;
+			baseConfigurationReference = 34645A7B26F4822BD144EACF /* Pods-Berty.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -904,7 +904,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 72572BA64462397140A164A5 /* Pods-Berty.release.xcconfig */;
+			baseConfigurationReference = 588A82D26D6A09FF5D50DA02 /* Pods-Berty.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -972,7 +972,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0D232839C67EC2E2DE06E41D /* Pods-Berty-tvOS.debug.xcconfig */;
+			baseConfigurationReference = 9821FB8BD12BCCCC976BB51A /* Pods-Berty-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1005,7 +1005,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 74335787BE12F10DE9BFF075 /* Pods-Berty-tvOS.release.xcconfig */;
+			baseConfigurationReference = ED8F7589FD4CF7719873AE78 /* Pods-Berty-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1038,7 +1038,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BDBE4195C0939CA0705A21A8 /* Pods-Berty-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = 04AF0FE54CBD6CE4C2D898D5 /* Pods-Berty-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1070,7 +1070,7 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 27729C4281337B640FDBA174 /* Pods-Berty-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = D700A47C37565AEB78087D18 /* Pods-Berty-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1140,7 +1140,7 @@
 		};
 		4854D01821C41BC300FB71B8 /* house */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DD1A20A38723EDCDB7805F1D /* Pods-Berty.house.xcconfig */;
+			baseConfigurationReference = 2B5E66035A59E46F030B7DCF /* Pods-Berty.house.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1208,7 +1208,7 @@
 		};
 		4854D01921C41BC300FB71B8 /* house */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 415A0E75F7870342DE0B77AA /* Pods-BertyTests.house.xcconfig */;
+			baseConfigurationReference = 445574D240DF2BE075F36FF1 /* Pods-BertyTests.house.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1233,7 +1233,7 @@
 		};
 		4854D01A21C41BC300FB71B8 /* house */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 59BC352E47265F0C6C6415E9 /* Pods-Berty-tvOS.house.xcconfig */;
+			baseConfigurationReference = 8BA1E61E9980F75BA73F354F /* Pods-Berty-tvOS.house.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1266,7 +1266,7 @@
 		};
 		4854D01B21C41BC300FB71B8 /* house */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6FB7729FD6C40E25B78EF24B /* Pods-Berty-tvOSTests.house.xcconfig */;
+			baseConfigurationReference = 79CAFB82ADE1973773452E0C /* Pods-Berty-tvOSTests.house.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1337,7 +1337,7 @@
 		};
 		48E77133215E43A40032E897 /* adhoc */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 23BA55428718512F2D196782 /* Pods-Berty.adhoc.xcconfig */;
+			baseConfigurationReference = 0DD07CAF710BE35041796527 /* Pods-Berty.adhoc.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1405,7 +1405,7 @@
 		};
 		48E77134215E43A40032E897 /* adhoc */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A8663743313518735D61FEA0 /* Pods-BertyTests.adhoc.xcconfig */;
+			baseConfigurationReference = D2F56CCB7F0AD8684C4E9BEC /* Pods-BertyTests.adhoc.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1430,7 +1430,7 @@
 		};
 		48E77135215E43A40032E897 /* adhoc */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B86149A2E3484E0284C8801E /* Pods-Berty-tvOS.adhoc.xcconfig */;
+			baseConfigurationReference = 52AA81F9A8CF559C753335ED /* Pods-Berty-tvOS.adhoc.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1463,7 +1463,7 @@
 		};
 		48E77136215E43A40032E897 /* adhoc */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3DA256C3D19CC20E03B06E65 /* Pods-Berty-tvOSTests.adhoc.xcconfig */;
+			baseConfigurationReference = 1388C2FA548F23C010667445 /* Pods-Berty-tvOSTests.adhoc.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;

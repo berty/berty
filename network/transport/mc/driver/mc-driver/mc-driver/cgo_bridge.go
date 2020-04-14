@@ -1,28 +1,28 @@
 // +build darwin
 
-package MPConnectivity
+package mcdriver
 
 /*
 #cgo CFLAGS: -x objective-c
 #cgo darwin LDFLAGS: -framework Foundation -framework MultipeerConnectivity
 #include <stdlib.h>
-#include "MPConnectivity.h"
+#include "mc-driver.h"
 */
 import "C"
 import "unsafe"
 
-func StartBleDriver(localPID string) bool {
+func StartMCDriver(localPID string) bool {
 	cPID := C.CString(localPID)
 	defer C.free(unsafe.Pointer(cPID))
 
-	if C.StartBleDriver(cPID) == 1 {
+	if C.StartMCDriver(cPID) == 1 {
 		return true
 	}
 	return false
 }
 
-func StopBleDriver() {
-	C.StopBleDriver()
+func StopMCDriver() {
+	C.StopMCDriver()
 }
 
 var GoHandleFoundPeer func(remotePID string) bool = nil

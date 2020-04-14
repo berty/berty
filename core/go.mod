@@ -57,7 +57,7 @@ require (
 	github.com/uber/jaeger-client-go v2.15.0+incompatible
 	github.com/uber/jaeger-lib v1.5.0 // indirect
 	github.com/whyrusleeping/go-logging v0.0.0-20170515211332-0457bb6b88fc
-	github.com/xeodou/go-sqlcipher v0.0.0-20180523161204-7f9cd319987f
+	github.com/xeodou/go-sqlcipher v0.0.0-20190217174029-ad30583d8387
 	go.uber.org/zap v1.10.0
 	golang.org/x/net v0.0.0-20190813141303-74dc4d7220e7
 	golang.org/x/text v0.3.2

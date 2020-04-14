@@ -4,23 +4,23 @@ import (
 	"context"
 	"fmt"
 
-	peer "github.com/libp2p/go-libp2p-core/peer"
-	pstore "github.com/libp2p/go-libp2p-core/peerstore"
+	peer "github.com/libp2p/go-libp2p-peer"
+	pstore "github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
-// HandleFoundPeer is called by the native driver when a new peer is found.
-func HandleFoundPeer(sRemotePID string) bool {
-	remotePID, err := peer.IDB58Decode(sRemotePID)
+// HandlePeerFound is called by the native driver when a new peer is found.
+func HandlePeerFound(rID string, rAddr string) bool {
+	rPID, err := peer.IDB58Decode(rID)
 	if err != nil {
 		logger().Error("discovery handle peer failed: wrong remote peerID")
 		return false
 	}
 
-	remoteMa, err := ma.NewMultiaddr(fmt.Sprintf("/ble/%s", sRemotePID))
+	rMa, err := ma.NewMultiaddr(fmt.Sprintf("/ble/%s", rAddr))
 	if err != nil {
-		// Should never occur
-		panic(err)
+		logger().Error("discovery handle peer failed: wrong remote multiaddr")
+		return false
 	}
 
 	// Checks if a listener is currently running.
@@ -33,26 +33,25 @@ func HandleFoundPeer(sRemotePID string) bool {
 	gListener.inUse.Add(1)
 
 	// Adds peer to peerstore.
-	gListener.transport.host.Peerstore().AddAddr(remotePID, remoteMa,
-		pstore.TempAddrTTL)
+	gListener.transport.host.Peerstore().AddAddr(rPID, rMa, pstore.TempAddrTTL)
 
-	// Peer with lexicographical smallest peerID inits libp2p connection.
-	if gListener.Addr().String() < sRemotePID {
-		// Async connect so HandleFoundPeer can return and unlock the native driver.
+	// Peer with lexicographical smallest address inits libp2p connection.
+	if gListener.Addr().String() < rAddr {
+		// Async connect so HandlePeerFound can return and unlock the native driver.
 		// Needed to read and write during the connect handshake.
-		go gListener.transport.host.Connect(context.Background(), peer.AddrInfo{
-			ID:    remotePID,
-			Addrs: []ma.Multiaddr{remoteMa},
+		go gListener.transport.host.Connect(context.Background(), pstore.PeerInfo{
+			ID:    rPID,
+			Addrs: []ma.Multiaddr{rMa},
 		})
 
 		return true
 	}
 
-	// Peer with lexicographical biggest peerID accepts incoming connection.
+	// Peer with lexicographical biggest address accepts incoming connection.
 	select {
 	case gListener.inboundConnReq <- connReq{
-		remoteMa:	remoteMa,
-		remotePID:	remotePID,
+		remoteMa:     rMa,
+		remotePeerID: rPID,
 	}:
 		return true
 	case <-gListener.ctx.Done():

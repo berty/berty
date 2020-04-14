@@ -31,12 +31,12 @@ const Bluetooth = ({ bridge, navigation, t }) => (
           <NextButton
             onPress={async () => {
               if (
-                Platform.OS === 'ios' ||
+                Platform.OS !== 'android' ||
                 (await requestBLEAndroidPermission())
               ) {
                 let config = await bridge.daemon.getNetworkConfig({})
                 config.bindP2P = config.bindP2P.concat(
-                  '/ble/Qmeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+                  '/ble/00000000-0000-0000-0000-000000000000'
                 )
                 await bridge.daemon.updateNetworkConfig(config)
               }

@@ -13,7 +13,7 @@ var protoBLE = ma.Protocol{
 	Name:       "ble",
 	Code:       P_BLE,
 	VCode:      ma.CodeToVarint(P_BLE),
-	Size:       -1,
+	Size:       128,
 	Path:       false,
 	Transcoder: TranscoderBLE,
 }

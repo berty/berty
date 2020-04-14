@@ -1,6 +1,6 @@
 //
-//  MPConnectivity.h
-//  MPConnectivity
+//  mc-driver.h
+//  mc-driver
 //
 //  Created by Rémi BARBERO on 30/03/2020.
 //  Copyright © 2020 Rémi BARBERO. All rights reserved.
@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-int StartBleDriver(char *localPId);
-void StopBleDriver(void);
+int StartMCDriver(char *localPId);
+void StopMCDriver(void);
 int SendToPeer(char *remotePID, void *payload, int length);
 int DialPeer(char *remotePID);
 void CloseConnWithPeer(char *remotePID);

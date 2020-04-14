@@ -9,6 +9,8 @@ import (
 
 	ble "berty.tech/network/transport/ble"
 	mable "berty.tech/network/transport/ble/multiaddr"
+	mc "berty.tech/network/transport/mc"
+	mamc "berty.tech/network/transport/mc/multiaddr"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -86,6 +88,8 @@ func (cfg *Config) applyP2POptions(ctx context.Context) error {
 				cfg.libp2p_opts = append(cfg.libp2p_opts, libp2p.Transport(libp2p_ws.New))
 			case mable.P_BLE:
 				cfg.libp2p_opts = append(cfg.libp2p_opts, libp2p.Transport(ble.NewTransport))
+			case mamc.P_MC:
+				cfg.libp2p_opts = append(cfg.libp2p_opts, libp2p.Transport(mc.NewTransport))
 			default: // continue
 				return true
 			}

@@ -55,7 +55,7 @@ func (c *Conn) Write(payload []byte) (n int, err error) {
 	}
 
 	// Write to the peer's device using native driver.
-	if bledrv.SendToPeer(c.RemoteAddr().String(), payload) == false {
+	if bledrv.SendToDevice(c.RemoteAddr().String(), payload) == false {
 		return 0, fmt.Errorf("conn write failed: native write failed")
 	}
 
@@ -74,8 +74,8 @@ func (c *Conn) Close() error {
 	// Removes conn from connmgr's connMap
 	connMap.Delete(c.RemoteAddr().String())
 
-	// Notify the native driver that the conn was cloed with this peer.
-	bledrv.CloseConnWithPeer(c.RemoteAddr().String())
+	// Notify the native driver that the conn was cloed with this device.
+	bledrv.CloseConnWithDevice(c.RemoteAddr().String())
 
 	return nil
 }

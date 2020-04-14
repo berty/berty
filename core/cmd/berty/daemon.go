@@ -56,6 +56,7 @@ type daemonOptions struct {
 	transportP2P   []string `mapstructure:"transport-p2p"`
 	hop            bool     `mapstructure:"hop"` // relay hop
 	ble            bool     `mapstructure:"ble"`
+	mc             bool     `mapstructure:"mc"`
 	mdns           bool     `mapstructure:"mdns"`
 	mobile         bool     `mapstructure:"mobile"`
 	dhtServer      bool     `mapstructure:"dht"`
@@ -87,6 +88,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
 	flags.BoolVar(&opts.dhtServer, "dht-server", true, "enable dht server")
 	flags.BoolVar(&opts.ble, "ble", false, "enable ble transport")
+	flags.BoolVar(&opts.mc, "mc", false, "enable multipeer connectivity transport")
 	flags.BoolVar(&opts.mobile, "mobile", false, "enable mobile mode")
 	flags.BoolVar(&opts.PrivateNetwork, "private-network", true, "enable private network with the default swarm key")
 	flags.BoolVar(&opts.ipfs, "ipfs", false, "connect to ipfs network (override private-network & boostrap)")

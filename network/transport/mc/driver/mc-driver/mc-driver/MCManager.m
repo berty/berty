@@ -1,18 +1,18 @@
 //
-//  MPConnectivityManager.m
-//  MPConnectivity
+//  MCManager.m
+//  mc-driver
 //
 //  Created by Rémi BARBERO on 31/03/2020.
 //  Copyright © 2020 Rémi BARBERO. All rights reserved.
 //
 
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
-#import "MPConnectivityManager.h"
-#import "MPConnectivity.h"
+#import "MCManager.h"
+#import "mc-driver.h"
 
 NSString *BERTY_DRIVER_MC = @"berty-mc";
 
-@implementation MPConnectivityManager
+@implementation MCManager
 
 - (MCPeerID *)getMCPeerID:(NSString *)appPID {
     NSLog(@"getMCPeerID called");
@@ -47,7 +47,7 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
     NSLog(@"MCConnectivityManager init() called");
     if (self = [super init]) {
         self.mPeerID = [[MCPeerID alloc] initWithDisplayName:peerID];
-        if (!(self.mSession = [[MCSession alloc] initWithPeer:self.mPeerID securityIdentity:nil encryptionPreference:MCEncryptionRequired])) {
+        if (!(self.mSession = [[MCSession alloc] initWithPeer:self.mPeerID securityIdentity:nil encryptionPreference:MCEncryptionNone])) {
             NSLog(@"MCSession init failed");
             return (self = nil);
         }
@@ -162,13 +162,13 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
     
 }
 
-- (void)session:(MCSession *)session didReceiveCertificate:(NSArray *)certificate fromPeer:(MCPeerID *)peerID certificateHandler:(void (^)(BOOL accept))certificateHandler
+/*- (void)session:(MCSession *)session didReceiveCertificate:(NSArray *)certificate fromPeer:(MCPeerID *)peerID certificateHandler:(void (^)(BOOL accept))certificateHandler
 {
      if (certificateHandler != nil)
      {
          certificateHandler(YES);
      }
-}
+}*/
 
 /*
                                 MCNearbyServiceAdvertiserDelegate

@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8A0F0D9E243227000072533B /* MPConnectivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F0D9D243227000072533B /* MPConnectivity.m */; };
-		8A0F0D9F243227000072533B /* MPConnectivity.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8A0F0D9C243227000072533B /* MPConnectivity.h */; };
-		8A88A6482432AD1B00A6739A /* MPConnectivityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A88A6472432AD1B00A6739A /* MPConnectivityManager.m */; };
+		8A0F0D9E243227000072533B /* mc-driver.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F0D9D243227000072533B /* mc-driver.m */; };
+		8A0F0D9F243227000072533B /* mc-driver.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8A0F0D9C243227000072533B /* mc-driver.h */; };
+		8A88A6482432AD1B00A6739A /* MCManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A88A6472432AD1B00A6739A /* MCManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -19,18 +19,18 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				8A0F0D9F243227000072533B /* MPConnectivity.h in CopyFiles */,
+				8A0F0D9F243227000072533B /* mc-driver.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8A0F0D99243227000072533B /* libMPConnectivity.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMPConnectivity.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		8A0F0D9C243227000072533B /* MPConnectivity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MPConnectivity.h; sourceTree = "<group>"; };
-		8A0F0D9D243227000072533B /* MPConnectivity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MPConnectivity.m; sourceTree = "<group>"; };
-		8A88A6462432AD1B00A6739A /* MPConnectivityManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MPConnectivityManager.h; sourceTree = "<group>"; };
-		8A88A6472432AD1B00A6739A /* MPConnectivityManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MPConnectivityManager.m; sourceTree = "<group>"; };
+		8A0F0D99243227000072533B /* libmc-driver.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmc-driver.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A0F0D9C243227000072533B /* mc-driver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mc-driver.h; sourceTree = "<group>"; };
+		8A0F0D9D243227000072533B /* mc-driver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mc-driver.m; sourceTree = "<group>"; };
+		8A88A6462432AD1B00A6739A /* MCManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MCManager.h; sourceTree = "<group>"; };
+		8A88A6472432AD1B00A6739A /* MCManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MCManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,7 +47,7 @@
 		8A0F0D90243227000072533B = {
 			isa = PBXGroup;
 			children = (
-				8A0F0D9B243227000072533B /* MPConnectivity */,
+				8A0F0D9B243227000072533B /* mc-driver */,
 				8A0F0D9A243227000072533B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -55,28 +55,28 @@
 		8A0F0D9A243227000072533B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8A0F0D99243227000072533B /* libMPConnectivity.a */,
+				8A0F0D99243227000072533B /* libmc-driver.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8A0F0D9B243227000072533B /* MPConnectivity */ = {
+		8A0F0D9B243227000072533B /* mc-driver */ = {
 			isa = PBXGroup;
 			children = (
-				8A0F0D9C243227000072533B /* MPConnectivity.h */,
-				8A88A6462432AD1B00A6739A /* MPConnectivityManager.h */,
-				8A88A6472432AD1B00A6739A /* MPConnectivityManager.m */,
-				8A0F0D9D243227000072533B /* MPConnectivity.m */,
+				8A0F0D9C243227000072533B /* mc-driver.h */,
+				8A88A6462432AD1B00A6739A /* MCManager.h */,
+				8A88A6472432AD1B00A6739A /* MCManager.m */,
+				8A0F0D9D243227000072533B /* mc-driver.m */,
 			);
-			path = MPConnectivity;
+			path = mc-driver;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8A0F0D98243227000072533B /* MPConnectivity */ = {
+		8A0F0D98243227000072533B /* mc-driver */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8A0F0DA2243227000072533B /* Build configuration list for PBXNativeTarget "MPConnectivity" */;
+			buildConfigurationList = 8A0F0DA2243227000072533B /* Build configuration list for PBXNativeTarget "mc-driver" */;
 			buildPhases = (
 				8A0F0D95243227000072533B /* Sources */,
 				8A0F0D96243227000072533B /* Frameworks */,
@@ -86,9 +86,9 @@
 			);
 			dependencies = (
 			);
-			name = MPConnectivity;
-			productName = MPConnectivity;
-			productReference = 8A0F0D99243227000072533B /* libMPConnectivity.a */;
+			name = mc-driver;
+			productName = mc-driver;
+			productReference = 8A0F0D99243227000072533B /* libmc-driver.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -105,7 +105,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8A0F0D94243227000072533B /* Build configuration list for PBXProject "MPConnectivity" */;
+			buildConfigurationList = 8A0F0D94243227000072533B /* Build configuration list for PBXProject "mc-driver" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -118,7 +118,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8A0F0D98243227000072533B /* MPConnectivity */,
+				8A0F0D98243227000072533B /* mc-driver */,
 			);
 		};
 /* End PBXProject section */
@@ -128,8 +128,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A0F0D9E243227000072533B /* MPConnectivity.m in Sources */,
-				8A88A6482432AD1B00A6739A /* MPConnectivityManager.m in Sources */,
+				8A0F0D9E243227000072533B /* mc-driver.m in Sources */,
+				8A88A6482432AD1B00A6739A /* MCManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,7 +273,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8A0F0D94243227000072533B /* Build configuration list for PBXProject "MPConnectivity" */ = {
+		8A0F0D94243227000072533B /* Build configuration list for PBXProject "mc-driver" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8A0F0DA0243227000072533B /* Debug */,
@@ -282,7 +282,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8A0F0DA2243227000072533B /* Build configuration list for PBXNativeTarget "MPConnectivity" */ = {
+		8A0F0DA2243227000072533B /* Build configuration list for PBXNativeTarget "mc-driver" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8A0F0DA3243227000072533B /* Debug */,

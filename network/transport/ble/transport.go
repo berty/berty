@@ -7,15 +7,16 @@ import (
 	bledrv "berty.tech/network/transport/ble/driver"
 	blema "berty.tech/network/transport/ble/multiaddr"
 
+	"github.com/gofrs/uuid"
 	tpt "github.com/libp2p/go-libp2p-core/transport"
-	host "github.com/libp2p/go-libp2p-core/host"
-	peer "github.com/libp2p/go-libp2p-core/peer"
+	host "github.com/libp2p/go-libp2p-host"
+	peer "github.com/libp2p/go-libp2p-peer"
 	tptu "github.com/libp2p/go-libp2p-transport-upgrader"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 )
 
-const DefaultBind = "/ble/Qmeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+const DefaultBind = "/ble/00000000-0000-0000-0000-000000000000"
 
 // Transport is a BLE tpt.transport.
 var _ tpt.Transport = &Transport{}
@@ -38,61 +39,42 @@ func NewTransport(h host.Host, u *tptu.Upgrader) (*Transport, error) {
 
 // Dial dials the peer at the remote address.
 // With BLE you can only dial a device that is already connected with the native driver.
-func (t *Transport) Dial(ctx context.Context, remoteMa ma.Multiaddr,
-	remotePID peer.ID) (tpt.CapableConn, error) {
+func (t *Transport) Dial(ctx context.Context, rMa ma.Multiaddr, rPID peer.ID) (tpt.CapableConn, error) {
 	// BLE transport needs to have a running listener in order to dial other peer
 	// because native driver is initialized during listener creation.
 	if gListener == nil {
 		return nil, errors.New("transport dialing peer failed: no active listener")
 	}
 
-	// remoteAddr is supposed to be equal to remotePID since with BLE transport:
-	// multiaddr = /ble/<peerID>
-	remoteAddr, err := remoteMa.ValueForProtocol(blema.P_BLE)
-	if err != nil || remoteAddr != remotePID.Pretty() {
+	rAddr, err := rMa.ValueForProtocol(blema.P_BLE)
+	if err != nil {
 		return nil, errors.Wrap(err, "transport dialing peer failed: wrong multiaddr")
 	}
 
 	// Check if native driver is already connected to peer's device.
 	// With BLE you can't really dial, only auto-connect with peer nearby.
-	if bledrv.DialPeer(remoteAddr) == false {
+	if bledrv.DialDevice(rAddr) == false {
 		return nil, errors.New("transport dialing peer failed: peer not connected through BLE")
 	}
 
 	// Can't have two connections on the same multiaddr
-	if _, ok := connMap.Load(remoteAddr); ok {
+	if _, ok := connMap.Load(rAddr); ok {
 		return nil, errors.New("transport dialing peer failed: already connected to this address")
 	}
 
 	// Returns an outbound conn.
-	return newConn(ctx, t, remoteMa, remotePID, false)
+	return newConn(ctx, t, rMa, rPID, false)
 }
 
 // CanDial returns true if this transport believes it can dial the given
 // multiaddr.
-func (t *Transport) CanDial(remoteMa ma.Multiaddr) bool {
-	return blema.BLE.Matches(remoteMa)
+func (t *Transport) CanDial(addr ma.Multiaddr) bool {
+	return blema.BLE.Matches(addr)
 }
 
 // Listen listens on the given multiaddr.
 // BLE can't listen on more than one listener.
-func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
-	// localAddr is supposed to be equal to the localPID
-	// or to DefaultBind since multiaddr == /ble/<peerID>
-	localPID := t.host.ID().Pretty()
-	localAddr, err := localMa.ValueForProtocol(blema.P_BLE)
-	if err != nil || (localMa.String() != DefaultBind && localAddr != localPID) {
-		return nil, errors.Wrap(err, "transport listen failed: wrong multiaddr")
-	}
-
-	// Replaces default bind by local host peerID
-	if localMa.String() == DefaultBind {
-		localMa, err = ma.NewMultiaddr(fmt.Sprintf("/ble/%s", localPID))
-		if err != nil { // Should never append.
-			panic(err)
-		}
-	}
-
+func (t *Transport) Listen(lMa ma.Multiaddr) (tpt.Listener, error) {
 	// If a global listener already exists, returns an error.
 	if gListener != nil {
 		// TODO: restore this when published as generic lib / fixed in Berty network
@@ -101,7 +83,22 @@ func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
 		gListener.Close()
 	}
 
-	return newListener(localMa, t)
+	// Checks if lMa is a valid multiaddr
+	_, err := lMa.ValueForProtocol(blema.P_BLE)
+	if err != nil {
+		return nil, errors.Wrap(err, "transport listen failed: wrong multiaddr")
+	}
+
+	// Replaces default bind by a deterministic one based on local peerID.
+	if lMa.String() == DefaultBind {
+		lAddr := uuid.NewV5(uuid.UUID{}, t.host.ID().String()).String()
+		lMa, err = ma.NewMultiaddr(fmt.Sprintf("/ble/%s", lAddr))
+		if err != nil { // Should never append.
+			panic(err)
+		}
+	}
+
+	return newListener(lMa, t)
 }
 
 // Proxy returns true if this transport proxies.

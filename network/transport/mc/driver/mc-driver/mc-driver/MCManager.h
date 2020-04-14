@@ -1,6 +1,6 @@
 //
-//  MPConnectivityManager.h
-//  MPConnectivity
+//  MCManager.h
+//  mc-driver
 //
 //  Created by Rémi BARBERO on 31/03/2020.
 //  Copyright © 2020 Rémi BARBERO. All rights reserved.
@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MPConnectivityManager : NSObject <MCSessionDelegate, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate>
+@interface MCManager : NSObject <MCSessionDelegate, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate>
 
 @property (nonatomic, strong) MCSession *mSession;
 @property (nonatomic, strong, nullable) MCNearbyServiceAdvertiser *mServiceAdvertiser;

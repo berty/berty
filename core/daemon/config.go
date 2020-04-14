@@ -1,6 +1,7 @@
 package daemon
 
 import "berty.tech/network/transport/ble"
+import "berty.tech/network/transport/mc"
 
 // This file contain the configuration by default
 
@@ -18,6 +19,7 @@ const (
 	defaultBind     = "/ip4/0.0.0.0/tcp/0"
 	quicBind        = "/ip4/0.0.0.0/udp/0/quic"
 	defaultBLEBind  = ble.DefaultBind
+	defaultMCBind  = mc.DefaultBind
 	defaultMetrics  = true
 	defaultIdentity = ""
 
