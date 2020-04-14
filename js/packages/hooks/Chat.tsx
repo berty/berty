@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import { chat, protocol } from '@berty-tech/store'
 import { Provider as ReactReduxProvider, useDispatch, useSelector } from 'react-redux'
 import DevMenu from 'react-native-dev-menu'
@@ -152,6 +152,16 @@ export const useConversationDelete = () => {
 			dispatch(chat.conversation.commands.delete(payload)),
 		[dispatch],
 	)
+}
+
+export const useStartReadConversation = (id: chat.conversation.Entity['id']) => {
+	const dispatch = useDispatch()
+	return useMemo(() => () => dispatch(chat.conversation.commands.startRead(id)), [dispatch, id])
+}
+
+export const useStopReadConversation = (id: chat.conversation.Entity['id']) => {
+	const dispatch = useDispatch()
+	return useMemo(() => () => dispatch(chat.conversation.commands.stopRead(id)), [dispatch, id])
 }
 
 export const useAccountDelete = () => {

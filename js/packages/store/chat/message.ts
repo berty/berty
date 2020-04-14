@@ -317,6 +317,7 @@ export function* orchestrator() {
 						groupPk: groupPkBuf,
 					}),
 					messageId: aggregateId,
+					isMe,
 				})
 
 				// send acknowledgment

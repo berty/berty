@@ -12,7 +12,7 @@ import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
 import { useNavigation, Routes } from '@berty-tech/berty-navigation'
-import { CommonActions } from '@react-navigation/core'
+import { CommonActions, useNavigation as useReactNavigation } from '@react-navigation/native'
 import moment from 'moment'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
@@ -131,9 +131,44 @@ const MessageList: React.FC<{ id: string }> = (props) => {
 	)
 }
 
+const useReadEffect = (convId: string, timeout: number) => {
+	// timeout is the duration (in ms) that the user must stay on the page to set messages as read
+	const navigation = useReactNavigation()
+	const startRead = ChatHooks.useStartReadConversation(convId)
+	const stopRead = ChatHooks.useStopReadConversation(convId)
+
+	useEffect(() => {
+		let timeoutID: number | null = null
+		const handleStart = () => {
+			if (timeoutID === null) {
+				timeoutID = setTimeout(() => {
+					timeoutID = null
+					startRead()
+				}, timeout)
+			}
+		}
+		handleStart()
+		const unsubscribeFocus = navigation.addListener('focus', handleStart)
+		const handleStop = () => {
+			if (timeoutID !== null) {
+				clearTimeout(timeoutID)
+				timeoutID = null
+			}
+			stopRead()
+		}
+		const unsubscribeBlur = navigation.addListener('blur', handleStop)
+		return () => {
+			unsubscribeFocus()
+			unsubscribeBlur()
+			handleStop()
+		}
+	}, [navigation, startRead, stopRead, timeout])
+}
+
 export const Chat: React.FC<{ route: any }> = ({ route }) => {
 	const [inputIsFocused, setInputFocus] = useState(true)
 	const [{ flex, background }] = useStyles()
+	useReadEffect(route.params.convId, 1000)
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white]}>
 			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
