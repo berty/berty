@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/testutil"
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
 	p2p_host "github.com/libp2p/go-libp2p-core/host"
 	p2p_disc "github.com/libp2p/go-libp2p-discovery"
@@ -38,6 +39,7 @@ func TestMultiDriver_Advertise(t *testing.T) {
 		},
 	}
 
+	logger := testutil.Logger(t)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -54,7 +56,7 @@ func TestMultiDriver_Advertise(t *testing.T) {
 
 			peers := testingPeers(t, mn, tc.NMock)
 			drivers := testingMockedDriverClients(t, ms, peers...)
-			md := NewMultiDriver(drivers...)
+			md := NewMultiDriver(logger, drivers...)
 
 			const testKey = "testkey"
 
@@ -96,6 +98,7 @@ func TestMultiDriver_FindPeers(t *testing.T) {
 		},
 	}
 
+	logger := testutil.Logger(t)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -112,7 +115,7 @@ func TestMultiDriver_FindPeers(t *testing.T) {
 
 			peers := testingPeers(t, mn, tc.NMock)
 			drivers := testingMockedDriverClients(t, ms, peers...)
-			md := NewMultiDriver(drivers...)
+			md := NewMultiDriver(logger, drivers...)
 
 			const testKey = "testkey"
 			_, err = md.Advertise(ctx, testKey, tc.Opts...)
@@ -147,6 +150,7 @@ func TestMultiDriver_Unregister(t *testing.T) {
 		},
 	}
 
+	logger := testutil.Logger(t)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -159,7 +163,7 @@ func TestMultiDriver_Unregister(t *testing.T) {
 
 			peers := testingPeers(t, mn, tc.NMock)
 			drivers := testingMockedDriverClients(t, ms, peers...)
-			md := NewMultiDriver(drivers...)
+			md := NewMultiDriver(logger, drivers...)
 
 			const testKey = "testkey"
 			_, err := md.Advertise(ctx, testKey, tc.Opts...)

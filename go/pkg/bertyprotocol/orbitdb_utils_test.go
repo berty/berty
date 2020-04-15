@@ -74,8 +74,15 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 		t.Fatal(err)
 	}
 
+	mn := mocknet.New(ctx)
+	rdvp, err := mn.GenPeer()
+	require.NoError(t, err, "failed to generate mocked peer")
+
+	_, _ = ipfsutil.TestingRDVP(ctx, t, rdvp)
+
 	ipfsopts := ipfsutil.TestingAPIOpts{
-		Mocknet: mocknet.New(ctx),
+		Mocknet: mn,
+		RDVPeer: rdvp.ID(),
 	}
 	deviceIndex := 0
 
@@ -117,7 +124,8 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 				DevKS:   devKS,
 			}
 
-			cls = append(cls, func() {
+			// setup cleanup
+			cls[i] = func() {
 				if ms := mp.GC.MetadataStore(); ms != nil {
 					err := ms.Drop()
 					assert.NoError(t, err)
@@ -129,7 +137,7 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 				}
 
 				cleanupNode()
-			})
+			}
 
 			mockedPeers[deviceIndex] = mp
 			deviceIndex++

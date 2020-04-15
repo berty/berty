@@ -30,6 +30,8 @@ type mockedPeer struct {
 type mockedHandshake struct {
 	requester *mockedPeer
 	responder *mockedPeer
+
+	cleanup func()
 }
 
 type requesterTestFunc func(
@@ -64,26 +66,37 @@ func newMockedPeer(t *testing.T, ctx context.Context, ipfsOpts *ipfsutil.Testing
 func newMockedHandshake(t *testing.T, ctx context.Context) *mockedHandshake {
 	t.Helper()
 
-	opts := &ipfsutil.TestingAPIOpts{
-		Mocknet: p2pmocknet.New(ctx),
-	}
-	requester, cleanup := newMockedPeer(t, ctx, opts)
-	defer cleanup()
+	mn := p2pmocknet.New(ctx)
+	rdvp, err := mn.GenPeer()
+	require.NoError(t, err, "failed to generate mocked peer")
 
-	responder, cleanup := newMockedPeer(t, ctx, opts)
-	defer cleanup()
+	_, rdv_cleanup := ipfsutil.TestingRDVP(ctx, t, rdvp)
+
+	opts := &ipfsutil.TestingAPIOpts{
+		Mocknet: mn,
+		RDVPeer: rdvp.ID(),
+	}
+	requester, req_cleanup := newMockedPeer(t, ctx, opts)
+	responder, res_cleanup := newMockedPeer(t, ctx, opts)
 
 	// link responder & requester
-	err := opts.Mocknet.LinkAll()
+	err = opts.Mocknet.LinkAll()
 	require.NoError(t, err, "can't link peers")
 
 	// connect responder & requester
 	err = opts.Mocknet.ConnectAllButSelf()
 	require.NoError(t, err, "can't connect peers")
 
+	cleanup := func() {
+		res_cleanup()
+		req_cleanup()
+		rdv_cleanup()
+	}
+
 	return &mockedHandshake{
 		requester: requester,
 		responder: responder,
+		cleanup:   cleanup,
 	}
 }
 
@@ -92,6 +105,7 @@ func (mh *mockedHandshake) close(t *testing.T) {
 
 	mh.requester.coreAPI.Close()
 	mh.responder.coreAPI.Close()
+	mh.cleanup()
 }
 
 func newTestHandshakeContext(stream p2pnetwork.Stream, ownAccountID p2pcrypto.PrivKey, peerAccountID p2pcrypto.PubKey) *handshakeContext {
