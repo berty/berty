@@ -183,7 +183,15 @@ const UnreadCount: React.FC<{ value: number }> = ({ value }) =>
 				paddingHorizontal: 2,
 			}}
 		>
-			<Text style={{ color: 'white', fontWeight: '700', fontSize: 10, textAlign: 'center' }}>
+			<Text
+				style={{
+					color: 'white',
+					fontWeight: '700',
+					fontSize: 10,
+					textAlign: 'center',
+					lineHeight: 14,
+				}}
+			>
 				{value}
 			</Text>
 		</View>
