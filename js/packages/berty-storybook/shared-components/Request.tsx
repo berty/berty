@@ -55,15 +55,7 @@ const RequestButtonItem: React.FC<RequestButtonItemProps> = ({
 				fill={iconColor}
 				style={[row.item.justify]}
 			/>
-			<Text
-				style={[
-					text.bold.medium,
-					text.size.medium,
-					text.family,
-					row.item.justify,
-					{ color: titleColor },
-				]}
-			>
+			<Text style={[text.bold.medium, text.size.medium, row.item.justify, { color: titleColor }]}>
 				{title}
 			</Text>
 		</TouchableOpacity>
@@ -107,7 +99,7 @@ export const RequestAvatar: React.FC<RequestAvatarProps> = ({
 	return (
 		<View style={[height(size), row.left, flex.tiny, { justifyContent: 'center' }, style]}>
 			<View style={[flex.tiny, row.item.bottom, row.center]}>
-				<Text category='h6' style={[text.align.center, text.family, text.color.black]}>
+				<Text category='h6' style={[text.align.center, text.color.black]}>
 					{name}
 				</Text>
 				{isVerified && (
@@ -173,9 +165,7 @@ export const MarkAsVerified: React.FC<{}> = () => {
 						fill={isToggled ? color.blue : '#E8E9FC'}
 						style={[column.item.center]}
 					/>
-					<Text style={[text.family, padding.left.small, column.item.center]}>
-						Mark as verified
-					</Text>
+					<Text style={[padding.left.small, column.item.center]}>Mark as verified</Text>
 				</View>
 				<View style={column.item.center}>
 					<Toggle status='primary' checked={isToggled} onChange={handleToggled} />

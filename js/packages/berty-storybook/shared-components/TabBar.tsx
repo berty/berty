@@ -48,7 +48,6 @@ const TabBarItem: React.FC<TabItemProps> = ({
 				<Icon fill={enable ? color.blue : color.black} name={icon} width={25} height={25} />
 				<Text
 					style={[
-						text.family,
 						text.bold.medium,
 						_styles.tabItemName,
 						enable ? text.color.blue : text.color.black,
