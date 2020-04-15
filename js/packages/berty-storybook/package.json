@@ -32,7 +32,7 @@
     "@berty-tech/berty-navigation": "^0.0.0",
     "@berty-tech/shared-storybook": "^0.0.0",
     "@berty-tech/styles": "^0.0.0",
-    "@eva-design/eva": "^1.2.0",
+    "@eva-design/eva": "^1.4.0",
     "@storybook/addon-notes": "^5.2.4",
     "i18next": "19.0.1",
     "moment": "^2.24.0",
@@ -50,7 +50,7 @@
     "react-native-raw-bottom-sheet": "^2.0.6",
     "react-native-redash": "^8.6.0",
     "react-native-swiper": "^1.6.0-rc.1",
-    "react-native-ui-kitten": "^4.1.1",
+    "react-native-ui-kitten": "^4.4.1",
     "react-use": "^13.9.0",
     "rn-swipeable-panel": "^1.0.15",
     "storybook-addon-i18n": "^5.1.11"
@@ -60,7 +60,7 @@
   },
   "peerDependencies": {
     "@storybook/react": "^5.2.1",
-    "@ui-kitten/eva-icons": "^4.2.0",
+    "@ui-kitten/eva-icons": "^4.4.1",
     "react": "^16.12.0",
     "react-native": "^0.61.5",
     "react-native-config": "luggit/react-native-config#master",

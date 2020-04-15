@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React from 'react'
 import { Request } from '../shared-components/Request'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { useStyles } from '@berty-tech/styles'

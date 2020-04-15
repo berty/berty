@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Text, View, Animated, TouchableWithoutFeedback, StyleProp } from 'react-native'
-import { Icon } from 'react-native-ui-kitten'
+import { View, Animated, TouchableWithoutFeedback, StyleProp } from 'react-native'
+import { Icon, Text } from 'react-native-ui-kitten'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/berty-navigation'
 import Interactable from 'react-native-interactable'

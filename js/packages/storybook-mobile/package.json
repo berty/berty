@@ -37,7 +37,7 @@
     "@storybook/addon-ondevice-notes": "^5.2.4",
     "@storybook/react-native": "^5.2.1",
     "@storybook/react-native-server": "^5.2.1",
-    "@ui-kitten/eva-icons": "^4.2.0",
+    "@ui-kitten/eva-icons": "^4.4.1",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-module-resolver": "^3.2.0",

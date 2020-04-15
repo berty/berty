@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react'
-import { TouchableOpacity, View, TextInput, Text, SafeAreaView } from 'react-native'
-import { Icon } from 'react-native-ui-kitten'
+import { TouchableOpacity, View, TextInput, SafeAreaView } from 'react-native'
+import { Icon, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Chat } from '@berty-tech/hooks'
 import { AppMessageType } from '@berty-tech/store/chat/AppMessage'
+import { BlurView } from '@react-native-community/blur'
 //
 // ChatFooter => Textinput for type message
 //
@@ -33,67 +34,68 @@ export const ChatFooter: React.FC<{
 	const isFake = conversation.kind === 'fake'
 
 	return (
-		<SafeAreaView style={background.white}>
-			<View
-				style={[
-					row.right,
-					padding.medium,
-					background.white,
-					_isFocused && padding.bottom.medium,
-					{ alignItems: 'center' },
-				]}
-			>
+		<BlurView style={[]} blurType='light' blurAmount={30}>
+			<SafeAreaView>
 				<View
 					style={[
-						flex.tiny,
-						border.radius.medium,
-						padding.small,
-						row.fill,
-						{ alignItems: 'center', backgroundColor: _isFocused ? '#E8E9FC99' : '#EDEFF3' },
+						row.right,
+						padding.medium,
+						_isFocused && padding.bottom.medium,
+						{ alignItems: 'center' },
 					]}
 				>
-					<TextInput
-						value={message}
-						ref={inputRef}
-						multiline={true}
-						onFocus={() => setFocus(true)}
-						onBlur={() => setFocus(false)}
-						onChangeText={setMessage}
+					<View
 						style={[
-							_styles.textInput,
-							_isFocused && { color: color.blue } && _styles.focusTextInput,
+							flex.tiny,
+							border.radius.medium,
+							padding.small,
+							row.fill,
+							{ alignItems: 'center', backgroundColor: _isFocused ? '#E8E9FC99' : '#EDEFF3' },
 						]}
-						placeholder='Write a secure message...'
-						placeholderTextColor={_isFocused ? color.blue : color.grey}
-					/>
-					<TouchableOpacity
-						style={[flex.tiny, _styles.sendButton]}
-						disabled={isFake}
-						onPress={() => {
-							if (isFake) {
-								return
-							}
-							if (message) {
-								sendMessage({
-									id: convId,
-									type: AppMessageType.UserMessage,
-									body: message,
-									attachments: [],
-								})
-							}
-							setMessage('')
-						}}
 					>
-						<Icon
-							name='paper-plane-outline'
-							width={30}
-							height={30}
-							fill={_isFocused && !isFake ? color.blue : color.grey}
+						<TextInput
+							value={message}
+							ref={inputRef}
+							multiline={true}
+							onFocus={() => setFocus(true)}
+							onBlur={() => setFocus(false)}
+							onChangeText={setMessage}
+							style={[
+								_styles.textInput,
+								_isFocused && { color: color.blue } && _styles.focusTextInput,
+							]}
+							placeholder='Write a secure message...'
+							placeholderTextColor={_isFocused ? color.blue : color.grey}
 						/>
-					</TouchableOpacity>
+						<TouchableOpacity
+							style={[flex.tiny, _styles.sendButton]}
+							disabled={isFake}
+							onPress={() => {
+								if (isFake) {
+									return
+								}
+								if (message) {
+									sendMessage({
+										id: convId,
+										type: AppMessageType.UserMessage,
+										body: message,
+										attachments: [],
+									})
+								}
+								setMessage('')
+							}}
+						>
+							<Icon
+								name='paper-plane-outline'
+								width={30}
+								height={30}
+								fill={_isFocused && !isFake ? color.blue : color.grey}
+							/>
+						</TouchableOpacity>
+					</View>
 				</View>
-			</View>
-		</SafeAreaView>
+			</SafeAreaView>
+		</BlurView>
 	)
 }
 

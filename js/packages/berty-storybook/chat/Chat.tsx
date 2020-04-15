@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { BlurView } from '@react-native-community/blur'
 import {
 	TouchableOpacity,
 	View,
@@ -51,8 +52,12 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 	}, [conversation.id, lastDate])
 
 	return (
-		<SafeAreaView style={[background.white, absolute.top, absolute.right, absolute.left]}>
-			<View style={[row.fill, padding.medium]}>
+		<BlurView
+			style={[row.fill, padding.medium, absolute.top, absolute.right, absolute.left]}
+			blurType='light'
+			blurAmount={30}
+		>
+			<SafeAreaView style={[row.fill, { width: '100%' }]}>
 				<TouchableOpacity style={[flex.tiny, row.item.justify]} onPress={goBack}>
 					<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
 				</TouchableOpacity>
@@ -94,8 +99,8 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 				>
 					<ConversationProceduralAvatar size={45} conversationId={id} />
 				</TouchableOpacity>
-			</View>
-		</SafeAreaView>
+			</SafeAreaView>
+		</BlurView>
 	)
 }
 
