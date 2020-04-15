@@ -238,8 +238,19 @@ export const useAccountContactSearchResults = (searchText: string): chat.contact
 
 // conversation queries
 export const useConversationList = () => {
+	const client = useClient()
+	// TODO: handle multiple devices
 	const list = useSelector((state: chat.conversation.GlobalState) =>
-		chat.conversation.queries.list(state),
+		client
+			? chat.conversation.queries
+					.list(state)
+					.filter(
+						(conv) =>
+							conv.kind === 'fake' ||
+							Object.values(conv.membersDevices).filter((m) => !m.includes(client.devicePk))
+								.length > 0,
+					)
+			: [],
 	)
 	return list
 }
