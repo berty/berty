@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, ScrollView, TouchableOpacity, StyleSheet, Linking } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
@@ -185,18 +185,18 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => {
 			<ButtonSettingRow
 				state={[
 					{
+						onPress: () => Linking.openURL('mailto:hello@berty.tech'),
 						name: 'Contact us',
 						icon: 'email-outline',
 						color: color.blue,
 						style: _styles.firstButtonRow,
-						disabled: true,
 					},
 					{
+						onPress: () => Linking.openURL('https://berty.tech'),
 						name: 'Website',
 						icon: 'globe-outline',
 						color: color.blue,
 						style: _styles.secondButtonRow,
-						disabled: true,
 					},
 				]}
 				style={_styles.buttonRowMarginTop}
