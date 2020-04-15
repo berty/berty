@@ -225,6 +225,9 @@ steps:
               'BAZEL_CMD_ARGS=--test_output=errors --action_env="GTEST_COLOR=1"',
             ]
           volumes: ["~:/home/buildkite-agent"]
+    retry:
+      automatic:
+        limit: 3
     commands:
       - set -x
       - export USER=$(id -u)
