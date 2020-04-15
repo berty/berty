@@ -20,6 +20,7 @@ import { Chat } from '@berty-tech/hooks'
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { CommonActions } from '@react-navigation/core'
 import { chat } from '@berty-tech/store'
+import { Icon } from 'react-native-ui-kitten'
 
 type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
 
@@ -171,9 +172,44 @@ const formatTimestamp = (date: Date) => {
 	return hour
 }
 
+const UnreadCount: React.FC<{ value: number }> = ({ value }) =>
+	value ? (
+		<View
+			style={{
+				backgroundColor: 'red',
+				justifyContent: 'center',
+				borderRadius: 1000,
+				height: 15,
+				minWidth: 15,
+				paddingHorizontal: 2,
+			}}
+		>
+			<Text style={{ color: 'white', fontWeight: '700', fontSize: 10, textAlign: 'center' }}>
+				{value}
+			</Text>
+		</View>
+	) : null
+
+const MessageStatus: React.FC<{ messageID: string }> = ({ messageID }) => {
+	const [{ color }] = useStyles()
+	const message = Chat.useGetMessage(messageID)
+	return (
+		<View style={{ width: 25, justifyContent: 'center', alignItems: 'center' }}>
+			{message ? (
+				<Icon
+					name={message.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
+					width={14}
+					height={14}
+					fill={color.blue}
+				/>
+			) : null}
+		</View>
+	)
+}
+
 const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	const { dispatch } = useNavigation()
-	const { title, kind, id, messages } = props
+	const { title, kind, id, messages, unreadCount, lastSentMessage } = props
 	const [{ color, row, border, flex, column, padding, text }] = useStyles()
 	const message = Chat.useGetMessage(messages ? messages[messages.length - 1] : '')
 
@@ -219,10 +255,12 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								{title || ''}
 							</Text>
 						</View>
-						<View style={[row.right]}>
+						<View style={[row.right, { alignItems: 'center' }]}>
+							<UnreadCount value={unreadCount} />
 							<Text style={[padding.left.small, text.size.small, text.color.grey]}>
 								{message && formatTimestamp(new Date(message.sentDate))}
 							</Text>
+							<MessageStatus messageID={lastSentMessage} />
 						</View>
 					</View>
 					<Text numberOfLines={1} style={[text.size.small, text.color.grey]}>

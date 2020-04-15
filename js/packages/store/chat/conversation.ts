@@ -17,6 +17,9 @@ type BaseConversation = {
 	membersDevices: { [key: string]: string[] }
 	members: Array<number>
 	messages: Array<string>
+	unreadCount: number
+	reading: boolean
+	lastSentMessage: string
 }
 
 type FakeConversation = BaseConversation & {
@@ -58,7 +61,9 @@ export namespace Command {
 	}
 	export type Delete = { id: string }
 	export type DeleteAll = void
-	export type AddMessage = { aggregateId: string; messageId: string }
+	export type AddMessage = { aggregateId: string; messageId: string; isMe: boolean }
+	export type StartRead = string
+	export type StopRead = string
 }
 
 export namespace Query {
@@ -90,7 +95,9 @@ export namespace Event {
 		devicePk: Uint8Array
 		memberPk: Uint8Array
 	}
-	export type MessageAdded = { aggregateId: string; messageId: string }
+	export type MessageAdded = { aggregateId: string; messageId: string; isMe: boolean }
+	export type StartRead = string
+	export type StopRead = string
 }
 
 type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
@@ -101,6 +108,8 @@ export type CommandsReducer = {
 	delete: SimpleCaseReducer<Command.Delete>
 	deleteAll: SimpleCaseReducer<Command.DeleteAll>
 	addMessage: SimpleCaseReducer<Command.AddMessage>
+	startRead: SimpleCaseReducer<Command.StartRead>
+	stopRead: SimpleCaseReducer<Command.StopRead>
 }
 
 export type QueryReducer = {
@@ -115,6 +124,8 @@ export type EventsReducer = {
 	nameUpdated: SimpleCaseReducer<Event.NameUpdated>
 	messageAdded: SimpleCaseReducer<Event.MessageAdded>
 	deviceAdded: SimpleCaseReducer<Event.DeviceAdded>
+	startRead: SimpleCaseReducer<Event.StartRead>
+	stopRead: SimpleCaseReducer<Event.StopRead>
 }
 
 export type Transactions = {
@@ -137,6 +148,8 @@ const commandHandler = createSlice<State, CommandsReducer>({
 		delete: (state) => state,
 		deleteAll: (state) => state,
 		addMessage: (state) => state,
+		startRead: (state) => state,
+		stopRead: (state) => state,
 	},
 })
 
@@ -171,6 +184,8 @@ const eventHandler = createSlice<State, EventsReducer>({
 					members: [],
 					messages: [],
 					membersDevices: {},
+					unreadCount: 0,
+					reading: false,
 				}
 				if (payload.kind === berty.chatmodel.Conversation.Kind.OneToOne) {
 					const oneToOne = { ...base, contactId: payload.contactId, kind: payload.kind }
@@ -189,10 +204,18 @@ const eventHandler = createSlice<State, EventsReducer>({
 			return state
 		},
 		messageAdded: (state, { payload }) => {
-			if (!state.aggregates[payload.aggregateId].messages) {
-				state.aggregates[payload.aggregateId].messages = []
+			const conv = state.aggregates[payload.aggregateId]
+			if (conv) {
+				if (!conv.messages) {
+					conv.messages = []
+				}
+				conv.messages.push(payload.messageId)
+				if (payload.isMe) {
+					conv.lastSentMessage = payload.messageId
+				} else if (!conv.reading) {
+					conv.unreadCount += 1
+				}
 			}
-			state.aggregates[payload.aggregateId].messages.push(payload.messageId)
 			return state
 		},
 		deviceAdded: (state, { payload }) => {
@@ -213,6 +236,21 @@ const eventHandler = createSlice<State, EventsReducer>({
 					set.push(devicePkStr)
 				}
 			}
+		},
+		startRead: (state, { payload: id }) => {
+			const conv = state.aggregates[id]
+			if (conv) {
+				conv.unreadCount = 0
+				conv.reading = true
+			}
+			return state
+		},
+		stopRead: (state, { payload: id }) => {
+			const conv = state.aggregates[id]
+			if (conv) {
+				conv.reading = false
+			}
+			return state
 		},
 	},
 })
@@ -240,6 +278,8 @@ const FAKE_CONVERSATIONS: Entity[] = FAKE_CONVERSATIONS_CONFIG.map((fc, index) =
 		membersDevices: {},
 		members: [],
 		messages: [id],
+		unreadCount: 0,
+		reading: false,
 	}
 })
 
@@ -366,13 +406,20 @@ export const transactions: Transactions = {
 			yield* transactions.delete({ id: conversation.id })
 		}
 	},
-	addMessage: function*({ aggregateId, messageId }) {
+	addMessage: function*({ aggregateId, messageId, isMe }) {
 		yield put(
 			events.messageAdded({
 				aggregateId,
 				messageId,
+				isMe,
 			}),
 		)
+	},
+	startRead: function*(id) {
+		yield put(events.startRead(id))
+	},
+	stopRead: function*(id) {
+		yield put(events.stopRead(id))
 	},
 }
 
@@ -392,6 +439,12 @@ export function* orchestrator() {
 		}),
 		takeLeading(commands.addMessage, function*(action) {
 			yield* transactions.addMessage(action.payload)
+		}),
+		takeLeading(commands.startRead, function*(action) {
+			yield* transactions.startRead(action.payload)
+		}),
+		takeLeading(commands.stopRead, function*(action) {
+			yield* transactions.stopRead(action.payload)
 		}),
 		// Events
 		takeEvery(protocol.events.client.accountContactRequestIncomingAccepted, function*({ payload }) {
