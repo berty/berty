@@ -10,7 +10,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
-	"github.com/ipfs/go-datastore"
+	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	p2plog "github.com/ipfs/go-log"
 	"github.com/juju/fslock"
@@ -31,7 +31,7 @@ var globalLogger *zap.Logger
 
 func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func()) {
 	var (
-		swarmAddresses []string = nil
+		swarmAddresses []string
 		lock           *fslock.Lock
 	)
 
@@ -49,7 +49,6 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 			"/ip4/0.0.0.0/udp/0/quic",
 			"/ip6/0.0.0.0/udp/0/quic",
 		}
-
 	}
 
 	rootDS := sync_ds.MutexWrap(opts.RootDS)
