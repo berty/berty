@@ -165,7 +165,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				actionIcon='arrow-ios-forward'
 				onPress={() => {
 					account != null && deleteAccount({ id: account.id })
-					navigation.navigate.onboarding.getStarted
+					navigation.navigate.onboarding.getStarted()
 				}}
 			/>
 		</View>
