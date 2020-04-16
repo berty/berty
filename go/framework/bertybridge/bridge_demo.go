@@ -94,7 +94,10 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 		}
 
 		var api ipfs_interface.CoreAPI
-		api, _, err = ipfsutil.NewInMemoryCoreAPI(ctx, swarmaddrs...)
+		api, _, err = ipfsutil.NewInMemoryCoreAPI(ctx, &ipfsutil.IpfsOpts{
+			Listeners: swarmaddrs,
+		})
+
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}

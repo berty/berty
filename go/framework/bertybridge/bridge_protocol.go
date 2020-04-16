@@ -99,7 +99,9 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 				swarmaddrs = config.swarmListeners
 			}
 
-			api, node, err = ipfsutil.NewInMemoryCoreAPI(ctx, swarmaddrs...)
+			api, node, err = ipfsutil.NewInMemoryCoreAPI(ctx, &ipfsutil.IpfsOpts{
+				Listeners: swarmaddrs,
+			})
 			if err != nil {
 				return nil, errcode.TODO.Wrap(err)
 			}

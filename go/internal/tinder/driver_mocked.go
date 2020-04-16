@@ -144,3 +144,5 @@ func (d *mockDriverClient) Unregister(ctx context.Context, ns string) error {
 	d.server.Unregister(ns, d.host.ID())
 	return nil
 }
+
+func (d *mockDriverClient) Name() string { return "mock" }

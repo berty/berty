@@ -5,21 +5,29 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"time"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
+
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	p2plog "github.com/ipfs/go-log"
+
 	"github.com/juju/fslock"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/multiformats/go-multiaddr"
 	"github.com/rivo/tview"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
 type Opts struct {
+	Bootstrap             []string
+	RendezVousServerMAddr string
+
 	RemoteAddr      string
 	GroupInvitation string
 	Port            uint
@@ -29,7 +37,7 @@ type Opts struct {
 
 var globalLogger *zap.Logger
 
-func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func()) {
+func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyprotocol.Service, func()) {
 	var (
 		swarmAddresses []string
 		lock           *fslock.Lock
@@ -51,6 +59,16 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 		}
 	}
 
+	mardv, err := multiaddr.NewMultiaddr(opts.RendezVousServerMAddr)
+	if err != nil {
+		panicUnlockFS(err, lock)
+	}
+
+	rdvpeer, err := peer.AddrInfoFromP2pAddr(mardv)
+	if err != nil {
+		panicUnlockFS(err, lock)
+	}
+
 	rootDS := sync_ds.MutexWrap(opts.RootDS)
 
 	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("ipfs"))
@@ -61,11 +79,37 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 		panicUnlockFS(err, lock)
 	}
 
+	routingOpt, crouting := ipfsutil.NewTinderRouting(logger, rdvpeer.ID, false)
+	cfg.Routing = routingOpt
+
+	ipfsConfig, err := cfg.Repo.Config()
+	if err != nil {
+		panicUnlockFS(err, lock)
+	}
+
+	// setup bootstrap peers
+	ipfsConfig.Bootstrap = append(opts.Bootstrap, opts.RendezVousServerMAddr)
+	if err = cfg.Repo.SetConfig(ipfsConfig); err != nil {
+		panicUnlockFS(err, lock)
+	}
+
 	orbitdbDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))
 
 	api, node, err := ipfsutil.NewConfigurableCoreAPI(ctx, cfg, ipfsutil.OptionMDNSDiscovery)
 	if err != nil {
 		panicUnlockFS(err, lock)
+	}
+
+	// wait to get routing
+	routing := <-crouting
+
+	for {
+		if err := node.PeerHost.Connect(ctx, *rdvpeer); err != nil {
+			logger.Error("cannot dial rendez-vous point: %v", zap.Error(err))
+		} else {
+			break
+		}
+		time.Sleep(time.Second)
 	}
 
 	mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
@@ -87,6 +131,7 @@ func newService(ctx context.Context, opts *Opts) (bertyprotocol.Service, func())
 	return service, func() {
 		node.Close()
 		service.Close()
+		routing.IpfsDHT.Close() // manually close dht since ipfs wont be able to that
 	}
 }
 
@@ -98,7 +143,7 @@ func Main(opts *Opts) {
 
 	var client bertyprotocol.ProtocolServiceClient
 	if opts.RemoteAddr == "" {
-		service, clean := newService(ctx, opts)
+		service, clean := newService(opts.Logger, ctx, opts)
 		defer clean()
 
 		protocolClient, err := bertyprotocol.NewClient(service)
@@ -131,6 +176,7 @@ func Main(opts *Opts) {
 	if err != nil {
 		panic(err)
 	}
+
 	if opts.Logger != nil {
 		globalLogger = opts.Logger.Named(pkAsShortID(accountGroup.Group.PublicKey))
 	} else {

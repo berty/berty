@@ -27,8 +27,8 @@ func TestMetadataStoreSecret_Basic(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	peers, groupSK := createPeersWithGroup(ctx, t, "/tmp/secrets_test", memberCount, deviceCount)
-	defer dropPeers(t, peers)
+	peers, groupSK, cleanup := createPeersWithGroup(ctx, t, "/tmp/secrets_test", memberCount, deviceCount)
+	defer cleanup()
 
 	secretsAdded := make(chan struct{})
 
@@ -104,8 +104,8 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 	defer cancel()
 
 	// Creates N members with M devices each within the same group
-	peers, groupSK := createPeersWithGroup(ctx, t, "/tmp/member_test", memberCount, deviceCount)
-	defer dropPeers(t, peers)
+	peers, groupSK, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", memberCount, deviceCount)
+	defer cleanup()
 
 	done := make(chan struct{})
 
@@ -163,8 +163,8 @@ func TestMetadataRendezvousPointLifecycle(t *testing.T) {
 	defer cancel()
 
 	// Creates N members with M devices each within the same group
-	peers, _ := createPeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
-	defer dropPeers(t, peers)
+	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
+	defer cleanup()
 
 	ownCG, err := peers[0].DB.OpenAccountGroup(ctx, nil)
 	assert.NoError(t, err)
@@ -230,8 +230,8 @@ func TestMetadataContactLifecycle(t *testing.T) {
 	peersCount := 4
 
 	// Creates N members with M devices each within the same group
-	peers, _ := createPeersWithGroup(ctx, t, "/tmp/member_test", peersCount, 1)
-	defer dropPeers(t, peers)
+	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", peersCount, 1)
+	defer cleanup()
 
 	var (
 		err      error
@@ -488,8 +488,8 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	peersCount := 4
 
 	// Creates N members with M devices each within the same group
-	peers, _ := createPeersWithGroup(ctx, t, "/tmp/member_test", peersCount, 1)
-	defer dropPeers(t, peers)
+	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", peersCount, 1)
+	defer cleanup()
 
 	// disclose
 	_, err := peers[0].GC.MetadataStore().ContactSendAliasKey(ctx)
@@ -536,8 +536,8 @@ func TestMetadataGroupsLifecycle(t *testing.T) {
 	defer cancel()
 
 	// Creates N members with M devices each within the same group
-	peers, _ := createPeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
-	defer dropPeers(t, peers)
+	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
+	defer cleanup()
 
 	ownCG, err := peers[0].DB.OpenAccountGroup(ctx, nil)
 	assert.NoError(t, err)

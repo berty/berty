@@ -82,6 +82,7 @@ func CreateRepo(dstore ipfs_datastore.Batching, opts *BuildOpts) (ipfs_repo.Repo
 
 	fmt.Printf("IPFS listening on %s\n", strings.Join(c.Addresses.Swarm, ", "))
 
+	c.Experimental.QUIC = true
 	c.Identity.PeerID = pid.Pretty()
 	c.Identity.PrivKey = base64.StdEncoding.EncodeToString(privkeyb)
 	c.Discovery.MDNS.Enabled = true
@@ -90,9 +91,7 @@ func CreateRepo(dstore ipfs_datastore.Batching, opts *BuildOpts) (ipfs_repo.Repo
 	c.Swarm.EnableAutoNATService = true
 	c.Swarm.EnableAutoRelay = true
 
-	if !opts.ClientMode {
-		c.Swarm.EnableRelayHop = true
-	}
+	c.Swarm.EnableRelayHop = false
 
 	return &ipfs_repo.Mock{
 		D: dstore,

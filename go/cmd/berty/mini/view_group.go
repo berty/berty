@@ -186,11 +186,6 @@ func (v *groupView) loop(ctx context.Context) {
 				}
 
 				v.messages.Append(&historyMessage{
-					messageType: messageTypeMeta,
-					payload:     []byte("receiving message: " + string(evt.Message)),
-				})
-
-				v.messages.Append(&historyMessage{
 					messageType: messageTypeMessage,
 					payload:     evt.Message,
 					sender:      evt.Headers.DevicePK,

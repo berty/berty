@@ -30,8 +30,8 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 
 	testMsg1 := []byte("first message")
 
-	peers, _ := createPeersWithGroup(ctx, t, "/tmp/message_test", memberCount, deviceCount)
-	defer dropPeers(t, peers)
+	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/message_test", memberCount, deviceCount)
+	defer cleanup()
 
 	dPK0 := peers[0].GC.DevicePubKey()
 	ds0, err := getDeviceSecret(ctx, peers[0].GC.Group(), peers[0].MKS, peers[0].DevKS)

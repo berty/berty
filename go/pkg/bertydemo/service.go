@@ -5,13 +5,13 @@ import (
 	crand "crypto/rand"
 	"encoding/hex"
 	"encoding/json"
+	fmt "fmt"
 	"sync"
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
@@ -50,13 +50,7 @@ func New(opts *Opts) (*Service, error) {
 
 	api := opts.CoreAPI
 	if api == nil {
-		// @NOTE(gfanton): CoreAPI is not mendatory here, but it's strongly recommended
-		// because node lifecycle should not depend on bertydemo
-		// Also (except in test) we should ALWAYS use CoreAPI instead of node directly
-		api, _, err = ipfsutil.NewInMemoryCoreAPI(ctx)
-		if err != nil {
-			return nil, err
-		}
+		return nil, errcode.TODO.Wrap(fmt.Errorf("CoreAPI should not be nil"))
 	}
 
 	if opts.OrbitDBDirectory == "" {

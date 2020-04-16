@@ -10,17 +10,20 @@ import (
 	mrand "math/rand"
 	"net"
 	"os"
+	"strconv"
 	"strings"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	libp2p "github.com/libp2p/go-libp2p"
+	libp2p_cicuit "github.com/libp2p/go-libp2p-circuit"
 	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto" // nolint:staticcheck
 	libp2p_host "github.com/libp2p/go-libp2p-core/host"
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	libp2p_quic "github.com/libp2p/go-libp2p-quic-transport"
 	libp2p_rp "github.com/libp2p/go-libp2p-rendezvous"
 	libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
+
+	ipfs_log "github.com/ipfs/go-log"
 
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
@@ -37,9 +40,12 @@ func main() {
 	var (
 		process run.Group
 
-		logger      *zap.Logger
-		globalFlags = flag.NewFlagSet("rdvp", flag.ExitOnError)
-		globalDebug = globalFlags.Bool("debug", false, "debug mode")
+		logger            *zap.Logger
+		globalFlags       = flag.NewFlagSet("berty", flag.ExitOnError)
+		globalDebug       = globalFlags.Bool("debug", false, "berty debug mode")
+		globalLibp2pDebug = globalFlags.Bool("debug-p2p", false, "libp2p debug mode")
+		globalOrbitDebug  = globalFlags.Bool("debug-odb", false, "orbitdb debug mode")
+		globalLogToFile   = globalFlags.String("logfile", "", "if specified, will log everything in JSON into a file and nothing on stderr")
 
 		serveFlags          = flag.NewFlagSet("serve", flag.ExitOnError)
 		serveFlagsURN       = serveFlags.String("db", ":memory:", "rdvp sqlite URN")
@@ -49,34 +55,36 @@ func main() {
 
 	globalPreRun := func() error {
 		mrand.Seed(srand.Secure())
-		logLevel := "info"
-		if *globalDebug {
-			config := zap.NewDevelopmentConfig()
-			config.Level.SetLevel(zap.DebugLevel)
-			config.DisableStacktrace = true
-			config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-			var err error
-			logger, err = config.Build()
-			if err != nil {
-				return errcode.TODO.Wrap(err)
-			}
-			logger.Debug("logger initialized in debug mode")
-			logLevel = "debug"
+		isDebugEnabled := *globalDebug || *globalOrbitDebug || *globalLibp2pDebug
+
+		// setup zap config
+		var config zap.Config
+		if *globalLogToFile != "" {
+			config = zap.NewProductionConfig()
+			config.OutputPaths = []string{*globalLogToFile}
 		} else {
-			config := zap.NewDevelopmentConfig()
-			config.Level.SetLevel(zap.InfoLevel)
+			config = zap.NewDevelopmentConfig()
 			config.DisableStacktrace = true
 			config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-			var err error
-			logger, err = config.Build()
-			if err != nil {
-				return errcode.TODO.Wrap(err)
-			}
 		}
-		// override p2p logger
-		err := ipfsutil.ConfigureLogger("*", logger, logLevel)
-		if err != nil {
+
+		if isDebugEnabled {
+			config.Level.SetLevel(zap.DebugLevel)
+		} else {
+			config.Level.SetLevel(zap.InfoLevel)
+		}
+
+		var err error
+		if logger, err = config.Build(); err != nil {
 			return errcode.TODO.Wrap(err)
+		}
+
+		if *globalLibp2pDebug {
+			ipfs_log.SetDebugLogging()
+		}
+
+		if *globalOrbitDebug {
+			zap.ReplaceGlobals(logger)
 		}
 
 		return nil
@@ -128,9 +136,19 @@ func main() {
 
 			// init p2p host
 			host, err := libp2p.New(ctx,
+				// default tpt + quic
 				libp2p.DefaultTransports,
 				libp2p.Transport(libp2p_quic.NewTransport),
+
+				// Nat & Relay service
+				libp2p.EnableNATService(),
+				libp2p.DefaultStaticRelays(),
+				libp2p.EnableRelay(libp2p_cicuit.OptHop),
+
+				// swarm listeners
 				libp2p.ListenAddrs(listeners...),
+
+				// identity
 				libp2p.Identity(priv),
 			)
 			if err != nil {
@@ -243,4 +261,51 @@ func parseAddrs(addrs ...string) (maddrs []ma.Multiaddr, err error) {
 	}
 
 	return
+}
+
+func parseBoolFromEnv(key string) (b bool) {
+	b, _ = strconv.ParseBool(os.Getenv(key))
+	return
+}
+
+func newLogger(debug bool, logfile string) (*zap.Logger, error) {
+	bertyDebug := parseBoolFromEnv("BERTY_DEBUG") || debug
+	libp2pDebug := parseBoolFromEnv("LIBP2P_DEBUG")
+	// @NOTE(gfanton): since orbitdb use `zap.L()`, this will only
+	// replace zap global logger with our logger
+	orbitdbDebug := parseBoolFromEnv("ORBITDB_DEBUG")
+
+	isDebugEnabled := bertyDebug || orbitdbDebug || libp2pDebug
+
+	// setup zap config
+	var config zap.Config
+	if logfile != "" {
+		config = zap.NewProductionConfig()
+		config.OutputPaths = []string{logfile}
+	} else {
+		config = zap.NewDevelopmentConfig()
+		config.DisableStacktrace = true
+		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	}
+
+	if isDebugEnabled {
+		config.Level.SetLevel(zap.DebugLevel)
+	} else {
+		config.Level.SetLevel(zap.InfoLevel)
+	}
+
+	logger, err := config.Build()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	if libp2pDebug {
+		ipfs_log.SetDebugLogging()
+	}
+
+	if orbitdbDebug {
+		zap.ReplaceGlobals(logger)
+	}
+
+	return logger, nil
 }

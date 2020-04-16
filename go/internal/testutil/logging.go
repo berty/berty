@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
+	ipfs_log "github.com/ipfs/go-log"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -41,9 +41,7 @@ func Logger(t *testing.T) *zap.Logger {
 	}
 
 	if libp2pDebug {
-		if err := ipfsutil.ConfigureLogger("*", logger, "debug"); err != nil {
-			logger.Error("setup libp2p logger", zap.Error(err))
-		}
+		ipfs_log.SetDebugLogging()
 	}
 
 	if orbitdbDebug {

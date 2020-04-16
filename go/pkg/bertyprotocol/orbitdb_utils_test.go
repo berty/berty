@@ -12,6 +12,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type mockedPeer struct {
@@ -26,20 +28,14 @@ func (m *mockedPeer) PeerInfo() peer.AddrInfo {
 	return m.CoreAPI.MockNode().Peerstore.PeerInfo(m.CoreAPI.MockNode().Identity)
 }
 
-func connectPeers(ctx context.Context, t testing.TB, peers []*mockedPeer) {
+func connectPeers(ctx context.Context, t testing.TB, mn mocknet.Mocknet) {
 	t.Helper()
 
-	for i := 0; i < len(peers); i++ {
-		for j := 0; j < i; j++ {
-			if _, err := peers[i].CoreAPI.MockNetwork().LinkPeers(peers[i].CoreAPI.MockNode().Identity, peers[j].CoreAPI.MockNode().Identity); err != nil {
-				t.Fatal(err)
-			}
+	err := mn.LinkAll()
+	require.NoError(t, err)
 
-			if err := peers[i].CoreAPI.Swarm().Connect(ctx, peers[j].PeerInfo()); err != nil {
-				t.Fatal(err)
-			}
-		}
-	}
+	err = mn.ConnectAllButSelf()
+	require.NoError(t, err)
 }
 
 func dropPeers(t *testing.T, mockedPeers []*mockedPeer) {
@@ -66,13 +62,10 @@ func dropPeers(t *testing.T, mockedPeers []*mockedPeer) {
 	}
 }
 
-func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, memberCount int, deviceCount int) ([]*mockedPeer, crypto.PrivKey) {
+func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, memberCount int, deviceCount int) ([]*mockedPeer, crypto.PrivKey, func()) {
 	t.Helper()
 
-	var (
-		mn    mocknet.Mocknet
-		devKS DeviceKeystore
-	)
+	var devKS DeviceKeystore
 
 	mockedPeers := make([]*mockedPeer, memberCount*deviceCount)
 
@@ -81,35 +74,34 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 		t.Fatal(err)
 	}
 
+	mn := mocknet.New(ctx)
+	rdvp, err := mn.GenPeer()
+	require.NoError(t, err, "failed to generate mocked peer")
+
+	_, _ = ipfsutil.TestingRDVP(ctx, t, rdvp)
+
+	ipfsopts := ipfsutil.TestingAPIOpts{
+		Mocknet: mn,
+		RDVPeer: rdvp.ID(),
+	}
 	deviceIndex := 0
+
+	cls := make([]func(), memberCount)
 	for i := 0; i < memberCount; i++ {
 		for j := 0; j < deviceCount; j++ {
-			var ca ipfsutil.CoreAPIMock
-
-			if mn != nil {
-				ca = ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, mn)
-			} else {
-				ca = ipfsutil.TestingCoreAPI(ctx, t)
-				mn = ca.MockNetwork()
-			}
+			ca, cleanupNode := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, &ipfsopts)
 
 			if j == 0 {
 				devKS = NewDeviceKeystore(keystore.NewMemKeystore())
 			} else {
 				accSK, err := devKS.AccountPrivKey()
-				if err != nil {
-					t.Fatalf("err: deviceKeystore private key, %v", err)
-				}
+				require.NoError(t, err, "deviceKeystore private key")
 
 				accProofSK, err := devKS.AccountProofPrivKey()
-				if err != nil {
-					t.Fatalf("err: deviceKeystore private proof key, %v", err)
-				}
+				require.NoError(t, err, "deviceKeystore private proof key")
 
 				devKS, err = NewWithExistingKeys(keystore.NewMemKeystore(), accSK, accProofSK)
-				if err != nil {
-					t.Fatalf("err: deviceKeystore from existing keys, %v", err)
-				}
+				require.NoError(t, err, "deviceKeystore from existing keys")
 			}
 
 			mk := NewInMemMessageKeystore()
@@ -124,7 +116,7 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 				t.Fatalf("err: creating new group context, %v", err)
 			}
 
-			mockedPeers[deviceIndex] = &mockedPeer{
+			mp := &mockedPeer{
 				CoreAPI: ca,
 				DB:      db,
 				GC:      gc,
@@ -132,13 +124,33 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 				DevKS:   devKS,
 			}
 
+			// setup cleanup
+			cls[i] = func() {
+				if ms := mp.GC.MetadataStore(); ms != nil {
+					err := ms.Drop()
+					assert.NoError(t, err)
+				}
+
+				if db := mp.DB; db != nil {
+					err := db.Close()
+					assert.NoError(t, err)
+				}
+
+				cleanupNode()
+			}
+
+			mockedPeers[deviceIndex] = mp
 			deviceIndex++
 		}
 	}
 
-	connectPeers(ctx, t, mockedPeers)
+	connectPeers(ctx, t, ipfsopts.Mocknet)
 
-	return mockedPeers, groupSK
+	return mockedPeers, groupSK, func() {
+		for _, cleanup := range cls {
+			cleanup()
+		}
+	}
 }
 
 func inviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*mockedPeer, groupSK crypto.PrivKey) {

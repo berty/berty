@@ -17,6 +17,8 @@ type Unregisterer interface {
 type Driver interface {
 	p2p_discovery.Discovery
 	Unregisterer
+
+	Name() string
 }
 
 var NoopUnregisterer Unregisterer = &noopUnregisterer{}
@@ -24,6 +26,8 @@ var NoopUnregisterer Unregisterer = &noopUnregisterer{}
 type noopUnregisterer struct{}
 
 func (*noopUnregisterer) Unregister(context.Context, string) error { return nil }
+
+func (*noopUnregisterer) Name() string { return "noop" }
 
 // composeDriver is a Driver
 var _ Driver = (*composeDriver)(nil)
@@ -33,12 +37,20 @@ type composeDriver struct {
 	p2p_discovery.Advertiser
 	p2p_discovery.Discoverer
 	Unregisterer
+
+	name string
 }
 
-func ComposeDriver(advertiser p2p_discovery.Advertiser, discover p2p_discovery.Discoverer, unregister Unregisterer) Driver {
+func (c *composeDriver) Name() string {
+	return c.name
+}
+
+func ComposeDriver(name string, advertiser p2p_discovery.Advertiser, discover p2p_discovery.Discoverer, unregister Unregisterer) Driver {
 	return &composeDriver{
 		Advertiser:   advertiser,
 		Discoverer:   discover,
 		Unregisterer: unregister,
+
+		name: name,
 	}
 }

@@ -2,7 +2,6 @@ package tinder
 
 import (
 	"context"
-	"fmt"
 	"reflect"
 	"sync"
 	"time"
@@ -10,18 +9,21 @@ import (
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	disc "github.com/libp2p/go-libp2p-discovery"
+	"go.uber.org/zap"
 )
 
 // MultiDriver is a simple driver manager, that forward request across multiple driver
 type MultiDriver struct {
+	logger  *zap.Logger
 	drivers []Driver
 
 	mapc map[string]context.CancelFunc
 	muc  sync.Mutex
 }
 
-func NewMultiDriver(drivers ...Driver) Driver {
+func NewMultiDriver(logger *zap.Logger, drivers ...Driver) Driver {
 	return &MultiDriver{
+		logger:  logger.Named("tinder/multi"),
 		drivers: drivers,
 		mapc:    make(map[string]context.CancelFunc),
 	}
@@ -37,10 +39,8 @@ func (md *MultiDriver) Advertise(ctx context.Context, ns string, opts ...p2p_dis
 	}
 
 	md.muc.Lock()
-	if _, ok := md.mapc[ns]; ok {
-		md.muc.Unlock()
-		// @NOTE(gfanton): should we return an error here?
-		return 0, fmt.Errorf("already advertising")
+	if cf, ok := md.mapc[ns]; ok {
+		cf()
 	}
 
 	ctx, cf := context.WithCancel(ctx)
@@ -48,15 +48,47 @@ func (md *MultiDriver) Advertise(ctx context.Context, ns string, opts ...p2p_dis
 	md.muc.Unlock()
 
 	for _, driver := range md.drivers {
-		disc.Advertise(ctx, driver, ns, opts...)
+		md.advertise(ctx, driver, ns, opts...)
 	}
 
 	return options.Ttl, nil
 }
 
+func (md *MultiDriver) advertise(ctx context.Context, d Driver, ns string, opts ...disc.Option) {
+	go func() {
+		for {
+			ttl, err := d.Advertise(ctx, ns, opts...)
+			if err != nil {
+				md.logger.Warn("failed to advertise",
+					zap.String("driver", d.Name()), zap.String("key", ns), zap.Error(err))
+				if ctx.Err() != nil {
+					return
+				}
+
+				select {
+				case <-time.After(time.Minute):
+					continue
+				case <-ctx.Done():
+					return
+				}
+			}
+
+			md.logger.Info("advertise", zap.String("driver", d.Name()), zap.String("key", ns))
+			wait := 7 * ttl / 8
+			select {
+			case <-time.After(wait):
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+}
+
 // FindPeers for MultiDriver doesn't care about duplicate peers, his only
 // job here is to dispatch FindPeers request across all the drivers.
 func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_discovery.Option) (<-chan p2p_peer.AddrInfo, error) {
+	md.logger.Debug("looking for peers", zap.String("key", ns))
+
 	ctx, cancel := context.WithCancel(ctx)
 
 	// @NOTE(gfanton): I prefer the use of select to limit the number of goroutines
@@ -67,12 +99,19 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 		Chan: reflect.ValueOf(ctx.Done()),
 	}
 
+	driverRefs := make([]string, 1)
 	for _, driver := range md.drivers {
 		ch, err := driver.FindPeers(ctx, ns, opts...)
 		if err != nil { // @TODO(gfanton): log this
+			md.logger.Warn("failed to run find peers",
+				zap.String("driver", driver.Name()),
+				zap.String("key", ns),
+				zap.Error(err))
+
 			continue
 		}
 
+		driverRefs = append(driverRefs, driver.Name())
 		selCases = append(selCases, reflect.SelectCase{
 			Dir:  reflect.SelectRecv,
 			Chan: reflect.ValueOf(ch),
@@ -80,6 +119,10 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 	}
 
 	ndrivers := len(selCases) - 1 // we dont want to wait for the context
+	if ndrivers == 0 {
+		md.logger.Error("no drivers available to find peers")
+	}
+
 	cpeers := make(chan p2p_peer.AddrInfo, ndrivers)
 	go func() {
 		defer cancel()
@@ -102,6 +145,10 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 
 			// we can safly get our peer
 			peer := value.Interface().(p2p_peer.AddrInfo)
+			// fmt.Printf("[multi] found a peers: %v for %s\n", peer, ns)
+
+			md.logger.Debug("found a peer",
+				zap.String("driver", driverRefs[idx]), zap.String("key", ns), zap.String("peer", peer.ID.String()))
 
 			// forward the peer
 			select {
@@ -131,3 +178,5 @@ func (md *MultiDriver) Unregister(ctx context.Context, ns string) error {
 
 	return nil
 }
+
+func (*MultiDriver) Name() string { return "MultiDriver" }
