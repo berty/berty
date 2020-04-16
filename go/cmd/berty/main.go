@@ -219,15 +219,18 @@ func main() {
 				var mardv ma.Multiaddr
 				var crouting <-chan *ipfsutil.RoutingOut
 
-				mardv, err = ma.NewMultiaddr(*clientProtocolRDVP)
-				if err == nil { // should be a valid rendezvous peer
-					rdvpeer, err = peer.AddrInfoFromP2pAddr(mardv)
-					if err != nil {
-						return errcode.TODO.Wrap(err)
-					}
+				if *clientProtocolRDVP != "" {
+					if mardv, err = ma.NewMultiaddr(*clientProtocolRDVP); err != nil {
+						logger.Warn("failed to parse rdvp multiaddr", zap.String("maddr", *clientProtocolRDVP), zap.Error(err))
+					} else { // should be a valid rendezvous peer
+						rdvpeer, err = peer.AddrInfoFromP2pAddr(mardv)
+						if err != nil {
+							return errcode.TODO.Wrap(err)
+						}
 
-					opts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer.ID, false)
-					opts.Bootstrap = append(opts.Bootstrap, mardv.String())
+						opts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer.ID, false)
+						opts.Bootstrap = append(opts.Bootstrap, mardv.String())
+					}
 				}
 
 				var node *core.IpfsNode
@@ -245,7 +248,7 @@ func main() {
 					if *clientProtocolRDVPFroce {
 						go func() {
 							// monitor rdv peer
-							monitorPeers(ctx, logger, node.PeerHost, rdvpeer.ID)
+							monitorPeers(logger, node.PeerHost, rdvpeer.ID)
 						}()
 
 						for {
@@ -539,7 +542,7 @@ func parseAddr(addr string) (maddr ma.Multiaddr, err error) {
 	return
 }
 
-func monitorPeers(ctx context.Context, l *zap.Logger, h host.Host, peers ...peer.ID) error {
+func monitorPeers(l *zap.Logger, h host.Host, peers ...peer.ID) error {
 	currentStates := make([]network.Connectedness, len(peers))
 	for {
 		time.Sleep(time.Second)
