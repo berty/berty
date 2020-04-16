@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"berty.tech/berty/v2/go/cmd/berty/mini"
+	mini "berty.tech/berty/v2/go/internal/bertymini"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/banner"
@@ -21,36 +21,30 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
+	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	"github.com/ipfs/go-ipfs/core"
+	ipfs_log "github.com/ipfs/go-log"
 	iface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/juju/fslock"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	peer "github.com/libp2p/go-libp2p-core/peer"
-
+	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-
-	ipfs_cfg "github.com/ipfs/go-ipfs-config"
-	ipfs_log "github.com/ipfs/go-log"
-
-	"github.com/multiformats/go-multiaddr"
-	ma "github.com/multiformats/go-multiaddr"
-
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
 	"moul.io/srand"
 )
 
@@ -384,7 +378,7 @@ func main() {
 			{
 				var err error
 
-				mardv := multiaddr.StringCast(DevRendezVousPoint)
+				mardv := ma.StringCast(DevRendezVousPoint)
 				rdvpeer, err := peer.AddrInfoFromP2pAddr(mardv)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
