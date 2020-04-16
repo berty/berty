@@ -45,7 +45,7 @@ func NewTinderRouting(logger *zap.Logger, rdvpeer peer.ID, dhtclient bool) (ipfs
 			drivers = append(drivers, rdvClient)
 		}
 
-		tinderRouting := tinder.NewRouting(logger, dht, drivers...)
+		tinderRouting := tinder.NewRouting(logger, "dht", dht, drivers...)
 		crout <- &RoutingOut{dht, tinderRouting}
 
 		return tinderRouting, nil

@@ -57,8 +57,6 @@ func (md *MultiDriver) Advertise(ctx context.Context, ns string, opts ...p2p_dis
 func (md *MultiDriver) advertise(ctx context.Context, d Driver, ns string, opts ...disc.Option) {
 	go func() {
 		for {
-			md.logger.Debug("advertise", zap.String("driver", d.Name()), zap.String("key", ns))
-
 			ttl, err := d.Advertise(ctx, ns, opts...)
 			if err != nil {
 				md.logger.Warn("failed to advertise",
@@ -75,7 +73,7 @@ func (md *MultiDriver) advertise(ctx context.Context, d Driver, ns string, opts 
 				}
 			}
 
-			md.logger.Info("advertised", zap.String("driver", d.Name()), zap.String("key", ns))
+			md.logger.Info("advertise", zap.String("driver", d.Name()), zap.String("key", ns))
 			wait := 7 * ttl / 8
 			select {
 			case <-time.After(wait):
@@ -105,7 +103,7 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 	for _, driver := range md.drivers {
 		ch, err := driver.FindPeers(ctx, ns, opts...)
 		if err != nil { // @TODO(gfanton): log this
-			md.logger.Warn("failed to find peers",
+			md.logger.Warn("failed to run find peers",
 				zap.String("driver", driver.Name()),
 				zap.String("key", ns),
 				zap.Error(err))

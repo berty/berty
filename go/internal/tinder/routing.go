@@ -28,9 +28,9 @@ func (r *routing) Bootstrap(ctx context.Context) error {
 	return r.bootstrap(ctx)
 }
 
-func NewRouting(logger *zap.Logger, r p2p_routing.Routing, drivers ...Driver) Routing {
+func NewRouting(logger *zap.Logger, name string, r p2p_routing.Routing, drivers ...Driver) Routing {
 	rdisc := discovery.NewRoutingDiscovery(r)
-	drivers = append(drivers, ComposeDriver("dht", rdisc, rdisc, nil))
+	drivers = append(drivers, ComposeDriver(name, rdisc, rdisc, nil))
 	md := NewMultiDriver(logger, drivers...)
 
 	cr := discovery.NewDiscoveryRouting(md)

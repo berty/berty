@@ -75,7 +75,7 @@ type TestingAPIOpts struct {
 }
 
 // TestingCoreAPIUsingMockNet returns a fully initialized mocked Core API with the given mocknet
-func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *TestingAPIOpts) (CoreAPIMock, func()) {
+func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *TestingAPIOpts) (api CoreAPIMock, cleanup func()) {
 	t.Helper()
 
 	r := TestingRepo(t)
@@ -98,19 +98,21 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	coreapi, err := ipfs_coreapi.NewCoreAPI(node)
 	require.NoError(t, err, "failed to initialize IPFS Core API mock")
 
-	api := &coreAPIMock{
+	api = &coreAPIMock{
 		CoreAPI: coreapi,
 		mocknet: opts.Mocknet,
 		node:    node,
 		tinder:  routing.Routing,
 	}
 
-	return api, func() {
+	cleanup = func() {
 		node.Close()
 
 		// manually close dht since ipfs will not be able to do that
 		routing.IpfsDHT.Close()
 	}
+
+	return
 }
 
 // TestingCoreAPI returns a fully initialized mocked Core API.
