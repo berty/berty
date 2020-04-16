@@ -286,7 +286,7 @@ const Conversations: React.FC<ConversationsProps> = ({ items }) => {
 			{(t): React.ReactNode => (
 				<ScrollView
 					style={[overflow, border.shadow.medium]}
-					contentContainerStyle={[background.white, border.radius.big]}
+					contentContainerStyle={[background.white, border.radius.big, { flexGrow: 1 }]}
 				>
 					<SafeAreaView>
 						<View style={[padding.bottom.scale(80)]}>
