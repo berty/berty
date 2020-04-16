@@ -1,5 +1,6 @@
-// Package gomodhack ensures that `go mod` detect some required dependencies.
-// This package should not be imported directly.
+// Package gomodhack ensures that `go mod` detect some required dependencies
+//
+// This package should not be imported directly
 package gomodhack
 
 import (
