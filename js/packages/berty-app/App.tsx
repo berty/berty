@@ -18,6 +18,10 @@ import '@berty-tech/berty-i18n'
 import { enableScreens } from 'react-native-screens'
 import { Chat } from '@berty-tech/hooks'
 import AsyncStorage from '@react-native-community/async-storage'
+import { FeatherIconsPack } from './feather-icons'
+import { IconRegistry } from 'react-native-ui-kitten'
+import { EvaIconsPack } from '@ui-kitten/eva-icons'
+import { CustomIconsPack } from './custom-icons'
 
 enableScreens()
 
@@ -33,6 +37,7 @@ export const App: React.FC = () => (
 		>
 			<Chat.Provider config={{ storage: AsyncStorage }}>
 				<Chat.Recorder />
+				<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 				<Theme.Provider>
 					<Navigation />
 				</Theme.Provider>

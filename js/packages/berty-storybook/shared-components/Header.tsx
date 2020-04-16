@@ -31,7 +31,8 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	children = null,
 	bgColor = colors.blue,
 	undo,
-	undoIcon = 'arrow-back-outline',
+	undoIcon = 'arrow-left',
+	undoIconPack = 'feather',
 	undoIconSize = 25,
 	undoIconColor = 'white',
 	desc = null,
@@ -52,6 +53,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 						<TouchableOpacity style={[flex.tiny, row.item.justify]} onPress={undo}>
 							<Icon
 								name={undoIcon}
+								pack={undoIconPack}
 								width={undoIconSize}
 								height={undoIconSize}
 								fill={undoIconColor}

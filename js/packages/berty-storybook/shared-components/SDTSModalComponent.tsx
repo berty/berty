@@ -20,6 +20,7 @@ type SDTSModalProps = {
 	title?: string
 	titleColor?: ColorsTypes
 	icon?: string | null
+	iconPack?: string
 	iconColor?: ColorsTypes
 	bgColor?: ColorsTypes
 	//
@@ -154,8 +155,8 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 									</Text>
 									{componentValues.icon && (
 										<Icon
-											style={[flex.tiny, column.item.center]}
 											name={componentValues.icon}
+											pack={componentValues.iconPack}
 											width={40}
 											height={40}
 											fill={componentValues.iconColor}
@@ -217,6 +218,7 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 		title: rows[0].title !== undefined ? rows[0].title : undefined,
 		titleColor: rows[0].titleColor || color.black,
 		icon: rows[0].icon !== undefined ? rows[0].icon : null,
+		iconPack: rows[0].iconPack !== undefined ? rows[0].iconPack : null,
 		iconColor: rows[0].iconColor || color.blue,
 		bgColor: rows[0].bgColor || color.white,
 		//
@@ -257,6 +259,7 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 				title: rows[1].title !== undefined ? rows[1].title : undefined,
 				titleColor: rows[1].titleColor || color.black,
 				icon: rows[1].icon !== undefined ? rows[1].icon : null,
+				iconPack: rows[1].iconPack !== undefined ? rows[1].iconPack : null,
 				iconColor: rows[1].iconColor || color.blue,
 				bgColor: rows[1].bgColor || color.white,
 				//
@@ -287,6 +290,7 @@ export const SDTSModalComponent: React.FC<SDTSModalComponentProps> = ({ rows, ch
 					title: rows[2].title !== undefined ? rows[2].title : undefined,
 					titleColor: rows[2].titleColor || color.black,
 					icon: rows[2].icon !== undefined ? rows[2].icon : null,
+					iconPack: rows[2].iconPack !== undefined ? rows[2].iconPack : null,
 					iconColor: rows[2].iconColor || color.blue,
 					bgColor: rows[2].bgColor || color.white,
 					//

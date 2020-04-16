@@ -129,6 +129,21 @@ const Requests: React.FC<{}> = () => {
 	)
 }
 
+const BertyIDIcon = ({ color }) => (
+	<View
+		style={{
+			borderColor: color,
+			borderRadius: 1000,
+			aspectRatio: 1,
+			borderWidth: 2,
+			padding: 3,
+			paddingBottom: 9,
+		}}
+	>
+		<Icon name='user' pack='feather' height={35} width={35} fill={color} />
+	</View>
+)
+
 const AddContact: React.FC<{}> = () => {
 	const navigation = useNavigation()
 	const _styles = useStylesList()
@@ -147,9 +162,10 @@ const AddContact: React.FC<{}> = () => {
 					]}
 					onPress={navigation.navigate.main.scan}
 				>
-					<View style={[row.fill]}>
-						<View />
-						<Icon name='image-outline' height={50} width={50} fill={color.white} />
+					<View
+						style={[row.fill, { justifyContent: 'flex-end', height: 45, alignItems: 'flex-start' }]}
+					>
+						<Icon name='qr' pack='custom' width={40} height={40} fill={color.white} />
 					</View>
 					<View style={[row.fill]}>
 						<Text numberOfLines={2} style={[text.color.white, _styles.addContactItemText]}>
@@ -168,9 +184,10 @@ const AddContact: React.FC<{}> = () => {
 					]}
 					onPress={navigation.navigate.settings.myBertyId}
 				>
-					<View style={[row.fill]}>
-						<View />
-						<Icon name='person-outline' height={50} width={50} fill={color.white} />
+					<View
+						style={[row.fill, { justifyContent: 'flex-end', height: 45, alignItems: 'flex-start' }]}
+					>
+						<BertyIDIcon color={color.white} />
 					</View>
 					<View style={[row.fill]}>
 						<Text numberOfLines={2} style={[text.color.white, _styles.addContactItemText]}>
@@ -212,7 +229,8 @@ export const ListModal: React.FC<{}> = () => {
 							toggledPoint: firstToggledPoint,
 							notToggledPoint: firstNotToggledPoint,
 							title: 'New group',
-							icon: 'people-outline',
+							icon: 'users',
+							iconPack: 'feather',
 							iconColor: color.black,
 							dragEnabled: false,
 							headerAction: navigation.navigate.main.createGroup.createGroup2,
@@ -221,7 +239,8 @@ export const ListModal: React.FC<{}> = () => {
 							toggledPoint: secondToggledPoint,
 							notToggledPoint: secondNotToggledPoint,
 							title: 'Add contact',
-							icon: 'person-add-outline',
+							icon: 'user-plus',
+							iconPack: 'feather',
 							iconColor: color.black,
 						},
 						{

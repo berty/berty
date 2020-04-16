@@ -35,7 +35,13 @@ const HeaderChatGroup: React.FC<berty.chatmodel.IConversation> = (props) => {
 				style={[row.center, padding.medium, { justifyContent: 'center', alignItems: 'center' }]}
 			>
 				<TouchableOpacity style={[flex.tiny, column.top]} onPress={goBack}>
-					<Icon style={[column.item.center]} name='arrow-back-outline' width={30} height={30} />
+					<Icon
+						style={[column.item.center]}
+						name='arrow-left'
+						pack='feather'
+						width={30}
+						height={30}
+					/>
 				</TouchableOpacity>
 				<View style={[flex.small, row.item.justify]}>
 					<Text numberOfLines={1} category='h5' style={[text.align.center, text.bold.medium]}>

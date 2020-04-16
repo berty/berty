@@ -39,6 +39,4 @@ target 'Berty' do
 
   use_native_modules!
 
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-
 end

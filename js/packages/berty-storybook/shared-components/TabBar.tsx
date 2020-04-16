@@ -36,6 +36,8 @@ const useStylesTab = () => {
 const TabBarItem: React.FC<TabItemProps> = ({
 	name,
 	icon,
+	iconPack,
+	iconTransform,
 	setEnable,
 	enable = false,
 	buttonDisabled = false,
@@ -45,7 +47,16 @@ const TabBarItem: React.FC<TabItemProps> = ({
 	return (
 		<TouchableOpacity onPress={() => setEnable(name)} style={flex.tiny} disabled={buttonDisabled}>
 			<View style={[!enable && _styles.tabItemDisable, { alignItems: 'center' }]}>
-				<Icon fill={enable ? color.blue : color.black} name={icon} width={25} height={25} />
+				<View style={{ height: 25 }}>
+					<Icon
+						fill={enable ? color.blue : color.black}
+						name={icon}
+						pack={iconPack}
+						style={{ transform: iconTransform }}
+						width={25}
+						height={25}
+					/>
+				</View>
 				<Text
 					style={[
 						text.bold.medium,
@@ -72,15 +83,15 @@ export const TabBar: React.FC<TabBarProps> = ({ tabs, onTabChange }) => {
 		if (!tabs) {
 			if (tabType === 'contact') {
 				setTabs([
-					{ name: 'QR', icon: 'code-outline' },
-					{ name: 'Fingerprint', icon: 'code-outline' },
+					{ name: 'QR', icon: 'qr', iconPack: "custom" },
+					{ name: 'Fingerprint', icon: 'fingerprint', iconPack: "custom" },
 					{ name: 'Infos', icon: 'info-outline' },
-					{ name: 'Devices', icon: 'smartphone-outline' },
+					{ name: 'Devices', icon: 'smartphone', iconPack: "feather" },
 				])
 			} else if (tabType === 'group') {
 				setTabs([
 					{ name: 'Members', icon: 'people-outline' },
-					{ name: 'Fingerprint', icon: 'code-outline' },
+					{ name: 'Fingerprint', icon: 'fingerprint', iconPack: "custom" },
 					{ name: 'Infos', icon: 'info-outline' },
 				])
 			}
@@ -101,6 +112,8 @@ export const TabBar: React.FC<TabBarProps> = ({ tabs, onTabChange }) => {
 						<TabBarItem
 							name={obj.name}
 							icon={obj.icon}
+							iconPack={obj.iconPack}
+							iconTransform={obj.iconTransform}
 							setEnable={setEnable}
 							enable={selectedTab === obj.name}
 						/>

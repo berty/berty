@@ -136,7 +136,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 			/>
 			<ButtonSetting
 				name='Multicast DNS'
-				icon='share-outline'
+				icon='upload'
 				iconColor={color.blue}
 				iconSize={30}
 				toggled
