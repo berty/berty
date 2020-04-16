@@ -10,7 +10,6 @@ import (
 	"net"
 	"os"
 	"path"
-	"strconv"
 	"strings"
 	"time"
 
@@ -25,12 +24,13 @@ import (
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
+	"github.com/ipfs/go-ipfs/core"
+	iface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/juju/fslock"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	peer "github.com/libp2p/go-libp2p-core/peer"
-	"github.com/multiformats/go-multiaddr"
-	ma "github.com/multiformats/go-multiaddr"
+
 	"github.com/oklog/run"
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
@@ -39,6 +39,9 @@ import (
 
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_log "github.com/ipfs/go-log"
+
+	"github.com/multiformats/go-multiaddr"
+	ma "github.com/multiformats/go-multiaddr"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -53,7 +56,7 @@ import (
 
 // Default ipfs bootstrap & rendezvous point server
 
-const RendezVousServer = "/ip4/167.99.223.55/tcp/4040/p2p/QmTo3RS6Uc8aCS5Cxx8EBHkNCe4C7vKRanbMEboxkA92Cn"
+const DevRendezVousPoint = "/ip4/167.99.223.55/tcp/4040/p2p/QmTo3RS6Uc8aCS5Cxx8EBHkNCe4C7vKRanbMEboxkA92Cn"
 
 var DefaultBootstrap = ipfs_cfg.DefaultBootstrapAddresses
 
@@ -61,10 +64,12 @@ func main() {
 	log.SetFlags(0)
 
 	var (
-		logger          *zap.Logger
-		globalFlags     = flag.NewFlagSet("berty", flag.ExitOnError)
-		globalDebug     = globalFlags.Bool("debug", false, "debug mode")
-		globalLogToFile = globalFlags.String("logfile", "", "if specified, will log everything in JSON into a file and nothing on stderr")
+		logger            *zap.Logger
+		globalFlags       = flag.NewFlagSet("berty", flag.ExitOnError)
+		globalDebug       = globalFlags.Bool("debug", false, "berty debug mode")
+		globalLibp2pDebug = globalFlags.Bool("debug-p2p", false, "libp2p debug mode")
+		globalOrbitDebug  = globalFlags.Bool("debug-odb", false, "orbitdb debug mode")
+		globalLogToFile   = globalFlags.String("logfile", "", "if specified, will log everything in JSON into a file and nothing on stderr")
 
 		bannerFlags = flag.NewFlagSet("banner", flag.ExitOnError)
 		bannerLight = bannerFlags.Bool("light", false, "light mode")
@@ -72,6 +77,8 @@ func main() {
 		clientProtocolFlags     = flag.NewFlagSet("protocol client", flag.ExitOnError)
 		clientProtocolListeners = clientProtocolFlags.String("l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
 		clientProtocolPath      = clientProtocolFlags.String("d", cacheleveldown.InMemoryDirectory, "datastore base directory")
+		clientProtocolRDVP      = clientProtocolFlags.String("rdvp", DevRendezVousPoint, "rendezvous point maddr")
+		clientProtocolRDVPFroce = clientProtocolFlags.Bool("force-rdvp", false, "force connect to rendezvous point")
 
 		clientDemoFlags     = flag.NewFlagSet("demo client", flag.ExitOnError)
 		clientDemoDirectory = clientDemoFlags.String("d", ":memory:", "orbit db directory")
@@ -82,12 +89,44 @@ func main() {
 		miniClientDemoPath       = miniClientDemoFlags.String("d", cacheleveldown.InMemoryDirectory, "datastore base directory")
 		miniClientDemoPort       = miniClientDemoFlags.Uint("p", 0, "default IPFS listen port")
 		miniClientDemoRemoteAddr = miniClientDemoFlags.String("r", "", "remote berty daemon")
+		miniClientDemoRDVP       = miniClientDemoFlags.String("rdvp", DevRendezVousPoint, "rendezvous point maddr")
 	)
 
-	globalPreRun := func() (err error) {
+	globalPreRun := func() error {
 		mrand.Seed(srand.Secure())
-		logger, err = newLogger(*globalDebug, *globalLogToFile)
-		return err
+		isDebugEnabled := *globalDebug || *globalOrbitDebug || *globalLibp2pDebug
+
+		// setup zap config
+		var config zap.Config
+		if *globalLogToFile != "" {
+			config = zap.NewProductionConfig()
+			config.OutputPaths = []string{*globalLogToFile}
+		} else {
+			config = zap.NewDevelopmentConfig()
+			config.DisableStacktrace = true
+			config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		}
+
+		if isDebugEnabled {
+			config.Level.SetLevel(zap.DebugLevel)
+		} else {
+			config.Level.SetLevel(zap.InfoLevel)
+		}
+
+		var err error
+		if logger, err = config.Build(); err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+
+		if *globalLibp2pDebug {
+			ipfs_log.SetDebugLogging()
+		}
+
+		if *globalOrbitDebug {
+			zap.ReplaceGlobals(logger)
+		}
+
+		return nil
 	}
 
 	banner := &ffcli.Command{
@@ -152,7 +191,7 @@ func main() {
 				RootDS:                rootDS,
 				Logger:                l,
 				Bootstrap:             DefaultBootstrap,
-				RendezVousServerMAddr: RendezVousServer,
+				RendezVousServerMAddr: *miniClientDemoRDVP,
 			})
 			return nil
 		},
@@ -169,44 +208,62 @@ func main() {
 
 			ctx := context.Background()
 
-			// protocol
-			var protocol bertyprotocol.Service
+			var api iface.CoreAPI
 			{
+				var err error
+				var opts = ipfsutil.IpfsOpts{}
 
-				mardv := multiaddr.StringCast(RendezVousServer)
-				rdvpeer, err := peer.AddrInfoFromP2pAddr(mardv)
-				if err != nil {
-					return errcode.TODO.Wrap(err)
+				opts.Bootstrap = DefaultBootstrap
+
+				var rdvpeer *peer.AddrInfo
+				var mardv ma.Multiaddr
+				var crouting <-chan *ipfsutil.RoutingOut
+
+				mardv, err = ma.NewMultiaddr(*clientProtocolRDVP)
+				if err == nil { // should be a valid rendezvous peer
+					rdvpeer, err = peer.AddrInfoFromP2pAddr(mardv)
+					if err != nil {
+						return errcode.TODO.Wrap(err)
+					}
+
+					opts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer.ID, false)
+					opts.Bootstrap = append(opts.Bootstrap, mardv.String())
 				}
 
-				routingOpts, crouting := ipfsutil.NewTinderRouting(logger, rdvpeer.ID, false)
-				ipfsOpts := &ipfsutil.IpfsOpts{
-					Bootstrap: append(DefaultBootstrap, RendezVousServer),
-					Routing:   routingOpts,
-				}
+				var node *core.IpfsNode
 
-				api, node, err := ipfsutil.NewInMemoryCoreAPI(ctx, ipfsOpts)
+				api, node, err = ipfsutil.NewInMemoryCoreAPI(ctx, &opts)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
 				defer node.Close()
 
-				go func() {
-					monitorPeers(ctx, logger, node.PeerHost, rdvpeer.ID)
-				}()
+				if crouting != nil {
+					routingOut := <-crouting
+					defer routingOut.IpfsDHT.Close()
 
-				// uncomment this to force connection with rdvp
-				// for {
-				// 	if err := node.PeerHost.Connect(ctx, *rdvpeer); err != nil {
-				// 		logger.Error("cannot dial rendez-vous point: %v", zap.Error(err))
-				// 	} else {
-				// 		break
-				// 	}
-				// 	time.Sleep(time.Second)
-				// }
+					if *clientProtocolRDVPFroce {
+						go func() {
+							// monitor rdv peer
+							monitorPeers(ctx, logger, node.PeerHost, rdvpeer.ID)
+						}()
 
-				routing := <-crouting
-				defer routing.IpfsDHT.Close()
+						for {
+							if err := node.PeerHost.Connect(ctx, *rdvpeer); err != nil {
+								logger.Error("cannot dial rendez-vous point", zap.Error(err))
+							} else {
+								break
+							}
+							time.Sleep(time.Second)
+						}
+					}
+
+				}
+			}
+
+			// protocol
+			var protocol bertyprotocol.Service
+			{
 
 				rootDS, dsLock, err := getRootDatastore(clientProtocolPath)
 				if err != nil {
@@ -324,7 +381,7 @@ func main() {
 			{
 				var err error
 
-				mardv := multiaddr.StringCast(RendezVousServer)
+				mardv := multiaddr.StringCast(DevRendezVousPoint)
 				rdvpeer, err := peer.AddrInfoFromP2pAddr(mardv)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
@@ -332,7 +389,7 @@ func main() {
 
 				routingOpts, crouting := ipfsutil.NewTinderRouting(logger, rdvpeer.ID, false)
 				ipfsOpts := &ipfsutil.IpfsOpts{
-					Bootstrap: append(DefaultBootstrap, RendezVousServer),
+					Bootstrap: append(DefaultBootstrap, DevRendezVousPoint),
 					Routing:   routingOpts,
 				}
 
@@ -482,67 +539,8 @@ func parseAddr(addr string) (maddr ma.Multiaddr, err error) {
 	return
 }
 
-func newLogger(debug bool, logfile string) (*zap.Logger, error) {
-	bertyDebug := parseBoolFromEnv("BERTY_DEBUG") || debug
-	libp2pDebug := parseBoolFromEnv("LIBP2P_DEBUG")
-	// @NOTE(gfanton): since orbitdb use `zap.L()`, this will only
-	// replace zap global logger with our logger
-	orbitdbDebug := parseBoolFromEnv("ORBITDB_DEBUG")
-
-	isDebugEnabled := bertyDebug || orbitdbDebug || libp2pDebug
-
-	// setup zap config
-	var config zap.Config
-	if logfile != "" {
-		config = zap.NewProductionConfig()
-		config.OutputPaths = []string{logfile}
-	} else {
-		config = zap.NewDevelopmentConfig()
-		config.DisableStacktrace = true
-		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	}
-
-	if isDebugEnabled {
-		config.Level.SetLevel(zap.DebugLevel)
-	} else {
-		config.Level.SetLevel(zap.InfoLevel)
-	}
-
-	logger, err := config.Build()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	if libp2pDebug {
-		ipfs_log.SetDebugLogging()
-	}
-
-	if orbitdbDebug {
-		zap.ReplaceGlobals(logger)
-	}
-
-	return logger, nil
-}
-
-func parseBoolFromEnv(key string) (b bool) {
-	b, _ = strconv.ParseBool(os.Getenv(key))
-	return
-}
-
 func monitorPeers(ctx context.Context, l *zap.Logger, h host.Host, peers ...peer.ID) error {
 	currentStates := make([]network.Connectedness, len(peers))
-	for i, p := range peers {
-		state := h.Network().Connectedness(p)
-		switch state {
-		case network.Connected:
-			l.Info("peer Connected", zap.String("ID", p.String()))
-		case network.NotConnected:
-			l.Info("peer NotConnected", zap.String("ID", p.String()))
-		}
-
-		currentStates[i] = state
-	}
-
 	for {
 		time.Sleep(time.Second)
 
