@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
@@ -101,9 +100,10 @@ func newNativeLogger(loglevel string, mlogger NativeLoggerDriver) (*zap.Logger, 
 	logger := zap.New(nativeCore)
 
 	// bind ipfs logger with zap
-	if err := ipfsutil.ConfigureLogger("*", logger, loglevel); err != nil {
-		return nil, err
-	}
+	// @FIXME(gfanton): find a way to bind libp2p logger
+	// if err := ipfsutil.ConfigureLogger("*", logger, loglevel); err != nil {
+	// 	return nil, err
+	// }
 
 	logger.Info("logger initialized", zap.String("level", loglevel))
 	return logger, nil

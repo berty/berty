@@ -38,6 +38,7 @@ import (
 	"go.uber.org/zap/zapcore"
 
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
+	ipfs_log "github.com/ipfs/go-log"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -513,9 +514,7 @@ func newLogger(debug bool, logfile string) (*zap.Logger, error) {
 	}
 
 	if libp2pDebug {
-		if err := ipfsutil.ConfigureLogger("*", logger, "debug"); err != nil {
-			logger.Error("setup libp2p logger", zap.Error(err))
-		}
+		ipfs_log.SetDebugLogging()
 	}
 
 	if orbitdbDebug {
