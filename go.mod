@@ -26,11 +26,11 @@ require (
 	github.com/libp2p/go-libp2p-core v0.5.1
 	github.com/libp2p/go-libp2p-discovery v0.3.0
 	github.com/libp2p/go-libp2p-kad-dht v0.6.2
-	github.com/libp2p/go-libp2p-peer v0.2.0
 	github.com/libp2p/go-libp2p-quic-transport v0.3.3
 	github.com/libp2p/go-libp2p-record v0.1.2
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e
 	github.com/multiformats/go-multiaddr v0.2.1
+	github.com/multiformats/go-multiaddr-dns v0.2.0
 	github.com/multiformats/go-multiaddr-net v0.1.4
 	github.com/multiformats/go-multihash v0.0.13
 	github.com/oklog/run v1.1.0

@@ -71,7 +71,7 @@ func TestingRepo(t testing.TB) ipfs_repo.Repo {
 
 type TestingAPIOpts struct {
 	Mocknet libp2p_mocknet.Mocknet
-	RDVPeer peer.ID
+	RDVPeer peer.AddrInfo
 }
 
 // TestingCoreAPIUsingMockNet returns a fully initialized mocked Core API with the given mocknet
@@ -79,7 +79,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	t.Helper()
 
 	r := TestingRepo(t)
-	routingopt, crout := NewTinderRouting(zap.NewNop(), opts.RDVPeer, false)
+	routingopt, crout := NewTinderRouting(zap.NewNop(), &opts.RDVPeer, false)
 
 	node, err := ipfs_core.NewNode(ctx, &ipfs_core.BuildCfg{
 		Repo:    r,
@@ -133,7 +133,7 @@ func TestingCoreAPI(ctx context.Context, t testing.TB) (CoreAPIMock, func()) {
 	_, cleanrdvp := TestingRDVP(ctx, t, peer)
 	api, cleanapi := TestingCoreAPIUsingMockNet(ctx, t, &TestingAPIOpts{
 		Mocknet: m,
-		RDVPeer: peer.ID(),
+		RDVPeer: peer.Network().Peerstore().PeerInfo(peer.ID()),
 	})
 
 	return api, func() {

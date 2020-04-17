@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -40,8 +41,8 @@ import (
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_log "github.com/ipfs/go-log"
 
-	"github.com/multiformats/go-multiaddr"
 	ma "github.com/multiformats/go-multiaddr"
+	madns "github.com/multiformats/go-multiaddr-dns"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -54,9 +55,11 @@ import (
 	"moul.io/srand"
 )
 
-// Default ipfs bootstrap & rendezvous point server
+// DNS Resolve timeout
+const ResolveTimeout = time.Second * 10
 
-const DevRendezVousPoint = "/ip4/167.99.223.55/tcp/4040/p2p/QmTo3RS6Uc8aCS5Cxx8EBHkNCe4C7vKRanbMEboxkA92Cn"
+// Default ipfs bootstrap & rendezvous point server
+const DevRendezVousPoint = "/dnsaddr/rdvp.berty.io/ipfs/QmTo3RS6Uc8aCS5Cxx8EBHkNCe4C7vKRanbMEboxkA92Cn"
 
 var DefaultBootstrap = ipfs_cfg.DefaultBootstrapAddresses
 
@@ -179,19 +182,36 @@ func main() {
 				remoteAddr = *miniClientDemoRemoteAddr
 			}
 
+			rdvpeer := &peer.AddrInfo{}
+			if *miniClientDemoRDVP != "" {
+				rdvpeer, err = parseIpfsAddr(*clientProtocolRDVP)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+
+				fds := make([]zapcore.Field, len(rdvpeer.Addrs))
+				for i, maddr := range rdvpeer.Addrs {
+					key := fmt.Sprintf("#%d", i)
+					fds[i] = zap.String(key, maddr.String())
+				}
+				logger.Info("rdvp peer resolved addrs", fds...)
+			} else {
+				logger.Warn("no rendezvous peer set")
+			}
+
 			l := zap.NewNop()
 			if *globalLogToFile != "" {
 				l = logger
 			}
 
 			mini.Main(&mini.Opts{
-				RemoteAddr:            remoteAddr,
-				GroupInvitation:       *miniClientDemoGroup,
-				Port:                  *miniClientDemoPort,
-				RootDS:                rootDS,
-				Logger:                l,
-				Bootstrap:             DefaultBootstrap,
-				RendezVousServerMAddr: *miniClientDemoRDVP,
+				RemoteAddr:      remoteAddr,
+				GroupInvitation: *miniClientDemoGroup,
+				Port:            *miniClientDemoPort,
+				RootDS:          rootDS,
+				Logger:          l,
+				Bootstrap:       DefaultBootstrap,
+				RendezVousPeer:  rdvpeer,
 			})
 			return nil
 		},
@@ -216,20 +236,20 @@ func main() {
 				opts.Bootstrap = DefaultBootstrap
 
 				var rdvpeer *peer.AddrInfo
-				var mardv ma.Multiaddr
 				var crouting <-chan *ipfsutil.RoutingOut
 
 				if *clientProtocolRDVP != "" {
-					if mardv, err = ma.NewMultiaddr(*clientProtocolRDVP); err != nil {
-						logger.Warn("failed to parse rdvp multiaddr", zap.String("maddr", *clientProtocolRDVP), zap.Error(err))
+					if rdvpeer, err = parseIpfsAddr(*clientProtocolRDVP); err != nil {
+						return errors.New("failed to parse rdvp multiaddr: " + *clientProtocolRDVP)
 					} else { // should be a valid rendezvous peer
-						rdvpeer, err = peer.AddrInfoFromP2pAddr(mardv)
-						if err != nil {
-							return errcode.TODO.Wrap(err)
-						}
+						// add rdv peer's addrs to bootstrap opt
+						// maddrs, err := peer.AddrInfoToP2pAddrs(rdvpeer)
+						// if err != nil {
+						// 	return errcode.TODO.Wrap(err)
+						// }
 
-						opts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer.ID, false)
-						opts.Bootstrap = append(opts.Bootstrap, mardv.String())
+						opts.Bootstrap = append(opts.Bootstrap, *clientProtocolRDVP)
+						opts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
 					}
 				}
 
@@ -284,7 +304,7 @@ func main() {
 				// initialize new protocol client
 				opts := bertyprotocol.Opts{
 					IpfsCoreAPI:     api,
-					Logger:          logger.Named("bertyprotocol"),
+					Logger:          logger.Named("bertyproocol"),
 					RootContext:     ctx,
 					RootDatastore:   rootDS,
 					MessageKeystore: mk,
@@ -384,13 +404,12 @@ func main() {
 			{
 				var err error
 
-				mardv := multiaddr.StringCast(DevRendezVousPoint)
-				rdvpeer, err := peer.AddrInfoFromP2pAddr(mardv)
+				rdvpeer, err := parseIpfsAddr(DevRendezVousPoint)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
 
-				routingOpts, crouting := ipfsutil.NewTinderRouting(logger, rdvpeer.ID, false)
+				routingOpts, crouting := ipfsutil.NewTinderRouting(logger, rdvpeer, false)
 				ipfsOpts := &ipfsutil.IpfsOpts{
 					Bootstrap: append(DefaultBootstrap, DevRendezVousPoint),
 					Routing:   routingOpts,
@@ -540,6 +559,52 @@ func parseAddr(addr string) (maddr ma.Multiaddr, err error) {
 	}
 
 	return
+}
+
+// parseIpfsAddr is a function that takes in addr string and return ipfsAddrs
+func parseIpfsAddr(addr string) (*peer.AddrInfo, error) {
+	maddr, err := ma.NewMultiaddr(addr)
+	if err != nil {
+		return nil, err
+	}
+
+	if !madns.Matches(maddr) {
+		return peer.AddrInfoFromP2pAddr(maddr)
+	}
+
+	// resolve multiaddr whose protocol is not ma.P_IPFS
+	ctx, cancel := context.WithTimeout(context.Background(), ResolveTimeout)
+	defer cancel()
+	addrs, err := madns.Resolve(ctx, maddr)
+	if err != nil {
+		return nil, err
+	}
+	if len(addrs) == 0 {
+		return nil, errors.New("fail to resolve the multiaddr:" + maddr.String())
+	}
+
+	var info peer.AddrInfo
+	for _, addr := range addrs {
+		taddr, id := peer.SplitAddr(addr)
+		if id == "" {
+			// not an ipfs addr, skipping.
+			continue
+		}
+		switch info.ID {
+		case "":
+			info.ID = id
+		case id:
+		default:
+			return nil, fmt.Errorf(
+				"ambiguous maddr %s could refer to %s or %s",
+				maddr,
+				info.ID,
+				id,
+			)
+		}
+		info.Addrs = append(info.Addrs, taddr)
+	}
+	return &info, nil
 }
 
 func monitorPeers(l *zap.Logger, h host.Host, peers ...peer.ID) error {

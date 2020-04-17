@@ -17,7 +17,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
-	peer "github.com/libp2p/go-libp2p-peer"
+	peer "github.com/libp2p/go-libp2p-core/peer"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 )
 
@@ -32,7 +32,7 @@ type TestingProtocol struct {
 type TestingOpts struct {
 	Logger  *zap.Logger
 	Mocknet libp2p_mocknet.Mocknet
-	RDVPeer peer.ID
+	RDVPeer peer.AddrInfo
 }
 
 func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*TestingProtocol, func()) {
@@ -104,7 +104,7 @@ func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpt
 	rdvpnet := opts.Mocknet.Net(rdvpeer.ID())
 	require.NotNil(t, rdvpnet)
 
-	opts.RDVPeer = rdvpeer.ID()
+	opts.RDVPeer = rdvpeer.Peerstore().PeerInfo(rdvpeer.ID())
 
 	cls := make([]func(), n)
 	tps := make([]*TestingProtocol, n)

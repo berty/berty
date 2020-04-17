@@ -82,7 +82,7 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 
 	ipfsopts := ipfsutil.TestingAPIOpts{
 		Mocknet: mn,
-		RDVPeer: rdvp.ID(),
+		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
 	}
 	deviceIndex := 0
 
