@@ -335,7 +335,12 @@ export const List: React.FC<ScreenProps.Chat.List> = () => {
 	const requests = Chat.useAccountContactsWithIncomingRequests().filter(
 		(contact) => !(contact.request.accepted || contact.request.discarded),
 	)
-	const conversations = Chat.useConversationList()
+	const conversations = Chat.useConversationList().sort((a, b) => {
+		if (a.kind !== 'fake' && b.kind !== 'fake') {
+			return b.lastMessageDate - a.lastMessageDate
+		}
+		return 0
+	})
 
 	const [{ absolute, background }] = useStyles()
 
