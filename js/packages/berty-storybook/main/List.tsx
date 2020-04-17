@@ -257,20 +257,35 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 				<View style={[flex.big, column.fill, padding.small]}>
 					<View style={[row.fill]}>
 						<View style={[row.left]}>
-							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
+							<Text
+								numberOfLines={1}
+								style={[text.size.medium, text.color.black, unreadCount && text.bold.medium]}
+							>
 								{kind === 'fake' && 'SAMPLE - '}
 								{title || ''}
 							</Text>
 						</View>
 						<View style={[row.right, { alignItems: 'center' }]}>
 							<UnreadCount value={unreadCount} />
-							<Text style={[padding.left.small, text.size.small, text.color.grey]}>
+							<Text
+								style={[
+									padding.left.small,
+									text.size.small,
+									unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+								]}
+							>
 								{message && formatTimestamp(new Date(message.sentDate))}
 							</Text>
 							<MessageStatus messageID={lastSentMessage} />
 						</View>
 					</View>
-					<Text numberOfLines={1} style={[text.size.small, text.color.grey]}>
+					<Text
+						numberOfLines={1}
+						style={[
+							text.size.small,
+							unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+						]}
+					>
 						{message && message.body}
 					</Text>
 				</View>
