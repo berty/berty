@@ -98,9 +98,14 @@ const BertIdBody: React.FC<RequestProps> = ({ user }) => {
 			<View style={[padding.horizontal.big, _styles.bodyContent]}>
 				<TabBar
 					tabs={[
-						{ name: 'QR', icon: 'code-outline' },
-						{ name: 'Fingerprint', icon: 'code-outline' },
-						{ name: 'Devices', icon: 'smartphone-outline' },
+						{ name: 'QR', icon: 'qr', iconPack: 'custom' },
+						{ name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' },
+						{
+							name: 'Devices',
+							icon: 'smartphone',
+							iconPack: 'feather',
+							iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],
+						},
 					]}
 					onTabChange={setSelectedContent}
 				/>
@@ -135,13 +140,7 @@ const BertyIdShare: React.FC<{}> = () => {
 			}}
 		>
 			<View style={[flex.tiny, { justifyContent: 'center' }]}>
-				<Icon
-					style={row.item.justify}
-					name='share-outline'
-					width={40}
-					height={40}
-					fill={color.blue}
-				/>
+				<Icon style={row.item.justify} name='upload' pack='feather' width={26} fill={'#3F49EA'} />
 			</View>
 		</TouchableOpacity>
 	)
@@ -149,14 +148,54 @@ const BertyIdShare: React.FC<{}> = () => {
 
 const Screen = Dimensions.get('window')
 
+const BertyIDIcon = ({ color }) => (
+	<View
+		style={{
+			borderColor: color,
+			borderRadius: 1000,
+			aspectRatio: 1,
+			borderWidth: 2,
+			padding: 3,
+			paddingBottom: 9,
+		}}
+	>
+		<Icon name='user' pack='feather' height={35} width={35} fill={color} />
+	</View>
+)
+
 const MyBertyIdComponent: React.FC<RequestProps> = ({ user }) => {
 	const { goBack } = useNavigation()
-	const [{ padding, color }] = useStyles()
+	const [{ padding, color, margin }] = useStyles()
+	const titleSize = 26
 	return (
 		<View style={[{ height: Screen.height }, padding.medium]}>
-			<TouchableOpacity onPress={goBack}>
-				<Icon name='arrow-back-outline' width={30} height={30} fill={color.white} />
-			</TouchableOpacity>
+			<View
+				style={[
+					{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+					margin.horizontal.medium,
+				]}
+			>
+				<View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
+					<TouchableOpacity
+						onPress={goBack}
+						style={{ alignItems: 'center', justifyContent: 'center' }}
+					>
+						<Icon name='arrow-left' pack='feather' width={30} height={30} fill={color.white} />
+					</TouchableOpacity>
+					<Text
+						style={{
+							fontWeight: '700',
+							fontSize: titleSize,
+							lineHeight: 1.25 * titleSize,
+							marginLeft: 10,
+							color: color.white,
+						}}
+					>
+						My Berty ID
+					</Text>
+				</View>
+				<BertyIDIcon color={color.white} />
+			</View>
 			<BertIdBody user={user} />
 			<BertyIdShare />
 		</View>

@@ -53,6 +53,7 @@
     "react-native-reanimated": "^1.7.1",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.4.0",
-    "react-native-svg": "^11.0.1"
+    "react-native-svg": "^11.0.1",
+    "react-native-vector-icons": "^6.6.0"
   }
 }

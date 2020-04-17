@@ -21,7 +21,9 @@ export const Footer: React.FC<{ selected: string }> = ({ selected }) => {
 							selected: true,
 					  }
 					: {
-							icon: 'message-circle-outline',
+							icon: 'message-circle',
+							iconStyle: { paddingTop: 2 },
+							iconPack: 'feather',
 							onPress: navigate.main.list,
 							selected: false,
 					  }

@@ -35,11 +35,13 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 	selectedBackgroundColor: selectedBackgroundColorProp,
 	avatarUri = null,
 	icon = null,
+	iconPack,
 	size: sizeProp = 47,
 	selectedSize = 59,
 	elemSize: elemSizeProp = 21,
 	selectedElemSize = 31,
 	elemColor: elemColorProp,
+	iconStyle,
 	selectedElemColor = 'white',
 	seed = null,
 	onPress,
@@ -77,13 +79,16 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 				]}
 			>
 				{icon && (
-					<Icon
-						style={[column.item.center]}
-						name={icon}
-						width={elemSize}
-						height={elemSize}
-						fill={elemColor}
-					/>
+					<View style={{ justifyContent: 'center', alignItems: 'center' }}>
+						<Icon
+							name={icon}
+							pack={iconPack}
+							width={elemSize}
+							height={elemSize}
+							fill={elemColor}
+							style={iconStyle}
+						/>
+					</View>
 				)}
 				{avatarUri && (
 					<Image

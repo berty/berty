@@ -114,11 +114,40 @@ const Screen = Dimensions.get('window')
 const ScanComponent: React.FC<{}> = () => {
 	const { goBack } = useNavigation()
 	const [{ color, padding, margin }] = useStyles()
+	const titleSize = 26
 	return (
 		<View style={[{ height: Screen.height }, padding.medium]}>
-			<TouchableOpacity onPress={goBack} style={[margin.bottom.huge]}>
-				<Icon name='arrow-back-outline' width={30} height={30} fill={color.black} />
-			</TouchableOpacity>
+			<View
+				style={[
+					{
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						marginBottom: 40,
+					},
+				]}
+			>
+				<View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
+					<TouchableOpacity
+						onPress={goBack}
+						style={{ alignItems: 'center', justifyContent: 'center' }}
+					>
+						<Icon name='arrow-left' pack='feather' width={30} height={30} fill={color.white} />
+					</TouchableOpacity>
+					<Text
+						style={{
+							fontWeight: '700',
+							fontSize: titleSize,
+							lineHeight: 1.25 * titleSize,
+							marginLeft: 10,
+							color: color.white,
+						}}
+					>
+						Scan QR code
+					</Text>
+				</View>
+				<Icon name='qr' pack='custom' width={40} height={40} fill={color.white} />
+			</View>
 			<ScanBody />
 			{__DEV__ && <ScanInfos />}
 		</View>

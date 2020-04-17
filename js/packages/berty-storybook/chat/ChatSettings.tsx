@@ -66,7 +66,7 @@ const ChatSettingsHeaderButtons: React.FC<{}> = () => {
 					},
 					{
 						name: 'Share',
-						icon: 'share-outline',
+						icon: 'upload',
 						color: color.blue,
 						style: _styles.thirdHeaderButton,
 						disabled: true,
