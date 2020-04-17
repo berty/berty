@@ -88,9 +88,6 @@ export type BoldDeclaration<T> = {
 	medium: T
 	huge: T
 }
-export type Bold<T> = BoldDeclaration<T> & {
-	scale: (fontWeight: BoldDeclarationTypes) => T
-}
 
 export type Text = {
 	color: Colors<{}> & ColorsBrightness<{}>
@@ -98,7 +95,7 @@ export type Text = {
 	family: {
 		use: (fontFamily: string) => {}
 	}
-	bold: Bold<{}>
+	bold: BoldDeclaration<{ fontWeight: BoldDeclarationTypes }>
 	italic: {}
 	align: Align<{}>
 }
@@ -357,13 +354,11 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 		}),
 		bold: {
 			...StyleSheet.create({
+				// default is '600'
 				small: { fontWeight: '500' },
-				medium: { fontWeight: 'bold' },
+				medium: { fontWeight: 'bold' }, // '700'
 				huge: { fontWeight: '900' },
 			}),
-			scale: mem(
-				(fontWeight: BoldDeclarationTypes) => StyleSheet.create({ scale: { fontWeight } }).scale,
-			),
 		},
 		...StyleSheet.create({
 			italic: { fontStyle: 'italic' },
