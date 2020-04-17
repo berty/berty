@@ -15,6 +15,7 @@ export type Entity = {
 	requests: Array<string>
 	conversations: Array<string>
 	contacts: Array<string>
+	onboarded: boolean
 }
 
 export type Event = {
@@ -45,6 +46,7 @@ export namespace Command {
 	}
 	export type Replay = { id: string }
 	export type Open = { id: string }
+	export type Onboard = { id: string }
 }
 
 export namespace Query {
@@ -61,6 +63,7 @@ export namespace Event {
 		name: string
 	}
 	export type Deleted = { aggregateId: string }
+	export type Onboarded = { aggregateId: string }
 }
 
 type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
@@ -72,6 +75,7 @@ export type CommandsReducer = {
 	sendContactRequest: SimpleCaseReducer<Command.SendContactRequest>
 	replay: SimpleCaseReducer<Command.Replay>
 	open: SimpleCaseReducer<Command.Open>
+	onboard: SimpleCaseReducer<Command.Onboard>
 }
 
 export type QueryReducer = {
@@ -88,6 +92,7 @@ export type QueryReducer = {
 export type EventsReducer = {
 	created: SimpleCaseReducer<Event.Created>
 	deleted: SimpleCaseReducer<Event.Deleted>
+	onboarded: SimpleCaseReducer<Event.Onboarded>
 }
 
 export type Transactions = {
@@ -110,6 +115,7 @@ const commandHandler = createSlice<State, CommandsReducer>({
 		sendContactRequest: (state) => state,
 		replay: (state) => state,
 		open: (state) => state,
+		onboard: (state) => state,
 	},
 })
 
@@ -124,11 +130,19 @@ const eventHandler = createSlice<State, EventsReducer>({
 				requests: [],
 				conversations: [],
 				contacts: [],
+				onboarded: false,
 			}
 			return state
 		},
 		deleted: (state, { payload }) => {
 			delete state.aggregates[payload.aggregateId]
+			return state
+		},
+		onboarded: (state, { payload }) => {
+			const account = state.aggregates[payload.aggregateId]
+			if (account) {
+				account.onboarded = true
+			}
 			return state
 		},
 	},
@@ -265,6 +279,9 @@ export const transactions: Transactions = {
 			contact,
 		})
 	},
+	onboard: function*(payload) {
+		yield put(events.onboarded({ aggregateId: payload.id }))
+	},
 }
 
 export function* orchestrator() {
@@ -298,6 +315,9 @@ export function* orchestrator() {
 		}),
 		takeLeading(commands.sendContactRequest, function*(action) {
 			yield* transactions.sendContactRequest(action.payload)
+		}),
+		takeLeading(commands.onboard, function*(action) {
+			yield* transactions.onboard(action.payload)
 		}),
 	])
 }

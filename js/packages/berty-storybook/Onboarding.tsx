@@ -18,6 +18,8 @@ import { ColorsTypes, useStyles } from '@berty-tech/styles'
 import { useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { Chat } from '@berty-tech/hooks'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
+import { useDispatch } from 'react-redux'
+import { chat } from '@berty-tech/store'
 
 type Navigation = () => void
 type Form<T> = (arg0: T) => Promise<void>
@@ -368,6 +370,11 @@ const Bluetooth: React.FC<{
 
 const SetupFinished: React.FC = () => {
 	const navigation = useReactNavigation()
+	const account = Chat.useAccount()
+	const dispatch = useDispatch()
+	if (!account) {
+		return null
+	}
 	return (
 		<Translation>
 			{(t) => (
@@ -377,6 +384,7 @@ const SetupFinished: React.FC = () => {
 					button={{
 						text: t('onboarding.setup-finished.button'),
 						onPress: () => {
+							dispatch(chat.account.commands.onboard({ id: account.id }))
 							navigation.navigate(Routes.Root.Tabs, { screen: Routes.Main.List })
 						},
 					}}
