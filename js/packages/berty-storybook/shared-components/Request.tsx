@@ -239,9 +239,7 @@ const BodyRequest: React.FC<BodyRequestProps> = ({ user, markAsVerified, buttons
 				<ProceduralCircleAvatar seed={user.publicKey} size={140} diffSize={40} />
 			</View>
 			<View style={[padding.horizontal.medium, padding.top.scale(75)]}>
-				<Text style={[padding.vertical.tiny, text.align.center, text.size.big, text.bold]}>
-					{user.name}
-				</Text>
+				<Text style={[padding.vertical.tiny, text.align.center, text.size.big]}>{user.name}</Text>
 				<TabBar
 					tabs={[
 						{ name: 'Fingerprint', icon: 'code-outline' },

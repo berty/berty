@@ -97,9 +97,7 @@ const AddThisContact: React.FC<{ name: string; rdvSeed: string; pubKey: string }
 							border.radius.small,
 						]}
 					>
-						<Text style={[text.bold.scale('600'), text.color.blue, { textAlign: 'center' }]}>
-							ADD THIS CONTACT
-						</Text>
+						<Text style={[text.color.blue, { textAlign: 'center' }]}>ADD THIS CONTACT</Text>
 					</TouchableOpacity>
 				</View>
 			</View>

@@ -35,13 +35,7 @@ const ChatSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 			/>
 			<Text
 				numberOfLines={1}
-				style={[
-					text.size.scale(18),
-					text.color.white,
-					text.align.center,
-					padding.top.small,
-					text.bold.scale('600'),
-				]}
+				style={[text.size.scale(18), text.color.white, text.align.center, padding.top.small]}
 			>
 				{contact.name}
 			</Text>

@@ -51,9 +51,7 @@ const ContactChatSettingsHeader: React.FC<{
 					/>
 				</View>
 				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(65)]}>
-					<Text
-						style={[text.size.big, text.color.black, text.align.center, text.bold.scale('500')]}
-					>
+					<Text style={[text.size.big, text.color.black, text.align.center, text.bold.small]}>
 						{params.contact.name}
 					</Text>
 					<TabBar
