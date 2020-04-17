@@ -20,6 +20,7 @@ type BaseConversation = {
 	unreadCount: number
 	reading: boolean
 	lastSentMessage: string
+	lastMessageDate: number
 }
 
 type FakeConversation = BaseConversation & {
@@ -95,7 +96,12 @@ export namespace Event {
 		devicePk: Uint8Array
 		memberPk: Uint8Array
 	}
-	export type MessageAdded = { aggregateId: string; messageId: string; isMe: boolean }
+	export type MessageAdded = {
+		aggregateId: string
+		messageId: string
+		isMe: boolean
+		lastMessageDate: number
+	}
 	export type StartRead = string
 	export type StopRead = string
 }
@@ -215,6 +221,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 				} else if (!conv.reading) {
 					conv.unreadCount += 1
 				}
+				conv.lastMessageDate = payload.lastMessageDate
 			}
 			return state
 		},
@@ -412,6 +419,7 @@ export const transactions: Transactions = {
 				aggregateId,
 				messageId,
 				isMe,
+				lastMessageDate: Date.now(),
 			}),
 		)
 	},
