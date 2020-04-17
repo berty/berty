@@ -107,23 +107,27 @@ const HomeBodySettings: React.FC<{}> = () => {
 			<ButtonSetting
 				name='Notifications'
 				icon='bell-outline'
+				iconColor={color.blue}
 				state={{ value: 'Current', color: color.white, bgColor: color.blue }}
 				onPress={navigate.settings.notifications}
 			/>
 			<ButtonSetting
 				name='Bluetooth'
 				icon='bluetooth-outline'
+				iconColor={color.blue}
 				onPress={navigate.settings.bluetooth}
 			/>
-			<ButtonSetting name='Dark mode' icon='moon-outline' toggled disabled />
+			<ButtonSetting name='Dark mode' icon='moon-outline' iconColor={color.blue} toggled disabled />
 			<ButtonSetting
 				name='About Berty'
 				icon='info-outline'
+				iconColor={color.blue}
 				onPress={navigate.settings.aboutBerty}
 			/>
 			<ButtonSetting
 				name='DevTools'
 				icon='options-2-outline'
+				iconColor={color.blue}
 				onPress={navigate.settings.devTools}
 			/>
 		</View>
