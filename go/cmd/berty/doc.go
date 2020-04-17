@@ -1,2 +1,2 @@
-// Berty is the main CLI tool to manage the Berty ecosystem
+// Berty is the main CLI entrypoint to manage the Berty ecosystem (client, server, relay, dev)
 package main
