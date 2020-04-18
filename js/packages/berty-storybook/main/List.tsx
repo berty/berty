@@ -42,12 +42,12 @@ type ConversationsItemProps = chat.conversation.Entity
 const RequestsItem: React.FC<{
 	id: string
 	name: string
-	seed: string
+	publicKey: string
 	display: Navigation<{ id: string }>
 	accept: (kwargs: { id: string }) => void
 	decline: (kwargs: { id: string }) => void
 }> = (props) => {
-	const { id, name, seed, display, decline, accept } = props
+	const { id, name, display, decline, accept, publicKey } = props
 	const [
 		{ border, padding, margin, width, height, column, row, background, absolute, text },
 	] = useStyles()
@@ -67,11 +67,11 @@ const RequestsItem: React.FC<{
 						border.radius.medium,
 						border.shadow.medium,
 					]}
-					onPress={() => display({ id, name, accept, decline })}
+					onPress={() => display({ id, name, accept, decline, publicKey })}
 				>
 					<ProceduralCircleAvatar
 						style={[absolute.center, absolute.scale({ top: -32.5 })]}
-						seed={seed}
+						seed={publicKey}
 						size={65}
 						diffSize={20}
 					/>
@@ -111,8 +111,8 @@ const RequestsItem: React.FC<{
 								padding.horizontal.tiny,
 								margin.left.tiny,
 							]}
-							onPress={async () => {
-								await accept({ id })
+							onPress={() => {
+								accept({ id })
 							}}
 						>
 							<Text style={[text.size.tiny, text.color.blue, row.item.justify, padding.small]}>
@@ -134,7 +134,7 @@ const ContactRequestsItem: React.FC<chat.contact.Entity> = ({ id, name, publicKe
 		<RequestsItem
 			id={id}
 			name={name}
-			seed={publicKey}
+			publicKey={publicKey}
 			display={navigate.main.contactRequest /*({ id }) => {}*/}
 			accept={accept}
 			decline={decline}

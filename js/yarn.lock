@@ -5946,6 +5946,14 @@ buffer-xor@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/buffer-xor/-/buffer-xor-1.0.3.tgz#26e61ed1422fb70dd42e6e36729ed51d855fe8d9"
 
+buffer@5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.5.0.tgz#9c3caa3d623c33dd1c7ef584b89b88bf9c9bc1ce"
+  integrity sha512-9FTEDjLjwoAkEwyMGDjYJQN2gfRgOKBKRfiglhvibGbpeeU/pQn1bJxQqm32OD/AIeEuHxU9roxXxg34Byp/Ww==
+  dependencies:
+    base64-js "^1.0.2"
+    ieee754 "^1.1.4"
+
 buffer@^4.3.0:
   version "4.9.1"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-4.9.1.tgz#6d1bb601b07a4efced97094132093027c95bc298"
@@ -17668,6 +17676,13 @@ sha.js@^2.4.0, sha.js@^2.4.8:
   dependencies:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
+
+sha3@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/sha3/-/sha3-2.1.2.tgz#76f404e401d17ca1d23d8458a3790d57f0671bac"
+  integrity sha512-agYUtkzMsdFTQkM3ECyt6YW0552fyEb0tYZkl7olurS1Vg2Ms5+2SdF4VFPC1jnwtiXMb8b0fSyuAGZh+q2mAw==
+  dependencies:
+    buffer "5.5.0"
 
 shallow-clone@^0.1.2:
   version "0.1.2"

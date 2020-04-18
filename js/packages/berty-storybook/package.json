@@ -53,6 +53,7 @@
     "react-native-ui-kitten": "^4.4.1",
     "react-use": "^13.9.0",
     "rn-swipeable-panel": "^1.0.15",
+    "sha3": "^2.1.2",
     "storybook-addon-i18n": "^5.1.11"
   },
   "optionalDependencies": {

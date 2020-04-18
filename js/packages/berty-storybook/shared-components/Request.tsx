@@ -213,15 +213,17 @@ const BodyRequestContent: React.FC<{}> = ({ children }) => {
 const SelectedContent = ({
 	contentName,
 	markAsVerified,
+	publicKey,
 }: {
 	contentName: string
 	markAsVerified: boolean
+	publicKey: string
 }) => {
 	switch (contentName) {
 		case 'Fingerprint':
 			return (
 				<View>
-					<FingerprintContent />
+					<FingerprintContent seed={publicKey} />
 					{markAsVerified && <MarkAsVerified />}
 				</View>
 			)
@@ -255,7 +257,11 @@ const BodyRequest: React.FC<BodyRequestProps> = ({ user, markAsVerified, buttons
 					onTabChange={setSelectedContent}
 				/>
 				<BodyRequestContent>
-					<SelectedContent contentName={selectedContent} markAsVerified={markAsVerified} />
+					<SelectedContent
+						contentName={selectedContent}
+						markAsVerified={markAsVerified}
+						publicKey={user.publicKey}
+					/>
 				</BodyRequestContent>
 			</View>
 			<RequestButtons buttons={buttons || []} />

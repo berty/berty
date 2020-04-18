@@ -6,6 +6,7 @@ import { Chat } from '@berty-tech/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { TabBar } from '../shared-components/TabBar'
+import { FingerprintContent } from '../shared-components/FingerprintContent'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -28,11 +29,7 @@ const SelectedContent = ({ contentName, pubKey }: { contentName: string; pubKey:
 	const [{ padding }] = useStyles()
 	switch (contentName) {
 		case 'Fingerprint':
-			return (
-				<View style={[padding.horizontal.medium, { width: '100%' }]}>
-					<Text style={[{ textAlign: 'center' }]}>{pubKey}</Text>
-				</View>
-			)
+			return <FingerprintContent seed={pubKey} />
 		default:
 			return (
 				<Text style={[padding.horizontal.medium]}>Error: Unknown content name "{contentName}"</Text>
@@ -61,6 +58,7 @@ const AddThisContact: React.FC<{ name: string; rdvSeed: string; pubKey: string }
 					padding.horizontal.medium,
 					padding.bottom.medium,
 					border.radius.large,
+					{ width: '100%' },
 				]}
 			>
 				<View style={[absolute.scale({ top: -50 }), row.item.justify]}>
