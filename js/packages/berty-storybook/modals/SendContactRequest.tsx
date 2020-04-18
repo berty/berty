@@ -10,8 +10,10 @@ export const SendContactRequest: React.FC<{
 	route: { params: { qrData: string } | { uriData: string } }
 }> = ({ route: { params } }) => {
 	const account = Chat.useAccount()
+	const client = Chat.useClient()
+	const contacts = Chat.useAccountContacts()
 	let content
-	if (!account?.onboarded) {
+	if (!client || !account?.onboarded) {
 		content = (
 			<InvalidScan
 				title={'App not ready!'}
@@ -33,13 +35,19 @@ export const SendContactRequest: React.FC<{
 				throw new Error('Corrupted deep link')
 			}
 			const [b64Name, rdvSeed, pubKey] = parts
-			content = (
-				<AddThisContact
-					name={Buffer.from(b64Name, 'base64').toString()}
-					rdvSeed={rdvSeed}
-					pubKey={pubKey}
-				/>
-			)
+			if (client.accountPk === pubKey) {
+				throw new Error("Can't add self")
+			} else if (contacts.find((contact) => contact.publicKey === pubKey)) {
+				throw new Error('Contact already added')
+			} else {
+				content = (
+					<AddThisContact
+						name={Buffer.from(b64Name, 'base64').toString()}
+						rdvSeed={rdvSeed}
+						pubKey={pubKey}
+					/>
+				)
+			}
 		} catch (e) {
 			let title
 			if ('uriData' in params) {
