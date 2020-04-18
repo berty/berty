@@ -369,7 +369,7 @@ const mapDeclaration = (decl: Declaration): Styles => ({
 				small: { fontSize: decl.text.sizes.small },
 				medium: { fontSize: decl.text.sizes.medium },
 				large: { fontSize: decl.text.sizes.large },
-				big: { fontSize: decl.text.sizes.big },
+				big: { fontSize: decl.text.sizes.big, lineHeight: decl.text.sizes.big },
 				huge: { fontSize: decl.text.sizes.huge },
 			}),
 			scale: mem(
