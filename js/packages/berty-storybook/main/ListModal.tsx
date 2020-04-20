@@ -11,7 +11,7 @@ import {
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { BlurView } from '@react-native-community/blur'
-import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
+// import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { Chat } from '@berty-tech/hooks'
@@ -26,9 +26,7 @@ const useStylesList = () => {
 		tinyAvatar: [absolute.scale({ top: -32.5 }), row.item.justify],
 		tinyCard: [
 			margin.medium,
-			margin.top.scale(42),
 			padding.medium,
-			padding.top.scale(42),
 			height(177),
 			border.radius.large,
 			background.white,
@@ -44,6 +42,71 @@ const useStylesList = () => {
 		addContactItem: [height(115), width(150)],
 		addContactItemText: width(75),
 	}
+}
+
+const Header: React.FC<{
+	title: string
+	icon: string
+	iconPack?: string
+	first?: boolean
+	disabled?: boolean
+}> = ({ children, title, icon, iconPack, first = false, disabled = false }) => {
+	const [
+		{ height, border, margin, row, padding, text, column, color, background, opacity },
+	] = useStyles()
+	return (
+		<View style={!first && [background.white]}>
+			<View
+				style={[
+					background.white,
+					border.radius.top.scale(30),
+					border.shadow.big,
+					disabled && opacity(0.5),
+				]}
+			>
+				<View style={[height(80)]}>
+					<View
+						style={[
+							margin.top.small,
+							row.item.justify,
+							border.scale(2.5),
+							border.color.light.grey,
+							border.radius.scale(4),
+							{
+								backgroundColor: '#E8E9FC',
+								width: '14%',
+							},
+						]}
+					/>
+					<View>
+						<View
+							style={[
+								row.fill,
+								padding.horizontal.medium,
+								padding.bottom.medium,
+								padding.top.small,
+							]}
+						>
+							<Text
+								style={[
+									text.bold.medium,
+									text.size.scale(20),
+									text.color.black,
+									column.item.center,
+								]}
+							>
+								{title}
+							</Text>
+							{icon && (
+								<Icon name={icon} pack={iconPack} width={30} height={30} fill={color.black} />
+							)}
+						</View>
+					</View>
+				</View>
+				{children && <View>{children}</View>}
+			</View>
+		</View>
+	)
 }
 
 const RequestsItem: React.FC<chat.contact.Entity> = ({ name, request, publicKey }) => {
@@ -76,7 +139,7 @@ const RequestsItem: React.FC<chat.contact.Entity> = ({ name, request, publicKey 
 				size={65}
 				diffSize={15}
 			/>
-			<Text style={[flex.tiny, text.align.center]}>{name}</Text>
+			<Text style={[flex.tiny, text.align.center, padding.top.medium]}>{name}</Text>
 			<Text
 				category='c1'
 				style={[padding.vertical.medium, text.align.center, text.size.tiny, text.color.grey]}
@@ -109,23 +172,30 @@ const RequestsItem: React.FC<chat.contact.Entity> = ({ name, request, publicKey 
 	)
 }
 
+const EmptyTab: React.FC<{}> = () => {
+	const [{ padding, background }] = useStyles()
+	return <View style={[padding.bottom.medium, background.white, padding.vertical.medium]} />
+}
+
 const Requests: React.FC<{}> = () => {
-	const [{ padding }] = useStyles()
+	const [{ padding, background }] = useStyles()
 
 	const requests = Chat.useAccountContactsWithOutgoingRequests().filter(
 		(contact) => !(contact.request.accepted || contact.request.discarded),
 	)
 
-	return (
-		<SafeAreaView>
-			<View style={[padding.vertical.medium]}>
+	return requests.length >= 1 ? (
+		<View style={[background.white]}>
+			<View style={[padding.vertical.medium, background.white]}>
 				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 					{requests.map((req) => (
 						<RequestsItem key={req.id} {...req} />
 					))}
 				</ScrollView>
 			</View>
-		</SafeAreaView>
+		</View>
+	) : (
+		<EmptyTab />
 	)
 }
 
@@ -150,7 +220,7 @@ const AddContact: React.FC<{}> = () => {
 	const [{ padding, row, column, border, background, color, text }] = useStyles()
 
 	return (
-		<View style={[padding.vertical.medium]}>
+		<View style={[padding.vertical.medium, background.white, padding.bottom.big]}>
 			<View style={[row.center]}>
 				<TouchableOpacity
 					style={[
@@ -201,62 +271,26 @@ const AddContact: React.FC<{}> = () => {
 	)
 }
 
-const NewGroup: React.FC<{}> = () => <View />
-
-const Screen = Dimensions.get('window')
-
 export const ListModal: React.FC<{}> = () => {
-	const firstNotToggledPoint = Screen.height - 193 + 16 + 35
-	const firstToggledPoint = firstNotToggledPoint
-
-	const secondNotToggledPoint = firstToggledPoint - 200
-	const secondToggledPoint = secondNotToggledPoint - 163 + 20
-
-	const thirdNotToggledPoint = secondToggledPoint - 200
-	const thirdToggledPoint = thirdNotToggledPoint - 283 + 20
 	const navigation = useNavigation()
-	const [{ absolute, color }] = useStyles()
+	const [{ absolute }] = useStyles()
 
 	return (
 		<>
-			<TouchableWithoutFeedback onPress={navigation.goBack} style={[StyleSheet.absoluteFill]}>
-				<BlurView style={StyleSheet.absoluteFill} blurType='light' />
+			<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
+				<View style={{ width: '100%', height: '100%' }} />
 			</TouchableWithoutFeedback>
-			<SafeAreaView style={[absolute.fill]}>
-				<SDTSModalComponent
-					rows={[
-						{
-							toggledPoint: firstToggledPoint,
-							notToggledPoint: firstNotToggledPoint,
-							title: 'New group',
-							icon: 'users',
-							iconPack: 'feather',
-							iconColor: color.black,
-							dragEnabled: false,
-							headerAction: navigation.navigate.main.createGroup.createGroup2,
-						},
-						{
-							toggledPoint: secondToggledPoint,
-							notToggledPoint: secondNotToggledPoint,
-							title: 'Add contact',
-							icon: 'user-plus',
-							iconPack: 'feather',
-							iconColor: color.black,
-						},
-						{
-							toggledPoint: thirdToggledPoint,
-							notToggledPoint: thirdNotToggledPoint,
-							title: 'Requests sent',
-							icon: 'paper-plane-outline',
-							iconColor: color.black,
-						},
-					]}
-				>
-					<NewGroup />
+			<View style={[absolute.bottom, absolute.left, absolute.right]}>
+				<Header title='Add contact' icon='user-plus' iconPack='feather' first>
 					<AddContact />
+				</Header>
+				<Header title='Requests sent' icon='paper-plane-outline'>
 					<Requests />
-				</SDTSModalComponent>
-			</SafeAreaView>
+				</Header>
+				<Header title='New group' icon='users' iconPack='feather' disabled>
+					<EmptyTab />
+				</Header>
+			</View>
 		</>
 	)
 }
