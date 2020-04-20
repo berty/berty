@@ -1,2 +1,2 @@
-// Package cryptoutil contains generic & stateless crypto helpers
+// Package cryptoutil contains generic & stateless crypto helpers.
 package cryptoutil

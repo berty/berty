@@ -1,4 +1,4 @@
-// Package banner generates ASCII picture of the Berty logo with a message
+// Package banner generates ASCII picture of the Berty logo with a message.
 //
 //           /\
 //      /\  / /\  ______         Lorem ipsum dolor sit amet, consectetur

@@ -1,4 +1,4 @@
-// Package handshake implements a capability-based handshake
+// Package handshake implements a capability-based handshake.
 //
 // Handshake Sequence Diagram:
 // ---------------------------

@@ -1,4 +1,4 @@
-// Package tinder is a multi-driver service backed by a cache
+// Package tinder is a multi-driver service backed by a cache.
 //
 //                   ┌───────────────────────────────────────────────────┐
 //                   │ Tinder                                            │        ┌───────────────────────┐
