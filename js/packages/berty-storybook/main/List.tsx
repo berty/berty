@@ -300,8 +300,9 @@ const Conversations: React.FC<ConversationsProps> = ({ items }) => {
 		<Translation>
 			{(t): React.ReactNode => (
 				<ScrollView
-					style={[overflow, border.shadow.medium]}
+					style={[overflow]}
 					contentContainerStyle={[background.white, border.radius.big, { flexGrow: 1 }]}
+					bounces={false}
 				>
 					<SafeAreaView>
 						<View style={[padding.bottom.scale(80)]}>
@@ -345,7 +346,7 @@ export const List: React.FC<ScreenProps.Chat.List> = () => {
 	const [{ absolute, background }] = useStyles()
 
 	return (
-		<View style={[absolute.fill, background.blue]}>
+		<View style={[absolute.fill, requests.length ? background.blue : background.white]}>
 			<Requests items={requests} onLayout={onLayoutRequests} />
 			<Conversations items={conversations} />
 		</View>
