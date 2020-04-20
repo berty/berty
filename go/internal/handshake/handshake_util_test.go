@@ -74,7 +74,7 @@ func newMockedHandshake(t *testing.T, ctx context.Context) *mockedHandshake {
 
 	opts := &ipfsutil.TestingAPIOpts{
 		Mocknet: mn,
-		RDVPeer: rdvp.ID(),
+		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
 	}
 	requester, req_cleanup := newMockedPeer(t, ctx, opts)
 	responder, res_cleanup := newMockedPeer(t, ctx, opts)

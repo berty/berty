@@ -18,15 +18,14 @@ import (
 
 	"github.com/juju/fslock"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/multiformats/go-multiaddr"
 	"github.com/rivo/tview"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
 type Opts struct {
-	Bootstrap             []string
-	RendezVousServerMAddr string
+	Bootstrap      []string
+	RendezVousPeer *peer.AddrInfo
 
 	RemoteAddr      string
 	GroupInvitation string
@@ -59,16 +58,6 @@ func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyproto
 		}
 	}
 
-	mardv, err := multiaddr.NewMultiaddr(opts.RendezVousServerMAddr)
-	if err != nil {
-		panicUnlockFS(err, lock)
-	}
-
-	rdvpeer, err := peer.AddrInfoFromP2pAddr(mardv)
-	if err != nil {
-		panicUnlockFS(err, lock)
-	}
-
 	rootDS := sync_ds.MutexWrap(opts.RootDS)
 
 	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("ipfs"))
@@ -79,7 +68,11 @@ func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyproto
 		panicUnlockFS(err, lock)
 	}
 
-	routingOpt, crouting := ipfsutil.NewTinderRouting(logger, rdvpeer.ID, false)
+	if opts.RendezVousPeer == nil {
+		opts.RendezVousPeer = &peer.AddrInfo{}
+	}
+
+	routingOpt, crouting := ipfsutil.NewTinderRouting(logger, opts.RendezVousPeer, false)
 	cfg.Routing = routingOpt
 
 	ipfsConfig, err := cfg.Repo.Config()
@@ -88,7 +81,11 @@ func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyproto
 	}
 
 	// setup bootstrap peers
-	ipfsConfig.Bootstrap = append(opts.Bootstrap, opts.RendezVousServerMAddr)
+	ipfsConfig.Bootstrap = opts.Bootstrap
+	for _, maddr := range opts.RendezVousPeer.Addrs {
+		ipfsConfig.Bootstrap = append(ipfsConfig.Bootstrap, maddr.String())
+	}
+
 	if err = cfg.Repo.SetConfig(ipfsConfig); err != nil {
 		panicUnlockFS(err, lock)
 	}
@@ -103,13 +100,16 @@ func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyproto
 	// wait to get routing
 	routing := <-crouting
 
-	for {
-		if err := node.PeerHost.Connect(ctx, *rdvpeer); err != nil {
-			logger.Error("cannot dial rendez-vous point: %v", zap.Error(err))
-		} else {
-			break
+	// if rdvpeer, force connection to it
+	if len(opts.RendezVousPeer.Addrs) > 0 {
+		for {
+			if err := node.PeerHost.Connect(ctx, *opts.RendezVousPeer); err != nil {
+				logger.Error("cannot dial rendez-vous point: %v", zap.Error(err))
+			} else {
+				break
+			}
+			time.Sleep(time.Second)
 		}
-		time.Sleep(time.Second)
 	}
 
 	mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))

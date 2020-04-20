@@ -9,6 +9,7 @@ import (
 	ipfs_p2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	host "github.com/libp2p/go-libp2p-core/host"
 	peer "github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/peerstore"
 	"github.com/libp2p/go-libp2p-core/routing"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	dhtopts "github.com/libp2p/go-libp2p-kad-dht/opts"
@@ -21,7 +22,7 @@ type RoutingOut struct {
 	tinder.Routing
 }
 
-func NewTinderRouting(logger *zap.Logger, rdvpeer peer.ID, dhtclient bool) (ipfs_p2p.RoutingOption, <-chan *RoutingOut) {
+func NewTinderRouting(logger *zap.Logger, rdvpeer *peer.AddrInfo, dhtclient bool) (ipfs_p2p.RoutingOption, <-chan *RoutingOut) {
 	crout := make(chan *RoutingOut, 1)
 	return func(ctx context.Context, h host.Host, dstore datastore.Batching, validator record.Validator) (routing.Routing, error) {
 		defer close(crout)
@@ -39,9 +40,10 @@ func NewTinderRouting(logger *zap.Logger, rdvpeer peer.ID, dhtclient bool) (ipfs
 
 		drivers := []tinder.Driver{}
 
-		if string(rdvpeer) != "" {
+		if rdvpeer != nil {
+			h.Peerstore().AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
 			// @FIXME(gfanton): use rand as argument
-			rdvClient := tinder.NewRendezvousDiscovery(logger, h, rdvpeer, rand.New(rand.NewSource(rand.Int63())))
+			rdvClient := tinder.NewRendezvousDiscovery(logger, h, rdvpeer.ID, rand.New(rand.NewSource(rand.Int63())))
 			drivers = append(drivers, rdvClient)
 		}
 
