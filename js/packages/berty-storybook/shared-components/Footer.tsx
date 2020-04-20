@@ -22,6 +22,7 @@ type ButtonFooterProps = {
 	onPress: (arg0: any) => void
 	selected: boolean
 	selectedElemSize?: number
+	disabled?: boolean
 }
 
 type FooterProps = {
@@ -46,8 +47,9 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 	seed = null,
 	onPress,
 	selected,
+	disabled = false,
 }) => {
-	const [{ border, column, width, height, color }] = useStyles()
+	const [{ border, column, width, height, color, opacity }] = useStyles()
 	const size = selected ? selectedSize : sizeProp
 	const elemSize = selected ? selectedElemSize : elemSizeProp
 	const elemColor = selected ? selectedElemColor : elemColorProp || color.blue
@@ -65,9 +67,11 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 		>
 			<TouchableOpacity
 				onPress={onPress}
+				activeOpacity={disabled ? 0.5 : 1}
 				style={[
 					border.shadow.medium,
 					column.justify,
+					disabled ? opacity(0.5) : null,
 					{
 						backgroundColor: seed ? 'white' : backgroundColor,
 						width: size,
