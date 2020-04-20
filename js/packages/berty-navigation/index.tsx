@@ -378,7 +378,7 @@ export const Navigation: React.FC = () => {
 				name={Routes.Main.ListModal}
 				component={Stories.Main.ListModal}
 				options={{
-					stackPresentation: 'transparentModal',
+					stackPresentation: 'modal',
 					contentStyle: { backgroundColor: 'transparent' },
 				}}
 			/>
