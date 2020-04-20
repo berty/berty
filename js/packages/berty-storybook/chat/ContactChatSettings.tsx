@@ -18,10 +18,13 @@ const ContactChatSettingsHeaderContent: React.FC<{}> = ({ children }) => {
 	return <View style={[margin.top.big]}>{children}</View>
 }
 
-const SelectedContent = ({ contentName }: { contentName: string }) => {
+const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
+	contentName,
+	publicKey,
+}) => {
 	switch (contentName) {
 		case 'Fingerprint':
-			return <FingerprintContent />
+			return <FingerprintContent seed={publicKey} />
 		default:
 			return <Text>Error: Unknown content name "{contentName}"</Text>
 	}
@@ -69,7 +72,7 @@ const ContactChatSettingsHeader: React.FC<{
 						onTabChange={setSelectedContent}
 					/>
 					<ContactChatSettingsHeaderContent>
-						<SelectedContent contentName={selectedContent} />
+						<SelectedContent publicKey={params.contact.publicKey} contentName={selectedContent} />
 					</ContactChatSettingsHeaderContent>
 				</View>
 			</View>

@@ -16,6 +16,7 @@ import { RequestAvatar } from '../shared-components/Request'
 import { Chat } from '@berty-tech/hooks'
 import { useNavigation } from '@berty-tech/berty-navigation'
 import QRCode from 'react-native-qrcode-svg'
+import { FingerprintContent } from '../shared-components/FingerprintContent'
 
 //
 // Settings My Berty ID Vue
@@ -71,10 +72,20 @@ const ContactRequestQR = () => {
 	}
 }
 
-const SelectedContent = ({ contentName }: { contentName: string }) => {
+const Fingerprint: React.FC = () => {
+	const client = Chat.useClient()
+	if (!client) {
+		return <Text>Client not initialized</Text>
+	}
+	return <FingerprintContent seed={client.accountPk} />
+}
+
+const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => {
 	switch (contentName) {
 		case 'QR':
 			return <ContactRequestQR />
+		case 'Fingerprint':
+			return <Fingerprint />
 		default:
 			return <Text>Error: Unknown content name "{contentName}"</Text>
 	}
