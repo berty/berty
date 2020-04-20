@@ -132,6 +132,7 @@ export type EventsReducer = {
 	deviceAdded: SimpleCaseReducer<Event.DeviceAdded>
 	startRead: SimpleCaseReducer<Event.StartRead>
 	stopRead: SimpleCaseReducer<Event.StopRead>
+	appInit: SimpleCaseReducer<void>
 }
 
 export type Transactions = {
@@ -259,6 +260,12 @@ const eventHandler = createSlice<State, EventsReducer>({
 			}
 			return state
 		},
+		appInit: (state) => {
+			for (const conv of Object.values(state.aggregates)) {
+				conv.reading = false
+			}
+			return state
+		},
 	},
 })
 
@@ -313,6 +320,7 @@ export const queries: QueryReducer = {
 export const transactions: Transactions = {
 	open: function*({ accountId }) {
 		const conversations = (yield select((state) => queries.list(state))) as Entity[]
+		yield put(events.appInit())
 		const multiMemberConversationsOfAccount = conversations.filter(
 			(conversation) =>
 				conversation.accountId === accountId &&
