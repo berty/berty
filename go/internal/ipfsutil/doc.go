@@ -1,2 +1,2 @@
-// Package ipfsutil contains helpers around IPFS (logging, datastore, networking, core API, ...)
+// Package ipfsutil contains helpers around IPFS (logging, datastore, networking, core API, ...).
 package ipfsutil

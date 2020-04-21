@@ -1,2 +1,2 @@
-// Package errcode contains the list of Berty error codes
+// Package errcode contains the list of Berty error codes.
 package errcode
