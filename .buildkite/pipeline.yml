@@ -146,10 +146,9 @@ steps:
       - gomobile init
       - cd js
       - make release.ios.yolo
-      - find . -name '.ipa'
-      - find . -name '.app'
+      - mv ./packages/berty-app/build/ios-yolo/development/Berty.ipa ../Berty-Yolo-$BUILDKITE_COMMIT.ipa
     artifact_paths:
-      - "js/packages/berty-app/build/**/*"
+      - Berty-Yolo-$BUILDKITE_COMMIT.ipa
 
   - label: js-generate
     if: build.branch == "master" || (build.message !~ /\[skip js-generate\]/ && build.message !~ /\[skip-ci\]/)
