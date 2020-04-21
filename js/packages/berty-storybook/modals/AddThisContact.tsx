@@ -73,13 +73,14 @@ const AddThisContact: React.FC<{ name: string; rdvSeed: string; pubKey: string }
 					<TabBar
 						tabs={[
 							{ name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' },
-							{ name: 'Infos', icon: 'info-outline' },
+							{ name: 'Infos', icon: 'info-outline', buttonDisabled: true },
 							{
 								name: 'Devices',
 								icon: 'smartphone',
 								iconSize: 20,
 								iconPack: 'feather',
 								iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],
+								buttonDisabled: true,
 							},
 						]}
 						onTabChange={setSelectedContent}

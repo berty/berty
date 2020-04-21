@@ -93,7 +93,7 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 
 const BertIdBody: React.FC<RequestProps> = ({ user }) => {
 	const _styles = useStylesBertyId()
-	const [{ background, border, margin, padding }] = useStyles()
+	const [{ background, border, margin, padding, opacity }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState()
 	const client = Chat.useClient()
 	return (
@@ -116,6 +116,8 @@ const BertIdBody: React.FC<RequestProps> = ({ user }) => {
 							icon: 'smartphone',
 							iconPack: 'feather',
 							iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],
+							buttonDisabled: true,
+							style: opacity(0.3),
 						},
 					]}
 					onTabChange={setSelectedContent}
