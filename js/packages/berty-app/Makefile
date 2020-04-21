@@ -226,6 +226,7 @@ endif
 	cd $(PWD) \
 		`# get ios certificates` \
 		&& $(bundle) exec fastlane run match \
+		  --verbose \
 			type:$(shell echo $(method) | sed 's/-//g') \
 			app_identifier:$(bundle-id) \
 			team_id:$(team-id) \
