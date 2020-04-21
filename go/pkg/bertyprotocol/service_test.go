@@ -27,10 +27,12 @@ func ExampleNew_basic() {
 	if err != nil {
 		panic(err)
 	}
+
 	ret, err := client.InstanceGetConfiguration(context.Background(), &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		panic(err)
 	}
+
 	for _, listener := range ret.Listeners {
 		if listener == "/p2p-circuit" {
 			fmt.Println(listener)
