@@ -89,7 +89,7 @@ export const ChatFooter: React.FC<{
 								name='paper-plane-outline'
 								width={30}
 								height={30}
-								fill={_isFocused && !isFake ? color.blue : color.grey}
+								fill={!isFake && message.length >= 1 ? color.blue : color.grey}
 							/>
 						</TouchableOpacity>
 					</View>
