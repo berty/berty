@@ -185,7 +185,9 @@ release.ios: git-url ?= git@github.com:berty/berty-ios-certs # @FIXME(gfanton): 
 release.ios: export FL_BUILDLOG_PATH=$(dest)
 release.ios: export KEYCHAIN_NAME=$(keychain-name)
 release.ios: export KEYCHAIN_PASSWORD=$(keychain-password)
+ifdef CI # use default keychain if not in CI
 release.ios: export MATCH_KEYCHAIN_NAME=$(keychain-name)
+endif
 release.ios: export MATCH_KEYCHAIN_PASSWORD=$(keychain-password)
 release.ios: export GYM_CLEAN=false
 release.ios: export GYM_EXPORT_METHOD=$(method)
