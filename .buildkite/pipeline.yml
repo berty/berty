@@ -145,7 +145,7 @@ steps:
       - go get golang.org/x/mobile/cmd/gomobile
       - gomobile init
       - cd js
-      - make release.ios.staff
+      - make release.ios.yolo
       - find . -name '.ipa'
       - find . -name '.app'
     artifact_paths:
