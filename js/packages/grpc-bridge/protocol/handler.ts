@@ -701,12 +701,18 @@ export const protocolServiceHandlerFactory = async (persist?: boolean) => {
 			transport: WebsocketTransport(),
 		})
 	} else {
-		await GoBridge.startDemo({
-			swarmListeners: ['/ip4/0.0.0.0/tcp/0', '/ip6/0.0.0.0/tcp/0'],
-			grpcListeners: ['/ip4/127.0.0.1/tcp/0/grpcws'],
-			logLevel: 'debug',
-			persistance: false,
-		})
+		try {
+			await GoBridge.startDemo({
+				swarmListeners: ['/ip4/0.0.0.0/tcp/0', '/ip6/0.0.0.0/tcp/0'],
+				grpcListeners: ['/ip4/127.0.0.1/tcp/0/grpcws'],
+				logLevel: 'debug',
+				persistance: false,
+			})
+		} catch (e) {
+			if (e.domain !== 'already started') {
+				throw new Error(e.domain)
+			}
+		}
 		const addr = await GoBridge.getDemoAddr()
 		console.warn(`http://${addr}`)
 		brdg = bridge({
