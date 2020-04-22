@@ -66,7 +66,7 @@ func testAddBerty(ctx context.Context, t *testing.T, api ipfsutil.CoreAPIMock, g
 	orbitdbCache := NewOrbitDatastoreCache(orbitdbDS)
 	mk := NewMessageKeystore(messagesDS)
 
-	odb, err := newBertyOrbitDB(ctx, api, NewDeviceKeystore(accountKS), mk, nil, &orbitdb.NewOrbitDBOptions{Cache: orbitdbCache})
+	odb, err := newBertyOrbitDB(ctx, api, NewDeviceKeystore(accountKS), mk, &orbitdb.NewOrbitDBOptions{Cache: orbitdbCache})
 	require.NoError(t, err)
 
 	defer odb.Close()

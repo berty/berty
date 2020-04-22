@@ -4,8 +4,8 @@ bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc h1:utDghgcjE8u+EBjHOgYT+dJPcnD
 bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc/go.mod h1:FbcW6z/2VytnFDhZfumh8Ss8zxHE6qpMP5sHTRe0EaM=
 berty.tech/go-ipfs-log v1.1.0 h1:agjJhOMs1XpqLz2/EFLCQJvc88Ml1Ed9djodzDL3trk=
 berty.tech/go-ipfs-log v1.1.0/go.mod h1:Kc2m+10y5sBDFvwOa+G2DytAYDMOgocn4QX4MMe6Wzs=
-berty.tech/go-orbit-db v1.3.1 h1:B31kI0lmT6sxxwFCMEzPAh6hlBPF+gOZq3LzqnYYLwk=
-berty.tech/go-orbit-db v1.3.1/go.mod h1:sJ5RkUD+ibwQCc6ch/i/kcHDZFB7wX34lFM59xQsXcs=
+berty.tech/go-orbit-db v1.4.1 h1:jI7GEyTpaL8ilbcW5E6qw4qhmhXbegg0uAt4h5Sb4M0=
+berty.tech/go-orbit-db v1.4.1/go.mod h1:sJ5RkUD+ibwQCc6ch/i/kcHDZFB7wX34lFM59xQsXcs=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.31.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=

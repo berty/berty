@@ -159,7 +159,7 @@ func (b *Bridge) Close() (err error) {
 		err = ctx.Err()
 	}
 
-	if err != errcode.ErrBridgeInterrupted {
+	if errcode.Code(err) != errcode.ErrBridgeInterrupted.Code() {
 		return errcode.TODO.Wrap(err)
 	}
 

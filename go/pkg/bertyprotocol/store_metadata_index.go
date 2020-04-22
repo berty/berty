@@ -10,7 +10,6 @@ import (
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
-	"berty.tech/go-orbit-db/stores/operation"
 	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
@@ -51,28 +50,6 @@ func (m *metadataStoreIndex) setLogger(logger *zap.Logger) {
 	m.logger = logger
 }
 
-func (m *metadataStoreIndex) openMetadataEntry(log ipfslog.Log, e ipfslog.Entry) (*bertytypes.GroupMetadataEvent, *bertytypes.GroupMetadata, proto.Message, error) {
-	op, err := operation.ParseOperation(e)
-	if err != nil {
-		m.logger.Error("unable to register chain key", zap.Error(err))
-		return nil, nil, nil, err
-	}
-
-	meta, event, err := openGroupEnvelope(m.g, op.GetValue())
-	if err != nil {
-		m.logger.Error("unable to open group envelope", zap.Error(err))
-		return nil, nil, nil, err
-	}
-
-	metaEvent, err := newGroupMetadataEventFromEntry(log, e, meta, event, m.g)
-	if err != nil {
-		m.logger.Error("unable to open group envelope", zap.Error(err))
-		return nil, nil, nil, err
-	}
-
-	return metaEvent, meta, event, nil
-}
-
 func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
@@ -80,10 +57,6 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	entries := log.Values().Slice()
 
 	// Resetting state
-	m.members = map[string][]*memberDevice{}
-	m.devices = map[string]*memberDevice{}
-	m.admins = map[crypto.PubKey]struct{}{}
-	m.sentSecrets = map[string]struct{}{}
 	m.contacts = map[string]*accountContact{}
 	m.groups = map[string]*accountGroup{}
 	m.contactRequestEnabled = nil
@@ -92,16 +65,23 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	for i := len(entries) - 1; i >= 0; i-- {
 		e := entries[i]
 
-		metaEvent, meta, event, err := m.openMetadataEntry(log, e)
+		_, alreadyHandledEvent := m.handledEvents[e.GetHash().String()]
+
+		// TODO: improve account events handling
+		if m.g.GroupType != bertytypes.GroupTypeAccount && alreadyHandledEvent {
+			continue
+		}
+
+		metaEvent, event, err := openMetadataEntry(log, e, m.g)
 		if err != nil {
 			m.logger.Error("unable to open metadata entry", zap.Error(err))
 			continue
 		}
 
-		handlers, ok := m.eventHandlers[meta.EventType]
+		handlers, ok := m.eventHandlers[metaEvent.Metadata.EventType]
 		if !ok {
 			m.handledEvents[e.GetHash().String()] = struct{}{}
-			m.logger.Error("handler for event type not found", zap.String("event-type", meta.EventType.String()))
+			m.logger.Error("handler for event type not found", zap.String("event-type", metaEvent.Metadata.EventType.String()))
 			continue
 		}
 
@@ -118,10 +98,6 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 		if lastErr != nil {
 			m.handledEvents[e.GetHash().String()] = struct{}{}
 			continue
-		}
-
-		if _, ok := m.handledEvents[e.GetHash().String()]; !ok {
-			m.eventEmitter.Emit(m.ctx, metaEvent)
 		}
 
 		m.handledEvents[e.GetHash().String()] = struct{}{}
@@ -175,7 +151,7 @@ func (m *metadataStoreIndex) handleGroupAddDeviceSecret(event proto.Message) err
 		return errcode.ErrInvalidInput
 	}
 
-	destPK, err := crypto.UnmarshalEd25519PublicKey(e.DestMemberPK)
+	_, err := crypto.UnmarshalEd25519PublicKey(e.DestMemberPK)
 	if err != nil {
 		return errcode.ErrDeserialization.Wrap(err)
 	}
@@ -187,10 +163,6 @@ func (m *metadataStoreIndex) handleGroupAddDeviceSecret(event proto.Message) err
 
 	if m.ownMemberDevice.device.Equals(senderPK) {
 		m.sentSecrets[string(e.DestMemberPK)] = struct{}{}
-	}
-
-	if !destPK.Equals(m.ownMemberDevice.member) {
-		return errcode.ErrGroupSecretOtherDestMember
 	}
 
 	return nil

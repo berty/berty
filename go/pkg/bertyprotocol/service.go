@@ -116,9 +116,10 @@ func New(opts Opts) (Service, error) {
 	}
 
 	orbitDirectory := opts.OrbitDirectory
-	odb, err := newBertyOrbitDB(opts.RootContext, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, opts.Logger, &orbitdb.NewOrbitDBOptions{
+	odb, err := newBertyOrbitDB(opts.RootContext, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, &orbitdb.NewOrbitDBOptions{
 		Cache:     opts.OrbitCache,
 		Directory: &orbitDirectory,
+		Logger:    opts.Logger.Named("odb"),
 	})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)

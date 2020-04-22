@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	berty.tech/go-ipfs-log v1.1.0
-	berty.tech/go-orbit-db v1.3.1
+	berty.tech/go-orbit-db v1.4.1
 	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/dgraph-io/badger v1.6.1

@@ -113,8 +113,6 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't deactivate deviceKeystore group"))
 	}
 
-	_ = cg.Close()
-
 	s.lock.Lock()
 	defer s.lock.Unlock()
 

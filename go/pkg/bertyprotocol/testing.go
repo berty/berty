@@ -72,8 +72,8 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 	trClient := opts.TracerProvider.Tracer("grpc-client")
 	trServer := opts.TracerProvider.Tracer("grpc-server")
 	grpcLogger := opts.Logger.Named("grpc")
-
 	zapOpts := []grpc_zap.Option{}
+
 	serverOpts := []grpc.ServerOption{
 		grpc_middleware.WithUnaryServerChain(
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
@@ -125,6 +125,9 @@ func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpt
 	logger := opts.Logger
 
 	rdvpeer, err := opts.Mocknet.GenPeer()
+	require.NoError(t, err)
+	require.NotNil(t, rdvpeer)
+
 	_, cleanupRDVP := ipfsutil.TestingRDVP(ctx, t, rdvpeer)
 	rdvpnet := opts.Mocknet.Net(rdvpeer.ID())
 	require.NotNil(t, rdvpnet)

@@ -50,20 +50,16 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry) (*berty
 		return nil, err
 	}
 
-	headers, payload, decryptInfo, err := openEnvelope(ctx, m.mks, m.g, op.GetValue(), e.GetHash())
-	if err != nil {
-		m.logger.Error("unable to open envelope", zap.Error(err))
-		return nil, err
-	}
-
 	ownPK := crypto.PubKey(nil)
 	md, inErr := m.devKS.MemberDeviceForGroup(m.g)
 	if inErr == nil {
 		ownPK = md.device.GetPublic()
 	}
 
-	if inErr = postDecryptActions(ctx, m.mks, decryptInfo, m.g, ownPK, headers); inErr != nil {
-		err = errcode.ErrCryptoKeyGeneration.Wrap(err)
+	headers, payload, err := m.mks.OpenEnvelope(ctx, m.g, ownPK, op.GetValue(), e.GetHash())
+	if err != nil {
+		m.logger.Error("unable to open envelope", zap.Error(err))
+		return nil, err
 	}
 
 	eventContext := newEventContext(e.GetHash(), e.GetNext(), m.g)
@@ -76,10 +72,10 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry) (*berty
 
 func (m *messageStore) ListMessages(ctx context.Context) (<-chan *bertytypes.GroupMessageEvent, error) {
 	out := make(chan *bertytypes.GroupMessageEvent)
-	ch := make(chan ipfslog.Entry)
 
+	// FIXME: use iterator instead to reduce resource usage (require go-ipfs-log improvements)
 	go func() {
-		for e := range ch {
+		for _, e := range m.OpLog().GetEntries().Slice() {
 			evt, err := m.openMessage(ctx, e)
 			if err != nil {
 				m.logger.Error("unable to open message", zap.Error(err))
@@ -92,12 +88,6 @@ func (m *messageStore) ListMessages(ctx context.Context) (<-chan *bertytypes.Gro
 		close(out)
 	}()
 
-	go func() {
-		if err := m.OpLog().Iterator(&ipfslog.IteratorOptions{}, ch); err != nil {
-			m.logger.Error("unable to iterate on messages", zap.Error(err))
-		}
-	}()
-
 	return out, nil
 }
 
@@ -107,7 +97,7 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte) (operatio
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := sealEnvelope(ctx, m.mks, m.g, md.device, payload)
+	env, err := m.mks.SealEnvelope(ctx, m.g, md.device, payload)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}
@@ -151,8 +141,6 @@ func constructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
 			for e := range store.Subscribe(ctx) {
 				entry := ipfslog.Entry(nil)
 
-				store.logger.Debug("received store event", zap.Any("raw event", e))
-
 				switch evt := e.(type) {
 				case *stores.EventWrite:
 					entry = evt.Entry
@@ -164,6 +152,8 @@ func constructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
 				if entry == nil {
 					continue
 				}
+
+				store.logger.Debug("received store event", zap.Any("raw event", e))
 
 				messageEvent, err := store.openMessage(ctx, entry)
 				if err != nil {

@@ -29,7 +29,6 @@ type bertyOrbitDB struct {
 	keyStore        *BertySignedKeyStore
 	messageKeystore *MessageKeystore
 	deviceKeystore  DeviceKeystore
-	logger          *zap.Logger
 }
 
 func (s *bertyOrbitDB) GetContactGroup(pk crypto.PubKey) (*bertytypes.Group, error) {
@@ -60,15 +59,15 @@ func (s *bertyOrbitDB) registerGroupPrivateKey(g *bertytypes.Group) error {
 	return nil
 }
 
-func newBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, acc DeviceKeystore, mk *MessageKeystore, logger *zap.Logger, options *orbitdb.NewOrbitDBOptions) (*bertyOrbitDB, error) {
+func newBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, acc DeviceKeystore, mk *MessageKeystore, options *orbitdb.NewOrbitDBOptions) (*bertyOrbitDB, error) {
 	var err error
 
 	if options == nil {
 		options = &orbitdb.NewOrbitDBOptions{}
 	}
 
-	if logger == nil {
-		logger = zap.NewNop()
+	if options.Logger == nil {
+		options.Logger = zap.NewNop()
 	}
 
 	ks := &BertySignedKeyStore{}
@@ -85,7 +84,6 @@ func newBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, acc DeviceKeysto
 		keyStore:        ks,
 		deviceKeystore:  acc,
 		messageKeystore: mk,
-		logger:          logger,
 	}
 
 	if err := bertyDB.RegisterAccessControllerType(NewSimpleAccessController); err != nil {
@@ -120,7 +118,7 @@ func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertytypes.Group, optio
 	id := g.GroupIDAsString()
 
 	existingGC, err := s.getGroupContext(id)
-	if err != nil && err != errcode.ErrMissingMapKey {
+	if err != nil && errcode.Code(err) != errcode.ErrMissingMapKey.Code() {
 		return nil, errcode.ErrInternal.Wrap(err)
 	} else if err == nil {
 		return existingGC, nil
@@ -133,7 +131,7 @@ func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertytypes.Group, optio
 		return nil, err
 	}
 
-	s.logger.Debug("OpenGroup", zap.Any("public key", g.PublicKey), zap.Any("secret", g.Secret), zap.Stringer("type", g.GroupType))
+	s.Logger().Debug("OpenGroup", zap.Any("public key", g.PublicKey), zap.Any("secret", g.Secret), zap.Stringer("type", g.GroupType))
 
 	memberDevice, err := s.deviceKeystore.MemberDeviceForGroup(g)
 	if err != nil {
@@ -141,7 +139,7 @@ func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertytypes.Group, optio
 	}
 
 	// Force secret generation if missing
-	if _, err := getDeviceSecret(ctx, g, s.messageKeystore, s.deviceKeystore); err != nil {
+	if _, err := s.messageKeystore.GetDeviceSecret(g, s.deviceKeystore); err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
@@ -155,7 +153,7 @@ func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertytypes.Group, optio
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
-	gc := newContextGroup(g, metaImpl, messagesImpl, s.messageKeystore, memberDevice, s.logger)
+	gc := newContextGroup(g, metaImpl, messagesImpl, s.messageKeystore, memberDevice, s.Logger())
 	s.groupContexts.Store(groupID, gc)
 
 	return gc, nil
@@ -193,10 +191,6 @@ func (s *bertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 	store, err := o.Open(ctx, fmt.Sprintf("%s_%s", g.GroupIDAsString(), storeType), options)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
-	}
-
-	if loggableStore, ok := store.(loggable); ok {
-		loggableStore.setLogger(s.logger)
 	}
 
 	_ = store.Load(ctx, -1)
