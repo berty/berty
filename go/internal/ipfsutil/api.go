@@ -11,6 +11,7 @@ import (
 	dsync "github.com/ipfs/go-datastore/sync"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
+	ipfs_coreapi "github.com/ipfs/go-ipfs/core/coreapi"
 	ipfs_node "github.com/ipfs/go-ipfs/core/node"
 	ipfs_libp2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
@@ -23,7 +24,9 @@ import (
 	p2p_ps "github.com/libp2p/go-libp2p-core/peerstore"
 )
 
-type BuildOpts struct {
+type CoreAPIOption func(context.Context, *ipfs_core.IpfsNode, ipfs_interface.CoreAPI) error
+
+type CoreAPIConfig struct {
 	Datastore ipfs_datastore.Batching
 
 	BootstrapAddrs []string
@@ -33,18 +36,42 @@ type BuildOpts struct {
 	Routing           ipfs_libp2p.RoutingOption
 }
 
-func BuildNewCoreAPI(ctx context.Context, bopts *BuildOpts) (ipfs_interface.CoreAPI, *ipfs_core.IpfsNode, error) {
-	cfg, err := CreateBuildConfig(bopts)
+func NewCoreAPI(ctx context.Context, cfg *CoreAPIConfig, opts ...CoreAPIOption) (ipfs_interface.CoreAPI, *ipfs_core.IpfsNode, error) {
+	bcfg, err := CreateBuildConfig(cfg)
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
-	return NewConfigurableCoreAPI(ctx, cfg)
+	return NewConfigurableCoreAPI(ctx, bcfg, opts...)
 }
 
-func CreateBuildConfig(opts *BuildOpts) (*ipfs_node.BuildCfg, error) {
+// NewConfigurableCoreAPI returns an IPFS CoreAPI from a provided ipfs_node.BuildCfg
+func NewConfigurableCoreAPI(ctx context.Context, bcfg *ipfs_node.BuildCfg, opts ...CoreAPIOption) (ipfs_interface.CoreAPI, *ipfs_core.IpfsNode, error) {
+	node, err := ipfs_core.NewNode(ctx, bcfg)
+	if err != nil {
+		return nil, nil, errcode.TODO.Wrap(err)
+	}
+
+	api, err := ipfs_coreapi.NewCoreAPI(node)
+	if err != nil {
+		node.Close()
+		return nil, nil, errcode.TODO.Wrap(err)
+	}
+
+	for _, opt := range opts {
+		err := opt(ctx, node, api)
+		if err != nil {
+			node.Close()
+			return nil, nil, err
+		}
+	}
+
+	return api, node, nil
+}
+
+func CreateBuildConfig(opts *CoreAPIConfig) (*ipfs_node.BuildCfg, error) {
 	if opts == nil {
-		opts = &BuildOpts{}
+		opts = &CoreAPIConfig{}
 	}
 
 	if opts.Datastore == nil {
@@ -80,7 +107,7 @@ func CreateBuildConfig(opts *BuildOpts) (*ipfs_node.BuildCfg, error) {
 	}, nil
 }
 
-func CreateRepo(dstore ipfs_datastore.Batching, opts *BuildOpts) (ipfs_repo.Repo, error) {
+func CreateRepo(dstore ipfs_datastore.Batching, opts *CoreAPIConfig) (ipfs_repo.Repo, error) {
 	c := ipfs_cfg.Config{}
 	priv, pub, err := p2p_ci.GenerateKeyPairWithReader(p2p_ci.RSA, 2048, crand.Reader) // nolint:staticcheck
 	if err != nil {

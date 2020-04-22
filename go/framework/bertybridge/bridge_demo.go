@@ -101,7 +101,7 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 	{
 		var err error
 
-		var bopts = ipfsutil.BuildOpts{}
+		var bopts = ipfsutil.CoreAPIConfig{}
 		bopts.BootstrapAddrs = defaultDemoBootstrap
 
 		var rdvpeer *peer.AddrInfo
@@ -119,7 +119,7 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 		}
 
 		var api ipfs_interface.CoreAPI
-		api, node, err = ipfsutil.BuildNewCoreAPI(ctx, &bopts)
+		api, node, err = ipfsutil.NewCoreAPI(ctx, &bopts)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}

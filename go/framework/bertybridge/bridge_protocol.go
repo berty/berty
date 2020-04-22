@@ -104,7 +104,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 		var err error
 
 		if api = config.coreAPI; api == nil {
-			var bopts = ipfsutil.BuildOpts{}
+			var bopts = ipfsutil.CoreAPIConfig{}
 			bopts.BootstrapAddrs = defaultProtocolBootstrap
 
 			var rdvpeer *peer.AddrInfo
@@ -121,7 +121,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 				bopts.SwarmAddrs = config.swarmListeners
 			}
 
-			api, node, err = ipfsutil.BuildNewCoreAPI(ctx, &bopts)
+			api, node, err = ipfsutil.NewCoreAPI(ctx, &bopts)
 			if err != nil {
 				return nil, errcode.TODO.Wrap(err)
 			}

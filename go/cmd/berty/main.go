@@ -234,7 +234,7 @@ func main() {
 			var api iface.CoreAPI
 			{
 				var err error
-				var bopts = ipfsutil.BuildOpts{}
+				var bopts = ipfsutil.CoreAPIConfig{}
 
 				bopts.BootstrapAddrs = DefaultBootstrap
 
@@ -254,7 +254,7 @@ func main() {
 				}
 
 				var node *core.IpfsNode
-				if api, node, err = ipfsutil.BuildNewCoreAPI(ctx, &bopts); err != nil {
+				if api, node, err = ipfsutil.NewCoreAPI(ctx, &bopts); err != nil {
 					return err
 				}
 
@@ -412,12 +412,12 @@ func main() {
 				}
 
 				routingOpts, crouting := ipfsutil.NewTinderRouting(logger, rdvpeer, false)
-				buildCfg := ipfsutil.BuildOpts{
+				buildCfg := ipfsutil.CoreAPIConfig{
 					BootstrapAddrs: append(DefaultBootstrap, DevRendezVousPoint),
 					Routing:        routingOpts,
 				}
 
-				api, node, err := ipfsutil.BuildNewCoreAPI(ctx, &buildCfg)
+				api, node, err := ipfsutil.NewCoreAPI(ctx, &buildCfg)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}

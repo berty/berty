@@ -77,7 +77,7 @@ func defaultClientOptions(opts *Opts) error {
 
 	if opts.IpfsCoreAPI == nil {
 		var err error
-		opts.IpfsCoreAPI, opts.createdIPFSNode, err = ipfsutil.BuildNewCoreAPI(opts.RootContext, &ipfsutil.BuildOpts{})
+		opts.IpfsCoreAPI, opts.createdIPFSNode, err = ipfsutil.NewCoreAPI(opts.RootContext, &ipfsutil.CoreAPIConfig{})
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}

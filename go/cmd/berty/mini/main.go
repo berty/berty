@@ -73,7 +73,7 @@ func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyproto
 	rootDS := sync_ds.MutexWrap(opts.RootDS)
 	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("ipfs"))
 	routingOpt, crouting := ipfsutil.NewTinderRouting(logger, opts.RendezVousPeer, false)
-	cfg, err := ipfsutil.CreateBuildConfig(&ipfsutil.BuildOpts{
+	cfg, err := ipfsutil.CreateBuildConfig(&ipfsutil.CoreAPIConfig{
 		BootstrapAddrs: opts.Bootstrap,
 		SwarmAddrs:     swarmAddresses,
 		Datastore:      ipfsDS,
