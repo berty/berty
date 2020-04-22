@@ -1,5 +1,13 @@
 import React from 'react'
-import { View, ScrollView, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native'
+import {
+	View,
+	ScrollView,
+	StyleSheet,
+	ActivityIndicator,
+	SafeAreaView,
+	Dimensions,
+	TouchableOpacity,
+} from 'react-native'
 import { Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
@@ -9,6 +17,7 @@ import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { berty } from '@berty-tech/api'
 import { Chat } from '@berty-tech/hooks'
+import QRCode from 'react-native-qrcode-svg'
 
 //
 // Home Vue
@@ -20,7 +29,7 @@ import { Chat } from '@berty-tech/hooks'
 const useStylesHome = () => {
 	const [{ width, height, margin, padding, text }] = useStyles()
 	return {
-		homeAvatarBox: [width(160), height(180)],
+		homeAvatarBox: [width(140), height(180)],
 		firstHeaderButton: [margin.right.scale(20), height(90)],
 		secondHeaderButton: [margin.right.scale(20), height(90)],
 		thirdHeaderButton: height(90),
@@ -66,17 +75,22 @@ const HomeHeaderGroupButton: React.FC<berty.chatmodel.Account> = () => {
 		</View>
 	)
 }
-const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => {
+const HomeHeaderAvatar: React.FC<{}> = () => {
 	const _styles = useStylesHome()
-	const [{ row, margin, background, border, text, padding }] = useStyles()
+	const [{ row, margin, background, border, padding }] = useStyles()
 	const client = Chat.useClient()
 	const account = Chat.useAccount()
+	const contactRequestReference = Chat.useContactRequestReference()
+	const { navigate } = useNavigation()
 	return (
-		<View style={[row.center, margin.top.scale(50)]}>
+		<TouchableOpacity
+			style={[row.center, margin.top.scale(50)]}
+			onPress={() => navigate.settings.myBertyId()}
+		>
 			<View style={[_styles.homeAvatarBox, background.white, border.radius.medium]}>
 				<View style={[_homeStyles.homeAvatar]}>
 					<ProceduralCircleAvatar
-						style={row.center}
+						style={[row.center, border.shadow.big]}
 						seed={client?.accountPk}
 						size={75}
 						diffSize={25}
@@ -84,9 +98,12 @@ const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => {
 					<View style={[row.center]}>
 						<Text style={[padding.top.small, _styles.headerNameText]}>{account?.name || ''}</Text>
 					</View>
+					<View style={[padding.top.small, row.item.justify]}>
+						<QRCode size={Dimensions.get('window').width * 0.2} value={contactRequestReference} />
+					</View>
 				</View>
 			</View>
-		</View>
+		</TouchableOpacity>
 	)
 }
 
@@ -156,7 +173,6 @@ export const useAccount = () => {
 }
 
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
-	const { navigate } = useNavigation()
 	const account = { ...Chat.useAccount(), ...useAccount() }
 	const _styles = useStylesHome()
 	const [{ flex, background, row }] = useStyles()
