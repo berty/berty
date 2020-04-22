@@ -278,7 +278,7 @@ export const ListModal: React.FC<{}> = () => {
 	return (
 		<>
 			<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
-				<View style={{ width: '100%', height: '100%' }} />
+				<BlurView style={{ width: '100%', height: '100%' }} blurType='light' />
 			</TouchableWithoutFeedback>
 			<View style={[absolute.bottom, absolute.left, absolute.right]}>
 				<Header title='Add contact' icon='user-plus' iconPack='feather' first>
