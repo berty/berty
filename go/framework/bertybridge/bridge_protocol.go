@@ -3,6 +3,7 @@ package bertybridge
 import (
 	"context"
 
+	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -11,6 +12,10 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	"github.com/libp2p/go-libp2p-core/peer"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/pkg/errors"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -22,10 +27,14 @@ import (
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 )
 
+var defaultProtocolRendezVousPeer = config.BertyMobile.RendezVousPeer
+var defaultProtocolBootstrap = config.BertyMobile.Bootstrap
+
 type Protocol struct {
 	*Bridge
 
 	node    *core.IpfsNode
+	dht     *dht.IpfsDHT
 	service bertyprotocol.Service
 }
 
@@ -90,21 +99,35 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 	// setup coreapi if needed
 	var api ipfs_interface.CoreAPI
 	var node *core.IpfsNode
+	var dht *dht.IpfsDHT
 	{
 		var err error
 
 		if api = config.coreAPI; api == nil {
-			swarmaddrs := []string{}
-			if len(config.swarmListeners) > 0 {
-				swarmaddrs = config.swarmListeners
+			var bopts = ipfsutil.CoreAPIConfig{}
+			bopts.BootstrapAddrs = defaultProtocolBootstrap
+
+			var rdvpeer *peer.AddrInfo
+			var crouting <-chan *ipfsutil.RoutingOut
+
+			if rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(ctx, defaultProtocolRendezVousPeer); err != nil {
+				return nil, errors.New("failed to parse rdvp multiaddr: " + defaultProtocolRendezVousPeer)
+			} else { // should be a valid rendezvous peer
+				bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultProtocolRendezVousPeer)
+				bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
 			}
 
-			api, node, err = ipfsutil.NewInMemoryCoreAPI(ctx, &ipfsutil.IpfsOpts{
-				Listeners: swarmaddrs,
-			})
+			if len(config.swarmListeners) > 0 {
+				bopts.SwarmAddrs = config.swarmListeners
+			}
+
+			api, node, err = ipfsutil.NewCoreAPI(ctx, &bopts)
 			if err != nil {
 				return nil, errcode.TODO.Wrap(err)
 			}
+
+			out := <-crouting
+			dht = out.IpfsDHT
 		}
 	}
 
@@ -180,6 +203,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 		service: service,
 		node:    node,
+		dht:     dht,
 	}, nil
 }
 
@@ -187,8 +211,12 @@ func (p *Protocol) Close() (err error) {
 	// Close bridge
 	err = p.Bridge.Close()
 
-	// close clients and dbs after listeners
+	// close service
 	p.service.Close()
+
+	if p.dht != nil {
+		p.dht.Close()
+	}
 
 	if p.node != nil {
 		p.node.Close()

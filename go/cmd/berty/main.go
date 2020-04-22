@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"berty.tech/berty/v2/go/cmd/berty/mini"
+	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/banner"
@@ -38,11 +39,9 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_log "github.com/ipfs/go-log"
 
 	ma "github.com/multiformats/go-multiaddr"
-	madns "github.com/multiformats/go-multiaddr-dns"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -59,9 +58,8 @@ import (
 const ResolveTimeout = time.Second * 10
 
 // Default ipfs bootstrap & rendezvous point server
-const DevRendezVousPoint = "/dnsaddr/rdvp.berty.io/ipfs/QmTo3RS6Uc8aCS5Cxx8EBHkNCe4C7vKRanbMEboxkA92Cn"
-
-var DefaultBootstrap = ipfs_cfg.DefaultBootstrapAddresses
+var DevRendezVousPoint = config.BertyDev.RendezVousPeer
+var DefaultBootstrap = config.BertyDev.Bootstrap
 
 func main() {
 	log.SetFlags(0)
@@ -163,6 +161,8 @@ func main() {
 		Usage:   "mini",
 		FlagSet: miniClientDemoFlags,
 		Exec: func(args []string) error {
+			ctx := context.Background()
+
 			if err := globalPreRun(); err != nil {
 				return err
 			}
@@ -184,7 +184,10 @@ func main() {
 
 			rdvpeer := &peer.AddrInfo{}
 			if *miniClientDemoRDVP != "" {
-				rdvpeer, err = parseIpfsAddr(*clientProtocolRDVP)
+				resoveCtx, cancel := context.WithTimeout(ctx, ResolveTimeout)
+				defer cancel()
+
+				rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(resoveCtx, DevRendezVousPoint)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
@@ -231,34 +234,30 @@ func main() {
 			var api iface.CoreAPI
 			{
 				var err error
-				var opts = ipfsutil.IpfsOpts{}
+				var bopts = ipfsutil.CoreAPIConfig{}
 
-				opts.Bootstrap = DefaultBootstrap
+				bopts.BootstrapAddrs = DefaultBootstrap
 
 				var rdvpeer *peer.AddrInfo
 				var crouting <-chan *ipfsutil.RoutingOut
 
 				if *clientProtocolRDVP != "" {
-					if rdvpeer, err = parseIpfsAddr(*clientProtocolRDVP); err != nil {
+					resoveCtx, cancel := context.WithTimeout(ctx, ResolveTimeout)
+					defer cancel()
+
+					if rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(resoveCtx, DevRendezVousPoint); err != nil {
 						return errors.New("failed to parse rdvp multiaddr: " + *clientProtocolRDVP)
 					} else { // should be a valid rendezvous peer
-						// add rdv peer's addrs to bootstrap opt
-						// maddrs, err := peer.AddrInfoToP2pAddrs(rdvpeer)
-						// if err != nil {
-						// 	return errcode.TODO.Wrap(err)
-						// }
-
-						opts.Bootstrap = append(opts.Bootstrap, *clientProtocolRDVP)
-						opts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
+						bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, *clientProtocolRDVP)
+						bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
 					}
 				}
 
 				var node *core.IpfsNode
-
-				api, node, err = ipfsutil.NewInMemoryCoreAPI(ctx, &opts)
-				if err != nil {
-					return errcode.TODO.Wrap(err)
+				if api, node, err = ipfsutil.NewCoreAPI(ctx, &bopts); err != nil {
+					return err
 				}
+
 				defer node.Close()
 
 				if crouting != nil {
@@ -404,18 +403,21 @@ func main() {
 			{
 				var err error
 
-				rdvpeer, err := parseIpfsAddr(DevRendezVousPoint)
+				resoveCtx, cancel := context.WithTimeout(ctx, ResolveTimeout)
+				defer cancel()
+
+				rdvpeer, err := ipfsutil.ParseAndResolveIpfsAddr(resoveCtx, DevRendezVousPoint)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
 
 				routingOpts, crouting := ipfsutil.NewTinderRouting(logger, rdvpeer, false)
-				ipfsOpts := &ipfsutil.IpfsOpts{
-					Bootstrap: append(DefaultBootstrap, DevRendezVousPoint),
-					Routing:   routingOpts,
+				buildCfg := ipfsutil.CoreAPIConfig{
+					BootstrapAddrs: append(DefaultBootstrap, DevRendezVousPoint),
+					Routing:        routingOpts,
 				}
 
-				api, node, err := ipfsutil.NewInMemoryCoreAPI(ctx, ipfsOpts)
+				api, node, err := ipfsutil.NewCoreAPI(ctx, &buildCfg)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
@@ -559,52 +561,6 @@ func parseAddr(addr string) (maddr ma.Multiaddr, err error) {
 	}
 
 	return
-}
-
-// parseIpfsAddr is a function that takes in addr string and return ipfsAddrs
-func parseIpfsAddr(addr string) (*peer.AddrInfo, error) {
-	maddr, err := ma.NewMultiaddr(addr)
-	if err != nil {
-		return nil, err
-	}
-
-	if !madns.Matches(maddr) {
-		return peer.AddrInfoFromP2pAddr(maddr)
-	}
-
-	// resolve multiaddr whose protocol is not ma.P_IPFS
-	ctx, cancel := context.WithTimeout(context.Background(), ResolveTimeout)
-	defer cancel()
-	addrs, err := madns.Resolve(ctx, maddr)
-	if err != nil {
-		return nil, err
-	}
-	if len(addrs) == 0 {
-		return nil, errors.New("fail to resolve the multiaddr:" + maddr.String())
-	}
-
-	var info peer.AddrInfo
-	for _, addr := range addrs {
-		taddr, id := peer.SplitAddr(addr)
-		if id == "" {
-			// not an ipfs addr, skipping.
-			continue
-		}
-		switch info.ID {
-		case "":
-			info.ID = id
-		case id:
-		default:
-			return nil, fmt.Errorf(
-				"ambiguous maddr %s could refer to %s or %s",
-				maddr,
-				info.ID,
-				id,
-			)
-		}
-		info.Addrs = append(info.Addrs, taddr)
-	}
-	return &info, nil
 }
 
 func monitorPeers(l *zap.Logger, h host.Host, peers ...peer.ID) error {

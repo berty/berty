@@ -3,6 +3,7 @@ package bertybridge
 import (
 	"context"
 
+	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/bertydemo"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -13,12 +14,19 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	"github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/libp2p/go-libp2p-core/peer"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/pkg/errors"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+var defaultDemoRendezVousPeer = config.BertyMobile.RendezVousPeer
+var defaultDemoBootstrap = config.BertyMobile.Bootstrap
 
 // type DemoBridge Bridge
 
@@ -26,6 +34,8 @@ type Demo struct {
 	*Bridge
 
 	service *bertydemo.Service
+	dht     *dht.IpfsDHT
+	node    *core.IpfsNode
 }
 
 type DemoConfig struct {
@@ -85,22 +95,37 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 
 	// setup demo
 	var service *bertydemo.Service
+	var node *core.IpfsNode
+	var dht *dht.IpfsDHT
+
 	{
 		var err error
 
-		swarmaddrs := []string{}
+		var bopts = ipfsutil.CoreAPIConfig{}
+		bopts.BootstrapAddrs = defaultDemoBootstrap
+
+		var rdvpeer *peer.AddrInfo
+		var crouting <-chan *ipfsutil.RoutingOut
+
+		if rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(ctx, defaultDemoRendezVousPeer); err != nil {
+			return nil, errors.New("failed to parse rdvp multiaddr: " + defaultDemoRendezVousPeer)
+		} else { // should be a valid rendezvous peer
+			bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultDemoRendezVousPeer)
+			bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
+		}
+
 		if len(config.swarmListeners) > 0 {
-			swarmaddrs = config.swarmListeners
+			bopts.SwarmAddrs = config.swarmListeners
 		}
 
 		var api ipfs_interface.CoreAPI
-		api, _, err = ipfsutil.NewInMemoryCoreAPI(ctx, &ipfsutil.IpfsOpts{
-			Listeners: swarmaddrs,
-		})
-
+		api, node, err = ipfsutil.NewCoreAPI(ctx, &bopts)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
+
+		out := <-crouting
+		dht = out.IpfsDHT
 
 		directory := ":memory:"
 		if config.orbitDBDirectory != "" {
@@ -171,8 +196,11 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 
 	// setup bridge
 	return &Demo{
-		Bridge:  bridge,
+		Bridge: bridge,
+
 		service: service,
+		dht:     dht,
+		node:    node,
 	}, nil
 }
 
@@ -180,7 +208,16 @@ func (d *Demo) Close() (err error) {
 	// Close bridge
 	err = d.Bridge.Close()
 
-	// close others
+	// close service
 	d.service.Close()
+
+	if d.dht != nil {
+		d.dht.Close()
+	}
+
+	if d.node != nil {
+		d.node.Close()
+	}
+
 	return
 }

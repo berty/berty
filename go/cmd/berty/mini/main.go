@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	"time"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -58,39 +57,31 @@ func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyproto
 		}
 	}
 
-	rootDS := sync_ds.MutexWrap(opts.RootDS)
-
-	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("ipfs"))
-	cfg, err := ipfsutil.CreateBuildConfigWithDatastore(&ipfsutil.BuildOpts{
-		SwarmAddresses: swarmAddresses,
-	}, ipfsDS)
-	if err != nil {
-		panicUnlockFS(err, lock)
-	}
-
 	if opts.RendezVousPeer == nil {
 		opts.RendezVousPeer = &peer.AddrInfo{}
 	}
 
-	routingOpt, crouting := ipfsutil.NewTinderRouting(logger, opts.RendezVousPeer, false)
-	cfg.Routing = routingOpt
-
-	ipfsConfig, err := cfg.Repo.Config()
+	rdvaddrs, err := peer.AddrInfoToP2pAddrs(opts.RendezVousPeer)
 	if err != nil {
 		panicUnlockFS(err, lock)
 	}
 
-	// setup bootstrap peers
-	ipfsConfig.Bootstrap = opts.Bootstrap
-	for _, maddr := range opts.RendezVousPeer.Addrs {
-		ipfsConfig.Bootstrap = append(ipfsConfig.Bootstrap, maddr.String())
+	for _, maddr := range rdvaddrs {
+		opts.Bootstrap = append(opts.Bootstrap, maddr.String())
 	}
 
-	if err = cfg.Repo.SetConfig(ipfsConfig); err != nil {
+	rootDS := sync_ds.MutexWrap(opts.RootDS)
+	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("ipfs"))
+	routingOpt, crouting := ipfsutil.NewTinderRouting(logger, opts.RendezVousPeer, false)
+	cfg, err := ipfsutil.CreateBuildConfig(&ipfsutil.CoreAPIConfig{
+		BootstrapAddrs: opts.Bootstrap,
+		SwarmAddrs:     swarmAddresses,
+		Datastore:      ipfsDS,
+		Routing:        routingOpt,
+	})
+	if err != nil {
 		panicUnlockFS(err, lock)
 	}
-
-	orbitdbDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))
 
 	api, node, err := ipfsutil.NewConfigurableCoreAPI(ctx, cfg, ipfsutil.OptionMDNSDiscovery)
 	if err != nil {
@@ -100,21 +91,9 @@ func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyproto
 	// wait to get routing
 	routing := <-crouting
 
-	// if rdvpeer, force connection to it
-	if len(opts.RendezVousPeer.Addrs) > 0 {
-		for {
-			if err := node.PeerHost.Connect(ctx, *opts.RendezVousPeer); err != nil {
-				logger.Error("cannot dial rendez-vous point: %v", zap.Error(err))
-			} else {
-				break
-			}
-			time.Sleep(time.Second)
-		}
-	}
-
 	mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
 	ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
-
+	orbitdbDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))
 	service, err := bertyprotocol.New(bertyprotocol.Opts{
 		IpfsCoreAPI:     api,
 		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(ks),
