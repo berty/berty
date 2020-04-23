@@ -6,16 +6,17 @@ import (
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"google.golang.org/grpc"
 )
 
 type cleanFunc func()
 
-func testingInMemoryClient(t *testing.T) (*Service, ipfsutil.CoreAPIMock, cleanFunc) {
+func testingInMemoryClientWithOpts(t *testing.T, netOpts *ipfsutil.TestingAPIOpts) (*Service, ipfsutil.CoreAPIMock, cleanFunc) {
 	t.Helper()
 
 	ctx := context.Background()
-	ipfsmock, cleanupNode := ipfsutil.TestingCoreAPI(ctx, t)
+	ipfsmock, cleanupNode := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, netOpts)
 	opts := &Opts{
 		CoreAPI:          ipfsmock,
 		OrbitDBDirectory: ":memory:",
@@ -29,6 +30,28 @@ func testingInMemoryClient(t *testing.T) (*Service, ipfsutil.CoreAPIMock, cleanF
 	return demo, ipfsmock, func() {
 		demo.Close()
 		cleanupNode()
+	}
+}
+
+func testingInMemoryClient(t *testing.T) (*Service, ipfsutil.CoreAPIMock, cleanFunc) {
+	t.Helper()
+
+	ctx := context.Background()
+
+	mn := mocknet.New(ctx)
+	rdvp, err := mn.GenPeer()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	demo, ipfsmock, cleanup := testingInMemoryClientWithOpts(t, &ipfsutil.TestingAPIOpts{
+		Mocknet: mn,
+		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
+	})
+
+	return demo, ipfsmock, func() {
+		cleanup()
+		_ = rdvp.Close()
 	}
 }
 

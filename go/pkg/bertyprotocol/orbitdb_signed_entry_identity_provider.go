@@ -15,7 +15,7 @@ type bertySignedIdentityProvider struct {
 }
 
 func (b *bertySignedIdentityProvider) UnmarshalPublicKey(data []byte) (crypto.PubKey, error) {
-	return crypto.UnmarshalEd25519PublicKey(data)
+	return crypto.UnmarshalPublicKey(data)
 }
 
 func (b *bertySignedIdentityProvider) GetID(opts *identityprovider.CreateIdentityOptions) (string, error) {
@@ -73,12 +73,17 @@ func (b *bertySignedIdentityProvider) createIdentity(options *identityprovider.C
 		return nil, err
 	}
 
-	publicKeyBytes, err := publicKey.Raw()
+	publicKeyRaw, err := publicKey.Raw()
 	if err != nil {
 		return nil, err
 	}
 
-	pubKeyIDSignature, err := b.SignIdentity(append(publicKeyBytes, idSignature...), options.ID)
+	publicKeyBytes, err := publicKey.Bytes()
+	if err != nil {
+		return nil, err
+	}
+
+	pubKeyIDSignature, err := b.SignIdentity(append(publicKeyRaw, idSignature...), options.ID)
 	if err != nil {
 		return nil, err
 	}

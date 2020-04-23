@@ -8,7 +8,6 @@ import (
 	logac "berty.tech/go-ipfs-log/accesscontroller"
 	"berty.tech/go-ipfs-log/identityprovider"
 	"berty.tech/go-orbit-db/accesscontroller"
-	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
 	cid "github.com/ipfs/go-cid"
@@ -19,10 +18,6 @@ import (
 type simpleAccessController struct {
 	events.EventEmitter
 	allowedKeys map[string][]string
-}
-
-func (o *simpleAccessController) Address() address.Address {
-	return nil
 }
 
 func (o *simpleAccessController) Grant(ctx context.Context, capability string, keyID string) error {
@@ -37,10 +32,10 @@ func (o *simpleAccessController) Load(ctx context.Context, address string) error
 	return nil
 }
 
-func (o *simpleAccessController) Save(ctx context.Context) (accesscontroller.ManifestParams, error) {
-	d, err := json.Marshal(o.allowedKeys)
+func simpleAccessControllerCID(allowedKeys map[string][]string) (cid.Cid, error) {
+	d, err := json.Marshal(allowedKeys)
 	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
+		return cid.Undef, errcode.ErrInvalidInput.Wrap(err)
 	}
 
 	c, err := cid.Prefix{
@@ -50,6 +45,15 @@ func (o *simpleAccessController) Save(ctx context.Context) (accesscontroller.Man
 		MhLength: -1,
 	}.Sum(d)
 
+	if err != nil {
+		return cid.Undef, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	return c, nil
+}
+
+func (o *simpleAccessController) Save(ctx context.Context) (accesscontroller.ManifestParams, error) {
+	c, err := simpleAccessControllerCID(o.allowedKeys)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}

@@ -32,7 +32,7 @@ var eventTypesMapper = map[bertytypes.EventType]struct {
 	bertytypes.EventTypeMultiMemberGroupAliasResolverAdded:     {Message: &bertytypes.MultiMemberGroupAddAliasResolver{}, SigChecker: sigCheckerDeviceSigned},
 	bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced: {Message: &bertytypes.MultiMemberInitialMember{}, SigChecker: sigCheckerGroupSigned},
 	bertytypes.EventTypeMultiMemberGroupAdminRoleGranted:       {Message: &bertytypes.MultiMemberGrantAdminRole{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeGroupMetadataPayloadSent:               {Message: &bertytypes.AppMetadata{}, SigChecker: sigCheckerMissing},
+	bertytypes.EventTypeGroupMetadataPayloadSent:               {Message: &bertytypes.AppMetadata{}, SigChecker: sigCheckerDeviceSigned},
 }
 
 func newEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *bertytypes.Group) *bertytypes.EventContext {

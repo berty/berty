@@ -10,7 +10,13 @@ import (
 	"berty.tech/berty/v2/go/internal/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
 	// "github.com/fortytw2/leaktest"
+	"encoding/hex"
+	"strings"
+
+	orbitdb "berty.tech/go-orbit-db"
+	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 )
 
 // The leaktest calls are commented out since there is leaks remaining
@@ -69,6 +75,129 @@ func TestLogFromToken(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, firstLog, secondLog)
+}
+
+func TestLogFromTokenDiffClients(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	mn := mocknet.New(ctx)
+	rdvp, err := mn.GenPeer()
+	require.NoError(t, err, "failed to generate mocked peer")
+
+	_, _ = ipfsutil.TestingRDVP(ctx, t, rdvp)
+
+	ipfsOpts := &ipfsutil.TestingAPIOpts{
+		Mocknet: mn,
+		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
+	}
+
+	client1, _, clean := testingInMemoryClientWithOpts(t, ipfsOpts)
+	defer clean()
+
+	demo1, clean := testingClientService(t, client1)
+	defer clean()
+
+	client2, _, clean := testingInMemoryClientWithOpts(t, ipfsOpts)
+	defer clean()
+
+	demo2, clean := testingClientService(t, client2)
+	defer clean()
+
+	err = mn.LinkAll()
+	require.NoError(t, err)
+
+	err = mn.ConnectAllButSelf()
+	require.NoError(t, err)
+
+	tokenA := testingLogToken(t, demo1)
+	tokenB := testingLogToken(t, demo2)
+
+	assert.NotEqual(t, tokenA, tokenB)
+
+	log1a, err := client1.logFromToken(ctx, tokenA)
+	require.NoError(t, err)
+
+	log2a, err := client2.logFromToken(ctx, tokenA)
+	require.NoError(t, err)
+
+	log1b, err := client1.logFromToken(ctx, tokenB)
+	require.NoError(t, err)
+
+	log2b, err := client2.logFromToken(ctx, tokenB)
+	require.NoError(t, err)
+
+	assert.Equal(t, log1a.Address().String(), log2a.Address().String())
+	assert.Equal(t, log1b.Address().String(), log2b.Address().String())
+	assert.NotEqual(t, log1a.Address().String(), log1b.Address().String())
+
+	authorized1, err := log1a.AccessController().GetAuthorizedByRole("write")
+	require.NoError(t, err)
+
+	authorized2, err := log1a.AccessController().GetAuthorizedByRole("write")
+	require.NoError(t, err)
+
+	assert.Equal(t, strings.Join(authorized1, ","), strings.Join(authorized2, ","))
+
+	pk1, err := log1a.Identity().GetPublicKey()
+	require.NoError(t, err)
+
+	pk2, err := log2a.Identity().GetPublicKey()
+	require.NoError(t, err)
+
+	require.True(t, pk1.Equals(pk2))
+
+	rawPK, err := pk1.Raw()
+	require.NoError(t, err)
+
+	require.Equal(t, hex.EncodeToString(rawPK), authorized1[0])
+
+	_, err = log1a.Add(ctx, []byte("From 1 - 1"))
+	require.NoError(t, err)
+
+	_, err = log2a.Add(ctx, []byte("From 2 - 1"))
+	require.NoError(t, err)
+
+	_, err = log1b.Add(ctx, []byte("From 1 - 2"))
+	require.NoError(t, err)
+
+	_, err = log2b.Add(ctx, []byte("From 2 - 2"))
+	require.NoError(t, err)
+
+	_, err = log1b.Add(ctx, []byte("From 1 - 3"))
+	require.NoError(t, err)
+
+	_, err = log2b.Add(ctx, []byte("From 2 - 3"))
+	require.NoError(t, err)
+
+	time.Sleep(time.Second)
+
+	infinity := -1
+
+	ops1, err := log1a.List(ctx, &orbitdb.StreamOptions{
+		Amount: &infinity,
+	})
+	require.NoError(t, err)
+
+	ops2, err := log2a.List(ctx, &orbitdb.StreamOptions{
+		Amount: &infinity,
+	})
+	require.NoError(t, err)
+
+	ops3, err := log1b.List(ctx, &orbitdb.StreamOptions{
+		Amount: &infinity,
+	})
+	require.NoError(t, err)
+
+	ops4, err := log2b.List(ctx, &orbitdb.StreamOptions{
+		Amount: &infinity,
+	})
+	require.NoError(t, err)
+
+	assert.Equal(t, 2, len(ops1))
+	assert.Equal(t, 2, len(ops2))
+	assert.Equal(t, 4, len(ops3))
+	assert.Equal(t, 4, len(ops4))
 }
 
 func testingAdd(t *testing.T, c DemoServiceClient, lt string, data []byte) string {
