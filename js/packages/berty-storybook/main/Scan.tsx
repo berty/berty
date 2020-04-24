@@ -132,7 +132,7 @@ const ScanComponent: React.FC<{}> = () => {
 						onPress={goBack}
 						style={{ alignItems: 'center', justifyContent: 'center' }}
 					>
-						<Icon name='arrow-left' pack='feather' width={30} height={30} fill={color.white} />
+						<Icon name='arrow-back-outline' width={30} height={30} fill={color.white} />
 					</TouchableOpacity>
 					<Text
 						style={{

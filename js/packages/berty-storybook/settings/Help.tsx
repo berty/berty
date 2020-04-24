@@ -62,7 +62,8 @@ const BodyHelp: React.FC<{}> = () => {
 			/>
 			<ButtonSetting
 				name='Contacts & Requests'
-				icon='person-add-outline'
+				icon='user-plus'
+				iconPack='custom'
 				iconSize={30}
 				iconColor={color.red}
 				actionIcon='arrow-ios-forward'
@@ -78,7 +79,8 @@ const BodyHelp: React.FC<{}> = () => {
 			/>
 			<ButtonSetting
 				name='Groups'
-				icon='people-outline'
+				icon='users'
+				iconPack='custom'
 				iconSize={30}
 				iconColor={color.red}
 				actionIcon='arrow-ios-forward'

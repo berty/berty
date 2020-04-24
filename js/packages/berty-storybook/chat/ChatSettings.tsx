@@ -85,7 +85,8 @@ const ChatSettingsBody: React.FC<{}> = () => {
 			<ButtonSetting name='Receive notifications' icon='bell-outline' toggled disabled />
 			<ButtonSetting
 				name='Mutual groups'
-				icon='people-outline'
+				icon='users'
+				iconPack='custom'
 				state={{ value: '3 mutuals', color: color.blue, bgColor: color.light.blue }}
 				disabled
 			/>

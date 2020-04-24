@@ -59,7 +59,7 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 		>
 			<SafeAreaView style={[row.fill, { width: '100%' }]}>
 				<TouchableOpacity style={[flex.tiny, row.item.justify]} onPress={goBack}>
-					<Icon name='arrow-left' pack='feather' width={25} height={25} fill={color.black} />
+					<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
 				</TouchableOpacity>
 				<View
 					style={[

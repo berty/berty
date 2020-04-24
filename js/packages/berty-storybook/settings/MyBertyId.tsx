@@ -153,28 +153,20 @@ const BertyIdShare: React.FC<{}> = () => {
 			}}
 		>
 			<View style={[flex.tiny, { justifyContent: 'center' }]}>
-				<Icon style={row.item.justify} name='upload' pack='feather' width={26} fill={'#3F49EA'} />
+				<Icon
+					style={row.item.justify}
+					name='share'
+					pack='custom'
+					width={26}
+					height={26}
+					fill={color.blue}
+				/>
 			</View>
 		</TouchableOpacity>
 	)
 }
 
 const Screen = Dimensions.get('window')
-
-const BertyIDIcon = ({ color }) => (
-	<View
-		style={{
-			borderColor: color,
-			borderRadius: 1000,
-			aspectRatio: 1,
-			borderWidth: 2,
-			padding: 3,
-			paddingBottom: 9,
-		}}
-	>
-		<Icon name='user' pack='feather' height={35} width={35} fill={color} />
-	</View>
-)
 
 const MyBertyIdComponent: React.FC<RequestProps> = ({ user }) => {
 	const { goBack } = useNavigation()
@@ -193,7 +185,7 @@ const MyBertyIdComponent: React.FC<RequestProps> = ({ user }) => {
 						onPress={goBack}
 						style={{ alignItems: 'center', justifyContent: 'center' }}
 					>
-						<Icon name='arrow-left' pack='feather' width={30} height={30} fill={color.white} />
+						<Icon name='arrow-back-outline' width={30} height={30} fill={color.white} />
 					</TouchableOpacity>
 					<Text
 						style={{
@@ -207,7 +199,7 @@ const MyBertyIdComponent: React.FC<RequestProps> = ({ user }) => {
 						My Berty ID
 					</Text>
 				</View>
-				<BertyIDIcon color={color.white} />
+				<Icon name='id' pack='custom' width={45} height={45} fill={color.white} />
 			</View>
 			<BertIdBody user={user} />
 			<BertyIdShare />
