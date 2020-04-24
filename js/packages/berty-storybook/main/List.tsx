@@ -299,11 +299,12 @@ const Conversations: React.FC<ConversationsProps> = ({ items }) => {
 	return items?.length ? (
 		<Translation>
 			{(t): React.ReactNode => (
-				<ScrollView
-					style={[overflow, border.shadow.medium]}
-					contentContainerStyle={[background.white, border.radius.big, { flexGrow: 1 }]}
-				>
-					<SafeAreaView>
+				<SafeAreaView>
+					<ScrollView
+						style={[overflow]}
+						contentContainerStyle={[background.white, border.radius.big, { flexGrow: 1 }]}
+						bounces={false}
+					>
 						<View style={[padding.bottom.scale(80)]}>
 							<Text
 								style={[
@@ -321,8 +322,8 @@ const Conversations: React.FC<ConversationsProps> = ({ items }) => {
 								return <ConversationsItem {..._} />
 							})}
 						</View>
-					</SafeAreaView>
-				</ScrollView>
+					</ScrollView>
+				</SafeAreaView>
 			)}
 		</Translation>
 	) : null
@@ -345,7 +346,7 @@ export const List: React.FC<ScreenProps.Chat.List> = () => {
 	const [{ absolute, background }] = useStyles()
 
 	return (
-		<View style={[absolute.fill, background.blue]}>
+		<View style={[absolute.fill, requests.length ? background.blue : background.white]}>
 			<Requests items={requests} onLayout={onLayoutRequests} />
 			<Conversations items={conversations} />
 		</View>

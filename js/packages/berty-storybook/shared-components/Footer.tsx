@@ -123,13 +123,14 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 }
 
 export const Footer: React.FC<FooterProps> = ({ left, center, right }) => {
-	const [{ absolute }] = useStyles()
+	const [{ absolute, padding }] = useStyles()
 	return (
 		<LinearGradient
 			style={[
 				absolute.bottom,
 				absolute.left,
 				absolute.right,
+				padding.bottom.scale(25),
 				{ alignItems: 'center', justifyContent: 'center' },
 			]}
 			colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
