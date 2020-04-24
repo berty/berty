@@ -54,26 +54,27 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 
 	assert.Equal(t, 1, countEntries(out))
 
-	watcherCtx, watcherCancel := context.WithTimeout(ctx, time.Millisecond*15000)
+	watcherCtx, watcherCancel := context.WithTimeout(ctx, time.Second*2)
+	go func() {
+		for range peers[1].GC.MessageStore().Subscribe(watcherCtx) {
+			c, err := peers[1].GC.MessageStore().ListMessages(watcherCtx)
+			if !assert.NoError(t, err) {
+				watcherCancel()
+				break
+			}
+
+			if countEntries(c) == entriesCount+1 {
+				watcherCancel()
+				break
+			}
+		}
+	}()
 
 	for i := 0; i < entriesCount; i++ {
 		payload := []byte(fmt.Sprintf("test message %d", i))
 		_, err = peers[0].GC.MessageStore().AddMessage(ctx, payload)
 		assert.NoError(t, err)
 	}
-
-	go func() {
-		for range peers[1].GC.MessageStore().Subscribe(watcherCtx) {
-			c, err := peers[1].GC.MessageStore().ListMessages(watcherCtx)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			if countEntries(c) == entriesCount+1 {
-				watcherCancel()
-			}
-		}
-	}()
 
 	<-watcherCtx.Done()
 
