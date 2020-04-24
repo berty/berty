@@ -200,21 +200,6 @@ const Requests: React.FC<{}> = () => {
 	)
 }
 
-const BertyIDIcon = ({ color }) => (
-	<View
-		style={{
-			borderColor: color,
-			borderRadius: 1000,
-			aspectRatio: 1,
-			borderWidth: 2,
-			padding: 3,
-			paddingBottom: 9,
-		}}
-	>
-		<Icon name='user' pack='feather' height={35} width={35} fill={color} />
-	</View>
-)
-
 const AddContact: React.FC<{}> = () => {
 	const navigation = useNavigation()
 	const _styles = useStylesList()
@@ -236,7 +221,7 @@ const AddContact: React.FC<{}> = () => {
 					<View
 						style={[row.fill, { justifyContent: 'flex-end', height: 45, alignItems: 'flex-start' }]}
 					>
-						<Icon name='qr' pack='custom' width={40} height={40} fill={color.white} />
+						<Icon name='qr' pack='custom' width={38} height={38} fill={color.white} />
 					</View>
 					<View style={[row.fill]}>
 						<Text numberOfLines={2} style={[text.color.white, _styles.addContactItemText]}>
@@ -258,7 +243,7 @@ const AddContact: React.FC<{}> = () => {
 					<View
 						style={[row.fill, { justifyContent: 'flex-end', height: 45, alignItems: 'flex-start' }]}
 					>
-						<BertyIDIcon color={color.white} />
+						<Icon name='id' pack='custom' width={40} height={40} fill={color.white} />
 					</View>
 					<View style={[row.fill]}>
 						<Text numberOfLines={2} style={[text.color.white, _styles.addContactItemText]}>
@@ -293,13 +278,13 @@ export const ListModal: React.FC<{}> = () => {
 					onDrag={(e: any) => handleOnDrag(e)}
 					boundaries={{ top: 0 }}
 				>
-					<Header title='Add contact' icon='user-plus' iconPack='feather' first>
+					<Header title='Add contact' icon='user-plus' iconPack='custom' first>
 						<AddContact />
 					</Header>
 					<Header title='Requests sent' icon='paper-plane-outline'>
 						<Requests />
 					</Header>
-					<Header title='New group' icon='users' iconPack='feather' disabled>
+					<Header title='New group' icon='users' iconPack='custom' disabled>
 						<EmptyTab />
 					</Header>
 				</Interactable.View>

@@ -1,6 +1,13 @@
 import React from 'react'
-import { View, ScrollView, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native'
-import { Text } from 'react-native-ui-kitten'
+import {
+	View,
+	ScrollView,
+	StyleSheet,
+	ActivityIndicator,
+	SafeAreaView,
+	TouchableOpacity,
+} from 'react-native'
+import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
@@ -20,7 +27,6 @@ import { Chat } from '@berty-tech/hooks'
 const useStylesHome = () => {
 	const [{ width, height, margin, padding, text }] = useStyles()
 	return {
-		homeAvatarBox: [width(160), height(180)],
 		firstHeaderButton: [margin.right.scale(20), height(90)],
 		secondHeaderButton: [margin.right.scale(20), height(90)],
 		thirdHeaderButton: height(90),
@@ -28,9 +34,6 @@ const useStylesHome = () => {
 		scrollViewPadding: padding.bottom.scale(116),
 	}
 }
-const _homeStyles = StyleSheet.create({
-	homeAvatar: { bottom: 37.5 },
-})
 
 const HomeHeaderGroupButton: React.FC<berty.chatmodel.Account> = () => {
 	const _styles = useStylesHome()
@@ -68,24 +71,26 @@ const HomeHeaderGroupButton: React.FC<berty.chatmodel.Account> = () => {
 }
 const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => {
 	const _styles = useStylesHome()
-	const [{ row, margin, background, border, text, padding }] = useStyles()
+	const [{ row, margin, background, border, color, column }] = useStyles()
 	const client = Chat.useClient()
 	const account = Chat.useAccount()
+	const navigation = useNavigation()
 	return (
 		<View style={[row.center, margin.top.scale(50)]}>
-			<View style={[_styles.homeAvatarBox, background.white, border.radius.medium]}>
-				<View style={[_homeStyles.homeAvatar]}>
-					<ProceduralCircleAvatar
-						style={row.center}
-						seed={client?.accountPk}
-						size={75}
-						diffSize={25}
-					/>
-					<View style={[row.center]}>
-						<Text style={[padding.top.small, _styles.headerNameText]}>{account?.name || ''}</Text>
+			<TouchableOpacity
+				style={[background.white, border.radius.medium, { padding: 20 }, { paddingTop: 40 }]}
+				onPress={() => navigation.navigate.settings.myBertyId()}
+			>
+				<View style={[{ alignItems: 'center' }]}>
+					<View style={{ position: 'absolute', top: -80 }}>
+						<ProceduralCircleAvatar seed={client?.accountPk} size={80} diffSize={25} />
+					</View>
+					<Text style={[_styles.headerNameText]}>{account?.name || ''}</Text>
+					<View style={{ paddingLeft: 12, paddingTop: 20 }}>
+						<Icon name='qr' pack='custom' width={140} height={140} fill={color.blue} />
 					</View>
 				</View>
-			</View>
+			</TouchableOpacity>
 		</View>
 	)
 }

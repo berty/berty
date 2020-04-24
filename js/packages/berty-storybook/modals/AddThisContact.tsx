@@ -93,7 +93,7 @@ const AddThisContact: React.FC<{ name: string; rdvSeed: string; pubKey: string }
 					<TouchableOpacity
 						onPress={() => {
 							sendContactRequest(name, rdvSeed, pubKey)
-							navigation.navigate('Main.List')
+							navigation.navigate('Main.ListModal')
 						}}
 						style={[
 							flex.medium,

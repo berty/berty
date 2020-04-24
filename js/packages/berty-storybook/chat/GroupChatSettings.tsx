@@ -86,7 +86,8 @@ const GroupChatSettingsBody: React.FC<berty.chatmodel.IConversation> = ({ avatar
 			<ButtonSetting name='Receive notifications' icon='bell-outline' toggled />
 			<FactionButtonSetting
 				name='Members'
-				icon='people-outline'
+				icon='users'
+				iconPack='custom'
 				state={{ value: '4 members', color: color.blue, bgColor: color.light.blue }}
 				style={[margin.top.medium]}
 			>
@@ -124,7 +125,7 @@ const GroupChatSettingsBody: React.FC<berty.chatmodel.IConversation> = ({ avatar
 					state={{ value: 'Not a contact', color: color.grey, bgColor: color.light.grey }}
 				/>
 			</FactionButtonSetting>
-			<ButtonSetting name='Add member' icon='person-add-outline' />
+			<ButtonSetting name='Add member' icon='user-plus' iconPack='custom' />
 			<ButtonSetting name='Invite by link' icon='attach-outline' />
 			<ButtonSetting
 				name='Erase conversation'

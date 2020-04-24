@@ -78,7 +78,14 @@ const RequestsItem: React.FC<{
 					<Text style={[text.align.center, text.color.black, text.size.medium]} numberOfLines={2}>
 						{name}
 					</Text>
-					<Text style={[text.size.tiny, text.color.grey, text.align.center]}>
+					<Text
+						style={[
+							text.size.tiny,
+							text.color.grey,
+							text.align.center,
+							{ lineHeight: text.size.tiny.fontSize * 1.25 },
+						]}
+					>
 						Some time a long ago (in a galaxy far far away)
 					</Text>
 					<View style={[row.center]}>

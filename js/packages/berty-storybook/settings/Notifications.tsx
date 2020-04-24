@@ -117,7 +117,8 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 			<ButtonSetting
 				name='ContactRequests'
 				toggled={true}
-				icon='person-add-outline'
+				icon='user-plus'
+				iconPack='custom'
 				iconSize={30}
 				iconColor={color.blue}
 				disabled
@@ -153,7 +154,8 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 			</FactionButtonSetting>
 			<FactionButtonSetting
 				name='Groups notifications'
-				icon='people-outline'
+				icon='users'
+				iconPack='custom'
 				iconSize={30}
 				iconColor={color.blue}
 				style={[margin.top.medium]}

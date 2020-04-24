@@ -15,6 +15,7 @@ type SettingButtonProps = {
 	icon?: string
 	iconSize?: number
 	iconColor?: ColorsTypes
+	iconPack?: string
 	iconDependToggle?: boolean
 	children?: React.ReactNode
 	state?: {
@@ -58,6 +59,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	image = null,
 	icon = null,
 	iconSize = 30,
+	iconPack,
 	iconColor = 'blue',
 	iconDependToggle = false,
 	children = null,
@@ -120,6 +122,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 										((actionToggle && !varToggle) || (!actionToggle && !isToggle)) &&
 										opacity(0.3),
 								]}
+								pack={iconPack}
 								name={icon}
 								width={iconSize}
 								height={iconSize}
@@ -221,6 +224,7 @@ type FactionButtonSettingProps = {
 	name?: string
 	icon?: string
 	iconSize?: number
+	iconPack?: string
 	iconColor?: ColorsTypes
 	state?: {
 		value: string
@@ -243,6 +247,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 	icon = null,
 	iconSize = 30,
 	iconColor = 'blue',
+	iconPack,
 	state = {},
 	style = null,
 	disabled = false,
@@ -265,7 +270,13 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 					<View style={[row.left, flex.tiny, { alignItems: 'center' }]}>
 						{icon && iconSize && iconColor && (
 							<View>
-								<Icon name={icon} width={iconSize} height={iconSize} fill={iconColor} />
+								<Icon
+									name={icon}
+									pack={iconPack}
+									width={iconSize}
+									height={iconSize}
+									fill={iconColor}
+								/>
 							</View>
 						)}
 						<View>
