@@ -74,10 +74,18 @@ export const bridge: Bridge = (options, metadata): pb.RPCImpl => (
 				`GRPC ${grpc.Code[code]} (${code}): ${message}\nTrailers: ${JSON.stringify(trailers)}`,
 			)
 
-			console.error(error.message)
-			// response "null" will shutdown the service
-			callback(error, null)
-			return
+			if (
+				code === grpc.Code.Unknown &&
+				message === 'Response closed without grpc-status (Headers only)'
+			) {
+				// hack because sometimes we enter this case although everything else seems fine so we only log it
+				// TODO: investigate
+				console.warn(error.message)
+			} else {
+				console.error(error.message)
+				// response "null" will shutdown the service
+				callback(error, null)
+			}
 		}
 	})
 	client.send(requestType.deserializeBinary(requestData))
