@@ -78,6 +78,8 @@ func TestLogFromToken(t *testing.T) {
 }
 
 func TestLogFromTokenDiffClients(t *testing.T) {
+	testutil.SkipSlow(t)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 

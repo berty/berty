@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/stretchr/testify/assert"
 )
@@ -21,6 +22,8 @@ func countEntries(out <-chan *bertytypes.GroupMessageEvent) int {
 }
 
 func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
+	testutil.SkipSlow(t)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 

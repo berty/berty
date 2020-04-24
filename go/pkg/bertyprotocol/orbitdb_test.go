@@ -3,13 +3,13 @@ package bertyprotocol
 import (
 	"context"
 	"encoding/hex"
-	"fmt"
 	"io/ioutil"
 	"strings"
 	"testing"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	orbitdb "berty.tech/go-orbit-db"
 	"github.com/ipfs/go-datastore"
@@ -46,6 +46,8 @@ func newTestOrbitDB(ctx context.Context, api ipfsutil.CoreAPIMock, t *testing.T,
 }
 
 func TestDifferentStores(t *testing.T) {
+	testutil.SkipSlow(t)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -164,7 +166,7 @@ func TestDifferentStores(t *testing.T) {
 	_, err = g2b.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 3"))
 	require.NoError(t, err)
 
-	time.Sleep(time.Second * 10)
+	time.Sleep(time.Millisecond * 250)
 
 	ops1 := testFilterAppMetadata(t, g1a.MetadataStore().ListEvents(ctx))
 	require.NoError(t, err)
@@ -190,9 +192,6 @@ func testFilterAppMetadata(t *testing.T, events <-chan *bertytypes.GroupMetadata
 	out := []*bertytypes.AppMetadata(nil)
 
 	for evt := range events {
-		fmt.Println("found event")
-		fmt.Println(evt.Metadata.EventType.String())
-
 		if evt.Metadata.EventType != bertytypes.EventTypeGroupMetadataPayloadSent {
 			continue
 		}
