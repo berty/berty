@@ -104,7 +104,7 @@ const ScanInfos: React.FC<{}> = () => {
 		<View style={[margin.top.medium, padding.medium]}>
 			<ScanInfosText textProps='Scanning a QR code sends a contact request' />
 			<ScanInfosText textProps='You need to wait for the request to be accepted in order to chat with the contact' />
-			<DevReferenceInput />
+			{__DEV__ && <DevReferenceInput />}
 		</View>
 	)
 }
@@ -149,7 +149,7 @@ const ScanComponent: React.FC<{}> = () => {
 				<Icon name='qr' pack='custom' width={40} height={40} fill={color.white} />
 			</View>
 			<ScanBody />
-			{__DEV__ && <ScanInfos />}
+			<ScanInfos />
 		</View>
 	)
 }
