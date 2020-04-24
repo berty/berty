@@ -10,10 +10,11 @@ type TabItemProps = {
 	setEnable: React.Dispatch<React.SetStateAction<any>>
 	enable?: boolean
 	buttonDisabled?: boolean
+	style?: any
 }
 
 type TabBarProps = {
-	tabs: { name: string; icon: string }[]
+	tabs: { name: string; icon: string; buttonDisabled?: boolean; style?: any }[]
 	onTabChange: any
 }
 
@@ -40,12 +41,17 @@ const TabBarItem: React.FC<TabItemProps> = ({
 	iconTransform,
 	setEnable,
 	enable = false,
+	style = null,
 	buttonDisabled = false,
 }) => {
 	const _styles = useStylesTab()
 	const [{ flex, color, text }] = useStyles()
 	return (
-		<TouchableOpacity onPress={() => setEnable(name)} style={flex.tiny} disabled={buttonDisabled}>
+		<TouchableOpacity
+			onPress={() => setEnable(name)}
+			style={[flex.tiny, style]}
+			disabled={buttonDisabled}
+		>
 			<View style={[!enable && _styles.tabItemDisable, { alignItems: 'center' }]}>
 				<View style={{ height: 25 }}>
 					<Icon
@@ -79,25 +85,6 @@ export const TabBar: React.FC<TabBarProps> = ({ tabs, onTabChange }) => {
 	const [selectedTab, setEnable] = useState(tabs[0].name)
 	const [{ margin, row }] = useStyles()
 
-	/*useEffect(() => {
-		if (!tabs) {
-			if (tabType === 'contact') {
-				setTabs([
-					{ name: 'QR', icon: 'qr', iconPack: "custom" },
-					{ name: 'Fingerprint', icon: 'fingerprint', iconPack: "custom" },
-					{ name: 'Infos', icon: 'info-outline' },
-					{ name: 'Devices', icon: 'smartphone', iconPack: "feather" },
-				])
-			} else if (tabType === 'group') {
-				setTabs([
-					{ name: 'Members', icon: 'people-outline' },
-					{ name: 'Fingerprint', icon: 'fingerprint', iconPack: "custom" },
-					{ name: 'Infos', icon: 'info-outline' },
-				])
-			}
-		}
-	}, [tabs, tabType])*/
-
 	useEffect(() => {
 		if (typeof onTabChange === 'function') {
 			onTabChange(selectedTab)
@@ -116,6 +103,8 @@ export const TabBar: React.FC<TabBarProps> = ({ tabs, onTabChange }) => {
 							iconTransform={obj.iconTransform}
 							setEnable={setEnable}
 							enable={selectedTab === obj.name}
+							buttonDisabled={obj.buttonDisabled || false}
+							style={obj.style}
 						/>
 					))}
 			</View>
