@@ -17,6 +17,7 @@ import { useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { Chat } from '@berty-tech/hooks'
 import { chat } from '@berty-tech/store'
 import { CommonActions } from '@react-navigation/core'
+import Interactable from 'react-native-interactable'
 
 const useStylesList = () => {
 	const [
@@ -275,21 +276,33 @@ export const ListModal: React.FC<{}> = () => {
 	const navigation = useNavigation()
 	const [{ absolute }] = useStyles()
 
+	const handleOnDrag = (e) => {
+		if (e.nativeEvent.y >= 250) {
+			navigation.goBack()
+		}
+	}
 	return (
 		<>
 			<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
 				<BlurView style={{ width: '100%', height: '100%' }} blurType='light' />
 			</TouchableWithoutFeedback>
 			<View style={[absolute.bottom, absolute.left, absolute.right]}>
-				<Header title='Add contact' icon='user-plus' iconPack='feather' first>
-					<AddContact />
-				</Header>
-				<Header title='Requests sent' icon='paper-plane-outline'>
-					<Requests />
-				</Header>
-				<Header title='New group' icon='users' iconPack='feather' disabled>
-					<EmptyTab />
-				</Header>
+				<Interactable.View
+					verticalOnly={true}
+					snapPoints={[{ x: 0 }, { x: -300 }]}
+					onDrag={(e: any) => handleOnDrag(e)}
+					boundaries={{ top: 0 }}
+				>
+					<Header title='Add contact' icon='user-plus' iconPack='feather' first>
+						<AddContact />
+					</Header>
+					<Header title='Requests sent' icon='paper-plane-outline'>
+						<Requests />
+					</Header>
+					<Header title='New group' icon='users' iconPack='feather' disabled>
+						<EmptyTab />
+					</Header>
+				</Interactable.View>
 			</View>
 		</>
 	)
