@@ -60,14 +60,22 @@ func defaultACForGroup(g *bertytypes.Group, storeType string) (accesscontroller.
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	access := map[string][]string{
+		"write":            {hex.EncodeToString(signingKeyBytes)},
+		identityGroupIDKey: {groupID},
+		storeTypeKey:       {storeType},
+	}
+
+	address, err := simpleAccessControllerCID(access)
+	if err != nil {
+		return nil, err
+	}
+
 	param := &accesscontroller.CreateAccessControllerOptions{
-		Access: map[string][]string{
-			"write":            {hex.EncodeToString(signingKeyBytes)},
-			identityGroupIDKey: {groupID},
-			storeTypeKey:       {storeType},
-		},
+		Access:       access,
 		SkipManifest: true,
 		Type:         "bertysimple",
+		Address:      address,
 	}
 
 	return param, nil

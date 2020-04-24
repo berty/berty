@@ -46,6 +46,9 @@ type DemoConfig struct {
 
 	swarmListeners   []string
 	orbitDBDirectory string
+
+	// internal
+	coreAPI ipfs_interface.CoreAPI
 }
 
 func NewDemoConfig() *DemoConfig {
@@ -101,31 +104,32 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 	{
 		var err error
 
-		var bopts = ipfsutil.CoreAPIConfig{}
-		bopts.BootstrapAddrs = defaultDemoBootstrap
+		if config.coreAPI == nil {
+			var bopts = ipfsutil.CoreAPIConfig{}
+			bopts.BootstrapAddrs = defaultDemoBootstrap
 
-		var rdvpeer *peer.AddrInfo
-		var crouting <-chan *ipfsutil.RoutingOut
+			var rdvpeer *peer.AddrInfo
+			var crouting <-chan *ipfsutil.RoutingOut
 
-		if rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(ctx, defaultDemoRendezVousPeer); err != nil {
-			return nil, errors.New("failed to parse rdvp multiaddr: " + defaultDemoRendezVousPeer)
-		} else { // should be a valid rendezvous peer
-			bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultDemoRendezVousPeer)
-			bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
+			if rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(ctx, defaultDemoRendezVousPeer); err != nil {
+				return nil, errors.New("failed to parse rdvp multiaddr: " + defaultDemoRendezVousPeer)
+			} else { // should be a valid rendezvous peer
+				bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultDemoRendezVousPeer)
+				bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
+			}
+
+			if len(config.swarmListeners) > 0 {
+				bopts.SwarmAddrs = config.swarmListeners
+			}
+
+			config.coreAPI, node, err = ipfsutil.NewCoreAPI(ctx, &bopts)
+			if err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
+
+			out := <-crouting
+			dht = out.IpfsDHT
 		}
-
-		if len(config.swarmListeners) > 0 {
-			bopts.SwarmAddrs = config.swarmListeners
-		}
-
-		var api ipfs_interface.CoreAPI
-		api, node, err = ipfsutil.NewCoreAPI(ctx, &bopts)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-
-		out := <-crouting
-		dht = out.IpfsDHT
 
 		directory := ":memory:"
 		if config.orbitDBDirectory != "" {
@@ -134,7 +138,7 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 
 		opts := &bertydemo.Opts{
 			Logger:           logger.Named("demo"),
-			CoreAPI:          api,
+			CoreAPI:          config.coreAPI,
 			OrbitDBDirectory: directory,
 		}
 
@@ -142,8 +146,9 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 			return nil, errcode.TODO.Wrap(err)
 		}
 
-		ipfsinfos := getIPFSZapInfosFields(ctx, api)
+		ipfsinfos := getIPFSZapInfosFields(ctx, config.coreAPI)
 		logger.Info("ipfs infos", ipfsinfos...)
+
 	}
 
 	// register service

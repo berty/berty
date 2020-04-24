@@ -104,12 +104,14 @@ func TestDemoBridge(t *testing.T) {
 	)
 
 	ctx := context.Background()
-	// coreAPI := ipfsutil.TestingCoreAPI(ctx, t)
+	coreapi, cleanup := ipfsutil.TestingCoreAPI(ctx, t)
+	defer cleanup()
 
 	logger := testutil.Logger(t)
 	config := NewDemoConfig()
 	config.AddGRPCListener("/ip4/127.0.0.1/tcp/0/grpc")
 	config.AddGRPCListener("/ip4/127.0.0.1/tcp/0/grpcweb")
+	config.coreAPI = coreapi
 
 	demo, err = newDemoBridge(logger, config)
 	require.NoError(t, err)
