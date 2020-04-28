@@ -275,9 +275,9 @@ type FakeConfig = {
 
 const FAKE_CONVERSATIONS_CONFIG: FakeConfig[] = [
 	{ title: 'Berty Crew' },
-	{ title: 'Snowden' },
-	{ title: 'Trump' },
-	{ title: 'fake' },
+	{ title: 'Snowlair' },
+	{ title: 'Tromp' },
+	{ title: 'Alice Yakeys' },
 ]
 
 const FAKE_CONVERSATIONS: Entity[] = FAKE_CONVERSATIONS_CONFIG.map((fc, index) => {

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react'
+import React, { useState, useRef, useContext, useEffect } from 'react'
 import {
 	SafeAreaView,
 	View,
@@ -293,18 +293,26 @@ const CreateYourAccount: React.FC<{
 	)
 }
 
-const GeneratingYourKey: React.FC<{}> = () => (
-	<Translation>
-		{(t) => (
-			<SwiperCard
-				title={t('onboarding.generate-key.title')}
-				description={t('onboarding.generate-key.desc')}
-			>
-				<Spinner size='large' />
-			</SwiperCard>
-		)}
-	</Translation>
-)
+const GeneratingYourKey: React.FC<{ next: () => void }> = ({ next }) => {
+	const account = Chat.useAccount()
+	useEffect(() => {
+		if (account) {
+			next()
+		}
+	}, [account, next])
+	return (
+		<Translation>
+			{(t) => (
+				<SwiperCard
+					title={t('onboarding.generate-key.title')}
+					description={t('onboarding.generate-key.desc')}
+				>
+					<Spinner size='large' />
+				</SwiperCard>
+			)}
+		</Translation>
+	)
+}
 
 const Notifications: React.FC<{
 	submit: Form<{}>
@@ -415,17 +423,12 @@ export const Performance: React.FC<{
 						activeDotStyle={[background.white]}
 						scrollEnabled={false}
 					>
-						<CreateYourAccount
-							next={(): void => {
-								next(2)()
-								setTimeout(() => next(3)(), 1000)
-							}}
-						/>
-						<GeneratingYourKey />
-						<SafeAreaView style={absolute.fill}>
+						<CreateYourAccount next={next(2)} />
+						<GeneratingYourKey next={next(3)} />
+						{/*<SafeAreaView style={absolute.fill}>
 							<Notifications submit={authorizeNotifications} next={next(4)} />
 						</SafeAreaView>
-						<Bluetooth submit={authorizeBluetooth} next={next(5)} />
+						<Bluetooth submit={authorizeBluetooth} next={next(5)} />*/}
 						<SetupFinished />
 					</Swiper>
 				</KeyboardAvoidingView>
@@ -452,13 +455,8 @@ export const Privacy: React.FC<{}> = () => {
 						activeDotStyle={[background.white]}
 						scrollEnabled={false}
 					>
-						<CreateYourAccount
-							next={(): void => {
-								next(2)()
-								setTimeout(() => next(3)(), 1000)
-							}}
-						/>
-						<GeneratingYourKey />
+						<CreateYourAccount next={next(2)} />
+						<GeneratingYourKey next={next(3)} />
 						<SetupFinished />
 					</Swiper>
 				</KeyboardAvoidingView>
