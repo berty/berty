@@ -422,10 +422,10 @@ export const Performance: React.FC<{
 							}}
 						/>
 						<GeneratingYourKey />
-						<SafeAreaView style={absolute.fill}>
+						{/*<SafeAreaView style={absolute.fill}>
 							<Notifications submit={authorizeNotifications} next={next(4)} />
 						</SafeAreaView>
-						<Bluetooth submit={authorizeBluetooth} next={next(5)} />
+						<Bluetooth submit={authorizeBluetooth} next={next(5)} />*/}
 						<SetupFinished />
 					</Swiper>
 				</KeyboardAvoidingView>
