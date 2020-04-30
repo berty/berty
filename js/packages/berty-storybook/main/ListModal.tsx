@@ -137,8 +137,8 @@ const RequestsItem: React.FC<chat.contact.Entity> = ({ name, request, publicKey 
 			<ProceduralCircleAvatar
 				style={[_styles.tinyAvatar]}
 				seed={publicKey}
-				size={65}
-				diffSize={15}
+				size={70}
+				diffSize={30}
 			/>
 			<Text style={[flex.tiny, text.align.center, padding.top.medium]}>{name}</Text>
 			<Text
