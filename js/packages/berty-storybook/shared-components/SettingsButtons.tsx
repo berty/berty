@@ -389,7 +389,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 		<View style={[flex.tiny, row.fill, margin.top.medium, style, { alignItems: 'center' }]}>
 			{state.map((obj) => (
 				<TouchableOpacity
-					activeOpacity={obj.disabled ? 0.5 : 1}
+					activeOpacity={obj.disabled ? 0.5 : undefined}
 					style={[
 						flex.tiny,
 						padding.medium,

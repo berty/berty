@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-	TouchableOpacity,
-	View,
-	ViewProps,
-	SafeAreaView,
-	ScrollView,
-	TouchableHighlight,
-} from 'react-native'
+import { TouchableOpacity, View, ViewProps, ScrollView, TouchableHighlight } from 'react-native'
 import { Translation } from 'react-i18next'
 import { berty } from '@berty-tech/api'
 import { useLayout } from '../hooks'
@@ -20,6 +13,7 @@ import { ScreenProps, useNavigation, Routes } from '@berty-tech/berty-navigation
 import { CommonActions } from '@react-navigation/core'
 import { chat } from '@berty-tech/store'
 import { Icon, Text } from 'react-native-ui-kitten'
+import { SafeAreaView, SafeAreaConsumer } from 'react-native-safe-area-context'
 
 type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
 
@@ -33,6 +27,7 @@ type RequestsProps = ViewProps & {
 
 type ConversationsProps = ViewProps & {
 	items: Array<chat.conversation.Entity>
+	hasRequests: boolean
 }
 
 type ConversationsItemProps = chat.conversation.Entity
@@ -301,18 +296,26 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	)
 }
 
-const Conversations: React.FC<ConversationsProps> = ({ items }) => {
+const Conversations: React.FC<ConversationsProps> = ({ items, hasRequests }) => {
 	const [{ overflow, border, padding, margin, text, background }] = useStyles()
 	return items?.length ? (
 		<Translation>
 			{(t): React.ReactNode => (
-				<SafeAreaView>
-					<ScrollView
-						style={[overflow]}
-						contentContainerStyle={[background.white, border.radius.big, { flexGrow: 1 }]}
-						bounces={false}
-					>
-						<View style={[padding.bottom.scale(80)]}>
+				<SafeAreaConsumer>
+					{(insets) => (
+						<ScrollView
+							style={[overflow]}
+							contentContainerStyle={[
+								background.white,
+								border.radius.big,
+								{
+									flexGrow: 1,
+									paddingTop: !hasRequests && insets?.top ? insets.top : 0,
+									paddingBottom: (insets?.bottom || 0) + 110,
+								},
+							]}
+							bounces={false}
+						>
 							<Text
 								style={[
 									text.color.black,
@@ -328,9 +331,9 @@ const Conversations: React.FC<ConversationsProps> = ({ items }) => {
 							{items.map((_) => {
 								return <ConversationsItem {..._} />
 							})}
-						</View>
-					</ScrollView>
-				</SafeAreaView>
+						</ScrollView>
+					)}
+				</SafeAreaConsumer>
 			)}
 		</Translation>
 	) : null
@@ -355,7 +358,7 @@ export const List: React.FC<ScreenProps.Chat.List> = () => {
 	return (
 		<View style={[absolute.fill, requests.length ? background.blue : background.white]}>
 			<Requests items={requests} onLayout={onLayoutRequests} />
-			<Conversations items={conversations} />
+			<Conversations items={conversations} hasRequests={requests.length > 0} />
 		</View>
 	)
 }

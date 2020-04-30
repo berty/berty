@@ -1,13 +1,5 @@
 import React, { useState } from 'react'
-import {
-	View,
-	SafeAreaView,
-	ScrollView,
-	TouchableOpacity,
-	TextInput,
-	Dimensions,
-	StyleSheet,
-} from 'react-native'
+import { View, ScrollView, TouchableOpacity, TextInput, Dimensions, StyleSheet } from 'react-native'
 import { Layout, Text, Icon, CheckBox } from 'react-native-ui-kitten'
 import { styles, colors, useStyles } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
@@ -16,6 +8,7 @@ import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { useNavigation } from '@berty-tech/berty-navigation'
 import { Chat } from '@berty-tech/hooks'
 import { chat } from '@berty-tech/store'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const Screen = Dimensions.get('window')
 

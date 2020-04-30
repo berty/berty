@@ -1,7 +1,8 @@
 import React from 'react'
-import { View, TouchableOpacity, SafeAreaView } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { colors, useStyles, ColorsTypes } from '@berty-tech/styles'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 //
 // Header Settings

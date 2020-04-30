@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import {
 	TouchableOpacity,
 	View,
-	SafeAreaView,
 	KeyboardAvoidingView,
 	ScrollView,
 	FlatList,
@@ -18,7 +17,7 @@ import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { berty } from '@berty-tech/api'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
-
+import { SafeAreaView } from 'react-native-safe-area-context'
 //
 // ChatGroup
 //

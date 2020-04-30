@@ -1,9 +1,10 @@
 import React from 'react'
-import { TouchableOpacity, View, Image, SafeAreaView } from 'react-native'
+import { TouchableOpacity, View, Image } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
 import LinearGradient from 'react-native-linear-gradient'
 import Jdenticon from 'react-native-jdenticon'
+import { SafeAreaConsumer } from 'react-native-safe-area-context'
 
 //
 // Footer
@@ -67,11 +68,11 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 		>
 			<TouchableOpacity
 				onPress={onPress}
-				activeOpacity={disabled ? 0.5 : 1}
+				activeOpacity={disabled ? 1 : undefined}
 				style={[
 					border.shadow.medium,
 					column.justify,
-					disabled ? opacity(0.5) : null,
+
 					{
 						backgroundColor: seed ? 'white' : backgroundColor,
 						width: size,
@@ -83,7 +84,12 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 				]}
 			>
 				{icon && (
-					<View style={{ justifyContent: 'center', alignItems: 'center' }}>
+					<View
+						style={[
+							{ justifyContent: 'center', alignItems: 'center' },
+							disabled ? opacity(0.5) : null,
+						]}
+					>
 						<Icon
 							name={icon}
 							pack={iconPack}
@@ -122,30 +128,31 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 	)
 }
 
+const max = (a: number, b: number) => (a >= b ? a : b)
+
 export const Footer: React.FC<FooterProps> = ({ left, center, right }) => {
 	const [{ absolute, padding }] = useStyles()
 	return (
 		<LinearGradient
-			style={[
-				absolute.bottom,
-				absolute.left,
-				absolute.right,
-				padding.bottom.scale(25),
-				{ alignItems: 'center', justifyContent: 'center' },
-			]}
+			style={[absolute.bottom, { alignItems: 'center', justifyContent: 'center', width: '100%' }]}
 			colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
 		>
-			<SafeAreaView
-				style={{
-					width: '72.8%',
-					justifyContent: 'space-between',
-					flexDirection: 'row',
-				}}
-			>
-				<ButtonFooter {...left} />
-				<ButtonFooter {...center} />
-				<ButtonFooter {...right} />
-			</SafeAreaView>
+			<SafeAreaConsumer>
+				{(insets) => (
+					<View
+						style={{
+							width: '72.8%',
+							justifyContent: 'space-between',
+							flexDirection: 'row',
+							paddingBottom: max(insets?.bottom || 0, 25),
+						}}
+					>
+						<ButtonFooter {...left} />
+						<ButtonFooter {...center} />
+						<ButtonFooter {...right} />
+					</View>
+				)}
+			</SafeAreaConsumer>
 		</LinearGradient>
 	)
 }

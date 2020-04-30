@@ -1,13 +1,5 @@
 import React, { useState } from 'react'
-import {
-	SafeAreaView,
-	View,
-	TouchableOpacity,
-	StyleSheet,
-	ScrollView,
-	Dimensions,
-	Share,
-} from 'react-native'
+import { View, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Share } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { RequestProps } from '../shared-props/User'
@@ -17,6 +9,7 @@ import { Chat } from '@berty-tech/hooks'
 import { useNavigation } from '@berty-tech/berty-navigation'
 import QRCode from 'react-native-qrcode-svg'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 //
 // Settings My Berty ID Vue

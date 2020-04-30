@@ -1,10 +1,11 @@
 import React from 'react'
-import { SafeAreaView, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
 import InvalidScan from './InvalidScan'
 import AddThisContact from './AddThisContact'
 import { Buffer } from 'buffer'
 import { Chat } from '@berty-tech/hooks'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 export const SendContactRequest: React.FC<{
 	route: { params: { qrData: string } | { uriData: string } }

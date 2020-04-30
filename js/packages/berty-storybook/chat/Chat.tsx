@@ -3,7 +3,6 @@ import { BlurView } from '@react-native-community/blur'
 import {
 	TouchableOpacity,
 	View,
-	SafeAreaView,
 	StyleSheet,
 	FlatList,
 	ActivityIndicator,
@@ -18,7 +17,7 @@ import moment from 'moment'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
-
+import { SafeAreaView } from 'react-native-safe-area-context'
 //
 // Chat
 //
