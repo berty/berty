@@ -293,27 +293,6 @@ const CreateYourAccount: React.FC<{
 	)
 }
 
-const GeneratingYourKey: React.FC<{ next: () => void }> = ({ next }) => {
-	const account = Chat.useAccount()
-	useEffect(() => {
-		if (account) {
-			next()
-		}
-	}, [account, next])
-	return (
-		<Translation>
-			{(t) => (
-				<SwiperCard
-					title={t('onboarding.generate-key.title')}
-					description={t('onboarding.generate-key.desc')}
-				>
-					<Spinner size='large' />
-				</SwiperCard>
-			)}
-		</Translation>
-	)
-}
-
 const Notifications: React.FC<{
 	submit: Form<{}>
 	next: Navigation
@@ -380,24 +359,30 @@ const SetupFinished: React.FC = () => {
 	const navigation = useReactNavigation()
 	const account = Chat.useAccount()
 	const dispatch = useDispatch()
-	if (!account) {
-		return null
-	}
 	return (
 		<Translation>
-			{(t) => (
-				<SwiperCard
-					title={t('onboarding.setup-finished.title')}
-					description={t('onboarding.setup-finished.desc')}
-					button={{
-						text: t('onboarding.setup-finished.button'),
-						onPress: () => {
-							dispatch(chat.account.commands.onboard({ id: account.id }))
-							navigation.navigate(Routes.Root.Tabs, { screen: Routes.Main.List })
-						},
-					}}
-				/>
-			)}
+			{(t) =>
+				account ? (
+					<SwiperCard
+						title={t('onboarding.setup-finished.title')}
+						description={t('onboarding.setup-finished.desc')}
+						button={{
+							text: t('onboarding.setup-finished.button'),
+							onPress: () => {
+								dispatch(chat.account.commands.onboard({ id: account.id }))
+								navigation.navigate(Routes.Root.Tabs, { screen: Routes.Main.List })
+							},
+						}}
+					/>
+				) : (
+					<SwiperCard
+						title={t('onboarding.generate-key.title')}
+						description={t('onboarding.generate-key.desc')}
+					>
+						<Spinner size='large' />
+					</SwiperCard>
+				)
+			}
 		</Translation>
 	)
 }
@@ -424,7 +409,6 @@ export const Performance: React.FC<{
 						scrollEnabled={false}
 					>
 						<CreateYourAccount next={next(2)} />
-						<GeneratingYourKey next={next(3)} />
 						{/*<SafeAreaView style={absolute.fill}>
 							<Notifications submit={authorizeNotifications} next={next(4)} />
 						</SafeAreaView>
@@ -456,7 +440,6 @@ export const Privacy: React.FC<{}> = () => {
 						scrollEnabled={false}
 					>
 						<CreateYourAccount next={next(2)} />
-						<GeneratingYourKey next={next(3)} />
 						<SetupFinished />
 					</Swiper>
 				</KeyboardAvoidingView>
