@@ -4,7 +4,6 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	StyleSheet,
-	Dimensions,
 	TouchableWithoutFeedback,
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
@@ -17,7 +16,7 @@ import { Chat } from '@berty-tech/hooks'
 import { chat } from '@berty-tech/store'
 import { CommonActions } from '@react-navigation/core'
 import Interactable from 'react-native-interactable'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import FromNow from '../shared-components/FromNow'
 
 const useStylesList = () => {
 	const [
@@ -137,15 +136,15 @@ const RequestsItem: React.FC<chat.contact.Entity> = ({ name, request, publicKey 
 			<ProceduralCircleAvatar
 				style={[_styles.tinyAvatar]}
 				seed={publicKey}
-				size={65}
-				diffSize={15}
+				size={70}
+				diffSize={30}
 			/>
 			<Text style={[flex.tiny, text.align.center, padding.top.medium]}>{name}</Text>
 			<Text
 				category='c1'
 				style={[padding.vertical.medium, text.align.center, text.size.tiny, text.color.grey]}
 			>
-				{request.sent ? 'Sent 3 days ago' : 'Not sent yet'}
+				{request.sent ? <FromNow date={request.sentDate} /> : 'Not sent yet'}
 			</Text>
 			<View style={[row.fill]}>
 				<TouchableOpacity style={[_styles.tinyDiscardButton, border.scale(1), row.item.justify]}>

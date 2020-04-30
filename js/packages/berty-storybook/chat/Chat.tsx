@@ -13,7 +13,7 @@ import { useStyles } from '@berty-tech/styles'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
 import { useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { CommonActions, useNavigation as useReactNavigation } from '@react-navigation/native'
-import moment from 'moment'
+import FromNow from '../shared-components/FromNow'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
@@ -41,14 +41,7 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 	const contact = ChatHooks.useOneToOneConversationContact(conversation.id)
 	const title =
 		conversation.kind === 'fake' ? `SAMPLE - ${conversation.title}` : contact?.name || ''
-	const [value, setValue] = useState()
 	const lastDate = ChatHooks.useGetDateLastContactMessage(conversation.id)
-
-	useEffect(() => {
-		setValue(moment(lastDate).fromNow())
-		const intervalID = setInterval(() => setValue(moment(lastDate).fromNow()), 10000)
-		return () => clearInterval(intervalID)
-	}, [conversation.id, lastDate])
 
 	return (
 		<BlurView
@@ -77,7 +70,7 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 					</Text>
 					{lastDate && (
 						<Text numberOfLines={1} style={[text.size.small, text.color.grey, text.align.center]}>
-							Last seen {value}
+							Last seen <FromNow date={lastDate} />
 						</Text>
 					)}
 				</View>

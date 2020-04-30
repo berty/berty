@@ -11,18 +11,29 @@ export enum ContactRequestType {
 	Outgoing,
 }
 
+type ContactRequestBase = {
+	type: ContactRequestType
+	accepted: boolean
+	discarded: boolean
+}
+
+type OutgoingContactRequestBase = ContactRequestBase & {
+	type: ContactRequestType.Outgoing
+	sent: boolean
+	sentDate?: number
+}
+
 export type ContactRequest =
-	| {
+	| (ContactRequestBase & {
 			type: ContactRequestType.Incoming
-			accepted: boolean
-			discarded: boolean
-	  }
-	| {
-			type: ContactRequestType.Outgoing
-			accepted: boolean
-			discarded: boolean
-			sent: boolean
-	  }
+	  })
+	| (OutgoingContactRequestBase & {
+			sent: false
+	  })
+	| (OutgoingContactRequestBase & {
+			sent: true
+			sentDate: number
+	  })
 
 export type Entity = {
 	id: string // id of the contact
@@ -31,6 +42,7 @@ export type Entity = {
 	name: string
 	request: ContactRequest
 	groupPk?: string
+	addedDate: number
 }
 
 export type Event = {
@@ -67,7 +79,9 @@ export namespace Query {
 }
 
 export namespace Event {
+	export type Created = Entity
 	export type OutgoingContactRequestAccepted = { accountId: string; contactPk: Uint8Array }
+	export type OutgoingContactRequestSent = { id: string; date: number }
 	export type Deleted = { id: string }
 }
 
@@ -91,6 +105,8 @@ export type QueryReducer = {
 export type EventsReducer = {
 	deleted: SimpleCaseReducer<Event.Deleted>
 	outgoingContactRequestAccepted: SimpleCaseReducer<Event.OutgoingContactRequestAccepted>
+	outgoingContactRequestSent: SimpleCaseReducer<Event.OutgoingContactRequestSent>
+	created: SimpleCaseReducer<Event.Created>
 }
 
 const initialState: State = {
@@ -138,70 +154,23 @@ const eventHandler = createSlice<State, EventsReducer>({
 			}
 			return state
 		},
-	},
-	extraReducers: {
-		[protocol.events.client.accountContactRequestOutgoingEnqueued.type]: (state, { payload }) => {
-			const { aggregateId: accountId, event } = payload
-			const { groupPk, contact: c } = event as berty.types.IAccountContactRequestEnqueued
-			if (!c || !c.pk || !groupPk) {
-				return state
-			}
-			const id = getAggregateId({ accountId, contactPk: c.pk })
-			const contact = state.aggregates[id]
-			if (!contact) {
-				const metadata = c.metadata ? JSON.parse(new Buffer(c.metadata).toString('utf-8')) : {}
-				state.aggregates[id] = {
-					id,
-					accountId: payload.aggregateId,
-					name: metadata.givenName,
-					publicKey: encodePublicKey(c.pk),
-					groupPk: encodePublicKey(groupPk),
-					request: {
-						type: ContactRequestType.Outgoing,
-						accepted: false,
-						discarded: false,
-						sent: false,
-					},
-				}
-			}
-			return state
-		},
-		[protocol.events.client.accountContactRequestOutgoingSent.type]: (state, { payload }) => {
-			const { aggregateId: accountId, event } = payload
-			const { contactPk } = event as berty.types.IAccountContactRequestSent
-			if (!contactPk) {
-				return state
-			}
-			const id = getAggregateId({ accountId, contactPk })
+		outgoingContactRequestSent: (state: State, { payload: { id, date } }) => {
 			const contact = state.aggregates[id]
 			if (contact && contact.request.type === ContactRequestType.Outgoing) {
 				contact.request.sent = true
+				contact.request.sentDate = date
 			}
 			return state
 		},
-		[protocol.events.client.accountContactRequestIncomingReceived.type]: (state, { payload }) => {
-			const {
-				aggregateId: accountId,
-				event: { contactPk, contactMetadata },
-			} = payload
-			const id = getAggregateId({ accountId, contactPk })
-			const contact = state.aggregates[id]
-			if (!contact) {
-				const metadata = JSON.parse(new Buffer(contactMetadata).toString('utf-8'))
-				state.aggregates[id] = {
-					id,
-					publicKey: encodePublicKey(contactPk),
-					accountId,
-					name: metadata.name,
-					request: {
-						type: ContactRequestType.Incoming,
-						accepted: false,
-						discarded: false,
-					},
-				}
+		created: (state: State, { payload }) => {
+			const { id } = payload
+			if (!state.aggregates[id]) {
+				state.aggregates[id] = payload
 			}
 			return state
 		},
+	},
+	extraReducers: {
 		[protocol.events.client.accountContactRequestIncomingAccepted.type]: (state, action) => {
 			const {
 				payload: {
@@ -337,9 +306,42 @@ export const transactions: Transactions = {
 	},
 }
 
+function* getContact(id: string) {
+	const contact = (yield select((state: GlobalState) => queries.get(state, { id }))) as
+		| Entity
+		| undefined
+	return contact
+}
+
 export function* orchestrator() {
 	yield all([
 		takeEvery(protocol.events.client.accountContactRequestOutgoingEnqueued, function*(action) {
+			const { aggregateId: accountId, event } = action.payload
+			const { groupPk, contact: c } = event as berty.types.IAccountContactRequestEnqueued
+			if (!c || !c.pk || !groupPk) {
+				return
+			}
+			const id = getAggregateId({ accountId, contactPk: c.pk })
+			const contact = yield* getContact(id)
+			if (!contact) {
+				const metadata = c.metadata ? JSON.parse(new Buffer(c.metadata).toString('utf-8')) : {}
+				yield put(
+					events.created({
+						id,
+						accountId: action.payload.aggregateId,
+						name: metadata.givenName,
+						publicKey: encodePublicKey(c.pk),
+						groupPk: encodePublicKey(groupPk),
+						request: {
+							type: ContactRequestType.Outgoing,
+							accepted: false,
+							discarded: false,
+							sent: false,
+						},
+						addedDate: Date.now(),
+					}),
+				)
+			}
 			yield fork(function*() {
 				const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
 					id: action.payload.aggregateId,
@@ -366,6 +368,31 @@ export function* orchestrator() {
 					yield put(action)
 				}
 			})
+		}),
+		takeEvery(protocol.events.client.accountContactRequestIncomingReceived, function*({ payload }) {
+			const {
+				aggregateId: accountId,
+				event: { contactPk, contactMetadata },
+			} = payload
+			const id = getAggregateId({ accountId, contactPk })
+			const contact = yield* getContact(id)
+			if (!contact) {
+				const metadata = JSON.parse(new Buffer(contactMetadata).toString('utf-8'))
+				yield put(
+					events.created({
+						id,
+						publicKey: encodePublicKey(contactPk),
+						accountId,
+						name: metadata.name,
+						request: {
+							type: ContactRequestType.Incoming,
+							accepted: false,
+							discarded: false,
+						},
+						addedDate: Date.now(),
+					}),
+				)
+			}
 		}),
 		takeEvery(protocol.events.client.accountContactRequestIncomingAccepted, function*({ payload }) {
 			const {
@@ -400,6 +427,20 @@ export function* orchestrator() {
 					yield put(action)
 				}
 			})
+		}),
+		takeEvery(protocol.events.client.accountContactRequestOutgoingSent, function*({ payload }) {
+			const { aggregateId: accountId, event } = payload
+			const { contactPk } = event
+			if (!contactPk) {
+				return
+			}
+			const id = getAggregateId({ accountId, contactPk })
+			yield put(
+				events.outgoingContactRequestSent({
+					id,
+					date: Date.now(),
+				}),
+			)
 		}),
 		takeEvery(protocol.events.client.groupMetadataPayloadSent, function*({ payload }) {
 			const { aggregateId: accountId } = payload

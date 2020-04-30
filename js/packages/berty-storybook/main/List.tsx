@@ -14,6 +14,7 @@ import { CommonActions } from '@react-navigation/core'
 import { chat } from '@berty-tech/store'
 import { Icon, Text } from 'react-native-ui-kitten'
 import { SafeAreaView, SafeAreaConsumer } from 'react-native-safe-area-context'
+import FromNow from '../shared-components/FromNow'
 
 type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
 
@@ -41,8 +42,9 @@ const RequestsItem: React.FC<{
 	display: Navigation<{ id: string }>
 	accept: (kwargs: { id: string }) => void
 	decline: (kwargs: { id: string }) => void
+	addedDate: number
 }> = (props) => {
-	const { id, name, display, decline, accept, publicKey } = props
+	const { id, name, display, decline, accept, publicKey, addedDate } = props
 	const [
 		{ border, padding, margin, width, height, column, row, background, absolute, text },
 	] = useStyles()
@@ -81,7 +83,7 @@ const RequestsItem: React.FC<{
 							{ lineHeight: text.size.tiny.fontSize * 1.25 },
 						]}
 					>
-						Some time a long ago (in a galaxy far far away)
+						<FromNow date={addedDate} />
 					</Text>
 					<View style={[row.center]}>
 						<TouchableOpacity
@@ -128,7 +130,7 @@ const RequestsItem: React.FC<{
 	)
 }
 
-const ContactRequestsItem: React.FC<chat.contact.Entity> = ({ id, name, publicKey }) => {
+const ContactRequestsItem: React.FC<chat.contact.Entity> = ({ id, name, publicKey, addedDate }) => {
 	const accept = Chat.useAcceptContactRequest()
 	const decline = Chat.useDiscardContactRequest()
 	const { navigate } = useNavigation()
@@ -140,6 +142,7 @@ const ContactRequestsItem: React.FC<chat.contact.Entity> = ({ id, name, publicKe
 			display={navigate.main.contactRequest /*({ id }) => {}*/}
 			accept={accept}
 			decline={decline}
+			addedDate={addedDate}
 		/>
 	)
 }
