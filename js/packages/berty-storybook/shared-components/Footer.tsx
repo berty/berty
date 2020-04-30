@@ -67,11 +67,11 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 		>
 			<TouchableOpacity
 				onPress={onPress}
-				activeOpacity={disabled ? 0.5 : 1}
+				activeOpacity={disabled ? 1 : undefined}
 				style={[
 					border.shadow.medium,
 					column.justify,
-					disabled ? opacity(0.5) : null,
+
 					{
 						backgroundColor: seed ? 'white' : backgroundColor,
 						width: size,
@@ -83,7 +83,12 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 				]}
 			>
 				{icon && (
-					<View style={{ justifyContent: 'center', alignItems: 'center' }}>
+					<View
+						style={[
+							{ justifyContent: 'center', alignItems: 'center' },
+							disabled ? opacity(0.5) : null,
+						]}
+					>
 						<Icon
 							name={icon}
 							pack={iconPack}
