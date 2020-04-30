@@ -76,7 +76,7 @@ export const GetStarted: React.FC = () => {
 						</Text>
 					</View>
 					<View style={[flex.medium]}>
-						<Button style={column.item.center} onPress={navigate.onboarding.selectMode}>
+						<Button style={column.item.center} onPress={navigate.onboarding.performance}>
 							GET STARTED
 						</Button>
 					</View>
