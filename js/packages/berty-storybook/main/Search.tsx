@@ -1,17 +1,11 @@
 import React, { useState } from 'react'
-import {
-	View,
-	SafeAreaView,
-	TouchableHighlight,
-	StyleSheet,
-	Dimensions,
-	TextInput,
-} from 'react-native'
+import { View, TouchableHighlight, StyleSheet, Dimensions, TextInput } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { styles, colors, useStyles } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import { Chat } from '@berty-tech/hooks'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const Screen = Dimensions.get('window')
 

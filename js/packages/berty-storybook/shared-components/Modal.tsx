@@ -4,13 +4,13 @@ import {
 	TouchableWithoutFeedback,
 	View,
 	StyleSheet,
-	SafeAreaView,
 	ViewStyle,
 } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/berty-navigation'
 import { BlurView } from '@react-native-community/blur'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 //
 // Modal => Modals on screens requests

@@ -1,6 +1,5 @@
 import React, { useState, useRef, useContext, useEffect } from 'react'
 import {
-	SafeAreaView,
 	View,
 	ActivityIndicator as Spinner,
 	KeyboardAvoidingView,
@@ -20,6 +19,7 @@ import { Chat } from '@berty-tech/hooks'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { useDispatch } from 'react-redux'
 import { chat } from '@berty-tech/store'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Navigation = () => void
 type Form<T> = (arg0: T) => Promise<void>

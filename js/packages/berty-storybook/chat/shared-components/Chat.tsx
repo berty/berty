@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react'
-import { TouchableOpacity, View, TextInput, SafeAreaView } from 'react-native'
+import { TouchableOpacity, View, TextInput } from 'react-native'
 import { Icon, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Chat } from '@berty-tech/hooks'
 import { AppMessageType } from '@berty-tech/store/chat/AppMessage'
 import { BlurView } from '@react-native-community/blur'
+import { SafeAreaView } from 'react-native-safe-area-context'
 //
 // ChatFooter => Textinput for type message
 //

@@ -22,28 +22,31 @@ import { FeatherIconsPack } from './feather-icons'
 import { IconRegistry } from 'react-native-ui-kitten'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import { CustomIconsPack } from './custom-icons'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 enableScreens()
 
 DevMenu.addItem('Clear async-storage', () => AsyncStorage.clear())
 
 export const App: React.FC = () => (
-	<NavigationContainer>
-		<Store.Provider
-			rpcImpl={
-				faker.berty.chat.ChatService
-					.rpcImpl /*bridge({ host: '', transport: ReactNativeTransport() */
-			}
-		>
-			<Chat.Provider config={{ storage: AsyncStorage }}>
-				<Chat.Recorder />
-				<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
-				<Theme.Provider>
-					<Navigation />
-				</Theme.Provider>
-			</Chat.Provider>
-		</Store.Provider>
-	</NavigationContainer>
+	<SafeAreaProvider>
+		<NavigationContainer>
+			<Store.Provider
+				rpcImpl={
+					faker.berty.chat.ChatService
+						.rpcImpl /*bridge({ host: '', transport: ReactNativeTransport() */
+				}
+			>
+				<Chat.Provider config={{ storage: AsyncStorage }}>
+					<Chat.Recorder />
+					<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
+					<Theme.Provider>
+						<Navigation />
+					</Theme.Provider>
+				</Chat.Provider>
+			</Store.Provider>
+		</NavigationContainer>
+	</SafeAreaProvider>
 )
 
 export default App

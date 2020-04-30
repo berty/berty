@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { View, SafeAreaView, Dimensions, TextInput, Button, TouchableOpacity } from 'react-native'
+import { View, Dimensions, TextInput, Button, TouchableOpacity } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 // import { RNCamera } from 'react-native-camera'
 import { useNavigation } from '@react-navigation/native'
 import ScanTarget from './scan_target.svg'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 //
 // Scan => Scan QrCode of an other contact

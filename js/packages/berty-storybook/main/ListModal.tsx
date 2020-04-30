@@ -1,7 +1,6 @@
 import React from 'react'
 import {
 	View,
-	SafeAreaView,
 	ScrollView,
 	TouchableOpacity,
 	StyleSheet,
@@ -18,6 +17,7 @@ import { Chat } from '@berty-tech/hooks'
 import { chat } from '@berty-tech/store'
 import { CommonActions } from '@react-navigation/core'
 import Interactable from 'react-native-interactable'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const useStylesList = () => {
 	const [

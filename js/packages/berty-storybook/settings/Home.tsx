@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-	View,
-	ScrollView,
-	StyleSheet,
-	ActivityIndicator,
-	SafeAreaView,
-	TouchableOpacity,
-} from 'react-native'
+import { View, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
@@ -16,6 +9,7 @@ import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 import { berty } from '@berty-tech/api'
 import { Chat } from '@berty-tech/hooks'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 //
 // Home Vue
