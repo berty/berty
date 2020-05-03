@@ -3,7 +3,7 @@
 package driver
 
 import (
-	native "berty.tech/network/transport/mc/driver/mc-driver/mc-driver"
+	native "berty.tech/network/transport/mc/driver/mc-driver"
 )
 
 // Native -> Go functions
