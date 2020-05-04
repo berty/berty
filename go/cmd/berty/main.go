@@ -33,6 +33,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	libp2p "github.com/libp2p/go-libp2p"
+
 	"github.com/oklog/run"
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
@@ -60,6 +63,7 @@ const ResolveTimeout = time.Second * 10
 // Default ipfs bootstrap & rendezvous point server
 var DevRendezVousPoint = config.BertyDev.RendezVousPeer
 var DefaultBootstrap = config.BertyDev.Bootstrap
+var DefaultMCBind = config.BertyDev.DefaultMCBind
 
 func main() {
 	log.SetFlags(0)
@@ -234,7 +238,10 @@ func main() {
 			var api iface.CoreAPI
 			{
 				var err error
-				var bopts = ipfsutil.CoreAPIConfig{}
+				var bopts = ipfsutil.CoreAPIConfig{
+					SwarmAddrs:        []string{DefaultMCBind},
+					ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
+				}
 
 				bopts.BootstrapAddrs = DefaultBootstrap
 
@@ -413,8 +420,10 @@ func main() {
 
 				routingOpts, crouting := ipfsutil.NewTinderRouting(logger, rdvpeer, false)
 				buildCfg := ipfsutil.CoreAPIConfig{
-					BootstrapAddrs: append(DefaultBootstrap, DevRendezVousPoint),
-					Routing:        routingOpts,
+					BootstrapAddrs:    append(DefaultBootstrap, DevRendezVousPoint),
+					Routing:           routingOpts,
+					SwarmAddrs:        []string{DefaultMCBind},
+					ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
 				}
 
 				api, node, err := ipfsutil.NewCoreAPI(ctx, &buildCfg)

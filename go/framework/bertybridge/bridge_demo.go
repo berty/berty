@@ -20,6 +20,9 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/pkg/errors"
 
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	libp2p "github.com/libp2p/go-libp2p"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -27,6 +30,7 @@ import (
 
 var defaultDemoRendezVousPeer = config.BertyMobile.RendezVousPeer
 var defaultDemoBootstrap = config.BertyMobile.Bootstrap
+var defaultDemoMCBind = config.BertyMobile.DefaultMCBind
 
 // type DemoBridge Bridge
 
@@ -105,8 +109,11 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 		var err error
 
 		if config.coreAPI == nil {
-			var bopts = ipfsutil.CoreAPIConfig{}
-			bopts.BootstrapAddrs = defaultDemoBootstrap
+			var bopts = ipfsutil.CoreAPIConfig{
+				BootstrapAddrs:    defaultDemoBootstrap,
+				SwarmAddrs:        []string{defaultDemoMCBind},
+				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
+			}
 
 			var rdvpeer *peer.AddrInfo
 			var crouting <-chan *ipfsutil.RoutingOut
@@ -119,7 +126,7 @@ func newDemoBridge(logger *zap.Logger, config *DemoConfig) (*Demo, error) {
 			}
 
 			if len(config.swarmListeners) > 0 {
-				bopts.SwarmAddrs = config.swarmListeners
+				bopts.SwarmAddrs = append(bopts.SwarmAddrs, config.swarmListeners...)
 			}
 
 			config.coreAPI, node, err = ipfsutil.NewCoreAPI(ctx, &bopts)
