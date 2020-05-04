@@ -31,7 +31,7 @@ There is a **protocol** that uses advanced cryptography and a **messenger app** 
 - End-to-end encryption used to encrypt all conversations
 - Focus on leaking as little metadata as possible
 - Decentralized, distributed, serverless
-- No concensus, no blockchain
+- No consensus, no blockchain
 - No internet connection required (uses the [BLE technology](https://en.wikipedia.org/wiki/Bluetooth_Low_Energy) and mDNS)
 - Free forever, no data stored, transparent code, open-source
 
