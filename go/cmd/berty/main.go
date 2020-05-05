@@ -519,7 +519,7 @@ func main() {
 
 func getRootDatastore(optPath *string) (datastore.Batching, *fslock.Lock, error) {
 	var (
-		baseDS datastore.Batching = datastore.NewMapDatastore()
+		baseDS datastore.Batching = sync_ds.MutexWrap(datastore.NewMapDatastore())
 		lock   *fslock.Lock
 	)
 
