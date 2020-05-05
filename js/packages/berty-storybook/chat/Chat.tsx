@@ -7,6 +7,7 @@ import {
 	FlatList,
 	ActivityIndicator,
 	KeyboardAvoidingView,
+	ScrollView,
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
@@ -117,14 +118,16 @@ const MessageList: React.FC<{ id: string }> = (props) => {
 	const conversation = ChatHooks.useGetConversation(props.id)
 
 	return (
-		<FlatList
-			style={[overflow, row.item.fill, flex.tiny, margin.top.scale(140)]}
-			data={conversation ? [...conversation.messages].reverse() : []}
-			inverted
-			keyExtractor={(item) => item}
-			ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
-			renderItem={({ item }) => <AppMessage message={item} />}
-		/>
+		<ScrollView keyboardDismissMode='on-drag' style={[flex.medium]}>
+			<FlatList
+				style={[overflow, row.item.fill, flex.tiny, margin.top.scale(140)]}
+				data={conversation ? [...conversation.messages].reverse() : []}
+				inverted
+				keyExtractor={(item) => item}
+				ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
+				renderItem={({ item }) => <AppMessage message={item} />}
+			/>
+		</ScrollView>
 	)
 }
 
