@@ -20,6 +20,7 @@ import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { useDispatch } from 'react-redux'
 import { chat } from '@berty-tech/store'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import Logo from './berty_gradient_square.svg'
 
 type Navigation = () => void
 type Form<T> = (arg0: T) => Promise<void>
@@ -64,12 +65,15 @@ const Button: React.FC<{
 
 export const GetStarted: React.FC = () => {
 	const { navigate } = useNavigation()
-	const [{ absolute, background, column, flex, padding, text }] = useStyles()
+	const [{ absolute, background, column, row, flex, padding, text }] = useStyles()
 	return (
 		<Translation>
 			{(t) => (
 				<SafeAreaView style={[absolute.fill, background.white, column.justify, padding.medium]}>
-					<View style={[flex.big]} />
+					<View style={[flex.medium]} />
+					<View style={[flex.big, { flexDirection: 'row', justifyContent: 'center' }]}>
+						<Logo height='60%' width='65%' />
+					</View>
 					<View style={[flex.medium]}>
 						<Text style={[padding.horizontal.medium, text.align.center, text.align.bottom]}>
 							{t('onboarding.getstarted')}
