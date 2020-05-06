@@ -6,6 +6,7 @@ import { ActivityIndicator, Clipboard } from 'react-native'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Buffer } from 'buffer'
 import { berty } from '@berty-tech/api'
+import { useStyles } from '@berty-tech/styles'
 
 export const Recorder: React.FC = ({ children }) => {
 	React.useEffect(() => {
@@ -30,9 +31,13 @@ export const Recorder: React.FC = ({ children }) => {
 
 export const Provider: React.FC<{ config: chat.InitConfig }> = ({ config, children }) => {
 	const store = chat.init(config)
+	const [{ flex }] = useStyles()
 	return (
 		<ReactReduxProvider store={store}>
-			<PersistGate loading={<ActivityIndicator size='large' />} persistor={store.persistor}>
+			<PersistGate
+				loading={<ActivityIndicator size='large' style={[flex.medium]} />}
+				persistor={store.persistor}
+			>
 				{children}
 			</PersistGate>
 		</ReactReduxProvider>
