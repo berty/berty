@@ -111,7 +111,6 @@ export const ProceduralAvatar: React.FC<{
 	diffSize?: number
 	style?: StyleProp<any>
 }> = ({ seeds, size, diffSize, style }) => {
-	const [{ padding }] = useStyles()
 	return seeds.length >= 2 ? (
 		<GroupProceduralCircleAvatar
 			firstSeed={seeds[0] || ''}

@@ -86,7 +86,7 @@ const SDTSComponent: React.FC<SDTSComponentProps> = ({
 }) => {
 	const { goBack } = useNavigation()
 	const _styles = useStylesSTDTS()
-	const [{ border, text, row, column, padding, margin, flex, absolute, color }] = useStyles()
+	const [{ border, text, row, column, padding, margin }] = useStyles()
 
 	const handleOnDrag = (e: any) => {
 		setFocusAction(componentValues.onFocus)

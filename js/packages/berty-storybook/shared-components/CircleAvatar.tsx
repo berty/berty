@@ -114,7 +114,6 @@ export const Avatar: React.FC<{
 	diffSize?: number
 	style?: StyleProp<any>
 }> = ({ uris, size, diffSize, style }) => {
-	const [{ padding }] = useStyles()
 	return uris.length >= 2 ? (
 		<GroupCircleAvatar
 			firstAvatarUri={uris[0] || ''}

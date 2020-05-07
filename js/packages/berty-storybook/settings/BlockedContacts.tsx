@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, ScrollView, TouchableOpacity } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
@@ -50,7 +50,7 @@ const HeaderBlockedContacts: React.FC<{}> = () => {
 
 const BlockedContactItem: React.FC<BlockedContactsItempProps> = ({ avatarUri, name }) => {
 	const _styles = useStylesBlockedContacts()
-	const [{ flex, background, padding, row, text, color, column }] = useStyles()
+	const [{ flex, background, padding, row, text, color }] = useStyles()
 
 	return (
 		<TouchableOpacity style={[flex.tiny, background.white, padding.small, _styles.item]}>

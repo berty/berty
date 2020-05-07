@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
@@ -19,7 +19,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 // Style
 const useStylesHome = () => {
-	const [{ width, height, margin, padding, text }] = useStyles()
+	const [{ height, margin, padding, text }] = useStyles()
 	return {
 		firstHeaderButton: [margin.right.scale(20), height(90)],
 		secondHeaderButton: [margin.right.scale(20), height(90)],
@@ -65,7 +65,7 @@ const HomeHeaderGroupButton: React.FC<berty.chatmodel.Account> = () => {
 }
 const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => {
 	const _styles = useStylesHome()
-	const [{ row, margin, background, border, color, column }] = useStyles()
+	const [{ row, margin, background, border, color }] = useStyles()
 	const client = Chat.useClient()
 	const account = Chat.useAccount()
 	const navigation = useNavigation()
@@ -155,7 +155,6 @@ export const useAccount = () => {
 }
 
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
-	const { navigate } = useNavigation()
 	const account = { ...Chat.useAccount(), ...useAccount() }
 	const _styles = useStylesHome()
 	const [{ flex, background, row }] = useStyles()

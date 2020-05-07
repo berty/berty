@@ -114,7 +114,7 @@ const Screen = Dimensions.get('window')
 
 const ScanComponent: React.FC<{}> = () => {
 	const { goBack } = useNavigation()
-	const [{ color, padding, margin }] = useStyles()
+	const [{ color, padding }] = useStyles()
 	const titleSize = 26
 	return (
 		<View style={[{ height: Screen.height }, padding.medium]}>
