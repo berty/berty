@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Share } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { RequestProps } from '../shared-props/User'
 import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'
 import { Chat } from '@berty-tech/hooks'
@@ -84,7 +83,7 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 	}
 }
 
-const BertIdBody: React.FC<RequestProps> = ({ user }) => {
+const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 	const _styles = useStylesBertyId()
 	const [{ background, border, margin, padding, opacity }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState()
@@ -161,7 +160,7 @@ const BertyIdShare: React.FC<{}> = () => {
 
 const Screen = Dimensions.get('window')
 
-const MyBertyIdComponent: React.FC<RequestProps> = ({ user }) => {
+const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 	const { goBack } = useNavigation()
 	const [{ padding, color, margin }] = useStyles()
 	const titleSize = 26
@@ -200,7 +199,7 @@ const MyBertyIdComponent: React.FC<RequestProps> = ({ user }) => {
 	)
 }
 
-export const MyBertyId: React.FC<RequestProps> = ({ user }) => {
+export const MyBertyId: React.FC<{ user: any }> = ({ user }) => {
 	const [{ flex, background }] = useStyles()
 	return (
 		<Layout style={[flex.tiny]}>
