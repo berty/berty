@@ -1,22 +1,22 @@
 import React from 'react'
 import {
 	View,
+	SafeAreaView,
 	ScrollView,
 	TouchableOpacity,
 	StyleSheet,
+	Dimensions,
 	TouchableWithoutFeedback,
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { BlurView } from '@react-native-community/blur'
-// import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { Chat } from '@berty-tech/hooks'
 import { chat } from '@berty-tech/store'
 import { CommonActions } from '@react-navigation/core'
-import Interactable from 'react-native-interactable'
-import FromNow from '../shared-components/FromNow'
+import MainModal from './MainModal'
 
 const useStylesList = () => {
 	const [
@@ -26,7 +26,9 @@ const useStylesList = () => {
 		tinyAvatar: [absolute.scale({ top: -32.5 }), row.item.justify],
 		tinyCard: [
 			margin.medium,
+			margin.top.scale(42),
 			padding.medium,
+			padding.top.scale(42),
 			height(177),
 			border.radius.large,
 			background.white,
@@ -42,71 +44,6 @@ const useStylesList = () => {
 		addContactItem: [height(115), width(150)],
 		addContactItemText: width(75),
 	}
-}
-
-const Header: React.FC<{
-	title: string
-	icon: string
-	iconPack?: string
-	first?: boolean
-	disabled?: boolean
-}> = ({ children, title, icon, iconPack, first = false, disabled = false }) => {
-	const [
-		{ height, border, margin, row, padding, text, column, color, background, opacity },
-	] = useStyles()
-	return (
-		<View style={!first && [background.white]}>
-			<View
-				style={[
-					background.white,
-					border.radius.top.scale(30),
-					border.shadow.big,
-					disabled && opacity(0.5),
-				]}
-			>
-				<View style={[height(80)]}>
-					<View
-						style={[
-							margin.top.small,
-							row.item.justify,
-							border.scale(2.5),
-							border.color.light.grey,
-							border.radius.scale(4),
-							{
-								backgroundColor: '#E8E9FC',
-								width: '14%',
-							},
-						]}
-					/>
-					<View>
-						<View
-							style={[
-								row.fill,
-								padding.horizontal.medium,
-								padding.bottom.medium,
-								padding.top.small,
-							]}
-						>
-							<Text
-								style={[
-									text.bold.medium,
-									text.size.scale(20),
-									text.color.black,
-									column.item.center,
-								]}
-							>
-								{title}
-							</Text>
-							{icon && (
-								<Icon name={icon} pack={iconPack} width={30} height={30} fill={color.black} />
-							)}
-						</View>
-					</View>
-				</View>
-				{children && <View>{children}</View>}
-			</View>
-		</View>
-	)
 }
 
 const RequestsItem: React.FC<chat.contact.Entity> = ({ name, request, publicKey }) => {
@@ -136,15 +73,15 @@ const RequestsItem: React.FC<chat.contact.Entity> = ({ name, request, publicKey 
 			<ProceduralCircleAvatar
 				style={[_styles.tinyAvatar]}
 				seed={publicKey}
-				size={70}
-				diffSize={30}
+				size={65}
+				diffSize={15}
 			/>
-			<Text style={[flex.tiny, text.align.center, padding.top.medium]}>{name}</Text>
+			<Text style={[flex.tiny, text.align.center]}>{name}</Text>
 			<Text
 				category='c1'
 				style={[padding.vertical.medium, text.align.center, text.size.tiny, text.color.grey]}
 			>
-				{request.sent ? <FromNow date={request.sentDate} /> : 'Not sent yet'}
+				{request.sent ? 'Sent 3 days ago' : 'Not sent yet'}
 			</Text>
 			<View style={[row.fill]}>
 				<TouchableOpacity style={[_styles.tinyDiscardButton, border.scale(1), row.item.justify]}>
@@ -172,30 +109,23 @@ const RequestsItem: React.FC<chat.contact.Entity> = ({ name, request, publicKey 
 	)
 }
 
-const EmptyTab: React.FC<{}> = () => {
-	const [{ padding, background }] = useStyles()
-	return <View style={[padding.bottom.medium, background.white, padding.vertical.medium]} />
-}
-
 const Requests: React.FC<{}> = () => {
-	const [{ padding, background }] = useStyles()
+	const [{ padding }] = useStyles()
 
 	const requests = Chat.useAccountContactsWithOutgoingRequests().filter(
 		(contact) => !(contact.request.accepted || contact.request.discarded),
 	)
 
-	return requests.length >= 1 ? (
-		<View style={[background.white]}>
-			<View style={[padding.vertical.medium, background.white]}>
+	return (
+		<SafeAreaView>
+			<View style={[padding.vertical.medium]}>
 				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 					{requests.map((req) => (
 						<RequestsItem key={req.id} {...req} />
 					))}
 				</ScrollView>
 			</View>
-		</View>
-	) : (
-		<EmptyTab />
+		</SafeAreaView>
 	)
 }
 
@@ -205,7 +135,7 @@ const AddContact: React.FC<{}> = () => {
 	const [{ padding, row, column, border, background, color, text }] = useStyles()
 
 	return (
-		<View style={[padding.vertical.medium, background.white, padding.bottom.big]}>
+		<View style={[padding.vertical.medium]}>
 			<View style={[row.center]}>
 				<TouchableOpacity
 					style={[
@@ -217,10 +147,9 @@ const AddContact: React.FC<{}> = () => {
 					]}
 					onPress={navigation.navigate.main.scan}
 				>
-					<View
-						style={[row.fill, { justifyContent: 'flex-end', height: 45, alignItems: 'flex-start' }]}
-					>
-						<Icon name='qr' pack='custom' width={38} height={38} fill={color.white} />
+					<View style={[row.fill]}>
+						<View />
+						<Icon name='image-outline' height={50} width={50} fill={color.white} />
 					</View>
 					<View style={[row.fill]}>
 						<Text numberOfLines={2} style={[text.color.white, _styles.addContactItemText]}>
@@ -239,10 +168,9 @@ const AddContact: React.FC<{}> = () => {
 					]}
 					onPress={navigation.navigate.settings.myBertyId}
 				>
-					<View
-						style={[row.fill, { justifyContent: 'flex-end', height: 45, alignItems: 'flex-start' }]}
-					>
-						<Icon name='id' pack='custom' width={40} height={40} fill={color.white} />
+					<View style={[row.fill]}>
+						<View />
+						<Icon name='person-outline' height={50} width={50} fill={color.white} />
 					</View>
 					<View style={[row.fill]}>
 						<Text numberOfLines={2} style={[text.color.white, _styles.addContactItemText]}>
@@ -256,38 +184,105 @@ const AddContact: React.FC<{}> = () => {
 	)
 }
 
-export const ListModal: React.FC<{}> = () => {
-	const navigation = useNavigation()
-	const [{ absolute }] = useStyles()
+const NewGroup: React.FC<{}> = () => <View />
 
-	const handleOnDrag = (e) => {
-		if (e.nativeEvent.y >= 250) {
-			navigation.goBack()
-		}
-	}
+const Screen = Dimensions.get('window')
+
+const Header: React.FC<{
+	title: string
+	icon: string
+	iconPack?: string
+	first?: boolean
+	disabled?: boolean
+	style: any
+}> = ({ title, icon, iconPack, disabled = false, style }) => {
+	const [
+		{ height, border, margin, row, padding, text, column, color, background, opacity },
+	] = useStyles()
 	return (
-		<>
-			<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
-				<BlurView style={{ width: '100%', height: '100%' }} blurType='light' />
-			</TouchableWithoutFeedback>
-			<View style={[absolute.bottom, absolute.left, absolute.right]}>
-				<Interactable.View
-					verticalOnly={true}
-					snapPoints={[{ x: 0 }, { x: -300 }]}
-					onDrag={(e: any) => handleOnDrag(e)}
-					boundaries={{ top: 0 }}
-				>
-					<Header title='Add contact' icon='user-plus' iconPack='custom' first>
-						<AddContact />
-					</Header>
-					<Header title='Requests sent' icon='paper-plane-outline'>
-						<Requests />
-					</Header>
-					<Header title='New group' icon='users' iconPack='custom' disabled>
-						<EmptyTab />
-					</Header>
-				</Interactable.View>
+		<View
+			style={[
+				background.white,
+				border.radius.top.scale(30),
+				{
+					shadowRadius: 8,
+					shadowOffset: { height: -8 },
+					shadowOpacity: 0.1,
+				},
+				disabled && opacity(0.5),
+				style,
+			]}
+		>
+			<View style={[height(80)]}>
+				<View
+					style={[
+						margin.top.small,
+						row.item.justify,
+						border.scale(2.5),
+						border.color.light.grey,
+						,
+						border.radius.scale(4),
+						{
+							backgroundColor: '#E8E9FC',
+							width: '14%',
+						},
+					]}
+				/>
+				<View>
+					<View
+						style={[row.fill, padding.horizontal.medium, padding.bottom.medium, padding.top.small]}
+					>
+						<Text
+							style={[text.bold.medium, text.size.scale(20), text.color.black, column.item.center]}
+						>
+							{title}
+						</Text>
+						{icon && <Icon name={icon} pack={iconPack} width={30} height={30} fill={color.black} />}
+					</View>
+				</View>
 			</View>
-		</>
+		</View>
+	)
+}
+
+export const ListModal: React.FC = () => {
+	const navigation = useNavigation()
+	return (
+		<MainModal
+			blurAmount={10}
+			easing='ease-in-out'
+			duration={300}
+			items={[
+				{
+					header: (
+						<View>
+							<Header title='Add contact' icon='people-outline' />
+						</View>
+					),
+					content: <AddContact />,
+				},
+				{
+					header: (
+						<View>
+							<Header title='Requests' icon='people-outline' />
+						</View>
+					),
+					content: (
+						<View style={{ minHeight: 160 }}>
+							<Requests />
+						</View>
+					),
+				},
+				{
+					header: (
+						<View>
+							<Header disabled title='New Group' icon='people-outline' style={{ zIndex: 42 }} />
+						</View>
+					),
+					onPress: navigation.navigate.main.createGroup.createGroup2,
+				},
+			]}
+			closeModal={navigation.goBack}
+		/>
 	)
 }
