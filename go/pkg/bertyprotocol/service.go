@@ -48,6 +48,7 @@ type Opts struct {
 	MessageKeystore *MessageKeystore
 	RootContext     context.Context
 	RootDatastore   datastore.Batching
+	OrbitDirectory  string
 	OrbitCache      cache.Interface
 	createdIPFSNode *ipfs_core.IpfsNode
 }
@@ -55,6 +56,10 @@ type Opts struct {
 func defaultClientOptions(opts *Opts) error {
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
+	}
+
+	if opts.OrbitDirectory == "" {
+		opts.OrbitDirectory = ":memory:"
 	}
 
 	if opts.RootContext == nil {
@@ -92,8 +97,10 @@ func New(opts Opts) (Service, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	orbitDirectory := opts.OrbitDirectory
 	odb, err := newBertyOrbitDB(opts.RootContext, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, opts.Logger, &orbitdb.NewOrbitDBOptions{
-		Cache: opts.OrbitCache,
+		Cache:     opts.OrbitCache,
+		Directory: &orbitDirectory,
 	})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)

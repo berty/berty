@@ -9,16 +9,23 @@
 import Foundation
 import Bertybridge
 
+// @FIXME(gfanton): remove demo
+
 @objc(GoBridge)
 class GoBridge: NSObject {
-    let orbitdir: URL
-
-    var bridgeDemo: BertybridgeDemo?
+    // protocol
     var bridgeProtocol: BertybridgeProtocol?
+    let rootdir: URL
+
+    // demo
+    var bridgeDemo: BertybridgeDemo?
+    let orbitdir: URL
 
     override init() {
         // set berty dir for persistance
         let absUserUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        self.rootdir = absUserUrl.appendingPathComponent("berty", isDirectory: true)
+
         self.orbitdir = absUserUrl.appendingPathComponent("orbitdb", isDirectory: true)
 
         super.init()
@@ -154,12 +161,13 @@ class GoBridge: NSObject {
             // set persistance if needed
             if optPersistance {
                 var isDirectory: ObjCBool = true
-                let exist = FileManager.default.fileExists(atPath: self.orbitdir.path, isDirectory: &isDirectory)
+                let exist = FileManager.default.fileExists(atPath: self.rootdir.path, isDirectory: &isDirectory)
                 if !exist {
-                    try FileManager.default.createDirectory(atPath: self.orbitdir.path, withIntermediateDirectories: true, attributes: nil)
+                    try FileManager.default.createDirectory(atPath: self.rootdir.path, withIntermediateDirectories: true, attributes: nil)
                 }
 
-                config.orbitDBDirectory(self.orbitdir.path)
+                NSLog("root dir: `%@`", self.rootdir.path)
+                config.rootDirectory(self.rootdir.path)
             }
 
             let bridgeProtocol = BertybridgeNewProtocolBridge(config, &err)
