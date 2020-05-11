@@ -47,7 +47,7 @@
     "text-encoding-polyfill": "^0.6.7"
   },
   "devDependencies": {
-    "jest": "^24.9.0",
+    "jest": "24.9.0",
     "redux-devtools-cli": "^0.0.1-1",
     "redux-test-recorder": "^1.4.0",
     "socket-cluster": "^1.0.2"

@@ -36,6 +36,6 @@
     "minimist": "^1.2.0",
     "pbhbs": "^0.2.2",
     "protobufjs": "^6.8.8",
-    "semver": "^5.5.0"
+    "semver": "6.3.0"
   }
 }

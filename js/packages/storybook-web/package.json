@@ -28,10 +28,10 @@
     "react-native-web": "^0.11.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.2",
+    "@babel/core": "7.9.0",
     "@berty-tech/babel-preset": "^0.0.0",
     "@storybook/react": "^5.2.1",
-    "babel-loader": "^8.0.6",
+    "babel-loader": "8.1.0",
     "babel-plugin-react-native-web": "^0.11.7",
     "react-scripts": "^3.1.2"
   }

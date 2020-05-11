@@ -9,7 +9,7 @@
     "preset": "react-native"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.2",
+    "@babel/core": "7.9.0",
     "@babel/runtime": "^7.6.2",
     "@react-native-community/eslint-config": "^0.0.5",
     "@types/react": "^16.9.3",
@@ -21,7 +21,7 @@
     "react-native-svg-transformer": "^0.14.3",
     "react-native-typescript-transformer": "^1.2.13",
     "react-test-renderer": "^16.9.0",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.3"
   },
   "dependencies": {
     "@berty-tech/berty-navigation": "^0.0.0",

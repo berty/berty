@@ -70,6 +70,29 @@ Storybook enables isolated development of UI component libraries. Examples and s
 
 `make run.storybook.android`
 
+## Run the web dev app
+
+### 1. Requirements
+
+- `yarn`
+- `bazel`
+
+### 2. Run required services
+
+- `cd packages/web-dev-app && yarn && yarn start`
+- `port=1337 make start.grpc-bridge.berty`
+- `port=1338 make start.grpc-bridge.berty`
+
+### 3. Navigate to the app
+
+`yarn start` should have opened a browser tab already but if that's not the case, navigate to `localhost:3000`
+
+### 4. Create an account and choose a bridge
+
+In the app's ui, you have to choose a bridge port when you create your account, if you started the services using the commands above, you will have a service on port `1337` and one on port `1338`
+
+You can use one normal tab and one private tab to have two accounts at the same time
+
 ## Known issues
 
 - `make run.storybook.*` outputs error `Error: => Create a storybook config file in "./.storybook/config.{ext}".` during build

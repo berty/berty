@@ -21,7 +21,7 @@
     "preset": "react-native"
   },
   "dependencies": {
-    "@babel/core": "^7.6.2",
+    "@babel/core": "7.9.0",
     "@babel/runtime": "^7.6.2",
     "@berty-tech/babel-preset": "^0.0.0",
     "@berty-tech/berty-storybook": "^0.0.0",
@@ -39,12 +39,12 @@
     "@storybook/react-native-server": "^5.2.1",
     "@ui-kitten/eva-icons": "^4.4.1",
     "babel-jest": "^24.9.0",
-    "babel-loader": "^8.0.6",
+    "babel-loader": "8.1.0",
     "babel-plugin-module-resolver": "^3.2.0",
     "clisim": "^2.5.0",
     "eslint": "^6.6.0",
     "glob": "^7.1.4",
-    "jest": "^24.9.0",
+    "jest": "24.9.0",
     "node-libs-react-native": "^1.0.3",
     "react-native": "^0.61.5",
     "react-native-dev-menu": "^4.0.0",

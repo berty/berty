@@ -19,7 +19,7 @@
     "url": "https://github.com/berty/berty/issues"
   },
   "dependencies": {
-    "@babel/core": "^7.6.2",
+    "@babel/core": "7.9.0",
     "@babel/preset-typescript": "^7.6.0",
     "metro-react-native-babel-preset": "^0.56.0"
   }
