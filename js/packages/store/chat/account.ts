@@ -45,7 +45,7 @@ export type GlobalState = {
 export namespace Command {
 	export type Generate = void
 	export type Create = { name: string; nodeConfig: protocol.client.BertyNodeConfig }
-	export type Delete = { id: string }
+	export type Delete = { id?: string }
 	export type SendContactRequest = {
 		id: string
 		contactName: string

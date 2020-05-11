@@ -125,6 +125,7 @@ export namespace Routes {
 	}
 	export enum Modals {
 		SendContactRequest = 'SendContactRequest',
+		DeleteAccount = 'DeleteAccount',
 	}
 }
 
@@ -238,6 +239,14 @@ export const ModalsNavigation: React.FC = () => (
 		<ModalsStack.Screen
 			name={Routes.Modals.SendContactRequest}
 			component={Stories.Modals.SendContactRequest}
+			options={{
+				stackPresentation: 'transparentModal',
+				stackAnimation: 'fade',
+			}}
+		/>
+		<ModalsStack.Screen
+			name={Routes.Modals.DeleteAccount}
+			component={Stories.Modals.DeleteAccount}
 			options={{
 				stackPresentation: 'transparentModal',
 				stackAnimation: 'fade',
