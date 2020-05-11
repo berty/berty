@@ -70,6 +70,7 @@ func TestingRepo(t testing.TB) ipfs_repo.Repo {
 }
 
 type TestingAPIOpts struct {
+	Logger  *zap.Logger
 	Mocknet libp2p_mocknet.Mocknet
 	RDVPeer peer.AddrInfo
 }
@@ -78,8 +79,12 @@ type TestingAPIOpts struct {
 func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *TestingAPIOpts) (api CoreAPIMock, cleanup func()) {
 	t.Helper()
 
+	if opts.Logger == nil {
+		opts.Logger = zap.NewNop()
+	}
+
 	r := TestingRepo(t)
-	routingopt, crout := NewTinderRouting(zap.NewNop(), &opts.RDVPeer, false)
+	routingopt, crout := NewTinderRouting(opts.Logger, &opts.RDVPeer, false)
 
 	node, err := ipfs_core.NewNode(ctx, &ipfs_core.BuildCfg{
 		Repo:    r,
