@@ -14,6 +14,8 @@ import (
 )
 
 func TestContactRequestFlow(t *testing.T) {
+	testutil.SkipSlow(t)
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*20)
 	defer cancel()
 

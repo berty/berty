@@ -71,14 +71,16 @@ func (s *swiper) watchForPeriod(ctx context.Context, topic, seed []byte, t time.
 
 	nextStart := nextTimePeriod(roundedTime, s.interval)
 	ctx, cancel := context.WithDeadline(ctx, nextStart)
-	defer cancel()
 
 	ch, err := s.tinder.FindPeers(ctx, string(topicForTime))
 	if err != nil {
+		cancel()
 		return nil, err
 	}
 
 	go func() {
+		defer cancel()
+
 		for pid := range ch {
 			out <- pid
 		}
