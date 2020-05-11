@@ -23,6 +23,8 @@ func TestValidHandshake(t *testing.T) {
 		stream p2pnetwork.Stream,
 		mh *mockedHandshake,
 	) {
+		defer p2phelpers.FullClose(stream)
+
 		err := Request(
 			stream,
 			mh.requester.accountID,
@@ -38,6 +40,7 @@ func TestValidHandshake(t *testing.T) {
 		wg *sync.WaitGroup,
 	) {
 		defer wg.Done()
+		defer p2phelpers.FullClose(stream)
 
 		peerAccountID, err := Response(stream, mh.responder.accountID)
 		require.NoError(t, err, "handshake response failed")
@@ -72,6 +75,7 @@ func TestInvalidRequesterHello(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
+			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			requireEqualFirstErrcode(t, errcode.ErrHandshakeRequesterHello, err)
@@ -93,6 +97,8 @@ func TestInvalidResponderHello(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			defer p2phelpers.FullClose(stream)
+
 			err := Request(
 				stream,
 				mh.requester.accountID,
@@ -156,6 +162,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
+			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.requester.accountID)
 			requireEqualFirstErrcode(
@@ -223,6 +230,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
+			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			requireEqualFirstErrcode(
@@ -295,6 +303,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
+			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			requireEqualFirstErrcode(
@@ -371,6 +380,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
+			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			requireEqualFirstErrcode(
@@ -444,6 +454,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
+			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			requireEqualFirstErrcode(
@@ -508,6 +519,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
+			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			requireEqualFirstErrcode(
@@ -577,6 +589,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
+			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			requireEqualFirstErrcode(
@@ -649,6 +662,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
+			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			requireEqualFirstErrcode(
@@ -697,6 +711,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
+			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			requireEqualFirstErrcode(
@@ -722,6 +737,8 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			defer p2phelpers.FullClose(stream)
+
 			err := Request(
 				stream,
 				mh.requester.accountID,
@@ -770,6 +787,8 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			defer p2phelpers.FullClose(stream)
+
 			err := Request(
 				stream,
 				mh.requester.accountID,
@@ -846,6 +865,8 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			defer p2phelpers.FullClose(stream)
+
 			err := Request(
 				stream,
 				mh.requester.accountID,
@@ -919,6 +940,8 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			defer p2phelpers.FullClose(stream)
+
 			err := Request(
 				stream,
 				mh.requester.accountID,
@@ -982,6 +1005,8 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			defer p2phelpers.FullClose(stream)
+
 			err := Request(
 				stream,
 				mh.requester.accountID,
@@ -1051,6 +1076,8 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			defer p2phelpers.FullClose(stream)
+
 			err := Request(
 				stream,
 				mh.requester.accountID,
@@ -1123,6 +1150,8 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			defer p2phelpers.FullClose(stream)
+
 			err := Request(
 				stream,
 				mh.requester.accountID,
@@ -1204,6 +1233,7 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
+			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			requireEqualFirstErrcode(
@@ -1258,6 +1288,7 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
+			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			requireEqualFirstErrcode(

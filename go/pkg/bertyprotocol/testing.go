@@ -55,6 +55,7 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 		DeviceKeystore:  NewDeviceKeystore(keystore.NewMemKeystore()),
 		MessageKeystore: NewInMemMessageKeystore(),
 		IpfsCoreAPI:     node,
+		TinderDriver:    node.Tinder(),
 	}
 
 	service, cleanupService := TestingService(t, serviceOpts)

@@ -27,7 +27,6 @@ import (
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
-	iface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/juju/fslock"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -235,7 +234,10 @@ func main() {
 			cleanup := globalPreRun(ctx)
 			defer cleanup()
 
-			var api iface.CoreAPI
+			var (
+				api        ipfsutil.ExtendedCoreAPI
+				routingOut *ipfsutil.RoutingOut
+			)
 			{
 				var err error
 				var bopts = ipfsutil.CoreAPIConfig{
@@ -268,7 +270,7 @@ func main() {
 				defer node.Close()
 
 				if crouting != nil {
-					routingOut := <-crouting
+					routingOut = <-crouting
 					defer routingOut.IpfsDHT.Close()
 
 					if *clientProtocolRDVPFroce {
@@ -309,6 +311,7 @@ func main() {
 
 				// initialize new protocol client
 				opts := bertyprotocol.Opts{
+					TinderDriver:    routingOut,
 					IpfsCoreAPI:     api,
 					Logger:          logger.Named("bertyprotocol"),
 					RootContext:     ctx,

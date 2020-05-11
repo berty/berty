@@ -10,17 +10,14 @@ import (
 
 	ggio "github.com/gogo/protobuf/io"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-	p2phelpers "github.com/libp2p/go-libp2p-core/helpers"
 	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
 )
 
-// Response handle the handshake inited by the requester
-func Response(stream p2pnetwork.Stream, ownAccountID p2pcrypto.PrivKey) (p2pcrypto.PubKey, error) {
-	defer p2phelpers.FullClose(stream)
-
+// ResponseUsingReaderWriter handle the handshake inited by the requester, using provided ggio reader and writer
+func ResponseUsingReaderWriter(reader ggio.Reader, writer ggio.Writer, ownAccountID p2pcrypto.PrivKey) (p2pcrypto.PubKey, error) {
 	hc := &handshakeContext{
-		reader:          ggio.NewDelimitedReader(stream, 2048),
-		writer:          ggio.NewDelimitedWriter(stream),
+		reader:          reader,
+		writer:          writer, // ggio.NewDelimitedWriter(stream),
 		ownAccountID:    ownAccountID,
 		sharedEphemeral: &[cryptoutil.KeySize]byte{},
 	}
@@ -43,6 +40,14 @@ func Response(stream p2pnetwork.Stream, ownAccountID p2pcrypto.PrivKey) (p2pcryp
 	}
 
 	return hc.peerAccountID, nil
+}
+
+// Response handle the handshake inited by the requester
+func Response(stream p2pnetwork.Stream, ownAccountID p2pcrypto.PrivKey) (p2pcrypto.PubKey, error) {
+	reader := ggio.NewDelimitedReader(stream, 2048)
+	writer := ggio.NewDelimitedWriter(stream)
+
+	return ResponseUsingReaderWriter(reader, writer, ownAccountID)
 }
 
 // 1st step - Responder receives: a

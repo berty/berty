@@ -57,7 +57,7 @@ func (s *service) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Re
 	// @FIXME: Wait for subscription to be ready, we should find a way to avoid this
 	time.AfterFunc(time.Millisecond*100, func() {
 		if err := sub.SendHeader(mdReady.Copy()); err != nil {
-			s.logger.Warn("Send header header error", zap.Error(err))
+			s.logger.Warn("Send header error", zap.Error(err))
 		}
 	})
 

@@ -292,10 +292,6 @@ func (m *metadataStore) GetIncomingContactRequestsStatus() (bool, *bertytypes.Sh
 	enabled := m.Index().(*metadataStoreIndex).contactRequestsEnabled()
 	seed := m.Index().(*metadataStoreIndex).contactRequestsSeed()
 
-	if len(seed) == 0 {
-		return enabled, nil
-	}
-
 	md, err := m.devKS.MemberDeviceForGroup(m.g)
 	if err != nil {
 		m.logger.Error("unable to get member device for group", zap.Error(err))
@@ -744,7 +740,13 @@ func (m *metadataStore) checkContactStatus(pk crypto.PubKey, states ...bertytype
 
 	contact, err := m.Index().(*metadataStoreIndex).getContact(pk)
 	if err != nil {
-		m.logger.Error("unable to get contact for public key", zap.Error(err))
+		for _, s := range states {
+			if bertytypes.ContactStateUndefined == s {
+				return true
+			}
+		}
+
+		m.logger.Warn("unable to get contact for public key", zap.Error(err))
 		return false
 	}
 

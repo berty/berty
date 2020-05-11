@@ -33,12 +33,12 @@ type CoreAPIConfig struct {
 	Options []CoreAPIOption
 }
 
-func NewCoreAPI(ctx context.Context, cfg *CoreAPIConfig) (ipfs_interface.CoreAPI, *ipfs_core.IpfsNode, error) {
+func NewCoreAPI(ctx context.Context, cfg *CoreAPIConfig) (ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
 	ds := dsync.MutexWrap(ds.NewMapDatastore())
 	return NewCoreAPIFromDatastore(ctx, ds, cfg)
 }
 
-func NewCoreAPIFromDatastore(ctx context.Context, ds ipfs_ds.Batching, cfg *CoreAPIConfig) (ipfs_interface.CoreAPI, *ipfs_core.IpfsNode, error) {
+func NewCoreAPIFromDatastore(ctx context.Context, ds ipfs_ds.Batching, cfg *CoreAPIConfig) (ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
 	repo, err := CreateMockedRepo(ds)
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
@@ -47,7 +47,7 @@ func NewCoreAPIFromDatastore(ctx context.Context, ds ipfs_ds.Batching, cfg *Core
 	return NewCoreAPIFromRepo(ctx, repo, cfg)
 }
 
-func NewCoreAPIFromRepo(ctx context.Context, repo ipfs_repo.Repo, cfg *CoreAPIConfig) (ipfs_interface.CoreAPI, *ipfs_core.IpfsNode, error) {
+func NewCoreAPIFromRepo(ctx context.Context, repo ipfs_repo.Repo, cfg *CoreAPIConfig) (ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
 	bcfg, err := CreateBuildConfig(repo, cfg)
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
@@ -65,7 +65,7 @@ func NewCoreAPIFromRepo(ctx context.Context, repo ipfs_repo.Repo, cfg *CoreAPICo
 }
 
 // NewConfigurableCoreAPI returns an IPFS CoreAPI from a provided ipfs_node.BuildCfg
-func NewConfigurableCoreAPI(ctx context.Context, bcfg *ipfs_node.BuildCfg, opts ...CoreAPIOption) (ipfs_interface.CoreAPI, *ipfs_core.IpfsNode, error) {
+func NewConfigurableCoreAPI(ctx context.Context, bcfg *ipfs_node.BuildCfg, opts ...CoreAPIOption) (ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
 	node, err := ipfs_core.NewNode(ctx, bcfg)
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
@@ -85,7 +85,7 @@ func NewConfigurableCoreAPI(ctx context.Context, bcfg *ipfs_node.BuildCfg, opts 
 		}
 	}
 
-	return api, node, nil
+	return NewExtendedCoreAPI(node.PeerHost, api), node, nil
 }
 
 func CreateBuildConfig(repo ipfs_repo.Repo, opts *CoreAPIConfig) (*ipfs_node.BuildCfg, error) {

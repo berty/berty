@@ -13,10 +13,10 @@ import (
 	"net/http"
 	"net/textproto"
 
-	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 )
 
-func (pc *ProtocolConfig) ipfsCoreAPI(api ipfs_interface.CoreAPI) {
+func (pc *ProtocolConfig) ipfsCoreAPI(api ipfsutil.ExtendedCoreAPI) {
 	pc.coreAPI = api
 }
 
