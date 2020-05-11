@@ -68,7 +68,7 @@ const EditMyProfile: React.FC<{}> = () => {
 }
 
 const ResetMyQrCode: React.FC<{}> = () => {
-	const [{ padding, margin, row, column, background, border, text, color }] = useStyles()
+	const [{ padding, margin, row, background, border, text, color }] = useStyles()
 	return (
 		<View style={[padding.horizontal.big, margin.vertical.big]}>
 			<TouchableOpacity
@@ -131,7 +131,6 @@ const ResetMyQrCode: React.FC<{}> = () => {
 const Screen = Dimensions.get('window')
 
 export const EditProfile: React.FC<ScreenProps.Settings.EditProfile> = () => {
-	const { goBack } = useNavigation()
 	const firstNotToggledPoint = Screen.height - 110 // 90 = header height component // 20 = padding // 10 = safeAreaview // 497 = height of the third component
 	const firstToggledPoint = firstNotToggledPoint - 370 // 379.5 = height of first component / 10 = padding
 

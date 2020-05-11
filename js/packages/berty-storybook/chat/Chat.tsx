@@ -35,9 +35,7 @@ const useStylesChat = () => {
 export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 	const { dispatch, goBack } = useNavigation()
 	const _styles = useStylesChat()
-	const [
-		{ absolute, row, padding, column, margin, text, flex, background, opacity, color },
-	] = useStyles()
+	const [{ absolute, row, padding, column, margin, text, flex, opacity, color }] = useStyles()
 	const conversation = ChatHooks.useGetConversation(id)
 	const contact = ChatHooks.useOneToOneConversationContact(conversation.id)
 	const title =
@@ -106,7 +104,7 @@ const InfosChat: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 	)
 }
 
-const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
+// const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
 const AppMessage: React.FC<{ message: string }> = ({ message }) => {
 	const msg = ChatHooks.useGetMessage(message)

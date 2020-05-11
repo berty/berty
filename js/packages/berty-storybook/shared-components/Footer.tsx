@@ -131,7 +131,7 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 const max = (a: number, b: number) => (a >= b ? a : b)
 
 export const Footer: React.FC<FooterProps> = ({ left, center, right }) => {
-	const [{ absolute, padding }] = useStyles()
+	const [{ absolute }] = useStyles()
 	return (
 		<LinearGradient
 			style={[absolute.bottom, { alignItems: 'center', justifyContent: 'center', width: '100%' }]}

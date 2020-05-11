@@ -29,7 +29,7 @@ export const ChatFooter: React.FC<{
 	const inputRef = useRef(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
 	const _styles = useStylesChatFooter()
-	const [{ background, row, padding, flex, border, column, color }] = useStyles()
+	const [{ row, padding, flex, border, color }] = useStyles()
 	const sendMessage = Chat.useMessageSend()
 	const conversation = Chat.useGetConversation(convId)
 	const isFake = conversation.kind === 'fake'

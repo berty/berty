@@ -95,7 +95,7 @@ export const RequestAvatar: React.FC<RequestAvatarProps> = ({
 	style = null,
 	isVerified = false,
 }) => {
-	const [{ height, row, flex, text, margin, color, absolute }] = useStyles()
+	const [{ height, row, flex, text, margin, color }] = useStyles()
 	return (
 		<View style={[height(size), row.left, flex.tiny, { justifyContent: 'center' }, style]}>
 			<View style={[flex.tiny, row.item.bottom, row.center]}>
@@ -112,16 +112,6 @@ export const RequestAvatar: React.FC<RequestAvatarProps> = ({
 					/>
 				)}
 			</View>
-			{/*!isGroup || !secondAvatarUri ? (
-				<ProceduralCircleAvatar
-					seed={seed}
-					size={size}
-					diffSize={20}
-					style={[absolute.scale({ top: -size / 2 })]}
-				/>
-			) : (
-				<GroupCircleAvatar firstAvatarUri={avatarUri} secondAvatarUri={secondAvatarUri} />
-			)*/}
 		</View>
 	)
 }
