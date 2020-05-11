@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="291px" height="241px" viewBox="0 0 291 241" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>empty_contact</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <circle id="path-1" cx="59.5" cy="36.5" r="36.5"></circle>
+        <path d="M43.5769231,41.3583333 L43.5769231,46.175 C43.5769231,47.62 42.6179487,48.5833333 41.1794872,48.5833333 C39.7410256,48.5833333 38.7820513,47.62 38.7820513,46.175 L38.7820513,41.3583333 C38.7820513,37.2641667 35.6653846,34.1333333 31.5897436,34.1333333 L12.4102564,34.1333333 C8.33461538,34.1333333 5.21794872,37.2641667 5.21794872,41.3583333 L5.21794872,46.175 C5.21794872,47.62 4.25897436,48.5833333 2.82051282,48.5833333 C1.38205128,48.5833333 0.423076923,47.62 0.423076923,46.175 L0.423076923,41.3583333 C0.423076923,34.615 5.6974359,29.3166667 12.4102564,29.3166667 L31.5897436,29.3166667 C38.3025641,29.3166667 43.5769231,34.615 43.5769231,41.3583333 Z M10.0128205,12.4583333 C10.0128205,5.715 15.2871795,0.416666667 22,0.416666667 C28.7128205,0.416666667 33.9871795,5.715 33.9871795,12.4583333 C33.9871795,19.2016667 28.7128205,24.5 22,24.5 C15.2871795,24.5 10.0128205,19.2016667 10.0128205,12.4583333 Z M14.8076923,12.4583333 C14.8076923,16.5525 17.924359,19.6833333 22,19.6833333 C26.075641,19.6833333 29.1923077,16.5525 29.1923077,12.4583333 C29.1923077,8.36416667 26.075641,5.23333333 22,5.23333333 C17.924359,5.23333333 14.8076923,8.36416667 14.8076923,12.4583333 Z" id="path-2"></path>
+        <circle id="path-4" cx="59.5" cy="36.5" r="36.5"></circle>
+        <circle id="path-5" cx="59.5" cy="36.5" r="36.5"></circle>
+        <path d="M43.5769231,41.3583333 L43.5769231,46.175 C43.5769231,47.62 42.6179487,48.5833333 41.1794872,48.5833333 C39.7410256,48.5833333 38.7820513,47.62 38.7820513,46.175 L38.7820513,41.3583333 C38.7820513,37.2641667 35.6653846,34.1333333 31.5897436,34.1333333 L12.4102564,34.1333333 C8.33461538,34.1333333 5.21794872,37.2641667 5.21794872,41.3583333 L5.21794872,46.175 C5.21794872,47.62 4.25897436,48.5833333 2.82051282,48.5833333 C1.38205128,48.5833333 0.423076923,47.62 0.423076923,46.175 L0.423076923,41.3583333 C0.423076923,34.615 5.6974359,29.3166667 12.4102564,29.3166667 L31.5897436,29.3166667 C38.3025641,29.3166667 43.5769231,34.615 43.5769231,41.3583333 Z M10.0128205,12.4583333 C10.0128205,5.715 15.2871795,0.416666667 22,0.416666667 C28.7128205,0.416666667 33.9871795,5.715 33.9871795,12.4583333 C33.9871795,19.2016667 28.7128205,24.5 22,24.5 C15.2871795,24.5 10.0128205,19.2016667 10.0128205,12.4583333 Z M14.8076923,12.4583333 C14.8076923,16.5525 17.924359,19.6833333 22,19.6833333 C26.075641,19.6833333 29.1923077,16.5525 29.1923077,12.4583333 C29.1923077,8.36416667 26.075641,5.23333333 22,5.23333333 C17.924359,5.23333333 14.8076923,8.36416667 14.8076923,12.4583333 Z" id="path-6"></path>
+        <circle id="path-8" cx="59.5" cy="36.5" r="36.5"></circle>
+        <rect id="path-9" x="0" y="18" width="120" height="132" rx="15"></rect>
+        <circle id="path-10" cx="59.5" cy="36.5" r="36.5"></circle>
+        <path d="M43.5769231,41.3583333 L43.5769231,46.175 C43.5769231,47.62 42.6179487,48.5833333 41.1794872,48.5833333 C39.7410256,48.5833333 38.7820513,47.62 38.7820513,46.175 L38.7820513,41.3583333 C38.7820513,37.2641667 35.6653846,34.1333333 31.5897436,34.1333333 L12.4102564,34.1333333 C8.33461538,34.1333333 5.21794872,37.2641667 5.21794872,41.3583333 L5.21794872,46.175 C5.21794872,47.62 4.25897436,48.5833333 2.82051282,48.5833333 C1.38205128,48.5833333 0.423076923,47.62 0.423076923,46.175 L0.423076923,41.3583333 C0.423076923,34.615 5.6974359,29.3166667 12.4102564,29.3166667 L31.5897436,29.3166667 C38.3025641,29.3166667 43.5769231,34.615 43.5769231,41.3583333 Z M10.0128205,12.4583333 C10.0128205,5.715 15.2871795,0.416666667 22,0.416666667 C28.7128205,0.416666667 33.9871795,5.715 33.9871795,12.4583333 C33.9871795,19.2016667 28.7128205,24.5 22,24.5 C15.2871795,24.5 10.0128205,19.2016667 10.0128205,12.4583333 Z M14.8076923,12.4583333 C14.8076923,16.5525 17.924359,19.6833333 22,19.6833333 C26.075641,19.6833333 29.1923077,16.5525 29.1923077,12.4583333 C29.1923077,8.36416667 26.075641,5.23333333 22,5.23333333 C17.924359,5.23333333 14.8076923,8.36416667 14.8076923,12.4583333 Z" id="path-11"></path>
+        <circle id="path-13" cx="59.5" cy="36.5" r="36.5"></circle>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <ellipse id="Oval" fill-opacity="0.75" fill="#ECECF0" fill-rule="nonzero" cx="143.306163" cy="209.265159" rx="64" ry="8"></ellipse>
+        <g id="Group-2" transform="translate(211.306163, 89.265159) rotate(17.000000) translate(-211.306163, -89.265159) translate(151.306163, 14.265159)">
+            <rect id="Rectangle" stroke="#ECECF0" stroke-width="5" fill="#FFFFFF" fill-rule="nonzero" x="2.5" y="20.5" width="115" height="127" rx="15"></rect>
+            <g id="Oval" fill-rule="nonzero">
+                <circle stroke="#ECECF0" stroke-width="5" stroke-linejoin="square" fill="#FFFFFF" fill-rule="evenodd" cx="59.5" cy="36.5" r="34"></circle>
+                <circle stroke="#FFFFFF" stroke-width="4" cx="59.5" cy="36.5" r="38.5"></circle>
+            </g>
+            <path d="M26.5,93.5 L97.5,93.5" id="Line-2" stroke="#ECECF0" stroke-width="5" stroke-linecap="round" stroke-dasharray="6,9" fill-rule="nonzero"></path>
+            <path d="M26.5,112.5 L97.5,112.5" id="Line-2" stroke="#ECECF0" stroke-width="5" stroke-linecap="round" stroke-dasharray="6,9" fill-rule="nonzero"></path>
+            <g id="icon-/-user" transform="translate(37.000000, 19.000000)">
+                <mask id="mask-3" fill="white">
+                    <use xlink:href="#path-2"></use>
+                </mask>
+                <use id="Mask" fill="#ECECF0" fill-rule="nonzero" xlink:href="#path-2"></use>
+            </g>
+            <g id="Oval" fill-rule="nonzero">
+                <circle stroke="#ECECF0" stroke-width="5" stroke-linejoin="square" cx="59.5" cy="36.5" r="34"></circle>
+                <circle stroke="#FFFFFF" stroke-width="4" cx="59.5" cy="36.5" r="38.5"></circle>
+            </g>
+        </g>
+        <g id="Group-2" transform="translate(79.306163, 89.265159) scale(-1, 1) rotate(17.000000) translate(-79.306163, -89.265159) translate(19.306163, 14.265159)">
+            <rect id="Rectangle" stroke="#ECECF0" stroke-width="5" fill="#FFFFFF" fill-rule="nonzero" x="2.5" y="20.5" width="115" height="127" rx="15"></rect>
+            <g id="Oval" fill-rule="nonzero">
+                <circle stroke="#ECECF0" stroke-width="5" stroke-linejoin="square" fill="#FFFFFF" fill-rule="evenodd" cx="59.5" cy="36.5" r="34"></circle>
+                <circle stroke="#FFFFFF" stroke-width="4" cx="59.5" cy="36.5" r="38.5"></circle>
+            </g>
+            <path d="M26.5,93.5 L97.5,93.5" id="Line-2" stroke="#ECECF0" stroke-width="5" stroke-linecap="round" stroke-dasharray="6,9" fill-rule="nonzero"></path>
+            <path d="M26.5,112.5 L97.5,112.5" id="Line-2" stroke="#ECECF0" stroke-width="5" stroke-linecap="round" stroke-dasharray="6,9" fill-rule="nonzero"></path>
+            <g id="icon-/-user" transform="translate(37.000000, 19.000000)">
+                <mask id="mask-7" fill="white">
+                    <use xlink:href="#path-6"></use>
+                </mask>
+                <use id="Mask" fill="#ECECF0" fill-rule="nonzero" xlink:href="#path-6"></use>
+            </g>
+            <g id="Oval" fill-rule="nonzero">
+                <circle stroke="#ECECF0" stroke-width="5" stroke-linejoin="square" cx="59.5" cy="36.5" r="34"></circle>
+                <circle stroke="#FFFFFF" stroke-width="4" cx="59.5" cy="36.5" r="38.5"></circle>
+            </g>
+        </g>
+        <g id="Group-2" transform="translate(85.306163, 23.265159)">
+            <g id="Rectangle" fill-rule="nonzero" stroke-width="5">
+                <rect stroke="#ECECF0" stroke-linejoin="square" fill="#FFFFFF" fill-rule="evenodd" x="2.5" y="20.5" width="115" height="127" rx="15"></rect>
+                <rect stroke="#FFFFFF" x="-2.5" y="15.5" width="125" height="137" rx="15"></rect>
+            </g>
+            <g id="Oval" fill-rule="nonzero">
+                <circle stroke="#ECECF0" stroke-width="5" stroke-linejoin="square" fill="#FFFFFF" fill-rule="evenodd" cx="59.5" cy="36.5" r="34"></circle>
+                <circle stroke="#FFFFFF" stroke-width="4" cx="59.5" cy="36.5" r="38.5"></circle>
+            </g>
+            <path d="M26.5,93.5 L97.5,93.5" id="Line-2" stroke="#ECECF0" stroke-width="5" stroke-linecap="round" stroke-dasharray="6,9" fill-rule="nonzero"></path>
+            <path d="M26.5,112.5 L97.5,112.5" id="Line-2" stroke="#ECECF0" stroke-width="5" stroke-linecap="round" stroke-dasharray="6,9" fill-rule="nonzero"></path>
+            <g id="icon-/-user" transform="translate(37.000000, 19.000000)">
+                <mask id="mask-12" fill="white">
+                    <use xlink:href="#path-11"></use>
+                </mask>
+                <use id="Mask" fill="#ECECF0" fill-rule="nonzero" xlink:href="#path-11"></use>
+            </g>
+            <g id="Oval" fill-rule="nonzero">
+                <circle stroke="#ECECF0" stroke-width="5" stroke-linejoin="square" cx="59.5" cy="36.5" r="34"></circle>
+                <circle stroke="#FFFFFF" stroke-width="4" cx="59.5" cy="36.5" r="38.5"></circle>
+            </g>
+        </g>
+    </g>
+</svg>
