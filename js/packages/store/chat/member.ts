@@ -1,6 +1,7 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, select, put, takeLeading } from 'redux-saga/effects'
+import { all } from 'redux-saga/effects'
+import { makeDefaultCommandsSagas } from '../utils'
 
 export type Entity = {
 	id: string
@@ -117,15 +118,5 @@ export const transactions: Transactions = {
 }
 
 export function* orchestrator() {
-	yield all([
-		takeLeading(commands.create, function*(action) {
-			yield* transactions.create(action.payload)
-		}),
-		takeLeading(commands.invite, function*(action) {
-			yield* transactions.invite(action.payload)
-		}),
-		takeLeading(commands.remove, function*(action) {
-			yield* transactions.remove(action.payload)
-		}),
-	])
+	yield all([...makeDefaultCommandsSagas(commands, transactions)])
 }

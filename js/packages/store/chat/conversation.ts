@@ -1,9 +1,10 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, select, takeLeading, takeEvery, fork, take } from 'redux-saga/effects'
+import { put, all, select, takeEvery } from 'redux-saga/effects'
 import { berty } from '@berty-tech/api'
 import { Buffer } from 'buffer'
 import { AppMessage, GroupInvitation, SetGroupName, AppMessageType } from './AppMessage'
+import { makeDefaultCommandsSagas, strToBuf, bufToStr, jsonToBuf, bufToJSON } from '../utils'
 
 import * as protocol from '../protocol'
 import { contact } from '../chat'
@@ -19,8 +20,9 @@ type BaseConversation = {
 	messages: Array<string>
 	unreadCount: number
 	reading: boolean
-	lastSentMessage: string
-	lastMessageDate: number
+	lastSentMessage?: string
+	lastMessageDate?: number
+	kind: berty.chatmodel.Conversation.Kind | 'fake'
 }
 
 type FakeConversation = BaseConversation & {
@@ -78,7 +80,7 @@ export namespace Event {
 	export type Created = {
 		accountId: string
 		title: string
-		pk: Uint8Array
+		pk: string
 	} & (
 		| {
 				kind: berty.chatmodel.Conversation.Kind.OneToOne
@@ -92,9 +94,9 @@ export namespace Event {
 	}
 	export type DeviceAdded = {
 		accountId: string
-		groupPk: Uint8Array
-		devicePk: Uint8Array
-		memberPk: Uint8Array
+		groupPk: string
+		devicePk: string
+		memberPk: string
 	}
 	export type MessageAdded = {
 		aggregateId: string
@@ -160,13 +162,16 @@ const commandHandler = createSlice<State, CommandsReducer>({
 	},
 })
 
-const getAggregateId: (kwargs: { accountId: string; groupPk: Uint8Array }) => string = ({
-	accountId,
-	groupPk,
-}) => Buffer.concat([Buffer.from(accountId, 'utf-8'), Buffer.from(groupPk)]).toString('base64')
-
-const decodePublicKey = (val: Buffer | Uint8Array) => Buffer.from(val).toString('utf-8')
-const encodePublicKey = (val: string) => Buffer.from(val, 'utf-8')
+export const getAggregateId: (kwargs: {
+	accountId: string
+	groupPk: string | Uint8Array
+}) => string = ({ accountId, groupPk }) =>
+	bufToStr(
+		Buffer.concat([
+			Buffer.from(accountId, 'utf-8'),
+			typeof groupPk === 'string' ? strToBuf(groupPk) : Buffer.from(groupPk),
+		]),
+	)
 
 const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/conversation/event',
@@ -180,13 +185,13 @@ const eventHandler = createSlice<State, EventsReducer>({
 		created: (state, { payload }) => {
 			const { accountId, pk, title } = payload
 			// Create id
-			const id = getAggregateId({ accountId, groupPk: pk })
+			const id = getAggregateId({ accountId, groupPk: strToBuf(pk) })
 			if (!state.aggregates[id]) {
 				const base = {
 					id,
 					accountId,
 					title,
-					pk: new Buffer(pk).toString(),
+					pk,
 					createdAt: Date.now(),
 					members: [],
 					messages: [],
@@ -229,21 +234,20 @@ const eventHandler = createSlice<State, EventsReducer>({
 		deviceAdded: (state, { payload }) => {
 			const { accountId, groupPk, devicePk, memberPk } = payload
 
-			const aggregateId = getAggregateId({ accountId, groupPk })
+			const aggregateId = getAggregateId({ accountId, groupPk: strToBuf(groupPk) })
 			const conversation = state.aggregates[aggregateId]
 
 			if (conversation) {
-				const memberPkStr = decodePublicKey(memberPk)
-				if (!conversation.membersDevices[memberPkStr]) {
-					conversation.membersDevices[memberPkStr] = []
+				if (!conversation.membersDevices[memberPk]) {
+					conversation.membersDevices[memberPk] = []
 				}
 
-				const devicePkStr = decodePublicKey(devicePk)
-				const set = conversation.membersDevices[memberPkStr]
-				if (!set.includes(devicePkStr)) {
-					set.push(devicePkStr)
+				const set = conversation.membersDevices[memberPk]
+				if (!set.includes(devicePk)) {
+					set.push(devicePk)
 				}
 			}
+			return state
 		},
 		startRead: (state, { payload: id }) => {
 			const conv = state.aggregates[id]
@@ -328,33 +332,14 @@ export const transactions: Transactions = {
 		)
 		for (const { pk } of multiMemberConversationsOfAccount) {
 			if (pk) {
-				yield fork(function*() {
-					const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
-						id: accountId,
-						groupPk: encodePublicKey(pk),
-						// TODO: use last cursor
-						since: new Uint8Array(),
-						until: new Uint8Array(),
-						goBackwards: false,
-					})
-					while (1) {
-						const action = yield take(chan)
-						yield put(action)
-					}
+				const gpkb = strToBuf(pk)
+				yield* protocol.client.transactions.activateGroup({
+					id: accountId,
+					groupPk: gpkb,
 				})
-				yield fork(function*() {
-					const chan = yield* protocol.transactions.client.groupMessageSubscribe({
-						id: accountId,
-						groupPk: encodePublicKey(pk),
-						// TODO: use last cursor
-						since: new Uint8Array(),
-						until: new Uint8Array(),
-						goBackwards: false,
-					})
-					while (1) {
-						const action = yield take(chan)
-						yield put(action)
-					}
+				yield* protocol.transactions.client.listenToGroup({
+					clientId: accountId,
+					groupPk: gpkb,
 				})
 			}
 		}
@@ -368,7 +353,7 @@ export const transactions: Transactions = {
 		})) as {
 			groupPk: Uint8Array
 		}
-		const groupPkStr = decodePublicKey(groupPk)
+		const groupPkStr = bufToStr(groupPk)
 
 		const setGroupName: SetGroupName = {
 			type: AppMessageType.SetGroupName,
@@ -377,7 +362,7 @@ export const transactions: Transactions = {
 		yield* protocol.client.transactions.appMetadataSend({
 			id: accountId,
 			groupPk,
-			payload: Buffer.from(JSON.stringify(setGroupName), 'utf-8'),
+			payload: jsonToBuf(setGroupName),
 		})
 
 		const group: berty.types.IGroup = {
@@ -396,8 +381,8 @@ export const transactions: Transactions = {
 				yield* protocol.client.transactions.appMetadataSend({
 					// TODO: replace with appMessageSend
 					id: accountId,
-					groupPk: encodePublicKey(oneToOnePk),
-					payload: Buffer.from(JSON.stringify(invitation), 'utf-8'),
+					groupPk: strToBuf(oneToOnePk),
+					payload: jsonToBuf(invitation),
 				})
 			} else {
 				console.warn(
@@ -441,27 +426,7 @@ export const transactions: Transactions = {
 
 export function* orchestrator() {
 	yield all([
-		takeLeading(commands.generate, function*(action) {
-			yield* transactions.generate(action.payload)
-		}),
-		takeLeading(commands.create, function*(action) {
-			yield* transactions.create(action.payload)
-		}),
-		takeLeading(commands.delete, function*(action) {
-			yield* transactions.delete(action.payload)
-		}),
-		takeLeading(commands.deleteAll, function*() {
-			yield* transactions.deleteAll()
-		}),
-		takeLeading(commands.addMessage, function*(action) {
-			yield* transactions.addMessage(action.payload)
-		}),
-		takeLeading(commands.startRead, function*(action) {
-			yield* transactions.startRead(action.payload)
-		}),
-		takeLeading(commands.stopRead, function*(action) {
-			yield* transactions.stopRead(action.payload)
-		}),
+		...makeDefaultCommandsSagas(commands, transactions),
 		// Events
 		takeEvery(protocol.events.client.accountContactRequestIncomingAccepted, function*({ payload }) {
 			const {
@@ -479,7 +444,7 @@ export function* orchestrator() {
 				events.created({
 					accountId,
 					title: request.name,
-					pk: groupPk,
+					pk: bufToStr(groupPk),
 					kind: berty.chatmodel.Conversation.Kind.OneToOne,
 					contactId: contact.getAggregateId({ accountId, contactPk }),
 				}),
@@ -488,18 +453,39 @@ export function* orchestrator() {
 		takeEvery(protocol.events.client.accountContactRequestOutgoingEnqueued, function*({ payload }) {
 			const {
 				aggregateId: accountId,
-				event: { groupPk, contact: c },
+				event: { contact: c },
 			} = payload
 			// Recup metadata
 			if (!c || !c.metadata || !c.pk) {
 				throw new Error('Invalid contact')
 			}
-			const metadata = JSON.parse(new Buffer(c.metadata).toString('utf-8'))
+			const contactPk = payload.event.contact.pk
+			if (!contactPk) {
+				return
+			}
+			const groupInfo = (yield* protocol.transactions.client.groupInfo({
+				id: payload.aggregateId,
+				contactPk,
+			} as any)) as berty.types.GroupInfo.IReply
+			const { group } = groupInfo
+			if (!group) {
+				return
+			}
+			const { publicKey: groupPk } = group
+			if (!groupPk) {
+				return
+			}
+			yield* protocol.transactions.client.activateGroup({
+				id: payload.aggregateId,
+				groupPk,
+			})
+			const groupPkStr = bufToStr(groupPk)
+			const metadata: contact.ContactRequestMetadata = bufToJSON(c.metadata)
 			yield put(
 				events.created({
 					accountId,
 					title: metadata.givenName,
-					pk: groupPk,
+					pk: groupPkStr,
 					kind: berty.chatmodel.Conversation.Kind.OneToOne,
 					contactId: contact.getAggregateId({ accountId, contactPk: c.pk }),
 				}),
@@ -515,7 +501,14 @@ export function* orchestrator() {
 			if (!groupPk) {
 				return
 			}
-			yield put(events.deviceAdded({ accountId, groupPk, memberPk, devicePk }))
+			yield put(
+				events.deviceAdded({
+					accountId,
+					groupPk: bufToStr(groupPk),
+					memberPk: bufToStr(memberPk),
+					devicePk: bufToStr(devicePk),
+				}),
+			)
 		}),
 		takeEvery(protocol.events.client.accountGroupJoined, function*({ payload }) {
 			const {
@@ -533,38 +526,11 @@ export function* orchestrator() {
 				events.created({
 					accountId,
 					title: 'Unknown',
-					pk: publicKey,
+					pk: bufToStr(publicKey),
 					kind: berty.chatmodel.Conversation.Kind.PrivateGroup,
 				}),
 			)
-			yield fork(function*() {
-				const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
-					id: accountId,
-					groupPk: publicKey,
-					// TODO: use last cursor
-					since: new Uint8Array(),
-					until: new Uint8Array(),
-					goBackwards: false,
-				})
-				while (1) {
-					const action = yield take(chan)
-					yield put(action)
-				}
-			})
-			yield fork(function*() {
-				const chan = yield* protocol.transactions.client.groupMessageSubscribe({
-					id: accountId,
-					groupPk: publicKey,
-					// TODO: use last cursor
-					since: new Uint8Array(),
-					until: new Uint8Array(),
-					goBackwards: false,
-				})
-				while (1) {
-					const action = yield take(chan)
-					yield put(action)
-				}
-			})
+			yield* protocol.transactions.client.listenToGroup({ clientId: accountId, groupPk: publicKey })
 		}),
 		takeEvery(protocol.events.client.groupMetadataPayloadSent, function*({ payload }) {
 			const {

@@ -5,5 +5,6 @@ import * as Settings from './settings'
 import * as Theme from './theme'
 import * as Shared from './shared-components'
 import * as Modals from './modals'
+import NodeGate from './NodeGate'
 
-export { Onboarding, Main, Chat, Settings, Theme, Shared, Modals }
+export { Onboarding, Main, Chat, Settings, Theme, Shared, Modals, NodeGate }

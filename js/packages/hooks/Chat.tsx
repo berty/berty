@@ -1,14 +1,14 @@
 import React, { useMemo, useEffect } from 'react'
 import { chat, protocol } from '@berty-tech/store'
 import { Provider as ReactReduxProvider, useDispatch, useSelector } from 'react-redux'
-import DevMenu from 'react-native-dev-menu'
+//import DevMenu from 'react-native-dev-menu'
 import { ActivityIndicator, Clipboard } from 'react-native'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Buffer } from 'buffer'
 import { berty } from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 
-export const Recorder: React.FC = ({ children }) => {
+/*export const Recorder: React.FC = ({ children }) => {
 	React.useEffect(() => {
 		DevMenu.addItem('(Chat) Start Test Recorder', () => {
 			chat.recorder.start()
@@ -18,7 +18,7 @@ export const Recorder: React.FC = ({ children }) => {
 				chat.recorder
 					.createTest()
 					.replace(
-						'/* import reducer from YOUR_REDUCER_LOCATION_HERE */',
+						'/* import reducer from YOUR_REDUCER_LOCATION_HERE',
 						"import * as chat from '..'\nconst { reducer } = chat.init()",
 					),
 			)
@@ -27,7 +27,7 @@ export const Recorder: React.FC = ({ children }) => {
 	})
 
 	return null
-}
+}*/
 
 export const Provider: React.FC<{ config: chat.InitConfig }> = ({ config, children }) => {
 	const store = chat.init(config)
@@ -262,8 +262,7 @@ export const useConversationList = () => {
 					.filter(
 						(conv) =>
 							conv.kind === 'fake' ||
-							Object.values(conv.membersDevices).filter((m) => !m.includes(client.devicePk))
-								.length > 0,
+							Object.keys(conv.membersDevices).filter((m) => m !== client.accountPk).length > 0,
 					)
 			: [],
 	)
@@ -274,7 +273,7 @@ export const useConversationLength = () => {
 	return useConversationList().length
 }
 
-export const useGetConversation = (id: string): chat.conversation.Entity => {
+export const useGetConversation = (id: string): chat.conversation.Entity | undefined => {
 	const conversation = useSelector((state: chat.conversation.GlobalState) =>
 		chat.conversation.queries.get(state, { id }),
 	)
@@ -312,7 +311,10 @@ export const useGetListMessage = (list: any): chat.message.Entity[] => {
 
 export const useGetDateLastContactMessage = (id: string) => {
 	const conversation = useGetConversation(id)
-	const messages = useGetListMessage(conversation.messages)
+	const messages = useGetListMessage(conversation?.messages)
+	if (!conversation) {
+		return null
+	}
 	let lastDate
 	conversation.kind !== 'fake' &&
 		messages.length &&

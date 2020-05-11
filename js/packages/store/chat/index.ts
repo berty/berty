@@ -5,9 +5,10 @@ import createSagaMiddleware from 'redux-saga'
 import createRecorder from 'redux-test-recorder'
 import mem from 'mem'
 import createSagaMonitor from '@clarketm/saga-monitor'
-import { Storage, persistReducer, persistStore } from 'redux-persist'
+import { persistReducer, persistStore } from 'redux-persist'
 
 import * as protocol from '../protocol'
+import * as settings from '../settings'
 import * as account from './account'
 import * as contact from './contact'
 import * as conversation from './conversation'
@@ -20,6 +21,7 @@ export type State = account.GlobalState
 
 export const reducers = {
 	...protocol.reducers,
+	...settings.reducers,
 	chat: combineReducers({
 		account: account.reducer,
 		contact: contact.reducer,
@@ -34,6 +36,7 @@ export function* rootSaga() {
 		try {
 			yield all([
 				call(protocol.rootSaga),
+				call(settings.rootSaga),
 				call(account.orchestrator),
 				call(contact.orchestrator),
 				call(conversation.orchestrator),
@@ -77,7 +80,7 @@ export const recorder: {
 }
 
 export type InitConfig = {
-	storage: Storage
+	storage: any
 	middlewares?: Array<Middleware>
 }
 
@@ -103,8 +106,9 @@ export const init = mem(
 		]
 
 		const persistConfig = {
-			key: 'chat',
+			key: 'root',
 			storage: config.storage,
+			whitelist: ['chat', 'settings'],
 		}
 
 		const configuredStore = configureStore({

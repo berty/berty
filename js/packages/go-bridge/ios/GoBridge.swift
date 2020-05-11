@@ -21,6 +21,10 @@ class GoBridge: NSObject {
     var bridgeDemo: BertybridgeDemo?
     let orbitdir: URL
 
+    static func requiresMainQueueSetup() -> Bool {
+        return true
+    }
+
     override init() {
         // set berty dir for persistance
         let absUserUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -31,6 +35,22 @@ class GoBridge: NSObject {
         super.init()
     }
 
+    @objc func clearStorage(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        do {
+            let orbitExists = FileManager.default.fileExists(atPath: self.orbitdir.path)
+            if orbitExists {
+                try FileManager.default.removeItem(atPath: self.orbitdir.path)
+            }
+            let rootExists = FileManager.default.fileExists(atPath: self.rootdir.path)
+            if rootExists {
+                try FileManager.default.removeItem(atPath: self.rootdir.path)
+            }
+            resolve(true)
+        }
+        catch let error as NSError {
+            reject("\(String(describing: error.code))", error.userInfo.description, error)
+        }
+    }
 
     //////////
     // Demo //
@@ -78,8 +98,7 @@ class GoBridge: NSObject {
 
             // set persistance if needed
             if optPersistance {
-                var isDirectory: ObjCBool = true
-                let exist = FileManager.default.fileExists(atPath: self.orbitdir.path, isDirectory: &isDirectory)
+                let exist = FileManager.default.fileExists(atPath: self.orbitdir.path)
                 if !exist {
                     try FileManager.default.createDirectory(atPath: self.orbitdir.path, withIntermediateDirectories: true, attributes: nil)
                 }
@@ -181,6 +200,18 @@ class GoBridge: NSObject {
         } catch let error as NSError {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
+    }
+
+    @objc func stopProtocol(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+      do {
+          if self.bridgeProtocol != nil {
+              try self.bridgeProtocol?.close()
+              self.bridgeProtocol = nil
+          }
+          resolve(true)
+      } catch let error as NSError {
+          reject("\(String(describing: error.code))", error.userInfo.description, error)
+      }
     }
 
     @objc func getProtocolAddr(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {

@@ -18,6 +18,9 @@
 
 @interface RCT_EXTERN_REMAP_MODULE_2(GoBridge, GoBridge, NSObject)
 
+RCT_EXTERN_METHOD(clearStorage:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject);
+
 RCT_EXTERN_METHOD(startDemo:(NSDictionary)opts
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
@@ -30,7 +33,15 @@ RCT_EXTERN_METHOD(startProtocol:(NSDictionary)opts
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(stopProtocol:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject);
+
 RCT_EXTERN_METHOD(getProtocolAddr:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
+
++ (BOOL)requiresMainQueueSetup
+{
+ return YES;  // only do this if your module initialization relies on calling UIKit!
+}
 
 @end

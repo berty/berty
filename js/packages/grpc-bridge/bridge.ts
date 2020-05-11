@@ -71,7 +71,9 @@ export const bridge: Bridge = (options, metadata): pb.RPCImpl => (
 	client.onEnd((code: grpc.Code, message: string, trailers: grpc.Metadata): void => {
 		if (code !== grpc.Code.OK) {
 			const error = new Error(
-				`GRPC ${grpc.Code[code]} (${code}): ${message}\nTrailers: ${JSON.stringify(trailers)}`,
+				`GRPC ${_method.methodName} ${
+					grpc.Code[code]
+				} (${code}): ${message}\nTrailers: ${JSON.stringify(trailers)}`,
 			)
 
 			if (

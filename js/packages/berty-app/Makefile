@@ -67,7 +67,7 @@ start.metro: port ?= 8081
 start.metro: host ?= 127.0.0.1
 start.metro: deps
 	$(call check-program, lsof)
-	$(eval pid := $(shell lsof -t -i :8081 -s TCP:LISTEN))
+	$(eval pid := $(shell lsof -t -i :$(port) -s TCP:LISTEN))
 	@echo Metro pid: $(pid)
 	kill -9 $(pid) || true
 	@echo "Waiting for metro to die.. ($(shell date))"

@@ -1,13 +1,21 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { fork, put, all, takeLeading, select, takeEvery, take } from 'redux-saga/effects'
-import faker from 'faker'
-import { Buffer } from 'buffer'
+import { fork, put, all, select, takeEvery, take, delay, call } from 'redux-saga/effects'
+import { GoBridge } from '@berty-tech/grpc-bridge/orbitdb/native'
+//import faker from 'faker'
 import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
 import { berty } from '@berty-tech/api'
+import {
+	makeDefaultReducers,
+	makeDefaultCommandsSagas,
+	strToBuf,
+	bufToStr,
+	jsonToBuf,
+} from '../utils'
 
 import { contact, conversation } from '../chat'
 import * as protocol from '../protocol'
+import { events as mainSettingsEvents } from '../settings/main'
 
 export type Entity = {
 	id: string
@@ -36,7 +44,7 @@ export type GlobalState = {
 
 export namespace Command {
 	export type Generate = void
-	export type Create = { name: string }
+	export type Create = { name: string; nodeConfig: protocol.client.BertyNodeConfig }
 	export type Delete = { id: string }
 	export type SendContactRequest = {
 		id: string
@@ -108,15 +116,17 @@ const initialState = {
 const commandHandler = createSlice<State, CommandsReducer>({
 	name: 'chat/account/command',
 	initialState,
-	reducers: {
-		generate: (state) => state,
-		create: (state) => state,
-		delete: (state) => state,
-		sendContactRequest: (state) => state,
-		replay: (state) => state,
-		open: (state) => state,
-		onboard: (state) => state,
-	},
+	// this is stupid but getting https://github.com/kimamula/ts-transformer-keys in might be a headache
+	// maybe move commands and events definitions in .protos
+	reducers: makeDefaultReducers([
+		'generate',
+		'create',
+		'delete',
+		'sendContactRequest',
+		'replay',
+		'open',
+		'onboard',
+	]),
 })
 
 const eventHandler = createSlice<State, EventsReducer>({
@@ -124,13 +134,15 @@ const eventHandler = createSlice<State, EventsReducer>({
 	initialState,
 	reducers: {
 		created: (state, { payload }) => {
-			state.aggregates[payload.aggregateId] = {
-				id: payload.aggregateId,
-				name: payload.name,
-				requests: [],
-				conversations: [],
-				contacts: [],
-				onboarded: false,
+			if (!state.aggregates[payload.aggregateId]) {
+				state.aggregates[payload.aggregateId] = {
+					id: payload.aggregateId,
+					name: payload.name,
+					requests: [],
+					conversations: [],
+					contacts: [],
+					onboarded: false,
+				}
 			}
 			return state
 		},
@@ -173,35 +185,43 @@ export const getProtocolClient = function*(id: string): Generator<unknown, proto
 export const transactions: Transactions = {
 	open: function*({ id }) {
 		yield* protocol.transactions.client.start({ id })
+
+		while (true) {
+			try {
+				yield* protocol.transactions.client.instanceGetConfiguration({ id })
+				break
+			} catch (e) {
+				console.warn(e)
+			}
+			yield delay(1000)
+		}
+
 		yield* conversation.transactions.open({ accountId: id })
 
-		// subcribe to account log
 		const client = yield* getProtocolClient(id)
-		yield fork(function*() {
-			const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
-				id: client.id,
-				groupPk: new Buffer(client.accountGroupPk),
-				// TODO: use last cursor
-				since: new Uint8Array(),
-				until: new Uint8Array(),
-				goBackwards: false,
-			})
-			while (1) {
-				const action = yield take(chan)
-				yield put(action)
-				if (action.type === protocol.events.client.groupMetadataPayloadSent.type) {
-					yield put(action.payload.event)
-				}
-			}
+
+		const gpkb = strToBuf(client.accountGroupPk)
+
+		/*yield* protocol.transactions.client.activateGroup({
+			id,
+			groupPk: gpkb,
+		})*/
+		yield* protocol.transactions.client.listenToGroupMetadata({
+			clientId: id,
+			groupPk: gpkb,
 		})
-		yield* protocol.transactions.client.contactRequestEnable({ id })
+
+		yield* protocol.transactions.client.contactRequestReference({ id })
 	},
 	generate: function*() {
-		yield* transactions.create({ name: faker.name.firstName() })
+		throw new Error('not implemented')
+		//yield* transactions.create({ name: faker.name.firstName(), config: {} })
 	},
-	create: function*({ name }) {
+	create: function*({ name, nodeConfig }) {
 		// create an id for the account
 		const id = simpleflake().toString()
+
+		yield put(mainSettingsEvents.created({ id, nodeConfig }))
 
 		const event = events.created({
 			aggregateId: id,
@@ -210,15 +230,23 @@ export const transactions: Transactions = {
 		// open account
 		yield* transactions.open({ id })
 		// get account PK
-		const client = yield* getProtocolClient(id)
+
+		yield* protocol.transactions.client.contactRequestResetReference({ id })
+		yield* protocol.transactions.client.contactRequestEnable({ id })
+
+		yield put(event)
+
+		/*const client = yield* getProtocolClient(id)
 
 		yield* protocol.transactions.client.appMetadataSend({
 			id,
-			groupPk: new Buffer(client.accountGroupPk),
-			payload: new Buffer(JSON.stringify(event)),
-		})
+			groupPk: strToBuf(client.accountGroupPk),
+			payload: jsonToBuf(event),
+		})*/
 	},
 	delete: function*() {
+		yield call(GoBridge.stopProtocol)
+		yield call(GoBridge.clearStorage)
 		yield put({ type: 'CLEAR_STORE' })
 	},
 	replay: function*({ id }) {
@@ -233,7 +261,7 @@ export const transactions: Transactions = {
 		// replay log from first event
 		const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
 			id: client.id,
-			groupPk: new Buffer(client.accountGroupPk),
+			groupPk: strToBuf(client.accountGroupPk),
 			// TODO: use last cursor
 			since: new Uint8Array(),
 			until: new Uint8Array(),
@@ -263,15 +291,15 @@ export const transactions: Transactions = {
 			throw new Error("account doesn't exist")
 		}
 
-		const metadata = {
+		const metadata: contact.ContactRequestMetadata = {
 			name: account.name,
 			givenName: payload.contactName,
 		}
 
 		const contact: berty.types.IShareableContact = {
-			pk: Buffer.from(payload.contactPublicKey, 'utf-8'),
-			publicRendezvousSeed: Buffer.from(payload.contactRdvSeed, 'utf-8'),
-			metadata: Buffer.from(JSON.stringify(metadata), 'utf-8'),
+			pk: strToBuf(payload.contactPublicKey),
+			publicRendezvousSeed: strToBuf(payload.contactRdvSeed),
+			metadata: jsonToBuf(metadata),
 		}
 
 		yield* protocol.transactions.client.contactRequestSend({
@@ -286,6 +314,7 @@ export const transactions: Transactions = {
 
 export function* orchestrator() {
 	yield all([
+		...makeDefaultCommandsSagas(commands, transactions),
 		fork(function*() {
 			yield take('persist/REHYDRATE')
 			// start protocol clients
@@ -294,30 +323,6 @@ export function* orchestrator() {
 				yield* transactions.open({ id: account.id })
 				yield* contact.transactions.open({ accountId: account.id })
 			}
-		}),
-
-		takeLeading(commands.open, function*(action) {
-			yield* transactions.open(action.payload)
-		}),
-
-		takeLeading(commands.generate, function*(action) {
-			yield* transactions.generate(action.payload)
-		}),
-		// TODO: fix create account with takeLeading
-		takeEvery(commands.create, function*(action) {
-			yield* transactions.create(action.payload)
-		}),
-		takeLeading(commands.delete, function*(action) {
-			yield* transactions.delete(action.payload)
-		}),
-		takeLeading(commands.replay, function*(action) {
-			yield* transactions.replay(action.payload)
-		}),
-		takeLeading(commands.sendContactRequest, function*(action) {
-			yield* transactions.sendContactRequest(action.payload)
-		}),
-		takeLeading(commands.onboard, function*(action) {
-			yield* transactions.onboard(action.payload)
 		}),
 	])
 }

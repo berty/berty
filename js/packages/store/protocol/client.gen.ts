@@ -248,3 +248,33 @@ export type Commands<State> = {
 		},
 	) => State
 }
+
+export enum Methods {
+	instanceExportData = 'instanceExportData',
+	instanceGetConfiguration = 'instanceGetConfiguration',
+	contactRequestReference = 'contactRequestReference',
+	contactRequestDisable = 'contactRequestDisable',
+	contactRequestEnable = 'contactRequestEnable',
+	contactRequestResetReference = 'contactRequestResetReference',
+	contactRequestSend = 'contactRequestSend',
+	contactRequestAccept = 'contactRequestAccept',
+	contactRequestDiscard = 'contactRequestDiscard',
+	contactBlock = 'contactBlock',
+	contactUnblock = 'contactUnblock',
+	contactAliasKeySend = 'contactAliasKeySend',
+	multiMemberGroupCreate = 'multiMemberGroupCreate',
+	multiMemberGroupJoin = 'multiMemberGroupJoin',
+	multiMemberGroupLeave = 'multiMemberGroupLeave',
+	multiMemberGroupAliasResolverDisclose = 'multiMemberGroupAliasResolverDisclose',
+	multiMemberGroupAdminRoleGrant = 'multiMemberGroupAdminRoleGrant',
+	multiMemberGroupInvitationCreate = 'multiMemberGroupInvitationCreate',
+	appMetadataSend = 'appMetadataSend',
+	appMessageSend = 'appMessageSend',
+	groupMetadataSubscribe = 'groupMetadataSubscribe',
+	groupMessageSubscribe = 'groupMessageSubscribe',
+	groupMetadataList = 'groupMetadataList',
+	groupMessageList = 'groupMessageList',
+	groupInfo = 'groupInfo',
+	activateGroup = 'activateGroup',
+	deactivateGroup = 'deactivateGroup',
+}

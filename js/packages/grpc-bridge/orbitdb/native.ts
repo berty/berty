@@ -20,6 +20,22 @@ class NoopGoBirdge {
 	getDemoAddr(): Promise<string> {
 		return Promise.reject()
 	}
+
+	startProtocol(_: GoBridgeOpts): Promise<void> {
+		return Promise.reject()
+	}
+
+	stopProtocol(): Promise<void> {
+		return Promise.reject()
+	}
+
+	getProtocolAddr(): Promise<string> {
+		return Promise.reject()
+	}
+
+	clearStorage(): Promise<void> {
+		return Promise.reject()
+	}
 }
 
 export const GoBridge: NoopGoBirdge = new NoopGoBirdge()
