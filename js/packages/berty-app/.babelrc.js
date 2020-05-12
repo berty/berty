@@ -1,3 +1,3 @@
 module.exports = {
-  presets: ['@berty-tech/babel-preset'],
+	presets: ['@berty-tech/babel-preset'],
 }

@@ -157,6 +157,9 @@ func (a *deviceKeystore) getOrGenerateDeviceKeyForGroupDevice(pk crypto.PubKey) 
 }
 
 func (a *deviceKeystore) getOrComputeECDH(nameSpace string, pk crypto.PubKey, ownSK crypto.PrivKey) (crypto.PrivKey, error) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	pkRaw, err := pk.Raw()
 	if err != nil {
 		return nil, err

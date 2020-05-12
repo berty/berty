@@ -66,10 +66,15 @@ const ContactRequestQR = () => {
 
 const Fingerprint: React.FC = () => {
 	const client = Chat.useClient()
+	const [styles] = useStyles()
 	if (!client) {
 		return <Text>Client not initialized</Text>
 	}
-	return <FingerprintContent seed={client.accountPk} />
+	return (
+		<View style={[styles.padding.top.big, { width: '100%' }]}>
+			<FingerprintContent seed={client.accountPk} />
+		</View>
+	)
 }
 
 const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => {

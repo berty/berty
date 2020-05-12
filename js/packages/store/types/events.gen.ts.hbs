@@ -35,6 +35,14 @@ import * as api from '@berty-tech/api'
           {{/with}}
         {{/each}}
       }
+			
+		export enum EventsNames {
+      {{#each values}}
+        {{#with (removeFirst @key "EventType") as | eventName |}}
+          {{case 'camel' eventName}},
+        {{/with}}
+      {{/each}}
+    }
     {{/if}}
   {{/each}}
 {{/with}}

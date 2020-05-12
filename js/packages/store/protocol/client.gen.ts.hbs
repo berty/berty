@@ -22,6 +22,12 @@ import * as api from '@berty-tech/api'
 					) => State
 				{{/each}}
 			}
+
+		export enum Methods {
+				{{#each methods}}
+					{{case 'camel' name}} = "{{case 'camel' name}}",
+				{{/each}}
+			}
 		{{/if}}
 	{{/each}}
 {{/with}}

@@ -93,7 +93,7 @@ class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
   }
 
   // @TODO: implement this
-  open func levelEnabler(_ level: String!) -> Bool {
+  open func levelEnabler(_ level: String?) -> Bool {
     return self.isEnabled
   }
 }

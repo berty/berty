@@ -293,3 +293,26 @@ export type Events<State> = {
 		},
 	) => State
 }
+
+export enum EventsNames {
+	undefined,
+	groupMemberDeviceAdded,
+	groupDeviceSecretAdded,
+	accountGroupJoined,
+	accountGroupLeft,
+	accountContactRequestDisabled,
+	accountContactRequestEnabled,
+	accountContactRequestReferenceReset,
+	accountContactRequestOutgoingEnqueued,
+	accountContactRequestOutgoingSent,
+	accountContactRequestIncomingReceived,
+	accountContactRequestIncomingDiscarded,
+	accountContactRequestIncomingAccepted,
+	accountContactBlocked,
+	accountContactUnblocked,
+	contactAliasKeyAdded,
+	multiMemberGroupAliasResolverAdded,
+	multiMemberGroupInitialMemberAnnounced,
+	multiMemberGroupAdminRoleGranted,
+	groupMetadataPayloadSent,
+}

@@ -73,6 +73,7 @@ module.exports = {
 				'no-dupe-class-members': [0],
 				'@typescript-eslint/indent': 0,
 				'@typescript-eslint/explicit-function-return-type': 0,
+				'@typescript-eslint/no-empty-function': 0,
 			},
 		},
 		{

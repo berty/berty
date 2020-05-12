@@ -73,17 +73,12 @@ func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyproto
 	rootDS := sync_ds.MutexWrap(opts.RootDS)
 	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("ipfs"))
 	routingOpt, crouting := ipfsutil.NewTinderRouting(logger, opts.RendezVousPeer, false)
-	cfg, err := ipfsutil.CreateBuildConfig(&ipfsutil.CoreAPIConfig{
+	api, node, err := ipfsutil.NewCoreAPIFromDatastore(ctx, ipfsDS, &ipfsutil.CoreAPIConfig{
 		BootstrapAddrs: opts.Bootstrap,
 		SwarmAddrs:     swarmAddresses,
-		Datastore:      ipfsDS,
 		Routing:        routingOpt,
+		Options:        []ipfsutil.CoreAPIOption{ipfsutil.OptionMDNSDiscovery},
 	})
-	if err != nil {
-		panicUnlockFS(err, lock)
-	}
-
-	api, node, err := ipfsutil.NewConfigurableCoreAPI(ctx, cfg, ipfsutil.OptionMDNSDiscovery)
 	if err != nil {
 		panicUnlockFS(err, lock)
 	}

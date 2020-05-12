@@ -9,21 +9,48 @@
 import Foundation
 import Bertybridge
 
+// @FIXME(gfanton): remove demo
+
 @objc(GoBridge)
 class GoBridge: NSObject {
+    // protocol
+    var bridgeProtocol: BertybridgeProtocol?
+    let rootdir: URL
+
+    // demo
+    var bridgeDemo: BertybridgeDemo?
     let orbitdir: URL
 
-    var bridgeDemo: BertybridgeDemo?
-    var bridgeProtocol: BertybridgeProtocol?
+    static func requiresMainQueueSetup() -> Bool {
+        return true
+    }
 
     override init() {
         // set berty dir for persistance
         let absUserUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        self.rootdir = absUserUrl.appendingPathComponent("berty", isDirectory: true)
+
         self.orbitdir = absUserUrl.appendingPathComponent("orbitdb", isDirectory: true)
 
         super.init()
     }
 
+    @objc func clearStorage(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        do {
+            let orbitExists = FileManager.default.fileExists(atPath: self.orbitdir.path)
+            if orbitExists {
+                try FileManager.default.removeItem(atPath: self.orbitdir.path)
+            }
+            let rootExists = FileManager.default.fileExists(atPath: self.rootdir.path)
+            if rootExists {
+                try FileManager.default.removeItem(atPath: self.rootdir.path)
+            }
+            resolve(true)
+        }
+        catch let error as NSError {
+            reject("\(String(describing: error.code))", error.userInfo.description, error)
+        }
+    }
 
     //////////
     // Demo //
@@ -71,8 +98,7 @@ class GoBridge: NSObject {
 
             // set persistance if needed
             if optPersistance {
-                var isDirectory: ObjCBool = true
-                let exist = FileManager.default.fileExists(atPath: self.orbitdir.path, isDirectory: &isDirectory)
+                let exist = FileManager.default.fileExists(atPath: self.orbitdir.path)
                 if !exist {
                     try FileManager.default.createDirectory(atPath: self.orbitdir.path, withIntermediateDirectories: true, attributes: nil)
                 }
@@ -154,12 +180,13 @@ class GoBridge: NSObject {
             // set persistance if needed
             if optPersistance {
                 var isDirectory: ObjCBool = true
-                let exist = FileManager.default.fileExists(atPath: self.orbitdir.path, isDirectory: &isDirectory)
+                let exist = FileManager.default.fileExists(atPath: self.rootdir.path, isDirectory: &isDirectory)
                 if !exist {
-                    try FileManager.default.createDirectory(atPath: self.orbitdir.path, withIntermediateDirectories: true, attributes: nil)
+                    try FileManager.default.createDirectory(atPath: self.rootdir.path, withIntermediateDirectories: true, attributes: nil)
                 }
 
-                config.orbitDBDirectory(self.orbitdir.path)
+                NSLog("root dir: `%@`", self.rootdir.path)
+                config.rootDirectory(self.rootdir.path)
             }
 
             let bridgeProtocol = BertybridgeNewProtocolBridge(config, &err)
@@ -173,6 +200,18 @@ class GoBridge: NSObject {
         } catch let error as NSError {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
+    }
+
+    @objc func stopProtocol(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+      do {
+          if self.bridgeProtocol != nil {
+              try self.bridgeProtocol?.close()
+              self.bridgeProtocol = nil
+          }
+          resolve(true)
+      } catch let error as NSError {
+          reject("\(String(describing: error.code))", error.userInfo.description, error)
+      }
     }
 
     @objc func getProtocolAddr(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
