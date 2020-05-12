@@ -35,6 +35,7 @@ export const ProceduralCircleAvatar: React.FC<ProceduralCircleAvatarProps> = ({
 	state = {},
 	style = null,
 }) => {
+	// for centering to work properly, size and diffsize must have the same oddness (pair or odd)
 	const [{ row, width, height, background, border, absolute, color: colorDecl }] = useStyles()
 	const _circleStyle = [
 		row.center,

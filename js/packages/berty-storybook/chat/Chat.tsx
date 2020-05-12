@@ -87,7 +87,7 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 						)
 					}
 				>
-					<ConversationProceduralAvatar size={45} conversationId={id} />
+					<ConversationProceduralAvatar size={45} diffSize={9} conversationId={id} />
 				</TouchableOpacity>
 			</SafeAreaView>
 		</BlurView>
