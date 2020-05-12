@@ -42,11 +42,12 @@ require (
 	github.com/rivo/tview v0.0.0-20200219210816-cd38d7432498
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/stretchr/testify v1.5.1
+	go.opentelemetry.io/otel v0.4.3
+	go.opentelemetry.io/otel/exporters/trace/jaeger v0.4.3
 	go.uber.org/zap v1.14.1
 	golang.org/x/crypto v0.0.0-20200406173513-056763e48d71
 	golang.org/x/net v0.0.0-20190923162816-aa69164e4478
 	golang.org/x/tools v0.0.0-20200226224502-204d844ad48d // indirect
-	google.golang.org/genproto v0.0.0-20190927181202-20e1ac93f88c // indirect
-	google.golang.org/grpc v1.24.0
+	google.golang.org/grpc v1.27.1
 	moul.io/srand v1.4.0
 )

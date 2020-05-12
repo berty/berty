@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
@@ -109,10 +110,13 @@ func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyproto
 	}
 }
 
-func Main(opts *Opts) {
+func Main(ctx context.Context, opts *Opts) {
+	ctx, span := tracer.NewSpan(ctx)
+	defer span.End()
+
 	p2plog.SetAllLoggers(p2plog.LevelFatal)
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	var client bertyprotocol.ProtocolServiceClient
