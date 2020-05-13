@@ -88,12 +88,13 @@ start.emulator: deps
 	)
 	$(if $(filter $(platform), android), adb wait-for-device || true)
 
-# the adb reverse is for the demo grpc bridge
+# the adb reverse is for the berty daemon
 .PHONY: run
 run: export PWD := $(PWD)
+run: berty_port ?= 1337
 run: deps
 	$(if $(filter $(platform), android), $(berty_root)/build/shell/check-java.sh 18)
-	$(if $(filter $(platform), android), adb -s $(device) reverse tcp:1337 tcp:1337)
+	$(if $(filter $(platform), android), adb -s $(device) reverse tcp:$(berty_port) tcp:$(berty_port))
 	cd $(PWD) && $(react-native) run-$(platform) \
 		--no-packager \
 		$(if $(filter $(platform), android), --variant=$(target)) \

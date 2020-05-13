@@ -19,7 +19,6 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/banner"
-	"berty.tech/berty/v2/go/pkg/bertydemo"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
@@ -84,10 +83,6 @@ func main() {
 		clientProtocolPath      = clientProtocolFlags.String("d", cacheleveldown.InMemoryDirectory, "datastore base directory")
 		clientProtocolRDVP      = clientProtocolFlags.String("rdvp", DevRendezVousPoint, "rendezvous point maddr")
 		clientProtocolRDVPFroce = clientProtocolFlags.Bool("force-rdvp", false, "force connect to rendezvous point")
-
-		clientDemoFlags     = flag.NewFlagSet("demo client", flag.ExitOnError)
-		clientDemoDirectory = clientDemoFlags.String("d", ":memory:", "orbit db directory")
-		clientDemoListeners = clientDemoFlags.String("l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
 
 		miniClientDemoFlags      = flag.NewFlagSet("mini demo client", flag.ExitOnError)
 		miniClientDemoGroup      = miniClientDemoFlags.String("g", "", "group to join, leave empty to create a new group")
@@ -394,97 +389,9 @@ func main() {
 		},
 	}
 
-	demo := &ffcli.Command{
-		Name:    "demo",
-		Usage:   "berty demo",
-		FlagSet: clientDemoFlags,
-		Exec: func(args []string) error {
-			if err := globalPreRun(); err != nil {
-				return err
-			}
-
-			ctx := context.Background()
-
-			// demo
-			var demo *bertydemo.Service
-			{
-				var err error
-
-				resoveCtx, cancel := context.WithTimeout(ctx, ResolveTimeout)
-				defer cancel()
-
-				rdvpeer, err := ipfsutil.ParseAndResolveIpfsAddr(resoveCtx, DevRendezVousPoint)
-				if err != nil {
-					return errcode.TODO.Wrap(err)
-				}
-
-				routingOpts, crouting := ipfsutil.NewTinderRouting(logger, rdvpeer, false)
-				buildCfg := ipfsutil.CoreAPIConfig{
-					BootstrapAddrs:    append(DefaultBootstrap, DevRendezVousPoint),
-					Routing:           routingOpts,
-					SwarmAddrs:        []string{DefaultMCBind},
-					ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
-				}
-
-				api, node, err := ipfsutil.NewCoreAPI(ctx, &buildCfg)
-				if err != nil {
-					return errcode.TODO.Wrap(err)
-				}
-				defer node.Close()
-
-				routing := <-crouting
-				defer routing.IpfsDHT.Close()
-
-				demo, err = bertydemo.New(&bertydemo.Opts{
-					Logger:           logger,
-					CoreAPI:          api,
-					OrbitDBDirectory: *clientDemoDirectory,
-				})
-				if err != nil {
-					return err
-				}
-
-				defer demo.Close()
-			}
-
-			// listeners for berty
-			var workers run.Group
-			{
-				// setup grpc server
-				grpcServer := grpc.NewServer()
-				bertydemo.RegisterDemoServiceServer(grpcServer, demo)
-				// setup listeners
-				addrs := strings.Split(*clientDemoListeners, ",")
-				for _, addr := range addrs {
-					maddr, err := parseAddr(addr)
-					if err != nil {
-						return errcode.TODO.Wrap(err)
-					}
-
-					l, err := grpcutil.Listen(maddr)
-					if err != nil {
-						return errcode.TODO.Wrap(err)
-					}
-
-					server := grpcutil.Server{Server: grpcServer}
-
-					workers.Add(func() error {
-						logger.Info("serving", zap.String("maddr", maddr.String()))
-						return server.Serve(l)
-					}, func(error) {
-						l.Close()
-					})
-				}
-			}
-
-			return workers.Run()
-		},
-	}
-
 	groupinit := &ffcli.Command{
-		Name:    "groupinit",
-		Usage:   "berty groupinit - initialize a new multi member group",
-		FlagSet: clientDemoFlags,
+		Name:  "groupinit",
+		Usage: "berty groupinit - initialize a new multi member group",
 		Exec: func(args []string) error {
 			g, _, err := bertyprotocol.NewGroupMultiMember()
 			if err != nil {
@@ -505,7 +412,7 @@ func main() {
 		Usage:       "berty [global flags] <subcommand> [flags] [args...]",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
-		Subcommands: []*ffcli.Command{daemon, demo, banner, version, mini, groupinit},
+		Subcommands: []*ffcli.Command{daemon, banner, version, mini, groupinit},
 		Exec: func([]string) error {
 			globalFlags.Usage()
 			return flag.ErrHelp
