@@ -16,6 +16,7 @@ import { chat } from '@berty-tech/store'
 import { CommonActions } from '@react-navigation/core'
 import Interactable from 'react-native-interactable'
 import FromNow from '../shared-components/FromNow'
+import EmptyContact from './empty_contact.svg'
 
 const useStylesList = () => {
 	const [
@@ -171,13 +172,13 @@ const RequestsItem: React.FC<chat.contact.Entity> = ({ name, request, publicKey 
 	)
 }
 
-const EmptyTab: React.FC<{}> = () => {
-	const [{ padding, background }] = useStyles()
-	return <View style={[padding.bottom.medium, background.white, padding.vertical.medium]} />
+const EmptyTab: React.FC<{}> = ({ children }) => {
+	const [{ padding, background, row }] = useStyles()
+	return <View style={[background.white, row.center, padding.bottom.medium]}>{children}</View>
 }
 
 const Requests: React.FC<{}> = () => {
-	const [{ padding, background }] = useStyles()
+	const [{ padding, background, column, text, opacity, height }] = useStyles()
 
 	const requests = Chat.useAccountContactsWithOutgoingRequests().filter(
 		(contact) => !(contact.request.accepted || contact.request.discarded),
@@ -185,7 +186,7 @@ const Requests: React.FC<{}> = () => {
 
 	return requests.length >= 1 ? (
 		<View style={[background.white]}>
-			<View style={[padding.vertical.medium, background.white]}>
+			<View style={[background.white, padding.bottom.medium]}>
 				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 					{requests.map((req) => (
 						<RequestsItem key={req.id} {...req} />
@@ -194,7 +195,12 @@ const Requests: React.FC<{}> = () => {
 			</View>
 		</View>
 	) : (
-		<EmptyTab />
+		<EmptyTab>
+			<View style={[column.justify, height(200)]}>
+				<EmptyContact width='75%' height='75%' style={[column.item.center]} />
+				<Text style={[text.color.grey, opacity(0.4)]}>You don't have any pending requests</Text>
+			</View>
+		</EmptyTab>
 	)
 }
 
@@ -204,7 +210,7 @@ const AddContact: React.FC<{}> = () => {
 	const [{ padding, row, column, border, background, color, text }] = useStyles()
 
 	return (
-		<View style={[padding.vertical.medium, background.white, padding.bottom.big]}>
+		<View style={[padding.bottom.medium, background.white, padding.bottom.big]}>
 			<View style={[row.center]}>
 				<TouchableOpacity
 					style={[
