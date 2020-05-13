@@ -122,7 +122,7 @@ function websocketRequest(options: grpc.TransportOptions): grpc.Transport {
 		start: (metadata: grpc.Metadata): void => {
 			ws = new WebSocket(webSocketAddress, ['grpc-websockets'])
 			ws.binaryType = 'arraybuffer'
-			ws.onopen = function() {
+			ws.onopen = function () {
 				options.debug && console.debug('websocketRequest.onopen')
 				ws.send(headersToBytes(metadata))
 
@@ -132,18 +132,18 @@ function websocketRequest(options: grpc.TransportOptions): grpc.Transport {
 				})
 			}
 
-			ws.onclose = function(closeEvent) {
+			ws.onclose = function (closeEvent) {
 				options.debug && console.debug('websocketRequest.onclose', closeEvent)
 				detach((): void => {
 					options.onEnd()
 				})
 			}
 
-			ws.onerror = function(error) {
+			ws.onerror = function (error) {
 				options.debug && console.debug('websocketRequest.onerror', error)
 			}
 
-			ws.onmessage = function(e) {
+			ws.onmessage = function (e) {
 				detach((): void => {
 					options.onChunk(new Uint8Array(e.data))
 				})

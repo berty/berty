@@ -1,7 +1,7 @@
 const Case = require('case')
 module.exports.register = (handlebars) => {
 	// try to match to string that are inconsistants
-	handlebars.registerHelper('matchInconsistant', function(a, b) {
+	handlebars.registerHelper('matchInconsistant', function (a, b) {
 		if (b.replace('Outgoing', '') === a) {
 			return true
 		}

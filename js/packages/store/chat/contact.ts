@@ -272,7 +272,7 @@ export type Transactions = {
 } & { open: (payload: { accountId: string }) => Generator }
 
 export const transactions: Transactions = {
-	open: function*({ accountId }) {
+	open: function* ({ accountId }) {
 		const contacts = (yield select((state) => queries.list(state))) as Entity[]
 		for (const { groupPk } of contacts.filter((contact) => contact.accountId === accountId)) {
 			if (groupPk) {
@@ -288,10 +288,10 @@ export const transactions: Transactions = {
 			}
 		}
 	},
-	delete: function*({ id }) {
+	delete: function* ({ id }) {
 		yield events.deleted({ id })
 	},
-	acceptRequest: function*({ id }) {
+	acceptRequest: function* ({ id }) {
 		const contact = (yield select((state: GlobalState) => queries.get(state, { id }))) as
 			| Entity
 			| undefined
@@ -305,7 +305,7 @@ export const transactions: Transactions = {
 			}),
 		)
 	},
-	discardRequest: function*({ id }) {
+	discardRequest: function* ({ id }) {
 		const contact = (yield select((state: GlobalState) => queries.get(state, { id }))) as
 			| Entity
 			| undefined
@@ -319,7 +319,7 @@ export const transactions: Transactions = {
 			}),
 		)
 	},
-	deleteAll: function*() {
+	deleteAll: function* () {
 		const contacts = (yield select(queries.list)) as Entity[]
 
 		for (const contact of contacts) {
@@ -338,7 +338,7 @@ function* getContact(id: string) {
 export function* orchestrator() {
 	yield all([
 		...makeDefaultCommandsSagas(commands, transactions),
-		takeEvery(protocol.events.client.accountContactRequestOutgoingEnqueued, function*(action) {
+		takeEvery(protocol.events.client.accountContactRequestOutgoingEnqueued, function* (action) {
 			const contactPk = action.payload.event.contact.pk
 			if (!contactPk) {
 				throw new Error('No contact pk in AccountContactRequestOutgoingEnqueued')
@@ -377,7 +377,9 @@ export function* orchestrator() {
 				groupPk,
 			})
 		}),
-		takeEvery(protocol.events.client.accountContactRequestIncomingReceived, function*({ payload }) {
+		takeEvery(protocol.events.client.accountContactRequestIncomingReceived, function* ({
+			payload,
+		}) {
 			const {
 				aggregateId: accountId,
 				event: { contactPk, contactMetadata },
@@ -402,7 +404,9 @@ export function* orchestrator() {
 				)
 			}
 		}),
-		takeEvery(protocol.events.client.accountContactRequestIncomingAccepted, function*({ payload }) {
+		takeEvery(protocol.events.client.accountContactRequestIncomingAccepted, function* ({
+			payload,
+		}) {
 			const {
 				event: { groupPk },
 				aggregateId: accountId,
@@ -412,7 +416,7 @@ export function* orchestrator() {
 				groupPk,
 			})
 		}),
-		takeEvery(protocol.events.client.accountContactRequestOutgoingSent, function*({ payload }) {
+		takeEvery(protocol.events.client.accountContactRequestOutgoingSent, function* ({ payload }) {
 			const { aggregateId: accountId, event } = payload
 			const { contactPk } = event
 			if (!contactPk) {
@@ -426,7 +430,7 @@ export function* orchestrator() {
 				}),
 			)
 		}),
-		takeEvery(protocol.events.client.groupMetadataPayloadSent, function*({ payload }) {
+		takeEvery(protocol.events.client.groupMetadataPayloadSent, function* ({ payload }) {
 			const { aggregateId: accountId } = payload
 			const event = payload.event as AppMessage
 			if (event.type === AppMessageType.GroupInvitation) {
@@ -437,7 +441,7 @@ export function* orchestrator() {
 				yield* protocol.client.transactions.multiMemberGroupJoin({ id: accountId, group })
 			}
 		}),
-		takeEvery(protocol.events.client.groupMemberDeviceAdded, function*({ payload }) {
+		takeEvery(protocol.events.client.groupMemberDeviceAdded, function* ({ payload }) {
 			// This is the only way to know if an outgoing contact request has been accepted without receiving a message
 			const {
 				aggregateId: accountId,

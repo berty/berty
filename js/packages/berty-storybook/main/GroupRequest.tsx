@@ -21,10 +21,12 @@ const useStylesGroupRequest = () => {
 	}
 }
 
-const BodyGroupRequestContentItem: React.FC<berty.chatmodel.IMember & {
-	separateBar: boolean
-	isConnected?: boolean
-}> = ({ avatarUri, name, role, state = {}, separateBar = true, isConnected = false }) => {
+const BodyGroupRequestContentItem: React.FC<
+	berty.chatmodel.IMember & {
+		separateBar: boolean
+		isConnected?: boolean
+	}
+> = ({ avatarUri, name, role, state = {}, separateBar = true, isConnected = false }) => {
 	const _styles = useStylesGroupRequest()
 	const [{ row, padding, margin, border, color, text }] = useStyles()
 
