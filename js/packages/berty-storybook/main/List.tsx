@@ -230,7 +230,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			underlayColor={color.light.grey}
 			style={[padding.horizontal.medium]}
 			onPress={
-				kind === berty.chatmodel.Conversation.Kind.PrivateGroup
+				kind === chat.conversation.ConversationKind.MultiMember
 					? () =>
 							dispatch(
 								CommonActions.navigate({

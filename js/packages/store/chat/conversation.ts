@@ -9,6 +9,12 @@ import { makeDefaultCommandsSagas, strToBuf, bufToStr, jsonToBuf, bufToJSON } fr
 import * as protocol from '../protocol'
 import { contact } from '../chat'
 
+export enum ConversationKind {
+	OneToOne = 'OneToOne',
+	MultiMember = 'MultiMember',
+	Self = 'Self',
+}
+
 type BaseConversation = {
 	id: string
 	accountId: string
@@ -22,18 +28,18 @@ type BaseConversation = {
 	reading: boolean
 	lastSentMessage?: string
 	lastMessageDate?: number
-	kind: berty.chatmodel.Conversation.Kind | 'fake'
+	kind: ConversationKind | 'fake'
 }
 
 type FakeConversation = BaseConversation & {
 	kind: 'fake'
 }
 type OneToOneConversation = BaseConversation & {
-	kind: berty.chatmodel.Conversation.Kind.OneToOne
+	kind: ConversationKind.OneToOne
 	contactId: string
 }
 type MultiMemberConversation = BaseConversation & {
-	kind: berty.chatmodel.Conversation.Kind.PrivateGroup
+	kind: ConversationKind.MultiMember
 }
 
 export type Entity = FakeConversation | OneToOneConversation | MultiMemberConversation
@@ -83,10 +89,10 @@ export namespace Event {
 		pk: string
 	} & (
 		| {
-				kind: berty.chatmodel.Conversation.Kind.OneToOne
+				kind: ConversationKind.OneToOne
 				contactId: string
 		  }
-		| { kind: berty.chatmodel.Conversation.Kind.PrivateGroup }
+		| { kind: ConversationKind.MultiMember }
 	)
 	export type NameUpdated = {
 		aggregateId: string
@@ -199,10 +205,10 @@ const eventHandler = createSlice<State, EventsReducer>({
 					unreadCount: 0,
 					reading: false,
 				}
-				if (payload.kind === berty.chatmodel.Conversation.Kind.OneToOne) {
+				if (payload.kind === ConversationKind.OneToOne) {
 					const oneToOne = { ...base, contactId: payload.contactId, kind: payload.kind }
 					state.aggregates[id] = oneToOne
-				} else if (payload.kind === berty.chatmodel.Conversation.Kind.PrivateGroup) {
+				} else if (payload.kind === ConversationKind.MultiMember) {
 					state.aggregates[id] = { ...base, kind: payload.kind }
 				}
 			}
@@ -327,8 +333,7 @@ export const transactions: Transactions = {
 		yield put(events.appInit())
 		const multiMemberConversationsOfAccount = conversations.filter(
 			(conversation) =>
-				conversation.accountId === accountId &&
-				conversation.kind === berty.chatmodel.Conversation.Kind.PrivateGroup,
+				conversation.accountId === accountId && conversation.kind === ConversationKind.MultiMember,
 		)
 		for (const { pk } of multiMemberConversationsOfAccount) {
 			if (pk) {
@@ -447,7 +452,7 @@ export function* orchestrator() {
 					accountId,
 					title: request.name,
 					pk: bufToStr(groupPk),
-					kind: berty.chatmodel.Conversation.Kind.OneToOne,
+					kind: ConversationKind.OneToOne,
 					contactId: contact.getAggregateId({ accountId, contactPk }),
 				}),
 			)
@@ -490,7 +495,7 @@ export function* orchestrator() {
 					accountId,
 					title: metadata.givenName,
 					pk: groupPkStr,
-					kind: berty.chatmodel.Conversation.Kind.OneToOne,
+					kind: ConversationKind.OneToOne,
 					contactId: contact.getAggregateId({ accountId, contactPk: c.pk }),
 				}),
 			)
@@ -531,7 +536,7 @@ export function* orchestrator() {
 					accountId,
 					title: 'Unknown',
 					pk: bufToStr(publicKey),
-					kind: berty.chatmodel.Conversation.Kind.PrivateGroup,
+					kind: ConversationKind.MultiMember,
 				}),
 			)
 			yield* protocol.transactions.client.listenToGroup({ clientId: accountId, groupPk: publicKey })

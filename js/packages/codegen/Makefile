@@ -16,10 +16,6 @@ codegen_protobuf_path := $(abspath $(PWD)/../../node_modules/@protocolbuffers/pr
 codegen_googleapis_path := $(abspath $(PWD)/../../node_modules/@googleapis/googleapis)
 codegen_go_path := $(abspath $(berty_root)/vendor)
 
-codegen_berty_chat_protos := \
-	$(codegen_berty_path)/js-internal/bertychat.proto \
-	$(codegen_berty_path)/js-internal/chatmodel.proto \
-
 codegen_berty_protocol_protos := \
 	$(codegen_berty_path)/bertyprotocol.proto \
 
@@ -27,13 +23,9 @@ codegen_berty_types_protos := \
 	$(codegen_berty_path)/bertytypes.proto \
 
 codegen_berty_shared_protos := \
-	$(codegen_berty_chat_protos) \
 	$(codegen_berty_protocol_protos) \
 	$(codegen_berty_types_protos) \
 
-codegen_berty_chat_sources := \
-	$(shell find $(abspath $(PWD)/..) -type f -name '*.hbs' -path '*/berty-*/*' -not -path '*/node_modules/*') \
-	$(shell find $(abspath $(PWD)/..) -type f -name '*.hbs' -path '*/*/chat/*' -not -path '*/node_modules/*')
 codegen_berty_protocol_sources := $(shell \
 	find $(abspath $(PWD)/..) -type f -name '*.hbs' -path '*/*/protocol/*' -not -path '*/node_modules/*')
 codegen_berty_types_sources := $(shell \
@@ -41,13 +33,11 @@ codegen_berty_types_sources := $(shell \
 codegen_berty_shared_sources := $(shell \
 	find $(abspath $(PWD)/..) -maxdepth 2 -type f -name '*.hbs' -not -path '*/berty-*/*')
 
-codegen_berty_chat_targets := $(patsubst %.hbs, %, $(codegen_berty_chat_sources))
 codegen_berty_protocol_targets := $(patsubst %.hbs, %, $(codegen_berty_protocol_sources))
 codegen_berty_types_targets := $(patsubst %.hbs, %, $(codegen_berty_types_sources))
 codegen_berty_shared_targets := $(patsubst %.hbs, %, $(codegen_berty_shared_sources))
 
 codegen_targets := \
-	$(codegen_berty_chat_targets) \
 	$(codegen_berty_protocol_targets) \
 	$(codegen_berty_types_targets) \
 	$(codegen_berty_shared_targets) \
@@ -64,21 +54,6 @@ codegen_deps := \
 	$(PWD)/Makefile \
 	$(codegen_go_path) \
 	$(PWD)/node_modules \
-
-$(codegen_berty_chat_sources): $(codegen_deps) $(codegen_berty_chat_protos)
-	touch $@
-
-$(codegen_berty_protocol_sources): $(codegen_deps) $(codegen_berty_chat_protos)
-	touch $@
-
-$(codegen_berty_types_sources): $(codegen_deps) $(codegen_berty_chat_protos)
-	touch $@
-
-$(codegen_berty_shared_sources): $(codegen_deps) $(codegen_berty_chat_protos)
-	touch $@
-
-$(codegen_berty_chat_targets): %: %.hbs
-	$(codegen_pbhbs) $(codegen_pbhbs_flags) -t $(dir $@) -o $(dir $@) $(codegen_berty_chat_protos)
 
 $(codegen_berty_protocol_targets): %: %.hbs
 	$(codegen_pbhbs) $(codegen_pbhbs_flags) -t $(dir $@) -o $(dir $@) $(codegen_berty_protocol_protos)

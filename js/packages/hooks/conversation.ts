@@ -81,7 +81,7 @@ export const useOneToOneConversationContact = (id: string): chat.contact.Entity 
 	const conversation = useGetConversation(id)
 	return useSelector(
 		(state: chat.contact.GlobalState) =>
-			(conversation?.kind === berty.chatmodel.Conversation.Kind.OneToOne &&
+			(conversation?.kind === chat.conversation.ConversationKind.OneToOne &&
 				chat.contact.queries.get(state, { id: conversation.contactId })) ||
 			undefined,
 	)

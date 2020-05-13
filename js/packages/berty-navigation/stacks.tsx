@@ -137,7 +137,7 @@ export const Navigation: React.FC = () => {
 					contentStyle: { backgroundColor: 'transparent' },
 				}}
 			/>
-			<NavigationStack.Screen
+			{/*<NavigationStack.Screen
 				name={Routes.Main.GroupRequest}
 				component={Stories.Main.GroupRequest}
 				options={{
@@ -145,7 +145,7 @@ export const Navigation: React.FC = () => {
 					stackAnimation: 'fade',
 					contentStyle: { backgroundColor: 'transparent' },
 				}}
-			/>
+			/>*/}
 			<NavigationStack.Screen name={Routes.Main.ScanRequest} component={Stories.Main.ScanRequest} />
 			<NavigationStack.Screen
 				name={Routes.Main.Scan}
@@ -153,16 +153,16 @@ export const Navigation: React.FC = () => {
 				options={{ stackPresentation: 'transparentModal' }}
 			/>
 			<NavigationStack.Screen name={Routes.Chat.One2One} component={Stories.Chat.Chat} />
-			<NavigationStack.Screen name={Routes.Chat.Group} component={Stories.Chat.ChatGroup} />
+			{/*<NavigationStack.Screen name={Routes.Chat.Group} component={Stories.Chat.ChatGroup} />*/}
 			<NavigationStack.Screen name={Routes.Chat.Settings} component={Stories.Chat.ChatSettings} />
 			<NavigationStack.Screen
 				name={Routes.Chat.One2OneSettings}
 				component={Stories.Chat.ContactChatSettings}
 			/>
-			<NavigationStack.Screen
+			{/*<NavigationStack.Screen
 				name={Routes.Chat.GroupSettings}
 				component={Stories.Chat.GroupChatSettings}
-			/>
+			/>*/}
 
 			<NavigationStack.Screen
 				name={Routes.Main.ListModal}

@@ -5,9 +5,7 @@ import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
-import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
-import { berty } from '@berty-tech/api'
 import { Chat } from '@berty-tech/hooks'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -29,7 +27,7 @@ const useStylesHome = () => {
 	}
 }
 
-const HomeHeaderGroupButton: React.FC<berty.chatmodel.Account> = () => {
+const HomeHeaderGroupButton: React.FC = () => {
 	const _styles = useStylesHome()
 	const [{ padding, color }] = useStyles()
 	const { navigate } = useNavigation()
@@ -63,7 +61,7 @@ const HomeHeaderGroupButton: React.FC<berty.chatmodel.Account> = () => {
 		</View>
 	)
 }
-const HomeHeaderAvatar: React.FC<berty.chatmodel.Account> = ({ contact }) => {
+const HomeHeaderAvatar: React.FC = () => {
 	const _styles = useStylesHome()
 	const [{ row, margin, background, border, color }] = useStyles()
 	const client = Chat.useClient()
@@ -133,29 +131,8 @@ const HomeBodySettings: React.FC<{}> = () => {
 	)
 }
 
-export const useAccount = () => {
-	const [accountGet, accountGetError] = Store.useAccountGet({ id: 0 })
-	const [contactGet, contactGetError] = Store.useContactGet({
-		id: accountGet?.account?.contactId || -1,
-	})
-	if (accountGetError || accountGet == null || accountGet?.account == null) {
-		accountGetError && console.error(accountGetError)
-		return null
-	}
-	if (contactGetError || contactGet?.contact == null) {
-		contactGetError && console.error(contactGetError)
-		return null
-	}
-	return {
-		...accountGet.account,
-		contact: {
-			...contactGet.contact,
-		},
-	}
-}
-
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
-	const account = { ...Chat.useAccount(), ...useAccount() }
+	const account = Chat.useAccount()
 	const _styles = useStylesHome()
 	const [{ flex, background, row }] = useStyles()
 	return (
@@ -166,8 +143,8 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 				<ScrollView contentContainerStyle={[_styles.scrollViewPadding]}>
 					<HeaderSettings>
 						<View>
-							<HomeHeader {...account} />
-							<HomeHeaderGroupButton {...account} />
+							<HomeHeader />
+							<HomeHeaderGroupButton />
 						</View>
 					</HeaderSettings>
 					<HomeBodySettings />

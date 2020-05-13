@@ -7,12 +7,10 @@
  */
 
 import React from 'react'
-import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import DevMenu from 'react-native-dev-menu'
 import Navigation, { NavigationContainer } from '@berty-tech/berty-navigation'
 // import bridge, { ReactNativeTransport } from '@berty-tech/grpc-bridge'
 
-import { faker } from '@berty-tech/berty-storybook/faker.gen'
 import { Theme, NodeGate } from '@berty-tech/berty-storybook'
 import '@berty-tech/berty-i18n'
 import { enableScreens } from 'react-native-screens'
@@ -37,21 +35,14 @@ DevMenu.addItem('Clear async-storage', async () => {
 export const App: React.FC = () => (
 	<SafeAreaProvider>
 		<NavigationContainer>
-			<Store.Provider
-				rpcImpl={
-					faker.berty.chat.ChatService
-						.rpcImpl /*bridge({ host: '', transport: ReactNativeTransport() */
-				}
-			>
-				<Chat.Provider config={{ storage: AsyncStorage }}>
-					<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
-					<Theme.Provider>
-						<NodeGate>
-							<Navigation />
-						</NodeGate>
-					</Theme.Provider>
-				</Chat.Provider>
-			</Store.Provider>
+			<Chat.Provider config={{ storage: AsyncStorage }}>
+				<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
+				<Theme.Provider>
+					<NodeGate>
+						<Navigation />
+					</NodeGate>
+				</Theme.Provider>
+			</Chat.Provider>
 		</NavigationContainer>
 	</SafeAreaProvider>
 )
