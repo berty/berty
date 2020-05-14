@@ -7,7 +7,6 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertydemo"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gogo/protobuf/proto"
@@ -174,67 +173,4 @@ func TestPersistenceProtocol(t *testing.T) {
 
 	assert.Equal(t, node_id_1, node_id_2, "IPFS node should have the same ID after reboot")
 	assert.Equal(t, device_pk_1, device_pk_2, "Device should have the same PK after reboot")
-}
-
-func TestDemoBridge(t *testing.T) {
-	var (
-		err          error
-		demo         *Demo
-		bridgeClient *Client
-		grpcClient   *grpc.ClientConn
-		req, res     []byte
-		//results      [][]byte
-	)
-
-	ctx := context.Background()
-	coreapi, cleanup := ipfsutil.TestingCoreAPI(ctx, t)
-	defer cleanup()
-
-	logger := testutil.Logger(t)
-	config := NewDemoConfig()
-	config.AddGRPCListener("/ip4/127.0.0.1/tcp/0/grpc")
-	config.AddGRPCListener("/ip4/127.0.0.1/tcp/0/grpcweb")
-	config.coreAPI = coreapi
-
-	demo, err = newDemoBridge(logger, config)
-	require.NoError(t, err)
-
-	defer func() {
-		err = demo.Close()
-		assert.NoErrorf(t, err, "demo.Close")
-	}()
-
-	logger.Info(
-		"listeners",
-		zap.String("gRPC", demo.GRPCListenerAddr()),
-		zap.String("gRPC web", demo.GRPCWebListenerAddr()),
-	)
-
-	// clients
-
-	bridgeClient, err = demo.NewGRPCClient()
-	require.NoError(t, err)
-	assert.NotNil(t, bridgeClient)
-
-	grpcClient, err = grpc.Dial(demo.GRPCListenerAddr(), grpc.WithBlock(), grpc.WithInsecure())
-	require.NoError(t, err)
-
-	// setup unary test
-	msg := &bertydemo.LogToken_Request{}
-
-	req, err = proto.Marshal(msg)
-	require.NoError(t, err)
-
-	// bridgeClient test
-	res, err = bridgeClient.UnaryRequest("/berty.protocol.DemoService/LogToken", req)
-	require.NoError(t, err)
-
-	out := &bertydemo.LogToken_Reply{}
-	err = proto.Unmarshal(res, out)
-	require.NoError(t, err)
-
-	// webclient test
-	cc := bertydemo.NewDemoServiceClient(grpcClient)
-	_, err = cc.LogToken(ctx, msg)
-	require.NoError(t, err)
 }

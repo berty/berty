@@ -42,11 +42,6 @@ bazel.daemon: bazel.generate
 	$(call check-program, $(BAZEL))
 	$(call bazel, run, //go/cmd/berty -- daemon)
 
-.PHONY: bazel.demo
-bazel.demo: bazel.generate
-	$(call check-program, $(BAZEL))
-	$(call bazel, run, //go/cmd/berty -- demo)
-
 .PHONY: bazel.mini
 bazel.mini: bazel.generate
 	$(call check-program, $(BAZEL))
@@ -88,10 +83,6 @@ bazel.fclean:
 .PHONY: ibazel.daemon
 ibazel.daemon: bazel.generate
 	USE_IBAZEL=true make bazel.daemon
-
-.PHONY: ibazel.daemon
-ibazel.demo: bazel.generate
-	USE_IBAZEL=true make bazel.demo
 
 .PHONY: ibazel.mini
 ibazel.mini: bazel.generate

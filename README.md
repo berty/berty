@@ -38,6 +38,7 @@ There is a **protocol** that uses advanced cryptography and a **messenger app** 
 Berty is currently developed by **Berty Technologies**, a French non-profit organization.
 
 Usages:
+
 - When you need to share sensitive information.
 - If you want to communicate with good anonymity.
 - If you don't want to use servers, because you want full control of your data.
@@ -61,7 +62,6 @@ _We will open betas for the different packages and apps soon, so anyone will be 
 
 **Note: this is an ongoing work. The repos are being opened progressively, and there will be more changes and updates.**
 
-
 ## Under the hood
 
 _TODO: add a high-level schema of how things are connected together_
@@ -70,7 +70,6 @@ _TODO: add a high-level schema of how things are connected together_
 
 [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/berty.tech/berty/v2)
 [![Code coverage](https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow)](https://codecov.io/gh/berty/berty)
-
 
 A generic SDK that allows developers to write P2P applications. It contains everything needed (encryption, identities, network routing, group management, account management, device management, application lifecycle) so you can just focus on the high-level features of your app.
 
@@ -86,17 +85,16 @@ A chat application written in [React Native](https://reactnative.dev/), that use
 
 ## Main items in the repo
 
-* [./go](go): Where all the Golang code belongs.
-    * [./go/pkg/**bertyprotocol**](go/pkg/bertyprotocol): **Berty Protocol** _Golang SDK_ to create secure and autonomous groups using _IPFS_.
-    * [./go/framework/bertybridge](go/framework/bertybridge): gomobile entrypoint.
-    * [./go/cmd/**berty**](go/cmd/berty): Main **Berty CLI**, containing:
-        * `berty daemon`: Runs the whole Berty Protocol instance.
-        * `berty demo`: Development/debugging subcommand which aims to show the internal features more easily.
-        * `berty mini`: Simple CLI chat app using Berty Protocol.
-    * [./go/cmd/**rdvp**](go/cmd/rdvp): A Rendez-Vous Point server.
-* [./js](js): Where all the Javascript/Typescript code belongs, containing:
-    * The **Berty Chat** application, written in React Native.
-* [./docs](docs): Mostly auto-generated documentation.
+- [./go](go): Where all the Golang code belongs.
+  - [./go/pkg/**bertyprotocol**](go/pkg/bertyprotocol): **Berty Protocol** _Golang SDK_ to create secure and autonomous groups using _IPFS_.
+  - [./go/framework/bertybridge](go/framework/bertybridge): gomobile entrypoint.
+  - [./go/cmd/**berty**](go/cmd/berty): Main **Berty CLI**, containing:
+    - `berty daemon`: Runs the whole Berty Protocol instance.
+    - `berty mini`: Simple CLI chat app using Berty Protocol.
+  - [./go/cmd/**rdvp**](go/cmd/rdvp): A Rendez-Vous Point server.
+- [./js](js): Where all the Javascript/Typescript code belongs, containing:
+  - The **Berty Chat** application, written in React Native.
+- [./docs](docs): Mostly auto-generated documentation.
 
 ## Philosophy
 
@@ -132,9 +130,9 @@ Read our [_contribute_ page](https://berty.tech/contribute) on berty.tech.
 
 ## Other resources
 
-* Official website: https://berty.tech
-* Assets: https://assets.berty.tech/
-* _TODO: add link to mockups_
+- Official website: https://berty.tech
+- Assets: https://assets.berty.tech/
+- _TODO: add link to mockups_
 
 ## Contact
 

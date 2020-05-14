@@ -21,14 +21,6 @@
 RCT_EXTERN_METHOD(clearStorage:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(startDemo:(NSDictionary)opts
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(getDemoAddr:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject);
-
-
 RCT_EXTERN_METHOD(startProtocol:(NSDictionary)opts
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);

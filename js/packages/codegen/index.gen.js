@@ -56,14 +56,6 @@ export const berty = {
 	},
 	protocol: {
 		ProtocolService: jsonPb.lookup('.berty.protocol.ProtocolService'),
-		DemoService: jsonPb.lookup('.berty.protocol.DemoService'),
-		LogOperation: jsonPb.lookup('.berty.protocol.LogOperation'),
-		LogStreamOptions: jsonPb.lookup('.berty.protocol.LogStreamOptions'),
-		LogToken: jsonPb.lookup('.berty.protocol.LogToken'),
-		LogAdd: jsonPb.lookup('.berty.protocol.LogAdd'),
-		LogGet: jsonPb.lookup('.berty.protocol.LogGet'),
-		LogList: jsonPb.lookup('.berty.protocol.LogList'),
-		LogStream: jsonPb.lookup('.berty.protocol.LogStream'),
 	},
 	types: {
 		GroupType: jsonPb.lookup('.berty.types.GroupType'),

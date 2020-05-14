@@ -17,7 +17,6 @@ api_go_path := $(abspath $(berty_root)/vendor)
 api_protos := \
 	$(api_berty_path)/js-internal/bertychat.proto \
 	$(api_berty_path)/js-internal/chatmodel.proto \
-	$(api_berty_path)/bertydemo.proto \
 	$(api_berty_path)/bertyprotocol.proto \
 
 api_targets := \
