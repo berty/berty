@@ -274,7 +274,7 @@ const makeMessageHandler = (id: string, eventsChannel: Channel<unknown>) => (
 // call cps on the service method by default
 const defaultTransactions = (Object.keys(gen.Methods) as (keyof gen.Commands<State>)[]).reduce(
 	(txs, methodName) => {
-		txs[methodName] = function*({ id, ...payload }: { id: string }) {
+		txs[methodName] = function* ({ id, ...payload }: { id: string }) {
 			return yield (cps as any)(getService(id)[methodName], payload)
 		}
 		return txs
@@ -301,7 +301,7 @@ export const defaultBridgeOpts = {
 
 export const transactions: Transactions = {
 	...defaultTransactions,
-	start: function*({ id }) {
+	start: function* ({ id }) {
 		if (services[id] != null) {
 			console.warn('service already exists')
 			return
@@ -362,21 +362,21 @@ export const transactions: Transactions = {
 			}),
 		)
 	},
-	deleteService: function*({ id }) {
+	deleteService: function* ({ id }) {
 		const service = getService(id)
 		service.end()
 		delete services[id]
 	},
-	restart: function*(payload) {
+	restart: function* (payload) {
 		yield* transactions.delete({ id: payload.id })
 		yield call(GoBridge.stopProtocol)
 		yield* transactions.start(payload)
 	},
-	delete: function*({ id }) {
+	delete: function* ({ id }) {
 		yield* transactions.deleteService({ id })
 		yield put(events.deleted({ aggregateId: id }))
 	},
-	contactRequestReference: function*(payload) {
+	contactRequestReference: function* (payload) {
 		const reply = (yield cps(
 			getService(payload.id).contactRequestReference,
 			{},
@@ -391,7 +391,7 @@ export const transactions: Transactions = {
 		}
 		return reply
 	},
-	contactRequestEnable: function*(payload) {
+	contactRequestEnable: function* (payload) {
 		const reply = (yield cps(
 			getService(payload.id).contactRequestEnable,
 			{},
@@ -407,27 +407,27 @@ export const transactions: Transactions = {
 		)
 		return reply
 	},
-	groupMetadataSubscribe: function*({ id, groupPk }) {
+	groupMetadataSubscribe: function* ({ id, groupPk }) {
 		const eventsChannel = channel()
 		getService(id).groupMetadataSubscribe({ groupPk }, makeMetadataHandler(id, eventsChannel))
 		return eventsChannel
 	},
-	groupMessageSubscribe: function*({ id, groupPk }) {
+	groupMessageSubscribe: function* ({ id, groupPk }) {
 		const eventsChannel = channel()
 		getService(id).groupMessageSubscribe({ groupPk }, makeMessageHandler(id, eventsChannel))
 		return eventsChannel
 	},
-	groupMetadataList: function*({ id, groupPk }) {
+	groupMetadataList: function* ({ id, groupPk }) {
 		const eventsChannel = channel()
 		getService(id).groupMetadataList({ groupPk }, makeMetadataHandler(id, eventsChannel))
 		return eventsChannel
 	},
-	groupMessageList: function*({ id, groupPk }) {
+	groupMessageList: function* ({ id, groupPk }) {
 		const eventsChannel = channel()
 		getService(id).groupMessageList({ groupPk }, makeMessageHandler(id, eventsChannel))
 		return eventsChannel
 	},
-	listenToGroupMetadata: function*({ clientId, groupPk }) {
+	listenToGroupMetadata: function* ({ clientId, groupPk }) {
 		const chan1 = yield* transactions.groupMetadataSubscribe({
 			id: clientId,
 			groupPk,
@@ -436,7 +436,7 @@ export const transactions: Transactions = {
 			until: new Uint8Array(),
 			goBackwards: false,
 		})
-		yield takeEvery(chan1, function*(action) {
+		yield takeEvery(chan1, function* (action) {
 			yield put(action)
 			if (action.type === events.groupMetadataPayloadSent.type) {
 				yield put((action as any).payload.event)
@@ -446,14 +446,14 @@ export const transactions: Transactions = {
 			id: clientId,
 			groupPk,
 		})
-		yield takeEvery(chan2, function*(action) {
+		yield takeEvery(chan2, function* (action) {
 			yield put(action)
 			if (action.type === events.groupMetadataPayloadSent.type) {
 				yield put((action as any).payload.event)
 			}
 		})
 	},
-	listenToGroupMessages: function*({ clientId, groupPk }) {
+	listenToGroupMessages: function* ({ clientId, groupPk }) {
 		const chan1 = yield* transactions.groupMessageSubscribe({
 			id: clientId,
 			groupPk,
@@ -462,7 +462,7 @@ export const transactions: Transactions = {
 			until: new Uint8Array(),
 			goBackwards: false,
 		})
-		yield takeEvery(chan1, function*(action) {
+		yield takeEvery(chan1, function* (action) {
 			yield put(action)
 			if (action.type === events.groupMetadataPayloadSent.type) {
 				yield put((action as any).payload.event)
@@ -472,14 +472,14 @@ export const transactions: Transactions = {
 			id: clientId,
 			groupPk,
 		})
-		yield takeEvery(chan2, function*(action) {
+		yield takeEvery(chan2, function* (action) {
 			yield put(action)
 			if (action.type === events.groupMetadataPayloadSent.type) {
 				yield put((action as any).payload.event)
 			}
 		})
 	},
-	listenToGroup: function*(payload) {
+	listenToGroup: function* (payload) {
 		yield* transactions.listenToGroupMetadata(payload)
 		yield* transactions.listenToGroupMessages(payload)
 	},

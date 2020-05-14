@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
-import { colors, useStyles, ColorsTypes } from '@berty-tech/styles'
+import { useStyles, ColorsTypes, defaultStylesDeclaration } from '@berty-tech/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 //
@@ -30,7 +30,7 @@ type HeaderSettingsProps = {
 export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	title = null,
 	children = null,
-	bgColor = colors.blue,
+	bgColor = defaultStylesDeclaration.colors.default.blue,
 	undo,
 	undoIcon = 'arrow-back-outline',
 	undoIconPack,

@@ -202,14 +202,14 @@ export const queries: QueryReducer = {
 }
 
 export const transactions: Transactions = {
-	delete: function*({ id }) {
+	delete: function* ({ id }) {
 		yield put(
 			events.deleted({
 				aggregateId: id,
 			}),
 		)
 	},
-	send: function*(payload) {
+	send: function* (payload) {
 		// Recup the conv
 		const conv = (yield select((state) => conversation.queries.get(state, { id: payload.id }))) as
 			| conversation.Entity
@@ -233,12 +233,12 @@ export const transactions: Transactions = {
 			})
 		}
 	},
-	hide: function*() {
+	hide: function* () {
 		// TODO: hide a message
 	},
 }
 
-export const getProtocolClient = function*(id: string): Generator<unknown, protocol.Client, void> {
+export const getProtocolClient = function* (id: string): Generator<unknown, protocol.Client, void> {
 	const client = (yield select((state) => protocol.queries.client.get(state, { id }))) as
 		| protocol.Client
 		| undefined
@@ -251,7 +251,7 @@ export const getProtocolClient = function*(id: string): Generator<unknown, proto
 export function* orchestrator() {
 	yield all([
 		...makeDefaultCommandsSagas(commands, transactions),
-		takeEvery('protocol/GroupMessageEvent', function*(
+		takeEvery('protocol/GroupMessageEvent', function* (
 			action: PayloadAction<berty.types.GroupMessageEvent & { aggregateId: string }>,
 		) {
 			// create an id for the message

@@ -172,7 +172,7 @@ export const queries: QueryReducer = {
 	getLength: (state) => Object.keys(state.chat.account.aggregates).length,
 }
 
-export const getProtocolClient = function*(id: string): Generator<unknown, protocol.Client, void> {
+export const getProtocolClient = function* (id: string): Generator<unknown, protocol.Client, void> {
 	const client = (yield select((state) => protocol.queries.client.get(state, { id }))) as
 		| protocol.Client
 		| undefined
@@ -183,7 +183,7 @@ export const getProtocolClient = function*(id: string): Generator<unknown, proto
 }
 
 export const transactions: Transactions = {
-	open: function*({ id }) {
+	open: function* ({ id }) {
 		yield* protocol.transactions.client.start({ id })
 
 		while (true) {
@@ -213,11 +213,11 @@ export const transactions: Transactions = {
 
 		yield* protocol.transactions.client.contactRequestReference({ id })
 	},
-	generate: function*() {
+	generate: function* () {
 		throw new Error('not implemented')
 		//yield* transactions.create({ name: faker.name.firstName(), config: {} })
 	},
-	create: function*({ name, nodeConfig }) {
+	create: function* ({ name, nodeConfig }) {
 		// create an id for the account
 		const id = simpleflake().toString()
 
@@ -244,12 +244,12 @@ export const transactions: Transactions = {
 			payload: jsonToBuf(event),
 		})*/
 	},
-	delete: function*() {
+	delete: function* () {
 		yield call(GoBridge.stopProtocol)
 		yield call(GoBridge.clearStorage)
 		yield put({ type: 'CLEAR_STORE' })
 	},
-	replay: function*({ id }) {
+	replay: function* ({ id }) {
 		const account = select((state) => queries.get(state, { id }))
 		if (account == null) {
 			console.error('account does not exist')
@@ -267,7 +267,7 @@ export const transactions: Transactions = {
 			until: new Uint8Array(),
 			goBackwards: false,
 		})
-		yield takeEvery(chan, function*(
+		yield takeEvery(chan, function* (
 			action: protocol.client.Commands extends {
 				[key: string]: (
 					state: protocol.client.State,
@@ -283,7 +283,7 @@ export const transactions: Transactions = {
 			}
 		})
 	},
-	sendContactRequest: function*(payload) {
+	sendContactRequest: function* (payload) {
 		const account = (yield select((state) => queries.get(state, { id: payload.id }))) as
 			| Entity
 			| undefined
@@ -307,7 +307,7 @@ export const transactions: Transactions = {
 			contact,
 		})
 	},
-	onboard: function*(payload) {
+	onboard: function* (payload) {
 		yield put(events.onboarded({ aggregateId: payload.id }))
 	},
 }
@@ -315,7 +315,7 @@ export const transactions: Transactions = {
 export function* orchestrator() {
 	yield all([
 		...makeDefaultCommandsSagas(commands, transactions),
-		fork(function*() {
+		fork(function* () {
 			yield take('persist/REHYDRATE')
 			// start protocol clients
 			const accounts = (yield select(queries.getAll)) as Entity[]

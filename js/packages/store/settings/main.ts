@@ -91,13 +91,13 @@ export function* getMainSettings(id: string) {
 }
 
 export const transactions: Transactions = {
-	create: function*() {
+	create: function* () {
 		throw new Error('not implemented')
 	},
-	set: function*() {
+	set: function* () {
 		throw new Error('not implemented')
 	},
-	delete: function*() {
+	delete: function* () {
 		throw new Error('not implemented')
 	},
 }
