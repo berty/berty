@@ -79,11 +79,6 @@ func (s *service) ContactRequestSend(ctx context.Context, req *bertytypes.Contac
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	//// TODO: remove this, used to fake contact requests atm
-	//if _, err := s.accountGroup.MetadataStore().ContactRequestOutgoingSent(ctx, pk); err != nil {
-	//	return nil, errcode.ErrOrbitDBAppend.Wrap(err)
-	//}
-
 	return &bertytypes.ContactRequestSend_Reply{}, nil
 }
 

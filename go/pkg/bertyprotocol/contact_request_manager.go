@@ -1,11 +1,9 @@
 package bertyprotocol
 
 import (
-	"context"
-
-	"sync"
-
 	"bytes"
+	"context"
+	"sync"
 
 	"berty.tech/berty/v2/go/internal/handshake"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -269,7 +267,7 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 	}()
 }
 
-const contactRequestV1 = "berty_contact_req_v1"
+const contactRequestV1 = "/berty/contact_req/1.0.0"
 
 func (c *contactRequestsManager) incomingHandler(stream network.Stream) {
 	defer func() {

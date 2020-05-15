@@ -17,7 +17,7 @@ import (
 func ResponseUsingReaderWriter(reader ggio.Reader, writer ggio.Writer, ownAccountID p2pcrypto.PrivKey) (p2pcrypto.PubKey, error) {
 	hc := &handshakeContext{
 		reader:          reader,
-		writer:          writer, // ggio.NewDelimitedWriter(stream),
+		writer:          writer,
 		ownAccountID:    ownAccountID,
 		sharedEphemeral: &[cryptoutil.KeySize]byte{},
 	}

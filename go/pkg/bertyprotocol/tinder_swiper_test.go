@@ -1,16 +1,14 @@
 package bertyprotocol
 
 import (
+	"context"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
-
-	"context"
-
-	"io"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"

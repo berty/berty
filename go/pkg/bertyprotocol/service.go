@@ -3,7 +3,6 @@ package bertyprotocol
 import (
 	"context"
 	"sync"
-
 	"time"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -132,13 +131,12 @@ func New(opts Opts) (Service, error) {
 
 	if opts.TinderDriver != nil {
 		s := newSwiper(opts.TinderDriver, opts.Logger, opts.RendezvousRotationBase)
-		println("tinder swiper is enabled")
+		opts.Logger.Debug("tinder swiper is enabled")
 
 		if err := initContactRequestsManager(opts.RootContext, s, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	} else {
-		println("no tinder driver provided, incoming and outgoing contact requests won't be enabled")
 		opts.Logger.Warn("no tinder driver provided, incoming and outgoing contact requests won't be enabled")
 	}
 

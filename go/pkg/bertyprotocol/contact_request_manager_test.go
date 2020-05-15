@@ -2,10 +2,9 @@ package bertyprotocol
 
 import (
 	"context"
+	"io"
 	"testing"
 	"time"
-
-	"io"
 
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"

@@ -9,6 +9,7 @@ import (
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
@@ -18,6 +19,8 @@ import (
 )
 
 func TestValidHandshake(t *testing.T) {
+	testutil.SkipSlow(t)
+
 	var requesterTest requesterTestFunc = func(
 		t *testing.T,
 		stream p2pnetwork.Stream,
@@ -56,6 +59,8 @@ func TestValidHandshake(t *testing.T) {
 }
 
 func TestInvalidRequesterHello(t *testing.T) {
+	testutil.SkipSlow(t)
+
 	t.Log("Requester interrupts by closing stream")
 	{
 		start := time.Now()
@@ -88,6 +93,8 @@ func TestInvalidRequesterHello(t *testing.T) {
 }
 
 func TestInvalidResponderHello(t *testing.T) {
+	testutil.SkipSlow(t)
+
 	t.Log("Responder interrupts by closing stream")
 	{
 		start := time.Now()
@@ -130,6 +137,8 @@ func TestInvalidResponderHello(t *testing.T) {
 }
 
 func TestInvalidRequesterAuthenticate(t *testing.T) {
+	testutil.SkipSlow(t)
+
 	t.Log("Requester interrupts by closing stream")
 	{
 		start := time.Now()
@@ -728,6 +737,8 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 }
 
 func TestInvalidResponderAccept(t *testing.T) {
+	testutil.SkipSlow(t)
+
 	t.Log("Responder interrupts by closing stream")
 	{
 		start := time.Now()
@@ -1196,6 +1207,8 @@ func TestInvalidResponderAccept(t *testing.T) {
 }
 
 func TestInvalidResponderAcceptAck(t *testing.T) {
+	testutil.SkipSlow(t)
+
 	t.Log("Requester interrupts by closing stream")
 	{
 		start := time.Now()

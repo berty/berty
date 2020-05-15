@@ -2,14 +2,11 @@ package bertyprotocol
 
 import (
 	"context"
-
-	"time"
-
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/binary"
-
 	"io"
+	"time"
 
 	"berty.tech/berty/v2/go/internal/tinder"
 	"github.com/libp2p/go-libp2p-core/peer"
