@@ -1,7 +1,7 @@
 import { combineReducers, Middleware } from 'redux'
 import { configureStore } from '@reduxjs/toolkit'
-import { all, call } from 'redux-saga/effects'
-import createSagaMiddleware from 'redux-saga'
+import { all, call, cancel, fork, take, join } from 'redux-saga/effects'
+import createSagaMiddleware, { Task } from 'redux-saga'
 import createRecorder from 'redux-test-recorder'
 import mem from 'mem'
 import createSagaMonitor from '@clarketm/saga-monitor'
@@ -32,22 +32,32 @@ export const reducers = {
 }
 
 export function* rootSaga() {
-	while (1) {
-		try {
-			yield all([
-				call(protocol.rootSaga),
-				call(settings.rootSaga),
-				call(account.orchestrator),
-				call(contact.orchestrator),
-				call(conversation.orchestrator),
-				call(member.orchestrator),
-				call(message.orchestrator),
-			])
-		} catch (error) {
-			console.error(error)
-			console.warn('Chat orchestrator crashed, retrying')
+	// wrapping everything in a call because typescript gets confused on sagaMiddleware.run otherwise
+	yield call(function* () {
+		yield take('persist/REHYDRATE')
+		while (true) {
+			try {
+				const rootTask = (yield fork(function* () {
+					yield all([
+						call(protocol.rootSaga),
+						call(settings.rootSaga),
+						call(account.orchestrator),
+						call(contact.orchestrator),
+						call(conversation.orchestrator),
+						call(member.orchestrator),
+						call(message.orchestrator),
+					])
+				})) as Task
+				yield take('CLEAR_STORE')
+				console.log('Store cleared, Restarting root saga')
+				yield cancel(rootTask)
+				yield join(rootTask)
+			} catch (error) {
+				console.error(error)
+				console.warn('Chat orchestrator crashed, retrying')
+			}
 		}
-	}
+	})
 }
 
 const combinedReducer = combineReducers(reducers)

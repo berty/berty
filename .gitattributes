@@ -24,6 +24,7 @@ go.sum linguist-generated
 yarn.lock linguist-generated
 package.json linguist-generated
 Podfile.lock linguist-generated
+/js/packages/store/protocol/grpc-web-gen/** linguist-generated
 
 # Reduce conflicts on markdown files
 *.md merge=union

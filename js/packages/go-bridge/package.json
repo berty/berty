@@ -3,7 +3,7 @@
   "title": "Go Bridge",
   "version": "1.0.0",
   "description": "Berty's react-native go-bridge library",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

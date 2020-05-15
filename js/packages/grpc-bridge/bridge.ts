@@ -26,11 +26,12 @@ const createMessage = (mtype: pb.Type): grpc.ProtobufMessageClass<grpc.ProtobufM
 	return Message
 }
 
-export type Bridge = (
+export type GRPCBridge = (
 	options: grpc.ClientRpcOptions,
 	metadata?: { [key: string]: string | Array<string> },
 ) => pb.RPCImpl
-export const bridge: Bridge = (options, metadata): pb.RPCImpl => (
+
+const grpcBridge: GRPCBridge = (options, metadata): pb.RPCImpl => (
 	method,
 	requestData,
 	callback,
@@ -94,4 +95,4 @@ export const bridge: Bridge = (options, metadata): pb.RPCImpl => (
 	client.finishSend()
 }
 
-export default bridge
+export default grpcBridge

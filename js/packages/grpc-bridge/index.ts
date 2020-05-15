@@ -1,10 +1,8 @@
-export * from './protocol'
-export * from './orbitdb'
+import grpcBridge from './bridge'
 
-export * from './bridge'
+export type { GRPCBridge } from './bridge'
 
 export { ReactNativeTransport } from './grpc-web-react-native-transport'
 export { WebsocketTransport } from './grpc-web-websocket-transport'
 
-import bridge from './bridge'
-export default bridge
+export default grpcBridge

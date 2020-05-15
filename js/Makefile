@@ -120,6 +120,7 @@ lint: files = .
 lint: options += --cache --quiet --ext=.js,.jsx,.ts,.tsx
 lint: deps
 	cat $(PWD)/.gitignore > $(PWD)/.eslintignore
+	echo "packages/store/protocol/grpc-web-gen/" >> $(PWD)/.eslintignore
 	echo "*.pb.*" >> $(PWD)/.eslintignore
 	echo "*.gen.*" >> $(PWD)/.eslintignore
 	$(eslint) $(options) $(files)
@@ -134,6 +135,7 @@ lint.watch: lint
 
 .PHONY: gen
 gen: deps
+	$(MAKE) pb.generate
 
 .PHONY: gen.clean
 gen.clean:
@@ -143,10 +145,25 @@ gen.clean:
 	  packages/*/*.pb.js \
 	  packages/*/*.pb.d.ts \
 	)
+	rm -f gen.sum
+	rm -fr packages/store/protocol/grpc-web-gen
 
 $(HOME)/.android/debug.keystore: $(pkg_mod)
 	mkdir -p $(dir $@)
 	cp $(BERTY_ROOT)/js/packages/berty-app/node_modules/react-native/template/android/app/debug.keystore $@
+
+.PHONY: start.grpc-bridge.berty
+start.grpc-bridge.berty: export PWD := $(PWD)
+start.grpc-bridge.berty: host ?= 127.0.0.1
+start.grpc-bridge.berty: port ?= 1337
+start.grpc-bridge.berty: proto ?= grpcws
+start.grpc-bridge.berty:
+	cd $(BERTY_ROOT) && $(MAKE) bazel.generate
+	cd $(BERTY_ROOT) \
+		&& bazel run //go/cmd/berty -- daemon -l /ip4/$(host)/tcp/$(port)/$(proto)
+
+# pb.generate
+include gen.make
 
 include packages/api/Makefile
 include packages/codegen/Makefile
@@ -154,4 +171,3 @@ include packages/go-bridge/Makefile
 include packages/berty-app/Makefile
 include packages/storybook-mobile/Makefile
 include packages/storybook-web/Makefile
-include packages/grpc-bridge/Makefile

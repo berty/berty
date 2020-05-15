@@ -22,7 +22,7 @@ steps:
     commands:
       - set -x
       - go version
-      - find . -name gen.sum -delete
+      - find . -name gen.sum ! -path './js/*' -delete
       - cd go
       - time go mod vendor
       - make generate_local
@@ -164,9 +164,14 @@ steps:
       queue: "bigcores"
     commands:
       - set -x
-      - cd js
+      - cd go
+      - go mod vendor
+      - cd ../js
       - make gen.clean
-      - make gen
+      - make deps
+      - make gen.api
+      - make gen.codegen
+      - make generate_local
       - cd ..
       - git status | cat
       - git diff -w | cat

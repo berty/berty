@@ -4,21 +4,23 @@ import * as pb from 'protobufjs'
 {{#with (lookup "berty.protocol")}}
 	{{#each nested}}
 		{{#if (eq (typeof this) "Service")}}
-			export class {{name}}Client {
+			export default class {{name}}Client {
 				_pbService: api{{namespace this}}
+				end: () => void
 
 				constructor(rpcImpl: pb.RPCImpl) {
 					this._pbService = api{{namespace this}}.create(rpcImpl)
+					this.end = this._pbService.end.bind(this._pbService)
 				}
 
 				{{#each methods}}
-					{{case 'camel' name}}(
+					{{case 'camel' name}}: (
 						request: api{{inamespace resolvedRequestType}},
 						callback: (
 							error: Error | null,
 							response?: api{{inamespace resolvedResponseType}}
 						) => void
-					) {
+					) => void = (request, callback) => {
 						return this._pbService.{{case 'camel' name}}.bind(this._pbService)(request, callback)
 					}
 			  	{{/each}}
