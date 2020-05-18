@@ -1,0 +1,50 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - react-native-easy-grid > lodash:
+        patched: '2020-05-18T23:17:06.506Z'
+    - '@storybook/addon-notes > @storybook/components > lodash':
+        patched: '2020-05-18T23:17:06.506Z'
+    - react-native-elements > react-native-ratings > lodash:
+        patched: '2020-05-18T23:17:06.506Z'
+    - storybook-addon-i18n > @storybook/client-api > lodash:
+        patched: '2020-05-18T23:17:06.506Z'
+    - '@storybook/addon-notes > @storybook/addons > @storybook/api > lodash':
+        patched: '2020-05-18T23:17:06.506Z'
+    - '@storybook/addon-notes > @storybook/api > telejson > lodash':
+        patched: '2020-05-18T23:17:06.506Z'
+    - react-native-qrcode-scanner > opencollective > inquirer > lodash:
+        patched: '2020-05-18T23:17:06.506Z'
+    - storybook-addon-i18n > @storybook/addons > @storybook/api > lodash:
+        patched: '2020-05-18T23:17:06.506Z'
+    - '@storybook/addon-notes > @storybook/addons > @storybook/api > @storybook/router > lodash':
+        patched: '2020-05-18T23:17:06.506Z'
+    - '@storybook/addon-notes > @storybook/addons > @storybook/api > telejson > lodash':
+        patched: '2020-05-18T23:17:06.506Z'
+    - storybook-addon-i18n > @storybook/addons > @storybook/api > telejson > lodash:
+        patched: '2020-05-18T23:17:06.506Z'
+    - storybook-addon-i18n > @storybook/client-api > @storybook/addons > @storybook/api > lodash:
+        patched: '2020-05-18T23:17:06.506Z'
+    - '@storybook/addon-notes > @storybook/addons > @storybook/api > @storybook/router > @storybook/csf > lodash':
+        patched: '2020-05-18T23:17:06.506Z'
+    - storybook-addon-i18n > @storybook/client-api > @storybook/addons > @storybook/api > telejson > lodash:
+        patched: '2020-05-18T23:17:06.506Z'
+    - '@storybook/addon-notes > @storybook/theming > @emotion/styled > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash':
+        patched: '2020-05-18T23:17:06.506Z'
+    - '@storybook/addon-notes > @storybook/components > @storybook/theming > @emotion/styled > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash':
+        patched: '2020-05-18T23:17:06.506Z'
+    - storybook-addon-i18n > @storybook/components > @storybook/theming > @emotion/styled > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2020-05-18T23:17:06.506Z'
+    - '@storybook/addon-notes > @storybook/addons > @storybook/api > @storybook/theming > @emotion/styled > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash':
+        patched: '2020-05-18T23:17:06.506Z'
+    - storybook-addon-i18n > @storybook/addons > @storybook/api > @storybook/theming > @emotion/styled > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2020-05-18T23:17:06.506Z'
+    - '@storybook/addon-notes > @storybook/addons > @storybook/api > @storybook/theming > @emotion/core > @emotion/css > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash':
+        patched: '2020-05-18T23:17:06.506Z'
+    - storybook-addon-i18n > @storybook/client-api > @storybook/addons > @storybook/api > @storybook/theming > @emotion/styled > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2020-05-18T23:17:06.506Z'
+    - storybook-addon-i18n > @storybook/client-api > @storybook/addons > @storybook/api > @storybook/theming > @emotion/core > @emotion/css > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2020-05-18T23:17:06.506Z'
