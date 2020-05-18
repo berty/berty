@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@berty-tech/berty-navigation": "^0.0.0",
-    "@berty-tech/berty-storybook": "^0.0.0",
+    "@berty-tech/components": "^0.0.0",
     "@berty-tech/go-bridge": "^1.0.0",
     "@berty-tech/hooks": "^0.0.0",
     "@berty-tech/react-native-example": "^1.0.0",

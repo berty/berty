@@ -4,12 +4,12 @@
 // https://github.com/elderfo/react-native-storybook-loader.git
 
 function loadStories() {
-	require('../../berty-storybook/storybook');
+	require('../../components/storybook');
 	require('../../shared-storybook/storybook');
 }
 
 const stories = [
-	'../../berty-storybook/storybook',
+	'../../components/storybook',
 	'../../shared-storybook/storybook'
 ];
 
