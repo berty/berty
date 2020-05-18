@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
@@ -18,6 +19,7 @@ import (
 	"github.com/juju/fslock"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/rivo/tview"
+	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -109,18 +111,34 @@ func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyproto
 	}
 }
 
-func Main(opts *Opts) {
+func Main(ctx context.Context, opts *Opts) {
+	ctx, span := tracer.NewSpan(ctx)
+	defer span.End()
+
 	p2plog.SetAllLoggers(p2plog.LevelFatal)
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
+
+	trClient := tracer.Tracer("grpc-client")
+	clientOpts := []grpc.DialOption{
+		grpc.WithUnaryInterceptor(grpc_trace.UnaryClientInterceptor(trClient)),
+		grpc.WithStreamInterceptor(grpc_trace.StreamClientInterceptor(trClient)),
+	}
 
 	var client bertyprotocol.ProtocolServiceClient
 	if opts.RemoteAddr == "" {
+		trServer := tracer.Tracer("grpc-server")
+
 		service, clean := newService(opts.Logger, ctx, opts)
 		defer clean()
 
-		protocolClient, err := bertyprotocol.NewClient(service)
+		grpcServer := grpc.NewServer(
+			grpc.UnaryInterceptor(grpc_trace.UnaryServerInterceptor(trServer)),
+			grpc.StreamInterceptor(grpc_trace.StreamServerInterceptor(trServer)),
+		)
+
+		protocolClient, err := bertyprotocol.NewClientFromServer(grpcServer, service, clientOpts...)
 		if err != nil {
 			panic(err)
 		}
@@ -129,7 +147,9 @@ func Main(opts *Opts) {
 
 		client = protocolClient
 	} else {
-		cc, err := grpc.Dial(opts.RemoteAddr, grpc.WithInsecure())
+		cc, err := grpc.Dial(opts.RemoteAddr, append([]grpc.DialOption{grpc.WithInsecure()},
+			clientOpts...,
+		)...)
 		if err != nil {
 			panic(err)
 		}

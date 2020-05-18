@@ -18,6 +18,7 @@ import (
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -49,6 +50,8 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -74,6 +77,7 @@ func main() {
 		globalLibp2pDebug = globalFlags.Bool("debug-p2p", false, "libp2p debug mode")
 		globalOrbitDebug  = globalFlags.Bool("debug-odb", false, "orbitdb debug mode")
 		globalLogToFile   = globalFlags.String("logfile", "", "if specified, will log everything in JSON into a file and nothing on stderr")
+		globalTracer      = globalFlags.String("tracer", "", "specify \"stdout\" to output tracing on stdout or <hostname:port> to trace on jaeger")
 
 		bannerFlags = flag.NewFlagSet("banner", flag.ExitOnError)
 		bannerLight = bannerFlags.Bool("light", false, "light mode")
@@ -92,9 +96,14 @@ func main() {
 		miniClientDemoRDVP       = miniClientDemoFlags.String("rdvp", DevRendezVousPoint, "rendezvous point maddr")
 	)
 
-	globalPreRun := func() error {
+	type cleanupFunc func()
+	globalPreRun := func(ctx context.Context) cleanupFunc {
 		mrand.Seed(srand.Secure())
 		isDebugEnabled := *globalDebug || *globalOrbitDebug || *globalLibp2pDebug
+
+		flush := tracer.InitTracer(*globalTracer, "berty")
+		ctx, span := tracer.NewNamedSpan(ctx, "pre-run")
+		defer span.End()
 
 		// setup zap config
 		var config zap.Config
@@ -115,7 +124,7 @@ func main() {
 
 		var err error
 		if logger, err = config.Build(); err != nil {
-			return errcode.TODO.Wrap(err)
+			log.Fatalf("unable to build log config: %s", err)
 		}
 
 		if *globalLibp2pDebug {
@@ -126,7 +135,7 @@ func main() {
 			zap.ReplaceGlobals(logger)
 		}
 
-		return nil
+		return flush
 	}
 
 	banner := &ffcli.Command{
@@ -134,9 +143,9 @@ func main() {
 		Usage:   "banner",
 		FlagSet: bannerFlags,
 		Exec: func(args []string) error {
-			if err := globalPreRun(); err != nil {
-				return err
-			}
+			cleanup := globalPreRun(context.Background())
+			defer cleanup()
+
 			if *bannerLight {
 				fmt.Println(banner.QOTD())
 			} else {
@@ -161,12 +170,10 @@ func main() {
 		FlagSet: miniClientDemoFlags,
 		Exec: func(args []string) error {
 			ctx := context.Background()
+			cleanup := globalPreRun(ctx)
+			defer cleanup()
 
-			if err := globalPreRun(); err != nil {
-				return err
-			}
-
-			rootDS, dsLock, err := getRootDatastore(miniClientDemoPath)
+			rootDS, dsLock, err := getRootDatastore(ctx, miniClientDemoPath)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
@@ -206,7 +213,7 @@ func main() {
 				l = logger
 			}
 
-			mini.Main(&mini.Opts{
+			mini.Main(ctx, &mini.Opts{
 				RemoteAddr:      remoteAddr,
 				GroupInvitation: *miniClientDemoGroup,
 				Port:            *miniClientDemoPort,
@@ -224,11 +231,9 @@ func main() {
 		Usage:   "berty daemon",
 		FlagSet: clientProtocolFlags,
 		Exec: func(args []string) error {
-			if err := globalPreRun(); err != nil {
-				return err
-			}
-
 			ctx := context.Background()
+			cleanup := globalPreRun(ctx)
+			defer cleanup()
 
 			var api iface.CoreAPI
 			{
@@ -289,7 +294,7 @@ func main() {
 			var protocol bertyprotocol.Service
 			{
 
-				rootDS, dsLock, err := getRootDatastore(clientProtocolPath)
+				rootDS, dsLock, err := getRootDatastore(ctx, clientProtocolPath)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
@@ -305,7 +310,7 @@ func main() {
 				// initialize new protocol client
 				opts := bertyprotocol.Opts{
 					IpfsCoreAPI:     api,
-					Logger:          logger.Named("bertyproocol"),
+					Logger:          logger.Named("bertyprotocol"),
 					RootContext:     ctx,
 					RootDatastore:   rootDS,
 					MessageKeystore: mk,
@@ -337,18 +342,20 @@ func main() {
 
 				zapOpts := []grpc_zap.Option{}
 
+				tr := tracer.Tracer("grpc-server")
 				// setup grpc with zap
 				grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
 				grpcServer := grpc.NewServer(
 					grpc_middleware.WithUnaryServerChain(
 						grpc_recovery.UnaryServerInterceptor(recoverOpts...),
 						grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-
 						grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
+						grpc_trace.UnaryServerInterceptor(tr),
 					),
 					grpc_middleware.WithStreamServerChain(
 						grpc_recovery.StreamServerInterceptor(recoverOpts...),
 						grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+						grpc_trace.StreamServerInterceptor(tr),
 						grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
 					),
 				)
@@ -424,7 +431,7 @@ func main() {
 	}
 }
 
-func getRootDatastore(optPath *string) (datastore.Batching, *fslock.Lock, error) {
+func getRootDatastore(ctx context.Context, optPath *string) (datastore.Batching, *fslock.Lock, error) {
 	var (
 		baseDS datastore.Batching = sync_ds.MutexWrap(datastore.NewMapDatastore())
 		lock   *fslock.Lock
