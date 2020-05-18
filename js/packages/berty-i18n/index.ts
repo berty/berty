@@ -5,9 +5,9 @@ import * as dateFns from './dateFns'
 
 i18next.use(initReactI18next).init({
 	fallbackLng: 'en',
+	lng: 'en',
 	resources: languages,
 	debug: true,
 })
 
 export default i18next
-// export { languages } from './locale/languages'
