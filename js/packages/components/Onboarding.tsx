@@ -13,7 +13,7 @@ import {
 import { useLayout } from 'react-native-hooks'
 import { Translation } from 'react-i18next'
 import Swiper from 'react-native-swiper'
-import { Card, TouchableCard } from '@berty-tech/shared-storybook'
+import { Card, TouchableCard } from './shared-components/Card'
 import { ColorsTypes, useStyles } from '@berty-tech/styles'
 import { useNavigation, Routes } from '@berty-tech/berty-navigation'
 import { Chat } from '@berty-tech/hooks'

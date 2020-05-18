@@ -25,7 +25,6 @@
     "@babel/runtime": "^7.6.2",
     "@berty-tech/babel-preset": "^0.0.0",
     "@berty-tech/components": "^0.0.0",
-    "@berty-tech/shared-storybook": "^0.0.0",
     "@berty-tech/styles": "^0.0.0",
     "@react-native-community/async-storage": "^1.8.0",
     "@react-native-community/blur": "^3.3.1",

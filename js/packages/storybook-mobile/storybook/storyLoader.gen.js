@@ -5,12 +5,10 @@
 
 function loadStories() {
 	require('../../components/storybook');
-	require('../../shared-storybook/storybook');
 }
 
 const stories = [
 	'../../components/storybook',
-	'../../shared-storybook/storybook'
 ];
 
 module.exports = {

@@ -30,7 +30,6 @@
     "@berty-tech/api": "^0.0.0",
     "@berty-tech/berty-i18n": "^0.0.0",
     "@berty-tech/berty-navigation": "^0.0.0",
-    "@berty-tech/shared-storybook": "^0.0.0",
     "@berty-tech/styles": "^0.0.0",
     "@eva-design/eva": "^1.4.0",
     "@storybook/addon-notes": "^5.2.4",
