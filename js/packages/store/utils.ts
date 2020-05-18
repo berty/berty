@@ -15,7 +15,7 @@ export function makeDefaultReducers<St, Defs extends SliceCaseReducers<St>>(name
 
 export function makeDefaultCommandsSagas(commands: any, transactions: any) {
 	return Object.keys(commands).map((commandName) =>
-		takeEvery(commands[commandName], function*(action: any) {
+		takeEvery(commands[commandName], function* (action: any) {
 			return yield* transactions[commandName](action.payload)
 		}),
 	)

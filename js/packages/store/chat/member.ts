@@ -106,13 +106,13 @@ export const queries: QueryReducer = {
 }
 
 export const transactions: Transactions = {
-	create: function*() {
+	create: function* () {
 		// TODO: create multiMemberGroup
 	},
-	invite: function*() {
+	invite: function* () {
 		// TODO: create invitation for multiMemberGrouo
 	},
-	remove: function*() {
+	remove: function* () {
 		// TODO: remove multiMemberGroup
 	},
 }

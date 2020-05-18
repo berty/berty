@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, TouchableHighlight, StyleSheet, Dimensions, TextInput } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { styles, colors, useStyles } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import { Chat } from '@berty-tech/hooks'
@@ -23,16 +23,10 @@ const useStylesSearch = () => {
 const _stylesSearch = StyleSheet.create({
 	searchComponent: {
 		borderRadius: 7,
-		backgroundColor: colors.lightYellow,
 		top: -395,
 	},
 	searchComponentBody: {
 		top: -290,
-	},
-	searchResultsSearchBar: {
-		borderRadius: 7,
-		backgroundColor: colors.lightYellow,
-		top: -50,
 	},
 })
 
@@ -91,11 +85,11 @@ const SearchHint = () => {
 const SearchComponent: React.FC<{}> = () => {
 	const [searchText, setSearchText] = useState(initialSearchText)
 	const contacts = Chat.useAccountContactSearchResults(searchText)
-	const [{ padding, column }] = useStyles()
+	const [{ padding, column, background }] = useStyles()
 
 	return (
 		<View style={[{ height: Screen.height, justifyContent: 'center' }]}>
-			<View style={[padding.small, _stylesSearch.searchComponent]}>
+			<View style={[padding.small, background.light.yellow, _stylesSearch.searchComponent]}>
 				<SearchBar searchText={searchText} onChange={setSearchText} />
 			</View>
 			<View style={[column.justify, _stylesSearch.searchComponentBody]}>
@@ -165,20 +159,21 @@ type SearchItemProps = {
 
 const SearchItem: React.FC<SearchItemProps> = ({ avatarUri, name, message }) => {
 	const _styles = useStylesSearch()
+	const [{ color, row, border, padding, flex, column, text, margin }] = useStyles()
 	return (
-		<TouchableHighlight underlayColor={colors.lightGrey}>
-			<View style={[styles.row, styles.borderBottom, styles.padding]}>
+		<TouchableHighlight underlayColor={color.light.grey}>
+			<View style={[row.center, border.bottom.big, padding.medium]}>
 				<CircleAvatar avatarUri={avatarUri} size={39} withCircle={false} />
-				<View style={[styles.flex, styles.col, styles.paddingLeft]}>
-					<View style={[styles.row, styles.alignItems]}>
+				<View style={[flex.medium, column.justify, padding.left.medium]}>
+					<View style={[row.center, { alignItems: 'center' }]}>
 						<Text numberOfLines={1} style={_styles.conversationsItemNameText}>
 							{name}
 						</Text>
 					</View>
-					<View style={[styles.bigMarginRight]}>
+					<View style={[margin.right.big]}>
 						<Text
 							numberOfLines={1}
-							style={[styles.textSmall, styles.textGrey, _styles.conversationsItemMsgText]}
+							style={[text.size.small, text.color.grey, _styles.conversationsItemMsgText]}
 						>
 							{message}
 						</Text>

@@ -322,7 +322,7 @@ export const queries: QueryReducer = {
 }
 
 export const transactions: Transactions = {
-	open: function*({ accountId }) {
+	open: function* ({ accountId }) {
 		const conversations = (yield select((state) => queries.list(state))) as Entity[]
 		yield put(events.appInit())
 		const multiMemberConversationsOfAccount = conversations.filter(
@@ -344,10 +344,10 @@ export const transactions: Transactions = {
 			}
 		}
 	},
-	generate: function*() {
+	generate: function* () {
 		// TODO: conversation generate
 	},
-	create: function*({ accountId, members, name }) {
+	create: function* ({ accountId, members, name }) {
 		const { groupPk } = (yield* protocol.client.transactions.multiMemberGroupCreate({
 			id: accountId,
 		})) as {
@@ -391,14 +391,14 @@ export const transactions: Transactions = {
 			}
 		}
 	},
-	delete: function*({ id }) {
+	delete: function* ({ id }) {
 		yield put(
 			events.deleted({
 				aggregateId: id,
 			}),
 		)
 	},
-	deleteAll: function*() {
+	deleteAll: function* () {
 		// Recup conversations
 		const conversations = (yield select(queries.list)) as Entity[]
 		// Delete conversations
@@ -406,7 +406,7 @@ export const transactions: Transactions = {
 			yield* transactions.delete({ id: conversation.id })
 		}
 	},
-	addMessage: function*({ aggregateId, messageId, isMe }) {
+	addMessage: function* ({ aggregateId, messageId, isMe }) {
 		yield put(
 			events.messageAdded({
 				aggregateId,
@@ -416,10 +416,10 @@ export const transactions: Transactions = {
 			}),
 		)
 	},
-	startRead: function*(id) {
+	startRead: function* (id) {
 		yield put(events.startRead(id))
 	},
-	stopRead: function*(id) {
+	stopRead: function* (id) {
 		yield put(events.stopRead(id))
 	},
 }
@@ -428,7 +428,9 @@ export function* orchestrator() {
 	yield all([
 		...makeDefaultCommandsSagas(commands, transactions),
 		// Events
-		takeEvery(protocol.events.client.accountContactRequestIncomingAccepted, function*({ payload }) {
+		takeEvery(protocol.events.client.accountContactRequestIncomingAccepted, function* ({
+			payload,
+		}) {
 			const {
 				aggregateId: accountId,
 				event: { contactPk, groupPk },
@@ -450,7 +452,9 @@ export function* orchestrator() {
 				}),
 			)
 		}),
-		takeEvery(protocol.events.client.accountContactRequestOutgoingEnqueued, function*({ payload }) {
+		takeEvery(protocol.events.client.accountContactRequestOutgoingEnqueued, function* ({
+			payload,
+		}) {
 			const {
 				aggregateId: accountId,
 				event: { contact: c },
@@ -491,7 +495,7 @@ export function* orchestrator() {
 				}),
 			)
 		}),
-		takeEvery(protocol.events.client.groupMemberDeviceAdded, function*({ payload }) {
+		takeEvery(protocol.events.client.groupMemberDeviceAdded, function* ({ payload }) {
 			// todo: move to extra reducers
 			const {
 				aggregateId: accountId,
@@ -510,7 +514,7 @@ export function* orchestrator() {
 				}),
 			)
 		}),
-		takeEvery(protocol.events.client.accountGroupJoined, function*({ payload }) {
+		takeEvery(protocol.events.client.accountGroupJoined, function* ({ payload }) {
 			const {
 				aggregateId: accountId,
 				event: { group },
@@ -532,7 +536,7 @@ export function* orchestrator() {
 			)
 			yield* protocol.transactions.client.listenToGroup({ clientId: accountId, groupPk: publicKey })
 		}),
-		takeEvery(protocol.events.client.groupMetadataPayloadSent, function*({ payload }) {
+		takeEvery(protocol.events.client.groupMetadataPayloadSent, function* ({ payload }) {
 			const {
 				aggregateId: accountId,
 				eventContext: { groupPk },
