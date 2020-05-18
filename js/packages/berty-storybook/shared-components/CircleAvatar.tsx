@@ -2,8 +2,7 @@ import React from 'react'
 import { View, Image, StyleProp } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
-import { berty } from '@berty-tech/api'
-import { BertyChatChatService as Store } from '@berty-tech/berty-store'
+import { chat } from '@berty-tech/store'
 
 //
 // CircleAvatar => every avatar in white circle or not
@@ -27,7 +26,6 @@ type CircleAvatarProps = {
 // Styles
 export const CircleAvatar: React.FC<CircleAvatarProps> = ({
 	avatarUri,
-	withCircle = true,
 	size = 100,
 	diffSize = 10,
 	color = 'white',
@@ -121,50 +119,18 @@ export const Avatar: React.FC<{
 			size={size}
 			diffSize={diffSize}
 			style={style}
-			withCircle={false}
 		/>
 	) : (
-		<CircleAvatar
-			style={style}
-			avatarUri={uris[0] || ''}
-			size={size}
-			diffSize={diffSize}
-			withCircle={false}
-		/>
+		<CircleAvatar style={style} avatarUri={uris[0] || ''} size={size} diffSize={diffSize} />
 	)
 }
-const useMembers = (filter: berty.chatmodel.IMember): Array<berty.chatmodel.IMember> | null => {
-	const [data, error] = Store.useMemberList({ filter })
-	if (error) {
-		return null
-	}
-	return data?.filter((_) => _?.member != null).map((_) => _.member) ?? null
-}
 
-type ConversationAvatarProp = berty.chatmodel.IConversation & {
+type ConversationAvatarProp = chat.conversation.Entity & {
 	size?: number
 	diffSize?: number
 	style?: StyleProp<any>
 }
-export const ConversationAvatar: React.FC<ConversationAvatarProp> = ({
-	id,
-	avatarUri,
-	kind,
-	size,
-	diffSize,
-	style,
-}: berty.chatmodel.IConversation) => {
-	const members = useMembers({ conversationId: id })?.filter((_) => _?.avatarUri != null)
-	return (
-		<Avatar
-			uris={
-				kind === berty.chatmodel.Conversation.Kind.PrivateGroup && members && members.length >= 2
-					? members.map((_) => _.avatarUri || '')
-					: [(members && members[0]?.avatarUri) || avatarUri || '']
-			}
-			size={size}
-			diffSize={diffSize}
-			style={style}
-		/>
-	)
+
+export const ConversationAvatar: React.FC<ConversationAvatarProp> = ({ size, diffSize, style }) => {
+	return <Avatar uris={[]} size={size} diffSize={diffSize} style={style} />
 }

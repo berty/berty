@@ -1,6 +1,6 @@
 export { List } from './List'
 export { ContactRequest } from './ContactRequest'
-export { GroupRequest } from './GroupRequest'
+//export { GroupRequest } from './GroupRequest'
 export { ScanRequest } from './ScanRequest'
 export { Scan } from './Scan'
 export { RequestSent } from './RequestSent'

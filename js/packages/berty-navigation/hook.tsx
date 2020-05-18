@@ -47,14 +47,8 @@ const createNavigation = ({
 			},
 			main: {
 				list: createNavigateFunc(navigate, Routes.Main.List),
-				contactRequest: createNavigateFunc<berty.chatmodel.IContact>(
-					navigate,
-					Routes.Main.ContactRequest,
-				),
-				groupRequest: createNavigateFunc<berty.chatmodel.IConversation>(
-					navigate,
-					Routes.Main.GroupRequest,
-				),
+				contactRequest: createNavigateFunc(navigate, Routes.Main.ContactRequest),
+				groupRequest: createNavigateFunc(navigate, Routes.Main.GroupRequest),
 				scanRequest: createNavigateFunc(navigate, Routes.Main.ScanRequest),
 				scan: createNavigateFunc(navigate, Routes.Main.Scan),
 
@@ -68,17 +62,11 @@ const createNavigation = ({
 				},
 			},
 			chat: {
-				one2One: createNavigateFunc<berty.chatmodel.IConversation>(navigate, Routes.Chat.One2One),
-				group: createNavigateFunc<berty.chatmodel.IConversation>(navigate, Routes.Chat.Group),
-				settings: createNavigateFunc<berty.chatmodel.IConversation>(navigate, Routes.Chat.Settings),
-				one2OneSettings: createNavigateFunc<berty.chatmodel.IConversation>(
-					navigate,
-					Routes.Chat.One2OneSettings,
-				),
-				groupSettings: createNavigateFunc<berty.chatmodel.IConversation>(
-					navigate,
-					Routes.Chat.GroupSettings,
-				),
+				one2One: createNavigateFunc(navigate, Routes.Chat.One2One),
+				group: createNavigateFunc(navigate, Routes.Chat.Group),
+				settings: createNavigateFunc(navigate, Routes.Chat.Settings),
+				one2OneSettings: createNavigateFunc(navigate, Routes.Chat.One2OneSettings),
+				groupSettings: createNavigateFunc(navigate, Routes.Chat.GroupSettings),
 			},
 			settings: {
 				home: createNavigateFunc(navigate, Routes.Settings.Home),

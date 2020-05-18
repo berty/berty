@@ -1,10 +1,10 @@
 import React from 'react'
-import { View, Image, StyleProp } from 'react-native'
+import { View, StyleProp } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
-import { berty } from '@berty-tech/api'
 import Jdenticon from 'react-native-jdenticon'
 import { Chat } from '@berty-tech/hooks'
+import { chat } from '@berty-tech/store'
 
 //
 // ProceduralCircleAvatar => every avatar in white circle or not
@@ -13,7 +13,6 @@ import { Chat } from '@berty-tech/hooks'
 // Types
 type ProceduralCircleAvatarProps = {
 	seed?: string
-	withCircle?: boolean
 	size?: number
 	diffSize?: number
 	color?: ColorsTypes // the color of the circle
@@ -28,7 +27,6 @@ type ProceduralCircleAvatarProps = {
 // Styles
 export const ProceduralCircleAvatar: React.FC<ProceduralCircleAvatarProps> = ({
 	seed,
-	withCircle = true,
 	size = 100,
 	diffSize = 10,
 	color = 'white',
@@ -119,16 +117,9 @@ export const ProceduralAvatar: React.FC<{
 			size={size}
 			diffSize={diffSize}
 			style={style}
-			withCircle={false}
 		/>
 	) : (
-		<ProceduralCircleAvatar
-			style={style}
-			seed={seeds[0] || ''}
-			size={size}
-			diffSize={diffSize}
-			withCircle={false}
-		/>
+		<ProceduralCircleAvatar style={style} seed={seeds[0] || ''} size={size} diffSize={diffSize} />
 	)
 }
 
@@ -148,15 +139,17 @@ export const ConversationProceduralAvatar: React.FC<ConversationProceduralAvatar
 	const conversation = Chat.useGetConversation(conversationId)
 	const contact = Chat.useOneToOneConversationContact(conversationId)
 	const seeds: string[] = []
-	switch (conversation.kind) {
-		case berty.chatmodel.Conversation.Kind.OneToOne:
-			if (contact) {
-				seeds.push(contact.publicKey)
-			}
-			break
-		case 'fake':
-			seeds.push(conversation.id)
-			break
+	if (conversation) {
+		switch (conversation.kind) {
+			case chat.conversation.ConversationKind.OneToOne:
+				if (contact) {
+					seeds.push(contact.publicKey)
+				}
+				break
+			case 'fake':
+				seeds.push(conversation.id)
+				break
+		}
 	}
 	return <ProceduralAvatar seeds={seeds} size={size} diffSize={diffSize} style={style} />
 }

@@ -2,16 +2,9 @@ import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { fork, put, all, select, takeEvery, take, delay, call } from 'redux-saga/effects'
 import { GoBridge } from '@berty-tech/grpc-bridge/orbitdb/native'
-//import faker from 'faker'
 import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
 import { berty } from '@berty-tech/api'
-import {
-	makeDefaultReducers,
-	makeDefaultCommandsSagas,
-	strToBuf,
-	bufToStr,
-	jsonToBuf,
-} from '../utils'
+import { makeDefaultReducers, makeDefaultCommandsSagas, strToBuf, jsonToBuf } from '../utils'
 
 import { contact, conversation } from '../chat'
 import * as protocol from '../protocol'
@@ -250,6 +243,8 @@ export const transactions: Transactions = {
 		yield put({ type: 'CLEAR_STORE' })
 	},
 	replay: function* ({ id }) {
+		// FIXME
+
 		const account = select((state) => queries.get(state, { id }))
 		if (account == null) {
 			console.error('account does not exist')

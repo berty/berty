@@ -8,16 +8,10 @@ export namespace ScreenProps {
 		export type Privacy = {}
 	}
 	export namespace Main {
-		export type ContactRequest = { route: { params: berty.chatmodel.IContact } }
-		export type GroupRequest = {
-			route: {
-				params: berty.chatmodel.IConversation & {
-					kind: berty.chatmodel.Conversation.Kind.PrivateGroup
-				}
-			}
-		}
+		export type ContactRequest = { route: { params: { contactId: string } } }
+		export type GroupRequest = { route: { params: { convId: string } } }
 		export type ScanRequest = {}
-		export type Scan = { route: { params: berty.chatmodel.IContact } }
+		export type Scan = { route: { params: { contactId: string } } }
 
 		export type ListModal = {}
 		export type Search = {}
@@ -31,16 +25,10 @@ export namespace ScreenProps {
 	export namespace Chat {
 		export type List = {}
 		export type One2One = { route: { params: { convId: string } } }
-		export type Group = {
-			route: {
-				params: berty.chatmodel.IConversation & {
-					kind: berty.chatmodel.Conversation.Kind.PrivateGroup
-				}
-			}
-		}
-		export type Settings = { route: { params: berty.chatmodel.IConversation } }
-		export type One2OneSettings = { route: { params: berty.chatmodel.IContact } }
-		export type GroupSettings = { route: { params: berty.chatmodel.IConversation } }
+		export type Group = { route: { params: { convId: string } } }
+		export type Settings = { route: { params: { convId: string } } }
+		export type One2OneSettings = { route: { params: { convId: string } } }
+		export type GroupSettings = { route: { params: { convId: string } } }
 	}
 	export namespace Settings {
 		export type Home = {}
