@@ -16,7 +16,9 @@
     "url": "git+https://github.com/n0izn0iz/berty.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "bugs": {
     "url": "https://github.com/n0izn0iz/berty/issues"
@@ -54,7 +56,8 @@
     "react-use": "^13.9.0",
     "rn-swipeable-panel": "^1.0.15",
     "sha3": "^2.1.2",
-    "storybook-addon-i18n": "^5.1.11"
+    "storybook-addon-i18n": "^5.1.11",
+    "snyk": "^1.321.0"
   },
   "optionalDependencies": {
     "@storybook/addon-links": "^5.2.1"
@@ -73,5 +76,6 @@
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.4.0",
     "react-native-svg": "^11.0.1"
-  }
+  },
+  "snyk": true
 }
