@@ -1,10 +1,11 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
 import InvalidScan from './InvalidScan'
 import AddThisContact from './AddThisContact'
 import { Buffer } from 'buffer'
 import { Chat } from '@berty-tech/hooks'
+import { useStyles } from '@berty-tech/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export const SendContactRequest: React.FC<{
@@ -13,6 +14,7 @@ export const SendContactRequest: React.FC<{
 	const account = Chat.useAccount()
 	const client = Chat.useClient()
 	const contacts = Chat.useAccountContacts()
+	const [{ border }] = useStyles()
 	let content
 	if (!client || !account?.onboarded) {
 		content = (
@@ -64,7 +66,7 @@ export const SendContactRequest: React.FC<{
 	return (
 		<>
 			<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
-			<SafeAreaView>{content}</SafeAreaView>
+			<SafeAreaView style={[border.shadow.huge]}>{content}</SafeAreaView>
 		</>
 	)
 }

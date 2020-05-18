@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
-import { useNavigation, Routes } from '@berty-tech/berty-navigation'
-import { Chat } from '@berty-tech/hooks'
+import { useNavigation } from '@berty-tech/berty-navigation'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 
 //
@@ -32,41 +31,10 @@ const _modeStyles = StyleSheet.create({
 	},
 })
 
-function usePrevious<T>(value: T) {
-	// https://blog.logrocket.com/how-to-get-previous-props-state-with-react-hooks/
-	const ref = useRef<T>()
-	useEffect(() => {
-		ref.current = value
-	})
-	return ref.current
-}
-
-const DeleteAccountButton = () => {
-	const navigation = useReactNavigation()
-	const account = Chat.useAccount()
-	const prevAccount = usePrevious(account)
-	const deleteAccount = Chat.useAccountDelete()
-	// reset navigation once account is deleted
-	useEffect(() => {
-		if (prevAccount && !account) {
-			navigation.reset({ routes: [{ name: Routes.Onboarding.GetStarted }] })
-		}
-	})
-	return (
-		<ButtonSetting
-			name='Delete my account'
-			icon='trash-2-outline'
-			iconSize={30}
-			iconColor={'red'}
-			actionIcon='arrow-ios-forward'
-			onPress={() => account && deleteAccount({ id: account.id })}
-		/>
-	)
-}
-
 const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 	const _styles = useStylesMode()
 	const [{ flex, padding, margin, color, text, row }] = useStyles()
+	const navigation = useReactNavigation()
 
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
@@ -188,7 +156,18 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				actionIcon='arrow-ios-forward'
 				disabled
 			/>
-			<DeleteAccountButton />
+			<ButtonSetting
+				name='Delete my account'
+				icon='trash-2-outline'
+				iconSize={30}
+				iconColor={'red'}
+				actionIcon='arrow-ios-forward'
+				onPress={() =>
+					navigation.navigate('Modals', {
+						screen: 'DeleteAccount',
+					})
+				}
+			/>
 		</View>
 	)
 }
