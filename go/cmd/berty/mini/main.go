@@ -19,6 +19,7 @@ import (
 	"github.com/juju/fslock"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/rivo/tview"
+	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -119,12 +120,25 @@ func Main(ctx context.Context, opts *Opts) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
+	trClient := tracer.Tracer("grpc-client")
+	clientOpts := []grpc.DialOption{
+		grpc.WithUnaryInterceptor(grpc_trace.UnaryClientInterceptor(trClient)),
+		grpc.WithStreamInterceptor(grpc_trace.StreamClientInterceptor(trClient)),
+	}
+
 	var client bertyprotocol.ProtocolServiceClient
 	if opts.RemoteAddr == "" {
+		trServer := tracer.Tracer("grpc-server")
+
 		service, clean := newService(opts.Logger, ctx, opts)
 		defer clean()
 
-		protocolClient, err := bertyprotocol.NewClient(service)
+		grpcServer := grpc.NewServer(
+			grpc.UnaryInterceptor(grpc_trace.UnaryServerInterceptor(trServer)),
+			grpc.StreamInterceptor(grpc_trace.StreamServerInterceptor(trServer)),
+		)
+
+		protocolClient, err := bertyprotocol.NewClientFromServer(grpcServer, service, clientOpts...)
 		if err != nil {
 			panic(err)
 		}
@@ -133,7 +147,9 @@ func Main(ctx context.Context, opts *Opts) {
 
 		client = protocolClient
 	} else {
-		cc, err := grpc.Dial(opts.RemoteAddr, grpc.WithInsecure())
+		cc, err := grpc.Dial(opts.RemoteAddr, append([]grpc.DialOption{grpc.WithInsecure()},
+			clientOpts...,
+		)...)
 		if err != nil {
 			panic(err)
 		}

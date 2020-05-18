@@ -50,6 +50,8 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -94,9 +96,14 @@ func main() {
 		miniClientDemoRDVP       = miniClientDemoFlags.String("rdvp", DevRendezVousPoint, "rendezvous point maddr")
 	)
 
-	globalPreRun := func() error {
+	type cleanupFunc func()
+	globalPreRun := func(ctx context.Context) cleanupFunc {
 		mrand.Seed(srand.Secure())
 		isDebugEnabled := *globalDebug || *globalOrbitDebug || *globalLibp2pDebug
+
+		flush := tracer.InitTracer(*globalTracer, "berty")
+		ctx, span := tracer.NewNamedSpan(ctx, "pre-run")
+		defer span.End()
 
 		// setup zap config
 		var config zap.Config
@@ -117,7 +124,7 @@ func main() {
 
 		var err error
 		if logger, err = config.Build(); err != nil {
-			return errcode.TODO.Wrap(err)
+			log.Fatalf("unable to build log config: %s", err)
 		}
 
 		if *globalLibp2pDebug {
@@ -128,7 +135,7 @@ func main() {
 			zap.ReplaceGlobals(logger)
 		}
 
-		return nil
+		return flush
 	}
 
 	banner := &ffcli.Command{
@@ -136,9 +143,9 @@ func main() {
 		Usage:   "banner",
 		FlagSet: bannerFlags,
 		Exec: func(args []string) error {
-			if err := globalPreRun(); err != nil {
-				return err
-			}
+			cleanup := globalPreRun(context.Background())
+			defer cleanup()
+
 			if *bannerLight {
 				fmt.Println(banner.QOTD())
 			} else {
@@ -162,14 +169,9 @@ func main() {
 		Usage:   "mini",
 		FlagSet: miniClientDemoFlags,
 		Exec: func(args []string) error {
-			if err := globalPreRun(); err != nil {
-				return err
-			}
-
-			flush := tracer.InitTracer(*globalTracer, "berty-mini")
-			defer flush()
-			ctx, span := tracer.NewNamedSpan(context.Background(), "cmd-root")
-			defer span.End()
+			ctx := context.Background()
+			cleanup := globalPreRun(ctx)
+			defer cleanup()
 
 			rootDS, dsLock, err := getRootDatastore(ctx, miniClientDemoPath)
 			if err != nil {
@@ -229,14 +231,9 @@ func main() {
 		Usage:   "berty daemon",
 		FlagSet: clientProtocolFlags,
 		Exec: func(args []string) error {
-			if err := globalPreRun(); err != nil {
-				return err
-			}
-
-			flush := tracer.InitTracer(*globalTracer, "berty-daemon")
-			defer flush()
-			ctx, span := tracer.NewNamedSpan(context.Background(), "cmd-root")
-			defer span.End()
+			ctx := context.Background()
+			cleanup := globalPreRun(ctx)
+			defer cleanup()
 
 			var api iface.CoreAPI
 			{
@@ -345,18 +342,20 @@ func main() {
 
 				zapOpts := []grpc_zap.Option{}
 
+				tr := tracer.Tracer("grpc-server")
 				// setup grpc with zap
 				grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
 				grpcServer := grpc.NewServer(
 					grpc_middleware.WithUnaryServerChain(
 						grpc_recovery.UnaryServerInterceptor(recoverOpts...),
 						grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-
 						grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
+						grpc_trace.UnaryServerInterceptor(tr),
 					),
 					grpc_middleware.WithStreamServerChain(
 						grpc_recovery.StreamServerInterceptor(recoverOpts...),
 						grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+						grpc_trace.StreamServerInterceptor(tr),
 						grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
 					),
 				)
@@ -437,9 +436,6 @@ func getRootDatastore(ctx context.Context, optPath *string) (datastore.Batching,
 		baseDS datastore.Batching = sync_ds.MutexWrap(datastore.NewMapDatastore())
 		lock   *fslock.Lock
 	)
-
-	ctx, span := tracer.NewSpan(ctx)
-	defer span.End()
 
 	if optPath != nil && *optPath != cacheleveldown.InMemoryDirectory {
 		basePath := path.Join(*optPath, "berty")

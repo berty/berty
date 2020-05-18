@@ -42,8 +42,8 @@ require (
 	github.com/rivo/tview v0.0.0-20200219210816-cd38d7432498
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/stretchr/testify v1.5.1
-	go.opentelemetry.io/otel v0.4.3
-	go.opentelemetry.io/otel/exporters/trace/jaeger v0.4.3
+	go.opentelemetry.io/otel v0.5.0
+	go.opentelemetry.io/otel/exporters/trace/jaeger v0.5.0
 	go.uber.org/zap v1.14.1
 	golang.org/x/crypto v0.0.0-20200406173513-056763e48d71
 	golang.org/x/net v0.0.0-20190923162816-aa69164e4478

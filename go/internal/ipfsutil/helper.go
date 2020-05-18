@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"berty.tech/berty/v2/go/internal/tracer"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	madns "github.com/multiformats/go-multiaddr-dns"
 
@@ -14,9 +13,6 @@ import (
 
 // parseIpfsAddr is a function that takes in addr string and return ipfsAddrs
 func ParseAndResolveIpfsAddr(ctx context.Context, addr string) (*peer.AddrInfo, error) {
-	ctx, span := tracer.NewSpan(ctx)
-	defer span.End()
-
 	maddr, err := ma.NewMultiaddr(addr)
 	if err != nil {
 		return nil, err

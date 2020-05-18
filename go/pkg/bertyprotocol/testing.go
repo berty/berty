@@ -6,11 +6,13 @@ import (
 	"testing"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tracer"
 	grpc "google.golang.org/grpc"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
 
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/stretchr/testify/assert"
@@ -58,19 +60,31 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 	service, cleanupService := TestingService(t, serviceOpts)
 
 	// setup client
+	trClient := tracer.Tracer("grpc-client")
+	trServer := tracer.Tracer("grpc-server")
 	grpcLogger := opts.Logger.Named("grpc")
+
 	zapOpts := []grpc_zap.Option{}
 	serverOpts := []grpc.ServerOption{
 		grpc_middleware.WithUnaryServerChain(
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
+			grpc_trace.UnaryServerInterceptor(trServer),
 		),
 		grpc_middleware.WithStreamServerChain(
 			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
+			grpc_trace.StreamServerInterceptor(trServer),
 		),
 	}
-	client, cleanupClient := TestingClient(t, service, serverOpts...)
+
+	clientOpts := []grpc.DialOption{
+		grpc.WithChainUnaryInterceptor(grpc_trace.UnaryClientInterceptor(trClient)),
+		grpc.WithChainStreamInterceptor(grpc_trace.StreamClientInterceptor(trClient)),
+	}
+
+	server := grpc.NewServer(serverOpts...)
+	client, cleanupClient := TestingClientFromServer(t, server, service, clientOpts...)
 	cleanup := func() {
 		cleanupClient()
 		cleanupService()
