@@ -59,9 +59,15 @@
     "react-native-storybook-loader": "^1.8.1",
     "react-native-svg": "^11.0.1",
     "react-test-renderer": "^16.9.0",
-    "storybook-addon-i18n": "^5.1.11"
+    "storybook-addon-i18n": "^5.1.11",
+    "snyk": "^1.321.0"
   },
   "peerDependencies": {
     "react": "^16.12.0"
-  }
+  },
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
