@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "react-native start"
+    "start": "react-native start",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "jest": {
     "preset": "react-native"
@@ -54,6 +56,8 @@
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.4.0",
     "react-native-svg": "^11.0.1",
-    "react-native-vector-icons": "^6.6.0"
-  }
+    "react-native-vector-icons": "^6.6.0",
+    "snyk": "^1.321.0"
+  },
+  "snyk": true
 }
