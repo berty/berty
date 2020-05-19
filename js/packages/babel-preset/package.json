@@ -21,6 +21,12 @@
   "dependencies": {
     "@babel/core": "7.9.0",
     "@babel/preset-typescript": "^7.6.0",
-    "metro-react-native-babel-preset": "^0.56.0"
-  }
+    "metro-react-native-babel-preset": "^0.56.0",
+    "snyk": "^1.321.0"
+  },
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
