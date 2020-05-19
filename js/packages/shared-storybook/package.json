@@ -20,10 +20,16 @@
   },
   "dependencies": {
     "react-native-easy-grid": "^0.2.2",
-    "react-native-ui-kitten": "^4.4.1"
+    "react-native-ui-kitten": "^4.4.1",
+    "snyk": "^1.321.0"
   },
   "peerDependencies": {
     "react": "^16.12.0",
     "react-native": "^0.61.5"
-  }
+  },
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
