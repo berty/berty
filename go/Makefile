@@ -136,7 +136,7 @@ $(GEN_SUM): $(GEN_SRC)
 	    --workdir="/go/src/berty.tech/berty/go" \
 	    --entrypoint="sh" \
 	    --rm \
-	    bertytech/protoc:22 \
+	    bertytech/protoc:23 \
 	    -xec 'make generate_local'; \
 	    $(MAKE) tidy \
 	)

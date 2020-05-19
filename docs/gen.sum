@@ -1,4 +1,4 @@
 58c5c5d9c23c868a7a9d3d836bc43d0a3abb1aa0  ../api/bertyprotocol.proto
 9e7d39280df1ac7167b46259c162df0a1d31f31b  ../api/bertytypes.proto
 be73e02731d03057fa2d8a7faacfc54aa574ed68  ../api/errcode.proto
-794a2d72f285c5995cf1944fd3b491c80832bb5b  Makefile
+24cde12efa3cf64672f7c9e809fa7701c002aa34  Makefile
