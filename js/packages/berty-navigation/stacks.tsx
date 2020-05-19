@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { createNativeStackNavigator } from 'react-native-screens/native-stack'
-import * as Stories from '@berty-tech/berty-storybook'
+import * as Components from '@berty-tech/components'
 import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
 import { chat } from '@berty-tech/store'
@@ -20,7 +20,7 @@ export const ModalsNavigation: React.FC = () => (
 	<ModalsStack.Navigator screenOptions={{ headerShown: false }}>
 		<ModalsStack.Screen
 			name={Routes.Modals.SendContactRequest}
-			component={Stories.Modals.SendContactRequest}
+			component={Components.Modals.SendContactRequest}
 			options={{
 				stackPresentation: 'transparentModal',
 				stackAnimation: 'fade',
@@ -28,7 +28,7 @@ export const ModalsNavigation: React.FC = () => (
 		/>
 		<ModalsStack.Screen
 			name={Routes.Modals.DeleteAccount}
-			component={Stories.Modals.DeleteAccount}
+			component={Components.Modals.DeleteAccount}
 			options={{
 				stackPresentation: 'transparentModal',
 				stackAnimation: 'fade',
@@ -61,7 +61,7 @@ export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 			>
 				{() => (
 					// should use setParams ? maybe, tis weird
-					<Stories.Main.CreateGroup2
+					<Components.Main.CreateGroup2
 						members={members}
 						onRemoveMember={removeMember}
 						onSetMember={setMember}
@@ -72,14 +72,14 @@ export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 				name={Routes.CreateGroup.CreateGroup3}
 				options={{ stackPresentation: 'transparentModal' }}
 			>
-				{() => <Stories.Main.CreateGroup3 members={members} onRemoveMember={removeMember} />}
+				{() => <Components.Main.CreateGroup3 members={members} onRemoveMember={removeMember} />}
 			</CreateGroupStack.Screen>
 			<CreateGroupStack.Screen
 				name={Routes.CreateGroup.CreateGroup1}
 				options={{ stackPresentation: 'transparentModal' }}
 			>
 				{() => (
-					<Stories.Main.CreateGroup
+					<Components.Main.CreateGroup
 						members={members}
 						onRemoveMember={removeMember}
 						onSetMember={setMember}
@@ -98,7 +98,7 @@ export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 const SearchStack = createNativeStackNavigator()
 export const SearchNavigation: React.FC<BottomTabBarProps> = () => (
 	<SearchStack.Navigator screenOptions={{ headerShown: false }}>
-		<SearchStack.Screen name={Routes.Main.Search} component={Stories.Main.Search} />
+		<SearchStack.Screen name={Routes.Main.Search} component={Components.Main.Search} />
 		<SearchStack.Screen
 			name={'Modals'}
 			component={ModalsNavigation}
@@ -111,11 +111,11 @@ const TabStack = createBottomTabNavigator()
 export const TabNavigation: React.FC = () => {
 	return (
 		<TabStack.Navigator
-			tabBar={({ state }) => <Stories.Main.Footer selected={state.routes[state.index].name} />}
+			tabBar={({ state }) => <Components.Main.Footer selected={state.routes[state.index].name} />}
 		>
-			<TabStack.Screen name={Routes.Main.List} component={Stories.Main.List} />
+			<TabStack.Screen name={Routes.Main.List} component={Components.Main.List} />
 			<TabStack.Screen name={Routes.Main.Search} component={SearchNavigation} />
-			<TabStack.Screen name={Routes.Settings.Home} component={Stories.Settings.Home} />
+			<TabStack.Screen name={Routes.Settings.Home} component={Components.Settings.Home} />
 		</TabStack.Navigator>
 	)
 }
@@ -130,7 +130,7 @@ export const Navigation: React.FC = () => {
 		>
 			<NavigationStack.Screen
 				name={Routes.Main.ContactRequest}
-				component={Stories.Main.ContactRequest}
+				component={Components.Main.ContactRequest}
 				options={{
 					stackPresentation: 'transparentModal',
 					stackAnimation: 'fade',
@@ -139,34 +139,40 @@ export const Navigation: React.FC = () => {
 			/>
 			{/*<NavigationStack.Screen
 				name={Routes.Main.GroupRequest}
-				component={Stories.Main.GroupRequest}
+				component={Components.Main.GroupRequest}
 				options={{
 					stackPresentation: 'transparentModal',
 					stackAnimation: 'fade',
 					contentStyle: { backgroundColor: 'transparent' },
 				}}
 			/>*/}
-			<NavigationStack.Screen name={Routes.Main.ScanRequest} component={Stories.Main.ScanRequest} />
+			<NavigationStack.Screen
+				name={Routes.Main.ScanRequest}
+				component={Components.Main.ScanRequest}
+			/>
 			<NavigationStack.Screen
 				name={Routes.Main.Scan}
-				component={Stories.Main.Scan}
+				component={Components.Main.Scan}
 				options={{ stackPresentation: 'transparentModal' }}
 			/>
-			<NavigationStack.Screen name={Routes.Chat.One2One} component={Stories.Chat.Chat} />
-			{/*<NavigationStack.Screen name={Routes.Chat.Group} component={Stories.Chat.ChatGroup} />*/}
-			<NavigationStack.Screen name={Routes.Chat.Settings} component={Stories.Chat.ChatSettings} />
+			<NavigationStack.Screen name={Routes.Chat.One2One} component={Components.Chat.Chat} />
+			{/*<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.ChatGroup} />*/}
+			<NavigationStack.Screen
+				name={Routes.Chat.Settings}
+				component={Components.Chat.ChatSettings}
+			/>
 			<NavigationStack.Screen
 				name={Routes.Chat.One2OneSettings}
-				component={Stories.Chat.ContactChatSettings}
+				component={Components.Chat.ContactChatSettings}
 			/>
 			{/*<NavigationStack.Screen
 				name={Routes.Chat.GroupSettings}
-				component={Stories.Chat.GroupChatSettings}
+				component={Components.Chat.GroupChatSettings}
 			/>*/}
 
 			<NavigationStack.Screen
 				name={Routes.Main.ListModal}
-				component={Stories.Main.ListModal}
+				component={Components.Main.ListModal}
 				options={{
 					stackPresentation: 'transparentModal',
 					contentStyle: { backgroundColor: 'transparent' },
@@ -174,7 +180,7 @@ export const Navigation: React.FC = () => {
 			/>
 			<NavigationStack.Screen
 				name={Routes.Main.RequestSent}
-				component={Stories.Main.RequestSent}
+				component={Components.Main.RequestSent}
 				options={{ stackPresentation: 'transparentModal' }}
 			/>
 			<NavigationStack.Screen
@@ -185,12 +191,12 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen name={Routes.Root.Tabs} component={TabNavigation} />
 			<NavigationStack.Screen
 				name={Routes.Settings.MyBertyId}
-				component={Stories.Settings.MyBertyId}
+				component={Components.Settings.MyBertyId}
 				options={{ stackPresentation: 'transparentModal' }}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.EditProfile}
-				component={Stories.Settings.EditProfile}
+				component={Components.Settings.EditProfile}
 				options={{
 					stackPresentation: 'transparentModal',
 					contentStyle: { backgroundColor: 'transparent' },
@@ -198,33 +204,33 @@ export const Navigation: React.FC = () => {
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.AppUpdates}
-				component={Stories.Settings.AppUpdates}
+				component={Components.Settings.AppUpdates}
 			/>
-			<NavigationStack.Screen name={Routes.Settings.Help} component={Stories.Settings.Help} />
-			<NavigationStack.Screen name={Routes.Settings.Mode} component={Stories.Settings.Mode} />
+			<NavigationStack.Screen name={Routes.Settings.Help} component={Components.Settings.Help} />
+			<NavigationStack.Screen name={Routes.Settings.Mode} component={Components.Settings.Mode} />
 			<NavigationStack.Screen
 				name={Routes.Settings.BlockedContacts}
-				component={Stories.Settings.BlockedContacts}
+				component={Components.Settings.BlockedContacts}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.Notifications}
-				component={Stories.Settings.Notifications}
+				component={Components.Settings.Notifications}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.Bluetooth}
-				component={Stories.Settings.Bluetooth}
+				component={Components.Settings.Bluetooth}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.AboutBerty}
-				component={Stories.Settings.AboutBerty}
+				component={Components.Settings.AboutBerty}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.TermsOfUse}
-				component={Stories.Settings.TermsOfUse}
+				component={Components.Settings.TermsOfUse}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.DevTools}
-				component={Stories.Settings.DevTools}
+				component={Components.Settings.DevTools}
 			/>
 			<NavigationStack.Screen
 				name={'Modals'}
@@ -233,19 +239,19 @@ export const Navigation: React.FC = () => {
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.GetStarted}
-				component={Stories.Onboarding.GetStarted}
+				component={Components.Onboarding.GetStarted}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.SelectMode}
-				component={Stories.Onboarding.SelectMode}
+				component={Components.Onboarding.SelectMode}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.Performance}
-				component={Stories.Onboarding.Performance}
+				component={Components.Onboarding.Performance}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.Privacy}
-				component={Stories.Onboarding.Privacy}
+				component={Components.Onboarding.Privacy}
 			/>
 		</NavigationStack.Navigator>
 	)

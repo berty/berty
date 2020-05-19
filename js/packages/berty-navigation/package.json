@@ -22,7 +22,7 @@
     "url": "https://github.com/berty/berty/issues"
   },
   "dependencies": {
-    "@berty-tech/berty-storybook": "^0.0.0",
+    "@berty-tech/components": "^0.0.0",
     "@berty-tech/hooks": "^0.0.0",
     "@react-navigation/bottom-tabs": "^5.2.5",
     "@react-navigation/compat": "^5.1.7",

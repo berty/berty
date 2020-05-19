@@ -6,7 +6,6 @@ import {
 	TouchableHighlightProps,
 	StyleSheet,
 } from 'react-native'
-// import { Text } from 'react-native-ui-kitten'
 
 const style = StyleSheet.create({
 	default: {
