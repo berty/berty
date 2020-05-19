@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
-import { colors, useStyles } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@react-navigation/native'
 
 //
@@ -39,7 +39,7 @@ const _invalidScanStyles = StyleSheet.create({
 
 const InvalidScanHeader: React.FC<{ title: string }> = ({ title }) => {
 	const _styles = useStylesInvalidScan()
-	const [{ background, margin, text, border, row, column }] = useStyles()
+	const [{ background, margin, text, border, row, column, color }] = useStyles()
 
 	return (
 		<View>
@@ -57,7 +57,7 @@ const InvalidScanHeader: React.FC<{ title: string }> = ({ title }) => {
 					name='alert-circle-outline'
 					width={100}
 					height={100}
-					fill={colors.red}
+					fill={color.red}
 					style={[row.item.justify]}
 				/>
 			</View>
