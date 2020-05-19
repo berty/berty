@@ -14,7 +14,7 @@ steps:
       queue: "bigcores"
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/protoc:22
+          image: bertytech/protoc:23
           propagate-uid-gid: true
           workdir: /go/src/berty.tech/berty
           environment: ["GO111MODULE=on", "GOPATH=/go"]
@@ -154,7 +154,7 @@ steps:
     if: build.branch == "master" || (build.message !~ /\[skip js-generate\]/ && build.message !~ /\[skip-ci\]/)
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/protoc:22
+          image: bertytech/protoc:23
           propagate-uid-gid: true
           workdir: /go/src/berty.tech/berty
           environment:
@@ -176,7 +176,7 @@ steps:
     if: build.branch == "master" || (build.message !~ /\[skip js-lint\]/ && build.message !~ /\[skip-ci\]/)
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/protoc:22
+          image: bertytech/protoc:23
           propagate-uid-gid: true
           workdir: /go/src/berty.tech/berty
           environment:
@@ -194,7 +194,7 @@ steps:
     if: build.branch == "master" || (build.message !~ /\[skip js-test\]/ && build.message !~ /\[skip-ci\]/)
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/protoc:22
+          image: bertytech/protoc:23
           propagate-uid-gid: true
           workdir: /go/src/berty.tech/berty
           environment:
