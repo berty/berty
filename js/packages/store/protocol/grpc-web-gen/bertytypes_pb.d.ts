@@ -2469,6 +2469,158 @@ export namespace DeactivateGroup {
   }
 }
 
+export class DebugListGroups extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DebugListGroups.AsObject;
+  static toObject(includeInstance: boolean, msg: DebugListGroups): DebugListGroups.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DebugListGroups, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DebugListGroups;
+  static deserializeBinaryFromReader(message: DebugListGroups, reader: jspb.BinaryReader): DebugListGroups;
+}
+
+export namespace DebugListGroups {
+  export type AsObject = {
+  }
+
+  export class Request extends jspb.Message {
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Request.AsObject;
+    static toObject(includeInstance: boolean, msg: Request): Request.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Request, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Request;
+    static deserializeBinaryFromReader(message: Request, reader: jspb.BinaryReader): Request;
+  }
+
+  export namespace Request {
+    export type AsObject = {
+    }
+  }
+
+  export class Reply extends jspb.Message {
+    getGroupPk(): Uint8Array | string;
+    getGroupPk_asU8(): Uint8Array;
+    getGroupPk_asB64(): string;
+    setGroupPk(value: Uint8Array | string): void;
+
+    getGroupType(): GroupTypeMap[keyof GroupTypeMap];
+    setGroupType(value: GroupTypeMap[keyof GroupTypeMap]): void;
+
+    getContactPk(): Uint8Array | string;
+    getContactPk_asU8(): Uint8Array;
+    getContactPk_asB64(): string;
+    setContactPk(value: Uint8Array | string): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Reply.AsObject;
+    static toObject(includeInstance: boolean, msg: Reply): Reply.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Reply, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Reply;
+    static deserializeBinaryFromReader(message: Reply, reader: jspb.BinaryReader): Reply;
+  }
+
+  export namespace Reply {
+    export type AsObject = {
+      groupPk: Uint8Array | string,
+      groupType: GroupTypeMap[keyof GroupTypeMap],
+      contactPk: Uint8Array | string,
+    }
+  }
+}
+
+export class DebugInspectGroupStore extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DebugInspectGroupStore.AsObject;
+  static toObject(includeInstance: boolean, msg: DebugInspectGroupStore): DebugInspectGroupStore.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DebugInspectGroupStore, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DebugInspectGroupStore;
+  static deserializeBinaryFromReader(message: DebugInspectGroupStore, reader: jspb.BinaryReader): DebugInspectGroupStore;
+}
+
+export namespace DebugInspectGroupStore {
+  export type AsObject = {
+  }
+
+  export class Request extends jspb.Message {
+    getGroupPk(): Uint8Array | string;
+    getGroupPk_asU8(): Uint8Array;
+    getGroupPk_asB64(): string;
+    setGroupPk(value: Uint8Array | string): void;
+
+    getLogType(): DebugInspectGroupLogTypeMap[keyof DebugInspectGroupLogTypeMap];
+    setLogType(value: DebugInspectGroupLogTypeMap[keyof DebugInspectGroupLogTypeMap]): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Request.AsObject;
+    static toObject(includeInstance: boolean, msg: Request): Request.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Request, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Request;
+    static deserializeBinaryFromReader(message: Request, reader: jspb.BinaryReader): Request;
+  }
+
+  export namespace Request {
+    export type AsObject = {
+      groupPk: Uint8Array | string,
+      logType: DebugInspectGroupLogTypeMap[keyof DebugInspectGroupLogTypeMap],
+    }
+  }
+
+  export class Reply extends jspb.Message {
+    getCid(): Uint8Array | string;
+    getCid_asU8(): Uint8Array;
+    getCid_asB64(): string;
+    setCid(value: Uint8Array | string): void;
+
+    clearParentCidsList(): void;
+    getParentCidsList(): Array<Uint8Array | string>;
+    getParentCidsList_asU8(): Array<Uint8Array>;
+    getParentCidsList_asB64(): Array<string>;
+    setParentCidsList(value: Array<Uint8Array | string>): void;
+    addParentCids(value: Uint8Array | string, index?: number): Uint8Array | string;
+
+    getMetadataEventType(): EventTypeMap[keyof EventTypeMap];
+    setMetadataEventType(value: EventTypeMap[keyof EventTypeMap]): void;
+
+    getDevicePk(): Uint8Array | string;
+    getDevicePk_asU8(): Uint8Array;
+    getDevicePk_asB64(): string;
+    setDevicePk(value: Uint8Array | string): void;
+
+    getPayload(): Uint8Array | string;
+    getPayload_asU8(): Uint8Array;
+    getPayload_asB64(): string;
+    setPayload(value: Uint8Array | string): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Reply.AsObject;
+    static toObject(includeInstance: boolean, msg: Reply): Reply.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Reply, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Reply;
+    static deserializeBinaryFromReader(message: Reply, reader: jspb.BinaryReader): Reply;
+  }
+
+  export namespace Reply {
+    export type AsObject = {
+      cid: Uint8Array | string,
+      parentCidsList: Array<Uint8Array | string>,
+      metadataEventType: EventTypeMap[keyof EventTypeMap],
+      devicePk: Uint8Array | string,
+      payload: Uint8Array | string,
+    }
+  }
+}
+
 export class ShareableContact extends jspb.Message {
   getPk(): Uint8Array | string;
   getPk_asU8(): Uint8Array;
@@ -2536,6 +2688,14 @@ export interface EventTypeMap {
 }
 
 export const EventType: EventTypeMap;
+
+export interface DebugInspectGroupLogTypeMap {
+  DEBUGINSPECTGROUPLOGTYPEUNDEFINED: 0;
+  DEBUGINSPECTGROUPLOGTYPEMESSAGE: 1;
+  DEBUGINSPECTGROUPLOGTYPEMETADATA: 2;
+}
+
+export const DebugInspectGroupLogType: DebugInspectGroupLogTypeMap;
 
 export interface ContactStateMap {
   CONTACTSTATEUNDEFINED: 0;

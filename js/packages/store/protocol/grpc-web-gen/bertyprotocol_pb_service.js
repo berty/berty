@@ -254,6 +254,24 @@ ProtocolService.DeactivateGroup = {
   responseType: bertytypes_pb.DeactivateGroup.Reply
 };
 
+ProtocolService.DebugListGroups = {
+  methodName: "DebugListGroups",
+  service: ProtocolService,
+  requestStream: false,
+  responseStream: true,
+  requestType: bertytypes_pb.DebugListGroups.Request,
+  responseType: bertytypes_pb.DebugListGroups.Reply
+};
+
+ProtocolService.DebugInspectGroupStore = {
+  methodName: "DebugInspectGroupStore",
+  service: ProtocolService,
+  requestStream: false,
+  responseStream: true,
+  requestType: bertytypes_pb.DebugInspectGroupStore.Request,
+  responseType: bertytypes_pb.DebugInspectGroupStore.Reply
+};
+
 exports.ProtocolService = ProtocolService;
 
 function ProtocolServiceClient(serviceHost, options) {
@@ -1125,6 +1143,84 @@ ProtocolServiceClient.prototype.deactivateGroup = function deactivateGroup(reque
   return {
     cancel: function () {
       callback = null;
+      client.close();
+    }
+  };
+};
+
+ProtocolServiceClient.prototype.debugListGroups = function debugListGroups(requestMessage, metadata) {
+  var listeners = {
+    data: [],
+    end: [],
+    status: []
+  };
+  var client = grpc.invoke(ProtocolService.DebugListGroups, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onMessage: function (responseMessage) {
+      listeners.data.forEach(function (handler) {
+        handler(responseMessage);
+      });
+    },
+    onEnd: function (status, statusMessage, trailers) {
+      listeners.status.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners.end.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners = null;
+    }
+  });
+  return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
+    cancel: function () {
+      listeners = null;
+      client.close();
+    }
+  };
+};
+
+ProtocolServiceClient.prototype.debugInspectGroupStore = function debugInspectGroupStore(requestMessage, metadata) {
+  var listeners = {
+    data: [],
+    end: [],
+    status: []
+  };
+  var client = grpc.invoke(ProtocolService.DebugInspectGroupStore, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onMessage: function (responseMessage) {
+      listeners.data.forEach(function (handler) {
+        handler(responseMessage);
+      });
+    },
+    onEnd: function (status, statusMessage, trailers) {
+      listeners.status.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners.end.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners = null;
+    }
+  });
+  return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
+    cancel: function () {
+      listeners = null;
       client.close();
     }
   };

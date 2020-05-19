@@ -247,6 +247,24 @@ export type Commands<State> = {
 			}
 		},
 	) => State
+	debugListGroups: (
+		state: State,
+		action: {
+			payload: {
+				id: string
+			}
+		},
+	) => State
+	debugInspectGroupStore: (
+		state: State,
+		action: {
+			payload: {
+				id: string
+				groupPk: Uint8Array
+				logType: api.berty.types.IDebugInspectGroupLogType
+			}
+		},
+	) => State
 }
 
 export enum Methods {
@@ -277,4 +295,6 @@ export enum Methods {
 	groupInfo = 'groupInfo',
 	activateGroup = 'activateGroup',
 	deactivateGroup = 'deactivateGroup',
+	debugListGroups = 'debugListGroups',
+	debugInspectGroupStore = 'debugInspectGroupStore',
 }

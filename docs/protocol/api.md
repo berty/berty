@@ -64,6 +64,12 @@
     - [DeactivateGroup](#berty.types.DeactivateGroup)
     - [DeactivateGroup.Reply](#berty.types.DeactivateGroup.Reply)
     - [DeactivateGroup.Request](#berty.types.DeactivateGroup.Request)
+    - [DebugInspectGroupStore](#berty.types.DebugInspectGroupStore)
+    - [DebugInspectGroupStore.Reply](#berty.types.DebugInspectGroupStore.Reply)
+    - [DebugInspectGroupStore.Request](#berty.types.DebugInspectGroupStore.Request)
+    - [DebugListGroups](#berty.types.DebugListGroups)
+    - [DebugListGroups.Reply](#berty.types.DebugListGroups.Reply)
+    - [DebugListGroups.Request](#berty.types.DebugListGroups.Request)
     - [DeviceSecret](#berty.types.DeviceSecret)
     - [EventContext](#berty.types.EventContext)
     - [Group](#berty.types.Group)
@@ -118,6 +124,7 @@
     - [ShareableContact](#berty.types.ShareableContact)
   
     - [ContactState](#berty.types.ContactState)
+    - [DebugInspectGroupLogType](#berty.types.DebugInspectGroupLogType)
     - [EventType](#berty.types.EventType)
     - [GroupType](#berty.types.GroupType)
     - [InstanceGetConfiguration.SettingState](#berty.types.InstanceGetConfiguration.SettingState)
@@ -170,6 +177,8 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | GroupInfo | [.berty.types.GroupInfo.Request](#berty.types.GroupInfo.Request) | [.berty.types.GroupInfo.Reply](#berty.types.GroupInfo.Reply) | GroupInfo retrieves information about a group |
 | ActivateGroup | [.berty.types.ActivateGroup.Request](#berty.types.ActivateGroup.Request) | [.berty.types.ActivateGroup.Reply](#berty.types.ActivateGroup.Reply) | ActivateGroup explicitly opens a group, groups are automatically enabled when actions are performed on them |
 | DeactivateGroup | [.berty.types.DeactivateGroup.Request](#berty.types.DeactivateGroup.Request) | [.berty.types.DeactivateGroup.Reply](#berty.types.DeactivateGroup.Reply) | DeactivateGroup closes a group |
+| DebugListGroups | [.berty.types.DebugListGroups.Request](#berty.types.DebugListGroups.Request) | [.berty.types.DebugListGroups.Reply](#berty.types.DebugListGroups.Reply) stream |  |
+| DebugInspectGroupStore | [.berty.types.DebugInspectGroupStore.Request](#berty.types.DebugInspectGroupStore.Request) | [.berty.types.DebugInspectGroupStore.Reply](#berty.types.DebugInspectGroupStore.Reply) stream |  |
 
  
 
@@ -559,6 +568,49 @@ ContactAddAliasKey is an event type where ones shares their alias public key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+
+<a name="berty.types.DebugInspectGroupStore"></a>
+
+### DebugInspectGroupStore
+
+<a name="berty.types.DebugInspectGroupStore.Reply"></a>
+
+### DebugInspectGroupStore.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cid | [bytes](#bytes) |  | cid is the CID of the IPFS log entry |
+| parent_cids | [bytes](#bytes) | repeated | parent_cids is the list of the parent entries |
+| metadata_event_type | [EventType](#berty.types.EventType) |  | event_type metadata event type if subscribed to metadata events |
+| device_pk | [bytes](#bytes) |  | device_pk is the public key of the device signing the entry |
+| payload | [bytes](#bytes) |  | payload is the un encrypted entry payload if available |
+
+<a name="berty.types.DebugInspectGroupStore.Request"></a>
+
+### DebugInspectGroupStore.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+| log_type | [DebugInspectGroupLogType](#berty.types.DebugInspectGroupLogType) |  | log_type is the log to inspect |
+
+<a name="berty.types.DebugListGroups"></a>
+
+### DebugListGroups
+
+<a name="berty.types.DebugListGroups.Reply"></a>
+
+### DebugListGroups.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the public key of the group |
+| group_type | [GroupType](#berty.types.GroupType) |  | group_type is the type of the group |
+| contact_pk | [bytes](#bytes) |  | contact_pk is the contact public key if appropriate |
+
+<a name="berty.types.DebugListGroups.Request"></a>
+
+### DebugListGroups.Request
 
 <a name="berty.types.DeviceSecret"></a>
 
@@ -974,6 +1026,16 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | ContactStateRemoved | 4 |  |
 | ContactStateDiscarded | 5 |  |
 | ContactStateBlocked | 6 |  |
+
+<a name="berty.types.DebugInspectGroupLogType"></a>
+
+### DebugInspectGroupLogType
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| DebugInspectGroupLogTypeUndefined | 0 |  |
+| DebugInspectGroupLogTypeMessage | 1 |  |
+| DebugInspectGroupLogTypeMetadata | 2 |  |
 
 <a name="berty.types.EventType"></a>
 

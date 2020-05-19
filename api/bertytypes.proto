@@ -732,6 +732,57 @@ message DeactivateGroup {
   }
 }
 
+message DebugListGroups {
+  message Request {
+  }
+
+  message Reply {
+    // group_pk is the public key of the group
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+
+    // group_type is the type of the group
+    GroupType group_type = 2 [(gogoproto.customname) = "GroupType"];
+
+    // contact_pk is the contact public key if appropriate
+    bytes contact_pk = 3 [(gogoproto.customname) = "ContactPK"];
+  }
+}
+
+message DebugInspectGroupStore {
+  message Request {
+    // group_pk is the identifier of the group
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+
+    // log_type is the log to inspect
+    DebugInspectGroupLogType log_type = 2 [(gogoproto.customname) = "LogType"];
+  }
+
+  message Reply {
+    // cid is the CID of the IPFS log entry
+    bytes cid = 1 [(gogoproto.customname) = "CID"];
+
+    // parent_cids is the list of the parent entries
+    repeated bytes parent_cids = 2  [(gogoproto.customname) = "ParentCIDs"];
+
+    // event_type metadata event type if subscribed to metadata events
+    EventType metadata_event_type = 3;
+
+    // device_pk is the public key of the device signing the entry
+    bytes device_pk = 4 [(gogoproto.customname) = "DevicePK"];
+
+    // payload is the un encrypted entry payload if available
+    bytes payload = 6;
+  }
+}
+
+
+enum DebugInspectGroupLogType {
+  DebugInspectGroupLogTypeUndefined = 0;
+  DebugInspectGroupLogTypeMessage = 1;
+  DebugInspectGroupLogTypeMetadata = 2;
+
+}
+
 enum ContactState {
   ContactStateUndefined = 0;
   ContactStateToRequest = 1;

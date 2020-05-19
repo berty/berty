@@ -248,6 +248,24 @@ type ProtocolServiceDeactivateGroup = {
   readonly responseType: typeof bertytypes_pb.DeactivateGroup.Reply;
 };
 
+type ProtocolServiceDebugListGroups = {
+  readonly methodName: string;
+  readonly service: typeof ProtocolService;
+  readonly requestStream: false;
+  readonly responseStream: true;
+  readonly requestType: typeof bertytypes_pb.DebugListGroups.Request;
+  readonly responseType: typeof bertytypes_pb.DebugListGroups.Reply;
+};
+
+type ProtocolServiceDebugInspectGroupStore = {
+  readonly methodName: string;
+  readonly service: typeof ProtocolService;
+  readonly requestStream: false;
+  readonly responseStream: true;
+  readonly requestType: typeof bertytypes_pb.DebugInspectGroupStore.Request;
+  readonly responseType: typeof bertytypes_pb.DebugInspectGroupStore.Reply;
+};
+
 export class ProtocolService {
   static readonly serviceName: string;
   static readonly InstanceExportData: ProtocolServiceInstanceExportData;
@@ -277,6 +295,8 @@ export class ProtocolService {
   static readonly GroupInfo: ProtocolServiceGroupInfo;
   static readonly ActivateGroup: ProtocolServiceActivateGroup;
   static readonly DeactivateGroup: ProtocolServiceDeactivateGroup;
+  static readonly DebugListGroups: ProtocolServiceDebugListGroups;
+  static readonly DebugInspectGroupStore: ProtocolServiceDebugInspectGroupStore;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -522,5 +542,7 @@ export class ProtocolServiceClient {
     requestMessage: bertytypes_pb.DeactivateGroup.Request,
     callback: (error: ServiceError|null, responseMessage: bertytypes_pb.DeactivateGroup.Reply|null) => void
   ): UnaryResponse;
+  debugListGroups(requestMessage: bertytypes_pb.DebugListGroups.Request, metadata?: grpc.Metadata): ResponseStream<bertytypes_pb.DebugListGroups.Reply>;
+  debugInspectGroupStore(requestMessage: bertytypes_pb.DebugInspectGroupStore.Request, metadata?: grpc.Metadata): ResponseStream<bertytypes_pb.DebugInspectGroupStore.Reply>;
 }
 

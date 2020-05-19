@@ -89,4 +89,8 @@ service ProtocolService {
 
   // DeactivateGroup closes a group
   rpc DeactivateGroup (types.DeactivateGroup.Request) returns (types.DeactivateGroup.Reply);
+
+  rpc DebugListGroups (types.DebugListGroups.Request) returns (stream types.DebugListGroups.Reply);
+
+  rpc DebugInspectGroupStore (types.DebugInspectGroupStore.Request) returns (stream types.DebugInspectGroupStore.Reply);
 }

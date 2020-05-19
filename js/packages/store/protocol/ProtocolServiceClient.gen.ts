@@ -205,4 +205,19 @@ export default class ProtocolServiceClient {
 	) => void = (request, callback) => {
 		return this._pbService.deactivateGroup.bind(this._pbService)(request, callback)
 	}
+	debugListGroups: (
+		request: api.berty.types.DebugListGroups.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.DebugListGroups.IReply) => void,
+	) => void = (request, callback) => {
+		return this._pbService.debugListGroups.bind(this._pbService)(request, callback)
+	}
+	debugInspectGroupStore: (
+		request: api.berty.types.DebugInspectGroupStore.IRequest,
+		callback: (
+			error: Error | null,
+			response?: api.berty.types.DebugInspectGroupStore.IReply,
+		) => void,
+	) => void = (request, callback) => {
+		return this._pbService.debugInspectGroupStore.bind(this._pbService)(request, callback)
+	}
 }
