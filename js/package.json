@@ -20,7 +20,9 @@
   "main": "index.js",
   "scripts": {
     "cli": "babel-node --extensions '.es6,.js,.es,.jsx,.mjs,.ts,.tsx'",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
   },
   "jest": {
     "globals": {
@@ -57,7 +59,8 @@
     "react": "^16.12.0",
     "react-native-create-library": "^3.1.2",
     "text-transform-cli": "^1.5.0",
-    "update-versions": "^2.0.0"
+    "update-versions": "^2.0.0",
+    "snyk": "^1.321.0"
   },
   "devDependencies": {
     "@berty-tech/babel-preset": "^0.0.0",
@@ -94,5 +97,6 @@
     "eslint-plugin-standard": "^4.0.1",
     "prettier": "2.0.5",
     "typescript": "^3.8.3"
-  }
+  },
+  "snyk": true
 }
