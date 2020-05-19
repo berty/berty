@@ -1,7 +1,7 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { fork, put, all, select, takeEvery, take, delay, call } from 'redux-saga/effects'
-import { GoBridge } from '@berty-tech/grpc-bridge/orbitdb/native'
+import GoBridge from '@berty-tech/go-bridge'
 import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
 import { berty } from '@berty-tech/api'
 import { makeDefaultReducers, makeDefaultCommandsSagas, strToBuf, jsonToBuf } from '../utils'
@@ -195,16 +195,12 @@ export const transactions: Transactions = {
 
 		const gpkb = strToBuf(client.accountGroupPk)
 
-		/*yield* protocol.transactions.client.activateGroup({
-			id,
-			groupPk: gpkb,
-		})*/
-		yield* protocol.transactions.client.listenToGroupMetadata({
+		yield fork(protocol.transactions.client.listenToGroupMetadata, {
 			clientId: id,
 			groupPk: gpkb,
 		})
 
-		yield* protocol.transactions.client.contactRequestReference({ id })
+		yield call(protocol.transactions.client.contactRequestReference, { id })
 	},
 	generate: function* () {
 		throw new Error('not implemented')
@@ -262,7 +258,7 @@ export const transactions: Transactions = {
 			until: new Uint8Array(),
 			goBackwards: false,
 		})
-		yield takeEvery(chan, function* (
+		/*yield takeEvery(chan, function* (
 			action: protocol.client.Commands extends {
 				[key: string]: (
 					state: protocol.client.State,
@@ -276,7 +272,7 @@ export const transactions: Transactions = {
 			if (action.type === protocol.events.client.groupMetadataPayloadSent.type) {
 				yield put(action.payload.event)
 			}
-		})
+		})*/
 	},
 	sendContactRequest: function* (payload) {
 		const account = (yield select((state) => queries.get(state, { id: payload.id }))) as
@@ -311,7 +307,6 @@ export function* orchestrator() {
 	yield all([
 		...makeDefaultCommandsSagas(commands, transactions),
 		fork(function* () {
-			yield take('persist/REHYDRATE')
 			// start protocol clients
 			const accounts = (yield select(queries.getAll)) as Entity[]
 			for (const account of accounts) {

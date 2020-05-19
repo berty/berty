@@ -1,16 +1,20 @@
-import { ProtocolServiceClient, WebsocketTransport, bridge } from '@berty-tech/grpc-bridge'
-import { GoBridge, GoBridgeOpts } from '@berty-tech/grpc-bridge/orbitdb/native'
+import { WebsocketTransport } from '@berty-tech/grpc-bridge'
+import GoBridge, { GoBridgeOpts } from '@berty-tech/go-bridge'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, put, putResolve, cps, takeEvery, call, delay } from 'redux-saga/effects'
-import { channel, Channel } from 'redux-saga'
+import { all, put, putResolve, call, delay, take, fork, join } from 'redux-saga/effects'
+import { Task } from 'redux-saga'
 import * as gen from './client.gen'
 import * as api from '@berty-tech/api'
 import Case from 'case'
 import * as evgen from '../types/events.gen'
-import { makeDefaultReducers, makeDefaultCommandsSagas, bufToStr, bufToJSON } from '../utils'
+import { makeDefaultReducers, makeDefaultCommandsSagas, bufToStr } from '../utils'
 import ExternalTransport from './externalTransport'
 import { getMainSettings } from '../settings/main'
+import ProtocolServiceSagaClient from './ProtocolServiceSagaClient.gen'
+import * as bertytypes from './grpc-web-gen/bertytypes_pb'
+import { grpc } from '@improbable-eng/grpc-web'
+import { unaryChan, EventChannelOutput } from '../sagaUtils'
 
 export type Entity = {
 	id: string
@@ -146,7 +150,9 @@ const eventNameFromValue = (value: number) => {
 	return api.berty.types.EventType[value]
 }
 
-export const services: { [key: string]: ProtocolServiceClient } = {}
+export const services: {
+	[key: string]: ProtocolServiceSagaClient
+} = {}
 export const getService = (id: string) => {
 	const service = services[id]
 	if (!service) {
@@ -155,8 +161,10 @@ export const getService = (id: string) => {
 	return service
 }
 
-export const decodeMetadataEvent = (response: api.berty.types.IGroupMetadataEvent) => {
-	const eventType = response?.metadata?.eventType
+export const decodeMetadataEvent = (
+	response: bertytypes.GroupMetadataEvent.AsObject | api.berty.types.IGroupMetadataEvent,
+) => {
+	const eventType = response.metadata?.eventType
 	if (eventType == null) {
 		return undefined
 	}
@@ -178,89 +186,45 @@ export const decodeMetadataEvent = (response: api.berty.types.IGroupMetadataEven
 		console.warn("Don't know how to decode", eventName)
 		return undefined
 	}
+	console.log('response.event', response.event)
 	const decodedEvent = event.decode(response.event)
 	return decodedEvent
 }
 
-const makeMetadataHandler = (id: string, eventsChannel: Channel<unknown>) => (
-	error: Error | null,
-	response?: api.berty.types.IGroupMetadataEvent,
+const groupMetadataEventToReduxAction = (
+	id: string,
+	e: bertytypes.GroupMetadataEvent.AsObject | api.berty.types.IGroupMetadataEvent,
 ) => {
-	if (error) {
-		// TODO: log error
-		throw error
+	if (!e.metadata?.eventType) {
+		throw new Error('Invalid reply, missing eventType')
 	}
-	if (!response) {
-		eventsChannel.close()
-		return
-	}
-	if (!response.event) {
-		console.warn('No event')
-		return
-	}
-	if (!response.eventContext?.id) {
-		console.warn('No event cid')
-		return
-	}
-
-	if (!response.metadata?.eventType) {
-		console.warn('No eventtype')
-		return
-	}
-	// if the event is defined by chat
-
-	const eventType = response.metadata?.eventType
-	if (eventType == null) {
-		return
-	}
-	if (eventType === api.berty.types.EventType.EventTypeGroupMetadataPayloadSent) {
-		eventsChannel.put(
-			events.groupMetadataPayloadSent({
-				aggregateId: id,
-				eventContext: response.eventContext || {},
-				metadata: response.metadata,
-				event: bufToJSON(response.event),
-			}),
-		)
-		return
-	}
+	const { eventType } = e.metadata
 	const eventName = eventNameFromValue(eventType)
 	if (eventName === undefined) {
 		throw new Error(`Invalid event type ${eventType}`)
 	}
 	const type = `${eventHandler.name}/${Case.camel(eventName.replace('EventType', ''))}`
-	eventsChannel.put({
+	return {
 		type,
 		payload: {
 			aggregateId: id,
-			eventContext: response.eventContext,
-			headers: response.metadata,
-			event: decodeMetadataEvent(response),
+			eventContext: e.eventContext,
+			headers: e.metadata,
+			event: decodeMetadataEvent(e),
 		},
-	})
+	}
 }
 
-const makeMessageHandler = (id: string, eventsChannel: Channel<unknown>) => (
-	error: Error | null,
-	response?: api.berty.types.IGroupMessageEvent,
+const groupMessageEventToReduxAction = (
+	id: string,
+	response: api.berty.types.IGroupMessageEvent,
 ) => {
-	if (error) {
-		// TODO: log error
-		throw error
-	}
-
-	if (response === undefined) {
-		eventsChannel.close()
-		return
-	}
-
 	if (!response.eventContext?.id) {
-		console.error('No event cid')
-		return
+		throw new Error('No event cid')
 	}
 
 	const type = 'protocol/GroupMessageEvent'
-	eventsChannel.put({
+	return {
 		type,
 		payload: {
 			aggregateId: id,
@@ -268,14 +232,14 @@ const makeMessageHandler = (id: string, eventsChannel: Channel<unknown>) => (
 			headers: response.headers,
 			message: response.message,
 		},
-	})
+	}
 }
 
 // call cps on the service method by default
 const defaultTransactions = (Object.keys(gen.Methods) as (keyof gen.Commands<State>)[]).reduce(
 	(txs, methodName) => {
 		txs[methodName] = function* ({ id, ...payload }: { id: string }) {
-			return yield (cps as any)(getService(id)[methodName], payload)
+			return yield* unaryChan(getService(id)[methodName], payload)
 		}
 		return txs
 	},
@@ -309,47 +273,36 @@ export const transactions: Transactions = {
 
 		const { nodeConfig } = yield* getMainSettings(id)
 
-		let brdg
+		let address
+		let transport: () => grpc.TransportFactory
 
 		if (nodeConfig.type === 'external') {
-			brdg = bridge({
-				host: `http://${nodeConfig.host}:${nodeConfig.port}`,
-				transport: ExternalTransport(),
-			})
+			address = `http://${nodeConfig.host}:${nodeConfig.port}`
+			transport = ExternalTransport
 		} else {
 			try {
 				yield call(GoBridge.startProtocol, nodeConfig.opts)
 			} catch (e) {
 				if (e.domain !== 'already started') {
-					throw new Error(e.domain)
+					throw e
 				}
 			}
 			const addr = (yield call(GoBridge.getProtocolAddr)) as string
-			brdg = bridge({
-				host: `http://${addr}`,
-				transport: WebsocketTransport(),
-				debug: __DEV__,
-			})
+			transport = WebsocketTransport
+			address = `http://${addr}`
 		}
 
-		services[id] = new ProtocolServiceClient(brdg)
+		services[id] = new ProtocolServiceSagaClient(address, transport())
+
+		const service = getService(id)
+
+		console.log('getting conf')
 
 		// try to connect repeatedly since startBridge can return before the bridge is ready to serve
-		let reply: api.berty.types.InstanceGetConfiguration.IReply
-		while (true) {
-			try {
-				reply = (yield cps(
-					services[id]?.instanceGetConfiguration,
-					{},
-				)) as api.berty.types.InstanceGetConfiguration.IReply
-				break
-			} catch (e) {
-				console.warn(e)
-			}
-			yield delay(1000)
-		}
-
+		const reply = yield* unaryChan(service.instanceGetConfiguration)
+		console.log('reply', reply)
 		const { accountPk, devicePk, accountGroupPk } = reply
+		console.log('accountPk', typeof accountPk, accountPk)
 		if (!(accountPk && devicePk && accountGroupPk)) {
 			throw new Error('Invalid instance data')
 		}
@@ -363,8 +316,6 @@ export const transactions: Transactions = {
 		)
 	},
 	deleteService: function* ({ id }) {
-		const service = getService(id)
-		service.end()
 		delete services[id]
 	},
 	restart: function* (payload) {
@@ -377,10 +328,7 @@ export const transactions: Transactions = {
 		yield put(events.deleted({ aggregateId: id }))
 	},
 	contactRequestReference: function* (payload) {
-		const reply = (yield cps(
-			getService(payload.id).contactRequestReference,
-			{},
-		)) as api.berty.types.ContactRequestReference.IReply
+		const reply = yield* unaryChan(getService(payload.id).contactRequestReference)
 		if (reply.publicRendezvousSeed) {
 			yield put(
 				events.contactRequestRdvSeedUpdated({
@@ -392,10 +340,7 @@ export const transactions: Transactions = {
 		return reply
 	},
 	contactRequestEnable: function* (payload) {
-		const reply = (yield cps(
-			getService(payload.id).contactRequestEnable,
-			{},
-		)) as api.berty.types.ContactRequestEnable.IReply
+		const reply = yield* unaryChan(getService(payload.id).contactRequestEnable)
 		if (!reply.publicRendezvousSeed) {
 			throw new Error(`Invalid reference ${reply.publicRendezvousSeed}`)
 		}
@@ -407,81 +352,106 @@ export const transactions: Transactions = {
 		)
 		return reply
 	},
-	groupMetadataSubscribe: function* ({ id, groupPk }) {
-		const eventsChannel = channel()
-		getService(id).groupMetadataSubscribe({ groupPk }, makeMetadataHandler(id, eventsChannel))
-		return eventsChannel
+	groupMetadataSubscribe: function* ({ id, ...req }) {
+		const chan = getService(id).groupMetadataSubscribe(req)
+		while (true) {
+			const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
+			yield put(groupMetadataEventToReduxAction(id, reply))
+		}
 	},
-	groupMessageSubscribe: function* ({ id, groupPk }) {
-		const eventsChannel = channel()
-		getService(id).groupMessageSubscribe({ groupPk }, makeMessageHandler(id, eventsChannel))
-		return eventsChannel
+	groupMessageSubscribe: function* ({ id, ...req }) {
+		const chan = getService(id).groupMessageSubscribe(req)
+		while (true) {
+			const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
+			yield put(groupMessageEventToReduxAction(id, reply))
+		}
 	},
-	groupMetadataList: function* ({ id, groupPk }) {
-		const eventsChannel = channel()
-		getService(id).groupMetadataList({ groupPk }, makeMetadataHandler(id, eventsChannel))
-		return eventsChannel
+	groupMetadataList: function* ({ id, ...req }) {
+		const chan = getService(id).groupMetadataList(req)
+		while (true) {
+			const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
+			yield put(groupMetadataEventToReduxAction(id, reply))
+		}
 	},
-	groupMessageList: function* ({ id, groupPk }) {
-		const eventsChannel = channel()
-		getService(id).groupMessageList({ groupPk }, makeMessageHandler(id, eventsChannel))
-		return eventsChannel
+	groupMessageList: function* ({ id, ...req }) {
+		const chan = getService(id).groupMessageList(req)
+		while (true) {
+			const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
+			yield put(groupMessageEventToReduxAction(id, reply))
+		}
 	},
 	listenToGroupMetadata: function* ({ clientId, groupPk }) {
-		const chan1 = yield* transactions.groupMetadataSubscribe({
-			id: clientId,
-			groupPk,
-			// TODO: use last cursor
-			since: new Uint8Array(),
-			until: new Uint8Array(),
-			goBackwards: false,
-		})
-		yield takeEvery(chan1, function* (action) {
-			yield put(action)
-			if (action.type === events.groupMetadataPayloadSent.type) {
-				yield put((action as any).payload.event)
+		const subscribeTask = (yield fork(function* () {
+			while (true) {
+				try {
+					yield call(transactions.groupMetadataSubscribe, {
+						id: clientId,
+						groupPk,
+						// TODO: use last cursor
+						since: new Uint8Array(),
+						until: new Uint8Array(),
+						goBackwards: false,
+					})
+				} catch (e) {
+					console.warn(e)
+				}
+				yield delay(1000)
 			}
-		})
-		const chan2 = yield* transactions.groupMetadataList({
-			id: clientId,
-			groupPk,
-		})
-		yield takeEvery(chan2, function* (action) {
-			yield put(action)
-			if (action.type === events.groupMetadataPayloadSent.type) {
-				yield put((action as any).payload.event)
+		})) as Task
+
+		let done = false
+		while (!done) {
+			try {
+				yield call(transactions.groupMetadataList, {
+					id: clientId,
+					groupPk,
+				})
+				done = true
+			} catch (e) {
+				console.warn(e)
 			}
-		})
+		}
+
+		yield join(subscribeTask)
 	},
 	listenToGroupMessages: function* ({ clientId, groupPk }) {
-		const chan1 = yield* transactions.groupMessageSubscribe({
-			id: clientId,
-			groupPk,
-			// TODO: use last cursor
-			since: new Uint8Array(),
-			until: new Uint8Array(),
-			goBackwards: false,
-		})
-		yield takeEvery(chan1, function* (action) {
-			yield put(action)
-			if (action.type === events.groupMetadataPayloadSent.type) {
-				yield put((action as any).payload.event)
+		const subscribeTask = (yield fork(function* () {
+			while (true) {
+				try {
+					yield call(transactions.groupMessageSubscribe, {
+						id: clientId,
+						groupPk,
+						// TODO: use last cursor
+						since: new Uint8Array(),
+						until: new Uint8Array(),
+						goBackwards: false,
+					})
+				} catch (e) {
+					console.warn(e)
+				}
+				yield delay(1000)
 			}
-		})
-		const chan2 = yield* transactions.groupMessageList({
-			id: clientId,
-			groupPk,
-		})
-		yield takeEvery(chan2, function* (action) {
-			yield put(action)
-			if (action.type === events.groupMetadataPayloadSent.type) {
-				yield put((action as any).payload.event)
+		})) as Task
+
+		let done = false
+		while (!done) {
+			try {
+				yield call(transactions.groupMessageList, {
+					id: clientId,
+					groupPk,
+				})
+				done = true
+			} catch (e) {
+				console.warn(e)
 			}
-		})
+		}
+
+		yield join(subscribeTask)
 	},
 	listenToGroup: function* (payload) {
-		yield* transactions.listenToGroupMetadata(payload)
-		yield* transactions.listenToGroupMessages(payload)
+		const metadataTask = (yield fork(transactions.listenToGroupMetadata, payload)) as Task
+		const messagesTask = (yield fork(transactions.listenToGroupMessages, payload)) as Task
+		yield join([metadataTask, messagesTask])
 	},
 }
 

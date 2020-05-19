@@ -1,6 +1,6 @@
 import { composeReducers } from 'redux-compose'
 import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { all, put, takeEvery, select } from 'redux-saga/effects'
+import { all, put, takeEvery, select, call } from 'redux-saga/effects'
 import { berty } from '@berty-tech/api'
 import { makeDefaultCommandsSagas, strToBuf, bufToStr, jsonToBuf, bufToJSON } from '../utils'
 
@@ -27,6 +27,7 @@ export type Event = {
 export type State = {
 	events: Array<Event>
 	aggregates: { [key: string]: Entity | undefined }
+	ackBacklog: { [key: string]: true | undefined }
 }
 
 export type GlobalState = {
@@ -113,6 +114,7 @@ export type Transactions = {
 const initialState: State = {
 	events: [],
 	aggregates: {},
+	ackBacklog: {},
 }
 
 const commandHandler = createSlice<State, CommandsReducer>({
@@ -135,6 +137,10 @@ const eventHandler = createSlice<State, EventsReducer>({
 			}
 			switch (message.type) {
 				case AppMessageType.UserMessage:
+					const hasAckInBacklog = !!state.ackBacklog[aggregateId]
+					if (hasAckInBacklog) {
+						delete state.ackBacklog[aggregateId]
+					}
 					state.aggregates[aggregateId] = {
 						id: aggregateId,
 						type: message.type,
@@ -142,7 +148,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 						isMe,
 						attachments: [],
 						sentDate: message.sentDate,
-						acknowledged: false,
+						acknowledged: hasAckInBacklog,
 						receivedDate,
 					}
 					break
@@ -160,7 +166,9 @@ const eventHandler = createSlice<State, EventsReducer>({
 				case AppMessageType.Acknowledge:
 					if (!isMe) {
 						const target = state.aggregates[message.target]
-						if (target && target.type === AppMessageType.UserMessage && target.isMe) {
+						if (!target) {
+							state.ackBacklog[message.target] = true
+						} else if (target.type === AppMessageType.UserMessage && target.isMe) {
 							target.acknowledged = true
 						}
 					}
@@ -252,7 +260,7 @@ export function* orchestrator() {
 	yield all([
 		...makeDefaultCommandsSagas(commands, transactions),
 		takeEvery('protocol/GroupMessageEvent', function* (
-			action: PayloadAction<berty.types.GroupMessageEvent & { aggregateId: string }>,
+			action: PayloadAction<berty.types.IGroupMessageEvent & { aggregateId: string }>,
 		) {
 			// create an id for the message
 			const idBuf = action.payload.eventContext?.id
@@ -261,6 +269,9 @@ export function* orchestrator() {
 			}
 			const groupPkBuf = action.payload.eventContext?.groupPk
 			if (!groupPkBuf) {
+				return
+			}
+			if (!action.payload.message) {
 				return
 			}
 			const message: AppMessage = bufToJSON(action.payload.message)
@@ -303,7 +314,7 @@ export function* orchestrator() {
 
 			if (message.type === AppMessageType.UserMessage) {
 				// add message to corresponding conversation
-				yield* conversation.transactions.addMessage({
+				yield call(conversation.transactions.addMessage, {
 					aggregateId: conversation.getAggregateId({
 						accountId: action.payload.aggregateId,
 						groupPk: groupPkBuf,
@@ -318,7 +329,7 @@ export function* orchestrator() {
 						type: AppMessageType.Acknowledge,
 						target: aggregateId,
 					}
-					yield* protocol.transactions.client.appMessageSend({
+					yield call(protocol.transactions.client.appMessageSend, {
 						id: conv.accountId,
 						groupPk: groupPkBuf,
 						payload: jsonToBuf(acknowledge),

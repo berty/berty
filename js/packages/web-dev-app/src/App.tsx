@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useLayoutEffect } from 'react'
 import { Chat } from '@berty-tech/hooks'
+import grpcBridge from '@berty-tech/grpc-bridge'
 import { protocol } from '@berty-tech/store'
+import { AppMessageType } from '@berty-tech/store/chat/AppMessage'
+import ProtocolServiceClient from '@berty-tech/store/protocol/ProtocolServiceClient.gen'
 import './App.css'
 import storage from 'redux-persist/lib/storage'
 
@@ -22,7 +25,13 @@ const CreateAccount: React.FC = () => {
 				value={port}
 				onChange={(e) => setPort(parseInt(e.target.value, 10))}
 			/>
-			<button onClick={() => createAccount({ name, bridgePort: port })}>Create account</button>
+			<button
+				onClick={() =>
+					createAccount({ name, nodeConfig: { type: 'external', host: 'localhost', port } })
+				}
+			>
+				Create account
+			</button>
 		</>
 	)
 }
@@ -96,20 +105,41 @@ const Contacts: React.FC = () => {
 
 const Message: React.FC<{ msgId: string }> = ({ msgId }) => {
 	const message = Chat.useGetMessage(msgId)
-	return <div style={{ textAlign: message.isMe ? 'left' : 'right' }}>{message.body}</div>
+	if (message.type !== AppMessageType.UserMessage) {
+		return null
+	}
+	return (
+		<div style={{ textAlign: message.isMe ? 'right' : 'left' }}>
+			{message.isMe && message.acknowledged && '✓ '}
+			{message.body}
+		</div>
+	)
 }
 
 const Conversation: React.FC<{ convId: string }> = ({ convId }) => {
 	const conv = Chat.useGetConversation(convId)
 	const sendMessage = Chat.useMessageSend()
 	const [message, setMessage] = useState('')
+	const scrollRef = useRef<HTMLDivElement>(null)
+	useLayoutEffect(() => {
+		const div = scrollRef.current
+		if (!div) return
+		div.scrollTop = div.scrollHeight - div.clientHeight
+	}, [conv])
 	return (
 		!!conv && (
 			<>
 				{conv.title}
 				<br />
-				<JSONed value={conv} />
-				<div style={{ display: 'flex', flexDirection: 'column' }}>
+				<div
+					style={{
+						display: 'flex',
+						flexDirection: 'column',
+						maxHeight: 200,
+						overflowY: 'scroll',
+					}}
+					ref={scrollRef}
+				>
 					{conv.messages.map((msg) => (
 						<Message key={msg} msgId={msg} />
 					))}
@@ -121,10 +151,21 @@ const Conversation: React.FC<{ convId: string }> = ({ convId }) => {
 					onChange={(e) => setMessage(e.target.value)}
 				/>
 				{!!message && (
-					<button onClick={() => sendMessage({ type: 'UserMessage', body: message, id: convId })}>
+					<button
+						onClick={() =>
+							sendMessage({
+								type: AppMessageType.UserMessage,
+								body: message,
+								id: convId,
+								attachments: [],
+								sentDate: Date.now(),
+							})
+						}
+					>
 						Send
 					</button>
 				)}
+				<JSONed value={conv} />
 			</>
 		)
 	)
@@ -206,7 +247,9 @@ const DumpGroup: React.FC = () => {
 					const gpkBuf = Buffer.from(groupPk, 'base64')
 					metadata = []
 					messages = []
-					service.groupMessageList({ groupPk: gpkBuf }, (...args: any[]) => {
+					const bridge = grpcBridge({ host: service.host, transport: service.transport })
+					const grpcClient = new ProtocolServiceClient(bridge)
+					grpcClient.groupMessageList({ groupPk: gpkBuf }, (...args: any[]) => {
 						if (args[1]?.message) {
 							const msg = JSON.parse(Buffer.from(args[1].message).toString('utf-8'))
 							console.log('message:', msg)
@@ -216,7 +259,7 @@ const DumpGroup: React.FC = () => {
 						setMs(messages)
 						console.log('messages callback', ...args)
 					})
-					service.groupMetadataList({ groupPk: gpkBuf }, (...args: any[]) => {
+					grpcClient.groupMetadataList({ groupPk: gpkBuf }, (...args: any[]) => {
 						if (args[1]?.event) {
 							const event = protocol.client.decodeMetadataEvent(args[1])
 							args[1] = { ...args[1], event }

@@ -9,7 +9,6 @@
 import React from 'react'
 import DevMenu from 'react-native-dev-menu'
 import Navigation, { NavigationContainer } from '@berty-tech/berty-navigation'
-// import bridge, { ReactNativeTransport } from '@berty-tech/grpc-bridge'
 
 import { Theme, NodeGate } from '@berty-tech/components'
 import '@berty-tech/berty-i18n'

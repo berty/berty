@@ -22,20 +22,9 @@
     "url": "https://github.com/berty/berty/issues"
   },
   "dependencies": {
-    "@berty-tech/api": "^0.0.0",
-    "@googleapis/googleapis": "googleapis/googleapis#common-protos-1_3_1",
     "@improbable-eng/grpc-web": "^0.11.0",
-    "@improbable-eng/grpc-web-node-http-transport": "^0.11.0",
-    "@protocolbuffers/protobuf": "protocolbuffers/protobuf#3.10.0",
     "@types/long": "^4.0.0",
     "@types/websocket": "^1.0.0",
-    "case": "^1.6.2",
-    "eslint": "^6.6.0",
-    "espree": "^3.5.4",
-    "jsdoc": "^3.5.5",
-    "minimist": "^1.2.0",
-    "pbhbs": "^0.2.2",
-    "protobufjs": "^6.8.8",
-    "semver": "6.3.0"
+    "protobufjs": "^6.8.8"
   }
 }

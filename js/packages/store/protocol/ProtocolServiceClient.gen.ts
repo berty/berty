@@ -1,7 +1,7 @@
 import * as api from '@berty-tech/api'
 import * as pb from 'protobufjs'
 
-export class ProtocolServiceClient {
+export default class ProtocolServiceClient {
 	_pbService: api.berty.protocol.ProtocolService
 	end: () => void
 
