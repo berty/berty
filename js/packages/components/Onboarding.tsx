@@ -352,6 +352,7 @@ const CreateYourAccount: React.FC<{
 							padding.medium,
 							text.size.large,
 							border.radius.small,
+							text.color.black,
 						]}
 						onChangeText={setName}
 					/>
