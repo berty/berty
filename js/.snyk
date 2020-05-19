@@ -1,0 +1,72 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - lerna-update-wizard > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - text-transform-cli > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - eslint_d > eslint > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna-update-wizard > inquirer > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > @jest/transform > @babel/core > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - eslint_d > eslint > inquirer > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - eslint_d > eslint > table > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna-update-wizard > inquirer-autocomplete-prompt > inquirer > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > @jest/transform > @babel/core > @babel/traverse > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > babel-plugin-istanbul > istanbul-lib-instrument > @babel/types > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna > @lerna/publish > @lerna/prompt > inquirer > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna > @lerna/version > @lerna/conventional-commits > conventional-changelog-core > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > @jest/transform > @babel/core > @babel/helpers > @babel/traverse > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > babel-plugin-istanbul > istanbul-lib-instrument > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > babel-preset-jest > babel-plugin-jest-hoist > @types/babel__traverse > @babel/types > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > @jest/transform > babel-plugin-istanbul > istanbul-lib-instrument > @babel/types > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna > @lerna/publish > @lerna/version > @lerna/prompt > inquirer > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna > @lerna/version > @lerna/conventional-commits > conventional-changelog-core > conventional-changelog-writer > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna > @lerna/version > @lerna/conventional-commits > conventional-changelog-core > conventional-commits-parser > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna > @lerna/version > @lerna/conventional-commits > conventional-recommended-bump > conventional-commits-parser > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna > @lerna/publish > @lerna/version > @lerna/conventional-commits > conventional-changelog-core > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > @jest/transform > @babel/core > @babel/helpers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > babel-plugin-istanbul > istanbul-lib-instrument > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > @jest/transform > babel-plugin-istanbul > istanbul-lib-instrument > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna > @lerna/publish > @lerna/npm-publish > @lerna/otplease > @lerna/prompt > inquirer > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna > @lerna/publish > @lerna/version > @lerna/conventional-commits > conventional-changelog-core > conventional-changelog-writer > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna > @lerna/publish > @lerna/version > @lerna/conventional-commits > conventional-changelog-core > conventional-commits-parser > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - lerna > @lerna/publish > @lerna/version > @lerna/conventional-commits > conventional-recommended-bump > conventional-commits-parser > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > @jest/transform > @babel/core > @babel/helpers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > @jest/transform > babel-plugin-istanbul > istanbul-lib-instrument > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > babel-plugin-istanbul > istanbul-lib-instrument > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > @jest/transform > @babel/core > @babel/helpers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
+    - babel-jest > @jest/transform > babel-plugin-istanbul > istanbul-lib-instrument > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash:
+        patched: '2020-05-19T07:32:16.099Z'
