@@ -343,7 +343,7 @@ const Conversations: React.FC<ConversationsProps> = ({ items, hasRequests }) => 
 								</Text>
 							</View>
 							{items.map((_) => {
-								return <ConversationsItem {..._} />
+								return <ConversationsItem key={_.id} {..._} />
 							})}
 						</ScrollView>
 					)}

@@ -335,7 +335,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 			)}
 			{children && Array.isArray(children) ? (
 				children.map((child, key) => (
-					<View>
+					<View key={key}>
 						{child}
 						{key + 1 < children.length && (
 							<View
@@ -387,8 +387,9 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 	const [{ flex, row, margin, padding, border, background, text, opacity }] = useStyles()
 	return (
 		<View style={[flex.tiny, row.fill, margin.top.medium, style, { alignItems: 'center' }]}>
-			{state.map((obj) => (
+			{state.map((obj, key) => (
 				<TouchableOpacity
+					key={key}
 					activeOpacity={obj.disabled ? 0.5 : undefined}
 					style={[
 						flex.tiny,

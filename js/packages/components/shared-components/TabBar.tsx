@@ -104,8 +104,9 @@ export const TabBar: React.FC<TabBarProps> = ({ tabs, onTabChange }) => {
 		<View style={[margin.top.medium]}>
 			<View style={[row.fill]}>
 				{tabs &&
-					tabs.map((obj) => (
+					tabs.map((obj, key) => (
 						<TabBarItem
+							key={key}
 							name={obj.name}
 							icon={obj.icon}
 							iconPack={obj.iconPack}
