@@ -92,6 +92,7 @@ func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyproto
 	ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
 	orbitdbDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))
 	service, err := bertyprotocol.New(bertyprotocol.Opts{
+		TinderDriver:    routing,
 		IpfsCoreAPI:     api,
 		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(ks),
 		RootContext:     ctx,

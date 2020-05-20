@@ -180,7 +180,7 @@ func TestMetadataRendezvousPointLifecycle(t *testing.T) {
 
 	enabled, shareableContact := meta.GetIncomingContactRequestsStatus()
 	assert.False(t, enabled)
-	assert.Nil(t, shareableContact)
+	assert.NotNil(t, shareableContact)
 
 	// reset rdv seed
 	_, err = meta.ContactRequestReferenceReset(ctx)
@@ -200,7 +200,7 @@ func TestMetadataRendezvousPointLifecycle(t *testing.T) {
 
 	enabled, shareableContact = meta.GetIncomingContactRequestsStatus()
 	assert.True(t, enabled)
-	assert.Nil(t, shareableContact)
+	assert.NotNil(t, shareableContact)
 
 	// Force reindex to check both enabled and seed
 	err = meta.Load(ctx, -1)

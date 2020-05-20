@@ -133,6 +133,7 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 
 			// context has been cancel stop and close chan
 			if idx == selDone {
+				md.logger.Debug("find peers done", zap.Error(ctx.Err()))
 				return
 			}
 
@@ -151,11 +152,7 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 				zap.String("driver", driverRefs[idx]), zap.String("key", ns), zap.String("peer", peer.ID.String()))
 
 			// forward the peer
-			select {
-			case cpeers <- peer:
-			case <-ctx.Done():
-				return
-			}
+			cpeers <- peer
 		}
 	}()
 

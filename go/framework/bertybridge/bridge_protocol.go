@@ -33,7 +33,6 @@ import (
 	ipfs_badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 )
 
 var defaultProtocolRendezVousPeer = config.BertyMobile.RendezVousPeer
@@ -64,7 +63,7 @@ type ProtocolConfig struct {
 	rootDirectory  string
 
 	// internal
-	coreAPI ipfs_interface.CoreAPI
+	coreAPI ipfsutil.ExtendedCoreAPI
 }
 
 func NewProtocolConfig() *ProtocolConfig {
@@ -113,7 +112,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 	ctx := context.Background()
 
 	// setup coreapi if needed
-	var api ipfs_interface.CoreAPI
+	var api ipfsutil.ExtendedCoreAPI
 	var node *core.IpfsNode
 	var dht *dht.IpfsDHT
 	var repo ipfs_repo.Repo

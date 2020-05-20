@@ -21,8 +21,10 @@ import (
 
 	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	host "github.com/libp2p/go-libp2p-core/host"
+	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
 	p2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
@@ -30,7 +32,7 @@ import (
 
 // CoreAPIMock implements ipfs.CoreAPI and adds some debugging helpers
 type CoreAPIMock interface {
-	ipfs_interface.CoreAPI
+	ExtendedCoreAPI
 
 	Tinder() tinder.Driver
 	MockNetwork() libp2p_mocknet.Mocknet
@@ -70,6 +72,7 @@ func TestingRepo(t testing.TB) ipfs_repo.Repo {
 }
 
 type TestingAPIOpts struct {
+	Logger  *zap.Logger
 	Mocknet libp2p_mocknet.Mocknet
 	RDVPeer peer.AddrInfo
 }
@@ -78,8 +81,12 @@ type TestingAPIOpts struct {
 func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *TestingAPIOpts) (api CoreAPIMock, cleanup func()) {
 	t.Helper()
 
+	if opts.Logger == nil {
+		opts.Logger = zap.NewNop()
+	}
+
 	r := TestingRepo(t)
-	routingopt, crout := NewTinderRouting(zap.NewNop(), &opts.RDVPeer, false)
+	routingopt, crout := NewTinderRouting(opts.Logger, &opts.RDVPeer, false)
 
 	node, err := ipfs_core.NewNode(ctx, &ipfs_core.BuildCfg{
 		Repo:    r,
@@ -157,6 +164,18 @@ type coreAPIMock struct {
 	mocknet libp2p_mocknet.Mocknet
 	node    *ipfs_core.IpfsNode
 	tinder  tinder.Driver
+}
+
+func (m *coreAPIMock) NewStream(ctx context.Context, p libp2p_peer.ID, pids ...protocol.ID) (p2pnetwork.Stream, error) {
+	return m.node.PeerHost.NewStream(ctx, p, pids...)
+}
+
+func (m *coreAPIMock) SetStreamHandler(pid protocol.ID, handler p2pnetwork.StreamHandler) {
+	m.node.PeerHost.SetStreamHandler(pid, handler)
+}
+
+func (m *coreAPIMock) RemoveStreamHandler(pid protocol.ID) {
+	m.node.PeerHost.RemoveStreamHandler(pid)
 }
 
 func (m *coreAPIMock) MockNetwork() libp2p_mocknet.Mocknet {
