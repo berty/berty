@@ -89,9 +89,9 @@ func (md *MultiDriver) advertise(ctx context.Context, d Driver, ns string, opts 
 // FindPeers for MultiDriver doesn't care about duplicate peers, his only
 // job here is to dispatch FindPeers request across all the drivers.
 func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_discovery.Option) (<-chan p2p_peer.AddrInfo, error) {
-	md.logger.Debug("looking for peers", zap.String("key", ns))
-
 	ctx, cancel := context.WithCancel(ctx)
+
+	md.logger.Debug("looking for peers", zap.String("key", ns))
 
 	// @NOTE(gfanton): I prefer the use of select to limit the number of goroutines
 	const selDone = 0

@@ -254,6 +254,7 @@ export namespace berty {
             counter?: (number|Long|null);
             devicePk?: (Uint8Array|null);
             sig?: (Uint8Array|null);
+            metadata?: ({ [k: string]: string }|null);
         }
 
         class MessageHeaders implements IMessageHeaders {
@@ -261,6 +262,7 @@ export namespace berty {
             public counter: (number|Long);
             public devicePk: Uint8Array;
             public sig: Uint8Array;
+            public metadata: { [k: string]: string };
             public static create(properties?: berty.types.IMessageHeaders): berty.types.MessageHeaders;
             public static encode(message: berty.types.IMessageHeaders, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.types.IMessageHeaders, writer?: $protobuf.Writer): $protobuf.Writer;

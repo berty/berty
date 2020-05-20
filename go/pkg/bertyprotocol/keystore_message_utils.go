@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/golang/protobuf/proto"
@@ -88,7 +89,7 @@ func sealPayload(payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.Pr
 	return secretbox.Seal(nil, payload, uint64AsNonce(ds.Counter+1), &msgKey), sig, nil
 }
 
-func sealEnvelopeInternal(payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.PrivKey, g *bertytypes.Group) ([]byte, error) {
+func sealEnvelopeInternal(ctx context.Context, payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.PrivKey, g *bertytypes.Group) ([]byte, error) {
 	encryptedPayload, sig, err := sealPayload(payload, ds, deviceSK, g)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
@@ -99,11 +100,15 @@ func sealEnvelopeInternal(payload []byte, ds *bertytypes.DeviceSecret, deviceSK 
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	headers, err := proto.Marshal(&bertytypes.MessageHeaders{
+	h := &bertytypes.MessageHeaders{
 		Counter:  ds.Counter + 1,
 		DevicePK: devicePKRaw,
 		Sig:      sig,
-	})
+	}
+
+	tracer.InjectSpanContextToMessageHeaders(ctx, h)
+
+	headers, err := proto.Marshal(h)
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
@@ -133,6 +138,9 @@ func sealEnvelopeInternal(payload []byte, ds *bertytypes.DeviceSecret, deviceSK 
 }
 
 func sealEnvelope(ctx context.Context, mkh *MessageKeystore, g *bertytypes.Group, deviceSK crypto.PrivKey, payload []byte) ([]byte, error) {
+	ctx, span := tracer.From(ctx).Start(ctx, "Seal Envelope")
+	defer span.End()
+
 	if deviceSK == nil || g == nil || mkh == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -142,7 +150,7 @@ func sealEnvelope(ctx context.Context, mkh *MessageKeystore, g *bertytypes.Group
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := sealEnvelopeInternal(payload, ds, deviceSK, g)
+	env, err := sealEnvelopeInternal(ctx, payload, ds, deviceSK, g)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}

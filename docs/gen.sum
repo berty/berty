@@ -1,5 +1,5 @@
 bcdab6528d30b54c2b5de0def6c3ea80754be35e  ../api/bertychat.proto
 a6b1965b41d41869f43fc31d65350fccd9fc2908  ../api/bertyprotocol.proto
-340ec3c32f85e91c317503d86d93db5eb46b38ce  ../api/bertytypes.proto
+9a50d810a6ef389b746a3714382c44e059205297  ../api/bertytypes.proto
 be73e02731d03057fa2d8a7faacfc54aa574ed68  ../api/errcode.proto
 be774eba3bc45c041495a5b1b9300e10ca18800e  Makefile

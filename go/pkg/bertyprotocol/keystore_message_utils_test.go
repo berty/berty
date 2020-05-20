@@ -284,7 +284,7 @@ func Test_EncryptMessageEnvelope(t *testing.T) {
 	err = registerChainKey(ctx, mkh2, g, omd1.device.GetPublic(), ds1, false)
 	assert.NoError(t, err)
 
-	env1, err := sealEnvelopeInternal(payloadRef1, ds1, omd1.device, g)
+	env1, err := sealEnvelopeInternal(ctx, payloadRef1, ds1, omd1.device, g)
 	assert.NoError(t, err)
 
 	headers, payloadClr1, decryptInfo, err := openEnvelope(ctx, mkh2, g, env1, cid.Undef)

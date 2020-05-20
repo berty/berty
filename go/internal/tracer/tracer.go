@@ -5,55 +5,95 @@ import (
 	"fmt"
 	"log"
 	"runtime"
-	"strings"
 
 	"go.opentelemetry.io/otel/api/global"
 	"go.opentelemetry.io/otel/api/kv"
+	"go.opentelemetry.io/otel/api/propagation"
 	"go.opentelemetry.io/otel/api/trace"
 	"go.opentelemetry.io/otel/exporters/trace/jaeger"
 	"go.opentelemetry.io/otel/exporters/trace/stdout"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
-var EnabledTracer = false
+type Cleanup func()
 
-var noopTracer = &trace.NoopTracer{}
+type ExporterType int
+
+const (
+	ExporterTypeNone ExporterType = iota
+	ExporterTypeStdout
+	ExporterTypeJaeger
+)
+
+type Config struct {
+	ExporterType    ExporterType
+	ServiceName     string
+	RuntimeProvider bool
+
+	// Jaeger config
+	JaegerHost string
+}
 
 func InitTracer(flag, service string) func() {
-	noop := func() {}
-
-	if flag == "stdout" {
-		initStdoutTracer()
-	} else if flag != "" {
-		return initJaegerTracer(flag, service)
+	cfg := &Config{
+		RuntimeProvider: true,
+		ServiceName:     service,
 	}
 
-	return noop
+	switch flag {
+	case "": // None
+		return func() {}
+	case "stdout": // Stdout
+		cfg.ExporterType = ExporterTypeStdout
+	default: // Jaeger
+		cfg.ExporterType = ExporterTypeJaeger
+		cfg.JaegerHost = flag
+	}
+
+	pt, cl, err := ConfigureProvider(cfg)
+	if err != nil {
+		log.Fatalf("unable to init tracer: `%s`", err)
+	}
+
+	SetGlobalTraceProvider(pt)
+	return cl
 }
 
-func SetTraceProvider(tp trace.Provider) {
+func ConfigureProvider(cfg *Config) (pt trace.Provider, cl Cleanup, err error) {
+	switch cfg.ExporterType {
+	case ExporterTypeJaeger:
+		pt, cl, err = NewJaegerProvider(cfg.JaegerHost, cfg.ServiceName)
+	case ExporterTypeStdout:
+		pt, err = NewStdoutProvider()
+	default:
+		pt, cl, err = &trace.NoopProvider{}, func() {}, nil
+		return
+	}
+
+	if cfg.RuntimeProvider {
+		pt = NewRuntimeProvider(pt)
+	}
+
+	return
+}
+
+func SetGlobalTraceProvider(tp trace.Provider) {
 	global.SetTraceProvider(tp)
-	EnabledTracer = true
 }
 
-func initStdoutTracer() {
+func NewStdoutProvider() (trace.Provider, error) {
 	exporter, err := stdout.NewExporter(stdout.Options{PrettyPrint: true})
 	if err != nil {
-		log.Fatalf("stdout tracer init error: %v", err)
+		return nil, err
 	}
-	tp, err := sdktrace.NewProvider(sdktrace.WithConfig(
+	return sdktrace.NewProvider(sdktrace.WithConfig(
 		sdktrace.Config{DefaultSampler: sdktrace.AlwaysSample()}),
 		sdktrace.WithSyncer(exporter),
 	)
-	if err != nil {
-		log.Fatalf("stdout tracer init error: %v", err)
-	}
-
-	SetTraceProvider(tp)
 }
 
-func initJaegerTracer(host, service string) func() {
-	tp, flush, err := jaeger.NewExportPipeline(
+func NewJaegerProvider(host, service string) (trace.Provider, func(), error) {
+	return jaeger.NewExportPipeline(
 		jaeger.WithCollectorEndpoint(fmt.Sprintf("http://%s/api/traces", host)),
 		jaeger.WithProcess(jaeger.Process{
 			ServiceName: service,
@@ -66,64 +106,16 @@ func initJaegerTracer(host, service string) func() {
 		}),
 		jaeger.WithSDK(&sdktrace.Config{DefaultSampler: sdktrace.AlwaysSample()}),
 	)
-	if err != nil {
-		log.Fatalf("jaeger tracer init error: %v", err)
-	}
-
-	SetTraceProvider(tp)
-	return flush
 }
 
-func Tracer(name string) trace.Tracer {
+func New(name string) trace.Tracer {
 	return global.Tracer(name)
 }
 
-func NewNamedSpan(ctx context.Context, name string, opts ...trace.StartOption) (context.Context, trace.Span) {
-	if !EnabledTracer {
-		return noopTracer.Start(ctx, name)
-	}
-
-	packageName, funcName := retrieveCaller()
-	ctx, span := global.Tracer(packageName).Start(ctx, name, opts...)
-	span.SetAttributes(
-		kv.String("runtime.package", packageName),
-		kv.String("runtime.function", funcName),
-	)
-
-	return ctx, span
+func From(ctx context.Context) trace.Tracer {
+	return trace.SpanFromContext(ctx).Tracer()
 }
 
-func NewSpan(ctx context.Context, opts ...trace.StartOption) (context.Context, trace.Span) {
-	if !EnabledTracer {
-		return noopTracer.Start(ctx, "")
-	}
-
-	packageName, funcName := retrieveCaller()
-	ctx, span := global.Tracer(packageName).Start(ctx, funcName, opts...)
-	span.SetAttributes(
-		kv.String("package", packageName),
-		kv.String("function", funcName),
-	)
-
-	return ctx, span
-}
-
-func retrieveCaller() (string, string) {
-	pc, _, _, ok := runtime.Caller(2)
-	if !ok {
-		return "undefined", "undefined"
-	}
-	parts := strings.Split(runtime.FuncForPC(pc).Name(), ".")
-	pl := len(parts)
-	packageName := ""
-	funcName := parts[pl-1]
-
-	if parts[pl-2][0] == '(' {
-		funcName = parts[pl-2] + "." + funcName
-		packageName = strings.Join(parts[0:pl-2], ".")
-	} else {
-		packageName = strings.Join(parts[0:pl-1], ".")
-	}
-
-	return packageName, funcName
+func Propagators() propagation.Propagators {
+	return global.Propagators()
 }

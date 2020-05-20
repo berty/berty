@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/tracer"
+
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"go.uber.org/zap"
@@ -67,7 +69,10 @@ func (s *service) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Re
 			continue
 		}
 
-		if err := sub.Send(e); err != nil {
+		_, span := tracer.SpanFromMessageHeaders(sub.Context(), e.Headers, "Receive Group Message")
+		err := sub.Send(e)
+		span.End()
+		if err != nil {
 			cg.logger.Error("error while sending message", zap.Error(err))
 			return err
 		}
@@ -105,6 +110,7 @@ func (s *service) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub
 	for evt := range messages {
 		if err := sub.Send(evt); err != nil {
 			cg.logger.Error("error while sending message", zap.Error(err))
+			return err
 		}
 	}
 

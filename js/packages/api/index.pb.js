@@ -263,6 +263,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               sig: {
                 type: "bytes",
                 id: 3
+              },
+              metadata: {
+                keyType: "string",
+                type: "string",
+                id: 4
               }
             }
           },

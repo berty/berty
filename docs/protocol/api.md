@@ -100,6 +100,7 @@
     - [InstanceGetConfiguration.Request](#berty.types.InstanceGetConfiguration.Request)
     - [MessageEnvelope](#berty.types.MessageEnvelope)
     - [MessageHeaders](#berty.types.MessageHeaders)
+    - [MessageHeaders.MetadataEntry](#berty.types.MessageHeaders.MetadataEntry)
     - [MultiMemberGrantAdminRole](#berty.types.MultiMemberGrantAdminRole)
     - [MultiMemberGroupAddAliasResolver](#berty.types.MultiMemberGroupAddAliasResolver)
     - [MultiMemberGroupAdminRoleGrant](#berty.types.MultiMemberGroupAdminRoleGrant)
@@ -869,6 +870,16 @@ MessageHeaders is used in MessageEnvelope and only readable by invited group mem
 | counter | [uint64](#uint64) |  | counter is the current counter value for the specified device |
 | device_pk | [bytes](#bytes) |  | device_pk is the public key of the device sending the message |
 | sig | [bytes](#bytes) |  | sig is the signature of the encrypted message using the device&#39;s private key |
+| metadata | [MessageHeaders.MetadataEntry](#berty.types.MessageHeaders.MetadataEntry) | repeated | metadata allow to pass custom informations |
+
+<a name="berty.types.MessageHeaders.MetadataEntry"></a>
+
+### MessageHeaders.MetadataEntry
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| key | [string](#string) |  |  |
+| value | [string](#string) |  |  |
 
 <a name="berty.types.MultiMemberGrantAdminRole"></a>
 

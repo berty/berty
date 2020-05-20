@@ -15,6 +15,7 @@ import (
 	"bytes"
 
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
@@ -38,33 +39,39 @@ func TestScenario_JoinGroup(t *testing.T) {
 		// {"10 clients/connectInLine", 10, ConnectInLine, true},
 	}
 
+	tr := tracer.NewTestingProvider(t, "Scenario_JoinGroup").Tracer("testing")
+	ctx := context.Background()
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
 			if tc.IsSlowTest {
 				testutil.SkipSlow(t)
 			}
 
-			testingScenario_JoinGroup(t, tc.NumberOfClient, tc.ConnectFunc)
+			opts := TestingOpts{
+				Mocknet: libp2p_mocknet.New(ctx),
+				Logger:  testutil.Logger(t),
+			}
+
+			pts, cleanup := generateTestingProtocol(ctx, t, &opts, tc.NumberOfClient)
+			defer cleanup()
+
+			// connect all pts together
+			tc.ConnectFunc(t, opts.Mocknet)
+
+			ctx, span := tr.Start(ctx, tc.Name)
+			defer span.End()
+
+			testingScenario_JoinGroup(ctx, t, pts...)
 		})
 	}
 }
 
-func testingScenario_JoinGroup(t *testing.T, nService int, cf ConnnectTestingProtocolFunc) {
-	ctx, cancel := context.WithCancel(context.Background())
+func testingScenario_JoinGroup(ctx context.Context, t *testing.T, pts ...*TestingProtocol) {
+	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	opts := TestingOpts{
-		Mocknet: libp2p_mocknet.New(ctx),
-		Logger:  testutil.Logger(t),
-	}
-
+	nService := len(pts)
 	// Setup test
-
-	pts, cleanup := generateTestingProtocol(ctx, t, &opts, nService)
-	defer cleanup()
-
-	// connect all pts together
-	cf(t, opts.Mocknet)
 
 	// create group
 	group, _, err := NewGroupMultiMember()
@@ -91,11 +98,6 @@ func testingScenario_JoinGroup(t *testing.T, nService int, cf ConnnectTestingPro
 			// pt join group
 			_, err = pt.Client.MultiMemberGroupJoin(ctx, &req)
 			require.NoError(t, err)
-
-			// pt join group
-			_, err = pt.Client.MultiMemberGroupJoin(ctx, &req)
-			assert.Error(t, err)
-
 		}
 	}
 
