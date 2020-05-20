@@ -21,6 +21,7 @@ require (
 	github.com/ipfs/go-ipfs-keystore v0.0.1
 	github.com/ipfs/go-log v1.0.3
 	github.com/ipfs/interface-go-ipfs-core v0.2.6
+	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/libp2p/go-libp2p v0.7.4
 	github.com/libp2p/go-libp2p-circuit v0.2.1
@@ -40,6 +41,7 @@ require (
 	github.com/peterbourgon/ff v1.6.0
 	github.com/pkg/errors v0.9.1
 	github.com/rivo/tview v0.0.0-20200219210816-cd38d7432498
+	github.com/skip2/go-qrcode v0.0.0-20200519171959-a3b48390827e
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/stretchr/testify v1.5.1
 	go.opentelemetry.io/otel v0.5.0

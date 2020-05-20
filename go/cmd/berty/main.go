@@ -138,9 +138,10 @@ func main() {
 	}
 
 	banner := &ffcli.Command{
-		Name:    "banner",
-		Usage:   "banner",
-		FlagSet: bannerFlags,
+		Name:      "banner",
+		Usage:     "banner",
+		FlagSet:   bannerFlags,
+		ShortHelp: "print the ascii Berty banner",
 		Exec: func(args []string) error {
 			cleanup := globalPreRun(context.Background())
 			defer cleanup()
@@ -155,8 +156,9 @@ func main() {
 	}
 
 	version := &ffcli.Command{
-		Name:  "version",
-		Usage: "version",
+		Name:      "version",
+		Usage:     "version",
+		ShortHelp: "print software version",
 		Exec: func(args []string) error {
 			fmt.Println("dev")
 			return nil
@@ -164,9 +166,10 @@ func main() {
 	}
 
 	mini := &ffcli.Command{
-		Name:    "mini",
-		Usage:   "mini",
-		FlagSet: miniClientDemoFlags,
+		Name:      "mini",
+		ShortHelp: "start a terminal-based mini berty client (not fully compatible with the app)",
+		Usage:     "mini",
+		FlagSet:   miniClientDemoFlags,
 		Exec: func(args []string) error {
 			ctx := context.Background()
 			cleanup := globalPreRun(ctx)
@@ -226,9 +229,10 @@ func main() {
 	}
 
 	daemon := &ffcli.Command{
-		Name:    "daemon",
-		Usage:   "berty daemon",
-		FlagSet: clientProtocolFlags,
+		Name:      "daemon",
+		Usage:     "berty daemon",
+		FlagSet:   clientProtocolFlags,
+		ShortHelp: "start a full Berty instance",
 		Exec: func(args []string) error {
 			ctx := context.Background()
 			cleanup := globalPreRun(ctx)
@@ -288,14 +292,12 @@ func main() {
 							time.Sleep(time.Second)
 						}
 					}
-
 				}
 			}
 
 			// protocol
 			var protocol bertyprotocol.Service
 			{
-
 				rootDS, dsLock, err := getRootDatastore(ctx, clientProtocolPath)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
@@ -400,8 +402,8 @@ func main() {
 	}
 
 	groupinit := &ffcli.Command{
-		Name:  "groupinit",
-		Usage: "berty groupinit - initialize a new multi member group",
+		Name:      "groupinit",
+		ShortHelp: "initialize a new multi-member group",
 		Exec: func(args []string) error {
 			g, _, err := bertyprotocol.NewGroupMultiMember()
 			if err != nil {
@@ -418,11 +420,33 @@ func main() {
 		},
 	}
 
+	shareInviteOnDiscord := &ffcli.Command{
+		Name:      "share-invite",
+		ShortHelp: "share invite link to Discord dedicated channel",
+		Exec: func(args []string) error {
+
+			fmt.Println("TEST")
+			return nil
+		},
+	}
+
+	dev := &ffcli.Command{
+		Name:        "dev",
+		Usage:       "berty [global flags] dev <subcommand> [flags] [args...]",
+		ShortHelp:   "developer helpers and tools",
+		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		Subcommands: []*ffcli.Command{groupinit, shareInviteOnDiscord},
+		Exec: func([]string) error {
+			globalFlags.Usage()
+			return flag.ErrHelp
+		},
+	}
+
 	root := &ffcli.Command{
 		Usage:       "berty [global flags] <subcommand> [flags] [args...]",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
-		Subcommands: []*ffcli.Command{daemon, banner, version, mini, groupinit},
+		Subcommands: []*ffcli.Command{daemon, mini, banner, version, dev},
 		Exec: func([]string) error {
 			globalFlags.Usage()
 			return flag.ErrHelp
