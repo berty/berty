@@ -3,6 +3,10 @@ import { eventChannel, END } from 'redux-saga'
 import { grpc } from '@improbable-eng/grpc-web'
 import { ProtocolService } from './grpc-web-gen/bertyprotocol_pb_service'
 import * as bertytypes from './grpc-web-gen/bertytypes_pb'
+import opentelemetry, { propagation } from '@opentelemetry/api'
+import { tracerProvider } from '@berty-tech/tracing'
+
+tracerProvider()
 
 {{#with (lookup "berty.protocol")}}
 	{{#each nested}}
@@ -10,21 +14,29 @@ import * as bertytypes from './grpc-web-gen/bertytypes_pb'
 			export default class {{name}}SagaClient {
 				host: string
 				transport: grpc.TransportFactory
+				tracer: string
 
-				constructor(host: string, transport: grpc.TransportFactory) {
+				constructor(host: string, transport: grpc.TransportFactory, tracer?: string) {
 					this.host = host
 					this.transport = transport
+					this.tracer = tracer || "default"
 				}
 
 				{{#each methods}}
 					{{case 'camel' name}} = (requestObj: api{{inamespace resolvedRequestType}} = {}) =>
 						eventChannel<api{{inamespace resolvedResponseType}}>((emit) => {
+							const span = opentelemetry.trace.getTracer(this.tracer).startSpan("ProtocolServiceSagaClient.{{case 'camel' name}}")
+							span.setAttribute("foo", "bar")
+							console.log("created span in {{case 'camel' name}}")
 							const buf = api.berty.{{requestType}}.encode(requestObj).finish()
 							const request = berty{{requestType}}.deserializeBinary(buf)
+							const metadata: {[key: string]: any} = {}
+							propagation.inject(metadata, (metadata, k, v) => metadata[k] = v);
 							const { close } = grpc.invoke(ProtocolService.{{name}}, {
 								request,
 								transport: this.transport,
 								host: this.host,
+								metadata,
 								onMessage: (message: berty{{responseType}}) =>
 									emit(api.berty.{{responseType}}.decode(message.serializeBinary())),
 								onEnd: (code, msg, trailers) => {
@@ -38,6 +50,7 @@ import * as bertytypes from './grpc-web-gen/bertytypes_pb'
 										)
 									}
 									emit(END)
+									span.end()
 								},
 							})
 							return close

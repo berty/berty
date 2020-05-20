@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@berty-tech/api": "^0.0.0",
+    "@berty-tech/tracing": "0.0.0",
     "@clarketm/saga-monitor": "^2.0.1",
     "@reduxjs/toolkit": "^1.2.1",
     "@types/once": "^1.4.0",

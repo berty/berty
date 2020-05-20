@@ -1,0 +1,4 @@
+{
+  "rulesDirectory": ["node_modules/tslint-microsoft-contrib"],
+  "extends": ["../../tslint.base.js", "./node_modules/tslint-consistent-codestyle"]
+}

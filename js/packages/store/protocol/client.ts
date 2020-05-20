@@ -186,7 +186,6 @@ export const decodeMetadataEvent = (
 		console.warn("Don't know how to decode", eventName)
 		return undefined
 	}
-	console.log('response.event', response.event)
 	const decodedEvent = event.decode(response.event)
 	return decodedEvent
 }

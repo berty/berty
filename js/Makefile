@@ -160,7 +160,7 @@ start.grpc-bridge.berty: proto ?= grpcws
 start.grpc-bridge.berty:
 	cd $(BERTY_ROOT) && $(MAKE) bazel.generate
 	cd $(BERTY_ROOT) \
-		&& bazel run //go/cmd/berty -- daemon -l /ip4/$(host)/tcp/$(port)/$(proto)
+		&& bazel run //go/cmd/berty -- -tracer=localhost:14268 daemon -l /ip4/$(host)/tcp/$(port)/$(proto)
 
 # pb.generate
 include gen.make
