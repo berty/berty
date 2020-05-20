@@ -107,7 +107,12 @@ func (c *contactRequestsManager) metadataRequestEnabled(_ *bertytypes.GroupMetad
 	c.ipfs.SetStreamHandler(contactRequestV1, c.incomingHandler)
 
 	c.enabled = true
-	return nil
+
+	if c.announceCancel != nil {
+		return nil
+	}
+
+	return c.enableIncomingRequests()
 }
 
 func (c *contactRequestsManager) metadataRequestReset(evt *bertytypes.GroupMetadataEvent) error {
@@ -118,25 +123,11 @@ func (c *contactRequestsManager) metadataRequestReset(evt *bertytypes.GroupMetad
 
 	c.seed = e.PublicRendezvousSeed
 
-	pkBytes, err := c.accSK.GetPublic().Raw()
-	if err != nil {
-		return err
-	}
-
 	if !c.enabled {
 		return nil
 	}
 
-	if c.announceCancel != nil {
-		c.announceCancel()
-	}
-
-	var ctx context.Context
-
-	ctx, c.announceCancel = context.WithCancel(c.ctx)
-	c.swiper.announce(ctx, pkBytes, c.seed)
-
-	return nil
+	return c.enableIncomingRequests()
 }
 
 func (c *contactRequestsManager) metadataRequestEnqueued(evt *bertytypes.GroupMetadataEvent) error {
@@ -356,6 +347,24 @@ func (c *contactRequestsManager) performSend(otherPK crypto.PubKey, stream netwo
 		c.logger.Error("an error occurred while marking contact request as sent", zap.Error(err))
 		return
 	}
+}
+
+func (c *contactRequestsManager) enableIncomingRequests() error {
+	if c.announceCancel != nil {
+		c.announceCancel()
+	}
+
+	pkBytes, err := c.accSK.GetPublic().Raw()
+	if err != nil {
+		return err
+	}
+
+	var ctx context.Context
+
+	ctx, c.announceCancel = context.WithCancel(c.ctx)
+	c.swiper.announce(ctx, pkBytes, c.seed)
+
+	return nil
 }
 
 func initContactRequestsManager(ctx context.Context, s *swiper, store *metadataStore, ipfs ipfsutil.ExtendedCoreAPI, logger *zap.Logger) error {
