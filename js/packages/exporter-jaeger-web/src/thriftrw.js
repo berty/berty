@@ -1050,7 +1050,6 @@ I64RW.prototype.poolByteLength = function poolByteLength(destResult, value) {
 
 I64RW.prototype.poolWriteInto = function poolWriteInto(destResult, value, buffer, offset) {
     if (Buffer.isBuffer(value)) {
-	console.log("is instanceof Buffer")
         return this.writeBufferInt64Into(destResult, value, buffer, offset);
     } else if (typeof value === 'number') {
         var number = Long.fromNumber(value);

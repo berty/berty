@@ -3,7 +3,7 @@ import { eventChannel, END } from 'redux-saga'
 import { grpc } from '@improbable-eng/grpc-web'
 import { ProtocolService } from './grpc-web-gen/bertyprotocol_pb_service'
 import * as bertytypes from './grpc-web-gen/bertytypes_pb'
-import opentelemetry, { propagation } from '@opentelemetry/api'
+import opentelemetry, { propagation, TraceFlags } from '@opentelemetry/api'
 import { tracerProvider } from '@berty-tech/tracing'
 
 tracerProvider()
@@ -30,8 +30,14 @@ tracerProvider()
 							console.log("created span in {{case 'camel' name}}")
 							const buf = api.berty.{{requestType}}.encode(requestObj).finish()
 							const request = berty{{requestType}}.deserializeBinary(buf)
-							const metadata: {[key: string]: any} = {}
-							propagation.inject(metadata, (metadata, k, v) => metadata[k] = v);
+
+							const ctx = span.context()
+							console.log('span context', ctx)
+							const metadata = new grpc.Metadata()
+							const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+							metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+							console.log('span metadata', metadata)
+
 							const { close } = grpc.invoke(ProtocolService.{{name}}, {
 								request,
 								transport: this.transport,

@@ -3,7 +3,7 @@ import { eventChannel, END } from 'redux-saga'
 import { grpc } from '@improbable-eng/grpc-web'
 import { ProtocolService } from './grpc-web-gen/bertyprotocol_pb_service'
 import * as bertytypes from './grpc-web-gen/bertytypes_pb'
-import opentelemetry, { propagation } from '@opentelemetry/api'
+import opentelemetry, { propagation, TraceFlags } from '@opentelemetry/api'
 import { tracerProvider } from '@berty-tech/tracing'
 
 tracerProvider()
@@ -28,8 +28,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in instanceExportData')
 			const buf = api.berty.types.InstanceExportData.Request.encode(requestObj).finish()
 			const request = bertytypes.InstanceExportData.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.InstanceExportData, {
 				request,
 				transport: this.transport,
@@ -62,8 +68,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in instanceGetConfiguration')
 			const buf = api.berty.types.InstanceGetConfiguration.Request.encode(requestObj).finish()
 			const request = bertytypes.InstanceGetConfiguration.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.InstanceGetConfiguration, {
 				request,
 				transport: this.transport,
@@ -96,8 +108,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in contactRequestReference')
 			const buf = api.berty.types.ContactRequestReference.Request.encode(requestObj).finish()
 			const request = bertytypes.ContactRequestReference.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.ContactRequestReference, {
 				request,
 				transport: this.transport,
@@ -130,8 +148,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in contactRequestDisable')
 			const buf = api.berty.types.ContactRequestDisable.Request.encode(requestObj).finish()
 			const request = bertytypes.ContactRequestDisable.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.ContactRequestDisable, {
 				request,
 				transport: this.transport,
@@ -164,8 +188,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in contactRequestEnable')
 			const buf = api.berty.types.ContactRequestEnable.Request.encode(requestObj).finish()
 			const request = bertytypes.ContactRequestEnable.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.ContactRequestEnable, {
 				request,
 				transport: this.transport,
@@ -200,8 +230,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in contactRequestResetReference')
 			const buf = api.berty.types.ContactRequestResetReference.Request.encode(requestObj).finish()
 			const request = bertytypes.ContactRequestResetReference.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.ContactRequestResetReference, {
 				request,
 				transport: this.transport,
@@ -236,8 +272,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in contactRequestSend')
 			const buf = api.berty.types.ContactRequestSend.Request.encode(requestObj).finish()
 			const request = bertytypes.ContactRequestSend.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.ContactRequestSend, {
 				request,
 				transport: this.transport,
@@ -270,8 +312,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in contactRequestAccept')
 			const buf = api.berty.types.ContactRequestAccept.Request.encode(requestObj).finish()
 			const request = bertytypes.ContactRequestAccept.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.ContactRequestAccept, {
 				request,
 				transport: this.transport,
@@ -304,8 +352,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in contactRequestDiscard')
 			const buf = api.berty.types.ContactRequestDiscard.Request.encode(requestObj).finish()
 			const request = bertytypes.ContactRequestDiscard.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.ContactRequestDiscard, {
 				request,
 				transport: this.transport,
@@ -338,8 +392,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in contactBlock')
 			const buf = api.berty.types.ContactBlock.Request.encode(requestObj).finish()
 			const request = bertytypes.ContactBlock.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.ContactBlock, {
 				request,
 				transport: this.transport,
@@ -372,8 +432,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in contactUnblock')
 			const buf = api.berty.types.ContactUnblock.Request.encode(requestObj).finish()
 			const request = bertytypes.ContactUnblock.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.ContactUnblock, {
 				request,
 				transport: this.transport,
@@ -406,8 +472,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in contactAliasKeySend')
 			const buf = api.berty.types.ContactAliasKeySend.Request.encode(requestObj).finish()
 			const request = bertytypes.ContactAliasKeySend.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.ContactAliasKeySend, {
 				request,
 				transport: this.transport,
@@ -440,8 +512,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in multiMemberGroupCreate')
 			const buf = api.berty.types.MultiMemberGroupCreate.Request.encode(requestObj).finish()
 			const request = bertytypes.MultiMemberGroupCreate.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.MultiMemberGroupCreate, {
 				request,
 				transport: this.transport,
@@ -474,8 +552,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in multiMemberGroupJoin')
 			const buf = api.berty.types.MultiMemberGroupJoin.Request.encode(requestObj).finish()
 			const request = bertytypes.MultiMemberGroupJoin.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.MultiMemberGroupJoin, {
 				request,
 				transport: this.transport,
@@ -508,8 +592,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in multiMemberGroupLeave')
 			const buf = api.berty.types.MultiMemberGroupLeave.Request.encode(requestObj).finish()
 			const request = bertytypes.MultiMemberGroupLeave.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.MultiMemberGroupLeave, {
 				request,
 				transport: this.transport,
@@ -548,8 +638,14 @@ export default class ProtocolServiceSagaClient {
 			const request = bertytypes.MultiMemberGroupAliasResolverDisclose.Request.deserializeBinary(
 				buf,
 			)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.MultiMemberGroupAliasResolverDisclose, {
 				request,
 				transport: this.transport,
@@ -588,8 +684,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in multiMemberGroupAdminRoleGrant')
 			const buf = api.berty.types.MultiMemberGroupAdminRoleGrant.Request.encode(requestObj).finish()
 			const request = bertytypes.MultiMemberGroupAdminRoleGrant.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.MultiMemberGroupAdminRoleGrant, {
 				request,
 				transport: this.transport,
@@ -628,8 +730,14 @@ export default class ProtocolServiceSagaClient {
 				requestObj,
 			).finish()
 			const request = bertytypes.MultiMemberGroupInvitationCreate.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.MultiMemberGroupInvitationCreate, {
 				request,
 				transport: this.transport,
@@ -666,8 +774,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in appMetadataSend')
 			const buf = api.berty.types.AppMetadataSend.Request.encode(requestObj).finish()
 			const request = bertytypes.AppMetadataSend.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.AppMetadataSend, {
 				request,
 				transport: this.transport,
@@ -700,8 +814,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in appMessageSend')
 			const buf = api.berty.types.AppMessageSend.Request.encode(requestObj).finish()
 			const request = bertytypes.AppMessageSend.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.AppMessageSend, {
 				request,
 				transport: this.transport,
@@ -734,8 +854,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in groupMetadataSubscribe')
 			const buf = api.berty.types.GroupMetadataSubscribe.Request.encode(requestObj).finish()
 			const request = bertytypes.GroupMetadataSubscribe.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.GroupMetadataSubscribe, {
 				request,
 				transport: this.transport,
@@ -768,8 +894,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in groupMessageSubscribe')
 			const buf = api.berty.types.GroupMessageSubscribe.Request.encode(requestObj).finish()
 			const request = bertytypes.GroupMessageSubscribe.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.GroupMessageSubscribe, {
 				request,
 				transport: this.transport,
@@ -802,8 +934,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in groupMetadataList')
 			const buf = api.berty.types.GroupMetadataList.Request.encode(requestObj).finish()
 			const request = bertytypes.GroupMetadataList.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.GroupMetadataList, {
 				request,
 				transport: this.transport,
@@ -836,8 +974,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in groupMessageList')
 			const buf = api.berty.types.GroupMessageList.Request.encode(requestObj).finish()
 			const request = bertytypes.GroupMessageList.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.GroupMessageList, {
 				request,
 				transport: this.transport,
@@ -870,8 +1014,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in groupInfo')
 			const buf = api.berty.types.GroupInfo.Request.encode(requestObj).finish()
 			const request = bertytypes.GroupInfo.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.GroupInfo, {
 				request,
 				transport: this.transport,
@@ -904,8 +1054,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in activateGroup')
 			const buf = api.berty.types.ActivateGroup.Request.encode(requestObj).finish()
 			const request = bertytypes.ActivateGroup.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.ActivateGroup, {
 				request,
 				transport: this.transport,
@@ -938,8 +1094,14 @@ export default class ProtocolServiceSagaClient {
 			console.log('created span in deactivateGroup')
 			const buf = api.berty.types.DeactivateGroup.Request.encode(requestObj).finish()
 			const request = bertytypes.DeactivateGroup.Request.deserializeBinary(buf)
-			const metadata: { [key: string]: any } = {}
-			propagation.inject(metadata, (metadata, k, v) => (metadata[k] = v))
+
+			const ctx = span.context()
+			console.log('span context', ctx)
+			const metadata = new grpc.Metadata()
+			const traceFlags = `0${(ctx.traceFlags || TraceFlags.NONE).toString(16)}`
+			metadata.set('traceparent', `00-${ctx.traceId}-${ctx.spanId}-${traceFlags}`)
+			console.log('span metadata', metadata)
+
 			const { close } = grpc.invoke(ProtocolService.DeactivateGroup, {
 				request,
 				transport: this.transport,
