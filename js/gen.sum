@@ -1,5 +1,5 @@
-58c5c5d9c23c868a7a9d3d836bc43d0a3abb1aa0  ../api/bertyprotocol.proto
-9e7d39280df1ac7167b46259c162df0a1d31f31b  ../api/bertytypes.proto
+a6b1965b41d41869f43fc31d65350fccd9fc2908  ../api/bertyprotocol.proto
+340ec3c32f85e91c317503d86d93db5eb46b38ce  ../api/bertytypes.proto
 4c0fa735ab710727c465ed1444dc6db1c748dc45  ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
 4b8f24f346b0cf0494144b7f18b370315ba83f02  Makefile
 583c90ab3c0fa4298f354eaf54fed7a476ef7711  gen.make

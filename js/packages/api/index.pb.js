@@ -123,6 +123,16 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               DeactivateGroup: {
                 requestType: "types.DeactivateGroup.Request",
                 responseType: "types.DeactivateGroup.Reply"
+              },
+              DebugListGroups: {
+                requestType: "types.DebugListGroups.Request",
+                responseType: "types.DebugListGroups.Reply",
+                responseStream: true
+              },
+              DebugInspectGroupStore: {
+                requestType: "types.DebugInspectGroupStore.Request",
+                responseType: "types.DebugInspectGroupStore.Reply",
+                responseStream: true
               }
             }
           }
@@ -1309,6 +1319,103 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               Reply: {
                 fields: {}
               }
+            }
+          },
+          DebugListGroups: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {}
+              },
+              Reply: {
+                fields: {
+                  groupPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  },
+                  groupType: {
+                    type: "GroupType",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "GroupType"
+                    }
+                  },
+                  contactPk: {
+                    type: "bytes",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "ContactPK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          DebugInspectGroupStore: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  groupPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  },
+                  logType: {
+                    type: "DebugInspectGroupLogType",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "LogType"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  cid: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "CID"
+                    }
+                  },
+                  parentCids: {
+                    rule: "repeated",
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "ParentCIDs"
+                    }
+                  },
+                  metadataEventType: {
+                    type: "EventType",
+                    id: 3
+                  },
+                  devicePk: {
+                    type: "bytes",
+                    id: 4,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  payload: {
+                    type: "bytes",
+                    id: 6
+                  }
+                }
+              }
+            }
+          },
+          DebugInspectGroupLogType: {
+            values: {
+              DebugInspectGroupLogTypeUndefined: 0,
+              DebugInspectGroupLogTypeMessage: 1,
+              DebugInspectGroupLogTypeMetadata: 2
             }
           },
           ContactState: {

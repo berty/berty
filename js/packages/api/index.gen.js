@@ -127,6 +127,16 @@ export const berty = {
 		GroupInfo: jsonPb.lookup('.berty.types.GroupInfo'),
 		ActivateGroup: jsonPb.lookup('.berty.types.ActivateGroup'),
 		DeactivateGroup: jsonPb.lookup('.berty.types.DeactivateGroup'),
+		DebugListGroups: jsonPb.lookup('.berty.types.DebugListGroups'),
+		DebugInspectGroupStore: jsonPb.lookup('.berty.types.DebugInspectGroupStore'),
+		DebugInspectGroupLogType: {
+			DebugInspectGroupLogTypeUndefined: 0,
+			0: 'DebugInspectGroupLogTypeUndefined',
+			DebugInspectGroupLogTypeMessage: 1,
+			1: 'DebugInspectGroupLogTypeMessage',
+			DebugInspectGroupLogTypeMetadata: 2,
+			2: 'DebugInspectGroupLogTypeMetadata',
+		},
 		ContactState: {
 			ContactStateUndefined: 0,
 			0: 'ContactStateUndefined',

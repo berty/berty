@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"io"
 	"strings"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"github.com/ipfs/go-cid"
 	"github.com/pkg/errors"
 )
 
@@ -89,10 +91,146 @@ func commandList() []*command {
 			cmd:   contactRequestsOnCommand,
 		},
 		{
+			title: "debug groups",
+			help:  "List groups for current account",
+			cmd:   debugListGroupsCommand,
+		},
+		{
+			title: "debug store",
+			help:  "Inspect a group store",
+			cmd:   debugInspectStoreCommand,
+		},
+		{
 			title: "/",
 			help:  "",
 			cmd:   newSlashMessageCommand,
 		},
+	}
+}
+
+func debugInspectStoreCommand(ctx context.Context, v *groupView, cmd string) error {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	args := strings.Split(cmd, " ")
+	if len(args) != 2 {
+		return fmt.Errorf("invalid args, expected: group_pk {message,metadata}")
+	}
+
+	groupPK, err := base64.StdEncoding.DecodeString(args[0])
+	if err != nil {
+		return err
+	}
+
+	var logType bertytypes.DebugInspectGroupLogType
+
+	switch args[1] {
+	case "message":
+		logType = bertytypes.DebugInspectGroupLogTypeMessage
+	case "metadata":
+		logType = bertytypes.DebugInspectGroupLogTypeMetadata
+	default:
+		return fmt.Errorf("invalid args, expected: group_pk {message,metadata}")
+	}
+
+	sub, err := v.v.client.DebugInspectGroupStore(ctx, &bertytypes.DebugInspectGroupStore_Request{
+		GroupPK: groupPK,
+		LogType: logType,
+	})
+	if err != nil {
+		return err
+	}
+
+	for {
+		e, err := sub.Recv()
+		if err == io.EOF {
+			v.v.accountGroupView.syncMessages <- &historyMessage{
+				messageType: 0,
+				payload:     []byte(fmt.Sprintf("listed events for group %s and store %s, most recent first", args[0], args[1])),
+			}
+
+			return nil
+		} else if err != nil {
+			return err
+		}
+
+		v.v.accountGroupView.syncMessages <- &historyMessage{
+			messageType: 0,
+			payload:     formatDebugInspectGroupStoreReply(e, logType),
+		}
+	}
+}
+
+func formatDebugInspectGroupStoreReply(rep *bertytypes.DebugInspectGroupStore_Reply, storeType bertytypes.DebugInspectGroupLogType) []byte {
+	data := []string(nil)
+
+	if rep.CID != nil {
+		c, err := cid.Parse(rep.CID)
+		if err == nil {
+			data = append(data, fmt.Sprintf("cid: %s", c.String()))
+		}
+	}
+
+	if len(rep.ParentCIDs) != 0 {
+		parents := make([]string, len(rep.ParentCIDs))
+		for i, p := range rep.ParentCIDs {
+			c, err := cid.Parse(p)
+			if err == nil {
+				parents[i] = c.String()
+			}
+		}
+
+		data = append(data, fmt.Sprintf("parents: %s", strings.Join(parents, "-")))
+	}
+
+	if rep.MetadataEventType != 0 {
+		data = append(data, fmt.Sprintf("evt type: %s", rep.MetadataEventType.String()))
+	}
+
+	if len(rep.DevicePK) != 0 {
+		data = append(data, fmt.Sprintf("device: %s", base64.StdEncoding.EncodeToString(rep.DevicePK)))
+	}
+
+	if storeType == bertytypes.DebugInspectGroupLogTypeMessage && len(rep.Payload) > 0 {
+		data = append(data, fmt.Sprintf("payload: %s", string(rep.Payload)))
+	}
+
+	return []byte(strings.Join(data, ", "))
+}
+
+func formatDebugListGroupsReply(rep *bertytypes.DebugListGroups_Reply) []byte {
+	if rep.GroupType == bertytypes.GroupTypeContact {
+		return []byte(fmt.Sprintf("%s: %s (contact: %s)", rep.GroupType.String(), base64.StdEncoding.EncodeToString(rep.GroupPK), base64.StdEncoding.EncodeToString(rep.ContactPK)))
+	}
+
+	return []byte(fmt.Sprintf("%s: %s", rep.GroupType.String(), base64.StdEncoding.EncodeToString(rep.GroupPK)))
+}
+
+func debugListGroupsCommand(ctx context.Context, v *groupView, cmd string) error {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	sub, err := v.v.client.DebugListGroups(ctx, &bertytypes.DebugListGroups_Request{})
+	if err != nil {
+		return err
+	}
+
+	for {
+		e, err := sub.Recv()
+		if err == io.EOF {
+			return nil
+		} else if err != nil {
+			return err
+		}
+
+		if e == nil {
+			continue
+		}
+
+		v.v.accountGroupView.syncMessages <- &historyMessage{
+			messageType: 0,
+			payload:     formatDebugListGroupsReply(e),
+		}
 	}
 }
 

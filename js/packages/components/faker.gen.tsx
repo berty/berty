@@ -236,6 +236,20 @@ export namespace faker {
 				) => void = (request, callback) => {
 					callback(null, _api.berty.types.DeactivateGroup.Reply.encode({}).finish())
 				}
+
+				export const DebugListGroups: (
+					request: _api.berty.types.DebugListGroups.IRequest,
+					callback: pb.RPCImplCallback,
+				) => void = (request, callback) => {
+					callback(null, _api.berty.types.DebugListGroups.Reply.encode({}).finish())
+				}
+
+				export const DebugInspectGroupStore: (
+					request: _api.berty.types.DebugInspectGroupStore.IRequest,
+					callback: pb.RPCImplCallback,
+				) => void = (request, callback) => {
+					callback(null, _api.berty.types.DebugInspectGroupStore.Reply.encode({}).finish())
+				}
 			}
 		}
 		export namespace types {}
