@@ -54,3 +54,5 @@ require (
 	google.golang.org/grpc v1.27.1
 	moul.io/srand v1.4.0
 )
+
+replace github.com/golang/protobuf => github.com/golang/protobuf v1.3.2
