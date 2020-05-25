@@ -6,11 +6,11 @@ This folder contains most of the Typescript and Javascript code needed for the B
 
 ## Run Berty Chat (macOS)
 
-### 1. Requirements
+### Requirements
 
 The installation list may look daunting, but if you have some experience in mobile development, you likely have most of them already!
 
-In addition to the _General requirements for React Native_ below, you'll need:
+In addition to the _**General requirements for React Native**_ below, you'll need:
 
 - An installation of [golang](https://golang.org/dl/), plus:
   - Your `$GOPATH` explicitly set to your golang directory (usually `$HOME/go`)
@@ -18,21 +18,42 @@ In addition to the _General requirements for React Native_ below, you'll need:
 - [Bazel](https://docs.bazel.build/versions/master/install-os-x.html#install-with-installer-mac-os-x)
 - _Android only:_ Java 8. If you already have another version of Java, you can use a version manager and Homebrew to add another installation. Some nice instructions are given [here](https://java.christmas/2019/16).
 
-### 2. Run required services
+### 1. Run required services
+
+Run JS bundler:
 
 `make start.metro`
 
-`make start.grpc-bridge.orbitdb`
+Run two nodes so you can run two app instances and use network protocol functionality:
 
-### 3. Build for Android and iOS
+`make start.grpc-bridge.berty port=1337`
+`make start.grpc-bridge.berty port=1338`
 
-#### iOS
+### 2. Launch in device simulators
 
-`device="[iPhone 11]|[your-device-name]" make run.ios.debug`
+_Run two simulators so you can use chat features._
 
-#### Android
+#### Run on iOS
 
-`device="[your device name]" make run.android.debug`
+`device="[some-iOS-device-name]" make run.ios`
+`device="[some-iOS-device-name]" make run.ios`
+
+_You'll have some errors, don't worry about them for now._
+
+#### Run on Android
+
+⚠️ Android build currently not maintained.
+
+`device="[some Android device]" make run.android`
+`device="[some Android device]" make run.android`
+
+### 3. Create accounts in simulators and choose a bridge
+
+Click get started in the app UI. In the second text field, enter the port chosen when you launched the bridges in the commands above.
+
+### Troubleshooting in iOS
+
+You may need to clear the app state if you continue getting GRPC warnings in your iOS simulator. Do this in iOS simulator with Cmd+D, then select 'Refresh async state.'
 
 ## General requirements for React Native
 
@@ -96,4 +117,7 @@ You can use one normal tab and one private tab to have two accounts at the same 
 ## Known issues
 
 - `make run.storybook.*` outputs error `Error: => Create a storybook config file in "./.storybook/config.{ext}".` during build
+
 - gRPC errors on iOS and Android views
+
+- `make start.metro` outputs `warning: the transform cache was reset. Loading dependency graph...'config.server.enableVisualizer' is enabled but the 'metro-visualizer' package was not found - have you installed it?`
