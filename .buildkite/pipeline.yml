@@ -107,12 +107,18 @@ steps:
               "HOME=/home/buildkite-agent",
               "GRADLE_USER_HOME=/home/buildkite-agent/.gradle",
             ]
-          volumes: ["~:/home/buildkite-agent"]
+          volumes:
+            [
+              "/usr/local/go:/usr/local/go",
+              "~:/home/buildkite-agent",
+            ]
     agents:
       queue: "bigcores"
     commands:
       - set -x
       - export PATH=$$PATH:/home/buildkite-agent/go/bin
+      - export PATH=/usr/local/go/bin:$$PATH
+      - go version
       - go get golang.org/x/mobile/cmd/gomobile
       - gomobile init
       - cd js
