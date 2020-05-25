@@ -3,58 +3,55 @@ package main
 import (
 	"context"
 	"encoding/base64"
-	"errors"
 	"flag"
 	"fmt"
 	"log"
 	mrand "math/rand"
 	"net"
+	"net/url"
 	"os"
+	"os/user"
 	"path"
 	"strings"
 	"time"
 
 	"berty.tech/berty/v2/go/cmd/berty/mini"
 	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
-	datastore "github.com/ipfs/go-datastore"
-	sync_ds "github.com/ipfs/go-datastore/sync"
-	badger "github.com/ipfs/go-ds-badger"
-	"github.com/ipfs/go-ipfs/core"
-	"github.com/juju/fslock"
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/network"
-	peer "github.com/libp2p/go-libp2p-core/peer"
-
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
-	libp2p "github.com/libp2p/go-libp2p"
-
-	"github.com/oklog/run"
-	"github.com/peterbourgon/ff"
-	"github.com/peterbourgon/ff/ffcli"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-
-	ipfs_log "github.com/ipfs/go-log"
-
-	ma "github.com/multiformats/go-multiaddr"
-
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	datastore "github.com/ipfs/go-datastore"
+	sync_ds "github.com/ipfs/go-datastore/sync"
+	badger "github.com/ipfs/go-ds-badger"
+	"github.com/ipfs/go-ipfs/core"
+	ipfs_log "github.com/ipfs/go-log"
+	"github.com/juju/fslock"
+	libp2p "github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/network"
+	peer "github.com/libp2p/go-libp2p-core/peer"
+	qrterminal "github.com/mdp/qrterminal/v3"
+	ma "github.com/multiformats/go-multiaddr"
+	"github.com/oklog/run"
+	"github.com/peterbourgon/ff"
+	"github.com/peterbourgon/ff/ffcli"
 	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
-
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
 	"moul.io/srand"
 )
 
@@ -62,53 +59,82 @@ import (
 const ResolveTimeout = time.Second * 10
 
 // Default ipfs bootstrap & rendezvous point server
-var DevRendezVousPoint = config.BertyDev.RendezVousPeer
-var DefaultBootstrap = config.BertyDev.Bootstrap
-var DefaultMCBind = config.BertyDev.DefaultMCBind
+var (
+	DevRendezVousPoint = config.BertyDev.RendezVousPeer
+	DefaultBootstrap   = config.BertyDev.Bootstrap
+	DefaultMCBind      = config.BertyDev.DefaultMCBind
+)
 
 func main() {
 	log.SetFlags(0)
 
 	var (
-		logger            *zap.Logger
-		globalFlags       = flag.NewFlagSet("berty", flag.ExitOnError)
-		globalDebug       = globalFlags.Bool("debug", false, "berty debug mode")
-		globalLibp2pDebug = globalFlags.Bool("debug-p2p", false, "libp2p debug mode")
-		globalOrbitDebug  = globalFlags.Bool("debug-odb", false, "orbitdb debug mode")
-		globalLogToFile   = globalFlags.String("logfile", "", "if specified, will log everything in JSON into a file and nothing on stderr")
-		globalTracer      = globalFlags.String("tracer", "", "specify \"stdout\" to output tracing on stdout or <hostname:port> to trace on jaeger")
+		globalDebug       bool
+		globalLibp2pDebug bool
+		globalOrbitDebug  bool
+		globalLogToFile   string
+		globalTracer      string
 
-		bannerFlags = flag.NewFlagSet("banner", flag.ExitOnError)
-		bannerLight = bannerFlags.Bool("light", false, "light mode")
-
-		clientProtocolFlags     = flag.NewFlagSet("protocol client", flag.ExitOnError)
-		clientProtocolListeners = clientProtocolFlags.String("l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
-		clientProtocolPath      = clientProtocolFlags.String("d", cacheleveldown.InMemoryDirectory, "datastore base directory")
-		clientProtocolRDVP      = clientProtocolFlags.String("rdvp", DevRendezVousPoint, "rendezvous point maddr")
-		clientProtocolRDVPFroce = clientProtocolFlags.Bool("force-rdvp", false, "force connect to rendezvous point")
-
-		miniClientDemoFlags      = flag.NewFlagSet("mini demo client", flag.ExitOnError)
-		miniClientDemoGroup      = miniClientDemoFlags.String("g", "", "group to join, leave empty to create a new group")
-		miniClientDemoPath       = miniClientDemoFlags.String("d", cacheleveldown.InMemoryDirectory, "datastore base directory")
-		miniClientDemoPort       = miniClientDemoFlags.Uint("p", 0, "default IPFS listen port")
-		miniClientDemoRemoteAddr = miniClientDemoFlags.String("r", "", "remote berty daemon")
-		miniClientDemoRDVP       = miniClientDemoFlags.String("rdvp", DevRendezVousPoint, "rendezvous point maddr")
+		bannerLight           bool
+		daemonListeners       string
+		remoteDaemonAddr      string
+		datastorePath         string
+		rdvpMaddr             string
+		rdvpForce             bool
+		miniPort              uint
+		shareInviteOnDiscord  bool
+		shareInviteReset      bool
+		shareInviteNoTerminal bool
+		miniGroup             string
+		displayName           string
 	)
+
+	var (
+		logger *zap.Logger
+
+		globalFlags      = flag.NewFlagSet("berty", flag.ExitOnError)
+		bannerFlags      = flag.NewFlagSet("banner", flag.ExitOnError)
+		devFlags         = flag.NewFlagSet("dev", flag.ExitOnError)
+		daemonFlags      = flag.NewFlagSet("protocol client", flag.ExitOnError)
+		miniFlags        = flag.NewFlagSet("mini demo client", flag.ExitOnError)
+		shareInviteFlags = flag.NewFlagSet("dev share-invite", flag.ExitOnError)
+	)
+
+	globalFlags.BoolVar(&globalDebug, "debug", false, "berty debug mode")
+	globalFlags.BoolVar(&globalLibp2pDebug, "debug-p2p", false, "libp2p debug mode")
+	globalFlags.BoolVar(&globalOrbitDebug, "debug-odb", false, "orbitdb debug mode")
+	globalFlags.StringVar(&globalLogToFile, "logfile", "", "if specified, will log everything in JSON into a file and nothing on stderr")
+	globalFlags.StringVar(&globalTracer, "tracer", "", "specify \"stdout\" to output tracing on stdout or <hostname:port> to trace on jaeger")
+	bannerFlags.BoolVar(&bannerLight, "light", false, "light mode")
+	daemonFlags.StringVar(&daemonListeners, "l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
+	daemonFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
+	daemonFlags.StringVar(&rdvpMaddr, "rdvp", DevRendezVousPoint, "rendezvous point maddr")
+	daemonFlags.BoolVar(&rdvpForce, "force-rdvp", false, "force connect to rendezvous point")
+	miniFlags.StringVar(&miniGroup, "g", "", "group to join, leave empty to create a new group")
+	miniFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
+	miniFlags.UintVar(&miniPort, "p", 0, "default IPFS listen port")
+	miniFlags.StringVar(&remoteDaemonAddr, "r", "", "remote berty daemon")
+	miniFlags.StringVar(&rdvpMaddr, "rdvp", DevRendezVousPoint, "rendezvous point maddr")
+	shareInviteFlags.BoolVar(&shareInviteOnDiscord, "discord", false, "post qrcode on Discord")
+	shareInviteFlags.BoolVar(&shareInviteReset, "reset", false, "reset contact reference")
+	shareInviteFlags.BoolVar(&shareInviteNoTerminal, "no-term", false, "do not print the QR code in terminal")
+	shareInviteFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
+	shareInviteFlags.StringVar(&displayName, "display-name", safeDefaultDisplayName(), "display name")
 
 	type cleanupFunc func()
 	globalPreRun := func(ctx context.Context) cleanupFunc {
 		mrand.Seed(srand.Secure())
-		isDebugEnabled := *globalDebug || *globalOrbitDebug || *globalLibp2pDebug
+		isDebugEnabled := globalDebug || globalOrbitDebug || globalLibp2pDebug
 
-		flush := tracer.InitTracer(*globalTracer, "berty")
+		flush := tracer.InitTracer(globalTracer, "berty")
 		ctx, span := tracer.NewNamedSpan(ctx, "pre-run")
 		defer span.End()
 
 		// setup zap config
 		var config zap.Config
-		if *globalLogToFile != "" {
+		if globalLogToFile != "" {
 			config = zap.NewProductionConfig()
-			config.OutputPaths = []string{*globalLogToFile}
+			config.OutputPaths = []string{globalLogToFile}
 		} else {
 			config = zap.NewDevelopmentConfig()
 			config.DisableStacktrace = true
@@ -126,11 +152,11 @@ func main() {
 			log.Fatalf("unable to build log config: %s", err)
 		}
 
-		if *globalLibp2pDebug {
+		if globalLibp2pDebug {
 			ipfs_log.SetDebugLogging()
 		}
 
-		if *globalOrbitDebug {
+		if globalOrbitDebug {
 			zap.ReplaceGlobals(logger)
 		}
 
@@ -138,14 +164,15 @@ func main() {
 	}
 
 	banner := &ffcli.Command{
-		Name:    "banner",
-		Usage:   "banner",
-		FlagSet: bannerFlags,
+		Name:      "banner",
+		Usage:     "banner",
+		FlagSet:   bannerFlags,
+		ShortHelp: "print the ascii Berty banner",
 		Exec: func(args []string) error {
 			cleanup := globalPreRun(context.Background())
 			defer cleanup()
 
-			if *bannerLight {
+			if bannerLight {
 				fmt.Println(banner.QOTD())
 			} else {
 				fmt.Println(banner.OfTheDay())
@@ -155,8 +182,9 @@ func main() {
 	}
 
 	version := &ffcli.Command{
-		Name:  "version",
-		Usage: "version",
+		Name:      "version",
+		Usage:     "version",
+		ShortHelp: "print software version",
 		Exec: func(args []string) error {
 			fmt.Println("dev")
 			return nil
@@ -164,15 +192,16 @@ func main() {
 	}
 
 	mini := &ffcli.Command{
-		Name:    "mini",
-		Usage:   "mini",
-		FlagSet: miniClientDemoFlags,
+		Name:      "mini",
+		ShortHelp: "start a terminal-based mini berty client (not fully compatible with the app)",
+		Usage:     "mini",
+		FlagSet:   miniFlags,
 		Exec: func(args []string) error {
 			ctx := context.Background()
 			cleanup := globalPreRun(ctx)
 			defer cleanup()
 
-			rootDS, dsLock, err := getRootDatastore(ctx, miniClientDemoPath)
+			rootDS, dsLock, err := getRootDatastore(ctx, datastorePath)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
@@ -182,40 +211,20 @@ func main() {
 			}
 			defer rootDS.Close()
 
-			remoteAddr := ""
-			if miniClientDemoRemoteAddr != nil && *miniClientDemoRemoteAddr != "" {
-				remoteAddr = *miniClientDemoRemoteAddr
-			}
-
-			rdvpeer := &peer.AddrInfo{}
-			if *miniClientDemoRDVP != "" {
-				resoveCtx, cancel := context.WithTimeout(ctx, ResolveTimeout)
-				defer cancel()
-
-				rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(resoveCtx, DevRendezVousPoint)
-				if err != nil {
-					return errcode.TODO.Wrap(err)
-				}
-
-				fds := make([]zapcore.Field, len(rdvpeer.Addrs))
-				for i, maddr := range rdvpeer.Addrs {
-					key := fmt.Sprintf("#%d", i)
-					fds[i] = zap.String(key, maddr.String())
-				}
-				logger.Info("rdvp peer resolved addrs", fds...)
-			} else {
-				logger.Warn("no rendezvous peer set")
+			rdvpeer, err := parseRdvpMaddr(ctx, rdvpMaddr, logger)
+			if err != nil {
+				return errcode.TODO.Wrap(err)
 			}
 
 			l := zap.NewNop()
-			if *globalLogToFile != "" {
+			if globalLogToFile != "" {
 				l = logger
 			}
 
 			mini.Main(ctx, &mini.Opts{
-				RemoteAddr:      remoteAddr,
-				GroupInvitation: *miniClientDemoGroup,
-				Port:            *miniClientDemoPort,
+				RemoteAddr:      remoteDaemonAddr,
+				GroupInvitation: miniGroup,
+				Port:            miniPort,
 				RootDS:          rootDS,
 				Logger:          l,
 				Bootstrap:       DefaultBootstrap,
@@ -226,9 +235,10 @@ func main() {
 	}
 
 	daemon := &ffcli.Command{
-		Name:    "daemon",
-		Usage:   "berty daemon",
-		FlagSet: clientProtocolFlags,
+		Name:      "daemon",
+		Usage:     "berty daemon",
+		FlagSet:   daemonFlags,
+		ShortHelp: "start a full Berty instance",
 		Exec: func(args []string) error {
 			ctx := context.Background()
 			cleanup := globalPreRun(ctx)
@@ -247,19 +257,15 @@ func main() {
 
 				bopts.BootstrapAddrs = DefaultBootstrap
 
-				var rdvpeer *peer.AddrInfo
 				var crouting <-chan *ipfsutil.RoutingOut
 
-				if *clientProtocolRDVP != "" {
-					resoveCtx, cancel := context.WithTimeout(ctx, ResolveTimeout)
-					defer cancel()
-
-					if rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(resoveCtx, DevRendezVousPoint); err != nil {
-						return errors.New("failed to parse rdvp multiaddr: " + *clientProtocolRDVP)
-					} else { // should be a valid rendezvous peer
-						bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, *clientProtocolRDVP)
-						bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
-					}
+				rdvpeer, err := parseRdvpMaddr(ctx, rdvpMaddr, logger)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+				if rdvpeer != nil {
+					bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, rdvpMaddr)
+					bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
 				}
 
 				var node *core.IpfsNode
@@ -273,7 +279,7 @@ func main() {
 					routingOut = <-crouting
 					defer routingOut.IpfsDHT.Close()
 
-					if *clientProtocolRDVPFroce {
+					if rdvpForce {
 						go func() {
 							// monitor rdv peer
 							monitorPeers(logger, node.PeerHost, rdvpeer.ID)
@@ -288,15 +294,13 @@ func main() {
 							time.Sleep(time.Second)
 						}
 					}
-
 				}
 			}
 
 			// protocol
 			var protocol bertyprotocol.Service
 			{
-
-				rootDS, dsLock, err := getRootDatastore(ctx, clientProtocolPath)
+				rootDS, dsLock, err := getRootDatastore(ctx, datastorePath)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
@@ -366,7 +370,7 @@ func main() {
 				bertyprotocol.RegisterProtocolServiceServer(grpcServer, protocol)
 
 				// setup listeners
-				addrs := strings.Split(*clientProtocolListeners, ",")
+				addrs := strings.Split(daemonListeners, ",")
 				for _, addr := range addrs {
 					maddr, err := parseAddr(addr)
 					if err != nil {
@@ -400,8 +404,8 @@ func main() {
 	}
 
 	groupinit := &ffcli.Command{
-		Name:  "groupinit",
-		Usage: "berty groupinit - initialize a new multi member group",
+		Name:      "groupinit",
+		ShortHelp: "initialize a new multi-member group",
 		Exec: func(args []string) error {
 			g, _, err := bertyprotocol.NewGroupMultiMember()
 			if err != nil {
@@ -418,11 +422,107 @@ func main() {
 		},
 	}
 
+	shareInvite := &ffcli.Command{
+		Name:      "share-invite",
+		ShortHelp: "share invite link to Discord dedicated channel",
+		FlagSet:   shareInviteFlags,
+		Exec: func(args []string) error {
+			ctx := context.Background()
+			cleanup := globalPreRun(ctx)
+			defer cleanup()
+
+			// protocol
+			var protocol bertyprotocol.Service
+			{
+				rootDS, dsLock, err := getRootDatastore(ctx, datastorePath)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+
+				if dsLock != nil {
+					defer func() { _ = dsLock.Unlock() }()
+				}
+				defer rootDS.Close()
+
+				deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
+
+				// initialize new protocol client
+				opts := bertyprotocol.Opts{
+					Logger:         logger.Named("bertyprotocol"),
+					RootContext:    ctx,
+					RootDatastore:  rootDS,
+					DeviceKeystore: bertyprotocol.NewDeviceKeystore(deviceDS),
+				}
+				protocol, err = bertyprotocol.New(opts)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+
+				defer protocol.Close()
+			}
+
+			config, err := protocol.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+			if err != nil {
+				return errcode.TODO.Wrap(err)
+			}
+
+			_, err = protocol.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
+			if err != nil {
+				return errcode.TODO.Wrap(err)
+			}
+
+			if shareInviteReset {
+				logger.Info("reset contact reference")
+				_, err = protocol.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+			}
+
+			res, err := protocol.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
+			if err != nil {
+				return errcode.TODO.Wrap(err)
+			}
+
+			qrData := fmt.Sprintf(
+				"%s %s %s",
+				base64.StdEncoding.EncodeToString([]byte(displayName)),
+				base64.StdEncoding.EncodeToString(res.PublicRendezvousSeed),
+				base64.StdEncoding.EncodeToString(config.AccountPK),
+			)
+			deeplink := fmt.Sprintf("%s", url.PathEscape(qrData))
+			if !shareInviteNoTerminal {
+				qrterminal.Generate(qrData, qrterminal.L, os.Stdout)
+			}
+			fmt.Printf("deeplink: %s\n", deeplink)
+			if shareInviteOnDiscord {
+				err = discordlog.ShareQRLink(displayName, discordlog.QRCodeRoom, "Add me on Berty!", qrData, deeplink)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+			}
+			return nil
+		},
+	}
+
+	dev := &ffcli.Command{
+		Name:        "dev",
+		Usage:       "berty [global flags] dev <subcommand> [flags] [args...]",
+		ShortHelp:   "developer helpers and tools",
+		FlagSet:     devFlags,
+		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		Subcommands: []*ffcli.Command{groupinit, shareInvite},
+		Exec: func([]string) error {
+			devFlags.Usage()
+			return flag.ErrHelp
+		},
+	}
+
 	root := &ffcli.Command{
 		Usage:       "berty [global flags] <subcommand> [flags] [args...]",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
-		Subcommands: []*ffcli.Command{daemon, banner, version, mini, groupinit},
+		Subcommands: []*ffcli.Command{daemon, mini, banner, version, dev},
 		Exec: func([]string) error {
 			globalFlags.Usage()
 			return flag.ErrHelp
@@ -434,14 +534,14 @@ func main() {
 	}
 }
 
-func getRootDatastore(ctx context.Context, optPath *string) (datastore.Batching, *fslock.Lock, error) {
+func getRootDatastore(ctx context.Context, optPath string) (datastore.Batching, *fslock.Lock, error) {
 	var (
 		baseDS datastore.Batching = sync_ds.MutexWrap(datastore.NewMapDatastore())
 		lock   *fslock.Lock
 	)
 
-	if optPath != nil && *optPath != cacheleveldown.InMemoryDirectory {
-		basePath := path.Join(*optPath, "berty")
+	if optPath != "" && optPath != cacheleveldown.InMemoryDirectory {
+		basePath := path.Join(optPath, "berty")
 		_, err := os.Stat(basePath)
 		if err != nil {
 			if !os.IsNotExist(err) {
@@ -452,7 +552,7 @@ func getRootDatastore(ctx context.Context, optPath *string) (datastore.Batching,
 			}
 		}
 
-		lock = fslock.New(path.Join(*optPath, "lock"))
+		lock = fslock.New(path.Join(optPath, "lock"))
 		err = lock.TryLock()
 		if err != nil {
 			return nil, nil, err
@@ -508,4 +608,43 @@ func monitorPeers(l *zap.Logger, h host.Host, peers ...peer.ID) error {
 			}
 		}
 	}
+}
+
+func parseRdvpMaddr(ctx context.Context, rdvpMaddr string, logger *zap.Logger) (*peer.AddrInfo, error) {
+	if rdvpMaddr == "" {
+		logger.Debug("no rendezvous peer set")
+		return nil, nil
+	}
+
+	rdvpeer := &peer.AddrInfo{}
+	resoveCtx, cancel := context.WithTimeout(ctx, ResolveTimeout)
+	defer cancel()
+
+	rdvpeer, err := ipfsutil.ParseAndResolveIpfsAddr(resoveCtx, rdvpMaddr)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	fds := make([]zapcore.Field, len(rdvpeer.Addrs))
+	for i, maddr := range rdvpeer.Addrs {
+		key := fmt.Sprintf("#%d", i)
+		fds[i] = zap.String(key, maddr.String())
+	}
+	logger.Debug("rdvp peer resolved addrs", fds...)
+	return rdvpeer, nil
+}
+
+func safeDefaultDisplayName() string {
+	var name string
+	current, err := user.Current()
+	if err == nil {
+		name = current.Username
+	}
+	if name == "" {
+		name = os.Getenv("USER")
+	}
+	if name == "" {
+		name = "Anonymous4242"
+	}
+	return fmt.Sprintf("%s (cli)", name)
 }
