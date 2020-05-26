@@ -14,7 +14,6 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	"github.com/juju/fslock"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
@@ -46,8 +45,7 @@ type Protocol struct {
 	service bertyprotocol.Service
 
 	// protocol datastore
-	ds     datastore.Batching
-	dslock *fslock.Lock
+	ds datastore.Batching
 
 	// ipfs repo
 	repo ipfs_repo.Repo
@@ -155,11 +153,10 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 	// load datastore
 	var rootds datastore.Batching
-	var rootdslock *fslock.Lock
 	{
 		var err error
 
-		if rootds, rootdslock, err = getRootDatastore(config.rootDirectory); err != nil {
+		if rootds, err = getRootDatastore(config.rootDirectory); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 
@@ -242,8 +239,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 		node:    node,
 		dht:     dht,
 
-		ds:     rootds,
-		dslock: rootdslock,
+		ds: rootds,
 	}, nil
 }
 
@@ -276,34 +272,24 @@ func (p *Protocol) Close() (err error) {
 		p.ds.Close()
 	}
 
-	if p.dslock != nil {
-		p.dslock.Unlock()
-	}
-
 	return
 }
 
-func getRootDatastore(path string) (datastore.Batching, *fslock.Lock, error) {
+func getRootDatastore(path string) (datastore.Batching, error) {
 	if path == "" || path == ":memory:" {
 		baseds := ds_sync.MutexWrap(datastore.NewMapDatastore())
-		return baseds, nil, nil
+		return baseds, nil
 	}
 
 	basepath := filepath.Join(path, "store")
 	_, err := os.Stat(basepath)
 	if err != nil {
 		if !os.IsNotExist(err) {
-			return nil, nil, errors.Wrap(err, "unable get directory")
+			return nil, errors.Wrap(err, "unable get directory")
 		}
 		if err := os.MkdirAll(basepath, 0700); err != nil {
-			return nil, nil, errors.Wrap(err, "unable to create datastore directory")
+			return nil, errors.Wrap(err, "unable to create datastore directory")
 		}
-	}
-
-	lock := fslock.New(filepath.Join(basepath, "lock"))
-	err = lock.TryLock()
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "unable to get lock file")
 	}
 
 	baseds, err := ipfs_badger.NewDatastore(basepath, &ipfs_badger.Options{
@@ -311,10 +297,10 @@ func getRootDatastore(path string) (datastore.Batching, *fslock.Lock, error) {
 	})
 
 	if err != nil {
-		return nil, nil, errors.Wrapf(err, "failed to load datastore on: `%s`", basepath)
+		return nil, errors.Wrapf(err, "failed to load datastore on: `%s`", basepath)
 	}
 
-	return baseds, lock, nil
+	return baseds, nil
 }
 
 func getOrbitDBDirectory(path string) (string, error) {
