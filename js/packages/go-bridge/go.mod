@@ -1,4 +1,4 @@
-go 1.13
+go 1.14
 
 module berty.tech/berty/v2/js/packages/go-bridge
 

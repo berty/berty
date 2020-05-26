@@ -60,7 +60,7 @@ steps:
       queue: "bigcores"
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/build-go:v3
+          image: bertytech/build-go:v4
           propagate-uid-gid: true
           workdir: /go/src/berty.tech/berty
           propagate-environment: true
@@ -107,12 +107,18 @@ steps:
               "HOME=/home/buildkite-agent",
               "GRADLE_USER_HOME=/home/buildkite-agent/.gradle",
             ]
-          volumes: ["~:/home/buildkite-agent"]
+          volumes:
+            [
+              "/usr/local/go:/usr/local/go",
+              "~:/home/buildkite-agent",
+            ]
     agents:
       queue: "bigcores"
     commands:
       - set -x
       - export PATH=$$PATH:/home/buildkite-agent/go/bin
+      - export PATH=/usr/local/go/bin:$$PATH
+      - go version
       - go get golang.org/x/mobile/cmd/gomobile
       - gomobile init
       - cd js
@@ -218,7 +224,7 @@ steps:
       queue: "bigcores"
     plugins:
       - n0izn0iz/docker#v3.5.4:
-          image: bertytech/bazel:2.0.0-buster-r0
+          image: bertytech/bazel:3.1.0-buster-r0
           propagate-uid-gid: true
           workdir: /go/src/berty.tech/berty
           environment:
