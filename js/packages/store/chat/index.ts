@@ -48,10 +48,11 @@ export function* rootSaga() {
 						call(message.orchestrator),
 					])
 				})) as Task
-				yield take('CLEAR_STORE')
-				console.log('Store cleared, Restarting root saga')
+
+				yield take(['RESTART_ROOT_SAGA', 'CLEAR_STORE'])
 				yield cancel(rootTask)
-				yield join(rootTask)
+				// I wish we could `join(rootTask)` here but it hangs
+				console.log('Restarting root task')
 			} catch (error) {
 				console.error(error)
 				console.warn('Chat orchestrator crashed, retrying')

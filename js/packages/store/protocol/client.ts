@@ -2,7 +2,7 @@ import { WebsocketTransport } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeOpts } from '@berty-tech/go-bridge'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, put, putResolve, call, delay, take, fork, join } from 'redux-saga/effects'
+import { all, put, putResolve, call, delay, take, fork, join, takeEvery } from 'redux-saga/effects'
 import { Task } from 'redux-saga'
 import * as gen from './client.gen'
 import * as api from '@berty-tech/api'
@@ -186,7 +186,6 @@ export const decodeMetadataEvent = (
 		console.warn("Don't know how to decode", eventName)
 		return undefined
 	}
-	console.log('response.event', response.event)
 	const decodedEvent = event.decode(response.event)
 	return decodedEvent
 }
@@ -261,6 +260,7 @@ export const defaultBridgeOpts = {
 	grpcListeners: ['/ip4/127.0.0.1/tcp/0/grpcws'],
 	logLevel: 'info',
 	persistance: true,
+	tracing: true,
 }
 
 export const transactions: Transactions = {
@@ -296,13 +296,17 @@ export const transactions: Transactions = {
 
 		const service = getService(id)
 
-		console.log('getting conf')
-
 		// try to connect repeatedly since startBridge can return before the bridge is ready to serve
-		const reply = yield* unaryChan(service.instanceGetConfiguration)
-		console.log('reply', reply)
+		let reply
+		while (true) {
+			try {
+				reply = yield* unaryChan(service.instanceGetConfiguration)
+				break
+			} catch (e) {
+				console.warn(e)
+			}
+		}
 		const { accountPk, devicePk, accountGroupPk } = reply
-		console.log('accountPk', typeof accountPk, accountPk)
 		if (!(accountPk && devicePk && accountGroupPk)) {
 			throw new Error('Invalid instance data')
 		}
@@ -319,12 +323,12 @@ export const transactions: Transactions = {
 		delete services[id]
 	},
 	restart: function* (payload) {
-		yield* transactions.delete({ id: payload.id })
+		yield call(transactions.delete, { id: payload.id })
 		yield call(GoBridge.stopProtocol)
-		yield* transactions.start(payload)
+		yield put({ type: 'RESTART_ROOT_SAGA' })
 	},
 	delete: function* ({ id }) {
-		yield* transactions.deleteService({ id })
+		yield call(transactions.deleteService, { id })
 		yield put(events.deleted({ aggregateId: id }))
 	},
 	contactRequestReference: function* (payload) {
@@ -456,5 +460,12 @@ export const transactions: Transactions = {
 }
 
 export function* orchestrator() {
-	yield all([...makeDefaultCommandsSagas(commands, transactions)])
+	yield all([
+		...makeDefaultCommandsSagas(commands, transactions),
+		takeEvery('settings/main/event/nodeConfigUpdated', function* (
+			action: PayloadAction<BertyNodeConfig & { id: string }>,
+		) {
+			yield call(transactions.restart, action.payload)
+		}),
+	])
 }

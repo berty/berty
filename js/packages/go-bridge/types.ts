@@ -10,6 +10,7 @@ export type GoBridgeOpts = {
 	grpcListeners?: string[]
 	persistance?: boolean
 	logLevel?: GoLogLevel
+	tracing?: boolean
 }
 
 export interface GoBridgeInterface {
