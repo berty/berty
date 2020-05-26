@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Dimensions, TextInput, Button, TouchableOpacity } from 'react-native'
+import { View, Dimensions, TextInput, Button, TouchableOpacity, Vibration } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import QRCodeScanner from 'react-native-qrcode-scanner'
@@ -51,6 +51,7 @@ const ScanBody: React.FC<{}> = () => {
 							screen: 'SendContactRequest',
 							params: { qrData: data },
 						})
+						Vibration.vibrate(1000)
 					}
 				}}
 				cameraProps={{ captureAudio: false }}
@@ -92,6 +93,7 @@ const DevReferenceInput = () => {
 						? { uriData: ref.substr(prefix.length) }
 						: { qrData: ref }
 					navigation.navigate('Modals', { screen: 'SendContactRequest', params })
+					Vibration.vibrate(1000)
 				}}
 			/>
 		</>

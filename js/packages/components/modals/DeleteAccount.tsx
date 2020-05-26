@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native'
+import {
+	View,
+	StyleSheet,
+	TouchableOpacity,
+	TextInput,
+	ActivityIndicator,
+	Vibration,
+} from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Routes } from '@berty-tech/berty-navigation'
@@ -106,6 +113,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 	useEffect(() => {
 		if (prevAccount && !account) {
 			navigation.reset({ routes: [{ name: Routes.Onboarding.GetStarted }] })
+			Vibration.vibrate([1000, 1000, 2000, 1000, 1000])
 		}
 	})
 	useEffect(() => {
