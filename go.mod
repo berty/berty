@@ -17,6 +17,7 @@ require (
 	github.com/ipfs/go-datastore v0.4.4
 	github.com/ipfs/go-ds-badger v0.2.4
 	github.com/ipfs/go-ipfs v0.5.0-rc1.0.20200409041533-6cb3ca41da70
+	github.com/ipfs/go-ipfs-cmds v0.2.2
 	github.com/ipfs/go-ipfs-config v0.4.0
 	github.com/ipfs/go-ipfs-keystore v0.0.1
 	github.com/ipfs/go-log v1.0.3
