@@ -20,7 +20,7 @@ export const SendContactRequest: React.FC<{
 		content = (
 			<InvalidScan
 				title={'App not ready!'}
-				error={'Please finish the onboarding before adding contacts'}
+				error={'Please finish the onboarding before adding contacts.'}
 			/>
 		)
 	} else {
@@ -35,13 +35,13 @@ export const SendContactRequest: React.FC<{
 			}
 			const parts = decodedData.split(' ')
 			if (parts.length !== 3) {
-				throw new Error('Corrupted deep link')
+				throw new Error('Corrupted deep link.')
 			}
 			const [b64Name, rdvSeed, pubKey] = parts
 			if (client.accountPk === pubKey) {
-				throw new Error("Can't add self")
+				throw new Error("Can't send a contact request to yourself.")
 			} else if (contacts.find((contact) => contact.publicKey === pubKey)) {
-				throw new Error('Contact already added')
+				throw new Error('Contact already added.')
 			} else {
 				content = (
 					<AddThisContact

@@ -378,7 +378,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 					/>
 				</View>
 				<View style={[margin.left.medium, flex.tiny, row.item.justify]}>
-					<TextInput placeholder='Name of the group' onChangeText={onGroupNameChange} />
+					<TextInput placeholder='Group name' onChangeText={onGroupNameChange} />
 				</View>
 			</View>
 			<TouchableOpacity
@@ -420,7 +420,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 				</View>
 				<View style={[margin.top.medium, _stylesCreateGroup.groupInfoAboutGroupsItems]}>
 					<ButtonSettingItem
-						value='Anyone in the grup can rename the group or invite new members'
+						value='Anyone in the group can rename it or invite new members'
 						color='rgba(43,46,77,0.8)'
 						iconColor={color.blue}
 					/>
@@ -430,18 +430,18 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 						iconColor={color.blue}
 					/>
 					<ButtonSettingItem
-						value='You can leave the group'
+						value='You can leave this group'
 						color='rgba(43,46,77,0.8)'
 						iconColor={color.blue}
 					/>
 					<ButtonSettingItem
-						value='You cannot delete the group'
+						value='You cannot delete this group'
 						color='rgba(43,46,77,0.8)'
 						icon='close-circle'
 						iconColor={color.red}
 					/>
 					<ButtonSettingItem
-						value='You cannot remove a member from group'
+						value='You cannot remove a member from this group'
 						color='rgba(43,46,77,0.8)'
 						icon='close-circle'
 						iconColor={color.red}
@@ -504,7 +504,7 @@ export const CreateGroup3: React.FC<{
 					<NewGroup2 members={members} onRemoveMember={onRemoveMember} />
 				</SDTSModalComponent>
 			</SafeAreaView>
-			<FooterCreateGroup title='CREATE THE GROUP' action={createGroup} />
+			<FooterCreateGroup title='CREATE A GROUP' action={createGroup} />
 		</Layout>
 	)
 }

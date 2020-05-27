@@ -73,7 +73,7 @@ const AddThisContact: React.FC<{ name: string; rdvSeed: string; pubKey: string }
 					<TabBar
 						tabs={[
 							{ name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' },
-							{ name: 'Infos', icon: 'info-outline', buttonDisabled: true },
+							{ name: 'Info', icon: 'info-outline', buttonDisabled: true },
 							{
 								name: 'Devices',
 								icon: 'smartphone',
