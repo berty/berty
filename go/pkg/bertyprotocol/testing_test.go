@@ -4,17 +4,17 @@ import (
 	"context"
 	"testing"
 
+	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/zap"
 )
 
 func TestTestingClient_impl(t *testing.T) {
 	client, cleanup := bertyprotocol.TestingService(t, bertyprotocol.Opts{
-		Logger:          zap.NewNop(),
+		Logger:          testutil.Logger(t),
 		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(keystore.NewMemKeystore()),
 		MessageKeystore: bertyprotocol.NewInMemMessageKeystore(),
 	})

@@ -1,6 +1,8 @@
 package bertyprotocol
 
 import (
+	"context"
+
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"google.golang.org/grpc"
 )
@@ -37,7 +39,11 @@ func NewClientFromServer(s *grpc.Server, svc Service, opts ...grpc.DialOption) (
 	RegisterProtocolServiceServer(s, svc)
 
 	go func() {
-		_ = s.Serve(pl)
+		err := s.Serve(pl)
+		if err != nil && err != context.Canceled {
+			panic(err)
+		}
+
 	}()
 
 	c := client{ProtocolServiceClient: NewProtocolServiceClient(cc), l: pl}

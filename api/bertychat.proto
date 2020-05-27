@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package berty.chat;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+//import "bertytypes.proto";
+
+option go_package = "berty.tech/berty/go/pkg/bertychat";
+
+// ChatService is the top-level API that uses the Berty Protocol to implement the Berty Chat specific logic.
+// Today, most of the Berty Chat logic is implemented directly in the application (see the /js folder of this repo).
+service ChatService {
+  // InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.
+  rpc InstanceShareableBertyID(InstanceShareableBertyID.Request) returns (InstanceShareableBertyID.Reply);
+
+  // DevShareInstanceBertyID shares your Berty ID on a dev channel.
+  // TODO: remove for public.
+  rpc DevShareInstanceBertyID(DevShareInstanceBertyID.Request) returns (DevShareInstanceBertyID.Reply);
+}
+
+message InstanceShareableBertyID {
+  message Request {
+    // reset will regenerate a new link
+    bool reset = 1;
+
+    string display_name = 2;
+  }
+  message Reply {
+    string berty_id = 1 [(gogoproto.customname) = "BertyID"];
+    string deep_link = 2 [(gogoproto.customname) = "DeepLink"];
+    string html_url = 3 [(gogoproto.customname) = "HTMLURL"];
+    string display_name = 4;
+  }
+}
+
+message DevShareInstanceBertyID {
+  message Request {
+    // reset will regenerate a new link
+    bool reset = 1;
+
+    string display_name = 2;
+  }
+  message Reply {}
+}

@@ -2386,6 +2386,143 @@ export namespace berty {
             public toJSON(): { [k: string]: any };
         }
     }
+
+    namespace chat {
+
+        class ChatService extends $protobuf.rpc.Service {
+
+            public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): ChatService;
+            public instanceShareableBertyID(request: berty.chat.InstanceShareableBertyID.IRequest, callback: berty.chat.ChatService.InstanceShareableBertyIDCallback): void;
+            public instanceShareableBertyID(request: berty.chat.InstanceShareableBertyID.IRequest): Promise<berty.chat.InstanceShareableBertyID.Reply>;
+            public devShareInstanceBertyID(request: berty.chat.DevShareInstanceBertyID.IRequest, callback: berty.chat.ChatService.DevShareInstanceBertyIDCallback): void;
+            public devShareInstanceBertyID(request: berty.chat.DevShareInstanceBertyID.IRequest): Promise<berty.chat.DevShareInstanceBertyID.Reply>;
+        }
+
+        namespace ChatService {
+
+            type InstanceShareableBertyIDCallback = (error: (Error|null), response?: berty.chat.InstanceShareableBertyID.Reply) => void;
+
+            type DevShareInstanceBertyIDCallback = (error: (Error|null), response?: berty.chat.DevShareInstanceBertyID.Reply) => void;
+        }
+
+        interface IInstanceShareableBertyID {
+        }
+
+        class InstanceShareableBertyID implements IInstanceShareableBertyID {
+
+            public static create(properties?: berty.chat.IInstanceShareableBertyID): berty.chat.InstanceShareableBertyID;
+            public static encode(message: berty.chat.IInstanceShareableBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IInstanceShareableBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.InstanceShareableBertyID;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.InstanceShareableBertyID;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.chat.InstanceShareableBertyID;
+            public static toObject(message: berty.chat.InstanceShareableBertyID, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        namespace InstanceShareableBertyID {
+
+            interface IRequest {
+                reset?: (boolean|null);
+                displayName?: (string|null);
+            }
+
+            class Request implements IRequest {
+
+                public reset: boolean;
+                public displayName: string;
+                public static create(properties?: berty.chat.InstanceShareableBertyID.IRequest): berty.chat.InstanceShareableBertyID.Request;
+                public static encode(message: berty.chat.InstanceShareableBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.InstanceShareableBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.InstanceShareableBertyID.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.InstanceShareableBertyID.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.InstanceShareableBertyID.Request;
+                public static toObject(message: berty.chat.InstanceShareableBertyID.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                bertyId?: (string|null);
+                deepLink?: (string|null);
+                htmlUrl?: (string|null);
+                displayName?: (string|null);
+            }
+
+            class Reply implements IReply {
+
+                public bertyId: string;
+                public deepLink: string;
+                public htmlUrl: string;
+                public displayName: string;
+                public static create(properties?: berty.chat.InstanceShareableBertyID.IReply): berty.chat.InstanceShareableBertyID.Reply;
+                public static encode(message: berty.chat.InstanceShareableBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.InstanceShareableBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.InstanceShareableBertyID.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.InstanceShareableBertyID.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.InstanceShareableBertyID.Reply;
+                public static toObject(message: berty.chat.InstanceShareableBertyID.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+        }
+
+        interface IDevShareInstanceBertyID {
+        }
+
+        class DevShareInstanceBertyID implements IDevShareInstanceBertyID {
+
+            public static create(properties?: berty.chat.IDevShareInstanceBertyID): berty.chat.DevShareInstanceBertyID;
+            public static encode(message: berty.chat.IDevShareInstanceBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.chat.IDevShareInstanceBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.DevShareInstanceBertyID;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.DevShareInstanceBertyID;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.chat.DevShareInstanceBertyID;
+            public static toObject(message: berty.chat.DevShareInstanceBertyID, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        namespace DevShareInstanceBertyID {
+
+            interface IRequest {
+                reset?: (boolean|null);
+                displayName?: (string|null);
+            }
+
+            class Request implements IRequest {
+
+                public reset: boolean;
+                public displayName: string;
+                public static create(properties?: berty.chat.DevShareInstanceBertyID.IRequest): berty.chat.DevShareInstanceBertyID.Request;
+                public static encode(message: berty.chat.DevShareInstanceBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.DevShareInstanceBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.DevShareInstanceBertyID.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.DevShareInstanceBertyID.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.DevShareInstanceBertyID.Request;
+                public static toObject(message: berty.chat.DevShareInstanceBertyID.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.chat.DevShareInstanceBertyID.IReply): berty.chat.DevShareInstanceBertyID.Reply;
+                public static encode(message: berty.chat.DevShareInstanceBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.chat.DevShareInstanceBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.DevShareInstanceBertyID.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.DevShareInstanceBertyID.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.chat.DevShareInstanceBertyID.Reply;
+                public static toObject(message: berty.chat.DevShareInstanceBertyID.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+        }
+    }
 }
 
 export namespace google {

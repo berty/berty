@@ -7,20 +7,17 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tracer"
-	grpc "google.golang.org/grpc"
-
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
-
 	keystore "github.com/ipfs/go-ipfs-keystore"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
-
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
+	"go.uber.org/zap"
+	grpc "google.golang.org/grpc"
 )
 
 type TestingProtocol struct {
@@ -40,9 +37,10 @@ type TestingOpts struct {
 func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*TestingProtocol, func()) {
 	t.Helper()
 
-	if opts.Mocknet == nil {
-		opts.Mocknet = libp2p_mocknet.New(ctx)
+	if opts == nil {
+		opts = &TestingOpts{}
 	}
+	opts.applyDefaults(ctx)
 
 	ipfsopts := &ipfsutil.TestingAPIOpts{
 		Mocknet: opts.Mocknet,
@@ -102,16 +100,18 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 	return tp, cleanup
 }
 
-func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, n int) ([]*TestingProtocol, func()) {
-	t.Helper()
-
-	if opts.Mocknet == nil {
-		opts.Mocknet = libp2p_mocknet.New(ctx)
-	}
-
+func (opts *TestingOpts) applyDefaults(ctx context.Context) {
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
 	}
+	if opts.Mocknet == nil {
+		opts.Mocknet = libp2p_mocknet.New(ctx)
+	}
+}
+
+func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, n int) ([]*TestingProtocol, func()) {
+	t.Helper()
+	opts.applyDefaults(ctx)
 	logger := opts.Logger
 
 	rdvpeer, err := opts.Mocknet.GenPeer()

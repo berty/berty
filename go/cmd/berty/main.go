@@ -8,7 +8,6 @@ import (
 	"log"
 	mrand "math/rand"
 	"net"
-	"net/url"
 	"os"
 	"os/user"
 	"path"
@@ -17,14 +16,13 @@ import (
 
 	"berty.tech/berty/v2/go/cmd/berty/mini"
 	"berty.tech/berty/v2/go/internal/config"
-	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/banner"
+	"berty.tech/berty/v2/go/pkg/bertychat"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -83,7 +81,7 @@ func main() {
 		rdvpMaddr             string
 		rdvpForce             bool
 		miniPort              uint
-		shareInviteOnDiscord  bool
+		shareInviteOnDev      bool
 		shareInviteReset      bool
 		shareInviteNoTerminal bool
 		miniGroup             string
@@ -117,7 +115,7 @@ func main() {
 	miniFlags.UintVar(&miniPort, "p", 0, "default IPFS listen port")
 	miniFlags.StringVar(&remoteDaemonAddr, "r", "", "remote berty daemon")
 	miniFlags.StringVar(&rdvpMaddr, "rdvp", DevRendezVousPoint, "rendezvous point maddr")
-	shareInviteFlags.BoolVar(&shareInviteOnDiscord, "discord", false, "post qrcode on Discord")
+	shareInviteFlags.BoolVar(&shareInviteOnDev, "dev-channel", false, "post qrcode on dev channel")
 	shareInviteFlags.BoolVar(&shareInviteReset, "reset", false, "reset contact reference")
 	shareInviteFlags.BoolVar(&shareInviteNoTerminal, "no-term", false, "do not print the QR code in terminal")
 	shareInviteFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
@@ -208,11 +206,10 @@ func main() {
 			cleanup := globalPreRun(ctx)
 			defer cleanup()
 
-			rootDS, dsLock, err := getRootDatastore(ctx, datastorePath)
+			rootDS, dsLock, err := getRootDatastore(datastorePath)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
-
 			if dsLock != nil {
 				defer func() { _ = dsLock.Unlock() }()
 			}
@@ -289,7 +286,9 @@ func main() {
 					if rdvpForce {
 						go func() {
 							// monitor rdv peer
-							monitorPeers(logger, node.PeerHost, rdvpeer.ID)
+							if err := monitorPeers(logger, node.PeerHost, rdvpeer.ID); err != nil {
+								logger.Error("monitorPeers", zap.Error(err))
+							}
 						}()
 
 						for {
@@ -304,46 +303,12 @@ func main() {
 				}
 			}
 
-			// protocol
-			var protocol bertyprotocol.Service
-			{
-				rootDS, dsLock, err := getRootDatastore(ctx, datastorePath)
-				if err != nil {
-					return errcode.TODO.Wrap(err)
-				}
-
-				if dsLock != nil {
-					defer func() { _ = dsLock.Unlock() }()
-				}
-				defer rootDS.Close()
-
-				deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
-				mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
-
-				// initialize new protocol client
-				opts := bertyprotocol.Opts{
-					TinderDriver:    routingOut,
-					IpfsCoreAPI:     api,
-					Logger:          logger.Named("bertyprotocol"),
-					RootContext:     ctx,
-					RootDatastore:   rootDS,
-					MessageKeystore: mk,
-					DeviceKeystore:  bertyprotocol.NewDeviceKeystore(deviceDS),
-					OrbitCache:      bertyprotocol.NewOrbitDatastoreCache(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))),
-				}
-				protocol, err = bertyprotocol.New(opts)
-				if err != nil {
-					return errcode.TODO.Wrap(err)
-				}
-
-				defer protocol.Close()
-			}
-
 			// listeners for berty
 			var workers run.Group
+			var grpcServer *grpc.Server
 			{
 				// setup grpc server
-				grpcLogger := logger.Named("grpc.protocol")
+				grpcLogger := logger.Named("grpc")
 				// Define customfunc to handle panic
 				panicHandler := func(p interface{}) (err error) {
 					return status.Errorf(codes.Unknown, "panic recover: %v", p)
@@ -359,7 +324,7 @@ func main() {
 				tr := tracer.Tracer("grpc-server")
 				// setup grpc with zap
 				grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
-				grpcServer := grpc.NewServer(
+				grpcServer = grpc.NewServer(
 					grpc_middleware.WithUnaryServerChain(
 						grpc_recovery.UnaryServerInterceptor(recoverOpts...),
 						grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
@@ -373,8 +338,6 @@ func main() {
 						grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
 					),
 				)
-
-				bertyprotocol.RegisterProtocolServiceServer(grpcServer, protocol)
 
 				// setup listeners
 				addrs := strings.Split(daemonListeners, ",")
@@ -398,6 +361,52 @@ func main() {
 						l.Close()
 					})
 				}
+			}
+
+			// protocol
+			var protocol bertyprotocol.Service
+			{
+				rootDS, dsLock, err := getRootDatastore(datastorePath)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+				if dsLock != nil {
+					defer func() { _ = dsLock.Unlock() }()
+				}
+				defer rootDS.Close()
+
+				deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
+				mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
+
+				// initialize new protocol client
+				opts := bertyprotocol.Opts{
+					TinderDriver:    routingOut,
+					IpfsCoreAPI:     api,
+					Logger:          logger.Named("protocol"),
+					RootContext:     ctx,
+					RootDatastore:   rootDS,
+					MessageKeystore: mk,
+					DeviceKeystore:  bertyprotocol.NewDeviceKeystore(deviceDS),
+					OrbitCache:      bertyprotocol.NewOrbitDatastoreCache(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))),
+				}
+				protocol, err = bertyprotocol.New(opts)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+
+				bertyprotocol.RegisterProtocolServiceServer(grpcServer, protocol)
+
+				defer protocol.Close()
+			}
+
+			// chat
+			{
+				protocolClient, err := bertyprotocol.NewClient(protocol)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+				chat := bertychat.New(protocolClient, &bertychat.Opts{Logger: logger.Named("chat")})
+				bertychat.RegisterChatServiceServer(grpcServer, chat)
 			}
 
 			info, err := protocol.InstanceGetConfiguration(ctx, nil)
@@ -441,19 +450,15 @@ func main() {
 			// protocol
 			var protocol bertyprotocol.Service
 			{
-				rootDS, dsLock, err := getRootDatastore(ctx, datastorePath)
+				rootDS, dsLock, err := getRootDatastore(datastorePath)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
-
 				if dsLock != nil {
 					defer func() { _ = dsLock.Unlock() }()
 				}
 				defer rootDS.Close()
-
 				deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
-
-				// initialize new protocol client
 				opts := bertyprotocol.Opts{
 					Logger:         logger.Named("bertyprotocol"),
 					RootContext:    ctx,
@@ -464,46 +469,24 @@ func main() {
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
-
 				defer protocol.Close()
 			}
-
-			config, err := protocol.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+			protocolClient, err := bertyprotocol.NewClient(protocol)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
-
-			_, err = protocol.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
+			chat := bertychat.New(protocolClient, &bertychat.Opts{Logger: logger.Named("chat")})
+			ret, err := chat.InstanceShareableBertyID(ctx, &bertychat.InstanceShareableBertyID_Request{DisplayName: displayName})
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
-
-			if shareInviteReset {
-				logger.Info("reset contact reference")
-				_, err = protocol.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
-				if err != nil {
-					return errcode.TODO.Wrap(err)
-				}
-			}
-
-			res, err := protocol.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
-			if err != nil {
-				return errcode.TODO.Wrap(err)
-			}
-
-			qrData := fmt.Sprintf(
-				"%s %s %s",
-				base64.StdEncoding.EncodeToString([]byte(displayName)),
-				base64.StdEncoding.EncodeToString(res.PublicRendezvousSeed),
-				base64.StdEncoding.EncodeToString(config.AccountPK),
-			)
-			deeplink := fmt.Sprintf("%s", url.PathEscape(qrData))
 			if !shareInviteNoTerminal {
-				qrterminal.Generate(qrData, qrterminal.L, os.Stdout)
+				qrterminal.Generate(ret.BertyID, qrterminal.L, os.Stdout) // FIXME: show deeplink
 			}
-			fmt.Printf("deeplink: %s\n", deeplink)
-			if shareInviteOnDiscord {
-				err = discordlog.ShareQRLink(displayName, discordlog.QRCodeRoom, "Add me on Berty!", qrData, deeplink)
+			fmt.Printf("deeplink: %s\n", ret.DeepLink)
+			fmt.Printf("html url: %s\n", ret.HTMLURL)
+			if shareInviteOnDev {
+				_, err = chat.DevShareInstanceBertyID(ctx, &bertychat.DevShareInstanceBertyID_Request{DisplayName: displayName})
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
@@ -541,7 +524,7 @@ func main() {
 	}
 }
 
-func getRootDatastore(ctx context.Context, optPath string) (datastore.Batching, *fslock.Lock, error) {
+func getRootDatastore(optPath string) (datastore.Batching, *fslock.Lock, error) {
 	var (
 		baseDS datastore.Batching = sync_ds.MutexWrap(datastore.NewMapDatastore())
 		lock   *fslock.Lock
@@ -623,7 +606,6 @@ func parseRdvpMaddr(ctx context.Context, rdvpMaddr string, logger *zap.Logger) (
 		return nil, nil
 	}
 
-	rdvpeer := &peer.AddrInfo{}
 	resoveCtx, cancel := context.WithTimeout(ctx, ResolveTimeout)
 	defer cancel()
 
