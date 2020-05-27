@@ -76,6 +76,7 @@ func main() {
 		globalTracer      string
 
 		bannerLight           bool
+		bannerRandom          bool
 		daemonListeners       string
 		remoteDaemonAddr      string
 		datastorePath         string
@@ -106,6 +107,7 @@ func main() {
 	globalFlags.StringVar(&globalLogToFile, "logfile", "", "if specified, will log everything in JSON into a file and nothing on stderr")
 	globalFlags.StringVar(&globalTracer, "tracer", "", "specify \"stdout\" to output tracing on stdout or <hostname:port> to trace on jaeger")
 	bannerFlags.BoolVar(&bannerLight, "light", false, "light mode")
+	bannerFlags.BoolVar(&bannerRandom, "random", false, "pick a random quote")
 	daemonFlags.StringVar(&daemonListeners, "l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
 	daemonFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
 	daemonFlags.StringVar(&rdvpMaddr, "rdvp", DevRendezVousPoint, "rendezvous point maddr")
@@ -167,15 +169,20 @@ func main() {
 		Name:      "banner",
 		Usage:     "banner",
 		FlagSet:   bannerFlags,
-		ShortHelp: "print the ascii Berty banner",
+		ShortHelp: "print the ascii Berty banner of the day",
 		Exec: func(args []string) error {
 			cleanup := globalPreRun(context.Background())
 			defer cleanup()
 
+			quote := banner.QOTD()
+			if bannerRandom {
+				quote = banner.RandomQuote()
+			}
+
 			if bannerLight {
-				fmt.Println(banner.QOTD())
+				fmt.Println(quote)
 			} else {
-				fmt.Println(banner.OfTheDay())
+				fmt.Println(banner.Say(quote.String()))
 			}
 			return nil
 		},
