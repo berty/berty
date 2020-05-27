@@ -24,6 +24,7 @@ var quotes = []Quote{
 	{"Robbie Sinclair", "Security is always excessive until it’s not enough."},
 	{"Tom Smothers", "The only valid censorship of ideas is the right of people not to listen."},
 	{"Voltaire", "We have a natural right to make use of our pens as of our tongue, at our peril, risk and hazard."},
+	{"Cəlil Məmmədquluzadə", "Freedom and Liberty is like air, when you don't receive it, you suffer."},
 }
 
 func RandomQuote() Quote {
