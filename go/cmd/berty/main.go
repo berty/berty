@@ -61,6 +61,8 @@ var (
 	DevRendezVousPoint = config.BertyDev.RendezVousPeer
 	DefaultBootstrap   = config.BertyDev.Bootstrap
 	DefaultMCBind      = config.BertyDev.DefaultMCBind
+	DefaultAPIAddrs    = config.BertyDev.DefaultAPIAddrs
+	APIConfig          = config.BertyDev.APIConfig
 )
 
 // nolint: gocyclo
@@ -254,6 +256,8 @@ func main() {
 				var err error
 				var bopts = ipfsutil.CoreAPIConfig{
 					SwarmAddrs:        []string{DefaultMCBind},
+					APIAddrs:          DefaultAPIAddrs,
+					APIConfig:         APIConfig,
 					ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
 				}
 
@@ -281,6 +285,11 @@ func main() {
 				if err = ipfsutil.ServeHTTPApi(ctx, node); err != nil {
 					return err
 				}
+
+				/*// construct gateway
+				if err = ipfsutil.ServeHTTPGateway(ctx, node); err != nil {
+					return err
+				}*/
 
 				if crouting != nil {
 					routingOut = <-crouting
