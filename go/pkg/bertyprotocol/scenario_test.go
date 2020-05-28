@@ -33,7 +33,7 @@ func TestScenario_JoinGroup(t *testing.T) {
 	}{
 
 		{"2 clients/connectAll", 2, ConnectAll, true},
-		{"3 clients/connectAll", 3, ConnectAll, false},
+		// {"3 clients/connectAll", 3, ConnectAll, false},
 		//{"5 clients/connectAll", 5, ConnectAll, true},
 		//{"8 clients/connectAll", 8, ConnectAll, false},
 		//@FIXME(gfanton): those tests doesn't works
@@ -89,10 +89,7 @@ func isEventAddSecretTargetedToMember(ownRawPK []byte, evt *bertytypes.GroupMeta
 }
 
 func testingScenario_JoinGroup(ctx context.Context, t *testing.T, pts ...*TestingProtocol) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	ctx, cancel = context.WithTimeout(ctx, time.Second*10)
+	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
 	defer cancel()
 
 	nService := len(pts)
