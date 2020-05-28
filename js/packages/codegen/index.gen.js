@@ -83,6 +83,11 @@ export const berty = {
 		ContactState: jsonPb.lookup('.berty.types.ContactState'),
 		ShareableContact: jsonPb.lookup('.berty.types.ShareableContact'),
 	},
+	chat: {
+		ChatService: jsonPb.lookup('.berty.chat.ChatService'),
+		InstanceShareableBertyID: jsonPb.lookup('.berty.chat.InstanceShareableBertyID'),
+		DevShareInstanceBertyID: jsonPb.lookup('.berty.chat.DevShareInstanceBertyID'),
+	},
 }
 export const gogoproto = {
 	goprotoEnumPrefix: jsonPb.lookup('.gogoproto.goprotoEnumPrefix'),

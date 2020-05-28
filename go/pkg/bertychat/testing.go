@@ -1,7 +1,7 @@
 package bertychat
 
 import (
-	context "context"
+	"context"
 	"testing"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
