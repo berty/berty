@@ -33,19 +33,16 @@ func TestServiceInstanceShareableBertyID(t *testing.T) {
 	assert.NotEmpty(t, ret3.HTMLURL)
 	assert.NotEqual(t, ret2.BertyID, ret3.BertyID)
 
-	/* FIXME: disabling this unit test for now, there is a temporary issue on the reset call that will be addressed later by someone else */
-	if false {
-		ret4, err := service.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{Reset_: true})
-		require.NoError(t, err)
-		assert.Equal(t, ret4.DisplayName, "anonymous#1337")
-		assert.NotEmpty(t, ret4.BertyID)
-		assert.NotEmpty(t, ret4.DeepLink)
-		assert.NotEmpty(t, ret4.HTMLURL)
-		assert.NotEqual(t, ret1.BertyID, ret4.BertyID)
-		assert.NotEqual(t, ret3.BertyID, ret4.BertyID)
+	ret4, err := service.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{Reset_: true})
+	require.NoError(t, err)
+	assert.Equal(t, ret4.DisplayName, "anonymous#1337")
+	assert.NotEmpty(t, ret4.BertyID)
+	assert.NotEmpty(t, ret4.DeepLink)
+	assert.NotEmpty(t, ret4.HTMLURL)
+	assert.NotEqual(t, ret1.BertyID, ret4.BertyID)
+	assert.NotEqual(t, ret3.BertyID, ret4.BertyID)
 
-		ret5, err := service.InstanceShareableBertyID(ctx, nil)
-		require.NoError(t, err)
-		assert.Equal(t, ret4, ret5)
-	}
+	ret5, err := service.InstanceShareableBertyID(ctx, nil)
+	require.NoError(t, err)
+	assert.Equal(t, ret4, ret5)
 }

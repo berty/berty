@@ -86,6 +86,8 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	m.sentSecrets = map[string]struct{}{}
 	m.contacts = map[string]*accountContact{}
 	m.groups = map[string]*accountGroup{}
+	m.contactRequestEnabled = nil
+	m.contactRequestSeed = []byte(nil)
 
 	for i := len(entries) - 1; i >= 0; i-- {
 		e := entries[i]
