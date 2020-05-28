@@ -56,12 +56,17 @@ var _ net.Listener = (*PipeListener)(nil)
 func (pl *PipeListener) Addr() net.Addr { return pl }
 func (pl *PipeListener) Accept() (net.Conn, error) {
 	select {
+	case <-pl.ctx.Done():
+		return nil, pl.ctx.Err()
 	case conn := <-pl.cconn:
 		if conn != nil {
 			return conn, nil
 		}
-	case <-pl.ctx.Done():
-		return nil, pl.ctx.Err()
+	}
+
+	// complementary check to avoid race condition on Close()
+	if err := pl.ctx.Err(); err != nil {
+		return nil, err
 	}
 
 	return nil, fmt.Errorf("pipe listener is closing")

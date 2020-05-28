@@ -56,7 +56,7 @@ type Opts struct {
 	close                  func() error
 }
 
-func defaultClientOptions(opts *Opts) error {
+func (opts *Opts) applyDefaults() error {
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
 	}
@@ -111,7 +111,7 @@ func defaultClientOptions(opts *Opts) error {
 
 // New initializes a new Service
 func New(opts Opts) (Service, error) {
-	if err := defaultClientOptions(&opts); err != nil {
+	if err := opts.applyDefaults(); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 

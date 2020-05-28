@@ -1449,6 +1449,91 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             }
           }
         }
+      },
+      chat: {
+        options: {
+          go_package: "berty.tech/berty/go/pkg/bertychat"
+        },
+        nested: {
+          ChatService: {
+            methods: {
+              InstanceShareableBertyID: {
+                requestType: "InstanceShareableBertyID.Request",
+                responseType: "InstanceShareableBertyID.Reply"
+              },
+              DevShareInstanceBertyID: {
+                requestType: "DevShareInstanceBertyID.Request",
+                responseType: "DevShareInstanceBertyID.Reply"
+              }
+            }
+          },
+          InstanceShareableBertyID: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  reset: {
+                    type: "bool",
+                    id: 1
+                  },
+                  displayName: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  bertyId: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "BertyID"
+                    }
+                  },
+                  deepLink: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "DeepLink"
+                    }
+                  },
+                  htmlUrl: {
+                    type: "string",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "HTMLURL"
+                    }
+                  },
+                  displayName: {
+                    type: "string",
+                    id: 4
+                  }
+                }
+              }
+            }
+          },
+          DevShareInstanceBertyID: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  reset: {
+                    type: "bool",
+                    id: 1
+                  },
+                  displayName: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          }
+        }
       }
     }
   },

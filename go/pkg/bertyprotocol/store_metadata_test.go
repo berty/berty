@@ -217,7 +217,7 @@ func TestMetadataRendezvousPointLifecycle(t *testing.T) {
 	assert.NoError(t, err)
 
 	enabled, shareableContact = meta.GetIncomingContactRequestsStatus()
-	assert.True(t, enabled)
+	assert.False(t, enabled)
 	assert.NotNil(t, shareableContact)
 	assert.Equal(t, accPK, shareableContact.PK)
 	assert.Equal(t, 32, len(shareableContact.PublicRendezvousSeed))

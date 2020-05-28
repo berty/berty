@@ -253,6 +253,36 @@ export namespace faker {
 			}
 		}
 		export namespace types {}
+		export namespace chat {
+			export namespace ChatService {
+				export const rpcImpl: pb.RPCImpl = (method, requestData, callback) => {
+					// map pbjs method descriptor to grpc method descriptor
+					if (!(method instanceof pb.Method)) {
+						console.error("bridge doesn't support protobuf.rpc.ServiceMethod")
+						return
+					}
+					const _ = faker.berty.chat.ChatService as { [key: string]: any }
+					_[method.name](
+						method && method.resolvedRequestType && method.resolvedRequestType.decode(requestData),
+						callback,
+					)
+				}
+
+				export const InstanceShareableBertyID: (
+					request: _api.berty.chat.InstanceShareableBertyID.IRequest,
+					callback: pb.RPCImplCallback,
+				) => void = (request, callback) => {
+					callback(null, _api.berty.chat.InstanceShareableBertyID.Reply.encode({}).finish())
+				}
+
+				export const DevShareInstanceBertyID: (
+					request: _api.berty.chat.DevShareInstanceBertyID.IRequest,
+					callback: pb.RPCImplCallback,
+				) => void = (request, callback) => {
+					callback(null, _api.berty.chat.DevShareInstanceBertyID.Reply.encode({}).finish())
+				}
+			}
+		}
 	}
 	export namespace gogoproto {}
 	export namespace google {

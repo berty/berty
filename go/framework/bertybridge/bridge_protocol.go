@@ -7,31 +7,26 @@ import (
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/pkg/bertychat"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
-
+	badger_opts "github.com/dgraph-io/badger/options"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-
-	"github.com/libp2p/go-libp2p-core/peer"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
-	"github.com/pkg/errors"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
-	"go.uber.org/zap"
-
 	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
-
-	badger_opts "github.com/dgraph-io/badger/options"
 	ipfs_badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
+	"github.com/libp2p/go-libp2p-core/peer"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var defaultProtocolRendezVousPeer = config.BertyMobile.RendezVousPeer
@@ -184,7 +179,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 		}
 	}
 
-	// register service
+	// register protocol service
 	var grpcServer *grpc.Server
 	{
 		grpcLogger := logger.Named("grpc.protocol")
@@ -219,6 +214,16 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 		)
 
 		bertyprotocol.RegisterProtocolServiceServer(grpcServer, service)
+	}
+
+	// register chat service
+	{
+		protocolClient, err := bertyprotocol.NewClient(service)
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+		chat := bertychat.New(protocolClient, &bertychat.Opts{Logger: logger.Named("chat")})
+		bertychat.RegisterChatServiceServer(grpcServer, chat)
 	}
 
 	// setup bridge

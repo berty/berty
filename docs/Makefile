@@ -33,8 +33,10 @@ PROTOC_OPTS = -I ../vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../vend
 .PHONY: generate_local
 generate_local:
 	protoc $(PROTOC_OPTS) --doc_out=./protocol --doc_opt=markdown,api.md.tmp ../api/bertyprotocol.proto ../api/bertytypes.proto
+	protoc $(PROTOC_OPTS) --doc_out=./chat --doc_opt=markdown,api.md.tmp ../api/bertychat.proto
 	@# repace multiple empty lines with one
 	cat protocol/api.md.tmp | sed '/^$$/N;/^\n$$/D' > protocol/api.md
+	cat chat/api.md.tmp | sed '/^$$/N;/^\n$$/D' > chat/api.md
 	rm -f */*.md.tmp
 	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
 	mv $(GEN_SUM).tmp $(GEN_SUM)
