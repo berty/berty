@@ -43,6 +43,8 @@ export namespace ScreenProps {
 		export type AboutBerty = {}
 		export type TermsOfUse = {}
 		export type DevTools = {}
+		export type Network = {}
+		export type ConnectedPeers = {}
 	}
 }
 
@@ -91,6 +93,8 @@ export namespace Routes {
 		AboutBerty = 'Settings.AboutBerty',
 		TermsOfUse = 'Settings.TermsOfUse',
 		DevTools = 'Settings.DevTools',
+		Network = 'Settings.Network',
+		ConnectedPeers = 'Settings.ConnectedPeers',
 	}
 	export enum Modals {
 		SendContactRequest = 'SendContactRequest',

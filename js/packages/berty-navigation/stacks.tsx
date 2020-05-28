@@ -233,6 +233,14 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.DevTools}
 			/>
 			<NavigationStack.Screen
+				name={Routes.Settings.Network}
+				component={Components.Settings.Network}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.ConnectedPeers}
+				component={Components.Settings.ConnectedPeers}
+			/>
+			<NavigationStack.Screen
 				name={'Modals'}
 				component={ModalsNavigation}
 				options={{ stackPresentation: 'transparentModal', stackAnimation: 'fade' }}
