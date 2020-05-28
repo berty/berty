@@ -2,19 +2,18 @@ package bertybridge
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	badger_opts "github.com/dgraph-io/badger/options"
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+
 	datastore "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_badger "github.com/ipfs/go-ds-badger"
@@ -24,13 +23,23 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
 )
 
-var defaultProtocolRendezVousPeer = config.BertyMobile.RendezVousPeer
-var defaultProtocolBootstrap = config.BertyMobile.Bootstrap
+var (
+	defaultProtocolRendezVousPeer = config.BertyMobile.RendezVousPeer
+	defaultProtocolBootstrap      = config.BertyMobile.Bootstrap
+	defaultTracingHost            = config.BertyMobile.Tracing
+)
 
 type Protocol struct {
 	*Bridge
@@ -51,6 +60,7 @@ type ProtocolConfig struct {
 
 	swarmListeners []string
 	rootDirectory  string
+	tracing        bool
 
 	// internal
 	coreAPI ipfsutil.ExtendedCoreAPI
@@ -64,6 +74,10 @@ func NewProtocolConfig() *ProtocolConfig {
 
 func (pc *ProtocolConfig) RootDirectory(dir string) {
 	pc.rootDirectory = dir
+}
+
+func (pc *ProtocolConfig) EnableTracing() {
+	pc.tracing = true
 }
 
 func (pc *ProtocolConfig) LogLevel(level string) {
@@ -143,6 +157,12 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 		}
 	}
 
+	// init tracing
+	if config.tracing {
+		svcName := fmt.Sprintf("<%.6s>", node.Identity.String())
+		tracer.InitTracer(defaultTracingHost, svcName)
+	}
+
 	// load datastore
 	var rootds datastore.Batching
 	{
@@ -195,20 +215,25 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 		// setup grpc with zap
 		grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
-		grpcServer = grpc.NewServer(
+
+		trServer := tracer.New("grpc-server")
+		serverOpts := []grpc.ServerOption{
 			grpc_middleware.WithUnaryServerChain(
 				grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 
 				grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
 				grpc_recovery.UnaryServerInterceptor(recoverOpts...),
+				grpc_trace.UnaryServerInterceptor(trServer),
 			),
 			grpc_middleware.WithStreamServerChain(
 				grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 				grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
 				grpc_recovery.StreamServerInterceptor(recoverOpts...),
+				grpc_trace.StreamServerInterceptor(trServer),
 			),
-		)
+		}
 
+		grpcServer = grpc.NewServer(serverOpts...)
 		bertyprotocol.RegisterProtocolServiceServer(grpcServer, service)
 	}
 

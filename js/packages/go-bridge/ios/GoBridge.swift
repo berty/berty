@@ -51,6 +51,7 @@ class GoBridge: NSObject {
             }
 
             // get opts
+            let optTracing = opts["tracing"] as? Bool ?? false
             let optPersistance = opts["persistance"] as? Bool ?? false
             let optLog = opts["logLevel"] as? String ?? "info"
             let optGrpcListeners = opts["grpcListeners"] as? NSArray ?? ["/ip4/127.0.0.1/tcp/0/grpcws"]
@@ -63,6 +64,7 @@ class GoBridge: NSObject {
 
             // init logger
             let logger = LoggerDriver("tech.berty", "protocol")
+
             config.logLevel(optLog)
             config.loggerDriver(logger)
 
@@ -94,6 +96,10 @@ class GoBridge: NSObject {
 
                 NSLog("root dir: `%@`", self.rootdir.path)
                 config.rootDirectory(self.rootdir.path)
+            }
+
+            if optTracing {
+                config.enableTracing()
             }
 
             let bridgeProtocol = BertybridgeNewProtocolBridge(config, &err)
