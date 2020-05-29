@@ -82,7 +82,7 @@ const createNavigation = ({
 				termsOfUse: createNavigateFunc(navigate, Routes.Settings.TermsOfUse),
 				devTools: createNavigateFunc(navigate, Routes.Settings.DevTools),
 				network: createNavigateFunc(navigate, Routes.Settings.Network),
-				connectedPeers: createNavigateFunc(navigate, Routes.Settings.ConnectedPeers),
+				ipfsWebUI: createNavigateFunc(navigate, Routes.Settings.IpfsWebUI),
 			},
 		},
 	}

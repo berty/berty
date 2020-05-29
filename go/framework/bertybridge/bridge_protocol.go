@@ -41,6 +41,8 @@ var (
 	defaultProtocolRendezVousPeer = config.BertyMobile.RendezVousPeer
 	defaultProtocolBootstrap      = config.BertyMobile.Bootstrap
 	defaultTracingHost            = config.BertyMobile.Tracing
+	DefaultAPIAddrs               = config.BertyMobile.DefaultAPIAddrs
+	APIConfig                     = config.BertyMobile.APIConfig
 )
 
 type Protocol struct {
@@ -141,7 +143,10 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 				return nil, errors.Wrap(err, "failed to get ipfs repo")
 			}
 
-			var bopts = ipfsutil.CoreAPIConfig{}
+			var bopts = ipfsutil.CoreAPIConfig{
+				APIAddrs:  DefaultAPIAddrs,
+				APIConfig: APIConfig,
+			}
 			bopts.BootstrapAddrs = defaultProtocolBootstrap
 
 			var rdvpeer *peer.AddrInfo
@@ -160,6 +165,11 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 			api, node, err = ipfsutil.NewCoreAPIFromRepo(ctx, repo, &bopts)
 			if err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
+
+			// construct http api endpoint
+			if err = ipfsutil.ServeHTTPApi(ctx, node); err != nil {
 				return nil, errcode.TODO.Wrap(err)
 			}
 

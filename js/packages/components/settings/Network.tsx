@@ -30,11 +30,11 @@ const HeaderNetwork: React.FC<{}> = () => {
 			<ButtonSettingRow
 				state={[
 					{
-						name: 'Connected peers',
+						name: 'Ipfs WebUI',
 						icon: 'smartphone-outline',
 						color: color.dark.grey,
 						style: _styles.buttonRow,
-						onPress: navigate.settings.connectedPeers,
+						onPress: navigate.settings.ipfsWebUI,
 					},
 				]}
 				style={[_styles.buttonRowMarginTop]}

@@ -237,8 +237,8 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.Network}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.ConnectedPeers}
-				component={Components.Settings.ConnectedPeers}
+				name={Routes.Settings.IpfsWebUI}
+				component={Components.Settings.IpfsWebUI}
 			/>
 			<NavigationStack.Screen
 				name={'Modals'}

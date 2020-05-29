@@ -281,15 +281,10 @@ func main() {
 
 				defer node.Close()
 
-				// construct api and webui endpoints
+				// construct http api endpoint
 				if err = ipfsutil.ServeHTTPApi(ctx, node); err != nil {
 					return err
 				}
-
-				/*// construct gateway
-				if err = ipfsutil.ServeHTTPGateway(ctx, node); err != nil {
-					return err
-				}*/
 
 				if crouting != nil {
 					routingOut = <-crouting

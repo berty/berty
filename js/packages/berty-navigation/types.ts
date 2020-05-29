@@ -44,7 +44,7 @@ export namespace ScreenProps {
 		export type TermsOfUse = {}
 		export type DevTools = {}
 		export type Network = {}
-		export type ConnectedPeers = {}
+		export type IpfsWebUI = {}
 	}
 }
 
@@ -94,7 +94,7 @@ export namespace Routes {
 		TermsOfUse = 'Settings.TermsOfUse',
 		DevTools = 'Settings.DevTools',
 		Network = 'Settings.Network',
-		ConnectedPeers = 'Settings.ConnectedPeers',
+		IpfsWebUI = 'Settings.IpfsWebUI',
 	}
 	export enum Modals {
 		SendContactRequest = 'SendContactRequest',
