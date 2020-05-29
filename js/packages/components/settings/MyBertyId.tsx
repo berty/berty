@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, StyleSheet, ScrollView, Dimensions, Share } from 'react-native'
+import { View, TouchableOpacity, StyleSheet, ScrollView, Share } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { TabBar } from '../shared-components/TabBar'
@@ -9,54 +9,56 @@ import { useNavigation } from '@berty-tech/berty-navigation'
 import QRCode from 'react-native-qrcode-svg'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { SafeAreaView } from 'react-native-safe-area-context'
-
+import { useDimensions } from '@react-native-community/hooks'
 //
 // Settings My Berty ID Vue
 //
 
-// Style
-const useStylesBertyId = () => {
-	const [{ margin, padding, maxHeight, minHeight }] = useStyles()
-	return {
-		bodyMarginTop: margin.top.scale(60),
-		bodyContent: [margin.bottom.scale(40), padding.top.scale(50)],
-		scrollViewMaxHeight: maxHeight(400),
-		contentMinHeight: minHeight(400),
-	}
-}
+// Styles
+const _bertyIdButtonSize = 60
+const _bertyIdContentScaleFactor = 0.66
+const _iconShareSize = 26
+const _iconArrowBackSize = 30
+const _iconIdSize = 45
+const _titleSize = 26
+const _requestAvatarSize = 90
+
 const _bertyIdStyles = StyleSheet.create({
-	headerToggleBar: {
-		borderWidth: 2.5,
-		width: '12%',
-		borderRadius: 4,
+	bertyIdButton: {
+		width: _bertyIdButtonSize,
+		height: _bertyIdButtonSize,
+		borderRadius: _bertyIdButtonSize / 2,
+		marginRight: _bertyIdButtonSize,
+		bottom: _bertyIdButtonSize / 2,
 	},
-	bertyLayout: { borderTopLeftRadius: 25, borderTopRightRadius: 25, height: '100%' },
-	bertyIdButton: { width: 60, height: 60, borderRadius: 60 / 2, marginRight: 60, bottom: 30 },
+	bertyIdContent: { paddingBottom: _bertyIdButtonSize / 2 + 10 },
 })
 
 const BertyIdContent: React.FC<{}> = ({ children }) => {
-	const _styles = useStylesBertyId()
-	const [{ padding, column }] = useStyles()
+	const [{ column }] = useStyles()
 
 	return (
-		<ScrollView
-			style={[_styles.scrollViewMaxHeight]}
-			contentContainerStyle={[padding.vertical.medium]}
-		>
-			<View style={[column.justify, { alignItems: 'center' }]}>{children}</View>
-		</ScrollView>
+		<View>
+			<View style={[column.item.center]}>{children}</View>
+		</View>
 	)
 }
 
 const ContactRequestQR = () => {
 	const contactRequestReference = Chat.useContactRequestReference()
 	const contactRequestEnabled = Chat.useContactRequestEnabled()
-	const [styles] = useStyles()
+	const [{ padding }] = useStyles()
+
+	const { height, width } = useDimensions().window
+
 	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 	if (contactRequestEnabled) {
 		return (
-			<View style={[styles.padding.top.big]}>
-				<QRCode size={Dimensions.get('window').width * 0.66} value={contactRequestReference} />
+			<View style={[padding.top.big]}>
+				<QRCode
+					size={_bertyIdContentScaleFactor * Math.min(height, width)}
+					value={contactRequestReference}
+				/>
 			</View>
 		)
 	} else {
@@ -66,12 +68,17 @@ const ContactRequestQR = () => {
 
 const Fingerprint: React.FC = () => {
 	const client = Chat.useClient()
-	const [styles] = useStyles()
+	const [{ padding }] = useStyles()
+
+	const { height, width } = useDimensions().window
+
 	if (!client) {
 		return <Text>Client not initialized</Text>
 	}
 	return (
-		<View style={[styles.padding.top.big, { width: '100%' }]}>
+		<View
+			style={[padding.top.big, { width: _bertyIdContentScaleFactor * Math.min(height, width) }]}
+		>
 			<FingerprintContent seed={client.accountPk} />
 		</View>
 	)
@@ -89,21 +96,22 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 }
 
 const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
-	const _styles = useStylesBertyId()
 	const [{ background, border, margin, padding, opacity }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState()
 	const client = Chat.useClient()
+
 	return (
 		<View
 			style={[
 				background.white,
 				border.radius.scale(30),
 				margin.horizontal.medium,
-				_styles.bodyMarginTop,
+				padding.top.large,
+				_bertyIdStyles.bertyIdContent,
 			]}
 		>
-			<RequestAvatar {...user} seed={client?.accountPk} size={90} />
-			<View style={[padding.horizontal.big, _styles.bodyContent]}>
+			<RequestAvatar {...user} seed={client?.accountPk} size={_requestAvatarSize} />
+			<View style={[padding.horizontal.big]}>
 				<TabBar
 					tabs={[
 						{ name: 'QR', icon: 'qr', iconPack: 'custom' },
@@ -154,8 +162,8 @@ const BertyIdShare: React.FC<{}> = () => {
 					style={row.item.justify}
 					name='share'
 					pack='custom'
-					width={26}
-					height={26}
+					width={_iconShareSize}
+					height={_iconShareSize}
 					fill={color.blue}
 				/>
 			</View>
@@ -163,32 +171,47 @@ const BertyIdShare: React.FC<{}> = () => {
 	)
 }
 
-const Screen = Dimensions.get('window')
-
 const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 	const { goBack } = useNavigation()
-	const [{ padding, color, margin }] = useStyles()
-	const titleSize = 26
+	const [{ padding, color }] = useStyles()
+	const { height } = useDimensions().window
+
 	return (
-		<View style={[{ height: Screen.height }, padding.medium]}>
+		<ScrollView style={[padding.medium]}>
 			<View
 				style={[
-					{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-					margin.horizontal.medium,
+					{
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						marginBottom: height * 0.1,
+					},
 				]}
 			>
-				<View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
+				<View
+					style={[
+						{
+							flexDirection: 'row',
+							alignItems: 'center',
+						},
+					]}
+				>
 					<TouchableOpacity
 						onPress={goBack}
 						style={{ alignItems: 'center', justifyContent: 'center' }}
 					>
-						<Icon name='arrow-back-outline' width={30} height={30} fill={color.white} />
+						<Icon
+							name='arrow-back-outline'
+							width={_iconArrowBackSize}
+							height={_iconArrowBackSize}
+							fill={color.white}
+						/>
 					</TouchableOpacity>
 					<Text
 						style={{
 							fontWeight: '700',
-							fontSize: titleSize,
-							lineHeight: 1.25 * titleSize,
+							fontSize: _titleSize,
+							lineHeight: 1.25 * _titleSize,
 							marginLeft: 10,
 							color: color.white,
 						}}
@@ -196,11 +219,11 @@ const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 						My Berty ID
 					</Text>
 				</View>
-				<Icon name='id' pack='custom' width={45} height={45} fill={color.white} />
+				<Icon name='id' pack='custom' width={_iconIdSize} height={_iconIdSize} fill={color.white} />
 			</View>
 			<BertIdBody user={user} />
 			<BertyIdShare />
-		</View>
+		</ScrollView>
 	)
 }
 

@@ -3,4 +3,4 @@ a6b1965b41d41869f43fc31d65350fccd9fc2908  ../api/bertyprotocol.proto
 4c0fa735ab710727c465ed1444dc6db1c748dc45  ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
 4b8f24f346b0cf0494144b7f18b370315ba83f02  Makefile
 583c90ab3c0fa4298f354eaf54fed7a476ef7711  gen.make
-8bf3ee0f05ffe75b4963fd2ace50ac16aa577e5e  yarn.lock
+bd178693b644c28f6cbd2caeb8220d30ff341912  yarn.lock

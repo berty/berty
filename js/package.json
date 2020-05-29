@@ -45,6 +45,7 @@
     ]
   },
   "dependencies": {
+    "@react-native-community/hooks": "^2.5.1",
     "@types/node": "^13.5.0",
     "babel-jest": "^24.9.0",
     "caser": "^0.1.1",
