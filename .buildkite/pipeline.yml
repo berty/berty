@@ -88,8 +88,6 @@ steps:
       - make go.install
       - SKIP_SLOW_TESTS=1 make go.unittest GO_TEST_OPTS="-v -test.timeout=1000s -count 10"
       - SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=1000s -count 2"
-      - make tidy
-      - make lint
       - cd ..
       - codecov -f ./go/coverage.txt
 
