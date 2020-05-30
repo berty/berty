@@ -93,14 +93,14 @@ func CreateBuildConfig(repo ipfs_repo.Repo, opts *CoreAPIConfig) (*ipfs_node.Bui
 		opts = &CoreAPIConfig{}
 	}
 
-	routing_opt := ipfs_libp2p.DHTOption
+	routingOpt := ipfs_libp2p.DHTOption
 	if opts.Routing != nil {
-		routing_opt = opts.Routing
+		routingOpt = opts.Routing
 	}
 
-	host_opt := ipfs_libp2p.DefaultHostOption
+	hostOpt := ipfs_libp2p.DefaultHostOption
 	if opts.ExtraLibp2pOption != nil {
-		host_opt = wrapP2POptionsToHost(host_opt, opts.ExtraLibp2pOption)
+		hostOpt = wrapP2POptionsToHost(hostOpt, opts.ExtraLibp2pOption)
 	}
 
 	return &ipfs_node.BuildCfg{
@@ -108,8 +108,8 @@ func CreateBuildConfig(repo ipfs_repo.Repo, opts *CoreAPIConfig) (*ipfs_node.Bui
 		Permanent:                   true,
 		DisableEncryptedConnections: false,
 		NilRepo:                     false,
-		Routing:                     routing_opt,
-		Host:                        host_opt,
+		Routing:                     routingOpt,
+		Host:                        hostOpt,
 		Repo:                        repo,
 		ExtraOpts: map[string]bool{
 			"pubsub": true,

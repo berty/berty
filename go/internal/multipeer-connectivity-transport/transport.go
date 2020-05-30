@@ -18,7 +18,8 @@ import (
 
 const DefaultBind = "/mc/Qmeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
 
-// Logger is global because HandleFoundPeer must be able to call it
+// logger is global because HandleFoundPeer must be able to call it
+// FIXME: remove global logger
 var logger *zap.Logger = zap.L().Named("mc-transport")
 
 // Transport is a tpt.transport.
@@ -31,14 +32,11 @@ type Transport struct {
 	upgrader *tptu.Upgrader
 }
 
-func NewTransportConstructorWithLogger(l *zap.Logger) func(h host.Host,
-	u *tptu.Upgrader) (*Transport, error) {
+func NewTransportConstructorWithLogger(l *zap.Logger) func(h host.Host, u *tptu.Upgrader) (*Transport, error) {
 	if l != nil {
 		logger = l
 	}
-	return func(h host.Host, u *tptu.Upgrader) (*Transport, error) {
-		return NewTransport(h, u)
-	}
+	return NewTransport
 }
 
 // NewTransport creates a transport object that tracks dialers and listener.
@@ -52,8 +50,7 @@ func NewTransport(h host.Host, u *tptu.Upgrader) (*Transport, error) {
 
 // Dial dials the peer at the remote address.
 // With MC you can only dial a device that is already connected with the native driver.
-func (t *Transport) Dial(ctx context.Context, remoteMa ma.Multiaddr,
-	remotePID peer.ID) (tpt.CapableConn, error) {
+func (t *Transport) Dial(ctx context.Context, remoteMa ma.Multiaddr, remotePID peer.ID) (tpt.CapableConn, error) {
 	// MC transport needs to have a running listener in order to dial other peer
 	// because native driver is initialized during listener creation.
 	if gListener == nil {
@@ -69,7 +66,7 @@ func (t *Transport) Dial(ctx context.Context, remoteMa ma.Multiaddr,
 
 	// Check if native driver is already connected to peer's device.
 	// With MC you can't really dial, only auto-connect with peer nearby.
-	if mcdrv.DialPeer(remoteAddr) == false {
+	if !mcdrv.DialPeer(remoteAddr) {
 		return nil, errors.New("transport dialing peer failed: peer not connected through MC")
 	}
 
@@ -115,7 +112,7 @@ func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
 		gListener.Close()
 	}
 
-	return newListener(localMa, t)
+	return newListener(localMa, t), nil
 }
 
 // Proxy returns true if this transport proxies.

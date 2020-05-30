@@ -43,7 +43,6 @@ func NewClientFromServer(s *grpc.Server, svc Service, opts ...grpc.DialOption) (
 		if err != nil && err != context.Canceled {
 			panic(err)
 		}
-
 	}()
 
 	c := client{ProtocolServiceClient: NewProtocolServiceClient(cc), l: pl}

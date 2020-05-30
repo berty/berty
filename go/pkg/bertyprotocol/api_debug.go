@@ -3,12 +3,11 @@ package bertyprotocol
 import (
 	"fmt"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/libp2p/go-libp2p-core/crypto"
-
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/stores/operation"
+	"github.com/golang/protobuf/proto"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 )
 
@@ -78,7 +77,6 @@ func (s *service) DebugInspectGroupStore(req *bertytypes.DebugInspectGroupStore_
 
 			if evt, err := cg.messageStore.openMessage(srv.Context(), e); err != nil {
 				s.logger.Error("unable to open message", zap.Error(err))
-
 			} else {
 				devicePK = evt.Headers.DevicePK
 				payload = evt.Message

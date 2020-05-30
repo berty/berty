@@ -55,7 +55,7 @@ func (c *Conn) Write(payload []byte) (n int, err error) {
 	}
 
 	// Write to the peer's device using native driver.
-	if mcdrv.SendToPeer(c.RemoteAddr().String(), payload) == false {
+	if !mcdrv.SendToPeer(c.RemoteAddr().String(), payload) {
 		return 0, fmt.Errorf("conn write failed: native write failed")
 	}
 

@@ -184,7 +184,6 @@ func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableCon
 
 	if pending, ok := c.toAdd[string(contact.PK)]; ok {
 		go pending.update(c.ctx, contact)
-
 	} else {
 		var ch chan peer.AddrInfo
 		c.toAdd[string(contact.PK)], ch = newPendingRequest(c.ctx, c.swiper, contact)

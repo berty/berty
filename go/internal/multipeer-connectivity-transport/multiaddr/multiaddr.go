@@ -7,7 +7,7 @@ import (
 // MC multiaddr protocol definition
 // See https://github.com/multiformats/go-multiaddr/blob/master/protocols.go
 // See https://github.com/multiformats/multiaddr/blob/master/protocols.csv
-const P_MC = 0x0043
+const P_MC = 0x0043 // nolint: golint
 
 var protoMC = ma.Protocol{
 	Name:       "mc",

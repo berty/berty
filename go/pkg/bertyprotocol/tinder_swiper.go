@@ -53,7 +53,10 @@ func generateRendezvousPointForPeriod(topic, seed []byte, date time.Time) []byte
 	mac := hmac.New(sha256.New, append(topic, seed...))
 	binary.BigEndian.PutUint64(buf, uint64(date.Unix()))
 
-	mac.Write(buf)
+	_, err := mac.Write(buf)
+	if err != nil {
+		panic(err)
+	}
 	sum := mac.Sum(nil)
 
 	return sum
@@ -112,7 +115,6 @@ func (s *swiper) watch(ctx context.Context, topic, seed []byte) chan peer.AddrIn
 			}
 
 			cancel()
-
 		}
 
 		close(out)

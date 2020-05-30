@@ -4,14 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	peer "github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/peer"
 	pstore "github.com/libp2p/go-libp2p-core/peerstore"
 	ma "github.com/multiformats/go-multiaddr"
+	"go.uber.org/zap"
 )
 
 // HandleFoundPeer is called by the native driver when a new peer is found.
 func HandleFoundPeer(sRemotePID string) bool {
-	remotePID, err := peer.IDB58Decode(sRemotePID)
+	remotePID, err := peer.Decode(sRemotePID)
 	if err != nil {
 		logger.Error("discovery handle peer failed: wrong remote peerID")
 		return false
@@ -25,7 +26,7 @@ func HandleFoundPeer(sRemotePID string) bool {
 
 	// Checks if a listener is currently running.
 	if gListener == nil || gListener.ctx.Err() != nil {
-		logger.Error("discovery handle peer failed: listener not running")
+		logger.Error("discovery handle peer failed: listener not running", zap.Error(gListener.ctx.Err()))
 		return false
 	}
 
@@ -40,10 +41,15 @@ func HandleFoundPeer(sRemotePID string) bool {
 	if gListener.Addr().String() < sRemotePID {
 		// Async connect so HandleFoundPeer can return and unlock the native driver.
 		// Needed to read and write during the connect handshake.
-		go gListener.transport.host.Connect(context.Background(), peer.AddrInfo{
-			ID:    remotePID,
-			Addrs: []ma.Multiaddr{remoteMa},
-		})
+		go func() {
+			err := gListener.transport.host.Connect(context.Background(), peer.AddrInfo{
+				ID:    remotePID,
+				Addrs: []ma.Multiaddr{remoteMa},
+			})
+			if err != nil {
+				logger.Error("async connect", zap.Error(err))
+			}
+		}()
 
 		return true
 	}

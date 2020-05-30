@@ -1,12 +1,10 @@
 package bertybridge
 
 import (
-	"context"
 	"fmt"
 	"os"
 
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc/codes"
@@ -115,21 +113,4 @@ func grpcCodeToLevel(code codes.Code) zapcore.Level {
 		return zap.DebugLevel
 	}
 	return grpc_zap.DefaultCodeToLevel(code)
-}
-
-func getIPFSZapInfosFields(ctx context.Context, api ipfs_interface.CoreAPI) (fields []zap.Field) {
-	fields = []zap.Field{}
-
-	if self, err := api.Key().Self(ctx); err == nil {
-		fields = append(fields, zap.String("peerID", self.ID().String()))
-	}
-
-	if maddrs, err := api.Swarm().ListenAddrs(ctx); err == nil {
-		for i, maddr := range maddrs {
-			key := fmt.Sprintf("maddr #%d", i)
-			fields = append(fields, zap.String(key, maddr.String()))
-		}
-	}
-
-	return fields
 }

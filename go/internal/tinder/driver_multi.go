@@ -8,7 +8,6 @@ import (
 
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
-	disc "github.com/libp2p/go-libp2p-discovery"
 	"go.uber.org/zap"
 )
 
@@ -54,7 +53,7 @@ func (md *MultiDriver) Advertise(ctx context.Context, ns string, opts ...p2p_dis
 	return options.Ttl, nil
 }
 
-func (md *MultiDriver) advertise(ctx context.Context, d Driver, ns string, opts ...disc.Option) {
+func (md *MultiDriver) advertise(ctx context.Context, d Driver, ns string, opts ...p2p_discovery.Option) {
 	go func() {
 		for {
 			ttl, err := d.Advertise(ctx, ns, opts...)

@@ -123,7 +123,7 @@ func TestPersistenceProtocol(t *testing.T) {
 		require.NoError(t, err)
 
 		// get grpc client
-		client, err := protocol.newServiceClient()
+		client, err := newServiceClient(protocol)
 		if !assert.NoError(t, err) {
 			protocol.Close()
 			assert.FailNow(t, "unable to create client")
@@ -151,7 +151,7 @@ func TestPersistenceProtocol(t *testing.T) {
 		require.NoError(t, err)
 
 		// get grpc client
-		client, err := protocol.newServiceClient()
+		client, err := newServiceClient(protocol)
 		if !assert.NoError(t, err) {
 			protocol.Close()
 			assert.FailNow(t, "unable to create client")

@@ -29,8 +29,8 @@ func NewTinderRouting(logger *zap.Logger, rdvpeer *peer.AddrInfo, dhtclient bool
 
 		dht, err := dht.New(
 			ctx, h,
-			dhtopts.Datastore(dstore),
-			dhtopts.Validator(validator),
+			dht.Datastore(dstore),
+			dht.Validator(validator),
 			dhtopts.Client(dhtclient),
 		)
 
