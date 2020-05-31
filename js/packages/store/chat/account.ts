@@ -225,7 +225,9 @@ export const transactions: Transactions = {
 
 		yield put(event)
 
-		/*const client = yield* getProtocolClient(id)
+		/* TODO: multi device support
+
+		const client = yield* getProtocolClient(id)
 
 		yield* protocol.transactions.client.appMetadataSend({
 			id,
