@@ -54,7 +54,7 @@ export type Transactions = {
 }
 
 const commandHandler = createSlice<State, CommandsReducer>({
-	name: 'chat/member/command',
+	name: 'notifications/command',
 	initialState,
 	reducers: {
 		notify: (state: State) => state,
@@ -62,7 +62,7 @@ const commandHandler = createSlice<State, CommandsReducer>({
 })
 
 const eventHandler = createSlice<State, EventsReducer>({
-	name: 'chat/member/event',
+	name: 'notifications/event',
 	initialState,
 	reducers: {
 		notified: (state: State, { payload: notif }) => {
