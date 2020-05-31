@@ -1,23 +1,19 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { all, put } from 'redux-saga/effects'
-import { makeDefaultCommandsSagas } from './utils'
+import { Notification, Type } from './types'
+import { makeDefaultCommandsSagas } from '../utils'
 
 const QUEUE_LENGTH = 50
 
-export type Entity = {
-	title: string
-	message: string
-}
-
-export type State = Entity[]
+export type State = Notification[]
 
 export type GlobalState = {
 	notifications: State
 }
 
 export namespace Command {
-	export type Notify = Entity
+	export type Notify = Notification
 }
 
 export namespace Query {
@@ -26,7 +22,7 @@ export namespace Query {
 }
 
 export namespace Event {
-	export type Notified = Entity
+	export type Notified = Notification
 }
 
 type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
@@ -36,8 +32,8 @@ export type CommandsReducer = {
 }
 
 export type QueryReducer = {
-	list: (state: GlobalState) => Array<Entity>
-	get: (state: GlobalState, query: Query.Get) => Entity
+	list: (state: GlobalState) => Array<Notification>
+	get: (state: GlobalState, query: Query.Get) => Notification
 	getLength: (state: GlobalState) => number
 }
 
@@ -45,7 +41,7 @@ export type EventsReducer = {
 	notified: SimpleCaseReducer<Event.Notified>
 }
 
-const initialState: State = [] as Entity[]
+const initialState: State = [] as Notification[]
 
 export type Transactions = {
 	[K in keyof CommandsReducer]: CommandsReducer[K] extends SimpleCaseReducer<infer TPayload>
@@ -95,3 +91,6 @@ export const transactions: Transactions = {
 export function* orchestrator() {
 	yield all([...makeDefaultCommandsSagas(commands, transactions)])
 }
+
+export type { Notification }
+export { Type }

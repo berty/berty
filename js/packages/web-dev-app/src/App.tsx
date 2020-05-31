@@ -7,7 +7,10 @@ import { AppMessageType } from '@berty-tech/store/chat/AppMessage'
 import ProtocolServiceClient from '@berty-tech/store/protocol/ProtocolServiceClient.gen'
 import './App.css'
 import storage from 'redux-persist/lib/storage'
-import ReactNotification, { store as reactNotifStore } from 'react-notifications-component'
+import ReactNotification, {
+	store as reactNotifStore,
+	ReactNotificationOptions,
+} from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 
 const CreateAccount: React.FC = () => {
@@ -350,7 +353,11 @@ const Tabs: React.FC = () => {
 	)
 }
 
-const DEFAULT_TEST_NOTIF: notifications.Entity = { title: 'Title', message: 'Message' }
+const DEFAULT_TEST_NOTIF: notifications.Notification = {
+	type: notifications.Type.Basic,
+	title: 'Title',
+	message: 'Message',
+}
 
 const NotifsTester: React.FC = () => {
 	const [notif, setNotif] = useState(DEFAULT_TEST_NOTIF)
@@ -373,25 +380,39 @@ const NotifsTester: React.FC = () => {
 	)
 }
 
+const NOTIFS_OPTS: ReactNotificationOptions = {
+	type: 'success',
+	insert: 'bottom',
+	container: 'bottom-left',
+	animationIn: ['animated', 'fadeIn'],
+	animationOut: ['animated', 'fadeOut'],
+	dismiss: {
+		duration: 5000,
+		onScreen: true,
+	},
+}
+
 // bridge notif from redux to react notifications
 const NotificationsBridge: React.FC = () => {
 	const notif = Notifications.useLastNotification()
 	useEffect(() => {
-		console.log('notif', notif)
 		if (notif) {
-			reactNotifStore.addNotification({
-				title: notif.title,
-				message: notif.message,
-				type: 'success',
-				insert: 'bottom',
-				container: 'bottom-left',
-				animationIn: ['animated', 'fadeIn'],
-				animationOut: ['animated', 'fadeOut'],
-				dismiss: {
-					duration: 5000,
-					onScreen: true,
-				},
-			})
+			switch (notif.type) {
+				case Notifications.Type.Basic:
+					reactNotifStore.addNotification({
+						...NOTIFS_OPTS,
+						title: notif.title,
+						message: notif.message,
+					})
+					break
+				case Notifications.Type.MessageReceived:
+					reactNotifStore.addNotification({
+						...NOTIFS_OPTS,
+						title: notif.convTitle,
+						message: notif.body,
+					})
+					break
+			}
 		}
 	}, [notif])
 	return null

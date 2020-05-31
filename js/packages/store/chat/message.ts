@@ -351,11 +351,15 @@ export function* orchestrator() {
 		takeEvery(events.received, function* ({ payload }) {
 			if (payload.message.type === AppMessageType.UserMessage && !payload.isMe) {
 				const conv = yield* conversation.getConversation(payload.convId)
-				if (!conv?.reading) {
-					yield call(notifications.transactions.notify, {
-						title: 'New message!',
-						message: payload.message.body,
-					})
+				if (conv && !conv.reading) {
+					yield put(
+						notifications.commands.notify({
+							type: notifications.Type.MessageReceived,
+							convTitle: conv.title,
+							convId: conv.id,
+							body: payload.message.body,
+						}),
+					)
 				}
 			}
 		}),

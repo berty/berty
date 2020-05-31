@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { chat } from '@berty-tech/store'
-import { berty } from '@berty-tech/api'
 import { useAccount, useClient } from './account'
 
 // conversations commands
