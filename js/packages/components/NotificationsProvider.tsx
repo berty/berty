@@ -41,26 +41,17 @@ const Bridge: React.FC = withInAppNotification(
 								title: notif.convTitle,
 								message: notif.body,
 								// FIXME
-								onPress:
-									conv.kind === chat.conversation.ConversationKind.MultiMember
-										? () =>
-												dispatch(
-													CommonActions.navigate({
-														name: Routes.Chat.Group,
-														params: {
-															convId: conv.id,
-														},
-													}),
-												)
-										: () =>
-												dispatch(
-													CommonActions.navigate({
-														name: Routes.Chat.One2One,
-														params: {
-															convId: conv.id,
-														},
-													}),
-												),
+								onPress: () => {
+									console.log('notif pressed', conv.id)
+									dispatch(
+										CommonActions.navigate({
+											name: Routes.Chat.One2One,
+											params: {
+												convId: conv.id,
+											},
+										}),
+									)
+								},
 							})
 						}
 						break

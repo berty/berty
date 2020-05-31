@@ -16,8 +16,9 @@ import * as contact from './contact'
 import * as conversation from './conversation'
 import * as member from './member'
 import * as message from './message'
+import * as AppMessage from './AppMessage'
 
-export { account, contact, conversation, member, message, protocol }
+export { account, contact, conversation, member, message, protocol, AppMessage }
 
 export type State = account.GlobalState
 

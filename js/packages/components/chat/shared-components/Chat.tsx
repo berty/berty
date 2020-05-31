@@ -32,7 +32,7 @@ export const ChatFooter: React.FC<{
 	const [{ row, padding, flex, border, color }] = useStyles()
 	const sendMessage = Chat.useMessageSend()
 	const conversation = Chat.useGetConversation(convId)
-	const isFake = conversation.kind === 'fake'
+	const isFake = conversation?.kind === 'fake'
 
 	return (
 		<BlurView style={[]} blurType='light' blurAmount={30}>

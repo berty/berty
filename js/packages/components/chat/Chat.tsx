@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { BlurView } from '@react-native-community/blur'
-import {
-	TouchableOpacity,
-	View,
-	StyleSheet,
-	FlatList,
-	ActivityIndicator,
-	KeyboardAvoidingView,
-} from 'react-native'
+import { TouchableOpacity, View, StyleSheet, FlatList, KeyboardAvoidingView } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
@@ -31,15 +24,15 @@ const useStylesChat = () => {
 	}
 }
 
-export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
+export const ChatHeader: React.FC<{ id: string }> = ({ id }) => {
 	const { dispatch, goBack } = useNavigation()
 	const _styles = useStylesChat()
 	const [{ absolute, row, padding, column, margin, text, flex, opacity, color }] = useStyles()
 	const conversation = ChatHooks.useGetConversation(id)
-	const contact = ChatHooks.useOneToOneConversationContact(conversation.id)
+	const contact = ChatHooks.useOneToOneConversationContact(conversation?.id || '')
 	const title =
-		conversation.kind === 'fake' ? `SAMPLE - ${conversation.title}` : contact?.name || ''
-	const lastDate = ChatHooks.useGetDateLastContactMessage(conversation.id)
+		conversation?.kind === 'fake' ? `SAMPLE - ${conversation?.title}` : contact?.name || ''
+	const lastDate = ChatHooks.useGetDateLastContactMessage(conversation?.id || '')
 
 	return (
 		<BlurView
@@ -105,9 +98,9 @@ const InfosChat: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 
 // const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
-const AppMessage: React.FC<{ message: string }> = ({ message }) => {
-	const msg = ChatHooks.useGetMessage(message)
-	return !!msg && <Message payload={msg} />
+const AppMessage: React.FC<{ message: string }> = ({ message: id }) => {
+	const msg = ChatHooks.useGetMessage(id)
+	return msg ? <Message {...msg} /> : null
 }
 
 const MessageList: React.FC<{ id: string }> = (props) => {
@@ -121,7 +114,7 @@ const MessageList: React.FC<{ id: string }> = (props) => {
 			data={conversation ? [...conversation.messages].reverse() : []}
 			inverted
 			keyExtractor={(item) => item}
-			ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
+			ListFooterComponent={<InfosChat createdAt={conversation?.createdAt || 0} />}
 			renderItem={({ item }) => <AppMessage message={item} />}
 		/>
 	)
@@ -137,10 +130,10 @@ const useReadEffect = (convId: string, timeout: number) => {
 		let timeoutID: number | null = null
 		const handleStart = () => {
 			if (timeoutID === null) {
-				timeoutID = setTimeout(() => {
+				timeoutID = (setTimeout(() => {
 					timeoutID = null
 					startRead()
-				}, timeout)
+				}, timeout) as unknown) as number
 			}
 		}
 		handleStart()
