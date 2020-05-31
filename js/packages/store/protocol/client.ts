@@ -22,6 +22,7 @@ export type Entity = {
 	accountPk: string
 	devicePk: string
 	accountGroupPk: string
+	peerId: string
 }
 
 export type Event = {}
@@ -54,6 +55,7 @@ export type Events = evgen.Events<State> & {
 				accountPk: string
 				devicePk: string
 				accountGroupPk: string
+				peerId: string
 			}
 		},
 	) => State
@@ -117,6 +119,7 @@ const eventHandler = createSlice<State, Events>({
 					accountPk: action.payload.accountPk,
 					devicePk: action.payload.devicePk,
 					accountGroupPk: action.payload.accountGroupPk,
+					peerId: action.payload.peerId,
 				}
 			}
 			return state
@@ -186,7 +189,6 @@ export const decodeMetadataEvent = (
 		console.warn("Don't know how to decode", eventName)
 		return undefined
 	}
-	console.log('response.event', response.event)
 	const decodedEvent = event.decode(response.event)
 	return decodedEvent
 }
@@ -239,7 +241,7 @@ const groupMessageEventToReduxAction = (
 const defaultTransactions = (Object.keys(gen.Methods) as (keyof gen.Commands<State>)[]).reduce(
 	(txs, methodName) => {
 		txs[methodName] = function* ({ id, ...payload }: { id: string }) {
-			return yield* unaryChan(getService(id)[methodName], payload)
+			return yield* unaryChan((getService(id) as any)[methodName], payload)
 		}
 		return txs
 	},
@@ -301,9 +303,9 @@ export const transactions: Transactions = {
 		// try to connect repeatedly since startBridge can return before the bridge is ready to serve
 		const reply = yield* unaryChan(service.instanceGetConfiguration)
 		console.log('reply', reply)
-		const { accountPk, devicePk, accountGroupPk } = reply
+		const { accountPk, devicePk, accountGroupPk, peerId } = reply
 		console.log('accountPk', typeof accountPk, accountPk)
-		if (!(accountPk && devicePk && accountGroupPk)) {
+		if (!(accountPk && devicePk && accountGroupPk && peerId)) {
 			throw new Error('Invalid instance data')
 		}
 		yield putResolve(
@@ -312,6 +314,7 @@ export const transactions: Transactions = {
 				accountPk: bufToStr(accountPk),
 				devicePk: bufToStr(devicePk),
 				accountGroupPk: bufToStr(accountGroupPk),
+				peerId,
 			}),
 		)
 	},

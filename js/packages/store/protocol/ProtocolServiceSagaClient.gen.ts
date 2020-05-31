@@ -518,13 +518,15 @@ export default class ProtocolServiceSagaClient {
 		eventChannel<api.berty.types.AppMessageSend.IReply>((emit) => {
 			const buf = api.berty.types.AppMessageSend.Request.encode(requestObj).finish()
 			const request = bertytypes.AppMessageSend.Request.deserializeBinary(buf)
+			console.log("invoking")
 			const { close } = grpc.invoke(ProtocolService.AppMessageSend, {
 				request,
 				transport: this.transport,
 				host: this.host,
 				onMessage: (message: bertytypes.AppMessageSend.Reply) =>
-					emit(api.berty.types.AppMessageSend.Reply.decode(message.serializeBinary())),
+					{console.log("onMessage");emit(api.berty.types.AppMessageSend.Reply.decode(message.serializeBinary()))},
 				onEnd: (code, msg, trailers) => {
+					console.log("onEnd")
 					if (code !== grpc.Code.OK) {
 						emit(
 							new Error(

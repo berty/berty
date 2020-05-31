@@ -1,11 +1,14 @@
-import React, { useState, useRef, useLayoutEffect } from 'react'
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react'
 import { Chat } from '@berty-tech/hooks'
+import { chat } from '@berty-tech/store'
 import grpcBridge from '@berty-tech/grpc-bridge'
 import { protocol } from '@berty-tech/store'
 import { AppMessageType } from '@berty-tech/store/chat/AppMessage'
 import ProtocolServiceClient from '@berty-tech/store/protocol/ProtocolServiceClient.gen'
 import './App.css'
 import storage from 'redux-persist/lib/storage'
+import ReactNotification, { store as reactNotifStore } from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
 
 const CreateAccount: React.FC = () => {
 	const [name, setName] = useState('')
@@ -171,9 +174,29 @@ const Conversation: React.FC<{ convId: string }> = ({ convId }) => {
 	)
 }
 
+function usePrevious<T>(value: T) {
+	// https://blog.logrocket.com/how-to-get-previous-props-state-with-react-hooks/
+	const ref = useRef<T>()
+	useEffect(() => {
+		ref.current = value
+	})
+	return ref.current
+}
+
 const Conversations: React.FC = () => {
 	const conversations = Chat.useConversationList()
+
 	const [selected, setSelected] = useState('')
+	const selectedPreviously = usePrevious(selected)
+	const startRead = Chat.useStartReadConversation(selected)
+	const stopReadPrevious = Chat.useStopReadConversation(selectedPreviously)
+	useEffect(() => {
+		if (selected !== selectedPreviously) {
+			stopReadPrevious()
+			startRead()
+		}
+		return stopReadPrevious
+	}, [selected, selectedPreviously, startRead, stopReadPrevious])
 	return (
 		<>
 			<h2>Conversations</h2>
@@ -326,12 +349,63 @@ const Tabs: React.FC = () => {
 	)
 }
 
+const DEFAULT_TEST_NOTIF: chat.notifications.Entity = { title: 'Unknown', message: 'Unknown' }
+
+const NotifsTester: React.FC = () => {
+	const [notif, setNotif] = useState(DEFAULT_TEST_NOTIF)
+	const notify = Chat.useNotify()
+	return (
+		<div>
+			Test notifications:{' '}
+			<input
+				type='text'
+				onChange={(ev) => setNotif({ ...notif, title: ev.target.value })}
+				value={notif.title}
+			/>
+			<input
+				type='text'
+				onChange={(ev) => setNotif({ ...notif, message: ev.target.value })}
+				value={notif.message}
+			/>
+			<button onClick={() => notify(notif)}>Notify</button>
+		</div>
+	)
+}
+
+// bridge notif from redux to react notifications
+const NotificationsBridge: React.FC = () => {
+	const notif = Chat.useLastNotification()
+	useEffect(() => {
+		console.log('notif', notif)
+		if (notif) {
+			reactNotifStore.addNotification({
+				title: notif.title,
+				message: notif.message,
+				type: 'success',
+				insert: 'bottom',
+				container: 'bottom-left',
+				animationIn: ['animated', 'fadeIn'],
+				animationOut: ['animated', 'fadeOut'],
+				dismiss: {
+					duration: 5000,
+					onScreen: true,
+				},
+			})
+		}
+	}, [notif])
+	return null
+}
+
 function App() {
 	return (
 		<Chat.Provider config={{ storage }}>
+			<ReactNotification />
+			<NotificationsBridge />
+
 			<div className='App' style={{ display: 'flex', flexDirection: 'column' }}>
 				<h1>Berty web dev</h1>
 				<ClearStorage />
+				<NotifsTester />
 				<AccountGate>
 					<Tabs />
 				</AccountGate>

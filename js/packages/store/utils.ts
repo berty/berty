@@ -27,4 +27,11 @@ export const bufToStr = (buf: Uint8Array) => Buffer.from(buf).toString(BUFFER_EN
 
 export const JSON_ENCODING = 'utf-8'
 export const jsonToBuf = (val: any) => Buffer.from(JSON.stringify(val), JSON_ENCODING)
-export const bufToJSON = (buf: Uint8Array) => JSON.parse(Buffer.from(buf).toString(JSON_ENCODING))
+export const bufToJSON = (buf: Uint8Array): any | undefined => {
+	try {
+		return JSON.parse(Buffer.from(buf).toString(JSON_ENCODING))
+	} catch (e) {
+		console.error(e)
+		return undefined
+	}
+}

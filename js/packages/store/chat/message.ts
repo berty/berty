@@ -4,8 +4,7 @@ import { all, put, takeEvery, select, call } from 'redux-saga/effects'
 import { berty } from '@berty-tech/api'
 import { makeDefaultCommandsSagas, strToBuf, bufToStr, jsonToBuf, bufToJSON } from '../utils'
 
-import * as protocol from '../protocol'
-import { conversation } from '../chat'
+import { conversation, notifications, protocol } from '.'
 
 import { UserMessage, GroupInvitation, AppMessageType, AppMessage, Acknowledge } from './AppMessage'
 
@@ -16,6 +15,7 @@ export type StoreMessage = StoreUserMessage | GroupInvitation
 export type Entity = {
 	id: string
 	receivedDate: number
+	convId: string
 } & StoreMessage
 
 export type Event = {
@@ -56,6 +56,7 @@ export namespace Event {
 		message: AppMessage
 		receivedDate: number
 		isMe: boolean
+		convId: string
 	}
 	export type Hidden = { aggregateId: string }
 }
@@ -89,6 +90,7 @@ const FAKE_MESSAGES: Entity[] = FAKE_MESSAGES_CONFIG.map((fc, i) => {
 		receivedDate: Date.now(),
 		isMe: false,
 		acknowledged: false,
+		convId: 'unknown',
 	}
 })
 
@@ -131,7 +133,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 	name: 'chat/message/event',
 	initialState,
 	reducers: {
-		received: (state, { payload: { aggregateId, message, receivedDate, isMe } }) => {
+		received: (state, { payload: { aggregateId, message, receivedDate, isMe, convId } }) => {
 			if (state.aggregates[aggregateId]) {
 				return state
 			}
@@ -150,6 +152,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 						sentDate: message.sentDate,
 						acknowledged: hasAckInBacklog,
 						receivedDate,
+						convId,
 					}
 					break
 				case AppMessageType.UserReaction:
@@ -161,6 +164,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 						type: message.type,
 						groupPk: message.groupPk,
 						receivedDate,
+						convId,
 					}
 					break
 				case AppMessageType.Acknowledge:
@@ -233,12 +237,13 @@ export const transactions: Transactions = {
 				attachments: payload.attachments,
 				sentDate: Date.now(),
 			}
-
-			yield* protocol.transactions.client.appMessageSend({
+			console.log('calling app message send')
+			yield call(protocol.transactions.client.appMessageSend, {
 				id: conv.accountId,
 				groupPk: strToBuf(conv.pk), // need to set the pk in conv handlers
 				payload: jsonToBuf(message),
 			})
+			console.log('app message send done')
 		}
 	},
 	hide: function* () {
@@ -274,7 +279,9 @@ export function* orchestrator() {
 			if (!action.payload.message) {
 				return
 			}
-			const message: AppMessage = bufToJSON(action.payload.message)
+			const message: AppMessage = bufToJSON(action.payload.message) || {
+				type: AppMessageType.Unknown,
+			}
 			const aggregateId = bufToStr(idBuf)
 			// create the message entity
 			const existingMessage = (yield select((state) => queries.get(state, { id: aggregateId }))) as
@@ -309,6 +316,7 @@ export function* orchestrator() {
 					message,
 					receivedDate: Date.now(),
 					isMe,
+					convId: conv.id,
 				}),
 			)
 
@@ -329,10 +337,22 @@ export function* orchestrator() {
 						type: AppMessageType.Acknowledge,
 						target: aggregateId,
 					}
+
 					yield call(protocol.transactions.client.appMessageSend, {
 						id: conv.accountId,
 						groupPk: groupPkBuf,
 						payload: jsonToBuf(acknowledge),
+					})
+				}
+			}
+		}),
+		takeEvery(events.received, function* ({ payload }) {
+			if (payload.message.type === AppMessageType.UserMessage && !payload.isMe) {
+				const conv = yield* conversation.getConversation(payload.convId)
+				if (!conv?.reading) {
+					yield call(notifications.transactions.notify, {
+						title: 'New message!',
+						message: payload.message.body,
 					})
 				}
 			}

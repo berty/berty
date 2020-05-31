@@ -14,8 +14,9 @@ import * as contact from './contact'
 import * as conversation from './conversation'
 import * as member from './member'
 import * as message from './message'
+import * as notifications from './notifications'
 
-export { account, contact, conversation, member, message }
+export { account, contact, conversation, member, message, notifications, protocol }
 
 export type State = account.GlobalState
 
@@ -29,6 +30,7 @@ export const reducers = {
 		member: member.reducer,
 		message: message.reducer,
 	}),
+	notifications: notifications.reducer,
 }
 
 export function* rootSaga() {
@@ -38,15 +40,18 @@ export function* rootSaga() {
 		while (true) {
 			try {
 				const rootTask = (yield fork(function* () {
-					yield all([
-						call(protocol.rootSaga),
-						call(settings.rootSaga),
-						call(account.orchestrator),
-						call(contact.orchestrator),
-						call(conversation.orchestrator),
-						call(member.orchestrator),
-						call(message.orchestrator),
-					])
+					yield all(
+						[
+							protocol.rootSaga,
+							settings.rootSaga,
+							account.orchestrator,
+							contact.orchestrator,
+							conversation.orchestrator,
+							member.orchestrator,
+							message.orchestrator,
+							notifications.orchestrator,
+						].map((saga) => call(saga)),
+					)
 				})) as Task
 				yield take('CLEAR_STORE')
 				console.log('Store cleared, Restarting root saga')

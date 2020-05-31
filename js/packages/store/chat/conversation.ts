@@ -327,6 +327,10 @@ export const queries: QueryReducer = {
 	getLength: (state) => Object.keys(getAggregatesWithFakes(state)).length,
 }
 
+export function* getConversation(id: string) {
+	return (yield select((state) => queries.get(state, { id }))) as Entity | undefined
+}
+
 export const transactions: Transactions = {
 	open: function* ({ accountId }) {
 		const conversations = (yield select((state) => queries.list(state))) as Entity[]
@@ -489,7 +493,10 @@ export function* orchestrator() {
 				groupPk,
 			})
 			const groupPkStr = bufToStr(groupPk)
-			const metadata: contact.ContactRequestMetadata = bufToJSON(c.metadata)
+			const metadata: contact.ContactRequestMetadata = bufToJSON(c.metadata) || {
+				name: 'Unknown',
+				givenName: 'Unknown',
+			}
 			yield put(
 				events.created({
 					accountId,

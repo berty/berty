@@ -162,6 +162,9 @@ start.grpc-bridge.berty:
 	cd $(BERTY_ROOT) \
 		&& bazel run //go/cmd/berty -- daemon -l /ip4/$(host)/tcp/$(port)/$(proto)
 
+start.web-dev-app: deps
+	cd packages/web-dev-app && yarn start
+
 # pb.generate
 include gen.make
 

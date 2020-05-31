@@ -4,6 +4,7 @@ export enum AppMessageType {
 	GroupInvitation = 'GroupInvitation',
 	SetGroupName = 'SetGroupName',
 	Acknowledge = 'Acknowledge',
+	Unknown = 'Unknown',
 }
 
 export type UserMessage = {
@@ -33,4 +34,14 @@ export type Acknowledge = {
 	target: string
 }
 
-export type AppMessage = UserMessage | UserReaction | GroupInvitation | SetGroupName | Acknowledge
+export type Unknown = {
+	type: AppMessageType.Unknown
+}
+
+export type AppMessage =
+	| UserMessage
+	| UserReaction
+	| GroupInvitation
+	| SetGroupName
+	| Acknowledge
+	| Unknown

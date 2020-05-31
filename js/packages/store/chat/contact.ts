@@ -362,13 +362,16 @@ export function* orchestrator() {
 			const contactPkStr = bufToStr(contactPk)
 			const groupPkStr = bufToStr(groupPk)
 			const mtdt = action.payload.event.contact.metadata
-			const metadata: ContactRequestMetadata = mtdt && bufToJSON(mtdt)
+			const metadata: ContactRequestMetadata = (mtdt && bufToJSON(mtdt)) || {
+				name: 'Unknown',
+				givenName: 'Unknown',
+			}
 			yield put(
 				events.outgoingContactRequestEnqueued({
 					accountId: action.payload.aggregateId,
 					contactPk: contactPkStr,
 					groupPk: groupPkStr,
-					metadata,
+					metadata: metadata,
 					addedDate: Date.now(),
 				}),
 			)
@@ -387,7 +390,10 @@ export function* orchestrator() {
 			const id = getAggregateId({ accountId, contactPk })
 			const contact = yield* getContact(id)
 			if (!contact) {
-				const metadata: ContactRequestMetadata = bufToJSON(contactMetadata)
+				const metadata: ContactRequestMetadata = bufToJSON(contactMetadata) || {
+					name: 'Unknown',
+					givenName: 'Unknown',
+				}
 				yield put(
 					events.created({
 						id,
