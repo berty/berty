@@ -10,7 +10,7 @@ import React from 'react'
 import DevMenu from 'react-native-dev-menu'
 import Navigation, { NavigationContainer } from '@berty-tech/berty-navigation'
 
-import { Theme, NodeGate } from '@berty-tech/components'
+import { Theme, NodeGate, NotificationsProvider } from '@berty-tech/components'
 import '@berty-tech/berty-i18n'
 import { enableScreens } from 'react-native-screens'
 import { Chat } from '@berty-tech/hooks'
@@ -37,9 +37,11 @@ export const App: React.FC = () => (
 			<Chat.Provider config={{ storage: AsyncStorage }}>
 				<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 				<Theme.Provider>
-					<NodeGate>
-						<Navigation />
-					</NodeGate>
+					<NotificationsProvider>
+						<NodeGate>
+							<Navigation />
+						</NodeGate>
+					</NotificationsProvider>
 				</Theme.Provider>
 			</Chat.Provider>
 		</NavigationContainer>

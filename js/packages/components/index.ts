@@ -6,5 +6,6 @@ import * as Theme from './theme'
 import * as Shared from './shared-components'
 import * as Modals from './modals'
 import NodeGate from './NodeGate'
+import NotificationsProvider from './NotificationsProvider'
 
-export { Onboarding, Main, Chat, Settings, Theme, Shared, Modals, NodeGate }
+export { Onboarding, Main, Chat, Settings, Theme, Shared, Modals, NodeGate, NotificationsProvider }

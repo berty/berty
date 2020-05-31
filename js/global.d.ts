@@ -5,6 +5,7 @@ declare interface Window {
 declare module 'simpleflakes/lib/simpleflakes-legacy'
 declare module '@clarketm/saga-monitor'
 declare module 'redux-test-recorder'
+declare module 'react-native-in-app-notification'
 
 declare module '*.svg' {
 	import { SvgProps } from 'react-native-svg'
