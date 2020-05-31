@@ -9,20 +9,22 @@ import { persistReducer, persistStore } from 'redux-persist'
 
 import * as protocol from '../protocol'
 import * as settings from '../settings'
+import * as notifications from '../notifications'
+
 import * as account from './account'
 import * as contact from './contact'
 import * as conversation from './conversation'
 import * as member from './member'
 import * as message from './message'
-import * as notifications from './notifications'
 
-export { account, contact, conversation, member, message, notifications, protocol }
+export { account, contact, conversation, member, message, protocol }
 
 export type State = account.GlobalState
 
 export const reducers = {
 	...protocol.reducers,
 	...settings.reducers,
+	...notifications.reducers,
 	chat: combineReducers({
 		account: account.reducer,
 		contact: contact.reducer,
@@ -30,7 +32,6 @@ export const reducers = {
 		member: member.reducer,
 		message: message.reducer,
 	}),
-	notifications: notifications.reducer,
 }
 
 export function* rootSaga() {

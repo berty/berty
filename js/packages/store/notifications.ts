@@ -1,7 +1,7 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { all, put } from 'redux-saga/effects'
-import { makeDefaultCommandsSagas } from '../utils'
+import { makeDefaultCommandsSagas } from './utils'
 
 const QUEUE_LENGTH = 50
 
@@ -76,6 +76,8 @@ const eventHandler = createSlice<State, EventsReducer>({
 })
 
 export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
+export const reducers = { notifications: reducer }
+
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
 export const queries: QueryReducer = {

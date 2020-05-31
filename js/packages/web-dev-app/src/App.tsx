@@ -1,6 +1,6 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from 'react'
-import { Chat } from '@berty-tech/hooks'
-import { chat } from '@berty-tech/store'
+import { Chat, Notifications } from '@berty-tech/hooks'
+import { notifications } from '@berty-tech/store'
 import grpcBridge from '@berty-tech/grpc-bridge'
 import { protocol } from '@berty-tech/store'
 import { AppMessageType } from '@berty-tech/store/chat/AppMessage'
@@ -195,6 +195,7 @@ const Conversations: React.FC = () => {
 			stopReadPrevious()
 			startRead()
 		}
+
 		return stopReadPrevious
 	}, [selected, selectedPreviously, startRead, stopReadPrevious])
 	return (
@@ -349,11 +350,11 @@ const Tabs: React.FC = () => {
 	)
 }
 
-const DEFAULT_TEST_NOTIF: chat.notifications.Entity = { title: 'Unknown', message: 'Unknown' }
+const DEFAULT_TEST_NOTIF: notifications.Entity = { title: 'Title', message: 'Message' }
 
 const NotifsTester: React.FC = () => {
 	const [notif, setNotif] = useState(DEFAULT_TEST_NOTIF)
-	const notify = Chat.useNotify()
+	const notify = Notifications.useNotify()
 	return (
 		<div>
 			Test notifications:{' '}
@@ -374,7 +375,7 @@ const NotifsTester: React.FC = () => {
 
 // bridge notif from redux to react notifications
 const NotificationsBridge: React.FC = () => {
-	const notif = Chat.useLastNotification()
+	const notif = Notifications.useLastNotification()
 	useEffect(() => {
 		console.log('notif', notif)
 		if (notif) {

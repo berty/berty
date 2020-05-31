@@ -4,7 +4,9 @@ import { all, put, takeEvery, select, call } from 'redux-saga/effects'
 import { berty } from '@berty-tech/api'
 import { makeDefaultCommandsSagas, strToBuf, bufToStr, jsonToBuf, bufToJSON } from '../utils'
 
-import { conversation, notifications, protocol } from '.'
+import * as conversation from './conversation'
+import * as notifications from '../notifications'
+import * as protocol from '../protocol'
 
 import { UserMessage, GroupInvitation, AppMessageType, AppMessage, Acknowledge } from './AppMessage'
 
