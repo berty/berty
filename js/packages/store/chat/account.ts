@@ -1,6 +1,6 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { fork, put, all, select, takeEvery, take, delay, call } from 'redux-saga/effects'
+import { fork, put, all, select, delay, call } from 'redux-saga/effects'
 import GoBridge from '@berty-tech/go-bridge'
 import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
 import { berty } from '@berty-tech/api'
@@ -238,41 +238,8 @@ export const transactions: Transactions = {
 		yield call(GoBridge.clearStorage)
 		yield put({ type: 'CLEAR_STORE' })
 	},
-	replay: function* ({ id }) {
-		// FIXME
-
-		const account = select((state) => queries.get(state, { id }))
-		if (account == null) {
-			console.error('account does not exist')
-			return
-		}
-
-		const client = yield* getProtocolClient(id)
-
-		// replay log from first event
-		const chan = yield* protocol.transactions.client.groupMetadataSubscribe({
-			id: client.id,
-			groupPk: strToBuf(client.accountGroupPk),
-			// TODO: use last cursor
-			since: new Uint8Array(),
-			until: new Uint8Array(),
-			goBackwards: false,
-		})
-		/*yield takeEvery(chan, function* (
-			action: protocol.client.Commands extends {
-				[key: string]: (
-					state: protocol.client.State,
-					action: infer UAction,
-				) => protocol.client.State
-			}
-				? UAction
-				: { type: string; payload: { event: any } },
-		) {
-			yield put(action)
-			if (action.type === protocol.events.client.groupMetadataPayloadSent.type) {
-				yield put(action.payload.event)
-			}
-		})*/
+	replay: function* () {
+		throw new Error('not implemented')
 	},
 	sendContactRequest: function* (payload) {
 		const account = (yield select((state) => queries.get(state, { id: payload.id }))) as
