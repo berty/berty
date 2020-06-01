@@ -59,13 +59,16 @@ func (md *MultiDriver) advertise(ctx context.Context, d Driver, ns string, opts 
 			ttl, err := d.Advertise(ctx, ns, opts...)
 			if err != nil {
 				md.logger.Warn("failed to advertise",
-					zap.String("driver", d.Name()), zap.String("key", ns), zap.Error(err))
+					zap.String("driver", d.Name()),
+					zap.String("key", ns),
+					zap.Error(err),
+				)
 				if ctx.Err() != nil {
 					return
 				}
 
 				select {
-				case <-time.After(time.Minute):
+				case <-time.After(10 * time.Second):
 					continue
 				case <-ctx.Done():
 					return
