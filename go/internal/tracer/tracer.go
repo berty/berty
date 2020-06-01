@@ -109,7 +109,10 @@ func NewSpan(ctx context.Context, opts ...trace.StartOption) (context.Context, t
 }
 
 func retrieveCaller() (string, string) {
-	pc, _, _, _ := runtime.Caller(2)
+	pc, _, _, ok := runtime.Caller(2)
+	if !ok {
+		return "undefined", "undefined"
+	}
 	parts := strings.Split(runtime.FuncForPC(pc).Name(), ".")
 	pl := len(parts)
 	packageName := ""

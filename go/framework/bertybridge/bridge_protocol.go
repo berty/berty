@@ -15,7 +15,7 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	"github.com/ipfs/go-datastore"
+	datastore "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
@@ -41,9 +41,6 @@ type Protocol struct {
 
 	// protocol datastore
 	ds datastore.Batching
-
-	// ipfs repo
-	repo ipfs_repo.Repo
 }
 
 type ProtocolConfig struct {
@@ -127,10 +124,10 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 			if rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(ctx, defaultProtocolRendezVousPeer); err != nil {
 				return nil, errors.New("failed to parse rdvp multiaddr: " + defaultProtocolRendezVousPeer)
-			} else { // should be a valid rendezvous peer
-				bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultProtocolRendezVousPeer)
-				bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
 			}
+			// should be a valid rendezvous peer
+			bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultProtocolRendezVousPeer)
+			bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
 
 			if len(config.swarmListeners) > 0 {
 				bopts.SwarmAddrs = config.swarmListeners
@@ -154,13 +151,12 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 		if rootds, err = getRootDatastore(config.rootDirectory); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
-
 	}
 
 	// setup protocol
 	var service bertyprotocol.Service
 	{
-		odb_dir, err := getOrbitDBDirectory(config.rootDirectory)
+		odbDir, err := getOrbitDBDirectory(config.rootDirectory)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -168,7 +164,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 		// initialize new protocol client
 		protocolOpts := bertyprotocol.Opts{
 			Logger:         logger.Named("bertyprotocol"),
-			OrbitDirectory: odb_dir,
+			OrbitDirectory: odbDir,
 			RootDatastore:  rootds,
 			IpfsCoreAPI:    api,
 		}
@@ -246,15 +242,6 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 		ds: rootds,
 	}, nil
-}
-
-func (p *Protocol) newServiceClient() (bertyprotocol.ProtocolServiceClient, error) {
-	cl, err := p.Bridge.NewGRPCClient()
-	if err != nil {
-		return nil, err
-	}
-
-	return bertyprotocol.NewProtocolServiceClient(cl.grpcClient), nil
 }
 
 func (p *Protocol) Close() (err error) {

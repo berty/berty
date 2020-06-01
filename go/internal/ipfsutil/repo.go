@@ -129,27 +129,27 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 }
 
 func upgradeToPersistanceConfig(cfg *ipfs_cfg.Config) (*ipfs_cfg.Config, error) {
-	cfg_copy, err := cfg.Clone()
+	cfgCopy, err := cfg.Clone()
 	if err != nil {
 		return nil, err
 	}
 
 	// setup the node mount points.
-	cfg_copy.Mounts = ipfs_cfg.Mounts{
+	cfgCopy.Mounts = ipfs_cfg.Mounts{
 		IPFS: "/ipfs",
 		IPNS: "/ipns",
 	}
 
-	cfg_copy.Ipns = ipfs_cfg.Ipns{
+	cfgCopy.Ipns = ipfs_cfg.Ipns{
 		ResolveCacheSize: 128,
 	}
 
-	cfg_copy.Reprovider = ipfs_cfg.Reprovider{
+	cfgCopy.Reprovider = ipfs_cfg.Reprovider{
 		Interval: "12h",
 		Strategy: "all",
 	}
 
-	cfg_copy.Datastore = ipfs_cfg.Datastore{
+	cfgCopy.Datastore = ipfs_cfg.Datastore{
 		StorageMax:         "10GB",
 		StorageGCWatermark: 90, // 90%
 		GCPeriod:           "1h",
@@ -182,7 +182,7 @@ func upgradeToPersistanceConfig(cfg *ipfs_cfg.Config) (*ipfs_cfg.Config, error) 
 		},
 	}
 
-	return cfg_copy, nil
+	return cfgCopy, nil
 }
 
 func loadPlugins(repoPath string) (*ipfs_loader.PluginLoader, error) {

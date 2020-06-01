@@ -27,10 +27,6 @@ func sigCheckerGroupSigned(g *bertytypes.Group, metadata *bertytypes.GroupMetada
 	return nil
 }
 
-func sigCheckerMissing(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error {
-	return errcode.ErrNotImplemented
-}
-
 type eventDeviceSigned interface {
 	proto.Message
 	GetDevicePK() []byte

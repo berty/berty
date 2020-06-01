@@ -37,7 +37,7 @@ type Opts struct {
 
 var globalLogger *zap.Logger
 
-func newService(logger *zap.Logger, ctx context.Context, opts *Opts) (bertyprotocol.Service, func()) {
+func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyprotocol.Service, func()) {
 	var (
 		swarmAddresses []string
 		lock           *fslock.Lock
@@ -131,7 +131,7 @@ func Main(ctx context.Context, opts *Opts) {
 	if opts.RemoteAddr == "" {
 		trServer := tracer.Tracer("grpc-server")
 
-		service, clean := newService(opts.Logger, ctx, opts)
+		service, clean := newService(ctx, opts.Logger, opts)
 		defer clean()
 
 		grpcServer := grpc.NewServer(

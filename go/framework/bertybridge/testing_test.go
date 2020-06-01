@@ -14,6 +14,7 @@ import (
 	"net/textproto"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 )
 
 func (pc *ProtocolConfig) ipfsCoreAPI(api ipfsutil.ExtendedCoreAPI) {
@@ -147,4 +148,13 @@ func makeGrpcRequest(host string, method string, requestMessages [][]byte, isTex
 	}
 
 	return responseMessages, nil
+}
+
+func newServiceClient(p *Protocol) (bertyprotocol.ProtocolServiceClient, error) {
+	cl, err := p.Bridge.NewGRPCClient()
+	if err != nil {
+		return nil, err
+	}
+
+	return bertyprotocol.NewProtocolServiceClient(cl.grpcClient), nil
 }

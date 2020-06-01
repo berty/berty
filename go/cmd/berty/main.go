@@ -63,6 +63,7 @@ var (
 	DefaultMCBind      = config.BertyDev.DefaultMCBind
 )
 
+// nolint: gocyclo
 func main() {
 	log.SetFlags(0)
 
@@ -127,7 +128,7 @@ func main() {
 		isDebugEnabled := globalDebug || globalOrbitDebug || globalLibp2pDebug
 
 		flush := tracer.InitTracer(globalTracer, "berty")
-		ctx, span := tracer.NewNamedSpan(ctx, "pre-run")
+		_, span := tracer.NewNamedSpan(ctx, "pre-run")
 		defer span.End()
 
 		// setup zap config

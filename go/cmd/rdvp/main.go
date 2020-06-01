@@ -10,10 +10,10 @@ import (
 	mrand "math/rand"
 	"net"
 	"os"
-	"strconv"
 	"strings"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
+	ipfs_log "github.com/ipfs/go-log"
 	libp2p "github.com/libp2p/go-libp2p"
 	libp2p_cicuit "github.com/libp2p/go-libp2p-circuit"
 	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto" // nolint:staticcheck
@@ -22,9 +22,6 @@ import (
 	libp2p_quic "github.com/libp2p/go-libp2p-quic-transport"
 	libp2p_rp "github.com/libp2p/go-libp2p-rendezvous"
 	libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
-
-	ipfs_log "github.com/ipfs/go-log"
-
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	"github.com/peterbourgon/ff"
@@ -261,51 +258,4 @@ func parseAddrs(addrs ...string) (maddrs []ma.Multiaddr, err error) {
 	}
 
 	return
-}
-
-func parseBoolFromEnv(key string) (b bool) {
-	b, _ = strconv.ParseBool(os.Getenv(key))
-	return
-}
-
-func newLogger(debug bool, logfile string) (*zap.Logger, error) {
-	bertyDebug := parseBoolFromEnv("BERTY_DEBUG") || debug
-	libp2pDebug := parseBoolFromEnv("LIBP2P_DEBUG")
-	// @NOTE(gfanton): since orbitdb use `zap.L()`, this will only
-	// replace zap global logger with our logger
-	orbitdbDebug := parseBoolFromEnv("ORBITDB_DEBUG")
-
-	isDebugEnabled := bertyDebug || orbitdbDebug || libp2pDebug
-
-	// setup zap config
-	var config zap.Config
-	if logfile != "" {
-		config = zap.NewProductionConfig()
-		config.OutputPaths = []string{logfile}
-	} else {
-		config = zap.NewDevelopmentConfig()
-		config.DisableStacktrace = true
-		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	}
-
-	if isDebugEnabled {
-		config.Level.SetLevel(zap.DebugLevel)
-	} else {
-		config.Level.SetLevel(zap.InfoLevel)
-	}
-
-	logger, err := config.Build()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	if libp2pDebug {
-		ipfs_log.SetDebugLogging()
-	}
-
-	if orbitdbDebug {
-		zap.ReplaceGlobals(logger)
-	}
-
-	return logger, nil
 }

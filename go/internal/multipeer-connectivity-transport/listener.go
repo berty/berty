@@ -40,7 +40,7 @@ type connReq struct {
 }
 
 // newListener starts the native driver then returns a new Listener.
-func newListener(localMa ma.Multiaddr, t *Transport) (*Listener, error) {
+func newListener(localMa ma.Multiaddr, t *Transport) *Listener {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	listener := &Listener{
@@ -59,7 +59,7 @@ func newListener(localMa ma.Multiaddr, t *Transport) (*Listener, error) {
 	// Sets listener as global listener
 	gListener = listener
 
-	return listener, nil
+	return listener
 }
 
 // Accept waits for and returns the next connection to the listener.
@@ -88,7 +88,7 @@ func (l *Listener) Close() error {
 	// Stops the native driver.
 	mcdrv.StopMCDriver()
 
-	// Removes global listener so transport can instanciate a new one later.
+	// Removes global listener so transport can instantiate a new one later.
 	if gListener != nil {
 		gListener.inUse.Wait()
 		gListener = nil

@@ -5,12 +5,12 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 )
 
-// MC multiaddr transcoder
+// TranscoderMC is a multipeer-connectivity multiaddr transcoder
 // See https://github.com/multiformats/go-multiaddr/blob/master/transcoders.go
 var TranscoderMC = ma.NewTranscoderFromFunctions(mcStB, mcBtS, mcVal)
 
 func mcStB(s string) ([]byte, error) {
-	_, err := peer.IDB58Decode(s)
+	_, err := peer.Decode(s)
 	if err != nil {
 		return nil, err
 	}
@@ -18,7 +18,7 @@ func mcStB(s string) ([]byte, error) {
 }
 
 func mcBtS(b []byte) (string, error) {
-	_, err := peer.IDB58Decode(string(b))
+	_, err := peer.Decode(string(b))
 	if err != nil {
 		return "", err
 	}
@@ -26,6 +26,6 @@ func mcBtS(b []byte) (string, error) {
 }
 
 func mcVal(b []byte) error {
-	_, err := peer.IDB58Decode(string(b))
+	_, err := peer.Decode(string(b))
 	return err
 }
