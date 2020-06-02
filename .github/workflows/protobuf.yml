@@ -1,0 +1,39 @@
+name: protobuf
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+  pull_request:
+jobs:
+  generate:
+    name: generate
+    runs-on: ubuntu-latest
+    container: bertytech/protoc:23
+    steps:
+      - uses: actions/checkout@v2
+      - run: find . -name gen.sum ! -path './js/*' -delete
+      - name: generating go/
+        run: |
+          cd go
+          go mod vendor
+          make generate_local
+          make tidy
+      - name: generting docs/
+        run: |
+          cd docs
+          make generate_local
+      #- name: generating js/
+      #  run: |
+      #    cd js
+      #    make gen.clean
+      #    make deps
+      #    make gen.api
+      #    make gen.codegen
+      #    make generate_local
+      - name: check diff
+        run: |
+          git status | cat
+          diff -w | cat
+          git diff-index -w --quiet HEAD --
