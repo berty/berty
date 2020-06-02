@@ -5,6 +5,7 @@ import { composeReducers } from 'redux-compose'
 import { all, put, putResolve, call, delay, take, fork, join, takeEvery } from 'redux-saga/effects'
 import { Task } from 'redux-saga'
 import * as gen from './client.gen'
+import * as messengerGen from '../messenger/client.gen'
 import * as api from '@berty-tech/api'
 import Case from 'case'
 import * as evgen from '../types/events.gen'
@@ -15,10 +16,12 @@ import ProtocolServiceSagaClient from './ProtocolServiceSagaClient.gen'
 import * as bertytypes from './grpc-web-gen/bertytypes_pb'
 import { grpc } from '@improbable-eng/grpc-web'
 import { unaryChan, EventChannelOutput } from '../sagaUtils'
+import MessengerServiceSagaClient from '../messenger/MessengerServiceSagaClient.gen'
 
 export type Entity = {
 	id: string
 	contactRequestRdvSeed?: string
+	instanceShareableBertyId?: api.berty.messenger.InstanceShareableBertyID.IReply
 	accountPk: string
 	devicePk: string
 	accountGroupPk: string
@@ -36,9 +39,10 @@ export type GlobalState = {
 	}
 }
 
-export type Commands = gen.Commands<State> & {
-	delete: (state: State, action: { payload: { id: string } }) => State
-}
+export type Commands = gen.Commands<State> &
+	messengerGen.Commands<State> & {
+		delete: (state: State, action: { payload: { id: string } }) => State
+	}
 
 export type Queries = {
 	get: (state: GlobalState, payload: { id: string }) => Entity
@@ -66,6 +70,15 @@ export type Events = evgen.Events<State> & {
 			}
 		},
 	) => State
+	instanceShareableBertyIdUpdated: (
+		state: State,
+		action: {
+			payload: {
+				aggregateId: string
+				instanceShareableBertyId: api.berty.messenger.InstanceShareableBertyID.IReply
+			}
+		},
+	) => State
 	deleted: (state: State, action: PayloadAction<{ aggregateId: string }>) => State
 }
 
@@ -89,7 +102,12 @@ const initialState: State = {
 	aggregates: {},
 }
 
-const commandsNames = [...Object.keys(gen.Methods), 'start', 'delete']
+const commandsNames = [
+	...Object.keys(gen.Methods),
+	...Object.keys(messengerGen.Methods),
+	'start',
+	'delete',
+]
 
 const commandHandler = createSlice<State, Commands>({
 	name: 'protocol/client/command',
@@ -128,6 +146,13 @@ const eventHandler = createSlice<State, Events>({
 			}
 			return state
 		},
+		instanceShareableBertyIdUpdated: (state, { payload }) => {
+			const client = state.aggregates[payload.aggregateId]
+			if (client) {
+				client.instanceShareableBertyId = payload.instanceShareableBertyId
+			}
+			return state
+		},
 		deleted: (state, action) => {
 			delete state.aggregates[action.payload.aggregateId]
 			return state
@@ -151,14 +176,21 @@ const eventNameFromValue = (value: number) => {
 }
 
 export const services: {
-	[key: string]: ProtocolServiceSagaClient
+	[key: string]: { protocol: ProtocolServiceSagaClient; messenger: MessengerServiceSagaClient }
 } = {}
-export const getService = (id: string) => {
+export const getProtocolService = (id: string): ProtocolServiceSagaClient => {
 	const service = services[id]
 	if (!service) {
-		throw new Error(`Service ${id} not found`)
+		throw new Error(`Services for ${id} not found`)
 	}
-	return service
+	return service.protocol
+}
+export const getMessengerService = (id: string): MessengerServiceSagaClient => {
+	const service = services[id]
+	if (!service) {
+		throw new Error(`Services for ${id} not found`)
+	}
+	return service.messenger
 }
 
 export const decodeMetadataEvent = (
@@ -234,16 +266,24 @@ const groupMessageEventToReduxAction = (
 	}
 }
 
-// call cps on the service method by default
-const defaultTransactions = (Object.keys(gen.Methods) as (keyof gen.Commands<State>)[]).reduce(
-	(txs, methodName) => {
+// call unaryChan on the service method by default
+const defaultTransactions = {
+	...(Object.keys(gen.Methods) as (keyof gen.Commands<State>)[]).reduce((txs, methodName) => {
 		txs[methodName] = function* ({ id, ...payload }: { id: string }) {
-			return yield* unaryChan(getService(id)[methodName], payload)
+			return yield call(unaryChan, (getProtocolService(id) as any)[methodName], payload)
 		}
 		return txs
-	},
-	{} as Transactions,
-) as Transactions
+	}, {} as Transactions),
+	...(Object.keys(messengerGen.Methods) as (keyof gen.Commands<State>)[]).reduce(
+		(txs, methodName) => {
+			txs[methodName] = function* ({ id, ...payload }: { id: string }) {
+				return yield call(unaryChan, (getMessengerService(id) as any)[methodName], payload)
+			}
+			return txs
+		},
+		{} as Transactions,
+	),
+} as Transactions
 
 export type BertyNodeConfig =
 	| { type: 'external'; host: string; port: number }
@@ -267,7 +307,7 @@ export const transactions: Transactions = {
 	...defaultTransactions,
 	start: function* ({ id }) {
 		if (services[id] != null) {
-			console.warn('service already exists')
+			console.warn(`services for ${id} already exist`)
 			return
 		}
 
@@ -292,24 +332,27 @@ export const transactions: Transactions = {
 			address = `http://${addr}`
 		}
 
-		services[id] = new ProtocolServiceSagaClient(address, transport())
-
-		const service = getService(id)
+		const protocolService = new ProtocolServiceSagaClient(address, transport())
+		services[id] = {
+			protocol: protocolService,
+			messenger: new MessengerServiceSagaClient(address, transport()),
+		}
 
 		// try to connect repeatedly since startBridge can return before the bridge is ready to serve
-		let reply
+		let instanceConf
 		while (true) {
 			try {
-				reply = yield* unaryChan(service.instanceGetConfiguration)
+				instanceConf = yield* unaryChan(protocolService.instanceGetConfiguration)
 				break
 			} catch (e) {
 				console.warn(e)
 			}
 		}
-		const { accountPk, devicePk, accountGroupPk } = reply
+		const { accountPk, devicePk, accountGroupPk } = instanceConf
 		if (!(accountPk && devicePk && accountGroupPk)) {
 			throw new Error('Invalid instance data')
 		}
+
 		yield putResolve(
 			events.started({
 				aggregateId: id,
@@ -332,7 +375,7 @@ export const transactions: Transactions = {
 		yield put(events.deleted({ aggregateId: id }))
 	},
 	contactRequestReference: function* (payload) {
-		const reply = yield* unaryChan(getService(payload.id).contactRequestReference)
+		const reply = yield* unaryChan(getProtocolService(payload.id).contactRequestReference)
 		if (reply.publicRendezvousSeed) {
 			yield put(
 				events.contactRequestRdvSeedUpdated({
@@ -343,8 +386,21 @@ export const transactions: Transactions = {
 		}
 		return reply
 	},
+	instanceShareableBertyID: function* (payload) {
+		const { id, ...params } = payload
+		const reply = yield* unaryChan(getMessengerService(payload.id).instanceShareableBertyID, params)
+		if (reply) {
+			yield put(
+				events.instanceShareableBertyIdUpdated({
+					aggregateId: payload.id,
+					instanceShareableBertyId: reply,
+				}),
+			)
+		}
+		return reply
+	},
 	contactRequestEnable: function* (payload) {
-		const reply = yield* unaryChan(getService(payload.id).contactRequestEnable)
+		const reply = yield* unaryChan(getProtocolService(payload.id).contactRequestEnable)
 		if (!reply.publicRendezvousSeed) {
 			throw new Error(`Invalid reference ${reply.publicRendezvousSeed}`)
 		}
@@ -357,28 +413,28 @@ export const transactions: Transactions = {
 		return reply
 	},
 	groupMetadataSubscribe: function* ({ id, ...req }) {
-		const chan = getService(id).groupMetadataSubscribe(req)
+		const chan = getProtocolService(id).groupMetadataSubscribe(req)
 		while (true) {
 			const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
 			yield put(groupMetadataEventToReduxAction(id, reply))
 		}
 	},
 	groupMessageSubscribe: function* ({ id, ...req }) {
-		const chan = getService(id).groupMessageSubscribe(req)
+		const chan = getProtocolService(id).groupMessageSubscribe(req)
 		while (true) {
 			const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
 			yield put(groupMessageEventToReduxAction(id, reply))
 		}
 	},
 	groupMetadataList: function* ({ id, ...req }) {
-		const chan = getService(id).groupMetadataList(req)
+		const chan = getProtocolService(id).groupMetadataList(req)
 		while (true) {
 			const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
 			yield put(groupMetadataEventToReduxAction(id, reply))
 		}
 	},
 	groupMessageList: function* ({ id, ...req }) {
-		const chan = getService(id).groupMessageList(req)
+		const chan = getProtocolService(id).groupMessageList(req)
 		while (true) {
 			const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
 			yield put(groupMessageEventToReduxAction(id, reply))

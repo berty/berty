@@ -36,6 +36,23 @@ export const useClient = () => {
 	)
 }
 
+export const useDevShareInstanceBertyID = () => {
+	const dispatch = useDispatch()
+	const account = useAccount()
+	if (!account) {
+		return () => {}
+	}
+	return () => {
+		dispatch(
+			protocol.client.commands.devShareInstanceBertyID({
+				id: account.id,
+				displayName: account.name,
+				reset: false,
+			}),
+		)
+	}
+}
+
 // account commands
 export const useAccountGenerate = () => {
 	const dispatch = useDispatch()

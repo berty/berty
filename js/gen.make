@@ -1,7 +1,9 @@
 GO ?= go
 PROTOS_SRC := ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto \
 	../api/bertytypes.proto \
-	../api/bertyprotocol.proto
+	../api/bertyprotocol.proto \
+	../api/bertymessenger.proto \
+	
 OUT_DIR = ./packages/store/protocol/grpc-web-gen
 GEN_SRC := $(PROTOS_SRC) gen.make Makefile yarn.lock
 GEN_SUM := gen.sum
