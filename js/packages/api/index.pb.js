@@ -1450,12 +1450,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           }
         }
       },
-      chat: {
+      messenger: {
         options: {
-          go_package: "berty.tech/berty/go/pkg/bertychat"
+          go_package: "berty.tech/berty/go/pkg/bertymessenger"
         },
         nested: {
-          ChatService: {
+          MessengerService: {
             methods: {
               InstanceShareableBertyID: {
                 requestType: "InstanceShareableBertyID.Request",

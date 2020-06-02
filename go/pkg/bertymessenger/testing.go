@@ -1,4 +1,4 @@
-package bertychat
+package bertymessenger
 
 import (
 	"context"
@@ -13,7 +13,7 @@ type TestingServiceOpts struct {
 	Client bertyprotocol.Client
 }
 
-func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts) (ChatServiceServer, func()) {
+func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts) (MessengerServiceServer, func()) {
 	t.Helper()
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()

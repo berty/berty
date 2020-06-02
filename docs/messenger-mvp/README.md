@@ -1,4 +1,4 @@
-# Chat MVP
+# Berty Messenger MVP
 
 ## Reading linked graphs
 

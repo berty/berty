@@ -16,7 +16,7 @@ api_go_path := $(abspath $(berty_root)/vendor)
 
 api_protos := \
 	$(api_berty_path)/bertyprotocol.proto \
-	$(api_berty_path)/bertychat.proto \
+	$(api_berty_path)/bertymessenger.proto \
 
 api_targets := \
 	$(PWD)/index.pb.js \

@@ -3,32 +3,32 @@
 
 ## Table of Contents
 
-- [bertychat.proto](#bertychat.proto)
-    - [DevShareInstanceBertyID](#berty.chat.DevShareInstanceBertyID)
-    - [DevShareInstanceBertyID.Reply](#berty.chat.DevShareInstanceBertyID.Reply)
-    - [DevShareInstanceBertyID.Request](#berty.chat.DevShareInstanceBertyID.Request)
-    - [InstanceShareableBertyID](#berty.chat.InstanceShareableBertyID)
-    - [InstanceShareableBertyID.Reply](#berty.chat.InstanceShareableBertyID.Reply)
-    - [InstanceShareableBertyID.Request](#berty.chat.InstanceShareableBertyID.Request)
+- [bertymessenger.proto](#bertymessenger.proto)
+    - [DevShareInstanceBertyID](#berty.messenger.DevShareInstanceBertyID)
+    - [DevShareInstanceBertyID.Reply](#berty.messenger.DevShareInstanceBertyID.Reply)
+    - [DevShareInstanceBertyID.Request](#berty.messenger.DevShareInstanceBertyID.Request)
+    - [InstanceShareableBertyID](#berty.messenger.InstanceShareableBertyID)
+    - [InstanceShareableBertyID.Reply](#berty.messenger.InstanceShareableBertyID.Reply)
+    - [InstanceShareableBertyID.Request](#berty.messenger.InstanceShareableBertyID.Request)
   
-    - [ChatService](#berty.chat.ChatService)
+    - [MessengerService](#berty.messenger.MessengerService)
   
 - [Scalar Value Types](#scalar-value-types)
 
-<a name="bertychat.proto"></a>
+<a name="bertymessenger.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## bertychat.proto
+## bertymessenger.proto
 
-<a name="berty.chat.DevShareInstanceBertyID"></a>
+<a name="berty.messenger.DevShareInstanceBertyID"></a>
 
 ### DevShareInstanceBertyID
 
-<a name="berty.chat.DevShareInstanceBertyID.Reply"></a>
+<a name="berty.messenger.DevShareInstanceBertyID.Reply"></a>
 
 ### DevShareInstanceBertyID.Reply
 
-<a name="berty.chat.DevShareInstanceBertyID.Request"></a>
+<a name="berty.messenger.DevShareInstanceBertyID.Request"></a>
 
 ### DevShareInstanceBertyID.Request
 
@@ -37,11 +37,11 @@
 | reset | [bool](#bool) |  | reset will regenerate a new link |
 | display_name | [string](#string) |  |  |
 
-<a name="berty.chat.InstanceShareableBertyID"></a>
+<a name="berty.messenger.InstanceShareableBertyID"></a>
 
 ### InstanceShareableBertyID
 
-<a name="berty.chat.InstanceShareableBertyID.Reply"></a>
+<a name="berty.messenger.InstanceShareableBertyID.Reply"></a>
 
 ### InstanceShareableBertyID.Reply
 
@@ -52,7 +52,7 @@
 | html_url | [string](#string) |  |  |
 | display_name | [string](#string) |  |  |
 
-<a name="berty.chat.InstanceShareableBertyID.Request"></a>
+<a name="berty.messenger.InstanceShareableBertyID.Request"></a>
 
 ### InstanceShareableBertyID.Request
 
@@ -67,16 +67,16 @@
 
  
 
-<a name="berty.chat.ChatService"></a>
+<a name="berty.messenger.MessengerService"></a>
 
-### ChatService
-ChatService is the top-level API that uses the Berty Protocol to implement the Berty Chat specific logic.
-Today, most of the Berty Chat logic is implemented directly in the application (see the /js folder of this repo).
+### MessengerService
+MessengerService is the top-level API that uses the Berty Protocol to implement the Berty Messenger specific logic.
+Today, most of the Berty Messenger logic is implemented directly in the application (see the /js folder of this repo).
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| InstanceShareableBertyID | [InstanceShareableBertyID.Request](#berty.chat.InstanceShareableBertyID.Request) | [InstanceShareableBertyID.Reply](#berty.chat.InstanceShareableBertyID.Reply) | InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link. |
-| DevShareInstanceBertyID | [DevShareInstanceBertyID.Request](#berty.chat.DevShareInstanceBertyID.Request) | [DevShareInstanceBertyID.Reply](#berty.chat.DevShareInstanceBertyID.Reply) | DevShareInstanceBertyID shares your Berty ID on a dev channel. TODO: remove for public. |
+| InstanceShareableBertyID | [InstanceShareableBertyID.Request](#berty.messenger.InstanceShareableBertyID.Request) | [InstanceShareableBertyID.Reply](#berty.messenger.InstanceShareableBertyID.Reply) | InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link. |
+| DevShareInstanceBertyID | [DevShareInstanceBertyID.Request](#berty.messenger.DevShareInstanceBertyID.Request) | [DevShareInstanceBertyID.Reply](#berty.messenger.DevShareInstanceBertyID.Reply) | DevShareInstanceBertyID shares your Berty ID on a dev channel. TODO: remove for public. |
 
  
 
