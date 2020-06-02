@@ -226,7 +226,7 @@ func Main(ctx context.Context, opts *Opts) {
 		AddItem(tview.NewTextView().SetText(">> "), 3, 0, false).
 		AddItem(input, 0, 1, true)
 
-	chat := tview.NewFlex().
+	messenger := tview.NewFlex().
 		AddItem(tabbedView.GetTabs(), 10, 0, false).
 		AddItem(tview.NewFlex().SetDirection(tview.FlexRow).
 			AddItem(tabbedView.GetHistory(), 0, 1, false).
@@ -266,7 +266,7 @@ func Main(ctx context.Context, opts *Opts) {
 		return event
 	})
 
-	if err := app.SetRoot(chat, true).SetFocus(chat).Run(); err != nil {
+	if err := app.SetRoot(messenger, true).SetFocus(messenger).Run(); err != nil {
 		panic(err)
 	}
 }

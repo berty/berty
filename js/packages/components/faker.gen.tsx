@@ -253,15 +253,15 @@ export namespace faker {
 			}
 		}
 		export namespace types {}
-		export namespace chat {
-			export namespace ChatService {
+		export namespace messenger {
+			export namespace MessengerService {
 				export const rpcImpl: pb.RPCImpl = (method, requestData, callback) => {
 					// map pbjs method descriptor to grpc method descriptor
 					if (!(method instanceof pb.Method)) {
 						console.error("bridge doesn't support protobuf.rpc.ServiceMethod")
 						return
 					}
-					const _ = faker.berty.chat.ChatService as { [key: string]: any }
+					const _ = faker.berty.messenger.MessengerService as { [key: string]: any }
 					_[method.name](
 						method && method.resolvedRequestType && method.resolvedRequestType.decode(requestData),
 						callback,
@@ -269,17 +269,17 @@ export namespace faker {
 				}
 
 				export const InstanceShareableBertyID: (
-					request: _api.berty.chat.InstanceShareableBertyID.IRequest,
+					request: _api.berty.messenger.InstanceShareableBertyID.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.InstanceShareableBertyID.Reply.encode({}).finish())
+					callback(null, _api.berty.messenger.InstanceShareableBertyID.Reply.encode({}).finish())
 				}
 
 				export const DevShareInstanceBertyID: (
-					request: _api.berty.chat.DevShareInstanceBertyID.IRequest,
+					request: _api.berty.messenger.DevShareInstanceBertyID.IRequest,
 					callback: pb.RPCImplCallback,
 				) => void = (request, callback) => {
-					callback(null, _api.berty.chat.DevShareInstanceBertyID.Reply.encode({}).finish())
+					callback(null, _api.berty.messenger.DevShareInstanceBertyID.Reply.encode({}).finish())
 				}
 			}
 		}

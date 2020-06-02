@@ -1,11 +1,11 @@
-package bertychat
+package bertymessenger
 
 import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"go.uber.org/zap"
 )
 
-func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) ChatServiceServer {
+func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) MessengerServiceServer {
 	svc := service{
 		protocol: client,
 		logger:   opts.Logger,
@@ -22,4 +22,4 @@ type service struct {
 	protocol bertyprotocol.ProtocolServiceClient
 }
 
-var _ ChatServiceServer = (*service)(nil)
+var _ MessengerServiceServer = (*service)(nil)

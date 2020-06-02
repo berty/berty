@@ -2389,22 +2389,22 @@ export namespace berty {
         }
     }
 
-    namespace chat {
+    namespace messenger {
 
-        class ChatService extends $protobuf.rpc.Service {
+        class MessengerService extends $protobuf.rpc.Service {
 
-            public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): ChatService;
-            public instanceShareableBertyID(request: berty.chat.InstanceShareableBertyID.IRequest, callback: berty.chat.ChatService.InstanceShareableBertyIDCallback): void;
-            public instanceShareableBertyID(request: berty.chat.InstanceShareableBertyID.IRequest): Promise<berty.chat.InstanceShareableBertyID.Reply>;
-            public devShareInstanceBertyID(request: berty.chat.DevShareInstanceBertyID.IRequest, callback: berty.chat.ChatService.DevShareInstanceBertyIDCallback): void;
-            public devShareInstanceBertyID(request: berty.chat.DevShareInstanceBertyID.IRequest): Promise<berty.chat.DevShareInstanceBertyID.Reply>;
+            public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): MessengerService;
+            public instanceShareableBertyID(request: berty.messenger.InstanceShareableBertyID.IRequest, callback: berty.messenger.MessengerService.InstanceShareableBertyIDCallback): void;
+            public instanceShareableBertyID(request: berty.messenger.InstanceShareableBertyID.IRequest): Promise<berty.messenger.InstanceShareableBertyID.Reply>;
+            public devShareInstanceBertyID(request: berty.messenger.DevShareInstanceBertyID.IRequest, callback: berty.messenger.MessengerService.DevShareInstanceBertyIDCallback): void;
+            public devShareInstanceBertyID(request: berty.messenger.DevShareInstanceBertyID.IRequest): Promise<berty.messenger.DevShareInstanceBertyID.Reply>;
         }
 
-        namespace ChatService {
+        namespace MessengerService {
 
-            type InstanceShareableBertyIDCallback = (error: (Error|null), response?: berty.chat.InstanceShareableBertyID.Reply) => void;
+            type InstanceShareableBertyIDCallback = (error: (Error|null), response?: berty.messenger.InstanceShareableBertyID.Reply) => void;
 
-            type DevShareInstanceBertyIDCallback = (error: (Error|null), response?: berty.chat.DevShareInstanceBertyID.Reply) => void;
+            type DevShareInstanceBertyIDCallback = (error: (Error|null), response?: berty.messenger.DevShareInstanceBertyID.Reply) => void;
         }
 
         interface IInstanceShareableBertyID {
@@ -2412,14 +2412,14 @@ export namespace berty {
 
         class InstanceShareableBertyID implements IInstanceShareableBertyID {
 
-            public static create(properties?: berty.chat.IInstanceShareableBertyID): berty.chat.InstanceShareableBertyID;
-            public static encode(message: berty.chat.IInstanceShareableBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IInstanceShareableBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.InstanceShareableBertyID;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.InstanceShareableBertyID;
+            public static create(properties?: berty.messenger.IInstanceShareableBertyID): berty.messenger.InstanceShareableBertyID;
+            public static encode(message: berty.messenger.IInstanceShareableBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.IInstanceShareableBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.InstanceShareableBertyID;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.InstanceShareableBertyID;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.InstanceShareableBertyID;
-            public static toObject(message: berty.chat.InstanceShareableBertyID, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.messenger.InstanceShareableBertyID;
+            public static toObject(message: berty.messenger.InstanceShareableBertyID, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
@@ -2434,14 +2434,14 @@ export namespace berty {
 
                 public reset: boolean;
                 public displayName: string;
-                public static create(properties?: berty.chat.InstanceShareableBertyID.IRequest): berty.chat.InstanceShareableBertyID.Request;
-                public static encode(message: berty.chat.InstanceShareableBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.chat.InstanceShareableBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.InstanceShareableBertyID.Request;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.InstanceShareableBertyID.Request;
+                public static create(properties?: berty.messenger.InstanceShareableBertyID.IRequest): berty.messenger.InstanceShareableBertyID.Request;
+                public static encode(message: berty.messenger.InstanceShareableBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.InstanceShareableBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.InstanceShareableBertyID.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.InstanceShareableBertyID.Request;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.chat.InstanceShareableBertyID.Request;
-                public static toObject(message: berty.chat.InstanceShareableBertyID.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.messenger.InstanceShareableBertyID.Request;
+                public static toObject(message: berty.messenger.InstanceShareableBertyID.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2458,14 +2458,14 @@ export namespace berty {
                 public deepLink: string;
                 public htmlUrl: string;
                 public displayName: string;
-                public static create(properties?: berty.chat.InstanceShareableBertyID.IReply): berty.chat.InstanceShareableBertyID.Reply;
-                public static encode(message: berty.chat.InstanceShareableBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.chat.InstanceShareableBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.InstanceShareableBertyID.Reply;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.InstanceShareableBertyID.Reply;
+                public static create(properties?: berty.messenger.InstanceShareableBertyID.IReply): berty.messenger.InstanceShareableBertyID.Reply;
+                public static encode(message: berty.messenger.InstanceShareableBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.InstanceShareableBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.InstanceShareableBertyID.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.InstanceShareableBertyID.Reply;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.chat.InstanceShareableBertyID.Reply;
-                public static toObject(message: berty.chat.InstanceShareableBertyID.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.messenger.InstanceShareableBertyID.Reply;
+                public static toObject(message: berty.messenger.InstanceShareableBertyID.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
         }
@@ -2475,14 +2475,14 @@ export namespace berty {
 
         class DevShareInstanceBertyID implements IDevShareInstanceBertyID {
 
-            public static create(properties?: berty.chat.IDevShareInstanceBertyID): berty.chat.DevShareInstanceBertyID;
-            public static encode(message: berty.chat.IDevShareInstanceBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.chat.IDevShareInstanceBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.DevShareInstanceBertyID;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.DevShareInstanceBertyID;
+            public static create(properties?: berty.messenger.IDevShareInstanceBertyID): berty.messenger.DevShareInstanceBertyID;
+            public static encode(message: berty.messenger.IDevShareInstanceBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.IDevShareInstanceBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.DevShareInstanceBertyID;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.DevShareInstanceBertyID;
             public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.chat.DevShareInstanceBertyID;
-            public static toObject(message: berty.chat.DevShareInstanceBertyID, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static fromObject(object: { [k: string]: any }): berty.messenger.DevShareInstanceBertyID;
+            public static toObject(message: berty.messenger.DevShareInstanceBertyID, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
 
@@ -2497,14 +2497,14 @@ export namespace berty {
 
                 public reset: boolean;
                 public displayName: string;
-                public static create(properties?: berty.chat.DevShareInstanceBertyID.IRequest): berty.chat.DevShareInstanceBertyID.Request;
-                public static encode(message: berty.chat.DevShareInstanceBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.chat.DevShareInstanceBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.DevShareInstanceBertyID.Request;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.DevShareInstanceBertyID.Request;
+                public static create(properties?: berty.messenger.DevShareInstanceBertyID.IRequest): berty.messenger.DevShareInstanceBertyID.Request;
+                public static encode(message: berty.messenger.DevShareInstanceBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.DevShareInstanceBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.DevShareInstanceBertyID.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.DevShareInstanceBertyID.Request;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.chat.DevShareInstanceBertyID.Request;
-                public static toObject(message: berty.chat.DevShareInstanceBertyID.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.messenger.DevShareInstanceBertyID.Request;
+                public static toObject(message: berty.messenger.DevShareInstanceBertyID.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2513,14 +2513,14 @@ export namespace berty {
 
             class Reply implements IReply {
 
-                public static create(properties?: berty.chat.DevShareInstanceBertyID.IReply): berty.chat.DevShareInstanceBertyID.Reply;
-                public static encode(message: berty.chat.DevShareInstanceBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.chat.DevShareInstanceBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.chat.DevShareInstanceBertyID.Reply;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.chat.DevShareInstanceBertyID.Reply;
+                public static create(properties?: berty.messenger.DevShareInstanceBertyID.IReply): berty.messenger.DevShareInstanceBertyID.Reply;
+                public static encode(message: berty.messenger.DevShareInstanceBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.DevShareInstanceBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.DevShareInstanceBertyID.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.DevShareInstanceBertyID.Reply;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.chat.DevShareInstanceBertyID.Reply;
-                public static toObject(message: berty.chat.DevShareInstanceBertyID.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.messenger.DevShareInstanceBertyID.Reply;
+                public static toObject(message: berty.messenger.DevShareInstanceBertyID.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
         }

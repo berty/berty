@@ -155,10 +155,10 @@ export const berty = {
 		},
 		ShareableContact: jsonPb.lookup('.berty.types.ShareableContact'),
 	},
-	chat: {
-		ChatService: jsonPb.lookup('.berty.chat.ChatService'),
-		InstanceShareableBertyID: jsonPb.lookup('.berty.chat.InstanceShareableBertyID'),
-		DevShareInstanceBertyID: jsonPb.lookup('.berty.chat.DevShareInstanceBertyID'),
+	messenger: {
+		MessengerService: jsonPb.lookup('.berty.messenger.MessengerService'),
+		InstanceShareableBertyID: jsonPb.lookup('.berty.messenger.InstanceShareableBertyID'),
+		DevShareInstanceBertyID: jsonPb.lookup('.berty.messenger.DevShareInstanceBertyID'),
 	},
 }
 export const gogoproto = {

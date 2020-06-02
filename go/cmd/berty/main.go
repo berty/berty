@@ -21,7 +21,7 @@ import (
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/banner"
-	"berty.tech/berty/v2/go/pkg/bertychat"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
@@ -397,14 +397,14 @@ func main() {
 				defer protocol.Close()
 			}
 
-			// chat
+			// messenger
 			{
 				protocolClient, err := bertyprotocol.NewClient(protocol)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
-				chat := bertychat.New(protocolClient, &bertychat.Opts{Logger: logger.Named("chat")})
-				bertychat.RegisterChatServiceServer(grpcServer, chat)
+				messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: logger.Named("messenger")})
+				bertymessenger.RegisterMessengerServiceServer(grpcServer, messenger)
 			}
 
 			info, err := protocol.InstanceGetConfiguration(ctx, nil)
@@ -473,8 +473,8 @@ func main() {
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
-			chat := bertychat.New(protocolClient, &bertychat.Opts{Logger: logger.Named("chat")})
-			ret, err := chat.InstanceShareableBertyID(ctx, &bertychat.InstanceShareableBertyID_Request{DisplayName: displayName})
+			messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: logger.Named("messenger")})
+			ret, err := messenger.InstanceShareableBertyID(ctx, &bertymessenger.InstanceShareableBertyID_Request{DisplayName: displayName})
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
@@ -484,7 +484,7 @@ func main() {
 			fmt.Printf("deeplink: %s\n", ret.DeepLink)
 			fmt.Printf("html url: %s\n", ret.HTMLURL)
 			if shareInviteOnDev {
-				_, err = chat.DevShareInstanceBertyID(ctx, &bertychat.DevShareInstanceBertyID_Request{DisplayName: displayName})
+				_, err = messenger.DevShareInstanceBertyID(ctx, &bertymessenger.DevShareInstanceBertyID_Request{DisplayName: displayName})
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}

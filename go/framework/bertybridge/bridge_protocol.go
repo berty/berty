@@ -7,7 +7,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/pkg/bertychat"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	badger_opts "github.com/dgraph-io/badger/options"
@@ -212,14 +212,14 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 		bertyprotocol.RegisterProtocolServiceServer(grpcServer, service)
 	}
 
-	// register chat service
+	// register messenger service
 	{
 		protocolClient, err := bertyprotocol.NewClient(service)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
-		chat := bertychat.New(protocolClient, &bertychat.Opts{Logger: logger.Named("chat")})
-		bertychat.RegisterChatServiceServer(grpcServer, chat)
+		messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: logger.Named("messenger")})
+		bertymessenger.RegisterMessengerServiceServer(grpcServer, messenger)
 	}
 
 	// setup bridge

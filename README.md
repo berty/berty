@@ -54,7 +54,7 @@ Usages:
 
 **Berty is still under active development and should not be used to exchange important data**.
 
-The current Berty Chat implementation is not using the Berty Protocol yet, but OrbitDB directly. Which means the encryption is not safe, but the good news is that the current Berty Chat app is already a P2P one!
+The current Berty Messenger implementation is not using the Berty Protocol yet, but OrbitDB directly. Which means the encryption is not safe, but the good news is that the current Berty Messenger app is already a P2P one!
 
 The current Berty Protocol is _partially implemented_. The API will certainly change in a near future, so be prepared to have breaking changes if you start using it right now.
 
@@ -79,9 +79,9 @@ _TODO: add usage examples_
 
 Get it: `go get -u berty.tech/berty/v2`
 
-### Berty Chat
+### Berty Messenger
 
-A chat application written in [React Native](https://reactnative.dev/), that uses the Berty Protocol using [gomobile-ipfs](https://github.com/ipfs-shipyard/gomobile-ipfs), which, in its turn, is using [gomobile](https://github.com/golang/mobile).
+A messenger application written in [React Native](https://reactnative.dev/), that uses the Berty Protocol using [gomobile-ipfs](https://github.com/ipfs-shipyard/gomobile-ipfs), which, in its turn, is using [gomobile](https://github.com/golang/mobile).
 
 ## Main items in the repo
 
@@ -90,10 +90,10 @@ A chat application written in [React Native](https://reactnative.dev/), that use
   - [./go/framework/bertybridge](go/framework/bertybridge): gomobile entrypoint.
   - [./go/cmd/**berty**](go/cmd/berty): Main **Berty CLI**, containing:
     - `berty daemon`: Runs the whole Berty Protocol instance.
-    - `berty mini`: Simple CLI chat app using Berty Protocol.
+    - `berty mini`: Simple CLI messenger app using Berty Protocol.
   - [./go/cmd/**rdvp**](go/cmd/rdvp): A Rendez-Vous Point server.
 - [./js](js): Where all the Javascript/Typescript code belongs, containing:
-  - The **Berty Chat** application, written in React Native.
+  - The **Berty Messenger** application, written in React Native.
 - [./docs](docs): Mostly auto-generated documentation.
 
 ## Philosophy

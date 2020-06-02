@@ -1,4 +1,4 @@
-package bertychat
+package bertymessenger
 
 import (
 	"context"
