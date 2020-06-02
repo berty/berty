@@ -2398,6 +2398,10 @@ export namespace berty {
             public instanceShareableBertyID(request: berty.messenger.InstanceShareableBertyID.IRequest): Promise<berty.messenger.InstanceShareableBertyID.Reply>;
             public devShareInstanceBertyID(request: berty.messenger.DevShareInstanceBertyID.IRequest, callback: berty.messenger.MessengerService.DevShareInstanceBertyIDCallback): void;
             public devShareInstanceBertyID(request: berty.messenger.DevShareInstanceBertyID.IRequest): Promise<berty.messenger.DevShareInstanceBertyID.Reply>;
+            public parseDeepLink(request: berty.messenger.ParseDeepLink.IRequest, callback: berty.messenger.MessengerService.ParseDeepLinkCallback): void;
+            public parseDeepLink(request: berty.messenger.ParseDeepLink.IRequest): Promise<berty.messenger.ParseDeepLink.Reply>;
+            public sendContactRequest(request: berty.messenger.SendContactRequest.IRequest, callback: berty.messenger.MessengerService.SendContactRequestCallback): void;
+            public sendContactRequest(request: berty.messenger.SendContactRequest.IRequest): Promise<berty.messenger.SendContactRequest.Reply>;
         }
 
         namespace MessengerService {
@@ -2405,6 +2409,10 @@ export namespace berty {
             type InstanceShareableBertyIDCallback = (error: (Error|null), response?: berty.messenger.InstanceShareableBertyID.Reply) => void;
 
             type DevShareInstanceBertyIDCallback = (error: (Error|null), response?: berty.messenger.DevShareInstanceBertyID.Reply) => void;
+
+            type ParseDeepLinkCallback = (error: (Error|null), response?: berty.messenger.ParseDeepLink.Reply) => void;
+
+            type SendContactRequestCallback = (error: (Error|null), response?: berty.messenger.SendContactRequest.Reply) => void;
         }
 
         interface IInstanceShareableBertyID {
@@ -2446,18 +2454,18 @@ export namespace berty {
             }
 
             interface IReply {
-                bertyId?: (string|null);
+                bertyId?: (berty.messenger.IBertyID|null);
+                bertyIdPayload?: (string|null);
                 deepLink?: (string|null);
                 htmlUrl?: (string|null);
-                displayName?: (string|null);
             }
 
             class Reply implements IReply {
 
-                public bertyId: string;
+                public bertyId?: (berty.messenger.IBertyID|null);
+                public bertyIdPayload: string;
                 public deepLink: string;
                 public htmlUrl: string;
-                public displayName: string;
                 public static create(properties?: berty.messenger.InstanceShareableBertyID.IReply): berty.messenger.InstanceShareableBertyID.Reply;
                 public static encode(message: berty.messenger.InstanceShareableBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.InstanceShareableBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2523,6 +2531,143 @@ export namespace berty {
                 public static toObject(message: berty.messenger.DevShareInstanceBertyID.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
+        }
+
+        interface IParseDeepLink {
+        }
+
+        class ParseDeepLink implements IParseDeepLink {
+
+            public static create(properties?: berty.messenger.IParseDeepLink): berty.messenger.ParseDeepLink;
+            public static encode(message: berty.messenger.IParseDeepLink, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.IParseDeepLink, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.ParseDeepLink;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.ParseDeepLink;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.messenger.ParseDeepLink;
+            public static toObject(message: berty.messenger.ParseDeepLink, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        namespace ParseDeepLink {
+
+            interface IRequest {
+                link?: (string|null);
+            }
+
+            class Request implements IRequest {
+
+                public link: string;
+                public static create(properties?: berty.messenger.ParseDeepLink.IRequest): berty.messenger.ParseDeepLink.Request;
+                public static encode(message: berty.messenger.ParseDeepLink.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.ParseDeepLink.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.ParseDeepLink.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.ParseDeepLink.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.ParseDeepLink.Request;
+                public static toObject(message: berty.messenger.ParseDeepLink.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                kind?: (berty.messenger.ParseDeepLink.Kind|null);
+                bertyId?: (berty.messenger.IBertyID|null);
+            }
+
+            class Reply implements IReply {
+
+                public kind: berty.messenger.ParseDeepLink.Kind;
+                public bertyId?: (berty.messenger.IBertyID|null);
+                public static create(properties?: berty.messenger.ParseDeepLink.IReply): berty.messenger.ParseDeepLink.Reply;
+                public static encode(message: berty.messenger.ParseDeepLink.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.ParseDeepLink.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.ParseDeepLink.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.ParseDeepLink.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.ParseDeepLink.Reply;
+                public static toObject(message: berty.messenger.ParseDeepLink.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            enum Kind {
+                UnknownKind = 0,
+                BertyID = 1
+            }
+        }
+
+        interface ISendContactRequest {
+        }
+
+        class SendContactRequest implements ISendContactRequest {
+
+            public static create(properties?: berty.messenger.ISendContactRequest): berty.messenger.SendContactRequest;
+            public static encode(message: berty.messenger.ISendContactRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.ISendContactRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.SendContactRequest;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.SendContactRequest;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.messenger.SendContactRequest;
+            public static toObject(message: berty.messenger.SendContactRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        namespace SendContactRequest {
+
+            interface IRequest {
+                bertyId?: (berty.messenger.IBertyID|null);
+            }
+
+            class Request implements IRequest {
+
+                public bertyId?: (berty.messenger.IBertyID|null);
+                public static create(properties?: berty.messenger.SendContactRequest.IRequest): berty.messenger.SendContactRequest.Request;
+                public static encode(message: berty.messenger.SendContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.SendContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.SendContactRequest.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.SendContactRequest.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.SendContactRequest.Request;
+                public static toObject(message: berty.messenger.SendContactRequest.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+            }
+
+            class Reply implements IReply {
+
+                public static create(properties?: berty.messenger.SendContactRequest.IReply): berty.messenger.SendContactRequest.Reply;
+                public static encode(message: berty.messenger.SendContactRequest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.SendContactRequest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.SendContactRequest.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.SendContactRequest.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.SendContactRequest.Reply;
+                public static toObject(message: berty.messenger.SendContactRequest.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+        }
+
+        interface IBertyID {
+            publicRendezvousSeed?: (Uint8Array|null);
+            accountPk?: (Uint8Array|null);
+            displayName?: (string|null);
+        }
+
+        class BertyID implements IBertyID {
+
+            public publicRendezvousSeed: Uint8Array;
+            public accountPk: Uint8Array;
+            public displayName: string;
+            public static create(properties?: berty.messenger.IBertyID): berty.messenger.BertyID;
+            public static encode(message: berty.messenger.IBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.IBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.BertyID;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.BertyID;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.messenger.BertyID;
+            public static toObject(message: berty.messenger.BertyID, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
         }
     }
 }

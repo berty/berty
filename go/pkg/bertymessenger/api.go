@@ -9,6 +9,7 @@ import (
 	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"github.com/gogo/protobuf/proto"
 )
 
 func (s *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareInstanceBertyID_Request) (*DevShareInstanceBertyID_Reply, error) {
@@ -19,7 +20,7 @@ func (s *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareInst
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	err = discordlog.ShareQRLink(ret.DisplayName, discordlog.QRCodeRoom, "Add me on Berty!", ret.BertyID, ret.HTMLURL)
+	err = discordlog.ShareQRLink(ret.BertyID.DisplayName, discordlog.QRCodeRoom, "Add me on Berty!", ret.DeepLink, ret.HTMLURL)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -75,16 +76,88 @@ func (s *service) InstanceShareableBertyID(ctx context.Context, req *InstanceSha
 	}
 
 	ret := InstanceShareableBertyID_Reply{
-		DisplayName: displayName,
+		BertyID: &BertyID{
+			DisplayName:          displayName,
+			PublicRendezvousSeed: res.PublicRendezvousSeed,
+			AccountPK:            config.AccountPK,
+		},
 	}
-	ret.BertyID = fmt.Sprintf(
-		"%s %s %s",
-		base64.StdEncoding.EncodeToString([]byte(displayName)),
-		base64.StdEncoding.EncodeToString(res.PublicRendezvousSeed),
-		base64.StdEncoding.EncodeToString(config.AccountPK),
-	)
-	ret.DeepLink = fmt.Sprintf("berty://%s", url.PathEscape(ret.BertyID))
-	ret.HTMLURL = fmt.Sprintf("https://berty.tech/id#key=%s&name=%s", url.PathEscape(ret.BertyID), url.PathEscape(displayName))
+	bertyIDPayloadBytes, _ := proto.Marshal(ret.BertyID)
+	ret.BertyIDPayload = base64.StdEncoding.EncodeToString(bertyIDPayloadBytes)
+
+	// create QRCodes with standalone display_name variable
+	lightID := BertyID{
+		PublicRendezvousSeed: ret.BertyID.PublicRendezvousSeed,
+		AccountPK:            ret.BertyID.AccountPK,
+	}
+	lightIDBytes, _ := proto.Marshal(&lightID)
+	lightIDPayload := base64.StdEncoding.EncodeToString(lightIDBytes)
+	v := url.Values{}
+	v.Set("key", url.QueryEscape(lightIDPayload)) // double-encoding to keep "+" as "+" and not as spaces
+	if displayName != "" {
+		v.Set("name", displayName)
+	}
+	fragment := v.Encode()
+	ret.DeepLink = fmt.Sprintf("berty://id/#%s", fragment)
+	ret.HTMLURL = fmt.Sprintf("https://berty.tech/id#%s", fragment)
+	return &ret, nil
+}
+
+func (s *service) ParseDeepLink(ctx context.Context, req *ParseDeepLink_Request) (*ParseDeepLink_Reply, error) {
+	if req == nil || req.Link == "" {
+		return nil, errcode.ErrMissingInput
+	}
+
+	u, err := url.Parse(req.Link)
+	if err != nil {
+		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+	}
+	ret := ParseDeepLink_Reply{}
+	var method string
+	qs := u.Fragment
+	switch {
+	case u.Scheme == "berty":
+		method = "/" + u.Host
+	case u.Scheme == "https" && u.Host == "berty.tech":
+		method = u.Path
+	}
+	query, err := url.ParseQuery(qs)
+	if err != nil {
+		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+	}
+
+	switch method {
+	case "/id":
+		ret.Kind = ParseDeepLink_BertyID
+		ret.BertyID = &BertyID{}
+		key := query.Get("key")
+		if key == "" {
+			return nil, errcode.ErrMessengerInvalidDeepLink
+		}
+		payload, err := base64.StdEncoding.DecodeString(key)
+		if err != nil {
+			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+		}
+		err = proto.Unmarshal(payload, ret.BertyID)
+		if err != nil {
+			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+		}
+		if len(ret.BertyID.PublicRendezvousSeed) == 0 || len(ret.BertyID.AccountPK) == 0 {
+			return nil, errcode.ErrMessengerInvalidDeepLink
+		}
+		if name := query.Get("name"); name != "" {
+			ret.BertyID.DisplayName = name
+		}
+	default:
+		return nil, errcode.ErrMessengerInvalidDeepLink
+	}
 
 	return &ret, nil
+}
+
+func (s *service) SendContactRequest(ctx context.Context, req *SendContactRequest_Request) (*SendContactRequest_Reply, error) {
+	if req == nil || req.BertyID == nil || req.BertyID.AccountPK == nil || req.BertyID.PublicRendezvousSeed == nil {
+		return nil, errcode.ErrMissingInput
+	}
+	return nil, errcode.ErrNotImplemented
 }

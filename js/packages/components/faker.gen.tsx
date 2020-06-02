@@ -281,6 +281,20 @@ export namespace faker {
 				) => void = (request, callback) => {
 					callback(null, _api.berty.messenger.DevShareInstanceBertyID.Reply.encode({}).finish())
 				}
+
+				export const ParseDeepLink: (
+					request: _api.berty.messenger.ParseDeepLink.IRequest,
+					callback: pb.RPCImplCallback,
+				) => void = (request, callback) => {
+					callback(null, _api.berty.messenger.ParseDeepLink.Reply.encode({}).finish())
+				}
+
+				export const SendContactRequest: (
+					request: _api.berty.messenger.SendContactRequest.IRequest,
+					callback: pb.RPCImplCallback,
+				) => void = (request, callback) => {
+					callback(null, _api.berty.messenger.SendContactRequest.Reply.encode({}).finish())
+				}
 			}
 		}
 	}

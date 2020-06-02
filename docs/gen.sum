@@ -1,5 +1,5 @@
-66bc0a4c941d0bbf466bbacc8ba87159b32cf76f  ../api/bertymessenger.proto
+d2107ff36a72f59ffcf310a268f6ae231d6573d4  ../api/bertymessenger.proto
 a6b1965b41d41869f43fc31d65350fccd9fc2908  ../api/bertyprotocol.proto
 9a50d810a6ef389b746a3714382c44e059205297  ../api/bertytypes.proto
-be73e02731d03057fa2d8a7faacfc54aa574ed68  ../api/errcode.proto
+0c750308ca695ad24d22caa368e197f0fbc3d9e7  ../api/errcode.proto
 cd9cbbd8a63a0f81bdfd2d29c0e83119776a7f48  Makefile

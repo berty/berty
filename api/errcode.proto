@@ -87,4 +87,10 @@ enum ErrCode {
 
   ErrBridgeInterrupted = 1400;
   ErrBridgeNotRunning = 1401;
+
+  //------------------
+  // Messenger errors
+  //------------------
+
+  ErrMessengerInvalidDeepLink = 2001;
 }

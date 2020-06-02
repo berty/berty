@@ -16,6 +16,14 @@ service MessengerService {
   // DevShareInstanceBertyID shares your Berty ID on a dev channel.
   // TODO: remove for public.
   rpc DevShareInstanceBertyID(DevShareInstanceBertyID.Request) returns (DevShareInstanceBertyID.Reply);
+
+  // ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure
+  // that can be used to display information.
+  // This action is read-only.
+  rpc ParseDeepLink(ParseDeepLink.Request) returns (ParseDeepLink.Reply);
+
+  // SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol.
+  rpc SendContactRequest(SendContactRequest.Request) returns (SendContactRequest.Reply);
 }
 
 message InstanceShareableBertyID {
@@ -26,10 +34,10 @@ message InstanceShareableBertyID {
     string display_name = 2;
   }
   message Reply {
-    string berty_id = 1 [(gogoproto.customname) = "BertyID"];
-    string deep_link = 2 [(gogoproto.customname) = "DeepLink"];
-    string html_url = 3 [(gogoproto.customname) = "HTMLURL"];
-    string display_name = 4;
+    BertyID berty_id = 1 [(gogoproto.customname) = "BertyID"];
+    string berty_id_payload = 2 [(gogoproto.customname) = "BertyIDPayload"];
+    string deep_link = 3 [(gogoproto.customname) = "DeepLink"];
+    string html_url = 4 [(gogoproto.customname) = "HTMLURL"];
   }
 }
 
@@ -41,4 +49,31 @@ message DevShareInstanceBertyID {
     string display_name = 2;
   }
   message Reply {}
+}
+
+message ParseDeepLink {
+  message Request {
+    string link = 1;
+  }
+  message Reply {
+    Kind kind = 1;
+    BertyID berty_id = 3 [(gogoproto.customname) = "BertyID"];
+  }
+  enum Kind {
+    UnknownKind = 0;
+    BertyID = 1;
+  }
+}
+
+message SendContactRequest {
+  message Request {
+    BertyID berty_id = 1 [(gogoproto.customname) = "BertyID"];
+  }
+  message Reply {}
+}
+
+message BertyID {
+  bytes public_rendezvous_seed = 1;
+  bytes account_pk = 2 [(gogoproto.customname) = "AccountPK"];
+  string display_name = 3;
 }

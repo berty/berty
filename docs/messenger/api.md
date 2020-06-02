@@ -4,12 +4,21 @@
 ## Table of Contents
 
 - [bertymessenger.proto](#bertymessenger.proto)
+    - [BertyID](#berty.messenger.BertyID)
     - [DevShareInstanceBertyID](#berty.messenger.DevShareInstanceBertyID)
     - [DevShareInstanceBertyID.Reply](#berty.messenger.DevShareInstanceBertyID.Reply)
     - [DevShareInstanceBertyID.Request](#berty.messenger.DevShareInstanceBertyID.Request)
     - [InstanceShareableBertyID](#berty.messenger.InstanceShareableBertyID)
     - [InstanceShareableBertyID.Reply](#berty.messenger.InstanceShareableBertyID.Reply)
     - [InstanceShareableBertyID.Request](#berty.messenger.InstanceShareableBertyID.Request)
+    - [ParseDeepLink](#berty.messenger.ParseDeepLink)
+    - [ParseDeepLink.Reply](#berty.messenger.ParseDeepLink.Reply)
+    - [ParseDeepLink.Request](#berty.messenger.ParseDeepLink.Request)
+    - [SendContactRequest](#berty.messenger.SendContactRequest)
+    - [SendContactRequest.Reply](#berty.messenger.SendContactRequest.Reply)
+    - [SendContactRequest.Request](#berty.messenger.SendContactRequest.Request)
+  
+    - [ParseDeepLink.Kind](#berty.messenger.ParseDeepLink.Kind)
   
     - [MessengerService](#berty.messenger.MessengerService)
   
@@ -19,6 +28,16 @@
 <p align="right"><a href="#top">Top</a></p>
 
 ## bertymessenger.proto
+
+<a name="berty.messenger.BertyID"></a>
+
+### BertyID
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| public_rendezvous_seed | [bytes](#bytes) |  |  |
+| account_pk | [bytes](#bytes) |  |  |
+| display_name | [string](#string) |  |  |
 
 <a name="berty.messenger.DevShareInstanceBertyID"></a>
 
@@ -47,10 +66,10 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| berty_id | [string](#string) |  |  |
+| berty_id | [BertyID](#berty.messenger.BertyID) |  |  |
+| berty_id_payload | [string](#string) |  |  |
 | deep_link | [string](#string) |  |  |
 | html_url | [string](#string) |  |  |
-| display_name | [string](#string) |  |  |
 
 <a name="berty.messenger.InstanceShareableBertyID.Request"></a>
 
@@ -61,7 +80,53 @@
 | reset | [bool](#bool) |  | reset will regenerate a new link |
 | display_name | [string](#string) |  |  |
 
+<a name="berty.messenger.ParseDeepLink"></a>
+
+### ParseDeepLink
+
+<a name="berty.messenger.ParseDeepLink.Reply"></a>
+
+### ParseDeepLink.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| kind | [ParseDeepLink.Kind](#berty.messenger.ParseDeepLink.Kind) |  |  |
+| berty_id | [BertyID](#berty.messenger.BertyID) |  |  |
+
+<a name="berty.messenger.ParseDeepLink.Request"></a>
+
+### ParseDeepLink.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| link | [string](#string) |  |  |
+
+<a name="berty.messenger.SendContactRequest"></a>
+
+### SendContactRequest
+
+<a name="berty.messenger.SendContactRequest.Reply"></a>
+
+### SendContactRequest.Reply
+
+<a name="berty.messenger.SendContactRequest.Request"></a>
+
+### SendContactRequest.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| berty_id | [BertyID](#berty.messenger.BertyID) |  |  |
+
  
+
+<a name="berty.messenger.ParseDeepLink.Kind"></a>
+
+### ParseDeepLink.Kind
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| UnknownKind | 0 |  |
+| BertyID | 1 |  |
 
  
 
@@ -77,6 +142,8 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ----------- | ------------ | ------------- | ------------|
 | InstanceShareableBertyID | [InstanceShareableBertyID.Request](#berty.messenger.InstanceShareableBertyID.Request) | [InstanceShareableBertyID.Reply](#berty.messenger.InstanceShareableBertyID.Reply) | InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link. |
 | DevShareInstanceBertyID | [DevShareInstanceBertyID.Request](#berty.messenger.DevShareInstanceBertyID.Request) | [DevShareInstanceBertyID.Reply](#berty.messenger.DevShareInstanceBertyID.Reply) | DevShareInstanceBertyID shares your Berty ID on a dev channel. TODO: remove for public. |
+| ParseDeepLink | [ParseDeepLink.Request](#berty.messenger.ParseDeepLink.Request) | [ParseDeepLink.Reply](#berty.messenger.ParseDeepLink.Reply) | ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure that can be used to display information. This action is read-only. |
+| SendContactRequest | [SendContactRequest.Request](#berty.messenger.SendContactRequest.Request) | [SendContactRequest.Reply](#berty.messenger.SendContactRequest.Reply) | SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol. |
 
  
 
