@@ -8,32 +8,6 @@ steps:
       - cd go
       - make docker.build
 
-  - label: go-generate
-    if: build.branch == "master" || (build.message !~ /\[skip go-generate\]/ && build.message !~ /\[skip-ci\]/)
-    agents:
-      queue: "bigcores"
-    plugins:
-      - n0izn0iz/docker#v3.5.4:
-          image: bertytech/protoc:23
-          propagate-uid-gid: true
-          workdir: /go/src/berty.tech/berty
-          environment: ["GO111MODULE=on", "GOPATH=/go"]
-          volumes: ["~/go/pkg/mod:/go/pkg/mod"]
-    commands:
-      - set -x
-      - go version
-      - find . -name gen.sum ! -path './js/*' -delete
-      - cd go
-      - time go mod vendor
-      - make generate_local
-      - make tidy
-      - cd ../docs
-      - make generate_local
-      - cd ..
-      - git status | cat
-      - git diff -w | cat
-      - git diff-index -w --quiet HEAD --
-
   - label: githooks
     if: build.branch == "master" || (build.message !~ /\[skip githooks\]/ && build.message !~ /\[skip-ci\]/)
     agents:
