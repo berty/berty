@@ -123,13 +123,10 @@ func main() {
 	shareInviteFlags.StringVar(&displayName, "display-name", safeDefaultDisplayName(), "display name")
 
 	type cleanupFunc func()
-	globalPreRun := func(ctx context.Context) cleanupFunc {
+	globalPreRun := func() cleanupFunc {
 		mrand.Seed(srand.Secure())
 		isDebugEnabled := globalDebug || globalOrbitDebug || globalLibp2pDebug
-
 		flush := tracer.InitTracer(globalTracer, "berty")
-		_, span := tracer.NewNamedSpan(ctx, "pre-run")
-		defer span.End()
 
 		// setup zap config
 		var config zap.Config
@@ -170,7 +167,7 @@ func main() {
 		FlagSet:   bannerFlags,
 		ShortHelp: "print the ascii Berty banner of the day",
 		Exec: func(args []string) error {
-			cleanup := globalPreRun(context.Background())
+			cleanup := globalPreRun()
 			defer cleanup()
 
 			quote := banner.QOTD()
@@ -204,7 +201,7 @@ func main() {
 		FlagSet:   miniFlags,
 		Exec: func(args []string) error {
 			ctx := context.Background()
-			cleanup := globalPreRun(ctx)
+			cleanup := globalPreRun()
 			defer cleanup()
 
 			rootDS, dsLock, err := getRootDatastore(datastorePath)
@@ -246,7 +243,7 @@ func main() {
 		ShortHelp: "start a full Berty instance",
 		Exec: func(args []string) error {
 			ctx := context.Background()
-			cleanup := globalPreRun(ctx)
+			cleanup := globalPreRun()
 			defer cleanup()
 
 			var (
@@ -322,7 +319,7 @@ func main() {
 
 				zapOpts := []grpc_zap.Option{}
 
-				tr := tracer.Tracer("grpc-server")
+				tr := tracer.New("grpc-server")
 				// setup grpc with zap
 				grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
 				grpcServer = grpc.NewServer(
@@ -445,7 +442,7 @@ func main() {
 		FlagSet:   shareInviteFlags,
 		Exec: func(args []string) error {
 			ctx := context.Background()
-			cleanup := globalPreRun(ctx)
+			cleanup := globalPreRun()
 			defer cleanup()
 
 			// protocol

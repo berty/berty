@@ -165,6 +165,9 @@ message MessageHeaders {
 
   // sig is the signature of the encrypted message using the device's private key
   bytes sig = 3;
+
+  // metadata allow to pass custom informations
+  map<string, string> metadata = 4;
 }
 
 // MessageEnvelope is a publicly exposed structure containing a group secure message

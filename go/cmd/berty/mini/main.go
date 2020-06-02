@@ -113,15 +113,12 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 }
 
 func Main(ctx context.Context, opts *Opts) {
-	ctx, span := tracer.NewSpan(ctx)
-	defer span.End()
-
 	p2plog.SetAllLoggers(p2plog.LevelFatal)
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	trClient := tracer.Tracer("grpc-client")
+	trClient := tracer.New("grpc-client")
 	clientOpts := []grpc.DialOption{
 		grpc.WithUnaryInterceptor(grpc_trace.UnaryClientInterceptor(trClient)),
 		grpc.WithStreamInterceptor(grpc_trace.StreamClientInterceptor(trClient)),
@@ -129,7 +126,7 @@ func Main(ctx context.Context, opts *Opts) {
 
 	var client bertyprotocol.ProtocolServiceClient
 	if opts.RemoteAddr == "" {
-		trServer := tracer.Tracer("grpc-server")
+		trServer := tracer.New("grpc-server")
 
 		service, clean := newService(ctx, opts.Logger, opts)
 		defer clean()

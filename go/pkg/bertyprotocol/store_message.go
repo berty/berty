@@ -172,7 +172,6 @@ func constructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
 				}
 
 				store.logger.Debug("received payload", zap.String("payload", string(messageEvent.Message)))
-
 				store.Emit(ctx, messageEvent)
 			}
 		}()
