@@ -19,7 +19,7 @@ func NewRuntimeProvider(root trace.Provider) *RuntimeProvider {
 
 func (rp *RuntimeProvider) Tracer(name string) trace.Tracer {
 	return &RuntimeTracer{
-		skipCall: 3,
+		skipCall: 2,
 		root:     rp.root.Tracer(name),
 	}
 }

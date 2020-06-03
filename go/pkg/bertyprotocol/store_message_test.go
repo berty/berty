@@ -37,11 +37,11 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 	defer cleanup()
 
 	dPK0 := peers[0].GC.DevicePubKey()
-	ds0, err := getDeviceSecret(ctx, peers[0].GC.Group(), peers[0].MKS, peers[0].DevKS)
+	ds0, err := peers[0].MKS.GetDeviceSecret(peers[0].GC.Group(), peers[0].DevKS)
 	assert.NoError(t, err)
 	assert.NotNil(t, ds0)
 
-	err = registerChainKey(ctx, peers[1].MKS, peers[0].GC.Group(), dPK0, ds0, false)
+	err = peers[1].MKS.RegisterChainKey(peers[0].GC.Group(), dPK0, ds0, false)
 	assert.NoError(t, err)
 
 	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1)

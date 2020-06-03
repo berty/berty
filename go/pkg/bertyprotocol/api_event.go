@@ -1,18 +1,14 @@
 package bertyprotocol
 
 import (
-	"strconv"
-	"time"
+	"sync"
 
 	"berty.tech/berty/v2/go/internal/tracer"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"go.uber.org/zap"
-	"google.golang.org/grpc/metadata"
 )
-
-var mdReady = metadata.New(map[string]string{"ready": strconv.FormatBool(true)})
 
 // GroupMetadataSubscribe subscribes to the metadata events for a group
 func (s *service) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_Request, sub ProtocolService_GroupMetadataSubscribeServer) error {
@@ -21,15 +17,38 @@ func (s *service) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
 	}
 
-	// TODO: replay
 	ch := cg.MetadataStore().Subscribe(sub.Context())
 
-	// @FIXME: Wait for subscription to be ready, we should find a way to avoid this
-	time.AfterFunc(time.Millisecond*100, func() {
-		if err := sub.SendHeader(mdReady.Copy()); err != nil {
-			s.logger.Warn("Send header header error", zap.Error(err))
-		}
-	})
+	replaySync := sync.WaitGroup{}
+	if len(req.Since) > 0 {
+		// TODO: add more granularity
+		replaySync.Add(1)
+
+		go func() {
+			defer replaySync.Done()
+			for e := range cg.MetadataStore().ListEvents(sub.Context()) {
+				if e == nil {
+					continue
+				}
+
+				if inErr := sub.Send(e); inErr != nil {
+					if sub.Context().Err() != nil {
+						return
+					}
+					cg.logger.Error("error while sending message", zap.Error(inErr))
+					err = inErr
+					break
+				} else {
+					cg.logger.Info("service - metadata store - sent 1 event from log history")
+				}
+			}
+		}()
+	}
+
+	replaySync.Wait()
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
 
 	for evt := range ch {
 		e, ok := evt.(*bertytypes.GroupMetadataEvent)
@@ -38,9 +57,14 @@ func (s *service) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_
 		}
 
 		if err := sub.Send(e); err != nil {
+			if sub.Context().Err() != nil {
+				return nil
+			}
 			cg.logger.Error("error while sending message", zap.Error(err))
 			return err
 		}
+
+		cg.logger.Info("service - metadata store - sent 1 event from log subscription")
 	}
 
 	return nil
@@ -53,15 +77,37 @@ func (s *service) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Re
 		return errcode.ErrGroupMemberUnknownGroupID.Wrap(err)
 	}
 
-	// TODO: replay
-	ch := cg.MessageStore().Subscribe(sub.Context())
+	replaySync := sync.WaitGroup{}
+	if len(req.Since) > 0 {
+		// TODO: add more granularity
+		replaySync.Add(1)
 
-	// @FIXME: Wait for subscription to be ready, we should find a way to avoid this
-	time.AfterFunc(time.Millisecond*100, func() {
-		if err := sub.SendHeader(mdReady.Copy()); err != nil {
-			s.logger.Warn("Send header error", zap.Error(err))
-		}
-	})
+		go func() {
+			defer replaySync.Done()
+			ch, inErr := cg.MessageStore().ListMessages(sub.Context())
+			if inErr != nil {
+				err = inErr
+				return
+			}
+
+			for e := range ch {
+				if inErr := sub.Send(e); inErr != nil {
+					if sub.Context().Err() != nil {
+						return
+					}
+					cg.logger.Error("error while sending message", zap.Error(inErr))
+					err = inErr
+					break
+				}
+			}
+		}()
+	}
+
+	replaySync.Wait()
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+	ch := cg.MessageStore().Subscribe(sub.Context())
 
 	for evt := range ch {
 		e, ok := evt.(*bertytypes.GroupMessageEvent)
@@ -73,6 +119,9 @@ func (s *service) GroupMessageSubscribe(req *bertytypes.GroupMessageSubscribe_Re
 		err := sub.Send(e)
 		span.End()
 		if err != nil {
+			if sub.Context().Err() != nil {
+				return nil
+			}
 			cg.logger.Error("error while sending message", zap.Error(err))
 			return err
 		}
@@ -88,7 +137,14 @@ func (s *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, s
 	}
 
 	for evt := range cg.MetadataStore().ListEvents(sub.Context()) {
+		if evt == nil {
+			continue
+		}
+
 		if err := sub.Send(evt); err != nil {
+			if sub.Context().Err() != nil {
+				return nil
+			}
 			cg.logger.Error("error while sending message", zap.Error(err))
 		}
 	}
@@ -109,6 +165,10 @@ func (s *service) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub
 
 	for evt := range messages {
 		if err := sub.Send(evt); err != nil {
+			if sub.Context().Err() != nil {
+				cg.logger.Error("context closed", zap.Error(err))
+				return nil
+			}
 			cg.logger.Error("error while sending message", zap.Error(err))
 			return err
 		}

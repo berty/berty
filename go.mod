@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	berty.tech/go-ipfs-log v1.1.0
-	berty.tech/go-orbit-db v1.3.1
+	berty.tech/go-orbit-db v1.4.1
 	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/dgraph-io/badger v1.6.1
@@ -45,8 +45,8 @@ require (
 	github.com/skip2/go-qrcode v0.0.0-20200519171959-a3b48390827e
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/stretchr/testify v1.5.1
-	go.opentelemetry.io/otel v0.5.0
-	go.opentelemetry.io/otel/exporters/trace/jaeger v0.5.0
+	go.opentelemetry.io/otel v0.6.0
+	go.opentelemetry.io/otel/exporters/trace/jaeger v0.6.0
 	go.uber.org/zap v1.14.1
 	golang.org/x/crypto v0.0.0-20200406173513-056763e48d71
 	golang.org/x/net v0.0.0-20190923162816-aa69164e4478

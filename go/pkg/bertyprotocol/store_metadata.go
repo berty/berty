@@ -12,9 +12,11 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-ipfs-log/identityprovider"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/iface"
+	"berty.tech/go-orbit-db/stores"
 	"berty.tech/go-orbit-db/stores/basestore"
 	"berty.tech/go-orbit-db/stores/operation"
 	"github.com/golang/protobuf/proto"
@@ -68,32 +70,44 @@ func (m *metadataStore) setLogger(l *zap.Logger) {
 	}
 }
 
+func openMetadataEntry(log ipfslog.Log, e ipfslog.Entry, g *bertytypes.Group) (*bertytypes.GroupMetadataEvent, proto.Message, error) {
+	op, err := operation.ParseOperation(e)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	meta, event, err := openGroupEnvelope(g, op.GetValue())
+	if err != nil {
+		return nil, nil, err
+	}
+
+	metaEvent, err := newGroupMetadataEventFromEntry(log, e, meta, event, g)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return metaEvent, event, err
+}
+
 func (m *metadataStore) ListEvents(ctx context.Context) <-chan *bertytypes.GroupMetadataEvent {
 	ch := make(chan *bertytypes.GroupMetadataEvent)
 
+	// FIXME: use iterator instead to reduce resource usage (require go-ipfs-log improvements)
 	go func() {
 		log := m.OpLog()
 
 		for _, e := range log.GetEntries().Slice() {
-			op, err := operation.ParseOperation(e)
+			metaEvent, _, err := openMetadataEntry(log, e, m.g)
 			if err != nil {
-				continue
-			}
-
-			meta, event, err := openGroupEnvelope(m.g, op.GetValue())
-			if err != nil {
-				m.logger.Error("unable to open group envelope", zap.Error(err))
-				continue
-			}
-
-			metaEvent, err := newGroupMetadataEventFromEntry(log, e, meta, event, m.g)
-			if err != nil {
-				m.logger.Error("unable to get group metadata event from entry", zap.Error(err))
+				m.logger.Error("unable to open message", zap.Error(err))
 				continue
 			}
 
 			ch <- metaEvent
+			m.logger.Info("metadata store - sent 1 event from log history")
 		}
+
+		ch <- nil
 
 		close(ch)
 	}()
@@ -142,6 +156,8 @@ func metadataStoreAddDeviceToGroup(ctx context.Context, m *metadataStore, g *ber
 		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
+	m.logger.Info("announcing device on store")
+
 	return metadataStoreAddEvent(ctx, m, g, bertytypes.EventTypeGroupMemberDeviceAdded, event, sig)
 }
 
@@ -161,14 +177,10 @@ func (m *metadataStore) SendSecret(ctx context.Context, memberPK crypto.PubKey) 
 	}
 
 	if devs, err := m.GetDevicesForMember(memberPK); len(devs) == 0 || err != nil {
-		if err != nil {
-			return nil, errcode.ErrInvalidInput.Wrap(err)
-		}
-
-		return nil, errcode.ErrInvalidInput
+		m.logger.Warn("sending secret to an unknown group member")
 	}
 
-	ds, err := getDeviceSecret(ctx, m.g, m.mks, m.devKS)
+	ds, err := m.mks.GetDeviceSecret(m.g, m.devKS)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -415,7 +427,7 @@ func (m *metadataStore) GroupJoin(ctx context.Context, g *bertytypes.Group) (ope
 	}
 
 	if m.checkIfInGroup(g.PublicKey) {
-		return nil, errcode.ErrInvalidInput
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("already present in group"))
 	}
 
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountGroupJoined{
@@ -759,6 +771,11 @@ func (m *metadataStore) checkContactStatus(pk crypto.PubKey, states ...bertytype
 	return false
 }
 
+type EventMetadataReceived struct {
+	MetaEvent *bertytypes.GroupMetadataEvent
+	Event     proto.Message
+}
+
 func constructorFactoryGroupMetadata(s *bertyOrbitDB) iface.StoreConstructor {
 	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		g, err := s.getGroupFromOptions(options)
@@ -777,6 +794,40 @@ func constructorFactoryGroupMetadata(s *bertyOrbitDB) iface.StoreConstructor {
 			devKS:  s.deviceKeystore,
 			logger: zap.NewNop(),
 		}
+
+		go func() {
+			for e := range store.Subscribe(ctx) {
+				entry := ipfslog.Entry(nil)
+
+				switch evt := e.(type) {
+				case *stores.EventWrite:
+					entry = evt.Entry
+
+				case *stores.EventReplicateProgress:
+					entry = evt.Entry
+				}
+
+				if entry == nil {
+					continue
+				}
+
+				store.logger.Debug("received store event", zap.Any("raw event", e))
+
+				metaEvent, event, err := openMetadataEntry(store.OpLog(), entry, g)
+				if err != nil {
+					store.logger.Error("unable to open message", zap.Error(err))
+					continue
+				}
+
+				store.logger.Debug("received payload", zap.String("payload", metaEvent.Metadata.EventType.String()))
+
+				store.Emit(ctx, &EventMetadataReceived{
+					MetaEvent: metaEvent,
+					Event:     event,
+				})
+				store.Emit(ctx, metaEvent)
+			}
+		}()
 
 		options.Index = newMetadataIndex(ctx, store, g, md.Public())
 
