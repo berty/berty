@@ -1594,6 +1594,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.customname)": "BertyID"
                     }
+                  },
+                  Metadata: {
+                    type: "bytes",
+                    id: 2
                   }
                 }
               },

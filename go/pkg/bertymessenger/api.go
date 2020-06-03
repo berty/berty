@@ -159,5 +159,18 @@ func (s *service) SendContactRequest(ctx context.Context, req *SendContactReques
 	if req == nil || req.BertyID == nil || req.BertyID.AccountPK == nil || req.BertyID.PublicRendezvousSeed == nil {
 		return nil, errcode.ErrMissingInput
 	}
-	return nil, errcode.ErrNotImplemented
+
+	contactRequest := bertytypes.ContactRequestSend_Request{
+		Contact: &bertytypes.ShareableContact{
+			PK:                   req.BertyID.AccountPK,
+			PublicRendezvousSeed: req.BertyID.PublicRendezvousSeed,
+			Metadata:             req.Metadata,
+		},
+	}
+	_, err := s.protocol.ContactRequestSend(ctx, &contactRequest)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return &SendContactRequest_Reply{}, nil
 }

@@ -126,6 +126,6 @@ func TestServiceSendContactRequest(t *testing.T) {
 	require.NoError(t, err)
 
 	ret, err = svc.SendContactRequest(ctx, &SendContactRequest_Request{BertyID: parseRet.BertyID})
-	testSameErrcodes(t, err, errcode.ErrNotImplemented)
-	assert.Nil(t, ret)
+	require.NoError(t, err)
+	assert.NotNil(t, ret)
 }

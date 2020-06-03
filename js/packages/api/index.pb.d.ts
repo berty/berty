@@ -2615,11 +2615,13 @@ export namespace berty {
 
             interface IRequest {
                 bertyId?: (berty.messenger.IBertyID|null);
+                Metadata?: (Uint8Array|null);
             }
 
             class Request implements IRequest {
 
                 public bertyId?: (berty.messenger.IBertyID|null);
+                public Metadata: Uint8Array;
                 public static create(properties?: berty.messenger.SendContactRequest.IRequest): berty.messenger.SendContactRequest.Request;
                 public static encode(message: berty.messenger.SendContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.SendContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
