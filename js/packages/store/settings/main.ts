@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, select } from 'redux-saga/effects'
+import { all, select, put } from 'redux-saga/effects'
 import { makeDefaultReducers, makeDefaultCommandsSagas } from '../utils'
 import { BertyNodeConfig } from '../protocol/client'
 
@@ -21,6 +21,7 @@ export type Commands = {
 	create: (state: State, action: { payload: Entity }) => State
 	set: (state: State, action: { payload: { id: string; key: string; value: any } }) => State
 	delete: (state: State, action: { payload: { id: string } }) => State
+	toggleTracing: (state: State, action: { payload: { id: string } }) => State
 }
 
 export type Queries = {
@@ -30,6 +31,7 @@ export type Queries = {
 
 export type Events = {
 	created: (state: State, action: { payload: Entity }) => State
+	nodeConfigUpdated: (state: State, action: { payload: BertyNodeConfig & { id: string } }) => State
 }
 
 export type Transactions = {
@@ -45,19 +47,19 @@ export type Transactions = {
 
 const initialState: State = {}
 
-const commandsNames = ['create', 'set', 'delete']
+const commandsNames = ['create', 'set', 'delete', 'toggleTracing']
 
 const commandHandler = createSlice<State, Commands>({
-	name: 'protocol/client/command',
+	name: 'settings/main/command',
 	initialState,
 	// we don't change state on commands
 	reducers: makeDefaultReducers(commandsNames),
 })
 
-const eventsNames = ['created'] as string[]
+const eventsNames = ['created', 'nodeConfigUpdated'] as string[]
 
 const eventHandler = createSlice<State, Events>({
-	name: 'protocol/client/event',
+	name: 'settings/main/event',
 	initialState,
 	reducers: {
 		...makeDefaultReducers(eventsNames),
@@ -66,6 +68,14 @@ const eventHandler = createSlice<State, Events>({
 			if (!state[id]) {
 				state[id] = payload
 			}
+			return state
+		},
+		nodeConfigUpdated: (state, { payload }) => {
+			const { id } = payload
+			if (!state[id]) {
+				return state
+			}
+			state[id].nodeConfig = payload
 			return state
 		},
 		// put reducer implementaion here
@@ -99,6 +109,19 @@ export const transactions: Transactions = {
 	},
 	delete: function* () {
 		throw new Error('not implemented')
+	},
+	toggleTracing: function* ({ id }) {
+		const { nodeConfig } = yield* getMainSettings(id)
+		if (nodeConfig.type === 'external') {
+			return
+		}
+		const tracingPreviously = nodeConfig.opts.tracing
+		const act = events.nodeConfigUpdated({
+			id,
+			...nodeConfig,
+			opts: { ...nodeConfig.opts, tracing: !tracingPreviously },
+		})
+		yield put(act)
 	},
 }
 

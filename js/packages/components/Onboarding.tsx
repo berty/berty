@@ -305,6 +305,18 @@ const NodeConfigInput: React.FC<{
 						}
 					/>
 				</View>
+				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<Text>Trace: </Text>
+					<Switch
+						value={config.opts.tracing}
+						onValueChange={() =>
+							onConfigChange({
+								...config,
+								opts: { ...config.opts, tracing: !config.opts.tracing },
+							})
+						}
+					/>
+				</View>
 			</>
 		)
 	}

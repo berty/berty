@@ -5,6 +5,7 @@ import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
+import { Settings } from '@berty-tech/hooks'
 
 //
 // DevTools
@@ -57,11 +58,31 @@ const HeaderDevTools: React.FC<{}> = () => {
 	)
 }
 
+const TracingButton: React.FC = () => {
+	const toggleTracing = Settings.useToggleTracing()
+	const settings = Settings.useSettings()
+	if (!settings || settings.nodeConfig.type === 'external') {
+		return null
+	}
+	return (
+		<ButtonSetting
+			name='Tracing'
+			icon='activity-outline'
+			iconSize={30}
+			iconColor='grey'
+			actionToggle={toggleTracing}
+			varToggle={settings.nodeConfig.opts.tracing}
+			toggled
+		/>
+	)
+}
+
 const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
+			<TracingButton />
 			<ButtonSetting
 				name='Bot mode'
 				icon='briefcase-outline'
