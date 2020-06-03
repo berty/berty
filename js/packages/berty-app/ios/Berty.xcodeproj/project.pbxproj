@@ -25,6 +25,7 @@
 		5F9F065C52DF4948ACD06FAF /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 50A51C4D5FCF4BE3BC06B638 /* Fontisto.ttf */; };
 		7D9D8DCF8F1B4F8287624D95 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ACA3FA19E16C4CE289EC144D /* Feather.ttf */; };
 		8191D455DF674F1A89032A0A /* OpenSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BC24EE9A24B2424FB34D78EF /* OpenSans-BoldItalic.ttf */; };
+		8A4BF33D2487F42F004D4193 /* ipfs_webui.zip in Resources */ = {isa = PBXBuildFile; fileRef = 8A4BF33C2487F42F004D4193 /* ipfs_webui.zip */; };
 		8A72F25B2451C4EC00CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
 		8A72F25C2451C4F500CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
 		8A72F25D2451C4FD00CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
@@ -92,6 +93,7 @@
 		691A909A3E3647AE8DE10380 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		6A2CBB8C091C10654628B2CE /* libPods-BertyTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BertyTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F84C76F030A6EDBA22AB150 /* Pods-BertyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.debug.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.debug.xcconfig"; sourceTree = "<group>"; };
+		8A4BF33C2487F42F004D4193 /* ipfs_webui.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = ipfs_webui.zip; path = ../../../../assets/ipfs_webui.zip; sourceTree = "<group>"; };
 		8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		8BF04205A0A80BA5C404077E /* Pods-BertyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.release.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.release.xcconfig"; sourceTree = "<group>"; };
 		8F4D2FAD70964BD9A3DC9697 /* OpenSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-SemiBold.ttf"; path = "../assets/OpenSans-SemiBold.ttf"; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				8A4BF33C2487F42F004D4193 /* ipfs_webui.zip */,
 				F8BF4661238444080077A846 /* Release.xcconfig */,
 				F81E8EE62382FE27007CDBA3 /* Debug.xcconfig */,
 				13B07FAE1A68108700A75B9A /* Berty */,
@@ -499,6 +502,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A4BF33D2487F42F004D4193 /* ipfs_webui.zip in Resources */,
 				F8BF46862384443D0077A846 /* Images.xcassets in Resources */,
 				F8BF46872384443D0077A846 /* LaunchScreen.xib in Resources */,
 			);

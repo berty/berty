@@ -27,7 +27,9 @@ const BodyIpfsWebUI: React.FC<{}> = () => {
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<WebView
-				source={{ uri: 'https://webui.ipfs.io/' }}
+				//source={{ uri: 'https://webui.ipfs.io/' }}
+				source={{ uri: 'http://127.0.0.1:5001/webui' }}
+				//source={{ uri: 'http://127.0.0.1:5001/api/v0/swarm/peers', method: 'POST' }}
 				//TODO: remove fixed height
 				style={[{height: 1000}]}
 			/>
