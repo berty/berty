@@ -1469,6 +1469,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               DevShareInstanceBertyID: {
                 requestType: "DevShareInstanceBertyID.Request",
                 responseType: "DevShareInstanceBertyID.Reply"
+              },
+              ParseDeepLink: {
+                requestType: "ParseDeepLink.Request",
+                responseType: "ParseDeepLink.Reply"
+              },
+              SendContactRequest: {
+                requestType: "SendContactRequest.Request",
+                responseType: "SendContactRequest.Reply"
               }
             }
           },
@@ -1490,29 +1498,32 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               Reply: {
                 fields: {
                   bertyId: {
-                    type: "string",
+                    type: "BertyID",
                     id: 1,
                     options: {
                       "(gogoproto.customname)": "BertyID"
                     }
                   },
-                  deepLink: {
+                  bertyIdPayload: {
                     type: "string",
                     id: 2,
+                    options: {
+                      "(gogoproto.customname)": "BertyIDPayload"
+                    }
+                  },
+                  deepLink: {
+                    type: "string",
+                    id: 3,
                     options: {
                       "(gogoproto.customname)": "DeepLink"
                     }
                   },
                   htmlUrl: {
                     type: "string",
-                    id: 3,
+                    id: 4,
                     options: {
                       "(gogoproto.customname)": "HTMLURL"
                     }
-                  },
-                  displayName: {
-                    type: "string",
-                    id: 4
                   }
                 }
               }
@@ -1535,6 +1546,82 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               Reply: {
                 fields: {}
+              }
+            }
+          },
+          ParseDeepLink: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  link: {
+                    type: "string",
+                    id: 1
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  kind: {
+                    type: "Kind",
+                    id: 1
+                  },
+                  bertyId: {
+                    type: "BertyID",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "BertyID"
+                    }
+                  }
+                }
+              },
+              Kind: {
+                values: {
+                  UnknownKind: 0,
+                  BertyID: 1
+                }
+              }
+            }
+          },
+          SendContactRequest: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  bertyId: {
+                    type: "BertyID",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "BertyID"
+                    }
+                  },
+                  Metadata: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          BertyID: {
+            fields: {
+              publicRendezvousSeed: {
+                type: "bytes",
+                id: 1
+              },
+              accountPk: {
+                type: "bytes",
+                id: 2,
+                options: {
+                  "(gogoproto.customname)": "AccountPK"
+                }
+              },
+              displayName: {
+                type: "string",
+                id: 3
               }
             }
           }

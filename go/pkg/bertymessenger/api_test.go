@@ -5,44 +5,127 @@ import (
 	"testing"
 
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestServiceInstanceShareableBertyID(t *testing.T) {
 	ctx := context.Background()
-	service, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
+	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
 	defer cleanup()
-	ret1, err := service.InstanceShareableBertyID(ctx, nil)
-	require.NoError(t, err)
-	assert.Equal(t, ret1.DisplayName, "anonymous#1337")
-	assert.NotEmpty(t, ret1.BertyID)
-	assert.NotEmpty(t, ret1.DeepLink)
-	assert.NotEmpty(t, ret1.HTMLURL)
 
-	ret2, err := service.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{})
+	ret1, err := svc.InstanceShareableBertyID(ctx, nil)
 	require.NoError(t, err)
-	assert.Equal(t, ret2.DisplayName, "anonymous#1337")
+	testParseInstanceShareable(ctx, t, svc, ret1)
+	assert.Equal(t, ret1.BertyID.DisplayName, "anonymous#1337")
+
+	ret2, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{})
+	require.NoError(t, err)
+	testParseInstanceShareable(ctx, t, svc, ret2)
+	assert.Equal(t, ret2.BertyID.DisplayName, "anonymous#1337")
 	assert.Equal(t, ret1, ret2)
 
-	ret3, err := service.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: "Hello World! 👋"})
+	ret3, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: "Hello World! 👋"})
 	require.NoError(t, err)
-	assert.Equal(t, ret3.DisplayName, "Hello World! 👋")
-	assert.NotEmpty(t, ret3.BertyID)
-	assert.NotEmpty(t, ret3.DeepLink)
-	assert.NotEmpty(t, ret3.HTMLURL)
+	testParseInstanceShareable(ctx, t, svc, ret3)
+	assert.Equal(t, ret3.BertyID.DisplayName, "Hello World! 👋")
 	assert.NotEqual(t, ret2.BertyID, ret3.BertyID)
 
-	ret4, err := service.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{Reset_: true})
+	ret4, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{Reset_: true})
 	require.NoError(t, err)
-	assert.Equal(t, ret4.DisplayName, "anonymous#1337")
-	assert.NotEmpty(t, ret4.BertyID)
-	assert.NotEmpty(t, ret4.DeepLink)
-	assert.NotEmpty(t, ret4.HTMLURL)
+	testParseInstanceShareable(ctx, t, svc, ret4)
+	assert.Equal(t, ret4.BertyID.DisplayName, "anonymous#1337")
 	assert.NotEqual(t, ret1.BertyID, ret4.BertyID)
 	assert.NotEqual(t, ret3.BertyID, ret4.BertyID)
 
-	ret5, err := service.InstanceShareableBertyID(ctx, nil)
+	ret5, err := svc.InstanceShareableBertyID(ctx, nil)
 	require.NoError(t, err)
+	testParseInstanceShareable(ctx, t, svc, ret5)
 	assert.Equal(t, ret4, ret5)
+}
+
+func testParseInstanceShareable(ctx context.Context, t *testing.T, svc MessengerServiceServer, ret *InstanceShareableBertyID_Reply) {
+	t.Helper()
+	assert.NotEmpty(t, ret.BertyID)
+	assert.NotEmpty(t, ret.BertyID.PublicRendezvousSeed)
+	assert.NotEmpty(t, ret.BertyID.AccountPK)
+	assert.NotEmpty(t, ret.BertyID.DisplayName)
+	assert.NotEmpty(t, ret.HTMLURL)
+	assert.NotEmpty(t, ret.DeepLink)
+	assert.NotEqual(t, ret.HTMLURL, ret.DeepLink)
+
+	parsed1, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: ret.DeepLink})
+	require.NoError(t, err)
+	parsed2, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: ret.HTMLURL})
+	require.NoError(t, err)
+
+	assert.Equal(t, parsed1, parsed2)
+	assert.Equal(t, parsed1.BertyID.PublicRendezvousSeed, ret.BertyID.PublicRendezvousSeed)
+	assert.Equal(t, parsed1.BertyID.AccountPK, ret.BertyID.AccountPK)
+	assert.Equal(t, parsed1.BertyID.DisplayName, ret.BertyID.DisplayName)
+}
+
+func TestServiceParseDeepLink(t *testing.T) {
+	tests := []struct {
+		name            string
+		request         *ParseDeepLink_Request
+		expectedErrcode error
+		expectedValidID bool
+		expectedName    bool
+	}{
+		{"nil", nil, errcode.ErrMissingInput, false, false},
+		{"empty", &ParseDeepLink_Request{}, errcode.ErrMissingInput, false, false},
+		{"invalid", &ParseDeepLink_Request{Link: "invalid"}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"invalid2", &ParseDeepLink_Request{Link: "berty://id/#key=blah&name=blih"}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"invalid3", &ParseDeepLink_Request{Link: "https://berty.tech/id#key=blah&name=blih"}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"deeplink", &ParseDeepLink_Request{Link: "berty://id/#key%3DCiDSJgvTIhdDfcZUhhZ8iPYvQVzwBBLRtbnlUX7sh5K9MRIg%252BK1qlkoN7RWQVnzmgveRI0HSLiyRFGa3KE9WNYgJmLQ%253D%26name%3Danonymous%25231337"}, nil, true, true},
+		{"htmlurl", &ParseDeepLink_Request{Link: "https://berty.tech/id#key%3DCiDSJgvTIhdDfcZUhhZ8iPYvQVzwBBLRtbnlUX7sh5K9MRIg%252BK1qlkoN7RWQVnzmgveRI0HSLiyRFGa3KE9WNYgJmLQ%253D%26name%3Danonymous%25231337"}, nil, true, true},
+		{"deeplink-noname", &ParseDeepLink_Request{Link: "berty://id/#key%3DCiDSJgvTIhdDfcZUhhZ8iPYvQVzwBBLRtbnlUX7sh5K9MRIg%252BK1qlkoN7RWQVnzmgveRI0HSLiyRFGa3KE9WNYgJmLQ%253D"}, nil, true, false},
+		{"htmlurl-noname", &ParseDeepLink_Request{Link: "https://berty.tech/id#key%3DCiDSJgvTIhdDfcZUhhZ8iPYvQVzwBBLRtbnlUX7sh5K9MRIg%252BK1qlkoN7RWQVnzmgveRI0HSLiyRFGa3KE9WNYgJmLQ%253D"}, nil, true, false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctx := context.Background()
+			service, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
+			defer cleanup()
+
+			ret, err := service.ParseDeepLink(ctx, tt.request)
+			testSameErrcodes(t, tt.expectedErrcode, err)
+			if tt.expectedValidID {
+				assert.NotEmpty(t, ret.BertyID.PublicRendezvousSeed)
+				assert.NotEmpty(t, ret.BertyID.AccountPK)
+			} else {
+				assert.True(t, ret == nil || ret.BertyID == nil || ret.BertyID.PublicRendezvousSeed == nil)
+				assert.True(t, ret == nil || ret.BertyID == nil || ret.BertyID.AccountPK == nil)
+			}
+			if tt.expectedName {
+				assert.NotEmpty(t, ret.BertyID.DisplayName)
+			} else {
+				assert.True(t, ret == nil || ret.BertyID == nil || ret.BertyID.DisplayName == "")
+			}
+		})
+	}
+}
+
+func TestServiceSendContactRequest(t *testing.T) {
+	ctx := context.Background()
+	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
+	defer cleanup()
+
+	ret, err := svc.SendContactRequest(ctx, nil)
+	testSameErrcodes(t, err, errcode.ErrMissingInput)
+	assert.Nil(t, ret)
+
+	ret, err = svc.SendContactRequest(ctx, &SendContactRequest_Request{})
+	testSameErrcodes(t, err, errcode.ErrMissingInput)
+	assert.Nil(t, ret)
+
+	parseRet, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: "https://berty.tech/id#key%3DCiDSJgvTIhdDfcZUhhZ8iPYvQVzwBBLRtbnlUX7sh5K9MRIg%252BK1qlkoN7RWQVnzmgveRI0HSLiyRFGa3KE9WNYgJmLQ%253D%26name%3Danonymous%25231337"})
+	require.NoError(t, err)
+
+	ret, err = svc.SendContactRequest(ctx, &SendContactRequest_Request{BertyID: parseRet.BertyID})
+	require.NoError(t, err)
+	assert.NotNil(t, ret)
 }

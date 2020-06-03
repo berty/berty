@@ -479,7 +479,7 @@ func main() {
 				return errcode.TODO.Wrap(err)
 			}
 			if !shareInviteNoTerminal {
-				qrterminal.Generate(ret.BertyID, qrterminal.L, os.Stdout) // FIXME: show deeplink
+				qrterminal.Generate(ret.DeepLink, qrterminal.L, os.Stdout) // FIXME: show deeplink
 			}
 			fmt.Printf("deeplink: %s\n", ret.DeepLink)
 			fmt.Printf("html url: %s\n", ret.HTMLURL)

@@ -87,6 +87,9 @@ export const berty = {
 		MessengerService: jsonPb.lookup('.berty.messenger.MessengerService'),
 		InstanceShareableBertyID: jsonPb.lookup('.berty.messenger.InstanceShareableBertyID'),
 		DevShareInstanceBertyID: jsonPb.lookup('.berty.messenger.DevShareInstanceBertyID'),
+		ParseDeepLink: jsonPb.lookup('.berty.messenger.ParseDeepLink'),
+		SendContactRequest: jsonPb.lookup('.berty.messenger.SendContactRequest'),
+		BertyID: jsonPb.lookup('.berty.messenger.BertyID'),
 	},
 }
 export const gogoproto = {

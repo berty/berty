@@ -26,6 +26,31 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type ParseDeepLink_Kind int32
+
+const (
+	ParseDeepLink_UnknownKind ParseDeepLink_Kind = 0
+	ParseDeepLink_BertyID     ParseDeepLink_Kind = 1
+)
+
+var ParseDeepLink_Kind_name = map[int32]string{
+	0: "UnknownKind",
+	1: "BertyID",
+}
+
+var ParseDeepLink_Kind_value = map[string]int32{
+	"UnknownKind": 0,
+	"BertyID":     1,
+}
+
+func (x ParseDeepLink_Kind) String() string {
+	return proto.EnumName(ParseDeepLink_Kind_name, int32(x))
+}
+
+func (ParseDeepLink_Kind) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_fd3bf21e238da6aa, []int{2, 0}
+}
+
 type InstanceShareableBertyID struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -104,10 +129,10 @@ func (m *InstanceShareableBertyID_Request) GetDisplayName() string {
 }
 
 type InstanceShareableBertyID_Reply struct {
-	BertyID              string   `protobuf:"bytes,1,opt,name=berty_id,json=bertyId,proto3" json:"berty_id,omitempty"`
-	DeepLink             string   `protobuf:"bytes,2,opt,name=deep_link,json=deepLink,proto3" json:"deep_link,omitempty"`
-	HTMLURL              string   `protobuf:"bytes,3,opt,name=html_url,json=htmlUrl,proto3" json:"html_url,omitempty"`
-	DisplayName          string   `protobuf:"bytes,4,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	BertyID              *BertyID `protobuf:"bytes,1,opt,name=berty_id,json=bertyId,proto3" json:"berty_id,omitempty"`
+	BertyIDPayload       string   `protobuf:"bytes,2,opt,name=berty_id_payload,json=bertyIdPayload,proto3" json:"berty_id_payload,omitempty"`
+	DeepLink             string   `protobuf:"bytes,3,opt,name=deep_link,json=deepLink,proto3" json:"deep_link,omitempty"`
+	HTMLURL              string   `protobuf:"bytes,4,opt,name=html_url,json=htmlUrl,proto3" json:"html_url,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -137,9 +162,16 @@ func (m *InstanceShareableBertyID_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_InstanceShareableBertyID_Reply proto.InternalMessageInfo
 
-func (m *InstanceShareableBertyID_Reply) GetBertyID() string {
+func (m *InstanceShareableBertyID_Reply) GetBertyID() *BertyID {
 	if m != nil {
 		return m.BertyID
+	}
+	return nil
+}
+
+func (m *InstanceShareableBertyID_Reply) GetBertyIDPayload() string {
+	if m != nil {
+		return m.BertyIDPayload
 	}
 	return ""
 }
@@ -154,13 +186,6 @@ func (m *InstanceShareableBertyID_Reply) GetDeepLink() string {
 func (m *InstanceShareableBertyID_Reply) GetHTMLURL() string {
 	if m != nil {
 		return m.HTMLURL
-	}
-	return ""
-}
-
-func (m *InstanceShareableBertyID_Reply) GetDisplayName() string {
-	if m != nil {
-		return m.DisplayName
 	}
 	return ""
 }
@@ -272,43 +297,340 @@ func (m *DevShareInstanceBertyID_Reply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_DevShareInstanceBertyID_Reply proto.InternalMessageInfo
 
+type ParseDeepLink struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ParseDeepLink) Reset()         { *m = ParseDeepLink{} }
+func (m *ParseDeepLink) String() string { return proto.CompactTextString(m) }
+func (*ParseDeepLink) ProtoMessage()    {}
+func (*ParseDeepLink) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd3bf21e238da6aa, []int{2}
+}
+func (m *ParseDeepLink) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ParseDeepLink.Unmarshal(m, b)
+}
+func (m *ParseDeepLink) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ParseDeepLink.Marshal(b, m, deterministic)
+}
+func (m *ParseDeepLink) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ParseDeepLink.Merge(m, src)
+}
+func (m *ParseDeepLink) XXX_Size() int {
+	return xxx_messageInfo_ParseDeepLink.Size(m)
+}
+func (m *ParseDeepLink) XXX_DiscardUnknown() {
+	xxx_messageInfo_ParseDeepLink.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ParseDeepLink proto.InternalMessageInfo
+
+type ParseDeepLink_Request struct {
+	Link                 string   `protobuf:"bytes,1,opt,name=link,proto3" json:"link,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ParseDeepLink_Request) Reset()         { *m = ParseDeepLink_Request{} }
+func (m *ParseDeepLink_Request) String() string { return proto.CompactTextString(m) }
+func (*ParseDeepLink_Request) ProtoMessage()    {}
+func (*ParseDeepLink_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd3bf21e238da6aa, []int{2, 0}
+}
+func (m *ParseDeepLink_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ParseDeepLink_Request.Unmarshal(m, b)
+}
+func (m *ParseDeepLink_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ParseDeepLink_Request.Marshal(b, m, deterministic)
+}
+func (m *ParseDeepLink_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ParseDeepLink_Request.Merge(m, src)
+}
+func (m *ParseDeepLink_Request) XXX_Size() int {
+	return xxx_messageInfo_ParseDeepLink_Request.Size(m)
+}
+func (m *ParseDeepLink_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_ParseDeepLink_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ParseDeepLink_Request proto.InternalMessageInfo
+
+func (m *ParseDeepLink_Request) GetLink() string {
+	if m != nil {
+		return m.Link
+	}
+	return ""
+}
+
+type ParseDeepLink_Reply struct {
+	Kind                 ParseDeepLink_Kind `protobuf:"varint,1,opt,name=kind,proto3,enum=berty.messenger.ParseDeepLink_Kind" json:"kind,omitempty"`
+	BertyID              *BertyID           `protobuf:"bytes,3,opt,name=berty_id,json=bertyId,proto3" json:"berty_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *ParseDeepLink_Reply) Reset()         { *m = ParseDeepLink_Reply{} }
+func (m *ParseDeepLink_Reply) String() string { return proto.CompactTextString(m) }
+func (*ParseDeepLink_Reply) ProtoMessage()    {}
+func (*ParseDeepLink_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd3bf21e238da6aa, []int{2, 1}
+}
+func (m *ParseDeepLink_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ParseDeepLink_Reply.Unmarshal(m, b)
+}
+func (m *ParseDeepLink_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ParseDeepLink_Reply.Marshal(b, m, deterministic)
+}
+func (m *ParseDeepLink_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ParseDeepLink_Reply.Merge(m, src)
+}
+func (m *ParseDeepLink_Reply) XXX_Size() int {
+	return xxx_messageInfo_ParseDeepLink_Reply.Size(m)
+}
+func (m *ParseDeepLink_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ParseDeepLink_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ParseDeepLink_Reply proto.InternalMessageInfo
+
+func (m *ParseDeepLink_Reply) GetKind() ParseDeepLink_Kind {
+	if m != nil {
+		return m.Kind
+	}
+	return ParseDeepLink_UnknownKind
+}
+
+func (m *ParseDeepLink_Reply) GetBertyID() *BertyID {
+	if m != nil {
+		return m.BertyID
+	}
+	return nil
+}
+
+type SendContactRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SendContactRequest) Reset()         { *m = SendContactRequest{} }
+func (m *SendContactRequest) String() string { return proto.CompactTextString(m) }
+func (*SendContactRequest) ProtoMessage()    {}
+func (*SendContactRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd3bf21e238da6aa, []int{3}
+}
+func (m *SendContactRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SendContactRequest.Unmarshal(m, b)
+}
+func (m *SendContactRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SendContactRequest.Marshal(b, m, deterministic)
+}
+func (m *SendContactRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SendContactRequest.Merge(m, src)
+}
+func (m *SendContactRequest) XXX_Size() int {
+	return xxx_messageInfo_SendContactRequest.Size(m)
+}
+func (m *SendContactRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SendContactRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SendContactRequest proto.InternalMessageInfo
+
+type SendContactRequest_Request struct {
+	BertyID              *BertyID `protobuf:"bytes,1,opt,name=berty_id,json=bertyId,proto3" json:"berty_id,omitempty"`
+	Metadata             []byte   `protobuf:"bytes,2,opt,name=Metadata,proto3" json:"Metadata,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SendContactRequest_Request) Reset()         { *m = SendContactRequest_Request{} }
+func (m *SendContactRequest_Request) String() string { return proto.CompactTextString(m) }
+func (*SendContactRequest_Request) ProtoMessage()    {}
+func (*SendContactRequest_Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd3bf21e238da6aa, []int{3, 0}
+}
+func (m *SendContactRequest_Request) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SendContactRequest_Request.Unmarshal(m, b)
+}
+func (m *SendContactRequest_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SendContactRequest_Request.Marshal(b, m, deterministic)
+}
+func (m *SendContactRequest_Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SendContactRequest_Request.Merge(m, src)
+}
+func (m *SendContactRequest_Request) XXX_Size() int {
+	return xxx_messageInfo_SendContactRequest_Request.Size(m)
+}
+func (m *SendContactRequest_Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_SendContactRequest_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SendContactRequest_Request proto.InternalMessageInfo
+
+func (m *SendContactRequest_Request) GetBertyID() *BertyID {
+	if m != nil {
+		return m.BertyID
+	}
+	return nil
+}
+
+func (m *SendContactRequest_Request) GetMetadata() []byte {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+type SendContactRequest_Reply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SendContactRequest_Reply) Reset()         { *m = SendContactRequest_Reply{} }
+func (m *SendContactRequest_Reply) String() string { return proto.CompactTextString(m) }
+func (*SendContactRequest_Reply) ProtoMessage()    {}
+func (*SendContactRequest_Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd3bf21e238da6aa, []int{3, 1}
+}
+func (m *SendContactRequest_Reply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SendContactRequest_Reply.Unmarshal(m, b)
+}
+func (m *SendContactRequest_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SendContactRequest_Reply.Marshal(b, m, deterministic)
+}
+func (m *SendContactRequest_Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SendContactRequest_Reply.Merge(m, src)
+}
+func (m *SendContactRequest_Reply) XXX_Size() int {
+	return xxx_messageInfo_SendContactRequest_Reply.Size(m)
+}
+func (m *SendContactRequest_Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_SendContactRequest_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SendContactRequest_Reply proto.InternalMessageInfo
+
+type BertyID struct {
+	PublicRendezvousSeed []byte   `protobuf:"bytes,1,opt,name=public_rendezvous_seed,json=publicRendezvousSeed,proto3" json:"public_rendezvous_seed,omitempty"`
+	AccountPK            []byte   `protobuf:"bytes,2,opt,name=account_pk,json=accountPk,proto3" json:"account_pk,omitempty"`
+	DisplayName          string   `protobuf:"bytes,3,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *BertyID) Reset()         { *m = BertyID{} }
+func (m *BertyID) String() string { return proto.CompactTextString(m) }
+func (*BertyID) ProtoMessage()    {}
+func (*BertyID) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd3bf21e238da6aa, []int{4}
+}
+func (m *BertyID) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_BertyID.Unmarshal(m, b)
+}
+func (m *BertyID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_BertyID.Marshal(b, m, deterministic)
+}
+func (m *BertyID) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BertyID.Merge(m, src)
+}
+func (m *BertyID) XXX_Size() int {
+	return xxx_messageInfo_BertyID.Size(m)
+}
+func (m *BertyID) XXX_DiscardUnknown() {
+	xxx_messageInfo_BertyID.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_BertyID proto.InternalMessageInfo
+
+func (m *BertyID) GetPublicRendezvousSeed() []byte {
+	if m != nil {
+		return m.PublicRendezvousSeed
+	}
+	return nil
+}
+
+func (m *BertyID) GetAccountPK() []byte {
+	if m != nil {
+		return m.AccountPK
+	}
+	return nil
+}
+
+func (m *BertyID) GetDisplayName() string {
+	if m != nil {
+		return m.DisplayName
+	}
+	return ""
+}
+
 func init() {
+	proto.RegisterEnum("berty.messenger.ParseDeepLink_Kind", ParseDeepLink_Kind_name, ParseDeepLink_Kind_value)
 	proto.RegisterType((*InstanceShareableBertyID)(nil), "berty.messenger.InstanceShareableBertyID")
 	proto.RegisterType((*InstanceShareableBertyID_Request)(nil), "berty.messenger.InstanceShareableBertyID.Request")
 	proto.RegisterType((*InstanceShareableBertyID_Reply)(nil), "berty.messenger.InstanceShareableBertyID.Reply")
 	proto.RegisterType((*DevShareInstanceBertyID)(nil), "berty.messenger.DevShareInstanceBertyID")
 	proto.RegisterType((*DevShareInstanceBertyID_Request)(nil), "berty.messenger.DevShareInstanceBertyID.Request")
 	proto.RegisterType((*DevShareInstanceBertyID_Reply)(nil), "berty.messenger.DevShareInstanceBertyID.Reply")
+	proto.RegisterType((*ParseDeepLink)(nil), "berty.messenger.ParseDeepLink")
+	proto.RegisterType((*ParseDeepLink_Request)(nil), "berty.messenger.ParseDeepLink.Request")
+	proto.RegisterType((*ParseDeepLink_Reply)(nil), "berty.messenger.ParseDeepLink.Reply")
+	proto.RegisterType((*SendContactRequest)(nil), "berty.messenger.SendContactRequest")
+	proto.RegisterType((*SendContactRequest_Request)(nil), "berty.messenger.SendContactRequest.Request")
+	proto.RegisterType((*SendContactRequest_Reply)(nil), "berty.messenger.SendContactRequest.Reply")
+	proto.RegisterType((*BertyID)(nil), "berty.messenger.BertyID")
 }
 
 func init() { proto.RegisterFile("bertymessenger.proto", fileDescriptor_fd3bf21e238da6aa) }
 
 var fileDescriptor_fd3bf21e238da6aa = []byte{
-	// 371 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x52, 0xbd, 0x6e, 0xe2, 0x40,
-	0x10, 0x96, 0xb9, 0xe3, 0x6c, 0x16, 0xa4, 0x3b, 0xad, 0x90, 0xce, 0x72, 0x03, 0x47, 0x81, 0xb8,
-	0x22, 0x76, 0x7e, 0xde, 0xc0, 0xa2, 0x08, 0x12, 0xa4, 0x58, 0x42, 0x93, 0xc6, 0xf2, 0xcf, 0x60,
-	0x5b, 0xac, 0x7f, 0xb2, 0x5e, 0x23, 0x59, 0x91, 0x52, 0xa6, 0xcd, 0x53, 0xe4, 0xb5, 0x28, 0x78,
-	0x92, 0xc8, 0x6b, 0x43, 0x94, 0x20, 0x17, 0x48, 0xe9, 0x66, 0x66, 0x67, 0xbe, 0xf9, 0xf6, 0xfb,
-	0x06, 0xf5, 0x1d, 0x60, 0xbc, 0x88, 0x20, 0xcb, 0x20, 0xf6, 0x81, 0xe9, 0x29, 0x4b, 0x78, 0x82,
-	0x7f, 0x8b, 0xaa, 0x7e, 0x2c, 0x6b, 0x17, 0x7e, 0xc8, 0x83, 0xdc, 0xd1, 0xdd, 0x24, 0x32, 0xfc,
-	0xc4, 0x4f, 0x0c, 0xd1, 0xe7, 0xe4, 0x6b, 0x91, 0x89, 0x44, 0x44, 0xd5, 0xfc, 0xe8, 0xa5, 0x85,
-	0xd4, 0x59, 0x9c, 0x71, 0x3b, 0x76, 0x61, 0x19, 0xd8, 0x0c, 0x6c, 0x87, 0x82, 0x59, 0x62, 0xce,
-	0xa6, 0x9a, 0x89, 0x64, 0x02, 0x8f, 0x39, 0x64, 0x1c, 0xf7, 0x51, 0x9b, 0x41, 0x06, 0x5c, 0x95,
-	0x86, 0xd2, 0x44, 0x21, 0x55, 0x82, 0xff, 0xa1, 0x9e, 0x17, 0x66, 0x29, 0xb5, 0x0b, 0x2b, 0xb6,
-	0x23, 0x50, 0x5b, 0x43, 0x69, 0xd2, 0x21, 0xdd, 0xba, 0x76, 0x67, 0x47, 0xa0, 0xbd, 0x49, 0xa8,
-	0x4d, 0x20, 0xa5, 0x05, 0x1e, 0x23, 0x45, 0x90, 0xb5, 0x42, 0x4f, 0xa0, 0x74, 0xcc, 0xee, 0x7e,
-	0x37, 0x90, 0xeb, 0x65, 0x44, 0x16, 0x8f, 0x33, 0x0f, 0xff, 0x47, 0x1d, 0x0f, 0x20, 0xb5, 0x68,
-	0x18, 0x6f, 0x2a, 0x44, 0xb3, 0xb7, 0xdf, 0x0d, 0x94, 0x29, 0x40, 0x3a, 0x0f, 0xe3, 0x0d, 0x51,
-	0xbc, 0x3a, 0x2a, 0x21, 0x03, 0x1e, 0x51, 0x2b, 0x67, 0x54, 0xfd, 0xf1, 0x01, 0x79, 0x7b, 0xbf,
-	0x98, 0xaf, 0xc8, 0x9c, 0xc8, 0xe5, 0xe3, 0x8a, 0xd1, 0x13, 0x9e, 0x3f, 0x4f, 0x78, 0x8e, 0xd6,
-	0xe8, 0xef, 0x14, 0xb6, 0x42, 0x82, 0x83, 0x1e, 0xdf, 0x29, 0x83, 0x5c, 0xab, 0x70, 0xfd, 0xda,
-	0x42, 0x7f, 0x16, 0x07, 0xb7, 0x96, 0xc0, 0xb6, 0xa1, 0x0b, 0xf8, 0xb9, 0xd9, 0x04, 0x7c, 0xa5,
-	0x7f, 0xb1, 0x58, 0x6f, 0x6a, 0xd5, 0x6b, 0x96, 0x9a, 0x71, 0xce, 0x48, 0x69, 0xcd, 0x53, 0xe3,
-	0xe7, 0xf1, 0xe5, 0x09, 0x56, 0x43, 0xe7, 0x71, 0xbb, 0x7e, 0xc6, 0x44, 0x4a, 0x0b, 0x73, 0xf2,
-	0x30, 0xae, 0x06, 0x38, 0xb8, 0x81, 0x21, 0x42, 0xa3, 0xbc, 0xdb, 0x8d, 0x6f, 0x7c, 0x3e, 0x79,
-	0xe7, 0x97, 0xb8, 0xd9, 0x9b, 0xf7, 0x00, 0x00, 0x00, 0xff, 0xff, 0x5f, 0xba, 0x10, 0x6f, 0x0b,
-	0x03, 0x00, 0x00,
+	// 623 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0xcd, 0x6e, 0xd3, 0x40,
+	0x10, 0xc6, 0x4d, 0x4a, 0x9c, 0x4d, 0xda, 0x46, 0xab, 0x0a, 0x2c, 0x4b, 0x28, 0x25, 0x54, 0x55,
+	0x2b, 0xc0, 0x86, 0x82, 0xc4, 0x85, 0x03, 0x98, 0x1e, 0xa8, 0xda, 0xa2, 0x68, 0x43, 0x2f, 0x48,
+	0xc8, 0x5a, 0xdb, 0x53, 0xc7, 0xb2, 0xb3, 0x36, 0xf6, 0xba, 0x28, 0x20, 0x71, 0xe0, 0xc0, 0x99,
+	0xf7, 0xe1, 0x49, 0x40, 0x28, 0x87, 0x3c, 0x09, 0xf2, 0xfa, 0xa7, 0x6a, 0x4d, 0x54, 0x0a, 0xdc,
+	0xe6, 0xe7, 0x9b, 0x6f, 0x66, 0x3e, 0x8f, 0x17, 0xad, 0x5b, 0x10, 0xf3, 0xe9, 0x04, 0x92, 0x04,
+	0x98, 0x0b, 0xb1, 0x16, 0xc5, 0x21, 0x0f, 0xf1, 0x9a, 0x88, 0x6a, 0x55, 0x58, 0xbd, 0xef, 0x7a,
+	0x7c, 0x9c, 0x5a, 0x9a, 0x1d, 0x4e, 0x74, 0x37, 0x74, 0x43, 0x5d, 0xe0, 0xac, 0xf4, 0x44, 0x78,
+	0xc2, 0x11, 0x56, 0x5e, 0x3f, 0xf8, 0xb6, 0x84, 0x94, 0x7d, 0x96, 0x70, 0xca, 0x6c, 0x18, 0x8d,
+	0x69, 0x0c, 0xd4, 0x0a, 0xc0, 0xc8, 0x38, 0xf7, 0xf7, 0x54, 0x03, 0xb5, 0x08, 0xbc, 0x4b, 0x21,
+	0xe1, 0x78, 0x1d, 0x2d, 0xc7, 0x90, 0x00, 0x57, 0xa4, 0x0d, 0x69, 0x5b, 0x26, 0xb9, 0x83, 0x6f,
+	0xa3, 0xae, 0xe3, 0x25, 0x51, 0x40, 0xa7, 0x26, 0xa3, 0x13, 0x50, 0x96, 0x36, 0xa4, 0xed, 0x36,
+	0xe9, 0x14, 0xb1, 0x57, 0x74, 0x02, 0xea, 0x0f, 0x09, 0x2d, 0x13, 0x88, 0x82, 0x29, 0x7e, 0x86,
+	0x64, 0x31, 0xac, 0xe9, 0x39, 0x82, 0xa5, 0xb3, 0xab, 0x68, 0x17, 0xa6, 0xd7, 0x8a, 0xce, 0x46,
+	0x67, 0x3e, 0xeb, 0xb7, 0x0a, 0x87, 0xb4, 0x04, 0x6a, 0xdf, 0xc1, 0x4f, 0x51, 0xaf, 0x64, 0x30,
+	0x23, 0x3a, 0x0d, 0x42, 0xea, 0xe4, 0x2d, 0x0d, 0x3c, 0x9f, 0xf5, 0x57, 0x0b, 0xfc, 0x30, 0xcf,
+	0x90, 0xd5, 0xa2, 0xac, 0xf0, 0xf1, 0x0e, 0x6a, 0x3b, 0x00, 0x91, 0x19, 0x78, 0xcc, 0x57, 0x1a,
+	0xa2, 0xac, 0x3b, 0x9f, 0xf5, 0xe5, 0x3d, 0x80, 0xe8, 0xd0, 0x63, 0x3e, 0x91, 0x9d, 0xc2, 0xc2,
+	0x5b, 0x48, 0x1e, 0xf3, 0x49, 0x60, 0xa6, 0x71, 0xa0, 0x34, 0x05, 0x52, 0x0c, 0xf4, 0xf2, 0xf5,
+	0xd1, 0xe1, 0x31, 0x39, 0x24, 0xad, 0x2c, 0x79, 0x1c, 0x07, 0x83, 0x13, 0x74, 0x73, 0x0f, 0x4e,
+	0x85, 0x6e, 0xa5, 0x88, 0xff, 0x53, 0xbb, 0x56, 0x21, 0xdd, 0xe0, 0xbb, 0x84, 0x56, 0x86, 0x34,
+	0x4e, 0xa0, 0x9c, 0x55, 0xbd, 0x75, 0x46, 0x8f, 0x51, 0x53, 0xac, 0x24, 0x09, 0x02, 0x61, 0xab,
+	0x9f, 0x2b, 0xd5, 0x9f, 0xa0, 0xa6, 0xef, 0xb1, 0x5c, 0xf1, 0xd5, 0xdd, 0x3b, 0x35, 0xc5, 0xcf,
+	0xd1, 0x6a, 0x07, 0x1e, 0x73, 0x88, 0x28, 0x38, 0xf7, 0xb9, 0x1a, 0x7f, 0xf3, 0xb9, 0x06, 0x9b,
+	0xa8, 0x99, 0xf1, 0xe1, 0x35, 0xd4, 0x39, 0x66, 0x3e, 0x0b, 0xdf, 0xb3, 0xcc, 0xed, 0x5d, 0xc3,
+	0x1d, 0x54, 0x82, 0x7b, 0xd2, 0xe0, 0x8b, 0x84, 0xf0, 0x08, 0x98, 0xf3, 0x22, 0x64, 0x9c, 0xda,
+	0xbc, 0xd8, 0x4a, 0x75, 0xcf, 0x16, 0xfc, 0xf7, 0xc3, 0x51, 0x91, 0x7c, 0x04, 0x9c, 0x3a, 0x94,
+	0x53, 0xa1, 0x73, 0x97, 0x54, 0xfe, 0x99, 0xc8, 0x5f, 0xa5, 0x6a, 0x2c, 0xfc, 0x18, 0xdd, 0x88,
+	0x52, 0x2b, 0xf0, 0x6c, 0x33, 0x06, 0xe6, 0xc0, 0x87, 0xd3, 0x30, 0x4d, 0xcc, 0x04, 0x20, 0x1f,
+	0xa0, 0x4b, 0xd6, 0xf3, 0x2c, 0xa9, 0x92, 0x23, 0x00, 0x07, 0xdf, 0x43, 0x88, 0xda, 0x76, 0x98,
+	0x32, 0x6e, 0x46, 0x7e, 0xde, 0xc8, 0x58, 0x99, 0xcf, 0xfa, 0xed, 0xe7, 0x79, 0x74, 0x78, 0x40,
+	0xda, 0x05, 0x60, 0xe8, 0xd7, 0x0e, 0xa0, 0x51, 0x3b, 0x80, 0xdd, 0x9f, 0x0d, 0xd4, 0x3b, 0x2a,
+	0x77, 0x1c, 0x41, 0x7c, 0xea, 0xd9, 0x80, 0x3f, 0x2d, 0xfe, 0x63, 0xf1, 0xc3, 0x9a, 0x30, 0x8b,
+	0xa0, 0x5a, 0x29, 0xb4, 0x7e, 0x95, 0x92, 0xec, 0xa2, 0x3e, 0x2e, 0x3c, 0x7a, 0xfc, 0xa0, 0xc6,
+	0xb5, 0x00, 0x59, 0x75, 0xd7, 0xae, 0x50, 0x91, 0x35, 0x7f, 0x7b, 0xe1, 0x47, 0xc0, 0x5b, 0x97,
+	0x5c, 0x74, 0xd9, 0x68, 0xf3, 0x52, 0x5c, 0x46, 0x1f, 0xfc, 0xee, 0x16, 0xf1, 0xdd, 0x5a, 0x6d,
+	0x1d, 0x54, 0x35, 0xda, 0xf9, 0x33, 0x70, 0x14, 0x4c, 0x8d, 0xed, 0x37, 0x5b, 0x39, 0x96, 0x83,
+	0x3d, 0xd6, 0x85, 0xa9, 0x67, 0x2f, 0xb6, 0xef, 0xea, 0xe7, 0x1f, 0x7b, 0xeb, 0xba, 0x78, 0xad,
+	0x1f, 0xfd, 0x0a, 0x00, 0x00, 0xff, 0xff, 0xfe, 0x04, 0x42, 0xbe, 0x05, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -328,6 +650,12 @@ type MessengerServiceClient interface {
 	// DevShareInstanceBertyID shares your Berty ID on a dev channel.
 	// TODO: remove for public.
 	DevShareInstanceBertyID(ctx context.Context, in *DevShareInstanceBertyID_Request, opts ...grpc.CallOption) (*DevShareInstanceBertyID_Reply, error)
+	// ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure
+	// that can be used to display information.
+	// This action is read-only.
+	ParseDeepLink(ctx context.Context, in *ParseDeepLink_Request, opts ...grpc.CallOption) (*ParseDeepLink_Reply, error)
+	// SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol.
+	SendContactRequest(ctx context.Context, in *SendContactRequest_Request, opts ...grpc.CallOption) (*SendContactRequest_Reply, error)
 }
 
 type messengerServiceClient struct {
@@ -356,6 +684,24 @@ func (c *messengerServiceClient) DevShareInstanceBertyID(ctx context.Context, in
 	return out, nil
 }
 
+func (c *messengerServiceClient) ParseDeepLink(ctx context.Context, in *ParseDeepLink_Request, opts ...grpc.CallOption) (*ParseDeepLink_Reply, error) {
+	out := new(ParseDeepLink_Reply)
+	err := c.cc.Invoke(ctx, "/berty.messenger.MessengerService/ParseDeepLink", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messengerServiceClient) SendContactRequest(ctx context.Context, in *SendContactRequest_Request, opts ...grpc.CallOption) (*SendContactRequest_Reply, error) {
+	out := new(SendContactRequest_Reply)
+	err := c.cc.Invoke(ctx, "/berty.messenger.MessengerService/SendContactRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MessengerServiceServer is the server API for MessengerService service.
 type MessengerServiceServer interface {
 	// InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.
@@ -363,6 +709,12 @@ type MessengerServiceServer interface {
 	// DevShareInstanceBertyID shares your Berty ID on a dev channel.
 	// TODO: remove for public.
 	DevShareInstanceBertyID(context.Context, *DevShareInstanceBertyID_Request) (*DevShareInstanceBertyID_Reply, error)
+	// ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure
+	// that can be used to display information.
+	// This action is read-only.
+	ParseDeepLink(context.Context, *ParseDeepLink_Request) (*ParseDeepLink_Reply, error)
+	// SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol.
+	SendContactRequest(context.Context, *SendContactRequest_Request) (*SendContactRequest_Reply, error)
 }
 
 // UnimplementedMessengerServiceServer can be embedded to have forward compatible implementations.
@@ -374,6 +726,12 @@ func (*UnimplementedMessengerServiceServer) InstanceShareableBertyID(ctx context
 }
 func (*UnimplementedMessengerServiceServer) DevShareInstanceBertyID(ctx context.Context, req *DevShareInstanceBertyID_Request) (*DevShareInstanceBertyID_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DevShareInstanceBertyID not implemented")
+}
+func (*UnimplementedMessengerServiceServer) ParseDeepLink(ctx context.Context, req *ParseDeepLink_Request) (*ParseDeepLink_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ParseDeepLink not implemented")
+}
+func (*UnimplementedMessengerServiceServer) SendContactRequest(ctx context.Context, req *SendContactRequest_Request) (*SendContactRequest_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendContactRequest not implemented")
 }
 
 func RegisterMessengerServiceServer(s *grpc.Server, srv MessengerServiceServer) {
@@ -416,6 +774,42 @@ func _MessengerService_DevShareInstanceBertyID_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MessengerService_ParseDeepLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ParseDeepLink_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessengerServiceServer).ParseDeepLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.messenger.MessengerService/ParseDeepLink",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessengerServiceServer).ParseDeepLink(ctx, req.(*ParseDeepLink_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessengerService_SendContactRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendContactRequest_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessengerServiceServer).SendContactRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.messenger.MessengerService/SendContactRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessengerServiceServer).SendContactRequest(ctx, req.(*SendContactRequest_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _MessengerService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "berty.messenger.MessengerService",
 	HandlerType: (*MessengerServiceServer)(nil),
@@ -427,6 +821,14 @@ var _MessengerService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DevShareInstanceBertyID",
 			Handler:    _MessengerService_DevShareInstanceBertyID_Handler,
+		},
+		{
+			MethodName: "ParseDeepLink",
+			Handler:    _MessengerService_ParseDeepLink_Handler,
+		},
+		{
+			MethodName: "SendContactRequest",
+			Handler:    _MessengerService_SendContactRequest_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
