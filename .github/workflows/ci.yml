@@ -1,4 +1,4 @@
-name: protobuf
+name: CI
 on:
   push:
     tags:
@@ -7,8 +7,20 @@ on:
       - master
   pull_request:
 jobs:
-  generate:
-    name: generate
+  golangci-lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v1
+        with:
+          version: v1.27
+          working-directory: go
+          args: --timeout=2m
+          # only-new-issues: true
+  protobuf:
+    name: protobuf
     runs-on: ubuntu-latest
     container: bertytech/protoc:23
     steps:
@@ -19,8 +31,9 @@ jobs:
           cd go
           go mod vendor
           make generate_local
-          make tidy
-      - name: generting docs/
+          cd ..
+          git checkout go.mod go.sum
+      - name: generating docs/
         run: |
           cd docs
           make generate_local
