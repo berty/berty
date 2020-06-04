@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -61,6 +62,7 @@ type ProtocolConfig struct {
 	swarmListeners []string
 	rootDirectory  string
 	tracing        bool
+	tracingPrefix  string
 
 	// internal
 	coreAPI ipfsutil.ExtendedCoreAPI
@@ -78,6 +80,10 @@ func (pc *ProtocolConfig) RootDirectory(dir string) {
 
 func (pc *ProtocolConfig) EnableTracing() {
 	pc.tracing = true
+}
+
+func (pc *ProtocolConfig) SetTracingPrefix(prefix string) {
+	pc.tracingPrefix = prefix
 }
 
 func (pc *ProtocolConfig) LogLevel(level string) {
@@ -159,7 +165,11 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 	// init tracing
 	if config.tracing {
-		svcName := fmt.Sprintf("<%.6s>", node.Identity.String())
+		shortID := fmt.Sprintf("%.6s", node.Identity.String())
+		svcName := fmt.Sprintf("<%s>", shortID)
+		if prefix := strings.TrimSpace(config.tracingPrefix); prefix != "" {
+			svcName = fmt.Sprintf("<%s@%s>", prefix, shortID)
+		}
 		tracer.InitTracer(defaultTracingHost, svcName)
 	}
 

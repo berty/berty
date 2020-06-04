@@ -100,6 +100,7 @@ class GoBridge: NSObject {
 
             if optTracing {
                 config.enableTracing()
+                config.setTracingPrefix("changeme")
             }
 
             let bridgeProtocol = BertybridgeNewProtocolBridge(config, &err)
