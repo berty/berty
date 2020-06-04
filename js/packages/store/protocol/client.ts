@@ -258,7 +258,7 @@ export const defaultExternalBridgeConfig: BertyNodeConfig = {
 export const defaultBridgeOpts = {
 	swarmListeners: ['/ip4/0.0.0.0/tcp/0', '/ip6/0.0.0.0/tcp/0'],
 	grpcListeners: ['/ip4/127.0.0.1/tcp/0/grpcws'],
-	logLevel: 'info',
+	logLevel: 'debug',
 	persistance: true,
 	tracing: true,
 }
