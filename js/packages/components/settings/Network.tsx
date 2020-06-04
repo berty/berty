@@ -44,15 +44,6 @@ const HeaderNetwork: React.FC<{}> = () => {
 	)
 }
 
-const BodyNetwork: React.FC<{}> = () => {
-	const _styles = useStylesNetwork()
-	const [{ padding, flex, margin, color, text }] = useStyles()
-	return (
-		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
-		</View>
-	)
-}
-
 export const Network: React.FC<ScreenProps.Settings.Network> = () => {
 	const { goBack } = useNavigation()
 	const [{ background, flex, color, padding }] = useStyles()
@@ -62,7 +53,6 @@ export const Network: React.FC<ScreenProps.Settings.Network> = () => {
 				<HeaderSettings title='Network' bgColor={color.dark.grey} undo={goBack}>
 					<HeaderNetwork />
 				</HeaderSettings>
-				<BodyNetwork />
 			</ScrollView>
 		</Layout>
 	)

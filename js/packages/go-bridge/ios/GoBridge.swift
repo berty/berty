@@ -8,7 +8,6 @@
 
 import Foundation
 import Bertybridge
-import ZIPFoundation
 
 @objc(GoBridge)
 class GoBridge: NSObject {
@@ -97,19 +96,6 @@ class GoBridge: NSObject {
 
                 NSLog("root dir: `%@`", self.rootdir.path)
                 config.rootDirectory(self.rootdir.path)
-            }
-           
-            // extract the ipfs webui blocks
-            let ipfsWebuiPath = Bundle.main.path(forResource: "ipfs_webui", ofType: "zip")
-            var sourceURL = URL(fileURLWithPath: ipfsWebuiPath!)
-            var destinationURL = URL(fileURLWithPath: self.rootdir.path)
-            destinationURL.appendPathComponent("ipfs")
-            NSLog("Unzip destination %@", destinationURL.absoluteString)
-            do {
-                try FileManager.default.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
-                try FileManager.default.unzipItem(at: sourceURL, to: destinationURL)
-            } catch {
-                print("Extraction of ZIP archive failed with error:\(error)")
             }
 
             if optTracing {

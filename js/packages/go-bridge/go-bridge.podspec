@@ -22,6 +22,5 @@ Pod::Spec.new do |s|
 
   s.ios.vendored_frameworks = 'ios/Frameworks/Bertybridge.framework'
   s.dependency "React"
-  s.dependency 'ZIPFoundation'
   # s.dependency "..."
 end

@@ -1,25 +1,26 @@
 package ipfsutil
 
 import (
-	"context"
+	"net/http"
 
 	"berty.tech/berty/v2/go/internal/config"
+	ipfswebui "berty.tech/ipfs-webui-packed"
 	"github.com/ipfs/go-ipfs/commands"
 	oldcmds "github.com/ipfs/go-ipfs/commands"
 	"github.com/ipfs/go-ipfs/core"
-	corehttp "github.com/ipfs/go-ipfs/core/corehttp"
+	"github.com/ipfs/go-ipfs/core/corehttp"
+	"go.uber.org/zap"
 )
 
-// TODO(@D4ryl00) get the actal api address from the ipfs node
-var DefaultAPIAddrs = config.BertyMobile.DefaultAPIAddrs
+var DefaultAPIAddrs = config.BertyMobile.DefaultAPIAddrs // TODO(@D4ryl00) get the actal api address from the ipfs node
 
 // ServeHTTPApi collects options, creates listener, prints status message and starts serving requests
-func ServeHTTPApi(ctx context.Context, node *core.IpfsNode) error {
+func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode) {
 	// mandatory for the IPFS API server
 	cctx := commands.Context{
 		// http handler requires it
 		ReqLog: &oldcmds.ReqLog{},
-		// the node is already construt so we pass it
+		// the node is already construct so we pass it
 		ConstructNode: func() (*core.IpfsNode, error) {
 			return node, nil
 		},
@@ -34,9 +35,17 @@ func ServeHTTPApi(ctx context.Context, node *core.IpfsNode) error {
 	}
 
 	// start the server in a new goroutine since it is not async
-	go func(node *core.IpfsNode, DefaultAPIAddrs string, opts ...corehttp.ServeOption) {
-		corehttp.ListenAndServe(node, DefaultAPIAddrs, opts...)
+	go func(node *core.IpfsNode, apiAddr string, opts ...corehttp.ServeOption) {
+		err := corehttp.ListenAndServe(node, apiAddr, opts...)
+		if err != nil {
+			logger.Error("corehttp.ListenAndServe failed", zap.Error(err))
+		}
 	}(node, DefaultAPIAddrs[0], opts...)
+}
 
-	return nil
+func ServeHTTPWebui(logger *zap.Logger) {
+	dir := http.FileServer(ipfswebui.Dir())
+	go func(dir http.Handler) {
+		logger.Error(http.ListenAndServe(":3000", dir).Error())
+	}(dir)
 }

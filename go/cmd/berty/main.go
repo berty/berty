@@ -282,9 +282,10 @@ func main() {
 				defer node.Close()
 
 				// construct http api endpoint
-				if err = ipfsutil.ServeHTTPApi(ctx, node); err != nil {
-					return err
-				}
+				ipfsutil.ServeHTTPApi(logger, node)
+
+				// serve the embedded ipfs webui
+				ipfsutil.ServeHTTPWebui(logger)
 
 				if crouting != nil {
 					routingOut = <-crouting

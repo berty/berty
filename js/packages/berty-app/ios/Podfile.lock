@@ -38,7 +38,6 @@ PODS:
   - glog (0.3.5)
   - go-bridge (1.0.0):
     - React
-    - ZIPFoundation
   - Interactable (2.0.1):
     - React
   - Permission-Camera (2.0.3):
@@ -281,7 +280,6 @@ PODS:
   - RNVectorIcons (6.6.0):
     - React
   - Yoga (1.14.0)
-  - ZIPFoundation (0.9.11)
 
 DEPENDENCIES:
   - BVLinearGradient (from `../../../node_modules/react-native-linear-gradient`)
@@ -336,7 +334,6 @@ SPEC REPOS:
   trunk:
     - AFNetworking
     - boost-for-react-native
-    - ZIPFoundation
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -437,7 +434,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 118d0d177724c2d67f08a59136eb29ef5943ec75
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
-  go-bridge: 509b3e98eb2822dba1a89ad15e25dd81d45d7c2d
+  go-bridge: c1dc5d0b5ca1cf244ea633a6ff535253eed83ac8
   Interactable: 411887c89fa16ac41f8e7898aca06dcad55e5f22
   Permission-Camera: 731959b8ffb5757e1ee85893fb49c3aa021ef512
   RCTRequired: b153add4da6e7dbc44aebf93f3cf4fcae392ddf1
@@ -475,7 +472,6 @@ SPEC CHECKSUMS:
   RNSVG: 67f1f12dae2cef6ed59a42cae74a6b8f5a9e7b46
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
-  ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
 PODFILE CHECKSUM: 8131f8079d7fcb22397880de7697fd483de0dc75
 

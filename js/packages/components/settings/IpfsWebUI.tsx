@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-import {  } from 'react-native';
-import { View, ScrollView, StyleSheet, Text} from 'react-native'
+import React, { Component } from 'react'
+import { View, ScrollView, StyleSheet, Text } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
 import { HeaderSettings } from '../shared-components/Header'
-import { WebView } from 'react-native-webview';
+import { WebView } from 'react-native-webview'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
 
@@ -27,11 +26,9 @@ const BodyIpfsWebUI: React.FC<{}> = () => {
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<WebView
-				//source={{ uri: 'https://webui.ipfs.io/' }}
-				source={{ uri: 'http://127.0.0.1:5001/webui' }}
-				//source={{ uri: 'http://127.0.0.1:5001/api/v0/swarm/peers', method: 'POST' }}
+				source={{ uri: 'http://127.0.0.1:3000' }}
 				//TODO: remove fixed height
-				style={[{height: 1000}]}
+				style={[{ height: 1000 }]}
 			/>
 		</View>
 	)
@@ -43,8 +40,7 @@ export const IpfsWebUI: React.FC<ScreenProps.Settings.IpfsWebUI> = () => {
 	return (
 		<Layout style={[background.white, flex.tiny]}>
 			<ScrollView contentContainerStyle={padding.bottom.scale(90)}>
-				<HeaderSettings title='Ipfs WebUI' bgColor={color.dark.grey} undo={goBack}>
-				</HeaderSettings>
+				<HeaderSettings title='Ipfs WebUI' bgColor={color.dark.grey} undo={goBack}></HeaderSettings>
 				<BodyIpfsWebUI />
 			</ScrollView>
 		</Layout>

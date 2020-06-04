@@ -169,9 +169,10 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			}
 
 			// construct http api endpoint
-			if err = ipfsutil.ServeHTTPApi(ctx, node); err != nil {
-				return nil, errcode.TODO.Wrap(err)
-			}
+			ipfsutil.ServeHTTPApi(logger, node)
+
+			// serve the embedded ipfs webui
+			ipfsutil.ServeHTTPWebui(logger)
 
 			out := <-crouting
 			dht = out.IpfsDHT

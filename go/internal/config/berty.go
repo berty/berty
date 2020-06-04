@@ -23,8 +23,8 @@ var BertyDev = &BertyConfig{
 	DefaultAPIAddrs: []string{"/ip4/127.0.0.1/tcp/5001"},
 	APIConfig: config.API{
 		HTTPHeaders: map[string][]string{
-			"Access-Control-Allow-Origin":  []string{"*"},
-			"Access-Control-Allow-Methods": []string{"POST"},
+			"Access-Control-Allow-Origin":  {"*"},
+			"Access-Control-Allow-Methods": {"POST"},
 		},
 	},
 }
@@ -37,8 +37,8 @@ var BertyMobile = &BertyConfig{
 	DefaultAPIAddrs: []string{"/ip4/127.0.0.1/tcp/5001"},
 	APIConfig: config.API{
 		HTTPHeaders: map[string][]string{
-			"Access-Control-Allow-Origin":  []string{"*"},
-			"Access-Control-Allow-Methods": []string{"POST"},
+			"Access-Control-Allow-Origin":  {"*"},
+			"Access-Control-Allow-Methods": {"POST"},
 		},
 	},
 }
