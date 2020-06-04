@@ -3,7 +3,7 @@
 ##
 
 GO ?= go
-GO_TEST_OPTS ?= -test.timeout=180s
+GO_TEST_OPTS ?= -test.timeout=180s -race -cover -coverprofile=coverage.txt -covermode=atomic
 GOPATH ?= $(HOME)/go
 
 ##
@@ -67,7 +67,7 @@ go.lint: pb.generate
 go.unittest: GO_TEST_PATH ?= ./...
 go.unittest: pb.generate
 	$(call check-program, $(GO))
-	GO111MODULE=on $(GO) test $(GO_TEST_OPTS) -cover -coverprofile=coverage.txt -covermode=atomic -race $(GO_TEST_PATH)
+	GO111MODULE=on $(GO) test $(GO_TEST_OPTS) $(GO_TEST_PATH)
 
 .PHONY: go.unittest.watch
 go.unittest: GO_TEST_PATH ?= ./...
