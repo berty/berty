@@ -31,7 +31,7 @@ steps:
       automatic:
         limit: 3
     agents:
-      queue: "bigcores"
+      queue: "berty-go-build" # a dedicated queue that should only be made available once per agent host
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/build-go:v4
