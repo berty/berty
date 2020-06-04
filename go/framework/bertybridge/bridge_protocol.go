@@ -8,6 +8,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -116,10 +117,14 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 	ctx := context.Background()
 
 	// setup coreapi if needed
-	var api ipfsutil.ExtendedCoreAPI
-	var node *core.IpfsNode
-	var dht *dht.IpfsDHT
-	var repo ipfs_repo.Repo
+	var (
+		api          ipfsutil.ExtendedCoreAPI
+		node         *core.IpfsNode
+		dht          *dht.IpfsDHT
+		repo         ipfs_repo.Repo
+		tinderDriver tinder.Driver
+	)
+
 	{
 		var err error
 
@@ -154,6 +159,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 			out := <-crouting
 			dht = out.IpfsDHT
+			tinderDriver = out.Routing
 		}
 	}
 
@@ -187,6 +193,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			OrbitDirectory: odbDir,
 			RootDatastore:  rootds,
 			IpfsCoreAPI:    api,
+			TinderDriver:   tinderDriver,
 		}
 
 		service, err = bertyprotocol.New(protocolOpts)
