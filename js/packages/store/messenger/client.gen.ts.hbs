@@ -1,0 +1,33 @@
+import * as api from '@berty-tech/api'
+
+{{#with (lookup "berty.messenger")}}
+	{{#each nested}}
+		{{#if (eq (typeof this) "Service")}}
+		export type Commands<State> = {
+				{{#each methods}}
+					{{case 'camel' name}}: (
+						state: State,
+						action: {
+							payload: {
+								id: string,
+								{{#each resolvedRequestType.fields}}
+									{{@key}}: {{#with (convertScalarType type)~}}
+										{{this}},
+									{{else}}
+										api{{inamespace resolvedType}},
+									{{/with}}
+								{{/each}}
+							}
+						}
+					) => State
+				{{/each}}
+			}
+
+		export enum Methods {
+				{{#each methods}}
+					{{case 'camel' name}} = "{{case 'camel' name}}",
+				{{/each}}
+			}
+		{{/if}}
+	{{/each}}
+{{/with}}

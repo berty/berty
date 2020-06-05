@@ -5,7 +5,7 @@ import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
-import { Settings } from '@berty-tech/hooks'
+import { Settings, Chat } from '@berty-tech/hooks'
 
 //
 // DevTools
@@ -77,12 +77,27 @@ const TracingButton: React.FC = () => {
 	)
 }
 
+const DiscordShareButton: React.FC = () => {
+	const devShareInstanceBertyID = Chat.useDevShareInstanceBertyID()
+	const [{ color }] = useStyles()
+	return (
+		<ButtonSetting
+			name='Share ID on discord'
+			icon='activity-outline'
+			iconSize={30}
+			iconColor={color.dark.grey}
+			onPress={devShareInstanceBertyID}
+		/>
+	)
+}
+
 const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<TracingButton />
+			<DiscordShareButton />
 			<ButtonSetting
 				name='Bot mode'
 				icon='briefcase-outline'

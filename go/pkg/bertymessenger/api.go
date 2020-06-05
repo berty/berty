@@ -25,7 +25,7 @@ func (s *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareInst
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	return nil, nil
+	return &DevShareInstanceBertyID_Reply{}, nil
 }
 
 func (s *service) InstanceShareableBertyID(ctx context.Context, req *InstanceShareableBertyID_Request) (*InstanceShareableBertyID_Reply, error) {

@@ -1,0 +1,49 @@
+import * as api from '@berty-tech/api'
+import { eventChannel, END } from 'redux-saga'
+import { grpc } from '@improbable-eng/grpc-web'
+import { MessengerService } from '../protocol/grpc-web-gen/bertymessenger_pb_service'
+import * as bertymessenger from '../protocol/grpc-web-gen/bertymessenger_pb'
+
+{{#with (lookup "berty.messenger")}}
+	{{#each nested}}
+		{{#if (eq (typeof this) "Service")}}
+			export default class {{name}}SagaClient {
+				host: string
+				transport: grpc.TransportFactory
+
+				constructor(host: string, transport: grpc.TransportFactory) {
+					this.host = host
+					this.transport = transport
+				}
+
+				{{#each methods}}
+					{{case 'camel' name}} = (requestObj: api{{inamespace resolvedRequestType}} = {}) =>
+						eventChannel<api{{inamespace resolvedResponseType}}>((emit) => {
+							const buf = api.berty.messenger.{{requestType}}.encode(requestObj).finish()
+							const request = bertymessenger.{{requestType}}.deserializeBinary(buf)
+							const { close } = grpc.invoke(MessengerService.{{name}}, {
+								request,
+								transport: this.transport,
+								host: this.host,
+								onMessage: (message: bertymessenger.{{responseType}}) =>
+									emit(api.berty.messenger.{{responseType}}.decode(message.serializeBinary())),
+								onEnd: (code, msg, trailers) => {
+									if (code !== grpc.Code.OK) {
+										emit(
+											new Error(
+												`GRPC {{name}} ${
+													grpc.Code[code]
+												} (${code}): ${msg}\nTrailers: ${JSON.stringify(trailers)}`,
+											) as any,
+										)
+									}
+									emit(END)
+								},
+							})
+							return close
+						})
+			  {{/each}}
+			}
+		{{/if}}
+	{{/each}}
+{{/with}}
