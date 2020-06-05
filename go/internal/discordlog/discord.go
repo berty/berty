@@ -45,8 +45,11 @@ func ShareQRLink(username, room, title, qrData, url string) error {
 		Content:   title,
 		Embeds: []*dishooks.Embed{
 			{
-				Title:       "Link",
+				Title:       "Associated Link",
 				Description: url,
+			}, {
+				Title:       "QR Data",
+				Description: qrData,
 			},
 		},
 	}
