@@ -3,7 +3,6 @@ package ipfsutil
 import (
 	"net/http"
 
-	"berty.tech/berty/v2/go/internal/config"
 	ipfswebui "berty.tech/ipfs-webui-packed"
 	"github.com/ipfs/go-ipfs/commands"
 	oldcmds "github.com/ipfs/go-ipfs/commands"
@@ -11,8 +10,6 @@ import (
 	"github.com/ipfs/go-ipfs/core/corehttp"
 	"go.uber.org/zap"
 )
-
-var DefaultAPIAddrs = config.BertyMobile.DefaultAPIAddrs // TODO(@D4ryl00) get the actal api address from the ipfs node
 
 // ServeHTTPApi collects options, creates listener, prints status message and starts serving requests
 func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode) {
@@ -26,8 +23,15 @@ func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode) {
 		},
 	}
 
+	var APIAddr string
+	cfg, err := node.Repo.Config()
+	if err != nil || len(cfg.Addresses.API) == 0 {
+		APIAddr = "ip4/127.0.0.1/tcp/5001"
+	} else {
+		APIAddr = cfg.Addresses.API[0]
+	}
+
 	var opts = []corehttp.ServeOption{
-		corehttp.MetricsCollectionOption("api"),
 		corehttp.CommandsOption(cctx),
 		// allow redirections from the http://{apiAddr}/webui to the actual webui address
 		corehttp.WebUIOption,
@@ -40,7 +44,7 @@ func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode) {
 		if err != nil {
 			logger.Error("corehttp.ListenAndServe failed", zap.Error(err))
 		}
-	}(node, DefaultAPIAddrs[0], opts...)
+	}(node, APIAddr, opts...)
 }
 
 func ServeHTTPWebui(logger *zap.Logger) {
