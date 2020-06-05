@@ -12,9 +12,11 @@ import (
 )
 
 // ServeHTTPApi collects options, creates listener, prints status message and starts serving requests
-func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode) {
+func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode, rootDirectory string) {
 	// mandatory for the IPFS API server
 	cctx := commands.Context{
+		// needed for config access
+		ConfigRoot: rootDirectory,
 		// http handler requires it
 		ReqLog: &oldcmds.ReqLog{},
 		// the node is already construct so we pass it

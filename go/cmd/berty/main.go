@@ -282,7 +282,7 @@ func main() {
 				defer node.Close()
 
 				// construct http api endpoint
-				ipfsutil.ServeHTTPApi(logger, node)
+				ipfsutil.ServeHTTPApi(logger, node, "")
 
 				// serve the embedded ipfs webui
 				ipfsutil.ServeHTTPWebui(logger)

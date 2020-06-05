@@ -169,7 +169,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			}
 
 			// construct http api endpoint
-			ipfsutil.ServeHTTPApi(logger, node)
+			ipfsutil.ServeHTTPApi(logger, node, config.rootDirectory+"/ipfs")
 
 			// serve the embedded ipfs webui
 			ipfsutil.ServeHTTPWebui(logger)

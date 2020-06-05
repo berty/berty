@@ -24,7 +24,7 @@ var BertyDev = &BertyConfig{
 	APIConfig: config.API{
 		HTTPHeaders: map[string][]string{
 			"Access-Control-Allow-Origin":  {"*"},
-			"Access-Control-Allow-Methods": {"POST"},
+			"Access-Control-Allow-Methods": {"POST", "PUT"},
 		},
 	},
 }
@@ -38,7 +38,7 @@ var BertyMobile = &BertyConfig{
 	APIConfig: config.API{
 		HTTPHeaders: map[string][]string{
 			"Access-Control-Allow-Origin":  {"*"},
-			"Access-Control-Allow-Methods": {"POST"},
+			"Access-Control-Allow-Methods": {"POST", "PUT"},
 		},
 	},
 }
