@@ -5,6 +5,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/go-orbit-db/stores"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
@@ -153,6 +154,22 @@ func (s *service) activateGroup(pk crypto.PubKey) error {
 		}
 
 		s.openedGroups[string(id)] = cg
+
+		go func() {
+			for e := range cg.metadataStore.Subscribe(s.ctx) {
+				if evt, ok := e.(*stores.EventNewPeer); ok {
+					s.ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", string(id)), 1)
+				}
+			}
+		}()
+
+		go func() {
+			for e := range cg.messageStore.Subscribe(s.ctx) {
+				if evt, ok := e.(*stores.EventNewPeer); ok {
+					s.ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", string(id)), 1)
+				}
+			}
+		}()
 
 		return nil
 	case bertytypes.GroupTypeAccount:

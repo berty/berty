@@ -166,6 +166,10 @@ type coreAPIMock struct {
 	tinder  tinder.Driver
 }
 
+func (m *coreAPIMock) ConnMgr() ConnMgr {
+	return m.node.PeerHost.ConnManager()
+}
+
 func (m *coreAPIMock) NewStream(ctx context.Context, p libp2p_peer.ID, pids ...protocol.ID) (p2pnetwork.Stream, error) {
 	return m.node.PeerHost.NewStream(ctx, p, pids...)
 }
