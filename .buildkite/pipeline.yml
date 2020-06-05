@@ -31,7 +31,7 @@ steps:
       automatic:
         limit: 3
     agents:
-      queue: "bigcores"
+      queue: "berty-go-build" # a dedicated queue that should only be made available once per agent host
     plugins:
       - n0izn0iz/docker#v3.5.4:
           image: bertytech/build-go:v4
@@ -60,8 +60,9 @@ steps:
       - cd go
       - touch gen.sum # avoid triggering make generate
       - make go.install
-      - SKIP_SLOW_TESTS=1 make go.unittest GO_TEST_OPTS="-v -test.timeout=1000s -count 10"
-      - SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=1000s -count 2"
+      - SKIP_SLOW_TESTS=1 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 5"
+      - SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 1"
+      - SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic"
       - cd ..
       - codecov -f ./go/coverage.txt
 
