@@ -7,6 +7,7 @@ import (
 	ds "github.com/ipfs/go-datastore"
 	ipfs_ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
+	config "github.com/ipfs/go-ipfs-config"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_coreapi "github.com/ipfs/go-ipfs/core/coreapi"
 	ipfs_node "github.com/ipfs/go-ipfs/core/node"
@@ -26,6 +27,8 @@ type CoreAPIOption func(context.Context, *ipfs_core.IpfsNode, ipfs_interface.Cor
 type CoreAPIConfig struct {
 	BootstrapAddrs []string
 	SwarmAddrs     []string
+	APIAddrs       []string
+	APIConfig      config.API
 
 	ExtraLibp2pOption p2p.Option
 	Routing           ipfs_libp2p.RoutingOption
@@ -129,6 +132,14 @@ func updateRepoConfig(repo ipfs_repo.Repo, cfg *CoreAPIConfig) error {
 
 	if len(cfg.SwarmAddrs) != 0 {
 		rcfg.Addresses.Swarm = cfg.SwarmAddrs
+	}
+
+	if len(cfg.APIAddrs) != 0 {
+		rcfg.Addresses.API = cfg.APIAddrs
+	}
+
+	if cfg.APIConfig.HTTPHeaders != nil {
+		rcfg.API = cfg.APIConfig
 	}
 
 	return repo.SetConfig(rcfg)

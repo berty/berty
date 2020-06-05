@@ -94,6 +94,7 @@ const DiscordShareButton: React.FC = () => {
 const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
+	const { navigate } = useNavigation()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<TracingButton />
@@ -128,7 +129,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconSize={30}
 				iconColor={color.dark.grey}
 				actionIcon='arrow-ios-forward'
-				disabled
+				onPress={navigate.settings.network}
 			/>
 			<ButtonSetting
 				name='Notifications'

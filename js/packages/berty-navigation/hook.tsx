@@ -81,6 +81,8 @@ const createNavigation = ({
 				aboutBerty: createNavigateFunc(navigate, Routes.Settings.AboutBerty),
 				termsOfUse: createNavigateFunc(navigate, Routes.Settings.TermsOfUse),
 				devTools: createNavigateFunc(navigate, Routes.Settings.DevTools),
+				network: createNavigateFunc(navigate, Routes.Settings.Network),
+				ipfsWebUI: createNavigateFunc(navigate, Routes.Settings.IpfsWebUI),
 			},
 		},
 	}
