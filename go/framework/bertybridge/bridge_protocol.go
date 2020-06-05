@@ -9,6 +9,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
@@ -21,6 +22,7 @@ import (
 	ipfs_badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
+	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/peer"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/pkg/errors"
@@ -41,6 +43,7 @@ var (
 	defaultProtocolRendezVousPeer = config.BertyMobile.RendezVousPeer
 	defaultProtocolBootstrap      = config.BertyMobile.Bootstrap
 	defaultTracingHost            = config.BertyMobile.Tracing
+	defaultMCBind                 = config.BertyMobile.DefaultMCBind
 	DefaultAPIAddrs               = config.BertyMobile.DefaultAPIAddrs
 	APIConfig                     = config.BertyMobile.APIConfig
 )
@@ -144,8 +147,10 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			}
 
 			var bopts = ipfsutil.CoreAPIConfig{
-				APIAddrs:  DefaultAPIAddrs,
-				APIConfig: APIConfig,
+				SwarmAddrs:        []string{defaultMCBind},
+				APIAddrs:          DefaultAPIAddrs,
+				APIConfig:         APIConfig,
+				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
 			}
 			bopts.BootstrapAddrs = defaultProtocolBootstrap
 
@@ -160,7 +165,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
 
 			if len(config.swarmListeners) > 0 {
-				bopts.SwarmAddrs = config.swarmListeners
+				bopts.SwarmAddrs = append(bopts.SwarmAddrs, config.swarmListeners...)
 			}
 
 			api, node, err = ipfsutil.NewCoreAPIFromRepo(ctx, repo, &bopts)
