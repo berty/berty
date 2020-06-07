@@ -144,7 +144,7 @@ export const GroupChatSettings: React.FC<ScreenProps.Main.GroupChatSettings> = (
 	const [{ flex, padding }] = useStyles()
 	return (
 		<Layout style={[flex.tiny]}>
-			<ScrollView contentContainerStyle={[padding.bottom.medium]}>
+			<ScrollView contentContainerStyle={[padding.bottom.medium]} bounces={false}>
 				<HeaderSettings actionIcon='edit-outline' undo={goBack}>
 					<View>
 						<GroupChatSettingsHeader {...params} />

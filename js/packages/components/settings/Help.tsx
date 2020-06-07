@@ -123,7 +123,7 @@ export const Help: React.FC<ScreenProps.Settings.Help> = () => {
 	const [{ background, flex, color, padding }] = useStyles()
 	return (
 		<Layout style={[background.white, flex.tiny]}>
-			<ScrollView contentContainerStyle={[padding.bottom.scale(100)]}>
+			<ScrollView bounces={false} contentContainerStyle={[padding.bottom.scale(100)]}>
 				<HeaderSettings title='Help' bgColor={color.red} undo={goBack}>
 					<HeaderHelp />
 				</HeaderSettings>

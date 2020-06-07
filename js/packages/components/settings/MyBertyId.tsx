@@ -177,7 +177,7 @@ const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 	const { height } = useDimensions().window
 
 	return (
-		<ScrollView style={[padding.medium]}>
+		<ScrollView bounces={false} style={[padding.medium]}>
 			<View
 				style={[
 					{

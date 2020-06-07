@@ -212,7 +212,7 @@ export const AboutBerty: React.FC<ScreenProps.Settings.AboutBerty> = () => {
 
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView>
+			<ScrollView bounces={false}>
 				<HeaderSettings title='About Berty' undo={goBack}>
 					<HeaderAboutBerty version={version} />
 				</HeaderSettings>

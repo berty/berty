@@ -140,7 +140,7 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 			{account == null ? (
 				<ActivityIndicator size='large' style={[row.center]} />
 			) : (
-				<ScrollView contentContainerStyle={[_styles.scrollViewPadding]}>
+				<ScrollView bounces={false} contentContainerStyle={[_styles.scrollViewPadding]}>
 					<HeaderSettings>
 						<View>
 							<HomeHeader />

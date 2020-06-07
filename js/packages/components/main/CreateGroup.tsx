@@ -144,6 +144,7 @@ const AddMembers: React.FC<AddMembersProps> = ({
 						paddingBottom ? padding.bottom.scale(paddingBottom) : padding.bottom.medium,
 					]}
 					showsVerticalScrollIndicator={false}
+					bounces={false}
 				>
 					{contacts.map((contact, index) => (
 						<AddMembersItem

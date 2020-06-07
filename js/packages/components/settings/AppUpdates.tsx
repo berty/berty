@@ -193,7 +193,7 @@ export const AppUpdates: React.FC<ScreenProps.Settings.AppUpdates> = () => {
 
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView contentContainerStyle={padding.bottom.scale(90)}>
+			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
 				<HeaderSettings
 					title='App updates'
 					desc={!update ? 'Your app is up to date' : null}

@@ -192,7 +192,7 @@ export const Notifications: React.FC<ScreenProps.Settings.Notifications> = () =>
 	const [{ padding, flex, background }] = useStyles()
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView contentContainerStyle={padding.bottom.scale(90)}>
+			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
 				<HeaderSettings
 					title='Notifications'
 					desc='You have not yet activated notifications for this app'

@@ -106,7 +106,7 @@ export const ContactChatSettings: React.FC<{ route: any }> = ({ route }) => {
 	const [isToggle, setIsToggle] = useState(true)
 	const [{ background, flex }] = useStyles()
 	return (
-		<ScrollView style={[flex.tiny, background.white]}>
+		<ScrollView style={[flex.tiny, background.white]} bounces={false}>
 			<HeaderSettings actionIcon='upload' undo={goBack}>
 				<ContactChatSettingsHeader {...route} isToggle={isToggle} />
 			</HeaderSettings>
