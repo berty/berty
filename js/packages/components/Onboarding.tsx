@@ -284,6 +284,7 @@ const NodeConfigInput: React.FC<{
 						padding.medium,
 						text.size.large,
 						border.radius.small,
+						text.color.black,
 					]}
 					value={`${config.port}`}
 					onChangeText={(text) => onConfigChange({ ...config, port: parseInt(text, 10) })}
