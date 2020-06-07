@@ -81,7 +81,11 @@ const BodyGroupRequestContent: React.FC<berty.chatmodel.IConversation> = ({ id }
 	return (
 		<Store.MemberList request={{ filter: { conversationId: id } }} fallback={Fallback}>
 			{(list) => (
-				<ScrollView style={maxHeight(330)} contentContainerStyle={[padding.top.big]}>
+				<ScrollView
+					style={maxHeight(330)}
+					contentContainerStyle={[padding.top.big]}
+					bounces={false}
+				>
 					{list
 						?.map((_) => _?.member)
 						.map((member, index) => (

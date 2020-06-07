@@ -101,7 +101,7 @@ export const BlockedContacts: React.FC<BlockedContactsProps> = ({ blocked }) => 
 
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView>
+			<ScrollView bounces={false}>
 				<HeaderSettings
 					title='Blocked contacts'
 					desc="Blocked contacts can't send you contact requests"

@@ -86,7 +86,7 @@ export const TermsOfUse: React.FC<{}> = () => {
 	const { goBack } = useNavigation()
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView contentContainerStyle={padding.bottom.scale(90)}>
+			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
 				<HeaderSettings title='Terms of use' desc='Last updated: August 29th 2019' undo={goBack} />
 				<BodyTermsOfUse />
 			</ScrollView>

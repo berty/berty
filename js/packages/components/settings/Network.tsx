@@ -49,7 +49,7 @@ export const Network: React.FC<ScreenProps.Settings.Network> = () => {
 	const [{ background, flex, color, padding }] = useStyles()
 	return (
 		<Layout style={[background.white, flex.tiny]}>
-			<ScrollView contentContainerStyle={padding.bottom.scale(90)}>
+			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
 				<HeaderSettings title='Network' bgColor={color.dark.grey} undo={goBack}>
 					<HeaderNetwork />
 				</HeaderSettings>

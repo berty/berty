@@ -104,7 +104,7 @@ export const ChatSettings: React.FC<{ route: any }> = ({ route: { params } }) =>
 	const { goBack, dispatch } = useNavigation()
 	const [{ flex, background }] = useStyles()
 	return (
-		<ScrollView style={[flex.tiny, background.white]}>
+		<ScrollView style={[flex.tiny, background.white]} bounces={false}>
 			<HeaderSettings
 				action={() =>
 					dispatch(

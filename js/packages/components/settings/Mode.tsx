@@ -178,7 +178,7 @@ export const Mode: React.FC<{}> = () => {
 	const [{ flex, background, padding }] = useStyles()
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView contentContainerStyle={[padding.bottom.scale(90)]}>
+			<ScrollView bounces={false} contentContainerStyle={[padding.bottom.scale(90)]}>
 				<HeaderSettings
 					title='Settings'
 					desc='Customize everything to get the app that fits your needs'
