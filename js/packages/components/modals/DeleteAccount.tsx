@@ -134,6 +134,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 						text.size.large,
 						border.radius.small,
 						margin.medium,
+						text.color.black,
 					]}
 					value={deleteConfirmation}
 					onChangeText={setDeleteConfirmation}
