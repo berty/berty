@@ -4,16 +4,26 @@ import {
 	NavigationContainer as ReactNavigationContainer,
 } from '@react-navigation/native'
 import { Routes } from './types'
+import { Chat } from '@berty-tech/hooks'
 
 export const NavigationContainer: React.FC = ({ children }) => {
 	const ref = useRef()
+	const initiateContactRequest = Chat.useInitiateContactRequest()
 
 	const { getInitialState } = useLinking(ref, {
 		prefixes: ['berty://'],
 		config: {
 			['Modals']: {
 				screens: {
-					[Routes.Modals.SendContactRequest]: ':uriData',
+					[Routes.Modals.SendContactRequest]: {
+						path: 'id/:type', // can't map prop name
+						parse: {
+							type: (data) => {
+								initiateContactRequest(`berty://id/${data}`)
+								return 'link'
+							},
+						},
+					},
 				},
 			},
 		},
@@ -36,7 +46,7 @@ export const NavigationContainer: React.FC = ({ children }) => {
 			})
 			.then((state) => {
 				if (state !== undefined) {
-					setInitialState(state)
+					setInitialState(state as any)
 				}
 
 				setIsReady(true)

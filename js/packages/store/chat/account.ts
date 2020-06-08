@@ -6,9 +6,11 @@ import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
 import { berty } from '@berty-tech/api'
 import { makeDefaultReducers, makeDefaultCommandsSagas, strToBuf, jsonToBuf } from '../utils'
 
-import { contact, conversation } from '../chat'
+import { commands as groupsCommands } from '../groups'
 import * as protocol from '../protocol'
 import { events as mainSettingsEvents } from '../settings/main'
+import { events as conversationEvents } from './conversation'
+import * as contact from './contact'
 
 export type Entity = {
 	id: string
@@ -159,8 +161,10 @@ export const events = eventHandler.actions
 export const queries: QueryReducer = {
 	list: (state) => Object.values(state.chat.account.aggregates),
 	get: (state, { id }) => state.chat.account.aggregates[id],
-	getRequestRdvSeed: (state, { id }) =>
-		protocol.queries.client.get(state, { id })?.contactRequestRdvSeed,
+	getRequestRdvSeed: (state, { id }) => {
+		const account = protocol.queries.client.get(state, { id })
+		return account && account.contactRequestRdvSeed
+	},
 	getAll: (state) => Object.values(state.chat.account.aggregates),
 	getLength: (state) => Object.keys(state.chat.account.aggregates).length,
 }
@@ -189,12 +193,15 @@ export const transactions: Transactions = {
 			yield delay(1000)
 		}
 
-		yield* conversation.transactions.open({ accountId: id })
+		yield put(conversationEvents.appInit())
+
+		yield put(groupsCommands.open({ clientId: id }))
 
 		const client = yield* getProtocolClient(id)
 
 		const gpkb = strToBuf(client.accountGroupPk)
 
+		// replace by subscribe maybe
 		yield fork(protocol.transactions.client.listenToGroupMetadata, {
 			clientId: id,
 			groupPk: gpkb,
@@ -231,13 +238,15 @@ export const transactions: Transactions = {
 
 		yield put(event)
 
-		/*const client = yield* getProtocolClient(id)
+		/* USEME when we want multidevices support
+		const client = yield* getProtocolClient(id)
 
 		yield* protocol.transactions.client.appMetadataSend({
 			id,
 			groupPk: strToBuf(client.accountGroupPk),
 			payload: jsonToBuf(event),
-		})*/
+		})
+		*/
 	},
 	delete: function* () {
 		yield call(GoBridge.stopProtocol)
@@ -260,6 +269,15 @@ export const transactions: Transactions = {
 			givenName: payload.contactName,
 		}
 
+		console.log(
+			'sending contact request with\npk:',
+			payload.contactPublicKey,
+			'\ncrs:',
+			payload.contactRdvSeed,
+			'\nmetadata:',
+			metadata,
+		)
+
 		const contact: berty.types.IShareableContact = {
 			pk: strToBuf(payload.contactPublicKey),
 			publicRendezvousSeed: strToBuf(payload.contactRdvSeed),
@@ -270,6 +288,8 @@ export const transactions: Transactions = {
 			id: payload.id,
 			contact,
 		})
+
+		console.log('contactRequestSend done')
 	},
 	onboard: function* (payload) {
 		yield put(events.onboarded({ aggregateId: payload.id }))

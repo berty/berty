@@ -41,7 +41,7 @@
     "babel-loader": "8.1.0",
     "babel-plugin-module-resolver": "^3.2.0",
     "clisim": "^2.5.0",
-    "eslint": "^6.6.0",
+    "eslint": "^7.2.0",
     "glob": "^7.1.4",
     "jest": "24.9.0",
     "node-libs-react-native": "^1.0.3",

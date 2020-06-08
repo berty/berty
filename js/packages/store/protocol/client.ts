@@ -1,6 +1,6 @@
 import { WebsocketTransport } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeOpts } from '@berty-tech/go-bridge'
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, CaseReducer } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { all, put, putResolve, call, delay, take, fork, join, takeEvery } from 'redux-saga/effects'
 import { Task } from 'redux-saga'
@@ -21,7 +21,8 @@ import MessengerServiceSagaClient from '../messenger/MessengerServiceSagaClient.
 export type Entity = {
 	id: string
 	contactRequestRdvSeed?: string
-	instanceShareableBertyId?: api.berty.messenger.InstanceShareableBertyID.IReply
+	deepLink?: string
+	htmlUrl?: string
 	accountPk: string
 	devicePk: string
 	accountGroupPk: string
@@ -41,7 +42,7 @@ export type GlobalState = {
 
 export type Commands = gen.Commands<State> &
 	messengerGen.Commands<State> & {
-		delete: (state: State, action: { payload: { id: string } }) => State
+		delete: CaseReducer<State, PayloadAction<{ id: string }>>
 	}
 
 export type Queries = {
@@ -50,43 +51,34 @@ export type Queries = {
 }
 
 export type Events = evgen.Events<State> & {
-	started: (
-		state: State,
-		action: {
-			payload: {
-				aggregateId: string
-				accountPk: string
-				devicePk: string
-				accountGroupPk: string
-			}
-		},
-	) => State
-	contactRequestRdvSeedUpdated: (
-		state: State,
-		action: {
-			payload: {
-				aggregateId: string
-				publicRendezvousSeed: string
-			}
-		},
-	) => State
-	instanceShareableBertyIdUpdated: (
-		state: State,
-		action: {
-			payload: {
-				aggregateId: string
-				instanceShareableBertyId: api.berty.messenger.InstanceShareableBertyID.IReply
-			}
-		},
-	) => State
-	deleted: (state: State, action: PayloadAction<{ aggregateId: string }>) => State
+	started: CaseReducer<
+		State,
+		PayloadAction<{
+			aggregateId: string
+			accountPk: string
+			devicePk: string
+			accountGroupPk: string
+		}>
+	>
+	contactRequestRdvSeedUpdated: CaseReducer<
+		State,
+		PayloadAction<{
+			aggregateId: string
+			publicRendezvousSeed: string
+		}>
+	>
+	instanceShareableBertyIdUpdated: CaseReducer<
+		State,
+		PayloadAction<{
+			aggregateId: string
+			instanceShareableBertyId: api.berty.messenger.InstanceShareableBertyID.IReply
+		}>
+	>
+	deleted: CaseReducer<State, PayloadAction<{ aggregateId: string }>>
 }
 
 export type Transactions = {
-	[K in keyof Commands]: Commands[K] extends (
-		state: State,
-		action: { payload: infer TPayload },
-	) => State
+	[K in keyof Commands]: Commands[K] extends CaseReducer<State, PayloadAction<infer TPayload>>
 		? (payload: TPayload) => Generator
 		: never
 } & {
@@ -102,12 +94,7 @@ const initialState: State = {
 	aggregates: {},
 }
 
-const commandsNames = [
-	...Object.keys(gen.Methods),
-	...Object.keys(messengerGen.Methods),
-	'start',
-	'delete',
-]
+const commandsNames = [...Object.keys(gen.Methods), ...Object.keys(messengerGen.Methods), 'delete']
 
 const commandHandler = createSlice<State, Commands>({
 	name: 'protocol/client/command',
@@ -123,22 +110,32 @@ const eventsNames = [
 	'contactRequestRdvSeedUpdated',
 ]
 
+const started: CaseReducer<
+	State,
+	PayloadAction<{
+		aggregateId: string
+		accountPk: string
+		devicePk: string
+		accountGroupPk: string
+	}>
+> = (state, action) => {
+	if (!state.aggregates[action.payload.aggregateId]) {
+		state.aggregates[action.payload.aggregateId] = {
+			id: action.payload.aggregateId,
+			accountPk: action.payload.accountPk,
+			devicePk: action.payload.devicePk,
+			accountGroupPk: action.payload.accountGroupPk,
+		}
+	}
+	return state
+}
+
 const eventHandler = createSlice<State, Events>({
 	name: 'protocol/client/event',
 	initialState,
 	reducers: {
 		...makeDefaultReducers(eventsNames),
-		started: (state, action) => {
-			if (!state.aggregates[action.payload.aggregateId]) {
-				state.aggregates[action.payload.aggregateId] = {
-					id: action.payload.aggregateId,
-					accountPk: action.payload.accountPk,
-					devicePk: action.payload.devicePk,
-					accountGroupPk: action.payload.accountGroupPk,
-				}
-			}
-			return state
-		},
+		started,
 		contactRequestRdvSeedUpdated: (state, { payload }) => {
 			const client = state.aggregates[payload.aggregateId]
 			if (client) {
@@ -149,7 +146,12 @@ const eventHandler = createSlice<State, Events>({
 		instanceShareableBertyIdUpdated: (state, { payload }) => {
 			const client = state.aggregates[payload.aggregateId]
 			if (client) {
-				client.instanceShareableBertyId = payload.instanceShareableBertyId
+				client.htmlUrl =
+					(payload.instanceShareableBertyId && payload.instanceShareableBertyId.htmlUrl) ||
+					undefined
+				client.deepLink =
+					(payload.instanceShareableBertyId && payload.instanceShareableBertyId.deepLink) ||
+					undefined
 			}
 			return state
 		},
@@ -196,7 +198,7 @@ export const getMessengerService = (id: string): MessengerServiceSagaClient => {
 export const decodeMetadataEvent = (
 	response: bertytypes.GroupMetadataEvent.AsObject | api.berty.types.IGroupMetadataEvent,
 ) => {
-	const eventType = response.metadata?.eventType
+	const eventType = response.metadata && response.metadata.eventType
 	if (eventType == null) {
 		return undefined
 	}
@@ -226,7 +228,7 @@ const groupMetadataEventToReduxAction = (
 	id: string,
 	e: bertytypes.GroupMetadataEvent.AsObject | api.berty.types.IGroupMetadataEvent,
 ) => {
-	if (!e.metadata?.eventType) {
+	if (!(e.metadata && e.metadata.eventType)) {
 		throw new Error('Invalid reply, missing eventType')
 	}
 	const { eventType } = e.metadata
@@ -234,6 +236,7 @@ const groupMetadataEventToReduxAction = (
 	if (eventName === undefined) {
 		throw new Error(`Invalid event type ${eventType}`)
 	}
+	console.log('received', eventName, 'on', id)
 	const type = `${eventHandler.name}/${Case.camel(eventName.replace('EventType', ''))}`
 	return {
 		type,
@@ -250,7 +253,7 @@ const groupMessageEventToReduxAction = (
 	id: string,
 	response: api.berty.types.IGroupMessageEvent,
 ) => {
-	if (!response.eventContext?.id) {
+	if (!(response.eventContext && response.eventContext.id)) {
 		throw new Error('No event cid')
 	}
 
@@ -268,21 +271,20 @@ const groupMessageEventToReduxAction = (
 
 // call unaryChan on the service method by default
 const defaultTransactions = {
-	...(Object.keys(gen.Methods) as (keyof gen.Commands<State>)[]).reduce((txs, methodName) => {
-		txs[methodName] = function* ({ id, ...payload }: { id: string }) {
+	...Object.keys(gen.Methods).reduce((txs, methodName) => {
+		const t = txs as any
+		t[methodName] = function* ({ id, ...payload }: { id: string }) {
 			return yield call(unaryChan, (getProtocolService(id) as any)[methodName], payload)
 		}
 		return txs
-	}, {} as Transactions),
-	...(Object.keys(messengerGen.Methods) as (keyof gen.Commands<State>)[]).reduce(
-		(txs, methodName) => {
-			txs[methodName] = function* ({ id, ...payload }: { id: string }) {
-				return yield call(unaryChan, (getMessengerService(id) as any)[methodName], payload)
-			}
-			return txs
-		},
-		{} as Transactions,
-	),
+	}, {}),
+	...Object.keys(messengerGen.Methods).reduce((txs, methodName) => {
+		const t = txs as any
+		t[methodName] = function* ({ id, ...payload }: { id: string }) {
+			return yield call(unaryChan, (getMessengerService(id) as any)[methodName], payload)
+		}
+		return txs
+	}, {}),
 } as Transactions
 
 export type BertyNodeConfig =

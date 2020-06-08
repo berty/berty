@@ -4,6 +4,13 @@ import { grpc } from '@improbable-eng/grpc-web'
 import { MessengerService } from '../protocol/grpc-web-gen/bertymessenger_pb_service'
 import * as bertymessenger from '../protocol/grpc-web-gen/bertymessenger_pb'
 
+class GRPCError extends Error {
+	constructor(message: string) {
+		super(message)
+		this.name = 'GRPCError'
+	}
+}
+
 export default class MessengerServiceSagaClient {
 	host: string
 	transport: grpc.TransportFactory
@@ -30,7 +37,7 @@ export default class MessengerServiceSagaClient {
 				onEnd: (code, msg, trailers) => {
 					if (code !== grpc.Code.OK) {
 						emit(
-							new Error(
+							new GRPCError(
 								`GRPC InstanceShareableBertyID ${
 									grpc.Code[code]
 								} (${code}): ${msg}\nTrailers: ${JSON.stringify(trailers)}`,
@@ -57,7 +64,7 @@ export default class MessengerServiceSagaClient {
 				onEnd: (code, msg, trailers) => {
 					if (code !== grpc.Code.OK) {
 						emit(
-							new Error(
+							new GRPCError(
 								`GRPC DevShareInstanceBertyID ${
 									grpc.Code[code]
 								} (${code}): ${msg}\nTrailers: ${JSON.stringify(trailers)}`,
@@ -82,7 +89,7 @@ export default class MessengerServiceSagaClient {
 				onEnd: (code, msg, trailers) => {
 					if (code !== grpc.Code.OK) {
 						emit(
-							new Error(
+							new GRPCError(
 								`GRPC ParseDeepLink ${
 									grpc.Code[code]
 								} (${code}): ${msg}\nTrailers: ${JSON.stringify(trailers)}`,
@@ -107,7 +114,7 @@ export default class MessengerServiceSagaClient {
 				onEnd: (code, msg, trailers) => {
 					if (code !== grpc.Code.OK) {
 						emit(
-							new Error(
+							new GRPCError(
 								`GRPC SendContactRequest ${
 									grpc.Code[code]
 								} (${code}): ${msg}\nTrailers: ${JSON.stringify(trailers)}`,

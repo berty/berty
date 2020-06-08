@@ -77,3 +77,30 @@ export const useAccountContactSearchResults = (searchText: string): chat.contact
 		account ? chat.contact.queries.search(state, { accountId: account.id, searchText }) : [],
 	)
 }
+
+export const useInitiateContactRequest = () => {
+	const dispatch = useDispatch()
+	const account = useAccount()
+	if (!account) {
+		return () => {}
+	}
+	return (url: string) => {
+		dispatch(chat.contact.commands.initiateRequest({ accountId: account.id, url }))
+	}
+}
+
+export const useRequestDraft = () => {
+	return useSelector((state: chat.contact.GlobalState) =>
+		chat.contact.queries.getRequestDraft(state),
+	)
+}
+
+export const useResetDraft = () => {
+	const dispatch = useDispatch()
+	const account = useAccount()
+	if (!account) {
+		return () => {}
+	} else {
+		return () => dispatch(chat.contact.events.draftReset({ accountId: account.id }))
+	}
+}

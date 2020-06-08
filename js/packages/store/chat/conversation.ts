@@ -1,10 +1,11 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { put, all, select, takeEvery } from 'redux-saga/effects'
+import { put, all, select, takeEvery, call } from 'redux-saga/effects'
 import { berty } from '@berty-tech/api'
 import { Buffer } from 'buffer'
 import { AppMessage, GroupInvitation, SetGroupName, AppMessageType } from './AppMessage'
 import { makeDefaultCommandsSagas, strToBuf, bufToStr, jsonToBuf, bufToJSON } from '../utils'
+import { commands as groupsCommands } from '../groups'
 
 import * as protocol from '../protocol'
 import { contact } from '../chat'
@@ -328,26 +329,8 @@ export const queries: QueryReducer = {
 }
 
 export const transactions: Transactions = {
-	open: function* ({ accountId }) {
-		const conversations = (yield select((state) => queries.list(state))) as Entity[]
+	open: function* () {
 		yield put(events.appInit())
-		const multiMemberConversationsOfAccount = conversations.filter(
-			(conversation) =>
-				conversation.accountId === accountId && conversation.kind === ConversationKind.MultiMember,
-		)
-		for (const { pk } of multiMemberConversationsOfAccount) {
-			if (pk) {
-				const gpkb = strToBuf(pk)
-				yield* protocol.client.transactions.activateGroup({
-					id: accountId,
-					groupPk: gpkb,
-				})
-				yield* protocol.transactions.client.listenToGroup({
-					clientId: accountId,
-					groupPk: gpkb,
-				})
-			}
-		}
 	},
 	generate: function* () {
 		// TODO: conversation generate
@@ -484,10 +467,6 @@ export function* orchestrator() {
 			if (!groupPk) {
 				return
 			}
-			yield* protocol.transactions.client.activateGroup({
-				id: payload.aggregateId,
-				groupPk,
-			})
 			const groupPkStr = bufToStr(groupPk)
 			const metadata: contact.ContactRequestMetadata = bufToJSON(c.metadata)
 			yield put(
@@ -539,7 +518,15 @@ export function* orchestrator() {
 					kind: ConversationKind.MultiMember,
 				}),
 			)
-			yield* protocol.transactions.client.listenToGroup({ clientId: accountId, groupPk: publicKey })
+			yield call(protocol.client.transactions.activateGroup, { id: accountId, groupPk: publicKey })
+			yield put(
+				groupsCommands.subscribe({
+					clientId: accountId,
+					publicKey: bufToStr(publicKey),
+					messages: true,
+					metadata: true,
+				}),
+			)
 		}),
 		takeEvery(protocol.events.client.groupMetadataPayloadSent, function* ({ payload }) {
 			const {

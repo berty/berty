@@ -1,270 +1,213 @@
 import * as api from '@berty-tech/api'
+import { PayloadAction, CaseReducer } from '@reduxjs/toolkit'
 
 export type Commands<State> = {
-	instanceExportData: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-			}
-		},
-	) => State
-	instanceGetConfiguration: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-			}
-		},
-	) => State
-	contactRequestReference: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-			}
-		},
-	) => State
-	contactRequestDisable: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-			}
-		},
-	) => State
-	contactRequestEnable: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-			}
-		},
-	) => State
-	contactRequestResetReference: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-			}
-		},
-	) => State
-	contactRequestSend: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				contact: api.berty.types.IShareableContact
-			}
-		},
-	) => State
-	contactRequestAccept: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				contactPk: Uint8Array
-			}
-		},
-	) => State
-	contactRequestDiscard: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				contactPk: Uint8Array
-			}
-		},
-	) => State
-	contactBlock: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				contactPk: Uint8Array
-			}
-		},
-	) => State
-	contactUnblock: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				contactPk: Uint8Array
-			}
-		},
-	) => State
-	contactAliasKeySend: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-			}
-		},
-	) => State
-	multiMemberGroupCreate: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-			}
-		},
-	) => State
-	multiMemberGroupJoin: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				group: api.berty.types.IGroup
-			}
-		},
-	) => State
-	multiMemberGroupLeave: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-			}
-		},
-	) => State
-	multiMemberGroupAliasResolverDisclose: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-			}
-		},
-	) => State
-	multiMemberGroupAdminRoleGrant: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-				memberPk: Uint8Array
-			}
-		},
-	) => State
-	multiMemberGroupInvitationCreate: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-			}
-		},
-	) => State
-	appMetadataSend: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-				payload: Uint8Array
-			}
-		},
-	) => State
-	appMessageSend: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-				payload: Uint8Array
-			}
-		},
-	) => State
-	groupMetadataSubscribe: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-				since: Uint8Array
-				until: Uint8Array
-				goBackwards: boolean
-			}
-		},
-	) => State
-	groupMessageSubscribe: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-				since: Uint8Array
-				until: Uint8Array
-				goBackwards: boolean
-			}
-		},
-	) => State
-	groupMetadataList: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-			}
-		},
-	) => State
-	groupMessageList: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-			}
-		},
-	) => State
-	groupInfo: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-				contactPk: Uint8Array
-			}
-		},
-	) => State
-	activateGroup: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-			}
-		},
-	) => State
-	deactivateGroup: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-			}
-		},
-	) => State
-	debugListGroups: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-			}
-		},
-	) => State
-	debugInspectGroupStore: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				groupPk: Uint8Array
-				logType: api.berty.types.IDebugInspectGroupLogType
-			}
-		},
-	) => State
+	instanceExportData: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+		}>
+	>
+	instanceGetConfiguration: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+		}>
+	>
+	contactRequestReference: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+		}>
+	>
+	contactRequestDisable: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+		}>
+	>
+	contactRequestEnable: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+		}>
+	>
+	contactRequestResetReference: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+		}>
+	>
+	contactRequestSend: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			contact: api.berty.types.IShareableContact
+		}>
+	>
+	contactRequestAccept: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			contactPk: Uint8Array
+		}>
+	>
+	contactRequestDiscard: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			contactPk: Uint8Array
+		}>
+	>
+	contactBlock: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			contactPk: Uint8Array
+		}>
+	>
+	contactUnblock: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			contactPk: Uint8Array
+		}>
+	>
+	contactAliasKeySend: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+		}>
+	>
+	multiMemberGroupCreate: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+		}>
+	>
+	multiMemberGroupJoin: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			group: api.berty.types.IGroup
+		}>
+	>
+	multiMemberGroupLeave: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+		}>
+	>
+	multiMemberGroupAliasResolverDisclose: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+		}>
+	>
+	multiMemberGroupAdminRoleGrant: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+			memberPk: Uint8Array
+		}>
+	>
+	multiMemberGroupInvitationCreate: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+		}>
+	>
+	appMetadataSend: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+			payload: Uint8Array
+		}>
+	>
+	appMessageSend: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+			payload: Uint8Array
+		}>
+	>
+	groupMetadataSubscribe: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+			since: Uint8Array
+			until: Uint8Array
+			goBackwards: boolean
+		}>
+	>
+	groupMessageSubscribe: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+			since: Uint8Array
+			until: Uint8Array
+			goBackwards: boolean
+		}>
+	>
+	groupMetadataList: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+		}>
+	>
+	groupMessageList: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+		}>
+	>
+	groupInfo: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+			contactPk: Uint8Array
+		}>
+	>
+	activateGroup: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+		}>
+	>
+	deactivateGroup: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+		}>
+	>
+	debugListGroups: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+		}>
+	>
+	debugInspectGroupStore: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+			logType: api.berty.types.DebugInspectGroupLogType
+		}>
+	>
 }
 
 export enum Methods {

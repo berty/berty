@@ -7,6 +7,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner'
 import { useNavigation } from '@react-navigation/native'
 import ScanTarget from './scan_target.svg'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { Chat } from '@berty-tech/hooks'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -27,6 +28,7 @@ const useStylesScan = () => {
 }
 
 const ScanBody: React.FC<{}> = () => {
+	const initiateContactRequest = Chat.useInitiateContactRequest()
 	const navigation = useNavigation()
 	const [{ background }] = useStyles()
 	const borderRadius = 30
@@ -46,10 +48,11 @@ const ScanBody: React.FC<{}> = () => {
 			<QRCodeScanner
 				onRead={({ data, type }) => {
 					if ((type as string) === 'QR_CODE' || (type as string) === 'org.iso.QRCode') {
+						initiateContactRequest(data)
 						// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
 						navigation.navigate('Modals', {
 							screen: 'SendContactRequest',
-							params: { qrData: data },
+							params: { type: 'qr' },
 						})
 						Vibration.vibrate(1000)
 					}
@@ -79,6 +82,7 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 }
 
 const DevReferenceInput = () => {
+	const initiateContactRequest = Chat.useInitiateContactRequest()
 	const [ref, setRef] = useState('')
 	const navigation = useNavigation()
 	return (
@@ -88,11 +92,11 @@ const DevReferenceInput = () => {
 			<Button
 				title='Submit'
 				onPress={() => {
-					const prefix = 'berty://'
-					const params = ref.startsWith(prefix)
-						? { uriData: ref.substr(prefix.length) }
-						: { qrData: ref }
-					navigation.navigate('Modals', { screen: 'SendContactRequest', params })
+					initiateContactRequest(ref)
+					navigation.navigate('Modals', {
+						screen: 'SendContactRequest',
+						params: { type: 'link' },
+					})
 					Vibration.vibrate(1000)
 				}}
 			/>

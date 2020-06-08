@@ -33,16 +33,16 @@ DevMenu.addItem('Clear async-storage', async () => {
 
 export const App: React.FC = () => (
 	<SafeAreaProvider>
-		<NavigationContainer>
-			<Chat.Provider config={{ storage: AsyncStorage }}>
+		<Chat.Provider config={{ storage: AsyncStorage }}>
+			<NavigationContainer>
 				<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 				<Theme.Provider>
 					<NodeGate>
 						<Navigation />
 					</NodeGate>
 				</Theme.Provider>
-			</Chat.Provider>
-		</NavigationContainer>
+			</NavigationContainer>
+		</Chat.Provider>
 	</SafeAreaProvider>
 )
 
