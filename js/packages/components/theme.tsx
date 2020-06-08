@@ -1,6 +1,7 @@
 import React from 'react'
 import { ApplicationProvider } from 'react-native-ui-kitten'
 import { mapping, light } from '@eva-design/eva'
+import { StatusBarWrapper } from './shared-components'
 
 export const Provider: React.FC = ({ children }) => (
 	<>
@@ -16,6 +17,7 @@ export const Provider: React.FC = ({ children }) => (
 			}
 			theme={light}
 		>
+			<StatusBarWrapper />
 			{children}
 		</ApplicationProvider>
 	</>
