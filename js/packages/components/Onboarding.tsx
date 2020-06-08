@@ -9,6 +9,7 @@ import {
 	TouchableOpacity,
 	ViewStyle,
 	Switch,
+	Vibration,
 } from 'react-native'
 import { useLayout } from 'react-native-hooks'
 import { Translation } from 'react-i18next'
@@ -352,6 +353,7 @@ const CreateYourAccount: React.FC<{
 						text: t('onboarding.create-account.button'),
 						onPress: async (): Promise<void> => {
 							createAccount({ name: name || 'Anonymous 1337', nodeConfig })
+							Vibration.vibrate(500)
 							// @TODO: Error handling
 							next()
 						},
@@ -392,6 +394,7 @@ const Notifications: React.FC<{
 					onPress: async (): Promise<void> => {
 						try {
 							await submit({})
+							Vibration.vibrate(500)
 							next()
 						} catch (err) {
 							next()
@@ -423,6 +426,7 @@ const Bluetooth: React.FC<{
 					onPress: async (): Promise<void> => {
 						try {
 							await submit({})
+							Vibration.vibrate(500)
 							next()
 						} catch (err) {
 							next()
@@ -453,6 +457,7 @@ const SetupFinished: React.FC = () => {
 							text: t('onboarding.setup-finished.button'),
 							onPress: () => {
 								dispatch(chat.account.commands.onboard({ id: account.id }))
+								Vibration.vibrate([500])
 								navigation.navigate(Routes.Root.Tabs, { screen: Routes.Main.List })
 							},
 						}}

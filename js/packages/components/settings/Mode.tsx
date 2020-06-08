@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ScrollView, StyleSheet } from 'react-native'
+import { View, ScrollView, StyleSheet, Vibration } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
@@ -162,11 +162,12 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				iconSize={30}
 				iconColor={'red'}
 				actionIcon='arrow-ios-forward'
-				onPress={() =>
+				onPress={() => {
+					Vibration.vibrate([250])
 					navigation.navigate('Modals', {
 						screen: 'DeleteAccount',
 					})
-				}
+				}}
 			/>
 		</View>
 	)
