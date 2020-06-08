@@ -97,7 +97,7 @@ function usePrevious<T>(value: T) {
 	return ref.current
 }
 
-const DELETE_STR = 'Delete'
+const DELETE_STR = 'delete'
 
 const DeleteAccountContent: React.FC<{}> = () => {
 	const _styles = useStylesDeleteAccount()
@@ -130,9 +130,10 @@ const DeleteAccountContent: React.FC<{}> = () => {
 		<>
 			<DeleteAccountError error={`Are you sure you want to delete your account?`} />
 			<View style={[padding.horizontal.medium, padding.bottom.medium]}>
-				<Text
-					style={[text.color.red, text.align.center, text.bold.small]}
-				>{`Please type 'Delete' to delete your account`}</Text>
+				<Text style={[text.color.red, text.align.center, text.bold.small]}>
+					Please type<Text style={[text.bold.huge, text.color.red]}> delete</Text> to delete your
+					account:
+				</Text>
 			</View>
 			<View style={[column.justify]}>
 				<TextInput
@@ -146,6 +147,8 @@ const DeleteAccountContent: React.FC<{}> = () => {
 					]}
 					value={deleteConfirmation}
 					onChangeText={setDeleteConfirmation}
+					autoCorrect={false}
+					autoCapitalize='none'
 				/>
 				<View style={row.center}>
 					<TouchableOpacity

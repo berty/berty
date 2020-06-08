@@ -360,6 +360,9 @@ const CreateYourAccount: React.FC<{
 					}}
 				>
 					<TextInput
+						autoCapitalize='none'
+						autoCorrect={false}
+						onChangeText={setName}
 						placeholder={t('onboarding.create-account.placeholder')}
 						style={[
 							margin.top.medium,
@@ -369,7 +372,6 @@ const CreateYourAccount: React.FC<{
 							border.radius.small,
 							text.color.black,
 						]}
-						onChangeText={setName}
 					/>
 					{__DEV__ && <NodeConfigInput onConfigChange={setNodeConfig} config={nodeConfig} />}
 				</SwiperCard>
