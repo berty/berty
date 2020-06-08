@@ -6,6 +6,7 @@ import {
 	TextInput,
 	ActivityIndicator,
 	Vibration,
+	Text as TextNative,
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
@@ -21,7 +22,7 @@ const useStylesDeleteAccount = () => {
 			border.color.light.grey,
 			border.scale(2),
 			border.radius.small,
-			margin.top.scale(30),
+			margin.top.scale(15),
 			padding.left.small,
 			padding.right.medium,
 			padding.top.small,
@@ -31,7 +32,7 @@ const useStylesDeleteAccount = () => {
 			border.color.light.red,
 			border.scale(2),
 			border.radius.small,
-			margin.top.scale(30),
+			margin.top.scale(15),
 			padding.left.small,
 			padding.right.medium,
 			padding.top.small,
@@ -72,7 +73,9 @@ const DeleteAccountHeader: React.FC<{ title: string }> = ({ title }) => {
 				/>
 			</View>
 			<View>
-				<Text style={[text.color.red, text.bold.medium, text.align.center]}>{title}</Text>
+				<TextNative style={[text.color.red, text.bold.medium, text.size.huge, text.align.center]}>
+					{title}
+				</TextNative>
 			</View>
 		</View>
 	)
@@ -130,10 +133,9 @@ const DeleteAccountContent: React.FC<{}> = () => {
 		<>
 			<DeleteAccountError error={`Are you sure you want to delete your account?`} />
 			<View style={[padding.horizontal.medium, padding.bottom.medium]}>
-				<Text style={[text.color.red, text.align.center, text.bold.small]}>
-					Please type<Text style={[text.bold.huge, text.color.red]}> delete</Text> to delete your
-					account:
-				</Text>
+				<Text
+					style={[text.color.red, text.align.center, text.bold.small]}
+				>{`Please type 'Delete' to confirm`}</Text>
 			</View>
 			<View style={[column.justify]}>
 				<TextInput
@@ -197,7 +199,7 @@ export const DeleteAccount: React.FC<{}> = () => {
 					background.white,
 					padding.medium,
 					border.radius.medium,
-					layout && { height: layout - 100 },
+					layout && { height: layout - 90 },
 				]}
 			>
 				<View style={[_deleteAccountStyles.body]}>
