@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useNavigation } from '@react-navigation/native'
 import { Chat } from '@berty-tech/hooks'
@@ -7,6 +7,7 @@ import { useStyles } from '@berty-tech/styles'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
+import { chat } from '@berty-tech/store'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -37,17 +38,14 @@ const SelectedContent = ({ contentName, pubKey }: { contentName: string; pubKey:
 	}
 }
 
-const AddThisContact: React.FC<{ name: string; rdvSeed: string; pubKey: string }> = ({
-	name,
-	rdvSeed,
-	pubKey,
+const AddThisContact: React.FC<{ requestDraft: chat.contact.ValidRequestDraft }> = ({
+	requestDraft,
 }) => {
 	const [{ row, text, column, color, flex, absolute, padding, background, border }] = useStyles()
 	const navigation = useNavigation()
 	const sendContactRequest = Chat.useAccountSendContactRequest()
-	const [selectedContent, setSelectedContent] = useState()
+	const [selectedContent, setSelectedContent] = useState('Fingerprint')
 	const _styles = useStylesModal()
-
 	return (
 		<View
 			style={[{ justifyContent: 'center', alignItems: 'center', height: '100%' }, padding.medium]}
@@ -63,16 +61,16 @@ const AddThisContact: React.FC<{ name: string; rdvSeed: string; pubKey: string }
 			>
 				<View style={[absolute.scale({ top: -50 }), row.item.justify]}>
 					<ProceduralCircleAvatar
-						seed={pubKey}
+						seed={requestDraft.contactPublicKey}
 						style={[border.shadow.big, row.center]}
 						diffSize={30}
 					/>
 				</View>
 				<View style={[padding.top.scale(55)]}>
-					<Text style={{ textAlign: 'center' }}>{name}</Text>
+					<Text style={{ textAlign: 'center' }}>{requestDraft.contactName}</Text>
 					<TabBar
 						tabs={[
-							{ name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' },
+							{ name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' } as any, // TODO: fix typing
 							{ name: 'Info', icon: 'info-outline', buttonDisabled: true },
 							{
 								name: 'Devices',
@@ -81,18 +79,24 @@ const AddThisContact: React.FC<{ name: string; rdvSeed: string; pubKey: string }
 								iconPack: 'feather',
 								iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],
 								buttonDisabled: true,
-							},
+							} as any, // TODO: fix typing
 						]}
 						onTabChange={setSelectedContent}
 					/>
 					<BodyAddThisContactContent>
-						<SelectedContent contentName={selectedContent} pubKey={pubKey} />
+						<SelectedContent contentName={selectedContent} pubKey={requestDraft.contactPublicKey} />
 					</BodyAddThisContactContent>
 				</View>
 				<View style={[padding.top.big, row.fill, padding.medium]}>
 					<TouchableOpacity
 						onPress={() => {
-							sendContactRequest(name, rdvSeed, pubKey)
+							sendContactRequest(
+								requestDraft.contactName,
+								requestDraft.contactRdvSeed,
+								requestDraft.contactPublicKey,
+							)
+							// Sometimes the navigation happens without sending the contact request
+							navigation.goBack()
 							navigation.navigate('Main.ListModal')
 						}}
 						style={[

@@ -1,25 +1,21 @@
 import * as api from '@berty-tech/api'
+import { PayloadAction, CaseReducer } from '@reduxjs/toolkit'
 
 {{#with (lookup "berty.protocol")}}
 	{{#each nested}}
 		{{#if (eq (typeof this) "Service")}}
 		export type Commands<State> = {
 				{{#each methods}}
-					{{case 'camel' name}}: (
-						state: State,
-						action: {
-							payload: {
-								id: string,
-								{{#each resolvedRequestType.fields}}
-									{{@key}}: {{#with (convertScalarType type)~}}
-										{{this}},
-									{{else}}
-										api{{inamespace resolvedType}},
-									{{/with}}
-								{{/each}}
-							}
-						}
-					) => State
+					{{case 'camel' name}}: CaseReducer<State, PayloadAction<{
+						id: string,
+						{{#each resolvedRequestType.fields}}
+							{{@key}}: {{#with (convertScalarType type)~}}
+								{{this}},
+							{{else}}
+								api{{inamespace resolvedType}},
+							{{/with}}
+						{{/each}}
+					}>>
 				{{/each}}
 			}
 

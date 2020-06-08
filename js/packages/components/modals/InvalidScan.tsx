@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@react-navigation/native'
+import { Chat } from '@berty-tech/hooks'
 
 //
 // Scan Invalid
@@ -86,12 +87,16 @@ const InvalidScanDismissButton: React.FC<{}> = () => {
 	const _styles = useStylesInvalidScan()
 	const [{ row, margin, color, padding, text }] = useStyles()
 	const navigation = useNavigation()
+	const resetDraft = Chat.useResetDraft()
 
 	return (
 		<View style={row.center}>
 			<TouchableOpacity
 				style={[row.fill, margin.bottom.medium, _styles.dismissButton]}
-				onPress={() => navigation.goBack()}
+				onPress={() => {
+					resetDraft()
+					navigation.goBack()
+				}}
 			>
 				<Icon name='close' width={30} height={30} fill={color.grey} style={row.item.justify} />
 				<Text style={[text.color.grey, padding.left.small, row.item.justify, _styles.dismissText]}>

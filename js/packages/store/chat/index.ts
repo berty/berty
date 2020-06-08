@@ -1,6 +1,6 @@
 import { combineReducers, Middleware } from 'redux'
 import { configureStore } from '@reduxjs/toolkit'
-import { all, call, cancel, fork, take, join } from 'redux-saga/effects'
+import { all, call, cancel, fork, take } from 'redux-saga/effects'
 import createSagaMiddleware, { Task } from 'redux-saga'
 import createRecorder from 'redux-test-recorder'
 import mem from 'mem'
@@ -14,6 +14,7 @@ import * as contact from './contact'
 import * as conversation from './conversation'
 import * as member from './member'
 import * as message from './message'
+import * as groups from '../groups'
 
 export { account, contact, conversation, member, message }
 
@@ -22,6 +23,7 @@ export type State = account.GlobalState
 export const reducers = {
 	...protocol.reducers,
 	...settings.reducers,
+	...groups.reducers,
 	chat: combineReducers({
 		account: account.reducer,
 		contact: contact.reducer,
@@ -46,6 +48,7 @@ export function* rootSaga() {
 						call(conversation.orchestrator),
 						call(member.orchestrator),
 						call(message.orchestrator),
+						call(groups.orchestrator),
 					])
 				})) as Task
 
@@ -119,7 +122,7 @@ export const init = mem(
 		const persistConfig = {
 			key: 'root',
 			storage: config.storage,
-			whitelist: ['chat', 'settings'],
+			whitelist: ['chat', 'settings', 'groups'],
 		}
 
 		const configuredStore = configureStore({

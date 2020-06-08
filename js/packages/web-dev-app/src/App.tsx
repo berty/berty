@@ -1,7 +1,8 @@
 import React, { useState, useRef, useLayoutEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { Chat } from '@berty-tech/hooks'
 import grpcBridge from '@berty-tech/grpc-bridge'
-import { protocol } from '@berty-tech/store'
+import { protocol, groups } from '@berty-tech/store'
 import { AppMessageType } from '@berty-tech/store/chat/AppMessage'
 import ProtocolServiceClient from '@berty-tech/store/protocol/ProtocolServiceClient.gen'
 import './App.css'
@@ -243,7 +244,7 @@ const DumpGroup: React.FC = () => {
 			<input value={groupPk} placeholder='groupPK' onChange={(e) => setGroupPk(e.target.value)} />
 			<button
 				onClick={() => {
-					const service = protocol.client.getService(client.id)
+					const service = protocol.client.getProtocolService(client.id)
 					const gpkBuf = Buffer.from(groupPk, 'base64')
 					metadata = []
 					messages = []
@@ -280,6 +281,18 @@ const DumpGroup: React.FC = () => {
 	)
 }
 
+const Groups: React.FC = () => {
+	const groups = useSelector((state: groups.GlobalState) => state.groups)
+	console.log('groups', groups)
+	return (
+		<>
+			{Object.values(groups).map((subscribeOpts) => (
+				<JSONed key={subscribeOpts.publicKey} value={subscribeOpts} />
+			))}
+		</>
+	)
+}
+
 const Tools: React.FC = () => {
 	return (
 		<>
@@ -293,6 +306,7 @@ type TabsDef = {
 	Contacts: typeof Contacts
 	Requests: typeof Requests
 	Conversations: typeof Conversations
+	Groups: typeof Groups
 	Tools: typeof Tools
 }
 
@@ -301,11 +315,12 @@ const TABS: TabsDef = {
 	Contacts: Contacts,
 	Requests: Requests,
 	Conversations: Conversations,
+	Groups: Groups,
 	Tools: Tools,
 }
 
 const Tabs: React.FC = () => {
-	const [selected, setSelected] = useState('Account')
+	const [selected, setSelected] = useState<keyof TabsDef>('Account')
 	if (!(selected in TABS)) {
 		return <>Error: Unknown tab {selected}</>
 	}
@@ -313,7 +328,7 @@ const Tabs: React.FC = () => {
 	return (
 		<>
 			<div>
-				{Object.keys(TABS).map((key) => (
+				{(Object.keys(TABS) as (keyof TabsDef)[]).map((key) => (
 					<button key={key} disabled={key === selected} onClick={() => setSelected(key)}>
 						{key}
 					</button>

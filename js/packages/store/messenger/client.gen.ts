@@ -1,45 +1,38 @@
 import * as api from '@berty-tech/api'
+import { PayloadAction, CaseReducer } from '@reduxjs/toolkit'
 
 export type Commands<State> = {
-	instanceShareableBertyID: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				reset: boolean
-				displayName: string
-			}
-		},
-	) => State
-	devShareInstanceBertyID: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				reset: boolean
-				displayName: string
-			}
-		},
-	) => State
-	parseDeepLink: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				link: string
-			}
-		},
-	) => State
-	sendContactRequest: (
-		state: State,
-		action: {
-			payload: {
-				id: string
-				bertyId: api.berty.messenger.IBertyID
-				Metadata: Uint8Array
-			}
-		},
-	) => State
+	instanceShareableBertyID: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			reset: boolean
+			displayName: string
+		}>
+	>
+	devShareInstanceBertyID: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			reset: boolean
+			displayName: string
+		}>
+	>
+	parseDeepLink: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			link: string
+		}>
+	>
+	sendContactRequest: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			bertyId: api.berty.messenger.IBertyID
+			Metadata: Uint8Array
+		}>
+	>
 }
 
 export enum Methods {

@@ -21,7 +21,7 @@
     "react-native-svg-transformer": "^0.14.3",
     "react-native-typescript-transformer": "^1.2.13",
     "react-test-renderer": "^16.9.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.5"
   },
   "dependencies": {
     "@berty-tech/berty-navigation": "^0.0.0",

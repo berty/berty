@@ -714,4 +714,54 @@ export default class ProtocolServiceSagaClient {
 			})
 			return close
 		})
+	debugListGroups = (requestObj: api.berty.types.DebugListGroups.IRequest = {}) =>
+		eventChannel<api.berty.types.DebugListGroups.IReply>((emit) => {
+			const buf = api.berty.types.DebugListGroups.Request.encode(requestObj).finish()
+			const request = bertytypes.DebugListGroups.Request.deserializeBinary(buf)
+			const { close } = grpc.invoke(ProtocolService.DebugListGroups, {
+				request,
+				transport: this.transport,
+				host: this.host,
+				onMessage: (message: bertytypes.DebugListGroups.Reply) =>
+					emit(api.berty.types.DebugListGroups.Reply.decode(message.serializeBinary())),
+				onEnd: (code, msg, trailers) => {
+					if (code !== grpc.Code.OK) {
+						emit(
+							new Error(
+								`GRPC DebugListGroups ${
+									grpc.Code[code]
+								} (${code}): ${msg}\nTrailers: ${JSON.stringify(trailers)}`,
+							) as any,
+						)
+					}
+					emit(END)
+				},
+			})
+			return close
+		})
+	debugInspectGroupStore = (requestObj: api.berty.types.DebugInspectGroupStore.IRequest = {}) =>
+		eventChannel<api.berty.types.DebugInspectGroupStore.IReply>((emit) => {
+			const buf = api.berty.types.DebugInspectGroupStore.Request.encode(requestObj).finish()
+			const request = bertytypes.DebugInspectGroupStore.Request.deserializeBinary(buf)
+			const { close } = grpc.invoke(ProtocolService.DebugInspectGroupStore, {
+				request,
+				transport: this.transport,
+				host: this.host,
+				onMessage: (message: bertytypes.DebugInspectGroupStore.Reply) =>
+					emit(api.berty.types.DebugInspectGroupStore.Reply.decode(message.serializeBinary())),
+				onEnd: (code, msg, trailers) => {
+					if (code !== grpc.Code.OK) {
+						emit(
+							new Error(
+								`GRPC DebugInspectGroupStore ${
+									grpc.Code[code]
+								} (${code}): ${msg}\nTrailers: ${JSON.stringify(trailers)}`,
+							) as any,
+						)
+					}
+					emit(END)
+				},
+			})
+			return close
+		})
 }

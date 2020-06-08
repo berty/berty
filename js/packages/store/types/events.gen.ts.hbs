@@ -1,4 +1,5 @@
 import * as api from '@berty-tech/api'
+import { PayloadAction, CaseReducer } from '@reduxjs/toolkit'
 
 {{#with (lookup "berty.types")}}
 	{{#each nested}}
@@ -6,36 +7,31 @@ import * as api from '@berty-tech/api'
       export type Events<State> = {
         {{#each values}}
           {{#with (removeFirst @key "EventType") as | eventName |}}
-            {{case 'camel' eventName}}: (
-              state: State,
-              action: {
-                payload: {
-                  aggregateId: string,
-                  eventContext: api.berty.types.IEventContext,
-                  metadata: api.berty.types.IGroupMetadata,
-                  event: {
-                    {{#with (lookup "berty.types")}}
-                      {{#each nested}}
-                        {{#if (matchInconsistant name eventName)}}
-                          // {{eventName}} seems event of type {{name}}
-                          {{#each fields}}
-                            {{@key}}: {{#with (convertScalarType type)~}}
-                              {{this}},
-                            {{else}}
-                              api{{inamespace resolvedType}},
-                            {{/with}}
-                          {{/each}}
-                        {{/if}}
-                      {{/each}}
-                    {{/with}}
-                  }
-                }
-              }
-            ) => State
+            {{case 'camel' eventName}}: CaseReducer<State, PayloadAction<{
+							aggregateId: string,
+							eventContext: api.berty.types.IEventContext,
+							metadata: api.berty.types.IGroupMetadata,
+							event: {
+								{{#with (lookup "berty.types")}}
+									{{#each nested}}
+										{{#if (matchInconsistant name eventName)}}
+											// {{eventName}} seems event of type {{name}}
+											{{#each fields}}
+												{{@key}}: {{#with (convertScalarType type)~}}
+													{{this}},
+												{{else}}
+													api{{inamespace resolvedType}},
+												{{/with}}
+											{{/each}}
+										{{/if}}
+									{{/each}}
+								{{/with}}
+							}
+						}>>
           {{/with}}
         {{/each}}
       }
-			
+
 		export enum EventsNames {
       {{#each values}}
         {{#with (removeFirst @key "EventType") as | eventName |}}

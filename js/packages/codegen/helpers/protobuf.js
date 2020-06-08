@@ -46,7 +46,8 @@ module.exports.register = (handlebars) => {
 	handlebars.registerHelper('namespace', namespace)
 
 	handlebars.registerHelper('inamespace', function (context, options) {
-		return (context.parent ? namespace(context.parent, options) + '.' : '') + 'I' + context.name
+		const prefix = context.constructor.name === 'Enum' ? '' : 'I'
+		return (context.parent ? namespace(context.parent, options) + '.' : '') + prefix + context.name
 	})
 
 	handlebars.registerHelper('importPaths', function (options) {

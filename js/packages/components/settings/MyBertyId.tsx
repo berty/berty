@@ -45,25 +45,21 @@ const BertyIdContent: React.FC<{}> = ({ children }) => {
 }
 
 const ContactRequestQR = () => {
-	const contactRequestReference = Chat.useContactRequestReference()
-	const contactRequestEnabled = Chat.useContactRequestEnabled()
+	const client = Chat.useClient()
 	const [{ padding }] = useStyles()
 
 	const { height, width } = useDimensions().window
 
-	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
-	if (contactRequestEnabled) {
-		return (
-			<View style={[padding.top.big]}>
-				<QRCode
-					size={_bertyIdContentScaleFactor * Math.min(height, width)}
-					value={contactRequestReference}
-				/>
-			</View>
-		)
-	} else {
-		return <Text>Error: Contact request is disabled</Text>
+	if (!client?.deepLink) {
+		return <Text>Internal error</Text>
 	}
+
+	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
+	return (
+		<View style={[padding.top.big]}>
+			<QRCode size={_bertyIdContentScaleFactor * Math.min(height, width)} value={client.deepLink} />
+		</View>
+	)
 }
 
 const Fingerprint: React.FC = () => {
@@ -97,7 +93,7 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 
 const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 	const [{ background, border, margin, padding, opacity }] = useStyles()
-	const [selectedContent, setSelectedContent] = useState()
+	const [selectedContent, setSelectedContent] = useState('QR')
 	const client = Chat.useClient()
 
 	return (
@@ -137,8 +133,9 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 
 const BertyIdShare: React.FC<{}> = () => {
 	const [{ row, border, background, flex, color }] = useStyles()
-	const contactRequestReference = Chat.useContactRequestReference()
-	if (!contactRequestReference) {
+	const client = Chat.useClient()
+	const url = client?.deepLink
+	if (!url) {
 		return null
 	}
 	return (
@@ -151,7 +148,7 @@ const BertyIdShare: React.FC<{}> = () => {
 			]}
 			onPress={async () => {
 				try {
-					await Share.share({ url: `berty://${encodeURIComponent(contactRequestReference)}` })
+					await Share.share({ url })
 				} catch (e) {
 					console.error(e)
 				}
