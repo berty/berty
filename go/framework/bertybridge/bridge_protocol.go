@@ -43,8 +43,8 @@ var (
 	defaultProtocolRendezVousPeer = config.BertyMobile.RendezVousPeer
 	defaultProtocolBootstrap      = config.BertyMobile.Bootstrap
 	defaultTracingHost            = config.BertyMobile.Tracing
-	defaultMCBind                 = config.BertyMobile.DefaultMCBind
-	DefaultAPIAddrs               = config.BertyMobile.DefaultAPIAddrs
+	defaultSwarmAddrs             = config.BertyMobile.DefaultSwarmAddrs
+	defaultAPIAddrs               = config.BertyMobile.DefaultAPIAddrs
 	APIConfig                     = config.BertyMobile.APIConfig
 )
 
@@ -147,8 +147,8 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			}
 
 			var bopts = ipfsutil.CoreAPIConfig{
-				SwarmAddrs:        []string{defaultMCBind},
-				APIAddrs:          DefaultAPIAddrs,
+				SwarmAddrs:        defaultSwarmAddrs,
+				APIAddrs:          defaultAPIAddrs,
 				APIConfig:         APIConfig,
 				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
 			}

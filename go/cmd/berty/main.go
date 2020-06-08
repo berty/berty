@@ -61,7 +61,7 @@ const ResolveTimeout = time.Second * 10
 var (
 	DevRendezVousPoint = config.BertyDev.RendezVousPeer
 	DefaultBootstrap   = config.BertyDev.Bootstrap
-	DefaultMCBind      = config.BertyDev.DefaultMCBind
+	DefaultSwarmAddrs  = config.BertyDev.DefaultSwarmAddrs
 	DefaultAPIAddrs    = config.BertyDev.DefaultAPIAddrs
 	APIConfig          = config.BertyDev.APIConfig
 )
@@ -278,7 +278,7 @@ func main() {
 			{
 				var err error
 				var bopts = ipfsutil.CoreAPIConfig{
-					SwarmAddrs:        []string{DefaultMCBind},
+					SwarmAddrs:        DefaultSwarmAddrs,
 					APIAddrs:          DefaultAPIAddrs,
 					APIConfig:         APIConfig,
 					ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
