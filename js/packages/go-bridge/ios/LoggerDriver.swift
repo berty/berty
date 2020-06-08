@@ -75,8 +75,8 @@ class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
             type = OSLogType.default
         }
         switch self.scope {
-        case Visibility.visible: os_log("[%@] %{public}@", log: logger, type: type, ulevel, out)
-        case Visibility.hidden: os_log("[%@] %{private}@", log: logger, type: type, ulevel, out)
+        case Visibility.visible: os_log("[%{public}@] %{public}@", log: logger, type: type, ulevel, out)
+        case Visibility.hidden: os_log("[%{private}@] %{private}@", log: logger, type: type, ulevel, out)
         }
     } else {
         NSLog("[%@] [%@]: %@", level.rawValue, self.subsytem + "." + subsytem, out)
