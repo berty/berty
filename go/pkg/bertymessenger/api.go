@@ -166,6 +166,7 @@ func (s *service) SendContactRequest(ctx context.Context, req *SendContactReques
 			PublicRendezvousSeed: req.BertyID.PublicRendezvousSeed,
 			Metadata:             req.Metadata,
 		},
+		OwnMetadata: req.OwnMetadata,
 	}
 	_, err := s.protocol.ContactRequestSend(ctx, &contactRequest)
 	if err != nil {

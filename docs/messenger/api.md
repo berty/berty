@@ -116,7 +116,8 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | berty_id | [BertyID](#berty.messenger.BertyID) |  |  |
-| Metadata | [bytes](#bytes) |  |  |
+| metadata | [bytes](#bytes) |  |  |
+| own_metadata | [bytes](#bytes) |  |  |
 
  
 

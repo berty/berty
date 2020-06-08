@@ -23,6 +23,8 @@ func TestContactRequestFlow(t *testing.T) {
 		Logger:  testutil.Logger(t),
 	}
 
+	metadataSender1 := []byte("sender_1")
+
 	pts, cleanup := generateTestingProtocol(ctx, t, &opts, 2)
 	defer cleanup()
 
@@ -63,6 +65,7 @@ func TestContactRequestFlow(t *testing.T) {
 			PK:                   config0.AccountPK,
 			PublicRendezvousSeed: ref0.PublicRendezvousSeed,
 		},
+		OwnMetadata: metadataSender1,
 	})
 	require.NoError(t, err)
 
@@ -83,6 +86,7 @@ func TestContactRequestFlow(t *testing.T) {
 
 		require.NoError(t, err)
 		require.Equal(t, config1.AccountPK, req.ContactPK)
+		require.Equal(t, metadataSender1, req.ContactMetadata)
 		found = true
 		subCancel()
 	}

@@ -369,6 +369,23 @@ func (m *metadataStore) ListMultiMemberGroups() []*bertytypes.Group {
 	return groups
 }
 
+func (m *metadataStore) GetRequestOwnMetadataForContact(pk []byte) ([]byte, error) {
+	idx, ok := m.Index().(*metadataStoreIndex)
+	if !ok {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid index type"))
+	}
+
+	idx.lock.Lock()
+	defer idx.lock.Unlock()
+
+	meta, ok := idx.contactRequestMetadata[string(pk)]
+	if !ok {
+		return nil, errcode.ErrMissingMapKey.Wrap(fmt.Errorf("no metadata found for specified contact"))
+	}
+
+	return meta, nil
+}
+
 func (m *metadataStore) ListContactsByStatus(states ...bertytypes.ContactState) []*bertytypes.ShareableContact {
 	if !m.typeChecker(isAccountGroup) {
 		return nil
@@ -492,7 +509,7 @@ func (m *metadataStore) ContactRequestReferenceReset(ctx context.Context) (opera
 }
 
 // ContactRequestOutgoingEnqueue indicates the payload includes that the deviceKeystore will attempt to send a new contact request
-func (m *metadataStore) ContactRequestOutgoingEnqueue(ctx context.Context, contact *bertytypes.ShareableContact) (operation.Operation, error) {
+func (m *metadataStore) ContactRequestOutgoingEnqueue(ctx context.Context, contact *bertytypes.ShareableContact, ownMetadata []byte) (operation.Operation, error) {
 	if !m.typeChecker(isAccountGroup) {
 		return nil, errcode.ErrGroupInvalidType
 	}
@@ -525,6 +542,7 @@ func (m *metadataStore) ContactRequestOutgoingEnqueue(ctx context.Context, conta
 			PublicRendezvousSeed: contact.PublicRendezvousSeed,
 			Metadata:             contact.Metadata,
 		},
+		OwnMetadata: ownMetadata,
 	}, bertytypes.EventTypeAccountContactRequestOutgoingEnqueued)
 }
 

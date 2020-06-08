@@ -7548,7 +7548,8 @@ proto.berty.types.AccountContactRequestEnqueued.toObject = function(includeInsta
   var f, obj = {
     devicePk: msg.getDevicePk_asB64(),
     groupPk: msg.getGroupPk_asB64(),
-    contact: (f = msg.getContact()) && proto.berty.types.ShareableContact.toObject(includeInstance, f)
+    contact: (f = msg.getContact()) && proto.berty.types.ShareableContact.toObject(includeInstance, f),
+    ownMetadata: msg.getOwnMetadata_asB64()
   };
 
   if (includeInstance) {
@@ -7597,6 +7598,10 @@ proto.berty.types.AccountContactRequestEnqueued.deserializeBinaryFromReader = fu
       var value = new proto.berty.types.ShareableContact;
       reader.readMessage(value,proto.berty.types.ShareableContact.deserializeBinaryFromReader);
       msg.setContact(value);
+      break;
+    case 4:
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setOwnMetadata(value);
       break;
     default:
       reader.skipField();
@@ -7647,6 +7652,13 @@ proto.berty.types.AccountContactRequestEnqueued.serializeBinaryToWriter = functi
       3,
       f,
       proto.berty.types.ShareableContact.serializeBinaryToWriter
+    );
+  }
+  f = message.getOwnMetadata_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
+      4,
+      f
     );
   }
 };
@@ -7770,6 +7782,48 @@ proto.berty.types.AccountContactRequestEnqueued.prototype.clearContact = functio
  */
 proto.berty.types.AccountContactRequestEnqueued.prototype.hasContact = function() {
   return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional bytes own_metadata = 4;
+ * @return {!(string|Uint8Array)}
+ */
+proto.berty.types.AccountContactRequestEnqueued.prototype.getOwnMetadata = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/**
+ * optional bytes own_metadata = 4;
+ * This is a type-conversion wrapper around `getOwnMetadata()`
+ * @return {string}
+ */
+proto.berty.types.AccountContactRequestEnqueued.prototype.getOwnMetadata_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getOwnMetadata()));
+};
+
+
+/**
+ * optional bytes own_metadata = 4;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getOwnMetadata()`
+ * @return {!Uint8Array}
+ */
+proto.berty.types.AccountContactRequestEnqueued.prototype.getOwnMetadata_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getOwnMetadata()));
+};
+
+
+/**
+ * @param {!(string|Uint8Array)} value
+ * @return {!proto.berty.types.AccountContactRequestEnqueued} returns this
+ */
+proto.berty.types.AccountContactRequestEnqueued.prototype.setOwnMetadata = function(value) {
+  return jspb.Message.setProto3BytesField(this, 4, value);
 };
 
 
@@ -11753,7 +11807,8 @@ proto.berty.types.ContactRequestSend.Request.prototype.toObject = function(opt_i
  */
 proto.berty.types.ContactRequestSend.Request.toObject = function(includeInstance, msg) {
   var f, obj = {
-    contact: (f = msg.getContact()) && proto.berty.types.ShareableContact.toObject(includeInstance, f)
+    contact: (f = msg.getContact()) && proto.berty.types.ShareableContact.toObject(includeInstance, f),
+    ownMetadata: msg.getOwnMetadata_asB64()
   };
 
   if (includeInstance) {
@@ -11795,6 +11850,10 @@ proto.berty.types.ContactRequestSend.Request.deserializeBinaryFromReader = funct
       reader.readMessage(value,proto.berty.types.ShareableContact.deserializeBinaryFromReader);
       msg.setContact(value);
       break;
+    case 2:
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setOwnMetadata(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -11830,6 +11889,13 @@ proto.berty.types.ContactRequestSend.Request.serializeBinaryToWriter = function(
       1,
       f,
       proto.berty.types.ShareableContact.serializeBinaryToWriter
+    );
+  }
+  f = message.getOwnMetadata_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
+      2,
+      f
     );
   }
 };
@@ -11869,6 +11935,48 @@ proto.berty.types.ContactRequestSend.Request.prototype.clearContact = function()
  */
 proto.berty.types.ContactRequestSend.Request.prototype.hasContact = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional bytes own_metadata = 2;
+ * @return {!(string|Uint8Array)}
+ */
+proto.berty.types.ContactRequestSend.Request.prototype.getOwnMetadata = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * optional bytes own_metadata = 2;
+ * This is a type-conversion wrapper around `getOwnMetadata()`
+ * @return {string}
+ */
+proto.berty.types.ContactRequestSend.Request.prototype.getOwnMetadata_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getOwnMetadata()));
+};
+
+
+/**
+ * optional bytes own_metadata = 2;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getOwnMetadata()`
+ * @return {!Uint8Array}
+ */
+proto.berty.types.ContactRequestSend.Request.prototype.getOwnMetadata_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getOwnMetadata()));
+};
+
+
+/**
+ * @param {!(string|Uint8Array)} value
+ * @return {!proto.berty.types.ContactRequestSend.Request} returns this
+ */
+proto.berty.types.ContactRequestSend.Request.prototype.setOwnMetadata = function(value) {
+  return jspb.Message.setProto3BytesField(this, 2, value);
 };
 
 

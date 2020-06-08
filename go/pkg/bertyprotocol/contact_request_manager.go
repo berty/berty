@@ -18,14 +18,15 @@ import (
 )
 
 type pendingRequest struct {
-	cancel  context.CancelFunc
-	contact *bertytypes.ShareableContact
-	lock    sync.Mutex
-	ch      chan peer.AddrInfo
-	swiper  *swiper
+	cancel      context.CancelFunc
+	contact     *bertytypes.ShareableContact
+	lock        sync.Mutex
+	ch          chan peer.AddrInfo
+	swiper      *swiper
+	ownMetadata []byte
 }
 
-func (p *pendingRequest) update(ctx context.Context, contact *bertytypes.ShareableContact) {
+func (p *pendingRequest) update(ctx context.Context, contact *bertytypes.ShareableContact, ownMetadata []byte) {
 	p.lock.Lock()
 
 	if p.contact != nil && bytes.Equal(p.contact.PublicRendezvousSeed, contact.PublicRendezvousSeed) {
@@ -38,6 +39,7 @@ func (p *pendingRequest) update(ctx context.Context, contact *bertytypes.Shareab
 	}
 
 	p.contact = contact
+	p.ownMetadata = ownMetadata
 	ctx, p.cancel = context.WithCancel(ctx)
 
 	p.lock.Unlock()
@@ -65,14 +67,15 @@ func (p *pendingRequest) Close() error {
 	return nil
 }
 
-func newPendingRequest(ctx context.Context, swiper *swiper, contact *bertytypes.ShareableContact) (*pendingRequest, chan peer.AddrInfo) {
+func newPendingRequest(ctx context.Context, swiper *swiper, contact *bertytypes.ShareableContact, ownMetadata []byte) (*pendingRequest, chan peer.AddrInfo) {
 	ch := make(chan peer.AddrInfo)
 	p := &pendingRequest{
-		ch:     ch,
-		swiper: swiper,
+		ch:          ch,
+		swiper:      swiper,
+		ownMetadata: ownMetadata,
 	}
 
-	go p.update(ctx, contact)
+	go p.update(ctx, contact, ownMetadata)
 
 	return p, ch
 }
@@ -139,7 +142,7 @@ func (c *contactRequestsManager) metadataRequestEnqueued(evt *bertytypes.GroupMe
 	return c.enqueueRequest(&bertytypes.ShareableContact{
 		PK:                   e.Contact.PK,
 		PublicRendezvousSeed: e.Contact.PublicRendezvousSeed,
-	})
+	}, e.OwnMetadata)
 }
 
 func (c *contactRequestsManager) metadataRequestSent(evt *bertytypes.GroupMetadataEvent) error {
@@ -176,17 +179,17 @@ func (c *contactRequestsManager) metadataRequestReceived(evt *bertytypes.GroupMe
 	return nil
 }
 
-func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableContact) error {
+func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableContact, ownMetadata []byte) error {
 	pk, err := crypto.UnmarshalEd25519PublicKey(contact.PK)
 	if err != nil {
 		return err
 	}
 
 	if pending, ok := c.toAdd[string(contact.PK)]; ok {
-		go pending.update(c.ctx, contact)
+		go pending.update(c.ctx, contact, ownMetadata)
 	} else {
 		var ch chan peer.AddrInfo
-		c.toAdd[string(contact.PK)], ch = newPendingRequest(c.ctx, c.swiper, contact)
+		c.toAdd[string(contact.PK)], ch = newPendingRequest(c.ctx, c.swiper, contact, ownMetadata)
 
 		go func(pk crypto.PubKey, ch chan peer.AddrInfo) {
 			for addr := range ch {
@@ -228,7 +231,12 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 	}
 
 	for _, contact := range c.metadataStore.ListContactsByStatus(bertytypes.ContactStateToRequest) {
-		if err := c.enqueueRequest(contact); err != nil {
+		ownMeta, err := c.metadataStore.GetRequestOwnMetadataForContact(contact.PK)
+		if err != nil {
+			c.logger.Warn("error while retrieving own metadata for contact", zap.Binary("pk", contact.PK), zap.Error(err))
+		}
+
+		if err := c.enqueueRequest(contact, ownMeta); err != nil {
 			c.logger.Error("unable to enqueue contact request", zap.Error(err))
 		}
 	}
@@ -328,6 +336,19 @@ func (c *contactRequestsManager) performSend(otherPK crypto.PubKey, stream netwo
 		c.logger.Error("unable to retrieve own contact information")
 		return
 	}
+
+	pkB, err := otherPK.Raw()
+	if err != nil {
+		return
+	}
+
+	ownMetadata, err := c.metadataStore.GetRequestOwnMetadataForContact(pkB)
+	if err != nil {
+		c.logger.Error("unable to get own metadata for contact", zap.Error(err))
+		ownMetadata = nil
+	}
+
+	contact.Metadata = ownMetadata
 
 	reader := ggio.NewDelimitedReader(stream, 2048)
 	writer := ggio.NewDelimitedWriter(stream)

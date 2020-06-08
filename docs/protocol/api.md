@@ -264,6 +264,7 @@ AccountContactRequestEnqueued indicates that the account will attempt to send a 
 | device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
 | group_pk | [bytes](#bytes) |  | group_pk is the 1to1 group with the requested user |
 | contact | [ShareableContact](#berty.types.ShareableContact) |  | contact is a message describing how to connect to the other account |
+| own_metadata | [bytes](#bytes) |  | own_metadata is the identifying metadata that will be shared to the other account |
 
 <a name="berty.types.AccountContactRequestReceived"></a>
 
@@ -537,6 +538,7 @@ ContactAddAliasKey is an event type where ones shares their alias public key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | contact | [ShareableContact](#berty.types.ShareableContact) |  | contact is a message describing how to connect to the other account |
+| own_metadata | [bytes](#bytes) |  | own_metadata is the identifying metadata that will be shared to the other account |
 
 <a name="berty.types.ContactUnblock"></a>
 

@@ -569,6 +569,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               contact: {
                 type: "ShareableContact",
                 id: 3
+              },
+              ownMetadata: {
+                type: "bytes",
+                id: 4
               }
             }
           },
@@ -851,6 +855,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   contact: {
                     type: "ShareableContact",
                     id: 1
+                  },
+                  ownMetadata: {
+                    type: "bytes",
+                    id: 2
                   }
                 }
               },
@@ -1595,9 +1603,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       "(gogoproto.customname)": "BertyID"
                     }
                   },
-                  Metadata: {
+                  metadata: {
                     type: "bytes",
                     id: 2
+                  },
+                  ownMetadata: {
+                    type: "bytes",
+                    id: 3
                   }
                 }
               },

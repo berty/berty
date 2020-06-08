@@ -351,6 +351,9 @@ message AccountContactRequestEnqueued {
 
   // contact is a message describing how to connect to the other account
   ShareableContact contact = 3;
+
+  // own_metadata is the identifying metadata that will be shared to the other account
+  bytes own_metadata = 4;
 }
 
 // AccountContactRequestSent indicates that the account has sent a contact request
@@ -494,6 +497,9 @@ message ContactRequestSend {
   message Request {
     // contact is a message describing how to connect to the other account
     ShareableContact contact = 1;
+
+    // own_metadata is the identifying metadata that will be shared to the other account
+    bytes own_metadata = 2;
   }
   message Reply {}
 }
