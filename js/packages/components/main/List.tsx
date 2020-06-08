@@ -15,6 +15,7 @@ import { chat } from '@berty-tech/store'
 import { Icon, Text } from 'react-native-ui-kitten'
 import { SafeAreaView, SafeAreaConsumer } from 'react-native-safe-area-context'
 import FromNow from '../shared-components/FromNow'
+import Logo from './1_berty_picto.svg'
 
 type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
 
@@ -300,7 +301,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 }
 
 const Conversations: React.FC<ConversationsProps> = ({ items, hasRequests }) => {
-	const [{ overflow, border, padding, margin, text, background }] = useStyles()
+	const [{ overflow, border, padding, margin, text, background, row }] = useStyles()
 	return items?.length ? (
 		<Translation>
 			{(t): React.ReactNode => (
@@ -319,18 +320,21 @@ const Conversations: React.FC<ConversationsProps> = ({ items, hasRequests }) => 
 							]}
 							bounces={false}
 						>
-							<Text
-								style={[
-									text.color.black,
-									text.size.huge,
-									text.bold.medium,
-									padding.medium,
-									padding.top.big,
-									margin.horizontal.medium,
-								]}
-							>
-								{t('main.messages.title')}
-							</Text>
+							<View style={[row.left, padding.left.scale(27), { alignItems: 'center' }]}>
+								<Logo width={35} height={35} />
+								<Text
+									style={[
+										text.color.black,
+										text.size.huge,
+										text.bold.medium,
+										padding.medium,
+										padding.top.big,
+										margin.horizontal.medium,
+									]}
+								>
+									{t('main.messages.title')}
+								</Text>
+							</View>
 							{items.map((_) => {
 								return <ConversationsItem {..._} />
 							})}
