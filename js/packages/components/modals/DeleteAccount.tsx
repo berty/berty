@@ -133,9 +133,9 @@ const DeleteAccountContent: React.FC<{}> = () => {
 		<>
 			<DeleteAccountError error={`Are you sure you want to delete your account?`} />
 			<View style={[padding.horizontal.medium, padding.bottom.medium]}>
-				<Text
-					style={[text.color.red, text.align.center, text.bold.small]}
-				>{`Please type 'Delete' to confirm`}</Text>
+				<Text style={[text.color.red, text.align.center, text.bold.small]}>
+					Please type <Text style={[text.bold.huge, text.color.red]}>delete</Text> to confirm
+				</Text>
 			</View>
 			<View style={[column.justify]}>
 				<TextInput
