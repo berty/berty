@@ -229,6 +229,11 @@ export namespace SendContactRequest {
     getMetadata_asB64(): string;
     setMetadata(value: Uint8Array | string): void;
 
+    getOwnMetadata(): Uint8Array | string;
+    getOwnMetadata_asU8(): Uint8Array;
+    getOwnMetadata_asB64(): string;
+    setOwnMetadata(value: Uint8Array | string): void;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Request.AsObject;
     static toObject(includeInstance: boolean, msg: Request): Request.AsObject;
@@ -243,6 +248,7 @@ export namespace SendContactRequest {
     export type AsObject = {
       bertyId?: BertyID.AsObject,
       metadata: Uint8Array | string,
+      ownMetadata: Uint8Array | string,
     }
   }
 

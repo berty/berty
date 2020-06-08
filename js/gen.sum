@@ -1,6 +1,6 @@
-1229d586a5d3a3a074809ee71a4778ed429047be  ../api/bertymessenger.proto
+8001272a9877a4a0aa34b52690428dc7b8c13a0d  ../api/bertymessenger.proto
 a6b1965b41d41869f43fc31d65350fccd9fc2908  ../api/bertyprotocol.proto
-9a50d810a6ef389b746a3714382c44e059205297  ../api/bertytypes.proto
+c38c894af6d917d75d4f4e51e9cd6af9668d9e0c  ../api/bertytypes.proto
 4c0fa735ab710727c465ed1444dc6db1c748dc45  ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
 4b8f24f346b0cf0494144b7f18b370315ba83f02  Makefile
 6044edee17b900b4f56b3e30f0082d36db5d6fce  gen.make

@@ -1719,7 +1719,8 @@ proto.berty.messenger.SendContactRequest.Request.prototype.toObject = function(o
 proto.berty.messenger.SendContactRequest.Request.toObject = function(includeInstance, msg) {
   var f, obj = {
     bertyId: (f = msg.getBertyId()) && proto.berty.messenger.BertyID.toObject(includeInstance, f),
-    metadata: msg.getMetadata_asB64()
+    metadata: msg.getMetadata_asB64(),
+    ownMetadata: msg.getOwnMetadata_asB64()
   };
 
   if (includeInstance) {
@@ -1765,6 +1766,10 @@ proto.berty.messenger.SendContactRequest.Request.deserializeBinaryFromReader = f
       var value = /** @type {!Uint8Array} */ (reader.readBytes());
       msg.setMetadata(value);
       break;
+    case 3:
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setOwnMetadata(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1809,6 +1814,13 @@ proto.berty.messenger.SendContactRequest.Request.serializeBinaryToWriter = funct
       f
     );
   }
+  f = message.getOwnMetadata_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -1850,7 +1862,7 @@ proto.berty.messenger.SendContactRequest.Request.prototype.hasBertyId = function
 
 
 /**
- * optional bytes Metadata = 2;
+ * optional bytes metadata = 2;
  * @return {!(string|Uint8Array)}
  */
 proto.berty.messenger.SendContactRequest.Request.prototype.getMetadata = function() {
@@ -1859,7 +1871,7 @@ proto.berty.messenger.SendContactRequest.Request.prototype.getMetadata = functio
 
 
 /**
- * optional bytes Metadata = 2;
+ * optional bytes metadata = 2;
  * This is a type-conversion wrapper around `getMetadata()`
  * @return {string}
  */
@@ -1870,7 +1882,7 @@ proto.berty.messenger.SendContactRequest.Request.prototype.getMetadata_asB64 = f
 
 
 /**
- * optional bytes Metadata = 2;
+ * optional bytes metadata = 2;
  * Note that Uint8Array is not supported on all browsers.
  * @see http://caniuse.com/Uint8Array
  * This is a type-conversion wrapper around `getMetadata()`
@@ -1888,6 +1900,48 @@ proto.berty.messenger.SendContactRequest.Request.prototype.getMetadata_asU8 = fu
  */
 proto.berty.messenger.SendContactRequest.Request.prototype.setMetadata = function(value) {
   return jspb.Message.setProto3BytesField(this, 2, value);
+};
+
+
+/**
+ * optional bytes own_metadata = 3;
+ * @return {!(string|Uint8Array)}
+ */
+proto.berty.messenger.SendContactRequest.Request.prototype.getOwnMetadata = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/**
+ * optional bytes own_metadata = 3;
+ * This is a type-conversion wrapper around `getOwnMetadata()`
+ * @return {string}
+ */
+proto.berty.messenger.SendContactRequest.Request.prototype.getOwnMetadata_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getOwnMetadata()));
+};
+
+
+/**
+ * optional bytes own_metadata = 3;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getOwnMetadata()`
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.SendContactRequest.Request.prototype.getOwnMetadata_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getOwnMetadata()));
+};
+
+
+/**
+ * @param {!(string|Uint8Array)} value
+ * @return {!proto.berty.messenger.SendContactRequest.Request} returns this
+ */
+proto.berty.messenger.SendContactRequest.Request.prototype.setOwnMetadata = function(value) {
+  return jspb.Message.setProto3BytesField(this, 3, value);
 };
 
 

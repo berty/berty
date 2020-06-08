@@ -622,6 +622,7 @@ export namespace berty {
             devicePk?: (Uint8Array|null);
             groupPk?: (Uint8Array|null);
             contact?: (berty.types.IShareableContact|null);
+            ownMetadata?: (Uint8Array|null);
         }
 
         class AccountContactRequestEnqueued implements IAccountContactRequestEnqueued {
@@ -629,6 +630,7 @@ export namespace berty {
             public devicePk: Uint8Array;
             public groupPk: Uint8Array;
             public contact?: (berty.types.IShareableContact|null);
+            public ownMetadata: Uint8Array;
             public static create(properties?: berty.types.IAccountContactRequestEnqueued): berty.types.AccountContactRequestEnqueued;
             public static encode(message: berty.types.IAccountContactRequestEnqueued, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: berty.types.IAccountContactRequestEnqueued, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1127,11 +1129,13 @@ export namespace berty {
 
             interface IRequest {
                 contact?: (berty.types.IShareableContact|null);
+                ownMetadata?: (Uint8Array|null);
             }
 
             class Request implements IRequest {
 
                 public contact?: (berty.types.IShareableContact|null);
+                public ownMetadata: Uint8Array;
                 public static create(properties?: berty.types.ContactRequestSend.IRequest): berty.types.ContactRequestSend.Request;
                 public static encode(message: berty.types.ContactRequestSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.types.ContactRequestSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2615,13 +2619,15 @@ export namespace berty {
 
             interface IRequest {
                 bertyId?: (berty.messenger.IBertyID|null);
-                Metadata?: (Uint8Array|null);
+                metadata?: (Uint8Array|null);
+                ownMetadata?: (Uint8Array|null);
             }
 
             class Request implements IRequest {
 
                 public bertyId?: (berty.messenger.IBertyID|null);
-                public Metadata: Uint8Array;
+                public metadata: Uint8Array;
+                public ownMetadata: Uint8Array;
                 public static create(properties?: berty.messenger.SendContactRequest.IRequest): berty.messenger.SendContactRequest.Request;
                 public static encode(message: berty.messenger.SendContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.SendContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;

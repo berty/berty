@@ -75,7 +75,7 @@ func (s *service) ContactRequestSend(ctx context.Context, req *bertytypes.Contac
 		return nil, errcode.ErrInvalidInput
 	}
 
-	if _, err := s.accountGroup.MetadataStore().ContactRequestOutgoingEnqueue(ctx, shareableContact); err != nil {
+	if _, err := s.accountGroup.MetadataStore().ContactRequestOutgoingEnqueue(ctx, shareableContact, req.OwnMetadata); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 

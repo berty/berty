@@ -68,7 +68,8 @@ message ParseDeepLink {
 message SendContactRequest {
   message Request {
     BertyID berty_id = 1 [(gogoproto.customname) = "BertyID"];
-    bytes Metadata = 2;
+    bytes metadata = 2;
+    bytes own_metadata = 3;
   }
   message Reply {}
 }

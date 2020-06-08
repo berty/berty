@@ -681,6 +681,11 @@ export class AccountContactRequestEnqueued extends jspb.Message {
   getContact(): ShareableContact | undefined;
   setContact(value?: ShareableContact): void;
 
+  getOwnMetadata(): Uint8Array | string;
+  getOwnMetadata_asU8(): Uint8Array;
+  getOwnMetadata_asB64(): string;
+  setOwnMetadata(value: Uint8Array | string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AccountContactRequestEnqueued.AsObject;
   static toObject(includeInstance: boolean, msg: AccountContactRequestEnqueued): AccountContactRequestEnqueued.AsObject;
@@ -696,6 +701,7 @@ export namespace AccountContactRequestEnqueued {
     devicePk: Uint8Array | string,
     groupPk: Uint8Array | string,
     contact?: ShareableContact.AsObject,
+    ownMetadata: Uint8Array | string,
   }
 }
 
@@ -1275,6 +1281,11 @@ export namespace ContactRequestSend {
     getContact(): ShareableContact | undefined;
     setContact(value?: ShareableContact): void;
 
+    getOwnMetadata(): Uint8Array | string;
+    getOwnMetadata_asU8(): Uint8Array;
+    getOwnMetadata_asB64(): string;
+    setOwnMetadata(value: Uint8Array | string): void;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Request.AsObject;
     static toObject(includeInstance: boolean, msg: Request): Request.AsObject;
@@ -1288,6 +1299,7 @@ export namespace ContactRequestSend {
   export namespace Request {
     export type AsObject = {
       contact?: ShareableContact.AsObject,
+      ownMetadata: Uint8Array | string,
     }
   }
 

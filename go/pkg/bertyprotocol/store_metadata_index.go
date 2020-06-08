@@ -23,6 +23,7 @@ type metadataStoreIndex struct {
 	admins                   map[crypto.PubKey]struct{}
 	contacts                 map[string]*accountContact
 	groups                   map[string]*accountGroup
+	contactRequestMetadata   map[string][]byte
 	contactRequestSeed       []byte
 	contactRequestEnabled    *bool
 	eventHandlers            map[bertytypes.EventType][]func(event proto.Message) error
@@ -59,6 +60,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	// Resetting state
 	m.contacts = map[string]*accountContact{}
 	m.groups = map[string]*accountGroup{}
+	m.contactRequestMetadata = map[string][]byte{}
 	m.contactRequestEnabled = nil
 	m.contactRequestSeed = []byte(nil)
 
@@ -387,6 +389,10 @@ func (m *metadataStoreIndex) handleContactRequestOutgoingEnqueued(event proto.Me
 		return nil
 	}
 
+	if _, ok := m.contactRequestMetadata[string(evt.Contact.PK)]; !ok {
+		m.contactRequestMetadata[string(evt.Contact.PK)] = evt.OwnMetadata
+	}
+
 	m.contacts[string(evt.Contact.PK)] = &accountContact{
 		state: bertytypes.ContactStateToRequest,
 		contact: &bertytypes.ShareableContact{
@@ -432,6 +438,10 @@ func (m *metadataStoreIndex) handleContactRequestIncomingReceived(event proto.Me
 
 		if m.contacts[string(evt.ContactPK)].contact.PublicRendezvousSeed == nil {
 			m.contacts[string(evt.ContactPK)].contact.PublicRendezvousSeed = evt.ContactRendezvousSeed
+		}
+
+		if m.contacts[string(evt.ContactPK)].contact.Metadata == nil {
+			m.contacts[string(evt.ContactPK)].contact.Metadata = evt.ContactMetadata
 		}
 
 		return nil
@@ -645,18 +655,19 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertytypes.Group, md *memberDevice) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		m := &metadataStoreIndex{
-			members:         map[string][]*memberDevice{},
-			devices:         map[string]*memberDevice{},
-			admins:          map[crypto.PubKey]struct{}{},
-			sentSecrets:     map[string]struct{}{},
-			handledEvents:   map[string]struct{}{},
-			contacts:        map[string]*accountContact{},
-			groups:          map[string]*accountGroup{},
-			g:               g,
-			eventEmitter:    eventEmitter,
-			ownMemberDevice: md,
-			ctx:             ctx,
-			logger:          zap.NewNop(),
+			members:                map[string][]*memberDevice{},
+			devices:                map[string]*memberDevice{},
+			admins:                 map[crypto.PubKey]struct{}{},
+			sentSecrets:            map[string]struct{}{},
+			handledEvents:          map[string]struct{}{},
+			contacts:               map[string]*accountContact{},
+			groups:                 map[string]*accountGroup{},
+			contactRequestMetadata: map[string][]byte{},
+			g:                      g,
+			eventEmitter:           eventEmitter,
+			ownMemberDevice:        md,
+			ctx:                    ctx,
+			logger:                 zap.NewNop(),
 		}
 
 		m.eventHandlers = map[bertytypes.EventType][]func(event proto.Message) error{
