@@ -5,6 +5,7 @@ import (
 	"context"
 	"sync"
 
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
@@ -22,6 +23,7 @@ type tabbedGroupsView struct {
 	contactGroupViews      []*groupView
 	multiMembersGroupViews []*groupView
 	lock                   sync.RWMutex
+	messenger              bertymessenger.MessengerServiceServer
 }
 
 func (v *tabbedGroupsView) getChannelViewGroups() []*groupView {
@@ -200,12 +202,13 @@ func (v *tabbedGroupsView) GetHistory() tview.Primitive {
 	return v.activeViewContainer
 }
 
-func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client bertyprotocol.ProtocolServiceClient, app *tview.Application) *tabbedGroupsView {
+func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client bertyprotocol.ProtocolServiceClient, messenger bertymessenger.MessengerServiceServer, app *tview.Application) *tabbedGroupsView {
 	v := &tabbedGroupsView{
-		ctx:    ctx,
-		topics: tview.NewTable(),
-		client: client,
-		app:    app,
+		ctx:       ctx,
+		topics:    tview.NewTable(),
+		client:    client,
+		messenger: messenger,
+		app:       app,
 	}
 
 	v.accountGroupView = newViewGroup(v, g.Group, g.MemberPK, g.DevicePK, globalLogger)

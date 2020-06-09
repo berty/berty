@@ -16,6 +16,7 @@ import (
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	p2plog "github.com/ipfs/go-log"
 
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"github.com/juju/fslock"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/rivo/tview"
@@ -155,6 +156,8 @@ func Main(ctx context.Context, opts *Opts) {
 		client = bertyprotocol.NewProtocolServiceClient(cc)
 	}
 
+	messenger := bertymessenger.New(client, &bertymessenger.Opts{Logger: opts.Logger.Named("messenger")})
+
 	config, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		panic(err)
@@ -175,7 +178,7 @@ func Main(ctx context.Context, opts *Opts) {
 		globalLogger = zap.NewNop()
 	}
 
-	tabbedView := newTabbedGroups(ctx, accountGroup, client, app)
+	tabbedView := newTabbedGroups(ctx, accountGroup, client, messenger, app)
 	if len(opts.GroupInvitation) > 0 {
 		req := &bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}
 		cl, err := tabbedView.client.GroupMetadataSubscribe(ctx, req)
@@ -226,7 +229,7 @@ func Main(ctx context.Context, opts *Opts) {
 		AddItem(tview.NewTextView().SetText(">> "), 3, 0, false).
 		AddItem(input, 0, 1, true)
 
-	messenger := tview.NewFlex().
+	mainUI := tview.NewFlex().
 		AddItem(tabbedView.GetTabs(), 10, 0, false).
 		AddItem(tview.NewFlex().SetDirection(tview.FlexRow).
 			AddItem(tabbedView.GetHistory(), 0, 1, false).
@@ -266,7 +269,7 @@ func Main(ctx context.Context, opts *Opts) {
 		return event
 	})
 
-	if err := app.SetRoot(messenger, true).SetFocus(messenger).Run(); err != nil {
+	if err := app.SetRoot(mainUI, true).SetFocus(mainUI).Run(); err != nil {
 		panic(err)
 	}
 }
