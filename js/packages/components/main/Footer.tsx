@@ -10,9 +10,9 @@ export const Footer: React.FC<{ selected: string }> = ({ selected }) => {
 		<SharedFooter
 			left={{
 				icon: 'search-outline',
-				// onPress: navigate.main.search,
+				onPress: navigate.main.search,
 				selected: selected === Routes.Main.Search,
-				disabled: true,
+				disabled: false,
 			}}
 			center={
 				selected === Routes.Main.List
