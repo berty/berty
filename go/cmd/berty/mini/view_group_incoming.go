@@ -85,12 +85,6 @@ func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView,
 	return nil
 }
 
-func handlerAccountContactRequestStatusChanged(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
-	_ = e
-	_ = isHistory
-	return contactShareCommand(ctx, v, "")
-}
-
 func handlerAccountGroupLeft(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &bertytypes.AccountGroupLeft{}
 	if err := casted.Unmarshal(e.Event); err != nil {
@@ -231,17 +225,21 @@ func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupV
 	return nil
 }
 
+func handlerNoop(_ context.Context, _ *groupView, _ *bertytypes.GroupMetadataEvent, _ bool) error {
+	return nil
+}
+
 func metadataEventHandler(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool, logger *zap.Logger) {
 	actions := map[bertytypes.EventType]func(context.Context, *groupView, *bertytypes.GroupMetadataEvent, bool) error{
 		bertytypes.EventTypeAccountContactBlocked:                  nil, // do it later
-		bertytypes.EventTypeAccountContactRequestDisabled:          handlerAccountContactRequestStatusChanged,
-		bertytypes.EventTypeAccountContactRequestEnabled:           handlerAccountContactRequestStatusChanged,
+		bertytypes.EventTypeAccountContactRequestDisabled:          handlerNoop,
+		bertytypes.EventTypeAccountContactRequestEnabled:           handlerNoop,
 		bertytypes.EventTypeAccountContactRequestIncomingAccepted:  handlerAccountContactRequestIncomingAccepted,
 		bertytypes.EventTypeAccountContactRequestIncomingDiscarded: handlerAccountContactRequestIncomingDiscarded,
 		bertytypes.EventTypeAccountContactRequestIncomingReceived:  handlerAccountContactRequestIncomingReceived,
 		bertytypes.EventTypeAccountContactRequestOutgoingEnqueued:  handlerAccountContactRequestOutgoingEnqueued,
 		bertytypes.EventTypeAccountContactRequestOutgoingSent:      handlerAccountContactRequestOutgoingSent,
-		bertytypes.EventTypeAccountContactRequestReferenceReset:    handlerAccountContactRequestStatusChanged,
+		bertytypes.EventTypeAccountContactRequestReferenceReset:    handlerNoop,
 		bertytypes.EventTypeAccountContactUnblocked:                nil, // do it later
 		bertytypes.EventTypeAccountGroupJoined:                     handlerAccountGroupJoined,
 		bertytypes.EventTypeAccountGroupLeft:                       handlerAccountGroupLeft,

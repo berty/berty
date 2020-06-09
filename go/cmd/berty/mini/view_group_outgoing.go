@@ -7,8 +7,12 @@ import (
 	"io"
 	"strings"
 
+	"bytes"
+
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/ipfs/go-cid"
+	qrterminal "github.com/mdp/qrterminal/v3"
 	"github.com/pkg/errors"
 )
 
@@ -375,14 +379,18 @@ func groupNewCommand(ctx context.Context, v *groupView, _ string) error {
 }
 
 func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error {
-	contactBytes, err := base64.StdEncoding.DecodeString(cmd)
+	res, err := v.v.messenger.ParseDeepLink(ctx, &bertymessenger.ParseDeepLink_Request{
+		Link: cmd,
+	})
+
 	if err != nil {
 		return err
 	}
 
-	contact := &bertytypes.ShareableContact{}
-	if err := contact.Unmarshal(contactBytes); err != nil {
-		return err
+	contact := &bertytypes.ShareableContact{
+		PK:                   res.BertyID.AccountPK,
+		PublicRendezvousSeed: res.BertyID.PublicRendezvousSeed,
+		Metadata:             []byte(res.BertyID.DisplayName),
 	}
 
 	_, err = v.v.client.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
@@ -406,38 +414,33 @@ func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func contactShareCommand(ctx context.Context, v *groupView, cmd string) error {
-	res, err := v.v.client.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
+	res, err := v.v.messenger.InstanceShareableBertyID(ctx, &bertymessenger.InstanceShareableBertyID_Request{})
 	if err != nil {
 		return err
 	}
 
-	enabled, rdvSeed := res.Enabled, res.PublicRendezvousSeed
+	if cmd == "qr" || cmd == "qrcode" {
+		qrOut := new(bytes.Buffer)
+		qrterminal.GenerateWithConfig(res.DeepLink, qrterminal.Config{
+			Writer:    qrOut,
+			Level:     qrterminal.L,
+			BlackChar: qrterminal.BLACK_BLACK + qrterminal.BLACK_BLACK,
+			WhiteChar: qrterminal.WHITE_WHITE + qrterminal.WHITE_WHITE,
+			QuietZone: qrterminal.QUIET_ZONE,
+		})
 
-	shareableContact, err := (&bertytypes.ShareableContact{
-		PK:                   v.v.accountGroupView.memberPK,
-		PublicRendezvousSeed: rdvSeed,
-		Metadata:             []byte(nil),
-	}).Marshal()
-	if err != nil {
-		return err
-	}
+		lines := strings.Split(qrOut.String(), "\n")
 
-	if enabled {
-		if rdvSeed == nil {
+		for _, l := range lines {
 			v.syncMessages <- &historyMessage{
 				messageType: messageTypeMeta,
-				payload:     []byte("contact request ref seed has not been generated"),
-			}
-		} else {
-			v.syncMessages <- &historyMessage{
-				messageType: messageTypeMeta,
-				payload:     []byte(fmt.Sprintf("shareable contact: %s", base64.StdEncoding.EncodeToString(shareableContact))),
+				payload:     []byte(l),
 			}
 		}
 	} else {
 		v.syncMessages <- &historyMessage{
-			messageType: messageTypeError,
-			payload:     []byte("contact request ref is disabled"),
+			messageType: messageTypeMeta,
+			payload:     []byte(res.DeepLink),
 		}
 	}
 
