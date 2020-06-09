@@ -1,9 +1,9 @@
 import React from 'react'
 import { TouchableOpacity, View, ViewProps, ScrollView, TouchableHighlight } from 'react-native'
 import { Translation } from 'react-i18next'
-import { berty } from '@berty-tech/api'
 import { useLayout } from '../hooks'
 import { useStyles } from '@berty-tech/styles'
+import { scaleSize } from '@berty-tech/styles/constant'
 import {
 	ProceduralCircleAvatar,
 	ConversationProceduralAvatar,
@@ -301,26 +301,40 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 }
 
 const Conversations: React.FC<ConversationsProps> = ({ items, hasRequests }) => {
-	const [{ overflow, border, padding, margin, text, background, row }] = useStyles()
+	const [{ overflow, border, padding, margin, text, background, row, absolute, flex }] = useStyles()
 	return items?.length ? (
 		<Translation>
 			{(t): React.ReactNode => (
 				<SafeAreaConsumer>
 					{(insets) => (
-						<ScrollView
-							style={[overflow]}
-							contentContainerStyle={[
-								background.white,
-								border.radius.big,
-								{
-									flexGrow: 1,
-									paddingTop: !hasRequests && insets?.top ? insets.top : 0,
-									paddingBottom: (insets?.bottom || 0) + 110,
-								},
-							]}
-							bounces={false}
-						>
-							<View style={[row.left, padding.left.scale(27), { alignItems: 'center' }]}>
+						<View style={[flex.medium]}>
+							<ScrollView
+								style={[overflow]}
+								contentContainerStyle={[
+									background.white,
+									border.radius.big,
+									{
+										flexGrow: 1,
+										paddingTop: (!hasRequests && insets?.top ? insets?.top * scaleSize : 0) + 85 * scaleSize,
+										paddingBottom: (insets?.bottom ? insets?.bottom * scaleSize : 0) + (100 - (insets?.bottom || 0)) * scaleSize,
+									},
+								]}
+								bounces={false}
+							>
+								{items.map((_) => {
+									return <ConversationsItem {..._} />
+								})}
+							</ScrollView>
+							<View
+								style={[
+									row.left,
+									padding.top.scale(insets?.top || 0),
+									padding.left.scale(27),
+									absolute.scale({ top: 0 }),
+									background.white,
+									{ alignItems: 'center', width: '100%', height: '13%' },
+								]}
+							>
 								<Logo width={35} height={35} />
 								<Text
 									style={[
@@ -335,10 +349,7 @@ const Conversations: React.FC<ConversationsProps> = ({ items, hasRequests }) => 
 									{t('main.messages.title')}
 								</Text>
 							</View>
-							{items.map((_) => {
-								return <ConversationsItem {..._} />
-							})}
-						</ScrollView>
+						</View>
 					)}
 				</SafeAreaConsumer>
 			)}
