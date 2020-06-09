@@ -1,9 +1,15 @@
 import GoBridge from './GoBridge'
 
+import BridgeLogger from './logger'
+const BridgeConsole = {
+	...console,
+	...BridgeLogger(GoBridge),
+}
+
 import { GoBridgeInterface, GoBridgeOpts, GoLogLevel } from './types'
 
 export type { GoBridgeInterface, GoBridgeOpts }
 
-export { GoLogLevel }
+export { GoLogLevel, BridgeConsole }
 
 export default GoBridge

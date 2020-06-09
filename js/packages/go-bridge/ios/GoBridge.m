@@ -25,6 +25,8 @@ RCT_EXTERN_METHOD(startProtocol:(NSDictionary)opts
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(log:(NSDictionary)opts);
+
 RCT_EXTERN_METHOD(stopProtocol:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 

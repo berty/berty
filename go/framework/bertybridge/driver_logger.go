@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"google.golang.org/grpc/codes"
 )
 
 type NativeLoggerDriver interface {
@@ -105,12 +103,4 @@ func newNativeLogger(loglevel string, mlogger NativeLoggerDriver) (*zap.Logger, 
 
 	logger.Info("logger initialized", zap.String("level", loglevel))
 	return logger, nil
-}
-
-func grpcCodeToLevel(code codes.Code) zapcore.Level {
-	if code == codes.OK {
-		// It is DEBUG
-		return zap.DebugLevel
-	}
-	return grpc_zap.DefaultCodeToLevel(code)
 }

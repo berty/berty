@@ -226,7 +226,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 	// register protocol service
 	var grpcServer *grpc.Server
 	{
-		grpcLogger := logger.Named("grpc.protocol")
+		grpcLogger := logger.Named("grpc")
 		// Define customfunc to handle panic
 		panicHandler := func(p interface{}) (err error) {
 			return status.Errorf(codes.Unknown, "panic recover: %v", p)
@@ -237,10 +237,6 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			grpc_recovery.WithRecoveryHandler(panicHandler),
 		}
 
-		zapOpts := []grpc_zap.Option{
-			grpc_zap.WithLevels(grpcCodeToLevel),
-		}
-
 		// setup grpc with zap
 		grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
 
@@ -249,13 +245,13 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			grpc_middleware.WithUnaryServerChain(
 				grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 
-				grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
+				grpc_zap.UnaryServerInterceptor(grpcLogger),
 				grpc_recovery.UnaryServerInterceptor(recoverOpts...),
 				grpc_trace.UnaryServerInterceptor(trServer),
 			),
 			grpc_middleware.WithStreamServerChain(
 				grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-				grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
+				grpc_zap.StreamServerInterceptor(grpcLogger),
 				grpc_recovery.StreamServerInterceptor(recoverOpts...),
 				grpc_trace.StreamServerInterceptor(trServer),
 			),

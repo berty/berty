@@ -11,6 +11,8 @@ import Bertybridge
 
 @objc(GoBridge)
 class GoBridge: NSObject {
+    static let rnlogger = LoggerDriver("tech.berty", "react")
+
     // protocol
     var bridgeProtocol: BertybridgeProtocol?
     let rootdir: URL
@@ -39,6 +41,19 @@ class GoBridge: NSObject {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
     }
+
+    @objc func log(_ opts: NSDictionary) {
+        if let message = opts["message"] as? String {
+            let type = opts["level"] as? String ?? "info"
+
+            // set log level
+            let level = Level(rawValue: type.uppercased()) ?? Level.info
+
+            // log
+            GoBridge.rnlogger.print(message as NSString, level: level, category: "react-native")
+        }
+    }
+
 
     //////////////
     // Protocol //
